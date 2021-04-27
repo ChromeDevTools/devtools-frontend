@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "`[aria-*]` ‏‮attributes‬‏ ‏‮match‬‏ ‏‮their‬‏ ‏‮roles‬‏"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "‏‮When‬‏ ‏‮an‬‏ ‏‮element‬‏ ‏‮doesn‬‏'‏‮t‬‏ ‏‮have‬‏ ‏‮an‬‏ ‏‮accessible‬‏ ‏‮name‬‏, ‏‮screen‬‏ ‏‮readers‬‏ ‏‮announce‬‏ ‏‮it‬‏ ‏‮with‬‏ ‏‮a‬‏ ‏‮generic‬‏ ‏‮name‬‏, ‏‮making‬‏ ‏‮it‬‏ ‏‮unusable‬‏ ‏‮for‬‏ ‏‮users‬‏ ‏‮who‬‏ ‏‮rely‬‏ ‏‮on‬‏ ‏‮screen‬‏ ‏‮readers‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "`button`, `link`, ‏‮and‬‏ `menuitem` ‏‮elements‬‏ ‏‮do‬‏ ‏‮not‬‏ ‏‮have‬‏ ‏‮accessible‬‏ ‏‮names‬‏."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "`button`, `link`, ‏‮and‬‏ `menuitem` ‏‮elements‬‏ ‏‮have‬‏ ‏‮accessible‬‏ ‏‮names‬‏"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "‏‮Assistive‬‏ ‏‮technologies‬‏, ‏‮like‬‏ ‏‮screen‬‏ ‏‮readers‬‏, ‏‮work‬‏ ‏‮inconsistently‬‏ ‏‮when‬‏ `aria-hidden=\"true\"` ‏‮is‬‏ ‏‮set‬‏ ‏‮on‬‏ ‏‮the‬‏ ‏‮document‬‏ `<body>`. [‏‮Learn‬‏ ‏‮more‬‏](https://web.dev/aria-hidden-body/)."
   },
@@ -36,13 +45,31 @@
     "message": "`[aria-hidden=\"true\"]` ‏‮elements‬‏ ‏‮do‬‏ ‏‮not‬‏ ‏‮contain‬‏ ‏‮focusable‬‏ ‏‮descendents‬‏"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "‏‮When‬‏ ‏‮an‬‏ ‏‮input‬‏ ‏‮field‬‏ ‏‮doesn‬‏'‏‮t‬‏ ‏‮have‬‏ ‏‮an‬‏ ‏‮accessible‬‏ ‏‮name‬‏, ‏‮screen‬‏ ‏‮readers‬‏ ‏‮announce‬‏ ‏‮it‬‏ ‏‮with‬‏ ‏‮a‬‏ ‏‮generic‬‏ ‏‮name‬‏, ‏‮making‬‏ ‏‮it‬‏ ‏‮unusable‬‏ ‏‮for‬‏ ‏‮users‬‏ ‏‮who‬‏ ‏‮rely‬‏ ‏‮on‬‏ ‏‮screen‬‏ ‏‮readers‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://web.dev/aria-input-field-name/)."
+    "message": "‏‮When‬‏ ‏‮an‬‏ ‏‮input‬‏ ‏‮field‬‏ ‏‮doesn‬‏'‏‮t‬‏ ‏‮have‬‏ ‏‮an‬‏ ‏‮accessible‬‏ ‏‮name‬‏, ‏‮screen‬‏ ‏‮readers‬‏ ‏‮announce‬‏ ‏‮it‬‏ ‏‮with‬‏ ‏‮a‬‏ ‏‮generic‬‏ ‏‮name‬‏, ‏‮making‬‏ ‏‮it‬‏ ‏‮unusable‬‏ ‏‮for‬‏ ‏‮users‬‏ ‏‮who‬‏ ‏‮rely‬‏ ‏‮on‬‏ ‏‮screen‬‏ ‏‮readers‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "‏‮ARIA‬‏ ‏‮input‬‏ ‏‮fields‬‏ ‏‮do‬‏ ‏‮not‬‏ ‏‮have‬‏ ‏‮accessible‬‏ ‏‮names‬‏"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "‏‮ARIA‬‏ ‏‮input‬‏ ‏‮fields‬‏ ‏‮have‬‏ ‏‮accessible‬‏ ‏‮names‬‏"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "‏‮When‬‏ ‏‮an‬‏ ‏‮element‬‏ ‏‮doesn‬‏'‏‮t‬‏ ‏‮have‬‏ ‏‮an‬‏ ‏‮accessible‬‏ ‏‮name‬‏, ‏‮screen‬‏ ‏‮readers‬‏ ‏‮announce‬‏ ‏‮it‬‏ ‏‮with‬‏ ‏‮a‬‏ ‏‮generic‬‏ ‏‮name‬‏, ‏‮making‬‏ ‏‮it‬‏ ‏‮unusable‬‏ ‏‮for‬‏ ‏‮users‬‏ ‏‮who‬‏ ‏‮rely‬‏ ‏‮on‬‏ ‏‮screen‬‏ ‏‮readers‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "‏‮ARIA‬‏ `meter` ‏‮elements‬‏ ‏‮do‬‏ ‏‮not‬‏ ‏‮have‬‏ ‏‮accessible‬‏ ‏‮names‬‏."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "‏‮ARIA‬‏ `meter` ‏‮elements‬‏ ‏‮have‬‏ ‏‮accessible‬‏ ‏‮names‬‏"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "‏‮When‬‏ ‏‮an‬‏ ‏‮element‬‏ ‏‮doesn‬‏'‏‮t‬‏ ‏‮have‬‏ ‏‮an‬‏ ‏‮accessible‬‏ ‏‮name‬‏, ‏‮screen‬‏ ‏‮readers‬‏ ‏‮announce‬‏ ‏‮it‬‏ ‏‮with‬‏ ‏‮a‬‏ ‏‮generic‬‏ ‏‮name‬‏, ‏‮making‬‏ ‏‮it‬‏ ‏‮unusable‬‏ ‏‮for‬‏ ‏‮users‬‏ ‏‮who‬‏ ‏‮rely‬‏ ‏‮on‬‏ ‏‮screen‬‏ ‏‮readers‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "‏‮ARIA‬‏ `progressbar` ‏‮elements‬‏ ‏‮do‬‏ ‏‮not‬‏ ‏‮have‬‏ ‏‮accessible‬‏ ‏‮names‬‏."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "‏‮ARIA‬‏ `progressbar` ‏‮elements‬‏ ‏‮have‬‏ ‏‮accessible‬‏ ‏‮names‬‏"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "‏‮Some‬‏ ‏‮ARIA‬‏ ‏‮roles‬‏ ‏‮have‬‏ ‏‮required‬‏ ‏‮attributes‬‏ ‏‮that‬‏ ‏‮describe‬‏ ‏‮the‬‏ ‏‮state‬‏ ‏‮of‬‏ ‏‮the‬‏ ‏‮element‬‏ ‏‮to‬‏ ‏‮screen‬‏ ‏‮readers‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://web.dev/aria-required-attr/)."
@@ -81,13 +108,31 @@
     "message": "`[role]` ‏‮values‬‏ ‏‮are‬‏ ‏‮valid‬‏"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "‏‮When‬‏ ‏‮a‬‏ ‏‮toggle‬‏ ‏‮field‬‏ ‏‮doesn‬‏'‏‮t‬‏ ‏‮have‬‏ ‏‮an‬‏ ‏‮accessible‬‏ ‏‮name‬‏, ‏‮screen‬‏ ‏‮readers‬‏ ‏‮announce‬‏ ‏‮it‬‏ ‏‮with‬‏ ‏‮a‬‏ ‏‮generic‬‏ ‏‮name‬‏, ‏‮making‬‏ ‏‮it‬‏ ‏‮unusable‬‏ ‏‮for‬‏ ‏‮users‬‏ ‏‮who‬‏ ‏‮rely‬‏ ‏‮on‬‏ ‏‮screen‬‏ ‏‮readers‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://web.dev/aria-toggle-field-name/)."
+    "message": "‏‮When‬‏ ‏‮a‬‏ ‏‮toggle‬‏ ‏‮field‬‏ ‏‮doesn‬‏'‏‮t‬‏ ‏‮have‬‏ ‏‮an‬‏ ‏‮accessible‬‏ ‏‮name‬‏, ‏‮screen‬‏ ‏‮readers‬‏ ‏‮announce‬‏ ‏‮it‬‏ ‏‮with‬‏ ‏‮a‬‏ ‏‮generic‬‏ ‏‮name‬‏, ‏‮making‬‏ ‏‮it‬‏ ‏‮unusable‬‏ ‏‮for‬‏ ‏‮users‬‏ ‏‮who‬‏ ‏‮rely‬‏ ‏‮on‬‏ ‏‮screen‬‏ ‏‮readers‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "‏‮ARIA‬‏ ‏‮toggle‬‏ ‏‮fields‬‏ ‏‮do‬‏ ‏‮not‬‏ ‏‮have‬‏ ‏‮accessible‬‏ ‏‮names‬‏"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "‏‮ARIA‬‏ ‏‮toggle‬‏ ‏‮fields‬‏ ‏‮have‬‏ ‏‮accessible‬‏ ‏‮names‬‏"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "‏‮When‬‏ ‏‮an‬‏ ‏‮element‬‏ ‏‮doesn‬‏'‏‮t‬‏ ‏‮have‬‏ ‏‮an‬‏ ‏‮accessible‬‏ ‏‮name‬‏, ‏‮screen‬‏ ‏‮readers‬‏ ‏‮announce‬‏ ‏‮it‬‏ ‏‮with‬‏ ‏‮a‬‏ ‏‮generic‬‏ ‏‮name‬‏, ‏‮making‬‏ ‏‮it‬‏ ‏‮unusable‬‏ ‏‮for‬‏ ‏‮users‬‏ ‏‮who‬‏ ‏‮rely‬‏ ‏‮on‬‏ ‏‮screen‬‏ ‏‮readers‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "‏‮ARIA‬‏ `tooltip` ‏‮elements‬‏ ‏‮do‬‏ ‏‮not‬‏ ‏‮have‬‏ ‏‮accessible‬‏ ‏‮names‬‏."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "‏‮ARIA‬‏ `tooltip` ‏‮elements‬‏ ‏‮have‬‏ ‏‮accessible‬‏ ‏‮names‬‏"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "‏‮When‬‏ ‏‮an‬‏ ‏‮element‬‏ ‏‮doesn‬‏'‏‮t‬‏ ‏‮have‬‏ ‏‮an‬‏ ‏‮accessible‬‏ ‏‮name‬‏, ‏‮screen‬‏ ‏‮readers‬‏ ‏‮announce‬‏ ‏‮it‬‏ ‏‮with‬‏ ‏‮a‬‏ ‏‮generic‬‏ ‏‮name‬‏, ‏‮making‬‏ ‏‮it‬‏ ‏‮unusable‬‏ ‏‮for‬‏ ‏‮users‬‏ ‏‮who‬‏ ‏‮rely‬‏ ‏‮on‬‏ ‏‮screen‬‏ ‏‮readers‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "‏‮ARIA‬‏ `treeitem` ‏‮elements‬‏ ‏‮do‬‏ ‏‮not‬‏ ‏‮have‬‏ ‏‮accessible‬‏ ‏‮names‬‏."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "‏‮ARIA‬‏ `treeitem` ‏‮elements‬‏ ‏‮have‬‏ ‏‮accessible‬‏ ‏‮names‬‏"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "‏‮Assistive‬‏ ‏‮technologies‬‏, ‏‮like‬‏ ‏‮screen‬‏ ‏‮readers‬‏, ‏‮can‬‏'‏‮t‬‏ ‏‮interpret‬‏ ‏‮ARIA‬‏ ‏‮attributes‬‏ ‏‮with‬‏ ‏‮invalid‬‏ ‏‮values‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://web.dev/aria-valid-attr-value/)."
@@ -468,16 +513,16 @@
     "message": "‏‮Minify‬‏ ‏‮JavaScript‬‏"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "‏‮Remove‬‏ ‏‮dead‬‏ ‏‮rules‬‏ ‏‮from‬‏ ‏‮stylesheets‬‏ ‏‮and‬‏ ‏‮defer‬‏ ‏‮the‬‏ ‏‮loading‬‏ ‏‮of‬‏ ‏‮CSS‬‏ ‏‮not‬‏ ‏‮used‬‏ ‏‮for‬‏ ‏‮above‬‏-‏‮the‬‏-‏‮fold‬‏ ‏‮content‬‏ ‏‮to‬‏ ‏‮reduce‬‏ ‏‮unnecessary‬‏ ‏‮bytes‬‏ ‏‮consumed‬‏ ‏‮by‬‏ ‏‮network‬‏ ‏‮activity‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://web.dev/unused-css-rules/)."
+    "message": "‏‮Reduce‬‏ ‏‮unused‬‏ ‏‮rules‬‏ ‏‮from‬‏ ‏‮stylesheets‬‏ ‏‮and‬‏ ‏‮defer‬‏ ‏‮CSS‬‏ ‏‮not‬‏ ‏‮used‬‏ ‏‮for‬‏ ‏‮above‬‏-‏‮the‬‏-‏‮fold‬‏ ‏‮content‬‏ ‏‮to‬‏ ‏‮decrease‬‏ ‏‮bytes‬‏ ‏‮consumed‬‏ ‏‮by‬‏ ‏‮network‬‏ ‏‮activity‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://web.dev/unused-css-rules/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "‏‮Remove‬‏ ‏‮unused‬‏ ‏‮CSS‬‏"
+    "message": "‏‮Reduce‬‏ ‏‮unused‬‏ ‏‮CSS‬‏"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "‏‮Remove‬‏ ‏‮unused‬‏ ‏‮JavaScript‬‏ ‏‮to‬‏ ‏‮reduce‬‏ ‏‮bytes‬‏ ‏‮consumed‬‏ ‏‮by‬‏ ‏‮network‬‏ ‏‮activity‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://web.dev/unused-javascript/)."
+    "message": "‏‮Reduce‬‏ ‏‮unused‬‏ ‏‮JavaScript‬‏ ‏‮and‬‏ ‏‮defer‬‏ ‏‮loading‬‏ ‏‮scripts‬‏ ‏‮until‬‏ ‏‮they‬‏ ‏‮are‬‏ ‏‮required‬‏ ‏‮to‬‏ ‏‮decrease‬‏ ‏‮bytes‬‏ ‏‮consumed‬‏ ‏‮by‬‏ ‏‮network‬‏ ‏‮activity‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://web.dev/unused-javascript/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "‏‮Remove‬‏ ‏‮unused‬‏ ‏‮JavaScript‬‏"
+    "message": "‏‮Reduce‬‏ ‏‮unused‬‏ ‏‮JavaScript‬‏"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "‏‮A‬‏ ‏‮long‬‏ ‏‮cache‬‏ ‏‮lifetime‬‏ ‏‮can‬‏ ‏‮speed‬‏ ‏‮up‬‏ ‏‮repeat‬‏ ‏‮visits‬‏ ‏‮to‬‏ ‏‮your‬‏ ‏‮page‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://web.dev/uses-long-cache-ttl/)."
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "‏‮Avoid‬‏ ‏‮chaining‬‏ ‏‮critical‬‏ ‏‮requests‬‏"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "‏‮Directive‬‏"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "‏‮A‬‏ ‏‮strong‬‏ ‏‮Content‬‏ ‏‮Security‬‏ ‏‮Policy‬‏ (‏‮CSP‬‏) ‏‮significantly‬‏ ‏‮reduces‬‏ ‏‮the‬‏ ‏‮risk‬‏ ‏‮of‬‏ ‏‮XSS‬‏ ‏‮attacks‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "‏‮The‬‏ ‏‮page‬‏ ‏‮contains‬‏ ‏‮a‬‏ ‏‮CSP‬‏ ‏‮defined‬‏ ‏‮in‬‏ ‏‮a‬‏ <meta> ‏‮tag‬‏. ‏‮Consider‬‏ ‏‮defining‬‏ ‏‮the‬‏ ‏‮CSP‬‏ ‏‮in‬‏ ‏‮an‬‏ ‏‮HTTP‬‏ ‏‮header‬‏ ‏‮if‬‏ ‏‮you‬‏ ‏‮can‬‏."
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "‏‮No‬‏ ‏‮CSP‬‏ ‏‮found‬‏ ‏‮in‬‏ ‏‮enforcement‬‏ ‏‮mode‬‏"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "‏‮Ensure‬‏ ‏‮CSP‬‏ ‏‮is‬‏ ‏‮effective‬‏ ‏‮against‬‏ ‏‮XSS‬‏ ‏‮attacks‬‏"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "‏‮Deprecation‬‏ / ‏‮Warning‬‏"
@@ -810,7 +870,7 @@
     "message": "‏‮The‬‏ ‏‮app‬‏ ‏‮is‬‏ ‏‮already‬‏ ‏‮installed‬‏"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "‏‮Downloaded‬‏ ‏‮icon‬‏ ‏‮was‬‏ ‏‮empty‬‏ ‏‮or‬‏ ‏‮corrupted‬‏"
+    "message": "‏‮Could‬‏ ‏‮not‬‏ ‏‮download‬‏ ‏‮a‬‏ ‏‮required‬‏ ‏‮icon‬‏ ‏‮from‬‏ ‏‮the‬‏ ‏‮manifest‬‏"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "‏‮Failure‬‏ ‏‮reason‬‏"
@@ -1026,7 +1086,7 @@
     "message": "‏‮Time‬‏ ‏‮to‬‏ ‏‮interactive‬‏ ‏‮is‬‏ ‏‮the‬‏ ‏‮amount‬‏ ‏‮of‬‏ ‏‮time‬‏ ‏‮it‬‏ ‏‮takes‬‏ ‏‮for‬‏ ‏‮the‬‏ ‏‮page‬‏ ‏‮to‬‏ ‏‮become‬‏ ‏‮fully‬‏ ‏‮interactive‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://web.dev/interactive/)."
   },
   "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
-    "message": "‏‮Largest‬‏ ‏‮Contentful‬‏ ‏‮Paint‬‏ ‏‮marks‬‏ ‏‮the‬‏ ‏‮time‬‏ ‏‮at‬‏ ‏‮which‬‏ ‏‮the‬‏ ‏‮largest‬‏ ‏‮text‬‏ ‏‮or‬‏ ‏‮image‬‏ ‏‮is‬‏ ‏‮painted‬‏. [‏‮Learn‬‏ ‏‮More‬‏](https://web.dev/lighthouse-largest-contentful-paint/)"
+    "message": "‏‮Largest‬‏ ‏‮Contentful‬‏ ‏‮Paint‬‏ ‏‮marks‬‏ ‏‮the‬‏ ‏‮time‬‏ ‏‮at‬‏ ‏‮which‬‏ ‏‮the‬‏ ‏‮largest‬‏ ‏‮text‬‏ ‏‮or‬‏ ‏‮image‬‏ ‏‮is‬‏ ‏‮painted‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
     "message": "‏‮The‬‏ ‏‮maximum‬‏ ‏‮potential‬‏ ‏‮First‬‏ ‏‮Input‬‏ ‏‮Delay‬‏ ‏‮that‬‏ ‏‮your‬‏ ‏‮users‬‏ ‏‮could‬‏ ‏‮experience‬‏ ‏‮is‬‏ ‏‮the‬‏ ‏‮duration‬‏ ‏‮of‬‏ ‏‮the‬‏ ‏‮longest‬‏ ‏‮task‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://web.dev/lighthouse-max-potential-fid/)."
@@ -1050,7 +1110,7 @@
     "message": "‏‮Server‬‏ ‏‮Backend‬‏ ‏‮Latencies‬‏"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "‏‮The‬‏ `unload` ‏‮event‬‏ ‏‮does‬‏ ‏‮not‬‏ ‏‮fire‬‏ ‏‮reliably‬‏ ‏‮and‬‏ ‏‮listening‬‏ ‏‮for‬‏ ‏‮it‬‏ ‏‮can‬‏ ‏‮prevent‬‏ ‏‮browser‬‏ ‏‮optimizations‬‏ ‏‮like‬‏ ‏‮the‬‏ ‏‮Back‬‏-‏‮Forward‬‏ ‏‮Cache‬‏. ‏‮Consider‬‏ ‏‮using‬‏ ‏‮the‬‏ `pagehide` ‏‮or‬‏ `visibilitychange` ‏‮events‬‏ ‏‮instead‬‏. [‏‮Learn‬‏ ‏‮More‬‏](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "‏‮The‬‏ `unload` ‏‮event‬‏ ‏‮does‬‏ ‏‮not‬‏ ‏‮fire‬‏ ‏‮reliably‬‏ ‏‮and‬‏ ‏‮listening‬‏ ‏‮for‬‏ ‏‮it‬‏ ‏‮can‬‏ ‏‮prevent‬‏ ‏‮browser‬‏ ‏‮optimizations‬‏ ‏‮like‬‏ ‏‮the‬‏ ‏‮Back‬‏-‏‮Forward‬‏ ‏‮Cache‬‏. ‏‮Consider‬‏ ‏‮using‬‏ ‏‮the‬‏ `pagehide` ‏‮or‬‏ `visibilitychange` ‏‮events‬‏ ‏‮instead‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "‏‮Registers‬‏ ‏‮an‬‏ `unload` ‏‮listener‬‏"
@@ -1095,7 +1155,7 @@
     "message": "‏‮Performance‬‏ ‏‮budget‬‏"
   },
   "lighthouse-core/audits/preload-fonts.js | description": {
-    "message": "‏‮Preload‬‏ `optional` ‏‮fonts‬‏ ‏‮so‬‏ ‏‮first‬‏-‏‮time‬‏ ‏‮visitors‬‏ ‏‮may‬‏ ‏‮use‬‏ ‏‮them‬‏. [‏‮Learn‬‏ ‏‮More‬‏](https://web.dev/preload-optional-fonts/)"
+    "message": "‏‮Preload‬‏ `optional` ‏‮fonts‬‏ ‏‮so‬‏ ‏‮first‬‏-‏‮time‬‏ ‏‮visitors‬‏ ‏‮may‬‏ ‏‮use‬‏ ‏‮them‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://web.dev/preload-optional-fonts/)"
   },
   "lighthouse-core/audits/preload-fonts.js | failureTitle": {
     "message": "‏‮Fonts‬‏ ‏‮with‬‏ `font-display: optional` ‏‮are‬‏ ‏‮not‬‏ ‏‮preloaded‬‏"
@@ -1467,7 +1527,7 @@
     "message": "‏‮Map‬‏ ‏‮URL‬‏"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "‏‮Source‬‏ ‏‮maps‬‏ ‏‮translate‬‏ ‏‮minified‬‏ ‏‮code‬‏ ‏‮to‬‏ ‏‮the‬‏ ‏‮original‬‏ ‏‮source‬‏ ‏‮code‬‏. ‏‮This‬‏ ‏‮helps‬‏ ‏‮developers‬‏ ‏‮debug‬‏ ‏‮in‬‏ ‏‮production‬‏. ‏‮In‬‏ ‏‮addition‬‏, ‏‮Lighthouse‬‏ ‏‮is‬‏ ‏‮able‬‏ ‏‮to‬‏ ‏‮provide‬‏ ‏‮further‬‏ ‏‮insights‬‏. ‏‮Consider‬‏ ‏‮deploying‬‏ ‏‮source‬‏ ‏‮maps‬‏ ‏‮to‬‏ ‏‮take‬‏ ‏‮advantage‬‏ ‏‮of‬‏ ‏‮these‬‏ ‏‮benefits‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
+    "message": "‏‮Source‬‏ ‏‮maps‬‏ ‏‮translate‬‏ ‏‮minified‬‏ ‏‮code‬‏ ‏‮to‬‏ ‏‮the‬‏ ‏‮original‬‏ ‏‮source‬‏ ‏‮code‬‏. ‏‮This‬‏ ‏‮helps‬‏ ‏‮developers‬‏ ‏‮debug‬‏ ‏‮in‬‏ ‏‮production‬‏. ‏‮In‬‏ ‏‮addition‬‏, ‏‮Lighthouse‬‏ ‏‮is‬‏ ‏‮able‬‏ ‏‮to‬‏ ‏‮provide‬‏ ‏‮further‬‏ ‏‮insights‬‏. ‏‮Consider‬‏ ‏‮deploying‬‏ ‏‮source‬‏ ‏‮maps‬‏ ‏‮to‬‏ ‏‮take‬‏ ‏‮advantage‬‏ ‏‮of‬‏ ‏‮these‬‏ ‏‮benefits‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "‏‮Missing‬‏ ‏‮source‬‏ ‏‮maps‬‏ ‏‮for‬‏ ‏‮large‬‏ ‏‮first‬‏-‏‮party‬‏ ‏‮JavaScript‬‏"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "‏‮Mobile‬‏ ‏‮Friendly‬‏"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{‏‮There‬‏ ‏‮may‬‏ ‏‮be‬‏ ‏‮stored‬‏ ‏‮data‬‏ ‏‮affecting‬‏ ‏‮loading‬‏ ‏‮performance‬‏ ‏‮in‬‏ ‏‮this‬‏ ‏‮location‬‏: {locations}. ‏‮Audit‬‏ ‏‮this‬‏ ‏‮page‬‏ ‏‮in‬‏ ‏‮an‬‏ ‏‮incognito‬‏ ‏‮window‬‏ ‏‮to‬‏ ‏‮prevent‬‏ ‏‮those‬‏ ‏‮resources‬‏ ‏‮from‬‏ ‏‮affecting‬‏ ‏‮your‬‏ ‏‮scores‬‏.}zero{‏‮There‬‏ ‏‮may‬‏ ‏‮be‬‏ ‏‮stored‬‏ ‏‮data‬‏ ‏‮affecting‬‏ ‏‮loading‬‏ ‏‮performance‬‏ ‏‮in‬‏ ‏‮these‬‏ ‏‮locations‬‏: {locations}. ‏‮Audit‬‏ ‏‮this‬‏ ‏‮page‬‏ ‏‮in‬‏ ‏‮an‬‏ ‏‮incognito‬‏ ‏‮window‬‏ ‏‮to‬‏ ‏‮prevent‬‏ ‏‮those‬‏ ‏‮resources‬‏ ‏‮from‬‏ ‏‮affecting‬‏ ‏‮your‬‏ ‏‮scores‬‏.}two{‏‮There‬‏ ‏‮may‬‏ ‏‮be‬‏ ‏‮stored‬‏ ‏‮data‬‏ ‏‮affecting‬‏ ‏‮loading‬‏ ‏‮performance‬‏ ‏‮in‬‏ ‏‮these‬‏ ‏‮locations‬‏: {locations}. ‏‮Audit‬‏ ‏‮this‬‏ ‏‮page‬‏ ‏‮in‬‏ ‏‮an‬‏ ‏‮incognito‬‏ ‏‮window‬‏ ‏‮to‬‏ ‏‮prevent‬‏ ‏‮those‬‏ ‏‮resources‬‏ ‏‮from‬‏ ‏‮affecting‬‏ ‏‮your‬‏ ‏‮scores‬‏.}few{‏‮There‬‏ ‏‮may‬‏ ‏‮be‬‏ ‏‮stored‬‏ ‏‮data‬‏ ‏‮affecting‬‏ ‏‮loading‬‏ ‏‮performance‬‏ ‏‮in‬‏ ‏‮these‬‏ ‏‮locations‬‏: {locations}. ‏‮Audit‬‏ ‏‮this‬‏ ‏‮page‬‏ ‏‮in‬‏ ‏‮an‬‏ ‏‮incognito‬‏ ‏‮window‬‏ ‏‮to‬‏ ‏‮prevent‬‏ ‏‮those‬‏ ‏‮resources‬‏ ‏‮from‬‏ ‏‮affecting‬‏ ‏‮your‬‏ ‏‮scores‬‏.}many{‏‮There‬‏ ‏‮may‬‏ ‏‮be‬‏ ‏‮stored‬‏ ‏‮data‬‏ ‏‮affecting‬‏ ‏‮loading‬‏ ‏‮performance‬‏ ‏‮in‬‏ ‏‮these‬‏ ‏‮locations‬‏: {locations}. ‏‮Audit‬‏ ‏‮this‬‏ ‏‮page‬‏ ‏‮in‬‏ ‏‮an‬‏ ‏‮incognito‬‏ ‏‮window‬‏ ‏‮to‬‏ ‏‮prevent‬‏ ‏‮those‬‏ ‏‮resources‬‏ ‏‮from‬‏ ‏‮affecting‬‏ ‏‮your‬‏ ‏‮scores‬‏.}other{‏‮There‬‏ ‏‮may‬‏ ‏‮be‬‏ ‏‮stored‬‏ ‏‮data‬‏ ‏‮affecting‬‏ ‏‮loading‬‏ ‏‮performance‬‏ ‏‮in‬‏ ‏‮these‬‏ ‏‮locations‬‏: {locations}. ‏‮Audit‬‏ ‏‮this‬‏ ‏‮page‬‏ ‏‮in‬‏ ‏‮an‬‏ ‏‮incognito‬‏ ‏‮window‬‏ ‏‮to‬‏ ‏‮prevent‬‏ ‏‮those‬‏ ‏‮resources‬‏ ‏‮from‬‏ ‏‮affecting‬‏ ‏‮your‬‏ ‏‮scores‬‏.}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "‏‮The‬‏ ‏‮page‬‏ ‏‮may‬‏ ‏‮not‬‏ ‏‮be‬‏ ‏‮loading‬‏ ‏‮as‬‏ ‏‮expected‬‏ ‏‮because‬‏ ‏‮your‬‏ ‏‮test‬‏ ‏‮URL‬‏ ({requested}) ‏‮was‬‏ ‏‮redirected‬‏ ‏‮to‬‏ {final}. ‏‮Try‬‏ ‏‮testing‬‏ ‏‮the‬‏ ‏‮second‬‏ ‏‮URL‬‏ ‏‮directly‬‏."
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "‏‮The‬‏ ‏‮page‬‏ ‏‮loaded‬‏ ‏‮too‬‏ ‏‮slowly‬‏ ‏‮to‬‏ ‏‮finish‬‏ ‏‮within‬‏ ‏‮the‬‏ ‏‮time‬‏ ‏‮limit‬‏. ‏‮Results‬‏ ‏‮may‬‏ ‏‮be‬‏ ‏‮incomplete‬‏."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "‏‮Consider‬‏ ‏‮adding‬‏ ‏‮https‬‏: ‏‮and‬‏ ‏‮http‬‏: ‏‮URL‬‏ ‏‮schemes‬‏ (‏‮ignored‬‏ ‏‮by‬‏ ‏‮browsers‬‏ ‏‮supporting‬‏ '‏‮strict‬‏-‏‮dynamic‬‏') ‏‮to‬‏ ‏‮be‬‏ ‏‮backward‬‏ ‏‮compatible‬‏ ‏‮with‬‏ ‏‮older‬‏ ‏‮browsers‬‏."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "‏‮disown‬‏-‏‮opener‬‏ ‏‮is‬‏ ‏‮deprecated‬‏ ‏‮since‬‏ ‏‮CSP‬‏3. ‏‮Please‬‏, ‏‮use‬‏ ‏‮the‬‏ ‏‮Cross‬‏-‏‮Origin‬‏-‏‮Opener‬‏-‏‮Policy‬‏ ‏‮header‬‏ ‏‮instead‬‏."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "‏‮referrer‬‏ ‏‮is‬‏ ‏‮deprecated‬‏ ‏‮since‬‏ ‏‮CSP‬‏2. ‏‮Please‬‏, ‏‮use‬‏ ‏‮the‬‏ ‏‮Referrer‬‏-‏‮Policy‬‏ ‏‮header‬‏ ‏‮instead‬‏."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "‏‮reflected‬‏-‏‮xss‬‏ ‏‮is‬‏ ‏‮deprecated‬‏ ‏‮since‬‏ ‏‮CSP‬‏2. ‏‮Please‬‏, ‏‮use‬‏ ‏‮the‬‏ ‏‮X‬‏-‏‮XSS‬‏-‏‮Protection‬‏ ‏‮header‬‏ ‏‮instead‬‏."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "‏‮Missing‬‏ ‏‮base‬‏-‏‮uri‬‏ ‏‮allows‬‏ ‏‮injected‬‏ <base> ‏‮tags‬‏ ‏‮to‬‏ ‏‮set‬‏ ‏‮the‬‏ ‏‮base‬‏ ‏‮URL‬‏ ‏‮for‬‏ ‏‮all‬‏ ‏‮relative‬‏ ‏‮URLs‬‏ (‏‮e‬‏.‏‮g‬‏. ‏‮scripts‬‏) ‏‮to‬‏ ‏‮an‬‏ ‏‮attacker‬‏ ‏‮controlled‬‏ ‏‮domain‬‏. ‏‮Consider‬‏ ‏‮setting‬‏ ‏‮base‬‏-‏‮uri‬‏ ‏‮to‬‏ '‏‮none‬‏' ‏‮or‬‏ '‏‮self‬‏'."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "‏‮Elements‬‏ ‏‮controlled‬‏ ‏‮by‬‏ ‏‮object‬‏-‏‮src‬‏ ‏‮are‬‏ ‏‮considered‬‏ ‏‮legacy‬‏ ‏‮features‬‏. ‏‮Consider‬‏ ‏‮setting‬‏ ‏‮object‬‏-‏‮src‬‏ ‏‮to‬‏ '‏‮none‬‏' ‏‮to‬‏ ‏‮prevent‬‏ ‏‮the‬‏ ‏‮injection‬‏ ‏‮of‬‏ ‏‮plugins‬‏ ‏‮that‬‏ ‏‮execute‬‏ ‏‮unsafe‬‏ ‏‮scripts‬‏."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "‏‮script‬‏-‏‮src‬‏ ‏‮directive‬‏ ‏‮is‬‏ ‏‮missing‬‏. ‏‮This‬‏ ‏‮can‬‏ ‏‮allow‬‏ ‏‮the‬‏ ‏‮execution‬‏ ‏‮of‬‏ ‏‮unsafe‬‏ ‏‮scripts‬‏."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "‏‮Did‬‏ ‏‮you‬‏ ‏‮forget‬‏ ‏‮the‬‏ ‏‮semicolon‬‏? {keyword} ‏‮seems‬‏ ‏‮to‬‏ ‏‮be‬‏ ‏‮a‬‏ ‏‮directive‬‏, ‏‮not‬‏ ‏‮a‬‏ ‏‮keyword‬‏."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "‏‮Nonces‬‏ ‏‮should‬‏ ‏‮use‬‏ ‏‮the‬‏ ‏‮base‬‏64 ‏‮charset‬‏."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "‏‮Nonces‬‏ ‏‮should‬‏ ‏‮be‬‏ ‏‮at‬‏ ‏‮least‬‏ 8 ‏‮characters‬‏ ‏‮long‬‏."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "‏‮The‬‏ ‏‮reporting‬‏ ‏‮destination‬‏ ‏‮is‬‏ ‏‮only‬‏ ‏‮configured‬‏ ‏‮via‬‏ ‏‮the‬‏ ‏‮report‬‏-‏‮to‬‏ ‏‮directive‬‏. ‏‮This‬‏ ‏‮directive‬‏ ‏‮is‬‏ ‏‮only‬‏ ‏‮supported‬‏ ‏‮in‬‏ ‏‮Chromium‬‏-‏‮based‬‏ ‏‮browsers‬‏ ‏‮so‬‏ ‏‮it‬‏ ‏‮is‬‏ ‏‮recommended‬‏ ‏‮to‬‏ ‏‮also‬‏ ‏‮use‬‏ ‏‮a‬‏ ‏‮report‬‏-‏‮uri‬‏ ‏‮directive‬‏."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "‏‮No‬‏ ‏‮CSP‬‏ ‏‮configures‬‏ ‏‮a‬‏ ‏‮reporting‬‏ ‏‮destination‬‏. ‏‮This‬‏ ‏‮makes‬‏ ‏‮it‬‏ ‏‮difficult‬‏ ‏‮to‬‏ ‏‮maintain‬‏ ‏‮the‬‏ ‏‮CSP‬‏ ‏‮over‬‏ ‏‮time‬‏ ‏‮and‬‏ ‏‮monitor‬‏ ‏‮for‬‏ ‏‮any‬‏ ‏‮breakages‬‏."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "‏‮Host‬‏ ‏‮allowlists‬‏ ‏‮can‬‏ ‏‮frequently‬‏ ‏‮be‬‏ ‏‮bypassed‬‏. ‏‮Consider‬‏ ‏‮using‬‏ '‏‮strict‬‏-‏‮dynamic‬‏' ‏‮in‬‏ ‏‮combination‬‏ ‏‮with‬‏ ‏‮CSP‬‏ ‏‮nonces‬‏ ‏‮or‬‏ ‏‮hashes‬‏."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "‏‮Unknown‬‏ ‏‮CSP‬‏ ‏‮directive‬‏."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "{keyword} ‏‮seems‬‏ ‏‮to‬‏ ‏‮be‬‏ ‏‮an‬‏ ‏‮invalid‬‏ ‏‮keyword‬‏."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "'‏‮unsafe‬‏-‏‮inline‬‏' ‏‮allows‬‏ ‏‮the‬‏ ‏‮execution‬‏ ‏‮of‬‏ ‏‮unsafe‬‏ ‏‮in‬‏-‏‮page‬‏ ‏‮scripts‬‏ ‏‮and‬‏ ‏‮event‬‏ ‏‮handlers‬‏. ‏‮Consider‬‏ ‏‮using‬‏ ‏‮CSP‬‏ ‏‮nonces‬‏ ‏‮or‬‏ ‏‮hashes‬‏ ‏‮to‬‏ ‏‮allow‬‏ ‏‮scripts‬‏ ‏‮individually‬‏."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "‏‮Consider‬‏ ‏‮adding‬‏ '‏‮unsafe‬‏-‏‮inline‬‏' (‏‮ignored‬‏ ‏‮by‬‏ ‏‮browsers‬‏ ‏‮supporting‬‏ ‏‮nonces‬‏/‏‮hashes‬‏) ‏‮to‬‏ ‏‮be‬‏ ‏‮backward‬‏ ‏‮compatible‬‏ ‏‮with‬‏ ‏‮older‬‏ ‏‮browsers‬‏."
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "‏‮Main‬‏-‏‮Thread‬‏ ‏‮Blocking‬‏ ‏‮Time‬‏"

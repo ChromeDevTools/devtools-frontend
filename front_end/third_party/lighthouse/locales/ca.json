@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Els atributs `[aria-*]` coincideixen amb les seves funcions"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "Si un element no té un nom accessible, els lectors de pantalla el llegeixen amb un nom genèric, de manera que resulta inservible per als usuaris que depenen d'aquesta tecnologia. [Obtén més informació](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "Els elements `button`, `link` i `menuitem` no tenen noms accessibles"
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "Els elements `button`, `link` i `menuitem` tenen noms accessibles"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Les tecnologies d'assistència, com ara els lectors de pantalla, funcionen de manera incongruent quan `aria-hidden=\"true\"` està definit en el document `<body>`. [Obtén més informació](https://web.dev/aria-hidden-body/)."
   },
@@ -36,13 +45,31 @@
     "message": "Els elements `[aria-hidden=\"true\"]` no contenen cap descendent en què es pugui posar el focus"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Si un camp d'entrada no té un nom accessible, els lectors de pantalla el llegeixen amb un nom genèric, de manera que resulta inservible per als usuaris que depenen d'aquesta tecnologia. [Obtén més informació](https://web.dev/aria-input-field-name/)."
+    "message": "Si un camp d'entrada no té un nom accessible, els lectors de pantalla el llegeixen amb un nom genèric, de manera que resulta inservible per als usuaris que depenen d'aquesta tecnologia. [Obtén més informació](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "Els camps d'entrada ARIA no tenen noms accessibles"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "Els camps d'entrada ARIA tenen noms accessibles"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "Si un element no té un nom accessible, els lectors de pantalla el llegeixen amb un nom genèric, de manera que resulta inservible per als usuaris que depenen d'aquesta tecnologia. [Obtén més informació](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "Els elements `meter` d'ARIA no tenen noms accessibles"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "Els elements `meter` d'ARIA tenen noms accessibles"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "Si un element no té un nom accessible, els lectors de pantalla el llegeixen amb un nom genèric, de manera que resulta inservible per als usuaris que depenen d'aquesta tecnologia. [Obtén més informació](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "Els elements `progressbar` d'ARIA no tenen noms accessibles"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "Els elements `progressbar` d'ARIA tenen noms accessibles"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "Algunes funcions d'ARIA tenen atributs obligatoris que descriuen l'estat de l'element als lectors de pantalla. [Obtén més informació](https://web.dev/aria-required-attr/)."
@@ -81,13 +108,31 @@
     "message": "Els valors de l'atribut `[role]` són vàlids"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Si un camp de commutació no té un nom accessible, els lectors de pantalla el llegeixen amb un nom genèric, de manera que resulta inservible per als usuaris que depenen d'aquesta tecnologia. [Obtén més informació](https://web.dev/aria-toggle-field-name/)."
+    "message": "Si un camp de commutació no té un nom accessible, els lectors de pantalla el llegeixen amb un nom genèric, de manera que resulta inservible per als usuaris que depenen d'aquesta tecnologia. [Obtén més informació](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "Els camps de commutació ARIA no tenen noms accessibles"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "Els camps de commutació ARIA tenen noms accessibles"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "Si un element no té un nom accessible, els lectors de pantalla el llegeixen amb un nom genèric, de manera que resulta inservible per als usuaris que depenen d'aquesta tecnologia. [Obtén més informació](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "Els elements `tooltip` d'ARIA no tenen noms accessibles"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "Els elements `tooltip` d'ARIA tenen noms accessibles"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "Si un element no té un nom accessible, els lectors de pantalla el llegeixen amb un nom genèric, de manera que resulta inservible per als usuaris que depenen d'aquesta tecnologia. [Obtén més informació](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "Els elements `treeitem` d'ARIA no tenen noms accessibles"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "Els elements `treeitem` d'ARIA tenen noms accessibles"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "Les tecnologies d'assistència, com ara els lectors de pantalla, no poden interpretar els atributs ARIA que tenen valors que no són vàlids. [Obtén més informació](https://web.dev/aria-valid-attr-value/)."
@@ -348,7 +393,7 @@
     "message": "Si un vídeo ofereix subtítols, permet que els usuaris sords o amb discapacitat auditiva accedeixin a la informació més fàcilment. [Obtén més informació](https://web.dev/video-caption/)."
   },
   "lighthouse-core/audits/accessibility/video-caption.js | failureTitle": {
-    "message": "Els elements `<video>` no contenen cap element `<track>` amb `[kind=\"captions\"]`."
+    "message": "Els elements `<video>` no contenen cap element `<track>` amb `[kind=\"captions\"]`"
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
     "message": "Els elements `<video>` contenen un element `<track>` amb `[kind=\"captions\"]`"
@@ -468,16 +513,16 @@
     "message": "Redueix els fitxers JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "Per reduir els bytes que es consumeixen de manera innecessària durant l'activitat de la xarxa, suprimeix dels fulls d'estil les regles que no s'utilitzin i ajorna la càrrega dels CSS que no es facin servir per al contingut de la part superior visible. [Obtén més informació](https://web.dev/unused-css-rules/)."
+    "message": "Redueix el nombre de regles no utilitzades dels fulls d'estil i ajorna els CSS que no es facin servir per al contingut de la meitat superior de la pàgina a fi de rebaixar el consum de bytes durant l'activitat de la xarxa. [Obtén més informació](https://web.dev/unused-css-rules/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "Suprimeix els CSS no utilitzats"
+    "message": "Redueix el nombre de fitxers CSS no utilitzats"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "Suprimeix els fitxers JavaScript que no s'utilitzen per reduir els bytes que es consumeixen durant l'activitat de la xarxa. [Obtén més informació](https://web.dev/unused-javascript/)."
+    "message": "Redueix el nombre de fitxers JavaScript no utilitzats i ajorna la càrrega dels scripts fins que siguin necessaris a fi de rebaixar el consum de bytes durant l'activitat de la xarxa. [Obtén més informació](https://web.dev/unused-javascript/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "Suprimeix els fitxers JavaScript no utilitzats"
+    "message": "Redueix el nombre de fitxers JavaScript no utilitzats"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "Si la memòria cau té una vida llarga, es poden accelerar les visites repetides a la teva pàgina. [Obtén més informació](https://web.dev/uses-long-cache-ttl/)."
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "No encadenis sol·licituds importants"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "Directiva"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "Una política de seguretat del contingut (CSP) sòlida redueix significativament el risc de patir atacs XSS. [Més informació](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "La pàgina conté una CSP definida en una etiqueta <meta>. Si pots, també pots optar per definir la CSP en una capçalera HTTP."
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "No s'ha trobat cap CSP en mode de compliment"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "Comprova que la CSP sigui efectiva contra atacs XSS"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "Desactivació/advertiment"
@@ -810,7 +870,7 @@
     "message": "L'aplicació ja està instal·lada"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "La icona baixada era buida o estava malmesa"
+    "message": "No s'ha pogut baixar una icona necessària del fitxer de manifest"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "Motiu de l'error"
@@ -888,7 +948,7 @@
     "message": "prefer_related_applications només s'admet a Chrome beta i als canals estables a Android."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
-    "message": "L'URL d'inici del fitxer de manifest no és vàlid"
+    "message": "L'URL d'inici del manifest no és vàlid"
   },
   "lighthouse-core/audits/installable-manifest.js | title": {
     "message": "El fitxer de manifest de l'aplicació web i el Service Worker no compleixen els requisits d'instal·lació"
@@ -999,13 +1059,13 @@
     "message": "No sembla que les transicions entre pàgines es bloquegin a la xarxa"
   },
   "lighthouse-core/audits/maskable-icon.js | description": {
-    "message": "Una icona emmascarable garanteix que la imatge omple la forma completa sense adquirir el format de bústia en instal·lar l'aplicació en un dispositiu. [Obtén més informació](https://web.dev/maskable-icon-audit/)."
+    "message": "Una icona adaptativa garanteix que la imatge omple la forma completa sense adquirir el format de bústia en instal·lar l'aplicació en un dispositiu. [Obtén més informació](https://web.dev/maskable-icon-audit/)."
   },
   "lighthouse-core/audits/maskable-icon.js | failureTitle": {
-    "message": "El manifest no té cap icona adaptable"
+    "message": "El manifest no té cap icona adaptativa"
   },
   "lighthouse-core/audits/maskable-icon.js | title": {
-    "message": "El manifest té una icona emmascarable"
+    "message": "El manifest té una icona adaptativa"
   },
   "lighthouse-core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "El canvi de disseny acumulatiu mesura el moviment d'elements visibles a la finestra gràfica. [Obtén més informació](https://web.dev/cls/)."
@@ -1026,7 +1086,7 @@
     "message": "La mètrica Temps fins que és interactiva és el que tarda la pàgina a fer-se completament interactiva. [Obtén més informació](https://web.dev/interactive/)."
   },
   "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
-    "message": "La renderització de l'element més gran amb contingut marca el moment en què es renderitza el text o la imatge més gran. [Obtén més informació](https://web.dev/lighthouse-largest-contentful-paint/)."
+    "message": "La renderització de l'element més gran amb contingut marca el moment en què es renderitza el text o la imatge més gran. [Més informació](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
     "message": "El retard potencial màxim respecte a la primera interacció que els usuaris es poden trobar és la durada de la tasca més llarga. [Obtén més informació](https://web.dev/lighthouse-max-potential-fid/)."
@@ -1050,7 +1110,7 @@
     "message": "Latències dorsals del servidor"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "L'esdeveniment `unload` no es pot activar amb fiabilitat i detectar-lo pot impedir optimitzacions del navegador, com ara la memòria cau Back-Forward. També pots fer servir els esdeveniments `pagehide` o `visibilitychange`. [Més informació](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "L'esdeveniment `unload` no es pot activar amb fiabilitat i detectar-lo pot impedir optimitzacions del navegador, com ara la memòria cau back-forward. També pots fer servir els esdeveniments `pagehide` o `visibilitychange`. [Més informació](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registra un detector de `unload`"
@@ -1467,7 +1527,7 @@
     "message": "URL del mapa"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Els mapes d'origen tradueixen el codi reduït al codi font original. Això ajuda els desenvolupadors a depurar durant la producció. A més, Lighthouse pot proporcionar estadístiques addicionals. Planteja't implementar mapes d'origen per treure partit d'aquests avantatges. [Obtén més informació](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
+    "message": "Els mapes d'origen tradueixen el codi reduït al codi font original. Això ajuda els desenvolupadors a depurar durant la producció. A més, Lighthouse pot proporcionar estadístiques addicionals. Planteja't implementar mapes d'origen per treure partit d'aquests avantatges. [Obtén més informació](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Falten mapes d'origen per a un fitxer JavaScript propi gran"
@@ -1494,7 +1554,7 @@
     "message": "Té una etiqueta `<meta name=\"viewport\">` amb l'atribut `width` o `initial-scale`"
   },
   "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
-    "message": "Aquí tens recomanacions per millorar l'ús dels elements d'ARIA a l'aplicació. També poden millorar l'experiència dels usuaris de tecnologia d'assistència (per exemple, de lectors de pantalla)."
+    "message": "Aquí tens recomanacions per millorar l'ús dels elements d'ARIA a l'aplicació. També poden millorar l'experiència dels usuaris de tecnologia assistencial (per exemple, de lectors de pantalla)."
   },
   "lighthouse-core/config/default-config.js | a11yAriaGroupTitle": {
     "message": "ARIA"
@@ -1533,7 +1593,7 @@
     "message": "Internacionalització i localització"
   },
   "lighthouse-core/config/default-config.js | a11yNamesLabelsGroupDescription": {
-    "message": "Aquí tens recomanacions per millorar la semàntica dels controls a l'aplicació. També poden millorar l'experiència dels usuaris de tecnologia d'assistència (per exemple, de lectors de pantalla)."
+    "message": "Aquí tens recomanacions per millorar la semàntica dels controls a l'aplicació. També poden millorar l'experiència dels usuaris de tecnologia assistencial (per exemple, de lectors de pantalla)."
   },
   "lighthouse-core/config/default-config.js | a11yNamesLabelsGroupTitle": {
     "message": "Noms i etiquetes"
@@ -1545,7 +1605,7 @@
     "message": "Navegació"
   },
   "lighthouse-core/config/default-config.js | a11yTablesListsVideoGroupDescription": {
-    "message": "Aquí tens recomanacions per millorar la lectura de dades de taules o llistes utilitzant la tecnologia d'assistència (per exemple, lectors de pantalla)."
+    "message": "Aquí tens recomanacions per millorar la lectura de dades de taules o llistes utilitzant la tecnologia assistencial (per exemple, lectors de pantalla)."
   },
   "lighthouse-core/config/default-config.js | a11yTablesListsVideoGroupTitle": {
     "message": "Taules i llistes"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Adaptació per a mòbils"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{Pot ser que hi hagi dades emmagatzemades que afectin el rendiment de càrrega en aquesta ubicació: {locations}. Audita aquesta pàgina en una finestra d'incògnit per impedir que aquests recursos afectin els teus resultats.}other{Pot ser que hi hagi dades emmagatzemades que afectin el rendiment de càrrega en aquestes ubicacions: {locations}. Audita aquesta pàgina en una finestra d'incògnit per impedir que aquests recursos afectin els teus resultats.}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "És possible que la pàgina no s'estigui carregant com s'esperava perquè s'ha redirigit el teu URL de prova ({requested}) a {final}. Intenta provar el segon URL directament."
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "La pàgina s'ha carregat molt lentament i ha sobrepassat el límit de temps. És possible que els resultats siguin incomplets."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "Pots optar per afegir esquemes d'URL https: o http: (els navegadors que admeten \"strict-dynamic\" els ignoren) perquè sigui retrocompatible amb navegadors més antics."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "La directiva \"disown-opener\" està obsoleta des de la CSP3. Com a alternativa, utilitza la capçalera Cross-Origin-Opener-Policy."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "La directiva \"referrer\" està obsoleta des de la CSP2. Com a alternativa, utilitza la capçalera Referrer-Policy."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "La directiva \"reflected-xss\" està obsoleta des de la CSP2. Com a alternativa, utilitza la capçalera X-XSS-Protection."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "Si no hi ha una directiva \"base-uri\", es poden injectar etiquetes <base> per establir l'URL de base de tots els URL relatius (per exemple, scripts) en un domini controlat per un atacant. Pots optar per establir \"base-uri\" en \"none\" o \"self\"."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "Els elements controlats per \"object-src\" es consideren funcions heretades. Pots optar per establir \"object-src\" en \"none\" per prevenir la injecció de connectors que executin scripts no segurs."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "Falta la directiva \"script-src\". Això pot permetre l'execució de scripts no segurs."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "Se t'ha oblidat el punt i coma? Sembla que \"{keyword}\" és una directiva i no una paraula clau."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "Els nonces han d'utilitzar el codi de caràcters base64."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "Els nonces han de tenir 8 caràcters com a mínim."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "La destinació d'informes només es pot configurar mitjançant la directiva \"report-to\". Aquesta directiva només s'admet en navegadors basats en Chromium i, per tant, també es recomana utilitzar una directiva \"report-uri\"."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "No hi ha cap CSP que ofereixi una destinació d'informes. Això fa que sigui més difícil mantenir la CSP al llarg del temps i monitorar les vulnerabilitats."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "Les llistes d'amfitrions permesos sovint es poden ometre. Pots optar per utilitzar \"strict-dynamic\" juntament amb nonces o valors resum de la CSP."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "Directiva CSP desconeguda."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "\"{keyword}\" sembla una paraula clau no vàlida."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "La directiva \"unsafe-inline\" permet l'execució de scripts in-page i gestors d'esdeveniments no segurs. Pots utilitzar nonces o valors resum de la CSP per permetre els scripts individualment."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "Pots optar per afegir \"unsafe-inline\" (els navegadors que admeten nonces o valors resum l'ignoren) perquè sigui retrocompatible amb navegadors més antics."
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Temps de bloqueig del fil principal"

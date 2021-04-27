@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "سمات `[aria-*]` هي مطابقة لأدوارها"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "إذا لم يتوفّر لأحد العناصر اسم يمكن الوصول إليه، ستقرأه برامج قراءة الشاشة مستخدمةً اسمًا عامًا له، ما يجعله غير قابل للاستخدام لدى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [مزيد من المعلومات](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "لا تتوفّر لعناصر `button` و`link` و`menuitem` أسماء يمكن الوصول إليها"
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "تتوفّر لعناصر `button` و`link` و`menuitem` أسماء يمكن الوصول إليها"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "لا تعمل التكنولوجيا المساعِدة، مثل برامج قراءة الشاشة، على نحوٍ متواصل عند إعداد `aria-hidden=\"true\"` في المستند `<body>`. [مزيد من المعلومات](https://web.dev/aria-hidden-body/)"
   },
@@ -36,13 +45,31 @@
     "message": "لا تحتوي عناصر `[aria-hidden=\"true\"]` على عناصر منحدرة قابلة للتركيز"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "عند عدم احتواء حقل الإدخال على اسم يمكن الوصول إليه، تشير برامج قراءة الشاشة إلى الحقل بصفة عامة، مما يجعله غير قابل للاستخدام بالنسبة إلى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [مزيد من المعلومات](https://web.dev/aria-input-field-name/)"
+    "message": "عند عدم احتواء حقل الإدخال على اسم يمكن الوصول إليه، تشير برامج قراءة الشاشة إلى الحقل بصفة عامة، مما يجعله غير قابل للاستخدام بالنسبة إلى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [مزيد من المعلومات](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "لا تحتوي حقول إدخال ARIA على أسماء يمكن الوصول إليها"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "تحتوي حقول إدخال ARIA على أسماء يمكن الوصول إليها"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "إذا لم يتوفّر لأحد العناصر اسم يمكن الوصول إليه، ستقرأه برامج قراءة الشاشة مستخدمةً اسمًا عامًا له، ما يجعله غير قابل للاستخدام لدى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [مزيد من المعلومات](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "لا تتوفّر لعناصر ARIA `meter` أسماء يمكن الوصول إليها"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "تتوفّر لعناصر ARIA `meter` أسماء يمكن الوصول إليها"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "إذا لم يتوفّر لأحد العناصر اسم يمكن الوصول إليه، ستقرأه برامج قراءة الشاشة مستخدمةً اسمًا عامًا له، ما يجعله غير قابل للاستخدام لدى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [مزيد من المعلومات](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "لا تتوفّر لعناصر ARIA `progressbar` أسماء يمكن الوصول إليها"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "تتوفّر لعناصر ARIA `progressbar` أسماء يمكن الوصول إليها"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "تتطلّب بعض أدوار ARIA تزويد برامج قراءة الشاشة بسمات تصف حالة العنصر. [مزيد من المعلومات](https://web.dev/aria-required-attr/)"
@@ -81,13 +108,31 @@
     "message": "قيم `[role]` هي صالحة"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "عند عدم احتواء حقول التبديل على اسم يمكن الوصول إليه، تشير برامج قراءة الشاشة إلى الحقل باستخدام بصفة عامة، مما يجعله غير قابل للاستخدام بالنسبة إلى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [مزيد من المعلومات](https://web.dev/aria-toggle-field-name/)"
+    "message": "عند عدم احتواء حقول التبديل على اسم يمكن الوصول إليه، تشير برامج قراءة الشاشة إلى الحقل باستخدام بصفة عامة، مما يجعله غير قابل للاستخدام بالنسبة إلى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [مزيد من المعلومات](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "لا تحتوي حقول تبديل ARIA على أسماء يمكن الوصول إليها"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "تحتوي جميع حقول تبديل ARIA على أسماء يمكن الوصول إليها"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "إذا لم يتوفّر لأحد العناصر اسم يمكن الوصول إليه، ستقرأه برامج قراءة الشاشة مستخدمةً اسمًا عامًا له، ما يجعله غير قابل للاستخدام لدى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [مزيد من المعلومات](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "لا تتوفّر لعناصر ARIA `tooltip` أسماء يمكن الوصول إليها"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "تتوفّر لعناصر ARIA `tooltip` أسماء يمكن الوصول إليها"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "إذا لم يتوفّر لأحد العناصر اسم يمكن الوصول إليه، ستقرأه برامج قراءة الشاشة مستخدمةً اسمًا عامًا له، ما يجعله غير قابل للاستخدام لدى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [مزيد من المعلومات](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "لا تتوفّر لعناصر ARIA `treeitem` أسماء يمكن الوصول إليها"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "تتوفّر لعناصر ARIA `treeitem` أسماء يمكن الوصول إليها"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "لا يمكن لتقنيات المساعدة، مثل برامج قراءة الشاشة، تفسير سمات ARIA باستخدام قيم غير صحيحة. [مزيد من المعلومات](https://web.dev/aria-valid-attr-value/)"
@@ -348,10 +393,10 @@
     "message": "عندما يقدم الفيديو شرحًا، يَسهُل على المستخدمين الصُم والذين يعانون من عجز سمعي فهم مضمونه. [مزيد من المعلومات](https://web.dev/video-caption/)"
   },
   "lighthouse-core/audits/accessibility/video-caption.js | failureTitle": {
-    "message": "عناصر `<video>` لا تحتوي على عنصر `<track>` مع `[kind=\"captions\"]`."
+    "message": "عناصر `<video>` لا تحتوي على عنصر `<track>` مع `[kind=\"captions\"]`"
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
-    "message": "العناصر `<video>` تحتوي على عنصر `<track>` مع `[kind=\"captions\"]`"
+    "message": "عناصر `<video>` تحتوي على عنصر `<track>` مع `[kind=\"captions\"]`"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
     "message": "للحصول على المظهر المثالي على نظام التشغيل iOS عند إضافة المستخدمين تطبيق ويب تقدّمي إلى الشاشة الرئيسية، يمكنك تحديد `apple-touch-icon`. يجب أن تشير هذه السمة إلى مربع غير شفاف بتنسيق PNG مقاسه 192 بكسل (أو 180 بكسل). [مزيد من المعلومات](https://web.dev/apple-touch-icon/)"
@@ -468,16 +513,16 @@
     "message": "تصغير JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "يمكنك إزالة القواعد الضارة من أوراق الأنماط وتأجيل تحميل خدمة CSS غير المستخدمة في محتوى الجزء المرئي من الصفحة للحد من وحدات البايت غير الضرورية المستهلكة من خلال نشاط الشبكة. [مزيد من المعلومات](https://web.dev/unused-css-rules/)"
+    "message": "يمكنك الحدّ من القواعد غير المستخدَمة الواردة من أوراق الأنماط، كما يمكنك تأجيل تحميل محتوى CSS غير المستخدَم في الجزء المرئي من الصفحة لتقليل وحدات البايت التي يستهلكها نشاط الشبكة. [مزيد من المعلومات](https://web.dev/unused-css-rules/)"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "إزالة خدمة CSS غير المُستخدَمة"
+    "message": "الحدّ من محتوى CSS غير المُستخدَم"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "يمكنك إزالة نصوص JavaScript غير المستخدمة لتقليل وحدات البايت التي يستهلكها نشاط الشبكة. [مزيد من المعلومات](https://web.dev/unused-javascript/)"
+    "message": "يمكنك الحدّ من محتوى JavaScript غير المستخدَم وتأجيل تحميل النصوص البرمجية لتقليل وحدات البايت التي يستهلكها نشاط الشبكة. [مزيد من المعلومات](https://web.dev/unused-javascript/)"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "إزالة JavaScript غير المستخدم"
+    "message": "الحدّ من محتوى JavaScript غير المستخدَم"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "يمكن لفترة التخزين المؤقت الطويلة تسريع عملية تكرار الزيارات إلى صفحتك. [مزيد من المعلومات](https://web.dev/uses-long-cache-ttl/)"
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "تجنَّب سلاسل الطلبات المهمة"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "أمر توجيهي"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "تقلِّل سياسة أمان المحتوى (CSP) القوية من خطر هجمات XSS بشكل كبير. [مزيد من المعلومات](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "تحتوي الصفحة على سياسة CSP تم تحديدها في علامة <meta>. ننصحك بتحديد سياسة CSP في عنوان HTTP إذا كان ذلك ممكنًا."
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "لم يتم العثور على سياسة CSP في وضع \"التنفيذ\"."
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "التأكُّد من فاعلية سياسة CSP ضد هجمات XSS"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "إيقاف / تحذير"
@@ -810,7 +870,7 @@
     "message": "سبق وتم تثبيت هذا التطبيق."
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "الرمز الذي تم تحميله فارغ أو تالف"
+    "message": "تعذَّر تنزيل رمز مطلوب من ملف البيان."
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "سبب الإخفاق"
@@ -852,7 +912,7 @@
     "message": "لا يتوفّر رمز بحجم {value0} بكسل مربّع على الأقل بتنسيق PNG أو SVG أو WebP."
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
-    "message": "الرمز الذي تم تحميله فارغ أو تالف"
+    "message": "الرمز الذي تم تحميله فارغ أو تالف."
   },
   "lighthouse-core/audits/installable-manifest.js | no-id-specified": {
     "message": "لم يتم توفير رقم تعريف \"متجر Play\"."
@@ -1026,7 +1086,7 @@
     "message": "وقت التفاعل هو مقدار الوقت المستغرق حتى تصبح الصفحة تفاعلية بالكامل. [مزيد من المعلومات](https://web.dev/interactive/)"
   },
   "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
-    "message": "تحدد \"سرعة عرض أكبر محتوى على الصفحة\" الوقت الذي يُعرَض فيه أكبر صورة أو نص. [مزيد من المعلومات](https://web.dev/lighthouse-largest-contentful-paint/)"
+    "message": "يحدّد مقياس \"سرعة عرض أكبر جزء من المحتوى على الصفحة\" المدة التي يتم خلالها عرض أكبر صورة أو نص. [مزيد من المعلومات](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
     "message": "الحد الأقصى المحتمل من \"مهلة الاستجابة لأوّل إدخال\" الذي قد يواجهه المستخدمين، هو مدة أطول مهمّة. [مزيد من المعلومات](https://web.dev/lighthouse-max-potential-fid/)"
@@ -1050,7 +1110,7 @@
     "message": "أوقات الاستجابة لواجهة الخادم الخلفية"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "لا يعمل حدث `unload` بفعالية ويمكن أن تؤدي معالجته إلى منع تحسينات المتصفّح، مثل Back-Forward Cache. يمكنك أيضًا استخدام حدث `pagehide` أو حدث `visibilitychange` بدلاً من ذلك. [مزيد من المعلومات](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "لا يعمل حدث `unload` بفعالية ويمكن أن تؤدي معالجته إلى منع تحسينات المتصفّح، مثل ميزة \"التخزين المؤقت للصفحات\". بدلاً من هذا الحدث، يمكنك استخدام `pagehide` أو `visibilitychange`. [مزيد من المعلومات](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "يتم استخدام أدوات معالجة حدث `unload`"
@@ -1467,7 +1527,7 @@
     "message": "عنوان URL لخريطة المصدر"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "تترجم خرائط المصدر الرمز المصغَّر إلى رمز المصدر الأصلي. ويساعد هذا الإجراء مطوّري البرامج على تصحيح الأخطاء في مرحلة الإنتاج. وتستطيع أيضًا أداة Lighthouse أن توفّر معلومات إضافية. ننصحك بنشر خرائط المصدر للاستفادة من هذه المزايا. [مزيد من المعلومات](https://developer.chrome.com/docs/devtools/javascript/source-maps/)"
+    "message": "تترجم خرائط المصدر الرمز المصغَّر إلى رمز المصدر الأصلي. ويساعد هذا الإجراء مطوّري البرامج على تصحيح الأخطاء في مرحلة الإنتاج. وتستطيع أيضًا أداة Lighthouse أن توفّر معلومات إضافية. ننصحك بنشر خرائط المصدر للاستفادة من هذه المزايا. [مزيد من المعلومات](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)"
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "عدم توفّر خرائط مصدر للغة JavaScript من الطرف الأول الكبير"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "متوافق مع الجوّال"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{قد تكون هناك بيانات مخزَّنة تؤثر على أداء التحميل في مكان تخزين البيانات التالي: {locations} يُرجى إجراء تدقيق لهذه الصفحة في نافذة التصفح المتخفي لمنع هذه المصادر من التأثير على نتيجتك.}zero{قد تكون هناك بيانات مخزَّنة تؤثر على أداء التحميل في أماكن تخزين البيانات التالية: {locations} يُرجى إجراء تدقيق لهذه الصفحة في نافذة التصفح المتخفي لمنع هذه المصادر من التأثير على نتيجتك.}two{قد تكون هناك بيانات مخزَّنة تؤثر على أداء التحميل في مكانَي تخزين البيانات التاليَين: {locations} يُرجى إجراء تدقيق لهذه الصفحة في نافذة التصفح المتخفي لمنع هذه المصادر من التأثير على نتيجتك.}few{قد تكون هناك بيانات مخزَّنة تؤثر على أداء التحميل في أماكن تخزين البيانات التالية: {locations} يُرجى إجراء تدقيق لهذه الصفحة في نافذة التصفح المتخفي لمنع هذه المصادر من التأثير على نتيجتك.}many{قد تكون هناك بيانات مخزَّنة تؤثر على أداء التحميل في أماكن تخزين البيانات التالية: {locations} يُرجى إجراء تدقيق لهذه الصفحة في نافذة التصفح المتخفي لمنع هذه المصادر من التأثير على نتيجتك.}other{قد تكون هناك بيانات مخزَّنة تؤثر على أداء التحميل في أماكن تخزين البيانات التالية: {locations} يُرجى إجراء تدقيق لهذه الصفحة في نافذة التصفح المتخفي لمنع هذه المصادر من التأثير على نتيجتك.}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "قد لا يتم تحميل الصفحة كما هو متوقَع لأن عنوان URL للاختبار ({requested}) تمت إعادة توجيهه إلى {final}. يُرجى محاولة اختبار عنوان URL الثاني مباشرةً."
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "أدّى عدم تحميل الصفحة بسرعة كافية إلى تعذّر انتهاء تحميلها في الوقت المحدّد. وقد تكون النتائج غير مكتملة."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "ننصحك بإضافة مخطّطات عناوين URL تستخدم https:‎ وhttp:‎ (التي تتجاهلها المتصفِّحات المتوافقة مع 'strict-dynamic') لجعل سياسة CSP متوافقة مع أنظمة المتصفِّحات القديمة."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "تم إيقاف disown-opener منذ بدء استخدام CSP3. يُرجى استخدام عنوان السياسة Cross-Origin-Opener-Policy بدلاً من ذلك."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "تم إيقاف referrer منذ بدء استخدام سياسة CSP2. يُرجى استخدام العنوان Referrer-Policy بدلاً من ذلك."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "تم إيقاف reflected-xss منذ بدء استخدام سياسة CSP2. يُرجى استخدام العنوان X-XSS-Protection بدلاً من ذلك."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "يسمح عدم توفُّر base-uri بأن تضبط علامات <base> التي تم إدراجها عنوان URL الأساسي لجميع عناوين URL النسبية (على سبيل المثال، النصوص البرمجية) على نطاق يتحكّم فيه مهاجم. ننصحك بضبط base-uri على \"none\" أو \"self\"."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "تُعتبر العناصر التي يتم التحكُّم فيها بواسطة object-src ميزات قديمة. ننصحك بضبط object-src على 'none' لمنع إدخال المكوّنات الإضافية التي تنفِّذ نصوصًا برمجية غير آمنة."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "الأمر التوجيهي script-src غير متوفّر. يمكن أن يسمح ذلك بتنفيذ نصوص برمجية غير آمنة."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "هل نسيت إضافة الفاصلة المنقوطة؟ {keyword} هو أمر توجيهي، وليس كلمة رئيسية."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "يجب أن تستخدم الأرقام الخاصة ترميز الأحرف base64."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "يجب ألّا تقل الأرقام الخاصة عن 8 أحرف."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "يتم ضبط وجهة إعداد التقارير من خلال الأمر التوجيهي report-to فقط. يتوافق هذا الأمر التوجيهي مع المتصفِّحات المستنِدة إلى Chromium فقط، ولذلك نقترح استخدام الأمر التوجيهي report-uri أيضًا."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "لا توفّر سياسة CSP أي وجهة إعداد تقارير، ما يجعل من الصعب الحفاظ على هذه السياسة بمرور الوقت ورصد أي خلل فيها."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "قد يتم تجاوز قائمة المضيفين المسموح بها بشكل متكرّر. ننصحك باستخدام 'strict-dynamic' مع أرقام CSP الخاصة أو أجزائها."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "أمر CSP توجيهي غير معروف."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "الكلمة الرئيسية {keyword} غير صالحة."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "يسمح 'unsafe-inline' بتنفيذ نصوص برمجية ومعالجات أحداث غير آمنة في الصفحة. ننصحك باستخدام أرقام CSP الخاصة أو أجزائها للسماح بالنصوص البرمجية كل على حدة."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "ننصحك بإضافة الأمر التوجيهي 'unsafe-inline' (الذي تتجاهله المتصفِّحات المتوافقة مع nonces/hashes) لجعل CSP متوافقة مع أنظمة المتصفِّحات القديمة."
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "وقت حظر سلسلة المحادثات الأساسية"

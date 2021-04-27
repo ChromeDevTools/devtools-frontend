@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "מאפייני ה-`[aria-*]`‎ תואמים לתפקידים שלהם"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "כשאין לרכיב שם נגיש, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בשדה. [למידע נוסף](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "לרכיבים `button`, `link` וגם `menuitem` אין שמות נגישים."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "לרכיבים `button`, `link` וגם `menuitem` יש שמות נגישים"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "טכנולוגיות מסייעות, כמו קוראי מסך, פועלים באופן לא עקבי כשמוגדר `aria-hidden=\"true\"` ב-`<body>` של המסמך. [מידע נוסף](https://web.dev/aria-hidden-body/)"
   },
@@ -36,13 +45,31 @@
     "message": "רכיבי `[aria-hidden=\"true\"]` אינם מכילים רכיבי צאצא שיכולים לקבל פוקוס"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "כשאין לשדה להזנת קלט שם נגיש, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בשדה. [מידע נוסף](https://web.dev/aria-input-field-name/)"
+    "message": "כשאין לשדה להזנת קלט שם נגיש, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בשדה. [מידע נוסף](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "לשדות הזנת קלט של ARIA אין שמות נגישים"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "לשדות ARIA להזנת קלט יש שמות נגישים"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "כשאין לרכיב שם נגיש, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בשדה. [למידע נוסף](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "לרכיבי `meter` מסוג ARIA אין שמות נגישים."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "לרכיבי `meter` מסוג ARIA יש שמות נגישים"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "כשאין לרכיב שם נגיש, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בשדה. [למידע נוסף](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "לרכיבי `progressbar` מסוג ARIA אין שמות נגישים."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "לרכיבי `progressbar` מסוג ARIA יש שמות נגישים"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "חלק מתפקידי ה-ARIA כוללים מאפיינים נדרשים שמתארים לקוראי המסך את מצב הרכיב. [מידע נוסף](https://web.dev/aria-required-attr/)."
@@ -81,13 +108,31 @@
     "message": "ערכי ה-`[role]` חוקיים"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "כשהשם של שדה החלפת מצב (toggle) אינו נגיש, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בשדה. [מידע נוסף](https://web.dev/aria-toggle-field-name/)"
+    "message": "כשהשם של שדה החלפת מצב (toggle) אינו נגיש, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בשדה. [מידע נוסף](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "לשדות החלפת מצב (toggle) של ARIA אין שמות נגישים"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "לשדות החלפת מצב (toggle) של ARIA יש שמות נגישים"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "כשאין לרכיב שם נגיש, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בשדה. [למידע נוסף](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "לרכיבי `tooltip` מסוג ARIA אין שמות נגישים."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "לרכיבי `tooltip` מסוג ARIA יש שמות נגישים"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "כשאין לרכיב שם נגיש, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בשדה. [למידע נוסף](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "לרכיבי `treeitem` מסוג ARIA אין שמות נגישים."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "לרכיבי `treeitem` מסוג ARIA יש שמות נגישים"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "טכנולוגיות לנגישות, כמו קוראי מסך, לא יכולות לפענח מאפייני ARIA שהערכים שלהם לא חוקיים. [מידע נוסף](https://web.dev/aria-valid-attr-value/)."
@@ -417,7 +462,7 @@
     "message": "אם קיימים מודולים משוכפלים גדולים בחבילות JavaScript, יש להסיר אותם מהחבילות האלה כדי לצמצם צריכה של בייטים מיותרים על ידי פעילות הרשת. "
   },
   "lighthouse-core/audits/byte-efficiency/duplicated-javascript.js | title": {
-    "message": "יש להסיר עותקים משוכפלים של מודולים בחבילות JavaScript"
+    "message": "יש להסיר עותקים כפולים של מודולים בחבילות JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/efficient-animated-content.js | description": {
     "message": "קובצי GIF גדולים לא מעבירים אנימציות בצורה יעילה. כדי לצמצם את מספר הבייטים שמועברים ברשת, במקום קובצי GIF כדאי לשקול את האפשרות להשתמש בסרטוני MPEG4/WebM בשביל אנימציות ובקובצי PNG/WebP בשביל תמונות סטטיות. [מידע נוסף](https://web.dev/efficient-animated-content/)"
@@ -468,16 +513,16 @@
     "message": "יש לקצר את קוד JavaScript למינימום ההכרחי"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "יש להסיר מגיליונות הסגנונות כללים שאינם בשימוש ולדחות את הטעינה של רכיבי CSS שאינם חלק מהתוכן בחלק העליון והקבוע. הפעולה הזו תצמצם צריכה בלתי נחוצה של בייטים כתוצאה מפעילות הרשת. [מידע נוסף](https://web.dev/unused-css-rules/)."
+    "message": "ניתן לצמצם את צריכת הבייטים כתוצאה מפעילות הרשת על ידי הפחתת כללים שאינם בשימוש מגיליונות הסגנונות ודחיית הטעינה של רכיבי CSS שלא משמשים את התוכן בחלק העליון והקבוע. [מידע נוסף](https://web.dev/unused-css-rules/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "יש להסיר CSS שאינו בשימוש"
+    "message": "הפחתת CSS שאינו בשימוש"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "יש להסיר JavaScript שאינו בשימוש כדי לצמצם צריכת בייטים על-ידי פעילות ברשת. [מידע נוסף](https://web.dev/unused-javascript/)"
+    "message": "ניתן לצמצם את צריכת הבייטים כתוצאה מפעילות הרשת על ידי הפחתת תוכן JavaScript שלא נמצא בשימוש ודחיית הטעינה של הסקריטפים עד שהם יידרשו. [מידע נוסף](https://web.dev/unused-javascript/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "יש להסיר JavaScript שאינו בשימוש"
+    "message": "הפחתת תוכן JavaScript שאינו בשימוש"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "משך חיים ארוך של מטמון יכול לזרז את הביקורים החוזרים בדף. [מידע נוסף](https://web.dev/uses-long-cache-ttl/)."
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "יש להימנע משרשור של בקשות קריטיות"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "הוראה"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "שימוש במדיניות חזקה מסוג Content Security Policy ‏(CSP) מפחית באופן משמעותי את הסיכון למתקפות XSS. [מידע נוסף](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "הדף מכיל מדיניות CSP שהוגדרה עם תג <meta>. אם אפשר, כדאי להגדיר את ה-CSP בכותרת HTTP."
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "אין CSP במצב האכיפה"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "איך לוודא שמדיניות CSP מגינה ביעילות ממתקפות XSS"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "הוצאה משימוש/אזהרה"
@@ -810,7 +870,7 @@
     "message": "האפליקציה כבר מותקנת"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "הסמל שהורד היה ריק או פגום"
+    "message": "לא ניתן היה להוריד סמל נדרש מהמניפסט"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "סיבה לכשל"
@@ -1026,7 +1086,7 @@
     "message": "הזמן עד לפעילות מלאה הוא משך הזמן שחולף עד שהדף מאפשר פעילות מלאה. [מידע נוסף](https://web.dev/interactive/)."
   },
   "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
-    "message": "הצגת חלק התוכן הגדול ביותר (LCP) מציינת את הזמן שבו התמונה או הטקסט הגדולים ביותר מוצגים. [מידע נוסף](https://web.dev/lighthouse-largest-contentful-paint/)"
+    "message": "הצגת חלק התוכן הגדול ביותר (LCP) מציינת את הזמן שבו התמונה או הטקסט הגדולים ביותר מוצגים. [למידע נוסף](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
     "message": "ההשהיה הפוטנציאלית המרבית שהמשתמשים יכולים לחוות לאחר קלט ראשוני (FID) היא משך הזמן של המשימה הארוכה ביותר. [מידע נוסף](https://web.dev/lighthouse-max-potential-fid/)"
@@ -1050,7 +1110,7 @@
     "message": "זמני אחזור בקצה עורפי של שרת"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "האירוע `unload` לא מופעל בצורה אמינה, והאזנה כדי לקלוט את האירוע הזה עשויה למנוע את השימוש באופטימיזציות שונות של הדפדפן, כמו שמירה במטמון לצורך מעבר לדף הקודם או הבא. מומלץ להשתמש במקומו באירוע `pagehide` או `visibilitychange`. [מידע נוסף](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "האירוע `unload` לא מופעל בצורה אמינה, והאזנה כדי לקלוט את האירוע הזה עשויה למנוע את השימוש באופטימיזציות שונות של הדפדפן, כמו שמירה במטמון לצורך מעבר לדף הקודם או הבא. מומלץ להשתמש במקומו באירוע `pagehide` או `visibilitychange`. [למידע נוסף](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "רישום מעבד אירוע של `unload`"
@@ -1467,7 +1527,7 @@
     "message": "כתובת URL של מפה"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "מפות מקור מתרגמות קוד מוקטן לקוד המקורי. פעולה זו עוזרת למפתחים לנפות באגים בסביבת ייצור. בנוסף, ניתן לקבל תובנות נוספות ב-Lighthouse. כדאי לשקול לפרוס את מפות המקור כדי לנצל את ההטבות האלה. [למידע נוסף](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
+    "message": "מפות מקור מתרגמות קוד מוקטן לקוד המקורי. פעולה זו עוזרת למפתחים לנפות באגים בסביבת ייצור. בנוסף, ניתן לקבל תובנות נוספות ב-Lighthouse. כדאי לשקול לפרוס את מפות המקור כדי לנצל את ההטבות האלה. [למידע נוסף](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "חסרות מפות מקור לספריית JavaScript של צד ראשון"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "התאמה לניידים"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{ייתכן שיש נתונים שמורים שמשפיעים על ביצועי הטעינה במיקום הזה: {locations}. יש לבדוק את הדף הזה בחלון אנונימי כדי למנוע מהמשאבים האלה להשפיע על תוצאות הניקוד.}two{ייתכן שיש נתונים שמורים שמשפיעים על ביצועי הטעינה במיקומים האלה: {locations}. יש לבדוק את הדף הזה בחלון אנונימי כדי למנוע מהמשאבים האלה להשפיע על תוצאות הניקוד.}many{ייתכן שיש נתונים שמורים שמשפיעים על ביצועי הטעינה במיקומים האלה: {locations}. יש לבדוק את הדף הזה בחלון אנונימי כדי למנוע מהמשאבים האלה להשפיע על תוצאות הניקוד.}other{ייתכן שיש נתונים שמורים שמשפיעים על ביצועי הטעינה במיקומים האלה: {locations}. יש לבדוק את הדף הזה בחלון אנונימי כדי למנוע מהמשאבים האלה להשפיע על תוצאות הניקוד.}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "ייתכן שהדף לא נטען כמו שציפית כי כתובת ה-URL הנבדקת ({requested}) הופנתה לכתובת {final}. כדאי לנסות לבדוק ישירות את כתובת ה-URL השנייה."
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "הדף נטען לאט מדי והפעולה לא הסתיימה במסגרת הזמן שהוקצבה. ייתכן שהתוצאות לא יהיו מלאות."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "כדאי להוסיף סכימות של כתובות URL מסוג https:‎ ו-http:‎ (דפדפנים שתומכים ב-strict-dynamic יתעלמו מהן) לצורך תאימות לאחור עם דפדפנים ישנים."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "הוראת disown-opener הוצאה משימוש החל מ-CSP3. במקום זאת, יש להשתמש בכותרת Cross-Origin-Opener-Policy."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "הוראת referrer הוצאה משימוש החל מ-CSP2. במקום זאת, יש להשתמש בכותרת Referrer-Policy."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "הוראת reflected-xss הוצאה משימוש החל מ-CSP2. במקום זאת, יש להשתמש בכותרת X-XSS-Protection."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "חסר base-uri, המאפשר להחדיר תגי <base> כדי להגדיר את כתובת ה-URL הבסיסית לכל כתובות ה-URL היחסיות (למשל, סקריפטים) לדומיין שנשלט על ידי תוקף. כדאי להגדיר את base-uri ל-none או ל-self."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "רכיבים שנשלטים על ידי object-src נחשבים לתכונות מדור קודם. כדאי להגדיר את object-src ל-none כדי למנוע החדרת יישומי פלאגין שמפעילים סקריפטים לא בטוחים."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "חסרה ההוראה script-src. מצב כזה מאפשר הפעלה של סקריפטים לא בטוחים."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "שכחת להוסיף נקודה-פסיק? נראה ש-{keyword} זו הוראה ולא מילת מפתח."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "צפנים חד-פעמיים צריכים להיכתב ב-charset מסוג base64."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "צפנים חד-פעמיים (nonce) צריכים להכיל 8 תווים לפחות."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "אפשר להגדיר יעד לדיווח רק באמצעות הוראת report-to. ההוראה הזו נתמכת רק בדפדפנים המבוססים על Chromium, לכן מומלץ להשתמש גם בהוראת report-uri."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "אין CSP עם הגדרה של יעד לדיווח. במצב כזה קשה לתחזק את ה-CSP לאורך זמן ולעקוב אחר פריצות."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "ניתן לעקוף את רשימת ההיתרים של המארח לעיתים קרובות. כדאי להשתמש ברכיב strict-dynamic יחד עם צפנים חד-פעמיים או גיבובים של CSP."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "הוראת CSP לא ידועה."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "נראה שמילת המפתח {keyword} אינה תקנית."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "הרכיב unsafe-inline מאפשר להפעיל בדף סקריפטים וגורמים מטפלים באירועים שאינם בטוחים. רצוי להשתמש בגיבובים או בצפנים חד-פעמיים של CSP כדי להתיר הפעלה של כל סקריפט בנפרד."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "כדאי להוסיף רכיב 'unsafe-inline' (דפדפנים שתומכים בגיבובים/צפנים חד-פעמיים יתעלמו ממנו) לצורך תאימות לאחור עם דפדפנים ישנים."
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "משך החסימה של התהליכון הראשי"

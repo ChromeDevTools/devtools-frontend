@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Les attributs `[aria-*]` correspondent à leurs rôles"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "Lorsqu'un élément n'a pas de nom accessible, les lecteurs d'écran l'annoncent avec un nom générique, ce qui le rend inutilisable pour les personnes qui se servent de tels outils. [En savoir plus](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "Les éléments `button`, `link` et `menuitem` n'ont pas de noms accessibles."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "Les éléments `button`, `link` et `menuitem` ont des noms accessibles"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Les technologies d'assistance, telles que les lecteurs d'écran, présentent un fonctionnement irrégulier lorsque `aria-hidden=\"true\"` est défini sur l'élément `<body>` du document. [En savoir plus](https://web.dev/aria-hidden-body/)"
   },
@@ -36,13 +45,31 @@
     "message": "Les éléments `[aria-hidden=\"true\"]` ne contiennent pas de descendants sélectionnables"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Lorsqu'un champ de saisie n'a pas de nom accessible, les lecteurs d'écran l'annoncent avec un nom générique, ce qui le rend inutilisable pour les personnes qui se servent de tels outils. [En savoir plus](https://web.dev/aria-input-field-name/)"
+    "message": "Lorsqu'un champ de saisie n'a pas de nom accessible, les lecteurs d'écran l'annoncent avec un nom générique, ce qui le rend inutilisable pour les personnes qui se servent de tels outils. [En savoir plus](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "Les champs de saisie ARIA n'ont pas de noms accessibles"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "Les champs de saisie ARIA ont des noms accessibles"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "Lorsqu'un élément n'a pas de nom accessible, les lecteurs d'écran l'annoncent avec un nom générique, ce qui le rend inutilisable pour les personnes qui se servent de tels outils. [En savoir plus](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "Les éléments ARIA `meter` n'ont pas de noms accessibles."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "Les éléments ARIA `meter` ont des noms accessibles"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "Lorsqu'un élément n'a pas de nom accessible, les lecteurs d'écran l'annoncent avec un nom générique, ce qui le rend inutilisable pour les personnes qui se servent de tels outils. [En savoir plus](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "Les éléments ARIA `progressbar` n'ont pas de noms accessibles."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "Les éléments ARIA `progressbar` ont des noms accessibles"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "Certains rôles ARIA ont des attributs obligatoires qui décrivent l'état de l'élément aux lecteurs d'écran. [En savoir plus](https://web.dev/aria-required-attr/)"
@@ -81,13 +108,31 @@
     "message": "Les valeurs `[role]` sont valides"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Lorsqu'un champ d'activation/de désactivation n'a pas de nom accessible, les lecteurs d'écran l'annoncent avec un nom générique, ce qui le rend inutilisable pour les personnes qui se servent de tels outils. [En savoir plus](https://web.dev/aria-toggle-field-name/)"
+    "message": "Lorsqu'un champ d'activation/de désactivation n'a pas de nom accessible, les lecteurs d'écran l'annoncent avec un nom générique, ce qui le rend inutilisable pour les personnes qui se servent de tels outils. [En savoir plus](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "Les champs d'activation/de désactivation ARIA n'ont pas de noms accessibles"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "Les champs d'activation/de désactivation ARIA ont des noms accessibles"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "Lorsqu'un élément n'a pas de nom accessible, les lecteurs d'écran l'annoncent avec un nom générique, ce qui le rend inutilisable pour les personnes qui se servent de tels outils. [En savoir plus](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "Les éléments ARIA `tooltip` n'ont pas de noms accessibles."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "Les éléments ARIA `tooltip` ont des noms accessibles"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "Lorsqu'un élément n'a pas de nom accessible, les lecteurs d'écran l'annoncent avec un nom générique, ce qui le rend inutilisable pour les personnes qui se servent de tels outils. [En savoir plus](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "Les éléments ARIA `treeitem` n'ont pas de noms accessibles."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "Les éléments ARIA `treeitem` ont des noms accessibles"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "Les technologies d'assistance telles que les lecteurs d'écran ne peuvent pas interpréter les attributs ARIA si leurs valeurs ne sont pas valides. [En savoir plus](https://web.dev/aria-valid-attr-value/)"
@@ -348,10 +393,10 @@
     "message": "Le fait d'ajouter des sous-titres à une vidéo rend cette dernière plus accessible aux personnes sourdes et malentendantes. [En savoir plus](https://web.dev/video-caption/)"
   },
   "lighthouse-core/audits/accessibility/video-caption.js | failureTitle": {
-    "message": "Les éléments `<video>` ne contiennent pas d'élément `<track>` possédant l'attribut `[kind=\"captions\"]`."
+    "message": "Les éléments `<video>` ne contiennent pas d'élément `<track>` avec `[kind=\"captions\"]`."
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
-    "message": "Les éléments `<video>` contiennent un élément `<track>` possédant l'attribut `[kind=\"captions\"]`"
+    "message": "Les éléments `<video>` contiennent un élément `<track>` avec `[kind=\"captions\"]`"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
     "message": "Définissez un attribut `apple-touch-icon` afin d'optimiser l'affichage de votre progressive web app sur l'écran d'accueil des appareils iOS. Il doit mener vers une image PNG carrée opaque de 180 ou 192 pixels. [Découvrez-en davantage](https://web.dev/apple-touch-icon/)."
@@ -468,16 +513,16 @@
     "message": "Réduisez la taille des ressources JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "Supprimez les règles inutilisées des feuilles de style et différez le chargement des ressources CSS inutilisées pour le contenu au-dessus de la ligne de flottaison afin de réduire la quantité d'octets inutiles consommés par l'activité réseau. [En savoir plus](https://web.dev/unused-css-rules/)"
+    "message": "Réduisez les règles inutilisées des feuilles de style et différez les ressources CSS non utilisées pour le contenu au-dessus de la ligne de flottaison afin de réduire la quantité d'octets consommés par l'activité réseau. [En savoir plus](https://web.dev/unused-css-rules/)"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "Supprimer les ressources CSS inutilisées"
+    "message": "Réduisez les ressources CSS inutilisées"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "Supprimez les ressources JavaScript inutilisées pour réduire la quantité d'octets consommés par l'activité réseau. [En savoir plus](https://web.dev/unused-javascript/)"
+    "message": "Réduisez les ressources JavaScript inutilisées et différez le chargement des scripts tant qu'ils ne sont pas requis afin de réduire la quantité d'octets consommés par l'activité réseau. [En savoir plus](https://web.dev/unused-javascript/)"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "Supprimez les ressources JavaScript inutilisées"
+    "message": "Réduisez les ressources JavaScript inutilisées"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "Une longue durée de vie du cache peut accélérer les visites répétées sur votre page. [En savoir plus](https://web.dev/uses-long-cache-ttl/)"
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "Évitez de créer des chaînes de requêtes critiques"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "Directive"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "Une CSP (Content Security Policy) efficace réduit considérablement le risque d'attaques XSS. [En savoir plus](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "La page contient une CSP définie dans une balise <meta>. Si possible, définissez la CSP dans un en-tête HTTP."
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "Aucune CSP trouvée en mode de mise en conformité"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "Garantir l'efficacité de la CSP contre les attaques XSS"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "API obsolète/Avertissement"
@@ -810,7 +870,7 @@
     "message": "L'application est déjà installée"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "L'icône téléchargée était vide ou corrompue"
+    "message": "Impossible de télécharger une icône requise depuis le fichier manifeste"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "Motif de l'échec"
@@ -1467,7 +1527,7 @@
     "message": "URL de mappage du code source"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Les mappages source traduisent le code minimisé pour obtenir le code source d'origine. Ce processus aide les développeurs à effectuer le débogage en phase de production. De plus, Lighthouse est en mesure de fournir d'autres renseignements. Envisagez de déployer des mappages source pour profiter de ces avantages. [En savoir plus](https://developer.chrome.com/docs/devtools/javascript/source-maps/)"
+    "message": "Les mappages source traduisent le code minimisé pour obtenir le code source d'origine. Ce processus aide les développeurs à effectuer le débogage en phase de production. De plus, Lighthouse est en mesure de fournir d'autres renseignements. Envisagez de déployer des mappages source pour profiter de ces avantages. [En savoir plus](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)"
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Mappages source manquants pour des fichiers JavaScript propriétaires volumineux"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Adapté aux mobiles"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{L'emplacement suivant peut contenir des données qui affectent les performances de chargement : {locations}. Effectuez un audit de cette page dans une fenêtre de navigation privée afin que ces ressources n'affectent pas vos scores.}one{L'emplacement suivant peut contenir des données qui affectent les performances de chargement : {locations}. Effectuez un audit de cette page dans une fenêtre de navigation privée afin que ces ressources n'affectent pas vos scores.}other{Les emplacements suivants peuvent contenir des données qui affectent les performances de chargement : : {locations}. Effectuez un audit de cette page dans une fenêtre de navigation privée afin que ces ressources n'affectent pas vos scores.}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Il est possible que cette page ne se charge pas comme prévu, car votre URL de test ({requested}) redirige vers {final}. Essayez de tester directement la seconde URL."
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Le chargement de la page a été trop lent et a dépassé la limite de temps. Il est possible que les résultats soient incomplets."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "Pensez à ajouter les schémas d'URL https: et http: (ignorés par les navigateurs prenant en charge 'strict-dynamic') pour assurer la rétrocompatibilité avec les anciens navigateurs."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "disown-opener est obsolète depuis CSP3. Veuillez utiliser l'en-tête Cross-Origin-Opener-Policy à la place."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "referrer est obsolète depuis CSP2. Veuillez utiliser l'en-tête Referrer-Policy à la place."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "reflected-xss est obsolète depuis CSP2. Veuillez utiliser l'en-tête X-XSS-Protection à la place."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "L'absence de directive base-uri permet aux balises <base> injectées de définir l'URL de base pour toutes les URL relatives (scripts, par exemple) en tant que domaine contrôlé par un pirate informatique. Envisagez de définir base-uri sur \"none\" ou \"self\"."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "Les éléments contrôlés par object-src sont considérés comme des anciennes fonctionnalités. Pensez à définir object-src sur 'none' pour empêcher l'injection de plug-ins qui exécutent des scripts non sécurisés."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "Directive script-src manquante. Elle permet d'exécuter des scripts non sécurisés."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "Avez-vous oublié le point-virgule ? {keyword} semble être une directive, et non un mot clé."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "Les nonces doivent utiliser le charset base64."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "Les nonces doivent comporter au moins huit caractères."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "La destination de rapport est configurée uniquement via la directive report-to qui n'est compatible qu'avec les navigateurs basés sur Chromium. Il est donc recommandé d'utiliser aussi une directive report-uri."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "Aucune CSP ne configure de destination de rapport. Il est donc difficile de respecter la CSP au fil du temps et de surveiller les éventuelles failles."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "Les listes d'autorisation des hôtes peuvent souvent être contournées. Pensez à utiliser la valeur 'strict-dynamic' et à l'associer à des nonces ou des hachages CSP."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "Directive CSP inconnue."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "{keyword} semble être un mot clé non valide."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "'unsafe-inline' permet d'exécuter des gestionnaires d'événements et des scripts non sécurisés sur la page. Pensez à utiliser des nonces ou des hachages CSP pour autoriser les scripts un à un."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "Pensez à ajouter la commande 'unsafe-inline' (ignorée par les navigateurs prenant en charge les nonces/hachages) pour assurer la rétrocompatibilité avec les anciens navigateurs."
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Durée de blocage du thread principal"

@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "`[aria-*]` 属性与其角色匹配"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "如果某个元素没有可供访问的名称，屏幕阅读器会将它读为通用名称，这会导致依赖屏幕阅读器的用户无法使用它。[了解详情](https://web.dev/aria-name/)。"
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "`button`、`link` 和 `menuitem` 元素缺少可供访问的名称。"
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "`button`、`link` 和 `menuitem` 元素都有可供访问的名称"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "在文档 `<body>` 上设置 `aria-hidden=\"true\"` 后，辅助技术（如屏幕阅读器）的工作方式不一致。[了解详情](https://web.dev/aria-hidden-body/)。"
   },
@@ -36,13 +45,31 @@
     "message": "`[aria-hidden=\"true\"]` 元素都不含可聚焦的下级元素"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "当某个输入字段没有可供访问的名称时，屏幕阅读器会将它读为通用名称，这会导致依赖屏幕阅读器的用户无法使用它。[了解详情](https://web.dev/aria-input-field-name/)。"
+    "message": "当某个输入字段没有可供访问的名称时，屏幕阅读器会将它读为通用名称，这会导致依赖屏幕阅读器的用户无法使用它。[了解详情](https://web.dev/aria-name/)。"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "ARIA 输入字段缺少可供访问的名称"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "ARIA 输入字段都有可供访问的名称"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "如果某个元素没有可供访问的名称，屏幕阅读器会将它读为通用名称，这会导致依赖屏幕阅读器的用户无法使用它。[了解详情](https://web.dev/aria-name/)。"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "ARIA `meter` 元素缺少可供访问的名称。"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "ARIA `meter` 元素都有可供访问的名称"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "如果某个元素没有可供访问的名称，屏幕阅读器会将它读为通用名称，这会导致依赖屏幕阅读器的用户无法使用它。[了解详情](https://web.dev/aria-name/)。"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "ARIA `progressbar` 元素缺少可供访问的名称。"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "ARIA `progressbar` 元素都有可供访问的名称"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "一些 ARIA 角色有必需属性，这些属性向屏幕阅读器描述了相应元素的状态。[了解详情](https://web.dev/aria-required-attr/)。"
@@ -81,13 +108,31 @@
     "message": "`[role]` 值有效"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "当某个切换字段没有可供访问的名称时，屏幕阅读器会将它读为通用名称，这会导致依赖屏幕阅读器的用户无法使用它。[了解详情](https://web.dev/aria-toggle-field-name/)。"
+    "message": "当某个切换字段没有可供访问的名称时，屏幕阅读器会将它读为通用名称，这会导致依赖屏幕阅读器的用户无法使用它。[了解详情](https://web.dev/aria-name/)。"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "ARIA 切换字段缺少可供访问的名称"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "ARIA 切换字段都有可供访问的名称"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "如果某个元素没有可供访问的名称，屏幕阅读器会将它读为通用名称，这会导致依赖屏幕阅读器的用户无法使用它。[了解详情](https://web.dev/aria-name/)。"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "ARIA `tooltip` 元素缺少可供访问的名称。"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "ARIA `tooltip` 元素都有可供访问的名称"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "如果某个元素没有可供访问的名称，屏幕阅读器会将它读为通用名称，这会导致依赖屏幕阅读器的用户无法使用它。[了解详情](https://web.dev/aria-name/)。"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "ARIA `treeitem` 元素缺少可供访问的名称。"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "ARIA `treeitem` 元素都有可供访问的名称"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "辅助技术（如屏幕阅读器）无法解读值无效的 ARIA 属性。[了解详情](https://web.dev/aria-valid-attr-value/)。"
@@ -348,7 +393,7 @@
     "message": "如果视频提供了字幕，失聪用户和听障用户便能更轻松地获取此视频中的信息。[了解详情](https://web.dev/video-caption/)。"
   },
   "lighthouse-core/audits/accessibility/video-caption.js | failureTitle": {
-    "message": "`<video>` 元素缺少含 `[kind=\"captions\"]` 的 `<track>` 元素。"
+    "message": "`<video>` 元素缺少带 `[kind=\"captions\"]` 的 `<track>` 元素。"
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
     "message": "`<video>` 元素包含带 `[kind=\"captions\"]` 的 `<track>` 元素"
@@ -468,16 +513,16 @@
     "message": "缩减 JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "从样式表中移除无效规则并延迟加载首屏内容未使用的 CSS 可减少网络活动的无谓消耗。[了解详情](https://web.dev/unused-css-rules/)。"
+    "message": "请从样式表中减少未使用的规则，并延迟加载首屏内容未用到的 CSS，以减少网络活动耗用的字节数。[了解详情](https://web.dev/unused-css-rules/)。"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "移除未使用的 CSS"
+    "message": "减少未使用的 CSS"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "移除未使用的 JavaScript 以减少网络活动消耗的字节数据。[了解详情](https://web.dev/unused-javascript/)。"
+    "message": "请减少未使用的 JavaScript，并等到需要使用时再加载脚本，以减少网络活动耗用的字节数。[了解详情](https://web.dev/unused-javascript/)。"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "移除未使用的 JavaScript"
+    "message": "减少未使用的 JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "延长缓存期限可加快重访您网页的速度。[了解详情](https://web.dev/uses-long-cache-ttl/)。"
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "避免链接关键请求"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "指令"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "强大的内容安全政策 (CSP) 可显著降低遭遇 XSS 攻击的风险。[了解详情](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "该页面包含一个在 <meta> 标记中定义的 CSP。如果可以的话，不妨考虑在 HTTP 标头中定义该 CSP。"
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "找不到任何处于强制模式的 CSP"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "请确保 CSP 能够有效地抵御 XSS 攻击"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "弃用/警告"
@@ -810,7 +870,7 @@
     "message": "该应用已安装"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "下载的图标为空或已损坏"
+    "message": "无法从清单下载必需的图标"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "失败原因"
@@ -1026,7 +1086,7 @@
     "message": "可交互时间是指网页需要多长时间才能提供完整交互功能。[了解详情](https://web.dev/interactive/)。"
   },
   "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
-    "message": "最大内容渲染时间标记了渲染出最大文本或图片的时间。[了解详情](https://web.dev/lighthouse-largest-contentful-paint/)"
+    "message": "Largest Contentful Paint 标记了渲染出最大文本或图片的时间。[了解详情](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
     "message": "您的用户可能会遇到的最长首次输入延迟是用时最长的任务的耗时。[了解详情](https://web.dev/lighthouse-max-potential-fid/)。"
@@ -1467,7 +1527,7 @@
     "message": "映射网址"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "源代码映射会将缩减了大小的代码转换成原始源代码。这有助于开发者在正式版中调试。此外，Lighthouse 还能提供进一步的数据分析。您不妨考虑部署源代码映射以充分利用这些好处。[了解详情](https://developer.chrome.com/docs/devtools/javascript/source-maps/)。"
+    "message": "源代码映射会将缩减了大小的代码转换成原始源代码。这有助于开发者在正式版中调试。此外，Lighthouse 还能提供进一步的数据分析。您不妨考虑部署源代码映射以充分利用这些好处。[了解详情](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)。"
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "大型第一方 JavaScript 缺少源代码映射"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "适合移动设备"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{下列位置可能存储了会影响加载性能的数据：{locations}。请在无痕式窗口中审核此页面，以防止这些资源影响您的得分。}other{下列位置可能存储了会影响加载性能的数据：{locations}。请在无痕式窗口中审核此页面，以防止这些资源影响您的得分。}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "相应网页可能无法按预期加载，因为您所测试的网址 ({requested}) 重定向到了 {final}。请尝试直接测试第二个网址。"
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "此页面的加载速度太慢，无法在时限内完成。结果可能会不完整。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "建议您添加 https: 和 http: 网址架构（会被支持“strict-dynamic”的浏览器忽略），以便向后兼容旧版浏览器。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "自 CSP3 起，disown-opener 已被弃用。请改用 Cross-Origin-Opener-Policy 标头。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "自 CSP2 起，referrer 已被弃用。请改用 Referrer-Policy 标头。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "自 CSP2 起，reflected-xss 已被弃用。请改用 X-XSS-Protection 标头。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "缺少 base-uri 意味着允许使用注入的 <base> 标记将所有相对网址（例如脚本）的基准网址设为一个受攻击者控制的网域。建议您将 base-uri 设为“none”或“self”。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "由 object-src 控制的元素会被视为旧版功能。建议您将 object-src 设为“none”，以防止不良之徒注入会执行不安全脚本的插件。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "缺少 script-src 指令。这意味着允许执行不安全的脚本。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "您忘了要使用英文分号吗？{keyword}似乎是一个指令，而非关键字。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "Nonces 应该使用 base64 字符集。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "Nonces 应包含至少 8 个字符。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "报告目的地只能通过 report-to 指令进行配置。此指令仅适用于基于 Chromium 的浏览器，因此我们建议您同时也使用 report-uri 指令。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "任何 CSP 都未配置报告目的地。这会导致系统很难持续维护 CSP 以及监控故障。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "主机许可名单经常会被绕过。建议您将“strict-dynamic”与 CSP nonces 或 hashes 结合使用。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "CSP 指令不明。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "{keyword}似乎是无效关键字。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "“unsafe-inline”允许执行不安全的页内脚本和事件处理脚本。建议您使用 CSP nonces 或 hashes 来逐一允许各个脚本。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "建议您添加“unsafe-inline”（会被支持 nonces/hashes 的浏览器忽略），以便向后兼容旧版浏览器。"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "主线程拦截时间"

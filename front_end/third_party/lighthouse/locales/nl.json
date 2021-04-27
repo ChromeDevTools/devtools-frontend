@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "`[aria-*]`-kenmerken komen overeen met hun rollen"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "Als een element geen toegankelijke naam heeft, kondigen schermlezers dit aan met een generieke naam, waardoor het veld onbruikbaar wordt voor gebruikers die afhankelijk zijn van schermlezers. [Meer informatie](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "`button`-, `link`- en `menuitem`-elementen hebben geen toegankelijke namen."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "`button`- `link`- en `menuitem`-elementen hebben toegankelijke namen"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Ondersteunende technologieën, zoals schermlezers, werken inconsistent als `aria-hidden=\"true\"` is ingesteld in het document `<body>`. [Meer informatie](https://web.dev/aria-hidden-body/)"
   },
@@ -36,13 +45,31 @@
     "message": "`[aria-hidden=\"true\"]`-elementen bevatten geen focusbare onderliggende elementen"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Als een invoerveld geen toegankelijke naam heeft, kondigen schermlezers dit aan met een generieke naam, waardoor het veld onbruikbaar wordt voor gebruikers die afhankelijk zijn van schermlezers. [Meer informatie](https://web.dev/aria-input-field-name/)"
+    "message": "Als een invoerveld geen toegankelijke naam heeft, kondigen schermlezers dit aan met een generieke naam, waardoor het veld onbruikbaar wordt voor gebruikers die afhankelijk zijn van schermlezers. [Meer informatie](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "ARIA-invoervelden hebben geen toegankelijke namen"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "ARIA-invoervelden hebben toegankelijke namen"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "Als een element geen toegankelijke naam heeft, kondigen schermlezers dit aan met een generieke naam, waardoor het veld onbruikbaar wordt voor gebruikers die afhankelijk zijn van schermlezers. [Meer informatie](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "ARIA `meter`-elementen hebben geen toegankelijke namen."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "ARIA `meter`-elementen hebben toegankelijke namen"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "Als een element geen toegankelijke naam heeft, kondigen schermlezers dit aan met een generieke naam, waardoor het veld onbruikbaar wordt voor gebruikers die afhankelijk zijn van schermlezers. [Meer informatie](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "ARIA `progressbar`-elementen hebben geen toegankelijke namen."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "ARIA `progressbar`-elementen hebben toegankelijke namen"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "Sommige ARIA-rollen hebben vereiste kenmerken die de status van het element beschrijven voor schermlezers. [Meer informatie](https://web.dev/aria-required-attr/)"
@@ -81,13 +108,31 @@
     "message": "`[role]`-waarden zijn geldig"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Als een schakelveld geen toegankelijke naam heeft, kondigen schermlezers dit aan met een generieke naam, waardoor het veld onbruikbaar wordt voor gebruikers die afhankelijk zijn van schermlezers. [Meer informatie](https://web.dev/aria-toggle-field-name/)"
+    "message": "Als een schakelveld geen toegankelijke naam heeft, kondigen schermlezers dit aan met een generieke naam, waardoor het veld onbruikbaar wordt voor gebruikers die afhankelijk zijn van schermlezers. [Meer informatie](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "ARIA-schakelvelden hebben geen toegankelijke namen"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "ARIA-schakelvelden hebben toegankelijke namen"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "Als een element geen toegankelijke naam heeft, kondigen schermlezers dit aan met een generieke naam, waardoor het veld onbruikbaar wordt voor gebruikers die afhankelijk zijn van schermlezers. [Meer informatie](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "ARIA `tooltip`-elementen hebben geen toegankelijke namen."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "ARIA `tooltip`-elementen hebben toegankelijke namen"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "Als een element geen toegankelijke naam heeft, kondigen schermlezers dit aan met een generieke naam, waardoor het veld onbruikbaar wordt voor gebruikers die afhankelijk zijn van schermlezers. [Meer informatie](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "ARIA `treeitem`-elementen hebben geen toegankelijke namen."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "ARIA `treeitem`-elementen hebben toegankelijke namen"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "ARIA-kenmerken met ongeldige waarden kunnen niet worden geïnterpreteerd door hulptechnologieën, zoals schermlezers. [Meer informatie](https://web.dev/aria-valid-attr-value/)"
@@ -225,7 +270,7 @@
     "message": "`<html>`-element bevat geen geldige waarde voor het `[lang]`-kenmerk."
   },
   "lighthouse-core/audits/accessibility/html-lang-valid.js | title": {
-    "message": "`<html>`-element bevat een geldige waarde voor het`[lang]`-kenmerk"
+    "message": "`<html>`-element bevat een geldige waarde voor het `[lang]`-kenmerk"
   },
   "lighthouse-core/audits/accessibility/image-alt.js | description": {
     "message": "Voor informatieve elementen moet een korte, beschrijvende alternatieve tekst worden gebruikt. Decoratieve elementen kunnen worden genegeerd met een leeg alt-kenmerk. [Meer informatie](https://web.dev/image-alt/)"
@@ -291,7 +336,7 @@
     "message": "Het document gebruikt `<meta http-equiv=\"refresh\">` niet"
   },
   "lighthouse-core/audits/accessibility/meta-viewport.js | description": {
-    "message": "Als je de zoomfunctie uitschakelt, is problematisch voor slechtzienden die afhankelijk zijn van schermvergroting om de content van een webpagina te zien. [Meer informatie](https://web.dev/meta-viewport/)"
+    "message": "Het uitzetten van de zoomfunctie is problematisch voor slechtzienden die afhankelijk zijn van schermvergroting om de content van een webpagina te zien. [Meer informatie](https://web.dev/meta-viewport/)"
   },
   "lighthouse-core/audits/accessibility/meta-viewport.js | failureTitle": {
     "message": "`[user-scalable=\"no\"]` wordt gebruikt in het `<meta name=\"viewport\">`-element of het `[maximum-scale]`-kenmerk is minder dan 5."
@@ -372,7 +417,7 @@
     "message": "Voorgestelde token"
   },
   "lighthouse-core/audits/autocomplete.js | description": {
-    "message": "Met `autocomplete` kunnen gebruikers sneller formulieren indienen. Overweeg deze functie in te schakelen door het kenmerk `autocomplete` in te stellen op een geldige waarde, zodat gebruikers minder hoeven te typen. [Meer informatie](https://developers.google.com/web/fundamentals/design-and-ux/input/forms#use_metadata_to_enable_auto-complete)"
+    "message": "Met `autocomplete` kunnen gebruikers sneller formulieren indienen. Overweeg deze functie aan te zetten door het kenmerk `autocomplete` in te stellen op een geldige waarde, zodat gebruikers minder hoeven te typen. [Meer informatie](https://developers.google.com/web/fundamentals/design-and-ux/input/forms#use_metadata_to_enable_auto-complete)"
   },
   "lighthouse-core/audits/autocomplete.js | failureTitle": {
     "message": "`<input>`-elementen hebben niet de juiste `autocomplete`-kenmerken"
@@ -468,16 +513,16 @@
     "message": "Verklein JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "Verwijder overbodig geworden regels uit stylesheets en stel het laden van ongebruikte css uit voor content boven de vouw zodat er minder onnodige bytes worden verbruikt door netwerkactiviteit. [Meer informatie](https://web.dev/unused-css-rules/)"
+    "message": "Beperk niet-gebruikte regels uit stylesheets en stel css uit die niet wordt gebruikt voor content boven de vouw zodat er minder bytes worden verbruikt door netwerkactiviteit. [Meer informatie](https://web.dev/unused-css-rules/)"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "Ongebruikte css verwijderen"
+    "message": "Beperk niet-gebruikte css"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "Verwijder ongebruikt JavaScript om het aantal bytes te verminderen dat wordt verbruikt door netwerkactiviteit. [Meer informatie](https://web.dev/unused-javascript/)"
+    "message": "Beperk niet-gebruikt JavaScript en stel het laden van scripts uit totdat ze nodig zijn zodat er minder bytes worden verbruikt door netwerkactiviteit. [Meer informatie](https://web.dev/unused-javascript/)"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "Verwijder ongebruikt JavaScript"
+    "message": "Beperk niet-gebruikt JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "Een lange levensduur voor het cachegeheugen kan herhaalde bezoeken aan je pagina versnellen. [Meer informatie](https://web.dev/uses-long-cache-ttl/)"
@@ -507,7 +552,7 @@
     "message": "Tekstgebaseerde bronnen moeten worden geleverd met compressie (gzip, deflate of brotli) om het totale aantal netwerkbytes te minimaliseren. [Meer informatie](https://web.dev/uses-text-compression/)"
   },
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
-    "message": "Schakel tekstcompressie in"
+    "message": "Zet tekstcompressie aan"
   },
   "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
     "message": "Afbeeldingsindelingen zoals JPEG 2000, JPEG XR en WebP bieden vaak betere compressie dan PNG of JPEG. Dit resulteert in snellere downloads en minder dataverbruik. [Meer informatie](https://web.dev/uses-webp-images/)"
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "Doorlinken van kritieke verzoeken voorkomen"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "Instructie"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "Een sterk Content Security Policy (CSP) verkleint het risico op XSS-aanvallen aanzienlijk. [Meer informatie](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "De pagina bevat een CSP dat is gedefinieerd in een <meta>-tag. Overweeg het CSP te definiëren in een HTTP-header als dat mogelijk is."
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "Geen CSP gevonden in de handhavingsmodus"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "Zorgen dat het CSP effectief is tegen XSS-aanvallen"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "Beëindiging / Waarschuwing"
@@ -738,7 +798,7 @@
     "message": "HTTP/2 beschikt over veel voordelen ten opzichte van HTTP/1.1, waaronder binaire headers en multiplexing. [Meer informatie](https://web.dev/uses-http2/)"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
-    "message": "{itemCount,plural, =1{1 verzoek niet weergegeven via HTTP/2}other{# verzoeken niet weergegeven via HTTP/2}}"
+    "message": "{itemCount,plural, =1{1 verzoek niet getoond via HTTP/2}other{# verzoeken niet getoond via HTTP/2}}"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | title": {
     "message": "HTTP/2 gebruiken"
@@ -810,7 +870,7 @@
     "message": "De app is al geïnstalleerd"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "Het gedownloade icoon is leeg of beschadigd"
+    "message": "Kan een vereist icoon niet downloaden uit het manifest"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "Oorzaak van fout"
@@ -1011,10 +1071,10 @@
     "message": "Cumulatieve indelingsverschuiving (CLS) meet de beweging van zichtbare elementen binnen het kijkvenster. [Meer informatie](https://web.dev/cls/)"
   },
   "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
-    "message": "Geschatte invoerwachttijd is een schatting van de tijd die je app nodig heeft om te reageren op gebruikersinvoer (in milliseconden), gemeten voor de drukste periode van 5 seconden tijdens het laden van de pagina. Als de wachttijd langer dan 50 ms is, kunnen gebruikers je app als traag beschouwen. [Meer informatie](https://web.dev/estimated-input-latency/)"
+    "message": "Geschatte invoerlatentie is een schatting van de tijd die je app nodig heeft om te reageren op gebruikersinvoer (in milliseconden), gemeten voor de drukste periode van 5 seconden tijdens het laden van de pagina. Als de latentie langer dan 50 ms is, kunnen gebruikers je app als traag beschouwen. [Meer informatie](https://web.dev/estimated-input-latency/)"
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
-    "message": "'Eerste tekenbewerking met content' (FCP) geeft het tijdstip aan waarop de eerste tekst of afbeelding wordt weergegeven. [Meer informatie](https://web.dev/first-contentful-paint/)"
+    "message": "'Eerste tekenbewerking met content' (FCP) geeft het tijdstip aan waarop de eerste tekst of afbeelding wordt getoond. [Meer informatie](https://web.dev/first-contentful-paint/)"
   },
   "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
     "message": "'Eerste keer dat CPU inactief was' geeft de eerste keer aan dat de primaire thread van de pagina rustig genoeg was om invoer te verwerken.  [Meer informatie](https://web.dev/first-cpu-idle/)."
@@ -1026,7 +1086,7 @@
     "message": "'Tijd tot interactief' is de hoeveelheid tijd die nodig is voordat een pagina volledig interactief is. [Meer informatie](https://web.dev/interactive/)"
   },
   "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
-    "message": "'Grootste tekenbewerking met content' (LCP) geeft het tijdstip aan waarop de grootste tekst of afbeelding is weergegeven. [Meer informatie](https://web.dev/lighthouse-largest-contentful-paint/)"
+    "message": "Grootste weergave met content (LCP) geeft het tijdstip aan waarop de grootste tekst of afbeelding is weergegeven. [Meer informatie](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
     "message": "De maximale potentiële vertraging voor de eerste invoer die gebruikers kunnen ervaren, is de duur van de langste taak. [Meer informatie](https://web.dev/lighthouse-max-potential-fid/)"
@@ -1044,7 +1104,7 @@
     "message": "Retourtijden van netwerk"
   },
   "lighthouse-core/audits/network-server-latency.js | description": {
-    "message": "Serverwachttijden kunnen invloed hebben op webprestaties. Als de serverwachttijd van een beginpunt hoog is, is dit een indicatie dat de server overbelast is of slechte backend-prestaties levert. [Meer informatie](https://hpbn.co/primer-on-web-performance/#analyzing-the-resource-waterfall)"
+    "message": "Serverlatenties kunnen invloed hebben op de webprestaties. Als de serverlatentie van een beginpunt hoog is, is dit een indicatie dat de server overbelast is of slechte backend-prestaties levert. [Meer informatie](https://hpbn.co/primer-on-web-performance/#analyzing-the-resource-waterfall)"
   },
   "lighthouse-core/audits/network-server-latency.js | title": {
     "message": "Wachttijden van server-backend"
@@ -1134,7 +1194,7 @@
     "message": "Houd het aantal verzoeken laag en de overdrachtsgrootte klein"
   },
   "lighthouse-core/audits/seo/canonical.js | description": {
-    "message": "Canonieke links geven een suggestie voor welke URL moet worden weergegeven in de zoekresultaten. [Meer informatie](https://web.dev/canonical/)"
+    "message": "Canonieke links geven een suggestie voor welke URL moet worden getoond in de zoekresultaten. [Meer informatie](https://web.dev/canonical/)"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "Meerdere conflicterende URL's ({urlList})"
@@ -1467,7 +1527,7 @@
     "message": "Kaart-URL"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Bronkaarten zetten verkleinde code om in de oorspronkelijke broncode. Aan de hand hiervan kunnen ontwikkelaars foutopsporing uitvoeren in productie. Daarnaast kan Lighthouse meer inzichten bieden. Overweeg bronkaarten te implementeren om gebruik te maken van deze voordelen. [Meer informatie](https://developer.chrome.com/docs/devtools/javascript/source-maps/)"
+    "message": "Bronkaarten zetten verkleinde code om in de oorspronkelijke broncode. Aan de hand hiervan kunnen ontwikkelaars foutopsporing uitvoeren in productie. Daarnaast kan Lighthouse meer inzichten bieden. Overweeg bronkaarten te implementeren om gebruik te maken van deze voordelen. [Meer informatie](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)"
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "De bronkaarten voor een groot first-party JavaScript-bestand ontbreken"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Geschikt voor mobiele apparaten"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{Er kunnen op de volgende locatie gegevens zijn opgeslagen die van invloed zijn op de laadprestaties: {locations}. Controleer deze pagina in een incognitovenster om te voorkomen dat die bronnen van invloed zijn op je scores.}other{Er kunnen op de volgende locaties gegevens zijn opgeslagen die van invloed zijn op de laadprestaties: {locations}. Controleer deze pagina in een incognitovenster om te voorkomen dat die bronnen van invloed zijn op je scores.}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "De pagina wordt mogelijk niet geladen zoals verwacht omdat je test-URL ({requested}) is omgeleid naar {final}. Probeer de tweede URL rechtstreeks te testen."
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "De pagina is te langzaam geladen om binnen de tijdslimiet te voltooien. De resultaten kunnen onvolledig zijn."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "Voor compatibiliteit met oudere browsers kun je overwegen https: en http: URL-schema's toe te voegen (deze worden genegeerd door browsers die 'strict-dynamic' ondersteunen)."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "disown-opener is beëindigd sinds CSP3. Gebruik in plaats daarvan de header Cross-Origin-Opener-Policy."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "referrer is beëindigd sinds CSP2. Gebruik in plaats daarvan de header Referrer-Policy."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "reflected-xss is beëindigd sinds CSP2. Gebruik in plaats daarvan de header X-XSS-Protection."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "Zonder base-uri kunnen ingevoegde <base>-tags de basis-URL instellen voor alle relatieve URL's (bijv. scripts) naar een door de aanvaller beheerd domein. Overweeg base-uri in te stellen op 'none' of 'self'."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "Elementen die worden beheerd door object-src, worden gezien als verouderde functies. Overweeg object-src in te stellen op 'none' om te voorkomen dat er plug-ins worden ingevoegd die onveilige scripts uitvoeren."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "De instructie script-src ontbreekt. Dit kan tot gevolg hebben dat onveilige scripts kunnen worden uitgevoerd."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "Ben je de puntkomma vergeten? Zo te zien is {keyword} een instructie en geen zoekwoord."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "Nonces moeten de base64-tekenset gebruiken."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "Nonces moeten ten minste 8 tekens lang zijn."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "De rapportagebestemming is alleen ingesteld via de instructie report-to. Deze instructie wordt alleen ondersteund in op Chromium gebaseerde browsers, dus het wordt aanbevolen ook een instructie report-uri te gebruiken."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "Er is geen CSP waarmee een rapportagebestemming wordt ingesteld. Hierdoor is het moeilijk om het CSP na verloop van tijd te onderhouden en te monitoren op kwetsbaarheden."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "Toelatingslijsten van hosts kunnen vaak worden omzeild. Overweeg 'strict-dynamic' te gebruiken in combinatie met CSP-nonces of -hashes."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "Onbekende CSP-instructie."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "Zo te zien is {keyword} een ongeldig zoekwoord."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "Met 'unsafe-inline' kunnen onveilige scripts en gebeurtenishandlers op de pagina worden uitgevoerd. Overweeg CSP-nonces of -hashes te gebruiken om scripts afzonderlijk toe te staan."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "Voor compatibiliteit met oudere browsers kun je overwegen 'unsafe-inline' toe te voegen (dit wordt genegeerd door browsers die nonces/hashes ondersteunen)."
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Tijd dat primaire thread is geblokkeerd"
@@ -1731,7 +1839,7 @@
     "message": "Document"
   },
   "lighthouse-core/lib/i18n/i18n.js | estimatedInputLatencyMetric": {
-    "message": "Geschatte invoerwachttijd"
+    "message": "Geschatte invoerlatentie"
   },
   "lighthouse-core/lib/i18n/i18n.js | firstCPUIdleMetric": {
     "message": "Eerste keer dat CPU inactief was"
@@ -1857,13 +1965,13 @@
     "message": "Beginnavigatie"
   },
   "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "Maximum wachttijd voor kritiek pad:"
+    "message": "Maximum latentie voor kritiek pad:"
   },
   "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
     "message": "Json kopiëren"
   },
   "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "Donker thema in-/uitschakelen"
+    "message": "Donker thema aan-/uitzetten"
   },
   "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
     "message": "Afdrukvenster uitvouwen"
@@ -1965,7 +2073,7 @@
     "message": "Fragment uitvouwen"
   },
   "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "Bronnen van derden weergeven"
+    "message": "Bronnen van derden tonen"
   },
   "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
     "message": "Bepaald door omgeving"
@@ -2034,19 +2142,19 @@
     "message": "Thema's, modules en serverspecificaties zijn allemaal van invloed op de reactietijd van de server. Overweeg een thema te gebruiken dat beter is geoptimaliseerd, kies met zorg een optimalisatiemodule en/of upgrade je server. Je hostingservers moeten gebruikmaken van PHP-opcode-caching, geheugencaching (zoals Redis of Memcached) om de databasequerytijden te beperken en geoptimaliseerde app-logica om pagina's sneller voor te bereiden."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | total-byte-weight": {
-    "message": "Overweeg [responsieve afbeeldingsstijlen](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) te gebruiken om de grootte van afbeeldingen die op je pagina worden geladen te verkleinen. Als je Views gebruikt om meerdere contentitems op een pagina weer te geven, kun je overwegen paginering te implementeren om het aantal contentitems dat op een pagina wordt weergegeven te beperken."
+    "message": "Overweeg [responsieve afbeeldingsstijlen](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) te gebruiken om de grootte van geladen afbeeldingen op je pagina te verkleinen. Als je Views gebruikt om meerdere contentitems op een pagina te tonen, kun je overwegen paginering te gebruiken om het aantal zichtbare contentitems op een pagina te beperken."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Zorg ervoor dat je 'Aggregate CSS files' (Css-bestanden aggregeren) hebt ingeschakeld op de pagina Administration » Configuration » Development (Beheer > Configuratie > Ontwikkeling). Je kunt ook meer geavanceerde aggregatie-opties configureren via [extra modules](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search) om je site te versnellen door je css-stijlen in te korten, te verkleinen en te comprimeren."
+    "message": "Zorg ervoor dat je Aggregate CSS files (Css-bestanden aggregeren) hebt aangezet op de pagina Administration » Configuration » Development (Beheer > Configuratie > Ontwikkeling). Je kunt ook meer geavanceerde aggregatie-opties instellen via [extra modules](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search) om je site te versnellen door je css-stijlen in te korten, te verkleinen en te comprimeren."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Zorg ervoor dat je 'Aggregate JavaScript files' (JavaScript-bestanden aggregeren) hebt ingeschakeld op de pagina Administration » Configuration » Development (Beheer > Configuratie > Ontwikkeling). Je kunt ook meer geavanceerde aggregatie-opties configureren via [extra modules](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search) om je site te versnellen door je JavaScript-items in te korten, te verkleinen en te comprimeren."
+    "message": "Zorg ervoor dat je Aggregate JavaScript files (JavaScript-bestanden aggregeren) hebt aangezet op de pagina Administration » Configuration » Development (Beheer > Configuratie > Ontwikkeling). Je kunt ook meer geavanceerde aggregatie-opties instellen via [extra modules](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search) om je site te versnellen door je JavaScript-items in te korten, te verkleinen en te comprimeren."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
-    "message": "Overweeg ongebruikte css-regels te verwijderen en alleen de benodigde Drupal-bibliotheken bij te voegen bij de relevante pagina of component op een pagina. Klik op de [link naar de Drupal-documentatie](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) voor meer informatie. Voer [codedekking](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) uit in Chrome DevTools als je bijgevoegde bibliotheken wilt identificeren die extra css toevoegen. Je kunt identificeren welk thema/welke module verantwoordelijk is voor de URL van de stylesheet als css-aggregatie is uitgeschakeld op je Drupal-site. Ga in de lijst op zoek naar thema's/modules met veel stylesheets en veel rood in de codedekking. Een thema/module zou een stylesheet alleen in de wachtrij moeten plaatsen als de stylesheet daadwerkelijk wordt gebruikt op de pagina."
+    "message": "Overweeg ongebruikte css-regels te verwijderen en alleen de benodigde Drupal-bibliotheken bij te voegen bij de relevante pagina of component op een pagina. Klik op de [link naar de Drupal-documentatie](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) voor meer informatie. Voer [codedekking](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) uit in Chrome DevTools als je bijgevoegde bibliotheken wilt identificeren die extra css toevoegen. Je kunt identificeren welk thema/welke module verantwoordelijk is voor de URL van de stylesheet als css-aggregatie is uitgezet op je Drupal-site. Ga in de lijst op zoek naar thema's/modules met veel stylesheets en veel rood in de codedekking. Een thema/module zou een stylesheet alleen in de wachtrij moeten plaatsen als de stylesheet daadwerkelijk wordt gebruikt op de pagina."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-javascript": {
-    "message": "Overweeg ongebruikte JavaScript-items te verwijderen en alleen de benodigde Drupal-bibliotheken bij te voegen bij de relevante pagina of component op een pagina. Klik op de [link naar de Drupal-documentatie](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) voor meer informatie. Voer [codedekking](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) uit in Chrome DevTools als je bijgevoegde bibliotheken wilt identificeren die extra JavaScript toevoegen. Je kunt identificeren welk thema/welke module verantwoordelijk is voor de URL van het script als JavaScript-aggregatie is uitgeschakeld op je Drupal-site. Ga in de lijst op zoek naar thema's/modules met veel scripts en veel rood in de codedekking. Een thema/module zou een script alleen in de wachtrij moeten plaatsen als het script daadwerkelijk wordt gebruikt op de pagina."
+    "message": "Overweeg ongebruikte JavaScript-items te verwijderen en alleen de benodigde Drupal-bibliotheken bij te voegen bij de relevante pagina of component op een pagina. Klik op de [link naar de Drupal-documentatie](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) voor meer informatie. Voer [codedekking](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) uit in Chrome DevTools als je bijgevoegde bibliotheken wilt identificeren die extra JavaScript toevoegen. Je kunt identificeren welk thema/welke module verantwoordelijk is voor de URL van het script als JavaScript-aggregatie is uitgezet op je Drupal-site. Ga in de lijst op zoek naar thema's/modules met veel scripts en veel rood in de codedekking. Een thema/module zou een script alleen in de wachtrij moeten plaatsen als het script daadwerkelijk wordt gebruikt op de pagina."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-long-cache-ttl": {
     "message": "Stel 'Browser and proxy cache maximum age' (Maximum leeftijd van browser- en proxycache) in op de pagina Administration » Configuration » Development (Beheer > Configuratie > Ontwikkeling). Bekijk meer informatie over [Drupal-cache en optimalisatie voor prestaties](https://www.drupal.org/docs/7/managing-site-performance-and-scalability/caching-to-improve-performance/caching-overview#s-drupal-performance-resources)."
@@ -2076,7 +2184,7 @@
     "message": "Templates, extensies en serverspecificaties zijn allemaal van invloed op de reactietijd van de server. Overweeg een template te gebruiken die beter is geoptimaliseerd, kies met zorg een optimalisatie-extensie en/of upgrade je server."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | total-byte-weight": {
-    "message": "Overweeg fragmenten te tonen in je artikelcategorieën (bijvoorbeeld via de link 'meer lezen'), zodat er per pagina minder artikelen worden weergegeven. Ook kun je lange posts verdelen over meerdere pagina's of een plug-in voor lazy loading van reacties gebruiken."
+    "message": "Overweeg fragmenten te tonen in je artikelcategorieën (bijvoorbeeld via de link 'meer lezen'), zodat er per pagina minder artikelen worden getoond. Ook kun je lange posts verdelen over meerdere pagina's of een plug-in voor lazy loading van reacties gebruiken."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | unminified-css": {
     "message": "Er zijn een aantal [Joomla-extensies](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) die je site sneller kunnen maken door je css-stijlen in te korten, te verkleinen of te comprimeren. Er zijn ook templates die deze functionaliteit bieden."
@@ -2100,7 +2208,7 @@
     "message": "Overweeg een [plug-in voor responsieve afbeeldingen](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=responsive%20images) te gebruiken als je responsieve afbeeldingen wilt gebruiken in je content."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-text-compression": {
-    "message": "Je kunt tekstcompressie inschakelen door Gzip-paginacompressie in te schakelen in Joomla via System > Global configuration > Server (Systeem > Algemene configuratie > Server)."
+    "message": "Je kunt tekstcompressie aanzetten door Gzip-paginacompressie in Joomla aan te zetten via System > Global configuration > Server (Systeem > Algemene configuratie > Server)."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-webp-images": {
     "message": "Overweeg een [plug-in](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) of service te gebruiken die je geüploade afbeeldingen automatisch converteert naar de optimale indelingen."
@@ -2109,7 +2217,7 @@
     "message": "Als je je JavaScript-items niet bundelt, kun je [baler](https://github.com/magento/baler) gebruiken."
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | disable-bundling": {
-    "message": "Schakel de ingebouwde [JavaScript-bundeling en -verkleining](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html) van Magento uit en overweeg in plaats daarvan [baler](https://github.com/magento/baler/) te gebruiken."
+    "message": "Zet de ingebouwde [JavaScript-bundeling en -verkleining](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html) van Magento uit en overweeg in plaats daarvan [baler](https://github.com/magento/baler/) te gebruiken."
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | font-display": {
     "message": "Specificeer `@font-display` als je [aangepaste lettertypen definieert](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html)."
@@ -2121,13 +2229,13 @@
     "message": "Gebruik de [Varnish-integratie](https://devdocs.magento.com/guides/v2.3/config-guide/varnish/config-varnish.html) van Magento."
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | unminified-css": {
-    "message": "Schakel de optie 'Css-bestanden verkleinen' in de ontwikkelaarsinstellingen van je winkel in. [Meer informatie](https://devdocs.magento.com/guides/v2.3/performance-best-practices/configuration.html?itm_source=devdocs&itm_medium=search_page&itm_campaign=federated_search&itm_term=minify%20css%20files)"
+    "message": "Zet de optie 'Css-bestanden verkleinen' in de ontwikkelaarsinstellingen van je winkel aan. [Meer informatie](https://devdocs.magento.com/guides/v2.3/performance-best-practices/configuration.html?itm_source=devdocs&itm_medium=search_page&itm_campaign=federated_search&itm_term=minify%20css%20files)"
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | unminified-javascript": {
-    "message": "Gebruik [Terser](https://www.npmjs.com/package/terser) om alle JavaScript-items van implementaties van statische content te verkleinen en de ingebouwde verkleiningsfunctie uit te schakelen."
+    "message": "Gebruik [Terser](https://www.npmjs.com/package/terser) om alle JavaScript-items van implementaties van statische content te verkleinen en de ingebouwde verkleiningsfunctie uit te zetten."
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | unused-javascript": {
-    "message": "Schakel de ingebouwde [JavaScript-bundeling](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html) van Magento uit."
+    "message": "Zet de ingebouwde [JavaScript-bundeling](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/js-bundling.html) van Magento uit."
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-optimized-images": {
     "message": "Je kunt in de [Magento-marktplaats](https://marketplace.magento.com/catalogsearch/result/?q=optimize%20image) zoeken naar verschillende extensies van derden om afbeeldingen te optimaliseren."
@@ -2217,7 +2325,7 @@
     "message": "Thema's, plug-ins en serverspecificaties zijn allemaal van invloed op de reactietijd van de server. Overweeg een thema te gebruiken dat beter is geoptimaliseerd, kies met zorg een optimalisatieplug-in en/of upgrade je server."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | total-byte-weight": {
-    "message": "Overweeg fragmenten te tonen in je postlijsten (bijvoorbeeld via de tag 'more'), zodat er per pagina minder posts worden weergegeven. Ook kun je lange posts verdelen over meerdere pagina's of een plug-in voor lazy loading van reacties gebruiken."
+    "message": "Overweeg fragmenten te tonen in je postlijsten (bijvoorbeeld via de tag 'more'), zodat er per pagina minder posts worden getoond. Ook kun je lange posts verdelen over meerdere pagina's of een plug-in voor lazy loading van reacties gebruiken."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | unminified-css": {
     "message": "Er zijn enkele [WordPress-plug-ins](https://wordpress.org/plugins/search/minify+css/) die je site sneller kunnen maken door stijlen in te korten, te verkleinen of te comprimeren. Mogelijk wil je ook een ontwerpproces gebruiken om deze verkleining van tevoren toe te passen."
@@ -2241,7 +2349,7 @@
     "message": "Upload afbeeldingen rechtstreeks via de [mediabibliotheek](https://wordpress.org/support/article/media-library-screen/) om er zeker van te zijn dat de vereiste afbeeldingsformaten beschikbaar zijn. Voeg de afbeeldingen vervolgens in vanuit de mediabibliotheek. Ook kun je de afbeeldingswidget gebruiken om ervoor te zorgen dat de optimale afbeeldingsformaten worden gebruikt (inclusief voor responsieve breakpoints). Vermijd `Full Size`-afbeeldingen, tenzij de afmetingen geschikt zijn voor waar ze worden geplaatst. [Meer informatie](https://wordpress.org/support/article/inserting-images-into-posts-and-pages/)"
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
-    "message": "Je kunt tekstcompressie inschakelen bij je webserverinstellingen."
+    "message": "Je kunt tekstcompressie in de webserverinstellingen aanzetten."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-webp-images": {
     "message": "Overweeg een [plug-in](https://wordpress.org/plugins/search/convert+webp/) of service te gebruiken die je geüploade afbeeldingen automatisch converteert naar de optimale indelingen."

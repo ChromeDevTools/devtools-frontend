@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "'`[aria-*]`' లక్షణాలు వాటి పాత్రలతో సరిపోలాలి"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "ఒక ఎలిమెంట్‌కు యాక్సెస్ చేయగల పేరు లేనప్పుడు, స్క్రీన్ రీడర్‌లు దానిని సాధారణ పేరుతో ప్రకటిస్తాయి, తద్వారా వాటిని స్క్రీన్ రీడర్‌లపై ఆధారపడే యూజర్‌లకు నిరుపయోగమైనవిగా చేస్తాయి. [మరింత తెలుసుకోండి](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "`button`, `link`, `menuitem` ఎలిమెంట్‌లు యాక్సెస్ చేయగల పేర్లను కలిగి లేవు."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "`button`, `link`, `menuitem` ఎలిమెంట్‌లు యాక్సెస్ చేయగల పేర్లను కలిగి ఉన్నాయి"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "'`<body>`' డాక్యుమెంట్‌లో '`aria-hidden=\"true\"`'ను సెట్ చేసినప్పుడు స్క్రీన్ రీడర్‌లు లాంటి సహాయకర సాంకేతిక పరిజ్ఞానాలు క్రమరహితంగా పని చేస్తాయి. [మరింత తెలుసుకోండి](https://web.dev/aria-hidden-body/)."
   },
@@ -36,13 +45,31 @@
     "message": "`[aria-hidden=\"true\"]` మూలకాలలో దృష్టి కేంద్రీకరించదగిన సంక్రమిత అంశాలు లేవు"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "ఒక ఇన్‌పుట్ ఫీల్డ్‌కు యాక్సెస్ చేయదగిన పేరు లేనప్పుడు, స్క్రీన్ రీడర్‌లు దానిని సాధారణ పేరుతో ప్రకటిస్తాయి, తద్వారా వాటిని స్క్రీన్ రీడర్‌లపై ఆధారపడే యూజర్‌లకు నిరుపయోగమైనవిగా చేస్తాయి. [మరింత తెలుసుకోండి](https://web.dev/aria-input-field-name/)."
+    "message": "ఒక ఇన్‌పుట్ ఫీల్డ్‌కు యాక్సెస్ చేయదగిన పేరు లేనప్పుడు, స్క్రీన్ రీడర్‌లు దానిని సాధారణ పేరుతో ప్రకటిస్తాయి, తద్వారా వాటిని స్క్రీన్ రీడర్‌లపై ఆధారపడే యూజర్‌లకు నిరుపయోగమైనవిగా చేస్తాయి. [మరింత తెలుసుకోండి](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "ARIA ఇన్‌పుట్ ఫీల్డ్‌లకు యాక్సెస్ చేయదగిన పేర్లు లేవు"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "ARIA ఇన్‌పుట్ లేబుల్‌లు యాక్సెస్ చేయదగిన పేర్లను కలిగి ఉన్నాయి"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "ఒక ఎలిమెంట్‌కు యాక్సెస్ చేయగల పేరు లేనప్పుడు, స్క్రీన్ రీడర్‌లు దానిని సాధారణ పేరుతో ప్రకటిస్తాయి, తద్వారా వాటిని స్క్రీన్ రీడర్‌లపై ఆధారపడే యూజర్‌లకు నిరుపయోగమైనవిగా చేస్తాయి. [మరింత తెలుసుకోండి](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "ARIA `meter` ఎలిమెంట్‌లు యాక్సెస్ చేయగల పేర్లను కలిగి లేవు."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "ARIA `meter` ఎలిమెంట్‌లు యాక్సెస్ చేయగల పేర్లను కలిగి ఉన్నాయి"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "ఒక ఎలిమెంట్‌కు యాక్సెస్ చేయగల పేరు లేనప్పుడు, స్క్రీన్ రీడర్‌లు దానిని సాధారణ పేరుతో ప్రకటిస్తాయి, తద్వారా వాటిని స్క్రీన్ రీడర్‌లపై ఆధారపడే యూజర్‌లకు నిరుపయోగమైనవిగా చేస్తాయి. [మరింత తెలుసుకోండి](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "ARIA `progressbar` ఎలిమెంట్‌లు యాక్సెస్ చేయగల పేర్లను కలిగి లేవు."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "ARIA `progressbar` ఎలిమెంట్‌లు యాక్సెస్ చేయగల పేర్లను కలిగి ఉన్నాయి"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "కొన్ని ARIA పాత్రలు మూలకం స్థితిని స్క్రీన్ రీడర్‌లకు వివరించే ఆవశ్యక లక్షణాలను కలిగి ఉన్నాయి. [మరింత తెలుసుకోండి](https://web.dev/aria-required-attr/)."
@@ -81,13 +108,31 @@
     "message": "`[role]` విలువలు చెల్లుబాటు అయ్యేవి"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "ఒక టోగుల్ ఫీల్డ్‌కు యాక్సెస్ చేయదగిన పేరు లేనప్పుడు, స్క్రీన్ రీడర్‌లు దానిని సాధారణ పేరుతో ప్రకటిస్తాయి, దీని వలన స్క్రీన్ రీడర్‌లపై ఆధారపడే యూజర్‌లకు నిరుపయోగమైనవిగా అవుతాయి. [మరింత తెలుసుకోండి](https://web.dev/aria-toggle-field-name/)."
+    "message": "ఒక టోగుల్ ఫీల్డ్‌కు యాక్సెస్ చేయదగిన పేరు లేనప్పుడు, స్క్రీన్ రీడర్‌లు దానిని సాధారణ పేరుతో ప్రకటిస్తాయి, దీని వలన స్క్రీన్ రీడర్‌లపై ఆధారపడే యూజర్‌లకు నిరుపయోగమైనవిగా అవుతాయి. [మరింత తెలుసుకోండి](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "ARIA టోగుల్ ఫీల్డ్‌లకు యాక్సెస్ చేయదగిన పేర్లు లేవు"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "ARIA టోగుల్ ఫీల్డ్‌లకు యాక్సెస్ చేయదగిన పేర్లు ఉన్నాయి"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "ఒక ఎలిమెంట్‌కు యాక్సెస్ చేయగల పేరు లేనప్పుడు, స్క్రీన్ రీడర్‌లు దానిని సాధారణ పేరుతో ప్రకటిస్తాయి, తద్వారా వాటిని స్క్రీన్ రీడర్‌లపై ఆధారపడే యూజర్‌లకు నిరుపయోగమైనవిగా చేస్తాయి. [మరింత తెలుసుకోండి](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "ARIA `tooltip` ఎలిమెంట్‌లు యాక్సెస్ చేయగల పేర్లను కలిగి లేవు."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "ARIA `tooltip` ఎలిమెంట్‌లు యాక్సెస్ చేయగల పేర్లను కలిగి ఉన్నాయి"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "ఒక ఎలిమెంట్‌కు యాక్సెస్ చేయగల పేరు లేనప్పుడు, స్క్రీన్ రీడర్‌లు దానిని సాధారణ పేరుతో ప్రకటిస్తాయి, తద్వారా వాటిని స్క్రీన్ రీడర్‌లపై ఆధారపడే యూజర్‌లకు నిరుపయోగమైనవిగా చేస్తాయి. [మరింత తెలుసుకోండి](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "ARIA `treeitem` ఎలిమెంట్‌లు యాక్సెస్ చేయగల పేర్లను కలిగి లేవు."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "ARIA `treeitem` ఎలిమెంట్‌లు యాక్సెస్ చేయగల పేర్లను కలిగి ఉన్నాయి"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "స్క్రీన్ రీడర్‌ల లాంటి సహాయక సాంకేతిక పరిజ్ఞానాలు చెల్లుబాటు కాని విలువలు గల ARIA లక్షణాలను అర్థం చేసుకోలేవు. [మరింత తెలుసుకోండి](https://web.dev/aria-valid-attr-value/)."
@@ -348,10 +393,10 @@
     "message": "వీడియోకు శీర్షికను అందిస్తే, చెవిటి వారు లేదా వినికిడి సమస్య ఉన్న వినియోగదారులు వీడియోలోని సమాచారాన్ని సులభంగా యాక్సెస్ చేయగలుగుతారు. [మరింత తెలుసుకోండి](https://web.dev/video-caption/)."
   },
   "lighthouse-core/audits/accessibility/video-caption.js | failureTitle": {
-    "message": "'`<video>`' మూలకాలలో '`[kind=\"captions\"]`'తో '`<track>`' మూలకం లేదు."
+    "message": "`<video>` ఎలిమెంట్‌లు `[kind=\"captions\"]`తో ఉన్న `<track>` ఎలిమెంట్‌ను కలిగి లేవు."
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
-    "message": "'`<video>`' మూలకాలు '`[kind=\"captions\"]`'తో '`<track>`' మూలకం కలిగి ఉన్నాయి"
+    "message": "`<video>` ఎలిమెంట్‌లు `[kind=\"captions\"]`తో ఉన్న `<track>` ఎలిమెంట్‌ను కలిగి ఉన్నాయి"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
     "message": "వినియోగదారులు హోమ్ స్క్రీన్‌కు ప్రోగ్రెసివ్ వెబ్ యాప్‌ను జోడించినప్పుడు, iOSలో ఉత్తమ ప్రదర్శన కోసం, '`apple-touch-icon`'ను నిర్వచించండి. అది తప్పనిసరిగా పారదర్శకం కాని 192px (లేదా 180px) చతురస్రాకార PNGని సూచించాలి. [మరింత తెలుసుకోండి](https://web.dev/apple-touch-icon/)."
@@ -468,16 +513,16 @@
     "message": "JavaScriptను చిన్నదిగా చేయండి"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "నెట్‌వర్క్ కార్యకలాపంలో ఉపయోగించబడే అనవసరమైన బైట్‌లను తగ్గించడం కోసం, స్టైల్‌షీట్‌ల నుండి గడువు ముగిసిన నియమాలను తీసివేయండి. అలాగే, మడత పైన ఉన్న కంటెంట్ కోసం ఉపయోగించని CSSను లోడ్ చేయకుండా ఆపివేయండి. [మరింత తెలుసుకోండి](https://web.dev/unused-css-rules/)."
+    "message": "నెట్‌వర్క్ యాక్టివిటీలో ఉపయోగించబడే బైట్‌లను తగ్గించడం కోసం, స్టైల్‌షీట్‌ల నుండి ఉపయోగించని నియమాలను తగ్గించండి. అలాగే, మడత పైన ఉన్న కంటెంట్ కోసం ఉపయోగించని CSSను మినహాయించండి. [మరింత తెలుసుకోండి](https://web.dev/unused-css-rules/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "ఉపయోగించని CSS తీసివేయబడింది"
+    "message": "ఉపయోగించని CSS తగ్గించండి"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "నెట్‌వర్క్ కార్యకలాపం వినియోగించే బైట్‌లను తగ్గించడానికి ఉపయోగించని JavaScriptను తీసివేయండి. [మరింత తెలుసుకోండి](https://web.dev/unused-javascript/)."
+    "message": "ఉపయోగించని JavaScriptను తగ్గించండి, నెట్‌వర్క్ యాక్టివిటీ వినియోగించే బైట్‌లను అవసరం ఉన్నంత వరకు తగ్గించడానికి లోడింగ్ స్క్రిప్ట్‌లను మినహాయించండి. [మరింత తెలుసుకోండి](https://web.dev/unused-javascript/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "ఉపయోగించని JavaScriptను తీసివేయండి"
+    "message": "ఉపయోగించని JavaScriptను తగ్గించండి"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "దీర్ఘమైన కాష్ జీవితకాలం మీ పేజీకి పునరావృత సందర్శనలను వేగవంతం చేయవచ్చు. [మరింత తెలుసుకోండి](https://web.dev/uses-long-cache-ttl/)."
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "అత్యంత ముఖ్యమైన అభ్యర్థనలను గొలుసు క్రమంలో అందించడం నివారించండి"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "డైరెక్టివ్"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "బలమైన కంటెంట్ సెక్యూరిటీ పాలసీ (CSP) XSS దాడుల ప్రమాదాన్ని గణనీయంగా తగ్గిస్తుంది. [మరింత తెలుసుకోండి](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "పేజీ <meta> ట్యాగ్‌లో నిర్వచించబడిన CSPని కలిగి ఉంది. మీకు సాధ్యమైతే CSPని HTTP హెడర్‌లో నిర్వచించడాన్ని పరిగణించండి."
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "ఆంక్ష మోడ్‌లో ఎలాంటి CSP కనుగొనబడలేదు"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "CSP XSS దాడులను సమర్ధవంతంగా ఎదుర్కొంటుందని నిర్ధారించుకోండి"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "విస్మరణ / హెచ్చరిక"
@@ -810,7 +870,7 @@
     "message": "యాప్ ఇప్పటికే ఇన్‌స్టాల్ అయింది"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "డౌన్‌లోడ్ చేసిన చిహ్నం ఖాళీగా ఉంది లేదా పాడైంది"
+    "message": "మ్యానిఫెస్ట్ నుండి అవసరమైన చిహ్నాన్ని డౌన్‌లోడ్ చేయడం సాధ్యపడలేదు"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "వైఫల్యానికి కారణం"
@@ -852,7 +912,7 @@
     "message": "కనీసం {value0} px స్క్వేర్‌తో PNG, SVG లేదా WebP ఫార్మాట్ చిహ్నం ఏదీ అందించలేదు"
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
-    "message": "డౌన్‌లోడ్ చేసిన చిహ్నం ఖాళీగా ఉంది లేదా పాడైంది"
+    "message": "డౌన్‌లోడ్ చేయబడిన చిహ్నం ఖాళీగా ఉంది లేదా పాడైంది"
   },
   "lighthouse-core/audits/installable-manifest.js | no-id-specified": {
     "message": "Play స్టోర్ IDని అందించలేదు"
@@ -1026,7 +1086,7 @@
     "message": "పరస్పర చర్య చేయడానికి పేజీ పూర్తిగా సిద్ధం అయ్యేందుకు పట్టే సమయాన్ని 'పేజీలో పూర్తి పరస్పర చర్యకు పట్టే సమయం' అంటారు. [మరింత తెలుసుకోండి](https://web.dev/interactive/)."
   },
   "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
-    "message": "అత్యంత పొడవైన కంటెంట్ గల పెయింట్ అనేది పొడవాటి వచనం లేదా చిత్రానికి పెయింట్ వేసిన సమయాన్ని గుర్తిస్తుంది. [మరింత తెలుసుకోండి](https://web.dev/lighthouse-largest-contentful-paint/)"
+    "message": "కంటెంట్ కలిగి ఉండే అతిపెద్ద పెయింట్ అతిపెద్ద టెక్స్ట్ లేదా ఇమేజ్‌ను పెయింట్ చేయబడే సమయాన్ని గుర్తిస్తుంది. [మరింత తెలుసుకోండి](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
     "message": "మీ యూజర్‌లు ఎదుర్కోగల గరిష్ఠ మొదటి ఇన్‌పుట్ ఆలస్యం అన్నది సుదీర్ఘ టాస్క్ సమయ వ్యవధిని కలిగి ఉంటుంది. [మరింత తెలుసుకోండి](https://web.dev/lighthouse-max-potential-fid/)."
@@ -1050,7 +1110,7 @@
     "message": "సర్వర్ బ్యాక్ఎండ్ ప్రతిస్పందన సమయాలు"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "ఈ `unload` ఈవెంట్ ఆశించినట్టు పని చేయదు. దాని కోసం వేచి ఉంటే, Back-Forward Cache లాంటి బ్రౌజర్ ఆప్టిమైజేషన్లు నిరోధించబడవచ్చు. బదులుగా `pagehide` లేదా `visibilitychange` ఈవెంట్‌లను ఉపయోగించడాన్ని పరిశీలించండి. [మరింత తెలుసుకోండి](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "ఈ `unload` ఈవెంట్ ఆశించినట్టు పని చేయదు. దాని కోసం వేచి ఉంటే, వెనుకకు-ముందుకు కాష్ లాంటి బ్రౌజర్ ఆప్టిమైజేషన్‌లు నిరోధించబడవచ్చు. బదులుగా `pagehide` లేదా `visibilitychange` ఈవెంట్‌లను ఉపయోగించడాన్ని పరిశీలించండి. [మరింత తెలుసుకోండి](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "`unload` లిజనర్‌గా రిజిస్టర్ చేస్తుంది"
@@ -1467,7 +1527,7 @@
     "message": "మ్యాప్ URL"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "సోర్స్ మ్యాప్‌లు, కనిష్ఠీకరించిన కోడ్‌ను ఒరిజినల్ సోర్స్ కోడ్‌కు అనువదిస్తాయి. ఇది డెవలపర్‌లకు ప్రొడక్షన్‌లో డీబగ్ చేయడంలో సహాయపడుతుంది. అదనంగా, Lighthouse మరిన్ని గణాంకాలను అందించగలదు. ఈ ప్రయోజనాలను సద్వినియోగం చేసుకోవడానికి, సోర్స్ మ్యాప్‌లను అమలు చేయడాన్ని పరిగణించండి. [మరింత తెలుసుకోండి](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
+    "message": "సోర్స్ మ్యాప్‌లు, కనిష్ఠీకరించిన కోడ్‌ను ఒరిజినల్ సోర్స్ కోడ్‌కు అనువదిస్తాయి. ఇది డెవలపర్‌లకు ప్రొడక్షన్‌లో డీబగ్ చేయడంలో సహాయపడుతుంది. అదనంగా, Lighthouse మరిన్ని గణాంకాలను అందించగలదు. ఈ ప్రయోజనాలను సద్వినియోగం చేసుకోవడానికి, సోర్స్ మ్యాప్‌లను అమలు చేయడాన్ని పరిగణించండి. [మరింత తెలుసుకోండి](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "పెద్ద ఫస్ట్ పార్టీ JavaScript కోసం సోర్స్ మ్యాప్‌లు కనుగొనబడలేదు"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "మొబైల్-అనుకూలం"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{ఈ లొకేషన్‌లో 'లోడింగ్ పనితీరు'ను ప్రభావితం చేసే స్టోర్డ్ డేటా ఉండవచ్చు: {locations}. మీ స్కోర్‌లను ఆ రిసోర్స్‌లు ప్రభావితం చేయకుండా నివారించడానికి అజ్ఞాత విండోలో ఈ పేజీని ఆడిట్ చేయండి.}other{ఈ లొకేషన్‌లలో ఉండే స్టోర్డ్ డేటా వల్ల 'లోడింగ్ పనితీరు' ప్రభావితం కావచ్చు: {locations}. మీ స్కోర్‌లను ఆ రిసోర్స్‌లు ప్రభావితం చేయకుండా నివారించడానికి అజ్ఞాత విండోలో ఈ పేజీని ఆడిట్ చేయండి.}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "మీ పరీక్ష URL ({requested})ను {final}కు మళ్లించినందున, పేజీ అనుకున్న విధంగా లోడ్ కాలేకపోతుండవచ్చు. నేరుగా రెండవ URLను పరీక్షించడం ట్రై చేయండి."
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "సమయ పరిమితి లోపల పూర్తి కావడానికి పేజీ మరీ నిదానంగా లోడ్ అయ్యింది. ఫలితాలు సంపూర్ణంగా ఉండకపోవచ్చు."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "పాత బ్రౌజర్‌లతో అనుకూలంగా ఉండటానికి https:, http: URL స్కీమ్ ('strict-dynamic'ను సపోర్ట్ చేసే బ్రౌజర్‌ల ద్వారా విస్మరించబడినవి)లను జోడించడాన్ని పరిగణించండి."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "CSP3 నుండి disown-opener విస్మరించబడింది. దయచేసి, బదులుగా Cross-Origin-Opener-Policy హెడర్‌ను ఉపయోగించండి."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "CSP2 నుండి referrer విస్మరించబడింది. దయచేసి, బదులుగా Referrer-Policy హెడర్‌ను ఉపయోగించండి."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "CSP2 నుండి reflected-xss విస్మరించబడింది. దయచేసి, బదులుగా X-XSS-Protection హెడర్‌ను ఉపయోగించండి."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "దాడి చేసే వారి ద్వారా కంట్రోల్ చేయబడే డొమైన్‌కు అన్ని సంబంధిత URLల (ఉదా. స్క్రిప్ట్‌లు) కోసం బేస్ URLను సెట్ చేయడానికి, పంపబడిన <base> ట్యాగ్‌లను మిస్ అయిన base-uri అనుమతిస్తుంది. base-uriని 'none' లేదా 'self'కు సెట్ చేయడాన్ని పరిగణించండి."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "object-src ద్వారా కంట్రోల్ చేయబడే మూలకాలను లెగసీ ఫీచర్‌లుగా పరిగణిస్తారు. సురక్షితంకాని స్క్రిప్ట్‌లను అమలు చేసే ప్లగ్ఇన్‌ల ఇంజక్షన్‌ను నిరోధించడానికి object-src ను 'none'కు సెట్ చేయడాన్ని పరిగణించండి."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "script-src డైరెక్టివ్ మిస్ అయింది. ఇది సురక్షితంకాని స్క్రిప్ట్‌ల అమలును అనుమతిస్తుంది."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "మీరు సెమీకోలన్‌ను మర్చిపోయారా? {keyword} కీవర్డ్ కాదు, డైరెక్టివ్ అనిపిస్తుంది."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "Nonces base64 charsetను ఉపయోగించాలి."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "Nonces కనీసం 8 అక్షరాల పొడవు ఉండాలి."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "రిపోర్ట్ చేసే గమ్యస్థానం report-to డైరెక్టివ్ ద్వారా మాత్రమే కాన్ఫిగర్ చేయబడుతుంది. ఈ డైరెక్టివ్ Chromium-ఆధారిత బ్రౌజర్‌లలో మాత్రమే సపోర్ట్ చేస్తుంది, కాబట్టి report-uri డైరెక్టివ్‌ను కూడా ఉపయోగించమని సిఫార్సు చేయబడింది."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "ఎలాంటి CSP రిపోర్ట్ చేసే గమ్యస్థానాన్ని కాన్ఫిగర్ చేయలేదు. ఇది కాలానుగుణంగా CSPని నిర్వహించడం, అలాగే ఏదైనా విచ్ఛిన్నాల కోసం పర్యవేక్షించడం కష్టతరం చేస్తుంది."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "హోస్ట్ వైట్‌లిస్ట్‌లు తరచుగా బైపాస్ చేయబడవచ్చు. 'strict-dynamic'ను CSP nonces లేదా hashesతో కలిపి ఉపయోగించడాన్ని పరిగణించండి."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "తెలియని CSP డైరెక్టివ్."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "{keyword} చెల్లని కీవర్డ్‌లాగా అనిపిస్తుంది."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "'unsafe-inline' సురక్షితంకాని unsafe in-page స్క్రిప్ట్‌లు, అలాగే ఈవెంట్ హ్యాండ్లర్‌ల అమలును అనుమతిస్తుంది. స్క్రిప్ట్‌లను వ్యక్తిగతంగా అనుమతించేందుకు CSP nonces లేదా hashesను ఉపయోగించడాన్ని పరిగణించండి."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "పాత బ్రౌజర్‌లతో అనుకూలంగా ఉండటానికి 'unsafe-inline' (nonces/hashes సపోర్ట్ చేసే బ్రౌజర్‌ల ద్వారా విస్మరించబడినవి) జోడించడాన్ని పరిగణించండి."
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "ప్రధాన థ్రెడ్ బ్లాక్ చేయబడే సమయం"

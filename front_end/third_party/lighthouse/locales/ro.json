@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Atributele `[aria-*]` se potrivesc cu rolurile"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "Când un element nu are un nume accesibil, cititoarele de ecran îl anunță cu o denumire generică, făcându-l inutil pentru utilizatorii care se bazează pe cititoarele de ecran. [Află mai multe](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "Elementele `button`, `link` și `menuitem` nu au nume accesibile."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "Elementele `button`, `link` și `menuitem` au nume accesibile"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Tehnologiile de asistare, precum cititoarele de ecran, funcționează inconsecvent atunci când `aria-hidden=\"true\"` este setat pentru documentul `<body>`. [Află mai multe](https://web.dev/aria-hidden-body/)."
   },
@@ -36,13 +45,31 @@
     "message": "Elementele `[aria-hidden=\"true\"]` nu conțin descendenți focalizabili"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Când un câmp de introducere nu are un nume accesibil, cititoarele de ecran îl anunță cu o denumire generică, făcându-l inutil pentru utilizatorii care se bazează pe cititoarele de ecran. [Află mai multe](https://web.dev/aria-input-field-name/)."
+    "message": "Când un câmp de introducere nu are un nume accesibil, cititoarele de ecran îl anunță cu o denumire generică, făcându-l inutil pentru utilizatorii care se bazează pe cititoarele de ecran. [Află mai multe](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "Câmpurile de introducere pentru ARIA nu au nume accesibile"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "Câmpurile de introducere pentru ARIA au nume accesibile"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "Când un element nu are un nume accesibil, cititoarele de ecran îl anunță cu o denumire generică, făcându-l inutil pentru utilizatorii care se bazează pe cititoarele de ecran. [Află mai multe](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "Elementele ARIA `meter` nu au nume accesibile."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "Elementele ARIA `meter` au nume accesibile"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "Când un element nu are un nume accesibil, cititoarele de ecran îl anunță cu o denumire generică, făcându-l inutil pentru utilizatorii care se bazează pe cititoarele de ecran. [Află mai multe](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "Elementele ARIA `progressbar` nu au nume accesibile."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "Elementele ARIA `progressbar` au nume accesibile"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "Unele roluri ARIA au atribute obligatorii care descriu starea elementului cititoarelor de ecrane. [Află mai multe](https://web.dev/aria-required-attr/)."
@@ -81,13 +108,31 @@
     "message": "Valorile `[role]` sunt valide"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Când un câmp de comutare nu are un nume accesibil, cititoarele de ecran îl anunță cu o denumire generică, făcându-l inutil pentru utilizatorii care se bazează pe cititoarele de ecran. [Află mai multe](https://web.dev/aria-toggle-field-name/)."
+    "message": "Când un câmp de comutare nu are un nume accesibil, cititoarele de ecran îl anunță cu o denumire generică, făcându-l inutil pentru utilizatorii care se bazează pe cititoarele de ecran. [Află mai multe](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "Câmpurile de comutare pentru ARIA nu au nume accesibile"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "Câmpurile de comutare pentru ARIA au nume accesibile"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "Când un element nu are un nume accesibil, cititoarele de ecran îl anunță cu o denumire generică, făcându-l inutil pentru utilizatorii care se bazează pe cititoarele de ecran. [Află mai multe](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "Elementele ARIA `tooltip` nu au nume accesibile."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "Elementele ARIA `tooltip` au nume accesibile"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "Când un element nu are un nume accesibil, cititoarele de ecran îl anunță cu o denumire generică, făcându-l inutil pentru utilizatorii care se bazează pe cititoarele de ecran. [Află mai multe](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "Elementele ARIA `treeitem` nu au nume accesibile."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "Elementele ARIA `treeitem` au nume accesibile"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "Tehnologiile care asigură asistență, precum cititoarele de ecran, nu pot interpreta atributele ARIA cu valori nevalide. [Află mai multe](https://web.dev/aria-valid-attr-value/)."
@@ -468,16 +513,16 @@
     "message": "Comprimă codul JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "Elimină regulile nefolosite din foile de stil și amână încărcarea conținutului CSS nefolosit pentru conținutul din partea superioară a paginii ca să reduci numărul de byți consumați de activitatea în rețea. [Află mai multe](https://web.dev/unused-css-rules/)."
+    "message": "Redu regulile nefolosite din foile de stil și amână codul CSS nefolosit pentru conținutul din partea superioară a paginii ca să reduci numărul de byți consumați de activitatea în rețea. [Află mai multe](https://web.dev/unused-css-rules/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "Elimină conținutul CSS nefolosit"
+    "message": "Redu conținutul CSS nefolosit"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "Elimină codul JavaScript nefolosit pentru a reduce byții consumați de activitatea rețelei. [Află mai multe](https://web.dev/unused-javascript/)."
+    "message": "Redu codul JavaScript nefolosit și amână încărcarea scripturilor până când sunt necesare ca să reduci numărul de byți consumați de activitatea în rețea. [Află mai multe](https://web.dev/unused-javascript/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "Elimină codul JavaScript nefolosit"
+    "message": "Redu codul JavaScript nefolosit"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "O durată lungă a memoriei cache poate grăbi accesările repetate ale paginii. [Află mai multe](https://web.dev/uses-long-cache-ttl/)."
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "Evită legarea solicitărilor critice"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "Directivă"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "O politică eficientă privind securitatea conținutului (CSP) reduce semnificativ riscul de atacuri de tip XSS. [Află mai multe](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "Pagina conține o politică CSP definită într-o etichetă <meta>. Îți recomandăm să definești CSP într-un antet HTTP, dacă este posibil."
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "Nu s-a găsit nicio politică CSP în modul de aplicare"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "Asigură-te că politica CSP este eficientă împotriva atacurilor de tip XSS"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "Renunțare la dezvoltare/Avertisment"
@@ -810,7 +870,7 @@
     "message": "Aplicația este deja instalată"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "Pictograma descărcată este goală sau deteriorată"
+    "message": "Nu s-a putut descărca o pictogramă necesară din manifest"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "Motivul erorii"
@@ -1467,7 +1527,7 @@
     "message": "Adresa URL a hărții"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Hărțile sursă traduc codul comprimat în codul sursă inițial. Astfel, dezvoltatorii pot să remedieze erorile în producție. În plus, Lighthouse poate oferi statistici suplimentare. Implementează hărțile sursă ca să profiți de aceste beneficii. [Află mai multe](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
+    "message": "Hărțile sursă traduc codul comprimat în codul sursă inițial. Astfel, dezvoltatorii pot să remedieze erorile în producție. În plus, Lighthouse poate oferi statistici suplimentare. Implementează hărțile sursă ca să profiți de aceste beneficii. [Află mai multe](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Lipsesc hărțile sursă pentru codul JavaScript primar mare"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Pentru dispozitivele mobile"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{Este posibil să existe date stocate care afectează performanța de încărcare în următoarea locație: {locations}. Verifică pagina într-o fereastră incognito pentru a împiedica resursele să îți afecteze scorurile.}few{Este posibil să existe date stocate care afectează performanța de încărcare în următoarele locații: {locations}. Verifică pagina într-o fereastră incognito pentru a împiedica resursele să îți afecteze scorurile.}other{Este posibil să existe date stocate care afectează performanța de încărcare în următoarele locații: {locations}. Verifică pagina într-o fereastră incognito pentru a împiedica resursele să îți afecteze scorurile.}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Este posibil ca pagina să nu se încarce conform așteptărilor, deoarece adresa URL de testare ({requested}) a fost redirecționată spre {final}. Încearcă să testezi direct a doua adresă URL."
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Pagina s-a încărcat prea lent pentru a respecta limita de timp. Rezultatele pot fi incomplete."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "Îți recomandăm să adaugi scheme de adrese URL https: și http: (ignorate de browserele care acceptă strict-dynamic) pentru retrocompatibilitatea cu browsere mai vechi."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "Directiva disown-opener este învechită începând cu versiunea CSP3. Folosește antetul Cross-Origin-Opener-Policy în locul acesteia."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "Directiva referrer este învechită începând cu versiunea CSP2. Folosește antetul Referrer-Policy în locul acesteia."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "Directiva reflected-xss este învechită începând cu versiunea CSP2. Folosește antetul X-XSS-Protection în locul acesteia."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "Lipsa directivei base-uri permite etichetelor <base> injectate să seteze adresa URL de bază pentru toate adresele URL relative (de ex., cu scripturi) ale unui domeniu controlat de atacatori. Îți recomandăm să setezi base-uri la none sau self."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "Elementele controlate prin object-src sunt considerate funcții moștenite. Îți recomandăm să setezi object-src la none pentru a preveni injectarea de pluginuri care execută scripturi nesigure."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "Directiva script-src lipsește. Astfel, se pot executa scripturi nesigure."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "Ai uitat să folosești punct și virgulă? {keyword} pare a fi o directivă, nu un cuvânt cheie."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "Valorile nonce trebuie să folosească setul de caractere base64."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "Valorile nonce trebuie să aibă minimum 8 caractere."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "Destinația de raportare se configurează numai prin directiva report-to. Această directivă este acceptată doar în browserele bazate pe Chromium, prin urmare îți recomandăm să folosești și o directivă report-uri."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "Nicio politică CSP nu configurează o destinație de raportare. De aceea, este dificilă menținerea CSP de-a lungul timpului și monitorizarea eventualelor încălcări."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "Listele gazdă cu acces permis pot fi ocolite frecvent. Îți recomandăm să folosești strict-dynamic în combinație cu valori nonce sau hash pentru CSP."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "Directivă CSP necunoscută."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "{keyword} pare un cuvânt cheie nevalid."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "unsafe-inline permite executarea de scripturi în pagină și handlere pentru evenimente nesigure. Îți recomandăm să folosești valori nonce sau hash pentru CSP pentru a accepta scripturile individual."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "Îți recomandăm să adaugi opțiunea unsafe-inline (ignorată de browserele care acceptă valori nonce/hash) pentru retrocompatibilitatea cu browsere mai vechi."
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Timpul de blocare a firului principal"

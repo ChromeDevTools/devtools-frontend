@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "`[aria-*]` 屬性與其角色相符"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "如果元素沒有無障礙名稱，螢幕閱讀器只會讀出一般名稱，導致依賴螢幕閱讀器的使用者無法使用該欄位。[瞭解詳情](https://web.dev/aria-name/)。"
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "`button`、`link` 和 `menuitem` 元素沒有無障礙名稱。"
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "`button`、`link` 和 `menuitem` 元素具有無障礙名稱"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "在 `<body>` 文件上設定 `aria-hidden=\"true\"` 時，輔助技術 (例如螢幕閱讀器) 的運作將無法保持一致。[瞭解詳情](https://web.dev/aria-hidden-body/)。"
   },
@@ -36,13 +45,31 @@
     "message": "`[aria-hidden=\"true\"]` 元素不含可聚焦的子代"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "如果輸入欄位沒有輔助名稱，螢幕閱讀器只會讀出一般名稱，導致依賴螢幕閱讀器的使用者無法使用該欄位。[瞭解詳情](https://web.dev/aria-input-field-name/)。"
+    "message": "如果輸入欄位沒有輔助名稱，螢幕閱讀器只會讀出一般名稱，導致依賴螢幕閱讀器的使用者無法使用該欄位。[瞭解詳情](https://web.dev/aria-name/)。"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "ARIA 輸入欄位沒有輔助名稱"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "ARIA 輸入欄位有輔助名稱"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "如果元素沒有無障礙名稱，螢幕閱讀器只會讀出一般名稱，導致依賴螢幕閱讀器的使用者無法使用該欄位。[瞭解詳情](https://web.dev/aria-name/)。"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "ARIA `meter` 元素沒有無障礙名稱。"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "ARIA `meter` 元素具有無障礙名稱"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "如果元素沒有無障礙名稱，螢幕閱讀器只會讀出一般名稱，導致依賴螢幕閱讀器的使用者無法使用該欄位。[瞭解詳情](https://web.dev/aria-name/)。"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "ARIA `progressbar` 元素沒有無障礙名稱。"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "ARIA `progressbar` 元素具有無障礙名稱"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "部分 ARIA 角色的必要屬性會向螢幕閱讀器使用者說明元素的狀態。[瞭解詳情](https://web.dev/aria-required-attr/)。"
@@ -81,13 +108,31 @@
     "message": "`[role]` 值有效"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "如果切換欄位沒有輔助名稱，螢幕閱讀器只會讀出一般名稱，導致依賴螢幕閱讀器的使用者無法使用該欄位。[瞭解詳情](https://web.dev/aria-toggle-field-name/)。"
+    "message": "如果切換欄位沒有輔助名稱，螢幕閱讀器只會讀出一般名稱，導致依賴螢幕閱讀器的使用者無法使用該欄位。[瞭解詳情](https://web.dev/aria-name/)。"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "ARIA 切換欄位沒有輔助名稱"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "ARIA 切換欄位有輔助名稱"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "如果元素沒有無障礙名稱，螢幕閱讀器只會讀出一般名稱，導致依賴螢幕閱讀器的使用者無法使用該欄位。[瞭解詳情](https://web.dev/aria-name/)。"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "ARIA `tooltip` 元素沒有無障礙名稱。"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "ARIA `tooltip` 元素具有無障礙名稱"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "如果元素沒有無障礙名稱，螢幕閱讀器只會讀出一般名稱，導致依賴螢幕閱讀器的使用者無法使用該欄位。[瞭解詳情](https://web.dev/aria-name/)。"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "ARIA `treeitem` 元素沒有無障礙名稱。"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "ARIA `treeitem` 元素具有無障礙名稱"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "輔助技術 (如螢幕閱讀器) 無法解讀具有無效值的 ARIA 屬性。[瞭解詳情](https://web.dev/aria-valid-attr-value/)。"
@@ -348,10 +393,10 @@
     "message": "如果在影片中提供字幕，將有助於失聰或聽障使用者取得影片資料。[瞭解詳情](https://web.dev/video-caption/)。"
   },
   "lighthouse-core/audits/accessibility/video-caption.js | failureTitle": {
-    "message": "`<video>` 元素不含任何帶有 `[kind=\"captions\"]``<track>` 的元素"
+    "message": "`<video>` 元素不含任何帶有 `[kind=\"captions\"]` 的 `<track>` 元素"
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
-    "message": "`<video>` 元素包含帶有 `[kind=\"captions\"]` 的`<track>` 元素"
+    "message": "`<video>` 元素包含帶有 `[kind=\"captions\"]` 的 `<track>` 元素"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
     "message": "請定義 `apple-touch-icon`。這樣，當 iOS 使用者將漸進式網絡應用程式新增到主畫面時，系統才會顯示正確圖示。apple-touch-icon 必須指向大小為 192 像素 (或 180 像素) 的不透明正方形 PNG。[瞭解詳情](https://web.dev/apple-touch-icon/)。"
@@ -468,16 +513,16 @@
     "message": "壓縮 JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "從樣式表中移除無用的規則，並延遲載在毋需捲動的當眼位置內容中未使用的 CSS，減少網絡活動耗用不必要的位元組。[瞭解詳情](https://web.dev/unused-css-rules/)。"
+    "message": "從樣式表中減少未使用的規則，並延遲毋需捲動的當眼位置內容中未使用的 CSS，以減少網絡活動耗用的字節數。[瞭解詳情](https://web.dev/unused-css-rules/)。"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "移除未使用的 CSS"
+    "message": "減少未使用的 CSS"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "移除未使用的 JavaScript，以減少網絡活動耗用的位元組。[瞭解詳情](https://web.dev/unused-javascript/)。"
+    "message": "減少未使用的 JavaScript，並延後載入指令碼，直至系統需要指令碼來減少網絡活動耗用的字節數為止。[瞭解詳情](https://web.dev/unused-javascript/)。"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "移除未使用的 JavaScript"
+    "message": "減少未使用的 JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "延長快取期限可加快重覆瀏覽頁面的速度。[瞭解詳情](https://web.dev/uses-long-cache-ttl/)。"
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "避免鏈結重要要求"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "指令"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "強大的內容安全政策 (CSP) 可大幅降低被 XSS 攻擊的風險。[瞭解詳情](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "網頁包含在 <meta> 標籤中定義的 CSP。如果可以，請考慮在 HTTP 標題中定義 CSP。"
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "找不到處於強制執行模式的 CSP"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "確保 CSP 能有效防範 XSS 攻擊"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "淘汰/警告"
@@ -810,7 +870,7 @@
     "message": "應用程式已安裝"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "已下載的圖示空白或已損毀"
+    "message": "無法從資訊清單下載必要圖示"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "失敗原因"
@@ -1467,7 +1527,7 @@
     "message": "對應網址"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "來源對應會將經壓縮的程式碼轉譯成原始碼。這項功能可協助開發人員在正式版本中偵錯。此外，Lighthouse 亦能提供進一步的分析資料。建議您部署來源對應，以善用這些優勢。[瞭解詳情](https://developer.chrome.com/docs/devtools/javascript/source-maps/)。"
+    "message": "來源對應會將經壓縮的程式碼轉譯成原始碼。這項功能可協助開發人員在正式版本中偵錯。此外，Lighthouse 亦能提供進一步的分析資料。建議您部署來源對應，以善用這些優勢。[瞭解詳情](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)。"
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "缺少大型第一方 JavaScript 的來源對應"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "適合透過流動裝置瀏覽"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{此位置可能有儲存資料正在影響載入效能：{locations}。請透過無痕式視窗審核此頁面，以免這些資源影響分數。}other{這些位置可能有儲存資料正在影響載入效能：{locations}。請透過無痕式視窗審核此頁面，以免這些資源影響分數。}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "您的測試網址 ({requested}) 已重新導向至 {final}，因此頁面未必可以如預期載入。請嘗試直接測試第二個網址。"
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "頁面載入過慢，無法於時限內完成，結果可能並不完整。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "建議新增 https: 和 http: 網址配置，以便退回兼容舊版瀏覽器 (支援「strict-dynamic」的瀏覽器會忽略這些架構)。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "disown-opener 已於 CSP3 淘汰，請改用 Cross-Origin-Opener-Policy 標題。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "referrer 已於 CSP2 淘汰，請改用 Referrer-Policy 標題。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "reflected-xss 已於 CSP2 淘汰，請改用 X-XSS-Protection 標題。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "如果遺漏 base-uri，有心人士便可透過已插入的 <base> 標籤將所有相對網址 (例如指令碼) 的基底網址設定為攻擊者控制的網域。建議將 base-uri 指定為「none」或「self」。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "系統會將由 object-src 控制的元素視為舊功能。建議將 object-src 設為「none」，以免有心人士插入會執行不安全指令碼的外掛程式。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "缺少 script-src 指令。這可能導致系統執行不安全的指令碼。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "忘記使用分號嗎？{keyword} 似乎是指令，而不是關鍵字。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "nonce 應使用 base64 字元集。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "nonce 的長度至少要有 8 個字元。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "報告目的地只能透過 report-to 指令設定。由於這項指令只受到以 Chromium 為基礎的瀏覽器支援，因此建議同時使用 report-uri 指令。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "沒有 CSP 設定報告目的地。這會導致系統難以持續維護 CSP 及監察故障情況。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "由於主機許可名單經常被忽略，建議使用「strict-dynamic」配搭 CSP nonce 或 hash。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "CSP 指令不明。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "{keyword} 似乎是無效關鍵字。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "「unsafe-inline」會允許執行不安全的頁面內嵌指令碼和事件處理常式。建議使用 CSP nonce 或 hash 逐一允許指令碼。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "建議新增「unsafe-inline」，以便退回兼容舊版瀏覽器 (支援 nonce/hash 的瀏覽器會忽略 unsafe-inline)。"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "主要執行緒封鎖時間"

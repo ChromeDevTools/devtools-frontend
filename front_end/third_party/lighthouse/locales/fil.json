@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Tumutugma ang mga attribute na `[aria-*]` sa mga tungkulin ng mga ito"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "Kapag walang naa-access na pangalan ang isang element, iaanunsyo ito ng mga screen reader gamit ang generic na pangalan, kaya hindi ito magagamit ng mga user na umaasa sa mga screen reader. [Matuto pa](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "Walang naa-access na pangalan ang mga element ng `button`, `link`, at `menuitem`."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "May mga naa-access na pangalan ang mga element ng `button`, `link`, at `menuitem`"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Ang mga pantulong na teknolohiya, tulad ng mga screen reader, ay hindi tuloy-tuloy na gumagana kapag nakatakda ang `aria-hidden=\"true\"` sa dokumentong `<body>`. [Matuto pa](https://web.dev/aria-hidden-body/)."
   },
@@ -36,13 +45,31 @@
     "message": "Walang nafo-focus na descendent ang mga element na `[aria-hidden=\"true\"]`"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Kapag walang naa-access na pangalan ang isang field ng input, iaanunsyo ito ng mga screen reader gamit ang generic na pangalan, kaya hindi ito magagamit ng mga user na umaasa sa mga screen reader. [Matuto pa](https://web.dev/aria-input-field-name/)."
+    "message": "Kapag walang naa-access na pangalan ang isang field ng input, iaanunsyo ito ng mga screen reader gamit ang generic na pangalan, kaya hindi ito magagamit ng mga user na umaasa sa mga screen reader. [Matuto pa](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "Walang naa-access na pangalan ang mga field ng input ng ARIA"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "May mga naa-access na pangalan ang mga field ng input ng ARIA"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "Kapag walang naa-access na pangalan ang isang element, iaanunsyo ito ng mga screen reader gamit ang generic na pangalan, kaya hindi ito magagamit ng mga user na umaasa sa mga screen reader. [Matuto pa](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "Walang naa-access na pangalan ang mga element ng `meter` ng ARIA."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "May mga naa-access na pangalan ang mga element ng `meter` ng ARIA"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "Kapag walang naa-access na pangalan ang isang element, iaanunsyo ito ng mga screen reader gamit ang generic na pangalan, kaya hindi ito magagamit ng mga user na umaasa sa mga screen reader. [Matuto pa](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "Walang naa-access na pangalan ang mga element ng `progressbar` ng ARIA."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "May mga naa-access na pangalan ang mga element ng `progressbar` ng ARIA"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "Ang ilang tungkulin ng ARIA ay may mga kinakailangang attribute na naglalarawan sa status ng element sa mga screen reader. [Matuto pa](https://web.dev/aria-required-attr/)."
@@ -81,13 +108,31 @@
     "message": "Valid ang mga value ng `[role]`"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Kapag walang naa-access na pangalan ang isang toggle field, iaanunsyo ito ng mga screen reader gamit ang generic na pangalan, kaya hindi ito magagamit ng mga user na umaasa sa mga screen reader. [Matuto pa](https://web.dev/aria-toggle-field-name/)."
+    "message": "Kapag walang naa-access na pangalan ang isang toggle field, iaanunsyo ito ng mga screen reader gamit ang generic na pangalan, kaya hindi ito magagamit ng mga user na umaasa sa mga screen reader. [Matuto pa](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "Walang naa-access na pangalan ang mga toggle field ng ARIA"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "May mga naa-access na pangalan ang mga toggle field ng ARIA"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "Kapag walang naa-access na pangalan ang isang element, iaanunsyo ito ng mga screen reader gamit ang generic na pangalan, kaya hindi ito magagamit ng mga user na umaasa sa mga screen reader. [Matuto pa](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "Walang naa-access na pangalan ang mga element ng `tooltip` ng ARIA."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "May mga naa-access na pangalan ang mga element ng `tooltip` ng ARIA"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "Kapag walang naa-access na pangalan ang isang element, iaanunsyo ito ng mga screen reader gamit ang generic na pangalan, kaya hindi ito magagamit ng mga user na umaasa sa mga screen reader. [Matuto pa](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "Walang naa-access na pangalan ang mga element ng `treeitem` ng ARIA."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "May mga naa-access na pangalan ang mga element ng `treeitem` ng ARIA"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "Hindi mauunawaan ng mga nakakatulong na teknolohiya, gaya ng mga screen reader, ang mga attribute ng ARIA na may mga invalid na value. [Matuto pa](https://web.dev/aria-valid-attr-value/)."
@@ -348,10 +393,10 @@
     "message": "Kapag nagbigay ng caption ang isang video, mas madaling maa-access ng mga user na bingi at may problema sa pandinig ang impormasyon nito. [Matuto pa](https://web.dev/video-caption/)."
   },
   "lighthouse-core/audits/accessibility/video-caption.js | failureTitle": {
-    "message": "Hindi naglalaman ng element na `<track>` na may `[kind=\"captions\"]` ang mga element na `<video>`"
+    "message": "Hindi naglalaman ng element na `<track>` na may `[kind=\"captions\"]` ang mga element ng `<video>`"
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
-    "message": "Naglalaman ng element na `<track>` na may `[kind=\"captions\"]` ang mga element na `<video>`"
+    "message": "Naglalaman ng element na `<track>` na may `[kind=\"captions\"]` ang mga element ng `<video>`"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
     "message": "Para sa magandang hitsura sa iOS kapag nagdagdag ang mga user ng progressive web app sa home screen, tumukoy ng `apple-touch-icon`. Dapat itong nakadirekta sa isang hindi transparent na kuwadradong 192px (o 180px) PNG. [Matuto Pa](https://web.dev/apple-touch-icon/)."
@@ -468,16 +513,16 @@
     "message": "Paliitin ang JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "Alisin ang mga hindi na gumaganang panuntunan sa mga stylesheet at ipagpaliban ang pag-load ng CSS na hindi ginagamit para sa content sa itaas ng fold para mabawasan ang mga hindi kinakailangang byte na nakokonsumo ng aktibidad sa network. [Matuto pa](https://web.dev/unused-css-rules/)."
+    "message": "Bawasan ang mga hindi ginagamit na panuntunan mula sa mga stylesheet at ipagpaliban ang CSS na hindi ginagamit para sa content sa itaas ng fold para mabawasan ang mga byte na kinokonsumo ng aktibidad ng network. [Matuto pa](https://web.dev/unused-css-rules/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "Alisin ang hindi ginagamit na CSS"
+    "message": "Bawasan ang hindi ginagamit na CSS"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "Alisin ang hindi nagamit na JavaScript para mabawasan ang mga byte na nakokonsumo ng aktibidad sa network. [Matuto pa](https://web.dev/unused-javascript/)."
+    "message": "Bawasan ang hindi ginagamit na JavaScript at ipagpaliban ang pag-load ng mga script hanggang sa kailanganin ang mga ito para mabawasan ang mga byte na kinokonsumo ng aktibidad ng network. [Matuto pa](https://web.dev/unused-javascript/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "Alisin ang hindi nagamit na JavaScript"
+    "message": "Bawasan ang hindi ginagamit na JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "Puwedeng mapabilis ng mahabang lifetime ng cache ang mga umuulit na pagbisita sa iyong page. [Matuto pa](https://web.dev/uses-long-cache-ttl/)."
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "Iwasan ang pagsusunod-sunod ng mga kritikal na kahilingan"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "Direktiba"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "Malaki ang nagagawa ng mahigpit na Patakaran sa Seguridad ng Content (Content Security Policy o CSP) para mabawasan ang panganib ng mga XSS na pag-atake. [Matuto pa](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "Naglalaman ang page ng CSP na tinukoy sa isang <meta> tag. Pag-isipang tukuyin ang CSP sa isang HTTP header kung puwede."
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "Walang nakitang CSP sa enforcement mode"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "Tiyaking epektibo ang CSP laban sa mga XSS na pag-atake"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "Paghinto sa Paggamit / Babala"
@@ -810,7 +870,7 @@
     "message": "Naka-install na ang app"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "Walang laman o sira ang na-download na icon"
+    "message": "Hindi ma-download ang kinakailangang icon mula sa manifest"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "Dahilan ng pagpalya"
@@ -1026,7 +1086,7 @@
     "message": "Ang oras bago maging interactive ay ang haba ng oras na inaabot bago maging ganap na interactive ang page. [Matuto pa](https://web.dev/interactive/)."
   },
   "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
-    "message": "Minamarkahan ng Largest Contentful Paint ang tagal bago ma-paint ang pinakamalaking text o larawan. [Matuto Pa](https://web.dev/lighthouse-largest-contentful-paint/)"
+    "message": "Minamarkahan ng Largest Contentful Paint ang tagal bago ma-paint ang pinakamalaking text o larawan. [Matuto pa](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
     "message": "Ang maximum na potensyal na First Input Delay na puwedeng maranasan ng iyong mga user ay ang tagal ng pinakamahabang gawain. [Matuto pa](https://web.dev/lighthouse-max-potential-fid/)."
@@ -1050,7 +1110,7 @@
     "message": "Mga Latency sa Backend ng Server"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "Hindi palaging gumagana nang maayos ang event na `unload` at puwedeng mahadlangan ng pag-listen dito ang mga pag-optimize ng browser tulad ng Back-Forward Cache. Pag-isipang gamitin na lang ang event na `pagehide` o ang event na `visibilitychange`. [Matuto Pa](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "Hindi maaasahan ang paggana ng event na `unload` at puwedeng mahadlangan ng paghihintay dito ang mga pag-optimize ng browser tulad ng Back-Forward Cache. Pag-isipang gamitin na lang ang event na `pagehide` o `visibilitychange`. [Matuto pa](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Nagrerehistro ng listener na `unload`"
@@ -1095,7 +1155,7 @@
     "message": "Badyet sa performance"
   },
   "lighthouse-core/audits/preload-fonts.js | description": {
-    "message": "Mag-preload ng mga `optional` na font para magamit ng mga unang beses na bisita ang mga ito. [Matuto Pa](https://web.dev/preload-optional-fonts/)"
+    "message": "Mag-preload ng mga `optional` na font para magamit ng mga unang beses na bisita ang mga ito. [Matuto pa](https://web.dev/preload-optional-fonts/)"
   },
   "lighthouse-core/audits/preload-fonts.js | failureTitle": {
     "message": "Hindi na-preload ang mga font na may `font-display: optional`"
@@ -1467,7 +1527,7 @@
     "message": "URL ng Map"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Tina-translate ng mga source map ang pinaliit na code sa orihinal na source code. Nakakatulong ito sa mga developer na mag-debug sa produksyon. Dagdag pa rito, nakakapagbigay ang Lighthouse ng higit pang insight. Pag-isipang mag-deploy ng mga source map para masulit ang mga benepisyong ito. [Matuto pa](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
+    "message": "Tina-translate ng mga source map ang pinaliit na code sa orihinal na source code. Nakakatulong ito sa mga developer na mag-debug sa produksyon. Dagdag pa rito, nakakapagbigay ang Lighthouse ng higit pang insight. Pag-isipang mag-deploy ng mga source map para masulit ang mga benepisyong ito. [Matuto pa](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Nawawala ang mga source map para sa malaking first-party na JavaScript"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Pang-mobile"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{Posibleng may naka-store na data na nakakaapekto sa bilis ng pag-load sa lokasyong ito: {locations}. I-audit ang page na ito sa incognito window para hindi maapektuhan ng mga resource na iyon ang iyong mga score.}one{Posibleng may naka-store na data na nakakaapekto sa bilis ng pag-load sa mga lokasyong ito: {locations}. I-audit ang page na ito sa incognito window para hindi maapektuhan ng mga resource na iyon ang iyong mga score.}other{Posibleng may naka-store na data na nakakaapekto sa bilis ng pag-load sa mga lokasyong ito: {locations}. I-audit ang page na ito sa incognito window para hindi maapektuhan ng mga resource na iyon ang iyong mga score.}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Posibleng hindi naglo-load ang page gaya ng inaasahan dahil na-redirect ang iyong pansubok na URL ({requested}) sa {final}. Direktang subukan ang pangalawang URL."
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Masyadong matagal ang pag-load ng page para matapos sa inilaang limitasyon sa oras. Posibleng hindi kumpleto ang mga resulta."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "Pag-isipang magdagdag ng https: at http: na URL scheme (binabalewala ng mga browser na sumusuporta sa 'strict-dynamic') para maging backward compatible sa mga lumang browser."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "Hindi na ginagamit ang disown-opener simula sa CSP3. Pakigamit na lang ang header na Cross-Origin-Opener-Policy."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "Hindi na ginagamit ang referrer simula sa CSP2. Pakigamit na lang ang header na Referrer-Policy."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "Hindi na ginagamit ang reflected-xss simula sa CSP2. Pakigamit na lang ang header na X-XSS-Protection."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "Binibigyang-daan ng nawawalang base-uri ang mga na-inject na <base> na tag na itakda ang base na URL para sa lahat ng relative URL (hal. mga script) sa isang domain na kinokontrol ng attacker. Pag-isipang itakda ang base-uri sa 'none' o 'self.'"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "Itinuturing na mga legacy na feature ang mga element na kinokontrol ng object-src. Pag-isipang itakda ang object-src sa 'none' para maiwasan ang pag-inject ng mga plugin na nagpapatupad ng mga hindi ligtas na script."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "Walang script-src na direktiba. Puwede nitong bigyang-daan ang pagpapatupad ng mga hindi ligtas na script."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "Nakalimutan mo ba ang semicolon? Mukhang direktiba ang {keyword} at hindi isang keyword."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "Dapat gamitin ng mga nonce ang base64 na charset."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "Dapat ay hindi bababa sa 8 character ang haba ng mga nonce."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "Nako-configure lang ang destinasyon ng pag-uulat sa pamamagitan ng report-to na direktiba. Sinusuportahan lang ang direktibang ito sa mga browser na batay sa Chromium kung kaya inirerekomendang gumamit din ng report-uri na direktiba."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "Walang CSP na nagko-configure ng destinasyon ng pag-uulat. Pinapahirap nitong mapanatili ang CSP sa paglipas ng panahon at masubaybayan ang anumang pagkasira."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "Puwedeng madalas na ma-bypass ang mga allowlist ng host. Pag-isipang gamitin ang 'strict-dynamic' kasama ng mga CSP nonce o hash."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "Hindi kilalang direktiba ng CSP."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "Mukhang invalid na keyword ang {keyword}."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "Nagbibigay-daan ang 'unsafe-inline' sa pagpapatupad ng mga hindi ligtas na in-page na script at tagapangasiwa ng event. Pag-isipang gumamit ng mga CSP nonce o hash para indibidwal na payagan ang mga script."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "Pag-isipang magdagdag ng 'unsafe-inline' (binabalewala ng mga browser na sumusuporta sa mga nonce/hash) para maging backward compatible sa mga lumang browser."
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Oras ng Pag-block ng Pangunahing Thread"

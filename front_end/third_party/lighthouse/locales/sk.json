@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Atribúty `[aria-*]` zodpovedajú svojim rolám"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "Keď prvok nemá dostupný názov, čítačky obrazovky ho oznamujú pod generickým názvom, takže je pre používateľov nanič. [Ďalšie informácie](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "Prvky `button`, `link` a `menuitem` nemajú dostupné názvy."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "Prvky `button`, `link` a `menuitem` majú dostupné názvy"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Asistenčné technológie, ako sú čítačky obrazovky, nepracujú konzistentne, keď je v dokumente `<body>` nastavený atribút `aria-hidden=\"true\"`. [Ďalšie informácie](https://web.dev/aria-hidden-body/)"
   },
@@ -36,13 +45,31 @@
     "message": "Prvky `[aria-hidden=\"true\"]` neobsahujú označiteľné odvodené položky"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Keď vstupné pole nemá dostupný názov, čítačky obrazovky ho oznamujú pod generickým názvom, takže je pre používateľov nanič. [Ďalšie informácie](https://web.dev/aria-input-field-name/)"
+    "message": "Keď vstupné pole nemá dostupný názov, čítačky obrazovky ho oznamujú pod generickým názvom, takže je pre používateľov nanič. [Ďalšie informácie](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "Vstupné polia ARIA nemajú dostupné názvy"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "Vstupné polia ARIA majú dostupné názvy"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "Keď prvok nemá dostupný názov, čítačky obrazovky ho oznamujú pod generickým názvom, takže je pre používateľov nanič. [Ďalšie informácie](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "Prvky `meter` ARIA nemajú dostupné názvy."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "Prvky `meter` ARIA majú dostupné názvy"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "Keď prvok nemá dostupný názov, čítačky obrazovky ho oznamujú pod generickým názvom, takže je pre používateľov nanič. [Ďalšie informácie](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "Prvky `progressbar` ARIA nemajú dostupné názvy."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "Prvky `progressbar` ARIA majú dostupné názvy"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "Niektoré roly ARIA majú povinné atribúty, ktoré čítačkám obrazovky opisujú stav prvku. [Ďalšie informácie](https://web.dev/aria-required-attr/)"
@@ -81,13 +108,31 @@
     "message": "Hodnoty `[role]` sú platné"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Keď pole prepínača nemá dostupný názov, čítačky obrazovky ho oznamujú pod generickým názvom, takže je pre používateľov nanič. [Ďalšie informácie](https://web.dev/aria-toggle-field-name/)"
+    "message": "Keď pole prepínača nemá dostupný názov, čítačky obrazovky ho oznamujú pod generickým názvom, takže je pre používateľov nanič. [Ďalšie informácie](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "Polia prepínačov ARIA nemajú dostupné názvy"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "Polia prepínačov ARIA majú dostupné názvy"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "Keď prvok nemá dostupný názov, čítačky obrazovky ho oznamujú pod generickým názvom, takže je pre používateľov nanič. [Ďalšie informácie](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "Prvky `tooltip` ARIA nemajú dostupné názvy."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "Prvky `tooltip` ARIA majú dostupné názvy"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "Keď prvok nemá dostupný názov, čítačky obrazovky ho oznamujú pod generickým názvom, takže je pre používateľov nanič. [Ďalšie informácie](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "Prvky `treeitem` ARIA nemajú dostupné názvy."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "Prvky `treeitem` ARIA majú dostupné názvy"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "Asistenčné technológie, ako sú čítačky obrazovky, nedokážu interpretovať atribúty ARIA s neplatnými hodnotami. [Ďalšie informácie](https://web.dev/aria-valid-attr-value/)"
@@ -468,16 +513,16 @@
     "message": "Minifikujte JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "Odstráňte nepoužívané pravidlá zo šablón štýlov a odložte načítavanie šablón CSS, ktoré sa nepoužívajú pre obsah nad záhybom stránky, čím znížite zbytočnú spotrebu bajtov sieťovou aktivitou. [Ďalšie informácie](https://web.dev/unused-css-rules/)"
+    "message": "Zredukujte nepoužívané pravidlá v šablónach štýlov a odložte šablóny CSS, ktoré sa nepoužívajú pre obsah nad záhybom stránky, čím znížite spotrebu bajtov aktivitou v sieti. [Ďalšie informácie](https://web.dev/unused-css-rules/)"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "Odstráňte nepoužívané šablóny CSS"
+    "message": "Zredukujte nepoužívané šablóny CSS"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "Odstráňte nepoužívaný JavaScript a znížte tak spotrebu bajtov sieťovou aktivitou. [Ďalšie informácie](https://web.dev/unused-javascript/)"
+    "message": "Zredukujte nepoužívaný jazyk JavaScript a odložte načítavanie skriptov do okamihu, kedy budú potrebné, čím znížite spotrebu bajtov aktivitou v sieti. [Ďalšie informácie](https://web.dev/unused-javascript/)"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "Odstráňte nepoužívaný JavaScript"
+    "message": "Zredukujte nepoužívaný jazyk JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "Dlhá životnosť vyrovnávacej pamäte môže zrýchliť opakované návštevy stránky. [Ďalšie informácie](https://web.dev/uses-long-cache-ttl/)"
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "Vyhýbajte sa reťazeniu podstatných žiadostí"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "Direktíva"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "Prísne pravidlá na zabezpečenie obsahu (PZO) výrazne znižujú riziko útokov XSS. [Ďalšie informácie](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "Stránka obsahuje PZO definované v značke <meta>. Ak je to možné, odporúčame definovať PZO v hlavičke HTTP."
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "V režime presadzovania neboli nájdené žiadne PZO"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "Zaistite, aby PZO účinne blokovali útoky XSS"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "Ukončenie podpory / upozornenie"
@@ -810,7 +870,7 @@
     "message": "Aplikácia je už nainštalovaná"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "Stiahnutá ikona bola prázdna alebo poškodená"
+    "message": "Z manifestu sa nepodarilo stiahnuť požadovanú ikonu"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "Dôvod neúspechu"
@@ -1026,7 +1086,7 @@
     "message": "Čas do interaktivity je údaj o tom, koľko času prejde, kým bude stránka plne interaktívna. [Ďalšie informácie](https://web.dev/interactive/)"
   },
   "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
-    "message": "Najväčšie vykreslenie obsahu označuje čas, za ktorý sa vykreslí najväčší text alebo obrázok. [Ďalšie informácie](https://web.dev/lighthouse-largest-contentful-paint/)"
+    "message": "Vykreslenie najväčšieho obsahu označuje čas, za ktorý sa vykreslí najväčší text alebo obrázok. [Ďalšie informácie](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
     "message": "Maximálne potenciálne oneskorenie prvého vstupu, ktoré sa u vašich používateľov môže vyskytnúť, je trvanie najdlhšej úlohy. [Ďalšie informácie](https://web.dev/lighthouse-max-potential-fid/)"
@@ -1050,7 +1110,7 @@
     "message": "Latencie na strane servera"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "Udalosť `unload` sa spoľahlivo nespúšťa a jej prijímanie môže brániť optimalizáciám prehliadača, ako je vyrovnávacia pamäť typu späť – dopredu. Skúste namiesto toho použiť udalosti `pagehide` alebo `visibilitychange`. [Ďalšie informácie](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "Udalosť `unload` sa nespúšťa spoľahlivo a jej prijímanie môže brániť optimalizáciám prehliadača, ako je spätná vyrovnávacia pamäť. Skúste namiesto toho použiť udalosť `pagehide` alebo `visibilitychange`. [Ďalšie informácie](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registruje sa ako prijímač udalosti `unload`"
@@ -1467,7 +1527,7 @@
     "message": "Webová adresa mapy"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Mapy zdroja prekladajú minifikovaný kód na pôvodný zdrojový kód. Vývojárom to pomáha pri ladení ostrej verzie. Lighthouse dokáže okrem toho poskytnúť ďalšie štatistiky. Zvážte nasadenie máp zdroja, aby ste tieto výhody využili. [Ďalšie informácie](https://developer.chrome.com/docs/devtools/javascript/source-maps/)"
+    "message": "Mapy zdroja prekladajú minifikovaný kód na pôvodný zdrojový kód. Vývojárom to pomáha pri ladení ostrej verzie. Lighthouse dokáže okrem toho poskytnúť ďalšie štatistiky. Zvážte nasadenie máp zdroja, aby ste tieto výhody využili. [Ďalšie informácie](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)"
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Veľkej vlastnej knižnici JavaScriptu chýbajú mapy zdroja"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Vhodné pre mobilné zariadenia"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{V nasledujúcom umiestnení môžu byť uložené údaje, ktoré ovplyvňujú výkonnosť načítavania: {locations}. Skontrolujte túto stránku v okne inkognito, aby príslušné zdroje neovplyvnili vaše skóre.}few{V nasledujúcich umiestneniach môžu byť uložené údaje, ktoré ovplyvňujú výkonnosť načítavania: {locations}. Skontrolujte túto stránku v okne inkognito, aby príslušné zdroje neovplyvnili vaše skóre.}many{V nasledujúcich umiestneniach môžu byť uložené údaje, ktoré ovplyvňujú výkonnosť načítavania: {locations}. Skontrolujte túto stránku v okne inkognito, aby príslušné zdroje neovplyvnili vaše skóre.}other{V nasledujúcich umiestneniach môžu byť uložené údaje, ktoré ovplyvňujú výkonnosť načítavania: {locations}. Skontrolujte túto stránku v okne inkognito, aby príslušné zdroje neovplyvnili vaše skóre.}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Táto stránka sa nemusí načítavať podľa očakávaní, pretože testovacia webová adresa ({requested}) bola presmerovaná na {final}. Skúste priamo otestovať druhú webovú adresu."
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Načítanie stránky bolo príliš pomalé, aby sa dokončilo v časovom limite. Výsledky nemusia byť úplné."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "Odporúčame pridať schémy webovej adresy HTTPS alebo HTTP (ignorované prehliadačmi podporujúcimi direktívu strict-dynamic), aby boli pravidlá spätne kompatibilné so staršími prehliadačmi."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "Podpora direktívy disown-opener bola ukončená vo verzii PZO3. Použitie namiesto nej hlavičku Cross-Origin-Opener-Policy."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "Podpora direktívy referrer bola ukončená vo verzii PZO2. Použite namiesto nej hlavičku Referrer-Policy."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "Podpora direktívy reflected-xss bola ukončená vo verzii PZO2. Použite namiesto nej hlavičku X-XSS-Protection."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "Chýbajúci prvok base-uri umožňuje vloženým značkám <base> nastaviť základnú webovú adresu pre všetky relatívne webové adresy (napr. skripty) na doménu ovládanú útočníkom. Prvok base-uri odporúčame nastaviť na „none“ alebo „self“."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "Prvky ovládané direktívou object-src sa považujú za staré funkcie. Odporúčame direktívu object-src nastaviť na none, aby ste zabránili vloženiu doplnkov spúšťajúcich nebezpečné skripty."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "Direktíva script-src chýba. Umožňuje to spustenie nebezpečných skriptov."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "Zabudli ste na bodkočiarku? Zdá sa, že {keyword} je direktíva, nie kľúčové slovo."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "Iba raz použiteľné čísla by mali používať charset base64."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "Iba raz použiteľné čísla by mali mať aspoň osem miest."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "Cieľ prehľadov sa konfiguruje iba prostredníctvom direktívy report-to. Táto direktíva podporovaná iba v prehliadačoch založených na platforme Chromium, takže sa tiež odporúča použiť direktívu report-uri."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "Žiadne PZO nekonfiguruje cieľ hlásení. Sťažuje to udržiavanie PZO v priebehu času a monitorovanie prípadných porúch."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "Zoznamy povolených hostí sa dajú často obísť. Odporúčame použiť direktívu strict-dynamic v kombinácii s iba raz použiteľnými číslami alebo hodnotami hash PZO."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "Neznáma direktíva PZO."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "Zdá sa, že {keyword} je neplatné kľúčové slovo."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "unsafe-inline umožňuje spustenie nebezpečných stránkových skriptov a obslužných nástrojov udalostí. Odporúčame povoliť skripty individuálne pomocou iba raz použiteľných čísiel alebo hodnôt hash PZO."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "Odporúčame pridať direktívu unsafe-inline (ignorovanú prehliadačmi podporujúcimi iba raz použiteľné čísla a hodnoty hash), aby boli pravidlá spätne kompatibilné so staršími prehliadačmi."
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Čas blokovania hlavného vlákna"

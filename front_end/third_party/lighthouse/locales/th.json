@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "แอตทริบิวต์ `[aria-*]` ตรงกับบทบาทของตน"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "เมื่อองค์ประกอบไม่มีชื่อสำหรับการช่วยเหลือพิเศษ โปรแกรมอ่านหน้าจอจะอ่านองค์ประกอบนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้องค์ประกอบดังกล่าวไม่ได้ [ดูข้อมูลเพิ่มเติม](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "องค์ประกอบ `button`, `link` และ `menuitem` ไม่มีชื่อสำหรับการช่วยเหลือพิเศษ"
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "องค์ประกอบ `button`, `link` และ `menuitem` มีชื่อสำหรับการช่วยเหลือพิเศษ"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "เทคโนโลยีความช่วยเหลือพิเศษ (เช่น โปรแกรมอ่านหน้าจอ) ทำงานไม่สอดคล้องกันเมื่อตั้งค่า `aria-hidden=\"true\"` ในเอกสาร `<body>` [ดูข้อมูลเพิ่มเติม](https://web.dev/aria-hidden-body/)"
   },
@@ -36,13 +45,31 @@
     "message": "เอลิเมนต์ `[aria-hidden=\"true\"]` ไม่มีเอลิเมนต์ที่โฟกัสได้ลำดับต่อลงมา"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "เมื่อช่องป้อนข้อมูลไม่มีชื่อสำหรับการช่วยเหลือพิเศษ โปรแกรมอ่านหน้าจอจะอ่านปุ่มนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้ช่องป้อนข้อมูลดังกล่าวไม่ได้ [ดูข้อมูลเพิ่มเติม](https://web.dev/aria-input-field-name/)"
+    "message": "เมื่อช่องป้อนข้อมูลไม่มีชื่อสำหรับการช่วยเหลือพิเศษ โปรแกรมอ่านหน้าจอจะอ่านปุ่มนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้ช่องป้อนข้อมูลดังกล่าวไม่ได้ [ดูข้อมูลเพิ่มเติม](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "ช่องป้อนข้อมูล ARIA ไม่มีชื่อสำหรับการช่วยเหลือพิเศษ"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "ช่องป้อนข้อมูล ARIA มีชื่อสำหรับการช่วยเหลือพิเศษ"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "เมื่อองค์ประกอบไม่มีชื่อสำหรับการช่วยเหลือพิเศษ โปรแกรมอ่านหน้าจอจะอ่านองค์ประกอบนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้องค์ประกอบดังกล่าวไม่ได้ [ดูข้อมูลเพิ่มเติม](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "องค์ประกอบ ARIA `meter` ไม่มีชื่อสำหรับการช่วยเหลือพิเศษ"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "องค์ประกอบ ARIA `meter` มีชื่อสำหรับการช่วยเหลือพิเศษ"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "เมื่อองค์ประกอบไม่มีชื่อสำหรับการช่วยเหลือพิเศษ โปรแกรมอ่านหน้าจอจะอ่านองค์ประกอบนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้องค์ประกอบดังกล่าวไม่ได้ [ดูข้อมูลเพิ่มเติม](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "องค์ประกอบ ARIA `progressbar` ไม่มีชื่อสำหรับการช่วยเหลือพิเศษ"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "องค์ประกอบ ARIA `progressbar` มีชื่อสำหรับการช่วยเหลือพิเศษ"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "บทบาท ARIA บางบทบาทกำหนดให้มีแอตทริบิวต์ที่อธิบายสถานะขององค์ประกอบให้โปรแกรมอ่านหน้าจอทราบ [ดูข้อมูลเพิ่มเติม](https://web.dev/aria-required-attr/)"
@@ -81,13 +108,31 @@
     "message": "ค่า `[role]` ถูกต้อง"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "เมื่อช่องสลับไม่มีชื่อสำหรับการช่วยเหลือพิเศษ โปรแกรมอ่านหน้าจอจะอ่านปุ่มนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้ช่องสลับดังกล่าวไม่ได้ [ดูข้อมูลเพิ่มเติม](https://web.dev/aria-toggle-field-name/)"
+    "message": "เมื่อช่องสลับไม่มีชื่อสำหรับการช่วยเหลือพิเศษ โปรแกรมอ่านหน้าจอจะอ่านปุ่มนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้ช่องสลับดังกล่าวไม่ได้ [ดูข้อมูลเพิ่มเติม](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "ช่องสลับ ARIA ไม่มีชื่อสำหรับการช่วยเหลือพิเศษ"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "ช่องสลับ ARIA มีชื่อสำหรับการช่วยเหลือพิเศษ"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "เมื่อองค์ประกอบไม่มีชื่อสำหรับการช่วยเหลือพิเศษ โปรแกรมอ่านหน้าจอจะอ่านองค์ประกอบนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้องค์ประกอบดังกล่าวไม่ได้ [ดูข้อมูลเพิ่มเติม](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "องค์ประกอบ ARIA `tooltip` ไม่มีชื่อสำหรับการช่วยเหลือพิเศษ"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "องค์ประกอบ ARIA `tooltip` มีชื่อสำหรับการช่วยเหลือพิเศษ"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "เมื่อองค์ประกอบไม่มีชื่อสำหรับการช่วยเหลือพิเศษ โปรแกรมอ่านหน้าจอจะอ่านองค์ประกอบนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้องค์ประกอบดังกล่าวไม่ได้ [ดูข้อมูลเพิ่มเติม](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "องค์ประกอบ ARIA `treeitem` ไม่มีชื่อสำหรับการช่วยเหลือพิเศษ"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "องค์ประกอบ ARIA `treeitem` มีชื่อสำหรับการช่วยเหลือพิเศษ"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "เทคโนโลยีอำนวยความสะดวก เช่น โปรแกรมอ่านหน้าจอ จะตีความแอตทริบิวต์ ARIA ที่มีค่าไม่ถูกต้องไม่ได้ [ดูข้อมูลเพิ่มเติม](https://web.dev/aria-valid-attr-value/)"
@@ -468,16 +513,16 @@
     "message": "ลดขนาด JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "นำกฎที่ไม่มีผลแล้วออกจากสไตล์ชีตและเลื่อนเวลาการโหลด CSS ที่ไม่ได้ใช้สำหรับเนื้อหาครึ่งหน้าบนเพื่อลดจำนวนไบต์ที่ไม่จำเป็นที่กิจกรรมเครือข่ายใช้ [ดูข้อมูลเพิ่มเติม](https://web.dev/unused-css-rules/)"
+    "message": "ลดกฎที่ไม่ได้ใช้ในสไตล์ชีตและเลื่อนเวลาโหลด CSS ที่ไม่ได้ใช้สำหรับเนื้อหาครึ่งหน้าบนเพื่อลดจำนวนไบต์ที่กิจกรรมเครือข่ายใช้ [ดูข้อมูลเพิ่มเติม](https://web.dev/unused-css-rules/)"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "นำ CSS ที่ไม่ได้ใช้ออก"
+    "message": "ลด CSS ที่ไม่ได้ใช้"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "นำ JavaScript ที่ไม่ได้ใช้ออกเพื่อลดจำนวนไบต์ที่กิจกรรมเครือข่ายใช้ [ดูข้อมูลเพิ่มเติม](https://web.dev/unused-javascript/)"
+    "message": "ลดจำนวน JavaScript ที่ไม่ได้ใช้และเลื่อนเวลาโหลดสคริปต์ไปจนกว่าจะจำเป็นต้องใช้เพื่อลดจำนวนไบต์ที่กิจกรรมเครือข่ายใช้ [ดูข้อมูลเพิ่มเติม](https://web.dev/unused-javascript/)"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "นำ JavaScript ที่ไม่ได้ใช้ออก"
+    "message": "ลดจำนวน JavaScript ที่ไม่ได้ใช้"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "อายุการใช้งานแคชที่ยาวนานช่วยเพิ่มการเข้าชมหน้าเว็บซ้ำได้ [ดูข้อมูลเพิ่มเติม](https://web.dev/uses-long-cache-ttl/)"
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "หลีกเลี่ยงคำขอสำคัญแบบลูกโซ่"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "คำสั่ง"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "นโยบายรักษาความปลอดภัยเนื้อหา (CSP) ที่มีประสิทธิภาพช่วยลดความเสี่ยงต่อการโจมตี XSS ได้อย่างมาก [ดูข้อมูลเพิ่มเติม](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "หน้าเว็บมีการกำหนด CSP ในแท็ก <meta> ลองกำหนด CSP ในส่วนหัว HTTP หากทำได้"
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "ไม่พบ CSP ในโหมดบังคับใช้"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "ตรวจสอบว่า CSP มีผลกับการโจมตี XSS"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "การเลิกใช้งาน / คำเตือน"
@@ -810,7 +870,7 @@
     "message": "มีการติดตั้งแอปนี้ไว้แล้ว"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "ไอคอนที่ดาวน์โหลดว่างเปล่าหรือเกิดความเสียหาย"
+    "message": "ดาวน์โหลดไอคอนที่จำเป็นจากไฟล์ Manifest ไม่ได้"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "เหตุผลที่ไม่สำเร็จ"
@@ -1467,7 +1527,7 @@
     "message": "URL ของแผนที่"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "แผนที่แหล่งที่มาจะแปลโค้ดที่มีการลดขนาดเป็นซอร์สโค้ดต้นฉบับ ซึ่งจะช่วยนักพัฒนาซอฟต์แวร์ในการแก้ไขข้อบกพร่องในเวอร์ชันที่ใช้งานจริง นอกจากนี้ Lighthouse ยังให้ข้อมูลเชิงลึกเพิ่มเติมได้ด้วย ลองพิจารณานำแผนที่แหล่งที่มาไปใช้งานเพื่อรับประโยชน์ดังกล่าว [ดูข้อมูลเพิ่มเติม](https://developer.chrome.com/docs/devtools/javascript/source-maps/)"
+    "message": "แผนที่แหล่งที่มาจะแปลโค้ดที่มีการลดขนาดเป็นซอร์สโค้ดต้นฉบับ ซึ่งจะช่วยนักพัฒนาซอฟต์แวร์ในการแก้ไขข้อบกพร่องในเวอร์ชันที่ใช้งานจริง นอกจากนี้ Lighthouse ยังให้ข้อมูลเชิงลึกเพิ่มเติมได้ด้วย ลองพิจารณานำแผนที่แหล่งที่มาไปใช้งานเพื่อรับประโยชน์ดังกล่าว [ดูข้อมูลเพิ่มเติม](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)"
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "ไม่มีแผนที่แหล่งที่มาของ JavaScript ขนาดใหญ่ของบุคคลที่หนึ่ง"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "เหมาะกับอุปกรณ์เคลื่อนที่"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{อาจมีข้อมูลที่จัดเก็บไว้ที่ส่งผลกระทบต่อประสิทธิภาพการโหลดในตำแหน่ง {locations} ทดสอบหน้านี้ในหน้าต่างที่ไม่ระบุตัวตนเพื่อป้องกันไม่ให้ทรัพยากรเหล่านั้นส่งผลกระทบต่อคะแนนของคุณ}other{อาจมีข้อมูลที่จัดเก็บไว้ที่ส่งผลกระทบต่อประสิทธิภาพการโหลดในตำแหน่ง {locations} ทดสอบหน้านี้ในหน้าต่างที่ไม่ระบุตัวตนเพื่อป้องกันไม่ให้ทรัพยากรเหล่านั้นส่งผลกระทบต่อคะแนนของคุณ}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "หน้านี้อาจไม่โหลดขึ้นตามที่คาดไว้เนื่องจาก URL ทดสอบของคุณ ({requested}) มีการเปลี่ยนเส้นทางไปยัง {final} ลองทดสอบ URL ที่ 2 โดยตรง"
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "หน้าโหลดช้าเกินกำหนดเวลา หน้าที่โหลดมาได้อาจไม่ครบถ้วน"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "ลองเพิ่ม URL ในรูปแบบ https: และ http: (ซึ่งเบราว์เซอร์ที่รองรับ \"strict-dynamic\" จะไม่สนใจ) เพื่อให้เข้ากันได้กับเบราว์เซอร์เวอร์ชันเก่ากว่า"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "disown-opener เลิกใช้งานไปตั้งแต่ CSP3 โปรดใช้ส่วนหัว Cross-Origin-Opener-Policy แทน"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "referrer เลิกใช้งานไปตั้งแต่ CSP2 โปรดใช้ส่วนหัว Referrer-Policy แทน"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "reflected-xss เลิกใช้งานไปตั้งแต่ CSP2 โปรดใช้ส่วนหัว X-XSS-Protection แทน"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "เมื่อไม่มี base-uri จะอนุญาตแท็ก <base> ที่แทรก เพื่อตั้งค่า URL ฐานสำหรับ URL (เช่น สคริปต์) ทั้งหมดที่เกี่ยวข้องกับโดเมนที่ผู้โจมตีควบคุม ลองตั้งค่า base-uri เป็น \"none\" หรือ \"self\""
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "เอลิเมนต์ที่ควบคุมโดย object-src จะถือว่าเป็นฟีเจอร์เดิม ลองตั้งค่า object-src เป็น \"none\" เพื่อป้องกันการแทรกปลั๊กอินที่รันสคริปต์ที่ไม่ปลอดภัย"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "ไม่มีคำสั่ง script-src ซึ่งอาจทำให้รันสคริปต์ที่ไม่ปลอดภัยได้"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "คุณลืมเครื่องหมายเซมิโคลอนหรือเปล่า ดูเหมือนว่า {keyword} จะเป็นคำสั่ง ไม่ใช่คีย์เวิร์ด"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "Nonces ควรใช้ชุดอักขระ base64"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "Nonces ต้องมีอักขระอย่างน้อย 8 ตัว"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "มีการกำหนดค่าปลายทางการรายงานผ่านคำสั่ง report-to เท่านั้น คำสั่งนี้ใช้ได้เฉพาะในเบราว์เซอร์แบบ Chromium จึงขอแนะนำให้ใช้คำสั่ง report-uri ด้วย"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "ไม่มี CSP ที่กำหนดค่าปลายทางการรายงาน ซึ่งทำให้ดูแลรักษา CSP เมื่อเวลาผ่านไปและตรวจสอบการหยุดทำงานได้ยาก"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "รายการโฮสต์ที่อนุญาตอาจถูกข้ามได้บ่อยๆ ลองใช้ \"strict-dynamic\" ร่วมกับ nonces หรือ hashes ของ CSP"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "คำสั่ง CSP ที่ไม่รู้จัก"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "ดูเหมือนว่า {keyword} จะเป็นคีย์เวิร์ดที่ไม่ถูกต้อง"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "\"unsafe-inline\" ทำให้รันสคริปต์ในหน้าเว็บและตัวจัดการเหตุการณ์ที่ไม่ปลอดภัยได้ ลองใช้ nonces หรือ hashes ของ CSP เพื่ออนุญาตสคริปต์แต่ละรายการ"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "ลองเพิ่ม \"unsafe-inline\" (ซึ่งเบราว์เซอร์ที่รองรับ nonces/hashes จะไม่สนใจ) เพื่อให้เข้ากันได้กับเบราว์เซอร์เวอร์ชันเก่ากว่า"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "เวลาในการบล็อกเทรดหลัก"

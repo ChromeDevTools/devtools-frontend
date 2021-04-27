@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "`[aria-*]`-attributtene samsvarer med rollene sine"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "Når elementer ikke har tilgjengelige navn, beskriver skjermlesere dem med generiske navn. Dermed er de ubrukelige for brukere som er avhengige av skjermlesere. [Finn ut mer](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "`button`-, `link`- og `menuitem`-elementer har ikke tilgjengelige navn."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "`button`-, `link`- og `menuitem`-elementer har tilgjengelige navn"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Assisterende teknologi, for eksempel skjermlesere, fungerer ikke konsekvent når `aria-hidden=\"true\"` er angitt på dokumentets `<body>`. [Finn ut mer](https://web.dev/aria-hidden-body/)."
   },
@@ -36,13 +45,31 @@
     "message": "`[aria-hidden=\"true\"]`-elementer inneholder ikke fokuserbare underelementer"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Når inndatafelt ikke har tilgjengelige navn, beskriver skjermlesere dem med generiske navn. Dermed er de ubrukelige for brukere som er avhengige av skjermlesere. [Finn ut mer](https://web.dev/aria-input-field-name/)."
+    "message": "Når inndatafelt ikke har tilgjengelige navn, beskriver skjermlesere dem med generiske navn. Dermed er de ubrukelige for brukere som er avhengige av skjermlesere. [Finn ut mer](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "ARIA-inndatafelt har ikke tilgjengelige navn"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "ARIA-inndatafelt har tilgjengelige navn"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "Når elementer ikke har tilgjengelige navn, beskriver skjermlesere dem med generiske navn. Dermed er de ubrukelige for brukere som er avhengige av skjermlesere. [Finn ut mer](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "ARIA-`meter`-elementer har ikke tilgjengelige navn."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "ARIA-`meter`-elementer har tilgjengelige navn"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "Når elementer ikke har tilgjengelige navn, beskriver skjermlesere dem med generiske navn. Dermed er de ubrukelige for brukere som er avhengige av skjermlesere. [Finn ut mer](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "ARIA-`progressbar`-elementer har ikke tilgjengelige navn."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "ARIA-`progressbar`-elementer har tilgjengelige navn"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "Noen ARIA-roller har obligatoriske attributter som beskriver elementenes tilstand for skjermlesere. [Finn ut mer](https://web.dev/aria-required-attr/)."
@@ -81,13 +108,31 @@
     "message": "`[role]`-verdiene er gyldige"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Når av/på-felt ikke har tilgjengelige navn, beskriver skjermlesere dem med generiske navn. Dermed er de ubrukelige for brukere som er avhengige av skjermlesere. [Finn ut mer](https://web.dev/aria-toggle-field-name/)."
+    "message": "Når av/på-felt ikke har tilgjengelige navn, beskriver skjermlesere dem med generiske navn. Dermed er de ubrukelige for brukere som er avhengige av skjermlesere. [Finn ut mer](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "ARIA-av/på-felt har ikke tilgjengelige navn"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "ARIA-av/på-felt har tilgjengelige navn"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "Når elementer ikke har tilgjengelige navn, beskriver skjermlesere dem med generiske navn. Dermed er de ubrukelige for brukere som er avhengige av skjermlesere. [Finn ut mer](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "ARIA-`tooltip`-elementer har ikke tilgjengelige navn."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "ARIA-`tooltip`-elementer har tilgjengelige navn"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "Når elementer ikke har tilgjengelige navn, beskriver skjermlesere dem med generiske navn. Dermed er de ubrukelige for brukere som er avhengige av skjermlesere. [Finn ut mer](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "ARIA-`treeitem`-elementer har ikke tilgjengelige navn."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "ARIA-`treeitem`-elementer har tilgjengelige navn"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "Assisterende teknologi, for eksempel skjermlesere, kan ikke tolke ARIA-attributter med ugyldige verdier. [Finn ut mer](https://web.dev/aria-valid-attr-value/)."
@@ -468,16 +513,16 @@
     "message": "Forminsk JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "Fjern overflødige regler fra stilark og utsett å laste inn CSS som ikke brukes på innholdet i den synlige delen av nettsiden. Da reduserer du antall byte som går med til unødvendig nettverksaktivitet. [Finn ut mer](https://web.dev/unused-css-rules/)."
+    "message": "Reduser antall ubrukte regler i stilark, og utsett innlasting av CSS som ikke brukes på innholdet på den synlige delen av nettsiden, for å redusere antall byte som går med til nettverksaktivitet. [Finn ut mer](https://web.dev/unused-css-rules/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "Fjern ubrukt CSS"
+    "message": "Reduser mengden ubrukt CSS"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "Fjern ubrukt JavaScript for å redusere antall byte som brukes av nettverksaktiviteten. [Finn ut mer](https://web.dev/unused-javascript/)."
+    "message": "Reduser mengden ubrukt JavaScript, og utsett innlasting av skript frem til de trengs, for å redusere antall byte som går med til nettverksaktivitet. [Finn ut mer](https://web.dev/unused-javascript/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "Fjern ubrukt JavaScript"
+    "message": "Reduser mengden ubrukt JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "En lang bufferlevetid kan gjøre at gjentatte besøk på siden din går raskere. [Finn ut mer](https://web.dev/uses-long-cache-ttl/)."
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "Unngå kjeding av kritiske forespørsler"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "Direktiv"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "En sterk Content Security Policy (CSP) reduserer risikoen for XSS-angrep betydelig. [Finn ut mer](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "Siden inneholder en CSP som er definert i en <meta>-tagg. Vurder å definere CSP-en i et HTTP-hode hvis mulig."
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "Fant ingen CSP i håndhevelsesmodus"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "Sørg for at CSP-en er effektiv mot XSS-angrep"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "Avvikling/varsel"
@@ -810,7 +870,7 @@
     "message": "Appen er allerede installert"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "Det nedlastede ikonet var tomt eller skadet"
+    "message": "Kunne ikke laste ned et obligatorisk ikon fra manifestet"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "Årsak til feilen"
@@ -1050,7 +1110,7 @@
     "message": "Forsinkelser i tjenerdelen"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "`unload`-hendelsen utløses ikke på en pålitelig måte. Å lytte til den kan forhindre nettleseroptimaliseringer som for eksempel bakover-fremover-bufferen. Vurder å bruke hendelsene `pagehide` eller `visibilitychange` i stedet. [Finn ut mer](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "`unload`-hendelsen utløses ikke på en pålitelig måte. Å lytte til den kan forhindre nettleseroptimaliseringer, for eksempel frem-og-tilbake-bufferen. Vurder å bruke hendelsene `pagehide` eller `visibilitychange` i stedet. [Finn ut mer](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registrerer en `unload`-lytter"
@@ -1467,7 +1527,7 @@
     "message": "Nettadresse til kildekart"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Kildekart oversetter minifisert kode til den opprinnelige kildekoden. Dette hjelper utviklere med feilsøking under produksjonen. I tillegg kan Lighthouse gi ytterligere innsikt. Vurder å implementere kildekart for å dra nytte av disse fordelene. [Finn ut mer](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
+    "message": "Kildekart oversetter minifisert kode til den opprinnelige kildekoden. Dette hjelper utviklere med feilsøking under produksjonen. I tillegg kan Lighthouse gi ytterligere innsikt. Vurder å implementere kildekart for å dra nytte av disse fordelene. [Finn ut mer](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Manglende kildekart for stor førsteparts JavaScript-kode"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Mobilvennlig"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{Det kan være lagrede data som påvirker innlastingsytelsen, på denne plasseringen: {locations}. Utfør en revisjon på denne siden i et inkognitovindu for å forhindre disse ressursene fra å påvirke poengsummene.}other{Det kan være lagrede data som påvirker innlastingsytelsen, på disse plasseringene: {locations}. Utfør en revisjon på denne siden i et inkognitovindu for å forhindre disse ressursene fra å påvirke poengsummene.}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Siden lastes kanskje ikke inn som forventet, fordi testnettadressen ({requested}) ble viderekoblet til {final}. Prøv å teste den andre nettadressen direkte."
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Siden ble lastet inn for tregt til å bli ferdig innenfor tidsgrensen. Resultatene kan være ufullstendige."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "Vurder å legge til nettadresseskjemaene https: og http: (ignoreres av nettlesere som støtter «strict-dynamic») for bakoverkompatibilitet med eldre nettlesere."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "disown-opener er avviklet siden CSP3. Bruk hodet Cross-Origin-Opener-Policy i stedet."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "referrer er avviklet siden CSP2. Bruk hodet Referrer-Policy i stedet."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "reflected-xss er avviklet siden CSP2. Bruk hodet X-XSS-Protection i stedet."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "Når base-uri mangler, kan injiserte <base>-tagger sette grunn-nettadressen for alle relative nettadresser (f.eks. skript) til et domene som en angriper kontrollerer. Vurder å sette base-uri til «none» eller «self»."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "Elementer som kontrolleres av object-src, anses som foreldede funksjoner. Vurder å sette object-src til «none» for å forhindre injisering av programtillegg som kjører utrygge skript."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "Direktivet script-src mangler. Dette kan gjøre det mulig å kjøre utrygge skript."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "Har du glemt et semikolon? {keyword} ser ut til å være et direktiv, ikke et nøkkelord."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "Engangsverdier må bruke base64-tegnsettet."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "Engangsverdier må være på minst åtte tegn."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "Rapporteringsdestinasjonen er bare konfigurert via direktivet report-to. Dette direktivet støttes kun i Chromium-baserte nettlesere, så det anbefales at du også bruker direktivet report-uri."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "Det er ingen CSP som konfigurerer en rapporteringsdestinasjon. Dette gjør det vanskelig å vedlikeholde CSP-en over tid og følge med på om noe slutter å virke."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "Godkjenningslister for verter kan ofte forbigås. Vurder å bruke «strict-dynamic» i kombinasjon med CSP-engangsverdier eller -hasher."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "Ukjent CSP-direktiv."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "{keyword} ser ut til å være et ugyldig nøkkelord."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "«unsafe-inline» muliggjør kjøring av utrygge skript og hendelsesbehandlere på siden. Vurder å bruke CSP-engangsverdier eller -hasher for å la skript kjøre individuelt."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "Vurder å legge til «unsafe-inline» (ignoreres av nettlesere som støtter engangsverdier eller hasher) for bakoverkompatibilitet med eldre nettlesere."
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Blokkeringstid i hovedtråden"

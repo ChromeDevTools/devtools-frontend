@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Atribut `[aria-*]` cocok dengan perannya"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "Jika elemen tidak memiliki nama yang dapat diakses, pembaca layar akan mengucapkannya dengan nama umum, sehingga tidak dapat digunakan oleh pengguna yang mengandalkan pembaca layar. [Pelajari lebih lanjut](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "Elemen `button`, `link`, dan `menuitem` tidak memiliki nama yang dapat diakses."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "Elemen `button`, `link`, dan `menuitem` memiliki nama yang dapat diakses"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Teknologi pendukung seperti pembaca layar tidak berfungsi secara konsisten jika `aria-hidden=\"true\"` ditetapkan pada`<body>` dokumen. [Pelajari lebih lanjut](https://web.dev/aria-hidden-body/)."
   },
@@ -36,13 +45,31 @@
     "message": "Elemen `[aria-hidden=\"true\"]` tidak memuat turunan yang dapat difokuskan"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Jika kolom masukan tidak memiliki nama yang dapat diakses, pembaca layar akan mengucapkannya dengan nama umum, sehingga tidak dapat digunakan oleh pengguna yang mengandalkan pembaca layar. [Pelajari lebih lanjut](https://web.dev/aria-input-field-name/)."
+    "message": "Jika kolom masukan tidak memiliki nama yang dapat diakses, pembaca layar akan mengucapkannya dengan nama umum, sehingga tidak dapat digunakan oleh pengguna yang mengandalkan pembaca layar. [Pelajari lebih lanjut](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "Kolom masukan ARIA tidak memiliki nama yang dapat diakses"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "Kolom masukan ARIA memiliki nama yang dapat diakses"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "Jika elemen tidak memiliki nama yang dapat diakses, pembaca layar akan mengucapkannya dengan nama umum, sehingga tidak dapat digunakan oleh pengguna yang mengandalkan pembaca layar. [Pelajari lebih lanjut](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "Elemen `meter` ARIA tidak memiliki nama yang dapat diakses."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "Elemen `meter` ARIA memiliki nama yang dapat diakses"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "Jika elemen tidak memiliki nama yang dapat diakses, pembaca layar akan mengucapkannya dengan nama umum, sehingga tidak dapat digunakan oleh pengguna yang mengandalkan pembaca layar. [Pelajari lebih lanjut](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "Elemen `progressbar` ARIA tidak memiliki nama yang dapat diakses."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "Elemen `progressbar` ARIA memiliki nama yang dapat diakses"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "Beberapa peran ARIA memiliki atribut wajib yang menjelaskan status elemen ke pembaca layar. [Pelajari lebih lanjut](https://web.dev/aria-required-attr/)."
@@ -81,13 +108,31 @@
     "message": "Nilai `[role]` valid"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Jika kolom beralih tidak memiliki nama yang dapat diakses, pembaca layar akan mengucapkannya dengan nama umum, sehingga tidak dapat digunakan oleh pengguna yang mengandalkan pembaca layar. [Pelajari lebih lanjut](https://web.dev/aria-toggle-field-name/)."
+    "message": "Jika kolom beralih tidak memiliki nama yang dapat diakses, pembaca layar akan mengucapkannya dengan nama umum, sehingga tidak dapat digunakan oleh pengguna yang mengandalkan pembaca layar. [Pelajari lebih lanjut](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "Kolom beralih ARIA tidak memiliki nama yang dapat diakses"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "Kolom beralih ARIA memiliki nama yang dapat diakses"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "Jika elemen tidak memiliki nama yang dapat diakses, pembaca layar akan mengucapkannya dengan nama umum, sehingga tidak dapat digunakan oleh pengguna yang mengandalkan pembaca layar. [Pelajari lebih lanjut](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "Elemen `tooltip` ARIA tidak memiliki nama yang dapat diakses."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "Elemen `tooltip` ARIA memiliki nama yang dapat diakses"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "Jika elemen tidak memiliki nama yang dapat diakses, pembaca layar akan mengucapkannya dengan nama umum, sehingga tidak dapat digunakan oleh pengguna yang mengandalkan pembaca layar. [Pelajari lebih lanjut](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "Elemen `treeitem` ARIA tidak memiliki nama yang dapat diakses."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "Elemen `treeitem` ARIA memiliki nama yang dapat diakses"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "Teknologi asistif, seperti pembaca layar, tidak dapat menafsirkan atribut ARIA dengan nilai yang tidak valid. [Pelajari lebih lanjut](https://web.dev/aria-valid-attr-value/)."
@@ -468,16 +513,16 @@
     "message": "Kecilkan ukuran JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "Hapus aturan yang tidak berlaku dari stylesheet dan tunda pemuatan CSS yang tidak digunakan untuk konten paruh atas, guna mengurangi byte yang tidak perlu yang digunakan oleh aktivitas jaringan. [Pelajari lebih lanjut](https://web.dev/unused-css-rules/)."
+    "message": "Mengurangi aturan yang tidak digunakan dari stylesheet dan menunda CSS yang tidak digunakan untuk konten paruh atas guna menurunkan byte yang digunakan oleh aktivitas jaringan. [Pelajari lebih lanjut](https://web.dev/unused-css-rules/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "Hapus CSS yang tidak digunakan"
+    "message": "Kurangi CSS yang tidak digunakan"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "Menghapus JavaScript yang tidak digunakan untuk mengurangi byte yang digunakan oleh aktivitas jaringan. [Pelajari lebih lanjut](https://web.dev/unused-javascript/)."
+    "message": "Mengurangi JavaScript yang tidak digunakan dan menunda pemuatan skrip sampai diperlukan untuk menurunkan byte yang digunakan oleh aktivitas jaringan. [Pelajari lebih lanjut](https://web.dev/unused-javascript/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "Hapus JavaScript yang tidak digunakan"
+    "message": "Kurangi JavaScript yang tidak digunakan"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "Durasi cache yang panjang dapat mempercepat kunjungan berulang ke halaman Anda. [Pelajari lebih lanjut](https://web.dev/uses-long-cache-ttl/)."
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "Hindari perantaian permintaan penting"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "Perintah"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "Kebijakan Keamanan Konten (CSP) yang kuat mengurangi risiko serangan XSS secara signifikan. [Pelajari lebih lanjut](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "Halaman ini memuat CSP yang ditentukan dalam tag <meta>. Sebaiknya tentukan CSP di header HTTP jika Anda dapat melakukannya."
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "CSP tidak ditemukan dalam mode penerapan"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "Pastikan CSP efektif melawan serangan XSS"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "Penghentian/Peringatan"
@@ -810,7 +870,7 @@
     "message": "Aplikasi sudah diinstal"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "Ikon yang didownload kosong atau rusak"
+    "message": "Tidak dapat mendownload ikon yang diperlukan dari manifes"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "Alasan kegagalan"
@@ -1026,7 +1086,7 @@
     "message": "Waktu untuk interaktif adalah lamanya waktu yang diperlukan halaman untuk menjadi interaktif sepenuhnya. [Pelajari lebih lanjut](https://web.dev/interactive/)."
   },
   "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
-    "message": "Largest Contentful Paint menandai waktu saat teks atau gambar terbesar di-paint. [Pelajari Lebih Lanjut](https://web.dev/lighthouse-largest-contentful-paint/)"
+    "message": "Largest Contentful Paint menandai waktu saat teks atau gambar terbesar di-paint. [Pelajari lebih lanjut](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
     "message": "Potensi maksimal Penundaan Input Pertama yang dapat dialami pengguna Anda adalah durasi tugas terpanjang. [Pelajari lebih lanjut](https://web.dev/lighthouse-max-potential-fid/)."
@@ -1050,7 +1110,7 @@
     "message": "Latensi Backend Server"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "Peristiwa `unload` tidak diaktifkan dengan andal, dan memprosesnya dapat mencegah pengoptimalan browser seperti Cache Mundur-Maju. Sebaiknya gunakan peristiwa `pagehide` atau `visibilitychange`. [Pelajari Lebih Lanjut](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "Peristiwa `unload` tidak diaktifkan dengan andal, dan memprosesnya dapat mencegah pengoptimalan browser seperti Back-Forward Cache. Sebaiknya gunakan peristiwa `pagehide` atau `visibilitychange`. [Pelajari lebih lanjut](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Mendaftarkan pemroses `unload`"
@@ -1095,7 +1155,7 @@
     "message": "Anggaran performa"
   },
   "lighthouse-core/audits/preload-fonts.js | description": {
-    "message": "Pramuat font `optional` agar pengunjung kali pertama dapat menggunakannya. [Pelajari Lebih Lanjut](https://web.dev/preload-optional-fonts/)"
+    "message": "Pramuat font `optional` agar pengunjung kali pertama dapat menggunakannya. [Pelajari lebih lanjut](https://web.dev/preload-optional-fonts/)"
   },
   "lighthouse-core/audits/preload-fonts.js | failureTitle": {
     "message": "Font dengan `font-display: optional` tidak dipramuat"
@@ -1467,7 +1527,7 @@
     "message": "URL Peta"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Peta sumber menerjemahkan kode yang diminifikasi ke kode sumber asli. Ini akan membantu developer melakukan debug dalam produksi. Selain itu, Lighthouse dapat memberikan data lebih lanjut. Sebaiknya deploy peta sumber untuk mendapatkan manfaat yang optimal. [Pelajari lebih lanjut](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
+    "message": "Peta sumber menerjemahkan kode yang diminifikasi ke kode sumber asli. Ini akan membantu developer melakukan debug dalam produksi. Selain itu, Lighthouse dapat memberikan data lebih lanjut. Sebaiknya deploy peta sumber untuk mendapatkan manfaat yang optimal. [Pelajari lebih lanjut](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Tidak ada peta sumber untuk JavaScript pihak pertama berukuran besar"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Mobile Friendly"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{Mungkin terdapat data tersimpan yang memengaruhi performa pemuatan di lokasi ini: {locations}. Audit halaman ini di jendela Samaran untuk mencegah resource tersebut memengaruhi performa Anda.}other{Mungkin terdapat data tersimpan yang memengaruhi performa pemuatan di lokasi ini {locations}. Audit halaman ini di jendela Samaran untuk mencegah resource tersebut memengaruhi performa Anda.}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Halaman tersebut mungkin tidak dimuat sesuai harapan karena URL uji Anda ({requested}) dialihkan ke {final}. Coba uji URL kedua secara langsung."
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Pemuatan halaman terlalu lambat untuk bisa selesai tepat waktu. Hasil mungkin tidak lengkap."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "Sebaiknya tambahkan skema URL https: dan http: (diabaikan oleh browser yang mendukung 'strict-dynamic') agar kompatibel dengan browser versi lama."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "disown-opener tidak digunakan lagi sejak CSP3. Sebagai gantinya, gunakan header Cross-Origin-Opener-Policy."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "referrer tidak digunakan lagi sejak CSP2. Sebagai gantinya, gunakan header Referrer-Policy."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "reflected-xss tidak digunakan lagi sejak CSP2. Sebagai gantinya, gunakan header X-XSS-Protection."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "Base-uri yang tidak ada memungkinkan injeksi tag <base> untuk menyetel URL dasar bagi semua URL relatif (misalnya, skrip) ke domain yang dikontrol penyerang. Sebaiknya setel base-uri ke 'none' atau 'self'."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "Elemen yang dikontrol oleh object-src dianggap sebagai fitur lama. Sebaiknya setel object-src ke 'none' untuk mencegah injeksi plugin yang mengeksekusi skrip yang tidak aman."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "Perintah script-src tidak ada. Ini dapat mengizinkan eksekusi skrip yang tidak aman."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "Apakah Anda lupa tanda titik koma? Tampaknya {keyword} adalah perintah, bukan kata kunci."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "Nonce harus menggunakan charset base64."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "Nonce harus terdiri dari minimal 8 karakter."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "Tujuan pelaporan hanya dikonfigurasi melalui perintah report-to. Perintah ini hanya didukung di browser berbasis Chromium. Jadi, sebaiknya gunakan juga perintah report-uri."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "Tidak ada CSP yang mengonfigurasi tujuan pelaporan. Mempertahankan CSP dari waktu ke waktu dan memantau setiap kerusakan menjadi sulit dilakukan."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "Daftar host yang diizinkan sering kali dapat diabaikan. Sebaiknya gunakan 'strict-dynamic' bersama dengan nonce atau hash CSP."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "Perintah CSP tidak dikenal."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "Tampaknya {keyword} adalah kata kunci yang tidak valid."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "'unsafe-inline' mengizinkan eksekusi skrip dalam halaman dan pengendali peristiwa yang tidak aman. Sebaiknya gunakan nonce atau hash CSP untuk mengizinkan skrip satu per satu."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "Sebaiknya tambahkan 'unsafe-inline' (diabaikan oleh browser yang mendukung nonce/hash) agar kompatibel dengan browser versi lama."
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Waktu Pemblokiran Thread Utama"

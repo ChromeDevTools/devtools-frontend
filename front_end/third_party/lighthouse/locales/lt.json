@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Atributai „`[aria-*]`“ atitinka savo vaidmenis"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "Kai nenurodytas neįgaliesiems pritaikytas elemento pavadinimas, ekrano skaitytuvai apie jį praneša naudodami bendrąjį pavadinimą, todėl jo negali naudoti ekrano skaitytuvo naudotojai. [Sužinokite daugiau](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "Nenurodyti neįgaliesiems pritaikyti elementų „`button`“, „`link`“ ir „`menuitem`“ pavadinimai."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "Nurodyti neįgaliesiems pritaikyti elementų „`button`“, „`link`“ ir „`menuitem`“ pavadinimai"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Pagalbinės technologijos, pvz., ekrano skaitytuvai, veikia nepastoviai, kai dokumente „`<body>`“ nustatytas elementas „`aria-hidden=\"true\"`“. [Sužinokite daugiau](https://web.dev/aria-hidden-body/)."
   },
@@ -36,13 +45,31 @@
     "message": "Elementuose „`[aria-hidden=\"true\"]`“ nėra išryškinamų mažėjančia tvarka pateiktų elementų"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Kai nenurodytas neįgaliesiems pritaikytas įvesties lauko pavadinimas, ekrano skaitytuvai apie jį praneša naudodami bendrąjį pavadinimą, todėl jo negali naudoti ekrano skaitytuvo naudotojai. [Sužinokite daugiau](https://web.dev/aria-input-field-name/)."
+    "message": "Kai nenurodytas neįgaliesiems pritaikytas įvesties lauko pavadinimas, ekrano skaitytuvai apie jį praneša naudodami bendrąjį pavadinimą, todėl jo negali naudoti ekrano skaitytuvo naudotojai. [Sužinokite daugiau](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "Nenurodyti neįgaliesiems pritaikyti ARIA įvesties laukų pavadinimai"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "Nurodyti neįgaliesiems pritaikyti ARIA įvesties laukų pavadinimai"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "Kai nenurodytas neįgaliesiems pritaikytas elemento pavadinimas, ekrano skaitytuvai apie jį praneša naudodami bendrąjį pavadinimą, todėl jo negali naudoti ekrano skaitytuvo naudotojai. [Sužinokite daugiau](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "Nenurodyti neįgaliesiems pritaikyti ARIA elementų „`meter`“ pavadinimai."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "Nurodyti neįgaliesiems pritaikyti ARIA elementų „`meter`“ pavadinimai"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "Kai nenurodytas neįgaliesiems pritaikytas elemento pavadinimas, ekrano skaitytuvai apie jį praneša naudodami bendrąjį pavadinimą, todėl jo negali naudoti ekrano skaitytuvo naudotojai. [Sužinokite daugiau](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "Nenurodyti neįgaliesiems pritaikyti ARIA elementų „`progressbar`“ pavadinimai."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "Nurodyti neįgaliesiems pritaikyti ARIA elementų „`progressbar`“ pavadinimai"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "Kai kuriems ARIA vaidmenims reikia atributų, aprašančių elementų būseną ekrano skaitytuvams. [Sužinokite daugiau](https://web.dev/aria-required-attr/)."
@@ -81,13 +108,31 @@
     "message": "Elemento „`[role]`“ vertės yra tinkamos"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Kai nenurodytas neįgaliesiems pritaikytas perjungimo lauko pavadinimas, ekrano skaitytuvai apie jį praneša naudodami bendrąjį pavadinimą, todėl jo negali naudoti ekrano skaitytuvo naudotojai. [Sužinokite daugiau](https://web.dev/aria-toggle-field-name/)."
+    "message": "Kai nenurodytas neįgaliesiems pritaikytas perjungimo lauko pavadinimas, ekrano skaitytuvai apie jį praneša naudodami bendrąjį pavadinimą, todėl jo negali naudoti ekrano skaitytuvo naudotojai. [Sužinokite daugiau](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "Nenurodyti neįgaliesiems pritaikyti ARIA perjungimo laukų pavadinimai"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "Nurodyti neįgaliesiems pritaikyti ARIA perjungimo laukų pavadinimai"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "Kai nenurodytas neįgaliesiems pritaikytas elemento pavadinimas, ekrano skaitytuvai apie jį praneša naudodami bendrąjį pavadinimą, todėl jo negali naudoti ekrano skaitytuvo naudotojai. [Sužinokite daugiau](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "Nenurodyti neįgaliesiems pritaikyti ARIA elementų „`tooltip`“ pavadinimai."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "Nurodyti neįgaliesiems pritaikyti ARIA elementų „`tooltip`“ pavadinimai"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "Kai nenurodytas neįgaliesiems pritaikytas elemento pavadinimas, ekrano skaitytuvai apie jį praneša naudodami bendrąjį pavadinimą, todėl jo negali naudoti ekrano skaitytuvo naudotojai. [Sužinokite daugiau](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "Nenurodyti neįgaliesiems pritaikyti ARIA elementų „`treeitem`“ pavadinimai."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "Nurodyti neįgaliesiems pritaikyti ARIA elementų „`treeitem`“ pavadinimai"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "Pagalbinės technologijos, pvz., ekrano skaitytuvai, negali interpretuoti ARIA atributų su netinkamomis vertėmis. [Sužinokite daugiau](https://web.dev/aria-valid-attr-value/)."
@@ -468,16 +513,16 @@
     "message": "Sumažinkite „JavaScript“"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "Pašalinkite neveikiančias taisykles iš stiliaus failų ir atidėkite CSS kalbos, nenaudojamos turiniui virš matomos ribos, įkėlimą, kad tinklo veikla sunaudotų mažiau baitų. [Sužinokite daugiau](https://web.dev/unused-css-rules/)."
+    "message": "Sumažinkite nenaudojamas taisykles iš stiliaus failų ir atidėkite CSS scenarijų, nenaudojamų turiniui virš matomos ribos, įkėlimą, kad tinklo veikla sunaudotų mažiau baitų. [Sužinokite daugiau](https://web.dev/unused-css-rules/)"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "Pašalinkite nevartojamą CSS kalbą"
+    "message": "Sumažinkite nenaudojamą CSS turinį"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "Pašalinkite nenaudojamą „JavaScript“, kad tinklo veikla sunaudotų mažiau baitų. [Sužinokite daugiau](https://web.dev/unused-javascript/)."
+    "message": "Sumažinkite nenaudojamą „JavaScript“ turinį ir atidėkite scenarijų įkėlimą, kol jų prireiks, kad tinklo veikla sunaudotų mažiau baitų. [Sužinokite daugiau](https://web.dev/unused-javascript/)"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "Pašalinkite nenaudojamą „JavaScript“"
+    "message": "Sumažinkite nenaudojamą „JavaScript“ turinį"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "Jei talpykla galios ilgiau, greičiau sulauksite pakartotinių apsilankymų puslapyje. [Sužinokite daugiau](https://web.dev/uses-long-cache-ttl/)."
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "Nekurkite svarbių užklausų grandinių"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "Direktyva"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "Griežta turinio apsaugos politika (CSP) gerokai sumažina XSS atakų riziką. [Sužinokite daugiau](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "Puslapyje yra CSP, apibrėžta žymoje <meta>. Jei galite, apsvarstykite galimybę apibrėžti CSP HTTP antraštėje."
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "Nerasta jokios vykdomos CSP"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "Įsitikinkite, kad CSP efektyviai saugo nuo XSS atakų"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "Naudojimo nutraukimas / įspėjimas"
@@ -810,7 +870,7 @@
     "message": "Programa jau įdiegta"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "Atsisiųsta piktograma buvo tuščia arba sugadinta"
+    "message": "Nepavyko atsisiųsti būtinos piktogramos iš aprašo"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "Trikties priežastis"
@@ -1026,7 +1086,7 @@
     "message": "Laikas iki sąveikos yra vertė, nurodanti, kiek laiko reikia, kol puslapis tampa visiškai interaktyvus. [Sužinokite daugiau](https://web.dev/interactive/)."
   },
   "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
-    "message": "Didžiausias turiningas žymėjimas nurodo laiką, kada pažymimas didžiausias tekstas ar vaizdas. [Sužinokite daugiau](https://web.dev/lighthouse-largest-contentful-paint/)."
+    "message": "Didžiausias turiningas žymėjimas nurodo laiką, kada pažymimas didžiausias tekstas ar vaizdas. [Sužinokite daugiau](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
     "message": "Didžiausia potenciali naudotojų patiriama pirmosios įvesties delsa yra ilgiausios užduoties trukmė. [Sužinokite daugiau](https://web.dev/lighthouse-max-potential-fid/)."
@@ -1095,7 +1155,7 @@
     "message": "Našumo biudžetas"
   },
   "lighthouse-core/audits/preload-fonts.js | description": {
-    "message": "Iš anksto įkelkite „`optional`“ šriftus, kad pirmą kartą apsilankantieji galėtų juos naudoti. [Sužinokite daugiau](https://web.dev/preload-optional-fonts/)"
+    "message": "Iš anksto įkelkite šriftus su atributu „`optional`“, kad pirmą kartą apsilankantieji galėtų juos naudoti. [Sužinokite daugiau](https://web.dev/preload-optional-fonts/)"
   },
   "lighthouse-core/audits/preload-fonts.js | failureTitle": {
     "message": "Šriftai su „`font-display: optional`“ nebuvo iš anksto įkelti"
@@ -1467,7 +1527,7 @@
     "message": "Žemėlapio URL"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Šaltinio žemėlapiai išverčia sumažintą kodą į originalų šaltinio kodą. Tai kūrėjams padeda derinti kuriant gamybinę versiją. Be to, „Lighthouse“ gali pateikti daugiau įžvalgų. Apsvarstykite galimybę pritaikyti šaltinio žemėlapius ir pasinaudoti šiais privalumais. [Sužinokite daugiau](https://developer.chrome.com/docs/devtools/javascript/source-maps/)"
+    "message": "Šaltinio žemėlapiai išverčia sumažintą kodą į originalų šaltinio kodą. Tai kūrėjams padeda derinti kuriant gamybinę versiją. Be to, „Lighthouse“ gali pateikti daugiau įžvalgų. Apsvarstykite galimybę pritaikyti šaltinio žemėlapius ir pasinaudoti šiais privalumais. [Sužinokite daugiau](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)"
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Trūksta didelio pirmosios šalies „JavaScript“ failo šaltinio žemėlapių"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Pritaikyta mobiliesiems"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{Šioje vietoje gali būti išsaugotų duomenų, turinčių poveikio įkėlimo našumui: {locations}. Patikrinkite šį puslapį inkognito lange, kad šie šaltiniai nepaveiktų rezultatų.}one{Šiose vietose gali būti išsaugotų duomenų, turinčių poveikio įkėlimo našumui: {locations}. Patikrinkite šį puslapį inkognito lange, kad šie šaltiniai nepaveiktų rezultatų.}few{Šiose vietose gali būti išsaugotų duomenų, turinčių poveikio įkėlimo našumui: {locations}. Patikrinkite šį puslapį inkognito lange, kad šie šaltiniai nepaveiktų rezultatų.}many{Šiose vietose gali būti išsaugotų duomenų, turinčių poveikio įkėlimo našumui: {locations}. Patikrinkite šį puslapį inkognito lange, kad šie šaltiniai nepaveiktų rezultatų.}other{Šiose vietose gali būti išsaugotų duomenų, turinčių poveikio įkėlimo našumui: {locations}. Patikrinkite šį puslapį inkognito lange, kad šie šaltiniai nepaveiktų rezultatų.}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Puslapis gali būti neįkeliamas, kaip numatyta, nes bandomasis URL ({requested}) peradresavo į {final}. Išbandykite antrąjį URL tiesiogiai."
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Puslapis įkeliamas per lėtai, kad įkėlimas būtų baigtas atitinkant laiko apribojimą. Rezultatai gali būti neišsamūs."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "Apsvarstykite galimybę pridėti https: ir http: URL schemas (nepaisoma naršyklėse, palaikančiose raktinį žodį „strict-dynamic“), kad būtų užtikrintas atgalinis suderinamumas su senesnėmis naršyklėmis."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "Direktyva „disown-opener“ nebenaudojama nuo CSP3. Vietoj jos naudokite antraštę „Cross-Origin-Opener-Policy“."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "Direktyva „referrer“ nebenaudojama nuo CSP2. Vietoj jos naudokite antraštę „Referrer-Policy“."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "Direktyva „reflected-xss“ nebenaudojama nuo CSP2. Vietoj jos naudokite antraštę „X-XSS-Protection“."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "Jei nėra direktyvos „base-uri“, galima įterpti žymas <base>. Jas naudojant galima nustatyti visų susijusių URL (pvz., scenarijų) pagrindinį URL kaip atakos vykdytojo kontroliuojamą domeną. Apsvarstykite galimybę nustatyti direktyvos „base-uri“ vertę „none“ arba „self“."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "Elementai, kuriuos kontroliuoja direktyva „object-src“, laikomi pasenusiomis funkcijomis. Apsvarstykite galimybę nustatyti direktyvos „object-src“ vertę „none“, kad nebūtų leidžiama įterpti papildinių, vykdančių nesaugius scenarijus."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "Nėra direktyvos „script-src“. Gali būti leidžiama vykdyti nesaugius scenarijus."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "Gal pamiršote įvesti kabliataškį? Panašu, kad „{keyword}“ yra direktyva, o ne raktinis žodis."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "Vertėse „nonce“ reikia naudoti „base64“ simbolių rinkinį."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "Vertės „nonce“ turi būti bent 8 simbolių ilgio."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "Ataskaitų teikimo paskirties vietą galima sukonfigūruoti tik naudojant direktyvą „report-to“. Ši direktyva palaikoma tik „Chromium“ pagrindo naršyklėse, todėl taip pat rekomenduojama naudoti direktyvą „report-uri“."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "Jokioje CSP nesukonfigūruota ataskaitų teikimo paskirties vieta. Tai apsunkins tolesnę CSP priežiūrą ir problemų stebėjimo procesą."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "Prieglobos leidžiamųjų sąrašus neretai galima apeiti. Apsvarstykite galimybę naudoti raktinį žodį „strict-dynamic“ kartu su CSP vertėmis „nonce“ ar „hash“."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "Nežinoma CSP direktyva."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "Panašu, kad „{keyword}“ yra netinkamas raktinis žodis."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "Raktinis žodis „unsafe-inline“ leidžia vykdyti nesaugius puslapio scenarijus ir įvykių dorokles. Apsvarstykite galimybę naudoti CSP vertes „nonce“ arba „hash“, kad scenarijų vykdymas būtų leidžiamas atskirai."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "Apsvarstykite galimybę pridėti raktinį žodį „unsafe-inline“ (nepaisoma naršyklėse, palaikančiose vertes „nonce“ / „hash“), kad būtų užtikrintas atgalinis suderinamumas su senesnėmis naršyklėmis."
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Pagrindinės grupės blokavimo laikas"

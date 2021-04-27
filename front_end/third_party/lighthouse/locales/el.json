@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Τα χαρακτηριστικά `[aria-*]` αντιστοιχούν στους ρόλους τους"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "Όταν ένα στοιχείο δεν έχει προσβάσιμο όνομα, οι αναγνώστες οθόνης το ανακοινώνουν με ένα γενικό όνομα, με αποτέλεσμα να μην μπορεί να χρησιμοποιηθεί από χρήστες που βασίζονται σε αναγνώστες οθόνης. [Μάθετε περισσότερα](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "Τα στοιχεία `button`, `link` και `menuitem` δεν έχουν προσβάσιμα ονόματα"
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "Τα στοιχεία `button`, `link` και `menuitem` έχουν προσβάσιμα ονόματα"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Οι τεχνολογίες υποβοήθησης χρηστών, όπως οι αναγνώστες οθόνης, λειτουργούν με μη συνεπή τρόπο όταν το `aria-hidden=\"true\"` έχει οριστεί στο έγγραφο `<body>`. [Μάθετε περισσότερα](https://web.dev/aria-hidden-body/)."
   },
@@ -36,13 +45,31 @@
     "message": "Τα στοιχεία `[aria-hidden=\"true\"]` δεν περιέχουν εξαρτημένα στοιχεία με δυνατότητα εστίασης"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Όταν ένα πεδίο εισαγωγής δεν έχει προσβάσιμο όνομα, οι αναγνώστες οθόνης το ανακοινώνουν με ένα γενικό όνομα, με αποτέλεσμα να μην μπορεί να χρησιμοποιηθεί από χρήστες που βασίζονται σε αναγνώστες οθόνης. [Μάθετε περισσότερα](https://web.dev/aria-input-field-name/)."
+    "message": "Όταν ένα πεδίο εισαγωγής δεν έχει προσβάσιμο όνομα, οι αναγνώστες οθόνης το ανακοινώνουν με ένα γενικό όνομα, με αποτέλεσμα να μην μπορεί να χρησιμοποιηθεί από χρήστες που βασίζονται σε αναγνώστες οθόνης. [Μάθετε περισσότερα](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "Τα πεδία εισαγωγής ARIA δεν έχουν προσβάσιμα ονόματα"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "Τα πεδία εισαγωγής ARIA διαθέτουν προσβάσιμα ονόματα"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "Όταν ένα στοιχείο δεν έχει προσβάσιμο όνομα, οι αναγνώστες οθόνης το ανακοινώνουν με ένα γενικό όνομα, με αποτέλεσμα να μην μπορεί να χρησιμοποιηθεί από χρήστες που βασίζονται σε αναγνώστες οθόνης. [Μάθετε περισσότερα](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "Τα στοιχεία ARIA `meter` δεν έχουν προσβάσιμα ονόματα"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "Τα στοιχεία ARIA `meter` έχουν προσβάσιμα ονόματα"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "Όταν ένα στοιχείο δεν έχει προσβάσιμο όνομα, οι αναγνώστες οθόνης το ανακοινώνουν με ένα γενικό όνομα, με αποτέλεσμα να μην μπορεί να χρησιμοποιηθεί από χρήστες που βασίζονται σε αναγνώστες οθόνης. [Μάθετε περισσότερα](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "Τα στοιχεία ARIA `progressbar` δεν έχουν προσβάσιμα ονόματα"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "Τα στοιχεία ARIA `progressbar` έχουν προσβάσιμα ονόματα"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "Ορισμένοι ρόλοι ARIA έχουν απαιτούμενα χαρακτηριστικά που περιγράφουν την κατάσταση του στοιχείου στους αναγνώστες οθόνης. [Μάθετε περισσότερα](https://web.dev/aria-required-attr/)."
@@ -81,13 +108,31 @@
     "message": "Οι τιμές `[role]` είναι έγκυρες"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Όταν ένα πεδίο εναλλαγής δεν έχει προσβάσιμο όνομα, οι αναγνώστες οθόνης το ανακοινώνουν με ένα γενικό όνομα, με αποτέλεσμα να μην μπορεί να χρησιμοποιηθεί από χρήστες που βασίζονται σε αναγνώστες οθόνης. [Μάθετε περισσότερα](https://web.dev/aria-toggle-field-name/)."
+    "message": "Όταν ένα πεδίο εναλλαγής δεν έχει προσβάσιμο όνομα, οι αναγνώστες οθόνης το ανακοινώνουν με ένα γενικό όνομα, με αποτέλεσμα να μην μπορεί να χρησιμοποιηθεί από χρήστες που βασίζονται σε αναγνώστες οθόνης. [Μάθετε περισσότερα](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "Τα πεδία εναλλαγής ARIA δεν έχουν προσβάσιμα ονόματα"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "Τα πεδία εναλλαγής ARIA διαθέτουν προσβάσιμα ονόματα"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "Όταν ένα στοιχείο δεν έχει προσβάσιμο όνομα, οι αναγνώστες οθόνης το ανακοινώνουν με ένα γενικό όνομα, με αποτέλεσμα να μην μπορεί να χρησιμοποιηθεί από χρήστες που βασίζονται σε αναγνώστες οθόνης. [Μάθετε περισσότερα](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "Τα στοιχεία ARIA `tooltip` δεν έχουν προσβάσιμα ονόματα"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "Τα στοιχεία ARIA `tooltip` έχουν προσβάσιμα ονόματα"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "Όταν ένα στοιχείο δεν έχει προσβάσιμο όνομα, οι αναγνώστες οθόνης το ανακοινώνουν με ένα γενικό όνομα, με αποτέλεσμα να μην μπορεί να χρησιμοποιηθεί από χρήστες που βασίζονται σε αναγνώστες οθόνης. [Μάθετε περισσότερα](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "Τα στοιχεία ARIA `treeitem` δεν έχουν προσβάσιμα ονόματα"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "Τα στοιχεία ARIA `treeitem` έχουν προσβάσιμα ονόματα"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "Οι τεχνολογίες υποβοήθησης χρηστών, όπως οι αναγνώστες οθόνης, δεν μπορούν να ερμηνεύσουν τα χαρακτηριστικά ARIA με μη έγκυρες τιμές. [Μάθετε περισσότερα](https://web.dev/aria-valid-attr-value/)."
@@ -348,7 +393,7 @@
     "message": "Όταν ένα βίντεο περιέχει υπότιτλους, διευκολύνεται η πρόσβαση των χρηστών που είναι κωφοί ή έχουν προβλήματα ακοής στις πληροφορίες που περιέχει. [Μάθετε περισσότερα](https://web.dev/video-caption/)."
   },
   "lighthouse-core/audits/accessibility/video-caption.js | failureTitle": {
-    "message": "Τα στοιχεία `<video>` δεν περιέχουν ένα στοιχείο `<track>` με `[kind=\"captions\"]`."
+    "message": "Τα στοιχεία `<video>` δεν περιέχουν ένα στοιχείο `<track>` με `[kind=\"captions\"]`"
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
     "message": "Τα στοιχεία `<video>` περιέχουν ένα στοιχείο `<track>` με `[kind=\"captions\"]`"
@@ -468,16 +513,16 @@
     "message": "Ελαχιστοποίηση JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "Καταργήστε τους ανενεργούς κανόνες από τα φύλλα στιλ και αναβάλετε τη φόρτωση των CSS που δεν χρησιμοποιούνται για το περιεχόμενο στο πάνω μέρος της σελίδας, για να ελαττώσετε τα περιττά byte που καταναλώνονται από τη δραστηριότητα δικτύου. [Μάθετε περισσότερα](https://web.dev/unused-css-rules/)."
+    "message": "Μειώστε τους κανόνες που δεν χρησιμοποιούνται από τα φύλλα στιλ και αναβάλλετε τη φόρτωση στοιχείων CSS που δεν χρησιμοποιούνται για περιεχόμενο στο επάνω μέρος, προκειμένου να μειωθούν τα byte που καταναλώνονται από τη δραστηριότητα δικτύου. [Μάθετε περισσότερα](https://web.dev/unused-css-rules/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "Κατάργηση CSS που δεν χρησιμοποιείται"
+    "message": "Μείωση στοιχείων CSS που δεν χρησιμοποιούνται"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "Καταργήστε τυχόν JavaScript που δεν χρησιμοποιείται, για να μειώσετε τα byte που καταναλώνονται από τη δραστηριότητα δικτύου. [Μάθετε περισσότερα](https://web.dev/unused-javascript/)."
+    "message": "Μειώστε τα στοιχεία JavaScript που δεν χρησιμοποιούνται και αναβάλλετε τη φόρτωση σεναρίων μέχρι να ζητηθούν, προκειμένου να μειωθούν τα byte που καταναλώνονται από τη δραστηριότητα δικτύου. [Μάθετε περισσότερα](https://web.dev/unused-javascript/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "Κατάργηση JavaScript που δεν χρησιμοποιείται"
+    "message": "Μείωση στοιχείων JavaScript που δεν χρησιμοποιούνται"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "Η μεγάλη διάρκεια ζωής της κρυφής μνήμης μπορεί να επιταχύνει τις επαναλαμβανόμενες επισκέψεις στη σελίδα σας. [Μάθετε περισσότερα](https://web.dev/uses-long-cache-ttl/)."
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "Αποφύγετε τη συσσώρευση σημαντικών αιτημάτων"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "Οδηγία"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "Μια ισχυρή Πολιτική ασφάλειας περιεχομένου (CSP) μειώνει σημαντικά τον κίνδυνο επιθέσεων XSS. [Μάθετε περισσότερα](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "Η σελίδα περιέχει CSP που ορίζεται σε ετικέτα <meta>. Εάν μπορείτε, εξετάστε το ενδεχόμενο ορισμού του CSP σε κεφαλίδα HTTP."
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "Δεν βρέθηκε CSP στη λειτουργία επιβολής"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "Διασφαλίστε ότι το CSP είναι αποτελεσματικό έναντι επιθέσεων XSS"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "Κατάργηση / Προειδοποίηση"
@@ -810,7 +870,7 @@
     "message": "Η εφαρμογή έχει εγκατασταθεί ήδη."
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "Το εικονίδιο λήψης ήταν κενό ή κατεστραμμένο."
+    "message": "Δεν ήταν δυνατή η λήψη ενός απαιτούμενου εικονιδίου από το μανιφέστο."
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "Αιτία αποτυχίας"
@@ -1026,7 +1086,7 @@
     "message": "Ο χρόνος για αλληλεπίδραση είναι το χρονικό διάστημα που απαιτείται προκειμένου η σελίδα να γίνει πλήρως διαδραστική. [Μάθετε περισσότερα](https://web.dev/interactive/)."
   },
   "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
-    "message": "Η μέτρηση Μεγαλύτερη μορφή με περιεχόμενο, σηματοδοτεί τη χρονική στιγμή στην οποία σχεδιάζεται το μεγαλύτερο κείμενο ή εικόνα. [Μάθετε περισσότερα](https://web.dev/lighthouse-largest-contentful-paint/)"
+    "message": "Η μέτρηση Μεγαλύτερη σχεδίαση με περιεχόμενο, σηματοδοτεί τη χρονική στιγμή στην οποία σχεδιάζεται το μεγαλύτερο κείμενο ή εικόνα. [Μάθετε περισσότερα](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
     "message": "Η μέγιστη δυνητική καθυστέρηση πρώτης εισόδου που θα μπορούσαν να αντιμετωπίσουν οι χρήστες είναι η διάρκεια της πιο χρονοβόρας εργασίας. [Μάθετε περισσότερα](https://web.dev/lighthouse-max-potential-fid/)."
@@ -1467,7 +1527,7 @@
     "message": "URL αντιστοίχισης"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Οι αντιστοιχίσεις πηγής μεταφράζουν ελαχιστοποιημένο κώδικα στον αρχικό πηγαίο κώδικα. Αυτό βοηθά τους προγραμματιστές με τον εντοπισμό σφαλμάτων στην παραγωγή. Επίσης, το Lighthouse μπορεί να παράσχει περαιτέρω Insight. Εξετάστε το ενδεχόμενο ανάπτυξης αντιστοιχίσεων πηγών για να αξιοποιήσετε αυτά τα πλεονεκτήματα. [Μάθετε περισσότερα](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
+    "message": "Οι αντιστοιχίσεις πηγής μεταφράζουν ελαχιστοποιημένο κώδικα στον αρχικό πηγαίο κώδικα. Αυτό βοηθά τους προγραμματιστές με τον εντοπισμό σφαλμάτων στην παραγωγή. Επίσης, το Lighthouse μπορεί να παράσχει περαιτέρω Insight. Εξετάστε το ενδεχόμενο ανάπτυξης αντιστοιχίσεων πηγών για να αξιοποιήσετε αυτά τα πλεονεκτήματα. [Μάθετε περισσότερα](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Λείπουν οι αντιστοιχίσεις πηγής για μεγάλες βιβλιοθήκες JavaScript πρώτου μέρους"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Φιλική προς κινητά"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{Ενδέχεται να υπάρχουν αποθηκευμένα δεδομένα που επηρεάζουν την απόδοση φόρτωσης σε αυτήν την τοποθεσία: {locations}. Ελέγξτε αυτήν τη σελίδα σε παράθυρο για ανώνυμη περιήγηση για να εμποδίσετε αυτούς τους πόρους από το να επηρεάσουν τις βαθμολογίες σας.}other{Ενδέχεται να υπάρχουν αποθηκευμένα δεδομένα που επηρεάζουν την απόδοση φόρτωσης σε αυτές τις τοποθεσίες: {locations}. Ελέγξτε αυτήν τη σελίδα σε παράθυρο για ανώνυμη περιήγηση για να εμποδίσετε αυτούς τους πόρους από το να επηρεάσουν τις βαθμολογίες σας.}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Η σελίδα μπορεί να μην φορτώνεται με τον αναμενόμενο τρόπο επειδή το URL δοκιμής ({requested}) ανακατευθύνθηκε στο {final}. Προσπαθήστε να δοκιμάσετε απευθείας το δεύτερο URL."
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Η φόρτωση της σελίδας ήταν υπερβολικά αργή και δεν ολοκληρώθηκε εντός του χρονικού ορίου. Τα αποτελέσματα ενδέχεται να μην είναι ολοκληρωμένα."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "Εξετάστε το ενδεχόμενο προσθήκης συνδυασμών URL https: και http: (παραβλέπονται από προγράμματα περιήγησης που υποστηρίζουν strict-dynamic) για συμβατότητα με παλαιότερα προγράμματα περιήγησης."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "Η οδηγία disown-opener καταργήθηκε από την έκδοση CSP3. Αντ' αυτού, χρησιμοποιήστε την κεφαλίδα Cross-Origin-Opener-Policy."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "Η οδηγία referrer καταργήθηκε από την έκδοση CSP2. Αντ' αυτού, χρησιμοποιήστε την κεφαλίδα Referrer-Policy."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "Η οδηγία reflected-xss καταργήθηκε από την έκδοση CSP2. Αντ' αυτού, χρησιμοποιήστε την κεφαλίδα X-XSS-Protection."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "Το base-uri που λείπει επιτρέπει στις ενσωματωμένες ετικέτες <base> να ορίζουν το βασικό URL για όλα τα σχετικά URL (π.χ. σενάρια) σε έναν τομέα που ελέγχεται από έναν υπεύθυνο επίθεσης. Εξετάστε το ενδεχόμενο ρύθμισης του base-uri στις επιλογές \"none\" ή \"self\"."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "Τα στοιχεία που ελέγχονται από το object-src θεωρούνται λειτουργίες παλαιού τύπου. Εξετάστε το ενδεχόμενο ρύθμισης του object-src σε none για να αποτρέψετε την εισαγωγή προσθηκών που εκτελούν μη ασφαλή σενάρια."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "Λείπει η οδηγία script-src. Αυτό μπορεί να επιτρέψει την εκτέλεση μη ασφαλών σεναρίων."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "Μήπως ξεχάσατε το ερωτηματικό; Το {keyword} φαίνεται ότι είναι οδηγία, όχι λέξη-κλειδί."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "Οι αριθμοί nonce πρέπει να χρησιμοποιούν το σύνολο χαρακτήρων base64."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "Οι αριθμοί nonce πρέπει να αποτελούνται από τουλάχιστον 8 χαρακτήρες."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "Ο προορισμός αναφοράς διαμορφώνεται μόνο μέσω της οδηγίας report-to. Αυτή η οδηγία υποστηρίζεται μόνο σε προγράμματα περιήγησης που βασίζονται στο Chromium, συνεπώς, συνιστάται επίσης η χρήση μιας οδηγίας report-uri."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "Δεν υπάρχει CSP που διαμορφώνει προορισμό αναφοράς. Αυτό δυσχεραίνει τη διατήρηση του CSP για μεγάλα διαστήματα και την παρακολούθηση για τυχόν προβλήματα."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "Οι λίστες επιτρεπόμενων κεντρικού υπολογιστή μπορούν συχνά να παρακαμφθούν. Εξετάστε το ενδεχόμενο χρήσης του strict-dynamic σε συνδυασμό με αριθμούς nonce ή κατακερματισμούς CSP."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "Άγνωστη οδηγία CSP."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "Το {keyword} φαίνεται ότι είναι μη έγκυρη λέξη-κλειδί."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "Το unsafe-inline επιτρέπει την εκτέλεση μη ασφαλών σεναρίων στη σελίδα και δεικτών χειρισμού συμβάντων. Εξετάστε το ενδεχόμενο χρήσης αριθμών nonce ή κατακερματισμών CSP για να επιτρέπεται μεμονωμένα σενάρια."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "Εξετάστε το ενδεχόμενο να προσθέσετε το unsafe-inline (παραβλέπεται από προγράμματα περιήγησης που υποστηρίζουν αριθμούς nonce/κατακερματισμούς) για συμβατότητα με παλαιότερα προγράμματα περιήγησης."
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Χρόνος αποκλεισμού κύριου νήματος"

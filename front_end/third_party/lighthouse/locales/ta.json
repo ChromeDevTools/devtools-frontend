@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "`[aria-*]` பண்புக்கூறுகள் அவற்றின் பங்களிப்புகளுடன் பொருந்துகின்றன"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "ஓர் உறுப்பிற்குத் தெளிவான பெயர் இல்லையெனில் ஸ்கிரீன் ரீடர்கள் அதைப் பொதுவான பெயரைப் பயன்படுத்தி அறிவிக்கும். இது ஸ்க்ரீன் ரீடர்களைப் பயன்படுத்தும் பயனர்களுக்கு உதவியாக இருக்காது. [மேலும் அறிக](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "`button`, `link`, `menuitem` ஆகிய உறுப்புகளுக்குத் தெளிவான பெயர்கள் இல்லை."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "`button`, `link`, `menuitem` ஆகிய உறுப்புகளுக்குத் தெளிவான பெயர்கள் உள்ளன"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "`<body>` ஆவணத்தில் `aria-hidden=\"true\"` அமைக்கப்பட்டிருக்கும்போது ஸ்க்ரீன் ரீடர்கள் போன்ற உதவிகரமான தொழில்நுட்பங்கள் சீரற்று இயங்கும். [மேலும் அறிக](https://web.dev/aria-hidden-body/)."
   },
@@ -36,13 +45,31 @@
     "message": "`[aria-hidden=\"true\"]` உறுப்புகளில் மையப்படுத்தக்கூடிய வழித்தோன்றல்கள் இல்லை"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "ஓர் உள்ளீட்டுப் புலத்திற்குத் தெளிவான பெயர் இல்லையெனில் ஸ்க்ரீன் ரீடர்கள் அதைப் பொதுவான பெயரைப் பயன்படுத்தி அறிவிக்கும், இது ஸ்க்ரீன் ரீடர்களைப் பயன்படுத்தும் பயனர்களுக்கு உதவியாக இருக்காது. [மேலும் அறிக](https://web.dev/aria-input-field-name/)."
+    "message": "ஓர் உள்ளீட்டுப் புலத்திற்குத் தெளிவான பெயர் இல்லையெனில் ஸ்க்ரீன் ரீடர்கள் அதைப் பொதுவான பெயரைப் பயன்படுத்தி அறிவிக்கும், இது ஸ்க்ரீன் ரீடர்களைப் பயன்படுத்தும் பயனர்களுக்கு உதவியாக இருக்காது. [மேலும் அறிக](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "ARIA உள்ளீட்டுப் புலங்களுக்குத் தெளிவான பெயர்கள் இல்லை"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "ARIA உள்ளீட்டுப் புலங்கள் தெளிவான பெயர்களைக் கொண்டுள்ளன"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "ஓர் உறுப்பிற்குத் தெளிவான பெயர் இல்லையெனில் ஸ்கிரீன் ரீடர்கள் அதைப் பொதுவான பெயரைப் பயன்படுத்தி அறிவிக்கும். இது ஸ்க்ரீன் ரீடர்களைப் பயன்படுத்தும் பயனர்களுக்கு உதவியாக இருக்காது. [மேலும் அறிக](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "ARIA `meter` உறுப்புகளுக்குத் தெளிவான பெயர்கள் இல்லை."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "ARIA `meter` உறுப்புகளுக்குத் தெளிவான பெயர்கள் உள்ளன"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "ஓர் உறுப்பிற்குத் தெளிவான பெயர் இல்லையெனில் ஸ்கிரீன் ரீடர்கள் அதைப் பொதுவான பெயரைப் பயன்படுத்தி அறிவிக்கும். இது ஸ்க்ரீன் ரீடர்களைப் பயன்படுத்தும் பயனர்களுக்கு உதவியாக இருக்காது. [மேலும் அறிக](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "ARIA `progressbar` உறுப்புகளுக்குத் தெளிவான பெயர்கள் இல்லை."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "ARIA `progressbar` உறுப்புகளுக்குத் தெளிவான பெயர்கள் உள்ளன"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "சில ARIA பங்களிப்புகளில் ஸ்க்ரீன் ரீடர்களுக்கு உறுப்பின் நிலையை விவரிக்கத் தேவையான பண்புக்கூறுகள் உள்ளன. [மேலும் அறிக](https://web.dev/aria-required-attr/)."
@@ -81,13 +108,31 @@
     "message": "`[role]` செல்லுபடியாகும் மதிப்புகளைக் கொண்டுள்ளன"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "நிலைமாற்றுப் புலம் ஒன்றுக்குத் தெளிவான பெயர் இல்லையெனில் ஸ்க்ரீன் ரீடர்கள் அதைப் பொதுவான பெயரைப் பயன்படுத்தி அறிவிக்கும், இது ஸ்க்ரீன் ரீடர்களைப் பயன்படுத்தும் பயனர்களுக்கு உதவியாக இருக்காது. [மேலும் அறிக](https://web.dev/aria-toggle-field-name/)."
+    "message": "நிலைமாற்றுப் புலம் ஒன்றுக்குத் தெளிவான பெயர் இல்லையெனில் ஸ்க்ரீன் ரீடர்கள் அதைப் பொதுவான பெயரைப் பயன்படுத்தி அறிவிக்கும், இது ஸ்க்ரீன் ரீடர்களைப் பயன்படுத்தும் பயனர்களுக்கு உதவியாக இருக்காது. [மேலும் அறிக](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "ARIA நிலைமாற்றுப் புலங்களுக்குத் தெளிவான பெயர்கள் இல்லை"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "ARIA நிலைமாற்றுப் புலங்கள் தெளிவான பெயர்களைக் கொண்டுள்ளன"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "ஓர் உறுப்பிற்குத் தெளிவான பெயர் இல்லையெனில் ஸ்கிரீன் ரீடர்கள் அதைப் பொதுவான பெயரைப் பயன்படுத்தி அறிவிக்கும். இது ஸ்க்ரீன் ரீடர்களைப் பயன்படுத்தும் பயனர்களுக்கு உதவியாக இருக்காது. [மேலும் அறிக](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "ARIA `tooltip` உறுப்புகளுக்குத் தெளிவான பெயர்கள் இல்லை."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "ARIA `tooltip` உறுப்புகளுக்குத் தெளிவான பெயர்கள் உள்ளன"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "ஓர் உறுப்பிற்குத் தெளிவான பெயர் இல்லையெனில் ஸ்கிரீன் ரீடர்கள் அதைப் பொதுவான பெயரைப் பயன்படுத்தி அறிவிக்கும். இது ஸ்க்ரீன் ரீடர்களைப் பயன்படுத்தும் பயனர்களுக்கு உதவியாக இருக்காது. [மேலும் அறிக](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "ARIA `treeitem` உறுப்புகளுக்குத் தெளிவான பெயர்கள் இல்லை."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "ARIA `treeitem` உறுப்புகளுக்குத் தெளிவான பெயர்கள் உள்ளன"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "செல்லுபடியாகாத மதிப்புகள் உள்ள ARIA பண்புக்கூறுகளை ஸ்க்ரீன் ரீடர்கள் போன்ற உதவிகரமான தொழில்நுட்பங்களால் புரிந்துகொள்ள இயலாது. [மேலும் அறிக](https://web.dev/aria-valid-attr-value/)."
@@ -351,7 +396,7 @@
     "message": "`<video>` உறுப்புகளில் `[kind=\"captions\"]` உள்ள `<track>` உறுப்பு இல்லை."
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
-    "message": "`<video>` உறுப்புகளில் `[kind=\"captions\"]`ஐக் கொண்டுள்ள`<track>` உறுப்பு உள்ளது"
+    "message": "`<video>` உறுப்புகளில் `[kind=\"captions\"]` உள்ள`<track>` உறுப்பு உள்ளது"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
     "message": "முகப்புத் திரையில் நவீன இணைய ஆப்ஸை பயனர்கள் சேர்க்கும் போது iOSஸில் சிறப்பாகத் தோன்ற `apple-touch-icon` ஒன்றை வரையறுக்கவும். அது ஒளிபுகுத்தன்மையற்ற 192 பிகசல் (அல்லது 180 பிக்சல்) அளவுள்ள கட்ட வடிவத்திலான PNGயைக் காட்ட வேண்டும். [மேலும் அறிக](https://web.dev/apple-touch-icon/)."
@@ -468,16 +513,16 @@
     "message": "JavaScriptடைச் சிறிதாக்கவும்"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "நெட்வொர்க் செயல்பாட்டின்போது பயன்படுத்தப்படும் தேவையற்ற பைட்களைக் குறைக்க, ஸ்டைல்ஷீட்களிலிருந்து காலாவதியான விதிகளை அகற்றி, பக்கத்தின் மேல் பகுதியில் உள்ள உள்ளடக்கத்தை ஏற்றுவதற்குப் பயன்படுத்தப்படுத்தப்படாத CSSஸை ஏற்றுவதைத் தவிர்க்கவும். [மேலும் அறிக](https://web.dev/unused-css-rules/)."
+    "message": "நெட்வொர்க் செயல்பாட்டின்போது உபயோகிக்கப்படும் பைட்டுகளைக் குறைக்க, ஸ்டைல்ஷீட்டுகளில் உள்ள பயன்படுத்தப்படாத விதிகளைக் குறைப்பதுடன் பக்கத்தின் மேல் பகுதியில் உள்ள உள்ளடக்கத்திற்குப் பயன்படுத்தப்படாத CSS ஏற்றப்படுவதையும் தாமதப்படுத்தவும். [மேலும் அறிக](https://web.dev/unused-css-rules/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "பயன்படுத்தப்படாத CSSசை அகற்றவும்"
+    "message": "பயன்படுத்தப்படாத CSSஸைக் குறையுங்கள்"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "நெட்வொர்க் செயல்பாடு பயன்படுத்தும் பைட்களைக் குறைப்பதற்கு, பயன்படுத்தப்படாத JavaScriptடை அகற்றவும். [மேலும் அறிக](https://web.dev/unused-javascript/)."
+    "message": "நெட்வொர்க் செயல்பாட்டின்போது உபயோகிக்கப்படும் பைட்டுகளைக் குறைக்க, பயன்படுத்தப்படாத JavaScriptடைக் குறைப்பதுடன் தேவைப்படாத வரை ஸ்கிரிப்ட்டுகள் ஏற்றப்படுவதையும் தாமதப்படுத்தவும். [மேலும் அறிக](https://web.dev/unused-javascript/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "பயன்படுத்தப்படாத JavaScriptடை அகற்றவும்"
+    "message": "பயன்படுத்தப்படாத JavaScriptடைக் குறையுங்கள்"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "தற்காலிக நினைவகத்தின் ஆயுட்காலம் நீண்டதாக இருந்தால் அது மீண்டும் மீண்டும் திறக்கப்படும் உங்கள் இணையப் பக்கங்களை விரைவாக ஏற்றக்கூடும். [மேலும் அறிக](https://web.dev/uses-long-cache-ttl/)."
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "முக்கியக் கோரிக்கைகள் தொடர்ந்து கோர்வையாக உருவாவதைத் தவிர்க்கவும்"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "டைரெக்டிவ்"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "வலிமையான உள்ளடக்கப் பாதுகாப்புக் கொள்கையை (CSP - Content Security Policy) அமைப்பது XSS (Cross Site Scripting) தாக்குதல்களின் ஆபத்தைக் குறைக்கும். [மேலும் அறிக](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "<meta> குறியீட்டில் வரையறுக்கப்பட்டுள்ள CSPயைப் பக்கம் கொண்டுள்ளது. முடியுமெனில் HTTP தலைப்பில் CSPயை வரையறுக்கவும்."
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "அமலாக்கப் பயன்முறையில் CSP எதுவும் கண்டறியப்படவில்லை"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "XSS தாக்குதல்களுக்கு எதிராக CSP சிறப்பாகச் செயல்படுவதை உறுதிசெய்து கொள்ளவும்"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "நிறுத்தம் / எச்சரித்தல்"
@@ -810,7 +870,7 @@
     "message": "இந்த ஆப்ஸ் ஏற்கெனவே நிறுவப்பட்டுள்ளது"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "பதிவிறக்கிய ஐகான் காலியாக உள்ளது அல்லது சிதைந்துள்ளது"
+    "message": "மெனிஃபெஸ்ட்டில் இருந்து அவசியமான ஐகானைப் பதிவிறக்க முடியவில்லை"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "தோல்விக்கான காரணம்"
@@ -1026,7 +1086,7 @@
     "message": "எதிர்வினை நேரம் என்பது பக்கம் முழுமையாக எதிர்வினையாற்றும் வகையில் ஏற்றப்படுவதற்கான கால அளவாகும். [மேலும் அறிக](https://web.dev/interactive/)."
   },
   "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
-    "message": "'உள்ளடக்கமுள்ள மிகப்பெரிய தோற்றம்' மிகப்பெரிய உரையோ படமோ தோன்றும் நேரத்தைக் குறிக்கிறது. [மேலும் அறிக](https://web.dev/lighthouse-largest-contentful-paint/)"
+    "message": "'பெரிய பகுதியைக் காண்பிக்கும் நேரம்' மிகப்பெரிய உரையோ படமோ தோன்றும் நேரத்தைக் குறிக்கிறது. [மேலும் அறிக](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
     "message": "உங்கள் பயனர்கள் எதிர்கொள்ளக்கூடிய அதிக சாத்தியமான ’முதல் உள்ளீட்டிற்குப் பதில் அளிக்கும் நேரம்’ என்பது மிக நீண்ட பணியின் கால அளவாகும். [மேலும் அறிக](https://web.dev/lighthouse-max-potential-fid/)."
@@ -1050,7 +1110,7 @@
     "message": "சேவையக பேக்எண்ட் தாமதங்கள்"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "`unload` நிகழ்வு நம்பத்தகுந்த வகையில் தொடங்கவில்லை, பக்கங்கள் மேற்கொண்டு இதைக் கையாண்டால் உலாவியின் மேம்பட்ட திறன்கள் தடுக்கப்படலாம் (‘பக்கங்களுக்கிடையே முன்னும் பின்னும் செல்வதை எளிதாக்க அவற்றைத் தற்காலிக நினைவகத்தில் சேமிக்கும் அம்சம்’ போன்றவை). இதற்குப் பதிலாக `pagehide`/`visibilitychange` நிகழ்வுகளைப் பயன்படுத்திப் பார்க்கவும். [மேலும் அறிக](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "`unload` நிகழ்வு நம்பத்தகுந்த வகையில் தொடங்கவில்லை, பக்கங்கள் மேற்கொண்டு இதைக் கையாண்டால் உலாவியின் மேம்பட்ட திறன்கள் தடுக்கப்படலாம். எ.கா. முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல் போன்றவை. இதற்குப் பதிலாக `pagehide`/`visibilitychange` நிகழ்வுகளைப் பயன்படுத்திப் பார்க்கவும். [மேலும் அறிக](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "`unload` நிகழ்வு லிசனரைப் பதிவுசெய்கிறது"
@@ -1095,7 +1155,7 @@
     "message": "செயல்திறன் பட்ஜெட்"
   },
   "lighthouse-core/audits/preload-fonts.js | description": {
-    "message": "`optional` என அமைக்கப்பட்டுள்ள எழுத்துருக்களை முன்கூட்டியே ஏற்றுவதால் முதல் முறையாக வரும் பயனர்கள் அவற்றைப் பயன்படுத்தக்கூடும். [மேலும் அறிக](https://web.dev/preload-optional-fonts/)"
+    "message": "`optional` என அமைக்கப்பட்டுள்ள எழுத்து வடிவங்களை முன்கூட்டியே ஏற்றுவதால் முதல் முறையாக வரும் பயனர்கள் அவற்றைப் பயன்படுத்தக்கூடும். [மேலும் அறிக](https://web.dev/preload-optional-fonts/)"
   },
   "lighthouse-core/audits/preload-fonts.js | failureTitle": {
     "message": "`font-display: optional` என அமைக்கப்பட்டுள்ள எழுத்துருக்கள் முன்கூட்டியே ஏற்றப்படவில்லை"
@@ -1467,7 +1527,7 @@
     "message": "சோர்ஸ் மேப்பிற்கான URL"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "சோர்ஸ் மேப்கள் சிறிதாக்கப்பட்ட குறியீட்டை அசல் மூலக் குறியீடாக மாற்றுகின்றன. இதனால் டெவெலப்பர்கள் புரொடக்ஷனின்போது பிழைதிருத்தம் செய்ய முடியும். இத்துடன் Lighthouseஸாலும் கூடுதல் புள்ளிவிவரங்களை வழங்க முடியும். இந்தப் பலன்களைப் பெற சோர்ஸ் மேப்களைப் பயன்படுத்திப் பார்க்கவும். [மேலும் அறிக](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
+    "message": "சோர்ஸ் மேப்கள் சிறிதாக்கப்பட்ட குறியீட்டை அசல் மூலக் குறியீடாக மாற்றுகின்றன. இதனால் டெவெலப்பர்கள் புரொடக்ஷனின்போது பிழைதிருத்தம் செய்ய முடியும். இத்துடன் Lighthouseஸாலும் கூடுதல் புள்ளிவிவரங்களை வழங்க முடியும். இந்தப் பலன்களைப் பெற சோர்ஸ் மேப்களைப் பயன்படுத்திப் பார்க்கவும். [மேலும் அறிக](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "பெரிய அளவிலான முதல் தரப்பு JavaScriptடுக்கான சோர்ஸ் மேப்கள் விடுபட்டுள்ளன"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "மொபைலுக்கேற்றது"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{செயல்திறன் அளவீட்டைப் பாதிக்கக்கூடிய, சேமித்தத் தரவு இந்த இடத்தில் இருக்கலாம்: {locations}. இவை உங்கள் ஸ்கோர்களைப் பாதிப்பதைத் தவிர்க்கும் வகையில், மறைநிலைச் சாளரத்தில் இந்தப் பக்கத்தின் செயல்பாட்டை ஆய்வு செய்யவும்.}other{செயல்திறன் அளவீட்டைப் பாதிக்கக்கூடிய, சேமித்தத் தரவு இந்த இடத்தில் இருக்கலாம்: {locations}. இவை உங்கள் ஸ்கோர்களைப் பாதிப்பதைத் தவிர்க்கும் வகையில், மறைநிலைச் சாளரத்தில் இந்தப் பக்கத்தின் செயல்பாட்டை ஆய்வு செய்யவும்.}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "உங்கள் சோதனை URL ({requested}) {final}என்பதற்குத் திசைதிருப்பப்பட்டதால் எதிர்பரர்த்த அளவிற்குப் பக்கம் ஏற்றப்படாமல் போகக்கூடும். நேரடியாக இரண்டாவது URLலை சோதித்துப் பாருங்கள்."
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "நேர வரம்பிற்குள் பக்கத்தை முழுமையாக ஏற்ற முடியவில்லை. இதனால் முடிவுகள் காட்டப்படாமல் போகலாம்."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "பழைய உலாவிகளுடன் இணக்கமாக இருக்கும் வகையில் https: மற்றும் http: URL திட்டங்களைச் ('strict-dynamic' என்பதை ஆதரிக்கும் உலாவிகளால் புறக்கணிக்கப்பட்டது) சேர்க்க வேண்டும்."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "CSP3 முதல் disown-opener நிறுத்தப்பட்டது. இதற்குப் பதிலாக Cross-Origin-Opener-Policy தலைப்பைப் பயன்படுத்தவும்."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "CSP2 முதல் referrer நிறுத்தப்பட்டது. இதற்குப் பதிலாக Referrer-Policy தலைப்பைப் பயன்படுத்தவும்."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "CSP2 முதல் reflected-xss நிறுத்தப்பட்டது. இதற்குப் பதிலாக X-XSS-Protection தலைப்பைப் பயன்படுத்தவும்."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "தீங்கிழைப்பவர் கட்டுப்படுத்தும் டொமைனிற்கான தொடர்புடைய URLகள் (எ.கா. ஸ்கிரிப்ட்டுகள்) அனைத்திற்கும் அடிப்படை URLலை அமைக்க base-uri டைரெக்டிவ் இல்லாதது <base> குறியீடுகள் திணிப்பை அனுமதிக்கிறது. base-uri என்பதை 'none' அல்லது 'self' என அமைக்கவும்."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "object-src மூலம் கட்டுப்படுத்தப்படும் உறுப்புகள் லெகஸி அம்சங்களாகக் கருதப்படுகின்றன. பாதுகாப்பற்ற ஸ்கிரிப்ட்டுகளை இயக்கும் செருகுநிரல்கள் திணிப்பைத் தடுக்க, object-src என்பதை 'none' என்று அமைக்கவும்."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "script-src டைரெக்டிவ் இல்லை. பாதுகாப்பற்ற ஸ்கிரிப்ட்டுகளின் இயக்கத்தை இது அனுமதிக்கலாம்."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "அரைப்புள்ளியை மறந்துவிட்டீர்களா? {keyword} டைரெக்டிவ் போல் தெரிகிறது, தேடல் குறிப்பாக இல்லை."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "base64 எழுத்துக்குறியாக்கத்தை Nonces பயன்படுத்த வேண்டும்."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "Nonces குறைந்தபட்சம் 8 எழுத்துகள் வரை இருக்க வேண்டும்."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "புகாரளிக்கும் இடத்தை report-to டைரெக்டிவ் வழியாக மட்டுமே உள்ளமைக்க வேண்டும். இந்த டைரெக்டிவ் Chromium சார்ந்த உலாவிகளில் மட்டுமே ஆதரிக்கப்படும் என்பதால் report-uri டைரெக்டிவ்வையும் பயன்படுத்துமாறு பரிந்துரைக்கப்படுகிறது."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "புகாரளிக்கும் இடத்தை எந்த CSPயும் உள்ளமைக்கவில்லை. CSPயைக் காலப்போக்கில் நிர்வகிப்பதையும் சிதைவுகளுக்காகக் கண்காணிப்பதையும் இது கடினமாக்குகிறது."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "ஹோஸ்ட் ஏற்புப் பட்டியல்கள் அடிக்கடிப் புறக்கணிக்கப்படலாம். CSP nonces/hashes உடன் சேர்த்து 'strict-dynamic' என்பதையும் பயன்படுத்தவும்."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "அறியப்படாத CSP டைரெக்டிவ்."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "{keyword} தவறான தேடல் குறிப்பு போல் தெரிகிறது."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "பக்கத்தில் உள்ள பாதுகாப்பற்ற ஸ்கிரிப்ட்டுகள் & ஈவண்ட் ஹேண்ட்லர்கள் இயக்கத்தை 'unsafe-inline' அனுமதிக்கிறது. ஸ்கிரிப்ட்டுகளைத் தனியாக அனுமதிக்க, CSP nonces/hashes என்பதைப் பயன்படுத்தவும்."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "பழைய உலாவிகளுடன் இணக்கமாக இருக்கும் வகையில் 'unsafe-inline' (nonces/hashes என்பதை ஆதரிக்கும் உலாவிகளால் புறக்கணிக்கப்பட்டது) என்பதைச் சேர்ப்பதைக் கருத்தில் கொள்ளவும்."
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "முக்கியத் தொடரிழையில் தடுப்பதற்குச் செலவிட்ட நேரம்"

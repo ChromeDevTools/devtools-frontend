@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Atributy `[aria-*]` odpovídají příslušným rolím"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "Když prvek nemá přístupný název, čtečky obrazovek oznamují obecný název a pro jejich uživatele je pak tento prvek v podstatě nepoužitelný. [Další informace](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "Prvky `button`, `link` a `menuitem` nemají přístupné názvy."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "Prvky `button`, `link` a `menuitem` mají přístupné názvy"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Asistenční technologie, jako jsou čtečky obrazovek, fungují, má-li prvek `<body>` dokumentu nastavenou hodnotu `aria-hidden=\"true\"`. [Další informace](https://web.dev/aria-hidden-body/)"
   },
@@ -36,13 +45,31 @@
     "message": "Prvky `[aria-hidden=\"true\"]` neobsahují zaměřitelné podřízené prvky"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Když zadávací pole nemá přístupný název, čtečky obrazovek oznamují obecný název a pro jejich uživatele je toto pole v podstatě nepoužitelné. [Další informace](https://web.dev/aria-input-field-name/)"
+    "message": "Když zadávací pole nemá přístupný název, čtečky obrazovek oznamují obecný název a pro jejich uživatele je toto pole v podstatě nepoužitelné. [Další informace](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "Zadávací pole ARIA nemají přístupné názvy"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "Zadávací pole ARIA mají přístupné názvy"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "Když prvek nemá přístupný název, čtečky obrazovek oznamují obecný název a pro jejich uživatele je pak tento prvek v podstatě nepoužitelný. [Další informace](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "Prvky ARIA `meter` nemají přístupné názvy."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "Prvky ARIA `meter` mají přístupné názvy"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "Když prvek nemá přístupný název, čtečky obrazovek oznamují obecný název a pro jejich uživatele je pak tento prvek v podstatě nepoužitelný. [Další informace](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "Prvky ARIA `progressbar` nemají přístupné názvy."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "Prvky ARIA `progressbar` mají přístupné názvy"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "Některé role ARIA mají povinné atributy, které čtečkám obrazovek popisují stav prvku. [Další informace](https://web.dev/aria-required-attr/)"
@@ -81,13 +108,31 @@
     "message": "Hodnoty atributů `[role]` jsou platné"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Když pole přepínače nemá přístupný název, čtečky obrazovek oznamují obecný název a pro jejich uživatele je toto pole v podstatě nepoužitelné. [Další informace](https://web.dev/aria-toggle-field-name/)"
+    "message": "Když pole přepínače nemá přístupný název, čtečky obrazovek oznamují obecný název a pro jejich uživatele je toto pole v podstatě nepoužitelné. [Další informace](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "Pole přepínačů ARIA nemají přístupné názvy"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "Pole přepínačů ARIA mají přístupné názvy"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "Když prvek nemá přístupný název, čtečky obrazovek oznamují obecný název a pro jejich uživatele je pak tento prvek v podstatě nepoužitelný. [Další informace](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "Prvky ARIA `tooltip` nemají přístupné názvy."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "Prvky ARIA `tooltip` mají přístupné názvy"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "Když prvek nemá přístupný název, čtečky obrazovek oznamují obecný název a pro jejich uživatele je pak tento prvek v podstatě nepoužitelný. [Další informace](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "Prvky ARIA `treeitem` nemají přístupné názvy."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "Prvky ARIA `treeitem` mají přístupné názvy"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "Asistenční technologie, jako jsou čtečky obrazovek, atributy ARIA s neplatnými hodnotami nedokážou interpretovat. [Další informace](https://web.dev/aria-valid-attr-value/)"
@@ -468,13 +513,13 @@
     "message": "Minifikujte JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "Odstraňte ze šablon stylů nepoužívaná pravidla a odložte načítání stylů CSS, které se nepoužívají pro obsah zobrazený bez posouvání, abyste snížili množství nepotřebných dat využívaných síťovou aktivitou. [Další informace](https://web.dev/unused-css-rules/)"
+    "message": "Odstraňte ze šablon stylů nepoužívaná pravidla a odložte styly CSS, které se nepoužívají pro obsah nad okrajem, abyste snížili množství dat využívaných síťovou aktivitou. [Další informace](https://web.dev/unused-css-rules/)"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
     "message": "Odstraňte nepoužívané styly CSS"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "Odstraněním nepoužívaného JavaScriptu zmenšíte množství přenášených dat. [Další informace](https://web.dev/unused-javascript/)"
+    "message": "Odstraňte nepoužívaný JavaScript a odložte načítání skriptů, abyste snížili množství dat využívaných síťovou aktivitou. [Další informace](https://web.dev/unused-javascript/)"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
     "message": "Odstraňte nepoužívaný JavaScript"
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "Nezřetězuje kritické požadavky"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "Direktiva"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "Silné zásady zabezpečení obsahu (CSP) významně snižují riziko útoků XSS. [Další informace](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "Stránka obsahuje zásadu CSP definovanou ve značce <meta>. Zvažte, zda nebude lepší definovat CSP v hlavičce HTTP, pokud máte tuto možnost."
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "V režimu vynucení nejsou žádné CSP"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "Zajistěte, aby zásady CSP byly účinné proti útokům XSS"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "Ukončení podpory / upozornění"
@@ -810,7 +870,7 @@
     "message": "Aplikace je již nainstalovaná"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "Stažená ikona byla prázdná nebo poškozená"
+    "message": "Z manifestu nelze stáhnout požadovanou ikonu"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "Příčina selhání"
@@ -1026,7 +1086,7 @@
     "message": "Time to Interactive (doba do interaktivity) udává, jak dlouho trvá, než stránka začne být plně interaktivní. [Další informace](https://web.dev/interactive/)"
   },
   "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
-    "message": "Metrika Largest Contentful Paint (vykreslení největšího obsahu) udává čas, kdy byl vykreslen největší text nebo obrázek. [Další informace](https://web.dev/lighthouse-largest-contentful-paint/)"
+    "message": "Vykreslení největšího obsahu udává čas, kdy byl vykreslen největší text nebo obrázek. [Další informace](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
     "message": "Maximální potenciální prodleva prvního vstupu, kterou by uživatelé mohli pocítit, je trvání nejdelší úlohy. [Další informace](https://web.dev/lighthouse-max-potential-fid/)"
@@ -1467,7 +1527,7 @@
     "message": "Adresa URL souboru sourcemap"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Soubory sourcemap překládají minifikovaný kód na původní zdrojový kód. To vývojářům usnadňuje ladění produkčních verzí. Kromě toho to nástroji Lighthouse umožňuje poskytovat více informací. Zvažte implementaci souborů sourcemap, abyste tyto výhody získali. [Další informace](https://developer.chrome.com/docs/devtools/javascript/source-maps/)"
+    "message": "Soubory sourcemap překládají minifikovaný kód na původní zdrojový kód. To vývojářům usnadňuje ladění produkčních verzí. Kromě toho to nástroji Lighthouse umožňuje poskytovat více informací. Zvažte implementaci souborů sourcemap, abyste tyto výhody získali. [Další informace](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)"
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Chybí soubory sourcemap pro velké soubory JavaScript první strany"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Optimalizováno pro mobily"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{Rychlost načítání může být ovlivněna daty uloženými v následujícím umístění: {locations}. Spusťte audit této stránky v anonymním okně, aby tyto zdroje na skóre neměly vliv.}few{Rychlost načítání může být ovlivněna daty uloženými v následujících umístěních: {locations}. Spusťte audit této stránky v anonymním okně, aby tyto zdroje na skóre neměly vliv.}many{Rychlost načítání může být ovlivněna daty uloženými v následujících umístěních: {locations}. Spusťte audit této stránky v anonymním okně, aby tyto zdroje na skóre neměly vliv.}other{Rychlost načítání může být ovlivněna daty uloženými v následujících umístěních: {locations}. Spusťte audit této stránky v anonymním okně, aby tyto zdroje na skóre neměly vliv.}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Stránka se možná nenačítá očekávaným způsobem, protože testovací adresa URL ({requested}) byla přesměrována na adresu {final}. Zkuste přímo otestovat druhou URL."
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Stránka se načítala příliš pomalu, a test se proto do časového limitu nepodařilo dokončit. Výsledky mohou být neúplné."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "Zvažte, zda nepřidat schémata URL https: a http: (ta jsou ignorována prohlížeči, které podporují strict-dynamic) z důvodu zpětné kompatibility se staršími prohlížeči."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "Direktiva disown-opener je od verze CSP3 zastaralá. Použijte místo ní hlavičku Cross-Origin-Opener-Policy."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "Direktiva referrer je od verze CSP2 zastaralá. Použijte místo ní hlavičku Referrer-Policy."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "Direktiva reflected-xss je od verze CSP2 zastaralá. Použijte místo ní hlavičku X-XSS-Protection."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "Chybějící base-uri umožňuje vložení značek <base> za účelem nastavení základní adresy URL pro všechny relativní adresy URL (např. skripty) na doménu kontrolovanou útočníkem. Nastavte base-uri na hodnotu „none“ nebo „self“."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "Prvky řízené pomocí object-src se považují za starší funkce. Zvažte, zda nenastavit object-src na „none“, abyste předešli vložení pluginů spouštějících skripty, které nejsou bezpečné."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "Chybí direktiva script-src. To může umožnit spouštění skriptů, které nejsou bezpečné."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "Nezapomněli jste středník? {keyword} vypadá jako direktiva, ne klíčové slovo."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "Hodnoty nonce mají používat znakovou sadu base64."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "Hodnoty nonce by měly mít délku alespoň 8 znaků."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "Cíl pro přehledy je nakonfigurován jenom pomocí direktivy report-to. Tato direktiva je podporovaná pouze v prohlížečích založených na projektu Chromium, proto doporučujeme použít direktivu report-uri."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "Žádné zásady CSP neurčují cíl pro přehledy. To znesnadňuje dlouhodobou údržbu zásad CSP a monitorování případných prolomení."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "Seznam povolených položek na hostiteli může být často obcházen. Zvažte, zda nepoužít strict-dynamic v kombinaci s hodnotami nonce nebo hash CSP."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "Neznámá direktiva CSP."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "{keyword} je zřejmě neplatné klíčové slovo."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "unsafe-inline umožňuje spouštění skriptů na stránce a obslužných rutin událostí, které nejsou bezpečné. Zvažte, zda nepoužít hodnoty nonce nebo hash CSP, abyste skripty povolovali individuálně."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "Zvažte, zda nepřidat unsafe-inline (ignorováno prohlížeči, které podporují hodnoty nonce/hash) z důvodu zpětné kompatibility se staršími prohlížeči."
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Doba blokování hlavního podprocesu"

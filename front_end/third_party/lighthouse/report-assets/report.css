@@ -541,18 +541,15 @@
   background-color: var(--color-hover);
 }
 
-/* Hide the expandable arrow icon, three ways: via the CSS Counter Styles spec, for webkit/blink browsers, hiding the polyfilled icon */
-/* https://github.com/javan/details-element-polyfill/blob/master/src/details-element-polyfill/polyfill.sass */
+/* We want to hide the browser's default arrow marker on summary elements. Admittedly, it's complicated. */
 .lh-audit-group > summary,
 .lh-expandable-details > summary {
-  list-style-type: none;
+  /* Blink 89+ and Firefox will hide the arrow when display is changed from (new) default of `list-item` to block.  https://chromestatus.com/feature/6730096436051968*/
+  display: block;
 }
+/* Safari and Blink <=88 require using the -webkit-details-marker selector */
 .lh-audit-group > summary::-webkit-details-marker,
 .lh-expandable-details > summary::-webkit-details-marker {
-  display: none;
-}
-.lh-audit-group > summary:before,
-.lh-expandable-details > summary:before {
   display: none;
 }
 
@@ -1379,7 +1376,6 @@
   width: 12%;
 }
 
-
 .lh-text__url-host {
   display: inline;
 }
@@ -1537,6 +1533,8 @@
   overflow: hidden;
 }
 .lh-element-screenshot__image {
+  /* Set by ElementScreenshotRenderer.installFullPageScreenshotCssVariable */
+  background-image: var(--element-screenshot-url);
   outline: 2px solid #777;
   background-color: white;
   background-repeat: no-repeat;

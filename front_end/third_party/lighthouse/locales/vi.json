@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Các thuộc tính `[aria-*]` khớp với vai trò tương ứng"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "Khi một phần tử không có tên dễ đọc, trình đọc màn hình sẽ gọi phần tử đó bằng một tên gọi chung, khiến người dùng trình đọc màn hình không sử dụng được phần tử này. [Tìm hiểu thêm](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "Các phần tử `button`, `link` và `menuitem` không có tên dễ đọc."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "Các phần tử `button`, `link` và `menuitem` có tên dễ đọc"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Các công nghệ hỗ trợ, chẳng hạn như trình đọc màn hình, sẽ hoạt động không nhất quán khi đặt `aria-hidden=\"true\"` trên tài liệu `<body>`. [Tìm hiểu thêm](https://web.dev/aria-hidden-body/)."
   },
@@ -36,13 +45,31 @@
     "message": "Các phần tử `[aria-hidden=\"true\"]` không chứa các phần tử theo thứ tự giảm dần có thể lấy tiêu điểm"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Khi tên của một trường nhập ở trạng thái không thể tiếp cận, thì trình đọc màn hình sẽ gọi trường đó bằng tên gọi chung, khiến người dùng trình đọc màn hình không dùng được trường này. [Tìm hiểu thêm](https://web.dev/aria-input-field-name/)."
+    "message": "Khi tên của một trường nhập ở trạng thái không thể tiếp cận, thì trình đọc màn hình sẽ gọi trường đó bằng tên gọi chung, khiến người dùng trình đọc màn hình không dùng được trường này. [Tìm hiểu thêm](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "Tên các trường nhập của ARIA ở trạng thái không thể tiếp cận"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "Tên các trường nhập của ARIA ở trạng thái có thể tiếp cận"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "Khi một phần tử không có tên dễ đọc, trình đọc màn hình sẽ gọi phần tử đó bằng một tên gọi chung, khiến người dùng trình đọc màn hình không sử dụng được phần tử này. [Tìm hiểu thêm](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "Các phần tử `meter` của ARIA không có tên dễ đọc."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "Các phần tử `meter` của ARIA có tên dễ đọc"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "Khi một phần tử không có tên dễ đọc, trình đọc màn hình sẽ gọi phần tử đó bằng một tên gọi chung, khiến người dùng trình đọc màn hình không sử dụng được phần tử này. [Tìm hiểu thêm](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "Các phần tử `progressbar` của ARIA không có tên dễ đọc."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "Các phần tử `progressbar` của ARIA có tên dễ đọc"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "Một số vai trò ARIA có các thuộc tính bắt buộc mô tả trạng thái của phần tử cho trình đọc màn hình. [Tìm hiểu thêm](https://web.dev/aria-required-attr/)."
@@ -81,13 +108,31 @@
     "message": "Các giá trị của `[role]` là hợp lệ"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Khi tên của một trường chuyển đổi ở trạng thái không thể tiếp cận, thì trình đọc màn hình sẽ gọi trường đó bằng tên gọi chung, khiến người dùng trình đọc màn hình không dùng được trường này. [Tìm hiểu thêm](https://web.dev/aria-toggle-field-name/)."
+    "message": "Khi tên của một trường chuyển đổi ở trạng thái không thể tiếp cận, thì trình đọc màn hình sẽ gọi trường đó bằng tên gọi chung, khiến người dùng trình đọc màn hình không dùng được trường này. [Tìm hiểu thêm](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "Tên các trường chuyển đổi của ARIA ở trạng thái không thể tiếp cận"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "Tên các trường chuyển đổi của ARIA ở trạng thái có thể tiếp cận"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "Khi một phần tử không có tên dễ đọc, trình đọc màn hình sẽ gọi phần tử đó bằng một tên gọi chung, khiến người dùng trình đọc màn hình không sử dụng được phần tử này. [Tìm hiểu thêm](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "Các phần tử `tooltip` của ARIA không có tên dễ đọc."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "Các phần tử `tooltip` của ARIA có tên dễ đọc"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "Khi một phần tử không có tên dễ đọc, trình đọc màn hình sẽ gọi phần tử đó bằng một tên gọi chung, khiến người dùng trình đọc màn hình không sử dụng được phần tử này. [Tìm hiểu thêm](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "Các phần tử `treeitem` của ARIA không có tên dễ đọc."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "Các phần tử `treeitem` của ARIA có tên dễ đọc"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "Các công nghệ hỗ trợ, chẳng hạn như trình đọc màn hình, không thể diễn giải thuộc tính của Ứng dụng Internet phong phú dễ dùng (ARIA) có giá trị không hợp lệ. [Tìm hiểu thêm](https://web.dev/aria-valid-attr-value/)."
@@ -468,16 +513,16 @@
     "message": "Rút gọn JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "Hãy xóa các quy tắc vô hiệu khỏi biểu định kiểu và trì hoãn tải Biểu định kiểu xếp chồng (CSS) không dùng cho nội dung trong màn hình đầu tiên để giảm số byte không cần thiết mà hoạt động mạng sử dụng. [Tìm hiểu thêm](https://web.dev/unused-css-rules/)."
+    "message": "Giảm những quy tắc không dùng đến trong các biểu định kiểu và trì hoãn CSS chưa sử dụng cho nội dung trong màn hình đầu tiên để giảm số byte mà hoạt động mạng sử dụng. [Tìm hiểu thêm](https://web.dev/unused-css-rules/)"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "Xóa biểu định kiểu xếp chồng (CSS) không dùng"
+    "message": "Giảm CSS không dùng đến"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "Xóa JavaScript không còn dùng nữa để giảm số byte dành cho hoạt động mạng. [Tìm hiểu thêm](https://web.dev/unused-javascript/)."
+    "message": "Giảm JavaScript không dùng đến và trì hoãn việc tải các tập lệnh cho tới khi cần có các tập lệnh này để giảm số byte mà hoạt động mạng sử dụng. [Tìm hiểu thêm](https://web.dev/unused-javascript/)"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "Xóa JavaScript không dùng"
+    "message": "Giảm JavaScript không dùng đến"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "Bộ nhớ đệm có thời gian hữu dụng dài có thể giúp tăng tốc số lượt truy cập lặp lại vào trang của bạn. [Tìm hiểu thêm](https://web.dev/uses-long-cache-ttl/)."
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "Tránh tạo chuỗi các yêu cầu quan trọng"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "Lệnh"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "Một Chính sách bảo mật nội dung (CSP) mạnh sẽ làm giảm đáng kể nguy cơ bị tấn công thông qua XSS. [Tìm hiểu thêm](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "Trang này chứa CSP được xác định trong thẻ <meta>. Hãy cân nhắc xác định CSP trong tiêu đề HTTP, nếu có thể."
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "Không tìm thấy CSP nào ở chế độ thực thi"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "Đảm bảo CSP có khả năng chống lại hình thức tấn công thông qua XSS"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "Không dùng nữa/Cảnh báo"
@@ -810,7 +870,7 @@
     "message": "Ứng dụng này đã được cài đặt"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "Biểu tượng đã tải xuống bị trống hoặc hỏng"
+    "message": "Không thể tải một biểu tượng bắt buộc từ tệp kê khai"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "Lý do xảy ra lỗi"
@@ -1026,7 +1086,7 @@
     "message": "Thời điểm tương tác là khoảng thời gian mà trang cần để trở nên hoàn toàn tương tác. [Tìm hiểu thêm](https://web.dev/interactive/)."
   },
   "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
-    "message": "Chỉ số Hiển thị nội dung có kích thước lớn nhất đánh dấu thời điểm hiển thị văn bản hoặc hình ảnh có kích thước lớn nhất. [Tìm hiểu thêm](https://web.dev/lighthouse-largest-contentful-paint/)"
+    "message": "Thời gian hiển thị nội dung lớn nhất đánh dấu thời điểm hiển thị văn bản hoặc hình ảnh có kích thước lớn nhất. [Tìm hiểu thêm](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
     "message": "Thời gian phản hồi lần tương tác đầu tiên tối đa mà người dùng có thể gặp phải là thời gian thực hiện nhiệm vụ lâu nhất. [Tìm hiểu thêm](https://web.dev/lighthouse-max-potential-fid/)."
@@ -1050,7 +1110,7 @@
     "message": "Thời gian dưới nền của máy chủ"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "Sự kiện `unload` kích hoạt không ổn định và việc làm theo sự kiện này có thể ngăn chặn các hoạt động tối ưu hóa trình duyệt, chẳng hạn như Bộ nhớ đệm cho thao tác tiến/lùi. Hãy cân nhắc dùng sự kiện `pagehide` hoặc `visibilitychange`. [Tìm hiểu thêm](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "Sự kiện `unload` kích hoạt theo cách không ổn định và việc làm theo sự kiện này có thể ngăn chặn các hoạt động tối ưu hóa trình duyệt, chẳng hạn như Bộ nhớ đệm cho thao tác tiến/lùi. Hãy cân nhắc dùng sự kiện `pagehide` hoặc `visibilitychange`. [Tìm hiểu thêm](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Đăng ký trình xử lý sự kiện `unload`"
@@ -1095,7 +1155,7 @@
     "message": "Ngân sách hiệu suất"
   },
   "lighthouse-core/audits/preload-fonts.js | description": {
-    "message": "Tải trước phông chữ có `optional` để khách truy cập lần đầu có thể sử dụng. [Tìm hiểu thêm](https://web.dev/preload-optional-fonts/)"
+    "message": "Bạn nên tải trước phông chữ `optional` để khách truy cập lần đầu có thể sử dụng. [Tìm hiểu thêm](https://web.dev/preload-optional-fonts/)"
   },
   "lighthouse-core/audits/preload-fonts.js | failureTitle": {
     "message": "Chưa tải trước phông chữ có `font-display: optional`"
@@ -1467,7 +1527,7 @@
     "message": "URL của bản đồ"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Bản đồ nguồn sẽ chuyển mã đã giảm thiểu thành mã nguồn gốc. Việc này giúp các nhà phát triển gỡ lỗi trong bản phát hành chính thức. Ngoài ra, Lighthouse cũng có thể cung cấp thêm thông tin chi tiết. Hãy cân nhắc triển khai bản đồ nguồn để tận dụng những lợi ích này. [Tìm hiểu thêm](https://developer.chrome.com/docs/devtools/javascript/source-maps/)"
+    "message": "Bản đồ nguồn sẽ chuyển mã đã giảm thiểu thành mã nguồn gốc. Việc này giúp các nhà phát triển gỡ lỗi trong bản phát hành chính thức. Ngoài ra, Lighthouse cũng có thể cung cấp thêm thông tin chi tiết. Hãy cân nhắc triển khai bản đồ nguồn để tận dụng những lợi ích này. [Tìm hiểu thêm](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)"
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Thiếu bản đồ nguồn cho JavaScript lớn của bên thứ nhất"
@@ -1509,7 +1569,7 @@
     "message": "Những mục này nêu bật các phương pháp hay nhất thường dùng cho hỗ trợ tiếp cận"
   },
   "lighthouse-core/config/default-config.js | a11yBestPracticesGroupTitle": {
-    "message": "Các phương pháp hay nhất"
+    "message": "Những phương pháp hay nhất"
   },
   "lighthouse-core/config/default-config.js | a11yCategoryDescription": {
     "message": "Các hoạt động kiểm tra này giúp xác định cơ hội [cải thiện khả năng hỗ trợ tiếp cận của ứng dụng web](https://developers.google.com/web/fundamentals/accessibility). Các hoạt động này chỉ có thể tự động phát hiện một phần vấn đề liên quan đến khả năng hỗ trợ tiếp cận, do đó, bạn nên kiểm tra cả theo cách thủ công."
@@ -1629,7 +1689,7 @@
     "message": "Định dạng HTML sao cho các trình thu thập thông tin có thể hiểu rõ hơn nội dung trong ứng dụng của bạn."
   },
   "lighthouse-core/config/default-config.js | seoContentGroupTitle": {
-    "message": "Các phương pháp hay nhất về nội dung"
+    "message": "Những phương pháp hay nhất về nội dung"
   },
   "lighthouse-core/config/default-config.js | seoCrawlingGroupDescription": {
     "message": "Để xuất hiện trong kết quả tìm kiếm, các trình thu thập thông tin cần quyền truy cập vào ứng dụng của bạn."
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Thân thiện với thiết bị di động"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{Dữ liệu đã lưu trữ có thể ảnh hưởng đến hiệu suất tải ở vị trí này: {locations}. Hãy kiểm tra trang này trong một cửa sổ ẩn danh để ngăn các tài nguyên đó ảnh hưởng đến điểm hiệu suất của bạn.}other{Dữ liệu đã lưu trữ có thể ảnh hưởng đến hiệu suất tải ở các vị trí này: {locations}. Hãy kiểm tra trang này trong một cửa sổ ẩn danh để ngăn các tài nguyên đó ảnh hưởng đến điểm hiệu suất của bạn.}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Trang có thể không tải như dự kiến do URL kiểm tra của bạn ({requested}) đã được chuyển hướng tới {final}. Hãy thử kiểm tra trực tiếp URL thứ hai."
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Trang này tải quá chậm nên không hoàn tất được trong giới hạn thời gian. Các kết quả có thể chưa hoàn chỉnh."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "Hãy cân nhắc thêm giao thức URL https: và http: (bị các trình duyệt hỗ trợ \"strict-dynamic\" bỏ qua) để tương thích ngược với những trình duyệt cũ."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "Kể từ CSP3, disown-opener sẽ không được dùng nữa. Vui lòng sử dụng tiêu đề Cross-Origin-Opener-Policy."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "Kể từ CSP2, referrer sẽ không được dùng nữa. Vui lòng sử dụng tiêu đề Referrer-Policy."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "Kể từ CSP2, reflected-xss sẽ không được dùng nữa. Vui lòng sử dụng tiêu đề X-XSS-Protection."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "Nếu thiếu base-uri, các thẻ <base> có thể được chèn vào để đặt URL cơ sở cho mọi URL tương đối (ví dụ: tập lệnh) đến miền do kẻ tấn công kiểm soát. Hãy cân nhắc đặt base-uri thành \"none\" hoặc \"self\"."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "Các phần tử do object-src kiểm soát được xem là tính năng cũ. Hãy cân nhắc đặt object-src thành \"none\" để ngăn chặn hành vi chèn các trình bổ trợ thực thi tập lệnh không an toàn."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "Thiếu lệnh script-src. Khi không có lệnh này, các tập lệnh không an toàn có thể được thực thi."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "Bạn quên dấu chấm phẩy ư? {keyword} có vẻ giống lệnh hơn là từ khóa."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "Nonces phải dùng bộ ký tự base64."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "Nonces phải có độ dài tối thiểu là 8 ký tự."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "Đích báo cáo này chỉ được định cấu hình thông qua lệnh report-to. Chỉ các trình duyệt dựa trên Chromium mới hỗ trợ lệnh này. Do đó, bạn nên dùng cả lệnh report-uri."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "Không có CSP nào định cấu hình đích báo cáo. Điều này sẽ gây khó khăn cho việc duy trì CSP theo thời gian và giám sát mọi sự cố."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "Danh sách máy chủ cho phép có thể thường xuyên bị bỏ qua. Hãy cân nhắc dùng \"strict-dynamic\" cùng với nonces hoặc hashes của CSP."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "Lệnh CSP không xác định."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "Có vẻ như {keyword} là một từ khóa không hợp lệ."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "\"unsafe-inline\" cho phép thực thi nhiều trình xử lý sự kiện và tập lệnh không an toàn trong trang. Hãy cân nhắc dùng nonces hoặc hashes của CSP để cho phép thực thi từng tập lệnh."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "Hãy cân nhắc thêm \"unsafe-inline\" (bị các trình duyệt hỗ trợ nonces/hashes bỏ qua) để tương thích ngược với những trình duyệt cũ."
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Thời gian chặn chuỗi chính"

@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "`[aria-*]` özellikleri rolleriyle eşleşiyor"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "Bir öğenin erişilebilir özellikli adı olmadığında ekran okuyucular tarafından genel adla okunur ve öğe, ekran okuyuculardan yararlanan kullanıcılar için kullanılamaz hale gelir. [Daha fazla bilgi](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "`button`, `link` ve `menuitem` öğelerinin erişilebilir özellikli adları yok."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "`button`, `link` ve `menuitem` öğelerinin erişilebilir özellikli adları var."
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Ekran okuyucular gibi yardımcı teknolojiler, `aria-hidden=\"true\"` öğesi dokümanın `<body>` kısmında ayarlandığında tutarsız çalışır. [Daha fazla bilgi](https://web.dev/aria-hidden-body/)."
   },
@@ -36,13 +45,31 @@
     "message": "`[aria-hidden=\"true\"]` öğelerinde odaklanabilir alt öğe bulunmuyor"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Bir giriş alanının erişilebilir özellikli bir adı yoksa ekran okuyucular bu alanı genel adla okuyacağı için bu, ekran okuyuculardan yararlanan kullanıcılar için yararlı olmaz. [Daha fazla bilgi](https://web.dev/aria-input-field-name/)."
+    "message": "Bir giriş alanının erişilebilir özellikli bir adı yoksa ekran okuyucular bu alanı genel adla okuyacağı için bu, ekran okuyuculardan yararlanan kullanıcılar için yararlı olmaz. [Daha fazla bilgi](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "ARIA giriş alanlarının erişilebilir özellikli adı yok"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "ARIA giriş alanları erişilebilir özellikli ada sahip"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "Bir öğenin erişilebilir özellikli adı olmadığında ekran okuyucular tarafından genel adla okunur ve öğe, ekran okuyuculardan yararlanan kullanıcılar için kullanılamaz hale gelir. [Daha fazla bilgi](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "ARIA `meter` öğelerinin erişilebilir özellikli adları yok."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "ARIA `meter` öğelerinin erişilebilir özellikli adları var"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "Bir öğenin erişilebilir özellikli adı olmadığında ekran okuyucular tarafından genel adla okunur ve öğe, ekran okuyuculardan yararlanan kullanıcılar için kullanılamaz hale gelir. [Daha fazla bilgi](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "ARIA `progressbar` öğelerinin erişilebilir özellikli adları yok."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "ARIA `progressbar` öğelerinin erişilebilir özellikli adları var"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "Bazı ARIA rolleri, öğenin durumunu ekran okuyuculara açıklayan gerekli özelliklere sahiptir. [Daha fazla bilgi](https://web.dev/aria-required-attr/)."
@@ -81,13 +108,31 @@
     "message": "`[role]` değerleri geçerli"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Bir açma/kapatma alanının erişilebilir özellikli bir adı yoksa ekran okuyucular bu alanı genel adla okuyacağı için bu, ekran okuyuculardan yararlanan kullanıcılar için yararlı olmaz. [Daha fazla bilgi](https://web.dev/aria-toggle-field-name/)."
+    "message": "Bir açma/kapatma alanının erişilebilir özellikli bir adı yoksa ekran okuyucular bu alanı genel adla okuyacağı için bu, ekran okuyuculardan yararlanan kullanıcılar için yararlı olmaz. [Daha fazla bilgi](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "ARIA açma/kapatma alanlarının erişilebilir özellikli adı yok"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "ARIA açma/kapatma alanları erişilebilir özellikli ada sahip"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "Bir öğenin erişilebilir özellikli adı olmadığında ekran okuyucular tarafından genel adla okunur ve öğe, ekran okuyuculardan yararlanan kullanıcılar için kullanılamaz hale gelir. [Daha fazla bilgi](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "ARIA `tooltip` öğelerinin erişilebilir özellikli adları yok."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "ARIA `tooltip` öğelerinin erişilebilir özellikli adları var"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "Bir öğenin erişilebilir özellikli adı olmadığında ekran okuyucular tarafından genel adla okunur ve öğe, ekran okuyuculardan yararlanan kullanıcılar için kullanılamaz hale gelir. [Daha fazla bilgi](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "ARIA `treeitem` öğelerinin erişilebilir özellikli adları yok."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "ARIA `treeitem` öğelerinin erişilebilir özellikli adları var"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "Ekran okuyucular gibi yardımcı teknolojiler geçersiz değerlere sahip ARIA özelliklerini yorumlayamaz. [Daha fazla bilgi](https://web.dev/aria-valid-attr-value/)."
@@ -468,16 +513,16 @@
     "message": "JavaScript'i küçült"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "Ağ etkinliğinin gereksiz yere kullandığı bayt sayısını azaltmak için, kullanılmayan kuralları stil sayfalarından kaldırın ve ekranın üst kısmında içerik için kullanılmayan CSS'nin yüklenmesini erteleyin. [Daha fazla bilgi](https://web.dev/unused-css-rules/)."
+    "message": "Ağ etkinliğinin kullandığı bayt sayısını azaltmak üzere stil sayfalarında kullanılmayan kuralları azaltıp ekranın üst kısmında içerik için kullanılmayan CSS'yi erteleyin. [Daha fazla bilgi](https://web.dev/unused-css-rules/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "Kullanılmayan CSS'yi kaldırın"
+    "message": "Kullanılmayan CSS'yi azaltın"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "Ağ etkinliğinin kullandığı bayt sayısını azaltmak için kullanılmayan JavaScript'i kaldırın. [Daha fazla bilgi](https://web.dev/unused-javascript/)."
+    "message": "Ağ etkinliğinin kullandığı bayt sayısını azaltılmaları gerekene kadar kullanılmayan JavaScript'i azaltıp komut dosyalarını erteleyin. [Daha fazla bilgi](https://web.dev/unused-javascript/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "Kullanılmayan JavaScript'i kaldırın"
+    "message": "Kullanılmayan JavaScript'i azaltın"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "Uzun önbellek ömrü, sayfanızın tekrar ziyaret edilmesi sürecini hızlandırabilir. [Daha fazla bilgi](https://web.dev/uses-long-cache-ttl/)."
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "Kritik istek zinciri oluşturmaktan kaçın"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "Yönerge"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "Güçlü bir İçerik Güvenliği Politikası (CSP), XSS saldırısı riskini önemli ölçüde azaltır. [Daha fazla bilgi](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "Bu sayfa <meta> etikette tanımlanmış bir CSP içeriyor. Mümkünse CSP'yi bir HTTP başlığında tanımlayın."
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "Zorunlu modda hiç CSP bulunmadı"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "XSS saldırıları karşısında CSP'nin etkinliğini sınayın"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "Kullanımdan Kaldırma / Uyarı"
@@ -810,7 +870,7 @@
     "message": "Uygulama zaten yüklenmiş"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "İndirilen simge boş veya bozuktu"
+    "message": "Gereken bir simge manifest'ten indirilemedi"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "Hata nedeni"
@@ -1026,7 +1086,7 @@
     "message": "Etkileşime hazır olma süresi, sayfanın tamamen etkileşime hazır hale gelmesi için geçmesi gereken süreyi ifade eder. [Daha fazla bilgi](https://web.dev/interactive/)."
   },
   "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
-    "message": "Largest Contentful Paint, en büyük metnin veya resmin ekranda belirdiği zamanı işaret eder. [Daha Fazla Bilgi](https://web.dev/lighthouse-largest-contentful-paint/)"
+    "message": "En Büyük Zengin İçerikli Boyama, en büyük metnin veya resmin boyandığı zamanı işaret eder. [Daha fazla bilgi](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
     "message": "Kullanıcılarınızın karşılaşabileceği olası maksimum İlk Giriş Gecikmesi, en uzun görevin süresidir. [Daha fazla bilgi](https://web.dev/lighthouse-max-potential-fid/)."
@@ -1467,7 +1527,7 @@
     "message": "Eşleme URL'si"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Kaynak eşlemeleri, küçültülmüş kodu orijinal kaynak koduna çevirir. Bu, geliştiricilerin üretimde hata ayıklamasına yardımcı olur. Ek olarak, Lighthouse daha detaylı bilgi sağlayabilir. Bu avantajlardan yararlanmak için kaynak eşlemelerini dağıtmayı düşünün. [Daha fazla bilgi](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
+    "message": "Kaynak eşlemeleri, küçültülmüş kodu orijinal kaynak koduna çevirir. Bu, geliştiricilerin üretimde hata ayıklamasına yardımcı olur. Ek olarak, Lighthouse daha detaylı bilgi sağlayabilir. Bu avantajlardan yararlanmak için kaynak eşlemelerini dağıtmayı düşünün. [Daha fazla bilgi](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Büyük birinci taraf JavaScript'te kaynak eşlemeleri eksik"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Mobil Uyumlu"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{Şu konumda yükleme performansını etkileyen depolanmış veriler olabilir: {locations}. Bu kaynakların puanlarınızı etkilemesini engellemek için bu sayfayı gizli pencerede denetleyin.}other{Şu konumlarda yükleme performansını etkileyen depolanmış veriler olabilir: {locations}. Bu kaynakların puanlarınızı etkilemesini engellemek için bu sayfayı gizli pencerede denetleyin.}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Sayfa, test URL'niz ({requested}) {final} adresine yönlendirildiğinden beklendiği gibi yüklenmiyor olabilir. İkinci URL'yi doğrudan test etmeyi deneyin."
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Sayfa, zaman sınırı içinde bitmeyecek kadar yavaş yüklendi. Sonuçlar eksik olabilir."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "Eski tarayıcılarla geriye dönük uyumluluk sağlamak için https: ve http: URL şemaları (\"strict-dynamic\" yönergesini destekleyen tarayıcılar tarafından yok sayılır) eklemeyi düşünün."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "disown-opener yönergesi, CSP3 çıktıktan sonra kullanımdan kaldırılmıştır. Lütfen onun yerine Cross-Origin-Opener-Policy başlığını kullanın."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "referrer yönergesi CSP2'den beri kullanılmamaktadır. Lütfen onun yerine Referrer-Policy başlığını kullanın."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "reflected-xss yönergesi CSP2'den beri kullanılmamaktadır. Lütfen onun yerine X-XSS-Protection başlığını kullanın."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "Base-uri yönergesinin olmaması, yerleştirilen <base> etiketlerinin tüm göreli URL'ler (örneğin, komut dosyaları) için temel URL'yi saldırgan kontrolündeki bir alana ayarlamaya olanak tanır. Base-uri'yi \"none\" veya \"self\" olarak ayarlamayı düşünün."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "object-src tarafından kontrol edilen öğeler eski özellik olarak kabul edilir. Güvenli olmayan komut satırları yürüten eklentilerin yerleştirilmesine engel olmak için object-src yönergesini \"none\" olarak ayarlamayı düşünün."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "script-src yönergesi eksik. Bu durum, güvenli olmayan komut dosyalarının yürütülmesine izin verebilir."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "Noktalı virgülü mü unuttunuz? {keyword}, anahtar kelimeden ziyade bir yönerge gibi görünüyor."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "Nonce'lar için base64 karakter kümesi kullanılmalıdır."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "Nonce'lar en az 8 karakter uzunluğunda olmalıdır."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "Raporlama hedefi yalnızca report-to yönergesi üzerinden yapılandırılır. Bu yönerge yalnızca Chromium tabanlı tarayıcılarda desteklendiği için ayrıca bir report-uri yönergesi kullanılması önerilir."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "Raporlama hedefi yapılandıran bir CSP yok. Bu durum, zaman içinde CSP'nin devamlılığının sağlanmasını ve hatalara karşı izlenmesini zorlaştırır."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "Ana makine izin verilenler listeleri sıklıkla atlanabilir. CSP nonce veya hash değerleriyle birlikte \"strict-dynamic\" kullanmayı düşünün."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "Bilinmeyen CSP yönergesi."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "{keyword} geçersiz bir anahtar kelime gibi görünüyor."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "\"unsafe-inline\", güvenli olmayan sayfa içi komut dosyalarının ve etkinlik işleyicilerin yürütülmesine izin verir. Komut dosyalarına ayrı ayrı izin vermek için CSP nonce veya hash değerleri kullanmayı düşünün."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "Eski tarayıcılarla geriye dönük uyumluluk sağlamak için \"unsafe-inline\" yönergesi (nonce/hash destekleyen tarayıcılar tarafından yok sayılır) eklemeyi düşünün."
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Ana İleti Dizisi Engelleme Süresi"

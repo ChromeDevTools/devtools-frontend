@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "A(z) `[aria-*]` attribútumok megfelelnek szerepüknek"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "Ha valamelyik elem nem rendelkezik akadálymentes névvel, a képernyőolvasók általános néven olvassák fel, ami használhatatlan a képernyőolvasóra hagyatkozó felhasználók számára. [További információ](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "A(z) `button`, `link` és `menuitem` elemek nem rendelkeznek akadálymentes névvel."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "A(z) `button`, `link` és `menuitem` elemek akadálymentes névvel rendelkeznek"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "A segítő technológiák (például a képernyőolvasók) nem működnek konzisztensen, ha a(z) `aria-hidden=\"true\"` be van állítva a dokumentum `<body>` elemében. [További információ](https://web.dev/aria-hidden-body/)."
   },
@@ -36,13 +45,31 @@
     "message": "A(z) `[aria-hidden=\"true\"]` elemek nem tartalmaznak fókuszálható utódelemeket"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Ha valamelyik beviteli mező nem rendelkezik akadálymentes névvel, a képernyőolvasók általános néven olvassák fel, ami használhatatlan a képernyőolvasóra hagyatkozó felhasználók számára. [További információ](https://web.dev/aria-input-field-name/)."
+    "message": "Ha valamelyik beviteli mező nem rendelkezik akadálymentes névvel, a képernyőolvasók általános néven olvassák fel, ami használhatatlan a képernyőolvasóra hagyatkozó felhasználók számára. [További információ](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "Egyes ARIA beviteli mezők nem rendelkeznek akadálymentes névvel"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "Az ARIA beviteli mezők akadálymentes névvel rendelkeznek"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "Ha valamelyik elem nem rendelkezik akadálymentes névvel, a képernyőolvasók általános néven olvassák fel, ami használhatatlan a képernyőolvasóra hagyatkozó felhasználók számára. [További információ](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "A(z) `meter` ARIA-elemek nem rendelkeznek akadálymentes névvel."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "A(z) `meter` ARIA-elemek akadálymentes névvel rendelkeznek"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "Ha valamelyik elem nem rendelkezik akadálymentes névvel, a képernyőolvasók általános néven olvassák fel, ami használhatatlan a képernyőolvasóra hagyatkozó felhasználók számára. [További információ](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "A(z) `progressbar` ARIA-elemek nem rendelkeznek akadálymentes névvel."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "A(z) `progressbar` ARIA-elemek akadálymentes névvel rendelkeznek"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "Bizonyos ARIA-szerepkörök kötelező attribútumokkal rendelkeznek, amelyek az elem állapotát írják le a képernyőolvasók számára. [További információ](https://web.dev/aria-required-attr/)."
@@ -81,13 +108,31 @@
     "message": "A(z) `[role]` értékek érvényesek"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Ha valamelyik kapcsolómező nem rendelkezik akadálymentes névvel, a képernyőolvasók általános néven olvassák fel, ami használhatatlan a képernyőolvasóra hagyatkozó felhasználók számára. [További információ](https://web.dev/aria-toggle-field-name/)."
+    "message": "Ha valamelyik kapcsolómező nem rendelkezik akadálymentes névvel, a képernyőolvasók általános néven olvassák fel, ami használhatatlan a képernyőolvasóra hagyatkozó felhasználók számára. [További információ](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "Egyes ARIA-kapcsolómezők nem rendelkeznek akadálymentes névvel"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "Az ARIA-kapcsolómezők akadálymentes névvel rendelkeznek"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "Ha valamelyik elem nem rendelkezik akadálymentes névvel, a képernyőolvasók általános néven olvassák fel, ami használhatatlan a képernyőolvasóra hagyatkozó felhasználók számára. [További információ](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "A(z) `tooltip` ARIA-elemek nem rendelkeznek akadálymentes névvel."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "A(z) `tooltip` ARIA-elemek akadálymentes névvel rendelkeznek"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "Ha valamelyik elem nem rendelkezik akadálymentes névvel, a képernyőolvasók általános néven olvassák fel, ami használhatatlan a képernyőolvasóra hagyatkozó felhasználók számára. [További információ](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "A(z) `treeitem` ARIA-elemek nem rendelkeznek akadálymentes névvel."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "A(z) `treeitem` ARIA-elemek akadálymentes névvel rendelkeznek"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "A kisegítő technológiák (például a képernyőolvasók) nem tudják értelmezni az érvénytelen értékkel rendelkező ARIA-attribútumokat. [További információ](https://web.dev/aria-valid-attr-value/)."
@@ -468,16 +513,16 @@
     "message": "Minimalizálja a JavaScript-kódot"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "A stíluslapok érvénytelen szabályainak eltávolításával és a hajtás feletti tartalomhoz nem használt CSS-kód betöltésének késleltetésével csökkentheti a hálózati tevékenység által felhasznált bájtmennyiséget. [További információ](https://web.dev/unused-css-rules/)."
+    "message": "A stíluslapok nem használt szabályainak eltávolításával és a hajtás feletti tartalomhoz nem használt CSS-kódok késleltetésével csökkentheti a hálózati tevékenység által felhasznált bájtmennyiséget. [További információ](https://web.dev/unused-css-rules/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "Távolítsa el a nem használt CSS-kódot"
+    "message": "Nem használt CSS-kódok számának csökkentése"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "A nem használt JavaScript-kód eltávolításával csökkentheti a hálózati tevékenység adatforgalmát. [További információ](https://web.dev/unused-javascript/)."
+    "message": "A nem használt JavaScript-kódok számának csökkentésével és a betöltési szkriptek késleltetésével csökkentheti a hálózati tevékenység által felhasznált bájtmennyiséget. [További információ](https://web.dev/unused-javascript/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "Távolítsa el a nem használt JavaScript-kódot"
+    "message": "Nem használt JavaScript-kódok számának csökkentése"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "Ha a gyorsítótárak élettartama hosszú, gyorsabbá válnak a weboldal későbbi ismételt megnyitásai. [További információ](https://web.dev/uses-long-cache-ttl/)."
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "Kerülje el a kritikus kérések láncba fűzését"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "Utasítás"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "A megfelelően erős Tartalombiztonsági irányelvek (CSP) jelentősen csökkentik az XSS-támadások kockázatát. [További információ](https://csp.withgoogle.com/docs/index.html)."
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "Az oldal tartalmaz egy <meta> címkében definiált CSP-t. Ha lehet, inkább a HTTP-fejlécben határozza meg a CSP-t."
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "Nem található CSP a kényszerítő módban"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "Gondoskodjon arról, hogy a CSP hatékony az XSS-támadásokkal szemben"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "Elavulás / Figyelmeztetés"
@@ -810,7 +870,7 @@
     "message": "Az alkalmazás már telepítve van."
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "A letöltött ikon üres vagy sérült"
+    "message": "Nem sikerült letölteni a szükséges ikont a manifestből"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "A hiba oka"
@@ -1050,7 +1110,7 @@
     "message": "Várakozási idő a háttérszervereknél"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "A(z) `unload` esemény működése nem megbízható, és figyelése megakadályozhatja a böngésző optimalizálását (például a Vissza/Előre gombbal elért oldalak gyorsítótárazását). Vegye fontolóra helyette a(z) `pagehide` vagy a(z) `visibilitychange` esemény használatát. [További információ](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)."
+    "message": "A(z) `unload` esemény működése nem megbízható, és figyelése megakadályozhatja a böngésző optimalizálását (például az előre-vissza gyorsítótárazást). Vegye fontolóra helyette a(z) `pagehide` vagy a(z) `visibilitychange` esemény használatát. [További információ](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)."
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "`unload`-figyelőt regisztrál"
@@ -1467,7 +1527,7 @@
     "message": "URL-hozzárendelés"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "A forrás-hozzárendelések lefordítják a kicsinyített kódot az eredeti forráskódra. Ez segít a fejlesztőknek az éles verzión végzett hibaelhárításban. A Lighthouse további statisztikákat is tud biztosítani. Fontolja meg a forrás-hozzárendelések használatát, hogy kihasználhassa ezeket az előnyöket. [További információ](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
+    "message": "A forrás-hozzárendelések lefordítják a kicsinyített kódot az eredeti forráskódra. Ez segít a fejlesztőknek az éles verzión végzett hibaelhárításban. A Lighthouse további statisztikákat is tud biztosítani. Fontolja meg a forrás-hozzárendelések használatát, hogy kihasználhassa ezeket az előnyöket. [További információ](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Hiányzó forrás-hozzárendelések a nagy belső JavaScriptnél"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Mobilbarát"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{Előfordulhat, hogy a tárolt adatok befolyásolják a betöltési sebességet ezen a helyen: {locations}. Ellenőrizze ezt az oldalt inkognitó ablakban, hogy az érintett források ne lehessenek hatással a teljesítmény értékelésére.}other{Előfordulhat, hogy a tárolt adatok befolyásolják a betöltési sebességet ezeken a helyeken: {locations}. Ellenőrizze ezt az oldalt inkognitó ablakban, hogy az érintett források ne lehessenek hatással a teljesítmény értékelésére.}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Előfordulhat, hogy az oldal nem az elvártaknak megfelelően töltődik be, mert a teszt-URL ({requested}) átirányít ide: {final}. Próbálkozzon a második URL közvetlen tesztelésével."
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Az oldal túl lassan töltődött be, és túllépte az időkeretet. Az eredmények hiányosak lehetnek."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "A régebbi böngészőkkel való kompatibilitás érdekében fontolja meg https: és http: URL-sémák megadását (a „strict-dynamic” kulcsszót támogató böngészők figyelmen kívül hagyják ezeket)."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "A disown-opener a CSP3 bevezetésekor megszűnt. Használja helyette a Cross-Origin-Opener-Policy fejlécet."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "A referrer a CSP2 bevezetésekor megszűnt. Használja helyette a Referrer-Policy fejlécet."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "A reflected-xss a CSP2 bevezetésekor megszűnt. Használja helyette az X-XSS-Protection fejlécet."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "A hiányzó base-uri lehetővé teszi az injektált <base> címkéknek alap-URL-ek beállítását minden relatív URL-nél (pl. szkripttel) a támadó által irányított domainre. Állítsa a base-uri direktívát „none” vagy „self” értékre."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "Az object-src által vezérelt elemek régi funkcióknak minősülnek. Fontolja meg az object-src beállítását a „none” értékre, hogy megakadályozza nem biztonságos szkriptek végrehajtását lehetővé tévő beépülő modulok beszúrását."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "Hiányzik a script-src utasítás. Ez lehetővé teheti nem biztonságos szkriptek futtatását."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "Elfelejtette kitenni a pontosvesszőt? Úgy tűnik, hogy a(z) {keyword} utasítás, nem pedig kulcsszó."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "A nonce-oknak a base64 charsetet kell használniuk."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "A nonce-nak legalább nyolc karakterből kell állnia."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "A jelentés célhelye csak a report-to utasítással van beállítva. Ezt az utasítást csak a Chromium-alapú böngészők támogatják, ezért ajánlott a report-uri utasítás használata is."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "A jelentési célt nem állítja be CSP. Ez később megnehezíti a CSP karbantartását, illetve a sebezhetőségek figyelemmel kísérését."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "A gazdagépek engedélyezőlistáit gyakran meg lehet kerülni. Fontolja meg a „strict-dynamic” kulcsszó és CSP nonce-ok vagy hashek együttes használatát."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "Ismeretlen CSP-utasítás."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "Úgy tűnik, hogy a(z) {keyword} érvénytelen kulcsszó."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "Az „unsafe-inline” lehetővé teszi nem biztonságos oldalon belüli szkriptek és eseménykezelők végrehajtását. A szkriptek egyenként történő engedélyezése érdekében fontolja meg CSP nonce-ok vagy hashek használatát."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "A régebbi böngészőkkel való kompatibilitás érdekében használhatja az „unsafe-inline” kulcsszót (a nonce-t/hasht támogató böngészők figyelmen kívül hagyják)."
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Fő szál akadályozásának időtartama"

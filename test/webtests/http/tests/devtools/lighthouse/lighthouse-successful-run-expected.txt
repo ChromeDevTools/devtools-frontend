@@ -308,8 +308,8 @@ Computing artifact: FirstContentfulPaint
 Computing artifact: LanternFirstContentfulPaint
 Auditing: Minify CSS
 Auditing: Minify JavaScript
-Auditing: Remove unused CSS
-Auditing: Remove unused JavaScript
+Auditing: Reduce unused CSS
+Auditing: Reduce unused JavaScript
 Computing artifact: JSBundles
 Auditing: Serve images in next-gen formats
 Auditing: Efficiently encode images
@@ -379,7 +379,7 @@ Generating results...
 
 =============== Lighthouse Results ===============
 URL: http://127.0.0.1:8000/devtools/lighthouse/resources/lighthouse-basic.html
-Version: 7.2.0
+Version: 7.4.0
 ViewportDimensions: {
   "innerWidth": 980,
   "innerHeight": 1743,

@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Atrybuty `[aria-*]` odpowiadają swoim rolom"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "Gdy element nie ma nazwy na potrzeby ułatwień dostępu, czytniki ekranu określają go nazwą ogólną, przez co jest on bezużyteczny dla ich użytkowników. [Więcej informacji](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "Elementy `button`, `link` i `menuitem` nie mają nazw na potrzeby ułatwień dostępu."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "Elementy `button`, `link` i `menuitem` mają nazwy na potrzeby ułatwień dostępu"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Technologie wspomagające, takie jak czytniki ekranu, mogą działać nieprawidłowo, gdy dokument `<body>` ma ustawiony atrybut `aria-hidden=\"true\"`. [Więcej informacji](https://web.dev/aria-hidden-body/)"
   },
@@ -36,13 +45,31 @@
     "message": "Elementy `[aria-hidden=\"true\"]` nie zawierają elementów podrzędnych, które można zaznaczyć"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Gdy pole do wprowadzania danych nie ma nazwy na potrzeby ułatwień dostępu, czytniki ekranu określają je nazwą ogólną, przez co jest ono bezużyteczne dla ich użytkowników. [Więcej informacji](https://web.dev/aria-input-field-name/)"
+    "message": "Gdy pole do wprowadzania danych nie ma nazwy na potrzeby ułatwień dostępu, czytniki ekranu określają je nazwą ogólną, przez co jest ono bezużyteczne dla ich użytkowników. [Więcej informacji](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "Pola do wprowadzania danych ARIA nie mają nazw na potrzeby ułatwień dostępu"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "Pola do wprowadzania danych ARIA mają nazwy na potrzeby ułatwień dostępu"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "Gdy element nie ma nazwy na potrzeby ułatwień dostępu, czytniki ekranu określają go nazwą ogólną, przez co jest on bezużyteczny dla ich użytkowników. [Więcej informacji](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "Elementy ARIA `meter` nie mają nazw na potrzeby ułatwień dostępu."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "Elementy ARIA `meter` mają nazwy na potrzeby ułatwień dostępu"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "Gdy element nie ma nazwy na potrzeby ułatwień dostępu, czytniki ekranu określają go nazwą ogólną, przez co jest on bezużyteczny dla ich użytkowników. [Więcej informacji](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "Elementy ARIA `progressbar` nie mają nazw na potrzeby ułatwień dostępu."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "Elementy ARIA `progressbar` mają nazwy na potrzeby ułatwień dostępu"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "Niektóre role ARIA mają atrybuty wymagane, które opisują stan elementu na potrzeby czytników ekranu. [Więcej informacji](https://web.dev/aria-required-attr/)"
@@ -81,13 +108,31 @@
     "message": "Wartości `[role]` są prawidłowe"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Gdy pole przełączania nie ma nazwy na potrzeby ułatwień dostępu, czytniki ekranu określają je nazwą ogólną, przez co jest ono bezużyteczne dla ich użytkowników. [Więcej informacji](https://web.dev/aria-toggle-field-name/)"
+    "message": "Gdy pole przełączania nie ma nazwy na potrzeby ułatwień dostępu, czytniki ekranu określają je nazwą ogólną, przez co jest ono bezużyteczne dla ich użytkowników. [Więcej informacji](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "Pola przełączania ARIA nie mają nazw na potrzeby ułatwień dostępu"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "Pola przełączania ARIA mają nazwy na potrzeby ułatwień dostępu"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "Gdy element nie ma nazwy na potrzeby ułatwień dostępu, czytniki ekranu określają go nazwą ogólną, przez co jest on bezużyteczny dla ich użytkowników. [Więcej informacji](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "Elementy ARIA `tooltip` nie mają nazw na potrzeby ułatwień dostępu."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "Elementy ARIA `tooltip` mają nazwy na potrzeby ułatwień dostępu"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "Gdy element nie ma nazwy na potrzeby ułatwień dostępu, czytniki ekranu określają go nazwą ogólną, przez co jest on bezużyteczny dla ich użytkowników. [Więcej informacji](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "Elementy ARIA `treeitem` nie mają nazw na potrzeby ułatwień dostępu."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "Elementy ARIA `treeitem` mają nazwy na potrzeby ułatwień dostępu"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "Technologie wspomagające, takie jak czytniki ekranu, nie potrafią interpretować atrybutów ARIA o nieprawidłowej wartości. [Więcej informacji](https://web.dev/aria-valid-attr-value/)"
@@ -468,16 +513,16 @@
     "message": "Minifikuj JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "Usuń nieużywane reguły z arkuszy stylów i opóźnij ładowanie kodu CSS, który nie jest używany w części strony widocznej na ekranie bez przewijania, by zmniejszyć ilość danych niepotrzebnie przesyłanych w sieci. [Więcej informacji](https://web.dev/unused-css-rules/)"
+    "message": "Ogranicz nieużywane reguły z arkuszy stylów i opóźnij ładowanie kodu CSS, który nie jest używany w części strony widocznej na ekranie. W ten sposób zmniejszysz ilość danych przesyłanych w sieci. [Więcej informacji](https://web.dev/unused-css-rules/)"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "Usuń nieużywany kod CSS"
+    "message": "Ogranicz nieużywany kod CSS"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "Usuń nieużywany kod JavaScript, by zmniejszyć ilość danych przesyłanych w sieci. [Więcej informacji](https://web.dev/unused-javascript/)"
+    "message": "Ogranicz nieużywany JavaScript i opóźnij ładowanie skryptów do momentu, aż będą wymagane. W ten sposób zmniejszysz ilość danych przesyłanych w sieci. [Więcej informacji](https://web.dev/unused-javascript/)"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "Usuń nieużywany JavaScript"
+    "message": "Ogranicz nieużywany JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "Długi czas przechowywania w pamięci podręcznej może przyśpieszyć ponowne otwarcie strony. [Więcej informacji](https://web.dev/uses-long-cache-ttl/)"
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "Unikaj tworzenia łańcuchów żądań krytycznych"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "Dyrektywa"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "Ścisłe przestrzeganie standardu Content Security Policy (CSP) znacznie zmniejsza ryzyko ataków typu XSS. [Więcej informacji](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "Strona zawiera definicję CSP w tagu <meta>. Jeśli to możliwe, zdefiniuj CSP w nagłówku HTTP."
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "W trybie egzekwowania nie znaleziono CSP"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "Skonfiguruj CSP pod kątem ochrony przed atakami typu XSS"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "Wycofanie/ostrzeżenie"
@@ -810,7 +870,7 @@
     "message": "Ta aplikacja jest już zainstalowana"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "Pobrana ikona była pusta lub uszkodzona"
+    "message": "Nie udało się pobrać wymaganej ikony z pliku manifestu"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "Przyczyna niepowodzenia"
@@ -1050,7 +1110,7 @@
     "message": "Opóźnienia backendu serwera"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "Zdarzenie `unload` nie zawsze jest uruchamiane prawidłowo, a wykrywanie go może uniemożliwić działanie mechanizmów optymalizujących pracę przeglądarki takich jak np. Back-Forward Cache. Rozważ używanie zdarzeń `pagehide` lub `visibilitychange`. [Więcej informacji](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "Zdarzenie `unload` nie zawsze jest uruchamiane prawidłowo, a wykrywanie go może uniemożliwić działanie mechanizmów optymalizujących pracę przeglądarki takich jak pamięć podręczna stanu strony internetowej. Rozważ używanie zdarzeń `pagehide` lub `visibilitychange`. [Więcej informacji](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Zarejestrowanie detektora zdarzeń `unload`"
@@ -1095,7 +1155,7 @@
     "message": "Budżet wydajności"
   },
   "lighthouse-core/audits/preload-fonts.js | description": {
-    "message": "Włącz wstępne wczytywanie czcionek z atrybutem `optional`, by mogli z nich korzystać nowi użytkownicy. [Więcej informacji](https://web.dev/preload-optional-fonts/)"
+    "message": "Włącz wstępne wczytywanie czcionek z atrybutem `optional`, aby mogli z nich korzystać nowi użytkownicy. [Więcej informacji](https://web.dev/preload-optional-fonts/)"
   },
   "lighthouse-core/audits/preload-fonts.js | failureTitle": {
     "message": "Czcionki z atrybutem `font-display: optional` nie są wstępnie wczytywane"
@@ -1467,7 +1527,7 @@
     "message": "URL mapy"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Mapy źródeł tłumaczą zminifikowany kod na oryginalny kod źródłowy. Ułatwia to programistom debugowanie w środowisku produkcyjnym. Oprócz tego Lighthouse może udostępniać dodatkowe statystyki. Warto wdrożyć mapy źródeł, aby korzystać z tych możliwości. [Więcej informacji](https://developer.chrome.com/docs/devtools/javascript/source-maps/)"
+    "message": "Mapy źródeł tłumaczą zminifikowany kod na oryginalny kod źródłowy. Ułatwia to programistom debugowanie w środowisku produkcyjnym. Oprócz tego Lighthouse może udostępniać dodatkowe statystyki. Warto wdrożyć mapy źródeł, aby korzystać z tych możliwości. [Więcej informacji](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)"
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Brakuje map źródeł dla własnych dużych plików JavaScript"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Na komórki"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{Możliwe, że przechowywane są dane, które mają wpływ na szybkość wczytywania w tej lokalizacji: {locations}. Aby uchronić się przed wpływem tych zasobów na wyniki, sprawdź tę stronę w oknie incognito.}few{Możliwe, że przechowywane są dane, które mają wpływ na szybkość wczytywania w tych lokalizacjach: {locations}. Aby uchronić się przed wpływem tych zasobów na wyniki, sprawdź tę stronę w oknie incognito.}many{Możliwe, że przechowywane są dane, które mają wpływ na szybkość wczytywania w tych lokalizacjach: {locations}. Aby uchronić się przed wpływem tych zasobów na wyniki, sprawdź tę stronę w oknie incognito.}other{Możliwe, że przechowywane są dane, które mają wpływ na szybkość wczytywania w tych lokalizacjach: {locations}. Aby uchronić się przed wpływem tych zasobów na wyniki, sprawdź tę stronę w oknie incognito.}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Strona może nie wczytywać się prawidłowo, ponieważ testowy URL ({requested}) został przekierowany pod adres {final}. Przetestuj drugi adres URL bezpośrednio."
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Wczytywanie strony trwało za długo i nie zostało ukończone w przewidzianym na to czasie. Wyniki mogą być niepełne."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "Zastanów się, czy nie dodać schematów adresów URL https: i http: (ignorowanych przez przeglądarki obsługujące dyrektywę „strict-dynamic”), aby uzyskać zgodność wsteczną ze starszymi przeglądarkami."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "Od momentu wprowadzenia CSP3 dyrektywa disown-opener jest wycofana. Zamiast niej użyj nagłówka Cross-Origin-Opener-Policy."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "Od momentu wprowadzenia CSP2 dyrektywa referrer jest wycofana. Zamiast niej użyj nagłówka Referrer-Policy."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "Od momentu wprowadzenia CSP2 dyrektywa reflected-xss jest wycofana. Zamiast niej użyj nagłówka X-XSS-Protection."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "Brak dyrektywy base-uri umożliwia wstrzyknięcie tagów <base>. W ten sposób hakerzy mogą ustawić podstawowy adres URL dla wszystkich względnych adresów URL (np. skryptów) na domenę, którą kontrolują. Warto ustawić base-uri na wartość „none” lub „self”."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "Elementy kontrolowane przez dyrektywę object-src są uważane za funkcje w starszych wersjach. Możesz ustawić dyrektywę object-src na wartość „none”, aby zapobiegała wstrzykiwaniu wtyczek wykonujących niebezpieczne skrypty."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "Brakuje dyrektywy script-src. Może to pozwolić na uruchamianie niebezpiecznych skryptów."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "Prawdopodobnie brakuje średnika. Ciąg {keyword} wygląda jak dyrektywa, a nie jak słowo kluczowe."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "W liczbach jednorazowych należy używać zestawu znaków base64."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "Liczby jednorazowe powinny składać się co najmniej z 8 znaków."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "Miejsce docelowe raportowania zostało skonfigurowane tylko za pomocą dyrektywy report-to. Jest ona obsługiwana tylko w przeglądarkach opartych na Chromium, dlatego zaleca się też używanie dyrektywy report-uri."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "Dla CSP nie skonfigurowano żadnego miejsca docelowego raportowania. Będzie to powodować utrudnienia w późniejszym konserwowaniu CSP i monitorowaniu problemów."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "Listy dozwolonych hostów mogą być często pomijane. Zastanów się, czy nie użyć dyrektywy „strict-dynamic” w połączeniu z liczbami jednorazowymi lub haszami CSP."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "Nieznana dyrektywa CSP."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "{keyword} jest prawdopodobnie nieprawidłowym słowem kluczowym."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "Dyrektywa „unsafe-inline” zezwala na wykonywanie niebezpiecznych skryptów na stronie i uruchamianie modułów obsługi zdarzeń. Zastanów się, czy nie użyć liczb jednorazowych lub haszy CSP, aby zezwolić osobno na poszczególne skrypty."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "Zastanów się, czy nie dodać dyrektywy „unsafe-inline” (ignorowanej przez przeglądarki obsługujące liczby jednorazowe i hasze), aby uzyskać zgodność wsteczną ze starszymi przeglądarkami."
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Czas blokowania głównego wątku"

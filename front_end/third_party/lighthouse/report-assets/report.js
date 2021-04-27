@@ -16,7 +16,7 @@
  */
 'use strict';
 
-/* globals self, URL */
+/* globals self */
 
 /** @typedef {import('./i18n')} I18n */
 
@@ -641,9 +641,10 @@ if (typeof module !== 'undefined' && module.exports) {
  */
 'use strict';
 
-/* globals URL self Util */
+/* globals self Util */
 
 /** @typedef {HTMLElementTagNameMap & {[id: string]: HTMLElement}} HTMLElementByTagName */
+/** @template {string} T @typedef {import('typed-query-selector/parser').ParseSelector<T, Element>} ParseSelector */
 
 class DOM {
   /**
@@ -841,13 +842,18 @@ class DOM {
    * @template {string} T
    * @param {T} query
    * @param {ParentNode} context
+   * @return {ParseSelector<T>}
    */
   find(query, context) {
     const result = context.querySelector(query);
     if (result === null) {
       throw new Error(`query ${query} not found`);
     }
-    return result;
+
+    // Because we control the report layout and templates, use the simpler
+    // `typed-query-selector` types that don't require differentiating between
+    // e.g. HTMLAnchorElement and SVGAElement. See https://github.com/GoogleChrome/lighthouse/issues/12011
+    return /** @type {ParseSelector<T>} */ (result);
   }
 
   /**
@@ -868,201 +874,6 @@ if (typeof module !== 'undefined' && module.exports) {
   self.DOM = DOM;
 }
 ;
-/*
-Details Element Polyfill 2.4.0
-Copyright © 2019 Javan Makhmali
- */
-(function() {
-  "use strict";
-  var element = document.createElement("details");
-  var elementIsNative = typeof HTMLDetailsElement != "undefined" && element instanceof HTMLDetailsElement;
-  var support = {
-    open: "open" in element || elementIsNative,
-    toggle: "ontoggle" in element
-  };
-  var styles = '\ndetails, summary {\n  display: block;\n}\ndetails:not([open]) > *:not(summary) {\n  display: none;\n}\nsummary::before {\n  content: "►";\n  padding-right: 0.3rem;\n  font-size: 0.6rem;\n  cursor: default;\n}\n[open] > summary::before {\n  content: "▼";\n}\n';
-  var _ref = [], forEach = _ref.forEach, slice = _ref.slice;
-  if (!support.open) {
-    polyfillStyles();
-    polyfillProperties();
-    polyfillToggle();
-    polyfillAccessibility();
-  }
-  if (support.open && !support.toggle) {
-    polyfillToggleEvent();
-  }
-  function polyfillStyles() {
-    document.head.insertAdjacentHTML("afterbegin", "<style>" + styles + "</style>");
-  }
-  function polyfillProperties() {
-    var prototype = document.createElement("details").constructor.prototype;
-    var setAttribute = prototype.setAttribute, removeAttribute = prototype.removeAttribute;
-    var open = Object.getOwnPropertyDescriptor(prototype, "open");
-    Object.defineProperties(prototype, {
-      open: {
-        get: function get() {
-          if (this.tagName == "DETAILS") {
-            return this.hasAttribute("open");
-          } else {
-            if (open && open.get) {
-              return open.get.call(this);
-            }
-          }
-        },
-        set: function set(value) {
-          if (this.tagName == "DETAILS") {
-            return value ? this.setAttribute("open", "") : this.removeAttribute("open");
-          } else {
-            if (open && open.set) {
-              return open.set.call(this, value);
-            }
-          }
-        }
-      },
-      setAttribute: {
-        value: function value(name, _value) {
-          var _this = this;
-          var call = function call() {
-            return setAttribute.call(_this, name, _value);
-          };
-          if (name == "open" && this.tagName == "DETAILS") {
-            var wasOpen = this.hasAttribute("open");
-            var result = call();
-            if (!wasOpen) {
-              var summary = this.querySelector("summary");
-              if (summary) summary.setAttribute("aria-expanded", true);
-              triggerToggle(this);
-            }
-            return result;
-          }
-          return call();
-        }
-      },
-      removeAttribute: {
-        value: function value(name) {
-          var _this2 = this;
-          var call = function call() {
-            return removeAttribute.call(_this2, name);
-          };
-          if (name == "open" && this.tagName == "DETAILS") {
-            var wasOpen = this.hasAttribute("open");
-            var result = call();
-            if (wasOpen) {
-              var summary = this.querySelector("summary");
-              if (summary) summary.setAttribute("aria-expanded", false);
-              triggerToggle(this);
-            }
-            return result;
-          }
-          return call();
-        }
-      }
-    });
-  }
-  function polyfillToggle() {
-    onTogglingTrigger(function(element) {
-      element.hasAttribute("open") ? element.removeAttribute("open") : element.setAttribute("open", "");
-    });
-  }
-  function polyfillToggleEvent() {
-    if (window.MutationObserver) {
-      new MutationObserver(function(mutations) {
-        forEach.call(mutations, function(mutation) {
-          var target = mutation.target, attributeName = mutation.attributeName;
-          if (target.tagName == "DETAILS" && attributeName == "open") {
-            triggerToggle(target);
-          }
-        });
-      }).observe(document.documentElement, {
-        attributes: true,
-        subtree: true
-      });
-    } else {
-      onTogglingTrigger(function(element) {
-        var wasOpen = element.getAttribute("open");
-        setTimeout(function() {
-          var isOpen = element.getAttribute("open");
-          if (wasOpen != isOpen) {
-            triggerToggle(element);
-          }
-        }, 1);
-      });
-    }
-  }
-  function polyfillAccessibility() {
-    setAccessibilityAttributes(document);
-    if (window.MutationObserver) {
-      new MutationObserver(function(mutations) {
-        forEach.call(mutations, function(mutation) {
-          forEach.call(mutation.addedNodes, setAccessibilityAttributes);
-        });
-      }).observe(document.documentElement, {
-        subtree: true,
-        childList: true
-      });
-    } else {
-      document.addEventListener("DOMNodeInserted", function(event) {
-        setAccessibilityAttributes(event.target);
-      });
-    }
-  }
-  function setAccessibilityAttributes(root) {
-    findElementsWithTagName(root, "SUMMARY").forEach(function(summary) {
-      var details = findClosestElementWithTagName(summary, "DETAILS");
-      summary.setAttribute("aria-expanded", details.hasAttribute("open"));
-      if (!summary.hasAttribute("tabindex")) summary.setAttribute("tabindex", "0");
-      if (!summary.hasAttribute("role")) summary.setAttribute("role", "button");
-    });
-  }
-  function eventIsSignificant(event) {
-    return !(event.defaultPrevented || event.ctrlKey || event.metaKey || event.shiftKey || event.target.isContentEditable);
-  }
-  function onTogglingTrigger(callback) {
-    addEventListener("click", function(event) {
-      if (eventIsSignificant(event)) {
-        if (event.which <= 1) {
-          var element = findClosestElementWithTagName(event.target, "SUMMARY");
-          if (element && element.parentNode && element.parentNode.tagName == "DETAILS") {
-            callback(element.parentNode);
-          }
-        }
-      }
-    }, false);
-    addEventListener("keydown", function(event) {
-      if (eventIsSignificant(event)) {
-        if (event.keyCode == 13 || event.keyCode == 32) {
-          var element = findClosestElementWithTagName(event.target, "SUMMARY");
-          if (element && element.parentNode && element.parentNode.tagName == "DETAILS") {
-            callback(element.parentNode);
-            event.preventDefault();
-          }
-        }
-      }
-    }, false);
-  }
-  function triggerToggle(element) {
-    var event = document.createEvent("Event");
-    event.initEvent("toggle", false, false);
-    element.dispatchEvent(event);
-  }
-  function findElementsWithTagName(root, tagName) {
-    return (root.tagName == tagName ? [ root ] : []).concat(typeof root.getElementsByTagName == "function" ? slice.call(root.getElementsByTagName(tagName)) : []);
-  }
-  function findClosestElementWithTagName(element, tagName) {
-    if (typeof element.closest == "function") {
-      return element.closest(tagName);
-    } else {
-      while (element) {
-        if (element.tagName == tagName) {
-          return element;
-        } else {
-          element = element.parentNode;
-        }
-      }
-    }
-  }
-})();
-;
 /**
  * @license
  * Copyright 2017 The Lighthouse Authors. All Rights Reserved.
@@ -1081,7 +892,7 @@ Copyright © 2019 Javan Makhmali
  */
 'use strict';
 
-/* globals self CriticalRequestChainRenderer SnippetRenderer ElementScreenshotRenderer Util URL */
+/* globals self CriticalRequestChainRenderer SnippetRenderer ElementScreenshotRenderer Util */
 
 /** @typedef {import('./dom.js')} DOM */
 
@@ -2283,6 +2094,15 @@ if (typeof module !== 'undefined' && module.exports) {
 /** @typedef {{width: number, height: number}} Size */
 
 /**
+ * @typedef InstallOverlayFeatureParams
+ * @property {DOM} dom
+ * @property {Element} reportEl
+ * @property {Element} overlayContainerEl
+ * @property {ParentNode} templateContext
+ * @property {LH.Artifacts.FullPageScreenshot} fullPageScreenshot
+ */
+
+/**
  * @param {LH.Artifacts.FullPageScreenshot['screenshot']} screenshot
  * @param {LH.Artifacts.Rect} rect
  * @return {boolean}
@@ -2383,40 +2203,30 @@ class ElementScreenshotRenderer {
   }
 
   /**
-   * Called externally and must be injected to the report in order to use this renderer.
-   * @param {DOM} dom
+   * Called by report renderer. Defines a css variable used by any element screenshots
+   * in the provided report element.
+   * Allows for multiple Lighthouse reports to be rendered on the page, each with their
+   * own full page screenshot.
+   * @param {HTMLElement} el
    * @param {LH.Artifacts.FullPageScreenshot['screenshot']} screenshot
    */
-  static createBackgroundImageStyle(dom, screenshot) {
-    const styleEl = dom.createElement('style');
-    styleEl.id = 'full-page-screenshot-style';
-    styleEl.textContent = `
-      .lh-element-screenshot__image {
-        background-image: url(${screenshot.data})
-      }`;
-    return styleEl;
+  static installFullPageScreenshot(el, screenshot) {
+    el.style.setProperty('--element-screenshot-url', `url(${screenshot.data})`);
   }
 
   /**
    * Installs the lightbox elements and wires up click listeners to all .lh-element-screenshot elements.
-   * @param {DOM} dom
-   * @param {ParentNode} templateContext
-   * @param {LH.Artifacts.FullPageScreenshot} fullPageScreenshot
+   * @param {InstallOverlayFeatureParams} opts
    */
-  static installOverlayFeature(dom, templateContext, fullPageScreenshot) {
-    const rootEl = dom.find('.lh-root', dom.document());
-    if (!rootEl) {
-      console.warn('No lh-root. Overlay install failed.'); // eslint-disable-line no-console
-      return;
-    }
-
+  static installOverlayFeature(opts) {
+    const {dom, reportEl, overlayContainerEl, templateContext, fullPageScreenshot} = opts;
     const screenshotOverlayClass = 'lh-screenshot-overlay--enabled';
     // Don't install the feature more than once.
-    if (rootEl.classList.contains(screenshotOverlayClass)) return;
-    rootEl.classList.add(screenshotOverlayClass);
+    if (reportEl.classList.contains(screenshotOverlayClass)) return;
+    reportEl.classList.add(screenshotOverlayClass);
 
-    // Add a single listener to the root element to handle all clicks within (event delegation).
-    rootEl.addEventListener('click', e => {
+    // Add a single listener to the provided element to handle all clicks within (event delegation).
+    reportEl.addEventListener('click', e => {
       const target = /** @type {?HTMLElement} */ (e.target);
       if (!target) return;
       // Only activate the overlay for clicks on the screenshot *preview* of an element, not the full-size too.
@@ -2424,7 +2234,7 @@ class ElementScreenshotRenderer {
       if (!el) return;
 
       const overlay = dom.createElement('div', 'lh-element-screenshot__overlay');
-      rootEl.append(overlay);
+      overlayContainerEl.append(overlay);
 
       // The newly-added overlay has the dimensions we need.
       const maxLightboxSize = {
@@ -2567,8 +2377,6 @@ if (typeof module !== 'undefined' && module.exports) {
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 'use strict';
-
-/* global URL */
 
 /**
  * @fileoverview
@@ -2778,7 +2586,7 @@ class ReportUIFeatures {
     this._setupMediaQueryListeners();
     this._dropDown.setup(this.onDropDownMenuClick);
     this._setupThirdPartyFilter();
-    this._setupElementScreenshotOverlay();
+    this._setupElementScreenshotOverlay(this._dom.find('.lh-container', this._document));
     this._setUpCollapseDetailsAfterPrinting();
     this._resetUIState();
     this._document.addEventListener('keyup', this.onKeyUp);
@@ -2994,7 +2802,10 @@ class ReportUIFeatures {
     });
   }
 
-  _setupElementScreenshotOverlay() {
+  /**
+   * @param {Element} el
+   */
+  _setupElementScreenshotOverlay(el) {
     const fullPageScreenshot =
       this.json.audits['full-page-screenshot'] &&
       this.json.audits['full-page-screenshot'].details &&
@@ -3002,8 +2813,13 @@ class ReportUIFeatures {
       this.json.audits['full-page-screenshot'].details;
     if (!fullPageScreenshot) return;
 
-    ElementScreenshotRenderer.installOverlayFeature(
-      this._dom, this._templateContext, fullPageScreenshot);
+    ElementScreenshotRenderer.installOverlayFeature({
+      dom: this._dom,
+      reportEl: el,
+      overlayContainerEl: el,
+      templateContext: this._templateContext,
+      fullPageScreenshot,
+    });
   }
 
   /**
@@ -4300,27 +4116,6 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
       filmstripEl && timelineEl.appendChild(filmstripEl);
     }
 
-    // Budgets
-    /** @type {Array<Element>} */
-    const budgetTableEls = [];
-    ['performance-budget', 'timing-budget'].forEach((id) => {
-      const audit = category.auditRefs.find(audit => audit.id === id);
-      if (audit && audit.result.details) {
-        const table = this.detailsRenderer.render(audit.result.details);
-        if (table) {
-          table.id = id;
-          table.classList.add('lh-audit');
-          budgetTableEls.push(table);
-        }
-      }
-    });
-    if (budgetTableEls.length > 0) {
-      const budgetsGroupEl = this.renderAuditGroup(groups.budgets);
-      budgetTableEls.forEach(table => budgetsGroupEl.appendChild(table));
-      budgetsGroupEl.classList.add('lh-audit-group--budgets');
-      element.appendChild(budgetsGroupEl);
-    }
-
     // Opportunities
     const opportunityAudits = category.auditRefs
         .filter(audit => audit.group === 'load-opportunities' && !Util.showAsPassed(audit.result))
@@ -4376,6 +4171,28 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
     };
     const passedElem = this.renderClump('passed', clumpOpts);
     element.appendChild(passedElem);
+
+    // Budgets
+    /** @type {Array<Element>} */
+    const budgetTableEls = [];
+    ['performance-budget', 'timing-budget'].forEach((id) => {
+      const audit = category.auditRefs.find(audit => audit.id === id);
+      if (audit && audit.result.details) {
+        const table = this.detailsRenderer.render(audit.result.details);
+        if (table) {
+          table.id = id;
+          table.classList.add('lh-audit');
+          budgetTableEls.push(table);
+        }
+      }
+    });
+    if (budgetTableEls.length > 0) {
+      const budgetsGroupEl = this.renderAuditGroup(groups.budgets);
+      budgetTableEls.forEach(table => budgetsGroupEl.appendChild(table));
+      budgetsGroupEl.classList.add('lh-audit-group--budgets');
+      element.appendChild(budgetsGroupEl);
+    }
+
     return element;
   }
 }
@@ -4789,9 +4606,6 @@ class ReportRenderer {
     const detailsRenderer = new DetailsRenderer(this._dom, {
       fullPageScreenshot,
     });
-    const fullPageScreenshotStyleEl = fullPageScreenshot &&
-      ElementScreenshotRenderer.createBackgroundImageStyle(
-        this._dom, fullPageScreenshot.screenshot);
 
     const categoryRenderer = new CategoryRenderer(this._dom, detailsRenderer);
     categoryRenderer.setTemplateContext(this._templateContext);
@@ -4850,8 +4664,12 @@ class ReportRenderer {
     reportFragment.appendChild(reportContainer);
     reportContainer.appendChild(headerContainer);
     reportContainer.appendChild(reportSection);
-    fullPageScreenshotStyleEl && reportContainer.appendChild(fullPageScreenshotStyleEl);
     reportSection.appendChild(this._renderReportFooter(report));
+
+    if (fullPageScreenshot) {
+      ElementScreenshotRenderer.installFullPageScreenshot(
+        reportContainer, fullPageScreenshot.screenshot);
+    }
 
     return reportFragment;
   }
@@ -4870,7 +4688,7 @@ if (typeof module !== 'undefined' && module.exports) {
  */
 'use strict';
 
-/* globals self, URL */
+/* globals self */
 
 // Not named `NBSP` because that creates a duplicate identifier (util.js).
 const NBSP2 = '\xa0';

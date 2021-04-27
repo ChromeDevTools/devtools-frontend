@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "`[aria-*]`-määritteet vastaavat roolejaan"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "Jos elementin nimi ei ole esteetön, näytönlukuohjelmat sanovat sen kohdalla geneerisen nimen, jolloin näytönlukuohjelmien käyttäjät eivät voi käyttää sitä. [Lue lisää](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "Elementeillä (`button`, `link` ja `menuitem`) ei ole esteettömiä nimiä"
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "Elementeillä (`button`, `link` ja `menuitem`) on esteettömät nimet"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Näytönlukuohjelmat ja muut avustavat teknologiat toimivat arvaamattomasti, kun `aria-hidden=\"true\"` asetetaan dokumentin kohdassa `<body>`. [Lue lisää](https://web.dev/aria-hidden-body/)."
   },
@@ -36,13 +45,31 @@
     "message": "`[aria-hidden=\"true\"]`-elementeissä ei ole tarkennettavia alaosia"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Jos syötekentän nimi ei ole esteetön, näytönlukuohjelmat sanovat sen kohdalla geneerisen nimen, jolloin näytönlukuohjelmien käyttäjät eivät voi käyttää sitä. [Lue lisää](https://web.dev/aria-input-field-name/)."
+    "message": "Jos syötekentän nimi ei ole esteetön, näytönlukuohjelmat sanovat sen kohdalla geneerisen nimen, jolloin näytönlukuohjelmien käyttäjät eivät voi käyttää sitä. [Lue lisää](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "ARIA-syötekenttien nimet eivät ole esteettömiä"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "ARIA-syötekenttien nimet ovat esteettömiä"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "Jos elementin nimi ei ole esteetön, näytönlukuohjelmat sanovat sen kohdalla geneerisen nimen, jolloin näytönlukuohjelmien käyttäjät eivät voi käyttää sitä. [Lue lisää](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "ARIA-elementeillä (`meter`) ei ole esteettömiä nimiä"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "ARIA-elementeillä (`meter`) on esteettömät nimet"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "Jos elementin nimi ei ole esteetön, näytönlukuohjelmat sanovat sen kohdalla geneerisen nimen, jolloin näytönlukuohjelmien käyttäjät eivät voi käyttää sitä. [Lue lisää](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "ARIA-elementeillä (`progressbar`) ei ole esteettömiä nimiä"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "ARIA-elementeillä (`progressbar`) on esteettömät nimet"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "Joillakin ARIA-rooleilla on pakollisia määritteitä, jotka kuvaavat elementin tilaa näytönlukuohjelmille. [Lue lisää](https://web.dev/aria-required-attr/)."
@@ -81,13 +108,31 @@
     "message": "`[role]`-arvot ovat kelvollisia"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Jos päälle/pois-kentän nimi ei ole esteetön, näytönlukuohjelmat sanovat sen kohdalla geneerisen nimen, jolloin näytönlukuohjelmien käyttäjät eivät voi käyttää sitä. [Lue lisää](https://web.dev/aria-toggle-field-name/)."
+    "message": "Jos päälle/pois-kentän nimi ei ole esteetön, näytönlukuohjelmat sanovat sen kohdalla geneerisen nimen, jolloin näytönlukuohjelmien käyttäjät eivät voi käyttää sitä. [Lue lisää](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "ARIAn päälle/pois-kenttien nimet eivät ole esteettömiä"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "ARIAn päälle/pois-kenttien nimet ovat esteettömiä"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "Jos elementin nimi ei ole esteetön, näytönlukuohjelmat sanovat sen kohdalla geneerisen nimen, jolloin näytönlukuohjelmien käyttäjät eivät voi käyttää sitä. [Lue lisää](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "ARIA-elementeillä (`tooltip`) ei ole esteettömiä nimiä"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "ARIA-elementeillä (`tooltip`) on esteettömät nimet"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "Jos elementin nimi ei ole esteetön, näytönlukuohjelmat sanovat sen kohdalla geneerisen nimen, jolloin näytönlukuohjelmien käyttäjät eivät voi käyttää sitä. [Lue lisää](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "ARIA-elementeillä (`treeitem`) ei ole esteettömiä nimiä"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "ARIA-elementeillä (`treeitem`) on esteettömät nimet"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "Avustustekniikat (kuten näytönlukuohjelmat) eivät voi tulkita ARIA-määritteitä, joissa on virheelliset arvot. [Lue lisää](https://web.dev/aria-valid-attr-value/)."
@@ -348,10 +393,10 @@
     "message": "Kun videossa on tekstitykset, kuurot ja heikkokuuloiset saavat videon tiedot paremmin. [Lue lisää](https://web.dev/video-caption/)."
   },
   "lighthouse-core/audits/accessibility/video-caption.js | failureTitle": {
-    "message": "`<video>`-elementit eivät sisällä `<track>`-elementtiä, jossa on `[kind=\"captions\"]`"
+    "message": "Elementit (`<video>`) eivät sisällä elementtiä (`<track>`), jossa on `[kind=\"captions\"]`"
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
-    "message": "`<video>`-elementit sisältävät `<track>`-elementin, jossa on `[kind=\"captions\"]`"
+    "message": "Elementit (`<video>`) sisältävät elementin (`<track>`), jossa on `[kind=\"captions\"]`"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
     "message": "Määritä `apple-touch-icon`, jotta iOS-näkyvyys on paras mahdollinen, kun käyttäjä lisää progressiivisen web-sovelluksen aloitusnäytölle. Sen on viitattava läpinäkymättömään neliön muotoiseen (192 px tai 180 px) PNG-tiedostoon. [Lue lisää](https://web.dev/apple-touch-icon/)."
@@ -468,16 +513,16 @@
     "message": "Pienennä JavaScript-tiedostoja"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "Poista käyttämättömät säännöt tyylisivuilta ja lykkää sellaisen CSS:n lataamista, jota ei käytetä sivun yläosan sisältöön, niin vähennät verkkotoiminnan turhaa tavujen kulutusta. [Lue lisää](https://web.dev/unused-css-rules/)."
+    "message": "Vähennä tyylisivujen käyttämättömiä sääntöjä ja lykkää sellaista CSS:ää, jota ei käytetä sivun yläosan sisältöön, niin vähennät verkkotoiminnan tavujen kulutusta. [Lue lisää](https://web.dev/unused-css-rules/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "Poista käyttämätön CSS"
+    "message": "Vähennä käyttämätöntä CSS:ää"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "Poista tarpeeton JavaScript pienentääksesi verkkotoiminnan tavunkulutusta. [Lue lisää](https://web.dev/unused-javascript/)."
+    "message": "Vähennä käyttämätöntä JavaScriptiä ja lykkää skriptien lataamista, kunnes niiden on vähennettävä verkkotoiminnan tavujen kulutusta. [Lue lisää](https://web.dev/unused-javascript/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "Poista käyttämätön JavaScript"
+    "message": "Vähennä käyttämätöntä JavaScriptiä"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "Pitkä välimuistin käyttöikä voi nopeuttaa sivun lataamista, kun käyttäjä avaa sen uudelleen. [Lue lisää](https://web.dev/uses-long-cache-ttl/)."
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "Vältä kriittisten pyyntöjen ketjuttamista"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "Sääntö"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "Vahva Content Security Policy ‑käytäntö (CSP) vähentää merkittävästi XSS-hyökkäyksien riskiä. [Lue lisää](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "Sivu sisältää <meta>-tagissa määritetyn CSP:n. Harkitse CSP:n määrittämistä HTTP-ylätunnisteessa, jos mahdollista."
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "Täytäntöönpanotilasta ei löytynyt CSP:tä"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "Varmista, että CSP tehoaa XSS-hyökkäyksiä vastaan"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "Käytöstä poistaminen / varoitus"
@@ -810,7 +870,7 @@
     "message": "Sovellus on jo asennettu"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "Ladattu kuvake oli tyhjä tai vioittunut"
+    "message": "Tarvittavan kuvakkeen lataaminen teknisistä tiedoista ei onnistunut"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "Epäonnistumisen syy"
@@ -1050,7 +1110,7 @@
     "message": "Palvelimen taustaviiveet"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "`unload` ei käynnisty luotettavasti, ja sen kuuntelu voi estää selaimen optimoinnin, esim. Back-Forward-välimuistin toiminnan. Harkitse sen sijaan näiden tapahtumien käyttämistä: `pagehide` tai `visibilitychange`. [Lisätietoja](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "`unload` ei käynnisty luotettavasti, ja sen kuuntelu voi estää selaimen optimoinnin, esim. Back-Forward-välimuistin toiminnan. Harkitse sen sijaan näiden tapahtumien käyttämistä: `pagehide` tai `visibilitychange`. [Lue lisää](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Rekisteröi (`unload`) kuuntelijan"
@@ -1467,7 +1527,7 @@
     "message": "Kartan URL"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Lähdekartat muuntavat pienennetyn koodin alkuperäiseksi lähdekoodiksi. Tämä auttaa kehittäjiä jäljittämään ja korjaamaan virheet tuotantovaiheessa. Lisätietoja saa myös Lighthousesta. Sinun kannattaa ehkä ottaa lähdekartat käyttöön, jotta voit hyödyntää näitä mahdollisuuksia. [Lue lisää](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
+    "message": "Lähdekartat muuntavat pienennetyn koodin alkuperäiseksi lähdekoodiksi. Tämä auttaa kehittäjiä jäljittämään ja korjaamaan virheet tuotantovaiheessa. Lisätietoja saa myös Lighthousesta. Sinun kannattaa ehkä ottaa lähdekartat käyttöön, jotta voit hyödyntää näitä mahdollisuuksia. [Lue lisää](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Suuresta ensimmäisen osapuolen JavaScript-kirjastosta puuttuu lähdekarttoja"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Mobiiliystävällinen"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{Tähän sijaintiin on voitu tallentaa dataa, joka vaikuttaa lataukseen: {locations}. Tarkista sivu incognito-ikkunassa, jotta voit estää kyseisten resurssien vaikutuksen tuloksiisi.}other{Näihin sijainteihin on voitu tallentaa dataa, joka vaikuttaa lataukseen: {locations}. Tarkista sivu incognito-ikkunassa, jotta voit estää kyseisten resurssien vaikutuksen tuloksiisi.}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Sivun lataus ei ehkä onnistu odotetusti, koska testi-URL ({requested}) ohjattiin uudelleen osoitteeseen {final}. Kokeile suoraan toista URL-osoitetta."
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Sivu ei ehtinyt latautua loppuun aikarajan sisällä. Tuloksista voi puuttua osa."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "Harkitse https:- ja http:-URL-osoitteen kaavojen (joita \"strict-dynamicia\" tukevat selaimet ohittavat) lisäämistä, niin voit saavuttaa taaksepäinyhteensopivuuden vanhempien selainten kanssa."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "CSP3:sta lähtien disown-opener on poistettu käytöstä. Käytä sen sijaan Cross-Origin-Opener-Policy-ylätunnistetta."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "CSP2:sta lähtien referrer on poistettu käytöstä. Käytä sen sijaan Referrer-Policy-ylätunnistetta."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "CSP2:sta lähtien reflected-xss on poistettu käytöstä. Käytä sen sijaan X-XSS-Protection-ylätunnistetta."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "Puuttuva base-uri sallii injektoitujen <base>-tagien määrittää kaikkien suhteellisten URL-osoitteiden (esim. skriptien) pohja-URL-osoitteen hyökkääjän hallitsemaan verkkotunnukseen. Sinun kannattaa valita base-urin arvoksi \"none\" tai \"self\"."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "object-srcin ohjaamat elementit ovat vanhoja ominaisuuksia. Määritä object-srcin arvoksi \"none\" estääksesi vaarallisten skriptejä suorittavien liitännäisten injektointi."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "script-src-sääntö puuttuu. Tämä mahdollistaa vaarallisten skriptien suorittamisen."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "Unohditko puolipisteen? Näyttää siltä, että {keyword} on sääntö eikä avainsana."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "Noncesien on käytettävä base64-merkistöä."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "Noncesien on oltava vähintään kahdeksan merkkiä."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "Raportointimääränpään voi määrittää vain report-to-säännön kautta. Vain Chromium-pohjaiset selaimet tukevat kyseistä sääntöä, joten on suositeltavaa käyttää myös report-uri-sääntöä."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "Raportointimääränpäätä määrittävää CSP:tä ei ole. Tämän takia on hankala säilyttää CSP:tä ajan mittaa ja seurata vaurioita."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "Isännän sallitut luettelot ovat usein ohitettavissa. Harkitse \"strict-dynamicin\" käyttöä CSP-noncesien tai ‑hashien kanssa."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "Tuntematon CSP-sääntö."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "Näyttää siltä, että {keyword} on virheellinen avainsana."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "\"unsafe-inlinen\" avulla voidaan suorittaa vaarallisia sivun sisäisiä skriptejä ja tapahtumien käsittelijöitä. Harkitse skriptien salliminen yksitellen käyttämällä CSP-nonceja tai ‑hasheja."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "Harkitse \"unsafe-inlinen\" (jonka nonceja/hasheja tukevat selaimet ohittavat) lisäämistä, niin voit saavuttaa taaksepäinyhteensopivuuden vanhempien selainten kanssa."
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Pääsäikeen estoaika"

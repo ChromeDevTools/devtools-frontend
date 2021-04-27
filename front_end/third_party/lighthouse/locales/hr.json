@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Atributi `[aria-*]` podudaraju se sa svojim ulogama"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "Kad element nema pristupačan naziv, čitači zaslona najavljuju ga generičkim nazivom, što ga čini neupotrebljivim za korisnike koji se oslanjaju na čitače zaslona. [Saznajte više](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "Elementi `button`, `link` i `menuitem` nemaju pristupačne nazive."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "Elementi `button`, `link` i `menuitem` imaju pristupačne nazive"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Asistivne tehnologije, poput čitača zaslona, ne funkcioniraju dosljedno kad je oznaka `aria-hidden=\"true\"` postavljena na `<body>` dokumenta. [Saznajte više](https://web.dev/aria-hidden-body/)."
   },
@@ -36,13 +45,31 @@
     "message": "Elementi `[aria-hidden=\"true\"]` ne sadrže podređene elemente koji se mogu fokusirati"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Kad polje za unos nema pristupačan naziv, čitači zaslona najavljuju ga generičkim nazivom, što ga čini neupotrebljivim za korisnike koji se oslanjaju na čitače zaslona. [Saznajte više](https://web.dev/aria-input-field-name/)."
+    "message": "Kad polje za unos nema pristupačan naziv, čitači zaslona najavljuju ga generičkim nazivom, što ga čini neupotrebljivim za korisnike koji se oslanjaju na čitače zaslona. [Saznajte više](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "ARIA polja za unos nemaju pristupačne nazive"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "ARIA polja za unos imaju pristupačne nazive"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "Kad element nema pristupačan naziv, čitači zaslona najavljuju ga generičkim nazivom, što ga čini neupotrebljivim za korisnike koji se oslanjaju na čitače zaslona. [Saznajte više](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "ARIA elementi `meter` nemaju pristupačne nazive."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "ARIA elementi `meter` imaju pristupačne nazive"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "Kad element nema pristupačan naziv, čitači zaslona najavljuju ga generičkim nazivom, što ga čini neupotrebljivim za korisnike koji se oslanjaju na čitače zaslona. [Saznajte više](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "ARIA elementi `progressbar` nemaju pristupačne nazive."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "ARIA elementi `progressbar` imaju pristupačne nazive"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "Neke uloge ARIA-e zahtijevaju atribute koji opisuju stanje elementa čitačima zaslona. [Saznajte više](https://web.dev/aria-required-attr/)."
@@ -81,13 +108,31 @@
     "message": "Vrijednosti `[role]` su valjane"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Kad polje prekidača nema pristupačan naziv, čitači zaslona najavljuju ga generičkim nazivom, što ga čini neupotrebljivim za korisnike koji se oslanjaju na čitače zaslona. [Saznajte više](https://web.dev/aria-toggle-field-name/)."
+    "message": "Kad polje prekidača nema pristupačan naziv, čitači zaslona najavljuju ga generičkim nazivom, što ga čini neupotrebljivim za korisnike koji se oslanjaju na čitače zaslona. [Saznajte više](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "ARIA polja prekidača nemaju pristupačne nazive"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "ARIA polja prekidača imaju pristupačne nazive"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "Kad element nema pristupačan naziv, čitači zaslona najavljuju ga generičkim nazivom, što ga čini neupotrebljivim za korisnike koji se oslanjaju na čitače zaslona. [Saznajte više](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "ARIA elementi `tooltip` nemaju pristupačne nazive."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "ARIA elementi `tooltip` imaju pristupačne nazive"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "Kad element nema pristupačan naziv, čitači zaslona najavljuju ga generičkim nazivom, što ga čini neupotrebljivim za korisnike koji se oslanjaju na čitače zaslona. [Saznajte više](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "ARIA elementi `treeitem` nemaju pristupačne nazive."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "ARIA elementi `treeitem` imaju pristupačne nazive"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "Pomoćne tehnologije, poput čitača zaslona, ne mogu tumačiti atribute ARIA s nevažećim vrijednostima. [Saznajte više](https://web.dev/aria-valid-attr-value/)."
@@ -468,16 +513,16 @@
     "message": "Umanjite JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "Uklonite nepotrebna pravila iz stilskih tablica i odgodite učitavanje CSS-a koji se ne koristi za sadržaj na vidljivom dijelu stranice kako biste smanjili nepotrebnu potrošnju bajtova u mrežnoj aktivnosti. [Saznajte više](https://web.dev/unused-css-rules/)."
+    "message": "Smanjite nekorištena pravila iz stilskih tablica i odgodite CSS koji se ne koristi za sadržaj na vidljivom dijelu stranice kako biste smanjili potrošnju bajtova u mrežnoj aktivnosti. [Saznajte više](https://web.dev/unused-css-rules/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "Uklonite CSS koji se ne koristi"
+    "message": "Smanjite nekorišteni CSS"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "Uklonite JavaScript koji se ne koristi da biste smanjili potrošnju bajtova u mrežnoj aktivnosti. [Saznajte više](https://web.dev/unused-javascript/)."
+    "message": "Smanjite nekorišteni JavaScript i odgodite učitavanje skripti dok ne budu potrebne kako biste smanjili potrošnju bajtova u mrežnoj aktivnosti. [Saznajte više](https://web.dev/unused-javascript/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "Uklonite nekorišteni JavaScript"
+    "message": "Smanjite nekorišteni JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "Dugotrajno predmemoriranje može ubrzati ponovljene posjete vašoj stranici. [Saznajte više](https://web.dev/uses-long-cache-ttl/)."
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "Izbjegavajte ulančavanje kritičnih zahtjeva"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "Direktiva"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "Snažna pravila o sigurnosti sadržaja (CSP) značajno smanjuju opasnost od XSS napada. [Saznajte više](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "Stranica sadrži CSP definiran u oznaci <meta>. Savjetujemo vam da definirate CSP u HTTP zaglavlju ako možete."
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "U načinu provedbe nije pronađen CSP"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "Provjera učinkovitosti CSP-a protiv XSS napada"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "Ukidanje / upozorenje"
@@ -810,7 +870,7 @@
     "message": "Aplikacija je već instalirana"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "Preuzeta ikona bila je prazna ili oštećena"
+    "message": "Preuzimanje obavezne ikone iz manifesta nije uspjelo"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "Razlog neuspjeha"
@@ -1050,7 +1110,7 @@
     "message": "Pozadinske latencije poslužitelja"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "Događaj `unload` ne aktivira se na pouzdan način i njegovo osluškivanje može spriječiti optimizacije preglednika kao što je predmemorija za kretanje unatrag i unaprijed Umjesto toga savjetujemo vam upotrebu `pagehide` ili `visibilitychange`. [Saznajte više](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "Događaj `unload` ne aktivira se na pouzdan način i njegovo osluškivanje može spriječiti optimizacije preglednika kao što je predmemoriranje cijele stranice. Umjesto toga savjetujemo vam upotrebu događaja `pagehide` ili `visibilitychange`. [Saznajte više](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registrira se kao slušatelj za događaj `unload`"
@@ -1467,7 +1527,7 @@
     "message": "URL karte"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Karte izvora prevode umanjeni kôd u originalni izvorni kôd. To pomaže razvojnim programerima pri otklanjanju pogrešaka u produkciji. Osim toga, Lighthouse može pružiti daljnje uvide. Savjetujemo vam da primijenite karte izvora kako biste iskoristili te pogodnosti. [Saznajte više](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
+    "message": "Karte izvora prevode umanjeni kôd u originalni izvorni kôd. To pomaže razvojnim programerima pri otklanjanju pogrešaka u produkciji. Osim toga, Lighthouse može pružiti daljnje uvide. Savjetujemo vam da primijenite karte izvora kako biste iskoristili te pogodnosti. [Saznajte više](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Nedostaju karte izvora za veliki JavaScript prve strane"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Prilagođeno mobilnim uređajima"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{Na ovoj lokaciji možda ima pohranjenih podataka koji utječu na izvedbu učitavanja: {locations}. Provjerite stranicu u anonimnom prozoru da ti resursi ne bi utjecali na rezultate.}one{Na ovim lokacijama možda ima pohranjenih podataka koji utječu na izvedbu učitavanja: {locations}. Provjerite stranicu u anonimnom prozoru da ti resursi ne bi utjecali na rezultate.}few{Na ovim lokacijama možda ima pohranjenih podataka koji utječu na izvedbu učitavanja: {locations}. Provjerite stranicu u anonimnom prozoru da ti resursi ne bi utjecali na rezultate.}other{Na ovim lokacijama možda ima pohranjenih podataka koji utječu na izvedbu učitavanja: {locations}. Provjerite stranicu u anonimnom prozoru da ti resursi ne bi utjecali na rezultate.}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Stranica se možda ne učitava kako je očekivano jer je vaš testni URL ({requested}) bio preusmjeren na {final}. Pokušajte izravno testirati drugi URL"
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Učitavanje stranice bilo je presporo da bi se dovršilo unutar vremenskog ograničenja. Rezultati možda nisu potpuni."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "Savjetujemo vam da dodate https: i http: URL sheme (koje ignoriraju preglednici koji podržavaju strict-dynamic) radi kompatibilnosti s prijašnjim verzijama preglednika."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "Direktiva disown-opener obustavljena je od pravila CSP3. Upotrijebite zaglavlje Cross-Origin-Opener-Policy."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "Direktiva referrer obustavljena je od pravila CSP2. Upotrijebite zaglavlje Referrer-Policy."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "Direktiva reflected-xss obustavljena je od pravila CSP2. Upotrijebite zaglavlje X-XSS-Protection."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "Base-uri koji nedostaje dopušta ugrađenim oznakama <base> da postave osnovni URL za sve relativne URL-ove (npr. skripte) na domenu kojom upravljaju napadači. Savjetujemo vam da base-uri postavite na none ili self."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "Elementi kojima upravlja object-src smatraju se starim značajkama. Savjetujemo vam da object-src postavite na none kako biste spriječili ugradnju dodataka koji izvršavaju nesigurne skripte."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "Nedostaje direktiva script-src. To može omogućiti izvršavanje nesigurnih skripti."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "Jeste li zaboravili točku sa zarezom? Čini se da je {keyword} direktiva, a ne ključna riječ."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "Nonceovi trebaju upotrebljavati base64 skup znakova."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "Nonceovi trebaju imati najmanje osam znakova."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "Odredište izvješća konfigurira se samo putem direktive report-to. Ta je direktiva podržana samo u preglednicima koji se temelje na Chromiumu, pa se preporučuje da se upotrijebi i direktiva report-uri."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "Nijedan CSP ne konfigurira odredište izvješća. To otežava održavanje CSP-a tijekom vremena i nadzor mogućih prekida."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "Popis dopuštenih hostova često se može zaobići. Savjetujemo vam da koristite strict-dynamic u kombinaciji s CSP nonceovima ili hashevima."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "Nepoznata direktiva CSP-a."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "Čini se da {keyword} nije važeća ključna riječ."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "Direktiva unsafe-inline omogućuje izvršavanje nesigurnih skripti i rukovatelja događajima unutar stranice. Savjetujemo vam da koristite CSP nonceove ili hasheve kako biste omogućavali skripte pojedinačno."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "Savjetujemo vam da koristite unsafe-inline (koji ignoriraju preglednici koji podržavaju nonceove/hasheve) radi kompatibilnosti s prijašnjim verzijama preglednika."
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Vrijeme blokiranja glavne niti"

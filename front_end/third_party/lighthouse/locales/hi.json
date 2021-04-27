@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "`[aria-*]` विशेषताएं और उनकी भूमिकाएं एक-दूसरे से मेल खाती हैं"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "अगर किसी एलिमेंट का कोई ऐसा नाम नहीं है जिसे ऐक्सेस किया जा सकता हो, तो स्क्रीन रीडर उस एलिमेंट को किसी सामान्य नाम से बुलाते हैं. इस वजह से, एलिमेंट का मूल नाम उन लोगों के लिए किसी काम का नहीं रहता जो स्क्रीन रीडर की मदद से ही टेक्स्ट पढ़ या समझ सकते हैं. [ज़्यादा जानें](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "`button`, `link`, और `menuitem` एलिमेंट के नाम ऐक्सेस नहीं किए जा सकते."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "`button`, `link`, और `menuitem` एलिमेंट के नाम ऐक्सेस किए जा सकते हैं"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "जब `aria-hidden=\"true\"`, `<body>` दस्तावेज़ पर सेट होता है, तो स्क्रीन रीडर जैसी सहायक टेक्नोलॉजी हर समय एक जैसा काम नहीं करती हैं. [ज़्यादा जानें](https://web.dev/aria-hidden-body/)."
   },
@@ -36,13 +45,31 @@
     "message": "`[aria-hidden=\"true\"]` एलिमेंट में फ़ोकस करने लायक डिसेंडेंट नहीं हैं"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "अगर किसी इनपुट फ़ील्ड का कोई ऐसा नाम नहीं है जिसे ऐक्सेस किया जा सकता है, तो स्क्रीन रीडर उसे किसी सामान्य नाम से बुलाते हैं. इस वजह से, यह उनके लिए किसी काम का नहीं रहता जो स्क्रीन रीडर से ही टेक्स्ट पढ़ या समझ सकते हैं. [ज़्यादा जानें](https://web.dev/aria-input-field-name/)."
+    "message": "अगर किसी इनपुट फ़ील्ड का कोई ऐसा नाम नहीं है जिसे ऐक्सेस किया जा सकता है, तो स्क्रीन रीडर उसे किसी सामान्य नाम से बुलाते हैं. इस वजह से, यह उनके लिए किसी काम का नहीं रहता जो स्क्रीन रीडर से ही टेक्स्ट पढ़ या समझ सकते हैं. [ज़्यादा जानें](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "ARIA इनपुट फ़ील्ड का कोई ऐसा नाम नहीं है जिसे ऐक्सेस किया जा सकता हो"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "ARIA इनपुट फ़ील्ड के ऐसे नाम हैं जिन्हें ऐक्सेस किया जा सकता है"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "अगर किसी एलिमेंट का कोई ऐसा नाम नहीं है जिसे ऐक्सेस किया जा सकता हो, तो स्क्रीन रीडर उस एलिमेंट को किसी सामान्य नाम से बुलाते हैं. इस वजह से, एलिमेंट का मूल नाम उन लोगों के लिए किसी काम का नहीं रहता जो स्क्रीन रीडर की मदद से ही टेक्स्ट पढ़ या समझ सकते हैं. [ज़्यादा जानें](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "ARIA `meter` एलिमेंट के नाम ऐक्सेस नहीं किए जा सकते."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "ARIA `meter` एलिमेंट के नाम ऐक्सेस किए जा सकते हैं"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "अगर किसी एलिमेंट का कोई ऐसा नाम नहीं है जिसे ऐक्सेस किया जा सकता हो, तो स्क्रीन रीडर उस एलिमेंट को किसी सामान्य नाम से बुलाते हैं. इस वजह से, एलिमेंट का मूल नाम उन लोगों के लिए किसी काम का नहीं रहता जो स्क्रीन रीडर की मदद से ही टेक्स्ट पढ़ या समझ सकते हैं. [ज़्यादा जानें](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "ARIA `progressbar` एलिमेंट के नाम ऐक्सेस नहीं किए जा सकते."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "ARIA `progressbar` एलिमेंट के नाम ऐक्सेस किए जा सकते हैं"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "कुछ ARIA भूमिकाओं में ऐसी विशेषताओं की ज़रूरत होती है जो स्क्रीन रीडर को एलिमेंट की स्थिति बताती हैं. [ज़्यादा जानें](https://web.dev/aria-required-attr/)."
@@ -81,13 +108,31 @@
     "message": "`[role]` मान सही हैं"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "अगर किसी टॉगल फ़ील्ड का कोई ऐसा नाम नहीं है जिसे ऐक्सेस किया जा सकता है, तो स्क्रीन रीडर उसे किसी सामान्य नाम से बुलाते हैं. इस वजह से यह उनके लिए किसी काम का नहीं रहता जो स्क्रीन रीडर से ही टेक्स्ट पढ़ या समझ सकते हैं. [ज़्यादा जानें](https://web.dev/aria-toggle-field-name/)."
+    "message": "अगर किसी टॉगल फ़ील्ड का कोई ऐसा नाम नहीं है जिसे ऐक्सेस किया जा सकता है, तो स्क्रीन रीडर उसे किसी सामान्य नाम से बुलाते हैं. इस वजह से यह उनके लिए किसी काम का नहीं रहता जो स्क्रीन रीडर से ही टेक्स्ट पढ़ या समझ सकते हैं. [ज़्यादा जानें](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "ARIA टॉगल फ़ील्ड का कोई ऐसा नाम नहीं है जिसे ऐक्सेस किया जा सकता हो"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "ARIA टॉगल फ़ील्ड के ऐसे नाम हैं जिन्हें ऐक्सेस किया जा सकता है"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "अगर किसी एलिमेंट का कोई ऐसा नाम नहीं है जिसे ऐक्सेस किया जा सकता हो, तो स्क्रीन रीडर उस एलिमेंट को किसी सामान्य नाम से बुलाते हैं. इस वजह से, एलिमेंट का मूल नाम उन लोगों के लिए किसी काम का नहीं रहता जो स्क्रीन रीडर की मदद से ही टेक्स्ट पढ़ या समझ सकते हैं. [ज़्यादा जानें](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "ARIA `tooltip` एलिमेंट के नाम ऐक्सेस नहीं किए जा सकते."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "ARIA `tooltip` एलिमेंट के नाम ऐक्सेस किए जा सकते हैं"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "अगर किसी एलिमेंट का कोई ऐसा नाम नहीं है जिसे ऐक्सेस किया जा सकता हो, तो स्क्रीन रीडर उस एलिमेंट को किसी सामान्य नाम से बुलाते हैं. इस वजह से, एलिमेंट का मूल नाम उन लोगों के लिए किसी काम का नहीं रहता जो स्क्रीन रीडर की मदद से ही टेक्स्ट पढ़ या समझ सकते हैं. [ज़्यादा जानें](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "ARIA `treeitem` एलिमेंट के नाम ऐक्सेस नहीं किए जा सकते."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "ARIA `treeitem` एलिमेंट के नाम ऐक्सेस किए जा सकते हैं"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "स्क्रीन रीडर जैसी सहायक तकनीक, गलत मानों वाली ARIA विशेषताओं को समझ नहीं सकतीं. [ज़्यादा जानें](https://web.dev/aria-valid-attr-value/)."
@@ -468,16 +513,16 @@
     "message": "JavaScript का आकार कम करें"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "स्टाइलशीट से इस्तेमाल न किए गए नियमों को हटाएं और पेज के ऊपरी हिस्से की सामग्री के लिए इस्तेमाल न होने वाले CSS को लोड होने से टालें. ऐसा करके, नेटवर्क गतिविधि में खर्च होने वाले गैर-ज़रूरी बाइट कम किए जा सकते हैं. [ज़्यादा जानें](https://web.dev/unused-css-rules/)."
+    "message": "स्टाइलशीट से इस्तेमाल न किए गए नियमों को कम करें और पेज के ऊपरी हिस्से वाले कॉन्टेंट के लिए जो सीएसएस इस्तेमाल न हुए हों उन्हें अभी लोड न होने दें. इससे नेटवर्क गतिविधि के लिए खपत होने वाले बाइट कम होंगे. [ज़्यादा जानें](https://web.dev/unused-css-rules/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "इस्तेमाल नहीं किए गए CSS को हटाएं"
+    "message": "इस्तेमाल न किए गए सीएसएस को कम करना"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "अपना इंटरनेट डेटा बचाने के लिए, इस्तेमाल नहीं होने वाले JavaScript को हटाएं. [ज़्यादा जानें](https://web.dev/unused-javascript/)."
+    "message": "इस्तेमाल न किए गए JavaScript को कम करें और स्क्रिप्ट को तब तक लोड न करें, जब तक उनके लिए नेटवर्क गतिविधि के तहत खपत होने वाले बाइट को कम करना ज़रूरी न हो जाए. [ज़्यादा जानें](https://web.dev/unused-javascript/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "इस्तेमाल नहीं किया गया JavaScript हटाएं"
+    "message": "इस्तेमाल न किए गए JavaScript को कम करना"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "अगर कैश मेमोरी ज़्यादा समय तक रहेगी, तो लोगों के आपकी साइट पर लौटने की प्रक्रिया में तेज़ी आएगी. [ज़्यादा जानें](https://web.dev/uses-long-cache-ttl/)."
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "गंभीर अनुरोधों की चेन न बनाएं"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "डायरेक्टिव"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "एक मज़बूत 'कॉन्टेंट की सुरक्षा के बारे में नीति' (CSP) की मदद से, XSS हमलाें का खतरा काफ़ी हद तक कम हो जाता है. [ज़्यादा जानें](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "इस पेज पर एक <meta> टैग में CSP की जानकारी दी गई है. अगर हो पाए, तो CSP की जानकारी किसी एचटीटीपी हेडर में दें."
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "एनफ़ोर्समेंट मोड में कोई CSP नहीं मिला"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "पक्का करें कि CSP, XSS हमलों से बेहतर तरीके से सुरक्षा देता है"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "रुक गया है / चेतावनी"
@@ -810,7 +870,7 @@
     "message": "यह ऐप्लिकेशन पहले से इंस्टॉल किया जा चुका है"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "डाउनलोड किया गया आइकॉन खाली या खराब था"
+    "message": "मेनिफ़ेस्ट में से एक ज़रूरी आइकॉन को डाउनलोड नहीं किया जा सका"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "इंस्टॉल न हो पाने की वजह"
@@ -1026,7 +1086,7 @@
     "message": "इंटरैक्टिव में लगने वाला समय, वह समय है जितनी देर में पेज पूरी तरह से इंटरैक्टिव हो जाता है. [ज़्यादा जानें](https://web.dev/interactive/)."
   },
   "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
-    "message": "सबसे बड़ी सामग्री को पेंट करने का आंकड़ा, उस टेक्स्ट या इमेज को पेंट करने में लगे समय को बताता है. [ज़्यादा जानें](https://web.dev/lighthouse-largest-contentful-paint/)"
+    "message": "सबसे बड़ा कॉन्टेंटफ़ुल पेंट, सबसे बड़े टेक्स्ट या इमेज को लोड करने में लगा समय बताता है. [ज़्यादा जानें](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
     "message": "आपके उपयोगकर्ताओं को अनुभव होने वाले संभावित फ़र्स्ट इनपुट डिले में सबसे लंबे टास्क की अवधि शामिल होती है. [ज़्यादा जानें](https://web.dev/lighthouse-max-potential-fid/)."
@@ -1050,7 +1110,7 @@
     "message": "सर्वर बैकएंड के इंतज़ार का समय"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "`unload` इवेंट भरोसेमंद तरीके से नहीं होता. साथ ही, इसे सुनना, कैश को आगे-पीछे करने जैसी ब्राउज़र ऑप्टिमाइज़ेशन को होने से रोकती है. इसके बजाय `pagehide` या `visibilitychange` इवेंट का इस्तेमाल करें. [ज़्यादा जानें](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "`unload` इवेंट भरोसेमंद तरीके से नहीं होता और इसे सुनने की वजह से, ब्राउज़र ऑप्टिमाइज़ेशन की कुछ सुविधाएं रुक सकती हैं. जैसे, बैक-फ़ॉरवर्ड कैश मेमोरी. इसके बजाय, `pagehide` या `visibilitychange` इवेंट इस्तेमाल करें. [ज़्यादा जानें](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "एक `unload` लिसनर रजिस्टर करता है"
@@ -1095,7 +1155,7 @@
     "message": "परफ़ॉर्मेंस बजट"
   },
   "lighthouse-core/audits/preload-fonts.js | description": {
-    "message": "`optional` फ़ॉन्ट पहले से लोड करें, ताकि पहली बार आने वाले उपयोगकर्ता उन्हें इस्तेमाल कर सकें. [ज़्यादा जानें](https://web.dev/preload-optional-fonts/)"
+    "message": "`optional` फ़ॉन्ट पहले से लोड करें, ताकि वेबसाइट पर पहली बार आने वाले उपयोगकर्ता उन्हें इस्तेमाल कर सकें. [ज़्यादा जानें](https://web.dev/preload-optional-fonts/)"
   },
   "lighthouse-core/audits/preload-fonts.js | failureTitle": {
     "message": "`font-display: optional` वाले फ़ॉन्ट पहले से लोड नहीं किए गए हैं"
@@ -1467,7 +1527,7 @@
     "message": "मैप का यूआरएल"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "सोर्स मैप, छोटे किए गए कोड का मूल सोर्स कोड में अनुवाद करते हैं. यह डेवलपर को डेटा तैयार करने के दौरान, डीबग करने में मदद करता है. इसके अलावा, Lighthouse, आगे की अहम जानकारी दे सकता है. ये फ़ायदे पाने के लिए, सोर्स मैप को डिप्लॉय करने पर विचार करें. [ज़्यादा जानें](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
+    "message": "सोर्स मैप, छोटे किए गए कोड का मूल सोर्स कोड में अनुवाद करते हैं. यह डेवलपर को डेटा तैयार करने के दौरान, डीबग करने में मदद करता है. इसके अलावा, Lighthouse, आगे की अहम जानकारी दे सकता है. ये फ़ायदे पाने के लिए, सोर्स मैप को डिप्लॉय करने पर विचार करें. [ज़्यादा जानें](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "पहले पक्ष की बड़ी JavaScript के लिए सोर्स मैप नहीं मिले"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "मोबाइल फ़्रेंडली"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{हो सकता है कि सेव किया गया डेटा इस जगह पर, लोड होने की परफ़ॉर्मेंस पर असर डाल रहा हो: {locations}. इस पेज को गुप्त विंडो में ऑडिट करें, ताकि उन संसाधनों का आपके स्कोर पर कोई असर न पड़े.}one{हो सकता है कि सेव किया गया डेटा इस जगह पर, लोड होने की परफ़ॉर्मेंस पर असर डाल रहा हो: {locations}. इस पेज को गुप्त विंडो में ऑडिट करें, ताकि उन संसाधनों का आपके स्कोर पर कोई असर न पड़े.}other{हो सकता है कि सेव किया गया डेटा इन जगहों पर, लोड होने की परफ़ॉर्मेंस पर असर डाल रहा हो: {locations}. इस पेज को गुप्त विंडो में ऑडिट करें, ताकि उन संसाधनों का आपके स्कोर पर कोई असर न पड़े.}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "शायद पेज उम्मीद के मुताबिक लोड नहीं हो रहा है, क्योंकि आपके टेस्ट यूआरएल ({requested}) को {final} की ओर रीडायरेक्ट किया गया था. टेस्टिंग के लिए दूसरा यूआरएल आज़माएं."
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "धीरे लोड होने की वजह से, पेज तय समयसीमा में पूरी तरह लोड नहीं हो पाया. नतीजे अधूरे हो सकते हैं."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "https: और http: यूआरएल स्कीम जोड़ें, ताकि CSP पुराने ब्राउज़र के साथ काम कर सके. 'strict-dynamic' के साथ काम करने वाले ब्राउज़र पर इन स्कीम को अनदेखा किया जा सकता है."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "CSP3 के बाद से disown-opener काम नहीं करता. इसके बजाय, कृपया Cross-Origin-Opener-Policy हेडर का इस्तेमाल करें."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "CSP2 के बाद से referrer काम नहीं करता. इसके बजाय, कृपया Referrer-Policy हेडर का इस्तेमाल करें."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "CSP2 के बाद से reflected-xss काम नहीं करता. इसके बजाय, कृपया X-XSS-Protection हेडर का इस्तेमाल करें."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "base-uri डायरेक्टिव शामिल न करने पर, इंजेक्ट किए गए <base> टैग की मदद से सभी मिलते-जुलते यूआरएल (जैसे, स्क्रिप्ट) के लिए बेस यूआरएल सेट हो जाता है. ऐसा उस डोमेन में होता है जिसे कोई हमलावर कंट्रोल करता है. base-uri को 'none' या 'self' पर सेट करें."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "object-src की मदद से कंट्रोल किए जा रहे एलिमेंट, विरासती फ़ीचर माने जाते हैं. object-src को 'none' पर सेट करें, ताकि प्लग इन न डाले जा सकें. इनमें ऐसे प्लग इन शामिल हैं जो असुरक्षित स्क्रिप्ट चलाते हैं."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "script-src डायरेक्टिव मौजूद नहीं है. इस वजह से, असुरक्षित स्क्रिप्ट चल सकती हैं."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "क्या आप सेमीकोलन डालना भूल गए? {keyword} एक कीवर्ड नहीं, डायरेक्टिव लग रहा है."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "Nonces में base64 charset का इस्तेमाल किया जाना चाहिए."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "Nonces में कम से कम आठ वर्ण होने चाहिए."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "रिपोर्टिंग डेस्टिनेशन को सिर्फ़ report-to डायरेक्टिव की मदद से कॉन्फ़िगर किया जाता है. यह डायरेक्टिव सिर्फ़ Chromium कोड वाले ब्राउज़र में काम करता है, इसलिए report-uri डायरेक्टिव भी इस्तेमाल करने का सुझाव दिया जाता है."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "कोई भी CSP, रिपोर्टिंग डेस्टिनेशन को कॉन्फ़िगर नहीं करता. समय के साथ, इसकी वजह से CSP को मेंटेन करने और किसी भी तरह के ब्रेकेज को मॉनिटर करने में दिक्कत होती है."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "होस्ट की 'अनुमति वाली सूचियों' को अक्सर बायपास किया जा सकता है. 'strict-dynamic' को CSP nonces या hashes के साथ इस्तेमाल करें."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "इस CSP डायरेक्टिव की जानकारी नहीं है."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "{keyword} एक गलत/अमान्य कीवर्ड लग रहा है."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "'unsafe-inline', असुरक्षित इन-पेज स्क्रिप्ट और इवेंट हैंडलर चलाने की अनुमति देता है. एक-एक करके स्क्रिप्ट को अनुमति देने के लिए, CSP nonces या hashes इस्तेमाल करें."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "'unsafe-inline' जोड़ें, ताकि CSP पुराने ब्राउज़र के साथ काम कर सके. nonces/hashes के साथ काम करने वाले ब्राउज़र पर 'unsafe-inline' को अनदेखा किया जा सकता है."
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "मुख्य थ्रेड ब्लॉक होने का समय"

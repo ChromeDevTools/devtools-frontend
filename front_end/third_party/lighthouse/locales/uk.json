@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Атрибути `[aria-*]` відповідають своїм ролям"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "Без такої назви програма зачитує тільки загальну назву (тобто роль або тип) елемента, що незручно для користувачів спеціальних можливостей. [Докладніше.](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "Елементи з ролями `button`, `link` і `menuitem` не мають зрозумілих назв для зчитування з екрана."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "Елементи з ролями `button`, `link` і `menuitem` мають зрозумілі назви для зчитування з екрана"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Технології для людей з обмеженими можливостями, як-от програми зчитування з екрана, працюють неналежно, коли `aria-hidden=\"true\"` налаштовано в документі `<body>`. [Докладніше](https://web.dev/aria-hidden-body/)."
   },
@@ -36,13 +45,31 @@
     "message": "Елементи `[aria-hidden=\"true\"]` не містять інтерактивних похідних"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Коли поле введення не має зрозумілої назви, програми зчитування з екрана озвучують його загальною назвою, через що воно стає непридатним для користувачів. [Докладніше](https://web.dev/aria-input-field-name/)."
+    "message": "Коли поле введення не має зрозумілої назви, програми зчитування з екрана озвучують його загальною назвою, через що воно стає непридатним для користувачів. [Докладніше](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "Поля введення ARIA не мають доступних для зчитування назв"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "Поля введення ARIA мають доступні для зчитування назви"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "Без такої назви програма зачитує тільки загальну назву (тобто роль або тип) елемента, що незручно для користувачів спеціальних можливостей. [Докладніше.](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "Елементи ARIA з роллю `meter` не мають зрозумілих назв для зчитування з екрана."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "Елементи ARIA з роллю `meter` мають зрозумілі назви для зчитування з екрана"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "Без такої назви програма зачитує тільки загальну назву (тобто роль або тип) елемента, що незручно для користувачів спеціальних можливостей. [Докладніше.](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "Елементи ARIA з роллю `progressbar` не мають зрозумілих назв для зчитування з екрана."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "Елементи ARIA з роллю `progressbar` мають зрозумілі назви для зчитування з екрана"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "Деякі ролі ARIA мають обов'язкові атрибути, що описують стан елемента для програм зчитування з екрана. [Докладніше](https://web.dev/aria-required-attr/)."
@@ -81,13 +108,31 @@
     "message": "Значення `[role]` дійсні"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Коли поле перемикача не має зрозумілої назви, програми зчитування з екрана озвучують його загальною назвою, через що воно стає непридатним для користувачів. [Докладніше](https://web.dev/aria-toggle-field-name/)."
+    "message": "Коли поле перемикача не має зрозумілої назви, програми зчитування з екрана озвучують його загальною назвою, через що воно стає непридатним для користувачів. [Докладніше](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "Поля перемикача ARIA не мають доступних для зчитування назв"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "Поля перемикача ARIA мають доступні для зчитування назви"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "Без такої назви програма зачитує тільки загальну назву (тобто роль або тип) елемента, що незручно для користувачів спеціальних можливостей. [Докладніше.](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "Елементи ARIA з роллю `tooltip` не мають зрозумілих назв для зчитування з екрана."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "Елементи ARIA з роллю `tooltip` мають зрозумілі назви для зчитування з екрана"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "Без такої назви програма зачитує тільки загальну назву (тобто роль або тип) елемента, що незручно для користувачів спеціальних можливостей. [Докладніше.](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "Елементи ARIA з роллю `treeitem` не мають зрозумілих назв для зчитування з екрана."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "Елементи ARIA з роллю `treeitem` мають зрозумілі назви для зчитування з екрана"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "Допоміжні технології, як-от програми зчитування з екрана, не можуть тлумачити атрибути ARIA з недійсними значеннями. [Докладніше](https://web.dev/aria-valid-attr-value/)."
@@ -468,16 +513,16 @@
     "message": "Зменште файл JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "Щоб зменшити трафік даних у мережі, видаліть непотрібні правила з таблиць стилів і відкладіть завантаження таблиць CSS, що не використовуються для вмісту у верхній частині сторінки. [Докладніше](https://web.dev/unused-css-rules/)."
+    "message": "Щоб скоротити трафік даних у мережі, зменште кількість непотрібних правил у таблиці стилів і відкладіть завантаження коду CSS, що не використовуються для контенту у верхній частині сторінки. [Докладніше.](https://web.dev/unused-css-rules/)"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "Видаліть вміст CSS, який не використовується"
+    "message": "Зменште код CSS, який не використовуєте"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "Видаліть файли JavaScript, які ви не використовуєте, щоб зменшити кількість байтів під час активності в мережі. [Докладніше](https://web.dev/unused-javascript/)."
+    "message": "Щоб скоротити трафік даних у мережі, зменште код JavaScript, який не використовуєте, і відкладіть завантаження скриптів, доки вони не знадобляться. [Докладніше.](https://web.dev/unused-javascript/)"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "Вилучіть файли JavaScript, які ви не використовуєте"
+    "message": "Зменште код JavaScript, який не використовуєте"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "Якщо зберігати кеш за тривалий період часу, сторінки можуть завантажуватися швидше під час повторних відвідувань. [Докладніше](https://web.dev/uses-long-cache-ttl/)."
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "Намагайтеся не створювати ланцюжки критичних запитів"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "Директива"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "Надійні Правила щодо безпеки контенту (CSP) значно зменшують ризик атак XSS. [Докладніше](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "Сторінка містить CSP, що визначений у тегу <meta>. За можливості визначте CSP в заголовку HTTP."
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "CSP не знайдено в режимі примусового застосування"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "Переконайтеся, що CSP допомагає проти атак XSS"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "Припинення підтримки/застереження"
@@ -810,7 +870,7 @@
     "message": "Цей додаток уже встановлено"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "Завантажений значок порожній або пошкоджений"
+    "message": "Не вдалося завантажити потрібний значок із маніфесту"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "Причина помилки"
@@ -1026,7 +1086,7 @@
     "message": "Час до повного завантаження – це період часу, через який сторінка стане повністю інтерактивною. [Докладніше](https://web.dev/interactive/)."
   },
   "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
-    "message": "Найбільша візуалізація контенту показує, коли з'являється найбільший текст чи зображення. [Докладніше](https://web.dev/lighthouse-largest-contentful-paint/)"
+    "message": "Візуалізація великого контенту показує, коли з'являється найбільший текст чи зображення. [Докладніше](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
     "message": "Максимальна потенційна затримка відповіді на першу дію – це тривалість найдовшого завдання. [Докладніше](https://web.dev/lighthouse-max-potential-fid/)."
@@ -1050,7 +1110,7 @@
     "message": "Затримка сервера"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "Подія \"`unload`\" активується ненадійно, і її прослуховування може запобігти оптимізації веб-переглядача, наприклад механізму Back-Forward Cache. Спробуйте натомість скористатися подією \"`pagehide`\" або \"`visibilitychange`\". [Докладніше](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "Подія \"`unload`\" активується ненадійно, і її прослуховування може запобігти оптимізації веб-переглядача, наприклад функції \"Зворотний кеш\". Спробуйте натомість скористатися подією \"`pagehide`\" або \"`visibilitychange`\". [Докладніше](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Реєструє прослуховувач події \"`unload`\""
@@ -1467,7 +1527,7 @@
     "message": "URL-адреси карт"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Карти джерела перетворюють стиснуті коди в оригінальні вихідні коди. Завдяки цьому розробники можуть здійснювати налагодження в робочому режимі. Крім того, інструмент Lighthouse може надавати іншу статистику. Спробуйте ввести в дію карти джерела, щоб скористатися цими перевагами. [Докладніше](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
+    "message": "Карти джерела перетворюють стиснуті коди в оригінальні вихідні коди. Завдяки цьому розробники можуть здійснювати налагодження в робочому режимі. Крім того, інструмент Lighthouse може надавати іншу статистику. Спробуйте ввести в дію карти джерела, щоб скористатися цими перевагами. [Докладніше](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Великий власний файл JavaScript не містить карт джерела"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Для мобільних пристроїв"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{У цьому місці можуть зберігатися дані, що впливають на тривалість завантаження: {locations}. Щоб такі ресурси не впливали на ваші показники, перевірте цю сторінку у вікні в режимі анонімного перегляду.}one{У цих місцях можуть зберігатися дані, що впливають на тривалість завантаження: {locations}. Щоб такі ресурси не впливали на ваші показники, перевірте цю сторінку у вікні в режимі анонімного перегляду.}few{У цих місцях можуть зберігатися дані, що впливають на тривалість завантаження: {locations}. Щоб такі ресурси не впливали на ваші показники, перевірте цю сторінку у вікні в режимі анонімного перегляду.}many{У цих місцях можуть зберігатися дані, що впливають на тривалість завантаження: {locations}. Щоб такі ресурси не впливали на ваші показники, перевірте цю сторінку у вікні в режимі анонімного перегляду.}other{У цих місцях можуть зберігатися дані, що впливають на тривалість завантаження: {locations}. Щоб такі ресурси не впливали на ваші показники, перевірте цю сторінку у вікні в режимі анонімного перегляду.}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Ця сторінка може не завантажуватися належним чином, оскільки тестову URL-адресу ({requested}) було переспрямовано на {final}. Спробуйте перейти безпосередньо на другу URL-адресу."
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Сторінка завантажувалася занадто повільно, щоб показати всі результати в межах визначеного часу, тому вони можуть бути неповними."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "Додайте схеми URL-адрес https: і http: (ігноруються веб-переглядачами, що підтримують strict-dynamic) для зворотної сумісності зі старішими веб-переглядачами."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "Директива disown-opener не підтримується, починаючи з версії CSP3. Натомість використовуйте заголовок Cross-Origin-Opener-Policy."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "Директива referrer не підтримується, починаючи з версії CSP2. Натомість використовуйте заголовок Referrer-Policy."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "Директива reflected-xss не підтримується, починаючи з версії CSP2. Натомість використовуйте заголовок X-XSS-Protection."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "Якщо директиви base-uri немає, за допомогою включених тегів <base> основною URL-адресою для всіх відносних URL-адрес (наприклад, скриптів) можна вказати домен, яким керує зловмисник. Рекомендуємо вибрати для директиви base-uri значення none або self."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "Елементи, якими керує object-src, вважаються застарілими функціями. Виберіть для object-src значення none, щоб не дозволити вставляти плагіни, які виконують ненадійні скрипти."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "Немає директиви script-src. Через це можуть виконуватися ненадійні скрипти."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "Можливо, ви забули додати крапку з комою? Схоже, {keyword} – це директива, а не ключове слово."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "Nonces мають бути набором символів base64."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "Мінімальна довжина для nonces – 8 символів."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "Призначення звітів можна налаштувати лише через директиву report-to. Вона підтримується тільки у веб-переглядачах на основі Chromium, тому радимо також скористатися директивою report-uri."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "Немає CSP, що налаштовує призначення звітів. Це ускладнює підтримку CSP впродовж тривалого часу та відстеження поломок."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "Білі списки хостів часто можна обходити. Скористайтеся strict-dynamic разом із nonces або hashes для CSP."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "Невідома директива CSP."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "Схоже, {keyword} – це недійсне ключове слово."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "unsafe-inline дозволяє виконувати ненадійні вбудовані скрипти та застосовувати обробники подій. Щоб дозволити окремі скрипти, скористатися nonces або hashes для CSP."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "Додайте команду unsafe-inline (ігнорується веб-переглядачами, що підтримують nonces/hashes) для зворотної сумісності зі старішими веб-переглядачами."
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Час блокування основного ланцюжка"

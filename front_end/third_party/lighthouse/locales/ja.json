@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "`[aria-*]` 属性は役割と一致しています"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "要素にユーザー補助機能向けの名前が設定されていない場合、スクリーン リーダーでは一般名で読み上げられるため、スクリーン リーダーのみを使用するユーザーには用途がわかりません。[詳細](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "`button`、`link`、`menuitem` 要素にユーザー補助機能向けの名前が設定されていません。"
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "`button`、`link`、`menuitem` 要素にユーザー補助機能向けの名前が設定されています"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "スクリーン リーダーなどの支援技術は、ドキュメントの `<body>` に `aria-hidden=\"true\"` が設定されていると、正常に動作しません。[詳細](https://web.dev/aria-hidden-body/)"
   },
@@ -36,13 +45,31 @@
     "message": "`[aria-hidden=\"true\"]` 要素にフォーカス可能な子要素は含まれていません"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "入力フィールドにユーザー補助機能向けの名前が設定されていない場合、スクリーン リーダーでは一般名で読み上げられるため、スクリーン リーダーのみを使用するユーザーには用途がわかりません。[詳細](https://web.dev/aria-input-field-name/)"
+    "message": "入力フィールドにユーザー補助機能向けの名前が設定されていない場合、スクリーン リーダーでは一般名で読み上げられるため、スクリーン リーダーのみを使用するユーザーには用途がわかりません。[詳細](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "ARIA 入力フィールドにユーザー補助機能向けの名前が設定されていません"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "ARIA 入力フィールドにユーザー補助機能向けの名前が設定されています"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "要素にユーザー補助機能向けの名前が設定されていない場合、スクリーン リーダーでは一般名で読み上げられるため、スクリーン リーダーのみを使用するユーザーには用途がわかりません。[詳細](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "ARIA `meter` 要素にユーザー補助機能向けの名前が設定されていません。"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "ARIA `meter` 要素にユーザー補助機能向けの名前が設定されています"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "要素にユーザー補助機能向けの名前が設定されていない場合、スクリーン リーダーでは一般名で読み上げられるため、スクリーン リーダーのみを使用するユーザーには用途がわかりません。[詳細](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "ARIA `progressbar` 要素にユーザー補助機能向けの名前が設定されていません。"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "ARIA `progressbar` 要素にユーザー補助機能向けの名前が設定されています"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "一部の ARIA 役割には、スクリーン リーダーに要素の状態を伝える必須の属性があります。[詳細](https://web.dev/aria-required-attr/)"
@@ -81,13 +108,31 @@
     "message": "`[role]` の値は有効です"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "切り替えフィールドにユーザー補助機能向けの名前が設定されていない場合、スクリーン リーダーでは一般名で読み上げられるため、スクリーン リーダーのみを使用するユーザーには使えません。[詳細](https://web.dev/aria-toggle-field-name/)"
+    "message": "切り替えフィールドにユーザー補助機能向けの名前が設定されていない場合、スクリーン リーダーでは一般名で読み上げられるため、スクリーン リーダーのみを使用するユーザーには使えません。[詳細](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "ARIA 切り替えフィールドにユーザー補助機能向けの名前が設定されていません"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "ARIA 切り替えフィールドにユーザー補助機能向けの名前が設定されています"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "要素にユーザー補助機能向けの名前が設定されていない場合、スクリーン リーダーでは一般名で読み上げられるため、スクリーン リーダーのみを使用するユーザーには用途がわかりません。[詳細](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "ARIA `tooltip` 要素にユーザー補助機能向けの名前が設定されていません。"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "ARIA `tooltip` 要素にユーザー補助機能向けの名前が設定されています"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "要素にユーザー補助機能向けの名前が設定されていない場合、スクリーン リーダーでは一般名で読み上げられるため、スクリーン リーダーのみを使用するユーザーには用途がわかりません。[詳細](https://web.dev/aria-name/)"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "ARIA `treeitem` 要素にユーザー補助機能向けの名前が設定されていません。"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "ARIA `treeitem` 要素にユーザー補助機能向けの名前が設定されています"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "支援技術（スクリーン リーダーなど）で、無効な値が指定された ARIA 属性を解釈できません。[詳細](https://web.dev/aria-valid-attr-value/)"
@@ -468,16 +513,16 @@
     "message": "JavaScript の最小化"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "スタイルシートから古いルールを削除し、スクロールせずに見える範囲のコンテンツに使用されていない CSS の読み込みを遅延させると、データ通信量を減らすことができます。[詳細](https://web.dev/unused-css-rules/)"
+    "message": "スタイルシートから使用していないルールを削除して、スクロールせずに見える範囲のコンテンツで使用されていない CSS の読み込みを遅らせると、ネットワークの通信量を減らすことができます。[詳細](https://web.dev/unused-css-rules/)"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "使用していない CSS を削除してください"
+    "message": "使用していない CSS の削減"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "使用していない JavaScript を削除して、データ通信量を減らしてください。[詳細](https://web.dev/unused-javascript/)"
+    "message": "使用していない JavaScript を減らして、必要になるまでスクリプトの読み込みを遅らせると、ネットワークの通信量を減らすことができます。[詳細](https://web.dev/unused-javascript/)"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "使用していない JavaScript の削除"
+    "message": "使用していない JavaScript の削減"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "キャッシュの有効期間を長くすると、再訪問したユーザーへのページの読み込み速度を向上できます。[詳細](https://web.dev/uses-long-cache-ttl/)"
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "クリティカル リクエスト チェーンを回避してください"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "ディレクティブ"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "厳格なコンテンツ セキュリティ ポリシー（CSP）を設定すると、XSS 攻撃のリスクを大幅に軽減できます。[詳細](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "このページでは CSP が <meta> タグで定義されています。可能な場合は、HTTP ヘッダーで CSP を定義することを検討してください。"
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "適用されている CSP はありません"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "CSP が XSS 攻撃を防げるよう設定されているか確認する"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "非推奨 / 警告"
@@ -810,7 +870,7 @@
     "message": "このアプリはすでにインストールされています"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "ダウンロードしたアイコンが空か、破損しています"
+    "message": "マ二フェストから必要なアイコンをダウンロードできませんでした"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "失敗の理由"
@@ -1467,7 +1527,7 @@
     "message": "マップ URL"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "ソースマップは軽量化したコードを元のソースコードに変換するもので、デベロッパーが本番環境でデバッグする際に役立ちます。また、Lighthouse で詳しい分析情報を提供することも可能になります。このようなメリットをふまえ、ソースマップの導入をご検討ください。[詳細](https://developer.chrome.com/docs/devtools/javascript/source-maps/)"
+    "message": "ソースマップは軽量化したコードを元のソースコードに変換するもので、デベロッパーが本番環境でデバッグする際に役立ちます。また、Lighthouse で詳しい分析情報を提供することも可能になります。このようなメリットをふまえ、ソースマップの導入をご検討ください。[詳細](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)"
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "サイズの大きいファーストパーティの JavaScript でソースマップが使用されていません"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "スマホ対応"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{次の場所に保存されているデータが読み込みパフォーマンスに影響を与えている可能性があります: {locations}。これらのリソースがスコアに影響しないようにするためには、シークレット ウィンドウでこのページを監査してください。}other{次の場所に保存されているデータが読み込みパフォーマンスに影響を与えている可能性があります: {locations}。これらのリソースがスコアに影響しないようにするためには、シークレット ウィンドウでこのページを監査してください。}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "テスト URL（{requested}）が「{final}」にリダイレクトされているため、このページは想定どおりに読み込まれない可能性があります。2 番目の URL を直接テストしてみてください。"
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "ページの読み込みに時間がかかり、制限時間内に完了できませんでした。結果は不完全な場合があります。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "古いブラウザとの下位互換性を保つため、https: と http: の URL スキームを追加することを検討してください（'strict-dynamic' をサポートしているブラウザでは無視されます）。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "disown-opener は CSP3 以降ではサポートされていません。代わりに、Cross-Origin-Opener-Policy ヘッダーを使用してください。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "referrer は CSP2 以降ではサポートされていません。代わりに、Referrer-Policy ヘッダーを使用してください。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "reflected-xss は CSP2 以降ではサポートされていません。代わりに、X-XSS-Protection ヘッダーを使用してください。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "base-uri を指定しないと、挿入された <base> タグによって、すべての相対 URL（スクリプトなど）のベース URL が攻撃者の管理ドメインに設定される可能性があります。base-uri を 'none' か 'self' に設定することをご検討ください。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "object-src で制御される要素は、古い機能とみなされます。安全でないスクリプトを実行するプラグインが挿入されないよう、object-src を 'none' に設定することを検討してください。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "script-src ディレクティブが指定されていません。このため、安全でないスクリプトを実行できる状態になっています。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "セミコロンが指定されていません。{keyword} はキーワードではなくディレクティブのようです。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "nonce には base64 文字セットを使用する必要があります。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "nonce は 8 文字以上である必要があります。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "報告先が report-to ディレクティブ経由でのみ設定されています。このディレクティブは、Chromium ベースのブラウザでしかサポートされていないため、report-uri ディレクティブも使用することをおすすめします。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "CSP で報告先が設定されていません。CSP の動作状況や問題が発生した場合の確認が難しくなります。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "ホストの許可リストが頻繁に回避されています。'strict-dynamic' と CSP nonce または hash を組み合わせて使用することを検討してください。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "不明な CSP ディレクティブです。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "{keyword} は無効なキーワードのようです。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "'unsafe-inline' が指定されているため、安全でないページ内スクリプトやイベント ハンドラを実行できる状態になっています。CSP nonce または hash を使用して、スクリプトを個別に許可することを検討してください。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "古いブラウザとの下位互換性を保つため、'unsafe-inline' を追加することを検討してください（nonce / hash をサポートしているブラウザでは無視されます）。"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "メインスレッドのブロック時間"

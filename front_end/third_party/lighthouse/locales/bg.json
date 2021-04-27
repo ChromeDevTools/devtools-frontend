@@ -17,6 +17,15 @@
   "lighthouse-core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Атрибутите `[aria-*]` съответстват на ролите си"
   },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
+    "message": "Когато даден елемент няма достъпно име, екранните четци ще произнасят за него общо име и той ще бъде неизползваем за потребителите, разчитащи на тази технология. [Научете повече](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
+    "message": "Елементите `button`, `link` и `menuitem` нямат достъпни имена"
+  },
+  "lighthouse-core/audits/accessibility/aria-command-name.js | title": {
+    "message": "Елементите `button`, `link` и `menuitem` имат достъпни имена"
+  },
   "lighthouse-core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Помощните технологии, например екранни четци, работят непоследователно, когато за `<body>` за документа е зададено `aria-hidden=\"true\"`. [Научете повече](https://web.dev/aria-hidden-body/)."
   },
@@ -36,13 +45,31 @@
     "message": "Елементите `[aria-hidden=\"true\"]` не съдържат дъщерни елементи, които могат да получат фокуса"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Когато дадено поле за въвеждане няма достъпно име, екранните четци ще произнасят за него общо име и то ще бъде неизползваемо за потребителите, разчитащи на тази технология. [Научете повече](https://web.dev/aria-input-field-name/)."
+    "message": "Когато дадено поле за въвеждане няма достъпно име, екранните четци ще произнасят за него общо име и то ще бъде неизползваемо за потребителите, разчитащи на тази технология. [Научете повече](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "Полетата за въвеждане за ARIA нямат достъпни имена"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
     "message": "Полетата за въвеждане за ARIA са с достъпни имена"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
+    "message": "Когато даден елемент няма достъпно име, екранните четци ще произнасят за него общо име и той ще бъде неизползваем за потребителите, разчитащи на тази технология. [Научете повече](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
+    "message": "ARIA елементите `meter` нямат достъпни имена"
+  },
+  "lighthouse-core/audits/accessibility/aria-meter-name.js | title": {
+    "message": "ARIA елементите `meter` имат достъпни имена"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
+    "message": "Когато даден елемент няма достъпно име, екранните четци ще произнасят за него общо име и той ще бъде неизползваем за потребителите, разчитащи на тази технология. [Научете повече](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
+    "message": "ARIA елементите `progressbar` нямат достъпни имена"
+  },
+  "lighthouse-core/audits/accessibility/aria-progressbar-name.js | title": {
+    "message": "ARIA елементите `progressbar` имат достъпни имена"
   },
   "lighthouse-core/audits/accessibility/aria-required-attr.js | description": {
     "message": "Някои роли на ARIA имат задължителни атрибути, от които екранните четци получават описание на състоянието на съответния елемент. [Научете повече](https://web.dev/aria-required-attr/)."
@@ -81,13 +108,31 @@
     "message": "Стойностите на `[role]` са валидни"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Когато дадено поле за превключване няма достъпно име, екранните четци ще произнасят за него общо име и то ще бъде неизползваемо за потребителите, разчитащи на тази технология. [Научете повече](https://web.dev/aria-toggle-field-name/)."
+    "message": "Когато дадено поле за превключване няма достъпно име, екранните четци ще произнасят за него общо име и то ще бъде неизползваемо за потребителите, разчитащи на тази технология. [Научете повече](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "Полетата за превключване за ARIA нямат достъпни имена"
   },
   "lighthouse-core/audits/accessibility/aria-toggle-field-name.js | title": {
     "message": "Полетата за превключване за ARIA са с достъпни имена"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
+    "message": "Когато даден елемент няма достъпно име, екранните четци ще произнасят за него общо име и той ще бъде неизползваем за потребителите, разчитащи на тази технология. [Научете повече](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
+    "message": "ARIA елементите `tooltip` нямат достъпни имена"
+  },
+  "lighthouse-core/audits/accessibility/aria-tooltip-name.js | title": {
+    "message": "ARIA елементите `tooltip` имат достъпни имена"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
+    "message": "Когато даден елемент няма достъпно име, екранните четци ще произнасят за него общо име и той ще бъде неизползваем за потребителите, разчитащи на тази технология. [Научете повече](https://web.dev/aria-name/)."
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
+    "message": "ARIA елементите `treeitem` нямат достъпни имена"
+  },
+  "lighthouse-core/audits/accessibility/aria-treeitem-name.js | title": {
+    "message": "ARIA елементите `treeitem` имат достъпни имена"
   },
   "lighthouse-core/audits/accessibility/aria-valid-attr-value.js | description": {
     "message": "Помощните технологии, като например екранни четци, не могат да интерпретират атрибути на ARIA с невалидни стойности. [Научете повече](https://web.dev/aria-valid-attr-value/)."
@@ -468,16 +513,16 @@
     "message": "Минимизирайте JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description": {
-    "message": "Премахнете ненужните правила от стиловите листове и отложете зареждането на CSS кода, който не се използва за съдържанието на видимата на екрана част от страницата, за да намалите ненужния пренос на данни в мрежата. [Научете повече](https://web.dev/unused-css-rules/)."
+    "message": "Намалете ненужните правила от стиловите листове и отложете зареждането на CSS кода, който не се използва за съдържанието на видимата на екрана част от страницата, за да намалите преноса на данни през мрежата. [Научете повече](https://web.dev/unused-css-rules/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title": {
-    "message": "Премахнете неизползвания CSS код"
+    "message": "Намалете неизползваните CSS стилове"
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description": {
-    "message": "Премахнете неизползвания JavaScript, за да намалите преноса на данни при мрежова активност. [Научете повече](https://web.dev/unused-javascript/)."
+    "message": "Намалете неизползвания JavaScript и отложете зареждането на скриптове, докато не станат нужни, за да намалите преноса на данни през мрежата. [Научете повече](https://web.dev/unused-javascript/)."
   },
   "lighthouse-core/audits/byte-efficiency/unused-javascript.js | title": {
-    "message": "Премахнете неизползвания JavaScript"
+    "message": "Намалете неизползвания JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
     "message": "Продължителното съхраняване в кеша може да ускори повторните посещения на страницата ви. [Научете повече](https://web.dev/uses-long-cache-ttl/)."
@@ -535,6 +580,21 @@
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "Избягвайте верижни последователности от критични заявки"
+  },
+  "lighthouse-core/audits/csp-xss.js | columnDirective": {
+    "message": "Директива"
+  },
+  "lighthouse-core/audits/csp-xss.js | description": {
+    "message": "Строги правила за сигурност на съдържанието (CSP) значително намаляват риска от XSS атаки. [Научете повече](https://csp.withgoogle.com/docs/index.html)"
+  },
+  "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
+    "message": "Страницата съдържа CSP, дефинирани в <meta> маркер. Обмислете дали да не дефинирате CSP в HTTP заглавка, ако можете."
+  },
+  "lighthouse-core/audits/csp-xss.js | noCsp": {
+    "message": "Няма намерени CSP в режим на налагане"
+  },
+  "lighthouse-core/audits/csp-xss.js | title": {
+    "message": "Осигуряване на ефективност на CSP срещу XSS атаки"
   },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "Оттегляне/предупреждение"
@@ -810,7 +870,7 @@
     "message": "Приложението вече е инсталирано"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "Изтегленият файл за икона бе празен или повреден"
+    "message": "Изисквана икона от манифеста не бе изтеглена"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "Причина за проблема"
@@ -1050,7 +1110,7 @@
     "message": "Забавяния в задния слой на сървъра"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "Събитието `unload` не се задейства надеждно и приемането му може да попречи на оптимизациите на браузъра, като например Back-Forward Cache. Вместо това можете да използвате събитията `pagehide` или `visibilitychange`. [Научете повече](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "Събитието `unload` не се задейства надеждно и приемането му може да попречи на оптимизациите на браузъра, като например кеш за назад/напред. Вместо това можете да използвате събитията `pagehide` или `visibilitychange`. [Научете повече](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Регистрира приемател за `unload`"
@@ -1467,7 +1527,7 @@
     "message": "URL адрес на карта"
   },
   "lighthouse-core/audits/valid-source-maps.js | description": {
-    "message": "Картите на изходния код преобразуват минимизирания код в оригиналния му вид. Това помага на програмистите да отстраняват грешки в стандартния канал. Също така Lighthouse може да предоставя допълнителни статистически данни. Препоръчваме да внедрите карти на изходния код, за да се възползвате от тези предимства. [Научете повече](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
+    "message": "Картите на изходния код преобразуват минимизирания код в оригиналния му вид. Това помага на програмистите да отстраняват грешки в стандартния канал. Също така Lighthouse може да предоставя допълнителни статистически данни. Препоръчваме да внедрите карти на изходния код, за да се възползвате от тези предимства. [Научете повече](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
   },
   "lighthouse-core/audits/valid-source-maps.js | failureTitle": {
     "message": "Липсват карти на изходния код за големи файлове на JavaScript"
@@ -1643,9 +1703,6 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Удобство за мобилни устройства"
   },
-  "lighthouse-core/gather/driver.js | warningData": {
-    "message": "{locationCount,plural, =1{Възможно е в следното място да се съхраняват данни, които засягат ефективността при зареждане: {locations}. Проверете тази страница в прозорец в режим „инкогнито“, така че тези ресурси да не влияят върху резултатите.}other{Възможно е в следните места да се съхраняват данни, които засягат ефективността при зареждане: {locations}. Проверете тази страница в прозорец в режим „инкогнито“, така че тези ресурси да не влияят върху резултатите.}}"
-  },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Възможно е страницата да не се зарежда нормално, тъй като тестовият ви URL адрес ({requested}) бе пренасочен към {final}. Тествайте директно втория URL адрес."
   },
@@ -1654,6 +1711,57 @@
   },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Страницата се зареждаше твърде бавно и зареждането не завърши в определеното време. Резултатите може да са непълни."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
+    "message": "Обмислете дали да не добавите схемите на URL адреси https: и http: URL (пренебрегвани от браузърите, поддържащи strict-dynamic), за да се обезпечи обратна съвместимост с по-стари браузъри."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedDisownOpener": {
+    "message": "disown-opener е оттеглено от CSP3 насам. Моля, вместо това използвайте заглавката Cross-Origin-Opener-Policy."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReferrer": {
+    "message": "referrer е оттеглено от CSP2 насам. Вместо това използвайте заглавката Referrer-Policy."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
+    "message": "reflected-xss е оттеглено от CSP2 насам. Вместо това използвайте заглавката X-XSS-Protection."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingBaseUri": {
+    "message": "Липсата на base-uri дава възможност за инжектиране на маркери <base> с цел задаване на базовия URL адрес за всички относителни URL адреси (напр. скриптове), така че да бъде от домейн, контролиран от хакера. Обмислете дали да не зададете base-uri на none или self."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
+    "message": "Елементите, контролирани от object-src, се смятат за наследени функции. Обмислете дали да не зададете object-src на none, за да предотвратите инжектирането на приставки, които изпълняват опасни скриптове."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
+    "message": "Липсва директива script-src. Това може да позволи изпълнението на опасни скриптове."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | missingSemicolon": {
+    "message": "Може би сте забравили точка и запетая? Изглежда, че {keyword} е директива, а не ключова дума."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceCharset": {
+    "message": "За nonce трябва да се използва набора от знаци base64."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
+    "message": "Nonce трябва да са с дължина поне 8 знака."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
+    "message": "Дестинацията за отчитане се конфигурира само през директивата report-to. Тази директива се поддържа само в браузъри, базирани на Chromium, затова се препоръчва да използвате и директивата report-uri."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
+    "message": "Няма CSP с конфигурирана дестинация за отчитане. Това затруднява поддръжката на CSP в течение на времето и наблюдението за проблеми при функционирането."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
+    "message": "Списъците с разрешения при хоста често може да бъдат заобиколени. Обмислете дали да не използвате strict-dynamic в комбинация с nonce или хешове в CSP."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
+    "message": "Неизвестна CSP директива."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
+    "message": "Изглежда, че {keyword} е невалидна ключова дума."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "unsafe-inline позволява изпълнението на опасни скриптове в страницата и манипулатори на събитието. Обмислете дали да не използвате nonce или хешове в CSP, за да разрешавате скриптове поотделно."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
+    "message": "Обмислете дали да не добавите unsafe-inline (пренебрегва се от браузъри, които поддържат nonce и хешове), за да се обезпечи обратна съвместимост с по-стари браузъри."
   },
   "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Време на блокиране на основната нишка"

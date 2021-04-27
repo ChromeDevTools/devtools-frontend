@@ -26,6 +26,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 // eslint-disable-next-line rulesdir/const_enum
 export enum IssueCode {
   InsecurePrivateNetwork = 'CorsIssue::InsecurePrivateNetwork',
+  InsecurePrivateNetworkPreflight = 'CorsIssue::InsecurePrivateNetworkPreflight',
   InvalidHeaderValues = 'CorsIssue::InvalidHeaders',
   WildcardOriginNotAllowed = 'CorsIssue::WildcardOriginWithCredentials',
   PreflightResponseInvalid = 'CorsIssue::PreflightResponseInvalid',
@@ -41,8 +42,8 @@ export enum IssueCode {
   InvalidResponse = 'CorsIssue::InvalidResponse',
 }
 
-export function getIssueCode(corsError: Protocol.Network.CorsError): IssueCode {
-  switch (corsError) {
+function getIssueCode(details: Protocol.Audits.CorsIssueDetails): IssueCode {
+  switch (details.corsErrorStatus.corsError) {
     case Protocol.Network.CorsError.InvalidAllowMethodsPreflightResponse:
     case Protocol.Network.CorsError.InvalidAllowHeadersPreflightResponse:
     case Protocol.Network.CorsError.PreflightMissingAllowOriginHeader:
@@ -81,7 +82,8 @@ export function getIssueCode(corsError: Protocol.Network.CorsError): IssueCode {
     case Protocol.Network.CorsError.InvalidResponse:
       return IssueCode.InvalidResponse;
     case Protocol.Network.CorsError.InsecurePrivateNetwork:
-      return IssueCode.InsecurePrivateNetwork;
+      return details.clientSecurityState?.initiatorIsSecureContext ? IssueCode.InsecurePrivateNetworkPreflight :
+                                                                     IssueCode.InsecurePrivateNetwork;
   }
 }
 
@@ -89,7 +91,7 @@ export class CorsIssue extends Issue<IssueCode> {
   private issueDetails: Protocol.Audits.CorsIssueDetails;
 
   constructor(issueDetails: Protocol.Audits.CorsIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
-    super(getIssueCode(issueDetails.corsErrorStatus.corsError), issuesModel);
+    super(getIssueCode(issueDetails), issuesModel);
     this.issueDetails = issueDetails;
   }
 
@@ -102,13 +104,19 @@ export class CorsIssue extends Issue<IssueCode> {
   }
 
   getDescription(): MarkdownIssueDescription|null {
-    switch (getIssueCode(this.issueDetails.corsErrorStatus.corsError)) {
+    switch (getIssueCode(this.issueDetails)) {
       case IssueCode.InsecurePrivateNetwork:
-        if (this.issueDetails.clientSecurityState?.initiatorIsSecureContext) {
-          return null;
-        }
         return {
           file: 'corsInsecurePrivateNetwork.md',
+          substitutions: undefined,
+          links: [{
+            link: 'https://developer.chrome.com/blog/private-network-access-update',
+            linkTitle: i18nString(UIStrings.corsForPrivateNetworksRfc),
+          }],
+        };
+      case IssueCode.InsecurePrivateNetworkPreflight:
+        return {
+          file: 'corsInsecurePrivateNetworkPreflight.md',
           substitutions: undefined,
           links: [{
             link: 'https://developer.chrome.com/blog/private-network-access-update',

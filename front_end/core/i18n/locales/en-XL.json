@@ -7325,6 +7325,9 @@
   "panels/profiler/HeapSnapshotView.ts | baseSnapshot": {
     "message": "B̂áŝé ŝńâṕŝh́ôt́"
   },
+  "panels/profiler/HeapSnapshotView.ts | captureNumericValue": {
+    "message": "Îńĉĺûd́ê ńûḿêŕîćâĺ v̂ál̂úêś îń ĉáp̂t́ûŕê"
+  },
   "panels/profiler/HeapSnapshotView.ts | classFilter": {
     "message": "Ĉĺâśŝ f́îĺt̂ér̂"
   },

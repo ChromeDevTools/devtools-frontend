@@ -174,6 +174,10 @@ const UIStrings = {
   treatGlobalObjectsAsRoots:
       'Treat global objects as roots (recommended, unchecking this exposes internal nodes and introduces excessive detail, but might help debugging cycles in retaining paths)',
   /**
+  *@description Text in Heap Snapshot View of a profiler tool
+  */
+  captureNumericValue: 'Include numerical values in capture',
+  /**
   *@description Progress update that the profiler is capturing a snapshot of the heap
   */
   snapshotting: 'Snapshotting…',
@@ -1161,7 +1165,8 @@ export class StatisticsPerspective extends Perspective {
 export class HeapSnapshotProfileType extends ProfileType implements
     SDK.SDKModel.SDKModelObserver<SDK.HeapProfilerModel.HeapProfilerModel> {
   _treatGlobalObjectsAsRoots: Common.Settings.Setting<boolean>;
-  _customContent: UI.UIUtils.CheckboxLabel|null;
+  _captureNumericValue: Common.Settings.Setting<boolean>;
+  _customContent: HTMLElement|null;
   constructor(id?: string, title?: string) {
     super(id || HeapSnapshotProfileType.TypeId, title || i18nString(UIStrings.heapSnapshot));
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.HeapProfilerModel.HeapProfilerModel, this);
@@ -1175,6 +1180,7 @@ export class HeapSnapshotProfileType extends ProfileType implements
         this._reportHeapSnapshotProgress, this);
     this._treatGlobalObjectsAsRoots =
         Common.Settings.Settings.instance().createSetting('treatGlobalObjectsAsRoots', true);
+    this._captureNumericValue = Common.Settings.Settings.instance().createSetting('captureNumericValue', false);
     this._customContent = null;
   }
 
@@ -1216,17 +1222,27 @@ export class HeapSnapshotProfileType extends ProfileType implements
   }
 
   customContent(): Element|null {
-    const checkboxSetting = UI.SettingsUI.createSettingCheckbox(
-        i18nString(UIStrings.treatGlobalObjectsAsRoots), this._treatGlobalObjectsAsRoots, true);
-    this._customContent = (checkboxSetting as UI.UIUtils.CheckboxLabel);
+    const optionsContainer = document.createElement('div');
     const showOptionToNotTreatGlobalObjectsAsRoots =
         Root.Runtime.experiments.isEnabled('showOptionToNotTreatGlobalObjectsAsRoots');
-    return showOptionToNotTreatGlobalObjectsAsRoots ? checkboxSetting : null;
+    const omitParagraphElement = !showOptionToNotTreatGlobalObjectsAsRoots;
+    if (showOptionToNotTreatGlobalObjectsAsRoots) {
+      const treatGlobalObjectsAsRootsCheckbox = UI.SettingsUI.createSettingCheckbox(
+          i18nString(UIStrings.treatGlobalObjectsAsRoots), this._treatGlobalObjectsAsRoots, omitParagraphElement);
+      optionsContainer.appendChild(treatGlobalObjectsAsRootsCheckbox);
+    }
+    const captureNumericValueCheckbox = UI.SettingsUI.createSettingCheckbox(
+        UIStrings.captureNumericValue, this._captureNumericValue, omitParagraphElement);
+    optionsContainer.appendChild(captureNumericValueCheckbox);
+    this._customContent = optionsContainer;
+    return optionsContainer;
   }
 
   setCustomContentEnabled(enable: boolean): void {
     if (this._customContent) {
-      this._customContent.checkboxElement.disabled = !enable;
+      this._customContent.querySelectorAll('[is=dt-checkbox]').forEach(label => {
+        (label as UI.UIUtils.CheckboxLabel).checkboxElement.disabled = !enable;
+      });
     }
   }
 
@@ -1248,7 +1264,8 @@ export class HeapSnapshotProfileType extends ProfileType implements
     this.addProfile(profile);
     profile.updateStatus(i18nString(UIStrings.snapshotting));
 
-    await heapProfilerModel.takeHeapSnapshot(true, this._treatGlobalObjectsAsRoots.get());
+    await heapProfilerModel.takeHeapSnapshot(
+        true, this._treatGlobalObjectsAsRoots.get(), this._captureNumericValue.get());
     profile = this.profileBeingRecorded() as HeapProfileHeader;
     if (!profile) {
       return;

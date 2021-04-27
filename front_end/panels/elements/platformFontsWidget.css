@@ -17,8 +17,7 @@
 }
 
 .font-usage {
-  color: #888; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
   padding-left: 3px;
 }
 
@@ -26,14 +25,12 @@
   padding: 0 5px;
   border-top: 1px solid;
   border-bottom: 1px solid;
-  border-color: #ddd; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-color: var(--color-background-elevation-2);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
   height: 24px;
-  background-color: #f1f1f1; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background-elevation-0);
   display: flex;
   align-items: center;
 }

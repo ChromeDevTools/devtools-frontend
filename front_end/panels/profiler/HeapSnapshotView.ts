@@ -175,6 +175,7 @@ const UIStrings = {
       'Treat global objects as roots (recommended, unchecking this exposes internal nodes and introduces excessive detail, but might help debugging cycles in retaining paths)',
   /**
   *@description Text in Heap Snapshot View of a profiler tool
+  * This option turns on inclusion of numerical values in the heap snapshot.
   */
   captureNumericValue: 'Include numerical values in capture',
   /**
@@ -1264,8 +1265,11 @@ export class HeapSnapshotProfileType extends ProfileType implements
     this.addProfile(profile);
     profile.updateStatus(i18nString(UIStrings.snapshotting));
 
-    await heapProfilerModel.takeHeapSnapshot(
-        true, this._treatGlobalObjectsAsRoots.get(), this._captureNumericValue.get());
+    await heapProfilerModel.takeHeapSnapshot({
+      reportProgress: true,
+      treatGlobalObjectsAsRoots: this._treatGlobalObjectsAsRoots.get(),
+      captureNumericValue: this._captureNumericValue.get(),
+    });
     profile = this.profileBeingRecorded() as HeapProfileHeader;
     if (!profile) {
       return;

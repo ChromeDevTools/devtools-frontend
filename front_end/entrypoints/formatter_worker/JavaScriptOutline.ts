@@ -6,7 +6,7 @@
 
 import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import * as AcornLoose from '../../third_party/acorn-loose/package/dist/acorn-loose.mjs';
+import * as AcornLoose from '../../third_party/acorn-loose/acorn-loose.js';
 import * as Acorn from '../../third_party/acorn/acorn.js';
 
 import {ECMA_VERSION} from './AcornTokenizer.js';
@@ -29,7 +29,7 @@ export function javaScriptOutline(content: string, chunkCallback: ChunkCallback)
   try {
     ast = Acorn.parse(content, {ecmaVersion: ECMA_VERSION, ranges: false});
   } catch (e) {
-    ast = AcornLoose.parse(content, {ecmaVersion: ECMA_VERSION, ranges: false});
+    ast = AcornLoose.AcornLoose.parse(content, {ecmaVersion: ECMA_VERSION, ranges: false});
   }
 
   const contentLineEndings = Platform.StringUtilities.findLineEndingIndexes(content);

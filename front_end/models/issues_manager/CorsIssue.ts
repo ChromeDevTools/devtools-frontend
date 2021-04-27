@@ -86,7 +86,7 @@ export class CorsIssue extends Issue {
           file: 'corsInsecurePrivateNetwork.md',
           substitutions: undefined,
           links: [{
-            link: 'https://web.dev/cors-rfc1918-guide',
+            link: 'https://developer.chrome.com/blog/private-network-access-update',
             linkTitle: i18nString(UIStrings.corsForPrivateNetworksRfc),
           }],
         };

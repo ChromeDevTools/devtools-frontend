@@ -152,7 +152,7 @@ table.network-timing-table > tr:not(.network-timing-table-header):not(.network-t
 }
 
 .network-fetch-timing-bar-clickable:focus-visible {
-  background-color: var(--toolbar-bg-color);
+  background-color: var(--color-background-elevation-1);
 }
 
 .network-fetch-timing-bar-clickable[aria-checked="true"]::before {

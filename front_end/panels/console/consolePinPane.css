@@ -13,7 +13,7 @@
 .console-pins {
   max-height: 200px;
   overflow-y: auto;
-  background: var(--toolbar-bg-color);
+  background: var(--color-background-elevation-1);
 
   --error-background-color: hsl(0deg 100% 97%);
   --error-border-color: hsl(0deg 100% 92%);

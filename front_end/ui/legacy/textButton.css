@@ -26,7 +26,7 @@
 .text-button:not(:disabled):focus,
 .text-button:not(:disabled):hover,
 .text-button:not(:disabled):active {
-  background-color: var(--toolbar-bg-color);
+  background-color: var(--color-background-elevation-1);
   box-shadow: 0 1px 2px rgb(0 0 0 / 10%); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
   cursor: pointer;

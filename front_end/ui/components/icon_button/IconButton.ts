@@ -74,7 +74,7 @@ export class IconButton extends HTMLElement {
           color: inherit;
           font-size: inherit;
           font-family: inherit;
-          background-color: var(--toolbar-bg-color);
+          background-color: var(--color-background-elevation-1);
         }
 
         .icon-button.with-click-handler {

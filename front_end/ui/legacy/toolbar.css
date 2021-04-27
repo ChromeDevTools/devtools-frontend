@@ -175,7 +175,7 @@ it. */
 .toolbar-button.close-devtools {
   position: fixed;
   right: 0;
-  background-color: var(--toolbar-bg-color);
+  background-color: var(--color-background-elevation-1);
 }
 
 :host-context(.right) .toolbar-button.main-menu,
@@ -217,7 +217,7 @@ it. */
 }
 
 .toolbar-toggled-gray:not(.toolbar-render-as-links) .toolbar-button:not(.toolbar-has-glyph):not(.toolbar-has-dropdown):not(.largeicon-menu):hover {
-  background-color: var(--toolbar-bg-color);
+  background-color: var(--color-background-elevation-1);
 }
 
 .toolbar-button.dark-text .toolbar-text {
@@ -278,7 +278,7 @@ it. */
 }
 
 .toolbar-toggled-gray .toolbar-button.toolbar-state-on {
-  background-color: var(--toolbar-bg-color) !important;
+  background-color: var(--color-background-elevation-1) !important;
 }
 
 :host-context(.-theme-with-dark-background) .toolbar-button.toolbar-state-on.toolbar-toggle-with-red-color .toolbar-glyph,

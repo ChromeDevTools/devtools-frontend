@@ -4,7 +4,7 @@
  * found in the LICENSE file.
  */
 .media-messages-header {
-  background-color: var(--toolbar-bg-color);
+  background-color: var(--color-background-elevation-1);
   border-bottom: 1px solid var(--color-details-hairline);
   min-height: 26px;
 }
@@ -14,7 +14,7 @@
 }
 
 .media-messages-level-dropdown-element {
-  background-color: var(--toolbar-bg-color);
+  background-color: var(--color-background-elevation-1);
   color: #000; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
   height: 18px;

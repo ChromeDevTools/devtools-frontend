@@ -30,14 +30,12 @@
   --focus-bg-color: hsl(214deg 40% 92%);
   --focus-ring-inactive-shadow-color: #e0e0e0;
   --input-validation-error: #db1600;
-  --toolbar-bg-color: var(--color-background-elevation-1);
   --toolbar-hover-bg-color: #eaeaea;
   --selection-fg-color: #fff;
   --selection-bg-color: var(--accent-color);
   --selection-inactive-fg-color: #5a5a5a;
   --selection-inactive-bg-color: #dadada;
   --tab-selected-fg-color: #333;
-  --tab-selected-bg-color: var(--toolbar-bg-color);
   --divider-border: 1px solid var(--color-details-hairline);
   --focus-ring-inactive-shadow: 0 0 0 1px var(--focus-ring-inactive-shadow-color);
   --focus-ring-active-shadow: 0 0 0 1px var(--accent-color);
@@ -82,7 +80,6 @@
   --selection-inactive-fg-color: #cdcdcd;
   --selection-inactive-bg-color: hsl(0deg 0% 28%);
   --tab-selected-fg-color: #eaeaea;
-  --tab-selected-bg-color: #000;
   --focus-ring-inactive-shadow: 0 0 0 1px var(--focus-ring-inactive-shadow-color);
   --item-selection-bg-color: hsl(207deg 88% 22%);
   --item-selection-inactive-bg-color: #454545;
@@ -712,7 +709,7 @@ input.custom-search-input::-webkit-search-cancel-button {
 
 .panel-sidebar {
   overflow-x: hidden;
-  background-color: var(--toolbar-bg-color);
+  background-color: var(--color-background-elevation-1);
 }
 
 iframe.extension {

@@ -93,7 +93,7 @@
   /* See: crbug.com/1152736 for color variable migration. */
   overflow: visible;
   width: 100%;
-  background-color: var(--toolbar-bg-color);
+  background-color: var(--color-background-elevation-1);
 }
 
 .tabbed-pane-header-contents {
@@ -149,8 +149,16 @@
 
 .tabbed-pane-header-tab.selected {
   border-bottom: none;
-  background-color: var(--tab-selected-bg-color);
+  background-color: var(--color-background-elevation-1);
   color: var(--tab-selected-fg-color);
+}
+
+/**
+ * In light-mode we have a blue border to show the active pane, and we don't change the background color. In dark mode we do not show the border, so we instead change the background color.
+ */
+.-theme-with-dark-background .tabbed-pane-header-tab.selected,
+:host-context(.-theme-with-dark-background) .tabbed-pane-header-tab.selected {
+  background-color: var(--color-background-elevation-0);
 }
 
 .tabbed-pane-header-tab.dragging {

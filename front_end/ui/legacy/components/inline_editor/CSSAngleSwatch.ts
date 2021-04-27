@@ -47,7 +47,7 @@ export class CSSAngleSwatch extends HTMLElement {
           border-radius: 50%;
           overflow: hidden;
           cursor: pointer;
-          background-color: var(--toolbar-bg-color);
+          background-color: var(--color-background-elevation-1);
         }
 
         .mini-hand {

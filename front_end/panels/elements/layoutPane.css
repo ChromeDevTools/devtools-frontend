@@ -4,10 +4,8 @@
 }
 
 .header {
-  background-color: var(--toolbar-bg-color, #f3f3f3); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  border-bottom: var(--divider-border, 1px solid #d0d0d0); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background-elevation-1);
+  border-bottom: var(--divider-border);
   line-height: 1.6;
   overflow: hidden;
   padding: 0 5px;
@@ -27,8 +25,7 @@
 
 .content-section {
   padding: 16px;
-  border-bottom: var(--divider-border, 1px solid #d0d0d0); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-bottom: var(--divider-border);
   overflow-x: hidden;
 }
 

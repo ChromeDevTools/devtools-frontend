@@ -114,7 +114,7 @@
 
 .data-grid th {
   text-align: left;
-  background-color: var(--toolbar-bg-color);
+  background-color: var(--color-background-elevation-1);
   border-bottom: 1px solid #aaa; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
   font-weight: normal;

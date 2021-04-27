@@ -49,7 +49,7 @@
 }
 
 .network-details-view-tall-header {
-  border-top: 4px solid var(--toolbar-bg-color);
+  border-top: 4px solid var(--color-background-elevation-1);
 }
 
 .network-item-view {
@@ -128,12 +128,12 @@
 }
 
 .network-tabbed-pane {
-  background-color: var(--toolbar-bg-color);
+  background-color: var(--color-background-elevation-1);
 }
 
 .network-settings-pane {
   flex: none;
-  background-color: var(--toolbar-bg-color);
+  background-color: var(--color-background-elevation-1);
 }
 
 .network-settings-pane .toolbar {
@@ -150,7 +150,7 @@
 }
 
 .panel.network .toolbar {
-  background-color: var(--toolbar-bg-color);
+  background-color: var(--color-background-elevation-1);
   border-bottom: var(--divider-border);
 }
 

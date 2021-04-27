@@ -191,6 +191,5 @@ ts_library("ts_library-verification") {
     "models/bindings:bundle",
     "models/logs:bundle",
     "models/workspace:bundle",
-    "ui/legacy/components/color_picker:bundle",
   ]
 }

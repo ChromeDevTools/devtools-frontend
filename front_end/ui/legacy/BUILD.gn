@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("./visibility.gni")
 
 devtools_module("ui") {
   sources = [
@@ -120,10 +121,6 @@ copy_to_gen("legacy_css") {
     "treeoutline.css",
     "viewContainers.css",
   ]
-}
-
-declare_args() {
-  devtools_ui_legacy_visibility = []
 }
 
 devtools_entrypoint("bundle") {

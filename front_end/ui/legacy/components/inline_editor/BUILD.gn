@@ -5,6 +5,7 @@
 import("../../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../../third_party/typescript/typescript.gni")
+import("../../visibility.gni")
 
 devtools_module("inline_editor") {
   sources = [
@@ -53,6 +54,21 @@ devtools_entrypoint("bundle") {
     ":inline_editor",
     "../../../../core/sdk:bundle",
   ]
+
+  visibility = [
+    ":*",
+    "../../../../../test/unittests/front_end/panels/elements/*",
+    "../../../../../test/unittests/front_end/ui/legacy/components/inline_editor/*",
+    "../../../../panels/animation/*",
+    "../../../../panels/application/*",
+    "../../../../panels/elements/*",
+    "../../../../panels/sources/*",
+
+    # TODO(crbug.com/1202788): Remove invalid dependents
+    "../../../components/docs/color_swatch/*",
+  ]
+
+  visibility += devtools_ui_legacy_visibility
 }
 
 devtools_entrypoint("legacy") {

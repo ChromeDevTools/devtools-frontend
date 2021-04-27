@@ -4,6 +4,7 @@
 
 import("../../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../../scripts/build/ninja/devtools_module.gni")
+import("../../visibility.gni")
 
 devtools_module("cookie_table") {
   sources = [ "CookiesTable.ts" ]
@@ -23,6 +24,14 @@ devtools_entrypoint("bundle") {
   entrypoint = "cookie_table.ts"
 
   deps = [ ":cookie_table" ]
+
+  visibility = [
+    ":*",
+    "../../../../panels/application/*",
+    "../../../../panels/network/*",
+  ]
+
+  visibility += devtools_ui_legacy_visibility
 }
 
 devtools_entrypoint("legacy") {

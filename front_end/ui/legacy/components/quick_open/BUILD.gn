@@ -4,6 +4,7 @@
 
 import("../../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../../scripts/build/ninja/devtools_module.gni")
+import("../../visibility.gni")
 
 devtools_module("quick_open") {
   sources = [
@@ -30,6 +31,15 @@ devtools_entrypoint("bundle") {
   entrypoint = "quick_open.ts"
 
   deps = [ ":quick_open" ]
+
+  visibility = [
+    ":*",
+    "../../../../../test/unittests/front_end/entrypoints/meta/*",
+    "../../../../panels/snippets/*",
+    "../../../../panels/sources/*",
+  ]
+
+  visibility += devtools_ui_legacy_visibility
 }
 
 devtools_entrypoint("legacy") {

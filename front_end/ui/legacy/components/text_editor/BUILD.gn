@@ -4,6 +4,7 @@
 
 import("../../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../../scripts/build/ninja/devtools_module.gni")
+import("../../visibility.gni")
 
 devtools_module("text_editor") {
   sources = [
@@ -39,6 +40,23 @@ devtools_entrypoint("bundle") {
     ":text_editor",
     "../../../../third_party/codemirror",
   ]
+
+  visibility = [
+    ":*",
+    "../../../../../test/unittests/front_end/ui/legacy/components/text_editor/*",
+    "../../../../legacy_test_runner/*",
+    "../../../../panels/changes/*",
+    "../../../../panels/console/*",
+    "../../../../panels/elements/*",
+    "../../../../panels/sources/*",
+    "../perf_ui/*",
+    "../source_frame/*",
+
+    # TODO(crbug.com/1202788): Remove invalid dependents
+    "../../../../../test/unittests/front_end/core/sdk/*",
+  ]
+
+  visibility += devtools_ui_legacy_visibility
 }
 
 devtools_entrypoint("legacy") {

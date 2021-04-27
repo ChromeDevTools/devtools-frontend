@@ -4,6 +4,7 @@
 
 import("../../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../../scripts/build/ninja/devtools_module.gni")
+import("../../visibility.gni")
 
 devtools_module("color_picker") {
   sources = [
@@ -28,6 +29,15 @@ devtools_entrypoint("bundle") {
   entrypoint = "color_picker.ts"
 
   deps = [ ":color_picker" ]
+
+  visibility = [
+    ":*",
+    "../../../../panels/css_overview/*",
+    "../../../../panels/elements/*",
+    "../../../../panels/sources/*",
+  ]
+
+  visibility += devtools_ui_legacy_visibility
 }
 
 devtools_entrypoint("legacy") {

@@ -4,6 +4,7 @@
 
 import("../../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../../scripts/build/ninja/devtools_module.gni")
+import("../../visibility.gni")
 
 devtools_module("utils") {
   sources = [
@@ -38,6 +39,23 @@ devtools_entrypoint("bundle") {
   entrypoint = "utils.ts"
 
   deps = [ ":utils" ]
+
+  visibility = [
+    ":*",
+    "../../../../../test/unittests/front_end/ui/legacy/components/utils/*",
+    "../../../../entrypoints/*",
+    "../../../../panels/*",
+    "../../../../panels/search/*",
+    "../inline_editor/*",
+    "../object_ui/*",
+
+    # TODO(crbug.com/1202788): Remove invalid dependents
+    "../../../../models/extensions/*",
+    "../../../../models/persistence/*",
+    "../../../components/linear_memory_inspector/*",
+  ]
+
+  visibility += devtools_ui_legacy_visibility
 }
 
 devtools_entrypoint("legacy") {

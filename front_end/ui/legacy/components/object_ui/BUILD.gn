@@ -4,6 +4,7 @@
 
 import("../../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../../scripts/build/ninja/devtools_module.gni")
+import("../../visibility.gni")
 
 devtools_module("object_ui") {
   sources = [
@@ -43,6 +44,20 @@ devtools_entrypoint("bundle") {
   entrypoint = "object_ui.ts"
 
   deps = [ ":object_ui" ]
+
+  visibility = [
+    ":*",
+    "../../../../panels/application/*",
+    "../../../../panels/console/*",
+    "../../../../panels/elements/*",
+    "../../../../panels/event_listeners/*",
+    "../../../../panels/network/*",
+    "../../../../panels/profiler/*",
+    "../../../../panels/sources/*",
+    "../source_frame/*",
+  ]
+
+  visibility += devtools_ui_legacy_visibility
 }
 
 devtools_entrypoint("legacy") {

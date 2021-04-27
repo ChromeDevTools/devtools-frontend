@@ -5,8 +5,7 @@
  */
 
 .paint-profiler-overview {
-  background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background);
 }
 
 .paint-profiler-canvas-container {

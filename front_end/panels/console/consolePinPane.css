@@ -15,19 +15,20 @@
   overflow-y: auto;
   background: var(--color-background-elevation-1);
 
-  --error-background-color: hsl(0deg 100% 97%);
-  --error-border-color: hsl(0deg 100% 92%);
-  --error-text-color: #f00;
+  --override-error-background-color: rgb(255 240 240);
+  --override-error-border-color: rgb(225 214 214);
+  --override-error-text-color: rgb(255 0 0);
 }
 
 .console-pins:not(:empty) {
   border-bottom: 1px solid var(--color-details-hairline);
 }
 
+.-theme-with-dark-background .console-pins,
 :host-context(.-theme-with-dark-background) .console-pins {
-  --error-background-color: hsl(0deg 100% 8%);
-  --error-border-color: rgb(92 0 0);
-  --error-text-color: hsl(0deg 100% 75%);
+  --override-error-background-color: rgb(41 0 0);
+  --override-error-border-color: rgb(92 0 0);
+  --override-error-text-color: rgb(255 128 128);
 }
 
 .console-pin {
@@ -42,17 +43,13 @@
 }
 
 .console-pin.error-level:not(:focus-within) {
-  background-color: var(--error-background-color); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  color: var(--error-text-color); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--override-error-background-color);
+  color: var(--override-error-text-color);
 }
 
 .console-pin:not(:last-child).error-level:not(:focus-within) {
-  border-top: 1px solid var(--error-border-color); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  border-bottom: 1px solid var(--error-border-color); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-top: 1px solid var(--override-error-border-color);
+  border-bottom: 1px solid var(--override-error-border-color);
   margin-top: -1px;
 }
 

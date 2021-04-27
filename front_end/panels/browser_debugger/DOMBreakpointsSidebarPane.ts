@@ -100,6 +100,14 @@ const UIStrings = {
   * modified).
   */
   breakOn: 'Break on',
+  /**
+  *@description Screen reader description for removing a DOM breakpoint.
+  */
+  breakpointRemoved: 'Breakpoint removed',
+  /**
+  *@description Screen reader description for setting a DOM breakpoint.
+  */
+  breakpointSet: 'Breakpoint set',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/browser_debugger/DOMBreakpointsSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -384,10 +392,14 @@ export class ContextMenuProvider implements UI.ContextMenu.Provider {
       if (!domDebuggerModel) {
         return;
       }
+      const label = Sources.DebuggerPausedMessage.BreakpointTypeNouns.get(type);
+      const labelString = label ? label() : '';
       if (domDebuggerModel.hasDOMBreakpoint(node, type)) {
         domDebuggerModel.removeDOMBreakpoint(node, type);
+        UI.ARIAUtils.alert(`${i18nString(UIStrings.breakpointRemoved)}: ${labelString}`);
       } else {
         domDebuggerModel.setDOMBreakpoint(node, type);
+        UI.ARIAUtils.alert(`${i18nString(UIStrings.breakpointSet)}: ${labelString}`);
       }
     }
 

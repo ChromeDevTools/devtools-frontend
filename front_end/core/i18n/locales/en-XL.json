@@ -3017,6 +3017,12 @@
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "b̂ŕêák̂ṕôín̂t́ ĥít̂"
   },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | breakpointRemoved": {
+    "message": "B̂ŕêák̂ṕôín̂t́ r̂ém̂óv̂éd̂"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | breakpointSet": {
+    "message": "B̂ŕêák̂ṕôín̂t́ ŝét̂"
+  },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | checked": {
     "message": "ĉh́êćk̂éd̂"
   },

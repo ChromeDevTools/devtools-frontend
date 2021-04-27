@@ -283,7 +283,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   constructor() {
     super();
     this.setMinimumSize(0, 35);
-    this.registerRequiredCSS('panels/console/consoleView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/console/consoleView.css', {enableLegacyPatching: false});
     this.registerRequiredCSS('ui/legacy/components/object_ui/objectValue.css', {enableLegacyPatching: true});
 
     this._searchableView = new UI.SearchableView.SearchableView(this, null);

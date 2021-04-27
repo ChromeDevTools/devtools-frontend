@@ -31,17 +31,27 @@
   background-color: var(--color-background);
   overflow: hidden;
 
-  --message-border-color: rgb(240 240 240);
-  --warning-border-color: hsl(50deg 100% 88%);
-  --error-border-color: hsl(0deg 100% 92%);
-  --error-text-color: #f00;
+  --override-message-border-color: rgb(240 240 240);
+  --override-warning-border-color: hsl(50deg 100% 88%);
+  --override-error-border-color: hsl(0deg 100% 92%);
+  --override-error-text-color: #f00;
+  --override-focused-message-border-color: hsl(214deg 67% 88%);
+  --override-focused-message-background-color: hsl(214deg 48% 95%);
+  --override-console-error-background-color: hsl(0deg 100% 97%);
+  --override-console-warning-background-color: hsl(50deg 100% 95%);
+  --override-console-warning-text-color: hsl(39deg 100% 18%);
 }
 
 .-theme-with-dark-background .console-view {
-  --message-border-color: rgb(58 58 58);
-  --warning-border-color: rgb(102 85 0);
-  --error-border-color: rgb(92 0 0);
-  --error-text-color: hsl(0deg 100% 75%);
+  --override-message-border-color: rgb(58 58 58);
+  --override-warning-border-color: rgb(102 85 0);
+  --override-error-border-color: rgb(92 0 0);
+  --override-error-text-color: hsl(0deg 100% 75%);
+  --override-focused-message-border-color: hsl(214deg 47% 48%);
+  --override-focused-message-background-color: hsl(214deg 19% 20%);
+  --override-console-error-background-color: hsl(0deg 100% 8%);
+  --override-console-warning-background-color: hsl(50deg 100% 10%);
+  --override-console-warning-text-color: hsl(39deg 89% 55%);
 }
 
 .console-toolbar-container {
@@ -56,11 +66,6 @@
 .console-toolbar-container > .toolbar {
   background-color: var(--toolbar-bg-color);
   border-bottom: var(--divider-border);
-}
-
-.console-view-wrapper {
-  background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .console-view-fix-select-all {
@@ -113,8 +118,7 @@
 }
 
 .console-timestamp {
-  color: #808080; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
   user-select: none;
   flex: none;
   margin-right: 5px;
@@ -160,8 +164,7 @@
 }
 
 .console-info {
-  color: rgb(128 128 128); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
   font-style: italic;
   padding-bottom: 2px;
 }
@@ -181,8 +184,6 @@
 .expand-group-icon {
   user-select: none;
   flex: none;
-  background-color: rgb(110 110 110); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
   position: relative;
   left: 10px;
   top: 5px;
@@ -206,8 +207,7 @@
 
 .console-message-wrapper {
   display: flex;
-  border-top: 1px solid var(--message-border-color); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-top: 1px solid var(--override-message-border-color);
   border-bottom: 1px solid transparent;
 }
 
@@ -220,51 +220,35 @@
 }
 
 .console-message-wrapper:last-of-type {
-  border-bottom-color: var(--message-border-color); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-bottom-color: var(--override-message-border-color);
 }
 
-.console-message-wrapper:focus,
-.console-message-wrapper:focus:last-of-type {
-  border-top-color: hsl(214deg 67% 88%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  border-bottom-color: hsl(214deg 67% 88%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  background-color: hsl(214deg 48% 95%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+.console-message-wrapper:focus {
+  border-top-color: var(--override-focused-message-border-color);
+  border-bottom-color: var(--override-focused-message-border-color);
+  background-color: var(--override-focused-message-background-color);
 }
 
 .console-message-wrapper:focus + .console-message-wrapper {
   border-top-color: transparent;
 }
 
-.-theme-with-dark-background .console-message-wrapper:focus,
-.-theme-with-dark-background .console-message-wrapper:focus:last-of-type {
-  border-top-color: hsl(214deg 47% 48%);
-  border-bottom-color: hsl(214deg 47% 48%);
-  background-color: hsl(214deg 19% 20%);
-}
-
 .console-message-wrapper.console-error-level,
 .console-message-wrapper.console-error-level:not(:focus) + .console-message-wrapper:not(.console-warning-level):not(:focus) {
-  border-top-color: var(--error-border-color); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-top-color: var(--override-error-border-color);
 }
 
 .console-message-wrapper.console-warning-level,
 .console-message-wrapper.console-warning-level:not(:focus) + .console-message-wrapper:not(.console-error-level):not(:focus) {
-  border-top-color: var(--warning-border-color); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-top-color: var(--override-warning-border-color);
 }
 
 .console-message-wrapper.console-error-level:last-of-type {
-  border-bottom-color: var(--error-border-color); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-bottom-color: var(--override-error-border-color);
 }
 
 .console-message-wrapper.console-warning-level:last-of-type {
-  border-bottom-color: var(--warning-border-color); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-bottom-color: var(--override-warning-border-color);
 }
 
 .console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level):not(.console-warning-level):focus {
@@ -280,29 +264,25 @@
   top: 3px;
 }
 
-.console-message-wrapper.console-error-level:focus,
-.console-message-wrapper.console-error-level:focus:last-of-type {
-  --error-text-color: rgb(200 0 0);
+.console-message-wrapper.console-error-level:focus {
+  --override-error-text-color: rgb(200 0 0);
 }
 
-.-theme-with-dark-background .console-message-wrapper.console-error-level:focus,
-.-theme-with-dark-background .console-message-wrapper.console-error-level:focus:last-of-type {
-  --error-text-color: hsl(0deg 100% 75%);
+.-theme-with-dark-background .console-message-wrapper.console-error-level:focus {
+  --override-error-text-color: hsl(0deg 100% 75%);
 }
 
 .console-message-wrapper .nesting-level-marker {
   width: 14px;
   flex: 0 0 auto;
-  border-right: 1px solid #a5a5a5; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-right: 1px solid var(--color-details-hairline);
   position: relative;
   margin-bottom: -1px;
   margin-top: -1px;
 }
 
 .console-message-wrapper .nesting-level-marker::before {
-  border-bottom: 1px solid #a5a5a5; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-bottom: 1px solid var(--color-details-hairline);
   position: absolute;
   top: 0;
   left: 0;
@@ -318,26 +298,15 @@
 }
 
 .console-error-level {
-  background-color: hsl(0deg 100% 97%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-}
-
-.-theme-with-dark-background .console-error-level {
-  background-color: hsl(0deg 100% 8%);
+  background-color: var(--override-console-error-background-color);
 }
 
 .console-warning-level {
-  background-color: hsl(50deg 100% 95%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-}
-
-.-theme-with-dark-background .console-warning-level {
-  background-color: hsl(50deg 100% 10%);
+  background-color: var(--override-console-warning-background-color);
 }
 
 .console-warning-level .console-message-text {
-  color: hsl(39deg 100% 18%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--override-console-warning-text-color);
 }
 
 .console-view-object-properties-section {
@@ -351,8 +320,7 @@
 }
 
 .info-note {
-  background-color: rgb(179 203 247); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-primary-variant);
 }
 
 .info-note::before {
@@ -365,8 +333,7 @@
 
 .console-error-level .console-message-text,
 .console-error-level .console-view-object-properties-section {
-  color: var(--error-text-color) !important; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--override-error-text-color) !important;
 }
 
 .console-system-type.console-info-level {
@@ -379,56 +346,20 @@
   color: hsl(220deg 100% 65%) !important;
 }
 
-.console-message.console-warning-level {
-  background-color: rgb(255 250 224); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-}
-
 #console-messages .link {
   text-decoration: underline;
 }
 
 #console-messages .link,
 #console-messages .devtools-link {
-  color: rgb(33% 33% 33%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
   cursor: pointer;
   word-break: break-all;
 }
 
 #console-messages .link:hover,
 #console-messages .devtools-link:hover {
-  color: rgb(15% 15% 15%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-}
-
-.console-group-messages .section {
-  margin: 0 0 0 12px !important;
-}
-
-.console-group-messages .section > .header {
-  padding: 0 8px 0 0;
-  background-image: none;
-  border: none;
-  min-height: 0;
-}
-
-.console-group-messages .section > .header::before {
-  margin-left: -12px;
-}
-
-.console-group-messages .section > .header .title {
-  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  font-weight: normal;
-  line-height: 13px;
-}
-
-.console-group-messages .section .properties li .info {
-  padding-top: 0;
-  padding-bottom: 0;
-  color: rgb(60% 60% 60%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-primary);
 }
 
 .console-object-preview {
@@ -438,9 +369,6 @@
 }
 
 .console-object-preview .name {
-  /* Follows .section .properties .name, .event-properties .name */
-  color: rgb(136 19 145); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
   flex-shrink: 0;
 }
 
@@ -481,8 +409,7 @@
   display: inline-block;
   width: 11px;
   height: 11px;
-  color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-background);
   text-align: center;
   border-radius: 3px;
   line-height: 13px;
@@ -562,6 +489,6 @@
 
   .console-message-wrapper.console-error-level:focus,
   .console-message-wrapper.console-error-level:focus:last-of-type {
-    --error-text-color: HighlightText;
+    --override-error-text-color: HighlightText;
   }
 }

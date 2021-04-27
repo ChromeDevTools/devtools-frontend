@@ -95,8 +95,6 @@ export class WrapperView extends UI.Widget.VBox {
 
   private constructor() {
     super();
-    this.element.classList.add('console-view-wrapper');
-
     this._view = ConsoleView.instance();
   }
 

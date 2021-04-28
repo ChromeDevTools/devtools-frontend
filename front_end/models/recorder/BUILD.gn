@@ -21,7 +21,6 @@ devtools_module("recorder") {
     "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../models/persistence:bundle",
-    "../../panels/accessibility:bundle",
     "../../panels/elements:bundle",
     "../../ui/legacy:bundle",
   ]

@@ -2,7 +2,6 @@
   "dependencies": [
     "ui/legacy",
     "models/persistence",
-    "panels/accessibility",
     "panels/elements"
   ],
     "resources": []

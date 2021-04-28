@@ -5,6 +5,7 @@
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../third_party/typescript/typescript.gni")
+import("../visibility.gni")
 
 devtools_module("elements") {
   sources = [
@@ -91,6 +92,25 @@ devtools_entrypoint("bundle") {
   entrypoint = "elements.ts"
 
   deps = [ ":elements" ]
+
+  visibility = [
+    ":*",
+    "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
+    "../../../test/unittests/front_end/panels/elements/*",
+    "../../entrypoints/*",
+    "../../ui/components/docs/computed_style_property/*",
+    "../../ui/components/docs/computed_style_trace/*",
+    "../../ui/components/docs/elements_breadcrumbs/*",
+    "../../ui/components/docs/flexbox_editor/*",
+    "../../ui/components/docs/layout_pane/*",
+
+    # TODO(crbug.com/1202788): Remove invalid dependents
+    "../../models/recorder/*",
+    "../issues/*",
+    "../network/*",
+  ]
+
+  visibility += devtools_panels_visibility
 }
 
 devtools_entrypoint("legacy") {

@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../visibility.gni")
 
 devtools_module("developer_resources") {
   sources = [
@@ -26,6 +27,14 @@ devtools_entrypoint("bundle") {
   entrypoint = "developer_resources.ts"
 
   deps = [ ":developer_resources" ]
+
+  visibility = [
+    ":*",
+    "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
+    "../../entrypoints/*",
+  ]
+
+  visibility += devtools_panels_visibility
 }
 
 devtools_entrypoint("meta") {

@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../visibility.gni")
 
 devtools_module("accessibility") {
   sources = [
@@ -31,6 +32,13 @@ devtools_entrypoint("bundle") {
   entrypoint = "accessibility.ts"
 
   deps = [ ":accessibility" ]
+
+  visibility = [
+    ":*",
+    "../../entrypoints/*",
+  ]
+
+  visibility += devtools_panels_visibility
 }
 
 devtools_entrypoint("legacy") {

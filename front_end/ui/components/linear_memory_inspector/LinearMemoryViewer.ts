@@ -190,7 +190,7 @@ export class LinearMemoryViewer extends HTMLElement {
         .cell.selected {
           border-color: var(--color-syntax-3);
           color: var(--color-syntax-3);
-          background-color: var(--item-selection-bg-color);
+          background-color: var(--legacy-item-selection-bg-color);
         }
 
         .byte-cell {

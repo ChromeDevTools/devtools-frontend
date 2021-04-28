@@ -96,7 +96,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
         .value-interpreter {
           --text-highlight-color: #80868b;
 
-          border: var(--divider-border);
+          border: var(--legacy-divider-border);
           background-color: var(--color-background-elevation-1);
           overflow: hidden;
           width: 400px;

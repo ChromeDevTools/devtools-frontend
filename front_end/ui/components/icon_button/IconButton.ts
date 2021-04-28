@@ -84,11 +84,11 @@ export class IconButton extends HTMLElement {
         }
 
         .icon-button.with-click-handler:hover {
-          background-color: var(--toolbar-hover-bg-color);
+          background-color: var(--legacy-toolbar-hover-bg-color);
         }
 
         .icon-button:focus-visible {
-          background-color: var(--toolbar-hover-bg-color);
+          background-color: var(--legacy-toolbar-hover-bg-color);
           border: 1px solid var(--color-details-hairline);
         }
 

@@ -227,7 +227,7 @@
 }
 
 .data-grid table.data tr.revealed.selected.dirty {
-  color: var(--selection-fg-color);
+  color: var(--legacy-selection-fg-color);
 }
 
 .data-grid.no-selection:focus-visible {
@@ -235,8 +235,8 @@
 }
 
 .data-grid:focus table.data tr.selected {
-  background-color: var(--selection-bg-color);
-  color: var(--selection-fg-color);
+  background-color: var(--legacy-selection-bg-color);
+  color: var(--legacy-selection-fg-color);
 }
 
 .data-grid:focus tr.selected.dirty {
@@ -251,16 +251,16 @@
 }
 
 .data-grid:focus tr.selected .devtools-link {
-  color: var(--selection-fg-color);
+  color: var(--legacy-selection-fg-color);
 }
 
 .data-grid:focus tr.parent.selected td.disclosure::before {
-  background-color: var(--selection-fg-color);
+  background-color: var(--legacy-selection-fg-color);
   -webkit-mask-position: 0 0;
 }
 
 .data-grid:focus tr.expanded.selected td.disclosure::before {
-  background-color: var(--selection-fg-color);
+  background-color: var(--legacy-selection-fg-color);
   -webkit-mask-position: -16px 0;
 }
 

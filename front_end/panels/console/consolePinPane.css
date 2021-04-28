@@ -90,7 +90,7 @@
 
 .console-pin-name:focus-within {
   background: var(--color-background);
-  box-shadow: var(--focus-ring-active-shadow) inset;
+  box-shadow: var(--legacy-focus-ring-active-shadow) inset;
 }
 
 .console-pin:focus-within .console-pin-preview,

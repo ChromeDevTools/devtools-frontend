@@ -33,7 +33,7 @@
   flex: none;
   flex-wrap: wrap;
   align-items: center;
-  border-bottom: var(--divider-border);
+  border-bottom: var(--legacy-divider-border);
 }
 
 .filter-text-filter {
@@ -140,12 +140,12 @@
 }
 
 .filter-input-container:hover {
-  box-shadow: var(--focus-ring-inactive-shadow);
+  box-shadow: var(--legacy-focus-ring-inactive-shadow);
 }
 
 .filter-input-container:focus-within,
 .filter-text-filter:not(.filter-text-empty) .filter-input-container {
-  box-shadow: var(--focus-ring-active-shadow);
+  box-shadow: var(--legacy-focus-ring-active-shadow);
 }
 
 .filter-input-clear-button {
@@ -178,12 +178,12 @@
   .filter-input-container {
     forced-color-adjust: none;
     background: ButtonFace;
-    box-shadow: var(--focus-ring-inactive-shadow);
+    box-shadow: var(--legacy-focus-ring-inactive-shadow);
   }
 
   .filter-input-container:hover,
   .filter-input-container:focus-within,
   .filter-text-filter:not(.filter-text-empty) .filter-input-container {
-    box-shadow: var(--focus-ring-active-shadow);
+    box-shadow: var(--legacy-focus-ring-active-shadow);
   }
 }

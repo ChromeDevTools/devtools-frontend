@@ -165,7 +165,7 @@ input::-webkit-inner-spin-button {
   width: 50px;
   margin: 8px;
   text-align: center;
-  box-shadow: var(--focus-ring-inactive-shadow);
+  box-shadow: var(--legacy-focus-ring-inactive-shadow);
 }
 
 .spectrum-switcher {

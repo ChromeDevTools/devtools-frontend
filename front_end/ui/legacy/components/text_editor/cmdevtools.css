@@ -685,11 +685,11 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .CodeMirror .CodeMirror-selected {
-  background-color: var(--item-selection-inactive-bg-color);
+  background-color: var(--legacy-item-selection-inactive-bg-color);
 }
 
 .CodeMirror-focused .CodeMirror-selected {
-  background-color: var(--item-selection-bg-color);
+  background-color: var(--legacy-item-selection-bg-color);
 }
 
 .-theme-with-dark-background .CodeMirror .CodeMirror-selected,
@@ -809,7 +809,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 .CodeMirror .CodeMirror-line::selection,
 .CodeMirror .CodeMirror-line > span::selection,
 .CodeMirror .CodeMirror-line > span > span::selection {
-  background: var(--item-selection-bg-color);
+  background: var(--legacy-item-selection-bg-color);
 }
 
 @media (forced-colors: active) {

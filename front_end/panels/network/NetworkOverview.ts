@@ -239,7 +239,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
       const y = ((band === -1) ? 0 : (band % this._numBands + 1)) * _bandHeight + paddingTop;
       const timeRanges = RequestTimingView.calculateRequestTimeRanges(request, this.calculator().minimumBoundary());
 
-      context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--selection-bg-color');
+      context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--legacy-selection-bg-color');
 
       const start = timeRanges[0].start * 1000;
       const end = timeRanges[0].end * 1000;

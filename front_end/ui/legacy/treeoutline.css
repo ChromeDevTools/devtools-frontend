@@ -32,19 +32,19 @@
 }
 
 .tree-outline:not(.hide-selection-when-blurred) li.selected {
-  color: var(--selection-inactive-fg-color);
+  color: var(--legacy-selection-inactive-fg-color);
 }
 
 .tree-outline:not(.hide-selection-when-blurred) li.selected .selection {
   display: block;
-  background-color: var(--selection-inactive-bg-color);
+  background-color: var(--legacy-selection-inactive-bg-color);
 }
 
 .tree-outline:not(.hide-selection-when-blurred) li.elements-drag-over .selection {
   display: block;
   margin-top: -2px;
   border-top: 2px solid;
-  border-top-color: var(--selection-bg-color);
+  border-top-color: var(--legacy-selection-bg-color);
 }
 
 .tree-outline:not(.hide-selection-when-blurred) li.hovered:not(.selected) .selection {
@@ -61,11 +61,11 @@
 }
 
 ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection {
-  background-color: var(--selection-bg-color);
+  background-color: var(--legacy-selection-bg-color);
 }
 
 ol.tree-outline:not(.hide-selection-when-blurred) li.parent.selected:focus::before {
-  background-color: var(--selection-fg-color);
+  background-color: var(--legacy-selection-fg-color);
 }
 
 ol.tree-outline,
@@ -87,7 +87,7 @@ ol.tree-outline,
 }
 
 ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
-  color: var(--selection-fg-color);
+  color: var(--legacy-selection-fg-color);
 }
 
 ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {

@@ -109,7 +109,7 @@
     background-color: ButtonFace;
     color: ButtonText;
     border-color: Highlight;
-    box-shadow: var(--focus-ring-active-shadow);
+    box-shadow: var(--legacy-focus-ring-active-shadow);
   }
 
   .text-button:not(:disabled):hover,

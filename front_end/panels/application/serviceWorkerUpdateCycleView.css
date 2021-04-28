@@ -73,7 +73,7 @@
 }
 
 .service-worker-update-timing-bar-details:focus-visible {
-  background-color: var(--selection-bg-color);
+  background-color: var(--legacy-selection-bg-color);
 }
 
 .service-worker-update-timing-bar.activate {

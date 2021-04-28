@@ -112,5 +112,5 @@ p.folder-exclude-pattern > input {
  */
 
 .harmony-input[type=text]:not(.error-input):not(:invalid) {
-  box-shadow: var(--focus-ring-inactive-shadow);
+  box-shadow: var(--legacy-focus-ring-inactive-shadow);
 }

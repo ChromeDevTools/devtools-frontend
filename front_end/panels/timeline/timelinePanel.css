@@ -34,7 +34,7 @@
 
 .timeline-toolbar-container > .toolbar {
   background-color: var(--color-background-elevation-1);
-  border-bottom: var(--divider-border);
+  border-bottom: var(--legacy-divider-border);
 }
 
 .timeline-main-toolbar {
@@ -44,7 +44,7 @@
 .timeline-settings-pane {
   flex: none;
   background-color: var(--color-background-elevation-1);
-  border-bottom: var(--divider-border);
+  border-bottom: var(--legacy-divider-border);
 }
 
 #timeline-overview-panel {
@@ -307,7 +307,7 @@
   background-color: var(--color-background);
   flex-direction: column;
   padding-bottom: 5px;
-  border-bottom: var(--divider-border);
+  border-bottom: var(--legacy-divider-border);
 }
 
 .timeline-details-view-row {
@@ -428,7 +428,7 @@
 
 .timeline-tree-view .toolbar {
   background-color: var(--color-background-elevation-1);
-  border-bottom: var(--divider-border);
+  border-bottom: var(--legacy-divider-border);
 }
 
 .timeline-tree-view .data-grid {
@@ -567,7 +567,7 @@
   color: #5a5a5a; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
   white-space: nowrap;
-  border-bottom: var(--divider-border);
+  border-bottom: var(--legacy-divider-border);
 }
 
 .timeline-landing-page {
@@ -607,7 +607,7 @@
   display: flex;
   flex: 0 0 27px;
   background-color: var(--color-background-elevation-1);
-  border-top: var(--divider-border);
+  border-top: var(--legacy-divider-border);
   overflow: hidden;
   z-index: 100;
 }

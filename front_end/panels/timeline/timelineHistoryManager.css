@@ -19,7 +19,7 @@
 }
 
 .preview-item.selected {
-  border-color: var(--selection-bg-color);
+  border-color: var(--legacy-selection-bg-color);
 }
 
 .preview-item canvas {

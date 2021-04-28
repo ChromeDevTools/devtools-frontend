@@ -97,7 +97,7 @@
 }
 
 .suggest-box-content-item.selected {
-  background-color: var(--selection-bg-color);
+  background-color: var(--legacy-selection-bg-color);
 }
 
 .suggest-box-content-item.selected devtools-icon {
@@ -105,7 +105,7 @@
 }
 
 .suggest-box-content-item.selected > span {
-  color: var(--selection-fg-color);
+  color: var(--legacy-selection-fg-color);
 }
 
 .suggest-box-content-item:hover:not(.selected) {

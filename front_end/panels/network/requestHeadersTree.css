@@ -175,7 +175,7 @@
 }
 
 .header-highlight:focus {
-  background-color: var(--selection-bg-color);
+  background-color: var(--legacy-selection-bg-color);
 }
 
 .x-client-data-details {

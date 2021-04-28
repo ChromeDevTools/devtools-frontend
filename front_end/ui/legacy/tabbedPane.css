@@ -135,7 +135,7 @@
 .tabbed-pane-shadow .tabbed-pane-header-tab:focus-visible {
   color: #333; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
-  background-color: var(--toolbar-hover-bg-color);
+  background-color: var(--legacy-toolbar-hover-bg-color);
 }
 
 .tabbed-pane-header-tab-title {
@@ -150,7 +150,7 @@
 .tabbed-pane-header-tab.selected {
   border-bottom: none;
   background-color: var(--color-background-elevation-1);
-  color: var(--tab-selected-fg-color);
+  color: var(--legacy-tab-selected-fg-color);
 }
 
 /**

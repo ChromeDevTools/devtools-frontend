@@ -105,7 +105,7 @@
   width: 52px;
   margin-right: 8px;
   text-align: right;
-  box-shadow: var(--focus-ring-inactive-shadow);
+  box-shadow: var(--legacy-focus-ring-inactive-shadow);
 }
 
 @media (forced-colors: active) {

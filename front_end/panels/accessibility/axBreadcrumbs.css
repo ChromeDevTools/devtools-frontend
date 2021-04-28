@@ -83,7 +83,7 @@
 }
 
 .ax-breadcrumbs .ax-node.inspected:focus .selection {
-  background-color: var(--selection-bg-color);
+  background-color: var(--legacy-selection-bg-color);
 }
 
 .ax-breadcrumbs .ax-node.parent.inspected:focus::before {

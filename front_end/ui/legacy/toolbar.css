@@ -345,12 +345,12 @@ select.toolbar-item:focus-visible > * {
   background-color: var(--color-background);
   border: 1px solid transparent;
   min-width: 35px;
-  box-shadow: var(--focus-ring-inactive-shadow);
+  box-shadow: var(--legacy-focus-ring-inactive-shadow);
 }
 
 .toolbar-input.focused,
 .toolbar-input:not(.toolbar-input-empty) {
-  box-shadow: var(--focus-ring-active-shadow);
+  box-shadow: var(--legacy-focus-ring-active-shadow);
 }
 
 .toolbar-input > input {
@@ -433,12 +433,12 @@ input[is=history-input] {
 }
 
 input[is=history-input]:hover {
-  box-shadow: var(--focus-ring-inactive-shadow);
+  box-shadow: var(--legacy-focus-ring-inactive-shadow);
 }
 
 input[is=history-input]:focus,
 input[is=history-input]:not(:placeholder-shown) {
-  box-shadow: var(--focus-ring-active-shadow);
+  box-shadow: var(--legacy-focus-ring-active-shadow);
 }
 
 .toolbar-item.warning {
@@ -530,18 +530,18 @@ devtools-icon.leading-issue-icon {
   .toolbar-input {
     forced-color-adjust: none;
     background: canvas;
-    box-shadow: var(--focus-ring-inactive-shadow);
+    box-shadow: var(--legacy-focus-ring-inactive-shadow);
   }
 
   .toolbar-input.focused,
   .toolbar-input:not(.toolbar-input-empty) {
     forced-color-adjust: none;
     background: canvas;
-    box-shadow: var(--focus-ring-active-shadow);
+    box-shadow: var(--legacy-focus-ring-active-shadow);
   }
 
   .toolbar-input:hover {
-    box-shadow: var(--focus-ring-active-shadow);
+    box-shadow: var(--legacy-focus-ring-active-shadow);
   }
 
   .toolbar-item .devtools-link {

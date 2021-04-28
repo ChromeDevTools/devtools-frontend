@@ -102,7 +102,7 @@ export class PieChart extends HTMLElement {
         }
 
         .chart-root .slice.selected {
-          stroke: var(--selection-bg-color);
+          stroke: var(--legacy-selection-bg-color);
           stroke-opacity: 1;
           stroke-width: 0.04;
           stroke-linecap: round;
@@ -123,7 +123,7 @@ export class PieChart extends HTMLElement {
         }
 
         .pie-chart-legend-row:focus-visible {
-          box-shadow: 0 0 0 2px var(--selection-bg-color) !important;
+          box-shadow: 0 0 0 2px var(--legacy-selection-bg-color) !important;
         }
 
         .pie-chart-swatch {

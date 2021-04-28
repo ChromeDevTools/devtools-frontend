@@ -99,7 +99,7 @@ li .devices-edit-client-hints-heading {
 }
 
 .devices-edit-client-hints-heading a:focus {
-  box-shadow: var(--focus-ring-active-shadow);
+  box-shadow: var(--legacy-focus-ring-active-shadow);
 }
 
 .devices-edit-fields input {

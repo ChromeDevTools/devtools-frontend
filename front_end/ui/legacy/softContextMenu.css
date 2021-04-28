@@ -20,8 +20,8 @@
 }
 
 :host-context(.-theme-with-dark-background) .soft-context-menu {
-  --context-menu-hover-bg: var(--selection-bg-color);
-  --context-menu-hover-color: var(--selection-fg-color);
+  --context-menu-hover-bg: var(--legacy-selection-bg-color);
+  --context-menu-hover-color: var(--legacy-selection-fg-color);
 
   border: none;
 }
@@ -102,7 +102,7 @@
 }
 
 .soft-context-menu-item-mouse-over .soft-context-menu-item-checkmark {
-  color: var(--selection-fg-color);
+  color: var(--legacy-selection-fg-color);
 }
 
 .soft-context-menu-custom-item {

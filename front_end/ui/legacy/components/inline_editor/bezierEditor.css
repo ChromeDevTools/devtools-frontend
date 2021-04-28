@@ -13,7 +13,7 @@
 }
 
 .bezier-preset-selected > svg {
-  background-color: var(--selection-bg-color);
+  background-color: var(--legacy-selection-bg-color);
 }
 
 .bezier-preset {
@@ -142,7 +142,7 @@ svg.bezier-preset-modify:hover,
 }
 
 .bezier-preset-selected .bezier-preset:hover {
-  background-color: var(--selection-bg-color);
+  background-color: var(--legacy-selection-bg-color);
 }
 
 .bezier-preset-modify path {
@@ -194,7 +194,7 @@ svg.bezier-preset-modify.bezier-preset-plus {
 
 svg.bezier-preset-modify:active {
   transform: scale(1.1);
-  background-color: var(--selection-bg-color);
+  background-color: var(--legacy-selection-bg-color);
 }
 
 .bezier-preset-category:active {

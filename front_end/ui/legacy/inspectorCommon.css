@@ -30,17 +30,17 @@
   --legacy-focus-bg-color: hsl(214deg 40% 92%);
   --legacy-focus-ring-inactive-shadow-color: #e0e0e0;
   --legacy-input-validation-error: #db1600;
-  --toolbar-hover-bg-color: #eaeaea;
-  --selection-fg-color: #fff;
-  --selection-bg-color: var(--legacy-accent-color);
-  --selection-inactive-fg-color: #5a5a5a;
-  --selection-inactive-bg-color: #dadada;
-  --tab-selected-fg-color: #333;
-  --divider-border: 1px solid var(--color-details-hairline);
-  --focus-ring-inactive-shadow: 0 0 0 1px var(--legacy-focus-ring-inactive-shadow-color);
-  --focus-ring-active-shadow: 0 0 0 1px var(--legacy-accent-color);
-  --item-selection-bg-color: #cfe8fc;
-  --item-selection-inactive-bg-color: #e0e0e0;
+  --legacy-toolbar-hover-bg-color: #eaeaea;
+  --legacy-selection-fg-color: #fff;
+  --legacy-selection-bg-color: var(--legacy-accent-color);
+  --legacy-selection-inactive-fg-color: #5a5a5a;
+  --legacy-selection-inactive-bg-color: #dadada;
+  --legacy-tab-selected-fg-color: #333;
+  --legacy-divider-border: 1px solid var(--color-details-hairline);
+  --legacy-focus-ring-inactive-shadow: 0 0 0 1px var(--legacy-focus-ring-inactive-shadow-color);
+  --legacy-focus-ring-active-shadow: 0 0 0 1px var(--legacy-accent-color);
+  --legacy-item-selection-bg-color: #cfe8fc;
+  --legacy-item-selection-inactive-bg-color: #e0e0e0;
   --item-hover-color: rgb(56 121 217 / 10%);
   --network-grid-default-color: rgb(255 255 255 / 100%);
   --network-grid-stripe-color: rgb(245 245 245 / 100%);
@@ -49,7 +49,7 @@
   --network-grid-initiator-path-color: rgb(58 217 58 / 40%);
   --network-grid-initiated-path-color: rgb(217 58 58 / 40%);
   --network-grid-selected-color: #dadce0;
-  --network-grid-focus-selected-color: var(--selection-bg-color);
+  --network-grid-focus-selected-color: var(--legacy-selection-bg-color);
   --network-grid-focus-selected-color-has-error: #fad2cf;
   --network-grid-from-frame-color: rgb(224 247 250 / 40%);
   --network-grid-is-product-color: rgb(255 252 225 / 60%);
@@ -75,14 +75,14 @@
   --legacy-active-control-bg-color: #cdcdcd;
   --legacy-focus-bg-color: hsl(214deg 19% 27%);
   --legacy-focus-ring-inactive-shadow-color: #5a5a5a;
-  --toolbar-hover-bg-color: #202020;
-  --selection-fg-color: #cdcdcd;
-  --selection-inactive-fg-color: #cdcdcd;
-  --selection-inactive-bg-color: hsl(0deg 0% 28%);
-  --tab-selected-fg-color: #eaeaea;
-  --focus-ring-inactive-shadow: 0 0 0 1px var(--legacy-focus-ring-inactive-shadow-color);
-  --item-selection-bg-color: hsl(207deg 88% 22%);
-  --item-selection-inactive-bg-color: #454545;
+  --legacy-toolbar-hover-bg-color: #202020;
+  --legacy-selection-fg-color: #cdcdcd;
+  --legacy-selection-inactive-fg-color: #cdcdcd;
+  --legacy-selection-inactive-bg-color: hsl(0deg 0% 28%);
+  --legacy-tab-selected-fg-color: #eaeaea;
+  --legacy-focus-ring-inactive-shadow: 0 0 0 1px var(--legacy-focus-ring-inactive-shadow-color);
+  --legacy-item-selection-bg-color: hsl(207deg 88% 22%);
+  --legacy-item-selection-inactive-bg-color: #454545;
   --network-grid-default-color: rgb(36 36 36 / 100%);
   --network-grid-stripe-color: rgb(41 41 41 / 100%);
   --network-grid-navigation-color: rgb(221 238 255 / 100%);
@@ -90,7 +90,7 @@
   --network-grid-initiator-path-color: rgb(58 217 58 / 40%);
   --network-grid-initiated-path-color: rgb(217 58 58 / 40%);
   --network-grid-selected-color: #454545;
-  --network-grid-focus-selected-color: var(--selection-bg-color);
+  --network-grid-focus-selected-color: var(--legacy-selection-bg-color);
   --network-grid-focus-selected-color-has-error: #482422;
   --network-grid-from-frame-color: rgb(224 247 250 / 40%);
   --network-grid-is-product-color: rgb(255 252 225 / 60%);
@@ -300,7 +300,7 @@ input::placeholder {
   padding: 3px 6px;
   height: 24px;
   border: none;
-  box-shadow: var(--focus-ring-inactive-shadow);
+  box-shadow: var(--legacy-focus-ring-inactive-shadow);
 }
 
 .harmony-input:not([type]).error-input,
@@ -316,13 +316,13 @@ input::placeholder {
 .harmony-input:not([type]):not(.error-input):not(:invalid):hover,
 .harmony-input[type=number]:not(.error-input):not(:invalid):hover,
 .harmony-input[type=text]:not(.error-input):not(:invalid):hover {
-  box-shadow: var(--focus-ring-inactive-shadow);
+  box-shadow: var(--legacy-focus-ring-inactive-shadow);
 }
 
 .harmony-input:not([type]):not(.error-input):not(:invalid):focus,
 .harmony-input[type=number]:not(.error-input):not(:invalid):focus,
 .harmony-input[type=text]:not(.error-input):not(:invalid):focus {
-  box-shadow: var(--focus-ring-active-shadow);
+  box-shadow: var(--legacy-focus-ring-active-shadow);
 }
 
 .highlighted-search-result.current-search-result {

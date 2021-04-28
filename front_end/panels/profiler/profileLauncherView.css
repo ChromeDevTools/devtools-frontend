@@ -79,7 +79,7 @@
 }
 
 .profile-memory-usage-item.selected {
-  background-color: var(--item-selection-inactive-bg-color);
+  background-color: var(--legacy-item-selection-inactive-bg-color);
 }
 
 .javascript-vm-instances-list {
@@ -88,8 +88,8 @@
 }
 
 .javascript-vm-instances-list:focus .profile-memory-usage-item.selected {
-  border-color: var(--selection-bg-color);
-  background-color: var(--item-selection-bg-color);
+  border-color: var(--legacy-selection-bg-color);
+  background-color: var(--legacy-item-selection-bg-color);
 }
 
 .profile-memory-usage-item > div {

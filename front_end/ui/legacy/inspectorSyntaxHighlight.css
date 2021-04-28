@@ -224,7 +224,7 @@
 }
 
 :focus .selected .devtools-link [is=ui-icon].icon-mask {
-  background-color: var(--item-selection-bg-color);
+  background-color: var(--legacy-item-selection-bg-color);
 }
 
 .devtools-link:focus-visible {

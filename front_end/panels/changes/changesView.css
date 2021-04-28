@@ -18,7 +18,7 @@
 }
 
 :focus.selected {
-  background-color: var(--selection-bg-color);
+  background-color: var(--legacy-selection-bg-color);
   color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
 }
@@ -77,7 +77,7 @@
 
 .changes-toolbar {
   background-color: var(--color-background-elevation-1);
-  border-top: var(--divider-border);
+  border-top: var(--legacy-divider-border);
 }
 
 .changes-diff-gutter {

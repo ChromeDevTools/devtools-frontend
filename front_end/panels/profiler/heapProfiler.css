@@ -185,8 +185,8 @@
 }
 
 .heap-allocation-stack .stack-frame:focus {
-  background-color: var(--selection-bg-color);
-  color: var(--selection-fg-color);
+  background-color: var(--legacy-selection-bg-color);
+  color: var(--legacy-selection-fg-color);
 }
 
 .heap-allocation-stack .stack-frame:focus:hover {
@@ -202,7 +202,7 @@
 }
 
 .heap-allocation-stack .stack-frame:focus .devtools-link {
-  color: var(--selection-fg-color);
+  color: var(--legacy-selection-fg-color);
 }
 
 .no-heap-allocation-stack {

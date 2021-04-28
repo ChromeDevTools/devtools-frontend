@@ -66,5 +66,5 @@
 }
 
 .websocket-frame-view .toolbar {
-  border-bottom: var(--divider-border);
+  border-bottom: var(--legacy-divider-border);
 }

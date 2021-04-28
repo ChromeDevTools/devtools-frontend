@@ -23,7 +23,7 @@
 }
 
 ::slotted(input.dt-radio-button:focus) {
-  box-shadow: var(--focus-ring-active-shadow);
+  box-shadow: var(--legacy-focus-ring-active-shadow);
 }
 
 :host-context(.-theme-with-dark-background) ::slotted(input.dt-radio-button) {

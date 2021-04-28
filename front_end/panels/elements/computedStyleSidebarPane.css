@@ -30,7 +30,7 @@
 
 .styles-sidebar-pane-filter-box > input:focus,
 .styles-sidebar-pane-filter-box > input:not(:placeholder-shown) {
-  box-shadow: var(--focus-ring-active-shadow);
+  box-shadow: var(--legacy-focus-ring-active-shadow);
 }
 
 .styles-sidebar-pane-filter-box > input::placeholder {

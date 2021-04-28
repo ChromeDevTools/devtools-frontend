@@ -10,7 +10,7 @@
 
 .header {
   padding: 0 0 6px;
-  border-bottom: var(--divider-border);
+  border-bottom: var(--legacy-divider-border);
   font-size: 18px;
   font-weight: normal;
   flex: none;

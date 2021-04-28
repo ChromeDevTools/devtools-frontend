@@ -43,7 +43,7 @@ export class CSSAngleSwatch extends HTMLElement {
           margin-bottom: -2px;
           width: 1em;
           height: 1em;
-          border: 1px solid var(--selection-inactive-fg-color);
+          border: 1px solid var(--legacy-selection-inactive-fg-color);
           border-radius: 50%;
           overflow: hidden;
           cursor: pointer;

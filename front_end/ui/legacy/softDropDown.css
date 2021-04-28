@@ -17,8 +17,8 @@
 }
 
 .item.highlighted {
-  color: var(--selection-fg-color);
-  background-color: var(--selection-bg-color);
+  color: var(--legacy-selection-fg-color);
+  background-color: var(--legacy-selection-bg-color);
 }
 
 @media (forced-colors: active) {

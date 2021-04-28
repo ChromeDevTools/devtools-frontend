@@ -50,7 +50,6 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
-import {HARWriter} from './HARWriter.js';
 import {Events, NetworkGroupNode, NetworkLogViewInterface, NetworkNode, NetworkRequestNode} from './NetworkDataGridNode.js';  // eslint-disable-line no-unused-vars
 import {NetworkFrameGrouper} from './NetworkFrameGrouper.js';
 import {NetworkLogViewColumns} from './NetworkLogViewColumns.js';
@@ -1605,7 +1604,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
 
     const progressIndicator = new UI.ProgressIndicator.ProgressIndicator();
     this._progressBarContainer.appendChild(progressIndicator.element);
-    await HARWriter.write(stream, this._harRequests(), progressIndicator);
+    await HARImporter.HARWriter.HARWriter.write(stream, this._harRequests(), progressIndicator);
     progressIndicator.done();
     stream.close();
   }

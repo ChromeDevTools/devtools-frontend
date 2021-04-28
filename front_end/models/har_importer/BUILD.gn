@@ -10,6 +10,7 @@ devtools_module("har_importer") {
     "HARFormat.ts",
     "HARImporter.ts",
     "HARLog.ts",
+    "HARWriter.ts",
   ]
 
   deps = [

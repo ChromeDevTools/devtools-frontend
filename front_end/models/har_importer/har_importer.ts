@@ -5,9 +5,11 @@
 import * as HARFormat from './HARFormat.js';
 import * as HARImporter from './HARImporter.js';
 import * as HARLog from './HARLog.js';
+import * as HARWriter from './HARWriter.js';
 
 export {
   HARFormat,
   HARImporter,
   HARLog,
+  HARWriter,
 };

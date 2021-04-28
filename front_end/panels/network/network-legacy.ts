@@ -27,11 +27,6 @@ Network.EventSourceMessageNode = NetworkModule.EventSourceMessagesView.EventSour
 /**
  * @constructor
  */
-Network.HARWriter = NetworkModule.HARWriter.HARWriter;
-
-/**
- * @constructor
- */
 Network.NetworkConfigView = NetworkModule.NetworkConfigView.NetworkConfigView;
 
 /** @type {!Array.<{title: string, values: !Array.<{title: string, value: string}>}>} */

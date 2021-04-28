@@ -6,7 +6,6 @@
 import './BinaryResourceView.js';
 import './BlockedURLsPane.js';
 import './EventSourceMessagesView.js';
-import './HARWriter.js';
 import './NetworkConfigView.js';
 import './NetworkDataGridNode.js';
 import './NetworkItemView.js';
@@ -32,7 +31,6 @@ import './NetworkPanel.js';
 import * as BinaryResourceView from './BinaryResourceView.js';
 import * as BlockedURLsPane from './BlockedURLsPane.js';
 import * as EventSourceMessagesView from './EventSourceMessagesView.js';
-import * as HARWriter from './HARWriter.js';
 import * as NetworkConfigView from './NetworkConfigView.js';
 import * as NetworkDataGridNode from './NetworkDataGridNode.js';
 import * as NetworkFrameGrouper from './NetworkFrameGrouper.js';
@@ -60,7 +58,6 @@ export {
   BinaryResourceView,
   BlockedURLsPane,
   EventSourceMessagesView,
-  HARWriter,
   NetworkConfigView,
   NetworkDataGridNode,
   NetworkFrameGrouper,

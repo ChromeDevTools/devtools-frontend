@@ -9,6 +9,13 @@ ts_library("har_importer") {
   sources = [
     "HARImporter_test.ts",
     "HARLog_test.ts",
+    "HARWriter_test.ts",
   ]
-  deps = [ "../../../../../front_end/models/har_importer:bundle" ]
+  deps = [
+    "../../../../../front_end/core/common:bundle",
+    "../../../../../front_end/core/sdk:bundle",
+    "../../../../../front_end/models/har_importer:bundle",
+    "../../../../../front_end/ui/legacy:bundle",
+    "../../helpers",
+  ]
 }

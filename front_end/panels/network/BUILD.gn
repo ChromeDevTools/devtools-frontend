@@ -10,7 +10,6 @@ devtools_module("network") {
     "BinaryResourceView.ts",
     "BlockedURLsPane.ts",
     "EventSourceMessagesView.ts",
-    "HARWriter.ts",
     "NetworkConfigView.ts",
     "NetworkDataGridNode.ts",
     "NetworkFrameGrouper.ts",

@@ -1223,6 +1223,12 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit failed: {PH1}"
   },
+  "models/har_importer/HARWriter.ts | collectingContent": {
+    "message": "Collecting content…"
+  },
+  "models/har_importer/HARWriter.ts | writingFile": {
+    "message": "Writing file…"
+  },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Content Security Policy - Eval"
   },
@@ -5935,12 +5941,6 @@
   },
   "panels/network/EventSourceMessagesView.ts | type": {
     "message": "Type"
-  },
-  "panels/network/HARWriter.ts | collectingContent": {
-    "message": "Collecting content…"
-  },
-  "panels/network/HARWriter.ts | writingFile": {
-    "message": "Writing file…"
   },
   "panels/network/network-meta.ts | colorCode": {
     "message": "color code"

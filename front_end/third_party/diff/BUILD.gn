@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../visibility.gni")
 
 devtools_module("diff") {
   sources = [
@@ -18,6 +19,17 @@ devtools_entrypoint("bundle") {
   entrypoint = "diff.ts"
 
   deps = [ ":diff" ]
+
+  visibility = [
+    ":*",
+    "../../models/workspace_diff/*",
+    "../../panels/changes/*",
+    "../../panels/sources/*",
+    "../../ui/legacy/components/quick_open/*",
+    "../../ui/legacy/components/source_frame/*",
+  ]
+
+  visibility += devtools_third_party_visibility
 }
 
 devtools_entrypoint("legacy") {

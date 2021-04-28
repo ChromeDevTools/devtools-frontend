@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
+import("../visibility.gni")
 
 devtools_pre_built("acorn") {
   sources_are_release = false
@@ -21,4 +22,8 @@ devtools_entrypoint("bundle") {
   entrypoint = "acorn.ts"
 
   deps = [ ":acorn" ]
+
+  visibility = [ "../../entrypoints/formatter_worker/*" ]
+
+  visibility += devtools_third_party_visibility
 }

@@ -5,6 +5,7 @@
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
+import("../visibility.gni")
 
 devtools_pre_built("lit-html") {
   sources_are_release = false
@@ -78,4 +79,16 @@ devtools_entrypoint("bundle") {
     ":lit-html",
     ":lit-html-directives",
   ]
+
+  visibility = [
+    "../../../test/unittests/front_end/*",
+    "../../panels/*",
+    "../../ui/components/*",
+
+    # TODO(crbug.com/1202788): Remove invalid dependents
+    "../../ui/legacy/components/inline_editor/*",
+    "../../ui/legacy/components/perf_ui/*",
+  ]
+
+  visibility += devtools_third_party_visibility
 }

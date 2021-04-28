@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
+import("../visibility.gni")
 
 devtools_pre_built("marked") {
   sources_are_release = false
@@ -19,4 +20,13 @@ devtools_entrypoint("bundle") {
   entrypoint = "marked.ts"
 
   deps = [ ":marked" ]
+
+  visibility = [
+    "../../../test/unittests/front_end/ui/components/*",
+    "../../models/issues_manager/*",
+    "../../ui/components/docs/markdown_view/*",
+    "../../ui/components/markdown_view/*",
+  ]
+
+  visibility += devtools_third_party_visibility
 }

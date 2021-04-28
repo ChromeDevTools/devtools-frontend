@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
+import("../visibility.gni")
 
 devtools_pre_built("puppeteer") {
   sources_are_release = false
@@ -194,4 +195,11 @@ devtools_entrypoint("bundle") {
   entrypoint = "puppeteer.ts"
 
   deps = [ ":puppeteer" ]
+
+  visibility = [
+    "../../../test/e2e/puppeteer/*",
+    "../../../test/e2e/recorder/*",
+  ]
+
+  visibility += devtools_third_party_visibility
 }

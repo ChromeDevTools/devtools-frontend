@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../visibility.gni")
 
 devtools_module("extensions") {
   sources = [
@@ -24,7 +25,6 @@ devtools_module("extensions") {
     "../../core/sdk:bundle",
     "../../models/bindings:bundle",
     "../../models/har_importer:bundle",
-    "../../models/issues_manager:bundle",
     "../../models/logs:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
@@ -38,6 +38,16 @@ devtools_entrypoint("bundle") {
   entrypoint = "extensions.ts"
 
   deps = [ ":extensions" ]
+
+  visibility = [
+    ":*",
+    "../../entrypoints/main/*",
+    "../../panels/elements/*",
+    "../../panels/sources/*",
+    "../../panels/timeline/*",
+  ]
+
+  visibility += devtools_models_visibility
 }
 
 devtools_entrypoint("legacy") {

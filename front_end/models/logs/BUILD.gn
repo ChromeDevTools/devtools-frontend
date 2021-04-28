@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../visibility.gni")
 
 devtools_module("logs") {
   sources = [
@@ -22,6 +23,18 @@ devtools_entrypoint("bundle") {
   entrypoint = "logs.ts"
 
   deps = [ ":logs" ]
+
+  visibility = [
+    ":*",
+    "../../entrypoints/main/*",
+    "../../panels/application/*",
+    "../../panels/console/*",
+    "../../panels/issues/*",
+    "../../panels/network/*",
+    "../extensions/*",
+  ]
+
+  visibility += devtools_models_visibility
 }
 
 devtools_entrypoint("meta") {

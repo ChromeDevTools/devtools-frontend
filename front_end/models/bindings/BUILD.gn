@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../visibility.gni")
 
 devtools_module("bindings") {
   sources = [
@@ -41,6 +42,35 @@ devtools_entrypoint("bundle") {
   entrypoint = "bindings.ts"
 
   deps = [ ":bindings" ]
+
+  visibility = [
+    ":*",
+    "../../../test/unittests/front_end/models/bindings/*",
+    "../../entrypoints/main/*",
+    "../../legacy_test_runner/*",
+    "../../panels/application/*",
+    "../../panels/console/*",
+    "../../panels/coverage/*",
+    "../../panels/input/*",
+    "../../panels/network/*",
+    "../../panels/profiler/*",
+    "../../panels/sources/*",
+    "../persistence/*",
+
+    # TODO(crbug.com/1202788): Remove invalid dependents
+    "../../../test/unittests/front_end/ui/legacy/components/utils/*",
+    "../../panels/elements/*",
+    "../../panels/emulation/*",
+    "../../ui/components/linkifier/*",
+    "../../ui/legacy/components/inline_editor/*",
+    "../../ui/legacy/components/perf_ui/*",
+    "../../ui/legacy/components/utils/*",
+    "../extensions/*",
+    "../formatter/*",
+    "../issues_manager/*",
+  ]
+
+  visibility += devtools_models_visibility
 }
 
 devtools_entrypoint("legacy") {

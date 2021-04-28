@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../visibility.gni")
 
 devtools_module("recorder") {
   sources = [
@@ -30,4 +31,13 @@ devtools_entrypoint("bundle") {
   entrypoint = "recorder.ts"
 
   deps = [ ":recorder" ]
+
+  visibility = [
+    ":*",
+    "../../../test/unittests/front_end/models/recorder/*",
+    "../../entrypoints/main/*",
+    "../../panels/sources/*",
+  ]
+
+  visibility += devtools_models_visibility
 }

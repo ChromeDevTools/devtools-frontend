@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../visibility.gni")
 
 devtools_module("workspace") {
   sources = [
@@ -25,6 +26,37 @@ devtools_entrypoint("bundle") {
   entrypoint = "workspace.ts"
 
   deps = [ ":workspace" ]
+
+  visibility = [
+    ":*",
+    "../../entrypoints/main/*",
+    "../../legacy_test_runner/*",
+    "../../panels/application/*",
+    "../../panels/changes/*",
+    "../../panels/coverage/*",
+    "../../panels/emulation/*",
+    "../../panels/lighthouse/*",
+    "../../panels/network/*",
+    "../../panels/profiler/*",
+    "../../panels/search/*",
+    "../../panels/snippets/*",
+    "../../panels/sources/*",
+    "../bindings/*",
+    "../extensions/*",
+    "../persistence/*",
+    "../workspace_diff/*",
+
+    # TODO(crbug.com/1202788): Remove invalid dependents
+    "../../../test/unittests/front_end/ui/legacy/components/utils/*",
+    "../../panels/elements/*",
+    "../../ui/legacy/components/perf_ui/*",
+    "../../ui/legacy/components/source_frame/*",
+    "../../ui/legacy/components/utils/*",
+    "../formatter/*",
+    "../issues_manager/*",
+  ]
+
+  visibility += devtools_models_visibility
 }
 
 devtools_entrypoint("legacy") {

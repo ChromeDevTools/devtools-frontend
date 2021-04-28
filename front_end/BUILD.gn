@@ -188,8 +188,5 @@ ts_library("ts_library-verification") {
     "core/protocol_client:bundle",
     "core/root:bundle",
     "core/sdk:bundle",
-    "models/bindings:bundle",
-    "models/logs:bundle",
-    "models/workspace:bundle",
   ]
 }

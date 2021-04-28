@@ -61,7 +61,6 @@ devtools_module("elements") {
     "../../generated",
     "../../models/bindings:bundle",
     "../../models/extensions:bundle",
-    "../../models/formatter:bundle",
     "../../models/workspace:bundle",
     "../../panels/emulation:bundle",
     "../../panels/event_listeners:bundle",

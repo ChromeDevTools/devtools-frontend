@@ -4,6 +4,7 @@
 
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../visibility.gni")
 
 devtools_module("icon_button") {
   sources = [
@@ -22,4 +23,11 @@ devtools_entrypoint("bundle") {
   entrypoint = "icon_button.ts"
 
   deps = [ ":icon_button" ]
+
+  visibility = [
+    # TODO(crbug.com/1202788): Remove invalid dependents
+    "../../legacy/components/color_picker/*",
+  ]
+
+  visibility += default_components_visibility
 }

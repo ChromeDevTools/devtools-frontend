@@ -6,6 +6,7 @@ import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/ninja/devtools_pre_built.gni")
 import("../../../../third_party/typescript/typescript.gni")
+import("../visibility.gni")
 
 devtools_module("helpers") {
   sources = [
@@ -27,4 +28,13 @@ devtools_entrypoint("bundle") {
   entrypoint = "helpers.ts"
 
   deps = [ ":helpers" ]
+
+  visibility = [
+    "../../../../test/unittests/front_end/test_setup/*",
+
+    # TODO(crbug.com/1202788): Remove invalid dependents
+    "../../legacy/components/inline_editor/*",
+  ]
+
+  visibility += default_components_visibility
 }

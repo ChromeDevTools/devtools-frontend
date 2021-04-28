@@ -4,6 +4,7 @@
 
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../visibility.gni")
 
 devtools_module("report_view") {
   sources = [ "ReportView.ts" ]
@@ -16,4 +17,6 @@ devtools_entrypoint("bundle") {
   entrypoint = "report_view.ts"
 
   deps = [ ":report_view" ]
+
+  visibility = default_components_visibility
 }

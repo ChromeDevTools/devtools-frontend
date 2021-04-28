@@ -4,6 +4,7 @@
 
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../visibility.gni")
 
 devtools_module("tree_outline") {
   sources = [
@@ -24,4 +25,6 @@ devtools_entrypoint("bundle") {
   entrypoint = "tree_outline.ts"
 
   deps = [ ":tree_outline" ]
+
+  visibility = default_components_visibility
 }

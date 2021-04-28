@@ -4,6 +4,7 @@
 
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../visibility.gni")
 
 devtools_module("markdown_view") {
   sources = [
@@ -33,4 +34,6 @@ devtools_entrypoint("bundle") {
   entrypoint = "markdown_view.ts"
 
   deps = [ ":markdown_view" ]
+
+  visibility = default_components_visibility
 }

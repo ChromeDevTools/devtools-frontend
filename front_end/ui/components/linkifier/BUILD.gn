@@ -4,6 +4,7 @@
 
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../visibility.gni")
 
 devtools_module("linkifier") {
   sources = [
@@ -23,4 +24,6 @@ devtools_entrypoint("bundle") {
   entrypoint = "linkifier.ts"
 
   deps = [ ":linkifier" ]
+
+  visibility = default_components_visibility
 }

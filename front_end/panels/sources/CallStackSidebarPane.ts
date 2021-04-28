@@ -63,10 +63,6 @@ const UIStrings = {
   /**
   *@description A context menu item in the Call Stack Sidebar Pane of the Sources panel
   */
-  restartFrame: 'Restart frame',
-  /**
-  *@description A context menu item in the Call Stack Sidebar Pane of the Sources panel
-  */
   copyStackTrace: 'Copy stack trace',
   /**
   *@description Text to stop preventing the debugger from stepping into library code
@@ -367,10 +363,6 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
       return;
     }
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    const debuggerCallFrame = itemToCallFrame.get(item);
-    if (debuggerCallFrame) {
-      contextMenu.defaultSection().appendItem(i18nString(UIStrings.restartFrame), () => debuggerCallFrame.restart());
-    }
     contextMenu.defaultSection().appendItem(i18nString(UIStrings.copyStackTrace), this._copyStackTrace.bind(this));
     if (item.uiLocation) {
       this.appendIgnoreListURLContextMenuItems(contextMenu, item.uiLocation.uiSourceCode);

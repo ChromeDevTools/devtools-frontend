@@ -1365,13 +1365,6 @@ export class CallFrame {
     }
     return {object: runtimeModel.createRemoteObject(response.result), exceptionDetails: response.exceptionDetails};
   }
-
-  async restart(): Promise<void> {
-    const response = await this.debuggerModel._agent.invoke_restartFrame({callFrameId: this._payload.callFrameId});
-    if (!response.getError()) {
-      this.debuggerModel.stepInto();
-    }
-  }
 }
 
 export interface ScopeChainEntry {

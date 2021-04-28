@@ -7,7 +7,10 @@ ts_library("ts") {
     "basic-with-legend.ts",
     "basic-without-legend.ts",
   ]
-  deps = [ "../../../../ui/legacy/components/perf_ui:bundle" ]
+  deps = [
+    "../../../../../test/unittests/front_end/helpers",
+    "../../../../ui/legacy/components/perf_ui:bundle",
+  ]
 }
 
 copy_to_gen("perf_piechart") {

@@ -12,7 +12,10 @@ ts_library("ts") {
     "change-color.ts",
   ]
 
-  deps = [ "../../../../ui/legacy/components/inline_editor:bundle" ]
+  deps = [
+    "../../../../../test/unittests/front_end/helpers",
+    "../../../../ui/legacy/components/inline_editor:bundle",
+  ]
 }
 
 copy_to_gen("color_swatch") {

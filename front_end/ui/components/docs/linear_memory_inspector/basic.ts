@@ -4,10 +4,12 @@
 
 import '../../linear_memory_inspector/linear_memory_inspector.js';
 
+import * as FrontendHelpers from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as ComponentHelpers from '../../helpers/helpers.js';
 import * as LinearMemoryInspector from '../../linear_memory_inspector/linear_memory_inspector.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
+await FrontendHelpers.initializeGlobalVars();
 
 const array = [];
 const string = 'Hello this is a string from the memory buffer!';

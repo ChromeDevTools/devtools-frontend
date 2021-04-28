@@ -9,7 +9,10 @@ ts_library("ts") {
   testonly = true
   sources = [ "basic.ts" ]
 
-  deps = [ "../../../../panels/elements:bundle" ]
+  deps = [
+    "../../../../../test/unittests/front_end/helpers",
+    "../../../../panels/elements:bundle",
+  ]
 }
 
 copy_to_gen("layout_pane") {

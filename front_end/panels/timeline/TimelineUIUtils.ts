@@ -3492,7 +3492,7 @@ export class InvalidationsGroupElement extends UI.TreeOutline.TreeElement {
     if (invalidationNodes.length >= 4) {
       return i18n.i18n.getFormatLocalizedString(
           str_, UIStrings.sSAndSOthers,
-          {PH1: invalidationNodes[0], PH2: invalidationNodes[1], PH3: invalidationNodes.length - 2});
+          {PH1: invalidationNodes[0], PH2: invalidationNodes[1], PH3: String(invalidationNodes.length - 2)});
     }
     return null;
   }

@@ -28,3 +28,8 @@
 .content .node-list {
   margin-left: 10px;
 }
+
+/* The .node-list's can be very long. So we override the tree item's default nowrap. */
+.tree-outline li {
+  white-space: normal;
+}

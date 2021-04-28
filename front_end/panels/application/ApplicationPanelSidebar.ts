@@ -347,6 +347,16 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.SDKMo
     if (!selection.length) {
       manifestTreeElement.select();
     }
+
+    SDK.SDKModel.TargetManager.instance().observeModels(DOMStorageModel, {
+      modelAdded: (model: DOMStorageModel): void => this._domStorageModelAdded(model),
+      modelRemoved: (model: DOMStorageModel): void => this._domStorageModelRemoved(model),
+    });
+    SDK.SDKModel.TargetManager.instance().observeModels(IndexedDBModel, {
+      modelAdded: (model: IndexedDBModel): void => model.enable(),
+      modelRemoved: (model: IndexedDBModel): void => this.indexedDBListTreeElement.removeIndexedDBForModel(model),
+    });
+
     // Work-around for crbug.com/1152713: Something is wrong with custom scrollbars and size containment.
     // @ts-ignore
     this.contentElement.style.contain = 'layout style';
@@ -428,17 +438,6 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.SDKMo
     if (resourceTreeModel) {
       this._populateApplicationCacheTree(resourceTreeModel);
     }
-    SDK.SDKModel.TargetManager.instance().observeModels(
-        DOMStorageModel, ({
-          modelAdded: (model: DOMStorageModel): void => this._domStorageModelAdded(model),
-          modelRemoved: (model: DOMStorageModel): void => this._domStorageModelRemoved(model),
-        } as SDK.SDKModel.SDKModelObserver<DOMStorageModel>));
-    this.indexedDBListTreeElement._initialize();
-    SDK.SDKModel.TargetManager.instance().observeModels(
-        IndexedDBModel, ({
-          modelAdded: (model: IndexedDBModel): void => model.enable(),
-          modelRemoved: (model: IndexedDBModel): void => this.indexedDBListTreeElement.removeIndexedDBForModel(model),
-        } as SDK.SDKModel.SDKModelObserver<IndexedDBModel>));
     const serviceWorkerCacheModel =
         this._target && this._target.model(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel) || null;
     this.cacheStorageListTreeElement.initialize(serviceWorkerCacheModel);
@@ -1048,9 +1047,10 @@ export class IndexedDBTreeElement extends ExpandableApplicationPanelTreeElement 
     const icon = UI.Icon.Icon.create('mediumicon-database', 'resource-tree-item');
     this.setLeadingIcons([icon]);
     this._idbDatabaseTreeElements = [];
+    this.initialize();
   }
 
-  _initialize(): void {
+  private initialize(): void {
     SDK.SDKModel.TargetManager.instance().addModelListener(
         IndexedDBModel, IndexedDBModelEvents.DatabaseAdded, this._indexedDBAdded, this);
     SDK.SDKModel.TargetManager.instance().addModelListener(

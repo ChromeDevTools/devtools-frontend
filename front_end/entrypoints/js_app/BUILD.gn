@@ -3,6 +3,7 @@
 # found in the LICENSE file.
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../third_party/typescript/typescript.gni")
+import("../visibility.gni")
 
 ts_library("js_app") {
   no_emit = true
@@ -26,4 +27,6 @@ devtools_entrypoint("js_main") {
     "../../core/sdk:bundle",
     "../../ui/legacy/components/utils:bundle",
   ]
+
+  visibility = [ ":*" ]
 }

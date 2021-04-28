@@ -2,6 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../visibility.gni")
 
 devtools_entrypoint("toolbox") {
   entrypoint = "toolbox.ts"
@@ -11,4 +12,8 @@ devtools_entrypoint("toolbox") {
     "../../core/dom_extension:bundle",
     "../../core/platform:bundle",
   ]
+
+  visibility = [ "../../../front_end" ]
+
+  visibility += devtools_entrypoints_visibility
 }

@@ -3,6 +3,7 @@
 # found in the LICENSE file.
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../third_party/typescript/typescript.gni")
+import("../visibility.gni")
 
 ts_library("worker_app") {
   no_emit = true
@@ -35,4 +36,8 @@ devtools_entrypoint("worker_main") {
     "../../panels/mobile_throttling:bundle",
     "../../ui/legacy/components/utils:bundle",
   ]
+
+  visibility = [ ":*" ]
+
+  visibility += devtools_entrypoints_visibility
 }

@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../visibility.gni")
 
 devtools_module("main") {
   sources = [
@@ -38,6 +39,13 @@ devtools_entrypoint("bundle") {
   entrypoint = "main.ts"
 
   deps = [ ":main" ]
+
+  visibility = [
+    ":*",
+    "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
+  ]
+
+  visibility += devtools_entrypoints_visibility
 }
 
 devtools_entrypoint("legacy") {

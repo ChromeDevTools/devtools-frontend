@@ -4,6 +4,7 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../visibility.gni")
 
 devtools_module("wasmparser_worker") {
   sources = [ "WasmParserWorker.ts" ]
@@ -18,6 +19,13 @@ devtools_entrypoint("bundle") {
   entrypoint = "wasmparser_worker.ts"
 
   deps = [ ":wasmparser_worker" ]
+
+  visibility = [
+    ":*",
+    "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
+  ]
+
+  visibility += devtools_entrypoints_visibility
 }
 
 devtools_entrypoint("worker_entrypoint") {
@@ -26,4 +34,8 @@ devtools_entrypoint("worker_entrypoint") {
   is_web_worker = true
 
   deps = [ ":bundle" ]
+
+  visibility = [ "../../../front_end" ]
+
+  visibility += devtools_entrypoints_visibility
 }

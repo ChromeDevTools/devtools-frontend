@@ -3,6 +3,7 @@
 # found in the LICENSE file.
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../third_party/typescript/typescript.gni")
+import("../visibility.gni")
 
 devtools_entrypoint("shell-meta-files") {
   entrypoint = "shell-meta-files.ts"
@@ -30,6 +31,10 @@ devtools_entrypoint("shell-meta-files") {
     "../../ui/legacy/components/quick_open:meta",
     "../../ui/legacy/components/source_frame:meta",
   ]
+
+  visibility = [ ":*" ]
+
+  visibility += devtools_entrypoints_visibility
 }
 
 ts_library("shell") {

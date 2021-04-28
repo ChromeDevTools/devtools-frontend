@@ -3,6 +3,7 @@
 # found in the LICENSE file.
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../third_party/typescript/typescript.gni")
+import("../visibility.gni")
 
 devtools_entrypoint("devtools_app-meta-files") {
   entrypoint = "devtools_app-meta-files.ts"
@@ -31,6 +32,10 @@ devtools_entrypoint("devtools_app-meta-files") {
     "../../panels/web_audio:meta",
     "../../panels/webauthn:meta",
   ]
+
+  visibility = [ ":*" ]
+
+  visibility += devtools_entrypoints_visibility
 }
 
 ts_library("devtools_app") {

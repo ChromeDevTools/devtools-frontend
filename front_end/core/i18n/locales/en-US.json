@@ -494,9 +494,6 @@
   "core/sdk/OverlayModel.ts | pausedInDebugger": {
     "message": "Paused in debugger"
   },
-  "core/sdk/PageLoad.ts | considerDisablingSWhileDebugging": {
-    "message": "Consider disabling {PH1} while debugging. For more info see: {PH2}"
-  },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToLoadTimeout": {
     "message": "Load canceled due to load timeout"
   },

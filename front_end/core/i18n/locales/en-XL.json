@@ -494,9 +494,6 @@
   "core/sdk/OverlayModel.ts | pausedInDebugger": {
     "message": "P̂áûśêd́ îń d̂éb̂úĝǵêŕ"
   },
-  "core/sdk/PageLoad.ts | considerDisablingSWhileDebugging": {
-    "message": "Ĉón̂śîd́êŕ d̂íŝáb̂ĺîńĝ {PH1} ẃĥíl̂é d̂éb̂úĝǵîńĝ. F́ôŕ m̂ór̂é îńf̂ó ŝéê: {PH2}"
-  },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToLoadTimeout": {
     "message": "L̂óâd́ ĉán̂ćêĺêd́ d̂úê t́ô ĺôád̂ t́îḿêóût́"
   },

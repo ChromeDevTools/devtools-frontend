@@ -15,6 +15,13 @@ const UNITTESTS_DIRECTORY = path.join(__dirname, '..', '..', '..', 'test', 'unit
 const INSPECTOR_OVERLAY_DIRECTORY = path.join(__dirname, '..', '..', '..', 'front_end', 'inspector_overlay');
 const COMPONENT_DOCS_DIRECTORY = path.join(FRONT_END_DIRECTORY, 'ui', 'components', 'docs');
 
+const EXEMPTED_THIRD_PARTY_MODULES = new Set([
+  // acorn is exempt as it doesn't expose all its modules from the root file
+  path.join(FRONT_END_DIRECTORY, 'third_party', 'acorn'),
+  // acorn-loose is exempt as it doesn't expose all its modules from the root file
+  path.join(FRONT_END_DIRECTORY, 'third_party', 'acorn-loose'),
+]);
+
 const CROSS_NAMESPACE_MESSAGE =
     'Incorrect cross-namespace import: "{{importPath}}". Use "import * as Namespace from \'../namespace/namespace.js\';" instead.';
 
@@ -185,6 +192,16 @@ module.exports = {
 
         const exportingFileName = path.resolve(path.dirname(importingFileName), importPath);
 
+        const importMatchesExemptThirdParty =
+            Array.from(EXEMPTED_THIRD_PARTY_MODULES)
+                .some(exemptModulePath => exportingFileName.startsWith(exemptModulePath));
+
+        if (importMatchesExemptThirdParty) {
+          /* We don't impose any rules on third_party DEPS which do not expose
+           * all functionality in a single entrypoint
+           */
+          return;
+        }
         if (importPath.includes('/front_end/') && !importingFileIsUnitTestFile && !importingFileIsComponentDocsFile) {
           context.report({
             node,

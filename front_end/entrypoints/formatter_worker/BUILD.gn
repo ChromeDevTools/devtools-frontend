@@ -25,7 +25,7 @@ devtools_module("formatter_worker") {
     "../../models/formatter:bundle",
     "../../models/text_utils:bundle",
     "../../third_party/acorn:bundle",
-    "../../third_party/acorn-loose:bundle",
+    "../../third_party/acorn-loose",
     "../../third_party/codemirror",
   ]
 }

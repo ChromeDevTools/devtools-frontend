@@ -4,11 +4,20 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../visibility.gni")
 
 devtools_entrypoint("bundle") {
   entrypoint = "js_profiler.ts"
 
   deps = []
+
+  visibility = [
+    ":*",
+    "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
+    "../../entrypoints/*",
+  ]
+
+  visibility += devtools_panels_visibility
 }
 
 devtools_entrypoint("meta") {

@@ -22,6 +22,8 @@ devtools_module("i18n") {
 devtools_entrypoint("bundle") {
   entrypoint = "i18n.ts"
   deps = [ ":i18n" ]
+
+  visibility = [ "*" ]
 }
 
 devtools_pre_built("i18n_locales") {

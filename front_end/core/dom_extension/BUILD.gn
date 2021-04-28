@@ -15,4 +15,10 @@ devtools_entrypoint("bundle") {
   entrypoint = "dom_extension.ts"
 
   deps = [ ":dom_extension" ]
+
+  visibility = [
+    "../../../test/unittests/front_end/core/dom_extension/*",
+    "../../entrypoints/*",
+    "../../ui/legacy/*",
+  ]
 }

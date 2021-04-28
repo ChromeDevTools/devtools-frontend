@@ -84,6 +84,8 @@ devtools_entrypoint("bundle") {
   entrypoint = "sdk.ts"
 
   deps = [ ":sdk" ]
+
+  visibility = [ "*" ]
 }
 
 devtools_entrypoint("legacy") {

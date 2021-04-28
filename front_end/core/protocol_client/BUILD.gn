@@ -22,6 +22,8 @@ devtools_entrypoint("bundle") {
   entrypoint = "protocol_client.ts"
 
   deps = [ ":protocol_client" ]
+
+  visibility = [ "*" ]
 }
 
 devtools_entrypoint("legacy") {

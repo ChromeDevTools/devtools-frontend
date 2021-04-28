@@ -60,6 +60,8 @@ devtools_entrypoint("bundle") {
   entrypoint = "common.ts"
 
   deps = [ ":common" ]
+
+  visibility = [ "*" ]
 }
 
 devtools_entrypoint("legacy") {

@@ -26,4 +26,6 @@ devtools_entrypoint("bundle") {
   entrypoint = "platform.ts"
 
   deps = [ ":platform" ]
+
+  visibility = [ "*" ]
 }

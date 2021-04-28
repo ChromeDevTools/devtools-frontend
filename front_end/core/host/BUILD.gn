@@ -25,6 +25,8 @@ devtools_entrypoint("bundle") {
   entrypoint = "host.ts"
 
   deps = [ ":host" ]
+
+  visibility = [ "*" ]
 }
 
 devtools_entrypoint("legacy") {

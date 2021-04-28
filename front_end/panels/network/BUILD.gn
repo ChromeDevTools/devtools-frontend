@@ -43,7 +43,7 @@ devtools_module("network") {
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../models/bindings:bundle",
-    "../../models/har_importer:bundle",
+    "../../models/har:bundle",
     "../../models/issues_manager:bundle",
     "../../models/logs:bundle",
     "../../models/text_utils:bundle",

@@ -5,7 +5,7 @@
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 
-devtools_module("har_importer") {
+devtools_module("har") {
   sources = [
     "HARFormat.ts",
     "HARImporter.ts",
@@ -20,7 +20,7 @@ devtools_module("har_importer") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "har_importer.ts"
+  entrypoint = "har.ts"
 
-  deps = [ ":har_importer" ]
+  deps = [ ":har" ]
 }

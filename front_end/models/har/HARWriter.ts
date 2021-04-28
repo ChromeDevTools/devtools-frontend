@@ -50,7 +50,7 @@ const UIStrings = {
   */
   writingFile: 'Writing file…',
 };
-const str_ = i18n.i18n.registerUIStrings('models/har_importer/HARWriter.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/har/HARWriter.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class HARWriter {
   static async write(

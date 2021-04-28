@@ -4,10 +4,10 @@
 
 const {assert} = chai;
 
-import * as HARImporter from '../../../../../front_end/models/har_importer/har_importer.js';
+import * as HAR from '../../../../../front_end/models/har/har.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 
-const exampleLog = new HARImporter.HARFormat.HARLog({
+const exampleLog = new HAR.HARFormat.HARLog({
   version: '1.2',
   creator: {
     name: 'WebInspector',
@@ -166,7 +166,7 @@ const exampleLog = new HARImporter.HARFormat.HARLog({
 describe('HARImporter', () => {
   let requests: SDK.NetworkRequest.NetworkRequest[];
   before(async () => {
-    requests = HARImporter.HARImporter.Importer.requestsFromHARLog(exampleLog);
+    requests = HAR.HARImporter.Importer.requestsFromHARLog(exampleLog);
   });
 
   it('Parses the correct number of Network Requests from HAR file', () => {

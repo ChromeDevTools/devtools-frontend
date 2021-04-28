@@ -40,7 +40,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
-import * as HARImporter from '../../models/har_importer/har_importer.js';
+import * as HAR from '../../models/har/har.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
@@ -731,13 +731,12 @@ export class NetworkLogView extends UI.Widget.VBox implements
     let harRoot;
     try {
       // HARRoot and JSON.parse might throw.
-      harRoot = new HARImporter.HARFormat.HARRoot(JSON.parse(outputStream.data()));
+      harRoot = new HAR.HARFormat.HARRoot(JSON.parse(outputStream.data()));
     } catch (e) {
       this._harLoadFailed(e);
       return;
     }
-    Logs.NetworkLog.NetworkLog.instance().importRequests(
-        HARImporter.HARImporter.Importer.requestsFromHARLog(harRoot.log));
+    Logs.NetworkLog.NetworkLog.instance().importRequests(HAR.HARImporter.Importer.requestsFromHARLog(harRoot.log));
   }
 
   _harLoadFailed(message: string): void {
@@ -1554,7 +1553,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
   }
 
   async _copyAll(): Promise<void> {
-    const harArchive = {log: await HARImporter.HARLog.HARLog.build(this._harRequests())};
+    const harArchive = {log: await HAR.HARLog.HARLog.build(this._harRequests())};
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(JSON.stringify(harArchive, null, 2));
   }
 
@@ -1604,7 +1603,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
 
     const progressIndicator = new UI.ProgressIndicator.ProgressIndicator();
     this._progressBarContainer.appendChild(progressIndicator.element);
-    await HARImporter.HARWriter.HARWriter.write(stream, this._harRequests(), progressIndicator);
+    await HAR.HARWriter.HARWriter.write(stream, this._harRequests(), progressIndicator);
     progressIndicator.done();
     stream.close();
   }

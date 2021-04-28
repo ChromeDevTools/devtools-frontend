@@ -46,7 +46,7 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import * as Bindings from '../bindings/bindings.js';
-import * as HARImporter from '../har_importer/har_importer.js';
+import * as HAR from '../har/har.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 import * as Workspace from '../workspace/workspace.js';
 
@@ -484,9 +484,9 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         message.expression, true, true, message.evaluateOptions, port[extensionOriginSymbol], callback.bind(this));
   }
 
-  async _onGetHAR(): Promise<HARImporter.HARLog.HARLogDTO> {
+  async _onGetHAR(): Promise<HAR.HARLog.HARLogDTO> {
     const requests = Logs.NetworkLog.NetworkLog.instance().requests();
-    const harLog = await HARImporter.HARLog.HARLog.build(requests);
+    const harLog = await HAR.HARLog.HARLog.build(requests);
     for (let i = 0; i < harLog.entries.length; ++i) {
       harLog.entries[i]._requestId = this._requestId(requests[i]);
     }
@@ -673,7 +673,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
 
   async _notifyRequestFinished(event: any): Promise<void> {
     const request = (event.data as SDK.NetworkRequest.NetworkRequest);
-    const entry = await HARImporter.HARLog.Entry.build(request);
+    const entry = await HAR.HARLog.Entry.build(request);
     this._postNotification(Extensions.extensionAPI.Events.NetworkRequestFinished, this._requestId(request), entry);
   }
 

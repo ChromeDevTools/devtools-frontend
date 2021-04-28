@@ -24,7 +24,7 @@ devtools_module("extensions") {
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../models/bindings:bundle",
-    "../../models/har_importer:bundle",
+    "../../models/har:bundle",
     "../../models/logs:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",

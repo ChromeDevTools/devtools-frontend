@@ -19,8 +19,8 @@
 }
 
 .flame-chart-canvas:focus-visible {
-  border-top: 1px solid var(--accent-color);
-  border-bottom: 1px solid var(--accent-color);
+  border-top: 1px solid var(--legacy-accent-color);
+  border-bottom: 1px solid var(--legacy-accent-color);
 }
 
 .flame-chart-highlight-element {

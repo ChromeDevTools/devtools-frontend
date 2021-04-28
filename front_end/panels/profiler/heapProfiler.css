@@ -190,7 +190,7 @@
 }
 
 .heap-allocation-stack .stack-frame:focus:hover {
-  background-color: var(--accent-color-hover);
+  background-color: var(--legacy-accent-color-hover);
 }
 
 .heap-allocation-stack .stack-frame:hover:not(:focus) {

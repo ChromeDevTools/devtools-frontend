@@ -70,7 +70,7 @@
 
 .timezone-error {
   margin-left: 10px;
-  color: var(--input-validation-error);
+  color: var(--legacy-input-validation-error);
 }
 /* Device Orientation */
 

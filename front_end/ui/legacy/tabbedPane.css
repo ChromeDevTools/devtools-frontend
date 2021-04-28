@@ -268,7 +268,7 @@
   height: 2px;
   position: absolute;
   bottom: -1px;
-  background-color: var(--accent-color);
+  background-color: var(--legacy-accent-color);
   left: 0;
   z-index: 50;
   transform-origin: 0 100%;

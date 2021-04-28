@@ -147,7 +147,7 @@
 }
 
 .pretty-printed .CodeMirror-linenumber {
-  color: var(--accent-color);
+  color: var(--legacy-accent-color);
 }
 
 .cm-non-breakable-line .CodeMirror-linenumber {

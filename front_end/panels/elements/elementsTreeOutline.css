@@ -116,9 +116,9 @@
 }
 
 .elements-disclosure .elements-tree-outline.hide-selection-when-blurred .selected:focus-visible .highlight > * {
-  background: var(--focus-bg-color);
+  background: var(--legacy-focus-bg-color);
   border-radius: 2px;
-  box-shadow: 0 0 0 2px var(--focus-bg-color);
+  box-shadow: 0 0 0 2px var(--legacy-focus-bg-color);
 }
 
 .elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection {

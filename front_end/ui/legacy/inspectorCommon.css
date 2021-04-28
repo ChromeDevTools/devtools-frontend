@@ -22,23 +22,23 @@
    * Chat to jacktfranklin@ or petermueller@ if you have questions.
    * https://crbug.com/1122511
    */
-  --accent-color: #1a73e8;
-  --accent-fg-color: #1a73e8;
-  --accent-color-hover: #3b86e8;
-  --accent-fg-color-hover: #1567d3;
-  --active-control-bg-color: #5a5a5a;
-  --focus-bg-color: hsl(214deg 40% 92%);
-  --focus-ring-inactive-shadow-color: #e0e0e0;
-  --input-validation-error: #db1600;
+  --legacy-accent-color: #1a73e8;
+  --legacy-accent-fg-color: #1a73e8;
+  --legacy-accent-color-hover: #3b86e8;
+  --legacy-accent-fg-color-hover: #1567d3;
+  --legacy-active-control-bg-color: #5a5a5a;
+  --legacy-focus-bg-color: hsl(214deg 40% 92%);
+  --legacy-focus-ring-inactive-shadow-color: #e0e0e0;
+  --legacy-input-validation-error: #db1600;
   --toolbar-hover-bg-color: #eaeaea;
   --selection-fg-color: #fff;
-  --selection-bg-color: var(--accent-color);
+  --selection-bg-color: var(--legacy-accent-color);
   --selection-inactive-fg-color: #5a5a5a;
   --selection-inactive-bg-color: #dadada;
   --tab-selected-fg-color: #333;
   --divider-border: 1px solid var(--color-details-hairline);
-  --focus-ring-inactive-shadow: 0 0 0 1px var(--focus-ring-inactive-shadow-color);
-  --focus-ring-active-shadow: 0 0 0 1px var(--accent-color);
+  --focus-ring-inactive-shadow: 0 0 0 1px var(--legacy-focus-ring-inactive-shadow-color);
+  --focus-ring-active-shadow: 0 0 0 1px var(--legacy-accent-color);
   --item-selection-bg-color: #cfe8fc;
   --item-selection-inactive-bg-color: #e0e0e0;
   --item-hover-color: rgb(56 121 217 / 10%);
@@ -68,19 +68,19 @@
    * Chat to jacktfranklin@ or petermueller@ if you have questions.
    * https://crbug.com/1122511
    */
-  --accent-color: #0e639c;
-  --accent-fg-color: #ccc;
-  --accent-fg-color-hover: #fff;
-  --accent-color-hover: rgb(17 119 187);
-  --active-control-bg-color: #cdcdcd;
-  --focus-bg-color: hsl(214deg 19% 27%);
-  --focus-ring-inactive-shadow-color: #5a5a5a;
+  --legacy-accent-color: #0e639c;
+  --legacy-accent-fg-color: #ccc;
+  --legacy-accent-fg-color-hover: #fff;
+  --legacy-accent-color-hover: rgb(17 119 187);
+  --legacy-active-control-bg-color: #cdcdcd;
+  --legacy-focus-bg-color: hsl(214deg 19% 27%);
+  --legacy-focus-ring-inactive-shadow-color: #5a5a5a;
   --toolbar-hover-bg-color: #202020;
   --selection-fg-color: #cdcdcd;
   --selection-inactive-fg-color: #cdcdcd;
   --selection-inactive-bg-color: hsl(0deg 0% 28%);
   --tab-selected-fg-color: #eaeaea;
-  --focus-ring-inactive-shadow: 0 0 0 1px var(--focus-ring-inactive-shadow-color);
+  --focus-ring-inactive-shadow: 0 0 0 1px var(--legacy-focus-ring-inactive-shadow-color);
   --item-selection-bg-color: hsl(207deg 88% 22%);
   --item-selection-inactive-bg-color: #454545;
   --network-grid-default-color: rgb(36 36 36 / 100%);
@@ -725,7 +725,7 @@ iframe.panel.extension {
 
 @media (forced-colors: active) {
   :root {
-    --accent-color: Highlight;
-    --focus-ring-inactive-shadow-color: ButtonText;
+    --legacy-accent-color: Highlight;
+    --legacy-focus-ring-inactive-shadow-color: ButtonText;
   }
 }

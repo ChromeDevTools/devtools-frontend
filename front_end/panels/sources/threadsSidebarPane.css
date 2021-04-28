@@ -22,7 +22,7 @@
 }
 
 .thread-item:focus-visible {
-  background-color: var(--focus-bg-color);
+  background-color: var(--legacy-focus-bg-color);
 }
 
 .thread-item-title,

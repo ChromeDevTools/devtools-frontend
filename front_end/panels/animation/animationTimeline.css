@@ -436,7 +436,7 @@ text.animation-timeline-grid-label {
 
 .animation-playback-rate-button.selected:first-child:focus-visible,
 .animation-playback-rate-button:focus-visible {
-  background-color: var(--focus-bg-color);
+  background-color: var(--legacy-focus-bg-color);
 }
 
 .animation-playback-rate-button:not(.selected):hover {

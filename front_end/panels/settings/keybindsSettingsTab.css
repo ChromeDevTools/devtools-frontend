@@ -54,7 +54,7 @@ h1 {
 }
 
 .keybinds-list-item:focus-visible {
-  background-color: var(--focus-bg-color);
+  background-color: var(--legacy-focus-bg-color);
 }
 
 .keybinds-list-item:not(.keybinds-category-header) {
@@ -82,7 +82,7 @@ h1 {
 }
 
 .keybinds-error {
-  color: var(--input-validation-error);
+  color: var(--legacy-input-validation-error);
 }
 
 :host-context(.-theme-with-dark-background) .keybinds-error {
@@ -109,7 +109,7 @@ h1 {
 }
 
 .keybinds-list-item button:focus-visible {
-  background-color: var(--focus-bg-color);
+  background-color: var(--legacy-focus-bg-color);
 }
 
 .keybinds-list-item button[disabled] {

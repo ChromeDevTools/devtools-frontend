@@ -40,7 +40,7 @@
 }
 
 .network-config-input-validation-error {
-  color: var(--input-validation-error);
+  color: var(--legacy-input-validation-error);
   margin: 5px 0;
 }
 

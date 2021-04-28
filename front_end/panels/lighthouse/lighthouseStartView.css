@@ -10,8 +10,8 @@
   font-size: var(--font-size);
   line-height: 18px;
   /* for buttons */
-  --accent-color: #0535c1;
-  --accent-color-hover: #17b;
+  --legacy-accent-color: #0535c1;
+  --legacy-accent-color-hover: #17b;
   --font-size: 14px;
   --report-font-family: roboto, helvetica, arial, sans-serif;
 }

@@ -80,9 +80,9 @@
 .tree-outline.hide-selection-when-blurred .selected:focus-visible .tree-element-title,
 .tree-outline.hide-selection-when-blurred .selected:focus-visible .name-and-value,
 .tree-outline.hide-selection-when-blurred .selected:focus-visible .gray-info-message {
-  background: var(--focus-bg-color);
+  background: var(--legacy-focus-bg-color);
   border-radius: 2px;
-  box-shadow: 0 0 0 2px var(--focus-bg-color);
+  box-shadow: 0 0 0 2px var(--legacy-focus-bg-color);
 }
 
 @media (forced-colors: active) {

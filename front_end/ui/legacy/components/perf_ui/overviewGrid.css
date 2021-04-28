@@ -25,7 +25,7 @@
 }
 
 .overview-grid-window-resizer:focus-visible {
-  background-color: var(--active-control-bg-color);
+  background-color: var(--legacy-active-control-bg-color);
 }
 
 .overview-grid-cursor-area {

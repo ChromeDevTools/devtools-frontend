@@ -231,7 +231,7 @@
 }
 
 .data-grid.no-selection:focus-visible {
-  border: 1px solid var(--accent-color) !important;
+  border: 1px solid var(--legacy-accent-color) !important;
 }
 
 .data-grid:focus table.data tr.selected {

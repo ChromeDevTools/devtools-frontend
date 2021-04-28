@@ -42,7 +42,7 @@ export class ComputedStyleTrace extends HTMLElement {
         }
 
         .computed-style-trace:hover {
-          background-color: var(--focus-bg-color);
+          background-color: var(--legacy-focus-bg-color);
           cursor: pointer;
         }
 
@@ -57,7 +57,7 @@ export class ComputedStyleTrace extends HTMLElement {
           margin: -1px 0 0 calc(-1 * var(--size));
           -webkit-mask-image: var(--image-file-mediumIcons);
           -webkit-mask-position: -32px 48px;
-          background-color: var(--active-control-bg-color);
+          background-color: var(--legacy-active-control-bg-color);
         }
 
         .computed-style-trace:hover .goto {

@@ -44,7 +44,7 @@
 }
 
 #network-container.grid-focused.no-node-selected:focus-within {
-  border: 1px solid var(--accent-color);
+  border: 1px solid var(--legacy-accent-color);
 }
 
 .network-summary-bar {

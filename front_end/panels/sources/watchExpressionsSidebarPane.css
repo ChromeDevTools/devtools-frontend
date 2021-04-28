@@ -105,7 +105,7 @@ li.watch-expression-tree-item:hover {
 }
 
 .watch-expression-header:focus-visible {
-  background: var(--focus-bg-color);
+  background: var(--legacy-focus-bg-color);
 }
 
 li.watch-expression-editing::before {

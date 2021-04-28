@@ -59,7 +59,7 @@ export class CSSAngleSwatch extends HTMLElement {
           bottom: 0;
           height: 55%;
           width: 2px;
-          background-color: var(--accent-fg-color);
+          background-color: var(--legacy-accent-fg-color);
           border-radius: 5px;
         }
       </style>

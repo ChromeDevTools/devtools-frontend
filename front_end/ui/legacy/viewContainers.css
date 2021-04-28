@@ -65,7 +65,7 @@
 }
 
 .expandable-view-title:focus-visible {
-  background-color: var(--focus-bg-color);
+  background-color: var(--legacy-focus-bg-color);
 }
 
 @media (forced-colors: active) {

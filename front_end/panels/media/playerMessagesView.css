@@ -22,7 +22,7 @@
 }
 
 .media-messages-level-dropdown-element:hover {
-  background-color: var(--accent-color-hover);
+  background-color: var(--legacy-accent-color-hover);
   color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
 }

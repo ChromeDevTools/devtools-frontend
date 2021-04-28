@@ -13,7 +13,7 @@
   border-radius: 4px;
   padding: 0 12px;
   font-weight: 500;
-  color: var(--accent-fg-color);
+  color: var(--legacy-accent-fg-color);
   background-color: var(--color-background);
   flex: none;
   white-space: nowrap;
@@ -45,12 +45,12 @@
 .text-button:not(:disabled):not(.running):focus,
 .text-button:not(:disabled):not(.running):hover,
 .text-button:not(:disabled):not(.running):active {
-  color: var(--accent-fg-color-hover);
+  color: var(--legacy-accent-fg-color-hover);
 }
 
 .text-button.primary-button,
 .-theme-preserve {
-  background-color: var(--accent-color);
+  background-color: var(--legacy-accent-color);
   border: none;
   color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
@@ -69,7 +69,7 @@
 .text-button.primary-button:not(:disabled):hover,
 .text-button.primary-button:not(:disabled):active,
 .-theme-preserve {
-  background-color: var(--accent-color-hover);
+  background-color: var(--legacy-accent-color-hover);
   color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
 }
@@ -117,7 +117,7 @@
     forced-color-adjust: none;
     background-color: Highlight;
     color: HighlightText;
-    box-shadow: var(--accent-color);
+    box-shadow: var(--legacy-accent-color);
   }
 
   .text-button.primary-button {

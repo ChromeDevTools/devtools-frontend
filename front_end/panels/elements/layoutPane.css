@@ -20,7 +20,7 @@
 }
 
 .header:focus {
-  background-color: var(--focus-bg-color);
+  background-color: var(--legacy-focus-bg-color);
 }
 
 .content-section {
@@ -162,7 +162,7 @@ that uses the dimensions to draw an outline around the element. */
 
 .color-picker-label:hover,
 .color-picker-label:focus {
-  border: 1px solid var(--accent-color-hover);
+  border: 1px solid var(--legacy-accent-color-hover);
   transform: scale(1.2);
 }
 

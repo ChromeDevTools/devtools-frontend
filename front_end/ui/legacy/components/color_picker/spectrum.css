@@ -51,7 +51,7 @@
 }
 
 .spectrum-color:focus .spectrum-dragger {
-  border: 1px solid var(--accent-color-hover);
+  border: 1px solid var(--legacy-accent-color-hover);
 }
 
 .spectrum-tools {
@@ -88,7 +88,7 @@
 
 .spectrum-hue:focus-visible .spectrum-slider,
 .spectrum-alpha:focus-visible .spectrum-slider {
-  border: 1px solid var(--accent-color-hover);
+  border: 1px solid var(--legacy-accent-color-hover);
   width: 14px;
   height: 14px;
   border-radius: 14px;
@@ -196,7 +196,7 @@
 
 .contrast-fix-button:hover,
 .contrast-fix-button:focus {
-  border: 1px solid var(--accent-color-hover);
+  border: 1px solid var(--legacy-accent-color-hover);
   transform: scale(1.2);
 }
 
@@ -384,7 +384,7 @@
 }
 
 .spectrum-switcher:focus-visible {
-  background-color: var(--focus-bg-color);
+  background-color: var(--legacy-focus-bg-color);
 }
 
 .spectrum-palette-container {
@@ -474,7 +474,7 @@
 }
 
 .spectrum-palette-color:not(.has-material-shades):focus {
-  border: 1px solid var(--accent-color-hover);
+  border: 1px solid var(--legacy-accent-color-hover);
   transform: scale(1.4);
 }
 

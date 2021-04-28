@@ -10,7 +10,7 @@
 }
 
 :host-context(.-theme-with-dark-background) {
-  --accent-color: #4688f1;
+  --legacy-accent-color: #4688f1;
 }
 
 .toolbar-shadow {
@@ -185,11 +185,11 @@ it. */
 }
 
 .toolbar-button.toolbar-state-on .toolbar-glyph {
-  background-color: var(--accent-color);
+  background-color: var(--legacy-accent-color);
 }
 
 .toolbar-button.toolbar-state-on .toolbar-icon {
-  --icon-color: var(--accent-color);
+  --icon-color: var(--legacy-accent-color);
 }
 
 .toolbar-button.toolbar-state-on.toolbar-toggle-with-red-color .toolbar-glyph,
@@ -209,11 +209,11 @@ it. */
 }
 
 .toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:hover:not(:active) {
-  background-color: var(--accent-color);
+  background-color: var(--legacy-accent-color);
 }
 
 .toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:active:hover {
-  background-color: var(--accent-color);
+  background-color: var(--legacy-accent-color);
 }
 
 .toolbar-toggled-gray:not(.toolbar-render-as-links) .toolbar-button:not(.toolbar-has-glyph):not(.toolbar-has-dropdown):not(.largeicon-menu):hover {
@@ -226,7 +226,7 @@ it. */
 }
 
 .toolbar-button.toolbar-state-on .toolbar-text {
-  color: var(--accent-color);
+  color: var(--legacy-accent-color);
 }
 
 :host-context(.-theme-with-dark-background) .toolbar-button .toolbar-icon {
@@ -266,15 +266,15 @@ it. */
 }
 
 .toolbar-button.toolbar-state-on:enabled:hover:not(:active) .toolbar-glyph {
-  background-color: var(--accent-color);
+  background-color: var(--legacy-accent-color);
 }
 
 .toolbar-button.toolbar-state-on:enabled:hover:not(:active) .toolbar-icon {
-  --icon-color: var(--accent-color);
+  --icon-color: var(--legacy-accent-color);
 }
 
 .toolbar-button.toolbar-state-on:enabled:hover:not(:active) .toolbar-text {
-  color: var(--accent-color);
+  color: var(--legacy-accent-color);
 }
 
 .toolbar-toggled-gray .toolbar-button.toolbar-state-on {

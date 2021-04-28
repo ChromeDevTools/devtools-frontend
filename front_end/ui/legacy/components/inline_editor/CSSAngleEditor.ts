@@ -194,7 +194,7 @@ export class CSSAngleEditor extends HTMLElement {
         .hand {
           height: 50%;
           width: 0.3em;
-          background: var(--accent-fg-color);
+          background: var(--legacy-accent-fg-color);
         }
 
         .hand::before {
@@ -213,7 +213,7 @@ export class CSSAngleEditor extends HTMLElement {
 
         .hand::before,
         .center {
-          background-color: var(--accent-fg-color);
+          background-color: var(--legacy-accent-fg-color);
         }
 
         :host-context(.-theme-with-dark-background) .hand::before {

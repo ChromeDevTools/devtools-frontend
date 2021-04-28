@@ -12,7 +12,7 @@
 }
 
 .breakpoint-entry:focus {
-  background-color: var(--focus-bg-color);
+  background-color: var(--legacy-focus-bg-color);
 }
 
 .breakpoint-entry [is=dt-checkbox] {

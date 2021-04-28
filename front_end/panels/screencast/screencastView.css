@@ -63,7 +63,7 @@
 
 .screencast-navigation button:hover,
 .screencast-navigation button:focus {
-  border-color: var(--accent-color-hover);
+  border-color: var(--legacy-accent-color-hover);
 }
 
 .screencast-navigation button:active {

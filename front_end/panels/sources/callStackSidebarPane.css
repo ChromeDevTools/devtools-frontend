@@ -75,7 +75,7 @@
 
 .call-frame-item:focus-visible,
 .call-frame-item.async-header:focus-visible .call-frame-item-title {
-  background-color: var(--focus-bg-color);
+  background-color: var(--legacy-focus-bg-color);
 }
 
 .call-frame-item:not(.async-header):hover {

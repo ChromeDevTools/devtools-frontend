@@ -8,13 +8,13 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    inkscape:version="1.0 (4035a4f, 2020-05-01)"
-   sodipodi:docname="flex-align-items-flex-start-icon.svg"
-   id="svg837"
+   sodipodi:docname="align-content-start-icon.svg"
+   id="svg839"
    version="1.1"
    viewBox="0 0 13 13"
    fill="none">
   <metadata
-     id="metadata843">
+     id="metadata845">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
@@ -25,17 +25,17 @@
     </rdf:RDF>
   </metadata>
   <defs
-     id="defs841" />
+     id="defs843" />
   <sodipodi:namedview
-     inkscape:current-layer="svg837"
+     inkscape:current-layer="svg839"
      inkscape:window-maximized="1"
      inkscape:window-y="23"
      inkscape:window-x="0"
-     inkscape:cy="6.5"
-     inkscape:cx="6.5"
+     inkscape:cy="7.239521"
+     inkscape:cx="5.8188623"
      inkscape:zoom="51.384615"
      showgrid="false"
-     id="namedview839"
+     id="namedview841"
      inkscape:window-height="1303"
      inkscape:window-width="2560"
      inkscape:pageshadow="2"
@@ -46,12 +46,21 @@
      borderopacity="1"
      bordercolor="#666666"
      pagecolor="#ffffff" />
-  <path
-     id="path833"
-     d="m 7,8.5000021 c 0,0.55228 0.44772,1 1,1 h 1 c 0.55228,0 1,-0.44772 1,-1 v -7 H 7 Z m -4,-2 c 0,0.55228 0.44772,1 1,1 h 1 c 0.55228,0 1,-0.44772 1,-1 v -5 H 3 Z"
-     fill="#000000" />
+  <rect
+     y="-9.5"
+     x="-10.5"
+     id="rect833"
+     transform="scale(-1)"
+     rx="1"
+     fill="#000"
+     height="3"
+     width="8" />
   <path
      id="path835"
-     d="m 1,2.0000021 h 11 v -1 H 1 Z"
-     fill="#000000" />
+     d="m 10.5,4.5000002 c 0,0.55228 -0.4477,1 -1,1 h -6 c -0.55228,0 -1,-0.44772 -1,-1 v -2 h 8 z"
+     fill="#000" />
+  <path
+     id="path837"
+     d="m 1,3.0000002 h 11 v -1 H 1 Z"
+     fill="#000" />
 </svg>

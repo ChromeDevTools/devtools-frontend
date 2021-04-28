@@ -8,7 +8,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 
-import {findIcon} from './CSSPropertyIconResolver.js';
+import {findFlexContainerIcon} from './CSSPropertyIconResolver.js';
 
 const UIStrings = {
   /**
@@ -194,7 +194,7 @@ export class FlexboxEditor extends HTMLElement {
 
   private renderButton(propertyValue: string, propertyName: string, selected: boolean = false): LitHtml.TemplateResult {
     const query = `${propertyName}: ${propertyValue}`;
-    const iconInfo = findIcon(query, this.computedProperties);
+    const iconInfo = findFlexContainerIcon(query, this.computedProperties);
     if (!iconInfo) {
       throw new Error(`Icon for ${query} is not found`);
     }

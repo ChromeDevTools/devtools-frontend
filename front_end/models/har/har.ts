@@ -3,13 +3,13 @@
 // found in the LICENSE file.
 
 import * as HARFormat from './HARFormat.js';
-import * as HARImporter from './HARImporter.js';
-import * as HARLog from './HARLog.js';
-import * as HARWriter from './HARWriter.js';
+import * as Importer from './Importer.js';
+import * as Log from './Log.js';
+import * as Writer from './Writer.js';
 
 export {
   HARFormat,
-  HARImporter,
-  HARLog,
-  HARWriter,
+  Importer,
+  Log,
+  Writer,
 };

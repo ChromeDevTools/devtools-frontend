@@ -38,7 +38,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import {EntryDTO, HARLog} from './HARLog.js';
+import {EntryDTO, Log} from './Log.js';
 
 const UIStrings = {
   /**
@@ -50,19 +50,19 @@ const UIStrings = {
   */
   writingFile: 'Writing file…',
 };
-const str_ = i18n.i18n.registerUIStrings('models/har/HARWriter.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/har/Writer.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class HARWriter {
+export class Writer {
   static async write(
       stream: Common.StringOutputStream.OutputStream, requests: SDK.NetworkRequest.NetworkRequest[],
       progress: Common.Progress.Progress): Promise<void> {
     const compositeProgress = new Common.Progress.CompositeProgress(progress);
 
-    const content = await HARWriter._harStringForRequests(requests, compositeProgress);
+    const content = await Writer._harStringForRequests(requests, compositeProgress);
     if (progress.isCanceled()) {
       return;
     }
-    await HARWriter._writeToStream(stream, compositeProgress, content);
+    await Writer._writeToStream(stream, compositeProgress, content);
   }
 
   static async _harStringForRequests(
@@ -74,7 +74,7 @@ export class HARWriter {
 
     // Sort by issueTime because this is recorded as startedDateTime in HAR logs.
     requests.sort((reqA, reqB) => reqA.issueTime() - reqB.issueTime());
-    const harLog = await HARLog.build(requests);
+    const harLog = await Log.build(requests);
     const promises = [];
     for (let i = 0; i < requests.length; i++) {
       const promise = requests[i].contentData();

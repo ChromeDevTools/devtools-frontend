@@ -163,10 +163,10 @@ const exampleLog = new HAR.HARFormat.HARLog({
   ],
 });
 
-describe('HARImporter', () => {
+describe('HAR Importer', () => {
   let requests: SDK.NetworkRequest.NetworkRequest[];
   before(async () => {
-    requests = HAR.HARImporter.Importer.requestsFromHARLog(exampleLog);
+    requests = HAR.Importer.Importer.requestsFromHARLog(exampleLog);
   });
 
   it('Parses the correct number of Network Requests from HAR file', () => {

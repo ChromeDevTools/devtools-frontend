@@ -736,7 +736,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
       this._harLoadFailed(e);
       return;
     }
-    Logs.NetworkLog.NetworkLog.instance().importRequests(HAR.HARImporter.Importer.requestsFromHARLog(harRoot.log));
+    Logs.NetworkLog.NetworkLog.instance().importRequests(HAR.Importer.Importer.requestsFromHARLog(harRoot.log));
   }
 
   _harLoadFailed(message: string): void {
@@ -1553,7 +1553,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
   }
 
   async _copyAll(): Promise<void> {
-    const harArchive = {log: await HAR.HARLog.HARLog.build(this._harRequests())};
+    const harArchive = {log: await HAR.Log.Log.build(this._harRequests())};
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(JSON.stringify(harArchive, null, 2));
   }
 
@@ -1603,7 +1603,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
 
     const progressIndicator = new UI.ProgressIndicator.ProgressIndicator();
     this._progressBarContainer.appendChild(progressIndicator.element);
-    await HAR.HARWriter.HARWriter.write(stream, this._harRequests(), progressIndicator);
+    await HAR.Writer.Writer.write(stream, this._harRequests(), progressIndicator);
     progressIndicator.done();
     stream.close();
   }

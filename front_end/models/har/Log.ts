@@ -39,13 +39,13 @@
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 
-export class HARLog {
+export class Log {
   static pseudoWallTime(request: SDK.NetworkRequest.NetworkRequest, monotonicTime: number): Date {
     return new Date(request.pseudoWallTime(monotonicTime) * 1000);
   }
 
-  static async build(requests: SDK.NetworkRequest.NetworkRequest[]): Promise<HARLogDTO> {
-    const log = new HARLog();
+  static async build(requests: SDK.NetworkRequest.NetworkRequest[]): Promise<LogDTO> {
+    const log = new Log();
     const entryPromises = [];
     for (const request of requests) {
       entryPromises.push(Entry.build(request));
@@ -77,7 +77,7 @@ export class HARLog {
 
   _convertPage(page: SDK.PageLoad.PageLoad, request: SDK.NetworkRequest.NetworkRequest): Page {
     return {
-      startedDateTime: HARLog.pseudoWallTime(request, page.startTime).toJSON(),
+      startedDateTime: Log.pseudoWallTime(request, page.startTime).toJSON(),
       id: 'page_' + page.id,
       title: page.url,
       pageTimings: {
@@ -151,7 +151,7 @@ export class Entry {
       response: harEntry._buildResponse(),
       // IPv6 address should not have square brackets per (https://tools.ietf.org/html/rfc2373#section-2.2).
       serverIPAddress: ipAddress.replace(/\[\]/g, ''),
-      startedDateTime: HARLog.pseudoWallTime(harEntry._request, harEntry._request.issueTime()).toJSON(),
+      startedDateTime: Log.pseudoWallTime(harEntry._request, harEntry._request.issueTime()).toJSON(),
       time: time,
       timings: timings,
     };
@@ -361,7 +361,7 @@ export class Entry {
       value: cookie.value(),
       path: cookie.path(),
       domain: cookie.domain(),
-      expires: cookie.expiresDate(HARLog.pseudoWallTime(this._request, this._request.startTime)),
+      expires: cookie.expiresDate(Log.pseudoWallTime(this._request, this._request.startTime)),
       httpOnly: cookie.httpOnly(),
       secure: cookie.secure(),
       sameSite: undefined,
@@ -512,7 +512,7 @@ export interface Creator {
   name: string;
 }
 
-export interface HARLogDTO {
+export interface LogDTO {
   version: string;
   creator: Creator;
   pages: Page[];

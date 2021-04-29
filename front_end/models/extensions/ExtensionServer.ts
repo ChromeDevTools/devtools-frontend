@@ -484,9 +484,9 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         message.expression, true, true, message.evaluateOptions, port[extensionOriginSymbol], callback.bind(this));
   }
 
-  async _onGetHAR(): Promise<HAR.HARLog.HARLogDTO> {
+  async _onGetHAR(): Promise<HAR.Log.LogDTO> {
     const requests = Logs.NetworkLog.NetworkLog.instance().requests();
-    const harLog = await HAR.HARLog.HARLog.build(requests);
+    const harLog = await HAR.Log.Log.build(requests);
     for (let i = 0; i < harLog.entries.length; ++i) {
       harLog.entries[i]._requestId = this._requestId(requests[i]);
     }
@@ -673,7 +673,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
 
   async _notifyRequestFinished(event: any): Promise<void> {
     const request = (event.data as SDK.NetworkRequest.NetworkRequest);
-    const entry = await HAR.HARLog.Entry.build(request);
+    const entry = await HAR.Log.Entry.build(request);
     this._postNotification(Extensions.extensionAPI.Events.NetworkRequestFinished, this._requestId(request), entry);
   }
 

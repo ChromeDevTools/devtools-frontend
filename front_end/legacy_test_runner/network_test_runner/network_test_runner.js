@@ -203,9 +203,9 @@ NetworkTestRunner.HARPropertyFormatters = {
 NetworkTestRunner.HARPropertyFormattersWithSize = JSON.parse(JSON.stringify(NetworkTestRunner.HARPropertyFormatters));
 NetworkTestRunner.HARPropertyFormattersWithSize.size = 'formatAsTypeName';
 
-NetworkTestRunner.buildHARLog = HAR.HARLog.HARLog.build;
-NetworkTestRunner.buildHARLogEntry = HAR.HARLog.Entry.build;
-NetworkTestRunner.writeHARLog = HAR.HARWriter.HARWriter.write;
+NetworkTestRunner.buildHARLog = HAR.Log.Log.build;
+NetworkTestRunner.buildHARLogEntry = HAR.Log.Entry.build;
+NetworkTestRunner.writeHARLog = HAR.Writer.Writer.write;
 NetworkTestRunner.networkLog = () => Logs.NetworkLog.NetworkLog.instance();
 NetworkTestRunner.NetworkLogEvents = Logs.NetworkLog.Events;
 

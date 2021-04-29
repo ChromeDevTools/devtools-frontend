@@ -8,9 +8,9 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 devtools_module("har") {
   sources = [
     "HARFormat.ts",
-    "HARImporter.ts",
-    "HARLog.ts",
-    "HARWriter.ts",
+    "Importer.ts",
+    "Log.ts",
+    "Writer.ts",
   ]
 
   deps = [

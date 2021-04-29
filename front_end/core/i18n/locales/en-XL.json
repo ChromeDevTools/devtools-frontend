@@ -1223,10 +1223,10 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit f̂áîĺêd́: {PH1}"
   },
-  "models/har/HARWriter.ts | collectingContent": {
+  "models/har/Writer.ts | collectingContent": {
     "message": "Ĉól̂ĺêćt̂ín̂ǵ ĉón̂t́êńt̂…"
   },
-  "models/har/HARWriter.ts | writingFile": {
+  "models/har/Writer.ts | writingFile": {
     "message": "Ŵŕît́îńĝ f́îĺê…"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {

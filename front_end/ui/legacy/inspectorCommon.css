@@ -42,18 +42,6 @@
   --legacy-item-selection-bg-color: #cfe8fc;
   --legacy-item-selection-inactive-bg-color: #e0e0e0;
   --item-hover-color: rgb(56 121 217 / 10%);
-  --network-grid-default-color: rgb(255 255 255 / 100%);
-  --network-grid-stripe-color: rgb(245 245 245 / 100%);
-  --network-grid-navigation-color: rgb(221 238 255 / 100%);
-  --network-grid-hovered-color: rgb(235 242 252 / 70%);
-  --network-grid-initiator-path-color: rgb(58 217 58 / 40%);
-  --network-grid-initiated-path-color: rgb(217 58 58 / 40%);
-  --network-grid-selected-color: #dadce0;
-  --network-grid-focus-selected-color: var(--legacy-selection-bg-color);
-  --network-grid-focus-selected-color-has-error: #fad2cf;
-  --network-grid-from-frame-color: rgb(224 247 250 / 40%);
-  --network-grid-is-product-color: rgb(255 252 225 / 60%);
-  --network-frame-divider-color: #fccc49;
   --link-color: rgb(17 85 204);
   --monospace-font-size: 10px;
   --monospace-font-family: monospace;
@@ -83,17 +71,6 @@
   --legacy-focus-ring-inactive-shadow: 0 0 0 1px var(--legacy-focus-ring-inactive-shadow-color);
   --legacy-item-selection-bg-color: hsl(207deg 88% 22%);
   --legacy-item-selection-inactive-bg-color: #454545;
-  --network-grid-default-color: rgb(36 36 36 / 100%);
-  --network-grid-stripe-color: rgb(41 41 41 / 100%);
-  --network-grid-navigation-color: rgb(221 238 255 / 100%);
-  --network-grid-hovered-color: rgb(20 37 63 / 70%);
-  --network-grid-initiator-path-color: rgb(58 217 58 / 40%);
-  --network-grid-initiated-path-color: rgb(217 58 58 / 40%);
-  --network-grid-selected-color: #454545;
-  --network-grid-focus-selected-color: var(--legacy-selection-bg-color);
-  --network-grid-focus-selected-color-has-error: #482422;
-  --network-grid-from-frame-color: rgb(224 247 250 / 40%);
-  --network-grid-is-product-color: rgb(255 252 225 / 60%);
   --link-color: rgb(171 171 171);
 }
 

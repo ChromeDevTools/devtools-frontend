@@ -41,6 +41,32 @@
   --override-network-overview-waiting: #00a846;
   --override-network-overview-receiving: #0299de;
   --override-network-overview-queueing: #fff;
+  --network-grid-default-color: rgb(255 255 255 / 100%);
+  --network-grid-stripe-color: rgb(245 245 245 / 100%);
+  --network-grid-navigation-color: rgb(221 238 255 / 100%);
+  --network-grid-hovered-color: rgb(235 242 252 / 70%);
+  --network-grid-initiator-path-color: rgb(58 217 58 / 40%);
+  --network-grid-initiated-path-color: rgb(217 58 58 / 40%);
+  --network-grid-selected-color: #dadce0;
+  --network-grid-focus-selected-color: var(--legacy-selection-bg-color);
+  --network-grid-focus-selected-color-has-error: #fad2cf;
+  --network-grid-from-frame-color: rgb(224 247 250 / 40%);
+  --network-grid-is-product-color: rgb(255 252 225 / 60%);
+  --network-frame-divider-color: #fccc49;
+}
+
+.-theme-with-dark-background {
+  --network-grid-default-color: rgb(36 36 36 / 100%);
+  --network-grid-stripe-color: rgb(41 41 41 / 100%);
+  --network-grid-navigation-color: rgb(221 238 255 / 100%);
+  --network-grid-hovered-color: rgb(20 37 63 / 70%);
+  --network-grid-initiator-path-color: rgb(58 217 58 / 40%);
+  --network-grid-initiated-path-color: rgb(217 58 58 / 40%);
+  --network-grid-selected-color: #454545;
+  --network-grid-focus-selected-color: var(--legacy-selection-bg-color);
+  --network-grid-focus-selected-color-has-error: #482422;
+  --network-grid-from-frame-color: rgb(224 247 250 / 40%);
+  --network-grid-is-product-color: rgb(255 252 225 / 60%);
 }
 
 .network-details-view {

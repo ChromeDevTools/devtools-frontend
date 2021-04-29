@@ -131,6 +131,16 @@ export function rotateJustifyContentIcon(iconName: string, direction: PhysicalDi
   };
 }
 
+export function rotateJustifyItemsIcon(iconName: string, direction: PhysicalDirection): IconInfo {
+  return {
+    iconName,
+    rotate: direction === PhysicalDirection.TOP_TO_BOTTOM ? 90 :
+                                                            (direction === PhysicalDirection.BOTTOM_TO_TOP ? -90 : 0),
+    scaleX: direction === PhysicalDirection.RIGHT_TO_LEFT ? -1 : 1,
+    scaleY: 1,
+  };
+}
+
 export function rotateAlignItemsIcon(iconName: string, direction: PhysicalDirection): IconInfo {
   return {
     iconName,
@@ -188,6 +198,14 @@ function gridJustifyContentIcon(iconName: string): (styles: ComputedStyles) => I
   function getIcon(computedStyles: ComputedStyles): IconInfo {
     const directions = getPhysicalDirections(computedStyles);
     return rotateJustifyContentIcon(iconName, directions.row);
+  }
+  return getIcon;
+}
+
+function gridJustifyItemsIcon(iconName: string): (styles: ComputedStyles) => IconInfo {
+  function getIcon(computedStyles: ComputedStyles): IconInfo {
+    const directions = getPhysicalDirections(computedStyles);
+    return rotateJustifyItemsIcon(iconName, directions.row);
   }
   return getIcon;
 }
@@ -331,6 +349,11 @@ const gridContainerIcons = new Map([
   ['align-items: start', gridAlignItemsIcon('align-items-flex-start-icon')],
   ['align-items: center', gridAlignItemsIcon('align-items-center-icon')],
   ['align-items: baseline', baselineIcon],
+  ['justify-items: center', gridJustifyItemsIcon('justify-items-center-icon')],
+  ['justify-items: stretch', gridJustifyItemsIcon('justify-items-stretch-icon')],
+  ['justify-items: end', gridJustifyItemsIcon('justify-items-end-icon')],
+  ['justify-items: start', gridJustifyItemsIcon('justify-items-start-icon')],
+  ['justify-items: baseline', baselineIcon],
 ]);
 
 const gridItemIcons = new Map([

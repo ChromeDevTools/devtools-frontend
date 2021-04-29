@@ -864,4 +864,75 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           `Test flex-wrap(${JSON.stringify(test.style)}) failed.`);
     }
   });
+
+  it('can rotate an icon for justify-items', () => {
+    const iconName = 'iconName';
+    assert.deepEqual(
+        Elements.CSSPropertyIconResolver.rotateJustifyItemsIcon(
+            iconName, Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT),
+        {
+          iconName,
+          rotate: 0,
+          scaleX: 1,
+          scaleY: 1,
+        });
+    assert.deepEqual(
+        Elements.CSSPropertyIconResolver.rotateJustifyItemsIcon(
+            iconName, Elements.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT),
+        {
+          iconName,
+          rotate: 0,
+          scaleX: -1,
+          scaleY: 1,
+        });
+    assert.deepEqual(
+        Elements.CSSPropertyIconResolver.rotateJustifyItemsIcon(
+            iconName, Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM),
+        {
+          iconName,
+          rotate: 90,
+          scaleX: 1,
+          scaleY: 1,
+        });
+    assert.deepEqual(
+        Elements.CSSPropertyIconResolver.rotateJustifyItemsIcon(
+            iconName, Elements.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP),
+        {
+          iconName,
+          rotate: -90,
+          scaleX: 1,
+          scaleY: 1,
+        });
+  });
+
+  it('can find an icon for justify-items properties', () => {
+    const tests = [
+      // grid
+      {
+        style: {
+          'justify-items': 'start',
+          display: 'grid',
+        },
+        iconName: 'justify-items-start-icon',
+        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+      },
+      {
+        style: {
+          'justify-items': 'start',
+          'writing-mode': 'vertical-lr',
+          display: 'grid',
+        },
+        iconName: 'justify-items-start-icon',
+        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
+      },
+    ];
+
+    for (const test of tests) {
+      assert.deepEqual(
+          Elements.CSSPropertyIconResolver.findIcon(
+              `justify-items: ${test.style['justify-items']}`, mapFromStyle(test.style)),
+          Elements.CSSPropertyIconResolver.rotateAlignItemsIcon(test.iconName, test.expected),
+          `Test justify-items(${JSON.stringify(test.style)}) failed.`);
+    }
+  });
 });

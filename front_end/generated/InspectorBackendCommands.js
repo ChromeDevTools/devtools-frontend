@@ -253,9 +253,13 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEnum(
       'Audits.TwaQualityEnforcementViolationType',
       {KHttpError: 'kHttpError', KUnavailableOffline: 'kUnavailableOffline', KDigitalAssetLinks: 'kDigitalAssetLinks'});
-  inspectorBackend.registerEnum(
-      'Audits.AttributionReportingIssueType',
-      {PermissionPolicyDisabled: 'PermissionPolicyDisabled', InvalidAttributionData: 'InvalidAttributionData'});
+  inspectorBackend.registerEnum('Audits.AttributionReportingIssueType', {
+    PermissionPolicyDisabled: 'PermissionPolicyDisabled',
+    InvalidAttributionSourceEventId: 'InvalidAttributionSourceEventId',
+    InvalidAttributionData: 'InvalidAttributionData',
+    AttributionSourceUntrustworthyOrigin: 'AttributionSourceUntrustworthyOrigin',
+    AttributionUntrustworthyOrigin: 'AttributionUntrustworthyOrigin'
+  });
   inspectorBackend.registerEnum('Audits.InspectorIssueCode', {
     SameSiteCookieIssue: 'SameSiteCookieIssue',
     MixedContentIssue: 'MixedContentIssue',

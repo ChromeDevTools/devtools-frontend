@@ -977,7 +977,7 @@ declare namespace ProtocolProxyApi {
     childNodeRemoved(params: Protocol.DOM.ChildNodeRemovedEvent): void;
 
     /**
-     * Called when distrubution is changed.
+     * Called when distribution is changed.
      */
     distributedNodesUpdated(params: Protocol.DOM.DistributedNodesUpdatedEvent): void;
 
@@ -1185,12 +1185,12 @@ declare namespace ProtocolProxyApi {
     invoke_canEmulate(): Promise<Protocol.Emulation.CanEmulateResponse>;
 
     /**
-     * Clears the overriden device metrics.
+     * Clears the overridden device metrics.
      */
     invoke_clearDeviceMetricsOverride(): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
-     * Clears the overriden Geolocation Position and Error.
+     * Clears the overridden Geolocation Position and Error.
      */
     invoke_clearGeolocationOverride(): Promise<Protocol.ProtocolResponseWithError>;
 
@@ -2208,7 +2208,7 @@ declare namespace ProtocolProxyApi {
         Promise<Protocol.Page.CaptureSnapshotResponse>;
 
     /**
-     * Clears the overriden device metrics.
+     * Clears the overridden device metrics.
      */
     invoke_clearDeviceMetricsOverride(): Promise<Protocol.ProtocolResponseWithError>;
 
@@ -2218,7 +2218,7 @@ declare namespace ProtocolProxyApi {
     invoke_clearDeviceOrientationOverride(): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
-     * Clears the overriden Geolocation Position and Error.
+     * Clears the overridden Geolocation Position and Error.
      */
     invoke_clearGeolocationOverride(): Promise<Protocol.ProtocolResponseWithError>;
 
@@ -3341,8 +3341,8 @@ declare namespace ProtocolProxyApi {
     playerErrorsRaised(params: Protocol.Media.PlayerErrorsRaisedEvent): void;
 
     /**
-     * Called whenever a player is created, or when a new agent joins and recieves
-     * a list of active players. If an agent is restored, it will recieve the full
+     * Called whenever a player is created, or when a new agent joins and receives
+     * a list of active players. If an agent is restored, it will receive the full
      * list of player ids and all events again.
      */
     playersCreated(params: Protocol.Media.PlayersCreatedEvent): void;

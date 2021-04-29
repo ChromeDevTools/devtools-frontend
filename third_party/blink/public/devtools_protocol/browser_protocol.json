@@ -1356,7 +1356,7 @@
                 },
                 {
                     "id": "SharedArrayBufferIssueDetails",
-                    "description": "Details for a issue arising from an SAB being instantiated in, or\ntransfered to a context that is not cross-origin isolated.",
+                    "description": "Details for a issue arising from an SAB being instantiated in, or\ntransferred to a context that is not cross-origin isolated.",
                     "type": "object",
                     "properties": [
                         {
@@ -1487,7 +1487,10 @@
                     "type": "string",
                     "enum": [
                         "PermissionPolicyDisabled",
-                        "InvalidAttributionData"
+                        "InvalidAttributionSourceEventId",
+                        "InvalidAttributionData",
+                        "AttributionSourceUntrustworthyOrigin",
+                        "AttributionUntrustworthyOrigin"
                     ]
                 },
                 {
@@ -2146,7 +2149,7 @@
                         },
                         {
                             "name": "downloadPath",
-                            "description": "The default path to save downloaded files to. This is requred if behavior is set to 'allow'\nor 'allowAndName'.",
+                            "description": "The default path to save downloaded files to. This is required if behavior is set to 'allow'\nor 'allowAndName'.",
                             "optional": true,
                             "type": "string"
                         },
@@ -5565,12 +5568,12 @@
                 },
                 {
                     "name": "distributedNodesUpdated",
-                    "description": "Called when distrubution is changed.",
+                    "description": "Called when distribution is changed.",
                     "experimental": true,
                     "parameters": [
                         {
                             "name": "insertionPointId",
-                            "description": "Insertion point where distrubuted nodes were updated.",
+                            "description": "Insertion point where distributed nodes were updated.",
                             "$ref": "NodeId"
                         },
                         {
@@ -7273,11 +7276,11 @@
                 },
                 {
                     "name": "clearDeviceMetricsOverride",
-                    "description": "Clears the overriden device metrics."
+                    "description": "Clears the overridden device metrics."
                 },
                 {
                     "name": "clearGeolocationOverride",
-                    "description": "Clears the overriden Geolocation Position and Error."
+                    "description": "Clears the overridden Geolocation Position and Error."
                 },
                 {
                     "name": "resetPageScaleFactor",
@@ -7620,7 +7623,7 @@
                         },
                         {
                             "name": "initialVirtualTime",
-                            "description": "If set, base::Time::Now will be overriden to initially return this value.",
+                            "description": "If set, base::Time::Now will be overridden to initially return this value.",
                             "optional": true,
                             "$ref": "Network.TimeSinceEpoch"
                         }
@@ -7836,7 +7839,7 @@
             "types": [
                 {
                     "id": "StreamHandle",
-                    "description": "This is either obtained from another method or specifed as `blob:&lt;uuid&gt;` where\n`&lt;uuid&gt` is an UUID of a Blob.",
+                    "description": "This is either obtained from another method or specified as `blob:&lt;uuid&gt;` where\n`&lt;uuid&gt` is an UUID of a Blob.",
                     "type": "string"
                 }
             ],
@@ -7888,7 +7891,7 @@
                         },
                         {
                             "name": "eof",
-                            "description": "Set if the end-of-file condition occured while reading.",
+                            "description": "Set if the end-of-file condition occurred while reading.",
                             "type": "boolean"
                         }
                     ]
@@ -11096,7 +11099,7 @@
                         },
                         {
                             "name": "interceptionStage",
-                            "description": "Stage at wich to begin intercepting requests. Default is Request.",
+                            "description": "Stage at which to begin intercepting requests. Default is Request.",
                             "optional": true,
                             "$ref": "InterceptionStage"
                         }
@@ -14735,7 +14738,7 @@
                 },
                 {
                     "name": "clearDeviceMetricsOverride",
-                    "description": "Clears the overriden device metrics.",
+                    "description": "Clears the overridden device metrics.",
                     "experimental": true,
                     "deprecated": true,
                     "redirect": "Emulation"
@@ -14749,7 +14752,7 @@
                 },
                 {
                     "name": "clearGeolocationOverride",
-                    "description": "Clears the overriden Geolocation Position and Error.",
+                    "description": "Clears the overridden Geolocation Position and Error.",
                     "deprecated": true,
                     "redirect": "Emulation"
                 },
@@ -15498,7 +15501,7 @@
                         },
                         {
                             "name": "downloadPath",
-                            "description": "The default path to save downloaded files to. This is requred if behavior is set to 'allow'",
+                            "description": "The default path to save downloaded files to. This is required if behavior is set to 'allow'",
                             "optional": true,
                             "type": "string"
                         }
@@ -17352,7 +17355,7 @@
                         },
                         {
                             "name": "quotaSize",
-                            "description": "The quota size (in bytes) to override the original quota with.\nIf this is called multiple times, the overriden quota will be equal to\nthe quotaSize provided in the final call. If this is called without\nspecifying a quotaSize, the quota will be reset to the default value for\nthe specified origin. If this is called multiple times with different\norigins, the override will be maintained for each origin until it is\ndisabled (called without a quotaSize).",
+                            "description": "The quota size (in bytes) to override the original quota with.\nIf this is called multiple times, the overridden quota will be equal to\nthe quotaSize provided in the final call. If this is called without\nspecifying a quotaSize, the quota will be reset to the default value for\nthe specified origin. If this is called multiple times with different\norigins, the override will be maintained for each origin until it is\ndisabled (called without a quotaSize).",
                             "optional": true,
                             "type": "number"
                         }
@@ -18707,7 +18710,7 @@
                         },
                         {
                             "name": "requestStage",
-                            "description": "Stage at wich to begin intercepting requests. Default is Request.",
+                            "description": "Stage at which to begin intercepting requests. Default is Request.",
                             "optional": true,
                             "$ref": "RequestStage"
                         }
@@ -19135,7 +19138,7 @@
                         },
                         {
                             "name": "renderCapacity",
-                            "description": "The time spent on rendering graph divided by render qunatum duration,\nand multiplied by 100. 100 means the audio renderer reached the full\ncapacity and glitch may occur.",
+                            "description": "The time spent on rendering graph divided by render quantum duration,\nand multiplied by 100. 100 means the audio renderer reached the full\ncapacity and glitch may occur.",
                             "type": "number"
                         },
                         {
@@ -19955,7 +19958,7 @@
                 },
                 {
                     "name": "playersCreated",
-                    "description": "Called whenever a player is created, or when a new agent joins and recieves\na list of active players. If an agent is restored, it will recieve the full\nlist of player ids and all events again.",
+                    "description": "Called whenever a player is created, or when a new agent joins and receives\na list of active players. If an agent is restored, it will receive the full\nlist of player ids and all events again.",
                     "parameters": [
                         {
                             "name": "players",
@@ -23342,7 +23345,8 @@
                         },
                         {
                             "name": "executionContextId",
-                            "description": "If specified, the binding would only be exposed to the specified\nexecution context. If omitted and `executionContextName` is not set,\nthe binding is exposed to all execution contexts of the target.\nThis parameter is mutually exclusive with `executionContextName`.",
+                            "description": "If specified, the binding would only be exposed to the specified\nexecution context. If omitted and `executionContextName` is not set,\nthe binding is exposed to all execution contexts of the target.\nThis parameter is mutually exclusive with `executionContextName`.\nDeprecated in favor of `executionContextName` due to an unclear use case\nand bugs in implementation (crbug.com/1169639). `executionContextId` will be\nremoved in the future.",
+                            "deprecated": true,
                             "optional": true,
                             "$ref": "ExecutionContextId"
                         },

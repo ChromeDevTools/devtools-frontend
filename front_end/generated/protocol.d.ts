@@ -934,7 +934,7 @@ declare namespace Protocol {
 
     /**
      * Details for a issue arising from an SAB being instantiated in, or
-     * transfered to a context that is not cross-origin isolated.
+     * transferred to a context that is not cross-origin isolated.
      */
     export interface SharedArrayBufferIssueDetails {
       sourceCodeLocation: SourceCodeLocation;
@@ -992,7 +992,10 @@ declare namespace Protocol {
 
     export enum AttributionReportingIssueType {
       PermissionPolicyDisabled = 'PermissionPolicyDisabled',
+      InvalidAttributionSourceEventId = 'InvalidAttributionSourceEventId',
       InvalidAttributionData = 'InvalidAttributionData',
+      AttributionSourceUntrustworthyOrigin = 'AttributionSourceUntrustworthyOrigin',
+      AttributionUntrustworthyOrigin = 'AttributionUntrustworthyOrigin',
     }
 
     /**
@@ -1406,7 +1409,7 @@ declare namespace Protocol {
        */
       browserContextId?: BrowserContextID;
       /**
-       * The default path to save downloaded files to. This is requred if behavior is set to 'allow'
+       * The default path to save downloaded files to. This is required if behavior is set to 'allow'
        * or 'allowAndName'.
        */
       downloadPath?: string;
@@ -3748,11 +3751,11 @@ declare namespace Protocol {
     }
 
     /**
-     * Called when distrubution is changed.
+     * Called when distribution is changed.
      */
     export interface DistributedNodesUpdatedEvent {
       /**
-       * Insertion point where distrubuted nodes were updated.
+       * Insertion point where distributed nodes were updated.
        */
       insertionPointId: NodeId;
       /**
@@ -5009,7 +5012,7 @@ declare namespace Protocol {
        */
       waitForNavigation?: boolean;
       /**
-       * If set, base::Time::Now will be overriden to initially return this value.
+       * If set, base::Time::Now will be overridden to initially return this value.
        */
       initialVirtualTime?: Network.TimeSinceEpoch;
     }
@@ -5155,7 +5158,7 @@ declare namespace Protocol {
   export namespace IO {
 
     /**
-     * This is either obtained from another method or specifed as `blob:&lt;uuid&gt;` where
+     * This is either obtained from another method or specified as `blob:&lt;uuid&gt;` where
      * `&lt;uuid&gt` is an UUID of a Blob.
      */
     export type StreamHandle = string;
@@ -5193,7 +5196,7 @@ declare namespace Protocol {
        */
       data: string;
       /**
-       * Set if the end-of-file condition occured while reading.
+       * Set if the end-of-file condition occurred while reading.
        */
       eof: boolean;
     }
@@ -7515,7 +7518,7 @@ declare namespace Protocol {
        */
       resourceType?: ResourceType;
       /**
-       * Stage at wich to begin intercepting requests. Default is Request.
+       * Stage at which to begin intercepting requests. Default is Request.
        */
       interceptionStage?: InterceptionStage;
     }
@@ -10530,7 +10533,7 @@ declare namespace Protocol {
        */
       behavior: SetDownloadBehaviorRequestBehavior;
       /**
-       * The default path to save downloaded files to. This is requred if behavior is set to 'allow'
+       * The default path to save downloaded files to. This is required if behavior is set to 'allow'
        */
       downloadPath?: string;
     }
@@ -11716,7 +11719,7 @@ declare namespace Protocol {
       origin: string;
       /**
        * The quota size (in bytes) to override the original quota with.
-       * If this is called multiple times, the overriden quota will be equal to
+       * If this is called multiple times, the overridden quota will be equal to
        * the quotaSize provided in the final call. If this is called without
        * specifying a quotaSize, the quota will be reset to the default value for
        * the specified origin. If this is called multiple times with different
@@ -12645,7 +12648,7 @@ declare namespace Protocol {
        */
       resourceType?: Network.ResourceType;
       /**
-       * Stage at wich to begin intercepting requests. Default is Request.
+       * Stage at which to begin intercepting requests. Default is Request.
        */
       requestStage?: RequestStage;
     }
@@ -12975,7 +12978,7 @@ declare namespace Protocol {
        */
       currentTime: number;
       /**
-       * The time spent on rendering graph divided by render qunatum duration,
+       * The time spent on rendering graph divided by render quantum duration,
        * and multiplied by 100. 100 means the audio renderer reached the full
        * capacity and glitch may occur.
        */
@@ -13425,8 +13428,8 @@ declare namespace Protocol {
     }
 
     /**
-     * Called whenever a player is created, or when a new agent joins and recieves
-     * a list of active players. If an agent is restored, it will recieve the full
+     * Called whenever a player is created, or when a new agent joins and receives
+     * a list of active players. If an agent is restored, it will receive the full
      * list of player ids and all events again.
      */
     export interface PlayersCreatedEvent {
@@ -15686,6 +15689,9 @@ declare namespace Protocol {
        * execution context. If omitted and `executionContextName` is not set,
        * the binding is exposed to all execution contexts of the target.
        * This parameter is mutually exclusive with `executionContextName`.
+       * Deprecated in favor of `executionContextName` due to an unclear use case
+       * and bugs in implementation (crbug.com/1169639). `executionContextId` will be
+       * removed in the future.
        */
       executionContextId?: ExecutionContextId;
       /**

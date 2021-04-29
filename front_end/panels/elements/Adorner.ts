@@ -10,15 +10,18 @@ import {AdornerCategories} from './AdornerManager.js';
 
 const {render, html} = LitHtml;
 
-export interface AdornerData {
+export interface AdornerDefinition {
   name: string;
+  category: AdornerCategories;
+}
+
+export interface AdornerData extends AdornerDefinition {
   content: HTMLElement;
-  category?: AdornerCategories;
 }
 
 export class Adorner extends HTMLElement {
   name = '';
-  category = AdornerCategories.Default;
+  category = AdornerCategories.DEFAULT;
 
   private readonly shadow = this.attachShadow({mode: 'open'});
   private isToggle = false;
@@ -29,7 +32,7 @@ export class Adorner extends HTMLElement {
     this.name = data.name;
     data.content.slot = 'content';
     this.append(data.content);
-    this.category = data.category || AdornerCategories.Default;
+    this.category = data.category;
     this.render();
   }
 

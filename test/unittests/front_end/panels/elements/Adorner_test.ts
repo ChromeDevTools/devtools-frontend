@@ -10,7 +10,6 @@ import type * as ElementsModule from '../../../../../front_end/panels/elements/e
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 
 const ADORNER_TAG_NAME = 'DEVTOOLS-ADORNER';
-const ADORNER_NAME = 'grid';
 
 describeWithEnvironment('Adorner', async () => {
   let Elements: typeof ElementsModule;
@@ -35,8 +34,8 @@ describeWithEnvironment('Adorner', async () => {
     const content = document.createElement('span');
     const adorner = new Elements.Adorner.Adorner();
     adorner.data = {
-      name: ADORNER_NAME,
       content,
+      ...Elements.AdornerManager.AdornerRegistry.GRID,
     };
     assert.isNull(adorner.getAttribute('role'), 'non-interactive adorner had wrong aria role value');
 
@@ -92,8 +91,8 @@ describeWithEnvironment('Adorner', async () => {
     const content = document.createElement('span');
     const adorner = new Elements.Adorner.Adorner();
     adorner.data = {
-      name: ADORNER_NAME,
       content,
+      ...Elements.AdornerManager.AdornerRegistry.GRID,
     };
     adorner.addInteraction(() => {}, {
       isToggle: true,

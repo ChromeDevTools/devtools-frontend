@@ -45,8 +45,8 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Emulation from '../emulation/emulation.js';
 
-import {Adorner} from './Adorner.js';
-import {AdornerCategories} from './AdornerManager.js';
+import {Adorner, AdornerDefinition} from './Adorner.js';
+import {AdornerCategories, AdornerRegistry} from './AdornerManager.js';
 import {canGetJSPath, cssPath, jsPath, xPath} from './DOMPath.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import {ElementsTreeOutline, MappedCharToEntity, UpdateRecord} from './ElementsTreeOutline.js';  // eslint-disable-line no-unused-vars
@@ -264,7 +264,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       this.updateStyleAdorners();
 
       if (node.isAdFrameNode()) {
-        const adorner = this.adornText('Ad', AdornerCategories.Security);
+        const adorner = this.adorn(AdornerRegistry.AD);
         UI.Tooltip.Tooltip.install(adorner, i18nString(UIStrings.thisFrameWasIdentifiedAsAnAd));
       }
     }
@@ -1903,12 +1903,12 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   // TODO: add unit tests for adorner-related methods after component and TypeScript works are done
-  adornText(text: string, category: AdornerCategories): Adorner {
+  adorn({name, category}: AdornerDefinition): Adorner {
     const adornerContent = (document.createElement('span') as HTMLElement);
-    adornerContent.textContent = text;
+    adornerContent.textContent = name;
     const adorner = new Adorner();
     adorner.data = {
-      name: text,
+      name,
       content: adornerContent,
       category,
     };
@@ -2014,7 +2014,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       return null;
     }
 
-    const adorner = this.adornText('grid', AdornerCategories.Layout);
+    const adorner = this.adorn(AdornerRegistry.GRID);
     adorner.classList.add('grid');
 
     const onClick = (((): void => {
@@ -2049,7 +2049,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     if (!nodeId) {
       return null;
     }
-    const adorner = this.adornText('scroll-snap', AdornerCategories.Layout);
+    const adorner = this.adorn(AdornerRegistry.SCROLL_SNAP);
     adorner.classList.add('scroll-snap');
 
     const onClick = (((): void => {
@@ -2086,7 +2086,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     if (!nodeId) {
       return null;
     }
-    const adorner = this.adornText('flex', AdornerCategories.Layout);
+    const adorner = this.adorn(AdornerRegistry.FLEX);
     adorner.classList.add('flex');
 
     const onClick = (((): void => {
@@ -2131,9 +2131,9 @@ export const ForbiddenClosingTagElements = new Set<string>([
 export const EditTagBlocklist = new Set<string>(['html', 'head', 'body']);
 
 const OrderedAdornerCategories = [
-  AdornerCategories.Security,
-  AdornerCategories.Layout,
-  AdornerCategories.Default,
+  AdornerCategories.SECURITY,
+  AdornerCategories.LAYOUT,
+  AdornerCategories.DEFAULT,
 ];
 // Use idx + 1 for the order to avoid JavaScript's 0 == false issue
 const AdornerCategoryOrder = new Map(OrderedAdornerCategories.map((category, idx) => [category, idx + 1]));

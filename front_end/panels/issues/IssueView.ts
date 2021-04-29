@@ -536,6 +536,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     countAdorner.data = {
       name: 'countWrapper',
       content: this._aggregatedIssuesCount,
+      category: Elements.AdornerManager.AdornerCategories.DEFAULT,
     };
     countAdorner.classList.add('aggregated-issues-count');
     this._aggregatedIssuesCount.textContent = `${this._issue.getAggregatedIssuesCount()}`;

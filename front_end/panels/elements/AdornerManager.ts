@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 export const enum AdornerCategories {
-  Security = 'Security',
-  Layout = 'Layout',
-  Default = 'Default',
+  SECURITY = 'Security',
+  LAYOUT = 'Layout',
+  DEFAULT = 'Default',
 }
 
 export interface AdornerSetting {
@@ -15,26 +15,35 @@ export interface AdornerSetting {
 
 export type AdornerSettingsMap = Map<string, boolean>;
 
-// This array serves as the authoritative source for all the adorners
-// that can be configured.
-export const DefaultAdornerSettings = [
-  {
-    adorner: 'grid',
-    isEnabled: true,
+// This enum-like const object serves as the authoritative registry for all the
+// adorners available.
+export const AdornerRegistry = {
+  GRID: {
+    name: 'grid',
+    category: AdornerCategories.LAYOUT,
+    enabledByDefault: true,
   },
-  {
-    adorner: 'flex',
-    isEnabled: true,
+  FLEX: {
+    name: 'flex',
+    category: AdornerCategories.LAYOUT,
+    enabledByDefault: true,
   },
-  {
-    adorner: 'Ad',
-    isEnabled: true,
+  AD: {
+    name: 'ad',
+    category: AdornerCategories.SECURITY,
+    enabledByDefault: true,
   },
-  {
-    adorner: 'scroll-snap',
-    isEnabled: true,
+  SCROLL_SNAP: {
+    name: 'scroll-snap',
+    category: AdornerCategories.LAYOUT,
+    enabledByDefault: true,
   },
-];
+} as const;
+
+export const DefaultAdornerSettings = Object.values(AdornerRegistry).map(({name, enabledByDefault}) => ({
+                                                                           adorner: name,
+                                                                           isEnabled: enabledByDefault,
+                                                                         }));
 
 interface SettingStore<Setting> {
   get(): Setting;

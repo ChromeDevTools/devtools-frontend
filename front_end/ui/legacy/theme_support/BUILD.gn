@@ -18,4 +18,14 @@ devtools_entrypoint("bundle") {
   entrypoint = "theme_support.ts"
 
   deps = [ ":theme_support" ]
+
+  visibility = [
+    "../*",
+    "../../../../test/unittests/front_end/test_setup/*",
+    "../../../../test/unittests/front_end/ui/components/helpers/*",
+    "../../../entrypoints/main/*",
+    "../../../models/extensions/*",
+    "../../../panels/*",
+    "../../components/helpers/*",
+  ]
 }

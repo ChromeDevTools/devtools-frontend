@@ -206,6 +206,8 @@ template("devtools_entrypoint") {
 
     if (defined(invoker.visibility)) {
       visibility = invoker.visibility
+    } else {
+      visibility = [ ":*" ]
     }
   }
 }

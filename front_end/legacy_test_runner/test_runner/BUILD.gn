@@ -22,4 +22,6 @@ devtools_entrypoint("bundle") {
   entrypoint = "test_runner.js"
 
   deps = [ ":test_runner" ]
+
+  visibility = [ "../*" ]
 }

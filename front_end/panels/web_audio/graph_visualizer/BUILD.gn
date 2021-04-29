@@ -26,4 +26,6 @@ devtools_entrypoint("bundle") {
   entrypoint = "graph_visualizer.ts"
 
   deps = [ ":web_audio_graph_visualizer" ]
+
+  visibility = [ "../*" ]
 }

@@ -25,4 +25,6 @@ devtools_entrypoint("bundle") {
   entrypoint = "utils.ts"
 
   deps = [ ":ui_utils" ]
+
+  visibility = [ "../*" ]
 }

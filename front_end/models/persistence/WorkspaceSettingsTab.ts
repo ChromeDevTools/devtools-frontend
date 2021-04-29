@@ -48,7 +48,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
   _mappingViewByPath: Map<string, EditFileSystemView>;
   private constructor() {
     super();
-    this.registerRequiredCSS('models/persistence/workspaceSettingsTab.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('models/persistence/workspaceSettingsTab.css', {enableLegacyPatching: false});
 
     const header = this.element.createChild('header');
     UI.UIUtils.createTextChild(header.createChild('h1'), i18nString(UIStrings.workspace));

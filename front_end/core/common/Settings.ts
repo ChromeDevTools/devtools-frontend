@@ -154,7 +154,7 @@ export class Settings {
     const storage = this._storageFromType(storageType);
     let setting = (this._registry.get(key) as Setting<T>);
     if (!setting) {
-      setting = new Setting(this, key, defaultValue, this._eventSupport, storage);
+      setting = new Setting(key, defaultValue, this._eventSupport, storage);
       this._registry.set(key, setting);
     }
     return setting;
@@ -171,8 +171,7 @@ export class Settings {
     if (!this._registry.get(key)) {
       this._registry.set(
           key,
-          new RegExpSetting(
-              this, key, defaultValue, this._eventSupport, this._storageFromType(storageType), regexFlags));
+          new RegExpSetting(key, defaultValue, this._eventSupport, this._storageFromType(storageType), regexFlags));
     }
     return this._registry.get(key) as RegExpSetting;
   }
@@ -269,8 +268,17 @@ export class SettingsStorage {
   }
 }
 
+function removeSetting(setting: Setting<unknown>): void {
+  const name = setting.name;
+  const settings = Settings.instance();
+
+  settings._registry.delete(name);
+  settings._moduleSettings.delete(name);
+
+  setting._storage.remove(name);
+}
+
 export class Setting<V> {
-  _settings: Settings;
   _name: string;
   _defaultValue: V;
   _eventSupport: ObjectWrapper;
@@ -284,9 +292,7 @@ export class Setting<V> {
   _value?: any;
   _hadUserAction?: boolean;
 
-  constructor(
-      settings: Settings, name: string, defaultValue: V, eventSupport: ObjectWrapper, storage: SettingsStorage) {
-    this._settings = settings;
+  constructor(name: string, defaultValue: V, eventSupport: ObjectWrapper, storage: SettingsStorage) {
     this._name = name;
     this._defaultValue = defaultValue;
     this._eventSupport = eventSupport;
@@ -366,12 +372,6 @@ export class Setting<V> {
     this._eventSupport.dispatchEventToListeners(this._name, value);
   }
 
-  remove(): void {
-    this._settings._registry.delete(this._name);
-    this._settings._moduleSettings.delete(this._name);
-    this._storage.remove(this._name);
-  }
-
   setRegistration(registration: SettingRegistration): void {
     this._registration = registration;
   }
@@ -446,9 +446,8 @@ export class RegExpSetting extends Setting<any> {
   _regex?: RegExp|null;
 
   constructor(
-      settings: Settings, name: string, defaultValue: string, eventSupport: ObjectWrapper, storage: SettingsStorage,
-      regexFlags?: string) {
-    super(settings, name, defaultValue ? [{pattern: defaultValue}] : [], eventSupport, storage);
+      name: string, defaultValue: string, eventSupport: ObjectWrapper, storage: SettingsStorage, regexFlags?: string) {
+    super(name, defaultValue ? [{pattern: defaultValue}] : [], eventSupport, storage);
     this._regexFlags = regexFlags;
   }
 
@@ -540,13 +539,13 @@ export class VersionController {
 
   _updateVersionFrom2To3(): void {
     Settings.instance().createSetting('fileSystemMapping', {}).set({});
-    Settings.instance().createSetting('fileMappingEntries', []).remove();
+    removeSetting(Settings.instance().createSetting('fileMappingEntries', []));
   }
 
   _updateVersionFrom3To4(): void {
     const advancedMode = Settings.instance().createSetting('showHeaSnapshotObjectsHiddenProperties', false);
     moduleSetting('showAdvancedHeapSnapshotProperties').set(advancedMode.get());
-    advancedMode.remove();
+    removeSetting(advancedMode);
   }
 
   _updateVersionFrom4To5(): void {
@@ -586,7 +585,7 @@ export class VersionController {
         newValue.vertical = {};
         // @ts-expect-error
         newValue.vertical.size = oldSetting.get();
-        oldSetting.remove();
+        removeSetting(oldSetting);
       }
       const oldSettingH = Settings.instance().createSetting(oldNameH, empty);
       if (oldSettingH.get() !== empty) {
@@ -595,7 +594,7 @@ export class VersionController {
         newValue.horizontal = {};
         // @ts-expect-error
         newValue.horizontal.size = oldSettingH.get();
-        oldSettingH.remove();
+        removeSetting(oldSettingH);
       }
       if (newValue) {
         Settings.instance().createSetting(newName, {}).set(newValue);
@@ -615,14 +614,14 @@ export class VersionController {
     for (const oldName in settingNames) {
       const oldSetting = Settings.instance().createSetting(oldName, null);
       if (oldSetting.get() === null) {
-        oldSetting.remove();
+        removeSetting(oldSetting);
         continue;
       }
 
       const newName = settingNames[oldName];
       const invert = oldName === 'WebInspector.Drawer.showOnLoad';
       const hidden = oldSetting.get() !== invert;
-      oldSetting.remove();
+      removeSetting(oldSetting);
       const showMode = hidden ? 'OnlyMain' : 'Both';
 
       const newSetting = Settings.instance().createSetting(newName, {});
@@ -751,7 +750,7 @@ export class VersionController {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       Settings.instance().createSetting<any>(newSettingName, []).set(newList);
     }
-    oldSetting.remove();
+    removeSetting(oldSetting);
   }
 
   _updateVersionFrom11To12(): void {
@@ -760,7 +759,7 @@ export class VersionController {
 
   _updateVersionFrom12To13(): void {
     this._migrateSettingsFromLocalStorage();
-    Settings.instance().createSetting('timelineOverviewMode', '').remove();
+    removeSetting(Settings.instance().createSetting('timelineOverviewMode', ''));
   }
 
   _updateVersionFrom13To14(): void {
@@ -860,14 +859,14 @@ export class VersionController {
     }
     const newSetting = Settings.instance().createSetting('networkLogColumns', {});
     newSetting.set(configs);
-    visibleColumnSettings.remove();
+    removeSetting(visibleColumnSettings);
   }
 
   _updateVersionFrom19To20(): void {
     const oldSetting = Settings.instance().createSetting('InspectorView.panelOrder', {});
     const newSetting = Settings.instance().createSetting('panel-tabOrder', {});
     newSetting.set(oldSetting.get());
-    oldSetting.remove();
+    removeSetting(oldSetting);
   }
 
   _updateVersionFrom20To21(): void {
@@ -900,7 +899,7 @@ export class VersionController {
     const oldSetting = Settings.instance().createSetting('searchInContentScripts', false);
     const newSetting = Settings.instance().createSetting('searchInAnonymousAndContentScripts', false);
     newSetting.set(oldSetting.get());
-    oldSetting.remove();
+    removeSetting(oldSetting);
   }
 
   _updateVersionFrom24To25(): void {
@@ -924,7 +923,7 @@ export class VersionController {
       const suffix = textFilterSetting.get() ? ` ${textFilterSetting.get()}` : '';
       textFilterSetting.set(`${textFilter}${suffix}`);
     }
-    oldSetting.remove();
+    removeSetting(oldSetting);
   }
 
   _updateVersionFrom26To27(): void {
@@ -1001,8 +1000,8 @@ export class VersionController {
     closeableTabSetting.set(newValue);
 
     // Remove old settings
-    panelCloseableTabSetting.remove();
-    drawerCloseableTabSetting.remove();
+    removeSetting(panelCloseableTabSetting);
+    removeSetting(drawerCloseableTabSetting);
   }
 
   _migrateSettingsFromLocalStorage(): void {

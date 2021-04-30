@@ -406,7 +406,7 @@ export class SensorsView extends UI.Widget.VBox {
     if (this._LocationOverrideEnabled) {
       this._LocationSetting.set(this._Location.toSetting());
     } else {
-      this._LocationSetting.remove();
+      this._LocationSetting.set('');
     }
     for (const emulationModel of SDK.SDKModel.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
       emulationModel.emulateLocation(this._LocationOverrideEnabled ? this._Location : null).catch(err => {

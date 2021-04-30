@@ -244,13 +244,14 @@ export const test = {
    * Set to get notified about any messages sent over protocol.
    */
   onMessageSent: null as
-          ((arg0: {domain: string, method: string, params: Object, id: number}, arg1: TargetBase|null) => void) |
+          ((message: {domain: string, method: string, params: Object, id: number, sessionId?: string},
+            target: TargetBase|null) => void) |
       null,
 
   /**
    * Set to get notified about any messages received over protocol.
    */
-  onMessageReceived: null as ((arg0: Object, arg1: TargetBase|null) => void) | null,
+  onMessageReceived: null as ((message: Object, target: TargetBase|null) => void) | null,
 };
 
 const LongPollingMethods = new Set<string>(['CSS.takeComputedStyleUpdates']);
@@ -361,7 +362,8 @@ export class SessionRouter {
     if (test.onMessageSent) {
       const paramsObject = JSON.parse(JSON.stringify(params || {}));
       test.onMessageSent(
-          {domain, method, params: (paramsObject as Object), id: messageId}, this._getTargetBySessionId(sessionId));
+          {domain, method, params: (paramsObject as Object), id: messageId, sessionId},
+          this._getTargetBySessionId(sessionId));
     }
 
     ++this._pendingResponsesCount;

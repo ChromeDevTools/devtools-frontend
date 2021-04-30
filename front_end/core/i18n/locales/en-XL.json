@@ -7730,6 +7730,12 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | response": {
     "message": "R̂éŝṕôńŝé"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | save": {
+    "message": "Ŝáv̂é"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | session": {
+    "message": "Ŝéŝśîón̂"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sMs": {
     "message": "{PH1} m̂ś"
   },

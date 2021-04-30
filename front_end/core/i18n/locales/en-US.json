@@ -7730,6 +7730,12 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | response": {
     "message": "Response"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | save": {
+    "message": "Save"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | session": {
+    "message": "Session"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | sMs": {
     "message": "{PH1} ms"
   },

@@ -8,8 +8,10 @@ import '../../ui/components/data_grid/data_grid.js';
 
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 import * as DataGrid from '../../ui/components/data_grid/data_grid.js';
@@ -68,6 +70,14 @@ const UIStrings = {
   *@description Text in Protocol Monitor of the Protocol Monitor tab
   */
   noMessageSelected: 'No message selected',
+  /**
+  *@description Text in Protocol Monitor for the save button
+  */
+  save: 'Save',
+  /**
+  *@description Text in Protocol Monitor to describe the sessions column
+  */
+  session: 'Session',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/protocol_monitor/ProtocolMonitor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -82,6 +92,15 @@ export interface Message {
   error: Object;
   result: Object;
   params: Object;
+  sessionId?: string;
+}
+
+export interface LogMessage {
+  id?: number;
+  domain: string;
+  method: string;
+  params: Object;
+  type: 'send'|'recv';
 }
 
 let protocolMonitorImplInstance: ProtocolMonitorImpl;
@@ -94,6 +113,8 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
   _filterParser: TextUtils.TextUtils.FilterParser;
   _suggestionBuilder: UI.FilterSuggestionBuilder.FilterSuggestionBuilder;
   _textFilterUI: UI.Toolbar.ToolbarInput;
+  private messages: LogMessage[] = [];
+  private isRecording: boolean = false;
 
   constructor() {
     super(true);
@@ -113,9 +134,16 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
 
     const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'largeicon-clear');
     clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+      this.messages = [];
       this._dataGridIntegrator.update({...this._dataGridIntegrator.data(), rows: []});
     });
     topToolbar.appendToolbarItem(clearButton);
+
+    const saveButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.save), 'largeicon-download');
+    saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+      this.saveAsFile();
+    });
+    topToolbar.appendToolbarItem(saveButton);
 
     const split = new UI.SplitWidget.SplitWidget(true, true, 'protocol-monitor-panel-split', 250);
     split.show(this.contentElement);
@@ -171,6 +199,14 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
           visible: false,
           hideable: true,
         },
+        {
+          id: 'session',
+          title: i18nString(UIStrings.session),
+          sortable: true,
+          widthWeighting: 1,
+          visible: false,
+          hideable: true,
+        },
       ],
       rows: [],
       contextMenus: {
@@ -181,19 +217,19 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
               const directionColumn = DataGrid.DataGridUtils.getRowEntryForColumnId(row, 'direction');
 
               /**
-           * You can click the "Filter" item in the context menu to filter the
-           * protocol monitor entries to those that match the method of the
-           * current row.
-           */
+             * You can click the "Filter" item in the context menu to filter the
+             * protocol monitor entries to those that match the method of the
+             * current row.
+             */
               menu.defaultSection().appendItem(i18nString(UIStrings.filter), () => {
                 const methodColumn = DataGrid.DataGridUtils.getRowEntryForColumnId(row, 'method');
                 this._textFilterUI.setValue(`method:${methodColumn.value}`, true);
               });
 
               /**
-           * You can click the "Documentation" item in the context menu to be
-           * taken to the CDP Documentation site entry for the given method.
-           */
+             * You can click the "Documentation" item in the context menu to be
+             * taken to the CDP Documentation site entry for the given method.
+             */
               menu.defaultSection().appendItem(i18nString(UIStrings.documentation), () => {
                 if (!methodColumn.value) {
                   return;
@@ -227,7 +263,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     });
     split.setMainWidget(this._dataGridIntegrator);
     split.setSidebarWidget(this._infoWidget);
-    const keys = ['method', 'request', 'response', 'direction'];
+    const keys = ['method', 'request', 'response', 'direction', 'target', 'session'];
     this._filterParser = new TextUtils.TextUtils.FilterParser(keys);
     this._suggestionBuilder = new UI.FilterSuggestionBuilder.FilterSuggestionBuilder(keys);
 
@@ -261,6 +297,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
   }
 
   _setRecording(recording: boolean): void {
+    this.isRecording = recording;
     const test = ProtocolClient.InspectorBackend.test;
     if (recording) {
       // TODO: TS thinks that properties are read-only because
@@ -287,6 +324,9 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
 
   // eslint-disable
   _messageReceived(message: Message, target: ProtocolClient.InspectorBackend.TargetBase|null): void {
+    if (this.isRecording) {
+      this.messages.push({...message, type: 'recv', domain: '-'});
+    }
     if ('id' in message && message.id) {
       const existingRow = this._dataGridRowForId.get(message.id);
       if (!existingRow) {
@@ -337,6 +377,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
         },
         {columnId: 'direction', value: 'received'},
         {columnId: 'target', value: this._targetToString(sdkTarget)},
+        {columnId: 'session', value: message.sessionId || ''},
       ],
       hidden: false,
     };
@@ -348,8 +389,11 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
   }
 
   _messageSent(
-      message: {domain: string, method: string, params: Object, id: number},
+      message: {domain: string, method: string, params: Object, id: number, sessionId?: string},
       target: ProtocolClient.InspectorBackend.TargetBase|null): void {
+    if (this.isRecording) {
+      this.messages.push({...message, type: 'send'});
+    }
     const sdkTarget = target as SDK.SDKModel.Target | null;
     const newRow: DataGrid.DataGridUtils.Row = {
       cells: [
@@ -367,6 +411,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
         },
         {columnId: 'direction', value: 'sent'},
         {columnId: 'target', value: this._targetToString(sdkTarget)},
+        {columnId: 'session', value: message.sessionId || ''},
       ],
       hidden: false,
     };
@@ -375,6 +420,20 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
       ...this._dataGridIntegrator.data(),
       rows: this._dataGridIntegrator.data().rows.concat([newRow]),
     });
+  }
+
+  private async saveAsFile(): Promise<void> {
+    const now = new Date();
+    const fileName = 'ProtocolMonitor-' + Platform.DateUtilities.toISO8601Compact(now) + '.json';
+    const stream = new Bindings.FileUtils.FileOutputStream();
+
+    const accepted = await stream.open(fileName);
+    if (!accepted) {
+      return;
+    }
+
+    stream.write(JSON.stringify(this.messages, null, '  '));
+    stream.close();
   }
 }
 
@@ -411,7 +470,8 @@ export class InfoWidget extends UI.Widget.VBox {
 
     const requestParsed = JSON.parse(String(data.request.value) || 'null');
     this._tabbedPane.changeTabView('request', SourceFrame.JSONView.JSONView.createViewSync(requestParsed));
-    const responseParsed = JSON.parse(String(data.response.value) || 'null');
+    const responseParsed =
+        data.response.value === '(pending)' ? null : JSON.parse(String(data.response.value) || 'null');
     this._tabbedPane.changeTabView('response', SourceFrame.JSONView.JSONView.createViewSync(responseParsed));
   }
 }

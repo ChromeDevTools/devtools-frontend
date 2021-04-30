@@ -5,16 +5,10 @@
 const {assert} = chai;
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import type * as IssuesManagerModule from '../../../../../front_end/models/issues_manager/issues_manager.js';
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import * as IssuesManager from '../../../../../front_end/models/issues_manager/issues_manager.js';
 import {StubIssue} from './StubIssue.js';
 
-describeWithEnvironment('issuesAssociatedWith', () => {
-  let IssuesManager: typeof IssuesManagerModule;
-  before(async () => {
-    IssuesManager = await import('../../../../../front_end/models/issues_manager/issues_manager.js');
-  });
-
+describe('issuesAssociatedWith', () => {
   it('should return no issues if no issues exist', () => {
     const request = new SDK.NetworkRequest.NetworkRequest('', '', '', '', '', null);
     assert.strictEqual(IssuesManager.RelatedIssue.issuesAssociatedWith([], request).length, 0);

@@ -4,8 +4,9 @@
 
 import {assert} from 'chai';
 
-import {getBrowserAndPages, waitFor, waitForElementWithTextContent} from '../../shared/helper.js';
+import {click, getBrowserAndPages, goToResource, step, waitFor, waitForElementWithTextContent} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
+import {clickNthChildOfSelectedElementNode, focusElementsTree, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
 import {addBreakpointForLine, openSourceCodeEditorForFile, retrieveTopCallFrameScriptLocation} from '../helpers/sources-helpers.js';
 
 describe('The Sources Tab', async () => {
@@ -27,5 +28,59 @@ describe('The Sources Tab', async () => {
 
     const scriptLocation1 = await retrieveTopCallFrameScriptLocation('functions[1]();', target);
     assert.deepEqual(scriptLocation1, 'sourcemap-codesplit.ts:3');
+  });
+});
+
+describe('The Elements Tab', async () => {
+  it('links to the right SASS source for inline CSS with relative sourcemap (crbug.com/787792)', async () => {
+    await goToResource('sources/sourcemap-css-inline-relative.html');
+    await step('Prepare elements tab', async () => {
+      await waitForElementsStyleSection();
+      await waitForContentOfSelectedElementsNode('<body>\u200B');
+      await focusElementsTree();
+      await clickNthChildOfSelectedElementNode(1);
+    });
+    const value = await waitForCSSPropertyValue('body .text', 'color', 'green', 'app.scss:6');
+    await click(value, {clickOptions: {modifier: 'ControlOrMeta'}});
+    await waitForElementWithTextContent('Line 12, Column 9');
+  });
+
+  it('links to the right SASS source for inline CSS with absolute sourcemap (crbug.com/787792)', async () => {
+    await goToResource('sources/sourcemap-css-dynamic-link.html');
+    await step('Prepare elements tab', async () => {
+      await waitForElementsStyleSection();
+      await waitForContentOfSelectedElementsNode('<body>\u200B');
+      await focusElementsTree();
+      await clickNthChildOfSelectedElementNode(1);
+    });
+    const value = await waitForCSSPropertyValue('body .text', 'color', 'green', 'app.scss:6');
+    await click(value, {clickOptions: {modifier: 'ControlOrMeta'}});
+    await waitForElementWithTextContent('Line 12, Column 9');
+  });
+
+  it('links to the right SASS source for dynamically added CSS style tags (crbug.com/787792)', async () => {
+    await goToResource('sources/sourcemap-css-dynamic.html');
+    await step('Prepare elements tab', async () => {
+      await waitForElementsStyleSection();
+      await waitForContentOfSelectedElementsNode('<body>\u200B');
+      await focusElementsTree();
+      await clickNthChildOfSelectedElementNode(1);
+    });
+    const value = await waitForCSSPropertyValue('body .text', 'color', 'green', 'app.scss:6');
+    await click(value, {clickOptions: {modifier: 'ControlOrMeta'}});
+    await waitForElementWithTextContent('Line 12, Column 9');
+  });
+
+  it('links to the right SASS source for dynamically added CSS link tags (crbug.com/787792)', async () => {
+    await goToResource('sources/sourcemap-css-dynamic-link.html');
+    await step('Prepare elements tab', async () => {
+      await waitForElementsStyleSection();
+      await waitForContentOfSelectedElementsNode('<body>\u200B');
+      await focusElementsTree();
+      await clickNthChildOfSelectedElementNode(1);
+    });
+    const value = await waitForCSSPropertyValue('body .text', 'color', 'green', 'app.scss:6');
+    await click(value, {clickOptions: {modifier: 'ControlOrMeta'}});
+    await waitForElementWithTextContent('Line 12, Column 9');
   });
 });

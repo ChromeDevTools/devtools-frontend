@@ -1,0 +1,13 @@
+{
+  "version": 3,
+  "sources": [
+    "app.scss"
+  ],
+  "names": [],
+  "mappings": "AAKA;EAEQ,gBALQ;EAMR,kBAA2B,EAC9B;;AAJL;EAMQ,aAXK,EAiBR;EAZL;IASY,YAAW;IACX,wBAdC,EAeJ;;AAIT;EACI,aAlBS,EAmBZ",
+  "file": "app.scss",
+  "sourcesContent": [
+    "$color: green;\n$bgcol: white;\n$font-size: 14px;\n$padding: 5px;\n\nbody {\n    .test {\n        font-size: $font-size;\n        line-height: 2 * $font-size;\n    }\n    .test {\n        color: $color;\n\n        &::after {\n            content: \"\";\n            background-color: $bgcol;\n        }\n    }\n}\n\nbody .test {\n    padding: $padding;\n}\n"
+  ],
+  "sourceRoot": ""
+}

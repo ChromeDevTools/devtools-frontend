@@ -79,9 +79,13 @@ export const getElementPosition =
   };
 };
 
+interface ClickOptions extends puppeteer.ClickOptions {
+  modifier?: 'ControlOrMeta';
+}
+
 export const click = async (
     selector: string|puppeteer.JSHandle,
-    options?: {root?: puppeteer.JSHandle, clickOptions?: puppeteer.ClickOptions, maxPixelsFromLeft?: number}) => {
+    options?: {root?: puppeteer.JSHandle, clickOptions?: ClickOptions, maxPixelsFromLeft?: number}) => {
   const {frontend} = getBrowserAndPages();
   const clickableElement =
       await getElementPosition(selector, options && options.root, options && options.maxPixelsFromLeft);
@@ -90,12 +94,20 @@ export const click = async (
     throw new Error(`Unable to locate clickable element "${selector}".`);
   }
 
+  const modifier = platform === 'mac' ? 'Meta' : 'Control';
+  if (options?.clickOptions?.modifier) {
+    await frontend.keyboard.down(modifier);
+  }
+
   // Click on the button and wait for the console to load. The reason we use this method
   // rather than elementHandle.click() is because the frontend attaches the behavior to
   // a 'mousedown' event (not the 'click' event). To avoid attaching the test behavior
   // to a specific event we instead locate the button in question and ask Puppeteer to
   // click on it instead.
   await frontend.mouse.click(clickableElement.x, clickableElement.y, options && options.clickOptions);
+  if (options?.clickOptions?.modifier) {
+    await frontend.keyboard.up(modifier);
+  }
 };
 
 export const doubleClick =

@@ -65,6 +65,7 @@ export interface SourceMap {
   findEntry(lineNumber: number, columnNumber: number): SourceMapEntry|null;
   sourceLineMapping(sourceURL: string, lineNumber: number, columnNumber: number): SourceMapEntry|null;
   mappings(): SourceMapEntry[];
+  mapsOrigin(): boolean;
 }
 
 class SourceMapV3 {
@@ -447,6 +448,15 @@ export class TextSourceMap implements SourceMap {
     const endMapping = mappings[endIndex];
     return new TextUtils.TextRange.TextRange(
         startMapping.lineNumber, startMapping.columnNumber, endMapping.lineNumber, endMapping.columnNumber);
+  }
+
+  mapsOrigin(): boolean {
+    const mappings = this.mappings();
+    if (mappings.length > 0) {
+      const firstEntry = mappings[0];
+      return firstEntry?.lineNumber === 0 || firstEntry.columnNumber === 0;
+    }
+    return false;
   }
 }
 

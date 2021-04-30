@@ -354,6 +354,24 @@ export const getStyleRule = (selector: string) => {
   return waitFor(getStyleRuleSelector(selector));
 };
 
+export const getStyleRuleWithSourcePosition = (styleSelector: string, sourcePosition?: string) => {
+  if (!sourcePosition) {
+    return getStyleRule(styleSelector);
+  }
+  const selector = getStyleRuleSelector(styleSelector);
+  return waitForFunction(async () => {
+    const candidate = await waitFor(selector);
+    if (candidate) {
+      const sourcePositionElement = await candidate.$('.styles-section-subtitle .devtools-link');
+      const text = await sourcePositionElement?.evaluate(node => node.textContent);
+      if (text === sourcePosition) {
+        return candidate;
+      }
+    }
+    return undefined;
+  });
+};
+
 export const getColorSwatch = async (parent: puppeteer.ElementHandle<Element>, index: number) => {
   const swatches = await $$(COLOR_SWATCH_SELECTOR, parent);
   return swatches[index];
@@ -392,9 +410,10 @@ export const getStyleSectionSubtitles = async () => {
   return Promise.all(subtitles.map(node => node.evaluate(n => n.textContent)));
 };
 
-export const getCSSPropertyInRule = async (ruleSection: puppeteer.ElementHandle<Element>|string, name: string) => {
+export const getCSSPropertyInRule =
+    async (ruleSection: puppeteer.ElementHandle<Element>|string, name: string, sourcePosition?: string) => {
   if (typeof ruleSection === 'string') {
-    ruleSection = await getStyleRule(ruleSection);
+    ruleSection = await getStyleRuleWithSourcePosition(ruleSection, sourcePosition);
   }
 
   const propertyNames = await $$(CSS_PROPERTY_NAME_SELECTOR, ruleSection);
@@ -444,19 +463,23 @@ export async function editCSSProperty(selector: string, propertyName: string, ne
   });
 }
 
-export async function waitForCSSPropertyValue(selector: string, name: string, value: string) {
-  await waitForFunction(async () => {
-    const propertyHandle = await getCSSPropertyInRule(selector, name);
+export async function waitForCSSPropertyValue(selector: string, name: string, value: string, sourcePosition?: string) {
+  return await waitForFunction(async () => {
+    const propertyHandle = await getCSSPropertyInRule(selector, name, sourcePosition);
     if (!propertyHandle) {
-      return false;
+      return undefined;
     }
 
     const valueHandle = await $(CSS_PROPERTY_VALUE_SELECTOR, propertyHandle);
     if (!valueHandle) {
-      return false;
+      return undefined;
     }
 
-    return await valueHandle.evaluate((node, value) => node.textContent === value, value);
+    const matches = await valueHandle.evaluate((node, value) => node.textContent === value, value);
+    if (matches) {
+      return valueHandle;
+    }
+    return undefined;
   });
 }
 

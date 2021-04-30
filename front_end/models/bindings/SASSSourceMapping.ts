@@ -117,7 +117,16 @@ export class SASSSourceMapping implements SourceMapping {
     if (!sourceMap) {
       return null;
     }
-    const entry = sourceMap.findEntry(rawLocation.lineNumber, rawLocation.columnNumber);
+    let {lineNumber, columnNumber} = rawLocation;
+    // If the source map maps the origin (line:0, column:0) but the CSS header is inline (in a HTML doc),
+    // then adjust the line and column numbers.
+    if (sourceMap.mapsOrigin() && header.isInline) {
+      lineNumber -= header.startLine;
+      if (lineNumber === 0) {
+        columnNumber -= header.startColumn;
+      }
+    }
+    const entry = sourceMap.findEntry(lineNumber, columnNumber);
     if (!entry || !entry.sourceURL) {
       return null;
     }

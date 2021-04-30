@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<body>
+	<div class="test text">Test div</div>
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			var cssText = 'body .test {\n\
+  font-size: 14px;\n\
+  line-height: 28px; }\n\
+\n\
+body .text {\n\
+  color: green; }\n\
+  body .test::after {\n\
+    content: "";\n\
+    background-color: white; }\n\
+\n\
+body .test {\n\
+  padding: 5px; }\n\
+\n\
+/*# sourceMappingURL=sourcemap-css-absolute.map */';
+			var styleElement = document.createElement('style');
+			styleElement.setAttribute('type', 'text/css');
+			document.head.appendChild(styleElement);
+			styleElement.appendChild(document.createTextNode(cssText));
+		});
+	</script>
+</body>
+</html>

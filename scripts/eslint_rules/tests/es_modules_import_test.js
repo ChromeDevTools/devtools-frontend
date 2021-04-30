@@ -77,14 +77,6 @@ ruleTester.run('es_modules_import', rule, {
       filename: 'test/unittests/front_end/elements/ElementsBreadcrumbs_test.ts',
     },
     {
-      code: 'import * as WasmDis from \'../third_party/wasmparser/WasmDis.js\';',
-      filename: 'front_end/wasmparser_worker/WasmParserWorker.js',
-    },
-    {
-      code: 'import * as Acorn from \'../../third_party/acorn/package/dist/acorn.mjs\';',
-      filename: 'front_end/entrypoints/formatter_worker/JavascriptOutline.js',
-    },
-    {
       code: 'import * as LitHtml from \'../third_party/lit-html/lit-html.js\';',
       filename: 'front_end/elements/ElementBreadcrumbs.ts',
     },
@@ -99,6 +91,10 @@ ruleTester.run('es_modules_import', rule, {
     {
       code: 'export {UIString} from \'../platform/platform.js\';',
       filename: 'front_end/common/common.js',
+    },
+    {
+      code: 'import * as ElementsComponents from \'./components/components.js\';',
+      filename: 'front_end/elements/ComputedStyleWidget.js',
     },
     {
       code: 'export async function foo() {};',

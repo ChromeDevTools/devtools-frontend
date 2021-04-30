@@ -57,6 +57,6 @@
 .image-preview-container .source-link {
   white-space: normal;
   word-break: break-all;
-  color: var(--link-color);
+  color: var(--color-link);
   cursor: pointer;
 }

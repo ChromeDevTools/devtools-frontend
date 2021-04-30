@@ -212,7 +212,7 @@
 }
 
 .elements-disclosure .devtools-link {
-  color: var(--link-color);
+  color: var(--color-link);
 }
 
 .devtools-link [is=ui-icon] {

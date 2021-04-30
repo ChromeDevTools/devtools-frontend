@@ -42,7 +42,6 @@
   --legacy-item-selection-bg-color: #cfe8fc;
   --legacy-item-selection-inactive-bg-color: #e0e0e0;
   --item-hover-color: rgb(56 121 217 / 10%);
-  --link-color: rgb(17 85 204);
   --monospace-font-size: 10px;
   --monospace-font-family: monospace;
   --source-code-font-size: 11px;
@@ -71,7 +70,6 @@
   --legacy-focus-ring-inactive-shadow: 0 0 0 1px var(--legacy-focus-ring-inactive-shadow-color);
   --legacy-item-selection-bg-color: hsl(207deg 88% 22%);
   --legacy-item-selection-inactive-bg-color: #454545;
-  --link-color: rgb(171 171 171);
 }
 
 body {

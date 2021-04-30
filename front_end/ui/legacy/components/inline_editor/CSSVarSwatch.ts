@@ -126,7 +126,7 @@ export class CSSVarSwatch extends HTMLElement {
       .css-var-link:not(.undefined) {
         cursor: pointer;
         text-underline-offset: 2px;
-        color: var(--link-color);
+        color: var(--color-link);
       }
 
       .css-var-link:hover:not(.undefined) {

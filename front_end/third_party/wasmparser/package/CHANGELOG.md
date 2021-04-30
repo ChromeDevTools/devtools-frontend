@@ -1,3 +1,10 @@
+## [5.1.1](https://github.com/wasdk/wasmparser/compare/v5.1.0...v5.1.1) (2021-04-26)
+
+
+### Bug Fixes
+
+* missing initializer in devtools name generator for exceptions ([a35948b](https://github.com/wasdk/wasmparser/commit/a35948b999aaa375da426714c54e6c86febe4854))
+
 # [5.1.0](https://github.com/wasdk/wasmparser/compare/v5.0.2...v5.1.0) (2021-04-15)
 
 

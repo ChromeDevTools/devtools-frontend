@@ -817,6 +817,9 @@ export class RowMessageBucket {
     if (!this._sourceFrame.isShowing()) {
       return;
     }
+    if (this.bookmark) {
+      this.bookmark.clear();
+    }
     if (!this._messages.length) {
       return;
     }
@@ -863,9 +866,6 @@ export class RowMessageBucket {
         .data = {...ConsoleCounters.IssueCounter.getIssueKindIconData(maxIssueKind), width: '12px', height: '12px'};
     this._issueIcon.classList.toggle('hidden', !showIssues);
     this._errorIcon.classList.toggle('hidden', !showErrors);
-    if (this.bookmark) {
-      this.bookmark.clear();
-    }
     if (showIssues || showErrors) {
       this.bookmark = this.textEditor.addBookmark(
           editorLineNumber, Number.MAX_SAFE_INTEGER, this.iconsElement, bookmarkTypeRowBucket);

@@ -16,7 +16,7 @@ const exampleRenderHelper = (key: string, value: string): LitHtml.TemplateResult
           <devtools-report-value>${value}</devtools-report-value>
         `;
 
-const container = document.querySelector('#container');
+const container = document.querySelector<HTMLElement>('#container');
 if (!container) {
   throw new Error('Could not find container');
 }

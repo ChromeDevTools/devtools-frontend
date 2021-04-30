@@ -243,7 +243,7 @@ export class CSSAngleEditor extends HTMLElement {
         </div>
       </div>
     `, this.shadow, {
-      eventContext: this,
+      host: this,
     });
     // clang-format on
   }

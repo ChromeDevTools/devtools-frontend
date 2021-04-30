@@ -4,6 +4,8 @@
   },
   "files": [
     "package/lit-html.js",
+    "package/async-directive.js",
+    "package/directive.js",
     "package/directives/class-map.js",
     "package/directives/if-defined.js",
     "package/directives/style-map.js",

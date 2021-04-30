@@ -99,7 +99,7 @@ export class ColorSwatch extends HTMLElement {
 
   private renderTextOnly(): void {
     // Non-color values can be passed to the component (like 'none' from border style).
-    LitHtml.render(this.text, this.shadow, {eventContext: this});
+    LitHtml.render(this.text, this.shadow, {host: this});
   }
 
   private render(): void {
@@ -116,7 +116,7 @@ export class ColorSwatch extends HTMLElement {
         @click=${this.onClick}
         @mousedown=${this.consume}
         @dblclick=${this.consume}></span></span><slot><span>${this.text}</span></slot>`,
-      this.shadow, {eventContext: this});
+      this.shadow, {host: this});
     // clang-format on
   }
 

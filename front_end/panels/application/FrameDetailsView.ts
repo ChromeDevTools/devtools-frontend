@@ -674,7 +674,7 @@ export class FrameDetailsReportView extends HTMLElement {
                 width: '16px',
                 height: '16px',
               } as IconButton.Icon.IconData}></devtools-icon>
-              <${linkTargetDOMNode.nodeName().toLocaleLowerCase()}>
+              &lt;${linkTargetDOMNode.nodeName().toLocaleLowerCase()}&gt;
             </button>
           </devtools-report-value>
         `;

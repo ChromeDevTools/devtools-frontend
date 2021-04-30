@@ -165,7 +165,7 @@ export class AdornerSettingsPane extends HTMLElement {
         <button class="close" @click=${this.hide} aria-label=${i18nString(UIStrings.closeButton)}></button>
       </div>
     `, this.shadow, {
-      eventContext: this,
+      host: this,
     });
     // clang-format on
   }

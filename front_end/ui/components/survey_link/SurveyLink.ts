@@ -156,7 +156,7 @@ export class SurveyLink extends HTMLElement {
       </button>
     `;
     // clang-format on
-    LitHtml.render(output, this.shadow, {eventContext: this});
+    LitHtml.render(output, this.shadow, {host: this});
   }
 }
 

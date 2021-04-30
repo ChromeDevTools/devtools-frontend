@@ -41,7 +41,7 @@ export interface Cell {
   columnId: string;
   value: CellValue;
   title?: string;
-  renderer?: (value: CellValue) => LitHtml.TemplateResult;
+  renderer?: (value: CellValue) => LitHtml.TemplateResult | typeof LitHtml.nothing;
 }
 
 export type Row = {
@@ -70,7 +70,7 @@ export function getRowEntryForColumnId(row: Row, id: string): Cell {
   return rowEntry;
 }
 
-export function renderCellValue(cell: Cell): LitHtml.TemplateResult {
+export function renderCellValue(cell: Cell): LitHtml.TemplateResult|typeof LitHtml.nothing {
   if (cell.renderer) {
     return cell.renderer(cell.value);
   }

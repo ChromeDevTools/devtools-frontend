@@ -8,9 +8,9 @@ export const primitiveRenderer = (value: CellValue): LitHtml.TemplateResult => {
   return LitHtml.html`${value}`;
 };
 
-export const codeBlockRenderer = (value: CellValue): LitHtml.TemplateResult => {
+export const codeBlockRenderer = (value: CellValue): LitHtml.TemplateResult|typeof LitHtml.nothing => {
   if (!value) {
-    return LitHtml.nothing as LitHtml.TemplateResult;
+    return LitHtml.nothing;
   }
   const MAX_LENGTH = 13;
   const stringValue = String(value);

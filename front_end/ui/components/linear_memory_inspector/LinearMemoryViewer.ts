@@ -226,7 +226,7 @@ export class LinearMemoryViewer extends HTMLElement {
       <div class="view" tabindex="0" @keydown=${this.onKeyDown}>
           ${this.renderView()}
       </div>
-      `, this.shadow, {eventContext: this});
+      `, this.shadow, {host: this});
   }
 
   private onKeyDown(event: Event): void {

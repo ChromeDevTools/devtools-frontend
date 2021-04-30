@@ -172,7 +172,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
         </div>
       </div>
     `,
-      this.shadow, { eventContext: this },
+      this.shadow, { host: this },
     );
     // clang-format on
   }

@@ -12,6 +12,9 @@ devtools_pre_built("lit-html") {
 
   sources = [
     "lit-html-tsconfig.json",
+    "package/async-directive.js",
+    "package/directive-helpers.js",
+    "package/directive.js",
     "package/directives/class-map.d.ts",
     "package/directives/class-map.js",
     "package/directives/class-map.js.map",
@@ -67,7 +70,10 @@ devtools_pre_built("lit-html") {
 }
 
 devtools_module("lit-html-directives") {
-  sources = [ "directives.ts" ]
+  sources = [
+    "directive.ts",
+    "directives.ts",
+  ]
 
   deps = [ ":lit-html" ]
 }

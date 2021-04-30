@@ -154,7 +154,7 @@ export class Adorner extends HTMLElement {
 
       <slot name="content"></slot>
     `, this.shadow, {
-      eventContext: this,
+      host: this,
     });
   }
 }

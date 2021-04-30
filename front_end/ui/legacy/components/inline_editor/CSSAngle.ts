@@ -248,7 +248,7 @@ export class CSSAngle extends HTMLElement {
         ${this.popoverOpen ? this.renderPopover() : null}
       </div>
     `, this.shadow, {
-      eventContext: this,
+      host: this,
     });
     // clang-format on
   }

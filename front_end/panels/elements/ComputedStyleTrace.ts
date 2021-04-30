@@ -109,7 +109,7 @@ export class ComputedStyleTrace extends HTMLElement {
         <slot name="trace-link"></slot>
       </div>
     `, this.shadow, {
-      eventContext: this,
+      host: this,
     });
     // clang-format on
   }

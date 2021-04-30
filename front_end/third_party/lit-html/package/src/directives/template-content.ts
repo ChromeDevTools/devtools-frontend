@@ -1,30 +1,30 @@
 /**
  * @license
- * Copyright (c) 2020 The Polymer Project Authors. All rights reserved.
- * This code may only be used under the BSD style license found at
- * http://polymer.github.io/LICENSE.txt
- * The complete set of authors may be found at
- * http://polymer.github.io/AUTHORS.txt
- * The complete set of contributors may be found at
- * http://polymer.github.io/CONTRIBUTORS.txt
- * Code distributed by Google as part of the polymer project is also
- * subject to an additional IP rights grant found at
- * http://polymer.github.io/PATENTS.txt
+ * Copyright 2020 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {directive, NodePart, Part} from '../lit-html.js';
+import {directive, Directive, PartInfo, PartType} from '../directive.js';
+import {noChange} from '../lit-html.js';
 
-interface PreviousValue {
-  readonly template: HTMLTemplateElement;
-  readonly fragment: DocumentFragment;
+class TemplateContentDirective extends Directive {
+  private _previousTemplate?: HTMLTemplateElement;
+
+  constructor(partInfo: PartInfo) {
+    super(partInfo);
+    if (partInfo.type !== PartType.CHILD) {
+      throw new Error('templateContent can only be used in child bindings');
+    }
+  }
+
+  render(template: HTMLTemplateElement) {
+    if (this._previousTemplate === template) {
+      return noChange;
+    }
+    this._previousTemplate = template;
+    return document.importNode(template.content, true);
+  }
 }
-
-// For each part, remember the value that was last rendered to the part by the
-// templateContent directive, and the DocumentFragment that was last set as a
-// value. The DocumentFragment is used as a unique key to check if the last
-// value rendered to the part was with templateContent. If not, we'll always
-// re-render the value passed to templateContent.
-const previousValues = new WeakMap<NodePart, PreviousValue>();
 
 /**
  * Renders the content of a template element as HTML.
@@ -33,20 +33,10 @@ const previousValues = new WeakMap<NodePart, PreviousValue>();
  * Rendering a user-controlled template with this directive
  * could lead to cross-site-scripting vulnerabilities.
  */
-export const templateContent =
-    directive((template: HTMLTemplateElement) => (part: Part): void => {
-      if (!(part instanceof NodePart)) {
-        throw new Error('templateContent can only be used in text bindings');
-      }
+export const templateContent = directive(TemplateContentDirective);
 
-      const previousValue = previousValues.get(part);
-
-      if (previousValue !== undefined && template === previousValue.template &&
-          part.value === previousValue.fragment) {
-        return;
-      }
-
-      const fragment = document.importNode(template.content, true);
-      part.setValue(fragment);
-      previousValues.set(part, {template, fragment});
-    });
+/**
+ * The type of the class that powers this directive. Necessary for naming the
+ * directive's return type.
+ */
+export type {TemplateContentDirective};

@@ -199,7 +199,7 @@ export class LinearMemoryNavigator extends HTMLElement {
             event: new RefreshRequestedEvent(), enabled: true})}
       </div>
       `;
-      render(result, this.shadow, {eventContext: this});
+      render(result, this.shadow, {host: this});
     // clang-format on
   }
 

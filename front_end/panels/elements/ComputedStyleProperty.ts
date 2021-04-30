@@ -134,7 +134,7 @@ export class ComputedStyleProperty extends HTMLElement {
         <span class="hidden" aria-hidden="false">;</span>
       </div>
     `, this.shadow, {
-      eventContext: this,
+      host: this,
     });
     // clang-format on
   }

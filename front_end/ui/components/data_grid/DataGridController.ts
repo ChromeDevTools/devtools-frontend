@@ -215,7 +215,7 @@ export class DataGridController extends HTMLElement {
         @context-menu-header-reset-click=${this.onContextMenuHeaderResetClick}
      ></devtools-data-grid>
     `, this.shadow, {
-      eventContext: this,
+      host: this,
     });
     // clang-format on
     this.hasRenderedAtLeastOnce = true;

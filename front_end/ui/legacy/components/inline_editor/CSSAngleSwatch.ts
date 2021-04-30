@@ -68,7 +68,7 @@ export class CSSAngleSwatch extends HTMLElement {
         <span class="mini-hand" style=${styleMap(miniHandStyle)}></span>
       </div>
     `, this.shadow, {
-      eventContext: this,
+      host: this,
     });
     // clang-format on
   }

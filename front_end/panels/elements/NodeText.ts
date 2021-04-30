@@ -81,7 +81,7 @@ export class NodeText extends HTMLElement {
       </style>
       ${parts}
     `, this.shadow, {
-      eventContext: this,
+      host: this,
     });
     // clang-format on
   }

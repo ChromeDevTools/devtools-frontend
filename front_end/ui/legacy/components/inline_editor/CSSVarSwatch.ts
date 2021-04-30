@@ -113,7 +113,7 @@ export class CSSVarSwatch extends HTMLElement {
   private render(): void {
     const functionParts = this.parseVariableFunctionParts();
     if (!functionParts) {
-      render('', this.shadow, {eventContext: this});
+      render('', this.shadow, {host: this});
       return;
     }
 
@@ -142,7 +142,7 @@ export class CSSVarSwatch extends HTMLElement {
         color: hsl(0deg 0% 46%);
       }
       </style><span title="${this.computedValue || ''}">${functionParts.pre}${link}${functionParts.post}</span>`,
-      this.shadow, { eventContext: this });
+      this.shadow, { host: this });
     // clang-format on
   }
 }

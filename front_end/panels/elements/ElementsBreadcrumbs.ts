@@ -378,7 +378,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
           ${this.renderOverflowButton('right', this.userScrollPosition === 'end')}
         </nav>
       `, this.shadow, {
-        eventContext: this,
+        host: this,
       });
       // clang-format on
     });

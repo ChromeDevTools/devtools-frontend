@@ -206,7 +206,7 @@ export class LinearMemoryInspector extends HTMLElement {
         </devtools-linear-memory-inspector-interpreter/>
       </div>
       `, this.shadow, {
-      eventContext: this,
+      host: this,
     });
     // clang-format on
   }

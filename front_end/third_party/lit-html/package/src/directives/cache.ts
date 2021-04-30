@@ -1,27 +1,86 @@
 /**
  * @license
- * Copyright (c) 2018 The Polymer Project Authors. All rights reserved.
- * This code may only be used under the BSD style license found at
- * http://polymer.github.io/LICENSE.txt
- * The complete set of authors may be found at
- * http://polymer.github.io/AUTHORS.txt
- * The complete set of contributors may be found at
- * http://polymer.github.io/CONTRIBUTORS.txt
- * Code distributed by Google as part of the polymer project is also
- * subject to an additional IP rights grant found at
- * http://polymer.github.io/PATENTS.txt
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {TemplateInstance} from '../lib/template-instance.js';
-import {Template} from '../lib/template.js';
-import {directive, NodePart, Part, reparentNodes, TemplateResult} from '../lit-html.js';
+import {
+  clearPart,
+  getCommittedValue,
+  insertPart,
+  isTemplateResult,
+  setCommittedValue,
+} from '../directive-helpers.js';
+import {
+  directive,
+  Directive,
+  DirectiveParameters,
+  PartInfo,
+} from '../directive.js';
+import { ChildPart, nothing, render,TemplateResult} from '../lit-html.js';
 
-interface CachedTemplate {
-  readonly instance: TemplateInstance;
-  readonly nodes: DocumentFragment;
+class CacheDirective extends Directive {
+  private _templateCache = new WeakMap<TemplateStringsArray, ChildPart>();
+  private _value?: TemplateResult;
+
+  constructor(partInfo: PartInfo) {
+    super(partInfo);
+  }
+
+  render(v: unknown) {
+    // Return an array of the value to induce lit-html to create a ChildPart
+    // for the value that we can move into the cache.
+    return [v];
+  }
+
+  update(containerPart: ChildPart, [v]: DirectiveParameters<this>) {
+    // If the previous value is a TemplateResult and the new value is not,
+    // or is a different Template as the previous value, move the child part
+    // into the cache.
+    if (
+      isTemplateResult(this._value) &&
+      (!isTemplateResult(v) || this._value.strings !== v.strings)
+    ) {
+      // This is always an array because we return [v] in render()
+      const partValue = getCommittedValue(containerPart) as Array<ChildPart>;
+      const childPart = partValue.pop()!;
+      let cachedContainerPart = this._templateCache.get(this._value.strings);
+      if (cachedContainerPart === undefined) {
+        const fragment = document.createDocumentFragment();
+        cachedContainerPart = render(nothing, fragment);
+        this._templateCache.set(this._value.strings, cachedContainerPart);
+      }
+      // Move into cache
+      setCommittedValue(cachedContainerPart, [childPart]);
+      insertPart(cachedContainerPart, undefined, childPart);
+      childPart.setConnected(false);
+    }
+    // If the new value is a TemplateResult and the previous value is not,
+    // or is a different Template as the previous value, restore the child
+    // part from the cache.
+    if (isTemplateResult(v)) {
+      if (!isTemplateResult(this._value) || this._value.strings !== v.strings) {
+        const cachedContainerPart = this._templateCache.get(v.strings);
+        if (cachedContainerPart !== undefined) {
+          // Move the cached part back into the container part value
+          const partValue = getCommittedValue(
+            cachedContainerPart
+          ) as Array<ChildPart>;
+          const cachedPart = partValue.pop()!;
+          // Move cached part back into DOM
+          clearPart(containerPart);
+          insertPart(containerPart, undefined, cachedPart);
+          setCommittedValue(containerPart, [cachedPart]);
+          cachedPart.setConnected(true);
+        }
+      }
+      this._value = v;
+    } else {
+      this._value = undefined;
+    }
+    return this.render(v);
+  }
 }
-const templateCaches =
-    new WeakMap<NodePart, WeakMap<Template, CachedTemplate>>();
 
 /**
  * Enables fast switching between multiple templates by caching the DOM nodes
@@ -37,54 +96,10 @@ const templateCaches =
  * `
  * ```
  */
-export const cache = directive((value: unknown) => (part: Part) => {
-  if (!(part instanceof NodePart)) {
-    throw new Error('cache can only be used in text bindings');
-  }
+export const cache = directive(CacheDirective);
 
-  let templateCache = templateCaches.get(part);
-
-  if (templateCache === undefined) {
-    templateCache = new WeakMap();
-    templateCaches.set(part, templateCache);
-  }
-
-  const previousValue = part.value;
-
-  // First, can we update the current TemplateInstance, or do we need to move
-  // the current nodes into the cache?
-  if (previousValue instanceof TemplateInstance) {
-    if (value instanceof TemplateResult &&
-        previousValue.template === part.options.templateFactory(value)) {
-      // Same Template, just trigger an update of the TemplateInstance
-      part.setValue(value);
-      return;
-    } else {
-      // Not the same Template, move the nodes from the DOM into the cache.
-      let cachedTemplate = templateCache.get(previousValue.template);
-      if (cachedTemplate === undefined) {
-        cachedTemplate = {
-          instance: previousValue,
-          nodes: document.createDocumentFragment(),
-        };
-        templateCache.set(previousValue.template, cachedTemplate);
-      }
-      reparentNodes(
-          cachedTemplate.nodes, part.startNode.nextSibling, part.endNode);
-    }
-  }
-
-  // Next, can we reuse nodes from the cache?
-  if (value instanceof TemplateResult) {
-    const template = part.options.templateFactory(value);
-    const cachedTemplate = templateCache.get(template);
-    if (cachedTemplate !== undefined) {
-      // Move nodes out of cache
-      part.setValue(cachedTemplate.nodes);
-      part.commit();
-      // Set the Part value to the TemplateInstance so it'll update it.
-      part.value = cachedTemplate.instance;
-    }
-  }
-  part.setValue(value);
-});
+/**
+ * The type of the class that powers this directive. Necessary for naming the
+ * directive's return type.
+ */
+export type {CacheDirective};

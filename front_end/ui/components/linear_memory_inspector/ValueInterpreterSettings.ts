@@ -119,7 +119,7 @@ export class ValueInterpreterSettings extends HTMLElement {
           </div>
         `;})}
       </div>
-      `, this.shadow, {eventContext: this});
+      `, this.shadow, {host: this});
   }
 
   private plotTypeSelections(group: ValueTypeGroup): LitHtml.TemplateResult {

@@ -482,7 +482,7 @@ export class DataGrid extends HTMLElement {
     this.cleanUpAfterResizeColumnComplete();
   }
 
-  private renderResizeForCell(column: Column, position: CellPosition): LitHtml.TemplateResult {
+  private renderResizeForCell(column: Column, position: CellPosition): LitHtml.TemplateResult|typeof LitHtml.nothing {
     /**
      * A resizer for a column is placed at the far right of the _previous column
      * cell_. So when we get called with [1, 0] that means this dragger is
@@ -494,7 +494,7 @@ export class DataGrid extends HTMLElement {
     const lastVisibleColumnIndex = this.getIndexOfLastVisibleColumn();
     // If we are in the very last column, there is no column to the right to resize, so don't render a resizer.
     if (columnIndex === lastVisibleColumnIndex || !column.visible) {
-      return LitHtml.nothing as LitHtml.TemplateResult;
+      return LitHtml.nothing;
     }
 
     return LitHtml.html`<span class="cell-resize-handle"
@@ -916,7 +916,7 @@ export class DataGrid extends HTMLElement {
         </table>
       </div>
       `, this.shadow, {
-        eventContext: this,
+        host: this,
       });
     });
     // clang-format on

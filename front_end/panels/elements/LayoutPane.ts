@@ -190,7 +190,7 @@ export class LayoutPane extends HTMLElement {
         `
       : ''}
     `, this.shadow, {
-      eventContext: this,
+      host: this,
     });
     // clang-format on
   }

@@ -30,21 +30,38 @@ export function isExpandableNode<TreeNodeDataType>(node: TreeNode<TreeNodeDataTy
  * creates and maps them to the tree node that was given to us. This means we
  * can navigate between real DOM node and structural tree node easily in code.
  */
-export const trackDOMNodeToTreeNode = LitHtml.directive(
-    <TreeNodeDataType>(
-        weakMap: WeakMap<HTMLLIElement, TreeNode<TreeNodeDataType>>, treeNode: TreeNode<TreeNodeDataType>) => {
-      return (part: LitHtml.Part): void => {
-        if (!(part instanceof LitHtml.AttributePart)) {
-          throw new Error('Ref directive must be used as an attribute.');
-        }
 
-        const elem = part.committer.element;
-        if (!(elem instanceof HTMLLIElement)) {
-          throw new Error('trackTreeNodeToDOMNode must be used on <li> elements.');
-        }
-        weakMap.set(elem, treeNode);
-      };
-    });
+class TrackDOMNodeToTreeNode extends LitHtml.Directive.Directive {
+  constructor(partInfo: LitHtml.Directive.PartInfo) {
+    super(partInfo);
+
+    if (partInfo.type !== LitHtml.Directive.PartType.ATTRIBUTE) {
+      throw new Error('TrackDOMNodeToTreeNode directive must be used as an attribute.');
+    }
+  }
+
+  update(part: LitHtml.Directive.ElementPart, [weakMap, treeNode]: LitHtml.Directive.DirectiveParameters<this>): void {
+    const elem = part.element;
+    if (!(elem instanceof HTMLLIElement)) {
+      throw new Error('trackTreeNodeToDOMNode must be used on <li> elements.');
+    }
+    weakMap.set(elem, treeNode);
+  }
+
+  /*
+   * Because this directive doesn't render anything, there's no implementation
+   * here for the render method. But we need it to state the params the
+   * directive takes so the update() method's types are correct. Unfortunately
+   * we have to pass any as the generic type because we can't define this class
+   * using a generic - the generic gets lost when wrapped in the directive call
+   * below.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  render(_weakmap: WeakMap<HTMLLIElement, TreeNode<any>>, _treeNode: TreeNode<any>): void {
+  }
+}
+
+export const trackDOMNodeToTreeNode = LitHtml.Directive.directive(TrackDOMNodeToTreeNode);
 
 
 /**

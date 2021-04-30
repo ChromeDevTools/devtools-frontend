@@ -169,7 +169,7 @@ export class FlexboxEditor extends HTMLElement {
         ${EditableProperties.map(prop => this.renderProperty(prop))}
       </div>
     `, this.shadow, {
-      eventContext: this,
+      host: this,
     });
     // clang-format on
   }

@@ -171,7 +171,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
       <div class="value-types">
         ${SORTED_VALUE_TYPES.map(type => this.valueTypes.has(type) ? this.showValue(type) : '')}
       </div>
-    `, this.shadow, {eventContext: this},
+    `, this.shadow, {host: this},
     );
     // clang-format on
   }

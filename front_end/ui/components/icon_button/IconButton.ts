@@ -59,7 +59,7 @@ export class IconButton extends HTMLElement {
     });
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.render(LitHtml.html`
+    LitHtml.render(LitHtml.html`
       <style>
         :host {
           white-space: normal;
@@ -126,7 +126,7 @@ export class IconButton extends HTMLElement {
       <span class="icon-button-title">${counter.text}</span>
       </button>`)}
       ${this.trailingText ? LitHtml.html`<span class="icon-button-title">${this.trailingText}</span>` : LitHtml.nothing}
-    `, this.shadow, { eventContext: this});
+    `, this.shadow, { host: this});
     // clang-format on
   }
 }

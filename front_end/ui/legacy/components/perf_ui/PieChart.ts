@@ -213,7 +213,7 @@ export class PieChart extends HTMLElement {
         ` : ''}
     `;
     // clang-format on
-    render(output, this.shadow, {eventContext: this});
+    render(output, this.shadow, {host: this});
   }
 
   private onSliceClicked(index: number): () => void {

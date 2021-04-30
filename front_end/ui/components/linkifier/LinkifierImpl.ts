@@ -69,7 +69,7 @@ export class Linkifier extends HTMLElement {
           }
         </style>
         <a class="link" href=${this.url} @click=${this.onLinkActivation}>${LinkifierUtils.linkText(this.url, this.lineNumber)}</a>
-      `, this.shadow, { eventContext: this});
+      `, this.shadow, { host: this});
       // clang-format on
     });
   }

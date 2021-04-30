@@ -541,7 +541,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
       </ul>
       </div>
       `, this.shadow, {
-        eventContext: this,
+        host: this,
       });
     });
     // clang-format on

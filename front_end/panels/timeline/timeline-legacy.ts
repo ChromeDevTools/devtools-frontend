@@ -229,9 +229,6 @@ Timeline.TimelineRecordStyle = TimelineModule.TimelineUIUtils.TimelineRecordStyl
 Timeline.TimelineCategory = TimelineModule.TimelineUIUtils.TimelineCategory;
 
 /** @constructor */
-Timeline.TimelinePopupContentHelper = TimelineModule.TimelineUIUtils.TimelinePopupContentHelper;
-
-/** @constructor */
 Timeline.TimelineDetailsContentHelper = TimelineModule.TimelineUIUtils.TimelineDetailsContentHelper;
 
 /** @constructor */

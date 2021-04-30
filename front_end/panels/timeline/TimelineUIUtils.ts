@@ -1180,11 +1180,6 @@ const UIStrings = {
   *@description Text of a DOM element in Timeline UIUtils of the Performance panel
   */
   UnknownNode: '[ unknown node ]',
-  /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  *@example {title} PH1
-  */
-  sDetails: '{PH1} - Details',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineUIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -3567,57 +3562,6 @@ export namespace TimelineCategory {
   // eslint-disable-next-line rulesdir/const_enum
   export enum Events {
     VisibilityChanged = 'VisibilityChanged',
-  }
-}
-
-export class TimelinePopupContentHelper {
-  _contentTable: HTMLTableElement;
-
-  constructor(title: string) {
-    this._contentTable = document.createElement('table');
-    const titleCell = this._createCell(i18nString(UIStrings.sDetails, {PH1: title}), 'timeline-details-title');
-    titleCell.colSpan = 2;
-    const titleRow = document.createElement('tr');
-    titleRow.appendChild(titleCell);
-    this._contentTable.appendChild(titleRow);
-  }
-
-  contentTable(): Element {
-    return this._contentTable;
-  }
-
-  _createCell(content: string|number, styleName?: string): HTMLTableDataCellElement {
-    const text = document.createElement('label');
-    UI.UIUtils.createTextChild(text, String(content));
-    const cell = document.createElement('td');
-    cell.className = 'timeline-details';
-    if (styleName) {
-      cell.className += ' ' + styleName;
-    }
-    cell.textContent = content.toString();
-    return cell;
-  }
-
-  appendTextRow(title: string, content: string|number): void {
-    const row = document.createElement('tr');
-    row.appendChild(this._createCell(title, 'timeline-details-row-title'));
-    row.appendChild(this._createCell(content, 'timeline-details-row-data'));
-    this._contentTable.appendChild(row);
-  }
-
-  appendElementRow(title: string, content: string|Node): void {
-    const row = document.createElement('tr');
-    const titleCell = this._createCell(title, 'timeline-details-row-title');
-    row.appendChild(titleCell);
-    const cell = document.createElement('td');
-    cell.className = 'details';
-    if (content instanceof Node) {
-      cell.appendChild(content);
-    } else {
-      UI.UIUtils.createTextChild(cell, content || '');
-    }
-    row.appendChild(cell);
-    this._contentTable.appendChild(row);
   }
 }
 

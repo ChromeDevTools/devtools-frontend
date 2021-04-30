@@ -312,7 +312,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   _selection?: TimelineSelection|null;
   constructor() {
     super('timeline');
-    this.registerRequiredCSS('panels/timeline/timelinePanel.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/timeline/timelinePanel.css', {enableLegacyPatching: false});
     this.element.addEventListener('contextmenu', this._contextMenu.bind(this), false);
     this._dropTarget = new UI.DropTarget.DropTarget(
         this.element, [UI.DropTarget.Type.File, UI.DropTarget.Type.URI],

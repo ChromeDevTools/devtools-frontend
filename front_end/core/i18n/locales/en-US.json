@@ -10163,9 +10163,6 @@
   "panels/timeline/TimelineUIUtils.ts | scrollUpdate": {
     "message": "Scroll Update"
   },
-  "panels/timeline/TimelineUIUtils.ts | sDetails": {
-    "message": "{PH1} - Details"
-  },
   "panels/timeline/TimelineUIUtils.ts | selfTime": {
     "message": "Self Time"
   },

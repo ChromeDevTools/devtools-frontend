@@ -77,17 +77,3 @@ export function runOnWindowLoad(callback: () => void): void {
 export function assertNever(type: never, message: string): never {
   throw new Error(message);
 }
-
-self.base64ToSize = function(content: string|null): number {
-  if (!content) {
-    return 0;
-  }
-  let size = content.length * 3 / 4;
-  if (content[content.length - 1] === '=') {
-    size--;
-  }
-  if (content.length > 1 && content[content.length - 2] === '=') {
-    size--;
-  }
-  return size;
-};

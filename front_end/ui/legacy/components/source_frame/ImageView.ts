@@ -166,7 +166,7 @@ export class ImageView extends UI.View.SimpleView {
     });
     this._imagePreviewElement.src = imageSrc;
     this._imagePreviewElement.alt = i18nString(UIStrings.imageFromS, {PH1: this._url});
-    const size = content && !contentEncoded ? content.length : base64ToSize(content);
+    const size = content && !contentEncoded ? content.length : Platform.StringUtilities.base64ToSize(content);
     this._sizeLabel.setText(Platform.NumberUtilities.bytesToString(size));
     await loadPromise;
     this._dimensionsLabel.setText(i18nString(

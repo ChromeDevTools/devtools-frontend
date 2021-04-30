@@ -133,7 +133,6 @@ interface Node {
   childTextNodes(): Node[];
 }
 
-declare function base64ToSize(content: string|null): number;
 declare function isEnterOrSpaceKey(event: Event): boolean;
 declare function isEscKey(event: Event): boolean;
 declare function createPlainTextSearchRegex(query: string, flags?: string): RegExp;

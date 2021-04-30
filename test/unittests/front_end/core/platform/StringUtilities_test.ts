@@ -662,4 +662,31 @@ describe('StringUtilities', () => {
       }
     });
   });
+
+  describe('base64ToSize', () => {
+    it('calculates length correctly', () => {
+      const inputString = 'foo';
+      const base64String = btoa(inputString);
+      assert.strictEqual(Platform.StringUtilities.base64ToSize(base64String), inputString.length);
+    });
+
+    it('calculates length of null string correctly', () => {
+      const inputString = null;
+      assert.strictEqual(Platform.StringUtilities.base64ToSize(inputString), 0);
+    });
+
+    it('calcualtes length of string with two = at the end', () => {
+      const inputString = 'fooo';
+      const base64String = btoa(inputString);
+      assert.strictEqual(base64String, 'Zm9vbw==');
+      assert.strictEqual(Platform.StringUtilities.base64ToSize(base64String), inputString.length);
+    });
+
+    it('calcualtes length of string with one = at the end', () => {
+      const inputString = 'foooo';
+      const base64String = btoa(inputString);
+      assert.strictEqual(base64String, 'Zm9vb28=');
+      assert.strictEqual(Platform.StringUtilities.base64ToSize(base64String), inputString.length);
+    });
+  });
 });

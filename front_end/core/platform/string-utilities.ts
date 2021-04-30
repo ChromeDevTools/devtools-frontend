@@ -506,3 +506,17 @@ export const naturalOrderComparator = (a: string, b: string): number => {
     b = b.substring(chunkb.length);
   }
 };
+
+export const base64ToSize = function(content: string|null): number {
+  if (!content) {
+    return 0;
+  }
+  let size = content.length * 3 / 4;
+  if (content[content.length - 1] === '=') {
+    size--;
+  }
+  if (content.length > 1 && content[content.length - 2] === '=') {
+    size--;
+  }
+  return size;
+};

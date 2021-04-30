@@ -81,7 +81,7 @@ export class ImagePreview {
     // When opening DevTools for the first time, base64 resource has no content.
     const content = resource.content ? resource.content : resource.url.split('base64,')[1];
     const contentSize = resource.contentSize();
-    const resourceSize = contentSize ? contentSize : base64ToSize(content);
+    const resourceSize = contentSize ? contentSize : Platform.StringUtilities.base64ToSize(content);
     const resourceSizeText = resourceSize > 0 ? Platform.NumberUtilities.bytesToString(resourceSize) : '';
 
     let fulfill: (arg0: Element|null) => void;

@@ -405,7 +405,7 @@ export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGrid.Sortab
       description = dataText;
 
     } else if (frame.opCode === OpCodes.BinaryFrame) {
-      length = Platform.NumberUtilities.bytesToString(base64ToSize(frame.text));
+      length = Platform.NumberUtilities.bytesToString(Platform.StringUtilities.base64ToSize(frame.text));
       description = opCodeDescriptions[frame.opCode]();
 
     } else {

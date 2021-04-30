@@ -107,41 +107,55 @@ export class NetworkSearchScope implements Search.SearchConfig.SearchScope {
   }
 }
 
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum UIHeaderSection {
+  General = 'General',
+  Request = 'Request',
+  Response = 'Response',
+}
+
+interface UIHeaderLocation {
+  section: UIHeaderSection;
+  header: SDK.NetworkRequest.NameValue|null;
+}
+
 export class UIRequestLocation {
   request: SDK.NetworkRequest.NetworkRequest;
-  requestHeader: SDK.NetworkRequest.NameValue|null;
-  responseHeader: SDK.NetworkRequest.NameValue|null;
+  header: UIHeaderLocation|null;
   searchMatch: TextUtils.ContentProvider.SearchMatch|null;
   isUrlMatch: boolean;
 
-  constructor(
-      request: SDK.NetworkRequest.NetworkRequest, requestHeader: SDK.NetworkRequest.NameValue|null,
-      responseHeader: SDK.NetworkRequest.NameValue|null, searchMatch: TextUtils.ContentProvider.SearchMatch|null,
-      urlMatch: boolean) {
+  private constructor(
+      request: SDK.NetworkRequest.NetworkRequest, header: UIHeaderLocation|null,
+      searchMatch: TextUtils.ContentProvider.SearchMatch|null, urlMatch: boolean) {
     this.request = request;
-    this.requestHeader = requestHeader;
-    this.responseHeader = responseHeader;
+    this.header = header;
     this.searchMatch = searchMatch;
     this.isUrlMatch = urlMatch;
   }
 
   static requestHeaderMatch(request: SDK.NetworkRequest.NetworkRequest, header: SDK.NetworkRequest.NameValue|null):
       UIRequestLocation {
-    return new UIRequestLocation(request, header, null, null, false);
+    return new UIRequestLocation(request, {section: UIHeaderSection.Request, header}, null, false);
   }
 
   static responseHeaderMatch(request: SDK.NetworkRequest.NetworkRequest, header: SDK.NetworkRequest.NameValue|null):
       UIRequestLocation {
-    return new UIRequestLocation(request, null, header, null, false);
+    return new UIRequestLocation(request, {section: UIHeaderSection.Response, header}, null, false);
   }
 
   static bodyMatch(request: SDK.NetworkRequest.NetworkRequest, searchMatch: TextUtils.ContentProvider.SearchMatch|null):
       UIRequestLocation {
-    return new UIRequestLocation(request, null, null, searchMatch, false);
+    return new UIRequestLocation(request, null, searchMatch, false);
   }
 
   static urlMatch(request: SDK.NetworkRequest.NetworkRequest): UIRequestLocation {
-    return new UIRequestLocation(request, null, null, null, true);
+    return new UIRequestLocation(request, null, null, true);
+  }
+
+  static header(request: SDK.NetworkRequest.NetworkRequest, section: UIHeaderSection, name: string): UIRequestLocation {
+    return new UIRequestLocation(request, {section, header: {name, value: ''}}, null, true);
   }
 }
 
@@ -175,7 +189,7 @@ export class NetworkSearchResult implements Search.SearchConfig.SearchResult {
     if (location.isUrlMatch) {
       return this._request.url();
     }
-    const header = location.requestHeader || location.responseHeader;
+    const header = location?.header?.header;
     if (header) {
       return header.value;
     }
@@ -191,7 +205,7 @@ export class NetworkSearchResult implements Search.SearchConfig.SearchResult {
     if (location.isUrlMatch) {
       return i18nString(UIStrings.url);
     }
-    const header = location.requestHeader || location.responseHeader;
+    const header = location?.header?.header;
     if (header) {
       return `${header.name}:`;
     }

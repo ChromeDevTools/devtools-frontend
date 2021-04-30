@@ -36,6 +36,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {EventSourceMessagesView} from './EventSourceMessagesView.js';
+import type {UIHeaderSection} from './NetworkSearchScope.js';
 import {NetworkTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
 import {RequestCookiesView} from './RequestCookiesView.js';
 import {RequestHeadersView} from './RequestHeadersView.js';
@@ -262,14 +263,9 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     }
   }
 
-  revealRequestHeader(header: string): void {
+  revealHeader(section: UIHeaderSection, header: string|undefined): void {
     this._selectTab(Tabs.Headers);
-    this._headersView.revealRequestHeader(header);
-  }
-
-  revealResponseHeader(header: string): void {
-    this._selectTab(Tabs.Headers);
-    this._headersView.revealResponseHeader(header);
+    this._headersView.revealHeader(section, header);
   }
 }
 

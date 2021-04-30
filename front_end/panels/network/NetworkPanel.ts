@@ -988,11 +988,8 @@ export class RequestLocationRevealer implements Common.Revealer.Revealer {
     if (location.searchMatch) {
       await view.revealResponseBody(location.searchMatch.lineNumber);
     }
-    if (location.requestHeader) {
-      view.revealRequestHeader(location.requestHeader.name);
-    }
-    if (location.responseHeader) {
-      view.revealResponseHeader(location.responseHeader.name);
+    if (location.header) {
+      view.revealHeader(location.header.section, location.header.header?.name);
     }
   }
 }

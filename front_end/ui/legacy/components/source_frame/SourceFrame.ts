@@ -865,7 +865,9 @@ export class SourceFrameImpl extends UI.View.SimpleView implements UI.Searchable
         this._sourcePosition.setText(i18nString(
             UIStrings.bytecodePositionXs, {PH1: bytecodeOffset.toString(16).padStart(bytecodeOffsetDigits, '0')}));
       } else {
-        this._textEditor.revealPosition(textRange.endLine, textRange.endColumn, !this.canEditSource());
+        if (!this.canEditSource()) {
+          this._textEditor.revealPosition(textRange.endLine, textRange.endColumn, true);
+        }
         this._sourcePosition.setText(i18nString(UIStrings.lineSColumnS, {PH1: location[0] + 1, PH2: location[1] + 1}));
       }
       return;

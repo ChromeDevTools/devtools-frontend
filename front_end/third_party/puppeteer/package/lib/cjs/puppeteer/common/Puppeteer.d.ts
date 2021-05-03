@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Browser } from './Browser.js';
-import { BrowserOptions } from './BrowserConnector.js';
+import { BrowserConnectOptions } from './BrowserConnector.js';
 import { ConnectionTransport } from './ConnectionTransport.js';
 import { DevicesMap } from './DeviceDescriptors.js';
 import { PuppeteerErrors } from './Errors.js';
@@ -29,7 +29,10 @@ import { CustomQueryHandler } from './QueryHandler.js';
 export interface CommonPuppeteerSettings {
     isPuppeteerCore: boolean;
 }
-export interface ConnectOptions extends BrowserOptions {
+/**
+ * @public
+ */
+export interface ConnectOptions extends BrowserConnectOptions {
     browserWSEndpoint?: string;
     browserURL?: string;
     transport?: ConnectionTransport;

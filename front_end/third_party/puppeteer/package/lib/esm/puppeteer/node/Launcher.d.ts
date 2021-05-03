@@ -1,12 +1,15 @@
 import { Product } from '../common/Product.js';
+
+import { BrowserLaunchArgumentOptions, PuppeteerNodeLaunchOptions } from './LaunchOptions.js';
+
 /**
  * Describes a launcher - a class that is able to create and launch a browser instance.
  * @public
  */
 export interface ProductLauncher {
-    launch(object: any): any;
+    launch(object: PuppeteerNodeLaunchOptions): any;
     executablePath: () => string;
-    defaultArgs(object: any): any;
+    defaultArgs(object: BrowserLaunchArgumentOptions): any;
     product: Product;
 }
 /**

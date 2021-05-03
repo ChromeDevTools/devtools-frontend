@@ -16,6 +16,9 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.networkConditions = void 0;
+/**
+ * @public
+ */
 exports.networkConditions = {
     'Slow 3G': {
         download: ((500 * 1000) / 8) * 0.8,

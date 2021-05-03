@@ -34,6 +34,7 @@ import { assert } from './assert.js';
  *   page.evaluate(() => alert('1'));
  * })();
  * ```
+ * @public
  */
 export class Dialog {
     /**

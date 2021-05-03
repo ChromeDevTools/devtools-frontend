@@ -24,11 +24,11 @@ import { JSHandle } from './JSHandle.js';
 /**
  * @internal
  */
-declare type ConsoleAPICalledCallback = (eventType: string, handles: JSHandle[], trace: Protocol.Runtime.StackTrace) => void;
+export declare type ConsoleAPICalledCallback = (eventType: string, handles: JSHandle[], trace: Protocol.Runtime.StackTrace) => void;
 /**
  * @internal
  */
-declare type ExceptionThrownCallback = (details: Protocol.Runtime.ExceptionDetails) => void;
+export declare type ExceptionThrownCallback = (details: Protocol.Runtime.ExceptionDetails) => void;
 /**
  * The WebWorker class represents a
  * {@link https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API | WebWorker}.
@@ -98,5 +98,4 @@ export declare class WebWorker extends EventEmitter {
      */
     evaluateHandle<HandlerType extends JSHandle = JSHandle>(pageFunction: EvaluateHandleFn, ...args: SerializableOrJSHandle[]): Promise<JSHandle>;
 }
-export {};
 //# sourceMappingURL=WebWorker.d.ts.map

@@ -20,8 +20,14 @@ import { PuppeteerEventListener } from './helper.js';
 import { HTTPRequest } from './HTTPRequest.js';
 import { HTTPResponse } from './HTTPResponse.js';
 
+/**
+ * @public
+ */
 export declare type PuppeteerLifeCycleEvent = 'load' | 'domcontentloaded' | 'networkidle0' | 'networkidle2';
-declare type ProtocolLifeCycleEvent = 'load' | 'DOMContentLoaded' | 'networkIdle' | 'networkAlmostIdle';
+/**
+ * @public
+ */
+export declare type ProtocolLifeCycleEvent = 'load' | 'DOMContentLoaded' | 'networkIdle' | 'networkAlmostIdle';
 /**
  * @internal
  */
@@ -58,5 +64,4 @@ export declare class LifecycleWatcher {
     _checkLifecycleComplete(): void;
     dispose(): void;
 }
-export {};
 //# sourceMappingURL=LifecycleWatcher.d.ts.map

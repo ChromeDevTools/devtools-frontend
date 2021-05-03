@@ -19,6 +19,9 @@ exports.ExecutionContext = exports.EVALUATION_SCRIPT_URL = void 0;
 const assert_js_1 = require("./assert.js");
 const helper_js_1 = require("./helper.js");
 const JSHandle_js_1 = require("./JSHandle.js");
+/**
+ * @public
+ */
 exports.EVALUATION_SCRIPT_URL = '__puppeteer_evaluation_script__';
 const SOURCE_URL_REGEX = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/m;
 /**
@@ -28,7 +31,7 @@ const SOURCE_URL_REGEX = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/m;
  *   {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe |
  *   frame } has "default" execution context that is always created after frame is
  *   attached to DOM. This context is returned by the
- *   {@link frame.executionContext()} method.
+ *   {@link Frame.executionContext} method.
  * - {@link https://developer.chrome.com/extensions | Extension}'s content scripts
  *   create additional execution contexts.
  *
@@ -98,8 +101,8 @@ class ExecutionContext {
      * await twoHandle.dispose();
      * console.log(result); // prints '3'.
      * ```
-     * @param pageFunction a function to be evaluated in the `executionContext`
-     * @param args argument to pass to the page function
+     * @param pageFunction - a function to be evaluated in the `executionContext`
+     * @param args - argument to pass to the page function
      *
      * @returns A promise that resolves to the return value of the given function.
      */
@@ -142,8 +145,8 @@ class ExecutionContext {
      * await resultHandle.dispose();
      * ```
      *
-     * @param pageFunction a function to be evaluated in the `executionContext`
-     * @param args argument to pass to the page function
+     * @param pageFunction - a function to be evaluated in the `executionContext`
+     * @param args - argument to pass to the page function
      *
      * @returns A promise that resolves to the return value of the given function
      * as an in-page object (a {@link JSHandle}).
@@ -281,7 +284,7 @@ class ExecutionContext {
      * await mapPrototype.dispose();
      * ```
      *
-     * @param prototypeHandle a handle to the object prototype
+     * @param prototypeHandle - a handle to the object prototype
      *
      * @returns A handle to an array of objects with the given prototype.
      */

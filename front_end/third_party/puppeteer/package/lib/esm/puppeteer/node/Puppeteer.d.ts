@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 import { Browser } from '../common/Browser.js';
-import { BrowserOptions } from '../common/BrowserConnector.js';
+import { BrowserConnectOptions } from '../common/BrowserConnector.js';
 import { Product } from '../common/Product.js';
 import { CommonPuppeteerSettings, ConnectOptions , Puppeteer} from '../common/Puppeteer.js';
 
 import { BrowserFetcher, BrowserFetcherOptions } from './BrowserFetcher.js';
 import { ProductLauncher } from './Launcher.js';
-import { ChromeArgOptions , LaunchOptions} from './LaunchOptions.js';
+import { BrowserLaunchArgumentOptions , LaunchOptions} from './LaunchOptions.js';
 
 /**
  * Extends the main {@link Puppeteer} class with Node specific behaviour for fetching and
@@ -112,7 +112,7 @@ export declare class PuppeteerNode extends Puppeteer {
      * @param options - Set of configurable options to set on the browser.
      * @returns Promise which resolves to browser instance.
      */
-    launch(options?: LaunchOptions & ChromeArgOptions & BrowserOptions & {
+    launch(options?: LaunchOptions & BrowserLaunchArgumentOptions & BrowserConnectOptions & {
         product?: Product;
         extraPrefsFirefox?: Record<string, unknown>;
     }): Promise<Browser>;
@@ -145,7 +145,7 @@ export declare class PuppeteerNode extends Puppeteer {
      * @param options - Set of configurable options to set on the browser.
      * @returns The default flags that Chromium will be launched with.
      */
-    defaultArgs(options?: ChromeArgOptions): string[];
+    defaultArgs(options?: BrowserLaunchArgumentOptions): string[];
     /**
      * @param options - Set of configurable options to specify the settings
      * of the BrowserFetcher.

@@ -21,8 +21,9 @@ exports.assert = void 0;
  * @param value
  * @param message - the error message to throw if the value is not truthy.
  */
-exports.assert = (value, message) => {
+const assert = (value, message) => {
     if (!value)
         throw new Error(message);
 };
+exports.assert = assert;
 //# sourceMappingURL=assert.js.map

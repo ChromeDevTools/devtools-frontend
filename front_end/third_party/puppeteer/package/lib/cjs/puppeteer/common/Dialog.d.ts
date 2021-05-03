@@ -37,6 +37,7 @@ import { CDPSession } from './Connection.js';
  *   page.evaluate(() => alert('1'));
  * })();
  * ```
+ * @public
  */
 export declare class Dialog {
     private _client;

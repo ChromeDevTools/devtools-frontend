@@ -8,6 +8,9 @@ export declare const debugError: (...args: unknown[]) => void;
 declare function getExceptionMessage(exceptionDetails: Protocol.Runtime.ExceptionDetails): string;
 declare function valueFromRemoteObject(remoteObject: Protocol.Runtime.RemoteObject): any;
 declare function releaseObject(client: CDPSession, remoteObject: Protocol.Runtime.RemoteObject): Promise<void>;
+/**
+ * @public
+ */
 export interface PuppeteerEventListener {
     emitter: CommonEventEmitter;
     eventName: string | symbol;

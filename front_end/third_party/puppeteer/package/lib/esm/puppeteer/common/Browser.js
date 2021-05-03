@@ -19,6 +19,27 @@ import { EventEmitter } from './EventEmitter.js';
 import { helper } from './helper.js';
 import { Target } from './Target.js';
 
+const WEB_PERMISSION_TO_PROTOCOL_PERMISSION = new Map([
+    ['geolocation', 'geolocation'],
+    ['midi', 'midi'],
+    ['notifications', 'notifications'],
+    // TODO: push isn't a valid type?
+    // ['push', 'push'],
+    ['camera', 'videoCapture'],
+    ['microphone', 'audioCapture'],
+    ['background-sync', 'backgroundSync'],
+    ['ambient-light-sensor', 'sensors'],
+    ['accelerometer', 'sensors'],
+    ['gyroscope', 'sensors'],
+    ['magnetometer', 'sensors'],
+    ['accessibility-events', 'accessibilityEvents'],
+    ['clipboard-read', 'clipboardReadWrite'],
+    ['clipboard-write', 'clipboardReadWrite'],
+    ['payment-handler', 'paymentHandler'],
+    ['idle-detection', 'idleDetection'],
+    // chrome-specific permissions we have.
+    ['midi-sysex', 'midiSysex'],
+]);
 /**
  * A Browser is created when Puppeteer connects to a Chromium instance, either through
  * {@link PuppeteerNode.launch} or {@link Puppeteer.connect}.
@@ -68,13 +89,14 @@ export class Browser extends EventEmitter {
     /**
      * @internal
      */
-    constructor(connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback) {
+    constructor(connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback) {
         super();
         this._ignoreHTTPSErrors = ignoreHTTPSErrors;
         this._defaultViewport = defaultViewport;
         this._process = process;
         this._connection = connection;
         this._closeCallback = closeCallback || function () { };
+        this._targetFilterCallback = targetFilterCallback || (() => true);
         this._defaultContext = new BrowserContext(this._connection, this, null);
         this._contexts = new Map();
         for (const contextId of contextIds)
@@ -88,8 +110,8 @@ export class Browser extends EventEmitter {
     /**
      * @internal
      */
-    static async create(connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback) {
-        const browser = new Browser(connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback);
+    static async create(connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback) {
+        const browser = new Browser(connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback);
         await connection.send('Target.setDiscoverTargets', { discover: true });
         return browser;
     }
@@ -152,6 +174,10 @@ export class Browser extends EventEmitter {
         const context = browserContextId && this._contexts.has(browserContextId)
             ? this._contexts.get(browserContextId)
             : this._defaultContext;
+        const shouldAttachToTarget = await this._targetFilterCallback(targetInfo);
+        if (!shouldAttachToTarget) {
+            return;
+        }
         const target = new Target(targetInfo, context, () => this._connection.createSession(targetInfo), this._ignoreHTTPSErrors, this._defaultViewport);
         assert(!this._targets.has(event.targetInfo.targetId), 'Target should not exist before targetCreated');
         this._targets.set(event.targetInfo.targetId, target);
@@ -367,6 +393,7 @@ export class Browser extends EventEmitter {
  * // Dispose context once it's no longer needed.
  * await context.close();
  * ```
+ * @public
  */
 export class BrowserContext extends EventEmitter {
     /**
@@ -441,29 +468,8 @@ export class BrowserContext extends EventEmitter {
      * All permissions that are not listed here will be automatically denied.
      */
     async overridePermissions(origin, permissions) {
-        const webPermissionToProtocol = new Map([
-            ['geolocation', 'geolocation'],
-            ['midi', 'midi'],
-            ['notifications', 'notifications'],
-            // TODO: push isn't a valid type?
-            // ['push', 'push'],
-            ['camera', 'videoCapture'],
-            ['microphone', 'audioCapture'],
-            ['background-sync', 'backgroundSync'],
-            ['ambient-light-sensor', 'sensors'],
-            ['accelerometer', 'sensors'],
-            ['gyroscope', 'sensors'],
-            ['magnetometer', 'sensors'],
-            ['accessibility-events', 'accessibilityEvents'],
-            ['clipboard-read', 'clipboardReadWrite'],
-            ['clipboard-write', 'clipboardReadWrite'],
-            ['payment-handler', 'paymentHandler'],
-            ['idle-detection', 'idleDetection'],
-            // chrome-specific permissions we have.
-            ['midi-sysex', 'midiSysex'],
-        ]);
         const protocolPermissions = permissions.map((permission) => {
-            const protocolPermission = webPermissionToProtocol.get(permission);
+            const protocolPermission = WEB_PERMISSION_TO_PROTOCOL_PERMISSION.get(permission);
             if (!protocolPermission)
                 throw new Error('Unknown permission: ' + permission);
             return protocolPermission;

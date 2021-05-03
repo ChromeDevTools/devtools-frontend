@@ -17,10 +17,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.initializePuppeteerWeb = void 0;
 const Puppeteer_js_1 = require("./common/Puppeteer.js");
-exports.initializePuppeteerWeb = (packageName) => {
+const initializePuppeteerWeb = (packageName) => {
     const isPuppeteerCore = packageName === 'puppeteer-core';
     return new Puppeteer_js_1.Puppeteer({
         isPuppeteerCore,
     });
 };
+exports.initializePuppeteerWeb = initializePuppeteerWeb;
 //# sourceMappingURL=initialize-web.js.map

@@ -35,6 +35,9 @@ export interface NetworkConditions {
     upload: number;
     latency: number;
 }
+/**
+ * @public
+ */
 export interface InternalNetworkConditions extends NetworkConditions {
     offline: boolean;
 }
@@ -46,6 +49,7 @@ export interface InternalNetworkConditions extends NetworkConditions {
  */
 export declare const NetworkManagerEmittedEvents: {
     readonly Request: symbol;
+    readonly RequestServedFromCache: symbol;
     readonly Response: symbol;
     readonly RequestFailed: symbol;
     readonly RequestFinished: symbol;
@@ -63,6 +67,7 @@ export declare class NetworkManager extends EventEmitter {
     _credentials?: Credentials;
     _attemptedAuthentications: Set<string>;
     _userRequestInterceptionEnabled: boolean;
+    _userRequestInterceptionCacheSafe: boolean;
     _protocolRequestInterceptionEnabled: boolean;
     _userCacheDisabled: boolean;
     _requestIdToInterceptionId: Map<string, string>;
@@ -77,7 +82,7 @@ export declare class NetworkManager extends EventEmitter {
     _updateNetworkConditions(): Promise<void>;
     setUserAgent(userAgent: string): Promise<void>;
     setCacheEnabled(enabled: boolean): Promise<void>;
-    setRequestInterception(value: boolean): Promise<void>;
+    setRequestInterception(value: boolean, cacheSafe?: boolean): Promise<void>;
     _updateProtocolRequestInterception(): Promise<void>;
     _updateProtocolCacheDisabled(): Promise<void>;
     _onRequestWillBeSent(event: Protocol.Network.RequestWillBeSentEvent): void;

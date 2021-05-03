@@ -53,7 +53,7 @@ const environment_js_1 = require("../environment.js");
  * // logs "Page: new page created"
  * ```
  */
-exports.debug = (prefix) => {
+const debug = (prefix) => {
     if (environment_js_1.isNode) {
         // eslint-disable-next-line @typescript-eslint/no-var-requires
         return require('debug')(prefix);
@@ -78,4 +78,5 @@ exports.debug = (prefix) => {
         console.log(`${prefix}:`, ...logArgs);
     };
 };
+exports.debug = debug;
 //# sourceMappingURL=Debug.js.map

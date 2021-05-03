@@ -29,7 +29,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -37,7 +37,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getFetch = void 0;
 const environment_js_1 = require("../environment.js");
 /* Use the global version if we're in the browser, else load the node-fetch module. */
-exports.getFetch = async () => {
+const getFetch = async () => {
     return environment_js_1.isNode ? await Promise.resolve().then(() => __importStar(require('node-fetch'))) : globalThis.fetch;
 };
+exports.getFetch = getFetch;
 //# sourceMappingURL=fetch.js.map

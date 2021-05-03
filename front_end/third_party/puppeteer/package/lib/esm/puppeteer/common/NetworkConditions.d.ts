@@ -14,8 +14,14 @@
  * limitations under the License.
  */
 import { NetworkConditions } from './NetworkManager.js';
+/**
+ * @public
+ */
 export declare type PredefinedNetworkConditions = {
     [name: string]: NetworkConditions;
 };
+/**
+ * @public
+ */
 export declare const networkConditions: PredefinedNetworkConditions;
 //# sourceMappingURL=NetworkConditions.d.ts.map

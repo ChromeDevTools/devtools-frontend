@@ -22,9 +22,10 @@ var __createBinding = (this && this.__createBinding) || (Object.create ? (functi
     o[k2] = m[k];
 }));
 var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !exports.hasOwnProperty(p)) __createBinding(exports, m, p);
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.networkConditions = exports.errors = exports.devices = void 0;
 /*
  * This file re-exports any APIs that we want to have documentation generated
  * for. It is used by API Extractor to determine what parts of the system to
@@ -41,6 +42,7 @@ __exportStar(require("./common/Accessibility.js"), exports);
 __exportStar(require("./common/Browser.js"), exports);
 __exportStar(require("./node/BrowserFetcher.js"), exports);
 __exportStar(require("./node/Puppeteer.js"), exports);
+__exportStar(require("./common/Coverage.js"), exports);
 __exportStar(require("./common/Connection.js"), exports);
 __exportStar(require("./common/ConsoleMessage.js"), exports);
 __exportStar(require("./common/Coverage.js"), exports);
@@ -52,6 +54,7 @@ __exportStar(require("./common/ExecutionContext.js"), exports);
 __exportStar(require("./common/EventEmitter.js"), exports);
 __exportStar(require("./common/FileChooser.js"), exports);
 __exportStar(require("./common/FrameManager.js"), exports);
+__exportStar(require("./common/PuppeteerViewport.js"), exports);
 __exportStar(require("./common/Input.js"), exports);
 __exportStar(require("./common/Page.js"), exports);
 __exportStar(require("./common/Product.js"), exports);
@@ -73,5 +76,6 @@ __exportStar(require("./common/PDFOptions.js"), exports);
 __exportStar(require("./common/TimeoutSettings.js"), exports);
 __exportStar(require("./common/LifecycleWatcher.js"), exports);
 __exportStar(require("./common/QueryHandler.js"), exports);
+__exportStar(require("./common/NetworkConditions.js"), exports);
 __exportStar(require("devtools-protocol/types/protocol"), exports);
 //# sourceMappingURL=api-docs-entry.js.map

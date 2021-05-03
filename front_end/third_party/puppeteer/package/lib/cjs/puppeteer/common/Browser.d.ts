@@ -15,6 +15,7 @@
  */
 /// <reference types="node" />
 import { ChildProcess } from 'child_process';
+import { Protocol } from 'devtools-protocol';
 
 import { Connection } from './Connection.js';
 import { EventEmitter } from './EventEmitter.js';
@@ -22,7 +23,18 @@ import { Page } from './Page.js';
 import { Viewport } from './PuppeteerViewport.js';
 import { Target } from './Target.js';
 
-declare type BrowserCloseCallback = () => Promise<void> | void;
+/**
+ * @internal
+ */
+export declare type BrowserCloseCallback = () => Promise<void> | void;
+/**
+ * @public
+ */
+export declare type TargetFilterCallback = (target: Protocol.Target.TargetInfo) => Promise<boolean> | boolean;
+/**
+ * @public
+ */
+export declare type Permission = 'geolocation' | 'midi' | 'notifications' | 'camera' | 'microphone' | 'background-sync' | 'ambient-light-sensor' | 'accelerometer' | 'gyroscope' | 'magnetometer' | 'accessibility-events' | 'clipboard-read' | 'clipboard-write' | 'payment-handler' | 'idle-detection' | 'midi-sysex';
 /**
  * @public
  */
@@ -127,12 +139,13 @@ export declare class Browser extends EventEmitter {
     /**
      * @internal
      */
-    static create(connection: Connection, contextIds: string[], ignoreHTTPSErrors: boolean, defaultViewport?: Viewport, process?: ChildProcess, closeCallback?: BrowserCloseCallback): Promise<Browser>;
+    static create(connection: Connection, contextIds: string[], ignoreHTTPSErrors: boolean, defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback): Promise<Browser>;
     private _ignoreHTTPSErrors;
     private _defaultViewport?;
     private _process?;
     private _connection;
     private _closeCallback;
+    private _targetFilterCallback;
     private _defaultContext;
     private _contexts;
     /**
@@ -143,7 +156,7 @@ export declare class Browser extends EventEmitter {
     /**
      * @internal
      */
-    constructor(connection: Connection, contextIds: string[], ignoreHTTPSErrors: boolean, defaultViewport?: Viewport, process?: ChildProcess, closeCallback?: BrowserCloseCallback);
+    constructor(connection: Connection, contextIds: string[], ignoreHTTPSErrors: boolean, defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback);
     /**
      * The spawned browser process. Returns `null` if the browser instance was created with
      * {@link Puppeteer.connect}.
@@ -278,6 +291,9 @@ export declare class Browser extends EventEmitter {
     isConnected(): boolean;
     private _getVersion;
 }
+/**
+ * @public
+ */
 export declare const enum BrowserContextEmittedEvents {
     /**
      * Emitted when the url of a target inside the browser context changes.
@@ -329,6 +345,7 @@ export declare const enum BrowserContextEmittedEvents {
  * // Dispose context once it's no longer needed.
  * await context.close();
  * ```
+ * @public
  */
 export declare class BrowserContext extends EventEmitter {
     private _connection;
@@ -389,7 +406,7 @@ export declare class BrowserContext extends EventEmitter {
      * @param permissions - An array of permissions to grant.
      * All permissions that are not listed here will be automatically denied.
      */
-    overridePermissions(origin: string, permissions: string[]): Promise<void>;
+    overridePermissions(origin: string, permissions: Permission[]): Promise<void>;
     /**
      * Clears all permission overrides for the browser context.
      *
@@ -419,5 +436,4 @@ export declare class BrowserContext extends EventEmitter {
      */
     close(): Promise<void>;
 }
-export {};
 //# sourceMappingURL=Browser.d.ts.map

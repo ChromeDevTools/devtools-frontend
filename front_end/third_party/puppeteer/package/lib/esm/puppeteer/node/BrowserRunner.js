@@ -34,11 +34,12 @@ This means that, on future Puppeteer launches, Puppeteer might not be able to la
 Please check your open processes and ensure that the browser processes that Puppeteer launched have been killed.
 If you think this is a bug, please report it on the Puppeteer issue tracker.`;
 export class BrowserRunner {
-    constructor(executablePath, processArguments, tempDirectory) {
+    constructor(product, executablePath, processArguments, tempDirectory) {
         this.proc = null;
         this.connection = null;
         this._closed = true;
         this._listeners = [];
+        this._product = product;
         this._executablePath = executablePath;
         this._processArguments = processArguments;
         this._tempDirectory = tempDirectory;
@@ -98,7 +99,7 @@ export class BrowserRunner {
     close() {
         if (this._closed)
             return Promise.resolve();
-        if (this._tempDirectory) {
+        if (this._tempDirectory && this._product !== 'firefox') {
             this.kill();
         }
         else if (this.connection) {

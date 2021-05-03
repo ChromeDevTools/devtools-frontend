@@ -67,12 +67,12 @@ export declare class DOMWorld {
     executionContext(): Promise<ExecutionContext>;
     evaluateHandle<HandlerType extends JSHandle = JSHandle>(pageFunction: EvaluateHandleFn, ...args: SerializableOrJSHandle[]): Promise<HandlerType>;
     evaluate<T extends EvaluateFn>(pageFunction: T, ...args: SerializableOrJSHandle[]): Promise<UnwrapPromiseLike<EvaluateFnReturnType<T>>>;
-    $(selector: string): Promise<ElementHandle | null>;
+    $<T extends Element = Element>(selector: string): Promise<ElementHandle<T> | null>;
     _document(): Promise<ElementHandle>;
     $x(expression: string): Promise<ElementHandle[]>;
     $eval<ReturnType>(selector: string, pageFunction: (element: Element, ...args: unknown[]) => ReturnType | Promise<ReturnType>, ...args: SerializableOrJSHandle[]): Promise<WrapElementHandle<ReturnType>>;
     $$eval<ReturnType>(selector: string, pageFunction: (elements: Element[], ...args: unknown[]) => ReturnType | Promise<ReturnType>, ...args: SerializableOrJSHandle[]): Promise<WrapElementHandle<ReturnType>>;
-    $$(selector: string): Promise<ElementHandle[]>;
+    $$<T extends Element = Element>(selector: string): Promise<Array<ElementHandle<T>>>;
     content(): Promise<string>;
     setContent(html: string, options?: {
         timeout?: number;

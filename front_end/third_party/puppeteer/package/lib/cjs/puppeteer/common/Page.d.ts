@@ -19,7 +19,9 @@ import { Protocol } from 'devtools-protocol';
 import { Accessibility } from './Accessibility.js';
 import { Browser, BrowserContext } from './Browser.js';
 import { CDPSession } from './Connection.js';
+import { ConsoleMessage } from './ConsoleMessage.js';
 import { Coverage } from './Coverage.js';
+import { Dialog } from './Dialog.js';
 import { EvaluateFn, EvaluateFnReturnType, EvaluateHandleFn, SerializableOrJSHandle, UnwrapPromiseLike , WrapElementHandle} from './EvalTypes.js';
 import { EventEmitter } from './EventEmitter.js';
 import { FileChooser } from './FileChooser.js';
@@ -101,24 +103,65 @@ export interface GeolocationOptions {
      */
     accuracy?: number;
 }
-interface MediaFeature {
+/**
+ * @public
+ */
+export interface MediaFeature {
     name: string;
     value: string;
 }
-interface ScreenshotClip {
+/**
+ * @public
+ */
+export interface ScreenshotClip {
     x: number;
     y: number;
     width: number;
     height: number;
 }
-interface ScreenshotOptions {
+/**
+ * @public
+ */
+export interface ScreenshotOptions {
+    /**
+     * @defaultValue 'png'
+     */
     type?: 'png' | 'jpeg';
+    /**
+     * The file path to save the image to. The screenshot type will be inferred
+     * from file extension. If path is a relative path, then it is resolved
+     * relative to current working directory. If no path is provided, the image
+     * won't be saved to the disk.
+     */
     path?: string;
+    /**
+     * When true, takes a screenshot of the full page.
+     * @defaultValue false
+     */
     fullPage?: boolean;
+    /**
+     * An object which specifies the clipping region of the page.
+     */
     clip?: ScreenshotClip;
+    /**
+     * Quality of the image, between 0-100. Not applicable to `png` images.
+     */
     quality?: number;
+    /**
+     * Hides default white background and allows capturing screenshots with transparency.
+     * @defaultValue false
+     */
     omitBackground?: boolean;
-    encoding?: string;
+    /**
+     * Encoding of the image.
+     * @defaultValue 'binary'
+     */
+    encoding?: 'base64' | 'binary';
+    /**
+     * If you need a screenshot bigger than the Viewport
+     * @defaultValue true
+     */
+    captureBeyondViewport?: boolean;
 }
 /**
  * All the events that a page instance may emit.
@@ -218,10 +261,18 @@ export declare const enum PageEmittedEvents {
      * Emitted when a page issues a request and contains a {@link HTTPRequest}.
      *
      * @remarks
-     * The object is readonly. See {@Page.setRequestInterception} for intercepting
+     * The object is readonly. See {@link Page.setRequestInterception} for intercepting
      * and mutating requests.
      */
     Request = "request",
+    /**
+     * Emitted when a request ended up loading from cache. Contains a {@link HTTPRequest}.
+     *
+     * @remarks
+     * For certain requests, might contain undefined.
+     * {@link https://crbug.com/750469}
+     */
+    RequestServedFromCache = "requestservedfromcache",
     /**
      * Emitted when a request fails, for example by timing out.
      *
@@ -254,6 +305,37 @@ export declare const enum PageEmittedEvents {
      * is destroyed by the page.
      */
     WorkerDestroyed = "workerdestroyed"
+}
+/**
+ * Denotes the objects received by callback functions for page events.
+ *
+ * See {@link PageEmittedEvents} for more detail on the events and when they are
+ * emitted.
+ * @public
+ */
+export interface PageEventObject {
+    close: never;
+    console: ConsoleMessage;
+    dialog: Dialog;
+    domcontentloaded: never;
+    error: Error;
+    frameattached: Frame;
+    framedetached: Frame;
+    framenavigated: Frame;
+    load: never;
+    metrics: {
+        title: string;
+        metrics: Metrics;
+    };
+    pageerror: Error;
+    popup: Page;
+    request: HTTPRequest;
+    response: HTTPResponse;
+    requestfailed: HTTPRequest;
+    requestfinished: HTTPRequest;
+    requestservedfromcache: HTTPRequest;
+    workercreated: WebWorker;
+    workerdestroyed: WebWorker;
 }
 /**
  * Page provides methods to interact with a single tab or
@@ -333,6 +415,11 @@ export declare class Page extends EventEmitter {
      */
     isJavaScriptEnabled(): boolean;
     /**
+     * Listen to page events.
+     */
+    on<K extends keyof PageEventObject>(eventName: K, handler: (event: PageEventObject[K]) => void): EventEmitter;
+    once<K extends keyof PageEventObject>(eventName: K, handler: (event: PageEventObject[K]) => void): EventEmitter;
+    /**
      * @param options - Optional waiting parameters
      * @returns Resolves after a page requests a file picker.
      */
@@ -385,6 +472,8 @@ export declare class Page extends EventEmitter {
     workers(): WebWorker[];
     /**
      * @param value - Whether to enable request interception.
+     * @param cacheSafe - Whether to trust browser caching. If set to false,
+     * enabling request interception disables page caching. Defaults to false.
      *
      * @remarks
      * Activating request interception enables {@link HTTPRequest.abort},
@@ -392,9 +481,7 @@ export declare class Page extends EventEmitter {
      * provides the capability to modify network requests that are made by a page.
      *
      * Once request interception is enabled, every request will stall unless it's
-     * continued, responded or aborted.
-     *
-     * **NOTE** Enabling request interception disables page caching.
+     * continued, responded or aborted; or completed using the browser cache.
      *
      * @example
      * An example of a naïve request interceptor that aborts all image requests:
@@ -416,7 +503,7 @@ export declare class Page extends EventEmitter {
      * })();
      * ```
      */
-    setRequestInterception(value: boolean): Promise<void>;
+    setRequestInterception(value: boolean, cacheSafe?: boolean): Promise<void>;
     /**
      * @param enabled - When `true`, enables offline mode for the page.
      */
@@ -441,7 +528,7 @@ export declare class Page extends EventEmitter {
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
      * to query page for.
      */
-    $(selector: string): Promise<ElementHandle | null>;
+    $<T extends Element = Element>(selector: string): Promise<ElementHandle<T> | null>;
     /**
      * @remarks
      *
@@ -624,20 +711,20 @@ export declare class Page extends EventEmitter {
      * );
      * ```
      *
-     * @param selector the
+     * @param selector - the
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
      * to query for
-     * @param pageFunction the function to be evaluated in the page context. Will
+     * @param pageFunction - the function to be evaluated in the page context. Will
      * be passed the result of `Array.from(document.querySelectorAll(selector))`
      * as its first argument.
-     * @param args any additional arguments to pass through to `pageFunction`.
+     * @param args - any additional arguments to pass through to `pageFunction`.
      *
      * @returns The result of calling `pageFunction`. If it returns an element it
      * is wrapped in an {@link ElementHandle}, else the raw value itself is
      * returned.
      */
     $$eval<ReturnType>(selector: string, pageFunction: (elements: Element[], ...args: unknown[]) => ReturnType | Promise<ReturnType>, ...args: SerializableOrJSHandle[]): Promise<WrapElementHandle<ReturnType>>;
-    $$(selector: string): Promise<ElementHandle[]>;
+    $$<T extends Element = Element>(selector: string): Promise<Array<ElementHandle<T>>>;
     $x(expression: string): Promise<ElementHandle[]>;
     /**
      * If no URLs are specified, this method returns cookies for the current page
@@ -669,6 +756,14 @@ export declare class Page extends EventEmitter {
     private _onBindingCalled;
     private _addConsoleMessage;
     private _onDialog;
+    /**
+     * Resets default white background
+     */
+    private _resetDefaultBackgroundColor;
+    /**
+     * Hides default white background
+     */
+    private _setTransparentBackgroundColor;
     url(): string;
     content(): Promise<string>;
     setContent(html: string, options?: WaitForOptions): Promise<void>;
@@ -678,10 +773,10 @@ export declare class Page extends EventEmitter {
     reload(options?: WaitForOptions): Promise<HTTPResponse | null>;
     waitForNavigation(options?: WaitForOptions): Promise<HTTPResponse | null>;
     private _sessionClosePromise;
-    waitForRequest(urlOrPredicate: string | Function, options?: {
+    waitForRequest(urlOrPredicate: string | ((req: HTTPRequest) => boolean | Promise<boolean>), options?: {
         timeout?: number;
     }): Promise<HTTPRequest>;
-    waitForResponse(urlOrPredicate: string | Function, options?: {
+    waitForResponse(urlOrPredicate: string | ((res: HTTPResponse) => boolean | Promise<boolean>), options?: {
         timeout?: number;
     }): Promise<HTTPResponse>;
     goBack(options?: WaitForOptions): Promise<HTTPResponse | null>;
@@ -713,9 +808,9 @@ export declare class Page extends EventEmitter {
      * await page.emulateIdleState();
      * ```
      *
-     * @param overrides Mock idle state. If not set, clears idle overrides
-     * @param isUserActive Mock isUserActive
-     * @param isScreenUnlocked Mock isScreenUnlocked
+     * @param overrides - Mock idle state. If not set, clears idle overrides
+     * @param isUserActive - Mock isUserActive
+     * @param isScreenUnlocked - Mock isScreenUnlocked
      */
     emulateIdleState(overrides?: {
         isUserActive: boolean;
@@ -907,5 +1002,4 @@ export declare class Page extends EventEmitter {
         polling?: string | number;
     }, ...args: SerializableOrJSHandle[]): Promise<JSHandle>;
 }
-export {};
 //# sourceMappingURL=Page.d.ts.map

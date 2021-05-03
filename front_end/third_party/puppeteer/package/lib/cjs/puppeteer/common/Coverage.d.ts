@@ -19,6 +19,11 @@ import { CDPSession } from './Connection.js';
 import { PuppeteerEventListener } from './helper.js';
 
 /**
+ * @internal
+ */
+export { PuppeteerEventListener };
+
+/**
  * The CoverageEntry class represents one entry of the coverage report.
  * @public
  */
@@ -144,7 +149,10 @@ export declare class Coverage {
      */
     stopCSSCoverage(): Promise<CoverageEntry[]>;
 }
-declare class JSCoverage {
+/**
+ * @public
+ */
+export declare class JSCoverage {
     _client: CDPSession;
     _enabled: boolean;
     _scriptURLs: Map<string, string>;
@@ -161,7 +169,10 @@ declare class JSCoverage {
     _onScriptParsed(event: Protocol.Debugger.ScriptParsedEvent): Promise<void>;
     stop(): Promise<CoverageEntry[]>;
 }
-declare class CSSCoverage {
+/**
+ * @public
+ */
+export declare class CSSCoverage {
     _client: CDPSession;
     _enabled: boolean;
     _stylesheetURLs: Map<string, string>;
@@ -177,5 +188,4 @@ declare class CSSCoverage {
     _onStyleSheet(event: Protocol.CSS.StyleSheetAddedEvent): Promise<void>;
     stop(): Promise<CoverageEntry[]>;
 }
-export {};
 //# sourceMappingURL=Coverage.d.ts.map

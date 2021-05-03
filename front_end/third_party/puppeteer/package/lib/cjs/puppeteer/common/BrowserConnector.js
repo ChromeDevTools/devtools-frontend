@@ -29,7 +29,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -52,8 +52,8 @@ const getWebSocketTransportClass = async () => {
  * `puppeteer.connect`.
  * @internal
  */
-exports.connectToBrowser = async (options) => {
-    const { browserWSEndpoint, browserURL, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, transport, slowMo = 0, } = options;
+const connectToBrowser = async (options) => {
+    const { browserWSEndpoint, browserURL, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, transport, slowMo = 0, targetFilter, } = options;
     assert_js_1.assert(Number(!!browserWSEndpoint) + Number(!!browserURL) + Number(!!transport) ===
         1, 'Exactly one of browserWSEndpoint, browserURL or transport must be passed to puppeteer.connect');
     let connection = null;
@@ -72,8 +72,9 @@ exports.connectToBrowser = async (options) => {
         connection = new Connection_js_1.Connection(connectionURL, connectionTransport, slowMo);
     }
     const { browserContextIds } = await connection.send('Target.getBrowserContexts');
-    return Browser_js_1.Browser.create(connection, browserContextIds, ignoreHTTPSErrors, defaultViewport, null, () => connection.send('Browser.close').catch(helper_js_1.debugError));
+    return Browser_js_1.Browser.create(connection, browserContextIds, ignoreHTTPSErrors, defaultViewport, null, () => connection.send('Browser.close').catch(helper_js_1.debugError), targetFilter);
 };
+exports.connectToBrowser = connectToBrowser;
 async function getWSEndpoint(browserURL) {
     const endpointURL = new URL('/json/version', browserURL);
     const fetch = await fetch_js_1.getFetch();

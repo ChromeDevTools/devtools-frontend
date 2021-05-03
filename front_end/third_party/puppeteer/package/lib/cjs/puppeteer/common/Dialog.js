@@ -37,6 +37,7 @@ const assert_js_1 = require("./assert.js");
  *   page.evaluate(() => alert('1'));
  * })();
  * ```
+ * @public
  */
 class Dialog {
     /**

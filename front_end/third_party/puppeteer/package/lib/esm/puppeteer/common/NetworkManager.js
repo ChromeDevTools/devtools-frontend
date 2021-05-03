@@ -27,6 +27,7 @@ import { HTTPResponse } from './HTTPResponse.js';
  */
 export const NetworkManagerEmittedEvents = {
     Request: Symbol('NetworkManager.Request'),
+    RequestServedFromCache: Symbol('NetworkManager.RequestServedFromCache'),
     Response: Symbol('NetworkManager.Response'),
     RequestFailed: Symbol('NetworkManager.RequestFailed'),
     RequestFinished: Symbol('NetworkManager.RequestFinished'),
@@ -43,6 +44,7 @@ export class NetworkManager extends EventEmitter {
         this._credentials = null;
         this._attemptedAuthentications = new Set();
         this._userRequestInterceptionEnabled = false;
+        this._userRequestInterceptionCacheSafe = false;
         this._protocolRequestInterceptionEnabled = false;
         this._userCacheDisabled = false;
         this._requestIdToInterceptionId = new Map();
@@ -119,8 +121,9 @@ export class NetworkManager extends EventEmitter {
         this._userCacheDisabled = !enabled;
         await this._updateProtocolCacheDisabled();
     }
-    async setRequestInterception(value) {
+    async setRequestInterception(value, cacheSafe = false) {
         this._userRequestInterceptionEnabled = value;
+        this._userRequestInterceptionCacheSafe = cacheSafe;
         await this._updateProtocolRequestInterception();
     }
     async _updateProtocolRequestInterception() {
@@ -146,12 +149,14 @@ export class NetworkManager extends EventEmitter {
     }
     async _updateProtocolCacheDisabled() {
         await this._client.send('Network.setCacheDisabled', {
-            cacheDisabled: this._userCacheDisabled || this._protocolRequestInterceptionEnabled,
+            cacheDisabled: this._userCacheDisabled ||
+                (this._userRequestInterceptionEnabled &&
+                    !this._userRequestInterceptionCacheSafe),
         });
     }
     _onRequestWillBeSent(event) {
         // Request interception doesn't happen for data URLs with Network Service.
-        if (this._protocolRequestInterceptionEnabled &&
+        if (this._userRequestInterceptionEnabled &&
             !event.request.url.startsWith('data:')) {
             const requestId = event.requestId;
             const interceptionId = this._requestIdToInterceptionId.get(requestId);
@@ -228,6 +233,7 @@ export class NetworkManager extends EventEmitter {
         const request = this._requestIdToRequest.get(event.requestId);
         if (request)
             request._fromMemoryCache = true;
+        this.emit(NetworkManagerEmittedEvents.RequestServedFromCache, request);
     }
     _handleRequestRedirect(request, responsePayload) {
         const response = new HTTPResponse(this._client, request, responsePayload);

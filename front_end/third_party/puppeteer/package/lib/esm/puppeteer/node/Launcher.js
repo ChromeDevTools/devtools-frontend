@@ -53,7 +53,9 @@ class ChromeLauncher {
         }
         let chromeExecutable = executablePath;
         if (!executablePath) {
-            if (os.arch() === 'arm64') {
+            // Use Intel x86 builds on Apple M1 until native macOS arm64
+            // Chromium builds are available.
+            if (os.platform() !== 'darwin' && os.arch() === 'arm64') {
                 chromeExecutable = '/usr/bin/chromium-browser';
             }
             else {
@@ -64,7 +66,7 @@ class ChromeLauncher {
             }
         }
         const usePipe = chromeArguments.includes('--remote-debugging-pipe');
-        const runner = new BrowserRunner(chromeExecutable, chromeArguments, temporaryUserDataDir);
+        const runner = new BrowserRunner(this.product, chromeExecutable, chromeArguments, temporaryUserDataDir);
         runner.start({
             handleSIGHUP,
             handleSIGTERM,
@@ -89,10 +91,6 @@ class ChromeLauncher {
             throw error;
         }
     }
-    /**
-     * @param {!Launcher.ChromeArgOptions=} options
-     * @returns {!Array<string>}
-     */
     defaultArgs(options = {}) {
         const chromeArguments = [
             '--disable-background-networking',
@@ -177,7 +175,7 @@ class FirefoxLauncher {
                 throw new Error(missingText);
             firefoxExecutable = executablePath;
         }
-        const runner = new BrowserRunner(firefoxExecutable, firefoxArguments, temporaryUserDataDir);
+        const runner = new BrowserRunner(this.product, firefoxExecutable, firefoxArguments, temporaryUserDataDir);
         runner.start({
             handleSIGHUP,
             handleSIGTERM,
@@ -443,8 +441,10 @@ function resolveExecutablePath(launcher) {
         }
     }
     const revisionInfo = browserFetcher.revisionInfo(launcher._preferredRevision);
+    const firefoxHelp = `Run \`PUPPETEER_PRODUCT=firefox npm install\` to download a supported Firefox browser binary.`;
+    const chromeHelp = `Run \`npm install\` to download the correct Chromium revision (${launcher._preferredRevision}).`;
     const missingText = !revisionInfo.local
-        ? `Could not find browser revision ${launcher._preferredRevision}. Run "PUPPETEER_PRODUCT=firefox npm install" or "PUPPETEER_PRODUCT=firefox yarn install" to download a supported Firefox browser binary.`
+        ? `Could not find expected browser (${launcher.product}) locally. ${launcher.product === 'chrome' ? chromeHelp : firefoxHelp}`
         : null;
     return { executablePath: revisionInfo.executablePath, missingText };
 }

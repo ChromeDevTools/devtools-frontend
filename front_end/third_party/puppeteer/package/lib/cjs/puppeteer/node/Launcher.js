@@ -14,7 +14,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -71,7 +71,9 @@ class ChromeLauncher {
         }
         let chromeExecutable = executablePath;
         if (!executablePath) {
-            if (os.arch() === 'arm64') {
+            // Use Intel x86 builds on Apple M1 until native macOS arm64
+            // Chromium builds are available.
+            if (os.platform() !== 'darwin' && os.arch() === 'arm64') {
                 chromeExecutable = '/usr/bin/chromium-browser';
             }
             else {
@@ -82,7 +84,7 @@ class ChromeLauncher {
             }
         }
         const usePipe = chromeArguments.includes('--remote-debugging-pipe');
-        const runner = new BrowserRunner_js_1.BrowserRunner(chromeExecutable, chromeArguments, temporaryUserDataDir);
+        const runner = new BrowserRunner_js_1.BrowserRunner(this.product, chromeExecutable, chromeArguments, temporaryUserDataDir);
         runner.start({
             handleSIGHUP,
             handleSIGTERM,
@@ -107,10 +109,6 @@ class ChromeLauncher {
             throw error;
         }
     }
-    /**
-     * @param {!Launcher.ChromeArgOptions=} options
-     * @returns {!Array<string>}
-     */
     defaultArgs(options = {}) {
         const chromeArguments = [
             '--disable-background-networking',
@@ -195,7 +193,7 @@ class FirefoxLauncher {
                 throw new Error(missingText);
             firefoxExecutable = executablePath;
         }
-        const runner = new BrowserRunner_js_1.BrowserRunner(firefoxExecutable, firefoxArguments, temporaryUserDataDir);
+        const runner = new BrowserRunner_js_1.BrowserRunner(this.product, firefoxExecutable, firefoxArguments, temporaryUserDataDir);
         runner.start({
             handleSIGHUP,
             handleSIGTERM,
@@ -461,8 +459,10 @@ function resolveExecutablePath(launcher) {
         }
     }
     const revisionInfo = browserFetcher.revisionInfo(launcher._preferredRevision);
+    const firefoxHelp = `Run \`PUPPETEER_PRODUCT=firefox npm install\` to download a supported Firefox browser binary.`;
+    const chromeHelp = `Run \`npm install\` to download the correct Chromium revision (${launcher._preferredRevision}).`;
     const missingText = !revisionInfo.local
-        ? `Could not find browser revision ${launcher._preferredRevision}. Run "PUPPETEER_PRODUCT=firefox npm install" or "PUPPETEER_PRODUCT=firefox yarn install" to download a supported Firefox browser binary.`
+        ? `Could not find expected browser (${launcher.product}) locally. ${launcher.product === 'chrome' ? chromeHelp : firefoxHelp}`
         : null;
     return { executablePath: revisionInfo.executablePath, missingText };
 }

@@ -22,7 +22,7 @@ exports.initializePuppeteerNode = void 0;
 const Puppeteer_js_1 = require("./node/Puppeteer.js");
 const revisions_js_1 = require("./revisions.js");
 const pkg_dir_1 = __importDefault(require("pkg-dir"));
-exports.initializePuppeteerNode = (packageName) => {
+const initializePuppeteerNode = (packageName) => {
     const puppeteerRootDirectory = pkg_dir_1.default.sync(__dirname);
     let preferredRevision = revisions_js_1.PUPPETEER_REVISIONS.chromium;
     const isPuppeteerCore = packageName === 'puppeteer-core';
@@ -41,4 +41,5 @@ exports.initializePuppeteerNode = (packageName) => {
         productName: productName,
     });
 };
+exports.initializePuppeteerNode = initializePuppeteerNode;
 //# sourceMappingURL=initialize-node.js.map

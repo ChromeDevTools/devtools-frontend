@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Coverage = void 0;
+exports.CSSCoverage = exports.JSCoverage = exports.Coverage = void 0;
 const assert_js_1 = require("./assert.js");
 const helper_js_1 = require("./helper.js");
 const ExecutionContext_js_1 = require("./ExecutionContext.js");
@@ -104,6 +104,9 @@ class Coverage {
     }
 }
 exports.Coverage = Coverage;
+/**
+ * @public
+ */
 class JSCoverage {
     constructor(client) {
         this._enabled = false;
@@ -189,6 +192,10 @@ class JSCoverage {
         return coverage;
     }
 }
+exports.JSCoverage = JSCoverage;
+/**
+ * @public
+ */
 class CSSCoverage {
     constructor(client) {
         this._enabled = false;
@@ -272,6 +279,7 @@ class CSSCoverage {
         return coverage;
     }
 }
+exports.CSSCoverage = CSSCoverage;
 function convertToDisjointRanges(nestedRanges) {
     const points = [];
     for (const range of nestedRanges) {

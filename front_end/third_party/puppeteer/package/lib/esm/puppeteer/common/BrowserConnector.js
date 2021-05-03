@@ -33,7 +33,7 @@ const getWebSocketTransportClass = async () => {
  * @internal
  */
 export const connectToBrowser = async (options) => {
-    const { browserWSEndpoint, browserURL, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, transport, slowMo = 0, } = options;
+    const { browserWSEndpoint, browserURL, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, transport, slowMo = 0, targetFilter, } = options;
     assert(Number(!!browserWSEndpoint) + Number(!!browserURL) + Number(!!transport) ===
         1, 'Exactly one of browserWSEndpoint, browserURL or transport must be passed to puppeteer.connect');
     let connection = null;
@@ -52,7 +52,7 @@ export const connectToBrowser = async (options) => {
         connection = new Connection(connectionURL, connectionTransport, slowMo);
     }
     const { browserContextIds } = await connection.send('Target.getBrowserContexts');
-    return Browser.create(connection, browserContextIds, ignoreHTTPSErrors, defaultViewport, null, () => connection.send('Browser.close').catch(debugError));
+    return Browser.create(connection, browserContextIds, ignoreHTTPSErrors, defaultViewport, null, () => connection.send('Browser.close').catch(debugError), targetFilter);
 };
 async function getWSEndpoint(browserURL) {
     const endpointURL = new URL('/json/version', browserURL);

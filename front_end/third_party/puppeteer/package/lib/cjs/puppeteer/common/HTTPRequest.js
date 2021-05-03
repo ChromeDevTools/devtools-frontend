@@ -78,17 +78,8 @@ class HTTPRequest {
     /**
      * Contains the request's resource type as it was perceived by the rendering
      * engine.
-     * @remarks
-     * @returns one of the following: `document`, `stylesheet`, `image`, `media`,
-     * `font`, `script`, `texttrack`, `xhr`, `fetch`, `eventsource`, `websocket`,
-     * `manifest`, `other`.
      */
     resourceType() {
-        // TODO (@jackfranklin): protocol.d.ts has a type for this, but all the
-        // string values are uppercase. The Puppeteer docs explicitly say the
-        // potential values are all lower case, and the constructor takes the event
-        // type and calls toLowerCase() on it, so we can't reuse the type from the
-        // protocol.d.ts. Why do we lower case?
         return this._resourceType;
     }
     /**
@@ -276,7 +267,7 @@ class HTTPRequest {
         const responseHeaders = {};
         if (response.headers) {
             for (const header of Object.keys(response.headers))
-                responseHeaders[header.toLowerCase()] = response.headers[header];
+                responseHeaders[header.toLowerCase()] = String(response.headers[header]);
         }
         if (response.contentType)
             responseHeaders['content-type'] = response.contentType;

@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 import { Connection } from '../common/Connection.js';
+import { Product } from '../common/Product.js';
 
 import { LaunchOptions } from './LaunchOptions.js';
 
 export declare class BrowserRunner {
+    private _product;
     private _executablePath;
     private _processArguments;
     private _tempDirectory?;
@@ -26,7 +28,7 @@ export declare class BrowserRunner {
     private _closed;
     private _listeners;
     private _processClosing;
-    constructor(executablePath: string, processArguments: string[], tempDirectory?: string);
+    constructor(product: Product, executablePath: string, processArguments: string[], tempDirectory?: string);
     start(options: LaunchOptions): void;
     close(): Promise<void>;
     kill(): void;

@@ -132,14 +132,15 @@ export class Page extends EventEmitter {
             const worker = this._workers.get(event.sessionId);
             if (!worker)
                 return;
-            this.emit("workerdestroyed" /* WorkerDestroyed */, worker);
             this._workers.delete(event.sessionId);
+            this.emit("workerdestroyed" /* WorkerDestroyed */, worker);
         });
         this._frameManager.on(FrameManagerEmittedEvents.FrameAttached, (event) => this.emit("frameattached" /* FrameAttached */, event));
         this._frameManager.on(FrameManagerEmittedEvents.FrameDetached, (event) => this.emit("framedetached" /* FrameDetached */, event));
         this._frameManager.on(FrameManagerEmittedEvents.FrameNavigated, (event) => this.emit("framenavigated" /* FrameNavigated */, event));
         const networkManager = this._frameManager.networkManager();
         networkManager.on(NetworkManagerEmittedEvents.Request, (event) => this.emit("request" /* Request */, event));
+        networkManager.on(NetworkManagerEmittedEvents.RequestServedFromCache, (event) => this.emit("requestservedfromcache" /* RequestServedFromCache */, event));
         networkManager.on(NetworkManagerEmittedEvents.Response, (event) => this.emit("response" /* Response */, event));
         networkManager.on(NetworkManagerEmittedEvents.RequestFailed, (event) => this.emit("requestfailed" /* RequestFailed */, event));
         networkManager.on(NetworkManagerEmittedEvents.RequestFinished, (event) => this.emit("requestfinished" /* RequestFinished */, event));
@@ -198,6 +199,19 @@ export class Page extends EventEmitter {
      */
     isJavaScriptEnabled() {
         return this._javascriptEnabled;
+    }
+    /**
+     * Listen to page events.
+     */
+    on(eventName, handler) {
+        // Note: this method only exists to define the types; we delegate the impl
+        // to EventEmitter.
+        return super.on(eventName, handler);
+    }
+    once(eventName, handler) {
+        // Note: this method only exists to define the types; we delegate the impl
+        // to EventEmitter.
+        return super.once(eventName, handler);
     }
     /**
      * @param options - Optional waiting parameters
@@ -310,6 +324,8 @@ export class Page extends EventEmitter {
     }
     /**
      * @param value - Whether to enable request interception.
+     * @param cacheSafe - Whether to trust browser caching. If set to false,
+     * enabling request interception disables page caching. Defaults to false.
      *
      * @remarks
      * Activating request interception enables {@link HTTPRequest.abort},
@@ -317,9 +333,7 @@ export class Page extends EventEmitter {
      * provides the capability to modify network requests that are made by a page.
      *
      * Once request interception is enabled, every request will stall unless it's
-     * continued, responded or aborted.
-     *
-     * **NOTE** Enabling request interception disables page caching.
+     * continued, responded or aborted; or completed using the browser cache.
      *
      * @example
      * An example of a naïve request interceptor that aborts all image requests:
@@ -341,8 +355,10 @@ export class Page extends EventEmitter {
      * })();
      * ```
      */
-    async setRequestInterception(value) {
-        return this._frameManager.networkManager().setRequestInterception(value);
+    async setRequestInterception(value, cacheSafe = false) {
+        return this._frameManager
+            .networkManager()
+            .setRequestInterception(value, cacheSafe);
     }
     /**
      * @param enabled - When `true`, enables offline mode for the page.
@@ -571,13 +587,13 @@ export class Page extends EventEmitter {
      * );
      * ```
      *
-     * @param selector the
+     * @param selector - the
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
      * to query for
-     * @param pageFunction the function to be evaluated in the page context. Will
+     * @param pageFunction - the function to be evaluated in the page context. Will
      * be passed the result of `Array.from(document.querySelectorAll(selector))`
      * as its first argument.
-     * @param args any additional arguments to pass through to `pageFunction`.
+     * @param args - any additional arguments to pass through to `pageFunction`.
      *
      * @returns The result of calling `pageFunction`. If it returns an element it
      * is wrapped in an {@link ElementHandle}, else the raw value itself is
@@ -775,6 +791,20 @@ export class Page extends EventEmitter {
         const dialog = new Dialog(this._client, dialogType, event.message, event.defaultPrompt);
         this.emit("dialog" /* Dialog */, dialog);
     }
+    /**
+     * Resets default white background
+     */
+    async _resetDefaultBackgroundColor() {
+        await this._client.send('Emulation.setDefaultBackgroundColorOverride');
+    }
+    /**
+     * Hides default white background
+     */
+    async _setTransparentBackgroundColor() {
+        await this._client.send('Emulation.setDefaultBackgroundColorOverride', {
+            color: { r: 0, g: 0, b: 0, a: 0 },
+        });
+    }
     url() {
         return this.mainFrame().url();
     }
@@ -871,7 +901,7 @@ export class Page extends EventEmitter {
         if (Array.isArray(features)) {
             features.every((mediaFeature) => {
                 const name = mediaFeature.name;
-                assert(/^prefers-(?:color-scheme|reduced-motion)$/.test(name), 'Unsupported media feature: ' + name);
+                assert(/^(?:prefers-(?:color-scheme|reduced-motion)|color-gamut)$/.test(name), 'Unsupported media feature: ' + name);
                 return true;
             });
             await this._client.send('Emulation.setEmulatedMedia', {
@@ -907,9 +937,9 @@ export class Page extends EventEmitter {
      * await page.emulateIdleState();
      * ```
      *
-     * @param overrides Mock idle state. If not set, clears idle overrides
-     * @param isUserActive Mock isUserActive
-     * @param isScreenUnlocked Mock isScreenUnlocked
+     * @param overrides - Mock idle state. If not set, clears idle overrides
+     * @param isUserActive - Mock isUserActive
+     * @param isScreenUnlocked - Mock isScreenUnlocked
      */
     async emulateIdleState(overrides) {
         if (overrides) {
@@ -1089,47 +1119,54 @@ export class Page extends EventEmitter {
             targetId: this._target._targetId,
         });
         let clip = options.clip ? processClip(options.clip) : undefined;
+        let { captureBeyondViewport = true } = options;
+        captureBeyondViewport =
+            typeof captureBeyondViewport === 'boolean' ? captureBeyondViewport : true;
         if (options.fullPage) {
             const metrics = await this._client.send('Page.getLayoutMetrics');
             const width = Math.ceil(metrics.contentSize.width);
             const height = Math.ceil(metrics.contentSize.height);
-            // Overwrite clip for full page at all times.
+            // Overwrite clip for full page.
             clip = { x: 0, y: 0, width, height, scale: 1 };
-            const { isMobile = false, deviceScaleFactor = 1, isLandscape = false } = this._viewport || {};
-            const screenOrientation = isLandscape
-                ? { angle: 90, type: 'landscapePrimary' }
-                : { angle: 0, type: 'portraitPrimary' };
-            await this._client.send('Emulation.setDeviceMetricsOverride', {
-                mobile: isMobile,
-                width,
-                height,
-                deviceScaleFactor,
-                screenOrientation,
-            });
+            if (!captureBeyondViewport) {
+                const { isMobile = false, deviceScaleFactor = 1, isLandscape = false } = this._viewport || {};
+                const screenOrientation = isLandscape
+                    ? { angle: 90, type: 'landscapePrimary' }
+                    : { angle: 0, type: 'portraitPrimary' };
+                await this._client.send('Emulation.setDeviceMetricsOverride', {
+                    mobile: isMobile,
+                    width,
+                    height,
+                    deviceScaleFactor,
+                    screenOrientation,
+                });
+            }
         }
         const shouldSetDefaultBackground = options.omitBackground && format === 'png';
-        if (shouldSetDefaultBackground)
-            await this._client.send('Emulation.setDefaultBackgroundColorOverride', {
-                color: { r: 0, g: 0, b: 0, a: 0 },
-            });
+        if (shouldSetDefaultBackground) {
+            await this._setTransparentBackgroundColor();
+        }
         const result = await this._client.send('Page.captureScreenshot', {
             format,
             quality: options.quality,
             clip,
+            captureBeyondViewport,
         });
-        if (shouldSetDefaultBackground)
-            await this._client.send('Emulation.setDefaultBackgroundColorOverride');
+        if (shouldSetDefaultBackground) {
+            await this._resetDefaultBackgroundColor();
+        }
         if (options.fullPage && this._viewport)
             await this.setViewport(this._viewport);
         const buffer = options.encoding === 'base64'
             ? result.data
             : Buffer.from(result.data, 'base64');
-        if (!isNode && options.path) {
-            throw new Error('Screenshots can only be written to a file path in a Node environment.');
-        }
-        const fs = await helper.importFSModule();
-        if (options.path)
+        if (options.path) {
+            if (!isNode) {
+                throw new Error('Screenshots can only be written to a file path in a Node environment.');
+            }
+            const fs = await helper.importFSModule();
             await fs.promises.writeFile(options.path, buffer);
+        }
         return buffer;
         function processClip(clip) {
             const x = Math.round(clip.x);
@@ -1158,7 +1195,7 @@ export class Page extends EventEmitter {
      * @param options - options for generating the PDF.
      */
     async pdf(options = {}) {
-        const { scale = 1, displayHeaderFooter = false, headerTemplate = '', footerTemplate = '', printBackground = false, landscape = false, pageRanges = '', preferCSSPageSize = false, margin = {}, path = null, } = options;
+        const { scale = 1, displayHeaderFooter = false, headerTemplate = '', footerTemplate = '', printBackground = false, landscape = false, pageRanges = '', preferCSSPageSize = false, margin = {}, path = null, omitBackground = false, } = options;
         let paperWidth = 8.5;
         let paperHeight = 11;
         if (options.format) {
@@ -1176,6 +1213,9 @@ export class Page extends EventEmitter {
         const marginLeft = convertPrintParameterToInches(margin.left) || 0;
         const marginBottom = convertPrintParameterToInches(margin.bottom) || 0;
         const marginRight = convertPrintParameterToInches(margin.right) || 0;
+        if (omitBackground) {
+            await this._setTransparentBackgroundColor();
+        }
         const result = await this._client.send('Page.printToPDF', {
             transferMode: 'ReturnAsStream',
             landscape,
@@ -1193,6 +1233,9 @@ export class Page extends EventEmitter {
             pageRanges,
             preferCSSPageSize,
         });
+        if (omitBackground) {
+            await this._resetDefaultBackgroundColor();
+        }
         return await helper.readProtocolStream(this._client, result.stream, path);
     }
     async title() {

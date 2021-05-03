@@ -119,12 +119,9 @@ const UIStrings = {
   xhr: 'XHR',
   /**
   *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+  *@example {setTimeout} PH1
   */
-  settimeoutFired: '`setTimeout` fired',
-  /**
-  *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
-  */
-  setintervalFired: '`setInterval` fired',
+  setTimeoutOrIntervalFired: '{PH1} fired',
   /**
   *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
   */
@@ -847,11 +844,11 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
     let breakpoint;
     breakpoint = this._resolveEventListenerBreakpoint('instrumentation:setTimeout.callback');
     if (breakpoint) {
-      breakpoint._title = i18nString(UIStrings.settimeoutFired);
+      breakpoint._title = i18nString(UIStrings.setTimeoutOrIntervalFired, {PH1: 'setTimeout'});
     }
     breakpoint = this._resolveEventListenerBreakpoint('instrumentation:setInterval.callback');
     if (breakpoint) {
-      breakpoint._title = i18nString(UIStrings.setintervalFired);
+      breakpoint._title = i18nString(UIStrings.setTimeoutOrIntervalFired, {PH1: 'setInterval'});
     }
     breakpoint = this._resolveEventListenerBreakpoint('instrumentation:scriptFirstStatement');
     if (breakpoint) {

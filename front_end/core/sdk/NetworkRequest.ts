@@ -117,12 +117,9 @@ const UIStrings = {
   anUnknownErrorWasEncounteredWhenTrying: 'An unknown error was encountered when trying to store this cookie.',
   /**
   *@description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site
+  *@example {SameSite=Strict} PH1
   */
-  thisSetcookieWasBlockedBecauseItHadTheSamesitestrict: 'This `Set-Cookie` was blocked because it had the "`SameSite=Strict`" attribute but came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site.',
-  /**
-  *@description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site
-  */
-  thisSetcookieWasBlockedBecauseItHadTheSamesitelax: 'This `Set-Cookie` was blocked because it had the "`SameSite=Lax`" attribute but came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site.',
+  thisSetcookieWasBlockedBecauseItHadTheSamesiteStrictLax: 'This `Set-Cookie` was blocked because it had the "{PH1}" attribute but came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site.',
   /**
   *@description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site
   */
@@ -141,12 +138,9 @@ const UIStrings = {
   blockedReasonSecureOnly: 'This `Set-Cookie` was blocked because it had the "Secure" attribute but was not received over a secure connection.',
   /**
    *@description Tooltip to explain why a cookie was blocked
+   *@example {SameSite=Strict} PH1
   */
-  blockedReasonSameSiteStrict: 'This `Set-Cookie` was blocked because it had the "`SameSite=Strict`" attribute but came from a cross-site response which was not the response to a top-level navigation.',
-  /**
-   *@description Tooltip to explain why a cookie was blocked
-  */
-  blockedReasonSameSiteLax: 'This `Set-Cookie` was blocked because it had the "`SameSite=Lax`" attribute but came from a cross-site response which was not the response to a top-level navigation.',
+  blockedReasonSameSiteStrictLax: 'This `Set-Cookie` was blocked because it had the "{PH1}" attribute but came from a cross-site response which was not the response to a top-level navigation.',
   /**
    *@description Tooltip to explain why a cookie was blocked
   */
@@ -1440,9 +1434,9 @@ export const setCookieBlockedReasonToUiString = function(blockedReason: Protocol
         case Protocol.Network.SetCookieBlockedReason.SecureOnly:
           return i18nString(UIStrings.blockedReasonSecureOnly);
         case Protocol.Network.SetCookieBlockedReason.SameSiteStrict:
-          return i18nString(UIStrings.blockedReasonSameSiteStrict);
+          return i18nString(UIStrings.blockedReasonSameSiteStrictLax, {PH1: 'SameSite=Strict'});
         case Protocol.Network.SetCookieBlockedReason.SameSiteLax:
-          return i18nString(UIStrings.blockedReasonSameSiteLax);
+          return i18nString(UIStrings.blockedReasonSameSiteStrictLax, {PH1: 'SameSite=Lax'});
         case Protocol.Network.SetCookieBlockedReason.SameSiteUnspecifiedTreatedAsLax:
           return i18nString(UIStrings.blockedReasonSameSiteUnspecifiedTreatedAsLax);
         case Protocol.Network.SetCookieBlockedReason.SameSiteNoneInsecure:
@@ -1462,9 +1456,10 @@ export const setCookieBlockedReasonToUiString = function(blockedReason: Protocol
         case Protocol.Network.SetCookieBlockedReason.UnknownError:
           return i18nString(UIStrings.anUnknownErrorWasEncounteredWhenTrying);
         case Protocol.Network.SetCookieBlockedReason.SchemefulSameSiteStrict:
-          return i18nString(UIStrings.thisSetcookieWasBlockedBecauseItHadTheSamesitestrict);
+          return i18nString(
+              UIStrings.thisSetcookieWasBlockedBecauseItHadTheSamesiteStrictLax, {PH1: 'SameSite=Strict'});
         case Protocol.Network.SetCookieBlockedReason.SchemefulSameSiteLax:
-          return i18nString(UIStrings.thisSetcookieWasBlockedBecauseItHadTheSamesitelax);
+          return i18nString(UIStrings.thisSetcookieWasBlockedBecauseItHadTheSamesiteStrictLax, {PH1: 'SameSite=Lax'});
         case Protocol.Network.SetCookieBlockedReason.SchemefulSameSiteUnspecifiedTreatedAsLax:
           return i18nString(UIStrings.thisSetcookieDidntSpecifyASamesite);
         case Protocol.Network.SetCookieBlockedReason.SamePartyFromCrossPartyContext:

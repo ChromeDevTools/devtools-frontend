@@ -332,11 +332,8 @@
   "core/sdk/DOMDebuggerModel.ts | setInnerhtml": {
     "message": "Set innerHTML"
   },
-  "core/sdk/DOMDebuggerModel.ts | setintervalFired": {
-    "message": "setInterval fired"
-  },
-  "core/sdk/DOMDebuggerModel.ts | settimeoutFired": {
-    "message": "setTimeout fired"
+  "core/sdk/DOMDebuggerModel.ts | setTimeoutOrIntervalFired": {
+    "message": "{PH1} fired"
   },
   "core/sdk/DOMDebuggerModel.ts | sinkViolations": {
     "message": "Sink Violations"
@@ -413,14 +410,11 @@
   "core/sdk/NetworkRequest.ts | blockedReasonOverwriteSecure": {
     "message": "This Set-Cookie was blocked because it was not sent over a secure connection and would have overwritten a cookie with the Secure attribute."
   },
-  "core/sdk/NetworkRequest.ts | blockedReasonSameSiteLax": {
-    "message": "This Set-Cookie was blocked because it had the \"SameSite=Lax\" attribute but came from a cross-site response which was not the response to a top-level navigation."
-  },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteNoneInsecure": {
     "message": "This Set-Cookie was blocked because it had the \"SameSite=None\" attribute but did not have the \"Secure\" attribute, which is required in order to use \"SameSite=None\"."
   },
-  "core/sdk/NetworkRequest.ts | blockedReasonSameSiteStrict": {
-    "message": "This Set-Cookie was blocked because it had the \"SameSite=Strict\" attribute but came from a cross-site response which was not the response to a top-level navigation."
+  "core/sdk/NetworkRequest.ts | blockedReasonSameSiteStrictLax": {
+    "message": "This Set-Cookie was blocked because it had the \"{PH1}\" attribute but came from a cross-site response which was not the response to a top-level navigation."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteUnspecifiedTreatedAsLax": {
     "message": "This Set-Cookie didn't specify a \"SameSite\" attribute and was defaulted to \"SameSite=Lax,\" and was blocked because it came from a cross-site response which was not the response to a top-level navigation. The Set-Cookie had to have been set with \"SameSite=None\" to enable cross-site usage."
@@ -476,11 +470,8 @@
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamepartyAttribute": {
     "message": "This Set-Cookie was blocked because it had the \"SameParty\" attribute but also had other conflicting attributes. Chrome requires cookies that use the \"SameParty\" attribute to also have the \"Secure\" attribute, and to not be restricted to \"SameSite=Strict\"."
   },
-  "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamesitelax": {
-    "message": "This Set-Cookie was blocked because it had the \"SameSite=Lax\" attribute but came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site."
-  },
-  "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamesitestrict": {
-    "message": "This Set-Cookie was blocked because it had the \"SameSite=Strict\" attribute but came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site."
+  "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamesiteStrictLax": {
+    "message": "This Set-Cookie was blocked because it had the \"{PH1}\" attribute but came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedDueToUser": {
     "message": "This Set-Cookie was blocked due to user preferences."
@@ -549,19 +540,10 @@
     "message": "Do not emulate any vision deficiency"
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCss": {
-    "message": "Do not emulate CSS prefers-color-scheme"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateCssColorgamut": {
-    "message": "Do not emulate CSS color-gamut"
+    "message": "Do not emulate CSS {PH1}"
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Do not emulate CSS media type"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateCssPrefersreduceddata": {
-    "message": "Do not emulate CSS prefers-reduced-data"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateCssPrefersreducedmotion": {
-    "message": "Do not emulate CSS prefers-reduced-motion"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Do not extend grid lines"
@@ -590,41 +572,14 @@
   "core/sdk/sdk-meta.ts | emulateBlurredVision": {
     "message": "Emulate blurred vision"
   },
-  "core/sdk/sdk-meta.ts | emulateCssColorgamutP": {
-    "message": "Emulate CSS color-gamut: p3"
-  },
-  "core/sdk/sdk-meta.ts | emulateCssColorgamutRec": {
-    "message": "Emulate CSS color-gamut: rec2020"
-  },
-  "core/sdk/sdk-meta.ts | emulateCssColorgamutSrgb": {
-    "message": "Emulate CSS color-gamut: srgb"
+  "core/sdk/sdk-meta.ts | emulateCss": {
+    "message": "Emulate CSS {PH1}"
   },
   "core/sdk/sdk-meta.ts | emulateCssMediaFeature": {
-    "message": "Emulate CSS media feature prefers-color-scheme"
-  },
-  "core/sdk/sdk-meta.ts | emulateCssMediaFeatureColorgamut": {
-    "message": "Emulate CSS media feature color-gamut"
-  },
-  "core/sdk/sdk-meta.ts | emulateCssMediaFeaturePrefersreduceddata": {
-    "message": "Emulate CSS media feature prefers-reduced-data"
-  },
-  "core/sdk/sdk-meta.ts | emulateCssMediaFeaturePrefersreducedmotion": {
-    "message": "Emulate CSS media feature prefers-reduced-motion"
+    "message": "Emulate CSS media feature {PH1}"
   },
   "core/sdk/sdk-meta.ts | emulateCssMediaType": {
     "message": "Emulate CSS media type"
-  },
-  "core/sdk/sdk-meta.ts | emulateCssPreferscolorscheme": {
-    "message": "Emulate CSS prefers-color-scheme: light"
-  },
-  "core/sdk/sdk-meta.ts | emulateCssPreferscolorschemeDark": {
-    "message": "Emulate CSS prefers-color-scheme: dark"
-  },
-  "core/sdk/sdk-meta.ts | emulateCssPrefersreduceddata": {
-    "message": "Emulate CSS prefers-reduced-data: reduce"
-  },
-  "core/sdk/sdk-meta.ts | emulateCssPrefersreducedmotion": {
-    "message": "Emulate CSS prefers-reduced-motion: reduce"
   },
   "core/sdk/sdk-meta.ts | emulateCssPrintMediaType": {
     "message": "Emulate CSS print media type"

@@ -200,64 +200,19 @@ const UIStrings = {
   emulateCssMediaType: 'Emulate CSS media type',
   /**
   *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
+  *@example {prefers-color-scheme} PH1
   */
-  doNotEmulateCss: 'Do not emulate CSS `prefers-color-scheme`',
+  doNotEmulateCss: 'Do not emulate CSS {PH1}',
   /**
   *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
+  *@example {prefers-color-scheme: light} PH1
   */
-  emulateCssPreferscolorscheme: 'Emulate CSS `prefers-color-scheme: light`',
+  emulateCss: 'Emulate CSS {PH1}',
   /**
   *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
+  *@example {prefers-color-scheme} PH1
   */
-  emulateCssPreferscolorschemeDark: 'Emulate CSS `prefers-color-scheme: dark`',
-  /**
-  *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
-  */
-  emulateCssMediaFeature: 'Emulate CSS media feature `prefers-color-scheme`',
-  /**
-  *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
-  */
-  doNotEmulateCssPrefersreducedmotion: 'Do not emulate CSS `prefers-reduced-motion`',
-  /**
-  *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
-  */
-  emulateCssPrefersreducedmotion: 'Emulate CSS `prefers-reduced-motion: reduce`',
-  /**
-  *@description Title of a setting under the Rendering drawer
-  */
-  emulateCssMediaFeaturePrefersreducedmotion: 'Emulate CSS media feature `prefers-reduced-motion`',
-  /**
-  *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
-  */
-  doNotEmulateCssPrefersreduceddata: 'Do not emulate CSS `prefers-reduced-data`',
-  /**
-  *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
-  */
-  emulateCssPrefersreduceddata: 'Emulate CSS `prefers-reduced-data: reduce`',
-  /**
-  *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
-  */
-  emulateCssMediaFeaturePrefersreduceddata: 'Emulate CSS media feature `prefers-reduced-data`',
-  /**
-  *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
-  */
-  doNotEmulateCssColorgamut: 'Do not emulate CSS `color-gamut`',
-  /**
-  *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
-  */
-  emulateCssColorgamutSrgb: 'Emulate CSS `color-gamut: srgb`',
-  /**
-  *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
-  */
-  emulateCssColorgamutP: 'Emulate CSS `color-gamut: p3`',
-  /**
-  *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
-  */
-  emulateCssColorgamutRec: 'Emulate CSS `color-gamut: rec2020`',
-  /**
-  *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
-  */
-  emulateCssMediaFeatureColorgamut: 'Emulate CSS media feature `color-gamut`',
+  emulateCssMediaFeature: 'Emulate CSS media feature {PH1}',
   /**
   *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
   */
@@ -745,17 +700,17 @@ Common.Settings.registerSettingExtension({
   defaultValue: '',
   options: [
     {
-      title: i18nLazyString(UIStrings.doNotEmulateCss),
+      title: i18nLazyString(UIStrings.doNotEmulateCss, {PH1: 'prefers-color-scheme'}),
       text: i18nLazyString(UIStrings.noEmulation),
       value: '',
     },
     {
-      title: i18nLazyString(UIStrings.emulateCssPreferscolorscheme),
+      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'prefers-color-scheme: light'}),
       text: i18n.i18n.lockedLazyString('prefers-color-scheme: light'),
       value: 'light',
     },
     {
-      title: i18nLazyString(UIStrings.emulateCssPreferscolorschemeDark),
+      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'prefers-color-scheme: dark'}),
       text: i18n.i18n.lockedLazyString('prefers-color-scheme: dark'),
       value: 'dark',
     },
@@ -763,7 +718,7 @@ Common.Settings.registerSettingExtension({
   tags: [
     i18nLazyString(UIStrings.query),
   ],
-  title: i18nLazyString(UIStrings.emulateCssMediaFeature),
+  title: i18nLazyString(UIStrings.emulateCssMediaFeature, {PH1: 'prefers-color-scheme'}),
 });
 
 Common.Settings.registerSettingExtension({
@@ -774,12 +729,12 @@ Common.Settings.registerSettingExtension({
   defaultValue: '',
   options: [
     {
-      title: i18nLazyString(UIStrings.doNotEmulateCssPrefersreducedmotion),
+      title: i18nLazyString(UIStrings.doNotEmulateCss, {PH1: 'prefers-reduced-motion'}),
       text: i18nLazyString(UIStrings.noEmulation),
       value: '',
     },
     {
-      title: i18nLazyString(UIStrings.emulateCssPrefersreducedmotion),
+      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'prefers-reduced-motion: reduce'}),
       text: i18n.i18n.lockedLazyString('prefers-reduced-motion: reduce'),
       value: 'reduce',
     },
@@ -787,7 +742,7 @@ Common.Settings.registerSettingExtension({
   tags: [
     i18nLazyString(UIStrings.query),
   ],
-  title: i18nLazyString(UIStrings.emulateCssMediaFeaturePrefersreducedmotion),
+  title: i18nLazyString(UIStrings.emulateCssMediaFeature, {PH1: 'prefers-reduced-motion'}),
 });
 
 Common.Settings.registerSettingExtension({
@@ -797,17 +752,17 @@ Common.Settings.registerSettingExtension({
   defaultValue: '',
   options: [
     {
-      title: i18nLazyString(UIStrings.doNotEmulateCssPrefersreduceddata),
+      title: i18nLazyString(UIStrings.doNotEmulateCss, {PH1: 'prefers-reduced-data'}),
       text: i18nLazyString(UIStrings.noEmulation),
       value: '',
     },
     {
-      title: i18nLazyString(UIStrings.emulateCssPrefersreduceddata),
+      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'prefers-reduced-data: reduce'}),
       text: i18n.i18n.lockedLazyString('prefers-reduced-data: reduce'),
       value: 'reduce',
     },
   ],
-  title: i18nLazyString(UIStrings.emulateCssMediaFeaturePrefersreduceddata),
+  title: i18nLazyString(UIStrings.emulateCssMediaFeature, {PH1: 'prefers-reduced-data'}),
 });
 
 Common.Settings.registerSettingExtension({
@@ -817,27 +772,27 @@ Common.Settings.registerSettingExtension({
   defaultValue: '',
   options: [
     {
-      title: i18nLazyString(UIStrings.doNotEmulateCssColorgamut),
+      title: i18nLazyString(UIStrings.doNotEmulateCss, {PH1: 'color-gamut'}),
       text: i18nLazyString(UIStrings.noEmulation),
       value: '',
     },
     {
-      title: i18nLazyString(UIStrings.emulateCssColorgamutSrgb),
+      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'color-gamut: srgb'}),
       text: i18n.i18n.lockedLazyString('color-gamut: srgb'),
       value: 'srgb',
     },
     {
-      title: i18nLazyString(UIStrings.emulateCssColorgamutP),
+      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'color-gamut: p3'}),
       text: i18n.i18n.lockedLazyString('color-gamut: p3'),
       value: 'p3',
     },
     {
-      title: i18nLazyString(UIStrings.emulateCssColorgamutRec),
+      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'color-gamut: rec2020'}),
       text: i18n.i18n.lockedLazyString('color-gamut: rec2020'),
       value: 'rec2020',
     },
   ],
-  title: i18nLazyString(UIStrings.emulateCssMediaFeatureColorgamut),
+  title: i18nLazyString(UIStrings.emulateCssMediaFeature, {PH1: 'color-gamut'}),
 });
 
 Common.Settings.registerSettingExtension({

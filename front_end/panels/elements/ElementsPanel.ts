@@ -502,6 +502,9 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       return;
     }
     selectedNode.setAsInspectedNode();
+    if (this._accessibilityTreeView) {
+      this._accessibilityTreeView.selectedNodeChanged(selectedNode);
+    }
     if (focus) {
       this._selectedNodeOnReset = selectedNode;
       this._hasNonDefaultSelectedNode = true;

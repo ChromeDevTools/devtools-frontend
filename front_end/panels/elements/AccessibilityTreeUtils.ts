@@ -4,12 +4,23 @@
 
 import '../../ui/components/tree_outline/tree_outline.js';
 
+import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 
 export type AXTreeNode = TreeOutline.TreeOutlineUtils.TreeNode<SDK.AccessibilityModel.AccessibilityNode>;
+
+
+const UIStrings = {
+  /**
+  *@description Ignored node element text content in Accessibility Tree View of the Elements panel
+  */
+  ignored: 'Ignored',
+};
+const str_ = i18n.i18n.registerUIStrings('panels/elements/AccessibilityTreeUtils.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export function sdkNodeToAXTreeNode(node: SDK.AccessibilityModel.AccessibilityNode): AXTreeNode {
   if (!node.numChildren()) {
@@ -22,11 +33,24 @@ export function sdkNodeToAXTreeNode(node: SDK.AccessibilityModel.AccessibilityNo
   return {
     treeNodeData: node,
     children: async(): Promise<AXTreeNode[]> => {
-      let children: SDK.AccessibilityModel.AccessibilityNode[] = node.children() || [];
-      if (node.numChildren() !== children.length) {
-        children = await node.accessibilityModel().requestAXChildren(node.id());
+      if (node.numChildren() === node.children().length) {
+        return Promise.resolve(node.children().map(child => sdkNodeToAXTreeNode(child)));
       }
-      const treeNodeChildren = (children || []).map(child => sdkNodeToAXTreeNode(child));
+      // numChildren returns the number of children that this node has, whereas node.children()
+      // returns only children that have been loaded. If these two don't match, that means that
+      // there are backend children that need to be loaded into the model, so request them now.
+      await node.accessibilityModel().requestAXChildren(node.id());
+
+      if (node.numChildren() !== node.children().length) {
+        throw new Error('Once loaded, number of children and length of children must match.');
+      }
+
+      const treeNodeChildren: AXTreeNode[] = [];
+
+      for (const child of node.children()) {
+        treeNodeChildren.push(sdkNodeToAXTreeNode(child));
+      }
+
       return Promise.resolve(treeNodeChildren);
     },
     id: node.id(),
@@ -43,24 +67,42 @@ function truncateTextIfNeeded(text: string): string {
   return text;
 }
 
-export function accessibilityNodeRenderer(node: AXTreeNode): LitHtml.TemplateResult {
-  // Left in for ease of reaching this file when doing DT on DT debugging
-  // eslint-disable-next-line no-console
+function ignoredNodeTemplate(): LitHtml.TemplateResult[] {
   const nodeContent: LitHtml.TemplateResult[] = [];
-  const axNode = node.treeNodeData;
+  nodeContent.push(LitHtml.html`<span class='monospace ignored-node'>${i18nString(UIStrings.ignored)}</span>`);
+  return nodeContent;
+}
 
-  const role = axNode.role();
+function unignoredNodeTemplate(node: SDK.AccessibilityModel.AccessibilityNode): LitHtml.TemplateResult[] {
+  const nodeContent: LitHtml.TemplateResult[] = [];
+
+  // All unignored nodes must have a role.
+  const role = node.role();
   if (!role) {
-    return LitHtml.html``;
+    nodeContent.push(LitHtml.html``);
+    return nodeContent;
   }
 
   const roleElement = LitHtml.html`<span class='monospace'>${truncateTextIfNeeded(role.value || '')}</span>`;
   nodeContent.push(LitHtml.html`${roleElement}`);
 
-  const name = axNode.name();
+  // Not all nodes have a name, however.
+  const name = node.name();
   if (name) {
     nodeContent.push(LitHtml.html`<span class='separator'>\xA0</span>`);
     nodeContent.push(LitHtml.html`<span class='ax-readable-string'>"${name.value}"</span>`);
+  }
+  return nodeContent;
+}
+
+export function accessibilityNodeRenderer(node: AXTreeNode): LitHtml.TemplateResult {
+  let nodeContent: LitHtml.TemplateResult[];
+  const axNode = node.treeNodeData;
+
+  if (axNode.ignored()) {
+    nodeContent = ignoredNodeTemplate();
+  } else {
+    nodeContent = unignoredNodeTemplate(axNode);
   }
 
   return LitHtml.html`

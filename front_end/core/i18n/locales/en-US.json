@@ -7736,6 +7736,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "Save"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
+    "message": "Send a raw CDP command"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Session"
   },

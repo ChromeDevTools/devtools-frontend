@@ -7736,6 +7736,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "Ŝáv̂é"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
+    "message": "Ŝén̂d́ â ŕâẃ CDP ĉóm̂ḿâńd̂"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Ŝéŝśîón̂"
   },

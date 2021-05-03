@@ -646,6 +646,9 @@ export class ToolbarInput extends ToolbarItem {
   }
 
   _onKeydownCallback(event: Event): void {
+    if ((event as KeyboardEvent).key === 'Enter' && this._prompt.text()) {
+      this.dispatchEventToListeners(ToolbarInput.Event.EnterPressed, this._prompt.text());
+    }
     if (!isEscKey(event) || !this._prompt.text()) {
       return;
     }
@@ -668,6 +671,7 @@ export namespace ToolbarInput {
   // eslint-disable-next-line rulesdir/const_enum
   export enum Event {
     TextChanged = 'TextChanged',
+    EnterPressed = 'EnterPressed',
   }
 }
 

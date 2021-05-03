@@ -78,6 +78,10 @@ const UIStrings = {
   *@description Text in Protocol Monitor to describe the sessions column
   */
   session: 'Session',
+  /**
+  *@description A placeholder for an input in Protocol Monitor. The input accepts commands that are sent to the backend on Enter. CDP stands for Chrome DevTools Protocol.
+  */
+  sendRawCDPCommand: 'Send a raw `CDP` command',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/protocol_monitor/ProtocolMonitor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -276,6 +280,29 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
       this._dataGridIntegrator.update({...this._dataGridIntegrator.data(), filters});
     });
     topToolbar.appendToolbarItem(this._textFilterUI);
+
+    const onSend = (): void => {
+      const value = input.value();
+      // If input cannot be parsed as json, we assume it's the command name
+      // for a command without parameters. Otherwise, we expect an object
+      // with "command" and "parameters" attributes.
+      let json = null;
+      try {
+        json = JSON.parse(value);
+      } catch (err) {
+      }
+      const command = json ? json.command : value;
+      const parameters = json ? json.parameters : null;
+      const test = ProtocolClient.InspectorBackend.test;
+      // TODO: TS thinks that properties are read-only because
+      // in TS test is defined as a namespace.
+      // @ts-ignore
+      test.sendRawMessage(command, parameters, () => {});
+    };
+    const input = new UI.Toolbar.ToolbarInput(i18nString(UIStrings.sendRawCDPCommand), '', 1, .2, '', undefined, false);
+    input.addEventListener(UI.Toolbar.ToolbarInput.Event.EnterPressed, onSend);
+    const bottomToolbar = new UI.Toolbar.Toolbar('protocol-monitor-bottom-toolbar', this.contentElement);
+    bottomToolbar.appendToolbarItem(input);
   }
 
   static instance(opts = {forceNew: null}): ProtocolMonitorImpl {

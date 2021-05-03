@@ -322,7 +322,7 @@
      id="g140">
     <path
        transform="translate(-224,-48)"
-       d="m 238,64 h 7 v -8 h -7 z m 9,2 H 233 V 54 h 14 z"
+       d="m 238,64 h 7 v -8 h -7 z m 9,2 h -14 v -12 h 14 z"
        id="path144"
        inkscape:connector-curvature="0" />
   </g>

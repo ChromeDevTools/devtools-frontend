@@ -269,7 +269,7 @@ class ModelInfo {
   }
 
   _frameDetached(event: Common.EventTarget.EventTargetEvent): void {
-    const frame = (event.data as SDK.ResourceTreeModel.ResourceTreeFrame);
+    const frame = (event.data.frame as SDK.ResourceTreeModel.ResourceTreeFrame);
     this._removeFrameResources(frame);
   }
 

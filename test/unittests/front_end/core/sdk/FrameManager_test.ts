@@ -16,13 +16,17 @@ class MockResourceTreeModel extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   target() {
-    return {id: () => this.targetId};
+    return {
+      id: () => this.targetId,
+      parentTarget: () => null,
+    };
   }
 }
 
 class MockResourceTreeFrame {
   private targetId: string;
   id: string;
+  getCreationStackTraceData = () => {};
 
   constructor(frameId: string, targetId: string) {
     this.id = frameId;
@@ -37,7 +41,7 @@ class MockResourceTreeFrame {
 
   isMainFrame = () => true;
   isTopFrame = () => true;
-  setCreationStackTraceFrom = () => {};
+  setCreationStackTrace = () => {};
 }
 
 describe('FrameManager', () => {
@@ -88,7 +92,8 @@ describe('FrameManager', () => {
     const mockModel = attachMockModel(frameManager, 'target-id');
     addMockFrame(mockModel, 'parent-frame-id');
     const mockChildFrame = addMockFrame(mockModel, 'child-frame-id');
-    mockModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameDetached, mockChildFrame);
+    mockModel.dispatchEventToListeners(
+        SDK.ResourceTreeModel.Events.FrameDetached, {frame: mockChildFrame, isSwap: false});
 
     const expectation = [
       {type: 'FrameAddedToTarget', data: {frame: {id: 'parent-frame-id', targetId: 'target-id'}}},
@@ -125,7 +130,7 @@ describe('FrameManager', () => {
     assert.strictEqual(frameFromId, null);
   });
 
-  it('a frame transferring to a different target', () => {
+  it('handles a frame transferring to a different target', () => {
     const frameManager = new SDK.FrameManager.FrameManager();
     const dispatchedEvents = setupEventSink(frameManager, [Events.FrameAddedToTarget, Events.FrameRemoved]);
 
@@ -135,7 +140,8 @@ describe('FrameManager', () => {
     const mockChildModel = attachMockModel(frameManager, 'child-target-id');
     const mockChildFrameParentTarget = addMockFrame(mockParentModel, 'child-frame-id');
     addMockFrame(mockChildModel, 'child-frame-id');
-    mockParentModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameDetached, mockChildFrameParentTarget);
+    mockParentModel.dispatchEventToListeners(
+        SDK.ResourceTreeModel.Events.FrameDetached, {frame: mockChildFrameParentTarget, isSwap: true});
 
     const expectation = [
       {type: 'FrameAddedToTarget', data: {frame: {id: 'parent-frame-id', targetId: 'parent-target-id'}}},
@@ -149,6 +155,94 @@ describe('FrameManager', () => {
     frameFromId = frameManager.getFrame('child-frame-id');
     assert.strictEqual(frameFromId?.id, 'child-frame-id');
     assert.strictEqual(frameFromId?.resourceTreeModel().target().id(), 'child-target-id');
+  });
+
+  it('transfers frame creation stack traces during OOPIF transfer (case 1)', () => {
+    const frameManager = new SDK.FrameManager.FrameManager();
+    const mockParentModel = attachMockModel(frameManager, 'parent-target-id');
+    const mockChildModel = attachMockModel(frameManager, 'child-target-id');
+    const trace = {
+      callFrames: [
+        {
+          functionName: 'function1',
+          url: 'http://www.example.com/script1.js',
+          lineNumber: 15,
+          columnNumber: 10,
+          scriptId: 'someScriptId',
+        },
+        {
+          functionName: 'function2',
+          url: 'http://www.example.com/script2.js',
+          lineNumber: 20,
+          columnNumber: 5,
+          scriptId: 'someScriptId',
+        },
+      ],
+    };
+
+    // step 1) frame added to existing target
+    const frameOldTarget = new SDK.ResourceTreeModel.ResourceTreeFrame(mockParentModel, null, 'frame-id', null, trace);
+    mockParentModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameAdded, frameOldTarget);
+
+    // step 2) frame added to new target
+    const frameNewTarget = new SDK.ResourceTreeModel.ResourceTreeFrame(mockChildModel, null, 'frame-id', null, null);
+    mockChildModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameAdded, frameNewTarget);
+
+    // step 3) frame removed from existing target
+    mockParentModel.dispatchEventToListeners(
+        SDK.ResourceTreeModel.Events.FrameDetached, {frame: frameOldTarget, isSwap: true});
+
+    const frame = frameManager.getFrame('frame-id');
+    assert.isNotNull(frame);
+    if (frame) {
+      const {creationStackTrace, creationStackTraceTarget} = frame.getCreationStackTraceData();
+      assert.deepEqual(creationStackTrace, trace);
+      assert.strictEqual(creationStackTraceTarget.id(), 'parent-target-id');
+    }
+  });
+
+  it('transfers frame creation stack traces during OOPIF transfer (case 2)', () => {
+    const frameManager = new SDK.FrameManager.FrameManager();
+    const mockParentModel = attachMockModel(frameManager, 'parent-target-id');
+    const mockChildModel = attachMockModel(frameManager, 'child-target-id');
+    const trace = {
+      callFrames: [
+        {
+          functionName: 'function1',
+          url: 'http://www.example.com/script1.js',
+          lineNumber: 15,
+          columnNumber: 10,
+          scriptId: 'someScriptId',
+        },
+        {
+          functionName: 'function2',
+          url: 'http://www.example.com/script2.js',
+          lineNumber: 20,
+          columnNumber: 5,
+          scriptId: 'someScriptId',
+        },
+      ],
+    };
+
+    // step 1) frame added to existing target
+    const frameOldTarget = new SDK.ResourceTreeModel.ResourceTreeFrame(mockParentModel, null, 'frame-id', null, trace);
+    mockParentModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameAdded, frameOldTarget);
+
+    // step 2) frame removed from existing target
+    mockParentModel.dispatchEventToListeners(
+        SDK.ResourceTreeModel.Events.FrameDetached, {frame: frameOldTarget, isSwap: true});
+
+    // step 3) frame added to new target
+    const frameNewTarget = new SDK.ResourceTreeModel.ResourceTreeFrame(mockChildModel, null, 'frame-id', null, null);
+    mockChildModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameAdded, frameNewTarget);
+
+    const frame = frameManager.getFrame('frame-id');
+    assert.isNotNull(frame);
+    if (frame) {
+      const {creationStackTrace, creationStackTraceTarget} = frame.getCreationStackTraceData();
+      assert.deepEqual(creationStackTrace, trace);
+      assert.strictEqual(creationStackTraceTarget.id(), 'parent-target-id');
+    }
   });
 
   describe('getTopFrame', () => {

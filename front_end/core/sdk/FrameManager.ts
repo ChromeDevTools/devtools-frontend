@@ -8,7 +8,7 @@ import * as Common from '../common/common.js';
 
 import {Resource} from './Resource.js';  // eslint-disable-line no-unused-vars
 import {Events as ResourceTreeModelEvents, ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
-import {SDKModelObserver, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import {SDKModelObserver, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 let frameManagerInstance: FrameManager|null = null;
 
@@ -25,6 +25,8 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper implements 
   }>;
   _framesForTarget: Map<string, Set<string>>;
   _topFrame: ResourceTreeFrame|null;
+  private creationStackTraceDataForTransferringFrame:
+      Map<string, {creationStackTrace: Protocol.Runtime.StackTrace | null, creationStackTraceTarget: Target}>;
 
   constructor() {
     super();
@@ -32,7 +34,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper implements 
     TargetManager.instance().observeModels(ResourceTreeModel, this);
 
     // Maps frameIds to frames and a count of how many ResourceTreeModels contain this frame.
-    // (OOPIFs are first attached to a new target and then detached from their old target,
+    // (OOPIFs are usually first attached to a new target and then detached from their old target,
     // therefore being contained in 2 models for a short period of time.)
     this._frames = new Map();
 
@@ -40,6 +42,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper implements 
     this._framesForTarget = new Map();
 
     this._topFrame = null;
+    this.creationStackTraceDataForTransferringFrame = new Map();
   }
 
   static instance({forceNew}: {
@@ -89,10 +92,17 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper implements 
     if (frameData) {
       // In order to not lose frame creation stack trace information during
       // an OOPIF transfer we need to copy it to the new frame
-      frame.setCreationStackTraceFrom(frameData.frame);
+      frame.setCreationStackTrace(frameData.frame.getCreationStackTraceData());
       this._frames.set(frame.id, {frame, count: frameData.count + 1});
     } else {
+      // If the transferring frame's detached event is received before its frame added
+      // event in the new target, the persisted frame creation stacktrace is reassigned.
+      const traceData = this.creationStackTraceDataForTransferringFrame.get(frame.id);
+      if (traceData && traceData.creationStackTrace) {
+        frame.setCreationStackTrace(traceData);
+      }
       this._frames.set(frame.id, {frame, count: 1});
+      this.creationStackTraceDataForTransferringFrame.delete(frame.id);
     }
     this._resetTopFrame();
 
@@ -106,9 +116,20 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper implements 
   }
 
   _frameDetached(event: Common.EventTarget.EventTargetEvent): void {
-    const frame = (event.data as ResourceTreeFrame);
+    const frame = event.data.frame as ResourceTreeFrame;
+    const isSwap = event.data.isSwap as boolean;
     // Decrease the frame's count or remove it entirely from the map.
     this._decreaseOrRemoveFrame(frame.id);
+
+    // If the transferring frame's detached event is received before its frame
+    // added event in the new target, we persist the frame creation stacktrace here
+    // so that later on the frame added event in the new target it can be reassigned.
+    if (isSwap && !this._frames.get(frame.id)) {
+      const traceData = frame.getCreationStackTraceData();
+      if (traceData.creationStackTrace) {
+        this.creationStackTraceDataForTransferringFrame.set(frame.id, traceData);
+      }
+    }
 
     // Remove the frameId from the target's set of frameIds.
     const frameSet = this._framesForTarget.get(frame.resourceTreeModel().target().id());
@@ -182,7 +203,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper implements 
 export enum Events {
   // The FrameAddedToTarget event is sent whenever a frame is added to a target.
   // This means that for OOPIFs it is sent twice: once when it's added to a
-  // parent frame and a second time when it's added to its own frame.
+  // parent target and a second time when it's added to its own target.
   FrameAddedToTarget = 'FrameAddedToTarget',
   FrameNavigated = 'FrameNavigated',
   // The FrameRemoved event is only sent when a frame has been detached from

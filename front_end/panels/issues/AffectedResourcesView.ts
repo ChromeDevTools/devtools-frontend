@@ -53,6 +53,12 @@ export const extractShortPath = (path: string): string => {
   return (/[^/]+$/.exec(path) || /[^/]+\/$/.exec(path) || [''])[0];
 };
 
+export interface CreateRequestCellOptions {
+  linkToPreflight?: boolean;
+  highlightHeader?: {section: Network.NetworkSearchScope.UIHeaderSection, name: string};
+}
+
+
 /**
  * The base class for all affected resource views. It provides basic scaffolding
  * as well as machinery for resolving request and frame ids to SDK objects.
@@ -224,7 +230,7 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     return frameCell;
   }
 
-  protected createRequestCell(request: Protocol.Audits.AffectedRequest, options: {linkToPreflight?: boolean} = {}):
+  protected createRequestCell(request: Protocol.Audits.AffectedRequest, options: CreateRequestCellOptions = {}):
       HTMLElement {
     let url = request.url;
     let filename = url ? extractShortPath(url) : '';
@@ -244,7 +250,13 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
         if (!linkedRequest) {
           return;
         }
-        Network.NetworkPanel.NetworkPanel.selectAndShowRequest(linkedRequest, Network.NetworkItemView.Tabs.Headers);
+        if (options.highlightHeader) {
+          const requestLocation = Network.NetworkSearchScope.UIRequestLocation.header(
+              linkedRequest, options.highlightHeader.section, options.highlightHeader.name);
+          Network.NetworkPanel.RequestLocationRevealer.instance().reveal(requestLocation);
+        } else {
+          Network.NetworkPanel.NetworkPanel.selectAndShowRequest(linkedRequest, Network.NetworkItemView.Tabs.Headers);
+        }
       };
       requestCell.classList.add('link');
       icon.classList.add('link');

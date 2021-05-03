@@ -7509,8 +7509,8 @@ declare namespace Protocol {
      */
     export interface RequestPattern {
       /**
-       * Wildcards ('*' -> zero or more, '?' -> exactly one) are allowed. Escape character is
-       * backslash. Omitting is equivalent to "*".
+       * Wildcards (`'*'` -> zero or more, `'?'` -> exactly one) are allowed. Escape character is
+       * backslash. Omitting is equivalent to `"*"`.
        */
       urlPattern?: string;
       /**
@@ -9479,6 +9479,7 @@ declare namespace Protocol {
       PublickeyCredentialsGet = 'publickey-credentials-get',
       ScreenWakeLock = 'screen-wake-lock',
       Serial = 'serial',
+      SharedAutofill = 'shared-autofill',
       StorageAccessAPI = 'storage-access-api',
       SyncXhr = 'sync-xhr',
       TrustTokenRedemption = 'trust-token-redemption',
@@ -9997,6 +9998,11 @@ declare namespace Protocol {
        * event is emitted.
        */
       worldName?: string;
+      /**
+       * Specifies whether command line API should be available to the script, defaults
+       * to false.
+       */
+      includeCommandLineAPI?: boolean;
     }
 
     export interface AddScriptToEvaluateOnNewDocumentResponse extends ProtocolResponseWithError {
@@ -12639,8 +12645,8 @@ declare namespace Protocol {
 
     export interface RequestPattern {
       /**
-       * Wildcards ('*' -> zero or more, '?' -> exactly one) are allowed. Escape character is
-       * backslash. Omitting is equivalent to "*".
+       * Wildcards (`'*'` -> zero or more, `'?'` -> exactly one) are allowed. Escape character is
+       * backslash. Omitting is equivalent to `"*"`.
        */
       urlPattern?: string;
       /**

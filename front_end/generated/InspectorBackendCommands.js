@@ -1925,6 +1925,7 @@ export function registerCommands(inspectorBackend) {
     PublickeyCredentialsGet: 'publickey-credentials-get',
     ScreenWakeLock: 'screen-wake-lock',
     Serial: 'serial',
+    SharedAutofill: 'shared-autofill',
     StorageAccessAPI: 'storage-access-api',
     SyncXhr: 'sync-xhr',
     TrustTokenRedemption: 'trust-token-redemption',
@@ -2016,7 +2017,8 @@ export function registerCommands(inspectorBackend) {
       'Page.addScriptToEvaluateOnNewDocument',
       [
         {'name': 'source', 'type': 'string', 'optional': false},
-        {'name': 'worldName', 'type': 'string', 'optional': true}
+        {'name': 'worldName', 'type': 'string', 'optional': true},
+        {'name': 'includeCommandLineAPI', 'type': 'boolean', 'optional': true}
       ],
       ['identifier']);
   inspectorBackend.registerCommand('Page.bringToFront', [], []);

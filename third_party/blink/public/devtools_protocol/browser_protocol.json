@@ -11087,7 +11087,7 @@
                     "properties": [
                         {
                             "name": "urlPattern",
-                            "description": "Wildcards ('*' -> zero or more, '?' -> exactly one) are allowed. Escape character is\nbackslash. Omitting is equivalent to \"*\".",
+                            "description": "Wildcards (`'*'` -> zero or more, `'?'` -> exactly one) are allowed. Escape character is\nbackslash. Omitting is equivalent to `\"*\"`.",
                             "optional": true,
                             "type": "string"
                         },
@@ -13933,6 +13933,7 @@
                         "publickey-credentials-get",
                         "screen-wake-lock",
                         "serial",
+                        "shared-autofill",
                         "storage-access-api",
                         "sync-xhr",
                         "trust-token-redemption",
@@ -14650,6 +14651,13 @@
                             "experimental": true,
                             "optional": true,
                             "type": "string"
+                        },
+                        {
+                            "name": "includeCommandLineAPI",
+                            "description": "Specifies whether command line API should be available to the script, defaults\nto false.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ],
                     "returns": [
@@ -18698,7 +18706,7 @@
                     "properties": [
                         {
                             "name": "urlPattern",
-                            "description": "Wildcards ('*' -> zero or more, '?' -> exactly one) are allowed. Escape character is\nbackslash. Omitting is equivalent to \"*\".",
+                            "description": "Wildcards (`'*'` -> zero or more, `'?'` -> exactly one) are allowed. Escape character is\nbackslash. Omitting is equivalent to `\"*\"`.",
                             "optional": true,
                             "type": "string"
                         },
@@ -20576,6 +20584,7 @@
                 {
                     "name": "restartFrame",
                     "description": "Restarts particular call frame from the beginning.",
+                    "deprecated": true,
                     "parameters": [
                         {
                             "name": "callFrameId",

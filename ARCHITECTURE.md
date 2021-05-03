@@ -336,8 +336,8 @@ Now, the new panel is allowed to add a dependency edge on `models/workspace_diff
 To bundle DevTools with Chromium, DevTools builds its GRD file that will be consumed by [GRIT].
 The GRD file lists all required files that should be loaded either in Debug or Release mode.
 All files that should be bundled are listed in `config/gni/devtools_grd_files.gni`.
-If a file should be present in a debug and release mode, add the file to `grd_files_release_sources`.
-If a file should only be present in release mode, add the file to `grd_files_debug_sources`.
+If a file should be present in debug and release mode, add the file to `grd_files_release_sources`.
+If a file should only be present in debug mode, add the file to `grd_files_debug_sources`.
 
 Note that `devtools_module` and `devtools_entrypoint` automatically take care of this for you.
 Any file included in `devtools_module` is only present in the Debug GRD file.

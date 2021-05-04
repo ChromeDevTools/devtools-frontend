@@ -6,7 +6,7 @@ import {assert} from 'chai';
 
 import {$$, goToResource, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {clickNthChildOfSelectedElementNode, focusElementsTree, getCSSPropertyInRule, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue} from '../helpers/elements-helpers.js';
+import {clickNthChildOfSelectedElementNode, editCSSProperty, focusElementsTree, getCSSPropertyInRule, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue} from '../helpers/elements-helpers.js';
 
 describe('Flexbox Editor', async function() {
   beforeEach(async function() {
@@ -47,5 +47,11 @@ describe('Flexbox Editor', async function() {
     await waitFor('[title="Add flex-direction: column"]');
     const property = await getCSSPropertyInRule('#target', 'flex-direction');
     assert.isUndefined(property);
+
+    // Close and re-open the editor when display == flex !important.
+    await clickFlexboxEditorButton();
+    await editCSSProperty('#target', 'display', 'flex !important');
+    await waitForCSSPropertyValue('#target', 'display', 'flex !important');
+    await clickFlexboxEditorButton();
   });
 });

@@ -134,6 +134,11 @@ export class CSSProperty {
     return this._active;
   }
 
+  trimmedValueWithoutImportant(): string {
+    const important = '!important';
+    return this.value.endsWith(important) ? this.value.slice(0, -important.length).trim() : this.value.trim();
+  }
+
   async setText(propertyText: string, majorChange: boolean, overwrite?: boolean): Promise<boolean> {
     if (!this.ownerStyle) {
       return Promise.reject(new Error('No ownerStyle for property'));

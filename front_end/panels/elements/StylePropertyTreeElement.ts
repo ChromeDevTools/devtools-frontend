@@ -618,9 +618,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     const section = this.section();
-    if (this.valueElement && section && section.editable && this.property.name === 'display' &&
-        (this.property.value === 'flex' || this.property.value === 'inline-flex')) {
-      this.listItemElement.appendChild(FlexboxEditorWidget.createFlexboxEditorButton(this._parentPane, section));
+    if (this.valueElement && section && section.editable && this.property.name === 'display') {
+      const propertyValue = this.property.trimmedValueWithoutImportant();
+      if (propertyValue === 'flex' || propertyValue === 'inline-flex') {
+        this.listItemElement.appendChild(FlexboxEditorWidget.createFlexboxEditorButton(this._parentPane, section));
+      }
     }
 
     if (!this.property.parsedOk) {

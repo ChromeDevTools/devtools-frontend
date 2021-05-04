@@ -10,6 +10,11 @@ group("unittests") {
     ":copy_to_gen",
     "front_end",
     "inspector_overlay",
+
+    # We only build locales in DevTools frontend, but `npm run auto-unittest`
+    # wouldn't regenerate the locales. Therefore, we need to explicitly
+    # depend on the locales here.
+    "../../front_end/core/i18n:i18n_locales",
   ]
 }
 

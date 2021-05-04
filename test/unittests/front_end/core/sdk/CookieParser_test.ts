@@ -4,10 +4,9 @@
 
 const {assert} = chai;
 
-import type * as SDKModule from '../../../../../front_end/core/sdk/sdk.js';
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 
-function ensureCookiesExistOrFailTest(cookies: SDKModule.Cookie.Cookie[]|null): cookies is SDKModule.Cookie.Cookie[] {
+function ensureCookiesExistOrFailTest(cookies: SDK.Cookie.Cookie[]|null): cookies is SDK.Cookie.Cookie[] {
   if (!cookies) {
     assert.fail('expected cookies to exist');
     return false;
@@ -45,7 +44,7 @@ const cookieExpectationDefaults: CookieExpectation = {
   priority: Protocol.Network.CookiePriority.Medium,
 };
 
-function expectCookie(cookie: SDKModule.Cookie.Cookie, cookieExpectation: CookieExpectation) {
+function expectCookie(cookie: SDK.Cookie.Cookie, cookieExpectation: CookieExpectation) {
   const expectation = {...cookieExpectationDefaults, ...cookieExpectation};
   assert.strictEqual(cookie.name(), expectation.name, 'name');
   assert.strictEqual(cookie.value(), expectation.value, 'value');
@@ -69,12 +68,7 @@ function expectCookie(cookie: SDKModule.Cookie.Cookie, cookieExpectation: Cookie
   assert.strictEqual(cookie.priority(), expectation.priority, 'priority');
 }
 
-describeWithEnvironment('CookieParser', () => {
-  let SDK: typeof SDKModule;
-  before(async () => {
-    SDK = await import('../../../../../front_end/core/sdk/sdk.js');
-  });
-
+describe('CookieParser', () => {
   function parseAndExpectSetCookies(setCookieString: string, cookieExpectations: CookieExpectation[]) {
     const cookies = SDK.CookieParser.CookieParser.parseSetCookie(setCookieString);
     if (ensureCookiesExistOrFailTest(cookies)) {

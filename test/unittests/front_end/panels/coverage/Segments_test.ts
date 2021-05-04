@@ -4,18 +4,12 @@
 
 const {assert} = chai;
 
-import type * as CoverageModule from '../../../../../front_end/panels/coverage/coverage.js';
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import * as Coverage from '../../../../../front_end/panels/coverage/coverage.js';
 
-describeWithEnvironment('mergeSegments', () => {
-  let Coverage: typeof CoverageModule;
-  before(async () => {
-    Coverage = await import('../../../../../front_end/panels/coverage/coverage.js');
-  });
-
+describe('mergeSegments', () => {
   const checkMerge =
-      (a: CoverageModule.CoverageModel.CoverageSegment[], b: CoverageModule.CoverageModel.CoverageSegment[],
-       expectedResult: CoverageModule.CoverageModel.CoverageSegment[]) => {
+      (a: Coverage.CoverageModel.CoverageSegment[], b: Coverage.CoverageModel.CoverageSegment[],
+       expectedResult: Coverage.CoverageModel.CoverageSegment[]) => {
         const mergedAB = Coverage.CoverageModel.mergeSegments(a, b);
         assert.deepEqual(mergedAB, expectedResult);
         const mergedBA = Coverage.CoverageModel.mergeSegments(b, a);

@@ -2,17 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as ElementsComponentsModule from '../../../../../../front_end/panels/elements/components/components.js';
+import * as ElementsComponents from '../../../../../../front_end/panels/elements/components/components.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
-describeWithEnvironment('ComputedStyleTrace', async () => {
-  let ElementsComponents: typeof ElementsComponentsModule;
-  before(async () => {
-    ElementsComponents = await import('../../../../../../front_end/panels/elements/components/components.js');
-  });
 
+describe('ComputedStyleTrace', async () => {
   it('renders ComputedStyleTrace selector correctly', () => {
     const component = new ElementsComponents.ComputedStyleTrace.ComputedStyleTrace();
     renderElementIntoDOM(component);

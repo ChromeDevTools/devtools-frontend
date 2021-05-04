@@ -4,7 +4,6 @@
 
 const {assert} = chai;
 
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import * as Common from '../../../../../front_end/core/common/common.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
@@ -17,7 +16,7 @@ const simulateRequestWithStartTime = (startTime: number): SDK.NetworkRequest.Net
   return request;
 };
 
-describeWithEnvironment('HARWriter', () => {
+describe('HARWriter', () => {
   it('can correctly sort exported requests logs', async () => {
     const req1Time = new Date(2020, 0, 3);
     const req2Time = new Date(2020, 1, 3);

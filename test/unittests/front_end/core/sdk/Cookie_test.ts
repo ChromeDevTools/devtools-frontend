@@ -4,16 +4,10 @@
 
 const {assert} = chai;
 
-import type * as SDKModule from '../../../../../front_end/core/sdk/sdk.js';
+import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import {assertNotNull} from '../../../../../front_end/core/platform/platform.js';
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 
-describeWithEnvironment('Cookie', () => {
-  let SDK: typeof SDKModule;
-  before(async () => {
-    SDK = await import('../../../../../front_end/core/sdk/sdk.js');
-  });
-
+describe('Cookie', () => {
   it('can be instantiated without issues', () => {
     const cookie = new SDK.Cookie.Cookie('name', 'value');
 

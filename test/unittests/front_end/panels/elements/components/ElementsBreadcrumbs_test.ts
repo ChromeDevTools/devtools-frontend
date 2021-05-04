@@ -2,24 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as ElementsComponentsModule from '../../../../../../front_end/panels/elements/components/components.js';
-import {assertElement, assertElements, assertShadowRoot, dispatchClickEvent, doubleRaf, renderElementIntoDOM, waitForScrollLeft} from '../../../helpers/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
-import {withNoMutations} from '../../../helpers/MutationHelpers.js';
-
+import * as ElementsComponents from '../../../../../../front_end/panels/elements/components/components.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
+import {assertElement, assertElements, assertShadowRoot, dispatchClickEvent, doubleRaf, renderElementIntoDOM, waitForScrollLeft} from '../../../helpers/DOMHelpers.js';
+import {withNoMutations} from '../../../helpers/MutationHelpers.js';
 
 const {assert} = chai;
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 
-interface MakeCrumbOptions extends Partial<ElementsComponentsModule.ElementsBreadcrumbsUtils.DOMNode> {
+interface MakeCrumbOptions extends Partial<ElementsComponents.ElementsBreadcrumbsUtils.DOMNode> {
   attributes?: {[x: string]: string};
 }
 
 const makeCrumb = (overrides: MakeCrumbOptions = {}) => {
   const attributes = overrides.attributes || {};
-  const newCrumb: ElementsComponentsModule.ElementsBreadcrumbsUtils.DOMNode = {
+  const newCrumb: ElementsComponents.ElementsBreadcrumbsUtils.DOMNode = {
     parentNode: null,
     nodeType: Node.ELEMENT_NODE,
     id: 1,
@@ -36,12 +34,7 @@ const makeCrumb = (overrides: MakeCrumbOptions = {}) => {
   return newCrumb;
 };
 
-describeWithEnvironment('ElementsBreadcrumbs', () => {
-  let ElementsComponents: typeof ElementsComponentsModule;
-  before(async () => {
-    ElementsComponents = await import('../../../../../../front_end/panels/elements/components/components.js');
-  });
-
+describe('ElementsBreadcrumbs', () => {
   describe('#determineElementTitle', () => {
     it('returns (text) for text nodes', () => {
       const node = makeCrumb({nodeType: Node.TEXT_NODE});
@@ -177,11 +170,10 @@ describeWithEnvironment('ElementsBreadcrumbs', () => {
   });
 
   describe('rendering breadcrumbs', () => {
-    async function renderBreadcrumbs(data: ElementsComponentsModule.ElementsBreadcrumbs.ElementsBreadcrumbsData):
-        Promise<{
-          component: ElementsComponentsModule.ElementsBreadcrumbs.ElementsBreadcrumbs,
-          shadowRoot: ShadowRoot,
-        }> {
+    async function renderBreadcrumbs(data: ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbsData): Promise<{
+      component: ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs,
+      shadowRoot: ShadowRoot,
+    }> {
       const component = new ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs();
       renderElementIntoDOM(component);
       component.data = data;
@@ -237,7 +229,7 @@ describeWithEnvironment('ElementsBreadcrumbs', () => {
       });
 
       await withNoMutations(shadowRoot, async shadowRoot => {
-        const newDiv: ElementsComponentsModule.ElementsBreadcrumbsUtils
+        const newDiv: ElementsComponents.ElementsBreadcrumbsUtils
             .DOMNode = {...divCrumb, nodeName: 'span', nodeNameNicelyCased: 'span'};
         component.data = {
           crumbs: [newDiv, bodyCrumb],

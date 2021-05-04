@@ -4,27 +4,21 @@
 
 const {assert} = chai;
 
-import type * as SDKModule from '../../../../../front_end/core/sdk/sdk.js';
+import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Common from '../../../../../front_end/core/common/common.js';
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 
-describeWithEnvironment('MultitargetNetworkManager', () => {
-  let SDK: typeof SDKModule;
-  before(async () => {
-    SDK = await import('../../../../../front_end/core/sdk/sdk.js');
-  });
-
+describe('MultitargetNetworkManager', () => {
   describe('Trust Token done event', () => {
     it('is not lost when arriving before the corresponding requestWillBeSent event', () => {
       // 1) Setup a NetworkManager and listen to "RequestStarted" events.
       const networkManager = new Common.ObjectWrapper.ObjectWrapper();
-      const startedRequests: SDKModule.NetworkRequest.NetworkRequest[] = [];
+      const startedRequests: SDK.NetworkRequest.NetworkRequest[] = [];
       networkManager.addEventListener(SDK.NetworkManager.Events.RequestStarted, event => {
-        const request = event.data.request as SDKModule.NetworkRequest.NetworkRequest;
+        const request = event.data.request as SDK.NetworkRequest.NetworkRequest;
         startedRequests.push(request);
       });
       const networkDispatcher =
-          new SDK.NetworkManager.NetworkDispatcher(networkManager as SDKModule.NetworkManager.NetworkManager);
+          new SDK.NetworkManager.NetworkDispatcher(networkManager as SDK.NetworkManager.NetworkManager);
 
       // 2) Fire a trust token event, followed by a requestWillBeSent event.
       const mockEvent = {requestId: 'mockId'} as Protocol.Network.TrustTokenOperationDoneEvent;

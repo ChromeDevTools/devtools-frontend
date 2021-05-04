@@ -6,7 +6,6 @@ const {assert} = chai;
 
 import * as SurveyLink from '../../../../../front_end/ui/components/survey_link/survey_link.js';
 import * as Common from '../../../../../front_end/core/common/common.js';
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {assertNotNull} from '../../../../../front_end/core/platform/platform.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 
@@ -25,7 +24,7 @@ function showFailureCallback(trigger: string, callback: SurveyLink.SurveyLink.Sh
 
 const empty = Common.UIString.LocalizedEmptyString;
 
-describeWithEnvironment('SurveyLink', async () => {
+describe('SurveyLink', async () => {
   it('shows no link when canShowSurvey is still pending', () => {
     const link = new SurveyLink.SurveyLink.SurveyLink();
     link.data = {trigger: 'test trigger', promptText: empty, canShowSurvey: () => {}, showSurvey: () => {}};

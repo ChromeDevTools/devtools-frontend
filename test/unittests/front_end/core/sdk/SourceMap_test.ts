@@ -4,9 +4,8 @@
 
 const {assert} = chai;
 
-import type * as SDKModule from '../../../../../front_end/core/sdk/sdk.js';
+import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import {assertNotNull} from '../../../../../front_end/core/platform/platform.js';
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 
 const fakeInitiator = {
   target: null,
@@ -14,12 +13,7 @@ const fakeInitiator = {
   initiatorUrl: '',
 };
 
-describeWithEnvironment('SourceMapEntry', () => {
-  let SDK: typeof SDKModule;
-  before(async () => {
-    SDK = await import('../../../../../front_end/core/sdk/sdk.js');
-  });
-
+describe('SourceMapEntry', () => {
   it('can be instantiated correctly', () => {
     const sourceMapEntry = new SDK.SourceMap.SourceMapEntry(1, 1, 'http://www.example.com/', 1, 1, 'example');
     assert.strictEqual(sourceMapEntry.lineNumber, 1, 'line number was not set correctly');
@@ -53,12 +47,7 @@ describeWithEnvironment('SourceMapEntry', () => {
   });
 });
 
-describeWithEnvironment('TextSourceMap', () => {
-  let SDK: typeof SDKModule;
-  before(async () => {
-    SDK = await import('../../../../../front_end/core/sdk/sdk.js');
-  });
-
+describe('TextSourceMap', () => {
   describe('StringCharIterator', () => {
     it('detects when it has reached the end', () => {
       const emptyIterator = new SDK.SourceMap.TextSourceMap.StringCharIterator('');
@@ -86,7 +75,7 @@ describeWithEnvironment('TextSourceMap', () => {
   });
 
   function assertMapping(
-      actual: SDKModule.SourceMap.SourceMapEntry|null, expectedSourceURL: string|undefined,
+      actual: SDK.SourceMap.SourceMapEntry|null, expectedSourceURL: string|undefined,
       expectedSourceLineNumber: number|undefined, expectedSourceColumnNumber: number|undefined) {
     assertNotNull(actual);
     assert.strictEqual(actual.sourceURL, expectedSourceURL, 'unexpected source URL');
@@ -95,7 +84,7 @@ describeWithEnvironment('TextSourceMap', () => {
   }
 
   function assertReverseMapping(
-      actual: SDKModule.SourceMap.SourceMapEntry|null, expectedCompiledLineNumber: number,
+      actual: SDK.SourceMap.SourceMapEntry|null, expectedCompiledLineNumber: number,
       expectedCompiledColumnNumber: number) {
     assertNotNull(actual);
     assert.strictEqual(actual.lineNumber, expectedCompiledLineNumber, 'unexpected compiled line number');

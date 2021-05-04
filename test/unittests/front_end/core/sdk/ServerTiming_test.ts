@@ -4,15 +4,9 @@
 
 const {assert} = chai;
 
-import type * as SDKModule from '../../../../../front_end/core/sdk/sdk.js';
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 
-describeWithEnvironment('ServerTiming', () => {
-  let SDK: typeof SDKModule;
-  before(async () => {
-    SDK = await import('../../../../../front_end/core/sdk/sdk.js');
-  });
-
+describe('ServerTiming', () => {
   it('can be instantiated correctly', () => {
     const serverTiming = new SDK.ServerTiming.ServerTiming('example metric', 1, 'example description');
     assert.strictEqual(serverTiming.metric, 'example metric', 'metric was not set correctly');
@@ -21,12 +15,7 @@ describeWithEnvironment('ServerTiming', () => {
   });
 });
 
-describeWithEnvironment('SDK.ServerTiming.ServerTiming.createFromHeaderValue', () => {
-  let SDK: typeof SDKModule;
-  before(async () => {
-    SDK = await import('../../../../../front_end/core/sdk/sdk.js');
-  });
-
+describe('SDK.ServerTiming.ServerTiming.createFromHeaderValue', () => {
   it('parses headers correctly', () => {
     // A real-world-like example with some edge cases.
     const actual = SDK.ServerTiming.ServerTiming.createFromHeaderValue(

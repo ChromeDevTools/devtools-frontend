@@ -5,15 +5,9 @@
 const {assert} = chai;
 
 import * as Common from '../../../../../front_end/core/common/common.js';
-import type * as SDKModule from '../../../../../front_end/core/sdk/sdk.js';
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 
-describeWithEnvironment('OverlayColorGenerator', () => {
-  let SDK: typeof SDKModule;
-  before(async () => {
-    SDK = await import('../../../../../front_end/core/sdk/sdk.js');
-  });
-
+describe('OverlayColorGenerator', () => {
   it('generates colors for at least 100 iterations', () => {
     const generator = new SDK.OverlayColorGenerator.OverlayColorGenerator();
     let prevColor: Common.Color.Color|undefined;

@@ -2,9 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as ElementsComponentsModule from '../../../../../../front_end/panels/elements/components/components.js';
+import * as ElementsComponents from '../../../../../../front_end/panels/elements/components/components.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 
@@ -14,12 +13,7 @@ const initialData = {
   onNavigateToSource: () => {},
 };
 
-describeWithEnvironment('ComputedStyleProperty', () => {
-  let ElementsComponents: typeof ElementsComponentsModule;
-  before(async () => {
-    ElementsComponents = await import('../../../../../../front_end/panels/elements/components/components.js');
-  });
-
+describe('ComputedStyleProperty', () => {
   it('renders inherited property correctly', () => {
     const component = new ElementsComponents.ComputedStyleProperty.ComputedStyleProperty();
     renderElementIntoDOM(component);

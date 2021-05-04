@@ -4,15 +4,9 @@
 
 const {assert} = chai;
 
-import type * as SDKModule from '../../../../../front_end/core/sdk/sdk.js';
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 
-describeWithEnvironment('TracingModel', () => {
-  let SDK: typeof SDKModule;
-  before(async () => {
-    SDK = await import('../../../../../front_end/core/sdk/sdk.js');
-  });
-
+describe('TracingModel', () => {
   it('is able to determine if a phase is a nestable async phase', () => {
     assert.isTrue(
         SDK.TracingModel.TracingModel.isNestableAsyncPhase('b'), '\'b\' should be considered a nestable async phase');

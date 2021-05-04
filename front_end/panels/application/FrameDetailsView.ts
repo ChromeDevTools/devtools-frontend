@@ -168,11 +168,15 @@ const UIStrings = {
   /**
   *@description Explanation for the SharedArrayBuffer availability status
   */
-  WillRequireCrossoriginIsolated: '⚠️ will require cross-origin isolated context in the future',
+  willRequireCrossoriginIsolated: '⚠️ will require cross-origin isolated context in the future',
   /**
   *@description Explanation for the SharedArrayBuffer availability status
   */
   requiresCrossoriginIsolated: 'requires cross-origin isolated context',
+  /**
+  *@description Explanation for the SharedArrayBuffer availability status
+  */
+  transferRequiresCrossoriginIsolatedPermission: 'transfer requires permission policy:',
   /**
   *@description Explanation for the Measure Memory availability status
   */
@@ -843,22 +847,37 @@ export class FrameDetailsReportView extends HTMLElement {
             i18nString(UIStrings.sharedarraybufferConstructorIs) :
             (sabAvailable ? i18nString(UIStrings.sharedarraybufferConstructorIsAvailable) : '');
 
+        function renderHint(frame: SDK.ResourceTreeModel.ResourceTreeFrame): LitHtml.TemplateResult|{} {
+          switch (frame.getCrossOriginIsolatedContextType()) {
+            case Protocol.Page.CrossOriginIsolatedContextType.Isolated:
+              return LitHtml.nothing;
+            case Protocol.Page.CrossOriginIsolatedContextType.NotIsolated:
+              if (sabAvailable) {
+                return LitHtml.html`<span class="inline-comment">${
+                    i18nString(UIStrings.willRequireCrossoriginIsolated)}</span>`;
+              }
+              return LitHtml.html`<span class="inline-comment">${
+                  i18nString(UIStrings.requiresCrossoriginIsolated)}</span>`;
+            case Protocol.Page.CrossOriginIsolatedContextType.NotIsolatedFeatureDisabled:
+              if (!sabTransferAvailable) {
+                return LitHtml.html`<span class="inline-comment">${
+                    i18nString(
+                        UIStrings
+                            .transferRequiresCrossoriginIsolatedPermission)} <code>cross-origin-isolated</code></span>`;
+              }
+              break;
+          }
+          return LitHtml.nothing;
+        }
+
         // SharedArrayBuffer is an API name, so we don't translate it.
-        // Disabled until https://crbug.com/1079231 is fixed.
-        // clang-format off
         return LitHtml.html`
           <devtools-report-key>SharedArrayBuffers</devtools-report-key>
           <devtools-report-value title=${tooltipText}>
             ${availabilityText}
-            ${!this.frame.isCrossOriginIsolated() ?
-              (sabAvailable ?
-                LitHtml.html`<span class="inline-comment">${
-                  i18nString(UIStrings.WillRequireCrossoriginIsolated)}</span>` :
-                LitHtml.html`<span class="inline-comment">${i18nString(UIStrings.requiresCrossoriginIsolated)}</span>`) :
-              LitHtml.nothing}
+            ${renderHint(this.frame)}
           </devtools-report-value>
         `;
-        // clang-format on
       }
     }
     return LitHtml.nothing;

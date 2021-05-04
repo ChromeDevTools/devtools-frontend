@@ -2495,6 +2495,9 @@
   "panels/application/FrameDetailsView.ts | thisFrameHasBeenIdentifiedAsTheA": {
     "message": "T̂h́îś f̂ŕâḿê h́âś b̂éêń îd́êńt̂íf̂íêd́ âś â ćĥíl̂d́ f̂ŕâḿê óf̂ án̂ ád̂"
   },
+  "panels/application/FrameDetailsView.ts | transferRequiresCrossoriginIsolatedPermission": {
+    "message": "t̂ŕâńŝf́êŕ r̂éq̂úîŕêś p̂ér̂ḿîśŝíôń p̂ól̂íĉý:"
+  },
   "panels/application/FrameDetailsView.ts | unavailable": {
     "message": "ûńâv́âíl̂áb̂ĺê"
   },
@@ -2504,7 +2507,7 @@
   "panels/application/FrameDetailsView.ts | url": {
     "message": "ÛŔL̂"
   },
-  "panels/application/FrameDetailsView.ts | WillRequireCrossoriginIsolated": {
+  "panels/application/FrameDetailsView.ts | willRequireCrossoriginIsolated": {
     "message": "⚠️ ŵíl̂ĺ r̂éq̂úîŕê ćr̂óŝś-ôŕîǵîń îśôĺât́êd́ ĉón̂t́êx́t̂ ín̂ t́ĥé f̂út̂úr̂é"
   },
   "panels/application/FrameDetailsView.ts | yes": {

@@ -2495,6 +2495,9 @@
   "panels/application/FrameDetailsView.ts | thisFrameHasBeenIdentifiedAsTheA": {
     "message": "This frame has been identified as a child frame of an ad"
   },
+  "panels/application/FrameDetailsView.ts | transferRequiresCrossoriginIsolatedPermission": {
+    "message": "transfer requires permission policy:"
+  },
   "panels/application/FrameDetailsView.ts | unavailable": {
     "message": "unavailable"
   },
@@ -2504,7 +2507,7 @@
   "panels/application/FrameDetailsView.ts | url": {
     "message": "URL"
   },
-  "panels/application/FrameDetailsView.ts | WillRequireCrossoriginIsolated": {
+  "panels/application/FrameDetailsView.ts | willRequireCrossoriginIsolated": {
     "message": "⚠️ will require cross-origin isolated context in the future"
   },
   "panels/application/FrameDetailsView.ts | yes": {

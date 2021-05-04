@@ -23,6 +23,7 @@ const makeFrame = (): SDK.ResourceTreeModel.ResourceTreeFrame => {
     resourceForURL: () => null,
     isSecureContext: () => true,
     isCrossOriginIsolated: () => true,
+    getCrossOriginIsolatedContextType: () => Protocol.Page.CrossOriginIsolatedContextType.NotIsolatedFeatureDisabled,
     getSecureContextType: () => Protocol.Page.SecureContextType.SecureLocalhost,
     getGatedAPIFeatures: () =>
         [Protocol.Page.GatedAPIFeatures.SharedArrayBuffers,

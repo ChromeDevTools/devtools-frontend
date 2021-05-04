@@ -281,6 +281,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   _issueCounter: IssueCounter.IssueCounter.IssueCounter;
   private pendingSidebarMessages: ConsoleViewMessage[] = [];
   private userHasOpenedSidebarAtLeastOnce = false;
+  private issueToolbarThrottle: Common.Throttler.Throttler;
 
   constructor() {
     super();
@@ -545,8 +546,10 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     SDK.ConsoleModel.ConsoleModel.instance().messages().forEach(this._addConsoleMessage, this);
 
     const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
+    this.issueToolbarThrottle = new Common.Throttler.Throttler(100);
     issuesManager.addEventListener(
-        IssuesManager.IssuesManager.Events.IssuesCountUpdated, this._updateIssuesToolbarItem, this);
+        IssuesManager.IssuesManager.Events.IssuesCountUpdated,
+        () => this.issueToolbarThrottle.schedule(async () => this._updateIssuesToolbarItem()), this);
   }
 
   static instance(): ConsoleView {

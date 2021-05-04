@@ -319,7 +319,5 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     return cell;
   }
 
-  update(): void {
-    throw new Error('This should never be called, did you forget to override?');
-  }
+  abstract update(): void;
 }

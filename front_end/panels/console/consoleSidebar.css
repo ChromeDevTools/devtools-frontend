@@ -72,6 +72,6 @@ li .largeicon-navigator-folder {
   .tree-outline li:hover [is=ui-icon].icon-mask,
   .tree-outline li.selected [is=ui-icon].icon-mask,
   .tree-outline li.selected:focus .spritesheet-mediumicons:not(.icon-mask) {
-    background-color: HighlightText !important;
+    background-color: HighlightText !important; /* stylelint-disable-line declaration-no-important */
   }
 }

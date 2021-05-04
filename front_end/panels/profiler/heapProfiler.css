@@ -44,7 +44,7 @@
 }
 
 .heap-snapshot-view .data-grid span.percent-column {
-  width: 35px !important;
+  width: 35px !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .heap-snapshot-view .object-value-object,

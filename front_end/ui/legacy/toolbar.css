@@ -194,13 +194,13 @@ it. */
 
 .toolbar-button.toolbar-state-on.toolbar-toggle-with-red-color .toolbar-glyph,
 .toolbar-button.toolbar-state-off.toolbar-default-with-red-color .toolbar-glyph {
-  background-color: rgb(216 0 0) !important; /* stylelint-disable-line plugin/use_theme_colors */
+  background-color: rgb(216 0 0) !important; /* stylelint-disable-line plugin/use_theme_colors, declaration-no-important */
   /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .toolbar-button.toolbar-state-on.toolbar-toggle-with-red-color .toolbar-icon,
 .toolbar-button.toolbar-state-off.toolbar-default-with-red-color .toolbar-icon {
-  --icon-color: rgb(216 0 0) !important; /* stylelint-disable-line plugin/use_theme_colors */
+  --icon-color: rgb(216 0 0) !important; /* stylelint-disable-line plugin/use_theme_colors, declaration-no-important */
   /* See: crbug.com/1152736 for color variable migration. */
 }
 
@@ -221,7 +221,7 @@ it. */
 }
 
 .toolbar-button.dark-text .toolbar-text {
-  color: #333 !important; /* stylelint-disable-line plugin/use_theme_colors */
+  color: #333 !important; /* stylelint-disable-line plugin/use_theme_colors, declaration-no-important */
   /* See: crbug.com/1152736 for color variable migration. */
 }
 
@@ -230,11 +230,11 @@ it. */
 }
 
 :host-context(.-theme-with-dark-background) .toolbar-button .toolbar-icon {
-  --icon-color: rgb(145 145 145) !important;
+  --icon-color: rgb(145 145 145) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 :host-context(.-theme-with-dark-background) .toolbar-button:hover .toolbar-icon {
-  --icon-color: rgb(204 204 204) !important;
+  --icon-color: rgb(204 204 204) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 :not(.toolbar-render-as-links) .toolbar-button:enabled:hover:not(:active) .toolbar-glyph {
@@ -278,17 +278,17 @@ it. */
 }
 
 .toolbar-toggled-gray .toolbar-button.toolbar-state-on {
-  background-color: var(--color-background-elevation-1) !important;
+  background-color: var(--color-background-elevation-1) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 :host-context(.-theme-with-dark-background) .toolbar-button.toolbar-state-on.toolbar-toggle-with-red-color .toolbar-glyph,
 :host-context(.-theme-with-dark-background) .toolbar-button.toolbar-state-off.toolbar-default-with-red-color .toolbar-glyph {
-  background-color: hsl(0deg 100% 65%) !important; /* stylelint-disable-line plugin/use_theme_colors */
+  background-color: hsl(0deg 100% 65%) !important; /* stylelint-disable-line plugin/use_theme_colors, declaration-no-important */
 }
 
 :host-context(.-theme-with-dark-background) .toolbar-button.toolbar-state-on.toolbar-toggle-with-red-color .toolbar-icon,
 :host-context(.-theme-with-dark-background) .toolbar-button.toolbar-state-off.toolbar-default-with-red-color .toolbar-icon {
-  --icon-color: hsl(0deg 100% 65%) !important;
+  --icon-color: hsl(0deg 100% 65%) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 /* Checkbox */

@@ -96,7 +96,7 @@
 }
 
 .resource-timing-table {
-  width: 100% !important;
+  width: 100% !important; /* stylelint-disable-line declaration-no-important */
 }
 
 #network-overview-panel {
@@ -146,7 +146,7 @@
 
 .network-film-strip {
   border-bottom: solid 1px var(--color-details-hairline);
-  flex: none !important;
+  flex: none !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .network-film-strip-placeholder {

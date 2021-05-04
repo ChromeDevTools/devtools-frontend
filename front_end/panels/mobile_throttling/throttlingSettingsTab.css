@@ -74,7 +74,7 @@
 
 .conditions-list-separator-invisible {
   visibility: hidden;
-  height: 100% !important;
+  height: 100% !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .conditions-edit-row {

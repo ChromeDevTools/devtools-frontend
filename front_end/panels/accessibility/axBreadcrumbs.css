@@ -130,7 +130,7 @@
 
   .ax-breadcrumbs .ax-node.inspected .selection {
     forced-color-adjust: none;
-    background: Highlight !important;
+    background: Highlight !important; /* stylelint-disable-line declaration-no-important */
   }
 
   .ax-breadcrumbs .ax-node.inspected .wrapper {

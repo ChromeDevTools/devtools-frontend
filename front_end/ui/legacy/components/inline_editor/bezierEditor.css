@@ -171,7 +171,7 @@ span.bezier-display-value {
   line-height: 20px;
   height: 20px;
   cursor: text;
-  white-space: nowrap !important;
+  white-space: nowrap !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .bezier-container {

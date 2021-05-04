@@ -379,7 +379,7 @@ text.animation-timeline-grid-label {
 }
 
 .animation-buffer-preview.selected > svg > line {
-  stroke: var(--color-background) !important;
+  stroke: var(--color-background) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 @keyframes newGroupAnim {

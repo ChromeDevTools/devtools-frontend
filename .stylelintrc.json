@@ -9,6 +9,7 @@
     "color-function-notation": "modern",
     "hue-degree-notation": "angle",
     "comment-empty-line-before": null,
+    "declaration-no-important": true,
     "color-named": "never",
     "property-no-vendor-prefix": [
       true,

@@ -7,7 +7,7 @@
 .root-view {
   background-color: var(--color-background);
   overflow: hidden;
-  position: absolute !important;
+  position: absolute !important; /* stylelint-disable-line declaration-no-important */
   left: 0;
   top: 0;
   right: 0;

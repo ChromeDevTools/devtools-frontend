@@ -123,7 +123,7 @@ export class PieChart extends HTMLElement {
         }
 
         .pie-chart-legend-row:focus-visible {
-          box-shadow: 0 0 0 2px var(--legacy-selection-bg-color) !important;
+          box-shadow: 0 0 0 2px var(--legacy-selection-bg-color) !important; /* stylelint-disable-line declaration-no-important */
         }
 
         .pie-chart-swatch {

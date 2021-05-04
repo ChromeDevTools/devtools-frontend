@@ -136,12 +136,12 @@ body {
 
 .monospace {
   font-family: var(--monospace-font-family);
-  font-size: var(--monospace-font-size) !important;
+  font-size: var(--monospace-font-size) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .source-code {
   font-family: var(--source-code-font-family);
-  font-size: var(--source-code-font-size) !important;
+  font-size: var(--source-code-font-size) !important; /* stylelint-disable-line declaration-no-important */
   white-space: pre-wrap;
 }
 
@@ -175,13 +175,13 @@ iframe.fill {
 
 .hbox {
   display: flex;
-  flex-direction: row !important;
+  flex-direction: row !important; /* stylelint-disable-line declaration-no-important */
   position: relative;
 }
 
 .vbox {
   display: flex;
-  flex-direction: column !important;
+  flex-direction: column !important; /* stylelint-disable-line declaration-no-important */
   position: relative;
 }
 
@@ -219,7 +219,7 @@ iframe.widget {
 }
 
 .hidden {
-  display: none !important;
+  display: none !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .highlighted-search-result {
@@ -315,21 +315,21 @@ input::placeholder {
 .editing {
   box-shadow: var(--drop-shadow);
   background-color: var(--color-background);
-  text-overflow: clip !important;
+  text-overflow: clip !important; /* stylelint-disable-line declaration-no-important */
   padding-left: 2px;
   margin-left: -2px;
   padding-right: 2px;
   margin-right: -2px;
   margin-bottom: -1px;
   padding-bottom: 1px;
-  opacity: 100% !important;
+  opacity: 100% !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .editing,
 .editing * {
-  color: #222 !important; /* stylelint-disable-line plugin/use_theme_colors */
+  color: #222 !important; /* stylelint-disable-line plugin/use_theme_colors, declaration-no-important */
   /* See: crbug.com/1152736 for color variable migration. */
-  text-decoration: none !important;
+  text-decoration: none !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .chrome-select {
@@ -492,7 +492,7 @@ span[is=dt-icon-label] {
 .-theme-preserve {
   -webkit-mask-image: var(--image-file-smallIcons);
   -webkit-mask-position: var(--spritesheet-position);
-  background: #fafafa !important; /* stylelint-disable-line plugin/use_theme_colors */
+  background: #fafafa !important; /* stylelint-disable-line plugin/use_theme_colors, declaration-no-important */
   /* See: crbug.com/1152736 for color variable migration. */
 }
 
@@ -502,7 +502,7 @@ span[is=dt-icon-label] {
 .-theme-preserve {
   -webkit-mask-image: var(--image-file-largeIcons);
   -webkit-mask-position: var(--spritesheet-position);
-  background: #fafafa !important; /* stylelint-disable-line plugin/use_theme_colors */
+  background: #fafafa !important; /* stylelint-disable-line plugin/use_theme_colors, declaration-no-important */
   /* See: crbug.com/1152736 for color variable migration. */
 }
 
@@ -512,7 +512,7 @@ span[is=dt-icon-label] {
 .-theme-preserve {
   -webkit-mask-image: var(--image-file-mediumIcons);
   -webkit-mask-position: var(--spritesheet-position);
-  background: #fafafa !important; /* stylelint-disable-line plugin/use_theme_colors */
+  background: #fafafa !important; /* stylelint-disable-line plugin/use_theme_colors, declaration-no-important */
   /* See: crbug.com/1152736 for color variable migration. */
 }
 

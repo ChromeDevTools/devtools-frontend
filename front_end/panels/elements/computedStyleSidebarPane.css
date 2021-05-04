@@ -20,7 +20,7 @@
 }
 
 .styles-sidebar-pane-filter-box > input {
-  outline: none !important;
+  outline: none !important; /* stylelint-disable-line declaration-no-important */
   border: none;
   width: 100%;
   background: var(--color-background);

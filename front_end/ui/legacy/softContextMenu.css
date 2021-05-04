@@ -6,7 +6,7 @@
 
 .soft-context-menu {
   overflow-y: auto;
-  min-width: 160px !important;
+  min-width: 160px !important; /* stylelint-disable-line declaration-no-important */
   /* NOTE: Keep padding in sync with padding adjustment in SoftContextMenu.js */
   padding: 4px 0 4px 0;
   border: 1px solid #b9b9b9; /* stylelint-disable-line plugin/use_theme_colors */

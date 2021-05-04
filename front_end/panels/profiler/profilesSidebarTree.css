@@ -137,11 +137,11 @@ li.small .subtitle {
 /* Launcher */
 
 .profile-launcher-view-tree-item {
-  margin-left: 0 !important;
+  margin-left: 0 !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .profile-launcher-view-tree-item > .icon {
-  width: 8px !important;
+  width: 8px !important; /* stylelint-disable-line declaration-no-important */
   visibility: hidden;
 }
 /* Heap profiles and CPU profiles */

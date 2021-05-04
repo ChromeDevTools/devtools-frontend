@@ -113,7 +113,7 @@
 
 #timeline-overview-framerate {
   flex-basis: 16px;
-  margin-top: 0 !important;
+  margin-top: 0 !important; /* stylelint-disable-line declaration-no-important */
 }
 
 #timeline-overview-filmstrip {
@@ -142,7 +142,7 @@
 
 #timeline-overview-responsiveness {
   flex-basis: 5px;
-  margin-top: 0 !important;
+  margin-top: 0 !important; /* stylelint-disable-line declaration-no-important */
 }
 
 #timeline-overview-input {
@@ -283,7 +283,7 @@
 }
 
 .timeline-details-view-block .timeline-details-stack-values {
-  flex-direction: column !important;
+  flex-direction: column !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .timeline-details-chip-title {

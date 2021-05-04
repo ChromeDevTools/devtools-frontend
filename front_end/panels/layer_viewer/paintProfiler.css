@@ -14,8 +14,8 @@
 }
 
 .paint-profiler-pie-chart {
-  width: 60px !important;
-  height: 60px !important;
+  width: 60px !important; /* stylelint-disable-line declaration-no-important */
+  height: 60px !important; /* stylelint-disable-line declaration-no-important */
   padding: 2px;
   overflow: hidden;
   font-size: 10px;

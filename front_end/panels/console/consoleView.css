@@ -333,7 +333,7 @@
 
 .console-error-level .console-message-text,
 .console-error-level .console-view-object-properties-section {
-  color: var(--override-error-text-color) !important;
+  color: var(--override-error-text-color) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .console-system-type.console-info-level {
@@ -343,7 +343,7 @@
 
 .-theme-with-dark-background .console-verbose-level:not(.console-warning-level) .console-message-text,
 .-theme-with-dark-background .console-system-type.console-info-level {
-  color: hsl(220deg 100% 65%) !important;
+  color: hsl(220deg 100% 65%) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 #console-messages .link {
@@ -402,7 +402,7 @@
 .console-message-nowrap-below,
 .console-message-nowrap-below div,
 .console-message-nowrap-below span {
-  white-space: nowrap !important;
+  white-space: nowrap !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .object-state-note {
@@ -469,7 +469,7 @@
   .console-message-wrapper:focus:last-of-type *,
   .console-message-wrapper:focus .devtools-link,
   .console-message-wrapper:focus:last-of-type .devtools-link {
-    color: HighlightText !important;
+    color: HighlightText !important; /* stylelint-disable-line declaration-no-important */
   }
 
   #console-messages .devtools-link,

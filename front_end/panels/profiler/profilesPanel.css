@@ -129,7 +129,7 @@
 }
 
 .cpu-profile-flame-chart-overview-pane {
-  flex: 0 0 80px !important;
+  flex: 0 0 80px !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .profile-text-view {

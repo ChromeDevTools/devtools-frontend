@@ -64,7 +64,7 @@
 }
 
 .shadow-split-widget.vbox > .shadow-split-widget-sidebar.no-default-splitter {
-  border: 0 !important;
+  border: 0 !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .shadow-split-widget.vbox > .shadow-split-widget-sidebar:not(.maximized) {

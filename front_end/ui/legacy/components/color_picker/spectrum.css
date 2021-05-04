@@ -412,7 +412,7 @@
   position: relative;
   border: 1px solid rgb(0 0 0 / 10%); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
-  background-position: -1px !important;
+  background-position: -1px !important; /* stylelint-disable-line declaration-no-important */
   z-index: 14;
 }
 
@@ -653,7 +653,7 @@ div.palette-preview {
 
 @media (forced-colors: active) {
   :host {
-    border: 1px solid canvastext !important;
+    border: 1px solid canvastext !important; /* stylelint-disable-line declaration-no-important */
   }
 
   .spectrum-color {
@@ -663,7 +663,7 @@ div.palette-preview {
   .spectrum-switcher:hover,
   .spectrum-switcher:focus-visible {
     forced-color-adjust: none;
-    background-color: Highlight !important;
+    background-color: Highlight !important; /* stylelint-disable-line declaration-no-important */
   }
 
   :host-context(.-theme-with-dark-background) .spectrum-switcher {
@@ -687,12 +687,12 @@ div.palette-preview {
 
   .swatch-overlay:hover,
   .swatch-overlay:focus-visible {
-    background-color: canvas !important;
+    background-color: canvas !important; /* stylelint-disable-line declaration-no-important */
   }
 
   .spectrum-slider {
     forced-color-adjust: none;
-    background-color: ButtonText !important;
-    box-shadow: 0 1px 4px 0 ButtonFace !important;
+    background-color: ButtonText !important; /* stylelint-disable-line declaration-no-important */
+    box-shadow: 0 1px 4px 0 ButtonFace !important; /* stylelint-disable-line declaration-no-important */
   }
 }

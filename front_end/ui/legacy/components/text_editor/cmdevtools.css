@@ -6,15 +6,15 @@
  */
 
 .CodeMirror {
-  line-height: 1.2em !important;
-  background-color: transparent !important;
+  line-height: 1.2em !important; /* stylelint-disable-line declaration-no-important */
+  background-color: transparent !important; /* stylelint-disable-line declaration-no-important */
   color: #222; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
   height: 300px;
 }
 
 .CodeMirror-linewidget {
-  overflow: visible !important;
+  overflow: visible !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .CodeMirror-gutter-performance {
@@ -444,7 +444,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .show-whitespaces .CodeMirror .cm-tab::before {
-  display: block !important;
+  display: block !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .cm-execution-line {

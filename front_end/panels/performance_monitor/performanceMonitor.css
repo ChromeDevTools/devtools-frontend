@@ -67,7 +67,7 @@
 }
 
 .perfmon-indicator:not(.active) .perfmon-indicator-swatch {
-  background-color: #eee !important; /* stylelint-disable-line plugin/use_theme_colors */
+  background-color: #eee !important; /* stylelint-disable-line plugin/use_theme_colors, declaration-no-important */
   /* See: crbug.com/1152736 for color variable migration. */
 }
 

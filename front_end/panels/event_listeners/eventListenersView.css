@@ -21,12 +21,12 @@
 }
 
 .tree-outline-disclosure {
-  padding-left: 0 !important;
+  padding-left: 0 !important; /* stylelint-disable-line declaration-no-important */
   padding-right: 3px;
 }
 
 .tree-outline-disclosure li.parent::before {
-  top: 0 !important;
+  top: 0 !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .tree-outline-disclosure .name {
@@ -79,7 +79,7 @@
   }
 
   .event-listener-button:hover {
-    background-color: Highlight !important;
+    background-color: Highlight !important; /* stylelint-disable-line declaration-no-important */
     color: HighlightText;
     border-color: ButtonText;
   }

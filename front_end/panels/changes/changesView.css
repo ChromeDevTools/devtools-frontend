@@ -24,11 +24,11 @@
 }
 
 .CodeMirror-lines:not(:active) {
-  cursor: default !important;
+  cursor: default !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .CodeMirror-line:hover {
-  cursor: default !important;
+  cursor: default !important; /* stylelint-disable-line declaration-no-important */
   background-color: rgb(0 0 255 / 5%); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
 }

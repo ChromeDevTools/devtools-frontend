@@ -37,7 +37,7 @@
 }
 
 .sensors-view input:focus::-webkit-input-placeholder {
-  color: transparent !important;
+  color: transparent !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .sensors-view .chrome-select {
@@ -98,7 +98,7 @@
 .orientation-stage.disabled {
   filter: grayscale();
   opacity: 50%;
-  cursor: default !important;
+  cursor: default !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .orientation-element,

@@ -86,7 +86,7 @@
 }
 
 .source-code.indexed-db-key-path {
-  font-size: unset !important;
+  font-size: unset !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .resources-toolbar {

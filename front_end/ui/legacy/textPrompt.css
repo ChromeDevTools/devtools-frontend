@@ -12,14 +12,14 @@
 .text-prompt-editing {
   box-shadow: var(--drop-shadow);
   background-color: var(--color-background);
-  text-overflow: clip !important;
+  text-overflow: clip !important; /* stylelint-disable-line declaration-no-important */
   padding-left: 2px;
   margin-left: -2px;
   padding-right: 2px;
   margin-right: -2px;
   margin-bottom: -1px;
   padding-bottom: 1px;
-  opacity: 100% !important;
+  opacity: 100% !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .text-prompt {
@@ -32,13 +32,13 @@
 }
 
 .text-prompt-editing > .text-prompt {
-  color: var(--color-text-primary) !important;
-  text-decoration: none !important;
+  color: var(--color-text-primary) !important; /* stylelint-disable-line declaration-no-important */
+  text-decoration: none !important; /* stylelint-disable-line declaration-no-important */
   white-space: pre;
 }
 
 .text-prompt > .auto-complete-text {
-  color: var(--color-text-secondary) !important;
+  color: var(--color-text-secondary) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .text-prompt[data-placeholder]:empty::before {
@@ -67,7 +67,7 @@
 
 @media (forced-colors: active) {
   .text-prompt[data-placeholder]:empty::before {
-    color: GrayText !important;
+    color: GrayText !important; /* stylelint-disable-line declaration-no-important */
   }
 
   .text-prompt.disabled {

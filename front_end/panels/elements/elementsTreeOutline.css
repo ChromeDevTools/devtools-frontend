@@ -7,21 +7,21 @@
 .editing {
   box-shadow: var(--drop-shadow);
   background-color: var(--color-background);
-  text-overflow: clip !important;
+  text-overflow: clip !important; /* stylelint-disable-line declaration-no-important */
   padding-left: 2px;
   margin-left: -2px;
   padding-right: 2px;
   margin-right: -2px;
   margin-bottom: -1px;
   padding-bottom: 1px;
-  opacity: 100% !important;
+  opacity: 100% !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .editing,
 .editing * {
-  color: #222 !important; /* stylelint-disable-line plugin/use_theme_colors */
+  color: #222 !important; /* stylelint-disable-line plugin/use_theme_colors, declaration-no-important */
   /* See: crbug.com/1152736 for color variable migration. */
-  text-decoration: none !important;
+  text-decoration: none !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .editing br {
@@ -186,7 +186,7 @@
 
 .CodeMirror {
   background-color: var(--color-background);
-  height: 300px !important;
+  height: 300px !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .CodeMirror-lines {
@@ -230,7 +230,7 @@ select {
 
 .elements-tree-nowrap,
 .elements-tree-nowrap .li {
-  white-space: pre !important;
+  white-space: pre !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .elements-disclosure .elements-tree-nowrap li {
@@ -335,7 +335,7 @@ li.selected:not(.always-parent) + ol.children {
 }
 
 li.selected:not(.always-parent) + ol.children {
-  --indentation-level-border-color: hsl(216deg 68% 80% / 100%) !important;
+  --indentation-level-border-color: hsl(216deg 68% 80% / 100%) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
@@ -349,7 +349,7 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
 @media (forced-colors: active) {
   .elements-disclosure li.parent::before {
     forced-color-adjust: none;
-    background-color: ButtonText !important;
+    background-color: ButtonText !important; /* stylelint-disable-line declaration-no-important */
   }
 
   .elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.selected .selected-hint::before {
@@ -360,8 +360,8 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
   .elements-disclosure li.hovered:not(.selected) .selection,
   .elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection {
     forced-color-adjust: none;
-    background: canvas !important;
-    border: 1px solid Highlight !important;
+    background: canvas !important; /* stylelint-disable-line declaration-no-important */
+    border: 1px solid Highlight !important; /* stylelint-disable-line declaration-no-important */
   }
 
   .gutter-menu-icon {

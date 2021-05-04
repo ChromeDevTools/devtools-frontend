@@ -31,7 +31,7 @@ button.view-trace {
     the LH viewer app, so disable this feature. */
 
 .lh-tools--viewer {
-  display: none !important;
+  display: none !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .lighthouse-settings-pane {

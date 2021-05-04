@@ -33,7 +33,7 @@
 }
 
 .close-button:active .hover-icon {
-  display: none !important;
+  display: none !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .close-button:focus-visible .hover-icon {

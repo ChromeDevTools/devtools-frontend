@@ -204,7 +204,7 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
 
   .tree-outline li.selected [is=ui-icon].icon-mask,
   .tree-outline li.selected:focus [is=ui-icon]:not(.icon-mask) {
-    background-color: HighlightText !important;
+    background-color: HighlightText !important; /* stylelint-disable-line declaration-no-important */
   }
 
   ol.tree-outline:not(.hide-selection-when-blurred) li.selected,

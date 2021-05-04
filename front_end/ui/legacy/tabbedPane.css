@@ -210,12 +210,12 @@
 /* Web page style */
 
 .tabbed-pane-shadow.vertical-tab-layout {
-  flex-direction: row !important;
+  flex-direction: row !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-header {
   background-color: transparent;
-  border: none transparent !important;
+  border: none transparent !important; /* stylelint-disable-line declaration-no-important */
   width: auto;
   flex: 0 0 auto;
   flex-direction: column;
@@ -254,7 +254,7 @@
 }
 
 .tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-header-tab:not(.selected) {
-  cursor: pointer !important;
+  cursor: pointer !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-header-tab.selected {

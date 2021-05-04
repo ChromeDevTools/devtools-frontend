@@ -75,8 +75,8 @@
 }
 
 .tree-outline li.child-editing {
-  word-wrap: break-word !important;
-  white-space: normal !important;
+  word-wrap: break-word !important; /* stylelint-disable-line declaration-no-important */
+  white-space: normal !important; /* stylelint-disable-line declaration-no-important */
   padding-left: 0;
 }
 
@@ -111,7 +111,7 @@ ol.expanded {
 }
 
 .tree-outline li.editing .enabled-button {
-  display: none !important;
+  display: none !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .overloaded:not(.has-ignorable-error),
@@ -192,7 +192,7 @@ ol.expanded {
 /* Matched styles */
 
 :host-context(.matched-styles) .tree-outline li {
-  margin-left: 0 !important;
+  margin-left: 0 !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .expand-icon {

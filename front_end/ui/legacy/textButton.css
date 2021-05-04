@@ -59,7 +59,7 @@
 .text-button.link-style {
   background: none;
   border: none;
-  padding: 0 !important;
+  padding: 0 !important; /* stylelint-disable-line declaration-no-important */
   font: inherit;
   cursor: pointer;
   height: 18px;

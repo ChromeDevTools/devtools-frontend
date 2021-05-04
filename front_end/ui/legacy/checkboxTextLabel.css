@@ -9,7 +9,7 @@
   margin: 0;
   display: inline-flex;
   flex-shrink: 0;
-  align-items: center !important;
+  align-items: center !important; /* stylelint-disable-line declaration-no-important */
 }
 
 input {
@@ -103,7 +103,7 @@ input.dt-checkbox-themed:checked::after {
 
   input.dt-checkbox-theme-preserve:hover:checked::before,
   input.dt-checkbox-theme-preserve:hover:checked::after {
-    background-color: Highlight !important;
+    background-color: Highlight !important; /* stylelint-disable-line declaration-no-important */
   }
 
   input.dt-checkbox-theme-preserve:hover:checked {

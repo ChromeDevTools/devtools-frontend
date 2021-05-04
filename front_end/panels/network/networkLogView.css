@@ -29,12 +29,12 @@
  */
 
 .network-log-grid.data-grid {
-  border: none !important;
+  border: none !important; /* stylelint-disable-line declaration-no-important */
   flex: auto;
 }
 
 .network-log-grid.data-grid.no-selection:focus-visible {
-  border: none !important;
+  border: none !important; /* stylelint-disable-line declaration-no-important */
 }
 
 #network-container {
@@ -144,7 +144,7 @@
 }
 
 .network-log-grid.data-grid th.sortable:active {
-  background-image: none !important;
+  background-image: none !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .network-cell-subtitle {
@@ -167,7 +167,7 @@
 
 .network-error-row,
 .network-error-row .network-cell-subtitle {
-  color: #e60000 !important; /* stylelint-disable-line plugin/use_theme_colors */
+  color: #e60000 !important; /* stylelint-disable-line plugin/use_theme_colors, declaration-no-important */
   /* See: crbug.com/1152736 for color variable migration. */
 }
 
@@ -178,7 +178,7 @@
 .network-log-grid.data-grid:focus tr.selected.network-error-row,
 .network-log-grid.data-grid:focus tr.selected.network-error-row .network-cell-subtitle,
 .network-log-grid.data-grid:focus tr.selected.network-error-row .network-dim-cell {
-  color: #9f0000 !important; /* stylelint-disable-line plugin/use_theme_colors */
+  color: #9f0000 !important; /* stylelint-disable-line plugin/use_theme_colors, declaration-no-important */
   /* See: crbug.com/1152736 for color variable migration. */
 }
 
@@ -465,7 +465,7 @@
   .network-status-pane {
     forced-color-adjust: none;
     border-color: Highlight;
-    background-color: canvas !important;
+    background-color: canvas !important; /* stylelint-disable-line declaration-no-important */
   }
 
   .network-waterfall-header:hover {

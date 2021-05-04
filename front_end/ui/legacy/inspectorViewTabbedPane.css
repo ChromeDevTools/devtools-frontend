@@ -22,5 +22,5 @@
 }
 
 .tabbed-pane-left-toolbar {
-  margin-right: 0 !important;
+  margin-right: 0 !important; /* stylelint-disable-line declaration-no-important */
 }

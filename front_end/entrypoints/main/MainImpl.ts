@@ -343,7 +343,11 @@ export class MainImpl {
     Logs.NetworkLog.NetworkLog.instance();
     SDK.FrameManager.FrameManager.instance();
     Logs.LogManager.LogManager.instance();
-    IssuesManager.IssuesManager.IssuesManager.instance();
+    IssuesManager.IssuesManager.IssuesManager.instance({
+      forceNew: true,
+      ensureFirst: true,
+      showThirdPartyIssuesSetting: IssuesManager.Issue.getShowThirdPartyIssuesSetting(),
+    });
     IssuesManager.ContrastCheckTrigger.ContrastCheckTrigger.instance();
 
     // @ts-ignore layout test global

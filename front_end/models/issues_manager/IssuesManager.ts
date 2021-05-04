@@ -8,7 +8,7 @@ import {ContentSecurityPolicyIssue} from './ContentSecurityPolicyIssue.js';
 import {CorsIssue} from './CorsIssue.js';
 import {CrossOriginEmbedderPolicyIssue, isCrossOriginEmbedderPolicyIssue} from './CrossOriginEmbedderPolicyIssue.js';
 import {HeavyAdIssue} from './HeavyAdIssue.js';
-import {getShowThirdPartyIssuesSetting, Issue, IssueKind} from './Issue.js';
+import {Issue, IssueKind} from './Issue.js';
 import {LowTextContrastIssue} from './LowTextContrastIssue.js';
 import {MixedContentIssue} from './MixedContentIssue.js';
 import {SameSiteCookieIssue} from './SameSiteCookieIssue.js';
@@ -86,6 +86,13 @@ function createIssuesFromProtocolIssue(
   return [];
 }
 
+export interface IssuesManagerCreationOptions {
+  forceNew: boolean;
+  /** Throw an error if this is not the first instance created */
+  ensureFirst: boolean;
+  showThirdPartyIssuesSetting?: Common.Settings.Setting<boolean>;
+}
+
 /**
  * The `IssuesManager` is the central storage for issues. It collects issues from all the
  * `IssuesModel` instances in the page, and deduplicates them wrt their primary key.
@@ -104,10 +111,10 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
   private filteredIssues: Map<string, Issue>;
   private issueCounts: Map<IssueKind, number>;
   private hasSeenTopFrameNavigated: boolean;
-  private showThirdPartySettingsChangeListener: Common.EventTarget.EventDescriptor|null;
   private sourceFrameIssuesManager: SourceFrameIssuesManager;
+  private showThirdPartyIssuesSetting?: Common.Settings.Setting<boolean>;
 
-  constructor() {
+  constructor(showThirdPartyIssuesSetting?: Common.Settings.Setting<boolean>) {
     super();
     this.eventListeners = new WeakMap();
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.IssuesModel.IssuesModel, this);
@@ -120,14 +127,25 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
     SDK.FrameManager.FrameManager.instance().addEventListener(
         SDK.FrameManager.Events.FrameAddedToTarget, this.onFrameAddedToTarget, this);
 
-    this.showThirdPartySettingsChangeListener = null;
+    this.showThirdPartyIssuesSetting = showThirdPartyIssuesSetting;
+    // issueFilter uses the 'showThirdPartyIssues' setting. Clients of IssuesManager need
+    // a full update when the setting changes to get an up-to-date issues list.
+    this.showThirdPartyIssuesSetting?.addChangeListener(() => this.updateFilteredIssues());
 
     this.sourceFrameIssuesManager = new SourceFrameIssuesManager(this);
   }
 
-  static instance({forceNew}: {forceNew: boolean} = {forceNew: false}): IssuesManager {
-    if (!issuesManagerInstance || forceNew) {
-      issuesManagerInstance = new IssuesManager();
+  static instance(opts: IssuesManagerCreationOptions = {
+    forceNew: false,
+    ensureFirst: false,
+  }): IssuesManager {
+    if (issuesManagerInstance && opts.ensureFirst) {
+      throw new Error(
+          'IssuesManager was already created. Either set "ensureFirst" to false or make sure that this invocation is really the first one.');
+    }
+
+    if (!issuesManagerInstance || opts.forceNew) {
+      issuesManagerInstance = new IssuesManager(opts.showThirdPartyIssuesSetting);
     }
 
     return issuesManagerInstance;
@@ -231,20 +249,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
   }
 
   private issueFilter(issue: Issue): boolean {
-    if (!this.showThirdPartySettingsChangeListener) {
-      // issueFilter uses the 'showThirdPartyIssues' setting. Clients of IssuesManager need
-      // a full update when the setting changes to get an up-to-date issues list.
-      //
-      // The settings change listener can't be set up in IssuesManager's constructor. At that
-      // time, the settings storage is not initialized yet, so the setting can't be created.
-      const showThirdPartyIssuesSetting = getShowThirdPartyIssuesSetting();
-      this.showThirdPartySettingsChangeListener = showThirdPartyIssuesSetting.addChangeListener(() => {
-        this.updateFilteredIssues();
-      });
-    }
-
-    const showThirdPartyIssuesSetting = getShowThirdPartyIssuesSetting();
-    return showThirdPartyIssuesSetting.get() || !issue.isCausedByThirdParty();
+    return this.showThirdPartyIssuesSetting?.get() || !issue.isCausedByThirdParty();
   }
 
   private updateFilteredIssues(): void {

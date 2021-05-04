@@ -5,25 +5,20 @@
 const {assert} = chai;
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import type * as IssuesManagerModule from '../../../../../front_end/models/issues_manager/issues_manager.js';
+import * as IssuesManager from '../../../../../front_end/models/issues_manager/issues_manager.js';
 
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import {createFakeSetting} from '../../helpers/EnvironmentHelpers.js';
 import {mkInspectorCspIssue, StubIssue, ThirdPartyStubIssue} from './StubIssue.js';
 import {MockIssuesModel} from './MockIssuesModel.js';
 
-describeWithEnvironment('IssuesManager', () => {
-  let IssuesManager: typeof IssuesManagerModule;
-  before(async () => {
-    IssuesManager = await import('../../../../../front_end/models/issues_manager/issues_manager.js');
-  });
-
+describe('IssuesManager', () => {
   it('collects issues from an issues model', () => {
     const issue1 = new StubIssue('StubIssue1', ['id1', 'id2'], []);
     const mockModel = new MockIssuesModel([issue1]) as unknown as SDK.IssuesModel.IssuesModel;
     const issuesManager = new IssuesManager.IssuesManager.IssuesManager();
     issuesManager.modelAdded(mockModel);
 
-    const dispatchedIssues: IssuesManagerModule.Issue.Issue[] = [];
+    const dispatchedIssues: IssuesManager.Issue.Issue[] = [];
     issuesManager.addEventListener(
         IssuesManager.IssuesManager.Events.IssueAdded, event => dispatchedIssues.push(event.data.issue));
 
@@ -49,9 +44,8 @@ describeWithEnvironment('IssuesManager', () => {
       new ThirdPartyStubIssue('StubIssue4', true),
     ];
 
-    IssuesManager.Issue.getShowThirdPartyIssuesSetting().set(false);
-
-    const issuesManager = new IssuesManager.IssuesManager.IssuesManager();
+    const showThirdPartyIssuesSetting = createFakeSetting('third party flag', false);
+    const issuesManager = new IssuesManager.IssuesManager.IssuesManager(showThirdPartyIssuesSetting);
     const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
     issuesManager.modelAdded(mockModel);
 
@@ -68,7 +62,7 @@ describeWithEnvironment('IssuesManager', () => {
     assert.deepStrictEqual(issueCodes, ['AllowedStubIssue1', 'AllowedStubIssue3']);
     assert.deepStrictEqual(firedIssueAddedEventCodes, ['AllowedStubIssue1', 'AllowedStubIssue3']);
 
-    IssuesManager.Issue.getShowThirdPartyIssuesSetting().set(true);
+    showThirdPartyIssuesSetting.set(true);
 
     issueCodes = Array.from(issuesManager.issues()).map(i => i.code());
     assert.deepStrictEqual(issueCodes, ['AllowedStubIssue1', 'StubIssue2', 'AllowedStubIssue3', 'StubIssue4']);
@@ -91,5 +85,14 @@ describeWithEnvironment('IssuesManager', () => {
     assert.deepStrictEqual(issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.Improvement), 2);
     assert.deepStrictEqual(issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.BreakingChange), 1);
     assert.deepStrictEqual(issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.PageError), 0);
+  });
+
+  describe('instance', () => {
+    it('throws an Error if its not the first instance created with "ensureFirst" set', () => {
+      IssuesManager.IssuesManager.IssuesManager.instance();
+
+      assert.throws(() => IssuesManager.IssuesManager.IssuesManager.instance({forceNew: true, ensureFirst: true}));
+      assert.throws(() => IssuesManager.IssuesManager.IssuesManager.instance({forceNew: false, ensureFirst: true}));
+    });
   });
 });

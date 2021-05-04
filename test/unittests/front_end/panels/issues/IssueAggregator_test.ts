@@ -4,20 +4,14 @@
 
 const {assert} = chai;
 
-import type * as IssuesModule from '../../../../../front_end/panels/issues/issues.js';
-import type * as IssuesManagerModule from '../../../../../front_end/models/issues_manager/issues_manager.js';
-import type * as SDKModule from '../../../../../front_end/core/sdk/sdk.js';
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import * as Issues from '../../../../../front_end/panels/issues/issues.js';
+import * as IssuesManager from '../../../../../front_end/models/issues_manager/issues_manager.js';
+import type * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import {StubIssue} from '../../models/issues_manager/StubIssue.js';
 import {MockIssuesModel} from '../../models/issues_manager/MockIssuesModel.js';
 import {MockIssuesManager} from '../../models/issues_manager/MockIssuesManager.js';
 
-describeWithEnvironment('AggregatedIssue', async () => {
-  let Issues: typeof IssuesModule;
-  before(async () => {
-    Issues = await import('../../../../../front_end/panels/issues/issues.js');
-  });
-
+describe('AggregatedIssue', async () => {
   it('deduplicates network requests across issues', () => {
     const issue1 = StubIssue.createFromRequestIds(['id1', 'id2']);
     const issue2 = StubIssue.createFromRequestIds(['id1']);
@@ -45,20 +39,13 @@ describeWithEnvironment('AggregatedIssue', async () => {
   });
 });
 
-describeWithEnvironment('IssueAggregator', async () => {
-  let IssuesManager: typeof IssuesManagerModule;
-  let Issues: typeof IssuesModule;
-  before(async () => {
-    Issues = await import('../../../../../front_end/panels/issues/issues.js');
-    IssuesManager = await import('../../../../../front_end/models/issues_manager/issues_manager.js');
-  });
-
+describe('IssueAggregator', async () => {
   it('deduplicates issues with the same code', () => {
     const issue1 = StubIssue.createFromRequestIds(['id1']);
     const issue2 = StubIssue.createFromRequestIds(['id2']);
 
-    const mockModel = new MockIssuesModel([]) as unknown as SDKModule.IssuesModel.IssuesModel;
-    const mockManager = new MockIssuesManager([]) as unknown as IssuesManagerModule.IssuesManager.IssuesManager;
+    const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
+    const mockManager = new MockIssuesManager([]) as unknown as IssuesManager.IssuesManager.IssuesManager;
     const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
     mockManager.dispatchEventToListeners(
         IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
@@ -77,9 +64,9 @@ describeWithEnvironment('IssueAggregator', async () => {
     const issue1b = StubIssue.createFromRequestIds(['id1']);  // Duplicate id.
     const issue3 = StubIssue.createFromRequestIds(['id3']);
 
-    const mockModel = new MockIssuesModel([]) as unknown as SDKModule.IssuesModel.IssuesModel;
+    const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
     const mockManager =
-        new MockIssuesManager([issue1b, issue3]) as unknown as IssuesManagerModule.IssuesManager.IssuesManager;
+        new MockIssuesManager([issue1b, issue3]) as unknown as IssuesManager.IssuesManager.IssuesManager;
     const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
     mockManager.dispatchEventToListeners(
         IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
@@ -98,9 +85,9 @@ describeWithEnvironment('IssueAggregator', async () => {
     const issue1b = new StubIssue('codeC', ['id1'], []);
     const issue3 = new StubIssue('codeA', ['id1'], []);
 
-    const mockModel = new MockIssuesModel([]) as unknown as SDKModule.IssuesModel.IssuesModel;
+    const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
     const mockManager =
-        new MockIssuesManager([issue1b, issue3]) as unknown as IssuesManagerModule.IssuesManager.IssuesManager;
+        new MockIssuesManager([issue1b, issue3]) as unknown as IssuesManager.IssuesManager.IssuesManager;
     const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
     mockManager.dispatchEventToListeners(
         IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
@@ -117,7 +104,7 @@ describeWithEnvironment('IssueAggregator', async () => {
     it('for a single issue', () => {
       const issues = StubIssue.createFromIssueKinds([IssuesManager.Issue.IssueKind.Improvement]);
 
-      const mockManager = new MockIssuesManager(issues) as unknown as IssuesManagerModule.IssuesManager.IssuesManager;
+      const mockManager = new MockIssuesManager(issues) as unknown as IssuesManager.IssuesManager.IssuesManager;
       const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
 
       const aggregatedIssues = Array.from(aggregator.aggregatedIssues());
@@ -133,7 +120,7 @@ describeWithEnvironment('IssueAggregator', async () => {
         IssuesManager.Issue.IssueKind.Improvement,
       ]);
 
-      const mockManager = new MockIssuesManager(issues) as unknown as IssuesManagerModule.IssuesManager.IssuesManager;
+      const mockManager = new MockIssuesManager(issues) as unknown as IssuesManager.IssuesManager.IssuesManager;
       const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
 
       const aggregatedIssues = Array.from(aggregator.aggregatedIssues());
@@ -149,7 +136,7 @@ describeWithEnvironment('IssueAggregator', async () => {
         IssuesManager.Issue.IssueKind.Improvement,
       ]);
 
-      const mockManager = new MockIssuesManager(issues) as unknown as IssuesManagerModule.IssuesManager.IssuesManager;
+      const mockManager = new MockIssuesManager(issues) as unknown as IssuesManager.IssuesManager.IssuesManager;
       const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
 
       const aggregatedIssues = Array.from(aggregator.aggregatedIssues());
@@ -160,16 +147,9 @@ describeWithEnvironment('IssueAggregator', async () => {
   });
 });
 
-describeWithEnvironment('IssueAggregator', async () => {
-  let Issues: typeof IssuesModule;
-  let IssuesManager: typeof IssuesManagerModule;
-  before(async () => {
-    IssuesManager = await import('../../../../../front_end/models/issues_manager/issues_manager.js');
-    Issues = await import('../../../../../front_end/panels/issues/issues.js');
-  });
-
+describe('IssueAggregator', async () => {
   it('aggregates heavy ad issues correctly', () => {
-    const mockModel = new MockIssuesModel([]) as unknown as SDKModule.IssuesModel.IssuesModel;
+    const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
     const details1 = {
       resolution: Protocol.Audits.HeavyAdResolutionStatus.HeavyAdBlocked,
       reason: Protocol.Audits.HeavyAdReason.CpuPeakLimit,
@@ -183,7 +163,7 @@ describeWithEnvironment('IssueAggregator', async () => {
     };
     const issue2 = new IssuesManager.HeavyAdIssue.HeavyAdIssue(details2, mockModel);
 
-    const mockManager = new MockIssuesManager([]) as unknown as IssuesManagerModule.IssuesManager.IssuesManager;
+    const mockManager = new MockIssuesManager([]) as unknown as IssuesManager.IssuesManager.IssuesManager;
     const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
     mockManager.dispatchEventToListeners(
         IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});

@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as IssuesManager from '../../../../../front_end/models/issues_manager/issues_manager.js';
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 
@@ -35,7 +34,7 @@ describe('createIssueDescriptionFromMarkdown', async () => {
   });
 });
 
-describeWithEnvironment('substitutePlaceholders', async () => {
+describe('substitutePlaceholders', async () => {
   it('returns the input as-is, with no placeholders present in the input', () => {
     const str = 'Example string with no placeholders';
 

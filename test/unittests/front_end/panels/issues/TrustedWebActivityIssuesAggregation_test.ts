@@ -4,24 +4,16 @@
 
 const {assert} = chai;
 
-import type * as IssuesModule from '../../../../../front_end/panels/issues/issues.js';
-import type * as IssuesManagerModule from '../../../../../front_end/models/issues_manager/issues_manager.js';
-import type * as SDKModule from '../../../../../front_end/core/sdk/sdk.js';
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import * as Issues from '../../../../../front_end/panels/issues/issues.js';
+import * as IssuesManager from '../../../../../front_end/models/issues_manager/issues_manager.js';
+import type * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import {MockIssuesModel} from '../../models/issues_manager/MockIssuesModel.js';
 import {MockIssuesManager} from '../../models/issues_manager/MockIssuesManager.js';
 
-describeWithEnvironment('AggregatedIssue', async () => {
-  let IssuesManager: typeof IssuesManagerModule;
-  let Issues: typeof IssuesModule;
-  before(async () => {
-    Issues = await import('../../../../../front_end/panels/issues/issues.js');
-    IssuesManager = await import('../../../../../front_end/models/issues_manager/issues_manager.js');
-  });
-
+describe('AggregatedIssue', async () => {
   it('aggregates two TWA issues with same violationType correctly', () => {
-    const mockModel = new MockIssuesModel([]) as unknown as SDKModule.IssuesModel.IssuesModel;
-    const mockManager = new MockIssuesManager([]) as unknown as IssuesManagerModule.IssuesManager.IssuesManager;
+    const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
+    const mockManager = new MockIssuesManager([]) as unknown as IssuesManager.IssuesManager.IssuesManager;
     const details1 = {
       violationType: Protocol.Audits.TwaQualityEnforcementViolationType.KHttpError,
       url: 'test.url1.com',
@@ -55,8 +47,8 @@ describeWithEnvironment('AggregatedIssue', async () => {
   });
 
   it('TWA issues with different violationType do not aggregate', () => {
-    const mockModel = new MockIssuesModel([]) as unknown as SDKModule.IssuesModel.IssuesModel;
-    const mockManager = new MockIssuesManager([]) as unknown as IssuesManagerModule.IssuesManager.IssuesManager;
+    const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
+    const mockManager = new MockIssuesManager([]) as unknown as IssuesManager.IssuesManager.IssuesManager;
     const details1 = {
       violationType: Protocol.Audits.TwaQualityEnforcementViolationType.KHttpError,
       url: 'test.url1.com',

@@ -4,24 +4,16 @@
 
 const {assert} = chai;
 
-import type * as IssuesModule from '../../../../../front_end/panels/issues/issues.js';
-import type * as IssuesManagerModule from '../../../../../front_end/models/issues_manager/issues_manager.js';
-import type * as SDKModule from '../../../../../front_end/core/sdk/sdk.js';
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import * as Issues from '../../../../../front_end/panels/issues/issues.js';
+import * as IssuesManager from '../../../../../front_end/models/issues_manager/issues_manager.js';
+import type * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import {MockIssuesModel} from '../../models/issues_manager/MockIssuesModel.js';
 import {MockIssuesManager} from '../../models/issues_manager/MockIssuesManager.js';
 
-describeWithEnvironment('AggregatedIssue', async () => {
-  let Issues: typeof IssuesModule;
-  let IssuesManager: typeof IssuesManagerModule;
-  before(async () => {
-    Issues = await import('../../../../../front_end/panels/issues/issues.js');
-    IssuesManager = await import('../../../../../front_end/models/issues_manager/issues_manager.js');
-  });
-
+describe('AggregatedIssue', async () => {
   it('aggregates multiple issues with duplicates correctly', () => {
-    const mockModel = new MockIssuesModel([]) as unknown as SDKModule.IssuesModel.IssuesModel;
-    const mockManager = new MockIssuesManager([]) as unknown as IssuesManagerModule.IssuesManager.IssuesManager;
+    const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
+    const mockManager = new MockIssuesManager([]) as unknown as IssuesManager.IssuesManager.IssuesManager;
     const commonDetails = {
       violatingNodeSelector: 'div',
       contrastRatio: 1,

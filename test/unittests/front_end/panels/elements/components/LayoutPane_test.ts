@@ -2,17 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../../../../front_end/core/common/common.js';
-import type * as ElementsModule from '../../../../../front_end/panels/elements/elements.js';
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
-import {assertElement, assertShadowRoot, getEventPromise, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
+import * as Common from '../../../../../../front_end/core/common/common.js';
+import type * as ElementsComponentsModule from '../../../../../../front_end/panels/elements/components/components.js';
+import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
+import {assertElement, assertShadowRoot, getEventPromise, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
 
 const {assert} = chai;
 
 describeWithEnvironment('LayoutPane', async () => {
-  let Elements: typeof ElementsModule;
+  let ElementsComponents: typeof ElementsComponentsModule;
   before(async () => {
-    Elements = await import('../../../../../front_end/panels/elements/elements.js');
+    ElementsComponents = await import('../../../../../../front_end/panels/elements/components/components.js');
   });
 
   function queryLabels(component: HTMLElement, selector: string) {
@@ -29,7 +29,7 @@ describeWithEnvironment('LayoutPane', async () => {
   }
 
   it('renders settings', async () => {
-    const component = new Elements.LayoutPane.LayoutPane();
+    const component = new ElementsComponents.LayoutPane.LayoutPane();
     renderElementIntoDOM(component);
 
     component.data = {
@@ -77,7 +77,7 @@ describeWithEnvironment('LayoutPane', async () => {
   });
 
   it('sends event when a setting is changed', async () => {
-    const component = new Elements.LayoutPane.LayoutPane();
+    const component = new ElementsComponents.LayoutPane.LayoutPane();
     renderElementIntoDOM(component);
 
     component.data = {
@@ -107,7 +107,8 @@ describeWithEnvironment('LayoutPane', async () => {
     const input = component.shadowRoot.querySelector('[data-input]');
     assertElement(input, HTMLInputElement);
 
-    const eventPromise = getEventPromise<ElementsModule.LayoutPane.SettingChangedEvent>(component, 'setting-changed');
+    const eventPromise =
+        getEventPromise<ElementsComponentsModule.LayoutPane.SettingChangedEvent>(component, 'setting-changed');
 
     input.click();
 
@@ -116,7 +117,7 @@ describeWithEnvironment('LayoutPane', async () => {
   });
 
   it('renders grid elements', async () => {
-    const component = new Elements.LayoutPane.LayoutPane();
+    const component = new ElementsComponents.LayoutPane.LayoutPane();
     renderElementIntoDOM(component);
 
     component.data = {
@@ -166,7 +167,7 @@ describeWithEnvironment('LayoutPane', async () => {
   });
 
   it('renders flex elements', async () => {
-    const component = new Elements.LayoutPane.LayoutPane();
+    const component = new ElementsComponents.LayoutPane.LayoutPane();
     renderElementIntoDOM(component);
 
     component.data = {
@@ -217,7 +218,7 @@ describeWithEnvironment('LayoutPane', async () => {
   });
 
   it('send an event when an element overlay is toggled', async () => {
-    const component = new Elements.LayoutPane.LayoutPane();
+    const component = new ElementsComponents.LayoutPane.LayoutPane();
     renderElementIntoDOM(component);
 
     let called = 0;
@@ -250,7 +251,7 @@ describeWithEnvironment('LayoutPane', async () => {
   });
 
   it('send an event when an element’s Show element button is pressed', async () => {
-    const component = new Elements.LayoutPane.LayoutPane();
+    const component = new ElementsComponents.LayoutPane.LayoutPane();
     let called = 0;
     component.data = {
       gridElements: [
@@ -279,7 +280,7 @@ describeWithEnvironment('LayoutPane', async () => {
   });
 
   it('expands/collapses <details> using ArrowLeft/ArrowRight keys', async () => {
-    const component = new Elements.LayoutPane.LayoutPane();
+    const component = new ElementsComponents.LayoutPane.LayoutPane();
     component.data = {
       gridElements: [],
       settings: [],

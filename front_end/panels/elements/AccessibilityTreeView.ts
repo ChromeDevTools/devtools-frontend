@@ -10,16 +10,16 @@ import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {accessibilityNodeRenderer, AXTreeNode, sdkNodeToAXTreeNode} from './AccessibilityTreeUtils.js';
+import * as ElementsComponents from './components/components.js';
 
 export class AccessibilityTreeView extends UI.Widget.VBox {
   private readonly accessibilityTreeComponent =
       new TreeOutline.TreeOutline.TreeOutline<SDK.AccessibilityModel.AccessibilityNode>();
-  private treeData: AXTreeNode[] = [];
+  private treeData: ElementsComponents.AccessibilityTreeUtils.AXTreeNode[] = [];
   private readonly toggleButton: HTMLButtonElement;
   private accessibilityModel: SDK.AccessibilityModel.AccessibilityModel|null = null;
   private rootAXNode: SDK.AccessibilityModel.AccessibilityNode|null = null;
-  private selectedTreeNode: AXTreeNode|null = null;
+  private selectedTreeNode: ElementsComponents.AccessibilityTreeUtils.AXTreeNode|null = null;
   private inspectedDOMNode: SDK.DOMModel.DOMNode|null = null;
 
   constructor(toggleButton: HTMLButtonElement) {
@@ -85,10 +85,11 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
     }
 
     this.rootAXNode = root;
-    this.treeData = [sdkNodeToAXTreeNode(this.rootAXNode)];
+    this.treeData = [ElementsComponents.AccessibilityTreeUtils.sdkNodeToAXTreeNode(this.rootAXNode)];
 
     this.accessibilityTreeComponent.data = {
-      defaultRenderer: (node): LitHtml.TemplateResult => accessibilityNodeRenderer(node),
+      defaultRenderer: (node): LitHtml.TemplateResult =>
+          ElementsComponents.AccessibilityTreeUtils.accessibilityNodeRenderer(node),
       tree: this.treeData,
     };
 
@@ -123,7 +124,8 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
     }
 
     this.accessibilityTreeComponent.data = {
-      defaultRenderer: (node): LitHtml.TemplateResult => accessibilityNodeRenderer(node),
+      defaultRenderer: (node): LitHtml.TemplateResult =>
+          ElementsComponents.AccessibilityTreeUtils.accessibilityNodeRenderer(node),
       tree: this.treeData,
     };
 
@@ -138,7 +140,7 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
       return;
     }
 
-    this.selectedTreeNode = sdkNodeToAXTreeNode(inspectedAXNode);
+    this.selectedTreeNode = ElementsComponents.AccessibilityTreeUtils.sdkNodeToAXTreeNode(inspectedAXNode);
     this.accessibilityTreeComponent.expandToAndSelectTreeNode(this.selectedTreeNode);
   }
 

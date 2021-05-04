@@ -3,19 +3,19 @@
 // found in the LICENSE file.
 
 import './NodeText.js';
-import '../../ui/components/survey_link/survey_link.js';
+import '../../../ui/components/survey_link/survey_link.js';
 
-import * as Common from '../../core/common/common.js';
-import * as Host from '../../core/host/host.js';
-import * as LitHtml from '../../third_party/lit-html/lit-html.js';
-import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
-import * as SurveyLink from '../../ui/components/survey_link/survey_link.js';
+import * as Common from '../../../core/common/common.js';
+import * as Host from '../../../core/host/host.js';
+import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as SurveyLink from '../../../ui/components/survey_link/survey_link.js';
 
 import {BooleanSetting, EnumSetting, LayoutElement, Setting} from './LayoutPaneUtils.js';
 
 import type {NodeTextData} from './NodeText.js';
 
-import * as i18n from '../../core/i18n/i18n.js';
+import * as i18n from '../../../core/i18n/i18n.js';
 const UIStrings = {
   /**
   *@description Title of the show element button in the Layout pane of the Elements panel
@@ -54,7 +54,7 @@ const UIStrings = {
   */
   noFlexboxLayoutsFoundOnThisPage: 'No flexbox layouts found on this page',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/elements/LayoutPane.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/elements/components/LayoutPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export {LayoutElement};
 

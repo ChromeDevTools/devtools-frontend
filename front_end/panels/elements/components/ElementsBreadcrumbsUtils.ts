@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../../core/i18n/i18n.js';
+import * as i18n from '../../../core/i18n/i18n.js';
 const UIStrings = {
   /**
   * @description Text in Elements Breadcrumbs of the Elements panel. Indicates that a HTML element
@@ -10,7 +10,7 @@ const UIStrings = {
   */
   text: '(text)',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementsBreadcrumbsUtils.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/elements/components/ElementsBreadcrumbsUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface DOMNode {
   parentNode: DOMNode|null;

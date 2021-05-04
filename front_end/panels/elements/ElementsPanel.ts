@@ -44,12 +44,9 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {AccessibilityTreeView} from './AccessibilityTreeView.js';
-import {Adorner} from './Adorner.js';  // eslint-disable-line no-unused-vars
-import {AdornerManager} from './AdornerManager.js';
-import {AdornerSettingsPane, AdornerSettingUpdatedEvent} from './AdornerSettingsPane.js';  // eslint-disable-line no-unused-vars
+import * as ElementsComponents from './components/components.js';
 import {ComputedStyleWidget} from './ComputedStyleWidget.js';
-import {DOMNode, ElementsBreadcrumbs} from './ElementsBreadcrumbs.js';  // eslint-disable-line no-unused-vars
-import {ElementsTreeElement} from './ElementsTreeElement.js';           // eslint-disable-line no-unused-vars
+import {ElementsTreeElement} from './ElementsTreeElement.js';  // eslint-disable-line no-unused-vars
 import {ElementsTreeElementHighlighter} from './ElementsTreeElementHighlighter.js';
 import {ElementsTreeOutline} from './ElementsTreeOutline.js';
 import {MarkerDecorator} from './MarkerDecorator.js';  // eslint-disable-line no-unused-vars
@@ -128,7 +125,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementsPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const legacyNodeToNewBreadcrumbsNode = (node: SDK.DOMModel.DOMNode): DOMNode => {
+const legacyNodeToNewBreadcrumbsNode = (node: SDK.DOMModel.DOMNode): ElementsComponents.ElementsBreadcrumbs.DOMNode => {
   return {
     parentNode: node.parentNode ? legacyNodeToNewBreadcrumbsNode(node.parentNode) : null,
     id: (node.id as number),
@@ -154,7 +151,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   _contentElement: HTMLDivElement;
   _splitMode: _splitMode|null;
   _accessibilityTreeView: AccessibilityTreeView|undefined;
-  _breadcrumbs: ElementsBreadcrumbs;
+  _breadcrumbs: ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs;
   _stylesWidget: StylesSidebarPane;
   _computedStyleWidget: ComputedStyleWidget;
   _metricsWidget: MetricsSidebarPane;
@@ -168,9 +165,9 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   }[]|undefined;
   _currentSearchResultIndex: number;
   _pendingNodeReveal: boolean;
-  _adornerManager: AdornerManager;
-  _adornerSettingsPane: AdornerSettingsPane|null;
-  _adornersByName: Map<string, Set<Adorner>>;
+  _adornerManager: ElementsComponents.AdornerManager.AdornerManager;
+  _adornerSettingsPane: ElementsComponents.AdornerSettingsPane.AdornerSettingsPane|null;
+  _adornersByName: Map<string, Set<ElementsComponents.Adorner.Adorner>>;
   _accessibilityTreeButton?: HTMLButtonElement;
   domTreeButton?: HTMLButtonElement;
   _selectedNodeOnReset?: SDK.DOMModel.DOMNode;
@@ -218,7 +215,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     if (this.domTreeButton) {
       this._accessibilityTreeView = new AccessibilityTreeView(this.domTreeButton);
     }
-    this._breadcrumbs = new ElementsBreadcrumbs();
+    this._breadcrumbs = new ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs();
     this._breadcrumbs.addEventListener('node-selected', (event: Common.EventTarget.EventTargetEvent) => {
       this._crumbNodeSelected(event);
     });
@@ -251,7 +248,8 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
     this._pendingNodeReveal = false;
 
-    this._adornerManager = new AdornerManager(Common.Settings.Settings.instance().moduleSetting('adornerSettings'));
+    this._adornerManager = new ElementsComponents.AdornerManager.AdornerManager(
+        Common.Settings.Settings.instance().moduleSetting('adornerSettings'));
     this._adornerSettingsPane = null;
     this._adornersByName = new Map();
   }
@@ -793,7 +791,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
     /* Get the change nodes from the event & convert them to breadcrumb nodes */
     const newNodes = nodes.map(legacyNodeToNewBreadcrumbsNode);
-    const nodesThatHaveChangedMap = new Map<number, DOMNode>();
+    const nodesThatHaveChangedMap = new Map<number, ElementsComponents.ElementsBreadcrumbs.DOMNode>();
     newNodes.forEach(crumb => nodesThatHaveChangedMap.set(crumb.id, crumb));
 
     /* Loop over our existing crumbs, and if any have an ID that matches an ID from the new nodes
@@ -1097,9 +1095,10 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     // Delay the initialization of the pane to the first showing
     // since usually this pane won't be used.
     if (!this._adornerSettingsPane) {
-      this._adornerSettingsPane = new AdornerSettingsPane();
+      this._adornerSettingsPane = new ElementsComponents.AdornerSettingsPane.AdornerSettingsPane();
       this._adornerSettingsPane.addEventListener('adorner-setting-updated', (event: Event) => {
-        const {adornerName, isEnabledNow, newSettings} = (event as AdornerSettingUpdatedEvent).data;
+        const {adornerName, isEnabledNow, newSettings} =
+            (event as ElementsComponents.AdornerSettingsPane.AdornerSettingUpdatedEvent).data;
         const adornersToUpdate = this._adornersByName.get(adornerName);
         if (adornersToUpdate) {
           for (const adorner of adornersToUpdate) {
@@ -1122,7 +1121,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     return this._adornerManager.isAdornerEnabled(adornerText);
   }
 
-  registerAdorner(adorner: Adorner): void {
+  registerAdorner(adorner: ElementsComponents.Adorner.Adorner): void {
     let adornerSet = this._adornersByName.get(adorner.name);
     if (!adornerSet) {
       adornerSet = new Set();
@@ -1134,7 +1133,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     }
   }
 
-  deregisterAdorner(adorner: Adorner): void {
+  deregisterAdorner(adorner: ElementsComponents.Adorner.Adorner): void {
     const adornerSet = this._adornersByName.get(adorner.name);
     if (!adornerSet) {
       return;

@@ -2,19 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as ElementsModule from '../../../../../front_end/panels/elements/elements.js';
-import {assertShadowRoot, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import type * as ElementsComponentsModule from '../../../../../../front_end/panels/elements/components/components.js';
+import {assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 describeWithEnvironment('ComputedStyleTrace', async () => {
-  let Elements: typeof ElementsModule;
+  let ElementsComponents: typeof ElementsComponentsModule;
   before(async () => {
-    Elements = await import('../../../../../front_end/panels/elements/elements.js');
+    ElementsComponents = await import('../../../../../../front_end/panels/elements/components/components.js');
   });
 
   it('renders ComputedStyleTrace selector correctly', () => {
-    const component = new Elements.ComputedStyleTrace.ComputedStyleTrace();
+    const component = new ElementsComponents.ComputedStyleTrace.ComputedStyleTrace();
     renderElementIntoDOM(component);
     const selector = '#id';
     const data = {
@@ -34,7 +34,7 @@ describeWithEnvironment('ComputedStyleTrace', async () => {
   });
 
   it('has a clickable goto icon and trace value', () => {
-    const component = new Elements.ComputedStyleTrace.ComputedStyleTrace();
+    const component = new ElementsComponents.ComputedStyleTrace.ComputedStyleTrace();
     renderElementIntoDOM(component);
     let clickCounter = 0;
     const data = {

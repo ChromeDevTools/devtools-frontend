@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as ElementsModule from '../../../../../front_end/panels/elements/elements.js';
-import {assertShadowRoot, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import type * as ElementsComponentsModule from '../../../../../../front_end/panels/elements/components/components.js';
+import {assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 
@@ -15,13 +15,13 @@ const initialData = {
 };
 
 describeWithEnvironment('ComputedStyleProperty', () => {
-  let Elements: typeof ElementsModule;
+  let ElementsComponents: typeof ElementsComponentsModule;
   before(async () => {
-    Elements = await import('../../../../../front_end/panels/elements/elements.js');
+    ElementsComponents = await import('../../../../../../front_end/panels/elements/components/components.js');
   });
 
   it('renders inherited property correctly', () => {
-    const component = new Elements.ComputedStyleProperty.ComputedStyleProperty();
+    const component = new ElementsComponents.ComputedStyleProperty.ComputedStyleProperty();
     renderElementIntoDOM(component);
     const data = {
       ...initialData,
@@ -43,7 +43,7 @@ describeWithEnvironment('ComputedStyleProperty', () => {
   });
 
   it('renders a clickable goto icon that calls onNavigateToSource when it contains traces', () => {
-    const component = new Elements.ComputedStyleProperty.ComputedStyleProperty();
+    const component = new ElementsComponents.ComputedStyleProperty.ComputedStyleProperty();
     renderElementIntoDOM(component);
     let isOnNavigateToSourceCalled = false;
     const data = {

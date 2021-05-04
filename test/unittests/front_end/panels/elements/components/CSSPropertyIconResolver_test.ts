@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as ElementsModule from '../../../../../front_end/panels/elements/elements.js';
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import type * as ElementsComponentsModule from '../../../../../../front_end/panels/elements/components/components.js';
+import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 
 describeWithEnvironment('CSSPropertyIconResolver', async () => {
-  let Elements: typeof ElementsModule;
+  let ElementsComponents: typeof ElementsComponentsModule;
   before(async () => {
-    Elements = await import('../../../../../front_end/panels/elements/elements.js');
+    ElementsComponents = await import('../../../../../../front_end/panels/elements/components/components.js');
   });
 
   function mapFromStyle(style: {[key: string]: string|undefined}) {
@@ -29,10 +29,10 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         expected: {
-          row: Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
-          column: Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
-          'row-reverse': Elements.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
-          'column-reverse': Elements.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
+          row: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
+          column: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+          'row-reverse': ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
+          'column-reverse': ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
         },
       },
       {
@@ -42,10 +42,10 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         expected: {
-          row: Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
-          column: Elements.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
-          'row-reverse': Elements.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
-          'column-reverse': Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
+          row: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+          column: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
+          'row-reverse': ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
+          'column-reverse': ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
         },
       },
       {
@@ -55,10 +55,10 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         expected: {
-          row: Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
-          column: Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
-          'row-reverse': Elements.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
-          'column-reverse': Elements.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
+          row: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+          column: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
+          'row-reverse': ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
+          'column-reverse': ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
         },
       },
       {
@@ -68,10 +68,10 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         expected: {
-          row: Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
-          column: Elements.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
-          'row-reverse': Elements.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
-          'column-reverse': Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
+          row: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+          column: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
+          'row-reverse': ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
+          'column-reverse': ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
         },
       },
       {
@@ -81,10 +81,10 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         expected: {
-          row: Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
-          column: Elements.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
-          'row-reverse': Elements.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
-          'column-reverse': Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
+          row: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+          column: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
+          'row-reverse': ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
+          'column-reverse': ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
         },
       },
       {
@@ -93,10 +93,10 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         expected: {
-          row: Elements.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
-          column: Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
-          'row-reverse': Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
-          'column-reverse': Elements.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
+          row: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
+          column: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+          'row-reverse': ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
+          'column-reverse': ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
         },
       },
       {
@@ -106,10 +106,10 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         expected: {
-          row: Elements.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
-          column: Elements.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
-          'row-reverse': Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
-          'column-reverse': Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
+          row: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
+          column: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
+          'row-reverse': ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+          'column-reverse': ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
         },
       },
       {
@@ -119,10 +119,10 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         expected: {
-          row: Elements.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
-          column: Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
-          'row-reverse': Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
-          'column-reverse': Elements.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
+          row: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
+          column: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
+          'row-reverse': ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+          'column-reverse': ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
         },
       },
       {
@@ -132,10 +132,10 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         expected: {
-          row: Elements.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
-          column: Elements.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
-          'row-reverse': Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
-          'column-reverse': Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
+          row: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
+          column: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
+          'row-reverse': ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+          'column-reverse': ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
         },
       },
       {
@@ -145,25 +145,25 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         expected: {
-          row: Elements.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
-          column: Elements.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
-          'row-reverse': Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
-          'column-reverse': Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
+          row: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
+          column: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
+          'row-reverse': ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+          'column-reverse': ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
         },
       },
     ];
 
     for (const test of tests) {
       assert.deepEqual(
-          Elements.CSSPropertyIconResolver.getPhysicalDirections(mapFromStyle(test.style)), test.expected,
+          ElementsComponents.CSSPropertyIconResolver.getPhysicalDirections(mapFromStyle(test.style)), test.expected,
           `Test ${JSON.stringify(test.style)} failed.`);
     }
   });
 
   it('can rotate the icon', () => {
     assert.deepEqual(
-        Elements.CSSPropertyIconResolver.rotateFlexDirectionIcon(
-            Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT),
+        ElementsComponents.CSSPropertyIconResolver.rotateFlexDirectionIcon(
+            ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT),
         {
           iconName: 'flex-direction-icon',
           rotate: -90,
@@ -171,8 +171,8 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           scaleY: 1,
         });
     assert.deepEqual(
-        Elements.CSSPropertyIconResolver.rotateFlexDirectionIcon(
-            Elements.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT),
+        ElementsComponents.CSSPropertyIconResolver.rotateFlexDirectionIcon(
+            ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT),
         {
           iconName: 'flex-direction-icon',
           rotate: 90,
@@ -180,8 +180,8 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           scaleY: 1,
         });
     assert.deepEqual(
-        Elements.CSSPropertyIconResolver.rotateFlexDirectionIcon(
-            Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM),
+        ElementsComponents.CSSPropertyIconResolver.rotateFlexDirectionIcon(
+            ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM),
         {
           iconName: 'flex-direction-icon',
           rotate: 0,
@@ -189,8 +189,8 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           scaleY: 1,
         });
     assert.deepEqual(
-        Elements.CSSPropertyIconResolver.rotateFlexDirectionIcon(
-            Elements.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP),
+        ElementsComponents.CSSPropertyIconResolver.rotateFlexDirectionIcon(
+            ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP),
         {
           iconName: 'flex-direction-icon',
           rotate: 0,
@@ -206,7 +206,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           'direction': 'ltr',
           display: 'flex',
         },
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
       {
         style: {
@@ -214,7 +214,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           'writing-mode': 'tb',
           display: 'flex',
         },
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
       {
         style: {
@@ -222,7 +222,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           'writing-mode': 'vertical-lr',
           display: 'flex',
         },
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
       {
         style: {
@@ -230,7 +230,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           'writing-mode': 'vertical-rl',
           display: 'flex',
         },
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
       {
         style: {
@@ -238,14 +238,14 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           'writing-mode': 'tb-rl',
           display: 'flex',
         },
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
       {
         style: {
           'direction': 'rtl',
           display: 'flex',
         },
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
       },
       {
         style: {
@@ -253,7 +253,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           'writing-mode': 'tb',
           display: 'flex',
         },
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
       },
       {
         style: {
@@ -261,7 +261,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           'writing-mode': 'vertical-lr',
           display: 'flex',
         },
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
       },
       {
         style: {
@@ -269,7 +269,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           'writing-mode': 'vertical-rl',
           display: 'flex',
         },
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
       },
       {
         style: {
@@ -277,19 +277,19 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           'writing-mode': 'tb-rl',
           display: 'flex',
         },
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP,
       },
     ];
     for (const test of tests) {
       assert.deepEqual(
-          Elements.CSSPropertyIconResolver.findIcon('flex-direction: row', mapFromStyle(test.style)),
-          Elements.CSSPropertyIconResolver.rotateFlexDirectionIcon(test.expected),
+          ElementsComponents.CSSPropertyIconResolver.findIcon('flex-direction: row', mapFromStyle(test.style)),
+          ElementsComponents.CSSPropertyIconResolver.rotateFlexDirectionIcon(test.expected),
           `Test 'flex-direction: row'(${JSON.stringify(test.style)}) failed.`);
 
       assert.deepEqual(
-          Elements.CSSPropertyIconResolver.findIcon('flex-direction: row-reverse', mapFromStyle(test.style)),
-          Elements.CSSPropertyIconResolver.rotateFlexDirectionIcon(
-              Elements.CSSPropertyIconResolver.reverseDirection(test.expected)),
+          ElementsComponents.CSSPropertyIconResolver.findIcon('flex-direction: row-reverse', mapFromStyle(test.style)),
+          ElementsComponents.CSSPropertyIconResolver.rotateFlexDirectionIcon(
+              ElementsComponents.CSSPropertyIconResolver.reverseDirection(test.expected)),
           `Test 'flex-direction: row-reverse'(${JSON.stringify(test.style)}) failed.`);
     }
   });
@@ -301,34 +301,35 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           'direction': 'ltr',
           display: 'flex',
         },
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
       {
         style: {
           'writing-mode': 'vertical-rl',
           display: 'flex',
         },
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
       },
       {
         style: {
           'writing-mode': 'vertical-lr',
           display: 'flex',
         },
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
     ];
 
     for (const test of tests) {
       assert.deepEqual(
-          Elements.CSSPropertyIconResolver.findIcon('flex-direction: column', mapFromStyle(test.style)),
-          Elements.CSSPropertyIconResolver.rotateFlexDirectionIcon(test.expected),
+          ElementsComponents.CSSPropertyIconResolver.findIcon('flex-direction: column', mapFromStyle(test.style)),
+          ElementsComponents.CSSPropertyIconResolver.rotateFlexDirectionIcon(test.expected),
           `Test 'flex-direction: column'(${JSON.stringify(test.style)}) failed.`);
 
       assert.deepEqual(
-          Elements.CSSPropertyIconResolver.findIcon('flex-direction: column-reverse', mapFromStyle(test.style)),
-          Elements.CSSPropertyIconResolver.rotateFlexDirectionIcon(
-              Elements.CSSPropertyIconResolver.reverseDirection(test.expected)),
+          ElementsComponents.CSSPropertyIconResolver.findIcon(
+              'flex-direction: column-reverse', mapFromStyle(test.style)),
+          ElementsComponents.CSSPropertyIconResolver.rotateFlexDirectionIcon(
+              ElementsComponents.CSSPropertyIconResolver.reverseDirection(test.expected)),
           `Test 'flex-direction: column-reverse'(${JSON.stringify(test.style)}) failed.`);
     }
   });
@@ -336,8 +337,8 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
   it('can rotate an icon for align-content', () => {
     const iconName = 'iconName';
     assert.deepEqual(
-        Elements.CSSPropertyIconResolver.rotateAlignContentIcon(
-            iconName, Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT),
+        ElementsComponents.CSSPropertyIconResolver.rotateAlignContentIcon(
+            iconName, ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT),
         {
           iconName,
           rotate: -90,
@@ -345,8 +346,8 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           scaleY: 1,
         });
     assert.deepEqual(
-        Elements.CSSPropertyIconResolver.rotateAlignContentIcon(
-            iconName, Elements.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT),
+        ElementsComponents.CSSPropertyIconResolver.rotateAlignContentIcon(
+            iconName, ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT),
         {
           iconName,
           rotate: 90,
@@ -354,8 +355,8 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           scaleY: 1,
         });
     assert.deepEqual(
-        Elements.CSSPropertyIconResolver.rotateAlignContentIcon(
-            iconName, Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM),
+        ElementsComponents.CSSPropertyIconResolver.rotateAlignContentIcon(
+            iconName, ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM),
         {
           iconName,
           rotate: 0,
@@ -363,8 +364,8 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           scaleY: 1,
         });
     assert.deepEqual(
-        Elements.CSSPropertyIconResolver.rotateAlignContentIcon(
-            iconName, Elements.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP),
+        ElementsComponents.CSSPropertyIconResolver.rotateAlignContentIcon(
+            iconName, ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP),
         {
           iconName,
           rotate: 0,
@@ -383,7 +384,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         iconName: 'align-content-center-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
       {
         style: {
@@ -392,7 +393,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         iconName: 'align-content-center-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
       {
         style: {
@@ -402,7 +403,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         iconName: 'align-content-center-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
       },
       {
         style: {
@@ -412,7 +413,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         iconName: 'align-content-center-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
       {
         style: {
@@ -422,7 +423,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         iconName: 'align-content-center-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
       },
       // grid
       {
@@ -431,7 +432,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'grid',
         },
         iconName: 'align-content-center-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
       {
         style: {
@@ -440,15 +441,15 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'grid',
         },
         iconName: 'align-content-center-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
       },
     ];
 
     for (const test of tests) {
       assert.deepEqual(
-          Elements.CSSPropertyIconResolver.findIcon(
+          ElementsComponents.CSSPropertyIconResolver.findIcon(
               `align-content: ${test.style['align-content']}`, mapFromStyle(test.style)),
-          Elements.CSSPropertyIconResolver.rotateAlignContentIcon(test.iconName, test.expected),
+          ElementsComponents.CSSPropertyIconResolver.rotateAlignContentIcon(test.iconName, test.expected),
           `Test align-content(${JSON.stringify(test.style)}) failed.`);
     }
   });
@@ -456,8 +457,8 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
   it('can rotate an icon for justify-content', () => {
     const iconName = 'iconName';
     assert.deepEqual(
-        Elements.CSSPropertyIconResolver.rotateJustifyContentIcon(
-            iconName, Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT),
+        ElementsComponents.CSSPropertyIconResolver.rotateJustifyContentIcon(
+            iconName, ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT),
         {
           iconName,
           rotate: 0,
@@ -465,8 +466,8 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           scaleY: 1,
         });
     assert.deepEqual(
-        Elements.CSSPropertyIconResolver.rotateJustifyContentIcon(
-            iconName, Elements.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT),
+        ElementsComponents.CSSPropertyIconResolver.rotateJustifyContentIcon(
+            iconName, ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT),
         {
           iconName,
           rotate: 0,
@@ -474,8 +475,8 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           scaleY: 1,
         });
     assert.deepEqual(
-        Elements.CSSPropertyIconResolver.rotateJustifyContentIcon(
-            iconName, Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM),
+        ElementsComponents.CSSPropertyIconResolver.rotateJustifyContentIcon(
+            iconName, ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM),
         {
           iconName,
           rotate: 90,
@@ -483,8 +484,8 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           scaleY: 1,
         });
     assert.deepEqual(
-        Elements.CSSPropertyIconResolver.rotateJustifyContentIcon(
-            iconName, Elements.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP),
+        ElementsComponents.CSSPropertyIconResolver.rotateJustifyContentIcon(
+            iconName, ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP),
         {
           iconName,
           rotate: -90,
@@ -504,7 +505,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         iconName: 'justify-content-center-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
       {
         style: {
@@ -513,7 +514,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         iconName: 'justify-content-center-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
       {
         style: {
@@ -523,7 +524,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         iconName: 'justify-content-center-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
       {
         style: {
@@ -533,7 +534,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         iconName: 'justify-content-center-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
       {
         style: {
@@ -542,7 +543,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         iconName: 'justify-content-center-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
       },
       // grid
       {
@@ -551,7 +552,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'grid',
         },
         iconName: 'justify-content-center-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
       {
         style: {
@@ -560,15 +561,15 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'grid',
         },
         iconName: 'justify-content-center-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
     ];
 
     for (const test of tests) {
       assert.deepEqual(
-          Elements.CSSPropertyIconResolver.findIcon(
+          ElementsComponents.CSSPropertyIconResolver.findIcon(
               `justify-content: ${test.style['justify-content']}`, mapFromStyle(test.style)),
-          Elements.CSSPropertyIconResolver.rotateJustifyContentIcon(test.iconName, test.expected),
+          ElementsComponents.CSSPropertyIconResolver.rotateJustifyContentIcon(test.iconName, test.expected),
           `Test justify-content(${JSON.stringify(test.style)}) failed.`);
     }
   });
@@ -576,8 +577,8 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
   it('can rotate an icon for align-items', () => {
     const iconName = 'iconName';
     assert.deepEqual(
-        Elements.CSSPropertyIconResolver.rotateAlignItemsIcon(
-            iconName, Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT),
+        ElementsComponents.CSSPropertyIconResolver.rotateAlignItemsIcon(
+            iconName, ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT),
         {
           iconName,
           rotate: -90,
@@ -585,8 +586,8 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           scaleY: 1,
         });
     assert.deepEqual(
-        Elements.CSSPropertyIconResolver.rotateAlignItemsIcon(
-            iconName, Elements.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT),
+        ElementsComponents.CSSPropertyIconResolver.rotateAlignItemsIcon(
+            iconName, ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT),
         {
           iconName,
           rotate: 90,
@@ -594,8 +595,8 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           scaleY: 1,
         });
     assert.deepEqual(
-        Elements.CSSPropertyIconResolver.rotateAlignItemsIcon(
-            iconName, Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM),
+        ElementsComponents.CSSPropertyIconResolver.rotateAlignItemsIcon(
+            iconName, ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM),
         {
           iconName,
           rotate: 0,
@@ -603,8 +604,8 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           scaleY: 1,
         });
     assert.deepEqual(
-        Elements.CSSPropertyIconResolver.rotateAlignItemsIcon(
-            iconName, Elements.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP),
+        ElementsComponents.CSSPropertyIconResolver.rotateAlignItemsIcon(
+            iconName, ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP),
         {
           iconName,
           rotate: 0,
@@ -624,7 +625,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         iconName: 'align-items-flex-start-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
       {
         style: {
@@ -633,7 +634,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         iconName: 'align-items-flex-start-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
       {
         style: {
@@ -643,7 +644,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         iconName: 'align-items-flex-start-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
       },
       {
         style: {
@@ -653,7 +654,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         iconName: 'align-items-flex-start-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
       {
         style: {
@@ -662,7 +663,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         iconName: 'align-items-flex-start-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
       // grid
       {
@@ -671,7 +672,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'grid',
         },
         iconName: 'align-items-flex-start-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
       {
         style: {
@@ -680,15 +681,15 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'grid',
         },
         iconName: 'align-items-flex-start-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
     ];
 
     for (const test of tests) {
       assert.deepEqual(
-          Elements.CSSPropertyIconResolver.findIcon(
+          ElementsComponents.CSSPropertyIconResolver.findIcon(
               `align-items: ${test.style['align-items']}`, mapFromStyle(test.style)),
-          Elements.CSSPropertyIconResolver.rotateAlignItemsIcon(test.iconName, test.expected),
+          ElementsComponents.CSSPropertyIconResolver.rotateAlignItemsIcon(test.iconName, test.expected),
           `Test align-items(${JSON.stringify(test.style)}) failed.`);
     }
   });
@@ -701,15 +702,16 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
       scaleY: 1,
     };
     assert.deepEqual(
-        Elements.CSSPropertyIconResolver.findIcon('align-items: baseline', mapFromStyle({display: 'flex'})),
+        ElementsComponents.CSSPropertyIconResolver.findIcon('align-items: baseline', mapFromStyle({display: 'flex'})),
         baselineIconInfo, 'Assertion for the \'align-items: baseline\' icon failed.');
 
     assert.deepEqual(
-        Elements.CSSPropertyIconResolver.findIcon('align-self: baseline', null, mapFromStyle({display: 'flex'})),
+        ElementsComponents.CSSPropertyIconResolver.findIcon(
+            'align-self: baseline', null, mapFromStyle({display: 'flex'})),
         baselineIconInfo, 'Assertion for the \'align-self: baseline\' icon failed.');
 
     assert.deepEqual(
-        Elements.CSSPropertyIconResolver.findIcon('align-content: baseline', mapFromStyle({display: 'flex'})),
+        ElementsComponents.CSSPropertyIconResolver.findIcon('align-content: baseline', mapFromStyle({display: 'flex'})),
         baselineIconInfo, 'Assertion for the \'align-content: baseline\' icon failed.');
   });
 
@@ -725,7 +727,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         iconName: 'align-self-flex-start-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
       {
         style: {
@@ -736,7 +738,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         iconName: 'align-self-flex-start-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
       {
         style: {
@@ -748,7 +750,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         iconName: 'align-self-flex-start-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
       },
       {
         style: {
@@ -760,7 +762,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         iconName: 'align-self-flex-start-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
       {
         style: {
@@ -771,7 +773,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         iconName: 'align-self-flex-start-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
       // grid
       {
@@ -782,7 +784,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'grid',
         },
         iconName: 'align-self-flex-start-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
       {
         style: {
@@ -793,7 +795,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'grid',
         },
         iconName: 'align-self-flex-start-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
       },
       {
         style: {
@@ -804,15 +806,15 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'grid',
         },
         iconName: 'align-self-flex-start-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
     ];
 
     for (const test of tests) {
       assert.deepEqual(
-          Elements.CSSPropertyIconResolver.findIcon(
+          ElementsComponents.CSSPropertyIconResolver.findIcon(
               `align-self: ${test.style['align-self']}`, mapFromStyle(test.style), mapFromStyle(test.parentStyle)),
-          Elements.CSSPropertyIconResolver.rotateAlignItemsIcon(test.iconName, test.expected),
+          ElementsComponents.CSSPropertyIconResolver.rotateAlignItemsIcon(test.iconName, test.expected),
           `Test align-self(${JSON.stringify(test.style)}) failed.`);
     }
   });
@@ -826,7 +828,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         iconName: 'flex-wrap-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
       {
         style: {
@@ -835,7 +837,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         iconName: 'flex-nowrap-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
       {
         style: {
@@ -844,7 +846,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         iconName: 'flex-wrap-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
       {
         style: {
@@ -853,14 +855,15 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'flex',
         },
         iconName: 'flex-nowrap-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
     ];
 
     for (const test of tests) {
       assert.deepEqual(
-          Elements.CSSPropertyIconResolver.findIcon(`flex-wrap: ${test.style['flex-wrap']}`, mapFromStyle(test.style)),
-          Elements.CSSPropertyIconResolver.roateFlexWrapIcon(test.iconName, test.expected),
+          ElementsComponents.CSSPropertyIconResolver.findIcon(
+              `flex-wrap: ${test.style['flex-wrap']}`, mapFromStyle(test.style)),
+          ElementsComponents.CSSPropertyIconResolver.roateFlexWrapIcon(test.iconName, test.expected),
           `Test flex-wrap(${JSON.stringify(test.style)}) failed.`);
     }
   });
@@ -868,8 +871,8 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
   it('can rotate an icon for justify-items', () => {
     const iconName = 'iconName';
     assert.deepEqual(
-        Elements.CSSPropertyIconResolver.rotateJustifyItemsIcon(
-            iconName, Elements.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT),
+        ElementsComponents.CSSPropertyIconResolver.rotateJustifyItemsIcon(
+            iconName, ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT),
         {
           iconName,
           rotate: 0,
@@ -877,8 +880,8 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           scaleY: 1,
         });
     assert.deepEqual(
-        Elements.CSSPropertyIconResolver.rotateJustifyItemsIcon(
-            iconName, Elements.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT),
+        ElementsComponents.CSSPropertyIconResolver.rotateJustifyItemsIcon(
+            iconName, ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT),
         {
           iconName,
           rotate: 0,
@@ -886,8 +889,8 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           scaleY: 1,
         });
     assert.deepEqual(
-        Elements.CSSPropertyIconResolver.rotateJustifyItemsIcon(
-            iconName, Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM),
+        ElementsComponents.CSSPropertyIconResolver.rotateJustifyItemsIcon(
+            iconName, ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM),
         {
           iconName,
           rotate: 90,
@@ -895,8 +898,8 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           scaleY: 1,
         });
     assert.deepEqual(
-        Elements.CSSPropertyIconResolver.rotateJustifyItemsIcon(
-            iconName, Elements.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP),
+        ElementsComponents.CSSPropertyIconResolver.rotateJustifyItemsIcon(
+            iconName, ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP),
         {
           iconName,
           rotate: -90,
@@ -914,7 +917,7 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'grid',
         },
         iconName: 'justify-items-start-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
       {
         style: {
@@ -923,15 +926,15 @@ describeWithEnvironment('CSSPropertyIconResolver', async () => {
           display: 'grid',
         },
         iconName: 'justify-items-start-icon',
-        expected: Elements.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
+        expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
       },
     ];
 
     for (const test of tests) {
       assert.deepEqual(
-          Elements.CSSPropertyIconResolver.findIcon(
+          ElementsComponents.CSSPropertyIconResolver.findIcon(
               `justify-items: ${test.style['justify-items']}`, mapFromStyle(test.style)),
-          Elements.CSSPropertyIconResolver.rotateAlignItemsIcon(test.iconName, test.expected),
+          ElementsComponents.CSSPropertyIconResolver.rotateAlignItemsIcon(test.iconName, test.expected),
           `Test justify-items(${JSON.stringify(test.style)}) failed.`);
     }
   });

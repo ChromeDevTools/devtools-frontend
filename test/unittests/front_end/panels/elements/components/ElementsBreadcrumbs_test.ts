@@ -2,24 +2,24 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as ElementsModule from '../../../../../front_end/panels/elements/elements.js';
-import {assertElement, assertElements, assertShadowRoot, dispatchClickEvent, doubleRaf, renderElementIntoDOM, waitForScrollLeft} from '../../helpers/DOMHelpers.js';
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
-import {withNoMutations} from '../../helpers/MutationHelpers.js';
+import type * as ElementsComponentsModule from '../../../../../../front_end/panels/elements/components/components.js';
+import {assertElement, assertElements, assertShadowRoot, dispatchClickEvent, doubleRaf, renderElementIntoDOM, waitForScrollLeft} from '../../../helpers/DOMHelpers.js';
+import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
+import {withNoMutations} from '../../../helpers/MutationHelpers.js';
 
-import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
+import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 
 const {assert} = chai;
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 
-interface MakeCrumbOptions extends Partial<ElementsModule.ElementsBreadcrumbsUtils.DOMNode> {
+interface MakeCrumbOptions extends Partial<ElementsComponentsModule.ElementsBreadcrumbsUtils.DOMNode> {
   attributes?: {[x: string]: string};
 }
 
 const makeCrumb = (overrides: MakeCrumbOptions = {}) => {
   const attributes = overrides.attributes || {};
-  const newCrumb: ElementsModule.ElementsBreadcrumbsUtils.DOMNode = {
+  const newCrumb: ElementsComponentsModule.ElementsBreadcrumbsUtils.DOMNode = {
     parentNode: null,
     nodeType: Node.ELEMENT_NODE,
     id: 1,
@@ -37,15 +37,15 @@ const makeCrumb = (overrides: MakeCrumbOptions = {}) => {
 };
 
 describeWithEnvironment('ElementsBreadcrumbs', () => {
-  let Elements: typeof ElementsModule;
+  let ElementsComponents: typeof ElementsComponentsModule;
   before(async () => {
-    Elements = await import('../../../../../front_end/panels/elements/elements.js');
+    ElementsComponents = await import('../../../../../../front_end/panels/elements/components/components.js');
   });
 
   describe('#determineElementTitle', () => {
     it('returns (text) for text nodes', () => {
       const node = makeCrumb({nodeType: Node.TEXT_NODE});
-      const title = Elements.ElementsBreadcrumbsUtils.determineElementTitle(node);
+      const title = ElementsComponents.ElementsBreadcrumbsUtils.determineElementTitle(node);
       assert.deepEqual(title, {
         main: '(text)',
         extras: {},
@@ -54,13 +54,13 @@ describeWithEnvironment('ElementsBreadcrumbs', () => {
 
     it('returns <!--> for comments', () => {
       const node = makeCrumb({nodeType: Node.COMMENT_NODE});
-      const title = Elements.ElementsBreadcrumbsUtils.determineElementTitle(node);
+      const title = ElementsComponents.ElementsBreadcrumbsUtils.determineElementTitle(node);
       assert.deepEqual(title, {main: '<!-->', extras: {}});
     });
 
     it('returns <!doctype> for doctypes', () => {
       const node = makeCrumb({nodeType: Node.DOCUMENT_TYPE_NODE});
-      const title = Elements.ElementsBreadcrumbsUtils.determineElementTitle(node);
+      const title = ElementsComponents.ElementsBreadcrumbsUtils.determineElementTitle(node);
       assert.deepEqual(title, {main: '<!doctype>', extras: {}});
     });
 
@@ -71,7 +71,7 @@ describeWithEnvironment('ElementsBreadcrumbs', () => {
           shadowRootType: 'shadowRoot',
           nodeNameNicelyCased: 'test-elem',
         });
-        const title = Elements.ElementsBreadcrumbsUtils.determineElementTitle(node);
+        const title = ElementsComponents.ElementsBreadcrumbsUtils.determineElementTitle(node);
         assert.deepEqual(title, {main: '#shadow-root', extras: {}});
       });
 
@@ -81,7 +81,7 @@ describeWithEnvironment('ElementsBreadcrumbs', () => {
           shadowRootType: undefined,
           nodeNameNicelyCased: 'test-elem',
         });
-        const title = Elements.ElementsBreadcrumbsUtils.determineElementTitle(node);
+        const title = ElementsComponents.ElementsBreadcrumbsUtils.determineElementTitle(node);
         assert.deepEqual(title, {main: 'test-elem', extras: {}});
       });
     });
@@ -89,19 +89,19 @@ describeWithEnvironment('ElementsBreadcrumbs', () => {
     describe('for element nodes', () => {
       it('takes the nicely cased node name by default', () => {
         const node = makeCrumb({nodeType: Node.ELEMENT_NODE, nodeNameNicelyCased: 'div'});
-        const title = Elements.ElementsBreadcrumbsUtils.determineElementTitle(node);
+        const title = ElementsComponents.ElementsBreadcrumbsUtils.determineElementTitle(node);
         assert.deepEqual(title, {main: 'div', extras: {}});
       });
 
       it('uses the pseudoType if that is passed', () => {
         const node = makeCrumb({nodeType: Node.ELEMENT_NODE, pseudoType: 'test'});
-        const title = Elements.ElementsBreadcrumbsUtils.determineElementTitle(node);
+        const title = ElementsComponents.ElementsBreadcrumbsUtils.determineElementTitle(node);
         assert.deepEqual(title, {main: '::test', extras: {}});
       });
 
       it('adds the ID as an extra if present', () => {
         const node = makeCrumb({nodeType: Node.ELEMENT_NODE, nodeNameNicelyCased: 'div', attributes: {id: 'test'}});
-        const title = Elements.ElementsBreadcrumbsUtils.determineElementTitle(node);
+        const title = ElementsComponents.ElementsBreadcrumbsUtils.determineElementTitle(node);
         assert.deepEqual(title, {
           main: 'div',
           extras: {
@@ -116,7 +116,7 @@ describeWithEnvironment('ElementsBreadcrumbs', () => {
           nodeNameNicelyCased: 'div',
           attributes: {class: 'class1 class2'},
         });
-        const title = Elements.ElementsBreadcrumbsUtils.determineElementTitle(node);
+        const title = ElementsComponents.ElementsBreadcrumbsUtils.determineElementTitle(node);
         assert.deepEqual(title, {
           main: 'div',
           extras: {
@@ -131,7 +131,7 @@ describeWithEnvironment('ElementsBreadcrumbs', () => {
         nodeType: Node.CDATA_SECTION_NODE,
         nodeNameNicelyCased: 'not-special-cased-node-type',
       });
-      const title = Elements.ElementsBreadcrumbsUtils.determineElementTitle(node);
+      const title = ElementsComponents.ElementsBreadcrumbsUtils.determineElementTitle(node);
       assert.deepEqual(title, {
         main: 'not-special-cased-node-type',
         extras: {},
@@ -141,7 +141,7 @@ describeWithEnvironment('ElementsBreadcrumbs', () => {
 
   describe('crumbsToRender', () => {
     it('returns an empty array when there is no selected node', () => {
-      const result = Elements.ElementsBreadcrumbsUtils.crumbsToRender([], null);
+      const result = ElementsComponents.ElementsBreadcrumbsUtils.crumbsToRender([], null);
       assert.deepEqual(result, []);
     });
 
@@ -160,7 +160,7 @@ describeWithEnvironment('ElementsBreadcrumbs', () => {
         nodeNameNicelyCased: 'body',
       });
 
-      const result = Elements.ElementsBreadcrumbsUtils.crumbsToRender([documentCrumb, bodyCrumb], bodyCrumb);
+      const result = ElementsComponents.ElementsBreadcrumbsUtils.crumbsToRender([documentCrumb, bodyCrumb], bodyCrumb);
 
       assert.deepEqual(result, [
         {
@@ -177,11 +177,12 @@ describeWithEnvironment('ElementsBreadcrumbs', () => {
   });
 
   describe('rendering breadcrumbs', () => {
-    async function renderBreadcrumbs(data: ElementsModule.ElementsBreadcrumbs.ElementsBreadcrumbsData): Promise<{
-      component: ElementsModule.ElementsBreadcrumbs.ElementsBreadcrumbs,
-      shadowRoot: ShadowRoot,
-    }> {
-      const component = new Elements.ElementsBreadcrumbs.ElementsBreadcrumbs();
+    async function renderBreadcrumbs(data: ElementsComponentsModule.ElementsBreadcrumbs.ElementsBreadcrumbsData):
+        Promise<{
+          component: ElementsComponentsModule.ElementsBreadcrumbs.ElementsBreadcrumbs,
+          shadowRoot: ShadowRoot,
+        }> {
+      const component = new ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs();
       renderElementIntoDOM(component);
       component.data = data;
 
@@ -236,7 +237,7 @@ describeWithEnvironment('ElementsBreadcrumbs', () => {
       });
 
       await withNoMutations(shadowRoot, async shadowRoot => {
-        const newDiv: ElementsModule.ElementsBreadcrumbsUtils
+        const newDiv: ElementsComponentsModule.ElementsBreadcrumbsUtils
             .DOMNode = {...divCrumb, nodeName: 'span', nodeNameNicelyCased: 'span'};
         component.data = {
           crumbs: [newDiv, bodyCrumb],
@@ -276,7 +277,7 @@ describeWithEnvironment('ElementsBreadcrumbs', () => {
         const thinWrapper = document.createElement('div');
         thinWrapper.style.width = '400px';
 
-        const component = new Elements.ElementsBreadcrumbs.ElementsBreadcrumbs();
+        const component = new ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs();
         thinWrapper.appendChild(component);
         renderElementIntoDOM(thinWrapper);
         component.data = {
@@ -300,7 +301,7 @@ describeWithEnvironment('ElementsBreadcrumbs', () => {
       it('disables the right button once the user has scrolled to the end', async () => {
         const thinWrapper = document.createElement('div');
         thinWrapper.style.width = '400px';
-        const component = new Elements.ElementsBreadcrumbs.ElementsBreadcrumbs();
+        const component = new ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs();
         thinWrapper.appendChild(component);
         renderElementIntoDOM(thinWrapper);
         component.data = {
@@ -328,7 +329,7 @@ describeWithEnvironment('ElementsBreadcrumbs', () => {
       it('hides the overflow buttons should the user resize the window to be large enough', async () => {
         const thinWrapper = document.createElement('div');
         thinWrapper.style.width = '400px';
-        const component = new Elements.ElementsBreadcrumbs.ElementsBreadcrumbs();
+        const component = new ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs();
         thinWrapper.appendChild(component);
         renderElementIntoDOM(thinWrapper);
         component.data = {
@@ -360,7 +361,7 @@ describeWithEnvironment('ElementsBreadcrumbs', () => {
         const thinWrapper = document.createElement('div');
         thinWrapper.style.width = '400px';
 
-        const component = new Elements.ElementsBreadcrumbs.ElementsBreadcrumbs();
+        const component = new ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs();
         thinWrapper.appendChild(component);
         renderElementIntoDOM(thinWrapper);
         component.data = {
@@ -391,7 +392,7 @@ describeWithEnvironment('ElementsBreadcrumbs', () => {
       it('shows the overflow buttons should the user resize the window down to be small', async () => {
         const thinWrapper = document.createElement('div');
         thinWrapper.style.width = '800px';
-        const component = new Elements.ElementsBreadcrumbs.ElementsBreadcrumbs();
+        const component = new ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs();
         thinWrapper.appendChild(component);
         renderElementIntoDOM(thinWrapper);
 

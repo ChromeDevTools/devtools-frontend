@@ -40,10 +40,9 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as ElementsComponents from './components/components.js';
 
 import {ComputedStyle, ComputedStyleModel, Events} from './ComputedStyleModel.js';  // eslint-disable-line no-unused-vars
-import {ComputedStyleProperty} from './ComputedStyleProperty.js';
-import {ComputedStyleTrace} from './ComputedStyleTrace.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {PlatformFontsWidget} from './PlatformFontsWidget.js';
 import {categorizePropertyName, Category, DefaultCategoryOrder} from './PropertyNameCategories.js';  // eslint-disable-line no-unused-vars
@@ -90,29 +89,29 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ComputedStyleWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const createPropertyElement =
-    (node: SDK.DOMModel.DOMNode, propertyName: string, propertyValue: string): ComputedStyleProperty => {
-      const propertyElement = new ComputedStyleProperty();
+const createPropertyElement = (node: SDK.DOMModel.DOMNode, propertyName: string, propertyValue: string):
+                                  ElementsComponents.ComputedStyleProperty.ComputedStyleProperty => {
+  const propertyElement = new ElementsComponents.ComputedStyleProperty.ComputedStyleProperty();
 
-      const renderer = new StylesSidebarPropertyRenderer(null, node, propertyName, propertyValue);
-      renderer.setColorHandler(processComputedColor);
+  const renderer = new StylesSidebarPropertyRenderer(null, node, propertyName, propertyValue);
+  renderer.setColorHandler(processComputedColor);
 
-      const propertyNameElement = renderer.renderName();
-      propertyNameElement.slot = 'property-name';
-      propertyElement.appendChild(propertyNameElement);
+  const propertyNameElement = renderer.renderName();
+  propertyNameElement.slot = 'property-name';
+  propertyElement.appendChild(propertyNameElement);
 
-      const propertyValueElement = renderer.renderValue();
-      propertyValueElement.slot = 'property-value';
-      propertyElement.appendChild(propertyValueElement);
+  const propertyValueElement = renderer.renderValue();
+  propertyValueElement.slot = 'property-value';
+  propertyElement.appendChild(propertyValueElement);
 
-      return propertyElement;
-    };
+  return propertyElement;
+};
 
 const createTraceElement =
     (node: SDK.DOMModel.DOMNode, property: SDK.CSSProperty.CSSProperty, isPropertyOverloaded: boolean,
      matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
-     linkifier: Components.Linkifier.Linkifier): ComputedStyleTrace => {
-      const trace = new ComputedStyleTrace();
+     linkifier: Components.Linkifier.Linkifier): ElementsComponents.ComputedStyleTrace.ComputedStyleTrace => {
+      const trace = new ElementsComponents.ComputedStyleTrace.ComputedStyleTrace();
 
       const renderer = new StylesSidebarPropertyRenderer(null, node, property.name, (property.value as string));
       renderer.setColorHandler(processColor);

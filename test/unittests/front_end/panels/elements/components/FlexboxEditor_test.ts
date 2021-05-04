@@ -2,17 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as ElementsModule from '../../../../../front_end/panels/elements/elements.js';
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
-import {assertElement, assertShadowRoot, getEventPromise, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
+import type * as ElementsComponentsModule from '../../../../../../front_end/panels/elements/components/components.js';
+import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
+import {assertElement, assertShadowRoot, getEventPromise, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
 
 const {assert} = chai;
 
 describeWithEnvironment('FlexboxEditor', async () => {
-  let Elements: typeof ElementsModule;
+  let ElementsComponents: typeof ElementsComponentsModule;
 
   before(async () => {
-    Elements = await import('../../../../../front_end/panels/elements/elements.js');
+    ElementsComponents = await import('../../../../../../front_end/panels/elements/components/components.js');
   });
 
   function assertValues(component: HTMLElement, values: string[]) {
@@ -26,7 +26,7 @@ describeWithEnvironment('FlexboxEditor', async () => {
   }
 
   it('renders the editor', async () => {
-    const component = new Elements.FlexboxEditor.FlexboxEditor();
+    const component = new ElementsComponents.FlexboxEditor.FlexboxEditor();
     renderElementIntoDOM(component);
     component.data = {
       authoredProperties: new Map([
@@ -70,7 +70,7 @@ describeWithEnvironment('FlexboxEditor', async () => {
   });
 
   it('allows selecting a property value', async () => {
-    const component = new Elements.FlexboxEditor.FlexboxEditor();
+    const component = new ElementsComponents.FlexboxEditor.FlexboxEditor();
     renderElementIntoDOM(component);
     component.data = {
       authoredProperties: new Map([
@@ -81,7 +81,7 @@ describeWithEnvironment('FlexboxEditor', async () => {
     assertValues(
         component, ['flex-direction: row', 'flex-wrap:', 'align-content:', 'justify-content:', 'align-items:']);
     const eventPromise =
-        getEventPromise<ElementsModule.FlexboxEditor.PropertySelectedEvent>(component, 'property-selected');
+        getEventPromise<ElementsComponentsModule.FlexboxEditor.PropertySelectedEvent>(component, 'property-selected');
     assertShadowRoot(component.shadowRoot);
     const flexDirectionColumnButton = component.shadowRoot.querySelector('.row .buttons .button:nth-child(2)');
     assertElement(flexDirectionColumnButton, HTMLButtonElement);
@@ -91,7 +91,7 @@ describeWithEnvironment('FlexboxEditor', async () => {
   });
 
   it('allows deselecting a property value', async () => {
-    const component = new Elements.FlexboxEditor.FlexboxEditor();
+    const component = new ElementsComponents.FlexboxEditor.FlexboxEditor();
     renderElementIntoDOM(component);
     component.data = {
       authoredProperties: new Map([
@@ -101,8 +101,8 @@ describeWithEnvironment('FlexboxEditor', async () => {
     };
     assertValues(
         component, ['flex-direction: column', 'flex-wrap:', 'align-content:', 'justify-content:', 'align-items:']);
-    const eventPromise =
-        getEventPromise<ElementsModule.FlexboxEditor.PropertyDeselectedEvent>(component, 'property-deselected');
+    const eventPromise = getEventPromise<ElementsComponentsModule.FlexboxEditor.PropertyDeselectedEvent>(
+        component, 'property-deselected');
     assertShadowRoot(component.shadowRoot);
     const flexDirectionColumnButton = component.shadowRoot.querySelector('.row .buttons .button:nth-child(2)');
     assertElement(flexDirectionColumnButton, HTMLButtonElement);

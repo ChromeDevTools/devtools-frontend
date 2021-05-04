@@ -7,12 +7,11 @@
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as ElementsComponents from './components/components.js';
 
 import {ElementsPanel} from './ElementsPanel.js';
-import {LayoutElement, LayoutPane} from './LayoutPane.js';  // eslint-disable-line no-unused-vars
-import {Setting} from './LayoutPaneUtils.js';
 
-const nodeToLayoutElement = (node: SDK.DOMModel.DOMNode): LayoutElement => {
+const nodeToLayoutElement = (node: SDK.DOMModel.DOMNode): ElementsComponents.LayoutPane.LayoutElement => {
   const className = node.getAttribute('class');
   const nodeId = node.id;
   return {
@@ -41,7 +40,7 @@ const nodeToLayoutElement = (node: SDK.DOMModel.DOMNode): LayoutElement => {
   };
 };
 
-const gridNodesToElements = (nodes: SDK.DOMModel.DOMNode[]): LayoutElement[] => {
+const gridNodesToElements = (nodes: SDK.DOMModel.DOMNode[]): ElementsComponents.LayoutPane.LayoutElement[] => {
   return nodes.map(node => {
     const layoutElement = nodeToLayoutElement(node);
     const nodeId = node.id;
@@ -66,7 +65,7 @@ const gridNodesToElements = (nodes: SDK.DOMModel.DOMNode[]): LayoutElement[] => 
 
 let layoutSidebarPaneInstance: LayoutSidebarPane;
 
-const flexContainerNodesToElements = (nodes: SDK.DOMModel.DOMNode[]): LayoutElement[] => {
+const flexContainerNodesToElements = (nodes: SDK.DOMModel.DOMNode[]): ElementsComponents.LayoutPane.LayoutElement[] => {
   return nodes.map(node => {
     const layoutElement = nodeToLayoutElement(node);
     const nodeId = node.id;
@@ -90,7 +89,7 @@ const flexContainerNodesToElements = (nodes: SDK.DOMModel.DOMNode[]): LayoutElem
 };
 
 export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
-  _layoutPane: LayoutPane;
+  _layoutPane: ElementsComponents.LayoutPane.LayoutPane;
   _settings: string[];
   _uaShadowDOMSetting: Common.Settings.Setting<boolean>;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
@@ -100,7 +99,7 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
 
   constructor() {
     super(true /* isWebComponent */);
-    this._layoutPane = new LayoutPane();
+    this._layoutPane = new ElementsComponents.LayoutPane.LayoutPane();
     this.contentElement.appendChild(this._layoutPane);
     this._settings = ['showGridLineLabels', 'showGridTrackSizes', 'showGridAreas', 'extendGridLines'];
     this._uaShadowDOMSetting = Common.Settings.Settings.instance().moduleSetting('showUAShadowDOM');
@@ -170,7 +169,7 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     return await this._fetchNodesByStyle([{name: 'display', value: 'flex'}, {name: 'display', value: 'inline-flex'}]);
   }
 
-  _mapSettings(): Setting[] {
+  _mapSettings(): ElementsComponents.LayoutPaneUtils.Setting[] {
     const settings = [];
     for (const settingName of this._settings) {
       const setting = Common.Settings.Settings.instance().moduleSetting(settingName);

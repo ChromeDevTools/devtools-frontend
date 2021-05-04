@@ -18,7 +18,7 @@ import * as MarkdownView from '../../ui/components/markdown_view/markdown_view.j
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ConsoleCounters from '../console_counters/console_counters.js';
-import * as Elements from '../elements/elements.js';
+import * as ElementsComponents from '../elements/components/components.js';
 import * as Network from '../network/network.js';
 
 import {AffectedBlockedByResponseView} from './AffectedBlockedByResponseView.js';
@@ -149,7 +149,7 @@ class AffectedDirectivesView extends AffectedResourcesView {
   }
 
   _appendBlockedElement(element: Element, nodeId: number|undefined, model: SDK.IssuesModel.IssuesModel): void {
-    const elementsPanelLinkComponent = new Elements.ElementsPanelLink.ElementsPanelLink();
+    const elementsPanelLinkComponent = new ElementsComponents.ElementsPanelLink.ElementsPanelLink();
     if (nodeId) {
       const violatingNodeId = nodeId;
       UI.Tooltip.Tooltip.install(elementsPanelLinkComponent, i18nString(UIStrings.clickToRevealTheViolatingDomNode));
@@ -532,11 +532,11 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     icon.data = ConsoleCounters.IssueCounter.getIssueKindIconData(kind);
     icon.classList.add('leading-issue-icon');
     this._aggregatedIssuesCount = (document.createElement('span') as HTMLElement);
-    const countAdorner = new Elements.Adorner.Adorner();
+    const countAdorner = new ElementsComponents.Adorner.Adorner();
     countAdorner.data = {
       name: 'countWrapper',
       content: this._aggregatedIssuesCount,
-      category: Elements.AdornerManager.AdornerCategories.DEFAULT,
+      category: ElementsComponents.AdornerManager.AdornerCategories.DEFAULT,
     };
     countAdorner.classList.add('aggregated-issues-count');
     this._aggregatedIssuesCount.textContent = `${this._issue.getAggregatedIssuesCount()}`;

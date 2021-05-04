@@ -7,8 +7,8 @@ import '../../ui/components/icon_button/icon_button.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as ElementsComponents from './components/components.js';
 
-import {EditableProperties, FlexboxEditor, PropertyDeselectedEvent, PropertySelectedEvent} from './FlexboxEditor.js';
 import {StylePropertyTreeElement} from './StylePropertyTreeElement.js';
 import {StylePropertiesSection, StylesSidebarPane} from './StylesSidebarPane.js';
 
@@ -27,7 +27,7 @@ let instance: FlexboxEditorWidget|null = null;
  * Thin UI.Widget wrapper around FlexboxEditor to allow using it as a popover.
  */
 export class FlexboxEditorWidget extends UI.Widget.VBox {
-  private editor: FlexboxEditor;
+  private editor: ElementsComponents.FlexboxEditor.FlexboxEditor;
   private pane?: StylesSidebarPane;
   private section?: StylePropertiesSection;
 
@@ -35,7 +35,7 @@ export class FlexboxEditorWidget extends UI.Widget.VBox {
     super(true);
     this.contentElement.tabIndex = 0;
     this.setDefaultFocusedElement(this.contentElement);
-    this.editor = new FlexboxEditor();
+    this.editor = new ElementsComponents.FlexboxEditor.FlexboxEditor();
     this.editor.data = {
       authoredProperties: new Map(),
       computedProperties: new Map(),
@@ -49,7 +49,7 @@ export class FlexboxEditorWidget extends UI.Widget.VBox {
     return this.section;
   }
 
-  async onPropertySelected(event: PropertySelectedEvent): Promise<void> {
+  async onPropertySelected(event: ElementsComponents.FlexboxEditor.PropertySelectedEvent): Promise<void> {
     if (!this.section) {
       return;
     }
@@ -60,7 +60,7 @@ export class FlexboxEditorWidget extends UI.Widget.VBox {
     await this.render();
   }
 
-  async onPropertyDeselected(event: PropertyDeselectedEvent): Promise<void> {
+  async onPropertyDeselected(event: ElementsComponents.FlexboxEditor.PropertyDeselectedEvent): Promise<void> {
     if (!this.section) {
       return;
     }
@@ -159,7 +159,8 @@ async function fetchComputedStyles(pane: StylesSidebarPane): Promise<Map<string,
 
 function getAuthoredStyles(section: StylePropertiesSection): Map<string, string> {
   const authoredProperties = new Map();
-  const flexboxProperties = new Set(EditableProperties.map(prop => prop.propertyName as string));
+  const flexboxProperties =
+      new Set(ElementsComponents.FlexboxEditor.EditableProperties.map(prop => prop.propertyName as string));
   for (const prop of section._style.leadingProperties()) {
     if (flexboxProperties.has(prop.name)) {
       authoredProperties.set(prop.name, prop.value);

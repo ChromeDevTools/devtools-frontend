@@ -49,8 +49,8 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {FontEditorSectionManager} from './ColorSwatchPopoverIcon.js';
+import * as ElementsComponents from './components/components.js';
 import {ComputedStyleModel} from './ComputedStyleModel.js';
-import {findIcon} from './CSSPropertyIconResolver.js';
 import {linkifyDeferredNodeReference} from './DOMLinkifier.js';
 import {ElementsSidebarPane} from './ElementsSidebarPane.js';
 import {FlexboxEditorWidget} from './FlexboxEditorWidget.js';
@@ -2755,7 +2755,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
       //  </div>
       // </div>
       // TODO(crbug/1139945): Find a better way to get the flex container styles.
-      const iconInfo = findIcon(
+      const iconInfo = ElementsComponents.CSSPropertyIconResolver.findIcon(
           this._isEditingName ? result.text : `${this._treeElement.property.name}: ${result.text}`,
           this._selectedNodeComputedStyles, this._parentNodeComputedStyles);
       if (!iconInfo) {

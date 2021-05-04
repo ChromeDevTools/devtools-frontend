@@ -3755,15 +3755,6 @@
   "panels/developer_resources/DeveloperResourcesView.ts | resourcesCurrentlyLoading": {
     "message": "{PH1} r̂éŝóûŕĉéŝ, {PH2} ćûŕr̂én̂t́l̂ý l̂óâd́îńĝ"
   },
-  "panels/elements/AccessibilityTreeUtils.ts | ignored": {
-    "message": "Îǵn̂ór̂éd̂"
-  },
-  "panels/elements/AdornerSettingsPane.ts | closeButton": {
-    "message": "Ĉĺôśê"
-  },
-  "panels/elements/AdornerSettingsPane.ts | settingsTitle": {
-    "message": "Ŝh́ôẃ b̂ád̂ǵêś"
-  },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Âd́d̂ ńêẃ ĉĺâśŝ"
   },
@@ -3781,6 +3772,51 @@
   },
   "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
     "message": "Ôṕêń ŝh́âd́ôẃ êd́ît́ôŕ"
+  },
+  "panels/elements/components/AccessibilityTreeUtils.ts | ignored": {
+    "message": "Îǵn̂ór̂éd̂"
+  },
+  "panels/elements/components/AdornerSettingsPane.ts | closeButton": {
+    "message": "Ĉĺôśê"
+  },
+  "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
+    "message": "Ŝh́ôẃ b̂ád̂ǵêś"
+  },
+  "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
+    "message": "(t̂éx̂t́)"
+  },
+  "panels/elements/components/FlexboxEditor.ts | deselectButton": {
+    "message": "R̂ém̂óv̂é {propertyName}: {propertyValue}"
+  },
+  "panels/elements/components/FlexboxEditor.ts | selectButton": {
+    "message": "Âd́d̂ {propertyName}: {propertyValue}"
+  },
+  "panels/elements/components/LayoutPane.ts | feedback": {
+    "message": "F̂éêd́b̂áĉḱ"
+  },
+  "panels/elements/components/LayoutPane.ts | flexbox": {
+    "message": "F̂ĺêx́b̂óx̂"
+  },
+  "panels/elements/components/LayoutPane.ts | flexboxOverlays": {
+    "message": "F̂ĺêx́b̂óx̂ óv̂ér̂ĺâýŝ"
+  },
+  "panels/elements/components/LayoutPane.ts | grid": {
+    "message": "Ĝŕîd́"
+  },
+  "panels/elements/components/LayoutPane.ts | gridOverlays": {
+    "message": "Ĝŕîd́ ôv́êŕl̂áŷś"
+  },
+  "panels/elements/components/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
+    "message": "N̂ó f̂ĺêx́b̂óx̂ ĺâýôút̂ś f̂óûńd̂ ón̂ t́ĥíŝ ṕâǵê"
+  },
+  "panels/elements/components/LayoutPane.ts | noGridLayoutsFoundOnThisPage": {
+    "message": "N̂ó ĝŕîd́ l̂áŷóût́ŝ f́ôún̂d́ ôń t̂h́îś p̂áĝé"
+  },
+  "panels/elements/components/LayoutPane.ts | overlayDisplaySettings": {
+    "message": "Ôv́êŕl̂áŷ d́îśp̂ĺâý ŝét̂t́îńĝś"
+  },
+  "panels/elements/components/LayoutPane.ts | showElementInTheElementsPanel": {
+    "message": "Ŝh́ôẃ êĺêḿêńt̂ ín̂ t́ĥé Êĺêḿêńt̂ś p̂án̂él̂"
   },
   "panels/elements/ComputedStyleWidget.ts | filter": {
     "message": "F̂íl̂t́êŕ"
@@ -3880,9 +3916,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Ŵór̂d́ ŵŕâṕ"
-  },
-  "panels/elements/ElementsBreadcrumbsUtils.ts | text": {
-    "message": "(t̂éx̂t́)"
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Ĉóm̂ṕût́êd́"
@@ -4073,41 +4106,8 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Ŝh́ôẃ l̂íŝt́êńêŕŝ ón̂ t́ĥé âńĉéŝt́ôŕŝ"
   },
-  "panels/elements/FlexboxEditor.ts | deselectButton": {
-    "message": "R̂ém̂óv̂é {propertyName}: {propertyValue}"
-  },
-  "panels/elements/FlexboxEditor.ts | selectButton": {
-    "message": "Âd́d̂ {propertyName}: {propertyValue}"
-  },
   "panels/elements/FlexboxEditorWidget.ts | editorButton": {
     "message": "Ôṕêń F̂ĺêx́b̂óx̂ éd̂ít̂ór̂"
-  },
-  "panels/elements/LayoutPane.ts | feedback": {
-    "message": "F̂éêd́b̂áĉḱ"
-  },
-  "panels/elements/LayoutPane.ts | flexbox": {
-    "message": "F̂ĺêx́b̂óx̂"
-  },
-  "panels/elements/LayoutPane.ts | flexboxOverlays": {
-    "message": "F̂ĺêx́b̂óx̂ óv̂ér̂ĺâýŝ"
-  },
-  "panels/elements/LayoutPane.ts | grid": {
-    "message": "Ĝŕîd́"
-  },
-  "panels/elements/LayoutPane.ts | gridOverlays": {
-    "message": "Ĝŕîd́ ôv́êŕl̂áŷś"
-  },
-  "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
-    "message": "N̂ó f̂ĺêx́b̂óx̂ ĺâýôút̂ś f̂óûńd̂ ón̂ t́ĥíŝ ṕâǵê"
-  },
-  "panels/elements/LayoutPane.ts | noGridLayoutsFoundOnThisPage": {
-    "message": "N̂ó ĝŕîd́ l̂áŷóût́ŝ f́ôún̂d́ ôń t̂h́îś p̂áĝé"
-  },
-  "panels/elements/LayoutPane.ts | overlayDisplaySettings": {
-    "message": "Ôv́êŕl̂áŷ d́îśp̂ĺâý ŝét̂t́îńĝś"
-  },
-  "panels/elements/LayoutPane.ts | showElementInTheElementsPanel": {
-    "message": "Ŝh́ôẃ êĺêḿêńt̂ ín̂ t́ĥé Êĺêḿêńt̂ś p̂án̂él̂"
   },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "D̂ÓM̂ B́r̂éâḱp̂óîńt̂"

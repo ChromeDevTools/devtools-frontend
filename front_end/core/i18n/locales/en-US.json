@@ -3755,15 +3755,6 @@
   "panels/developer_resources/DeveloperResourcesView.ts | resourcesCurrentlyLoading": {
     "message": "{PH1} resources, {PH2} currently loading"
   },
-  "panels/elements/AccessibilityTreeUtils.ts | ignored": {
-    "message": "Ignored"
-  },
-  "panels/elements/AdornerSettingsPane.ts | closeButton": {
-    "message": "Close"
-  },
-  "panels/elements/AdornerSettingsPane.ts | settingsTitle": {
-    "message": "Show badges"
-  },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Add new class"
   },
@@ -3781,6 +3772,51 @@
   },
   "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
     "message": "Open shadow editor"
+  },
+  "panels/elements/components/AccessibilityTreeUtils.ts | ignored": {
+    "message": "Ignored"
+  },
+  "panels/elements/components/AdornerSettingsPane.ts | closeButton": {
+    "message": "Close"
+  },
+  "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
+    "message": "Show badges"
+  },
+  "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
+    "message": "(text)"
+  },
+  "panels/elements/components/FlexboxEditor.ts | deselectButton": {
+    "message": "Remove {propertyName}: {propertyValue}"
+  },
+  "panels/elements/components/FlexboxEditor.ts | selectButton": {
+    "message": "Add {propertyName}: {propertyValue}"
+  },
+  "panels/elements/components/LayoutPane.ts | feedback": {
+    "message": "Feedback"
+  },
+  "panels/elements/components/LayoutPane.ts | flexbox": {
+    "message": "Flexbox"
+  },
+  "panels/elements/components/LayoutPane.ts | flexboxOverlays": {
+    "message": "Flexbox overlays"
+  },
+  "panels/elements/components/LayoutPane.ts | grid": {
+    "message": "Grid"
+  },
+  "panels/elements/components/LayoutPane.ts | gridOverlays": {
+    "message": "Grid overlays"
+  },
+  "panels/elements/components/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
+    "message": "No flexbox layouts found on this page"
+  },
+  "panels/elements/components/LayoutPane.ts | noGridLayoutsFoundOnThisPage": {
+    "message": "No grid layouts found on this page"
+  },
+  "panels/elements/components/LayoutPane.ts | overlayDisplaySettings": {
+    "message": "Overlay display settings"
+  },
+  "panels/elements/components/LayoutPane.ts | showElementInTheElementsPanel": {
+    "message": "Show element in the Elements panel"
   },
   "panels/elements/ComputedStyleWidget.ts | filter": {
     "message": "Filter"
@@ -3880,9 +3916,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Word wrap"
-  },
-  "panels/elements/ElementsBreadcrumbsUtils.ts | text": {
-    "message": "(text)"
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Computed"
@@ -4073,41 +4106,8 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Show listeners on the ancestors"
   },
-  "panels/elements/FlexboxEditor.ts | deselectButton": {
-    "message": "Remove {propertyName}: {propertyValue}"
-  },
-  "panels/elements/FlexboxEditor.ts | selectButton": {
-    "message": "Add {propertyName}: {propertyValue}"
-  },
   "panels/elements/FlexboxEditorWidget.ts | editorButton": {
     "message": "Open Flexbox editor"
-  },
-  "panels/elements/LayoutPane.ts | feedback": {
-    "message": "Feedback"
-  },
-  "panels/elements/LayoutPane.ts | flexbox": {
-    "message": "Flexbox"
-  },
-  "panels/elements/LayoutPane.ts | flexboxOverlays": {
-    "message": "Flexbox overlays"
-  },
-  "panels/elements/LayoutPane.ts | grid": {
-    "message": "Grid"
-  },
-  "panels/elements/LayoutPane.ts | gridOverlays": {
-    "message": "Grid overlays"
-  },
-  "panels/elements/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
-    "message": "No flexbox layouts found on this page"
-  },
-  "panels/elements/LayoutPane.ts | noGridLayoutsFoundOnThisPage": {
-    "message": "No grid layouts found on this page"
-  },
-  "panels/elements/LayoutPane.ts | overlayDisplaySettings": {
-    "message": "Overlay display settings"
-  },
-  "panels/elements/LayoutPane.ts | showElementInTheElementsPanel": {
-    "message": "Show element in the Elements panel"
   },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM Breakpoint"

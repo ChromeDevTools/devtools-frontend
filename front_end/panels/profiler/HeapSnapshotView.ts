@@ -1758,7 +1758,7 @@ export class HeapSnapshotStatisticsView extends UI.Widget.VBox {
   }
 
   static _valueFormatter(value: number): string {
-    return i18nString(UIStrings.sKb, {PH1: Number.withThousandsSeparator(Math.round(value / 1000))});
+    return i18nString(UIStrings.sKb, {PH1: Platform.NumberUtilities.withThousandsSeparator(Math.round(value / 1000))});
   }
 
   setTotalAndRecords(total: number, records: PerfUI.PieChart.Slice[]): void {

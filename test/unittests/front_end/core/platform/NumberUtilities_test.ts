@@ -113,4 +113,30 @@ describe('NumberUtilities', () => {
       assert.strictEqual('16∶10', Platform.NumberUtilities.aspectRatio(2560, 1600));
     });
   });
+
+  describe('numberWithThousandSeparator', () => {
+    it('separates 1000', () => {
+      const inputNumber = 1000;
+      const outputString = Platform.NumberUtilities.withThousandsSeparator(inputNumber);
+      assert.strictEqual(outputString, '1\xA0000');
+    });
+
+    it('does not separate 1', () => {
+      const inputNumber = 1;
+      const outputString = Platform.NumberUtilities.withThousandsSeparator(inputNumber);
+      assert.strictEqual(outputString, '1');
+    });
+
+    it('separates a billion', () => {
+      const inputNumber = 7654321;
+      const outputString = Platform.NumberUtilities.withThousandsSeparator(inputNumber);
+      assert.strictEqual(outputString, '7\xA0654\xA0321');
+    });
+
+    it('separates decimal points', () => {
+      const inputNumber = 0.0001;
+      const outputString = Platform.NumberUtilities.withThousandsSeparator(inputNumber);
+      assert.strictEqual(outputString, '0.0\xA0001');
+    });
+  });
 });

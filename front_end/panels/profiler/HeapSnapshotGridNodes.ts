@@ -515,8 +515,8 @@ export abstract class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode
     const retainedSizePercent = this._retainedSize / snapshot.totalSize * 100.0;
     this.data = {
       'distance': this._toUIDistance(this._distance),
-      'shallowSize': Number.withThousandsSeparator(this._shallowSize),
-      'retainedSize': Number.withThousandsSeparator(this._retainedSize),
+      'shallowSize': Platform.NumberUtilities.withThousandsSeparator(this._shallowSize),
+      'retainedSize': Platform.NumberUtilities.withThousandsSeparator(this._retainedSize),
       'shallowSize-percent': this._toPercentString(shallowSizePercent),
       'retainedSize-percent': this._toPercentString(retainedSizePercent),
     };
@@ -870,10 +870,10 @@ export class HeapSnapshotInstanceNode extends HeapSnapshotGenericObjectNode {
       data['addedCount'] = '';
       data['addedSize'] = '';
       data['removedCount'] = '\u2022';
-      data['removedSize'] = Number.withThousandsSeparator(this._shallowSize || 0);
+      data['removedSize'] = Platform.NumberUtilities.withThousandsSeparator(this._shallowSize || 0);
     } else {
       data['addedCount'] = '\u2022';
-      data['addedSize'] = Number.withThousandsSeparator(this._shallowSize || 0);
+      data['addedSize'] = Platform.NumberUtilities.withThousandsSeparator(this._shallowSize || 0);
       data['removedCount'] = '';
       data['removedSize'] = '';
     }
@@ -960,10 +960,10 @@ export class HeapSnapshotConstructorNode extends HeapSnapshotGridNode {
     const shallowSizePercent = this._shallowSize / snapshot.totalSize * 100.0;
     this.data = {
       'object': className,
-      'count': Number.withThousandsSeparator(this._count),
+      'count': Platform.NumberUtilities.withThousandsSeparator(this._count),
       'distance': this._toUIDistance(this._distance),
-      'shallowSize': Number.withThousandsSeparator(this._shallowSize),
-      'retainedSize': Number.withThousandsSeparator(this._retainedSize),
+      'shallowSize': Platform.NumberUtilities.withThousandsSeparator(this._shallowSize),
+      'retainedSize': Platform.NumberUtilities.withThousandsSeparator(this._retainedSize),
       'shallowSize-percent': this._toPercentString(shallowSizePercent),
       'retainedSize-percent': this._toPercentString(retainedSizePercent),
     };
@@ -1125,12 +1125,14 @@ export class HeapSnapshotDiffNode extends HeapSnapshotGridNode {
     this._deletedIndexes = diffForClass.deletedIndexes;
     this.data = {
       'object': className,
-      'addedCount': Number.withThousandsSeparator(this._addedCount),
-      'removedCount': Number.withThousandsSeparator(this._removedCount),
-      'countDelta': this._signForDelta(this._countDelta) + Number.withThousandsSeparator(Math.abs(this._countDelta)),
-      'addedSize': Number.withThousandsSeparator(this._addedSize),
-      'removedSize': Number.withThousandsSeparator(this._removedSize),
-      'sizeDelta': this._signForDelta(this._sizeDelta) + Number.withThousandsSeparator(Math.abs(this._sizeDelta)),
+      'addedCount': Platform.NumberUtilities.withThousandsSeparator(this._addedCount),
+      'removedCount': Platform.NumberUtilities.withThousandsSeparator(this._removedCount),
+      'countDelta': this._signForDelta(this._countDelta) +
+          Platform.NumberUtilities.withThousandsSeparator(Math.abs(this._countDelta)),
+      'addedSize': Platform.NumberUtilities.withThousandsSeparator(this._addedSize),
+      'removedSize': Platform.NumberUtilities.withThousandsSeparator(this._removedSize),
+      'sizeDelta': this._signForDelta(this._sizeDelta) +
+          Platform.NumberUtilities.withThousandsSeparator(Math.abs(this._sizeDelta)),
     };
   }
 
@@ -1224,10 +1226,10 @@ export class AllocationGridNode extends HeapSnapshotGridNode {
     this._populated = false;
     this._allocationNode = data;
     this.data = {
-      'liveCount': Number.withThousandsSeparator(data.liveCount),
-      'count': Number.withThousandsSeparator(data.count),
-      'liveSize': Number.withThousandsSeparator(data.liveSize),
-      'size': Number.withThousandsSeparator(data.size),
+      'liveCount': Platform.NumberUtilities.withThousandsSeparator(data.liveCount),
+      'count': Platform.NumberUtilities.withThousandsSeparator(data.count),
+      'liveSize': Platform.NumberUtilities.withThousandsSeparator(data.liveSize),
+      'size': Platform.NumberUtilities.withThousandsSeparator(data.size),
       'name': data.name,
     };
   }

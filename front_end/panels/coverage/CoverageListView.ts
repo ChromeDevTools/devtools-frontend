@@ -6,6 +6,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Formatter from '../../models/formatter/formatter.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -352,7 +353,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
       }
       case 'size': {
         const sizeSpan = cell.createChild('span');
-        sizeSpan.textContent = Number.withThousandsSeparator(this._coverageInfo.size() || 0);
+        sizeSpan.textContent = Platform.NumberUtilities.withThousandsSeparator(this._coverageInfo.size() || 0);
         const sizeAccessibleName = i18nString(UIStrings.sBytes, {n: this._coverageInfo.size() || 0});
         this.setCellAccessibleName(sizeAccessibleName, cell, columnId);
         break;
@@ -361,7 +362,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
         const unusedSize = this._coverageInfo.unusedSize() || 0;
         const unusedSizeSpan = cell.createChild('span');
         const unusedPercentsSpan = cell.createChild('span', 'percent-value');
-        unusedSizeSpan.textContent = Number.withThousandsSeparator(unusedSize);
+        unusedSizeSpan.textContent = Platform.NumberUtilities.withThousandsSeparator(unusedSize);
         // TODO(l10n): Don't concatenate the % string here. Do we need to use Intl number formatter instead?
         const unusedPercentFormatted =
             i18nString(UIStrings.sPercent, {PH1: this._percentageString(this._coverageInfo.unusedPercentage())});

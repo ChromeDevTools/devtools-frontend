@@ -82,3 +82,12 @@ export const aspectRatio = (width: number, height: number): string => {
   const result = `${width}∶${height}`;
   return commonRatios.get(result) || result;
 };
+
+export const withThousandsSeparator = function(num: number): string {
+  let str = String(num);
+  const re = /(\d+)(\d{3})/;
+  while (str.match(re)) {
+    str = str.replace(re, '$1\xA0$2');
+  }  // \xa0 is a non-breaking space
+  return str;
+};

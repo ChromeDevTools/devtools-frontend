@@ -664,15 +664,6 @@ Number.secondsToString = function(seconds: number, higherResolution?: boolean): 
   return Number.millisToString(seconds * 1000, higherResolution);
 };
 
-Number.withThousandsSeparator = function(num: number): string {
-  let str = String(num);
-  const re = /(\d+)(\d{3})/;
-  while (str.match(re)) {
-    str = str.replace(re, '$1\xA0$2');
-  }  // \xa0 is a non-breaking space
-  return str;
-};
-
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function formatLocalized(format: string, substitutions: ArrayLike<any>|null): Element {

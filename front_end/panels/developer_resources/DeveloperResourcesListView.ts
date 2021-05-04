@@ -6,6 +6,7 @@
 
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
@@ -264,7 +265,7 @@ class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<GridNode> 
         const size = this.item.size;
         if (size !== null) {
           const sizeSpan = cell.createChild('span');
-          sizeSpan.textContent = Number.withThousandsSeparator(size);
+          sizeSpan.textContent = Platform.NumberUtilities.withThousandsSeparator(size);
           const sizeAccessibleName = i18nString(UIStrings.sBytes, {n: size});
           this.setCellAccessibleName(sizeAccessibleName, cell, columnId);
         }

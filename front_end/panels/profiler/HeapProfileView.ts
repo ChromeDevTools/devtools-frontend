@@ -596,7 +596,7 @@ export class NodeFormatter implements Formatter {
   }
 
   formatValue(value: number): string {
-    return Number.withThousandsSeparator(value);
+    return Platform.NumberUtilities.withThousandsSeparator(value);
   }
 
   formatValueAccessibleText(value: number): string {
@@ -645,7 +645,7 @@ export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
   }
 
   formatValue(value: number, _precision?: number): string {
-    return i18nString(UIStrings.skb, {PH1: Number.withThousandsSeparator(value / 1e3)});
+    return i18nString(UIStrings.skb, {PH1: Platform.NumberUtilities.withThousandsSeparator(value / 1e3)});
   }
 
   _calculateTimelineData(): PerfUI.FlameChart.TimelineData {

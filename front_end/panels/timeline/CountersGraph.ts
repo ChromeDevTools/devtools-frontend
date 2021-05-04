@@ -410,7 +410,7 @@ export class CounterUI {
       formatter?: (arg0: number) => string) {
     this._countersPane = countersPane;
     this.counter = counter;
-    this._formatter = formatter || Number.withThousandsSeparator;
+    this._formatter = formatter || Platform.NumberUtilities.withThousandsSeparator;
 
     this._setting = Common.Settings.Settings.instance().createSetting('timelineCountersGraph-' + title, true);
     this._setting.setTitle(title);
@@ -471,7 +471,7 @@ export class CounterUI {
       return;
     }
     const index = this._recordIndexAt(x);
-    const value = Number.withThousandsSeparator(this.counter.values[index]);
+    const value = Platform.NumberUtilities.withThousandsSeparator(this.counter.values[index]);
     this._value.textContent = `${this._currentValueLabel}: ${value}`;
     const y = this.graphYValues[index] / window.devicePixelRatio;
     this._marker.style.left = x + 'px';

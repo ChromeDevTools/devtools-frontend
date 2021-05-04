@@ -496,9 +496,14 @@ export async function waitForPropertyToHighlight(ruleSelector: string, propertyN
   });
 }
 
-export const getBreadcrumbsTextContent = async () => {
-  const crumbs = await $$('li.crumb > a > devtools-node-text');
+export const getBreadcrumbsTextContent = async ({expectedNodeCount}: {expectedNodeCount: number}) => {
+  const crumbsSelector = 'li.crumb > a > devtools-node-text';
+  await waitForFunction(async () => {
+    const crumbs = await $$(crumbsSelector);
+    return crumbs.length === expectedNodeCount;
+  });
 
+  const crumbs = await $$(crumbsSelector);
   const crumbsAsText: string[] = await Promise.all(crumbs.map(node => node.evaluate((node: Element) => {
     if (!node.shadowRoot) {
       assert.fail('Found breadcrumbs node that unexpectedly has no shadowRoot.');

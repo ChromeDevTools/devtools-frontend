@@ -10,6 +10,7 @@ devtools_module("recorder") {
   sources = [
     "Conditions.ts",
     "RecorderModel.ts",
+    "RecordingClient.ts",
     "RecordingEventHandler.ts",
     "RecordingFileSystem.ts",
     "RecordingScriptWriter.ts",

@@ -298,6 +298,14 @@ export class RuntimeModel extends SDKModel {
     object.release();
   }
 
+  async addBinding(event: Protocol.Runtime.AddBindingRequest): Promise<Protocol.ProtocolResponseWithError> {
+    return await this._agent.invoke_addBinding(event);
+  }
+
+  _bindingCalled(event: Protocol.Runtime.BindingCalledEvent): void {
+    this.dispatchEventToListeners(Events.BindingCalled, event);
+  }
+
   _copyRequested(object: RemoteObject): void {
     if (!object.objectId) {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(
@@ -443,6 +451,7 @@ const _sideEffectTestExpression: string = '(async function(){ await 1; })()';
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum Events {
+  BindingCalled = 'BindingCalled',
   ExecutionContextCreated = 'ExecutionContextCreated',
   ExecutionContextDestroyed = 'ExecutionContextDestroyed',
   ExecutionContextChanged = 'ExecutionContextChanged',
@@ -489,7 +498,8 @@ class RuntimeDispatcher implements ProtocolProxyApi.RuntimeDispatcher {
     this._runtimeModel._inspectRequested(object, hints);
   }
 
-  bindingCalled(_event: Protocol.Runtime.BindingCalledEvent): void {
+  bindingCalled(event: Protocol.Runtime.BindingCalledEvent): void {
+    this._runtimeModel._bindingCalled(event);
   }
 }
 
@@ -707,6 +717,7 @@ export interface EvaluationOptions {
   disableBreaks?: boolean;
   replMode?: boolean;
   allowUnsafeEvalBlockedByCSP?: boolean;
+  contextId?: number;
 }
 
 export type QueryObjectResult = {

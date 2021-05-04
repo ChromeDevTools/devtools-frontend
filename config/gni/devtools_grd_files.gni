@@ -669,6 +669,7 @@ grd_files_debug_sources = [
   "front_end/models/persistence/WorkspaceSettingsTab.js",
   "front_end/models/recorder/Conditions.js",
   "front_end/models/recorder/RecorderModel.js",
+  "front_end/models/recorder/RecordingClient.js",
   "front_end/models/recorder/RecordingEventHandler.js",
   "front_end/models/recorder/RecordingFileSystem.js",
   "front_end/models/recorder/RecordingScriptWriter.js",

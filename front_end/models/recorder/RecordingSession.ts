@@ -7,100 +7,83 @@
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Workspace from '../workspace/workspace.js';
-import {RecordingEventHandler} from './RecordingEventHandler.js';
 import {RecordingScriptWriter} from './RecordingScriptWriter.js';
+import {RecordingEventHandler} from './RecordingEventHandler.js';
+import {setupRecordingClient} from './RecordingClient.js';
 import {EmulateNetworkConditions, NavigationStep, Step} from './Steps.js';
 
-const DOM_BREAKPOINTS = new Set<string>(['Mouse:click', 'Control:change', 'Control:submit']);
+const RECORDER_ISOLATED_WORLD_NAME = 'devtools_recorder';
+
+type RecorderEvent = {
+  type: 'windowOpened'|'windowClosed'|'navigation'|'bindingCalled',
+  event: Common.EventTarget.EventTargetEvent,
+};
 
 export class RecordingSession {
   _target: SDK.SDKModel.Target;
   _uiSourceCode: Workspace.UISourceCode.UISourceCode;
-  _debuggerAgent: ProtocolProxyApi.DebuggerApi;
-  _domDebuggerAgent: ProtocolProxyApi.DOMDebuggerApi;
   _runtimeAgent: ProtocolProxyApi.RuntimeApi;
   _accessibilityAgent: ProtocolProxyApi.AccessibilityApi;
   _pageAgent: ProtocolProxyApi.PageApi;
   _targetAgent: ProtocolProxyApi.TargetApi;
   _networkManager: SDK.NetworkManager.MultitargetNetworkManager;
   _domModel: SDK.DOMModel.DOMModel;
-  _axModel: SDK.AccessibilityModel.AccessibilityModel;
-  _debuggerModel: SDK.DebuggerModel.DebuggerModel;
   _resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel;
   _runtimeModel: SDK.RuntimeModel.RuntimeModel;
   _childTargetManager: SDK.ChildTargetManager.ChildTargetManager|null;
   _eventHandlers: Map<string, RecordingEventHandler>;
   _targets: Map<string, SDK.SDKModel.Target>;
-  _initialDomBreakpointState: Map<SDK.DOMDebuggerModel.EventListenerBreakpoint, boolean>;
-  _interestingBreakpoints: SDK.DOMDebuggerModel.EventListenerBreakpoint[];
-  _newDocumentScriptIdentifier: string|null;
-  steps: Step[] = [];
+  _newDocumentScriptIdentifiers: Map<string, string>;
   _indentation: string;
   _scriptWriter: RecordingScriptWriter|null = null;
+  _eventQueue: Array<RecorderEvent> = [];
+  _isProcessingEvent = false;
 
   constructor(target: SDK.SDKModel.Target, uiSourceCode: Workspace.UISourceCode.UISourceCode, indentation: string) {
     this._target = target;
     this._uiSourceCode = uiSourceCode;
     this._indentation = indentation;
 
-    this._debuggerAgent = target.debuggerAgent();
-    this._domDebuggerAgent = target.domdebuggerAgent();
     this._runtimeAgent = target.runtimeAgent();
     this._accessibilityAgent = target.accessibilityAgent();
     this._pageAgent = target.pageAgent();
     this._targetAgent = target.targetAgent();
 
     this._networkManager = SDK.NetworkManager.MultitargetNetworkManager.instance();
-    this._domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
-    this._axModel =
-        target.model(SDK.AccessibilityModel.AccessibilityModel) as SDK.AccessibilityModel.AccessibilityModel;
-    this._debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
-    this._resourceTreeModel =
-        target.model(SDK.ResourceTreeModel.ResourceTreeModel) as SDK.ResourceTreeModel.ResourceTreeModel;
-    this._runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel) as SDK.RuntimeModel.RuntimeModel;
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    if (!domModel) {
+      throw new Error('DOMModel is missing for the target: ' + target.id());
+    }
+    this._domModel = domModel;
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    if (!resourceTreeModel) {
+      throw new Error('ResourceTreeModel is missing for the target: ' + target.id());
+    }
+    this._resourceTreeModel = resourceTreeModel;
+    const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+    if (!runtimeModel) {
+      throw new Error('RuntimeModel is missing for the target: ' + target.id());
+    }
+    this._runtimeModel = runtimeModel;
     this._childTargetManager = target.model(SDK.ChildTargetManager.ChildTargetManager);
 
     this._target = target;
     this._eventHandlers = new Map();
-
     this._targets = new Map();
-
-    this._initialDomBreakpointState = new Map();
-
-    this._interestingBreakpoints = [];
-
-    this._newDocumentScriptIdentifier = null;
+    this._newDocumentScriptIdentifiers = new Map();
   }
 
   async start(): Promise<void> {
-    const allDomBreakpoints = SDK.DOMDebuggerModel.DOMDebuggerManager.instance().eventListenerBreakpoints();
-    this._interestingBreakpoints =
-        allDomBreakpoints.filter(breakpoint => DOM_BREAKPOINTS.has(breakpoint.category() + ':' + breakpoint.title()));
-
-    for (const breakpoint of this._interestingBreakpoints) {
-      this._initialDomBreakpointState.set(breakpoint, breakpoint.enabled());
-      breakpoint.setEnabled(true);
+    const mainFrame = this._resourceTreeModel.mainFrame;
+    if (!mainFrame) {
+      throw new Error('Could not find main frame');
     }
 
     this._networkManager.addEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, this._handleNetworkConditionsChanged,
         this);
 
-    this.attachToTarget(this._target);
-    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
-    if (!mainTarget) {
-      throw new Error('Could not find main target');
-    }
-    const resourceTreeModel = mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    if (!resourceTreeModel) {
-      throw new Error('Could not find resource tree model');
-    }
-
-    const mainFrame = resourceTreeModel.mainFrame;
-
-    if (!mainFrame) {
-      throw new Error('Could not find main frame');
-    }
+    await this.attachToTarget(this._target);
 
     this._scriptWriter = new RecordingScriptWriter(this._indentation);
 
@@ -112,11 +95,6 @@ export class RecordingSession {
     await this.appendStep(new NavigationStep(mainFrame.url));
   }
 
-  _handleNetworkConditionsChanged(): void {
-    const networkConditions = this._networkManager.networkConditions();
-    this.appendStep(new EmulateNetworkConditions(networkConditions));
-  }
-
   async stop(): Promise<void> {
     for (const target of this._targets.values()) {
       await this.detachFromTarget(target);
@@ -126,16 +104,11 @@ export class RecordingSession {
     this._networkManager.removeEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, this._handleNetworkConditionsChanged,
         this);
+  }
 
-    if (this._newDocumentScriptIdentifier) {
-      await this._pageAgent.invoke_removeScriptToEvaluateOnNewDocument({identifier: this._newDocumentScriptIdentifier});
-    }
-
-    await this._debuggerModel.ignoreDebuggerPausedEvents(false);
-
-    for (const [breakpoint, enabled] of this._initialDomBreakpointState.entries()) {
-      breakpoint.setEnabled(enabled);
-    }
+  _handleNetworkConditionsChanged(): void {
+    const networkConditions = this._networkManager.networkConditions();
+    this.appendStep(new EmulateNetworkConditions(networkConditions));
   }
 
   async appendStep(step: Step): Promise<void> {
@@ -160,70 +133,103 @@ export class RecordingSession {
     await Common.Revealer.reveal(this._uiSourceCode.uiLocation(content.length), true);
   }
 
-  async isSubmitButton(targetId: string): Promise<boolean> {
-    function innerIsSubmitButton(this: HTMLButtonElement): boolean {
-      return this.tagName === 'BUTTON' && this.type === 'submit' && this.form !== null;
+  bindingCalled(event: Common.EventTarget.EventTargetEvent): void {
+    this._enqueueEvent({type: 'bindingCalled', event});
+  }
+
+  bindingCalledInternal(params: {data: Protocol.Runtime.BindingCalledEvent}): void {
+    if (params.data.name !== 'addStep') {
+      return;
+    }
+    const executionContextId = params.data.executionContextId;
+    let contextTarget: SDK.SDKModel.Target|undefined;
+    let frameId: string|undefined;
+    for (const target of this._targets.values()) {
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      if (runtimeModel) {
+        for (const context of runtimeModel.executionContexts()) {
+          if (context.id === executionContextId) {
+            contextTarget = target;
+            frameId = context.frameId;
+          }
+        }
+      }
+    }
+    if (!contextTarget || !frameId) {
+      return;
     }
 
-    const {result} = await this._runtimeAgent.invoke_callFunctionOn({
-      functionDeclaration: innerIsSubmitButton.toString(),
-      objectId: targetId,
-    });
-    return result.value;
+    const eventHandler = this._eventHandlers.get(contextTarget.id());
+    if (!eventHandler) {
+      return;
+    }
+
+    eventHandler.bindingCalled(frameId, JSON.parse(params.data.payload));
   }
 
   async attachToTarget(target: SDK.SDKModel.Target): Promise<void> {
     this._targets.set(target.id(), target);
     const eventHandler = new RecordingEventHandler(this, target);
     this._eventHandlers.set(target.id(), eventHandler);
-    target.registerDebuggerDispatcher(eventHandler);
 
     const pageAgent = target.pageAgent();
 
-    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
+    const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel) as SDK.RuntimeModel.RuntimeModel;
 
-    const childTargetManager =
-        target.model(SDK.ChildTargetManager.ChildTargetManager) as SDK.ChildTargetManager.ChildTargetManager;
+    await runtimeModel.addBinding({
+      name: 'addStep',
+      executionContextName: RECORDER_ISOLATED_WORLD_NAME,
+    });
 
-    const setupEventListeners = `
-      if (!window.__recorderEventListener) {
-        const recorderEventListener = (event) => { };
-        window.addEventListener('click', recorderEventListener, true);
-        window.addEventListener('submit', recorderEventListener, true);
-        window.addEventListener('change', recorderEventListener, true);
-        window.__recorderEventListener = recorderEventListener;
-      }
-    `;
+    runtimeModel.addEventListener(SDK.RuntimeModel.Events.BindingCalled, this.bindingCalled, this);
 
-    // This uses the setEventListenerBreakpoint method from the debugger
-    // to get notified about new events. Therefor disable the normal debugger
-    // while recording.
-    await debuggerModel.resumeModel();
-    await debuggerModel.ignoreDebuggerPausedEvents(true);
+    const setupEventListeners = setupRecordingClient.toString() +
+        `;${setupRecordingClient.name}({getAccessibleName, getAccessibleRole}, true);`;
 
-    const {identifier} = await pageAgent.invoke_addScriptToEvaluateOnNewDocument({source: setupEventListeners});
-    this._newDocumentScriptIdentifier = identifier;
+    const {identifier} = await pageAgent.invoke_addScriptToEvaluateOnNewDocument(
+        {source: setupEventListeners, worldName: RECORDER_ISOLATED_WORLD_NAME, includeCommandLineAPI: true});
+    this._newDocumentScriptIdentifiers.set(target.id(), identifier);
 
     await this.evaluateInAllFrames(target, setupEventListeners);
 
-    childTargetManager.addEventListener(SDK.ChildTargetManager.Events.TargetCreated, this.handleWindowOpened, this);
-    childTargetManager.addEventListener(SDK.ChildTargetManager.Events.TargetDestroyed, this.handleWindowClosed, this);
-    childTargetManager.addEventListener(SDK.ChildTargetManager.Events.TargetInfoChanged, this.handleNavigation, this);
+    const childTargetManager =
+        target.model(SDK.ChildTargetManager.ChildTargetManager) as SDK.ChildTargetManager.ChildTargetManager;
+    childTargetManager.addEventListener(SDK.ChildTargetManager.Events.TargetCreated, this.receiveWindowOpened, this);
+    childTargetManager.addEventListener(SDK.ChildTargetManager.Events.TargetDestroyed, this.receiveWindowClosed, this);
+    childTargetManager.addEventListener(SDK.ChildTargetManager.Events.TargetInfoChanged, this.receiveNavigation, this);
     for (const target of childTargetManager.childTargets()) {
-      this.attachToTarget(target);
+      await this.attachToTarget(target);
     }
   }
 
   async detachFromTarget(target: SDK.SDKModel.Target): Promise<void> {
-    const eventHandler = this._eventHandlers.get(target.id());
-    if (!eventHandler) {
-      return;
+    const childTargetManager = target.model(SDK.ChildTargetManager.ChildTargetManager);
+
+    if (childTargetManager) {
+      childTargetManager.removeEventListener(
+          SDK.ChildTargetManager.Events.TargetCreated, this.receiveWindowOpened, this);
+      childTargetManager.removeEventListener(
+          SDK.ChildTargetManager.Events.TargetDestroyed, this.receiveWindowClosed, this);
+      childTargetManager.removeEventListener(
+          SDK.ChildTargetManager.Events.TargetInfoChanged, this.receiveNavigation, this);
     }
-    target.unregisterDebuggerDispatcher(eventHandler);
 
-    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
+    const newDocumentScriptIdentifier = this._newDocumentScriptIdentifiers.get(target.id());
+    if (newDocumentScriptIdentifier) {
+      await target.pageAgent().invoke_removeScriptToEvaluateOnNewDocument({identifier: newDocumentScriptIdentifier});
+    }
 
-    await debuggerModel.ignoreDebuggerPausedEvents(false);
+    await target.runtimeAgent().invoke_removeBinding({
+      name: 'addStep',
+    });
+
+    const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+
+    if (runtimeModel) {
+      runtimeModel.removeEventListener(SDK.RuntimeModel.Events.BindingCalled, this.bindingCalled, this);
+    }
+
+    this._eventHandlers.delete(target.id());
   }
 
   async evaluateInAllFrames(target: SDK.SDKModel.Target, expression: string): Promise<void> {
@@ -236,22 +242,62 @@ export class RecordingSession {
       if (!executionContext) {
         continue;
       }
+      // Note: it would return previously created world if it exists for the frame.
+      const world = await target.pageAgent().invoke_createIsolatedWorld({
+        frameId: frame.id,
+        worldName: RECORDER_ISOLATED_WORLD_NAME,
+      });
+      await target.runtimeAgent().invoke_evaluate({
+        expression,
+        includeCommandLineAPI: true,
+        contextId: world.executionContextId,
+      });
+    }
+  }
 
-      await executionContext.evaluate(
-          {
-            expression,
-            objectGroup: undefined,
-            includeCommandLineAPI: undefined,
-            silent: undefined,
-            returnByValue: undefined,
-            generatePreview: undefined,
-            allowUnsafeEvalBlockedByCSP: undefined,
-            throwOnSideEffect: undefined,
-            timeout: undefined,
-            disableBreaks: undefined,
-            replMode: undefined,
-          },
-          true, false);
+  receiveWindowOpened(event: Common.EventTarget.EventTargetEvent): void {
+    this._enqueueEvent({type: 'windowOpened', event});
+  }
+
+  receiveWindowClosed(event: Common.EventTarget.EventTargetEvent): void {
+    this._enqueueEvent({type: 'windowClosed', event});
+  }
+
+  receiveNavigation(event: Common.EventTarget.EventTargetEvent): void {
+    this._enqueueEvent({type: 'navigation', event});
+  }
+
+  async _enqueueEvent(event: RecorderEvent): Promise<void> {
+    this._eventQueue.push(event);
+    if (this._isProcessingEvent) {
+      return;
+    }
+    while (this._eventQueue.length) {
+      this._isProcessingEvent = true;
+      try {
+        const item = this._eventQueue.shift();
+        if (!item) {
+          throw new Error('No event found in the queue');
+        }
+        switch (item.type) {
+          case 'windowClosed':
+            await this.handleWindowClosed(item.event);
+            break;
+          case 'windowOpened':
+            await this.handleWindowOpened(item.event);
+            break;
+          case 'navigation':
+            await this.handleNavigation(item.event);
+            break;
+          case 'bindingCalled':
+            this.bindingCalledInternal(item.event);
+            break;
+        }
+      } catch (err) {
+        console.error('error happened while processing recording events', err);
+      } finally {
+        this._isProcessingEvent = false;
+      }
     }
   }
 
@@ -271,8 +317,7 @@ export class RecordingSession {
     if (!target) {
       throw new Error('Could not find target.');
     }
-
-    this.attachToTarget(target);
+    await this.attachToTarget(target);
   }
 
   async handleWindowClosed(event: Common.EventTarget.EventTargetEvent): Promise<void> {
@@ -298,6 +343,7 @@ export class RecordingSession {
       return;
     }
 
+    // TODO: can we get rid of _resourceTreeModel?
     const targetId = this._resourceTreeModel.mainFrame?.id === event.data.targetId ? 'main' : event.data.targetId;
     const eventHandler = this._eventHandlers.get(targetId);
     if (!eventHandler) {

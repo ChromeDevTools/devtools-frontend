@@ -16,6 +16,13 @@ export class RecordingScriptWriter {
     this.steps.push(step);
   }
 
+  getLastStep(): Step|null {
+    if (this.steps.length) {
+      return this.steps[this.steps.length - 1];
+    }
+    return null;
+  }
+
   getScript(): string {
     const indentation = this.indentation;
     const script: string[] = [];

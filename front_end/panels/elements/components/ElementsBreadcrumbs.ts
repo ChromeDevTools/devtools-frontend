@@ -305,6 +305,8 @@ export class ElementsBreadcrumbs extends HTMLElement {
             text-align: center;
             background-color: var(--color-background-elevation-1);
             color: var(--color-text-secondary);
+            margin: 1px;
+            outline: var(--color-background-elevation-1) solid 1px;
           }
 
           .overflow.hidden {
@@ -316,7 +318,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
           }
 
           .overflow:focus {
-            outline: var(--color-primary) auto 1px;
+            outline-color: var(--color-primary);
           }
 
           .overflow:not(:disabled):hover {

@@ -1,4 +1,4 @@
-import { tokTypes, SourceLocation, Node, lineBreak, isNewLine, Parser, Token, getLineInfo, lineBreakG, defaultOptions } from '../../../acorn/package/dist/acorn.mjs';
+import { tokTypes, SourceLocation, Node, lineBreak, isNewLine, Parser, Token, getLineInfo, lineBreakG, defaultOptions } from '../../../acorn/acorn.js';
 
 var dummyValue = "✖";
 

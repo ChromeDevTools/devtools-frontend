@@ -4,12 +4,8 @@
 
 import * as acorn from './package/dist/acorn.mjs';
 
-export type Token = acorn.Token;
-export type Comment = acorn.Comment;
-
-export const tokTypes = acorn.tokTypes;
+export { Comment, defaultOptions, getLineInfo, isNewLine, lineBreak, lineBreakG, Node, SourceLocation, Token,tokTypes} from './package/dist/acorn.mjs';
 
 export const Parser = acorn.Parser;
 export const tokenizer = acorn.Parser.tokenizer.bind(acorn.Parser);
 export const parse = acorn.Parser.parse.bind(acorn.Parser);
-

@@ -85,9 +85,6 @@ export default {
               // import {DataGrid} from './components/DataGrid.js' = not external
               // import * as Components from './components/foo.js' = not external
 
-              // We currently still have to import third_party packages and put them in separate
-              // folders with the `module.json` files.
-              //
               // Note that we can't do a simple check for only `third_party`, as in Chromium
               // our full path is `third_party/devtools-frontend/src/`, which thus *always*
               // includes third_party. It also not possible to use the current directory
@@ -95,23 +92,6 @@ export default {
               // would therefore not match the path of `__dirname`.
               // These should be removed because the new heuristic _should_ deal with these
               // e.g. it'll pick up third_party/lit-html/lit-html.js is its own entrypoint
-
-
-              // Our heuristic for deciding if an import is external (and
-              // therefore a separate bundle) works for most third_party
-              // imports; e.g. it correctly detects that
-              // 'third_party/lit-html/lit-html.js' is its own bundle. However
-              // due to the structure of Acorn and the fact that it's many files
-              // that augment the Acorn module, we can't apply the same logic to
-              // any Acorn files, so we special case Acorn here to make sure
-              // that we treat acorn.js correctly.
-              if (importedFileDirectory.includes(path.join('front_end', 'third_party', 'acorn')) &&
-                  // Note that we have to include the path.sep for `acorn`, as there are multiple packages
-                  // in `third_party` that start with `acorn-`
-                  !importedFileDirectory.includes(
-                      dirnameWithSeparator(path.join('front_end', 'third_party', 'acorn', 'acorn.js')))) {
-                return null;
-              }
 
               // Puppeteer has dynamic imports in its build gated on an ifNode
               // flag, but our Rollup config doesn't know about that and tries

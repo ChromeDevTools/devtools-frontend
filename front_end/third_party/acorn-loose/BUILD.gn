@@ -20,7 +20,10 @@ devtools_pre_built("acorn-loose") {
 devtools_entrypoint("bundle") {
   entrypoint = "acorn-loose.ts"
 
-  deps = [ ":acorn-loose" ]
+  deps = [
+    ":acorn-loose",
+    "../acorn:bundle",
+  ]
 
   visibility = [ "../../entrypoints/formatter_worker/*" ]
 

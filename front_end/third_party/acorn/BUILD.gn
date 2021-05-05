@@ -23,7 +23,10 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":acorn" ]
 
-  visibility = [ "../../entrypoints/formatter_worker/*" ]
+  visibility = [
+    "../../entrypoints/formatter_worker/*",
+    "../acorn-loose/*",
+  ]
 
   visibility += devtools_third_party_visibility
 }

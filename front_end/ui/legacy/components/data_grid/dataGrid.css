@@ -1,6 +1,6 @@
 .data-grid {
   position: relative;
-  border: 1px solid rgb(204 204 204) !important; /* stylelint-disable-line plugin/use_theme_colors, declaration-no-important */
+  border: 1px solid var(--color-details-hairline-light) !important; /* stylelint-disable-line declaration-no-important */
   /* See: crbug.com/1152736 for color variable migration. */
   line-height: 120%;
 }
@@ -89,10 +89,9 @@
   display: table-row;
 }
 
-.striped-data-grid .revealed.data-grid-data-grid-node:nth-child(odd),
-.striped-data-grid-starts-with-odd .revealed.data-grid-data-grid-node:nth-child(even) {
-  background-color: hsl(214deg 70% 97%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+.striped-data-grid .revealed.data-grid-data-grid-node:nth-child(odd):not(.dirty):not(.selected),
+.striped-data-grid-starts-with-odd .revealed.data-grid-data-grid-node:nth-child(even):not(.dirty):not(.selected) {
+  background-color: var(--color-background-elevation-1);
 }
 
 .data-grid td,
@@ -102,8 +101,7 @@
   overflow: hidden;
   line-height: 18px;
   height: 18px;
-  border-left: 1px solid #aaa; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-left: 1px solid var(--color-details-hairline);
   padding: 1px 4px;
 }
 
@@ -115,8 +113,7 @@
 .data-grid th {
   text-align: left;
   background-color: var(--color-background-elevation-1);
-  border-bottom: 1px solid #aaa; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-bottom: 1px solid var(--color-details-hairline);
   font-weight: normal;
   vertical-align: middle;
 }
@@ -150,17 +147,6 @@
   position: relative;
 }
 
-.data-grid th.sortable:active::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  background-color: rgb(0 0 0 / 15%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-}
-
 .data-grid th .sort-order-icon-container {
   position: absolute;
   top: 1px;
@@ -182,8 +168,7 @@
 }
 
 .data-grid th.sortable:hover {
-  background-color: hsl(0deg 0% 90% / 100%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background-elevation-2);
 }
 
 .data-grid .top-filler-td {
@@ -208,8 +193,7 @@
   content: "";
   position: relative;
   top: 3px;
-  background-color: rgb(110 110 110); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-text-secondary);
 }
 
 .data-grid tr:not(.parent) td.disclosure::before {
@@ -221,8 +205,7 @@
 }
 
 .data-grid table.data tr.revealed.selected {
-  background-color: rgb(212 212 212); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background-highlight);
   color: inherit;
 }
 
@@ -240,14 +223,13 @@
 }
 
 .data-grid:focus tr.selected.dirty {
-  /* See: crbug.com/1152736 for color variable migration. */
-  /* stylelint-disable-next-line plugin/use_theme_colors */
-  background-color: hsl(0deg 100% 70%);
+  --override-data-grid-dirty-background-color: hsl(0deg 100% 70%);
 }
 
 .data-grid table.data tr.selected.dirty {
-  /* stylelint-disable-next-line plugin/use_theme_colors */
-  background-color: hsl(0deg 100% 30%);
+  --override-data-grid-dirty-background-color: hsl(0deg 100% 30%);
+
+  background-color: var(--override-data-grid-dirty-background-color);
 }
 
 .data-grid:focus tr.selected .devtools-link {
@@ -265,16 +247,15 @@
 }
 
 .data-grid tr.inactive {
-  color: rgb(128 128 128); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-disabled);
   font-style: italic;
 }
 
 .data-grid tr.dirty {
-  background-color: hsl(0deg 100% 92%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  color: #f00; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  --override-data-grid-dirty-background-color: hsl(0deg 100% 92%);
+
+  background-color: var(--override-data-grid-dirty-background-color);
+  color: var(--color-red);
   font-style: normal;
 }
 

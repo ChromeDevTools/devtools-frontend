@@ -2,6 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+interface Step {
+  type: string;
+  selector: string;
+  value?: string;
+}
 declare global {
   interface HTMLElement {
     role: string;
@@ -9,26 +14,35 @@ declare global {
   }
 
   interface Window {
-    _recorderEventListener: (event: Event) => void;
-    addStep(step: unknown): void;
+    _recorderEventListener?: (event: Event) => void;
+    addStep(step: string): void;
   }
 }
 
+export interface Exports {
+  createStepFromEvent?: (event: Event, target: EventTarget|null, isTrusted: boolean) => Step | undefined;
+  getSelector?: (node: Node) => string;
+  teardown?: () => void;
+}
+
+/**
+ * This function is special because it gets injected into the target page.
+ * All runtime code should be defined withing the function so that it can
+ * be serialised.
+ */
 export function setupRecordingClient(
     bindings: {
       getAccessibleName: (node: Node) => string,
       getAccessibleRole: (node: Node) => string,
     },
-    debug = false): void {
+    debug = false, exports: Exports = {}): void {
   const log = (...args: unknown[]): void => {
     if (debug) {
       console.log(...args);  // eslint-disable-line no-console
     }
   };
 
-  const recorderEventListener = (event: Event): void => {
-    const target = event.target as HTMLButtonElement;
-    log(target.nodeName, target.type);
+  const createStepFromEvent = (event: Event, target: EventTarget|null, isTrusted = false): Step|undefined => {
     // Clicking on a submit button will emit a submit event
     // which will be handled in a different handler.
     // TODO: figure out the event type for Submit.
@@ -36,12 +50,22 @@ export function setupRecordingClient(
     if (event.type === 'submit' && Boolean((event as any).submitter)) {
       return;
     }
-    // Synthetic events should not be captured by the recorder.
-    if (!event.isTrusted) {
+    if (!target || !isTrusted) {
       return;
     }
-    window.addStep(
-        JSON.stringify({type: event.type, selector: getSelector(target), value: (target as HTMLInputElement).value}));
+    const nodeTarget = target as Node;
+    return {type: event.type, selector: getSelector(nodeTarget), value: (target as HTMLInputElement).value};
+  };
+  exports.createStepFromEvent = createStepFromEvent;
+
+  const recorderEventListener = (event: Event): void => {
+    const target = event.target as HTMLButtonElement;
+    log(target.nodeName, target.type);
+    const step = createStepFromEvent(event, event.target, event.isTrusted);
+    if (!step) {
+      return;
+    }
+    window.addStep(JSON.stringify(step));
   };
 
   if (!window._recorderEventListener) {
@@ -53,6 +77,14 @@ export function setupRecordingClient(
   } else {
     log('_recorderEventListener was already installed');
   }
+
+  const teardown = (): void => {
+    window.removeEventListener('click', recorderEventListener, true);
+    window.removeEventListener('submit', recorderEventListener, true);
+    window.removeEventListener('change', recorderEventListener, true);
+    delete window._recorderEventListener;
+  };
+  exports.teardown = teardown;
 
   const RELEVANT_ROLES_FOR_ARIA_SELECTORS = new Set(['button', 'link', 'textbox', 'checkbox', 'combobox']);
 
@@ -69,6 +101,7 @@ export function setupRecordingClient(
     }
     return cssPath(node);
   };
+  exports.getSelector = getSelector;
 
   const nodeNameInCorrectCase = (node: Node): string => {
     // If there is no local name, it's case sensitive

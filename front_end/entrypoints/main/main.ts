@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as DevToolsLocale from './DevToolsLocale.js';
 import * as ExecutionContextSelector from './ExecutionContextSelector.js';
 import * as MainImpl from './MainImpl.js';
 import * as SimpleApp from './SimpleApp.js';
 
 export {
+  DevToolsLocale,
   ExecutionContextSelector,
   MainImpl,
   SimpleApp,

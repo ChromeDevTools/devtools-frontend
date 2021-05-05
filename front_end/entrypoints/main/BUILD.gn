@@ -8,6 +8,7 @@ import("../visibility.gni")
 
 devtools_module("main") {
   sources = [
+    "DevToolsLocale.ts",
     "ExecutionContextSelector.ts",
     "MainImpl.ts",
     "SimpleApp.ts",
@@ -42,7 +43,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
+    "../../../test/unittests/front_end/entrypoints/main/*",
   ]
 
   visibility += devtools_entrypoints_visibility

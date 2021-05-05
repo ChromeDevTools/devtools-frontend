@@ -104,7 +104,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
     const shadowContainer = document.createElement('div');
     this._shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
         shadowContainer,
-        {cssFile: 'panels/elements/elementsTreeOutline.css', enableLegacyPatching: true, delegatesFocus: undefined});
+        {cssFile: 'panels/elements/elementsTreeOutline.css', enableLegacyPatching: false, delegatesFocus: undefined});
     const outlineDisclosureElement = this._shadowRoot.createChild('div', 'elements-disclosure');
 
     this._element = this.element;

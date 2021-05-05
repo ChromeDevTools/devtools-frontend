@@ -2,33 +2,31 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
-import * as Common from '../../core/common/common.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../../core/sdk/sdk.js';
-import * as UI from '../../ui/legacy/legacy.js';  // eslint-disable-line no-unused-vars
+import type * as Common from '../../core/common/common.js';
+import type * as UI from '../../ui/legacy/legacy.js';
 
 export class ExecutionContextSelector implements SDK.SDKModel.SDKModelObserver<SDK.RuntimeModel.RuntimeModel> {
-  _targetManager: SDK.SDKModel.TargetManager;
-  _context: UI.Context.Context;
-  _lastSelectedContextId?: string;
-  _ignoreContextChanged?: boolean;
+  private targetManager: SDK.SDKModel.TargetManager;
+  private context: UI.Context.Context;
+  private lastSelectedContextId?: string;
+  private ignoreContextChanged?: boolean;
 
   constructor(targetManager: SDK.SDKModel.TargetManager, context: UI.Context.Context) {
-    context.addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this._executionContextChanged, this);
-    context.addFlavorChangeListener(SDK.SDKModel.Target, this._targetChanged, this);
+    context.addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this.executionContextChanged, this);
+    context.addFlavorChangeListener(SDK.SDKModel.Target, this.targetChanged, this);
 
     targetManager.addModelListener(
-        SDK.RuntimeModel.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextCreated, this._onExecutionContextCreated,
+        SDK.RuntimeModel.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextCreated, this.onExecutionContextCreated,
         this);
     targetManager.addModelListener(
         SDK.RuntimeModel.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextDestroyed,
-        this._onExecutionContextDestroyed, this);
+        this.onExecutionContextDestroyed, this);
     targetManager.addModelListener(
         SDK.RuntimeModel.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextOrderChanged,
-        this._onExecutionContextOrderChanged, this);
-    this._targetManager = targetManager;
-    this._context = context;
+        this.onExecutionContextOrderChanged, this);
+    this.targetManager = targetManager;
+    this.context = context;
     targetManager.observeModels(SDK.RuntimeModel.RuntimeModel, this);
   }
 
@@ -39,41 +37,41 @@ export class ExecutionContextSelector implements SDK.SDKModel.SDKModelObserver<S
 
     function deferred(this: ExecutionContextSelector): void {
       // We always want the second context for the service worker targets.
-      if (!this._context.flavor(SDK.SDKModel.Target)) {
-        this._context.setFlavor(SDK.SDKModel.Target, runtimeModel.target());
+      if (!this.context.flavor(SDK.SDKModel.Target)) {
+        this.context.setFlavor(SDK.SDKModel.Target, runtimeModel.target());
       }
     }
   }
 
   modelRemoved(runtimeModel: SDK.RuntimeModel.RuntimeModel): void {
-    const currentExecutionContext = this._context.flavor(SDK.RuntimeModel.ExecutionContext);
+    const currentExecutionContext = this.context.flavor(SDK.RuntimeModel.ExecutionContext);
     if (currentExecutionContext && currentExecutionContext.runtimeModel === runtimeModel) {
-      this._currentExecutionContextGone();
+      this.currentExecutionContextGone();
     }
 
-    const models = this._targetManager.models(SDK.RuntimeModel.RuntimeModel);
-    if (this._context.flavor(SDK.SDKModel.Target) === runtimeModel.target() && models.length) {
-      this._context.setFlavor(SDK.SDKModel.Target, models[0].target());
+    const models = this.targetManager.models(SDK.RuntimeModel.RuntimeModel);
+    if (this.context.flavor(SDK.SDKModel.Target) === runtimeModel.target() && models.length) {
+      this.context.setFlavor(SDK.SDKModel.Target, models[0].target());
     }
   }
 
-  _executionContextChanged(event: Common.EventTarget.EventTargetEvent): void {
+  private executionContextChanged(event: Common.EventTarget.EventTargetEvent): void {
     const newContext = (event.data as SDK.RuntimeModel.ExecutionContext | null);
     if (newContext) {
-      this._context.setFlavor(SDK.SDKModel.Target, newContext.target());
-      if (!this._ignoreContextChanged) {
-        this._lastSelectedContextId = this._contextPersistentId(newContext);
+      this.context.setFlavor(SDK.SDKModel.Target, newContext.target());
+      if (!this.ignoreContextChanged) {
+        this.lastSelectedContextId = this.contextPersistentId(newContext);
       }
     }
   }
 
-  _contextPersistentId(executionContext: SDK.RuntimeModel.ExecutionContext): string {
+  private contextPersistentId(executionContext: SDK.RuntimeModel.ExecutionContext): string {
     return executionContext.isDefault ? executionContext.target().name() + ':' + executionContext.frameId : '';
   }
 
-  _targetChanged(event: Common.EventTarget.EventTargetEvent): void {
+  private targetChanged(event: Common.EventTarget.EventTargetEvent): void {
     const newTarget = (event.data as SDK.SDKModel.Target | null);
-    const currentContext = this._context.flavor(SDK.RuntimeModel.ExecutionContext);
+    const currentContext = this.context.flavor(SDK.RuntimeModel.ExecutionContext);
 
     if (!newTarget || (currentContext && currentContext.target() === newTarget)) {
       return;
@@ -87,31 +85,28 @@ export class ExecutionContextSelector implements SDK.SDKModel.SDKModelObserver<S
 
     let newContext: SDK.RuntimeModel.ExecutionContext|null = null;
     for (let i = 0; i < executionContexts.length && !newContext; ++i) {
-      if (this._shouldSwitchToContext(executionContexts[i])) {
+      if (this.shouldSwitchToContext(executionContexts[i])) {
         newContext = executionContexts[i];
       }
     }
     for (let i = 0; i < executionContexts.length && !newContext; ++i) {
-      if (this._isDefaultContext(executionContexts[i])) {
+      if (this.isDefaultContext(executionContexts[i])) {
         newContext = executionContexts[i];
       }
     }
-    this._ignoreContextChanged = true;
-    this._context.setFlavor(SDK.RuntimeModel.ExecutionContext, newContext || executionContexts[0]);
-    this._ignoreContextChanged = false;
+    this.ignoreContextChanged = true;
+    this.context.setFlavor(SDK.RuntimeModel.ExecutionContext, newContext || executionContexts[0]);
+    this.ignoreContextChanged = false;
   }
 
-  _shouldSwitchToContext(executionContext: SDK.RuntimeModel.ExecutionContext): boolean {
-    if (this._lastSelectedContextId && this._lastSelectedContextId === this._contextPersistentId(executionContext)) {
+  private shouldSwitchToContext(executionContext: SDK.RuntimeModel.ExecutionContext): boolean {
+    if (this.lastSelectedContextId && this.lastSelectedContextId === this.contextPersistentId(executionContext)) {
       return true;
     }
-    if (!this._lastSelectedContextId && this._isDefaultContext(executionContext)) {
-      return true;
-    }
-    return false;
+    return !this.lastSelectedContextId && this.isDefaultContext(executionContext);
   }
 
-  _isDefaultContext(executionContext: SDK.RuntimeModel.ExecutionContext): boolean {
+  private isDefaultContext(executionContext: SDK.RuntimeModel.ExecutionContext): boolean {
     if (!executionContext.isDefault || !executionContext.frameId) {
       return false;
     }
@@ -120,50 +115,47 @@ export class ExecutionContextSelector implements SDK.SDKModel.SDKModelObserver<S
     }
     const resourceTreeModel = executionContext.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
     const frame = resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
-    if (frame && frame.isTopFrame()) {
-      return true;
-    }
-    return false;
+    return Boolean(frame?.isTopFrame());
   }
 
-  _onExecutionContextCreated(event: Common.EventTarget.EventTargetEvent): void {
-    this._switchContextIfNecessary((event.data as SDK.RuntimeModel.ExecutionContext));
+  private onExecutionContextCreated(event: Common.EventTarget.EventTargetEvent): void {
+    this.switchContextIfNecessary((event.data as SDK.RuntimeModel.ExecutionContext));
   }
 
-  _onExecutionContextDestroyed(event: Common.EventTarget.EventTargetEvent): void {
+  private onExecutionContextDestroyed(event: Common.EventTarget.EventTargetEvent): void {
     const executionContext = (event.data as SDK.RuntimeModel.ExecutionContext);
-    if (this._context.flavor(SDK.RuntimeModel.ExecutionContext) === executionContext) {
-      this._currentExecutionContextGone();
+    if (this.context.flavor(SDK.RuntimeModel.ExecutionContext) === executionContext) {
+      this.currentExecutionContextGone();
     }
   }
 
-  _onExecutionContextOrderChanged(event: Common.EventTarget.EventTargetEvent): void {
+  private onExecutionContextOrderChanged(event: Common.EventTarget.EventTargetEvent): void {
     const runtimeModel = (event.data as SDK.RuntimeModel.RuntimeModel);
     const executionContexts = runtimeModel.executionContexts();
     for (let i = 0; i < executionContexts.length; i++) {
-      if (this._switchContextIfNecessary(executionContexts[i])) {
+      if (this.switchContextIfNecessary(executionContexts[i])) {
         break;
       }
     }
   }
 
-  _switchContextIfNecessary(executionContext: SDK.RuntimeModel.ExecutionContext): boolean {
-    if (!this._context.flavor(SDK.RuntimeModel.ExecutionContext) || this._shouldSwitchToContext(executionContext)) {
-      this._ignoreContextChanged = true;
-      this._context.setFlavor(SDK.RuntimeModel.ExecutionContext, executionContext);
-      this._ignoreContextChanged = false;
+  private switchContextIfNecessary(executionContext: SDK.RuntimeModel.ExecutionContext): boolean {
+    if (!this.context.flavor(SDK.RuntimeModel.ExecutionContext) || this.shouldSwitchToContext(executionContext)) {
+      this.ignoreContextChanged = true;
+      this.context.setFlavor(SDK.RuntimeModel.ExecutionContext, executionContext);
+      this.ignoreContextChanged = false;
       return true;
     }
     return false;
   }
 
-  _currentExecutionContextGone(): void {
-    const runtimeModels = this._targetManager.models(SDK.RuntimeModel.RuntimeModel);
+  private currentExecutionContextGone(): void {
+    const runtimeModels = this.targetManager.models(SDK.RuntimeModel.RuntimeModel);
     let newContext: SDK.RuntimeModel.ExecutionContext|null = null;
     for (let i = 0; i < runtimeModels.length && !newContext; ++i) {
       const executionContexts = runtimeModels[i].executionContexts();
       for (const executionContext of executionContexts) {
-        if (this._isDefaultContext(executionContext)) {
+        if (this.isDefaultContext(executionContext)) {
           newContext = executionContext;
           break;
         }
@@ -178,8 +170,8 @@ export class ExecutionContextSelector implements SDK.SDKModel.SDKModelObserver<S
         }
       }
     }
-    this._ignoreContextChanged = true;
-    this._context.setFlavor(SDK.RuntimeModel.ExecutionContext, newContext);
-    this._ignoreContextChanged = false;
+    this.ignoreContextChanged = true;
+    this.context.setFlavor(SDK.RuntimeModel.ExecutionContext, newContext);
+    this.ignoreContextChanged = false;
   }
 }

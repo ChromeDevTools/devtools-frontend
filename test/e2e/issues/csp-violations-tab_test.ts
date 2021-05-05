@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {ElementHandle} from 'puppeteer';
 
-import {click, enableExperiment, goToResource, typeText, waitFor} from '../../shared/helper.js';
+import {click, enableExperiment, goToResource, matchArray, typeText, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {getDataGridRows} from '../helpers/datagrid-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
@@ -35,6 +35,19 @@ async function getDataGridText(datagrid: ElementHandle<Element>[][]): Promise<st
   return table;
 }
 
+async function waitForDataGridText(selector: string, expectedRows: string[][]) {
+  await waitForFunction(async () => {
+    const cspViolationsPane = await waitFor('.csp-violations-pane');
+    const actualRows = await getDataGridText(await getDataGridRows(expectedRows.length, cspViolationsPane));
+    for (let i = 0; i < actualRows.length; ++i) {
+      const result = matchArray(actualRows[i], expectedRows[i]);
+      if (result !== true) {
+        return undefined;
+      }
+    }
+    return true;
+  });
+}
 
 describe('CSP Violations Tab', async () => {
   beforeEach(async () => {
@@ -73,11 +86,10 @@ describe('CSP Violations Tab', async () => {
     assert.deepEqual(rows, expectedRows);
 
     await goToResource('network/trusted-type-violations-enforced.rawresponse');
-    const rows2 = await getDataGridText(await getDataGridRows(1, cspViolationsPane));
     const expectedRows2 = [
       ['trusted-type-violations-enforced.rawresponse:1', 'trusted-types', 'Policy Violation', 'blocked'],
     ];
-    assert.deepEqual(rows2, expectedRows2);
+    await waitForDataGridText('.csp-violations-pane', expectedRows2);
   });
 
   it('should not display sink violations', async () => {

@@ -540,19 +540,27 @@ export function assertNotNull<T>(val: T): asserts val is NonNullable<T> {
 // on Node modules resolution to import it.
 export {getBrowserAndPages, getTestServerPort, reloadDevTools, puppeteer};
 
-export function matchArray(actual: Array<string>, expected: Array<string|RegExp>) {
+export function matchArray(actual: Array<string>, expected: Array<string|RegExp>): true|string {
   if (actual.length !== expected.length) {
-    throw new AssertionError(`Expected [${actual.map(x => `"${x}"`).join(', ')}] to have length ${expected.length}`);
+    return `Expected [${actual.map(x => `"${x}"`).join(', ')}] to have length ${expected.length}`;
   }
 
   for (let i = 0; i < expected.length; ++i) {
     const expectedItem = expected[i];
     if (typeof expectedItem === 'string') {
       if (actual[i] !== expectedItem) {
-        throw new AssertionError(`Expected item at position ${i} which was "${actual[i]}" to equal "${expectedItem}"`);
+        return `Expected item at position ${i} which was "${actual[i]}" to equal "${expectedItem}"`;
       }
     } else if (!expectedItem.test(actual[i])) {
-      throw new AssertionError(`Expected item at position ${i} which was "${actual[i]}" to match "${expectedItem}"`);
+      return `Expected item at position ${i} which was "${actual[i]}" to match "${expectedItem}"`;
     }
+  }
+  return true;
+}
+
+export function assertMatchArray(actual: Array<string>, expected: Array<string|RegExp>) {
+  const result = matchArray(actual, expected);
+  if (result !== true) {
+    throw new AssertionError(result);
   }
 }

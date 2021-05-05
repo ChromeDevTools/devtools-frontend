@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {getBrowserAndPages, goToResource, matchArray} from '../../shared/helper.js';
+import {assertMatchArray, getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {ensureResourceSectionIsExpanded, expandIssue, extractTableFromResourceSection, getIssueByTitle, getResourcesElement, navigateToIssuesTab} from '../helpers/issues-helpers.js';
 
@@ -38,7 +38,7 @@ describe('CORS issues', async () => {
           'Problem',
           'Invalid Value (if available)',
         ]);
-        matchArray(table[1], [
+        assertMatchArray(table[1], [
           /^devtools.oopif.test:.*/,
           'blocked',
           '',
@@ -46,7 +46,7 @@ describe('CORS issues', async () => {
           'Missing Header',
           '',
         ]);
-        matchArray(table[2], [
+        assertMatchArray(table[2], [
           /^devtools.oopif.test:.*/,
           'blocked',
           /^devtools.oopif.test:.*/,
@@ -54,7 +54,7 @@ describe('CORS issues', async () => {
           'Missing Header',
           '',
         ]);
-        matchArray(table[3], [
+        assertMatchArray(table[3], [
           /.*invalid-preflight.*/,
           'blocked',
           /.*invalid-preflight.*/,
@@ -66,7 +66,7 @@ describe('CORS issues', async () => {
     }
   });
 
-  it('should display CORS violations with the correct affected resources', async () => {
+  it('should display credentialed+wildcard CORS issues with the correct affected resources', async () => {
     await goToResource('empty.html');
     const {target} = getBrowserAndPages();
     await target.evaluate(async () => {
@@ -98,7 +98,7 @@ describe('CORS issues', async () => {
           'Status',
           'Preflight Request (if problematic)',
         ]);
-        matchArray(table[1], [
+        assertMatchArray(table[1], [
           'origin-wildcard.rawresponse',
           'blocked',
           '',
@@ -151,13 +151,13 @@ describe('CORS issues', async () => {
           'Preflight Request',
           'Problem',
         ]);
-        matchArray(table[1], [
+        assertMatchArray(table[1], [
           'invalid-response-code.rawresponse',
           'blocked',
           'invalid-response-code.rawresponse',
           'HTTP status of preflight request didn\'t indicate success',
         ]);
-        matchArray(table[2], [
+        assertMatchArray(table[2], [
           'redirect.rawresponse',
           'blocked',
           'redirect.rawresponse',
@@ -209,14 +209,14 @@ describe('CORS issues', async () => {
           'Initiator Context',
           'Allowed Origin (from header)',
         ]);
-        matchArray(table[1], [
+        assertMatchArray(table[1], [
           'acao-mismatch.rawresponse',
           'blocked',
           'acao-mismatch.rawresponse',
           /^https:\/\/localhost.*/,
           'https://devtools.oopif.test',
         ]);
-        matchArray(table[2], [
+        assertMatchArray(table[2], [
           'acao-mismatch.rawresponse',
           'blocked',
           '',
@@ -268,13 +268,13 @@ describe('CORS issues', async () => {
           'Preflight Request (if problematic)',
           'Access-Control-Allow-Credentials Header Value',
         ]);
-        matchArray(table[1], [
+        assertMatchArray(table[1], [
           'acac-invalid.rawresponse',
           'blocked',
           'acac-invalid.rawresponse',
           'false',
         ]);
-        matchArray(table[2], [
+        assertMatchArray(table[2], [
           'acac-invalid.rawresponse',
           'blocked',
           '',
@@ -320,7 +320,7 @@ describe('CORS issues', async () => {
           'Preflight Request',
           'Disallowed Request Method',
         ]);
-        matchArray(table[1], [
+        assertMatchArray(table[1], [
           'method-disallowed.rawresponse',
           'blocked',
           'method-disallowed.rawresponse',
@@ -365,7 +365,7 @@ describe('CORS issues', async () => {
           'Preflight Request',
           'Disallowed Request Header',
         ]);
-        matchArray(table[1], [
+        assertMatchArray(table[1], [
           'method-disallowed.rawresponse',
           'blocked',
           'method-disallowed.rawresponse',
@@ -406,7 +406,7 @@ describe('CORS issues', async () => {
           'Request',
           'Status',
         ]);
-        matchArray(table[1], [
+        assertMatchArray(table[1], [
           'credentialed-redirect.rawresponse',
           'blocked',
         ]);

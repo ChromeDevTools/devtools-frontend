@@ -36,6 +36,10 @@ export function setupRecordingClient(
     if (event.type === 'submit' && Boolean((event as any).submitter)) {
       return;
     }
+    // Synthetic events should not be captured by the recorder.
+    if (!event.isTrusted) {
+      return;
+    }
     window.addStep(
         JSON.stringify({type: event.type, selector: getSelector(target), value: (target as HTMLInputElement).value}));
   };

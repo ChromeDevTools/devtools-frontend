@@ -115,6 +115,45 @@ describe('Recorder', function() {
 })();`);
   });
 
+  it('should not capture synthetic events', async () => {
+    const waitForScriptToChange = getWaitForScriptToChangeFunction();
+    await enableExperiment('recorder');
+    await goToResource('recorder/recorder.html');
+
+    const {frontend, target} = getBrowserAndPages();
+
+    await openSourcesPanel();
+    await openRecorderSubPane();
+    await createNewRecording('New recording');
+    await frontend.click('aria/Record');
+    await frontend.waitForSelector('aria/Stop');
+    await waitForScriptToChange();
+    await target.bringToFront();
+    await target.click('#synthetic');
+    await waitForScriptToChange();
+
+    await frontend.bringToFront();
+    await frontend.waitForSelector('aria/Stop');
+    await frontend.click('aria/Stop');
+    const textContent = await getCode();
+
+    assert.strictEqual(textContent, `const puppeteer = require('puppeteer');
+
+(async () => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    await page.goto("https://<url>/test/e2e/resources/recorder/recorder.html");
+    {
+        const targetPage = page;
+        const frame = targetPage.mainFrame();
+        const element = await frame.waitForSelector("aria/Trigger Synthetic Event");
+        await element.click();
+    }
+    await browser.close();
+})();`);
+  });
+
   it('should capture clicks on submit buttons inside of forms as click steps', async () => {
     const waitForScriptToChange = getWaitForScriptToChangeFunction();
     await enableExperiment('recorder');

@@ -47,9 +47,9 @@ describe('Flexbox Editor', async function() {
     await waitFor('[title="Add flex-direction: column"]');
     const property = await getCSSPropertyInRule('#target', 'flex-direction');
     assert.isUndefined(property);
+  });
 
-    // Close and re-open the editor when display == flex !important.
-    await clickFlexboxEditorButton();
+  it('can be opened for flexbox styles with !important', async () => {
     await editCSSProperty('#target', 'display', 'flex !important');
     await waitForCSSPropertyValue('#target', 'display', 'flex !important');
     await clickFlexboxEditorButton();

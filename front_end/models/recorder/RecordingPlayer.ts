@@ -44,6 +44,7 @@ export class RecordingPlayer {
         await client.send('Runtime.disable');
       }
       browser.disconnect();
+      await SDK.SDKModel.TargetManager.instance().resumeAllTargets();
     }
   }
 

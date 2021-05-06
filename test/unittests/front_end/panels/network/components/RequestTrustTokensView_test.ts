@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNull} from '../../../../../front_end/core/platform/platform.js';
-import * as Network from '../../../../../front_end/panels/network/network.js';
-import {getElementsWithinComponent, getElementWithinComponent, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
+import {assertNotNull} from '../../../../../../front_end/core/platform/platform.js';
+import * as NetworkComponents from '../../../../../../front_end/panels/network/components/components.js';
+import {getElementsWithinComponent, getElementWithinComponent, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
 
 const {assert} = chai;
 
 describe('RequestTrustTokensView', () => {
   const renderRequestTrustTokensView = () => {
-    const component = new Network.RequestTrustTokensView.RequestTrustTokensReport();
+    const component = new NetworkComponents.RequestTrustTokensView.RequestTrustTokensReport();
     renderElementIntoDOM(component);
     return component;
   };
@@ -22,7 +22,7 @@ describe('RequestTrustTokensView', () => {
         type: Protocol.Network.TrustTokenOperationType.Redemption,
         refreshPolicy: Protocol.Network.TrustTokenParamsRefreshPolicy.UseCached,
       },
-    } as Network.RequestTrustTokensView.RequestTrustTokensReportData;
+    } as NetworkComponents.RequestTrustTokensView.RequestTrustTokensReportData;
 
     const [typeSpan, refreshPolicySpan] =
         getElementsWithinComponent(component, 'devtools-report-value.code', HTMLElement);
@@ -38,7 +38,7 @@ describe('RequestTrustTokensView', () => {
         type: Protocol.Network.TrustTokenOperationType.Signing,
         issuers: expectedIssuers,
       },
-    } as Network.RequestTrustTokensView.RequestTrustTokensReportData;
+    } as NetworkComponents.RequestTrustTokensView.RequestTrustTokensReportData;
 
     const issuerElements = getElementsWithinComponent(component, 'ul.issuers-list > li', HTMLElement);
     const actualIssuers = [...issuerElements].map(e => e.textContent);

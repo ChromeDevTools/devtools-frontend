@@ -30,7 +30,6 @@ devtools_module("network") {
     "RequestPreviewView.ts",
     "RequestResponseView.ts",
     "RequestTimingView.ts",
-    "RequestTrustTokensView.ts",
     "ResourceWebSocketFrameView.ts",
     "SignedExchangeInfoView.ts",
   ]
@@ -61,6 +60,7 @@ devtools_module("network") {
     "../../ui/legacy/components/source_frame:bundle",
     "../../ui/legacy/components/utils:bundle",
     "../../ui/legacy/theme_support:bundle",
+    "./components:bundle",
   ]
 }
 
@@ -72,7 +72,6 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
-    "../../../test/unittests/front_end/panels/network/*",
     "../../entrypoints/*",
 
     # TODO(crbug.com/1202788): Remove invalid dependents

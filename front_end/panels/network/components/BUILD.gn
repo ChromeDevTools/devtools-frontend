@@ -1,0 +1,34 @@
+# Copyright 2020 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../visibility.gni")
+
+devtools_module("components") {
+  sources = [ "RequestTrustTokensView.ts" ]
+
+  deps = [
+    "../../../core/i18n:bundle",
+    "../../../core/sdk:bundle",
+    "../../../third_party/lit-html:bundle",
+    "../../../ui/components/helpers:bundle",
+    "../../../ui/components/icon_button:bundle",
+    "../../../ui/legacy:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "components.ts"
+
+  deps = [ ":components" ]
+
+  visibility = [
+    ":*",
+    "../:*",
+    "../../../../test/unittests/front_end/panels/network/components/*",
+  ]
+
+  visibility += devtools_panels_visibility
+}

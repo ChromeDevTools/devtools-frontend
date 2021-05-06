@@ -5885,6 +5885,57 @@
   "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
     "message": "T̂éx̂t́ p̂át̂t́êŕn̂ t́ô b́l̂óĉḱ m̂át̂ćĥín̂ǵ r̂éq̂úêśt̂ś; ûśê * f́ôŕ ŵíl̂d́ĉár̂d́"
   },
+  "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
+    "message": "Â ćl̂íêńt̂-ṕr̂óv̂íd̂éd̂ ár̂ǵûḿêńt̂ ẃâś m̂ál̂f́ôŕm̂éd̂ ór̂ ót̂h́êŕŵíŝé îńv̂ál̂íd̂."
+  },
+  "panels/network/components/RequestTrustTokensView.ts | eitherNoInputsForThisOperation": {
+    "message": "Êít̂h́êŕ n̂ó îńp̂út̂ś f̂ór̂ t́ĥíŝ óp̂ér̂át̂íôń âŕê áv̂áîĺâb́l̂é ôŕ t̂h́ê óût́p̂út̂ éx̂ćêéd̂ś t̂h́ê óp̂ér̂át̂íôńŝ q́ûót̂á."
+  },
+  "panels/network/components/RequestTrustTokensView.ts | failure": {
+    "message": "F̂áîĺûŕê"
+  },
+  "panels/network/components/RequestTrustTokensView.ts | issuer": {
+    "message": "Îśŝúêŕ"
+  },
+  "panels/network/components/RequestTrustTokensView.ts | issuers": {
+    "message": "Îśŝúêŕŝ"
+  },
+  "panels/network/components/RequestTrustTokensView.ts | numberOfIssuedTokens": {
+    "message": "N̂úm̂b́êŕ ôf́ îśŝúêd́ t̂ók̂én̂ś"
+  },
+  "panels/network/components/RequestTrustTokensView.ts | parameters": {
+    "message": "P̂ár̂ám̂ét̂ér̂ś"
+  },
+  "panels/network/components/RequestTrustTokensView.ts | refreshPolicy": {
+    "message": "R̂éf̂ŕêśĥ ṕôĺîćŷ"
+  },
+  "panels/network/components/RequestTrustTokensView.ts | result": {
+    "message": "R̂éŝúl̂t́"
+  },
+  "panels/network/components/RequestTrustTokensView.ts | status": {
+    "message": "Ŝt́ât́ûś"
+  },
+  "panels/network/components/RequestTrustTokensView.ts | success": {
+    "message": "Ŝúĉćêśŝ"
+  },
+  "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
+    "message": "T̂h́ê óp̂ér̂át̂íôń f̂áîĺêd́ f̂ór̂ án̂ ún̂ḱn̂óŵń r̂éâśôń."
+  },
+  "panels/network/components/RequestTrustTokensView.ts | theOperationsResultWasServedFrom": {
+    "message": "T̂h́ê óp̂ér̂át̂íôńŝ ŕêśûĺt̂ ẃâś ŝér̂v́êd́ f̂ŕôḿ ĉáĉh́ê."
+  },
+  "panels/network/components/RequestTrustTokensView.ts | theOperationWasFulfilledLocally": {
+    "message": "T̂h́ê óp̂ér̂át̂íôń ŵáŝ f́ûĺf̂íl̂ĺêd́ l̂óĉál̂ĺŷ, ńô ŕêq́ûéŝt́ ŵáŝ śêńt̂."
+  },
+  "panels/network/components/RequestTrustTokensView.ts | theServersResponseWasMalformedOr": {
+    "message": "T̂h́ê śêŕv̂ér̂ś r̂éŝṕôńŝé ŵáŝ ḿâĺf̂ór̂ḿêd́ ôŕ ôt́ĥér̂ẃîśê ín̂v́âĺîd́."
+  },
+  "panels/network/components/RequestTrustTokensView.ts | topLevelOrigin": {
+    "message": "T̂óp̂ ĺêv́êĺ ôŕîǵîń"
+  },
+  "panels/network/components/RequestTrustTokensView.ts | type": {
+    "message": "T̂ýp̂é"
+  },
   "panels/network/EventSourceMessagesView.ts | copyMessage": {
     "message": "Ĉóp̂ý m̂éŝśâǵê"
   },
@@ -6814,57 +6865,6 @@
   },
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "Ŵát̂ér̂f́âĺl̂"
-  },
-  "panels/network/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
-    "message": "Â ćl̂íêńt̂-ṕr̂óv̂íd̂éd̂ ár̂ǵûḿêńt̂ ẃâś m̂ál̂f́ôŕm̂éd̂ ór̂ ót̂h́êŕŵíŝé îńv̂ál̂íd̂."
-  },
-  "panels/network/RequestTrustTokensView.ts | eitherNoInputsForThisOperation": {
-    "message": "Êít̂h́êŕ n̂ó îńp̂út̂ś f̂ór̂ t́ĥíŝ óp̂ér̂át̂íôń âŕê áv̂áîĺâb́l̂é ôŕ t̂h́ê óût́p̂út̂ éx̂ćêéd̂ś t̂h́ê óp̂ér̂át̂íôńŝ q́ûót̂á."
-  },
-  "panels/network/RequestTrustTokensView.ts | failure": {
-    "message": "F̂áîĺûŕê"
-  },
-  "panels/network/RequestTrustTokensView.ts | issuer": {
-    "message": "Îśŝúêŕ"
-  },
-  "panels/network/RequestTrustTokensView.ts | issuers": {
-    "message": "Îśŝúêŕŝ"
-  },
-  "panels/network/RequestTrustTokensView.ts | numberOfIssuedTokens": {
-    "message": "N̂úm̂b́êŕ ôf́ îśŝúêd́ t̂ók̂én̂ś"
-  },
-  "panels/network/RequestTrustTokensView.ts | parameters": {
-    "message": "P̂ár̂ám̂ét̂ér̂ś"
-  },
-  "panels/network/RequestTrustTokensView.ts | refreshPolicy": {
-    "message": "R̂éf̂ŕêśĥ ṕôĺîćŷ"
-  },
-  "panels/network/RequestTrustTokensView.ts | result": {
-    "message": "R̂éŝúl̂t́"
-  },
-  "panels/network/RequestTrustTokensView.ts | status": {
-    "message": "Ŝt́ât́ûś"
-  },
-  "panels/network/RequestTrustTokensView.ts | success": {
-    "message": "Ŝúĉćêśŝ"
-  },
-  "panels/network/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
-    "message": "T̂h́ê óp̂ér̂át̂íôń f̂áîĺêd́ f̂ór̂ án̂ ún̂ḱn̂óŵń r̂éâśôń."
-  },
-  "panels/network/RequestTrustTokensView.ts | theOperationsResultWasServedFrom": {
-    "message": "T̂h́ê óp̂ér̂át̂íôńŝ ŕêśûĺt̂ ẃâś ŝér̂v́êd́ f̂ŕôḿ ĉáĉh́ê."
-  },
-  "panels/network/RequestTrustTokensView.ts | theOperationWasFulfilledLocally": {
-    "message": "T̂h́ê óp̂ér̂át̂íôń ŵáŝ f́ûĺf̂íl̂ĺêd́ l̂óĉál̂ĺŷ, ńô ŕêq́ûéŝt́ ŵáŝ śêńt̂."
-  },
-  "panels/network/RequestTrustTokensView.ts | theServersResponseWasMalformedOr": {
-    "message": "T̂h́ê śêŕv̂ér̂ś r̂éŝṕôńŝé ŵáŝ ḿâĺf̂ór̂ḿêd́ ôŕ ôt́ĥér̂ẃîśê ín̂v́âĺîd́."
-  },
-  "panels/network/RequestTrustTokensView.ts | topLevelOrigin": {
-    "message": "T̂óp̂ ĺêv́êĺ ôŕîǵîń"
-  },
-  "panels/network/RequestTrustTokensView.ts | type": {
-    "message": "T̂ýp̂é"
   },
   "panels/network/ResourceWebSocketFrameView.ts | all": {
     "message": "Âĺl̂"

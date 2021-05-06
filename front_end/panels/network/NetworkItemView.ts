@@ -34,6 +34,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as NetworkComponents from './components/components.js';
 
 import {EventSourceMessagesView} from './EventSourceMessagesView.js';
 import type {UIHeaderSection} from './NetworkSearchScope.js';
@@ -44,7 +45,6 @@ import {RequestInitiatorView} from './RequestInitiatorView.js';
 import {RequestPreviewView} from './RequestPreviewView.js';
 import {RequestResponseView} from './RequestResponseView.js';
 import {RequestTimingView} from './RequestTimingView.js';
-import {RequestTrustTokensView, statusConsideredSuccess} from './RequestTrustTokensView.js';
 import {ResourceWebSocketFrameView} from './ResourceWebSocketFrameView.js';
 
 const UIStrings = {
@@ -176,7 +176,8 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
 
     if (request.trustTokenParams()) {
       this.appendTab(
-          Tabs.TrustTokens, i18nString(UIStrings.trustTokens), new RequestTrustTokensView(request),
+          Tabs.TrustTokens, i18nString(UIStrings.trustTokens),
+          new NetworkComponents.RequestTrustTokensView.RequestTrustTokensView(request),
           i18nString(UIStrings.trustTokenOperationDetails));
     }
 
@@ -230,7 +231,8 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
 
   _maybeShowErrorIconInTrustTokenTabHeader(): void {
     const trustTokenResult = this._request.trustTokenOperationDoneEvent();
-    if (trustTokenResult && !statusConsideredSuccess(trustTokenResult.status)) {
+    if (trustTokenResult &&
+        !NetworkComponents.RequestTrustTokensView.statusConsideredSuccess(trustTokenResult.status)) {
       this.setTabIcon(Tabs.TrustTokens, UI.Icon.Icon.create('smallicon-error'));
     }
   }

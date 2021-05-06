@@ -2,15 +2,15 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../../../../third_party/typescript/typescript.gni")
+import("../../../../../../third_party/typescript/typescript.gni")
 
-ts_library("network") {
+ts_library("components") {
   testonly = true
   sources = [ "RequestTrustTokensView_test.ts" ]
 
   deps = [
-    "../../../../../front_end/core/platform:bundle",
-    "../../../../../front_end/panels/network:bundle",
-    "../../helpers",
+    "../../../../../../front_end/core/platform:bundle",
+    "../../../../../../front_end/panels/network/components:bundle",
+    "../../../helpers",
   ]
 }

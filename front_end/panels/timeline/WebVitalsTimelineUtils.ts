@@ -7,11 +7,11 @@
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {WebVitalsTimeline} from './WebVitalsTimeline.js';
+import * as TimelineComponents from './components/components.js';
 
 export class WebVitalsIntegrator extends UI.Widget.VBox implements PerfUI.ChartViewport.ChartViewportDelegate {
   delegate: PerfUI.FlameChart.FlameChartDelegate;
-  webVitalsTimeline: WebVitalsTimeline;
+  webVitalsTimeline: TimelineComponents.WebVitalsTimeline.WebVitalsTimeline;
   chartViewport: PerfUI.ChartViewport.ChartViewport;
 
   constructor(delegate: PerfUI.FlameChart.FlameChartDelegate) {
@@ -21,7 +21,7 @@ export class WebVitalsIntegrator extends UI.Widget.VBox implements PerfUI.ChartV
     this.element.style.height = '120px';
     this.element.style.flex = '0 auto';
 
-    this.webVitalsTimeline = new WebVitalsTimeline();
+    this.webVitalsTimeline = new TimelineComponents.WebVitalsTimeline.WebVitalsTimeline();
 
     this.chartViewport = new PerfUI.ChartViewport.ChartViewport(this);
     this.chartViewport.show(this.contentElement);

@@ -3,13 +3,13 @@
 // found in the LICENSE file.
 
 import * as FrontendHelpers from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import * as Timeline from '../../../../panels/timeline/timeline.js';
+import * as TimelineComponents from '../../../../panels/timeline/components/components.js';
 import * as ComponentHelpers from '../../helpers/helpers.js';
 
 await FrontendHelpers.initializeGlobalVars();
 await ComponentHelpers.ComponentServerSetup.setup();
 
-const component = new Timeline.WebVitalsTimeline.WebVitalsTimeline();
+const component = new TimelineComponents.WebVitalsTimeline.WebVitalsTimeline();
 document.getElementById('container')?.appendChild(component);
 
 component.data = {

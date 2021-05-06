@@ -9092,6 +9092,36 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "R̂éf̂ŕêśĥ ẃât́ĉh́ êx́p̂ŕêśŝíôńŝ"
   },
+  "panels/timeline/components/WebVitalsTimeline.ts | fcp": {
+    "message": "F̂ĆP̂"
+  },
+  "panels/timeline/components/WebVitalsTimeline.ts | firstContentfulPaint": {
+    "message": "F̂ír̂śt̂ Ćôńt̂én̂t́f̂úl̂ Ṕâín̂t́"
+  },
+  "panels/timeline/components/WebVitalsTimeline.ts | good": {
+    "message": "Ĝóôd́"
+  },
+  "panels/timeline/components/WebVitalsTimeline.ts | largestContentfulPaint": {
+    "message": "L̂ár̂ǵêśt̂ Ćôńt̂én̂t́f̂úl̂ Ṕâín̂t́"
+  },
+  "panels/timeline/components/WebVitalsTimeline.ts | lcp": {
+    "message": "L̂ĆP̂"
+  },
+  "panels/timeline/components/WebVitalsTimeline.ts | longTask": {
+    "message": "L̂ón̂ǵ T̂áŝḱ"
+  },
+  "panels/timeline/components/WebVitalsTimeline.ts | longTasks": {
+    "message": "L̂ón̂ǵ T̂áŝḱŝ"
+  },
+  "panels/timeline/components/WebVitalsTimeline.ts | ls": {
+    "message": "L̂Ś"
+  },
+  "panels/timeline/components/WebVitalsTimeline.ts | needsImprovement": {
+    "message": "N̂éêd́ŝ ím̂ṕr̂óv̂ém̂én̂t́"
+  },
+  "panels/timeline/components/WebVitalsTimeline.ts | poor": {
+    "message": "P̂óôŕ"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "D̂óĉúm̂én̂t́ŝ"
   },
@@ -10369,36 +10399,6 @@
   },
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "Ŝýŝt́êḿ"
-  },
-  "panels/timeline/WebVitalsTimeline.ts | fcp": {
-    "message": "F̂ĆP̂"
-  },
-  "panels/timeline/WebVitalsTimeline.ts | firstContentfulPaint": {
-    "message": "F̂ír̂śt̂ Ćôńt̂én̂t́f̂úl̂ Ṕâín̂t́"
-  },
-  "panels/timeline/WebVitalsTimeline.ts | good": {
-    "message": "Ĝóôd́"
-  },
-  "panels/timeline/WebVitalsTimeline.ts | largestContentfulPaint": {
-    "message": "L̂ár̂ǵêśt̂ Ćôńt̂én̂t́f̂úl̂ Ṕâín̂t́"
-  },
-  "panels/timeline/WebVitalsTimeline.ts | lcp": {
-    "message": "L̂ĆP̂"
-  },
-  "panels/timeline/WebVitalsTimeline.ts | longTask": {
-    "message": "L̂ón̂ǵ T̂áŝḱ"
-  },
-  "panels/timeline/WebVitalsTimeline.ts | longTasks": {
-    "message": "L̂ón̂ǵ T̂áŝḱŝ"
-  },
-  "panels/timeline/WebVitalsTimeline.ts | ls": {
-    "message": "L̂Ś"
-  },
-  "panels/timeline/WebVitalsTimeline.ts | needsImprovement": {
-    "message": "N̂éêd́ŝ ím̂ṕr̂óv̂ém̂én̂t́"
-  },
-  "panels/timeline/WebVitalsTimeline.ts | poor": {
-    "message": "P̂óôŕ"
   },
   "panels/web_audio/AudioContextContentBuilder.ts | callbackBufferSize": {
     "message": "Ĉál̂ĺb̂áĉḱ B̂úf̂f́êŕ Ŝíẑé"

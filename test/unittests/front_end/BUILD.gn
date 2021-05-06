@@ -37,7 +37,7 @@ group("front_end") {
     "panels/media",
     "panels/network/components",
     "panels/sources",
-    "panels/timeline",
+    "panels/timeline/components",
     "test_setup",
     "ui",
     "ui/components",

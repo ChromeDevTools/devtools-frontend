@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Host from '../../core/host/host.js';
-import * as LitHtml from '../../third_party/lit-html/lit-html.js';
+import * as Host from '../../../core/host/host.js';
+import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
 
 import {assertInstanceOf, Event, LONG_TASK_THRESHOLD, Marker, MarkerType, Timebox, WebVitalsTimeline} from './WebVitalsTimeline.js';
 

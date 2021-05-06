@@ -9092,6 +9092,36 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Refresh watch expressions"
   },
+  "panels/timeline/components/WebVitalsTimeline.ts | fcp": {
+    "message": "FCP"
+  },
+  "panels/timeline/components/WebVitalsTimeline.ts | firstContentfulPaint": {
+    "message": "First Contentful Paint"
+  },
+  "panels/timeline/components/WebVitalsTimeline.ts | good": {
+    "message": "Good"
+  },
+  "panels/timeline/components/WebVitalsTimeline.ts | largestContentfulPaint": {
+    "message": "Largest Contentful Paint"
+  },
+  "panels/timeline/components/WebVitalsTimeline.ts | lcp": {
+    "message": "LCP"
+  },
+  "panels/timeline/components/WebVitalsTimeline.ts | longTask": {
+    "message": "Long Task"
+  },
+  "panels/timeline/components/WebVitalsTimeline.ts | longTasks": {
+    "message": "Long Tasks"
+  },
+  "panels/timeline/components/WebVitalsTimeline.ts | ls": {
+    "message": "LS"
+  },
+  "panels/timeline/components/WebVitalsTimeline.ts | needsImprovement": {
+    "message": "Needs improvement"
+  },
+  "panels/timeline/components/WebVitalsTimeline.ts | poor": {
+    "message": "Poor"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Documents"
   },
@@ -10369,36 +10399,6 @@
   },
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "System"
-  },
-  "panels/timeline/WebVitalsTimeline.ts | fcp": {
-    "message": "FCP"
-  },
-  "panels/timeline/WebVitalsTimeline.ts | firstContentfulPaint": {
-    "message": "First Contentful Paint"
-  },
-  "panels/timeline/WebVitalsTimeline.ts | good": {
-    "message": "Good"
-  },
-  "panels/timeline/WebVitalsTimeline.ts | largestContentfulPaint": {
-    "message": "Largest Contentful Paint"
-  },
-  "panels/timeline/WebVitalsTimeline.ts | lcp": {
-    "message": "LCP"
-  },
-  "panels/timeline/WebVitalsTimeline.ts | longTask": {
-    "message": "Long Task"
-  },
-  "panels/timeline/WebVitalsTimeline.ts | longTasks": {
-    "message": "Long Tasks"
-  },
-  "panels/timeline/WebVitalsTimeline.ts | ls": {
-    "message": "LS"
-  },
-  "panels/timeline/WebVitalsTimeline.ts | needsImprovement": {
-    "message": "Needs improvement"
-  },
-  "panels/timeline/WebVitalsTimeline.ts | poor": {
-    "message": "Poor"
   },
   "panels/web_audio/AudioContextContentBuilder.ts | callbackBufferSize": {
     "message": "Callback Buffer Size"

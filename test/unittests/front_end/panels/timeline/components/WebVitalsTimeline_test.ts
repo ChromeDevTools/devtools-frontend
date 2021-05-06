@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
+import * as TimelineComponents from '../../../../../../front_end/panels/timeline/components/components.js';
 
 const {assert} = chai;
 
 describe('WebVitalsTimeline', () => {
   it('should instantiate without problems', () => {
-    const node = new Timeline.WebVitalsTimeline.WebVitalsTimeline();
-    assert.instanceOf(node, Timeline.WebVitalsTimeline.WebVitalsTimeline);
+    const node = new TimelineComponents.WebVitalsTimeline.WebVitalsTimeline();
+    assert.instanceOf(node, TimelineComponents.WebVitalsTimeline.WebVitalsTimeline);
   });
 
   // Not yet implementable

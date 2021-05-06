@@ -29,10 +29,7 @@ devtools_module("timeline") {
     "TimelineUIUtils.ts",
     "UIDevtoolsController.ts",
     "UIDevtoolsUtils.ts",
-    "WebVitalsLane.ts",
-    "WebVitalsTimeline.ts",
     "WebVitalsTimelineUtils.ts",
-    "WebVitalsTooltip.ts",
   ]
 
   deps = [
@@ -49,6 +46,7 @@ devtools_module("timeline") {
     "../../ui/legacy/components/perf_ui:bundle",
     "../../ui/legacy/components/utils:bundle",
     "../../ui/legacy/theme_support:bundle",
+    "./components:bundle",
   ]
 }
 
@@ -60,9 +58,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
-    "../../../test/unittests/front_end/panels/timeline/*",
     "../../entrypoints/*",
-    "../../ui/components/docs/webvitals/*",
 
     # TODO(crbug.com/1202788): Remove invalid dependents
     "../input/*",

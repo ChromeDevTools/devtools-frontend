@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Host from '../../core/host/host.js';
-import * as i18n from '../../core/i18n/i18n.js';
-import * as LitHtml from '../../third_party/lit-html/lit-html.js';
-import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
-import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
+import * as Host from '../../../core/host/host.js';
+import * as i18n from '../../../core/i18n/i18n.js';
+import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -55,7 +55,7 @@ const UIStrings = {
   */
   poor: 'Poor',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/timeline/WebVitalsTimeline.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/WebVitalsTimeline.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 declare global {

@@ -16,6 +16,7 @@ copy_to_gen("elements") {
     "element-reveal-inline-issue.html",
     "flexbox-editor.html",
     "focus.html",
+    "grid-editor.html",
     "hover.html",
     "low-contrast.html",
     "multiple-constructed-stylesheets.html",

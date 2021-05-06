@@ -21,7 +21,7 @@ type DirectionsDict = {
   [key: string]: PhysicalDirection,
 };
 
-type IconInfo = {
+export type IconInfo = {
   iconName: string,
   rotate: number,
   scaleX: number,

@@ -4,7 +4,6 @@
 
 import '../../ui/components/icon_button/icon_button.js';
 
-import * as i18n from '../../core/i18n/i18n.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ElementsComponents from './components/components.js';
@@ -12,35 +11,33 @@ import * as ElementsComponents from './components/components.js';
 import {StylePropertyTreeElement} from './StylePropertyTreeElement.js';
 import {StylePropertiesSection, StylesSidebarPane} from './StylesSidebarPane.js';
 
-const UIStrings = {
-  /**
-    * @description Title of the button that opens the flexbox editor in the Styles panel.
-    */
-  editorButton: 'Open Flexbox editor',
-};
-const str_ = i18n.i18n.registerUIStrings('panels/elements/FlexboxEditorWidget.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+type PropertySelectedEvent = ElementsComponents.StylePropertyEditor.PropertySelectedEvent;
+type PropertyDeselectedEvent = ElementsComponents.StylePropertyEditor.PropertyDeselectedEvent;
 
-let instance: FlexboxEditorWidget|null = null;
+let instance: StyleEditorWidget|null = null;
+interface Editor extends HTMLElement {
+  data: {
+    authoredProperties: Map<String, String>,
+    computedProperties: Map<String, String>,
+  };
+  getEditableProperties(): Array<{propertyName: string}>;
+}
 
 /**
- * Thin UI.Widget wrapper around FlexboxEditor to allow using it as a popover.
+ * Thin UI.Widget wrapper around style editors to allow using it as a popover.
  */
-export class FlexboxEditorWidget extends UI.Widget.VBox {
-  private editor: ElementsComponents.FlexboxEditor.FlexboxEditor;
+export class StyleEditorWidget extends UI.Widget.VBox {
+  private editor?: Editor;
   private pane?: StylesSidebarPane;
   private section?: StylePropertiesSection;
+  private editorContainer: HTMLElement;
 
   constructor() {
     super(true);
     this.contentElement.tabIndex = 0;
     this.setDefaultFocusedElement(this.contentElement);
-    this.editor = new ElementsComponents.FlexboxEditor.FlexboxEditor();
-    this.editor.data = {
-      authoredProperties: new Map(),
-      computedProperties: new Map(),
-    };
-    this.contentElement.appendChild(this.editor);
+    this.editorContainer = document.createElement('div');
+    this.contentElement.appendChild(this.editorContainer);
     this.onPropertySelected = this.onPropertySelected.bind(this);
     this.onPropertyDeselected = this.onPropertyDeselected.bind(this);
   }
@@ -49,7 +46,7 @@ export class FlexboxEditorWidget extends UI.Widget.VBox {
     return this.section;
   }
 
-  async onPropertySelected(event: ElementsComponents.FlexboxEditor.PropertySelectedEvent): Promise<void> {
+  async onPropertySelected(event: PropertySelectedEvent): Promise<void> {
     if (!this.section) {
       return;
     }
@@ -60,7 +57,7 @@ export class FlexboxEditorWidget extends UI.Widget.VBox {
     await this.render();
   }
 
-  async onPropertyDeselected(event: ElementsComponents.FlexboxEditor.PropertyDeselectedEvent): Promise<void> {
+  async onPropertyDeselected(event: PropertyDeselectedEvent): Promise<void> {
     if (!this.section) {
       return;
     }
@@ -72,45 +69,56 @@ export class FlexboxEditorWidget extends UI.Widget.VBox {
   bindContext(pane: StylesSidebarPane, section: StylePropertiesSection): void {
     this.pane = pane;
     this.section = section;
-    this.editor.addEventListener('property-selected', this.onPropertySelected);
-    this.editor.addEventListener('property-deselected', this.onPropertyDeselected);
+    this.editor?.addEventListener('propertyselected', this.onPropertySelected);
+    this.editor?.addEventListener('propertydeselected', this.onPropertyDeselected);
   }
 
   unbindContext(): void {
     this.pane = undefined;
     this.section = undefined;
-    this.editor.removeEventListener('property-selected', this.onPropertySelected);
-    this.editor.removeEventListener('property-deselected', this.onPropertyDeselected);
+    this.editor?.removeEventListener('propertyselected', this.onPropertySelected);
+    this.editor?.removeEventListener('propertydeselected', this.onPropertyDeselected);
   }
 
   async render(): Promise<void> {
-    this.editor.data = {
-      authoredProperties: this.section ? getAuthoredStyles(this.section) : new Map(),
-      computedProperties: this.pane ? await fetchComputedStyles(this.pane) : new Map(),
-    };
+    this.contentElement.removeChildren();
+    if (this.editor) {
+      this.editor.data = {
+        authoredProperties: this.section ? getAuthoredStyles(this.section, this.editor.getEditableProperties()) :
+                                           new Map(),
+        computedProperties: this.pane ? await fetchComputedStyles(this.pane) : new Map(),
+      };
+      this.contentElement.appendChild(this.editor);
+    }
   }
 
-  static instance(): FlexboxEditorWidget {
+  static instance(): StyleEditorWidget {
     if (!instance) {
-      instance = new FlexboxEditorWidget();
+      instance = new StyleEditorWidget();
     }
     return instance;
   }
 
-  static createFlexboxEditorButton(pane: StylesSidebarPane, section: StylePropertiesSection): HTMLElement {
-    const flexboxEditorButton = createButton();
+  setEditor(editor: Editor): void {
+    this.editor = editor;
+  }
 
-    flexboxEditorButton.onclick = async(event): Promise<void> => {
+  static createTriggerButton(
+      pane: StylesSidebarPane, section: StylePropertiesSection, editor: Editor, buttonTitle: string): HTMLElement {
+    const triggerButton = createButton(buttonTitle);
+
+    triggerButton.onclick = async(event): Promise<void> => {
       event.stopPropagation();
       const popoverHelper = pane.swatchPopoverHelper();
-      const widget = FlexboxEditorWidget.instance();
+      const widget = StyleEditorWidget.instance();
+      widget.setEditor(editor);
       widget.bindContext(pane, section);
       await widget.render();
-      const scrollerElement = flexboxEditorButton.enclosingNodeOrSelfWithClass('style-panes-wrapper');
+      const scrollerElement = triggerButton.enclosingNodeOrSelfWithClass('style-panes-wrapper');
       const onScroll = (): void => {
         popoverHelper.hide(true);
       };
-      popoverHelper.show(widget, flexboxEditorButton, () => {
+      popoverHelper.show(widget, triggerButton, () => {
         widget.unbindContext();
         if (scrollerElement) {
           scrollerElement.removeEventListener('scroll', onScroll);
@@ -121,23 +129,23 @@ export class FlexboxEditorWidget extends UI.Widget.VBox {
       }
     };
 
-    return flexboxEditorButton;
+    return triggerButton;
   }
 }
 
-function createButton(): HTMLButtonElement {
-  const flexboxEditorButton = document.createElement('button');
-  flexboxEditorButton.classList.add('styles-pane-button');
-  flexboxEditorButton.tabIndex = 0;
-  flexboxEditorButton.title = i18nString(UIStrings.editorButton);
-  flexboxEditorButton.onmouseup = (event): void => {
+function createButton(buttonTitle: string): HTMLButtonElement {
+  const button = document.createElement('button');
+  button.classList.add('styles-pane-button');
+  button.tabIndex = 0;
+  button.title = buttonTitle;
+  button.onmouseup = (event): void => {
     // Stop propagation to prevent the property editor from being activated.
     event.stopPropagation();
   };
-  const flexboxIcon = new IconButton.Icon.Icon();
-  flexboxIcon.data = {iconName: 'flex-wrap-icon', color: 'var(--color-text-secondary)', width: '12px', height: '12px'};
-  flexboxEditorButton.appendChild(flexboxIcon);
-  return flexboxEditorButton;
+  const icon = new IconButton.Icon.Icon();
+  icon.data = {iconName: 'flex-wrap-icon', color: 'var(--color-text-secondary)', width: '12px', height: '12px'};
+  button.appendChild(icon);
+  return button;
 }
 
 function ensureTreeElementForProperty(section: StylePropertiesSection, propertyName: string): StylePropertyTreeElement {
@@ -157,12 +165,12 @@ async function fetchComputedStyles(pane: StylesSidebarPane): Promise<Map<string,
   return style ? style.computedStyle : new Map();
 }
 
-function getAuthoredStyles(section: StylePropertiesSection): Map<string, string> {
+function getAuthoredStyles(
+    section: StylePropertiesSection, editableProperties: Array<{propertyName: string}>): Map<string, string> {
   const authoredProperties = new Map();
-  const flexboxProperties =
-      new Set(ElementsComponents.FlexboxEditor.EditableProperties.map(prop => prop.propertyName as string));
+  const editablePropertiesSet = new Set(editableProperties.map(prop => prop.propertyName));
   for (const prop of section._style.leadingProperties()) {
-    if (flexboxProperties.has(prop.name)) {
+    if (editablePropertiesSet.has(prop.name)) {
       authoredProperties.set(prop.name, prop.value);
     }
   }

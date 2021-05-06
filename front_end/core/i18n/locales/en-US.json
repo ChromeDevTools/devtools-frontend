@@ -3785,12 +3785,6 @@
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(text)"
   },
-  "panels/elements/components/FlexboxEditor.ts | deselectButton": {
-    "message": "Remove {propertyName}: {propertyValue}"
-  },
-  "panels/elements/components/FlexboxEditor.ts | selectButton": {
-    "message": "Add {propertyName}: {propertyValue}"
-  },
   "panels/elements/components/LayoutPane.ts | feedback": {
     "message": "Feedback"
   },
@@ -3817,6 +3811,12 @@
   },
   "panels/elements/components/LayoutPane.ts | showElementInTheElementsPanel": {
     "message": "Show element in the Elements panel"
+  },
+  "panels/elements/components/StylePropertyEditor.ts | deselectButton": {
+    "message": "Remove {propertyName}: {propertyValue}"
+  },
+  "panels/elements/components/StylePropertyEditor.ts | selectButton": {
+    "message": "Add {propertyName}: {propertyValue}"
   },
   "panels/elements/ComputedStyleWidget.ts | filter": {
     "message": "Filter"
@@ -4106,9 +4106,6 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Show listeners on the ancestors"
   },
-  "panels/elements/FlexboxEditorWidget.ts | editorButton": {
-    "message": "Open Flexbox editor"
-  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM Breakpoint"
   },
@@ -4144,6 +4141,12 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | copyValue": {
     "message": "Copy value"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
+    "message": "Open flexbox editor"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | gridEditorButton": {
+    "message": "Open grid editor"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "Open color picker. {PH1}"

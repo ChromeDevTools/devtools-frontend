@@ -12,10 +12,10 @@ import * as CSSPropertyIconResolver from './CSSPropertyIconResolver.js';
 import * as ElementsBreadcrumbs from './ElementsBreadcrumbs.js';
 import * as ElementsBreadcrumbsUtils from './ElementsBreadcrumbsUtils.js';
 import * as ElementsPanelLink from './ElementsPanelLink.js';
-import * as FlexboxEditor from './FlexboxEditor.js';
 import * as LayoutPane from './LayoutPane.js';
 import * as LayoutPaneUtils from './LayoutPaneUtils.js';
 import * as NodeText from './NodeText.js';
+import * as StylePropertyEditor from './StylePropertyEditor.js';
 
 export {
   AccessibilityTreeUtils,
@@ -28,8 +28,8 @@ export {
   ElementsBreadcrumbs,
   ElementsBreadcrumbsUtils,
   ElementsPanelLink,
-  FlexboxEditor,
   LayoutPane,
   LayoutPaneUtils,
   NodeText,
+  StylePropertyEditor,
 };

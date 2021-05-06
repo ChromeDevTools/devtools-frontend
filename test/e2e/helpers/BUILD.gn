@@ -31,6 +31,7 @@ node_ts_library("helpers") {
     "settings-helpers.ts",
     "settings-shortcuts-helpers.ts",
     "sources-helpers.ts",
+    "style-property-editor-helpers.ts",
     "webaudio-helpers.ts",
   ]
 

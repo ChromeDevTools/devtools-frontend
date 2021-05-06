@@ -3785,12 +3785,6 @@
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(t̂éx̂t́)"
   },
-  "panels/elements/components/FlexboxEditor.ts | deselectButton": {
-    "message": "R̂ém̂óv̂é {propertyName}: {propertyValue}"
-  },
-  "panels/elements/components/FlexboxEditor.ts | selectButton": {
-    "message": "Âd́d̂ {propertyName}: {propertyValue}"
-  },
   "panels/elements/components/LayoutPane.ts | feedback": {
     "message": "F̂éêd́b̂áĉḱ"
   },
@@ -3817,6 +3811,12 @@
   },
   "panels/elements/components/LayoutPane.ts | showElementInTheElementsPanel": {
     "message": "Ŝh́ôẃ êĺêḿêńt̂ ín̂ t́ĥé Êĺêḿêńt̂ś p̂án̂él̂"
+  },
+  "panels/elements/components/StylePropertyEditor.ts | deselectButton": {
+    "message": "R̂ém̂óv̂é {propertyName}: {propertyValue}"
+  },
+  "panels/elements/components/StylePropertyEditor.ts | selectButton": {
+    "message": "Âd́d̂ {propertyName}: {propertyValue}"
   },
   "panels/elements/ComputedStyleWidget.ts | filter": {
     "message": "F̂íl̂t́êŕ"
@@ -4106,9 +4106,6 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Ŝh́ôẃ l̂íŝt́êńêŕŝ ón̂ t́ĥé âńĉéŝt́ôŕŝ"
   },
-  "panels/elements/FlexboxEditorWidget.ts | editorButton": {
-    "message": "Ôṕêń F̂ĺêx́b̂óx̂ éd̂ít̂ór̂"
-  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "D̂ÓM̂ B́r̂éâḱp̂óîńt̂"
   },
@@ -4144,6 +4141,12 @@
   },
   "panels/elements/StylePropertyTreeElement.ts | copyValue": {
     "message": "Ĉóp̂ý v̂ál̂úê"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
+    "message": "Ôṕêń flexbox êd́ît́ôŕ"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | gridEditorButton": {
+    "message": "Ôṕêń grid êd́ît́ôŕ"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "Ôṕêń ĉól̂ór̂ ṕîćk̂ér̂. {PH1}"

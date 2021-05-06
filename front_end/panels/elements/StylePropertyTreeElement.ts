@@ -16,9 +16,13 @@ import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_e
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {BezierPopoverIcon, ColorSwatchPopoverIcon, ShadowSwatchPopoverHelper} from './ColorSwatchPopoverIcon.js';
+import * as ElementsComponents from './components/components.js';
 import {ElementsPanel} from './ElementsPanel.js';
-import {FlexboxEditorWidget} from './FlexboxEditorWidget.js';
+import {StyleEditorWidget} from './StyleEditorWidget.js';
 import {CSSPropertyPrompt, StylePropertiesSection, StylesSidebarPane, StylesSidebarPropertyRenderer} from './StylesSidebarPane.js';  // eslint-disable-line no-unused-vars
+
+const FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
+const GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;
 
 const UIStrings = {
   /**
@@ -72,6 +76,14 @@ const UIStrings = {
   *@description A context menu item in Styles panel to view the computed CSS property value.
   */
   viewComputedValue: 'View computed value',
+  /**
+  * @description Title of the button that opens the flexbox editor in the Styles panel.
+  */
+  flexboxEditorButton: 'Open `flexbox` editor',
+  /**
+  * @description Title of the button that opens the CSS Grid editor in the Styles panel.
+  */
+  gridEditorButton: 'Open `grid` editor',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/StylePropertyTreeElement.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -621,7 +633,12 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     if (this.valueElement && section && section.editable && this.property.name === 'display') {
       const propertyValue = this.property.trimmedValueWithoutImportant();
       if (propertyValue === 'flex' || propertyValue === 'inline-flex') {
-        this.listItemElement.appendChild(FlexboxEditorWidget.createFlexboxEditorButton(this._parentPane, section));
+        this.listItemElement.appendChild(StyleEditorWidget.createTriggerButton(
+            this._parentPane, section, new FlexboxEditor(), i18nString(UIStrings.flexboxEditorButton)));
+      }
+      if (propertyValue === 'grid' || propertyValue === 'inline-grid') {
+        this.listItemElement.appendChild(StyleEditorWidget.createTriggerButton(
+            this._parentPane, section, new GridEditor(), i18nString(UIStrings.gridEditorButton)));
       }
     }
 

@@ -17,10 +17,10 @@ devtools_module("components") {
     "ElementsBreadcrumbs.ts",
     "ElementsBreadcrumbsUtils.ts",
     "ElementsPanelLink.ts",
-    "FlexboxEditor.ts",
     "LayoutPane.ts",
     "LayoutPaneUtils.ts",
     "NodeText.ts",
+    "StylePropertyEditor.ts",
   ]
 
   deps = [

@@ -4,9 +4,10 @@
 
 import {assert} from 'chai';
 
-import {$$, goToResource, waitFor} from '../../shared/helper.js';
+import {goToResource, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {clickNthChildOfSelectedElementNode, editCSSProperty, focusElementsTree, getCSSPropertyInRule, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue} from '../helpers/elements-helpers.js';
+import {clickPropertyButton, clickStylePropertyEditorButton} from '../helpers/style-property-editor-helpers.js';
 
 describe('Flexbox Editor', async function() {
   beforeEach(async function() {
@@ -17,31 +18,15 @@ describe('Flexbox Editor', async function() {
     await waitForCSSPropertyValue('#target', 'display', 'flex');
   });
 
-  async function clickFlexboxEditorButton() {
-    const flexboxEditorButtons = await $$('[title="Open Flexbox editor"]');
-    assert.deepEqual(flexboxEditorButtons.length, 1);
-    const flexboxEditorButton = flexboxEditorButtons[0];
-    flexboxEditorButton.click();
-    await waitFor('devtools-flexbox-editor');
-  }
-
-  async function clickFlexEditButton(selector: string) {
-    await waitFor(selector);
-    const buttons = await $$(selector);
-    assert.strictEqual(buttons.length, 1);
-    const button = buttons[0];
-    button.click();
-  }
-
   it('can be opened and flexbox styles can be edited', async () => {
-    await clickFlexboxEditorButton();
+    await clickStylePropertyEditorButton('Open flexbox editor', 'devtools-flexbox-editor');
 
     // Clicking once sets the value.
-    await clickFlexEditButton('[title="Add flex-direction: column"]');
+    await clickPropertyButton('[title="Add flex-direction: column"]');
     await waitForCSSPropertyValue('#target', 'flex-direction', 'column');
 
     // Clicking again removes the value.
-    await clickFlexEditButton('[title="Remove flex-direction: column"]');
+    await clickPropertyButton('[title="Remove flex-direction: column"]');
     // Wait for the button's title to be updated so that we know the change
     // was made.
     await waitFor('[title="Add flex-direction: column"]');
@@ -52,6 +37,6 @@ describe('Flexbox Editor', async function() {
   it('can be opened for flexbox styles with !important', async () => {
     await editCSSProperty('#target', 'display', 'flex !important');
     await waitForCSSPropertyValue('#target', 'display', 'flex !important');
-    await clickFlexboxEditorButton();
+    await clickStylePropertyEditorButton('Open flexbox editor', 'devtools-flexbox-editor');
   });
 });

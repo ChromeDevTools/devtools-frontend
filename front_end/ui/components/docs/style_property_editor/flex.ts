@@ -9,7 +9,7 @@ import * as ComponentHelpers from '../../helpers/helpers.js';
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
-const component = new Elements.FlexboxEditor.FlexboxEditor();
+const component = new Elements.StylePropertyEditor.FlexboxEditor();
 
 document.getElementById('container')?.appendChild(component);
 
@@ -33,7 +33,7 @@ component.data = {
   authoredProperties,
 };
 
-component.addEventListener('property-selected', (event: Elements.FlexboxEditor.PropertySelectedEvent) => {
+component.addEventListener('propertyselected', (event: Elements.StylePropertyEditor.PropertySelectedEvent) => {
   authoredProperties.set(event.data.name, event.data.value);
   computedProperties.set(event.data.name, event.data.value);
   component.data = {
@@ -42,7 +42,7 @@ component.addEventListener('property-selected', (event: Elements.FlexboxEditor.P
   };
 });
 
-component.addEventListener('property-deselected', (event: Elements.FlexboxEditor.PropertyDeselectedEvent) => {
+component.addEventListener('propertydeselected', (event: Elements.StylePropertyEditor.PropertyDeselectedEvent) => {
   authoredProperties.delete(event.data.name);
   computedProperties.set(event.data.name, originalComputedProperties.get(event.data.name) as string);
   component.data = {

@@ -53,8 +53,8 @@ import * as ElementsComponents from './components/components.js';
 import {ComputedStyleModel} from './ComputedStyleModel.js';
 import {linkifyDeferredNodeReference} from './DOMLinkifier.js';
 import {ElementsSidebarPane} from './ElementsSidebarPane.js';
-import {FlexboxEditorWidget} from './FlexboxEditorWidget.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
+import {StyleEditorWidget} from './StyleEditorWidget.js';
 import {StylePropertyHighlighter} from './StylePropertyHighlighter.js';
 import {Context, StylePropertyTreeElement} from './StylePropertyTreeElement.js';  // eslint-disable-line no-unused-vars
 
@@ -743,13 +743,13 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     // With the following code we re-bind the flexbox editor to the new
     // section with the same index as the previous section had.
     const newSections = this._sectionBlocks.map(block => block.sections).flat();
-    const flexEditorWidget = FlexboxEditorWidget.instance();
-    const boundSection = flexEditorWidget.getSection();
+    const styleEditorWidget = StyleEditorWidget.instance();
+    const boundSection = styleEditorWidget.getSection();
     if (boundSection) {
-      flexEditorWidget.unbindContext();
+      styleEditorWidget.unbindContext();
       for (const [index, prevSection] of prevSections.entries()) {
         if (boundSection === prevSection && index < newSections.length) {
-          flexEditorWidget.bindContext(this, newSections[index]);
+          styleEditorWidget.bindContext(this, newSections[index]);
         }
       }
     }

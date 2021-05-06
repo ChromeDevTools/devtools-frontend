@@ -7,7 +7,10 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("ts") {
   testonly = true
-  sources = [ "basic.ts" ]
+  sources = [
+    "flex.ts",
+    "grid.ts",
+  ]
 
   deps = [
     "../../../../../test/unittests/front_end/helpers",
@@ -16,9 +19,12 @@ ts_library("ts") {
   ]
 }
 
-copy_to_gen("flexbox_editor") {
+copy_to_gen("style_property_editor") {
   testonly = true
-  sources = [ "basic.html" ]
+  sources = [
+    "flex.html",
+    "grid.html",
+  ]
 
   deps = [ ":ts" ]
 }

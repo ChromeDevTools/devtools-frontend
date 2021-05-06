@@ -1896,7 +1896,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
       referrer,
       referrerPolicy,
       body: requestBody,
-      method: request.requestMethod,
+      method: request.requestMethod !== 'GET' ? request.requestMethod : void 0,
       mode: 'cors',
     };
 

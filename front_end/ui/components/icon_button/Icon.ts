@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
 
 export interface IconWithPath {
@@ -110,9 +111,7 @@ export class Icon extends HTMLElement {
   }
 }
 
-if (!customElements.get('devtools-icon')) {
-  customElements.define('devtools-icon', Icon);
-}
+ComponentHelpers.CustomElements.defineComponent('devtools-icon', Icon);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

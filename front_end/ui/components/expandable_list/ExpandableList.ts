@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 
 export interface ExpandableListData {
   rows: LitHtml.TemplateResult[];
@@ -105,7 +106,7 @@ export class ExpandableList extends HTMLElement {
   }
 }
 
-customElements.define('devtools-expandable-list', ExpandableList);
+ComponentHelpers.CustomElements.defineComponent('devtools-expandable-list', ExpandableList);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

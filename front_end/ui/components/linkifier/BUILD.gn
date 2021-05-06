@@ -15,6 +15,7 @@ devtools_module("linkifier") {
     "../../../models/bindings:bundle",
     "../../../third_party/lit-html:bundle",
     "../../../ui/components/render_coordinator:bundle",
+    "../helpers:bundle",
   ]
 
   visibility = [ "../../../../test/unittests/front_end/ui/components" ]

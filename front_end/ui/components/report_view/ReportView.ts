@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 
 /**
  * The `Report` component can be used to display static information. A report
@@ -204,11 +205,11 @@ export class ReportValue extends HTMLElement {
   }
 }
 
-customElements.define('devtools-report', Report);
-customElements.define('devtools-report-section-header', ReportSectionHeader);
-customElements.define('devtools-report-key', ReportKey);
-customElements.define('devtools-report-value', ReportValue);
-customElements.define('devtools-report-divider', ReportSectionDivider);
+ComponentHelpers.CustomElements.defineComponent('devtools-report', Report);
+ComponentHelpers.CustomElements.defineComponent('devtools-report-section-header', ReportSectionHeader);
+ComponentHelpers.CustomElements.defineComponent('devtools-report-key', ReportKey);
+ComponentHelpers.CustomElements.defineComponent('devtools-report-value', ReportValue);
+ComponentHelpers.CustomElements.defineComponent('devtools-report-divider', ReportSectionDivider);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

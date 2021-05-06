@@ -13,6 +13,7 @@ devtools_module("icon_button") {
   ]
   deps = [
     "../../../third_party/lit-html:bundle",
+    "../../../ui/components/helpers:bundle",
     "../../../ui/components/render_coordinator:bundle",
   ]
 

@@ -8,6 +8,7 @@ import './LinearMemoryViewer.js';
 
 import * as Common from '../../../core/common/common.js';
 import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as ComponentHelpers from '../helpers/helpers.js';
 
 const {render, html} = LitHtml;
 
@@ -338,7 +339,7 @@ export class LinearMemoryInspector extends HTMLElement {
   }
 }
 
-customElements.define('devtools-linear-memory-inspector-inspector', LinearMemoryInspector);
+ComponentHelpers.CustomElements.defineComponent('devtools-linear-memory-inspector-inspector', LinearMemoryInspector);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

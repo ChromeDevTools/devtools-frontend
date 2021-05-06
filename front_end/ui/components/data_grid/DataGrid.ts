@@ -947,7 +947,7 @@ export class DataGrid extends HTMLElement {
   }
 }
 
-customElements.define('devtools-data-grid', DataGrid);
+ComponentHelpers.CustomElements.defineComponent('devtools-data-grid', DataGrid);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as ComponentHelpers from '../helpers/helpers.js';
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
 
 import * as LinkifierUtils from './LinkifierUtils.js';
@@ -75,7 +76,7 @@ export class Linkifier extends HTMLElement {
   }
 }
 
-customElements.define('devtools-linkifier', Linkifier);
+ComponentHelpers.CustomElements.defineComponent('devtools-linkifier', Linkifier);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

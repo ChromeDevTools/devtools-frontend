@@ -270,9 +270,7 @@ export class CSSAngleEditor extends HTMLElement {
   }
 }
 
-if (!customElements.get('devtools-css-angle-editor')) {
-  customElements.define('devtools-css-angle-editor', CSSAngleEditor);
-}
+ComponentHelpers.CustomElements.defineComponent('devtools-css-angle-editor', CSSAngleEditor);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

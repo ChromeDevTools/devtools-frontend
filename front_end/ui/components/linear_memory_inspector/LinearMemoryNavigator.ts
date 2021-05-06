@@ -6,6 +6,7 @@ import '../icon_button/icon_button.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as ComponentHelpers from '../helpers/helpers.js';
 import * as IconButton from '../icon_button/icon_button.js';
 
 const UIStrings = {
@@ -231,7 +232,7 @@ export class LinearMemoryNavigator extends HTMLElement {
   }
 }
 
-customElements.define('devtools-linear-memory-inspector-navigator', LinearMemoryNavigator);
+ComponentHelpers.CustomElements.defineComponent('devtools-linear-memory-inspector-navigator', LinearMemoryNavigator);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

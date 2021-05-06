@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+
 import {IconData} from './Icon.js';
 
 export interface IconWithTextData {
@@ -131,7 +133,7 @@ export class IconButton extends HTMLElement {
   }
 }
 
-customElements.define('icon-button', IconButton);
+ComponentHelpers.CustomElements.defineComponent('icon-button', IconButton);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

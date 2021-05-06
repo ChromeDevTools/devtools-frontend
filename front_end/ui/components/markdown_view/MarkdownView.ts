@@ -4,6 +4,7 @@
 
 import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
 import type * as Marked from '../../../third_party/marked/marked.js';
+import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 
 import {MarkdownImageData} from './MarkdownImage.js';
 import {MarkdownLinkData} from './MarkdownLink.js';
@@ -83,7 +84,7 @@ export class MarkdownView extends HTMLElement {
   }
 }
 
-customElements.define('devtools-markdown-view', MarkdownView);
+ComponentHelpers.CustomElements.defineComponent('devtools-markdown-view', MarkdownView);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as LitHtml from '../../../../third_party/lit-html/lit-html.js';
+import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 
 const {render, html, svg} = LitHtml;
 
@@ -318,9 +319,7 @@ export class PieChart extends HTMLElement {
   }
 }
 
-if (!customElements.get('devtools-perf-piechart')) {
-  customElements.define('devtools-perf-piechart', PieChart);
-}
+ComponentHelpers.CustomElements.defineComponent('devtools-perf-piechart', PieChart);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

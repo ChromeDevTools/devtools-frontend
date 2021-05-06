@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as LitHtml from '../../../../third_party/lit-html/lit-html.js';
+import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 
 import {Angle, AngleUnit, get2DTranslationsForAngle} from './CSSAngleUtils.js';
 
@@ -74,9 +75,7 @@ export class CSSAngleSwatch extends HTMLElement {
   }
 }
 
-if (!customElements.get('devtools-css-angle-swatch')) {
-  customElements.define('devtools-css-angle-swatch', CSSAngleSwatch);
-}
+ComponentHelpers.CustomElements.defineComponent('devtools-css-angle-swatch', CSSAngleSwatch);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

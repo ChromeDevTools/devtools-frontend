@@ -5,6 +5,7 @@
 import '../../../ui/components/icon_button/icon_button.js'; // Required to get <devtools-icon>
 
 import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 
 import {getMarkdownImage, ImageData} from './MarkdownImagesMap.js';
@@ -71,7 +72,7 @@ export class MarkdownImage extends HTMLElement {
   }
 }
 
-customElements.define('devtools-markdown-image', MarkdownImage);
+ComponentHelpers.CustomElements.defineComponent('devtools-markdown-image', MarkdownImage);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

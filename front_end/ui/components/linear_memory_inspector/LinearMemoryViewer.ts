@@ -327,7 +327,7 @@ export class LinearMemoryViewer extends HTMLElement {
   }
 }
 
-customElements.define('devtools-linear-memory-inspector-viewer', LinearMemoryViewer);
+ComponentHelpers.CustomElements.defineComponent('devtools-linear-memory-inspector-viewer', LinearMemoryViewer);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

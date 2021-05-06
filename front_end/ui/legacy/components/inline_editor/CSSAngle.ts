@@ -6,6 +6,7 @@ import './CSSAngleEditor.js';
 import './CSSAngleSwatch.js';
 
 import * as LitHtml from '../../../../third_party/lit-html/lit-html.js';
+import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 
 import {Angle, AngleUnit, convertAngleUnit, getNewAngleFromEvent, getNextUnit, parseText, roundAngleByUnit} from './CSSAngleUtils.js';
 
@@ -278,9 +279,7 @@ export class CSSAngle extends HTMLElement {
   }
 }
 
-if (!customElements.get('devtools-css-angle')) {
-  customElements.define('devtools-css-angle', CSSAngle);
-}
+ComponentHelpers.CustomElements.defineComponent('devtools-css-angle', CSSAngle);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

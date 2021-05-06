@@ -5,6 +5,7 @@
 import '../../legacy/legacy.js'; // Required for <x-link>.
 
 import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 
 import {getMarkdownLink} from './MarkdownLinksMap.js';
 export interface MarkdownLinkData {
@@ -50,7 +51,7 @@ export class MarkdownLink extends HTMLElement {
   }
 }
 
-customElements.define('devtools-markdown-link', MarkdownLink);
+ComponentHelpers.CustomElements.defineComponent('devtools-markdown-link', MarkdownLink);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

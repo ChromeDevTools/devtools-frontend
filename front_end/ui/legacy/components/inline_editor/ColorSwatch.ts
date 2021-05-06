@@ -155,9 +155,8 @@ export class ColorSwatch extends HTMLElement {
   }
 }
 
-if (!customElements.get('devtools-color-swatch')) {
-  customElements.define('devtools-color-swatch', ColorSwatch);
-}
+ComponentHelpers.CustomElements.defineComponent('devtools-color-swatch', ColorSwatch);
+
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

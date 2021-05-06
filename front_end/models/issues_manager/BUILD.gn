@@ -55,7 +55,6 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../../test/unittests/front_end/models/issues_manager/*",
-    "../../../test/unittests/front_end/panels/console_counters/*",
     "../../entrypoints/main/*",
     "../../panels/application/*",
     "../../panels/console/*",
@@ -66,6 +65,8 @@ devtools_entrypoint("bundle") {
     "../../ui/components/docs/issue_counter/*",
 
     # TODO(crbug.com/1202788): Remove invalid dependents
+    "../../../test/unittests/front_end/ui/components/issue_counter/*",
+    "../../ui/components/issue_counter/*",
     "../../ui/legacy/components/cookie_table/*",
   ]
 

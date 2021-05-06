@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/components/issue_counter/issue_counter.js';
+
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
+import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as ConsoleCounters from '../console_counters/console_counters.js';
 
 import type {AggregatedIssue} from './IssueAggregator.js';
 import {Events as IssueAggregatorEvents, IssueAggregator} from './IssueAggregator.js';
@@ -224,14 +226,14 @@ export class IssuesPane extends UI.Widget.VBox {
     this.setDefaultFocusedElement(this.showThirdPartyCheckbox.inputElement);
 
     rightToolbar.appendSeparator();
-    const issueCounter = new ConsoleCounters.IssueCounter.IssueCounter();
+    const issueCounter = new IssueCounter.IssueCounter.IssueCounter();
     issueCounter.data = {
       tooltipCallback: (): void => {
-        const issueEnumeration = ConsoleCounters.IssueCounter.getIssueCountsEnumeration(
+        const issueEnumeration = IssueCounter.IssueCounter.getIssueCountsEnumeration(
             IssuesManager.IssuesManager.IssuesManager.instance(), false);
         UI.Tooltip.Tooltip.install(issueCounter, issueEnumeration);
       },
-      displayMode: ConsoleCounters.IssueCounter.DisplayMode.ShowAlways,
+      displayMode: IssueCounter.IssueCounter.DisplayMode.ShowAlways,
       issuesManager: IssuesManager.IssuesManager.IssuesManager.instance(),
     };
     issueCounter.id = 'console-issues-counter';

@@ -6,6 +6,7 @@
 
 import '../../ui/components/icon_button/icon_button.js';
 import '../../ui/components/markdown_view/markdown_view.js';
+import '../../ui/components/issue_counter/issue_counter.js';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -14,10 +15,10 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as MarkdownView from '../../ui/components/markdown_view/markdown_view.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as ConsoleCounters from '../console_counters/console_counters.js';
 import * as ElementsComponents from '../elements/components/components.js';
 import * as Network from '../network/network.js';
 
@@ -529,7 +530,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     header.classList.add('header');
     const icon = new IconButton.Icon.Icon();
     const kind = this._issue.getKind();
-    icon.data = ConsoleCounters.IssueCounter.getIssueKindIconData(kind);
+    icon.data = IssueCounter.IssueCounter.getIssueKindIconData(kind);
     icon.classList.add('leading-issue-icon');
     this._aggregatedIssuesCount = (document.createElement('span') as HTMLElement);
     const countAdorner = new ElementsComponents.Adorner.Adorner();
@@ -541,7 +542,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     countAdorner.classList.add('aggregated-issues-count');
     this._aggregatedIssuesCount.textContent = `${this._issue.getAggregatedIssuesCount()}`;
     header.appendChild(icon);
-    UI.Tooltip.Tooltip.install(icon, ConsoleCounters.IssueCounter.getIssueKindDescription(kind));
+    UI.Tooltip.Tooltip.install(icon, IssueCounter.IssueCounter.getIssueKindDescription(kind));
     header.appendChild(countAdorner);
 
     const title = document.createElement('div');

@@ -2,19 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../../ui/components/issue_counter/issue_counter.js';
+
 import * as FrontendHelpers from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as ComponentHelpers from '../../helpers/helpers.js';
-import type * as ConsoleCountersModule from '../../../../panels/console_counters/console_counters.js';
+
+import type * as IssueCounterModule from '../../../../ui/components/issue_counter/issue_counter.js';
 import type * as IssuesManager from '../../../../models/issues_manager/issues_manager.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
-const ConsoleCounters: typeof ConsoleCountersModule =
-    await import('../../../../panels/console_counters/console_counters.js');
+const IssueCounter: typeof IssueCounterModule =
+    await import('../../../../ui/components/issue_counter/issue_counter.js');
 
-function appendComponent(data: ConsoleCountersModule.IssueCounter.IssueCounterData) {
-  const component = new ConsoleCounters.IssueCounter.IssueCounter();
+function appendComponent(data: IssueCounterModule.IssueCounter.IssueCounterData) {
+  const component = new IssueCounter.IssueCounter.IssueCounter();
   component.data = data;
   document.getElementById('container')?.appendChild(component);
 }

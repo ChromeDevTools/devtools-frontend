@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../ui/components/icon_button/icon_button.js';
+import '../icon_button/icon_button.js';
 
-import * as Common from '../../core/common/common.js';
-import * as i18n from '../../core/i18n/i18n.js';
-import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
-import * as LitHtml from '../../third_party/lit-html/lit-html.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as Common from '../../../core/common/common.js';
+import * as i18n from '../../../core/i18n/i18n.js';
+import * as IssuesManager from '../../../models/issues_manager/issues_manager.js';
+import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as IconButton from '../icon_button/icon_button.js';
 
 const UIStrings = {
   /**
@@ -36,7 +36,7 @@ const UIStrings = {
  */
   possibleImprovements: '{issueCount, plural, =1 {# possible improvement} other {# possible improvements}}',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/console_counters/IssueCounter.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('ui/components/issue_counter/IssueCounter.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export function getIssueKindIconData(issueKind: IssuesManager.Issue.IssueKind): IconButton.Icon.IconWithName {

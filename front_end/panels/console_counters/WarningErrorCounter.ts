@@ -5,6 +5,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import '../../ui/components/icon_button/icon_button.js';
+import '../../ui/components/issue_counter/issue_counter.js';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -13,10 +14,8 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as UI from '../../ui/legacy/legacy.js';
-
-import {DisplayMode, IssueCounter} from './IssueCounter.js';
-import {getIssueCountsEnumeration} from './IssueCounter.js';
 
 const UIStrings = {
   /**
@@ -50,7 +49,7 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
   _toolbarItem: UI.Toolbar.ToolbarItem;
   _consoleCounter: IconButton.IconButton.IconButton;
   _violationCounter: IconButton.IconButton.IconButton|null;
-  _issueCounter: IssueCounter;
+  _issueCounter: IssueCounter.IssueCounter.IssueCounter;
   _throttler: Common.Throttler.Throttler;
   _updatingForTest?: boolean;
 
@@ -79,7 +78,7 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
     }
 
     const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
-    this._issueCounter = new IssueCounter();
+    this._issueCounter = new IssueCounter.IssueCounter.IssueCounter();
     countersWrapper.appendChild(this._issueCounter);
     this._issueCounter.data = {
       clickHandler: (): void => {
@@ -87,7 +86,7 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
         UI.ViewManager.ViewManager.instance().showView('issues-pane');
       },
       issuesManager,
-      displayMode: DisplayMode.OnlyMostImportant,
+      displayMode: IssueCounter.IssueCounter.DisplayMode.OnlyMostImportant,
     };
 
     this._throttler = new Common.Throttler.Throttler(100);
@@ -163,7 +162,7 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
     }
 
     /* Update issuesCounter items. */
-    const issueEnumeration = getIssueCountsEnumeration(issuesManager);
+    const issueEnumeration = IssueCounter.IssueCounter.getIssueCountsEnumeration(issuesManager);
     const issuesTitleLead = i18nString(UIStrings.openIssuesToView, {n: issues});
     const issuesTitle = `${issuesTitleLead} ${issueEnumeration}`;
     // TODO(chromium:1167711): Let the component handle the title and ARIA label.

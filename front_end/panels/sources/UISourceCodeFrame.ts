@@ -31,6 +31,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import '../../ui/components/icon_button/icon_button.js';
+import '../../ui/components/issue_counter/issue_counter.js';
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -40,10 +41,10 @@ import * as Persistence from '../../models/persistence/persistence.js';  // esli
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as TextEditor from '../../ui/legacy/components/text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../../ui/legacy/legacy.js';
-import * as ConsoleCounters from '../console_counters/console_counters.js';
 
 import {CoveragePlugin} from './CoveragePlugin.js';
 import {CSSPlugin} from './CSSPlugin.js';
@@ -607,7 +608,7 @@ function getLineClassPerLevel(level: Workspace.UISourceCode.Message.Level): stri
 function getIconDataForMessage(message: Workspace.UISourceCode.Message): IconButton.Icon.IconData {
   if (message instanceof IssuesManager.SourceFrameIssuesManager.IssueMessage) {
     return {
-      ...ConsoleCounters.IssueCounter.getIssueKindIconData(message.getIssueKind()),
+      ...IssueCounter.IssueCounter.getIssueKindIconData(message.getIssueKind()),
       width: '12px',
       height: '12px',
     };
@@ -863,7 +864,7 @@ export class RowMessageBucket {
     this.textEditor.toggleLineClass(editorLineNumber, getLineClassPerLevel(this._level), true);
     this._errorIcon.data = getIconDataForLevel(this._level);
     this._issueIcon
-        .data = {...ConsoleCounters.IssueCounter.getIssueKindIconData(maxIssueKind), width: '12px', height: '12px'};
+        .data = {...IssueCounter.IssueCounter.getIssueKindIconData(maxIssueKind), width: '12px', height: '12px'};
     this._issueIcon.classList.toggle('hidden', !showIssues);
     this._errorIcon.classList.toggle('hidden', !showErrors);
     if (showIssues || showErrors) {

@@ -1,0 +1,26 @@
+# Copyright 2019 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../visibility.gni")
+
+devtools_module("issue_counter") {
+  sources = [ "IssueCounter.ts" ]
+
+  deps = [
+    "../../../core/common:bundle",
+    "../../../core/i18n:bundle",
+    "../../../models/issues_manager:bundle",
+    "../icon_button:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "issue_counter.ts"
+
+  deps = [ ":issue_counter" ]
+
+  visibility = default_components_visibility
+}

@@ -3089,24 +3089,6 @@
   "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
     "message": "( … Skipping {PH1} matching lines … )"
   },
-  "panels/console_counters/IssueCounter.ts | breakingChangeIssue": {
-    "message": "A breaking change issue: the page may stop working in an upcoming version of Chrome"
-  },
-  "panels/console_counters/IssueCounter.ts | breakingChanges": {
-    "message": "{issueCount, plural, =1 {# breaking change} other {# breaking changes}}"
-  },
-  "panels/console_counters/IssueCounter.ts | improvementIssue": {
-    "message": "An improvement issue: there is an opportunity to improve the page"
-  },
-  "panels/console_counters/IssueCounter.ts | pageErrorIssue": {
-    "message": "A page error issue: the page is not working correctly"
-  },
-  "panels/console_counters/IssueCounter.ts | pageErrors": {
-    "message": "{issueCount, plural, =1 {# page error} other {# page errors}}"
-  },
-  "panels/console_counters/IssueCounter.ts | possibleImprovements": {
-    "message": "{issueCount, plural, =1 {# possible improvement} other {# possible improvements}}"
-  },
   "panels/console_counters/WarningErrorCounter.ts | openConsoleToViewS": {
     "message": "Open Console to view {PH1}"
   },
@@ -10540,6 +10522,24 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Sort By"
+  },
+  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
+    "message": "A breaking change issue: the page may stop working in an upcoming version of Chrome"
+  },
+  "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
+    "message": "{issueCount, plural, =1 {# breaking change} other {# breaking changes}}"
+  },
+  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
+    "message": "An improvement issue: there is an opportunity to improve the page"
+  },
+  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
+    "message": "A page error issue: the page is not working correctly"
+  },
+  "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
+    "message": "{issueCount, plural, =1 {# page error} other {# page errors}}"
+  },
+  "ui/components/issue_counter/IssueCounter.ts | possibleImprovements": {
+    "message": "{issueCount, plural, =1 {# possible improvement} other {# possible improvements}}"
   },
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | memoryInspector": {
     "message": "Memory Inspector"

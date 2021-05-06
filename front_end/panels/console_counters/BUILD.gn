@@ -7,10 +7,7 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../visibility.gni")
 
 devtools_module("console_counters") {
-  sources = [
-    "IssueCounter.ts",
-    "WarningErrorCounter.ts",
-  ]
+  sources = [ "WarningErrorCounter.ts" ]
 
   deps = [
     "../../core/common:bundle",
@@ -19,6 +16,7 @@ devtools_module("console_counters") {
     "../../core/sdk:bundle",
     "../../models/issues_manager:bundle",
     "../../ui/components/icon_button:bundle",
+    "../../ui/components/issue_counter:bundle",
     "../../ui/legacy:bundle",
   ]
 }
@@ -31,7 +29,6 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
-    "../../../test/unittests/front_end/panels/console_counters/*",
     "../../entrypoints/*",
     "../../legacy_test_runner/*",
     "../../ui/components/docs/issue_counter/*",

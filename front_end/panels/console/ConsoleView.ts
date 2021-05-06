@@ -33,6 +33,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
+import '../../ui/components/issue_counter/issue_counter.js';
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -42,9 +44,9 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as ConsoleCounters from '../console_counters/console_counters.js';
 
 import {ConsoleContextSelector} from './ConsoleContextSelector.js';
 import {ConsoleFilter, FilterType, LevelsMask} from './ConsoleFilter.js';
@@ -276,7 +278,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   _innerSearchTimeoutId?: number;
   _muteViewportUpdates?: boolean;
   _waitForScrollTimeout?: number;
-  _issueCounter: ConsoleCounters.IssueCounter.IssueCounter;
+  _issueCounter: IssueCounter.IssueCounter.IssueCounter;
   private pendingSidebarMessages: ConsoleViewMessage[] = [];
   private userHasOpenedSidebarAtLeastOnce = false;
 
@@ -374,7 +376,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     toolbar.appendToolbarItem(this._filter._levelMenuButton);
     toolbar.appendToolbarItem(this._progressToolbarItem);
     toolbar.appendSeparator();
-    this._issueCounter = new ConsoleCounters.IssueCounter.IssueCounter();
+    this._issueCounter = new IssueCounter.IssueCounter.IssueCounter();
     this._issueCounter.id = 'console-issues-counter';
     const issuesToolbarItem = new UI.Toolbar.ToolbarItem(this._issueCounter);
     this._issueCounter.data = {
@@ -384,7 +386,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
       },
       issuesManager: IssuesManager.IssuesManager.IssuesManager.instance(),
       accessibleName: i18nString(UIStrings.issueToolbarTooltipGeneral),
-      displayMode: ConsoleCounters.IssueCounter.DisplayMode.OmitEmpty,
+      displayMode: IssueCounter.IssueCounter.DisplayMode.OmitEmpty,
     };
     toolbar.appendToolbarItem(issuesToolbarItem);
     rightToolbar.appendSeparator();
@@ -711,7 +713,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
 
   _updateIssuesToolbarItem(): void {
     const manager = IssuesManager.IssuesManager.IssuesManager.instance();
-    const issueEnumeration = ConsoleCounters.IssueCounter.getIssueCountsEnumeration(manager);
+    const issueEnumeration = IssueCounter.IssueCounter.getIssueCountsEnumeration(manager);
     const issuesTitleGotoIssues = manager.numberOfIssues() === 0 ?
         i18nString(UIStrings.issueToolbarClickToGoToTheIssuesTab) :
         i18nString(UIStrings.issueToolbarClickToView, {issueEnumeration});

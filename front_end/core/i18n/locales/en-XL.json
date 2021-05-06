@@ -3089,24 +3089,6 @@
   "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
     "message": "( … Ŝḱîṕp̂ín̂ǵ {PH1} m̂át̂ćĥín̂ǵ l̂ín̂éŝ … )"
   },
-  "panels/console_counters/IssueCounter.ts | breakingChangeIssue": {
-    "message": "Â b́r̂éâḱîńĝ ćĥán̂ǵê íŝśûé: t̂h́ê ṕâǵê ḿâý ŝt́ôṕ ŵór̂ḱîńĝ ín̂ án̂ úp̂ćôḿîńĝ v́êŕŝíôń ôf́ Ĉh́r̂óm̂é"
-  },
-  "panels/console_counters/IssueCounter.ts | breakingChanges": {
-    "message": "{issueCount, plural, =1 {# b̂ŕêák̂ín̂ǵ ĉh́âńĝé} other {# b̂ŕêák̂ín̂ǵ ĉh́âńĝéŝ}}"
-  },
-  "panels/console_counters/IssueCounter.ts | improvementIssue": {
-    "message": "Âń îḿp̂ŕôv́êḿêńt̂ íŝśûé: t̂h́êŕê íŝ án̂ óp̂ṕôŕt̂ún̂ít̂ý t̂ó îḿp̂ŕôv́ê t́ĥé p̂áĝé"
-  },
-  "panels/console_counters/IssueCounter.ts | pageErrorIssue": {
-    "message": "Â ṕâǵê ér̂ŕôŕ îśŝúê: t́ĥé p̂áĝé îś n̂ót̂ ẃôŕk̂ín̂ǵ ĉór̂ŕêćt̂ĺŷ"
-  },
-  "panels/console_counters/IssueCounter.ts | pageErrors": {
-    "message": "{issueCount, plural, =1 {# p̂áĝé êŕr̂ór̂} other {# ṕâǵê ér̂ŕôŕŝ}}"
-  },
-  "panels/console_counters/IssueCounter.ts | possibleImprovements": {
-    "message": "{issueCount, plural, =1 {# p̂óŝśîb́l̂é îḿp̂ŕôv́êḿêńt̂} other {# ṕôśŝíb̂ĺê ím̂ṕr̂óv̂ém̂én̂t́ŝ}}"
-  },
   "panels/console_counters/WarningErrorCounter.ts | openConsoleToViewS": {
     "message": "Ôṕêń Ĉón̂śôĺê t́ô v́îéŵ {PH1}"
   },
@@ -10540,6 +10522,24 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Ŝór̂t́ B̂ý"
+  },
+  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
+    "message": "Â b́r̂éâḱîńĝ ćĥán̂ǵê íŝśûé: t̂h́ê ṕâǵê ḿâý ŝt́ôṕ ŵór̂ḱîńĝ ín̂ án̂ úp̂ćôḿîńĝ v́êŕŝíôń ôf́ Ĉh́r̂óm̂é"
+  },
+  "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
+    "message": "{issueCount, plural, =1 {# b̂ŕêák̂ín̂ǵ ĉh́âńĝé} other {# b̂ŕêák̂ín̂ǵ ĉh́âńĝéŝ}}"
+  },
+  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
+    "message": "Âń îḿp̂ŕôv́êḿêńt̂ íŝśûé: t̂h́êŕê íŝ án̂ óp̂ṕôŕt̂ún̂ít̂ý t̂ó îḿp̂ŕôv́ê t́ĥé p̂áĝé"
+  },
+  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
+    "message": "Â ṕâǵê ér̂ŕôŕ îśŝúê: t́ĥé p̂áĝé îś n̂ót̂ ẃôŕk̂ín̂ǵ ĉór̂ŕêćt̂ĺŷ"
+  },
+  "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
+    "message": "{issueCount, plural, =1 {# p̂áĝé êŕr̂ór̂} other {# ṕâǵê ér̂ŕôŕŝ}}"
+  },
+  "ui/components/issue_counter/IssueCounter.ts | possibleImprovements": {
+    "message": "{issueCount, plural, =1 {# p̂óŝśîb́l̂é îḿp̂ŕôv́êḿêńt̂} other {# ṕôśŝíb̂ĺê ím̂ṕr̂óv̂ém̂én̂t́ŝ}}"
   },
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | memoryInspector": {
     "message": "M̂ém̂ór̂ý Îńŝṕêćt̂ór̂"

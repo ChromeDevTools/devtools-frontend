@@ -2,10 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as IssueCounter from './IssueCounter.js';
 import * as WarningErrorCounter from './WarningErrorCounter.js';
 
 export {
-  IssueCounter,
   WarningErrorCounter,
 };

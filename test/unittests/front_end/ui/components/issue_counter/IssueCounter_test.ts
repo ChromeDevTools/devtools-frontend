@@ -2,18 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNull} from '../../../../../front_end/core/platform/platform.js';
-import * as IssuesManager from '../../../../../front_end/models/issues_manager/issues_manager.js';
-import * as ConsoleCounters from '../../../../../front_end/panels/console_counters/console_counters.js';
-import * as IconButton from '../../../../../front_end/ui/components/icon_button/icon_button.js';
-import {assertElement, assertElements, assertShadowRoot, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
-import {MockIssuesManager} from '../../models/issues_manager/MockIssuesManager.js';
+import {assertNotNull} from '../../../../../../front_end/core/platform/platform.js';
+import * as IssuesManager from '../../../../../../front_end/models/issues_manager/issues_manager.js';
+import * as IconButton from '../../../../../../front_end/ui/components/icon_button/icon_button.js';
+import * as IssueCounter from '../../../../../../front_end/ui/components/issue_counter/issue_counter.js';
+import {assertElement, assertElements, assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import {MockIssuesManager} from '../../../models/issues_manager/MockIssuesManager.js';
 
 const {assert} = chai;
 
-const renderIssueCounter = (data: ConsoleCounters.IssueCounter.IssueCounterData):
-    {component: ConsoleCounters.IssueCounter.IssueCounter, shadowRoot: ShadowRoot} => {
-      const component = new ConsoleCounters.IssueCounter.IssueCounter();
+const renderIssueCounter = (data: IssueCounter.IssueCounter.IssueCounterData):
+    {component: IssueCounter.IssueCounter.IssueCounter, shadowRoot: ShadowRoot} => {
+      const component = new IssueCounter.IssueCounter.IssueCounter();
       component.data = data;
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
@@ -86,7 +86,7 @@ describe('IssueCounter', () => {
       const issuesManager = new MockIssuesManager([]);
       const {shadowRoot} = renderIssueCounter({
         issuesManager: issuesManager as unknown as IssuesManager.IssuesManager.IssuesManager,
-        displayMode: ConsoleCounters.IssueCounter.DisplayMode.ShowAlways,
+        displayMode: IssueCounter.IssueCounter.DisplayMode.ShowAlways,
         throttlerTimeout: 0,
       });
 
@@ -101,7 +101,7 @@ describe('IssueCounter', () => {
       const issuesManager = new MockIssuesManager([]);
       const {shadowRoot} = renderIssueCounter({
         issuesManager: issuesManager as unknown as IssuesManager.IssuesManager.IssuesManager,
-        displayMode: ConsoleCounters.IssueCounter.DisplayMode.ShowAlways,
+        displayMode: IssueCounter.IssueCounter.DisplayMode.ShowAlways,
         throttlerTimeout: 0,
       });
 
@@ -129,13 +129,13 @@ describe('IssueCounter', () => {
 describe('getIssueCountsEnumeration', () => {
   it('formats issue counts correctly', () => {
     const issuesManager = new MockIssuesManager([]);
-    const string = ConsoleCounters.IssueCounter.getIssueCountsEnumeration(
+    const string = IssueCounter.IssueCounter.getIssueCountsEnumeration(
         issuesManager as unknown as IssuesManager.IssuesManager.IssuesManager);
     assert.strictEqual(string, '2 page errors, 1 breaking change');
   });
   it('formats issue counts correctly when displaying zero entries', () => {
     const issuesManager = new MockIssuesManager([]);
-    const string = ConsoleCounters.IssueCounter.getIssueCountsEnumeration(
+    const string = IssueCounter.IssueCounter.getIssueCountsEnumeration(
         issuesManager as unknown as IssuesManager.IssuesManager.IssuesManager, false);
     assert.strictEqual(string, '2 page errors, 1 breaking change, 0 possible improvements');
   });

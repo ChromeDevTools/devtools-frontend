@@ -50,18 +50,18 @@ import {ApplicationPanelTreeElement, ExpandableApplicationPanelTreeElement} from
 import {AppManifestView} from './AppManifestView.js';
 import {BackgroundServiceModel} from './BackgroundServiceModel.js';
 import {BackgroundServiceView} from './BackgroundServiceView.js';
+import * as ApplicationComponents from './components/components.js';
 import {Database as DatabaseModelDatabase, DatabaseModel, Events as DatabaseModelEvents} from './DatabaseModel.js';  // eslint-disable-line no-unused-vars
 import {DatabaseQueryView, Events as DatabaseQueryViewEvents} from './DatabaseQueryView.js';
 import {DatabaseTableView} from './DatabaseTableView.js';
 import {DOMStorage, DOMStorageModel, Events as DOMStorageModelEvents} from './DOMStorageModel.js';  // eslint-disable-line no-unused-vars
-import {FrameDetailsView} from './FrameDetailsView.js';
 import {Database as IndexedDBModelDatabase, DatabaseId, Events as IndexedDBModelEvents, Index, IndexedDBModel, ObjectStore} from './IndexedDBModel.js';  // eslint-disable-line no-unused-vars
 import {IDBDatabaseView, IDBDataView} from './IndexedDBViews.js';
 import {OpenedWindowDetailsView, WorkerDetailsView} from './OpenedWindowDetailsView.js';
 import {ResourcesPanel} from './ResourcesPanel.js';  // eslint-disable-line no-unused-vars
 import {ServiceWorkersView} from './ServiceWorkersView.js';
 import {StorageView} from './StorageView.js';
-import {TrustTokensTreeElement} from './TrustTokensView.js';
+import {TrustTokensTreeElement} from './TrustTokensTreeElement.js';
 
 const UIStrings = {
   /**
@@ -1803,7 +1803,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
   _treeElementForResource: Map<string, FrameResourceTreeElement>;
   _treeElementForWindow: Map<string, FrameWindowTreeElement>;
   _treeElementForWorker: Map<string, WorkerTreeElement>;
-  _view: FrameDetailsView|null;
+  _view: ApplicationComponents.FrameDetailsView.FrameDetailsView|null;
 
   constructor(section: ResourcesSection, frame: SDK.ResourceTreeModel.ResourceTreeFrame) {
     super(section._panel, '', false);
@@ -1850,7 +1850,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
     this._treeElementForWorker.clear();
 
     if (this.selected) {
-      this._view = new FrameDetailsView(this._frame);
+      this._view = new ApplicationComponents.FrameDetailsView.FrameDetailsView(this._frame);
       this.showView(this._view);
     } else {
       this._view = null;
@@ -1884,7 +1884,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
   onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
     if (!this._view) {
-      this._view = new FrameDetailsView(this._frame);
+      this._view = new ApplicationComponents.FrameDetailsView.FrameDetailsView(this._frame);
     } else {
       this._view.update();
     }

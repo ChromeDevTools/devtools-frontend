@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import * as Resources from '../../../../../front_end/panels/application/application.js';
-import * as ExpandableList from '../../../../../front_end/ui/components/expandable_list/expandable_list.js';
-import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
-import * as ReportView from '../../../../../front_end/ui/components/report_view/report_view.js';
-import {assertShadowRoot, getCleanTextContentFromElements, getElementWithinComponent, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
+import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
+import * as ApplicationComponents from '../../../../../../front_end/panels/application/components/components.js';
+import * as ExpandableList from '../../../../../../front_end/ui/components/expandable_list/expandable_list.js';
+import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
+import * as ReportView from '../../../../../../front_end/ui/components/report_view/report_view.js';
+import {assertShadowRoot, getCleanTextContentFromElements, getElementWithinComponent, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -69,7 +69,7 @@ const makeFrame = (): SDK.ResourceTreeModel.ResourceTreeFrame => {
 describe('FrameDetailsView', () => {
   it('renders with a title', async () => {
     const frame = makeFrame();
-    const component = new Resources.FrameDetailsView.FrameDetailsReportView();
+    const component = new ApplicationComponents.FrameDetailsView.FrameDetailsReportView();
     renderElementIntoDOM(component);
     component.data = {
       frame: frame,
@@ -85,7 +85,7 @@ describe('FrameDetailsView', () => {
 
   it('renders report keys and values', async () => {
     const frame = makeFrame();
-    const component = new Resources.FrameDetailsView.FrameDetailsReportView();
+    const component = new ApplicationComponents.FrameDetailsView.FrameDetailsReportView();
     renderElementIntoDOM(component);
     component.data = {
       frame: frame,
@@ -123,8 +123,8 @@ describe('FrameDetailsView', () => {
       'available Learn more',
     ]);
 
-    const stackTrace =
-        getElementWithinComponent(component, 'devtools-resources-stack-trace', Resources.StackTrace.StackTrace);
+    const stackTrace = getElementWithinComponent(
+        component, 'devtools-resources-stack-trace', ApplicationComponents.StackTrace.StackTrace);
     assertShadowRoot(stackTrace.shadowRoot);
     const expandableList =
         getElementWithinComponent(stackTrace, 'devtools-expandable-list', ExpandableList.ExpandableList.ExpandableList);

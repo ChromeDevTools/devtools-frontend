@@ -2,26 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../ui/components/data_grid/data_grid.js';
-import '../../ui/components/icon_button/icon_button.js';
+import '../../../ui/components/data_grid/data_grid.js';
+import '../../../ui/components/icon_button/icon_button.js';
 
-import * as i18n from '../../core/i18n/i18n.js';
-import * as SDK from '../../core/sdk/sdk.js';
-import * as LitHtml from '../../third_party/lit-html/lit-html.js';
-import * as DataGrid from '../../ui/components/data_grid/data_grid.js';
-import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
-import * as UI from '../../ui/legacy/legacy.js';
-
-import type {ResourcesPanel} from './ResourcesPanel.js';
-
-import {ApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
+import * as i18n from '../../../core/i18n/i18n.js';
+import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
+import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 
 const UIStrings = {
-  /**
-  *@description Hover text for an info icon in the Trust Token panel
-  */
-  trustTokens: 'Trust Tokens',
   /**
   *@description Text for the issuer of an item
   */
@@ -46,60 +36,8 @@ const UIStrings = {
    */
   deleteTrustTokens: 'Delete all stored Trust Tokens issued by {PH1}.',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/application/TrustTokensView.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-
-/** Fetch the Trust Token data regularly from the backend while the panel is open */
-const REFRESH_INTERVAL_MS = 1000;
-
-export class TrustTokensTreeElement extends ApplicationPanelTreeElement {
-  private view?: TrustTokensViewWidgetWrapper;
-
-  constructor(storagePanel: ResourcesPanel) {
-    super(storagePanel, i18nString(UIStrings.trustTokens), false);
-    const icon = UI.Icon.Icon.create('mediumicon-database', 'resource-tree-item');
-    this.setLeadingIcons([icon]);
-  }
-
-  get itemURL(): string {
-    return 'trustTokens://';
-  }
-
-  onselect(selectedByUser?: boolean): boolean {
-    super.onselect(selectedByUser);
-    if (!this.view) {
-      this.view = new TrustTokensViewWidgetWrapper();
-    }
-    this.showView(this.view);
-    return false;
-  }
-}
-
-class TrustTokensViewWidgetWrapper extends UI.ThrottledWidget.ThrottledWidget {
-  private readonly trustTokensView = new TrustTokensView();
-
-  constructor() {
-    super(/* isWebComponent */ false, REFRESH_INTERVAL_MS);
-    this.contentElement.appendChild(this.trustTokensView);
-    this.update();
-  }
-
-  protected async doUpdate(): Promise<void> {
-    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
-    if (!mainTarget) {
-      return;
-    }
-    const {tokens} = await mainTarget.storageAgent().invoke_getTrustTokens();
-    this.trustTokensView.data = {
-      tokens,
-      deleteClickHandler: (issuer: string): void => {
-        mainTarget.storageAgent().invoke_clearTrustTokens({issuerOrigin: issuer});
-      },
-    };
-
-    this.update();
-  }
-}
+const str_ = i18n.i18n.registerUIStrings('panels/application/components/TrustTokensView.ts', UIStrings);
+export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface TrustTokensViewData {
   tokens: Protocol.Storage.TrustTokens[];

@@ -2,20 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Resources from '../../../../../front_end/panels/application/application.js';
-import * as DataGrid from '../../../../../front_end/ui/components/data_grid/data_grid.js';
-import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
-import {assertElement, assertShadowRoot, getElementWithinComponent, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
-import {getCellByIndexes, getValuesOfAllBodyRows} from '../../ui/components/DataGridHelpers.js';
+import * as ApplicationComponents from '../../../../../../front_end/panels/application/components/components.js';
+import * as DataGrid from '../../../../../../front_end/ui/components/data_grid/data_grid.js';
+import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
+import {assertElement, assertShadowRoot, getElementWithinComponent, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import {getCellByIndexes, getValuesOfAllBodyRows} from '../../../ui/components/DataGridHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const {assert} = chai;
 
 async function renderTrustTokensView(
-    tokens: Protocol.Storage.TrustTokens[],
-    deleteClickHandler: (issuer: string) => void = () => {}): Promise<Resources.TrustTokensView.TrustTokensView> {
-  const component = new Resources.TrustTokensView.TrustTokensView();
+    tokens: Protocol.Storage.TrustTokens[], deleteClickHandler: (issuer: string) => void = () => {}):
+    Promise<ApplicationComponents.TrustTokensView.TrustTokensView> {
+  const component = new ApplicationComponents.TrustTokensView.TrustTokensView();
   renderElementIntoDOM(component);
   component.data = {tokens, deleteClickHandler};
 
@@ -26,7 +26,7 @@ async function renderTrustTokensView(
   return component;
 }
 
-function getInternalDataGridShadowRoot(component: Resources.TrustTokensView.TrustTokensView): ShadowRoot {
+function getInternalDataGridShadowRoot(component: ApplicationComponents.TrustTokensView.TrustTokensView): ShadowRoot {
   const dataGridController = getElementWithinComponent(
       component, 'devtools-data-grid-controller', DataGrid.DataGridController.DataGridController);
   const dataGrid = getElementWithinComponent(dataGridController, 'devtools-data-grid', DataGrid.DataGrid.DataGrid);

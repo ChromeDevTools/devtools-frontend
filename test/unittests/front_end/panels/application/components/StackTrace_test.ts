@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import * as Resources from '../../../../../front_end/panels/application/application.js';
-import * as ExpandableList from '../../../../../front_end/ui/components/expandable_list/expandable_list.js';
-import * as Components from '../../../../../front_end/ui/legacy/components/utils/utils.js';
-import {assertElement, assertShadowRoot, dispatchClickEvent, getCleanTextContentFromElements, getElementWithinComponent, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
+import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
+import * as ApplicationComponents from '../../../../../../front_end/panels/application/components/components.js';
+import * as ExpandableList from '../../../../../../front_end/ui/components/expandable_list/expandable_list.js';
+import * as Components from '../../../../../../front_end/ui/legacy/components/utils/utils.js';
+import {assertElement, assertShadowRoot, dispatchClickEvent, getCleanTextContentFromElements, getElementWithinComponent, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
 
 const {assert} = chai;
 
@@ -39,7 +39,7 @@ function mockBuildStackTraceRows(
 
 describe('StackTrace', () => {
   it('does not generate rows when there is no data', () => {
-    const component = new Resources.StackTrace.StackTrace();
+    const component = new ApplicationComponents.StackTrace.StackTrace();
     const rows = component.createRowTemplates();
     assert.deepEqual(rows, []);
   });
@@ -68,7 +68,7 @@ describe('StackTrace', () => {
         creationStackTraceTarget: {} as SDK.SDKModel.Target,
       }),
     });
-    const component = new Resources.StackTrace.StackTrace();
+    const component = new ApplicationComponents.StackTrace.StackTrace();
     renderElementIntoDOM(component);
     component.data = {
       frame: frame,
@@ -114,7 +114,7 @@ describe('StackTrace', () => {
         creationStackTraceTarget: {} as SDK.SDKModel.Target,
       }),
     });
-    const component = new Resources.StackTrace.StackTrace();
+    const component = new ApplicationComponents.StackTrace.StackTrace();
     renderElementIntoDOM(component);
     component.data = {
       frame: frame,

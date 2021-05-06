@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../ui/components/expandable_list/expandable_list.js';
+import '../../../ui/components/expandable_list/expandable_list.js';
 
-import * as i18n from '../../core/i18n/i18n.js';
-import * as SDK from '../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
-import * as LitHtml from '../../third_party/lit-html/lit-html.js';
-import * as ExpandableList from '../../ui/components/expandable_list/expandable_list.js';
-import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
-import * as Components from '../../ui/legacy/components/utils/utils.js';
+import * as i18n from '../../../core/i18n/i18n.js';
+import * as SDK from '../../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as ExpandableList from '../../../ui/components/expandable_list/expandable_list.js';
+import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as Components from '../../../ui/legacy/components/utils/utils.js';
 
 const UIStrings = {
   /**
@@ -21,7 +21,7 @@ const UIStrings = {
   */
   showSMoreFrames: '{n, plural, =1 {Show # more frame} other {Show # more frames}}',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/application/StackTrace.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/components/StackTrace.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface StackTraceData {

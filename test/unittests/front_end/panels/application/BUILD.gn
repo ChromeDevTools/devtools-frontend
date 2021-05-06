@@ -6,18 +6,11 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("application") {
   testonly = true
-  sources = [
-    "FrameDetailsView_test.ts",
-    "ServiceWorkerUpdateCycleView_test.ts",
-    "StackTrace_test.ts",
-    "TrustTokensView_test.ts",
-  ]
+  sources = [ "ServiceWorkerUpdateCycleView_test.ts" ]
 
   deps = [
+    "../../../../../front_end/core/sdk:bundle",
     "../../../../../front_end/panels/application:bundle",
-    "../../../../../front_end/ui/components/data_grid:bundle",
-    "../../../../../front_end/ui/components/render_coordinator:bundle",
-    "../../helpers",
-    "../../ui/components",
+    "./components",
   ]
 }

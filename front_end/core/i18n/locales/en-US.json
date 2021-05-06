@@ -2285,6 +2285,189 @@
   "panels/application/BackgroundServiceView.ts | timestamp": {
     "message": "Timestamp"
   },
+  "panels/application/components/FrameDetailsView.ts | additionalInformation": {
+    "message": "Additional Information"
+  },
+  "panels/application/components/FrameDetailsView.ts | adStatus": {
+    "message": "Ad Status"
+  },
+  "panels/application/components/FrameDetailsView.ts | aFrameAncestorIsAnInsecure": {
+    "message": "A frame ancestor is an insecure context"
+  },
+  "panels/application/components/FrameDetailsView.ts | allowedFeatures": {
+    "message": "Allowed Features"
+  },
+  "panels/application/components/FrameDetailsView.ts | apiAvailability": {
+    "message": "API availability"
+  },
+  "panels/application/components/FrameDetailsView.ts | availabilityOfCertainApisDepends": {
+    "message": "Availability of certain APIs depends on the document being cross-origin isolated."
+  },
+  "panels/application/components/FrameDetailsView.ts | available": {
+    "message": "available"
+  },
+  "panels/application/components/FrameDetailsView.ts | availableNotTransferable": {
+    "message": "available, not transferable"
+  },
+  "panels/application/components/FrameDetailsView.ts | availableTransferable": {
+    "message": "available, transferable"
+  },
+  "panels/application/components/FrameDetailsView.ts | child": {
+    "message": "child"
+  },
+  "panels/application/components/FrameDetailsView.ts | clickToRevealInElementsPanel": {
+    "message": "Click to reveal in Elements panel"
+  },
+  "panels/application/components/FrameDetailsView.ts | clickToRevealInNetworkPanel": {
+    "message": "Click to reveal in Network panel"
+  },
+  "panels/application/components/FrameDetailsView.ts | clickToRevealInNetworkPanelMight": {
+    "message": "Click to reveal in Network panel (might require page reload)"
+  },
+  "panels/application/components/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
+    "message": "Click to reveal in Sources panel"
+  },
+  "panels/application/components/FrameDetailsView.ts | clickToShowHeader": {
+    "message": "Click to reveal the request whose \"Permissions-Policy\" HTTP header disables this feature."
+  },
+  "panels/application/components/FrameDetailsView.ts | clickToShowIframe": {
+    "message": "Click to reveal the top-most iframe which does not allow this feature in the elements panel."
+  },
+  "panels/application/components/FrameDetailsView.ts | creationStackTrace": {
+    "message": "Frame Creation Stack Trace"
+  },
+  "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
+    "message": "This frame was created programmatically. The stack trace shows where this happened."
+  },
+  "panels/application/components/FrameDetailsView.ts | crossoriginEmbedderPolicy": {
+    "message": "Cross-Origin Embedder Policy"
+  },
+  "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
+    "message": "Cross-Origin Isolated"
+  },
+  "panels/application/components/FrameDetailsView.ts | crossoriginOpenerPolicy": {
+    "message": "Cross-Origin Opener Policy"
+  },
+  "panels/application/components/FrameDetailsView.ts | disabledByHeader": {
+    "message": "disabled by \"Permissions-Policy\" header"
+  },
+  "panels/application/components/FrameDetailsView.ts | disabledByIframe": {
+    "message": "missing in iframe \"allow\" attribute"
+  },
+  "panels/application/components/FrameDetailsView.ts | disabledFeatures": {
+    "message": "Disabled Features"
+  },
+  "panels/application/components/FrameDetailsView.ts | document": {
+    "message": "Document"
+  },
+  "panels/application/components/FrameDetailsView.ts | frameId": {
+    "message": "Frame ID"
+  },
+  "panels/application/components/FrameDetailsView.ts | hideDetails": {
+    "message": "Hide details"
+  },
+  "panels/application/components/FrameDetailsView.ts | learnMore": {
+    "message": "Learn more"
+  },
+  "panels/application/components/FrameDetailsView.ts | localhostIsAlwaysASecureContext": {
+    "message": "Localhost is always a secure context"
+  },
+  "panels/application/components/FrameDetailsView.ts | measureMemory": {
+    "message": "Measure Memory"
+  },
+  "panels/application/components/FrameDetailsView.ts | no": {
+    "message": "No"
+  },
+  "panels/application/components/FrameDetailsView.ts | origin": {
+    "message": "Origin"
+  },
+  "panels/application/components/FrameDetailsView.ts | ownerElement": {
+    "message": "Owner Element"
+  },
+  "panels/application/components/FrameDetailsView.ts | permissionsPolicy": {
+    "message": "Permissions Policy"
+  },
+  "panels/application/components/FrameDetailsView.ts | reportingTo": {
+    "message": "reporting to"
+  },
+  "panels/application/components/FrameDetailsView.ts | requiresCrossoriginIsolated": {
+    "message": "requires cross-origin isolated context"
+  },
+  "panels/application/components/FrameDetailsView.ts | root": {
+    "message": "root"
+  },
+  "panels/application/components/FrameDetailsView.ts | secureContext": {
+    "message": "Secure Context"
+  },
+  "panels/application/components/FrameDetailsView.ts | securityIsolation": {
+    "message": "Security & Isolation"
+  },
+  "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIs": {
+    "message": "SharedArrayBuffer constructor is available and SABs can be transferred via postMessage"
+  },
+  "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
+    "message": "SharedArrayBuffer constructor is available but SABs cannot be transferred via postMessage"
+  },
+  "panels/application/components/FrameDetailsView.ts | showDetails": {
+    "message": "Show details"
+  },
+  "panels/application/components/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
+    "message": "The frame's scheme is insecure"
+  },
+  "panels/application/components/FrameDetailsView.ts | thePerformanceAPI": {
+    "message": "The performance.measureUserAgentSpecificMemory() API is available"
+  },
+  "panels/application/components/FrameDetailsView.ts | thePerformancemeasureuseragentspecificmemory": {
+    "message": "The performance.measureUserAgentSpecificMemory() API is not available"
+  },
+  "panels/application/components/FrameDetailsView.ts | thisAdditionalDebugging": {
+    "message": "This additional (debugging) information is shown because the 'Protocol Monitor' experiment is enabled."
+  },
+  "panels/application/components/FrameDetailsView.ts | thisFrameHasBeenIdentifiedAsThe": {
+    "message": "This frame has been identified as the root frame of an ad"
+  },
+  "panels/application/components/FrameDetailsView.ts | thisFrameHasBeenIdentifiedAsTheA": {
+    "message": "This frame has been identified as a child frame of an ad"
+  },
+  "panels/application/components/FrameDetailsView.ts | transferRequiresCrossoriginIsolatedPermission": {
+    "message": "transfer requires permission policy:"
+  },
+  "panels/application/components/FrameDetailsView.ts | unavailable": {
+    "message": "unavailable"
+  },
+  "panels/application/components/FrameDetailsView.ts | unreachableUrl": {
+    "message": "Unreachable URL"
+  },
+  "panels/application/components/FrameDetailsView.ts | url": {
+    "message": "URL"
+  },
+  "panels/application/components/FrameDetailsView.ts | willRequireCrossoriginIsolated": {
+    "message": "⚠️ will require cross-origin isolated context in the future"
+  },
+  "panels/application/components/FrameDetailsView.ts | yes": {
+    "message": "Yes"
+  },
+  "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
+    "message": "Cannot not render stack trace"
+  },
+  "panels/application/components/StackTrace.ts | showSMoreFrames": {
+    "message": "{n, plural, =1 {Show # more frame} other {Show # more frames}}"
+  },
+  "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
+    "message": "All stored Trust Tokens available in this browser instance."
+  },
+  "panels/application/components/TrustTokensView.ts | deleteTrustTokens": {
+    "message": "Delete all stored Trust Tokens issued by {PH1}."
+  },
+  "panels/application/components/TrustTokensView.ts | issuer": {
+    "message": "Issuer"
+  },
+  "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
+    "message": "No Trust Tokens are currently stored."
+  },
+  "panels/application/components/TrustTokensView.ts | storedTokenCount": {
+    "message": "Stored token count"
+  },
   "panels/application/CookieItemsView.ts | clearAllCookies": {
     "message": "Clear all cookies"
   },
@@ -2350,168 +2533,6 @@
   },
   "panels/application/DOMStorageItemsView.ts | value": {
     "message": "Value"
-  },
-  "panels/application/FrameDetailsView.ts | additionalInformation": {
-    "message": "Additional Information"
-  },
-  "panels/application/FrameDetailsView.ts | adStatus": {
-    "message": "Ad Status"
-  },
-  "panels/application/FrameDetailsView.ts | aFrameAncestorIsAnInsecure": {
-    "message": "A frame ancestor is an insecure context"
-  },
-  "panels/application/FrameDetailsView.ts | allowedFeatures": {
-    "message": "Allowed Features"
-  },
-  "panels/application/FrameDetailsView.ts | apiAvailability": {
-    "message": "API availability"
-  },
-  "panels/application/FrameDetailsView.ts | availabilityOfCertainApisDepends": {
-    "message": "Availability of certain APIs depends on the document being cross-origin isolated."
-  },
-  "panels/application/FrameDetailsView.ts | available": {
-    "message": "available"
-  },
-  "panels/application/FrameDetailsView.ts | availableNotTransferable": {
-    "message": "available, not transferable"
-  },
-  "panels/application/FrameDetailsView.ts | availableTransferable": {
-    "message": "available, transferable"
-  },
-  "panels/application/FrameDetailsView.ts | child": {
-    "message": "child"
-  },
-  "panels/application/FrameDetailsView.ts | clickToRevealInElementsPanel": {
-    "message": "Click to reveal in Elements panel"
-  },
-  "panels/application/FrameDetailsView.ts | clickToRevealInNetworkPanel": {
-    "message": "Click to reveal in Network panel"
-  },
-  "panels/application/FrameDetailsView.ts | clickToRevealInNetworkPanelMight": {
-    "message": "Click to reveal in Network panel (might require page reload)"
-  },
-  "panels/application/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
-    "message": "Click to reveal in Sources panel"
-  },
-  "panels/application/FrameDetailsView.ts | clickToShowHeader": {
-    "message": "Click to reveal the request whose \"Permissions-Policy\" HTTP header disables this feature."
-  },
-  "panels/application/FrameDetailsView.ts | clickToShowIframe": {
-    "message": "Click to reveal the top-most iframe which does not allow this feature in the elements panel."
-  },
-  "panels/application/FrameDetailsView.ts | creationStackTrace": {
-    "message": "Frame Creation Stack Trace"
-  },
-  "panels/application/FrameDetailsView.ts | creationStackTraceExplanation": {
-    "message": "This frame was created programmatically. The stack trace shows where this happened."
-  },
-  "panels/application/FrameDetailsView.ts | crossoriginEmbedderPolicy": {
-    "message": "Cross-Origin Embedder Policy"
-  },
-  "panels/application/FrameDetailsView.ts | crossoriginIsolated": {
-    "message": "Cross-Origin Isolated"
-  },
-  "panels/application/FrameDetailsView.ts | crossoriginOpenerPolicy": {
-    "message": "Cross-Origin Opener Policy"
-  },
-  "panels/application/FrameDetailsView.ts | disabledByHeader": {
-    "message": "disabled by \"Permissions-Policy\" header"
-  },
-  "panels/application/FrameDetailsView.ts | disabledByIframe": {
-    "message": "missing in iframe \"allow\" attribute"
-  },
-  "panels/application/FrameDetailsView.ts | disabledFeatures": {
-    "message": "Disabled Features"
-  },
-  "panels/application/FrameDetailsView.ts | document": {
-    "message": "Document"
-  },
-  "panels/application/FrameDetailsView.ts | frameId": {
-    "message": "Frame ID"
-  },
-  "panels/application/FrameDetailsView.ts | hideDetails": {
-    "message": "Hide details"
-  },
-  "panels/application/FrameDetailsView.ts | learnMore": {
-    "message": "Learn more"
-  },
-  "panels/application/FrameDetailsView.ts | localhostIsAlwaysASecureContext": {
-    "message": "Localhost is always a secure context"
-  },
-  "panels/application/FrameDetailsView.ts | measureMemory": {
-    "message": "Measure Memory"
-  },
-  "panels/application/FrameDetailsView.ts | no": {
-    "message": "No"
-  },
-  "panels/application/FrameDetailsView.ts | origin": {
-    "message": "Origin"
-  },
-  "panels/application/FrameDetailsView.ts | ownerElement": {
-    "message": "Owner Element"
-  },
-  "panels/application/FrameDetailsView.ts | permissionsPolicy": {
-    "message": "Permissions Policy"
-  },
-  "panels/application/FrameDetailsView.ts | reportingTo": {
-    "message": "reporting to"
-  },
-  "panels/application/FrameDetailsView.ts | requiresCrossoriginIsolated": {
-    "message": "requires cross-origin isolated context"
-  },
-  "panels/application/FrameDetailsView.ts | root": {
-    "message": "root"
-  },
-  "panels/application/FrameDetailsView.ts | secureContext": {
-    "message": "Secure Context"
-  },
-  "panels/application/FrameDetailsView.ts | securityIsolation": {
-    "message": "Security & Isolation"
-  },
-  "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIs": {
-    "message": "SharedArrayBuffer constructor is available and SABs can be transferred via postMessage"
-  },
-  "panels/application/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
-    "message": "SharedArrayBuffer constructor is available but SABs cannot be transferred via postMessage"
-  },
-  "panels/application/FrameDetailsView.ts | showDetails": {
-    "message": "Show details"
-  },
-  "panels/application/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
-    "message": "The frame's scheme is insecure"
-  },
-  "panels/application/FrameDetailsView.ts | thePerformanceAPI": {
-    "message": "The performance.measureUserAgentSpecificMemory() API is available"
-  },
-  "panels/application/FrameDetailsView.ts | thePerformancemeasureuseragentspecificmemory": {
-    "message": "The performance.measureUserAgentSpecificMemory() API is not available"
-  },
-  "panels/application/FrameDetailsView.ts | thisAdditionalDebugging": {
-    "message": "This additional (debugging) information is shown because the 'Protocol Monitor' experiment is enabled."
-  },
-  "panels/application/FrameDetailsView.ts | thisFrameHasBeenIdentifiedAsThe": {
-    "message": "This frame has been identified as the root frame of an ad"
-  },
-  "panels/application/FrameDetailsView.ts | thisFrameHasBeenIdentifiedAsTheA": {
-    "message": "This frame has been identified as a child frame of an ad"
-  },
-  "panels/application/FrameDetailsView.ts | transferRequiresCrossoriginIsolatedPermission": {
-    "message": "transfer requires permission policy:"
-  },
-  "panels/application/FrameDetailsView.ts | unavailable": {
-    "message": "unavailable"
-  },
-  "panels/application/FrameDetailsView.ts | unreachableUrl": {
-    "message": "Unreachable URL"
-  },
-  "panels/application/FrameDetailsView.ts | url": {
-    "message": "URL"
-  },
-  "panels/application/FrameDetailsView.ts | willRequireCrossoriginIsolated": {
-    "message": "⚠️ will require cross-origin isolated context in the future"
-  },
-  "panels/application/FrameDetailsView.ts | yes": {
-    "message": "Yes"
   },
   "panels/application/IndexedDBViews.ts | clearObjectStore": {
     "message": "Clear object store"
@@ -2795,12 +2816,6 @@
   "panels/application/ServiceWorkerUpdateCycleView.ts | version": {
     "message": "Version"
   },
-  "panels/application/StackTrace.ts | cannotRenderStackTrace": {
-    "message": "Cannot not render stack trace"
-  },
-  "panels/application/StackTrace.ts | showSMoreFrames": {
-    "message": "{n, plural, =1 {Show # more frame} other {Show # more frames}}"
-  },
   "panels/application/StorageItemsView.ts | clearAll": {
     "message": "Clear All"
   },
@@ -2900,22 +2915,7 @@
   "panels/application/StorageView.ts | webSql": {
     "message": "Web SQL"
   },
-  "panels/application/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
-    "message": "All stored Trust Tokens available in this browser instance."
-  },
-  "panels/application/TrustTokensView.ts | deleteTrustTokens": {
-    "message": "Delete all stored Trust Tokens issued by {PH1}."
-  },
-  "panels/application/TrustTokensView.ts | issuer": {
-    "message": "Issuer"
-  },
-  "panels/application/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "No Trust Tokens are currently stored."
-  },
-  "panels/application/TrustTokensView.ts | storedTokenCount": {
-    "message": "Stored token count"
-  },
-  "panels/application/TrustTokensView.ts | trustTokens": {
+  "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Trust Tokens"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | contentScripts": {

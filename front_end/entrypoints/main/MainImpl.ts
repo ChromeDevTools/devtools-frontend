@@ -274,6 +274,9 @@ export class MainImpl {
     // New cookie features.
     Root.Runtime.experiments.register('experimentalCookieFeatures', 'Enable experimental cookie features');
 
+    Root.Runtime.experiments.enableExperimentsByDefault([
+      'sourceOrderViewer',
+    ]);
     Root.Runtime.experiments.cleanUpStaleExperiments();
     const enabledExperiments = Root.Runtime.Runtime.queryParam('enabledExperiments');
     if (enabledExperiments) {

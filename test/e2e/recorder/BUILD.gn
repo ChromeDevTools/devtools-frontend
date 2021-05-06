@@ -5,7 +5,10 @@
 import("../../../third_party/typescript/typescript.gni")
 
 node_ts_library("recorder") {
-  sources = [ "recorder_test.ts" ]
+  sources = [
+    "recorder_test.ts",
+    "replay_test.ts",
+  ]
 
   deps = [
     "../../../front_end/core/protocol_client:bundle",

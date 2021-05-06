@@ -133,6 +133,10 @@ const UIStrings = {
   */
   record: 'Record',
   /**
+  *@description Text to replay a recorded series of actions
+  */
+  replayRecording: 'Replay',
+  /**
   *@description Text of an item that stops the running task
   */
   stop: 'Stop',
@@ -749,6 +753,26 @@ UI.ActionRegistration.registerActionExtension({
     {
       platform: UI.ActionRegistration.Platforms.Mac,
       shortcut: 'Meta+E',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'recorder.replay-recording',
+  experiment: Root.Runtime.ExperimentName.RECORDER,
+  category: UI.ActionRegistration.ActionCategory.RECORDER,
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesPanel.DebuggingActionDelegate.instance();
+  },
+  title: i18nLazyString(UIStrings.replayRecording),
+  iconClass: UI.ActionRegistration.IconClass.LARGEICON_PLAY,
+  contextTypes() {
+    return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
+  },
+  bindings: [
+    {
+      shortcut: 'Ctrl+Enter',
     },
   ],
 });

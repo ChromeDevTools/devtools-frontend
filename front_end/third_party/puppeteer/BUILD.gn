@@ -197,6 +197,7 @@ devtools_entrypoint("bundle") {
   deps = [ ":puppeteer" ]
 
   visibility = [
+    "../../../front_end/models/recorder/*",
     "../../../test/e2e/puppeteer/*",
     "../../../test/e2e/recorder/*",
   ]

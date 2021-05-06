@@ -643,6 +643,22 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     recorderModel.toggleRecording(uiSourceCode);
   }
 
+  _replayRecording(): void {
+    const uiSourceCode = this._sourcesView.currentUISourceCode();
+    if (!uiSourceCode) {
+      return;
+    }
+    const target = UI.Context.Context.instance().flavor(SDK.SDKModel.Target);
+    if (!target) {
+      return;
+    }
+    const recorderModel = target.model(Recorder.RecorderModel.RecorderModel);
+    if (!recorderModel) {
+      return;
+    }
+    recorderModel.replayRecording(uiSourceCode);
+  }
+
   _editorSelected(event: Common.EventTarget.EventTargetEvent): void {
     const uiSourceCode = (event.data as Workspace.UISourceCode.UISourceCode);
     if (this.editorView.mainWidget() &&
@@ -1255,6 +1271,10 @@ export class DebuggingActionDelegate implements UI.ActionRegistration.ActionDele
       }
       case 'recorder.toggle-recording': {
         panel._toggleRecording();
+        return true;
+      }
+      case 'recorder.replay-recording': {
+        panel._replayRecording();
         return true;
       }
       case 'debugger.toggle-breakpoints-active': {

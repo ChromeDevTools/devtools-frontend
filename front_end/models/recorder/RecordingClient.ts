@@ -86,7 +86,7 @@ export function setupRecordingClient(
   };
   exports.teardown = teardown;
 
-  const RELEVANT_ROLES_FOR_ARIA_SELECTORS = new Set(['button', 'link', 'textbox', 'checkbox', 'combobox']);
+  const RELEVANT_ROLES_FOR_ARIA_SELECTORS = new Set(['button', 'link', 'textbox', 'checkbox', 'combobox', 'option']);
 
   const getSelector = (node: Node): string => {
     let axNode: Node|null = node;

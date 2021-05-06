@@ -65,12 +65,20 @@ export abstract class Step extends EventTarget {
   }
 }
 
-export class ClickStep extends Step {
+export abstract class StepWithContext extends Step {
   context: StepFrameContext;
-  selector: string;
-  constructor(context: StepFrameContext, selector: string) {
-    super('click');
+
+  constructor(action: string, context: StepFrameContext) {
+    super(action);
     this.context = context;
+  }
+}
+
+export class ClickStep extends StepWithContext {
+  selector: string;
+
+  constructor(context: StepFrameContext, selector: string) {
+    super('click', context);
     this.selector = selector;
   }
 
@@ -87,6 +95,7 @@ export class ClickStep extends Step {
 
 export class NavigationStep extends Step {
   url: string;
+
   constructor(url: string) {
     super('navigate');
     this.url = url;
@@ -97,12 +106,11 @@ export class NavigationStep extends Step {
   }
 }
 
-export class SubmitStep extends Step {
-  context: StepFrameContext;
+export class SubmitStep extends StepWithContext {
   selector: string;
+
   constructor(context: StepFrameContext, selector: string) {
-    super('submit');
-    this.context = context;
+    super('submit', context);
     this.selector = selector;
   }
 
@@ -117,13 +125,12 @@ export class SubmitStep extends Step {
   }
 }
 
-export class ChangeStep extends Step {
-  context: StepFrameContext;
+export class ChangeStep extends StepWithContext {
   selector: string;
   value: string;
+
   constructor(context: StepFrameContext, selector: string, value: string) {
-    super('change');
-    this.context = context;
+    super('change', context);
     this.selector = selector;
     this.value = value;
   }

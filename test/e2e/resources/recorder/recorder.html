@@ -5,7 +5,8 @@
 -->
 <div>
   <button id="test">Test Button</button>
-  <form class="form1"><button id="form-button" type="submit">Form Button</button></form>
+  <form id="form1"><button id="form-button" type="submit">Form Button</button></form>
+  <div id="form1-result"></div>
   <form class="form2"><button><span id="span">Hello World</span></button></form>
   <form><div><span id="span2">Hello</span> World</div></form>
   <label for="input">Input</label>
@@ -56,5 +57,9 @@
     });
     const event = new Event('click');
     handler.dispatchEvent(event);
+  });
+
+  document.getElementById('form1').addEventListener('submit', () => {
+    document.getElementById('form1-result').textContent = 'From 1 Submitted';
   });
 </script>

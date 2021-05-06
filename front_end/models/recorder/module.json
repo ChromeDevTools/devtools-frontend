@@ -2,7 +2,9 @@
   "dependencies": [
     "ui/legacy",
     "models/persistence",
-    "panels/elements"
+    "panels/accessibility",
+    "panels/elements",
+    "third_party/puppeteer"
   ],
     "resources": []
 }

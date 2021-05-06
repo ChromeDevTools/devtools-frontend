@@ -8627,6 +8627,9 @@
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Ôṕêń â J́âv́âŚĉŕîṕt̂ ór̂ ĆŜŚ f̂íl̂é t̂ó ŝéê śŷḿb̂ól̂ś"
   },
+  "panels/sources/RecorderPlugin.ts | play": {
+    "message": "R̂ép̂ĺâý"
+  },
   "panels/sources/RecorderPlugin.ts | record": {
     "message": "R̂éĉór̂d́"
   },
@@ -8830,6 +8833,9 @@
   },
   "panels/sources/sources-meta.ts | rename": {
     "message": "R̂én̂ám̂é"
+  },
+  "panels/sources/sources-meta.ts | replayRecording": {
+    "message": "R̂ép̂ĺâý"
   },
   "panels/sources/sources-meta.ts | resumeScriptExecution": {
     "message": "R̂éŝúm̂é ŝćr̂íp̂t́ êx́êćût́îón̂"

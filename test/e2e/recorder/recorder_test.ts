@@ -65,15 +65,13 @@ describe('Recorder', function() {
     await frontend.click('aria/Stop');
     const textContent = await getCode();
 
-    assert.strictEqual(textContent, `const puppeteer = require('puppeteer');
-
-(async () => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-
-    await page.goto("https://<url>/test/e2e/resources/recorder/recorder.html");
-    await browser.close();
-})();`);
+    assert.strictEqual(textContent, `[
+    {
+        "action": "navigate",
+        "condition": null,
+        "url": "https://<url>/test/e2e/resources/recorder/recorder.html"
+    }
+]`);
   });
 
   it('should capture clicks on buttons', async () => {
@@ -98,21 +96,22 @@ describe('Recorder', function() {
     await frontend.click('aria/Stop');
     const textContent = await getCode();
 
-    assert.strictEqual(textContent, `const puppeteer = require('puppeteer');
-
-(async () => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-
-    await page.goto("https://<url>/test/e2e/resources/recorder/recorder.html");
+    assert.strictEqual(textContent, `[
     {
-        const targetPage = page;
-        const frame = targetPage.mainFrame();
-        const element = await frame.waitForSelector("aria/Test Button");
-        await element.click();
+        "action": "navigate",
+        "condition": null,
+        "url": "https://<url>/test/e2e/resources/recorder/recorder.html"
+    },
+    {
+        "action": "click",
+        "condition": null,
+        "context": {
+            "path": [],
+            "target": "main"
+        },
+        "selector": "aria/Test Button"
     }
-    await browser.close();
-})();`);
+]`);
   });
 
   it('should not capture synthetic events', async () => {
@@ -137,21 +136,22 @@ describe('Recorder', function() {
     await frontend.click('aria/Stop');
     const textContent = await getCode();
 
-    assert.strictEqual(textContent, `const puppeteer = require('puppeteer');
-
-(async () => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-
-    await page.goto("https://<url>/test/e2e/resources/recorder/recorder.html");
+    assert.strictEqual(textContent, `[
     {
-        const targetPage = page;
-        const frame = targetPage.mainFrame();
-        const element = await frame.waitForSelector("aria/Trigger Synthetic Event");
-        await element.click();
+        "action": "navigate",
+        "condition": null,
+        "url": "https://<url>/test/e2e/resources/recorder/recorder.html"
+    },
+    {
+        "action": "click",
+        "condition": null,
+        "context": {
+            "path": [],
+            "target": "main"
+        },
+        "selector": "aria/Trigger Synthetic Event"
     }
-    await browser.close();
-})();`);
+]`);
   });
 
   it('should capture clicks on submit buttons inside of forms as click steps', async () => {
@@ -176,21 +176,22 @@ describe('Recorder', function() {
     await frontend.click('aria/Stop');
     const textContent = await getCode();
 
-    assert.strictEqual(textContent, `const puppeteer = require('puppeteer');
-
-(async () => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-
-    await page.goto("https://<url>/test/e2e/resources/recorder/recorder.html");
+    assert.strictEqual(textContent, `[
     {
-        const targetPage = page;
-        const frame = targetPage.mainFrame();
-        const element = await frame.waitForSelector("aria/Form Button");
-        await element.click();
+        "action": "navigate",
+        "condition": null,
+        "url": "https://<url>/test/e2e/resources/recorder/recorder.html"
+    },
+    {
+        "action": "click",
+        "condition": null,
+        "context": {
+            "path": [],
+            "target": "main"
+        },
+        "selector": "aria/Form Button"
     }
-    await browser.close();
-})();`);
+]`);
   });
 
   it('should build an aria selector for the parent element that is interactive', async () => {
@@ -215,21 +216,22 @@ describe('Recorder', function() {
     await frontend.click('aria/Stop');
     const textContent = await getCode();
 
-    assert.strictEqual(textContent, `const puppeteer = require('puppeteer');
-
-(async () => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-
-    await page.goto("https://<url>/test/e2e/resources/recorder/recorder.html");
+    assert.strictEqual(textContent, `[
     {
-        const targetPage = page;
-        const frame = targetPage.mainFrame();
-        const element = await frame.waitForSelector("aria/Hello World");
-        await element.click();
+        "action": "navigate",
+        "condition": null,
+        "url": "https://<url>/test/e2e/resources/recorder/recorder.html"
+    },
+    {
+        "action": "click",
+        "condition": null,
+        "context": {
+            "path": [],
+            "target": "main"
+        },
+        "selector": "aria/Hello World"
     }
-    await browser.close();
-})();`);
+]`);
   });
 
   it('should fall back to a css selector if an element does not have an accessible and interactive parent',
@@ -255,21 +257,22 @@ describe('Recorder', function() {
        await frontend.click('aria/Stop');
        const textContent = await getCode();
 
-       assert.strictEqual(textContent, `const puppeteer = require('puppeteer');
-
-(async () => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-
-    await page.goto("https://<url>/test/e2e/resources/recorder/recorder.html");
+       assert.strictEqual(textContent, `[
     {
-        const targetPage = page;
-        const frame = targetPage.mainFrame();
-        const element = await frame.waitForSelector("span#span2");
-        await element.click();
+        "action": "navigate",
+        "condition": null,
+        "url": "https://<url>/test/e2e/resources/recorder/recorder.html"
+    },
+    {
+        "action": "click",
+        "condition": null,
+        "context": {
+            "path": [],
+            "target": "main"
+        },
+        "selector": "span#span2"
     }
-    await browser.close();
-})();`);
+]`);
      });
 
   it('should create an aria selector even if the element is within a shadow root', async () => {
@@ -294,21 +297,22 @@ describe('Recorder', function() {
     await frontend.click('aria/Stop');
     const textContent = await getCode();
 
-    assert.strictEqual(textContent, `const puppeteer = require('puppeteer');
-
-(async () => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-
-    await page.goto("https://<url>/test/e2e/resources/recorder/recorder.html");
+    assert.strictEqual(textContent, `[
     {
-        const targetPage = page;
-        const frame = targetPage.mainFrame();
-        const element = await frame.waitForSelector("aria/Hello World");
-        await element.click();
+        "action": "navigate",
+        "condition": null,
+        "url": "https://<url>/test/e2e/resources/recorder/recorder.html"
+    },
+    {
+        "action": "click",
+        "condition": null,
+        "context": {
+            "path": [],
+            "target": "main"
+        },
+        "selector": "aria/Hello World"
     }
-    await browser.close();
-})();`);
+]`);
   });
 
   it('should record interactions with elements within iframes', async () => {
@@ -335,27 +339,36 @@ describe('Recorder', function() {
     await frontend.click('aria/Stop');
     const textContent = await getCode();
 
-    assert.strictEqual(textContent, `const puppeteer = require('puppeteer');
-
-(async () => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-
-    await page.goto("https://<url>/test/e2e/resources/recorder/recorder.html");
+    assert.strictEqual(textContent, `[
     {
-        const targetPage = page;
-        const frame = targetPage.mainFrame().childFrames()[0];
-        const element = await frame.waitForSelector("aria/iframe button");
-        await element.click();
-    }
+        "action": "navigate",
+        "condition": null,
+        "url": "https://<url>/test/e2e/resources/recorder/recorder.html"
+    },
     {
-        const targetPage = page;
-        const frame = targetPage.mainFrame().childFrames()[0].childFrames()[0];
-        const element = await frame.waitForSelector("aria/Inner iframe button");
-        await element.click();
+        "action": "click",
+        "condition": null,
+        "context": {
+            "path": [
+                0
+            ],
+            "target": "main"
+        },
+        "selector": "aria/iframe button"
+    },
+    {
+        "action": "click",
+        "condition": null,
+        "context": {
+            "path": [
+                0,
+                0
+            ],
+            "target": "main"
+        },
+        "selector": "aria/Inner iframe button"
     }
-    await browser.close();
-})();`);
+]`);
   });
 
   it('should record interactions with popups', async () => {
@@ -389,35 +402,38 @@ describe('Recorder', function() {
     await frontend.click('aria/Stop');
     const textContent = await getCode();
 
-    assert.strictEqual(textContent, `const puppeteer = require('puppeteer');
-
-(async () => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-
-    await page.goto("https://<url>/test/e2e/resources/recorder/recorder.html");
+    assert.strictEqual(textContent, `[
     {
-        const targetPage = page;
-        const frame = targetPage.mainFrame();
-        const element = await frame.waitForSelector("aria/Open Popup");
-        await element.click();
-    }
+        "action": "navigate",
+        "condition": null,
+        "url": "https://<url>/test/e2e/resources/recorder/recorder.html"
+    },
     {
-        const target = await browser.waitForTarget(p => p.url() === "https://<url>/test/e2e/resources/recorder/popup.html");
-        const targetPage = await target.page();
-        const frame = targetPage.mainFrame();
-        const promise = targetPage.waitForNavigation();
-        const element = await frame.waitForSelector("aria/Button in Popup");
-        await element.click();
-        await promise;
-    }
+        "action": "click",
+        "condition": null,
+        "context": {
+            "path": [],
+            "target": "main"
+        },
+        "selector": "aria/Open Popup"
+    },
     {
-        const target = await browser.waitForTarget(p => p.url() === "https://<url>/test/e2e/resources/recorder/popup.html");
-        const targetPage = await target.page();
-        await targetPage.close();
+        "action": "click",
+        "condition": {
+            "expectedUrl": "https://<url>/test/e2e/resources/recorder/popup.html"
+        },
+        "context": {
+            "path": [],
+            "target": "https://<url>/test/e2e/resources/recorder/popup.html"
+        },
+        "selector": "aria/Button in Popup"
+    },
+    {
+        "action": "close",
+        "condition": null,
+        "target": "https://<url>/test/e2e/resources/recorder/popup.html"
     }
-    await browser.close();
-})();`);
+]`);
   });
 
   it('should wait for navigations in the generated scripts', async () => {
@@ -434,43 +450,49 @@ describe('Recorder', function() {
     await frontend.waitForSelector('aria/Stop');
     await waitForScriptToChange();
     await target.bringToFront();
+    const promise1 = target.waitForNavigation();
     await target.click('aria/Page 2');
+    await promise1;
     await waitForScriptToChange();
     await target.waitForSelector('aria/Back to Page 1');
-    const promise = target.waitForNavigation();
+    const promise2 = target.waitForNavigation();
     await target.click('aria/Back to Page 1');
-    await promise;
+    await promise2;
     await waitForScriptToChange();
 
     await frontend.bringToFront();
     await frontend.waitForSelector('aria/Stop');
     await frontend.click('aria/Stop');
     const textContent = await getCode();
-    assert.strictEqual(textContent, `const puppeteer = require('puppeteer');
-
-(async () => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-
-    await page.goto("https://<url>/test/e2e/resources/recorder/recorder.html");
+    assert.strictEqual(textContent, `[
     {
-        const targetPage = page;
-        const frame = targetPage.mainFrame();
-        const promise = targetPage.waitForNavigation();
-        const element = await frame.waitForSelector("aria/Page 2");
-        await element.click();
-        await promise;
-    }
+        "action": "navigate",
+        "condition": null,
+        "url": "https://<url>/test/e2e/resources/recorder/recorder.html"
+    },
     {
-        const targetPage = page;
-        const frame = targetPage.mainFrame();
-        const promise = targetPage.waitForNavigation();
-        const element = await frame.waitForSelector("aria/Back to Page 1");
-        await element.click();
-        await promise;
+        "action": "click",
+        "condition": {
+            "expectedUrl": "https://<url>/test/e2e/resources/recorder/recorder2.html"
+        },
+        "context": {
+            "path": [],
+            "target": "main"
+        },
+        "selector": "aria/Page 2"
+    },
+    {
+        "action": "click",
+        "condition": {
+            "expectedUrl": "https://<url>/test/e2e/resources/recorder/recorder.html"
+        },
+        "context": {
+            "path": [],
+            "target": "main"
+        },
+        "selector": "aria/Back to Page 1"
     }
-    await browser.close();
-})();`);
+]`);
   });
 
   it('should record the interactions with the browser as a script', async () => {
@@ -536,93 +558,128 @@ describe('Recorder', function() {
     await frontend.click('aria/Stop');
     const textContent = await getCode();
 
-    assert.strictEqual(textContent, `const puppeteer = require('puppeteer');
-
-(async () => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-
-    await page.goto("https://<url>/test/e2e/resources/recorder/recorder.html");
+    assert.strictEqual(textContent, `[
     {
-        const targetPage = page;
-        const frame = targetPage.mainFrame();
-        const element = await frame.waitForSelector("aria/Test Button");
-        await element.click();
-    }
+        "action": "navigate",
+        "condition": null,
+        "url": "https://<url>/test/e2e/resources/recorder/recorder.html"
+    },
     {
-        const targetPage = page;
-        const frame = targetPage.mainFrame();
-        const element = await frame.waitForSelector("aria/Form Button");
-        await element.click();
-    }
+        "action": "click",
+        "condition": null,
+        "context": {
+            "path": [],
+            "target": "main"
+        },
+        "selector": "aria/Test Button"
+    },
     {
-        const targetPage = page;
-        const frame = targetPage.mainFrame();
-        const element = await frame.waitForSelector("aria/Hello World");
-        await element.click();
-    }
+        "action": "click",
+        "condition": null,
+        "context": {
+            "path": [],
+            "target": "main"
+        },
+        "selector": "aria/Form Button"
+    },
     {
-        const targetPage = page;
-        const frame = targetPage.mainFrame();
-        const element = await frame.waitForSelector("span#span2");
-        await element.click();
-    }
+        "action": "click",
+        "condition": null,
+        "context": {
+            "path": [],
+            "target": "main"
+        },
+        "selector": "aria/Hello World"
+    },
     {
-        const targetPage = page;
-        const frame = targetPage.mainFrame();
-        const element = await frame.waitForSelector("aria/Hello World");
-        await element.click();
-    }
+        "action": "click",
+        "condition": null,
+        "context": {
+            "path": [],
+            "target": "main"
+        },
+        "selector": "span#span2"
+    },
     {
-        const targetPage = page;
-        const frame = targetPage.mainFrame().childFrames()[0];
-        const element = await frame.waitForSelector("aria/iframe button");
-        await element.click();
-    }
+        "action": "click",
+        "condition": null,
+        "context": {
+            "path": [],
+            "target": "main"
+        },
+        "selector": "aria/Hello World"
+    },
     {
-        const targetPage = page;
-        const frame = targetPage.mainFrame().childFrames()[0].childFrames()[0];
-        const element = await frame.waitForSelector("aria/Inner iframe button");
-        await element.click();
-    }
+        "action": "click",
+        "condition": null,
+        "context": {
+            "path": [
+                0
+            ],
+            "target": "main"
+        },
+        "selector": "aria/iframe button"
+    },
     {
-        const targetPage = page;
-        const frame = targetPage.mainFrame();
-        const element = await frame.waitForSelector("aria/Open Popup");
-        await element.click();
-    }
+        "action": "click",
+        "condition": null,
+        "context": {
+            "path": [
+                0,
+                0
+            ],
+            "target": "main"
+        },
+        "selector": "aria/Inner iframe button"
+    },
     {
-        const target = await browser.waitForTarget(p => p.url() === "https://<url>/test/e2e/resources/recorder/popup.html");
-        const targetPage = await target.page();
-        const frame = targetPage.mainFrame();
-        const promise = targetPage.waitForNavigation();
-        const element = await frame.waitForSelector("aria/Button in Popup");
-        await element.click();
-        await promise;
-    }
+        "action": "click",
+        "condition": null,
+        "context": {
+            "path": [],
+            "target": "main"
+        },
+        "selector": "aria/Open Popup"
+    },
     {
-        const target = await browser.waitForTarget(p => p.url() === "https://<url>/test/e2e/resources/recorder/popup.html");
-        const targetPage = await target.page();
-        await targetPage.close();
-    }
+        "action": "click",
+        "condition": {
+            "expectedUrl": "https://<url>/test/e2e/resources/recorder/popup.html"
+        },
+        "context": {
+            "path": [],
+            "target": "https://<url>/test/e2e/resources/recorder/popup.html"
+        },
+        "selector": "aria/Button in Popup"
+    },
     {
-        const targetPage = page;
-        const frame = targetPage.mainFrame();
-        const promise = targetPage.waitForNavigation();
-        const element = await frame.waitForSelector("aria/Page 2");
-        await element.click();
-        await promise;
-    }
+        "action": "close",
+        "condition": null,
+        "target": "https://<url>/test/e2e/resources/recorder/popup.html"
+    },
     {
-        const targetPage = page;
-        const frame = targetPage.mainFrame();
-        const promise = targetPage.waitForNavigation();
-        const element = await frame.waitForSelector("aria/Back to Page 1");
-        await element.click();
-        await promise;
+        "action": "click",
+        "condition": {
+            "expectedUrl": "https://<url>/test/e2e/resources/recorder/recorder2.html"
+        },
+        "context": {
+            "path": [],
+            "target": "main"
+        },
+        "selector": "aria/Page 2"
+    },
+    {
+        "action": "click",
+        "condition": {
+            "expectedUrl": "https://<url>/test/e2e/resources/recorder/recorder.html"
+        },
+        "context": {
+            "path": [],
+            "target": "main"
+        },
+        "selector": "aria/Back to Page 1"
     }
-    await browser.close();
-})();`);
+]`);
   });
 
   it('should also record network conditions', async () => {
@@ -655,56 +712,48 @@ describe('Recorder', function() {
     await click('[aria-label="Stop"]');
     const textContent = await getCode();
 
-    assert.strictEqual(textContent, `const puppeteer = require('puppeteer');
-
-(async () => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-
+    assert.strictEqual(textContent, `[
     {
-        // Simulated network throttling (Fast 3G)
-        const client = await page.target().createCDPSession();
-        await client.send('Network.enable');
-        await client.send('Network.emulateNetworkConditions', {
-        // Network connectivity is absent
-        offline: false,
-        // Download speed (bytes/s)
-        downloadThroughput: 180000,
-        // Upload speed (bytes/s)
-        uploadThroughput: 84375,
-        // Latency (ms)
-        latency: 562.5,
-        });
-    }
-    await page.goto("https://<url>/test/e2e/resources/recorder/recorder.html");
+        "action": "emulateNetworkConditions",
+        "condition": null,
+        "conditions": {
+            "download": 180000,
+            "upload": 84375,
+            "latency": 562.5
+        }
+    },
     {
-        const targetPage = page;
-        const frame = targetPage.mainFrame();
-        const element = await frame.waitForSelector("aria/Test Button");
-        await element.click();
-    }
+        "action": "navigate",
+        "condition": null,
+        "url": "https://<url>/test/e2e/resources/recorder/recorder.html"
+    },
     {
-        // Simulated network throttling (Slow 3G)
-        const client = await page.target().createCDPSession();
-        await client.send('Network.enable');
-        await client.send('Network.emulateNetworkConditions', {
-        // Network connectivity is absent
-        offline: false,
-        // Download speed (bytes/s)
-        downloadThroughput: 50000,
-        // Upload speed (bytes/s)
-        uploadThroughput: 50000,
-        // Latency (ms)
-        latency: 2000,
-        });
-    }
+        "action": "click",
+        "condition": null,
+        "context": {
+            "path": [],
+            "target": "main"
+        },
+        "selector": "aria/Test Button"
+    },
     {
-        const targetPage = page;
-        const frame = targetPage.mainFrame();
-        const element = await frame.waitForSelector("aria/Test Button");
-        await element.click();
+        "action": "emulateNetworkConditions",
+        "condition": null,
+        "conditions": {
+            "download": 50000,
+            "upload": 50000,
+            "latency": 2000
+        }
+    },
+    {
+        "action": "click",
+        "condition": null,
+        "context": {
+            "path": [],
+            "target": "main"
+        },
+        "selector": "aria/Test Button"
     }
-    await browser.close();
-})();`);
+]`);
   });
 });

@@ -38,6 +38,7 @@ export class RecordingSession {
   _scriptWriter: RecordingScriptWriter|null = null;
   _eventQueue: Array<RecorderEvent> = [];
   _isProcessingEvent = false;
+  steps: Step[] = [];
 
   constructor(target: SDK.SDKModel.Target, uiSourceCode: Workspace.UISourceCode.UISourceCode, indentation: string) {
     this._target = target;
@@ -112,6 +113,8 @@ export class RecordingSession {
   }
 
   async appendStep(step: Step): Promise<void> {
+    this.steps.push(step);
+
     if (!this._scriptWriter) {
       throw new Error('Recording has not started yet.');
     }
@@ -127,7 +130,8 @@ export class RecordingSession {
     if (!this._scriptWriter) {
       throw new Error('Recording has not started yet.');
     }
-    const content = this._scriptWriter.getScript();
+
+    const content = JSON.stringify(this.steps, null, this._indentation);
 
     this._uiSourceCode.setContent(content, false);
     await Common.Revealer.reveal(this._uiSourceCode.uiLocation(content.length), true);

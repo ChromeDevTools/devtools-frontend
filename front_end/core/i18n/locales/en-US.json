@@ -8627,6 +8627,9 @@
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Open a JavaScript or CSS file to see symbols"
   },
+  "panels/sources/RecorderPlugin.ts | play": {
+    "message": "Replay"
+  },
   "panels/sources/RecorderPlugin.ts | record": {
     "message": "Record"
   },
@@ -8830,6 +8833,9 @@
   },
   "panels/sources/sources-meta.ts | rename": {
     "message": "Rename"
+  },
+  "panels/sources/sources-meta.ts | replayRecording": {
+    "message": "Replay"
   },
   "panels/sources/sources-meta.ts | resumeScriptExecution": {
     "message": "Resume script execution"

@@ -259,13 +259,12 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
         }
       };
       requestCell.classList.add('link');
-      icon.classList.add('link');
       url = request.url();
       filename = extractShortPath(url);
       UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.clickToShowRequestInTheNetwork));
     } else {
       UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.requestUnavailableInTheNetwork));
-      icon.classList.add('unavailable');
+      icon.data = {...icon.data, color: 'var(--issue-color-yellow)'};
     }
     if (url) {
       UI.Tooltip.Tooltip.install(requestCell, url);

@@ -361,18 +361,6 @@ ul > li.plain-enum::before {
   vertical-align: sub;
 }
 
-.affected-resource-cell [is=ui-icon].icon-mask.link {
-  background-color: var(--color-link);
-}
-
-.link [is=ui-icon].icon-mask.link {
-  background-color: var(--color-link);
-}
-
-.affected-resource-cell [is=ui-icon].icon-mask.unavailable {
-  background-color: var(--issue-color-yellow);
-}
-
 .affected-resources > .parent {
   margin-top: 0;
   padding: 2px 5px 0 5px;
@@ -421,6 +409,6 @@ devtools-icon.link-icon {
 devtools-icon.elements-panel,
 devtools-icon.network-panel {
   margin-right: 0.5ex;
-  vertical-align: sub;
+  vertical-align: baseline;
   height: 14px;
 }

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as ComponentHelpers from '../components/helpers/helpers.js';
+
 /* eslint-disable rulesdir/no_underscored_properties */
 
 export class XElement extends HTMLElement {
@@ -113,9 +115,9 @@ class XText extends XElement {
   }
 }
 
-self.customElements.define('x-vbox', XVBox);
-self.customElements.define('x-hbox', XHBox);
-self.customElements.define('x-cbox', XCBox);
-self.customElements.define('x-div', XDiv);
-self.customElements.define('x-span', XSpan);
-self.customElements.define('x-text', XText);
+ComponentHelpers.CustomElements.defineComponent('x-vbox', XVBox);
+ComponentHelpers.CustomElements.defineComponent('x-hbox', XHBox);
+ComponentHelpers.CustomElements.defineComponent('x-cbox', XCBox);
+ComponentHelpers.CustomElements.defineComponent('x-div', XDiv);
+ComponentHelpers.CustomElements.defineComponent('x-span', XSpan);
+ComponentHelpers.CustomElements.defineComponent('x-text', XText);

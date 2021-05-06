@@ -4,6 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
+import * as ComponentHelpers from '../components/helpers/helpers.js';
 import {appendStyle} from './utils/append-style.js';
 import {XElement} from './XElement.js';
 
@@ -156,4 +157,4 @@ export class XWidget extends XElement {
   }
 }
 
-self.customElements.define('x-widget', XWidget);
+ComponentHelpers.CustomElements.defineComponent('x-widget', XWidget);

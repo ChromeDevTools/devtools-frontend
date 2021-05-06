@@ -6,6 +6,7 @@
 
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as ComponentHelpers from '../components/helpers/helpers.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu, Provider} from './ContextMenu.js';  // eslint-disable-line no-unused-vars
@@ -152,4 +153,4 @@ export class ContextMenuProvider implements Provider {
   }
 }
 
-self.customElements.define('x-link', XLink);
+ComponentHelpers.CustomElements.defineComponent('x-link', XLink);

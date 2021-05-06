@@ -34,6 +34,7 @@ devtools_entrypoint("bundle") {
     "../../../../test/unittests/front_end/test_setup/*",
 
     # TODO(crbug.com/1202788): Remove invalid dependents
+    "../../legacy/*",
     "../../legacy/components/inline_editor/*",
   ]
 

@@ -75,6 +75,7 @@ devtools_module("ui") {
     "../../core/sdk:bundle",
     "../../models/text_utils:bundle",
     "../../ui/legacy/theme_support:bundle",
+    "../components/helpers:bundle",
     "utils:bundle",
   ]
 }

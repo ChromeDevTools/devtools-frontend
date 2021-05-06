@@ -2,11 +2,15 @@ import("../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("helpers") {
   testonly = true
-  sources = [ "component_helpers_test.ts" ]
+  sources = [
+    "component_helpers_test.ts",
+    "custom_elements_test.ts",
+  ]
 
   deps = [
     "../../../../../../front_end/third_party/lit-html:bundle",
     "../../../../../../front_end/ui/components/helpers:bundle",
     "../../../../../../front_end/ui/legacy/theme_support:bundle",
+    "../../../helpers",
   ]
 }

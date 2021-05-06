@@ -8,6 +8,7 @@ import type * as IconButton from '../../ui/components/icon_button/icon_button.js
 
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
@@ -310,7 +311,7 @@ function renderRowWithCodeValue(key: string, value: string): LitHtml.TemplateRes
   `;
 }
 
-customElements.define('devtools-trust-token-report', RequestTrustTokensReport);
+ComponentHelpers.CustomElements.defineComponent('devtools-trust-token-report', RequestTrustTokensReport);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

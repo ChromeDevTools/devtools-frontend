@@ -5,6 +5,7 @@
 import './NodeText.js';
 
 import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import {crumbsToRender, DOMNode, NodeSelectedEvent, UserScrollPosition} from './ElementsBreadcrumbsUtils.js';
@@ -415,9 +416,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
   }
 }
 
-if (!customElements.get('devtools-elements-breadcrumbs')) {
-  customElements.define('devtools-elements-breadcrumbs', ElementsBreadcrumbs);
-}
+ComponentHelpers.CustomElements.defineComponent('devtools-elements-breadcrumbs', ElementsBreadcrumbs);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

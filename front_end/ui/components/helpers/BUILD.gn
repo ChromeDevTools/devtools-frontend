@@ -11,6 +11,7 @@ import("../visibility.gni")
 devtools_module("helpers") {
   sources = [
     "component-server-setup.ts",
+    "custom-elements.ts",
     "directives.ts",
     "get-stylesheet.ts",
     "set-css-property.ts",

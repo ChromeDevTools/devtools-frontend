@@ -302,7 +302,7 @@ export class LayoutPane extends HTMLElement {
   }
 }
 
-customElements.define('devtools-layout-pane', LayoutPane);
+ComponentHelpers.CustomElements.defineComponent('devtools-layout-pane', LayoutPane);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

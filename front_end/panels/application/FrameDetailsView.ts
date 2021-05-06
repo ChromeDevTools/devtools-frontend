@@ -16,6 +16,7 @@ import * as SDK from '../../core/sdk/sdk.js';  // eslint-disable-line no-unused-
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 import * as ReportView from '../../ui/components/report_view/report_view.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -920,7 +921,7 @@ export class FrameDetailsReportView extends HTMLElement {
   }
 }
 
-customElements.define('devtools-resources-frame-details-view', FrameDetailsReportView);
+ComponentHelpers.CustomElements.defineComponent('devtools-resources-frame-details-view', FrameDetailsReportView);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

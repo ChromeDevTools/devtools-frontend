@@ -4,6 +4,7 @@
 
 import * as Platform from '../../../core/platform/platform.js';
 import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 
 import {AdornerCategories} from './AdornerManager.js';
@@ -159,9 +160,7 @@ export class Adorner extends HTMLElement {
   }
 }
 
-if (!customElements.get('devtools-adorner')) {
-  customElements.define('devtools-adorner', Adorner);
-}
+ComponentHelpers.CustomElements.defineComponent('devtools-adorner', Adorner);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

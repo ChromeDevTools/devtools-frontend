@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
+import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -101,4 +102,4 @@ export class WebVitalsTooltip extends HTMLElement {
   }
 }
 
-customElements.define('devtools-timeline-webvitals-tooltip', WebVitalsTooltip);
+ComponentHelpers.CustomElements.defineComponent('devtools-timeline-webvitals-tooltip', WebVitalsTooltip);

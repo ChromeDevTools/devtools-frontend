@@ -10,7 +10,7 @@
 
 .media-property-renderer {
   line-height: 20px;
-  height: 28px;
+  min-height: 28px;
   padding: 4px 10px;
 }
 

@@ -11,5 +11,6 @@ export function defineComponent(tagName: string, componentClass: CustomElementCo
     console.error(`${tagName} already defined!`);
     return;
   }
+  // eslint-disable-next-line rulesdir/custom_element_component_definition
   customElements.define(tagName, componentClass);
 }

@@ -16,6 +16,7 @@ module.exports = {
     'rulesdir/l10n_no_unused_message': 2,
     'rulesdir/components_import': 2,
     'rulesdir/custom_element_definitions_location': 2,
+    'rulesdir/custom_element_component_definition': 2,
   },
   'overrides': [
     {

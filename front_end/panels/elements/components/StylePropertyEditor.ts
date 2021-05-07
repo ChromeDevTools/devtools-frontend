@@ -252,7 +252,7 @@ export class GridEditor extends StylePropertyEditor {
   }
 }
 
-customElements.define('devtools-grid-editor', GridEditor);
+ComponentHelpers.CustomElements.defineComponent('devtools-grid-editor', GridEditor);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

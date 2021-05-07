@@ -407,6 +407,11 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     if (response.securityDetails) {
       networkRequest.setSecurityDetails(response.securityDetails);
     }
+
+    const newResourceType = Common.ResourceType.ResourceType.fromMimeTypeOverride(networkRequest.mimeType);
+    if (newResourceType) {
+      networkRequest.setResourceType(newResourceType);
+    }
   }
 
   resourceChangedPriority({requestId, newPriority}: Protocol.Network.ResourceChangedPriorityEvent): void {

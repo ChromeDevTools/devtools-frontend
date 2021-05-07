@@ -96,6 +96,14 @@ const UIStrings = {
   */
   ws: 'WS',
   /**
+  *@description Text that appears in a tooltip for the WebAssembly types filter.
+  */
+  webasembly: 'WebAssembly',
+  /**
+  *@description Text that appears on a button for the WebAssembly resource type filter.
+  */
+  wasm: 'Wasm',
+  /**
   *@description Text that appears on a button for the manifest resource type filter.
   */
   manifest: 'Manifest',
@@ -204,6 +212,14 @@ export class ResourceType {
     }
 
     return resourceTypes.Other;
+  }
+
+  static fromMimeTypeOverride(mimeType: string|null): ResourceType|null {
+    if (mimeType === 'application/wasm') {
+      return resourceTypes.Wasm;
+    }
+
+    return null;
   }
 
   static fromURL(url: string): ResourceType|null {
@@ -316,12 +332,16 @@ export const resourceCategories = {
   Font: new ResourceCategory(i18nLazyString(UIStrings.fonts), i18nLazyString(UIStrings.font)),
   Document: new ResourceCategory(i18nLazyString(UIStrings.documents), i18nLazyString(UIStrings.doc)),
   WebSocket: new ResourceCategory(i18nLazyString(UIStrings.websockets), i18nLazyString(UIStrings.ws)),
+  Wasm: new ResourceCategory(i18nLazyString(UIStrings.webasembly), i18nLazyString(UIStrings.wasm)),
   Manifest: new ResourceCategory(i18nLazyString(UIStrings.manifest), i18nLazyString(UIStrings.manifest)),
   Other: new ResourceCategory(i18nLazyString(UIStrings.other), i18nLazyString(UIStrings.other)),
 };
 
 /**
- * Keep these in sync with WebCore::InspectorPageAgent::resourceTypeJson
+ * This enum is a superset of all types defined in WebCore::InspectorPageAgent::resourceTypeJson
+ * For DevTools-only types that are based on MIME-types that are backed by other request types
+ * (for example WASM that is based on Fetch), additional types are added here.
+ * For these types, make sure to update `fromMimeTypeOverride` to implement the custom logic.
  */
 export const resourceTypes = {
   Document: new ResourceType('document', i18nLazyString(UIStrings.document), resourceCategories.Document, true),
@@ -338,6 +358,7 @@ export const resourceTypes = {
   // TODO(yoichio): Consider creating new category WT or WS/WT with WebSocket.
   WebTransport:
       new ResourceType('webtransport', i18nLazyString(UIStrings.webtransport), resourceCategories.WebSocket, false),
+  Wasm: new ResourceType('wasm', i18nLazyString(UIStrings.wasm), resourceCategories.Wasm, false),
   Manifest: new ResourceType('manifest', i18nLazyString(UIStrings.manifest), resourceCategories.Manifest, true),
   SignedExchange:
       new ResourceType('signed-exchange', i18nLazyString(UIStrings.signedexchange), resourceCategories.Other, false),
@@ -361,28 +382,20 @@ export const _mimeTypeByName = new Map([
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const _resourceTypeByExtension = new Map([
-  ['js', resourceTypes.Script],
-  ['mjs', resourceTypes.Script],
+  ['js', resourceTypes.Script],      ['mjs', resourceTypes.Script],
 
-  ['css', resourceTypes.Stylesheet],
-  ['xsl', resourceTypes.Stylesheet],
+  ['css', resourceTypes.Stylesheet], ['xsl', resourceTypes.Stylesheet],
 
-  ['jpeg', resourceTypes.Image],
-  ['jpg', resourceTypes.Image],
-  ['svg', resourceTypes.Image],
-  ['gif', resourceTypes.Image],
-  ['png', resourceTypes.Image],
-  ['ico', resourceTypes.Image],
-  ['tiff', resourceTypes.Image],
-  ['tif', resourceTypes.Image],
-  ['bmp', resourceTypes.Image],
+  ['jpeg', resourceTypes.Image],     ['jpg', resourceTypes.Image],      ['svg', resourceTypes.Image],
+  ['gif', resourceTypes.Image],      ['png', resourceTypes.Image],      ['ico', resourceTypes.Image],
+  ['tiff', resourceTypes.Image],     ['tif', resourceTypes.Image],      ['bmp', resourceTypes.Image],
 
   ['webp', resourceTypes.Media],
 
-  ['ttf', resourceTypes.Font],
-  ['otf', resourceTypes.Font],
-  ['ttc', resourceTypes.Font],
+  ['ttf', resourceTypes.Font],       ['otf', resourceTypes.Font],       ['ttc', resourceTypes.Font],
   ['woff', resourceTypes.Font],
+
+  ['wasm', resourceTypes.Wasm],
 ]);
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
@@ -396,6 +409,7 @@ export const _mimeTypeByExtension = new Map([
   ['htm', 'text/html'],
   ['xml', 'application/xml'],
   ['xsl', 'application/xml'],
+  ['wasm', 'application/wasm'],
 
   // HTML Embedded Scripts, ASP], JSP
   ['asp', 'application/x-aspx'],

@@ -71,6 +71,12 @@
   "core/common/ResourceType.ts | texttrack": {
     "message": "TextTrack"
   },
+  "core/common/ResourceType.ts | wasm": {
+    "message": "Wasm"
+  },
+  "core/common/ResourceType.ts | webasembly": {
+    "message": "WebAssembly"
+  },
   "core/common/ResourceType.ts | websocket": {
     "message": "WebSocket"
   },

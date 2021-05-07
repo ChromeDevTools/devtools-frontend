@@ -71,6 +71,12 @@
   "core/common/ResourceType.ts | texttrack": {
     "message": "T̂éx̂t́T̂ŕâćk̂"
   },
+  "core/common/ResourceType.ts | wasm": {
+    "message": "Ŵáŝḿ"
+  },
+  "core/common/ResourceType.ts | webasembly": {
+    "message": "Ŵéb̂Áŝśêḿb̂ĺŷ"
+  },
   "core/common/ResourceType.ts | websocket": {
     "message": "Ŵéb̂Śôćk̂ét̂"
   },

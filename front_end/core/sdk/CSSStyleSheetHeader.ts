@@ -10,6 +10,7 @@ import * as i18n from '../i18n/i18n.js';
 
 import {CSSModel} from './CSSModel.js';  // eslint-disable-line no-unused-vars
 import {DeferredDOMNode} from './DOMModel.js';
+import type {FrameAssociated} from './FrameAssociated.js';
 import {PageResourceLoadInitiator} from './PageResourceLoader.js';  // eslint-disable-line no-unused-vars
 import {ResourceTreeModel} from './ResourceTreeModel.js';
 
@@ -26,10 +27,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('core/sdk/CSSStyleSheetHeader.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-/**
- * TODO(chromium:1011811): make `implements {FrameAssociated}` annotation work here.
- */
-export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentProvider {
+export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentProvider, FrameAssociated {
   _cssModel: CSSModel;
   id: string;
   frameId: string;

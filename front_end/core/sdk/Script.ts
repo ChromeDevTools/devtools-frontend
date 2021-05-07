@@ -35,6 +35,7 @@ import * as i18n from '../i18n/i18n.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
 
 import {DebuggerModel, Location} from './DebuggerModel.js';         // eslint-disable-line no-unused-vars
+import type {FrameAssociated} from './FrameAssociated.js';
 import {PageResourceLoadInitiator} from './PageResourceLoader.js';  // eslint-disable-line no-unused-vars
 import {ResourceTreeModel} from './ResourceTreeModel.js';
 import {ExecutionContext} from './RuntimeModel.js';  // eslint-disable-line no-unused-vars
@@ -53,10 +54,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('core/sdk/Script.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-/**
- * TODO(chromium:1011811): make `implements {FrameAssociated}` annotation work here.
- */
-export class Script implements TextUtils.ContentProvider.ContentProvider {
+export class Script implements TextUtils.ContentProvider.ContentProvider, FrameAssociated {
   debuggerModel: DebuggerModel;
   scriptId: string;
   sourceURL: string;

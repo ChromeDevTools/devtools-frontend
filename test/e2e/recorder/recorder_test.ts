@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {click, enableExperiment, getBrowserAndPages, getTestServerPort, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
+import {enableExperiment, getBrowserAndPages, getTestServerPort, goToResource, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {createNewRecording, openRecorderSubPane, openSourcesPanel} from '../helpers/sources-helpers.js';
 
@@ -42,30 +42,44 @@ async function changeNetworkConditions(condition: string) {
   await frontend.select('pierce/[aria-label="Throttling"] select', condition);
 }
 
+async function startRecording(path: string, networkCondition: string = '') {
+  await enableExperiment('recorder');
+  await goToResource(path);
+
+  const {frontend} = getBrowserAndPages();
+  if (networkCondition) {
+    await changeNetworkConditions(networkCondition);
+  }
+
+  await openSourcesPanel();
+  await openRecorderSubPane();
+  await createNewRecording('New recording');
+  await frontend.click('aria/Record');
+  await frontend.waitForSelector('aria/Stop');
+}
+
+async function stopRecording() {
+  const {frontend} = getBrowserAndPages();
+  await frontend.bringToFront();
+  await frontend.waitForSelector('aria/Stop');
+  await frontend.click('aria/Stop');
+}
+
+async function assertOutput(expected: string) {
+  const textContent = await getCode();
+  assert.strictEqual(textContent, expected);
+}
+
 describe('Recorder', function() {
   // The tests in this suite are particularly slow, as they perform a lot of actions
   this.timeout(10000);
 
   it('should capture the initial page as a navigation step', async () => {
     const waitForScriptToChange = getWaitForScriptToChangeFunction();
-    await enableExperiment('recorder');
-    await goToResource('recorder/recorder.html');
-
-    const {frontend} = getBrowserAndPages();
-
-    await openSourcesPanel();
-    await openRecorderSubPane();
-    await createNewRecording('New recording');
-    await frontend.click('aria/Record');
-    await frontend.waitForSelector('aria/Stop');
+    await startRecording('recorder/recorder.html');
     await waitForScriptToChange();
-
-    await frontend.bringToFront();
-    await frontend.waitForSelector('aria/Stop');
-    await frontend.click('aria/Stop');
-    const textContent = await getCode();
-
-    assert.strictEqual(textContent, `[
+    await stopRecording();
+    await assertOutput(`[
     {
         "action": "navigate",
         "condition": null,
@@ -76,27 +90,16 @@ describe('Recorder', function() {
 
   it('should capture clicks on buttons', async () => {
     const waitForScriptToChange = getWaitForScriptToChangeFunction();
-    await enableExperiment('recorder');
-    await goToResource('recorder/recorder.html');
-
-    const {frontend, target} = getBrowserAndPages();
-
-    await openSourcesPanel();
-    await openRecorderSubPane();
-    await createNewRecording('New recording');
-    await frontend.click('aria/Record');
-    await frontend.waitForSelector('aria/Stop');
+    await startRecording('recorder/recorder.html');
     await waitForScriptToChange();
+
+    const {target} = getBrowserAndPages();
     await target.bringToFront();
     await target.click('#test');
     await waitForScriptToChange();
 
-    await frontend.bringToFront();
-    await frontend.waitForSelector('aria/Stop');
-    await frontend.click('aria/Stop');
-    const textContent = await getCode();
-
-    assert.strictEqual(textContent, `[
+    await stopRecording();
+    await assertOutput(`[
     {
         "action": "navigate",
         "condition": null,
@@ -116,27 +119,16 @@ describe('Recorder', function() {
 
   it('should not capture synthetic events', async () => {
     const waitForScriptToChange = getWaitForScriptToChangeFunction();
-    await enableExperiment('recorder');
-    await goToResource('recorder/recorder.html');
-
-    const {frontend, target} = getBrowserAndPages();
-
-    await openSourcesPanel();
-    await openRecorderSubPane();
-    await createNewRecording('New recording');
-    await frontend.click('aria/Record');
-    await frontend.waitForSelector('aria/Stop');
+    await startRecording('recorder/recorder.html');
     await waitForScriptToChange();
+
+    const {target} = getBrowserAndPages();
     await target.bringToFront();
     await target.click('#synthetic');
     await waitForScriptToChange();
 
-    await frontend.bringToFront();
-    await frontend.waitForSelector('aria/Stop');
-    await frontend.click('aria/Stop');
-    const textContent = await getCode();
-
-    assert.strictEqual(textContent, `[
+    await stopRecording();
+    await assertOutput(`[
     {
         "action": "navigate",
         "condition": null,
@@ -156,27 +148,16 @@ describe('Recorder', function() {
 
   it('should capture clicks on submit buttons inside of forms as click steps', async () => {
     const waitForScriptToChange = getWaitForScriptToChangeFunction();
-    await enableExperiment('recorder');
-    await goToResource('recorder/recorder.html');
-
-    const {frontend, target} = getBrowserAndPages();
-
-    await openSourcesPanel();
-    await openRecorderSubPane();
-    await createNewRecording('New recording');
-    await frontend.click('aria/Record');
-    await frontend.waitForSelector('aria/Stop');
+    await startRecording('recorder/recorder.html');
     await waitForScriptToChange();
+
+    const {target} = getBrowserAndPages();
     await target.bringToFront();
     await target.click('#form-button');
     await waitForScriptToChange();
 
-    await frontend.bringToFront();
-    await frontend.waitForSelector('aria/Stop');
-    await frontend.click('aria/Stop');
-    const textContent = await getCode();
-
-    assert.strictEqual(textContent, `[
+    await stopRecording();
+    await assertOutput(`[
     {
         "action": "navigate",
         "condition": null,
@@ -196,27 +177,16 @@ describe('Recorder', function() {
 
   it('should build an aria selector for the parent element that is interactive', async () => {
     const waitForScriptToChange = getWaitForScriptToChangeFunction();
-    await enableExperiment('recorder');
-    await goToResource('recorder/recorder.html');
-
-    const {frontend, target} = getBrowserAndPages();
-
-    await openSourcesPanel();
-    await openRecorderSubPane();
-    await createNewRecording('New recording');
-    await frontend.click('aria/Record');
-    await frontend.waitForSelector('aria/Stop');
+    await startRecording('recorder/recorder.html');
     await waitForScriptToChange();
+
+    const {target} = getBrowserAndPages();
     await target.bringToFront();
     await target.click('#span');
     await waitForScriptToChange();
 
-    await frontend.bringToFront();
-    await frontend.waitForSelector('aria/Stop');
-    await frontend.click('aria/Stop');
-    const textContent = await getCode();
-
-    assert.strictEqual(textContent, `[
+    await stopRecording();
+    await assertOutput(`[
     {
         "action": "navigate",
         "condition": null,
@@ -237,27 +207,16 @@ describe('Recorder', function() {
   it('should fall back to a css selector if an element does not have an accessible and interactive parent',
      async () => {
        const waitForScriptToChange = getWaitForScriptToChangeFunction();
-       await enableExperiment('recorder');
-       await goToResource('recorder/recorder.html');
-
-       const {frontend, target} = getBrowserAndPages();
-
-       await openSourcesPanel();
-       await openRecorderSubPane();
-       await createNewRecording('New recording');
-       await frontend.click('aria/Record');
-       await frontend.waitForSelector('aria/Stop');
+       await startRecording('recorder/recorder.html');
        await waitForScriptToChange();
+
+       const {target} = getBrowserAndPages();
        await target.bringToFront();
        await target.click('#span2');
        await waitForScriptToChange();
 
-       await frontend.bringToFront();
-       await frontend.waitForSelector('aria/Stop');
-       await frontend.click('aria/Stop');
-       const textContent = await getCode();
-
-       assert.strictEqual(textContent, `[
+       await stopRecording();
+       await assertOutput(`[
     {
         "action": "navigate",
         "condition": null,
@@ -277,27 +236,16 @@ describe('Recorder', function() {
 
   it('should create an aria selector even if the element is within a shadow root', async () => {
     const waitForScriptToChange = getWaitForScriptToChangeFunction();
-    await enableExperiment('recorder');
-    await goToResource('recorder/recorder.html');
-
-    const {frontend, target} = getBrowserAndPages();
-
-    await openSourcesPanel();
-    await openRecorderSubPane();
-    await createNewRecording('New recording');
-    await frontend.click('aria/Record');
-    await frontend.waitForSelector('aria/Stop');
+    await startRecording('recorder/recorder.html');
     await waitForScriptToChange();
+
+    const {target} = getBrowserAndPages();
     await target.bringToFront();
     await target.click('pierce/#inner-span');
     await waitForScriptToChange();
 
-    await frontend.bringToFront();
-    await frontend.waitForSelector('aria/Stop');
-    await frontend.click('aria/Stop');
-    const textContent = await getCode();
-
-    assert.strictEqual(textContent, `[
+    await stopRecording();
+    await assertOutput(`[
     {
         "action": "navigate",
         "condition": null,
@@ -317,29 +265,18 @@ describe('Recorder', function() {
 
   it('should record interactions with elements within iframes', async () => {
     const waitForScriptToChange = getWaitForScriptToChangeFunction();
-    await enableExperiment('recorder');
-    await goToResource('recorder/recorder.html');
-
-    const {frontend, target} = getBrowserAndPages();
-
-    await openSourcesPanel();
-    await openRecorderSubPane();
-    await createNewRecording('New recording');
-    await frontend.click('aria/Record');
-    await frontend.waitForSelector('aria/Stop');
+    await startRecording('recorder/recorder.html');
     await waitForScriptToChange();
+
+    const {target} = getBrowserAndPages();
     await target.bringToFront();
     await target.mainFrame().childFrames()[0].click('#in-iframe');
     await waitForScriptToChange();
     await target.mainFrame().childFrames()[0].childFrames()[0].click('aria/Inner iframe button');
     await waitForScriptToChange();
 
-    await frontend.bringToFront();
-    await frontend.waitForSelector('aria/Stop');
-    await frontend.click('aria/Stop');
-    const textContent = await getCode();
-
-    assert.strictEqual(textContent, `[
+    await stopRecording();
+    await assertOutput(`[
     {
         "action": "navigate",
         "condition": null,
@@ -373,17 +310,10 @@ describe('Recorder', function() {
 
   it('should record interactions with popups', async () => {
     const waitForScriptToChange = getWaitForScriptToChangeFunction();
-    await enableExperiment('recorder');
-    await goToResource('recorder/recorder.html');
-
-    const {browser, frontend, target} = getBrowserAndPages();
-
-    await openSourcesPanel();
-    await openRecorderSubPane();
-    await createNewRecording('New recording');
-    await frontend.click('aria/Record');
-    await frontend.waitForSelector('aria/Stop');
+    await startRecording('recorder/recorder.html');
     await waitForScriptToChange();
+
+    const {target, browser} = getBrowserAndPages();
     await target.bringToFront();
     const newTargetPromise = browser.waitForTarget(t => t.url().endsWith('popup.html'));
     await target.click('aria/Open Popup');
@@ -397,12 +327,9 @@ describe('Recorder', function() {
     await waitForScriptToChange();
     await newPage.close();
     await waitForScriptToChange();
-    await frontend.bringToFront();
-    await frontend.waitForSelector('aria/Stop');
-    await frontend.click('aria/Stop');
-    const textContent = await getCode();
+    await stopRecording();
 
-    assert.strictEqual(textContent, `[
+    await assertOutput(`[
     {
         "action": "navigate",
         "condition": null,
@@ -438,17 +365,10 @@ describe('Recorder', function() {
 
   it('should wait for navigations in the generated scripts', async () => {
     const waitForScriptToChange = getWaitForScriptToChangeFunction();
-    await enableExperiment('recorder');
-    await goToResource('recorder/recorder.html');
-
-    const {frontend, target} = getBrowserAndPages();
-
-    await openSourcesPanel();
-    await openRecorderSubPane();
-    await createNewRecording('New recording');
-    await frontend.click('aria/Record');
-    await frontend.waitForSelector('aria/Stop');
+    await startRecording('recorder/recorder.html');
     await waitForScriptToChange();
+
+    const {target} = getBrowserAndPages();
     await target.bringToFront();
     const promise1 = target.waitForNavigation();
     await target.click('aria/Page 2');
@@ -460,11 +380,8 @@ describe('Recorder', function() {
     await promise2;
     await waitForScriptToChange();
 
-    await frontend.bringToFront();
-    await frontend.waitForSelector('aria/Stop');
-    await frontend.click('aria/Stop');
-    const textContent = await getCode();
-    assert.strictEqual(textContent, `[
+    await stopRecording();
+    await assertOutput(`[
     {
         "action": "navigate",
         "condition": null,
@@ -497,19 +414,10 @@ describe('Recorder', function() {
 
   it('should also record network conditions', async () => {
     const waitForScriptToChange = getWaitForScriptToChangeFunction();
-    await enableExperiment('recorder');
-    await goToResource('recorder/recorder.html');
+    await startRecording('recorder/recorder.html', 'Fast 3G');
+    await waitForScriptToChange();
 
     const {frontend, target} = getBrowserAndPages();
-
-    await changeNetworkConditions('Fast 3G');
-    await openSourcesPanel();
-    await openRecorderSubPane();
-    await createNewRecording('New recording');
-    // Record
-    await click('[aria-label="Record"]');
-    await waitFor('[aria-label="Stop"]');
-    await waitForScriptToChange();
     await target.bringToFront();
     await target.click('#test');
     await waitForScriptToChange();
@@ -520,12 +428,9 @@ describe('Recorder', function() {
     await target.bringToFront();
     await target.click('#test');
     await waitForScriptToChange();
-    await frontend.bringToFront();
-    await waitFor('[aria-label="Stop"]');
-    await click('[aria-label="Stop"]');
-    const textContent = await getCode();
 
-    assert.strictEqual(textContent, `[
+    await stopRecording();
+    await assertOutput(`[
     {
         "action": "emulateNetworkConditions",
         "condition": null,

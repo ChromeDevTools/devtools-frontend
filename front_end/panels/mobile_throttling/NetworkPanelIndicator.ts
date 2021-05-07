@@ -25,7 +25,7 @@ const UIStrings = {
    * @description Title of an icon in the Network panel that indicates that accepted content encodings have been overriden.
    */
   acceptedEncodingOverrideSet:
-      'The set of accepted `Content-Encoding`s has been modified by DevTools. See the Network Conditions panel.',
+      'The set of accepted `Content-Encoding` headers has been modified by DevTools. See the Network Conditions panel.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/NetworkPanelIndicator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

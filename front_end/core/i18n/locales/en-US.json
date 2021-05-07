@@ -5703,7 +5703,7 @@
     "message": "Presets"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
-    "message": "The set of accepted Content-Encodings has been modified by DevTools. See the Network Conditions panel."
+    "message": "The set of accepted Content-Encoding headers has been modified by DevTools. See the Network Conditions panel."
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "Network throttling is enabled"

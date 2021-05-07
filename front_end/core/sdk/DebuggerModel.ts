@@ -884,10 +884,6 @@ export class DebuggerModel extends SDKModel {
           if (prop.name === 'name' && prop.value && prop.value.type === 'string') {
             functionName = prop.value;
           }
-          if (prop.name === 'displayName' && prop.value && prop.value.type === 'string') {
-            functionName = prop.value;
-            break;
-          }
         }
       }
       let debuggerLocation: Location|null = null;

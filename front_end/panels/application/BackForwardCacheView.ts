@@ -40,11 +40,13 @@ const UIStrings = {
    */
   unknown: 'unknown',
   /**
-   * @description Status text for the status of the back-forward cache status indicating that the back-forward cache was not used and a normal navigation occured instead.
+   * @description Status text for the status of the back-forward cache status indicating that
+   * the back-forward cache was not used and a normal navigation occured instead.
    */
   normalNavigation: 'Normal navigation',
   /**
-   * @description Status text for the status of the back-forward cache status indicating that the back-forward cache was used.
+   * @description Status text for the status of the back-forward cache status indicating that
+   * the back-forward cache was used to restore the page instead of reloading it.
    */
   restoredFromBFCache: 'Restored from back-forward cache',
 };

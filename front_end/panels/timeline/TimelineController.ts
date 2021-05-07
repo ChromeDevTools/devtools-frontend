@@ -26,9 +26,11 @@ const UIStrings = {
    */
   cpuProfileForATargetIsNot: 'CPU profile for a target is not available.',
   /**
-  *@description Text in Timeline Controller of the Performance panel
-  */
-  tracingNotSupported: 'Tracing not supported for this type of target',
+   *@description Text in Timeline Controller of the Performance panel indicating that the Performance Panel cannot
+   * record a performance trace because the type of target (where possible types are page, service worker and shared
+   * worker) doesn't support it.
+   */
+  tracingNotSupported: 'Performance trace recording not supported for this type of target',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineController.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

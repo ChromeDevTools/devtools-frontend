@@ -9189,7 +9189,7 @@
     "message": "CPU profile for a target is not available."
   },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
-    "message": "Tracing not supported for this type of target"
+    "message": "Performance trace recording not supported for this type of target"
   },
   "panels/timeline/TimelineDetailsView.ts | bottomup": {
     "message": "Bottom-Up"

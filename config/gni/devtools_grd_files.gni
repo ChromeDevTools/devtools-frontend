@@ -1081,7 +1081,6 @@ grd_files_debug_sources = [
   "front_end/third_party/lit-html/package/lib/template-result.js",
   "front_end/third_party/lit-html/package/lib/template.js",
   "front_end/third_party/lit-html/package/lit-html.js",
-  "front_end/third_party/lit-html/package/static.js",
   "front_end/third_party/marked/package/lib/marked.esm.js",
   "front_end/third_party/puppeteer/package/lib/esm/puppeteer/api-docs-entry.js",
   "front_end/third_party/puppeteer/package/lib/esm/puppeteer/common/Accessibility.js",

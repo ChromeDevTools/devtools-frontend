@@ -72,13 +72,10 @@ devtools_pre_built("lit-html") {
     "package/lit-html.d.ts",
     "package/lit-html.js",
     "package/lit-html.js.map",
-    "package/static.d.ts",
-    "package/static.js",
-    "package/static.js.map",
   ]
 }
 
-devtools_module("lit-html-additions") {
+devtools_module("lit-html-directives") {
   sources = [
     "directive.ts",
     "directives.ts",
@@ -92,7 +89,7 @@ devtools_entrypoint("bundle") {
 
   deps = [
     ":lit-html",
-    ":lit-html-additions",
+    ":lit-html-directives",
   ]
 
   visibility = [

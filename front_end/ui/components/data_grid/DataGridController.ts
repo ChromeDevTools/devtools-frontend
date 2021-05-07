@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import './DataGrid.js';
+
 import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 import type * as TextUtils from '../../../models/text_utils/text_utils.js';
 import {SortDirection, SortState, Column, Row, getRowEntryForColumnId, ContextMenuColumnSortClickEvent} from './DataGridUtils.js';
-import {DataGrid, DataGridData, ColumnHeaderClickEvent, DataGridContextMenusConfiguration} from './DataGrid.js';
+import type {DataGridData, ColumnHeaderClickEvent, DataGridContextMenusConfiguration} from './DataGrid.js';
 
 export interface DataGridControllerData {
   columns: Column[];
@@ -202,7 +204,7 @@ export class DataGridController extends HTMLElement {
           overflow: hidden;
         }
       </style>
-      <${DataGrid.litTagName} .data=${{
+      <devtools-data-grid .data=${{
           columns: this.columns,
           rows: this.rows,
           activeSort: this.sortState,
@@ -211,7 +213,7 @@ export class DataGridController extends HTMLElement {
         @column-header-click=${this.onColumnHeaderClick}
         @context-menu-column-sort-click=${this.onContextMenuColumnSortClick}
         @context-menu-header-reset-click=${this.onContextMenuHeaderResetClick}
-     ></${DataGrid.litTagName}>
+     ></devtools-data-grid>
     `, this.shadow, {
       host: this,
     });

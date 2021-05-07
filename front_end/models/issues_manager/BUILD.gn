@@ -38,6 +38,50 @@ devtools_module("issues_manager") {
   ]
 }
 
+devtools_issue_description_files = [
+  "CoepCoopSandboxedIframeCannotNavigateToCoopPage.md",
+  "CoepCorpNotSameOrigin.md",
+  "CoepCorpNotSameOriginAfterDefaultedToSameOriginByCoep.md",
+  "CoepCorpNotSameSite.md",
+  "CoepFrameResourceNeedsCoepHeader.md",
+  "corsAllowCredentialsRequired.md",
+  "corsHeaderDisallowedByPreflightResponse.md",
+  "corsInsecurePrivateNetwork.md",
+  "corsInsecurePrivateNetworkPreflight.md",
+  "corsInvalidHeaderValues.md",
+  "corsMethodDisallowedByPreflightResponse.md",
+  "corsOriginMismatch.md",
+  "corsPreflightResponseInvalid.md",
+  "corsRedirectContainsCredentials.md",
+  "corsWildcardOriginNotAllowed.md",
+  "cspEvalViolation.md",
+  "cspInlineViolation.md",
+  "cspTrustedTypesPolicyViolation.md",
+  "cspTrustedTypesSinkViolation.md",
+  "cspURLViolation.md",
+  "heavyAd.md",
+  "LowTextContrast.md",
+  "mixedContent.md",
+  "SameSiteExcludeContextDowngradeRead.md",
+  "SameSiteExcludeContextDowngradeSet.md",
+  "SameSiteExcludeNavigationContextDowngrade.md",
+  "SameSiteNoneInsecureErrorRead.md",
+  "SameSiteNoneInsecureErrorSet.md",
+  "SameSiteNoneInsecureWarnRead.md",
+  "SameSiteNoneInsecureWarnSet.md",
+  "SameSiteUnspecifiedLaxAllowUnsafeRead.md",
+  "SameSiteUnspecifiedLaxAllowUnsafeSet.md",
+  "SameSiteUnspecifiedTreatedAsLaxRead.md",
+  "SameSiteUnspecifiedTreatedAsLaxSet.md",
+  "SameSiteWarnCrossDowngradeRead.md",
+  "SameSiteWarnCrossDowngradeSet.md",
+  "SameSiteWarnStrictLaxDowngradeStrict.md",
+  "sharedArrayBuffer.md",
+  "TwaDigitalAssetLinksFailed.md",
+  "TwaHttpError.md",
+  "TwaPageUnavailableOffline.md",
+]
+
 devtools_pre_built("descriptions") {
   sources = []
   data = []

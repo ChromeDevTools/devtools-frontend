@@ -9,6 +9,7 @@ import("../../../scripts/build/ninja/devtools_pre_built.gni")
 
 devtools_module("i18n") {
   sources = [
+    "DevToolsLocale.ts",
     "i18nImpl.ts",
     "i18nTypes.ts",
   ]

@@ -507,6 +507,7 @@ grd_files_debug_sources = [
   "front_end/core/host/Platform.js",
   "front_end/core/host/ResourceLoader.js",
   "front_end/core/host/UserMetrics.js",
+  "front_end/core/i18n/DevToolsLocale.js",
   "front_end/core/i18n/i18nImpl.js",
   "front_end/core/i18n/i18nTypes.js",
   "front_end/core/platform/UIString.js",

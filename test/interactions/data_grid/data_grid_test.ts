@@ -7,7 +7,7 @@ import {assert} from 'chai';
 import {getDataGrid, getDataGridCellAtIndex, getDataGridFillerCellAtColumnIndex, getDataGridRows, getInnerTextOfDataGridCells} from '../../e2e/helpers/datagrid-helpers.js';
 import {$, $$, click, getBrowserAndPages, waitFor, waitForFunction} from '../../shared/helper.js';
 import {it} from '../../shared/mocha-extensions.js';
-import {loadComponentDocExample} from '../helpers/shared.js';
+import {loadComponentDocExample, preloadForCodeCoverage} from '../helpers/shared.js';
 
 import type {ElementHandle} from 'puppeteer';
 
@@ -44,7 +44,9 @@ async function getColumnPercentageWidthsRounded(dataGrid: ElementHandle<Element>
   }));
 }
 
-describe('data grid', () => {
+describe('data grid', async () => {
+  preloadForCodeCoverage('data_grid/basic.html');
+
   it('lists the data grid contents', async () => {
     await loadComponentDocExample('data_grid/basic.html');
     const dataGrid = await getDataGrid();

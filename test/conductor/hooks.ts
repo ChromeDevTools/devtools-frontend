@@ -5,6 +5,7 @@
 /* eslint-disable no-console */
 
 import * as puppeteer from 'puppeteer';
+import type {CoverageMapData} from 'istanbul-lib-coverage';
 
 import {clearPuppeteerState, getBrowserAndPages, registerHandlers, setBrowserAndPages, setTestServerPort} from './puppeteer-state.js';
 import {getTestRunnerConfigSetting} from './test_runner_config.js';
@@ -346,6 +347,12 @@ export async function postFileTeardown() {
   if (fatalErrors.length) {
     throw new Error('Fatal errors logged:\n' + fatalErrors.join('\n'));
   }
+}
+
+export function collectCoverageFromPage(): Promise<CoverageMapData|undefined> {
+  const {frontend} = getBrowserAndPages();
+
+  return frontend.evaluate('window.__coverage__');
 }
 
 export const fatalErrors: string[] = [];

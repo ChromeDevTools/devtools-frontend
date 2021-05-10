@@ -7,7 +7,7 @@ import type * as puppeteer from 'puppeteer';
 import {getDataGrid, getDataGridController, getInnerTextOfDataGridCells} from '../../e2e/helpers/datagrid-helpers.js';
 import {$, $$, $textContent, click, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {loadComponentDocExample} from '../helpers/shared.js';
+import {loadComponentDocExample, preloadForCodeCoverage} from '../helpers/shared.js';
 import {platform} from '../../shared/helper.js';
 
 function platformSpecificTextForSubMenuEntryItem(text: string): string {
@@ -99,8 +99,9 @@ async function activateContextMenuOnBodyCell(cellText: string) {
   return headerCell;
 }
 
-
 describe('data grid controller', () => {
+  preloadForCodeCoverage('data_grid_controller/basic.html');
+
   it('lets the user right click on a header to show the context menu', async () => {
     await loadComponentDocExample('data_grid_controller/basic.html');
     await activateContextMenuOnColumnHeader('Key');

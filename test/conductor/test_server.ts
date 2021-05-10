@@ -17,7 +17,7 @@ export function startServer(server: 'hosted-mode'|'component-docs'): Promise<num
     throw new Error('Server was already started.');
   }
   function handleServerError(error: Error) {
-    throw new Error(`Server error: ${error}`);
+    console.error(`Server error: ${error}`);
   }
 
   const serverExecutable = {

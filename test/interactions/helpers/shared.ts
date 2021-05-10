@@ -10,3 +10,21 @@ export const loadComponentDocExample = async (url: string) => {
     waitUntil: 'networkidle0',
   });
 };
+
+const SHOULD_GATHER_COVERAGE_INFORMATION = process.env.COVERAGE === '1';
+
+export const preloadForCodeCoverage = (name: string) => {
+  if (!SHOULD_GATHER_COVERAGE_INFORMATION) {
+    return;
+  }
+
+  before(async function() {
+    this.timeout(0);
+    const {frontend} = getBrowserAndPages();
+    await frontend.setExtraHTTPHeaders({
+      'devtools-compute-coverage': '1',
+    });
+    await loadComponentDocExample(name);
+    await frontend.setExtraHTTPHeaders({});
+  });
+};

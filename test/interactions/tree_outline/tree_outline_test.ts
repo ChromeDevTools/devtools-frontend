@@ -7,7 +7,7 @@ import {assert} from 'chai';
 import type {ElementHandle} from 'puppeteer';
 import {$, $$, click, waitFor, waitForFunction} from '../../shared/helper.js';
 import {it} from '../../shared/mocha-extensions.js';
-import {loadComponentDocExample} from '../helpers/shared.js';
+import {loadComponentDocExample, preloadForCodeCoverage} from '../helpers/shared.js';
 
 
 async function getTreeOutline(root?: ElementHandle) {
@@ -58,6 +58,8 @@ async function getRenderedNodesTextAsTree(treeOutline: ElementHandle<HTMLElement
 }
 
 describe('TreeOutline', () => {
+  preloadForCodeCoverage('tree_outline/basic.html');
+
   it('renders the top level nodes by default', async () => {
     await loadComponentDocExample('tree_outline/basic.html');
     const treeOutline = await getTreeOutline();

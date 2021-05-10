@@ -4,7 +4,7 @@
 
 import '../../report_view/report_view.js';
 
-import * as LitHtml from '../../../../third_party/lit-html/lit-html.js';
+import * as LitHtml from '../../../lit-html/lit-html.js';
 import * as ComponentHelpers from '../../helpers/helpers.js';
 
 import type * as ReportView from '../../report_view/report_view.js';

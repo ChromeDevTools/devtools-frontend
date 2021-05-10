@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as LitHtml from '../../../../../../front_end/third_party/lit-html/lit-html.js';
 import * as ComponentHelpers from '../../../../../../front_end/ui/components/helpers/helpers.js';
 import * as ThemeSupport from '../../../../../../front_end/ui/legacy/theme_support/theme_support.js';
+import * as LitHtml from '../../../../../../front_end/ui/lit-html/lit-html.js';
 
 const {assert} = chai;
 

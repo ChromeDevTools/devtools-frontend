@@ -35,12 +35,12 @@ devtools_module("issues") {
     "../../panels/console_counters:bundle",
     "../../panels/elements/components:bundle",
     "../../panels/network:bundle",
-    "../../third_party/lit-html:bundle",
     "../../ui/components/data_grid:bundle",
     "../../ui/components/linkifier:bundle",
     "../../ui/components/markdown_view:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/utils:bundle",
+    "../../ui/lit-html:bundle",
   ]
 
   visibility = [ "../../../test/unittests/front_end/issues" ]

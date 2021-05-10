@@ -468,6 +468,7 @@ grd_files_release_sources = [
   "front_end/ui/legacy/legacy.js",
   "front_end/ui/legacy/theme_support/theme_support.js",
   "front_end/ui/legacy/utils/utils.js",
+  "front_end/ui/lit-html/lit-html.js",
   "front_end/worker_app.html",
 ]
 
@@ -1309,6 +1310,7 @@ grd_files_debug_sources = [
   "front_end/ui/legacy/utils/inject-core-styles.js",
   "front_end/ui/legacy/utils/measured-scrollbar-width.js",
   "front_end/ui/legacy/utils/register-custom-element.js",
+  "front_end/ui/lit-html/static.js",
 ]
 
 # Confirm that there is no overlap between the two lists.

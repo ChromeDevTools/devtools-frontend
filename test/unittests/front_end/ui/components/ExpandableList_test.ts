@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as LitHtml from '../../../../../front_end/third_party/lit-html/lit-html.js';
 import * as ExpandableList from '../../../../../front_end/ui/components/expandable_list/expandable_list.js';
+import * as LitHtml from '../../../../../front_end/ui/lit-html/lit-html.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {MutationType, withMutations} from '../../helpers/MutationHelpers.js';
 

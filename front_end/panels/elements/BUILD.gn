@@ -52,7 +52,6 @@ devtools_module("elements") {
     "../../panels/emulation:bundle",
     "../../panels/event_listeners:bundle",
     "../../panels/mobile_throttling:bundle",
-    "../../third_party/lit-html:bundle",
     "../../ui/components/tree_outline:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/color_picker:bundle",
@@ -60,6 +59,7 @@ devtools_module("elements") {
     "../../ui/legacy/components/object_ui:bundle",
     "../../ui/legacy/components/text_editor:bundle",
     "../../ui/legacy/components/utils:bundle",
+    "../../ui/lit-html:bundle",
     "./components:bundle",
   ]
 

@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../core/common/common.js';
-import * as LitHtml from '../../../../third_party/lit-html/lit-html.js';
 import * as ComponentHelpers from '../../../components/helpers/helpers.js';
+import * as LitHtml from '../../../lit-html/lit-html.js';
 
 import {Angle, AngleUnit, get2DTranslationsForAngle, getAngleFromRadians, getNewAngleFromEvent, getRadiansFromAngle} from './CSSAngleUtils.js';
 

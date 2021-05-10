@@ -13,7 +13,7 @@ import * as Network from '../../network/network.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
-import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as ReportView from '../../../ui/components/report_view/report_view.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';

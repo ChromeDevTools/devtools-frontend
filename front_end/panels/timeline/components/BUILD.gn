@@ -16,9 +16,9 @@ devtools_module("components") {
   deps = [
     "../../../core/host:bundle",
     "../../../core/i18n:bundle",
-    "../../../third_party/lit-html:bundle",
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/render_coordinator:bundle",
+    "../../../ui/lit-html:bundle",
   ]
 }
 

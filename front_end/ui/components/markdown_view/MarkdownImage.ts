@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../../ui/components/icon_button/icon_button.js'; // Required to get <devtools-icon>
+import '../../components/icon_button/icon_button.js'; // Required to get <devtools-icon>
 
-import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import * as ComponentHelpers from '../../components/helpers/helpers.js';
+import * as IconButton from '../../components/icon_button/icon_button.js';
+import * as LitHtml from '../../lit-html/lit-html.js';
 
 import {getMarkdownImage, ImageData} from './MarkdownImagesMap.js';
 

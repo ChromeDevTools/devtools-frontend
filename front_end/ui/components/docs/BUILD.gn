@@ -43,5 +43,5 @@ ts_library("bundle") {
     "toggle_dark_mode.ts",
   ]
 
-  deps = [ "../../../third_party/lit-html:bundle" ]
+  deps = [ "../../../ui/lit-html:bundle" ]
 }

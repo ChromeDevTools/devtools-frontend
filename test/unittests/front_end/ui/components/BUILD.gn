@@ -19,7 +19,6 @@ ts_library("components") {
 
   deps = [
     "../../../../../front_end/core/platform:bundle",
-    "../../../../../front_end/third_party/lit-html",
     "../../../../../front_end/third_party/marked:bundle",
     "../../../../../front_end/ui/components/data_grid:bundle",
     "../../../../../front_end/ui/components/expandable_list:bundle",
@@ -29,6 +28,7 @@ ts_library("components") {
     "../../../../../front_end/ui/components/report_view:bundle",
     "../../../../../front_end/ui/components/survey_link:bundle",
     "../../../../../front_end/ui/components/tree_outline:bundle",
+    "../../../../../front_end/ui/lit-html:bundle",
     "../../helpers",
   ]
 }

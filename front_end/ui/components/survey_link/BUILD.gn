@@ -12,8 +12,8 @@ devtools_module("survey_link") {
     "../../../core/common:bundle",
     "../../../core/host:bundle",
     "../../../core/i18n:bundle",
-    "../../../third_party/lit-html:bundle",
     "../../../ui/components/helpers:bundle",
+    "../../../ui/lit-html:bundle",
     "../icon_button:bundle",
   ]
 

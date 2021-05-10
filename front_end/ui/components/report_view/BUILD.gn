@@ -9,7 +9,7 @@ import("../visibility.gni")
 devtools_module("report_view") {
   sources = [ "ReportView.ts" ]
   deps = [
-    "../../../third_party/lit-html:bundle",
+    "../../../ui/lit-html:bundle",
     "../../components/helpers:bundle",
   ]
 

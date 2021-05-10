@@ -22,8 +22,8 @@ ts_library("helpers") {
     "../../../../front_end/core/protocol_client:bundle",
     "../../../../front_end/core/root:bundle",
     "../../../../front_end/core/sdk:bundle",
-    "../../../../front_end/third_party/lit-html:bundle",
     "../../../../front_end/ui/legacy:bundle",
+    "../../../../front_end/ui/lit-html:bundle",
     "../../../../inspector_overlay",
   ]
 }

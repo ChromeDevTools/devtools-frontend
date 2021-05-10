@@ -18,7 +18,12 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     "../../../test/unittests/front_end/*",
+    "../../../test/unittests/front_end/ui/components/*",
     "../../panels/*",
     "../../ui/components/*",
+
+    # TODO(crbug.com/1202788): Remove invalid dependents
+    "../../ui/legacy/components/inline_editor/*",
+    "../../ui/legacy/components/perf_ui/*",
   ]
 }

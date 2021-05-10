@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../../core/platform/platform.js';
-import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
+import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import {AdornerCategories} from './AdornerManager.js';
 

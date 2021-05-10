@@ -4,18 +4,17 @@
 
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 import * as Static from './static.js';
+export {Directive, TemplateResult} from '../../third_party/lit-html/lit-html.js';
 
-const {render, Directive, Directives, nothing, noChange} = LitHtml;
+const {render, svg, Directives, nothing, noChange} = LitHtml;
 const {html, literal, flattenTemplate} = Static;
-
-export type TemplateResult = LitHtml.TemplateResult|typeof LitHtml.nothing;
 
 export {
   render,
-  Directive,
   Directives,
   nothing,
   noChange,
+  svg,
   html,
   literal,
   flattenTemplate,  // Exposed for unit testing.

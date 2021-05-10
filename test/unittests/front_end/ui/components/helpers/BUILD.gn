@@ -8,9 +8,9 @@ ts_library("helpers") {
   ]
 
   deps = [
-    "../../../../../../front_end/third_party/lit-html:bundle",
     "../../../../../../front_end/ui/components/helpers:bundle",
     "../../../../../../front_end/ui/legacy/theme_support:bundle",
+    "../../../../../../front_end/ui/lit-html:bundle",
     "../../../helpers",
   ]
 }

@@ -7,8 +7,8 @@ import '../../../ui/components/tree_outline/tree_outline.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
 import * as TreeOutline from '../../../ui/components/tree_outline/tree_outline.js';
+import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 export type AXTreeNode = TreeOutline.TreeOutlineUtils.TreeNode<SDK.AccessibilityModel.AccessibilityNode>;
 

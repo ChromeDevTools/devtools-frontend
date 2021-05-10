@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as LitHtml from '../../lit-html/lit-html.js';
 
 /**
  * Provides a hook to get a callback when a LitHtml node is rendered into the DOM:

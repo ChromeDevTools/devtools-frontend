@@ -5,7 +5,7 @@
 import '../../expandable_list/expandable_list.js';
 
 import * as FrontendHelpers from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import * as LitHtml from '../../../../third_party/lit-html/lit-html.js';
+import * as LitHtml from '../../../lit-html/lit-html.js';
 import * as ExpandableList from '../../expandable_list/expandable_list.js';
 
 await FrontendHelpers.initializeGlobalVars();

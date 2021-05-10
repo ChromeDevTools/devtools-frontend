@@ -4,7 +4,7 @@
 
 import './DataGrid.js';
 
-import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 import type * as TextUtils from '../../../models/text_utils/text_utils.js';
 import {SortDirection, SortState, Column, Row, getRowEntryForColumnId, ContextMenuColumnSortClickEvent} from './DataGridUtils.js';

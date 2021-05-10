@@ -30,11 +30,11 @@ devtools_module("perf_ui") {
     "../../../../models/bindings:bundle",
     "../../../../models/timeline_model:bundle",
     "../../../../models/workspace:bundle",
-    "../../../../third_party/lit-html:bundle",
     "../../../../ui/legacy:bundle",
     "../../../../ui/legacy/components/source_frame:bundle",
     "../../../../ui/legacy/components/text_editor:bundle",
     "../../../../ui/legacy/theme_support:bundle",
+    "../../../../ui/lit-html:bundle",
   ]
 
   visibility = [

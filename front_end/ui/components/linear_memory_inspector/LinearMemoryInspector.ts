@@ -7,7 +7,7 @@ import './LinearMemoryValueInterpreter.js';
 import './LinearMemoryViewer.js';
 
 import * as Common from '../../../core/common/common.js';
-import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as LitHtml from '../../lit-html/lit-html.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 
 const {render, html} = LitHtml;

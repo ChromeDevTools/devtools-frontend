@@ -20,8 +20,8 @@ devtools_module("helpers") {
   deps = [
     "../../../core/common:bundle",
     "../../../core/root:bundle",
-    "../../../third_party/lit-html:bundle",
     "../../../ui/legacy/theme_support:bundle",
+    "../../../ui/lit-html:bundle",
   ]
 }
 

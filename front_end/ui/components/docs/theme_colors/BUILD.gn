@@ -10,8 +10,8 @@ ts_library("ts") {
   sources = [ "basic.ts" ]
 
   deps = [
-    "../../../../third_party/lit-html:bundle",
     "../../../../ui/components/helpers:bundle",
+    "../../../../ui/lit-html:bundle",
   ]
 }
 

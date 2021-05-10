@@ -4,9 +4,9 @@
 
 import * as Common from '../../../core/common/common.js';
 import type * as Host from '../../../core/host/host.js';
-import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as LitHtml from '../../lit-html/lit-html.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as ComponentHelpers from '../../components/helpers/helpers.js';
 
 import '../icon_button/icon_button.js';
 import type {Icon} from '../icon_button/icon_button.js';

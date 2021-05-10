@@ -5,7 +5,7 @@
 import type * as Platform from '../../core/platform/platform.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as LitHtml from '../../third_party/lit-html/lit-html.js';
+import * as LitHtml from '../../ui/lit-html/lit-html.js';
 import '../../ui/components/report_view/report_view.js';
 import * as ReportView from '../../ui/components/report_view/report_view.js';
 import * as UI from '../../ui/legacy/legacy.js';

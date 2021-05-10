@@ -19,12 +19,12 @@ devtools_module("markdown_view") {
     "../../../core/host:bundle",
     "../../../core/platform:bundle",
     "../../../models/text_utils:bundle",
-    "../../../third_party/lit-html:bundle",
     "../../../third_party/marked:bundle",
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/icon_button:bundle",
     "../../../ui/components/render_coordinator:bundle",
     "../../../ui/legacy:bundle",
+    "../../../ui/lit-html:bundle",
   ]
 
   visibility = [ "../../../../test/unittests/front_end/ui/components" ]

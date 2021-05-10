@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as LitHtml from '../../../../front_end/third_party/lit-html/lit-html.js';
+import * as LitHtml from '../../../../front_end/ui/lit-html/lit-html.js';
 
 import {renderElementIntoDOM} from './DOMHelpers.js';
 import {TEXT_NODE, withMutations, withNoMutations} from './MutationHelpers.js';

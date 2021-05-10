@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
-import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import {assertInstanceOf, Event, LONG_TASK_THRESHOLD, Marker, MarkerType, Timebox, WebVitalsTimeline} from './WebVitalsTimeline.js';
 

@@ -6,7 +6,7 @@ import '../../../ui/components/icon_button/icon_button.js';
 
 import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 
-import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
+import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as UI from '../../../ui/legacy/legacy.js';

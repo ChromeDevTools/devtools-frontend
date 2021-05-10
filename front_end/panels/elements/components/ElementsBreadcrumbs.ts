@@ -4,9 +4,9 @@
 
 import './NodeText.js';
 
-import * as LitHtml from '../../../third_party/lit-html/lit-html.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import {crumbsToRender, DOMNode, NodeSelectedEvent, UserScrollPosition} from './ElementsBreadcrumbsUtils.js';
 

@@ -212,3 +212,7 @@ devtools-survey-link {
   --issue-link-padding: 0;
   --issue-link-icon-size: 14px;
 }
+
+:host-context(.-theme-with-dark-background) input[type="checkbox"] {
+  filter: invert(80%);
+}

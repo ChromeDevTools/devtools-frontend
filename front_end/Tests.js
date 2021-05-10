@@ -1488,7 +1488,9 @@
     await testCase(
         baseURL + 'echoheader?Cookie', undefined, 200, ['cache-control'], 'devtools-test-cookie=same-site-cookie');
     await testCase('data:text/html,<body>hello</body>', undefined, 200, [], '<body>hello</body>');
-    await testCase(fileURL, undefined, 200, [], '<html>\n<body>\nDummy page.\n</body>\n</html>\n');
+    // Temporarily disable this test to allow the browser side to add DOCTYPE to
+    // content/test/data/devtools/navigation.html.
+    // await testCase(fileURL, undefined, 200, [], '<html>\n<body>\nDummy page.\n</body>\n</html>\n');
     await testCase(fileURL + 'thisfileshouldnotbefound', undefined, 404, [], '');
 
     this.releaseControl();

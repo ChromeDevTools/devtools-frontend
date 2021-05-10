@@ -98,7 +98,7 @@ const UIStrings = {
   /**
   *@description Text that appears in a tooltip for the WebAssembly types filter.
   */
-  webasembly: 'WebAssembly',
+  webassembly: 'WebAssembly',
   /**
   *@description Text that appears on a button for the WebAssembly resource type filter.
   */
@@ -332,7 +332,7 @@ export const resourceCategories = {
   Font: new ResourceCategory(i18nLazyString(UIStrings.fonts), i18nLazyString(UIStrings.font)),
   Document: new ResourceCategory(i18nLazyString(UIStrings.documents), i18nLazyString(UIStrings.doc)),
   WebSocket: new ResourceCategory(i18nLazyString(UIStrings.websockets), i18nLazyString(UIStrings.ws)),
-  Wasm: new ResourceCategory(i18nLazyString(UIStrings.webasembly), i18nLazyString(UIStrings.wasm)),
+  Wasm: new ResourceCategory(i18nLazyString(UIStrings.webassembly), i18nLazyString(UIStrings.wasm)),
   Manifest: new ResourceCategory(i18nLazyString(UIStrings.manifest), i18nLazyString(UIStrings.manifest)),
   Other: new ResourceCategory(i18nLazyString(UIStrings.other), i18nLazyString(UIStrings.other)),
 };
@@ -340,7 +340,7 @@ export const resourceCategories = {
 /**
  * This enum is a superset of all types defined in WebCore::InspectorPageAgent::resourceTypeJson
  * For DevTools-only types that are based on MIME-types that are backed by other request types
- * (for example WASM that is based on Fetch), additional types are added here.
+ * (for example Wasm that is based on Fetch), additional types are added here.
  * For these types, make sure to update `fromMimeTypeOverride` to implement the custom logic.
  */
 export const resourceTypes = {
@@ -379,24 +379,36 @@ export const _mimeTypeByName = new Map([
   ['Cakefile', 'text/x-coffeescript'],
 ]);
 
+// clang-format off
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const _resourceTypeByExtension = new Map([
-  ['js', resourceTypes.Script],      ['mjs', resourceTypes.Script],
+  ['js', resourceTypes.Script],
+  ['mjs', resourceTypes.Script],
 
-  ['css', resourceTypes.Stylesheet], ['xsl', resourceTypes.Stylesheet],
+  ['css', resourceTypes.Stylesheet],
+  ['xsl', resourceTypes.Stylesheet],
 
-  ['jpeg', resourceTypes.Image],     ['jpg', resourceTypes.Image],      ['svg', resourceTypes.Image],
-  ['gif', resourceTypes.Image],      ['png', resourceTypes.Image],      ['ico', resourceTypes.Image],
-  ['tiff', resourceTypes.Image],     ['tif', resourceTypes.Image],      ['bmp', resourceTypes.Image],
+  ['jpeg', resourceTypes.Image],
+  ['jpg', resourceTypes.Image],
+  ['svg', resourceTypes.Image],
+  ['gif', resourceTypes.Image],
+  ['png', resourceTypes.Image],
+  ['ico', resourceTypes.Image],
+  ['tiff', resourceTypes.Image],
+  ['tif', resourceTypes.Image],
+  ['bmp', resourceTypes.Image],
 
   ['webp', resourceTypes.Media],
 
-  ['ttf', resourceTypes.Font],       ['otf', resourceTypes.Font],       ['ttc', resourceTypes.Font],
+  ['ttf', resourceTypes.Font],
+  ['otf', resourceTypes.Font],
+  ['ttc', resourceTypes.Font],
   ['woff', resourceTypes.Font],
 
   ['wasm', resourceTypes.Wasm],
 ]);
+// clang-format on
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
 // eslint-disable-next-line @typescript-eslint/naming-convention

@@ -74,7 +74,7 @@
   "core/common/ResourceType.ts | wasm": {
     "message": "Ŵáŝḿ"
   },
-  "core/common/ResourceType.ts | webasembly": {
+  "core/common/ResourceType.ts | webassembly": {
     "message": "Ŵéb̂Áŝśêḿb̂ĺŷ"
   },
   "core/common/ResourceType.ts | websocket": {

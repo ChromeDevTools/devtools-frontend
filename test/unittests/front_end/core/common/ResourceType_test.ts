@@ -35,7 +35,7 @@ describe('ResourceType class', () => {
     assert.strictEqual(
         resourceType.category().shortTitle(), 'Category Test Short Title',
         'category short title was not set correctly');
-    assert.strictEqual(resourceType.isTextType(), true, 'isTextType was not set correctly');
+    assert.strictEqual(resourceType.isTextType(), true, 'resource type was not set correctly');
   });
 
   it('is able to return a document resource from the string "text/html"', () => {
@@ -45,7 +45,7 @@ describe('ResourceType class', () => {
     assert.strictEqual(result.title(), 'Document', 'title was not set correctly');
     assert.strictEqual(result.category().title(), 'Documents', 'category title was not set correctly');
     assert.strictEqual(result.category().shortTitle(), 'Doc', 'category short title was not set correctly');
-    assert.isTrue(result.isTextType(), 'isTextType was not set correctly');
+    assert.isTrue(result.isTextType(), 'resource type was not set correctly');
   });
 
   it('is able to return a stylesheet resource from the string "text/css"', () => {
@@ -55,7 +55,7 @@ describe('ResourceType class', () => {
     assert.strictEqual(result.title(), 'Stylesheet', 'title was not set correctly');
     assert.strictEqual(result.category().title(), 'Stylesheets', 'category title was not set correctly');
     assert.strictEqual(result.category().shortTitle(), 'CSS', 'category short title was not set correctly');
-    assert.isTrue(result.isTextType(), 'isTextType was not set correctly');
+    assert.isTrue(result.isTextType(), 'resource type was not set correctly');
   });
 
   it('is able to return an image resource from the string "image/"', () => {
@@ -65,7 +65,7 @@ describe('ResourceType class', () => {
     assert.strictEqual(result.title(), 'Image', 'title was not set correctly');
     assert.strictEqual(result.category().title(), 'Images', 'category title was not set correctly');
     assert.strictEqual(result.category().shortTitle(), 'Img', 'category short title was not set correctly');
-    assert.isFalse(result.isTextType(), 'isTextType was not set correctly');
+    assert.isFalse(result.isTextType(), 'resource type was not set correctly');
   });
 
   it('is able to return a script resource from the string "text/"', () => {
@@ -75,7 +75,7 @@ describe('ResourceType class', () => {
     assert.strictEqual(result.title(), 'Script', 'title was not set correctly');
     assert.strictEqual(result.category().title(), 'Scripts', 'category title was not set correctly');
     assert.strictEqual(result.category().shortTitle(), 'JS', 'category short title was not set correctly');
-    assert.isTrue(result.isTextType(), 'isTextType was not set correctly');
+    assert.isTrue(result.isTextType(), 'resource type was not set correctly');
   });
 
   it('is able to return a font resource from the string "font"', () => {
@@ -85,7 +85,7 @@ describe('ResourceType class', () => {
     assert.strictEqual(result.title(), 'Font', 'title was not set correctly');
     assert.strictEqual(result.category().title(), 'Fonts', 'category title was not set correctly');
     assert.strictEqual(result.category().shortTitle(), 'Font', 'category short title was not set correctly');
-    assert.isFalse(result.isTextType(), 'isTextType was not set correctly');
+    assert.isFalse(result.isTextType(), 'resource type was not set correctly');
   });
 
   it('is able to return a script resource from the string "script"', () => {
@@ -95,7 +95,7 @@ describe('ResourceType class', () => {
     assert.strictEqual(result.title(), 'Script', 'title was not set correctly');
     assert.strictEqual(result.category().title(), 'Scripts', 'category title was not set correctly');
     assert.strictEqual(result.category().shortTitle(), 'JS', 'category short title was not set correctly');
-    assert.isTrue(result.isTextType(), 'isTextType was not set correctly');
+    assert.isTrue(result.isTextType(), 'resource type was not set correctly');
   });
 
   it('is able to return an octet resource from the string "octet"', () => {
@@ -105,7 +105,7 @@ describe('ResourceType class', () => {
     assert.strictEqual(result.title(), 'Other', 'title was not set correctly');
     assert.strictEqual(result.category().title(), 'Other', 'category title was not set correctly');
     assert.strictEqual(result.category().shortTitle(), 'Other', 'category short title was not set correctly');
-    assert.isFalse(result.isTextType(), 'isTextType was not set correctly');
+    assert.isFalse(result.isTextType(), 'resource type was not set correctly');
   });
 
   it('is able to return an application resource from the string "application"', () => {
@@ -115,7 +115,7 @@ describe('ResourceType class', () => {
     assert.strictEqual(result.title(), 'Script', 'title was not set correctly');
     assert.strictEqual(result.category().title(), 'Scripts', 'category title was not set correctly');
     assert.strictEqual(result.category().shortTitle(), 'JS', 'category short title was not set correctly');
-    assert.isTrue(result.isTextType(), 'isTextType was not set correctly');
+    assert.isTrue(result.isTextType(), 'resource type was not set correctly');
   });
 
   it('is able to return a resource of type other from the string "test/resource"', () => {
@@ -125,7 +125,7 @@ describe('ResourceType class', () => {
     assert.strictEqual(result.title(), 'Other', 'title was not set correctly');
     assert.strictEqual(result.category().title(), 'Other', 'category title was not set correctly');
     assert.strictEqual(result.category().shortTitle(), 'Other', 'category short title was not set correctly');
-    assert.isFalse(result.isTextType(), 'isTextType was not set correctly');
+    assert.isFalse(result.isTextType(), 'resource type was not set correctly');
   });
 
   it('is able to return a resource type from a URL that contains a mapped extension', () => {
@@ -136,7 +136,18 @@ describe('ResourceType class', () => {
     assert.strictEqual(result.title(), 'Script', 'title was not set correctly');
     assert.strictEqual(result.category().title(), 'Scripts', 'category title was not set correctly');
     assert.strictEqual(result.category().shortTitle(), 'JS', 'category short title was not set correctly');
-    assert.isTrue(result.isTextType(), 'isTextType was not set correctly');
+    assert.isTrue(result.isTextType(), 'resource type was not set correctly');
+  });
+
+  it('is able to return a resource type from a URL that ends in .avif', () => {
+    const result = ResourceType.fromURL('https://host.example/image.avif');
+    assertNotNull(result);
+    assert.instanceOf(result, ResourceType, 'result type is incorrect');
+    assert.strictEqual(result.name(), 'image', 'name was not set correctly');
+    assert.strictEqual(result.title(), 'Image', 'title was not set correctly');
+    assert.strictEqual(result.category().title(), 'Images', 'category title was not set correctly');
+    assert.strictEqual(result.category().shortTitle(), 'Img', 'category short title was not set correctly');
+    assert.isTrue(result.isImage(), 'resource type was not set correctly');
   });
 
   it('is able to return null from a URL that contains an unmapped extension', () => {
@@ -152,7 +163,7 @@ describe('ResourceType class', () => {
     assert.strictEqual(result.title(), 'Script', 'title was not set correctly');
     assert.strictEqual(result.category().title(), 'Scripts', 'category title was not set correctly');
     assert.strictEqual(result.category().shortTitle(), 'JS', 'category short title was not set correctly');
-    assert.isTrue(result.isTextType(), 'isTextType was not set correctly');
+    assert.isTrue(result.isTextType(), 'resource type was not set correctly');
   });
 
   it('is able to return null from an unmapped name', () => {

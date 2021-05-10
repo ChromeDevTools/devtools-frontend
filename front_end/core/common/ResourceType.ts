@@ -389,15 +389,17 @@ export const _resourceTypeByExtension = new Map([
   ['css', resourceTypes.Stylesheet],
   ['xsl', resourceTypes.Stylesheet],
 
+  ['avif', resourceTypes.Image],
+  ['avifs', resourceTypes.Image],
+  ['bmp', resourceTypes.Image],
+  ['gif', resourceTypes.Image],
+  ['ico', resourceTypes.Image],
   ['jpeg', resourceTypes.Image],
   ['jpg', resourceTypes.Image],
-  ['svg', resourceTypes.Image],
-  ['gif', resourceTypes.Image],
   ['png', resourceTypes.Image],
-  ['ico', resourceTypes.Image],
-  ['tiff', resourceTypes.Image],
+  ['svg', resourceTypes.Image],
   ['tif', resourceTypes.Image],
-  ['bmp', resourceTypes.Image],
+  ['tiff', resourceTypes.Image],
 
   ['webp', resourceTypes.Media],
 
@@ -494,16 +496,18 @@ export const _mimeTypeByExtension = new Map([
   ['jsx', 'text/jsx'],
 
   // Image
+  ['avif', 'image/avif'],
+  ['avifs', 'image/avif-sequence'],
+  ['bmp', 'image/bmp'],
+  ['gif', 'image/gif'],
+  ['ico', 'image/ico'],
   ['jpeg', 'image/jpeg'],
   ['jpg', 'image/jpeg'],
-  ['svg', 'image/svg+xml'],
-  ['gif', 'image/gif'],
-  ['webp', 'image/webp'],
   ['png', 'image/png'],
-  ['ico', 'image/ico'],
-  ['tiff', 'image/tiff'],
+  ['svg', 'image/svg+xml'],
   ['tif', 'image/tif'],
-  ['bmp', 'image/bmp'],
+  ['tiff', 'image/tiff'],
+  ['webp', 'image/webp'],
 
   // Font
   ['ttf', 'font/opentype'],

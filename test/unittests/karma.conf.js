@@ -51,7 +51,7 @@ const singleRun = !(DEBUG_ENABLED || REPEAT_ENABLED);
 
 const coverageReporters = COVERAGE_ENABLED ? ['coverage'] : [];
 const coveragePreprocessors = COVERAGE_ENABLED ? ['coverage'] : [];
-const commonIstanbulReporters = [{type: 'json-summary'}];
+const commonIstanbulReporters = [{type: 'json-summary'}, {type: 'json'}];
 const istanbulReportOutputs = commonIstanbulReporters;
 
 if (TEXT_COVERAGE_ENABLED) {

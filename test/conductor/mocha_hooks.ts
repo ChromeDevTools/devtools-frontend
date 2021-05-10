@@ -102,6 +102,7 @@ export const mochaHooks = {
     // The types in @types/istanbul-lib-report are incorrectly typing `create`
     // to return a Visitor instead of a ReportBase.
     (reports.create('html') as unknown as report.ReportBase).execute(context);
+    (reports.create('json') as unknown as report.ReportBase).execute(context);
     (reports.create('json-summary') as unknown as report.ReportBase).execute(context);
   },
   // In both modes, run before each test.

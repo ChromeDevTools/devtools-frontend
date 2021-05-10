@@ -12,8 +12,8 @@ might pass in:
 
 ```js
 const columns = [
-  { id: 'city', title: 'City', width: 50 },
-  { id: 'country', title: 'Country', width: 50 },
+  { id: 'city', title: 'City', widthWeighting: 50, hideable: false, visible: true },
+  { id: 'country', title: 'Country', widthWeighting: 50, hideable: false, visible: true },
 ]
 
 const rows = [

@@ -12,8 +12,8 @@ import * as DataGridRenderers from './DataGridRenderers.js';
   * - `title`: the user visible title.
   * - `visible`: if the column is visible when rendered
   * - `hideable`: if the user is able to show/hide the column via the context menu.
-  * - `width`: a number that denotes the width of the column. This is percentage
-  *   based, out of 100.
+  * - `widthWeighting`: a number that denotes the width of the column. This is a proportion
+  *   of the total weighting of all columns (for details see below).
   * - `sortable`: an optional property to denote if the  column is sortable.
   *   Note, if you're rendering a data-grid yourself you likely  shouldn't set
   *   this. It's set by the `data-grid-controller`, which is the component you

@@ -1,6 +1,5 @@
 .DS_Store
 .git_cl_description_backup
-.vscode
 *.ctc.json
 *.Makefile
 *.mk
@@ -38,4 +37,4 @@ npm-debug.log
 test/screenshots/.generated
 test/perf/.generated
 
-
+/.vscode/settings.json

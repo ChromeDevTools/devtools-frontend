@@ -18,8 +18,7 @@ describe('Low contrast issues', async () => {
     await assertIssueTitle(issueTitle);
     const issueElement = await getIssueByTitle(issueTitle);
     assertNotNull(issueElement);
-    // TODO(crbug.com/1189877): Remove 2nd space after fixing l10n presubmit check
-    const section = await getResourcesElement('3  elements', issueElement);
+    const section = await getResourcesElement('3 elements', issueElement);
     const table = await extractTableFromResourceSection(section.content);
     assertNotNull(table);
     assert.strictEqual(table.length, 4);

@@ -34,8 +34,7 @@ describe('Trusted Web Activity issue', async () => {
     const issueElement = await getIssueByTitle(
         'Trusted Web Activity navigations must succeed or be handled by the ServiceWorker. Your app may crash in the future.');
     assertNotNull(issueElement);
-    // TODO(crbug.com/1189877): Remove 2nd space after fixing l10n presubmit check
-    const section = await getResourcesElement('1  resource', issueElement);
+    const section = await getResourcesElement('1 resource', issueElement);
     const table = await extractTableFromResourceSection(section.content);
     assertNotNull(table);
     assert.strictEqual(table.length, 2);
@@ -63,8 +62,7 @@ describe('Trusted Web Activity issue', async () => {
     const issueElement = await getIssueByTitle(
         'Trusted Web Activity does not work offline. In the future, your app may crash if the user’s device goes offline.');
     assertNotNull(issueElement);
-    // TODO(crbug.com/1189877): Remove 2nd space after fixing l10n presubmit check
-    const section = await getResourcesElement('1  resource', issueElement);
+    const section = await getResourcesElement('1 resource', issueElement);
     const table = await extractTableFromResourceSection(section.content);
     assertNotNull(table);
     assert.strictEqual(table.length, 2);
@@ -94,8 +92,7 @@ describe('Trusted Web Activity issue', async () => {
     const issueElement = await getIssueByTitle(
         'Digital asset links of the Trusted Web Activity failed verification. Your app may crash in the future.');
     assertNotNull(issueElement);
-    // TODO(crbug.com/1189877): Remove 2nd space after fixing l10n presubmit check
-    const section = await getResourcesElement('1  resource', issueElement);
+    const section = await getResourcesElement('1 resource', issueElement);
     const table = await extractTableFromResourceSection(section.content);
     assertNotNull(table);
     assert.strictEqual(table.length, 2);

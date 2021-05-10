@@ -16,7 +16,7 @@ const UIStrings = {
   /**
   *@description Label for number of affected resources indication in issue view
   */
-  nResources: '{n, plural, =1 { resource} other { resources}}',
+  nResources: '{n, plural, =1 {# resource} other {# resources}}',
   /**
   *@description Title for a column in an Heavy Ads issue view
   */
@@ -80,7 +80,7 @@ export class AffectedHeavyAdView extends AffectedResourcesView {
     this.updateAffectedResourceCount(count);
   }
 
-  protected getResourceName(count: number): Platform.UIString.LocalizedString {
+  protected getResourceNameWithCount(count: number): Platform.UIString.LocalizedString {
     return i18nString(UIStrings.nResources, {n: count});
   }
 

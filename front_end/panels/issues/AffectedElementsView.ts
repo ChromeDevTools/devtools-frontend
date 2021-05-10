@@ -16,7 +16,7 @@ const UIStrings = {
   /**
   *@description Noun for singular or plural number of affected element resource indication in issue view.
   */
-  nElements: '{n, plural, =1 { element} other { elements}}',
+  nElements: '{n, plural, =1 {# element} other {# elements}}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedElementsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -41,7 +41,7 @@ export class AffectedElementsView extends AffectedResourcesView {
     this.updateAffectedResourceCount(count);
   }
 
-  protected getResourceName(count: number): Platform.UIString.LocalizedString {
+  protected getResourceNameWithCount(count: number): Platform.UIString.LocalizedString {
     return i18nString(UIStrings.nElements, {n: count});
   }
 

@@ -2454,7 +2454,7 @@
     "message": "Ŷéŝ"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
-    "message": "Ĉán̂ńôt́ n̂ót̂ ŕêńd̂ér̂ śt̂áĉḱ t̂ŕâćê"
+    "message": "Ĉán̂ńôt́ r̂én̂d́êŕ ŝt́âćk̂ t́r̂áĉé"
   },
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n, plural, =1 {Ŝh́ôẃ # m̂ór̂é f̂ŕâḿê} other {Śĥóŵ # ḿôŕê f́r̂ám̂éŝ}}"
@@ -4782,7 +4782,7 @@
     "message": "B̂ĺôćk̂éd̂ Ŕêśôúr̂ćê"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | nRequests": {
-    "message": "{n, plural, =1 { r̂éq̂úêśt̂} other { ŕêq́ûéŝt́ŝ}}"
+    "message": "{n, plural, =1 {# r̂éq̂úêśt̂} other {# ŕêq́ûéŝt́ŝ}}"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | parentFrame": {
     "message": "P̂ár̂én̂t́ F̂ŕâḿê"
@@ -4797,13 +4797,13 @@
     "message": "N̂ám̂é"
   },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
-    "message": "{n, plural, =1 { ĉóôḱîé} other { ĉóôḱîéŝ}}"
+    "message": "{n, plural, =1 {# ĉóôḱîé} other {# ĉóôḱîéŝ}}"
   },
   "panels/issues/AffectedCookiesView.ts | path": {
     "message": "P̂át̂h́"
   },
   "panels/issues/AffectedElementsView.ts | nElements": {
-    "message": "{n, plural, =1 { êĺêḿêńt̂} other { él̂ém̂én̂t́ŝ}}"
+    "message": "{n, plural, =1 {# êĺêḿêńt̂} other {# él̂ém̂én̂t́ŝ}}"
   },
   "panels/issues/AffectedElementsWithLowContrastView.ts | contrastRatio": {
     "message": "Ĉón̂t́r̂áŝt́ r̂át̂íô"
@@ -4839,7 +4839,7 @@
     "message": "N̂ét̂ẃôŕk̂ ĺîḿît́"
   },
   "panels/issues/AffectedHeavyAdView.ts | nResources": {
-    "message": "{n, plural, =1 { r̂éŝóûŕĉé} other { r̂éŝóûŕĉéŝ}}"
+    "message": "{n, plural, =1 {# r̂éŝóûŕĉé} other {# r̂éŝóûŕĉéŝ}}"
   },
   "panels/issues/AffectedHeavyAdView.ts | removed": {
     "message": "R̂ém̂óv̂éd̂"
@@ -4872,7 +4872,7 @@
     "message": "Îńŝt́âńt̂íât́îón̂"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | nViolations": {
-    "message": "{n, plural, =1 { v̂íôĺât́îón̂} other { v́îól̂át̂íôńŝ}}"
+    "message": "{n, plural, =1 {# v̂íôĺât́îón̂} other {# v́îól̂át̂íôńŝ}}"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | sharedarraybufferWasTransferedTo": {
     "message": "SharedArrayBuffer ŵáŝ t́r̂án̂śf̂ér̂éd̂ t́ô á ĉón̂t́êx́t̂ t́ĥát̂ íŝ ńôt́ ĉŕôśŝ-ór̂íĝín̂ íŝól̂át̂éd̂"
@@ -4893,7 +4893,7 @@
     "message": "ŵár̂ńîńĝ"
   },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
-    "message": "{n, plural, =1 { r̂éŝóûŕĉé} other { r̂éŝóûŕĉéŝ}}"
+    "message": "{n, plural, =1 {# r̂éŝóûŕĉé} other {# r̂éŝóûŕĉéŝ}}"
   },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageName": {
     "message": "P̂áĉḱâǵê ńâḿê"
@@ -4938,7 +4938,7 @@
     "message": "Îńv̂ál̂íd̂ V́âĺûé (îf́ âv́âíl̂áb̂ĺê)"
   },
   "panels/issues/CorsIssueDetailsView.ts | nRequests": {
-    "message": "{n, plural, =1 { r̂éq̂úêśt̂} other { ŕêq́ûéŝt́ŝ}}"
+    "message": "{n, plural, =1 {# r̂éq̂úêśt̂} other {# ŕêq́ûéŝt́ŝ}}"
   },
   "panels/issues/CorsIssueDetailsView.ts | preflightDisallowedRedirect": {
     "message": "R̂éŝṕôńŝé t̂ó p̂ŕêf́l̂íĝh́t̂ ẃâś â ŕêd́îŕêćt̂"
@@ -5067,16 +5067,16 @@
     "message": "N̂ám̂é"
   },
   "panels/issues/IssueView.ts | nDirectives": {
-    "message": "{n, plural, =1 { d̂ír̂éĉt́îv́ê} other { d́îŕêćt̂ív̂éŝ}}"
+    "message": "{n, plural, =1 {# d̂ír̂éĉt́îv́ê} other {# d́îŕêćt̂ív̂éŝ}}"
   },
   "panels/issues/IssueView.ts | nRequests": {
-    "message": "{n, plural, =1 { r̂éq̂úêśt̂} other { ŕêq́ûéŝt́ŝ}}"
+    "message": "{n, plural, =1 {# r̂éq̂úêśt̂} other {# ŕêq́ûéŝt́ŝ}}"
   },
   "panels/issues/IssueView.ts | nResources": {
-    "message": "{n, plural, =1 { r̂éŝóûŕĉé} other { r̂éŝóûŕĉéŝ}}"
+    "message": "{n, plural, =1 {# r̂éŝóûŕĉé} other {# r̂éŝóûŕĉéŝ}}"
   },
   "panels/issues/IssueView.ts | nSources": {
-    "message": "{n, plural, =1 { ŝóûŕĉé} other { ŝóûŕĉéŝ}}"
+    "message": "{n, plural, =1 {# ŝóûŕĉé} other {# ŝóûŕĉéŝ}}"
   },
   "panels/issues/IssueView.ts | reportonly": {
     "message": "r̂ép̂ór̂t́-ôńl̂ý"

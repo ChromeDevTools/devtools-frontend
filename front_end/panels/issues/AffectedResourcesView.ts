@@ -107,11 +107,11 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     return affectedResources;
   }
 
-  protected abstract getResourceName(count: number): string;
+  protected abstract getResourceNameWithCount(count: number): string;
 
   protected updateAffectedResourceCount(count: number): void {
     this.affectedResourcesCount = count;
-    this.affectedResourcesCountElement.textContent = `${count} ${this.getResourceName(count)}`;
+    this.affectedResourcesCountElement.textContent = this.getResourceNameWithCount(count);
     this.hidden = this.affectedResourcesCount === 0;
     this.parentView.updateAffectedResourceVisibility();
   }

@@ -42,7 +42,7 @@ const UIStrings = {
   /**
   *@description Singular or plural label for number of affected directive resource indication in issue view.
   */
-  nDirectives: '{n, plural, =1 { directive} other { directives}}',
+  nDirectives: '{n, plural, =1 {# directive} other {# directives}}',
   /**
   *@description Indicates that a CSP error should be treated as a warning
   */
@@ -78,15 +78,15 @@ const UIStrings = {
   /**
   *@description Label for a type of issue that can appear in the Issues view. Noun for singular or plural number of network requests.
   */
-  nRequests: '{n, plural, =1 { request} other { requests}}',
+  nRequests: '{n, plural, =1 {# request} other {# requests}}',
   /**
   *@description Singular or Plural label for number of affected source resource indication in issue view
   */
-  nSources: '{n, plural, =1 { source} other { sources}}',
+  nSources: '{n, plural, =1 {# source} other {# sources}}',
   /**
   *@description Label for singular or plural number of affected resources indication in issue view
   */
-  nResources: '{n, plural, =1 { resource} other { resources}}',
+  nResources: '{n, plural, =1 {# resource} other {# resources}}',
   /**
   *@description Label for mixed content issue's restriction status
   */
@@ -132,7 +132,7 @@ class AffectedDirectivesView extends AffectedResourcesView {
     element.appendChild(status);
   }
 
-  protected getResourceName(count: number): Platform.UIString.LocalizedString {
+  protected getResourceNameWithCount(count: number): Platform.UIString.LocalizedString {
     return i18nString(UIStrings.nDirectives, {n: count});
   }
 
@@ -287,7 +287,7 @@ class AffectedRequestsView extends AffectedResourcesView {
     this.updateAffectedResourceCount(count);
   }
 
-  protected getResourceName(count: number): Platform.UIString.LocalizedString {
+  protected getResourceNameWithCount(count: number): Platform.UIString.LocalizedString {
     return i18nString(UIStrings.nRequests, {n: count});
   }
 
@@ -334,7 +334,7 @@ class AffectedSourcesView extends AffectedResourcesView {
     this.updateAffectedResourceCount(count);
   }
 
-  protected getResourceName(count: number): Platform.UIString.LocalizedString {
+  protected getResourceNameWithCount(count: number): Platform.UIString.LocalizedString {
     return i18nString(UIStrings.nSources, {n: count});
   }
 
@@ -399,7 +399,7 @@ class AffectedMixedContentView extends AffectedResourcesView {
     this.updateAffectedResourceCount(count);
   }
 
-  protected getResourceName(count: number): Platform.UIString.LocalizedString {
+  protected getResourceNameWithCount(count: number): Platform.UIString.LocalizedString {
     return i18nString(UIStrings.nResources, {n: count});
   }
 

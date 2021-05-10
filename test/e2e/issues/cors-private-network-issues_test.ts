@@ -58,8 +58,7 @@ describe('Cors Private Network issue', async () => {
     await expandIssue();
     const issueElement = await getIssueByTitle('Ensure private network requests are made from secure contexts');
     assertNotNull(issueElement);
-    // TODO(crbug.com/1189877): Remove 2nd space after fixing l10n presubmit check
-    const section = await getResourcesElement('2  requests', issueElement, '.cors-issue-affected-resource-label');
+    const section = await getResourcesElement('2 requests', issueElement, '.cors-issue-affected-resource-label');
     await ensureResourceSectionIsExpanded(section);
     const table = await extractTableFromResourceSection(section.content);
     assertNotNull(table);
@@ -133,8 +132,7 @@ describe('Cors Private Network issue', async () => {
     const issueElement =
         await getIssueByTitle('Ensure private network requests are only made to resources that allow them');
     assertNotNull(issueElement);
-    // TODO(crbug.com/1189877): Remove 2nd space after fixing l10n presubmit check
-    const section = await getResourcesElement('2  requests', issueElement, '.cors-issue-affected-resource-label');
+    const section = await getResourcesElement('2 requests', issueElement, '.cors-issue-affected-resource-label');
     await ensureResourceSectionIsExpanded(section);
     const table = await extractTableFromResourceSection(section.content);
     assertNotNull(table);

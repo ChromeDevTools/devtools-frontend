@@ -199,7 +199,8 @@ const UIStrings = {
   */
   learnMore: 'Learn more',
   /**
-  *@description Entry in the document section of the frame details view
+  *@description Label for a stack trace. If a frame is created programmatically (i.e. via JavaScript), there is a
+  * stack trace for the line of code which caused the creation of the iframe. This is the stack trace we are showing here.
   */
   creationStackTrace: 'Frame Creation Stack Trace',
   /**
@@ -235,7 +236,8 @@ const UIStrings = {
   */
   clickToShowHeader: 'Click to reveal the request whose "`Permissions-Policy`" HTTP header disables this feature.',
   /**
-  *@description Tooltip text for a link to a specific iframe in the Elements panel.
+  *@description Tooltip text for a link to a specific iframe in the Elements panel (Iframes can be nested, the link goes
+  *  to the outer-most iframe which blocks a certain feature).
   */
   clickToShowIframe: 'Click to reveal the top-most iframe which does not allow this feature in the elements panel.',
   /**

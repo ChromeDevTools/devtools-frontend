@@ -15,7 +15,7 @@ const UIStrings = {
   /**
   *@description Label for number of affected resources indication in issue view
   */
-  nRequests: '{n, plural, =1 { request} other { requests}}',
+  nRequests: '{n, plural, =1 {# request} other {# requests}}',
   /**
   *@description Value for the status column in SharedArrayBuffer issues
   */
@@ -133,7 +133,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
     element.appendChild(status);
   }
 
-  protected getResourceName(count: number): Platform.UIString.LocalizedString {
+  protected getResourceNameWithCount(count: number): Platform.UIString.LocalizedString {
     return i18nString(UIStrings.nRequests, {n: count});
   }
 

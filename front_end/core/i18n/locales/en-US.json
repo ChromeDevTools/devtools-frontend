@@ -2454,7 +2454,7 @@
     "message": "Yes"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
-    "message": "Cannot not render stack trace"
+    "message": "Cannot render stack trace"
   },
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n, plural, =1 {Show # more frame} other {Show # more frames}}"
@@ -4782,7 +4782,7 @@
     "message": "Blocked Resource"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | nRequests": {
-    "message": "{n, plural, =1 { request} other { requests}}"
+    "message": "{n, plural, =1 {# request} other {# requests}}"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | parentFrame": {
     "message": "Parent Frame"
@@ -4797,13 +4797,13 @@
     "message": "Name"
   },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
-    "message": "{n, plural, =1 { cookie} other { cookies}}"
+    "message": "{n, plural, =1 {# cookie} other {# cookies}}"
   },
   "panels/issues/AffectedCookiesView.ts | path": {
     "message": "Path"
   },
   "panels/issues/AffectedElementsView.ts | nElements": {
-    "message": "{n, plural, =1 { element} other { elements}}"
+    "message": "{n, plural, =1 {# element} other {# elements}}"
   },
   "panels/issues/AffectedElementsWithLowContrastView.ts | contrastRatio": {
     "message": "Contrast ratio"
@@ -4839,7 +4839,7 @@
     "message": "Network limit"
   },
   "panels/issues/AffectedHeavyAdView.ts | nResources": {
-    "message": "{n, plural, =1 { resource} other { resources}}"
+    "message": "{n, plural, =1 {# resource} other {# resources}}"
   },
   "panels/issues/AffectedHeavyAdView.ts | removed": {
     "message": "Removed"
@@ -4872,7 +4872,7 @@
     "message": "Instantiation"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | nViolations": {
-    "message": "{n, plural, =1 { violation} other { violations}}"
+    "message": "{n, plural, =1 {# violation} other {# violations}}"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | sharedarraybufferWasTransferedTo": {
     "message": "SharedArrayBuffer was transfered to a context that is not cross-origin isolated"
@@ -4893,7 +4893,7 @@
     "message": "warning"
   },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
-    "message": "{n, plural, =1 { resource} other { resources}}"
+    "message": "{n, plural, =1 {# resource} other {# resources}}"
   },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageName": {
     "message": "Package name"
@@ -4938,7 +4938,7 @@
     "message": "Invalid Value (if available)"
   },
   "panels/issues/CorsIssueDetailsView.ts | nRequests": {
-    "message": "{n, plural, =1 { request} other { requests}}"
+    "message": "{n, plural, =1 {# request} other {# requests}}"
   },
   "panels/issues/CorsIssueDetailsView.ts | preflightDisallowedRedirect": {
     "message": "Response to preflight was a redirect"
@@ -5067,16 +5067,16 @@
     "message": "Name"
   },
   "panels/issues/IssueView.ts | nDirectives": {
-    "message": "{n, plural, =1 { directive} other { directives}}"
+    "message": "{n, plural, =1 {# directive} other {# directives}}"
   },
   "panels/issues/IssueView.ts | nRequests": {
-    "message": "{n, plural, =1 { request} other { requests}}"
+    "message": "{n, plural, =1 {# request} other {# requests}}"
   },
   "panels/issues/IssueView.ts | nResources": {
-    "message": "{n, plural, =1 { resource} other { resources}}"
+    "message": "{n, plural, =1 {# resource} other {# resources}}"
   },
   "panels/issues/IssueView.ts | nSources": {
-    "message": "{n, plural, =1 { source} other { sources}}"
+    "message": "{n, plural, =1 {# source} other {# sources}}"
   },
   "panels/issues/IssueView.ts | reportonly": {
     "message": "report-only"

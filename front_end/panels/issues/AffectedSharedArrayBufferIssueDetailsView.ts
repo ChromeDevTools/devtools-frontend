@@ -15,7 +15,7 @@ const UIStrings = {
   /**
   *@description Label for number of affected resources indication in issue view
   */
-  nViolations: '{n, plural, =1 { violation} other { violations}}',
+  nViolations: '{n, plural, =1 {# violation} other {# violations}}',
   /**
   *@description Value for the status column in SharedArrayBuffer issues
   */
@@ -63,7 +63,7 @@ export class AffectedSharedArrayBufferIssueDetailsView extends AffectedResources
     this.issue = issue;
   }
 
-  protected getResourceName(count: number): Platform.UIString.LocalizedString {
+  protected getResourceNameWithCount(count: number): Platform.UIString.LocalizedString {
     return i18nString(UIStrings.nViolations, {n: count});
   }
 

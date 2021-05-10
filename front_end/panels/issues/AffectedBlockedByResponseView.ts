@@ -14,7 +14,7 @@ const UIStrings = {
   /**
   *@description Noun for singular or plural network requests. Label for the affected resources section in the issue view.
   */
-  nRequests: '{n, plural, =1 { request} other { requests}}',
+  nRequests: '{n, plural, =1 {# request} other {# requests}}',
   /**
   *@description Noun for a singular network request. Label for a column in the affected resources table in the issue view.
   */
@@ -55,7 +55,7 @@ export class AffectedBlockedByResponseView extends AffectedResourcesView {
     this.updateAffectedResourceCount(count);
   }
 
-  protected getResourceName(count: number): Platform.UIString.LocalizedString {
+  protected getResourceNameWithCount(count: number): Platform.UIString.LocalizedString {
     return i18nString(UIStrings.nRequests, {n: count});
   }
 

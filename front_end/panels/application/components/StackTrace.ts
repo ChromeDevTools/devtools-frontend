@@ -15,7 +15,7 @@ const UIStrings = {
   /**
   *@description Error message stating that something went wrong when tring to render stack trace
   */
-  cannotRenderStackTrace: 'Cannot not render stack trace',
+  cannotRenderStackTrace: 'Cannot render stack trace',
   /**
   *@description A link to show more frames in the stack trace if more are available. Never 0.
   */

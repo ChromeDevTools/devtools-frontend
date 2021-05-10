@@ -47,5 +47,6 @@ group("front_end") {
     "ui/legacy/components/perf_ui",
     "ui/legacy/components/text_editor",
     "ui/legacy/components/utils",
+    "ui/lit-html",
   ]
 }

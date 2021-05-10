@@ -96,6 +96,7 @@ devtools_entrypoint("bundle") {
     "../../../test/unittests/front_end/*",
     "../../panels/*",
     "../../ui/components/*",
+    "../../ui/lit-html/*",
 
     # TODO(crbug.com/1202788): Remove invalid dependents
     "../../ui/legacy/components/inline_editor/*",

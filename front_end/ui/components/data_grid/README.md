@@ -15,25 +15,6 @@ const columns = [
   { id: 'city', title: 'City', width: 50 },
   { id: 'country', title: 'Country', width: 50 },
 ]
-```
-
-# data-grid
-
-The data-grid component takes in tabular data and renders it into a table. It does not provide complex functionality such as sorting or filtering. For that, you should use a `data-grid-controller` component.
-
-## Passing data into the data grid
-
-The data-grid takes in `rows` and `columns` separately. See the type definitions
-of these in `DataGridUtils.ts` for an explanation on each individual field.
-
-For example, to construct a table of capital cities around the world, we
-might pass in:
-
-```js
-const columns = [
-  { id: 'city', title: 'City', width: 50 },
-  { id: 'country', title: 'Country', width: 50 },
-]
 
 const rows = [
   { cells: [

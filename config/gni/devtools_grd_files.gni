@@ -127,6 +127,7 @@ grd_files_release_sources = [
   "front_end/core/host/host.js",
   "front_end/core/i18n/i18n.js",
   "front_end/core/i18n/locales/en-US.json",
+  "front_end/core/i18n/locales/zh.json",
   "front_end/core/platform/platform.js",
   "front_end/core/protocol_client/protocol_client-legacy.js",
   "front_end/core/protocol_client/protocol_client.js",

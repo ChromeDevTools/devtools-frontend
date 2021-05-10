@@ -12,6 +12,7 @@
 const locales = {
   'en-US': {'title': 'value'}, // The 'source' strings, with descriptions
   'en-XL': {'title': 'value'}, // local pseudolocalization
+  'zh': {'title': 'value'},
 };
 
 export default locales;

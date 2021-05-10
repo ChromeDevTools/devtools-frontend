@@ -89,6 +89,11 @@ const yargsObject =
           desc: 'Path to the directory containing the out/TARGET folder.',
           default: devtoolsRootPath()
         })
+        .option('coverage', {
+          type: 'boolean',
+          desc: 'Whether to collect code coverage for this test suite',
+          default: false,
+        })
         .parserConfiguration({
           // So that if we pass --foo-bar, Yargs only populates
           // argv with '--foo-bar', not '--foo-bar' and 'fooBar'.
@@ -139,8 +144,17 @@ function setNodeModulesPath(nodeModulesPath) {
   }
 }
 
-function executeTestSuite(
-    {absoluteTestSuitePath, jobs, target, nodeModulesPath, chromeBinaryPath, chromeFeatures, testFilePattern, cwd}) {
+function executeTestSuite({
+  absoluteTestSuitePath,
+  jobs,
+  target,
+  nodeModulesPath,
+  chromeBinaryPath,
+  chromeFeatures,
+  testFilePattern,
+  coverage,
+  cwd
+}) {
   /**
   * Internally within various scripts (Mocha configs, Conductor, etc), we rely on
   * process.env.FOO. We are moving to exposing the entire configuration to
@@ -153,6 +167,7 @@ function executeTestSuite(
   setEnvValueIfValuePresent('JOBS', jobs);
   setEnvValueIfValuePresent('TARGET', target);
   setEnvValueIfValuePresent('TEST_PATTERNS', testFilePattern);
+  setEnvValueIfValuePresent('COVERAGE', coverage);
 
   /**
    * This one has to be set as an ENV variable as Node looks for the NODE_PATH environment variable.
@@ -237,6 +252,7 @@ function main() {
       nodeModulesPath: yargsObject['node-modules-path'],
       jobs: yargsObject['jobs'],
       testFilePattern: yargsObject['test-file-pattern'],
+      coverage: yargsObject['coverage'] && '1',
       target,
       cwd: yargsObject['cwd']
     });

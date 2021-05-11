@@ -150,6 +150,17 @@ describe('ResourceType class', () => {
     assert.isTrue(result.isImage(), 'resource type was not set correctly');
   });
 
+  it('is able to return a resource type from a URL that ends in .jxl', () => {
+    const result = ResourceType.fromURL('https://host.example/image.jxl');
+    assertNotNull(result);
+    assert.instanceOf(result, ResourceType, 'result type is incorrect');
+    assert.strictEqual(result.name(), 'image', 'name was not set correctly');
+    assert.strictEqual(result.title(), 'Image', 'title was not set correctly');
+    assert.strictEqual(result.category().title(), 'Images', 'category title was not set correctly');
+    assert.strictEqual(result.category().shortTitle(), 'Img', 'category short title was not set correctly');
+    assert.isTrue(result.isImage(), 'resource type was not set correctly');
+  });
+
   it('is able to return null from a URL that contains an unmapped extension', () => {
     const result = ResourceType.fromURL('http://www.example.com/test/testFile.testExt');
     assert.isNull(result, 'result is not null');

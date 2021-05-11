@@ -20,6 +20,7 @@ group("docs") {
     "./icon_component",
     "./issue_counter",
     "./layout_pane",
+    "./legacy_color_invert",
     "./linear_memory_inspector",
     "./linkifier",
     "./markdown_image",

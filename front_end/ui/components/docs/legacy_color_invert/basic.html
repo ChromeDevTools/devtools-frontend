@@ -1,0 +1,49 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Legacy color input</title>
+    <style>
+      #container {
+        margin: 20px;
+        padding: 0;
+      }
+
+     #text-input, span, pre {
+       display: block;
+       font-size: 16px;
+     }
+
+     #text-input input {
+       display: block;
+       margin: 10px 0;
+       padding: 10px;
+       border: 1px solid #ccc;
+     }
+
+     pre {
+       margin: 10px 0;
+       padding: 10px;
+       border: 1px solid #ccc;
+     }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <label id="text-input">
+        Insert the light mode legacy color:
+        <input type="text" placeholder="rgb(100, 100, 100)"/>
+      </label>
+
+      <span>And get back the light and dark mode override CSS:</span>
+      <pre><code id="output"></code></pre>
+    </div>
+    <script type="module" src="./basic.js"></script>
+  </body>
+</html>

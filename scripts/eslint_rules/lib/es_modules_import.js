@@ -138,9 +138,9 @@ module.exports = {
         checkImportExtension(importPath, context, node);
       },
       ImportDeclaration(node) {
-        const importPath = path.normalize(node.source.value);
+        checkImportExtension(node.source.value, context, node);
 
-        checkImportExtension(importPath, context, node);
+        const importPath = path.normalize(node.source.value);
 
         // Accidental relative URL:
         // import * as Root from 'front_end/root/root.js';

@@ -126,6 +126,14 @@ ruleTester.run('es_modules_import', rule, {
 
   invalid: [
     {
+      code: 'import {Foo} from \'./app\'',
+      filename: 'front_end/common/Importing.ts',
+      output: 'import {Foo} from \'./app.js\'',
+      errors: [{
+        message: 'Missing file extension for import "./app"',
+      }],
+    },
+    {
       code: 'import { Exporting } from \'../namespace/Exporting.js\';',
       filename: 'front_end/common/Importing.js',
       errors: [{

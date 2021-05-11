@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer';
 
 import {$$, click, hasClass, waitFor, waitForClass, waitForFunction} from '../../shared/helper.js';
-import {openPanelViaMoreTools} from './settings-helpers';
+import {openPanelViaMoreTools} from './settings-helpers.js';
 
 export const CATEGORY = '.issue-category';
 export const CATEGORY_NAME = '.issue-category .title';

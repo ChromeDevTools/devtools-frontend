@@ -38,7 +38,7 @@ import * as ARIAUtils from './ARIAUtils.js';
 import {Icon} from './Icon.js';
 import {KeyboardShortcut, Modifiers} from './KeyboardShortcut.js';
 import {bindCheckbox} from './SettingsUI.js';
-import type {Suggestions} from './SuggestBox';
+import type {Suggestions} from './SuggestBox.js';
 import {Events, TextPrompt} from './TextPrompt.js';
 import type {ToolbarButton} from './Toolbar.js';
 import {ToolbarSettingToggle} from './Toolbar.js';  // eslint-disable-line no-unused-vars

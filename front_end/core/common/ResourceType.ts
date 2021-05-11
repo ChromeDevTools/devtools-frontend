@@ -404,10 +404,11 @@ export const _resourceTypeByExtension = new Map([
 
   ['webp', resourceTypes.Media],
 
-  ['ttf', resourceTypes.Font],
   ['otf', resourceTypes.Font],
   ['ttc', resourceTypes.Font],
+  ['ttf', resourceTypes.Font],
   ['woff', resourceTypes.Font],
+  ['woff2', resourceTypes.Font],
 
   ['wasm', resourceTypes.Wasm],
 ]);
@@ -512,8 +513,9 @@ export const _mimeTypeByExtension = new Map([
   ['webp', 'image/webp'],
 
   // Font
-  ['ttf', 'font/opentype'],
-  ['otf', 'font/opentype'],
-  ['ttc', 'font/opentype'],
-  ['woff', 'application/font-woff'],
+  ['otf', 'font/otf'],
+  ['ttc', 'font/collection'],
+  ['ttf', 'font/ttf'],
+  ['woff', 'font/woff'],
+  ['woff2', 'font/woff2'],
 ]);

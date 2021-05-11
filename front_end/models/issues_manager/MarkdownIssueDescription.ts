@@ -57,20 +57,13 @@ export interface IssueDescription {
 }
 
 export async function getFileContent(url: URL): Promise<string> {
-  return new Promise((resolve, reject) => {
-    function reqListener(this: XMLHttpRequest): void {
-      if (this.status !== 200) {
-        const error = new Error(`Markdown file ${
-            url.toString()} not found. Make sure it is correctly listed in the relevant BUILD.gn files.`);
-        reject(error);
-      }
-      resolve(this.responseText);
-    }
-    const oReq = new XMLHttpRequest();
-    oReq.addEventListener('load', reqListener);
-    oReq.open('GET', url.toString());
-    oReq.send();
-  });
+  try {
+    const response = await fetch(url.toString());
+    return response.text();
+  } catch (error) {
+    throw new Error(
+        `Markdown file ${url.toString()} not found. Make sure it is correctly listed in the relevant BUILD.gn files.`);
+  }
 }
 
 export async function getMarkdownFileContent(filename: string): Promise<string> {

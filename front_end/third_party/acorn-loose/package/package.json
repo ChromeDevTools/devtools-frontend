@@ -5,13 +5,20 @@
   "main": "dist/acorn-loose.js",
   "module": "dist/acorn-loose.mjs",
   "exports": {
-    "import": "./dist/acorn-loose.mjs",
-    "require": "./dist/acorn-loose.js"
+    ".": [
+      {
+        "import": "./dist/acorn-loose.mjs",
+        "require": "./dist/acorn-loose.js",
+        "default": "./dist/acorn-loose.js"
+      },
+      "./dist/acorn-loose.js"
+    ],
+    "./package.json": "./package.json"
   },
-  "version": "8.0.1",
+  "version": "8.1.0",
   "engines": {"node": ">=0.4.0"},
   "dependencies": {
-    "acorn": "^8.0.0"
+    "acorn": "^8.2.0"
   },
   "maintainers": [
     {

@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './NodeText.js';
-
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -11,6 +9,7 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import type {UserScrollPosition} from './ElementsBreadcrumbsUtils.js';
 import {crumbsToRender, DOMNode, NodeSelectedEvent} from './ElementsBreadcrumbsUtils.js';
 
+import {NodeText} from './NodeText.js';
 import type {NodeTextData} from './NodeText.js';
 export {DOMNode};
 
@@ -371,11 +370,11 @@ export class ElementsBreadcrumbs extends HTMLElement {
                       @mouseleave=${this.onCrumbMouseLeave(crumb.node)}
                       @focus=${this.onCrumbFocus(crumb.node)}
                       @blur=${this.onCrumbBlur(crumb.node)}
-                    ><devtools-node-text data-node-title=${crumb.title.main} .data=${{
+                    ><${NodeText.litTagName} data-node-title=${crumb.title.main} .data=${{
                       nodeTitle: crumb.title.main,
                       nodeId: crumb.title.extras.id,
                       nodeClasses: crumb.title.extras.classes,
-                    } as NodeTextData}></devtools-node-text></a>
+                    } as NodeTextData}></${NodeText.litTagName}></a>
                   </li>`;
               })}
             </ul>

@@ -32,6 +32,13 @@ Changelog entries are classified using the following labels _(from [keep-a-chang
 
 </details>
 
+## 2.2.3 (2021-04-10)
+
+### Fixed
+
+* Do not skip pattern seperator for square brackets ([fb08a30](https://github.com/micromatch/picomatch/commit/fb08a30)).
+* Set negatedExtGlob also if it does not span the whole pattern ([032e3f5](https://github.com/micromatch/picomatch/commit/032e3f5)).
+
 ## 2.2.2 (2020-03-21)
 
 ### Fixed

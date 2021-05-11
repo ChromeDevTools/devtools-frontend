@@ -86,7 +86,7 @@ DEPS = {
     "rollup-plugin-terser": "7.0.2",
     "sinon": "10.0.0",
     "source-map-support": "0.5.19",
-    "stylelint": "13.12.0",
+    "stylelint": "13.13.1",
     "stylelint-config-standard": "21.0.0",
     "typescript": "4.3.0-beta",
     "yargs": "16.2.0",
@@ -276,7 +276,8 @@ def run_npm_command(npm_command_args=None):
     if run_custom_command:
         runs_analysis_command = npm_command_args[:1] == [
             'outdated'
-        ] or npm_command_args[:1] == ['audit']
+        ] or npm_command_args[:1] == ['audit'
+                                      ] or npm_command_args[:1] == ['ls']
 
     # By default, run the CI version of npm, which prevents updates to the versions of modules.
     # However, when we are analyzing the installed NPM dependencies, we don't need to run

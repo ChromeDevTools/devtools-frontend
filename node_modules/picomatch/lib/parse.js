@@ -247,7 +247,7 @@ const parse = (input, options) => {
         output = token.close = `)$))${extglobStar}`;
       }
 
-      if (token.prev.type === 'bos' && eos()) {
+      if (token.prev.type === 'bos') {
         state.negatedExtglob = true;
       }
     }

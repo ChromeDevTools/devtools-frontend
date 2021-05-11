@@ -43,8 +43,9 @@ Changelog entries are classified using the following labels _(from [keep-a-chang
 
 ### Breaking changes
 
+- Require Node.js >= 8.6
 - Removed support for passing an array of brace patterns to `micromatch.braces()`.
-- To strictly enforce closing brackets (for `{`, `[`, and `(`), you must now use `strictBrackets=true` instead of `strictErrors`.   
+- To strictly enforce closing brackets (for `{`, `[`, and `(`), you must now use `strictBrackets=true` instead of `strictErrors`.
 - `cache` - caching and all related options and methods have been removed
 - `options.unixify` was renamed to `options.windows`
 - `options.nodupes` Was removed. Duplicates are always removed by default. You can override this with custom behavior by using the `onMatch`, `onResult` and `onIgnore` functions.
@@ -72,7 +73,7 @@ Here are those sub-modules with links to related prs on those modules if you wan
 
 **Added**
 
- - source map support (optionally created when using parse or compile - I have no idea what the use case is yet, but they come for free) (note that source maps are not generated for brace expansion at present, since the braces compiler uses a different strategy. I'll update if/when this changes). 
+ - source map support (optionally created when using parse or compile - I have no idea what the use case is yet, but they come for free) (note that source maps are not generated for brace expansion at present, since the braces compiler uses a different strategy. I'll update if/when this changes).
  - parser is exposed, so that implementors can customize or override specific micromatch parsers if necessary
  - compiler is exposed, so that implementors can customize or override specific micromatch compilers if necessary
 

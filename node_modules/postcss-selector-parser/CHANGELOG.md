@@ -1,3 +1,7 @@
+# 6.0.5
+
+- Perf: rework unesc for a 63+% performance boost
+
 # 6.0.4
 
 - Fixed: ts errors

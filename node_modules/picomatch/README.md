@@ -562,7 +562,7 @@ If you wish to match the following special characters in a filepath, and you wan
 
 Some characters that are used for matching in regular expressions are also regarded as valid file path characters on some platforms.
 
-To match any of the following characters as literals: `$^*+?()[]
+To match any of the following characters as literals: `$^*+?()[]`
 
 Examples:
 

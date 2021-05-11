@@ -154,7 +154,7 @@ Just a quick overview.
 - `{}` allows for a comma-separated list of "or" expressions
 - `!` at the beginning of a pattern will negate the match
 
-[Various patterns and expected matches.](https://github.com/sindresorhus/multimatch/blob/master/test/test.js)
+[Various patterns and expected matches.](https://github.com/sindresorhus/multimatch/blob/main/test/test.js)
 
 ## globby for enterprise
 

@@ -5,7 +5,7 @@
 import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 
-import {IconData} from './Icon.js';
+import type {IconData} from './Icon.js';
 
 export interface IconWithTextData {
   iconName: string;

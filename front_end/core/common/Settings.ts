@@ -30,12 +30,13 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Platform from '../platform/platform.js';  // eslint-disable-line no-unused-vars
+import type * as Platform from '../platform/platform.js'; // eslint-disable-line no-unused-vars
 import * as Root from '../root/root.js';
 
-import {Color, Format} from './Color.js';  // eslint-disable-line no-unused-vars
+import type {Color} from './Color.js';
+import {Format} from './Color.js';  // eslint-disable-line no-unused-vars
 import {Console} from './Console.js';
-import {EventDescriptor, EventTargetEvent} from './EventTarget.js';  // eslint-disable-line no-unused-vars
+import type {EventDescriptor, EventTargetEvent} from './EventTarget.js'; // eslint-disable-line no-unused-vars
 import {ObjectWrapper} from './Object.js';
 import {getLocalizedSettingsCategory, getRegisteredSettings, maybeRemoveSettingExtension, RegExpSettingItem, registerSettingExtension, registerSettingsForTest, resetSettings, SettingCategory, SettingExtensionOption, SettingRegistration, SettingType} from './SettingRegistration.js';  // eslint-disable-line no-unused-vars
 

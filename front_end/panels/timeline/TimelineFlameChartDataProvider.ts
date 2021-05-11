@@ -42,10 +42,11 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
-import {PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
+import type {PerformanceModel} from './PerformanceModel.js'; // eslint-disable-line no-unused-vars
 import {FlameChartStyle, Selection, TimelineFlameChartMarker} from './TimelineFlameChartView.js';
 import {TimelineSelection} from './TimelinePanel.js';
-import {TimelineCategory, TimelineUIUtils} from './TimelineUIUtils.js';  // eslint-disable-line no-unused-vars
+import type {TimelineCategory} from './TimelineUIUtils.js';
+import {TimelineUIUtils} from './TimelineUIUtils.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

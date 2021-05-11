@@ -7,7 +7,7 @@ import i18nBundle from '../../third_party/i18n/i18n-bundle.js';
 import * as Platform from '../platform/platform.js';
 
 import {DevToolsLocale} from './DevToolsLocale.js';
-import * as i18nTypes from './i18nTypes.js';
+import type * as i18nTypes from './i18nTypes.js';
 
 /**
  * The locale that DevTools displays

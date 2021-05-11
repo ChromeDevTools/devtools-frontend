@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import {assert} from 'chai';
-import * as puppeteer from 'puppeteer';
+import type * as puppeteer from 'puppeteer';
 
 import {click, getBrowserAndPages, goToResource, pressKey, typeText, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';

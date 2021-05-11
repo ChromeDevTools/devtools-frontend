@@ -29,7 +29,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import {EventDescriptor, EventTarget, EventTargetEvent} from './EventTarget.js';  // eslint-disable-line no-unused-vars
+import type {EventDescriptor, EventTarget, EventTargetEvent} from './EventTarget.js'; // eslint-disable-line no-unused-vars
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
 // eslint-disable-next-line @typescript-eslint/naming-convention
 interface _listenerCallbackTuple {

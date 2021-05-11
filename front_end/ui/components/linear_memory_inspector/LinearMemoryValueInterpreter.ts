@@ -8,10 +8,11 @@ import '../icon_button/icon_button.js';
 
 import * as LitHtml from '../../lit-html/lit-html.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
-import * as IconButton from '../icon_button/icon_button.js';
+import type * as IconButton from '../icon_button/icon_button.js';
 
 import type {ValueDisplayData} from './ValueInterpreterDisplay.js';
-import {Endianness, endiannessToLocalizedString, ValueType, ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
+import type {ValueType, ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
+import {Endianness, endiannessToLocalizedString} from './ValueInterpreterDisplayUtils.js';
 import type {TypeToggleEvent, ValueInterpreterSettingsData} from './ValueInterpreterSettings.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';

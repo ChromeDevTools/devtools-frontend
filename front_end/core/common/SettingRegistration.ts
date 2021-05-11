@@ -3,10 +3,10 @@
 // found in the LICENSE file.
 
 import * as i18n from '../i18n/i18n.js';
-import * as Platform from '../platform/platform.js';
+import type * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
-import {SettingStorageType} from './Settings.js';
+import type {SettingStorageType} from './Settings.js';
 
 const UIStrings = {
   /**

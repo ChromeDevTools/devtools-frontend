@@ -9,14 +9,16 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
-import {ContextMenu} from './ContextMenu.js';  // eslint-disable-line no-unused-vars
+import type {ContextMenu} from './ContextMenu.js'; // eslint-disable-line no-unused-vars
 import {Icon} from './Icon.js';
 import {Events as TabbedPaneEvents, TabbedPane} from './TabbedPane.js';
-import {Toolbar, ToolbarItem, ToolbarMenuButton} from './Toolbar.js';  // eslint-disable-line no-unused-vars
+import type {ToolbarItem} from './Toolbar.js';
+import {Toolbar, ToolbarMenuButton} from './Toolbar.js';  // eslint-disable-line no-unused-vars
 import {createTextChild} from './UIUtils.js';
-import {TabbedViewLocation, View, ViewLocation, ViewLocationResolver} from './View.js';  // eslint-disable-line no-unused-vars
+import type {TabbedViewLocation, View, ViewLocation, ViewLocationResolver} from './View.js'; // eslint-disable-line no-unused-vars
 import {getRegisteredLocationResolvers, getRegisteredViewExtensions, maybeRemoveViewExtension, registerLocationResolver, registerViewExtension, ViewLocationCategoryValues, ViewLocationValues, ViewPersistence, ViewRegistration} from './ViewRegistration.js';
-import {VBox, Widget, WidgetElement} from './Widget.js';  // eslint-disable-line no-unused-vars
+import type {Widget, WidgetElement} from './Widget.js';
+import {VBox} from './Widget.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

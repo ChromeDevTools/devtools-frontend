@@ -6,10 +6,11 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
-import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
+import type * as ProtocolClient from '../protocol_client/protocol_client.js'; // eslint-disable-line no-unused-vars
 
 import {ParallelConnection} from './Connections.js';
-import {Capability, Events as SDKModelEvents, SDKModel, Target, TargetManager, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {Target} from './SDKModel.js';
+import {Capability, Events as SDKModelEvents, SDKModel, TargetManager, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
 // eslint-disable-next-line @typescript-eslint/naming-convention

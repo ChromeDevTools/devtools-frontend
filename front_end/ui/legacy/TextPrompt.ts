@@ -39,7 +39,8 @@ import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
-import {SuggestBox, SuggestBoxDelegate, Suggestion} from './SuggestBox.js';  // eslint-disable-line no-unused-vars
+import type {SuggestBoxDelegate, Suggestion} from './SuggestBox.js';
+import {SuggestBox} from './SuggestBox.js';  // eslint-disable-line no-unused-vars
 import {Tooltip} from './Tooltip.js';
 import {ElementFocusRestorer} from './UIUtils.js';
 import {appendStyle} from './utils/append-style.js';

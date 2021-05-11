@@ -4,7 +4,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import {AudioParamRadius, InputPortRadius, LeftSideTopPadding, Point, Size, TotalInputPortHeight, TotalOutputPortHeight, TotalParamPortHeight} from './GraphStyle.js';  // eslint-disable-line no-unused-vars
+import type {Point, Size} from './GraphStyle.js';
+import {AudioParamRadius, InputPortRadius, LeftSideTopPadding, TotalInputPortHeight, TotalOutputPortHeight, TotalParamPortHeight} from './GraphStyle.js';  // eslint-disable-line no-unused-vars
 
 /**
  * Calculate the x, y value of input port.

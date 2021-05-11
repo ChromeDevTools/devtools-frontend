@@ -7,7 +7,7 @@
 import * as Platform from '../../core/platform/platform.js';
 
 import {CSSFormatter} from './CSSFormatter.js';
-import {FormattedContentBuilder} from './FormattedContentBuilder.js';  // eslint-disable-line no-unused-vars
+import type {FormattedContentBuilder} from './FormattedContentBuilder.js'; // eslint-disable-line no-unused-vars
 import {AbortTokenization, createTokenizer} from './FormatterWorker.js';
 import {JavaScriptFormatter} from './JavaScriptFormatter.js';
 

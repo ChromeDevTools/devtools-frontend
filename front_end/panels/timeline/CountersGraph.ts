@@ -37,8 +37,9 @@ import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {Events, PerformanceModel, Window} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
-import {TimelineModeViewDelegate} from './TimelinePanel.js';             // eslint-disable-line no-unused-vars
+import type {PerformanceModel, Window} from './PerformanceModel.js';
+import {Events} from './PerformanceModel.js';                     // eslint-disable-line no-unused-vars
+import type {TimelineModeViewDelegate} from './TimelinePanel.js'; // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

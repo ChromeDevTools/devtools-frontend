@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as SDK from '../../core/sdk/sdk.js';         // eslint-disable-line no-unused-vars
+import type * as SDK from '../../core/sdk/sdk.js';    // eslint-disable-line no-unused-vars
 import * as Bindings from '../bindings/bindings.js';  // eslint-disable-line no-unused-vars
 
 export class LanguageExtensionEndpoint extends Bindings.DebuggerLanguagePlugins.DebuggerLanguagePlugin {

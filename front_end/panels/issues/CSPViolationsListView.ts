@@ -7,7 +7,7 @@ import '../../ui/components/data_grid/data_grid.js';
 
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as DataGrid from '../../ui/components/data_grid/data_grid.js';
-import * as Linkifier from '../../ui/components/linkifier/linkifier.js';
+import type * as Linkifier from '../../ui/components/linkifier/linkifier.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
 

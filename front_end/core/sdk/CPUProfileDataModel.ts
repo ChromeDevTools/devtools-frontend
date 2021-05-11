@@ -9,7 +9,7 @@ import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 
 import {ProfileNode, ProfileTreeModel} from './ProfileTreeModel.js';
-import {Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {Target} from './SDKModel.js'; // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

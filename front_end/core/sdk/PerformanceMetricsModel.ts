@@ -6,7 +6,8 @@
 
 import * as Platform from '../platform/platform.js';
 
-import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {Target} from './SDKModel.js';
+import {Capability, SDKModel} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 export class PerformanceMetricsModel extends SDKModel {
   _agent: ProtocolProxyApi.PerformanceApi;

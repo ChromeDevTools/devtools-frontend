@@ -32,9 +32,10 @@
 
 import * as Acorn from '../../third_party/acorn/acorn.js';
 
-import {AcornTokenizer, ECMA_VERSION, TokenOrComment} from './AcornTokenizer.js';  // eslint-disable-line no-unused-vars
+import type {TokenOrComment} from './AcornTokenizer.js';
+import {AcornTokenizer, ECMA_VERSION} from './AcornTokenizer.js';  // eslint-disable-line no-unused-vars
 import {ESTreeWalker} from './ESTreeWalker.js';
-import {FormattedContentBuilder} from './FormattedContentBuilder.js';  // eslint-disable-line no-unused-vars
+import type {FormattedContentBuilder} from './FormattedContentBuilder.js'; // eslint-disable-line no-unused-vars
 
 export class JavaScriptFormatter {
   _builder: FormattedContentBuilder;

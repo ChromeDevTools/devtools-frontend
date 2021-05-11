@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as ESTree from 'estree';
+import type * as ESTree from 'estree';
 
 const SkipSubTreeObject: Object = {};
 

@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../../core/common/common.js';  // eslint-disable-line no-unused-vars
+import type * as Common from '../../core/common/common.js'; // eslint-disable-line no-unused-vars
 import * as Host from '../../core/host/host.js';
 
 import {Context} from './Context.js';  // eslint-disable-line no-unused-vars

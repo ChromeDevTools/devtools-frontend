@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import {assert} from 'chai';
-import {ElementHandle} from 'puppeteer';
+import type {ElementHandle} from 'puppeteer';
 import {$$, $$textContent, click, platform, selectOption, waitFor, waitForElementsWithTextContent, waitForElementWithTextContent, waitForFunction} from '../../shared/helper.js';
 
 const CANCEL_BUTTON_SELECTOR = '[aria-label="Discard changes"]';

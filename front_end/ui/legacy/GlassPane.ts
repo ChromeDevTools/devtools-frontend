@@ -7,11 +7,12 @@
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 
-import {Size} from './Geometry.js';  // eslint-disable-line no-unused-vars
+import type {Size} from './Geometry.js'; // eslint-disable-line no-unused-vars
 import {Icon} from './Icon.js';
 import {deepElementFromEvent} from './UIUtils.js';
 import {measuredScrollbarWidth} from './utils/measured-scrollbar-width.js';
-import {Widget, WidgetElement} from './Widget.js';
+import type {WidgetElement} from './Widget.js';
+import {Widget} from './Widget.js';
 
 export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
   _widget: Widget;

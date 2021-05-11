@@ -32,11 +32,12 @@
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
+import type * as TextUtils from '../text_utils/text_utils.js'; // eslint-disable-line no-unused-vars
 import * as Workspace from '../workspace/workspace.js';
 
 import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
-import {LiveLocation, LiveLocationPool} from './LiveLocation.js';        // eslint-disable-line no-unused-vars
+import type {LiveLocation} from './LiveLocation.js';
+import {LiveLocationPool} from './LiveLocation.js';  // eslint-disable-line no-unused-vars
 
 let breakpointManagerInstance: BreakpointManager;
 

@@ -7,9 +7,9 @@
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 
 import {CSSMedia} from './CSSMedia.js';
-import {CSSModel, Edit} from './CSSModel.js';  // eslint-disable-line no-unused-vars
+import type {CSSModel, Edit} from './CSSModel.js'; // eslint-disable-line no-unused-vars
 import {CSSStyleDeclaration, Type} from './CSSStyleDeclaration.js';
-import {CSSStyleSheetHeader} from './CSSStyleSheetHeader.js';  // eslint-disable-line no-unused-vars
+import type {CSSStyleSheetHeader} from './CSSStyleSheetHeader.js'; // eslint-disable-line no-unused-vars
 
 export class CSSRule {
   _cssModel: CSSModel;

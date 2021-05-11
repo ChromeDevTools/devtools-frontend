@@ -28,8 +28,10 @@
 //  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 //  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import {Bounds, createChild, Overlay, ResetData} from './common.js';
-import {buildPath, emptyBounds, PathBounds} from './highlight_common.js';
+import type {Bounds, ResetData} from './common.js';
+import {createChild, Overlay} from './common.js';
+import type {PathBounds} from './highlight_common.js';
+import {buildPath, emptyBounds} from './highlight_common.js';
 
 interface Path {
   path: Array<string|number>;

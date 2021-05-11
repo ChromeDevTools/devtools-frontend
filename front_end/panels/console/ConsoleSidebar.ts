@@ -11,7 +11,8 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {ConsoleFilter, FilterType, LevelsMask} from './ConsoleFilter.js';
+import type {LevelsMask} from './ConsoleFilter.js';
+import {ConsoleFilter, FilterType} from './ConsoleFilter.js';
 import type {ConsoleViewMessage} from './ConsoleViewMessage.js';
 
 const UIStrings = {

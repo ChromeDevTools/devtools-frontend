@@ -6,13 +6,14 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as SDK from '../../core/sdk/sdk.js';                                    // eslint-disable-line no-unused-vars
-import * as TimelineModel from '../../models/timeline_model/timeline_model.js';  // eslint-disable-line no-unused-vars
+import type * as SDK from '../../core/sdk/sdk.js'; // eslint-disable-line no-unused-vars
+import type * as TimelineModel from '../../models/timeline_model/timeline_model.js'; // eslint-disable-line no-unused-vars
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {Category, IsLong} from './TimelineFilters.js';
-import {TimelineModeViewDelegate, TimelineSelection} from './TimelinePanel.js';  // eslint-disable-line no-unused-vars
+import type {TimelineModeViewDelegate} from './TimelinePanel.js';
+import {TimelineSelection} from './TimelinePanel.js';  // eslint-disable-line no-unused-vars
 import {TimelineTreeView} from './TimelineTreeView.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 

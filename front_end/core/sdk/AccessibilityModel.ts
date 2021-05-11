@@ -4,8 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import {DeferredDOMNode, DOMNode} from './DOMModel.js';      // eslint-disable-line no-unused-vars
-import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {DOMNode} from './DOMModel.js';
+import {DeferredDOMNode} from './DOMModel.js';  // eslint-disable-line no-unused-vars
+import type {Target} from './SDKModel.js';
+import {Capability, SDKModel} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum

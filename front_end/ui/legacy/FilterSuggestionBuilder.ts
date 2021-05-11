@@ -6,7 +6,7 @@
 
 import * as Platform from '../../core/platform/platform.js';
 
-import {Suggestion} from './SuggestBox.js';  // eslint-disable-line no-unused-vars
+import type {Suggestion} from './SuggestBox.js'; // eslint-disable-line no-unused-vars
 
 export class FilterSuggestionBuilder {
   _keys: string[];

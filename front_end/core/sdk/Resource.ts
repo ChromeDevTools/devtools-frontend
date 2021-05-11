@@ -36,8 +36,9 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
 import * as Platfrom from '../platform/platform.js';
 
-import {Events, NetworkRequest} from './NetworkRequest.js';                   // eslint-disable-line no-unused-vars
-import {ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
+import type {NetworkRequest} from './NetworkRequest.js';
+import {Events} from './NetworkRequest.js';                                       // eslint-disable-line no-unused-vars
+import type {ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js'; // eslint-disable-line no-unused-vars
 
 export class Resource implements TextUtils.ContentProvider.ContentProvider {
   _resourceTreeModel: ResourceTreeModel;

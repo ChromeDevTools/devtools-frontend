@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Platform from '../../core/platform/platform.js';
-import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
+import type * as Platform from '../../core/platform/platform.js';
+import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 
 import {AffectedResourcesView} from './AffectedResourcesView.js';
 

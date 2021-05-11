@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as ProtocolClient from '../../../../front_end/core/protocol_client/protocol_client.js';
-import {ProtocolMapping} from '../../../../front_end/generated/protocol-mapping.js';  // eslint-disable-line rulesdir/es_modules_import
+import type {ProtocolMapping} from '../../../../front_end/generated/protocol-mapping.js'; // eslint-disable-line rulesdir/es_modules_import
 
 import {deinitializeGlobalVars, initializeGlobalVars} from './EnvironmentHelpers.js';
 

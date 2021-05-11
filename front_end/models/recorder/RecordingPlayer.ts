@@ -3,11 +3,12 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../core/sdk/sdk.js';
-import * as puppeteer from '../../third_party/puppeteer/puppeteer.js';
+import type * as puppeteer from '../../third_party/puppeteer/puppeteer.js';
 import {WaitForNavigationCondition} from './Conditions.js';
 import {getPuppeteerConnection as getPuppeteerConnectionToCurrentPage} from './PuppeteerConnection.js';
 
-import {ChangeStep, ClickStep, NavigationStep, Step, StepFrameContext, StepWithContext, SubmitStep} from './Steps.js';
+import type {Step, StepFrameContext} from './Steps.js';
+import {ChangeStep, ClickStep, NavigationStep, StepWithContext, SubmitStep} from './Steps.js';
 
 export class RecordingPlayer {
   recording: Step[];

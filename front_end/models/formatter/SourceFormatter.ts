@@ -10,7 +10,8 @@ import * as Bindings from '../bindings/bindings.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
-import {FormatterInterface, FormatterSourceMapping} from './ScriptFormatter.js';  // eslint-disable-line no-unused-vars
+import type {FormatterSourceMapping} from './ScriptFormatter.js';
+import {FormatterInterface} from './ScriptFormatter.js';  // eslint-disable-line no-unused-vars
 
 const objectToFormattingResult = new WeakMap<Object, SourceFormatData>();
 

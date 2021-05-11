@@ -6,11 +6,11 @@
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';  // eslint-disable-line no-unused-vars
+import type * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js'; // eslint-disable-line no-unused-vars
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {NetworkGroupNode} from './NetworkDataGridNode.js';
-import {GroupLookupInterface, NetworkLogView} from './NetworkLogView.js';  // eslint-disable-line no-unused-vars
+import type {GroupLookupInterface, NetworkLogView} from './NetworkLogView.js'; // eslint-disable-line no-unused-vars
 
 export class NetworkFrameGrouper implements GroupLookupInterface {
   _parentView: NetworkLogView;

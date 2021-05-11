@@ -10,7 +10,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type {HeapSnapshotView} from './HeapSnapshotView.js';
-import {ProfileType} from './ProfileHeader.js';
+import type {ProfileType} from './ProfileHeader.js';
 import {ProfilesPanel} from './ProfilesPanel.js';
 import {instance} from './ProfileTypeRegistry.js';
 

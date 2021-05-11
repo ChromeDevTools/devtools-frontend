@@ -30,9 +30,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as SDK from '../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import type * as SDK from '../../core/sdk/sdk.js'; // eslint-disable-line no-unused-vars
 
-import {Client, TimelineController} from './TimelineController.js';  // eslint-disable-line no-unused-vars
+import type {Client} from './TimelineController.js';
+import {TimelineController} from './TimelineController.js';  // eslint-disable-line no-unused-vars
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 import {UIDevtoolsUtils} from './UIDevtoolsUtils.js';
 

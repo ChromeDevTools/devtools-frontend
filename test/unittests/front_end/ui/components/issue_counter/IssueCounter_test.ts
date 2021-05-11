@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assertNotNull} from '../../../../../../front_end/core/platform/platform.js';
-import * as IssuesManager from '../../../../../../front_end/models/issues_manager/issues_manager.js';
+import type * as IssuesManager from '../../../../../../front_end/models/issues_manager/issues_manager.js';
 import * as IconButton from '../../../../../../front_end/ui/components/icon_button/icon_button.js';
 import * as IssueCounter from '../../../../../../front_end/ui/components/issue_counter/issue_counter.js';
 import {assertElement, assertElements, assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';

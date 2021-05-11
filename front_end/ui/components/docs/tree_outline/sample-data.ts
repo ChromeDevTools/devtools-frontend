@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import '../../tree_outline/tree_outline.js';
-import * as TreeOutline from '../../tree_outline/tree_outline.js';
+import type * as TreeOutline from '../../tree_outline/tree_outline.js';
 
 export const belgraveHouse = {
   treeNodeData: 'BEL',

@@ -5,8 +5,10 @@
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 import type * as TextUtils from '../../../models/text_utils/text_utils.js';
-import {SortDirection, SortState, Column, Row, getRowEntryForColumnId, ContextMenuColumnSortClickEvent} from './DataGridUtils.js';
-import {DataGrid, DataGridData, ColumnHeaderClickEvent, DataGridContextMenusConfiguration} from './DataGrid.js';
+import type {SortState, Column, Row, ContextMenuColumnSortClickEvent} from './DataGridUtils.js';
+import {SortDirection, getRowEntryForColumnId} from './DataGridUtils.js';
+import type {DataGridData, ColumnHeaderClickEvent, DataGridContextMenusConfiguration} from './DataGrid.js';
+import {DataGrid} from './DataGrid.js';
 
 export interface DataGridControllerData {
   columns: Column[];

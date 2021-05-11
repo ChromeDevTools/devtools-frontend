@@ -11,7 +11,7 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {SearchConfig, SearchResult} from './SearchConfig.js';  // eslint-disable-line no-unused-vars
+import type {SearchConfig, SearchResult} from './SearchConfig.js'; // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import {Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {Target} from './SDKModel.js'; // eslint-disable-line no-unused-vars
 
 export class ProfileNode {
   callFrame: Protocol.Runtime.CallFrame;

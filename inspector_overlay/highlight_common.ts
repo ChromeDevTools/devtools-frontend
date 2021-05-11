@@ -30,7 +30,7 @@
 
 import {rgbaToHsla} from '../front_end/core/common/ColorUtils.js';
 
-import {Bounds, PathCommands, Quad} from './common.js';
+import type {Bounds, PathCommands, Quad} from './common.js';
 
 export type PathBounds = Bounds&{
   leftmostXForY: {[key: string]: number},

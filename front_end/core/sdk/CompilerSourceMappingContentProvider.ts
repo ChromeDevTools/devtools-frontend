@@ -31,10 +31,11 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import type * as Common from '../common/common.js'; // eslint-disable-line no-unused-vars
 import * as i18n from '../i18n/i18n.js';
 
-import {PageResourceLoader, PageResourceLoadInitiator} from './PageResourceLoader.js';  // eslint-disable-line no-unused-vars
+import type {PageResourceLoadInitiator} from './PageResourceLoader.js';
+import {PageResourceLoader} from './PageResourceLoader.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

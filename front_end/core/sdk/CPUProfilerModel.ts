@@ -34,8 +34,9 @@ import * as i18n from '../i18n/i18n.js';
 import * as Root from '../root/root.js';
 
 import {DebuggerModel, Location} from './DebuggerModel.js';
-import {RuntimeModel} from './RuntimeModel.js';              // eslint-disable-line no-unused-vars
-import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {RuntimeModel} from './RuntimeModel.js'; // eslint-disable-line no-unused-vars
+import type {Target} from './SDKModel.js';
+import {Capability, SDKModel} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

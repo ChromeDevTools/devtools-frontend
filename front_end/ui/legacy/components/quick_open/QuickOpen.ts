@@ -5,9 +5,10 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as i18n from '../../../../core/i18n/i18n.js';
-import * as UI from '../../legacy.js';  // eslint-disable-line no-unused-vars
+import type * as UI from '../../legacy.js'; // eslint-disable-line no-unused-vars
 
-import {FilteredListWidget, getRegisteredProviders, Provider} from './FilteredListWidget.js';  // eslint-disable-line no-unused-vars
+import type {Provider} from './FilteredListWidget.js';
+import {FilteredListWidget, getRegisteredProviders} from './FilteredListWidget.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

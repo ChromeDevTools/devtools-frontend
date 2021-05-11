@@ -3,12 +3,12 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Platform from '../../core/platform/platform.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 
 import {AffectedResourcesView} from './AffectedResourcesView.js';
-import {AggregatedIssue} from './IssueAggregator.js';
-import {IssueView} from './IssueView.js';
+import type {AggregatedIssue} from './IssueAggregator.js';
+import type {IssueView} from './IssueView.js';
 
 const UIStrings = {
   /**

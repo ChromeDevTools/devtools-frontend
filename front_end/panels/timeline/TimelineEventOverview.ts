@@ -32,14 +32,15 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as SDK from '../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import type * as SDK from '../../core/sdk/sdk.js'; // eslint-disable-line no-unused-vars
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Coverage from '../coverage/coverage.js';
 
-import {PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
-import {EventDispatchTypeDescriptor, TimelineCategory, TimelineUIUtils} from './TimelineUIUtils.js';  // eslint-disable-line no-unused-vars
+import type {PerformanceModel} from './PerformanceModel.js'; // eslint-disable-line no-unused-vars
+import type {EventDispatchTypeDescriptor, TimelineCategory} from './TimelineUIUtils.js';
+import {TimelineUIUtils} from './TimelineUIUtils.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

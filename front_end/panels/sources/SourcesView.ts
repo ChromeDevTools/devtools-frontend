@@ -15,7 +15,8 @@ import * as SourceFrame from '../../ui/legacy/components/source_frame/source_fra
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {EditingLocationHistoryManager} from './EditingLocationHistoryManager.js';
-import {Events as TabbedEditorContainerEvents, TabbedEditorContainer, TabbedEditorContainerDelegate} from './TabbedEditorContainer.js';  // eslint-disable-line no-unused-vars
+import type {TabbedEditorContainerDelegate} from './TabbedEditorContainer.js';
+import {Events as TabbedEditorContainerEvents, TabbedEditorContainer} from './TabbedEditorContainer.js';  // eslint-disable-line no-unused-vars
 import {Events as UISourceCodeFrameEvents, UISourceCodeFrame} from './UISourceCodeFrame.js';
 
 const UIStrings = {

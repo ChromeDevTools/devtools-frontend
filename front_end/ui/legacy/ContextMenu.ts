@@ -30,13 +30,14 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../../core/common/common.js';  // eslint-disable-line no-unused-vars
+import type * as Common from '../../core/common/common.js'; // eslint-disable-line no-unused-vars
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
 
 import {ActionRegistry} from './ActionRegistry.js';
 import {ShortcutRegistry} from './ShortcutRegistry.js';
-import {SoftContextMenu, SoftContextMenuDescriptor} from './SoftContextMenu.js';  // eslint-disable-line no-unused-vars
+import type {SoftContextMenuDescriptor} from './SoftContextMenu.js';
+import {SoftContextMenu} from './SoftContextMenu.js';  // eslint-disable-line no-unused-vars
 import {deepElementFromEvent} from './UIUtils.js';
 
 export class Item {

@@ -5,10 +5,11 @@
 import '../../components/icon_button/icon_button.js'; // Required to get <devtools-icon>
 
 import * as ComponentHelpers from '../../components/helpers/helpers.js';
-import * as IconButton from '../../components/icon_button/icon_button.js';
+import type * as IconButton from '../../components/icon_button/icon_button.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 
-import {getMarkdownImage, ImageData} from './MarkdownImagesMap.js';
+import type {ImageData} from './MarkdownImagesMap.js';
+import {getMarkdownImage} from './MarkdownImagesMap.js';
 
 export interface MarkdownImageData {
   key: string;

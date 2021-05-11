@@ -5,7 +5,8 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import {OverlayModel} from './OverlayModel.js';
-import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {Target} from './SDKModel.js';
+import {Capability, SDKModel} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 export class ScreenCaptureModel extends SDKModel implements ProtocolProxyApi.PageDispatcher {
   _agent: ProtocolProxyApi.PageApi;

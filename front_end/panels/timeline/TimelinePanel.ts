@@ -46,12 +46,15 @@ import * as Extensions from '../../models/extensions/extensions.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Coverage from '../coverage/coverage.js';  // eslint-disable-line no-unused-vars
+import type * as Coverage from '../coverage/coverage.js'; // eslint-disable-line no-unused-vars
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
-import {Events, PerformanceModel, Window} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
-import {Client, TimelineController} from './TimelineController.js';      // eslint-disable-line no-unused-vars
-import {TimelineEventOverview, TimelineEventOverviewCoverage, TimelineEventOverviewCPUActivity, TimelineEventOverviewFrames, TimelineEventOverviewInput, TimelineEventOverviewMemory, TimelineEventOverviewNetwork, TimelineEventOverviewResponsiveness, TimelineFilmStripOverview} from './TimelineEventOverview.js';  // eslint-disable-line no-unused-vars
+import type {Window} from './PerformanceModel.js';
+import {Events, PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
+import type {Client} from './TimelineController.js';
+import {TimelineController} from './TimelineController.js';  // eslint-disable-line no-unused-vars
+import type {TimelineEventOverview} from './TimelineEventOverview.js';
+import {TimelineEventOverviewCoverage, TimelineEventOverviewCPUActivity, TimelineEventOverviewFrames, TimelineEventOverviewInput, TimelineEventOverviewMemory, TimelineEventOverviewNetwork, TimelineEventOverviewResponsiveness, TimelineFilmStripOverview} from './TimelineEventOverview.js';  // eslint-disable-line no-unused-vars
 import {TimelineFlameChartView} from './TimelineFlameChartView.js';
 import {TimelineHistoryManager} from './TimelineHistoryManager.js';
 import {TimelineLoader} from './TimelineLoader.js';

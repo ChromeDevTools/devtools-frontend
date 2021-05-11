@@ -7,11 +7,13 @@
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 
-import {Location} from './DebuggerModel.js';                                // eslint-disable-line no-unused-vars
-import {DOMModel, DOMNode, Events as DOMModelEvents} from './DOMModel.js';  // eslint-disable-line no-unused-vars
+import type {Location} from './DebuggerModel.js'; // eslint-disable-line no-unused-vars
+import type {DOMNode} from './DOMModel.js';
+import {DOMModel, Events as DOMModelEvents} from './DOMModel.js';  // eslint-disable-line no-unused-vars
 import {RemoteObject} from './RemoteObject.js';
 import {RuntimeModel} from './RuntimeModel.js';
-import {Capability, SDKModel, SDKModelObserver, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {SDKModelObserver, Target} from './SDKModel.js';
+import {Capability, SDKModel, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

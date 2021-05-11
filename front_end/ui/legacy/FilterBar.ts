@@ -38,9 +38,10 @@ import * as ARIAUtils from './ARIAUtils.js';
 import {Icon} from './Icon.js';
 import {KeyboardShortcut, Modifiers} from './KeyboardShortcut.js';
 import {bindCheckbox} from './SettingsUI.js';
-import {Suggestions} from './SuggestBox';
+import type {Suggestions} from './SuggestBox';
 import {Events, TextPrompt} from './TextPrompt.js';
-import {ToolbarButton, ToolbarSettingToggle} from './Toolbar.js';  // eslint-disable-line no-unused-vars
+import type {ToolbarButton} from './Toolbar.js';
+import {ToolbarSettingToggle} from './Toolbar.js';  // eslint-disable-line no-unused-vars
 import {Tooltip} from './Tooltip.js';
 import {CheckboxLabel, createTextChild} from './UIUtils.js';
 import {HBox} from './Widget.js';

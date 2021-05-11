@@ -9,8 +9,9 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 
-import {ContrastIssue} from './CSSOverviewCompletedView.js';
-import {CSSOverviewUnusedDeclarations, UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
+import type {ContrastIssue} from './CSSOverviewCompletedView.js';
+import type {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
+import {CSSOverviewUnusedDeclarations} from './CSSOverviewUnusedDeclarations.js';
 
 interface NodeStyleStats {
   elementCount: number;

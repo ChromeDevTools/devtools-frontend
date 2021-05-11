@@ -6,9 +6,11 @@
 
 import * as Common from '../common/common.js';
 
-import {Resource} from './Resource.js';  // eslint-disable-line no-unused-vars
-import {Events as ResourceTreeModelEvents, ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
-import {SDKModelObserver, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {Resource} from './Resource.js'; // eslint-disable-line no-unused-vars
+import type {ResourceTreeFrame} from './ResourceTreeModel.js';
+import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
+import type {SDKModelObserver, Target} from './SDKModel.js';
+import {TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 let frameManagerInstance: FrameManager|null = null;
 

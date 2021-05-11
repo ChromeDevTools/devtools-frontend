@@ -6,8 +6,9 @@
 
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 
-import {CSSLocation, CSSModel, Edit} from './CSSModel.js';     // eslint-disable-line no-unused-vars
-import {CSSStyleSheetHeader} from './CSSStyleSheetHeader.js';  // eslint-disable-line no-unused-vars
+import type {CSSModel, Edit} from './CSSModel.js';
+import {CSSLocation} from './CSSModel.js';                         // eslint-disable-line no-unused-vars
+import type {CSSStyleSheetHeader} from './CSSStyleSheetHeader.js'; // eslint-disable-line no-unused-vars
 
 export class CSSMediaQuery {
   _active: boolean;

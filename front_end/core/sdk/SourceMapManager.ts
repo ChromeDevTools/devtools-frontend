@@ -8,9 +8,11 @@ import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 
-import {FrameAssociated} from './FrameAssociated.js';  // eslint-disable-line no-unused-vars
-import {Events as TargetManagerEvents, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
-import {SourceMap, TextSourceMap} from './SourceMap.js';  // eslint-disable-line no-unused-vars
+import type {FrameAssociated} from './FrameAssociated.js'; // eslint-disable-line no-unused-vars
+import type {Target} from './SDKModel.js';
+import {Events as TargetManagerEvents, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {SourceMap} from './SourceMap.js';
+import {TextSourceMap} from './SourceMap.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

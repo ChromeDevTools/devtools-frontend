@@ -4,19 +4,21 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../../core/common/common.js';  // eslint-disable-line no-unused-vars
+import type * as Common from '../../core/common/common.js'; // eslint-disable-line no-unused-vars
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
+import type * as Workspace from '../workspace/workspace.js'; // eslint-disable-line no-unused-vars
 
 import {CompilerScriptMapping} from './CompilerScriptMapping.js';
 import {DebuggerLanguagePluginManager} from './DebuggerLanguagePlugins.js';
 import {DefaultScriptMapping} from './DefaultScriptMapping.js';
 import {IgnoreListManager} from './IgnoreListManager.js';
-import {LiveLocation, LiveLocationPool, LiveLocationWithPool} from './LiveLocation.js';  // eslint-disable-line no-unused-vars
+import type {LiveLocation, LiveLocationPool} from './LiveLocation.js';
+import {LiveLocationWithPool} from './LiveLocation.js';  // eslint-disable-line no-unused-vars
 import {ResourceMapping} from './ResourceMapping.js';
-import {ResourceScriptFile, ResourceScriptMapping} from './ResourceScriptMapping.js';  // eslint-disable-line no-unused-vars
+import type {ResourceScriptFile} from './ResourceScriptMapping.js';
+import {ResourceScriptMapping} from './ResourceScriptMapping.js';  // eslint-disable-line no-unused-vars
 
 let debuggerWorkspaceBindingInstance: DebuggerWorkspaceBinding;
 

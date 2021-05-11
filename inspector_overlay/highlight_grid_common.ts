@@ -29,8 +29,9 @@
 //  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-import {AreaBounds, Bounds} from './common.js';
-import {drawGridLabels, GridLabelState} from './css_grid_label_helpers.js';
+import type {AreaBounds, Bounds} from './common.js';
+import type {GridLabelState} from './css_grid_label_helpers.js';
+import {drawGridLabels} from './css_grid_label_helpers.js';
 import {applyMatrixToPoint, buildPath, emptyBounds, hatchFillPath} from './highlight_common.js';
 
 const DEFAULT_EXTENDED_LINE_COLOR = 'rgba(128, 128, 128, 0.3)';

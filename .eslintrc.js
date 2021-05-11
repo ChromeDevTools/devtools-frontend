@@ -167,6 +167,7 @@ module.exports = {
        * this.foo!.toLowerCase()
        */
       '@typescript-eslint/no-non-null-assertion': 2,
+      // '@typescript-eslint/consistent-type-imports': 2,
       'rulesdir/const_enum': 2,
       'rulesdir/no_underscored_properties': 2,
       'rulesdir/prefer_readonly_keyword': 2,

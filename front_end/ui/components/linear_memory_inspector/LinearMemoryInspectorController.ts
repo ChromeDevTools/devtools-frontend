@@ -7,9 +7,10 @@ import * as Host from '../../../core/host/host.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as UI from '../../legacy/legacy.js';
 
-import {Settings} from './LinearMemoryInspector.js';
+import type {Settings} from './LinearMemoryInspector.js';
 import {LinearMemoryInspectorPaneImpl} from './LinearMemoryInspectorPane.js';
-import {Endianness, getDefaultValueTypeMapping, ValueType, ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
+import type {ValueType, ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
+import {Endianness, getDefaultValueTypeMapping} from './ValueInterpreterDisplayUtils.js';
 
 const LINEAR_MEMORY_INSPECTOR_OBJECT_GROUP = 'linear-memory-inspector';
 const MEMORY_TRANSFER_MIN_CHUNK_SIZE = 1000;

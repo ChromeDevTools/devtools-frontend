@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {ElementHandle} from 'puppeteer';
+import type {ElementHandle} from 'puppeteer';
 
 import {click, enableExperiment, goToResource, matchArray, typeText, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';

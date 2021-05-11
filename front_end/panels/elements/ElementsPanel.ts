@@ -46,10 +46,10 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {AccessibilityTreeView} from './AccessibilityTreeView.js';
 import * as ElementsComponents from './components/components.js';
 import {ComputedStyleWidget} from './ComputedStyleWidget.js';
-import {ElementsTreeElement} from './ElementsTreeElement.js';  // eslint-disable-line no-unused-vars
+import type {ElementsTreeElement} from './ElementsTreeElement.js'; // eslint-disable-line no-unused-vars
 import {ElementsTreeElementHighlighter} from './ElementsTreeElementHighlighter.js';
 import {ElementsTreeOutline} from './ElementsTreeOutline.js';
-import {MarkerDecorator} from './MarkerDecorator.js';  // eslint-disable-line no-unused-vars
+import type {MarkerDecorator} from './MarkerDecorator.js'; // eslint-disable-line no-unused-vars
 import {MetricsSidebarPane} from './MetricsSidebarPane.js';
 import {Events as StylesSidebarPaneEvents, StylesSidebarPane} from './StylesSidebarPane.js';
 

@@ -6,7 +6,8 @@
 
 import * as Host from '../host/host.js';
 
-import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {Target} from './SDKModel.js';
+import {Capability, SDKModel} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 export class LogModel extends SDKModel implements ProtocolProxyApi.LogDispatcher {
   _logAgent: ProtocolProxyApi.LogApi;

@@ -4,7 +4,7 @@
 
 import * as Marked from '../../../../../front_end/third_party/marked/marked.js';
 import * as MarkdownView from '../../../../../front_end/ui/components/markdown_view/markdown_view.js';
-import * as LitHtml from '../../../../../front_end/ui/lit-html/lit-html.js';
+import type * as LitHtml from '../../../../../front_end/ui/lit-html/lit-html.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 
 const {assert} = chai;

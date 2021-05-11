@@ -9,10 +9,12 @@ import * as i18n from '../i18n/i18n.js';
 import * as Root from '../root/root.js';
 
 import {DebuggerModel, Events as DebuggerModelEvents} from './DebuggerModel.js';
-import {DeferredDOMNode, DOMModel, DOMNode, Events as DOMModelEvents} from './DOMModel.js';  // eslint-disable-line no-unused-vars
+import type {DOMNode} from './DOMModel.js';
+import {DeferredDOMNode, DOMModel, Events as DOMModelEvents} from './DOMModel.js';  // eslint-disable-line no-unused-vars
 import {OverlayPersistentHighlighter} from './OverlayPersistentHighlighter.js';
-import {RemoteObject} from './RemoteObject.js';                             // eslint-disable-line no-unused-vars
-import {Capability, SDKModel, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {RemoteObject} from './RemoteObject.js'; // eslint-disable-line no-unused-vars
+import type {Target} from './SDKModel.js';
+import {Capability, SDKModel, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

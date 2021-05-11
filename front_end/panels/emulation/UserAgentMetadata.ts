@@ -5,9 +5,10 @@
 // Helper functions for working with UserAgentMetadata protocol objects, in
 // particular their plain string representation.
 
-import * as UI from '../../ui/legacy/legacy.js';
+import type * as UI from '../../ui/legacy/legacy.js';
 
-import {Item, List, Parameters, ParamName, parseList, ResultKind, serializeItem, serializeList, String as SHString} from './StructuredHeaders.js';
+import type {Item, List, Parameters, ParamName, String as SHString} from './StructuredHeaders.js';
+import {parseList, ResultKind, serializeItem, serializeList} from './StructuredHeaders.js';
 
 /* Returned string is for error, either parseErrorString or structErrorString.
  */

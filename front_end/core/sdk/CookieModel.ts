@@ -7,10 +7,12 @@
 import * as Common from '../common/common.js';
 import * as Root from '../root/root.js';
 
-import {Attributes, Cookie} from './Cookie.js';  // eslint-disable-line no-unused-vars
-import {Resource} from './Resource.js';          // eslint-disable-line no-unused-vars
+import type {Attributes} from './Cookie.js';
+import {Cookie} from './Cookie.js';          // eslint-disable-line no-unused-vars
+import type {Resource} from './Resource.js'; // eslint-disable-line no-unused-vars
 import {ResourceTreeModel} from './ResourceTreeModel.js';
-import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {Target} from './SDKModel.js';
+import {Capability, SDKModel} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 export class CookieModel extends SDKModel {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration

@@ -49,7 +49,8 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {ConsoleContextSelector} from './ConsoleContextSelector.js';
-import {ConsoleFilter, FilterType, LevelsMask} from './ConsoleFilter.js';
+import type {LevelsMask} from './ConsoleFilter.js';
+import {ConsoleFilter, FilterType} from './ConsoleFilter.js';
 import {ConsolePinPane} from './ConsolePinPane.js';
 import {ConsolePrompt, Events as ConsolePromptEvents} from './ConsolePrompt.js';
 import {ConsoleSidebar, Events} from './ConsoleSidebar.js';

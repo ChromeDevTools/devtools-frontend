@@ -4,9 +4,11 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 
-import {Condition, WaitForNavigationCondition} from './Conditions.js';
-import {RecordingSession} from './RecordingSession.js';
-import {ChangeStep, ClickStep, CloseStep, Step, StepFrameContext, SubmitStep} from './Steps.js';
+import type {Condition} from './Conditions.js';
+import {WaitForNavigationCondition} from './Conditions.js';
+import type {RecordingSession} from './RecordingSession.js';
+import type {Step} from './Steps.js';
+import {ChangeStep, ClickStep, CloseStep, StepFrameContext, SubmitStep} from './Steps.js';
 
 interface Payload {
   type: string;

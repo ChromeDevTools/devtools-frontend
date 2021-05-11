@@ -3,9 +3,10 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import type * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
-import {assertInstanceOf, Event, LONG_TASK_THRESHOLD, Marker, MarkerType, Timebox, WebVitalsTimeline} from './WebVitalsTimeline.js';
+import type {Event, Marker, Timebox, WebVitalsTimeline} from './WebVitalsTimeline.js';
+import {assertInstanceOf, LONG_TASK_THRESHOLD, MarkerType} from './WebVitalsTimeline.js';
 
 type GetMarkerTypeCallback = (event: Event) => MarkerType;
 type GetMarkerOverlayCallback = (marker: Marker) => LitHtml.TemplateResult;

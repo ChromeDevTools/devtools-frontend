@@ -12,8 +12,10 @@ import {FrameManager} from './FrameManager.js';
 import {IOModel} from './IOModel.js';
 import {MultitargetNetworkManager} from './NetworkManager.js';
 import {NetworkManager} from './NetworkManager.js';
-import {Events as ResourceTreeModelEvents, ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
-import {Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {ResourceTreeFrame} from './ResourceTreeModel.js';
+import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
+import type {Target} from './SDKModel.js';
+import {TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

@@ -49,9 +49,10 @@ import {GlassPane, PointerEventsBehavior, SizeBehavior} from './GlassPane.js';
 import {Icon} from './Icon.js';
 import {KeyboardShortcut} from './KeyboardShortcut.js';
 import * as ThemeSupport from './theme_support/theme_support.js';  // eslint-disable-line rulesdir/es_modules_import
-import {Toolbar, ToolbarButton} from './Toolbar.js';  // eslint-disable-line no-unused-vars
+import type {ToolbarButton} from './Toolbar.js';
+import {Toolbar} from './Toolbar.js';  // eslint-disable-line no-unused-vars
 import {Tooltip} from './Tooltip.js';
-import {TreeOutline} from './Treeoutline.js';  // eslint-disable-line no-unused-vars
+import type {TreeOutline} from './Treeoutline.js'; // eslint-disable-line no-unused-vars
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
 import {focusChanged} from './utils/focus-changed.js';
 import {injectCoreStyles} from './utils/inject-core-styles.js';

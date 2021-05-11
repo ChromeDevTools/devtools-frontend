@@ -5,14 +5,14 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 
-import * as Common from '../../core/common/common.js';  // eslint-disable-line no-unused-vars
+import type * as Common from '../../core/common/common.js'; // eslint-disable-line no-unused-vars
 import * as i18n from '../../core/i18n/i18n.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {Keys} from './KeyboardShortcut.js';
 import {createTextButton} from './UIUtils.js';
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
-import {Widget} from './Widget.js';  // eslint-disable-line no-unused-vars
+import type {Widget} from './Widget.js'; // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

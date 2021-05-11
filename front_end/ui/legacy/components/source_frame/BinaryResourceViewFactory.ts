@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../../../../core/common/common.js';               // eslint-disable-line no-unused-vars
+import type * as Common from '../../../../core/common/common.js';          // eslint-disable-line no-unused-vars
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
-import * as UI from '../../legacy.js';                                     // eslint-disable-line no-unused-vars
+import type * as UI from '../../legacy.js';                                // eslint-disable-line no-unused-vars
 
 import {ResourceSourceFrame} from './ResourceSourceFrame.js';
 

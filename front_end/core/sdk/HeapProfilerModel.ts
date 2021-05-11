@@ -4,10 +4,11 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import {DebuggerModel} from './DebuggerModel.js';            // eslint-disable-line no-unused-vars
-import {RemoteObject} from './RemoteObject.js';              // eslint-disable-line no-unused-vars
+import type {DebuggerModel} from './DebuggerModel.js';       // eslint-disable-line no-unused-vars
+import type {RemoteObject} from './RemoteObject.js';         // eslint-disable-line no-unused-vars
 import {RuntimeModel} from './RuntimeModel.js';              // eslint-disable-line no-unused-vars
-import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {Target} from './SDKModel.js';
+import {Capability, SDKModel} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 export class HeapProfilerModel extends SDKModel {
   _enabled: boolean;

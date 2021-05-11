@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {NetworkRequest} from './NetworkRequest.js';
+import type {NetworkRequest} from './NetworkRequest.js';
 
 export class PageLoad {
   id: number;

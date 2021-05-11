@@ -38,7 +38,7 @@ import * as NetworkComponents from './components/components.js';
 
 import {EventSourceMessagesView} from './EventSourceMessagesView.js';
 import type {UIHeaderSection} from './NetworkSearchScope.js';
-import {NetworkTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
+import type {NetworkTimeCalculator} from './NetworkTimeCalculator.js'; // eslint-disable-line no-unused-vars
 import {RequestCookiesView} from './RequestCookiesView.js';
 import {RequestHeadersView} from './RequestHeadersView.js';
 import {RequestInitiatorView} from './RequestInitiatorView.js';

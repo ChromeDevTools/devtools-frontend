@@ -35,9 +35,10 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
 
-import {Breakpoint, BreakpointManager} from './BreakpointManager.js';  // eslint-disable-line no-unused-vars
+import type {Breakpoint} from './BreakpointManager.js';
+import {BreakpointManager} from './BreakpointManager.js';  // eslint-disable-line no-unused-vars
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
-import {DebuggerSourceMapping, DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
+import type {DebuggerSourceMapping, DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js'; // eslint-disable-line no-unused-vars
 import {NetworkProject} from './NetworkProject.js';
 import {metadataForURL} from './ResourceUtils.js';
 

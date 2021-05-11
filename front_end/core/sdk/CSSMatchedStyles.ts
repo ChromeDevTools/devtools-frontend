@@ -7,11 +7,11 @@
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 
 import {cssMetadata, CustomVariableRegex, VariableRegex} from './CSSMetadata.js';
-import {CSSModel} from './CSSModel.js';        // eslint-disable-line no-unused-vars
-import {CSSProperty} from './CSSProperty.js';  // eslint-disable-line no-unused-vars
+import type {CSSModel} from './CSSModel.js';       // eslint-disable-line no-unused-vars
+import type {CSSProperty} from './CSSProperty.js'; // eslint-disable-line no-unused-vars
 import {CSSKeyframesRule, CSSStyleRule} from './CSSRule.js';
 import {CSSStyleDeclaration, Type} from './CSSStyleDeclaration.js';
-import {DOMNode} from './DOMModel.js';  // eslint-disable-line no-unused-vars
+import type {DOMNode} from './DOMModel.js'; // eslint-disable-line no-unused-vars
 
 export class CSSMatchedStyles {
   _cssModel: CSSModel;

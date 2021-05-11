@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import {assert} from 'chai';
 import {performance} from 'perf_hooks';
-import * as puppeteer from 'puppeteer';
+import type * as puppeteer from 'puppeteer';
 
 import {$, $$, click, getBrowserAndPages, step, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
 

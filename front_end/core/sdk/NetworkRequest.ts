@@ -35,7 +35,8 @@ import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 
-import {Attributes, Cookie} from './Cookie.js';  // eslint-disable-line no-unused-vars
+import type {Cookie} from './Cookie.js';
+import {Attributes} from './Cookie.js';  // eslint-disable-line no-unused-vars
 import {CookieParser} from './CookieParser.js';
 import {NetworkManager} from './NetworkManager.js';
 import {Type} from './SDKModel.js';

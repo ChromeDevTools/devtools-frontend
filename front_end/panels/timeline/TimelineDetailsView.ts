@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../../core/common/common.js';  // eslint-disable-line no-unused-vars
+import type * as Common from '../../core/common/common.js'; // eslint-disable-line no-unused-vars
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
@@ -12,11 +12,14 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {EventsTimelineTreeView} from './EventsTimelineTreeView.js';
-import {Events, PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
+import type {PerformanceModel} from './PerformanceModel.js';
+import {Events} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
 import {TimelineLayersView} from './TimelineLayersView.js';
 import {TimelinePaintProfilerView} from './TimelinePaintProfilerView.js';
-import {TimelineModeViewDelegate, TimelineSelection} from './TimelinePanel.js';  // eslint-disable-line no-unused-vars
-import {BottomUpTimelineTreeView, CallTreeTimelineTreeView, TimelineTreeView} from './TimelineTreeView.js';  // eslint-disable-line no-unused-vars
+import type {TimelineModeViewDelegate} from './TimelinePanel.js';
+import {TimelineSelection} from './TimelinePanel.js';  // eslint-disable-line no-unused-vars
+import type {TimelineTreeView} from './TimelineTreeView.js';
+import {BottomUpTimelineTreeView, CallTreeTimelineTreeView} from './TimelineTreeView.js';  // eslint-disable-line no-unused-vars
 import {TimelineDetailsContentHelper, TimelineUIUtils} from './TimelineUIUtils.js';
 
 const UIStrings = {

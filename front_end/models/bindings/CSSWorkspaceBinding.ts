@@ -7,9 +7,10 @@
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
+import type * as Workspace from '../workspace/workspace.js'; // eslint-disable-line no-unused-vars
 
-import {LiveLocation as LiveLocationInterface, LiveLocationPool, LiveLocationWithPool} from './LiveLocation.js';  // eslint-disable-line no-unused-vars
+import type {LiveLocation as LiveLocationInterface, LiveLocationPool} from './LiveLocation.js';
+import {LiveLocationWithPool} from './LiveLocation.js';  // eslint-disable-line no-unused-vars
 import {ResourceMapping} from './ResourceMapping.js';
 import {SASSSourceMapping} from './SASSSourceMapping.js';
 import {StylesSourceMapping} from './StylesSourceMapping.js';

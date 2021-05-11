@@ -30,8 +30,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import {DebuggerModel, FunctionDetails} from './DebuggerModel.js';  // eslint-disable-line no-unused-vars
-import {RuntimeModel} from './RuntimeModel.js';                     // eslint-disable-line no-unused-vars
+import type {DebuggerModel, FunctionDetails} from './DebuggerModel.js'; // eslint-disable-line no-unused-vars
+import type {RuntimeModel} from './RuntimeModel.js';                    // eslint-disable-line no-unused-vars
 
 export class RemoteObject {
   /**

@@ -10,8 +10,8 @@ import * as HostModule from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 
 import {cssMetadata, GridAreaRowRegex} from './CSSMetadata.js';
-import {Edit} from './CSSModel.js';                            // eslint-disable-line no-unused-vars
-import {CSSStyleDeclaration} from './CSSStyleDeclaration.js';  // eslint-disable-line no-unused-vars
+import type {Edit} from './CSSModel.js';                           // eslint-disable-line no-unused-vars
+import type {CSSStyleDeclaration} from './CSSStyleDeclaration.js'; // eslint-disable-line no-unused-vars
 
 export class CSSProperty {
   ownerStyle: CSSStyleDeclaration;

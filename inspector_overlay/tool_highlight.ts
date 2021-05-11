@@ -30,11 +30,15 @@
 
 import {contrastRatio, contrastRatioAPCA, getAPCAThreshold, getContrastThreshold} from '../front_end/core/common/ColorUtils.js';
 
-import {Bounds, constrainNumber, createChild, createElement, createTextChild, ellipsify, Overlay, PathCommands, ResetData} from './common.js';
-import {drawPath, emptyBounds, formatColor, formatRgba, parseHexa, PathBounds} from './highlight_common.js';
-import {drawLayoutFlexContainerHighlight, drawLayoutFlexItemHighlight, FlexContainerHighlight, FlexItemHighlight} from './highlight_flex_common.js';
-import {drawLayoutGridHighlight, GridHighlight} from './highlight_grid_common.js';
-import {ScrollSnapHighlight} from './highlight_scroll_snap.js';
+import type {Bounds, PathCommands, ResetData} from './common.js';
+import {constrainNumber, createChild, createElement, createTextChild, ellipsify, Overlay} from './common.js';
+import type {PathBounds} from './highlight_common.js';
+import {drawPath, emptyBounds, formatColor, formatRgba, parseHexa} from './highlight_common.js';
+import type {FlexContainerHighlight, FlexItemHighlight} from './highlight_flex_common.js';
+import {drawLayoutFlexContainerHighlight, drawLayoutFlexItemHighlight} from './highlight_flex_common.js';
+import type {GridHighlight} from './highlight_grid_common.js';
+import {drawLayoutGridHighlight} from './highlight_grid_common.js';
+import type {ScrollSnapHighlight} from './highlight_scroll_snap.js';
 import {PersistentOverlay} from './tool_persistent.js';
 
 interface Path {

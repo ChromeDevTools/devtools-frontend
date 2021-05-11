@@ -7,8 +7,9 @@
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 
-import {NameValue} from './NetworkRequest.js';               // eslint-disable-line no-unused-vars
-import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {NameValue} from './NetworkRequest.js'; // eslint-disable-line no-unused-vars
+import type {Target} from './SDKModel.js';
+import {Capability, SDKModel} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 import {Events as SecurityOriginManagerEvents, SecurityOriginManager} from './SecurityOriginManager.js';
 
 const UIStrings = {

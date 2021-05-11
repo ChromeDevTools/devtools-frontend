@@ -38,7 +38,8 @@ import * as Logs from '../../models/logs/logs.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {Events, NetworkTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
+import type {NetworkTimeCalculator} from './NetworkTimeCalculator.js';
+import {Events} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

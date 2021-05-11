@@ -12,7 +12,8 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
 import {defaultMobileScaleFactor, DeviceModeModel, Type, UA} from './DeviceModeModel.js';
-import {EmulatedDevice, EmulatedDevicesList, Events, Horizontal, Mode, Vertical} from './EmulatedDevices.js';  // eslint-disable-line no-unused-vars
+import type {Mode} from './EmulatedDevices.js';
+import {EmulatedDevice, EmulatedDevicesList, Events, Horizontal, Vertical} from './EmulatedDevices.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

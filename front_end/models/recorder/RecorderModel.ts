@@ -11,7 +11,8 @@ import type * as Workspace from '../workspace/workspace.js';
 import {RecordingPlayer} from './RecordingPlayer.js';
 
 import {RecordingSession} from './RecordingSession.js';
-import {ClickStep, NavigationStep, Step, StepFrameContext, SubmitStep, ChangeStep, CloseStep, EmulateNetworkConditions} from './Steps.js';
+import type {Step} from './Steps.js';
+import {ClickStep, NavigationStep, StepFrameContext, SubmitStep, ChangeStep, CloseStep, EmulateNetworkConditions} from './Steps.js';
 
 const enum RecorderState {
   Recording = 'Recording',

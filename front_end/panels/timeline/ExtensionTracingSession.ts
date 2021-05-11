@@ -4,11 +4,12 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as SDK from '../../core/sdk/sdk.js';                         // eslint-disable-line no-unused-vars
-import * as Extensions from '../../models/extensions/extensions.js';  // eslint-disable-line no-unused-vars
+import type * as SDK from '../../core/sdk/sdk.js';                        // eslint-disable-line no-unused-vars
+import type * as Extensions from '../../models/extensions/extensions.js'; // eslint-disable-line no-unused-vars
 
-import {PerformanceModel} from './PerformanceModel.js';      // eslint-disable-line no-unused-vars
-import {Client, TimelineLoader} from './TimelineLoader.js';  // eslint-disable-line no-unused-vars
+import type {PerformanceModel} from './PerformanceModel.js'; // eslint-disable-line no-unused-vars
+import type {Client} from './TimelineLoader.js';
+import {TimelineLoader} from './TimelineLoader.js';  // eslint-disable-line no-unused-vars
 
 export class ExtensionTracingSession implements Extensions.ExtensionTraceProvider.TracingSession, Client {
   _provider: Extensions.ExtensionTraceProvider.ExtensionTraceProvider;

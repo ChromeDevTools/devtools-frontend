@@ -8,8 +8,8 @@ import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Network from '../../panels/network/network.js';
 
 import {AffectedResourcesView} from './AffectedResourcesView.js';
-import {AggregatedIssue} from './IssueAggregator.js';
-import {IssueView} from './IssueView.js';
+import type {AggregatedIssue} from './IssueAggregator.js';
+import type {IssueView} from './IssueView.js';
 
 const UIStrings = {
   /**

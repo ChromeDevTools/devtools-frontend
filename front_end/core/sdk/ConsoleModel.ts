@@ -35,13 +35,17 @@ import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 
 import {FrontendMessageSource, FrontendMessageType} from './ConsoleModelTypes.js';
-import {CPUProfilerModel, EventData, Events as CPUProfilerModelEvents} from './CPUProfilerModel.js';  // eslint-disable-line no-unused-vars
-import {Events as DebuggerModelEvents, Location} from './DebuggerModel.js';  // eslint-disable-line no-unused-vars
+import type {EventData} from './CPUProfilerModel.js';
+import {CPUProfilerModel, Events as CPUProfilerModelEvents} from './CPUProfilerModel.js';  // eslint-disable-line no-unused-vars
+import type {Location} from './DebuggerModel.js';
+import {Events as DebuggerModelEvents} from './DebuggerModel.js';  // eslint-disable-line no-unused-vars
 import {LogModel} from './LogModel.js';
 import {RemoteObject} from './RemoteObject.js';
 import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
-import {Events as RuntimeModelEvents, ExecutionContext, RuntimeModel} from './RuntimeModel.js';  // eslint-disable-line no-unused-vars
-import {Observer, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {ExecutionContext} from './RuntimeModel.js';
+import {Events as RuntimeModelEvents, RuntimeModel} from './RuntimeModel.js';  // eslint-disable-line no-unused-vars
+import type {Observer, Target} from './SDKModel.js';
+import {TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

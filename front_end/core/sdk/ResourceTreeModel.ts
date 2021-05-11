@@ -33,12 +33,15 @@
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 
-import {DeferredDOMNode, DOMModel, DOMNode} from './DOMModel.js';  // eslint-disable-line no-unused-vars
-import {Events as NetworkManagerEvents, NetworkManager, RequestUpdateDroppedEventData} from './NetworkManager.js';  // eslint-disable-line no-unused-vars
-import {NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
+import type {DeferredDOMNode, DOMNode} from './DOMModel.js';
+import {DOMModel} from './DOMModel.js';  // eslint-disable-line no-unused-vars
+import type {RequestUpdateDroppedEventData} from './NetworkManager.js';
+import {Events as NetworkManagerEvents, NetworkManager} from './NetworkManager.js';  // eslint-disable-line no-unused-vars
+import type {NetworkRequest} from './NetworkRequest.js'; // eslint-disable-line no-unused-vars
 import {Resource} from './Resource.js';
 import {ExecutionContext, RuntimeModel} from './RuntimeModel.js';
-import {Capability, SDKModel, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {Target} from './SDKModel.js';
+import {Capability, SDKModel, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 import {SecurityOriginManager} from './SecurityOriginManager.js';
 
 export class ResourceTreeModel extends SDKModel {

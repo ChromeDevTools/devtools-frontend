@@ -30,13 +30,14 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../../core/common/common.js';  // eslint-disable-line no-unused-vars
+import type * as Common from '../../core/common/common.js'; // eslint-disable-line no-unused-vars
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
-import {LiveLocation, LiveLocationPool} from './LiveLocation.js';  // eslint-disable-line no-unused-vars
+import type {LiveLocation} from './LiveLocation.js';
+import {LiveLocationPool} from './LiveLocation.js';  // eslint-disable-line no-unused-vars
 
 const debuggerModelToMessageHelperMap =
     new WeakMap<SDK.DebuggerModel.DebuggerModel, PresentationConsoleMessageHelper>();

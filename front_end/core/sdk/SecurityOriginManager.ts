@@ -4,7 +4,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {Target} from './SDKModel.js';
+import {Capability, SDKModel} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 export class SecurityOriginManager extends SDKModel {
   _mainSecurityOrigin: string;

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import * as puppeteer from 'puppeteer';
+import type * as puppeteer from 'puppeteer';
 
 import {$$, click, hasClass, waitFor, waitForClass, waitForFunction} from '../../shared/helper.js';
 import {openPanelViaMoreTools} from './settings-helpers';

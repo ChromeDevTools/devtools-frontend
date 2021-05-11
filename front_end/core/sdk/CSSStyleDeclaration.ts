@@ -6,10 +6,10 @@
 
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import {cssMetadata} from './CSSMetadata.js';
-import {CSSModel, Edit} from './CSSModel.js';  // eslint-disable-line no-unused-vars
+import type {CSSModel, Edit} from './CSSModel.js'; // eslint-disable-line no-unused-vars
 import {CSSProperty} from './CSSProperty.js';
-import {CSSRule} from './CSSRule.js';  // eslint-disable-line no-unused-vars
-import {Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {CSSRule} from './CSSRule.js'; // eslint-disable-line no-unused-vars
+import type {Target} from './SDKModel.js'; // eslint-disable-line no-unused-vars
 
 export class CSSStyleDeclaration {
   _cssModel: CSSModel;

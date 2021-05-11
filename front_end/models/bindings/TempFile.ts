@@ -32,9 +32,10 @@
 
 import * as Common from '../../core/common/common.js';  // eslint-disable-line no-unused-vars
 
-import * as SDK from '../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import type * as SDK from '../../core/sdk/sdk.js'; // eslint-disable-line no-unused-vars
 
-import {ChunkedFileReader, ChunkedReader} from './FileUtils.js';  // eslint-disable-line no-unused-vars
+import type {ChunkedReader} from './FileUtils.js';
+import {ChunkedFileReader} from './FileUtils.js';  // eslint-disable-line no-unused-vars
 
 export class TempFile {
   _lastBlob: Blob|null;

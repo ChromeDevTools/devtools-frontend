@@ -4,9 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import {DOMModel, DOMNode} from './DOMModel.js';      // eslint-disable-line no-unused-vars
-import {SnapshotWithRect} from './PaintProfiler.js';  // eslint-disable-line no-unused-vars
-import {Target} from './SDKModel.js';                 // eslint-disable-line no-unused-vars
+import type {DOMNode} from './DOMModel.js';
+import {DOMModel} from './DOMModel.js';                   // eslint-disable-line no-unused-vars
+import type {SnapshotWithRect} from './PaintProfiler.js'; // eslint-disable-line no-unused-vars
+import type {Target} from './SDKModel.js';                // eslint-disable-line no-unused-vars
 
 export interface Layer {
   id(): string;

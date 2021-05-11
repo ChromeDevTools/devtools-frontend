@@ -56,7 +56,8 @@ import {ElementsSidebarPane} from './ElementsSidebarPane.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {StyleEditorWidget} from './StyleEditorWidget.js';
 import {StylePropertyHighlighter} from './StylePropertyHighlighter.js';
-import {Context, StylePropertyTreeElement} from './StylePropertyTreeElement.js';  // eslint-disable-line no-unused-vars
+import type {Context} from './StylePropertyTreeElement.js';
+import {StylePropertyTreeElement} from './StylePropertyTreeElement.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

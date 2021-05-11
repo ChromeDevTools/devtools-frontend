@@ -10,9 +10,11 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as Marked from '../../third_party/marked/marked.js';
 
 import {ContentSecurityPolicyIssue, trustedTypesPolicyViolationCode, trustedTypesSinkViolationCode} from './ContentSecurityPolicyIssue.js';
-import {Issue, IssueKind, toZeroBasedLocation} from './Issue.js';
+import type {Issue, IssueKind} from './Issue.js';
+import {toZeroBasedLocation} from './Issue.js';
 import * as IssuesManager from './IssuesManager.js';
-import {findTitleFromMarkdownAst, getMarkdownFileContent, MarkdownIssueDescription} from './MarkdownIssueDescription.js';
+import type {MarkdownIssueDescription} from './MarkdownIssueDescription.js';
+import {findTitleFromMarkdownAst, getMarkdownFileContent} from './MarkdownIssueDescription.js';
 
 export class SourceFrameIssuesManager {
   private issuesManager: IssuesManager.IssuesManager;

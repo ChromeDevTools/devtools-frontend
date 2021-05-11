@@ -7,10 +7,10 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {ApplicationPanelSidebar} from './ApplicationPanelSidebar.js';
+import type {ApplicationPanelSidebar} from './ApplicationPanelSidebar.js';
 import {ApplicationPanelTreeElement, ExpandableApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import {BackForwardCacheView} from './BackForwardCacheView.js';
-import {ResourcesPanel} from './ResourcesPanel.js';
+import type {ResourcesPanel} from './ResourcesPanel.js';
 import {ServiceWorkerCacheView} from './ServiceWorkerCacheViews.js';
 
 const UIStrings = {

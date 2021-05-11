@@ -8,7 +8,8 @@ import './CSSAngleSwatch.js';
 import * as ComponentHelpers from '../../../components/helpers/helpers.js';
 import * as LitHtml from '../../../lit-html/lit-html.js';
 
-import {Angle, AngleUnit, convertAngleUnit, getNewAngleFromEvent, getNextUnit, parseText, roundAngleByUnit} from './CSSAngleUtils.js';
+import type {Angle} from './CSSAngleUtils.js';
+import {AngleUnit, convertAngleUnit, getNewAngleFromEvent, getNextUnit, parseText, roundAngleByUnit} from './CSSAngleUtils.js';
 
 import type {CSSAngleEditorData} from './CSSAngleEditor.js';
 import type {CSSAngleSwatchData} from './CSSAngleSwatch.js';

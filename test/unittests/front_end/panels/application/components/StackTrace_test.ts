@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
+import type * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
 import * as ApplicationComponents from '../../../../../../front_end/panels/application/components/components.js';
 import * as ExpandableList from '../../../../../../front_end/ui/components/expandable_list/expandable_list.js';
 import * as Components from '../../../../../../front_end/ui/legacy/components/utils/utils.js';

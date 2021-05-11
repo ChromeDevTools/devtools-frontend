@@ -21,8 +21,8 @@ import type {ProfileFlameChartDataProvider} from './CPUProfileFlameChart.js';
 import {CPUProfileFlameChart} from './CPUProfileFlameChart.js';
 import type {Formatter, ProfileDataGridNode} from './ProfileDataGrid.js';
 import {ProfileDataGridTree} from './ProfileDataGrid.js';
-import type {DataDisplayDelegate} from './ProfileHeader.js';
-import {Events, ProfileHeader, ProfileType} from './ProfileHeader.js';
+import type {DataDisplayDelegate, ProfileType} from './ProfileHeader.js';
+import {Events, ProfileHeader} from './ProfileHeader.js';
 import {ProfileSidebarTreeElement} from './ProfileSidebarTreeElement.js';
 import {TopDownProfileDataGridTree} from './TopDownProfileDataGrid.js';
 

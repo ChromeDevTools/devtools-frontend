@@ -4,12 +4,12 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../../core/common/common.js';
-import * as TextUtils from '../../models/text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
+import type * as Common from '../../core/common/common.js';
+import type * as TextUtils from '../../models/text_utils/text_utils.js'; // eslint-disable-line no-unused-vars
 
-import {AnchorBehavior} from './GlassPane.js';
-import {Suggestion} from './SuggestBox.js';  // eslint-disable-line no-unused-vars
-import {Widget} from './Widget.js';          // eslint-disable-line no-unused-vars
+import type {AnchorBehavior} from './GlassPane.js';
+import type {Suggestion} from './SuggestBox.js'; // eslint-disable-line no-unused-vars
+import type {Widget} from './Widget.js';         // eslint-disable-line no-unused-vars
 
 export interface TextEditorFactory {
   createEditor(options: Options): TextEditor;

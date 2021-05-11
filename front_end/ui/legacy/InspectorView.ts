@@ -35,23 +35,24 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 
-import {ActionDelegate as ActionDelegateInterface} from './ActionRegistration.js';  // eslint-disable-line no-unused-vars
-import {Context} from './Context.js';          // eslint-disable-line no-unused-vars
-import {ContextMenu} from './ContextMenu.js';  // eslint-disable-line no-unused-vars
+import type {ActionDelegate as ActionDelegateInterface} from './ActionRegistration.js'; // eslint-disable-line no-unused-vars
+import type {Context} from './Context.js';         // eslint-disable-line no-unused-vars
+import type {ContextMenu} from './ContextMenu.js'; // eslint-disable-line no-unused-vars
 import {Dialog} from './Dialog.js';
 import {DockController, State} from './DockController.js';
 import {GlassPane} from './GlassPane.js';
-import {Icon} from './Icon.js';  // eslint-disable-line no-unused-vars
+import type {Icon} from './Icon.js'; // eslint-disable-line no-unused-vars
 import {Infobar, Type as InfobarType} from './Infobar.js';
 import {KeyboardShortcut} from './KeyboardShortcut.js';
-import {Panel} from './Panel.js';  // eslint-disable-line no-unused-vars
+import type {Panel} from './Panel.js'; // eslint-disable-line no-unused-vars
 import {SplitWidget} from './SplitWidget.js';
 import {Events as TabbedPaneEvents} from './TabbedPane.js';
-import {TabbedPane, TabbedPaneTabDelegate} from './TabbedPane.js';  // eslint-disable-line no-unused-vars
+import type {TabbedPane, TabbedPaneTabDelegate} from './TabbedPane.js'; // eslint-disable-line no-unused-vars
 import {ToolbarButton} from './Toolbar.js';
-import {TabbedViewLocation, View, ViewLocation, ViewLocationResolver} from './View.js';  // eslint-disable-line no-unused-vars
+import type {TabbedViewLocation, View, ViewLocation, ViewLocationResolver} from './View.js'; // eslint-disable-line no-unused-vars
 import {ViewManager} from './ViewManager.js';
-import {VBox, Widget, WidgetFocusRestorer} from './Widget.js';  // eslint-disable-line no-unused-vars
+import type {Widget} from './Widget.js';
+import {VBox, WidgetFocusRestorer} from './Widget.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

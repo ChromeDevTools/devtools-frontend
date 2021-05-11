@@ -43,7 +43,7 @@ import {linkifyDeferredNodeReference} from './DOMLinkifier.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import {ElementsTreeElement, InitialChildrenLimit} from './ElementsTreeElement.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
-import {MarkerDecoratorRegistration} from './MarkerDecorator.js';  // eslint-disable-line no-unused-vars
+import type {MarkerDecoratorRegistration} from './MarkerDecorator.js'; // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

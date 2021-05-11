@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import * as IssueManager from '../../../../../front_end/models/issues_manager/issues_manager.js';
-import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import type * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import {StubIssue} from './StubIssue.js';
 
 describe('Issue', () => {

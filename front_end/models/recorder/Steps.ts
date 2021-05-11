@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as SDK from '../../core/sdk/sdk.js';
-import {Condition} from './Conditions.js';
+import type * as SDK from '../../core/sdk/sdk.js';
+import type {Condition} from './Conditions.js';
 
 export type Script = (string|null)[];
 

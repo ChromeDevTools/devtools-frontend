@@ -37,7 +37,8 @@ import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
-import {CanShowSurveyResult, ContextMenuDescriptor, EnumeratedHistogram, EventDescriptors, Events, ExtensionDescriptor, InspectorFrontendHostAPI, LoadNetworkResourceResult, ShowSurveyResult} from './InspectorFrontendHostAPI.js';  // eslint-disable-line no-unused-vars
+import type {CanShowSurveyResult, ContextMenuDescriptor, EnumeratedHistogram, ExtensionDescriptor, InspectorFrontendHostAPI, LoadNetworkResourceResult, ShowSurveyResult} from './InspectorFrontendHostAPI.js';
+import {EventDescriptors, Events} from './InspectorFrontendHostAPI.js';  // eslint-disable-line no-unused-vars
 import {streamWrite as resourceLoaderStreamWrite} from './ResourceLoader.js';
 
 const UIStrings = {

@@ -4,10 +4,11 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import {TabbedPane} from './TabbedPane.js';                   // eslint-disable-line no-unused-vars
-import {ToolbarItem, ToolbarMenuButton} from './Toolbar.js';  // eslint-disable-line no-unused-vars
+import type {TabbedPane} from './TabbedPane.js';                  // eslint-disable-line no-unused-vars
+import type {ToolbarItem, ToolbarMenuButton} from './Toolbar.js'; // eslint-disable-line no-unused-vars
 import {ViewManager} from './ViewManager.js';
-import {VBox, Widget} from './Widget.js';  // eslint-disable-line no-unused-vars
+import type {Widget} from './Widget.js';
+import {VBox} from './Widget.js';  // eslint-disable-line no-unused-vars
 export interface View {
   viewId(): string;
 

@@ -39,8 +39,9 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
-import {Icon} from './Icon.js';                            // eslint-disable-line no-unused-vars
-import {Config, InplaceEditor} from './InplaceEditor.js';  // eslint-disable-line no-unused-vars
+import type {Icon} from './Icon.js'; // eslint-disable-line no-unused-vars
+import type {Config} from './InplaceEditor.js';
+import {InplaceEditor} from './InplaceEditor.js';  // eslint-disable-line no-unused-vars
 import {Keys} from './KeyboardShortcut.js';
 import {Tooltip} from './Tooltip.js';
 import {deepElementFromPoint, enclosingNodeOrSelfWithNodeNameInArray, isEditing} from './UIUtils.js';

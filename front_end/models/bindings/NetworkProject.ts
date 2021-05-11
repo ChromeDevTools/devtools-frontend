@@ -32,7 +32,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
+import type * as Workspace from '../workspace/workspace.js'; // eslint-disable-line no-unused-vars
 
 const uiSourceCodeToAttributionMap = new WeakMap<Workspace.UISourceCode.UISourceCode, Map<string, {
                                                    frame: SDK.ResourceTreeModel.ResourceTreeFrame,

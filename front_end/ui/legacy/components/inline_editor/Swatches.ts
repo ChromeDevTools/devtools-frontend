@@ -9,7 +9,7 @@ import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as UI from '../../legacy.js';
 
 import {ColorSwatch} from './ColorSwatch.js';
-import {CSSShadowModel} from './CSSShadowModel.js';  // eslint-disable-line no-unused-vars
+import type {CSSShadowModel} from './CSSShadowModel.js'; // eslint-disable-line no-unused-vars
 
 export class BezierSwatch extends HTMLSpanElement {
   _iconElement: UI.Icon.Icon;

@@ -13,9 +13,9 @@ import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
+import type {PerformanceModel} from './PerformanceModel.js'; // eslint-disable-line no-unused-vars
 import {TimelineRegExp} from './TimelineFilters.js';
-import {TimelineSelection} from './TimelinePanel.js';  // eslint-disable-line no-unused-vars
+import type {TimelineSelection} from './TimelinePanel.js'; // eslint-disable-line no-unused-vars
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 const UIStrings = {

@@ -32,14 +32,15 @@
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
-import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
+import type * as ProtocolClient from '../protocol_client/protocol_client.js'; // eslint-disable-line no-unused-vars
 
-import {DebuggerModel, Location} from './DebuggerModel.js';         // eslint-disable-line no-unused-vars
+import type {DebuggerModel} from './DebuggerModel.js';
+import {Location} from './DebuggerModel.js';  // eslint-disable-line no-unused-vars
 import type {FrameAssociated} from './FrameAssociated.js';
-import {PageResourceLoadInitiator} from './PageResourceLoader.js';  // eslint-disable-line no-unused-vars
+import type {PageResourceLoadInitiator} from './PageResourceLoader.js'; // eslint-disable-line no-unused-vars
 import {ResourceTreeModel} from './ResourceTreeModel.js';
-import {ExecutionContext} from './RuntimeModel.js';  // eslint-disable-line no-unused-vars
-import {Target} from './SDKModel.js';                // eslint-disable-line no-unused-vars
+import type {ExecutionContext} from './RuntimeModel.js'; // eslint-disable-line no-unused-vars
+import type {Target} from './SDKModel.js';               // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

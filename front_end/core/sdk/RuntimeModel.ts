@@ -33,11 +33,14 @@
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 
-import {DebuggerModel, FunctionDetails} from './DebuggerModel.js';  // eslint-disable-line no-unused-vars
+import type {FunctionDetails} from './DebuggerModel.js';
+import {DebuggerModel} from './DebuggerModel.js';  // eslint-disable-line no-unused-vars
 import {HeapProfilerModel} from './HeapProfilerModel.js';
-import {RemoteFunction, RemoteObject, RemoteObjectImpl,  // eslint-disable-line no-unused-vars
-        RemoteObjectProperty, ScopeRef, ScopeRemoteObject} from './RemoteObject.js';  // eslint-disable-line no-unused-vars
-import {Capability, SDKModel, Target, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {ScopeRef} from './RemoteObject.js';
+import {RemoteFunction, RemoteObject, RemoteObjectImpl,                     // eslint-disable-line no-unused-vars
+        RemoteObjectProperty, ScopeRemoteObject} from './RemoteObject.js';  // eslint-disable-line no-unused-vars
+import type {Target} from './SDKModel.js';
+import {Capability, SDKModel, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 export class RuntimeModel extends SDKModel {
   _agent: ProtocolProxyApi.RuntimeApi;

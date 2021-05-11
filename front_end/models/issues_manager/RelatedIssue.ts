@@ -6,7 +6,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import {Issue, IssueCategory} from './Issue.js';
+import type {Issue, IssueCategory} from './Issue.js';
 import {IssuesManager} from './IssuesManager.js';
 
 export type IssuesAssociatable = SDK.NetworkRequest.NetworkRequest|SDK.Cookie.Cookie;

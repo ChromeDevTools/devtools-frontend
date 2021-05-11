@@ -13,8 +13,8 @@ import * as ColorPicker from '../../ui/legacy/components/color_picker/color_pick
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {StylePropertyTreeElement} from './StylePropertyTreeElement.js';            // eslint-disable-line no-unused-vars
-import {StylePropertiesSection, StylesSidebarPane} from './StylesSidebarPane.js';  // eslint-disable-line no-unused-vars
+import type {StylePropertyTreeElement} from './StylePropertyTreeElement.js'; // eslint-disable-line no-unused-vars
+import type {StylePropertiesSection, StylesSidebarPane} from './StylesSidebarPane.js'; // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

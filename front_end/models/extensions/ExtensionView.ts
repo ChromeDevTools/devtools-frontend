@@ -32,7 +32,7 @@
 
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {ExtensionServer} from './ExtensionServer.js';  // eslint-disable-line no-unused-vars
+import type {ExtensionServer} from './ExtensionServer.js'; // eslint-disable-line no-unused-vars
 
 export class ExtensionView extends UI.Widget.Widget {
   _server: ExtensionServer;

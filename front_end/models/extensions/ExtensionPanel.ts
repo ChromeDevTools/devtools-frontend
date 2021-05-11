@@ -34,7 +34,7 @@ import * as _ProtocolClient from '../../core/protocol_client/protocol_client.js'
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {ExtensionServer} from './ExtensionServer.js';  // eslint-disable-line no-unused-vars
+import type {ExtensionServer} from './ExtensionServer.js'; // eslint-disable-line no-unused-vars
 import {ExtensionNotifierView, ExtensionView} from './ExtensionView.js';
 
 export class ExtensionPanel extends UI.Panel.Panel implements UI.SearchableView.Searchable {

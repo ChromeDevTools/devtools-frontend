@@ -34,14 +34,15 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
 
-import {Action, Events as ActionEvents} from './ActionRegistration.js';  // eslint-disable-line no-unused-vars
+import type {Action} from './ActionRegistration.js';
+import {Events as ActionEvents} from './ActionRegistration.js';  // eslint-disable-line no-unused-vars
 import {ActionRegistry} from './ActionRegistry.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu} from './ContextMenu.js';
 import {GlassPane, PointerEventsBehavior} from './GlassPane.js';
 import {Icon} from './Icon.js';
 import {bindCheckbox} from './SettingsUI.js';
-import {Suggestion} from './SuggestBox.js';
+import type {Suggestion} from './SuggestBox.js';
 import {Events as TextPromptEvents, TextPrompt} from './TextPrompt.js';
 import {Tooltip} from './Tooltip.js';
 import {CheckboxLabel, LongClickController} from './UIUtils.js';

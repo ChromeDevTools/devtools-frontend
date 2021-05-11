@@ -11,7 +11,8 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {EmulatedDevice, Horizontal, HorizontalSpanned, Mode, Vertical, VerticalSpanned} from './EmulatedDevices.js';  // eslint-disable-line no-unused-vars
+import type {EmulatedDevice, Mode} from './EmulatedDevices.js';
+import {Horizontal, HorizontalSpanned, Vertical, VerticalSpanned} from './EmulatedDevices.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

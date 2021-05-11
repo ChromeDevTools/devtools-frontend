@@ -30,15 +30,17 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as TextUtils from '../../models/text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
+import type * as TextUtils from '../../models/text_utils/text_utils.js'; // eslint-disable-line no-unused-vars
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 
 import {Cookie} from './Cookie.js';
-import {BlockedCookieWithReason, ContentData, Events as NetworkRequestEvents, ExtraRequestInfo, ExtraResponseInfo, MIME_TYPE, NameValue, NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
-import {Capability, SDKModel, SDKModelObserver, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {BlockedCookieWithReason, ContentData, ExtraRequestInfo, ExtraResponseInfo, MIME_TYPE, NameValue} from './NetworkRequest.js';
+import {Events as NetworkRequestEvents, NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
+import type {SDKModelObserver, Target} from './SDKModel.js';
+import {Capability, SDKModel, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

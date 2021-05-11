@@ -7,7 +7,8 @@
 import * as Common from '../common/common.js';
 
 import {RemoteObject} from './RemoteObject.js';              // eslint-disable-line no-unused-vars
-import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {Target} from './SDKModel.js';
+import {Capability, SDKModel} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 export class IOModel extends SDKModel {
   constructor(target: Target) {

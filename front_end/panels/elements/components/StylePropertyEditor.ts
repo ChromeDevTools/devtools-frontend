@@ -6,10 +6,11 @@ import '../../../ui/components/icon_button/icon_button.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
-import {findFlexContainerIcon, findGridContainerIcon, IconInfo} from './CSSPropertyIconResolver.js';
+import type {IconInfo} from './CSSPropertyIconResolver.js';
+import {findFlexContainerIcon, findGridContainerIcon} from './CSSPropertyIconResolver.js';
 
 const UIStrings = {
   /**

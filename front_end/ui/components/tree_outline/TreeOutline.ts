@@ -7,7 +7,8 @@ import * as LitHtml from '../../lit-html/lit-html.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
 
-import {findNextNodeForTreeOutlineKeyboardNavigation, getNodeChildren, getPathToTreeNode, isExpandableNode, trackDOMNodeToTreeNode, TreeNode, TreeNodeWithChildren} from './TreeOutlineUtils.js';
+import type {TreeNode, TreeNodeWithChildren} from './TreeOutlineUtils.js';
+import {findNextNodeForTreeOutlineKeyboardNavigation, getNodeChildren, getPathToTreeNode, isExpandableNode, trackDOMNodeToTreeNode} from './TreeOutlineUtils.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 

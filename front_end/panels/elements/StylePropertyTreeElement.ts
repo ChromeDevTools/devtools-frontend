@@ -19,7 +19,8 @@ import {BezierPopoverIcon, ColorSwatchPopoverIcon, ShadowSwatchPopoverHelper} fr
 import * as ElementsComponents from './components/components.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import {StyleEditorWidget} from './StyleEditorWidget.js';
-import {CSSPropertyPrompt, StylePropertiesSection, StylesSidebarPane, StylesSidebarPropertyRenderer} from './StylesSidebarPane.js';  // eslint-disable-line no-unused-vars
+import type {StylePropertiesSection} from './StylesSidebarPane.js';
+import {CSSPropertyPrompt, StylesSidebarPane, StylesSidebarPropertyRenderer} from './StylesSidebarPane.js';  // eslint-disable-line no-unused-vars
 
 const FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
 const GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;

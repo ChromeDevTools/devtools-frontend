@@ -12,10 +12,12 @@ import * as ComponentHelpers from '../helpers/helpers.js';
 
 const {render, html} = LitHtml;
 
-import {Mode, AddressInputChangedEvent, HistoryNavigationEvent, LinearMemoryNavigatorData, Navigation, PageNavigationEvent} from './LinearMemoryNavigator.js';
+import type {AddressInputChangedEvent, HistoryNavigationEvent, LinearMemoryNavigatorData, PageNavigationEvent} from './LinearMemoryNavigator.js';
+import {Mode, Navigation} from './LinearMemoryNavigator.js';
 import type {EndiannessChangedEvent, LinearMemoryValueInterpreterData, ValueTypeToggledEvent} from './LinearMemoryValueInterpreter.js';
 import type {ByteSelectedEvent, LinearMemoryViewerData, ResizeEvent} from './LinearMemoryViewer.js';
-import {VALUE_INTEPRETER_MAX_NUM_BYTES, Endianness, ValueType, ValueTypeMode, getDefaultValueTypeMapping} from './ValueInterpreterDisplayUtils.js';
+import type {ValueType, ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
+import {VALUE_INTEPRETER_MAX_NUM_BYTES, Endianness, getDefaultValueTypeMapping} from './ValueInterpreterDisplayUtils.js';
 import {formatAddress, parseAddress} from './LinearMemoryInspectorUtils.js';
 import type {JumpToPointerAddressEvent, ValueTypeModeChangedEvent} from './ValueInterpreterDisplay.js';
 

@@ -48,9 +48,11 @@ import * as ElementsComponents from './components/components.js';
 
 import {canGetJSPath, cssPath, jsPath, xPath} from './DOMPath.js';
 import {ElementsPanel} from './ElementsPanel.js';
-import {ElementsTreeOutline, MappedCharToEntity, UpdateRecord} from './ElementsTreeOutline.js';  // eslint-disable-line no-unused-vars
+import type {ElementsTreeOutline, UpdateRecord} from './ElementsTreeOutline.js';
+import {MappedCharToEntity} from './ElementsTreeOutline.js';  // eslint-disable-line no-unused-vars
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
-import {getRegisteredDecorators, MarkerDecorator, MarkerDecoratorRegistration} from './MarkerDecorator.js';  // eslint-disable-line no-unused-vars
+import type {MarkerDecorator, MarkerDecoratorRegistration} from './MarkerDecorator.js';
+import {getRegisteredDecorators} from './MarkerDecorator.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

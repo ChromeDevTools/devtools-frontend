@@ -51,11 +51,15 @@ import * as Search from '../search/search.js';
 
 import {BlockedURLsPane} from './BlockedURLsPane.js';
 import {Events} from './NetworkDataGridNode.js';
-import {NetworkItemView, Tabs as NetworkItemViewTabs} from './NetworkItemView.js';  // eslint-disable-line no-unused-vars
-import {FilterType, NetworkLogView} from './NetworkLogView.js';  // eslint-disable-line no-unused-vars
+import type {Tabs as NetworkItemViewTabs} from './NetworkItemView.js';
+import {NetworkItemView} from './NetworkItemView.js';  // eslint-disable-line no-unused-vars
+import type {FilterType} from './NetworkLogView.js';
+import {NetworkLogView} from './NetworkLogView.js';  // eslint-disable-line no-unused-vars
 import {NetworkOverview} from './NetworkOverview.js';
-import {NetworkSearchScope, UIRequestLocation} from './NetworkSearchScope.js';  // eslint-disable-line no-unused-vars
-import {NetworkTimeCalculator, NetworkTransferTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
+import type {UIRequestLocation} from './NetworkSearchScope.js';
+import {NetworkSearchScope} from './NetworkSearchScope.js';  // eslint-disable-line no-unused-vars
+import type {NetworkTimeCalculator} from './NetworkTimeCalculator.js';
+import {NetworkTransferTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

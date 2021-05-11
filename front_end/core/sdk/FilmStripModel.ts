@@ -6,7 +6,8 @@
 
 import * as Platform from '../platform/platform.js';
 
-import {Event, ObjectSnapshot, TracingModel} from './TracingModel.js';  // eslint-disable-line no-unused-vars
+import type {Event, ObjectSnapshot} from './TracingModel.js';
+import {TracingModel} from './TracingModel.js';  // eslint-disable-line no-unused-vars
 
 export class FilmStripModel {
   _frames: Frame[];

@@ -4,7 +4,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import {Chunk, ChunkCallback, createTokenizer} from './FormatterWorker.js';
+import type {Chunk, ChunkCallback} from './FormatterWorker.js';
+import {createTokenizer} from './FormatterWorker.js';
 
 export const CSSParserStates = {
   Initial: 'Initial',

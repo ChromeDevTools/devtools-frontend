@@ -38,15 +38,16 @@
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
-import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
+import type * as ProtocolClient from '../protocol_client/protocol_client.js'; // eslint-disable-line no-unused-vars
 import * as Root from '../root/root.js';
 
 import {CSSModel} from './CSSModel.js';
 import {FrameManager} from './FrameManager.js';
 import {OverlayModel} from './OverlayModel.js';
-import {RemoteObject} from './RemoteObject.js';  // eslint-disable-line no-unused-vars
+import type {RemoteObject} from './RemoteObject.js'; // eslint-disable-line no-unused-vars
 import {RuntimeModel} from './RuntimeModel.js';
-import {Capability, SDKModel, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {Target} from './SDKModel.js';
+import {Capability, SDKModel, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 export class DOMNode {
   _domModel: DOMModel;

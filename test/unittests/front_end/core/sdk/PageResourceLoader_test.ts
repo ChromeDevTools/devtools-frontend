@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import * as Host from '../../../../../front_end/core/host/host.js';
+import type * as Host from '../../../../../front_end/core/host/host.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 
 interface LoadResult {

@@ -5,12 +5,12 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Platform from '../../core/platform/platform.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
+import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 
 import {AffectedItem, AffectedResourcesView} from './AffectedResourcesView.js';
-import {IssueView} from './IssueView.js';
+import type {IssueView} from './IssueView.js';
 
 const UIStrings = {
   /**

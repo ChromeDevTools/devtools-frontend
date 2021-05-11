@@ -6,7 +6,7 @@
 
 import * as Root from '../root/root.js';  // eslint-disable-line no-unused-vars
 
-import {App} from './App.js';  // eslint-disable-line no-unused-vars
+import type {App} from './App.js'; // eslint-disable-line no-unused-vars
 
 /**
  * @interface

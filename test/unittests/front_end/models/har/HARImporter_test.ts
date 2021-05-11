@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import * as HAR from '../../../../../front_end/models/har/har.js';
-import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import type * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 
 const exampleLog = new HAR.HARFormat.HARLog({
   version: '1.2',

@@ -32,7 +32,7 @@
 
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
-import * as Formatter from '../../models/formatter/formatter.js';
+import type * as Formatter from '../../models/formatter/formatter.js';
 import * as Acorn from '../../third_party/acorn/acorn.js';
 
 import {AcornTokenizer, ECMA_VERSION} from './AcornTokenizer.js';

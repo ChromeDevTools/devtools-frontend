@@ -41,9 +41,11 @@ import {CSSMedia} from './CSSMedia.js';
 import {CSSStyleRule} from './CSSRule.js';
 import {CSSStyleDeclaration, Type} from './CSSStyleDeclaration.js';
 import {CSSStyleSheetHeader} from './CSSStyleSheetHeader.js';
-import {DOMModel, DOMNode} from './DOMModel.js';  // eslint-disable-line no-unused-vars
+import type {DOMNode} from './DOMModel.js';
+import {DOMModel} from './DOMModel.js';  // eslint-disable-line no-unused-vars
 import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
-import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {Target} from './SDKModel.js';
+import {Capability, SDKModel} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 import {SourceMapManager} from './SourceMapManager.js';
 
 export class CSSModel extends SDKModel {

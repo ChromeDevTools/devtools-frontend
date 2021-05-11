@@ -10,7 +10,8 @@ import type * as Workspace from '../workspace/workspace.js';
 import {RecordingScriptWriter} from './RecordingScriptWriter.js';
 import {RecordingEventHandler} from './RecordingEventHandler.js';
 import {setupRecordingClient} from './RecordingClient.js';
-import {EmulateNetworkConditions, NavigationStep, Step} from './Steps.js';
+import type {Step} from './Steps.js';
+import {EmulateNetworkConditions, NavigationStep} from './Steps.js';
 
 const RECORDER_ISOLATED_WORLD_NAME = 'devtools_recorder';
 

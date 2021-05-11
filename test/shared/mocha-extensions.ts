@@ -8,7 +8,8 @@ import * as Path from 'path';
 import {getBrowserAndPages} from '../conductor/puppeteer-state.js';
 
 import {getEnvVar} from './config.js';
-import {Platform, platform} from './helper.js';
+import type {Platform} from './helper.js';
+import {platform} from './helper.js';
 
 export {beforeEach} from 'mocha';
 

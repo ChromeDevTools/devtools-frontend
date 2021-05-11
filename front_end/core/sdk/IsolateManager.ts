@@ -6,9 +6,10 @@
 
 import * as Common from '../common/common.js';
 
-import {HeapProfilerModel} from './HeapProfilerModel.js';  // eslint-disable-line no-unused-vars
+import type {HeapProfilerModel} from './HeapProfilerModel.js'; // eslint-disable-line no-unused-vars
 import {RuntimeModel} from './RuntimeModel.js';
-import {SDKModelObserver, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {SDKModelObserver} from './SDKModel.js';
+import {TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 let isolateManagerInstance: IsolateManager;
 

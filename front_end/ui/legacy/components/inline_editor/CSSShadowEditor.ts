@@ -8,7 +8,8 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as UI from '../../legacy.js';
 
-import {CSSLength, CSSShadowModel} from './CSSShadowModel.js';  // eslint-disable-line no-unused-vars
+import type {CSSShadowModel} from './CSSShadowModel.js';
+import {CSSLength} from './CSSShadowModel.js';  // eslint-disable-line no-unused-vars
 
 const UIStrings = {
   /**

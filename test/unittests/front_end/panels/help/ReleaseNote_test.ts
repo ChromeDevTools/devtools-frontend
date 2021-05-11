@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import * as Help from '../../../../../front_end/panels/help/help.js';
-import * as Platform from '../../../../../front_end/core/platform/platform.js';
+import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import {initializeGlobalVars, deinitializeGlobalVars} from '../../helpers/EnvironmentHelpers.js';
 

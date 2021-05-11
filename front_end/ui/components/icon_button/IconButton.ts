@@ -2,8 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/components_import */
 import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
+import {Icon} from './Icon.js';
 
 import type {IconData} from './Icon.js';
 
@@ -121,11 +123,10 @@ export class IconButton extends HTMLElement {
       <button class="${buttonClasses}" @click=${this.onClickHandler}>
       ${this.leadingText ? LitHtml.html`<span class="icon-button-title">${this.leadingText}</span>` : LitHtml.nothing}
       ${this.groups.filter(counter => counter.text !== undefined).map(counter =>
-// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
       LitHtml.html`
-      <devtools-icon class="status-icon"
+      <${Icon.litTagName} class="status-icon"
       .data=${{iconName: counter.iconName, color: counter.iconColor || '', width: counter.iconWidth || '1.5ex', height: counter.iconHeight || '1.5ex'} as IconData}>
-      </devtools-icon>
+      </${Icon.litTagName}>
       <span class="icon-button-title">${counter.text}</span>
       </button>`)}
       ${this.trailingText ? LitHtml.html`<span class="icon-button-title">${this.trailingText}</span>` : LitHtml.nothing}

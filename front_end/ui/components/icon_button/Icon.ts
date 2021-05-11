@@ -26,6 +26,8 @@ const isString = (value: string|undefined): value is string => value !== undefin
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export class Icon extends HTMLElement {
+  static litTagName = LitHtml.literal`devtools-icon`;
+
   private readonly shadow = this.attachShadow({mode: 'open'});
 
   private iconPath: Readonly<string> = '';

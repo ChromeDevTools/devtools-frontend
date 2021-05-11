@@ -28,6 +28,8 @@ export interface ReportData {
   reportTitle: string;
 }
 export class Report extends HTMLElement {
+  static litTagName = LitHtml.literal`devtools-report`;
+
   private readonly shadow = this.attachShadow({mode: 'open'});
   private reportTitle: string = '';
 
@@ -83,8 +85,9 @@ export interface ReportSectionData {
 }
 
 export class ReportSectionHeader extends HTMLElement {
-  private readonly shadow = this.attachShadow({mode: 'open'});
+  static litTagName = LitHtml.literal`devtools-report-section-header`;
 
+  private readonly shadow = this.attachShadow({mode: 'open'});
   connectedCallback(): void {
     this.render();
   }
@@ -120,6 +123,8 @@ export class ReportSectionHeader extends HTMLElement {
 }
 
 export class ReportSectionDivider extends HTMLElement {
+  static litTagName = LitHtml.literal`devtools-report-divider`;
+
   private readonly shadow = this.attachShadow({mode: 'open'});
   connectedCallback(): void {
     this.render();
@@ -146,8 +151,9 @@ export class ReportSectionDivider extends HTMLElement {
 }
 
 export class ReportKey extends HTMLElement {
-  private readonly shadow = this.attachShadow({mode: 'open'});
+  static litTagName = LitHtml.literal`devtools-report-key`;
 
+  private readonly shadow = this.attachShadow({mode: 'open'});
   connectedCallback(): void {
     this.render();
   }
@@ -176,8 +182,9 @@ export class ReportKey extends HTMLElement {
 }
 
 export class ReportValue extends HTMLElement {
-  private readonly shadow = this.attachShadow({mode: 'open'});
+  static litTagName = LitHtml.literal`devtools-report-value`;
 
+  private readonly shadow = this.attachShadow({mode: 'open'});
   connectedCallback(): void {
     this.render();
   }

@@ -37,7 +37,9 @@ describe('With en-XL locale (debug)', async () => {
     });
   });
 
-  it('check that the reload button has the correct text', async () => {
+  // DevTools only honors navigator.language when the language setting is set to 'browserLanguage'.
+  // This test needs to be updated once the setting has landed properly.
+  it.skip('[crbug.com/1163928] check that the reload button has the correct text', async () => {
     await openPanelViaMoreTools('Ĉóv̂ér̂áĝé', true);
     await waitFor('div[aria-label="Ĉóv̂ér̂áĝé p̂án̂él̂"]');
     await waitFor('.coverage-results .landing-page');

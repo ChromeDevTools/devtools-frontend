@@ -155,16 +155,20 @@ export class MainImpl {
   }
 
   async requestAndRegisterLocaleData(): Promise<void> {
-    const hostLocale = navigator.language || 'en-US';
-    i18n.i18n.registerLocale(hostLocale);
-    const locale = i18n.i18n.registeredLocale;
-    if (locale) {
-      const data = await Root.Runtime.loadResourcePromise(
-          new URL(`../../core/i18n/locales/${locale}.json`, import.meta.url).toString());
-      if (data) {
-        const localizedStrings = JSON.parse(data);
-        i18n.i18n.registerLocaleData(locale, localizedStrings);
-      }
+    const devToolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance({
+      create: true,
+      data: {
+        navigatorLanguage: navigator.language,
+        // TODO(crbug.com/1163928): Use the setting once it has landed.
+        settingLanguage: 'en-US',
+        lookupClosestDevToolsLocale: i18n.i18n.lookupClosestSupportedDevToolsLocale,
+      },
+    });
+    const data = await Root.Runtime.loadResourcePromise(
+        new URL(`../../core/i18n/locales/${devToolsLocale.locale}.json`, import.meta.url).toString());
+    if (data) {
+      const localizedStrings = JSON.parse(data);
+      i18n.i18n.registerLocaleData(devToolsLocale.locale, localizedStrings);
     }
   }
 

@@ -16,23 +16,28 @@ import type * as UIModule from '../../../../front_end/ui/legacy/legacy.js';
 let UI: typeof UIModule;
 
 // Expose the locale.
-i18n.i18n.registerLocale('en-US');
+i18n.DevToolsLocale.DevToolsLocale.instance({
+  create: true,
+  data: {
+    navigatorLanguage: 'en-US',
+    settingLanguage: 'en-US',
+    lookupClosestDevToolsLocale: () => 'en-US',
+  },
+});
 
 // Load the strings from the resource file.
 (async () => {
-  const locale = i18n.i18n.registeredLocale;
-  if (locale) {
-    // proxied call.
-    try {
-      const data = await (await fetch(`locales/${locale}.json`)).json();
-      if (data) {
-        const localizedStrings = data;
-        i18n.i18n.registerLocaleData(locale, localizedStrings);
-      }
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.warn('EnvironmentHelper: Loading en-US locale failed', error.message);
+  const locale = i18n.DevToolsLocale.DevToolsLocale.instance().locale;
+  // proxied call.
+  try {
+    const data = await (await fetch(`locales/${locale}.json`)).json();
+    if (data) {
+      const localizedStrings = data;
+      i18n.i18n.registerLocaleData(locale, localizedStrings);
     }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.warn('EnvironmentHelper: Loading en-US locale failed', error.message);
   }
 })();
 

@@ -4,7 +4,7 @@
 
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 
-interface Static {
+export interface Static {
   value: unknown;
   $$static$$: true;
 }

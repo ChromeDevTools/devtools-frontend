@@ -102,6 +102,8 @@ const ROW_HEIGHT_PIXELS = 18;
 const PADDING_ROWS_COUNT = 10;
 
 export class DataGrid extends HTMLElement {
+  static litTagName = LitHtml.literal`devtools-data-grid`;
+
   private readonly shadow = this.attachShadow({mode: 'open'});
   private columns: readonly Column[] = [];
   private rows: readonly Row[] = [];

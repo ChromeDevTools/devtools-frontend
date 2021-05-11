@@ -40,7 +40,8 @@ const UIStrings = {
   */
   name: 'Name',
   /**
-  *@description Singular or plural label for number of affected directive resource indication in issue view.
+  *@description Singular or plural label for number of affected CSP (content security policy,
+  * see https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) directives in issue view.
   */
   nDirectives: '{n, plural, =1 {# directive} other {# directives}}',
   /**
@@ -80,11 +81,11 @@ const UIStrings = {
   */
   nRequests: '{n, plural, =1 {# request} other {# requests}}',
   /**
-  *@description Singular or Plural label for number of affected source resource indication in issue view
+  *@description Singular or Plural label for number of affected sources (consisting of (source) file name + line number) in issue view
   */
   nSources: '{n, plural, =1 {# source} other {# sources}}',
   /**
-  *@description Label for singular or plural number of affected resources indication in issue view
+  *@description Label for singular or plural number of affected resources in issue view
   */
   nResources: '{n, plural, =1 {# resource} other {# resources}}',
   /**

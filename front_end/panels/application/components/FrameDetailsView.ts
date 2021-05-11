@@ -217,11 +217,6 @@ const UIStrings = {
   */
   hideDetails: 'Hide details',
   /**
-  *@description Permissions policy is a mechanism that allows developers to enable/disable browser features and APIs
-  *(e.g. camera, geolocation, autoplay). In some languages, this might not need to be translated.
-  */
-  permissionsPolicy: 'Permissions Policy',
-  /**
   *@description Label for a list of features which are allowed according to the current Permissions policy
   *(a mechanism that allows developers to enable/disable browser features and APIs (e.g. camera, geolocation, autoplay))
   */
@@ -506,7 +501,7 @@ export class FrameDetailsReportView extends HTMLElement {
     };
 
     return LitHtml.html`
-      <devtools-report-section-header>${i18nString(UIStrings.permissionsPolicy)}</devtools-report-section-header>
+      <devtools-report-section-header>${i18n.i18n.lockedString('Permissions Policy')}</devtools-report-section-header>
       ${renderAllowed()}
       ${LitHtml.Directives.until(renderDisallowed(), LitHtml.nothing)}
       <devtools-report-divider></devtools-report-divider>

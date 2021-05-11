@@ -2390,9 +2390,6 @@
   "panels/application/components/FrameDetailsView.ts | ownerElement": {
     "message": "Owner Element"
   },
-  "panels/application/components/FrameDetailsView.ts | permissionsPolicy": {
-    "message": "Permissions Policy"
-  },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "reporting to"
   },

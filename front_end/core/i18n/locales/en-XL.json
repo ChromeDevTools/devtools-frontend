@@ -408,25 +408,25 @@
     "message": "(b̂ín̂ár̂ý)"
   },
   "core/sdk/NetworkRequest.ts | blockedReasonInvalidDomain": {
-    "message": "T̂h́îś Set-Cookie ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê ít̂ś D̂óm̂áîń ât́t̂ŕîb́ût́ê ẃâś îńv̂ál̂íd̂ ẃît́ĥ ŕêǵâŕd̂ś t̂ó t̂h́ê ćûŕr̂én̂t́ ĥóŝt́ ûŕl̂."
+    "message": "T̂h́îś ât́t̂ém̂ṕt̂ t́ô śêt́ â ćôók̂íê v́îá â Set-Cookie h́êád̂ér̂ ẃâś b̂ĺôćk̂éd̂ b́êćâúŝé ît́ŝ D́ôḿâín̂ át̂t́r̂íb̂út̂é ŵáŝ ín̂v́âĺîd́ ŵít̂h́ r̂éĝár̂d́ŝ t́ô t́ĥé ĉúr̂ŕêńt̂ h́ôśt̂ úr̂ĺ."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonInvalidPrefix": {
-    "message": "T̂h́îś Set-Cookie ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê ít̂ úŝéd̂ t́ĥé \"__Secure-\" ôŕ \"__Host-\" p̂ŕêf́îx́ îń ît́ŝ ńâḿê án̂d́ b̂ŕôḱê t́ĥé âd́d̂ít̂íôńâĺ r̂úl̂éŝ áp̂ṕl̂íêd́ t̂ó ĉóôḱîéŝ ẃît́ĥ t́ĥéŝé p̂ŕêf́îx́êś âś d̂éf̂ín̂éd̂ ín̂ https://tools.ietf.org/html/draft-west-cookie-prefixes-05."
+    "message": "T̂h́îś ât́t̂ém̂ṕt̂ t́ô śêt́ â ćôók̂íê v́îá â Set-Cookie h́êád̂ér̂ ẃâś b̂ĺôćk̂éd̂ b́êćâúŝé ît́ ûśêd́ t̂h́ê \"__Secure-\" ór̂ \"__Host-\" ṕr̂éf̂íx̂ ín̂ ít̂ś n̂ám̂é âńd̂ b́r̂ók̂é t̂h́ê ád̂d́ît́îón̂ál̂ ŕûĺêś âṕp̂ĺîéd̂ t́ô ćôók̂íêś ŵít̂h́ t̂h́êśê ṕr̂éf̂íx̂éŝ áŝ d́êf́îńêd́ îń https://tools.ietf.org/html/draft-west-cookie-prefixes-05."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonOverwriteSecure": {
-    "message": "T̂h́îś Set-Cookie ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê ít̂ ẃâś n̂ót̂ śêńt̂ óv̂ér̂ á ŝéĉúr̂é ĉón̂ńêćt̂íôń âńd̂ ẃôúl̂d́ ĥáv̂é ôv́êŕŵŕît́t̂én̂ á ĉóôḱîé ŵít̂h́ t̂h́ê Śêćûŕê át̂t́r̂íb̂út̂é."
+    "message": "T̂h́îś ât́t̂ém̂ṕt̂ t́ô śêt́ â ćôók̂íê v́îá â Set-Cookie h́êád̂ér̂ ẃâś b̂ĺôćk̂éd̂ b́êćâúŝé ît́ ŵáŝ ńôt́ ŝén̂t́ ôv́êŕ â śêćûŕê ćôńn̂éĉt́îón̂ án̂d́ ŵóûĺd̂ h́âv́ê óv̂ér̂ẃr̂ít̂t́êń â ćôók̂íê ẃît́ĥ t́ĥé Ŝéĉúr̂é ât́t̂ŕîb́ût́ê."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteNoneInsecure": {
-    "message": "T̂h́îś Set-Cookie ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê ít̂ h́âd́ t̂h́ê \"SameSite=None\" át̂t́r̂íb̂út̂é b̂út̂ d́îd́ n̂ót̂ h́âv́ê t́ĥé \"Ŝéĉúr̂é\" ât́t̂ŕîb́ût́ê, ẃĥíĉh́ îś r̂éq̂úîŕêd́ îń ôŕd̂ér̂ t́ô úŝé \"SameSite=None\"."
+    "message": "T̂h́îś ât́t̂ém̂ṕt̂ t́ô śêt́ â ćôók̂íê v́îá â Set-Cookie h́êád̂ér̂ ẃâś b̂ĺôćk̂éd̂ b́êćâúŝé ît́ ĥád̂ t́ĥé \"SameSite=None\" ât́t̂ŕîb́ût́ê b́ût́ d̂íd̂ ńôt́ ĥáv̂é t̂h́ê \"Śêćûŕê\" át̂t́r̂íb̂út̂é, ŵh́îćĥ íŝ ŕêq́ûír̂éd̂ ín̂ ór̂d́êŕ t̂ó ûśê \"SameSite=None\"."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteStrictLax": {
-    "message": "T̂h́îś Set-Cookie ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê ít̂ h́âd́ t̂h́ê \"{PH1}\" át̂t́r̂íb̂út̂é b̂út̂ ćâḿê f́r̂óm̂ á ĉŕôśŝ-śît́ê ŕêśp̂ón̂śê ẃĥíĉh́ ŵáŝ ńôt́ t̂h́ê ŕêśp̂ón̂śê t́ô á t̂óp̂-ĺêv́êĺ n̂áv̂íĝát̂íôń."
+    "message": "T̂h́îś ât́t̂ém̂ṕt̂ t́ô śêt́ â ćôók̂íê v́îá â Set-Cookie h́êád̂ér̂ ẃâś b̂ĺôćk̂éd̂ b́êćâúŝé ît́ ĥád̂ t́ĥé \"{PH1}\" ât́t̂ŕîb́ût́ê b́ût́ ĉám̂é f̂ŕôḿ â ćr̂óŝś-ŝít̂é r̂éŝṕôńŝé ŵh́îćĥ ẃâś n̂ót̂ t́ĥé r̂éŝṕôńŝé t̂ó â t́ôṕ-l̂év̂él̂ ńâv́îǵât́îón̂."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteUnspecifiedTreatedAsLax": {
-    "message": "T̂h́îś Set-Cookie d̂íd̂ń't̂ śp̂éĉíf̂ý â \"SameSite\" át̂t́r̂íb̂út̂é âńd̂ ẃâś d̂éf̂áûĺt̂éd̂ t́ô \"SameSite=Lax,\" án̂d́ ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê ít̂ ćâḿê f́r̂óm̂ á ĉŕôśŝ-śît́ê ŕêśp̂ón̂śê ẃĥíĉh́ ŵáŝ ńôt́ t̂h́ê ŕêśp̂ón̂śê t́ô á t̂óp̂-ĺêv́êĺ n̂áv̂íĝát̂íôń. T̂h́ê Set-Cookie h́âd́ t̂ó ĥáv̂é b̂éêń ŝét̂ ẃît́ĥ \"SameSite=None\" t́ô én̂áb̂ĺê ćr̂óŝś-ŝít̂é ûśâǵê."
+    "message": "T̂h́îś Set-Cookie ĥéâd́êŕ d̂íd̂ń't̂ śp̂éĉíf̂ý â \"SameSite\" át̂t́r̂íb̂út̂é âńd̂ ẃâś d̂éf̂áûĺt̂éd̂ t́ô \"SameSite=Lax,\" án̂d́ ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê ít̂ ćâḿê f́r̂óm̂ á ĉŕôśŝ-śît́ê ŕêśp̂ón̂śê ẃĥíĉh́ ŵáŝ ńôt́ t̂h́ê ŕêśp̂ón̂śê t́ô á t̂óp̂-ĺêv́êĺ n̂áv̂íĝát̂íôń. T̂h́ê Set-Cookie h́âd́ t̂ó ĥáv̂é b̂éêń ŝét̂ ẃît́ĥ \"SameSite=None\" t́ô én̂áb̂ĺê ćr̂óŝś-ŝít̂é ûśâǵê."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSecureOnly": {
-    "message": "T̂h́îś Set-Cookie ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê ít̂ h́âd́ t̂h́ê \"Śêćûŕê\" át̂t́r̂íb̂út̂é b̂út̂ ẃâś n̂ót̂ ŕêćêív̂éd̂ óv̂ér̂ á ŝéĉúr̂é ĉón̂ńêćt̂íôń."
+    "message": "T̂h́îś ât́t̂ém̂ṕt̂ t́ô śêt́ â ćôók̂íê v́îá â Set-Cookie h́êád̂ér̂ ẃâś b̂ĺôćk̂éd̂ b́êćâúŝé ît́ ĥád̂ t́ĥé \"Ŝéĉúr̂é\" ât́t̂ŕîb́ût́ê b́ût́ ŵáŝ ńôt́ r̂éĉéîv́êd́ ôv́êŕ â śêćûŕê ćôńn̂éĉt́îón̂."
   },
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "T̂h́îś ĉóôḱîé ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê ńêít̂h́êŕ d̂íd̂ t́ĥé r̂éq̂úêśt̂ ÚR̂Ĺ'ŝ d́ôḿâín̂ éx̂áĉt́l̂ý m̂át̂ćĥ t́ĥé ĉóôḱîé'ŝ d́ôḿâín̂, ńôŕ ŵáŝ t́ĥé r̂éq̂úêśt̂ ÚR̂Ĺ'ŝ d́ôḿâín̂ á ŝúb̂d́ôḿâín̂ óf̂ t́ĥé ĉóôḱîé'ŝ D́ôḿâín̂ át̂t́r̂íb̂út̂é v̂ál̂úê."
@@ -465,22 +465,22 @@
     "message": "T̂h́ê śĉh́êḿê óf̂ t́ĥíŝ ćôńn̂éĉt́îón̂ íŝ ńôt́ âĺl̂óŵéd̂ t́ô śt̂ór̂é ĉóôḱîéŝ."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieDidntSpecifyASamesite": {
-    "message": "T̂h́îś Set-Cookie d̂íd̂ń't̂ śp̂éĉíf̂ý â \"SameSite\" át̂t́r̂íb̂út̂é, ŵáŝ d́êf́âúl̂t́êd́ t̂ó \"SameSite=Lax\", âńd̂ ẃâś b̂ĺôćk̂éd̂ b́êćâúŝé ît́ ĉám̂é f̂ŕôḿ â ćr̂óŝś-ŝít̂é r̂éŝṕôńŝé ŵh́îćĥ ẃâś n̂ót̂ t́ĥé r̂éŝṕôńŝé t̂ó â t́ôṕ-l̂év̂él̂ ńâv́îǵât́îón̂. T́ĥíŝ ŕêśp̂ón̂śê íŝ ćôńŝíd̂ér̂éd̂ ćr̂óŝś-ŝít̂é b̂éĉáûśê t́ĥé ÛŔL̂ h́âś â d́îf́f̂ér̂én̂t́ ŝćĥém̂é t̂h́âń t̂h́ê ćûŕr̂én̂t́ ŝít̂é."
+    "message": "T̂h́îś Set-Cookie ĥéâd́êŕ d̂íd̂ń't̂ śp̂éĉíf̂ý â \"SameSite\" át̂t́r̂íb̂út̂é, ŵáŝ d́êf́âúl̂t́êd́ t̂ó \"SameSite=Lax\", âńd̂ ẃâś b̂ĺôćk̂éd̂ b́êćâúŝé ît́ ĉám̂é f̂ŕôḿ â ćr̂óŝś-ŝít̂é r̂éŝṕôńŝé ŵh́îćĥ ẃâś n̂ót̂ t́ĥé r̂éŝṕôńŝé t̂ó â t́ôṕ-l̂év̂él̂ ńâv́îǵât́îón̂. T́ĥíŝ ŕêśp̂ón̂śê íŝ ćôńŝíd̂ér̂éd̂ ćr̂óŝś-ŝít̂é b̂éĉáûśê t́ĥé ÛŔL̂ h́âś â d́îf́f̂ér̂én̂t́ ŝćĥém̂é t̂h́âń t̂h́ê ćûŕr̂én̂t́ ŝít̂é."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieHadInvalidSyntax": {
-    "message": "T̂h́îś Set-Cookie ĥád̂ ín̂v́âĺîd́ ŝýn̂t́âx́."
+    "message": "T̂h́îś Set-Cookie ĥéâd́êŕ ĥád̂ ín̂v́âĺîd́ ŝýn̂t́âx́."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSameparty": {
-    "message": "T̂h́îś Set-Cookie ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê ít̂ h́âd́ t̂h́ê \"SameParty\" át̂t́r̂íb̂út̂é b̂út̂ t́ĥé r̂éq̂úêśt̂ ẃâś ĉŕôśŝ-ṕâŕt̂ý. T̂h́ê ŕêq́ûéŝt́ ŵáŝ ćôńŝíd̂ér̂éd̂ ćr̂óŝś-p̂ár̂t́ŷ b́êćâúŝé t̂h́ê d́ôḿâín̂ óf̂ t́ĥé r̂éŝóûŕĉé'ŝ ÚR̂Ĺ âńd̂ t́ĥé d̂óm̂áîńŝ óf̂ t́ĥé r̂éŝóûŕĉé'ŝ én̂ćl̂óŝín̂ǵ f̂ŕâḿêś/d̂óĉúm̂én̂t́ŝ ár̂é n̂éît́ĥér̂ óŵńêŕŝ ńôŕ m̂ém̂b́êŕŝ ín̂ t́ĥé ŝám̂é F̂ír̂śt̂-Ṕâŕt̂ý Ŝét̂."
+    "message": "T̂h́îś ât́t̂ém̂ṕt̂ t́ô śêt́ â ćôók̂íê v́îá â Set-Cookie h́êád̂ér̂ ẃâś b̂ĺôćk̂éd̂ b́êćâúŝé ît́ ĥád̂ t́ĥé \"SameParty\" ât́t̂ŕîb́ût́ê b́ût́ t̂h́ê ŕêq́ûéŝt́ ŵáŝ ćr̂óŝś-p̂ár̂t́ŷ. T́ĥé r̂éq̂úêśt̂ ẃâś ĉón̂śîd́êŕêd́ ĉŕôśŝ-ṕâŕt̂ý b̂éĉáûśê t́ĥé d̂óm̂áîń ôf́ t̂h́ê ŕêśôúr̂ćê'ś ÛŔL̂ án̂d́ t̂h́ê d́ôḿâín̂ś ôf́ t̂h́ê ŕêśôúr̂ćê'ś êńĉĺôśîńĝ f́r̂ám̂éŝ/d́ôćûḿêńt̂ś âŕê ńêít̂h́êŕ ôẃn̂ér̂ś n̂ór̂ ḿêḿb̂ér̂ś îń t̂h́ê śâḿê F́îŕŝt́-P̂ár̂t́ŷ Śêt́."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamepartyAttribute": {
-    "message": "T̂h́îś Set-Cookie ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê ít̂ h́âd́ t̂h́ê \"SameParty\" át̂t́r̂íb̂út̂é b̂út̂ ál̂śô h́âd́ ôt́ĥér̂ ćôńf̂ĺîćt̂ín̂ǵ ât́t̂ŕîb́ût́êś. Ĉh́r̂óm̂é r̂éq̂úîŕêś ĉóôḱîéŝ t́ĥát̂ úŝé t̂h́ê \"SameParty\" át̂t́r̂íb̂út̂é t̂ó âĺŝó ĥáv̂é t̂h́ê \"Śêćûŕê\" át̂t́r̂íb̂út̂é, âńd̂ t́ô ńôt́ b̂é r̂éŝt́r̂íĉt́êd́ t̂ó \"SameSite=Strict\"."
+    "message": "T̂h́îś ât́t̂ém̂ṕt̂ t́ô śêt́ â ćôók̂íê v́îá â Set-Cookie h́êád̂ér̂ ẃâś b̂ĺôćk̂éd̂ b́êćâúŝé ît́ ĥád̂ t́ĥé \"SameParty\" ât́t̂ŕîb́ût́ê b́ût́ âĺŝó ĥád̂ ót̂h́êŕ ĉón̂f́l̂íĉt́îńĝ át̂t́r̂íb̂út̂éŝ. Ćĥŕôḿê ŕêq́ûír̂éŝ ćôók̂íêś t̂h́ât́ ûśê t́ĥé \"SameParty\" ât́t̂ŕîb́ût́ê t́ô ál̂śô h́âv́ê t́ĥé \"Ŝéĉúr̂é\" ât́t̂ŕîb́ût́ê, án̂d́ t̂ó n̂ót̂ b́ê ŕêśt̂ŕîćt̂éd̂ t́ô \"SameSite=Strict\"."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamesiteStrictLax": {
-    "message": "T̂h́îś Set-Cookie ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê ít̂ h́âd́ t̂h́ê \"{PH1}\" át̂t́r̂íb̂út̂é b̂út̂ ćâḿê f́r̂óm̂ á ĉŕôśŝ-śît́ê ŕêśp̂ón̂śê ẃĥíĉh́ ŵáŝ ńôt́ t̂h́ê ŕêśp̂ón̂śê t́ô á t̂óp̂-ĺêv́êĺ n̂áv̂íĝát̂íôń. T̂h́îś r̂éŝṕôńŝé îś ĉón̂śîd́êŕêd́ ĉŕôśŝ-śît́ê b́êćâúŝé t̂h́ê ÚR̂Ĺ ĥáŝ á d̂íf̂f́êŕêńt̂ śĉh́êḿê t́ĥán̂ t́ĥé ĉúr̂ŕêńt̂ śît́ê."
+    "message": "T̂h́îś ât́t̂ém̂ṕt̂ t́ô śêt́ â ćôók̂íê v́îá â Set-Cookie h́êád̂ér̂ ẃâś b̂ĺôćk̂éd̂ b́êćâúŝé ît́ ĥád̂ t́ĥé \"{PH1}\" ât́t̂ŕîb́ût́ê b́ût́ ĉám̂é f̂ŕôḿ â ćr̂óŝś-ŝít̂é r̂éŝṕôńŝé ŵh́îćĥ ẃâś n̂ót̂ t́ĥé r̂éŝṕôńŝé t̂ó â t́ôṕ-l̂év̂él̂ ńâv́îǵât́îón̂. T́ĥíŝ ŕêśp̂ón̂śê íŝ ćôńŝíd̂ér̂éd̂ ćr̂óŝś-ŝít̂é b̂éĉáûśê t́ĥé ÛŔL̂ h́âś â d́îf́f̂ér̂én̂t́ ŝćĥém̂é t̂h́âń t̂h́ê ćûŕr̂én̂t́ ŝít̂é."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedDueToUser": {
-    "message": "T̂h́îś Set-Cookie ŵáŝ b́l̂óĉḱêd́ d̂úê t́ô úŝér̂ ṕr̂éf̂ér̂én̂ćêś."
+    "message": "T̂h́îś ât́t̂ém̂ṕt̂ t́ô śêt́ â ćôók̂íê v́îá â Set-Cookie h́êád̂ér̂ ẃâś b̂ĺôćk̂éd̂ d́ûé t̂ó ûśêŕ p̂ŕêf́êŕêńĉéŝ."
   },
   "core/sdk/NetworkRequest.ts | unknownError": {
     "message": "Âń ûńk̂ńôẃn̂ ér̂ŕôŕ ŵáŝ én̂ćôún̂t́êŕêd́ ŵh́êń t̂ŕŷín̂ǵ t̂ó ŝén̂d́ t̂h́îś ĉóôḱîé."

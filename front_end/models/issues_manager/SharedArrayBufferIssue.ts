@@ -9,8 +9,9 @@ import type * as SDK from '../../core/sdk/sdk.js';
 
 const UIStrings = {
   /**
-  *@description Label for the link for SharedArrayBuffer Issues
-  */
+   *@description Label for the link for SharedArrayBuffer Issues. The full text reads "Enabling `SharedArrayBuffer`"
+   * and is the title of an article that describes how to enable a JavaScript feature called SharedArrayBuffer.
+   */
   enablingSharedArrayBuffer: 'Enabling `SharedArrayBuffer`',
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/SharedArrayBufferIssue.ts', UIStrings);

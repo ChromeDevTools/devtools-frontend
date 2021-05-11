@@ -408,25 +408,25 @@
     "message": "(binary)"
   },
   "core/sdk/NetworkRequest.ts | blockedReasonInvalidDomain": {
-    "message": "This Set-Cookie was blocked because its Domain attribute was invalid with regards to the current host url."
+    "message": "This attempt to set a cookie via a Set-Cookie header was blocked because its Domain attribute was invalid with regards to the current host url."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonInvalidPrefix": {
-    "message": "This Set-Cookie was blocked because it used the \"__Secure-\" or \"__Host-\" prefix in its name and broke the additional rules applied to cookies with these prefixes as defined in https://tools.ietf.org/html/draft-west-cookie-prefixes-05."
+    "message": "This attempt to set a cookie via a Set-Cookie header was blocked because it used the \"__Secure-\" or \"__Host-\" prefix in its name and broke the additional rules applied to cookies with these prefixes as defined in https://tools.ietf.org/html/draft-west-cookie-prefixes-05."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonOverwriteSecure": {
-    "message": "This Set-Cookie was blocked because it was not sent over a secure connection and would have overwritten a cookie with the Secure attribute."
+    "message": "This attempt to set a cookie via a Set-Cookie header was blocked because it was not sent over a secure connection and would have overwritten a cookie with the Secure attribute."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteNoneInsecure": {
-    "message": "This Set-Cookie was blocked because it had the \"SameSite=None\" attribute but did not have the \"Secure\" attribute, which is required in order to use \"SameSite=None\"."
+    "message": "This attempt to set a cookie via a Set-Cookie header was blocked because it had the \"SameSite=None\" attribute but did not have the \"Secure\" attribute, which is required in order to use \"SameSite=None\"."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteStrictLax": {
-    "message": "This Set-Cookie was blocked because it had the \"{PH1}\" attribute but came from a cross-site response which was not the response to a top-level navigation."
+    "message": "This attempt to set a cookie via a Set-Cookie header was blocked because it had the \"{PH1}\" attribute but came from a cross-site response which was not the response to a top-level navigation."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteUnspecifiedTreatedAsLax": {
-    "message": "This Set-Cookie didn't specify a \"SameSite\" attribute and was defaulted to \"SameSite=Lax,\" and was blocked because it came from a cross-site response which was not the response to a top-level navigation. The Set-Cookie had to have been set with \"SameSite=None\" to enable cross-site usage."
+    "message": "This Set-Cookie header didn't specify a \"SameSite\" attribute and was defaulted to \"SameSite=Lax,\" and was blocked because it came from a cross-site response which was not the response to a top-level navigation. The Set-Cookie had to have been set with \"SameSite=None\" to enable cross-site usage."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSecureOnly": {
-    "message": "This Set-Cookie was blocked because it had the \"Secure\" attribute but was not received over a secure connection."
+    "message": "This attempt to set a cookie via a Set-Cookie header was blocked because it had the \"Secure\" attribute but was not received over a secure connection."
   },
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "This cookie was blocked because neither did the request URL's domain exactly match the cookie's domain, nor was the request URL's domain a subdomain of the cookie's Domain attribute value."
@@ -465,22 +465,22 @@
     "message": "The scheme of this connection is not allowed to store cookies."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieDidntSpecifyASamesite": {
-    "message": "This Set-Cookie didn't specify a \"SameSite\" attribute, was defaulted to \"SameSite=Lax\", and was blocked because it came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site."
+    "message": "This Set-Cookie header didn't specify a \"SameSite\" attribute, was defaulted to \"SameSite=Lax\", and was blocked because it came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieHadInvalidSyntax": {
-    "message": "This Set-Cookie had invalid syntax."
+    "message": "This Set-Cookie header had invalid syntax."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSameparty": {
-    "message": "This Set-Cookie was blocked because it had the \"SameParty\" attribute but the request was cross-party. The request was considered cross-party because the domain of the resource's URL and the domains of the resource's enclosing frames/documents are neither owners nor members in the same First-Party Set."
+    "message": "This attempt to set a cookie via a Set-Cookie header was blocked because it had the \"SameParty\" attribute but the request was cross-party. The request was considered cross-party because the domain of the resource's URL and the domains of the resource's enclosing frames/documents are neither owners nor members in the same First-Party Set."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamepartyAttribute": {
-    "message": "This Set-Cookie was blocked because it had the \"SameParty\" attribute but also had other conflicting attributes. Chrome requires cookies that use the \"SameParty\" attribute to also have the \"Secure\" attribute, and to not be restricted to \"SameSite=Strict\"."
+    "message": "This attempt to set a cookie via a Set-Cookie header was blocked because it had the \"SameParty\" attribute but also had other conflicting attributes. Chrome requires cookies that use the \"SameParty\" attribute to also have the \"Secure\" attribute, and to not be restricted to \"SameSite=Strict\"."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamesiteStrictLax": {
-    "message": "This Set-Cookie was blocked because it had the \"{PH1}\" attribute but came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site."
+    "message": "This attempt to set a cookie via a Set-Cookie header was blocked because it had the \"{PH1}\" attribute but came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedDueToUser": {
-    "message": "This Set-Cookie was blocked due to user preferences."
+    "message": "This attempt to set a cookie via a Set-Cookie header was blocked due to user preferences."
   },
   "core/sdk/NetworkRequest.ts | unknownError": {
     "message": "An unknown error was encountered when trying to send this cookie."

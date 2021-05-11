@@ -239,4 +239,9 @@ hooks = [
     'pattern': '.',
     'action': ['python', 'scripts/deps/download_emscripten.py', Var('emscripten_tag'), 'third_party/emscripten-releases'],
   },
+  {
+    'name': 'VS Code settings',
+    'pattern': '.',
+    'action': ['python', 'third_party/node/node.py', '--output', 'scripts/deps/sync-vscode-settings.js']
+  },
 ]

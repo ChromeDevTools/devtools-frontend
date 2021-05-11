@@ -618,6 +618,12 @@ button.link:focus-visible {
   .harmony-input[type=text] {
     border: 1px solid ButtonText;
   }
+
+  .harmony-input:not([type]):focus,
+  .harmony-input[type=number]:focus,
+  .harmony-input[type=text]:focus {
+    border: 1px solid Highlight;
+  }
 }
 /* search input with customized styling */
 input.custom-search-input::-webkit-search-cancel-button {

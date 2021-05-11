@@ -200,7 +200,9 @@ export class ValueInterpreterDisplay extends HTMLElement {
       <div class="value-type-cell">
         <div class="value-type-value-with-link" data-value="true">
         <span>${unsignedValue}</span>
-          ${html`
+          ${
+// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
+            html`
               <button class="jump-to-button" data-jump="true" title=${buttonTitle} ?disabled=${jumpDisabled}
                 @click=${this.onJumpToAddressClicked.bind(this, Number(address))}>
                 <devtools-icon .data=${

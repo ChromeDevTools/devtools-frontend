@@ -11,6 +11,7 @@ import type * as ReportView from '../../report_view/report_view.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 
+// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
 const exampleRenderHelper = (key: string, value: string): LitHtml.TemplateResult => LitHtml.html`
           <devtools-report-key>${key}</devtools-report-key>
           <devtools-report-value>${value}</devtools-report-value>
@@ -22,6 +23,7 @@ if (!container) {
 }
 
 LitHtml.render(
+    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     LitHtml.html`
         <style>
           .source-code {

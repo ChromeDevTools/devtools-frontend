@@ -196,6 +196,7 @@ export class DataGridController extends HTMLElement {
   private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
+// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     LitHtml.render(LitHtml.html`
       <style>
         :host {

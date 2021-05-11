@@ -138,11 +138,13 @@ const tokenRenderers = new Map<string, (token: any) => LitHtml.TemplateResult>([
   ['space', (): LitHtml.TemplateResult => html``],
   [
     'link',
+    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     (token): LitHtml.TemplateResult => html`<devtools-markdown-link .data=${
         {key: token.href, title: token.text} as MarkdownLinkData}></devtools-markdown-link>`,
   ],
   [
     'image',
+    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     (token): LitHtml.TemplateResult => html`<devtools-markdown-image .data=${
         {key: token.href, title: token.text} as MarkdownImageData}></devtools-markdown-image>`,
   ],

@@ -212,6 +212,7 @@ export class CSSAngle extends HTMLElement {
   private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
+// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     render(html`
       <style>
         .css-angle {
@@ -264,6 +265,7 @@ export class CSSAngle extends HTMLElement {
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
+// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return html`
     <devtools-css-angle-editor
       class="popover popover-css-angle"

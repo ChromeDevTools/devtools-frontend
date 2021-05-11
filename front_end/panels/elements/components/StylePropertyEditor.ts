@@ -206,6 +206,7 @@ export class StylePropertyEditor extends HTMLElement {
     });
     const title =
         i18nString(selected ? UIStrings.deselectButton : UIStrings.selectButton, {propertyName, propertyValue});
+    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return html`<button title=${title} class=${classes} @click=${
         (): void => this.onButtonClick(propertyName, propertyValue, selected)}>
        <devtools-icon style=${transform} .data=${

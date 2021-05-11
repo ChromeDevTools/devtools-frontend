@@ -86,6 +86,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
   private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
+// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     render(html`
       <style>
         :host {
@@ -154,11 +155,13 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
         <span class="divider"></span>
         <div>
           ${this.showSettings ?
+// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
             html`
               <devtools-linear-memory-inspector-interpreter-settings
                 .data=${{ valueTypes: this.valueTypes } as ValueInterpreterSettingsData}
                 @type-toggle=${this.onTypeToggle}>
               </devtools-linear-memory-inspector-interpreter-settings>` :
+// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
             html`
               <devtools-linear-memory-inspector-interpreter-display
                 .data=${{

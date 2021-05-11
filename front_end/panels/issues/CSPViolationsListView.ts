@@ -80,6 +80,7 @@ export class CSPViolationsListView extends UI.Widget.VBox {
           columnId: 'sourceCode',
           value: location.url,
           renderer(): LitHtml.TemplateResult {
+            // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
             return LitHtml.html`<devtools-linkifier .data=${
                 location as Linkifier.Linkifier.LinkifierData}></devtools-linkifier>`;
           },

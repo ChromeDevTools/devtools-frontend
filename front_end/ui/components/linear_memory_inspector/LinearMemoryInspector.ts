@@ -153,6 +153,7 @@ export class LinearMemoryInspector extends HTMLElement {
     const canGoForwardInHistory = this.history.canRollover();
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
+// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     render(html`
       <style>
         :host {

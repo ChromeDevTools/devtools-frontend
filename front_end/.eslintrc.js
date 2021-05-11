@@ -28,6 +28,7 @@ module.exports = {
         'rulesdir/set_data_type_reference': 2,
         'rulesdir/lit_html_data_as_type': 2,
         'rulesdir/lit_no_style_interpolation': 2,
+        'rulesdir/ban_literal_devtools_component_tag_names': 2,
         '@typescript-eslint/naming-convention': [
           'error', {
             'selector': ['property', 'parameterProperty'],

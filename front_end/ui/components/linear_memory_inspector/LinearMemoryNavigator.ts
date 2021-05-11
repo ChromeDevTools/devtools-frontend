@@ -222,6 +222,7 @@ export class LinearMemoryNavigator extends HTMLElement {
 
   private createButton(data: {icon: string, title: string, event: Event, enabled: boolean}): LitHtml.TemplateResult {
     const iconColor = data.enabled ? 'var(--color-text-secondary)' : 'var(--color-background-highlight)';
+    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return html`
       <button class="navigator-button" ?disabled=${!data.enabled}
         data-button=${data.event.type} title=${data.title}

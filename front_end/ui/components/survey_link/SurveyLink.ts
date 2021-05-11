@@ -116,6 +116,7 @@ export class SurveyLink extends HTMLElement {
     const ariaDisabled = this.state !== State.ShowLink;
 
     // clang-format off
+// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     const output = LitHtml.html`
       <style>
         .link-icon {

@@ -61,6 +61,7 @@ export class TrustTokensView extends HTMLElement {
 
   private render(): void {
     LitHtml.render(
+        // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
         LitHtml.html`
       <style>
         :host {
@@ -137,6 +138,7 @@ export class TrustTokensView extends HTMLElement {
       },
     };
 
+    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return LitHtml.html`
       <devtools-data-grid-controller .data=${
         gridData as DataGrid.DataGridController.DataGridControllerData}></devtools-data-grid-controller>
@@ -160,6 +162,7 @@ export class TrustTokensView extends HTMLElement {
 
   private deleteButtonRenderer(issuer: DataGrid.DataGridUtils.CellValue): LitHtml.TemplateResult {
     // clang-format off
+// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return LitHtml.html`
       <style>
         .delete-button {

@@ -42,6 +42,7 @@ export class MarkdownImage extends HTMLElement {
       return LitHtml.html``;
     }
     const {src, color, width = '100%', height = '100%'} = this.imageData;
+    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return LitHtml.html`
       <devtools-icon .data=${{iconPath: src, color, width, height} as IconButton.Icon.IconData}></devtools-icon>
     `;

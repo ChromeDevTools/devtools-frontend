@@ -137,6 +137,7 @@ export class RequestTrustTokensReport extends HTMLElement {
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
+// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     LitHtml.render(LitHtml.html`
       <style>
         .code {
@@ -170,6 +171,7 @@ export class RequestTrustTokensReport extends HTMLElement {
       return LitHtml.nothing;
     }
 
+    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return LitHtml.html`
       <devtools-report-section-header>${i18nString(UIStrings.parameters)}</devtools-report-section-header>
       ${renderRowWithCodeValue(i18nString(UIStrings.type), this.trustTokenData.params.type.toString())}
@@ -192,6 +194,7 @@ export class RequestTrustTokensReport extends HTMLElement {
       return LitHtml.nothing;
     }
 
+    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return LitHtml.html`
       <devtools-report-key>${i18nString(UIStrings.issuers)}</devtools-report-key>
       <devtools-report-value>
@@ -219,6 +222,7 @@ export class RequestTrustTokensReport extends HTMLElement {
     if (!this.trustTokenData || !this.trustTokenData.result) {
       return LitHtml.nothing;
     }
+    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return LitHtml.html`
       <devtools-report-section-header>${i18nString(UIStrings.result)}</devtools-report-section-header>
       <devtools-report-key>${i18nString(UIStrings.status)}</devtools-report-key>
@@ -298,6 +302,7 @@ function renderSimpleRowIfValuePresent<T>(key: string, value: T|undefined): LitH
     return LitHtml.nothing;
   }
 
+  // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
   return LitHtml.html`
     <devtools-report-key>${key}</devtools-report-key>
     <devtools-report-value>${value}</devtools-report-value>
@@ -305,6 +310,7 @@ function renderSimpleRowIfValuePresent<T>(key: string, value: T|undefined): LitH
 }
 
 function renderRowWithCodeValue(key: string, value: string): LitHtml.TemplateResult {
+  // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
   return LitHtml.html`
     <devtools-report-key>${key}</devtools-report-key>
     <devtools-report-value class="code">${value}</devtools-report-value>

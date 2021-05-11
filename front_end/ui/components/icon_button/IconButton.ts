@@ -121,6 +121,7 @@ export class IconButton extends HTMLElement {
       <button class="${buttonClasses}" @click=${this.onClickHandler}>
       ${this.leadingText ? LitHtml.html`<span class="icon-button-title">${this.leadingText}</span>` : LitHtml.nothing}
       ${this.groups.filter(counter => counter.text !== undefined).map(counter =>
+// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
       LitHtml.html`
       <devtools-icon class="status-icon"
       .data=${{iconName: counter.iconName, color: counter.iconColor || '', width: counter.iconWidth || '1.5ex', height: counter.iconHeight || '1.5ex'} as IconData}>

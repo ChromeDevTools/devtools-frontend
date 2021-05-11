@@ -155,6 +155,7 @@ export class StackTrace extends HTMLElement {
     }
     const expandableRows = this.createRowTemplates();
     LitHtml.render(
+// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
       LitHtml.html`
         <devtools-expandable-list .data=${{
           rows: expandableRows,

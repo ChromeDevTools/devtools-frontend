@@ -69,6 +69,7 @@ export class BackForwardCacheView extends UI.ThrottledWidget.ThrottledWidget {
 
   async doUpdate(): Promise<void> {
     const data = {reportTitle: i18nString(UIStrings.backForwardCacheTitle)};
+    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     const html = LitHtml.html`
       <devtools-report .data=${data as ReportView.ReportView.ReportData}>
       ${this.renderMainFrameInformation(this.getMainFrame())}
@@ -88,11 +89,13 @@ export class BackForwardCacheView extends UI.ThrottledWidget.ThrottledWidget {
 
   private renderMainFrameInformation(mainFrame: SDK.ResourceTreeModel.ResourceTreeFrame|null): LitHtml.TemplateResult {
     if (!mainFrame) {
+      // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
       return LitHtml.html`<devtools-report-key>${i18nString(UIStrings.mainFrame)}</devtools-report-key>
       <devtools-report-value>
       ${i18nString(UIStrings.unavailable)}
       </devtools-report-value>`;
     }
+    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return LitHtml.html`
       <devtools-report-section-header>${i18nString(UIStrings.lastMainFrameNavigation)}</devtools-report-section-header>
       <devtools-report-key>${i18nString(UIStrings.url)}</devtools-report-key>

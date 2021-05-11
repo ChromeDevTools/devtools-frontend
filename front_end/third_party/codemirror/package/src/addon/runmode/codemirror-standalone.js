@@ -1,4 +1,5 @@
 import * as modeMethods from "../../modes.js"
+import { countColumn } from "../../util/misc.js"
 import StringStream from "../../util/StringStream.js"
 
 // declare global: globalThis, CodeMirror
@@ -17,6 +18,7 @@ CodeMirror.defineMIME("text/plain", "null")
 
 CodeMirror.registerHelper = CodeMirror.registerGlobalHelper = Math.min
 CodeMirror.splitLines = function(string) { return string.split(/\r?\n|\r/) }
+CodeMirror.countColumn = countColumn
 
 CodeMirror.defaults = { indentUnit: 2 }
 export default CodeMirror

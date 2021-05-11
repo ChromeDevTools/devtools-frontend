@@ -37,6 +37,7 @@ import six
 import time
 
 AUTOROLL_ACCOUNT = "devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com"
+USE_PYTHON3 = True
 
 
 def _ExecuteSubProcess(input_api, output_api, script_path, args, results):
@@ -53,9 +54,11 @@ def _ExecuteSubProcess(input_api, output_api, script_path, args, results):
     time_difference = end_time - start_time
     time_info = "Script execution time was %.1fs seconds\n" % (time_difference)
     if process.returncode != 0:
-        results.append(output_api.PresubmitError(time_info + out))
+        results.append(
+            output_api.PresubmitError(time_info + out.decode('utf-8')))
     else:
-        results.append(output_api.PresubmitNotifyResult(time_info + out))
+        results.append(
+            output_api.PresubmitNotifyResult(time_info + out.decode('utf-8')))
     return results
 
 
@@ -94,7 +97,9 @@ def _CheckChangesAreExclusiveToDirectory(input_api, output_api):
     num_affected = len(affected_files)
     for dirs in EXCLUSIVE_CHANGE_DIRECTORIES:
         dir_list = ', '.join(dirs)
-        affected_in_dir = filter(lambda f: FileIsInDir(f, dirs), affected_files)
+        affected_in_dir = [
+            file for file in affected_files if FileIsInDir(file, dirs)
+        ]
         num_in_dir = len(affected_in_dir)
         if num_in_dir == 0:
             continue
@@ -454,8 +459,9 @@ def _CheckNoUncheckedFiles(input_api, output_api):
         files_changed, _ = files_changed_process.communicate()
 
         return [
-            output_api.PresubmitError('You have changed files that need to be committed:'),
-            output_api.PresubmitError(files_changed)
+            output_api.PresubmitError(
+                'You have changed files that need to be committed:'),
+            output_api.PresubmitError(files_changed.decode('utf-8'))
         ]
     return []
 
@@ -572,8 +578,12 @@ def _getAffectedFiles(input_api, parent_directories, excluded_actions, accepted_
         f.AbsoluteLocalPath() for f in input_api.AffectedFiles() if all(f.Action() != action for action in excluded_actions)
     ]
     affected_files = [
-        file_name for file_name in local_paths if any(parent_directory in file_name for parent_directory in parent_directories) and
-        (len(accepted_endings) is 0 or any(file_name.endswith(accepted_ending) for accepted_ending in accepted_endings))
+        file_name for file_name in local_paths
+        if any(parent_directory in file_name
+               for parent_directory in parent_directories) and (
+                   len(accepted_endings) == 0 or any(
+                       file_name.endswith(accepted_ending)
+                       for accepted_ending in accepted_endings))
     ]
     return affected_files
 
@@ -616,7 +626,7 @@ def _checkWithTypeScript(input_api,
     if tsc_compiler_process.returncode != 0:
         return [
             output_api.PresubmitError('Error compiling briges regenerator:\n' +
-                                      str(out))
+                                      out.decode('utf-8'))
         ]
 
     return _checkWithNodeScript(input_api, output_api, script_path,
@@ -629,7 +639,7 @@ def _getFilesToLint(input_api, output_api, lint_config_files,
     files_to_lint = []
 
     # We are changing the lint configuration; run the full check.
-    if len(lint_config_files) is not 0:
+    if len(lint_config_files) != 0:
         results.append(
             output_api.PresubmitNotifyResult('Running full lint check'))
         run_full_check = True
@@ -640,15 +650,16 @@ def _getFilesToLint(input_api, output_api, lint_config_files,
                                           accepted_endings)
 
         # Exclude front_end/third_party files.
-        files_to_lint = filter(lambda path: "third_party" not in path,
-                               files_to_lint)
+        files_to_lint = [
+            file for file in files_to_lint if "third_party" not in file
+        ]
 
-        if len(files_to_lint) is 0:
+        if len(files_to_lint) == 0:
             results.append(
                 output_api.PresubmitNotifyResult(
                     'No affected files for lint check'))
 
-    should_bail_out = len(files_to_lint) is 0 and not run_full_check
+    should_bail_out = len(files_to_lint) == 0 and not run_full_check
     return should_bail_out, files_to_lint
 
 

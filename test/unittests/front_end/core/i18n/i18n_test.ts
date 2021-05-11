@@ -52,3 +52,17 @@ describe('serialize/deserialize round-trip', () => {
     });
   });
 });
+
+describe('getLocalizedLanguageRegion', () => {
+  it('build the correct language/region string', () => {
+    assert.strictEqual(
+        i18n.i18n.getLocalizedLanguageRegion('de-AT', {locale: 'en-US'}), 'German (Austria) - Deutsch (Österreich)');
+    assert.strictEqual(i18n.i18n.getLocalizedLanguageRegion('de', {locale: 'en-US'}), 'German - Deutsch');
+  });
+
+  it('uses english for the target locale if the languages match', () => {
+    assert.strictEqual(
+        i18n.i18n.getLocalizedLanguageRegion('de-AT', {locale: 'de'}), 'Deutsch (Österreich) - German (Austria)');
+    assert.strictEqual(i18n.i18n.getLocalizedLanguageRegion('de', {locale: 'de'}), 'Deutsch - German');
+  });
+});

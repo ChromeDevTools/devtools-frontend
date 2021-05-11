@@ -6,6 +6,7 @@
 import i18nBundle from '../../third_party/i18n/i18n-bundle.js';
 import * as Platform from '../platform/platform.js';
 
+import type {DevToolsLocale} from './DevToolsLocale';
 import * as i18nTypes from './i18nTypes.js';
 
 /**
@@ -179,4 +180,39 @@ export function lockedString(str: string): Platform.UIString.LocalizedString {
  */
 export function lockedLazyString(str: string): () => Platform.UIString.LocalizedString {
   return (): Platform.UIString.LocalizedString => str as Platform.UIString.LocalizedString;
+}
+
+/**
+ * Returns a string of the form:
+ *   "German (Austria) - Deutsch (Österreich)"
+ * where the former locale representation is written in the currently enabled DevTools
+ * locale and the latter locale representation is written in the locale of `localeString`.
+ *
+ * Should the two locales match (i.e. have the same language) then the latter locale
+ * representation is written in English.
+ */
+export function getLocalizedLanguageRegion(
+    localeString: Intl.UnicodeBCP47LocaleIdentifier,
+    devtoolsLocale: DevToolsLocale): Platform.UIString.LocalizedString {
+  // @ts-ignore TODO(crbug.com/1163928) Wait for Intl support.
+  const locale = new Intl.Locale(localeString);
+  // @ts-ignore TODO(crbug.com/1163928) Wait for Intl support.
+  const devtoolsLoc = new Intl.Locale(devtoolsLocale.locale);
+  const targetLanguage = locale.language === devtoolsLoc.language ? 'en' : locale.baseName;
+  const languageInCurrentLocale =
+      new Intl.DisplayNames([devtoolsLocale.locale], {type: 'language'}).of(locale.language);
+  const languageInTargetLocale = new Intl.DisplayNames([targetLanguage], {type: 'language'}).of(locale.language);
+
+  let wrappedRegionInCurrentLocale = '';
+  let wrappedRegionInTargetLocale = '';
+
+  if (locale.region) {
+    const regionInCurrentLocale = new Intl.DisplayNames([devtoolsLocale.locale], {type: 'region'}).of(locale.region);
+    const regionInTargetLocale = new Intl.DisplayNames([targetLanguage], {type: 'region'}).of(locale.region);
+    wrappedRegionInCurrentLocale = ` (${regionInCurrentLocale})`;
+    wrappedRegionInTargetLocale = ` (${regionInTargetLocale})`;
+  }
+
+  return `${languageInCurrentLocale}${wrappedRegionInCurrentLocale} - ${languageInTargetLocale}${
+             wrappedRegionInTargetLocale}` as Platform.UIString.LocalizedString;
 }

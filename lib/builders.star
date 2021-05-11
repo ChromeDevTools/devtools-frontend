@@ -26,15 +26,15 @@ acls = struct(
 
 dimensions = struct(
     ubuntu = {
-        "os": "Ubuntu-16.04",
+        "os": "Ubuntu",
     },
     default_ubuntu = {
         "host_class": "default",
-        "os": "Ubuntu-16.04",
+        "os": "Ubuntu",
     },
     beefy_ubuntu = {
         "host_class": "beefy",
-        "os": "Ubuntu-16.04",
+        "os": "Ubuntu",
     },
     win10 = {
         "cpu": "x86-64",

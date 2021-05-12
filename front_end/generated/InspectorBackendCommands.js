@@ -270,7 +270,8 @@ export function registerCommands(inspectorBackend) {
     TrustedWebActivityIssue: 'TrustedWebActivityIssue',
     LowTextContrastIssue: 'LowTextContrastIssue',
     CorsIssue: 'CorsIssue',
-    AttributionReportingIssue: 'AttributionReportingIssue'
+    AttributionReportingIssue: 'AttributionReportingIssue',
+    QuirksModeIssue: 'QuirksModeIssue'
   });
   inspectorBackend.registerEvent('Audits.issueAdded', ['issue']);
   inspectorBackend.registerEnum('Audits.GetEncodedResponseRequestEncoding', {Webp: 'webp', Jpeg: 'jpeg', Png: 'png'});
@@ -1902,6 +1903,7 @@ export function registerCommands(inspectorBackend) {
     ClipboardWrite: 'clipboard-write',
     ConversionMeasurement: 'conversion-measurement',
     CrossOriginIsolated: 'cross-origin-isolated',
+    DirectSockets: 'direct-sockets',
     DisplayCapture: 'display-capture',
     DocumentDomain: 'document-domain',
     EncryptedMedia: 'encrypted-media',
@@ -1936,6 +1938,26 @@ export function registerCommands(inspectorBackend) {
   });
   inspectorBackend.registerEnum(
       'Page.PermissionsPolicyBlockReason', {Header: 'Header', IframeAttribute: 'IframeAttribute'});
+  inspectorBackend.registerEnum('Page.OriginTrialTokenStatus', {
+    Success: 'Success',
+    NotSupported: 'NotSupported',
+    Insecure: 'Insecure',
+    Expired: 'Expired',
+    WrongOrigin: 'WrongOrigin',
+    InvalidSignature: 'InvalidSignature',
+    Malformed: 'Malformed',
+    WrongVersion: 'WrongVersion',
+    FeatureDisabled: 'FeatureDisabled',
+    TokenDisabled: 'TokenDisabled',
+    FeatureDisabledForUser: 'FeatureDisabledForUser'
+  });
+  inspectorBackend.registerEnum('Page.OriginTrialStatus', {
+    Enabled: 'Enabled',
+    ValidTokenNotProvided: 'ValidTokenNotProvided',
+    OSNotSupported: 'OSNotSupported',
+    TrialNotAllowed: 'TrialNotAllowed'
+  });
+  inspectorBackend.registerEnum('Page.OriginTrialUsageRestriction', {None: 'None', Subset: 'Subset'});
   inspectorBackend.registerEnum('Page.TransitionType', {
     Link: 'link',
     Typed: 'typed',

@@ -1011,6 +1011,22 @@ declare namespace Protocol {
     }
 
     /**
+     * Details for issues about documents in Quirks Mode
+     * or Limited Quirks Mode that affects page layouting.
+     */
+    export interface QuirksModeIssueDetails {
+      /**
+       * If false, it means the document's mode is "quirks"
+       * instead of "limited-quirks".
+       */
+      isLimitedQuirksMode: boolean;
+      documentNodeId: DOM.BackendNodeId;
+      url: string;
+      frameId: Page.FrameId;
+      loaderId: Network.LoaderId;
+    }
+
+    /**
      * A unique identifier for the type of issue. Each type may use one of the
      * optional fields in InspectorIssueDetails to convey more specific
      * information about the kind of issue.
@@ -1026,6 +1042,7 @@ declare namespace Protocol {
       LowTextContrastIssue = 'LowTextContrastIssue',
       CorsIssue = 'CorsIssue',
       AttributionReportingIssue = 'AttributionReportingIssue',
+      QuirksModeIssue = 'QuirksModeIssue',
     }
 
     /**
@@ -1044,6 +1061,7 @@ declare namespace Protocol {
       lowTextContrastIssueDetails?: LowTextContrastIssueDetails;
       corsIssueDetails?: CorsIssueDetails;
       attributionReportingIssueDetails?: AttributionReportingIssueDetails;
+      quirksModeIssueDetails?: QuirksModeIssueDetails;
     }
 
     /**
@@ -9456,6 +9474,7 @@ declare namespace Protocol {
       ClipboardWrite = 'clipboard-write',
       ConversionMeasurement = 'conversion-measurement',
       CrossOriginIsolated = 'cross-origin-isolated',
+      DirectSockets = 'direct-sockets',
       DisplayCapture = 'display-capture',
       DocumentDomain = 'document-domain',
       EncryptedMedia = 'encrypted-media',
@@ -9506,6 +9525,64 @@ declare namespace Protocol {
       feature: PermissionsPolicyFeature;
       allowed: boolean;
       locator?: PermissionsPolicyBlockLocator;
+    }
+
+    /**
+     * Origin Trial(https://www.chromium.org/blink/origin-trials) support.
+     * Status for an Origin Trial token.
+     */
+    export enum OriginTrialTokenStatus {
+      Success = 'Success',
+      NotSupported = 'NotSupported',
+      Insecure = 'Insecure',
+      Expired = 'Expired',
+      WrongOrigin = 'WrongOrigin',
+      InvalidSignature = 'InvalidSignature',
+      Malformed = 'Malformed',
+      WrongVersion = 'WrongVersion',
+      FeatureDisabled = 'FeatureDisabled',
+      TokenDisabled = 'TokenDisabled',
+      FeatureDisabledForUser = 'FeatureDisabledForUser',
+    }
+
+    /**
+     * Status for an Origin Trial.
+     */
+    export enum OriginTrialStatus {
+      Enabled = 'Enabled',
+      ValidTokenNotProvided = 'ValidTokenNotProvided',
+      OSNotSupported = 'OSNotSupported',
+      TrialNotAllowed = 'TrialNotAllowed',
+    }
+
+    export enum OriginTrialUsageRestriction {
+      None = 'None',
+      Subset = 'Subset',
+    }
+
+    export interface OriginTrialToken {
+      origin: string;
+      matchSubDomains: boolean;
+      trialName: string;
+      expiryTime: Network.TimeSinceEpoch;
+      isThirdParty: boolean;
+      usageRestriction: OriginTrialUsageRestriction;
+    }
+
+    export interface OriginTrialTokenWithStatus {
+      rawTokenText: string;
+      /**
+       * `parsedToken` is present only when the token is extractable and
+       * parsable.
+       */
+      parsedToken?: OriginTrialToken;
+      status: OriginTrialTokenStatus;
+    }
+
+    export interface OriginTrial {
+      trialName: string;
+      status: OriginTrialStatus;
+      tokensWithStatus: OriginTrialTokenWithStatus[];
     }
 
     /**
@@ -9571,6 +9648,10 @@ declare namespace Protocol {
        * Indicated which gated APIs / features are available.
        */
       gatedAPIFeatures: GatedAPIFeatures[];
+      /**
+       * Frame document's origin trials with at least one token present.
+       */
+      originTrials?: OriginTrial[];
     }
 
     /**

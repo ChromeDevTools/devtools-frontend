@@ -733,6 +733,18 @@ experimental domain Audits
       optional DOM.BackendNodeId violatingNodeId
       optional string invalidParameter
 
+# Details for issues about documents in Quirks Mode
+# or Limited Quirks Mode that affects page layouting.
+  type QuirksModeIssueDetails extends object
+    properties
+      # If false, it means the document's mode is "quirks"
+      # instead of "limited-quirks".
+      boolean isLimitedQuirksMode
+      DOM.BackendNodeId documentNodeId
+      string url
+      Page.FrameId frameId
+      Network.LoaderId loaderId
+
   # A unique identifier for the type of issue. Each type may use one of the
   # optional fields in InspectorIssueDetails to convey more specific
   # information about the kind of issue.
@@ -748,6 +760,7 @@ experimental domain Audits
       LowTextContrastIssue
       CorsIssue
       AttributionReportingIssue
+      QuirksModeIssue
 
   # This struct holds a list of optional fields with additional information
   # specific to the kind of issue. When adding a new issue code, please also
@@ -764,6 +777,7 @@ experimental domain Audits
       optional LowTextContrastIssueDetails lowTextContrastIssueDetails
       optional CorsIssueDetails corsIssueDetails
       optional AttributionReportingIssueDetails attributionReportingIssueDetails
+      optional QuirksModeIssueDetails quirksModeIssueDetails
 
   # An inspector issue reported from the back-end.
   type InspectorIssue extends object
@@ -6443,6 +6457,7 @@ domain Page
       clipboard-write
       conversion-measurement
       cross-origin-isolated
+      direct-sockets
       display-capture
       document-domain
       encrypted-media
@@ -6494,6 +6509,58 @@ domain Page
       boolean allowed
       optional PermissionsPolicyBlockLocator locator
 
+  # Origin Trial(https://www.chromium.org/blink/origin-trials) support.
+  # Status for an Origin Trial token.
+  experimental type OriginTrialTokenStatus extends string
+    enum
+      Success
+      NotSupported
+      Insecure
+      Expired
+      WrongOrigin
+      InvalidSignature
+      Malformed
+      WrongVersion
+      FeatureDisabled
+      TokenDisabled
+      FeatureDisabledForUser
+
+  # Status for an Origin Trial.
+  experimental type OriginTrialStatus extends string
+    enum
+      Enabled
+      ValidTokenNotProvided
+      OSNotSupported
+      TrialNotAllowed
+
+  experimental type OriginTrialUsageRestriction extends string
+    enum
+      None
+      Subset
+
+  experimental type OriginTrialToken extends object
+    properties
+      string origin
+      boolean matchSubDomains
+      string trialName
+      Network.TimeSinceEpoch expiryTime
+      boolean isThirdParty
+      OriginTrialUsageRestriction usageRestriction
+
+  experimental type OriginTrialTokenWithStatus extends object
+    properties
+      string rawTokenText
+      # `parsedToken` is present only when the token is extractable and
+      # parsable.
+      optional OriginTrialToken parsedToken
+      OriginTrialTokenStatus status
+
+  experimental type OriginTrial extends object
+    properties
+      string trialName
+      OriginTrialStatus status
+      array of OriginTrialTokenWithStatus tokensWithStatus
+
   # Information about the Frame on the page.
   type Frame extends object
     properties
@@ -6528,6 +6595,8 @@ domain Page
       experimental CrossOriginIsolatedContextType crossOriginIsolatedContextType
       # Indicated which gated APIs / features are available.
       experimental array of GatedAPIFeatures gatedAPIFeatures
+      # Frame document's origin trials with at least one token present.
+      experimental optional array of OriginTrial originTrials
 
   # Information about the Resource on the page.
   experimental type FrameResource extends object

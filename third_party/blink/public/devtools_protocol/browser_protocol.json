@@ -1525,6 +1525,34 @@
                     ]
                 },
                 {
+                    "id": "QuirksModeIssueDetails",
+                    "description": "Details for issues about documents in Quirks Mode\nor Limited Quirks Mode that affects page layouting.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "isLimitedQuirksMode",
+                            "description": "If false, it means the document's mode is \"quirks\"\ninstead of \"limited-quirks\".",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "documentNodeId",
+                            "$ref": "DOM.BackendNodeId"
+                        },
+                        {
+                            "name": "url",
+                            "type": "string"
+                        },
+                        {
+                            "name": "frameId",
+                            "$ref": "Page.FrameId"
+                        },
+                        {
+                            "name": "loaderId",
+                            "$ref": "Network.LoaderId"
+                        }
+                    ]
+                },
+                {
                     "id": "InspectorIssueCode",
                     "description": "A unique identifier for the type of issue. Each type may use one of the\noptional fields in InspectorIssueDetails to convey more specific\ninformation about the kind of issue.",
                     "type": "string",
@@ -1538,7 +1566,8 @@
                         "TrustedWebActivityIssue",
                         "LowTextContrastIssue",
                         "CorsIssue",
-                        "AttributionReportingIssue"
+                        "AttributionReportingIssue",
+                        "QuirksModeIssue"
                     ]
                 },
                 {
@@ -1595,6 +1624,11 @@
                             "name": "attributionReportingIssueDetails",
                             "optional": true,
                             "$ref": "AttributionReportingIssueDetails"
+                        },
+                        {
+                            "name": "quirksModeIssueDetails",
+                            "optional": true,
+                            "$ref": "QuirksModeIssueDetails"
                         }
                     ]
                 },
@@ -13910,6 +13944,7 @@
                         "clipboard-write",
                         "conversion-measurement",
                         "cross-origin-isolated",
+                        "direct-sockets",
                         "display-capture",
                         "document-domain",
                         "encrypted-media",
@@ -13985,6 +14020,120 @@
                             "name": "locator",
                             "optional": true,
                             "$ref": "PermissionsPolicyBlockLocator"
+                        }
+                    ]
+                },
+                {
+                    "id": "OriginTrialTokenStatus",
+                    "description": "Origin Trial(https://www.chromium.org/blink/origin-trials) support.\nStatus for an Origin Trial token.",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "Success",
+                        "NotSupported",
+                        "Insecure",
+                        "Expired",
+                        "WrongOrigin",
+                        "InvalidSignature",
+                        "Malformed",
+                        "WrongVersion",
+                        "FeatureDisabled",
+                        "TokenDisabled",
+                        "FeatureDisabledForUser"
+                    ]
+                },
+                {
+                    "id": "OriginTrialStatus",
+                    "description": "Status for an Origin Trial.",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "Enabled",
+                        "ValidTokenNotProvided",
+                        "OSNotSupported",
+                        "TrialNotAllowed"
+                    ]
+                },
+                {
+                    "id": "OriginTrialUsageRestriction",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "None",
+                        "Subset"
+                    ]
+                },
+                {
+                    "id": "OriginTrialToken",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "origin",
+                            "type": "string"
+                        },
+                        {
+                            "name": "matchSubDomains",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "trialName",
+                            "type": "string"
+                        },
+                        {
+                            "name": "expiryTime",
+                            "$ref": "Network.TimeSinceEpoch"
+                        },
+                        {
+                            "name": "isThirdParty",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "usageRestriction",
+                            "$ref": "OriginTrialUsageRestriction"
+                        }
+                    ]
+                },
+                {
+                    "id": "OriginTrialTokenWithStatus",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "rawTokenText",
+                            "type": "string"
+                        },
+                        {
+                            "name": "parsedToken",
+                            "description": "`parsedToken` is present only when the token is extractable and\nparsable.",
+                            "optional": true,
+                            "$ref": "OriginTrialToken"
+                        },
+                        {
+                            "name": "status",
+                            "$ref": "OriginTrialTokenStatus"
+                        }
+                    ]
+                },
+                {
+                    "id": "OriginTrial",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "trialName",
+                            "type": "string"
+                        },
+                        {
+                            "name": "status",
+                            "$ref": "OriginTrialStatus"
+                        },
+                        {
+                            "name": "tokensWithStatus",
+                            "type": "array",
+                            "items": {
+                                "$ref": "OriginTrialTokenWithStatus"
+                            }
                         }
                     ]
                 },
@@ -14076,6 +14225,16 @@
                             "type": "array",
                             "items": {
                                 "$ref": "GatedAPIFeatures"
+                            }
+                        },
+                        {
+                            "name": "originTrials",
+                            "description": "Frame document's origin trials with at least one token present.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "OriginTrial"
                             }
                         }
                     ]

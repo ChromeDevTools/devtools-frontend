@@ -666,6 +666,10 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
   }
 
   _showRequestPanel(shownTab?: NetworkItemViewTabs, takeFocus?: boolean): void {
+    if (this._splitWidget.showMode() === UI.SplitWidget.ShowMode.Both && !shownTab && !takeFocus) {
+      // If panel is already shown, and we are not forcing a specific tab, return.
+      return;
+    }
     this._clearNetworkItemView();
     if (this._currentRequest) {
       const networkItemView = this._createNetworkItemView(shownTab);

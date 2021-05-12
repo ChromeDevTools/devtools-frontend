@@ -93,6 +93,13 @@ export class JavaScriptCompilerPlugin extends Plugin {
       return;
     }
 
+    const scripts =
+        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptsForResource(this._uiSourceCode);
+    const isModule = scripts.reduce((v, s) => v || s.isModule === true, false);
+    if (isModule) {
+      return;
+    }
+
     this._compiling = true;
     const result = await runtimeModel.compileScript(code, '', false, currentExecutionContext.id);
 

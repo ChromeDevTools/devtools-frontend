@@ -698,8 +698,9 @@ export class DebuggerModel extends SDKModel {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       executionContextId: number, hash: string, executionContextAuxData: any, isLiveEdit: boolean,
       sourceMapURL: string|undefined, hasSourceURLComment: boolean, hasSyntaxError: boolean, length: number,
-      originStackTrace: Protocol.Runtime.StackTrace|null, codeOffset: number|null, scriptLanguage: string|null,
-      debugSymbols: Protocol.Debugger.DebugSymbols|null, embedderName: string|null): Script {
+      isModule: boolean|null, originStackTrace: Protocol.Runtime.StackTrace|null, codeOffset: number|null,
+      scriptLanguage: string|null, debugSymbols: Protocol.Debugger.DebugSymbols|null,
+      embedderName: string|null): Script {
     const knownScript = this._scripts.get(scriptId);
     if (knownScript) {
       return knownScript;
@@ -710,7 +711,7 @@ export class DebuggerModel extends SDKModel {
     }
     const script = new Script(
         this, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,
-        isContentScript, isLiveEdit, sourceMapURL, hasSourceURLComment, length, originStackTrace, codeOffset,
+        isContentScript, isLiveEdit, sourceMapURL, hasSourceURLComment, length, isModule, originStackTrace, codeOffset,
         scriptLanguage, debugSymbols, embedderName);
     this._registerScript(script);
     this.dispatchEventToListeners(Events.ParsedScriptSource, script);
@@ -1027,6 +1028,7 @@ class DebuggerDispatcher implements ProtocolProxyApi.DebuggerDispatcher {
     sourceMapURL,
     hasSourceURL,
     length,
+    isModule,
     stackTrace,
     codeOffset,
     scriptLanguage,
@@ -1038,8 +1040,8 @@ class DebuggerDispatcher implements ProtocolProxyApi.DebuggerDispatcher {
     }
     this._debuggerModel._parsedScriptSource(
         scriptId, url, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData,
-        Boolean(isLiveEdit), sourceMapURL, Boolean(hasSourceURL), false, length || 0, stackTrace || null,
-        codeOffset || null, scriptLanguage || null, debugSymbols || null, embedderName || null);
+        Boolean(isLiveEdit), sourceMapURL, Boolean(hasSourceURL), false, length || 0, isModule || null,
+        stackTrace || null, codeOffset || null, scriptLanguage || null, debugSymbols || null, embedderName || null);
   }
 
   scriptFailedToParse({
@@ -1055,6 +1057,7 @@ class DebuggerDispatcher implements ProtocolProxyApi.DebuggerDispatcher {
     sourceMapURL,
     hasSourceURL,
     length,
+    isModule,
     stackTrace,
     codeOffset,
     scriptLanguage,
@@ -1065,8 +1068,8 @@ class DebuggerDispatcher implements ProtocolProxyApi.DebuggerDispatcher {
     }
     this._debuggerModel._parsedScriptSource(
         scriptId, url, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData,
-        false, sourceMapURL, Boolean(hasSourceURL), true, length || 0, stackTrace || null, codeOffset || null,
-        scriptLanguage || null, null, embedderName || null);
+        false, sourceMapURL, Boolean(hasSourceURL), true, length || 0, isModule || null, stackTrace || null,
+        codeOffset || null, scriptLanguage || null, null, embedderName || null);
   }
 
   breakpointResolved({breakpointId, location}: Protocol.Debugger.BreakpointResolvedEvent): void {

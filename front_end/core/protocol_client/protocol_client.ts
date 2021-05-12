@@ -18,5 +18,3 @@ self.Protocol = self.Protocol || {};
 
 // FIXME: This instance of InspectorBackend should not be a side effect of importing this module.
 InspectorBackendCommands.registerCommands(InspectorBackend.inspectorBackend);
-
-export const Protocol = self.Protocol;

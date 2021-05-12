@@ -43,6 +43,8 @@ GLOBAL_TYPESCRIPT_DEFINITION_FILES = [
     # generated protocol definitions
     path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'front_end', 'generated',
               'protocol.d.ts'),
+    path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'front_end', 'generated',
+              'protocol-globals.d.ts'),
     # generated protocol api interactions
     path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'front_end', 'generated',
               'protocol-proxy-api.d.ts'),

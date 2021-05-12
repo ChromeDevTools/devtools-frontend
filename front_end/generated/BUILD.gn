@@ -3,6 +3,7 @@
 # found in the LICENSE file.
 
 import("../../scripts/build/ninja/devtools_module.gni")
+import("../../scripts/build/ninja/devtools_pre_built.gni")
 
 devtools_module("generated") {
   sources = [
@@ -18,5 +19,16 @@ devtools_module("generated") {
     "../core/sdk:sdk-typescript",
     "../panels/accessibility:*",
     "../panels/elements:*",
+  ]
+}
+
+devtools_pre_built("protocol") {
+  sources_are_release = false
+
+  sources = [
+    "protocol-mapping.d.ts",
+    "protocol-proxy-api.d.ts",
+    "protocol-tsconfig.json",
+    "protocol.d.ts",
   ]
 }

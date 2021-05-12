@@ -31,6 +31,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import {NodeURL} from './NodeURL.js';
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 
 export const ProtocolError = Symbol('Protocol.Error');
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration

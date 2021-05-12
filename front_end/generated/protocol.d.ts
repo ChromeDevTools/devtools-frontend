@@ -15944,3 +15944,6 @@ declare namespace Protocol {
     }
   }
 }
+
+export = Protocol;
+export as namespace Protocol;

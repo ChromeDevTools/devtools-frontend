@@ -70,6 +70,8 @@ const emitModule = (moduleName: string, domains: Protocol.Domain[]) => {
   domains.forEach(emitDomain);
   emitCloseBlock();
   emitLine();
+  emitLine('export = Protocol;');
+  emitLine('export as namespace Protocol;');
 };
 
 const emitGlobalTypeDefs = () => {
@@ -380,6 +382,8 @@ const emitApi = (moduleName: string, protocolModuleName: string, domains: Protoc
   moduleName = toTitleCase(moduleName);
   emitHeaderComments();
   emitLine();
+  emitLine('import type * as Protocol from \'./protocol.js\'');
+  emitLine();
   emitDescription('API generated from Protocol commands and events.');
   emitOpenBlock(`declare namespace ${moduleName}`);
 
@@ -396,6 +400,8 @@ const emitApi = (moduleName: string, protocolModuleName: string, domains: Protoc
   domains.forEach(d => emitDomainApi(d, protocolModulePrefix));
   emitCloseBlock();
   emitLine();
+  emitLine('export = ProtocolProxyApi;');
+  emitLine('export as namespace ProtocolProxyApi;');
 };
 
 const flushEmitToFile = (path: string) => {

@@ -8,6 +8,8 @@
  */
 
 
+import type * as Protocol from './protocol.js'
+
 /**
  * API generated from Protocol commands and events.
  */
@@ -3893,3 +3895,5 @@ declare namespace ProtocolProxyApi {
   export interface SchemaDispatcher {}
 }
 
+export = ProtocolProxyApi;
+export as namespace ProtocolProxyApi;

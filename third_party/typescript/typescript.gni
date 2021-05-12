@@ -64,6 +64,7 @@ template("ts_library") {
       devtools_location_prepend + "node_modules/@types/node/index.d.ts",
       devtools_location_prepend + "node_modules/@types/estree/index.d.ts",
       devtools_location_prepend + "front_end/generated/protocol.d.ts",
+      devtools_location_prepend + "front_end/generated/protocol-globals.d.ts",
       devtools_location_prepend + "front_end/generated/protocol-proxy-api.d.ts",
       devtools_location_prepend + "node_modules/@types/filesystem/index.d.ts",
       devtools_location_prepend + "node_modules/@types/codemirror/index.d.ts",

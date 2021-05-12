@@ -76,6 +76,7 @@ devtools_module("sdk") {
     "../../core/platform:bundle",
     "../../core/protocol_client:bundle",
     "../../generated",
+    "../../generated:protocol",
     "../../models/text_utils:bundle",
   ]
 }

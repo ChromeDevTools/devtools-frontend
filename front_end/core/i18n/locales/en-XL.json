@@ -950,6 +950,9 @@
   "entrypoints/main/main-meta.ts | bottom": {
     "message": "B̂ót̂t́ôḿ"
   },
+  "entrypoints/main/main-meta.ts | browserLanguage": {
+    "message": "B̂ŕôẃŝér̂ ÚÎ ĺâńĝúâǵê"
+  },
   "entrypoints/main/main-meta.ts | cancelSearch": {
     "message": "Ĉán̂ćêĺ ŝéâŕĉh́"
   },
@@ -991,6 +994,9 @@
   },
   "entrypoints/main/main-meta.ts | horizontal": {
     "message": "ĥór̂íẑón̂t́âĺ"
+  },
+  "entrypoints/main/main-meta.ts | language": {
+    "message": "L̂án̂ǵûáĝé:"
   },
   "entrypoints/main/main-meta.ts | left": {
     "message": "L̂éf̂t́"

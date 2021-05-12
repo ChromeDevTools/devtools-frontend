@@ -199,6 +199,17 @@ const UIStrings = {
   *@description Name of the default set of DevTools keyboard shortcuts
   */
   devtoolsDefault: 'DevTools (Default)',
+  /**
+   * @description Title of the language setting that allows users to switch the locale
+   * in which DevTools is presented.
+   */
+  language: 'Language:',
+  /**
+   * @description Users can choose this option when picking the language in which
+   * DevTools is presented. Choosing this option means that the DevTools language matches
+   * Chrome's UI language.
+   */
+  browserLanguage: 'Browser UI language',
 };
 const str_ = i18n.i18n.registerUIStrings('entrypoints/main/main-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -713,6 +724,38 @@ Common.Settings.registerSettingExtension({
       text: i18n.i18n.lockedLazyString('Visual Studio Code'),
     },
   ],
+});
+
+function createLazyLocalizedLocaleSettingText(localeString: string): () => Common.UIString.LocalizedString {
+  return (): Common.UIString.LocalizedString =>
+             i18n.i18n.getLocalizedLanguageRegion(localeString, i18n.DevToolsLocale.DevToolsLocale.instance());
+}
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.APPEARANCE,
+  settingName: 'language',
+  settingType: Common.Settings.SettingType.ENUM,
+  title: i18nLazyString(UIStrings.language),
+  defaultValue: 'en-US',
+  options: [
+    {
+      value: 'browserLanguage',
+      title: i18nLazyString(UIStrings.browserLanguage),
+      text: i18nLazyString(UIStrings.browserLanguage),
+    },
+    {
+      value: 'en-US',
+      title: createLazyLocalizedLocaleSettingText('en-US'),
+      text: createLazyLocalizedLocaleSettingText('en-US'),
+    },
+    {
+      value: 'zh',
+      title: createLazyLocalizedLocaleSettingText('zh'),
+      text: createLazyLocalizedLocaleSettingText('zh'),
+    },
+  ],
+  reloadRequired: true,
+  experiment: Root.Runtime.ExperimentName.LOCALIZED_DEVTOOLS,
 });
 
 Common.Settings.registerSettingExtension({

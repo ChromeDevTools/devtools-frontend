@@ -58,6 +58,7 @@ describe('getLocalizedLanguageRegion', () => {
     assert.strictEqual(
         i18n.i18n.getLocalizedLanguageRegion('de-AT', {locale: 'en-US'}), 'German (Austria) - Deutsch (Österreich)');
     assert.strictEqual(i18n.i18n.getLocalizedLanguageRegion('de', {locale: 'en-US'}), 'German - Deutsch');
+    assert.strictEqual(i18n.i18n.getLocalizedLanguageRegion('en-US', {locale: 'de'}), 'Englisch (USA) - English (US)');
   });
 
   it('uses english for the target locale if the languages match', () => {

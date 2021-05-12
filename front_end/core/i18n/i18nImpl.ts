@@ -194,8 +194,10 @@ export function getLocalizedLanguageRegion(
   let wrappedRegionInTargetLocale = '';
 
   if (locale.region) {
-    const regionInCurrentLocale = new Intl.DisplayNames([devtoolsLocale.locale], {type: 'region'}).of(locale.region);
-    const regionInTargetLocale = new Intl.DisplayNames([targetLanguage], {type: 'region'}).of(locale.region);
+    const regionInCurrentLocale =
+        new Intl.DisplayNames([devtoolsLocale.locale], {type: 'region', style: 'short'}).of(locale.region);
+    const regionInTargetLocale =
+        new Intl.DisplayNames([targetLanguage], {type: 'region', style: 'short'}).of(locale.region);
     wrappedRegionInCurrentLocale = ` (${regionInCurrentLocale})`;
     wrappedRegionInTargetLocale = ` (${regionInTargetLocale})`;
   }

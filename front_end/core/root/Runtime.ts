@@ -563,6 +563,7 @@ export enum ExperimentName {
   PROTOCOL_MONITOR = 'protocolMonitor',
   WEBAUTHN_PANE = 'webauthnPane',
   RECORDER = 'recorder',
+  LOCALIZED_DEVTOOLS = 'localizedDevTools',
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

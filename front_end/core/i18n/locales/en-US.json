@@ -950,6 +950,9 @@
   "entrypoints/main/main-meta.ts | bottom": {
     "message": "Bottom"
   },
+  "entrypoints/main/main-meta.ts | browserLanguage": {
+    "message": "Browser UI language"
+  },
   "entrypoints/main/main-meta.ts | cancelSearch": {
     "message": "Cancel search"
   },
@@ -991,6 +994,9 @@
   },
   "entrypoints/main/main-meta.ts | horizontal": {
     "message": "horizontal"
+  },
+  "entrypoints/main/main-meta.ts | language": {
+    "message": "Language:"
   },
   "entrypoints/main/main-meta.ts | left": {
     "message": "Left"

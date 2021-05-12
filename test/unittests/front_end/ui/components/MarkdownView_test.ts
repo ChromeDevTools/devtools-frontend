@@ -61,6 +61,7 @@ describe('MarkdownView', async () => {
       MarkdownView.MarkdownLinksMap.markdownLinks.set('exampleLink', 'https://web.dev/');
       const renderResult =
           MarkdownView.MarkdownView.renderToken({type: 'link', text: 'learn more', href: 'exampleLink'});
+
       assert.deepStrictEqual(
           renderResult.strings.raw, ['<devtools-markdown-link .data=', '></devtools-markdown-link>']);
     });

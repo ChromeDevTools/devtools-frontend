@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/components_import */
 import '../../components/icon_button/icon_button.js'; // Required to get <devtools-icon>
 
 import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import type * as IconButton from '../../components/icon_button/icon_button.js';
+import {Icon} from '../../components/icon_button/icon_button.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 
 import type {ImageData} from './MarkdownImagesMap.js';
@@ -22,6 +24,8 @@ export interface MarkdownImageData {
  * This makes sure that all icons/images are accounted for in markdown.
  */
 export class MarkdownImage extends HTMLElement {
+  static litTagName = LitHtml.literal`devtools-markdown-image`;
+
   private readonly shadow = this.attachShadow({mode: 'open'});
   private imageData?: ImageData;
   private imageTitle?: string;
@@ -43,9 +47,9 @@ export class MarkdownImage extends HTMLElement {
       return LitHtml.html``;
     }
     const {src, color, width = '100%', height = '100%'} = this.imageData;
-    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return LitHtml.html`
-      <devtools-icon .data=${{iconPath: src, color, width, height} as IconButton.Icon.IconData}></devtools-icon>
+      <${Icon.Icon.litTagName} .data=${{iconPath: src, color, width, height} as IconButton.Icon.IconData}></${
+        Icon.Icon.litTagName}>
     `;
   }
 

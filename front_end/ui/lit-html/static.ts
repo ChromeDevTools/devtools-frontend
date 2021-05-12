@@ -46,7 +46,7 @@ export function flattenTemplate(strings: TemplateStringsArray, ...values: Templa
   // to append whatever that final string is to whatever is left in the
   // buffer, and flush both out to the newStrings.
   newStrings.push(buffer + strings[values.length]);
-
+  (newStrings as unknown as {raw: readonly string[]}).raw = [...newStrings];
   return {strings: newStrings as unknown as TemplateStringsArray, valueMap};
 }
 

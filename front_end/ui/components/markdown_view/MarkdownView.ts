@@ -8,6 +8,8 @@ import * as ComponentHelpers from '../../components/helpers/helpers.js';
 
 import type {MarkdownImageData} from './MarkdownImage.js';
 import type {MarkdownLinkData} from './MarkdownLink.js';
+import {MarkdownLink} from './MarkdownLink.js';
+import {MarkdownImage} from './MarkdownImage.js';
 
 const html = LitHtml.html;
 const render = LitHtml.render;
@@ -138,15 +140,13 @@ const tokenRenderers = new Map<string, (token: any) => LitHtml.TemplateResult>([
   ['space', (): LitHtml.TemplateResult => html``],
   [
     'link',
-    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
-    (token): LitHtml.TemplateResult => html`<devtools-markdown-link .data=${
-        {key: token.href, title: token.text} as MarkdownLinkData}></devtools-markdown-link>`,
+    (token): LitHtml.TemplateResult => html`<${MarkdownLink.litTagName} .data=${
+        {key: token.href, title: token.text} as MarkdownLinkData}></${MarkdownLink.litTagName}>`,
   ],
   [
     'image',
-    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
-    (token): LitHtml.TemplateResult => html`<devtools-markdown-image .data=${
-        {key: token.href, title: token.text} as MarkdownImageData}></devtools-markdown-image>`,
+    (token): LitHtml.TemplateResult => html`<${MarkdownImage.litTagName} .data=${
+        {key: token.href, title: token.text} as MarkdownImageData}></${MarkdownImage.litTagName}>`,
   ],
 ]);
 

@@ -23,6 +23,7 @@ devtools_module("css_overview") {
     "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../core/sdk:bundle",
+    "../../generated:protocol",
     "../../models/text_utils:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/color_picker:bundle",

@@ -36,6 +36,7 @@ import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import type * as ProtocolClient from '../protocol_client/protocol_client.js'; // eslint-disable-line no-unused-vars
 import * as Root from '../root/root.js';
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 
 import type {GetPropertiesResult, RemoteObject} from './RemoteObject.js';
 import {ScopeRef} from './RemoteObject.js';  // eslint-disable-line no-unused-vars

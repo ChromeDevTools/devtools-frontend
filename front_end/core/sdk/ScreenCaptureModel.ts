@@ -4,6 +4,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+
 import {OverlayModel} from './OverlayModel.js';
 import type {Target} from './SDKModel.js';
 import {Capability, SDKModel} from './SDKModel.js';  // eslint-disable-line no-unused-vars

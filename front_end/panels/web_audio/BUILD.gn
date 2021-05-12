@@ -18,6 +18,7 @@ devtools_module("web_audio") {
     "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../core/sdk:bundle",
+    "../../generated:protocol",
     "../../ui/legacy:bundle",
     "graph_visualizer:bundle",
   ]

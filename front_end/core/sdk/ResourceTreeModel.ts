@@ -32,6 +32,7 @@
 
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 
 import type {DeferredDOMNode, DOMNode} from './DOMModel.js';
 import {DOMModel} from './DOMModel.js';  // eslint-disable-line no-unused-vars

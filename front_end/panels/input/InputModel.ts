@@ -5,6 +5,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 
 export class InputModel extends SDK.SDKModel.SDKModel {
   _inputAgent: ProtocolProxyApi.InputApi;

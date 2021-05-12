@@ -30,6 +30,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+
 import type {DebuggerModel, FunctionDetails} from './DebuggerModel.js'; // eslint-disable-line no-unused-vars
 import type {RuntimeModel} from './RuntimeModel.js';                    // eslint-disable-line no-unused-vars
 

@@ -8,8 +8,9 @@ import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type * as Workspace from '../workspace/workspace.js';
-import {RecordingPlayer} from './RecordingPlayer.js';
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 
+import {RecordingPlayer} from './RecordingPlayer.js';
 import {RecordingSession} from './RecordingSession.js';
 import type {Step} from './Steps.js';
 import {ClickStep, NavigationStep, StepFrameContext, SubmitStep, ChangeStep, CloseStep, EmulateNetworkConditions} from './Steps.js';

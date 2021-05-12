@@ -33,6 +33,7 @@
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 
 export class LayerTreeModel extends SDK.SDKModel.SDKModel {
   _layerTreeAgent: ProtocolProxyApi.LayerTreeApi;

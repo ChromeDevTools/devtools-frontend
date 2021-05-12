@@ -6,6 +6,7 @@
 
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 
 import type {Location} from './DebuggerModel.js'; // eslint-disable-line no-unused-vars
 import type {DOMNode} from './DOMModel.js';

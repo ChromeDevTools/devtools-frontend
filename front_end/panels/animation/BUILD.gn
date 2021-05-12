@@ -21,6 +21,7 @@ devtools_module("animation") {
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
+    "../../generated:protocol",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/inline_editor:bundle",
   ]

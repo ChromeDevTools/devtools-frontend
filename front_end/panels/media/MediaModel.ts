@@ -5,6 +5,8 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+
 export interface PlayerEvent extends Protocol.Media.PlayerEvent {
   value: string;
   displayTimestamp: string;

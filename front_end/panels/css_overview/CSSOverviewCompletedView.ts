@@ -13,6 +13,7 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 
 import type {OverviewController} from './CSSOverviewController.js';
 import {Events} from './CSSOverviewController.js';

@@ -5,6 +5,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Platform from '../platform/platform.js';
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 
 import type {Target} from './SDKModel.js';
 import {Capability, SDKModel} from './SDKModel.js';  // eslint-disable-line no-unused-vars

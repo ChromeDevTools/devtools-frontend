@@ -5,6 +5,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import type * as Protocol from '../../generated/protocol.js';
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 
 import type {DOMNode} from './DOMModel.js';
 import {DeferredDOMNode} from './DOMModel.js';  // eslint-disable-line no-unused-vars

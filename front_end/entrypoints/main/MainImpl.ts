@@ -154,15 +154,6 @@ export class MainImpl {
     this._createAppUI();
   }
 
-  private async loadAndRegisterLocaleData(locale: string): Promise<void> {
-    const data = await Root.Runtime.loadResourcePromise(
-        new URL(`../../core/i18n/locales/${locale}.json`, import.meta.url).toString());
-    if (data) {
-      const localizedStrings = JSON.parse(data);
-      i18n.i18n.registerLocaleData(locale, localizedStrings);
-    }
-  }
-
   async requestAndRegisterLocaleData(): Promise<void> {
     // The language setting is only available when the experiment is enabled.
     // TODO(crbug.com/1163928): Remove the check when the experiment is gone.
@@ -180,13 +171,18 @@ export class MainImpl {
       },
     });
 
-    const localePromises = [this.loadAndRegisterLocaleData(devToolsLocale.locale)];
+    const localePromises = [i18n.i18n.fetchAndRegisterLocaleData(devToolsLocale.locale)];
     if (devToolsLocale.locale !== 'en-US') {
-      // Always load en-US as a fallback. This is important during developement, as newly added
-      // strings won't have a translation yet.
-      localePromises.push(this.loadAndRegisterLocaleData('en-US'));
+      // Always load en-US locale data as a fallback. This is important, newly added
+      // strings won't have a translation.
+      localePromises.push(i18n.i18n.fetchAndRegisterLocaleData('en-US'));
     }
-    await Promise.all(localePromises);
+
+    try {
+      await Promise.all(localePromises);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   _createSettings(prefs: {

@@ -26,20 +26,14 @@ i18n.DevToolsLocale.DevToolsLocale.instance({
 });
 
 // Load the strings from the resource file.
-(async () => {
-  const locale = i18n.DevToolsLocale.DevToolsLocale.instance().locale;
-  // proxied call.
-  try {
-    const data = await (await fetch(`locales/${locale}.json`)).json();
-    if (data) {
-      const localizedStrings = data;
-      i18n.i18n.registerLocaleData(locale, localizedStrings);
-    }
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.warn('EnvironmentHelper: Loading en-US locale failed', error.message);
-  }
-})();
+const locale = i18n.DevToolsLocale.DevToolsLocale.instance().locale;
+// proxied call.
+try {
+  await i18n.i18n.fetchAndRegisterLocaleData(locale);
+} catch (error) {
+  // eslint-disable-next-line no-console
+  console.warn('EnvironmentHelper: Loading en-US locale failed', error.message);
+}
 
 let targetManager: SDK.SDKModel.TargetManager;
 

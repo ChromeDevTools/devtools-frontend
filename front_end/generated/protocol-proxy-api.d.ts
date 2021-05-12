@@ -3896,4 +3896,3 @@ declare namespace ProtocolProxyApi {
 }
 
 export = ProtocolProxyApi;
-export as namespace ProtocolProxyApi;

@@ -45,9 +45,6 @@ GLOBAL_TYPESCRIPT_DEFINITION_FILES = [
               'protocol.d.ts'),
     path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'front_end', 'generated',
               'protocol-globals.d.ts'),
-    # generated protocol api interactions
-    path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'front_end', 'generated',
-              'protocol-proxy-api.d.ts'),
     # Types for W3C FileSystem API
     path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'node_modules', '@types',
               'filesystem', 'index.d.ts'),

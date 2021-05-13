@@ -42,6 +42,8 @@ describe('Element breadcrumbs', async () => {
   });
 
   it('correctly highlights the active node', async () => {
+    // Wait for the crumbs to render with all the elements we expect.
+    await getBreadcrumbsTextContent({expectedNodeCount: 5});
     const selectedCrumbText = await getSelectedBreadcrumbTextContent();
     assert.strictEqual(selectedCrumbText, 'div.div2');
   });

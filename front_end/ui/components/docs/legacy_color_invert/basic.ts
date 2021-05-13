@@ -24,15 +24,25 @@ inputField.addEventListener('input', (event: Event) => {
   if (!event.target) {
     return;
   }
-  const value = (event.target as HTMLInputElement).value;
+  let value = (event.target as HTMLInputElement).value;
+  if (!value.endsWith(';')) {
+    value = value + ';';
+  }
   generateCSS(value);
 });
 
+let generateCSSID = 0;
 function generateCSS(inputValue: string) {
+  generateCSSID++;
+  const outputBox = document.querySelector<HTMLElement>('#output');
+  if (!outputBox) {
+    return;
+  }
+  outputBox.innerText = '';
   const inputText = `fake-element-selector {
     color: ${inputValue};
   }`;
-  const result = themeSupport.themeStyleSheet('fake-stylesheet', inputText);
+  const result = themeSupport.themeStyleSheet(`fake-stylesheet-${generateCSSID}`, inputText);
   if (!result) {
     return;
   }
@@ -50,9 +60,5 @@ function generateCSS(inputValue: string) {
   --override-my-custom-value: ${darkModeColorValue};
 }`;
 
-  const outputBox = document.querySelector<HTMLElement>('#output');
-  if (!outputBox) {
-    return;
-  }
   outputBox.innerText = outputCSS;
 }

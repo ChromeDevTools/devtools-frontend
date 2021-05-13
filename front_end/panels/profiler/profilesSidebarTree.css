@@ -83,13 +83,13 @@ li.wait .spinner::before {
 li.wait.small .spinner::before {
   --dimension: 14px;
   --clip-size: 9px;
-  --spinner-size: 2px;
+  --override-spinner-size: 2px;
 
   margin: 1px;
 }
 
 li.wait.selected .spinner::before {
-  --spinner-color: #fff;
+  --override-spinner-color: #fff;
 }
 
 @keyframes spinner-animation {

@@ -99,6 +99,8 @@ export class LayoutPane extends HTMLElement {
     super();
     this.shadow.adoptedStyleSheets = [
       ...getStyleSheets('panels/elements/layoutPane.css', {enableLegacyPatching: false}),
+      // Required for chrome-select styles.
+      ...getStyleSheets('ui/legacy/inspectorCommon.css', {enableLegacyPatching: false}),
     ];
   }
 

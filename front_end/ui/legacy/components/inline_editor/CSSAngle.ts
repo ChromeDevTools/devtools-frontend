@@ -2,8 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './CSSAngleEditor.js';
-import './CSSAngleSwatch.js';
+/* eslint-disable rulesdir/components_import */
 
 import * as ComponentHelpers from '../../../components/helpers/helpers.js';
 import * as LitHtml from '../../../lit-html/lit-html.js';
@@ -12,7 +11,9 @@ import type {Angle} from './CSSAngleUtils.js';
 import {AngleUnit, convertAngleUnit, getNewAngleFromEvent, getNextUnit, parseText, roundAngleByUnit} from './CSSAngleUtils.js';
 
 import type {CSSAngleEditorData} from './CSSAngleEditor.js';
+import {CSSAngleEditor} from './CSSAngleEditor.js';
 import type {CSSAngleSwatchData} from './CSSAngleSwatch.js';
+import {CSSAngleSwatch} from './CSSAngleSwatch.js';
 
 const {render, html} = LitHtml;
 const styleMap = LitHtml.Directives.styleMap;
@@ -213,7 +214,6 @@ export class CSSAngle extends HTMLElement {
   private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     render(html`
       <style>
         .css-angle {
@@ -239,14 +239,14 @@ export class CSSAngle extends HTMLElement {
 
       <div class="css-angle" @keydown=${this.onKeydown} tabindex="-1">
         <div class="preview">
-          <devtools-css-angle-swatch
+          <${CSSAngleSwatch.litTagName}
             @click=${this.onMiniIconClick}
             @mousedown=${this.consume}
             @dblclick=${this.consume}
             .data=${{
               angle: this.angle,
             } as CSSAngleSwatchData}>
-          </devtools-css-angle-swatch><slot></slot>
+          </${CSSAngleSwatch.litTagName}><slot></slot>
         </div>
         ${this.popoverOpen ? this.renderPopover() : null}
       </div>
@@ -266,9 +266,8 @@ export class CSSAngle extends HTMLElement {
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return html`
-    <devtools-css-angle-editor
+    <${CSSAngleEditor.litTagName}
       class="popover popover-css-angle"
       style=${styleMap({top: this.popoverStyleTop, left: this.popoverStyleLeft})}
       .data=${{
@@ -276,7 +275,7 @@ export class CSSAngle extends HTMLElement {
         onAngleUpdate: this.onAngleUpdate,
         background: contextualBackground,
       } as CSSAngleEditorData}
-    ></devtools-css-angle-editor>
+    ></${CSSAngleEditor.litTagName}>
     `;
     // clang-format on
   }

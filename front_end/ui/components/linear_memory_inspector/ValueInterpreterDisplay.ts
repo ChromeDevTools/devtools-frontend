@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../icon_button/icon_button.js';
+/* eslint-disable rulesdir/components_import */
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
-import type * as IconButton from '../icon_button/icon_button.js';
+import * as IconButton from '../icon_button/icon_button.js';
 
 import {Endianness, format, getDefaultValueTypeMapping, getPointerAddress, isNumber, isPointer, isValidMode, VALUE_TYPE_MODE_LIST, ValueType, ValueTypeMode, valueTypeModeToLocalizedString, valueTypeToLocalizedString} from './ValueInterpreterDisplayUtils.js';
 
@@ -72,6 +72,8 @@ export class JumpToPointerAddressEvent extends Event {
 }
 
 export class ValueInterpreterDisplay extends HTMLElement {
+  static litTagName = LitHtml.literal`devtools-linear-memory-inspector-interpreter-display`;
+
   private readonly shadow = this.attachShadow({mode: 'open'});
   private endianness = Endianness.Little;
   private buffer = new ArrayBuffer(0);
@@ -201,13 +203,12 @@ export class ValueInterpreterDisplay extends HTMLElement {
         <div class="value-type-value-with-link" data-value="true">
         <span>${unsignedValue}</span>
           ${
-// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
             html`
               <button class="jump-to-button" data-jump="true" title=${buttonTitle} ?disabled=${jumpDisabled}
                 @click=${this.onJumpToAddressClicked.bind(this, Number(address))}>
-                <devtools-icon .data=${
+                <${IconButton.Icon.Icon.litTagName} .data=${
                   {iconName: 'link_icon', color: iconColor, width: '14px'} as IconButton.Icon.IconWithName}>
-                </devtools-icon>
+                </${IconButton.Icon.Icon.litTagName}>
               </button>`}
         </div>
       </div>

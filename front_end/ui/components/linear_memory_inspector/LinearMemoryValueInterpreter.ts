@@ -2,13 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './ValueInterpreterDisplay.js';
-import './ValueInterpreterSettings.js';
-import '../icon_button/icon_button.js';
+/* eslint-disable rulesdir/components_import */
 
 import * as LitHtml from '../../lit-html/lit-html.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
-import type * as IconButton from '../icon_button/icon_button.js';
+import * as IconButton from '../icon_button/icon_button.js';
+
+import {ValueInterpreterDisplay} from './ValueInterpreterDisplay.js';
+import {ValueInterpreterSettings} from './ValueInterpreterSettings.js';
 
 import type {ValueDisplayData} from './ValueInterpreterDisplay.js';
 import type {ValueType, ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
@@ -60,6 +61,8 @@ export interface LinearMemoryValueInterpreterData {
 }
 
 export class LinearMemoryValueInterpreter extends HTMLElement {
+  static litTagName = LitHtml.literal`devtools-linear-memory-inspector-interpreter`;
+
   private readonly shadow = this.attachShadow({mode: 'open'});
   private endianness = Endianness.Little;
   private buffer = new ArrayBuffer(0);
@@ -87,7 +90,6 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
   private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     render(html`
       <style>
         :host {
@@ -148,23 +150,21 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
         <div class="settings-toolbar">
           ${this.renderEndiannessSetting()}
           <button data-settings="true" class="settings-toolbar-button ${this.showSettings ? 'active' : ''}" title=${i18nString(UIStrings.toggleValueTypeSettings)} @click=${this.onSettingsToggle}>
-            <devtools-icon
+            <${IconButton.Icon.Icon.litTagName}
               .data=${{ iconName: 'settings_14x14_icon', color: 'var(--color-text-secondary)', width: '14px' } as IconButton.Icon.IconWithName}>
-            </devtools-icon>
+            </${IconButton.Icon.Icon.litTagName}>
           </button>
         </div>
         <span class="divider"></span>
         <div>
           ${this.showSettings ?
-// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
             html`
-              <devtools-linear-memory-inspector-interpreter-settings
+              <${ValueInterpreterSettings.litTagName}
                 .data=${{ valueTypes: this.valueTypes } as ValueInterpreterSettingsData}
                 @type-toggle=${this.onTypeToggle}>
-              </devtools-linear-memory-inspector-interpreter-settings>` :
-// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
+              </${ValueInterpreterSettings.litTagName}>` :
             html`
-              <devtools-linear-memory-inspector-interpreter-display
+              <${ValueInterpreterDisplay.litTagName}
                 .data=${{
                   buffer: this.buffer,
                   valueTypes: this.valueTypes,
@@ -172,7 +172,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
                   valueTypeModes: this.valueTypeModeConfig,
                   memoryLength: this.memoryLength,
                 } as ValueDisplayData}
-              </devtools-linear-memory-inspector-interpreter-display>`}
+              </${ValueInterpreterDisplay.litTagName}>`}
         </div>
       </div>
     `,

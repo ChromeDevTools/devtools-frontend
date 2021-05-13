@@ -2,9 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './LinearMemoryNavigator.js';
-import './LinearMemoryValueInterpreter.js';
-import './LinearMemoryViewer.js';
+/* eslint-disable rulesdir/components_import */
 
 import * as Common from '../../../core/common/common.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
@@ -13,13 +11,15 @@ import * as ComponentHelpers from '../helpers/helpers.js';
 const {render, html} = LitHtml;
 
 import type {AddressInputChangedEvent, HistoryNavigationEvent, LinearMemoryNavigatorData, PageNavigationEvent} from './LinearMemoryNavigator.js';
-import {Mode, Navigation} from './LinearMemoryNavigator.js';
+import {Mode, Navigation, LinearMemoryNavigator} from './LinearMemoryNavigator.js';
 import type {EndiannessChangedEvent, LinearMemoryValueInterpreterData, ValueTypeToggledEvent} from './LinearMemoryValueInterpreter.js';
+import {LinearMemoryValueInterpreter} from './LinearMemoryValueInterpreter.js';
 import type {ByteSelectedEvent, LinearMemoryViewerData, ResizeEvent} from './LinearMemoryViewer.js';
 import type {ValueType, ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
 import {VALUE_INTEPRETER_MAX_NUM_BYTES, Endianness, getDefaultValueTypeMapping} from './ValueInterpreterDisplayUtils.js';
 import {formatAddress, parseAddress} from './LinearMemoryInspectorUtils.js';
 import type {JumpToPointerAddressEvent, ValueTypeModeChangedEvent} from './ValueInterpreterDisplay.js';
+import {LinearMemoryViewer} from './LinearMemoryViewer.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 const UIStrings = {
@@ -155,7 +155,6 @@ export class LinearMemoryInspector extends HTMLElement {
     const canGoForwardInHistory = this.history.canRollover();
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     render(html`
       <style>
         :host {
@@ -182,20 +181,20 @@ export class LinearMemoryInspector extends HTMLElement {
         }
       </style>
       <div class="view">
-        <devtools-linear-memory-inspector-navigator
+        <${LinearMemoryNavigator.litTagName}
           .data=${{address: navigatorAddressToShow, valid: navigatorAddressIsValid, mode: this.currentNavigatorMode, error: errorMsg, canGoBackInHistory, canGoForwardInHistory} as LinearMemoryNavigatorData}
           @refresh-requested=${this.onRefreshRequest}
           @address-input-changed=${this.onAddressChange}
           @page-navigation=${this.navigatePage}
-          @history-navigation=${this.navigateHistory}></devtools-linear-memory-inspector-navigator>
-        <devtools-linear-memory-inspector-viewer
+          @history-navigation=${this.navigateHistory}></${LinearMemoryNavigator.litTagName}>
+        <${LinearMemoryViewer.litTagName}
           .data=${{memory: this.memory.slice(start - this.memoryOffset, end - this.memoryOffset), address: this.address, memoryOffset: start, focus: this.currentNavigatorMode === Mode.Submitted} as LinearMemoryViewerData}
           @byte-selected=${this.onByteSelected}
           @resize=${this.resize}>
-        </devtools-linear-memory-inspector-viewer>
+        </${LinearMemoryViewer.litTagName}>
       </div>
       <div class="value-interpreter">
-        <devtools-linear-memory-inspector-interpreter
+        <${LinearMemoryValueInterpreter.litTagName}
           .data=${{
             value: this.memory.slice(this.address - this.memoryOffset, this.address + VALUE_INTEPRETER_MAX_NUM_BYTES).buffer,
             valueTypes: this.valueTypes,
@@ -207,7 +206,7 @@ export class LinearMemoryInspector extends HTMLElement {
           @endianness-changed=${this.onEndiannessChanged}
           @jump-to-pointer-address=${this.onJumpToPointerAddress}
           >
-        </devtools-linear-memory-inspector-interpreter/>
+        </${LinearMemoryValueInterpreter.litTagName}/>
       </div>
       `, this.shadow, {
       host: this,

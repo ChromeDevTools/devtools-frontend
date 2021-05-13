@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../icon_button/icon_button.js';
+/* eslint-disable rulesdir/components_import */
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
-import type * as IconButton from '../icon_button/icon_button.js';
+import * as IconButton from '../icon_button/icon_button.js';
 
 const UIStrings = {
   /**
@@ -94,6 +94,8 @@ export const enum Mode {
 }
 
 export class LinearMemoryNavigator extends HTMLElement {
+  static litTagName = LitHtml.literal`devtools-linear-memory-inspector-navigator`;
+
   private readonly shadow = this.attachShadow({mode: 'open'});
   private address = '0';
   private error: string|undefined = undefined;
@@ -222,13 +224,13 @@ export class LinearMemoryNavigator extends HTMLElement {
 
   private createButton(data: {icon: string, title: string, event: Event, enabled: boolean}): LitHtml.TemplateResult {
     const iconColor = data.enabled ? 'var(--color-text-secondary)' : 'var(--color-background-highlight)';
-    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return html`
       <button class="navigator-button" ?disabled=${!data.enabled}
         data-button=${data.event.type} title=${data.title}
         @click=${this.dispatchEvent.bind(this, data.event)}>
-        <devtools-icon .data=${{iconName: data.icon, color: iconColor, width: '14px'} as IconButton.Icon.IconWithName}>
-        </devtools-icon>
+        <${IconButton.Icon.Icon.litTagName} .data=${
+        {iconName: data.icon, color: iconColor, width: '14px'} as IconButton.Icon.IconWithName}>
+        </${IconButton.Icon.Icon.litTagName}>
       </button>`;
   }
 }

@@ -33,6 +33,8 @@ export class ResizeEvent extends Event {
   }
 }
 export class LinearMemoryViewer extends HTMLElement {
+  static litTagName = LitHtml.literal`devtools-linear-memory-inspector-viewer`;
+
   private static readonly BYTE_GROUP_MARGIN = 8;
   private static readonly BYTE_GROUP_SIZE = 4;
   private readonly shadow = this.attachShadow({mode: 'open'});

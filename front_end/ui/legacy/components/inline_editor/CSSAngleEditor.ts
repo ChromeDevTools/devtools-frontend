@@ -21,6 +21,7 @@ export interface CSSAngleEditorData {
 }
 
 export class CSSAngleEditor extends HTMLElement {
+  static litTagName = LitHtml.literal`devtools-css-angle-editor`;
   private readonly shadow = this.attachShadow({mode: 'open'});
   private angle: Angle = {
     value: 0,

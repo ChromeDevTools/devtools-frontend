@@ -14,6 +14,7 @@ devtools_module("components") {
     "../../../core/sdk:bundle",
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/icon_button:bundle",
+    "../../../ui/components/report_view:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/lit-html:bundle",
   ]

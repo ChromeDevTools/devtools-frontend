@@ -2,19 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './NodeText.js';
-import '../../../ui/components/survey_link/survey_link.js';
-
+/* eslint-disable rulesdir/components_import */
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import type * as SurveyLink from '../../../ui/components/survey_link/survey_link.js';
+import * as SurveyLink from '../../../ui/components/survey_link/survey_link.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import type {BooleanSetting, EnumSetting, Setting} from './LayoutPaneUtils.js';
 import {LayoutElement} from './LayoutPaneUtils.js';
 
 import type {NodeTextData} from './NodeText.js';
+import {NodeText} from './NodeText.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 const UIStrings = {
@@ -133,7 +132,6 @@ export class LayoutPane extends HTMLElement {
   private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     render(html`
       <details open>
         <summary class="header" @keydown=${this.onSummaryKeyDown}>
@@ -145,12 +143,12 @@ export class LayoutPane extends HTMLElement {
               <h3 class="content-section-title">${i18nString(UIStrings.overlayDisplaySettings)}</h3>
             </div>
             <div class="feedback">
-              <devtools-survey-link .data=${{
+              <${SurveyLink.SurveyLink.SurveyLink.litTagName} .data=${{
                 trigger: 'devtools-layout-panel',
                 promptText: i18nString(UIStrings.feedback),
                 canShowSurvey: Host.InspectorFrontendHost.InspectorFrontendHostInstance.canShowSurvey,
                 showSurvey: Host.InspectorFrontendHost.InspectorFrontendHostInstance.showSurvey,
-              } as SurveyLink.SurveyLink.SurveyLinkData}></devtools-survey-link>
+              } as SurveyLink.SurveyLink.SurveyLinkData}></${SurveyLink.SurveyLink.SurveyLink.litTagName}>
             </div>
           </div>
           <div class="select-settings">
@@ -264,16 +262,15 @@ export class LayoutPane extends HTMLElement {
     };
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return html`<div class="element">
       <label data-element="true" class="checkbox-label" title=${element.name}>
         <input data-input="true" type="checkbox" .checked=${element.enabled} @change=${onElementToggle} />
         <span class="node-text-container" data-label="true" @mouseenter=${onMouseEnter} @mouseleave=${onMouseLeave}>
-          <devtools-node-text .data=${{
+          <${NodeText.litTagName} .data=${{
             nodeId: element.domId,
             nodeTitle: element.name,
             nodeClasses: element.domClasses,
-          } as NodeTextData}></devtools-node-text>
+          } as NodeTextData}></${NodeText.litTagName}>
         </span>
       </label>
       <label @keyup=${onColorLabelKeyUp} @keydown=${onColorLabelKeyDown} tabindex="0" class="color-picker-label" style="background: ${element.color};">

@@ -2,11 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../../ui/components/icon_button/icon_button.js';
-
+/* eslint-disable rulesdir/components_import */
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import type {IconInfo} from './CSSPropertyIconResolver.js';
@@ -207,12 +206,11 @@ export class StylePropertyEditor extends HTMLElement {
     });
     const title =
         i18nString(selected ? UIStrings.deselectButton : UIStrings.selectButton, {propertyName, propertyValue});
-    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return html`<button title=${title} class=${classes} @click=${
         (): void => this.onButtonClick(propertyName, propertyValue, selected)}>
-       <devtools-icon style=${transform} .data=${
+       <${IconButton.Icon.Icon.litTagName} style=${transform} .data=${
         {iconName: iconInfo.iconName, color: 'var(--icon-color)', width: '18px', height: '18px'} as
-        IconButton.Icon.IconWithName}></devtools-icon>
+        IconButton.Icon.IconWithName}></${IconButton.Icon.Icon.litTagName}>
     </button>`;
   }
 

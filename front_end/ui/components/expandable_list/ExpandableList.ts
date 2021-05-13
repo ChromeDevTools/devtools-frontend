@@ -10,6 +10,8 @@ export interface ExpandableListData {
 }
 
 export class ExpandableList extends HTMLElement {
+  static litTagName = LitHtml.literal`devtools-expandable-list`;
+
   private readonly shadow = this.attachShadow({mode: 'open'});
   private expanded = false;
   private rows: LitHtml.TemplateResult[] = [];

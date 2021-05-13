@@ -29,6 +29,8 @@ export class LinkifierClick extends Event {
 }
 
 export class Linkifier extends HTMLElement {
+  static litTagName = LitHtml.literal`devtools-linkifier`;
+
   private readonly shadow = this.attachShadow({mode: 'open'});
   private url: string = '';
   private lineNumber?: number;

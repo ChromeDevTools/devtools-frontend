@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/components_import */
 import type * as Platform from '../../core/platform/platform.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
-import '../../ui/components/report_view/report_view.js';
-import type * as ReportView from '../../ui/components/report_view/report_view.js';
+import * as ReportView from '../../ui/components/report_view/report_view.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
@@ -69,11 +69,10 @@ export class BackForwardCacheView extends UI.ThrottledWidget.ThrottledWidget {
 
   async doUpdate(): Promise<void> {
     const data = {reportTitle: i18nString(UIStrings.backForwardCacheTitle)};
-    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     const html = LitHtml.html`
-      <devtools-report .data=${data as ReportView.ReportView.ReportData}>
+      <${ReportView.ReportView.Report.litTagName} .data=${data as ReportView.ReportView.ReportData}>
       ${this.renderMainFrameInformation(this.getMainFrame())}
-      </devtools-report>
+      </${ReportView.ReportView.Report.litTagName}>
     `;
     LitHtml.render(html, this.contentElement);
   }
@@ -89,20 +88,24 @@ export class BackForwardCacheView extends UI.ThrottledWidget.ThrottledWidget {
 
   private renderMainFrameInformation(mainFrame: SDK.ResourceTreeModel.ResourceTreeFrame|null): LitHtml.TemplateResult {
     if (!mainFrame) {
-      // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
-      return LitHtml.html`<devtools-report-key>${i18nString(UIStrings.mainFrame)}</devtools-report-key>
-      <devtools-report-value>
+      return LitHtml.html`<${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.mainFrame)}</${
+          ReportView.ReportView.ReportKey.litTagName}>
+      <${ReportView.ReportView.ReportValue.litTagName}>
       ${i18nString(UIStrings.unavailable)}
-      </devtools-report-value>`;
+      </${ReportView.ReportView.ReportValue.litTagName}>`;
     }
-    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return LitHtml.html`
-      <devtools-report-section-header>${i18nString(UIStrings.lastMainFrameNavigation)}</devtools-report-section-header>
-      <devtools-report-key>${i18nString(UIStrings.url)}</devtools-report-key>
-      <devtools-report-value>${mainFrame.url}</devtools-report-value>
-      <devtools-report-key>${i18nString(UIStrings.bfcacheStatus)}</devtools-report-key>
-      <devtools-report-value>${
-        this.renderBackForwardCacheStatus(mainFrame.backForwardCacheDetails.restoredFromCache)}</devtools-report-value>
+      <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.lastMainFrameNavigation)}</${
+        ReportView.ReportView.ReportSectionHeader.litTagName}>
+      <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.url)}</${
+        ReportView.ReportView.ReportKey.litTagName}>
+      <${ReportView.ReportView.ReportValue.litTagName}>${mainFrame.url}</${
+        ReportView.ReportView.ReportValue.litTagName}>
+      <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.bfcacheStatus)}</${
+        ReportView.ReportView.ReportKey.litTagName}>
+      <${ReportView.ReportView.ReportValue.litTagName}>${
+        this.renderBackForwardCacheStatus(
+            mainFrame.backForwardCacheDetails.restoredFromCache)}</${ReportView.ReportView.ReportValue.litTagName}>
     `;
   }
 

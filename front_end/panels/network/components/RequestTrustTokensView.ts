@@ -2,16 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../../ui/components/icon_button/icon_button.js';
-
-import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
-
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as SDK from '../../../core/sdk/sdk.js';
-import * as UI from '../../../ui/legacy/legacy.js';
-
+/* eslint-disable rulesdir/components_import */
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as SDK from '../../../core/sdk/sdk.js';
+import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import * as ReportView from '../../../ui/components/report_view/report_view.js';
+import * as UI from '../../../ui/legacy/legacy.js';
+import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+
 const UIStrings = {
   /**
   *@description Section heading in the Trust Token tab
@@ -137,7 +136,6 @@ export class RequestTrustTokensReport extends HTMLElement {
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     LitHtml.render(LitHtml.html`
       <style>
         .code {
@@ -158,10 +156,10 @@ export class RequestTrustTokensReport extends HTMLElement {
           vertical-align: middle;
         }
       </style>
-      <devtools-report>
+      <${ReportView.ReportView.Report.litTagName}>
         ${this.renderParameterSection()}
         ${this.renderResultSection()}
-      </devtools-report>
+      </${ReportView.ReportView.Report.litTagName}>
     `, this.shadow);
     // clang-format on
   }
@@ -171,14 +169,15 @@ export class RequestTrustTokensReport extends HTMLElement {
       return LitHtml.nothing;
     }
 
-    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return LitHtml.html`
-      <devtools-report-section-header>${i18nString(UIStrings.parameters)}</devtools-report-section-header>
+      <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.parameters)}</${
+        ReportView.ReportView.ReportSectionHeader.litTagName}>
       ${renderRowWithCodeValue(i18nString(UIStrings.type), this.trustTokenData.params.type.toString())}
       ${this.renderRefreshPolicy(this.trustTokenData.params)}
       ${this.renderIssuers(this.trustTokenData.params)}
       ${this.renderIssuerAndTopLevelOriginFromResult()}
-      <devtools-report-divider></devtools-report-divider>
+      <${ReportView.ReportView.ReportSectionDivider.litTagName}></${
+        ReportView.ReportView.ReportSectionDivider.litTagName}>
     `;
   }
 
@@ -194,14 +193,14 @@ export class RequestTrustTokensReport extends HTMLElement {
       return LitHtml.nothing;
     }
 
-    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return LitHtml.html`
-      <devtools-report-key>${i18nString(UIStrings.issuers)}</devtools-report-key>
-      <devtools-report-value>
+      <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.issuers)}</${
+        ReportView.ReportView.ReportKey.litTagName}>
+      <${ReportView.ReportView.ReportValue.litTagName}>
         <ul class="issuers-list">
           ${params.issuers.map(issuer => LitHtml.html`<li>${issuer}</li>`)}
         </ul>
-      </devtools-report-value>
+      </${ReportView.ReportView.ReportValue.litTagName}>
     `;
   }
 
@@ -222,21 +221,23 @@ export class RequestTrustTokensReport extends HTMLElement {
     if (!this.trustTokenData || !this.trustTokenData.result) {
       return LitHtml.nothing;
     }
-    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return LitHtml.html`
-      <devtools-report-section-header>${i18nString(UIStrings.result)}</devtools-report-section-header>
-      <devtools-report-key>${i18nString(UIStrings.status)}</devtools-report-key>
-      <devtools-report-value>
+      <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.result)}</${
+        ReportView.ReportView.ReportSectionHeader.litTagName}>
+      <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.status)}</${
+        ReportView.ReportView.ReportKey.litTagName}>
+      <${ReportView.ReportView.ReportValue.litTagName}>
         <span>
-          <devtools-icon class="status-icon"
+          <${IconButton.Icon.Icon.litTagName} class="status-icon"
             .data=${getIconForStatusCode(this.trustTokenData.result.status) as IconButton.Icon.IconData}>
-          </devtools-icon>
+          </${IconButton.Icon.Icon.litTagName}>
           <strong>${getSimplifiedStatusTextForStatusCode(this.trustTokenData.result.status)}</strong>
           ${getDetailedTextForStatusCode(this.trustTokenData.result.status)}
         </span>
-      </devtools-report-value>
+      </${ReportView.ReportView.ReportValue.litTagName}>
       ${this.renderIssuedTokenCount(this.trustTokenData.result)}
-      <devtools-report-divider></devtools-report-divider>
+      <${ReportView.ReportView.ReportSectionDivider.litTagName}></${
+        ReportView.ReportView.ReportSectionDivider.litTagName}>
       `;
   }
 
@@ -302,18 +303,17 @@ function renderSimpleRowIfValuePresent<T>(key: string, value: T|undefined): LitH
     return LitHtml.nothing;
   }
 
-  // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
   return LitHtml.html`
-    <devtools-report-key>${key}</devtools-report-key>
-    <devtools-report-value>${value}</devtools-report-value>
+    <${ReportView.ReportView.ReportKey.litTagName}>${key}</${ReportView.ReportView.ReportKey.litTagName}>
+    <${ReportView.ReportView.ReportValue.litTagName}>${value}</${ReportView.ReportView.ReportValue.litTagName}>
   `;
 }
 
 function renderRowWithCodeValue(key: string, value: string): LitHtml.TemplateResult {
-  // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
   return LitHtml.html`
-    <devtools-report-key>${key}</devtools-report-key>
-    <devtools-report-value class="code">${value}</devtools-report-value>
+    <${ReportView.ReportView.ReportKey.litTagName}>${key}</${ReportView.ReportView.ReportKey.litTagName}>
+    <${ReportView.ReportView.ReportValue.litTagName} class="code">${value}</${
+      ReportView.ReportView.ReportValue.litTagName}>
   `;
 }
 

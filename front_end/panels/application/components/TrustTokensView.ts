@@ -2,13 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../../ui/components/data_grid/data_grid.js';
-import '../../../ui/components/icon_button/icon_button.js';
+/* eslint-disable rulesdir/components_import */
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 const UIStrings = {
@@ -61,7 +60,6 @@ export class TrustTokensView extends HTMLElement {
 
   private render(): void {
     LitHtml.render(
-        // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
         LitHtml.html`
       <style>
         :host {
@@ -88,11 +86,12 @@ export class TrustTokensView extends HTMLElement {
       </style>
       <div>
         <span class="heading">Trust Tokens</span>
-        <devtools-icon class="info-icon" title=${i18nString(UIStrings.allStoredTrustTokensAvailableIn)}
+        <${IconButton.Icon.Icon.litTagName} class="info-icon" title=${
+            i18nString(UIStrings.allStoredTrustTokensAvailableIn)}
           .data=${
             {iconName: 'ic_info_black_18dp', color: 'var(--color-link)', width: '14px'} as
             IconButton.Icon.IconWithName}>
-        </devtools-icon>
+        </${IconButton.Icon.Icon.litTagName}>
         ${this.renderGridOrNoDataMessage()}
       </div>
     `,
@@ -138,10 +137,10 @@ export class TrustTokensView extends HTMLElement {
       },
     };
 
-    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return LitHtml.html`
-      <devtools-data-grid-controller .data=${
-        gridData as DataGrid.DataGridController.DataGridControllerData}></devtools-data-grid-controller>
+      <${DataGrid.DataGridController.DataGridController.litTagName} .data=${
+        gridData as DataGrid.DataGridController.DataGridControllerData}></${
+        DataGrid.DataGridController.DataGridController.litTagName}>
     `;
   }
 
@@ -162,7 +161,6 @@ export class TrustTokensView extends HTMLElement {
 
   private deleteButtonRenderer(issuer: DataGrid.DataGridUtils.CellValue): LitHtml.TemplateResult {
     // clang-format off
-// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return LitHtml.html`
       <style>
         .delete-button {
@@ -194,10 +192,10 @@ export class TrustTokensView extends HTMLElement {
         <button class="delete-button"
           title=${i18nString(UIStrings.deleteTrustTokens, {PH1: issuer as string})}
           @click=${(): void => this.deleteClickHandler(issuer as string)}>
-          <devtools-icon .data=${
+          <${IconButton.Icon.Icon.litTagName} .data=${
         {iconName: 'trash_bin_icon', color: 'var(--color-text-secondary)', width: '9px', height: '14px'} as
         IconButton.Icon.IconWithName}>
-          </devtools-icon>
+          </${IconButton.Icon.Icon.litTagName}>
         </button>
       </span>`;
     // clang-format on

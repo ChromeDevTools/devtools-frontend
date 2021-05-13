@@ -24,6 +24,7 @@ export interface DataGridControllerData {
 }
 
 export class DataGridController extends HTMLElement {
+  static litTagName = LitHtml.literal`devtools-data-grid-controller`;
   private readonly shadow = this.attachShadow({mode: 'open'});
 
   private hasRenderedAtLeastOnce = false;

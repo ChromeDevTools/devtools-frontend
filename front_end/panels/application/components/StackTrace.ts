@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../../ui/components/expandable_list/expandable_list.js';
+/* eslint-disable rulesdir/components_import */
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js'; // eslint-disable-line no-unused-vars
-import type * as ExpandableList from '../../../ui/components/expandable_list/expandable_list.js';
+import * as ExpandableList from '../../../ui/components/expandable_list/expandable_list.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Components from '../../../ui/legacy/components/utils/utils.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -155,12 +155,11 @@ export class StackTrace extends HTMLElement {
     }
     const expandableRows = this.createRowTemplates();
     LitHtml.render(
-// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
       LitHtml.html`
-        <devtools-expandable-list .data=${{
+        <${ExpandableList.ExpandableList.ExpandableList.litTagName} .data=${{
           rows: expandableRows,
         } as ExpandableList.ExpandableList.ExpandableListData}>
-        </devtools-expandable-list>
+        </${ExpandableList.ExpandableList.ExpandableList.litTagName}>
       `,
       this.shadow);
     // clang-format on

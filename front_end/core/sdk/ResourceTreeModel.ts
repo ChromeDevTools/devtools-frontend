@@ -401,6 +401,10 @@ export class ResourceTreeModel extends SDKModel {
     this._agent.invoke_navigateToHistoryEntry({entryId: entry.id});
   }
 
+  setLifecycleEventsEnabled(enabled: boolean): Promise<Protocol.ProtocolResponseWithError> {
+    return this._agent.invoke_setLifecycleEventsEnabled({enabled});
+  }
+
   async fetchAppManifest(): Promise<{
     url: string,
     data: string|null,

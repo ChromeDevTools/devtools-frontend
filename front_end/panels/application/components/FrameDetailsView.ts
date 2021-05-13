@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../../ui/components/report_view/report_view.js';
-import '../../../ui/components/icon_button/icon_button.js';
+/* eslint-disable rulesdir/components_import */
 
 import type {StackTraceData} from './StackTrace.js';
+import {StackTrace} from './StackTrace.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
@@ -14,8 +14,8 @@ import type * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
-import type * as ReportView from '../../../ui/components/report_view/report_view.js';
-import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import * as ReportView from '../../../ui/components/report_view/report_view.js';
+import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
@@ -289,7 +289,6 @@ export class FrameDetailsReportView extends HTMLElement {
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     LitHtml.render(LitHtml.html`
       <style>
         .text-ellipsis {
@@ -355,13 +354,13 @@ export class FrameDetailsReportView extends HTMLElement {
           padding-top: 3px;
         }
       </style>
-      <devtools-report .data=${{reportTitle: this.frame.displayName()} as ReportView.ReportView.ReportData}>
+      <${ReportView.ReportView.Report.litTagName} .data=${{reportTitle: this.frame.displayName()} as ReportView.ReportView.ReportData}>
         ${this.renderDocumentSection()}
         ${this.renderIsolationSection()}
         ${this.renderApiAvailabilitySection()}
         ${LitHtml.Directives.until(this.renderPermissionPolicy(), LitHtml.nothing)}
         ${this.protocolMonitorExperimentEnabled ? this.renderAdditionalInfoSection() : LitHtml.nothing}
-      </devtools-report>
+      </${ReportView.ReportView.Report.litTagName}>
     `, this.shadow);
     // clang-format on
   }
@@ -382,12 +381,12 @@ export class FrameDetailsReportView extends HTMLElement {
       if (!allowed.length) {
         return LitHtml.nothing;
       }
-      // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
       return LitHtml.html`
-        <devtools-report-key>${i18nString(UIStrings.allowedFeatures)}</devtools-report-key>
-        <devtools-report-value>
+        <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.allowedFeatures)}</${
+          ReportView.ReportView.ReportKey.litTagName}>
+        <${ReportView.ReportView.ReportValue.litTagName}>
           ${allowed.join(', ')}
-        </devtools-report-value>
+        </${ReportView.ReportView.ReportValue.litTagName}>
       `;
     };
 
@@ -397,15 +396,15 @@ export class FrameDetailsReportView extends HTMLElement {
         return LitHtml.nothing;
       }
       if (!this.showPermissionsDisallowedDetails) {
-        // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
         return LitHtml.html`
-          <devtools-report-key>${i18nString(UIStrings.disabledFeatures)}</devtools-report-key>
-          <devtools-report-value>
+          <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.disabledFeatures)}</${
+            ReportView.ReportView.ReportKey.litTagName}>
+          <${ReportView.ReportView.ReportValue.litTagName}>
             ${disallowed.map(p => p.feature).join(', ')}
             <button class="link" @click=${(): void => toggleShowPermissionsDisallowedDetails()}>
               ${i18nString(UIStrings.showDetails)}
             </button>
-          </devtools-report-value>
+          </${ReportView.ReportView.ReportValue.litTagName}>
         `;
       }
 
@@ -437,13 +436,12 @@ export class FrameDetailsReportView extends HTMLElement {
           await Network.NetworkPanel.RequestLocationRevealer.instance().reveal(requestLocation);
         };
 
-        // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
         return LitHtml.html`
           <div class="permissions-row">
             <div>
-              <devtools-icon class="allowed-icon"
+              <${IconButton.Icon.Icon.litTagName} class="allowed-icon"
                 .data=${{color: '', iconName: 'error_icon', width: '14px'} as IconButton.Icon.IconData}>
-              </devtools-icon>
+              </${IconButton.Icon.Icon.litTagName}>
             </div>
             <div class="feature-name text-ellipsis">
               ${policy.feature}
@@ -469,10 +467,10 @@ export class FrameDetailsReportView extends HTMLElement {
         `;
       }));
 
-      // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
       return LitHtml.html`
-        <devtools-report-key>${i18nString(UIStrings.disabledFeatures)}</devtools-report-key>
-        <devtools-report-value class="policies-list">
+        <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.disabledFeatures)}</${
+          ReportView.ReportView.ReportKey.litTagName}>
+        <${ReportView.ReportView.ReportValue.litTagName} class="policies-list">
           <style>
             .permissions-row {
               display: flex;
@@ -501,16 +499,17 @@ export class FrameDetailsReportView extends HTMLElement {
               ${i18nString(UIStrings.hideDetails)}
             </button>
           </div>
-        </devtools-report-value>
+        </${ReportView.ReportView.ReportValue.litTagName}>
       `;
     };
 
-    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return LitHtml.html`
-      <devtools-report-section-header>${i18n.i18n.lockedString('Permissions Policy')}</devtools-report-section-header>
+      <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18n.i18n.lockedString('Permissions Policy')}</${
+        ReportView.ReportView.ReportSectionHeader.litTagName}>
       ${renderAllowed()}
       ${LitHtml.Directives.until(renderDisallowed(), LitHtml.nothing)}
-      <devtools-report-divider></devtools-report-divider>
+      <${ReportView.ReportView.ReportSectionDivider.litTagName}></${
+        ReportView.ReportView.ReportSectionDivider.litTagName}>
     `;
   }
 
@@ -519,23 +518,25 @@ export class FrameDetailsReportView extends HTMLElement {
       return LitHtml.nothing;
     }
 
-    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return LitHtml.html`
-      <devtools-report-section-header>${i18nString(UIStrings.document)}</devtools-report-section-header>
-      <devtools-report-key>${i18nString(UIStrings.url)}</devtools-report-key>
-      <devtools-report-value>
+      <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.document)}</${
+        ReportView.ReportView.ReportSectionHeader.litTagName}>
+      <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.url)}</${
+        ReportView.ReportView.ReportKey.litTagName}>
+      <${ReportView.ReportView.ReportValue.litTagName}>
         <div class="inline-items">
           ${this.maybeRenderSourcesLinkForURL()}
           ${this.maybeRenderNetworkLinkForURL()}
           <div class="text-ellipsis" title=${this.frame.url}>${this.frame.url}</div>
         </div>
-      </devtools-report-value>
+      </${ReportView.ReportView.ReportValue.litTagName}>
       ${this.maybeRenderUnreachableURL()}
       ${this.maybeRenderOrigin()}
       ${LitHtml.Directives.until(this.renderOwnerElement(), LitHtml.nothing)}
       ${this.maybeRenderCreationStacktrace()}
       ${this.maybeRenderAdStatus()}
-      <devtools-report-divider></devtools-report-divider>
+      <${ReportView.ReportView.ReportSectionDivider.litTagName}></${
+        ReportView.ReportView.ReportSectionDivider.litTagName}>
     `;
   }
 
@@ -572,10 +573,9 @@ export class FrameDetailsReportView extends HTMLElement {
       clickHandler: (() => void)|(() => Promise<void>)): LitHtml.TemplateResult {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return LitHtml.html`
       <button class="link" role="link" tabindex=0 @click=${clickHandler} title=${title}>
-        <devtools-icon .data=${{
+        <${IconButton.Icon.Icon.litTagName} .data=${{
           iconName: iconName,
           color: 'var(--color-primary)',
           width: '16px',
@@ -604,15 +604,15 @@ export class FrameDetailsReportView extends HTMLElement {
     if (!this.frame || !this.frame.unreachableUrl()) {
       return LitHtml.nothing;
     }
-    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return LitHtml.html`
-      <devtools-report-key>${i18nString(UIStrings.unreachableUrl)}</devtools-report-key>
-      <devtools-report-value>
+      <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.unreachableUrl)}</${
+        ReportView.ReportView.ReportKey.litTagName}>
+      <${ReportView.ReportView.ReportValue.litTagName}>
         <div class="inline-items">
           ${this.renderNetworkLinkForUnreachableURL()}
           <div class="text-ellipsis" title=${this.frame.unreachableUrl()}>${this.frame.unreachableUrl()}</div>
         </div>
-      </devtools-report-value>
+      </${ReportView.ReportView.ReportValue.litTagName}>
     `;
   }
 
@@ -646,12 +646,12 @@ export class FrameDetailsReportView extends HTMLElement {
 
   private maybeRenderOrigin(): LitHtml.TemplateResult|{} {
     if (this.frame && this.frame.securityOrigin && this.frame.securityOrigin !== '://') {
-      // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
       return LitHtml.html`
-        <devtools-report-key>${i18nString(UIStrings.origin)}</devtools-report-key>
-        <devtools-report-value>
+        <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.origin)}</${
+          ReportView.ReportView.ReportKey.litTagName}>
+        <${ReportView.ReportView.ReportValue.litTagName}>
           <div class="text-ellipsis" title=${this.frame.securityOrigin}>${this.frame.securityOrigin}</div>
-        </devtools-report-value>
+        </${ReportView.ReportView.ReportValue.litTagName}>
       `;
     }
     return LitHtml.nothing;
@@ -663,7 +663,6 @@ export class FrameDetailsReportView extends HTMLElement {
       if (linkTargetDOMNode) {
         // Disabled until https://crbug.com/1079231 is fixed.
         // clang-format off
-// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
         return LitHtml.html`
           <style>
             .button-icon-with-text {
@@ -674,22 +673,22 @@ export class FrameDetailsReportView extends HTMLElement {
               min-width: auto;
             }
           </style>
-            <devtools-report-key>${i18nString(UIStrings.ownerElement)}</devtools-report-key>
-          <devtools-report-value class="without-min-width">
+            <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.ownerElement)}</${ReportView.ReportView.ReportKey.litTagName}>
+          <${ReportView.ReportView.ReportValue.litTagName} class="without-min-width">
               <button class="link" role="link" tabindex=0 title=${i18nString(UIStrings.clickToRevealInElementsPanel)}
               @mouseenter=${(): Promise<void>|undefined => this.frame?.highlight()}
               @mouseleave=${(): void => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight()}
               @click=${(): Promise<void> => Common.Revealer.reveal(linkTargetDOMNode)}
             >
-              <devtools-icon class="button-icon-with-text" .data=${{
+              <${IconButton.Icon.Icon.litTagName} class="button-icon-with-text" .data=${{
                 iconName: 'elements_panel_icon',
                 color: 'var(--color-primary)',
                 width: '16px',
                 height: '16px',
-              } as IconButton.Icon.IconData}></devtools-icon>
+              } as IconButton.Icon.IconData}></${IconButton.Icon.Icon.litTagName}>
               &lt;${linkTargetDOMNode.nodeName().toLocaleLowerCase()}&gt;
             </button>
-          </devtools-report-value>
+          </${ReportView.ReportView.ReportValue.litTagName}>
         `;
         // clang-format on
       }
@@ -702,17 +701,16 @@ export class FrameDetailsReportView extends HTMLElement {
     if (creationStackTraceData && creationStackTraceData.creationStackTrace) {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
       return LitHtml.html`
-        <devtools-report-key title=${i18nString(UIStrings.creationStackTraceExplanation)}>${
-          i18nString(UIStrings.creationStackTrace)}</devtools-report-key>
-        <devtools-report-value>
-          <devtools-resources-stack-trace .data=${{
+        <${ReportView.ReportView.ReportKey.litTagName} title=${i18nString(UIStrings.creationStackTraceExplanation)}>${
+          i18nString(UIStrings.creationStackTrace)}</${ReportView.ReportView.ReportKey.litTagName}>
+        <${ReportView.ReportView.ReportValue.litTagName}>
+          <${StackTrace.litTagName} .data=${{
             frame: this.frame,
             buildStackTraceRows: Components.JSPresentationUtils.buildStackTraceRows,
           } as StackTraceData}>
-          </devtools-resources-stack-trace>
-        </devtools-report-value>
+          </${StackTrace.litTagName}>
+        </${ReportView.ReportView.ReportValue.litTagName}>
       `;
       // clang-format on
     }
@@ -722,19 +720,21 @@ export class FrameDetailsReportView extends HTMLElement {
   private maybeRenderAdStatus(): LitHtml.TemplateResult|{} {
     if (this.frame) {
       if (this.frame.adFrameType() === Protocol.Page.AdFrameType.Root) {
-        // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
         return LitHtml.html`
-          <devtools-report-key>${i18nString(UIStrings.adStatus)}</devtools-report-key>
-          <devtools-report-value title=${i18nString(UIStrings.thisFrameHasBeenIdentifiedAsThe)}>${
-            i18nString(UIStrings.root)}</devtools-report-value>
+          <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.adStatus)}</${
+            ReportView.ReportView.ReportKey.litTagName}>
+          <${ReportView.ReportView.ReportValue.litTagName} title=${
+            i18nString(UIStrings.thisFrameHasBeenIdentifiedAsThe)}>${i18nString(UIStrings.root)}</${
+            ReportView.ReportView.ReportValue.litTagName}>
         `;
       }
       if (this.frame.adFrameType() === Protocol.Page.AdFrameType.Child) {
-        // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
         return LitHtml.html`
-          <devtools-report-key>${i18nString(UIStrings.adStatus)}</devtools-report-key>
-          <devtools-report-value title=${i18nString(UIStrings.thisFrameHasBeenIdentifiedAsTheA)}>${
-            i18nString(UIStrings.child)}</devtools-report-value>
+          <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.adStatus)}</${
+            ReportView.ReportView.ReportKey.litTagName}>
+          <${ReportView.ReportView.ReportValue.litTagName} title=${
+            i18nString(UIStrings.thisFrameHasBeenIdentifiedAsTheA)}>${i18nString(UIStrings.child)}</${
+            ReportView.ReportView.ReportValue.litTagName}>
         `;
       }
     }
@@ -745,20 +745,23 @@ export class FrameDetailsReportView extends HTMLElement {
     if (!this.frame) {
       return LitHtml.nothing;
     }
-    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return LitHtml.html`
-      <devtools-report-section-header>${i18nString(UIStrings.securityIsolation)}</devtools-report-section-header>
-      <devtools-report-key>${i18nString(UIStrings.secureContext)}</devtools-report-key>
-      <devtools-report-value>
+      <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.securityIsolation)}</${
+        ReportView.ReportView.ReportSectionHeader.litTagName}>
+      <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.secureContext)}</${
+        ReportView.ReportView.ReportKey.litTagName}>
+      <${ReportView.ReportView.ReportValue.litTagName}>
         ${this.frame.isSecureContext() ? i18nString(UIStrings.yes) : i18nString(UIStrings.no)}
         ${this.maybeRenderSecureContextExplanation()}
-      </devtools-report-value>
-      <devtools-report-key>${i18nString(UIStrings.crossoriginIsolated)}</devtools-report-key>
-      <devtools-report-value>
+      </${ReportView.ReportView.ReportValue.litTagName}>
+      <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.crossoriginIsolated)}</${
+        ReportView.ReportView.ReportKey.litTagName}>
+      <${ReportView.ReportView.ReportValue.litTagName}>
         ${this.frame.isCrossOriginIsolated() ? i18nString(UIStrings.yes) : i18nString(UIStrings.no)}
-      </devtools-report-value>
+      </${ReportView.ReportView.ReportValue.litTagName}>
       ${LitHtml.Directives.until(this.maybeRenderCoopCoepStatus(), LitHtml.nothing)}
-      <devtools-report-divider></devtools-report-divider>
+      <${ReportView.ReportView.ReportSectionDivider.litTagName}></${
+        ReportView.ReportView.ReportSectionDivider.litTagName}>
     `;
   }
 
@@ -817,16 +820,15 @@ export class FrameDetailsReportView extends HTMLElement {
     const isEnabled = info.value !== noneValue;
     const isReportOnly = (!isEnabled && info.reportOnlyValue !== noneValue);
     const endpoint = isEnabled ? info.reportingEndpoint : info.reportOnlyReportingEndpoint;
-    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return LitHtml.html`
-      <devtools-report-key>${policyName}</devtools-report-key>
-      <devtools-report-value>
+      <${ReportView.ReportView.ReportKey.litTagName}>${policyName}</${ReportView.ReportView.ReportKey.litTagName}>
+      <${ReportView.ReportView.ReportValue.litTagName}>
         ${isEnabled ? info.value : info.reportOnlyValue}
         ${isReportOnly ? LitHtml.html`<span class="inline-comment">report-only</span>` : LitHtml.nothing}
         ${
         endpoint ? LitHtml.html`<span class="inline-name">${i18nString(UIStrings.reportingTo)}</span>${endpoint}` :
                    LitHtml.nothing}
-      </devtools-report-value>
+      </${ReportView.ReportView.ReportValue.litTagName}>
     `;
   }
 
@@ -835,16 +837,17 @@ export class FrameDetailsReportView extends HTMLElement {
       return LitHtml.nothing;
     }
 
-    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return LitHtml.html`
-      <devtools-report-section-header>${i18nString(UIStrings.apiAvailability)}</devtools-report-section-header>
+      <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.apiAvailability)}</${
+        ReportView.ReportView.ReportSectionHeader.litTagName}>
       <div class="span-cols">
         ${i18nString(UIStrings.availabilityOfCertainApisDepends)}
         <x-link href="https://web.dev/why-coop-coep/" class="link">${i18nString(UIStrings.learnMore)}</x-link>
       </div>
       ${this.renderSharedArrayBufferAvailability()}
       ${this.renderMeasureMemoryAvailability()}
-      <devtools-report-divider></devtools-report-divider>
+      <${ReportView.ReportView.ReportSectionDivider.litTagName}></${
+        ReportView.ReportView.ReportSectionDivider.litTagName}>
     `;
   }
 
@@ -886,13 +889,13 @@ export class FrameDetailsReportView extends HTMLElement {
         }
 
         // SharedArrayBuffer is an API name, so we don't translate it.
-        // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
         return LitHtml.html`
-          <devtools-report-key>SharedArrayBuffers</devtools-report-key>
-          <devtools-report-value title=${tooltipText}>
+          <${ReportView.ReportView.ReportKey.litTagName}>SharedArrayBuffers</${
+            ReportView.ReportView.ReportKey.litTagName}>
+          <${ReportView.ReportView.ReportValue.litTagName} title=${tooltipText}>
             ${availabilityText}
             ${renderHint(this.frame)}
-          </devtools-report-value>
+          </${ReportView.ReportView.ReportValue.litTagName}>
         `;
       }
     }
@@ -906,14 +909,14 @@ export class FrameDetailsReportView extends HTMLElement {
           measureMemoryAvailable ? i18nString(UIStrings.available) : i18nString(UIStrings.unavailable);
       const tooltipText = measureMemoryAvailable ? i18nString(UIStrings.thePerformanceAPI) :
                                                    i18nString(UIStrings.thePerformancemeasureuseragentspecificmemory);
-      // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
       return LitHtml.html`
-        <devtools-report-key>${i18nString(UIStrings.measureMemory)}</devtools-report-key>
-        <devtools-report-value>
+        <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.measureMemory)}</${
+          ReportView.ReportView.ReportKey.litTagName}>
+        <${ReportView.ReportView.ReportValue.litTagName}>
           <span title=${tooltipText}>${availabilityText}</span>
           <x-link class="link" href="https://web.dev/monitor-total-page-memory-usage/">${
           i18nString(UIStrings.learnMore)}</x-link>
-        </devtools-report-value>
+        </${ReportView.ReportView.ReportValue.litTagName}>
       `;
     }
     return LitHtml.nothing;
@@ -924,16 +927,17 @@ export class FrameDetailsReportView extends HTMLElement {
       return LitHtml.nothing;
     }
 
-    // eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
     return LitHtml.html`
-      <devtools-report-section-header
+      <${ReportView.ReportView.ReportSectionHeader.litTagName}
         title=${i18nString(UIStrings.thisAdditionalDebugging)}
-      >${i18nString(UIStrings.additionalInformation)}</devtools-report-section-header>
-      <devtools-report-key>${i18nString(UIStrings.frameId)}</devtools-report-key>
-      <devtools-report-value>
+      >${i18nString(UIStrings.additionalInformation)}</${ReportView.ReportView.ReportSectionHeader.litTagName}>
+      <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.frameId)}</${
+        ReportView.ReportView.ReportKey.litTagName}>
+      <${ReportView.ReportView.ReportValue.litTagName}>
         <div class="text-ellipsis" title=${this.frame.id}>${this.frame.id}</div>
-      </devtools-report-value>
-      <devtools-report-divider></devtools-report-divider>
+      </${ReportView.ReportView.ReportValue.litTagName}>
+      <${ReportView.ReportView.ReportSectionDivider.litTagName}></${
+        ReportView.ReportView.ReportSectionDivider.litTagName}>
     `;
   }
 }

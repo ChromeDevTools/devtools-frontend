@@ -26,7 +26,7 @@ export class FormatChangedEvent extends Event {
   data: {format: string, text: string|null};
 
   constructor(format: string, text: string|null) {
-    super('format-changed', {});
+    super('formatchanged', {});
     this.data = {format, text};
   }
 }

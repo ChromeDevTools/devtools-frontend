@@ -71,7 +71,7 @@ describe('CSSAngle', () => {
     let isPopoverOpen = false;
     component.data = initialData;
 
-    component.addEventListener('popover-toggled', (event: Event) => {
+    component.addEventListener('popovertoggled', (event: Event) => {
       const popoverToggledEvent = event as InlineEditor.CSSAngleImpl.PopoverToggledEvent;
       isPopoverOpen = popoverToggledEvent.data.open;
     });
@@ -95,7 +95,7 @@ describe('CSSAngle', () => {
     assertShadowRoot(component.shadowRoot);
 
     let cssAngleText = initialData.angleText;
-    component.addEventListener('unit-changed', (event: Event) => {
+    component.addEventListener('unitchanged', (event: Event) => {
       const {data} = event as InlineEditor.CSSAngleImpl.UnitChangedEvent;
       cssAngleText = data.value;
     });
@@ -117,7 +117,7 @@ describe('CSSAngle', () => {
     assertShadowRoot(component.shadowRoot);
 
     let cssAngleText = initialData.angleText;
-    component.addEventListener('value-changed', (event: Event) => {
+    component.addEventListener('valuechanged', (event: Event) => {
       const {data} = event as InlineEditor.CSSAngleImpl.ValueChangedEvent;
       cssAngleText = data.value;
     });
@@ -144,7 +144,7 @@ describe('CSSAngle', () => {
       renderElementIntoDOM(component);
       let shouldPopoverEventBeOpen = false;
       component.data = initialData;
-      component.addEventListener('popover-toggled', (event: Event) => {
+      component.addEventListener('popovertoggled', (event: Event) => {
         const popoverEvent = event as InlineEditor.CSSAngleImpl.PopoverToggledEvent;
         assert.strictEqual(popoverEvent.data.open, shouldPopoverEventBeOpen);
       });

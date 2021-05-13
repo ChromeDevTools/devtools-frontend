@@ -80,7 +80,7 @@ describe('LinearMemoryViewer', () => {
   async function assertEventTriggeredOnArrowNavigation(
       component: LinearMemoryInspector.LinearMemoryViewer.LinearMemoryViewer, code: string, expectedAddress: number) {
     const eventPromise =
-        getEventPromise<LinearMemoryInspector.LinearMemoryViewer.ByteSelectedEvent>(component, 'byte-selected');
+        getEventPromise<LinearMemoryInspector.LinearMemoryViewer.ByteSelectedEvent>(component, 'byteselected');
     const view = getElementWithinComponent(component, '.view', HTMLDivElement);
     view.dispatchEvent(new KeyboardEvent('keydown', {'code': code}));
     const event = await eventPromise;
@@ -181,7 +181,7 @@ describe('LinearMemoryViewer', () => {
     assertElement(byte, HTMLSpanElement);
 
     const eventPromise =
-        getEventPromise<LinearMemoryInspector.LinearMemoryViewer.ByteSelectedEvent>(component, 'byte-selected');
+        getEventPromise<LinearMemoryInspector.LinearMemoryViewer.ByteSelectedEvent>(component, 'byteselected');
     byte.click();
     const {data: address} = await eventPromise;
     assert.strictEqual(address, data.memoryOffset);
@@ -227,7 +227,7 @@ describe('LinearMemoryViewer', () => {
     assertElement(asciiCell, HTMLSpanElement);
 
     const eventPromise =
-        getEventPromise<LinearMemoryInspector.LinearMemoryViewer.ByteSelectedEvent>(component, 'byte-selected');
+        getEventPromise<LinearMemoryInspector.LinearMemoryViewer.ByteSelectedEvent>(component, 'byteselected');
     asciiCell.click();
     const {data: address} = await eventPromise;
     assert.strictEqual(address, data.memoryOffset);

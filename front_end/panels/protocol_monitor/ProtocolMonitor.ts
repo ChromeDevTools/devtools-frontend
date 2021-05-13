@@ -250,7 +250,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     this._dataGridIntegrator =
         new DataGrid.DataGridControllerIntegrator.DataGridControllerIntegrator(dataGridInitialData);
 
-    this._dataGridIntegrator.dataGrid.addEventListener('cell-focused', (event: Event) => {
+    this._dataGridIntegrator.dataGrid.addEventListener('cellfocused', (event: Event) => {
       const focusedEvent = event as DataGrid.DataGrid.BodyCellFocusedEvent;
       const focusedRow = focusedEvent.data.row;
       const infoWidgetData = {
@@ -261,7 +261,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
       this._infoWidget.render(infoWidgetData);
     });
 
-    this._dataGridIntegrator.dataGrid.addEventListener('new-user-filter-text', (event: Event) => {
+    this._dataGridIntegrator.dataGrid.addEventListener('newuserfiltertext', (event: Event) => {
       const filterTextEvent = event as DataGrid.DataGrid.NewUserFilterTextEvent;
       this._textFilterUI.setValue(filterTextEvent.data.filterText, /* notify listeners */ true);
     });

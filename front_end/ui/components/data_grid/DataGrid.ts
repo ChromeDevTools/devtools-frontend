@@ -51,7 +51,7 @@ export class ColumnHeaderClickEvent extends Event {
   };
 
   constructor(column: Column, columnIndex: number) {
-    super('column-header-click');
+    super('columnheaderclick');
     this.data = {
       column,
       columnIndex,
@@ -63,7 +63,7 @@ export class NewUserFilterTextEvent extends Event {
   data: {filterText: string};
 
   constructor(filterText: string) {
-    super('new-user-filter-text', {
+    super('newuserfiltertext', {
       composed: true,
     });
 
@@ -87,7 +87,7 @@ export class BodyCellFocusedEvent extends Event {
   };
 
   constructor(cell: Cell, row: Row) {
-    super('cell-focused', {
+    super('cellfocused', {
       composed: true,
     });
     this.data = {

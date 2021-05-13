@@ -20,7 +20,7 @@ export class LinkifierClick extends Event {
   data: LinkifierData;
 
   constructor(data: LinkifierData) {
-    super('linkifier-activated', {
+    super('linkifieractivated', {
       bubbles: true,
       composed: true,
     });

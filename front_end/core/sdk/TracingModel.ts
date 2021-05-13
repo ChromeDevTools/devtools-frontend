@@ -610,13 +610,13 @@ export class Event {
   }
 }
 
+// eslint-disable-next-line rulesdir/enforce_custom_event_names
 export class ObjectSnapshot extends Event {
   _backingStorage: (() => Promise<string|null>)|null;
   id!: string;
   _objectPromise: Promise<ObjectSnapshot|null>|null;
 
   constructor(category: string|undefined, name: string, startTime: number, thread: Thread) {
-    // eslint-disable-next-line rulesdir/kebab_case_events
     super(category, name, Phase.SnapshotObject, startTime, thread);
     this._backingStorage = null;
     this._objectPromise = null;
@@ -680,12 +680,12 @@ export class ObjectSnapshot extends Event {
   }
 }
 
+// eslint-disable-next-line rulesdir/enforce_custom_event_names
 export class AsyncEvent extends Event {
   steps: Event[];
   causedFrame: boolean;
 
   constructor(startEvent: Event) {
-    // eslint-disable-next-line rulesdir/kebab_case_events
     super(startEvent.categoriesString, startEvent.name, startEvent.phase, startEvent.startTime, startEvent.thread);
     this.addArgs(startEvent.args);
     this.steps = [startEvent];

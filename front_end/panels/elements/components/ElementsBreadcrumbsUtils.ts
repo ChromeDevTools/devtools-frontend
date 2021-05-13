@@ -72,7 +72,7 @@ export class NodeSelectedEvent extends Event {
   data: unknown;
 
   constructor(node: DOMNode) {
-    super('node-selected', {});
+    super('breadcrumbsnodeselected', {});
     this.data = node.legacyDomNode;
   }
 }

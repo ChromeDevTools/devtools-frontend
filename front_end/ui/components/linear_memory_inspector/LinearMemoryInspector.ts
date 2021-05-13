@@ -56,7 +56,7 @@ export class MemoryRequestEvent extends Event {
   data: {start: number, end: number, address: number};
 
   constructor(start: number, end: number, address: number) {
-    super('memory-request');
+    super('memoryrequest');
     this.data = {start, end, address};
   }
 }
@@ -65,7 +65,7 @@ export class AddressChangedEvent extends Event {
   data: number;
 
   constructor(address: number) {
-    super('address-changed');
+    super('addresschanged');
     this.data = address;
   }
 }
@@ -74,7 +74,7 @@ export class SettingsChangedEvent extends Event {
   data: Settings;
 
   constructor(settings: Settings) {
-    super('settings-changed');
+    super('settingschanged');
     this.data = settings;
   }
 }
@@ -183,13 +183,13 @@ export class LinearMemoryInspector extends HTMLElement {
       <div class="view">
         <${LinearMemoryNavigator.litTagName}
           .data=${{address: navigatorAddressToShow, valid: navigatorAddressIsValid, mode: this.currentNavigatorMode, error: errorMsg, canGoBackInHistory, canGoForwardInHistory} as LinearMemoryNavigatorData}
-          @refresh-requested=${this.onRefreshRequest}
-          @address-input-changed=${this.onAddressChange}
-          @page-navigation=${this.navigatePage}
-          @history-navigation=${this.navigateHistory}></${LinearMemoryNavigator.litTagName}>
+          @refreshrequested=${this.onRefreshRequest}
+          @addressinputchanged=${this.onAddressChange}
+          @pagenavigation=${this.navigatePage}
+          @historynavigation=${this.navigateHistory}></${LinearMemoryNavigator.litTagName}>
         <${LinearMemoryViewer.litTagName}
           .data=${{memory: this.memory.slice(start - this.memoryOffset, end - this.memoryOffset), address: this.address, memoryOffset: start, focus: this.currentNavigatorMode === Mode.Submitted} as LinearMemoryViewerData}
-          @byte-selected=${this.onByteSelected}
+          @byteselected=${this.onByteSelected}
           @resize=${this.resize}>
         </${LinearMemoryViewer.litTagName}>
       </div>
@@ -201,10 +201,10 @@ export class LinearMemoryInspector extends HTMLElement {
             valueTypeModes: this.valueTypeModes,
             endianness: this.endianness,
             memoryLength: this.outerMemoryLength } as LinearMemoryValueInterpreterData}
-          @value-type-toggled=${this.onValueTypeToggled}
-          @value-type-mode-changed=${this.onValueTypeModeChanged}
-          @endianness-changed=${this.onEndiannessChanged}
-          @jump-to-pointer-address=${this.onJumpToPointerAddress}
+          @valuetypetoggled=${this.onValueTypeToggled}
+          @valuetypemodechanged=${this.onValueTypeModeChanged}
+          @endiannesschanged=${this.onEndiannessChanged}
+          @jumptopointeraddress=${this.onJumpToPointerAddress}
           >
         </${LinearMemoryValueInterpreter.litTagName}/>
       </div>

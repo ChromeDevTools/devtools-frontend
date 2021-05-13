@@ -55,7 +55,7 @@ describe('ValueInterpreterSettings', () => {
       const checked = checkbox.checked;
 
       const eventPromise =
-          getEventPromise<LinearMemoryInspector.ValueInterpreterSettings.TypeToggleEvent>(component, 'type-toggle');
+          getEventPromise<LinearMemoryInspector.ValueInterpreterSettings.TypeToggleEvent>(component, 'typetoggle');
       checkbox.click();
       const event = await eventPromise;
 

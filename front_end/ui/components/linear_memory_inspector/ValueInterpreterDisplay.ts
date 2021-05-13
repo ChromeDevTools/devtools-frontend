@@ -53,7 +53,7 @@ export class ValueTypeModeChangedEvent extends Event {
   data: {type: ValueType, mode: ValueTypeMode};
 
   constructor(type: ValueType, mode: ValueTypeMode) {
-    super('value-type-mode-changed', {
+    super('valuetypemodechanged', {
       composed: true,
     });
     this.data = {type, mode};
@@ -64,7 +64,7 @@ export class JumpToPointerAddressEvent extends Event {
   data: number;
 
   constructor(address: number) {
-    super('jump-to-pointer-address', {
+    super('jumptopointeraddress', {
       composed: true,
     });
     this.data = address;

@@ -65,7 +65,7 @@ export class SettingChangedEvent extends Event {
   data: {setting: string, value: string|boolean};
 
   constructor(setting: string, value: string|boolean) {
-    super('setting-changed', {});
+    super('settingchanged', {});
     this.data = {setting, value};
   }
 }

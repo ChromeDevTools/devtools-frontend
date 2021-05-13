@@ -306,7 +306,7 @@ describe('ValueInterpreterDisplay', () => {
     assert.strictEqual(input.value, oldMode);
     input.value = newMode;
     const eventPromise = getEventPromise<LinearMemoryInspector.ValueInterpreterDisplay.ValueTypeModeChangedEvent>(
-        component, 'value-type-mode-changed');
+        component, 'valuetypemodechanged');
     const changeEvent = new Event('change');
     input.dispatchEvent(changeEvent);
     const event = await eventPromise;
@@ -329,7 +329,7 @@ describe('ValueInterpreterDisplay', () => {
 
     const button = getElementWithinComponent(component, DISPLAY_JUMP_TO_POINTER_BUTTON_SELECTOR, HTMLButtonElement);
     const eventPromise = getEventPromise<LinearMemoryInspector.ValueInterpreterDisplay.JumpToPointerAddressEvent>(
-        component, 'jump-to-pointer-address');
+        component, 'jumptopointeraddress');
     dispatchClickEvent(button);
     const event = await eventPromise;
     assert.deepEqual(event.data, 1);
@@ -350,7 +350,7 @@ describe('ValueInterpreterDisplay', () => {
 
     const button = getElementWithinComponent(component, DISPLAY_JUMP_TO_POINTER_BUTTON_SELECTOR, HTMLButtonElement);
     const eventPromise = getEventPromise<LinearMemoryInspector.ValueInterpreterDisplay.JumpToPointerAddressEvent>(
-        component, 'jump-to-pointer-address');
+        component, 'jumptopointeraddress');
     dispatchClickEvent(button);
     const event = await eventPromise;
     assert.deepEqual(event.data, 1);

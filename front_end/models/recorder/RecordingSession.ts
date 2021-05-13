@@ -124,7 +124,7 @@ export class RecordingSession {
 
     this._scriptWriter.appendStep(step);
     await this.renderSteps();
-    step.addEventListener('condition-added', () => {
+    step.addEventListener('conditionadded', () => {
       this.renderSteps();
     });
   }

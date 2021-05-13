@@ -24,7 +24,7 @@ module.exports = {
       'rules': {
         '@typescript-eslint/explicit-function-return-type': 2,
 
-        'rulesdir/kebab_case_events': 2,
+        'rulesdir/enforce_custom_event_names': 2,
         'rulesdir/set_data_type_reference': 2,
         'rulesdir/lit_html_data_as_type': 2,
         'rulesdir/lit_no_style_interpolation': 2,

@@ -59,7 +59,7 @@ describe('Linkifier', () => {
     const link = component.shadowRoot.querySelector('a');
     assertElement(link, HTMLAnchorElement);
 
-    const clickEventPromise = getEventPromise<Linkifier.Linkifier.LinkifierClick>(component, 'linkifier-activated');
+    const clickEventPromise = getEventPromise<Linkifier.Linkifier.LinkifierClick>(component, 'linkifieractivated');
     dispatchClickEvent(link, {
       cancelable: true,
     });

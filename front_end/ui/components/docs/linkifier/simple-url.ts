@@ -19,7 +19,7 @@ link.data = {
 
 const container = document.getElementById('container');
 
-container?.addEventListener('linkifier-activated', (event: Event) => {
+container?.addEventListener('linkifieractivated', (event: Event) => {
   const data = JSON.stringify((event as unknown as {data: unknown}).data, null, 2);
   alert(`Linkifier click: ${data}`);
 });

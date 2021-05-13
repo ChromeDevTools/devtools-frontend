@@ -102,7 +102,7 @@ describe('LayoutPane', async () => {
     assertElement(input, HTMLInputElement);
 
     const eventPromise =
-        getEventPromise<ElementsComponents.LayoutPane.SettingChangedEvent>(component, 'setting-changed');
+        getEventPromise<ElementsComponents.LayoutPane.SettingChangedEvent>(component, 'settingchanged');
 
     input.click();
 

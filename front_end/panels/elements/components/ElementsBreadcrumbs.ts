@@ -25,7 +25,7 @@ export interface ElementsBreadcrumbs extends HTMLElement {
       options?: boolean|AddEventListenerOptions): void;
   addEventListener(
       type: string, listener: EventListenerOrEventListenerObject, options?: boolean|AddEventListenerOptions): void;
-  addEventListener(type: 'node-selected', callback: (event: NodeSelectedEvent) => void): void;
+  addEventListener(type: 'breadcrumbsnodeselected', callback: (event: NodeSelectedEvent) => void): void;
 }
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();

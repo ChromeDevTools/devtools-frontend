@@ -245,7 +245,7 @@ export class ContextMenuColumnSortClickEvent extends Event {
   };
 
   constructor(column: Column) {
-    super('context-menu-column-sort-click');
+    super('contextmenucolumnsortclick');
     this.data = {
       column,
     };
@@ -254,6 +254,6 @@ export class ContextMenuColumnSortClickEvent extends Event {
 
 export class ContextMenuHeaderResetClickEvent extends Event {
   constructor() {
-    super('context-menu-header-reset-click');
+    super('contextmenuheaderresetclick');
   }
 }

@@ -19,7 +19,7 @@ export class ByteSelectedEvent extends Event {
   data: number;
 
   constructor(address: number) {
-    super('byte-selected');
+    super('byteselected');
     this.data = address;
   }
 }

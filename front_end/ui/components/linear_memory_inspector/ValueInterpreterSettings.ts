@@ -51,7 +51,7 @@ export class TypeToggleEvent extends Event {
   data: {type: ValueType, checked: boolean};
 
   constructor(type: ValueType, checked: boolean) {
-    super('type-toggle');
+    super('typetoggle');
     this.data = {type, checked};
   }
 }

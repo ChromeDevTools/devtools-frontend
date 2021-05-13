@@ -49,7 +49,7 @@ export class AddressInputChangedEvent extends Event {
   data: {address: string, mode: Mode};
 
   constructor(address: string, mode: Mode) {
-    super('address-input-changed');
+    super('addressinputchanged');
     this.data = {address, mode};
   }
 }
@@ -58,7 +58,7 @@ export class PageNavigationEvent extends Event {
   data: Navigation;
 
   constructor(navigation: Navigation) {
-    super('page-navigation', {});
+    super('pagenavigation', {});
     this.data = navigation;
   }
 }
@@ -67,14 +67,14 @@ export class HistoryNavigationEvent extends Event {
   data: Navigation;
 
   constructor(navigation: Navigation) {
-    super('history-navigation', {});
+    super('historynavigation', {});
     this.data = navigation;
   }
 }
 
 export class RefreshRequestedEvent extends Event {
   constructor() {
-    super('refresh-requested', {});
+    super('refreshrequested', {});
   }
 }
 

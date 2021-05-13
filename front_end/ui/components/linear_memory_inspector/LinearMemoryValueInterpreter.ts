@@ -38,7 +38,7 @@ export class EndiannessChangedEvent extends Event {
   data: Endianness;
 
   constructor(endianness: Endianness) {
-    super('endianness-changed');
+    super('endiannesschanged');
     this.data = endianness;
   }
 }
@@ -47,7 +47,7 @@ export class ValueTypeToggledEvent extends Event {
   data: {type: ValueType, checked: boolean};
 
   constructor(type: ValueType, checked: boolean) {
-    super('value-type-toggled');
+    super('valuetypetoggled');
     this.data = {type, checked};
   }
 }
@@ -161,7 +161,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
             html`
               <${ValueInterpreterSettings.litTagName}
                 .data=${{ valueTypes: this.valueTypes } as ValueInterpreterSettingsData}
-                @type-toggle=${this.onTypeToggle}>
+                @typetoggle=${this.onTypeToggle}>
               </${ValueInterpreterSettings.litTagName}>` :
             html`
               <${ValueInterpreterDisplay.litTagName}

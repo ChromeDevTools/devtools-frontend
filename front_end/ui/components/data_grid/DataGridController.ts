@@ -211,9 +211,9 @@ export class DataGridController extends HTMLElement {
           activeSort: this.sortState,
           contextMenus: this.contextMenus,
         } as DataGridData}
-        @column-header-click=${this.onColumnHeaderClick}
-        @context-menu-column-sort-click=${this.onContextMenuColumnSortClick}
-        @context-menu-header-reset-click=${this.onContextMenuHeaderResetClick}
+        @columnheaderclick=${this.onColumnHeaderClick}
+        @contextmenucolumnsortclick=${this.onContextMenuColumnSortClick}
+        @contextmenuheaderresetclick=${this.onContextMenuHeaderResetClick}
      ></${DataGrid.litTagName}>
     `, this.shadow, {
       host: this,

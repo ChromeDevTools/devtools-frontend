@@ -128,7 +128,7 @@ describe('ColorSwatch', () => {
     const target = getClickTarget(swatch);
 
     let currentFormat = swatch.getFormat();
-    swatch.addEventListener('format-changed', (e: Event) => {
+    swatch.addEventListener('formatchanged', (e: Event) => {
       currentFormat = (e as InlineEditor.ColorSwatchImpl.FormatChangedEvent).data.format;
     });
 
@@ -178,7 +178,7 @@ describe('ColorSwatch', () => {
     swatch.removeEventListener('swatch-click', onClick);
   });
 
-  it('does not dispatch a format-changed event on click', () => {
+  it('does not dispatch a formatchanged event on click', () => {
     const swatch = createSwatch('red');
     const target = getClickTarget(swatch);
 
@@ -186,14 +186,14 @@ describe('ColorSwatch', () => {
     const onClick = (e: Event) => {
       formatChangedEventsReceived.push(e);
     };
-    swatch.addEventListener('format-changed', onClick);
+    swatch.addEventListener('formatchanged', onClick);
 
     dispatchClickEvent(target);
     dispatchClickEvent(target);
     dispatchClickEvent(target);
 
-    assert.strictEqual(formatChangedEventsReceived.length, 0, 'No format-changed events are received on click');
+    assert.strictEqual(formatChangedEventsReceived.length, 0, 'No formatchanged events are received on click');
 
-    swatch.removeEventListener('format-changed', onClick);
+    swatch.removeEventListener('formatchanged', onClick);
   });
 });

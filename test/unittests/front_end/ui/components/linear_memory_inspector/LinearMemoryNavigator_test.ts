@@ -8,9 +8,9 @@ import {assertElement, assertElements, assertShadowRoot, getElementsWithinCompon
 const {assert} = chai;
 
 export const NAVIGATOR_ADDRESS_SELECTOR = '[data-input]';
-export const NAVIGATOR_PAGE_BUTTON_SELECTOR = '[data-button=page-navigation]';
-export const NAVIGATOR_HISTORY_BUTTON_SELECTOR = '[data-button=history-navigation]';
-export const NAVIGATOR_REFRESH_BUTTON_SELECTOR = '[data-button=refresh-requested]';
+export const NAVIGATOR_PAGE_BUTTON_SELECTOR = '[data-button=pagenavigation]';
+export const NAVIGATOR_HISTORY_BUTTON_SELECTOR = '[data-button=historynavigation]';
+export const NAVIGATOR_REFRESH_BUTTON_SELECTOR = '[data-button=refreshrequested]';
 
 describe('LinearMemoryNavigator', () => {
   let component: LinearMemoryInspector.LinearMemoryNavigator.LinearMemoryNavigator;
@@ -80,7 +80,7 @@ describe('LinearMemoryNavigator', () => {
 
   it('sends event when clicking on refresh', async () => {
     const eventPromise = getEventPromise<LinearMemoryInspector.LinearMemoryNavigator.RefreshRequestedEvent>(
-        component, 'refresh-requested');
+        component, 'refreshrequested');
 
     const shadowRoot = component.shadowRoot;
     assertShadowRoot(shadowRoot);
@@ -92,11 +92,11 @@ describe('LinearMemoryNavigator', () => {
   });
 
   it('sends events when clicking previous and next page', async () => {
-    await assertNavigationEvents('history-navigation');
+    await assertNavigationEvents('historynavigation');
   });
 
   it('sends events when clicking undo and redo', async () => {
-    await assertNavigationEvents('page-navigation');
+    await assertNavigationEvents('pagenavigation');
   });
 
   it('disables the previous and next page buttons if specified as not navigatable', () => {

@@ -128,17 +128,17 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
     this._memoryWrapper = memoryWrapper;
     this._address = address;
     this._inspector = new LinearMemoryInspector();
-    this._inspector.addEventListener('memory-request', (event: Event) => {
+    this._inspector.addEventListener('memoryrequest', (event: Event) => {
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this._memoryRequested((event as any));
     });
-    this._inspector.addEventListener('address-changed', (event: Event) => {
+    this._inspector.addEventListener('addresschanged', (event: Event) => {
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.updateAddress((event as any).data);
     });
-    this._inspector.addEventListener('settings-changed', (event: Event) => {
+    this._inspector.addEventListener('settingschanged', (event: Event) => {
       // Stop event from bubbling up, since no element further up needs the event.
       event.stopPropagation();
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration

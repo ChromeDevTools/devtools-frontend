@@ -216,7 +216,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       this._accessibilityTreeView = new AccessibilityTreeView(this.domTreeButton);
     }
     this._breadcrumbs = new ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs();
-    this._breadcrumbs.addEventListener('node-selected', (event: Common.EventTarget.EventTargetEvent) => {
+    this._breadcrumbs.addEventListener('breadcrumbsnodeselected', (event: Common.EventTarget.EventTargetEvent) => {
       this._crumbNodeSelected(event);
     });
 
@@ -1096,7 +1096,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     // since usually this pane won't be used.
     if (!this._adornerSettingsPane) {
       this._adornerSettingsPane = new ElementsComponents.AdornerSettingsPane.AdornerSettingsPane();
-      this._adornerSettingsPane.addEventListener('adorner-setting-updated', (event: Event) => {
+      this._adornerSettingsPane.addEventListener('adornersettingupdated', (event: Event) => {
         const {adornerName, isEnabledNow, newSettings} =
             (event as ElementsComponents.AdornerSettingsPane.AdornerSettingUpdatedEvent).data;
         const adornersToUpdate = this._adornersByName.get(adornerName);

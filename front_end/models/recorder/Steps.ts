@@ -41,7 +41,7 @@ export class ConditionAddedEvent extends Event {
   data: {condition: Condition};
 
   constructor(condition: Condition) {
-    super('condition-added', {});
+    super('conditionadded', {});
     this.data = {condition};
   }
 }

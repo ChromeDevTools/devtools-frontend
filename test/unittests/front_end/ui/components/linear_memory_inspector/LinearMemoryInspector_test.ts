@@ -117,7 +117,7 @@ describe('LinearMemoryInspector', () => {
 
     for (const index of byteIndices) {
       const byteSelectedPromise =
-          getEventPromise<LinearMemoryInspectorModule.LinearMemoryViewer.ByteSelectedEvent>(viewer, 'byte-selected');
+          getEventPromise<LinearMemoryInspectorModule.LinearMemoryViewer.ByteSelectedEvent>(viewer, 'byteselected');
       dispatchClickEvent(byteCells[index]);
       await byteSelectedPromise;
     }
@@ -144,7 +144,7 @@ describe('LinearMemoryInspector', () => {
 
     for (let i = 1; i < historyLength; ++i) {
       const byteSelectedPromise =
-          getEventPromise<LinearMemoryInspectorModule.LinearMemoryViewer.ByteSelectedEvent>(viewer, 'byte-selected');
+          getEventPromise<LinearMemoryInspectorModule.LinearMemoryViewer.ByteSelectedEvent>(viewer, 'byteselected');
       dispatchClickEvent(byteCells[i]);
       const byteSelectedEvent = await byteSelectedPromise;
       visitedByteValue.push(byteSelectedEvent.data);
@@ -216,7 +216,7 @@ describe('LinearMemoryInspector', () => {
     assert.deepEqual(select.value, event.data);
   });
 
-  it('updates current address if user triggers a jump-to-pointer-address event', () => {
+  it('updates current address if user triggers a jumptopointeraddress event', () => {
     const {component, data} = setUpComponent();
     data.valueTypes = new Set([LinearMemoryInspectorModule.ValueInterpreterDisplayUtils.ValueType.Pointer32]);
     data.memory = new Uint8Array([2, 0, 0, 0]);
@@ -277,7 +277,7 @@ describe('LinearMemoryInspector', () => {
     const numBytesPerPage = bytes.length;
 
     const eventPromise = getEventPromise<LinearMemoryInspectorModule.LinearMemoryInspector.MemoryRequestEvent>(
-        component, 'memory-request');
+        component, 'memoryrequest');
     navigator.dispatchEvent(new LinearMemoryInspectorModule.LinearMemoryNavigator.RefreshRequestedEvent());
     const event = await eventPromise;
     const {start, end, address} = event.data;
@@ -290,7 +290,7 @@ describe('LinearMemoryInspector', () => {
   it('triggers event on address change when byte is selected', async () => {
     const {component, data} = setUpComponent();
     const eventPromise = getEventPromise<LinearMemoryInspectorModule.LinearMemoryInspector.AddressChangedEvent>(
-        component, 'address-changed');
+        component, 'addresschanged');
     const viewer = getViewer(component);
     const bytes = getElementsWithinComponent(viewer, VIEWER_BYTE_CELL_SELECTOR, HTMLSpanElement);
     const numBytesPerPage = bytes.length;
@@ -304,7 +304,7 @@ describe('LinearMemoryInspector', () => {
   it('triggers event on address change when data is set', async () => {
     const {component, data} = setUpComponent();
     const eventPromise = getEventPromise<LinearMemoryInspectorModule.LinearMemoryInspector.AddressChangedEvent>(
-        component, 'address-changed');
+        component, 'addresschanged');
     data.address = 10;
     component.data = data;
     const event = await eventPromise;
@@ -315,7 +315,7 @@ describe('LinearMemoryInspector', () => {
     const {component} = setUpComponent();
     const interpreter = getValueInterpreter(component);
     const eventPromise = getEventPromise<LinearMemoryInspectorModule.LinearMemoryInspector.SettingsChangedEvent>(
-        component, 'settings-changed');
+        component, 'settingschanged');
     const valueType = LinearMemoryInspectorModule.ValueInterpreterDisplayUtils.ValueType.Int16;
     interpreter.dispatchEvent(
         new LinearMemoryInspectorModule.LinearMemoryValueInterpreter.ValueTypeToggledEvent(valueType, false));
@@ -328,7 +328,7 @@ describe('LinearMemoryInspector', () => {
     const {component} = setUpComponent();
     const interpreter = getValueInterpreter(component);
     const eventPromise = getEventPromise<LinearMemoryInspectorModule.LinearMemoryInspector.SettingsChangedEvent>(
-        component, 'settings-changed');
+        component, 'settingschanged');
     const valueType = LinearMemoryInspectorModule.ValueInterpreterDisplayUtils.ValueType.Int16;
     const valueTypeMode = LinearMemoryInspectorModule.ValueInterpreterDisplayUtils.ValueTypeMode.Hexadecimal;
     interpreter.dispatchEvent(
@@ -342,7 +342,7 @@ describe('LinearMemoryInspector', () => {
     const {component} = setUpComponent();
     const interpreter = getValueInterpreter(component);
     const eventPromise = getEventPromise<LinearMemoryInspectorModule.LinearMemoryInspector.SettingsChangedEvent>(
-        component, 'settings-changed');
+        component, 'settingschanged');
     const endianness = LinearMemoryInspectorModule.ValueInterpreterDisplayUtils.Endianness.Big;
     interpreter.dispatchEvent(
         new LinearMemoryInspectorModule.LinearMemoryValueInterpreter.EndiannessChangedEvent(endianness));

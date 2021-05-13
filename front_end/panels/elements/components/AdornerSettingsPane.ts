@@ -31,7 +31,7 @@ export class AdornerSettingUpdatedEvent extends Event {
   };
 
   constructor(adornerName: string, isEnabledNow: boolean, newSettings: AdornerSettingsMap) {
-    super('adorner-setting-updated', {});
+    super('adornersettingupdated', {});
     this.data = {adornerName, isEnabledNow, newSettings};
   }
 }

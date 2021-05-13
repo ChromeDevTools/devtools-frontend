@@ -24,7 +24,7 @@ export class PopoverToggledEvent extends Event {
   data: {open: boolean};
 
   constructor(open: boolean) {
-    super('popover-toggled', {});
+    super('popovertoggled', {});
     this.data = {open};
   }
 }
@@ -33,7 +33,7 @@ export class ValueChangedEvent extends Event {
   data: {value: string};
 
   constructor(value: string) {
-    super('value-changed', {});
+    super('valuechanged', {});
     this.data = {value};
   }
 }
@@ -42,7 +42,7 @@ export class UnitChangedEvent extends Event {
   data: {value: string};
 
   constructor(value: string) {
-    super('unit-changed', {});
+    super('unitchanged', {});
     this.data = {value};
   }
 }

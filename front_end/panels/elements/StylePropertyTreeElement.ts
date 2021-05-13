@@ -227,7 +227,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       swatch.createChild('span').textContent = data.text;
     };
 
-    swatch.addEventListener('format-changed', onFormatchanged);
+    swatch.addEventListener('formatchanged', onFormatchanged);
 
     if (this._editable()) {
       this._addColorContrastInfo(swatch);
@@ -402,9 +402,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       valueElement.textContent = data.value;
     };
 
-    cssAngle.addEventListener('popover-toggled', popoverToggled);
-    cssAngle.addEventListener('value-changed', valueChanged);
-    cssAngle.addEventListener('unit-changed', unitChanged);
+    cssAngle.addEventListener('popovertoggled', popoverToggled);
+    cssAngle.addEventListener('valuechanged', valueChanged);
+    cssAngle.addEventListener('unitchanged', unitChanged);
 
     return cssAngle;
   }

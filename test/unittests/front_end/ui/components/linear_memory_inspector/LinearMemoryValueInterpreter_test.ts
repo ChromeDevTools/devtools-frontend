@@ -71,7 +71,7 @@ describe('LinearMemoryValueInterpreter', () => {
     const settings = getElementWithinComponent(
         component, SETTINGS_SELECTOR, LinearMemoryInspector.ValueInterpreterSettings.ValueInterpreterSettings);
     const eventPromise = getEventPromise<LinearMemoryInspector.LinearMemoryValueInterpreter.ValueTypeToggledEvent>(
-        component, 'value-type-toggled');
+        component, 'valuetypetoggled');
     const expectedType = LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float64;
     const expectedChecked = true;
     const typeToggleEvent =
@@ -100,7 +100,7 @@ describe('LinearMemoryValueInterpreter', () => {
     const input = getElementWithinComponent(component, ENDIANNESS_SELECTOR, HTMLSelectElement);
 
     const eventPromise = getEventPromise<LinearMemoryInspector.LinearMemoryValueInterpreter.EndiannessChangedEvent>(
-        component, 'endianness-changed');
+        component, 'endiannesschanged');
     const changeEvent = new Event('change');
     input.dispatchEvent(changeEvent);
 

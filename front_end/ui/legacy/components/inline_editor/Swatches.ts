@@ -101,7 +101,7 @@ export class CSSShadowSwatch extends HTMLSpanElement {
         if (!this._colorSwatch) {
           this._colorSwatch = new ColorSwatch();
           const value = this._colorSwatch.createChild('span');
-          this._colorSwatch.addEventListener('format-changed', (event: Event) => {
+          this._colorSwatch.addEventListener('formatchanged', (event: Event) => {
             // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             value.textContent = (event as any).data.text;

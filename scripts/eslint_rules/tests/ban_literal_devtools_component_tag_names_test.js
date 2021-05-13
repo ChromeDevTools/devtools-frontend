@@ -28,13 +28,11 @@ ruleTester.run('ban_literal_devtools_component_tag_names', rule, {
       code: 'LitHtml.html`<devtools-foo></devtools-foo>`',
       filename: 'front_end/components/test.ts',
       errors: [{message: EXPECTED_ERROR_MESSAGE}],
-      output: `// eslint-disable-next-line rulesdir/ban_literal_devtools_component_tag_names
-LitHtml.html\`<devtools-foo></devtools-foo>\``
     },
-    // {
-    //   code: 'LitHtml.html`<p>${foo}</p><devtools-foo></devtools-foo>`',
-    //   filename: 'front_end/components/test.ts',
-    //   errors: [{message: EXPECTED_ERROR_MESSAGE}]
-    // },
+    {
+      code: 'LitHtml.html`<p>${foo}</p><devtools-foo></devtools-foo>`',
+      filename: 'front_end/components/test.ts',
+      errors: [{message: EXPECTED_ERROR_MESSAGE}]
+    },
   ]
 });

@@ -401,7 +401,6 @@ const emitApi = (moduleName: string, protocolModuleName: string, domains: Protoc
   emitCloseBlock();
   emitLine();
   emitLine('export = ProtocolProxyApi;');
-  emitLine('export as namespace ProtocolProxyApi;');
 };
 
 const flushEmitToFile = (path: string) => {

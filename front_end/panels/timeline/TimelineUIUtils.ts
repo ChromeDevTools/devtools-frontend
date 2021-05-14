@@ -558,7 +558,8 @@ const UIStrings = {
   */
   sS: '{PH1}: {PH2}',
   /**
-  *@description Text for a network response
+  *@description Label of a field in a timeline. A Network response refers to the act of acknowledging a
+  network request. Should not be confused with answer.
   */
   response: 'Response',
   /**

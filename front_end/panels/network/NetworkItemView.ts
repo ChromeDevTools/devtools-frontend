@@ -81,7 +81,8 @@ const UIStrings = {
   */
   signedexchangeError: 'SignedExchange error',
   /**
-  *@description Text for a network response
+  *@description Title of a tab in the Network panel. A Network response refers to the act of acknowledging a
+  network request. Should not be confused with answer.
   */
   response: 'Response',
   /**

@@ -669,7 +669,7 @@ describe('User Metrics for Issue Panel', () => {
     await beginCatchEvents(frontend);
   });
 
-  it('dispatch events when expand an issue', async () => {
+  it('dispatch events when issue is expanded', async () => {
     await goToResource('host/cookie-issue.html');
     await waitFor('.issue');
 

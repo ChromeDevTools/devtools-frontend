@@ -3,6 +3,7 @@
   Use of this source code is governed by a BSD-style license that can be
   found in the LICENSE file.
 -->
+<!DOCTYPE html>
 <script>
 async function foo() { await 1; console.log((new Error).stack); }
 (async function() { await foo(); })();

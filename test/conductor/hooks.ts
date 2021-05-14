@@ -18,7 +18,7 @@ declare module 'puppeteer' {
   }
 }
 
-const EMPTY_PAGE = 'data:text/html,';
+const EMPTY_PAGE = 'data:text/html,<!DOCTYPE html>';
 const DEFAULT_TAB = {
   name: 'elements',
   selector: '.elements',

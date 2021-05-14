@@ -1488,7 +1488,8 @@ export function registerCommands(inspectorBackend) {
     MethodDisallowedByPreflightResponse: 'MethodDisallowedByPreflightResponse',
     HeaderDisallowedByPreflightResponse: 'HeaderDisallowedByPreflightResponse',
     RedirectContainsCredentials: 'RedirectContainsCredentials',
-    InsecurePrivateNetwork: 'InsecurePrivateNetwork'
+    InsecurePrivateNetwork: 'InsecurePrivateNetwork',
+    NoCorsRedirectModeNotFollow: 'NoCorsRedirectModeNotFollow'
   });
   inspectorBackend.registerEnum(
       'Network.ServiceWorkerResponseSource',

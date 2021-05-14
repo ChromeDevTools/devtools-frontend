@@ -40,6 +40,7 @@ export enum IssueCode {
   PreflightMissingAllowExternal = 'CorsIssue::PreflightMissingAllowExternal',
   PreflightInvalidAllowExternal = 'CorsIssue::PreflightInvalidAllowExternal',
   InvalidResponse = 'CorsIssue::InvalidResponse',
+  NoCorsRedirectModeNotFollow = 'NoCorsRedirectModeNotFollow',
 }
 
 function getIssueCode(details: Protocol.Audits.CorsIssueDetails): IssueCode {
@@ -84,6 +85,8 @@ function getIssueCode(details: Protocol.Audits.CorsIssueDetails): IssueCode {
     case Protocol.Network.CorsError.InsecurePrivateNetwork:
       return details.clientSecurityState?.initiatorIsSecureContext ? IssueCode.InsecurePrivateNetworkPreflight :
                                                                      IssueCode.InsecurePrivateNetwork;
+    case Protocol.Network.CorsError.NoCorsRedirectModeNotFollow:
+      return IssueCode.NoCorsRedirectModeNotFollow;
   }
 }
 
@@ -191,6 +194,7 @@ export class CorsIssue extends Issue<IssueCode> {
       case IssueCode.PreflightMissingAllowExternal:
       case IssueCode.PreflightInvalidAllowExternal:
       case IssueCode.InvalidResponse:
+      case IssueCode.NoCorsRedirectModeNotFollow:
         return null;
     }
   }

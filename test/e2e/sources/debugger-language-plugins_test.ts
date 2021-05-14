@@ -477,7 +477,8 @@ describe('The Debugger Language Plugins', async () => {
     });
   });
 
-  it('falls back to wasm function names when inline info not present', async () => {
+  // Needs expectations update.
+  it.skip('[crbug.com/1209155] falls back to wasm function names when inline info not present', async () => {
     const {frontend} = getBrowserAndPages();
     await frontend.evaluateHandle(
         () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {

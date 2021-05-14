@@ -183,7 +183,8 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
         // The default columns suffice.
         break;
       default:
-        Platform.assertUnhandled<IssuesManager.CorsIssue.IssueCode.DisallowedByMode|
+        Platform.assertUnhandled<IssuesManager.CorsIssue.IssueCode.NoCorsRedirectModeNotFollow|
+                                 IssuesManager.CorsIssue.IssueCode.DisallowedByMode|
                                  IssuesManager.CorsIssue.IssueCode.CorsDisabledScheme|
                                  IssuesManager.CorsIssue.IssueCode.PreflightMissingAllowExternal|
                                  IssuesManager.CorsIssue.IssueCode.PreflightInvalidAllowExternal|
@@ -372,7 +373,8 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
       default:
         element.appendChild(this.createRequestCell(details.request));
         this.appendStatus(element, details.isWarning);
-        Platform.assertUnhandled<IssuesManager.CorsIssue.IssueCode.DisallowedByMode|
+        Platform.assertUnhandled<IssuesManager.CorsIssue.IssueCode.NoCorsRedirectModeNotFollow|
+                                 IssuesManager.CorsIssue.IssueCode.DisallowedByMode|
                                  IssuesManager.CorsIssue.IssueCode.CorsDisabledScheme|
                                  IssuesManager.CorsIssue.IssueCode.PreflightMissingAllowExternal|
                                  IssuesManager.CorsIssue.IssueCode.PreflightInvalidAllowExternal|

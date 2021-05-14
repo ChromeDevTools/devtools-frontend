@@ -4,11 +4,11 @@ Server: Apache/2.2.8 (Ubuntu) mod_ssl/2.2.8 OpenSSL/0.9.8g
 Last-Modified: Wed, 19 Feb 2020 08:04:35 GMT
 ETag: "corp-frame-rawresponse"
 Accept-Ranges: bytes
-Content-Length: 136
+Content-Length: 216
 Connection: close
 Cache-Control: max-age=315360000
 Content-Type: text/html; charset=utf-8
 Cross-Origin-Embedder-Policy: require-corp
 Cross-Origin-Resource-Policy: cross-origin
 
-<html><body><script>console.log("hello from corp-frame"); const sab = new SharedArrayBuffer(); postMessage(sab); </script></body></html>
+<!DOCTYPE html><html><body><script>console.log("hello from corp-frame"); const sab = new (new WebAssembly.Memory({ shared:true, initial:0, maximum:0 }).buffer.constructor)(); postMessage(sab); </script></body></html>

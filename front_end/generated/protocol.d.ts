@@ -985,6 +985,7 @@ declare namespace Protocol {
       corsErrorStatus: Network.CorsErrorStatus;
       isWarning: boolean;
       request: AffectedRequest;
+      location?: SourceCodeLocation;
       initiatorOrigin?: string;
       resourceIPAddressSpace?: Network.IPAddressSpace;
       clientSecurityState?: Network.ClientSecurityState;
@@ -6988,6 +6989,7 @@ declare namespace Protocol {
       HeaderDisallowedByPreflightResponse = 'HeaderDisallowedByPreflightResponse',
       RedirectContainsCredentials = 'RedirectContainsCredentials',
       InsecurePrivateNetwork = 'InsecurePrivateNetwork',
+      NoCorsRedirectModeNotFollow = 'NoCorsRedirectModeNotFollow',
     }
 
     export interface CorsErrorStatus {

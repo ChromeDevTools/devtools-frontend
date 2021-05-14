@@ -1320,8 +1320,8 @@
     const {browserContextId} = await targetAgent.invoke_createBrowserContext();
 
     // Cause a Browser to be created with the temp profile.
-    const {targetId} =
-        await targetAgent.invoke_createTarget({url: 'data:text/html,', browserContextId, newWindow: true});
+    const {targetId} = await targetAgent.invoke_createTarget(
+        {url: 'data:text/html,<!DOCTYPE html>', browserContextId, newWindow: true});
     await targetAgent.invoke_attachToTarget({targetId, flatten: true});
 
     // Destroy the temp profile.

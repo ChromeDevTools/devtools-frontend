@@ -4,6 +4,40 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+# We are still generating PDL types as an out-of-process manual task, rather
+# than in GN. There are some technical nuances here, but broadly speaking CDP
+# is backwards compatible. That means that if you would update CDP, and
+# DevTools was built with the expectation of an older version of CDP, that
+# should compile and run. This is generally true, but sadly not always. As it
+# turns out, the CDP owners regard some domains in CDP as "experimental",
+# which is not covered by the backwards compatibility guarantee.
+
+# The concrete result of that is that, sometimes, the CDP owners update the
+# CDP definitions in such a way that it would break compilation of DevTools.
+# That would happen if the types change, methods or events are removed and all
+# of that integrates with our TypeScript build, which would start failing. As
+# such, if the CDP definitions change and DevTools would break on it, we
+# currently have to manually patch these on DevTools side. This currently
+# happens when DevTools engineers roll our deps, regenerate the types, run the
+# build and figure out if manually patching is required. Most of the time,
+# there are no functional changes required, but there are rare cases where it
+# is required. (Generally speaking, those that introduced the CDP breakage tend
+# to be the ones resolving the breakage as well.)
+
+# If we were to take the PDL definition from Chromium and compile DevTools with
+# it, we effectively block any breaking change in CDP. The CDP owners indicated
+# that they would like to maintain the freedom of making breaking changes in
+# several domains, so that disallows us from integrating the PDL definition in
+# the DevTools build. That's why we have to maintain a copy of CDP that we
+# build DevTools with and ensure that we remain up-to-date on the Chromium side,
+# resolving type breakages whenever they occur.
+
+# There is another reason why we generate the types manually: so that VS Code
+# picks them up and makes them available for usage in the editor. If we
+# wouldn't generate them, then VS Code (or any other IDE with a TypeScript
+# language server) would not see the types and start complaining,
+# even though the local build would succeed.
+
 import os.path as path
 import re
 import os

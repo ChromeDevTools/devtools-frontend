@@ -173,9 +173,11 @@ const UIStrings = {
   */
   requiresCrossoriginIsolated: 'requires cross-origin isolated context',
   /**
-  *@description Explanation for the SharedArrayBuffer availability status
-  */
-  transferRequiresCrossoriginIsolatedPermission: 'transfer requires permission policy:',
+   *@description Explanation for the SharedArrayBuffer availability status in case the transfer of a SAB requires the
+   * permission policy `cross-origin-isolated` to be enabled (e.g. because the message refers to the situation in an iframe).
+   */
+  transferRequiresCrossoriginIsolatedPermission:
+      '`SharedArrayBuffer` transfer requires enabling the permission policy:',
   /**
   *@description Explanation for the Measure Memory availability status
   */

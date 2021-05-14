@@ -2439,7 +2439,7 @@
     "message": "This frame has been identified as a child frame of an ad"
   },
   "panels/application/components/FrameDetailsView.ts | transferRequiresCrossoriginIsolatedPermission": {
-    "message": "transfer requires permission policy:"
+    "message": "SharedArrayBuffer transfer requires enabling the permission policy:"
   },
   "panels/application/components/FrameDetailsView.ts | unavailable": {
     "message": "unavailable"

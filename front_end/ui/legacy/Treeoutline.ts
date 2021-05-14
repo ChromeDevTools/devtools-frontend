@@ -437,6 +437,7 @@ export class TreeElement {
   _leadingIconsElement: HTMLElement|null;
   _trailingIconsElement: HTMLElement|null;
   _selectionElement: HTMLElement|null;
+  _disableSelectFocus: boolean;
   constructor(title?: string|Node, expandable?: boolean) {
     this.treeOutline = null;
     this.parent = null;
@@ -476,6 +477,7 @@ export class TreeElement {
     this._leadingIconsElement = null;
     this._trailingIconsElement = null;
     this._selectionElement = null;
+    this._disableSelectFocus = false;
   }
 
   static getTreeElementBylistItemNode(node: Node): TreeElement|undefined {
@@ -1135,6 +1137,7 @@ export class TreeElement {
   }
 
   select(omitFocus?: boolean, selectedByUser?: boolean): boolean {
+    omitFocus = omitFocus || this._disableSelectFocus;
     if (!this.treeOutline || !this.selectable || this.selected) {
       if (!omitFocus) {
         this.listItemElement.focus();
@@ -1352,5 +1355,9 @@ export class TreeElement {
     const computedLeftPadding = parseFloat(paddingLeftValue);
     const left = this._listItemNode.totalOffsetLeft() + computedLeftPadding;
     return event.pageX >= left && event.pageX <= left + arrowToggleWidth && this._expandable;
+  }
+
+  setDisableSelectFocus(toggle: boolean): void {
+    this._disableSelectFocus = toggle;
   }
 }

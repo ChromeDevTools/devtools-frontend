@@ -358,6 +358,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
 
   startEditing(): void {
     this._editing = true;
+    this._treeElement.setDisableSelectFocus(true);
     this._element.removeChildren();
     const newDiv = this._element.createChild('div');
     newDiv.textContent = this._nameElement.textContent;
@@ -385,6 +386,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     this._editing = false;
+    this._treeElement.setDisableSelectFocus(false);
     this._treeElement.listItemElement.classList.remove('watch-expression-editing');
     if (this._textPrompt) {
       this._textPrompt.detach();
@@ -509,7 +511,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
 
       if (this._treeElement.expanded) {
         this._treeElement.collapse();
-      } else {
+      } else if (!this._editing) {
         this._treeElement.expand();
       }
     }

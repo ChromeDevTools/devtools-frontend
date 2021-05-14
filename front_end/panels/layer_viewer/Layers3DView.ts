@@ -849,6 +849,7 @@ export class Layers3DView extends UI.Widget.VBox implements LayerView {
     const maxDistanceInPixels = 6;
     if (this._mouseDownX && Math.abs(mouseEvent.clientX - this._mouseDownX) < maxDistanceInPixels &&
         Math.abs(mouseEvent.clientY - (this._mouseDownY || 0)) < maxDistanceInPixels) {
+      this._canvasElement.focus();
       this._layerViewHost.selectObject(this._selectionFromEventPoint(event));
     }
     delete this._mouseDownX;

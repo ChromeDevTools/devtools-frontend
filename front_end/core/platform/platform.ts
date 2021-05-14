@@ -40,6 +40,7 @@ import * as StringUtilities from './string-utilities.js';
 import * as TypeScriptUtilities from './typescript-utilities.js';
 import * as UIString from './UIString.js';
 
+export {DCHECK} from './dcheck.js';
 /* `assertNotNull` also need to be exposed, as TypeScript does not
  * allow `asserts` functions to be used with qualified access
  * (e.g. `Platform.TypeScriptUtilities.assertNotNull` causes a

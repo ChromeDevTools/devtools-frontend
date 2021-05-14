@@ -29,8 +29,6 @@ template("rollup") {
       # as Chromium does not process the returncode of the subprocess correctly
       # and instead looks if `stderr` is empty.
       "--silent",
-      "--plugin",
-      "terser",
       "--config",
       rebase_path(devtools_location_prepend + "front_end/rollup.config.js",
                   root_build_dir),
@@ -39,6 +37,10 @@ template("rollup") {
       "--file",
       rebase_path(invoker.output_file_location, root_build_dir),
     ]
+
+    if (!devtools_dcheck_always_on) {
+      args += [ "--configDCHECK" ]
+    }
 
     outputs = [ invoker.output_file_location ]
   }

@@ -23,7 +23,7 @@ template("devtools_pre_built") {
                                     ])
 
   group(target_name) {
-    public_deps = [ _copy_gen_target_dep ]
+    public_deps = [ _copy_gen_target_dep ] + invoker.deps
 
     data = _javascript_implementation_files +
            filter_include(_target_outputs, [ "*.map" ])

@@ -515,6 +515,7 @@ grd_files_debug_sources = [
   "front_end/core/platform/UIString.js",
   "front_end/core/platform/array-utilities.js",
   "front_end/core/platform/date-utilities.js",
+  "front_end/core/platform/dcheck.js",
   "front_end/core/platform/keyboard-utilities.js",
   "front_end/core/platform/map-utilities.js",
   "front_end/core/platform/number-utilities.js",

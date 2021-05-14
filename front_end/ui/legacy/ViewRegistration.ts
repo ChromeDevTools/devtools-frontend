@@ -2,7 +2,7 @@
 // Copyright 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 
 import type {ViewLocationResolver} from './View.js';
@@ -117,9 +117,7 @@ export interface ViewRegistration {
 const viewIdSet = new Set<string>();
 export function registerViewExtension(registration: ViewRegistration): void {
   const viewId = registration.id;
-  if (viewIdSet.has(viewId)) {
-    throw new Error(`Duplicate view id '${viewId}': ${new Error().stack}`);
-  }
+  Platform.DCHECK(() => !viewIdSet.has(viewId), `Duplicate view id '${viewId}'`);
   viewIdSet.add(viewId);
   registeredViewExtensions.push(new PreRegisteredView(registration));
 }

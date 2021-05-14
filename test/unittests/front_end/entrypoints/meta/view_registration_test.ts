@@ -58,19 +58,6 @@ describeWithEnvironment('View registration', () => {
     assert.strictEqual(filteredCommands.length, 1, 'Command for showing a preregistered view was not added correctly');
   });
 
-  it('throws an error trying to register a duplicated view id', () => {
-    assert.throws(() => {
-      UI.ViewManager.registerViewExtension({
-        id: viewId,
-        commandPrompt: (): Platform.UIString.LocalizedString => commandPrompt as Platform.UIString.LocalizedString,
-        title: (): Platform.UIString.LocalizedString => viewTitle as Platform.UIString.LocalizedString,
-        async loadView() {
-          return new MockView();
-        },
-      });
-    });
-  });
-
   it('deletes a registered view using its id', () => {
     const removalResult = UI.ViewManager.maybeRemoveViewExtension(viewId);
     assert.isTrue(removalResult);

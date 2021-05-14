@@ -2,6 +2,10 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+declare_args() {
+  devtools_dcheck_always_on = is_debug
+}
+
 if (!defined(devtools_location)) {
   if (defined(use_devtools_typescript) && use_devtools_typescript) {
     devtools_location = ""

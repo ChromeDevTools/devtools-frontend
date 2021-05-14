@@ -107,7 +107,7 @@ export class TabbedPane extends VBox {
 
   constructor() {
     super(true);
-    this.registerRequiredCSS('ui/legacy/tabbedPane.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('ui/legacy/tabbedPane.css', {enableLegacyPatching: false});
     this.element.classList.add('tabbed-pane');
     this.contentElement.classList.add('tabbed-pane-shadow');
     this.contentElement.tabIndex = -1;

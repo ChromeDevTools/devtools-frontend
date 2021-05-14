@@ -35,6 +35,7 @@
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
 import * as Platfrom from '../platform/platform.js';
+import type * as Protocol from '../../generated/protocol.js';
 
 import type {NetworkRequest} from './NetworkRequest.js';
 import {Events} from './NetworkRequest.js';                                       // eslint-disable-line no-unused-vars

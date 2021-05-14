@@ -5,6 +5,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import type * as Protocol from '../../generated/protocol.js';
 
 import {OverlayModel} from './OverlayModel.js';
 import type {Target} from './SDKModel.js';

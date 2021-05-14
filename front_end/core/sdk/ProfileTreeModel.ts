@@ -4,6 +4,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
+import type * as Protocol from '../../generated/protocol.js';
+
 import type {Target} from './SDKModel.js'; // eslint-disable-line no-unused-vars
 
 export class ProfileNode {

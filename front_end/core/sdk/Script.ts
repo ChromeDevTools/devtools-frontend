@@ -33,6 +33,7 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import type * as ProtocolClient from '../protocol_client/protocol_client.js'; // eslint-disable-line no-unused-vars
+import * as Protocol from '../../generated/protocol.js';
 
 import type {DebuggerModel} from './DebuggerModel.js';
 import {Location} from './DebuggerModel.js';  // eslint-disable-line no-unused-vars

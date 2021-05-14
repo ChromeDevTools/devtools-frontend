@@ -5,6 +5,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import type * as Protocol from '../../generated/protocol.js';
 
 import {cssMetadata, CustomVariableRegex, VariableRegex} from './CSSMetadata.js';
 import type {CSSModel} from './CSSModel.js';       // eslint-disable-line no-unused-vars

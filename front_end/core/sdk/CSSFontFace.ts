@@ -4,6 +4,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
+import type * as Protocol from '../../generated/protocol.js';
+
 export class CSSFontFace {
   _fontFamily: string;
   _fontVariationAxes: Protocol.CSS.FontVariationAxis[];

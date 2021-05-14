@@ -41,6 +41,7 @@ import * as Platform from '../platform/platform.js';
 import type * as ProtocolClient from '../protocol_client/protocol_client.js'; // eslint-disable-line no-unused-vars
 import * as Root from '../root/root.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import * as Protocol from '../../generated/protocol.js';
 
 import {CSSModel} from './CSSModel.js';
 import {FrameManager} from './FrameManager.js';

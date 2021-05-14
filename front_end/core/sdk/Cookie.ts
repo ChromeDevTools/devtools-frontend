@@ -4,6 +4,8 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
+import type * as Protocol from '../../generated/protocol.js';
+
 export class Cookie {
   _name: string;
   _value: string;

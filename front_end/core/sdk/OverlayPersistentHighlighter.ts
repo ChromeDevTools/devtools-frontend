@@ -4,6 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
+import * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 
 import {OverlayColorGenerator} from './OverlayColorGenerator.js';

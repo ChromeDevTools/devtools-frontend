@@ -8,6 +8,7 @@ import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import type * as ProtocolClient from '../protocol_client/protocol_client.js'; // eslint-disable-line no-unused-vars
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import type * as Protocol from '../../generated/protocol.js';
 
 import {ParallelConnection} from './Connections.js';
 import type {Target} from './SDKModel.js';

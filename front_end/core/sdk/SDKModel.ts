@@ -8,6 +8,7 @@ import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
+import type * as Protocol from '../../generated/protocol.js';
 
 export interface RegistrationInfo {
   capabilities: number;

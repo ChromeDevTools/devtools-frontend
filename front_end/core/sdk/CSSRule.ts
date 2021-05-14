@@ -4,9 +4,11 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
+import * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 
 import {CSSMedia} from './CSSMedia.js';
+
 import type {CSSModel, Edit} from './CSSModel.js'; // eslint-disable-line no-unused-vars
 import {CSSStyleDeclaration, Type} from './CSSStyleDeclaration.js';
 import type {CSSStyleSheetHeader} from './CSSStyleSheetHeader.js'; // eslint-disable-line no-unused-vars

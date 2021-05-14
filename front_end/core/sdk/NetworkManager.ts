@@ -36,6 +36,7 @@ import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import * as Protocol from '../../generated/protocol.js';
 
 import {Cookie} from './Cookie.js';
 import type {BlockedCookieWithReason, ContentData, ExtraRequestInfo, ExtraResponseInfo, MIME_TYPE, NameValue} from './NetworkRequest.js';

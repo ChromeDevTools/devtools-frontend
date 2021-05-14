@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/components_import */
-
 import type {StackTraceData} from './StackTrace.js';
 import {StackTrace} from './StackTrace.js';
 import * as Bindings from '../../../models/bindings/bindings.js';

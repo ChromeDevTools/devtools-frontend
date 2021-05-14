@@ -14,7 +14,6 @@ module.exports = {
     'rulesdir/l10n_no_locked_or_placeholder_only_phrase': 2,
     'rulesdir/l10n_no_uistrings_export': 2,
     'rulesdir/l10n_no_unused_message': 2,
-    'rulesdir/components_import': 2,
     'rulesdir/custom_element_definitions_location': 2,
     'rulesdir/custom_element_component_definition': 2,
   },
@@ -23,7 +22,6 @@ module.exports = {
       'files': ['*.ts'],
       'rules': {
         '@typescript-eslint/explicit-function-return-type': 2,
-
         'rulesdir/enforce_custom_event_names': 2,
         'rulesdir/set_data_type_reference': 2,
         'rulesdir/lit_html_data_as_type': 2,

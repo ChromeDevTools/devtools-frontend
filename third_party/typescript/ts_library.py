@@ -40,11 +40,6 @@ GLOBAL_TYPESCRIPT_DEFINITION_FILES = [
               'request_idle_callback.d.ts'),
     path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'front_end', 'global_typings',
               'intl_display_names.d.ts'),
-    # generated protocol definitions
-    path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'front_end', 'generated',
-              'protocol.d.ts'),
-    path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'front_end', 'generated',
-              'protocol-globals.d.ts'),
     # Types for W3C FileSystem API
     path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'node_modules', '@types',
               'filesystem', 'index.d.ts'),

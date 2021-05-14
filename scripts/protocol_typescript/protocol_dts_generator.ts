@@ -71,7 +71,6 @@ const emitModule = (moduleName: string, domains: Protocol.Domain[]) => {
   emitCloseBlock();
   emitLine();
   emitLine('export = Protocol;');
-  emitLine('export as namespace Protocol;');
 };
 
 const emitGlobalTypeDefs = () => {

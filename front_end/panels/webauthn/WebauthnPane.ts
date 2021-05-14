@@ -212,6 +212,11 @@ const PRIVATE_KEY_HEADER = `-----BEGIN ${PRIVATE_NAME} KEY-----
 `;
 const PRIVATE_KEY_FOOTER = `-----END ${PRIVATE_NAME} KEY-----`;
 
+const PROTOCOL_AUTHENTICATOR_VALUES: Protocol.EnumerableEnum<typeof Protocol.WebAuthn.AuthenticatorProtocol> = {
+  Ctap2: Protocol.WebAuthn.AuthenticatorProtocol.Ctap2,
+  U2f: Protocol.WebAuthn.AuthenticatorProtocol.U2f,
+};
+
 export class WebauthnPaneImpl extends UI.Widget.VBox {
   _enabled: boolean;
   _activeAuthId: string|null;
@@ -510,7 +515,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     protocolGroup.appendChild(protocolSelectTitle);
     this._protocolSelect = (protocolGroup.createChild('select', 'chrome-select') as HTMLSelectElement);
     UI.ARIAUtils.bindLabelToControl(protocolSelectTitle, (this._protocolSelect as Element));
-    Object.values(Protocol.WebAuthn.AuthenticatorProtocol)
+    Object.values(PROTOCOL_AUTHENTICATOR_VALUES)
         .sort()
         .forEach((option: Protocol.WebAuthn.AuthenticatorProtocol): void => {
           if (this._protocolSelect) {

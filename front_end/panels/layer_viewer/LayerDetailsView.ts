@@ -229,7 +229,7 @@ export class LayerDetailsView extends UI.Widget.Widget implements LayerView {
       element.classList.add('active');
     }
     element.textContent = i18nString(UIStrings.scrollRectangleDimensions, {
-      PH1: slowScrollRectNames.get(scrollRect.type)?.(),
+      PH1: slowScrollRectNames.get(scrollRect.type as unknown as SDK.LayerTreeBase.Layer.ScrollRectType)?.(),
       PH2: scrollRect.rect.width,
       PH3: scrollRect.rect.height,
       PH4: scrollRect.rect.x,

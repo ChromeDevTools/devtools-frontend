@@ -167,10 +167,11 @@ export class TimelineEventOverviewNetwork extends TimelineEventOverview {
     const scale = canvasWidth / timeSpan;
     const highPath = new Path2D();
     const lowPath = new Path2D();
-    const priorities = Protocol.Network.ResourcePriority;
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const highPrioritySet = new Set<any>([priorities.VeryHigh, priorities.High, priorities.Medium]);
+    const highPrioritySet = new Set([
+      Protocol.Network.ResourcePriority.VeryHigh,
+      Protocol.Network.ResourcePriority.High,
+      Protocol.Network.ResourcePriority.Medium,
+    ]);
     for (const request of timelineModel.networkRequests()) {
       const path = highPrioritySet.has(request.priority) ? highPath : lowPath;
       const s = Math.max(Math.floor((request.startTime - timeOffset) * scale), 0);

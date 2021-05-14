@@ -7,6 +7,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Protocol from '../../generated/protocol.js';
 
 import type {LayerPaintEvent} from './TimelineFrameModel.js';
 
@@ -333,23 +334,19 @@ export class TracingLayer implements SDK.LayerTreeBase.Layer {
     const nonPayloadScrollRects: Protocol.LayerTree.ScrollRect[] = [];
     if (payload.non_fast_scrollable_region) {
       nonPayloadScrollRects.push(this._scrollRectsFromParams(
-          payload.non_fast_scrollable_region,
-          SDK.LayerTreeBase.Layer.ScrollRectType.NonFastScrollable as Protocol.LayerTree.ScrollRectType));
+          payload.non_fast_scrollable_region, 'NonFastScrollable' as Protocol.LayerTree.ScrollRectType));
     }
     if (payload.touch_event_handler_region) {
       nonPayloadScrollRects.push(this._scrollRectsFromParams(
-          payload.touch_event_handler_region,
-          SDK.LayerTreeBase.Layer.ScrollRectType.TouchEventHandler as Protocol.LayerTree.ScrollRectType));
+          payload.touch_event_handler_region, Protocol.LayerTree.ScrollRectType.TouchEventHandler));
     }
     if (payload.wheel_event_handler_region) {
       nonPayloadScrollRects.push(this._scrollRectsFromParams(
-          payload.wheel_event_handler_region,
-          SDK.LayerTreeBase.Layer.ScrollRectType.WheelEventHandler as Protocol.LayerTree.ScrollRectType));
+          payload.wheel_event_handler_region, Protocol.LayerTree.ScrollRectType.WheelEventHandler));
     }
     if (payload.scroll_event_handler_region) {
       nonPayloadScrollRects.push(this._scrollRectsFromParams(
-          payload.scroll_event_handler_region,
-          SDK.LayerTreeBase.Layer.ScrollRectType.RepaintsOnScroll as Protocol.LayerTree.ScrollRectType));
+          payload.scroll_event_handler_region, Protocol.LayerTree.ScrollRectType.RepaintsOnScroll));
     }
 
     // SDK.LayerBaseTree.Layer.ScrollRectType and Protocol.LayerTree.ScrollRectType are the

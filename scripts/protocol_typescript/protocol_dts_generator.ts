@@ -76,8 +76,9 @@ const emitModule = (moduleName: string, domains: Protocol.Domain[]) => {
 
 const emitGlobalTypeDefs = () => {
   emitLine();
-  emitLine('export type integer = number');
-  emitLine('export type binary = string');
+  emitLine('export type integer = number;');
+  emitLine('export type binary = string;');
+  emitLine('export type EnumerableEnum<T> = {[K in keyof T]: T[K]};');
   emitLine('export interface ProtocolResponseWithError {');
   numIndents++;
   emitLine('/** Returns an error message if the request failed. */');
@@ -168,7 +169,7 @@ const emitInterface = (interfaceName: string, props?: Protocol.PropertyType[], o
 };
 
 const emitEnum = (enumName: string, enumValues: string[]) => {
-  emitOpenBlock(`export enum ${enumName}`);
+  emitOpenBlock(`export const enum ${enumName}`);
   enumValues.forEach(value => {
     emitLine(`${fixCamelCase(value)} = '${value}',`);
   });

@@ -52,7 +52,7 @@ export class LogManager implements SDK.SDKModel.SDKModelObserver<SDK.LogModel.Lo
       NetworkLog.instance().associateConsoleMessageWithRequest(consoleMessage, data.entry.networkRequestId);
     }
 
-    if (consoleMessage.source === SDK.ConsoleModel.MessageSource.Worker) {
+    if (consoleMessage.source === Protocol.Log.LogEntrySource.Worker) {
       const workerId = consoleMessage.workerId || '';
       // We have a copy of worker messages reported through the page, so that
       // user can see messages from the worker which has been already destroyed.

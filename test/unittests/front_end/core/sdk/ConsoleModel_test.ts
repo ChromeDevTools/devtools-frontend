@@ -20,7 +20,7 @@ describe('ConsoleMessage', () => {
     executionContextId?: number,
   }) {
     return new SDK.ConsoleModel.ConsoleMessage(
-        null, options.source || SDK.ConsoleModel.MessageSource.ConsoleAPI, null, options.message || 'Message',
+        null, options.source || SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI, null, options.message || 'Message',
         undefined, options.url, undefined, undefined, undefined, undefined, undefined, options.executionContextId,
         options.scriptId);
   }
@@ -38,7 +38,7 @@ describe('ConsoleMessage', () => {
   it('compares using source', () => {
     const a = newMessage({});
     const b = newMessage({});
-    const c = newMessage({source: SDK.ConsoleModel.MessageSource.CSS});
+    const c = newMessage({source: SDK.ConsoleModel.FrontendMessageSource.CSS});
     assert.isTrue(a.isEqual(b));
     assert.isFalse(b.isEqual(c));
     assert.isFalse(c.isEqual(a));

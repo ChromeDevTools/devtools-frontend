@@ -404,7 +404,12 @@ export class ContextMenuProvider implements UI.ContextMenu.Provider {
     }
 
     const breakpointsMenu = contextMenu.debugSection().appendSubMenuItem(i18nString(UIStrings.breakOn));
-    for (const type of Object.values(Protocol.DOMDebugger.DOMBreakpointType)) {
+    const allBreakpointTypes: Protocol.EnumerableEnum<typeof Protocol.DOMDebugger.DOMBreakpointType> = {
+      SubtreeModified: Protocol.DOMDebugger.DOMBreakpointType.SubtreeModified,
+      AttributeModified: Protocol.DOMDebugger.DOMBreakpointType.AttributeModified,
+      NodeRemoved: Protocol.DOMDebugger.DOMBreakpointType.NodeRemoved,
+    };
+    for (const type of Object.values(allBreakpointTypes)) {
       const label = Sources.DebuggerPausedMessage.BreakpointTypeNouns.get(type);
       if (label) {
         breakpointsMenu.defaultSection().appendCheckboxItem(

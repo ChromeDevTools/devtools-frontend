@@ -8,8 +8,9 @@
  */
 
 declare namespace Protocol {
-  export type integer = number
-  export type binary = string
+  export type integer = number;
+  export type binary = string;
+  export type EnumerableEnum<T> = {[K in keyof T]: T[K]};
   export interface ProtocolResponseWithError {
     /** Returns an error message if the request failed. */
     getError(): string|undefined;
@@ -25,7 +26,7 @@ declare namespace Protocol {
     /**
      * Enum of possible property types.
      */
-    export enum AXValueType {
+    export const enum AXValueType {
       Boolean = 'boolean',
       Tristate = 'tristate',
       BooleanOrUndefined = 'booleanOrUndefined',
@@ -48,7 +49,7 @@ declare namespace Protocol {
     /**
      * Enum of possible property sources.
      */
-    export enum AXValueSourceType {
+    export const enum AXValueSourceType {
       Attribute = 'attribute',
       Implicit = 'implicit',
       Style = 'style',
@@ -60,7 +61,7 @@ declare namespace Protocol {
     /**
      * Enum of possible native property sources (as a subtype of a particular AXValueSourceType).
      */
-    export enum AXValueNativeSourceType {
+    export const enum AXValueNativeSourceType {
       Figcaption = 'figcaption',
       Label = 'label',
       Labelfor = 'labelfor',
@@ -170,7 +171,7 @@ declare namespace Protocol {
      * - from 'checked' to 'selected': states which apply to widgets
      * - from 'activedescendant' to 'owns' - relationships between elements other than parent/child/sibling.
      */
-    export enum AXPropertyName {
+    export const enum AXPropertyName {
       Busy = 'busy',
       Disabled = 'disabled',
       Editable = 'editable',
@@ -339,7 +340,7 @@ declare namespace Protocol {
 
   export namespace Animation {
 
-    export enum AnimationType {
+    export const enum AnimationType {
       CSSTransition = 'CSSTransition',
       CSSAnimation = 'CSSAnimation',
       WebAnimation = 'WebAnimation',
@@ -738,14 +739,14 @@ declare namespace Protocol {
       frameId: Page.FrameId;
     }
 
-    export enum SameSiteCookieExclusionReason {
+    export const enum SameSiteCookieExclusionReason {
       ExcludeSameSiteUnspecifiedTreatedAsLax = 'ExcludeSameSiteUnspecifiedTreatedAsLax',
       ExcludeSameSiteNoneInsecure = 'ExcludeSameSiteNoneInsecure',
       ExcludeSameSiteLax = 'ExcludeSameSiteLax',
       ExcludeSameSiteStrict = 'ExcludeSameSiteStrict',
     }
 
-    export enum SameSiteCookieWarningReason {
+    export const enum SameSiteCookieWarningReason {
       WarnSameSiteUnspecifiedCrossSiteContext = 'WarnSameSiteUnspecifiedCrossSiteContext',
       WarnSameSiteNoneInsecure = 'WarnSameSiteNoneInsecure',
       WarnSameSiteUnspecifiedLaxAllowUnsafe = 'WarnSameSiteUnspecifiedLaxAllowUnsafe',
@@ -756,7 +757,7 @@ declare namespace Protocol {
       WarnSameSiteLaxCrossDowngradeLax = 'WarnSameSiteLaxCrossDowngradeLax',
     }
 
-    export enum SameSiteCookieOperation {
+    export const enum SameSiteCookieOperation {
       SetCookie = 'SetCookie',
       ReadCookie = 'ReadCookie',
     }
@@ -780,13 +781,13 @@ declare namespace Protocol {
       request?: AffectedRequest;
     }
 
-    export enum MixedContentResolutionStatus {
+    export const enum MixedContentResolutionStatus {
       MixedContentBlocked = 'MixedContentBlocked',
       MixedContentAutomaticallyUpgraded = 'MixedContentAutomaticallyUpgraded',
       MixedContentWarning = 'MixedContentWarning',
     }
 
-    export enum MixedContentResourceType {
+    export const enum MixedContentResourceType {
       Audio = 'Audio',
       Beacon = 'Beacon',
       CSPReport = 'CSPReport',
@@ -850,7 +851,7 @@ declare namespace Protocol {
      * Enum indicating the reason a response has been blocked. These reasons are
      * refinements of the net error BLOCKED_BY_RESPONSE.
      */
-    export enum BlockedByResponseReason {
+    export const enum BlockedByResponseReason {
       CoepFrameResourceNeedsCoepHeader = 'CoepFrameResourceNeedsCoepHeader',
       CoopSandboxedIFrameCannotNavigateToCoopPage = 'CoopSandboxedIFrameCannotNavigateToCoopPage',
       CorpNotSameOrigin = 'CorpNotSameOrigin',
@@ -870,12 +871,12 @@ declare namespace Protocol {
       reason: BlockedByResponseReason;
     }
 
-    export enum HeavyAdResolutionStatus {
+    export const enum HeavyAdResolutionStatus {
       HeavyAdBlocked = 'HeavyAdBlocked',
       HeavyAdWarning = 'HeavyAdWarning',
     }
 
-    export enum HeavyAdReason {
+    export const enum HeavyAdReason {
       NetworkTotalLimit = 'NetworkTotalLimit',
       CpuTotalLimit = 'CpuTotalLimit',
       CpuPeakLimit = 'CpuPeakLimit',
@@ -896,7 +897,7 @@ declare namespace Protocol {
       frame: AffectedFrame;
     }
 
-    export enum ContentSecurityPolicyViolationType {
+    export const enum ContentSecurityPolicyViolationType {
       KInlineViolation = 'kInlineViolation',
       KEvalViolation = 'kEvalViolation',
       KURLViolation = 'kURLViolation',
@@ -927,7 +928,7 @@ declare namespace Protocol {
       violatingNodeId?: DOM.BackendNodeId;
     }
 
-    export enum SharedArrayBufferIssueType {
+    export const enum SharedArrayBufferIssueType {
       TransferIssue = 'TransferIssue',
       CreationIssue = 'CreationIssue',
     }
@@ -942,7 +943,7 @@ declare namespace Protocol {
       type: SharedArrayBufferIssueType;
     }
 
-    export enum TwaQualityEnforcementViolationType {
+    export const enum TwaQualityEnforcementViolationType {
       KHttpError = 'kHttpError',
       KUnavailableOffline = 'kUnavailableOffline',
       KDigitalAssetLinks = 'kDigitalAssetLinks',
@@ -991,7 +992,7 @@ declare namespace Protocol {
       clientSecurityState?: Network.ClientSecurityState;
     }
 
-    export enum AttributionReportingIssueType {
+    export const enum AttributionReportingIssueType {
       PermissionPolicyDisabled = 'PermissionPolicyDisabled',
       InvalidAttributionSourceEventId = 'InvalidAttributionSourceEventId',
       InvalidAttributionData = 'InvalidAttributionData',
@@ -1032,7 +1033,7 @@ declare namespace Protocol {
      * optional fields in InspectorIssueDetails to convey more specific
      * information about the kind of issue.
      */
-    export enum InspectorIssueCode {
+    export const enum InspectorIssueCode {
       SameSiteCookieIssue = 'SameSiteCookieIssue',
       MixedContentIssue = 'MixedContentIssue',
       BlockedByResponseIssue = 'BlockedByResponseIssue',
@@ -1073,7 +1074,7 @@ declare namespace Protocol {
       details: InspectorIssueDetails;
     }
 
-    export enum GetEncodedResponseRequestEncoding {
+    export const enum GetEncodedResponseRequestEncoding {
       Webp = 'webp',
       Jpeg = 'jpeg',
       Png = 'png',
@@ -1135,7 +1136,7 @@ declare namespace Protocol {
      * Every Background Service operates independently, but they share the same
      * API.
      */
-    export enum ServiceName {
+    export const enum ServiceName {
       BackgroundFetch = 'backgroundFetch',
       BackgroundSync = 'backgroundSync',
       PushMessaging = 'pushMessaging',
@@ -1229,7 +1230,7 @@ declare namespace Protocol {
     /**
      * The state of the browser window.
      */
-    export enum WindowState {
+    export const enum WindowState {
       Normal = 'normal',
       Minimized = 'minimized',
       Maximized = 'maximized',
@@ -1262,7 +1263,7 @@ declare namespace Protocol {
       windowState?: WindowState;
     }
 
-    export enum PermissionType {
+    export const enum PermissionType {
       AccessibilityEvents = 'accessibilityEvents',
       AudioCapture = 'audioCapture',
       BackgroundSync = 'backgroundSync',
@@ -1288,7 +1289,7 @@ declare namespace Protocol {
       WakeLockSystem = 'wakeLockSystem',
     }
 
-    export enum PermissionSetting {
+    export const enum PermissionSetting {
       Granted = 'granted',
       Denied = 'denied',
       Prompt = 'prompt',
@@ -1326,7 +1327,7 @@ declare namespace Protocol {
     /**
      * Browser command ids used by executeBrowserCommand.
      */
-    export enum BrowserCommandId {
+    export const enum BrowserCommandId {
       OpenTabSearch = 'openTabSearch',
       CloseTabSearch = 'closeTabSearch',
     }
@@ -1409,7 +1410,7 @@ declare namespace Protocol {
       browserContextId?: BrowserContextID;
     }
 
-    export enum SetDownloadBehaviorRequestBehavior {
+    export const enum SetDownloadBehaviorRequestBehavior {
       Deny = 'deny',
       Allow = 'allow',
       AllowAndName = 'allowAndName',
@@ -1597,7 +1598,7 @@ declare namespace Protocol {
       suggestedFilename: string;
     }
 
-    export enum DownloadProgressEventState {
+    export const enum DownloadProgressEventState {
       InProgress = 'inProgress',
       Completed = 'completed',
       Canceled = 'canceled',
@@ -1643,7 +1644,7 @@ declare namespace Protocol {
      * stylesheets, "inspector" for stylesheets created by the inspector (i.e. those holding the "via
      * inspector" rules), "regular" for regular stylesheets.
      */
-    export enum StyleSheetOrigin {
+    export const enum StyleSheetOrigin {
       Injected = 'injected',
       UserAgent = 'user-agent',
       Inspector = 'inspector',
@@ -1962,7 +1963,7 @@ declare namespace Protocol {
       range?: SourceRange;
     }
 
-    export enum CSSMediaSource {
+    export const enum CSSMediaSource {
       MediaRule = 'mediaRule',
       ImportRule = 'importRule',
       LinkedSheet = 'linkedSheet',
@@ -2503,7 +2504,7 @@ declare namespace Protocol {
     /**
      * type of HTTP response cached
      */
-    export enum CachedResponseType {
+    export const enum CachedResponseType {
       Basic = 'basic',
       Cors = 'cors',
       Default = 'default',
@@ -2758,7 +2759,7 @@ declare namespace Protocol {
     /**
      * Pseudo element type.
      */
-    export enum PseudoType {
+    export const enum PseudoType {
       FirstLine = 'first-line',
       FirstLetter = 'first-letter',
       Before = 'before',
@@ -2783,7 +2784,7 @@ declare namespace Protocol {
     /**
      * Shadow root type.
      */
-    export enum ShadowRootType {
+    export const enum ShadowRootType {
       UserAgent = 'user-agent',
       Open = 'open',
       Closed = 'closed',
@@ -3874,7 +3875,7 @@ declare namespace Protocol {
     /**
      * DOM breakpoint type.
      */
-    export enum DOMBreakpointType {
+    export const enum DOMBreakpointType {
       SubtreeModified = 'subtree-modified',
       AttributeModified = 'attribute-modified',
       NodeRemoved = 'node-removed',
@@ -3883,7 +3884,7 @@ declare namespace Protocol {
     /**
      * CSP Violation type.
      */
-    export enum CSPViolationType {
+    export const enum CSPViolationType {
       TrustedtypeSinkViolation = 'trustedtype-sink-violation',
       TrustedtypePolicyViolation = 'trustedtype-policy-violation',
     }
@@ -4719,7 +4720,7 @@ declare namespace Protocol {
    */
   export namespace Emulation {
 
-    export enum ScreenOrientationType {
+    export const enum ScreenOrientationType {
       PortraitPrimary = 'portraitPrimary',
       PortraitSecondary = 'portraitSecondary',
       LandscapePrimary = 'landscapePrimary',
@@ -4740,7 +4741,7 @@ declare namespace Protocol {
       angle: integer;
     }
 
-    export enum DisplayFeatureOrientation {
+    export const enum DisplayFeatureOrientation {
       Vertical = 'vertical',
       Horizontal = 'horizontal',
     }
@@ -4774,7 +4775,7 @@ declare namespace Protocol {
      * pauseIfNetworkFetchesPending: The virtual time base may not advance if there are any pending
      * resource fetches.
      */
-    export enum VirtualTimePolicy {
+    export const enum VirtualTimePolicy {
       Advance = 'advance',
       Pause = 'pause',
       PauseIfNetworkFetchesPending = 'pauseIfNetworkFetchesPending',
@@ -4805,7 +4806,7 @@ declare namespace Protocol {
     /**
      * Enum of image types that can be disabled.
      */
-    export enum DisabledImageType {
+    export const enum DisabledImageType {
       Avif = 'avif',
       Jxl = 'jxl',
       Webp = 'webp',
@@ -4912,7 +4913,7 @@ declare namespace Protocol {
       disabled: boolean;
     }
 
-    export enum SetEmitTouchEventsForMouseRequestConfiguration {
+    export const enum SetEmitTouchEventsForMouseRequestConfiguration {
       Mobile = 'mobile',
       Desktop = 'desktop',
     }
@@ -4939,7 +4940,7 @@ declare namespace Protocol {
       features?: MediaFeature[];
     }
 
-    export enum SetEmulatedVisionDeficiencyRequestType {
+    export const enum SetEmulatedVisionDeficiencyRequestType {
       None = 'none',
       Achromatopsia = 'achromatopsia',
       BlurredVision = 'blurredVision',
@@ -5102,7 +5103,7 @@ declare namespace Protocol {
    */
   export namespace HeadlessExperimental {
 
-    export enum ScreenshotParamsFormat {
+    export const enum ScreenshotParamsFormat {
       Jpeg = 'jpeg',
       Png = 'png',
     }
@@ -5300,7 +5301,7 @@ declare namespace Protocol {
       multiEntry: boolean;
     }
 
-    export enum KeyType {
+    export const enum KeyType {
       Number = 'number',
       String = 'string',
       Date = 'date',
@@ -5373,7 +5374,7 @@ declare namespace Protocol {
       value: Runtime.RemoteObject;
     }
 
-    export enum KeyPathType {
+    export const enum KeyPathType {
       Null = 'null',
       String = 'string',
       Array = 'array',
@@ -5586,13 +5587,13 @@ declare namespace Protocol {
       id?: number;
     }
 
-    export enum GestureSourceType {
+    export const enum GestureSourceType {
       Default = 'default',
       Touch = 'touch',
       Mouse = 'mouse',
     }
 
-    export enum MouseButton {
+    export const enum MouseButton {
       None = 'none',
       Left = 'left',
       Middle = 'middle',
@@ -5635,7 +5636,7 @@ declare namespace Protocol {
       dragOperationsMask: integer;
     }
 
-    export enum DispatchDragEventRequestType {
+    export const enum DispatchDragEventRequestType {
       DragEnter = 'dragEnter',
       DragOver = 'dragOver',
       Drop = 'drop',
@@ -5664,7 +5665,7 @@ declare namespace Protocol {
       modifiers?: integer;
     }
 
-    export enum DispatchKeyEventRequestType {
+    export const enum DispatchKeyEventRequestType {
       KeyDown = 'keyDown',
       KeyUp = 'keyUp',
       RawKeyDown = 'rawKeyDown',
@@ -5748,14 +5749,14 @@ declare namespace Protocol {
       text: string;
     }
 
-    export enum DispatchMouseEventRequestType {
+    export const enum DispatchMouseEventRequestType {
       MousePressed = 'mousePressed',
       MouseReleased = 'mouseReleased',
       MouseMoved = 'mouseMoved',
       MouseWheel = 'mouseWheel',
     }
 
-    export enum DispatchMouseEventRequestPointerType {
+    export const enum DispatchMouseEventRequestPointerType {
       Mouse = 'mouse',
       Pen = 'pen',
     }
@@ -5830,7 +5831,7 @@ declare namespace Protocol {
       pointerType?: DispatchMouseEventRequestPointerType;
     }
 
-    export enum DispatchTouchEventRequestType {
+    export const enum DispatchTouchEventRequestType {
       TouchStart = 'touchStart',
       TouchEnd = 'touchEnd',
       TouchMove = 'touchMove',
@@ -5860,7 +5861,7 @@ declare namespace Protocol {
       timestamp?: TimeSinceEpoch;
     }
 
-    export enum EmulateTouchFromMouseEventRequestType {
+    export const enum EmulateTouchFromMouseEventRequestType {
       MousePressed = 'mousePressed',
       MouseReleased = 'mouseReleased',
       MouseMoved = 'mouseMoved',
@@ -6054,7 +6055,7 @@ declare namespace Protocol {
      */
     export type SnapshotId = string;
 
-    export enum ScrollRectType {
+    export const enum ScrollRectType {
       RepaintsOnScroll = 'RepaintsOnScroll',
       TouchEventHandler = 'TouchEventHandler',
       WheelEventHandler = 'WheelEventHandler',
@@ -6333,7 +6334,7 @@ declare namespace Protocol {
    */
   export namespace Log {
 
-    export enum LogEntrySource {
+    export const enum LogEntrySource {
       XML = 'xml',
       Javascript = 'javascript',
       Network = 'network',
@@ -6349,7 +6350,7 @@ declare namespace Protocol {
       Other = 'other',
     }
 
-    export enum LogEntryLevel {
+    export const enum LogEntryLevel {
       Verbose = 'verbose',
       Info = 'info',
       Warning = 'warning',
@@ -6402,7 +6403,7 @@ declare namespace Protocol {
       args?: Runtime.RemoteObject[];
     }
 
-    export enum ViolationSettingName {
+    export const enum ViolationSettingName {
       LongTask = 'longTask',
       LongLayout = 'longLayout',
       BlockedEvent = 'blockedEvent',
@@ -6449,7 +6450,7 @@ declare namespace Protocol {
     /**
      * Memory pressure level.
      */
-    export enum PressureLevel {
+    export const enum PressureLevel {
       Moderate = 'moderate',
       Critical = 'critical',
     }
@@ -6556,7 +6557,7 @@ declare namespace Protocol {
     /**
      * Resource type as it was perceived by the rendering engine.
      */
-    export enum ResourceType {
+    export const enum ResourceType {
       Document = 'Document',
       Stylesheet = 'Stylesheet',
       Image = 'Image',
@@ -6594,7 +6595,7 @@ declare namespace Protocol {
     /**
      * Network level fetch failure reason.
      */
-    export enum ErrorReason {
+    export const enum ErrorReason {
       Failed = 'Failed',
       Aborted = 'Aborted',
       TimedOut = 'TimedOut',
@@ -6631,7 +6632,7 @@ declare namespace Protocol {
     /**
      * The underlying connection technology that the browser is supposedly using.
      */
-    export enum ConnectionType {
+    export const enum ConnectionType {
       None = 'none',
       Cellular2g = 'cellular2g',
       Cellular3g = 'cellular3g',
@@ -6647,7 +6648,7 @@ declare namespace Protocol {
      * Represents the cookie's 'SameSite' status:
      * https://tools.ietf.org/html/draft-west-first-party-cookies
      */
-    export enum CookieSameSite {
+    export const enum CookieSameSite {
       Strict = 'Strict',
       Lax = 'Lax',
       None = 'None',
@@ -6657,7 +6658,7 @@ declare namespace Protocol {
      * Represents the cookie's 'Priority' status:
      * https://tools.ietf.org/html/draft-west-cookie-priority-00
      */
-    export enum CookiePriority {
+    export const enum CookiePriority {
       Low = 'Low',
       Medium = 'Medium',
       High = 'High',
@@ -6668,7 +6669,7 @@ declare namespace Protocol {
      * A value of "Unset" allows protocol clients to emulate legacy cookie scope for the scheme.
      * This is a temporary ability and it will be removed in the future.
      */
-    export enum CookieSourceScheme {
+    export const enum CookieSourceScheme {
       Unset = 'Unset',
       NonSecure = 'NonSecure',
       Secure = 'Secure',
@@ -6756,7 +6757,7 @@ declare namespace Protocol {
     /**
      * Loading priority of a resource request.
      */
-    export enum ResourcePriority {
+    export const enum ResourcePriority {
       VeryLow = 'VeryLow',
       Low = 'Low',
       Medium = 'Medium',
@@ -6771,7 +6772,7 @@ declare namespace Protocol {
       bytes?: binary;
     }
 
-    export enum RequestReferrerPolicy {
+    export const enum RequestReferrerPolicy {
       UnsafeUrl = 'unsafe-url',
       NoReferrerWhenDowngrade = 'no-referrer-when-downgrade',
       NoReferrer = 'no-referrer',
@@ -6936,7 +6937,7 @@ declare namespace Protocol {
     /**
      * Whether the request complied with Certificate Transparency policy.
      */
-    export enum CertificateTransparencyCompliance {
+    export const enum CertificateTransparencyCompliance {
       Unknown = 'unknown',
       NotCompliant = 'not-compliant',
       Compliant = 'compliant',
@@ -6945,7 +6946,7 @@ declare namespace Protocol {
     /**
      * The reason why request was blocked.
      */
-    export enum BlockedReason {
+    export const enum BlockedReason {
       Other = 'other',
       Csp = 'csp',
       MixedContent = 'mixed-content',
@@ -6963,7 +6964,7 @@ declare namespace Protocol {
     /**
      * The reason why request was blocked.
      */
-    export enum CorsError {
+    export const enum CorsError {
       DisallowedByMode = 'DisallowedByMode',
       InvalidResponse = 'InvalidResponse',
       WildcardOriginNotAllowed = 'WildcardOriginNotAllowed',
@@ -7000,14 +7001,14 @@ declare namespace Protocol {
     /**
      * Source of serviceworker response.
      */
-    export enum ServiceWorkerResponseSource {
+    export const enum ServiceWorkerResponseSource {
       CacheStorage = 'cache-storage',
       HttpCache = 'http-cache',
       FallbackCode = 'fallback-code',
       Network = 'network',
     }
 
-    export enum TrustTokenParamsRefreshPolicy {
+    export const enum TrustTokenParamsRefreshPolicy {
       UseCached = 'UseCached',
       Refresh = 'Refresh',
     }
@@ -7031,7 +7032,7 @@ declare namespace Protocol {
       issuers?: string[];
     }
 
-    export enum TrustTokenOperationType {
+    export const enum TrustTokenOperationType {
       Issuance = 'Issuance',
       Redemption = 'Redemption',
       Signing = 'Signing',
@@ -7217,7 +7218,7 @@ declare namespace Protocol {
       bodySize: number;
     }
 
-    export enum InitiatorType {
+    export const enum InitiatorType {
       Parser = 'parser',
       Script = 'script',
       Preload = 'preload',
@@ -7325,7 +7326,7 @@ declare namespace Protocol {
     /**
      * Types of reasons why a cookie may not be stored from a response.
      */
-    export enum SetCookieBlockedReason {
+    export const enum SetCookieBlockedReason {
       SecureOnly = 'SecureOnly',
       SameSiteStrict = 'SameSiteStrict',
       SameSiteLax = 'SameSiteLax',
@@ -7348,7 +7349,7 @@ declare namespace Protocol {
     /**
      * Types of reasons why a cookie may not be sent with a request.
      */
-    export enum CookieBlockedReason {
+    export const enum CookieBlockedReason {
       SecureOnly = 'SecureOnly',
       NotOnPath = 'NotOnPath',
       DomainMismatch = 'DomainMismatch',
@@ -7460,7 +7461,7 @@ declare namespace Protocol {
       sourcePort?: integer;
     }
 
-    export enum AuthChallengeSource {
+    export const enum AuthChallengeSource {
       Server = 'Server',
       Proxy = 'Proxy',
     }
@@ -7487,7 +7488,7 @@ declare namespace Protocol {
       realm: string;
     }
 
-    export enum AuthChallengeResponseResponse {
+    export const enum AuthChallengeResponseResponse {
       Default = 'Default',
       CancelAuth = 'CancelAuth',
       ProvideCredentials = 'ProvideCredentials',
@@ -7519,7 +7520,7 @@ declare namespace Protocol {
      * Stages of the interception to begin intercepting. Request will intercept before the request is
      * sent. Response will intercept after the response is received.
      */
-    export enum InterceptionStage {
+    export const enum InterceptionStage {
       Request = 'Request',
       HeadersReceived = 'HeadersReceived',
     }
@@ -7616,7 +7617,7 @@ declare namespace Protocol {
     /**
      * Field type for a signed exchange related error.
      */
-    export enum SignedExchangeErrorField {
+    export const enum SignedExchangeErrorField {
       SignatureSig = 'signatureSig',
       SignatureIntegrity = 'signatureIntegrity',
       SignatureCertUrl = 'signatureCertUrl',
@@ -7668,19 +7669,19 @@ declare namespace Protocol {
     /**
      * List of content encodings supported by the backend.
      */
-    export enum ContentEncoding {
+    export const enum ContentEncoding {
       Deflate = 'deflate',
       Gzip = 'gzip',
       Br = 'br',
     }
 
-    export enum PrivateNetworkRequestPolicy {
+    export const enum PrivateNetworkRequestPolicy {
       Allow = 'Allow',
       BlockFromInsecureToMorePrivate = 'BlockFromInsecureToMorePrivate',
       WarnFromInsecureToMorePrivate = 'WarnFromInsecureToMorePrivate',
     }
 
-    export enum IPAddressSpace {
+    export const enum IPAddressSpace {
       Local = 'Local',
       Private = 'Private',
       Public = 'Public',
@@ -7693,7 +7694,7 @@ declare namespace Protocol {
       privateNetworkRequestPolicy: PrivateNetworkRequestPolicy;
     }
 
-    export enum CrossOriginOpenerPolicyValue {
+    export const enum CrossOriginOpenerPolicyValue {
       SameOrigin = 'SameOrigin',
       SameOriginAllowPopups = 'SameOriginAllowPopups',
       UnsafeNone = 'UnsafeNone',
@@ -7707,7 +7708,7 @@ declare namespace Protocol {
       reportOnlyReportingEndpoint?: string;
     }
 
-    export enum CrossOriginEmbedderPolicyValue {
+    export const enum CrossOriginEmbedderPolicyValue {
       None = 'None',
       CorsOrCredentialless = 'CorsOrCredentialless',
       RequireCorp = 'RequireCorp',
@@ -8701,7 +8702,7 @@ declare namespace Protocol {
       headersText?: string;
     }
 
-    export enum TrustTokenOperationDoneEventStatus {
+    export const enum TrustTokenOperationDoneEventStatus {
       Ok = 'Ok',
       InvalidArgument = 'InvalidArgument',
       FailedPrecondition = 'FailedPrecondition',
@@ -8906,7 +8907,7 @@ declare namespace Protocol {
       flexibilityArrow?: LineStyle;
     }
 
-    export enum LineStylePattern {
+    export const enum LineStylePattern {
       Dashed = 'dashed',
       Dotted = 'dotted',
     }
@@ -8939,7 +8940,7 @@ declare namespace Protocol {
       hatchColor?: DOM.RGBA;
     }
 
-    export enum ContrastAlgorithm {
+    export const enum ContrastAlgorithm {
       Aa = 'aa',
       Aaa = 'aaa',
       Apca = 'apca',
@@ -9023,7 +9024,7 @@ declare namespace Protocol {
       contrastAlgorithm?: ContrastAlgorithm;
     }
 
-    export enum ColorFormat {
+    export const enum ColorFormat {
       Rgb = 'rgb',
       Hsl = 'hsl',
       Hex = 'hex',
@@ -9102,7 +9103,7 @@ declare namespace Protocol {
       outlineColor?: DOM.RGBA;
     }
 
-    export enum InspectMode {
+    export const enum InspectMode {
       SearchForNode = 'searchForNode',
       SearchForUAShadowDOM = 'searchForUAShadowDOM',
       CaptureAreaScreenshot = 'captureAreaScreenshot',
@@ -9416,7 +9417,7 @@ declare namespace Protocol {
     /**
      * Indicates whether a frame has been identified as an ad.
      */
-    export enum AdFrameType {
+    export const enum AdFrameType {
       None = 'none',
       Child = 'child',
       Root = 'root',
@@ -9425,7 +9426,7 @@ declare namespace Protocol {
     /**
      * Indicates whether the frame is a secure context and why it is the case.
      */
-    export enum SecureContextType {
+    export const enum SecureContextType {
       Secure = 'Secure',
       SecureLocalhost = 'SecureLocalhost',
       InsecureScheme = 'InsecureScheme',
@@ -9435,13 +9436,13 @@ declare namespace Protocol {
     /**
      * Indicates whether the frame is cross-origin isolated and why it is the case.
      */
-    export enum CrossOriginIsolatedContextType {
+    export const enum CrossOriginIsolatedContextType {
       Isolated = 'Isolated',
       NotIsolated = 'NotIsolated',
       NotIsolatedFeatureDisabled = 'NotIsolatedFeatureDisabled',
     }
 
-    export enum GatedAPIFeatures {
+    export const enum GatedAPIFeatures {
       SharedArrayBuffers = 'SharedArrayBuffers',
       SharedArrayBuffersTransferAllowed = 'SharedArrayBuffersTransferAllowed',
       PerformanceMeasureMemory = 'PerformanceMeasureMemory',
@@ -9452,7 +9453,7 @@ declare namespace Protocol {
      * All Permissions Policy features. This enum should match the one defined
      * in renderer/core/feature_policy/feature_policy_features.json5.
      */
-    export enum PermissionsPolicyFeature {
+    export const enum PermissionsPolicyFeature {
       Accelerometer = 'accelerometer',
       AmbientLightSensor = 'ambient-light-sensor',
       Autoplay = 'autoplay',
@@ -9513,7 +9514,7 @@ declare namespace Protocol {
     /**
      * Reason for a permissions policy feature to be disabled.
      */
-    export enum PermissionsPolicyBlockReason {
+    export const enum PermissionsPolicyBlockReason {
       Header = 'Header',
       IframeAttribute = 'IframeAttribute',
     }
@@ -9533,7 +9534,7 @@ declare namespace Protocol {
      * Origin Trial(https://www.chromium.org/blink/origin-trials) support.
      * Status for an Origin Trial token.
      */
-    export enum OriginTrialTokenStatus {
+    export const enum OriginTrialTokenStatus {
       Success = 'Success',
       NotSupported = 'NotSupported',
       Insecure = 'Insecure',
@@ -9550,14 +9551,14 @@ declare namespace Protocol {
     /**
      * Status for an Origin Trial.
      */
-    export enum OriginTrialStatus {
+    export const enum OriginTrialStatus {
       Enabled = 'Enabled',
       ValidTokenNotProvided = 'ValidTokenNotProvided',
       OSNotSupported = 'OSNotSupported',
       TrialNotAllowed = 'TrialNotAllowed',
     }
 
-    export enum OriginTrialUsageRestriction {
+    export const enum OriginTrialUsageRestriction {
       None = 'None',
       Subset = 'Subset',
     }
@@ -9730,7 +9731,7 @@ declare namespace Protocol {
     /**
      * Transition type.
      */
-    export enum TransitionType {
+    export const enum TransitionType {
       Link = 'link',
       Typed = 'typed',
       Address_bar = 'address_bar',
@@ -9809,7 +9810,7 @@ declare namespace Protocol {
     /**
      * Javascript dialog type.
      */
-    export enum DialogType {
+    export const enum DialogType {
       Alert = 'alert',
       Confirm = 'confirm',
       Prompt = 'prompt',
@@ -9982,7 +9983,7 @@ declare namespace Protocol {
       fixed?: integer;
     }
 
-    export enum ClientNavigationReason {
+    export const enum ClientNavigationReason {
       FormSubmissionGet = 'formSubmissionGet',
       FormSubmissionPost = 'formSubmissionPost',
       HttpHeaderRefresh = 'httpHeaderRefresh',
@@ -9993,7 +9994,7 @@ declare namespace Protocol {
       AnchorClick = 'anchorClick',
     }
 
-    export enum ClientNavigationDisposition {
+    export const enum ClientNavigationDisposition {
       CurrentTab = 'currentTab',
       NewTab = 'newTab',
       NewWindow = 'newWindow',
@@ -10028,7 +10029,7 @@ declare namespace Protocol {
     /**
      * The referring-policy used for the navigation.
      */
-    export enum ReferrerPolicy {
+    export const enum ReferrerPolicy {
       NoReferrer = 'noReferrer',
       NoReferrerWhenDowngrade = 'noReferrerWhenDowngrade',
       Origin = 'origin',
@@ -10057,7 +10058,7 @@ declare namespace Protocol {
     /**
      * The type of a frameNavigated event.
      */
-    export enum NavigationType {
+    export const enum NavigationType {
       Navigation = 'Navigation',
       BackForwardCacheRestore = 'BackForwardCacheRestore',
     }
@@ -10095,7 +10096,7 @@ declare namespace Protocol {
       identifier: ScriptIdentifier;
     }
 
-    export enum CaptureScreenshotRequestFormat {
+    export const enum CaptureScreenshotRequestFormat {
       Jpeg = 'jpeg',
       Png = 'png',
     }
@@ -10130,7 +10131,7 @@ declare namespace Protocol {
       data: binary;
     }
 
-    export enum CaptureSnapshotRequestFormat {
+    export const enum CaptureSnapshotRequestFormat {
       MHTML = 'mhtml',
     }
 
@@ -10344,7 +10345,7 @@ declare namespace Protocol {
       entryId: integer;
     }
 
-    export enum PrintToPDFRequestTransferMode {
+    export const enum PrintToPDFRequestTransferMode {
       ReturnAsBase64 = 'ReturnAsBase64',
       ReturnAsStream = 'ReturnAsStream',
     }
@@ -10609,7 +10610,7 @@ declare namespace Protocol {
       html: string;
     }
 
-    export enum SetDownloadBehaviorRequestBehavior {
+    export const enum SetDownloadBehaviorRequestBehavior {
       Deny = 'deny',
       Allow = 'allow',
       Default = 'default',
@@ -10649,7 +10650,7 @@ declare namespace Protocol {
       enabled: boolean;
     }
 
-    export enum SetTouchEmulationEnabledRequestConfiguration {
+    export const enum SetTouchEmulationEnabledRequestConfiguration {
       Mobile = 'mobile',
       Desktop = 'desktop',
     }
@@ -10665,7 +10666,7 @@ declare namespace Protocol {
       configuration?: SetTouchEmulationEnabledRequestConfiguration;
     }
 
-    export enum StartScreencastRequestFormat {
+    export const enum StartScreencastRequestFormat {
       Jpeg = 'jpeg',
       Png = 'png',
     }
@@ -10693,7 +10694,7 @@ declare namespace Protocol {
       everyNthFrame?: integer;
     }
 
-    export enum SetWebLifecycleStateRequestState {
+    export const enum SetWebLifecycleStateRequestState {
       Frozen = 'frozen',
       Active = 'active',
     }
@@ -10740,7 +10741,7 @@ declare namespace Protocol {
       timestamp: Network.MonotonicTime;
     }
 
-    export enum FileChooserOpenedEventMode {
+    export const enum FileChooserOpenedEventMode {
       SelectSingle = 'selectSingle',
       SelectMultiple = 'selectMultiple',
     }
@@ -10791,7 +10792,7 @@ declare namespace Protocol {
       frameId: FrameId;
     }
 
-    export enum FrameDetachedEventReason {
+    export const enum FrameDetachedEventReason {
       Remove = 'remove',
       Swap = 'swap',
     }
@@ -10917,7 +10918,7 @@ declare namespace Protocol {
       suggestedFilename: string;
     }
 
-    export enum DownloadProgressEventState {
+    export const enum DownloadProgressEventState {
       InProgress = 'inProgress',
       Completed = 'completed',
       Canceled = 'canceled',
@@ -11121,7 +11122,7 @@ declare namespace Protocol {
       value: number;
     }
 
-    export enum EnableRequestTimeDomain {
+    export const enum EnableRequestTimeDomain {
       TimeTicks = 'timeTicks',
       ThreadTicks = 'threadTicks',
     }
@@ -11133,7 +11134,7 @@ declare namespace Protocol {
       timeDomain?: EnableRequestTimeDomain;
     }
 
-    export enum SetTimeDomainRequestTimeDomain {
+    export const enum SetTimeDomainRequestTimeDomain {
       TimeTicks = 'timeTicks',
       ThreadTicks = 'threadTicks',
     }
@@ -11272,7 +11273,7 @@ declare namespace Protocol {
      * A description of mixed content (HTTP resources on HTTPS pages), as defined by
      * https://www.w3.org/TR/mixed-content/#categories
      */
-    export enum MixedContentType {
+    export const enum MixedContentType {
       Blockable = 'blockable',
       OptionallyBlockable = 'optionally-blockable',
       None = 'none',
@@ -11281,7 +11282,7 @@ declare namespace Protocol {
     /**
      * The security level of a page or resource.
      */
-    export enum SecurityState {
+    export const enum SecurityState {
       Unknown = 'unknown',
       Neutral = 'neutral',
       Insecure = 'insecure',
@@ -11368,7 +11369,7 @@ declare namespace Protocol {
       obsoleteSslSignature: boolean;
     }
 
-    export enum SafetyTipStatus {
+    export const enum SafetyTipStatus {
       BadReputation = 'badReputation',
       Lookalike = 'lookalike',
     }
@@ -11478,7 +11479,7 @@ declare namespace Protocol {
      * The action to take when a certificate error occurs. continue will continue processing the
      * request and cancel will cancel the request.
      */
-    export enum CertificateErrorAction {
+    export const enum CertificateErrorAction {
       Continue = 'continue',
       Cancel = 'cancel',
     }
@@ -11580,14 +11581,14 @@ declare namespace Protocol {
       isDeleted: boolean;
     }
 
-    export enum ServiceWorkerVersionRunningStatus {
+    export const enum ServiceWorkerVersionRunningStatus {
       Stopped = 'stopped',
       Starting = 'starting',
       Running = 'running',
       Stopping = 'stopping',
     }
 
-    export enum ServiceWorkerVersionStatus {
+    export const enum ServiceWorkerVersionStatus {
       New = 'new',
       Installing = 'installing',
       Installed = 'installed',
@@ -11695,7 +11696,7 @@ declare namespace Protocol {
     /**
      * Enum of possible storage types.
      */
-    export enum StorageType {
+    export const enum StorageType {
       Appcache = 'appcache',
       Cookies = 'cookies',
       File_systems = 'file_systems',
@@ -12015,7 +12016,7 @@ declare namespace Protocol {
     /**
      * YUV subsampling type of the pixels of a given image.
      */
-    export enum SubsamplingFormat {
+    export const enum SubsamplingFormat {
       Yuv420 = 'yuv420',
       Yuv422 = 'yuv422',
       Yuv444 = 'yuv444',
@@ -12024,7 +12025,7 @@ declare namespace Protocol {
     /**
      * Image format of a given image.
      */
-    export enum ImageType {
+    export const enum ImageType {
       Jpeg = 'jpeg',
       Webp = 'webp',
       Unknown = 'unknown',
@@ -12491,7 +12492,7 @@ declare namespace Protocol {
       [key: string]: string;
     }
 
-    export enum TraceConfigRecordMode {
+    export const enum TraceConfigRecordMode {
       RecordUntilFull = 'recordUntilFull',
       RecordContinuously = 'recordContinuously',
       RecordAsMuchAsPossible = 'recordAsMuchAsPossible',
@@ -12537,7 +12538,7 @@ declare namespace Protocol {
      * Data format of a trace. Can be either the legacy JSON format or the
      * protocol buffer format. Note that the JSON format will be deprecated soon.
      */
-    export enum StreamFormat {
+    export const enum StreamFormat {
       Json = 'json',
       Proto = 'proto',
     }
@@ -12545,7 +12546,7 @@ declare namespace Protocol {
     /**
      * Compression type to use for traces returned via streams.
      */
-    export enum StreamCompression {
+    export const enum StreamCompression {
       None = 'none',
       Gzip = 'gzip',
     }
@@ -12555,7 +12556,7 @@ declare namespace Protocol {
      * Keep consistent with memory_dump_request_args.h and
      * memory_instrumentation.mojom
      */
-    export enum MemoryDumpLevelOfDetail {
+    export const enum MemoryDumpLevelOfDetail {
       Background = 'background',
       Light = 'light',
       Detailed = 'detailed',
@@ -12568,7 +12569,7 @@ declare namespace Protocol {
      * `auto` chooses `system` when the perfettoConfig provided to Tracing.start
      * specifies at least one non-Chrome data source; otherwise uses `chrome`.
      */
-    export enum TracingBackend {
+    export const enum TracingBackend {
       Auto = 'auto',
       Chrome = 'chrome',
       System = 'system',
@@ -12610,7 +12611,7 @@ declare namespace Protocol {
       success: boolean;
     }
 
-    export enum StartRequestTransferMode {
+    export const enum StartRequestTransferMode {
       ReportEvents = 'ReportEvents',
       ReturnAsStream = 'ReturnAsStream',
     }
@@ -12721,7 +12722,7 @@ declare namespace Protocol {
      * sent. Response will intercept after the response is received (but before response
      * body is received.
      */
-    export enum RequestStage {
+    export const enum RequestStage {
       Request = 'Request',
       Response = 'Response',
     }
@@ -12750,7 +12751,7 @@ declare namespace Protocol {
       value: string;
     }
 
-    export enum AuthChallengeSource {
+    export const enum AuthChallengeSource {
       Server = 'Server',
       Proxy = 'Proxy',
     }
@@ -12777,7 +12778,7 @@ declare namespace Protocol {
       realm: string;
     }
 
-    export enum AuthChallengeResponseResponse {
+    export const enum AuthChallengeResponseResponse {
       Default = 'Default',
       CancelAuth = 'CancelAuth',
       ProvideCredentials = 'ProvideCredentials',
@@ -13009,7 +13010,7 @@ declare namespace Protocol {
     /**
      * Enum of BaseAudioContext types
      */
-    export enum ContextType {
+    export const enum ContextType {
       Realtime = 'realtime',
       Offline = 'offline',
     }
@@ -13017,7 +13018,7 @@ declare namespace Protocol {
     /**
      * Enum of AudioContextState from the spec
      */
-    export enum ContextState {
+    export const enum ContextState {
       Suspended = 'suspended',
       Running = 'running',
       Closed = 'closed',
@@ -13031,7 +13032,7 @@ declare namespace Protocol {
     /**
      * Enum of AudioNode::ChannelCountMode from the spec
      */
-    export enum ChannelCountMode {
+    export const enum ChannelCountMode {
       ClampedMax = 'clamped-max',
       Explicit = 'explicit',
       Max = 'max',
@@ -13040,7 +13041,7 @@ declare namespace Protocol {
     /**
      * Enum of AudioNode::ChannelInterpretation from the spec
      */
-    export enum ChannelInterpretation {
+    export const enum ChannelInterpretation {
       Discrete = 'discrete',
       Speakers = 'speakers',
     }
@@ -13053,7 +13054,7 @@ declare namespace Protocol {
     /**
      * Enum of AudioParam::AutomationRate from the spec
      */
-    export enum AutomationRate {
+    export const enum AutomationRate {
       ARate = 'a-rate',
       KRate = 'k-rate',
     }
@@ -13266,17 +13267,17 @@ declare namespace Protocol {
 
     export type AuthenticatorId = string;
 
-    export enum AuthenticatorProtocol {
+    export const enum AuthenticatorProtocol {
       U2f = 'u2f',
       Ctap2 = 'ctap2',
     }
 
-    export enum Ctap2Version {
+    export const enum Ctap2Version {
       Ctap2_0 = 'ctap2_0',
       Ctap2_1 = 'ctap2_1',
     }
 
-    export enum AuthenticatorTransport {
+    export const enum AuthenticatorTransport {
       Usb = 'usb',
       Nfc = 'nfc',
       Ble = 'ble',
@@ -13419,7 +13420,7 @@ declare namespace Protocol {
 
     export type Timestamp = number;
 
-    export enum PlayerMessageLevel {
+    export const enum PlayerMessageLevel {
       Error = 'error',
       Warning = 'warning',
       Info = 'info',
@@ -13462,7 +13463,7 @@ declare namespace Protocol {
       value: string;
     }
 
-    export enum PlayerErrorType {
+    export const enum PlayerErrorType {
       Pipeline_error = 'pipeline_error',
       Media_error = 'media_error',
     }
@@ -13615,7 +13616,7 @@ declare namespace Protocol {
       returnValue?: Runtime.RemoteObject;
     }
 
-    export enum ScopeType {
+    export const enum ScopeType {
       Global = 'global',
       Local = 'local',
       With = 'with',
@@ -13667,7 +13668,7 @@ declare namespace Protocol {
       lineContent: string;
     }
 
-    export enum BreakLocationType {
+    export const enum BreakLocationType {
       DebuggerStatement = 'debuggerStatement',
       Call = 'call',
       Return = 'return',
@@ -13692,12 +13693,12 @@ declare namespace Protocol {
     /**
      * Enum of possible script languages.
      */
-    export enum ScriptLanguage {
+    export const enum ScriptLanguage {
       JavaScript = 'JavaScript',
       WebAssembly = 'WebAssembly',
     }
 
-    export enum DebugSymbolsType {
+    export const enum DebugSymbolsType {
       None = 'None',
       SourceMap = 'SourceMap',
       EmbeddedDWARF = 'EmbeddedDWARF',
@@ -13718,7 +13719,7 @@ declare namespace Protocol {
       externalURL?: string;
     }
 
-    export enum ContinueToLocationRequestTargetCallFrames {
+    export const enum ContinueToLocationRequestTargetCallFrames {
       Any = 'any',
       Current = 'current',
     }
@@ -13978,7 +13979,7 @@ declare namespace Protocol {
       actualLocation: Location;
     }
 
-    export enum SetInstrumentationBreakpointRequestInstrumentation {
+    export const enum SetInstrumentationBreakpointRequestInstrumentation {
       BeforeScriptExecution = 'beforeScriptExecution',
       BeforeScriptWithSourceMapExecution = 'beforeScriptWithSourceMapExecution',
     }
@@ -14063,7 +14064,7 @@ declare namespace Protocol {
       active: boolean;
     }
 
-    export enum SetPauseOnExceptionsRequestState {
+    export const enum SetPauseOnExceptionsRequestState {
       None = 'none',
       Uncaught = 'uncaught',
       All = 'all',
@@ -14182,7 +14183,7 @@ declare namespace Protocol {
       location: Location;
     }
 
-    export enum PausedEventReason {
+    export const enum PausedEventReason {
       Ambiguous = 'ambiguous',
       Assert = 'assert',
       CSPViolation = 'CSPViolation',
@@ -14920,7 +14921,7 @@ declare namespace Protocol {
      */
     export type UnserializableValue = string;
 
-    export enum RemoteObjectType {
+    export const enum RemoteObjectType {
       Object = 'object',
       Function = 'function',
       Undefined = 'undefined',
@@ -14931,7 +14932,7 @@ declare namespace Protocol {
       Bigint = 'bigint',
     }
 
-    export enum RemoteObjectSubtype {
+    export const enum RemoteObjectSubtype {
       Array = 'array',
       Null = 'null',
       Node = 'node',
@@ -15009,7 +15010,7 @@ declare namespace Protocol {
       bodyGetterId?: RemoteObjectId;
     }
 
-    export enum ObjectPreviewType {
+    export const enum ObjectPreviewType {
       Object = 'object',
       Function = 'function',
       Undefined = 'undefined',
@@ -15020,7 +15021,7 @@ declare namespace Protocol {
       Bigint = 'bigint',
     }
 
-    export enum ObjectPreviewSubtype {
+    export const enum ObjectPreviewSubtype {
       Array = 'array',
       Null = 'null',
       Node = 'node',
@@ -15072,7 +15073,7 @@ declare namespace Protocol {
       entries?: EntryPreview[];
     }
 
-    export enum PropertyPreviewType {
+    export const enum PropertyPreviewType {
       Object = 'object',
       Function = 'function',
       Undefined = 'undefined',
@@ -15084,7 +15085,7 @@ declare namespace Protocol {
       Bigint = 'bigint',
     }
 
-    export enum PropertyPreviewSubtype {
+    export const enum PropertyPreviewSubtype {
       Array = 'array',
       Null = 'null',
       Node = 'node',
@@ -15809,7 +15810,7 @@ declare namespace Protocol {
       executionContextId: ExecutionContextId;
     }
 
-    export enum ConsoleAPICalledEventType {
+    export const enum ConsoleAPICalledEventType {
       Log = 'log',
       Debug = 'debug',
       Info = 'info',

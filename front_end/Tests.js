@@ -524,7 +524,7 @@
   TestSuite.prototype.testConsoleOnNavigateBack = function() {
 
     function filteredMessages() {
-      return self.SDK.consoleModel.messages().filter(a => a.source !== SDK.ConsoleMessage.MessageSource.Violation);
+      return self.SDK.consoleModel.messages().filter(a => a.source !== Protocol.Log.LogEntrySource.Violation);
     }
 
     if (filteredMessages().length === 1) {
@@ -535,7 +535,7 @@
 
 
     function firstConsoleMessageReceived(event) {
-      if (event && event.data.source === SDK.ConsoleMessage.MessageSource.Violation) {
+      if (event && event.data.source === Protocol.Log.LogEntrySource.Violation) {
         return;
       }
       self.SDK.consoleModel.removeEventListener(

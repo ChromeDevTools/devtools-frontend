@@ -314,13 +314,12 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
 
   _colorForPriority(priority: string): string|null {
     if (!this._priorityToValue) {
-      const priorities = Protocol.Network.ResourcePriority;
       this._priorityToValue = new Map([
-        [priorities.VeryLow, 1],
-        [priorities.Low, 2],
-        [priorities.Medium, 3],
-        [priorities.High, 4],
-        [priorities.VeryHigh, 5],
+        [Protocol.Network.ResourcePriority.VeryLow, 1],
+        [Protocol.Network.ResourcePriority.Low, 2],
+        [Protocol.Network.ResourcePriority.Medium, 3],
+        [Protocol.Network.ResourcePriority.High, 4],
+        [Protocol.Network.ResourcePriority.VeryHigh, 5],
       ]);
     }
     const value = this._priorityToValue.get(priority);

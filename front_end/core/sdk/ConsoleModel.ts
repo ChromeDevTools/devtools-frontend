@@ -35,6 +35,8 @@ import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 
 import {FrontendMessageSource, FrontendMessageType} from './ConsoleModelTypes.js';
+export {FrontendMessageSource, FrontendMessageType} from './ConsoleModelTypes.js';
+
 import type {EventData} from './CPUProfilerModel.js';
 import {CPUProfilerModel, Events as CPUProfilerModelEvents} from './CPUProfilerModel.js';  // eslint-disable-line no-unused-vars
 import type {Location} from './DebuggerModel.js';
@@ -194,7 +196,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper implements 
 
   addCommandMessage(executionContext: ExecutionContext, text: string): ConsoleMessage {
     const commandMessage = new ConsoleMessage(
-        executionContext.runtimeModel, MessageSource.Javascript, null, text, FrontendMessageType.Command);
+        executionContext.runtimeModel, Protocol.Log.LogEntrySource.Javascript, null, text, FrontendMessageType.Command);
     commandMessage.setExecutionContextId(executionContext.id);
     this.addMessage(commandMessage);
     return commandMessage;
@@ -327,7 +329,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper implements 
   }
 
   _incrementErrorWarningCount(msg: ConsoleMessage): void {
-    if (msg.source === MessageSource.Violation) {
+    if (msg.source === Protocol.Log.LogEntrySource.Violation) {
       this._violations++;
       return;
     }
@@ -506,7 +508,7 @@ export class ConsoleMessage {
       messageType?: Protocol.Runtime.ConsoleAPICalledEventType|FrontendMessageType, timestamp?: number,
       forceUrl?: string): ConsoleMessage {
     return new ConsoleMessage(
-        runtimeModel, MessageSource.Javascript, Protocol.Log.LogEntryLevel.Error,
+        runtimeModel, Protocol.Log.LogEntrySource.Javascript, Protocol.Log.LogEntryLevel.Error,
         RuntimeModel.simpleTextFromException(exceptionDetails), messageType, forceUrl || exceptionDetails.url,
         exceptionDetails.lineNumber, exceptionDetails.columnNumber,
         exceptionDetails.exception ? [RemoteObject.fromLocalObject(exceptionDetails.text), exceptionDetails.exception] :
@@ -556,7 +558,7 @@ export class ConsoleMessage {
 
   isGroupable(): boolean {
     const isUngroupableError = this.level === Protocol.Log.LogEntryLevel.Error &&
-        (this.source === MessageSource.Javascript || this.source === MessageSource.Network);
+        (this.source === Protocol.Log.LogEntrySource.Javascript || this.source === Protocol.Log.LogEntrySource.Network);
     return (
         this.source !== FrontendMessageSource.ConsoleAPI && this.type !== FrontendMessageType.Command &&
         this.type !== FrontendMessageType.Result && this.type !== FrontendMessageType.System && !isUngroupableError);
@@ -629,38 +631,26 @@ export class ConsoleMessage {
   }
 }
 
-export const MessageSource = {
-  ...Protocol.Log.LogEntrySource,
-  ...FrontendMessageSource,
-};
-
 export type MessageSource = Protocol.Log.LogEntrySource|FrontendMessageSource;
-
-export const MessageLevel = Protocol.Log.LogEntryLevel;
 export type MessageLevel = Protocol.Log.LogEntryLevel;
-
-export const MessageType = {
-  ...Protocol.Runtime.ConsoleAPICalledEventType,
-  ...FrontendMessageType,
-};
 export type MessageType = Protocol.Runtime.ConsoleAPICalledEventType|FrontendMessageType;
 
 export const MessageSourceDisplayName = new Map<MessageSource, string>(([
-  [MessageSource.XML, 'xml'],
-  [MessageSource.Javascript, 'javascript'],
-  [MessageSource.Network, 'network'],
-  [MessageSource.ConsoleAPI, 'console-api'],
-  [MessageSource.Storage, 'storage'],
-  [MessageSource.Appcache, 'appcache'],
-  [MessageSource.Rendering, 'rendering'],
-  [MessageSource.CSS, 'css'],
-  [MessageSource.Security, 'security'],
-  [MessageSource.Deprecation, 'deprecation'],
-  [MessageSource.Worker, 'worker'],
-  [MessageSource.Violation, 'violation'],
-  [MessageSource.Intervention, 'intervention'],
-  [MessageSource.Recommendation, 'recommendation'],
-  [MessageSource.Other, 'other'],
+  [Protocol.Log.LogEntrySource.XML, 'xml'],
+  [Protocol.Log.LogEntrySource.Javascript, 'javascript'],
+  [Protocol.Log.LogEntrySource.Network, 'network'],
+  [FrontendMessageSource.ConsoleAPI, 'console-api'],
+  [Protocol.Log.LogEntrySource.Storage, 'storage'],
+  [Protocol.Log.LogEntrySource.Appcache, 'appcache'],
+  [Protocol.Log.LogEntrySource.Rendering, 'rendering'],
+  [FrontendMessageSource.CSS, 'css'],
+  [Protocol.Log.LogEntrySource.Security, 'security'],
+  [Protocol.Log.LogEntrySource.Deprecation, 'deprecation'],
+  [Protocol.Log.LogEntrySource.Worker, 'worker'],
+  [Protocol.Log.LogEntrySource.Violation, 'violation'],
+  [Protocol.Log.LogEntrySource.Intervention, 'intervention'],
+  [Protocol.Log.LogEntrySource.Recommendation, 'recommendation'],
+  [Protocol.Log.LogEntrySource.Other, 'other'],
 ]));
 
 export interface ConsoleAPICall {

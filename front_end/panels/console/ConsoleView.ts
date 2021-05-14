@@ -621,22 +621,22 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   }
 
   _addSinkMessage(message: Common.Console.Message): void {
-    let level: Protocol.Log.LogEntryLevel = SDK.ConsoleModel.MessageLevel.Verbose;
+    let level: Protocol.Log.LogEntryLevel = Protocol.Log.LogEntryLevel.Verbose;
     switch (message.level) {
       case Common.Console.MessageLevel.Info:
-        level = SDK.ConsoleModel.MessageLevel.Info;
+        level = Protocol.Log.LogEntryLevel.Info;
         break;
       case Common.Console.MessageLevel.Error:
-        level = SDK.ConsoleModel.MessageLevel.Error;
+        level = Protocol.Log.LogEntryLevel.Error;
         break;
       case Common.Console.MessageLevel.Warning:
-        level = SDK.ConsoleModel.MessageLevel.Warning;
+        level = Protocol.Log.LogEntryLevel.Warning;
         break;
     }
 
     const consoleMessage = new SDK.ConsoleModel.ConsoleMessage(
-        null, SDK.ConsoleModel.MessageSource.Other, level, message.text, SDK.ConsoleModel.MessageType.System, undefined,
-        undefined, undefined, undefined, undefined, message.timestamp);
+        null, Protocol.Log.LogEntrySource.Other, level, message.text, SDK.ConsoleModel.FrontendMessageType.System,
+        undefined, undefined, undefined, undefined, undefined, message.timestamp);
     this._addConsoleMessage(consoleMessage);
   }
 
@@ -769,7 +769,8 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   _addConsoleMessage(message: SDK.ConsoleModel.ConsoleMessage): void {
     const viewMessage = this._createViewMessage(message);
     consoleMessageToViewMessage.set(message, viewMessage);
-    if (message.type === SDK.ConsoleModel.MessageType.Command || message.type === SDK.ConsoleModel.MessageType.Result) {
+    if (message.type === SDK.ConsoleModel.FrontendMessageType.Command ||
+        message.type === SDK.ConsoleModel.FrontendMessageType.Result) {
       const lastMessage = this._consoleMessages[this._consoleMessages.length - 1];
       const newTimestamp = lastMessage && messagesSortedBySymbol.get(lastMessage) || 0;
       messagesSortedBySymbol.set(viewMessage, newTimestamp);
@@ -865,7 +866,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     }
 
     const lastMessage = this._visibleViewMessages[this._visibleViewMessages.length - 1];
-    if (viewMessage.consoleMessage().type === SDK.ConsoleModel.MessageType.EndGroup) {
+    if (viewMessage.consoleMessage().type === Protocol.Runtime.ConsoleAPICalledEventType.EndGroup) {
       if (lastMessage && !this._currentGroup.messagesHidden()) {
         lastMessage.incrementCloseGroupDecorationCount();
       }
@@ -896,15 +897,15 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   _createViewMessage(message: SDK.ConsoleModel.ConsoleMessage): ConsoleViewMessage {
     const nestingLevel = this._currentGroup.nestingLevel();
     switch (message.type) {
-      case SDK.ConsoleModel.MessageType.Command:
+      case SDK.ConsoleModel.FrontendMessageType.Command:
         return new ConsoleCommand(message, this._linkifier, nestingLevel, this._onMessageResizedBound);
-      case SDK.ConsoleModel.MessageType.Result:
+      case SDK.ConsoleModel.FrontendMessageType.Result:
         return new ConsoleCommandResult(message, this._linkifier, nestingLevel, this._onMessageResizedBound);
-      case SDK.ConsoleModel.MessageType.StartGroupCollapsed:
-      case SDK.ConsoleModel.MessageType.StartGroup:
+      case Protocol.Runtime.ConsoleAPICalledEventType.StartGroupCollapsed:
+      case Protocol.Runtime.ConsoleAPICalledEventType.StartGroup:
         return new ConsoleGroupViewMessage(
             message, this._linkifier, nestingLevel, this._updateMessageList.bind(this), this._onMessageResizedBound);
-      case SDK.ConsoleModel.MessageType.Table:
+      case Protocol.Runtime.ConsoleAPICalledEventType.Table:
         return new ConsoleTableMessageView(message, this._linkifier, nestingLevel, this._onMessageResizedBound);
       default:
         return new ConsoleViewMessage(message, this._linkifier, nestingLevel, this._onMessageResizedBound);
@@ -1022,8 +1023,8 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   _tryToCollapseMessages(viewMessage: ConsoleViewMessage, lastMessage?: ConsoleViewMessage): boolean {
     const timestampsShown = this._timestampsSetting.get();
     if (!timestampsShown && lastMessage && !viewMessage.consoleMessage().isGroupMessage() &&
-        viewMessage.consoleMessage().type !== SDK.ConsoleModel.MessageType.Command &&
-        viewMessage.consoleMessage().type !== SDK.ConsoleModel.MessageType.Result &&
+        viewMessage.consoleMessage().type !== SDK.ConsoleModel.FrontendMessageType.Command &&
+        viewMessage.consoleMessage().type !== SDK.ConsoleModel.FrontendMessageType.Result &&
         viewMessage.consoleMessage().isEqual(lastMessage.consoleMessage())) {
       lastMessage.incrementRepeatCount();
       if (viewMessage.isLastInSimilarGroup()) {
@@ -1128,7 +1129,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
       if (!startGroupViewMessage) {
         const startGroupMessage = new SDK.ConsoleModel.ConsoleMessage(
             null, message.source, message.level, viewMessage.groupTitle(),
-            SDK.ConsoleModel.MessageType.StartGroupCollapsed);
+            Protocol.Runtime.ConsoleAPICalledEventType.StartGroupCollapsed);
         startGroupViewMessage = this._createViewMessage(startGroupMessage);
         this._groupableMessageTitle.set(key, startGroupViewMessage);
       }
@@ -1143,7 +1144,8 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
       }
 
       const endGroupMessage = new SDK.ConsoleModel.ConsoleMessage(
-          null, message.source, message.level, message.messageText, SDK.ConsoleModel.MessageType.EndGroup);
+          null, message.source, message.level, message.messageText,
+          Protocol.Runtime.ConsoleAPICalledEventType.EndGroup);
       this._appendMessageToEnd(this._createViewMessage(endGroupMessage));
     }
   }
@@ -1211,15 +1213,15 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
       return;
     }
 
-    const level = Boolean(exceptionDetails) ? SDK.ConsoleModel.MessageLevel.Error : SDK.ConsoleModel.MessageLevel.Info;
+    const level = Boolean(exceptionDetails) ? Protocol.Log.LogEntryLevel.Error : Protocol.Log.LogEntryLevel.Info;
     let message;
     if (!exceptionDetails) {
       message = new SDK.ConsoleModel.ConsoleMessage(
-          result.runtimeModel(), SDK.ConsoleModel.MessageSource.Javascript, level, '',
-          SDK.ConsoleModel.MessageType.Result, undefined, undefined, undefined, [result]);
+          result.runtimeModel(), Protocol.Log.LogEntrySource.Javascript, level, '',
+          SDK.ConsoleModel.FrontendMessageType.Result, undefined, undefined, undefined, [result]);
     } else {
       message = SDK.ConsoleModel.ConsoleMessage.fromException(
-          result.runtimeModel(), exceptionDetails, SDK.ConsoleModel.MessageType.Result, undefined, undefined);
+          result.runtimeModel(), exceptionDetails, SDK.ConsoleModel.FrontendMessageType.Result, undefined, undefined);
     }
     message.setOriginatingMessage(originatingConsoleMessage);
     SDK.ConsoleModel.ConsoleModel.instance().addMessage(message);
@@ -1480,10 +1482,10 @@ export class ConsoleViewFilter {
     this._currentFilter = new ConsoleFilter('', [], null, this._messageLevelFiltersSetting.get());
     this._updateCurrentFilter();
     this._levelLabels = new Map(([
-      [SDK.ConsoleModel.MessageLevel.Verbose, i18nString(UIStrings.verbose)],
-      [SDK.ConsoleModel.MessageLevel.Info, i18nString(UIStrings.info)],
-      [SDK.ConsoleModel.MessageLevel.Warning, i18nString(UIStrings.warnings)],
-      [SDK.ConsoleModel.MessageLevel.Error, i18nString(UIStrings.errors)],
+      [Protocol.Log.LogEntryLevel.Verbose, i18nString(UIStrings.verbose)],
+      [Protocol.Log.LogEntryLevel.Info, i18nString(UIStrings.info)],
+      [Protocol.Log.LogEntryLevel.Warning, i18nString(UIStrings.warnings)],
+      [Protocol.Log.LogEntryLevel.Error, i18nString(UIStrings.errors)],
     ]));
 
     this._levelMenuButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.logLevels));
@@ -1497,8 +1499,8 @@ export class ConsoleViewFilter {
   }
 
   onMessageAdded(message: SDK.ConsoleModel.ConsoleMessage): void {
-    if (message.type === SDK.ConsoleModel.MessageType.Command || message.type === SDK.ConsoleModel.MessageType.Result ||
-        message.isGroupMessage()) {
+    if (message.type === SDK.ConsoleModel.FrontendMessageType.Command ||
+        message.type === SDK.ConsoleModel.FrontendMessageType.Result || message.isGroupMessage()) {
       return;
     }
     if (message.context) {
@@ -1530,7 +1532,7 @@ export class ConsoleViewFilter {
     const parsedFilters = this._filterParser.parse(this._textFilterUI.value());
     if (this._hideNetworkMessagesSetting.get()) {
       parsedFilters.push(
-          {key: FilterType.Source, text: SDK.ConsoleModel.MessageSource.Network, negative: true, regex: undefined});
+          {key: FilterType.Source, text: Protocol.Log.LogEntrySource.Network, negative: true, regex: undefined});
     }
 
     this._currentFilter.executionContext = this._filterByExecutionContextSetting.get() ?
@@ -1553,7 +1555,13 @@ export class ConsoleViewFilter {
 
     let text: Common.UIString.LocalizedString|null = null;
     const levels = this._messageLevelFiltersSetting.get();
-    for (const name of Object.values(SDK.ConsoleModel.MessageLevel)) {
+    const allLevels: Protocol.EnumerableEnum<typeof Protocol.Log.LogEntryLevel> = {
+      Verbose: Protocol.Log.LogEntryLevel.Verbose,
+      Info: Protocol.Log.LogEntryLevel.Info,
+      Warning: Protocol.Log.LogEntryLevel.Warning,
+      Error: Protocol.Log.LogEntryLevel.Error,
+    };
+    for (const name of Object.values(allLevels)) {
       isAll = isAll && levels[name] === allValue[name];
       isDefault = isDefault && levels[name] === defaultValue[name];
       if (levels[name]) {

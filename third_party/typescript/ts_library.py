@@ -62,9 +62,11 @@ GLOBAL_TYPESCRIPT_DEFINITION_FILES = [
 
 
 def runTsc(tsconfig_location):
-    process = subprocess.Popen([NODE_LOCATION, TSC_LOCATION, '-p', tsconfig_location],
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE)
+    process = subprocess.Popen(
+        [NODE_LOCATION, TSC_LOCATION, '-p', tsconfig_location],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        universal_newlines=True)
     stdout, stderr = process.communicate()
     # TypeScript does not correctly write to stderr because of https://github.com/microsoft/TypeScript/issues/33849
     return process.returncode, stdout + stderr
@@ -114,7 +116,8 @@ def runTscRemote(tsconfig_location, all_ts_files, rewrapper_binary,
         relative_tsc_location, '-p', relative_tsconfig_location
     ],
                                stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE)
+                               stderr=subprocess.PIPE,
+                               universal_newlines=True)
     stdout, stderr = process.communicate()
     # TypeScript does not correctly write to stderr because of https://github.com/microsoft/TypeScript/issues/33849
     return process.returncode, stdout + stderr

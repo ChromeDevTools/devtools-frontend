@@ -5,6 +5,8 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Protocol from '../../generated/protocol.js';
+
 import {CategorizedBreakpointsSidebarPane} from './CategorizedBreakpointsSidebarPane.js';
 
 let eventListenerBreakpointsSidebarPaneInstance: EventListenerBreakpointsSidebarPane;

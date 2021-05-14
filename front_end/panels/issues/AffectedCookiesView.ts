@@ -7,6 +7,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Network from '../network/network.js';
+import type * as Protocol from '../../generated/protocol.js';
 
 import {AffectedItem, AffectedResourcesView} from './AffectedResourcesView.js';
 

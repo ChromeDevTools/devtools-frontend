@@ -18,6 +18,7 @@ import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import * as Components from '../../../ui/legacy/components/utils/utils.js';
+import * as Protocol from '../../../generated/protocol.js';
 
 const UIStrings = {
   /**

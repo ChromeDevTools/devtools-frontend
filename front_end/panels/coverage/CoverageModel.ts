@@ -9,6 +9,7 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import type * as Protocol from '../../generated/protocol.js';
 
 export const enum CoverageType {
   CSS = (1 << 0),

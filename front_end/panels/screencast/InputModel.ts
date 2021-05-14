@@ -6,6 +6,7 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import * as Protocol from '../../generated/protocol.js';
 
 export class InputModel extends SDK.SDKModel.SDKModel {
   _inputAgent: ProtocolProxyApi.InputApi;

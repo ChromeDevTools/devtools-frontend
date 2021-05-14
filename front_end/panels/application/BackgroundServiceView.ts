@@ -11,6 +11,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Protocol from '../../generated/protocol.js';
 
 import type {BackgroundServiceModel} from './BackgroundServiceModel.js';
 import {Events} from './BackgroundServiceModel.js';  // eslint-disable-line no-unused-vars

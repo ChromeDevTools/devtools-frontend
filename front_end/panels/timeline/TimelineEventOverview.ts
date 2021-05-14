@@ -37,6 +37,7 @@ import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Coverage from '../coverage/coverage.js';
+import * as Protocol from '../../generated/protocol.js';
 
 import type {PerformanceModel} from './PerformanceModel.js'; // eslint-disable-line no-unused-vars
 import type {EventDispatchTypeDescriptor, TimelineCategory} from './TimelineUIUtils.js';

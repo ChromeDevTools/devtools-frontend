@@ -12,6 +12,7 @@ import type * as TimelineModel from '../../models/timeline_model/timeline_model.
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import * as Protocol from '../../generated/protocol.js';
 
 import type {PerformanceModel} from './PerformanceModel.js'; // eslint-disable-line no-unused-vars
 import {FlameChartStyle, Selection} from './TimelineFlameChartView.js';

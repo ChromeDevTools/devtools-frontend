@@ -7,6 +7,7 @@ import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import type * as Protocol from '../../../generated/protocol.js';
 
 const UIStrings = {
   /**

@@ -6,6 +6,7 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import type * as Protocol from '../../generated/protocol.js';
 
 export class BackgroundServiceModel extends SDK.SDKModel.SDKModel implements
     ProtocolProxyApi.BackgroundServiceDispatcher {

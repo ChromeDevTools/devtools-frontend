@@ -42,6 +42,7 @@ import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import type * as TextEditor from '../../ui/legacy/components/text_editor/text_editor.js'; // eslint-disable-line no-unused-vars
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Protocol from '../../generated/protocol.js';
 
 import {AddSourceMapURLDialog} from './AddSourceMapURLDialog.js';
 import {BreakpointEditDialog, LogpointPrefix} from './BreakpointEditDialog.js';

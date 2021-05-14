@@ -9,6 +9,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import * as Protocol from '../../generated/protocol.js';
 
 import type {ContrastIssue} from './CSSOverviewCompletedView.js';
 import type {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';

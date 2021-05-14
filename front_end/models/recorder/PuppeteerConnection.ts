@@ -4,6 +4,7 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as puppeteer from '../../third_party/puppeteer/puppeteer.js';
+import type * as Protocol from '../../generated/protocol.js';
 
 export class Transport implements puppeteer.ConnectionTransport {
   private connection: SDK.Connections.ParallelConnection;

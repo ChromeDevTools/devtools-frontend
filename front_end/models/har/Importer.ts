@@ -6,6 +6,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Protocol from '../../generated/protocol.js';
 
 import type {HAREntry, HARLog, HARPage, HARTimings} from './HARFormat.js'; // eslint-disable-line no-unused-vars
 

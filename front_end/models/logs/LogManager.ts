@@ -4,6 +4,8 @@
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Protocol from '../../generated/protocol.js';
+
 import {NetworkLog} from './NetworkLog.js';
 
 const modelToEventListeners = new WeakMap<SDK.LogModel.LogModel, Common.EventTarget.EventDescriptor[]>();

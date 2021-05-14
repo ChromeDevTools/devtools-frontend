@@ -4,6 +4,7 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
+import * as Protocol from '../../generated/protocol.js';
 
 import {Issue, IssueCategory, IssueKind} from './Issue.js';
 import type {LazyMarkdownIssueDescription, MarkdownIssueDescription} from './MarkdownIssueDescription.js';

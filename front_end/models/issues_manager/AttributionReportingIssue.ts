@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import type * as SDK from '../../core/sdk/sdk.js';
+import * as Protocol from '../../generated/protocol.js';
 
 import {Issue, IssueCategory, IssueKind} from './Issue.js';
 import type {MarkdownIssueDescription} from './MarkdownIssueDescription.js';

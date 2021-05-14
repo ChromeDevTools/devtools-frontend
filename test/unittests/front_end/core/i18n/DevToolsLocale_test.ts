@@ -11,6 +11,16 @@ describe('DevToolsLocale', () => {
   // Finding the closes supported locale is implemented in the i18n lib and tested as part of that lib.
   const identity = (locale: string) => locale;
 
+  after(() => {
+    // Reset the singleton after the test suite for other tests.
+    const data: i18n.DevToolsLocale.DevToolsLocaleData = {
+      settingLanguage: 'en-US',
+      navigatorLanguage: '',
+      lookupClosestDevToolsLocale: identity,
+    };
+    i18n.DevToolsLocale.DevToolsLocale.instance({create: true, data});
+  });
+
   it('chooses navigator.language if setting is "browserLanguage"', () => {
     const data: i18n.DevToolsLocale.DevToolsLocaleData = {
       settingLanguage: 'browserLanguage',
@@ -42,5 +52,16 @@ describe('DevToolsLocale', () => {
     const devToolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance({create: true, data});
 
     assert.strictEqual(devToolsLocale.locale, 'en-US');
+  });
+
+  it('chooses the closest supported language', () => {
+    const data: i18n.DevToolsLocale.DevToolsLocaleData = {
+      settingLanguage: 'zh-HK',
+      navigatorLanguage: '',
+      lookupClosestDevToolsLocale: () => 'zh',
+    };
+    const devToolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance({create: true, data});
+
+    assert.strictEqual(devToolsLocale.locale, 'zh');
   });
 });

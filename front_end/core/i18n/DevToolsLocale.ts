@@ -37,6 +37,8 @@ export class DevToolsLocale {
     } else {
       this.locale = data.settingLanguage;
     }
+
+    this.locale = data.lookupClosestDevToolsLocale(this.locale);
   }
 
   static instance(opts: DevToolsLocaleCreationOptions = {create: false}): DevToolsLocale {

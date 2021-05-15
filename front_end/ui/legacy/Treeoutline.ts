@@ -1128,8 +1128,8 @@ export class TreeElement {
     }
 
     if (this._listItemNode.draggable && this._selectionElement && this.treeOutline) {
-      const marginLeft =
-          this.treeOutline.element.getBoundingClientRect().left - this._listItemNode.getBoundingClientRect().left;
+      const marginLeft = this.treeOutline.element.getBoundingClientRect().left -
+          this._listItemNode.getBoundingClientRect().left - this.treeOutline.element.scrollLeft;
       // By default the left margin extends far off screen. This is not a problem except when dragging an element.
       // Setting the margin once here should be fine, because we believe the left margin should never change.
       this._selectionElement.style.setProperty('margin-left', marginLeft + 'px');

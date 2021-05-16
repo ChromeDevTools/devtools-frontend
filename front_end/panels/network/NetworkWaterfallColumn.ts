@@ -440,7 +440,10 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     PerfUI.TimelineGrid.TimelineGrid.drawCanvasHeaders(
         context, dividersData, time => this._calculator.formatValue(time, dividersData.precision), this._fontSize,
         this._headerHeight, freeZoneAtLeft);
+    context.save();
+    context.scale(window.devicePixelRatio, window.devicePixelRatio);
     context.clearRect(this._offsetWidth - freeZoneAtRight, 0, freeZoneAtRight, this._headerHeight);
+    context.restore();
     this._didDrawForTest();
   }
 

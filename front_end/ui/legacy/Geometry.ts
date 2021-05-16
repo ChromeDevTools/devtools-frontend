@@ -135,7 +135,7 @@ export class CubicBezier {
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  static readonly Regex = /((cubic-bezier\([^)]+\))|\b(linear|ease-in-out|ease-in|ease-out|ease)\b)/g;
+  static readonly Regex = /((cubic-bezier\([^)]+\))|\b(linear(?!-)|ease-in-out|ease-in|ease-out|ease)\b)/g;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/naming-convention
   static readonly KeywordValues = new Map([

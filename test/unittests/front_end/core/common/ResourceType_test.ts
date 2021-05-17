@@ -118,6 +118,28 @@ describe('ResourceType class', () => {
     assert.isTrue(result.isTextType(), 'resource type was not set correctly');
   });
 
+  it('is able to return an wasm resource from the string "application/wasm"', () => {
+    const result = ResourceType.fromMimeTypeOverride('application/wasm');
+    assertNotNull(result);
+    assert.instanceOf(result, ResourceType, 'result type is incorrect');
+    assert.strictEqual(result.name(), 'wasm', 'name was not set correctly');
+    assert.strictEqual(result.title(), 'Wasm', 'title was not set correctly');
+    assert.strictEqual(result.category().title(), 'WebAssembly', 'category title was not set correctly');
+    assert.strictEqual(result.category().shortTitle(), 'Wasm', 'category short title was not set correctly');
+    assert.isFalse(result.isTextType(), 'resource type was not set correctly');
+  });
+
+  it('is able to return an web bundle resource from the string "application/webbundle"', () => {
+    const result = ResourceType.fromMimeTypeOverride('application/webbundle');
+    assertNotNull(result);
+    assert.instanceOf(result, ResourceType, 'result type is incorrect');
+    assert.strictEqual(result.name(), 'webbundle', 'name was not set correctly');
+    assert.strictEqual(result.title(), 'WebBundle', 'title was not set correctly');
+    assert.strictEqual(result.category().title(), 'Other', 'category title was not set correctly');
+    assert.strictEqual(result.category().shortTitle(), 'Other', 'category short title was not set correctly');
+    assert.isFalse(result.isTextType(), 'resource type was not set correctly');
+  });
+
   it('is able to return a resource of type other from the string "test/resource"', () => {
     const result = ResourceType.fromMimeType('test/resource');
     assert.instanceOf(result, ResourceType, 'result type is incorrect');

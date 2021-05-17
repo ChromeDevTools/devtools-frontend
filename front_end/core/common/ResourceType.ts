@@ -163,6 +163,10 @@ const UIStrings = {
   *@description Name of a network initiator type
   */
   preflight: 'Preflight',
+  /**
+  *@description Name of a network initiator type
+  */
+  webbundle: 'WebBundle',
 };
 const str_ = i18n.i18n.registerUIStrings('core/common/ResourceType.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -217,6 +221,9 @@ export class ResourceType {
   static fromMimeTypeOverride(mimeType: string|null): ResourceType|null {
     if (mimeType === 'application/wasm') {
       return resourceTypes.Wasm;
+    }
+    if (mimeType === 'application/webbundle') {
+      return resourceTypes.WebBundle;
     }
 
     return null;
@@ -370,6 +377,7 @@ export const resourceTypes = {
   SourceMapScript: new ResourceType('sm-script', i18nLazyString(UIStrings.script), resourceCategories.Script, true),
   SourceMapStyleSheet:
       new ResourceType('sm-stylesheet', i18nLazyString(UIStrings.stylesheet), resourceCategories.Stylesheet, true),
+  WebBundle: new ResourceType('webbundle', i18nLazyString(UIStrings.webbundle), resourceCategories.Other, false),
 };
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration

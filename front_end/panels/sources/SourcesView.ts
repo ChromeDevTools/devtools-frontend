@@ -62,7 +62,7 @@ export class SourcesView extends UI.Widget.VBox implements TabbedEditorContainer
 
   constructor() {
     super();
-    this.registerRequiredCSS('panels/sources/sourcesView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/sources/sourcesView.css', {enableLegacyPatching: false});
     this.element.id = 'sources-panel-sources-view';
     this.setMinimumAndPreferredSizes(88, 52, 150, 100);
 

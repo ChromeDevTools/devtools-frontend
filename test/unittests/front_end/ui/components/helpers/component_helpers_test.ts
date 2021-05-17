@@ -3,8 +3,24 @@
 // found in the LICENSE file.
 
 import * as ComponentHelpers from '../../../../../../front_end/ui/components/helpers/helpers.js';
+import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import * as ThemeSupport from '../../../../../../front_end/ui/legacy/theme_support/theme_support.js';
 import * as LitHtml from '../../../../../../front_end/ui/lit-html/lit-html.js';
+
+const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
+
+const TestElement = class extends HTMLElement {
+  renderCount = 0;
+  readonly renderBound = this.render.bind(this);
+  private render() {
+    if (!ComponentHelpers.ScheduledRender.isScheduledRender(this)) {
+      throw new Error('Render is not scheduled');
+    }
+
+    this.renderCount++;
+  }
+};
+customElements.define('x-devtools-test-element', TestElement);
 
 const {assert} = chai;
 
@@ -102,6 +118,27 @@ describe('ComponentHelpers', () => {
         fakeComponentRender('render two');
         assert.strictEqual(callback.callCount, 2);
       });
+    });
+  });
+
+  describe('scheduleRender', () => {
+    it('throws if renders are unscheduled', () => {
+      const element = new TestElement();
+      assert.throws(() => {
+        element.renderBound();
+      }, 'Render is not scheduled');
+    });
+
+    it('re-renders if second render call is made during the first', async () => {
+      const element = new TestElement();
+      ComponentHelpers.ScheduledRender.scheduleRender(element, () => {
+        ComponentHelpers.ScheduledRender.scheduleRender(element, element.renderBound);
+
+        element.renderBound();
+      });
+
+      await coordinator.done();
+      assert.strictEqual(element.renderCount, 2);
     });
   });
 });

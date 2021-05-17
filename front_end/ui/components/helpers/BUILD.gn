@@ -14,6 +14,7 @@ devtools_module("helpers") {
     "custom-elements.ts",
     "directives.ts",
     "get-stylesheet.ts",
+    "scheduled-render.ts",
     "set-css-property.ts",
   ]
 
@@ -22,6 +23,7 @@ devtools_module("helpers") {
     "../../../core/root:bundle",
     "../../../ui/legacy/theme_support:bundle",
     "../../../ui/lit-html:bundle",
+    "../render_coordinator:bundle",
   ]
 }
 

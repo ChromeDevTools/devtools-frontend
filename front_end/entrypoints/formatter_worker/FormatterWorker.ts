@@ -132,21 +132,21 @@ export function javaScriptIdentifiers(content: string): {
   name: (string|undefined),
   offset: number,
 }[] {
-  let root: ESTree.Node|null = null;
+  let root: Acorn.ESTree.Node|null = null;
   try {
-    root = Acorn.parse(content, {ecmaVersion: ECMA_VERSION, ranges: false}) as ESTree.Node | null;
+    root = Acorn.parse(content, {ecmaVersion: ECMA_VERSION, ranges: false}) as Acorn.ESTree.Node | null;
   } catch (e) {
   }
 
-  const identifiers: ESTree.Node[] = [];
+  const identifiers: Acorn.ESTree.Node[] = [];
   const walker = new ESTreeWalker(beforeVisit);
 
-  function isFunction(node: ESTree.Node): boolean {
+  function isFunction(node: Acorn.ESTree.Node): boolean {
     return node.type === 'FunctionDeclaration' || node.type === 'FunctionExpression' ||
         node.type === 'ArrowFunctionExpression';
   }
 
-  function beforeVisit(node: ESTree.Node): Object|undefined {
+  function beforeVisit(node: Acorn.ESTree.Node): Object|undefined {
     if (isFunction(node)) {
       if (node.id) {
         identifiers.push(node.id);
@@ -159,7 +159,7 @@ export function javaScriptIdentifiers(content: string): {
     }
 
     if (node.parent && node.parent.type === 'MemberExpression') {
-      const parent = (node.parent as ESTree.MemberExpression);
+      const parent = (node.parent as Acorn.ESTree.MemberExpression);
       if (parent.property === node && !parent.computed) {
         return;
       }
@@ -172,7 +172,7 @@ export function javaScriptIdentifiers(content: string): {
     return [];
   }
 
-  const functionNode = (root.body[0] as ESTree.FunctionDeclaration);
+  const functionNode = (root.body[0] as Acorn.ESTree.FunctionDeclaration);
   for (const param of functionNode.params) {
     walker.walk(param);
   }
@@ -253,7 +253,7 @@ export function findLastFunctionCall(content: string): {
   const callee = base.baseNode['callee'];
 
   let functionName = '';
-  const functionProperty = callee.type === 'Identifier' ? callee : (callee as ESTree.MemberExpression).property;
+  const functionProperty = callee.type === 'Identifier' ? callee : (callee as Acorn.ESTree.MemberExpression).property;
   if (functionProperty) {
     if (functionProperty.type === 'Identifier') {
       functionName = functionProperty.name;
@@ -278,14 +278,14 @@ export function argumentsList(content: string): string[] {
   if (content.length > 10000) {
     return [];
   }
-  let parsed: ESTree.Node|null = null;
+  let parsed: Acorn.ESTree.Node|null = null;
   try {
-    parsed = Acorn.parse(`(${content})`, {ecmaVersion: ECMA_VERSION}) as ESTree.Node | null;
+    parsed = Acorn.parse(`(${content})`, {ecmaVersion: ECMA_VERSION}) as Acorn.ESTree.Node | null;
   } catch (e) {
   }
   if (!parsed) {
     try {
-      parsed = Acorn.parse(`({${content}})`, {ecmaVersion: ECMA_VERSION}) as ESTree.Node | null;
+      parsed = Acorn.parse(`({${content}})`, {ecmaVersion: ECMA_VERSION}) as Acorn.ESTree.Node | null;
     } catch (e) {
     }
   }
@@ -294,7 +294,7 @@ export function argumentsList(content: string): string[] {
     return [];
   }
   const expression = parsed.body[0].expression;
-  let params: ESTree.Pattern[]|null = null;
+  let params: Acorn.ESTree.Pattern[]|null = null;
   switch (expression.type) {
     case 'ClassExpression': {
       if (!expression.body.body) {
@@ -325,7 +325,7 @@ export function argumentsList(content: string): string[] {
   }
   return params.map(paramName);
 
-  function paramName(param: ESTree.Node): string {
+  function paramName(param: Acorn.ESTree.Node): string {
     switch (param.type) {
       case 'Identifier':
         return param.name;
@@ -373,16 +373,16 @@ export function findLastExpression(content: string): string|null {
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function _lastCompleteExpression(content: string, suffix: string, types: Set<string>): {
-  baseNode: ESTree.Node,
+  baseNode: Acorn.ESTree.Node,
   baseExpression: string,
 }|null {
-  let ast: ESTree.Node|null = null;
+  let ast: Acorn.ESTree.Node|null = null;
   let parsedContent = '';
   for (let i = 0; i < content.length; i++) {
     try {
       // Wrap content in paren to successfully parse object literals
       parsedContent = content[i] === '{' ? `(${content.substring(i)})${suffix}` : `${content.substring(i)}${suffix}`;
-      ast = (Acorn.parse(parsedContent, {ecmaVersion: ECMA_VERSION}) as ESTree.Node);
+      ast = (Acorn.parse(parsedContent, {ecmaVersion: ECMA_VERSION}) as Acorn.ESTree.Node);
       break;
     } catch (e) {
     }
@@ -391,7 +391,7 @@ export function _lastCompleteExpression(content: string, suffix: string, types: 
     return null;
   }
   const astEnd = ast.end;
-  let baseNode: ESTree.Node|null = null;
+  let baseNode: Acorn.ESTree.Node|null = null;
   const walker = new ESTreeWalker(node => {
     if (baseNode || node.end < astEnd) {
       return ESTreeWalker.SkipSubtree;
@@ -405,7 +405,8 @@ export function _lastCompleteExpression(content: string, suffix: string, types: 
   if (!baseNode) {
     return null;
   }
-  let baseExpression = parsedContent.substring((baseNode as ESTree.Node).start, parsedContent.length - suffix.length);
+  let baseExpression =
+      parsedContent.substring((baseNode as Acorn.ESTree.Node).start, parsedContent.length - suffix.length);
   if (baseExpression.startsWith('{')) {
     baseExpression = `(${baseExpression})`;
   }

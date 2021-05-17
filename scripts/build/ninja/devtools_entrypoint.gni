@@ -40,6 +40,7 @@ template("devtools_entrypoint") {
     ts_library(_ts_library_target_name) {
       sources = [ invoker.entrypoint ]
 
+      inputs = invoker.inputs
       deps = invoker.deps
 
       is_web_worker = _is_web_worker
@@ -115,6 +116,7 @@ template("devtools_entrypoint") {
 
       rootdir = target_gen_dir
 
+      inputs = invoker.inputs
       deps = invoker.deps
 
       public_deps = [ ":$_copy_target_name" ]
@@ -210,4 +212,8 @@ template("devtools_entrypoint") {
       visibility = [ ":*" ]
     }
   }
+}
+
+set_defaults("devtools_entrypoint") {
+  inputs = []
 }

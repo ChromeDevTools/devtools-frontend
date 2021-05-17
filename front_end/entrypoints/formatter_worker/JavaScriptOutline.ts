@@ -36,7 +36,7 @@ export function javaScriptOutline(content: string, chunkCallback: ChunkCallback)
   const textCursor = new TextUtils.TextCursor.TextCursor(contentLineEndings);
   const walker = new ESTreeWalker(beforeVisit);
 
-  // @ts-ignore Technically, the acorn Node type is a subclass of ESTree.Node.
+  // @ts-ignore Technically, the acorn Node type is a subclass of Acorn.ESTree.Node.
   // However, the acorn package currently exports its type without specifying
   // this relationship. So while this is allowed on runtime, we can't properly
   // typecheck it.
@@ -44,21 +44,21 @@ export function javaScriptOutline(content: string, chunkCallback: ChunkCallback)
 
   chunkCallback({chunk, isLastChunk: true});
 
-  function beforeVisit(node: ESTree.Node): undefined {
+  function beforeVisit(node: Acorn.ESTree.Node): undefined {
     if (node.type === 'ClassDeclaration') {
-      reportClass((node.id as ESTree.Node));
+      reportClass((node.id as Acorn.ESTree.Node));
     } else if (node.type === 'VariableDeclarator' && node.init && isClassNode(node.init)) {
-      reportClass((node.id as ESTree.Node));
+      reportClass((node.id as Acorn.ESTree.Node));
     } else if (node.type === 'AssignmentExpression' && isNameNode(node.left) && isClassNode(node.right)) {
-      reportClass((node.left as ESTree.Node));
+      reportClass((node.left as Acorn.ESTree.Node));
     } else if (node.type === 'Property' && isNameNode(node.key) && isClassNode(node.value)) {
-      reportClass((node.key as ESTree.Node));
+      reportClass((node.key as Acorn.ESTree.Node));
     } else if (node.type === 'FunctionDeclaration') {
-      reportFunction((node.id as ESTree.Node), node);
+      reportFunction((node.id as Acorn.ESTree.Node), node);
     } else if (node.type === 'VariableDeclarator' && node.init && isFunctionNode(node.init)) {
-      reportFunction((node.id as ESTree.Node), (node.init as ESTree.Node));
+      reportFunction((node.id as Acorn.ESTree.Node), (node.init as Acorn.ESTree.Node));
     } else if (node.type === 'AssignmentExpression' && isNameNode(node.left) && isFunctionNode(node.right)) {
-      reportFunction((node.left as ESTree.Node), (node.right as ESTree.Node));
+      reportFunction((node.left as Acorn.ESTree.Node), (node.right as Acorn.ESTree.Node));
     } else if (
         (node.type === 'MethodDefinition' || node.type === 'Property') && isNameNode(node.key) &&
         isFunctionNode(node.value)) {
@@ -69,21 +69,21 @@ export function javaScriptOutline(content: string, chunkCallback: ChunkCallback)
       if ('static' in node && node.static) {
         namePrefix.push('static');
       }
-      reportFunction((node.key as ESTree.Node), node.value, namePrefix.join(' '));
+      reportFunction((node.key as Acorn.ESTree.Node), node.value, namePrefix.join(' '));
     }
 
     return undefined;
   }
 
-  function reportClass(nameNode: ESTree.Node): void {
+  function reportClass(nameNode: Acorn.ESTree.Node): void {
     const name = 'class ' + stringifyNameNode(nameNode);
     textCursor.advance(nameNode.start);
     addOutlineItem(name);
   }
 
-  function reportFunction(nameNode: ESTree.Node, functionNode: ESTree.Node, namePrefix?: string): void {
+  function reportFunction(nameNode: Acorn.ESTree.Node, functionNode: Acorn.ESTree.Node, namePrefix?: string): void {
     let name = stringifyNameNode(nameNode);
-    const functionDeclarationNode = (functionNode as ESTree.FunctionDeclaration);
+    const functionDeclarationNode = (functionNode as Acorn.ESTree.FunctionDeclaration);
     if (functionDeclarationNode.generator) {
       name = '*' + name;
     }
@@ -95,10 +95,10 @@ export function javaScriptOutline(content: string, chunkCallback: ChunkCallback)
     }
 
     textCursor.advance(nameNode.start);
-    addOutlineItem(name, stringifyArguments((functionDeclarationNode.params as ESTree.Node[])));
+    addOutlineItem(name, stringifyArguments((functionDeclarationNode.params as Acorn.ESTree.Node[])));
   }
 
-  function isNameNode(node: ESTree.Node): boolean {
+  function isNameNode(node: Acorn.ESTree.Node): boolean {
     if (!node) {
       return false;
     }
@@ -108,27 +108,27 @@ export function javaScriptOutline(content: string, chunkCallback: ChunkCallback)
     return node.type === 'Identifier';
   }
 
-  function isFunctionNode(node: ESTree.Node): boolean {
+  function isFunctionNode(node: Acorn.ESTree.Node): boolean {
     if (!node) {
       return false;
     }
     return node.type === 'FunctionExpression' || node.type === 'ArrowFunctionExpression';
   }
 
-  function isClassNode(node: ESTree.Node): boolean {
+  function isClassNode(node: Acorn.ESTree.Node): boolean {
     return node !== undefined && node.type === 'ClassExpression';
   }
 
-  function stringifyNameNode(node: ESTree.Node): string {
+  function stringifyNameNode(node: Acorn.ESTree.Node): string {
     if (node.type === 'MemberExpression') {
-      node = (node.property as ESTree.Node);
+      node = (node.property as Acorn.ESTree.Node);
     }
     console.assert(node.type === 'Identifier', 'Cannot extract identifier from unknown type: ' + node.type);
-    const identifier = (node as ESTree.Identifier);
+    const identifier = (node as Acorn.ESTree.Identifier);
     return identifier.name;
   }
 
-  function stringifyArguments(params: ESTree.Node[]): string {
+  function stringifyArguments(params: Acorn.ESTree.Node[]): string {
     const result = [];
     for (const param of params) {
       if (param.type === 'Identifier') {

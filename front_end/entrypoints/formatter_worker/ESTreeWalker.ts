@@ -3,17 +3,18 @@
 // found in the LICENSE file.
 
 /* eslint-disable rulesdir/no_underscored_properties */
-
-import type * as ESTree from 'estree';
+import type * as Acorn from '../../third_party/acorn/acorn.js';
 
 const SkipSubTreeObject: Object = {};
 
 export class ESTreeWalker {
-  _beforeVisit: (arg0: ESTree.Node) => (Object | undefined);
+  _beforeVisit: (arg0: Acorn.ESTree.Node) => (Object | undefined);
   _afterVisit: Function;
   _walkNulls: boolean;
 
-  constructor(beforeVisit: (arg0: ESTree.Node) => (Object | undefined), afterVisit?: ((arg0: ESTree.Node) => void)) {
+  constructor(
+      beforeVisit: (arg0: Acorn.ESTree.Node) => (Object | undefined),
+      afterVisit?: ((arg0: Acorn.ESTree.Node) => void)) {
     this._beforeVisit = beforeVisit;
     this._afterVisit = afterVisit || new Function();
     this._walkNulls = false;
@@ -29,13 +30,13 @@ export class ESTreeWalker {
     this._walkNulls = value;
   }
 
-  walk(ast: ESTree.Node): void {
+  walk(ast: Acorn.ESTree.Node): void {
     this._innerWalk(ast, null);
   }
 
-  _innerWalk(node: ESTree.Node, parent: ESTree.Node|null): void {
+  _innerWalk(node: Acorn.ESTree.Node, parent: Acorn.ESTree.Node|null): void {
     if (!node && parent && this._walkNulls) {
-      const result = ({raw: 'null', value: null, parent: null} as ESTree.SimpleLiteral);
+      const result = ({raw: 'null', value: null, parent: null} as Acorn.ESTree.SimpleLiteral);
       // Otherwise Closure can't handle the definition
       result.type = 'Literal';
 
@@ -59,7 +60,7 @@ export class ESTreeWalker {
     }
 
     if (node.type === 'TemplateLiteral') {
-      const templateLiteral = (node as ESTree.TemplateLiteral);
+      const templateLiteral = (node as Acorn.ESTree.TemplateLiteral);
       const expressionsLength = templateLiteral.expressions.length;
       for (let i = 0; i < expressionsLength; ++i) {
         this._innerWalk(templateLiteral.quasis[i], templateLiteral);
@@ -75,9 +76,9 @@ export class ESTreeWalker {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const entity = (node[walkOrder[i]] as any);
         if (Array.isArray(entity)) {
-          this._walkArray((entity as ESTree.Node[]), node);
+          this._walkArray((entity as Acorn.ESTree.Node[]), node);
         } else {
-          this._innerWalk((entity as ESTree.Node), node);
+          this._innerWalk((entity as Acorn.ESTree.Node), node);
         }
       }
     }
@@ -85,7 +86,7 @@ export class ESTreeWalker {
     this._afterVisit.call(null, node);
   }
 
-  _walkArray(nodeArray: ESTree.Node[], parentNode: ESTree.Node|null): void {
+  _walkArray(nodeArray: Acorn.ESTree.Node[], parentNode: Acorn.ESTree.Node|null): void {
     for (let i = 0; i < nodeArray.length; ++i) {
       this._innerWalk(nodeArray[i], parentNode);
     }

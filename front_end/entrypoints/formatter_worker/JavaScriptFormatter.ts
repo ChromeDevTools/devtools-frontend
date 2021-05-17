@@ -62,7 +62,7 @@ export class JavaScriptFormatter {
       allowHashBang: true,
     });
     const walker = new ESTreeWalker(this._beforeVisit.bind(this), this._afterVisit.bind(this));
-    // @ts-ignore Technically, the acorn Node type is a subclass of ESTree.Node.
+    // @ts-ignore Technically, the acorn Node type is a subclass of Acorn.ESTree.Node.
     // However, the acorn package currently exports its type without specifying
     // this relationship. So while this is allowed on runtime, we can't properly
     // typecheck it.
@@ -93,7 +93,7 @@ export class JavaScriptFormatter {
     }
   }
 
-  _beforeVisit(node: ESTree.Node): undefined {
+  _beforeVisit(node: Acorn.ESTree.Node): undefined {
     if (!node.parent) {
       return;
     }
@@ -107,7 +107,7 @@ export class JavaScriptFormatter {
     return;
   }
 
-  _afterVisit(node: ESTree.Node): void {
+  _afterVisit(node: Acorn.ESTree.Node): void {
     let token;
     while ((token = this._tokenizer.peekToken()) && token.start < node.end) {
       const token = (this._tokenizer.nextToken() as TokenOrComment);
@@ -117,23 +117,23 @@ export class JavaScriptFormatter {
     this._push(null, this._finishNode(node));
   }
 
-  _inForLoopHeader(node: ESTree.Node): boolean {
+  _inForLoopHeader(node: Acorn.ESTree.Node): boolean {
     const parent = node.parent;
     if (!parent) {
       return false;
     }
     if (parent.type === 'ForStatement') {
-      const parentNode = (parent as ESTree.ForStatement);
+      const parentNode = (parent as Acorn.ESTree.ForStatement);
       return node === parentNode.init || node === parentNode.test || node === parentNode.update;
     }
     if (parent.type === 'ForInStatement' || parent.type === 'ForOfStatement') {
-      const parentNode = (parent as ESTree.ForInStatement | ESTree.ForOfStatement);
+      const parentNode = (parent as Acorn.ESTree.ForInStatement | Acorn.ESTree.ForOfStatement);
       return node === parentNode.left || node === parentNode.right;
     }
     return false;
   }
 
-  _formatToken(node: ESTree.Node, tokenOrComment: TokenOrComment): string {
+  _formatToken(node: Acorn.ESTree.Node, tokenOrComment: TokenOrComment): string {
     const AT = AcornTokenizer;
     if (AT.lineComment(tokenOrComment)) {
       return 'tn';
@@ -234,7 +234,7 @@ export class JavaScriptFormatter {
     } else if (node.type === 'VariableDeclaration') {
       if (AT.punctuator(token, ',')) {
         let allVariablesInitialized = true;
-        const declarations = (node.declarations as ESTree.Node[]);
+        const declarations = (node.declarations as Acorn.ESTree.Node[]);
         for (let i = 0; i < declarations.length; ++i) {
           // @ts-ignore We are doing a subtype check, without properly checking whether
           // it exists. We can't fix that, unless we use proper typechecking
@@ -348,7 +348,7 @@ export class JavaScriptFormatter {
     return AT.keyword(token) && !AT.keyword(token, 'this') ? 'ts' : 't';
   }
 
-  _finishNode(node: ESTree.Node): string {
+  _finishNode(node: Acorn.ESTree.Node): string {
     if (node.type === 'WithStatement') {
       if (node.body && node.body.type !== 'BlockStatement') {
         return 'n<';
@@ -363,7 +363,7 @@ export class JavaScriptFormatter {
       }
     } else if (node.type === 'BlockStatement') {
       if (node.parent && node.parent.type === 'IfStatement') {
-        const parentNode = (node.parent as ESTree.IfStatement);
+        const parentNode = (node.parent as Acorn.ESTree.IfStatement);
         if (parentNode.alternate && parentNode.consequent === node) {
           return '';
         }
@@ -384,13 +384,13 @@ export class JavaScriptFormatter {
         return '';
       }
       if (node.parent && node.parent.type === 'TryStatement') {
-        const parentNode = (node.parent as ESTree.TryStatement);
+        const parentNode = (node.parent as Acorn.ESTree.TryStatement);
         if (parentNode.block === node) {
           return 's';
         }
       }
       if (node.parent && node.parent.type === 'CatchClause') {
-        const parentNode = (node.parent as ESTree.CatchClause);
+        const parentNode = (node.parent as Acorn.ESTree.CatchClause);
         // @ts-ignore We are doing a subtype check, without properly checking whether
         // it exists. We can't fix that, unless we use proper typechecking
         if (parentNode.parent && parentNode.parent.finalizer) {

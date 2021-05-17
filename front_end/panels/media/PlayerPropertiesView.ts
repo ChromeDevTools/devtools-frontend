@@ -5,6 +5,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
 
@@ -283,12 +284,26 @@ export class DimensionPropertyRenderer extends PropertyRenderer {
 }
 
 export class AttributesView extends UI.Widget.VBox {
+  _contentHash: number;
+
   constructor(elements: UI.Widget.Widget[]) {
     super();
+    this._contentHash = 0;
     this.contentElement.classList.add('media-attributes-view');
     for (const element of elements) {
       element.show(this.contentElement);
+      // We just need a really simple way to compare the topical equality
+      // of the attributes views in order to avoid deleting and recreating
+      // a node containing exactly the same data.
+      const content = this.contentElement.textContent;
+      if (content !== null) {
+        this._contentHash += Platform.StringUtilities.hashCode(content);
+      }
     }
+  }
+
+  getContentHash(): number {
+    return this._contentHash;
   }
 }
 
@@ -356,10 +371,20 @@ class GenericTrackMenu extends UI.TabbedPane.TabbedPane {
     this._trackName = trackName;
   }
 
-  addNewTab(trackNumber: number, element: UI.Widget.Widget): void {
+  addNewTab(trackNumber: number, element: AttributesView): void {
     const localizedTrackLower = i18nString(UIStrings.track);
+    const tabId = `Track${trackNumber}`;
+    if (this.hasTab(tabId)) {
+      const tabElement = this.tabView(tabId);
+      if (tabElement === null) {
+        return;
+      }
+      if ((tabElement as AttributesView).getContentHash() === element.getContentHash())
+        return;
+      this.closeTab(tabId, /*userGesture=*/ false);
+    }
     this.appendTab(
-        `Track${trackNumber}`,  // No need for localizing, internal ID.
+        tabId,  // No need for localizing, internal ID.
         `${this._trackName} #${trackNumber}`, element, `${this._decoderName} ${localizedTrackLower} #${trackNumber}`);
   }
 }
@@ -388,7 +413,7 @@ class NoTracksPlaceholderMenu extends UI.Widget.VBox {
     this._wrapping.show(this.contentElement);
   }
 
-  addNewTab(trackNumber: number, element: UI.Widget.Widget): void {
+  addNewTab(trackNumber: number, element: AttributesView): void {
     if (this._isPlaceholder) {
       this._wrapping.closeTab('_placeholder');
       this._isPlaceholder = false;
@@ -408,8 +433,7 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
   _audioDecoderProperties: AttributesView;
   _videoDecoderTabs: DecoderTrackMenu;
   _audioDecoderTabs: DecoderTrackMenu;
-  _textTrackTabs: GenericTrackMenu|NoTracksPlaceholderMenu|null;
-  _textTracksTabs?: NoTracksPlaceholderMenu;
+  _textTracksTabs: GenericTrackMenu|NoTracksPlaceholderMenu|null;
 
   constructor() {
     super();
@@ -432,11 +456,11 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
     this._audioDecoderTabs = new DecoderTrackMenu(TrackTypeLocalized.Audio(), this._audioDecoderProperties);
     this._audioDecoderTabs.show(this.contentElement);
 
-    this._textTrackTabs = null;
+    this._textTracksTabs = null;
   }
 
   _lazyCreateTrackTabs(): GenericTrackMenu|NoTracksPlaceholderMenu {
-    let textTracksTabs = this._textTrackTabs;
+    let textTracksTabs = this._textTracksTabs;
     if (textTracksTabs === null) {
       const textTracks = new GenericTrackMenu(i18nString(UIStrings.textTrack));
       textTracksTabs = new NoTracksPlaceholderMenu(textTracks, i18nString(UIStrings.noTextTracks));

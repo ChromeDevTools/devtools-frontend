@@ -10614,7 +10614,7 @@
     "message": "R̂éf̂ŕêśĥ"
   },
   "ui/components/linear_memory_inspector/LinearMemoryValueInterpreter.ts | changeEndianness": {
-    "message": "Ĉh́âńĝé Êńd̂íâńn̂éŝś"
+    "message": "Ĉh́âńĝé Endianness"
   },
   "ui/components/linear_memory_inspector/LinearMemoryValueInterpreter.ts | toggleValueTypeSettings": {
     "message": "T̂óĝǵl̂é v̂ál̂úê t́ŷṕê śêt́t̂ín̂ǵŝ"
@@ -10629,43 +10629,13 @@
     "message": "Ĵúm̂ṕ t̂ó âd́d̂ŕêśŝ"
   },
   "ui/components/linear_memory_inspector/ValueInterpreterDisplay.ts | signedValue": {
-    "message": "Ŝíĝńêd́ v̂ál̂úê"
+    "message": "Signed v̂ál̂úê"
   },
   "ui/components/linear_memory_inspector/ValueInterpreterDisplay.ts | unsignedValue": {
-    "message": "Ûńŝíĝńêd́ v̂ál̂úê"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | bigEndian": {
-    "message": "B̂íĝ Én̂d́îán̂"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | float64Bit": {
-    "message": "F̂ĺôát̂ 64-b́ît́"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | floatBit": {
-    "message": "F̂ĺôát̂ 32-b́ît́"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integer16Bit": {
-    "message": "Îńt̂éĝér̂ 16-b́ît́"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integer32Bit": {
-    "message": "Îńt̂éĝér̂ 32-b́ît́"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integer64Bit": {
-    "message": "Îńt̂éĝér̂ 64-b́ît́"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integerBit": {
-    "message": "Îńt̂éĝér̂ 8-b́ît́"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | littleEndian": {
-    "message": "L̂ít̂t́l̂é Êńd̂íâń"
+    "message": "Unsigned v̂ál̂úê"
   },
   "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | notApplicable": {
     "message": "N̂/Á"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | pointer32Bit": {
-    "message": "P̂óîńt̂ér̂ 32-b́ît́"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | pointer64Bit": {
-    "message": "P̂óîńt̂ér̂ 64-b́ît́"
   },
   "ui/components/linear_memory_inspector/ValueInterpreterSettings.ts | otherGroup": {
     "message": "Ôt́ĥér̂"

@@ -11,19 +11,20 @@ import {ValueInterpreterSettings} from './ValueInterpreterSettings.js';
 
 import type {ValueDisplayData} from './ValueInterpreterDisplay.js';
 import type {ValueType, ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
-import {Endianness, endiannessToLocalizedString} from './ValueInterpreterDisplayUtils.js';
+import {Endianness} from './ValueInterpreterDisplayUtils.js';
 import type {TypeToggleEvent, ValueInterpreterSettingsData} from './ValueInterpreterSettings.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 const UIStrings = {
   /**
-  *@description Tooltip text that appears when hovering over the gear button to open and close settings in the Linear Memory Inspector
+  *@description Tooltip text that appears when hovering over the gear button to open and close settings in the Linear Memory Inspector. These settings
+  *             allow the user to change the value type to view, such as 32-bit Integer, or 32-bit Float.
   */
   toggleValueTypeSettings: 'Toggle value type settings',
   /**
-  *@description Tooltip text that appears when hovering over the 'Little Endian' or 'Big Endian' setting in the Linear Memory Inspector
+  *@description Tooltip text that appears when hovering over the 'Little Endian' or 'Big Endian' setting in the Linear Memory Inspector.
   */
-  changeEndianness: 'Change Endianness',
+  changeEndianness: 'Change `Endianness`',
 };
 const str_ =
     i18n.i18n.registerUIStrings('ui/components/linear_memory_inspector/LinearMemoryValueInterpreter.ts', UIStrings);
@@ -197,7 +198,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
         data-endianness="true" @change=${onEnumSettingChange}>
         ${[Endianness.Little, Endianness.Big].map(endianness => {
             return html`<option value=${endianness} .selected=${this.endianness === endianness}>${
-                endiannessToLocalizedString(endianness)}</option>`;
+                i18n.i18n.lockedString(endianness)}</option>`;
         })}
       </select>
     </label>

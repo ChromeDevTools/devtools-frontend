@@ -7,21 +7,22 @@ import * as LitHtml from '../../lit-html/lit-html.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 import * as IconButton from '../icon_button/icon_button.js';
 
-import {Endianness, format, getDefaultValueTypeMapping, getPointerAddress, isNumber, isPointer, isValidMode, VALUE_TYPE_MODE_LIST, ValueType, ValueTypeMode, valueTypeModeToLocalizedString, valueTypeToLocalizedString} from './ValueInterpreterDisplayUtils.js';
+import {Endianness, format, getDefaultValueTypeMapping, getPointerAddress, isNumber, isPointer, isValidMode, VALUE_TYPE_MODE_LIST, ValueType, ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
 
 const UIStrings = {
   /**
   *@description Tooltip text that appears when hovering over an unsigned interpretation of the memory under the Value Interpreter
   */
-  unsignedValue: 'Unsigned value',
+  unsignedValue: '`Unsigned` value',
   /**
-   *@description Tooltip text that appears when hovering over the element to change value type modes of under the Value Interpreter
+   *@description Tooltip text that appears when hovering over the element to change value type modes of under the Value Interpreter. Value type modes
+   *             are different ways of viewing a certain value, e.g.: 10 (decimal) can be 0xa in hexadecimal mode, or 12 in octal mode.
    */
   changeValueTypeMode: 'Change mode',
   /**
   *@description Tooltip text that appears when hovering over a signed interpretation of the memory under the Value Interpreter
   */
-  signedValue: 'Signed value',
+  signedValue: '`Signed` value',
   /**
   *@description Tooltip text that appears when hovering over a 'jump-to-address' button that is next to a pointer (32-bit or 64-bit) under the Value Interpreter
   */
@@ -188,7 +189,6 @@ export class ValueInterpreterDisplay extends HTMLElement {
 
   private renderPointerValue(type: ValueType): LitHtml.TemplateResult {
     const unsignedValue = this.parse({type, signed: false});
-    const localizedType = valueTypeToLocalizedString(type);
     const address = getPointerAddress(type, this.buffer, this.endianness);
     const jumpDisabled = Number.isNaN(address) || BigInt(address) >= BigInt(this.memoryLength);
     const buttonTitle = jumpDisabled ? i18nString(UIStrings.addressOutOfRange) : i18nString(UIStrings.jumpToPointer);
@@ -196,7 +196,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
-      <span class="value-type-cell-no-mode value-type-cell">${localizedType}</span>
+      <span class="value-type-cell-no-mode value-type-cell">${i18n.i18n.lockedString(type)}</span>
       <div class="value-type-cell">
         <div class="value-type-value-with-link" data-value="true">
         <span>${unsignedValue}</span>
@@ -219,11 +219,10 @@ export class ValueInterpreterDisplay extends HTMLElement {
   }
 
   private renderNumberValues(type: ValueType): LitHtml.TemplateResult {
-    const localizedType = valueTypeToLocalizedString(type);
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
-      <span class="value-type-cell">${localizedType}</span>
+      <span class="value-type-cell">${i18n.i18n.lockedString(type)}</span>
       <div>
         <select title=${i18nString(UIStrings.changeValueTypeMode)}
           data-mode-settings="true"
@@ -233,7 +232,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
             ${VALUE_TYPE_MODE_LIST.filter(x => isValidMode(type, x)).map(mode => {
               return html`
                 <option value=${mode} .selected=${this.valueTypeModeConfig.get(type) === mode}>${
-                  valueTypeModeToLocalizedString(mode)}
+                  i18n.i18n.lockedString(mode)}
                 </option>`;
             })}
         </select>

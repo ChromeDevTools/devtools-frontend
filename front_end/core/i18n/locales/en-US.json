@@ -10634,38 +10634,8 @@
   "ui/components/linear_memory_inspector/ValueInterpreterDisplay.ts | unsignedValue": {
     "message": "Unsigned value"
   },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | bigEndian": {
-    "message": "Big Endian"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | float64Bit": {
-    "message": "Float 64-bit"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | floatBit": {
-    "message": "Float 32-bit"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integer16Bit": {
-    "message": "Integer 16-bit"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integer32Bit": {
-    "message": "Integer 32-bit"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integer64Bit": {
-    "message": "Integer 64-bit"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integerBit": {
-    "message": "Integer 8-bit"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | littleEndian": {
-    "message": "Little Endian"
-  },
   "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | notApplicable": {
     "message": "N/A"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | pointer32Bit": {
-    "message": "Pointer 32-bit"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | pointer64Bit": {
-    "message": "Pointer 64-bit"
   },
   "ui/components/linear_memory_inspector/ValueInterpreterSettings.ts | otherGroup": {
     "message": "Other"

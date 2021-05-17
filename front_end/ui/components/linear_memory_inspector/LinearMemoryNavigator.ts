@@ -9,7 +9,7 @@ import * as IconButton from '../icon_button/icon_button.js';
 
 const UIStrings = {
   /**
-  *@description Tooltip text that appears when hovering over a valid address in the address line in the Linear Memory Inspector
+  *@description Tooltip text that appears when hovering over a valid memory address (e.g. 0x0) in the address line in the Linear Memory Inspector.
   */
   enterAddress: 'Enter address',
   /**

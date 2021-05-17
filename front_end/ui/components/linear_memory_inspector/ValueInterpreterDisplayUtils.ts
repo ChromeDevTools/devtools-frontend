@@ -7,46 +7,6 @@ import * as Platform from '../../../core/platform/platform.js';
 
 const UIStrings = {
   /**
-  *@description Text that describes the Endianness setting that can be selected in the select item in the Linear Memory Inspector
-  */
-  littleEndian: 'Little Endian',
-  /**
-  *@description Text that describes the Endianness setting that can be selected in the select item in the Linear Memory Inspector
-  */
-  bigEndian: 'Big Endian',
-  /**
-  *@description Text that describes the type of a value in the Linear Memory Inspector
-  */
-  integerBit: 'Integer 8-bit',
-  /**
-  *@description Text that describes the type of a value in the Linear Memory Inspector
-  */
-  integer16Bit: 'Integer 16-bit',
-  /**
-  *@description Text that describes the type of a value in the Linear Memory Inspector
-  */
-  integer32Bit: 'Integer 32-bit',
-  /**
-  *@description Text that describes the type of a value in the Linear Memory Inspector
-  */
-  integer64Bit: 'Integer 64-bit',
-  /**
-  *@description Text that describes the type of a value in the Linear Memory Inspector
-  */
-  floatBit: 'Float 32-bit',
-  /**
-  *@description Text that describes the type of a value in the Linear Memory Inspector
-  */
-  float64Bit: 'Float 64-bit',
-  /**
-  *@description Text that describes the type of a value in the Linear Memory Inspector
-  */
-  pointer32Bit: 'Pointer 32-bit',
-  /**
-  *@description Text that describes the type of a value in the Linear Memory Inspector
-  */
-  pointer64Bit: 'Pointer 64-bit',
-  /**
   *@description Text that is shown in the LinearMemoryInspector if a value could not be correctly formatted
   *             for the requested mode (e.g. we do not floats to be represented as hexadecimal numbers).
   *             Abbreviation stands for 'not applicable'.
@@ -104,53 +64,8 @@ export const VALUE_TYPE_MODE_LIST = [
   ValueTypeMode.Scientific,
 ];
 
-export function valueTypeModeToLocalizedString(mode: ValueTypeMode): string {
-  switch (mode) {
-    case ValueTypeMode.Decimal:
-      return i18n.i18n.lockedString('dec');
-    case ValueTypeMode.Hexadecimal:
-      return i18n.i18n.lockedString('hex');
-    case ValueTypeMode.Octal:
-      return i18n.i18n.lockedString('oct');
-    case ValueTypeMode.Scientific:
-      return i18n.i18n.lockedString('sci');
-    default:
-      return Platform.assertNever(mode, `Unknown mode: ${mode}`);
-  }
-}
-
-export function endiannessToLocalizedString(endianness: Endianness): string {
-  switch (endianness) {
-    case Endianness.Little:
-      return i18nString(UIStrings.littleEndian);
-    case Endianness.Big:
-      return i18nString(UIStrings.bigEndian);
-    default:
-      return Platform.assertNever(endianness, `Unknown endianness: ${endianness}`);
-  }
-}
-
 export function valueTypeToLocalizedString(valueType: ValueType): string {
-  switch (valueType) {
-    case ValueType.Int8:
-      return i18nString(UIStrings.integerBit);
-    case ValueType.Int16:
-      return i18nString(UIStrings.integer16Bit);
-    case ValueType.Int32:
-      return i18nString(UIStrings.integer32Bit);
-    case ValueType.Int64:
-      return i18nString(UIStrings.integer64Bit);
-    case ValueType.Float32:
-      return i18nString(UIStrings.floatBit);
-    case ValueType.Float64:
-      return i18nString(UIStrings.float64Bit);
-    case ValueType.Pointer32:
-      return i18nString(UIStrings.pointer32Bit);
-    case ValueType.Pointer64:
-      return i18nString(UIStrings.pointer64Bit);
-    default:
-      return Platform.assertNever(valueType, `Unknown value type: ${valueType}`);
-  }
+  return i18n.i18n.lockedString(valueType);
 }
 
 export function isValidMode(type: ValueType, mode: ValueTypeMode): boolean {

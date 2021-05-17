@@ -112,6 +112,10 @@ const UIStrings = {
   *@description Header for the source location column
   */
   sourceLocation: 'Source Location',
+  /**
+  *@description Header for the column with the URL scheme that is not supported by fetch
+  */
+  unsupportedScheme: 'Unsupported Scheme',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/CorsIssueDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -190,9 +194,13 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
         this.appendColumnTitle(header, i18nString(UIStrings.initiatorContext));
         this.appendColumnTitle(header, i18nString(UIStrings.sourceLocation));
         break;
+      case IssuesManager.CorsIssue.IssueCode.CorsDisabledScheme:
+        this.appendColumnTitle(header, i18nString(UIStrings.initiatorContext));
+        this.appendColumnTitle(header, i18nString(UIStrings.sourceLocation));
+        this.appendColumnTitle(header, i18nString(UIStrings.unsupportedScheme));
+        break;
       default:
         Platform.assertUnhandled<IssuesManager.CorsIssue.IssueCode.NoCorsRedirectModeNotFollow|
-                                 IssuesManager.CorsIssue.IssueCode.CorsDisabledScheme|
                                  IssuesManager.CorsIssue.IssueCode.PreflightMissingAllowExternal|
                                  IssuesManager.CorsIssue.IssueCode.PreflightInvalidAllowExternal|
                                  IssuesManager.CorsIssue.IssueCode.InvalidResponse>(issueCode);
@@ -383,11 +391,22 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
         this.appendIssueDetailCell(element, details.initiatorOrigin ?? '', 'code-example');
         this.appendSourceLocation(element, details.location, issue.model()?.getTargetIfNotDisposed());
         break;
+      case IssuesManager.CorsIssue.IssueCode.CorsDisabledScheme:
+        element.appendChild(this.createRequestCell(details.request, {
+          highlightHeader: {
+            section: Network.NetworkSearchScope.UIHeaderSection.Response,
+            name: CorsIssueDetailsView.getHeaderFromError(corsError),
+          },
+        }));
+        this.appendStatus(element, details.isWarning);
+        this.appendIssueDetailCell(element, details.initiatorOrigin ?? '', 'code-example');
+        this.appendSourceLocation(element, details.location, issue.model()?.getTargetIfNotDisposed());
+        this.appendIssueDetailCell(element, details.corsErrorStatus.failedParameter ?? '', 'code-example');
+        break;
       default:
         element.appendChild(this.createRequestCell(details.request));
         this.appendStatus(element, details.isWarning);
         Platform.assertUnhandled<IssuesManager.CorsIssue.IssueCode.NoCorsRedirectModeNotFollow|
-                                 IssuesManager.CorsIssue.IssueCode.CorsDisabledScheme|
                                  IssuesManager.CorsIssue.IssueCode.PreflightMissingAllowExternal|
                                  IssuesManager.CorsIssue.IssueCode.PreflightInvalidAllowExternal|
                                  IssuesManager.CorsIssue.IssueCode.InvalidResponse>(issueCode);

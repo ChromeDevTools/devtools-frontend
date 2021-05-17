@@ -4982,6 +4982,9 @@
   "panels/issues/CorsIssueDetailsView.ts | status": {
     "message": "Status"
   },
+  "panels/issues/CorsIssueDetailsView.ts | unsupportedScheme": {
+    "message": "Unsupported Scheme"
+  },
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "warning"
   },

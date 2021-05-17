@@ -45,6 +45,7 @@ devtools_issue_description_files = [
   "CoepCorpNotSameSite.md",
   "CoepFrameResourceNeedsCoepHeader.md",
   "corsAllowCredentialsRequired.md",
+  "corsDisallowedByMode.md",
   "corsHeaderDisallowedByPreflightResponse.md",
   "corsInsecurePrivateNetwork.md",
   "corsInsecurePrivateNetworkPreflight.md",

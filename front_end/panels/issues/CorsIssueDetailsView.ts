@@ -108,6 +108,10 @@ const UIStrings = {
   *@description Title for a column in the affected resources for a CORS issue showing the request header that was disallowed.
   */
   disallowedRequestHeader: 'Disallowed Request Header',
+  /**
+  *@description Header for the source location column
+  */
+  sourceLocation: 'Source Location',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/CorsIssueDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -182,9 +186,12 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
       case IssuesManager.CorsIssue.IssueCode.RedirectContainsCredentials:
         // The default columns suffice.
         break;
+      case IssuesManager.CorsIssue.IssueCode.DisallowedByMode:
+        this.appendColumnTitle(header, i18nString(UIStrings.initiatorContext));
+        this.appendColumnTitle(header, i18nString(UIStrings.sourceLocation));
+        break;
       default:
         Platform.assertUnhandled<IssuesManager.CorsIssue.IssueCode.NoCorsRedirectModeNotFollow|
-                                 IssuesManager.CorsIssue.IssueCode.DisallowedByMode|
                                  IssuesManager.CorsIssue.IssueCode.CorsDisabledScheme|
                                  IssuesManager.CorsIssue.IssueCode.PreflightMissingAllowExternal|
                                  IssuesManager.CorsIssue.IssueCode.PreflightInvalidAllowExternal|
@@ -370,11 +377,16 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
         }));
         this.appendStatus(element, details.isWarning);
         break;
+      case IssuesManager.CorsIssue.IssueCode.DisallowedByMode:
+        element.appendChild(this.createRequestCell(details.request));
+        this.appendStatus(element, details.isWarning);
+        this.appendIssueDetailCell(element, details.initiatorOrigin ?? '', 'code-example');
+        this.appendSourceLocation(element, details.location, issue.model()?.getTargetIfNotDisposed());
+        break;
       default:
         element.appendChild(this.createRequestCell(details.request));
         this.appendStatus(element, details.isWarning);
         Platform.assertUnhandled<IssuesManager.CorsIssue.IssueCode.NoCorsRedirectModeNotFollow|
-                                 IssuesManager.CorsIssue.IssueCode.DisallowedByMode|
                                  IssuesManager.CorsIssue.IssueCode.CorsDisabledScheme|
                                  IssuesManager.CorsIssue.IssueCode.PreflightMissingAllowExternal|
                                  IssuesManager.CorsIssue.IssueCode.PreflightInvalidAllowExternal|

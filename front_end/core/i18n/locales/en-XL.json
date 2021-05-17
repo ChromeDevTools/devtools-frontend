@@ -4976,6 +4976,9 @@
   "panels/issues/CorsIssueDetailsView.ts | secure": {
     "message": "ŝéĉúr̂é"
   },
+  "panels/issues/CorsIssueDetailsView.ts | sourceLocation": {
+    "message": "Ŝóûŕĉé L̂óĉát̂íôń"
+  },
   "panels/issues/CorsIssueDetailsView.ts | status": {
     "message": "Ŝt́ât́ûś"
   },

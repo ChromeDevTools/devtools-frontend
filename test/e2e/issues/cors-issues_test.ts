@@ -373,4 +373,40 @@ describe('CORS issues', async () => {
       'blocked',
     ]);
   });
+
+  it('should display CORS issues that are disallowed by the mode', async () => {
+    await goToResource('empty.html');
+    const {target} = getBrowserAndPages();
+    await target.evaluate(async () => {
+      try {
+        const url = new URL('/', document.location.toString()).toString().replace('localhost', 'devtools.oopif.test');
+        await fetch(url, {mode: 'same-origin'});
+      } catch (e) {
+      }
+    });
+    await navigateToIssuesTab();
+    await expandIssue();
+    const issueElement =
+        await getIssueByTitle('Ensure only same-origin resources are fetched with same-origin request mode');
+    assertNotNull(issueElement);
+    const section = await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label');
+    const text = await section.label.evaluate(el => el.textContent);
+    assert.strictEqual(text, '1 request');
+    await ensureResourceSectionIsExpanded(section);
+    const table = await extractTableFromResourceSection(section.content);
+    assertNotNull(table);
+    assert.strictEqual(table.length, 2);
+    assert.deepEqual(table[0], [
+      'Request',
+      'Status',
+      'Initiator Context',
+      'Source Location',
+    ]);
+    assertMatchArray(table[1], [
+      /^devtools.oopif.test.*\//,
+      'blocked',
+      /^https:\/\/localhost.*/,
+      /.*:\d+/,
+    ]);
+  });
 });

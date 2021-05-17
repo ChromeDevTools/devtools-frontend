@@ -120,7 +120,6 @@ export class CorsIssue extends Issue<IssueCode> {
       case IssueCode.InsecurePrivateNetworkPreflight:
         return {
           file: 'corsInsecurePrivateNetworkPreflight.md',
-          substitutions: undefined,
           links: [{
             link: 'https://developer.chrome.com/blog/private-network-access-update',
             linkTitle: i18nString(UIStrings.corsForPrivateNetworksRfc),
@@ -191,6 +190,13 @@ export class CorsIssue extends Issue<IssueCode> {
           }],
         };
       case IssueCode.DisallowedByMode:
+        return {
+          file: 'corsDisallowedByMode.md',
+          links: [{
+            link: 'https://web.dev/cross-origin-resource-sharing',
+            linkTitle: i18nString(UIStrings.CORS),
+          }],
+        };
       case IssueCode.CorsDisabledScheme:
       case IssueCode.PreflightMissingAllowExternal:
       case IssueCode.PreflightInvalidAllowExternal:

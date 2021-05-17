@@ -675,6 +675,21 @@ export const IssueCreated: {
   'TrustedWebActivityIssue::kDigitalAssetLinks': 40,
   LowTextContrastIssue: 41,
   'CorsIssue::InsecurePrivateNetwork': 42,
+  'CorsIssue::InsecurePrivateNetworkPreflight': 43,
+  'CorsIssue::InvalidHeaders': 44,
+  'CorsIssue::WildcardOriginWithCredentials': 45,
+  'CorsIssue::PreflightResponseInvalid': 46,
+  'CorsIssue::OriginMismatch': 47,
+  'CorsIssue::AllowCredentialsRequired': 48,
+  'CorsIssue::MethodDisallowedByPreflightResponse': 49,
+  'CorsIssue::HeaderDisallowedByPreflightResponse': 50,
+  'CorsIssue::RedirectContainsCredentials': 51,
+  'CorsIssue::DisallowedByMode': 52,
+  'CorsIssue::CorsDisabledScheme': 53,
+  'CorsIssue::PreflightMissingAllowExternal': 54,
+  'CorsIssue::PreflightInvalidAllowExternal': 55,
+  'CorsIssue::InvalidResponse': 56,
+  'CorsIssue::NoCorsRedirectModeNotFollow': 57,
 };
 
 // TODO(crbug.com/1167717): Make this a const enum again

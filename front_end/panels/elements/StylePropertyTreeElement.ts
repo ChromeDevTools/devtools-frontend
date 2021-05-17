@@ -635,11 +635,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       const propertyValue = this.property.trimmedValueWithoutImportant();
       if (propertyValue === 'flex' || propertyValue === 'inline-flex') {
         this.listItemElement.appendChild(StyleEditorWidget.createTriggerButton(
-            this._parentPane, section, new FlexboxEditor(), i18nString(UIStrings.flexboxEditorButton)));
+            this._parentPane, section, FlexboxEditor, i18nString(UIStrings.flexboxEditorButton)));
       }
       if (propertyValue === 'grid' || propertyValue === 'inline-grid') {
         this.listItemElement.appendChild(StyleEditorWidget.createTriggerButton(
-            this._parentPane, section, new GridEditor(), i18nString(UIStrings.gridEditorButton)));
+            this._parentPane, section, GridEditor, i18nString(UIStrings.gridEditorButton)));
       }
     }
 

@@ -81,15 +81,14 @@ export class StyleEditorWidget extends UI.Widget.VBox {
   }
 
   async render(): Promise<void> {
-    this.contentElement.removeChildren();
-    if (this.editor) {
-      this.editor.data = {
-        authoredProperties: this.section ? getAuthoredStyles(this.section, this.editor.getEditableProperties()) :
-                                           new Map(),
-        computedProperties: this.pane ? await fetchComputedStyles(this.pane) : new Map(),
-      };
-      this.contentElement.appendChild(this.editor);
+    if (!this.editor) {
+      return;
     }
+    this.editor.data = {
+      authoredProperties: this.section ? getAuthoredStyles(this.section, this.editor.getEditableProperties()) :
+                                         new Map(),
+      computedProperties: this.pane ? await fetchComputedStyles(this.pane) : new Map(),
+    };
   }
 
   static instance(): StyleEditorWidget {
@@ -99,19 +98,24 @@ export class StyleEditorWidget extends UI.Widget.VBox {
     return instance;
   }
 
-  setEditor(editor: Editor): void {
-    this.editor = editor;
+  setEditor(editorClass: {new(): Editor}): void {
+    if (!(this.editor instanceof editorClass)) {
+      this.contentElement.removeChildren();
+      this.editor = new editorClass();
+      this.contentElement.appendChild(this.editor);
+    }
   }
 
   static createTriggerButton(
-      pane: StylesSidebarPane, section: StylePropertiesSection, editor: Editor, buttonTitle: string): HTMLElement {
+      pane: StylesSidebarPane, section: StylePropertiesSection, editorClass: {new(): Editor},
+      buttonTitle: string): HTMLElement {
     const triggerButton = createButton(buttonTitle);
 
     triggerButton.onclick = async(event): Promise<void> => {
       event.stopPropagation();
       const popoverHelper = pane.swatchPopoverHelper();
       const widget = StyleEditorWidget.instance();
-      widget.setEditor(editor);
+      widget.setEditor(editorClass);
       widget.bindContext(pane, section);
       await widget.render();
       const scrollerElement = triggerButton.enclosingNodeOrSelfWithClass('style-panes-wrapper');

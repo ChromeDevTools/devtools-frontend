@@ -137,6 +137,10 @@ const UIStrings = {
   */
   replayRecording: 'Replay',
   /**
+  *@description Title of a button to export a recorded series of actions as a Puppeteer script
+  */
+  exportRecording: 'Export',
+  /**
   *@description Text of an item that stops the running task
   */
   stop: 'Stop',
@@ -775,6 +779,22 @@ UI.ActionRegistration.registerActionExtension({
       shortcut: 'Ctrl+Enter',
     },
   ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'recorder.export-recording',
+  experiment: Root.Runtime.ExperimentName.RECORDER,
+  category: UI.ActionRegistration.ActionCategory.RECORDER,
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesPanel.DebuggingActionDelegate.instance();
+  },
+  title: i18nLazyString(UIStrings.exportRecording),
+  iconClass: UI.ActionRegistration.IconClass.LARGEICON_DOWNLOAD,
+  contextTypes() {
+    return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
+  },
+  bindings: [],
 });
 
 UI.ActionRegistration.registerActionExtension({

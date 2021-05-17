@@ -6,7 +6,9 @@
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 import * as UI from '../../ui/legacy/legacy.js';
+
 import type * as Workspace from '../workspace/workspace.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 
@@ -14,6 +16,7 @@ import {RecordingPlayer} from './RecordingPlayer.js';
 import {RecordingSession} from './RecordingSession.js';
 import type {Step} from './Steps.js';
 import {ClickStep, NavigationStep, StepFrameContext, SubmitStep, ChangeStep, CloseStep, EmulateNetworkConditions} from './Steps.js';
+import {RecordingScriptWriter} from './RecordingScriptWriter.js';
 
 const enum RecorderState {
   Recording = 'Recording',
@@ -125,6 +128,22 @@ export class RecorderModel extends SDK.SDKModel.SDKModel {
 
     this._currentRecordingSession.stop();
     this._currentRecordingSession = null;
+  }
+
+  async exportRecording(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
+    const script = this.parseScript(uiSourceCode.content());
+    const writer = new RecordingScriptWriter('  ');
+    while (script.length) {
+      const step = script.shift();
+      step && writer.appendStep(step);
+    }
+    const filename = uiSourceCode.name();
+    const stream = new Bindings.FileUtils.FileOutputStream();
+    if (!await stream.open(filename + '.js')) {
+      return;
+    }
+    stream.write(writer.getScript());
+    stream.close();
   }
 }
 

@@ -8645,6 +8645,9 @@
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Open a JavaScript or CSS file to see symbols"
   },
+  "panels/sources/RecorderPlugin.ts | export": {
+    "message": "Export"
+  },
   "panels/sources/RecorderPlugin.ts | play": {
     "message": "Replay"
   },
@@ -8803,6 +8806,9 @@
   },
   "panels/sources/sources-meta.ts | evaluateSelectedTextInConsole": {
     "message": "Evaluate selected text in console"
+  },
+  "panels/sources/sources-meta.ts | exportRecording": {
+    "message": "Export"
   },
   "panels/sources/sources-meta.ts | filesystem": {
     "message": "Filesystem"

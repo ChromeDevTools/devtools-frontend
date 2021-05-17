@@ -221,6 +221,7 @@ export const enum IconClass {
   LARGEICON_VISIBILITY = 'largeicon-visibility',
   LARGEICON_PHONE = 'largeicon-phone',
   LARGEICON_PLAY = 'largeicon-play',
+  LARGEICON_DOWNLOAD = 'largeicon-download',
   LARGEICON_PAUSE = 'largeicon-pause',
   LARGEICON_RESUME = 'largeicon-resume',
   LARGEICON_TRASH_BIN = 'largeicon-trash-bin',

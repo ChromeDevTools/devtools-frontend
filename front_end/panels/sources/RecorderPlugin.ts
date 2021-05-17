@@ -21,6 +21,10 @@ const UIStrings = {
   *@description Text to replay a recording
   */
   play: 'Replay',
+  /**
+  *@description Text of a button to export as a Puppeteer script
+  */
+  export: 'Export',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/RecorderPlugin.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -45,7 +49,9 @@ export class RecorderPlugin extends Plugin {
     toggleRecording.setText(i18nString(UIStrings.record));
     const replayRecording = UI.Toolbar.Toolbar.createActionButtonForId('recorder.replay-recording');
     replayRecording.setText(i18nString(UIStrings.play));
+    const exportRecording = UI.Toolbar.Toolbar.createActionButtonForId('recorder.export-recording');
+    exportRecording.setText(i18nString(UIStrings.export));
 
-    return [toggleRecording, replayRecording];
+    return [toggleRecording, replayRecording, exportRecording];
   }
 }

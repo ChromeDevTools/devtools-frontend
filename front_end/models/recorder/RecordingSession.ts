@@ -176,6 +176,9 @@ export class RecordingSession {
   }
 
   async attachToTarget(target: SDK.SDKModel.Target): Promise<void> {
+    if (target.type() !== SDK.SDKModel.Type.Frame) {
+      return;
+    }
     this._targets.set(target.id(), target);
     const eventHandler = new RecordingEventHandler(this, target);
     this._eventHandlers.set(target.id(), eventHandler);
@@ -191,8 +194,10 @@ export class RecordingSession {
 
     runtimeModel.addEventListener(SDK.RuntimeModel.Events.BindingCalled, this.bindingCalled, this);
 
+    // TODO(alexrudenko): maybe wire this flag up to DEBUG mode or a setting?
+    const debugRecordingClient = false;
     const setupEventListeners = setupRecordingClient.toString() +
-        `;${setupRecordingClient.name}({getAccessibleName, getAccessibleRole}, true);`;
+        `;${setupRecordingClient.name}({getAccessibleName, getAccessibleRole}, ${debugRecordingClient});`;
 
     const {identifier} = await pageAgent.invoke_addScriptToEvaluateOnNewDocument(
         {source: setupEventListeners, worldName: RECORDER_ISOLATED_WORLD_NAME, includeCommandLineAPI: true});

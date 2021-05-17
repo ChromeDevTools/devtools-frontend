@@ -11435,6 +11435,12 @@
   "ui/legacy/TargetCrashedScreen.ts | oncePageIsReloadedDevtoolsWill": {
     "message": "Once page is reloaded, DevTools will automatically reconnect."
   },
+  "ui/legacy/Toolbar.ts | notPressed": {
+    "message": "not pressed"
+  },
+  "ui/legacy/Toolbar.ts | pressed": {
+    "message": "pressed"
+  },
   "ui/legacy/UIUtils.ts | anonymous": {
     "message": "(anonymous)"
   },

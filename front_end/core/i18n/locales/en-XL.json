@@ -11435,6 +11435,12 @@
   "ui/legacy/TargetCrashedScreen.ts | oncePageIsReloadedDevtoolsWill": {
     "message": "Ôńĉé p̂áĝé îś r̂él̂óâd́êd́, D̂év̂T́ôól̂ś ŵíl̂ĺ âút̂óm̂át̂íĉál̂ĺŷ ŕêćôńn̂éĉt́."
   },
+  "ui/legacy/Toolbar.ts | notPressed": {
+    "message": "n̂ót̂ ṕr̂éŝśêd́"
+  },
+  "ui/legacy/Toolbar.ts | pressed": {
+    "message": "p̂ŕêśŝéd̂"
+  },
   "ui/legacy/UIUtils.ts | anonymous": {
     "message": "(âńôńŷḿôúŝ)"
   },

@@ -31,6 +31,8 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import type * as CodeMirrorModule from '../../third_party/codemirror/codemirror-legacy.js'; // eslint-disable-line @typescript-eslint/no-unused-vars
+
 import * as TextRange from './TextRange.js';
 import type * as TextUtils from './TextUtils.js';
 

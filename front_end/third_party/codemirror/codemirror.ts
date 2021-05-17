@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as CodeMirrorLegacy from './codemirror-legacy';
+export {CodeMirrorLegacy};
+
 import './package/lib/codemirror.js';
 import './package/addon/comment/comment.js';
 import './package/addon/edit/closebrackets.js';

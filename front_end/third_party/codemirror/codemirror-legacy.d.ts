@@ -2,10 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as CodeMirrorModule from '../../node_modules/@types/codemirror/index';
-declare global {
-  var CodeMirror: typeof CodeMirrorModule;
+import * as CodeMirrorModule from 'codemirror/index';
 
+declare module 'codemirror/index' {
   namespace CodeMirror {
     // These are commands we add to CodeMirror.commands, which is allowed
     // although makes TS very upset unless we define them here.
@@ -37,5 +36,8 @@ declare global {
   }
 }
 
+declare global {
+  var CodeMirror: typeof CodeMirrorModule;
+}
 
 export {}

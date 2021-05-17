@@ -5,6 +5,7 @@
 import("../../../scripts/build/ninja/copy.gni")
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
+import("../../../scripts/build/ninja/vars.gni")
 import("../visibility.gni")
 
 devtools_pre_built("codemirror") {
@@ -75,12 +76,28 @@ copy_to_gen("legacy_css") {
   sources = [ "codemirror.css" ]
 }
 
+copy_to_gen("codemirror-legacy-types") {
+  sources = [
+    "codemirror-legacy-types-tsconfig.json",
+    "codemirror-legacy.d.ts",
+  ]
+}
+
 devtools_entrypoint("bundle") {
   entrypoint = "codemirror.ts"
 
-  deps = [ ":codemirror" ]
+  inputs = [ devtools_location_prepend +
+             "node_modules/@types/codemirror/index.d.ts" ]
 
-  visibility = [ "../../ui/legacy/components/text_editor/*" ]
+  deps = [
+    ":codemirror",
+    ":codemirror-legacy-types",
+  ]
+
+  visibility = [
+    "../../models/text_utils/*",
+    "../../ui/legacy/components/text_editor/*",
+  ]
 
   visibility += devtools_third_party_visibility
 }

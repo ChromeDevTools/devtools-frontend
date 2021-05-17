@@ -31,6 +31,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Platform from '../../core/platform/platform.js';
+import type * as CodeMirrorModule from '../../third_party/codemirror/codemirror-legacy.js'; // eslint-disable-line @typescript-eslint/no-unused-vars
 
 import {SearchMatch} from './ContentProvider.js';
 import {Text} from './Text.js';

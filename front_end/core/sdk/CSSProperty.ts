@@ -9,6 +9,7 @@ import * as Common from '../common/common.js';
 import * as HostModule from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
+import type * as CodeMirrorModule from '../../third_party/codemirror/codemirror-legacy.js'; // eslint-disable-line @typescript-eslint/no-unused-vars
 
 import {cssMetadata, GridAreaRowRegex} from './CSSMetadata.js';
 import type {Edit} from './CSSModel.js';                           // eslint-disable-line no-unused-vars

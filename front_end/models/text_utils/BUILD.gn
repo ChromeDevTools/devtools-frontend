@@ -32,7 +32,7 @@ devtools_entrypoint("bundle") {
 
   deps = [
     ":text_utils",
-    "../../third_party/codemirror",
+    "../../third_party/codemirror:bundle",
   ]
 
   visibility = [

@@ -1566,15 +1566,15 @@ export class CodeMirrorTextEditorFactory implements UI.TextEditor.TextEditorFact
 // @ts-ignore
 export class DevToolsAccessibleTextArea extends CodeMirror.inputStyles.textarea {
   textarea!: HTMLTextAreaElement;
-  cm!: any;
   contextMenuPending: boolean;
   composing: boolean;
+  cm: any;
   prevInput!: string;
 
   // https://crbug.com/1151919 * = CodeMirror.Editor
   constructor(codeMirror: any) {
     super(codeMirror);
-
+    this.cm = codeMirror;
     this.contextMenuPending = false;
     this.composing = false;
   }

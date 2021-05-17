@@ -24,7 +24,7 @@ class MockResourceTreeModel extends Common.ObjectWrapper.ObjectWrapper {
 }
 
 class MockResourceTreeFrame {
-  private targetId: string;
+  targetId: string;
   id: string;
   getCreationStackTraceData = () => {};
 
@@ -42,6 +42,13 @@ class MockResourceTreeFrame {
   isMainFrame = () => true;
   isTopFrame = () => true;
   setCreationStackTrace = () => {};
+}
+
+function mockFrameToObjectForAssertion(mockFrame: MockResourceTreeFrame): {targetId: string, id: string} {
+  return {
+    targetId: mockFrame.targetId,
+    id: mockFrame.id,
+  };
 }
 
 describe('FrameManager', () => {
@@ -95,12 +102,18 @@ describe('FrameManager', () => {
     mockModel.dispatchEventToListeners(
         SDK.ResourceTreeModel.Events.FrameDetached, {frame: mockChildFrame, isSwap: false});
 
-    const expectation = [
-      {type: 'FrameAddedToTarget', data: {frame: {id: 'parent-frame-id', targetId: 'target-id'}}},
-      {type: 'FrameAddedToTarget', data: {frame: {id: 'child-frame-id', targetId: 'target-id'}}},
-      {type: 'FrameRemoved', data: {frameId: 'child-frame-id'}},
-    ];
-    assert.strictEqual(JSON.stringify(dispatchedEvents), JSON.stringify(expectation));
+    assert.strictEqual(dispatchedEvents[0].type, 'FrameAddedToTarget');
+    assert.deepEqual(mockFrameToObjectForAssertion(dispatchedEvents[0].data.frame), {
+      targetId: 'target-id',
+      id: 'parent-frame-id',
+    });
+    assert.strictEqual(dispatchedEvents[1].type, 'FrameAddedToTarget');
+    assert.deepEqual(mockFrameToObjectForAssertion(dispatchedEvents[1].data.frame), {
+      targetId: 'target-id',
+      id: 'child-frame-id',
+    });
+    assert.strictEqual(dispatchedEvents[2].type, 'FrameRemoved');
+    assert.deepEqual(dispatchedEvents[2].data, {frameId: 'child-frame-id'});
     let frameFromId = frameManager.getFrame('parent-frame-id');
     assert.strictEqual(frameFromId?.id, 'parent-frame-id');
     assert.strictEqual(frameFromId?.resourceTreeModel().target().id(), 'target-id');
@@ -117,13 +130,21 @@ describe('FrameManager', () => {
     addMockFrame(mockModel, 'child-frame-id');
     frameManager.modelRemoved(mockModel);
 
-    const expectation = [
-      {type: 'FrameAddedToTarget', data: {frame: {id: 'parent-frame-id', targetId: 'target-id'}}},
-      {type: 'FrameAddedToTarget', data: {frame: {id: 'child-frame-id', targetId: 'target-id'}}},
-      {type: 'FrameRemoved', data: {frameId: 'parent-frame-id'}},
-      {type: 'FrameRemoved', data: {frameId: 'child-frame-id'}},
-    ];
-    assert.strictEqual(JSON.stringify(dispatchedEvents), JSON.stringify(expectation));
+    assert.strictEqual(dispatchedEvents[0].type, 'FrameAddedToTarget');
+    assert.deepEqual(mockFrameToObjectForAssertion(dispatchedEvents[0].data.frame), {
+      targetId: 'target-id',
+      id: 'parent-frame-id',
+    });
+    assert.strictEqual(dispatchedEvents[1].type, 'FrameAddedToTarget');
+    assert.deepEqual(mockFrameToObjectForAssertion(dispatchedEvents[1].data.frame), {
+      targetId: 'target-id',
+      id: 'child-frame-id',
+    });
+    assert.strictEqual(dispatchedEvents[2].type, 'FrameRemoved');
+    assert.deepEqual(dispatchedEvents[2].data, {frameId: 'parent-frame-id'});
+    assert.strictEqual(dispatchedEvents[3].type, 'FrameRemoved');
+    assert.deepEqual(dispatchedEvents[3].data, {frameId: 'child-frame-id'});
+
     let frameFromId = frameManager.getFrame('parent-frame-id');
     assert.strictEqual(frameFromId, null);
     frameFromId = frameManager.getFrame('child-frame-id');
@@ -143,12 +164,21 @@ describe('FrameManager', () => {
     mockParentModel.dispatchEventToListeners(
         SDK.ResourceTreeModel.Events.FrameDetached, {frame: mockChildFrameParentTarget, isSwap: true});
 
-    const expectation = [
-      {type: 'FrameAddedToTarget', data: {frame: {id: 'parent-frame-id', targetId: 'parent-target-id'}}},
-      {type: 'FrameAddedToTarget', data: {frame: {id: 'child-frame-id', targetId: 'parent-target-id'}}},
-      {type: 'FrameAddedToTarget', data: {frame: {id: 'child-frame-id', targetId: 'child-target-id'}}},
-    ];
-    assert.strictEqual(JSON.stringify(dispatchedEvents), JSON.stringify(expectation));
+    assert.strictEqual(dispatchedEvents[0].type, 'FrameAddedToTarget');
+    assert.deepEqual(mockFrameToObjectForAssertion(dispatchedEvents[0].data.frame), {
+      targetId: 'parent-target-id',
+      id: 'parent-frame-id',
+    });
+    assert.strictEqual(dispatchedEvents[1].type, 'FrameAddedToTarget');
+    assert.deepEqual(mockFrameToObjectForAssertion(dispatchedEvents[1].data.frame), {
+      targetId: 'parent-target-id',
+      id: 'child-frame-id',
+    });
+    assert.strictEqual(dispatchedEvents[2].type, 'FrameAddedToTarget');
+    assert.deepEqual(mockFrameToObjectForAssertion(dispatchedEvents[2].data.frame), {
+      targetId: 'child-target-id',
+      id: 'child-frame-id',
+    });
     let frameFromId = frameManager.getFrame('parent-frame-id');
     assert.strictEqual(frameFromId?.id, 'parent-frame-id');
     assert.strictEqual(frameFromId?.resourceTreeModel().target().id(), 'parent-target-id');

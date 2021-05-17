@@ -613,7 +613,6 @@ export class Event {
 // eslint-disable-next-line rulesdir/enforce_custom_event_names
 export class ObjectSnapshot extends Event {
   _backingStorage: (() => Promise<string|null>)|null;
-  id!: string;
   _objectPromise: Promise<ObjectSnapshot|null>|null;
 
   constructor(category: string|undefined, name: string, startTime: number, thread: Thread) {

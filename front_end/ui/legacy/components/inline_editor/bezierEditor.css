@@ -16,32 +16,40 @@
   background-color: var(--legacy-selection-bg-color);
 }
 
+.bezier-container {
+  --override-bezier-control-color: #9c27b0;
+
+  display: flex;
+  margin-top: 38px;
+}
+
+.-theme-with-dark-background .bezier-container,
+:host-context(.-theme-with-dark-background) .bezier-container {
+  --override-bezier-control-color: rgb(196 79 216);
+}
+
 .bezier-preset {
   width: 50px;
   height: 50px;
   padding: 5px;
   margin: auto;
-  background-color: #f5f5f5; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background-elevation-1);
   border-radius: 3px;
 }
 
 .bezier-preset line.bezier-control-line {
-  stroke: #666; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  stroke: var(--color-text-secondary);
   stroke-width: 1;
   stroke-linecap: round;
   fill: none;
 }
 
 .bezier-preset circle.bezier-control-circle {
-  fill: #666; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  fill: var(--color-text-secondary);
 }
 
 .bezier-preset path.bezier-path {
-  stroke: #000; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  stroke: var(--color-background-inverted);
   stroke-width: 2;
   stroke-linecap: round;
   fill: none;
@@ -49,30 +57,22 @@
 
 .bezier-preset-selected path.bezier-path,
 .bezier-preset-selected line.bezier-control-line {
-  stroke: #fff; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  stroke: var(--color-background);
 }
 
 .bezier-preset-selected circle.bezier-control-circle {
-  fill: #fff; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  fill: var(--color-background);
 }
 
 .bezier-curve line.linear-line {
-  stroke: rgb(238 238 238); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  stroke: var(--color-background-elevation-2);
   stroke-width: 2;
   stroke-linecap: round;
   fill: none;
 }
 
-:host-context(.-theme-with-dark-background) .bezier-curve line.linear-line {
-  stroke: rgb(138 138 138);
-}
-
 .bezier-curve line.bezier-control-line {
-  stroke: #9c27b0; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  stroke: var(--override-bezier-control-color);
   stroke-width: 2;
   stroke-linecap: round;
   fill: none;
@@ -80,14 +80,12 @@
 }
 
 .bezier-curve circle.bezier-control-circle {
-  fill: #9c27b0; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  fill: var(--override-bezier-control-color);
   cursor: pointer;
 }
 
 .bezier-curve path.bezier-path {
-  stroke: #000; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  stroke: var(--color-background-inverted);
   stroke-width: 3;
   stroke-linecap: round;
   fill: none;
@@ -125,8 +123,7 @@
 }
 
 svg.bezier-preset-modify {
-  background-color: #f5f5f5; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background-elevation-1);
   border-radius: 35px;
   display: inline-block;
   visibility: hidden;
@@ -137,8 +134,7 @@ svg.bezier-preset-modify {
 
 svg.bezier-preset-modify:hover,
 .bezier-preset:hover {
-  background-color: #999; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background-elevation-2);
 }
 
 .bezier-preset-selected .bezier-preset:hover {
@@ -147,8 +143,7 @@ svg.bezier-preset-modify:hover,
 
 .bezier-preset-modify path {
   stroke-width: 2;
-  stroke: #000; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  stroke: var(--color-background-inverted);
   fill: none;
 }
 
@@ -172,11 +167,6 @@ span.bezier-display-value {
   height: 20px;
   cursor: text;
   white-space: nowrap !important; /* stylelint-disable-line declaration-no-important */
-}
-
-.bezier-container {
-  display: flex;
-  margin-top: 38px;
 }
 
 svg.bezier-curve {
@@ -206,6 +196,5 @@ svg.bezier-preset-modify:active {
 }
 
 .bezier-preset-modify:active path {
-  stroke: #fff; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  stroke: var(--color-background);
 }

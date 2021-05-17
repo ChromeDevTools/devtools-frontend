@@ -30,7 +30,7 @@ export class BezierEditor extends UI.Widget.VBox {
   constructor(bezier: UI.Geometry.CubicBezier) {
     super(true);
     this._bezier = bezier;
-    this.registerRequiredCSS('ui/legacy/components/inline_editor/bezierEditor.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('ui/legacy/components/inline_editor/bezierEditor.css', {enableLegacyPatching: false});
     this.contentElement.tabIndex = 0;
     this.setDefaultFocusedElement(this.contentElement);
 

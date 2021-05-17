@@ -477,8 +477,7 @@ describe('The Debugger Language Plugins', async () => {
     });
   });
 
-  // Needs expectations update.
-  it.skip('[crbug.com/1209155] falls back to wasm function names when inline info not present', async () => {
+  it('falls back to wasm function names when inline info not present', async () => {
     const {frontend} = getBrowserAndPages();
     await frontend.evaluateHandle(
         () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
@@ -537,7 +536,7 @@ describe('The Debugger Language Plugins', async () => {
 
     // Call stack shows inline function names and source locations.
     const funcNames = await getCallFrameNames();
-    assert.deepEqual(funcNames, ['Main', 'go', 'await in go (async)', '(anonymous)']);
+    assert.deepEqual(funcNames, ['$Main', 'go', 'await in go (async)', '(anonymous)']);
     const sourceLocations = await getCallFrameLocations();
     assert.deepEqual(sourceLocations, ['unreachable.ll:6', 'unreachable.html:27', 'unreachable.html:30']);
   });

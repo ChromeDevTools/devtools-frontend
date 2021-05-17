@@ -421,8 +421,7 @@ describe('Sources Tab', async function() {
 });
 
 describe('Raw-Wasm', async () => {
-  // Needs expectations update.
-  it.skip('[crbug.com/1209155] displays correct location in Wasm source', async () => {
+  it('displays correct location in Wasm source', async () => {
     const {target} = getBrowserAndPages();
 
     // Have the target load the page.
@@ -449,7 +448,7 @@ describe('Raw-Wasm', async () => {
 
     assert.isAbove(titles.length, 1);
     assert.isAbove(locations.length, 1);
-    assert.strictEqual(titles[1], 'foo');
+    assert.strictEqual(titles[1], '$foo');
     assert.strictEqual(locations[1], 'callstack-wasm-to-js.wasm:0x32');
 
     // Select second call frame.

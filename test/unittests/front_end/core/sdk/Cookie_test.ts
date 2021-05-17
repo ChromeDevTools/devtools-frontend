@@ -6,6 +6,7 @@ const {assert} = chai;
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import {assertNotNull} from '../../../../../front_end/core/platform/platform.js';
+import * as Protocol from '../../../../../front_end/generated/protocol.js';
 
 describe('Cookie', () => {
   it('can be instantiated without issues', () => {

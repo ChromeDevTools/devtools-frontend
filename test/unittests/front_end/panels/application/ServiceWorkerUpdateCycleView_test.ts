@@ -6,6 +6,7 @@ const {assert} = chai;
 
 import type * as SDKModule from '../../../../../front_end/core/sdk/sdk.js';
 import * as Resources from '../../../../../front_end/panels/application/application.js';
+import * as Protocol from '../../../../../front_end/generated/protocol.js';
 
 import View = Resources.ServiceWorkerUpdateCycleView;
 

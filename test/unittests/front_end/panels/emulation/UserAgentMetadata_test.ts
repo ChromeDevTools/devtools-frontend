@@ -4,6 +4,7 @@
 
 const {assert} = chai;
 import * as Emulation from '../../../../../front_end/panels/emulation/emulation.js';
+import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 const UserAgentMetadata = Emulation.UserAgentMetadata;
 
 const errParse = 'syntax error';

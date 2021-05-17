@@ -37,6 +37,7 @@ import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Bindings from '../../../../models/bindings/bindings.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';  // eslint-disable-line no-unused-vars
+import type * as Protocol from '../../../../generated/protocol.js';
 import * as UI from '../../legacy.js';
 
 const UIStrings = {

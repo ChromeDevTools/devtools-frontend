@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {Issue, IssueCategory, IssueKind} from '../../../../../front_end/models/issues_manager/Issue.js';  // eslint-disable-line rulesdir/es_modules_import
 
 export class StubIssue extends Issue {

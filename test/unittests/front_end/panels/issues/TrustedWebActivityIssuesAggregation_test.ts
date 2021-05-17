@@ -9,6 +9,7 @@ import * as IssuesManager from '../../../../../front_end/models/issues_manager/i
 import type * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import {MockIssuesModel} from '../../models/issues_manager/MockIssuesModel.js';
 import {MockIssuesManager} from '../../models/issues_manager/MockIssuesManager.js';
+import * as Protocol from '../../../../../front_end/generated/protocol.js';
 
 describe('AggregatedIssue', async () => {
   it('aggregates two TWA issues with same violationType correctly', () => {

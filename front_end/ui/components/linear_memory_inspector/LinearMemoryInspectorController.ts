@@ -5,6 +5,7 @@
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import * as Protocol from '../../../generated/protocol.js';
 import * as UI from '../../legacy/legacy.js';
 
 import type {Settings} from './LinearMemoryInspector.js';

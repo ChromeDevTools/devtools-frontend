@@ -10,6 +10,7 @@ import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Bindings from '../../../../models/bindings/bindings.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';   // eslint-disable-line no-unused-vars
 import * as SourceFrame from '../source_frame/source_frame.js';           // eslint-disable-line no-unused-vars
+import type * as Protocol from '../../../../generated/protocol.js';
 
 const UIStrings = {
   /**

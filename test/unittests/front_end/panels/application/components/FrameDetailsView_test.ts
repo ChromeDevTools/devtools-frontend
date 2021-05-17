@@ -7,6 +7,7 @@ import * as ApplicationComponents from '../../../../../../front_end/panels/appli
 import * as ExpandableList from '../../../../../../front_end/ui/components/expandable_list/expandable_list.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../../../../front_end/ui/components/report_view/report_view.js';
+import * as Protocol from '../../../../../../front_end/generated/protocol.js';
 import {assertShadowRoot, getCleanTextContentFromElements, getElementWithinComponent, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();

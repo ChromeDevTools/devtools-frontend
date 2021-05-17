@@ -7,6 +7,7 @@
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../../../generated/protocol-proxy-api.js';
+import type * as Protocol from '../../../../generated/protocol.js';
 import * as UI from '../../legacy.js';
 
 const UIStrings = {

@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../data_grid/data_grid.js';
-
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as DataGrid from '../../data_grid/data_grid.js';
 import * as ComponentHelpers from '../../helpers/helpers.js';

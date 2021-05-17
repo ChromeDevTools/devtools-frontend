@@ -34,12 +34,10 @@ import * as Common from '../../../../core/common/common.js';
 import type * as Components from '../utils/utils.js';
 import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
-import '../../../components/linear_memory_inspector/linear_memory_inspector.js';
 import * as LinearMemoryInspector from '../../../components/linear_memory_inspector/linear_memory_inspector.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
-import '../../../components/icon_button/icon_button.js';
 import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as UI from '../../legacy.js';
 

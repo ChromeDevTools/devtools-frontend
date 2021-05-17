@@ -30,9 +30,6 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import '../../ui/components/icon_button/icon_button.js';
-import '../../ui/components/issue_counter/issue_counter.js';
-
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';

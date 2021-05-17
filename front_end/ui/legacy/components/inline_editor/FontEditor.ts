@@ -4,8 +4,6 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import '../../../components/icon_button/icon_button.js';
-
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as IconButton from '../../../components/icon_button/icon_button.js';

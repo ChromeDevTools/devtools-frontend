@@ -62,6 +62,9 @@ SDK.ConsoleMessage.MessageType = SDKModule.ConsoleModel.MessageType;
  */
 SDK.ConsoleMessage.MessageLevel = SDKModule.ConsoleModel.MessageLevel;
 
+SDK.ConsoleMessage.FrontendMessageType = SDKModule.ConsoleModel.FrontendMessageType;
+SDK.ConsoleMessage.FrontendMessageSource = SDKModule.ConsoleModel.FrontendMessageSource;
+
 /** @constructor */
 SDK.Cookie = SDKModule.Cookie.Cookie;
 

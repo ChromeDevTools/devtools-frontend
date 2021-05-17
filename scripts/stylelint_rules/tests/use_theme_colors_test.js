@@ -233,4 +233,18 @@ describe('use_theme_colors', () => {
       },
     ]);
   });
+
+  it('is silent when linting code that has an empty var()', async () => {
+    /**
+     * This is a weird test case but if you've got Stylelint in your editor and
+     * you're working on changing files, I've found that after typing "var("
+     * (and my editor adding the closing ")"), the theme_colors rule tries to
+     * run against this and fails as it expects the var() to contain a variable.
+     * So if we do detect var(), we just do nothing and wait for the user to
+     * actually fill it in.
+     */
+    const code = 'header { color: var(); }';
+    const warnings = await lint(code);
+    assert.lengthOf(warnings, 0);
+  });
 });

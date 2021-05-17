@@ -119,6 +119,16 @@ module.exports = stylelint.createPlugin(RULE_NAME, function(primary, secondary, 
         return;
       }
 
+      if (cssValueToCheck === 'var()') {
+        /**
+          * If it's an empty var(), let's leave it, as the developer is
+          * probably in the middle of typing the value into their editor, and
+          * we don't want to jump the gun and test until they've filled that
+          * value in.
+          */
+        return;
+      }
+
       if (cssValueToCheck.includes('var(')) {
         const [match, variableName] = /var\((--[\w-]+)/.exec(cssValueToCheck);
         if (!match) {

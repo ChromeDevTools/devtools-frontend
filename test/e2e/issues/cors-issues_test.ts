@@ -448,4 +448,39 @@ describe('CORS issues', async () => {
       'webdav',
     ]);
   });
+
+  it('should display CORS issues that are misconfiguring the redirect mode', async () => {
+    await goToResource('empty.html');
+    const {target} = getBrowserAndPages();
+    await target.evaluate(async () => {
+      try {
+        const url = new URL('/', document.location.toString())
+                        .toString()
+                        .replace('https://localhost', 'webdav://devtools.oopif.test');
+        await fetch(url, {mode: 'no-cors', redirect: 'manual'});
+      } catch (e) {
+      }
+    });
+    await navigateToIssuesTab();
+    await expandIssue();
+    const issueElement = await getIssueByTitle('Ensure no-cors requests configure redirect mode follow');
+    assertNotNull(issueElement);
+    const section = await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label');
+    const text = await section.label.evaluate(el => el.textContent);
+    assert.strictEqual(text, '1 request');
+    await ensureResourceSectionIsExpanded(section);
+    const table = await extractTableFromResourceSection(section.content);
+    assertNotNull(table);
+    assert.strictEqual(table.length, 2);
+    assert.deepEqual(table[0], [
+      'Request',
+      'Status',
+      'Source Location',
+    ]);
+    assertMatchArray(table[1], [
+      /^devtools.oopif.test.*\//,
+      'blocked',
+      /.*:\d+/,
+    ]);
+  });
 });

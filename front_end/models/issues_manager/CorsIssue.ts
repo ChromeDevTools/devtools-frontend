@@ -41,7 +41,7 @@ export enum IssueCode {
   PreflightMissingAllowExternal = 'CorsIssue::PreflightMissingAllowExternal',
   PreflightInvalidAllowExternal = 'CorsIssue::PreflightInvalidAllowExternal',
   InvalidResponse = 'CorsIssue::InvalidResponse',
-  NoCorsRedirectModeNotFollow = 'NoCorsRedirectModeNotFollow',
+  NoCorsRedirectModeNotFollow = 'CorsIssue::NoCorsRedirectModeNotFollow',
 }
 
 function getIssueCode(details: Protocol.Audits.CorsIssueDetails): IssueCode {
@@ -205,10 +205,17 @@ export class CorsIssue extends Issue<IssueCode> {
             linkTitle: i18nString(UIStrings.CORS),
           }],
         };
+      case IssueCode.NoCorsRedirectModeNotFollow:
+        return {
+          file: 'corsNoCorsRedirectModeNotFollow.md',
+          links: [{
+            link: 'https://web.dev/cross-origin-resource-sharing',
+            linkTitle: i18nString(UIStrings.CORS),
+          }],
+        };
       case IssueCode.PreflightMissingAllowExternal:
       case IssueCode.PreflightInvalidAllowExternal:
       case IssueCode.InvalidResponse:
-      case IssueCode.NoCorsRedirectModeNotFollow:
         return null;
     }
   }

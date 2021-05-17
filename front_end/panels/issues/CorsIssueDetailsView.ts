@@ -199,9 +199,11 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
         this.appendColumnTitle(header, i18nString(UIStrings.sourceLocation));
         this.appendColumnTitle(header, i18nString(UIStrings.unsupportedScheme));
         break;
+      case IssuesManager.CorsIssue.IssueCode.NoCorsRedirectModeNotFollow:
+        this.appendColumnTitle(header, i18nString(UIStrings.sourceLocation));
+        break;
       default:
-        Platform.assertUnhandled<IssuesManager.CorsIssue.IssueCode.NoCorsRedirectModeNotFollow|
-                                 IssuesManager.CorsIssue.IssueCode.PreflightMissingAllowExternal|
+        Platform.assertUnhandled<IssuesManager.CorsIssue.IssueCode.PreflightMissingAllowExternal|
                                  IssuesManager.CorsIssue.IssueCode.PreflightInvalidAllowExternal|
                                  IssuesManager.CorsIssue.IssueCode.InvalidResponse>(issueCode);
     }
@@ -403,11 +405,15 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
         this.appendSourceLocation(element, details.location, issue.model()?.getTargetIfNotDisposed());
         this.appendIssueDetailCell(element, details.corsErrorStatus.failedParameter ?? '', 'code-example');
         break;
+      case IssuesManager.CorsIssue.IssueCode.NoCorsRedirectModeNotFollow:
+        element.appendChild(this.createRequestCell(details.request));
+        this.appendStatus(element, details.isWarning);
+        this.appendSourceLocation(element, details.location, issue.model()?.getTargetIfNotDisposed());
+        break;
       default:
         element.appendChild(this.createRequestCell(details.request));
         this.appendStatus(element, details.isWarning);
-        Platform.assertUnhandled<IssuesManager.CorsIssue.IssueCode.NoCorsRedirectModeNotFollow|
-                                 IssuesManager.CorsIssue.IssueCode.PreflightMissingAllowExternal|
+        Platform.assertUnhandled<IssuesManager.CorsIssue.IssueCode.PreflightMissingAllowExternal|
                                  IssuesManager.CorsIssue.IssueCode.PreflightInvalidAllowExternal|
                                  IssuesManager.CorsIssue.IssueCode.InvalidResponse>(issueCode);
         break;

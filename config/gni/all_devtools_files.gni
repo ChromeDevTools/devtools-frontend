@@ -214,6 +214,7 @@ all_devtools_files = [
   "front_end/models/issues_manager/descriptions/corsAllowCredentialsRequired.md",
   "front_end/models/issues_manager/descriptions/corsDisallowedByMode.md",
   "front_end/models/issues_manager/descriptions/corsDisabledScheme.md",
+  "front_end/models/issues_manager/descriptions/corsNoCorsRedirectModeNotFollow.md",
   "front_end/models/issues_manager/descriptions/corsHeaderDisallowedByPreflightResponse.md",
   "front_end/models/issues_manager/descriptions/corsInvalidHeaderValues.md",
   "front_end/models/issues_manager/descriptions/corsMethodDisallowedByPreflightResponse.md",

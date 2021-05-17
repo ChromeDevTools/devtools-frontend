@@ -385,6 +385,7 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
       const item =
           this._breakpoints.find(breakpointItem => breakpointItem.locations.some(loc => loc.breakpoint === breakpoint));
       if (item) {
+        this._list.selectItem(item);
         this._list.refreshItem(item);
       }
     }

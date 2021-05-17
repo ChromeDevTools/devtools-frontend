@@ -380,7 +380,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
       networkLogLargeRowsSetting: Common.Settings.Setting<boolean>) {
     super();
     this.setMinimumSize(50, 64);
-    this.registerRequiredCSS('panels/network/networkLogView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/network/networkLogView.css', {enableLegacyPatching: false});
 
     this.element.id = 'network-container';
     this.element.classList.add('no-node-selected');

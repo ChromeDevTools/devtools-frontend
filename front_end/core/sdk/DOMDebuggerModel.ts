@@ -198,6 +198,7 @@ export class DOMDebuggerModel extends SDKModel {
   _domBreakpoints: DOMBreakpoint[];
   _domBreakpointsSetting: Common.Settings
       .Setting<{url: string, path: string, type: Protocol.DOMDebugger.DOMBreakpointType, enabled: boolean}[]>;
+  suspended = false;
 
   constructor(target: Target) {
     super(target);
@@ -216,6 +217,14 @@ export class DOMDebuggerModel extends SDKModel {
 
   runtimeModel(): RuntimeModel {
     return this._runtimeModel;
+  }
+
+  async suspendModel(): Promise<void> {
+    this.suspended = true;
+  }
+
+  async resumeModel(): Promise<void> {
+    this.suspended = false;
   }
 
   async eventListeners(remoteObject: RemoteObject): Promise<EventListener[]> {
@@ -342,12 +351,21 @@ export class DOMDebuggerModel extends SDKModel {
     return domDocument ? domDocument.documentURL : '';
   }
 
-  _documentUpdated(): void {
+  async _documentUpdated(): Promise<void> {
+    if (this.suspended) {
+      return;
+    }
     const removed = this._domBreakpoints;
     this._domBreakpoints = [];
     this.dispatchEventToListeners(Events.DOMBreakpointsRemoved, removed);
 
-    const currentURL = this._currentURL();
+    // this._currentURL() is empty when the page is reloaded because the
+    // new document has not been requested yet and the old one has been
+    // removed. Therefore, we need to request the document and wait for it.
+    // Note that requestDocument() caches the document so that it is requested
+    // only once.
+    const document = await this._domModel.requestDocument();
+    const currentURL = document ? document.documentURL : '';
     for (const breakpoint of this._domBreakpointsSetting.get()) {
       if (breakpoint.url === currentURL) {
         this._domModel.pushNodeByPathToFrontend(breakpoint.path).then(appendBreakpoint.bind(this, breakpoint));
@@ -397,6 +415,9 @@ export class DOMDebuggerModel extends SDKModel {
   }
 
   _nodeRemoved(event: Common.EventTarget.EventTargetEvent): void {
+    if (this.suspended) {
+      return;
+    }
     const node = (event.data.node as DOMNode);
     const children = node.children() || [];
     this._removeDOMBreakpoints(breakpoint => breakpoint.node === node || children.indexOf(breakpoint.node) !== -1);

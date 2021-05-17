@@ -10,6 +10,7 @@ devtools_module("issues") {
   sources = [
     "AffectedBlockedByResponseView.ts",
     "AffectedCookiesView.ts",
+    "AffectedDocumentsInQuirksModeView.ts",
     "AffectedElementsView.ts",
     "AffectedElementsWithLowContrastView.ts",
     "AffectedHeavyAdView.ts",

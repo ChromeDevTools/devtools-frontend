@@ -1232,6 +1232,9 @@
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Preventing mixed content"
   },
+  "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
+    "message": "Document compatibility mode"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "an insecure"
   },
@@ -4805,6 +4808,18 @@
   "panels/issues/AffectedCookiesView.ts | path": {
     "message": "Path"
   },
+  "panels/issues/AffectedDocumentsInQuirksModeView.ts | documentInTheDOMTree": {
+    "message": "Document in the DOM tree"
+  },
+  "panels/issues/AffectedDocumentsInQuirksModeView.ts | mode": {
+    "message": "Mode"
+  },
+  "panels/issues/AffectedDocumentsInQuirksModeView.ts | nDocuments": {
+    "message": "{n, plural, =1 { document} other { documents}}"
+  },
+  "panels/issues/AffectedDocumentsInQuirksModeView.ts | url": {
+    "message": "URL"
+  },
   "panels/issues/AffectedElementsView.ts | nElements": {
     "message": "{n, plural, =1 {# element} other {# elements}}"
   },
@@ -5044,6 +5059,9 @@
   },
   "panels/issues/IssuesPane.ts | other": {
     "message": "Other"
+  },
+  "panels/issues/IssuesPane.ts | quirksMode": {
+    "message": "Quirks Mode"
   },
   "panels/issues/IssuesPane.ts | samesiteCookie": {
     "message": "SameSite Cookie"

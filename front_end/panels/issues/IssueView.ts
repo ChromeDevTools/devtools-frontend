@@ -24,6 +24,7 @@ import * as Network from '../network/network.js';
 
 import {AffectedBlockedByResponseView} from './AffectedBlockedByResponseView.js';
 import {AffectedCookiesView} from './AffectedCookiesView.js';
+import {AffectedDocumentsInQuirksModeView} from './AffectedDocumentsInQuirksModeView.js';
 import {AffectedElementsView} from './AffectedElementsView.js';
 import {AffectedElementsWithLowContrastView} from './AffectedElementsWithLowContrastView.js';
 import {AffectedHeavyAdView} from './AffectedHeavyAdView.js';
@@ -492,6 +493,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       new AffectedElementsWithLowContrastView(this, this._issue),
       new AffectedTrustedWebActivityIssueDetailsView(this, this._issue),
       new CorsIssueDetailsView(this, this._issue),
+      new AffectedDocumentsInQuirksModeView(this, this._issue),
     ];
 
     this._aggregatedIssuesCount = null;

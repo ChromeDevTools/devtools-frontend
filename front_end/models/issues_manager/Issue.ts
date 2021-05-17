@@ -20,6 +20,7 @@ export enum IssueCategory {
   LowTextContrast = 'LowTextContrast',
   Cors = 'Cors',
   AttributionReporting = 'AttributionReporting',
+  QuirksMode = 'QuirksMode',
   Other = 'Other',
 }
 

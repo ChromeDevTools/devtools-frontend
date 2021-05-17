@@ -83,6 +83,12 @@ const UIStrings = {
    * Attribution Reporting API is a newly proposed web API (see https://github.com/WICG/conversion-measurement-api).
    */
   attributionReporting: 'Attribution Reporting `API`',
+  /**
+   * @description Category title for the different 'Quirks Mode' issues. Quirks Mode refers
+   *              to the legacy browser modes that displays web content according to outdated
+   *              browser behaviors.
+   */
+  quirksMode: 'Quirks Mode',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/IssuesPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -120,6 +126,8 @@ class IssueCategoryView extends UI.TreeOutline.TreeElement {
         return i18nString(UIStrings.cors);
       case IssuesManager.Issue.IssueCategory.AttributionReporting:
         return i18nString(UIStrings.attributionReporting);
+      case IssuesManager.Issue.IssueCategory.QuirksMode:
+        return i18nString(UIStrings.quirksMode);
       case IssuesManager.Issue.IssueCategory.Other:
         return i18nString(UIStrings.other);
     }

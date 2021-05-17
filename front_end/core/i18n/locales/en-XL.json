@@ -1232,6 +1232,9 @@
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "P̂ŕêv́êńt̂ín̂ǵ m̂íx̂éd̂ ćôńt̂én̂t́"
   },
+  "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
+    "message": "D̂óĉúm̂én̂t́ ĉóm̂ṕât́îb́îĺît́ŷ ḿôd́ê"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "âń îńŝéĉúr̂é"
   },
@@ -4805,6 +4808,18 @@
   "panels/issues/AffectedCookiesView.ts | path": {
     "message": "P̂át̂h́"
   },
+  "panels/issues/AffectedDocumentsInQuirksModeView.ts | documentInTheDOMTree": {
+    "message": "D̂óĉúm̂én̂t́ îń t̂h́ê D́ÔḾ t̂ŕêé"
+  },
+  "panels/issues/AffectedDocumentsInQuirksModeView.ts | mode": {
+    "message": "M̂ód̂é"
+  },
+  "panels/issues/AffectedDocumentsInQuirksModeView.ts | nDocuments": {
+    "message": "{n, plural, =1 { d̂óĉúm̂én̂t́} other { d̂óĉúm̂én̂t́ŝ}}"
+  },
+  "panels/issues/AffectedDocumentsInQuirksModeView.ts | url": {
+    "message": "ÛŔL̂"
+  },
   "panels/issues/AffectedElementsView.ts | nElements": {
     "message": "{n, plural, =1 {# êĺêḿêńt̂} other {# él̂ém̂én̂t́ŝ}}"
   },
@@ -5044,6 +5059,9 @@
   },
   "panels/issues/IssuesPane.ts | other": {
     "message": "Ôt́ĥér̂"
+  },
+  "panels/issues/IssuesPane.ts | quirksMode": {
+    "message": "Q̂úîŕk̂ś M̂ód̂é"
   },
   "panels/issues/IssuesPane.ts | samesiteCookie": {
     "message": "Ŝám̂éŜít̂é Ĉóôḱîé"

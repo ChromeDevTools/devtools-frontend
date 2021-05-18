@@ -789,6 +789,22 @@ describe('User Metrics for Issue Panel', () => {
     ]);
   });
 
+  it('dispatches events when Quirks Mode issues are created', async () => {
+    await goToResource('elements/quirks-mode-iframes.html');
+    await waitFor('.issue');
+
+    await assertCapturedEvents([
+      {
+        name: 'DevTools.IssueCreated',
+        value: 59,  // QuirksModeIssue::LimitedQuirksMode
+      },
+      {
+        name: 'DevTools.IssueCreated',
+        value: 58,  // QuirksModeIssue::QuirksMode
+      },
+    ]);
+  });
+
   afterEach(async () => {
     const {frontend} = getBrowserAndPages();
     await endCatchEvents(frontend);

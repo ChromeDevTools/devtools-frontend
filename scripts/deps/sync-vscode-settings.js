@@ -5,19 +5,23 @@
 const path = require('path');
 const fs = require('fs');
 
-const VSCODE_SETTINGS_LOCATION = path.join(__dirname, '..', '..', '.vscode', 'settings.json');
-const DEFAULT_VS_CODE_SETTINGS = {
-  'eslint.runtime': 'third_party/node/node.py',
-};
+const DEVTOOLS_SETTINGS_LOCATION = path.join(process.cwd(), '.vscode', 'devtools-workspace-settings.json');
+const VSCODE_SETTINGS_LOCATION = path.join(process.cwd(), '.vscode', 'settings.json');
+
+if (!fs.existsSync(DEVTOOLS_SETTINGS_LOCATION)) {
+  // If there are no settings to copy and paste, return and do nothing.
+  return;
+}
+const devtoolsSettings = require(DEVTOOLS_SETTINGS_LOCATION);
+
 
 let preExistingSettings = {};
-
 if (fs.existsSync(VSCODE_SETTINGS_LOCATION)) {
   preExistingSettings = require(VSCODE_SETTINGS_LOCATION);
 }
 
 const updatedSettings = {
-  ...DEFAULT_VS_CODE_SETTINGS,
+  ...devtoolsSettings,
   // Any setting specified by the engineer will always take precedence over the defaults
   ...preExistingSettings,
 };

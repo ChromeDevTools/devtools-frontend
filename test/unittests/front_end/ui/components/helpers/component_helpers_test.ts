@@ -129,6 +129,15 @@ describe('ComponentHelpers', () => {
       }, 'Render is not scheduled');
     });
 
+    it('only renders once if second render call is made before the first has been handled', async () => {
+      const element = new TestElement();
+      ComponentHelpers.ScheduledRender.scheduleRender(element, element.renderBound);
+      ComponentHelpers.ScheduledRender.scheduleRender(element, element.renderBound);
+
+      await coordinator.done();
+      assert.strictEqual(element.renderCount, 1);
+    });
+
     it('re-renders if second render call is made during the first', async () => {
       const element = new TestElement();
       ComponentHelpers.ScheduledRender.scheduleRender(element, () => {

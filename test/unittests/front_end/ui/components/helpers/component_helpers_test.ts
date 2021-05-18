@@ -11,13 +11,27 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const TestElement = class extends HTMLElement {
   renderCount = 0;
+  renderAsyncCount = 0;
   readonly renderBound = this.render.bind(this);
+  readonly renderAsyncBound = this.renderAsync.bind(this);
   private render() {
     if (!ComponentHelpers.ScheduledRender.isScheduledRender(this)) {
       throw new Error('Render is not scheduled');
     }
 
     this.renderCount++;
+  }
+  private renderAsync() {
+    if (!ComponentHelpers.ScheduledRender.isScheduledRender(this)) {
+      throw new Error('Render is not scheduled');
+    }
+
+    return new Promise<void>(resolve => {
+      setTimeout(() => {
+        this.renderAsyncCount++;
+        resolve();
+      }, 40);
+    });
   }
 };
 customElements.define('x-devtools-test-element', TestElement);
@@ -127,6 +141,27 @@ describe('ComponentHelpers', () => {
       assert.throws(() => {
         element.renderBound();
       }, 'Render is not scheduled');
+    });
+
+    it('only renders once if second render call is made before the first has been handled', async () => {
+      const element = new TestElement();
+      ComponentHelpers.ScheduledRender.scheduleRender(element, element.renderBound);
+      ComponentHelpers.ScheduledRender.scheduleRender(element, element.renderBound);
+
+      await coordinator.done();
+      assert.strictEqual(element.renderCount, 1);
+    });
+
+    it('handles async callbacks', async () => {
+      const element = new TestElement();
+      ComponentHelpers.ScheduledRender.scheduleRender(element, async () => {
+        ComponentHelpers.ScheduledRender.scheduleRender(element, element.renderAsyncBound);
+
+        await element.renderAsyncBound();
+      });
+
+      await coordinator.done();
+      assert.strictEqual(element.renderAsyncCount, 2);
     });
 
     it('re-renders if second render call is made during the first', async () => {

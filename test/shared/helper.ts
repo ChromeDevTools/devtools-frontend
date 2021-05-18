@@ -280,6 +280,35 @@ export const waitForFunction = async<T>(fn: () => Promise<T|undefined>, asyncSco
   });
 };
 
+export const waitForFunctionWithTries = async<T>(
+    fn: () => Promise<T|undefined>, options: {tries: number} = {
+      tries: Number.MAX_SAFE_INTEGER,
+    },
+    asyncScope = new AsyncScope()): Promise<T|undefined> => {
+  return await asyncScope.exec(async () => {
+    let tries = 0;
+    while (tries++ < options.tries) {
+      const result = await fn();
+      if (result) {
+        return result;
+      }
+      await timeout(100);
+    }
+    return undefined;
+  });
+};
+
+export const waitForWithTries = async (
+    selector: string, root?: puppeteer.JSHandle, options: {tries: number} = {
+      tries: Number.MAX_SAFE_INTEGER,
+    },
+    asyncScope = new AsyncScope(), handler?: string) => {
+  return await asyncScope.exec(() => waitForFunctionWithTries(async () => {
+                                 const element = await $(selector, root, handler);
+                                 return (element || undefined);
+                               }, options, asyncScope));
+};
+
 export const debuggerStatement = (frontend: puppeteer.Page) => {
   return frontend.evaluate(() => {
     // eslint-disable-next-line no-debugger

@@ -85,7 +85,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
   _editingRow: ShortcutListItem|null;
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/settings/keybindsSettingsTab.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/settings/keybindsSettingsTab.css', {enableLegacyPatching: false});
 
     const header = this.contentElement.createChild('header');
     header.createChild('h1').textContent = i18nString(UIStrings.shortcuts);
@@ -104,7 +104,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
     this._list = new UI.ListControl.ListControl(this._items, this, UI.ListControl.ListMode.NonViewport);
     this._items.replaceAll(this._createListItems());
     UI.ARIAUtils.markAsList(this._list.element);
-    this.registerRequiredCSS('panels/settings/keybindsSettingsTab.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/settings/keybindsSettingsTab.css', {enableLegacyPatching: false});
     this.contentElement.appendChild(this._list.element);
     UI.ARIAUtils.setAccessibleName(this._list.element, i18nString(UIStrings.keyboardShortcutsList));
     const footer = this.contentElement.createChild('div');

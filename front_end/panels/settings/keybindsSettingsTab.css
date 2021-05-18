@@ -6,8 +6,7 @@
 
 header {
   padding: 0 0 6px;
-  border-bottom: 1px solid #eee; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-bottom: 1px solid var(--color-details-hairline);
   flex: none;
   margin-bottom: 25px;
 }
@@ -26,21 +25,15 @@ h1 {
 
 .keybinds-key {
   padding: 0.1em 0.6em;
-  border: 1px solid #ccc; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border: 1px solid var(--color-details-hairline);
   font-size: 11px;
-  background-color: #f7f7f7; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  color: #333; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  box-shadow: 0 1px 0 rgb(0 0 0 / 20%), 0 0 0 2px #fff inset; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */ /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background-elevation-1);
+  color: var(--color-text-primary);
+  box-shadow: var(--box-shadow-outline-color);
   border-radius: 3px;
   display: inline-block;
   margin: 0 0.1em;
-  text-shadow: 0 1px 0 #fff; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  text-shadow: 0 1px 0 var(--color-background);
   line-height: 1.5;
   white-space: nowrap;
 }
@@ -62,8 +55,7 @@ h1 {
 }
 
 .keybinds-list-item.keybinds-editing {
-  background-color: rgb(0 0 0 / 5%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background-elevation-2);
 }
 
 .keybinds-action-name {
@@ -82,11 +74,7 @@ h1 {
 }
 
 .keybinds-error {
-  color: var(--legacy-input-validation-error);
-}
-
-:host-context(.-theme-with-dark-background) .keybinds-error {
-  color: #ff6161;
+  color: var(--color-accent-red);
 }
 
 .keybinds-list-item.keybinds-editing .keybinds-shortcut {
@@ -104,8 +92,7 @@ h1 {
 }
 
 .keybinds-list-item button:hover .icon-mask {
-  background-color: #333; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-text-primary);
 }
 
 .keybinds-list-item button:focus-visible {
@@ -141,8 +128,7 @@ h1 {
   text-overflow: ellipsis;
   overflow: hidden;
   user-select: none;
-  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-primary);
   text-align: start;
   position: relative;
   margin-right: 0;
@@ -155,13 +141,11 @@ h1 {
 }
 
 .keybinds-category-header:not(:nth-child(2)) {
-  border-top: 1px solid rgb(231 231 231); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-top: 1px solid var(--color-details-hairline);
 }
 
 .keybinds-list-item:not(.keybinds-category-header):hover {
-  background: hsl(0deg 0% 96%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background: var(--color-background-elevation-1);
 }
 
 .keybinds-set-select {
@@ -171,8 +155,7 @@ h1 {
 
 .keybinds-set-select label p {
   display: inline;
-  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-primary);
 }
 
 .keybinds-set-select select {

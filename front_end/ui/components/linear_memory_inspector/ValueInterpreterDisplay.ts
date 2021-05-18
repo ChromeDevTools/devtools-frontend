@@ -83,7 +83,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
   constructor() {
     super();
     this.shadow.adoptedStyleSheets = [
-      ...getStyleSheets('ui/legacy/inspectorCommon.css', {enableLegacyPatching: true}),
+      ...getStyleSheets('ui/legacy/inspectorCommon.css', {enableLegacyPatching: false}),
     ];
   }
 

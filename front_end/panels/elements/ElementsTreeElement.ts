@@ -56,11 +56,11 @@ import {getRegisteredDecorators} from './MarkerDecorator.js';  // eslint-disable
 
 const UIStrings = {
   /**
-  *@description Title for Ad adorner
+  *@description Title for Ad adorner. This iframe is marked as advertisement frame.
   */
   thisFrameWasIdentifiedAsAnAd: 'This frame was identified as an ad frame',
   /**
-  *@description A context menu item in the Elements Tree Element of the Elements panel
+  *@description A context menu item in the Elements panel. Force is used as a verb, indicating intention to make the state change.
   */
   forceState: 'Force state',
   /**

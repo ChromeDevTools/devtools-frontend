@@ -16,7 +16,7 @@ export abstract class ReportRenderer {
   }
 }
 
-export class ReportUIFeatures {
+export abstract class ReportUIFeatures {
   json!: ReportJSON;
   _document!: Document;
 
@@ -28,6 +28,8 @@ export class ReportUIFeatures {
 
   initFeatures(_report: ReportJSON): void {
   }
+
+  abstract addButton(_opts: {text: string, icon?: string, onClick: () => void}): HTMLButtonElement;
 
   _resetUIState(): void {
   }

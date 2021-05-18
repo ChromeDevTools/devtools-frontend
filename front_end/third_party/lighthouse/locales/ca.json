@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Adaptació per a mòbils"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "És possible que la pàgina no s'estigui carregant com s'esperava perquè s'ha redirigit el teu URL de prova ({requested}) a {final}. Intenta provar el segon URL directament."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "Sembla que el dispositiu provat té una CPU més lenta que la que espera Lighthouse. Això pot repercutir negativament en el teu resultat del rendiment. Obtén més informació sobre com pots [calibrar un multiplicador de retenció de la CPU adequat](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "La pàgina s'ha carregat molt lentament i ha sobrepassat el límit de temps. És possible que els resultats siguin incomplets."
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{Pot ser que hi hagi dades emmagatzemades que afectin el rendiment de càrrega en aquesta ubicació: {locations}. Audita aquesta pàgina en una finestra d'incògnit per impedir que aquests recursos afectin els teus resultats.}other{Pot ser que hi hagi dades emmagatzemades que afectin el rendiment de càrrega en aquestes ubicacions: {locations}. Audita aquesta pàgina en una finestra d'incògnit per impedir que aquests recursos afectin els teus resultats.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "Pots optar per afegir esquemes d'URL https: o http: (els navegadors que admeten \"strict-dynamic\" els ignoren) perquè sigui retrocompatible amb navegadors més antics."
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "Els valors són estimacions i poden variar. El [resultat del rendiment es calcula](https://web.dev/performance-scoring/) directament a partir d'aquestes mètriques."
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "Mostra un mapa d'arbre"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "Auditories aprovades però amb advertiments"

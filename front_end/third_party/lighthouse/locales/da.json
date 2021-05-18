@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Mobilvenlig"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "Siden indlæses muligvis ikke som forventet, da din testwebadresse ({requested}) blev omdirigeret til {final}. Prøv at teste den anden webadresse direkte."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "Den testede enhed ser ud til at have en langsommere CPU, end Lighthouse forventer. Dette kan påvirke resultatet negativt. Få flere oplysninger om [kalibrering af en passende CPU-multiplikator for køkørsel](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "Siden blev indlæst for langsomt til at afslutte inden for tidsgrænsen. Resultaterne kan være ufuldstændige."
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{Der kan være gemte data, som påvirker indlæsningseffektiviteten på følgende placering: {locations}. Gennemgå denne side i et inkognitovindue for at forhindre, at disse ressourcer påvirker dine resultater.}one{Der kan være gemte data, som påvirker indlæsningseffektiviteten på følgende placering: {locations}. Gennemgå denne side i et inkognitovindue for at forhindre, at disse ressourcer påvirker dine resultater.}other{Der kan være gemte data, som påvirker indlæsningseffektiviteten på følgende placeringer: {locations}. Gennemgå denne side i et inkognitovindue for at forhindre, at disse ressourcer påvirker dine resultater.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "Overvej at tilføje webadresseformaterne https: og http: (ignoreres af browsere, der understøtter \"strict-dynamic\") for at gøre CSP'en bagudkompatibel med ældre browsere."
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "Værdierne er estimater og kan variere. [Resultatet beregnes](https://web.dev/performance-scoring/) direkte på baggrund af disse metrics."
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "Se trædiagram"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "Bestod revisioner, men med advarsler"

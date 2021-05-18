@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "모바일 친화적"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "테스트 URL({requested})이 {final}(으)로 리디렉션되었기 때문에 페이지가 예상대로 로드되지 않을 수 있습니다. 두 번째 URL을 직접 테스트해 보세요."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "테스트된 기기의 CPU가 Lighthouse의 예상보다 느린 것으로 보입니다. 이는 성능 점수에 부정적인 영향을 줄 수 있습니다. [적절한 CPU 감속 배율기 보정](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)에 관해 자세히 알아보세요."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "페이지 로드가 너무 느려 시간 제한 내에 완료되지 않았습니다. 결과가 불완전할 수 있습니다."
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{{locations}에 저장된 데이터가 로드 성능에 영향을 줄 수 있습니다. 시크릿 창에서 페이지를 감사하여 이러한 리소스가 점수에 영향을 주지 않도록 하세요.}other{{locations}에 저장된 데이터가 로드 성능에 영향을 줄 수 있습니다. 시크릿 창에서 페이지를 감사하여 이러한 리소스가 점수에 영향을 주지 않도록 하세요.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "기존 브라우저와의 하위 호환성을 위하여 https: 및 http: URL 스킴('strict-dynamic'을 지원하는 브라우저에서 무시됨)을 추가하는 것이 좋습니다."
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "값은 추정치이며 달라질 수 있습니다. 이러한 측정항목에서 [성능 점수가 직접 계산됩니다](https://web.dev/performance-scoring/)."
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "트리맵 보기"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "감사를 통과했으나 경고를 받음"

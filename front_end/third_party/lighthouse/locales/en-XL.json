@@ -1703,17 +1703,17 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "M̂ób̂íl̂é F̂ŕîén̂d́l̂ý"
   },
-  "lighthouse-core/gather/driver/storage.js | warningData": {
-    "message": "{locationCount, plural,\n    =1 {T̂h́êŕê ḿâý b̂é ŝt́ôŕêd́ d̂át̂á âf́f̂éĉt́îńĝ ĺôád̂ín̂ǵ p̂ér̂f́ôŕm̂án̂ćê ín̂ t́ĥíŝ ĺôćât́îón̂: {locations}. Áûd́ît́ t̂h́îś p̂áĝé îń âń îńĉóĝńît́ô ẃîńd̂óŵ t́ô ṕr̂év̂én̂t́ t̂h́ôśê ŕêśôúr̂ćêś f̂ŕôḿ âf́f̂éĉt́îńĝ ýôúr̂ śĉór̂éŝ.}\n    other {T́ĥér̂é m̂áŷ b́ê śt̂ór̂éd̂ d́ât́â áf̂f́êćt̂ín̂ǵ l̂óâd́îńĝ ṕêŕf̂ór̂ḿâńĉé îń t̂h́êśê ĺôćât́îón̂ś: {locations}. Âúd̂ít̂ t́ĥíŝ ṕâǵê ín̂ án̂ ín̂ćôǵn̂ít̂ó ŵín̂d́ôẃ t̂ó p̂ŕêv́êńt̂ t́ĥóŝé r̂éŝóûŕĉéŝ f́r̂óm̂ áf̂f́êćt̂ín̂ǵ ŷóûŕ ŝćôŕêś.}\n  }"
-  },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "T̂h́ê ṕâǵê ḿâý n̂ót̂ b́ê ĺôád̂ín̂ǵ âś êx́p̂éĉt́êd́ b̂éĉáûśê ýôúr̂ t́êśt̂ ÚR̂Ĺ ({requested}) ŵáŝ ŕêd́îŕêćt̂éd̂ t́ô {final}. T́r̂ý t̂éŝt́îńĝ t́ĥé ŝéĉón̂d́ ÛŔL̂ d́îŕêćt̂ĺŷ."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
+  "lighthouse-core/gather/driver/environment.js | warningSlowHostCpu": {
     "message": "T̂h́ê t́êśt̂éd̂ d́êv́îćê áp̂ṕêár̂ś t̂ó ĥáv̂é â śl̂óŵér̂ ĆP̂Ú t̂h́âń  L̂íĝh́t̂h́ôúŝé êx́p̂éĉt́ŝ. T́ĥíŝ ćâń n̂éĝát̂ív̂él̂ý âf́f̂éĉt́ ŷóûŕ p̂ér̂f́ôŕm̂án̂ćê śĉór̂é. L̂éâŕn̂ ḿôŕê áb̂óût́ [ĉál̂íb̂ŕât́îńĝ án̂ áp̂ṕr̂óp̂ŕîát̂é ĈṔÛ śl̂óŵd́ôẃn̂ ḿûĺt̂íp̂ĺîér̂](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
   },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
+  "lighthouse-core/gather/driver/navigation.js | warningRedirected": {
+    "message": "T̂h́ê ṕâǵê ḿâý n̂ót̂ b́ê ĺôád̂ín̂ǵ âś êx́p̂éĉt́êd́ b̂éĉáûśê ýôúr̂ t́êśt̂ ÚR̂Ĺ ({requested}) ŵáŝ ŕêd́îŕêćt̂éd̂ t́ô {final}. T́r̂ý t̂éŝt́îńĝ t́ĥé ŝéĉón̂d́ ÛŔL̂ d́îŕêćt̂ĺŷ."
+  },
+  "lighthouse-core/gather/driver/navigation.js | warningTimeout": {
     "message": "T̂h́ê ṕâǵê ĺôád̂éd̂ t́ôó ŝĺôẃl̂ý t̂ó f̂ín̂íŝh́ ŵít̂h́îń t̂h́ê t́îḿê ĺîḿît́. R̂éŝúl̂t́ŝ ḿâý b̂é îńĉóm̂ṕl̂ét̂é."
+  },
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount, plural,\n    =1 {T̂h́êŕê ḿâý b̂é ŝt́ôŕêd́ d̂át̂á âf́f̂éĉt́îńĝ ĺôád̂ín̂ǵ p̂ér̂f́ôŕm̂án̂ćê ín̂ t́ĥíŝ ĺôćât́îón̂: {locations}. Áûd́ît́ t̂h́îś p̂áĝé îń âń îńĉóĝńît́ô ẃîńd̂óŵ t́ô ṕr̂év̂én̂t́ t̂h́ôśê ŕêśôúr̂ćêś f̂ŕôḿ âf́f̂éĉt́îńĝ ýôúr̂ śĉór̂éŝ.}\n    other {T́ĥér̂é m̂áŷ b́ê śt̂ór̂éd̂ d́ât́â áf̂f́êćt̂ín̂ǵ l̂óâd́îńĝ ṕêŕf̂ór̂ḿâńĉé îń t̂h́êśê ĺôćât́îón̂ś: {locations}. Âúd̂ít̂ t́ĥíŝ ṕâǵê ín̂ án̂ ín̂ćôǵn̂ít̂ó ŵín̂d́ôẃ t̂ó p̂ŕêv́êńt̂ t́ĥóŝé r̂éŝóûŕĉéŝ f́r̂óm̂ áf̂f́êćt̂ín̂ǵ ŷóûŕ ŝćôŕêś.}\n  }"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "Ĉón̂śîd́êŕ âd́d̂ín̂ǵ ĥt́t̂ṕŝ: án̂d́ ĥt́t̂ṕ: ÛŔL̂ śĉh́êḿêś (îǵn̂ór̂éd̂ b́ŷ b́r̂óŵśêŕŝ śûṕp̂ór̂t́îńĝ 'śt̂ŕîćt̂-d́ŷńâḿîć') t̂ó b̂é b̂áĉḱŵár̂d́ ĉóm̂ṕât́îb́l̂é ŵít̂h́ ôĺd̂ér̂ b́r̂óŵśêŕŝ."
@@ -2069,6 +2069,9 @@
   "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
     "message": "Ûńk̂ńôẃn̂"
   },
+  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
+    "message": "Ŝh́ôẃ âúd̂ít̂ś r̂él̂év̂án̂t́ t̂ó:"
+  },
   "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
     "message": "Ĉól̂ĺâṕŝé ŝńîṕp̂ét̂"
   },
@@ -2087,11 +2090,38 @@
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "V̂ál̂úêś âŕê éŝt́îḿât́êd́ âńd̂ ḿâý v̂ár̂ý. T̂h́ê [ṕêŕf̂ór̂ḿâńĉé ŝćôŕê íŝ ćâĺĉúl̂át̂éd̂](https://web.dev/performance-scoring/) d́îŕêćt̂ĺŷ f́r̂óm̂ t́ĥéŝé m̂ét̂ŕîćŝ."
   },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "V̂íêẃ T̂ŕêém̂áp̂"
+  },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "P̂áŝśêd́ âúd̂ít̂ś b̂út̂ ẃît́ĥ ẃâŕn̂ín̂ǵŝ"
   },
   "lighthouse-core/report/html/renderer/util.js | warningHeader": {
     "message": "Ŵár̂ńîńĝś: "
+  },
+  "lighthouse-treemap/app/src/util.js | allLabel": {
+    "message": "Âĺl̂"
+  },
+  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "Âĺl̂ Śĉŕîṕt̂ś"
+  },
+  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
+    "message": "Ĉóv̂ér̂áĝé"
+  },
+  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "D̂úp̂ĺîćât́ê Ḿôd́ûĺêś"
+  },
+  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "R̂éŝóûŕĉé B̂ýt̂éŝ"
+  },
+  "lighthouse-treemap/app/src/util.js | tableColumnName": {
+    "message": "N̂ám̂é"
+  },
+  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "T̂óĝǵl̂é T̂áb̂ĺê"
+  },
+  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "Ûńûśêd́ B̂ýt̂éŝ"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "F̂ór̂ án̂ím̂át̂éd̂ ćôńt̂én̂t́, ûśê [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) t́ô ḿîńîḿîźê ĆP̂Ú ûśâǵê ẃĥén̂ t́ĥé ĉón̂t́êńt̂ íŝ óf̂f́ŝćr̂éêń."

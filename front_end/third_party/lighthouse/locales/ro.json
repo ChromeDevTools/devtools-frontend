@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Pentru dispozitivele mobile"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "Este posibil ca pagina să nu se încarce conform așteptărilor, deoarece adresa URL de testare ({requested}) a fost redirecționată spre {final}. Încearcă să testezi direct a doua adresă URL."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "Se pare că dispozitivul testat are un CPU mai lent decât prevede Lighthouse. Aceasta poate afecta negativ scorul de performanță. Află mai multe despre [calibrarea unui multiplicator corespunzător pentru încetinirea CPU-ului](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "Pagina s-a încărcat prea lent pentru a respecta limita de timp. Rezultatele pot fi incomplete."
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{Este posibil să existe date stocate care afectează performanța de încărcare în următoarea locație: {locations}. Verifică pagina într-o fereastră incognito pentru a împiedica resursele să îți afecteze scorurile.}few{Este posibil să existe date stocate care afectează performanța de încărcare în următoarele locații: {locations}. Verifică pagina într-o fereastră incognito pentru a împiedica resursele să îți afecteze scorurile.}other{Este posibil să existe date stocate care afectează performanța de încărcare în următoarele locații: {locations}. Verifică pagina într-o fereastră incognito pentru a împiedica resursele să îți afecteze scorurile.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "Îți recomandăm să adaugi scheme de adrese URL https: și http: (ignorate de browserele care acceptă strict-dynamic) pentru retrocompatibilitatea cu browsere mai vechi."
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "Valorile sunt estimate și pot varia. [Scorul de performanță este calculat](https://web.dev/performance-scoring/) direct folosind aceste valori."
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "Afișează Treemap"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "Auditări trecute, dar cu avertismente"

@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Prilagojeno za mobilne naprave"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "Stran se morda ne naloži po pričakovanjih, ker je bil preizkusni URL ({requested}) preusmerjen na {final}. Poskusite neposredno preizkusiti drugi URL."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "Videti je, da ima preizkušena naprava počasnejši CPE kot ga pričakuje Lighthouse. To lahko negativno vpliva na rezultat uspešnosti. Preberite več o [umerjanju ustreznega množitelja za upočasnitev CPE-ja](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "Stran se je naložila prepočasi, da bi se nalaganje dokončalo znotraj časovne omejitve. Rezultati so morda nepopolni."
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{Na tej lokaciji so morda shranjeni podatki, ki vplivajo na uspešnost nalaganja: {locations}. Preglejte to stran v anonimnem oknu, da preprečite, da bi ti viri vplivali na vaše rezultate.}one{Na teh lokacijah so morda shranjeni podatki, ki vplivajo na uspešnost nalaganja: {locations}. Preglejte to stran v anonimnem oknu, da preprečite, da bi ti viri vplivali na vaše rezultate.}two{Na teh lokacijah so morda shranjeni podatki, ki vplivajo na uspešnost nalaganja: {locations}. Preglejte to stran v anonimnem oknu, da preprečite, da bi ti viri vplivali na vaše rezultate.}few{Na teh lokacijah so morda shranjeni podatki, ki vplivajo na uspešnost nalaganja: {locations}. Preglejte to stran v anonimnem oknu, da preprečite, da bi ti viri vplivali na vaše rezultate.}other{Na teh lokacijah so morda shranjeni podatki, ki vplivajo na uspešnost nalaganja: {locations}. Preglejte to stran v anonimnem oknu, da preprečite, da bi ti viri vplivali na vaše rezultate.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "Razmislite o dodajanju shem URL-jev https: in http: (brskalniki, ki podpirajo element »strict-dynamic«, jih prezrejo) zaradi povratne združljivosti s starejšimi brskalniki."
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "Vrednosti so ocenjene in lahko odstopajo. [Rezultat uspešnosti se izračuna](https://web.dev/performance-scoring/) neposredno iz teh meritev."
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "Ogled drevesnega zemljevida"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "Pregledi so bili uspešno opravljeni, vendar z opozorili"

@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Mobilvennlig"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "Siden lastes kanskje ikke inn som forventet, fordi testnettadressen ({requested}) ble viderekoblet til {final}. Prøv å teste den andre nettadressen direkte."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "Den testede enheten ser ut til å ha tregere prosessor enn Lighthouse forventer. Dette kan virke negativt inn på ytelsespoengsummen din. Finn ut mer om [kalibrering av en hensiktsmessig multiplikator for prosessorforsinkelse](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "Siden ble lastet inn for tregt til å bli ferdig innenfor tidsgrensen. Resultatene kan være ufullstendige."
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{Det kan være lagrede data som påvirker innlastingsytelsen, på denne plasseringen: {locations}. Utfør en revisjon på denne siden i et inkognitovindu for å forhindre disse ressursene fra å påvirke poengsummene.}other{Det kan være lagrede data som påvirker innlastingsytelsen, på disse plasseringene: {locations}. Utfør en revisjon på denne siden i et inkognitovindu for å forhindre disse ressursene fra å påvirke poengsummene.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "Vurder å legge til nettadresseskjemaene https: og http: (ignoreres av nettlesere som støtter «strict-dynamic») for bakoverkompatibilitet med eldre nettlesere."
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "Verdiene er anslått og kan variere. [Beregningen av ytelsespoengsummen](https://web.dev/performance-scoring/) er basert direkte på disse verdiene."
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "Vis trekart"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "Revisjoner som er bestått, men med advarsler"

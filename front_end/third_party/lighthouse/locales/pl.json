@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Na komórki"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "Strona może nie wczytywać się prawidłowo, ponieważ testowy URL ({requested}) został przekierowany pod adres {final}. Przetestuj drugi adres URL bezpośrednio."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "Testowane urządzenie wydaje się mieć procesor o szybkości mniejszej niż oczekiwana przez Lighthouse. Może to negatywnie wpływać na wynik w kategorii Wydajność. Dowiedz się więcej o [kalibrowaniu odpowiedniego mnożnika spowolnienia procesora](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "Wczytywanie strony trwało za długo i nie zostało ukończone w przewidzianym na to czasie. Wyniki mogą być niepełne."
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{Możliwe, że przechowywane są dane, które mają wpływ na szybkość wczytywania w tej lokalizacji: {locations}. Aby uchronić się przed wpływem tych zasobów na wyniki, sprawdź tę stronę w oknie incognito.}few{Możliwe, że przechowywane są dane, które mają wpływ na szybkość wczytywania w tych lokalizacjach: {locations}. Aby uchronić się przed wpływem tych zasobów na wyniki, sprawdź tę stronę w oknie incognito.}many{Możliwe, że przechowywane są dane, które mają wpływ na szybkość wczytywania w tych lokalizacjach: {locations}. Aby uchronić się przed wpływem tych zasobów na wyniki, sprawdź tę stronę w oknie incognito.}other{Możliwe, że przechowywane są dane, które mają wpływ na szybkość wczytywania w tych lokalizacjach: {locations}. Aby uchronić się przed wpływem tych zasobów na wyniki, sprawdź tę stronę w oknie incognito.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "Zastanów się, czy nie dodać schematów adresów URL https: i http: (ignorowanych przez przeglądarki obsługujące dyrektywę „strict-dynamic”), aby uzyskać zgodność wsteczną ze starszymi przeglądarkami."
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "Wartości są szacunkowe i mogą się zmieniać. [Wynik wydajności jest obliczony](https://web.dev/performance-scoring/) bezpośrednio na podstawie tych danych."
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "Pokaż diagram"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "Audyty zaliczone z ostrzeżeniami"

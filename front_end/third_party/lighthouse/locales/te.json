@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "మొబైల్-అనుకూలం"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "మీ పరీక్ష URL ({requested})ను {final}కు మళ్లించినందున, పేజీ అనుకున్న విధంగా లోడ్ కాలేకపోతుండవచ్చు. నేరుగా రెండవ URLను పరీక్షించడం ట్రై చేయండి."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "పరీక్షించిన పరికరం Lighthouse ఆశించే దాని కంటే తక్కువ CPUని కలిగి ఉన్నట్లుంది. మీ పనితీరు స్కోర్‌పై ఇది ప్రతికూల ప్రభావం చూపగలదు. [సముచిత CPU నెమ్మది చలనం మల్టీప్లయర్‌ను క్యాలిబ్రేట్ చేయడం](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling) గురించి మరింత తెలుసుకోండి."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "సమయ పరిమితి లోపల పూర్తి కావడానికి పేజీ మరీ నిదానంగా లోడ్ అయ్యింది. ఫలితాలు సంపూర్ణంగా ఉండకపోవచ్చు."
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{ఈ లొకేషన్‌లో 'లోడింగ్ పనితీరు'ను ప్రభావితం చేసే స్టోర్డ్ డేటా ఉండవచ్చు: {locations}. మీ స్కోర్‌లను ఆ రిసోర్స్‌లు ప్రభావితం చేయకుండా నివారించడానికి అజ్ఞాత విండోలో ఈ పేజీని ఆడిట్ చేయండి.}other{ఈ లొకేషన్‌లలో ఉండే స్టోర్డ్ డేటా వల్ల 'లోడింగ్ పనితీరు' ప్రభావితం కావచ్చు: {locations}. మీ స్కోర్‌లను ఆ రిసోర్స్‌లు ప్రభావితం చేయకుండా నివారించడానికి అజ్ఞాత విండోలో ఈ పేజీని ఆడిట్ చేయండి.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "పాత బ్రౌజర్‌లతో అనుకూలంగా ఉండటానికి https:, http: URL స్కీమ్ ('strict-dynamic'ను సపోర్ట్ చేసే బ్రౌజర్‌ల ద్వారా విస్మరించబడినవి)లను జోడించడాన్ని పరిగణించండి."
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "విలువలు కేవలం అంచనా మాత్రమే, ఇవి మారే అవకాశం ఉంది. నేరుగా ఈ కొలమానాల ఆధారంగా [పనితీరు స్కోరు లెక్కించబడుతుంది](https://web.dev/performance-scoring/)."
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "ట్రీమ్యాప్‌ను చూడండి"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "ఆడిట్‌లు పాస్ అయ్యాయి కానీ హెచ్చరికలు ఉన్నాయి"

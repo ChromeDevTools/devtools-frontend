@@ -1703,17 +1703,17 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Mobile Friendly"
   },
-  "lighthouse-core/gather/driver/storage.js | warningData": {
-    "message": "{locationCount, plural,\n    =1 {There may be stored data affecting loading performance in this location: {locations}. Audit this page in an incognito window to prevent those resources from affecting your scores.}\n    other {There may be stored data affecting loading performance in these locations: {locations}. Audit this page in an incognito window to prevent those resources from affecting your scores.}\n  }"
-  },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "The page may not be loading as expected because your test URL ({requested}) was redirected to {final}. Try testing the second URL directly."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
+  "lighthouse-core/gather/driver/environment.js | warningSlowHostCpu": {
     "message": "The tested device appears to have a slower CPU than  Lighthouse expects. This can negatively affect your performance score. Learn more about [calibrating an appropriate CPU slowdown multiplier](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
   },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
+  "lighthouse-core/gather/driver/navigation.js | warningRedirected": {
+    "message": "The page may not be loading as expected because your test URL ({requested}) was redirected to {final}. Try testing the second URL directly."
+  },
+  "lighthouse-core/gather/driver/navigation.js | warningTimeout": {
     "message": "The page loaded too slowly to finish within the time limit. Results may be incomplete."
+  },
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount, plural,\n    =1 {There may be stored data affecting loading performance in this location: {locations}. Audit this page in an incognito window to prevent those resources from affecting your scores.}\n    other {There may be stored data affecting loading performance in these locations: {locations}. Audit this page in an incognito window to prevent those resources from affecting your scores.}\n  }"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "Consider adding https: and http: URL schemes (ignored by browsers supporting 'strict-dynamic') to be backward compatible with older browsers."
@@ -2069,6 +2069,9 @@
   "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
     "message": "Unknown"
   },
+  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
+    "message": "Show audits relevant to:"
+  },
   "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
     "message": "Collapse snippet"
   },
@@ -2087,11 +2090,38 @@
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "Values are estimated and may vary. The [performance score is calculated](https://web.dev/performance-scoring/) directly from these metrics."
   },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "View Treemap"
+  },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "Passed audits but with warnings"
   },
   "lighthouse-core/report/html/renderer/util.js | warningHeader": {
     "message": "Warnings: "
+  },
+  "lighthouse-treemap/app/src/util.js | allLabel": {
+    "message": "All"
+  },
+  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "All Scripts"
+  },
+  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
+    "message": "Coverage"
+  },
+  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "Duplicate Modules"
+  },
+  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "Resource Bytes"
+  },
+  "lighthouse-treemap/app/src/util.js | tableColumnName": {
+    "message": "Name"
+  },
+  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "Toggle Table"
+  },
+  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "Unused Bytes"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "For animated content, use [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) to minimize CPU usage when the content is offscreen."

@@ -48,11 +48,6 @@ limitations under the License.
       // is in the document.
       const features = new ReportUIFeatures(dom);
       features.initFeatures(window.__LIGHTHOUSE_JSON__);
-
-      // No UI for treemap yet. For now, must run this command in console.
-      globalThis._tmpFeatures = features;
-      const command = 'ReportUIFeatures.openTreemap(_tmpFeatures.json);';
-      console.log(`For treemap viewer, run: ${command}`);
     }
     window.addEventListener('DOMContentLoaded', __initLighthouseReport__);
 

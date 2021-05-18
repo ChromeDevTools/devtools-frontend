@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Prilagođeno mobilnim uređajima"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "Stranica se možda ne učitava kako je očekivano jer je vaš testni URL ({requested}) bio preusmjeren na {final}. Pokušajte izravno testirati drugi URL"
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "Čini se da testirani uređaj ima sporiji procesor nego što Lighthouse očekuje. To može negativno utjecati na vaš rezultat izvedbe. Saznajte više o [kalibraciji odgovarajućeg množitelja usporavanja procesora](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "Učitavanje stranice bilo je presporo da bi se dovršilo unutar vremenskog ograničenja. Rezultati možda nisu potpuni."
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{Na ovoj lokaciji možda ima pohranjenih podataka koji utječu na izvedbu učitavanja: {locations}. Provjerite stranicu u anonimnom prozoru da ti resursi ne bi utjecali na rezultate.}one{Na ovim lokacijama možda ima pohranjenih podataka koji utječu na izvedbu učitavanja: {locations}. Provjerite stranicu u anonimnom prozoru da ti resursi ne bi utjecali na rezultate.}few{Na ovim lokacijama možda ima pohranjenih podataka koji utječu na izvedbu učitavanja: {locations}. Provjerite stranicu u anonimnom prozoru da ti resursi ne bi utjecali na rezultate.}other{Na ovim lokacijama možda ima pohranjenih podataka koji utječu na izvedbu učitavanja: {locations}. Provjerite stranicu u anonimnom prozoru da ti resursi ne bi utjecali na rezultate.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "Savjetujemo vam da dodate https: i http: URL sheme (koje ignoriraju preglednici koji podržavaju strict-dynamic) radi kompatibilnosti s prijašnjim verzijama preglednika."
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "Vrijednosti se procjenjuju i mogu se razlikovati. [Rezultat izvedbe računa se](https://web.dev/performance-scoring/) izravno pomoću tih mjernih podataka."
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "Pregledajte Treemap"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "Uspješni pregledi no s upozorenjima"

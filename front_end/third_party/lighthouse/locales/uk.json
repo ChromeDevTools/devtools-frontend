@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Для мобільних пристроїв"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "Ця сторінка може не завантажуватися належним чином, оскільки тестову URL-адресу ({requested}) було переспрямовано на {final}. Спробуйте перейти безпосередньо на другу URL-адресу."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "ЦП пристрою для тестування працює повільніше, ніж потрібно для роботи Lighthouse. Це може негативно позначитися на оцінці ефективності. Докладніше про [калібрування відповідного множника сповільнення ЦП](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "Сторінка завантажувалася занадто повільно, щоб показати всі результати в межах визначеного часу, тому вони можуть бути неповними."
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{У цьому місці можуть зберігатися дані, що впливають на тривалість завантаження: {locations}. Щоб такі ресурси не впливали на ваші показники, перевірте цю сторінку у вікні в режимі анонімного перегляду.}one{У цих місцях можуть зберігатися дані, що впливають на тривалість завантаження: {locations}. Щоб такі ресурси не впливали на ваші показники, перевірте цю сторінку у вікні в режимі анонімного перегляду.}few{У цих місцях можуть зберігатися дані, що впливають на тривалість завантаження: {locations}. Щоб такі ресурси не впливали на ваші показники, перевірте цю сторінку у вікні в режимі анонімного перегляду.}many{У цих місцях можуть зберігатися дані, що впливають на тривалість завантаження: {locations}. Щоб такі ресурси не впливали на ваші показники, перевірте цю сторінку у вікні в режимі анонімного перегляду.}other{У цих місцях можуть зберігатися дані, що впливають на тривалість завантаження: {locations}. Щоб такі ресурси не впливали на ваші показники, перевірте цю сторінку у вікні в режимі анонімного перегляду.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "Додайте схеми URL-адрес https: і http: (ігноруються веб-переглядачами, що підтримують strict-dynamic) для зворотної сумісності зі старішими веб-переглядачами."
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "Значення приблизні й можуть відрізнятися. [Значення ефективності визначено](https://web.dev/performance-scoring/) на основі цих показників."
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "Переглянути веб-додаток Treemap"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "Перевірки зі статусом \"Пройдено\", що містять застереження"

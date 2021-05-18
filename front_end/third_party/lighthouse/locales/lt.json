@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Pritaikyta mobiliesiems"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "Puslapis gali būti neįkeliamas, kaip numatyta, nes bandomasis URL ({requested}) peradresavo į {final}. Išbandykite antrąjį URL tiesiogiai."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "Išbandyto įrenginio centrinis procesorius pasirodė lėtesnis, nei tikėjosi „Lighthouse“. Tai gali neigiamai paveikti našumo įvertinimą. Sužinokite daugiau apie [atitinkamo centrinio procesoriaus sulėtėjimo koeficiento kalibravimą](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "Puslapis įkeliamas per lėtai, kad įkėlimas būtų baigtas atitinkant laiko apribojimą. Rezultatai gali būti neišsamūs."
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{Šioje vietoje gali būti išsaugotų duomenų, turinčių poveikio įkėlimo našumui: {locations}. Patikrinkite šį puslapį inkognito lange, kad šie šaltiniai nepaveiktų rezultatų.}one{Šiose vietose gali būti išsaugotų duomenų, turinčių poveikio įkėlimo našumui: {locations}. Patikrinkite šį puslapį inkognito lange, kad šie šaltiniai nepaveiktų rezultatų.}few{Šiose vietose gali būti išsaugotų duomenų, turinčių poveikio įkėlimo našumui: {locations}. Patikrinkite šį puslapį inkognito lange, kad šie šaltiniai nepaveiktų rezultatų.}many{Šiose vietose gali būti išsaugotų duomenų, turinčių poveikio įkėlimo našumui: {locations}. Patikrinkite šį puslapį inkognito lange, kad šie šaltiniai nepaveiktų rezultatų.}other{Šiose vietose gali būti išsaugotų duomenų, turinčių poveikio įkėlimo našumui: {locations}. Patikrinkite šį puslapį inkognito lange, kad šie šaltiniai nepaveiktų rezultatų.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "Apsvarstykite galimybę pridėti https: ir http: URL schemas (nepaisoma naršyklėse, palaikančiose raktinį žodį „strict-dynamic“), kad būtų užtikrintas atgalinis suderinamumas su senesnėmis naršyklėmis."
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "Vertės yra apytikslės ir gali skirtis. [Našumo įvertinimas apskaičiuojamas](https://web.dev/performance-scoring/) tiesiogiai pagal šias metrikas."
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "Žr. medžio žemėlapį"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "Sėkmingos patikros, bet pateikta įspėjimų"

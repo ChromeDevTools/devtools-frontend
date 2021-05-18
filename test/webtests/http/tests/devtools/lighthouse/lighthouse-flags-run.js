@@ -25,7 +25,7 @@
   TestRunner.addResult(`disableStorageReset: ${lhr.configSettings.disableStorageReset}`);
   TestRunner.addResult(`throttlingMethod: ${lhr.configSettings.throttlingMethod}`);
 
-  const viewTraceButton = LighthouseTestRunner.getResultsElement().querySelector('.view-trace');
+  const viewTraceButton = LighthouseTestRunner.getResultsElement().querySelector('.lh-button--trace');
   TestRunner.addResult(`\nView Trace Button Text: "${viewTraceButton.textContent}"`);
   TestRunner.addResult(`View Trace Button Title: "${viewTraceButton.title}"`);
 

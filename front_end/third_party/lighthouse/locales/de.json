@@ -1080,13 +1080,13 @@
     "message": "Der Messwert \"Erster CPU-Leerlauf\" gibt an, wann die Aktivität des Hauptthreads der Seite das erste Mal gering genug ist, um Eingaben zu verarbeiten.  [Weitere Informationen.](https://web.dev/first-cpu-idle/)"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
-    "message": "\"Inhalte weitgehend gezeichnet\" gibt an, wann die Hauptinhalte einer Seite sichtbar sind. [Weitere Informationen.](https://web.dev/first-meaningful-paint/)"
+    "message": "\"First Meaningful Paint\" gibt an, wann die Hauptinhalte einer Seite sichtbar sind. [Weitere Informationen.](https://web.dev/first-meaningful-paint/)"
   },
   "lighthouse-core/audits/metrics/interactive.js | description": {
     "message": "Die Zeit bis Interaktivität entspricht der Zeit, die vergeht, bis die Seite vollständig interaktiv ist. [Weitere Informationen.](https://web.dev/interactive/)"
   },
   "lighthouse-core/audits/metrics/largest-contentful-paint.js | description": {
-    "message": "Largest Contentful Paint gibt an, wie lange das Rendern des längsten Texts oder des größten Bilds dauert. [Weitere Informationen](https://web.dev/lighthouse-largest-contentful-paint/)"
+    "message": "Largest Contentful Paint gibt an, wie lange das Zeichnen des längsten Texts oder des größten Bilds dauert. [Weitere Informationen](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
   "lighthouse-core/audits/metrics/max-potential-fid.js | description": {
     "message": "Das maximale potenzielle First Input Delay, das bei Ihren Nutzern auftreten kann, entspricht der Dauer der längsten Aufgabe. [Weitere Informationen](https://web.dev/lighthouse-max-potential-fid/)"
@@ -1638,7 +1638,7 @@
     "message": "Diagnose"
   },
   "lighthouse-core/config/default-config.js | firstPaintImprovementsGroupDescription": {
-    "message": "Der wichtigste Faktor bei der Leistung ist, wie schnell Pixel auf dem Bildschirm gerendert werden. Wichtige Messwerte: \"Erste Inhalte gezeichnet\", \"Inhalte weitgehend gezeichnet\""
+    "message": "Der wichtigste Faktor bei der Leistung ist, wie schnell Pixel auf dem Bildschirm gezeichnet werden. Wichtige Messwerte: \"First Contentful Paint\", \"First Meaningful Paint\""
   },
   "lighthouse-core/config/default-config.js | firstPaintImprovementsGroupTitle": {
     "message": "Verbesserungen beim Zeichnen der ersten Inhalte"
@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Für Mobilgeräte optimiert"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "Die Seite lädt möglicherweise nicht wie erwartet, weil Ihre Test-URL ({requested}) auf {final} weitergeleitet wurde. Versuchen Sie, die zweite URL direkt zu testen."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "Das getestete Gerät hat eine langsamere CPU, als für Lighthouse erforderlich ist. Dies kann sich negativ auf die Leistungsbewertung auswirken. [Hier finden Sie weitere Informationen zur Kalibrierung eines geeigneten CPU-Verlangsamungsmultiplikators.](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)"
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "Diese Seite wurde nicht innerhalb der Zeitbegrenzung geladen. Daher sind die Ergebnisse möglicherweise unvollständig."
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{Gespeicherte Daten haben möglicherweise die Ladeleistung an diesem Ort beeinflusst: {locations}. Testen Sie diese Seite in einem Inkognitofenster, um zu verhindern, dass sich diese Ressourcen auf Ihre Ergebnisse auswirken.}other{Gespeicherte Daten haben möglicherweise die Ladeleistungen an diesen Orten beeinflusst: {locations}. Testen Sie diese Seite in einem Inkognitofenster, um zu verhindern, dass sich diese Ressourcen auf Ihre Ergebnisse auswirken.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "Sie können „https:“- und „http“:-URL-Schemas hinzufügen (wird von Browsern ignoriert, die „strict-dynamic“ unterstützen), um mit älteren Browsern kompatibel zu sein."
@@ -1848,7 +1842,7 @@
     "message": "First Contentful Paint"
   },
   "lighthouse-core/lib/i18n/i18n.js | firstMeaningfulPaintMetric": {
-    "message": "Inhalte weitgehend gezeichnet"
+    "message": "First Meaningful Paint"
   },
   "lighthouse-core/lib/i18n/i18n.js | fontResourceType": {
     "message": "Schriftart"
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "Die Werte sind geschätzt und können variieren. Die [Leistungsbewertung](https://web.dev/performance-scoring/) wird direkt aus diesen Messwerten berechnet."
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "Strukturkarte anzeigen"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "Bestandene Prüfungen mit Warnungen"

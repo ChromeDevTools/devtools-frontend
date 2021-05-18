@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "התאמה לניידים"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "ייתכן שהדף לא נטען כמו שציפית כי כתובת ה-URL הנבדקת ({requested}) הופנתה לכתובת {final}. כדאי לנסות לבדוק ישירות את כתובת ה-URL השנייה."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "יחידת העיבוד המרכזית (CPU) במכשיר שנבדק איטית ממה שצפוי ב-Lighthouse. זה עשוי להשפיע לרעה על ציון הביצועים שלך. בקישור הבא אפשר למצוא מידע נוסף על [כיול של מכפיל מתאים להאטה ביחידת העיבוד המרכזית (CPU)](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "הדף נטען לאט מדי והפעולה לא הסתיימה במסגרת הזמן שהוקצבה. ייתכן שהתוצאות לא יהיו מלאות."
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{ייתכן שיש נתונים שמורים שמשפיעים על ביצועי הטעינה במיקום הזה: {locations}. יש לבדוק את הדף הזה בחלון אנונימי כדי למנוע מהמשאבים האלה להשפיע על תוצאות הניקוד.}two{ייתכן שיש נתונים שמורים שמשפיעים על ביצועי הטעינה במיקומים האלה: {locations}. יש לבדוק את הדף הזה בחלון אנונימי כדי למנוע מהמשאבים האלה להשפיע על תוצאות הניקוד.}many{ייתכן שיש נתונים שמורים שמשפיעים על ביצועי הטעינה במיקומים האלה: {locations}. יש לבדוק את הדף הזה בחלון אנונימי כדי למנוע מהמשאבים האלה להשפיע על תוצאות הניקוד.}other{ייתכן שיש נתונים שמורים שמשפיעים על ביצועי הטעינה במיקומים האלה: {locations}. יש לבדוק את הדף הזה בחלון אנונימי כדי למנוע מהמשאבים האלה להשפיע על תוצאות הניקוד.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "כדאי להוסיף סכימות של כתובות URL מסוג https:‎ ו-http:‎ (דפדפנים שתומכים ב-strict-dynamic יתעלמו מהן) לצורך תאימות לאחור עם דפדפנים ישנים."
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "הערכים משוערים והם עשויים להשתנות. [ציון הביצועים מחושב](https://web.dev/performance-scoring/) ישירות לפי הערכים האלה."
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "הצגת תרשים Treemap"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "בדיקות שהסתיימו בציון 'עובר', אבל עם אזהרות"

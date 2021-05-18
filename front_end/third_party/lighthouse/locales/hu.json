@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Mobilbarát"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "Előfordulhat, hogy az oldal nem az elvártaknak megfelelően töltődik be, mert a teszt-URL ({requested}) átirányít ide: {final}. Próbálkozzon a második URL közvetlen tesztelésével."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "Úgy tűnik, a tesztelt eszköz lassabb CPU-val rendelkezik, mint amire a Lighthouse számít. Ez negatív hatással lehet a teljesítményre kapott pontszámra. További információ a [megfelelő CPU-lassulási szorzó kalibrálásáról](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "Az oldal túl lassan töltődött be, és túllépte az időkeretet. Az eredmények hiányosak lehetnek."
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{Előfordulhat, hogy a tárolt adatok befolyásolják a betöltési sebességet ezen a helyen: {locations}. Ellenőrizze ezt az oldalt inkognitó ablakban, hogy az érintett források ne lehessenek hatással a teljesítmény értékelésére.}other{Előfordulhat, hogy a tárolt adatok befolyásolják a betöltési sebességet ezeken a helyeken: {locations}. Ellenőrizze ezt az oldalt inkognitó ablakban, hogy az érintett források ne lehessenek hatással a teljesítmény értékelésére.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "A régebbi böngészőkkel való kompatibilitás érdekében fontolja meg https: és http: URL-sémák megadását (a „strict-dynamic” kulcsszót támogató böngészők figyelmen kívül hagyják ezeket)."
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "Az értékek becsültek és változhatnak. A [teljesítménypontszám kiszámítása](https://web.dev/performance-scoring/) közvetlenül e mutatók alapján történik."
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "Fastruktúra megtekintése"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "Átment az ellenőrzéseken – figyelmeztetésekkel"

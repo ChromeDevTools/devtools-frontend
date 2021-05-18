@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "متوافق مع الجوّال"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "قد لا يتم تحميل الصفحة كما هو متوقَع لأن عنوان URL للاختبار ({requested}) تمت إعادة توجيهه إلى {final}. يُرجى محاولة اختبار عنوان URL الثاني مباشرةً."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "يبدو أنّ الجهاز المختبَر يحتوي على وحدة معالجة مركزية (CPU) أبطأ مما توقعته أداة Lighthouse. قد يؤثر ذلك سلبيًا على نتيجة الأداء. تعرّف على المزيد من المعلومات عن [معايرة مُضاعِف بطء وحدة المعالجة المركزية (CPU) المناسب](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "أدّى عدم تحميل الصفحة بسرعة كافية إلى تعذّر انتهاء تحميلها في الوقت المحدّد. وقد تكون النتائج غير مكتملة."
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{قد تكون هناك بيانات مخزَّنة تؤثر على أداء التحميل في مكان تخزين البيانات التالي: {locations} يُرجى إجراء تدقيق لهذه الصفحة في نافذة التصفح المتخفي لمنع هذه المصادر من التأثير على نتيجتك.}zero{قد تكون هناك بيانات مخزَّنة تؤثر على أداء التحميل في أماكن تخزين البيانات التالية: {locations} يُرجى إجراء تدقيق لهذه الصفحة في نافذة التصفح المتخفي لمنع هذه المصادر من التأثير على نتيجتك.}two{قد تكون هناك بيانات مخزَّنة تؤثر على أداء التحميل في مكانَي تخزين البيانات التاليَين: {locations} يُرجى إجراء تدقيق لهذه الصفحة في نافذة التصفح المتخفي لمنع هذه المصادر من التأثير على نتيجتك.}few{قد تكون هناك بيانات مخزَّنة تؤثر على أداء التحميل في أماكن تخزين البيانات التالية: {locations} يُرجى إجراء تدقيق لهذه الصفحة في نافذة التصفح المتخفي لمنع هذه المصادر من التأثير على نتيجتك.}many{قد تكون هناك بيانات مخزَّنة تؤثر على أداء التحميل في أماكن تخزين البيانات التالية: {locations} يُرجى إجراء تدقيق لهذه الصفحة في نافذة التصفح المتخفي لمنع هذه المصادر من التأثير على نتيجتك.}other{قد تكون هناك بيانات مخزَّنة تؤثر على أداء التحميل في أماكن تخزين البيانات التالية: {locations} يُرجى إجراء تدقيق لهذه الصفحة في نافذة التصفح المتخفي لمنع هذه المصادر من التأثير على نتيجتك.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "ننصحك بإضافة مخطّطات عناوين URL تستخدم https:‎ وhttp:‎ (التي تتجاهلها المتصفِّحات المتوافقة مع 'strict-dynamic') لجعل سياسة CSP متوافقة مع أنظمة المتصفِّحات القديمة."
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "القيم تقديرية وقابلة للتغيير. ويتم [حساب نتيجة الأداء](https://web.dev/performance-scoring/) مباشرة من خلال هذه المقاييس."
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "عرض \"المخطّط الهيكلي\""
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "عمليات التدقيق التي تم اجتيازها، ولكن تتضمّن التحذيرات"

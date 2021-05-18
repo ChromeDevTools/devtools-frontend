@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "เหมาะกับอุปกรณ์เคลื่อนที่"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "หน้านี้อาจไม่โหลดขึ้นตามที่คาดไว้เนื่องจาก URL ทดสอบของคุณ ({requested}) มีการเปลี่ยนเส้นทางไปยัง {final} ลองทดสอบ URL ที่ 2 โดยตรง"
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "ดูเหมือนว่า CPU ของอุปกรณ์ที่ใช้ทดสอบจะช้ากว่าที่ Lighthouse คาดไว้ ซึ่งอาจส่งผลเสียต่อคะแนนประสิทธิภาพของคุณ ดูข้อมูลเพิ่มเติมเกี่ยวกับ[การปรับเทียบตัวคูณการชะลอตัวของ CPU ที่เหมาะสม](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "หน้าโหลดช้าเกินกำหนดเวลา หน้าที่โหลดมาได้อาจไม่ครบถ้วน"
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{อาจมีข้อมูลที่จัดเก็บไว้ที่ส่งผลกระทบต่อประสิทธิภาพการโหลดในตำแหน่ง {locations} ทดสอบหน้านี้ในหน้าต่างที่ไม่ระบุตัวตนเพื่อป้องกันไม่ให้ทรัพยากรเหล่านั้นส่งผลกระทบต่อคะแนนของคุณ}other{อาจมีข้อมูลที่จัดเก็บไว้ที่ส่งผลกระทบต่อประสิทธิภาพการโหลดในตำแหน่ง {locations} ทดสอบหน้านี้ในหน้าต่างที่ไม่ระบุตัวตนเพื่อป้องกันไม่ให้ทรัพยากรเหล่านั้นส่งผลกระทบต่อคะแนนของคุณ}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "ลองเพิ่ม URL ในรูปแบบ https: และ http: (ซึ่งเบราว์เซอร์ที่รองรับ \"strict-dynamic\" จะไม่สนใจ) เพื่อให้เข้ากันได้กับเบราว์เซอร์เวอร์ชันเก่ากว่า"
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "ค่ามาจากการประมาณและอาจแตกต่างกันไป [คะแนนประสิทธิภาพคำนวณ](https://web.dev/performance-scoring/)จากเมตริกเหล่านี้โดยตรง"
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "ดูแผนภูมิทรีแม็ป"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "ผ่านการตรวจสอบแต่มีคำเตือน"

@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Оптимизация для мобильных устройств"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "Эта страница может загружаться неправильно, потому что тестовый URL ({requested}) был перенаправлен на {final}. Попробуйте напрямую проверить второй URL."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "У тестируемого устройства недостаточно быстрый процессор. Это может негативно повлиять на показатель производительности. Подробнее [о калибровке множителя замедления процессора](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)…"
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "Страница загружалась слишком медленно и не загрузилась в отведенное время. Результаты могут быть неполными."
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{На скорость загрузки могут влиять данные из этого хранилища: {locations}. Попробуйте открыть страницу в режиме инкогнито.}one{На скорость загрузки могут влиять данные из этих хранилищ: {locations}. Попробуйте открыть страницу в режиме инкогнито.}few{На скорость загрузки могут влиять данные из этих хранилищ: {locations}. Попробуйте открыть страницу в режиме инкогнито.}many{На скорость загрузки могут влиять данные из этих хранилищ: {locations}. Попробуйте открыть страницу в режиме инкогнито.}other{На скорость загрузки могут влиять данные из этих хранилищ: {locations}. Попробуйте открыть страницу в режиме инкогнито.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "Чтобы обеспечить обратную совместимость со старыми браузерами, добавьте в URL протоколы https: и http: (игнорируются браузерами, которые поддерживают strict-dynamic)."
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "Значения приблизительные и могут изменяться. [Уровень производительности рассчитывается](https://web.dev/performance-scoring/) непосредственно на основании этих показателей."
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "Открыть карту эффективности"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "Пройденные проверки с предупреждениями"

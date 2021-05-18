@@ -275,7 +275,6 @@ export class LighthousePanel extends UI.Panel.Panel {
 
     renderer.setTemplateContext(templatesDOM);
     const el = renderer.renderReport(lighthouseResult, reportContainer);
-    LighthouseReportRenderer.addViewTraceButton(el, artifacts);
     // Linkifying requires the target be loaded. Do not block the report
     // from rendering, as this is just an embellishment and the main target
     // could take awhile to load.
@@ -290,6 +289,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     features.setBeforePrint(this._beforePrint.bind(this));
     features.setAfterPrint(this._afterPrint.bind(this));
     features.setTemplateContext(templatesDOM);
+    LighthouseReportRenderer.addViewTraceButton(el, features, artifacts);
     features.initFeatures(lighthouseResult);
 
     this._cachedRenderedReports.set(lighthouseResult, reportContainer);

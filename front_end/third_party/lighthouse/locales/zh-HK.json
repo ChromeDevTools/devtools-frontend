@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "適合透過流動裝置瀏覽"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "您的測試網址 ({requested}) 已重新導向至 {final}，因此頁面未必可以如預期載入。請嘗試直接測試第二個網址。"
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "已測試裝置的 CPU 似乎比 Lighthouse 所預期的慢，因此可能會對您的效能分數產生負面影響。進一步瞭解[如何校準適當的 CPU 減速乘數](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)。"
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "頁面載入過慢，無法於時限內完成，結果可能並不完整。"
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{此位置可能有儲存資料正在影響載入效能：{locations}。請透過無痕式視窗審核此頁面，以免這些資源影響分數。}other{這些位置可能有儲存資料正在影響載入效能：{locations}。請透過無痕式視窗審核此頁面，以免這些資源影響分數。}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "建議新增 https: 和 http: 網址配置，以便退回兼容舊版瀏覽器 (支援「strict-dynamic」的瀏覽器會忽略這些架構)。"
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "此為預計值，可能與實際值有所不同。[效能分數將利用這些數據直接計算](https://web.dev/performance-scoring/)。"
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "查看矩形樹圖"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "經過審核，但附有警告訊息"

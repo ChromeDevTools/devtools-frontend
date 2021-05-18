@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Mobiiliystävällinen"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "Sivun lataus ei ehkä onnistu odotetusti, koska testi-URL ({requested}) ohjattiin uudelleen osoitteeseen {final}. Kokeile suoraan toista URL-osoitetta."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "Testatun laitteen CPU näyttää olevan hitaampi kuin Lighthouse olettaa. Tämä voi vaikuttaa tuloksiin negatiivisesti. Lue lisää [sopivan CPU-hidastuskertoimen kalibroinnista](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "Sivu ei ehtinyt latautua loppuun aikarajan sisällä. Tuloksista voi puuttua osa."
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{Tähän sijaintiin on voitu tallentaa dataa, joka vaikuttaa lataukseen: {locations}. Tarkista sivu incognito-ikkunassa, jotta voit estää kyseisten resurssien vaikutuksen tuloksiisi.}other{Näihin sijainteihin on voitu tallentaa dataa, joka vaikuttaa lataukseen: {locations}. Tarkista sivu incognito-ikkunassa, jotta voit estää kyseisten resurssien vaikutuksen tuloksiisi.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "Harkitse https:- ja http:-URL-osoitteen kaavojen (joita \"strict-dynamicia\" tukevat selaimet ohittavat) lisäämistä, niin voit saavuttaa taaksepäinyhteensopivuuden vanhempien selainten kanssa."
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "Arvot ovat arvioita ja voivat vaihdella. [Tehokkuusprosentti lasketaan](https://web.dev/performance-scoring/) suoraan näistä mittareista."
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "Katso Treemap"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "Läpäisi tarkastukset, mutta sai varoituksia"

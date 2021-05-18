@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Mobilanpassad"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "Sidan kanske inte läses in eftersom testwebbadressen ({requested}) omdirigerades till {final}. Testa den andra webbadressen direkt i stället."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "Enheten som testas verkar ha en lägre CPU-hastighet än vad som förväntas i Lighthouse. Det här kan påverka prestandavärdet negativt. Läs mer om att [kalibrera en lämplig CPU-multiplicerare](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "Sidan lästes in för långsamt för att slutföra sidhämtningen inom tidsgränsen. Resultatet kan vara ofullständigt."
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{På följande plats kan det finnas lagrad data som påverkar inläsningen: {locations}. Granska sidan i ett inkognitofönster för att förhindra att resurserna påverkar dina resultat.}other{På följande platser kan det finnas lagrad data som påverkar inläsningen: {locations}. Granska sidan i ett inkognitofönster för att förhindra att resurserna påverkar dina resultat.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "Du kan lägga till webbadressscheman https: och http: (ignoreras av webbläsare med stöd för strict-dynamic) för bakåtkompatibilitet med äldre webbläsare."
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "Värdena är uppskattningar och kan variera. [Prestandapoängen beräknas](https://web.dev/performance-scoring/) direkt utifrån dessa mätvärden."
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "Visa Treemap"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "Godkänd i granskningarna men med varningar"

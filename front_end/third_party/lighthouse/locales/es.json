@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Optimización para móviles"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "Es posible que la página no se esté cargando correctamente porque la URL de prueba ({requested}) se ha redirigido a {final}. Prueba directamente la segunda URL."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "Parece que el dispositivo probado tiene una CPU más lenta de lo que espera Lighthouse. Esto puede afectar negativamente a la puntuación de rendimiento. Más información sobre cómo [calibrar un multiplicador de ralentización de CPU adecuado](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)"
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "La página ha tardado demasiado en cargar como para terminar dentro del límite de tiempo. Es posible que el resultado esté incompleto."
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{Es posible que algunos datos almacenados hayan afectado al rendimiento de las subidas en esta ubicación: {locations}. Haz una auditoría de esta página en una ventana de incógnito para evitar que esos recursos afecten a tus puntuaciones.}other{Es posible que algunos datos almacenados hayan afectado al rendimiento de las subidas en estas ubicaciones: {locations}. Haz una auditoría de esta página en una ventana de incógnito para evitar que esos recursos afecten a tus puntuaciones.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "Puedes añadir esquemas de URL https: y http: (los navegadores que admiten strict-dynamic los ignoran) para que sea retrocompatible con navegadores anteriores."
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "Los valores son estimaciones y pueden variar. La [puntuación del rendimiento se calcula](https://web.dev/performance-scoring/) directamente a partir de estas métricas."
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "Ver gráfico de rectángulos"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "Auditorías aprobadas con advertencias"

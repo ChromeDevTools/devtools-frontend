@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Adapté aux mobiles"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "Il est possible que cette page ne se charge pas comme prévu, car votre URL de test ({requested}) redirige vers {final}. Essayez de tester directement la seconde URL."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "L'appareil testé semble avoir un processeur plus lent qu'attendu par Lighthouse. Cela peut avoir des répercussions négatives sur votre score lié aux performances. En savoir plus sur le [calibrage d'un multiplicateur de ralentissement de processeur adapté](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)"
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "Le chargement de la page a été trop lent et a dépassé la limite de temps. Il est possible que les résultats soient incomplets."
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{L'emplacement suivant peut contenir des données qui affectent les performances de chargement : {locations}. Effectuez un audit de cette page dans une fenêtre de navigation privée afin que ces ressources n'affectent pas vos scores.}one{L'emplacement suivant peut contenir des données qui affectent les performances de chargement : {locations}. Effectuez un audit de cette page dans une fenêtre de navigation privée afin que ces ressources n'affectent pas vos scores.}other{Les emplacements suivants peuvent contenir des données qui affectent les performances de chargement : : {locations}. Effectuez un audit de cette page dans une fenêtre de navigation privée afin que ces ressources n'affectent pas vos scores.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "Pensez à ajouter les schémas d'URL https: et http: (ignorés par les navigateurs prenant en charge 'strict-dynamic') pour assurer la rétrocompatibilité avec les anciens navigateurs."
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "Les valeurs sont estimées et peuvent varier. Le [calcul du score lié aux performances](https://web.dev/performance-scoring/) repose directement sur ces statistiques."
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "Consultez la carte proportionnelle"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "Réussite des audits, mais avec des avertissements"

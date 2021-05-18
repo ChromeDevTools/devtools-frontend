@@ -49,6 +49,7 @@ redirects
 render-blocking-resources
 resource-summary
 screenshot-thumbnails
+script-treemap-data
 server-response-time
 speed-index
 third-party-facades

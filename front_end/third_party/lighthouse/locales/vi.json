@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Thân thiện với thiết bị di động"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "Trang có thể không tải như dự kiến do URL kiểm tra của bạn ({requested}) đã được chuyển hướng tới {final}. Hãy thử kiểm tra trực tiếp URL thứ hai."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "Có vẻ như thiết bị được thử nghiệm có CPU chậm hơn mức Lighthouse mong đợi. Điều này có thể ảnh hưởng tiêu cực đến điểm hiệu suất của bạn. Tìm hiểu thêm về cách [hiệu chỉnh một hệ số giảm tốc CPU phù hợp](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "Trang này tải quá chậm nên không hoàn tất được trong giới hạn thời gian. Các kết quả có thể chưa hoàn chỉnh."
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{Dữ liệu đã lưu trữ có thể ảnh hưởng đến hiệu suất tải ở vị trí này: {locations}. Hãy kiểm tra trang này trong một cửa sổ ẩn danh để ngăn các tài nguyên đó ảnh hưởng đến điểm hiệu suất của bạn.}other{Dữ liệu đã lưu trữ có thể ảnh hưởng đến hiệu suất tải ở các vị trí này: {locations}. Hãy kiểm tra trang này trong một cửa sổ ẩn danh để ngăn các tài nguyên đó ảnh hưởng đến điểm hiệu suất của bạn.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "Hãy cân nhắc thêm giao thức URL https: và http: (bị các trình duyệt hỗ trợ \"strict-dynamic\" bỏ qua) để tương thích ngược với những trình duyệt cũ."
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "Các giá trị chỉ là ước tính và có thể thay đổi. [Điểm hiệu quả được tính](https://web.dev/performance-scoring/) trực tiếp từ những chỉ số này."
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "Xem Biểu đồ dạng cây"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "Đã vượt qua bài kiểm tra nhưng có cảnh báo"

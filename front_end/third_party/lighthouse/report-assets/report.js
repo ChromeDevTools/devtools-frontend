@@ -18,7 +18,7 @@
 
 /* globals self */
 
-/** @typedef {import('./i18n')} I18n */
+/** @template T @typedef {import('./i18n')<T>} I18n */
 
 const ELLIPSIS = '\u2026';
 const NBSP = '\xa0';
@@ -102,10 +102,29 @@ class Util {
 
     // For convenience, smoosh all AuditResults into their auditRef (which has just weight & group)
     if (typeof clone.categories !== 'object') throw new Error('No categories provided.');
+
+    /** @type {Map<string, Array<LH.ReportResult.AuditRef>>} */
+    const relevantAuditToMetricsMap = new Map();
+
     for (const category of Object.values(clone.categories)) {
+      // Make basic lookup table for relevantAudits
+      category.auditRefs.forEach(metricRef => {
+        if (!metricRef.relevantAudits) return;
+        metricRef.relevantAudits.forEach(auditId => {
+          const arr = relevantAuditToMetricsMap.get(auditId) || [];
+          arr.push(metricRef);
+          relevantAuditToMetricsMap.set(auditId, arr);
+        });
+      });
+
       category.auditRefs.forEach(auditRef => {
         const result = clone.audits[auditRef.id];
         auditRef.result = result;
+
+        // Attach any relevantMetric auditRefs
+        if (relevantAuditToMetricsMap.has(auditRef.id)) {
+          auditRef.relevantMetrics = relevantAuditToMetricsMap.get(auditRef.id);
+        }
 
         // attach the stackpacks to the auditRef object
         if (clone.stackPacks) {
@@ -508,7 +527,7 @@ Util.getUniqueSuffix = (() => {
   };
 })();
 
-/** @type {I18n} */
+/** @type {I18n<typeof Util['UIStrings']>} */
 // @ts-expect-error: Is set in report renderer.
 Util.i18n = null;
 
@@ -520,6 +539,8 @@ Util.UIStrings = {
   varianceDisclaimer: 'Values are estimated and may vary. The [performance score is calculated](https://web.dev/performance-scoring/) directly from these metrics.',
   /** Text link pointing to an interactive calculator that explains Lighthouse scoring. The link text should be fairly short. */
   calculatorLink: 'See calculator.',
+  /** Label preceding a radio control for filtering the list of audits. The radio choices are various performance metrics (FCP, LCP, TBT), and if chosen, the audits in the report are hidden if they are not relevant to the selected metric. */
+  showRelevantAudits: 'Show audits relevant to:',
   /** Column heading label for the listing of opportunity audits. Each audit title represents an opportunity. There are only 2 columns, so no strict character limit.  */
   opportunityResourceColumnLabel: 'Opportunity',
   /** Column heading label for the estimated page load savings of opportunity audits. Estimated Savings is the total amount of time (in seconds) that Lighthouse computed could be reduced from the total page load time, if the suggested action is taken. There are only 2 columns, so no strict character limit. */
@@ -560,6 +581,8 @@ Util.UIStrings = {
 
   /** This label is for a checkbox above a table of items loaded by a web page. The checkbox is used to show or hide third-party (or "3rd-party") resources in the table, where "third-party resources" refers to items loaded by a web page from URLs that aren't controlled by the owner of the web page. */
   thirdPartyResourcesLabel: 'Show 3rd-party resources',
+  /** This label is for a button that opens a new tab to a webapp called "Treemap", which is a nested visual representation of a heierarchy of data releated to the reports (script bytes and coverage, resource breakdown, etc.) */
+  viewTreemapLabel: 'View Treemap',
 
   /** Option in a dropdown menu that opens a small, summary report in a print dialog.  */
   dropdownPrintSummary: 'Print Summary',
@@ -946,6 +969,7 @@ class DetailsRenderer {
       case 'screenshot':
       case 'debugdata':
       case 'full-page-screenshot':
+      case 'treemap-data':
         return null;
 
       default: {
@@ -2646,6 +2670,17 @@ class ReportUIFeatures {
       toggleInputEl.checked = true;
     }
 
+    const showTreemapApp =
+      this.json.audits['script-treemap-data'] && this.json.audits['script-treemap-data'].details;
+    // TODO: need window.opener to work in DevTools.
+    if (showTreemapApp && !this._dom.isDevTools()) {
+      this.addButton({
+        text: Util.i18n.strings.viewTreemapLabel,
+        icon: 'treemap',
+        onClick: () => ReportUIFeatures.openTreemap(this.json),
+      });
+    }
+
     // Fill in all i18n data.
     for (const node of this._dom.findAll('[data-i18n]', this._dom.document())) {
       // These strings are guaranteed to (at least) have a default English string in Util.UIStrings,
@@ -2662,6 +2697,28 @@ class ReportUIFeatures {
    */
   setTemplateContext(context) {
     this._templateContext = context;
+  }
+
+  /**
+   * @param {{text: string, icon?: string, onClick: () => void}} opts
+   */
+  addButton(opts) {
+    const metricsEl = this._document.querySelector('.lh-audit-group--metrics');
+    // Not supported without metrics group.
+    if (!metricsEl) return;
+
+    const classes = [
+      'lh-button',
+    ];
+    if (opts.icon) {
+      classes.push('report-icon');
+      classes.push(`report-icon--${opts.icon}`);
+    }
+    const buttonEl = this._dom.createChildOf(metricsEl, 'button', classes.join(' '));
+    buttonEl.addEventListener('click', opts.onClick);
+    buttonEl.textContent = opts.text;
+    metricsEl.append(buttonEl);
+    return buttonEl;
   }
 
   /**
@@ -3012,9 +3069,8 @@ class ReportUIFeatures {
    * @param {LH.Result} json
    */
   static openTreemap(json) {
-    const treemapDebugData = /** @type {LH.Audit.Details.DebugData} */ (
-      json.audits['script-treemap-data'].details);
-    if (!treemapDebugData) {
+    const treemapData = json.audits['script-treemap-data'].details;
+    if (!treemapData) {
       throw new Error('no script treemap data found');
     }
 
@@ -3471,8 +3527,15 @@ class CategoryRenderer {
 
     const titleEl = this.dom.find('.lh-audit__title', auditEl);
     titleEl.appendChild(this.dom.convertMarkdownCodeSnippets(audit.result.title));
-    this.dom.find('.lh-audit__description', auditEl)
-        .appendChild(this.dom.convertMarkdownLinkSnippets(audit.result.description));
+    const descEl = this.dom.find('.lh-audit__description', auditEl);
+    descEl.appendChild(this.dom.convertMarkdownLinkSnippets(audit.result.description));
+
+    for (const relevantMetric of audit.relevantMetrics || []) {
+      const adornEl = this.dom.createChildOf(descEl, 'span', 'lh-audit__adorn', {
+        title: `Relevant to ${relevantMetric.result.title}`,
+      });
+      adornEl.textContent = relevantMetric.acronym || relevantMetric.id;
+    }
 
     if (audit.stackPacks) {
       audit.stackPacks.forEach(pack => {
@@ -4014,18 +4077,6 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
     if (fci) v5andv6metrics.push(fci);
     if (fmp) v5andv6metrics.push(fmp);
 
-    /** @type {Record<string, string>} */
-    const acronymMapping = {
-      'cumulative-layout-shift': 'CLS',
-      'first-contentful-paint': 'FCP',
-      'first-cpu-idle': 'FCI',
-      'first-meaningful-paint': 'FMP',
-      'interactive': 'TTI',
-      'largest-contentful-paint': 'LCP',
-      'speed-index': 'SI',
-      'total-blocking-time': 'TBT',
-    };
-
     /**
      * Clamp figure to 2 decimal places
      * @param {number} val
@@ -4043,7 +4094,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
       } else {
         value = 'null';
       }
-      return [acronymMapping[audit.id] || audit.id, value];
+      return [audit.acronym || audit.id, value];
     });
     const paramPairs = [...metricPairs];
 
@@ -4121,6 +4172,13 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
         .filter(audit => audit.group === 'load-opportunities' && !Util.showAsPassed(audit.result))
         .sort((auditA, auditB) => this._getWastedMs(auditB) - this._getWastedMs(auditA));
 
+
+    const filterableMetrics = metricAudits.filter(a => !!a.relevantAudits);
+    // TODO: only add if there are opportunities & diagnostics rendered.
+    if (filterableMetrics.length) {
+      this.renderMetricAuditFilter(filterableMetrics, element);
+    }
+
     if (opportunityAudits.length) {
       // Scale the sparklines relative to savings, minimum 2s to not overstate small savings
       const minimumScale = 2000;
@@ -4194,6 +4252,71 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
     }
 
     return element;
+  }
+
+  /**
+   * Render the control to filter the audits by metric. The filtering is done at runtime by CSS only
+   * @param {LH.ReportResult.AuditRef[]} filterableMetrics
+   * @param {HTMLDivElement} categoryEl
+   */
+  renderMetricAuditFilter(filterableMetrics, categoryEl) {
+    const metricFilterEl = this.dom.createElement('div', 'lh-metricfilter');
+    const textEl = this.dom.createChildOf(metricFilterEl, 'span', 'lh-metricfilter__text');
+    textEl.textContent = Util.i18n.strings.showRelevantAudits;
+
+    const filterChoices = /** @type {LH.ReportResult.AuditRef[]} */ ([
+      ({acronym: 'All'}),
+      ...filterableMetrics,
+    ]);
+    for (const metric of filterChoices) {
+      const elemId = `metric-${metric.acronym}`;
+      const labelEl = this.dom.createChildOf(metricFilterEl, 'label', 'lh-metricfilter__label', {
+        for: elemId,
+        title: metric.result && metric.result.title,
+      });
+      labelEl.textContent = metric.acronym || metric.id;
+      const radioEl = this.dom.createChildOf(labelEl, 'input', 'lh-metricfilter__radio', {
+        type: 'radio',
+        name: 'metricsfilter',
+        id: elemId,
+        hidden: 'true',
+      });
+
+      if (metric.acronym === 'All') {
+        radioEl.checked = true;
+        labelEl.classList.add('lh-metricfilter__label--active');
+      }
+      categoryEl.append(metricFilterEl);
+
+      // Toggle class/hidden state based on filter choice.
+      radioEl.addEventListener('input', _ => {
+        for (const elem of categoryEl.querySelectorAll('label.lh-metricfilter__label')) {
+          elem.classList.toggle('lh-metricfilter__label--active', elem.htmlFor === elemId);
+        }
+        categoryEl.classList.toggle('lh-category--filtered', metric.acronym !== 'All');
+
+        for (const perfAuditEl of categoryEl.querySelectorAll('div.lh-audit')) {
+          if (metric.acronym === 'All') {
+            perfAuditEl.hidden = false;
+            continue;
+          }
+
+          perfAuditEl.hidden = true;
+          if (metric.relevantAudits && metric.relevantAudits.includes(perfAuditEl.id)) {
+            perfAuditEl.hidden = false;
+          }
+        }
+
+        // Hide groups/clumps if all child audits are also hidden.
+        const groupEls = categoryEl.querySelectorAll('div.lh-audit-group, details.lh-audit-group');
+        for (const groupEl of groupEls) {
+          groupEl.hidden = false;
+          const childEls = Array.from(groupEl.querySelectorAll('div.lh-audit'));
+          const areAllHidden = !!childEls.length && childEls.every(auditEl => auditEl.hidden);
+          groupEl.hidden = areAllHidden;
+        }
+      });
+    }
   }
 }
 
@@ -4692,11 +4815,16 @@ if (typeof module !== 'undefined' && module.exports) {
 
 // Not named `NBSP` because that creates a duplicate identifier (util.js).
 const NBSP2 = '\xa0';
+const KiB = 1024;
+const MiB = KiB * KiB;
 
+/**
+ * @template T
+ */
 class I18n {
   /**
    * @param {LH.Locale} locale
-   * @param {LH.I18NRendererStrings=} strings
+   * @param {T} strings
    */
   constructor(locale, strings) {
     // When testing, use a locale with more exciting numeric formatting.
@@ -4704,7 +4832,8 @@ class I18n {
 
     this._numberDateLocale = locale;
     this._numberFormatter = new Intl.NumberFormat(locale);
-    this._strings = /** @type {LH.I18NRendererStrings} */ (strings || {});
+    this._percentFormatter = new Intl.NumberFormat(locale, {style: 'percent'});
+    this._strings = strings;
   }
 
   get strings() {
@@ -4723,6 +4852,15 @@ class I18n {
   }
 
   /**
+   * Format percent.
+   * @param {number} number 0–1
+   * @return {string}
+   */
+  formatPercent(number) {
+    return this._percentFormatter.format(number);
+  }
+
+  /**
    * @param {number} size
    * @param {number=} granularity Controls how coarse the displayed value is, defaults to 0.1
    * @return {string}
@@ -4735,6 +4873,17 @@ class I18n {
 
   /**
    * @param {number} size
+   * @param {number=} granularity Controls how coarse the displayed value is, defaults to 0.1
+   * @return {string}
+   */
+  formatBytesToMiB(size, granularity = 0.1) {
+    const formatter = this._byteFormatterForGranularity(granularity);
+    const kbs = formatter.format(Math.round(size / 1024 ** 2 / granularity) * granularity);
+    return `${kbs}${NBSP2}MiB`;
+  }
+
+  /**
+   * @param {number} size
    * @param {number=} granularity Controls how coarse the displayed value is, defaults to 1
    * @return {string}
    */
@@ -4742,6 +4891,17 @@ class I18n {
     const formatter = this._byteFormatterForGranularity(granularity);
     const kbs = formatter.format(Math.round(size / granularity) * granularity);
     return `${kbs}${NBSP2}bytes`;
+  }
+
+  /**
+   * @param {number} size
+   * @param {number=} granularity Controls how coarse the displayed value is, defaults to 0.1
+   * @return {string}
+   */
+  formatBytesWithBestUnit(size, granularity = 0.1) {
+    if (size >= MiB) return this.formatBytesToMiB(size, granularity);
+    if (size >= KiB) return this.formatBytesToKiB(size, granularity);
+    return this.formatNumber(size, granularity) + '\xa0B';
   }
 
   /**

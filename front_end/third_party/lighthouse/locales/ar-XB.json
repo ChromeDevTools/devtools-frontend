@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "‏‮Mobile‬‏ ‏‮Friendly‬‏"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "‏‮The‬‏ ‏‮page‬‏ ‏‮may‬‏ ‏‮not‬‏ ‏‮be‬‏ ‏‮loading‬‏ ‏‮as‬‏ ‏‮expected‬‏ ‏‮because‬‏ ‏‮your‬‏ ‏‮test‬‏ ‏‮URL‬‏ ({requested}) ‏‮was‬‏ ‏‮redirected‬‏ ‏‮to‬‏ {final}. ‏‮Try‬‏ ‏‮testing‬‏ ‏‮the‬‏ ‏‮second‬‏ ‏‮URL‬‏ ‏‮directly‬‏."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "‏‮The‬‏ ‏‮tested‬‏ ‏‮device‬‏ ‏‮appears‬‏ ‏‮to‬‏ ‏‮have‬‏ ‏‮a‬‏ ‏‮slower‬‏ ‏‮CPU‬‏ ‏‮than‬‏  ‏‮Lighthouse‬‏ ‏‮expects‬‏. ‏‮This‬‏ ‏‮can‬‏ ‏‮negatively‬‏ ‏‮affect‬‏ ‏‮your‬‏ ‏‮performance‬‏ ‏‮score‬‏. ‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ [‏‮calibrating‬‏ ‏‮an‬‏ ‏‮appropriate‬‏ ‏‮CPU‬‏ ‏‮slowdown‬‏ ‏‮multiplier‬‏](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "‏‮The‬‏ ‏‮page‬‏ ‏‮loaded‬‏ ‏‮too‬‏ ‏‮slowly‬‏ ‏‮to‬‏ ‏‮finish‬‏ ‏‮within‬‏ ‏‮the‬‏ ‏‮time‬‏ ‏‮limit‬‏. ‏‮Results‬‏ ‏‮may‬‏ ‏‮be‬‏ ‏‮incomplete‬‏."
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{‏‮There‬‏ ‏‮may‬‏ ‏‮be‬‏ ‏‮stored‬‏ ‏‮data‬‏ ‏‮affecting‬‏ ‏‮loading‬‏ ‏‮performance‬‏ ‏‮in‬‏ ‏‮this‬‏ ‏‮location‬‏: {locations}. ‏‮Audit‬‏ ‏‮this‬‏ ‏‮page‬‏ ‏‮in‬‏ ‏‮an‬‏ ‏‮incognito‬‏ ‏‮window‬‏ ‏‮to‬‏ ‏‮prevent‬‏ ‏‮those‬‏ ‏‮resources‬‏ ‏‮from‬‏ ‏‮affecting‬‏ ‏‮your‬‏ ‏‮scores‬‏.}zero{‏‮There‬‏ ‏‮may‬‏ ‏‮be‬‏ ‏‮stored‬‏ ‏‮data‬‏ ‏‮affecting‬‏ ‏‮loading‬‏ ‏‮performance‬‏ ‏‮in‬‏ ‏‮these‬‏ ‏‮locations‬‏: {locations}. ‏‮Audit‬‏ ‏‮this‬‏ ‏‮page‬‏ ‏‮in‬‏ ‏‮an‬‏ ‏‮incognito‬‏ ‏‮window‬‏ ‏‮to‬‏ ‏‮prevent‬‏ ‏‮those‬‏ ‏‮resources‬‏ ‏‮from‬‏ ‏‮affecting‬‏ ‏‮your‬‏ ‏‮scores‬‏.}two{‏‮There‬‏ ‏‮may‬‏ ‏‮be‬‏ ‏‮stored‬‏ ‏‮data‬‏ ‏‮affecting‬‏ ‏‮loading‬‏ ‏‮performance‬‏ ‏‮in‬‏ ‏‮these‬‏ ‏‮locations‬‏: {locations}. ‏‮Audit‬‏ ‏‮this‬‏ ‏‮page‬‏ ‏‮in‬‏ ‏‮an‬‏ ‏‮incognito‬‏ ‏‮window‬‏ ‏‮to‬‏ ‏‮prevent‬‏ ‏‮those‬‏ ‏‮resources‬‏ ‏‮from‬‏ ‏‮affecting‬‏ ‏‮your‬‏ ‏‮scores‬‏.}few{‏‮There‬‏ ‏‮may‬‏ ‏‮be‬‏ ‏‮stored‬‏ ‏‮data‬‏ ‏‮affecting‬‏ ‏‮loading‬‏ ‏‮performance‬‏ ‏‮in‬‏ ‏‮these‬‏ ‏‮locations‬‏: {locations}. ‏‮Audit‬‏ ‏‮this‬‏ ‏‮page‬‏ ‏‮in‬‏ ‏‮an‬‏ ‏‮incognito‬‏ ‏‮window‬‏ ‏‮to‬‏ ‏‮prevent‬‏ ‏‮those‬‏ ‏‮resources‬‏ ‏‮from‬‏ ‏‮affecting‬‏ ‏‮your‬‏ ‏‮scores‬‏.}many{‏‮There‬‏ ‏‮may‬‏ ‏‮be‬‏ ‏‮stored‬‏ ‏‮data‬‏ ‏‮affecting‬‏ ‏‮loading‬‏ ‏‮performance‬‏ ‏‮in‬‏ ‏‮these‬‏ ‏‮locations‬‏: {locations}. ‏‮Audit‬‏ ‏‮this‬‏ ‏‮page‬‏ ‏‮in‬‏ ‏‮an‬‏ ‏‮incognito‬‏ ‏‮window‬‏ ‏‮to‬‏ ‏‮prevent‬‏ ‏‮those‬‏ ‏‮resources‬‏ ‏‮from‬‏ ‏‮affecting‬‏ ‏‮your‬‏ ‏‮scores‬‏.}other{‏‮There‬‏ ‏‮may‬‏ ‏‮be‬‏ ‏‮stored‬‏ ‏‮data‬‏ ‏‮affecting‬‏ ‏‮loading‬‏ ‏‮performance‬‏ ‏‮in‬‏ ‏‮these‬‏ ‏‮locations‬‏: {locations}. ‏‮Audit‬‏ ‏‮this‬‏ ‏‮page‬‏ ‏‮in‬‏ ‏‮an‬‏ ‏‮incognito‬‏ ‏‮window‬‏ ‏‮to‬‏ ‏‮prevent‬‏ ‏‮those‬‏ ‏‮resources‬‏ ‏‮from‬‏ ‏‮affecting‬‏ ‏‮your‬‏ ‏‮scores‬‏.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "‏‮Consider‬‏ ‏‮adding‬‏ ‏‮https‬‏: ‏‮and‬‏ ‏‮http‬‏: ‏‮URL‬‏ ‏‮schemes‬‏ (‏‮ignored‬‏ ‏‮by‬‏ ‏‮browsers‬‏ ‏‮supporting‬‏ '‏‮strict‬‏-‏‮dynamic‬‏') ‏‮to‬‏ ‏‮be‬‏ ‏‮backward‬‏ ‏‮compatible‬‏ ‏‮with‬‏ ‏‮older‬‏ ‏‮browsers‬‏."
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "‏‮Values‬‏ ‏‮are‬‏ ‏‮estimated‬‏ ‏‮and‬‏ ‏‮may‬‏ ‏‮vary‬‏. ‏‮The‬‏ [‏‮performance‬‏ ‏‮score‬‏ ‏‮is‬‏ ‏‮calculated‬‏](https://web.dev/performance-scoring/) ‏‮directly‬‏ ‏‮from‬‏ ‏‮these‬‏ ‏‮metrics‬‏."
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "‏‮View‬‏ ‏‮Treemap‬‏"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "‏‮Passed‬‏ ‏‮audits‬‏ ‏‮but‬‏ ‏‮with‬‏ ‏‮warnings‬‏"

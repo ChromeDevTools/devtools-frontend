@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Piemērota mobilajām ierīcēm"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "Iespējams, lapa netiek ielādēta, kā paredzēts, jo jūsu testa URL ({requested}) tika novirzīts uz: {final}. Mēģiniet tieši testēt otro URL."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "Šķiet, testējamās ierīces centrālā procesora ātrums ir mazāks, nekā paredzēts Lighthouse prasībās. Tas var negatīvi ietekmēt veiktspējas rezultātu. Uzziniet vairāk par to, [kā kalibrēt atbilstošu centrālā procesora palēninājuma reizinātāju](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "Lapa tika ielādēta pārāk lēni, lai ielāde tiktu pabeigta noteiktajā laika ierobežojumā. Rezultāti var būt nepilnīgi."
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{Iespējams, ielādes veiktspēju ietekmē dati, kas tiek glabāti šajā atrašanās vietā: {locations}. Lai šie resursi neietekmētu jūsu rezultātus, pārbaudiet šo lapu inkognito logā.}zero{Iespējams, ielādes veiktspēju ietekmē dati, kas tiek glabāti šajās atrašanās vietās: {locations}. Lai šie resursi neietekmētu jūsu rezultātus, pārbaudiet šo lapu inkognito logā.}one{Iespējams, ielādes veiktspēju ietekmē dati, kas tiek glabāti šajās atrašanās vietās: {locations}. Lai šie resursi neietekmētu jūsu rezultātus, pārbaudiet šo lapu inkognito logā.}other{Iespējams, ielādes veiktspēju ietekmē dati, kas tiek glabāti šajās atrašanās vietās: {locations}. Lai šie resursi neietekmētu jūsu rezultātus, pārbaudiet šo lapu inkognito logā.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "Lai nodrošinātu atpakaļsaderību ar vecākām pārlūkprogrammām, varat pievienot URL shēmas “https:” un “http:” (pārlūkprogrammās, kas atbalsta atslēgvārdu “strict-dynamic”, šīs shēmas tiks ignorētas)."
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "Vērtības ir aptuvenas un var atšķirties. [Veiktspējas rezultāts tiek aprēķināts](https://web.dev/performance-scoring/), pamatojoties tieši uz šiem metrikas veidiem."
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "Skatīt koka struktūru"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "Veiktās pārbaudes ar brīdinājumiem"

@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Ottimizzata per i dispositivi mobili"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "La pagina potrebbe non essere caricata come previsto perché l'URL di prova ({requested}) è stato reindirizzato a {final}. Prova a testare direttamente il secondo URL."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "Il dispositivo testato sembra disporre di una CPU più lenta rispetto a quella prevista da Lighthouse. Ciò può influire negativamente sul tuo punteggio relativo alle prestazioni. Scopri di più sulla [calibrazione di un moltiplicatore di rallentamento CPU adeguato](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "Il caricamento della pagina è stato troppo lento e non è stato completato entro il limite di tempo. I risultati potrebbero essere incompleti."
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{Potrebbero esserci dei dati memorizzati che incidono sulle prestazioni di caricamento in questa posizione: {locations}. Controlla questa pagina in una finestra di navigazione in incognito per evitare che queste risorse incidano sui tuoi punteggi.}other{Potrebbero esserci dei dati memorizzati che incidono sulle prestazioni di caricamento in queste posizioni: {locations}. Controlla questa pagina in una finestra di navigazione in incognito per evitare che queste risorse incidano sui tuoi punteggi.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "Potresti aggiungere schemi URL https: e http: (ignorati dai browser che supportano \"strict-dynamic\") per la compatibilità con le versioni precedenti dei browser."
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "I valori sono delle stime e potrebbero variare. Il [punteggio relativo alle prestazioni viene calcolato](https://web.dev/performance-scoring/) direttamente in base a queste metriche."
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "Visualizza Treemap"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "Controlli superati ma con avvisi"

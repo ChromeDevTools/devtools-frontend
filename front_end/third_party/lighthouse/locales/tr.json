@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Mobil Uyumlu"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "Sayfa, test URL'niz ({requested}) {final} adresine yönlendirildiğinden beklendiği gibi yüklenmiyor olabilir. İkinci URL'yi doğrudan test etmeyi deneyin."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "Test edilen cihazın CPU'sunun, Lighthouse'un beklediğinden daha yavaş olduğu anlaşılıyor. Bu durum, performans skorunuzu olumsuz etkileyebilir. [Uygun CPU yavaşlama katsayısını ayarlama](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling) hakkında daha fazla bilgi edinin."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "Sayfa, zaman sınırı içinde bitmeyecek kadar yavaş yüklendi. Sonuçlar eksik olabilir."
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{Şu konumda yükleme performansını etkileyen depolanmış veriler olabilir: {locations}. Bu kaynakların puanlarınızı etkilemesini engellemek için bu sayfayı gizli pencerede denetleyin.}other{Şu konumlarda yükleme performansını etkileyen depolanmış veriler olabilir: {locations}. Bu kaynakların puanlarınızı etkilemesini engellemek için bu sayfayı gizli pencerede denetleyin.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "Eski tarayıcılarla geriye dönük uyumluluk sağlamak için https: ve http: URL şemaları (\"strict-dynamic\" yönergesini destekleyen tarayıcılar tarafından yok sayılır) eklemeyi düşünün."
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "Değerler tahminidir ve değişiklik gösterebilir. [Performance skorunun hesaplanması ](https://web.dev/performance-scoring/), doğrudan bu metriklerle yapılır."
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "Ağaç grafiği göster"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "Kontrollerden geçti, ancak uyarılar var"

@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "スマホ対応"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "テスト URL（{requested}）が「{final}」にリダイレクトされているため、このページは想定どおりに読み込まれない可能性があります。2 番目の URL を直接テストしてみてください。"
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "テストしたデバイスの CPU が Lighthouse の推定より遅いようです。これは、パフォーマンス スコアに悪影響を与える可能性があります。詳しくは、[適切な CPU 速度低下乗数の調整](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)についての説明をご覧ください。"
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "ページの読み込みに時間がかかり、制限時間内に完了できませんでした。結果は不完全な場合があります。"
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{次の場所に保存されているデータが読み込みパフォーマンスに影響を与えている可能性があります: {locations}。これらのリソースがスコアに影響しないようにするためには、シークレット ウィンドウでこのページを監査してください。}other{次の場所に保存されているデータが読み込みパフォーマンスに影響を与えている可能性があります: {locations}。これらのリソースがスコアに影響しないようにするためには、シークレット ウィンドウでこのページを監査してください。}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "古いブラウザとの下位互換性を保つため、https: と http: の URL スキームを追加することを検討してください（'strict-dynamic' をサポートしているブラウザでは無視されます）。"
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "推定値のため変動する可能性があります。[パフォーマンス スコアの計算](https://web.dev/performance-scoring/)は、これらの指標を基に行っています。"
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "ツリーマップを見る"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "監査には合格しましたが警告があります"

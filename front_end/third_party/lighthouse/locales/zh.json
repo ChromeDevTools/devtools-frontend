@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "适合移动设备"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "相应网页可能无法按预期加载，因为您所测试的网址 ({requested}) 重定向到了 {final}。请尝试直接测试第二个网址。"
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "所测试设备的 CPU 速度似乎未达到 Lighthouse 的预期。这可能会对您的性能得分产生负面影响。详细了解如何[校准相应的 CPU 速度减慢倍数](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)。"
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "此页面的加载速度太慢，无法在时限内完成。结果可能会不完整。"
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{下列位置可能存储了会影响加载性能的数据：{locations}。请在无痕式窗口中审核此页面，以防止这些资源影响您的得分。}other{下列位置可能存储了会影响加载性能的数据：{locations}。请在无痕式窗口中审核此页面，以防止这些资源影响您的得分。}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "建议您添加 https: 和 http: 网址架构（会被支持“strict-dynamic”的浏览器忽略），以便向后兼容旧版浏览器。"
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "这些都是估算值，且可能会因时而异。系统会直接基于这些指标来[计算性能得分](https://web.dev/performance-scoring/)。"
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "查看树状图"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "已顺利通过审核，但有警告消息"

@@ -25,8 +25,8 @@ Benchmarking machine
 Initializing…
 Running defaultPass pass
 Resetting state with about:blank
-Setting up network for the pass trace
 Cleaning browser cache
+Preparing network conditions
 Running beforePass methods
 Gathering setup: CSSUsage
 Gathering setup: JsUsage
@@ -89,6 +89,7 @@ Gathering in-page: SourceMaps
 Gathering in-page: FullPageScreenshot
 Gathering trace
 Gathering devtoolsLog & network records
+Computing artifact: NetworkRecords
 Running afterPass methods
 Gathering: CSSUsage
 Gathering: JsUsage
@@ -112,6 +113,7 @@ Gathering: TagsBlockingFirstPaint
 Gathering: FontSize
 Gathering: EmbeddedContent
 Gathering: RobotsTxt
+Getting browser version
 Gathering: TapTargets
 Gathering: Accessibility
 Gathering: TraceElements
@@ -123,7 +125,7 @@ Get webapp manifest
 Collect stacks
 Running offlinePass pass
 Resetting state with about:blank
-Setting up network for the pass trace
+Preparing network conditions
 Running beforePass methods
 Gathering setup: ServiceWorker
 Beginning devtoolsLog and trace
@@ -131,11 +133,12 @@ Loading page & waiting for onload
 Running pass methods
 Gathering in-page: ServiceWorker
 Gathering devtoolsLog & network records
+Computing artifact: NetworkRecords
 Running afterPass methods
 Gathering: ServiceWorker
 Running redirectPass pass
 Resetting state with about:blank
-Setting up network for the pass trace
+Preparing network conditions
 Running beforePass methods
 Gathering setup: HTTPRedirect
 Beginning devtoolsLog and trace
@@ -143,12 +146,12 @@ Loading page & waiting for onload
 Running pass methods
 Gathering in-page: HTTPRedirect
 Gathering devtoolsLog & network records
+Computing artifact: NetworkRecords
 Running afterPass methods
 Gathering: HTTPRedirect
 Disconnecting from browser...
 Analyzing and running audits...
 Auditing: Uses HTTPS
-Computing artifact: NetworkRecords
 Auditing: Redirects HTTP traffic to HTTPS
 Auditing: Registers a service worker that controls page and `start_url`
 Auditing: Has a `<meta name="viewport">` tag with `width` or `initial-scale`
@@ -242,6 +245,9 @@ Auditing: Preload Largest Contentful Paint image
 Computing artifact: LanternLargestContentfulPaint
 Computing artifact: LanternFirstContentfulPaint
 Auditing: Full-page screenshot
+Auditing: Script Treemap Data
+Computing artifact: JSBundles
+Computing artifact: ModuleDuplication
 Auditing: Site works cross-browser
 Auditing: Page transitions don't feel like they block on the network
 Auditing: Each page has a URL
@@ -379,7 +385,7 @@ Generating results...
 
 =============== Lighthouse Results ===============
 URL: http://127.0.0.1:8000/devtools/lighthouse/resources/lighthouse-basic.html
-Version: 7.4.0
+Version: 7.5.0
 ViewportDimensions: {
   "innerWidth": 980,
   "innerHeight": 1743,
@@ -524,6 +530,7 @@ resource-summary: informative
 robots-txt: notApplicable
 screenshot-thumbnails: flaky
 script-injected-tags: notApplicable
+script-treemap-data: informative
 serial-header-bidding: notApplicable
 server-response-time: pass
 service-worker: fail

@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Geschikt voor mobiele apparaten"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "De pagina wordt mogelijk niet geladen zoals verwacht omdat je test-URL ({requested}) is omgeleid naar {final}. Probeer de tweede URL rechtstreeks te testen."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "Zo te zien heeft het geteste apparaat een langzamere CPU dan Lighthouse verwachtte. Dit kan je prestatiescore negatief beïnvloeden. Meer informatie over hoe je [de juiste vertragingsvermenigvuldiger voor de CPU kalibreert](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)"
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "De pagina is te langzaam geladen om binnen de tijdslimiet te voltooien. De resultaten kunnen onvolledig zijn."
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{Er kunnen op de volgende locatie gegevens zijn opgeslagen die van invloed zijn op de laadprestaties: {locations}. Controleer deze pagina in een incognitovenster om te voorkomen dat die bronnen van invloed zijn op je scores.}other{Er kunnen op de volgende locaties gegevens zijn opgeslagen die van invloed zijn op de laadprestaties: {locations}. Controleer deze pagina in een incognitovenster om te voorkomen dat die bronnen van invloed zijn op je scores.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "Voor compatibiliteit met oudere browsers kun je overwegen https: en http: URL-schema's toe te voegen (deze worden genegeerd door browsers die 'strict-dynamic' ondersteunen)."
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "Waarden worden geschat en kunnen variëren. De [prestatiescore wordt rechtstreeks berekend](https://web.dev/performance-scoring/) op basis van deze statistieken."
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "Treemap bekijken"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "Geslaagd voor controles maar met waarschuwingen"

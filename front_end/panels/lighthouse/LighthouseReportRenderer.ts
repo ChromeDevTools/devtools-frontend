@@ -43,7 +43,9 @@ export class LighthouseReportRenderer extends self.ReportRenderer {
     super(dom);
   }
 
-  static addViewTraceButton(el: Element, artifacts?: ReportRenderer.RunnerResultArtifacts): void {
+  static addViewTraceButton(
+      el: Element, reportUIFeatures: ReportRenderer.ReportUIFeatures,
+      artifacts?: ReportRenderer.RunnerResultArtifacts): void {
     if (!artifacts || !artifacts.traces || !artifacts.traces.defaultPass) {
       return;
     }
@@ -60,8 +62,12 @@ export class LighthouseReportRenderer extends self.ReportRenderer {
     }
 
     const defaultPassTrace = artifacts.traces.defaultPass;
-    const label = simulated ? i18nString(UIStrings.viewOriginalTrace) : i18nString(UIStrings.viewTrace);
-    const timelineButton = UI.UIUtils.createTextButton(label, onViewTraceClick, 'view-trace');
+    const text = simulated ? i18nString(UIStrings.viewOriginalTrace) : i18nString(UIStrings.viewTrace);
+    const timelineButton = reportUIFeatures.addButton({
+      text,
+      onClick: onViewTraceClick,
+    });
+    timelineButton.classList.add('lh-button--trace');
     if (simulated) {
       UI.Tooltip.Tooltip.install(timelineButton, i18nString(UIStrings.thePerformanceMetricsAboveAre));
     }

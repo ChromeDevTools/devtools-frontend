@@ -1703,14 +1703,8 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Mobile Friendly"
   },
-  "lighthouse-core/gather/gather-runner.js | warningRedirected": {
-    "message": "Halaman tersebut mungkin tidak dimuat sesuai harapan karena URL uji Anda ({requested}) dialihkan ke {final}. Coba uji URL kedua secara langsung."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
-    "message": "Perangkat yang diuji sepertinya memiliki CPU yang lebih lambat daripada perkiraan Lighthouse. Hal ini dapat berdampak buruk pada skor performa Anda. Pelajari lebih lanjut [cara mengalibrasi pengali pelambatan CPU yang sesuai](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
-  },
-  "lighthouse-core/gather/gather-runner.js | warningTimeout": {
-    "message": "Pemuatan halaman terlalu lambat untuk bisa selesai tepat waktu. Hasil mungkin tidak lengkap."
+  "lighthouse-core/gather/driver/storage.js | warningData": {
+    "message": "{locationCount,plural, =1{Mungkin terdapat data tersimpan yang memengaruhi performa pemuatan di lokasi ini: {locations}. Audit halaman ini di jendela Samaran untuk mencegah resource tersebut memengaruhi performa Anda.}other{Mungkin terdapat data tersimpan yang memengaruhi performa pemuatan di lokasi ini {locations}. Audit halaman ini di jendela Samaran untuk mencegah resource tersebut memengaruhi performa Anda.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "Sebaiknya tambahkan skema URL https: dan http: (diabaikan oleh browser yang mendukung 'strict-dynamic') agar kompatibel dengan browser versi lama."
@@ -2083,6 +2077,9 @@
   },
   "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
     "message": "Nilai adalah hasil perkiraan dan dapat bervariasi. [Skor performa dihitung](https://web.dev/performance-scoring/) secara langsung dari metrik ini."
+  },
+  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
+    "message": "Lihat Peta Hierarki"
   },
   "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
     "message": "Lulus audit tetapi dengan peringatan"

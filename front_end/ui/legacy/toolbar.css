@@ -142,6 +142,9 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
   background-color: var(--color-background-elevation-2);
   border-radius: 2px;
   content: "";
+  /* This ::before rule serves as a background for an element.
+  Setting z-index to make sure it's always below the content. */
+  z-index: -1;
 }
 
 .toolbar-icon {

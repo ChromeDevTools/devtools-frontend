@@ -59,7 +59,7 @@ class Descriptors:
 
     def application_json(self):
         result = dict()
-        result['modules'] = self.application.values()
+        result['modules'] = list(self.application.values())
         return json.dumps(result)
 
     def module_resources(self, name):

@@ -124,7 +124,7 @@ export class FontEditor extends UI.Widget.VBox {
 
   constructor(propertyMap: Map<string, string>) {
     super(true);
-    this.registerRequiredCSS('ui/legacy/components/inline_editor/fontEditor.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('ui/legacy/components/inline_editor/fontEditor.css', {enableLegacyPatching: false});
     this._selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
 
     this._propertyMap = propertyMap;

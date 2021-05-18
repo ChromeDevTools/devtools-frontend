@@ -390,7 +390,7 @@
 }
 
 .network-waterfall-header:hover {
-  background-color: var(--color-background-elevation-2);
+  background-color: var(--color-background-hover-overlay);
 }
 
 .network-waterfall-header div {

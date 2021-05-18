@@ -61,7 +61,7 @@ export class EventListenersView extends UI.Widget.VBox {
     this._treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     this._treeOutline.hideOverflow();
     this._treeOutline.registerRequiredCSS(
-        'ui/legacy/components/object_ui/objectValue.css', {enableLegacyPatching: true});
+        'ui/legacy/components/object_ui/objectValue.css', {enableLegacyPatching: false});
     this._treeOutline.registerRequiredCSS(
         'panels/event_listeners/eventListenersView.css', {enableLegacyPatching: false});
     this._treeOutline.setComparator(EventListenersTreeElement.comparator);

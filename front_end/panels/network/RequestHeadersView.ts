@@ -273,7 +273,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
     this._highlightedElement = null;
 
     const root = new UI.TreeOutline.TreeOutlineInShadow();
-    root.registerRequiredCSS('ui/legacy/components/object_ui/objectValue.css', {enableLegacyPatching: true});
+    root.registerRequiredCSS('ui/legacy/components/object_ui/objectValue.css', {enableLegacyPatching: false});
     root.registerRequiredCSS(
         'ui/legacy/components/object_ui/objectPropertiesSection.css', {enableLegacyPatching: true});
     root.registerRequiredCSS('panels/network/requestHeadersTree.css', {enableLegacyPatching: false});

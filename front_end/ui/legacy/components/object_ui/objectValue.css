@@ -10,8 +10,7 @@
 
 .object-value-function-prefix,
 .object-value-boolean {
-  color: rgb(13 34 170); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-syntax-3);
 }
 
 .object-value-function {
@@ -19,19 +18,23 @@
 }
 
 .object-value-function.linkified:hover {
-  background-color: rgb(0 0 0 / 10%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  --override-linkified-hover-background: rgb(0 0 0 / 10%);
+
+  background-color: var(--override-linkified-hover-background);
   cursor: pointer;
 }
 
+.-theme-with-dark-background .object-value-function.linkified:hover,
+:host-context(.-theme-with-dark-background) .object-value-function.linkified:hover {
+  --override-linkified-hover-background: rgb(230 230 230 / 10%);
+}
+
 .object-value-number {
-  color: rgb(28 0 207); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-syntax-3);
 }
 
 .object-value-bigint {
-  color: rgb(0 93 0); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-syntax-6);
 }
 
 .object-value-string,
@@ -39,24 +42,13 @@
 .object-value-symbol {
   white-space: pre;
   unicode-bidi: -webkit-isolate;
-  color: rgb(196 26 22); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-}
-
-.-theme-with-dark-background .object-value-string,
-:host-context(.-theme-with-dark-background) .object-value-string,
-.-theme-with-dark-background .object-value-regexp,
-:host-context(.-theme-with-dark-background) .object-value-regexp,
-.-theme-with-dark-background .object-value-symbol,
-:host-context(.-theme-with-dark-background) .object-value-symbol {
-  color: rgb(242 139 84);
+  color: var(--color-syntax-1);
 }
 
 .object-value-node {
   position: relative;
   vertical-align: baseline;
-  color: rgb(48 57 66); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-syntax-7);
   display: inline-block;
 }
 
@@ -76,15 +68,7 @@
 
 .object-value-null,
 .object-value-undefined {
-  color: rgb(94 94 94); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-}
-
-.-theme-with-dark-background .object-value-null,
-:host-context(.-theme-with-dark-background) .object-value-null,
-.-theme-with-dark-background .object-value-undefined,
-:host-context(.-theme-with-dark-background) .object-value-undefined {
-  color: rgb(161 161 161);
+  color: var(--color-text-disabled);
 }
 
 .object-value-calculate-value-button:hover {
@@ -100,12 +84,13 @@
 :host-context(.-theme-with-dark-background) .object-value-number,
 .-theme-with-dark-background .object-value-boolean,
 :host-context(.-theme-with-dark-background) .object-value-boolean {
-  color: hsl(252deg 100% 75%);
+  --override-primitive-dark-mode-color: hsl(252deg 100% 75%);
+
+  color: var(--override-primitive-dark-mode-color);
 }
 
 .object-properties-section .object-description {
-  color: #808080; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
 }
 
 .value .object-properties-preview {
@@ -113,14 +98,12 @@
 }
 
 .name {
-  color: rgb(136 19 145); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-syntax-2);
   flex-shrink: 0;
 }
 
 .object-properties-preview .name {
-  color: #565656; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
 }
 
 @media (forced-colors: active) {

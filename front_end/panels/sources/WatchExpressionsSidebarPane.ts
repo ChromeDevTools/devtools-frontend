@@ -98,7 +98,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
   _linkifier: Components.Linkifier.Linkifier;
   private constructor() {
     super(true);
-    this.registerRequiredCSS('ui/legacy/components/object_ui/objectValue.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('ui/legacy/components/object_ui/objectValue.css', {enableLegacyPatching: false});
     this.registerRequiredCSS('panels/sources/watchExpressionsSidebarPane.css', {enableLegacyPatching: true});
 
     // TODO(szuend): Replace with a Set once the web test

@@ -102,7 +102,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     this._profileTypes = profileTypes;
     this.registerRequiredCSS('panels/profiler/heapProfiler.css', {enableLegacyPatching: false});
     this.registerRequiredCSS('panels/profiler/profilesPanel.css', {enableLegacyPatching: false});
-    this.registerRequiredCSS('ui/legacy/components/object_ui/objectValue.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('ui/legacy/components/object_ui/objectValue.css', {enableLegacyPatching: false});
 
     const mainContainer = new UI.Widget.VBox();
     this.splitWidget().setMainWidget(mainContainer);

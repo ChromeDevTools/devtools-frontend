@@ -125,8 +125,7 @@ describe('The row\'s icon bucket', async function() {
     assert.strictEqual(icons.length, 1);
   });
 
-  // Flaky test.
-  it.skipOnPlatforms(['mac'], '[crbug.com/1184162]: should reveal Issues tab when the icon is clicked', async () => {
+  it('should reveal Issues tab when the icon is clicked', async () => {
     await openFileInSourceTab('trusted-type-policy-violation-report-only.rawresponse');
 
     const HIDE_DEBUGGER_SELECTOR = '[aria-label="Hide debugger"]';

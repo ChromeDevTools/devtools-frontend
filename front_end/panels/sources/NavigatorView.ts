@@ -162,7 +162,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.SDKModel.Observ
 
     this._placeholder = null;
     this._scriptsTree = new UI.TreeOutline.TreeOutlineInShadow();
-    this._scriptsTree.registerRequiredCSS('panels/sources/navigatorTree.css', {enableLegacyPatching: true});
+    this._scriptsTree.registerRequiredCSS('panels/sources/navigatorTree.css', {enableLegacyPatching: false});
     this._scriptsTree.setComparator(NavigatorView._treeElementsCompare);
     this._scriptsTree.setFocusable(false);
     this.contentElement.appendChild(this._scriptsTree.element);

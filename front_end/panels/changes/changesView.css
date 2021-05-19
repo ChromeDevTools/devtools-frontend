@@ -18,9 +18,15 @@
 }
 
 :focus.selected {
+  --override-selected-color: #fff;
+
   background-color: var(--legacy-selection-bg-color);
-  color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--override-selected-color);
+}
+
+.-theme-with-dark-background :focus.selected,
+:host-context(.-theme-with-dark-background) :focus.selected {
+  --override-selected-color: rgb(0 0 0);
 }
 
 .CodeMirror-lines:not(:active) {
@@ -28,17 +34,24 @@
 }
 
 .CodeMirror-line:hover {
+  --override-line-hover-background-color: rgb(0 0 255 / 5%);
+
   cursor: default !important; /* stylelint-disable-line declaration-no-important */
-  background-color: rgb(0 0 255 / 5%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--override-line-hover-background-color) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .CodeMirror .CodeMirror-linebackground.spacer {
+  --override-spacer-color: rgb(0 0 0 / 50%);
+  --override-spacer-background-color: rgb(0 0 255 / 10%);
+
   text-align: center;
-  color: rgb(0 0 0 / 50%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  background-color: rgb(0 0 255 / 10%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--override-spacer-color);
+  background-color: var(--override-spacer-background-color);
+}
+
+.-theme-with-dark-background .CodeMirror .CodeMirror-linebackground.spacer,
+:host-context(.-theme-with-dark-background) .CodeMirror .CodeMirror-linebackground.spacer {
+  --override-spacer-color: rgb(230 230 230 / 50%);
 }
 
 .CodeMirror .equal > span > span {
@@ -50,29 +63,30 @@
 }
 
 .CodeMirror .CodeMirror-linebackground.addition,
-.-theme-preserve,
 .changes-diff-gutter-marker.addition {
-  background-color: hsl(144deg 55% 49% / 20%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  --override-addition-background-color: hsl(144deg 55% 49% / 20%);
+
+  background-color: var(--override-addition-background-color);
 }
 
 .CodeMirror .CodeMirror-linebackground.deletion,
-.-theme-preserve,
 .changes-diff-gutter-marker.deletion {
-  background-color: rgb(255 0 0 / 20%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  --override-deletion-background-color: rgb(255 0 0 / 20%);
+
+  background-color: var(--override-deletion-background-color);
 }
 
-.CodeMirror .addition .cm-inner-diff:not(.CodeMirror-selectedtext),
-.-theme-preserve {
-  background-color: hsl(144deg 55% 49% / 30%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+.CodeMirror .addition .cm-inner-diff:not(.CodeMirror-selectedtext) {
+  --override-addition-inner-diff-background-color: hsl(144deg 55% 49% / 30%);
+
+  background-color: var(--override-addition-inner-diff-background-color);
 }
 
 .CodeMirror .deletion .cm-inner-diff:not(.CodeMirror-selectedtext),
 .-theme-preserve {
-  background-color: rgb(255 0 0 / 30%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  --override-deletion-inner-diff-background-color: rgb(255 0 0 / 30%);
+
+  background-color: var(--override-deletion-inner-diff-background-color);
 }
 
 .changes-toolbar {

@@ -5,7 +5,18 @@
  */
 
 .websocket-frame-view {
+  --override-icon-color-when-row-selected: #fff;
+  --override-send-row-background-color: rgb(226 247 218);
+  --override-error-row-background-color: rgb(255 237 237);
+
   user-select: text;
+}
+
+.-theme-with-dark-background .websocket-frame-view,
+:host-context(.-theme-with-dark-background) .websocket-frame-view {
+  --override-icon-color-when-row-selected: #000;
+  --override-send-row-background-color: rgb(16 37 8);
+  --override-error-row-background-color: rgb(18 0 0);
 }
 
 .websocket-frame-view .data-grid {
@@ -18,51 +29,38 @@
 }
 
 .websocket-frame-view-td {
-  border-bottom: 1px solid #ccc; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-}
-
-.websocket-frame-view .data-grid tr.selected {
-  background-color: #def; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-bottom: 1px solid var(--color-details-hairline);
 }
 
 .websocket-frame-view .data-grid td,
 .websocket-frame-view .data-grid th {
-  border-left-color: #ccc; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-left-color: var(--color-details-hairline);
 }
 
 .websocket-frame-view-row-send td:first-child::before {
   content: "\2B06";
-  color: #080; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-green);
   padding-right: 4px;
 }
 
 .websocket-frame-view-row-receive td:first-child::before {
   content: "\2B07";
-  color: #e65100; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-red);
   padding-right: 4px;
 }
 
 .data-grid:focus .websocket-frame-view-row-send.selected td:first-child::before,
 .data-grid:focus .websocket-frame-view-row-receive.selected td:first-child::before {
-  color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--override-icon-color-when-row-selected);
 }
 
 .websocket-frame-view-row-send {
-  background-color: rgb(226 247 218); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--override-send-row-background-color);
 }
 
 .websocket-frame-view-row-error {
-  background-color: rgb(255 237 237); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  color: rgb(182 0 0); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--override-error-row-background-color);
+  color: var(--color-accent-red);
 }
 
 .websocket-frame-view .toolbar {

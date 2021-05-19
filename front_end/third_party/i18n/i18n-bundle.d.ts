@@ -2,12 +2,12 @@
  * Look up the best available locale for the requested language through these fall backs:
  * - exact match
  * - progressively shorter prefixes (`de-CH-1996` -> `de-CH` -> `de`)
- * - the default locale ('en-US') if no match is found
  *
- * If `locale` isn't provided, the default is used.
- * @param {string=} locale
+ * If `locale` isn't provided or one could not be found, DEFAULT_LOCALE is returned.
+ * @param {string|string[]=} locales
+ * @return {LH.Locale}
  */
- declare function lookupLocale(locale: string): string;
+ declare function lookupLocale(locales?: string|string[]): string;
 
  /**
   * Function to retrieve all 'argumentElement's from an ICU message. An argumentElement
@@ -34,13 +34,13 @@
   * @param {string} locale
   */
  declare function getRendererFormattedStrings(locale: string): {};
- /**
-  * Register a file's UIStrings with i18n, return function to
-  * generate the string ids.
-  *
-  * @param {string} filename
-  */
- declare function createMessageInstanceIdFn(filename: string, fileStrings: Object): typeof getMessageInstanceIdFn;
+/**
+ * Returns a function that generates `LH.IcuMessage` objects to localize the
+ * messages in `fileStrings` and the shared `i18n.UIStrings`.
+ * @param {string} filename
+ * @param {Record<string, string>} fileStrings
+ */
+ declare function createIcuMessageFn(filename: string, fileStrings: Object): typeof getMessageInstanceIdFn;
  /**
   * Returns true if string is an ICUMessage reference.
   * @param {string} icuMessageIdOrRawString
@@ -51,25 +51,22 @@
   * @param {string} locale
   */
  declare function getFormatted(icuMessageIdOrRawString: string, locale: string): string;
- /**
-  * @param {string} icuMessageIdOrRawString
-  * @param {string} locale
-  */
+/**
+ * @param {string} icuMessageIdOrRawString
+ * @param {string} locale
+ */
  declare function getFormatter(icuMessageIdOrRawString: string, locale: string): any;
- /**
-  * @param {string} locale
-  * @param {string} icuMessageId
-  * @param {Object} [values]
-  */
- declare function getFormattedFromIdAndValues(locale: string, icuMessageId: string, values: Object): string;
- /**
-  * Recursively walk the input object, looking for property values that are
-  * string references and replace them with their localized values. Primarily
-  * used with the full LHR as input.
-  * @param {*} inputObject
-  * @param {string} locale
-  */
- declare function replaceIcuMessageInstanceIds(inputObject: any, locale: string): {};
+/**
+ * Recursively walk the input object, looking for property values that are
+ * `LH.IcuMessage`s and replace them with their localized values. Primarily
+ * used with the full LHR or a Config as input.
+ * Returns a map of locations that were replaced to the `IcuMessage` that was at
+ * that location.
+ * @param {unknown} inputObject
+ * @param {LH.Locale} locale
+ * @return {LH.IcuMessagePaths}
+ */
+ declare function replaceIcuMessages(inputObject: any, locale: string): {};
  /**
   * Populate the i18n string lookup dict with locale data
   * Used when the host environment selects the locale and serves lighthouse the intended locale file
@@ -92,14 +89,12 @@ declare function idNotInMainDictionaryException(icuMessage: string): void;
 
  declare var i18n: {
    _formatPathAsString: typeof _formatPathAsString;
-   _ICUMsgNotFoundMsg: string;
    lookupLocale: typeof lookupLocale;
    getRendererFormattedStrings: typeof getRendererFormattedStrings;
-   createMessageInstanceIdFn: typeof createMessageInstanceIdFn;
+   createIcuMessageFn: typeof createIcuMessageFn;
    getFormatted: typeof getFormatted;
    getFormatter: typeof getFormatter;
-   getFormattedFromIdAndValues: typeof getFormattedFromIdAndValues;
-   replaceIcuMessageInstanceIds: typeof replaceIcuMessageInstanceIds;
+   replaceIcuMessages: typeof replaceIcuMessages;
    isIcuMessage: typeof isIcuMessage;
    collectAllCustomElementsFromICU: typeof collectAllCustomElementsFromICU;
    registerLocaleData: typeof registerLocaleData;

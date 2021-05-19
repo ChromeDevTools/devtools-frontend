@@ -104,7 +104,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
 
   private constructor() {
     super(i18nString(UIStrings.callStack), true);
-    this.registerRequiredCSS('panels/sources/callStackSidebarPane.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/sources/callStackSidebarPane.css', {enableLegacyPatching: false});
 
     this._ignoreListMessageElement = this._createIgnoreListMessageElement();
     this.contentElement.appendChild(this._ignoreListMessageElement);

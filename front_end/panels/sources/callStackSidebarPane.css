@@ -5,13 +5,18 @@
  */
 
 .ignore-listed-message {
+  --override-ignore-message-background-color: #ffffc2;
+
   text-align: center;
   font-style: italic;
   padding: 4px;
-  color: #888; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  background-color: #ffffc2; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
+  background-color: var(--override-ignore-message-background-color);
+}
+
+.-theme-with-dark-background .ignore-listed-message,
+:host-context(.-theme-with-dark-background) .ignore-listed-message {
+  --override-ignore-message-background-color: rgb(72 72 0);
 }
 
 .show-more-message > .link {
@@ -30,8 +35,7 @@
   text-align: center;
   font-style: italic;
   padding: 4px;
-  border-top: 1px solid #d8d8d8; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-top: 1px solid var(--color-details-hairline);
 }
 
 .call-frame-item {
@@ -53,8 +57,7 @@
 }
 
 .call-frame-item:not(.async-header) {
-  border-top: 1px solid #efefef; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-top: 1px solid var(--color-details-hairline);
 }
 
 .call-frame-item-title,
@@ -65,8 +68,7 @@
 
 .async-header .call-frame-item-title {
   font-weight: bold;
-  color: #999; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-primary);
   background-color: var(--color-background);
   margin-left: -5px;
   padding: 0 5px;
@@ -79,13 +81,11 @@
 }
 
 .call-frame-item:not(.async-header):hover {
-  background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background-elevation-1);
 }
 
 .call-frame-location {
-  color: #888; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
   margin-left: auto;
   padding: 0 10px 0 10px;
 }
@@ -93,8 +93,7 @@
 .async-header::before {
   content: " ";
   width: 100%;
-  border-top: 1px solid #d8d8d8; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-top: 1px solid var(--color-details-hairline);
   margin-top: 8px;
   position: absolute;
   left: 0;
@@ -114,15 +113,6 @@
 
 .call-frame-item.selected .selected-call-frame-icon {
   display: block;
-}
-
-:host-context(.-theme-with-dark-background) .ignore-listed-message {
-  background-color: hsl(46deg 98% 22%);
-  color: #aaa;
-}
-
-:host-context(.-theme-with-dark-background) .ignore-listed-message > .link {
-  color: hsl(0deg 0% 67%);
 }
 
 @media (forced-colors: active) {

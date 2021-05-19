@@ -67,7 +67,7 @@ describe('Quirks Mode issues', async () => {
       'Mode',
       'URL',
     ]);
-    const [limitedQuirksMode, quirksMode] = table.slice(1).sort((rowA, rowB) => rowA[1].localeCompare(rowB[2]));
+    const [limitedQuirksMode, quirksMode] = table.slice(1).sort((rowA, rowB) => rowA[1].localeCompare(rowB[1]));
     assert.deepEqual(limitedQuirksMode, [
       'document',
       'Limited Quirks Mode',

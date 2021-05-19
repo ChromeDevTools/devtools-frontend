@@ -9,6 +9,7 @@ import * as Protocol from '../../generated/protocol.js';
 import {ContentSecurityPolicyIssue} from './ContentSecurityPolicyIssue.js';
 import {CorsIssue} from './CorsIssue.js';
 import {CrossOriginEmbedderPolicyIssue, isCrossOriginEmbedderPolicyIssue} from './CrossOriginEmbedderPolicyIssue.js';
+import {DeprecationIssue} from './DeprecationIssue.js';
 import {HeavyAdIssue} from './HeavyAdIssue.js';
 import type {Issue, IssueKind} from './Issue.js';
 import {LowTextContrastIssue} from './LowTextContrastIssue.js';
@@ -75,6 +76,12 @@ const issueCodeHandlers = new Map<
   [
     Protocol.Audits.InspectorIssueCode.QuirksModeIssue,
     QuirksModeIssue.fromInspectorIssue,
+  ],
+  [
+    // TODO(crbug.com/1072335) Update types once protocol rolls
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    'NavigatorUserAgentIssue' as Protocol.Audits.InspectorIssueCode,
+    DeprecationIssue.fromInspectorIssue,
   ],
 ]);
 

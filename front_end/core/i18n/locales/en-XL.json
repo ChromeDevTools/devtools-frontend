@@ -1226,6 +1226,9 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Ŝám̂é-Ŝít̂é âńd̂ Śâḿê-Ór̂íĝín̂"
   },
+  "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
+    "message": "Ûśêŕ-Âǵêńt̂ Śt̂ŕîńĝ Ŕêd́ûćt̂íôń"
+  },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Ĥán̂d́l̂ín̂ǵ Ĥéâv́ŷ Ád̂ Ín̂t́êŕv̂én̂t́îón̂ś"
   },

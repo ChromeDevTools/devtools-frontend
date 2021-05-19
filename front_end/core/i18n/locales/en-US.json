@@ -1226,6 +1226,9 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site and Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
+    "message": "User-Agent String Reduction"
+  },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Handling Heavy Ad Interventions"
   },

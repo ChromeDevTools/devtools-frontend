@@ -207,6 +207,7 @@ all_devtools_files = [
   "front_end/models/issues_manager/descriptions/cspEvalViolation.md",
   "front_end/models/issues_manager/descriptions/cspInlineViolation.md",
   "front_end/models/issues_manager/descriptions/cspURLViolation.md",
+  "front_end/models/issues_manager/descriptions/deprecationNavigatorUserAgent.md",
   "front_end/models/issues_manager/descriptions/LowTextContrast.md",
   "front_end/models/issues_manager/descriptions/cspTrustedTypesSinkViolation.md",
   "front_end/models/issues_manager/descriptions/cspTrustedTypesPolicyViolation.md",

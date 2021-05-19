@@ -261,7 +261,7 @@ class DragHandler {
       this._dragEventsTargetDocumentTop = this._dragEventsTargetDocument;
     }
 
-    targetDocument.addEventListener('mousemove', e => this._elementDragMove((e as MouseEvent)), true);
+    targetDocument.addEventListener('mousemove', this._elementDragMove, true);
     targetDocument.addEventListener('mouseup', this._elementDragEnd, true);
     DragHandler._rootForMouseOut &&
         DragHandler._rootForMouseOut.addEventListener('mouseout', this._mouseOutWhileDragging, {capture: true});

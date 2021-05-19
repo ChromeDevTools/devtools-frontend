@@ -48,12 +48,14 @@ export class RenderCoordinatorNewFrameEvent extends Event {
 }
 
 type RenderCoordinatorResolverCallback = (value: unknown) => void;
+type RenderCoordinatorRejectorCallback = (error: Error) => void;
 
 let renderCoordinatorInstance: RenderCoordinator;
 
 const UNNAMED_READ = 'Unnamed read';
 const UNNAMED_WRITE = 'Unnamed write';
 const UNNAMED_SCROLL = 'Unnamed scroll';
+const DEADLOCK_TIMEOUT = 1500;
 
 export class RenderCoordinator extends EventTarget {
   static instance({forceNew = false} = {}): RenderCoordinator {
@@ -77,6 +79,7 @@ export class RenderCoordinator extends EventTarget {
 
   private readonly pendingWorkFrames: CoordinatorFrame[] = [];
   private readonly resolvers = new WeakMap<CoordinatorCallback, RenderCoordinatorResolverCallback>();
+  private readonly rejectors = new WeakMap<CoordinatorCallback, RenderCoordinatorRejectorCallback>();
   private readonly labels = new WeakMap<CoordinatorCallback, string>();
   private scheduledWorkId = 0;
 
@@ -170,8 +173,9 @@ export class RenderCoordinator extends EventTarget {
         throw new Error(`Unknown action: ${action}`);
     }
 
-    const resolverPromise = new Promise(resolve => {
+    const resolverPromise = new Promise((resolve, reject) => {
       this.resolvers.set(callback, resolve);
+      this.rejectors.set(callback, reject);
     });
 
     this.scheduleWork();
@@ -187,6 +191,7 @@ export class RenderCoordinator extends EventTarget {
 
     resolver.call(undefined, data);
     this.resolvers.delete(handler);
+    this.rejectors.delete(handler);
   }
 
   private scheduleWork(): void {
@@ -228,7 +233,18 @@ export class RenderCoordinator extends EventTarget {
       }
 
       // Wait for them all to be done.
-      await Promise.all(readers);
+      try {
+        await Promise.race([
+          Promise.all(readers),
+          new Promise((_, reject) => {
+            setTimeout(
+                () => reject(new Error(`Readers took over ${DEADLOCK_TIMEOUT}ms. Possible deadlock?`)),
+                DEADLOCK_TIMEOUT);
+          }),
+        ]);
+      } catch (err) {
+        this.rejectAll(frame.readers, err);
+      }
 
       // Next do all the writers as a block.
       const writers: Promise<unknown>[] = [];
@@ -238,7 +254,18 @@ export class RenderCoordinator extends EventTarget {
       }
 
       // And wait for them to be done, too.
-      await Promise.all(writers);
+      try {
+        await Promise.race([
+          Promise.all(writers),
+          new Promise((_, reject) => {
+            setTimeout(
+                () => reject(new Error(`Writers took over ${DEADLOCK_TIMEOUT}ms. Possible deadlock?`)),
+                DEADLOCK_TIMEOUT);
+          }),
+        ]);
+      } catch (err) {
+        this.rejectAll(frame.writers, err);
+      }
 
       // Since there may have been more work requested in
       // the callback of a reader / writer, we attempt to schedule
@@ -246,6 +273,20 @@ export class RenderCoordinator extends EventTarget {
       this.scheduledWorkId = 0;
       this.scheduleWork();
     });
+  }
+
+  private rejectAll(handlers: CoordinatorCallback[], error: Error): void {
+    for (const handler of handlers) {
+      const rejector = this.rejectors.get(handler);
+      if (!rejector) {
+        console.warn('Unable to locate rejector');
+        continue;
+      }
+
+      rejector.call(undefined, error);
+      this.resolvers.delete(handler);
+      this.rejectors.delete(handler);
+    }
   }
 
   private logIfEnabled(value: string|undefined): void {

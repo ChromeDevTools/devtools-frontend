@@ -114,6 +114,32 @@ describe('Render Coordinator', () => {
     assert.strictEqual(targetValue, expected);
   });
 
+  it('throws if there is a read-write deadlock (blocked on read)', async () => {
+    try {
+      await coordinator.write(async () => {
+        // Awaiting a read block within a write should block because
+        // this write can't proceed until the read has completed, but
+        // the read won't start until this write has completed.
+        await coordinator.read(() => {});
+      });
+    } catch (err) {
+      assert.strictEqual(err.toString(), new Error('Writers took over 1500ms. Possible deadlock?').toString());
+    }
+  });
+
+  it('throws if there is a write deadlock (blocked on write)', async () => {
+    try {
+      await coordinator.read(async () => {
+        // Awaiting a write block within a read should block because
+        // this read can't proceed until the write has completed, but
+        // the write won't start until this read has completed.
+        await coordinator.write(() => {});
+      });
+    } catch (err) {
+      assert.strictEqual(err.toString(), new Error('Readers took over 1500ms. Possible deadlock?').toString());
+    }
+  });
+
   describe('Logger', () => {
     it('only logs by default when provided with names', async () => {
       const expected = [

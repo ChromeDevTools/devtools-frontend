@@ -251,11 +251,22 @@ export class CSSStyleDeclaration {
         property.setActive(false);
         continue;
       }
-      const canonicalName = cssMetadata().canonicalPropertyName(property.name);
+      const metadata = cssMetadata();
+      const canonicalName = metadata.canonicalPropertyName(property.name);
+      const longhands = metadata.longhands(canonicalName);
+      if (longhands) {
+        for (const longhand of longhands) {
+          const activeLonghand = activeProperties.get(longhand);
+          if (activeLonghand && activeLonghand.range && (!activeLonghand.important || property.important)) {
+            activeLonghand.setActive(false);
+            activeProperties.delete(longhand);
+          }
+        }
+      }
       const activeProperty = activeProperties.get(canonicalName);
       if (!activeProperty) {
         activeProperties.set(canonicalName, property);
-      } else if (!this.leadingProperties().find(prop => prop === property)) {
+      } else if (!property.range) {
         // For some -webkit- properties, the backend returns also the canonical
         // property. e.g. if you set in the css only the property
         // -webkit-background-clip, the backend will return

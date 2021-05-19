@@ -61,7 +61,7 @@ export class CSSShadowEditor extends UI.Widget.VBox {
   _changedElement?: HTMLInputElement|null;
   constructor() {
     super(true);
-    this.registerRequiredCSS('ui/legacy/components/inline_editor/cssShadowEditor.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('ui/legacy/components/inline_editor/cssShadowEditor.css', {enableLegacyPatching: false});
     this.contentElement.tabIndex = 0;
     this.setDefaultFocusedElement(this.contentElement);
 

@@ -35,8 +35,7 @@
   position: absolute;
   height: 88px;
   width: 88px;
-  border: 1px solid rgb(0 0 0 / 14.000000000000002%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border: 1px solid var(--divider-line);
   border-radius: 2px;
 }
 
@@ -55,10 +54,8 @@
   height: 24px;
   padding: 3px 7px;
   line-height: 16px;
-  border: 1px solid rgb(0 0 0 / 14.000000000000002%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  color: #333; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border: 1px solid var(--divider-line);
+  color: var(--color-text-primary);
   background-color: var(--color-background);
   text-align: center;
   font-weight: 500;
@@ -75,30 +72,25 @@
 
 .shadow-editor-button-left:hover,
 .shadow-editor-button-right:hover {
-  box-shadow: 0 1px 1px rgb(0 0 0 / 10%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  box-shadow: 0 1px 1px var(--color-background-elevation-1);
 }
 
 .shadow-editor-button-left:focus,
 .shadow-editor-button-right:focus {
-  background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background-elevation-1);
 }
 
 .shadow-editor-button-left.enabled,
-.shadow-editor-button-right.enabled,
-.-theme-preserve {
-  background-color: #4285f4; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+.shadow-editor-button-right.enabled {
+  --override-button-text-color: #fff;
+
+  background-color: var(--color-primary);
+  color: var(--override-button-text-color);
 }
 
 .shadow-editor-button-left.enabled:focus,
-.shadow-editor-button-right.enabled:focus,
-.-theme-preserve {
-  background-color: #3b78e7; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+.shadow-editor-button-right.enabled:focus {
+  background-color: var(--color-primary-variant);
 }
 
 .shadow-editor-text-input {

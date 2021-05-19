@@ -20,6 +20,7 @@ devtools_module("main") {
     "../../core/platform:bundle",
     "../../core/protocol_client:bundle",
     "../../core/sdk:bundle",
+    "../../generated:protocol",
     "../../models/bindings:bundle",
     "../../models/extensions:bundle",
     "../../models/issues_manager:bundle",

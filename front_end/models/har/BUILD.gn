@@ -16,6 +16,7 @@ devtools_module("har") {
   deps = [
     "../../core/common:bundle",
     "../../core/sdk:bundle",
+    "../../generated:protocol",
   ]
 }
 

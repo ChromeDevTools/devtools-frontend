@@ -24,6 +24,7 @@ devtools_module("accessibility") {
     "../../core/i18n:bundle",
     "../../core/sdk:bundle",
     "../../generated",
+    "../../generated:protocol",
     "../../ui/legacy:bundle",
   ]
 }

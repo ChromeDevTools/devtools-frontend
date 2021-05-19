@@ -16,6 +16,7 @@ devtools_module("logs") {
     "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../core/sdk:bundle",
+    "../../generated:protocol",
   ]
 }
 

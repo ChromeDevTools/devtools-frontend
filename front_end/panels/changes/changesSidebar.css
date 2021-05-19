@@ -1,7 +1,6 @@
 li .icon {
   margin: -3px -5px -3px -5px;
-  background: linear-gradient(45deg, hsl(0deg 0% 50%), hsl(0deg 0% 70%)); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background: var(--color-background-elevation-2);
 }
 
 .tree-outline li {
@@ -13,33 +12,24 @@ li .icon {
   background-color: var(--item-hover-color);
 }
 
-.navigator-fs-tree-item .icon {
-  background: linear-gradient(45deg, hsl(28deg 75% 50%), hsl(28deg 75% 70%)); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-}
-
 .navigator-sm-script-tree-item .icon,
 .navigator-script-tree-item .icon,
 .navigator-snippet-tree-item .icon {
-  background: linear-gradient(45deg, hsl(48deg 70% 50%), hsl(48deg 70% 70%)); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background: var(--color-syntax-4);
 }
 
 .navigator-sm-stylesheet-tree-item .icon,
 .navigator-stylesheet-tree-item .icon {
-  background: linear-gradient(45deg, hsl(256deg 50% 50%), hsl(256deg 50% 70%)); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background: var(--color-syntax-2);
 }
 
 .navigator-image-tree-item .icon,
 .navigator-font-tree-item .icon {
-  background: linear-gradient(45deg, hsl(109deg 33% 50%), hsl(109deg 33% 70%)); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background: var(--color-syntax-6);
 }
 
 @media (forced-colors: active) {
   li .icon,
-  .navigator-fs-tree-item .icon,
   .navigator-sm-script-tree-item .icon,
   .navigator-script-tree-item .icon,
   .navigator-snippet-tree-item .icon,

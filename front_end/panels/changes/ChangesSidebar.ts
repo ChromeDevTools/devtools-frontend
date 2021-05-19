@@ -29,7 +29,7 @@ export class ChangesSidebar extends UI.Widget.Widget {
     super();
     this._treeoutline = new UI.TreeOutline.TreeOutlineInShadow();
     this._treeoutline.setFocusable(false);
-    this._treeoutline.registerRequiredCSS('panels/changes/changesSidebar.css', {enableLegacyPatching: true});
+    this._treeoutline.registerRequiredCSS('panels/changes/changesSidebar.css', {enableLegacyPatching: false});
     this._treeoutline.setComparator((a, b) => Platform.StringUtilities.compare(a.titleAsText(), b.titleAsText()));
     this._treeoutline.addEventListener(UI.TreeOutline.Events.ElementSelected, this._selectionChanged, this);
     UI.ARIAUtils.markAsTablist(this._treeoutline.contentElement);

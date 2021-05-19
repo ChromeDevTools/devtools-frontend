@@ -5,25 +5,28 @@
  */
 
 .infobar {
-  color: rgb(34 34 34); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-primary);
   display: flex;
   flex: auto;
-  border-bottom: 1px solid rgb(171 171 171); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-bottom: 1px solid var(--color-details-hairline);
   flex-direction: column;
   position: relative;
   padding: 1px 6px 1px;
 }
 
 .infobar:focus {
-  box-shadow: 0 0 0 2px rgb(0 0 0 / 20%) inset; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  box-shadow: 0 0 0 2px var(--color-background-elevation-2) inset;
 }
 
 .infobar-warning {
-  background-color: rgb(253 242 192); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  --override-infobar-warning-background: rgb(253 242 192);
+
+  background-color: var(--override-infobar-warning-background);
+}
+
+.-theme-with-dark-background .infobar-warning,
+:host-context(.-theme-with-dark-background) .infobar-warning {
+  --override-infobar-warning-background: rgb(63 52 2);
 }
 
 .infobar-main-row {
@@ -73,28 +76,31 @@
 }
 
 .infobar-button {
-  color: #757575; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
   cursor: pointer;
   padding: 0 4px;
 }
 
 .info-icon {
   -webkit-mask-image: var(--image-file-ic_info_black_18dp);
-  background-color: hsl(214deg 92% 50%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-primary);
 }
 
 .warning-icon {
+  --override-warning-icon-color: hsl(44deg 92% 50%);
+
   -webkit-mask-image: var(--image-file-ic_warning_black_18dp);
-  background-color: hsl(44deg 92% 50%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--override-warning-icon-color);
+}
+
+.-theme-with-dark-background .warning-icon,
+:host-context(.-theme-with-dark-background) .warning-icon {
+  --override-warning-icon-color: rgb(245 182 10);
 }
 
 .issue-icon {
   -webkit-mask-image: var(--image-file-issue-text-icon);
-  background-color: #1a73e8; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-primary);
 }
 
 .icon {

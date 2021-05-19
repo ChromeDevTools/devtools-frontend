@@ -179,4 +179,42 @@ describe('IssueAggregator', async () => {
       Protocol.Audits.HeavyAdResolutionStatus.HeavyAdWarning,
     ]);
   });
+
+  describe('IssueAggregator', async () => {
+    it('aggregates affected locations correctly', () => {
+      const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
+      const issue1 = StubIssue.createFromAffectedLocations([{url: 'foo', lineNumber: 1, columnNumber: 1}]);
+      const issue2 = StubIssue.createFromAffectedLocations([
+        {url: 'foo', lineNumber: 1, columnNumber: 1},
+        {url: 'foo', lineNumber: 1, columnNumber: 12},
+      ]);
+      const issue3 = StubIssue.createFromAffectedLocations([
+        {url: 'bar', lineNumber: 1, columnNumber: 1},
+        {url: 'baz', lineNumber: 1, columnNumber: 1},
+      ]);
+      const issue4 = StubIssue.createFromAffectedLocations([
+        {url: 'bar', lineNumber: 1, columnNumber: 1, scriptId: '1'},
+        {url: 'foo', lineNumber: 2, columnNumber: 1},
+      ]);
+
+      const mockManager = new MockIssuesManager([]) as unknown as IssuesManager.IssuesManager.IssuesManager;
+      const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
+      for (const issue of [issue1, issue2, issue3, issue4]) {
+        mockManager.dispatchEventToListeners(
+            IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue});
+      }
+
+      const issues = Array.from(aggregator.aggregatedIssues());
+      assert.strictEqual(issues.length, 1);
+      const locations = [...issues[0].sources()].sort((x, y) => JSON.stringify(x).localeCompare(JSON.stringify(y)));
+      assert.deepStrictEqual(locations, [
+        {url: 'bar', lineNumber: 1, columnNumber: 1, scriptId: '1'},
+        {url: 'bar', lineNumber: 1, columnNumber: 1},
+        {url: 'baz', lineNumber: 1, columnNumber: 1},
+        {url: 'foo', lineNumber: 1, columnNumber: 1},
+        {url: 'foo', lineNumber: 1, columnNumber: 12},
+        {url: 'foo', lineNumber: 2, columnNumber: 1},
+      ]);
+    });
+  });
 });

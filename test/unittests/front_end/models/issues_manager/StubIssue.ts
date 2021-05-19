@@ -9,6 +9,7 @@ export class StubIssue extends Issue {
   private requestIds: string[];
   private cookieNames: string[];
   private issueKind: IssueKind;
+  private locations: Protocol.Audits.SourceCodeLocation[] = [];
 
   constructor(code: string, requestIds: string[], cookieNames: string[], issueKind = IssueKind.Improvement) {
     super(code);
@@ -36,6 +37,10 @@ export class StubIssue extends Issue {
     return IssueCategory.Other;
   }
 
+  sources() {
+    return this.locations;
+  }
+
   getKind() {
     return this.issueKind;
   }
@@ -56,6 +61,12 @@ export class StubIssue extends Issue {
 
   static createFromIssueKinds(issueKinds: IssueKind[]) {
     return issueKinds.map(k => new StubIssue('StubIssue', [], [], k));
+  }
+
+  static createFromAffectedLocations(locations: Protocol.Audits.SourceCodeLocation[]) {
+    const issue = new StubIssue('StubIssue', [], []);
+    issue.locations = locations;
+    return issue;
   }
 }
 

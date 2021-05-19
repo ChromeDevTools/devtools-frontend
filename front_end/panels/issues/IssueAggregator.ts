@@ -18,6 +18,7 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
     hasRequest: boolean,
   }>;
   private affectedRequests: Map<string, Protocol.Audits.AffectedRequest>;
+  private affectedLocations: Map<string, Protocol.Audits.SourceCodeLocation>;
   private heavyAdIssues: Set<IssuesManager.HeavyAdIssue.HeavyAdIssue>;
   private blockedByResponseDetails: Map<string, Protocol.Audits.BlockedByResponseIssueDetails>;
   private corsIssues: Set<IssuesManager.CorsIssue.CorsIssue>;
@@ -35,6 +36,7 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
     super(code);
     this.affectedCookies = new Map();
     this.affectedRequests = new Map();
+    this.affectedLocations = new Map();
     this.heavyAdIssues = new Set();
     this.blockedByResponseDetails = new Map();
     this.corsIssues = new Set();
@@ -59,6 +61,10 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
 
   cookies(): Iterable<Protocol.Audits.AffectedCookie> {
     return Array.from(this.affectedCookies.values()).map(x => x.cookie);
+  }
+
+  sources(): Iterable<Protocol.Audits.SourceCodeLocation> {
+    return this.affectedLocations.values();
   }
 
   cookiesWithRequestIndicator(): Iterable<{
@@ -148,6 +154,12 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
       const key = this.keyForCookie(cookie);
       if (!this.affectedCookies.has(key)) {
         this.affectedCookies.set(key, {cookie, hasRequest});
+      }
+    }
+    for (const location of issue.sources()) {
+      const key = JSON.stringify(location);
+      if (!this.affectedLocations.has(key)) {
+        this.affectedLocations.set(key, location);
       }
     }
     if (issue instanceof IssuesManager.MixedContentIssue.MixedContentIssue) {

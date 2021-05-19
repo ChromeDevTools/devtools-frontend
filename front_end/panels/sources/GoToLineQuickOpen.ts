@@ -96,7 +96,12 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
       if (disassembly) {
         const lastBytecodeOffset = disassembly.lineNumberToBytecodeOffset(disassembly.lineNumbers - 1);
         const bytecodeOffsetDigits = lastBytecodeOffset.toString(16).length;
-        return i18nString(UIStrings.currentPositionXsTypeAnOffset, {PH1: '0'.padStart(bytecodeOffsetDigits, '0')});
+        const currentPosition = disassembly.lineNumberToBytecodeOffset(currentLineNumber);
+        return i18nString(UIStrings.currentPositionXsTypeAnOffset, {
+          PH1: currentPosition.toString(16).padStart(bytecodeOffsetDigits, '0'),
+          PH2: '0'.padStart(bytecodeOffsetDigits, '0'),
+          PH3: lastBytecodeOffset.toString(16),
+        });
       }
       const linesCount = sourceFrame.textEditor.linesCount;
       return i18nString(UIStrings.currentLineSTypeALineNumber, {PH1: currentLineNumber, PH2: linesCount});

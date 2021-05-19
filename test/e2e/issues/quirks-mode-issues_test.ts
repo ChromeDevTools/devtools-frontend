@@ -67,12 +67,13 @@ describe('Quirks Mode issues', async () => {
       'Mode',
       'URL',
     ]);
-    assert.deepEqual(table[1], [
+    const [limitedQuirksMode, quirksMode] = table.slice(1).sort((rowA, rowB) => rowA[1].localeCompare(rowB[2]));
+    assert.deepEqual(limitedQuirksMode, [
       'document',
       'Limited Quirks Mode',
       `${getResourcesPath()}/elements/limited-quirks-mode.html`,
     ]);
-    assert.deepEqual(table[2], [
+    assert.deepEqual(quirksMode, [
       'document',
       'Quirks Mode',
       `${getResourcesPath()}/elements/quirks-mode.html`,

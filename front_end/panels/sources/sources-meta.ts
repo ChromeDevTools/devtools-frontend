@@ -1600,14 +1600,13 @@ UI.ViewManager.registerLocationResolver({
 
 UI.ContextMenu.registerProvider({
   contextTypes() {
-    return maybeRetrieveContextTypes(
-        Sources =>
-            [Workspace.UISourceCode.UISourceCode,
-             Workspace.UISourceCode.UILocation,
-             SDK.RemoteObject.RemoteObject,
-             SDK.NetworkRequest.NetworkRequest,
-             Sources.UISourceCodeFrame.UISourceCodeFrame,
-    ]);
+    return [
+      Workspace.UISourceCode.UISourceCode,
+      Workspace.UISourceCode.UILocation,
+      SDK.RemoteObject.RemoteObject,
+      SDK.NetworkRequest.NetworkRequest,
+      ...maybeRetrieveContextTypes(Sources => [Sources.UISourceCodeFrame.UISourceCodeFrame]),
+    ];
   },
   async loadProvider() {
     const Sources = await loadSourcesModule();

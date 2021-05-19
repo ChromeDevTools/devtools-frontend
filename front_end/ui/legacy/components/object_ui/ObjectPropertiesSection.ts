@@ -625,7 +625,7 @@ export class RootElement extends UI.TreeOutline.TreeElement {
 
   private onContextMenu(event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.appendApplicableItems(this);
+    contextMenu.appendApplicableItems(this._object);
 
     if (this._object instanceof SDK.RemoteObject.LocalJSONObject) {
       const {value} = this._object;

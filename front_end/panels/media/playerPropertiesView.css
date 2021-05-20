@@ -30,13 +30,11 @@
 }
 
 .media-property-renderer:nth-child(even) {
-  background: hsl(214deg 0% 97%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background: var(--color-background-elevation-0);
 }
 
 .media-property-renderer:hover {
-  background: hsl(214deg 70% 97%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background: var(--color-background-hover-overlay);
 }
 
 .-theme-with-dark-background .media-property-renderer:nth-child(even) {

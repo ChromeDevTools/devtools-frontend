@@ -204,7 +204,7 @@ class MessageLevelSelector extends Common.ObjectWrapper.ObjectWrapper implements
     const element = document.createElement('div');
     const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
         element,
-        {cssFile: 'panels/media/playerMessagesView.css', enableLegacyPatching: true, delegatesFocus: undefined});
+        {cssFile: 'panels/media/playerMessagesView.css', enableLegacyPatching: false, delegatesFocus: undefined});
     const container = shadowRoot.createChild('div', 'media-messages-level-dropdown-element');
     const checkBox = container.createChild('div', 'media-messages-level-dropdown-checkbox') as HTMLElement;
     const text = container.createChild('span', 'media-messages-level-dropdown-text');

@@ -103,7 +103,7 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
     // The parent tree for storing sections
     this._sidebarTree = new UI.TreeOutline.TreeOutlineInShadow();
     this.contentElement.appendChild(this._sidebarTree.element);
-    this._sidebarTree.registerRequiredCSS('panels/media/playerListView.css', {enableLegacyPatching: true});
+    this._sidebarTree.registerRequiredCSS('panels/media/playerListView.css', {enableLegacyPatching: false});
 
     // Players active in this tab.
     this._playerList = this._addListSection(i18nString(UIStrings.players));

@@ -6,8 +6,7 @@
 
 .tree-outline {
   padding-left: 0;
-  color: rgb(90 90 90); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
 }
 
 li.storage-group-list-item {
@@ -15,8 +14,7 @@ li.storage-group-list-item {
 }
 
 li.storage-group-list-item:not(:first-child) {
-  border-top: 1px solid rgb(230 230 230); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-top: 1px solid var(--color-details-hairline);
 }
 
 li.storage-group-list-item::before {

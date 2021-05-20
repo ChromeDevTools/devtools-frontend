@@ -379,9 +379,10 @@ class GenericTrackMenu extends UI.TabbedPane.TabbedPane {
       if (tabElement === null) {
         return;
       }
-      if ((tabElement as AttributesView).getContentHash() === element.getContentHash())
+      if ((tabElement as AttributesView).getContentHash() === element.getContentHash()) {
         return;
-      this.closeTab(tabId, /*userGesture=*/ false);
+      }
+      this.closeTab(tabId, /* userGesture=*/ false);
     }
     this.appendTab(
         tabId,  // No need for localizing, internal ID.
@@ -438,7 +439,7 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
   constructor() {
     super();
     this.contentElement.classList.add('media-properties-frame');
-    this.registerRequiredCSS('panels/media/playerPropertiesView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/media/playerPropertiesView.css', {enableLegacyPatching: false});
     this._mediaElements = [];
     this._videoDecoderElements = [];
     this._audioDecoderElements = [];

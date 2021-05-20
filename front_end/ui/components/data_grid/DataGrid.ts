@@ -681,8 +681,8 @@ export class DataGrid extends HTMLElement {
     this.isRendering = true;
 
     const {topVisibleRow, bottomVisibleRow} = await this.calculateTopAndBottomRowIndexes();
-    const renderableRows =
-        this.rows.filter(row => !row.hidden).filter((_, idx) => idx >= topVisibleRow && idx <= bottomVisibleRow);
+    const nonHiddenRows = this.rows.filter(row => !row.hidden);
+    const renderableRows = nonHiddenRows.filter((_, idx) => idx >= topVisibleRow && idx <= bottomVisibleRow);
     const indexOfFirstVisibleColumn = this.columns.findIndex(col => col.visible);
     const anyColumnsSortable = this.columns.some(col => col.sortable === true);
 
@@ -913,7 +913,7 @@ export class DataGrid extends HTMLElement {
             })}
             ${this.renderEmptyFillerRow()}
             <tr class="filler-row-bottom padding-row" style=${LitHtml.Directives.styleMap({
-              height: `${Math.max(0, renderableRows.length - bottomVisibleRow) * ROW_HEIGHT_PIXELS}px`,
+              height: `${Math.max(0, nonHiddenRows.length - bottomVisibleRow) * ROW_HEIGHT_PIXELS}px`,
             })}></tr>
           </tbody>
         </table>

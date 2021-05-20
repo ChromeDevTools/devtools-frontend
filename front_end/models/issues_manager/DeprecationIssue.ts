@@ -66,7 +66,7 @@ export class DeprecationIssue extends Issue<IssueCode> {
   }
 
   getKind(): IssueKind {
-    return IssueKind.BreakingChange;
+    return IssueKind.Improvement;
   }
 
   isCausedByThirdParty(): boolean {

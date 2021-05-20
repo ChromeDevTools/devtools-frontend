@@ -48,7 +48,8 @@
 }
 
 .navigator-file-tree-item .icon {
-  background: var(--color-background-highlight);
+  background: linear-gradient(45deg, hsl(0deg 0% 50%), hsl(0deg 0% 70%)); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .navigator-fs-tree-item:not(.has-mapped-files):not(.selected) > :not(.selection),
@@ -67,33 +68,39 @@
 }
 
 .navigator-folder-tree-item .icon {
-  background-color: var(--color-syntax-7);
+  background-color: #555; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .navigator-sm-folder-tree-item .icon,
 .navigator-fs-tree-item .icon,
 .navigator-fs-folder-tree-item .icon {
-  background: var(--color-syntax-4);
+  background: linear-gradient(45deg, hsl(28deg 75% 50%), hsl(28deg 75% 70%)); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .navigator-nw-folder-tree-item .icon {
-  background: var(--color-syntax-3);
+  background: linear-gradient(45deg, hsl(210deg 82% 65%), hsl(210deg 82% 80%)); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .navigator-sm-script-tree-item .icon,
 .navigator-script-tree-item .icon,
 .navigator-snippet-tree-item .icon {
-  background: var(--color-syntax-6);
+  background: linear-gradient(45deg, hsl(48deg 70% 50%), hsl(48deg 70% 70%)); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .navigator-sm-stylesheet-tree-item .icon,
 .navigator-stylesheet-tree-item .icon {
-  background: var(--color-syntax-2);
+  background: linear-gradient(45deg, hsl(256deg 50% 50%), hsl(256deg 50% 70%)); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .navigator-image-tree-item .icon,
 .navigator-font-tree-item .icon {
-  background: var(--color-syntax-6);
+  background: linear-gradient(45deg, hsl(109deg 33% 50%), hsl(109deg 33% 70%)); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .navigator-sm-folder-tree-item .tree-element-title,

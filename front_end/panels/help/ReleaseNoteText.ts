@@ -18,6 +18,38 @@ const commandMenuShortcut = Host.Platform.isMac() ? 'Command+Shift+P' : 'Control
 
 export const releaseNoteText: ReleaseNote[] = [
   {
+    version: 34,
+    header: 'Highlights from the Chrome 92 update',
+    highlights: [
+      {
+        title: 'CSS Grid editor',
+        subtitle: 'Preview and author CSS Grid with the CSS Grid editor.',
+        link: 'https://developer.chrome.com/blog/new-in-devtools-92#grid-editor',
+      },
+      {
+        title: 'Source order viewer',
+        subtitle: 'Display the order of source elements on screen for better accessibility inspection.',
+        link: 'https://developer.chrome.com/blog/new-in-devtools-92#source-order',
+      },
+      {
+        title: 'Lighthouse 7.5',
+        subtitle: 'Easily view all the JavaScript bundles on your page with the new Lighthouse Treemap, and more.',
+        link: 'https://developer.chrome.com/blog/new-in-devtools-92#lighthouse',
+      },
+      {
+        title: 'Improved CORS debugging',
+        subtitle: 'CORS errors are now reported in the Issues tab.',
+        link: 'https://developer.chrome.com/blog/new-in-devtools-92#cors',
+      },
+      {
+        title: 'Network panel updates',
+        subtitle: 'Add Wasm and web bundle to the resource types and rename XHR label to Fetch/XHR.',
+        link: 'https://developer.chrome.com/blog/new-in-devtools-92#network',
+      },
+    ],
+    link: 'https://developer.chrome.com/blog/new-in-devtools-92/',
+  },
+  {
     version: 33,
     header: 'Highlights from the Chrome 91 update',
     highlights: [

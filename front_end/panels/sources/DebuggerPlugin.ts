@@ -1784,6 +1784,7 @@ export class DebuggerPlugin extends Plugin {
     const element = this._prettyPrintInfobar.createDetailsRowMessage();
     element.appendChild(
         i18n.i18n.getFormatLocalizedString(str_, UIStrings.prettyprintingWillFormatThisFile, {PH1: toolbar.element}));
+    UI.ARIAUtils.markAsAlert(element);
     this._textEditor.attachInfobar(this._prettyPrintInfobar);
   }
 

@@ -1357,7 +1357,7 @@ export class StatusPane extends UI.Widget.VBox {
       },
       buttonCallback: () => (Promise<void>| void)) {
     super(true);
-    this.registerRequiredCSS('panels/timeline/timelineStatusDialog.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/timeline/timelineStatusDialog.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('timeline-status-dialog');
 
     const statusLine = this.contentElement.createChild('div', 'status-dialog-line status');

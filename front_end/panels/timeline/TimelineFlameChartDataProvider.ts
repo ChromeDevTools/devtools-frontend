@@ -996,7 +996,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const element = document.createElement('div');
     const root = UI.Utils.createShadowRootWithCoreStyles(element, {
       cssFile: 'panels/timeline/timelineFlamechartPopover.css',
-      enableLegacyPatching: true,
+      enableLegacyPatching: false,
       delegatesFocus: undefined,
     });
     const contents = root.createChild('div', 'timeline-flamechart-popover');

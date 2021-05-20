@@ -47,9 +47,29 @@
   top: 0;
 }
 
+.tree-outline {
+  --override-folder-tree-item-color: #555;
+  --override-file-tree-item-color: hsl(0deg 0% 50%);
+  --override-sm-folder-fs-tree-fs-folder-item-color: hsl(28deg 75% 50%);
+  --override-nw-folder-tree-item-color: hsl(210deg 82% 62%);
+  --override-script-snippet-tree-item-color: hsl(48deg 70% 50%);
+  --override-stylesheet-tree-item-color: hsl(256deg 50% 50%);
+  --override-image-font-tree-item-color: hsl(109deg 33% 50%);
+}
+
+.-theme-with-dark-background .tree-outline,
+:host-context(.-theme-with-dark-background) .tree-outline {
+  --override-folder-tree-item-color: rgb(170 170 170);
+  --override-file-tree-item-color: rgb(127 127 127);
+  --override-sm-folder-fs-tree-fs-folder-item-color: rgb(223 121 32);
+  --override-nw-folder-tree-item-color: rgb(17 96 176);
+  --override-script-snippet-tree-item-color: rgb(217 181 38);
+  --override-stylesheet-tree-item-color: rgb(98 64 191);
+  --override-image-font-tree-item-color: rgb(101 170 85);
+}
+
 .navigator-file-tree-item .icon {
-  background: linear-gradient(45deg, hsl(0deg 0% 50%), hsl(0deg 0% 70%)); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background: var(--override-file-tree-item-color);
 }
 
 .navigator-fs-tree-item:not(.has-mapped-files):not(.selected) > :not(.selection),
@@ -68,39 +88,33 @@
 }
 
 .navigator-folder-tree-item .icon {
-  background-color: #555; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--override-folder-tree-item-color);
 }
 
 .navigator-sm-folder-tree-item .icon,
 .navigator-fs-tree-item .icon,
 .navigator-fs-folder-tree-item .icon {
-  background: linear-gradient(45deg, hsl(28deg 75% 50%), hsl(28deg 75% 70%)); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background: var(--override-sm-folder-fs-tree-fs-folder-item-color);
 }
 
 .navigator-nw-folder-tree-item .icon {
-  background: linear-gradient(45deg, hsl(210deg 82% 65%), hsl(210deg 82% 80%)); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background: var(--override-nw-folder-tree-item-color);
 }
 
 .navigator-sm-script-tree-item .icon,
 .navigator-script-tree-item .icon,
 .navigator-snippet-tree-item .icon {
-  background: linear-gradient(45deg, hsl(48deg 70% 50%), hsl(48deg 70% 70%)); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background: var(--override-script-snippet-tree-item-color);
 }
 
 .navigator-sm-stylesheet-tree-item .icon,
 .navigator-stylesheet-tree-item .icon {
-  background: linear-gradient(45deg, hsl(256deg 50% 50%), hsl(256deg 50% 70%)); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background: var(--override-stylesheet-tree-item-color);
 }
 
 .navigator-image-tree-item .icon,
 .navigator-font-tree-item .icon {
-  background: linear-gradient(45deg, hsl(109deg 33% 50%), hsl(109deg 33% 70%)); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background: var(--override-image-font-tree-item-color);
 }
 
 .navigator-sm-folder-tree-item .tree-element-title,

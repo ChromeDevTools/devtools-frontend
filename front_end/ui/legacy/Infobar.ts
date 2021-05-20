@@ -80,6 +80,8 @@ export class Infobar {
 
     this._actionContainer = this._infoContainer.createChild('div', 'infobar-info-actions');
     if (actions) {
+      this._contentElement.setAttribute('role', 'group');
+
       for (const action of actions) {
         const actionCallback = this._actionCallbackFactory(action);
         let buttonClass = 'infobar-button';

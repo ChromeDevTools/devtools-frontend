@@ -793,14 +793,16 @@ describe('User Metrics for Issue Panel', () => {
     await goToResource('elements/quirks-mode-iframes.html');
     await waitFor('.issue');
 
-    await assertCapturedEvents([
-      {
-        name: 'DevTools.IssueCreated',
-        value: 59,  // QuirksModeIssue::LimitedQuirksMode
-      },
+    const {frontend} = getBrowserAndPages();
+    const events = await retrieveCapturedEvents(frontend);
+    assert.deepEqual(events.sort((a, b) => Number(a.value) - Number(b.value)), [
       {
         name: 'DevTools.IssueCreated',
         value: 58,  // QuirksModeIssue::QuirksMode
+      },
+      {
+        name: 'DevTools.IssueCreated',
+        value: 59,  // QuirksModeIssue::LimitedQuirksMode
       },
     ]);
   });

@@ -19,6 +19,10 @@ class MockRemoteObject extends SDK.RemoteObject.LocalJSONObject {
   arrayBufferByteLength() {
     return this._value.byteLength;
   }
+
+  get subtype(): string|undefined {
+    return 'arraybuffer';
+  }
 }
 
 function createWrapper(array: Uint8Array) {

@@ -839,11 +839,6 @@ export class LocalJSONObject extends RemoteObject {
       return 'date';
     }
 
-    if (this._value instanceof ArrayBuffer ||
-        typeof SharedArrayBuffer !== 'undefined' && this._value instanceof SharedArrayBuffer) {
-      return 'arraybuffer';
-    }
-
     return undefined;
   }
 

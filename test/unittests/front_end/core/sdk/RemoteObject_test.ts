@@ -300,31 +300,5 @@ describe('RemoteObject', () => {
       assert.deepEqual(callArguments.value, createNewFixedTimeDate());
       assert.deepEqual(callArguments.unserializableValue, undefined);
     });
-
-    it('can handle an arraybuffer', () => {
-      const createNewArrayBuffer = () => {
-        const arrayBuffer = new Int32Array(4);
-        arrayBuffer[0] = 52;
-        arrayBuffer[1] = 307;
-        arrayBuffer[2] = 7306;
-        arrayBuffer[3] = 826;
-        return arrayBuffer.buffer;
-      };
-
-      const remoteObject = SDK.RemoteObject.RemoteObject.fromLocalObject(createNewArrayBuffer());
-
-      assert.deepEqual(remoteObject.type, 'object');
-      assert.deepEqual(remoteObject.subtype, 'arraybuffer');
-      assert.deepEqual(remoteObject.value, createNewArrayBuffer());
-      assert.deepEqual(String(remoteObject.value), '[object ArrayBuffer]');
-      assert.deepEqual(remoteObject.description, '{}');
-      assert.deepEqual(remoteObject.unserializableValue(), undefined);
-      assert.deepEqual(remoteObject.hasChildren, false);
-
-      const callArguments = SDK.RemoteObject.RemoteObject.toCallArgument(remoteObject);
-
-      assert.deepEqual(callArguments.value, createNewArrayBuffer());
-      assert.deepEqual(callArguments.unserializableValue, undefined);
-    });
   });
 });

@@ -1,5 +1,5 @@
 #!/usr/bin/env vpython
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 #
 # Copyright 2020 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
@@ -44,7 +44,9 @@ def rollup(input_path, output_path, filename, max_size, rollup_plugin):
         ['--format', 'iife', '-n', 'InspectorOverlay'] + ['--input', target] +
         ['--plugin', rollup_plugin, '--plugin', 'terser'],
         stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE)
+        stderr=subprocess.PIPE,
+        universal_newlines=True,
+        encoding='utf-8')
     out, error = rollup_process.communicate()
     if not out:
         raise Exception("rollup failed: " + error)

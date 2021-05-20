@@ -7871,14 +7871,8 @@
   "panels/security/SecurityPanel.ts | contentWithCertificateErrors": {
     "message": "ĉón̂t́êńt̂ ẃît́ĥ ćêŕt̂íf̂íĉát̂é êŕr̂ór̂ś"
   },
-  "panels/security/SecurityPanel.ts | dataWasEnteredInAFieldOnA": {
-    "message": "D̂át̂á ŵáŝ én̂t́êŕêd́ îń â f́îél̂d́ ôń â ńôń-ŝéĉúr̂é p̂áĝé. Â ẃâŕn̂ín̂ǵ ĥáŝ b́êén̂ ád̂d́êd́ t̂ó t̂h́ê ÚR̂Ĺ b̂ár̂."
-  },
   "panels/security/SecurityPanel.ts | flaggedByGoogleSafeBrowsing": {
     "message": "F̂ĺâǵĝéd̂ b́ŷ Ǵôóĝĺê Śâf́ê B́r̂óŵśîńĝ"
-  },
-  "panels/security/SecurityPanel.ts | formFieldEditedOnANonsecurePage": {
-    "message": "F̂ór̂ḿ f̂íêĺd̂ éd̂ít̂éd̂ ón̂ á n̂ón̂-śêćûŕê ṕâǵê"
   },
   "panels/security/SecurityPanel.ts | hashAlgorithm": {
     "message": "Ĥáŝh́ âĺĝór̂ít̂h́m̂"

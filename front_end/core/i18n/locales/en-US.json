@@ -7871,14 +7871,8 @@
   "panels/security/SecurityPanel.ts | contentWithCertificateErrors": {
     "message": "content with certificate errors"
   },
-  "panels/security/SecurityPanel.ts | dataWasEnteredInAFieldOnA": {
-    "message": "Data was entered in a field on a non-secure page. A warning has been added to the URL bar."
-  },
   "panels/security/SecurityPanel.ts | flaggedByGoogleSafeBrowsing": {
     "message": "Flagged by Google Safe Browsing"
-  },
-  "panels/security/SecurityPanel.ts | formFieldEditedOnANonsecurePage": {
-    "message": "Form field edited on a non-secure page"
   },
   "panels/security/SecurityPanel.ts | hashAlgorithm": {
     "message": "Hash algorithm"

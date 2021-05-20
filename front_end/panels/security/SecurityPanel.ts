@@ -109,15 +109,6 @@ const UIStrings = {
   */
   thisPageIsInsecureUnencrypted: 'This page is insecure (unencrypted HTTP).',
   /**
-  *@description Summary phrase for a security problem where the site is non-secure (HTTP) and user has entered data in a form field.
-  */
-  formFieldEditedOnANonsecurePage: 'Form field edited on a non-secure page',
-  /**
-  *@description Description of a security problem where the site is non-secure (HTTP) and user has entered data in a form field.
-  */
-  dataWasEnteredInAFieldOnA:
-      'Data was entered in a field on a non-secure page. A warning has been added to the URL bar.',
-  /**
   *@description Main summary for where the site has a non-cryptographic secure origin.
   */
   thisPageHasANonhttpsSecureOrigin: 'This page has a non-HTTPS secure origin.',
@@ -1170,11 +1161,6 @@ export class SecurityMainView extends UI.Widget.VBox {
         securityState === Protocol.Security.SecurityState.InsecureBroken &&
         securityStateIssueIds.includes('scheme-is-not-cryptographic')) {
       summary = summary || i18nString(UIStrings.thisPageIsInsecureUnencrypted);
-      if (securityStateIssueIds.includes('insecure-input-events')) {
-        explanations.push(new SecurityStyleExplanation(
-            Protocol.Security.SecurityState.Insecure, undefined, i18nString(UIStrings.formFieldEditedOnANonsecurePage),
-            i18nString(UIStrings.dataWasEnteredInAFieldOnA)));
-      }
     }
 
     if (securityStateIssueIds.includes('scheme-is-not-cryptographic')) {

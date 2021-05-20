@@ -12,9 +12,6 @@ export const codeBlockRenderer = (value: CellValue): LitHtml.TemplateResult|type
   if (!value) {
     return LitHtml.nothing;
   }
-  const MAX_LENGTH = 13;
   const stringValue = String(value);
-  const truncatedValue =
-      stringValue.length > MAX_LENGTH ? stringValue.substring(0, MAX_LENGTH - 3) + '...' : stringValue;
-  return LitHtml.html`<code>${truncatedValue}</code>`;
+  return LitHtml.html`<code>${stringValue}</code>`;
 };

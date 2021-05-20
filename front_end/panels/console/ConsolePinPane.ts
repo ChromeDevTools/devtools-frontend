@@ -161,6 +161,8 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
   }
 }
 
+let consolePinNumber = 0;
+
 export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
   _pinElement: Element;
   _pinPreview: HTMLElement;
@@ -171,9 +173,11 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
   _hovered: boolean;
   _lastNode: SDK.RemoteObject.RemoteObject|null;
   _editorPromise: Promise<UI.TextEditor.TextEditor>;
+  private consolePinNumber: number;
 
   constructor(expression: string, pinPane: ConsolePinPane) {
     super();
+    this.consolePinNumber = ++consolePinNumber;
     const deletePinIcon = (document.createElement('div', {is: 'dt-close-button'}) as UI.UIUtils.DevToolsCloseButton);
     deletePinIcon.gray = true;
     deletePinIcon.classList.add('close-button');
@@ -315,7 +319,8 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
     const timeout = throwOnSideEffect ? 250 : undefined;
     const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
     const {preview, result} = await ObjectUI.JavaScriptREPL.JavaScriptREPL.evaluateAndBuildPreview(
-        text, throwOnSideEffect, timeout, !isEditing /* allowErrors */, 'console');
+        `${text}\n//# sourceURL=watch-expression-${this.consolePinNumber}.devtools`, throwOnSideEffect, timeout,
+        !isEditing /* allowErrors */, 'console');
     if (this._lastResult && this._lastExecutionContext) {
       this._lastExecutionContext.runtimeModel.releaseEvaluationResult(this._lastResult);
     }

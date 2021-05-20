@@ -67,4 +67,20 @@ describe('ConsoleMessage', () => {
     assert.isFalse(c.isEqual(d));
     assert.isFalse(c.isEqual(e));
   });
+
+  it('compares ignoring script id for the same watch expressions', () => {
+    const a = newMessage({executionContextId: 5, scriptId: '1'});
+    a.url = 'watch-expression-1.devtools';
+    const b = newMessage({executionContextId: 5, scriptId: '2'});
+    b.url = 'watch-expression-1.devtools';
+    assert.isTrue(a.isEqual(b));
+  });
+
+  it('compares using script id for different watch expressions', () => {
+    const a = newMessage({executionContextId: 5, scriptId: '1'});
+    a.url = 'watch-expression-1.devtools';
+    const b = newMessage({executionContextId: 5, scriptId: '2'});
+    b.url = 'watch-expression-2.devtools';
+    assert.isFalse(a.isEqual(b));
+  });
 });

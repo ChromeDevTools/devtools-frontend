@@ -21,7 +21,7 @@ template("rollup") {
 
     inputs = [
       invoker.entrypoint,
-      devtools_location_prepend + "front_end/rollup.config.js",
+      devtools_location_prepend + "scripts/build/rollup.config.js",
     ]
 
     args = [
@@ -30,7 +30,7 @@ template("rollup") {
       # and instead looks if `stderr` is empty.
       "--silent",
       "--config",
-      rebase_path(devtools_location_prepend + "front_end/rollup.config.js",
+      rebase_path(devtools_location_prepend + "scripts/build/rollup.config.js",
                   root_build_dir),
       "--input",
       rebase_path(invoker.entrypoint, root_build_dir),

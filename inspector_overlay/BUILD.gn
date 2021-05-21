@@ -2,11 +2,13 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("//build/config/python.gni")
 import("../third_party/typescript/typescript.gni")
 
 resources_out_dir = "$root_out_dir/resources/inspector_overlay"
 
-action("build_inspector_overlay") {
+# TODO(crbug.com/1112471): Get this to work under Python 3.
+python2_action("build_inspector_overlay") {
   script = "../scripts/build/build_inspector_overlay.py"
 
   inputs = [

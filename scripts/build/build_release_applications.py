@@ -1,5 +1,5 @@
 #!/usr/bin/env vpython
-# -*- coding: utf-8 -*-
+# -*- coding: UTF-8 -*-
 #
 # Copyright 2016 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
@@ -10,7 +10,7 @@ Builds applications in release mode:
 and the application loader into a single script.
 """
 
-from io import StringIO
+from cStringIO import StringIO
 from os import path
 from os.path import join
 import copy
@@ -152,7 +152,8 @@ class ReleaseBuilder(object):
             resource_content = read_file(path.join(self.application_dir, resource_name))
             if not (resource_name.endswith('.html')
                     or resource_name.endswith('md')):
-                resource_content += resource_source_url(resource_name)
+                resource_content += resource_source_url(resource_name).encode(
+                    'utf-8')
             resource_content = resource_content.replace('\\', '\\\\')
             resource_content = resource_content.replace('\n', '\\n')
             resource_content = resource_content.replace('"', '\\"')
@@ -178,9 +179,7 @@ class ReleaseBuilder(object):
     def _concatenate_application_script(self, output):
         output.write('Root.allDescriptors.push(...%s);' % self._release_module_descriptors())
         if self.descriptors.extends:
-            output.write(
-                'Root.applicationDescriptor.modules.push(...%s);' %
-                json.dumps(list(self.descriptors.application.values())))
+            output.write('Root.applicationDescriptor.modules.push(...%s);' % json.dumps(self.descriptors.application.values()))
         else:
             output.write('Root.applicationDescriptor = %s;' % self.descriptors.application_json())
 

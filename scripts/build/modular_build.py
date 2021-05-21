@@ -20,7 +20,7 @@ except ImportError:
 
 
 def read_file(filename):
-    with open(path.normpath(filename), 'rt', encoding='utf-8') as input:
+    with open(path.normpath(filename), 'rt') as input:
         return input.read()
 
 
@@ -30,7 +30,7 @@ def write_file(filename, content):
     directory = path.dirname(filename)
     if not path.exists(directory):
         os.makedirs(directory)
-    with open(filename, 'wt', encoding='utf-8') as output:
+    with open(filename, 'wt') as output:
         output.write(content)
 
 
@@ -59,7 +59,7 @@ class Descriptors:
 
     def application_json(self):
         result = dict()
-        result['modules'] = list(self.application.values())
+        result['modules'] = self.application.values()
         return json.dumps(result)
 
     def module_resources(self, name):

@@ -91,6 +91,13 @@ def run_unit_tests_on_ninja_build_target(target,
                              cwd)
     if errors_found:
         print('ERRORS DETECTED')
+
+        if not expanded_reporting:
+            print('')
+            print(
+                '  Run with \033[1m--expanded-reporting\033[0m to get better information about why the tests failed.'
+            )
+            print('')
         sys.exit(1)
 
 

@@ -13,6 +13,7 @@ import sys
 from os import path
 
 import run_unittests
+import devtools_paths
 
 build_scripts_path = path.join(path.dirname(path.abspath(__file__)), '..', 'build')
 sys.path.append(build_scripts_path)
@@ -29,17 +30,34 @@ def main():
         '--target', '-t', default='Default', dest='target', help='The name of the Ninja output directory. Defaults to "Default"')
     parser.add_argument(
         '--no-text-coverage', action='store_true', default=False, dest='no_text_coverage', help='Whether to output text coverage')
+    parser.add_argument('--no-html-coverage',
+                        action='store_true',
+                        default=False,
+                        dest='no_html_coverage',
+                        help='Whether to output html coverage')
     parser.add_argument('--coverage',
                         action='store_true',
                         default=False,
                         dest='coverage',
                         help='Whether to output coverage')
+    parser.add_argument('--expanded-reporting',
+                        action='store_true',
+                        default=False,
+                        dest='expanded_reporting',
+                        help='Whether to output expanded report info')
+    parser.add_argument('--chrome-binary',
+                        dest='chrome_binary',
+                        help='Path to Chromium binary')
+    parser.add_argument('--cwd',
+                        dest='cwd',
+                        help='Path to the directory containing the out dir',
+                        default=devtools_paths.devtools_root_path())
     args = parser.parse_args(sys.argv[1:])
 
     efficiently_recompile.recompile(args.target, 'test/unittests')
-    run_unittests.run_unit_tests_on_ninja_build_target(args.target,
-                                                       args.no_text_coverage,
-                                                       args.coverage)
+    run_unittests.run_unit_tests_on_ninja_build_target(
+        args.target, args.no_text_coverage, args.no_html_coverage,
+        args.coverage, args.expanded_reporting, args.chrome_binary, args.cwd)
 
 
 if __name__ == '__main__':

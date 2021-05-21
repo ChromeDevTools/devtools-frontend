@@ -134,7 +134,7 @@ module.exports = function(config) {
     ],
 
     reporters: [
-      EXPANDED_REPORTING ? 'spec' : 'dots',
+      EXPANDED_REPORTING ? 'mocha' : 'dots',
       ...coverageReporters,
     ],
 
@@ -154,6 +154,7 @@ module.exports = function(config) {
     plugins: [
       require('karma-chrome-launcher'),
       require('karma-mocha'),
+      require('karma-mocha-reporter'),
       require('karma-chai'),
       require('karma-sinon'),
       require('karma-sourcemap-loader'),
@@ -182,6 +183,10 @@ module.exports = function(config) {
     coverageReporter: {dir: COVERAGE_OUTPUT_DIRECTORY, subdir: '.', reporters: istanbulReportOutputs},
 
     singleRun,
+
+    mochaReporter: {
+      showDiff: true,
+    }
   };
 
   config.set(options);

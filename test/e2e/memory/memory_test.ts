@@ -54,38 +54,39 @@ describe('The Memory Panel', async function() {
   });
 
   // Flaky test
-  it.skipOnPlatforms(['mac'], '[crbug.com/1134602] Correctly retains the path for event listeners', async () => {
-    await goToResource('memory/event-listeners.html');
-    await step('taking a heap snapshot', async () => {
-      await navigateToMemoryTab();
-      await takeHeapSnapshot();
-      await waitForNonEmptyHeapSnapshotData();
-    });
-    await step('searching for the event listener', async () => {
-      await setSearchFilter('myEventListener');
-      await waitForSearchResultNumber(4);
-    });
+  it.skipOnPlatforms(
+      ['mac', 'linux'], '[crbug.com/1134602] Correctly retains the path for event listeners', async () => {
+        await goToResource('memory/event-listeners.html');
+        await step('taking a heap snapshot', async () => {
+          await navigateToMemoryTab();
+          await takeHeapSnapshot();
+          await waitForNonEmptyHeapSnapshotData();
+        });
+        await step('searching for the event listener', async () => {
+          await setSearchFilter('myEventListener');
+          await waitForSearchResultNumber(4);
+        });
 
-    await step('selecting the search result that we need', async () => {
-      await findSearchResult(async p => {
-        const el = await p.$(':scope > td > div > .object-value-function');
-        return el !== null && await el.evaluate(el => el.textContent === 'myEventListener()');
+        await step('selecting the search result that we need', async () => {
+          await findSearchResult(async p => {
+            const el = await p.$(':scope > td > div > .object-value-function');
+            return el !== null && await el.evaluate(el => el.textContent === 'myEventListener()');
+          });
+        });
+
+        await step('waiting for retainer chain', async () => {
+          await waitForRetainerChain([
+            'V8EventListener',
+            'EventListener',
+            'InternalNode',
+            'InternalNode',
+            'HTMLBodyElement',
+            'HTMLHtmlElement',
+            'HTMLDocument',
+            'Window',
+          ]);
+        });
       });
-    });
-
-    await step('waiting for retainer chain', async () => {
-      await waitForRetainerChain([
-        'V8EventListener',
-        'EventListener',
-        'InternalNode',
-        'InternalNode',
-        'HTMLBodyElement',
-        'HTMLHtmlElement',
-        'HTMLDocument',
-        'Window',
-      ]);
-    });
-  });
 
   it('Puts all ActiveDOMObjects with pending activities into one group', async () => {
     await goToResource('memory/dom-objects.html');

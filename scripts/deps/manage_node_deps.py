@@ -72,6 +72,7 @@ DEPS = {
     "karma-chrome-launcher": "3.1.0",
     "karma-coverage": "2.0.3",
     "karma-mocha": "2.0.1",
+    "karma-mocha-reporter": "2.2.5",
     "karma-sinon": "1.0.5",
     "karma-sourcemap-loader": "0.3.8",
     "karma-spec-reporter": "0.0.32",

@@ -105,8 +105,8 @@ export function registerUIStrings(path: string, stringStructure: Object): (id: s
    * */
   const str: (id: string, value: Object) => Platform.UIString.LocalizedString = (id: string, value: Object) => {
     try {
-      const i18nInstance = i18nBundle.createIcuMessageFn(path, stringStructure) as (id: string, values: Object) =>
-                               Platform.UIString.LocalizedString;
+      const i18nInstance = i18nBundle.createMessageInstanceIdFn(path, stringStructure) as (
+                               id: string, values: Object) => Platform.UIString.LocalizedString;
       return i18nInstance(id, value);
     } catch (e) {
       // ID was not in the main file search for module.json strings

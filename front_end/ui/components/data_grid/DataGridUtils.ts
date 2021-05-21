@@ -44,9 +44,14 @@ export interface Cell {
   renderer?: (value: CellValue) => LitHtml.TemplateResult | typeof LitHtml.nothing;
 }
 
+export interface RowCSSStylesObject {
+  readonly [name: string]: string;
+}
+
 export type Row = {
   cells: Cell[],
   hidden?: boolean,
+  styles?: RowCSSStylesObject,
 };
 
 export const enum SortDirection {

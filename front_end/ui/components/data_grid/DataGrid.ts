@@ -719,7 +719,7 @@ export class DataGrid extends HTMLElement {
         }
 
         tbody tr {
-          background-color: var(--color-background);
+          background-color: var(--override-data-grid-row-background-color, --color-background);
         }
 
         tbody tr.selected {
@@ -884,6 +884,7 @@ export class DataGrid extends HTMLElement {
                 <tr
                   aria-rowindex=${rowIndex + 1}
                   class=${rowClasses}
+                  style=${LitHtml.Directives.ifDefined(row.styles ? LitHtml.Directives.styleMap(row.styles) : undefined)}
                   @contextmenu=${this.onBodyRowContextMenu}
                 >${this.columns.map((col, columnIndex) => {
                   const cell = getRowEntryForColumnId(row, col.id);

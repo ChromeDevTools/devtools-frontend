@@ -125,6 +125,8 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     this._startTime = 0;
     this._dataGridRowForId = new Map();
     const topToolbar = new UI.Toolbar.Toolbar('protocol-monitor-toolbar', this.contentElement);
+    this.registerRequiredCSS('panels/protocol_monitor/protocolMonitor.css', {enableLegacyPatching: false});
+    this.contentElement.classList.add('protocol-monitor');
     const recordButton = new UI.Toolbar.ToolbarToggle(
         i18nString(UIStrings.record), 'largeicon-start-recording', 'largeicon-stop-recording');
     recordButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
@@ -422,6 +424,9 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     }
     const sdkTarget = target as SDK.SDKModel.Target | null;
     const newRow: DataGrid.DataGridUtils.Row = {
+      styles: {
+        '--override-data-grid-row-background-color': 'var(--override-data-grid-sent-message-row-background-color)',
+      },
       cells: [
         {columnId: 'method', value: message.method},
         {

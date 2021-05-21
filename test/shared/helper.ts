@@ -593,3 +593,12 @@ export function assertMatchArray(actual: Array<string>, expected: Array<string|R
     throw new AssertionError(result);
   }
 }
+
+export async function renderCoordinatorQueueEmpty(): Promise<void> {
+  const {frontend} = await getBrowserAndPages();
+  await frontend.evaluate(() => {
+    return new Promise(resolve => {
+      globalThis.addEventListener('renderqueueempty', resolve, {once: true});
+    });
+  });
+}

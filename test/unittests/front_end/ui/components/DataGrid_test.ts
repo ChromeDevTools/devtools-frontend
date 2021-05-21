@@ -669,6 +669,23 @@ describe('DataGrid', () => {
     });
   });
 
+  describe('marking a row as selected', () => {
+    it('marks the row as selected when the user clicks on a cell', async () => {
+      const component = renderDataGrid({rows, columns: columnsWithNoneSortable});
+      assertShadowRoot(component.shadowRoot);
+      await coordinator.done();
+      // Ensure no row is selected before the user clicks
+      let selectedRow = component.shadowRoot.querySelector('tr.selected');
+      assert.isNull(selectedRow);
+      // Focus the very first cell
+      await emulateUserFocusingCellAt(component.shadowRoot, {column: 0, row: 1});
+      await coordinator.done();
+      // Ensure the row is updated to be marked as selected
+      selectedRow = component.shadowRoot.querySelector('tbody tr.selected');
+      assertElement(selectedRow, HTMLTableRowElement);
+    });
+  });
+
   describe('DataGrid.DataGridUtils.calculateColumnWidthPercentageFromWeighting', () => {
     const makeColumnsWithWeightings = (...weights: number[]): DataGrid.DataGridUtils.Column[] => {
       return weights.map((weight, index) => {

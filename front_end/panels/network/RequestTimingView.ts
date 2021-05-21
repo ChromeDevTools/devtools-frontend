@@ -356,7 +356,7 @@ export class RequestTimingView extends UI.Widget.VBox {
   static createTimingTable(request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator): Element {
     const tableElement = document.createElement('table');
     tableElement.classList.add('network-timing-table');
-    UI.Utils.appendStyle(tableElement, 'panels/network/networkTimingTable.css', {enableLegacyPatching: true});
+    UI.Utils.appendStyle(tableElement, 'panels/network/networkTimingTable.css', {enableLegacyPatching: false});
     const colgroup = tableElement.createChild('colgroup');
     colgroup.createChild('col', 'labels');
     colgroup.createChild('col', 'bars');

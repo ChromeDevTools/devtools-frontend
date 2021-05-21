@@ -355,6 +355,7 @@ export class IssuesPane extends UI.Widget.VBox {
     if (issueView) {
       issueView.expand();
       issueView.reveal();
+      issueView.select();
     }
   }
 }

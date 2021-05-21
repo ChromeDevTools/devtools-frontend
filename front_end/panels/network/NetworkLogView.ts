@@ -915,6 +915,12 @@ export class NetworkLogView extends UI.Widget.VBox implements
     this._dataGrid.element.addEventListener('mousemove', this._dataGridMouseMove.bind(this), true);
     this._dataGrid.element.addEventListener('mouseleave', () => this._setHoveredNode(null), true);
     this._dataGrid.element.addEventListener('keydown', event => {
+      if (event.key === 'ArrowRight' && this._dataGrid.selectedNode) {
+        const initiatorLink = this._dataGrid.selectedNode.element().querySelector('span.devtools-link');
+        if (initiatorLink) {
+          (initiatorLink as HTMLElement).focus();
+        }
+      }
       if (isEnterOrSpaceKey(event)) {
         this.dispatchEventToListeners(Events.RequestActivated, {showPanel: true, takeFocus: true});
         event.consume(true);

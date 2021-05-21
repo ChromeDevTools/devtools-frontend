@@ -1231,9 +1231,11 @@ export class NetworkRequestNode extends NetworkNode {
         cell.appendChild(document.createTextNode(i18nString(UIStrings.preflight)));
         if (initiator.initiatorRequest) {
           const icon = UI.Icon.Icon.create('mediumicon-network-panel');
-          cell.appendChild(Components.Linkifier.Linkifier.linkifyRevealable(
+          const link = Components.Linkifier.Linkifier.linkifyRevealable(
               initiator.initiatorRequest, icon, undefined, i18nString(UIStrings.selectTheRequestThatTriggered),
-              'trailing-link-icon'));
+              'trailing-link-icon');
+          UI.ARIAUtils.setAccessibleName(link, i18nString(UIStrings.selectTheRequestThatTriggered));
+          cell.appendChild(link);
         }
         break;
       }

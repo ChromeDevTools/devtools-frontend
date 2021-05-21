@@ -108,7 +108,7 @@ export class DebuggerPausedMessage {
     this._element.classList.add('flex-none');
     const root = UI.Utils.createShadowRootWithCoreStyles(
         this._element,
-        {cssFile: 'panels/sources/debuggerPausedMessage.css', enableLegacyPatching: true, delegatesFocus: undefined});
+        {cssFile: 'panels/sources/debuggerPausedMessage.css', enableLegacyPatching: false, delegatesFocus: undefined});
     this._contentElement = (root.createChild('div') as HTMLElement);
     UI.ARIAUtils.markAsPoliteLiveRegion(this._element, false);
   }

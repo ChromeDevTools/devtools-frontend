@@ -37,6 +37,9 @@ devtools_module("emulation") {
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/utils:bundle",
   ]
+
+  public_deps =
+      [ "../../emulated_devices/optimized:optimized_emulated_devices" ]
 }
 
 copy_to_gen("legacy_css") {

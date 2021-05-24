@@ -16,8 +16,6 @@ group("front_end") {
     ":legacy_css",
     ":legacy_entrypoints",
     "Images",
-    "Images:generate_css_vars",
-    "emulated_devices/optimized:optimized_emulated_devices",
     "entrypoints/devtools_app",
     "entrypoints/formatter_worker:worker_entrypoint",
     "entrypoints/heap_snapshot_worker:worker_entrypoint",
@@ -31,7 +29,6 @@ group("front_end") {
     "entrypoints/wasmparser_worker:worker_entrypoint",
     "entrypoints/worker_app",
     "legacy_test_runner",
-    "models/issues_manager:descriptions",
   ]
 }
 

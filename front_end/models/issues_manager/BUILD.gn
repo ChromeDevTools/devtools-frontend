@@ -39,6 +39,8 @@ devtools_module("issues_manager") {
     "../../models/workspace:bundle",
     "../../third_party/marked:bundle",
   ]
+
+  public_deps = [ ":descriptions" ]
 }
 
 devtools_issue_description_files = [

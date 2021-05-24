@@ -19,6 +19,11 @@ devtools_module("i18n") {
     "../../core/root:bundle",
     "../../third_party/i18n:bundle",
   ]
+
+  public_deps = [
+    ":i18n_bundled_locales",
+    ":i18n_remote_locales",
+  ]
 }
 
 devtools_entrypoint("bundle") {

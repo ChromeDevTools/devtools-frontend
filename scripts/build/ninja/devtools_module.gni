@@ -30,7 +30,7 @@ template("devtools_module") {
       filter_include(_target_outputs + invoker.data, [ "*.js" ])
 
   group(target_name) {
-    public_deps = [ _typescript_target_dep ]
+    public_deps = [ _typescript_target_dep ] + invoker.public_deps
 
     visibility = invoker.visibility + [ ":*" ]
 
@@ -47,4 +47,5 @@ template("devtools_module") {
 set_defaults("devtools_module") {
   visibility = []
   data = []
+  public_deps = []
 }

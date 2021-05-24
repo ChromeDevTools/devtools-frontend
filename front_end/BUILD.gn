@@ -17,8 +17,6 @@ group("front_end") {
     ":legacy_entrypoints",
     "Images",
     "Images:generate_css_vars",
-    "core/i18n:i18n_bundled_locales",
-    "core/i18n:i18n_remote_locales",
     "emulated_devices/optimized:optimized_emulated_devices",
     "entrypoints/devtools_app",
     "entrypoints/formatter_worker:worker_entrypoint",

@@ -97,6 +97,12 @@ export class BodyCellFocusedEvent extends Event {
   }
 }
 
+const enum UserScrollState {
+  NOT_SCROLLED = 'NOT_SCROLLED',
+  MANUAL_SCROLL_NOT_BOTTOM = 'MANUAL_SCROLL_NOT_BOTTOM',
+  SCROLLED_TO_BOTTOM = 'SCROLLED_TO_BOTTOM',
+}
+
 const KEYS_TREATED_AS_CLICKS = new Set([' ', 'Enter']);
 
 const ROW_HEIGHT_PIXELS = 18;
@@ -110,6 +116,7 @@ export class DataGrid extends HTMLElement {
   private rows: readonly Row[] = [];
   private sortState: Readonly<SortState>|null = null;
   private isRendering = false;
+  private userScrollState: UserScrollState = UserScrollState.NOT_SCROLLED;
   private contextMenus?: DataGridContextMenusConfiguration = undefined;
   private currentResize: {
     rightCellCol: HTMLTableColElement,
@@ -154,7 +161,6 @@ export class DataGrid extends HTMLElement {
   private focusableCell: CellPosition = [0, 1];
   private hasRenderedAtLeastOnce = false;
   private userHasFocusInDataGrid = false;
-  private userHasScrolled = false;
   private scheduleRender = false;
 
   constructor() {
@@ -224,18 +230,33 @@ export class DataGrid extends HTMLElement {
     this.render();
   }
 
-  private scrollToBottomIfRequired(): void {
-    if (this.hasRenderedAtLeastOnce === false || this.userHasFocusInDataGrid || this.userHasScrolled) {
-      // On the first render we don't want to assume the user wants to scroll to the bottom.
-      // And if they have focused a cell we don't want to scroll them away from it.
-      // If they have scrolled the table manually we also won't scroll and disrupt their scroll position.
-      return;
+  private shouldAutoScrollToBottom(): boolean {
+    /**
+     * If the user's last scroll took them to the bottom, then we assume they
+     * want to automatically scroll.
+     */
+    if (this.userScrollState === UserScrollState.SCROLLED_TO_BOTTOM) {
+      return true;
     }
 
-    const focusableCell = this.getCurrentlyFocusableCellElement();
-    if (focusableCell && focusableCell === this.shadow.activeElement) {
-      // The user has a cell (and indirectly, a row) selected so we don't want
-      // to mess with their scroll
+    /**
+     * If the user does not have focus in the data grid (e.g. they haven't
+     * selected a cell), we automatically scroll, as long as the user hasn't
+     * manually scrolled the data-grid to somewhere that isn't the bottom.
+     */
+    if (!this.userHasFocusInDataGrid && this.userScrollState !== UserScrollState.MANUAL_SCROLL_NOT_BOTTOM) {
+      return true;
+    }
+
+    /**
+     * Else, the user has focused a cell, or their last scroll action took them
+     * not to the bottom, so we assume that they don't want to be auto-scrolled.
+     */
+    return false;
+  }
+
+  private scrollToBottomIfRequired(): void {
+    if (this.hasRenderedAtLeastOnce === false || !this.shouldAutoScrollToBottom()) {
       return;
     }
 
@@ -584,12 +605,19 @@ export class DataGrid extends HTMLElement {
     menu.show();
   }
 
-  private onScroll(): void {
-    this.render();
-  }
+  private onScroll(event: Event): void {
+    const wrapper = event.target as HTMLElement;
+    if (!wrapper) {
+      return;
+    }
 
-  private onWheel(): void {
-    this.userHasScrolled = true;
+    // Need to Math.round because on high res screens we can end up with decimal
+    // point numbers for scroll positions.
+    const userIsAtBottom = Math.round(wrapper.scrollTop + wrapper.clientHeight) === Math.round(wrapper.scrollHeight);
+    this.userScrollState =
+        userIsAtBottom ? UserScrollState.SCROLLED_TO_BOTTOM : UserScrollState.MANUAL_SCROLL_NOT_BOTTOM;
+
+    this.render();
   }
 
   private alignScrollHandlers(): Promise<void> {
@@ -817,7 +845,7 @@ export class DataGrid extends HTMLElement {
         */
         return this.renderResizeForCell(col, [columnIndex, 0]);
       })}
-      <div class="wrapping-container" @scroll=${this.onScroll} @wheel=${this.onWheel} @focusout=${this.onFocusOut}>
+      <div class="wrapping-container" @scroll=${this.onScroll} @focusout=${this.onFocusOut}>
         <table
           aria-rowcount=${this.rows.length}
           aria-colcount=${this.columns.length}

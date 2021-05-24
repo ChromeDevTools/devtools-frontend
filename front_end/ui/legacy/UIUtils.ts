@@ -1298,7 +1298,7 @@ export class CheckboxLabel extends HTMLSpanElement {
     CheckboxLabel._lastId = CheckboxLabel._lastId + 1;
     const id = 'ui-checkbox-label' + CheckboxLabel._lastId;
     this._shadowRoot = createShadowRootWithCoreStyles(
-        this, {cssFile: 'ui/legacy/checkboxTextLabel.css', enableLegacyPatching: true, delegatesFocus: undefined});
+        this, {cssFile: 'ui/legacy/checkboxTextLabel.css', enableLegacyPatching: false, delegatesFocus: undefined});
     this.checkboxElement = (this._shadowRoot.createChild('input') as HTMLInputElement);
     this.checkboxElement.type = 'checkbox';
     this.checkboxElement.setAttribute('id', id);

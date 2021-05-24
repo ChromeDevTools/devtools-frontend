@@ -24,7 +24,8 @@ def RunNode(cmd_parts, output=subprocess.PIPE):
     process = subprocess.Popen(cmd,
                                cwd=os.getcwd(),
                                stdout=output,
-                               stderr=output)
+                               stderr=output,
+                               universal_newlines=True)
     stdout, stderr = process.communicate()
 
     if process.returncode != 0:

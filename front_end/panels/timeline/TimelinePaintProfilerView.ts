@@ -156,7 +156,7 @@ export class TimelinePaintImageView extends UI.Widget.Widget {
   _maskRectangle?: Protocol.DOM.Rect|null;
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/timeline/timelinePaintProfiler.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/timeline/timelinePaintProfiler.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('fill', 'paint-profiler-image-view');
     this._imageContainer = this.contentElement.createChild('div', 'paint-profiler-image-container');
     this._imageElement = (this._imageContainer.createChild('img') as HTMLImageElement);

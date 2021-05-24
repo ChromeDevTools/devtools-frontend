@@ -238,7 +238,7 @@ export class PlayerMessagesView extends UI.Widget.VBox {
 
   constructor() {
     super();
-    this.registerRequiredCSS('panels/media/playerMessagesView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/media/playerMessagesView.css', {enableLegacyPatching: false});
 
     this._headerPanel = this.contentElement.createChild('div', 'media-messages-header');
     this._bodyPanel = this.contentElement.createChild('div', 'media-messages-body');

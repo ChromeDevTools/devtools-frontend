@@ -467,7 +467,7 @@ export class ToolbarButton extends UI.Toolbar.ToolbarItem {
     const element = document.createElement('button');
     element.classList.add('history-dropdown-button');
     super(element);
-    UI.Utils.appendStyle(this.element, 'panels/timeline/historyToolbarButton.css', {enableLegacyPatching: true});
+    UI.Utils.appendStyle(this.element, 'panels/timeline/historyToolbarButton.css', {enableLegacyPatching: false});
     this._contentElement = this.element.createChild('span', 'content');
     const dropdownArrowIcon = UI.Icon.Icon.create('smallicon-triangle-down');
     this.element.appendChild(dropdownArrowIcon);

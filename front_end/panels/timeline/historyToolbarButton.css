@@ -37,8 +37,7 @@
   right: 0;
   bottom: 2px;
   border-radius: 2px;
-  background: rgb(0 0 0 / 8%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background: var(--divider-line);
 }
 
 @media (forced-colors: active) {

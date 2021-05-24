@@ -49,7 +49,7 @@ export class SoftDropDown<T> implements ListDelegate<T> {
 
     this.element = document.createElement('button');
     this.element.classList.add('soft-dropdown');
-    appendStyle(this.element, 'ui/legacy/softDropDownButton.css', {enableLegacyPatching: true});
+    appendStyle(this.element, 'ui/legacy/softDropDownButton.css', {enableLegacyPatching: false});
     this._titleElement = this.element.createChild('span', 'title');
     const dropdownArrowIcon = Icon.create('smallicon-triangle-down');
     this.element.appendChild(dropdownArrowIcon);

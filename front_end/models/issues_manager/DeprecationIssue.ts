@@ -28,13 +28,9 @@ export enum IssueCode {
 }
 
 export class DeprecationIssue extends Issue<IssueCode> {
-  // TODO(crbug.com/1072335) Update types once protocol rolls
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private issueDetails: any;
+  private issueDetails: Protocol.Audits.NavigatorUserAgentIssueDetails;
 
-  // TODO(crbug.com/1072335) Update types once protocol rolls
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(issueDetails: any, issuesModel: SDK.IssuesModel.IssuesModel) {
+  constructor(issueDetails: Protocol.Audits.NavigatorUserAgentIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
     super(IssueCode.NavigatorUserAgentIssue, issuesModel);
     this.issueDetails = issueDetails;
   }
@@ -43,7 +39,7 @@ export class DeprecationIssue extends Issue<IssueCode> {
     return IssueCategory.Other;
   }
 
-  details(): Protocol.Audits.CorsIssueDetails {
+  details(): Protocol.Audits.NavigatorUserAgentIssueDetails {
     return this.issueDetails;
   }
 
@@ -58,7 +54,10 @@ export class DeprecationIssue extends Issue<IssueCode> {
   }
 
   sources(): Iterable<Protocol.Audits.SourceCodeLocation> {
-    return [this.issueDetails.location];
+    if (this.issueDetails.location) {
+      return [this.issueDetails.location];
+    }
+    return [];
   }
 
   primaryKey(): string {
@@ -77,13 +76,11 @@ export class DeprecationIssue extends Issue<IssueCode> {
   static fromInspectorIssue(
       issuesModel: SDK.IssuesModel.IssuesModel,
       inspectorDetails: Protocol.Audits.InspectorIssueDetails): DeprecationIssue[] {
-    // TODO(crbug.com/1072335) Update types once protocol rolls
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const corsIssueDetails = (inspectorDetails as any)['navigatorUserAgentIssueDetails'];
-    if (!corsIssueDetails) {
-      console.warn('Cors issue without details received.');
+    const details = inspectorDetails.navigatorUserAgentIssueDetails;
+    if (!details) {
+      console.warn('NavigatorUserAgent issue without details received.');
       return [];
     }
-    return [new DeprecationIssue(corsIssueDetails, issuesModel)];
+    return [new DeprecationIssue(details, issuesModel)];
   }
 }

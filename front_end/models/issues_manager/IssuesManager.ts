@@ -78,9 +78,7 @@ const issueCodeHandlers = new Map<
     QuirksModeIssue.fromInspectorIssue,
   ],
   [
-    // TODO(crbug.com/1072335) Update types once protocol rolls
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    'NavigatorUserAgentIssue' as Protocol.Audits.InspectorIssueCode,
+    Protocol.Audits.InspectorIssueCode.NavigatorUserAgentIssue,
     DeprecationIssue.fromInspectorIssue,
   ],
 ]);

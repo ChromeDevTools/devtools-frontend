@@ -1404,7 +1404,7 @@ export class DevToolsSlider extends HTMLSpanElement {
   constructor() {
     super();
     const root = createShadowRootWithCoreStyles(
-        this, {cssFile: 'ui/legacy/slider.css', enableLegacyPatching: true, delegatesFocus: undefined});
+        this, {cssFile: 'ui/legacy/slider.css', enableLegacyPatching: false, delegatesFocus: undefined});
     this.sliderElement = document.createElement('input');
     this.sliderElement.classList.add('dt-range-input');
     this.sliderElement.type = 'range';

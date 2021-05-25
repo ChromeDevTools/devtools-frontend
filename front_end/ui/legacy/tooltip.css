@@ -5,18 +5,20 @@
  */
 
 .tooltip {
-  background: hsl(0deg 0% 95%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  --override-tooltip-background-color: hsl(0deg 0% 95%);
+  --override-tooltip-color: hsl(0deg 0% 20%);
+  --override-tooltip-drop-shadow-color: hsl(0deg 0% 0% / 30%);
+  --override-tooltip-border-color: hsl(0deg 0% 0% / 10%);
+
+  background: var(--override-tooltip-background-color);
   border-radius: 2px;
-  color: hsl(0deg 0% 20%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--override-tooltip-color);
   padding: 5px 8px;
   line-height: 14px;
   display: flex;
   align-items: center;
-  filter: drop-shadow(0 1px 2px hsl(0deg 0% 0% / 30%));
-  border: 1px solid hsl(0deg 0% 0% / 10%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  filter: drop-shadow(0 1px 2px var(--override-tooltip-drop-shadow-color));
+  border: 1px solid var(--override-tooltip-border-color);
   background-clip: padding-box;
   box-sizing: border-box;
   position: absolute;
@@ -29,6 +31,14 @@
   text-overflow: ellipsis;
   overflow: hidden;
   pointer-events: none;
+}
+
+.-theme-with-dark-background .tooltip,
+:host-context(.-theme-with-dark-background) .tooltip {
+  --override-tooltip-background-color: rgb(13 13 13);
+  --override-tooltip-color: rgb(204 204 204);
+  --override-tooltip-drop-shadow-color: rgb(230 230 230 / 30%);
+  --override-tooltip-border-color: rgb(230 230 230 / 10%);
 }
 
 .tooltip-breakword {
@@ -46,9 +56,15 @@
 }
 
 .tooltip-shortcut {
-  color: hsl(0deg 0% 45%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  --override-tooltip-shortcut-color: hsl(0deg 0% 45%);
+
+  color: var(--override-tooltip-shortcut-color);
   display: inline-block;
   margin-left: 8px;
   flex: 0 0 auto;
+}
+
+.-theme-with-dark-background .tooltip-shortcut,
+:host-context(.-theme-with-dark-background) .tooltip-shortcut {
+  --override-tooltip-shortcut-color: rgb(140 140 140);
 }

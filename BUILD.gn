@@ -6,6 +6,7 @@ import("./config/gni/all_devtools_files.gni")
 import("./config/gni/devtools_grd_files.gni")
 import("./config/gni/devtools_image_files.gni")
 import("./front_end/emulated_devices/optimized/optimized_images.gni")
+import("./scripts/build/ninja/node.gni")
 import("./scripts/build/ninja/vars.gni")
 import("./third_party/blink/public/public_features.gni")
 
@@ -212,15 +213,46 @@ generated_file("input_grd_files") {
   ]
 }
 
+_compressable_grd_files = filter_include(_expected_grd_files,
+                                         [
+                                           "*.css",
+                                           "*.html",
+                                           "*.js",
+                                           "*.svg",
+                                           "*.json",
+                                         ])
+
+if (!is_debug) {
+  node_action("compress") {
+    script = "scripts/build/compress_files.js"
+    public_deps = [ ":devtools_frontend_resources" ]
+
+    sources = []
+    foreach(_grd_file, _compressable_grd_files) {
+      sources += [ "$target_gen_dir/$_grd_file" ]
+    }
+
+    response_file_contents = rebase_path(sources, root_build_dir)
+
+    outputs = []
+    foreach(_grd_file, _compressable_grd_files) {
+      outputs += [
+        "$target_gen_dir/$_grd_file.compressed",
+        "$target_gen_dir/$_grd_file.hash",
+      ]
+    }
+
+    args = [
+      "--file_list",
+      "{{response_file_name}}",
+    ]
+  }
+} else {
+  not_needed([ "_compressable_grd_files" ])
+}
+
 action("generate_devtools_grd") {
   script = "scripts/build/generate_devtools_grd.py"
-
-  deps = [ ":devtools_frontend_resources" ]
-
-  inputs = []
-  foreach(_grd_file, _expected_grd_files) {
-    inputs += [ "$target_gen_dir/$_grd_file" ]
-  }
 
   response_file_contents = rebase_path(_expected_grd_files, "front_end")
   outfile = "$target_gen_dir/front_end/devtools_resources.grd"
@@ -232,7 +264,23 @@ action("generate_devtools_grd") {
     "--output",
     rebase_path(outfile, root_build_dir),
   ]
-  if (!is_debug) {
+
+  inputs = []
+
+  if (is_debug) {
+    deps = [ ":devtools_frontend_resources" ]
+    foreach(_grd_file, _expected_grd_files) {
+      inputs += [ "$target_gen_dir/$_grd_file" ]
+    }
+  } else {
+    deps = [ ":compress" ]
+    foreach(_grd_file, _expected_grd_files) {
+      inputs += [ "$target_gen_dir/$_grd_file" ]
+    }
+    foreach(_grd_file, _compressable_grd_files) {
+      inputs += [ "$target_gen_dir/$_grd_file.compressed" ]
+    }
+
     # Compression is slow, particularly in debug builds, so only compress in
     # non-debug builds.
     args += [ "--compress" ]

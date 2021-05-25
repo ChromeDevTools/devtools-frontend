@@ -92,14 +92,18 @@ def add_file_to_grd(grd_doc, relative_filename, compress):
     includes_node = grd_doc.getElementsByTagName('includes')[0]
     includes_node.appendChild(grd_doc.createTextNode('\n      '))
 
-    new_include_node = grd_doc.createElement('include')
-    new_include_node.setAttribute('name', make_name_from_filename(relative_filename))
-    new_include_node.setAttribute('file', relative_filename)
-    new_include_node.setAttribute('type', 'BINDATA')
     ext = os.path.splitext(relative_filename)[1]
-    if compress:
-        if ext in ['.css', '.html', '.js', '.svg']:
-            new_include_node.setAttribute('compress', 'brotli')
+    new_include_node = grd_doc.createElement('include')
+    if compress and ext in ['.css', '.html', '.js', '.svg', '.json']:
+        new_include_node.setAttribute('file',
+                                      relative_filename + '.compressed')
+    else:
+        new_include_node.setAttribute('file', relative_filename)
+
+    new_include_node.setAttribute('name', make_name_from_filename(relative_filename))
+    new_include_node.setAttribute('resource_path', relative_filename)
+    new_include_node.setAttribute('type', 'BINDATA')
+    new_include_node.setAttribute('compress', 'false')
     includes_node.appendChild(new_include_node)
 
 

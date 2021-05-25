@@ -130,7 +130,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     this._inputModel = screenCaptureModel.target().model(InputModel);
 
     this.setMinimumSize(150, 150);
-    this.registerRequiredCSS('panels/screencast/screencastView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/screencast/screencastView.css', {enableLegacyPatching: false});
     this._shortcuts = {} as {
       [x: number]: (arg0?: Event|undefined) => boolean,
     };
@@ -164,8 +164,8 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     this._canvasElement.addEventListener('keyup', this._handleKeyEvent.bind(this), false);
     this._canvasElement.addEventListener('keypress', this._handleKeyEvent.bind(this), false);
     this._canvasElement.addEventListener('blur', this._handleBlurEvent.bind(this), false);
-    this._titleElement = this._canvasContainerElement.createChild(
-                             'div', 'screencast-element-title monospace hidden -theme-not-patched') as HTMLElement;
+    this._titleElement =
+        this._canvasContainerElement.createChild('div', 'screencast-element-title monospace hidden') as HTMLElement;
     this._tagNameElement = this._titleElement.createChild('span', 'screencast-tag-name') as HTMLElement;
     this._attributeElement = this._titleElement.createChild('span', 'screencast-attribute') as HTMLElement;
     UI.UIUtils.createTextChild(this._titleElement, ' ');

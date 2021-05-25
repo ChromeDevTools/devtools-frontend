@@ -10,15 +10,13 @@
 
 .tree-outline > ol {
   padding-bottom: 5px;
-  border-bottom: solid 1px #e0e0e0; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-bottom: solid 1px var(--color-details-hairline);
 }
 
 .tree-outline > .parent {
   user-select: none;
   font-weight: bold;
-  color: #616161; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-primary);
   margin-top: -1px;
   display: flex;
   align-items: center;
@@ -40,8 +38,7 @@
 }
 
 .tree-outline .header-name {
-  color: rgb(33% 33% 33%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
   display: inline-block;
   margin-right: 0.25em;
   font-weight: bold;
@@ -65,19 +62,23 @@
   display: inline;
   margin-left: 30px;
   font-weight: normal;
-  color: rgb(45% 45% 45%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-disabled);
 }
 
 .tree-outline .header-toggle:hover {
-  color: rgb(20% 20% 45%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  --override-header-hover-color: rgb(20% 20% 45%);
+
+  color: var(--override-header-hover-color);
   cursor: pointer;
 }
 
+.-theme-with-dark-background .tree-outline .header-toggle:hover,
+:host-context(.-theme-with-dark-background) .tree-outline .header-toggle:hover {
+  --override-header-hover-color: rgb(140 140 204);
+}
+
 .tree-outline .error-log {
-  color: #f00; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-red);
   display: inline-block;
   margin-right: 0.25em;
   margin-left: 0.25em;
@@ -93,6 +94,5 @@
 }
 
 .tree-outline .error-field {
-  color: #f00; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-red);
 }

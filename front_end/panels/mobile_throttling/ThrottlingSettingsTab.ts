@@ -88,7 +88,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
   _editor?: UI.ListWidget.Editor<SDK.NetworkManager.Conditions>;
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/mobile_throttling/throttlingSettingsTab.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/mobile_throttling/throttlingSettingsTab.css', {enableLegacyPatching: false});
 
     const header = this.contentElement.createChild('div', 'header');
     header.textContent = i18nString(UIStrings.networkThrottlingProfiles);
@@ -100,7 +100,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
 
     this._list = new UI.ListWidget.ListWidget(this);
     this._list.element.classList.add('conditions-list');
-    this._list.registerRequiredCSS('panels/mobile_throttling/throttlingSettingsTab.css', {enableLegacyPatching: true});
+    this._list.registerRequiredCSS('panels/mobile_throttling/throttlingSettingsTab.css', {enableLegacyPatching: false});
     this._list.show(this.contentElement);
 
     this._customSetting = Common.Settings.Settings.instance().moduleSetting('customNetworkConditions');

@@ -209,38 +209,55 @@ div.CodeMirror-dragcursors {
 }
 
 .CodeMirror-selected {
-  background: #d9d9d9; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  --override-cm-selected-background-color: #d9d9d9;
+
+  background: var(--override-cm-selected-background-color);
+}
+
+.-theme-with-dark-background .CodeMirror-selected,
+:host-context(.-theme-with-dark-background) .CodeMirror-selected {
+  --override-cm-selected-background-color: rgb(38 38 38);
 }
 
 .CodeMirror-focused .CodeMirror-selected {
-  background: #d7d4f0; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  --override-cm-selected-background-color: #d7d4f0;
+}
+
+.-theme-with-dark-background .CodeMirror-focused .CodeMirror-selected,
+:host-context(.-theme-with-dark-background) .CodeMirror-focused .CodeMirror-selected {
+  --override-cm-selected-background-color: rgb(18 15 43);
 }
 
 .CodeMirror-crosshair {
   cursor: crosshair;
 }
 
+.CodeMirror-line {
+  --override-line-selection-background-color: #d7d4f0;
+}
+
 .CodeMirror-line::selection,
 .CodeMirror-line > span::selection,
 .CodeMirror-line > span > span::selection {
-  background: #d7d4f0; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background:var(--override-line-selection-background-color);
 }
 
 .CodeMirror-line::-moz-selection,
 .CodeMirror-line > span::-moz-selection,
 .CodeMirror-line > span > span::-moz-selection {
-  background: #d7d4f0; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background: var(--override-line-selection-background-color);
+}
+
+.-theme-with-dark-background .CodeMirror-line,
+:host-context(.-theme-with-dark-background) .CodeMirror-line {
+  --override-line-selection-background-color: rgb(18 15 43);
+
 }
 
 .cm-searching {
-  background-color: #ffa; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  background-color: rgb(255 255 0 / 40%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  --override-searching-background-color: rgb(255 255 0 / 40%);
+
+  background-color: var(--override-searching-background-color);
 }
 
 /* Used to force a border model for a node */

@@ -16,6 +16,7 @@ devtools_module("search") {
   deps = [
     "../../core/common:bundle",
     "../../core/i18n:bundle",
+    "../../core/platform:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
     "../../ui/legacy:bundle",

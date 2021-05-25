@@ -15,6 +15,8 @@ devtools_module("har") {
 
   deps = [
     "../../core/common:bundle",
+    "../../core/i18n:bundle",
+    "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated:protocol",
   ]

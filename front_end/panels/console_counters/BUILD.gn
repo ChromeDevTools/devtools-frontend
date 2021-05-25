@@ -13,6 +13,7 @@ devtools_module("console_counters") {
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
+    "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../models/issues_manager:bundle",
     "../../ui/components/helpers:bundle",

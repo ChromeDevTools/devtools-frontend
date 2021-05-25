@@ -18,6 +18,7 @@ devtools_module("data_grid") {
   deps = [
     "../../../core/common:bundle",
     "../../../core/host:bundle",
+    "../../../core/i18n:bundle",
     "../../../core/platform:bundle",
     "../../../models/text_utils:bundle",
     "../../../ui/components/helpers:bundle",

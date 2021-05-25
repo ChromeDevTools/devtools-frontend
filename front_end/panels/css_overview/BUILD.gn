@@ -22,6 +22,8 @@ devtools_module("css_overview") {
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
+    "../../core/platform:bundle",
+    "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../generated:protocol",
     "../../models/text_utils:bundle",

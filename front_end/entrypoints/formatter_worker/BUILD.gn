@@ -23,6 +23,7 @@ devtools_module("formatter_worker") {
 
   deps = [
     "../../core/platform:bundle",
+    "../../core/root:bundle",
     "../../models/formatter:bundle",
     "../../models/text_utils:bundle",
     "../../third_party/acorn:bundle",

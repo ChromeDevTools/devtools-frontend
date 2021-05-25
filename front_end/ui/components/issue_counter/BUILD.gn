@@ -13,6 +13,8 @@ devtools_module("issue_counter") {
     "../../../core/common:bundle",
     "../../../core/i18n:bundle",
     "../../../models/issues_manager:bundle",
+    "../../../ui/lit-html:bundle",
+    "../helpers:bundle",
     "../icon_button:bundle",
   ]
 }

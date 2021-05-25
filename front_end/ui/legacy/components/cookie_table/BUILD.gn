@@ -12,8 +12,10 @@ devtools_module("cookie_table") {
   deps = [
     "../../../../core/common:bundle",
     "../../../../core/i18n:bundle",
+    "../../../../core/platform:bundle",
     "../../../../core/root:bundle",
     "../../../../core/sdk:bundle",
+    "../../../../generated:protocol",
     "../../../../models/issues_manager:bundle",
     "../../../../ui/legacy:bundle",
     "../../../../ui/legacy/components/data_grid:bundle",

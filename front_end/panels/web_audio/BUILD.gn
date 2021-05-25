@@ -17,6 +17,7 @@ devtools_module("web_audio") {
   deps = [
     "../../core/common:bundle",
     "../../core/i18n:bundle",
+    "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated:protocol",
     "../../ui/legacy:bundle",

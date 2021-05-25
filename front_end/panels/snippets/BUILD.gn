@@ -17,9 +17,11 @@ devtools_module("snippets") {
     "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../core/sdk:bundle",
+    "../../generated:protocol",
     "../../models/persistence:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
+    "../../ui/legacy:bundle",
     "../../ui/legacy/components/quick_open:bundle",
   ]
 }

@@ -95,6 +95,7 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility = [
+    "../../core/sdk/*",
     "../../models/text_utils/*",
     "../../ui/legacy/components/text_editor/*",
   ]

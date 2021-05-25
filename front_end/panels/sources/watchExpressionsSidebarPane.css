@@ -48,21 +48,22 @@
 }
 
 .watch-expressions .name {
-  color: rgb(136 19 145); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  --override-watch-expression-name-color: rgb(136 19 145);
+
+  color: var(--override-watch-expression-name-color);
   flex: none;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
 }
 
-.watch-expression-error {
-  color: #f00; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+.-theme-with-dark-background .watch-expressions .name,
+:host-context(.-theme-with-dark-background) .watch-expressions .name {
+  --override-watch-expression-name-color: rgb(227 110 236);
 }
 
-:host-context(.-theme-with-dark-background) .watch-expression-error {
-  color: hsl(0deg 100% 65%);
+.watch-expression-error {
+  color: var(--color-red);
 }
 
 .watch-expressions-separator {
@@ -100,8 +101,7 @@ li.watch-expression-tree-item {
 }
 
 li.watch-expression-tree-item:hover {
-  background-color: #f0f0f0; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background-elevation-2);
 }
 
 .watch-expression-header:focus-visible {

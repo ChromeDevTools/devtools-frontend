@@ -110,7 +110,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     this.profilesItemTreeElement = new ProfilesSidebarTreeElement(this);
 
     this._sidebarTree = new UI.TreeOutline.TreeOutlineInShadow();
-    this._sidebarTree.registerRequiredCSS('panels/profiler/profilesSidebarTree.css', {enableLegacyPatching: true});
+    this._sidebarTree.registerRequiredCSS('panels/profiler/profilesSidebarTree.css', {enableLegacyPatching: false});
     this._sidebarTree.element.classList.add('profiles-sidebar-tree-box');
     this.panelSidebarElement().appendChild(this._sidebarTree.element);
 

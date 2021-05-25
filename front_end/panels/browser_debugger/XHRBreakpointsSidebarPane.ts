@@ -78,7 +78,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
 
   private constructor() {
     super(true);
-    this.registerRequiredCSS('panels/browser_debugger/xhrBreakpointsSidebarPane.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/browser_debugger/xhrBreakpointsSidebarPane.css', {enableLegacyPatching: false});
 
     this._breakpoints = new UI.ListModel.ListModel();
     this._list = new UI.ListControl.ListControl(this._breakpoints, this, UI.ListControl.ListMode.NonViewport);

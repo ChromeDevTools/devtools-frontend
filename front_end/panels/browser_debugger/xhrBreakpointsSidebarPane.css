@@ -26,8 +26,7 @@
   margin-left: 0;
   margin-right: 0;
   outline: none !important; /* stylelint-disable-line declaration-no-important */
-  border: 1px solid rgb(66% 66% 66%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border: 1px solid var(--color-background-elevation-2);
 }
 
 .breakpoint-entry {
@@ -36,8 +35,7 @@
 }
 
 .breakpoint-list .breakpoint-entry:hover {
-  background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background-elevation-1);
 }
 
 .breakpoint-list .breakpoint-entry:focus-visible {
@@ -49,15 +47,17 @@
 }
 
 .breakpoint-hit {
-  background-color: rgb(255 255 194); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  border-right: 3px solid rgb(107 97 48); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  --override-breakpoint-hit-background-color: rgb(255 255 194);
+  --override-breakpoint-hit-border-color: rgb(107 97 48);
+
+  background-color: var(--override-breakpoint-hit-background-color);
+  border-right: 3px solid var(--override-breakpoint-hit-border-color);
 }
 
+.-theme-with-dark-background .breakpoint-hit,
 :host-context(.-theme-with-dark-background) .breakpoint-hit {
-  background-color: hsl(46deg 98% 22%);
-  color: #ccc;
+  --override-breakpoint-hit-background-color: hsl(46deg 98% 22%);
+  --override-breakpoint-hit-border-color: #ccc;
 }
 
 @media (forced-colors: active) {

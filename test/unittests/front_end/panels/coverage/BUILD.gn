@@ -2,9 +2,13 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("coverage") {
   testonly = true
-  sources = [ "Segments_test.ts" ]
+  sources = [
+    "CoverageInfo_test.ts",
+    "Segments_test.ts",
+  ]
 
   deps = [
+    "../../../../../front_end/models/text_utils:bundle",
     "../../../../../front_end/panels/coverage:bundle",
     "../../helpers",
   ]

@@ -464,12 +464,6 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
 
   async exportReport(fos: Bindings.FileUtils.FileOutputStream): Promise<void> {
     const result: {url: string, ranges: {start: number, end: number}[], text: string|null}[] = [];
-    function locationCompare(a: string, b: string): number {
-      const [aLine, aPos] = a.split(':');
-      const [bLine, bPos] = b.split(':');
-      return Number.parseInt(aLine, 10) - Number.parseInt(bLine, 10) ||
-          Number.parseInt(aPos, 10) - Number.parseInt(bPos, 10);
-    }
     const coverageByUrlKeys = Array.from(this._coverageByURL.keys()).sort();
     for (const urlInfoKey of coverageByUrlKeys) {
       const urlInfo = this._coverageByURL.get(urlInfoKey);
@@ -480,74 +474,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
       if (url.startsWith('extensions::') || url.startsWith('chrome-extension://')) {
         continue;
       }
-
-      // For .html resources, multiple scripts share URL, but have different offsets.
-      let useFullText = false;
-      for (const info of urlInfo._coverageInfoByLocation.values()) {
-        if (info._lineOffset || info._columnOffset) {
-          useFullText = Boolean(url);
-          break;
-        }
-      }
-
-      let fullText: TextUtils.Text.Text|null = null;
-      if (useFullText) {
-        const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
-        if (resource) {
-          const content = (await resource.requestContent()).content;
-          fullText = new TextUtils.Text.Text(content || '');
-        }
-      }
-
-      const coverageByLocationKeys = Array.from(urlInfo._coverageInfoByLocation.keys()).sort(locationCompare);
-
-      // We have full text for this resource, resolve the offsets using the text line endings.
-      if (fullText) {
-        const entry: {
-          url: string,
-          ranges: {start: number, end: number}[],
-          text: string,
-        } = {url, ranges: [], text: fullText.value()};
-        for (const infoKey of coverageByLocationKeys) {
-          const info = urlInfo._coverageInfoByLocation.get(infoKey);
-          if (!info) {
-            continue;
-          }
-          const offset = fullText ? fullText.offsetFromPosition(info._lineOffset, info._columnOffset) : 0;
-          let start = 0;
-          for (const segment of info._segments) {
-            if (segment.count) {
-              entry.ranges.push({start: start + offset, end: segment.end + offset});
-            } else {
-              start = segment.end;
-            }
-          }
-        }
-        result.push(entry);
-        continue;
-      }
-
-      // Fall back to the per-script operation.
-      for (const infoKey of coverageByLocationKeys) {
-        const info = urlInfo._coverageInfoByLocation.get(infoKey);
-        if (!info) {
-          continue;
-        }
-        const entry: {
-          url: string,
-          ranges: {start: number, end: number}[],
-          text: string|null,
-        } = {url, ranges: [], text: (await info.contentProvider().requestContent()).content};
-        let start = 0;
-        for (const segment of info._segments) {
-          if (segment.count) {
-            entry.ranges.push({start: start, end: segment.end});
-          } else {
-            start = segment.end;
-          }
-        }
-        result.push(entry);
-      }
+      result.push(...await urlInfo.entriesForExport());
     }
     await fos.write(JSON.stringify(result, undefined, 2));
     fos.close();
@@ -555,6 +482,19 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
 }
 
 SDK.SDKModel.SDKModel.register(CoverageModel, {capabilities: SDK.SDKModel.Capability.None, autostart: false});
+
+export interface EntryForExport {
+  url: string;
+  ranges: {start: number, end: number}[];
+  text: string|null;
+}
+
+function locationCompare(a: string, b: string): number {
+  const [aLine, aPos] = a.split(':');
+  const [bLine, bPos] = b.split(':');
+  return Number.parseInt(aLine, 10) - Number.parseInt(bLine, 10) ||
+      Number.parseInt(aPos, 10) - Number.parseInt(bPos, 10);
+}
 
 export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper {
   _url: string;
@@ -652,6 +592,72 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper {
 
     return entry;
   }
+
+  async getFullText(): Promise<TextUtils.Text.Text|null> {
+    // For .html resources, multiple scripts share URL, but have different offsets.
+    let useFullText = false;
+    const url = this.url();
+    for (const info of this._coverageInfoByLocation.values()) {
+      if (info._lineOffset || info._columnOffset) {
+        useFullText = Boolean(url);
+        break;
+      }
+    }
+
+    if (!useFullText) {
+      return null;
+    }
+    const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
+    if (!resource) {
+      return null;
+    }
+    const content = (await resource.requestContent()).content;
+    return new TextUtils.Text.Text(content || '');
+  }
+
+  entriesForExportBasedOnFullText(fullText: TextUtils.Text.Text): EntryForExport {
+    const coverageByLocationKeys = Array.from(this._coverageInfoByLocation.keys()).sort(locationCompare);
+    const entry: EntryForExport = {url: this.url(), ranges: [], text: fullText.value()};
+    for (const infoKey of coverageByLocationKeys) {
+      const info = this._coverageInfoByLocation.get(infoKey);
+      if (!info) {
+        continue;
+      }
+      const offset = fullText ? fullText.offsetFromPosition(info._lineOffset, info._columnOffset) : 0;
+      entry.ranges.push(...info.rangesForExport(offset));
+    }
+    return entry;
+  }
+
+  async entriesForExportBasedOnContent(): Promise<EntryForExport[]> {
+    const coverageByLocationKeys = Array.from(this._coverageInfoByLocation.keys()).sort(locationCompare);
+    const result = [];
+    for (const infoKey of coverageByLocationKeys) {
+      const info = this._coverageInfoByLocation.get(infoKey);
+      if (!info) {
+        continue;
+      }
+      const entry: EntryForExport = {
+        url: this.url(),
+        ranges: info.rangesForExport(),
+        text: (await info.contentProvider().requestContent()).content,
+      };
+      result.push(entry);
+    }
+    return result;
+  }
+
+  async entriesForExport(): Promise<EntryForExport[]> {
+    const fullText = await this.getFullText();
+
+    // We have full text for this resource, resolve the offsets using the text line endings.
+    if (fullText) {
+      return [await this.entriesForExportBasedOnFullText(fullText)];
+    }
+
+    // Fall back to the per-script operation.
+    return this.entriesForExportBasedOnContent();
+  }
 }
 
 export namespace URLCoverageInfo {
@@ -702,7 +708,8 @@ export class CoverageInfo {
   _lineOffset: number;
   _columnOffset: number;
   _coverageType: CoverageType;
-  _segments: CoverageSegment[];
+  private segments: CoverageSegment[];
+
   constructor(
       contentProvider: TextUtils.ContentProvider.ContentProvider, size: number, lineOffset: number,
       columnOffset: number, type: CoverageType) {
@@ -714,7 +721,7 @@ export class CoverageInfo {
     this._columnOffset = columnOffset;
     this._coverageType = type;
 
-    this._segments = [];
+    this.segments = [];
   }
 
   contentProvider(): TextUtils.ContentProvider.ContentProvider {
@@ -730,7 +737,7 @@ export class CoverageInfo {
   }
 
   mergeCoverage(segments: CoverageSegment[]): void {
-    this._segments = mergeSegments(this._segments, segments);
+    this.segments = mergeSegments(this.segments, segments);
     this._updateStats();
   }
 
@@ -743,21 +750,21 @@ export class CoverageInfo {
   }
 
   usageForRange(start: number, end: number): boolean {
-    let index =
-        Platform.ArrayUtilities.upperBound(this._segments, start, (position, segment) => position - segment.end);
-    for (; index < this._segments.length && this._segments[index].end < end; ++index) {
-      if (this._segments[index].count) {
+    let index = Platform.ArrayUtilities.upperBound(this.segments, start, (position, segment) => position - segment.end);
+    for (; index < this.segments.length && this.segments[index].end < end; ++index) {
+      if (this.segments[index].count) {
         return true;
       }
     }
-    return index < this._segments.length && Boolean(this._segments[index].count);
+    return index < this.segments.length && Boolean(this.segments[index].count);
   }
+
   _updateStats(): void {
     this._statsByTimestamp = new Map();
     this._usedSize = 0;
 
     let last = 0;
-    for (const segment of this._segments) {
+    for (const segment of this.segments) {
       let previousCount = this._statsByTimestamp.get(segment.stamp);
       if (previousCount === undefined) {
         previousCount = 0;
@@ -770,6 +777,25 @@ export class CoverageInfo {
       }
       last = segment.end;
     }
+  }
+
+  rangesForExport(offset: number = 0): {start: number, end: number}[] {
+    const ranges = [];
+    let start = 0;
+    for (const segment of this.segments) {
+      if (segment.count) {
+        const last = ranges.length > 0 ? ranges[ranges.length - 1] : null;
+        if (last && last.end === start + offset) {
+          // We can extend the last segment.
+          last.end = segment.end + offset;
+        } else {
+          // There was a gap, add a new segment.
+          ranges.push({start: start + offset, end: segment.end + offset});
+        }
+      }
+      start = segment.end;
+    }
+    return ranges;
   }
 }
 export interface RangeUseCount {

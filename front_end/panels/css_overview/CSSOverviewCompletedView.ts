@@ -254,7 +254,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
 
     // Dupe the styles into the main container because of the shadow root will prevent outer styles.
     this._mainContainer.registerRequiredCSS(
-        'panels/css_overview/cssOverviewCompletedView.css', {enableLegacyPatching: true});
+        'panels/css_overview/cssOverviewCompletedView.css', {enableLegacyPatching: false});
 
     this._mainContainer.setMainWidget(this._resultsContainer);
     this._mainContainer.setSidebarWidget(this._elementContainer);

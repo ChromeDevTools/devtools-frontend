@@ -31,7 +31,7 @@ export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searc
     this.contentElement.classList.add('shadow-xml-view', 'source-code');
     this._treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     this._treeOutline.registerRequiredCSS(
-        'ui/legacy/components/source_frame/xmlTree.css', {enableLegacyPatching: true});
+        'ui/legacy/components/source_frame/xmlTree.css', {enableLegacyPatching: false});
     this.contentElement.appendChild(this._treeOutline.element);
     this._currentSearchFocusIndex = 0;
     this._currentSearchTreeElements = [];

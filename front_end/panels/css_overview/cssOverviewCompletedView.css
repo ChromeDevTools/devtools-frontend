@@ -243,8 +243,7 @@
 .overview-completed-view .unused-declarations button:hover .bar,
 .overview-completed-view .unused-declarations button:focus .bar {
   background-color: var(--color-primary-variant);
-  box-shadow: 0 1px 2px rgb(0 0 0 / 10%), 0 0 0 2px rgb(66 133 244 / 40%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  box-shadow: 0 1px 2px var(--divider-line), 0 0 0 2px var(--color-primary-variant);
   color: var(--color-background);
 }
 
@@ -320,13 +319,11 @@
 }
 
 [is=ui-icon].smallicon-checkmark-square {
-  background-color: #00b06f; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-green);
 }
 
 [is=ui-icon].smallicon-no {
-  background-color: #f00; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-red);
 }
 
 .data .nodeId-column {

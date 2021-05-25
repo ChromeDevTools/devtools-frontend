@@ -29,20 +29,22 @@
 }
 
 .breakpoint-hit {
-  background-color: rgb(255 255 194); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  --override-breakpoint-hit-background-color: rgb(255 255 194);
+  --override-breakpoint-hit-border-color: rgb(107 97 48);
+
+  background-color: var(--override-breakpoint-hit-background-color);
 }
 
 :host-context(.-theme-with-dark-background) .breakpoint-hit {
-  background-color: hsl(46deg 98% 22%);
-  color: #ccc;
+  --override-breakpoint-hit-background-color: hsl(46deg 98% 22%);
+  --override-breakpoint-hit-dark-mode-color: #ccc;
+
+  color: var(--override-breakpoint-hit-dark-mode-color);
 }
 
 .breakpoint-hit .breakpoint-hit-marker {
-  background-color: rgb(255 255 194); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  border-right: 3px solid rgb(107 97 48); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--override-breakpoint-hit-background-color);
+  border-right: 3px solid var(--override-breakpoint-hit-border-color);
   height: 100%;
   left: 0;
   margin-left: -30px;
@@ -53,8 +55,4 @@
 
 .source-code[is="dt-checkbox"] {
   max-width: 100%;
-}
-
-:host-context(.-theme-with-dark-background) .breakpoint-hit .breakpoint-hit-marker {
-  background-color: hsl(46deg 98% 22%);
 }

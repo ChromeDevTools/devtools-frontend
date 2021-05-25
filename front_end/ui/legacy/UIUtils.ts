@@ -1350,7 +1350,7 @@ export class DevToolsIconLabel extends HTMLSpanElement {
   constructor() {
     super();
     const root = createShadowRootWithCoreStyles(this, {
-      enableLegacyPatching: true,
+      enableLegacyPatching: false,
       cssFile: undefined,
       delegatesFocus: undefined,
     });

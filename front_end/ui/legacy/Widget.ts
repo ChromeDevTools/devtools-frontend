@@ -78,7 +78,7 @@ export class Widget extends Common.ObjectWrapper.ObjectWrapper {
       this.element.classList.add('flex-auto');
       this._shadowRoot = createShadowRootWithCoreStyles(this.element, {
         cssFile: undefined,
-        enableLegacyPatching: true,
+        enableLegacyPatching: false,
         delegatesFocus,
       });
       this._shadowRoot.appendChild(this.contentElement);

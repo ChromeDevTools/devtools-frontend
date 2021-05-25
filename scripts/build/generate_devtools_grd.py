@@ -94,7 +94,7 @@ def add_file_to_grd(grd_doc, relative_filename, compress):
 
     ext = os.path.splitext(relative_filename)[1]
     new_include_node = grd_doc.createElement('include')
-    if compress and ext in ['.css', '.html', '.js', '.svg', '.json']:
+    if compress and ext in ['.css', '.html', '.js', '.svg', '.json', '.md']:
         new_include_node.setAttribute('file',
                                       relative_filename + '.compressed')
     else:

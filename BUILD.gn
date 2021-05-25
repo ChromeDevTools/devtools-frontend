@@ -220,6 +220,7 @@ _compressable_grd_files = filter_include(_expected_grd_files,
                                            "*.js",
                                            "*.svg",
                                            "*.json",
+                                           "*.md",
                                          ])
 
 if (!is_debug) {

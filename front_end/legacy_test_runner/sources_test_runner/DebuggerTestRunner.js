@@ -31,7 +31,10 @@ SourcesTestRunner.startDebuggerTestPromise = function(quiet) {
 
 SourcesTestRunner.completeDebuggerTest = function() {
   self.Common.settings.moduleSetting('breakpointsActive').set(true);
-  SourcesTestRunner.resumeExecution(TestRunner.completeTest.bind(TestRunner));
+  SourcesTestRunner.resumeExecution(async () => {
+    await TestRunner.debuggerModel.suspendModel();
+    TestRunner.completeTest();
+  });
 };
 
 (function() {

@@ -7,14 +7,12 @@
 .list {
   flex: auto 0 1;
   overflow-y: auto;
-  border: 1px solid rgb(231 231 231); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border: 1px solid var(--color-details-hairline);
   flex-direction: column;
 }
 
 .list-separator {
-  background: rgb(231 231 231); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background: var(--color-background-elevation-1);
   height: 1px;
 }
 
@@ -29,8 +27,7 @@
 
 .list-item:focus-within,
 .list-item:hover {
-  background: hsl(0deg 0% 96%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background: var(--color-background-elevation-2);
 }
 
 .list-widget-input-validation-error {
@@ -52,8 +49,16 @@
 
 .list-item:focus-within .controls-gradient,
 .list-item:hover .controls-gradient {
-  background-image: linear-gradient(90deg, transparent, hsl(0deg 0% 96%)); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  --override-background-gradient-color: hsl(0deg 0% 96%);
+
+  background-image: linear-gradient(90deg, transparent, var(--override-background-gradient-color));
+}
+
+.-theme-with-dark-background .list-item:focus-within .controls-gradient,
+.-theme-with-dark-background .list-item:hover .controls-gradient,
+:host-context(.-theme-with-dark-background) .list-item:focus-within .controls-gradient,
+:host-context(.-theme-with-dark-background) .list-item:hover .controls-gradient {
+  --override-background-gradient-color: rgb(10 10 10);
 }
 
 .controls-buttons {
@@ -67,8 +72,7 @@
 
 .list-item:focus-within .controls-buttons,
 .list-item:hover .controls-buttons {
-  background-color: hsl(0deg 0% 96%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background-elevation-2);
   visibility: visible;
 }
 
@@ -77,8 +81,7 @@
   flex-direction: column;
   align-items: stretch;
   flex: none;
-  background: hsl(0deg 0% 96%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background: var(--color-background-elevation-2);
   overflow: hidden;
 }
 

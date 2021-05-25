@@ -51,7 +51,7 @@ export class ListWidget<T> extends VBox {
   _emptyPlaceholder: Element|null;
   constructor(delegate: Delegate<T>, delegatesFocus: boolean|undefined = true) {
     super(true, delegatesFocus);
-    this.registerRequiredCSS('ui/legacy/listWidget.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('ui/legacy/listWidget.css', {enableLegacyPatching: false});
     this._delegate = delegate;
 
     this._list = this.contentElement.createChild('div', 'list');

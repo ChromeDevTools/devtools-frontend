@@ -52,9 +52,16 @@ export class AffectedElementsView extends AffectedResourcesView {
     this.affectedResources.appendChild(rowElement);
   }
 
-  protected async renderElementCell({backendNodeId, nodeName}: IssuesManager.Issue.AffectedElement): Promise<Element> {
-    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget() as SDK.SDKModel.Target;
-    const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(mainTarget, backendNodeId);
+  protected async renderElementCell(
+      {backendNodeId, nodeName}: IssuesManager.Issue.AffectedElement,
+      maybeTarget?: SDK.SDKModel.Target|null): Promise<Element> {
+    const target = maybeTarget ?? SDK.SDKModel.TargetManager.instance().mainTarget();
+    if (!target) {
+      const cellElement = document.createElement('td');
+      cellElement.textContent = 'Unavailable';
+      return cellElement;
+    }
+    const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(target, backendNodeId);
     const anchorElement = (await Common.Linkifier.Linkifier.linkify(deferredDOMNode)) as HTMLElement;
     anchorElement.textContent = nodeName;
     anchorElement.addEventListener('click', () => this.sendTelemetry());

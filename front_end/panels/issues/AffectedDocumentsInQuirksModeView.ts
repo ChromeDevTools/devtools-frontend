@@ -4,6 +4,7 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 
 import {AffectedElementsView} from './AffectedElementsView.js';
@@ -61,7 +62,10 @@ export class AffectedDocumentsInQuirksModeView extends AffectedElementsView {
 
     const details = issue.details();
 
-    row.appendChild(await this.renderElementCell({nodeName: 'document', backendNodeId: details.documentNodeId}));
+    const maybeTarget =
+        SDK.FrameManager.FrameManager.instance().getFrame(details.frameId)?.resourceTreeModel().target();
+    row.appendChild(
+        await this.renderElementCell({nodeName: 'document', backendNodeId: details.documentNodeId}, maybeTarget));
     this.appendIssueDetailCell(row, details.isLimitedQuirksMode ? 'Limited Quirks Mode' : 'Quirks Mode');
     this.appendIssueDetailCell(row, details.url);
 

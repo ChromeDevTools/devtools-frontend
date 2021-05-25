@@ -158,6 +158,11 @@ describe('use_theme_colors', () => {
     assert.lengthOf(warnings, 0);
   });
 
+  it('allows variables within rgb', async () => {
+    const warnings = await lint('p { background: rgb(var(--override-base-color) / 20%); }');
+    assert.lengthOf(warnings, 0);
+  });
+
   it('allows any color to be used when in a :host-context dark theme block', async () => {
     const code = `:host-context(.-theme-with-dark-background) p {
       color: #fff;

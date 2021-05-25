@@ -77,7 +77,7 @@ export class FilterBar extends HBox {
 
   constructor(name: string, visibleByDefault?: boolean) {
     super();
-    this.registerRequiredCSS('ui/legacy/filter.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('ui/legacy/filter.css', {enableLegacyPatching: false});
     this._enabled = true;
     this.element.classList.add('filter-bar');
 

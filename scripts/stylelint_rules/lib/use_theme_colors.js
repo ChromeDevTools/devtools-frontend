@@ -101,7 +101,12 @@ module.exports = stylelint.createPlugin(RULE_NAME, function(primary, secondary, 
 
     function checkColorValueIsValidOrError({declarationToErrorOn, cssValueToCheck, alreadyFixed}) {
       for (const indicator of COLOR_INDICATOR_REGEXES) {
-        if (indicator.test(cssValueToCheck)) {
+        /**
+         * In rare situations in the codebase we allow
+         * rgb(var(--some-base-color) / 20%) so we don't want to error if we
+         * match that.
+         */
+        if (indicator.test(cssValueToCheck) && !cssValueToCheck.startsWith('rgb(var')) {
           reportError(declarationToErrorOn, !alreadyFixed);
         }
       }

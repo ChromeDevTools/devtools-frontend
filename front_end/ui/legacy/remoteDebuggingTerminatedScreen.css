@@ -21,6 +21,12 @@
 }
 
 .reason {
-  color: #8b0000; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  --override-reason-color: #8b0000;
+
+  color: var(--override-reason-color);
+}
+
+.-theme-with-dark-background .reason,
+:host-context(.-theme-with-dark-background) .reason {
+  --override-reason-color: rgb(255 116 116);
 }

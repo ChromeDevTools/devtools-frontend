@@ -13,8 +13,14 @@ table td:first-child {
 }
 
 .scroll-rect.active {
-  background-color: rgb(100 100 100 / 20%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  --override-active-rect-color: rgb(100 100 100 / 20%);
+
+  background-color: var(--override-active-rect-color);
+}
+
+.-theme-with-dark-background .scroll-rect.active,
+:host-context(.-theme-with-dark-background) .scroll-rect.active {
+  --override-active-rect-color: rgb(155 155 155 / 20%);
 }
 
 ul {

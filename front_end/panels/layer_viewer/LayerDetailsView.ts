@@ -171,7 +171,7 @@ export class LayerDetailsView extends UI.Widget.Widget implements LayerView {
 
   constructor(layerViewHost: LayerViewHost) {
     super(true);
-    this.registerRequiredCSS('panels/layer_viewer/layerDetailsView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('panels/layer_viewer/layerDetailsView.css', {enableLegacyPatching: false});
     this._layerViewHost = layerViewHost;
     this._layerViewHost.registerView(this);
     this._emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.selectALayerToSeeItsDetails));

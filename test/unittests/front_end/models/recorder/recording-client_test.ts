@@ -13,10 +13,19 @@ function assertDefined<T>(val: T|undefined): asserts val is T {
 }
 
 describe('Recorder', () => {
+  function withImports(callback: (imports: Recorder.RecordingClient.Exports) => void) {
+    const imports: Recorder.RecordingClient.Exports = {};
+    try {
+      callback(imports);
+    } finally {
+      assertDefined(imports.teardown);
+      imports.teardown();
+    }
+  }
+
   describe('RecordingClient', () => {
     it('should create click steps from events', () => {
-      const imports: Recorder.RecordingClient.Exports = {};
-      try {
+      withImports(imports => {
         const getAccessibleName = () => 'testName';
         const getAccessibleRole = () => 'button';
         setup({getAccessibleName, getAccessibleRole}, false, imports);
@@ -26,17 +35,56 @@ describe('Recorder', () => {
         assert.deepStrictEqual(imports.createStepFromEvent(event, button, true), {
           type: 'click',
           selector: 'aria/testName',
-          value: '',
         });
-      } finally {
-        assertDefined(imports.teardown);
-        imports.teardown();
-      }
+      });
+    });
+
+    it('should create keydown steps from events', () => {
+      withImports(imports => {
+        const getAccessibleName = () => 'testName';
+        const getAccessibleRole = () => 'button';
+        setup({getAccessibleName, getAccessibleRole}, false, imports);
+        assertDefined(imports.createStepFromEvent);
+        const event = new KeyboardEvent('keydown', {
+          key: 'Escape',
+        });
+        const button = document.createElement('button');
+        assert.deepStrictEqual(imports.createStepFromEvent(event, button, true), {
+          type: 'keydown',
+          selector: 'aria/testName',
+          altKey: false,
+          metaKey: false,
+          shiftKey: false,
+          ctrlKey: false,
+          key: 'Escape',
+        });
+      });
+    });
+
+    it('should create keyup steps from events', () => {
+      withImports(imports => {
+        const getAccessibleName = () => 'testName';
+        const getAccessibleRole = () => 'button';
+        setup({getAccessibleName, getAccessibleRole}, false, imports);
+        assertDefined(imports.createStepFromEvent);
+        const event = new KeyboardEvent('keyup', {
+          key: 'Escape',
+        });
+        const button = document.createElement('button');
+        assert.deepStrictEqual(imports.createStepFromEvent(event, button, true), {
+          type: 'keyup',
+          selector: 'aria/testName',
+          altKey: false,
+          metaKey: false,
+          shiftKey: false,
+          ctrlKey: false,
+          key: 'Escape',
+        });
+      });
     });
 
     it('should get a selector for elements', () => {
-      const imports: Recorder.RecordingClient.Exports = {};
-      try {
+      withImports(imports => {
         const getAccessibleName = () => '';
         const getAccessibleRole = () => 'button';
         setup({getAccessibleName, getAccessibleRole}, false, imports);
@@ -44,10 +92,7 @@ describe('Recorder', () => {
         const button = document.createElement('button');
         button.id = 'customId';
         assert.deepStrictEqual(imports.getSelector(button), 'button#customId');
-      } finally {
-        assertDefined(imports.teardown);
-        imports.teardown();
-      }
+      });
     });
   });
 });

@@ -32,9 +32,10 @@ async function setCode(code: string) {
   }
 }
 
-async function setupRecorderWithScriptAndReplay(script: string): Promise<void> {
+async function setupRecorderWithScriptAndReplay(
+    script: string, path: string = 'recorder/recorder.html'): Promise<void> {
   await enableExperiment('recorder');
-  await goToResource('recorder/recorder.html');
+  await goToResource(path);
 
   const {frontend} = getBrowserAndPages();
 
@@ -107,6 +108,97 @@ describe('Recorder', function() {
 
       const value = await target.$eval('#input', e => (e as HTMLInputElement).value);
       assert.strictEqual(value, 'Hello World');
+    });
+
+    it('should be able to replay keyboard events', async () => {
+      const {target} = getBrowserAndPages();
+      await setupRecorderWithScriptAndReplay(
+          `[
+        {
+            "action": "keydown",
+            "condition": null,
+            "context": {
+                "path": [],
+                "target": "main"
+            },
+            "selector": "html > body",
+            "key": "Tab"
+        },
+        {
+            "action": "keyup",
+            "condition": null,
+            "context": {
+                "path": [],
+                "target": "main"
+            },
+            "selector": "input#one",
+            "key": "Tab"
+        },
+        {
+            "action": "keydown",
+            "condition": null,
+            "context": {
+                "path": [],
+                "target": "main"
+            },
+            "selector": "input#one",
+            "key": "1"
+        },
+        {
+            "action": "keyup",
+            "condition": null,
+            "context": {
+                "path": [],
+                "target": "main"
+            },
+            "selector": "input#one",
+            "key": "1"
+        },
+        {
+            "action": "keydown",
+            "condition": null,
+            "context": {
+                "path": [],
+                "target": "main"
+            },
+            "selector": "input#one",
+            "key": "Tab"
+        },
+        {
+            "action": "keyup",
+            "condition": null,
+            "context": {
+                "path": [],
+                "target": "main"
+            },
+            "selector": "input#two",
+            "key": "Tab"
+        },
+        {
+            "action": "keydown",
+            "condition": null,
+            "context": {
+                "path": [],
+                "target": "main"
+            },
+            "selector": "input#two",
+            "key": "2"
+        },
+        {
+            "action": "keyup",
+            "condition": null,
+            "context": {
+                "path": [],
+                "target": "main"
+            },
+            "selector": "input#two",
+            "key": "2"
+        }
+      ]`,
+          'recorder/input.html');
+
+      const value = await target.$eval('#log', e => (e as HTMLElement).innerText.trim());
+      assert.strictEqual(value, ['one:1', 'two:2'].join('\n'));
     });
   });
 });

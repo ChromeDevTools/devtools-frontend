@@ -8,7 +8,7 @@ import {WaitForNavigationCondition} from './Conditions.js';
 import {getPuppeteerConnection as getPuppeteerConnectionToCurrentPage} from './PuppeteerConnection.js';
 
 import type {Step, StepFrameContext} from './Steps.js';
-import {ChangeStep, ClickStep, NavigationStep, StepWithContext, SubmitStep} from './Steps.js';
+import {ChangeStep, ClickStep, NavigationStep, KeydownStep, KeyupStep, StepWithContext, SubmitStep} from './Steps.js';
 
 export class RecordingPlayer {
   recording: Step[];
@@ -101,6 +101,22 @@ export class RecordingPlayer {
         throw new Error('Could not find element: ' + step.selector);
       }
       await element.type(step.value);
+    } else if (step instanceof KeydownStep) {
+      const element = await frame.waitForSelector(step.selector);
+      if (!element) {
+        throw new Error('Could not find element: ' + step.selector);
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await page.keyboard.down(step.key as any);
+      await page.waitForTimeout(100);
+    } else if (step instanceof KeyupStep) {
+      const element = await frame.waitForSelector(step.selector);
+      if (!element) {
+        throw new Error('Could not find element: ' + step.selector);
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await page.keyboard.up(step.key as any);
+      await page.waitForTimeout(100);
     } else if (step instanceof SubmitStep) {
       const element = await frame.waitForSelector(step.selector);
       if (!element) {

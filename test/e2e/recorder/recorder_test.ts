@@ -474,4 +474,108 @@ describe('Recorder', function() {
     }
 ]`);
   });
+
+  it('should capture keyboard events on inputs', async () => {
+    const waitForScriptToChange = getWaitForScriptToChangeFunction();
+    await startRecording('recorder/input.html');
+    await waitForScriptToChange();
+
+    const {target} = getBrowserAndPages();
+    await target.bringToFront();
+    await target.keyboard.press('Tab');
+    await target.keyboard.type('1');
+    await target.keyboard.press('Tab');
+    await target.keyboard.type('2');
+
+    await waitForScriptToChange();
+
+    await stopRecording();
+    await assertOutput(`[
+    {
+        "action": "navigate",
+        "condition": null,
+        "url": "https://<url>/test/e2e/resources/recorder/input.html"
+    },
+    {
+        "action": "keydown",
+        "condition": null,
+        "context": {
+            "path": [],
+            "target": "main"
+        },
+        "selector": "html > body",
+        "key": "Tab"
+    },
+    {
+        "action": "keyup",
+        "condition": null,
+        "context": {
+            "path": [],
+            "target": "main"
+        },
+        "selector": "input#one",
+        "key": "Tab"
+    },
+    {
+        "action": "keydown",
+        "condition": null,
+        "context": {
+            "path": [],
+            "target": "main"
+        },
+        "selector": "input#one",
+        "key": "1"
+    },
+    {
+        "action": "keyup",
+        "condition": null,
+        "context": {
+            "path": [],
+            "target": "main"
+        },
+        "selector": "input#one",
+        "key": "1"
+    },
+    {
+        "action": "keydown",
+        "condition": null,
+        "context": {
+            "path": [],
+            "target": "main"
+        },
+        "selector": "input#one",
+        "key": "Tab"
+    },
+    {
+        "action": "keyup",
+        "condition": null,
+        "context": {
+            "path": [],
+            "target": "main"
+        },
+        "selector": "input#two",
+        "key": "Tab"
+    },
+    {
+        "action": "keydown",
+        "condition": null,
+        "context": {
+            "path": [],
+            "target": "main"
+        },
+        "selector": "input#two",
+        "key": "2"
+    },
+    {
+        "action": "keyup",
+        "condition": null,
+        "context": {
+            "path": [],
+            "target": "main"
+        },
+        "selector": "input#two",
+        "key": "2"
+    }
+]`);
+  });
 });

@@ -146,6 +146,54 @@ export class ChangeStep extends StepWithContext {
   }
 }
 
+export class KeydownStep extends StepWithContext {
+  selector: string;
+  key: string;
+
+  constructor(context: StepFrameContext, data: {
+    key: string,
+    selector: string,
+  }) {
+    super('keydown', context);
+    this.selector = data.selector;
+    this.key = data.key;
+  }
+
+  toScript(): Script {
+    return [
+      ...this.context.toScript(),
+      this.condition ? this.condition.toString() : null,
+      `await frame.waitForSelector(${JSON.stringify(this.selector)});`,
+      `await targetPage.keyboard.down(${JSON.stringify(this.key)});`,
+      this.condition ? 'await promise;' : null,
+    ];
+  }
+}
+
+export class KeyupStep extends StepWithContext {
+  selector: string;
+  key: string;
+
+  constructor(context: StepFrameContext, data: {
+    key: string,
+    selector: string,
+  }) {
+    super('keyup', context);
+    this.selector = data.selector;
+    this.key = data.key;
+  }
+
+  toScript(): Script {
+    return [
+      ...this.context.toScript(),
+      this.condition ? this.condition.toString() : null,
+      `await frame.waitForSelector(${JSON.stringify(this.selector)});`,
+      `await targetPage.keyboard.up(${JSON.stringify(this.key)});`,
+      this.condition ? 'await promise;' : null,
+    ];
+  }
+}
+
 export class CloseStep extends Step {
   target: string;
   constructor(target: string) {

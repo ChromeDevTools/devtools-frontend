@@ -2,15 +2,46 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-interface Step {
-  type: string;
-  selector: string;
-  value?: string;
-}
+export type Step = {
+  type: 'click',
+  selector: string,
+}|{
+  type: 'submit',
+  selector: string,
+}|{
+  type: 'change',
+  selector: string,
+  value: string,
+}|{
+  type: 'keydown',
+  selector: string,
+  altKey: boolean,
+  ctrlKey: boolean,
+  key: string,
+  metaKey: boolean,
+  shiftKey: boolean,
+}|{
+  type: 'keyup',
+  selector: string,
+  altKey: boolean,
+  ctrlKey: boolean,
+  key: string,
+  metaKey: boolean,
+  shiftKey: boolean,
+};
+
 declare global {
   interface HTMLElement {
     role: string;
     ariaLabel: string|null;
+  }
+
+  interface SubmitEvent extends Event {
+    submitter: HTMLElement;
+  }
+
+  interface HTMLElementEventMap {
+    'submit': SubmitEvent;
   }
 
   interface Window {
@@ -47,14 +78,41 @@ export function setupRecordingClient(
     // which will be handled in a different handler.
     // TODO: figure out the event type for Submit.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if (event.type === 'submit' && Boolean((event as any).submitter)) {
+    if (event.type === 'submit' && Boolean((event as SubmitEvent).submitter)) {
       return;
     }
     if (!target || !isTrusted) {
       return;
     }
     const nodeTarget = target as Node;
-    return {type: event.type, selector: getSelector(nodeTarget), value: (target as HTMLInputElement).value};
+    if (event.type === 'click') {
+      return {
+        type: event.type,
+        selector: getSelector(nodeTarget),
+      };
+    }
+    if (event.type === 'submit') {
+      return {
+        type: event.type,
+        selector: getSelector(nodeTarget),
+      };
+    }
+    if (event.type === 'change') {
+      return {type: event.type, selector: getSelector(nodeTarget), value: (target as HTMLInputElement).value};
+    }
+    if (event.type === 'keydown' || event.type === 'keyup') {
+      const keyboardEvent = event as KeyboardEvent;
+      return {
+        type: event.type,
+        selector: getSelector(nodeTarget),
+        altKey: keyboardEvent.altKey,
+        ctrlKey: keyboardEvent.ctrlKey,
+        key: keyboardEvent.key,
+        metaKey: keyboardEvent.metaKey,
+        shiftKey: keyboardEvent.shiftKey,
+      };
+    }
+    return;
   };
   exports.createStepFromEvent = createStepFromEvent;
 
@@ -73,6 +131,8 @@ export function setupRecordingClient(
     window.addEventListener('click', recorderEventListener, true);
     window.addEventListener('submit', recorderEventListener, true);
     window.addEventListener('change', recorderEventListener, true);
+    window.addEventListener('keydown', recorderEventListener, true);
+    window.addEventListener('keyup', recorderEventListener, true);
     window._recorderEventListener = recorderEventListener;
   } else {
     log('_recorderEventListener was already installed');
@@ -82,6 +142,8 @@ export function setupRecordingClient(
     window.removeEventListener('click', recorderEventListener, true);
     window.removeEventListener('submit', recorderEventListener, true);
     window.removeEventListener('change', recorderEventListener, true);
+    window.removeEventListener('keydown', recorderEventListener, true);
+    window.removeEventListener('keyup', recorderEventListener, true);
     delete window._recorderEventListener;
   };
   exports.teardown = teardown;

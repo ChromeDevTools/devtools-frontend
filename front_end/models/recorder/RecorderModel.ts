@@ -15,7 +15,8 @@ import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import {RecordingPlayer} from './RecordingPlayer.js';
 import {RecordingSession} from './RecordingSession.js';
 import type {Step} from './Steps.js';
-import {ClickStep, NavigationStep, StepFrameContext, SubmitStep, ChangeStep, CloseStep, EmulateNetworkConditions} from './Steps.js';
+import {KeyupStep} from './Steps.js';
+import {ClickStep, NavigationStep, StepFrameContext, SubmitStep, ChangeStep, CloseStep, KeydownStep, EmulateNetworkConditions} from './Steps.js';
 import {RecordingScriptWriter} from './RecordingScriptWriter.js';
 
 const enum RecorderState {
@@ -78,6 +79,10 @@ export class RecorderModel extends SDK.SDKModel.SDKModel {
         return new CloseStep(step.target);
       case 'emulateNetworkConditions':
         return new EmulateNetworkConditions(step.conditions);
+      case 'keydown':
+        return new KeydownStep(context, step);
+      case 'keyup':
+        return new KeyupStep(context, step);
       default:
         throw new Error('Unknown step: ' + step.action);
     }

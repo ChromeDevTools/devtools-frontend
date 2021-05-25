@@ -8,13 +8,10 @@ import type {Condition} from './Conditions.js';
 import {WaitForNavigationCondition} from './Conditions.js';
 import type {RecordingSession} from './RecordingSession.js';
 import type {Step} from './Steps.js';
-import {ChangeStep, ClickStep, CloseStep, StepFrameContext, SubmitStep} from './Steps.js';
+import {KeyupStep} from './Steps.js';
+import {KeydownStep, ClickStep, CloseStep, StepFrameContext, SubmitStep} from './Steps.js';
+import type {Step as ClientStep} from './RecordingClient.js';
 
-interface Payload {
-  type: string;
-  selector: string;
-  value: string;
-}
 export class RecordingEventHandler {
   private target: SDK.SDKModel.Target;
   private session: RecordingSession;
@@ -58,7 +55,7 @@ export class RecordingEventHandler {
     return new StepFrameContext(target, path);
   }
 
-  bindingCalled(frameId: string, payload: Payload): void {
+  bindingCalled(frameId: string, step: ClientStep): void {
     const frame = this.resourceTreeModel.frameForId(frameId);
     if (!frame) {
       throw new Error('Could not find frame.');
@@ -66,22 +63,27 @@ export class RecordingEventHandler {
 
     const context = this.getContextForFrame(frame);
 
-    switch (payload.type) {
+    switch (step.type) {
       case 'click':
-        this.appendStep(new ClickStep(context, payload.selector));
+        this.appendStep(new ClickStep(context, step.selector));
         break;
       case 'submit':
-        this.appendStep(new SubmitStep(context, payload.selector));
+        this.appendStep(new SubmitStep(context, step.selector));
         break;
-      case 'change':
-        this.appendStep(new ChangeStep(context, payload.selector, payload.value));
+      // case 'change':
+      //   this.appendStep(new ChangeStep(context, step.selector, step.value));
+      //   break;
+      case 'keydown':
+        this.appendStep(new KeydownStep(context, step));
+        break;
+      case 'keyup':
+        this.appendStep(new KeyupStep(context, step));
         break;
     }
   }
 
   async appendStep(step: Step): Promise<void> {
-    await this.session.appendStep(step);
-    this.lastStep = step;
+    this.lastStep = await this.session.appendStep(step);
     if (this.lastStepTimeout) {
       window.clearTimeout(this.lastStepTimeout);
     }

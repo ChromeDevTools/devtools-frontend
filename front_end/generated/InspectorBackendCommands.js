@@ -271,7 +271,8 @@ export function registerCommands(inspectorBackend) {
     LowTextContrastIssue: 'LowTextContrastIssue',
     CorsIssue: 'CorsIssue',
     AttributionReportingIssue: 'AttributionReportingIssue',
-    QuirksModeIssue: 'QuirksModeIssue'
+    QuirksModeIssue: 'QuirksModeIssue',
+    NavigatorUserAgentIssue: 'NavigatorUserAgentIssue'
   });
   inspectorBackend.registerEvent('Audits.issueAdded', ['issue']);
   inspectorBackend.registerEnum('Audits.GetEncodedResponseRequestEncoding', {Webp: 'webp', Jpeg: 'jpeg', Png: 'png'});
@@ -593,6 +594,9 @@ export function registerCommands(inspectorBackend) {
     InputListButton: 'input-list-button'
   });
   inspectorBackend.registerEnum('DOM.ShadowRootType', {UserAgent: 'user-agent', Open: 'open', Closed: 'closed'});
+  inspectorBackend.registerEnum(
+      'DOM.CompatibilityMode',
+      {QuirksMode: 'QuirksMode', LimitedQuirksMode: 'LimitedQuirksMode', NoQuirksMode: 'NoQuirksMode'});
   inspectorBackend.registerEvent('DOM.attributeModified', ['nodeId', 'name', 'value']);
   inspectorBackend.registerEvent('DOM.attributeRemoved', ['nodeId', 'name']);
   inspectorBackend.registerEvent('DOM.characterDataModified', ['nodeId', 'characterData']);
@@ -1621,6 +1625,13 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEvent(
       'Network.trustTokenOperationDone',
       ['status', 'type', 'requestId', 'topLevelOrigin', 'issuerOrigin', 'issuedTokenCount']);
+  inspectorBackend.registerEvent('Network.subresourceWebBundleMetadataReceived', ['requestId', 'urls']);
+  inspectorBackend.registerEvent('Network.subresourceWebBundleMetadataError', ['requestId', 'errorMessage']);
+  inspectorBackend.registerEvent(
+      'Network.subresourceWebBundleInnerResponseParsed', ['innerRequestId', 'innerRequestURL', 'bundleRequestId']);
+  inspectorBackend.registerEvent(
+      'Network.subresourceWebBundleInnerResponseError',
+      ['innerRequestId', 'innerRequestURL', 'errorMessage', 'bundleRequestId']);
   inspectorBackend.registerCommand(
       'Network.setAcceptedEncodings', [{'name': 'encodings', 'type': 'object', 'optional': false}], []);
   inspectorBackend.registerCommand('Network.clearAcceptedEncodingsOverride', [], []);
@@ -1883,6 +1894,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEnum('Page.PermissionsPolicyFeature', {
     Accelerometer: 'accelerometer',
     AmbientLightSensor: 'ambient-light-sensor',
+    AttributionReporting: 'attribution-reporting',
     Autoplay: 'autoplay',
     Camera: 'camera',
     ChDpr: 'ch-dpr',
@@ -1890,6 +1902,7 @@ export function registerCommands(inspectorBackend) {
     ChDownlink: 'ch-downlink',
     ChEct: 'ch-ect',
     ChLang: 'ch-lang',
+    ChPrefersColorScheme: 'ch-prefers-color-scheme',
     ChRtt: 'ch-rtt',
     ChUa: 'ch-ua',
     ChUaArch: 'ch-ua-arch',
@@ -1902,7 +1915,6 @@ export function registerCommands(inspectorBackend) {
     ChWidth: 'ch-width',
     ClipboardRead: 'clipboard-read',
     ClipboardWrite: 'clipboard-write',
-    ConversionMeasurement: 'conversion-measurement',
     CrossOriginIsolated: 'cross-origin-isolated',
     DirectSockets: 'direct-sockets',
     DisplayCapture: 'display-capture',
@@ -1935,6 +1947,7 @@ export function registerCommands(inspectorBackend) {
     Usb: 'usb',
     VerticalScroll: 'vertical-scroll',
     WebShare: 'web-share',
+    WindowPlacement: 'window-placement',
     XrSpatialTracking: 'xr-spatial-tracking'
   });
   inspectorBackend.registerEnum(

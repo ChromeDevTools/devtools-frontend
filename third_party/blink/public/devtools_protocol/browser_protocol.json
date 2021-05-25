@@ -1558,6 +1558,21 @@
                     ]
                 },
                 {
+                    "id": "NavigatorUserAgentIssueDetails",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "url",
+                            "type": "string"
+                        },
+                        {
+                            "name": "location",
+                            "optional": true,
+                            "$ref": "SourceCodeLocation"
+                        }
+                    ]
+                },
+                {
                     "id": "InspectorIssueCode",
                     "description": "A unique identifier for the type of issue. Each type may use one of the\noptional fields in InspectorIssueDetails to convey more specific\ninformation about the kind of issue.",
                     "type": "string",
@@ -1572,7 +1587,8 @@
                         "LowTextContrastIssue",
                         "CorsIssue",
                         "AttributionReportingIssue",
-                        "QuirksModeIssue"
+                        "QuirksModeIssue",
+                        "NavigatorUserAgentIssue"
                     ]
                 },
                 {
@@ -1634,6 +1650,11 @@
                             "name": "quirksModeIssueDetails",
                             "optional": true,
                             "$ref": "QuirksModeIssueDetails"
+                        },
+                        {
+                            "name": "navigatorUserAgentIssueDetails",
+                            "optional": true,
+                            "$ref": "NavigatorUserAgentIssueDetails"
                         }
                     ]
                 },
@@ -4183,6 +4204,16 @@
                     ]
                 },
                 {
+                    "id": "CompatibilityMode",
+                    "description": "Document compatibility mode.",
+                    "type": "string",
+                    "enum": [
+                        "QuirksMode",
+                        "LimitedQuirksMode",
+                        "NoQuirksMode"
+                    ]
+                },
+                {
                     "id": "Node",
                     "description": "DOM interaction is implemented in terms of mirror objects that represent the actual DOM nodes.\nDOMNode is a base node mirror type.",
                     "type": "object",
@@ -4364,6 +4395,11 @@
                             "description": "Whether the node is SVG.",
                             "optional": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "compatibilityMode",
+                            "optional": true,
+                            "$ref": "CompatibilityMode"
                         }
                     ]
                 },
@@ -12871,6 +12907,94 @@
                             "type": "integer"
                         }
                     ]
+                },
+                {
+                    "name": "subresourceWebBundleMetadataReceived",
+                    "description": "Fired once when parsing the .wbn file has succeeded.\nThe event contains the information about the web bundle contents.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "description": "Request identifier. Used to match this information to another event.",
+                            "$ref": "RequestId"
+                        },
+                        {
+                            "name": "urls",
+                            "description": "A list of URLs of resources in the subresource Web Bundle.",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "subresourceWebBundleMetadataError",
+                    "description": "Fired once when parsing the .wbn file has failed.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "description": "Request identifier. Used to match this information to another event.",
+                            "$ref": "RequestId"
+                        },
+                        {
+                            "name": "errorMessage",
+                            "description": "Error message",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "subresourceWebBundleInnerResponseParsed",
+                    "description": "Fired when handling requests for resources within a .wbn file.\nNote: this will only be fired for resources that are requested by the webpage.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "innerRequestId",
+                            "description": "Request identifier of the subresource request",
+                            "$ref": "RequestId"
+                        },
+                        {
+                            "name": "innerRequestURL",
+                            "description": "URL of the subresource resource.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "bundleRequestId",
+                            "description": "Bundle request identifier. Used to match this information to another event.\nThis made be absent in case when the instrumentation was enabled only\nafter webbundle was parsed.",
+                            "optional": true,
+                            "$ref": "RequestId"
+                        }
+                    ]
+                },
+                {
+                    "name": "subresourceWebBundleInnerResponseError",
+                    "description": "Fired when request for resources within a .wbn file failed.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "innerRequestId",
+                            "description": "Request identifier of the subresource request",
+                            "$ref": "RequestId"
+                        },
+                        {
+                            "name": "innerRequestURL",
+                            "description": "URL of the subresource resource.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "errorMessage",
+                            "description": "Error message",
+                            "type": "string"
+                        },
+                        {
+                            "name": "bundleRequestId",
+                            "description": "Bundle request identifier. Used to match this information to another event.\nThis made be absent in case when the instrumentation was enabled only\nafter webbundle was parsed.",
+                            "optional": true,
+                            "$ref": "RequestId"
+                        }
+                    ]
                 }
             ]
         },
@@ -13923,12 +14047,13 @@
                 },
                 {
                     "id": "PermissionsPolicyFeature",
-                    "description": "All Permissions Policy features. This enum should match the one defined\nin renderer/core/feature_policy/feature_policy_features.json5.",
+                    "description": "All Permissions Policy features. This enum should match the one defined\nin third_party/blink/renderer/core/permissions_policy/permissions_policy_features.json5.",
                     "experimental": true,
                     "type": "string",
                     "enum": [
                         "accelerometer",
                         "ambient-light-sensor",
+                        "attribution-reporting",
                         "autoplay",
                         "camera",
                         "ch-dpr",
@@ -13936,6 +14061,7 @@
                         "ch-downlink",
                         "ch-ect",
                         "ch-lang",
+                        "ch-prefers-color-scheme",
                         "ch-rtt",
                         "ch-ua",
                         "ch-ua-arch",
@@ -13948,7 +14074,6 @@
                         "ch-width",
                         "clipboard-read",
                         "clipboard-write",
-                        "conversion-measurement",
                         "cross-origin-isolated",
                         "direct-sockets",
                         "display-capture",
@@ -13981,6 +14106,7 @@
                         "usb",
                         "vertical-scroll",
                         "web-share",
+                        "window-placement",
                         "xr-spatial-tracking"
                     ]
                 },
@@ -18858,7 +18984,7 @@
                 },
                 {
                     "id": "RequestStage",
-                    "description": "Stages of the request to handle. Request will intercept before the request is\nsent. Response will intercept after the response is received (but before response\nbody is received.",
+                    "description": "Stages of the request to handle. Request will intercept before the request is\nsent. Response will intercept after the response is received (but before response\nbody is received).",
                     "type": "string",
                     "enum": [
                         "Request",

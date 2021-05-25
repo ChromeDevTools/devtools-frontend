@@ -1028,6 +1028,11 @@ declare namespace Protocol {
       loaderId: Network.LoaderId;
     }
 
+    export interface NavigatorUserAgentIssueDetails {
+      url: string;
+      location?: SourceCodeLocation;
+    }
+
     /**
      * A unique identifier for the type of issue. Each type may use one of the
      * optional fields in InspectorIssueDetails to convey more specific
@@ -1045,6 +1050,7 @@ declare namespace Protocol {
       CorsIssue = 'CorsIssue',
       AttributionReportingIssue = 'AttributionReportingIssue',
       QuirksModeIssue = 'QuirksModeIssue',
+      NavigatorUserAgentIssue = 'NavigatorUserAgentIssue',
     }
 
     /**
@@ -1064,6 +1070,7 @@ declare namespace Protocol {
       corsIssueDetails?: CorsIssueDetails;
       attributionReportingIssueDetails?: AttributionReportingIssueDetails;
       quirksModeIssueDetails?: QuirksModeIssueDetails;
+      navigatorUserAgentIssueDetails?: NavigatorUserAgentIssueDetails;
     }
 
     /**
@@ -2791,6 +2798,15 @@ declare namespace Protocol {
     }
 
     /**
+     * Document compatibility mode.
+     */
+    export const enum CompatibilityMode {
+      QuirksMode = 'QuirksMode',
+      LimitedQuirksMode = 'LimitedQuirksMode',
+      NoQuirksMode = 'NoQuirksMode',
+    }
+
+    /**
      * DOM interaction is implemented in terms of mirror objects that represent the actual DOM nodes.
      * DOMNode is a base node mirror type.
      */
@@ -2911,6 +2927,7 @@ declare namespace Protocol {
        * Whether the node is SVG.
        */
       isSVG?: boolean;
+      compatibilityMode?: CompatibilityMode;
     }
 
     /**
@@ -8744,6 +8761,80 @@ declare namespace Protocol {
        */
       issuedTokenCount?: integer;
     }
+
+    /**
+     * Fired once when parsing the .wbn file has succeeded.
+     * The event contains the information about the web bundle contents.
+     */
+    export interface SubresourceWebBundleMetadataReceivedEvent {
+      /**
+       * Request identifier. Used to match this information to another event.
+       */
+      requestId: RequestId;
+      /**
+       * A list of URLs of resources in the subresource Web Bundle.
+       */
+      urls: string[];
+    }
+
+    /**
+     * Fired once when parsing the .wbn file has failed.
+     */
+    export interface SubresourceWebBundleMetadataErrorEvent {
+      /**
+       * Request identifier. Used to match this information to another event.
+       */
+      requestId: RequestId;
+      /**
+       * Error message
+       */
+      errorMessage: string;
+    }
+
+    /**
+     * Fired when handling requests for resources within a .wbn file.
+     * Note: this will only be fired for resources that are requested by the webpage.
+     */
+    export interface SubresourceWebBundleInnerResponseParsedEvent {
+      /**
+       * Request identifier of the subresource request
+       */
+      innerRequestId: RequestId;
+      /**
+       * URL of the subresource resource.
+       */
+      innerRequestURL: string;
+      /**
+       * Bundle request identifier. Used to match this information to another event.
+       * This made be absent in case when the instrumentation was enabled only
+       * after webbundle was parsed.
+       */
+      bundleRequestId?: RequestId;
+    }
+
+    /**
+     * Fired when request for resources within a .wbn file failed.
+     */
+    export interface SubresourceWebBundleInnerResponseErrorEvent {
+      /**
+       * Request identifier of the subresource request
+       */
+      innerRequestId: RequestId;
+      /**
+       * URL of the subresource resource.
+       */
+      innerRequestURL: string;
+      /**
+       * Error message
+       */
+      errorMessage: string;
+      /**
+       * Bundle request identifier. Used to match this information to another event.
+       * This made be absent in case when the instrumentation was enabled only
+       * after webbundle was parsed.
+       */
+      bundleRequestId?: RequestId;
+    }
   }
 
   /**
@@ -9451,11 +9542,12 @@ declare namespace Protocol {
 
     /**
      * All Permissions Policy features. This enum should match the one defined
-     * in renderer/core/feature_policy/feature_policy_features.json5.
+     * in third_party/blink/renderer/core/permissions_policy/permissions_policy_features.json5.
      */
     export const enum PermissionsPolicyFeature {
       Accelerometer = 'accelerometer',
       AmbientLightSensor = 'ambient-light-sensor',
+      AttributionReporting = 'attribution-reporting',
       Autoplay = 'autoplay',
       Camera = 'camera',
       ChDpr = 'ch-dpr',
@@ -9463,6 +9555,7 @@ declare namespace Protocol {
       ChDownlink = 'ch-downlink',
       ChEct = 'ch-ect',
       ChLang = 'ch-lang',
+      ChPrefersColorScheme = 'ch-prefers-color-scheme',
       ChRtt = 'ch-rtt',
       ChUa = 'ch-ua',
       ChUaArch = 'ch-ua-arch',
@@ -9475,7 +9568,6 @@ declare namespace Protocol {
       ChWidth = 'ch-width',
       ClipboardRead = 'clipboard-read',
       ClipboardWrite = 'clipboard-write',
-      ConversionMeasurement = 'conversion-measurement',
       CrossOriginIsolated = 'cross-origin-isolated',
       DirectSockets = 'direct-sockets',
       DisplayCapture = 'display-capture',
@@ -9508,6 +9600,7 @@ declare namespace Protocol {
       Usb = 'usb',
       VerticalScroll = 'vertical-scroll',
       WebShare = 'web-share',
+      WindowPlacement = 'window-placement',
       XrSpatialTracking = 'xr-spatial-tracking',
     }
 
@@ -12720,7 +12813,7 @@ declare namespace Protocol {
     /**
      * Stages of the request to handle. Request will intercept before the request is
      * sent. Response will intercept after the response is received (but before response
-     * body is received.
+     * body is received).
      */
     export const enum RequestStage {
       Request = 'Request',

@@ -275,6 +275,24 @@ export namespace ProtocolMapping {
      */
     'Network.trustTokenOperationDone': [Protocol.Network.TrustTokenOperationDoneEvent];
     /**
+     * Fired once when parsing the .wbn file has succeeded.
+     * The event contains the information about the web bundle contents.
+     */
+    'Network.subresourceWebBundleMetadataReceived': [Protocol.Network.SubresourceWebBundleMetadataReceivedEvent];
+    /**
+     * Fired once when parsing the .wbn file has failed.
+     */
+    'Network.subresourceWebBundleMetadataError': [Protocol.Network.SubresourceWebBundleMetadataErrorEvent];
+    /**
+     * Fired when handling requests for resources within a .wbn file.
+     * Note: this will only be fired for resources that are requested by the webpage.
+     */
+    'Network.subresourceWebBundleInnerResponseParsed': [Protocol.Network.SubresourceWebBundleInnerResponseParsedEvent];
+    /**
+     * Fired when request for resources within a .wbn file failed.
+     */
+    'Network.subresourceWebBundleInnerResponseError': [Protocol.Network.SubresourceWebBundleInnerResponseErrorEvent];
+    /**
      * Fired when the node should be inspected. This happens after call to `setInspectMode` or when
      * user manually inspects an element.
      */

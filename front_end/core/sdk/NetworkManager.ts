@@ -936,6 +936,17 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     }
     request.setTrustTokenOperationDoneEvent(event);
   }
+
+
+  subresourceWebBundleMetadataReceived(_params: Protocol.Network.SubresourceWebBundleMetadataReceivedEvent): void {
+  }
+  subresourceWebBundleMetadataError(_params: Protocol.Network.SubresourceWebBundleMetadataErrorEvent): void {
+  }
+  subresourceWebBundleInnerResponseParsed(_params: Protocol.Network.SubresourceWebBundleInnerResponseParsedEvent):
+      void {
+  }
+  subresourceWebBundleInnerResponseError(_params: Protocol.Network.SubresourceWebBundleInnerResponseErrorEvent): void {
+  }
 }
 
 let multiTargetNetworkManagerInstance: MultitargetNetworkManager|null;

@@ -746,6 +746,11 @@ experimental domain Audits
       Page.FrameId frameId
       Network.LoaderId loaderId
 
+  type NavigatorUserAgentIssueDetails extends object
+    properties
+      string url
+      optional SourceCodeLocation location
+
   # A unique identifier for the type of issue. Each type may use one of the
   # optional fields in InspectorIssueDetails to convey more specific
   # information about the kind of issue.
@@ -762,6 +767,7 @@ experimental domain Audits
       CorsIssue
       AttributionReportingIssue
       QuirksModeIssue
+      NavigatorUserAgentIssue
 
   # This struct holds a list of optional fields with additional information
   # specific to the kind of issue. When adding a new issue code, please also
@@ -779,6 +785,7 @@ experimental domain Audits
       optional CorsIssueDetails corsIssueDetails
       optional AttributionReportingIssueDetails attributionReportingIssueDetails
       optional QuirksModeIssueDetails quirksModeIssueDetails
+      optional NavigatorUserAgentIssueDetails navigatorUserAgentIssueDetails
 
   # An inspector issue reported from the back-end.
   type InspectorIssue extends object
@@ -1965,6 +1972,13 @@ domain DOM
       open
       closed
 
+  # Document compatibility mode.
+  type CompatibilityMode extends string
+    enum
+      QuirksMode
+      LimitedQuirksMode
+      NoQuirksMode
+
   # DOM interaction is implemented in terms of mirror objects that represent the actual DOM nodes.
   # DOMNode is a base node mirror type.
   type Node extends object
@@ -2029,6 +2043,7 @@ domain DOM
       optional array of BackendNode distributedNodes
       # Whether the node is SVG.
       optional boolean isSVG
+      optional CompatibilityMode compatibilityMode
 
   # A structure holding an RGBA color.
   type RGBA extends object
@@ -5883,6 +5898,50 @@ domain Network
       # The number of obtained Trust Tokens on a successful "Issuance" operation.
       optional integer issuedTokenCount
 
+  # Fired once when parsing the .wbn file has succeeded.
+  # The event contains the information about the web bundle contents.
+  experimental event subresourceWebBundleMetadataReceived
+    parameters
+      # Request identifier. Used to match this information to another event.
+      RequestId requestId
+      # A list of URLs of resources in the subresource Web Bundle.
+      array of string urls
+
+  # Fired once when parsing the .wbn file has failed.
+  experimental event subresourceWebBundleMetadataError
+    parameters
+      # Request identifier. Used to match this information to another event.
+      RequestId requestId
+      # Error message
+      string errorMessage
+
+  # Fired when handling requests for resources within a .wbn file.
+  # Note: this will only be fired for resources that are requested by the webpage.
+  experimental event subresourceWebBundleInnerResponseParsed
+    parameters
+      # Request identifier of the subresource request
+      RequestId innerRequestId
+      # URL of the subresource resource.
+      string innerRequestURL
+      # Bundle request identifier. Used to match this information to another event.
+      # This made be absent in case when the instrumentation was enabled only
+      # after webbundle was parsed.
+      optional RequestId bundleRequestId
+
+  # Fired when request for resources within a .wbn file failed.
+  experimental event subresourceWebBundleInnerResponseError
+    parameters
+      # Request identifier of the subresource request
+      RequestId innerRequestId
+      # URL of the subresource resource.
+      string innerRequestURL
+      # Error message
+      string errorMessage
+      # Bundle request identifier. Used to match this information to another event.
+      # This made be absent in case when the instrumentation was enabled only
+      # after webbundle was parsed.
+      optional RequestId bundleRequestId
+
   experimental type CrossOriginOpenerPolicyValue extends string
     enum
       SameOrigin
@@ -6433,11 +6492,12 @@ domain Page
       PerformanceProfile
 
   # All Permissions Policy features. This enum should match the one defined
-  # in renderer/core/feature_policy/feature_policy_features.json5.
+  # in third_party/blink/renderer/core/permissions_policy/permissions_policy_features.json5.
   experimental type PermissionsPolicyFeature extends string
     enum
       accelerometer
       ambient-light-sensor
+      attribution-reporting
       autoplay
       camera
       ch-dpr
@@ -6445,6 +6505,7 @@ domain Page
       ch-downlink
       ch-ect
       ch-lang
+      ch-prefers-color-scheme
       ch-rtt
       ch-ua
       ch-ua-arch
@@ -6457,7 +6518,6 @@ domain Page
       ch-width
       clipboard-read
       clipboard-write
-      conversion-measurement
       cross-origin-isolated
       direct-sockets
       display-capture
@@ -6490,6 +6550,7 @@ domain Page
       usb
       vertical-scroll
       web-share
+      window-placement
       xr-spatial-tracking
 
   # Reason for a permissions policy feature to be disabled.
@@ -8741,7 +8802,7 @@ domain Fetch
 
   # Stages of the request to handle. Request will intercept before the request is
   # sent. Response will intercept after the response is received (but before response
-  # body is received.
+  # body is received).
   type RequestStage extends string
     enum
       Request

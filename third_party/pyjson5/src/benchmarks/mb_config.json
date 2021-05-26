@@ -1563,12 +1563,6 @@
       "V8-Blink Win": "release_bot_x86_minimal_symbols",
       "Win Release (NVIDIA)": "gpu_tests_release_trybot_x86_minimal_symbols"
     },
-    "internal.client.kitchensync": {
-      "Linux Canary": "debug_bot",
-      "Linux Dev": "debug_bot",
-      "Mac Dev": "debug_bot",
-      "Windows Dev": "debug_bot_minimal_symbols"
-    },
     "tryserver.blink": {
       "linux_trusty_blink_compile_dbg": "debug_trybot",
       "linux_trusty_blink_compile_rel": "release_bot_minimal_symbols",

@@ -342,10 +342,12 @@ def _CheckDevToolsPythonLikeFileLicenseHeaders(input_api, output_api):
                                             'test')
     scripts_directory = input_api.os_path.join(input_api.PresubmitLocalPath(),
                                                'scripts')
+    config_directory = input_api.os_path.join(input_api.PresubmitLocalPath(),
+                                              'config')
 
     default_linted_directories = [
         front_end_directory, test_directory, scripts_directory,
-        inspector_overlay_directory
+        inspector_overlay_directory, config_directory
     ]
 
     check_related_files = [lint_path]
@@ -355,7 +357,7 @@ def _CheckDevToolsPythonLikeFileLicenseHeaders(input_api, output_api):
 
     should_bail_out, files_to_lint = _getFilesToLint(
         input_api, output_api, lint_config_files, default_linted_directories,
-        ['BUILD.gn'], results)
+        ['BUILD.gn', '.gni'], results)
     if should_bail_out:
         return results
 

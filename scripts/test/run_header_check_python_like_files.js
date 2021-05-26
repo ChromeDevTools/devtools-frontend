@@ -15,6 +15,7 @@ const FRONT_END_DIRECTORY = path.join(ROOT_DIRECTORY, 'front_end');
 const TEST_DIRECTORY = path.join(ROOT_DIRECTORY, 'test');
 const SCRIPTS_DIRECTORY = path.join(ROOT_DIRECTORY, 'scripts');
 const INSPECTOR_OVERLAY_DIRECTORY = path.join(ROOT_DIRECTORY, 'inspector_overlay');
+const CONFIG_DIRECTORY = path.join(ROOT_DIRECTORY, 'config');
 
 const CURRENT_YEAR = new Date().getFullYear();
 const LINE_LICENSE_HEADER = [
@@ -76,8 +77,8 @@ let filesToLint = process.argv.slice(2);
 
 if (filesToLint.length === 0) {
   const topLevelDirectories =
-      [FRONT_END_DIRECTORY, SCRIPTS_DIRECTORY, TEST_DIRECTORY, INSPECTOR_OVERLAY_DIRECTORY].join(',');
-  filesToLint = glob.sync(`{${topLevelDirectories}}/**/BUILD.gn`);
+      [FRONT_END_DIRECTORY, SCRIPTS_DIRECTORY, TEST_DIRECTORY, INSPECTOR_OVERLAY_DIRECTORY, CONFIG_DIRECTORY].join(',');
+  filesToLint = glob.sync(`{${topLevelDirectories}}/**/{BUILD.gn,*.gni}`);
 }
 
 for (const fileLocation of filesToLint) {

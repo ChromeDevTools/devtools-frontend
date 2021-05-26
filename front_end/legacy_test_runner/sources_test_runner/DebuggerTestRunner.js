@@ -37,28 +37,10 @@ SourcesTestRunner.completeDebuggerTest = function() {
   });
 };
 
-(function() {
-const origThen = Promise.prototype.then;
-const origCatch = Promise.prototype.catch;
-
-Promise.prototype.then = function() {
-  const result = origThen.apply(this, arguments);
-  origThen.call(result, undefined, onUncaughtPromiseReject.bind(null, new Error().stack));
-  return result;
-};
-
-Promise.prototype.catch = function() {
-  const result = origCatch.apply(this, arguments);
-  origThen.call(result, undefined, onUncaughtPromiseReject.bind(null, new Error().stack));
-  return result;
-};
-
-function onUncaughtPromiseReject(stack, e) {
-  const message = typeof e === 'object' && e.stack || e;
-  TestRunner.addResult('FAIL: Uncaught exception in promise: ' + message + ' ' + stack);
+window.addEventListener('unhandledrejection', e => {
+  TestRunner.addResult('FAIL: Uncaught exception in promise: ' + e + ' ' + e.stack);
   SourcesTestRunner.completeDebuggerTest();
-}
-})();
+});
 
 SourcesTestRunner.runDebuggerTestSuite = function(testSuite) {
   const testSuiteTests = testSuite.slice();

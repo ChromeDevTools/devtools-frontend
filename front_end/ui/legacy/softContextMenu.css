@@ -6,6 +6,7 @@
 
 .soft-context-menu {
   --override-context-menu-seperator-color: var(--color-details-hairline);
+  --override-context-menu-hover-text-color: rgb(255 255 255);
 
   overflow-y: auto;
   min-width: 160px !important; /* stylelint-disable-line declaration-no-important */
@@ -65,8 +66,8 @@
 .soft-context-menu-item-mouse-over {
   border-top: 1px solid var(--color-background-elevation-1);
   border-bottom: 1px solid var(--color-background-elevation-1);
-  background-color: var(--color-background-elevation-1);
-  color: var(--color-text-primary);
+  background-color: var(--color-primary);
+  color: var(--override-context-menu-hover-text-color);
 }
 
 :host:host-context(.platform-mac):host-context(html:not(.-theme-with-dark-background)) .soft-context-menu-item-mouse-over {

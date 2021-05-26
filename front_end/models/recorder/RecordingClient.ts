@@ -14,7 +14,6 @@ export type Step = {
   value: string,
 }|{
   type: 'keydown',
-  selector: string,
   altKey: boolean,
   ctrlKey: boolean,
   key: string,
@@ -22,7 +21,6 @@ export type Step = {
   shiftKey: boolean,
 }|{
   type: 'keyup',
-  selector: string,
   altKey: boolean,
   ctrlKey: boolean,
   key: string,
@@ -104,7 +102,6 @@ export function setupRecordingClient(
       const keyboardEvent = event as KeyboardEvent;
       return {
         type: event.type,
-        selector: getSelector(nodeTarget),
         altKey: keyboardEvent.altKey,
         ctrlKey: keyboardEvent.ctrlKey,
         key: keyboardEvent.key,

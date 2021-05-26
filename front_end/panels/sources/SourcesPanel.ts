@@ -627,7 +627,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     }
   }
 
-  _toggleRecording(): void {
+  async _toggleRecording(): Promise<void> {
     const uiSourceCode = this._sourcesView.currentUISourceCode();
     if (!uiSourceCode) {
       return;
@@ -640,7 +640,15 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     if (!recorderModel) {
       return;
     }
-    recorderModel.toggleRecording(uiSourceCode);
+    const currentSession = await recorderModel.toggleRecording(uiSourceCode);
+    if (currentSession) {
+      currentSession.addEventListener('recording-updated', async ({data}: {data: Recorder.Steps.UserFlow}) => {
+        const indent = Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get();
+        const content = JSON.stringify(data, null, indent);
+        uiSourceCode.setContent(content, false);
+        await Common.Revealer.reveal(uiSourceCode.uiLocation(content.length), true);
+      });
+    }
   }
 
   _replayRecording(): void {
@@ -1286,6 +1294,7 @@ export class DebuggingActionDelegate implements UI.ActionRegistration.ActionDele
         return true;
       }
       case 'recorder.toggle-recording': {
+        // TODO: Handle dangling promise
         panel._toggleRecording();
         return true;
       }

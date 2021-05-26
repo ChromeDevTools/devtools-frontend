@@ -14,9 +14,7 @@ import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 
 import {RecordingPlayer} from './RecordingPlayer.js';
 import {RecordingSession} from './RecordingSession.js';
-import type {Step} from './Steps.js';
-import {KeyupStep} from './Steps.js';
-import {ClickStep, NavigationStep, StepFrameContext, SubmitStep, ChangeStep, CloseStep, KeydownStep, EmulateNetworkConditions} from './Steps.js';
+import type {UserFlow} from './Steps.js';
 import {RecordingScriptWriter} from './RecordingScriptWriter.js';
 
 const enum RecorderState {
@@ -63,55 +61,22 @@ export class RecorderModel extends SDK.SDKModel.SDKModel {
     return this._state === RecorderState.Recording;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  parseStep(step: any): Step {
-    const context = step.context && new StepFrameContext(step.context.target, step.context.path);
-    switch (step.action) {
-      case 'click':
-        return new ClickStep(context, step.selector);
-      case 'navigate':
-        return new NavigationStep(step.url);
-      case 'submit':
-        return new SubmitStep(context, step.selector);
-      case 'change':
-        return new ChangeStep(context, step.selector, step.value);
-      case 'close':
-        return new CloseStep(step.target);
-      case 'emulateNetworkConditions':
-        return new EmulateNetworkConditions(step.conditions);
-      case 'keydown':
-        return new KeydownStep(context, step);
-      case 'keyup':
-        return new KeyupStep(context, step);
-      default:
-        throw new Error('Unknown step: ' + step.action);
-    }
-  }
-
-  parseScript(script: string): Step[] {
-    const input = JSON.parse(script);
-    const output = [];
-
-    for (const stepInput of input) {
-      const step = this.parseStep(stepInput);
-      output.push(step);
-    }
-
-    return output;
+  parseUserFlow(source: string): UserFlow {
+    return JSON.parse(source) as UserFlow;
   }
 
   async replayRecording(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
     this.updateState(RecorderState.Replaying);
     try {
-      const script = this.parseScript(uiSourceCode.content());
-      const player = new RecordingPlayer(script);
+      const userFlow = this.parseUserFlow(uiSourceCode.content());
+      const player = new RecordingPlayer(userFlow);
       await player.play();
     } finally {
       this.updateState(RecorderState.Idle);
     }
   }
 
-  async toggleRecording(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
+  async toggleRecording(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<RecordingSession|null> {
     if (this._state === RecorderState.Idle) {
       await this.startRecording(uiSourceCode);
       await this.updateState(RecorderState.Recording);
@@ -119,11 +84,14 @@ export class RecorderModel extends SDK.SDKModel.SDKModel {
       await this.stopRecording();
       await this.updateState(RecorderState.Idle);
     }
+
+    return this._currentRecordingSession;
   }
 
-  async startRecording(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
+  async startRecording(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<RecordingSession> {
     this._currentRecordingSession = new RecordingSession(this.target(), uiSourceCode, this._indentation);
     await this._currentRecordingSession.start();
+    return this._currentRecordingSession;
   }
 
   async stopRecording(): Promise<void> {
@@ -136,18 +104,14 @@ export class RecorderModel extends SDK.SDKModel.SDKModel {
   }
 
   async exportRecording(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
-    const script = this.parseScript(uiSourceCode.content());
+    const userFlow = this.parseUserFlow(uiSourceCode.content());
     const writer = new RecordingScriptWriter('  ');
-    while (script.length) {
-      const step = script.shift();
-      step && writer.appendStep(step);
-    }
     const filename = uiSourceCode.name();
     const stream = new Bindings.FileUtils.FileOutputStream();
     if (!await stream.open(filename + '.js')) {
       return;
     }
-    stream.write(writer.getScript());
+    stream.write(writer.getScript(userFlow));
     stream.close();
   }
 }

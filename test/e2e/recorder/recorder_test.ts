@@ -4,7 +4,9 @@
 
 import {assert} from 'chai';
 
-import {enableExperiment, getBrowserAndPages, getTestServerPort, goToResource, waitForFunction} from '../../shared/helper.js';
+import type {UserFlow, Selector} from '../../../front_end/models/recorder/Steps.js';
+
+import {enableExperiment, getBrowserAndPages, getTestServerPort, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {createNewRecording, openRecorderSubPane, openSourcesPanel} from '../helpers/sources-helpers.js';
 
@@ -17,21 +19,13 @@ async function getCode() {
   const {frontend} = getBrowserAndPages();
   const textContent = await frontend.evaluate(retrieveCodeMirrorEditorContent);
   // TODO: Change to replaceAll once it's supported in Node.js.
-  return textContent.replace(new RegExp(`localhost:${getTestServerPort()}`, 'g'), '<url>')
-      .replace(/\u200b/g, '')
-      .trim();
-}
-
-function getWaitForScriptToChangeFunction() {
-  let previousScript = '';
-  return async function waitForScriptToChange() {
-    const newScript = await waitForFunction(async () => {
-      const currentScript = await getCode();
-      return previousScript !== currentScript ? currentScript : undefined;
-    });
-    previousScript = newScript;
-    return newScript;
-  };
+  const replacedContent =
+      textContent.replace(new RegExp(`localhost:${getTestServerPort()}`, 'g'), '<url>').replace(/\u200b/g, '').trim();
+  const userFlow = JSON.parse(replacedContent);
+  for (const section of userFlow.sections) {
+    section.screenshot = '<screenshot>';
+  }
+  return userFlow;
 }
 
 async function changeNetworkConditions(condition: string) {
@@ -51,10 +45,13 @@ async function startRecording(path: string, networkCondition: string = '') {
     await changeNetworkConditions(networkCondition);
   }
 
+
   await openSourcesPanel();
   await openRecorderSubPane();
   await createNewRecording('New recording');
+  //   await enableCDPLogging()
   await frontend.click('aria/Record');
+  await frontend.bringToFront();
   await frontend.waitForSelector('aria/Stop');
 }
 
@@ -65,420 +62,387 @@ async function stopRecording() {
   await frontend.click('aria/Stop');
 }
 
-async function assertOutput(expected: string) {
+async function assertOutput(expected: UserFlow) {
   const textContent = await getCode();
-  assert.strictEqual(textContent, expected);
+  assert.deepEqual(textContent, expected);
 }
 
 describe('Recorder', function() {
   // The tests in this suite are particularly slow, as they perform a lot of actions
   this.timeout(10000);
 
-  it('should capture the initial page as a navigation step', async () => {
-    const waitForScriptToChange = getWaitForScriptToChangeFunction();
-    await startRecording('recorder/recorder.html');
-    await waitForScriptToChange();
-    await stopRecording();
-    await assertOutput(`[
-    {
-        "action": "navigate",
-        "condition": null,
-        "url": "https://<url>/test/e2e/resources/recorder/recorder.html"
-    }
-]`);
-  });
+  //     it('should capture the initial page as a navigation step', async () => {
+  //         await startRecording('recorder/recorder.html');
+  //         await stopRecording();
+  //         await assertOutput(`[
+  //     {
+  //         "action": "navigate",
+  //         "condition": null,
+  //         "url": "https://<url>/test/e2e/resources/recorder/recorder.html"
+  //     }
+  // ]`);
+  //     });
 
   it('should capture clicks on buttons', async () => {
-    const waitForScriptToChange = getWaitForScriptToChangeFunction();
     await startRecording('recorder/recorder.html');
-    await waitForScriptToChange();
 
     const {target} = getBrowserAndPages();
     await target.bringToFront();
     await target.click('#test');
-    await waitForScriptToChange();
 
     await stopRecording();
-    await assertOutput(`[
-    {
-        "action": "navigate",
-        "condition": null,
-        "url": "https://<url>/test/e2e/resources/recorder/recorder.html"
-    },
-    {
-        "action": "click",
-        "condition": null,
-        "context": {
-            "path": [],
-            "target": "main"
-        },
-        "selector": "aria/Test Button"
-    }
-]`);
+    await assertOutput({
+      title: 'New Recording',
+      sections: [{
+        url: 'https://<url>/test/e2e/resources/recorder/recorder.html',
+        screenshot: '<screenshot>',
+        title: '',
+        steps: [{
+          type: 'click',
+          selector: 'aria/Test Button' as Selector,
+          context: {
+            target: 'main',
+            path: [],
+          },
+        }],
+      }],
+    });
   });
 
   it('should not capture synthetic events', async () => {
-    const waitForScriptToChange = getWaitForScriptToChangeFunction();
     await startRecording('recorder/recorder.html');
-    await waitForScriptToChange();
 
     const {target} = getBrowserAndPages();
     await target.bringToFront();
     await target.click('#synthetic');
-    await waitForScriptToChange();
 
     await stopRecording();
-    await assertOutput(`[
-    {
-        "action": "navigate",
-        "condition": null,
-        "url": "https://<url>/test/e2e/resources/recorder/recorder.html"
-    },
-    {
-        "action": "click",
-        "condition": null,
-        "context": {
-            "path": [],
-            "target": "main"
-        },
-        "selector": "aria/Trigger Synthetic Event"
-    }
-]`);
+    await assertOutput({
+      title: 'New Recording',
+      sections: [{
+        url: 'https://<url>/test/e2e/resources/recorder/recorder.html',
+        screenshot: '<screenshot>',
+        title: '',
+        steps: [{
+          type: 'click',
+          selector: 'aria/Trigger Synthetic Event' as Selector,
+          context: {
+            target: 'main',
+            path: [],
+          },
+        }],
+      }],
+    });
   });
 
   it('should capture clicks on submit buttons inside of forms as click steps', async () => {
-    const waitForScriptToChange = getWaitForScriptToChangeFunction();
     await startRecording('recorder/recorder.html');
-    await waitForScriptToChange();
 
     const {target} = getBrowserAndPages();
     await target.bringToFront();
     await target.click('#form-button');
-    await waitForScriptToChange();
 
     await stopRecording();
-    await assertOutput(`[
-    {
-        "action": "navigate",
-        "condition": null,
-        "url": "https://<url>/test/e2e/resources/recorder/recorder.html"
-    },
-    {
-        "action": "click",
-        "condition": null,
-        "context": {
-            "path": [],
-            "target": "main"
-        },
-        "selector": "aria/Form Button"
-    }
-]`);
+    await assertOutput({
+      title: 'New Recording',
+      sections: [{
+        url: 'https://<url>/test/e2e/resources/recorder/recorder.html',
+        screenshot: '<screenshot>',
+        title: '',
+        steps: [{
+          type: 'click',
+          selector: 'aria/Form Button' as Selector,
+          context: {
+            target: 'main',
+            path: [],
+          },
+        }],
+      }],
+    });
   });
 
   it('should build an aria selector for the parent element that is interactive', async () => {
-    const waitForScriptToChange = getWaitForScriptToChangeFunction();
     await startRecording('recorder/recorder.html');
-    await waitForScriptToChange();
 
     const {target} = getBrowserAndPages();
     await target.bringToFront();
     await target.click('#span');
-    await waitForScriptToChange();
 
     await stopRecording();
-    await assertOutput(`[
-    {
-        "action": "navigate",
-        "condition": null,
-        "url": "https://<url>/test/e2e/resources/recorder/recorder.html"
-    },
-    {
-        "action": "click",
-        "condition": null,
-        "context": {
-            "path": [],
-            "target": "main"
-        },
-        "selector": "aria/Hello World"
-    }
-]`);
+    await assertOutput({
+      title: 'New Recording',
+      sections: [{
+        url: 'https://<url>/test/e2e/resources/recorder/recorder.html',
+        screenshot: '<screenshot>',
+        title: '',
+        steps: [{
+          type: 'click',
+          selector: 'aria/Hello World' as Selector,
+          context: {
+            target: 'main',
+            path: [],
+          },
+        }],
+      }],
+    });
   });
 
   it('should fall back to a css selector if an element does not have an accessible and interactive parent',
      async () => {
-       const waitForScriptToChange = getWaitForScriptToChangeFunction();
        await startRecording('recorder/recorder.html');
-       await waitForScriptToChange();
 
        const {target} = getBrowserAndPages();
        await target.bringToFront();
        await target.click('#span2');
-       await waitForScriptToChange();
 
        await stopRecording();
-       await assertOutput(`[
-    {
-        "action": "navigate",
-        "condition": null,
-        "url": "https://<url>/test/e2e/resources/recorder/recorder.html"
-    },
-    {
-        "action": "click",
-        "condition": null,
-        "context": {
-            "path": [],
-            "target": "main"
-        },
-        "selector": "span#span2"
-    }
-]`);
+       await assertOutput({
+         title: 'New Recording',
+         sections: [{
+           url: 'https://<url>/test/e2e/resources/recorder/recorder.html',
+           screenshot: '<screenshot>',
+           title: '',
+           steps: [{
+             type: 'click',
+             selector: 'span#span2' as Selector,
+             context: {
+               target: 'main',
+               path: [],
+             },
+           }],
+         }],
+       });
      });
 
   it('should create an aria selector even if the element is within a shadow root', async () => {
-    const waitForScriptToChange = getWaitForScriptToChangeFunction();
     await startRecording('recorder/recorder.html');
-    await waitForScriptToChange();
 
     const {target} = getBrowserAndPages();
     await target.bringToFront();
     await target.click('pierce/#inner-span');
-    await waitForScriptToChange();
 
     await stopRecording();
-    await assertOutput(`[
-    {
-        "action": "navigate",
-        "condition": null,
-        "url": "https://<url>/test/e2e/resources/recorder/recorder.html"
-    },
-    {
-        "action": "click",
-        "condition": null,
-        "context": {
-            "path": [],
-            "target": "main"
-        },
-        "selector": "aria/Hello World"
-    }
-]`);
+    await assertOutput({
+      title: 'New Recording',
+      sections: [{
+        url: 'https://<url>/test/e2e/resources/recorder/recorder.html',
+        screenshot: '<screenshot>',
+        title: '',
+        steps: [{
+          type: 'click',
+          selector: 'aria/Hello World' as Selector,
+          context: {
+            target: 'main',
+            path: [],
+          },
+        }],
+      }],
+    });
   });
 
   it('should record interactions with elements within iframes', async () => {
-    const waitForScriptToChange = getWaitForScriptToChangeFunction();
     await startRecording('recorder/recorder.html');
-    await waitForScriptToChange();
 
     const {target} = getBrowserAndPages();
     await target.bringToFront();
     await target.mainFrame().childFrames()[0].click('#in-iframe');
-    await waitForScriptToChange();
     await target.mainFrame().childFrames()[0].childFrames()[0].click('aria/Inner iframe button');
-    await waitForScriptToChange();
 
     await stopRecording();
-    await assertOutput(`[
-    {
-        "action": "navigate",
-        "condition": null,
-        "url": "https://<url>/test/e2e/resources/recorder/recorder.html"
-    },
-    {
-        "action": "click",
-        "condition": null,
-        "context": {
-            "path": [
-                0
-            ],
-            "target": "main"
-        },
-        "selector": "aria/iframe button"
-    },
-    {
-        "action": "click",
-        "condition": null,
-        "context": {
-            "path": [
+    await assertOutput({
+      title: 'New Recording',
+      sections: [{
+        url: 'https://<url>/test/e2e/resources/recorder/recorder.html',
+        screenshot: '<screenshot>',
+        title: '',
+        steps: [
+          {
+            type: 'click',
+            selector: 'aria/iframe button' as Selector,
+            context: {
+              target: 'main',
+              path: [
                 0,
-                0
-            ],
-            "target": "main"
-        },
-        "selector": "aria/Inner iframe button"
-    }
-]`);
+              ],
+            },
+          },
+          {
+            type: 'click',
+            selector: 'aria/Inner iframe button' as Selector,
+            context: {
+              target: 'main',
+              path: [
+                0,
+                0,
+              ],
+            },
+          },
+        ],
+      }],
+    });
   });
 
-  it('should record interactions with popups', async () => {
-    const waitForScriptToChange = getWaitForScriptToChangeFunction();
-    await startRecording('recorder/recorder.html');
-    await waitForScriptToChange();
+  //     it('should record interactions with popups', async () => {
+  //         const waitForScriptToChange = getWaitForScriptToChangeFunction();
+  //         await startRecording('recorder/recorder.html');
+  //         // await waitForScriptToChange();
 
-    const {target, browser} = getBrowserAndPages();
-    await target.bringToFront();
-    const newTargetPromise = browser.waitForTarget(t => t.url().endsWith('popup.html'));
-    await target.click('aria/Open Popup');
-    await waitForScriptToChange();
-    const newTarget = await newTargetPromise;
-    const newPage = await newTarget.page() as typeof target;
-    await newPage.waitForSelector('aria/Button in Popup');
-    // TODO: fix race condition by auto attach functionality via the browser target.
-    await newPage.waitForTimeout(500);
-    await newPage.click('aria/Button in Popup');
-    await waitForScriptToChange();
-    await newPage.close();
-    await waitForScriptToChange();
-    await stopRecording();
+  //         const { target, browser } = getBrowserAndPages();
+  //         await target.bringToFront();
+  //         const newTargetPromise = browser.waitForTarget(t => t.url().endsWith('popup.html'));
+  //         await target.click('aria/Open Popup');
+  //         // await waitForScriptToChange();
+  //         const newTarget = await newTargetPromise;
+  //         const newPage = await newTarget.page() as typeof target;
+  //         await newPage.waitForSelector('aria/Button in Popup');
+  //         // TODO: fix race condition by auto attach functionality via the browser target.
+  //         await newPage.waitForTimeout(500);
+  //         await newPage.click('aria/Button in Popup');
+  //         // await waitForScriptToChange();
+  //         await newPage.close();
+  //         // await waitForScriptToChange();
+  //         await stopRecording();
 
-    await assertOutput(`[
-    {
-        "action": "navigate",
-        "condition": null,
-        "url": "https://<url>/test/e2e/resources/recorder/recorder.html"
-    },
-    {
-        "action": "click",
-        "condition": null,
-        "context": {
-            "path": [],
-            "target": "main"
-        },
-        "selector": "aria/Open Popup"
-    },
-    {
-        "action": "click",
-        "condition": {
-            "expectedUrl": "https://<url>/test/e2e/resources/recorder/popup.html"
-        },
-        "context": {
-            "path": [],
-            "target": "https://<url>/test/e2e/resources/recorder/popup.html"
-        },
-        "selector": "aria/Button in Popup"
-    },
-    {
-        "action": "close",
-        "condition": null,
-        "target": "https://<url>/test/e2e/resources/recorder/popup.html"
-    }
-]`);
-  });
+  //         await assertOutput(`[
+  //     {
+  //         "action": "navigate",
+  //         "condition": null,
+  //         "url": "https://<url>/test/e2e/resources/recorder/recorder.html"
+  //     },
+  //     {
+  //         "action": "click",
+  //         "condition": null,
+  //         "context": {
+  //             "path": [],
+  //             "target": "main"
+  //         },
+  //         "selector": "aria/Open Popup"
+  //     },
+  //     {
+  //         "action": "click",
+  //         "condition": {
+  //             "expectedUrl": "https://<url>/test/e2e/resources/recorder/popup.html"
+  //         },
+  //         "context": {
+  //             "path": [],
+  //             "target": "https://<url>/test/e2e/resources/recorder/popup.html"
+  //         },
+  //         "selector": "aria/Button in Popup"
+  //     },
+  //     {
+  //         "action": "close",
+  //         "condition": null,
+  //         "target": "https://<url>/test/e2e/resources/recorder/popup.html"
+  //     }
+  // ]`);
+  //     });
 
   it('should wait for navigations in the generated scripts', async () => {
-    const waitForScriptToChange = getWaitForScriptToChangeFunction();
     await startRecording('recorder/recorder.html');
-    await waitForScriptToChange();
 
     const {target} = getBrowserAndPages();
     await target.bringToFront();
     const promise1 = target.waitForNavigation();
     await target.click('aria/Page 2');
     await promise1;
-    await waitForScriptToChange();
     await target.waitForSelector('aria/Back to Page 1');
     const promise2 = target.waitForNavigation();
     await target.click('aria/Back to Page 1');
     await promise2;
-    await waitForScriptToChange();
 
     await stopRecording();
-    await assertOutput(`[
-    {
-        "action": "navigate",
-        "condition": null,
-        "url": "https://<url>/test/e2e/resources/recorder/recorder.html"
-    },
-    {
-        "action": "click",
-        "condition": {
-            "expectedUrl": "https://<url>/test/e2e/resources/recorder/recorder2.html"
-        },
-        "context": {
-            "path": [],
-            "target": "main"
-        },
-        "selector": "aria/Page 2"
-    },
-    {
-        "action": "click",
-        "condition": {
-            "expectedUrl": "https://<url>/test/e2e/resources/recorder/recorder.html"
-        },
-        "context": {
-            "path": [],
-            "target": "main"
-        },
-        "selector": "aria/Back to Page 1"
-    }
-]`);
+    await assertOutput({
+      title: 'New Recording',
+      sections: [{
+        url: 'https://<url>/test/e2e/resources/recorder/recorder.html',
+        screenshot: '<screenshot>',
+        title: '',
+        steps: [
+          {
+            type: 'click',
+            selector: 'aria/Page 2' as Selector,
+            context: {
+              target: 'main',
+              path: [],
+            },
+            condition: {
+              expectedUrl: 'https://<url>/test/e2e/resources/recorder/recorder2.html',
+              type: 'waitForNavigation',
+            },
+          },
+          {
+            type: 'click',
+            selector: 'aria/Back to Page 1' as Selector,
+            context: {
+              target: 'main',
+              path: [],
+            },
+            condition: {
+              expectedUrl: 'https://<url>/test/e2e/resources/recorder/recorder.html',
+              type: 'waitForNavigation',
+            },
+          },
+        ],
+      }],
+    });
   });
 
   it('should also record network conditions', async () => {
-    const waitForScriptToChange = getWaitForScriptToChangeFunction();
     await startRecording('recorder/recorder.html', 'Fast 3G');
-    await waitForScriptToChange();
 
     const {frontend, target} = getBrowserAndPages();
     await target.bringToFront();
     await target.click('#test');
-    await waitForScriptToChange();
     await frontend.bringToFront();
     await changeNetworkConditions('Slow 3G');
     await openSourcesPanel();
-    await waitForScriptToChange();
     await target.bringToFront();
     await target.click('#test');
-    await waitForScriptToChange();
 
     await stopRecording();
-    await assertOutput(`[
-    {
-        "action": "emulateNetworkConditions",
-        "condition": null,
-        "conditions": {
-            "download": 180000,
-            "upload": 84375,
-            "latency": 562.5
-        }
-    },
-    {
-        "action": "navigate",
-        "condition": null,
-        "url": "https://<url>/test/e2e/resources/recorder/recorder.html"
-    },
-    {
-        "action": "click",
-        "condition": null,
-        "context": {
-            "path": [],
-            "target": "main"
+    await assertOutput({
+      title: 'New Recording',
+      sections: [{
+        url: 'https://<url>/test/e2e/resources/recorder/recorder.html',
+        screenshot: '<screenshot>',
+        title: '',
+        networkConditions: {
+          download: 180000,
+          latency: 562.5,
+          upload: 84375,
         },
-        "selector": "aria/Test Button"
-    },
-    {
-        "action": "emulateNetworkConditions",
-        "condition": null,
-        "conditions": {
-            "download": 50000,
-            "upload": 50000,
-            "latency": 2000
-        }
-    },
-    {
-        "action": "click",
-        "condition": null,
-        "context": {
-            "path": [],
-            "target": "main"
-        },
-        "selector": "aria/Test Button"
-    }
-]`);
+        steps: [
+          {
+            type: 'click',
+            selector: 'aria/Test Button' as Selector,
+            context: {
+              target: 'main',
+              path: [],
+            },
+          },
+          {
+            type: 'emulateNetworkConditions',
+            conditions: {
+              download: 50000,
+              latency: 2000,
+              upload: 50000,
+            },
+          },
+          {
+            type: 'click',
+            selector: 'aria/Test Button' as Selector,
+            context: {
+              target: 'main',
+              path: [],
+            },
+          },
+        ],
+      }],
+    });
   });
 
   it('should capture keyboard events on inputs', async () => {
-    const waitForScriptToChange = getWaitForScriptToChangeFunction();
     await startRecording('recorder/input.html');
-    await waitForScriptToChange();
 
     const {target} = getBrowserAndPages();
     await target.bringToFront();
@@ -487,95 +451,121 @@ describe('Recorder', function() {
     await target.keyboard.press('Tab');
     await target.keyboard.type('2');
 
-    await waitForScriptToChange();
-
     await stopRecording();
-    await assertOutput(`[
-    {
-        "action": "navigate",
-        "condition": null,
-        "url": "https://<url>/test/e2e/resources/recorder/input.html"
-    },
-    {
-        "action": "keydown",
-        "condition": null,
-        "context": {
-            "path": [],
-            "target": "main"
-        },
-        "selector": "html > body",
-        "key": "Tab"
-    },
-    {
-        "action": "keyup",
-        "condition": null,
-        "context": {
-            "path": [],
-            "target": "main"
-        },
-        "selector": "input#one",
-        "key": "Tab"
-    },
-    {
-        "action": "keydown",
-        "condition": null,
-        "context": {
-            "path": [],
-            "target": "main"
-        },
-        "selector": "input#one",
-        "key": "1"
-    },
-    {
-        "action": "keyup",
-        "condition": null,
-        "context": {
-            "path": [],
-            "target": "main"
-        },
-        "selector": "input#one",
-        "key": "1"
-    },
-    {
-        "action": "keydown",
-        "condition": null,
-        "context": {
-            "path": [],
-            "target": "main"
-        },
-        "selector": "input#one",
-        "key": "Tab"
-    },
-    {
-        "action": "keyup",
-        "condition": null,
-        "context": {
-            "path": [],
-            "target": "main"
-        },
-        "selector": "input#two",
-        "key": "Tab"
-    },
-    {
-        "action": "keydown",
-        "condition": null,
-        "context": {
-            "path": [],
-            "target": "main"
-        },
-        "selector": "input#two",
-        "key": "2"
-    },
-    {
-        "action": "keyup",
-        "condition": null,
-        "context": {
-            "path": [],
-            "target": "main"
-        },
-        "selector": "input#two",
-        "key": "2"
-    }
-]`);
+    await assertOutput({
+      title: 'New Recording',
+      sections: [{
+        url: 'https://<url>/test/e2e/resources/recorder/input.html',
+        screenshot: '<screenshot>',
+        title: '',
+        steps: [
+          {
+            altKey: false,
+            context: {
+              path: [],
+              target: 'main',
+            },
+            ctrlKey: false,
+            key: 'Tab',
+            metaKey: false,
+            shiftKey: false,
+            type: 'keydown',
+          },
+          {
+            altKey: false,
+            context: {
+              path: [],
+              target: 'main',
+            },
+            ctrlKey: false,
+            key: 'Tab',
+            metaKey: false,
+            shiftKey: false,
+            type: 'keyup',
+          },
+          {
+            altKey: false,
+            context: {
+              path: [],
+              target: 'main',
+            },
+            ctrlKey: false,
+            key: '1',
+            metaKey: false,
+            shiftKey: false,
+            type: 'keydown',
+          },
+          {
+            altKey: false,
+            context: {
+              path: [],
+              target: 'main',
+            },
+            ctrlKey: false,
+            key: '1',
+            metaKey: false,
+            shiftKey: false,
+            type: 'keyup',
+          },
+          {
+            altKey: false,
+            context: {
+              path: [],
+              target: 'main',
+            },
+            ctrlKey: false,
+            key: 'Tab',
+            metaKey: false,
+            shiftKey: false,
+            type: 'keydown',
+          },
+          {
+            context: {
+              path: [],
+              target: 'main',
+            },
+            selector: 'input#one' as Selector,
+            type: 'change',
+            value: '1',
+          },
+          {
+            altKey: false,
+            context: {
+              path: [],
+              target: 'main',
+            },
+            ctrlKey: false,
+            key: 'Tab',
+            metaKey: false,
+            shiftKey: false,
+            type: 'keyup',
+          },
+          {
+            altKey: false,
+            context: {
+              path: [],
+              target: 'main',
+            },
+            ctrlKey: false,
+            key: '2',
+            metaKey: false,
+            shiftKey: false,
+            type: 'keydown',
+          },
+          {
+            altKey: false,
+            context: {
+              path: [],
+              target: 'main',
+            },
+            ctrlKey: false,
+            key: '2',
+            metaKey: false,
+            shiftKey: false,
+            type: 'keyup',
+          },
+        ],
+      }],
+    });
   });
 });

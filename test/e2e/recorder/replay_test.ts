@@ -4,6 +4,8 @@
 
 import {assert} from 'chai';
 
+import type {UserFlow, Selector} from '../../../front_end/models/recorder/Steps.js';
+
 import {enableExperiment, getBrowserAndPages, getResourcesPath, goToResource, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {createNewRecording, openRecorderSubPane, openSourcesPanel} from '../helpers/sources-helpers.js';
@@ -33,7 +35,7 @@ async function setCode(code: string) {
 }
 
 async function setupRecorderWithScriptAndReplay(
-    script: string, path: string = 'recorder/recorder.html'): Promise<void> {
+    script: UserFlow, path: string = 'recorder/recorder.html'): Promise<void> {
   await enableExperiment('recorder');
   await goToResource(path);
 
@@ -42,7 +44,7 @@ async function setupRecorderWithScriptAndReplay(
   await openSourcesPanel();
   await openRecorderSubPane();
   await createNewRecording('New recording');
-  await setCode(script);
+  await setCode(JSON.stringify(script));
 
   await frontend.click('pierce/[aria-label="Replay"]');
   // TODO: find out why this is not working:
@@ -58,53 +60,65 @@ describe('Recorder', function() {
   this.timeout(10000);
 
   describe('Replay', () => {
-    it('should be able to replay navigation steps', async () => {
+    it('should navigate to the url of the first section', async () => {
       const {target} = getBrowserAndPages();
 
       const promise = target.waitForNavigation();
-      await setupRecorderWithScriptAndReplay(`[
-        {
-            "action": "navigate",
-            "condition": null,
-            "url": "${getResourcesPath()}/recorder/recorder2.html"
-        }
-      ]`);
+      await setupRecorderWithScriptAndReplay({
+        title: 'Test Recording',
+        sections: [
+          {
+            url: `${getResourcesPath()}/recorder/recorder2.html`,
+            screenshot: '',
+            title: '',
+            steps: [],
+          },
+        ],
+      });
       await promise;
       assert.strictEqual(target.url(), `${getResourcesPath()}/recorder/recorder2.html`);
     });
 
     it('should be able to replay click steps', async () => {
       const {target} = getBrowserAndPages();
-      await setupRecorderWithScriptAndReplay(`[
-        {
-          "action": "click",
-          "condition": {
-              "expectedUrl": "${getResourcesPath()}/recorder/recorder2.html"
-          },
-          "context": {
-              "path": [],
-              "target": "main"
-          },
-          "selector": "a[href=\\"recorder2.html\\"]"
-      }
-      ]`);
+      await setupRecorderWithScriptAndReplay({
+        title: 'Test Recording',
+        sections: [{
+          url: `${getResourcesPath()}/recorder/recorder.html`,
+          screenshot: '',
+          title: '',
+          steps: [{
+            type: 'click',
+            context: {
+              path: [],
+              target: 'main',
+            },
+            selector: 'a[href="recorder2.html"]' as Selector,
+          }],
+        }],
+      });
       assert.strictEqual(target.url(), `${getResourcesPath()}/recorder/recorder2.html`);
     });
 
     it('should be able to replay change steps', async () => {
       const {target} = getBrowserAndPages();
-      await setupRecorderWithScriptAndReplay(`[
-        {
-            "action": "change",
-            "condition": null,
-            "context": {
-                "path": [],
-                "target": "main"
+      await setupRecorderWithScriptAndReplay({
+        title: 'Test Recording',
+        sections: [{
+          url: `${getResourcesPath()}/recorder/recorder.html`,
+          screenshot: '',
+          title: '',
+          steps: [{
+            type: 'change',
+            context: {
+              path: [],
+              target: 'main',
             },
-            "selector": "#input",
-            "value": "Hello World"
-        }
-      ]`);
+            selector: '#input' as Selector,
+            value: 'Hello World',
+          }],
+        }],
+      });
 
       const value = await target.$eval('#input', e => (e as HTMLInputElement).value);
       assert.strictEqual(value, 'Hello World');
@@ -112,90 +126,80 @@ describe('Recorder', function() {
 
     it('should be able to replay keyboard events', async () => {
       const {target} = getBrowserAndPages();
-      await setupRecorderWithScriptAndReplay(
-          `[
-        {
-            "action": "keydown",
-            "condition": null,
-            "context": {
-                "path": [],
-                "target": "main"
+      await setupRecorderWithScriptAndReplay({
+        title: 'Test Recording',
+        sections: [{
+          url: `${getResourcesPath()}/recorder/input.html`,
+          screenshot: '',
+          title: '',
+          steps: [
+            {
+              'type': 'keydown',
+              'context': {
+                'path': [],
+                'target': 'main',
+              },
+              'key': 'Tab',
             },
-            "selector": "html > body",
-            "key": "Tab"
-        },
-        {
-            "action": "keyup",
-            "condition": null,
-            "context": {
-                "path": [],
-                "target": "main"
+            {
+              'type': 'keyup',
+              'context': {
+                'path': [],
+                'target': 'main',
+              },
+              'key': 'Tab',
             },
-            "selector": "input#one",
-            "key": "Tab"
-        },
-        {
-            "action": "keydown",
-            "condition": null,
-            "context": {
-                "path": [],
-                "target": "main"
+            {
+              'type': 'keydown',
+              'context': {
+                'path': [],
+                'target': 'main',
+              },
+              'key': '1',
             },
-            "selector": "input#one",
-            "key": "1"
-        },
-        {
-            "action": "keyup",
-            "condition": null,
-            "context": {
-                "path": [],
-                "target": "main"
+            {
+              'type': 'keyup',
+              'context': {
+                'path': [],
+                'target': 'main',
+              },
+              'key': '1',
             },
-            "selector": "input#one",
-            "key": "1"
-        },
-        {
-            "action": "keydown",
-            "condition": null,
-            "context": {
-                "path": [],
-                "target": "main"
+            {
+              'type': 'keydown',
+              'context': {
+                'path': [],
+                'target': 'main',
+              },
+              'key': 'Tab',
             },
-            "selector": "input#one",
-            "key": "Tab"
-        },
-        {
-            "action": "keyup",
-            "condition": null,
-            "context": {
-                "path": [],
-                "target": "main"
+            {
+              'type': 'keyup',
+              'context': {
+                'path': [],
+                'target': 'main',
+              },
+              'key': 'Tab',
             },
-            "selector": "input#two",
-            "key": "Tab"
-        },
-        {
-            "action": "keydown",
-            "condition": null,
-            "context": {
-                "path": [],
-                "target": "main"
+            {
+              'type': 'keydown',
+              'context': {
+                'path': [],
+                'target': 'main',
+              },
+              'key': '2',
             },
-            "selector": "input#two",
-            "key": "2"
-        },
-        {
-            "action": "keyup",
-            "condition": null,
-            "context": {
-                "path": [],
-                "target": "main"
+            {
+              'type': 'keyup',
+              'context': {
+                'path': [],
+                'target': 'main',
+              },
+              'key': '2',
             },
-            "selector": "input#two",
-            "key": "2"
-        }
-      ]`,
-          'recorder/input.html');
+          ],
+        }],
+      });
 
       const value = await target.$eval('#log', e => (e as HTMLElement).innerText.trim());
       assert.strictEqual(value, ['one:1', 'two:2'].join('\n'));

@@ -8,7 +8,6 @@ import("../visibility.gni")
 
 devtools_module("recorder") {
   sources = [
-    "Conditions.ts",
     "PuppeteerConnection.ts",
     "RecorderModel.ts",
     "RecordingClient.ts",
@@ -39,6 +38,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
+    "../../../test/e2e/recorder/*",
     "../../../test/unittests/front_end/models/recorder/*",
     "../../entrypoints/main/*",
     "../../panels/sources/*",

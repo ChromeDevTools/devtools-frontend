@@ -51,7 +51,6 @@ describe('Recorder', () => {
         const button = document.createElement('button');
         assert.deepStrictEqual(imports.createStepFromEvent(event, button, true), {
           type: 'keydown',
-          selector: 'aria/testName',
           altKey: false,
           metaKey: false,
           shiftKey: false,
@@ -73,7 +72,6 @@ describe('Recorder', () => {
         const button = document.createElement('button');
         assert.deepStrictEqual(imports.createStepFromEvent(event, button, true), {
           type: 'keyup',
-          selector: 'aria/testName',
           altKey: false,
           metaKey: false,
           shiftKey: false,

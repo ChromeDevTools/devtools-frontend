@@ -13,8 +13,8 @@ import type * as Protocol from '../../generated/protocol.js';
 import {RecordingScriptWriter} from './RecordingScriptWriter.js';
 import {RecordingEventHandler} from './RecordingEventHandler.js';
 import {setupRecordingClient} from './RecordingClient.js';
-import type {Step} from './Steps.js';
-import {EmulateNetworkConditions, NavigationStep} from './Steps.js';
+import type {Condition, Step, StepWithCondition, UserFlow, UserFlowSection} from './Steps.js';
+import {createEmulateNetworkConditionsStep} from './Steps.js';
 
 const RECORDER_ISOLATED_WORLD_NAME = 'devtools_recorder';
 
@@ -23,7 +23,7 @@ type RecorderEvent = {
   event: Common.EventTarget.EventTargetEvent,
 };
 
-export class RecordingSession {
+export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper {
   _target: SDK.SDKModel.Target;
   _uiSourceCode: Workspace.UISourceCode.UISourceCode;
   _runtimeAgent: ProtocolProxyApi.RuntimeApi;
@@ -42,9 +42,11 @@ export class RecordingSession {
   _scriptWriter: RecordingScriptWriter|null = null;
   _eventQueue: Array<RecorderEvent> = [];
   _isProcessingEvent = false;
-  steps: Step[] = [];
+  userFlow: UserFlow;
 
   constructor(target: SDK.SDKModel.Target, uiSourceCode: Workspace.UISourceCode.UISourceCode, indentation: string) {
+    super();
+
     this._target = target;
     this._uiSourceCode = uiSourceCode;
     this._indentation = indentation;
@@ -76,6 +78,11 @@ export class RecordingSession {
     this._eventHandlers = new Map();
     this._targets = new Map();
     this._newDocumentScriptIdentifiers = new Map();
+
+    this.userFlow = {
+      title: 'New Recording',
+      sections: [],
+    };
   }
 
   async start(): Promise<void> {
@@ -85,7 +92,7 @@ export class RecordingSession {
     }
 
     this._networkManager.addEventListener(
-        SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, this._handleNetworkConditionsChanged,
+        SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, this.addNetworkConditionsChangedStep,
         this);
 
     await this.attachToTarget(this._target);
@@ -94,13 +101,44 @@ export class RecordingSession {
 
     const networkConditions = this._networkManager.networkConditions();
     if (networkConditions !== SDK.NetworkManager.NoThrottlingConditions) {
-      await this.appendStep(new EmulateNetworkConditions(networkConditions));
+      this.addNetworkConditionsChangedStep();
     }
 
-    await this.appendStep(new NavigationStep(mainFrame.url));
+    await this.appendNewSection(true);
 
     // Focus the target so that events can be captured without additional actions.
     await this._pageAgent.invoke_bringToFront();
+  }
+
+  async appendNewSection(includeNetworkConditions: boolean = false): Promise<void> {
+    const mainFrame = this._resourceTreeModel.mainFrame;
+    if (!mainFrame) {
+      throw new Error('Could not find mainFrame.');
+    }
+
+    const url = mainFrame.url;
+    const title = mainFrame.name;
+
+    const {data: screenshot} = await this._pageAgent.invoke_captureScreenshot({
+      captureBeyondViewport: false,
+    });
+
+    const section: UserFlowSection = {
+      title,
+      url,
+      screenshot: 'data:image/png;base64,' + screenshot,
+      steps: [],
+    };
+
+    if (includeNetworkConditions) {
+      const networkConditions = this._networkManager.networkConditions();
+      if (networkConditions !== SDK.NetworkManager.NoThrottlingConditions) {
+        section.networkConditions = networkConditions;
+      }
+    }
+    this.userFlow.sections.push(section);
+
+    this.dispatchEventToListeners('recording-updated', this.userFlow);
   }
 
   async stop(): Promise<void> {
@@ -110,39 +148,26 @@ export class RecordingSession {
     await this.detachFromTarget(this._target);
 
     this._networkManager.removeEventListener(
-        SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, this._handleNetworkConditionsChanged,
+        SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, this.addNetworkConditionsChangedStep,
         this);
   }
 
-  _handleNetworkConditionsChanged(): void {
+  addNetworkConditionsChangedStep(): void {
     const networkConditions = this._networkManager.networkConditions();
-    this.appendStep(new EmulateNetworkConditions(networkConditions));
+    this.appendStep(createEmulateNetworkConditionsStep(networkConditions));
   }
 
   async appendStep(step: Step): Promise<Step> {
-    this.steps.push(step);
+    const currentSection = this.userFlow.sections[this.userFlow.sections.length - 1];
+    currentSection.steps.push(step);
 
-    if (!this._scriptWriter) {
-      throw new Error('Recording has not started yet.');
-    }
-
-    this._scriptWriter.appendStep(step);
-    await this.renderSteps();
-    step.addEventListener('conditionadded', () => {
-      this.renderSteps();
-    });
+    this.dispatchEventToListeners('recording-updated', this.userFlow);
     return step;
   }
 
-  async renderSteps(): Promise<void> {
-    if (!this._scriptWriter) {
-      throw new Error('Recording has not started yet.');
-    }
-
-    const content = JSON.stringify(this.steps, null, this._indentation);
-
-    this._uiSourceCode.setContent(content, false);
-    await Common.Revealer.reveal(this._uiSourceCode.uiLocation(content.length), true);
+  addConditionToStep(step: StepWithCondition, condition: Condition): void {
+    step.condition = condition;
+    this.dispatchEventToListeners('recording-updated', this.userFlow);
   }
 
   bindingCalled(event: Common.EventTarget.EventTargetEvent): void {

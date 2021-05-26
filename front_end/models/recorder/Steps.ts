@@ -1,238 +1,174 @@
-// Copyright 2021 The Chromium Authors. All rights reserved.
+// Copyright (c) 2021 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as SDK from '../../core/sdk/sdk.js';
-import type {Condition} from './Conditions.js';
 
-export type Script = (string|null)[];
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export type Selector = string&{__brand: 'selector'};
 
-export class StepFrameContext {
+export interface WaitForNavigationCondition {
+  type: 'waitForNavigation';
+  expectedUrl: string;
+}
+
+export type Condition = WaitForNavigationCondition;
+
+
+export interface FrameContext {
   path: number[];
   target: string;
-  constructor(target: string, path: number[] = []) {
-    this.path = path;
-    this.target = target;
-  }
-
-  toScript(): Script {
-    const script = StepFrameContext.getExpressionForTarget(this.target);
-    let expression = 'const frame = targetPage.mainFrame()';
-    for (const index of this.path) {
-      expression += `.childFrames()[${index}]`;
-    }
-    expression += ';';
-    script.push(expression);
-    return script;
-  }
-
-  static getExpressionForTarget(target: string): Script {
-    if (target === 'main') {
-      return ['const targetPage = page;'];
-    }
-    return [
-      `const target = await browser.waitForTarget(p => p.url() === ${JSON.stringify(target)});`,
-      'const targetPage = await target.page();',
-    ];
-  }
 }
 
-export class ConditionAddedEvent extends Event {
-  data: {condition: Condition};
-
-  constructor(condition: Condition) {
-    super('conditionadded', {});
-    this.data = {condition};
-  }
+export interface StepWithFrameContext {
+  context: FrameContext;
 }
 
-export abstract class Step extends EventTarget {
-  action: string;
-  condition: Condition|null;
-
-  constructor(action: string) {
-    super();
-
-    this.action = action;
-    this.condition = null;
-  }
-
-  abstract toScript(): Script;
-
-  addCondition(condition: Condition): void {
-    this.condition = condition;
-    this.dispatchEvent(new ConditionAddedEvent(condition));
-  }
+export interface ClickStep extends StepWithFrameContext, StepWithCondition {
+  type: 'click';
+  selector: Selector;
 }
 
-export abstract class StepWithContext extends Step {
-  context: StepFrameContext;
-
-  constructor(action: string, context: StepFrameContext) {
-    super(action);
-    this.context = context;
-  }
+export interface NetworkConditions {
+  download: number;
+  upload: number;
+  latency: number;
 }
 
-export class ClickStep extends StepWithContext {
-  selector: string;
-
-  constructor(context: StepFrameContext, selector: string) {
-    super('click', context);
-    this.selector = selector;
-  }
-
-  toScript(): Script {
-    return [
-      ...this.context.toScript(),
-      this.condition ? this.condition.toString() : null,
-      `const element = await frame.waitForSelector(${JSON.stringify(this.selector)});`,
-      'await element.click();',
-      this.condition ? 'await promise;' : null,
-    ];
-  }
+export interface EmulateNetworkConditionsStep {
+  type: 'emulateNetworkConditions';
+  conditions: NetworkConditions;
 }
 
-export class NavigationStep extends Step {
-  url: string;
-
-  constructor(url: string) {
-    super('navigate');
-    this.url = url;
-  }
-
-  toScript(): Script {
-    return [`await page.goto(${JSON.stringify(this.url)});`];
-  }
-}
-
-export class SubmitStep extends StepWithContext {
-  selector: string;
-
-  constructor(context: StepFrameContext, selector: string) {
-    super('submit', context);
-    this.selector = selector;
-  }
-
-  toScript(): Script {
-    return [
-      ...this.context.toScript(),
-      this.condition ? this.condition.toString() : null,
-      `const element = await frame.waitForSelector(${JSON.stringify(this.selector)});`,
-      'await element.evaluate(form => form.submit());',
-      this.condition ? 'await promise;' : null,
-    ];
-  }
-}
-
-export class ChangeStep extends StepWithContext {
-  selector: string;
+export interface ChangeStep extends StepWithFrameContext, StepWithCondition {
+  type: 'change';
+  selector: Selector;
   value: string;
-
-  constructor(context: StepFrameContext, selector: string, value: string) {
-    super('change', context);
-    this.selector = selector;
-    this.value = value;
-  }
-
-  toScript(): Script {
-    return [
-      ...this.context.toScript(),
-      this.condition ? this.condition.toString() : null,
-      `const element = await frame.waitForSelector(${JSON.stringify(this.selector)});`,
-      `await element.type(${JSON.stringify(this.value)});`,
-      this.condition ? 'await promise;' : null,
-    ];
-  }
 }
 
-export class KeydownStep extends StepWithContext {
-  selector: string;
-  key: string;
-
-  constructor(context: StepFrameContext, data: {
-    key: string,
-    selector: string,
-  }) {
-    super('keydown', context);
-    this.selector = data.selector;
-    this.key = data.key;
-  }
-
-  toScript(): Script {
-    return [
-      ...this.context.toScript(),
-      this.condition ? this.condition.toString() : null,
-      `await frame.waitForSelector(${JSON.stringify(this.selector)});`,
-      `await targetPage.keyboard.down(${JSON.stringify(this.key)});`,
-      this.condition ? 'await promise;' : null,
-    ];
-  }
+export interface SubmitStep extends StepWithFrameContext, StepWithCondition {
+  type: 'submit';
+  selector: Selector;
 }
 
-export class KeyupStep extends StepWithContext {
-  selector: string;
-  key: string;
-
-  constructor(context: StepFrameContext, data: {
-    key: string,
-    selector: string,
-  }) {
-    super('keyup', context);
-    this.selector = data.selector;
-    this.key = data.key;
-  }
-
-  toScript(): Script {
-    return [
-      ...this.context.toScript(),
-      this.condition ? this.condition.toString() : null,
-      `await frame.waitForSelector(${JSON.stringify(this.selector)});`,
-      `await targetPage.keyboard.up(${JSON.stringify(this.key)});`,
-      this.condition ? 'await promise;' : null,
-    ];
-  }
+export interface StepWithCondition {
+  condition?: Condition;
 }
 
-export class CloseStep extends Step {
+export type Key = '0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9'|'Power'|'Eject'|'Abort'|'Help'|'Backspace'|'Tab'|'Numpad5'|
+    'NumpadEnter'|'Enter'|'\r'|'\n'|'ShiftLeft'|'ShiftRight'|'ControlLeft'|'ControlRight'|'AltLeft'|'AltRight'|'Pause'|
+    'CapsLock'|'Escape'|'Convert'|'NonConvert'|'Space'|'Numpad9'|'PageUp'|'Numpad3'|'PageDown'|'End'|'Numpad1'|'Home'|
+    'Numpad7'|'ArrowLeft'|'Numpad4'|'Numpad8'|'ArrowUp'|'ArrowRight'|'Numpad6'|'Numpad2'|'ArrowDown'|'Select'|'Open'|
+    'PrintScreen'|'Insert'|'Numpad0'|'Delete'|'NumpadDecimal'|'Digit0'|'Digit1'|'Digit2'|'Digit3'|'Digit4'|'Digit5'|
+    'Digit6'|'Digit7'|'Digit8'|'Digit9'|'KeyA'|'KeyB'|'KeyC'|'KeyD'|'KeyE'|'KeyF'|'KeyG'|'KeyH'|'KeyI'|'KeyJ'|'KeyK'|
+    'KeyL'|'KeyM'|'KeyN'|'KeyO'|'KeyP'|'KeyQ'|'KeyR'|'KeyS'|'KeyT'|'KeyU'|'KeyV'|'KeyW'|'KeyX'|'KeyY'|'KeyZ'|'MetaLeft'|
+    'MetaRight'|'ContextMenu'|'NumpadMultiply'|'NumpadAdd'|'NumpadSubtract'|'NumpadDivide'|'F1'|'F2'|'F3'|'F4'|'F5'|
+    'F6'|'F7'|'F8'|'F9'|'F10'|'F11'|'F12'|'F13'|'F14'|'F15'|'F16'|'F17'|'F18'|'F19'|'F20'|'F21'|'F22'|'F23'|'F24'|
+    'NumLock'|'ScrollLock'|'AudioVolumeMute'|'AudioVolumeDown'|'AudioVolumeUp'|'MediaTrackNext'|'MediaTrackPrevious'|
+    'MediaStop'|'MediaPlayPause'|'Semicolon'|'Equal'|'NumpadEqual'|'Comma'|'Minus'|'Period'|'Slash'|'Backquote'|
+    'BracketLeft'|'Backslash'|'BracketRight'|'Quote'|'AltGraph'|'Props'|'Cancel'|'Clear'|'Shift'|'Control'|'Alt'|
+    'Accept'|'ModeChange'|' '|'Print'|'Execute'|'\u0000'|'a'|'b'|'c'|'d'|'e'|'f'|'g'|'h'|'i'|'j'|'k'|'l'|'m'|'n'|'o'|
+    'p'|'q'|'r'|'s'|'t'|'u'|'v'|'w'|'x'|'y'|'z'|'Meta'|'*'|'+'|'-'|'/'|';'|'='|','|'.'|'`'|'['|'\\'|']'|'\''|'Attn'|
+    'CrSel'|'ExSel'|'EraseEof'|'Play'|'ZoomOut'|')'|'!'|'@'|'#'|'$'|'%'|'^'|'&'|'('|'A'|'B'|'C'|'D'|'E'|'F'|'G'|'H'|'I'|
+    'J'|'K'|'L'|'M'|'N'|'O'|'P'|'Q'|'R'|'S'|'T'|'U'|'V'|'W'|'X'|'Y'|'Z'|':'|'<'|'_'|'>'|'?'|'~'|'{'|'|'|'}'|'"'|
+    'SoftLeft'|'SoftRight'|'Camera'|'Call'|'EndCall'|'VolumeDown'|'VolumeUp';
+
+export interface KeyDownStep extends StepWithFrameContext, StepWithCondition {
+  type: 'keydown';
+  key: Key;
+  altKey?: boolean;
+  ctrlKey?: boolean;
+  metaKey?: boolean;
+  shiftKey?: boolean;
+}
+
+export interface KeyUpStep extends StepWithFrameContext, StepWithCondition {
+  type: 'keyup';
+  key: Key;
+  altKey?: boolean;
+  ctrlKey?: boolean;
+  metaKey?: boolean;
+  shiftKey?: boolean;
+}
+
+export interface CloseStep {
+  type: 'close';
   target: string;
-  constructor(target: string) {
-    super('close');
-    this.target = target;
-  }
-
-  toScript(): Script {
-    return [
-      ...StepFrameContext.getExpressionForTarget(this.target),
-      'await targetPage.close();',
-    ];
-  }
 }
 
-export class EmulateNetworkConditions extends Step {
-  conditions: SDK.NetworkManager.Conditions;
-  constructor(conditions: SDK.NetworkManager.Conditions) {
-    super('emulateNetworkConditions');
-    this.conditions = conditions;
-  }
+export type Step = ClickStep|ChangeStep|SubmitStep|EmulateNetworkConditionsStep|KeyDownStep|KeyUpStep|CloseStep;
 
-  toScript(): Script {
-    const title = typeof this.conditions.title === 'function' ? this.conditions.title() : this.conditions.title;
-    // TODO(crbug.com/1161438): Update once puppeteer has better support for this
-    return [
-      `// Simulated network throttling (${title})`,
-      'const client = await page.target().createCDPSession();',
-      'await client.send(\'Network.enable\');',
-      'await client.send(\'Network.emulateNetworkConditions\', {',
-      '  // Network connectivity is absent',
-      `  offline: ${!this.conditions.download && !this.conditions.upload},`,
-      '  // Download speed (bytes/s)',
-      `  downloadThroughput: ${this.conditions.download},`,
-      '  // Upload speed (bytes/s)',
-      `  uploadThroughput: ${this.conditions.upload},`,
-      '  // Latency (ms)',
-      `  latency: ${this.conditions.latency},`,
-      '});',
-    ];
-  }
+export interface UserFlowSection {
+  screenshot: string;
+  title: string;
+  url: string;
+  steps: Step[];
+  networkConditions?: NetworkConditions;
+}
+
+export interface UserFlow {
+  title: string;
+  description?: string;
+  sections: UserFlowSection[];
+}
+
+export function assertAllStepTypesAreHandled(s: never): never;
+export function assertAllStepTypesAreHandled(s: Step): never {
+  throw new Error(`Unknown step type: ${s.type}`);
+}
+
+
+export function createClickStep(context: FrameContext, selector: Selector): ClickStep {
+  return {
+    type: 'click',
+    context,
+    selector,
+  };
+}
+
+export function createSubmitStep(context: FrameContext, selector: Selector): SubmitStep {
+  return {
+    type: 'submit',
+    context,
+    selector,
+  };
+}
+
+export function createChangeStep(context: FrameContext, selector: Selector, value: string): ChangeStep {
+  return {
+    type: 'change',
+    context,
+    selector,
+    value,
+  };
+}
+
+export function createEmulateNetworkConditionsStep(conditions: NetworkConditions): EmulateNetworkConditionsStep {
+  return {
+    type: 'emulateNetworkConditions',
+    conditions,
+  };
+}
+
+export function createKeyDownStep(context: FrameContext, key: Key): KeyDownStep {
+  return {
+    type: 'keydown',
+    context,
+    key,
+  };
+}
+
+export function createKeyUpStep(context: FrameContext, key: Key): KeyUpStep {
+  return {
+    type: 'keyup',
+    context,
+    key,
+  };
+}
+
+export function hasFrameContext(step: Step): step is ClickStep|ChangeStep|SubmitStep|KeyDownStep|KeyUpStep {
+  return ['click', 'change', 'submit', 'keydown', 'keyup'].includes(step.type);
+}
+
+export function hasCondition(step: Step): step is ClickStep|ChangeStep|SubmitStep|KeyDownStep|KeyUpStep {
+  return ['click', 'change', 'submit', 'keydown', 'keyup'].includes(step.type);
 }

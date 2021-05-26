@@ -26,11 +26,9 @@ const LINE_REGEXES =
     LINE_LICENSE_HEADER.map(line => new RegExp(line.replace(String(CURRENT_YEAR), '(\\(c\\) )?\\d{4}') + '$'));
 
 /**
- * @param {string} fileName
+ * @param {string} fileLocation
  */
-async function checkAndMaybeAddLicenseHeader(fileName) {
-  const fileLocation = path.join(process.cwd(), fileName);
-
+async function checkAndMaybeAddLicenseHeader(fileLocation) {
   const fileStream = fs.createReadStream(fileLocation);
   const fileReader = readline.createInterface({input: fileStream});
 
@@ -79,10 +77,9 @@ let filesToLint = process.argv.slice(2);
 if (filesToLint.length === 0) {
   const topLevelDirectories =
       [FRONT_END_DIRECTORY, SCRIPTS_DIRECTORY, TEST_DIRECTORY, INSPECTOR_OVERLAY_DIRECTORY].join(',');
-  filesToLint =
-      glob.sync(`{${topLevelDirectories}}/**/BUILD.gn`).map(fileLocation => path.relative(process.cwd(), fileLocation));
+  filesToLint = glob.sync(`{${topLevelDirectories}}/**/BUILD.gn`);
 }
 
-for (const fileName of filesToLint) {
-  checkAndMaybeAddLicenseHeader(fileName);
+for (const fileLocation of filesToLint) {
+  checkAndMaybeAddLicenseHeader(fileLocation);
 }

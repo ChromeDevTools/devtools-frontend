@@ -325,6 +325,50 @@ def _CheckDevToolsStyleCSS(input_api, output_api):
     return results
 
 
+def _CheckDevToolsPythonLikeFileLicenseHeaders(input_api, output_api):
+    results = [
+        output_api.PresubmitNotifyResult(
+            'Python-like file license header check:')
+    ]
+    lint_path = input_api.os_path.join(
+        input_api.PresubmitLocalPath(), 'scripts', 'test',
+        'run_header_check_python_like_files.js')
+
+    front_end_directory = input_api.os_path.join(
+        input_api.PresubmitLocalPath(), 'front_end')
+    inspector_overlay_directory = input_api.os_path.join(
+        input_api.PresubmitLocalPath(), 'inspector_overlay')
+    test_directory = input_api.os_path.join(input_api.PresubmitLocalPath(),
+                                            'test')
+    scripts_directory = input_api.os_path.join(input_api.PresubmitLocalPath(),
+                                               'scripts')
+
+    default_linted_directories = [
+        front_end_directory, test_directory, scripts_directory,
+        inspector_overlay_directory
+    ]
+
+    check_related_files = [lint_path]
+
+    lint_config_files = _getAffectedFiles(input_api, check_related_files, [],
+                                          ['.js'])
+
+    should_bail_out, files_to_lint = _getFilesToLint(
+        input_api, output_api, lint_config_files, default_linted_directories,
+        ['BUILD.gn'], results)
+    if should_bail_out:
+        return results
+
+    # If there are more than 50 files to check, don't bother and check
+    # everything, so as to not run into command line length limits on Windows.
+    if len(files_to_lint) > 50:
+        files_to_lint = []
+
+    results.extend(
+        _checkWithNodeScript(input_api, output_api, lint_path, files_to_lint))
+    return results
+
+
 def _CheckDarkModeStyleSheetsUpToDate(input_api, output_api):
     devtools_root = input_api.PresubmitLocalPath()
     devtools_front_end = input_api.os_path.join(devtools_root, 'front_end')
@@ -526,6 +570,8 @@ def _CommonChecks(input_api, output_api):
     results.extend(_CheckJSON(input_api, output_api))
     results.extend(_CheckDevToolsStyleJS(input_api, output_api))
     results.extend(_CheckDevToolsStyleCSS(input_api, output_api))
+    results.extend(
+        _CheckDevToolsPythonLikeFileLicenseHeaders(input_api, output_api))
 
     results.extend(_CheckDarkModeStyleSheetsUpToDate(input_api, output_api))
     results.extend(_CheckFormat(input_api, output_api))

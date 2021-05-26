@@ -59,7 +59,7 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   registerRequiredCSS(cssFile: string, options: {
-    enableLegacyPatching: boolean,
+    enableLegacyPatching: false,
   }): void {
     this._widget.registerRequiredCSS(cssFile, options);
   }

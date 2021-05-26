@@ -390,7 +390,7 @@ export class TreeOutlineInShadow extends TreeOutline {
   }
 
   registerRequiredCSS(cssFile: string, options: {
-    enableLegacyPatching: boolean,
+    enableLegacyPatching: false,
   }): void {
     appendStyle(this._shadowRoot, cssFile, options);
   }

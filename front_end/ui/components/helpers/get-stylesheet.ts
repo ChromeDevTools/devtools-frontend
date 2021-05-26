@@ -5,18 +5,17 @@
 import * as Root from '../../../core/root/root.js';
 import * as ThemeSupport from '../../legacy/theme_support/theme_support.js';
 
-const sheetsCache = new Map<string, {sheets: CSSStyleSheet[], enableLegacyPatching: boolean}>();
+const sheetsCache = new Map<string, {sheets: CSSStyleSheet[], enableLegacyPatching: false}>();
 
 /**
  * Helper for importing a legacy stylesheet into a component.
  *
  * Given a path to a stylesheet, it returns a CSSStyleSheet that can then be
  * adopted by your component.
- *
- * Pass `enableLegacyPatching: true` to turn on the legacy dark mode theming and be
- * returned both the original stylesheet and the new patched rules for dark mode.
  */
-export function getStyleSheets(path: string, {enableLegacyPatching = false} = {}): CSSStyleSheet[] {
+export function getStyleSheets(path: string, {enableLegacyPatching}: {enableLegacyPatching: false} = {
+  enableLegacyPatching: false,
+}): CSSStyleSheet[] {
   const cachedResult = sheetsCache.get(path);
   if (cachedResult && cachedResult.enableLegacyPatching === enableLegacyPatching) {
     return cachedResult.sheets;

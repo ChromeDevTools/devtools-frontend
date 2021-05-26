@@ -9,7 +9,7 @@ import {injectCoreStyles} from './inject-core-styles.js';
 interface Options {
   cssFile?: string;
   delegatesFocus?: boolean;
-  enableLegacyPatching: boolean;
+  enableLegacyPatching: false;
 }
 
 export function createShadowRootWithCoreStyles(element: Element, options: Options = {

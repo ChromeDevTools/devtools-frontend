@@ -461,7 +461,7 @@ export class Widget extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   registerRequiredCSS(cssFile: string, options: {
-    enableLegacyPatching: boolean,
+    enableLegacyPatching: false,
   }): void {
     if (this._isWebComponent) {
       appendStyle((this._shadowRoot as DocumentFragment), cssFile, options);

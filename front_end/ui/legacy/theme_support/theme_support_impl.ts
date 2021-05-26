@@ -126,7 +126,7 @@ export class ThemeSupport {
    * so there is no circular dependency between ui/utils and theme_support.
    */
   _appendStyle(node: Node, cssFile: string, options: {
-    enableLegacyPatching: boolean,
+    enableLegacyPatching: false,
   } = {enableLegacyPatching: false}): void {
     const content = Root.Runtime.cachedResources.get(cssFile) || '';
     if (!content) {

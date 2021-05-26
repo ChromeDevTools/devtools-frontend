@@ -61,15 +61,6 @@ describe('ComponentHelpers', () => {
         };
       });
 
-      it('returns the original and the patched stylesheet if there is a themed stylesheet and the option is set',
-         () => {
-           const sheets = ComponentHelpers.GetStylesheet.getStyleSheets(
-               'ui/legacy/inspectorCommon.css', {enableLegacyPatching: true});
-           assert.lengthOf(sheets, 2);
-           assert.instanceOf(sheets[0], CSSStyleSheet);
-           assert.instanceOf(sheets[1], CSSStyleSheet);
-         });
-
       it('does not patch by default', () => {
         const sheets = ComponentHelpers.GetStylesheet.getStyleSheets('ui/legacy/inspectorCommon.css');
         assert.lengthOf(sheets, 1);

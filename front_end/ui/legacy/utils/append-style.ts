@@ -5,7 +5,7 @@
 import * as Root from '../../../core/root/root.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
 
-export function appendStyle(node: Node, cssFile: string, options: {enableLegacyPatching: boolean} = {
+export function appendStyle(node: Node, cssFile: string, options: {enableLegacyPatching: false} = {
   enableLegacyPatching: false,
 }): void {
   const content = Root.Runtime.cachedResources.get(cssFile) || '';

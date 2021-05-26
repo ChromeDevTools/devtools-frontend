@@ -163,9 +163,11 @@ export class CPUProfilerModel extends SDKModel implements ProtocolProxyApi.Profi
     return this._profilerAgent.invoke_stopPreciseCoverage();
   }
 
-  preciseCoverageDeltaUpdate({timestamp, occassion, result}: Protocol.Profiler.PreciseCoverageDeltaUpdateEvent): void {
+  // @ts-ignore
+  preciseCoverageDeltaUpdate({timestamp, occassion, occasion, result}:
+                                 Protocol.Profiler.PreciseCoverageDeltaUpdateEvent): void {
     if (this._preciseCoverageDeltaUpdateCallback) {
-      this._preciseCoverageDeltaUpdateCallback(timestamp, occassion, result);
+      this._preciseCoverageDeltaUpdateCallback(timestamp, occassion ?? occasion, result);
     }
   }
 }

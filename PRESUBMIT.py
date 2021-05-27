@@ -554,7 +554,10 @@ def _RunCannedChecks(input_api, output_api):
             input_api, output_api))
     results.extend(
         input_api.canned_checks.CheckChangeHasNoStrayWhitespace(
-            input_api, output_api))
+            input_api,
+            output_api,
+            source_file_filter=lambda file: not file.LocalPath().startswith(
+                'node_modules')))
     results.extend(
         input_api.canned_checks.CheckGenderNeutral(input_api, output_api))
     return results

@@ -90,7 +90,7 @@ DEPS = {
     "source-map-support": "0.5.19",
     "stylelint": "13.13.1",
     "stylelint-config-standard": "21.0.0",
-    "typescript": "4.3.1-rc",
+    "typescript": "4.3.2",
     "yargs": "16.2.0",
 }
 

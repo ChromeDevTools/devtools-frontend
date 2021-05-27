@@ -85,6 +85,7 @@ DEPS = {
     "recast": "0.20.4",
     "rimraf": "3.0.2",
     "rollup": "2.42.3",
+    "rollup-plugin-minify-html-template-literals": "1.2.0",
     "rollup-plugin-terser": "7.0.2",
     "sinon": "10.0.0",
     "source-map-support": "0.5.19",

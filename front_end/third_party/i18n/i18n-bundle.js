@@ -4078,10 +4078,10 @@ function _getLocaleMessageAndCreateFormatter(locale, icuMessageId, uiStringMessa
     if (!LOCALES['en-US'][icuMessageId]) {
       console.log('i18n', `Message "${icuMessageId}" does not exist in en-US.json.
           Check that the i18n.registerUIStrings() call has the correct path,
-          and run 'npm run check-loc'`);
+          and run 'npm run collect-strings'`);
     } else if (localeMessage !== LOCALES['en-US'][icuMessageId].message) {
       console.log('i18n', `Message "${icuMessageId}" does not match its 'en-US' counterpart. ` +
-        `Run 'npm run check-loc' to update.`);
+        `Run 'npm run collect-strings' to update.`);
     }
   }
   // At this point, there is no reasonable string to show to the user, so throw.

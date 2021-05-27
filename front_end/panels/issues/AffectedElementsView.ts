@@ -17,6 +17,10 @@ const UIStrings = {
   *@description Noun for singular or plural number of affected element resource indication in issue view.
   */
   nElements: '{n, plural, =1 {# element} other {# elements}}',
+  /**
+  *@description Replacement text for a link to an HTML element which is not available (anymore).
+  */
+  unavailable: 'unavailable',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedElementsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -52,13 +56,11 @@ export class AffectedElementsView extends AffectedResourcesView {
     this.affectedResources.appendChild(rowElement);
   }
 
-  protected async renderElementCell(
-      {backendNodeId, nodeName}: IssuesManager.Issue.AffectedElement,
-      maybeTarget?: SDK.SDKModel.Target|null): Promise<Element> {
-    const target = maybeTarget ?? SDK.SDKModel.TargetManager.instance().mainTarget();
+  protected async renderElementCell({backendNodeId, nodeName, target}: IssuesManager.Issue.AffectedElement):
+      Promise<Element> {
     if (!target) {
       const cellElement = document.createElement('td');
-      cellElement.textContent = 'Unavailable';
+      cellElement.textContent = nodeName || i18nString(UIStrings.unavailable);
       return cellElement;
     }
     const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(target, backendNodeId);

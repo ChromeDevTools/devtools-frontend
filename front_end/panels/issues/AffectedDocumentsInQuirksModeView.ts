@@ -62,10 +62,10 @@ export class AffectedDocumentsInQuirksModeView extends AffectedElementsView {
 
     const details = issue.details();
 
-    const maybeTarget =
-        SDK.FrameManager.FrameManager.instance().getFrame(details.frameId)?.resourceTreeModel().target();
+    const target =
+        SDK.FrameManager.FrameManager.instance().getFrame(details.frameId)?.resourceTreeModel().target() || null;
     row.appendChild(
-        await this.renderElementCell({nodeName: 'document', backendNodeId: details.documentNodeId}, maybeTarget));
+        await this.renderElementCell({nodeName: 'document', backendNodeId: details.documentNodeId, target}));
     this.appendIssueDetailCell(row, details.isLimitedQuirksMode ? 'Limited Quirks Mode' : 'Quirks Mode');
     this.appendIssueDetailCell(row, details.url);
 

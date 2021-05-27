@@ -4,6 +4,7 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 
 import {AffectedElementsView} from './AffectedElementsView.js';
@@ -37,8 +38,11 @@ export class AffectedElementsWithLowContrastView extends AffectedElementsView {
 
     const details = issue.details();
 
+    // TODO: Use the correct target once we report LowContrastIssues for frames
+    // besides the main frame.
+    const target = SDK.SDKModel.TargetManager.instance().mainTarget();
     row.appendChild(await this.renderElementCell(
-        {nodeName: details.violatingNodeSelector, backendNodeId: details.violatingNodeId}));
+        {nodeName: details.violatingNodeSelector, backendNodeId: details.violatingNodeId, target}));
     this.appendIssueDetailCell(row, String(Platform.NumberUtilities.floor(details.contrastRatio, 2)));
     this.appendIssueDetailCell(row, String(details.thresholdAA));
     this.appendIssueDetailCell(row, String(details.thresholdAAA));

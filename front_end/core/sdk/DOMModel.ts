@@ -163,11 +163,9 @@ export class DOMNode {
       this._contentDocument.parentNode = this;
       this._children = [];
     } else if ((payload.nodeName === 'IFRAME' || payload.nodeName === 'PORTAL') && payload.frameId) {
-      const childTarget = TargetManager.instance().targetById(payload.frameId);
-      const childModel = childTarget ? childTarget.model(DOMModel) : null;
-      if (childModel) {
-        this._childDocumentPromiseForTesting = childModel.requestDocument();
-      }
+      // At this point we know we are in an OOPIF, otherwise payload.contentDocument would have been set.
+      this._childDocumentPromiseForTesting =
+          this.createChildDocumentPromiseForTesting(payload.frameId, this._domModel.target());
       this._children = [];
     }
 
@@ -203,6 +201,15 @@ export class DOMNode {
       this.name = payload.name;
       this.value = payload.value;
     }
+  }
+
+  private async createChildDocumentPromiseForTesting(frameId: string, notInTarget: Target): Promise<DOMDocument|null> {
+    const frame = await FrameManager.instance().getOrWaitForFrame(frameId, notInTarget);
+    const childModel = frame.resourceTreeModel()?.target().model(DOMModel);
+    if (childModel) {
+      return childModel.requestDocument();
+    }
+    return null;
   }
 
   isAdFrameNode(): boolean {

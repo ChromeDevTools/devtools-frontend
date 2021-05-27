@@ -30,6 +30,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper implements 
   _topFrame: ResourceTreeFrame|null;
   private creationStackTraceDataForTransferringFrame:
       Map<string, {creationStackTrace: Protocol.Runtime.StackTrace | null, creationStackTraceTarget: Target}>;
+  private awaitedFrames: Map<string, {notInTarget?: Target, resolve: (frame: ResourceTreeFrame) => void}> = new Map();
 
   constructor() {
     super();
@@ -116,6 +117,11 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper implements 
     }
 
     this.dispatchEventToListeners(Events.FrameAddedToTarget, {frame});
+    const wasAwaited = this.awaitedFrames.get(frame.id);
+    if (wasAwaited && (!wasAwaited.notInTarget || wasAwaited.notInTarget !== frame.resourceTreeModel().target())) {
+      this.awaitedFrames.delete(frame.id);
+      wasAwaited.resolve(frame);
+    }
   }
 
   _frameDetached(event: Common.EventTarget.EventTargetEvent): void {
@@ -198,6 +204,16 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper implements 
 
   getTopFrame(): ResourceTreeFrame|null {
     return this._topFrame;
+  }
+
+  async getOrWaitForFrame(frameId: string, notInTarget?: Target): Promise<ResourceTreeFrame> {
+    const frame = this.getFrame(frameId);
+    if (frame && (!notInTarget || notInTarget !== frame.resourceTreeModel().target())) {
+      return frame;
+    }
+    return new Promise<ResourceTreeFrame>(resolve => {
+      this.awaitedFrames.set(frameId, {notInTarget, resolve});
+    });
   }
 }
 

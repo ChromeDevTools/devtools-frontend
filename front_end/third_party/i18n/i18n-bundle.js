@@ -32,7 +32,7 @@ function createCommonjsModule(fn) {
  * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
  */
 
-createCommonjsModule(function (module, exports) {
+var _package = createCommonjsModule(function (module, exports) {
 /** Used as the size to enable large array optimizations. */
 var LARGE_ARRAY_SIZE = 200;
 
@@ -3891,12 +3891,12 @@ var LOCALES = /*@__PURE__*/getAugmentedNamespace(locales$1);
 const MessageFormat = intlMessageformat.default;
 
 
-const DEFAULT_LOCALE = 'en-US';
-
 /** @typedef {import('intl-messageformat-parser').Element} MessageElement */
 /** @typedef {import('intl-messageformat-parser').ArgumentElement} ArgumentElement */
 
-const MESSAGE_I18N_ID_REGEX = / | [^\s]+$/;
+const MESSAGE_INSTANCE_ID_REGEX = /(.* \| .*) # (\d+)$/;
+// Above regex is very slow against large strings. Use QUICK_REGEX as a much quicker discriminator.
+const MESSAGE_INSTANCE_ID_QUICK_REGEX = / # \d+$/;
 
 const formats = {
   number: {
@@ -3923,17 +3923,18 @@ const formats = {
  * Look up the best available locale for the requested language through these fall backs:
  * - exact match
  * - progressively shorter prefixes (`de-CH-1996` -> `de-CH` -> `de`)
+ * - the default locale ('en-US') if no match is found
  *
- * If `locale` isn't provided or one could not be found, DEFAULT_LOCALE is returned.
- * @param {string|string[]=} locales
+ * If `locale` isn't provided, the default is used.
+ * @param {string=} locale
  * @return {LH.Locale}
  */
-function lookupLocale(locales) {
+function lookupLocale(locale) {
   // TODO: could do more work to sniff out default locale
-  const canonicalLocales = Intl.getCanonicalLocales(locales);
+  const canonicalLocale = Intl.getCanonicalLocales(locale)[0];
 
-  const closestLocale = lookupClosestLocale(canonicalLocales[0], LOCALES);
-  return closestLocale || DEFAULT_LOCALE;
+  const closestLocale = lookupClosestLocale(canonicalLocale, LOCALES);
+  return closestLocale || 'en-US';
 }
 
 /**
@@ -3975,15 +3976,15 @@ function collectAllCustomElementsFromICU(icuElements, seenElementsById = new Map
 
 /**
  * Returns a copy of the `values` object, with the values formatted based on how
- * they will be used in their icuMessage, e.g. KB or milliseconds. The original
+ * they will be used in the `icuMessage`, e.g. KB or milliseconds. The original
  * object is unchanged.
  * @param {string} icuMessageId
+ * @param {string} icuMessage
  * @param {MessageFormat} messageFormatter
  * @param {Readonly<Record<string, string | number>>} values
- * @param {string} lhlMessage Used for clear error logging.
  * @return {Record<string, string | number>}
  */
-function _preformatValues(icuMessageId, messageFormatter, values, lhlMessage) {
+function _preformatValues(icuMessageId, icuMessage, messageFormatter, values) {
   const elementMap = collectAllCustomElementsFromICU(messageFormatter.getAst().elements);
   const argumentElements = [...elementMap.values()];
 
@@ -3994,7 +3995,7 @@ function _preformatValues(icuMessageId, messageFormatter, values, lhlMessage) {
     // Throw an error if a message's value isn't provided
     if (id && (id in values) === false) {
       throw new Error(`ICU Message with ID "${icuMessageId}" contains a value reference ("${id}") ` +
-        `that wasn't provided. Full message text: "${lhlMessage}"` + '\n' +
+        `that wasn't provided. Full message text: "${icuMessage}"` + '\n' +
         new Error().stack);
     }
 
@@ -4007,7 +4008,7 @@ function _preformatValues(icuMessageId, messageFormatter, values, lhlMessage) {
     }
 
     if (typeof value !== 'number') {
-      throw new Error(`ICU Message "${lhlMessage}" contains a numeric reference ("${id}") ` +
+      throw new Error(`ICU Message "${icuMessage}" contains a numeric reference ("${id}") ` +
         'but provided value was not a number');
     }
 
@@ -4038,78 +4039,77 @@ function _preformatValues(icuMessageId, messageFormatter, values, lhlMessage) {
     }
 
     throw new Error(`Provided value "${valueId}" does not match any placeholder in ` +
-      `ICU message "${lhlMessage}"`);
+      `ICU message "${icuMessage}"`);
   }
 
   return formattedValues;
 }
 
 /**
- * Format string `message` by localizing `values` and inserting them.
+ * @typedef IcuMessageInstance
+ * @prop {string} icuMessageId
+ * @prop {string} icuMessage
+ * @prop {Record<string, string | number>|undefined} [values]
+ */
+
+/** @type {Map<string, IcuMessageInstance[]>} */
+const _icuMessageInstanceMap = new Map();
+
+const _ICUMsgNotFoundMsg = 'ICU message not found in destination locale';
+/**
+ *
+ * @param {LH.Locale} locale
  * @param {string} icuMessageId
- * @param {string} message
- * @param {Record<string, string | number>} values
- * @param {LH.Locale} locale
- * @return {string}
+ * @param {string=} uiStringMessage The original string given in 'UIStrings', used as a backup if no locale message can be found
+ * @return {{localeMessage: string, formatter: MessageFormat}}
  */
- function _formatMessage(icuMessageId, message, values = {}, locale) {
-  // When using accented english, force the use of a different locale for number formatting.
-  const localeForMessageFormat = (locale === 'en-XA' || locale === 'en-XL') ? 'de-DE' : locale;
-
-  const formatter = new MessageFormat(message, localeForMessageFormat, formats);
-
-  // Preformat values for the message format like KB and milliseconds.
-  const valuesForMessageFormat = _preformatValues(icuMessageId, formatter, values, message);
-
-  return formatter.format(valuesForMessageFormat);
-}
-
-/**
- * Retrieves the localized version of `icuMessage` and formats with any given
- * value replacements.
- * @param {LH.IcuMessage} icuMessage
- * @param {LH.Locale} locale
- * @return {string}
- */
- function _localizeIcuMessage(icuMessage, locale) {
+function _getLocaleMessageAndCreateFormatter(locale, icuMessageId, uiStringMessage) {
   const localeMessages = LOCALES[locale];
   if (!localeMessages) throw new Error(`Unsupported locale '${locale}'`);
-  const localeMessage = localeMessages[icuMessage.i18nId];
+  let localeMessage = localeMessages[icuMessageId] && localeMessages[icuMessageId].message;
 
-  // Fall back to the default (usually the original english message) if we couldn't find a
-  // message in the specified locale. This could be because of string drift between
-  // Lighthouse versions or because new strings haven't been updated yet. Better to have
-  // an english message than no message at all; in some cases it won't even matter.
+  // fallback to the original english message if we couldn't find a message in the specified locale
+  // better to have an english message than no message at all, in some number cases it won't even matter
+  if (!localeMessage && uiStringMessage) {
+    // Try to use the original uiStringMessage
+    localeMessage = uiStringMessage;
+
+    // Warn the user that the UIString message != the `en-US` message ∴ they should update the strings
+    if (!LOCALES['en-US'][icuMessageId]) {
+      console.log('i18n', `Message "${icuMessageId}" does not exist in en-US.json.
+          Check that the i18n.registerUIStrings() call has the correct path,
+          and run 'npm run check-loc'`);
+    } else if (localeMessage !== LOCALES['en-US'][icuMessageId].message) {
+      console.log('i18n', `Message "${icuMessageId}" does not match its 'en-US' counterpart. ` +
+        `Run 'npm run check-loc' to update.`);
+    }
+  }
+  // At this point, there is no reasonable string to show to the user, so throw.
   if (!localeMessage) {
-    return icuMessage.formattedDefault;
+    throw new Error(_ICUMsgNotFoundMsg);
   }
 
-  return _formatMessage(localeMessage.i18nId, localeMessage.message, icuMessage.values, locale);
-}
-
-/**
- * Straight-up copy of _loclizeIcuMessage, but returns the formatter instead of formatting
- * the IcuMessage directly.
- * @param {LH.IcuMessage} icuMessage
- * @param {LH.Locale} locale
- * @return {MessageFormat | string}
- */
- function _localizeIcuMessageFormatter(icuMessage, locale) {
-  const localeMessages = LOCALES[locale];
-  if (!localeMessages) throw new Error(`Unsupported locale '${locale}'`);
-  const localeMessage = localeMessages[icuMessage.i18nId];
-
-  // Fall back to the default (usually the original english message) if we couldn't find a
-  // message in the specified locale. This could be because of string drift between
-  // Lighthouse versions or because new strings haven't been updated yet. Better to have
-  // an english message than no message at all; in some cases it won't even matter.
-  if (!localeMessage) {
-    return icuMessage.formattedDefault;
-  }
-
-  // When using accented english, force the use of a different locale for number formatting.
+  // when using accented english, force the use of a different locale for number formatting
   const localeForMessageFormat = (locale === 'en-XA' || locale === 'en-XL') ? 'de-DE' : locale;
-  return new MessageFormat(localeMessage.message, localeForMessageFormat, formats);
+
+  const formatter = new MessageFormat(localeMessage, localeForMessageFormat, formats);
+
+  return {localeMessage, formatter};
+}
+/**
+ *
+ * @param {string} icuMessageId
+ * @param {string} localeMessage
+ * @param {MessageFormat} formatter
+ * @param {Record<string, string | number>} [values]
+ * @return {{formattedString: string, icuMessage: string}}
+ */
+function _formatMessage(icuMessageId, localeMessage, formatter, values = {}) {
+  // preformat values for the message format like KB and milliseconds
+  const valuesForMessageFormat = _preformatValues(icuMessageId, localeMessage, formatter, values);
+
+  const formattedString = formatter.format(valuesForMessageFormat);
+  return {formattedString, icuMessage: localeMessage};
 }
 
 /** @param {string[]} pathInLHR */
@@ -4148,152 +4148,159 @@ function getRendererFormattedStrings(locale) {
 }
 
 /**
- * Returns a function that generates `LH.IcuMessage` objects to localize the
- * messages in `fileStrings` and the shared `i18n.UIStrings`.
+ * Register a file's UIStrings with i18n, return function to
+ * generate the string ids.
+ *
  * @param {string} filename
  * @param {Record<string, string>} fileStrings
  */
- function createIcuMessageFn(filename, fileStrings) {
+function createMessageInstanceIdFn(filename, fileStrings) {
   /**
-   * Convert a message string and replacement values into an `LH.IcuMessage`.
-   * @param {string} message
+   * Convert a message string & replacement values into an
+   * indexed id value in the form '{messageid} | # {index}'.
+   *
+   * @param {string} icuMessage
    * @param {Record<string, string | number>} [values]
-   * @return {LH.IcuMessage}
-   */
-  const getIcuMessageFn = (message, values) => {
-    const keyname = Object.keys(fileStrings).find(key => fileStrings[key] === message);
-    if (!keyname) throw new Error(`Could not locate: ${message}`);
+   * */
+  const getMessageInstanceIdFn = (icuMessage, values) => {
+    const keyname = Object.keys(fileStrings).find(key => fileStrings[key] === icuMessage);
+    if (!keyname) throw new idNotInMainDictionaryException(icuMessage);
 
     const unixStyleFilename = filename.replace(/\\/g, '/');
-    const i18nId = `${unixStyleFilename} | ${keyname}`;
+    const icuMessageId = `${unixStyleFilename} | ${keyname}`;
+    const icuMessageInstances = _icuMessageInstanceMap.get(icuMessageId) || [];
 
-    return {
-      i18nId,
-      values,
-      formattedDefault: _formatMessage(i18nId, message, values, DEFAULT_LOCALE),
-    };
+    let indexOfInstance = icuMessageInstances.findIndex(inst => _package(inst.values, values));
+    if (indexOfInstance === -1) {
+      icuMessageInstances.push({icuMessageId, icuMessage, values});
+      indexOfInstance = icuMessageInstances.length - 1;
+    }
+
+    _icuMessageInstanceMap.set(icuMessageId, icuMessageInstances);
+
+    return `${icuMessageId} # ${indexOfInstance}`;
   };
 
-  return getIcuMessageFn;
+  return getMessageInstanceIdFn;
 }
 
 /**
- * Returns whether `icuMessageOrNot`` is an `LH.IcuMessage` instance.
- * @param {unknown} icuMessageOrNot
- * @return {icuMessageOrNot is LH.IcuMessage}
+ * Returns true if string is an ICUMessage reference.
+ * @param {string} icuMessageIdOrRawString
+ * @return {boolean}
  */
- function isIcuMessage(icuMessageOrNot) {
-  if (!isObjectOfUnknownValues(icuMessageOrNot)) {
-    return false;
-  }
-
-  const {i18nId, values, formattedDefault} = icuMessageOrNot;
-  if (typeof i18nId !== 'string') {
-    return false;
-  }
-
-  // formattedDefault is required.
-  if (typeof formattedDefault !== 'string') {
-    return false;
-  }
-
-  // Values is optional.
-  if (values !== undefined) {
-    if (!isObjectOfUnknownValues(values)) {
-      return false;
-    }
-    // Do not check each value in values for DevTools. DevTools passes objects for some placeholders.
-  }
-
-  // Finally return true if i18nId seems correct.
-  return MESSAGE_I18N_ID_REGEX.test(i18nId);
+function isIcuMessage(icuMessageIdOrRawString) {
+  return MESSAGE_INSTANCE_ID_QUICK_REGEX.test(icuMessageIdOrRawString) &&
+      MESSAGE_INSTANCE_ID_REGEX.test(icuMessageIdOrRawString);
 }
 
 /**
- * Get the localized and formatted form of `icuMessageOrRawString` if it's an
- * LH.IcuMessage, or get it back directly if it's already a string.
- * Warning: this function throws if `icuMessageOrRawString` is not the expected
- * type (use function from `createIcuMessageFn` to create a valid LH.IcuMessage)
- * or `locale` isn't supported (use `lookupLocale` to find a valid locale).
- * @param {LH.IcuMessage | string} icuMessageOrRawString
+ * @param {string} icuMessageIdOrRawString
  * @param {LH.Locale} locale
  * @return {string}
  */
- function getFormatted(icuMessageOrRawString, locale) {
-  if (isIcuMessage(icuMessageOrRawString)) {
-    return _localizeIcuMessage(icuMessageOrRawString, locale);
+function getFormatted(icuMessageIdOrRawString, locale) {
+  if (isIcuMessage(icuMessageIdOrRawString)) {
+    const {icuMessageId, icuMessageInstance} = _resolveIcuMessageInstanceId(icuMessageIdOrRawString);
+    const {localeMessage, formatter} = _getLocaleMessageAndCreateFormatter(locale, icuMessageId, icuMessageInstance.icuMessage);
+    const {formattedString} = _formatMessage(icuMessageId, localeMessage, formatter, icuMessageInstance.values);
+    return formattedString;
   }
 
-  if (typeof icuMessageOrRawString === 'string') {
-    return icuMessageOrRawString;
-  }
-
-  // Should be impossible from types, but do a strict check in case malformed JSON makes it this far.
-  throw new Error(`Attempted to format invalid icuMessage type: ${JSON.stringify(icuMessageOrRawString)}`);
+  return icuMessageIdOrRawString;
 }
 
 /**
- * @param {LH.IcuMessage | string} icuMessageOrRawString
+ * @param {string} icuMessageIdOrRawString
  * @param {LH.Locale} locale
  * @return {MessageFormat | string}
  */
- function getFormatter(icuMessageOrRawString, locale) {
-  if (isIcuMessage(icuMessageOrRawString)) {
-    return _localizeIcuMessageFormatter(icuMessageOrRawString, locale);
+function getFormatter(icuMessageIdOrRawString, locale) {
+  if (isIcuMessage(icuMessageIdOrRawString)) {
+    const {icuMessageId, icuMessageInstance} = _resolveIcuMessageInstanceId(icuMessageIdOrRawString);
+    const {formatter} = _getLocaleMessageAndCreateFormatter(locale, icuMessageId, icuMessageInstance.icuMessage);
+
+    return formatter;
   }
 
-  if (typeof icuMessageOrRawString === 'string') {
-    return icuMessageOrRawString;
-  }
+  return icuMessageIdOrRawString;
+}
 
-  // Should be impossible from types, but do a strict check in case malformed JSON makes it this far.
-  throw new Error(`Attempted to format invalid icuMessage type: ${JSON.stringify(icuMessageOrRawString)}`);
+/**
+ * @param {LH.Locale} locale
+ * @param {string} icuMessageId
+ * @param {Record<string, string | number>} [values]
+ * @return {string}
+ */
+function getFormattedFromIdAndValues(locale, icuMessageId, values) {
+  const icuMessageIdRegex = /(.* \| .*)$/;
+  if (!icuMessageIdRegex.test(icuMessageId)) throw new Error('This is not an ICU message ID');
+
+  const {localeMessage, formatter} = _getLocaleMessageAndCreateFormatter(locale, icuMessageId, undefined);
+  const {formattedString} = _formatMessage(icuMessageId, localeMessage, formatter, values);
+
+  return formattedString;
+}
+
+/**
+ * @param {string} icuMessageInstanceId
+ * @return {{icuMessageId: string, icuMessageInstance: IcuMessageInstance}}
+ */
+function _resolveIcuMessageInstanceId(icuMessageInstanceId) {
+  const matches = icuMessageInstanceId.match(MESSAGE_INSTANCE_ID_REGEX);
+  if (!matches) throw new Error(`${icuMessageInstanceId} is not a valid message instance ID`);
+
+  const [_, icuMessageId, icuMessageInstanceIndex] = matches;
+  const icuMessageInstances = _icuMessageInstanceMap.get(icuMessageId) || [];
+  const icuMessageInstance = icuMessageInstances[Number(icuMessageInstanceIndex)];
+
+  return {icuMessageId, icuMessageInstance};
 }
 
 /**
  * Recursively walk the input object, looking for property values that are
- * `LH.IcuMessage`s and replace them with their localized values. Primarily
- * used with the full LHR or a Config as input.
- * Returns a map of locations that were replaced to the `IcuMessage` that was at
- * that location.
- * @param {unknown} inputObject
+ * string references and replace them with their localized values. Primarily
+ * used with the full LHR as input.
+ * @param {*} inputObject
  * @param {LH.Locale} locale
- * @return {LH.IcuMessagePaths}
+ * @return {LH.I18NMessages}
  */
- function replaceIcuMessages(inputObject, locale) {
+function replaceIcuMessageInstanceIds(inputObject, locale) {
   /**
-   * @param {unknown} subObject
-   * @param {LH.IcuMessagePaths} icuMessagePaths
+   * @param {*} subObject
+   * @param {LH.I18NMessages} icuMessagePaths
    * @param {string[]} pathInLHR
    */
   function replaceInObject(subObject, icuMessagePaths, pathInLHR = []) {
-    if (!isObjectOrArrayOfUnknownValues(subObject)) return;
+    if (typeof subObject !== 'object' || !subObject) return;
 
-    for (const [property, possibleIcuMessage] of Object.entries(subObject)) {
+    for (const [property, value] of Object.entries(subObject)) {
       const currentPathInLHR = pathInLHR.concat([property]);
 
-      // Replace any IcuMessages with a localized string.
-      if (isIcuMessage(possibleIcuMessage)) {
-        const formattedString = _localizeIcuMessage(possibleIcuMessage, locale);
-        const messageInstancesInLHR = icuMessagePaths[possibleIcuMessage.i18nId] || [];
+      // Check to see if the value in the LHR looks like a string reference. If it is, replace it.
+      if (typeof value === 'string' && isIcuMessage(value)) {
+        const {icuMessageId, icuMessageInstance} = _resolveIcuMessageInstanceId(value);
+        const {localeMessage, formatter} = _getLocaleMessageAndCreateFormatter(locale, icuMessageId, icuMessageInstance.icuMessage);
+        const {formattedString} = _formatMessage(icuMessageId, localeMessage, formatter, icuMessageInstance.values);
+
+        const messageInstancesInLHR = icuMessagePaths[icuMessageInstance.icuMessageId] || [];
         const currentPathAsString = _formatPathAsString(currentPathInLHR);
 
         messageInstancesInLHR.push(
-          possibleIcuMessage.values ?
-            {values: possibleIcuMessage.values, path: currentPathAsString} :
+          icuMessageInstance.values ?
+            {values: icuMessageInstance.values, path: currentPathAsString} :
             currentPathAsString
         );
 
-        // @ts-ignore - tsc doesn't like that `property` can be either string key or array index.
         subObject[property] = formattedString;
-        icuMessagePaths[possibleIcuMessage.i18nId] = messageInstancesInLHR;
+        icuMessagePaths[icuMessageInstance.icuMessageId] = messageInstancesInLHR;
       } else {
-        replaceInObject(possibleIcuMessage, icuMessagePaths, currentPathInLHR);
+        replaceInObject(value, icuMessagePaths, currentPathInLHR);
       }
     }
   }
 
-  /** @type {LH.IcuMessagePaths} */
+  /** @type {LH.I18NMessages} */
   const icuMessagePaths = {};
   replaceInObject(inputObject, icuMessagePaths);
   return icuMessagePaths;
@@ -4337,45 +4344,19 @@ function idNotInMainDictionaryException(icuMessage) {
 }
 idNotInMainDictionaryException.prototype = new Error;
 
-/**
- * Type predicate verifying `val` is an object (excluding `Array` and `null`).
- * @param {unknown} val
- * @return {val is Record<string, unknown>}
- */
-function isObjectOfUnknownValues(val) {
-  return typeof val === 'object' && val !== null && !Array.isArray(val);
-}
-
-/**
- * Type predicate verifying `val` is an object or an array.
- * @param {unknown} val
- * @return {val is Record<string, unknown>|Array<unknown>}
- */
-function isObjectOrArrayOfUnknownValues(val) {
-  return typeof val === 'object' && val !== null;
-}
-
-/**
- * Returns true if the given value is a string or an LH.IcuMessage.
- * @param {unknown} value
- * @return {value is string|LH.IcuMessage}
- */
- function isStringOrIcuMessage(value) {
-  return typeof value === 'string' || isIcuMessage(value);
-}
-
 var i18n = {
   _formatPathAsString,
+  _ICUMsgNotFoundMsg,
   lookupLocale,
   getRendererFormattedStrings,
-  createIcuMessageFn,
+  createMessageInstanceIdFn,
   getFormatted,
   getFormatter,
-  replaceIcuMessages,
+  getFormattedFromIdAndValues,
+  replaceIcuMessageInstanceIds,
   isIcuMessage,
   collectAllCustomElementsFromICU,
   registerLocaleData,
-  isStringOrIcuMessage,
   idNotInMainDictionaryException,
 };
 

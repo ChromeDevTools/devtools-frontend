@@ -380,8 +380,32 @@ export class JavaScriptAutocomplete {
     if (cache && cache.date + TEN_SECONDS > Date.now()) {
       completionGroups = await cache.value;
     } else if (!expressionString && selectedFrame) {
+      // Always complete 'this' for local Debug-Evaluate, and
+      // auto-complete 'arguments' whenever there's an Arguments
+      // object (which might not exist for real, but might also
+      // happen to be materialized by local Debug-Evaluate).
+      const items = ['this'];
+      const result = await executionContext.evaluate(
+          {
+            expression: 'arguments',
+            objectGroup: 'completion',
+            includeCommandLineAPI: false,
+            silent: true,
+            returnByValue: false,
+            generatePreview: false,
+            throwOnSideEffect: true,
+            timeout: DEFAULT_TIMEOUT,
+            allowUnsafeEvalBlockedByCSP: undefined,
+            disableBreaks: undefined,
+            replMode: undefined,
+          },
+          /* userGesture */ false, /* awaitPromise */ false);
+      if (!('error' in result) && !result.exceptionDetails && result.object?.type === 'object' &&
+          result.object?.className === 'Arguments') {
+        items.unshift('arguments');
+      }
       const value: CompletionGroup[] = [{
-        items: ['this'],
+        items,
         title: undefined,
       }];
       const scopeChain = selectedFrame.scopeChain();

@@ -77,6 +77,9 @@
   "core/common/ResourceType.ts | webassembly": {
     "message": "WebAssembly"
   },
+  "core/common/ResourceType.ts | webbundle": {
+    "message": "WebBundle"
+  },
   "core/common/ResourceType.ts | websocket": {
     "message": "WebSocket"
   },
@@ -408,25 +411,25 @@
     "message": "(binär)"
   },
   "core/sdk/NetworkRequest.ts | blockedReasonInvalidDomain": {
-    "message": "Dieses Set-Cookie wurde blockiert, weil sein Domain-Attribut in Bezug auf die aktuelle Host-URL ungültig war."
+    "message": "Dieser Versuch, ein Cookie über einen „Set-Cookie“-Header zu setzen, wurde blockiert, weil das Domain-Attribut des Cookies in Bezug auf die aktuelle Host-URL ungültig war."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonInvalidPrefix": {
-    "message": "Dieses Set-Cookie wurde blockiert, weil es das Präfix „__Secure-“ oder „__Host-“ in seinem Namen verwendet und gegen die zusätzlichen Regeln verstoßen hat, die für Cookies mit diesen Präfixen gelten und in https://tools.ietf.org/html/draft-west-cookie-prefixes-05 definiert sind."
+    "message": "Dieser Versuch, ein Cookie über einen „Set-Cookie“-Header zu setzen, wurde blockiert, weil das Cookie das Präfix „__Secure-“ oder „__Host-“ in seinem Namen verwendet und gegen die zusätzlichen Regeln verstoßen hat, die für Cookies mit diesen Präfixen gelten und in „https://tools.ietf.org/html/draft-west-cookie-prefixes-05“ definiert sind."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonOverwriteSecure": {
-    "message": "Dieses Set-Cookie wurde blockiert, weil es nicht über eine sichere Verbindung gesendet wurde und ein Cookie mit dem Attribut „Secure“ überschrieben hätte."
+    "message": "Dieser Versuch, ein Cookie über einen „Set-Cookie“-Header zu setzen, wurde blockiert, weil das Cookie nicht über eine sichere Verbindung gesendet wurde und ein Cookie mit dem Attribut „Secure“ überschrieben hätte."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteNoneInsecure": {
-    "message": "Dieses Set-Cookie wurde blockiert, weil es das Attribut „SameSite=None“ und nicht das Attribut „Secure“ hat, das für die Verwendung von „SameSite=None“ erforderlich ist."
+    "message": "Dieser Versuch, ein Cookie über einen „Set-Cookie“-Header zu setzen, wurde blockiert, weil das Cookie das Attribut „SameSite=None“ hatte, aber nicht das Attribut „Secure“, das für die Verwendung von „SameSite=None“ erforderlich ist."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteStrictLax": {
-    "message": "Dieses Set-Cookie wurde blockiert, weil es das Attribut „{PH1}“ hat, aber von einer websiteübergreifenden Antwort kam, die nicht die Antwort auf eine Navigation der obersten Ebene war."
+    "message": "Dieser Versuch, ein Cookie über einen „Set-Cookie“-Header zu setzen, wurde blockiert, weil das Cookie das Attribut „{PH1}“ hatte, aber von einer websiteübergreifenden Antwort kam, die nicht die Antwort auf eine Navigation der obersten Ebene war."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteUnspecifiedTreatedAsLax": {
-    "message": "Dieses Set-Cookie gab kein Attribut „SameSite“ an und war auf „SameSite=Lax,“ voreingestellt. Es wurde blockiert, weil es von einer websiteübergreifenden Antwort kam, die nicht die Antwort auf eine Navigation der obersten Ebene war. Das Set-Cookie muss mit „SameSite=None“ festgelegt werden, um eine websiteübergreifende Nutzung zu ermöglichen."
+    "message": "Dieser „Set-Cookie“-Header gab kein Attribut „SameSite“ an und war auf „SameSite=Lax,“ voreingestellt. Der Versuch, ein Cookie zu setzen, wurde blockiert, weil das Cookie von einer websiteübergreifenden Antwort kam, die nicht die Antwort auf eine Navigation der obersten Ebene war. Das „Set-Cookie“ muss erst mit „SameSite=None“ festgelegt worden sein, um eine websiteübergreifende Nutzung zu ermöglichen."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSecureOnly": {
-    "message": "Dieses Set-Cookie wurde blockiert, weil es das Attribut „Secure“ hatte, aber nicht über eine sichere Verbindung empfangen wurde."
+    "message": "Dieser Versuch, ein Cookie über einen „Set-Cookie“-Header zu setzen, wurde blockiert, weil das Cookie das Attribut „Secure“ hatte, aber nicht über eine sichere Verbindung empfangen wurde."
   },
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "Dieses Cookie wurde blockiert, weil weder die Domain der Anfrage-URL genau mit der Domain des Cookies übereinstimmte, noch die Domain der Anfrage-URL eine Subdomain des Domain-Attributwerts des Cookies war."
@@ -465,22 +468,22 @@
     "message": "Im Schema dieser Verbindung dürfen keine Cookies gespeichert werden."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieDidntSpecifyASamesite": {
-    "message": "Dieses Set-Cookie gab kein Attribut „SameSite“ an und war auf „SameSite=Lax\"“ voreingestellt. Es wurde blockiert, weil es von einer websiteübergreifenden Antwort kam, die nicht die Antwort auf eine Navigation der obersten Ebene war. Diese Antwort gilt als websiteübergreifend, da die URL ein anderes Schema als die aktuelle Website hat."
+    "message": "Dieser „Set-Cookie“-Header gab kein Attribut „SameSite“ an und war auf „SameSite=Lax\"“ voreingestellt. Der Versuch, ein Cookie zu setzen, wurde blockiert, weil das Cookie von einer websiteübergreifenden Antwort kam, die nicht die Antwort auf eine Navigation der obersten Ebene war. Diese Antwort gilt als websiteübergreifend, da die URL ein anderes Schema als die aktuelle Website hat."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieHadInvalidSyntax": {
-    "message": "Dieses Set-Cookie hatte eine ungültige Syntax."
+    "message": "Dieser „Set-Cookie“-Header hatte eine ungültige Syntax."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSameparty": {
-    "message": "Dieses Set-Cookie wurde blockiert, weil es das Attribut „SameParty“ hatte, die Anfrage aber parteiübergreifend war. Die Anfrage wurde als parteiübergreifend betrachtet, weil die Domain der URL der Ressource und die Domains der umschließenden Frames/Dokumente der Ressource weder Inhaber noch Mitglieder desselben First-Party-Sets sind."
+    "message": "Dieser Versuch, ein Cookie über einen „Set-Cookie“-Header zu setzen, wurde blockiert, weil das Cookie das Attribut „SameParty“ hatte, die Anfrage aber parteiübergreifend war. Die Anfrage wurde als parteiübergreifend betrachtet, weil die Domain der URL der Ressource und die Domains der umschließenden Frames/Dokumente der Ressource weder Inhaber noch Mitglieder desselben First-Party-Sets sind."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamepartyAttribute": {
-    "message": "Dieses Set-Cookie wurde blockiert, weil es das Attribut „SameParty“ und noch andere widersprüchliche Attribute hatte. Chrome verlangt, dass Cookies, die das Attribut „SameParty“ verwenden, auch das Attribut „Secure“ haben und nicht auf „SameSite=Strict“ beschränkt sind."
+    "message": "Dieser Versuch, ein Cookie über einen „Set-Cookie“-Header zu setzen, wurde blockiert, weil das Cookie das Attribut „SameParty“ und noch andere widersprüchliche Attribute hatte. Chrome verlangt, dass Cookies, die das Attribut „SameParty“ verwenden, auch das Attribut „Secure“ haben und nicht auf „SameSite=Strict“ beschränkt sind."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamesiteStrictLax": {
-    "message": "Dieses Set-Cookie wurde blockiert, weil es das Attribut „{PH1}“ hat, aber von einer websiteübergreifenden Antwort kam, die nicht die Antwort auf eine Navigation der obersten Ebene war. Diese Antwort gilt als websiteübergreifend, da die URL ein anderes Schema als die aktuelle Website hat."
+    "message": "Dieser Versuch, ein Cookie über einen „Set-Cookie“-Header zu setzen, wurde blockiert, weil das Cookie das Attribut „{PH1}“ hatte, aber von einer websiteübergreifenden Antwort kam, die nicht die Antwort auf eine Navigation der obersten Ebene war. Diese Antwort gilt als websiteübergreifend, da die URL ein anderes Schema als die aktuelle Website hat."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedDueToUser": {
-    "message": "Dieses Set-Cookie wurde aufgrund von Nutzereinstellungen blockiert."
+    "message": "Dieser Versuch, ein Cookie über einen „Set-Cookie“-Header zu setzen, wurde aufgrund von Nutzereinstellungen blockiert."
   },
   "core/sdk/NetworkRequest.ts | unknownError": {
     "message": "Beim Senden dieses Cookies ist ein unbekannter Fehler aufgetreten."
@@ -989,6 +992,9 @@
   "entrypoints/main/main-meta.ts | bottom": {
     "message": "Unten"
   },
+  "entrypoints/main/main-meta.ts | browserLanguage": {
+    "message": "Browsersprache"
+  },
   "entrypoints/main/main-meta.ts | cancelSearch": {
     "message": "Suche abbrechen"
   },
@@ -1030,6 +1036,9 @@
   },
   "entrypoints/main/main-meta.ts | horizontal": {
     "message": "horizontal"
+  },
+  "entrypoints/main/main-meta.ts | language": {
+    "message": "Sprache:"
   },
   "entrypoints/main/main-meta.ts | left": {
     "message": "Links"
@@ -1217,6 +1226,9 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site und Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
+    "message": "Verringerung der User-Agent-Strings"
+  },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Handhabung umfangreicher Anzeigeninterventionen"
   },
@@ -1225,6 +1237,9 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Gemischte Inhalte verhindern"
+  },
+  "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
+    "message": "Modus für die Kompatibilität von Dokumenten"
   },
   "models/issues_manager/SameSiteCookieIssue.ts | aSecure": {
     "message": "sicher"
@@ -2840,9 +2855,6 @@
   "panels/application/components/FrameDetailsView.ts | ownerElement": {
     "message": "Inhaber-Element"
   },
-  "panels/application/components/FrameDetailsView.ts | permissionsPolicy": {
-    "message": "Richtlinie für Berechtigungen"
-  },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "melden an"
   },
@@ -2886,7 +2898,7 @@
     "message": "Dieser Frame wurde als untergeordneter Frame einer Werbeanzeige erkannt"
   },
   "panels/application/components/FrameDetailsView.ts | transferRequiresCrossoriginIsolatedPermission": {
-    "message": "transfer requires permission policy:"
+    "message": "Für die „SharedArrayBuffer“-Übertragung muss die Berechtigungsrichtlinie aktiviert werden:"
   },
   "panels/application/components/FrameDetailsView.ts | unavailable": {
     "message": "nicht verfügbar"
@@ -2904,7 +2916,7 @@
     "message": "Ja"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
-    "message": "Cannot render stack trace"
+    "message": "Stacktrace kann nicht gerendert werden"
   },
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{# weiteren Frame anzeigen}other{# weitere Frames anzeigen}}"
@@ -3732,7 +3744,7 @@
     "message": "HTTP(S)-Entwicklerressourcen über das geprüfte Ziel laden"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
-    "message": "{n, plural, =1 {# resource} other {# resources}}"
+    "message": "{n,plural, =1{# Ressource}other{# Ressourcen}}"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resourcesCurrentlyLoading": {
     "message": "{PH1} Ressourcen, {PH2} werden derzeit geladen"
@@ -4011,10 +4023,10 @@
     "message": "Wert kopieren"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
-    "message": "Open flexbox editor"
+    "message": "flexbox-Editor öffnen"
   },
   "panels/elements/StylePropertyTreeElement.ts | gridEditorButton": {
-    "message": "Open grid editor"
+    "message": "grid-Editor öffnen"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "Farbauswahl öffnen. {PH1}"
@@ -4782,7 +4794,7 @@
     "message": "Blockierte Ressource"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | nRequests": {
-    "message": "{n, plural, =1 {# request} other {# requests}}"
+    "message": "{n,plural, =1{# Anfrage}other{# Anfragen}}"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | parentFrame": {
     "message": "Übergeordneter Frame"
@@ -4794,7 +4806,7 @@
     "message": "Domain"
   },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
-    "message": "{n, plural, =1 {# cookie} other {# cookies}}"
+    "message": "{n,plural, =1{# Cookie}other{# Cookies}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Name"
@@ -4802,8 +4814,20 @@
   "panels/issues/AffectedCookiesView.ts | path": {
     "message": "Pfad"
   },
+  "panels/issues/AffectedDocumentsInQuirksModeView.ts | documentInTheDOMTree": {
+    "message": "Dokument im DOM-Baum"
+  },
+  "panels/issues/AffectedDocumentsInQuirksModeView.ts | mode": {
+    "message": "Modus"
+  },
+  "panels/issues/AffectedDocumentsInQuirksModeView.ts | nDocuments": {
+    "message": "{n,plural, =1{ Dokument}other{ Dokumente}}"
+  },
+  "panels/issues/AffectedDocumentsInQuirksModeView.ts | url": {
+    "message": "URL"
+  },
   "panels/issues/AffectedElementsView.ts | nElements": {
-    "message": "{n, plural, =1 {# element} other {# elements}}"
+    "message": "{n,plural, =1{# Element}other{# Elemente}}"
   },
   "panels/issues/AffectedElementsWithLowContrastView.ts | contrastRatio": {
     "message": "Kontrastverhältnis"
@@ -4836,7 +4860,7 @@
     "message": "Limit überschritten"
   },
   "panels/issues/AffectedHeavyAdView.ts | nResources": {
-    "message": "{n, plural, =1 {# resource} other {# resources}}"
+    "message": "{n,plural, =1{# Ressource}other{# Ressourcen}}"
   },
   "panels/issues/AffectedHeavyAdView.ts | networkLimit": {
     "message": "Netzwerklimit"
@@ -4872,7 +4896,7 @@
     "message": "Instanziierung"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | nViolations": {
-    "message": "{n, plural, =1 {# violation} other {# violations}}"
+    "message": "{n,plural, =1{# Verstoß}other{# Verstöße}}"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | sharedarraybufferWasTransferedTo": {
     "message": "SharedArrayBuffer wurde an einen Kontext übertragen, der nicht ursprungsübergreifend isoliert ist"
@@ -4893,7 +4917,7 @@
     "message": "Warnung"
   },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
-    "message": "{n, plural, =1 {# resource} other {# resources}}"
+    "message": "{n,plural, =1{# Ressource}other{# Ressourcen}}"
   },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageName": {
     "message": "Paketname"
@@ -4941,7 +4965,7 @@
     "message": "Ungültiger Wert (soweit zutreffend)"
   },
   "panels/issues/CorsIssueDetailsView.ts | nRequests": {
-    "message": "{n, plural, =1 {# request} other {# requests}}"
+    "message": "{n,plural, =1{# Anfrage}other{# Anfragen}}"
   },
   "panels/issues/CorsIssueDetailsView.ts | preflightDisallowedRedirect": {
     "message": "Antwort auf Preflight war eine Weiterleitung"
@@ -4976,8 +5000,14 @@
   "panels/issues/CorsIssueDetailsView.ts | secure": {
     "message": "sicher"
   },
+  "panels/issues/CorsIssueDetailsView.ts | sourceLocation": {
+    "message": "Quellort"
+  },
   "panels/issues/CorsIssueDetailsView.ts | status": {
     "message": "Status"
+  },
+  "panels/issues/CorsIssueDetailsView.ts | unsupportedScheme": {
+    "message": "Nicht unterstütztes Schema"
   },
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "Warnung"
@@ -5004,16 +5034,16 @@
     "message": "Weitere Informationen: {PH1}"
   },
   "panels/issues/IssueView.ts | nDirectives": {
-    "message": "{n, plural, =1 {# directive} other {# directives}}"
+    "message": "{n,plural, =1{# Anweisung}other{# Anweisungen}}"
   },
   "panels/issues/IssueView.ts | nRequests": {
-    "message": "{n, plural, =1 {# request} other {# requests}}"
+    "message": "{n,plural, =1{# Anfrage}other{# Anfragen}}"
   },
   "panels/issues/IssueView.ts | nResources": {
-    "message": "{n, plural, =1 {# resource} other {# resources}}"
+    "message": "{n,plural, =1{# Ressource}other{# Ressourcen}}"
   },
   "panels/issues/IssueView.ts | nSources": {
-    "message": "{n, plural, =1 {# source} other {# sources}}"
+    "message": "{n,plural, =1{# Quelle}other{# Quellen}}"
   },
   "panels/issues/IssueView.ts | name": {
     "message": "Name"
@@ -5077,6 +5107,9 @@
   },
   "panels/issues/IssuesPane.ts | other": {
     "message": "Sonstige"
+  },
+  "panels/issues/IssuesPane.ts | quirksMode": {
+    "message": "Quirks-Modus"
   },
   "panels/issues/IssuesPane.ts | samesiteCookie": {
     "message": "SameSite-Cookie"
@@ -5685,7 +5718,7 @@
     "message": "Voreinstellungen"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
-    "message": "The set of accepted Content-Encoding headers has been modified by DevTools. See the Network Conditions panel."
+    "message": "Der Satz an akzeptierten Content-Encoding-Headern wurde durch die Entwicklertools geändert. Im Bereich „Netzwerkbedingungen“ erfahren Sie mehr."
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "Netzwerkdrosselung ist aktiviert"
@@ -8615,8 +8648,11 @@
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Eine JavaScript- oder CSS-Datei öffnen, um Symbole zu sehen"
   },
+  "panels/sources/RecorderPlugin.ts | export": {
+    "message": "Exportieren"
+  },
   "panels/sources/RecorderPlugin.ts | play": {
-    "message": "Replay"
+    "message": "Erneut abspielen"
   },
   "panels/sources/RecorderPlugin.ts | record": {
     "message": "Aufnehmen"
@@ -8924,6 +8960,9 @@
   "panels/sources/sources-meta.ts | evaluateSelectedTextInConsole": {
     "message": "Ausgewählten Text in der Konsole auswerten"
   },
+  "panels/sources/sources-meta.ts | exportRecording": {
+    "message": "Exportieren"
+  },
   "panels/sources/sources-meta.ts | filesystem": {
     "message": "Dateisystem"
   },
@@ -8973,7 +9012,7 @@
     "message": "Umbenennen"
   },
   "panels/sources/sources-meta.ts | replayRecording": {
-    "message": "Replay"
+    "message": "Erneut abspielen"
   },
   "panels/sources/sources-meta.ts | resumeScriptExecution": {
     "message": "Skriptausführung fortsetzen"
@@ -9117,7 +9156,7 @@
     "message": "CPU-Profil für ein Ziel ist nicht verfügbar."
   },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
-    "message": "Performance trace recording not supported for this type of target"
+    "message": "Aufnahme des Leistungs-Trace wird für diese Art von Ziel nicht unterstützt"
   },
   "panels/timeline/TimelineDetailsView.ts | bottomup": {
     "message": "Von unten nach oben"
@@ -10587,43 +10626,13 @@
     "message": "Zur Adresse springen"
   },
   "ui/components/linear_memory_inspector/ValueInterpreterDisplay.ts | signedValue": {
-    "message": "Signierter Wert"
+    "message": "Signed Wert"
   },
   "ui/components/linear_memory_inspector/ValueInterpreterDisplay.ts | unsignedValue": {
-    "message": "Wert ohne Vorzeichen"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | bigEndian": {
-    "message": "Big Endian"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | float64Bit": {
-    "message": "Gleitkommazahl (64-Bit)"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | floatBit": {
-    "message": "Gleitkommazahl (32-Bit)"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integer16Bit": {
-    "message": "Ganzzahl 16-Bit"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integer32Bit": {
-    "message": "Ganzzahl 32-Bit"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integer64Bit": {
-    "message": "Ganzzahl (64-Bit)"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integerBit": {
-    "message": "Ganzzahl 8-Bit"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | littleEndian": {
-    "message": "Little Endian"
+    "message": "Unsigned Wert"
   },
   "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | notApplicable": {
     "message": "–"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | pointer32Bit": {
-    "message": "Zeiger (32-Bit)"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | pointer64Bit": {
-    "message": "Zeiger (64-Bit)"
   },
   "ui/components/linear_memory_inspector/ValueInterpreterSettings.ts | otherGroup": {
     "message": "Sonstige"
@@ -10801,6 +10810,12 @@
   },
   "ui/legacy/TargetCrashedScreen.ts | oncePageIsReloadedDevtoolsWill": {
     "message": "Sobald die Seite neu geladen ist, verbinden sich die Entwicklertools automatisch wieder."
+  },
+  "ui/legacy/Toolbar.ts | notPressed": {
+    "message": "Nicht gedrückt"
+  },
+  "ui/legacy/Toolbar.ts | pressed": {
+    "message": "Gedrückt"
   },
   "ui/legacy/UIUtils.ts | anonymous": {
     "message": "(anonym)"

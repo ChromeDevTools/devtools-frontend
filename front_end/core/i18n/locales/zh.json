@@ -77,6 +77,9 @@
   "core/common/ResourceType.ts | webassembly": {
     "message": "WebAssembly"
   },
+  "core/common/ResourceType.ts | webbundle": {
+    "message": "WebBundle"
+  },
   "core/common/ResourceType.ts | websocket": {
     "message": "WebSocket"
   },
@@ -201,7 +204,7 @@
     "message": "未知错误"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
-    "message": "DevTools：CPU 性能分析报告解析器正在修复 {PH1} 个缺少的示例。"
+    "message": "DevTools：CPU 性能分析报告解析器正在修复 {PH1} 个缺少的样本。"
   },
   "core/sdk/CPUProfilerModel.ts | profileD": {
     "message": "性能分析报告 {PH1}"
@@ -408,25 +411,25 @@
     "message": "（二进制）"
   },
   "core/sdk/NetworkRequest.ts | blockedReasonInvalidDomain": {
-    "message": "此 Set-Cookie 已被屏蔽，因为其“Domain”属性对于当前的主机网址而言无效。"
+    "message": "尝试通过 Set-Cookie 标头设置 Cookie 的操作被禁止了，因为此标头的“Domain”属性对当前的主机网址而言无效。"
   },
   "core/sdk/NetworkRequest.ts | blockedReasonInvalidPrefix": {
-    "message": "此 Set-Cookie 已被屏蔽，因为它在名称中使用了“__Secure-”或“__Host-”前缀，这违反了包含这些前缀的 Cookie 所适用的其他规则，如 https://tools.ietf.org/html/draft-west-cookie-prefixes-05 中所定义。"
+    "message": "尝试通过 Set-Cookie 标头设置 Cookie 的操作被禁止了，因为此标头在名称中使用了“__Secure-”或“__Host-”前缀，该做法违反了包含这些前缀的 Cookie 所适用的附加规则，如 https://tools.ietf.org/html/draft-west-cookie-prefixes-05 中所定义。"
   },
   "core/sdk/NetworkRequest.ts | blockedReasonOverwriteSecure": {
-    "message": "此 Set-Cookie 已被屏蔽，因为它不是通过安全连接发送的，而且会覆盖具有“Secure”属性的 Cookie。"
+    "message": "尝试通过 Set-Cookie 标头设置 Cookie 的操作被禁止了，因为此标头不是通过安全连接发送的，而且会覆盖具有“Secure”属性的 Cookie。"
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteNoneInsecure": {
-    "message": "此 Set-Cookie 已被屏蔽，因为它具有“SameSite=None”属性但缺少使用“SameSite=None”所需的“Secure”属性。"
+    "message": "尝试通过 Set-Cookie 标头设置 Cookie 的操作被禁止了，因为此标头具有“SameSite=None”属性但缺少使用“SameSite=None”所需的“Secure”属性。"
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteStrictLax": {
-    "message": "此 Set-Cookie 已被屏蔽，因为它具有“{PH1}”属性但来自一个跨网站响应，而该响应并不是对顶级导航操作的响应。"
+    "message": "尝试通过 Set-Cookie 标头设置 Cookie 的操作被禁止了，因为此标头具有“{PH1}”属性但来自一个跨网站响应，而该响应并不是对顶级导航操作的响应。"
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteUnspecifiedTreatedAsLax": {
-    "message": "此 Set-Cookie 未指定“SameSite”属性，默认为“SameSite=Lax,”，并且已被屏蔽，因为它来自一个跨网站响应，而该响应并不是对顶级导航操作的响应。此 Set-Cookie 必须在设置时指定“SameSite=None”，才能跨网站使用。"
+    "message": "此 Set-Cookie 标头未指定“SameSite”属性，默认为“SameSite=Lax,”，并且已被屏蔽，因为它来自一个跨网站响应，而该响应并不是对顶级导航操作的响应。此 Set-Cookie 必须在设置时指定“SameSite=None”，才能跨网站使用。"
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSecureOnly": {
-    "message": "此 Set-Cookie 已被屏蔽，因为它具有“Secure”属性但不是通过安全连接接收的。"
+    "message": "尝试通过 Set-Cookie 标头设置 Cookie 的操作被禁止了，因为此标头具有“Secure”属性但不是通过安全连接接收的。"
   },
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "此 Cookie 已被屏蔽，因为请求网址的网域与此 Cookie 的网域不完全一致，也不是此 Cookie 的“Domain”属性值的子网域。"
@@ -444,7 +447,7 @@
     "message": "此 Cookie 已被屏蔽，因为它具有“SameSite=None”属性但未被标记为“Secure”。无“SameSite”限制的 Cookie 必须被标记为“Secure”并通过安全连接发送。"
   },
   "core/sdk/NetworkRequest.ts | sameSiteStrict": {
-    "message": "此 Cookie 已被屏蔽，因为它具有“SameSite=Strict”属性但相应请求是通过另一网站发出的。其中包括其他网站发出的顶级导航请求。"
+    "message": "此 Cookie 已被屏蔽，因为它具有“SameSite=Strict”属性但相应请求是通过另一网站发出的。这包括其他网站发出的顶级导航请求。"
   },
   "core/sdk/NetworkRequest.ts | sameSiteUnspecifiedTreatedAsLax": {
     "message": "此 Cookie 在存储时未指定“SameSite”属性，因而采用了默认值“SameSite=Lax”；该 Cookie 已被屏蔽，因为相应请求来自其他网站，而且不是由顶级导航操作发出。此 Cookie 必须在设置时指定“SameSite=None”，才能跨网站使用。"
@@ -453,7 +456,7 @@
     "message": "此 Cookie 已被屏蔽，因为它具有“SameSite=Lax”属性，但相应请求是跨网站请求且不是由顶级导航操作发出的。由于网址架构与当前网站的架构不同，因此系统判定这是跨网站请求。"
   },
   "core/sdk/NetworkRequest.ts | schemefulSameSiteStrict": {
-    "message": "此 Cookie 已被屏蔽，因为它具有“SameSite=Strict”属性但相应请求是跨网站请求。其中包括其他网站发出的顶级导航请求。由于网址架构与当前网站的架构不同，因此系统判定这是跨网站请求。"
+    "message": "此 Cookie 已被屏蔽，因为它具有“SameSite=Strict”属性但相应请求是跨网站请求。这包括其他网站发出的顶级导航请求。由于网址架构与当前网站的架构不同，因此系统判定这是跨网站请求。"
   },
   "core/sdk/NetworkRequest.ts | schemefulSameSiteUnspecifiedTreatedAsLax": {
     "message": "此 Cookie 在存储时未指定“SameSite”属性，默认为“SameSite=Lax\"”，并且已被屏蔽，因为相应请求是跨网站请求，而且不是由顶级导航操作发出。由于网址架构与当前网站的架构不同，因此系统判定这是跨网站请求。"
@@ -465,22 +468,22 @@
     "message": "此连接的架构不能存储 Cookie。"
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieDidntSpecifyASamesite": {
-    "message": "此 Set-Cookie 未指定“SameSite”属性，默认为“SameSite=Lax\"”，并且已被屏蔽，因为它来自一个跨网站响应，而该响应并不是对顶级导航操作的响应。由于网址架构与当前网站的架构不同，因此系统判定这是跨网站响应。"
+    "message": "此 Set-Cookie 标头未指定“SameSite”属性，默认为“SameSite=Lax\"”，并且已被屏蔽，因为它来自一个跨网站响应，而该响应并不是对顶级导航操作的响应。该响应之所以被视为跨网站，是因为网址架构与当前网站的架构不同。"
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieHadInvalidSyntax": {
-    "message": "此 Set-Cookie 的语法无效。"
+    "message": "此 Set-Cookie 标头的语法无效。"
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSameparty": {
-    "message": "此 Set-Cookie 已被屏蔽，因为它具有“SameParty”属性，但相应请求是跨多方请求。由于资源网址的网域和资源所属框架/文档的网域不是同一 First-Party Set 的所有者或成员，因此系统判定这是跨多方请求。"
+    "message": "尝试通过 Set-Cookie 标头设置 Cookie 的操作被禁止了，因为此标头具有“SameParty”属性，但相应请求是跨多方请求。该请求之所以被视为跨多方，是因为资源网址的网域和资源所属框架/文档的网域不是同一 First-Party Set 的所有者或成员。"
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamepartyAttribute": {
-    "message": "此 Set-Cookie 已被屏蔽，因为它既具有“SameParty”属性又具有与该属性冲突的其他属性。Chrome 要求那些使用“SameParty”属性的 Cookie 也使用“Secure”属性且不受“SameSite=Strict”限制。"
+    "message": "尝试通过 Set-Cookie 标头设置 Cookie 的操作被禁止了，因为此标头既具有“SameParty”属性又具有与该属性冲突的其他属性。Chrome 要求那些使用“SameParty”属性的 Cookie 也使用“Secure”属性且不受“SameSite=Strict”限制。"
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamesiteStrictLax": {
-    "message": "此 Set-Cookie 已被屏蔽，因为它具有“{PH1}”属性但来自一个跨网站响应，而该响应并不是对顶级导航操作的响应。由于网址架构与当前网站的架构不同，因此系统判定这是跨网站响应。"
+    "message": "尝试通过 Set-Cookie 标头设置 Cookie 的操作被禁止了，因为此标头具有“{PH1}”属性但来自一个跨网站响应，而该响应并不是对顶级导航操作的响应。该响应之所以被视为跨网站，是因为网址架构与当前网站的架构不同。"
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedDueToUser": {
-    "message": "此 Set-Cookie 因用户偏好设置而被屏蔽。"
+    "message": "尝试通过 Set-Cookie 标头设置 Cookie 的操作被禁止了，因为用户指定了偏好设置。"
   },
   "core/sdk/NetworkRequest.ts | unknownError": {
     "message": "尝试发送此 Cookie 时发生未知错误。"
@@ -564,7 +567,7 @@
     "message": "无法解析 {PH1} 的内容：{PH2}"
   },
   "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "DevTools 无法加载源代码映射：{PH1}"
+    "message": "DevTools 无法加载来源映射：{PH1}"
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "全色盲"
@@ -989,6 +992,9 @@
   "entrypoints/main/main-meta.ts | bottom": {
     "message": "底部"
   },
+  "entrypoints/main/main-meta.ts | browserLanguage": {
+    "message": "浏览器界面语言"
+  },
   "entrypoints/main/main-meta.ts | cancelSearch": {
     "message": "取消搜索"
   },
@@ -1030,6 +1036,9 @@
   },
   "entrypoints/main/main-meta.ts | horizontal": {
     "message": "横向"
+  },
+  "entrypoints/main/main-meta.ts | language": {
+    "message": "语言："
   },
   "entrypoints/main/main-meta.ts | left": {
     "message": "左侧"
@@ -1217,6 +1226,9 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site 和 Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
+    "message": "用户代理字符串缩短"
+  },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "针对消耗过多资源的广告的干预措施"
   },
@@ -1225,6 +1237,9 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "防止混合内容"
+  },
+  "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
+    "message": "文档兼容模式"
   },
   "models/issues_manager/SameSiteCookieIssue.ts | aSecure": {
     "message": "安全的"
@@ -2751,7 +2766,7 @@
     "message": "其他信息"
   },
   "panels/application/components/FrameDetailsView.ts | allowedFeatures": {
-    "message": "可操作的功能"
+    "message": "允许的功能"
   },
   "panels/application/components/FrameDetailsView.ts | apiAvailability": {
     "message": "API 可用性"
@@ -2790,10 +2805,10 @@
     "message": "点击即可在“元素”面板中显示不允许使用此功能的最顶部 iframe。"
   },
   "panels/application/components/FrameDetailsView.ts | creationStackTrace": {
-    "message": "帧创建堆栈轨迹"
+    "message": "框架创建堆栈轨迹"
   },
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
-    "message": "此帧是以编程方式创建的。堆栈轨迹会显示此操作的发生位置。"
+    "message": "此框架是以编程方式创建的。堆栈轨迹会显示此操作的发生位置。"
   },
   "panels/application/components/FrameDetailsView.ts | crossoriginEmbedderPolicy": {
     "message": "跨源嵌入器政策"
@@ -2840,9 +2855,6 @@
   "panels/application/components/FrameDetailsView.ts | ownerElement": {
     "message": "所有者元素"
   },
-  "panels/application/components/FrameDetailsView.ts | permissionsPolicy": {
-    "message": "“权限”政策"
-  },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "报告对象："
   },
@@ -2886,7 +2898,7 @@
     "message": "此框架已被识别为某个广告的子框架"
   },
   "panels/application/components/FrameDetailsView.ts | transferRequiresCrossoriginIsolatedPermission": {
-    "message": "transfer requires permission policy:"
+    "message": "若要传输 SharedArrayBuffer，必须启用以下权限政策："
   },
   "panels/application/components/FrameDetailsView.ts | unavailable": {
     "message": "不可用"
@@ -2904,10 +2916,10 @@
     "message": "是"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
-    "message": "Cannot render stack trace"
+    "message": "无法渲染堆栈轨迹"
   },
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
-    "message": "{n,plural, =1{显示另外 # 个帧}other{显示另外 # 个帧}}"
+    "message": "{n,plural, =1{显示另外 # 个框架}other{显示另外 # 个框架}}"
   },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "在此浏览器实例中可用的所有已存储信任令牌。"
@@ -3060,7 +3072,7 @@
     "message": "XHR/提取断点"
   },
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
-    "message": "{PH1}（来自源代码映射）"
+    "message": "{PH1}（来自来源映射）"
   },
   "panels/changes/ChangesTextEditor.ts | additions": {
     "message": "添加项：{PH1}"
@@ -3732,7 +3744,7 @@
     "message": "通过检查到的目标加载 HTTP(S) 开发者资源"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
-    "message": "{n, plural, =1 {# resource} other {# resources}}"
+    "message": "{n,plural, =1{# 项资源}other{# 项资源}}"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resourcesCurrentlyLoading": {
     "message": "共有 {PH1} 项资源，正在加载 {PH2} 项"
@@ -4011,10 +4023,10 @@
     "message": "复制值"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
-    "message": "Open flexbox editor"
+    "message": "打开 flexbox 编辑器"
   },
   "panels/elements/StylePropertyTreeElement.ts | gridEditorButton": {
-    "message": "Open grid editor"
+    "message": "打开grid编辑器"
   },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "打开颜色选择器。{PH1}"
@@ -4032,7 +4044,7 @@
     "message": "“{PH1}”设置的值 {PH2} 超出了字体系列“{PH5}”的支持范围 [{PH3}，{PH4}]。"
   },
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
-    "message": "查看计算过的值"
+    "message": "查看计算得出的值"
   },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "构造的样式表"
@@ -4782,7 +4794,7 @@
     "message": "已拦截的资源"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | nRequests": {
-    "message": "{n, plural, =1 {# request} other {# requests}}"
+    "message": "{n,plural, =1{# 项请求}other{# 项请求}}"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | parentFrame": {
     "message": "父框架"
@@ -4794,7 +4806,7 @@
     "message": "网域"
   },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
-    "message": "{n, plural, =1 {# cookie} other {# cookies}}"
+    "message": "{n,plural, =1{# 个 Cookie}other{# 个 Cookie}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "名称"
@@ -4802,8 +4814,20 @@
   "panels/issues/AffectedCookiesView.ts | path": {
     "message": "路径"
   },
+  "panels/issues/AffectedDocumentsInQuirksModeView.ts | documentInTheDOMTree": {
+    "message": "DOM 树中的文档"
+  },
+  "panels/issues/AffectedDocumentsInQuirksModeView.ts | mode": {
+    "message": "模式"
+  },
+  "panels/issues/AffectedDocumentsInQuirksModeView.ts | nDocuments": {
+    "message": "{n,plural, =1{ 个文档}other{  个文档}}"
+  },
+  "panels/issues/AffectedDocumentsInQuirksModeView.ts | url": {
+    "message": "网址"
+  },
   "panels/issues/AffectedElementsView.ts | nElements": {
-    "message": "{n, plural, =1 {# element} other {# elements}}"
+    "message": "{n,plural, =1{# 个元素}other{# 个元素}}"
   },
   "panels/issues/AffectedElementsWithLowContrastView.ts | contrastRatio": {
     "message": "对比度"
@@ -4836,7 +4860,7 @@
     "message": "超出限额"
   },
   "panels/issues/AffectedHeavyAdView.ts | nResources": {
-    "message": "{n, plural, =1 {# resource} other {# resources}}"
+    "message": "{n,plural, =1{# 项资源}other{# 项资源}}"
   },
   "panels/issues/AffectedHeavyAdView.ts | networkLimit": {
     "message": "网络限制"
@@ -4872,7 +4896,7 @@
     "message": "实例化"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | nViolations": {
-    "message": "{n, plural, =1 {# violation} other {# violations}}"
+    "message": "{n,plural, =1{# 项违规行为}other{# 项违规行为}}"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | sharedarraybufferWasTransferedTo": {
     "message": "SharedArrayBuffer 已转移到非跨域隔离的上下文"
@@ -4893,7 +4917,7 @@
     "message": "警告"
   },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
-    "message": "{n, plural, =1 {# resource} other {# resources}}"
+    "message": "{n,plural, =1{# 项资源}other{# 项资源}}"
   },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageName": {
     "message": "软件包名称"
@@ -4941,10 +4965,10 @@
     "message": "无效值（若有）"
   },
   "panels/issues/CorsIssueDetailsView.ts | nRequests": {
-    "message": "{n, plural, =1 {# request} other {# requests}}"
+    "message": "{n,plural, =1{# 项请求}other{# 项请求}}"
   },
   "panels/issues/CorsIssueDetailsView.ts | preflightDisallowedRedirect": {
-    "message": "对预检的响应是重定向响应"
+    "message": "对预检的响应是重定向"
   },
   "panels/issues/CorsIssueDetailsView.ts | preflightInvalidStatus": {
     "message": "预检请求的 HTTP 状态表明未成功"
@@ -4976,8 +5000,14 @@
   "panels/issues/CorsIssueDetailsView.ts | secure": {
     "message": "安全"
   },
+  "panels/issues/CorsIssueDetailsView.ts | sourceLocation": {
+    "message": "源位置"
+  },
   "panels/issues/CorsIssueDetailsView.ts | status": {
     "message": "状态"
+  },
+  "panels/issues/CorsIssueDetailsView.ts | unsupportedScheme": {
+    "message": "架构不受支持"
   },
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "警告"
@@ -5004,16 +5034,16 @@
     "message": "了解详情：{PH1}"
   },
   "panels/issues/IssueView.ts | nDirectives": {
-    "message": "{n, plural, =1 {# directive} other {# directives}}"
+    "message": "{n,plural, =1{# 条指令}other{# 条指令}}"
   },
   "panels/issues/IssueView.ts | nRequests": {
-    "message": "{n, plural, =1 {# request} other {# requests}}"
+    "message": "{n,plural, =1{# 项请求}other{# 项请求}}"
   },
   "panels/issues/IssueView.ts | nResources": {
-    "message": "{n, plural, =1 {# resource} other {# resources}}"
+    "message": "{n,plural, =1{# 项资源}other{# 项资源}}"
   },
   "panels/issues/IssueView.ts | nSources": {
-    "message": "{n, plural, =1 {# source} other {# sources}}"
+    "message": "{n,plural, =1{# 个来源}other{# 个来源}}"
   },
   "panels/issues/IssueView.ts | name": {
     "message": "名称"
@@ -5077,6 +5107,9 @@
   },
   "panels/issues/IssuesPane.ts | other": {
     "message": "其他"
+  },
+  "panels/issues/IssuesPane.ts | quirksMode": {
+    "message": "怪异模式"
   },
   "panels/issues/IssuesPane.ts | samesiteCookie": {
     "message": "SameSite Cookie"
@@ -5685,7 +5718,7 @@
     "message": "预设"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
-    "message": "The set of accepted Content-Encoding headers has been modified by DevTools. See the Network Conditions panel."
+    "message": "接受的 Content-Encoding 标头集合已被 DevTools 修改。请查看“网络状况”面板。"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "已启用网络节流"
@@ -5895,7 +5928,7 @@
     "message": "类型"
   },
   "panels/network/NetworkConfigView.ts | acceptedEncoding": {
-    "message": "接受的Content-Encoding"
+    "message": "接受的 Content-Encoding"
   },
   "panels/network/NetworkConfigView.ts | caching": {
     "message": "缓存"
@@ -5916,7 +5949,7 @@
     "message": "网络节流"
   },
   "panels/network/NetworkConfigView.ts | selectAutomatically": {
-    "message": "使用默认浏览器"
+    "message": "使用浏览器默认设置"
   },
   "panels/network/NetworkConfigView.ts | userAgent": {
     "message": "用户代理"
@@ -7275,7 +7308,7 @@
     "message": "基础快照"
   },
   "panels/profiler/HeapSnapshotView.ts | captureNumericValue": {
-    "message": "在截图中添加数字值"
+    "message": "在快照中添加数字值"
   },
   "panels/profiler/HeapSnapshotView.ts | classFilter": {
     "message": "类过滤器"
@@ -8286,7 +8319,7 @@
     "message": "添加"
   },
   "panels/sources/AddSourceMapURLDialog.ts | sourceMapUrl": {
-    "message": "源代码映射网址： "
+    "message": "来源映射网址："
   },
   "panels/sources/BreakpointEditDialog.ts | breakpoint": {
     "message": "断点"
@@ -8427,7 +8460,7 @@
     "message": "添加日志点…"
   },
   "panels/sources/DebuggerPlugin.ts | addSourceMap": {
-    "message": "添加源代码映射…"
+    "message": "添加来源映射…"
   },
   "panels/sources/DebuggerPlugin.ts | associatedFilesAreAvailable": {
     "message": "相关文件可通过文件树或按相应的组合键 ({PH1}) 获取。"
@@ -8439,13 +8472,13 @@
     "message": "配置"
   },
   "panels/sources/DebuggerPlugin.ts | disableBreakpoint": {
-    "message": "{n,plural, =1{停用 1 个断点}other{依序停用所有断点}}"
+    "message": "{n,plural, =1{停用断点}other{停用行内所有断点}}"
   },
   "panels/sources/DebuggerPlugin.ts | editBreakpoint": {
     "message": "修改断点…"
   },
   "panels/sources/DebuggerPlugin.ts | enableBreakpoint": {
-    "message": "{n,plural, =1{启用断点}other{依序启用所有断点}}"
+    "message": "{n,plural, =1{启用断点}other{启用行内所有断点}}"
   },
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "一律不在此处暂停"
@@ -8460,16 +8493,16 @@
     "message": "美观输出会在新标签页中为此文件设置格式，您可以继续在新标签页中调试。您也可以点击底部状态栏上的 {PH1} 按钮，美观输出此文件。"
   },
   "panels/sources/DebuggerPlugin.ts | removeBreakpoint": {
-    "message": "{n,plural, =1{移除 1 个断点}other{依序移除所有断点}}"
+    "message": "{n,plural, =1{移除 1 个断点}other{移除行内所有断点}}"
   },
   "panels/sources/DebuggerPlugin.ts | removeFromIgnoreList": {
     "message": "从忽略列表中移除"
   },
   "panels/sources/DebuggerPlugin.ts | sourceMapDetected": {
-    "message": "已检测到源代码映射。"
+    "message": "已检测到来源映射。"
   },
   "panels/sources/DebuggerPlugin.ts | sourceMapFoundButIgnoredForFile": {
-    "message": "源代码映射已找到，但对于忽略列表中的文件而言已忽略。"
+    "message": "来源映射已找到，但对于忽略列表中的文件而言已忽略。"
   },
   "panels/sources/DebuggerPlugin.ts | theDebuggerWillSkipStepping": {
     "message": "调试程序将跳过逐步执行此脚本的过程，且不会在遇到异常时停止。"
@@ -8541,7 +8574,7 @@
     "message": "移除所有断点"
   },
   "panels/sources/JavaScriptBreakpointsSidebarPane.ts | removeAllBreakpointsInLine": {
-    "message": "依序移除所有断点"
+    "message": "移除行内所有断点"
   },
   "panels/sources/JavaScriptBreakpointsSidebarPane.ts | removeBreakpoint": {
     "message": "移除断点"
@@ -8598,7 +8631,7 @@
     "message": "重命名…"
   },
   "panels/sources/NavigatorView.ts | sFromSourceMap": {
-    "message": "{PH1}（来自源代码映射）"
+    "message": "{PH1}（来自来源映射）"
   },
   "panels/sources/NavigatorView.ts | searchInAllFiles": {
     "message": "在所有文件中搜索"
@@ -8615,8 +8648,11 @@
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "打开 JavaScript 或 CSS 文件即可查看符号"
   },
+  "panels/sources/RecorderPlugin.ts | export": {
+    "message": "导出"
+  },
   "panels/sources/RecorderPlugin.ts | play": {
-    "message": "Replay"
+    "message": "重放"
   },
   "panels/sources/RecorderPlugin.ts | record": {
     "message": "录制"
@@ -8924,6 +8960,9 @@
   "panels/sources/sources-meta.ts | evaluateSelectedTextInConsole": {
     "message": "在控制台中评估所选文本"
   },
+  "panels/sources/sources-meta.ts | exportRecording": {
+    "message": "导出"
+  },
   "panels/sources/sources-meta.ts | filesystem": {
     "message": "文件系统"
   },
@@ -8973,7 +9012,7 @@
     "message": "重命名"
   },
   "panels/sources/sources-meta.ts | replayRecording": {
-    "message": "Replay"
+    "message": "重放"
   },
   "panels/sources/sources-meta.ts | resumeScriptExecution": {
     "message": "继续执行脚本"
@@ -9117,7 +9156,7 @@
     "message": "无法显示目标的 CPU 性能分析报告。"
   },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
-    "message": "Performance trace recording not supported for this type of target"
+    "message": "无法为这类目标提供性能跟踪记录"
   },
   "panels/timeline/TimelineDetailsView.ts | bottomup": {
     "message": "自下而上"
@@ -10572,7 +10611,7 @@
     "message": "刷新"
   },
   "ui/components/linear_memory_inspector/LinearMemoryValueInterpreter.ts | changeEndianness": {
-    "message": "更改字节序"
+    "message": "更改Endianness"
   },
   "ui/components/linear_memory_inspector/LinearMemoryValueInterpreter.ts | toggleValueTypeSettings": {
     "message": "开启/关闭值类型设置"
@@ -10587,43 +10626,13 @@
     "message": "跳转到地址"
   },
   "ui/components/linear_memory_inspector/ValueInterpreterDisplay.ts | signedValue": {
-    "message": "符号值"
+    "message": "Signed的值"
   },
   "ui/components/linear_memory_inspector/ValueInterpreterDisplay.ts | unsignedValue": {
-    "message": "未签名的值"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | bigEndian": {
-    "message": "大端字节序"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | float64Bit": {
-    "message": "64 位浮点数"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | floatBit": {
-    "message": "32 位浮点数"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integer16Bit": {
-    "message": "16 位整数"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integer32Bit": {
-    "message": "整数 32 位"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integer64Bit": {
-    "message": "整数 64 位"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integerBit": {
-    "message": "8 位整数"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | littleEndian": {
-    "message": "小端字节序"
+    "message": "Unsigned的值"
   },
   "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | notApplicable": {
     "message": "不适用"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | pointer32Bit": {
-    "message": "指针 32 位"
-  },
-  "ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.ts | pointer64Bit": {
-    "message": "指针 64 位"
   },
   "ui/components/linear_memory_inspector/ValueInterpreterSettings.ts | otherGroup": {
     "message": "其他"
@@ -10801,6 +10810,12 @@
   },
   "ui/legacy/TargetCrashedScreen.ts | oncePageIsReloadedDevtoolsWill": {
     "message": "网页重新加载后，DevTools 会自动重新连接。"
+  },
+  "ui/legacy/Toolbar.ts | notPressed": {
+    "message": "未按下"
+  },
+  "ui/legacy/Toolbar.ts | pressed": {
+    "message": "已按下"
   },
   "ui/legacy/UIUtils.ts | anonymous": {
     "message": "（匿名）"
@@ -11430,7 +11445,7 @@
     "message": "从忽略列表中移除"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showSMoreFrames": {
-    "message": "{n,plural, =1{显示另外 # 个帧}other{显示另外 # 个帧}}"
+    "message": "{n,plural, =1{显示另外 # 个框架}other{显示另外 # 个框架}}"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | unknownSource": {
     "message": "未知"

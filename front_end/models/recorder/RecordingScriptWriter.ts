@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {Step, ClickStep, StepWithFrameContext, ChangeStep, SubmitStep, UserFlow, EmulateNetworkConditionsStep, KeyDownStep, KeyUpStep, CloseStep} from './Steps.js';
+import type {Step, ClickStep, StepWithFrameContext, ChangeStep, SubmitStep, UserFlow, EmulateNetworkConditionsStep, KeyDownStep, KeyUpStep, CloseStep, ViewportStep} from './Steps.js';
 import {assertAllStepTypesAreHandled} from './Steps.js';
 
 export class RecordingScriptWriter {
@@ -75,6 +75,11 @@ export class RecordingScriptWriter {
     this.appendLineToScript('await targetPage.close()');
   }
 
+  appendViewportStep(step: ViewportStep): void {
+    this.appendLineToScript(
+        `await targetPage.setViewport(${JSON.stringify({width: step.width, height: step.height})}})`);
+  }
+
   appendStepType(step: Step): void {
     switch (step.type) {
       case 'click':
@@ -91,6 +96,8 @@ export class RecordingScriptWriter {
         return this.appendKeyUpStep(step);
       case 'close':
         return this.appendCloseStep(step);
+      case 'viewport':
+        return this.appendViewportStep(step);
       default:
         return assertAllStepTypesAreHandled(step);
     }

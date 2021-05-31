@@ -90,12 +90,19 @@ export interface KeyUpStep extends StepWithFrameContext, StepWithCondition {
   shiftKey?: boolean;
 }
 
+export interface ViewportStep {
+  type: 'viewport';
+  width: number;
+  height: number;
+}
+
 export interface CloseStep {
   type: 'close';
   target: string;
 }
 
-export type Step = ClickStep|ChangeStep|SubmitStep|EmulateNetworkConditionsStep|KeyDownStep|KeyUpStep|CloseStep;
+export type Step =
+    ClickStep|ChangeStep|SubmitStep|EmulateNetworkConditionsStep|KeyDownStep|KeyUpStep|CloseStep|ViewportStep;
 
 export interface UserFlowSection {
   screenshot: string;
@@ -162,6 +169,14 @@ export function createKeyUpStep(context: FrameContext, key: Key): KeyUpStep {
     type: 'keyup',
     context,
     key,
+  };
+}
+
+export function createViewportStep(viewport: {clientWidth: number, clientHeight: number}): ViewportStep {
+  return {
+    type: 'viewport',
+    width: viewport.clientWidth,
+    height: viewport.clientHeight,
   };
 }
 

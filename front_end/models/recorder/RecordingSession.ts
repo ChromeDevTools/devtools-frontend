@@ -14,6 +14,7 @@ import {RecordingScriptWriter} from './RecordingScriptWriter.js';
 import {RecordingEventHandler} from './RecordingEventHandler.js';
 import {setupRecordingClient} from './RecordingClient.js';
 import type {Condition, Step, StepWithCondition, UserFlow, UserFlowSection} from './Steps.js';
+import {createViewportStep} from './Steps.js';
 import {createEmulateNetworkConditionsStep} from './Steps.js';
 
 const RECORDER_ISOLATED_WORLD_NAME = 'devtools_recorder';
@@ -95,6 +96,8 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper {
         SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, this.addNetworkConditionsChangedStep,
         this);
 
+    const {cssVisualViewport} = await this._target.pageAgent().invoke_getLayoutMetrics();
+
     await this.attachToTarget(this._target);
 
     this._scriptWriter = new RecordingScriptWriter(this._indentation);
@@ -105,6 +108,7 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     await this.appendNewSection(true);
+    this.addViewportStep(cssVisualViewport);
 
     // Focus the target so that events can be captured without additional actions.
     await this._pageAgent.invoke_bringToFront();
@@ -150,6 +154,10 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper {
     this._networkManager.removeEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, this.addNetworkConditionsChangedStep,
         this);
+  }
+
+  addViewportStep(viewport: Protocol.Page.VisualViewport): void {
+    this.appendStep(createViewportStep(viewport));
   }
 
   addNetworkConditionsChangedStep(): void {

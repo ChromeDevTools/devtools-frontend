@@ -206,5 +206,27 @@ describe('Recorder', function() {
       const value = await target.$eval('#select', e => (e as HTMLSelectElement).value);
       assert.strictEqual(value, 'O2');
     });
+
+    it('should be able to replay viewport change', async () => {
+      const {target} = getBrowserAndPages();
+      await setupRecorderWithScriptAndReplay({
+        title: 'Test Recording',
+        sections: [{
+          url: `${getResourcesPath()}/recorder/select.html`,
+          screenshot: '',
+          title: '',
+          steps: [
+            {
+              'type': 'viewport',
+              width: 800,
+              height: 600,
+            },
+          ],
+        }],
+      });
+
+      assert.strictEqual(await target.evaluate(() => window.visualViewport.width), 800);
+      assert.strictEqual(await target.evaluate(() => window.visualViewport.height), 600);
+    });
   });
 });

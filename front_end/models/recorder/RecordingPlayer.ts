@@ -133,6 +133,13 @@ export class RecordingPlayer {
         await element.evaluate(e => e.blur());
         await element.focus();
       } break;
+      case 'viewport': {
+        await targetPage.setViewport({
+          width: step.width,
+          height: step.height,
+        });
+        break;
+      }
       default:
         assertAllStepTypesAreHandled(step);
     }

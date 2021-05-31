@@ -225,8 +225,17 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper {
 
     // TODO(alexrudenko): maybe wire this flag up to DEBUG mode or a setting?
     const debugRecordingClient = false;
+    // This setting is set during the test to work around the fact that Puppeteer cannot
+    // send trusted change and input events.
+    let untrustedRecorderEvents = false;
+    try {
+      Common.Settings.Settings.instance().settingForTest('untrustedRecorderEvents');
+      untrustedRecorderEvents = true;
+    } catch {
+    }
     const setupEventListeners = setupRecordingClient.toString() +
-        `;${setupRecordingClient.name}({getAccessibleName, getAccessibleRole}, ${debugRecordingClient});`;
+        `;${setupRecordingClient.name}({getAccessibleName, getAccessibleRole}, ${debugRecordingClient}, ${
+                                    untrustedRecorderEvents});`;
 
     const {identifier} = await pageAgent.invoke_addScriptToEvaluateOnNewDocument(
         {source: setupEventListeners, worldName: RECORDER_ISOLATED_WORLD_NAME, includeCommandLineAPI: true});

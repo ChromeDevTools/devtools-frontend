@@ -36,7 +36,15 @@ async function changeNetworkConditions(condition: string) {
   await frontend.select('pierce/[aria-label="Throttling"] select', condition);
 }
 
-async function startRecording(path: string, networkCondition: string = '') {
+const enableUntrustedEventMode = async () => {
+  const {frontend} = getBrowserAndPages();
+  await frontend.evaluate(() => {
+    // @ts-ignore
+    globalThis.Common.Settings.instance().createSetting('untrustedRecorderEvents', true);
+  });
+};
+
+async function startRecording(path: string, networkCondition: string = '', untrustedEvents = false) {
   await enableExperiment('recorder');
   await goToResource(path);
 
@@ -48,6 +56,9 @@ async function startRecording(path: string, networkCondition: string = '') {
 
   await openSourcesPanel();
   await openRecorderSubPane();
+  if (untrustedEvents) {
+    await enableUntrustedEventMode();
+  }
   await createNewRecording('New recording');
   //   await enableCDPLogging()
   await frontend.click('aria/Record');
@@ -520,15 +531,6 @@ describe('Recorder', function() {
             type: 'keydown',
           },
           {
-            context: {
-              path: [],
-              target: 'main',
-            },
-            selector: 'input#one' as Selector,
-            type: 'change',
-            value: '1',
-          },
-          {
             altKey: false,
             context: {
               path: [],
@@ -563,6 +565,37 @@ describe('Recorder', function() {
             metaKey: false,
             shiftKey: false,
             type: 'keyup',
+          },
+        ],
+      }],
+    });
+  });
+
+  it('should work for select elements', async () => {
+    const untrustedEvents = true;
+    const networkCondition = '';
+    await startRecording('recorder/select.html', networkCondition, untrustedEvents);
+
+    const {target} = getBrowserAndPages();
+    await target.bringToFront();
+    await target.select('#select', 'O2');
+
+    await stopRecording();
+    await assertOutput({
+      title: 'New Recording',
+      sections: [{
+        url: 'https://<url>/test/e2e/resources/recorder/select.html',
+        screenshot: '<screenshot>',
+        title: '',
+        steps: [
+          {
+            'type': 'change',
+            'context': {
+              'path': [],
+              'target': 'main',
+            },
+            'selector': 'aria/Select' as Selector,
+            'value': 'O2',
           },
         ],
       }],

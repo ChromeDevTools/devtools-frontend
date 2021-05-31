@@ -64,7 +64,7 @@ export function setupRecordingClient(
       getAccessibleName: (node: Node) => string,
       getAccessibleRole: (node: Node) => string,
     },
-    debug = false, exports: Exports = {}): void {
+    debug = false, allowUntrustedEvents = false, exports: Exports = {}): void {
   const log = (...args: unknown[]): void => {
     if (debug) {
       console.log(...args);  // eslint-disable-line no-console
@@ -79,7 +79,7 @@ export function setupRecordingClient(
     if (event.type === 'submit' && Boolean((event as SubmitEvent).submitter)) {
       return;
     }
-    if (!target || !isTrusted) {
+    if (!target || (!isTrusted && !allowUntrustedEvents)) {
       return;
     }
     const nodeTarget = target as Node;
@@ -96,6 +96,12 @@ export function setupRecordingClient(
       };
     }
     if (event.type === 'change') {
+      // Currently we support a Change event only for the select element.
+      // Perhaps eventually we need to create a select-change event to
+      // capture select-specific logic.
+      if (nodeTarget.nodeName.toLowerCase() !== 'select') {
+        return;
+      }
       return {type: event.type, selector: getSelector(nodeTarget), value: (target as HTMLInputElement).value};
     }
     if (event.type === 'keydown' || event.type === 'keyup') {
@@ -113,6 +119,7 @@ export function setupRecordingClient(
   };
   exports.createStepFromEvent = createStepFromEvent;
 
+  let lastStep: Step|undefined;
   const recorderEventListener = (event: Event): void => {
     const target = event.target as HTMLButtonElement;
     log(target.nodeName, target.type);
@@ -120,7 +127,13 @@ export function setupRecordingClient(
     if (!step) {
       return;
     }
+    // If you click on a select option both the change event and click event fire.
+    // Therefore, we ignore the click.
+    if (lastStep && step.type === 'click' && lastStep.type === 'change' && step.selector === lastStep.selector) {
+      return;
+    }
     window.addStep(JSON.stringify(step));
+    lastStep = step;
   };
 
   if (!window._recorderEventListener) {

@@ -100,30 +100,6 @@ describe('Recorder', function() {
       assert.strictEqual(target.url(), `${getResourcesPath()}/recorder/recorder2.html`);
     });
 
-    it('should be able to replay change steps', async () => {
-      const {target} = getBrowserAndPages();
-      await setupRecorderWithScriptAndReplay({
-        title: 'Test Recording',
-        sections: [{
-          url: `${getResourcesPath()}/recorder/recorder.html`,
-          screenshot: '',
-          title: '',
-          steps: [{
-            type: 'change',
-            context: {
-              path: [],
-              target: 'main',
-            },
-            selector: '#input' as Selector,
-            value: 'Hello World',
-          }],
-        }],
-      });
-
-      const value = await target.$eval('#input', e => (e as HTMLInputElement).value);
-      assert.strictEqual(value, 'Hello World');
-    });
-
     it('should be able to replay keyboard events', async () => {
       const {target} = getBrowserAndPages();
       await setupRecorderWithScriptAndReplay({
@@ -203,6 +179,32 @@ describe('Recorder', function() {
 
       const value = await target.$eval('#log', e => (e as HTMLElement).innerText.trim());
       assert.strictEqual(value, ['one:1', 'two:2'].join('\n'));
+    });
+
+    it('should be able to replay events on select', async () => {
+      const {target} = getBrowserAndPages();
+      await setupRecorderWithScriptAndReplay({
+        title: 'Test Recording',
+        sections: [{
+          url: `${getResourcesPath()}/recorder/select.html`,
+          screenshot: '',
+          title: '',
+          steps: [
+            {
+              'type': 'change',
+              'context': {
+                'path': [],
+                'target': 'main',
+              },
+              'selector': 'aria/Select' as Selector,
+              'value': 'O2',
+            },
+          ],
+        }],
+      });
+
+      const value = await target.$eval('#select', e => (e as HTMLSelectElement).value);
+      assert.strictEqual(value, 'O2');
     });
   });
 });

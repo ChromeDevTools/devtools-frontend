@@ -99,13 +99,6 @@ export class RecordingPlayer {
         }
         await element.click();
       } break;
-      case 'change': {
-        const element = await frame.waitForSelector(step.selector);
-        if (!element) {
-          throw new Error('Could not find element: ' + step.selector);
-        }
-        await element.type(step.value);
-      } break;
       case 'submit': {
         const element = await frame.waitForSelector(step.selector);
         if (!element) {
@@ -126,6 +119,19 @@ export class RecordingPlayer {
       } break;
       case 'close': {
         await page.close();
+      } break;
+      case 'change': {
+        // TODO(alexrudenko): currently the change event is only supported for <select>s.
+        const element = await frame.waitForSelector(step.selector);
+        if (!element) {
+          throw new Error('Could not find element: ' + step.selector);
+        }
+        await element.select(step.value);
+        // We need blur and focus to make the select dropdown to close.
+        // Otherwise, it remains open until a blur event. This is not very
+        // nice because user actions don't actually generate those events.
+        await element.evaluate(e => e.blur());
+        await element.focus();
       } break;
       default:
         assertAllStepTypesAreHandled(step);

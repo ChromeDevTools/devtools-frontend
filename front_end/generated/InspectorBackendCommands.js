@@ -183,7 +183,8 @@ export function registerCommands(inspectorBackend) {
     ExcludeSameSiteUnspecifiedTreatedAsLax: 'ExcludeSameSiteUnspecifiedTreatedAsLax',
     ExcludeSameSiteNoneInsecure: 'ExcludeSameSiteNoneInsecure',
     ExcludeSameSiteLax: 'ExcludeSameSiteLax',
-    ExcludeSameSiteStrict: 'ExcludeSameSiteStrict'
+    ExcludeSameSiteStrict: 'ExcludeSameSiteStrict',
+    ExcludeInvalidSameParty: 'ExcludeInvalidSameParty'
   });
   inspectorBackend.registerEnum('Audits.SameSiteCookieWarningReason', {
     WarnSameSiteUnspecifiedCrossSiteContext: 'WarnSameSiteUnspecifiedCrossSiteContext',
@@ -1572,7 +1573,7 @@ export function registerCommands(inspectorBackend) {
   });
   inspectorBackend.registerEnum(
       'Network.CrossOriginEmbedderPolicyValue',
-      {None: 'None', CorsOrCredentialless: 'CorsOrCredentialless', RequireCorp: 'RequireCorp'});
+      {None: 'None', Credentialless: 'Credentialless', RequireCorp: 'RequireCorp'});
   inspectorBackend.registerEvent('Network.dataReceived', ['requestId', 'timestamp', 'dataLength', 'encodedDataLength']);
   inspectorBackend.registerEvent(
       'Network.eventSourceMessageReceived', ['requestId', 'timestamp', 'eventName', 'eventId', 'data']);

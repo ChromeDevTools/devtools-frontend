@@ -509,6 +509,7 @@ experimental domain Audits
       ExcludeSameSiteNoneInsecure
       ExcludeSameSiteLax
       ExcludeSameSiteStrict
+      ExcludeInvalidSameParty
 
   type SameSiteCookieWarningReason extends string
     enum
@@ -531,7 +532,12 @@ experimental domain Audits
   # information without the cookie.
   type SameSiteCookieIssueDetails extends object
     properties
-      AffectedCookie cookie
+      # If AffectedCookie is not set then rawCookieLine contains the raw
+      # Set-Cookie header string. This hints at a problem where the
+      # cookie line is syntactically or semantically malformed in a way
+      # that no valid cookie could be created.
+      optional AffectedCookie cookie
+      optional string rawCookieLine
       array of SameSiteCookieWarningReason cookieWarningReasons
       array of SameSiteCookieExclusionReason cookieExclusionReasons
       # Optionally identifies the site-for-cookies and the cookie url, which
@@ -792,6 +798,9 @@ experimental domain Audits
     properties
       InspectorIssueCode code
       InspectorIssueDetails details
+      # A unique id for this issue. May be omitted if no other entity (e.g.
+      # exception, CDP message, etc.) is referencing this issue.
+      optional string issueId
 
   # Returns the response body and size if it were re-encoded with the specified settings. Only
   # applies to images.
@@ -5959,7 +5968,7 @@ domain Network
   experimental type CrossOriginEmbedderPolicyValue extends string
     enum
       None
-      CorsOrCredentialless
+      Credentialless
       RequireCorp
 
   experimental type CrossOriginEmbedderPolicyStatus extends object

@@ -1047,7 +1047,8 @@
                         "ExcludeSameSiteUnspecifiedTreatedAsLax",
                         "ExcludeSameSiteNoneInsecure",
                         "ExcludeSameSiteLax",
-                        "ExcludeSameSiteStrict"
+                        "ExcludeSameSiteStrict",
+                        "ExcludeInvalidSameParty"
                     ]
                 },
                 {
@@ -1079,7 +1080,14 @@
                     "properties": [
                         {
                             "name": "cookie",
+                            "description": "If AffectedCookie is not set then rawCookieLine contains the raw\nSet-Cookie header string. This hints at a problem where the\ncookie line is syntactically or semantically malformed in a way\nthat no valid cookie could be created.",
+                            "optional": true,
                             "$ref": "AffectedCookie"
+                        },
+                        {
+                            "name": "rawCookieLine",
+                            "optional": true,
+                            "type": "string"
                         },
                         {
                             "name": "cookieWarningReasons",
@@ -1670,6 +1678,12 @@
                         {
                             "name": "details",
                             "$ref": "InspectorIssueDetails"
+                        },
+                        {
+                            "name": "issueId",
+                            "description": "A unique id for this issue. May be omitted if no other entity (e.g.\nexception, CDP message, etc.) is referencing this issue.",
+                            "optional": true,
+                            "type": "string"
                         }
                     ]
                 }
@@ -11442,7 +11456,7 @@
                     "type": "string",
                     "enum": [
                         "None",
-                        "CorsOrCredentialless",
+                        "Credentialless",
                         "RequireCorp"
                     ]
                 },

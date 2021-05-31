@@ -744,6 +744,7 @@ declare namespace Protocol {
       ExcludeSameSiteNoneInsecure = 'ExcludeSameSiteNoneInsecure',
       ExcludeSameSiteLax = 'ExcludeSameSiteLax',
       ExcludeSameSiteStrict = 'ExcludeSameSiteStrict',
+      ExcludeInvalidSameParty = 'ExcludeInvalidSameParty',
     }
 
     export const enum SameSiteCookieWarningReason {
@@ -768,7 +769,14 @@ declare namespace Protocol {
      * information without the cookie.
      */
     export interface SameSiteCookieIssueDetails {
-      cookie: AffectedCookie;
+      /**
+       * If AffectedCookie is not set then rawCookieLine contains the raw
+       * Set-Cookie header string. This hints at a problem where the
+       * cookie line is syntactically or semantically malformed in a way
+       * that no valid cookie could be created.
+       */
+      cookie?: AffectedCookie;
+      rawCookieLine?: string;
       cookieWarningReasons: SameSiteCookieWarningReason[];
       cookieExclusionReasons: SameSiteCookieExclusionReason[];
       /**
@@ -1079,6 +1087,11 @@ declare namespace Protocol {
     export interface InspectorIssue {
       code: InspectorIssueCode;
       details: InspectorIssueDetails;
+      /**
+       * A unique id for this issue. May be omitted if no other entity (e.g.
+       * exception, CDP message, etc.) is referencing this issue.
+       */
+      issueId?: string;
     }
 
     export const enum GetEncodedResponseRequestEncoding {
@@ -7727,7 +7740,7 @@ declare namespace Protocol {
 
     export const enum CrossOriginEmbedderPolicyValue {
       None = 'None',
-      CorsOrCredentialless = 'CorsOrCredentialless',
+      Credentialless = 'Credentialless',
       RequireCorp = 'RequireCorp',
     }
 

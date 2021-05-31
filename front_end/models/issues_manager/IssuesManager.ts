@@ -117,7 +117,7 @@ export interface IssuesManagerCreationOptions {
  * `IssuesManager#issues()`.
  */
 export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
-    SDK.SDKModel.SDKModelObserver<SDK.IssuesModel.IssuesModel> {
+    SDK.TargetManager.SDKModelObserver<SDK.IssuesModel.IssuesModel> {
   private eventListeners: WeakMap<SDK.IssuesModel.IssuesModel, Common.EventTarget.EventDescriptor>;
   private allIssues: Map<string, Issue>;
   private filteredIssues: Map<string, Issue>;
@@ -129,7 +129,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
   constructor(showThirdPartyIssuesSetting?: Common.Settings.Setting<boolean>) {
     super();
     this.eventListeners = new WeakMap();
-    SDK.SDKModel.TargetManager.instance().observeModels(SDK.IssuesModel.IssuesModel, this);
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.IssuesModel.IssuesModel, this);
     this.allIssues = new Map();
     this.filteredIssues = new Map();
     this.issueCounts = new Map();
@@ -289,7 +289,7 @@ export enum Events {
 
 // @ts-ignore
 globalThis.addIssueForTest = (issue: Protocol.Audits.InspectorIssue): void => {
-  const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+  const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
   const issuesModel = mainTarget?.model(SDK.IssuesModel.IssuesModel);
   issuesModel?.issueAdded({issue});
 };

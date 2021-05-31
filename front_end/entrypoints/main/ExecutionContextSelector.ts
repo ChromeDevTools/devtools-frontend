@@ -6,13 +6,13 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Common from '../../core/common/common.js';
 import type * as UI from '../../ui/legacy/legacy.js';
 
-export class ExecutionContextSelector implements SDK.SDKModel.SDKModelObserver<SDK.RuntimeModel.RuntimeModel> {
-  private targetManager: SDK.SDKModel.TargetManager;
+export class ExecutionContextSelector implements SDK.TargetManager.SDKModelObserver<SDK.RuntimeModel.RuntimeModel> {
+  private targetManager: SDK.TargetManager.TargetManager;
   private context: UI.Context.Context;
   private lastSelectedContextId?: string;
   private ignoreContextChanged?: boolean;
 
-  constructor(targetManager: SDK.SDKModel.TargetManager, context: UI.Context.Context) {
+  constructor(targetManager: SDK.TargetManager.TargetManager, context: UI.Context.Context) {
     context.addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this.executionContextChanged, this);
     context.addFlavorChangeListener(SDK.SDKModel.Target, this.targetChanged, this);
 

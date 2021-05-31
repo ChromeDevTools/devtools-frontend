@@ -382,8 +382,8 @@ export class MainImpl {
     self.SDK.multitargetNetworkManager = SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
     // @ts-ignore layout test global
     self.SDK.domDebuggerManager = SDK.DOMDebuggerModel.DOMDebuggerManager.instance({forceNew: true});
-    SDK.SDKModel.TargetManager.instance().addEventListener(
-        SDK.SDKModel.Events.SuspendStateChanged, this._onSuspendStateChanged.bind(this));
+    SDK.TargetManager.TargetManager.instance().addEventListener(
+        SDK.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged.bind(this));
 
     // @ts-ignore layout test global
     self.Workspace.fileManager = Workspace.FileManager.FileManager.instance({forceNew: true});
@@ -395,27 +395,27 @@ export class MainImpl {
     // @ts-ignore layout test global
     self.Bindings.resourceMapping = Bindings.ResourceMapping.ResourceMapping.instance({
       forceNew: true,
-      targetManager: SDK.SDKModel.TargetManager.instance(),
+      targetManager: SDK.TargetManager.TargetManager.instance(),
       workspace: Workspace.Workspace.WorkspaceImpl.instance(),
     });
     new Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager();
     // @ts-ignore layout test global
     self.Bindings.cssWorkspaceBinding = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance({
       forceNew: true,
-      targetManager: SDK.SDKModel.TargetManager.instance(),
+      targetManager: SDK.TargetManager.TargetManager.instance(),
       workspace: Workspace.Workspace.WorkspaceImpl.instance(),
     });
     // @ts-ignore layout test global
     self.Bindings.debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
       forceNew: true,
-      targetManager: SDK.SDKModel.TargetManager.instance(),
+      targetManager: SDK.TargetManager.TargetManager.instance(),
       workspace: Workspace.Workspace.WorkspaceImpl.instance(),
     });
     // @ts-ignore layout test global
     self.Bindings.breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance({
       forceNew: true,
       workspace: Workspace.Workspace.WorkspaceImpl.instance(),
-      targetManager: SDK.SDKModel.TargetManager.instance(),
+      targetManager: SDK.TargetManager.TargetManager.instance(),
       debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
     });
     // @ts-ignore layout test global
@@ -445,7 +445,7 @@ export class MainImpl {
         Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance(
             {forceNew: true, workspace: Workspace.Workspace.WorkspaceImpl.instance()});
 
-    new ExecutionContextSelector(SDK.SDKModel.TargetManager.instance(), UI.Context.Context.instance());
+    new ExecutionContextSelector(SDK.TargetManager.TargetManager.instance(), UI.Context.Context.instance());
     // @ts-ignore layout test global
     self.Bindings.ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({
       forceNew: true,
@@ -618,7 +618,7 @@ export class MainImpl {
   }
 
   _onSuspendStateChanged(): void {
-    const suspended = SDK.SDKModel.TargetManager.instance().allTargetsSuspended();
+    const suspended = SDK.TargetManager.TargetManager.instance().allTargetsSuspended();
     UI.InspectorView.InspectorView.instance().onSuspendStateChanged(suspended);
   }
 
@@ -802,7 +802,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
     }
 
     if (UI.DockController.DockController.instance().dockSide() === UI.DockController.State.Undocked) {
-      const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+      const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
       if (mainTarget && mainTarget.type() === SDK.SDKModel.Type.Frame) {
         contextMenu.defaultSection().appendAction('inspector_main.focus-debuggee', i18nString(UIStrings.focusDebuggee));
       }
@@ -879,12 +879,12 @@ export class SettingsButtonProvider implements UI.Toolbar.Provider {
 
 export class PauseListener {
   constructor() {
-    SDK.SDKModel.TargetManager.instance().addModelListener(
+    SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._debuggerPaused, this);
   }
 
   _debuggerPaused(event: Common.EventTarget.EventTargetEvent): void {
-    SDK.SDKModel.TargetManager.instance().removeModelListener(
+    SDK.TargetManager.TargetManager.instance().removeModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._debuggerPaused, this);
     const debuggerModel = (event.data as SDK.DebuggerModel.DebuggerModel);
     const debuggerPausedDetails = debuggerModel.debuggerPausedDetails();

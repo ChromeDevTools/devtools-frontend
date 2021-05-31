@@ -8,8 +8,8 @@ import * as Common from '../common/common.js';
 
 import type {HeapProfilerModel} from './HeapProfilerModel.js'; // eslint-disable-line no-unused-vars
 import {RuntimeModel} from './RuntimeModel.js';
-import type {SDKModelObserver} from './SDKModel.js';
-import {TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {SDKModelObserver} from './TargetManager.js';
+import {TargetManager} from './TargetManager.js';
 
 let isolateManagerInstance: IsolateManager;
 

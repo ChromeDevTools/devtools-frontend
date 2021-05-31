@@ -72,19 +72,19 @@ type SerializableSettings = {
   endianness: Endianness,
 };
 
-export class LinearMemoryInspectorController extends SDK.SDKModel.SDKModelObserver<SDK.RuntimeModel.RuntimeModel> {
+export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelObserver<SDK.RuntimeModel.RuntimeModel> {
   private paneInstance = LinearMemoryInspectorPaneImpl.instance();
   private bufferIdToRemoteObject: Map<string, SDK.RemoteObject.RemoteObject> = new Map();
   private settings: Common.Settings.Setting<SerializableSettings>;
 
   private constructor() {
     super();
-    SDK.SDKModel.TargetManager.instance().observeModels(SDK.RuntimeModel.RuntimeModel, this);
-    SDK.SDKModel.TargetManager.instance().addModelListener(
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.RuntimeModel.RuntimeModel, this);
+    SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared, this.onGlobalObjectClear, this);
     this.paneInstance.addEventListener('view-closed', this.viewClosed.bind(this));
 
-    SDK.SDKModel.TargetManager.instance().addModelListener(
+    SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this.onDebuggerPause, this);
 
     const defaultValueTypeModes = getDefaultValueTypeMapping();

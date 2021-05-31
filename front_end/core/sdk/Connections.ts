@@ -9,7 +9,7 @@ import * as Host from '../host/host.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as Root from '../root/root.js';
 
-import {TargetManager} from './SDKModel.js';
+import {TargetManager} from './TargetManager.js';
 
 export class MainConnection implements ProtocolClient.InspectorBackend.Connection {
   _onMessage: ((arg0: (Object|string)) => void)|null;

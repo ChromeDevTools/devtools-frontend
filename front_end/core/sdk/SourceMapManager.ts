@@ -10,7 +10,7 @@ import * as Platform from '../platform/platform.js';
 
 import type {FrameAssociated} from './FrameAssociated.js'; // eslint-disable-line no-unused-vars
 import type {Target} from './SDKModel.js';
-import {Events as TargetManagerEvents, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import {Events as TargetManagerEvents, TargetManager} from './TargetManager.js';  // eslint-disable-line no-unused-vars
 import type {SourceMap} from './SourceMap.js';
 import {TextSourceMap} from './SourceMap.js';  // eslint-disable-line no-unused-vars
 

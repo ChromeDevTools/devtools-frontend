@@ -65,6 +65,7 @@ import * as ServiceWorkerCacheModel from './ServiceWorkerCacheModel.js';
 import * as ServiceWorkerManager from './ServiceWorkerManager.js';
 import * as SourceMap from './SourceMap.js';
 import * as SourceMapManager from './SourceMapManager.js';
+import * as TargetManager from './TargetManager.js';
 import * as TracingManager from './TracingManager.js';
 import * as TracingModel from './TracingModel.js';
 import * as WebAuthnModel from './WebAuthnModel.js';
@@ -125,6 +126,7 @@ export {
   ServiceWorkerManager,
   SourceMap,
   SourceMapManager,
+  TargetManager,
   TracingManager,
   TracingModel,
   WebAuthnModel,

@@ -232,7 +232,7 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
       this.modelRemoved(domModel);
     }
     this._domModels = [];
-    SDK.SDKModel.TargetManager.instance().observeModels(SDK.DOMModel.DOMModel, this);
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.DOMModel.DOMModel, this);
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.update, this);
     this._uaShadowDOMSetting.addChangeListener(this.update, this);
     this.update();
@@ -243,7 +243,7 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
       Common.Settings.Settings.instance().moduleSetting(setting).removeChangeListener(this.update, this);
     }
     this._layoutPane.removeEventListener('settingchanged', this._boundOnSettingChanged);
-    SDK.SDKModel.TargetManager.instance().unobserveModels(SDK.DOMModel.DOMModel, this);
+    SDK.TargetManager.TargetManager.instance().unobserveModels(SDK.DOMModel.DOMModel, this);
     UI.Context.Context.instance().removeFlavorChangeListener(SDK.DOMModel.DOMNode, this.update, this);
     this._uaShadowDOMSetting.removeChangeListener(this.update, this);
   }

@@ -151,7 +151,7 @@ export class CPUProfileType extends ProfileType {
     super(CPUProfileType.TypeId, i18nString(UIStrings.recordJavascriptCpuProfile));
     this._recording = false;
 
-    SDK.SDKModel.TargetManager.instance().addModelListener(
+    SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.CPUProfilerModel.CPUProfilerModel, SDK.CPUProfilerModel.Events.ConsoleProfileFinished,
         this._consoleProfileFinished, this);
   }
@@ -204,7 +204,7 @@ export class CPUProfileType extends ProfileType {
     }
     const profile = new CPUProfileHeader(cpuProfilerModel, this);
     this.setProfileBeingRecorded(profile as ProfileHeader);
-    SDK.SDKModel.TargetManager.instance().suspendAllTargets();
+    SDK.TargetManager.TargetManager.instance().suspendAllTargets();
     this.addProfile(profile as ProfileHeader);
     profile.updateStatus(i18nString(UIStrings.recording));
     this._recording = true;
@@ -230,7 +230,7 @@ export class CPUProfileType extends ProfileType {
       this.setProfileBeingRecorded(null);
     }
 
-    await SDK.SDKModel.TargetManager.instance().resumeAllTargets();
+    await SDK.TargetManager.TargetManager.instance().resumeAllTargets();
     this.dispatchEventToListeners(ProfileEvents.ProfileComplete, recordedProfile);
   }
 

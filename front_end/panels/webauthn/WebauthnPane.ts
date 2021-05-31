@@ -255,7 +255,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
         (Common.Settings.Settings.instance().createSetting('webauthnAuthenticators', []) as
          Common.Settings.Setting<AvailableAuthenticatorOptions[]>);
 
-    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+    const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
     if (mainTarget) {
       this._model = mainTarget.model(SDK.WebAuthnModel.WebAuthnModel);
     }

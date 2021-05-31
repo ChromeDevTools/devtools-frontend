@@ -49,7 +49,8 @@ import {OverlayModel} from './OverlayModel.js';
 import type {RemoteObject} from './RemoteObject.js'; // eslint-disable-line no-unused-vars
 import {RuntimeModel} from './RuntimeModel.js';
 import type {Target} from './SDKModel.js';
-import {Capability, SDKModel, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import {Capability, SDKModel} from './SDKModel.js';
+import {TargetManager} from './TargetManager.js';
 
 export class DOMNode {
   _domModel: DOMModel;

@@ -198,7 +198,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
       this._disableExtensions();
       return;
     }
-    if (event.data !== SDK.SDKModel.TargetManager.instance().mainTarget()) {
+    if (event.data !== SDK.TargetManager.TargetManager.instance().mainTarget()) {
       return;
     }
     this._requests = {};
@@ -518,7 +518,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     uiSourceCodes = uiSourceCodes.concat(Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodesForProjectType(
         Workspace.Workspace.projectTypes.ContentScripts));
     uiSourceCodes.forEach(pushResourceData.bind(this));
-    for (const resourceTreeModel of SDK.SDKModel.TargetManager.instance().models(
+    for (const resourceTreeModel of SDK.TargetManager.TargetManager.instance().models(
              SDK.ResourceTreeModel.ResourceTreeModel)) {
       resourceTreeModel.forAllResources(pushResourceData.bind(this));
     }
@@ -657,8 +657,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         onElementsSubscriptionStopped.bind(this));
     this._registerResourceContentCommittedHandler(this._notifyUISourceCodeContentCommitted);
 
-    SDK.SDKModel.TargetManager.instance().addEventListener(
-        SDK.SDKModel.Events.InspectedURLChanged, this._inspectedURLChanged, this);
+    SDK.TargetManager.TargetManager.instance().addEventListener(
+        SDK.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
   }
 
   _notifyResourceAdded(event: any): void {
@@ -700,7 +700,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
   _addExtension(extensionInfo: Host.InspectorFrontendHostAPI.ExtensionDescriptor): boolean|undefined {
     const startPage = extensionInfo.startPage;
 
-    const inspectedURL = SDK.SDKModel.TargetManager.instance().mainTarget().inspectedURL();
+    const inspectedURL = SDK.TargetManager.TargetManager.instance().mainTarget().inspectedURL();
     if (inspectedURL !== '' && !this._canInspectURL(inspectedURL)) {
       this._disableExtensions();
     }
@@ -796,10 +796,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
       handler: (arg0: Common.EventTarget.EventTargetEvent) => any): void {
     this._registerSubscriptionHandler(
         eventTopic,
-        SDK.SDKModel.TargetManager.instance().addModelListener.bind(
-            SDK.SDKModel.TargetManager.instance(), modelClass, frontendEventType, handler, this),
-        SDK.SDKModel.TargetManager.instance().removeModelListener.bind(
-            SDK.SDKModel.TargetManager.instance(), modelClass, frontendEventType, handler, this));
+        SDK.TargetManager.TargetManager.instance().addModelListener.bind(
+            SDK.TargetManager.TargetManager.instance(), modelClass, frontendEventType, handler, this),
+        SDK.TargetManager.TargetManager.instance().removeModelListener.bind(
+            SDK.TargetManager.TargetManager.instance(), modelClass, frontendEventType, handler, this));
   }
 
   _registerResourceContentCommittedHandler(handler: any): void {
@@ -869,7 +869,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     if (options.frameURL) {
       frame = resolveURLToFrame(options.frameURL);
     } else {
-      const target = SDK.SDKModel.TargetManager.instance().mainTarget();
+      const target = SDK.TargetManager.TargetManager.instance().mainTarget();
       const resourceTreeModel = target && target.model(SDK.ResourceTreeModel.ResourceTreeModel);
       frame = resourceTreeModel && resourceTreeModel.mainFrame;
     }

@@ -22,7 +22,7 @@ export class GCActionDelegate implements UI.ActionRegistration.ActionDelegate {
   }
 
   handleAction(_context: UI.Context.Context, _actionId: string): boolean {
-    for (const heapProfilerModel of SDK.SDKModel.TargetManager.instance().models(
+    for (const heapProfilerModel of SDK.TargetManager.TargetManager.instance().models(
              SDK.HeapProfilerModel.HeapProfilerModel)) {
       heapProfilerModel.collectGarbage();
     }

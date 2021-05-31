@@ -50,7 +50,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let _instance: NetworkLog;
 
 export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements
-    SDK.SDKModel.SDKModelObserver<SDK.NetworkManager.NetworkManager> {
+    SDK.TargetManager.SDKModelObserver<SDK.NetworkManager.NetworkManager> {
   _requests: SDK.NetworkRequest.NetworkRequest[];
   _sentNetworkRequests: Protocol.Network.Request[];
   _receivedNetworkResponses: Protocol.Network.Response[];
@@ -73,7 +73,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements
     this._isRecording = true;
     this._modelListeners = new WeakMap();
     this._initiatorData = new WeakMap();
-    SDK.SDKModel.TargetManager.instance().observeModels(SDK.NetworkManager.NetworkManager, this);
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.NetworkManager.NetworkManager, this);
     const recordLogSetting: Common.Settings.Setting<boolean> =
         Common.Settings.Settings.instance().moduleSetting('network_log.record-log');
     recordLogSetting.addChangeListener(() => {
@@ -136,10 +136,10 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements
     }
     this._isRecording = enabled;
     if (enabled) {
-      SDK.SDKModel.TargetManager.instance().observeModels(SDK.NetworkManager.NetworkManager, this);
+      SDK.TargetManager.TargetManager.instance().observeModels(SDK.NetworkManager.NetworkManager, this);
     } else {
-      SDK.SDKModel.TargetManager.instance().unobserveModels(SDK.NetworkManager.NetworkManager, this);
-      SDK.SDKModel.TargetManager.instance()
+      SDK.TargetManager.TargetManager.instance().unobserveModels(SDK.NetworkManager.NetworkManager, this);
+      SDK.TargetManager.TargetManager.instance()
           .models(SDK.NetworkManager.NetworkManager)
           .forEach(this._removeNetworkManagerListeners.bind(this));
     }
@@ -512,7 +512,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements
     this._requestsMap.clear();
     this._unresolvedPreflightRequests.clear();
     const managers = new Set<SDK.NetworkManager.NetworkManager>(
-        SDK.SDKModel.TargetManager.instance().models(SDK.NetworkManager.NetworkManager));
+        SDK.TargetManager.TargetManager.instance().models(SDK.NetworkManager.NetworkManager));
     for (const manager of this._pageLoadForManager.keys()) {
       if (!managers.has(manager)) {
         this._pageLoadForManager.delete(manager);

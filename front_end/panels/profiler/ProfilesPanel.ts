@@ -165,8 +165,8 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
 
     this.element.addEventListener('contextmenu', this._handleContextMenuEvent.bind(this), false);
 
-    SDK.SDKModel.TargetManager.instance().addEventListener(
-        SDK.SDKModel.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
+    SDK.TargetManager.TargetManager.instance().addEventListener(
+        SDK.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
     UI.Context.Context.instance().addFlavorChangeListener(
         SDK.CPUProfilerModel.CPUProfilerModel, this._updateProfileTypeSpecificUI, this);
     UI.Context.Context.instance().addFlavorChangeListener(
@@ -263,7 +263,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     const hasSelectedTarget = Boolean(
         UI.Context.Context.instance().flavor(SDK.CPUProfilerModel.CPUProfilerModel) ||
         UI.Context.Context.instance().flavor(SDK.HeapProfilerModel.HeapProfilerModel));
-    const enable = toggled || (!SDK.SDKModel.TargetManager.instance().allTargetsSuspended() && hasSelectedTarget);
+    const enable = toggled || (!SDK.TargetManager.TargetManager.instance().allTargetsSuspended() && hasSelectedTarget);
     this._toggleRecordAction.setEnabled(enable);
     this._toggleRecordAction.setToggled(toggled);
     if (enable) {

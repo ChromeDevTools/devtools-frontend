@@ -296,7 +296,7 @@ export class LighthousePanel extends UI.Panel.Panel {
   }
 
   async _waitForMainTargetLoad(): Promise<void> {
-    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+    const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
     if (!mainTarget) {
       return;
     }
@@ -449,7 +449,7 @@ export class LighthousePanel extends UI.Panel.Panel {
 
     Emulation.InspectedPagePlaceholder.InspectedPagePlaceholder.instance().update(true);
 
-    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+    const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
     if (!mainTarget) {
       return;
     }

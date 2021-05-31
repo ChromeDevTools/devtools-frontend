@@ -21,10 +21,10 @@ const styleSheetOffsetMap = new WeakMap<SDK.CSSStyleSheetHeader.CSSStyleSheetHea
 const scriptOffsetMap = new WeakMap<SDK.Script.Script, TextUtils.TextRange.TextRange>();
 const boundUISourceCodes = new WeakSet<Workspace.UISourceCode.UISourceCode>();
 
-export class ResourceMapping implements SDK.SDKModel.SDKModelObserver<SDK.ResourceTreeModel.ResourceTreeModel> {
+export class ResourceMapping implements SDK.TargetManager.SDKModelObserver<SDK.ResourceTreeModel.ResourceTreeModel> {
   _workspace: Workspace.Workspace.WorkspaceImpl;
   _modelToInfo: Map<SDK.ResourceTreeModel.ResourceTreeModel, ModelInfo>;
-  private constructor(targetManager: SDK.SDKModel.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl) {
+  private constructor(targetManager: SDK.TargetManager.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl) {
     this._workspace = workspace;
     this._modelToInfo = new Map();
     targetManager.observeModels(SDK.ResourceTreeModel.ResourceTreeModel, this);
@@ -32,7 +32,7 @@ export class ResourceMapping implements SDK.SDKModel.SDKModelObserver<SDK.Resour
 
   static instance(opts: {
     forceNew: boolean|null,
-    targetManager: SDK.SDKModel.TargetManager|null,
+    targetManager: SDK.TargetManager.TargetManager|null,
     workspace: Workspace.Workspace.WorkspaceImpl|null,
   } = {forceNew: null, targetManager: null, workspace: null}): ResourceMapping {
     const {forceNew, targetManager, workspace} = opts;

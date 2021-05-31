@@ -77,7 +77,7 @@ export class BackForwardCacheView extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   private getMainResourceTreeModel(): SDK.ResourceTreeModel.ResourceTreeModel|null {
-    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+    const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
     return mainTarget?.model(SDK.ResourceTreeModel.ResourceTreeModel) || null;
   }
 

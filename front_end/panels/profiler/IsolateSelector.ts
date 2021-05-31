@@ -91,9 +91,10 @@ export class IsolateSelector extends UI.Widget.VBox implements UI.ListControl.Li
     UI.Tooltip.Tooltip.install(this._totalValueDiv, i18nString(UIStrings.totalPageJsHeapSizeAcrossAllVm));
 
     SDK.IsolateManager.IsolateManager.instance().observeIsolates(this);
-    SDK.SDKModel.TargetManager.instance().addEventListener(SDK.SDKModel.Events.NameChanged, this._targetChanged, this);
-    SDK.SDKModel.TargetManager.instance().addEventListener(
-        SDK.SDKModel.Events.InspectedURLChanged, this._targetChanged, this);
+    SDK.TargetManager.TargetManager.instance().addEventListener(
+        SDK.TargetManager.Events.NameChanged, this._targetChanged, this);
+    SDK.TargetManager.TargetManager.instance().addEventListener(
+        SDK.TargetManager.Events.InspectedURLChanged, this._targetChanged, this);
   }
 
   wasShown(): void {
@@ -110,7 +111,7 @@ export class IsolateSelector extends UI.Widget.VBox implements UI.ListControl.Li
     this._list.element.tabIndex = 0;
     const item = new ListItem(isolate);
     const index = (item.model() as SDK.RuntimeModel.RuntimeModel).target() ===
-            SDK.SDKModel.TargetManager.instance().mainTarget() ?
+            SDK.TargetManager.TargetManager.instance().mainTarget() ?
         0 :
         this._items.length;
     this._items.insert(index, item);
@@ -273,7 +274,7 @@ export class ListItem {
     const modelCountByName = new Map<string, number>();
     for (const model of this._isolate.models()) {
       const target = model.target();
-      const name = SDK.SDKModel.TargetManager.instance().mainTarget() !== target ? target.name() : '';
+      const name = SDK.TargetManager.TargetManager.instance().mainTarget() !== target ? target.name() : '';
       const parsedURL = new Common.ParsedURL.ParsedURL(target.inspectedURL());
       const domain = parsedURL.isValid ? parsedURL.domain() : '';
       const title =

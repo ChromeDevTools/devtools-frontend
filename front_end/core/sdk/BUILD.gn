@@ -64,6 +64,7 @@ devtools_module("sdk") {
     "ServiceWorkerManager.ts",
     "SourceMap.ts",
     "SourceMapManager.ts",
+    "TargetManager.ts",
     "TracingManager.ts",
     "TracingModel.ts",
     "WebAuthnModel.ts",

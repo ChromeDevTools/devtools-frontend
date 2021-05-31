@@ -326,7 +326,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/AppManifestView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class AppManifestView extends UI.Widget.VBox implements SDK.SDKModel.Observer {
+export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager.Observer {
   _emptyView: UI.EmptyWidget.EmptyWidget;
   _reportView: UI.ReportView.ReportView;
   _errorsSection: UI.ReportView.Section;
@@ -398,7 +398,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.SDKModel.Obse
     this._displayField = this._presentationSection.appendField(i18nString(UIStrings.display));
 
     this._throttler = new Common.Throttler.Throttler(1000);
-    SDK.SDKModel.TargetManager.instance().observeTargets(this);
+    SDK.TargetManager.TargetManager.instance().observeTargets(this);
     this._registeredListeners = [];
   }
 

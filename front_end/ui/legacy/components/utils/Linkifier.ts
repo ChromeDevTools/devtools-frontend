@@ -86,7 +86,7 @@ const linkHandlers = new Map<string, LinkHandler>();
 
 let linkHandlerSettingInstance: Common.Settings.Setting<string>;
 
-export class Linkifier implements SDK.SDKModel.Observer {
+export class Linkifier implements SDK.TargetManager.Observer {
   _maxLength: number;
   _anchorsByTarget: Map<SDK.SDKModel.Target, Element[]>;
   _locationPoolByTarget: Map<SDK.SDKModel.Target, Bindings.LiveLocation.LiveLocationPool>;
@@ -102,7 +102,7 @@ export class Linkifier implements SDK.SDKModel.Observer {
     this._onLiveLocationUpdate = onLiveLocationUpdate;
     this._useLinkDecorator = Boolean(useLinkDecorator);
     instances.add(this);
-    SDK.SDKModel.TargetManager.instance().observeTargets(this);
+    SDK.TargetManager.TargetManager.instance().observeTargets(this);
   }
 
   static setLinkDecorator(linkDecorator: LinkDecorator): void {
@@ -441,7 +441,7 @@ export class Linkifier implements SDK.SDKModel.Observer {
     for (const target of [...this._anchorsByTarget.keys()]) {
       this.targetRemoved(target);
     }
-    SDK.SDKModel.TargetManager.instance().unobserveTargets(this);
+    SDK.TargetManager.TargetManager.instance().unobserveTargets(this);
     instances.delete(this);
   }
 

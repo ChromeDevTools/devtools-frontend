@@ -12,9 +12,9 @@ const modelToEventListeners = new WeakMap<SDK.LogModel.LogModel, Common.EventTar
 
 let instance: LogManager|null = null;
 
-export class LogManager implements SDK.SDKModel.SDKModelObserver<SDK.LogModel.LogModel> {
+export class LogManager implements SDK.TargetManager.SDKModelObserver<SDK.LogModel.LogModel> {
   private constructor() {
-    SDK.SDKModel.TargetManager.instance().observeModels(SDK.LogModel.LogModel, this);
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.LogModel.LogModel, this);
   }
 
   static instance({forceNew}: {forceNew: boolean} = {forceNew: false}): LogManager {
@@ -60,11 +60,11 @@ export class LogManager implements SDK.SDKModel.SDKModelObserver<SDK.LogModel.Lo
       // user can see messages from the worker which has been already destroyed.
       // When opening DevTools, give us some time to connect to the worker and
       // not report the message twice if the worker is still alive.
-      if (SDK.SDKModel.TargetManager.instance().targetById(workerId)) {
+      if (SDK.TargetManager.TargetManager.instance().targetById(workerId)) {
         return;
       }
       setTimeout(() => {
-        if (!SDK.SDKModel.TargetManager.instance().targetById(workerId)) {
+        if (!SDK.TargetManager.TargetManager.instance().targetById(workerId)) {
           SDK.ConsoleModel.ConsoleModel.instance().addMessage(consoleMessage);
         }
       }, 1000);

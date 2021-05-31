@@ -318,10 +318,10 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     this._toggleRecordFilmStrip();
     this._updateUI();
 
-    SDK.SDKModel.TargetManager.instance().addModelListener(
+    SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.WillReloadPage, this._willReloadPage,
         this);
-    SDK.SDKModel.TargetManager.instance().addModelListener(
+    SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._load, this);
     this._networkLogView.addEventListener(Events.RequestSelected, this._onRequestSelected, this);
     this._networkLogView.addEventListener(Events.RequestActivated, this._onRequestActivated, this);
@@ -887,7 +887,7 @@ export class FilmStripRecorder implements SDK.TracingManager.TracingManagerClien
   startRecording(): void {
     this._filmStripView.reset();
     this._filmStripView.setStatusText(i18nString(UIStrings.recordingFrames));
-    const tracingManagers = SDK.SDKModel.TargetManager.instance().models(SDK.TracingManager.TracingManager);
+    const tracingManagers = SDK.TargetManager.TargetManager.instance().models(SDK.TracingManager.TracingManager);
     if (this._tracingManager || !tracingManagers.length) {
       return;
     }

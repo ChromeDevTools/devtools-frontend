@@ -16,7 +16,7 @@ export class ContrastCheckTrigger extends Common.ObjectWrapper.ObjectWrapper {
 
   constructor() {
     super();
-    SDK.SDKModel.TargetManager.instance().observeModels(SDK.ResourceTreeModel.ResourceTreeModel, this);
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.ResourceTreeModel.ResourceTreeModel, this);
   }
 
   static instance({forceNew}: {forceNew: boolean} = {forceNew: false}): ContrastCheckTrigger {

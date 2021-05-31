@@ -12,7 +12,7 @@ import {Memory} from './LineLevelProfile.js';
 
 let liveHeapProfileInstance: LiveHeapProfile;
 export class LiveHeapProfile implements Common.Runnable.Runnable,
-                                        SDK.SDKModel.SDKModelObserver<SDK.HeapProfilerModel.HeapProfilerModel> {
+                                        SDK.TargetManager.SDKModelObserver<SDK.HeapProfilerModel.HeapProfilerModel> {
   _running: boolean;
   _sessionId: number;
   _loadEventCallback: (arg0?: Function|null) => void;
@@ -56,12 +56,12 @@ export class LiveHeapProfile implements Common.Runnable.Runnable,
     }
     this._running = true;
     const sessionId = this._sessionId;
-    SDK.SDKModel.TargetManager.instance().observeModels(SDK.HeapProfilerModel.HeapProfilerModel, this);
-    SDK.SDKModel.TargetManager.instance().addModelListener(
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.HeapProfilerModel.HeapProfilerModel, this);
+    SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._loadEventFired, this);
 
     do {
-      const models = SDK.SDKModel.TargetManager.instance().models(SDK.HeapProfilerModel.HeapProfilerModel);
+      const models = SDK.TargetManager.TargetManager.instance().models(SDK.HeapProfilerModel.HeapProfilerModel);
       const profiles = await Promise.all(models.map(model => model.getSamplingProfile()));
       if (sessionId !== this._sessionId) {
         break;
@@ -83,10 +83,10 @@ export class LiveHeapProfile implements Common.Runnable.Runnable,
       ]);
     } while (sessionId === this._sessionId);
 
-    SDK.SDKModel.TargetManager.instance().unobserveModels(SDK.HeapProfilerModel.HeapProfilerModel, this);
-    SDK.SDKModel.TargetManager.instance().removeModelListener(
+    SDK.TargetManager.TargetManager.instance().unobserveModels(SDK.HeapProfilerModel.HeapProfilerModel, this);
+    SDK.TargetManager.TargetManager.instance().removeModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._loadEventFired, this);
-    for (const model of SDK.SDKModel.TargetManager.instance().models(SDK.HeapProfilerModel.HeapProfilerModel)) {
+    for (const model of SDK.TargetManager.TargetManager.instance().models(SDK.HeapProfilerModel.HeapProfilerModel)) {
       model.stopSampling();
     }
     Memory.instance().reset();

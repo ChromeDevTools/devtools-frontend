@@ -740,7 +740,8 @@ export class SourceScope implements SDK.DebuggerModel.ScopeChainEntry {
   }
 }
 
-export class DebuggerLanguagePluginManager implements SDK.SDKModel.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
+export class DebuggerLanguagePluginManager implements
+    SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
   _workspace: Workspace.Workspace.WorkspaceImpl;
   _debuggerWorkspaceBinding: DebuggerWorkspaceBinding;
   _plugins: DebuggerLanguagePlugin[];
@@ -753,7 +754,7 @@ export class DebuggerLanguagePluginManager implements SDK.SDKModel.SDKModelObser
   }>;
 
   constructor(
-      targetManager: SDK.SDKModel.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl,
+      targetManager: SDK.TargetManager.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl,
       debuggerWorkspaceBinding: DebuggerWorkspaceBinding) {
     this._workspace = workspace;
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;

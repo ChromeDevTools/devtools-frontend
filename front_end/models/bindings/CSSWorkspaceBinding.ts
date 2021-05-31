@@ -17,13 +17,13 @@ import {StylesSourceMapping} from './StylesSourceMapping.js';
 
 let cssWorkspaceBindingInstance: CSSWorkspaceBinding;
 
-export class CSSWorkspaceBinding implements SDK.SDKModel.SDKModelObserver<SDK.CSSModel.CSSModel> {
+export class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<SDK.CSSModel.CSSModel> {
   _workspace: Workspace.Workspace.WorkspaceImpl;
   _modelToInfo: Map<SDK.CSSModel.CSSModel, ModelInfo>;
   _sourceMappings: SourceMapping[];
   _liveLocationPromises: Set<Promise<unknown>>;
 
-  private constructor(targetManager: SDK.SDKModel.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl) {
+  private constructor(targetManager: SDK.TargetManager.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl) {
     this._workspace = workspace;
 
     this._modelToInfo = new Map();
@@ -35,7 +35,7 @@ export class CSSWorkspaceBinding implements SDK.SDKModel.SDKModelObserver<SDK.CS
 
   static instance(opts: {
     forceNew: boolean|null,
-    targetManager: SDK.SDKModel.TargetManager|null,
+    targetManager: SDK.TargetManager.TargetManager|null,
     workspace: Workspace.Workspace.WorkspaceImpl|null,
   } = {forceNew: null, targetManager: null, workspace: null}): CSSWorkspaceBinding {
     const {forceNew, targetManager, workspace} = opts;

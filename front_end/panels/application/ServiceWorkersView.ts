@@ -176,7 +176,7 @@ export const setThrottleDisabledForDebugging = (enable: boolean): void => {
 };
 
 export class ServiceWorkersView extends UI.Widget.VBox implements
-    SDK.SDKModel.SDKModelObserver<SDK.ServiceWorkerManager.ServiceWorkerManager> {
+    SDK.TargetManager.SDKModelObserver<SDK.ServiceWorkerManager.ServiceWorkerManager> {
   _currentWorkersView: UI.ReportView.ReportView;
   _toolbar: UI.Toolbar.Toolbar;
   _sections: Map<SDK.ServiceWorkerManager.ServiceWorkerRegistration, Section>;
@@ -217,7 +217,7 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
         UI.Fragment
             .html`<a class="devtools-link" role="link" tabindex="0" href="chrome://serviceworker-internals" target="_blank" style="display: inline; cursor: pointer;">See all registrations</a>`;
     self.onInvokeElement(seeOthers, event => {
-      const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+      const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
       mainTarget && mainTarget.targetAgent().invoke_createTarget({url: 'chrome://serviceworker-internals?devtools'});
       event.consume(true);
     });
@@ -238,7 +238,7 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
     this._toolbar.appendToolbarItem(fallbackToNetwork);
 
     this._eventListeners = new Map();
-    SDK.SDKModel.TargetManager.instance().observeModels(SDK.ServiceWorkerManager.ServiceWorkerManager, this);
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.ServiceWorkerManager.ServiceWorkerManager, this);
     this._updateListVisibility();
 
     const drawerChangeHandler = (event: Event): void => {
@@ -559,7 +559,7 @@ export class Section {
     if (!version || !version.targetId) {
       return null;
     }
-    return SDK.SDKModel.TargetManager.instance().targetById(version.targetId);
+    return SDK.TargetManager.TargetManager.instance().targetById(version.targetId);
   }
 
   _addVersion(versionsStack: Element, icon: string, label: string): Element {

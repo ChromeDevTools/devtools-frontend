@@ -191,7 +191,8 @@ export const GenericFonts = [
 ];
 
 export async function generateComputedFontArray(): Promise<string[]> {
-  const modelArray = SDK.SDKModel.TargetManager.instance().models(CssOverviewModule.CSSOverviewModel.CSSOverviewModel);
+  const modelArray =
+      SDK.TargetManager.TargetManager.instance().models(CssOverviewModule.CSSOverviewModel.CSSOverviewModel);
   if (modelArray) {
     const cssOverviewModel = modelArray[0];
     if (cssOverviewModel) {

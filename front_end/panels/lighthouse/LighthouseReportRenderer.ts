@@ -81,7 +81,7 @@ export class LighthouseReportRenderer extends self.ReportRenderer {
   }
 
   static async linkifyNodeDetails(el: Element): Promise<void> {
-    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+    const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
     if (!mainTarget) {
       return;
     }

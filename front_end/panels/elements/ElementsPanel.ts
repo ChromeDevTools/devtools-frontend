@@ -144,7 +144,7 @@ const legacyNodeToNewBreadcrumbsNode = (node: SDK.DOMModel.DOMNode): ElementsCom
 let elementsPanelInstance: ElementsPanel;
 
 export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.Searchable,
-                                                             SDK.SDKModel.SDKModelObserver<SDK.DOMModel.DOMModel>,
+                                                             SDK.TargetManager.SDKModelObserver<SDK.DOMModel.DOMModel>,
                                                              UI.View.ViewLocationResolver {
   _splitWidget: UI.SplitWidget.SplitWidget;
   _searchableView: UI.SearchableView.SearchableView;
@@ -234,13 +234,13 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     this._treeOutlines = new Set();
     this._treeOutlineHeaders = new Map();
     this._gridStyleTrackerByCSSModel = new Map();
-    SDK.SDKModel.TargetManager.instance().observeModels(SDK.DOMModel.DOMModel, this);
-    SDK.SDKModel.TargetManager.instance().addEventListener(
-        SDK.SDKModel.Events.NameChanged, event => this._targetNameChanged((event.data as SDK.SDKModel.Target)));
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.DOMModel.DOMModel, this);
+    SDK.TargetManager.TargetManager.instance().addEventListener(
+        SDK.TargetManager.Events.NameChanged, event => this._targetNameChanged((event.data as SDK.SDKModel.Target)));
     Common.Settings.Settings.instance()
         .moduleSetting('showUAShadowDOM')
         .addChangeListener(this._showUAShadowDOMChanged.bind(this));
-    SDK.SDKModel.TargetManager.instance().addModelListener(
+    SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.DocumentUpdated, this._documentUpdatedEvent, this);
     Extensions.ExtensionServer.ExtensionServer.instance().addEventListener(
         Extensions.ExtensionServer.Events.SidebarPaneAdded, this._extensionSidebarPaneAdded, this);
@@ -422,7 +422,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     }
     super.wasShown();
 
-    const domModels = SDK.SDKModel.TargetManager.instance().models(SDK.DOMModel.DOMModel);
+    const domModels = SDK.TargetManager.TargetManager.instance().models(SDK.DOMModel.DOMModel);
     for (const domModel of domModels) {
       if (domModel.parentModel()) {
         continue;
@@ -614,7 +614,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     this._searchConfig = searchConfig;
 
     const showUAShadowDOM = Common.Settings.Settings.instance().moduleSetting('showUAShadowDOM').get();
-    const domModels = SDK.SDKModel.TargetManager.instance().models(SDK.DOMModel.DOMModel);
+    const domModels = SDK.TargetManager.TargetManager.instance().models(SDK.DOMModel.DOMModel);
     const promises = domModels.map(domModel => domModel.performSearch(whitespaceTrimmedQuery, showUAShadowDOM));
     Promise.all(promises).then(resultCounts => {
       this._searchResults = [];

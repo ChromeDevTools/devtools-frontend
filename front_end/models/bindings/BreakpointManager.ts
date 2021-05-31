@@ -44,13 +44,13 @@ let breakpointManagerInstance: BreakpointManager;
 export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper {
   _storage: Storage;
   _workspace: Workspace.Workspace.WorkspaceImpl;
-  _targetManager: SDK.SDKModel.TargetManager;
+  _targetManager: SDK.TargetManager.TargetManager;
   _debuggerWorkspaceBinding: DebuggerWorkspaceBinding;
   _breakpointsForUISourceCode: Map<Workspace.UISourceCode.UISourceCode, Map<string, BreakpointLocation>>;
   _breakpointByStorageId: Map<string, Breakpoint>;
 
   private constructor(
-      targetManager: SDK.SDKModel.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl,
+      targetManager: SDK.TargetManager.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl,
       debuggerWorkspaceBinding: DebuggerWorkspaceBinding) {
     super();
     this._storage = new Storage();
@@ -68,7 +68,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper {
 
   static instance(opts: {
     forceNew: boolean|null,
-    targetManager: SDK.SDKModel.TargetManager|null,
+    targetManager: SDK.TargetManager.TargetManager|null,
     workspace: Workspace.Workspace.WorkspaceImpl|null,
     debuggerWorkspaceBinding: DebuggerWorkspaceBinding|null,
   } = {forceNew: null, targetManager: null, workspace: null, debuggerWorkspaceBinding: null}): BreakpointManager {
@@ -297,7 +297,7 @@ export enum Events {
   BreakpointRemoved = 'breakpoint-removed',
 }
 
-export class Breakpoint implements SDK.SDKModel.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
+export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
   _breakpointManager: BreakpointManager;
   _url: string;
   _lineNumber: number;

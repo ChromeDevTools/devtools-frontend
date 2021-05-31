@@ -16,7 +16,8 @@ import {DeferredDOMNode, DOMModel, Events as DOMModelEvents} from './DOMModel.js
 import {OverlayPersistentHighlighter} from './OverlayPersistentHighlighter.js';
 import type {RemoteObject} from './RemoteObject.js'; // eslint-disable-line no-unused-vars
 import type {Target} from './SDKModel.js';
-import {Capability, SDKModel, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import {Capability, SDKModel} from './SDKModel.js';
+import {TargetManager} from './TargetManager.js';
 
 const UIStrings = {
   /**

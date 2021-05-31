@@ -57,9 +57,9 @@ export class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
       this._createBreakpoint(breakpoint);
     }
 
-    SDK.SDKModel.TargetManager.instance().addModelListener(
+    SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._update, this);
-    SDK.SDKModel.TargetManager.instance().addModelListener(
+    SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this._update, this);
     UI.Context.Context.instance().addFlavorChangeListener(SDK.SDKModel.Target, this._update, this);
   }

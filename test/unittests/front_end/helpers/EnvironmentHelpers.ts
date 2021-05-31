@@ -35,11 +35,11 @@ try {
   console.warn('EnvironmentHelper: Loading en-US locale failed', error.message);
 }
 
-let targetManager: SDK.SDKModel.TargetManager;
+let targetManager: SDK.TargetManager.TargetManager;
 
 function initializeTargetManagerIfNecessary() {
   // Create the target manager.
-  targetManager = targetManager || SDK.SDKModel.TargetManager.instance({forceNew: true});
+  targetManager = targetManager || SDK.TargetManager.TargetManager.instance({forceNew: true});
 }
 
 export function createTarget({id = 'test', name = 'test', type = SDK.SDKModel.Type.Frame} = {}) {
@@ -141,7 +141,7 @@ export async function deinitializeGlobalVars() {
   delete globalObject.ls;
 
   // Remove instances.
-  SDK.SDKModel.TargetManager.removeInstance();
+  SDK.TargetManager.TargetManager.removeInstance();
   Root.Runtime.Runtime.removeInstance();
   Common.Settings.Settings.removeInstance();
   Common.Settings.resetSettings();

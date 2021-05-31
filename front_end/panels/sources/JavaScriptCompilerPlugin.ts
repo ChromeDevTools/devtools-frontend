@@ -45,7 +45,7 @@ export class JavaScriptCompilerPlugin extends Plugin {
     if (Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode)) {
       return true;
     }
-    for (const debuggerModel of SDK.SDKModel.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel)) {
+    for (const debuggerModel of SDK.TargetManager.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel)) {
       if (Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptFile(
               uiSourceCode, debuggerModel)) {
         return true;
@@ -66,7 +66,7 @@ export class JavaScriptCompilerPlugin extends Plugin {
   }
 
   _findRuntimeModel(): SDK.RuntimeModel.RuntimeModel|null {
-    const debuggerModels = SDK.SDKModel.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel);
+    const debuggerModels = SDK.TargetManager.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel);
     for (let i = 0; i < debuggerModels.length; ++i) {
       const scriptFile = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptFile(
           this._uiSourceCode, debuggerModels[i]);
@@ -74,7 +74,7 @@ export class JavaScriptCompilerPlugin extends Plugin {
         return debuggerModels[i].runtimeModel();
       }
     }
-    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+    const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
     return mainTarget ? mainTarget.model(SDK.RuntimeModel.RuntimeModel) : null;
   }
 

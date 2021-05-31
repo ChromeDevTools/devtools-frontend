@@ -87,7 +87,7 @@ const playbackRates = new WeakMap<HTMLElement, number>();
 
 let animationTimelineInstance: AnimationTimeline;
 
-export class AnimationTimeline extends UI.Widget.VBox implements SDK.SDKModel.SDKModelObserver<AnimationModel> {
+export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManager.SDKModelObserver<AnimationModel> {
   _gridWrapper: HTMLElement;
   _grid: Element;
   _playbackRate: number;
@@ -146,9 +146,9 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.SDKModel.SD
     this._previewMap = new Map();
     this._symbol = Symbol('animationTimeline');
     this._animationsMap = new Map();
-    SDK.SDKModel.TargetManager.instance().addModelListener(
+    SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
-    SDK.SDKModel.TargetManager.instance().observeModels(AnimationModel, this);
+    SDK.TargetManager.TargetManager.instance().observeModels(AnimationModel, this);
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this._nodeChanged, this);
   }
 
@@ -160,13 +160,13 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.SDKModel.SD
   }
 
   wasShown(): void {
-    for (const animationModel of SDK.SDKModel.TargetManager.instance().models(AnimationModel)) {
+    for (const animationModel of SDK.TargetManager.TargetManager.instance().models(AnimationModel)) {
       this._addEventListeners(animationModel);
     }
   }
 
   willHide(): void {
-    for (const animationModel of SDK.SDKModel.TargetManager.instance().models(AnimationModel)) {
+    for (const animationModel of SDK.TargetManager.TargetManager.instance().models(AnimationModel)) {
       this._removeEventListeners(animationModel);
     }
 
@@ -367,7 +367,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.SDKModel.SD
 
   _setPlaybackRate(playbackRate: number): void {
     this._playbackRate = playbackRate;
-    for (const animationModel of SDK.SDKModel.TargetManager.instance().models(AnimationModel)) {
+    for (const animationModel of SDK.TargetManager.TargetManager.instance().models(AnimationModel)) {
       animationModel.setPlaybackRate(this._allPaused ? 0 : this._playbackRate);
     }
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AnimationsPlaybackRateChanged);

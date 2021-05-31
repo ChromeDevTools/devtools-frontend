@@ -67,7 +67,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let throttlingManagerInstance: ThrottlingManager;
 
 export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper implements
-    SDK.SDKModel.SDKModelObserver<SDK.EmulationModel.EmulationModel> {
+    SDK.TargetManager.SDKModelObserver<SDK.EmulationModel.EmulationModel> {
   _cpuThrottlingRate: number;
   _cpuThrottlingControls: Set<UI.Toolbar.ToolbarComboBox>;
   _cpuThrottlingRates: number[];
@@ -90,7 +90,7 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper implem
               SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
         });
 
-    SDK.SDKModel.TargetManager.instance().observeModels(SDK.EmulationModel.EmulationModel, this);
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.EmulationModel.EmulationModel, this);
   }
 
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): ThrottlingManager {
@@ -234,7 +234,7 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper implem
 
   setCPUThrottlingRate(rate: number): void {
     this._cpuThrottlingRate = rate;
-    for (const emulationModel of SDK.SDKModel.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
+    for (const emulationModel of SDK.TargetManager.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
       emulationModel.setCPUThrottlingRate(this._cpuThrottlingRate);
     }
     let icon: UI.Icon.Icon|null = null;

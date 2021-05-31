@@ -17,7 +17,8 @@ async function getEmMultiplier(isFontSizeProperty?: boolean): Promise<number> {
   const selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
   let currentFontSize;
   if (selectedNode && selectedNode.parentNode && selectedNode.nodeName() !== 'HTML') {
-    const [model] = SDK.SDKModel.TargetManager.instance().models(CssOverviewModule.CSSOverviewModel.CSSOverviewModel);
+    const [model] =
+        SDK.TargetManager.TargetManager.instance().models(CssOverviewModule.CSSOverviewModel.CSSOverviewModel);
     const fontSizeNodeId = isFontSizeProperty ? selectedNode.parentNode.id : selectedNode.id;
     const computedFontSize = await model.getComputedStyleForNode(fontSizeNodeId).then(findFontSizeValue);
     const computedFontSizeValue = computedFontSize.replace(/[a-z]/g, '');
@@ -34,7 +35,8 @@ async function getRemMultiplier(): Promise<number> {
   if (!htmlNode || !htmlNode.id) {
     return 16;
   }
-  const [model] = SDK.SDKModel.TargetManager.instance().models(CssOverviewModule.CSSOverviewModel.CSSOverviewModel);
+  const [model] =
+      SDK.TargetManager.TargetManager.instance().models(CssOverviewModule.CSSOverviewModel.CSSOverviewModel);
   const computedRootFontSize = await model.getComputedStyleForNode(htmlNode.id).then(findFontSizeValue);
   const rootFontSizeValue = computedRootFontSize.replace(/[a-z]/g, '');
   const rootFontSize = parseFloat(rootFontSizeValue);

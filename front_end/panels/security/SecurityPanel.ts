@@ -457,7 +457,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let securityPanelInstance: SecurityPanel;
 
-export class SecurityPanel extends UI.Panel.PanelWithSidebar implements SDK.SDKModel.SDKModelObserver<SecurityModel> {
+export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
+    SDK.TargetManager.SDKModelObserver<SecurityModel> {
   _mainView: SecurityMainView;
   _sidebarMainViewElement: SecurityPanelSidebarTreeElement;
   _sidebarTree: SecurityPanelSidebarTree;
@@ -488,7 +489,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements SDK.SDKM
 
     this._filterRequestCounts = new Map();
 
-    SDK.SDKModel.TargetManager.instance().observeModels(SecurityModel, this);
+    SDK.TargetManager.TargetManager.instance().observeModels(SecurityModel, this);
 
     this._visibleView = null;
     this._eventListeners = [];

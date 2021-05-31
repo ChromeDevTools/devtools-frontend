@@ -26,7 +26,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let webAudioViewInstance: WebAudioView;
 export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
-    SDK.SDKModel.SDKModelObserver<WebAudioModel> {
+    SDK.TargetManager.SDKModelObserver<WebAudioModel> {
   _contextSelector: AudioContextSelector;
   _contentContainer: HTMLElement;
   _detailViewContainer: HTMLElement;
@@ -74,7 +74,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
           this.doUpdate();
         });
 
-    SDK.SDKModel.TargetManager.instance().observeModels(WebAudioModel, this);
+    SDK.TargetManager.TargetManager.instance().observeModels(WebAudioModel, this);
   }
 
   static instance(opts = {forceNew: null}): WebAudioView {
@@ -88,13 +88,13 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
 
   wasShown(): void {
     super.wasShown();
-    for (const model of SDK.SDKModel.TargetManager.instance().models(WebAudioModel)) {
+    for (const model of SDK.TargetManager.TargetManager.instance().models(WebAudioModel)) {
       this._addEventListeners(model);
     }
   }
 
   willHide(): void {
-    for (const model of SDK.SDKModel.TargetManager.instance().models(WebAudioModel)) {
+    for (const model of SDK.TargetManager.TargetManager.instance().models(WebAudioModel)) {
       this._removeEventListeners(model);
     }
   }
@@ -349,7 +349,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
       return;
     }
 
-    for (const model of SDK.SDKModel.TargetManager.instance().models(WebAudioModel)) {
+    for (const model of SDK.TargetManager.TargetManager.instance().models(WebAudioModel)) {
       // Display summary only for real-time context.
       if (context.contextType === 'realtime') {
         if (!this._graphManager.hasContext(context.contextId)) {

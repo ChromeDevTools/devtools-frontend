@@ -213,7 +213,7 @@ export class InputTimeline extends UI.Widget.VBox implements Timeline.TimelineLo
   async _startRecording(): Promise<void> {
     this._setState(State.StartPending);
     this._tracingClient =
-        new TracingClient(SDK.SDKModel.TargetManager.instance().mainTarget() as SDK.SDKModel.Target, this);
+        new TracingClient(SDK.TargetManager.TargetManager.instance().mainTarget() as SDK.SDKModel.Target, this);
 
     const response = await this._tracingClient.startRecording();
     // @ts-ignore crbug.com/1011811 Fix tracing manager type once Closure is gone
@@ -271,7 +271,7 @@ export class InputTimeline extends UI.Widget.VBox implements Timeline.TimelineLo
       this._reset();
       return;
     }
-    this._inputModel = new InputModel(SDK.SDKModel.TargetManager.instance().mainTarget() as SDK.SDKModel.Target);
+    this._inputModel = new InputModel(SDK.TargetManager.TargetManager.instance().mainTarget() as SDK.SDKModel.Target);
     this._tracingModel = tracingModel;
     this._inputModel.setEvents(tracingModel);
 
@@ -375,7 +375,7 @@ export class TracingClient implements SDK.TracingManager.TracingManagerClient {
     }
 
     await this._waitForTracingToStop(true);
-    await SDK.SDKModel.TargetManager.instance().resumeAllTargets();
+    await SDK.TargetManager.TargetManager.instance().resumeAllTargets();
     this._tracingModel.tracingComplete();
     this._client.loadingComplete(this._tracingModel);
   }

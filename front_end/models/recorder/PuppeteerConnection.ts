@@ -74,7 +74,7 @@ export class Transport implements puppeteer.ConnectionTransport {
 
 export async function getPuppeteerConnection():
     Promise<{page: puppeteer.Page | null, connection: SDK.Connections.ParallelConnection, browser: puppeteer.Browser}> {
-  const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+  const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
   if (!mainTarget) {
     throw new Error('Could not find main target');
   }

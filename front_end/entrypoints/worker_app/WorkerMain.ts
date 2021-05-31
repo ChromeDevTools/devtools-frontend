@@ -36,7 +36,7 @@ export class WorkerMainImpl extends Common.ObjectWrapper.ObjectWrapper implement
 
   async run(): Promise<void> {
     SDK.Connections.initMainConnection(async () => {
-      SDK.SDKModel.TargetManager.instance().createTarget(
+      SDK.TargetManager.TargetManager.instance().createTarget(
           'main', i18nString(UIStrings.main), SDK.SDKModel.Type.ServiceWorker, null);
     }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);
     new MobileThrottling.NetworkPanelIndicator.NetworkPanelIndicator();

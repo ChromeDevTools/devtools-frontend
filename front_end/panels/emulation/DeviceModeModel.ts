@@ -74,7 +74,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let deviceModeModelInstance: DeviceModeModel;
 
 export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper implements
-    SDK.SDKModel.SDKModelObserver<SDK.EmulationModel.EmulationModel> {
+    SDK.TargetManager.SDKModelObserver<SDK.EmulationModel.EmulationModel> {
   _screenRect: UI.Geometry.Rect;
   _visiblePageRect: UI.Geometry.Rect;
   _availableSize: UI.Geometry.Size;
@@ -164,7 +164,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper implemen
 
     this._emulationModel = null;
     this._onModelAvailable = null;
-    SDK.SDKModel.TargetManager.instance().observeModels(SDK.EmulationModel.EmulationModel, this);
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.EmulationModel.EmulationModel, this);
   }
 
   static instance(opts: {
@@ -763,7 +763,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper implemen
   _applyTouch(touchEnabled: boolean, mobile: boolean): void {
     this._touchEnabled = touchEnabled;
     this._touchMobile = mobile;
-    for (const emulationModel of SDK.SDKModel.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
+    for (const emulationModel of SDK.TargetManager.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
       emulationModel.emulateTouch(touchEnabled, mobile);
     }
   }

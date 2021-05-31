@@ -35,7 +35,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineController.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class TimelineController implements SDK.SDKModel.SDKModelObserver<SDK.CPUProfilerModel.CPUProfilerModel>,
+export class TimelineController implements SDK.TargetManager.SDKModelObserver<SDK.CPUProfilerModel.CPUProfilerModel>,
                                            SDK.TracingManager.TracingManagerClient {
   _target: SDK.SDKModel.Target;
   _tracingManager: SDK.TracingManager.TracingManager|null;
@@ -63,11 +63,11 @@ export class TimelineController implements SDK.SDKModel.SDKModelObserver<SDK.CPU
     this._tracingModel = new SDK.TracingModel.TracingModel(backingStorage);
 
     this._extensionSessions = [];
-    SDK.SDKModel.TargetManager.instance().observeModels(SDK.CPUProfilerModel.CPUProfilerModel, this);
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.CPUProfilerModel.CPUProfilerModel, this);
   }
 
   dispose(): void {
-    SDK.SDKModel.TargetManager.instance().unobserveModels(SDK.CPUProfilerModel.CPUProfilerModel, this);
+    SDK.TargetManager.TargetManager.instance().unobserveModels(SDK.CPUProfilerModel.CPUProfilerModel, this);
   }
 
   mainTarget(): SDK.SDKModel.Target {
@@ -119,7 +119,7 @@ export class TimelineController implements SDK.SDKModel.SDKModelObserver<SDK.CPU
     const response = await this._startRecordingWithCategories(categoriesArray.join(','), options.enableJSSampling);
     if (response.getError()) {
       await this._waitForTracingToStop(false);
-      await SDK.SDKModel.TargetManager.instance().resumeAllTargets();
+      await SDK.TargetManager.TargetManager.instance().resumeAllTargets();
     }
     return response;
   }
@@ -165,7 +165,7 @@ export class TimelineController implements SDK.SDKModel.SDKModelObserver<SDK.CPU
 
   async _startProfilingOnAllModels(): Promise<void> {
     this._profiling = true;
-    const models = SDK.SDKModel.TargetManager.instance().models(SDK.CPUProfilerModel.CPUProfilerModel);
+    const models = SDK.TargetManager.TargetManager.instance().models(SDK.CPUProfilerModel.CPUProfilerModel);
     await Promise.all(models.map(model => model.startRecording()));
   }
 
@@ -182,7 +182,7 @@ export class TimelineController implements SDK.SDKModel.SDKModelObserver<SDK.CPU
 
   async _stopProfilingOnAllModels(): Promise<void> {
     const models =
-        this._profiling ? SDK.SDKModel.TargetManager.instance().models(SDK.CPUProfilerModel.CPUProfilerModel) : [];
+        this._profiling ? SDK.TargetManager.TargetManager.instance().models(SDK.CPUProfilerModel.CPUProfilerModel) : [];
     this._profiling = false;
     const promises = [];
     for (const model of models) {
@@ -201,7 +201,7 @@ export class TimelineController implements SDK.SDKModel.SDKModelObserver<SDK.CPU
     // There might be a significant delay in the beginning of timeline recording
     // caused by starting CPU profiler, that needs to traverse JS heap to collect
     // all the functions data.
-    await SDK.SDKModel.TargetManager.instance().suspendAllTargets('performance-timeline');
+    await SDK.TargetManager.TargetManager.instance().suspendAllTargets('performance-timeline');
     if (enableJSSampling && Root.Runtime.Runtime.queryParam('timelineTracingJSProfileDisabled')) {
       await this._startProfilingOnAllModels();
     }
@@ -228,7 +228,7 @@ export class TimelineController implements SDK.SDKModel.SDKModelObserver<SDK.CPU
 
   async _finalizeTrace(): Promise<void> {
     this._injectCpuProfileEvents();
-    await SDK.SDKModel.TargetManager.instance().resumeAllTargets();
+    await SDK.TargetManager.TargetManager.instance().resumeAllTargets();
     this._tracingModel.tracingComplete();
     this._client.loadingComplete(this._tracingModel);
   }
@@ -291,7 +291,7 @@ export class TimelineController implements SDK.SDKModel.SDKModelObserver<SDK.CPU
     const mainRendererProcessId = mainFrame.processId;
     const mainProcess = this._tracingModel.processById(mainRendererProcessId);
     if (mainProcess) {
-      const target = SDK.SDKModel.TargetManager.instance().mainTarget();
+      const target = SDK.TargetManager.TargetManager.instance().mainTarget();
       if (target) {
         targetIdToPid.set(target.id(), mainProcess.id());
       }
@@ -336,7 +336,7 @@ export class TimelineController implements SDK.SDKModel.SDKModelObserver<SDK.CPU
         // of cpu profiles.
         let tid = 0;
         for (const pair of this._cpuProfiles) {
-          const target = SDK.SDKModel.TargetManager.instance().targetById(pair[0]);
+          const target = SDK.TargetManager.TargetManager.instance().targetById(pair[0]);
           const name = target && target.name();
           this._tracingModel.addEvents(
               TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.buildTraceProfileFromCpuProfile(

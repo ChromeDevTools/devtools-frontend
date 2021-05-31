@@ -258,7 +258,7 @@ export class WorkerDetailsView extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   async _updateCoopCoepStatus(): Promise<void> {
-    const target = SDK.SDKModel.TargetManager.instance().targetById(this._targetInfo.targetId);
+    const target = SDK.TargetManager.TargetManager.instance().targetById(this._targetInfo.targetId);
     if (!target) {
       return;
     }

@@ -13,7 +13,7 @@ import type {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js'; // 
 
 let ignoreListManagerInstance: IgnoreListManager;
 
-export class IgnoreListManager implements SDK.SDKModel.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
+export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
   _debuggerWorkspaceBinding: DebuggerWorkspaceBinding;
   _listeners: Set<() => void>;
   _isIgnoreListedURLCache: Map<string, boolean>;
@@ -21,7 +21,7 @@ export class IgnoreListManager implements SDK.SDKModel.SDKModelObserver<SDK.Debu
   private constructor(debuggerWorkspaceBinding: DebuggerWorkspaceBinding) {
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
 
-    SDK.SDKModel.TargetManager.instance().addModelListener(
+    SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared,
         this._clearCacheIfNeeded.bind(this), this);
     Common.Settings.Settings.instance()
@@ -35,7 +35,7 @@ export class IgnoreListManager implements SDK.SDKModel.SDKModelObserver<SDK.Debu
 
     this._isIgnoreListedURLCache = new Map();
 
-    SDK.SDKModel.TargetManager.instance().observeModels(SDK.DebuggerModel.DebuggerModel, this);
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.DebuggerModel.DebuggerModel, this);
   }
 
   static instance(opts: {
@@ -267,7 +267,7 @@ export class IgnoreListManager implements SDK.SDKModel.SDKModelObserver<SDK.Debu
     this._isIgnoreListedURLCache.clear();
 
     const promises: Promise<unknown>[] = [];
-    for (const debuggerModel of SDK.SDKModel.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel)) {
+    for (const debuggerModel of SDK.TargetManager.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel)) {
       promises.push(this._setIgnoreListPatterns(debuggerModel));
       const sourceMapManager = debuggerModel.sourceMapManager();
       for (const script of debuggerModel.scripts()) {

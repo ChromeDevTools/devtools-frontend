@@ -20,7 +20,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let threadsSidebarPaneInstance: ThreadsSidebarPane;
 
 export class ThreadsSidebarPane extends UI.Widget.VBox implements
-    SDK.SDKModel.SDKModelObserver<SDK.DebuggerModel.DebuggerModel>,
+    SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel>,
     UI.ListControl.ListDelegate<SDK.DebuggerModel.DebuggerModel> {
   _items: UI.ListModel.ListModel<SDK.DebuggerModel.DebuggerModel>;
   _list: UI.ListControl.ListControl<SDK.DebuggerModel.DebuggerModel>;
@@ -37,7 +37,7 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
     this.contentElement.appendChild(this._list.element);
 
     UI.Context.Context.instance().addFlavorChangeListener(SDK.SDKModel.Target, this._targetFlavorChanged, this);
-    SDK.SDKModel.TargetManager.instance().observeModels(SDK.DebuggerModel.DebuggerModel, this);
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.DebuggerModel.DebuggerModel, this);
   }
 
   static instance(): ThreadsSidebarPane {
@@ -48,7 +48,7 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
   }
 
   static shouldBeShown(): boolean {
-    return SDK.SDKModel.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel).length >= 2;
+    return SDK.TargetManager.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel).length >= 2;
   }
 
   createElementForItem(debuggerModel: SDK.DebuggerModel.DebuggerModel): Element {
@@ -86,7 +86,8 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
     debuggerModel.addEventListener(SDK.DebuggerModel.Events.DebuggerPaused, updatePausedState);
     debuggerModel.addEventListener(SDK.DebuggerModel.Events.DebuggerResumed, updatePausedState);
     debuggerModel.runtimeModel().addEventListener(SDK.RuntimeModel.Events.ExecutionContextChanged, updateTitle);
-    SDK.SDKModel.TargetManager.instance().addEventListener(SDK.SDKModel.Events.NameChanged, targetNameChanged);
+    SDK.TargetManager.TargetManager.instance().addEventListener(
+        SDK.TargetManager.Events.NameChanged, targetNameChanged);
 
     updatePausedState();
     updateTitle();

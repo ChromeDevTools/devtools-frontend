@@ -44,9 +44,9 @@ const debuggerModelToMessageHelperMap =
     new WeakMap<SDK.DebuggerModel.DebuggerModel, PresentationConsoleMessageHelper>();
 
 export class PresentationConsoleMessageManager implements
-    SDK.SDKModel.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
+    SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
   constructor() {
-    SDK.SDKModel.TargetManager.instance().observeModels(SDK.DebuggerModel.DebuggerModel, this);
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.DebuggerModel.DebuggerModel, this);
 
     SDK.ConsoleModel.ConsoleModel.instance().addEventListener(
         SDK.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
@@ -80,7 +80,7 @@ export class PresentationConsoleMessageManager implements
   }
 
   _consoleCleared(): void {
-    for (const debuggerModel of SDK.SDKModel.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel)) {
+    for (const debuggerModel of SDK.TargetManager.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel)) {
       const helper = debuggerModelToMessageHelperMap.get(debuggerModel);
       if (helper) {
         helper._consoleCleared();

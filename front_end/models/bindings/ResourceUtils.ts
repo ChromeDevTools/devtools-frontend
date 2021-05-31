@@ -40,7 +40,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
 
 export function resourceForURL(url: string): SDK.Resource.Resource|null {
-  for (const resourceTreeModel of SDK.SDKModel.TargetManager.instance().models(
+  for (const resourceTreeModel of SDK.TargetManager.TargetManager.instance().models(
            SDK.ResourceTreeModel.ResourceTreeModel)) {
     const resource = resourceTreeModel.resourceForURL(url);
     if (resource) {
@@ -65,7 +65,7 @@ export function displayNameForURL(url: string): string {
     return uiSourceCode.displayName();
   }
 
-  const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+  const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
   const inspectedURL = mainTarget && mainTarget.inspectedURL();
   if (!inspectedURL) {
     return Platform.StringUtilities.trimURL(url, '');

@@ -133,7 +133,7 @@ class PlayerDataDownloadManager implements TriggerDispatcher {
 }
 
 let mainViewInstance: MainView;
-export class MainView extends UI.Panel.PanelWithSidebar implements SDK.SDKModel.SDKModelObserver<MediaModel> {
+export class MainView extends UI.Panel.PanelWithSidebar implements SDK.TargetManager.SDKModelObserver<MediaModel> {
   _detailPanels: Map<string, PlayerDetailView>;
   _deletedPlayers: Set<string>;
   _downloadStore: PlayerDataDownloadManager;
@@ -150,7 +150,7 @@ export class MainView extends UI.Panel.PanelWithSidebar implements SDK.SDKModel.
     this._sidebar = new PlayerListView(this);
     this._sidebar.show(this.panelSidebarElement());
 
-    SDK.SDKModel.TargetManager.instance().observeModels(MediaModel, this);
+    SDK.TargetManager.TargetManager.instance().observeModels(MediaModel, this);
   }
 
   static instance(opts = {forceNew: null}): MainView {
@@ -175,13 +175,13 @@ export class MainView extends UI.Panel.PanelWithSidebar implements SDK.SDKModel.
 
   wasShown(): void {
     super.wasShown();
-    for (const model of SDK.SDKModel.TargetManager.instance().models(MediaModel)) {
+    for (const model of SDK.TargetManager.TargetManager.instance().models(MediaModel)) {
       this._addEventListeners(model);
     }
   }
 
   willHide(): void {
-    for (const model of SDK.SDKModel.TargetManager.instance().models(MediaModel)) {
+    for (const model of SDK.TargetManager.TargetManager.instance().models(MediaModel)) {
       this._removeEventListeners(model);
     }
   }

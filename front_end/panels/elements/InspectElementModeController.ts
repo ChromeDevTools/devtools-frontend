@@ -40,7 +40,7 @@ import {ElementsPanel} from './ElementsPanel.js';
 
 let inspectElementModeController: InspectElementModeController;
 
-export class InspectElementModeController implements SDK.SDKModel.SDKModelObserver<SDK.OverlayModel.OverlayModel> {
+export class InspectElementModeController implements SDK.TargetManager.SDKModelObserver<SDK.OverlayModel.OverlayModel> {
   _toggleSearchAction: UI.ActionRegistration.Action|null;
   _mode: Protocol.Overlay.InspectMode;
   _showDetailedInspectTooltipSetting: Common.Settings.Setting<boolean>;
@@ -48,13 +48,13 @@ export class InspectElementModeController implements SDK.SDKModel.SDKModelObserv
   constructor() {
     this._toggleSearchAction = UI.ActionRegistry.ActionRegistry.instance().action('elements.toggle-element-search');
     this._mode = Protocol.Overlay.InspectMode.None;
-    SDK.SDKModel.TargetManager.instance().addEventListener(
-        SDK.SDKModel.Events.SuspendStateChanged, this._suspendStateChanged, this);
-    SDK.SDKModel.TargetManager.instance().addModelListener(
+    SDK.TargetManager.TargetManager.instance().addEventListener(
+        SDK.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
+    SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.OverlayModel.OverlayModel, SDK.OverlayModel.Events.ExitedInspectMode,
         () => this._setMode(Protocol.Overlay.InspectMode.None));
     SDK.OverlayModel.OverlayModel.setInspectNodeHandler(this._inspectNode.bind(this));
-    SDK.SDKModel.TargetManager.instance().observeModels(SDK.OverlayModel.OverlayModel, this);
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.OverlayModel.OverlayModel, this);
 
     this._showDetailedInspectTooltipSetting =
         Common.Settings.Settings.instance().moduleSetting('showDetailedInspectTooltip');
@@ -115,11 +115,11 @@ export class InspectElementModeController implements SDK.SDKModel.SDKModelObserv
   }
 
   _setMode(mode: Protocol.Overlay.InspectMode): void {
-    if (SDK.SDKModel.TargetManager.instance().allTargetsSuspended()) {
+    if (SDK.TargetManager.TargetManager.instance().allTargetsSuspended()) {
       return;
     }
     this._mode = mode;
-    for (const overlayModel of SDK.SDKModel.TargetManager.instance().models(SDK.OverlayModel.OverlayModel)) {
+    for (const overlayModel of SDK.TargetManager.TargetManager.instance().models(SDK.OverlayModel.OverlayModel)) {
       overlayModel.setInspectMode(mode, this._showDetailedInspectTooltipSetting.get());
     }
     if (this._toggleSearchAction) {
@@ -128,7 +128,7 @@ export class InspectElementModeController implements SDK.SDKModel.SDKModelObserv
   }
 
   _suspendStateChanged(): void {
-    if (!SDK.SDKModel.TargetManager.instance().allTargetsSuspended()) {
+    if (!SDK.TargetManager.TargetManager.instance().allTargetsSuspended()) {
       return;
     }
 

@@ -12,7 +12,8 @@ import type * as Protocol from '../../generated/protocol.js';
 
 import {ParallelConnection} from './Connections.js';
 import type {Target} from './SDKModel.js';
-import {Capability, Events as SDKModelEvents, SDKModel, TargetManager, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import {Capability, SDKModel, Type} from './SDKModel.js';
+import {Events as TargetManagerEvents, TargetManager} from './TargetManager.js';
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -110,7 +111,7 @@ export class ChildTargetManager extends SDKModel implements ProtocolProxyApi.Tar
 
   _fireAvailableTargetsChanged(): void {
     TargetManager.instance().dispatchEventToListeners(
-        SDKModelEvents.AvailableTargetsChanged, [...this._targetInfos.values()]);
+        TargetManagerEvents.AvailableTargetsChanged, [...this._targetInfos.values()]);
   }
 
   async _getParentTargetId(): Promise<string> {

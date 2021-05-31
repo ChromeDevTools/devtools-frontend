@@ -136,7 +136,7 @@ const TYPE_ORDERS = new Map([
   [Types.FileSystem, 100],
 ]);
 
-export class NavigatorView extends UI.Widget.VBox implements SDK.SDKModel.Observer {
+export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.Observer {
   _placeholder: UI.Widget.Widget|null;
   _scriptsTree: UI.TreeOutline.TreeOutlineInShadow;
   _uiSourceCodeNodes:
@@ -189,10 +189,10 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.SDKModel.Observ
         Persistence.Persistence.Events.BindingCreated, this._onBindingChanged, this);
     Persistence.Persistence.PersistenceImpl.instance().addEventListener(
         Persistence.Persistence.Events.BindingRemoved, this._onBindingChanged, this);
-    SDK.SDKModel.TargetManager.instance().addEventListener(
-        SDK.SDKModel.Events.NameChanged, this._targetNameChanged, this);
+    SDK.TargetManager.TargetManager.instance().addEventListener(
+        SDK.TargetManager.Events.NameChanged, this._targetNameChanged, this);
 
-    SDK.SDKModel.TargetManager.instance().observeTargets(this);
+    SDK.TargetManager.TargetManager.instance().observeTargets(this);
     this._resetWorkspace(Workspace.Workspace.WorkspaceImpl.instance());
     this._workspace.uiSourceCodes().forEach(this._addUISourceCode.bind(this));
     Bindings.NetworkProject.NetworkProjectManager.instance().addEventListener(
@@ -628,7 +628,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.SDKModel.Observ
   }
 
   _targetNode(project: Workspace.Workspace.Project, target: SDK.SDKModel.Target): NavigatorTreeNode {
-    if (target === SDK.SDKModel.TargetManager.instance().mainTarget()) {
+    if (target === SDK.TargetManager.TargetManager.instance().mainTarget()) {
       return this._rootNode;
     }
 

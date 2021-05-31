@@ -45,7 +45,7 @@ export class CSSOverviewPanel extends UI.Panel.Panel {
     this.registerRequiredCSS('panels/css_overview/cssOverview.css', {enableLegacyPatching: false});
     this.element.classList.add('css-overview-panel');
 
-    const [model] = SDK.SDKModel.TargetManager.instance().models(CSSOverviewModel);
+    const [model] = SDK.TargetManager.TargetManager.instance().models(CSSOverviewModel);
     this._model = (model as CSSOverviewModel);
 
     this._controller = new OverviewController();

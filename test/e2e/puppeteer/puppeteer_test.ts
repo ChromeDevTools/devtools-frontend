@@ -59,7 +59,7 @@ describe('Puppeteer', () => {
       }
 
       const childTargetManager =
-        SDK.SDKModel.TargetManager.instance().mainTarget().model(SDK.ChildTargetManager.ChildTargetManager);
+        SDK.TargetManager.TargetManager.instance().mainTarget().model(SDK.ChildTargetManager.ChildTargetManager);
       const rawConnection = await childTargetManager.createParallelConnection();
 
       const transport = new Transport(rawConnection);

@@ -16,8 +16,8 @@ export class ProtocolService extends Common.ObjectWrapper.ObjectWrapper {
   private lighthouseMessageUpdateCallback?: ((arg0: string) => void);
 
   async attach(): Promise<void> {
-    await SDK.SDKModel.TargetManager.instance().suspendAllTargets();
-    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+    await SDK.TargetManager.TargetManager.instance().suspendAllTargets();
+    const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
     if (!mainTarget) {
       throw new Error('Unable to find main target required for LightHouse');
     }
@@ -58,7 +58,7 @@ export class ProtocolService extends Common.ObjectWrapper.ObjectWrapper {
     if (oldRawConnection) {
       await oldRawConnection.disconnect();
     }
-    await SDK.SDKModel.TargetManager.instance().resumeAllTargets();
+    await SDK.TargetManager.TargetManager.instance().resumeAllTargets();
   }
 
   registerStatusCallback(callback: (arg0: string) => void): void {

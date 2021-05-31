@@ -40,7 +40,7 @@ export class NodeMainImpl extends Common.ObjectWrapper.ObjectWrapper implements 
   async run(): Promise<void> {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConnectToNodeJSFromFrontend);
     SDK.Connections.initMainConnection(async () => {
-      const target = SDK.SDKModel.TargetManager.instance().createTarget(
+      const target = SDK.TargetManager.TargetManager.instance().createTarget(
           'main', i18nString(UIStrings.main), SDK.SDKModel.Type.Browser, null);
       target.setInspectedURL('Node.js');
     }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);
@@ -50,7 +50,7 @@ export class NodeMainImpl extends Common.ObjectWrapper.ObjectWrapper implements 
 Common.Runnable.registerEarlyInitializationRunnable(NodeMainImpl.instance);
 
 export class NodeChildTargetManager extends SDK.SDKModel.SDKModel implements ProtocolProxyApi.TargetDispatcher {
-  _targetManager: SDK.SDKModel.TargetManager;
+  _targetManager: SDK.TargetManager.TargetManager;
   _parentTarget: SDK.SDKModel.Target;
   _targetAgent: ProtocolProxyApi.TargetApi;
   _childTargets: Map<string, SDK.SDKModel.Target>;

@@ -13,7 +13,7 @@ Input = Input || {};
 Input.InputModel = InputModule.InputModel.InputModel;
 
 /**
- * @implements {SDK.SDKModel.SDKModelObserver<!Input.InputModel>}
+ * @implements {SDK.TargetManager.SDKModelObserver<!Input.InputModel>}
  * @constructor
  */
 Input.InputTimeline = InputModule.InputTimeline.InputTimeline;

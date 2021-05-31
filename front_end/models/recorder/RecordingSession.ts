@@ -363,7 +363,7 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     await this._targetAgent.invoke_attachToTarget({targetId: event.data.targetId, flatten: true});
-    const target = SDK.SDKModel.TargetManager.instance().targets().find(t => t.id() === event.data.targetId);
+    const target = SDK.TargetManager.TargetManager.instance().targets().find(t => t.id() === event.data.targetId);
 
     if (!target) {
       throw new Error('Could not find target.');

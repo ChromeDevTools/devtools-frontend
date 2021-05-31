@@ -22,13 +22,13 @@ import {ResourceScriptMapping} from './ResourceScriptMapping.js';  // eslint-dis
 
 let debuggerWorkspaceBindingInstance: DebuggerWorkspaceBinding;
 
-export class DebuggerWorkspaceBinding implements SDK.SDKModel.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
+export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
   _workspace: Workspace.Workspace.WorkspaceImpl;
   _sourceMappings: DebuggerSourceMapping[];
   _debuggerModelToData: Map<SDK.DebuggerModel.DebuggerModel, ModelData>;
   _liveLocationPromises: Set<Promise<void|Location|StackTraceTopFrameLocation|null>>;
   pluginManager: DebuggerLanguagePluginManager|null;
-  private constructor(targetManager: SDK.SDKModel.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl) {
+  private constructor(targetManager: SDK.TargetManager.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl) {
     this._workspace = workspace;
 
     this._sourceMappings = [];
@@ -49,7 +49,7 @@ export class DebuggerWorkspaceBinding implements SDK.SDKModel.SDKModelObserver<S
 
   static instance(opts: {
     forceNew: boolean|null,
-    targetManager: SDK.SDKModel.TargetManager|null,
+    targetManager: SDK.TargetManager.TargetManager|null,
     workspace: Workspace.Workspace.WorkspaceImpl|null,
   } = {forceNew: null, targetManager: null, workspace: null}): DebuggerWorkspaceBinding {
     const {forceNew, targetManager, workspace} = opts;

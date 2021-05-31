@@ -139,7 +139,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/application/StorageView.ts', UI
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
- * @implements {SDK.SDKModel.Observer}
+ * @implements {SDK.TargetManager.Observer}
  */
 export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
   private pieColors: Map<Protocol.Storage.StorageType, string>;
@@ -257,7 +257,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     this.appendItem(caches, i18nString(UIStrings.applicationCache), Protocol.Storage.StorageType.Appcache);
     caches.markFieldListAsGroup();
 
-    SDK.SDKModel.TargetManager.instance().observeTargets(this);
+    SDK.TargetManager.TargetManager.instance().observeTargets(this);
   }
 
   private appendItem(section: UI.ReportView.Section, title: string, settingName: Protocol.Storage.StorageType): void {
@@ -406,7 +406,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     }
 
     if (set.has(Protocol.Storage.StorageType.Indexeddb) || hasAll) {
-      for (const target of SDK.SDKModel.TargetManager.instance().targets()) {
+      for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
         const indexedDBModel = target.model(IndexedDBModel);
         if (indexedDBModel) {
           indexedDBModel.clearForOrigin(securityOrigin);
@@ -430,7 +430,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     }
 
     if (set.has(Protocol.Storage.StorageType.Cache_storage) || hasAll) {
-      const target = SDK.SDKModel.TargetManager.instance().mainTarget();
+      const target = SDK.TargetManager.TargetManager.instance().mainTarget();
       const model = target && target.model(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel);
       if (model) {
         model.clearForOrigin(securityOrigin);
@@ -562,7 +562,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   }
 
   private handleClear(includeThirdPartyCookies: boolean): boolean {
-    const target = SDK.SDKModel.TargetManager.instance().mainTarget();
+    const target = SDK.TargetManager.TargetManager.instance().mainTarget();
     if (!target) {
       return false;
     }

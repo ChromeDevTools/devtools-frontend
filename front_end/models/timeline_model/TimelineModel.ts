@@ -263,8 +263,8 @@ export class TimelineModelImpl {
   targetByEvent(event: SDK.TracingModel.Event): SDK.SDKModel.Target|null {
     // FIXME: Consider returning null for loaded traces.
     const workerId = this._workerIdByThread.get(event.thread);
-    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
-    return workerId ? SDK.SDKModel.TargetManager.instance().targetById(workerId) : mainTarget;
+    const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
+    return workerId ? SDK.TargetManager.TargetManager.instance().targetById(workerId) : mainTarget;
   }
 
   navStartTimes(): Map<string, SDK.TracingModel.Event> {

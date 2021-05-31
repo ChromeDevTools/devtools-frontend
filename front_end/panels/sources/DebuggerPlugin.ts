@@ -1686,7 +1686,7 @@ export class DebuggerPlugin extends Plugin {
   }
 
   _updateScriptFiles(): void {
-    for (const debuggerModel of SDK.SDKModel.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel)) {
+    for (const debuggerModel of SDK.TargetManager.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel)) {
       const scriptFile = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptFile(
           this._uiSourceCode, debuggerModel);
       if (scriptFile) {

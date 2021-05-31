@@ -50,7 +50,7 @@ export class InspectorMainImpl extends Common.ObjectWrapper.ObjectWrapper implem
       const type = Root.Runtime.Runtime.queryParam('v8only') ? SDK.SDKModel.Type.Node : SDK.SDKModel.Type.Frame;
       const waitForDebuggerInPage =
           type === SDK.SDKModel.Type.Frame && Root.Runtime.Runtime.queryParam('panel') === 'sources';
-      const target = SDK.SDKModel.TargetManager.instance().createTarget(
+      const target = SDK.TargetManager.TargetManager.instance().createTarget(
           'main', i18nString(UIStrings.main), type, null, undefined, waitForDebuggerInPage);
 
       // Only resume target during the first connection,
@@ -129,7 +129,7 @@ export class FocusDebuggeeActionDelegate implements UI.ActionRegistration.Action
     return focusDebuggeeActionDelegateInstance;
   }
   handleAction(_context: UI.Context.Context, _actionId: string): boolean {
-    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+    const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
     if (!mainTarget) {
       return false;
     }
@@ -153,8 +153,8 @@ export class NodeIndicator implements UI.Toolbar.Provider {
         'click', () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openNodeFrontend(), false);
     this._button = new UI.Toolbar.ToolbarItem(element);
     this._button.setTitle(i18nString('Open dedicated DevTools for Node.js'));
-    SDK.SDKModel.TargetManager.instance().addEventListener(
-        SDK.SDKModel.Events.AvailableTargetsChanged,
+    SDK.TargetManager.TargetManager.instance().addEventListener(
+        SDK.TargetManager.Events.AvailableTargetsChanged,
         event => this._update((event.data as Protocol.Target.TargetInfo[])));
     this._button.setVisible(false);
     this._update([]);
@@ -202,7 +202,7 @@ export class SourcesPanelIndicator {
   }
 }
 
-export class BackendSettingsSync implements SDK.SDKModel.Observer {
+export class BackendSettingsSync implements SDK.TargetManager.Observer {
   _autoAttachSetting: Common.Settings.Setting<boolean>;
   _adBlockEnabledSetting: Common.Settings.Setting<boolean>;
   _emulatePageFocusSetting: Common.Settings.Setting<boolean>;
@@ -218,7 +218,7 @@ export class BackendSettingsSync implements SDK.SDKModel.Observer {
     this._emulatePageFocusSetting = Common.Settings.Settings.instance().moduleSetting('emulatePageFocus');
     this._emulatePageFocusSetting.addChangeListener(this._update, this);
 
-    SDK.SDKModel.TargetManager.instance().observeTargets(this);
+    SDK.TargetManager.TargetManager.instance().observeTargets(this);
   }
 
   _updateTarget(target: SDK.SDKModel.Target): void {
@@ -234,7 +234,7 @@ export class BackendSettingsSync implements SDK.SDKModel.Observer {
   }
 
   _update(): void {
-    for (const target of SDK.SDKModel.TargetManager.instance().targets()) {
+    for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
       this._updateTarget(target);
     }
   }

@@ -22,7 +22,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let appInstance: ScreencastApp;
 
 export class ScreencastApp implements Common.App.App,
-                                      SDK.SDKModel.SDKModelObserver<SDK.ScreenCaptureModel.ScreenCaptureModel> {
+                                      SDK.TargetManager.SDKModelObserver<SDK.ScreenCaptureModel.ScreenCaptureModel> {
   _enabledSetting: Common.Settings.Setting<boolean>;
   _toggleButton: UI.Toolbar.ToolbarToggle;
   _rootSplitWidget?: UI.SplitWidget.SplitWidget;
@@ -34,7 +34,7 @@ export class ScreencastApp implements Common.App.App,
     this._toggleButton.setToggled(this._enabledSetting.get());
     this._toggleButton.setEnabled(false);
     this._toggleButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._toggleButtonClicked, this);
-    SDK.SDKModel.TargetManager.instance().observeModels(SDK.ScreenCaptureModel.ScreenCaptureModel, this);
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.ScreenCaptureModel.ScreenCaptureModel, this);
   }
 
   static _instance(): ScreencastApp {

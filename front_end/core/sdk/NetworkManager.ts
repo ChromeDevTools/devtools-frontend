@@ -41,8 +41,10 @@ import * as Protocol from '../../generated/protocol.js';
 import {Cookie} from './Cookie.js';
 import type {BlockedCookieWithReason, ContentData, ExtraRequestInfo, ExtraResponseInfo, MIME_TYPE, NameValue} from './NetworkRequest.js';
 import {Events as NetworkRequestEvents, NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
-import type {SDKModelObserver, Target} from './SDKModel.js';
-import {Capability, SDKModel, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {Target} from './SDKModel.js';
+import {Capability, SDKModel} from './SDKModel.js';
+import type {SDKModelObserver} from './TargetManager.js';
+import {TargetManager} from './TargetManager.js';
 
 const UIStrings = {
   /**

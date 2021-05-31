@@ -118,8 +118,8 @@ let networkNavigatorViewInstance: NetworkNavigatorView;
 export class NetworkNavigatorView extends NavigatorView {
   private constructor() {
     super();
-    SDK.SDKModel.TargetManager.instance().addEventListener(
-        SDK.SDKModel.Events.InspectedURLChanged, this._inspectedURLChanged, this);
+    SDK.TargetManager.TargetManager.instance().addEventListener(
+        SDK.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
 
     // Record the sources tool load time after the file navigator has loaded.
     Host.userMetrics.panelLoaded('sources', 'DevTools.Launch.Sources');
@@ -140,7 +140,7 @@ export class NetworkNavigatorView extends NavigatorView {
   }
 
   _inspectedURLChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+    const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
     if (event.data !== mainTarget) {
       return;
     }
@@ -156,7 +156,7 @@ export class NetworkNavigatorView extends NavigatorView {
   }
 
   uiSourceCodeAdded(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
-    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+    const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
     const inspectedURL = mainTarget && mainTarget.inspectedURL();
     if (!inspectedURL) {
       return;

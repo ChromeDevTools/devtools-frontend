@@ -61,7 +61,7 @@ let performanceMonitorImplInstance: PerformanceMonitorImpl;
 
 
 export class PerformanceMonitorImpl extends UI.Widget.HBox implements
-    SDK.SDKModel.SDKModelObserver<SDK.PerformanceMetricsModel.PerformanceMetricsModel> {
+    SDK.TargetManager.SDKModelObserver<SDK.PerformanceMetricsModel.PerformanceMetricsModel> {
   _metricsBuffer: {timestamp: number, metrics: Map<string, number>}[];
   _pixelsPerMs: number;
   _pollIntervalMs: number;
@@ -100,7 +100,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     this.contentElement.createChild('div', 'perfmon-chart-suspend-overlay fill').createChild('div').textContent =
         i18nString(UIStrings.paused);
     this._controlPane.addEventListener(Events.MetricChanged, this._recalcChartHeight, this);
-    SDK.SDKModel.TargetManager.instance().observeModels(SDK.PerformanceMetricsModel.PerformanceMetricsModel, this);
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.PerformanceMetricsModel.PerformanceMetricsModel, this);
   }
 
   static instance(opts = {forceNew: null}): PerformanceMonitorImpl {
@@ -116,8 +116,8 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     if (!this._model) {
       return;
     }
-    SDK.SDKModel.TargetManager.instance().addEventListener(
-        SDK.SDKModel.Events.SuspendStateChanged, this._suspendStateChanged, this);
+    SDK.TargetManager.TargetManager.instance().addEventListener(
+        SDK.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
     this._model.enable();
     this._suspendStateChanged();
   }
@@ -126,8 +126,8 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     if (!this._model) {
       return;
     }
-    SDK.SDKModel.TargetManager.instance().removeEventListener(
-        SDK.SDKModel.Events.SuspendStateChanged, this._suspendStateChanged, this);
+    SDK.TargetManager.TargetManager.instance().removeEventListener(
+        SDK.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
     this._stopPolling();
     this._model.disable();
   }
@@ -153,7 +153,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
   }
 
   _suspendStateChanged(): void {
-    const suspended = SDK.SDKModel.TargetManager.instance().allTargetsSuspended();
+    const suspended = SDK.TargetManager.TargetManager.instance().allTargetsSuspended();
     if (suspended) {
       this._stopPolling();
     } else {

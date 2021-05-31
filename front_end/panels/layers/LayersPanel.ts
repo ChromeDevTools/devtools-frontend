@@ -54,7 +54,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let layersPanelInstance: LayersPanel;
 
-export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.SDKModel.Observer {
+export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.TargetManager.Observer {
   _model: LayerTreeModel|null;
   _layerViewHost: LayerViewer.LayerViewHost.LayerViewHost;
   _layerTreeOutline: LayerViewer.LayerTreeOutline.LayerTreeOutline;
@@ -69,7 +69,7 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.SDKMod
     super('layers', 225);
     this._model = null;
 
-    SDK.SDKModel.TargetManager.instance().observeTargets(this);
+    SDK.TargetManager.TargetManager.instance().observeTargets(this);
     this._layerViewHost = new LayerViewer.LayerViewHost.LayerViewHost();
     this._layerTreeOutline = new LayerViewer.LayerTreeOutline.LayerTreeOutline(this._layerViewHost);
     this._layerTreeOutline.addEventListener(

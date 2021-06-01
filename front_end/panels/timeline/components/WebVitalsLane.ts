@@ -4,6 +4,7 @@
 
 import * as Host from '../../../core/host/host.js';
 import type * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as i18n from '../../../core/i18n/i18n.js';
 
 import type {Event, Marker, Timebox, WebVitalsTimeline} from './WebVitalsTimeline.js';
 import {assertInstanceOf, LONG_TASK_THRESHOLD, MarkerType} from './WebVitalsTimeline.js';
@@ -134,7 +135,7 @@ export class WebVitalsEventLane extends WebVitalsLane {
   private getMarker(event: Event): Marker {
     const markerType = this.getMarkerType(event);
     const timestamp = this.timeline.getTimeSinceLastMainFrameNavigation(event.timestamp);
-    const timestampLabel = Number.preciseMillisToString(timestamp, 1);
+    const timestampLabel = i18n.i18n.preciseMillisToString(timestamp, 1);
     const timestampMetrics = this.measureTimestamp(timestampLabel);
     const widthIncludingLabel = 10 + 5 + this.labelMetrics.width + 5;
     const widthIncludingTimestamp = widthIncludingLabel + 5 + timestampMetrics.width;

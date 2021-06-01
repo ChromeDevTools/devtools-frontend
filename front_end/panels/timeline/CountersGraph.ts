@@ -590,7 +590,7 @@ export class Calculator implements PerfUI.TimelineGrid.Calculator {
   }
 
   formatValue(value: number, precision?: number): string {
-    return Number.preciseMillisToString(value - this.zeroTime(), precision);
+    return i18n.i18n.preciseMillisToString(value - this.zeroTime(), precision);
   }
 
   maximumBoundary(): number {

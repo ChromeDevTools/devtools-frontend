@@ -615,11 +615,6 @@ export function handleElementValueModifications(
   return false;
 }
 
-Number.preciseMillisToString = function(ms: number, precision?: number): string {
-  precision = precision || 0;
-  return i18nString(UIStrings.fms, {PH1: ms.toFixed(precision)});
-};
-
 Number.millisToString = function(ms: number, higherResolution?: boolean): string {
   if (!isFinite(ms)) {
     return '-';

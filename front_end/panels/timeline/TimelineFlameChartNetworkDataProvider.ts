@@ -387,7 +387,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
   }
 
   formatValue(value: number, precision?: number): string {
-    return Number.preciseMillisToString(value, precision);
+    return i18n.i18n.preciseMillisToString(value, precision);
   }
 
   canJumpToEntry(_entryIndex: number): boolean {

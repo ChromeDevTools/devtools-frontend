@@ -35,6 +35,7 @@ import * as Host from '../../core/host/host.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as i18n from '../../core/i18n/i18n.js';
 
 let colorGeneratorInstance: Common.Color.Generator|null = null;
 
@@ -75,7 +76,7 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
   }
 
   formatValue(value: number, precision?: number): string {
-    return Number.preciseMillisToString(value, precision);
+    return i18n.i18n.preciseMillisToString(value, precision);
   }
 
   maxStackDepth(): number {

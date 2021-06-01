@@ -33,6 +33,7 @@
 import * as Common from '../../../../core/common/common.js';
 import type * as SDK from '../../../../core/sdk/sdk.js'; // eslint-disable-line no-unused-vars
 import * as UI from '../../legacy.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
 
 import {Events as OverviewGridEvents, OverviewGrid} from './OverviewGrid.js';
 import type {Calculator} from './TimelineGrid.js'; // eslint-disable-line no-unused-vars
@@ -307,7 +308,7 @@ export class TimelineOverviewCalculator implements Calculator {
       }
     }
 
-    return Number.preciseMillisToString(value - this.zeroTime(), precision);
+    return i18n.i18n.preciseMillisToString(value - this.zeroTime(), precision);
   }
 
   maximumBoundary(): number {

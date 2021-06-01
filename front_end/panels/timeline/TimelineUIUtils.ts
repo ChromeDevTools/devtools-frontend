@@ -2335,7 +2335,7 @@ export class TimelineUIUtils {
           }
         }
 
-        contentHelper.appendTextRow(i18nString(UIStrings.timestamp), Number.preciseMillisToString(eventTime, 1));
+        contentHelper.appendTextRow(i18nString(UIStrings.timestamp), i18n.i18n.preciseMillisToString(eventTime, 1));
         contentHelper.appendElementRow(
             i18nString(UIStrings.details), TimelineUIUtils.buildDetailsNodeForPerformanceEvent(event));
         break;
@@ -2717,7 +2717,7 @@ export class TimelineUIUtils {
       TimelineUIUtils._generateInvalidations(event, target, relatedNodesMap, contentHelper);
     } else if (initiator) {  // Partial invalidation tracking.
       const delay = event.startTime - initiator.startTime;
-      contentHelper.appendTextRow(i18nString(UIStrings.pendingFor), Number.preciseMillisToString(delay, 1));
+      contentHelper.appendTextRow(i18nString(UIStrings.pendingFor), i18n.i18n.preciseMillisToString(delay, 1));
 
       const link = document.createElement('span');
       link.classList.add('devtools-link');
@@ -3041,7 +3041,7 @@ export class TimelineUIUtils {
     pieChart.data = {
       chartName: i18nString(UIStrings.timeSpentInRendering),
       size: 110,
-      formatter: (value: number): string => Number.preciseMillisToString(value),
+      formatter: (value: number): string => i18n.i18n.preciseMillisToString(value),
       showLegend: true,
       total,
       slices,

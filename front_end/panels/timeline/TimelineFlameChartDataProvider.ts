@@ -974,7 +974,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       const frame = (this._entryData[entryIndex] as TimelineModel.TimelineFrameModel.TimelineFrame);
       time = i18nString(
           UIStrings.sFfps,
-          {PH1: Number.preciseMillisToString(frame.duration, 1), PH2: (1000 / frame.duration).toFixed(0)});
+          {PH1: i18n.i18n.preciseMillisToString(frame.duration, 1), PH2: (1000 / frame.duration).toFixed(0)});
 
       if (frame.idle) {
         title = i18nString(UIStrings.idleFrame);
@@ -1082,7 +1082,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         frame.idle ? 'white' : frame.dropped ? '#f0b7b1' : (frame.hasWarnings() ? '#fad1d1' : '#d7f0d1');
     context.fillRect(barX, barY, barWidth, barHeight);
 
-    const frameDurationText = Number.preciseMillisToString(frame.duration, 1);
+    const frameDurationText = i18n.i18n.preciseMillisToString(frame.duration, 1);
     const textWidth = context.measureText(frameDurationText).width;
     if (textWidth <= barWidth) {
       context.fillStyle = this.textColor(entryIndex);
@@ -1298,7 +1298,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   formatValue(value: number, precision?: number): string {
-    return Number.preciseMillisToString(value, precision);
+    return i18n.i18n.preciseMillisToString(value, precision);
   }
 
   canJumpToEntry(_entryIndex: number): boolean {

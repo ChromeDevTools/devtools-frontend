@@ -695,4 +695,16 @@ function formatted2() {
 }
 `);
   });
+
+  it('format class fields correctly', () => {
+    const formattedCode = formatJavaScript('class Clazz {map=new Map();someMethod(){console.log(42);}map2=new Map();}');
+    assert.strictEqual(formattedCode, `class Clazz {
+  map = new Map();
+  someMethod() {
+    console.log(42);
+  }
+  map2 = new Map();
+}
+`);
+  });
 });

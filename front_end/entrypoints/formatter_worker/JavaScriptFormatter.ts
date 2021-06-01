@@ -242,6 +242,14 @@ export class JavaScriptFormatter {
         }
         return !this._inForLoopHeader(node) && allVariablesInitialized ? 'nSSts' : 'ts';
       }
+      // @ts-expect-error Requires updated @types/estree definition
+    } else if (node.type === 'PropertyDefinition') {
+      if (AT.punctuator(token, '=')) {
+        return 'sts';
+      }
+      if (AT.punctuator(token, ';')) {
+        return 'tn';
+      }
     } else if (node.type === 'BlockStatement') {
       if (AT.punctuator(token, '{')) {
         return node.body.length ? 'tn>' : 't';

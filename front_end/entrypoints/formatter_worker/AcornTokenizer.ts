@@ -152,4 +152,4 @@ export class AcornTokenizer {
   }
 }
 
-export const ECMA_VERSION = 2021;
+export const ECMA_VERSION = 2022;

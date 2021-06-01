@@ -203,8 +203,23 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Unknown error"
   },
+  "core/i18n/i18nImpl.ts | fdays": {
+    "message": "{PH1} days"
+  },
+  "core/i18n/i18nImpl.ts | fhrs": {
+    "message": "{PH1} hrs"
+  },
+  "core/i18n/i18nImpl.ts | fmin": {
+    "message": "{PH1} min"
+  },
+  "core/i18n/i18nImpl.ts | fmms": {
+    "message": "{PH1} μs"
+  },
   "core/i18n/i18nImpl.ts | fms": {
     "message": "{PH1} ms"
+  },
+  "core/i18n/i18nImpl.ts | fs": {
+    "message": "{PH1} s"
   },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "Could not load content for {PH1} ({PH2})"

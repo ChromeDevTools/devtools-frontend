@@ -203,8 +203,23 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Ûńk̂ńôẃn̂ ér̂ŕôŕ"
   },
+  "core/i18n/i18nImpl.ts | fdays": {
+    "message": "{PH1} d̂áŷś"
+  },
+  "core/i18n/i18nImpl.ts | fhrs": {
+    "message": "{PH1} ĥŕŝ"
+  },
+  "core/i18n/i18nImpl.ts | fmin": {
+    "message": "{PH1} m̂ín̂"
+  },
+  "core/i18n/i18nImpl.ts | fmms": {
+    "message": "{PH1} μŝ"
+  },
   "core/i18n/i18nImpl.ts | fms": {
     "message": "{PH1} m̂ś"
+  },
+  "core/i18n/i18nImpl.ts | fs": {
+    "message": "{PH1} ŝ"
   },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "Ĉóûĺd̂ ńôt́ l̂óâd́ ĉón̂t́êńt̂ f́ôŕ {PH1} ({PH2})"

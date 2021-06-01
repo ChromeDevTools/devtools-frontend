@@ -203,6 +203,9 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Unknown error"
   },
+  "core/i18n/i18nImpl.ts | fms": {
+    "message": "{PH1} ms"
+  },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "Could not load content for {PH1} ({PH2})"
   },

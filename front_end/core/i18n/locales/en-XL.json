@@ -203,6 +203,9 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Ûńk̂ńôẃn̂ ér̂ŕôŕ"
   },
+  "core/i18n/i18nImpl.ts | fms": {
+    "message": "{PH1} m̂ś"
+  },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "Ĉóûĺd̂ ńôt́ l̂óâd́ ĉón̂t́êńt̂ f́ôŕ {PH1} ({PH2})"
   },

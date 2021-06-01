@@ -8,7 +8,19 @@ import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import {DevToolsLocale} from './DevToolsLocale.js';
+
 import type * as i18nTypes from './i18nTypes.js';
+
+const UIStrings = {
+  /**
+  *@description ms is the short form of milli-seconds and the placeholder is a decimal number
+  *@example {2.14} PH1
+  */
+  fms: '{PH1} ms',
+};
+
+const str_ = registerUIStrings('core/i18n/i18nImpl.ts', UIStrings);
+const i18nString = getLocalizedString.bind(undefined, str_);
 
 // All the locales that are part of the DevTools bundle and should not be fetched
 // remotely. Keep this list in sync with "copied_devtools_locale_files" in
@@ -234,3 +246,8 @@ export function getLocalizedLanguageRegion(
   return `${languageInCurrentLocale}${wrappedRegionInCurrentLocale} - ${languageInTargetLocale}${
              wrappedRegionInTargetLocale}` as Platform.UIString.LocalizedString;
 }
+
+export const preciseMillisToString = function(ms: number, precision?: number): string {
+  precision = precision || 0;
+  return i18nString(UIStrings.fms, {PH1: ms.toFixed(precision)});
+};

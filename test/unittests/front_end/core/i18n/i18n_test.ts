@@ -67,3 +67,18 @@ describe('getLocalizedLanguageRegion', () => {
     assert.strictEqual(i18n.i18n.getLocalizedLanguageRegion('de', {locale: 'de'}), 'Deutsch - German');
   });
 });
+
+describe('preciseMillisToString', () => {
+  it('formats without a given precision', () => {
+    const inputNumber = 7.84;
+    const outputString = i18n.i18n.preciseMillisToString(inputNumber);
+    assert.strictEqual(outputString, '8\xA0ms');
+  });
+
+  it('formats without a given precision', () => {
+    const inputNumber = 7.84;
+    const precision = 2;
+    const outputString = i18n.i18n.preciseMillisToString(inputNumber, precision);
+    assert.strictEqual(outputString, '7.84\xA0ms');
+  });
+});

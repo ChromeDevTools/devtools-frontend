@@ -87,7 +87,10 @@ devtools_module("sdk") {
 devtools_entrypoint("bundle") {
   entrypoint = "sdk.ts"
 
-  deps = [ ":sdk" ]
+  deps = [
+    ":sdk",
+    "../../generated",
+  ]
 
   visibility = [ "*" ]
 }

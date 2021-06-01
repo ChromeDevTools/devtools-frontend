@@ -33,7 +33,10 @@ devtools_module("accessibility") {
 devtools_entrypoint("bundle") {
   entrypoint = "accessibility.ts"
 
-  deps = [ ":accessibility" ]
+  deps = [
+    ":accessibility",
+    "../../generated",
+  ]
 
   visibility = [
     ":*",

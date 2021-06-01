@@ -16,7 +16,7 @@ devtools_module("generated") {
 
   visibility = [
     "../core/protocol_client:*",
-    "../core/sdk:sdk-typescript",
+    "../core/sdk:*",
     "../panels/accessibility:*",
     "../panels/elements:*",
   ]

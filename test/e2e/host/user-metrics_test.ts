@@ -391,7 +391,7 @@ describe('User Metrics', () => {
 
   it('dispatches an event when experiments are enabled and disabled', async () => {
     await openSettingsTab('Experiments');
-    const customThemeCheckbox = await waitFor('[aria-label="Allow custom UI themes"]');
+    const customThemeCheckbox = await waitFor('[aria-label="Allow extensions to load custom stylesheets"]');
     // Enable the experiment
     await customThemeCheckbox.click();
     // Disable the experiment
@@ -408,11 +408,11 @@ describe('User Metrics', () => {
       },
       {
         name: 'DevTools.ExperimentEnabled',
-        value: 0,  // Allow Custom UI Themes
+        value: 0,  // Allow extensions to load custom stylesheets
       },
       {
         name: 'DevTools.ExperimentDisabled',
-        value: 0,  // Allow Custom UI Themes
+        value: 0,  // Allow extensions to load custom stylesheets
       },
     ]);
   });

@@ -220,7 +220,7 @@ export class MainImpl {
   }
 
   _initializeExperiments(): void {
-    Root.Runtime.experiments.register('applyCustomStylesheet', 'Allow custom UI themes');
+    Root.Runtime.experiments.register('applyCustomStylesheet', 'Allow extensions to load custom stylesheets');
     Root.Runtime.experiments.register('captureNodeCreationStacks', 'Capture node creation stacks');
     Root.Runtime.experiments.register('sourcesPrettyPrint', 'Automatically pretty print in the Sources Panel');
     Root.Runtime.experiments.register('backgroundServices', 'Background web platform feature events', true);

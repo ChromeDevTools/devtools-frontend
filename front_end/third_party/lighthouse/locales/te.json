@@ -476,6 +476,12 @@
   "lighthouse-core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "లెగసీ JavaScriptను మోడ్రన్ బ్రౌజర్‌లకు అందించడం మానివేయండి"
   },
+  "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
+    "message": "JPEG 2000, JPEG XR, WebP లాంటి చిత్రం ఫార్మాట్‌లు తరచుగా PNG లేదా JPEG కంటే మెరుగైన కుదింపును అందిస్తాయి. దీని వలన, డౌన్‌లోడ్‌లు మరింత వేగంగా ఉంటాయి, తక్కువ డేటా వినియోగం అవుతుంది. [మరింత తెలుసుకోండి](https://web.dev/uses-webp-images/)."
+  },
+  "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
+    "message": "చిత్రాలను తర్వాతి-తరం ఫార్మాట్‌లలో అందించండి"
+  },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
     "message": "పేజీలో పూర్తి పరస్పర చర్యకు పట్టే సమయం తగ్గించడానికి అన్ని క్లిష్టమైన వనరులు లోడ్ అవ్వడం పూర్తయిన తర్వాతే ఆఫ్‌స్క్రీన్, దాగి ఉన్న చిత్రాలను నెమ్మదిగా లోడ్ చేయడాన్ని పరిశీలించండి. [మరింత తెలుసుకోండి](https://web.dev/offscreen-images/)."
   },
@@ -554,12 +560,6 @@
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "వచనం కుదింపును ప్రారంభించండి"
   },
-  "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
-    "message": "JPEG 2000, JPEG XR, WebP లాంటి చిత్రం ఫార్మాట్‌లు తరచుగా PNG లేదా JPEG కంటే మెరుగైన కుదింపును అందిస్తాయి. దీని వలన, డౌన్‌లోడ్‌లు మరింత వేగంగా ఉంటాయి, తక్కువ డేటా వినియోగం అవుతుంది. [మరింత తెలుసుకోండి](https://web.dev/uses-webp-images/)."
-  },
-  "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
-    "message": "చిత్రాలను తర్వాతి-తరం ఫార్మాట్‌లలో అందించండి"
-  },
   "lighthouse-core/audits/content-width.js | description": {
     "message": "ఒకవేళ వీక్షణ పోర్ట్ వెడల్పుతో మీ యాప్ కంటెంట్ వెడల్పు సరిపోలకుంటే, మొబైల్ స్క్రీన్‌లకు అనుగుణంగా మీ యాప్‌ను ఆప్టిమైజ్ చేయడం సాధ్యపడకపోవచ్చు. [మరింత తెలుసుకోండి](https://web.dev/content-width/)."
   },
@@ -584,8 +584,14 @@
   "lighthouse-core/audits/csp-xss.js | columnDirective": {
     "message": "డైరెక్టివ్"
   },
+  "lighthouse-core/audits/csp-xss.js | columnSeverity": {
+    "message": "Severity"
+  },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "బలమైన కంటెంట్ సెక్యూరిటీ పాలసీ (CSP) XSS దాడుల ప్రమాదాన్ని గణనీయంగా తగ్గిస్తుంది. [మరింత తెలుసుకోండి](https://csp.withgoogle.com/docs/index.html)"
+    "message": "బలమైన కంటెంట్ సెక్యూరిటీ పాలసీ (CSP), క్రాస్-సైట్ స్క్రిప్టింగ్ (XSS) దాడుల ప్రమాదాన్ని గణనీయంగా తగ్గిస్తుంది. [మరింత తెలుసుకోండి](https://web.dev/strict-csp/)"
+  },
+  "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
+    "message": "Syntax"
   },
   "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
     "message": "పేజీ <meta> ట్యాగ్‌లో నిర్వచించబడిన CSPని కలిగి ఉంది. మీకు సాధ్యమైతే CSPని HTTP హెడర్‌లో నిర్వచించడాన్ని పరిగణించండి."
@@ -760,15 +766,6 @@
   },
   "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | failureTitle": {
     "message": "తెలిసిన భద్రతా ప్రమాదాలను కలిగి ఉండే ఫ్రంట్-ఎండ్ JavaScript లైబ్రరీలను జోడిస్తుంది"
-  },
-  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityHigh": {
-    "message": "అధికం"
-  },
-  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityLow": {
-    "message": "తక్కువ"
-  },
-  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityMedium": {
-    "message": "మధ్యస్థం"
   },
   "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | title": {
     "message": "తెలిసిన భద్రతా ప్రమాదాలను కలిగి ఉండే ఫ్రంట్-ఎండ్ JavaScript లైబ్రరీలను నివారిస్తుంది"
@@ -1070,14 +1067,8 @@
   "lighthouse-core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "క్యుములేటివ్ లేఅవుట్ షిఫ్ట్, వీక్షణ పోర్ట్‌లో కనిపించే మూలకాల కదలికను సూచిస్తోంది. [మరింత తెలుసుకోండి](https://web.dev/cls/)."
   },
-  "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
-    "message": "పేజీ లోడ్‌కు అత్యంత రద్దీ అయిన 5 సెకన్ల విండో సమయంలో, వినియోగదారు ఇన్‌పుట్‌కు ప్రతిస్పందించడానికి, మిల్లీ సెకన్లలో, మీ యాప్ తీసుకునే సమయం యొక్క అంచనాను 'అంచనా వేసిన ఇన్‌పుట్ ప్రతిస్పందన సమయం' అని అంటారు. మీ ప్రతిస్పందన సమయం 50 మిల్లీ సెక‌న్ల‌ కన్నా ఎక్కువ అయితే, మీ యాప్ వేగవంతంగా పని చేయట్లేదని వినియోగదారులు భావించవచ్చు. [మరింత తెలుసుకోండి](https://web.dev/estimated-input-latency/)."
-  },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
     "message": "మొదటి కంటెంట్ సహిత పెయింట్ ఏదైనా వచనం లేదా చిత్రం మొదటిసారి పెయింట్ చేయబడిన సమయాన్ని గుర్తిస్తుంది. [మరింత తెలుసుకోండి](https://web.dev/first-contentful-paint/)."
-  },
-  "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
-    "message": "'మొదటి CPU ఖాళీ సమయం' కొలమానం, మొదటి సారి పేజీ యొక్క ప్రధాన థ్రెడ్ ఇన్‌పుట్‌ను నిర్వహించడానికి తీసుకున్న సమయాన్ని గుర్తిస్తుంది.  [మరింత తెలుసుకోండి](https://web.dev/first-cpu-idle/)."
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "ఒక పేజీ ప్రాథమిక కంటెంట్ ఎప్పుడు కనిపించింది అనేదానికి, మొదటి అర్ధవంతమైన పెయింట్ ఒక కొలమానం. [మరింత తెలుసుకోండి](https://web.dev/first-meaningful-paint/)."
@@ -1703,6 +1694,15 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "మొబైల్-అనుకూలం"
   },
+  "lighthouse-core/gather/driver/environment.js | warningSlowHostCpu": {
+    "message": "పరీక్షించిన పరికరం Lighthouse ఆశించే దాని కంటే తక్కువ CPUని కలిగి ఉన్నట్లుంది. మీ పనితీరు స్కోర్‌పై ఇది ప్రతికూల ప్రభావం చూపగలదు. [సముచిత CPU నెమ్మది చలనం మల్టీప్లయర్‌ను క్యాలిబ్రేట్ చేయడం](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling) గురించి మరింత తెలుసుకోండి."
+  },
+  "lighthouse-core/gather/driver/navigation.js | warningRedirected": {
+    "message": "మీ పరీక్ష URL ({requested})ను {final}కు మళ్లించినందున, పేజీ అనుకున్న విధంగా లోడ్ కాలేకపోతుండవచ్చు. నేరుగా రెండవ URLను పరీక్షించడం ట్రై చేయండి."
+  },
+  "lighthouse-core/gather/driver/navigation.js | warningTimeout": {
+    "message": "సమయ పరిమితి లోపల పూర్తి కావడానికి పేజీ మరీ నిదానంగా లోడ్ అయ్యింది. ఫలితాలు సంపూర్ణంగా ఉండకపోవచ్చు."
+  },
   "lighthouse-core/gather/driver/storage.js | warningData": {
     "message": "{locationCount,plural, =1{ఈ లొకేషన్‌లో 'లోడింగ్ పనితీరు'ను ప్రభావితం చేసే స్టోర్డ్ డేటా ఉండవచ్చు: {locations}. మీ స్కోర్‌లను ఆ రిసోర్స్‌లు ప్రభావితం చేయకుండా నివారించడానికి అజ్ఞాత విండోలో ఈ పేజీని ఆడిట్ చేయండి.}other{ఈ లొకేషన్‌లలో ఉండే స్టోర్డ్ డేటా వల్ల 'లోడింగ్ పనితీరు' ప్రభావితం కావచ్చు: {locations}. మీ స్కోర్‌లను ఆ రిసోర్స్‌లు ప్రభావితం చేయకుండా నివారించడానికి అజ్ఞాత విండోలో ఈ పేజీని ఆడిట్ చేయండి.}}"
   },
@@ -1832,12 +1832,6 @@
   "lighthouse-core/lib/i18n/i18n.js | documentResourceType": {
     "message": "పత్రం"
   },
-  "lighthouse-core/lib/i18n/i18n.js | estimatedInputLatencyMetric": {
-    "message": "అంచనా వేయబడిన ఇన్‌పుట్ ప్రతిస్పందన సమయం"
-  },
-  "lighthouse-core/lib/i18n/i18n.js | firstCPUIdleMetric": {
-    "message": "CPU మొదటి ఖాళీ సమయం"
-  },
   "lighthouse-core/lib/i18n/i18n.js | firstContentfulPaintMetric": {
     "message": "First Contentful Paint"
   },
@@ -1852,6 +1846,15 @@
   },
   "lighthouse-core/lib/i18n/i18n.js | interactiveMetric": {
     "message": "Time to Interactive"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | itemSeverityHigh": {
+    "message": "అధికం"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | itemSeverityLow": {
+    "message": "తక్కువ"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | itemSeverityMedium": {
+    "message": "మధ్యస్థం"
   },
   "lighthouse-core/lib/i18n/i18n.js | largestContentfulPaintMetric": {
     "message": "Largest Contentful Paint"
@@ -2060,6 +2063,9 @@
   "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
     "message": "తెలియదు"
   },
+  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
+    "message": "వీటికి సంబంధించిన ఆడిట్‌లను చూపండి:"
+  },
   "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
     "message": "స్నిప్పెట్‌ను కుదించు"
   },
@@ -2087,8 +2093,35 @@
   "lighthouse-core/report/html/renderer/util.js | warningHeader": {
     "message": "హెచ్చరికలు: "
   },
+  "lighthouse-treemap/app/src/util.js | allLabel": {
+    "message": "అన్నీ"
+  },
+  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "అన్ని స్క్రిప్ట్‌లు"
+  },
+  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
+    "message": "కవరేజీ"
+  },
+  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "డూప్లికేట్ మాడ్యూల్‌లు"
+  },
+  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "రిసోర్స్ బైట్‌లు"
+  },
+  "lighthouse-treemap/app/src/util.js | tableColumnName": {
+    "message": "పేరు"
+  },
+  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "టోగుల్ టేబుల్"
+  },
+  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "వినియోగించని బైట్‌లు"
+  },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "యానిమేట్ చేసిన కంటెంట్ కోసం, కంటెంట్ ఆఫ్‌స్క్రీన్‌లో ఉన్నప్పుడు CPU వినియోగాన్ని తగ్గించడానికి, [`amp-anim`](https://amp.dev/documentation/components/amp-anim/)ను ఉపయోగించండి."
+  },
+  "node_modules/lighthouse-stack-packs/packs/amp.js | modern-image-formats": {
+    "message": "ఇతర బ్రౌజర్‌ల కోసం సముచితంగా ఉండే మునుపటి వాటిని పేర్కొంటున్నప్పుడు, మీ అన్ని [ `amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) కాంపోనెంట్‌లను WebP ఫార్మాట్‌లలో ప్రదర్శించడానికి ప్రయత్నించండి. [మరింత తెలుసుకోండి](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | offscreen-images": {
     "message": "ఇమేజ్‌లను ఆటోమేటిక్‌గా లేజీ-లోడ్ చేయడానికి, మీరు [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites)ను ఉపయోగిస్తున్నారని నిర్ధారించుకోండి. [మరింత తెలుసుకోండి](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)."
@@ -2101,9 +2134,6 @@
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | uses-responsive-images": {
     "message": "స్క్రీన్ సైజ్ ఆధారంగా ఏయే ఇమేజ్ అస్సెట్‌లను ఉపయోగించాలో పేర్కొనడానికి [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) కాంపోనెంట్ [`srcset`](https://web.dev/use-srcset-to-automatically-choose-the-right-image/) లక్షణానికి సపోర్ట్ అందిస్తుంది. [మరింత తెలుసుకోండి](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)."
-  },
-  "node_modules/lighthouse-stack-packs/packs/amp.js | uses-webp-images": {
-    "message": "ఇతర బ్రౌజర్‌ల కోసం సముచితంగా ఉండే మునుపటి వాటిని పేర్కొంటున్నప్పుడు, మీ అన్ని [ `amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) కాంపోనెంట్‌లను WebP ఫార్మాట్‌లలో ప్రదర్శించడానికి ప్రయత్నించండి. [మరింత తెలుసుకోండి](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/angular.js | dom-size": {
     "message": "చాలా ఎక్కువ జాబితాలను అమలు చేస్తున్నట్లయితే, కాంపొనెంట్ డెవలపర్ కిట్ (CDK)తో వర్చువల్ స్క్రోలింగ్ చేయడానికి ప్రయత్నించండి. [మరింత తెలుసుకోండి](https://web.dev/virtualize-lists-with-angular-cdk/)."
@@ -2129,13 +2159,16 @@
   "node_modules/lighthouse-stack-packs/packs/drupal.js | font-display": {
     "message": "మీ థీమ్‌లో అనుకూల ఫాంట్‌లను నిర్వచించినప్పుడు `@font-display`ను పేర్కొనండి."
   },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | modern-image-formats": {
+    "message": "మీ సైట్‌లో [WebP ఇమేజ్ ఫార్మాట్‌లను ఉపయోగించడానికి మాడ్యూల్](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search)ను ఇన్‌స్టాల్ చేసి, కాన్ఫిగర్ చేయడానికి ప్రయత్నించండి. అలాంటి మాడ్యూల్‌లు, లోడ్ అయ్యే సమయాన్ని ఆప్టిమైజ్ చేయడానికి, మీరు అప్‌లోడ్ చేసిన ఇమేజ్‌లకు ఒక WebP వెర్షన్‌ను ఆటోమేటిక్‌గా జెనరేట్ చేస్తాయి."
+  },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | offscreen-images": {
     "message": "లేజీ ఇమేజ్‌లను లోడ్ చేయగల [ఒక Drupal మాడ్యూల్](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search)ను ఇన్‌స్టాల్ చేయండి. అలాంటి మాడ్యూల్‌లు, పనితీరును మెరుగుపరచడానికి ఎలాంటి ఆఫ్‌స్క్రీన్ ఇమేజ్‌లను అయినా మినహాయించగల సామర్థ్యాన్ని అందిస్తాయి."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
     "message": "కీలకమైన CSS, JavaSciptను ఇన్‌లైన్‌లో ఉంచడానికి, లేదా [అధునాతన CSS/JS అగ్రిగేషన్](https://www.drupal.org/project/advagg) మాడ్యూల్ లాంటి JavaScript ద్వారా అస్సెట్‌లను అసమకాలికంగా లోడ్ చేసే అవకాశం ఉండటానికి, మాడ్యూల్‌ను ఉపయోగించడానికి ప్రయత్నించండి. ఈ మాడ్యూల్ ద్వారా అందించబడే ఆప్టిమైజేషన్‌లు మీ సైట్‌ను విడగొట్టవచ్చని గుర్తుంచుకోండి, కనుక మీరు కోడ్‌కు మార్పులు చేయాల్సి రావచ్చు."
   },
-  "node_modules/lighthouse-stack-packs/packs/drupal.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "థీమ్‌లు, మాడ్యూల్‌లు, సర్వర్ నిర్దేశాలన్నీ కూడా సర్వర్ ప్రతిస్పందన సమయాన్ని ప్రభావితం చేస్తాయి. చాలా జాగ్రత్తగా ఆప్టిమైజేషన్ మాడ్యూల్‌ను ఎంచుకోవడం, మరియు/లేదా మీ సర్వర్‌ను అప్‌గ్రేడ్ చేయడం ద్వారా, మరింత ఆప్టిమైజ్ చేయబడిన థీమ్‌ను కనుగొనడానికి ప్రయత్నించండి. మీ హోస్టింగ్ సర్వర్‌లు Redis లేదా Memcached లాంటి డేటాబేస్ క్వెరీ సమయాలను తగ్గించడానికి PHP opcode కాషింగ్, మెమరీ-కాషింగ్‌లను ఉపయోగించాలి, అలాగే పేజీలను వేగవంతంగా సిద్ధం చేయడానికి ఆప్టిమైజ్ చేయబడిన అప్లికేషన్ లాజిక్‌ను ఉపయోగించాలి."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | total-byte-weight": {
@@ -2165,11 +2198,11 @@
   "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-responsive-images": {
     "message": "మీరు Drupal నుండి అందించబడే (Drupal 8, ఆపైన అందుబాటులో ఉన్నవి) స్థానిక [ప్రతిస్పందనాత్మక ఇమేజ్ స్టయిల్‌ల](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8)ను ఉపయోగిస్తున్నారని నిర్ధారించుకోండి. వీక్షణ మోడ్‌లు, వీక్షణల ద్వారా ఇమేజ్ ఫీల్డ్‌లను, లేదా WYSIWYG ఎడిటర్ ద్వారా అప్‌లోడ్ చేయబడిన ఇమేజ్‌లను రెండరింగ్ చేస్తున్నప్పుడు ప్రతిస్పందనాత్మక ఇమేజ్ స్టయిల్‌లను ఉపయోగించండి."
   },
-  "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-webp-images": {
-    "message": "మీ సైట్‌లో [WebP ఇమేజ్ ఫార్మాట్‌లను ఉపయోగించడానికి మాడ్యూల్](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search)ను ఇన్‌స్టాల్ చేసి, కాన్ఫిగర్ చేయడానికి ప్రయత్నించండి. అలాంటి మాడ్యూల్‌లు, లోడ్ అయ్యే సమయాన్ని ఆప్టిమైజ్ చేయడానికి, మీరు అప్‌లోడ్ చేసిన ఇమేజ్‌లకు ఒక WebP వెర్షన్‌ను ఆటోమేటిక్‌గా జెనరేట్ చేస్తాయి."
-  },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "మీ GIFను HTML5 వీడియోగా పొందుపరచడానికి అందుబాటులో ఉండేలా చేసే సర్వీస్‌కు దానిని అప్‌లోడ్ చేయవచ్చు, దాన్ని పరిశీలించండి."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | modern-image-formats": {
+    "message": "మీరు అప్‌లోడ్ చేసిన ఇమేజ్‌లను అనుకూలమైన ఫార్మాట్‌లలోకి ఆటోమేటిక్‌గా మార్చే [ప్లగ్ఇన్](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) లేదా సర్వీస్‌ను ఉపయోగించవచ్చు, దాన్ని పరిశీలించండి."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
     "message": "ఏవైనా ఆఫ్‌స్క్రీన్ ఇమేజ్‌లు ఉంటే, వాటిని మినహాయించగల సామర్థ్యాన్ని అందించే లేదా ఆ ఫంక్షనాలిటీని అందించే టెంప్లేట్‌కు స్విచ్ చేయగలిగే [లేజీ-లోడ్ Joomla ప్లగ్ఇన్‌](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading)ను ఇన్‌స్టాల్ చేయండి. Joomla 4.0 నుండి, అన్ని కొత్త ఇమేజ్‌లు ప్రధాన భాగం నుండి [ఆటోమేటిక్‌గా](https://github.com/joomla/joomla-cms/pull/30748) `loading` లక్షణాన్ని పొందుతాయి."
@@ -2207,9 +2240,6 @@
   "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-text-compression": {
     "message": "మీరు Joomlaలో (సిస్టమ్ > గ్లోబల్ కాన్ఫిగరేషన్ > సర్వర్) Gzip పేజీ కుదింపును ఎనేబుల్ చేయడం ద్వారా టెక్స్ట్ కుదింపును ఎనేబుల్ చేయవచ్చు."
   },
-  "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-webp-images": {
-    "message": "మీరు అప్‌లోడ్ చేసిన ఇమేజ్‌లను అనుకూలమైన ఫార్మాట్‌లలోకి ఆటోమేటిక్‌గా మార్చే [ప్లగ్ఇన్](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) లేదా సర్వీస్‌ను ఉపయోగించవచ్చు, దాన్ని పరిశీలించండి."
-  },
   "node_modules/lighthouse-stack-packs/packs/magento.js | critical-request-chains": {
     "message": "మీ JavaScript అస్సెట్‌లను మీరు బండిల్ చేయనట్లయితే, [బేలర్‌](https://github.com/magento/baler)ను ఉపయోగించడానికి ప్రయత్నించండి."
   },
@@ -2219,10 +2249,13 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | font-display": {
     "message": "[అనుకూల ఫాంట్‌లను నిర్వచిస్తున్నప్పుడు](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html), `@font-display`ను పేర్కొనండి."
   },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | modern-image-formats": {
+    "message": "సరికొత్త చిత్ర ఫార్మాట్‌లను అందించే వివిధ రకాల మూడవ పక్ష ఎక్స్‌టెన్షన్‌ల కోసం [Magento మార్కెట్‌ప్లేస్](https://marketplace.magento.com/catalogsearch/result/?q=webp)‌లో వెతకడానికి ప్రయత్నించండి."
+  },
   "node_modules/lighthouse-stack-packs/packs/magento.js | offscreen-images": {
     "message": "వెబ్ ప్లాట్‌ఫామ్‌లోని [లేజీ లోడింగ్](https://web.dev/native-lazy-loading) ఫీచర్‌ను వినియోగించడం కోసం మీ ఉత్పత్తి, కేటలాగ్ టెంప్లేట్‌లను సవరించడానికి ప్రయత్నించండి."
   },
-  "node_modules/lighthouse-stack-packs/packs/magento.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/magento.js | server-response-time": {
     "message": "Magento సంబంధిత [వార్నిష్ ఇంటిగ్రేషన్‌](https://devdocs.magento.com/guides/v2.3/config-guide/varnish/config-varnish.html)ను ఉపయోగించండి."
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | unminified-css": {
@@ -2243,11 +2276,11 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "[థీమ్ లేఅవుట్‌ను సవరించడం](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html) ద్వారా `<link rel=preload>` ట్యాగ్‌లను జోడించవచ్చు."
   },
-  "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
-    "message": "సరికొత్త చిత్ర ఫార్మాట్‌లను అందించే వివిధ రకాల మూడవ పక్ష ఎక్స్‌టెన్షన్‌ల కోసం [Magento మార్కెట్‌ప్లేస్](https://marketplace.magento.com/catalogsearch/result/?q=webp)‌లో వెతకడానికి ప్రయత్నించండి."
-  },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "వెబ్ పేజీ మరింత వేగంగా లోడ్ కేవడానికి [యానిమేట్ చేసిన GIFలను వీడియోతో భర్తీ చేయండి](https://web.dev/replace-gifs-with-videos/), అలాగే కుదింపు సామర్థ్యాన్ని ప్రస్తుత స్టేట్-ఆఫ్-ది-ఆర్ట్ వీడియో కోడెక్, VP9 కంటే 30% ఎక్కువగా ఉంటే [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) లేదా [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) లాంటి ఆధునిక ఫైల్ ఫార్మాట్‌లను ఉపయోగించవచ్చు, దాన్ని పరిశీలించండి."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | modern-image-formats": {
+    "message": "అప్‌లోడ్ చేసిన ఇమేజ్‌లను అనుకూలమైన ఫార్మాట్‌లలోకి ఆటోమేటిక్‌గా మార్చే [ప్లగ్ఇన్](https://octobercms.com/plugins?search=image) లేదా సర్వీస్‌ను ఉపయోగించవచ్చు, దాన్ని పరిశీలించండి. [WebP నష్టరహిత ఇమేజ్‌లు](https://developers.google.com/speed/webp) PNG ఇమేజ్‌లతో పోల్చితే 26% తక్కువ సైజ్, JPEG ఇమేజ్‌లతో పోల్చితే 25-34% తక్కువ సైజ్ ఉంటూ సమానమైన SSIM క్వాలిటీ ఇండెక్స్‌ను కలిగి ఉంటాయి. పరిగణనలోకి తీసుకోవాల్సిన మరొక తర్వాతి తరం ఇమేజ్ ఫార్మాట్, [AVIF](https://jakearchibald.com/2020/avif-has-landed/)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
     "message": "ఏవైనా ఆఫ్‌స్క్రీన్ ఇమేజ్‌లు ఉంటే, వాటిని మినహాయించగల సామర్థ్యాన్ని అందించే లేదా ఆ ఫంక్షనాలిటీ అందించే టెంప్లేట్‌ను స్విచ్ చేయగలిగే [ఇమేజ్ లేజీ లోడింగ్ ప్లగ్ఇన్‌](https://octobercms.com/plugins?search=lazy)ను ఇన్‌స్టాల్ చేయవచ్చు, దాన్ని పరిశీలించండి. అలాగే, [AMP ప్లగ్ఇన్‌](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages)ను ఉపయోగించడం కూడా పరిశీలించండి."
@@ -2255,7 +2288,7 @@
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
     "message": "[కీలకమైన అస్సెట్‌లను ఇన్‌లైన్‌లో ఉంచడానికి](https://octobercms.com/plugins?search=css) సహాయపడే అనేక ప్లగ్ఇన్‌లు ఉన్నాయి. ఈ ప్లగ్ఇన్‌లు ఇతర ప్లగ్ఇన్‌లను నిరోధించవచ్చు, కనుక మీరు వీటిని బాగా పరీక్షించవలసి ఉంటుంది."
   },
-  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | server-response-time": {
     "message": "థీమ్‌లు, ప్లగ్ఇన్‌లు, సర్వర్ లక్షణాలన్నీ కూడా సర్వర్ ప్రతిస్పందన సమయాన్ని ప్రభావితం చేస్తాయి. చాలా జాగ్రత్తగా ఆప్టిమైజేషన్ ప్లగ్ఇన్‌ను ఎంచుకోవడం మరియు/లేదా సర్వర్‌ను అప్‌గ్రేడ్ చేయడం ద్వారా మరింత ఆప్టిమైజ్ చేసిన థీమ్‌ను కనుగొనడానికి ప్రయత్నించండి. October CMS ఇ-మెయిల్ పంపడం లాంటి సమయం తీసుకునే పనిని మినహాయించడానికి [`Queues`](https://octobercms.com/docs/services/queues)ని ఉపయోగించేందుకు డెవలపర్‌లను అనుమతిస్తుంది. ఇది వెబ్ రిక్వెస్ట్‌లను చాలా వేగవంతం చేస్తుంది."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
@@ -2285,16 +2318,13 @@
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
     "message": "వెబ్ సర్వర్ కాన్ఫిగరేషన్‌లో టెక్స్ట్ కుదింపును ఎనేబుల్ చేయండి."
   },
-  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
-    "message": "అప్‌లోడ్ చేసిన ఇమేజ్‌లను అనుకూలమైన ఫార్మాట్‌లలోకి ఆటోమేటిక్‌గా మార్చే [ప్లగ్ఇన్](https://octobercms.com/plugins?search=image) లేదా సర్వీస్‌ను ఉపయోగించవచ్చు, దాన్ని పరిశీలించండి. [WebP నష్టరహిత ఇమేజ్‌లు](https://developers.google.com/speed/webp) PNG ఇమేజ్‌లతో పోల్చితే 26% తక్కువ సైజ్, JPEG ఇమేజ్‌లతో పోల్చితే 25-34% తక్కువ సైజ్ ఉంటూ సమానమైన SSIM క్వాలిటీ ఇండెక్స్‌ను కలిగి ఉంటాయి. పరిగణనలోకి తీసుకోవాల్సిన మరొక తర్వాతి తరం ఇమేజ్ ఫార్మాట్, [AVIF](https://jakearchibald.com/2020/avif-has-landed/)."
-  },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
     "message": "మీరు పేజీలోని అనేక రిపీట్ అయ్యే ఎలిమెంట్‌లను రెండరింగ్ చేస్తున్నట్లయితే, క్రియేట్ చేసే DOM నోడ్‌ల సంఖ్యను కనిష్ఠ స్థాయికి తగ్గించడానికి, `react-window` లాంటి “విండో తరహా” లైబ్రరీని ఉపయోగించచవచ్చు, దాన్ని పరిశీలించండి. [మరింత తెలుసుకోండి](https://web.dev/virtualize-long-lists-react-window/). అలాగే, [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent), లేదా [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo)ను ఉపయోగించి అనవసరమైన రీ-రెండర్‌లను తగ్గించండి, అలాగే మీరు రన్‌టైమ్ పనితీరును మెరుగుపరచడానికి `Effect` హుక్‌ను ఉపయోగిస్తున్నప్పుడు కొన్ని ఆధారిత అంశాలు మారినప్పుడు మాత్రమే[ఎఫెక్ట్‌లను స్కిప్ చేయండి](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects)."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "మీరు 'రియాక్ట్ రూటర్'ను ఉపయోగిస్తున్నట్లయితే, [మార్గం నావిగేషన్‌ల](https://reacttraining.com/react-router/web/api/Redirect) కోసం `<Redirect>` కాంపొనెంట్ వినియోగాన్ని కనీస స్థాయికి తగ్గించండి."
   },
-  "node_modules/lighthouse-stack-packs/packs/react.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/react.js | server-response-time": {
     "message": "మీరు సర్వర్ వైపు నుండి ఏవైనా 'రియాక్ట్' కాంపొనెంట్‌లను అమలు చేస్తున్నట్లయితే, `renderToNodeStream()` లేదా `renderToStaticNodeStream()`ను వినియోగించడానికి ప్రయత్నించడం ద్వారా మార్క్అప్‌లో ఉండే విభాగాలన్నీ ఒకేసారి కాకుండా, వివిధ భాగాలుగా అందుకోవడానికి, హైడ్రేట్ చేయడానికి క్లయింట్‌ను అనుమతించండి. [మరింత తెలుసుకోండి](https://reactjs.org/docs/react-dom-server.html#rendertonodestream)."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | unminified-css": {
@@ -2312,13 +2342,16 @@
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "మీ GIFను HTML5 వీడియోగా పొందుపరచడానికి అందుబాటులో ఉండేలా చేసే సర్వీస్‌కు దానిని అప్‌లోడ్ చేయవచ్చు, దాన్ని పరిశీలించండి."
   },
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | modern-image-formats": {
+    "message": "మీరు అప్‌లోడ్ చేసిన ఇమేజ్‌లను అనుకూలమైన ఫార్మాట్‌లలోకి ఆటోమేటిక్‌గా మార్చే [ప్లగ్ఇన్](https://wordpress.org/plugins/search/convert+webp/) లేదా సర్వీస్‌ను ఉపయోగించవచ్చు, దాన్ని పరిశీలించండి."
+  },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | offscreen-images": {
     "message": "ఏవైనా ఆఫ్‌స్క్రీన్ చిత్రాలు ఉంటే, వాటిని మినహాయించగల సామర్థ్యం కలిగి ఉండే లేదా ఆ కార్యశీలతను అందించే థీమ్‌కు మార్చగలిగే [లేజీ-లోడ్ WordPress ప్లగ్ఇన్‌](https://wordpress.org/plugins/search/lazy+load/)ను ఇన్‌స్టాల్ చేసుకోండి. అలాగే, [AMP ప్లగ్ఇన్‌](https://wordpress.org/plugins/amp/)ను ఉపయోగించడం కూడా పరిశీలించండి."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | render-blocking-resources": {
     "message": "[కీలకమైన ఆస్తులను ఇన్‌లైన్‌లో ఉంచడానికి](https://wordpress.org/plugins/search/critical+css/) లేదా [తక్కువ ప్రాముఖ్యత ఉన్న వనరులను మినహాయించడానికి](https://wordpress.org/plugins/search/defer+css+javascript/) మీకు సహాయపడగల అనేక WordPress ప్లగ్ఇన్‌లు ఉన్నాయి. ఈ ప్లగ్ఇన్‌ల ద్వారా అందించబడే ఆప్టిమైజేషన్‌లు మీ థీమ్ లేదా ప్లగ్ఇన్‌ల ఫీచర్‌లను విడగొట్టవచ్చని గుర్తుంచుకోండి, దీని వలన మీరు కోడ్‌కు మార్పులు చేయాల్సి రావచ్చు."
   },
-  "node_modules/lighthouse-stack-packs/packs/wordpress.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | server-response-time": {
     "message": "థీమ్‌లు, ప్లగ్ఇన్‌లు, సర్వర్ లక్షణాలన్నీ కూడా సర్వర్ ప్రతిస్పందన సమయాన్ని ప్రభావితం చేస్తాయి. మరింత ఆప్టిమైజ్ చేయబడిన థీమ్‌ను కనుగొనడానికి, చాలా జాగ్రత్తగా ఆప్టిమైజేషన్ ప్లగ్ఇన్‌ను ఎంచుకోవడానికి మరియు/లేదా మీ సర్వర్‌ను అప్‌గ్రేడ్ చేయడానికి ప్రయత్నించండి."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | total-byte-weight": {
@@ -2347,8 +2380,5 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "మీరు మీ వెబ్ సర్వర్ కన్ఫిగరేషన్‌లో వచన కుదింపును ప్రారంభించవచ్చు."
-  },
-  "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-webp-images": {
-    "message": "మీరు అప్‌లోడ్ చేసిన ఇమేజ్‌లను అనుకూలమైన ఫార్మాట్‌లలోకి ఆటోమేటిక్‌గా మార్చే [ప్లగ్ఇన్](https://wordpress.org/plugins/search/convert+webp/) లేదా సర్వీస్‌ను ఉపయోగించవచ్చు, దాన్ని పరిశీలించండి."
   }
 }

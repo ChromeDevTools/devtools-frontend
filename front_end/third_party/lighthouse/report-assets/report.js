@@ -2542,7 +2542,7 @@ if (typeof module !== 'undefined' && module.exports) {
  * the report.
  */
 
-/* globals getFilenamePrefix Util ElementScreenshotRenderer */
+/* globals getFilenamePrefix Util TextEncoding ElementScreenshotRenderer */
 
 /** @typedef {import('./dom')} DOM */
 
@@ -2672,8 +2672,7 @@ class ReportUIFeatures {
 
     const showTreemapApp =
       this.json.audits['script-treemap-data'] && this.json.audits['script-treemap-data'].details;
-    // TODO: need window.opener to work in DevTools.
-    if (showTreemapApp && !this._dom.isDevTools()) {
+    if (showTreemapApp) {
       this.addButton({
         text: Util.i18n.strings.viewTreemapLabel,
         icon: 'treemap',
@@ -2700,12 +2699,18 @@ class ReportUIFeatures {
   }
 
   /**
-   * @param {{text: string, icon?: string, onClick: () => void}} opts
+   * @param {{container?: Element, text: string, icon?: string, onClick: () => void}} opts
    */
   addButton(opts) {
+    // report-ui-features doesn't have a reference to the root report el, and PSI has
+    // 2 reports on the page (and not even attached to DOM when installFeatures is called..)
+    // so we need a container option to specify where the element should go.
     const metricsEl = this._document.querySelector('.lh-audit-group--metrics');
-    // Not supported without metrics group.
-    if (!metricsEl) return;
+    const containerEl = opts.container || metricsEl;
+    if (!containerEl) return;
+
+    let buttonsEl = containerEl.querySelector('.lh-buttons');
+    if (!buttonsEl) buttonsEl = this._dom.createChildOf(containerEl, 'div', 'lh-buttons');
 
     const classes = [
       'lh-button',
@@ -2714,10 +2719,9 @@ class ReportUIFeatures {
       classes.push('report-icon');
       classes.push(`report-icon--${opts.icon}`);
     }
-    const buttonEl = this._dom.createChildOf(metricsEl, 'button', classes.join(' '));
-    buttonEl.addEventListener('click', opts.onClick);
+    const buttonEl = this._dom.createChildOf(buttonsEl, 'button', classes.join(' '));
     buttonEl.textContent = opts.text;
-    metricsEl.append(buttonEl);
+    buttonEl.addEventListener('click', opts.onClick);
     return buttonEl;
   }
 
@@ -3049,23 +3053,31 @@ class ReportUIFeatures {
   }
 
   /**
+   * The popup's window.name is keyed by version+url+fetchTime, so we reuse/select tabs correctly.
+   * @param {LH.Result} json
+   * @protected
+   */
+  static computeWindowNameSuffix(json) {
+    // @ts-ignore - If this is a v2 LHR, use old `generatedTime`.
+    const fallbackFetchTime = /** @type {string} */ (json.generatedTime);
+    const fetchTime = json.fetchTime || fallbackFetchTime;
+    return `${json.lighthouseVersion}-${json.requestedUrl}-${fetchTime}`;
+  }
+
+  /**
    * Opens a new tab to the online viewer and sends the local page's JSON results
    * to the online viewer using postMessage.
    * @param {LH.Result} json
    * @protected
    */
   static openTabAndSendJsonReportToViewer(json) {
-    // The popup's window.name is keyed by version+url+fetchTime, so we reuse/select tabs correctly
-    // @ts-ignore - If this is a v2 LHR, use old `generatedTime`.
-    const fallbackFetchTime = /** @type {string} */ (json.generatedTime);
-    const fetchTime = json.fetchTime || fallbackFetchTime;
-    const windowName = `${json.lighthouseVersion}-${json.requestedUrl}-${fetchTime}`;
+    const windowName = 'viewer-' + this.computeWindowNameSuffix(json);
     const url = getAppsOrigin() + '/viewer/';
     ReportUIFeatures.openTabAndSendData({lhr: json}, url, windowName);
   }
 
   /**
-   * Opens a new tab to the treemap app and sends the JSON results using postMessage.
+   * Opens a new tab to the treemap app and sends the JSON results using URL.fragment
    * @param {LH.Result} json
    */
   static openTreemap(json) {
@@ -3074,13 +3086,23 @@ class ReportUIFeatures {
       throw new Error('no script treemap data found');
     }
 
-    const windowName = `treemap-${json.requestedUrl}`;
     /** @type {LH.Treemap.Options} */
     const treemapOptions = {
-      lhr: json,
+      lhr: {
+        requestedUrl: json.requestedUrl,
+        finalUrl: json.finalUrl,
+        audits: {
+          'script-treemap-data': json.audits['script-treemap-data'],
+        },
+        configSettings: {
+          locale: json.configSettings.locale,
+        },
+      },
     };
     const url = getAppsOrigin() + '/treemap/';
-    ReportUIFeatures.openTabAndSendData(treemapOptions, url, windowName);
+    const windowName = 'treemap-' + this.computeWindowNameSuffix(json);
+
+    ReportUIFeatures.openTabWithUrlData(treemapOptions, url, windowName);
   }
 
   /**
@@ -3106,8 +3128,24 @@ class ReportUIFeatures {
       }
     });
 
-    // The popup's window.name is keyed by version+url+fetchTime, so we reuse/select tabs correctly
     const popup = window.open(url, windowName);
+  }
+
+  /**
+   * Opens a new tab to an external page and sends data via base64 encoded url params.
+   * @param {{lhr: LH.Result} | LH.Treemap.Options} data
+   * @param {string} url_
+   * @param {string} windowName
+   * @protected
+   */
+  static async openTabWithUrlData(data, url_, windowName) {
+    const url = new URL(url_);
+    const gzip = Boolean(window.CompressionStream);
+    url.hash = await TextEncoding.toBase64(JSON.stringify(data), {
+      gzip,
+    });
+    if (gzip) url.searchParams.set('gzip', '1');
+    window.open(url.toString(), windowName);
   }
 
   /**
@@ -4071,11 +4109,12 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
    * @return {string}
    */
   _getScoringCalculatorHref(auditRefs) {
-    const v5andv6metrics = auditRefs.filter(audit => audit.group === 'metrics');
+    // TODO: filter by !!acronym when dropping renderer support of v7 LHRs.
+    const metrics = auditRefs.filter(audit => audit.group === 'metrics');
     const fci = auditRefs.find(audit => audit.id === 'first-cpu-idle');
     const fmp = auditRefs.find(audit => audit.id === 'first-meaningful-paint');
-    if (fci) v5andv6metrics.push(fci);
-    if (fmp) v5andv6metrics.push(fmp);
+    if (fci) metrics.push(fci);
+    if (fmp) metrics.push(fmp);
 
     /**
      * Clamp figure to 2 decimal places
@@ -4084,7 +4123,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
      */
     const clampTo2Decimals = val => Math.round(val * 100) / 100;
 
-    const metricPairs = v5andv6metrics.map(audit => {
+    const metricPairs = metrics.map(audit => {
       let value;
       if (typeof audit.result.numericValue === 'number') {
         value = audit.id === 'cumulative-layout-shift' ?
@@ -4270,17 +4309,17 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
     ]);
     for (const metric of filterChoices) {
       const elemId = `metric-${metric.acronym}`;
+      const radioEl = this.dom.createChildOf(metricFilterEl, 'input', 'lh-metricfilter__radio', {
+        type: 'radio',
+        name: 'metricsfilter',
+        id: elemId,
+      });
+
       const labelEl = this.dom.createChildOf(metricFilterEl, 'label', 'lh-metricfilter__label', {
         for: elemId,
         title: metric.result && metric.result.title,
       });
       labelEl.textContent = metric.acronym || metric.id;
-      const radioEl = this.dom.createChildOf(labelEl, 'input', 'lh-metricfilter__radio', {
-        type: 'radio',
-        name: 'metricsfilter',
-        id: elemId,
-        hidden: 'true',
-      });
 
       if (metric.acronym === 'All') {
         radioEl.checked = true;
@@ -5009,4 +5048,83 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = I18n;
 } else {
   self.I18n = I18n;
+}
+;
+/**
+ * @license Copyright 2021 The Lighthouse Authors. All Rights Reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+'use strict';
+
+/* global self btoa atob window CompressionStream Response */
+
+const btoa_ = typeof btoa !== 'undefined' ?
+  btoa :
+  /** @param {string} str */
+  (str) => Buffer.from(str).toString('base64');
+const atob_ = typeof atob !== 'undefined' ?
+  atob :
+  /** @param {string} str */
+  (str) => Buffer.from(str, 'base64').toString();
+
+/**
+ * Takes an UTF-8 string and returns a base64 encoded string.
+ * If gzip is true, the UTF-8 bytes are gzipped before base64'd, using
+ * CompressionStream (currently only in Chrome), falling back to pako
+ * (which is only used to encode in our Node tests).
+ * @param {string} string
+ * @param {{gzip: boolean}} options
+ * @return {Promise<string>}
+ */
+async function toBase64(string, options) {
+  let bytes = new TextEncoder().encode(string);
+
+  if (options.gzip) {
+    if (typeof CompressionStream !== 'undefined') {
+      const cs = new CompressionStream('gzip');
+      const writer = cs.writable.getWriter();
+      writer.write(bytes);
+      writer.close();
+      const compAb = await new Response(cs.readable).arrayBuffer();
+      bytes = new Uint8Array(compAb);
+    } else {
+      /** @type {import('pako')=} */
+      const pako = window.pako;
+      bytes = pako.gzip(string);
+    }
+  }
+
+  let binaryString = '';
+  // This is ~25% faster than building the string one character at a time.
+  // https://jsbench.me/2gkoxazvjl
+  const chunkSize = 5000;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    binaryString += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+  }
+  return btoa_(binaryString);
+}
+
+/**
+ * @param {string} encoded
+ * @param {{gzip: boolean}} options
+ * @return {string}
+ */
+function fromBase64(encoded, options) {
+  const binaryString = atob_(encoded);
+  const bytes = Uint8Array.from(binaryString, c => c.charCodeAt(0));
+
+  if (options.gzip) {
+    /** @type {import('pako')=} */
+    const pako = window.pako;
+    return pako.ungzip(bytes, {to: 'string'});
+  } else {
+    return new TextDecoder().decode(bytes);
+  }
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {toBase64, fromBase64};
+} else {
+  self.TextEncoding = {toBase64, fromBase64};
 }

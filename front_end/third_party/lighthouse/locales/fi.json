@@ -476,6 +476,12 @@
   "lighthouse-core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Vältä vanhan JavaScriptin näyttämistä nykyaikaisilla selaimilla"
   },
+  "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
+    "message": "Tietyt kuvamuodot, kuten JPEG 2000, JPEG XR ja WebP, pakkaavat sisältöä usein paremmin kuin PNG tai JPEG, minkä vuoksi ne auttavat nopeuttamaan latauksia ja vähentämään datan kulutusta. [Lue lisää](https://web.dev/uses-webp-images/)."
+  },
+  "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
+    "message": "Jakele kuvat seuraavan sukupolven muodoissa"
+  },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
     "message": "Suosittelemme lykkäämään poissa näkyvistä olevien ja piilotettujen kuvien lataamista, kunnes kaikki kriittiset resurssit on ladattu. [Lue lisää](https://web.dev/offscreen-images/)."
   },
@@ -554,12 +560,6 @@
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "Ota tekstin pakkaus käyttöön"
   },
-  "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
-    "message": "Tietyt kuvamuodot, kuten JPEG 2000, JPEG XR ja WebP, pakkaavat sisältöä usein paremmin kuin PNG tai JPEG, minkä vuoksi ne auttavat nopeuttamaan latauksia ja vähentämään datan kulutusta. [Lue lisää](https://web.dev/uses-webp-images/)."
-  },
-  "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
-    "message": "Jakele kuvat seuraavan sukupolven muodoissa"
-  },
   "lighthouse-core/audits/content-width.js | description": {
     "message": "Jos sovelluksesi leveys ei vastaa näkymän leveyttä, sovelluksesi ei välttämättä ole mobiilinäytöille optimoitu. [Lue lisää](https://web.dev/content-width/)."
   },
@@ -584,8 +584,14 @@
   "lighthouse-core/audits/csp-xss.js | columnDirective": {
     "message": "Sääntö"
   },
+  "lighthouse-core/audits/csp-xss.js | columnSeverity": {
+    "message": "Severity"
+  },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "Vahva Content Security Policy ‑käytäntö (CSP) vähentää merkittävästi XSS-hyökkäyksien riskiä. [Lue lisää](https://csp.withgoogle.com/docs/index.html)"
+    "message": "Vahva Content Security Policy ‑käytäntö (CSP) vähentää merkittävästi cross-site scripting (XSS) ‑hyökkäyksien riskiä. [Lue lisää](https://web.dev/strict-csp/)"
+  },
+  "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
+    "message": "Syntax"
   },
   "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
     "message": "Sivu sisältää <meta>-tagissa määritetyn CSP:n. Harkitse CSP:n määrittämistä HTTP-ylätunnisteessa, jos mahdollista."
@@ -760,15 +766,6 @@
   },
   "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | failureTitle": {
     "message": "Sisältää käyttöliittymän JavaScript-kirjastot, joissa on tunnettuja tietoturvahaavoittuvuuksia"
-  },
-  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityHigh": {
-    "message": "Vakava"
-  },
-  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityLow": {
-    "message": "Vähäinen"
-  },
-  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityMedium": {
-    "message": "Kohtalainen"
   },
   "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | title": {
     "message": "Välttää käyttöliittymän JavaScript-kirjastoja, joissa on tunnettuja tietoturvahaavoittuvuuksia"
@@ -1070,14 +1067,8 @@
   "lighthouse-core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "Kumulatiivinen asettelumuutos mittaa näkymässä olevien elementtien liikettä. [Lue lisää](https://web.dev/cls/)."
   },
-  "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
-    "message": "Arvioitu syöttöviive on millisekunteina annettu arvio siitä, kuinka kauan sovelluksellasi kestää vastata käyttäjän syötteeseen sivun lataamisen kiireisimmän, viiden sekunnin mittaisen jakson aikana. Jos viive on yli 50 ms, sovelluksesi voi toimia käyttäjien mielestä hitaasti. [Lue lisää](https://web.dev/estimated-input-latency/)."
-  },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Ensimmäinen sisällön renderöinti kertoo, milloin ensimmäinen tekstikohde tai kuva renderöidään. [Lue lisää](https://web.dev/first-contentful-paint/)."
-  },
-  "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
-    "message": "CPU:n ensimmäinen toimettomuusjakso kertoo, milloin sivun pääsäikeen tilanne sallii syötteiden käsittelyn.  [Lue lisää](https://web.dev/first-cpu-idle/)."
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "Ensimmäinen merkityksellinen renderöinti kertoo, milloin sivun ensisijainen sisältö tulee näkyviin. [Lue lisää](https://web.dev/first-meaningful-paint/)."
@@ -1703,6 +1694,15 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Mobiiliystävällinen"
   },
+  "lighthouse-core/gather/driver/environment.js | warningSlowHostCpu": {
+    "message": "Testatun laitteen CPU näyttää olevan hitaampi kuin Lighthouse olettaa. Tämä voi vaikuttaa tuloksiin negatiivisesti. Lue lisää [sopivan CPU-hidastuskertoimen kalibroinnista](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
+  },
+  "lighthouse-core/gather/driver/navigation.js | warningRedirected": {
+    "message": "Sivun lataus ei ehkä onnistu odotetusti, koska testi-URL ({requested}) ohjattiin uudelleen osoitteeseen {final}. Kokeile suoraan toista URL-osoitetta."
+  },
+  "lighthouse-core/gather/driver/navigation.js | warningTimeout": {
+    "message": "Sivu ei ehtinyt latautua loppuun aikarajan sisällä. Tuloksista voi puuttua osa."
+  },
   "lighthouse-core/gather/driver/storage.js | warningData": {
     "message": "{locationCount,plural, =1{Tähän sijaintiin on voitu tallentaa dataa, joka vaikuttaa lataukseen: {locations}. Tarkista sivu incognito-ikkunassa, jotta voit estää kyseisten resurssien vaikutuksen tuloksiisi.}other{Näihin sijainteihin on voitu tallentaa dataa, joka vaikuttaa lataukseen: {locations}. Tarkista sivu incognito-ikkunassa, jotta voit estää kyseisten resurssien vaikutuksen tuloksiisi.}}"
   },
@@ -1832,12 +1832,6 @@
   "lighthouse-core/lib/i18n/i18n.js | documentResourceType": {
     "message": "Dokumentti"
   },
-  "lighthouse-core/lib/i18n/i18n.js | estimatedInputLatencyMetric": {
-    "message": "Arvioitu syöttöviive"
-  },
-  "lighthouse-core/lib/i18n/i18n.js | firstCPUIdleMetric": {
-    "message": "CPU:n ensimmäinen toimettomuusjakso"
-  },
   "lighthouse-core/lib/i18n/i18n.js | firstContentfulPaintMetric": {
     "message": "First Contentful Paint"
   },
@@ -1852,6 +1846,15 @@
   },
   "lighthouse-core/lib/i18n/i18n.js | interactiveMetric": {
     "message": "Time to Interactive"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | itemSeverityHigh": {
+    "message": "Vakava"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | itemSeverityLow": {
+    "message": "Vähäinen"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | itemSeverityMedium": {
+    "message": "Kohtalainen"
   },
   "lighthouse-core/lib/i18n/i18n.js | largestContentfulPaintMetric": {
     "message": "Largest Contentful Paint"
@@ -2060,6 +2063,9 @@
   "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
     "message": "Ei tietoa"
   },
+  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
+    "message": "Näytä tähän liittyvät tarkastukset:"
+  },
   "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
     "message": "Tiivistä koodinpätkä"
   },
@@ -2087,8 +2093,35 @@
   "lighthouse-core/report/html/renderer/util.js | warningHeader": {
     "message": "Varoitukset: "
   },
+  "lighthouse-treemap/app/src/util.js | allLabel": {
+    "message": "Kaikki"
+  },
+  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "Kaikki skriptit"
+  },
+  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
+    "message": "Kattavuus"
+  },
+  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "Moduulien kaksoiskappaleet"
+  },
+  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "Resurssin tavut"
+  },
+  "lighthouse-treemap/app/src/util.js | tableColumnName": {
+    "message": "Nimi"
+  },
+  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "Näytä/piilota taulukko"
+  },
+  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "Käyttämättömät tavut"
+  },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "Käytä animoidun sisällön kanssa [`amp-anim`](https://amp.dev/documentation/components/amp-anim/)-ominaisuutta, joka minimoi suoritinkäytön, kun sisältö ei ole näytöllä."
+  },
+  "node_modules/lighthouse-stack-packs/packs/amp.js | modern-image-formats": {
+    "message": "Harkitse kaikkien [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites)-komponenttien näyttämistä WebP-muodoissa ja lisää varavaihtoehto muita selaimia varten. [Lue lisää](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | offscreen-images": {
     "message": "Varmista, että käytössä on [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites), jotta kuvien lataamista lykätään automaattisesti. [Lue lisää](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)."
@@ -2101,9 +2134,6 @@
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | uses-responsive-images": {
     "message": "[`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites)-komponentti tukee [`srcset`](https://web.dev/use-srcset-to-automatically-choose-the-right-image/)-määritettä, jolla määritetään käytettävä kuvasisältö näytön koon perusteella. [Lue lisää](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)."
-  },
-  "node_modules/lighthouse-stack-packs/packs/amp.js | uses-webp-images": {
-    "message": "Harkitse kaikkien [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites)-komponenttien näyttämistä WebP-muodoissa ja lisää varavaihtoehto muita selaimia varten. [Lue lisää](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/angular.js | dom-size": {
     "message": "Harkitse virtuaalivieritystä Component Dev Kitissä (CDK), jos laajoja listoja renderöidään. [Lue lisää](https://web.dev/virtualize-lists-with-angular-cdk/)."
@@ -2129,13 +2159,16 @@
   "node_modules/lighthouse-stack-packs/packs/drupal.js | font-display": {
     "message": "Valitse `@font-display`, kun määrität teemaasi yksilöityjä fontteja."
   },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | modern-image-formats": {
+    "message": "Sinun kannattaa ehkä asentaa ja määrittää [moduuli, jolla voit käyttää WebP-kuvamuotoja](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search) sivustollasi. Tällaiset moduulit optimoivat latautumisaikoja luomalla WebP-versioita lataamistasi kuvista automaattisesti."
+  },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | offscreen-images": {
     "message": "Asenna [Drupal-moduuli](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search), joka voi ladata kuvia tarveohjatusti. Tällaiset moduulit voivat parantaa toimintaa lykkäämällä näytön ulkopuolella olevien kuvien lataamista."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
     "message": "Sinun kannattaa ehkä käyttää moduulia, joka voi tuoda kriittistä CSS:ää tai JavaScriptiä sivun sisälle tai mahdollisesti ladata sisältöä asynkronisesti JavaScriptin avulla (esim. [Advanced CSS/JS Aggregation](https://www.drupal.org/project/advagg) ‑moduuli). Huomaathan, että tämän moduulin suorittamat optimoinnit voivat rikkoa sivustosi, joten sinun on todennäköisesti muutettava koodia."
   },
-  "node_modules/lighthouse-stack-packs/packs/drupal.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Teemat, moduulit ja palvelinasetukset vaikuttavat kaikki palvelimen vastausaikaan. Sinun kannattaa ehkä etsiä optimoidumpi teema, valita optimointimoduuli tai päivittää palvelimesi. Hosting-palvelimiesi olisi hyvä käyttää PHP-toimintokoodin ja muun sisällön tallentamista välimuistiin, mikä auttaa lyhentämään tietokantojen kyselyaikoja (esim. Redis tai Memcached). Lisäksi niiden tulee käyttää optimoitua sovelluslogiikkaa sivujen nopeampaan valmisteluun."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | total-byte-weight": {
@@ -2165,11 +2198,11 @@
   "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-responsive-images": {
     "message": "Varmista, että käytät Drupalin natiivia [Responsive Image Styles](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) (Responsiiviset kuvatyylit) ‑toimintoa, joka on saatavilla Drupalin versiosta 8 alkaen. Käytä Responsive Image Styles ‑toimintoa, kun renderöit kuvakenttiä hyödyntämällä katselutiloja, näkymiä tai WYSIWYG-muokkaustyökalulla ladattuja kuvia."
   },
-  "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-webp-images": {
-    "message": "Sinun kannattaa ehkä asentaa ja määrittää [moduuli, jolla voit käyttää WebP-kuvamuotoja](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search) sivustollasi. Tällaiset moduulit optimoivat latautumisaikoja luomalla WebP-versioita lataamistasi kuvista automaattisesti."
-  },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "GIF kannattaa ehkä ladata palveluun, jonka avulla se voidaan upottaa HTML5-videona."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | modern-image-formats": {
+    "message": "Sinun kannattaa ehkä käyttää [laajennusta](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) tai palvelua, joka muuntaa ladatut kuvat automaattisesti oikeisiin muotoihin."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
     "message": "Asenna [Joomlan laiskan latautumisen liitännäinen](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading), joka lykkää muiden kuin näytöllä näkyvien kuvien latautumista, tai vaihda malliin, joka tarjoaa tämän ominaisuuden. Joomla 4.0:sta alkaen kaikille kuville lisätään [automaattisesti](https://github.com/joomla/joomla-cms/pull/30748) `loading`-ydinmäärite."
@@ -2207,9 +2240,6 @@
   "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-text-compression": {
     "message": "Voit ottaa tekstin pakkaamisen käyttöön laittamalla Gzip Page Compression (Sivun Gzip-pakkaus) ‑toiminnon päälle Joomlassa. Valitse System > Global configuration > Server (Järjestelmä > Yleiset asetukset > Palvelin)."
   },
-  "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-webp-images": {
-    "message": "Sinun kannattaa ehkä käyttää [laajennusta](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) tai palvelua, joka muuntaa ladatut kuvat automaattisesti oikeisiin muotoihin."
-  },
   "node_modules/lighthouse-stack-packs/packs/magento.js | critical-request-chains": {
     "message": "Jos et vielä kokoa JavaScript-sisältöä nipuiksi, harkitse[niputtajan (baler)](https://github.com/magento/baler) käyttöä."
   },
@@ -2219,10 +2249,13 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | font-display": {
     "message": "Valitse `@font-display`, kun[määrität omia kirjasimia](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html)."
   },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | modern-image-formats": {
+    "message": "Etsi [Magento Marketplacesta](https://marketplace.magento.com/catalogsearch/result/?q=webp) erilaisia kolmannen osapuolen laajennuksia uusien kuvamuotojen hyödyntämiseksi."
+  },
   "node_modules/lighthouse-stack-packs/packs/magento.js | offscreen-images": {
     "message": "Muokkaa tuote- ja kuvastomalleja niin, että ne hyödyntävät verkkoalustan [lykätty lataus](https://web.dev/native-lazy-loading) ‑ominaisuutta."
   },
-  "node_modules/lighthouse-stack-packs/packs/magento.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/magento.js | server-response-time": {
     "message": "Käytä Magenton [Varnish-integraatiota](https://devdocs.magento.com/guides/v2.3/config-guide/varnish/config-varnish.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | unminified-css": {
@@ -2243,11 +2276,11 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "`<link rel=preload>`-tagit voidaan lisätä [muuttamalla teeman asettelua](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
-  "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
-    "message": "Etsi [Magento Marketplacesta](https://marketplace.magento.com/catalogsearch/result/?q=webp) erilaisia kolmannen osapuolen laajennuksia uusien kuvamuotojen hyödyntämiseksi."
-  },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Korvaa animoidut GIFit videoilla](https://web.dev/replace-gifs-with-videos/), mikä nopeuttaa verkkosivujen latautumista. Kannattaa myös käyttää nykyaikaisia tiedostomuotoja (esim. [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) tai [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder)), jotka voivat pakata yli 30 % tehokkaammin kuin VP9."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | modern-image-formats": {
+    "message": "Harkitse [laajennusta](https://octobercms.com/plugins?search=image) tai palvelua, joka muuntaa ladatut kuvat automaattisesti oikeaan muotoon. [Häviöttömät WebP-kuvat](https://developers.google.com/speed/webp) ovat kooltaan 26 % pienempiä kuin PNG:t ja 25–34 % pienempiä kuin vertailukelpoiset JPEG-kuvat vastaavassa SSIM-laatuindeksissä. Myös [AVIF](https://jakearchibald.com/2020/avif-has-landed/) on mahdollinen seuraavan sukupolven kuvamuoto."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
     "message": "Kannattaa ehkä asentaa [kuvien laiskan latautumisen liitännäinen](https://octobercms.com/plugins?search=lazy), joka lykkää muiden kuin näytöllä näkyvien kuvien latautumista, tai vaihtaa malliin, joka tarjoaa tämän ominaisuuden. Harkitse myös [AMP-liitännäisen](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages) käyttöä."
@@ -2255,7 +2288,7 @@
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
     "message": "Liitännäisistä (plugin) voi olla apua [tärkeiden osien järjestelemisessä](https://octobercms.com/plugins?search=css). En voivat kuitenkin rikkoa muita liitännäisiä, joten testaa ne huolellisesti."
   },
-  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | server-response-time": {
     "message": "Teemat, liitännäiset ja palvelinasetukset vaikuttavat kaikki palvelimen vastausaikaan. Kannattaa ehkä etsiä optimoidumpi teema, valita optimointiliitännäinen tai päivittää palvelin. October CMSin ansiosta [`Queues`](https://octobercms.com/docs/services/queues) voivat auttaa kehittäjiä aikaa vievien tehtävien (esim. sähköpostin lähettämisen) lykkäämisessä. Tämä nopeuttaa verkkopyyntöjä merkittävästi."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
@@ -2285,16 +2318,13 @@
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
     "message": "Ota tekstin pakkaaminen käyttöön palvelimen määrityksistä."
   },
-  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
-    "message": "Harkitse [laajennusta](https://octobercms.com/plugins?search=image) tai palvelua, joka muuntaa ladatut kuvat automaattisesti oikeaan muotoon. [Häviöttömät WebP-kuvat](https://developers.google.com/speed/webp) ovat kooltaan 26 % pienempiä kuin PNG:t ja 25–34 % pienempiä kuin vertailukelpoiset JPEG-kuvat vastaavassa SSIM-laatuindeksissä. Myös [AVIF](https://jakearchibald.com/2020/avif-has-landed/) on mahdollinen seuraavan sukupolven kuvamuoto."
-  },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
     "message": "Kannattaa ehkä käyttää \"windowing\"-kirjastoa (esim. `react-window`) DOM-säikeiden määrän vähentämiseksi, jos sivulla renderöidään monia toistuvia elementtejä. [Lue lisää](https://web.dev/virtualize-long-lists-react-window/). [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) tai [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) auttavat välttämään tarpeettomia uudelleenrenderöintejä. [Ohita tehosteet](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) vain siihen asti, kunnes tietyt riippuvuudet ovat muuttuneet, jos käytät `Effect` -koukkua suoritusaikaisen toiminnan parantamiseen."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "Jos käytät React Routeria, minimoi `<Redirect>`-komponentin käyttö [reittinavigoinnissa](https://reacttraining.com/react-router/web/api/Redirect)."
   },
-  "node_modules/lighthouse-stack-packs/packs/react.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/react.js | server-response-time": {
     "message": "Jos renderöit React-komponentteja palvelinpuolella, `renderToNodeStream()` tai `renderToStaticNodeStream()` voi auttaa niin, että asiakas saa vastaanottaa ja aktivoida merkintöjen eri kohtia kerralla käsittelyn sijaan. [Lue lisää](https://reactjs.org/docs/react-dom-server.html#rendertonodestream)."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | unminified-css": {
@@ -2312,13 +2342,16 @@
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "GIF kannattaa ehkä ladata palveluun, jonka avulla se voidaan upottaa HTML5-videona."
   },
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | modern-image-formats": {
+    "message": "Sinun kannattaa ehkä käyttää [laajennusta](https://wordpress.org/plugins/search/convert+webp/) tai palvelua, joka muuntaa ladatut kuvat automaattisesti oikeisiin muotoihin."
+  },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | offscreen-images": {
     "message": "Asenna [WordPressin lazy load ‑laajennus](https://wordpress.org/plugins/search/lazy+load/), joka lykkää näytöllä näkymättömien kuvien lataamista, tai vaihda teemaan, joka tarjoaa tämän ominaisuuden. Harkitse myös [AMP-laajennuksen](https://wordpress.org/plugins/amp/) käyttöä."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | render-blocking-resources": {
     "message": "Monet WordPress-laajennukset voivat [tuoda tärkeää materiaalia sivun sisälle](https://wordpress.org/plugins/search/critical+css/) tai [lykätä vähemmän tärkeiden resurssien lataamista](https://wordpress.org/plugins/search/defer+css+javascript/). Huomaa, että näiden laajennusten tuomat optimoinnit voivat rikkoa teeman tai laajennusten toimintoja, joten sinun on todennäköisesti muutettava koodia."
   },
-  "node_modules/lighthouse-stack-packs/packs/wordpress.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | server-response-time": {
     "message": "Teemat, laajennukset ja palvelinasetukset vaikuttavat kaikki palvelimen vastausaikaan. Sinun kannattaa ehkä etsiä optimoidumpi teema, valita optimointilaajennus tai päivittää palvelimesi."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | total-byte-weight": {
@@ -2347,8 +2380,5 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "Voit ottaa tekstin pakkaamisen käyttöön palvelimen määrityksistä."
-  },
-  "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-webp-images": {
-    "message": "Sinun kannattaa ehkä käyttää [laajennusta](https://wordpress.org/plugins/search/convert+webp/) tai palvelua, joka muuntaa ladatut kuvat automaattisesti oikeisiin muotoihin."
   }
 }

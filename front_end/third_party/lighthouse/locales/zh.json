@@ -476,6 +476,12 @@
   "lighthouse-core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "应避免向新型浏览器提供旧版 JavaScript"
   },
+  "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
+    "message": "JPEG 2000、JPEG XR 和 WebP 等图片格式的压缩效果通常比 PNG 或 JPEG 好，因此下载速度更快，消耗的数据流量更少。[了解详情](https://web.dev/uses-webp-images/)。"
+  },
+  "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
+    "message": "采用新一代格式提供图片"
+  },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
     "message": "建议您在所有关键资源加载完毕后推迟加载屏幕外图片和处于隐藏状态的图片，从而缩短可交互前的耗时。[了解详情](https://web.dev/offscreen-images/)。"
   },
@@ -554,12 +560,6 @@
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "启用文本压缩"
   },
-  "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
-    "message": "JPEG 2000、JPEG XR 和 WebP 等图片格式的压缩效果通常比 PNG 或 JPEG 好，因此下载速度更快，消耗的数据流量更少。[了解详情](https://web.dev/uses-webp-images/)。"
-  },
-  "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
-    "message": "采用新一代格式提供图片"
-  },
   "lighthouse-core/audits/content-width.js | description": {
     "message": "如果应用内容的宽度与视口的宽度不一致，该应用可能不会针对移动设备屏幕进行优化。[了解详情](https://web.dev/content-width/)。"
   },
@@ -584,8 +584,14 @@
   "lighthouse-core/audits/csp-xss.js | columnDirective": {
     "message": "指令"
   },
+  "lighthouse-core/audits/csp-xss.js | columnSeverity": {
+    "message": "Severity"
+  },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "强大的内容安全政策 (CSP) 可显著降低遭遇 XSS 攻击的风险。[了解详情](https://csp.withgoogle.com/docs/index.html)"
+    "message": "强有力的内容安全政策 (CSP) 可显著降低遭遇跨站脚本攻击 (XSS) 的风险。[了解详情](https://web.dev/strict-csp/)"
+  },
+  "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
+    "message": "Syntax"
   },
   "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
     "message": "该页面包含一个在 <meta> 标记中定义的 CSP。如果可以的话，不妨考虑在 HTTP 标头中定义该 CSP。"
@@ -760,15 +766,6 @@
   },
   "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | failureTitle": {
     "message": "包含有已知安全漏洞的前端 JavaScript 库"
-  },
-  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityHigh": {
-    "message": "高"
-  },
-  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityLow": {
-    "message": "低"
-  },
-  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityMedium": {
-    "message": "中"
   },
   "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | title": {
     "message": "避免使用含已知安全漏洞的前端 JavaScript 库"
@@ -1070,14 +1067,8 @@
   "lighthouse-core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "“累积布局偏移”旨在衡量可见元素在视口内的移动情况。[了解详情](https://web.dev/cls/)。"
   },
-  "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
-    "message": "预计输入延迟是估算值，表示您的应用在网页加载最繁忙的 5 秒期间大概需要花费多长时间（以毫秒为单位）才能对用户输入做出响应。如果您的延迟时间超过了 50 毫秒，用户可能会感觉您的应用运行迟缓。[了解详情](https://web.dev/estimated-input-latency/)。"
-  },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
     "message": "首次内容渲染时间标记了渲染出首个文本或首张图片的时间。[了解详情](https://web.dev/first-contentful-paint/)。"
-  },
-  "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
-    "message": "首次 CPU 闲置时间标记了网页的主线程首次有空处理输入操作的时间。[了解详情](https://web.dev/first-cpu-idle/)。"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "首次有效渲染时间测量了网页主要内容开始对用户显示的时间。[了解详情](https://web.dev/first-meaningful-paint/)。"
@@ -1703,6 +1694,15 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "适合移动设备"
   },
+  "lighthouse-core/gather/driver/environment.js | warningSlowHostCpu": {
+    "message": "所测试设备的 CPU 速度似乎未达到 Lighthouse 的预期。这可能会对您的性能得分产生负面影响。详细了解如何[校准相应的 CPU 速度减慢倍数](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)。"
+  },
+  "lighthouse-core/gather/driver/navigation.js | warningRedirected": {
+    "message": "相应网页可能无法按预期加载，因为您所测试的网址 ({requested}) 重定向到了 {final}。请尝试直接测试第二个网址。"
+  },
+  "lighthouse-core/gather/driver/navigation.js | warningTimeout": {
+    "message": "此页面的加载速度太慢，无法在时限内完成。结果可能会不完整。"
+  },
   "lighthouse-core/gather/driver/storage.js | warningData": {
     "message": "{locationCount,plural, =1{下列位置可能存储了会影响加载性能的数据：{locations}。请在无痕式窗口中审核此页面，以防止这些资源影响您的得分。}other{下列位置可能存储了会影响加载性能的数据：{locations}。请在无痕式窗口中审核此页面，以防止这些资源影响您的得分。}}"
   },
@@ -1832,12 +1832,6 @@
   "lighthouse-core/lib/i18n/i18n.js | documentResourceType": {
     "message": "文档"
   },
-  "lighthouse-core/lib/i18n/i18n.js | estimatedInputLatencyMetric": {
-    "message": "输入延迟（估算值）"
-  },
-  "lighthouse-core/lib/i18n/i18n.js | firstCPUIdleMetric": {
-    "message": "首次 CPU 闲置时间"
-  },
   "lighthouse-core/lib/i18n/i18n.js | firstContentfulPaintMetric": {
     "message": "First Contentful Paint"
   },
@@ -1852,6 +1846,15 @@
   },
   "lighthouse-core/lib/i18n/i18n.js | interactiveMetric": {
     "message": "Time to Interactive"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | itemSeverityHigh": {
+    "message": "高"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | itemSeverityLow": {
+    "message": "低"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | itemSeverityMedium": {
+    "message": "中"
   },
   "lighthouse-core/lib/i18n/i18n.js | largestContentfulPaintMetric": {
     "message": "Largest Contentful Paint"
@@ -2060,6 +2063,9 @@
   "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
     "message": "不明"
   },
+  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
+    "message": "显示与所选指标相关的评估结果："
+  },
   "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
     "message": "收起代码段"
   },
@@ -2087,8 +2093,35 @@
   "lighthouse-core/report/html/renderer/util.js | warningHeader": {
     "message": "警告： "
   },
+  "lighthouse-treemap/app/src/util.js | allLabel": {
+    "message": "全部"
+  },
+  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "所有脚本"
+  },
+  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
+    "message": "覆盖率"
+  },
+  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "重复的模块"
+  },
+  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "资源字节数"
+  },
+  "lighthouse-treemap/app/src/util.js | tableColumnName": {
+    "message": "名称"
+  },
+  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "显示/隐藏表格"
+  },
+  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "未使用的字节数"
+  },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "对于动画内容，请使用 [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) 尽量减少当内容在屏幕外时的 CPU 使用量。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/amp.js | modern-image-formats": {
+    "message": "您不妨既以 WebP 格式显示所有 [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) 组件，也为其他浏览器指定适当的后备图片。[了解详情](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)。"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | offscreen-images": {
     "message": "确保您对图片使用了 [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) 以便自动延迟加载。[了解详情](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)。"
@@ -2101,9 +2134,6 @@
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | uses-responsive-images": {
     "message": "[`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) 组件支持 [`srcset`](https://web.dev/use-srcset-to-automatically-choose-the-right-image/) 属性，以便系统根据屏幕尺寸指定要使用的图片素材资源。[了解详情](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)。"
-  },
-  "node_modules/lighthouse-stack-packs/packs/amp.js | uses-webp-images": {
-    "message": "您不妨既以 WebP 格式显示所有 [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) 组件，也为其他浏览器指定适当的后备图片。[了解详情](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)。"
   },
   "node_modules/lighthouse-stack-packs/packs/angular.js | dom-size": {
     "message": "如果要呈现的列表非常大，您不妨使用 Component Dev Kit (CDK) 进行虚拟滚动。[了解详情](https://web.dev/virtualize-lists-with-angular-cdk/)。"
@@ -2129,13 +2159,16 @@
   "node_modules/lighthouse-stack-packs/packs/drupal.js | font-display": {
     "message": "在主题背景中定义自定义字体时，您可以指定 `@font-display`。"
   },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | modern-image-formats": {
+    "message": "建议您安装并配置[一个模块，以便在您的网站中利用 WebP 图片格式](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search)。此类模块会自动为您上传的图片生成 WebP 版本，以缩短加载用时。"
+  },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | offscreen-images": {
     "message": "安装可延迟加载图片的 [Drupal 模块](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search)。此类模块能够推迟加载所有的屏幕外图片，进而提高性能。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
     "message": "建议您使用模块来内嵌重要的 CSS 和 JavaScipt，或通过 JavaScript（例如[高级 CSS/JS 聚合](https://www.drupal.org/project/advagg)模块）异步加载资源。请注意，此模块执行的优化可能会导致您的网站无法正常运行，因此您可能需要更改代码。"
   },
-  "node_modules/lighthouse-stack-packs/packs/drupal.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "主题背景、模块和服务器规格都会影响服务器响应用时。建议您查找更优化的主题背景、仔细选择优化模块并/或升级您的服务器。您的托管服务器应该使用 PHP 运算码缓存、内存缓存（例如 Redis 或 Memcached）来缩短数据库查询时间，并优化应用逻辑以加快网页准备速度。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | total-byte-weight": {
@@ -2165,11 +2198,11 @@
   "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-responsive-images": {
     "message": "确保您使用的是 Drupal 提供的原生[自适应图片样式](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8)（在 Drupal 8 及更高版本中提供）。通过视图模式、视图或借助 WYSIWYG 编辑器上传的图片呈现图片字段时，请使用自适应图片样式。"
   },
-  "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-webp-images": {
-    "message": "建议您安装并配置[一个模块，以便在您的网站中利用 WebP 图片格式](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search)。此类模块会自动为您上传的图片生成 WebP 版本，以缩短加载用时。"
-  },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "建议您将 GIF 上传到可让其作为 HTML5 视频嵌入的服务。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | modern-image-formats": {
+    "message": "建议您使用可自动将您上传的图片转换为最佳格式的[插件](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp)或服务。"
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
     "message": "安装能够延迟加载所有屏幕外图片的[延迟加载 Joomla 插件](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading)，或者改用可提供该功能的模板。从 Joomla 4.0 开始，所有新图片都会[自动](https://github.com/joomla/joomla-cms/pull/30748)从核心获取 `loading` 属性。"
@@ -2207,9 +2240,6 @@
   "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-text-compression": {
     "message": "您可以通过在 Joomla 中启用 Gzip 页面压缩（“系统”>“全局配置”>“服务器”）来启用文本压缩功能。"
   },
-  "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-webp-images": {
-    "message": "建议您使用可自动将您上传的图片转换为最佳格式的[插件](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp)或服务。"
-  },
   "node_modules/lighthouse-stack-packs/packs/magento.js | critical-request-chains": {
     "message": "如果您没有捆绑 JavaScript 资源，不妨使用 [baler](https://github.com/magento/baler)。"
   },
@@ -2219,10 +2249,13 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | font-display": {
     "message": "在[定义自定义字体](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html)时指定 `@font-display`。"
   },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | modern-image-formats": {
+    "message": "您不妨在 [Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp) 中搜索各种第三方扩展程序，以利用更新的图片格式。"
+  },
   "node_modules/lighthouse-stack-packs/packs/magento.js | offscreen-images": {
     "message": "您不妨修改产品和目录模板，以利用这一网络平台的[延迟加载](https://web.dev/native-lazy-loading)功能。"
   },
-  "node_modules/lighthouse-stack-packs/packs/magento.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/magento.js | server-response-time": {
     "message": "使用 Magento 的 [Varnish 集成](https://devdocs.magento.com/guides/v2.3/config-guide/varnish/config-varnish.html)。"
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | unminified-css": {
@@ -2243,11 +2276,11 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "您可以通过[修改主题背景的布局](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)来添加 `<link rel=preload>` 标记。"
   },
-  "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
-    "message": "您不妨在 [Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp) 中搜索各种第三方扩展程序，以利用更新的图片格式。"
-  },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[将 GIF 动画替换为视频](https://web.dev/replace-gifs-with-videos/)以提高网页加载速度，并考虑使用现代文件格式（例如 [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) 或 [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder)），通过目前最先进的 VP9 视频编解码器将压缩效率提高 30% 以上。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | modern-image-formats": {
+    "message": "建议您使用可自动将所上传的图片转换为最佳格式的[插件](https://octobercms.com/plugins?search=image)或服务。[WebP 无损图片](https://developers.google.com/speed/webp)比 PNG 图片小 26%，比采用等效 SSIM 质量指标的同等 JPEG 图片小 25-34%。还可以考虑使用 [AVIF](https://jakearchibald.com/2020/avif-has-landed/) 这种新一代图片格式。"
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
     "message": "建议您安装能延迟加载所有屏幕外图片的[图片延迟加载插件](https://octobercms.com/plugins?search=lazy)，或者改用可提供该功能的主题。另外，建议您使用 [AMP 插件](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages)。"
@@ -2255,7 +2288,7 @@
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
     "message": "有很多插件可帮助您[内嵌重要资源](https://octobercms.com/plugins?search=css)。这些插件可能会导致其他插件无法正常运行，因此您需要全面测试。"
   },
-  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | server-response-time": {
     "message": "主题、插件和服务器规范都会影响服务器响应用时。建议您查找更优化的主题、仔细选择优化插件并/或升级服务器。借助 October CMS，开发者还可以使用[`Queues`](https://octobercms.com/docs/services/queues)推迟耗时任务（例如发送电子邮件）的处理时间。这可以大大加快 Web 请求的处理速度。"
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
@@ -2285,16 +2318,13 @@
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
     "message": "在网络服务器配置中启用文本压缩。"
   },
-  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
-    "message": "建议您使用可自动将所上传的图片转换为最佳格式的[插件](https://octobercms.com/plugins?search=image)或服务。[WebP 无损图片](https://developers.google.com/speed/webp)比 PNG 图片小 26%，比采用等效 SSIM 质量指标的同等 JPEG 图片小 25-34%。还可以考虑使用 [AVIF](https://jakearchibald.com/2020/avif-has-landed/) 这种新一代图片格式。"
-  },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
     "message": "如果您要在页面上呈现很多重复元素，不妨使用“窗口类”库（如 `react-window`）尽量减少所创建的 DOM 节点的数量。[了解详情](https://web.dev/virtualize-long-lists-react-window/)。此外，如果您使用 `Effect` 钩子提高运行时性能，则应该仅在某些依赖项发生更改之前使用 [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action)、[`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) 或 [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) 及[跳过效果](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects)，以尽量减少不必要的重复呈现。"
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "如果您使用了 React Router，请尽量避免使用 `<Redirect>` 组件进行[路径导航](https://reacttraining.com/react-router/web/api/Redirect)。"
   },
-  "node_modules/lighthouse-stack-packs/packs/react.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/react.js | server-response-time": {
     "message": "如果您在服务器端呈现任何 React 组件，不妨使用 `renderToNodeStream()` 或 `renderToStaticNodeStream()` 来允许客户端接收并合成标记的各个不同部分，而不是一次性接收整个标记。[了解详情](https://reactjs.org/docs/react-dom-server.html#rendertonodestream)。"
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | unminified-css": {
@@ -2312,13 +2342,16 @@
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "建议您将 GIF 上传到可让其作为 HTML5 视频嵌入的服务。"
   },
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | modern-image-formats": {
+    "message": "建议您使用可自动将您上传的图片转换为最佳格式的[插件](https://wordpress.org/plugins/search/convert+webp/)或服务。"
+  },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | offscreen-images": {
     "message": "安装[延迟加载 WordPress 插件](https://wordpress.org/plugins/search/lazy+load/)以便能够推迟加载所有的屏幕外图片，或者改用可提供该功能的主题背景。另外，建议您使用 [AMP 插件](https://wordpress.org/plugins/amp/)。"
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | render-blocking-resources": {
     "message": "有很多 WordPress 插件可帮助您[内嵌重要资源](https://wordpress.org/plugins/search/critical+css/)或[推迟加载不太重要的资源](https://wordpress.org/plugins/search/defer+css+javascript/)。请注意，这些插件提供的优化可能会导致您的主题背景或插件的功能中断，因此您可能需要更改代码。"
   },
-  "node_modules/lighthouse-stack-packs/packs/wordpress.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | server-response-time": {
     "message": "主题背景、插件和服务器规范都会影响服务器响应用时。建议您查找更优化的主题背景、仔细选择所需的优化插件并/或升级您的服务器。"
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | total-byte-weight": {
@@ -2347,8 +2380,5 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "您可以在网络服务器配置中启用文本压缩。"
-  },
-  "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-webp-images": {
-    "message": "建议您使用可自动将您上传的图片转换为最佳格式的[插件](https://wordpress.org/plugins/search/convert+webp/)或服务。"
   }
 }

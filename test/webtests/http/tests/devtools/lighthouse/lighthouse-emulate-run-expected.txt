@@ -14,7 +14,7 @@ Generate report: enabled visible
 
 =============== Lighthouse Results ===============
 URL: http://127.0.0.1:8000/devtools/lighthouse/resources/lighthouse-emulate-pass.html
-Version: 7.5.0
+Version: 8.0.0
 formFactor: mobile
 screenEmulation: {
   "mobile": true,

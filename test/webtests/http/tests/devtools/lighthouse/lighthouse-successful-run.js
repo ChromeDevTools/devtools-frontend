@@ -9,9 +9,7 @@
     // metrics
     'first-contentful-paint',
     'first-meaningful-paint',
-    'first-cpu-idle',
     'interactive',
-    'estimated-input-latency',
     'speed-index',
     'metrics',
     'screenshot-thumbnails',
@@ -31,7 +29,7 @@
     'uses-rel-preload',
     'uses-responsive-images',
     'uses-text-compression',
-    'uses-webp-images',
+    'modern-image-formats',
   ];
 
   TestRunner.addResult('Tests that audits panel works.\n');

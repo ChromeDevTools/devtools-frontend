@@ -399,11 +399,7 @@
   display: flex;
   align-items: center;
   padding: 10px 12px;
-  opacity: 0.7;
   cursor: pointer;
-}
-.report-icon:hover {
-  opacity: 1;
 }
 .report-icon[disabled] {
   opacity: 0.3;
@@ -416,6 +412,10 @@
   background-repeat: no-repeat;
   width: var(--report-icon-size);
   height: var(--report-icon-size);
+  opacity: 0.7;
+}
+.report-icon:hover::before {
+  opacity: 1;
 }
 .dark .report-icon::before {
   filter: invert(1);
@@ -439,6 +439,10 @@
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="black"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M3 5v14h19V5H3zm2 2h15v4H5V7zm0 10v-4h4v4H5zm6 0v-4h9v4h-9z"/></svg>');
 }
 
+.lh-buttons {
+  display: flex;
+  flex-wrap: wrap;
+}
 .lh-button {
   margin: 10px;
   height: 30px;
@@ -583,6 +587,14 @@
 .lh-metricfilter {
   text-align: right;
   margin-top: var(--default-padding);
+}
+
+.lh-metricfilter__radio {
+  position: absolute;
+  left: -9999px;
+}
+.lh-metricfilter input[type='radio']:focus-visible + label {
+  outline: -webkit-focus-ring-color auto 1px;
 }
 
 .lh-metricfilter__label {

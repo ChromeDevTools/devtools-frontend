@@ -476,6 +476,12 @@
   "lighthouse-core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "تجنُّب عرض ميزات JavaScript القديمة في المتصفحات الحديثة"
   },
+  "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
+    "message": "غالبًا ما توفِّر تنسيقات الصور، مثل JPEG 2000 وJPEG XR وWebP، ضغطًا أفضل من تنسيق PNG أو JPEG، وهذا يعني تنزيلاً أسرع واستهلاكًا أقل للبيانات. [مزيد من المعلومات](https://web.dev/uses-webp-images/)"
+  },
+  "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
+    "message": "عرض الصور بتنسيقات الجيل القادم"
+  },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
     "message": "يمكنك إجراء تحميل بطيء للصور الموجودة خارج الشاشة والصور المخفية بعد الانتهاء من تحميل جميع الموارد المهمة من أجل تقليص وقت التفاعل. [مزيد من المعلومات](https://web.dev/offscreen-images/)"
   },
@@ -554,12 +560,6 @@
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "تفعيل ضغط النص"
   },
-  "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
-    "message": "غالبًا ما توفِّر تنسيقات الصور، مثل JPEG 2000 وJPEG XR وWebP، ضغطًا أفضل من تنسيق PNG أو JPEG، وهذا يعني تنزيلاً أسرع واستهلاكًا أقل للبيانات. [مزيد من المعلومات](https://web.dev/uses-webp-images/)"
-  },
-  "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
-    "message": "عرض الصور بتنسيقات الجيل القادم"
-  },
   "lighthouse-core/audits/content-width.js | description": {
     "message": "في حال كان عرض محتوى التطبيق لا يتطابق مع عرض إطار العرض، قد لا يتم تحسين تطبيقك لشاشات الجوّال. [مزيد من المعلومات](https://web.dev/content-width/)"
   },
@@ -584,8 +584,14 @@
   "lighthouse-core/audits/csp-xss.js | columnDirective": {
     "message": "أمر توجيهي"
   },
+  "lighthouse-core/audits/csp-xss.js | columnSeverity": {
+    "message": "Severity"
+  },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "تقلِّل سياسة أمان المحتوى (CSP) القوية من خطر هجمات XSS بشكل كبير. [مزيد من المعلومات](https://csp.withgoogle.com/docs/index.html)"
+    "message": "تقلِّل سياسة Content Security Policy (CSP) القوية بشكل كبير من خطر هجمات cross-site scripting (XSS). [مزيد من المعلومات](https://web.dev/strict-csp/)"
+  },
+  "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
+    "message": "Syntax"
   },
   "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
     "message": "تحتوي الصفحة على سياسة CSP تم تحديدها في علامة <meta>. ننصحك بتحديد سياسة CSP في عنوان HTTP إذا كان ذلك ممكنًا."
@@ -760,15 +766,6 @@
   },
   "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | failureTitle": {
     "message": "يتم تضمين مكتبات الواجهة الأمامية JavaScript ذات الثغرات الأمنية المعروفة"
-  },
-  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityHigh": {
-    "message": "مرتفع"
-  },
-  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityLow": {
-    "message": "منخفض"
-  },
-  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityMedium": {
-    "message": "متوسط"
   },
   "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | title": {
     "message": "يتم تجنُب مكتبات الواجهة الأمامية JavaScript ذات الثغرات الأمنية المعروفة"
@@ -1070,14 +1067,8 @@
   "lighthouse-core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "تقيس \"متغيّرات التصميم التراكمية\" حركة العناصر المرئية في إطار العرض. [مزيد من المعلومات](https://web.dev/cls/)"
   },
-  "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
-    "message": "إن \"وقت الاستجابة المقدر للإدخال\" هو تقدير لطول المدة التي يستغرقها تطبيقك للاستجابة لإدخال المستخدم بالمللي ثانية، وذلك أثناء الثواني الخمس الأكثر انشغالاً في فترة تحميل الصفحة. وفي حال كان وقت الاستجابة أكثر من 50 مللي ثانية، يمكن للمستخدمين اعتبار تطبيقك بأنه بطيء في التفاعل. [مزيد من المعلومات](https://web.dev/estimated-input-latency/)"
-  },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
     "message": "تحدد \"سرعة عرض المحتوى على الصفحة\" الوقت الذي يُعرَض فيه أول صورة أو نص. [مزيد من المعلومات](https://web.dev/first-contentful-paint/)"
-  },
-  "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
-    "message": "تشير \"وحدة المعالجة المركزية الأولى الخاملة\" إلى المرة الأولى التي يتوفر فيها وقت كافٍ للعملية الرئيسية للصفحة حتى تعالج إدخالات المستخدم.  [مزيد من المعلومات](https://web.dev/first-cpu-idle/)"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "تقيس \"سرعة عرض أوّل محتوى مفيد على الصفحة\" الوقت الذي يكون فيه المحتوى الأساسي لصفحة مرئيًا. [مزيد من المعلومات](https://web.dev/first-meaningful-paint/)"
@@ -1703,6 +1694,15 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "متوافق مع الجوّال"
   },
+  "lighthouse-core/gather/driver/environment.js | warningSlowHostCpu": {
+    "message": "يبدو أنّ الجهاز المختبَر يحتوي على وحدة معالجة مركزية (CPU) أبطأ مما توقعته أداة Lighthouse. قد يؤثر ذلك سلبيًا على نتيجة الأداء. تعرّف على المزيد من المعلومات عن [معايرة مُضاعِف بطء وحدة المعالجة المركزية (CPU) المناسب](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
+  },
+  "lighthouse-core/gather/driver/navigation.js | warningRedirected": {
+    "message": "قد لا يتم تحميل الصفحة كما هو متوقَع لأن عنوان URL للاختبار ({requested}) تمت إعادة توجيهه إلى {final}. يُرجى محاولة اختبار عنوان URL الثاني مباشرةً."
+  },
+  "lighthouse-core/gather/driver/navigation.js | warningTimeout": {
+    "message": "أدّى عدم تحميل الصفحة بسرعة كافية إلى تعذّر انتهاء تحميلها في الوقت المحدّد. وقد تكون النتائج غير مكتملة."
+  },
   "lighthouse-core/gather/driver/storage.js | warningData": {
     "message": "{locationCount,plural, =1{قد تكون هناك بيانات مخزَّنة تؤثر على أداء التحميل في مكان تخزين البيانات التالي: {locations} يُرجى إجراء تدقيق لهذه الصفحة في نافذة التصفح المتخفي لمنع هذه المصادر من التأثير على نتيجتك.}zero{قد تكون هناك بيانات مخزَّنة تؤثر على أداء التحميل في أماكن تخزين البيانات التالية: {locations} يُرجى إجراء تدقيق لهذه الصفحة في نافذة التصفح المتخفي لمنع هذه المصادر من التأثير على نتيجتك.}two{قد تكون هناك بيانات مخزَّنة تؤثر على أداء التحميل في مكانَي تخزين البيانات التاليَين: {locations} يُرجى إجراء تدقيق لهذه الصفحة في نافذة التصفح المتخفي لمنع هذه المصادر من التأثير على نتيجتك.}few{قد تكون هناك بيانات مخزَّنة تؤثر على أداء التحميل في أماكن تخزين البيانات التالية: {locations} يُرجى إجراء تدقيق لهذه الصفحة في نافذة التصفح المتخفي لمنع هذه المصادر من التأثير على نتيجتك.}many{قد تكون هناك بيانات مخزَّنة تؤثر على أداء التحميل في أماكن تخزين البيانات التالية: {locations} يُرجى إجراء تدقيق لهذه الصفحة في نافذة التصفح المتخفي لمنع هذه المصادر من التأثير على نتيجتك.}other{قد تكون هناك بيانات مخزَّنة تؤثر على أداء التحميل في أماكن تخزين البيانات التالية: {locations} يُرجى إجراء تدقيق لهذه الصفحة في نافذة التصفح المتخفي لمنع هذه المصادر من التأثير على نتيجتك.}}"
   },
@@ -1832,12 +1832,6 @@
   "lighthouse-core/lib/i18n/i18n.js | documentResourceType": {
     "message": "المستند"
   },
-  "lighthouse-core/lib/i18n/i18n.js | estimatedInputLatencyMetric": {
-    "message": "وقت الاستجابة المُقدّر للإدخال"
-  },
-  "lighthouse-core/lib/i18n/i18n.js | firstCPUIdleMetric": {
-    "message": "وحدة المعالجة المركزية الأولى الخاملة"
-  },
   "lighthouse-core/lib/i18n/i18n.js | firstContentfulPaintMetric": {
     "message": "First Contentful Paint"
   },
@@ -1852,6 +1846,15 @@
   },
   "lighthouse-core/lib/i18n/i18n.js | interactiveMetric": {
     "message": "Time to Interactive"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | itemSeverityHigh": {
+    "message": "مرتفع"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | itemSeverityLow": {
+    "message": "منخفض"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | itemSeverityMedium": {
+    "message": "متوسط"
   },
   "lighthouse-core/lib/i18n/i18n.js | largestContentfulPaintMetric": {
     "message": "Largest Contentful Paint"
@@ -2060,6 +2063,9 @@
   "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
     "message": "غير معروف"
   },
+  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
+    "message": "عرض عمليات التدقيق المرتبطة بالمقاييس:"
+  },
   "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
     "message": "تصغير المقتطف"
   },
@@ -2087,8 +2093,35 @@
   "lighthouse-core/report/html/renderer/util.js | warningHeader": {
     "message": "التحذيرات: "
   },
+  "lighthouse-treemap/app/src/util.js | allLabel": {
+    "message": "الكل"
+  },
+  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "جميع النصوص البرمجية"
+  },
+  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
+    "message": "التغطية"
+  },
+  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "الوحدات المكرَّرة"
+  },
+  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "حجم الموارد بوحدة البايت"
+  },
+  "lighthouse-treemap/app/src/util.js | tableColumnName": {
+    "message": "الاسم"
+  },
+  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "تبديل الجدول"
+  },
+  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "وحدات بايت غير المستخدمة"
+  },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "بالنسبة إلى المحتوى الذي يتضمن صورًا متحركة، يمكنك استخدام [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) لتقليل استخدام وحدة المعالجة المركزية (CPU) عندما يكون المحتوى خارج الشاشة."
+  },
+  "node_modules/lighthouse-stack-packs/packs/amp.js | modern-image-formats": {
+    "message": "يجب عرض جميع مكوِّنات [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) بتنسيق WebP مع تحديد عنصر احتياطي مناسب للمتصفّحات الأخرى. [مزيد من المعلومات](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | offscreen-images": {
     "message": "يُرجى الحرص على استخدام [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) حتى يتم تحميل الصور ببطء تلقائيًا. [مزيد من المعلومات](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)"
@@ -2101,9 +2134,6 @@
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | uses-responsive-images": {
     "message": "يوفّر المكوِّن [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) السمة [`srcset`](https://web.dev/use-srcset-to-automatically-choose-the-right-image/) لتحديد مواد عرض الصور المطلوب استخدامها استنادًا إلى حجم الشاشة. [مزيد من المعلومات](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)"
-  },
-  "node_modules/lighthouse-stack-packs/packs/amp.js | uses-webp-images": {
-    "message": "يجب عرض جميع مكوِّنات [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) بتنسيق WebP مع تحديد عنصر احتياطي مناسب للمتصفّحات الأخرى. [مزيد من المعلومات](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)"
   },
   "node_modules/lighthouse-stack-packs/packs/angular.js | dom-size": {
     "message": "عليك استخدام التمرير الافتراضي مع مجموعة تطوير المكوّنات (CDK) في حال عرض قوائم كبيرة جدًا. [مزيد من المعلومات](https://web.dev/virtualize-lists-with-angular-cdk/)"
@@ -2129,13 +2159,16 @@
   "node_modules/lighthouse-stack-packs/packs/drupal.js | font-display": {
     "message": "يمكنك اختيار `@font-display` عند تحديد خطوط مخصّصة في التصميم."
   },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | modern-image-formats": {
+    "message": "يمكنك تثبيت [وحدة للاستفادة من تنسيقات صور WebP](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search) وإعداداها في موقعك الإلكتروني. وستنشِئ هذه الوحدات إصدار WebP تلقائيًا من الصور التي تم تحميلها، وهذا لتحسين أوقات التحميل."
+  },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | offscreen-images": {
     "message": "يمكنك تثبيت [وحدة Drupal](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) تتيح تحميل الصور ببطء. وتتيح هذه الوحدات إمكانية تأجيل أي صور خارج الشاشة لتحسين الأداء."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
     "message": "يمكنك استخدام وحدة لتضمين لغتَيّ CSS وJavaScript المهمّتَين أو تحميل الأصول بشكلٍ غير متزامن من خلال JavaScript مثل وحدة [تجميع CSS/JS المتقدّم](https://www.drupal.org/project/advagg). يجب الانتباه إلى أنّ التحسينات التي توفّرها هذه الوحدة قد توقف موقعك الإلكتروني، لذلك من المحتمل أن تحتاج إلى إجراء تغييرات في الرمز البرمجي."
   },
-  "node_modules/lighthouse-stack-packs/packs/drupal.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "تساهم التصاميم والوحدات ومواصفات الخادم في تحسين وقت استجابة الخادم. يمكنك البحث عن تصميم مُحسّن بدرجة أكبر و/أو اختيار وحدة تحسين بعناية و/أو ترقية الخادم. ويجب أن تستفيد خوادم الاستضافة من التخزين المؤقت لأجزاء عمليات لغة PHP والتخزين المؤقت للذاكرة لتقليل الأوقات التي تستغرقها طلبات قواعد البيانات مثل Redis أو Memcached، بالإضافة إلى منطق التطبيق المحسّن لتحضير الصفحات بشكلٍ أسرع."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | total-byte-weight": {
@@ -2165,11 +2198,11 @@
   "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-responsive-images": {
     "message": "يُرجى التأكّد من أنّك تستخدم [أنماط الصور السريعة الاستجابة](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) الأصلية والتي يوفّرها Drupal (متوفّرة في Drupal 8 والإصدارات الأحدث). ويمكنك استخدام أنماط الصور السريعة الاستجابة عند عرض حقول الصور من خلال أوضاع العرض أو طرق العرض أو الصور التي يتم تحميلها من خلال محرِّر WYSIWYG."
   },
-  "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-webp-images": {
-    "message": "يمكنك تثبيت [وحدة للاستفادة من تنسيقات صور WebP](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search) وإعداداها في موقعك الإلكتروني. وستنشِئ هذه الوحدات إصدار WebP تلقائيًا من الصور التي تم تحميلها، وهذا لتحسين أوقات التحميل."
-  },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "يمكنك تحميل ملف GIF إلى خدمة ستتيح تضمينه في شكل فيديو HTML5."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | modern-image-formats": {
+    "message": "يمكنك استخدام [مكوّن إضافي](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) أو خدمة تتيح لك تحويل صورك المحمَّلة إلى أفضل التنسيقات تلقائيًا."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
     "message": "يمكنك تثبيت [مكوِّن Joomla الإضافي المُساعِد في التحميل البطيء](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) والذي يتيح لك إمكانية تأجيل أي صور خارج الشاشة، أو يمكنك الانتقال إلى نموذج يوفّر هذه الوظيفة. وبدءًا من الإصدار Joomla 4.0، تحصل كل الصور الجديدة [تلقائيًا](https://github.com/joomla/joomla-cms/pull/30748) على السمة `loading` من الحزمة الأساسية."
@@ -2207,9 +2240,6 @@
   "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-text-compression": {
     "message": "يمكنك تفعيل ميزة \"ضغط النص\" من خلال تفعيل ضغط صفحة Gzip في Joomla (النظام > الإعداد العام > الخادم)."
   },
-  "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-webp-images": {
-    "message": "يمكنك استخدام [مكوّن إضافي](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) أو خدمة تتيح لك تحويل صورك المحمَّلة إلى أفضل التنسيقات تلقائيًا."
-  },
   "node_modules/lighthouse-stack-packs/packs/magento.js | critical-request-chains": {
     "message": "في حال عدم إنشاء حزمة لمواد عرض JavaScript، عليك استخدام [baler](https://github.com/magento/baler)."
   },
@@ -2219,10 +2249,13 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | font-display": {
     "message": "حدِّد `@font-display` عند [وضع خطوط مخصصة](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html)."
   },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | modern-image-formats": {
+    "message": "عليك البحث عن [سوق Magento](https://marketplace.magento.com/catalogsearch/result/?q=webp) للحصول على مجموعة متنوعة من إضافات الجهات الخارجية للاستفادة من تنسيقات الصور الأحدث."
+  },
   "node_modules/lighthouse-stack-packs/packs/magento.js | offscreen-images": {
     "message": "عليك تعديل نماذج الكتالوج والمنتج للاستفادة من ميزة [التحميل الخامل](https://web.dev/native-lazy-loading) للنظام الأساسي للويب."
   },
-  "node_modules/lighthouse-stack-packs/packs/magento.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/magento.js | server-response-time": {
     "message": "استخدِم [دمج Varnish](https://devdocs.magento.com/guides/v2.3/config-guide/varnish/config-varnish.html) للنظام الأساسي Magento."
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | unminified-css": {
@@ -2243,11 +2276,11 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "يمكن إضافة علامات `<link rel=preload>` عن طريق [تعديل تنسيق التصميمات](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
-  "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
-    "message": "عليك البحث عن [سوق Magento](https://marketplace.magento.com/catalogsearch/result/?q=webp) للحصول على مجموعة متنوعة من إضافات الجهات الخارجية للاستفادة من تنسيقات الصور الأحدث."
-  },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[يمكنك استخدام الفيديو بدلاً من صور GIF المتحركة](https://web.dev/replace-gifs-with-videos/) لتحميل صفحات الويب بشكل أسرع، بالإضافة إلى استخدام تنسيقات ملفات حديثة، مثل [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) أو [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) لتحسين كفاءة الضغط بنسبة تزيد عن 30% على برنامج ترميز الفيديو المتطوّر الحالي، VP9."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | modern-image-formats": {
+    "message": "يمكنك استخدام [مكوّن إضافي](https://octobercms.com/plugins?search=image) أو خدمة تتيح تحويل الصور المحمَّلة إلى أفضل التنسيقات تلقائيًا. يقل [حجم صور WebP بدون فقدان أي تفاصيل](https://developers.google.com/speed/webp) بنسبة 26% مقارنةً بصور PNG، ويقل بنسبة تتراوح بين 25% و34% مقارنةً بصور JPEG في مؤشر الجودة المعادِلة وفق مقياس مؤشر التشابه الهيكلي (SSIM). يمكن استخدام تنسيق [AVIF](https://jakearchibald.com/2020/avif-has-landed/) لعرض الصور بتنسيقات الجيل القادم."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
     "message": "يمكنك تثبيت [مكوّن إضافي لتحميل الصور ببطء](https://octobercms.com/plugins?search=lazy) يتيح لك إمكانية تأجيل عرض أي صور خارج الشاشة، أو يمكنك الانتقال إلى مظهر يوفّر هذه الوظيفة. يمكنك أيضًا استخدام [مكون AMP الإضافي](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages)."
@@ -2255,7 +2288,7 @@
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
     "message": "ثمّة مكوّنات إضافية تساعد على تشغيل [مواد العرض المهمة المضمَّنة](https://octobercms.com/plugins?search=css) على نحو سليم. قد تتسبب هذه المكوّنات الإضافية في إيقاف مكونّات إضافية أخرى، لذا يجب اختبارها جيدًا."
   },
-  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | server-response-time": {
     "message": "تساهم المظاهر والمكونات الإضافية ومواصفات الخادم في تحسين وقت استجابة الخادم. ابحث عن مظهر محسَّن للغاية و/أو اختَر مكوّنًا إضافيًا و/أو قم بترقية الخادم. إنّ منصّة October لإدارة المحتوى تتيح لمطوّري البرامج إمكانية استخدام [`Queues`](https://octobercms.com/docs/services/queues) لتأجيل معالجة أي مَهمّة تستهلك الوقت، مثل إرسال رسالة إلكترونية. ويساعد ذلك على تسريع تنفيذ طلبات الويب بشدّة."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
@@ -2285,16 +2318,13 @@
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
     "message": "يمكنك تفعيل ضغط النص في إعداد خادم الويب."
   },
-  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
-    "message": "يمكنك استخدام [مكوّن إضافي](https://octobercms.com/plugins?search=image) أو خدمة تتيح تحويل الصور المحمَّلة إلى أفضل التنسيقات تلقائيًا. يقل [حجم صور WebP بدون فقدان أي تفاصيل](https://developers.google.com/speed/webp) بنسبة 26% مقارنةً بصور PNG، ويقل بنسبة تتراوح بين 25% و34% مقارنةً بصور JPEG في مؤشر الجودة المعادِلة وفق مقياس مؤشر التشابه الهيكلي (SSIM). يمكن استخدام تنسيق [AVIF](https://jakearchibald.com/2020/avif-has-landed/) لعرض الصور بتنسيقات الجيل القادم."
-  },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
     "message": "يمكنك استخدام مكتبة \"عرض المحتوى في النافذة الحالية\" مثل `react-window` لتقليل عدد عُقَد DOM التي يتم إنشاؤها في حال عرض العديد من العناصر المتكررة على الصفحة. [يُرجى الاطّلاع على مزيد من المعلومات.](https://web.dev/virtualize-long-lists-react-window/) ويمكنك تقليل عمليات إعادة العرض غير الضرورية باستخدام [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action) أو [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) أو [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) و[تخطّي التأثيرات](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) فقط حتى يتم تغيير اعتماديات معيّنة في حال استخدام موضع الإدراج `Effect` لتحسين مستوى أداء وقت التشغيل."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "في حال استخدام React Router، عليك تقليل استخدام المكوّن `<Redirect>` في [عمليات تنقل المسار](https://reacttraining.com/react-router/web/api/Redirect)."
   },
-  "node_modules/lighthouse-stack-packs/packs/react.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/react.js | server-response-time": {
     "message": "في حال كنت تعرض من جانب الخادم أي مكوّنات React، عليك استخدام `renderToNodeStream()` أو `renderToStaticNodeStream()` للسماح للعميل بتلقي أجزاء مختلفة من الترميز ودمجها بدلاً من جميع الأجزاء دفعة واحدة. [مزيد من المعلومات](https://reactjs.org/docs/react-dom-server.html#rendertonodestream)"
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | unminified-css": {
@@ -2312,13 +2342,16 @@
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "يمكنك تحميل ملف GIF إلى خدمة ستتيح تضمينه في شكل فيديو HTML5."
   },
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | modern-image-formats": {
+    "message": "يمكنك استخدام [مكوّن إضافي](https://wordpress.org/plugins/search/convert+webp/) أو خدمة تتيح لك تحويل صورك المحمَّلة إلى أفضل التنسيقات تلقائيًا."
+  },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | offscreen-images": {
     "message": "يمكنك تثبيت [مكون WordPress الإضافي للتحميل الكسول](https://wordpress.org/plugins/search/lazy+load/) الذي يوفر القدرة على تأجيل أي صور خارج الشاشة، أو التبديل إلى تصميم يوفِّر هذه القدرة الوظيفية. يمكنك أيضًا استخدام [مكون AMP الإضافي](https://wordpress.org/plugins/amp/)."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | render-blocking-resources": {
     "message": "هناك عدد من مكونات WordPress الإضافية التي يمكنها مساعدتك على [تضمين مواد العرض المهمة](https://wordpress.org/plugins/search/critical+css/) أو [تأجيل موارد أقل أهمية](https://wordpress.org/plugins/search/defer+css+javascript/). عليك توخي الحذر من أن التحسينات التي توفرها هذه الإضافات قد توقف ميزات التصميم أو المكونات الإضافية، لذلك ستحتاج على الأرجح إلى إجراء تغييرات في الرمز البرمجي."
   },
-  "node_modules/lighthouse-stack-packs/packs/wordpress.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | server-response-time": {
     "message": "تساهم التصاميم والمكونات الإضافية ومواصفات الخادم في تحسين وقت استجابة الخادم. يمكنك البحث عن تصميم مُحسّن أكثر و/أو اختيار مكون إضافي للتحسين و/أو ترقية الخادم."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | total-byte-weight": {
@@ -2347,8 +2380,5 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "يمكنك تفعيل ضغط النص في إعداد خادم الويب."
-  },
-  "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-webp-images": {
-    "message": "يمكنك استخدام [مكوّن إضافي](https://wordpress.org/plugins/search/convert+webp/) أو خدمة تتيح لك تحويل صورك المحمَّلة إلى أفضل التنسيقات تلقائيًا."
   }
 }

@@ -71,7 +71,6 @@ export class LighthouseReportRenderer extends self.ReportRenderer {
     if (simulated) {
       UI.Tooltip.Tooltip.install(timelineButton, i18nString(UIStrings.thePerformanceMetricsAboveAre));
     }
-    container.insertBefore(timelineButton, disclaimerEl.nextSibling);
 
     async function onViewTraceClick(): Promise<void> {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseViewTrace);

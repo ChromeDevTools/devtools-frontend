@@ -476,6 +476,12 @@
   "lighthouse-core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Nu folosi o versiune veche de JavaScript în browsere moderne"
   },
+  "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
+    "message": "Formatele de imagine ca JPEG 2000, JPEG XR și WebP oferă adesea o comprimare mai bună decât PNG sau JPEG, ceea ce înseamnă descărcări mai rapide și mai puțin consum de date. [Află mai multe](https://web.dev/uses-webp-images/)."
+  },
+  "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
+    "message": "Difuzează imagini în formate moderne"
+  },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
     "message": "Poți încărca lent imaginile ascunse sau pe cele din afara ecranului după ce toate resursele esențiale s-au încărcat, pentru a micșora timpul până la interactivitate. [Află mai multe](https://web.dev/offscreen-images/)."
   },
@@ -554,12 +560,6 @@
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "Activează comprimarea textului"
   },
-  "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
-    "message": "Formatele de imagine ca JPEG 2000, JPEG XR și WebP oferă adesea o comprimare mai bună decât PNG sau JPEG, ceea ce înseamnă descărcări mai rapide și mai puțin consum de date. [Află mai multe](https://web.dev/uses-webp-images/)."
-  },
-  "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
-    "message": "Difuzează imagini în formate moderne"
-  },
   "lighthouse-core/audits/content-width.js | description": {
     "message": "Dacă lățimea conținutului aplicației nu se potrivește cu lățimea ariei vizibile, este posibil ca aplicația să nu fie optimizată pentru ecrane mobile. [Află mai multe](https://web.dev/content-width/)."
   },
@@ -584,8 +584,14 @@
   "lighthouse-core/audits/csp-xss.js | columnDirective": {
     "message": "Directivă"
   },
+  "lighthouse-core/audits/csp-xss.js | columnSeverity": {
+    "message": "Severity"
+  },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "O politică eficientă privind securitatea conținutului (CSP) reduce semnificativ riscul de atacuri de tip XSS. [Află mai multe](https://csp.withgoogle.com/docs/index.html)"
+    "message": "O politică eficientă privind securitatea conținutului (CSP) reduce semnificativ riscul de atacuri de tip cross-site scripting (XSS). [Află mai multe](https://web.dev/strict-csp/)"
+  },
+  "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
+    "message": "Syntax"
   },
   "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
     "message": "Pagina conține o politică CSP definită într-o etichetă <meta>. Îți recomandăm să definești CSP într-un antet HTTP, dacă este posibil."
@@ -760,15 +766,6 @@
   },
   "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | failureTitle": {
     "message": "Include bibliotecile JavaScript front-end cu vulnerabilități de securitate cunoscute"
-  },
-  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityHigh": {
-    "message": "Înaltă"
-  },
-  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityLow": {
-    "message": "Redusă"
-  },
-  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityMedium": {
-    "message": "Medie"
   },
   "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | title": {
     "message": "Evită bibliotecile JavaScript front-end cu vulnerabilități de securitate cunoscute"
@@ -1070,14 +1067,8 @@
   "lighthouse-core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "Schimbarea cumulată a aspectului măsoară deplasarea elementelor vizibile în aria vizibilă. [Află mai multe](https://web.dev/cls/)."
   },
-  "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
-    "message": "Latența estimată a comenzilor reprezintă o estimare a duratei necesare pentru ca aplicația să răspundă la comanda utilizatorului, în milisecunde, în cea mai aglomerată fereastră de cinci secunde de încărcare a paginii. Dacă latența este mai mare de 50 ms, utilizatorii îți pot percepe aplicația ca fiind lentă. [Află mai multe](https://web.dev/estimated-input-latency/)."
-  },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Prima redare de conținut arată momentul când se redă primul text sau prima imagine. [Află mai multe](https://web.dev/first-contentful-paint/)."
-  },
-  "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
-    "message": "Primul „CPU inactiv” semnalează primul moment în care firul principal al paginii este suficient de liber pentru a accepta comenzi.  [Află mai multe](https://web.dev/first-cpu-idle/)."
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "Prima redare semnificativă arată momentul când este vizibil conținutul principal al unei pagini. [Află mai multe](https://web.dev/first-meaningful-paint/)."
@@ -1703,6 +1694,15 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Pentru dispozitivele mobile"
   },
+  "lighthouse-core/gather/driver/environment.js | warningSlowHostCpu": {
+    "message": "Se pare că dispozitivul testat are un CPU mai lent decât prevede Lighthouse. Aceasta poate afecta negativ scorul de performanță. Află mai multe despre [calibrarea unui multiplicator corespunzător pentru încetinirea CPU-ului](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
+  },
+  "lighthouse-core/gather/driver/navigation.js | warningRedirected": {
+    "message": "Este posibil ca pagina să nu se încarce conform așteptărilor, deoarece adresa URL de testare ({requested}) a fost redirecționată spre {final}. Încearcă să testezi direct a doua adresă URL."
+  },
+  "lighthouse-core/gather/driver/navigation.js | warningTimeout": {
+    "message": "Pagina s-a încărcat prea lent pentru a respecta limita de timp. Rezultatele pot fi incomplete."
+  },
   "lighthouse-core/gather/driver/storage.js | warningData": {
     "message": "{locationCount,plural, =1{Este posibil să existe date stocate care afectează performanța de încărcare în următoarea locație: {locations}. Verifică pagina într-o fereastră incognito pentru a împiedica resursele să îți afecteze scorurile.}few{Este posibil să existe date stocate care afectează performanța de încărcare în următoarele locații: {locations}. Verifică pagina într-o fereastră incognito pentru a împiedica resursele să îți afecteze scorurile.}other{Este posibil să existe date stocate care afectează performanța de încărcare în următoarele locații: {locations}. Verifică pagina într-o fereastră incognito pentru a împiedica resursele să îți afecteze scorurile.}}"
   },
@@ -1832,12 +1832,6 @@
   "lighthouse-core/lib/i18n/i18n.js | documentResourceType": {
     "message": "Document"
   },
-  "lighthouse-core/lib/i18n/i18n.js | estimatedInputLatencyMetric": {
-    "message": "Latența estimată a comenzilor"
-  },
-  "lighthouse-core/lib/i18n/i18n.js | firstCPUIdleMetric": {
-    "message": "Primul „CPU inactiv”"
-  },
   "lighthouse-core/lib/i18n/i18n.js | firstContentfulPaintMetric": {
     "message": "First Contentful Paint"
   },
@@ -1852,6 +1846,15 @@
   },
   "lighthouse-core/lib/i18n/i18n.js | interactiveMetric": {
     "message": "Time to Interactive"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | itemSeverityHigh": {
+    "message": "Înaltă"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | itemSeverityLow": {
+    "message": "Redusă"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | itemSeverityMedium": {
+    "message": "Medie"
   },
   "lighthouse-core/lib/i18n/i18n.js | largestContentfulPaintMetric": {
     "message": "Largest Contentful Paint"
@@ -2060,6 +2063,9 @@
   "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
     "message": "Necunoscută"
   },
+  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
+    "message": "Vezi audituri relevante pentru:"
+  },
   "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
     "message": "Restrânge fragmentul"
   },
@@ -2087,8 +2093,35 @@
   "lighthouse-core/report/html/renderer/util.js | warningHeader": {
     "message": "Avertismente: "
   },
+  "lighthouse-treemap/app/src/util.js | allLabel": {
+    "message": "Toate"
+  },
+  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "Toate scripturile"
+  },
+  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
+    "message": "Acoperire"
+  },
+  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "Module dublate"
+  },
+  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "Byți resursă"
+  },
+  "lighthouse-treemap/app/src/util.js | tableColumnName": {
+    "message": "Nume"
+  },
+  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "Activează / dezactivează tabelul"
+  },
+  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "Byți nefolosiți"
+  },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "Pentru conținut animat, folosește [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) ca să minimizezi utilizarea CPU în timp ce conținutul rămâne în afara ecranului."
+  },
+  "node_modules/lighthouse-stack-packs/packs/amp.js | modern-image-formats": {
+    "message": "Afișează toate componentele [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) în formate WebP și specifică o alternativă adecvată pentru alte browsere. [Află mai multe](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | offscreen-images": {
     "message": "Verifică dacă folosești [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) pentru ca imaginile să se încarce lent automat. [Află mai multe](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)."
@@ -2101,9 +2134,6 @@
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | uses-responsive-images": {
     "message": "Componenta [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) acceptă ca atributul [`srcset`](https://web.dev/use-srcset-to-automatically-choose-the-right-image/) să specifice elementele imagine care se vor folosi în funcție de dimensiunea ecranului. [Află mai multe](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)."
-  },
-  "node_modules/lighthouse-stack-packs/packs/amp.js | uses-webp-images": {
-    "message": "Afișează toate componentele [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) în formate WebP și specifică o alternativă adecvată pentru alte browsere. [Află mai multe](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/angular.js | dom-size": {
     "message": "Poți derula virtual cu Kitul pentru dezvoltatori de componente (CDK) dacă se redau liste foarte mari. [Află mai multe](https://web.dev/virtualize-lists-with-angular-cdk/)."
@@ -2129,13 +2159,16 @@
   "node_modules/lighthouse-stack-packs/packs/drupal.js | font-display": {
     "message": "Specifică `@font-display` atunci când definești fonturile personalizate pentru temă."
   },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | modern-image-formats": {
+    "message": "Îți recomandăm să instalezi și să configurezi [un modul pentru folosirea formatelor de imagine WebP](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search) în site. Aceste module vor genera automat o versiune WebP a imaginilor încărcate pentru a optimiza durata de încărcare."
+  },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | offscreen-images": {
     "message": "Instalează [un modul Drupal](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) care poate încărca lent imagini. Aceste module oferă opțiunea de a amâna imaginile din afara ecranului pentru a îmbunătăți performanța."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
     "message": "Îți recomandăm să folosești un modul pentru a activa inline elementele CSS și JavaScript critice sau să încarci în mod asincron elemente prin JavaScript, de exemplu, modulul [Advanced CSS/JS Aggregation](https://www.drupal.org/project/advagg). Atenție, optimizările oferite de acest modul pot să întrerupă site-ul, astfel că probabil va trebui să modifici codul."
   },
-  "node_modules/lighthouse-stack-packs/packs/drupal.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Temele, modulele și specificațiile serverului contribuie toate la timpul de răspuns al serverului. Îți recomandăm să găsești o temă mai optimizată, selectând cu atenție un modul de optimizare și/sau făcând upgrade la server. Serverele de găzduire ar trebui să folosească stocarea în memoria cache opcode a codului PHP pentru a reduce duratele de interogare a bazei de date, de exemplu, Redis sau Memcached, precum și logica optimizată a aplicației pentru a pregăti paginile mai rapid."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | total-byte-weight": {
@@ -2165,11 +2198,11 @@
   "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-responsive-images": {
     "message": "Folosește [Stilurile de imagini adaptabile](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) native oferite în Drupal (disponibile în Drupal versiunea 8 și versiunile ulterioare). Folosește Stilurile de imagini adaptabile când redai câmpuri de imagine în moduri de afișare, afișări sau imagini încărcate în editorul WYSIWYG."
   },
-  "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-webp-images": {
-    "message": "Îți recomandăm să instalezi și să configurezi [un modul pentru folosirea formatelor de imagine WebP](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search) în site. Aceste module vor genera automat o versiune WebP a imaginilor încărcate pentru a optimiza durata de încărcare."
-  },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "Îți recomandăm să încarci GIF-ul într-un serviciu care îl va pune la dispoziție pentru încorporare ca videoclip HTML5."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | modern-image-formats": {
+    "message": "Îți recomandăm să folosești un [plugin](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) sau un serviciu care convertește automat imaginile încărcate în formatele optime."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
     "message": "Instalează un [plugin Joomla de încărcare lentă](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) care oferă capacitatea de a amâna imaginile din afara ecranului sau schimbă-ți șablonul cu unul care oferă acea funcție. Începând cu versiunea Joomla 4.0, toate imaginile noi vor prelua [automat](https://github.com/joomla/joomla-cms/pull/30748) atributul `loading` de la nucleu."
@@ -2207,9 +2240,6 @@
   "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-text-compression": {
     "message": "Poți activa comprimarea textului activând Comprimarea paginilor Gzip în Joomla: System > Global configuration > Server (Sistem > Configurație globală > Server)."
   },
-  "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-webp-images": {
-    "message": "Îți recomandăm să folosești un [plugin](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) sau un serviciu care convertește automat imaginile încărcate în formatele optime."
-  },
   "node_modules/lighthouse-stack-packs/packs/magento.js | critical-request-chains": {
     "message": "Dacă nu grupezi elementele JavaScript, poți folosi [baler](https://github.com/magento/baler)."
   },
@@ -2219,10 +2249,13 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | font-display": {
     "message": "Specifică `@font-display` atunci când [definești fonturile personalizate](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html)."
   },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | modern-image-formats": {
+    "message": "Caută în [Piața Magento](https://marketplace.magento.com/catalogsearch/result/?q=webp) o varietate de extensii terță parte pentru a obține formate de imagine mai noi."
+  },
   "node_modules/lighthouse-stack-packs/packs/magento.js | offscreen-images": {
     "message": "Modifică șabloanele de produse și de cataloage ca să folosești funcția de [încărcare lentă](https://web.dev/native-lazy-loading) a platformei web."
   },
-  "node_modules/lighthouse-stack-packs/packs/magento.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/magento.js | server-response-time": {
     "message": "Folosește [integrarea Varnish](https://devdocs.magento.com/guides/v2.3/config-guide/varnish/config-varnish.html) din Magento."
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | unminified-css": {
@@ -2243,11 +2276,11 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "Etichetele `<link rel=preload>` se pot adăuga prin [modificarea aspectului unei teme](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
-  "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
-    "message": "Caută în [Piața Magento](https://marketplace.magento.com/catalogsearch/result/?q=webp) o varietate de extensii terță parte pentru a obține formate de imagine mai noi."
-  },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Înlocuiește GIF-urile animate cu videoclipuri](https://web.dev/replace-gifs-with-videos/) pentru încărcarea mai rapidă a paginilor web și folosește formate de fișiere moderne, cum ar fi [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) sau [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), pentru a îmbunătăți eficiența comprimării cu până la 30 % față de cea a codecului video actual de ultimă generație, VP9."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | modern-image-formats": {
+    "message": "Îți recomandăm să folosești un [plugin](https://octobercms.com/plugins?search=image) sau un serviciu care convertește automat imaginile încărcate în formatele optime. [Imaginile WebP fără pierderi](https://developers.google.com/speed/webp) sunt cu 26 % mai mici decât PNG-urile și cu 25 – 34 % mai mici decât imaginile JPEG comparabile la indicele de calitate SSIM echivalent. Un alt format de imagine de ultimă generație recomandat este [AVIF](https://jakearchibald.com/2020/avif-has-landed/)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
     "message": "Îți recomandăm să instalezi un [plugin de încărcare lentă a imaginilor](https://octobercms.com/plugins?search=lazy) care oferă capacitatea de a amâna imaginile din afara ecranului sau schimbă-ți tema cu una care oferă această funcție. Îți recomandăm [pluginul AMP](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages)."
@@ -2255,7 +2288,7 @@
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
     "message": "Există multe pluginuri care ajută la [activarea inline a elementelor critice](https://octobercms.com/plugins?search=css). Acestea pot să întrerupă alte pluginuri, astfel încât trebuie să le testezi în detaliu."
   },
-  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | server-response-time": {
     "message": "Temele, pluginurile și specificațiile serverului contribuie toate la timpul de răspuns al serverului. Îți recomandăm să găsești o temă mai optimizată, selectând cu atenție un plugin de optimizare și / sau făcând upgrade la server. CMS-ul October le dă dezvoltatorilor posibilitatea de a folosi [`Queues`](https://octobercms.com/docs/services/queues) pentru a amâna procesarea unei activități care durează mult timp, cum ar fi trimiterea unui e-mail. Astfel, solicitările web sunt accelerate semnificativ."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
@@ -2285,16 +2318,13 @@
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
     "message": "Activează comprimarea textului în configurația serverului web."
   },
-  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
-    "message": "Îți recomandăm să folosești un [plugin](https://octobercms.com/plugins?search=image) sau un serviciu care convertește automat imaginile încărcate în formatele optime. [Imaginile WebP fără pierderi](https://developers.google.com/speed/webp) sunt cu 26 % mai mici decât PNG-urile și cu 25 – 34 % mai mici decât imaginile JPEG comparabile la indicele de calitate SSIM echivalent. Un alt format de imagine de ultimă generație recomandat este [AVIF](https://jakearchibald.com/2020/avif-has-landed/)."
-  },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
     "message": "Folosește o bibliotecă „windowing”, ca `react-window`, pentru a minimaliza numărul de noduri DOM create dacă redai multe elemente repetate pe pagină. [Află mai multe](https://web.dev/virtualize-long-lists-react-window/). În plus, redu redările suplimentare inutile folosind [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) sau [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) și [omite efectele](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) doar până când anumite dependențe s-au schimbat dacă folosești hookul `Effect` ca să îmbunătățești performanța la redare."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "Dacă folosești React Router, minimalizează folosirea componentei `<Redirect>` pentru [navigările pe traseu](https://reacttraining.com/react-router/web/api/Redirect)."
   },
-  "node_modules/lighthouse-stack-packs/packs/react.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/react.js | server-response-time": {
     "message": "Dacă redai componente React pe server, poți folosi `renderToNodeStream()` sau `renderToStaticNodeStream()` ca să-i permiți clientului să primească și să completeze diferite părți ale codului de markup, nu pe tot deodată. [Află mai multe](https://reactjs.org/docs/react-dom-server.html#rendertonodestream)."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | unminified-css": {
@@ -2312,13 +2342,16 @@
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "Îți recomandăm să încarci GIF-ul într-un serviciu care îl va pune la dispoziție pentru încorporare ca videoclip HTML5."
   },
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | modern-image-formats": {
+    "message": "Îți recomandăm să folosești un [plugin](https://wordpress.org/plugins/search/convert+webp/) sau un serviciu care convertește automat imaginile încărcate în formatele optime."
+  },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | offscreen-images": {
     "message": "Instalează un [plugin WordPress de încărcare lentă](https://wordpress.org/plugins/search/lazy+load/) care oferă capacitatea de a amâna imaginile din afara ecranului sau schimbă-ți tema cu una care oferă acea funcție. Îți recomandăm [pluginul AMP](https://wordpress.org/plugins/amp/)."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | render-blocking-resources": {
     "message": "Există o serie de pluginuri Wordpress care te pot ajuta să [activezi inline elementele critice](https://wordpress.org/plugins/search/critical+css/) sau să [amâni resurse mai puțin importante](https://wordpress.org/plugins/search/defer+css+javascript/). Atenție, optimizările oferite de aceste pluginuri pot să întrerupă funcțiile temei sau pluginurilor tale, astfel încât este posibil să trebuiască să modifici codul."
   },
-  "node_modules/lighthouse-stack-packs/packs/wordpress.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | server-response-time": {
     "message": "Temele, pluginurile și specificațiile serverului contribuie toate la timpul de răspuns al serverului. Îți recomandăm să găsești o temă mai optimizată, selectând cu atenție un plugin de optimizare și/sau făcând upgrade la server."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | total-byte-weight": {
@@ -2347,8 +2380,5 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "Poți activa comprimarea textului în configurarea serverului web."
-  },
-  "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-webp-images": {
-    "message": "Îți recomandăm să folosești un [plugin](https://wordpress.org/plugins/search/convert+webp/) sau un serviciu care convertește automat imaginile încărcate în formatele optime."
   }
 }

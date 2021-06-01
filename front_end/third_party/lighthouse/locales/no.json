@@ -476,6 +476,12 @@
   "lighthouse-core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Unngå å sende JavaScript i en eldre versjon til moderne nettlesere"
   },
+  "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
+    "message": "Bildeformater som JPEG 2000, JPEG XR og WebP gir ofte bedre komprimering enn PNG eller JPEG, noe som betyr raskere nedlasting og mindre databruk. [Finn ut mer](https://web.dev/uses-webp-images/)."
+  },
+  "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
+    "message": "Bruk nyere bildeformater"
+  },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
     "message": "Vurder «lat» innlasting av bilder som er utenfor skjermen eller skjult, etter at alle kritiske ressurser er ferdig innlastet, for å redusere tiden det tar før siden blir interaktiv. [Finn ut mer](https://web.dev/offscreen-images/)."
   },
@@ -554,12 +560,6 @@
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "Aktiver tekstkomprimering"
   },
-  "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
-    "message": "Bildeformater som JPEG 2000, JPEG XR og WebP gir ofte bedre komprimering enn PNG eller JPEG, noe som betyr raskere nedlasting og mindre databruk. [Finn ut mer](https://web.dev/uses-webp-images/)."
-  },
-  "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
-    "message": "Bruk nyere bildeformater"
-  },
   "lighthouse-core/audits/content-width.js | description": {
     "message": "Hvis bredden på appinnholdet ikke samsvarer med bredden på det synlige området, er appen kanskje ikke optimalisert for mobilskjermer. [Finn ut mer](https://web.dev/content-width/)."
   },
@@ -584,8 +584,14 @@
   "lighthouse-core/audits/csp-xss.js | columnDirective": {
     "message": "Direktiv"
   },
+  "lighthouse-core/audits/csp-xss.js | columnSeverity": {
+    "message": "Intensitet"
+  },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "En sterk Content Security Policy (CSP) reduserer risikoen for XSS-angrep betydelig. [Finn ut mer](https://csp.withgoogle.com/docs/index.html)"
+    "message": "En sterk regel for innholdssikkerhet (CSP) reduserer faren for skriptangrep på tvers av nettsteder (XSS) betydelig. [Finn ut mer](https://web.dev/strict-csp/)"
+  },
+  "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
+    "message": "Syntaks"
   },
   "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
     "message": "Siden inneholder en CSP som er definert i en <meta>-tagg. Vurder å definere CSP-en i et HTTP-hode hvis mulig."
@@ -760,15 +766,6 @@
   },
   "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | failureTitle": {
     "message": "Inkluderer JavaScript-grensesnittsbiblioteker med kjente sikkerhetssårbarheter"
-  },
-  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityHigh": {
-    "message": "Høy"
-  },
-  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityLow": {
-    "message": "Lav"
-  },
-  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityMedium": {
-    "message": "Middels"
   },
   "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | title": {
     "message": "Unngår JavaScript-grensesnittsbiblioteker med kjente sikkerhetssårbarheter"
@@ -1070,14 +1067,8 @@
   "lighthouse-core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "Akkumulert utseendeforskyvning (CLS) måler bevegelsen av synlige elementer i det synlige området. [Finn ut mer](https://web.dev/cls/)."
   },
-  "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
-    "message": "Beregnet inndataforsinkelse er et estimat av hvor lang tid (i millisekunder) det tar for appen å svare på brukerinndata i det travleste 5-sekunders tidsrommet mens siden lastes inn. Hvis tidsforsinkelsen er høyere enn 50 ms, kan brukere oppleve appen som treg. [Finn ut mer](https://web.dev/estimated-input-latency/)."
-  },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Den første innholdsrike opptegningen (FCP) markerer den første gangen tekst eller bilder tegnes opp. [Finn ut mer](https://web.dev/first-contentful-paint/)."
-  },
-  "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
-    "message": "Første prosessor ledig markerer den første gangen at sidens hovedtråd er rolig nok til å klare å håndtere inndata.  [Finn ut mer](https://web.dev/first-cpu-idle/)."
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "Første vesentlige opptegning måler når hovedinnholdet på en side er synlig. [Finn ut mer](https://web.dev/first-meaningful-paint/)."
@@ -1703,6 +1694,15 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Mobilvennlig"
   },
+  "lighthouse-core/gather/driver/environment.js | warningSlowHostCpu": {
+    "message": "Den testede enheten ser ut til å ha tregere prosessor enn Lighthouse forventer. Dette kan virke negativt inn på ytelsespoengsummen din. Finn ut mer om [kalibrering av en hensiktsmessig multiplikator for prosessorforsinkelse](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
+  },
+  "lighthouse-core/gather/driver/navigation.js | warningRedirected": {
+    "message": "Siden lastes kanskje ikke inn som forventet, fordi testnettadressen ({requested}) ble viderekoblet til {final}. Prøv å teste den andre nettadressen direkte."
+  },
+  "lighthouse-core/gather/driver/navigation.js | warningTimeout": {
+    "message": "Siden ble lastet inn for tregt til å bli ferdig innenfor tidsgrensen. Resultatene kan være ufullstendige."
+  },
   "lighthouse-core/gather/driver/storage.js | warningData": {
     "message": "{locationCount,plural, =1{Det kan være lagrede data som påvirker innlastingsytelsen, på denne plasseringen: {locations}. Utfør en revisjon på denne siden i et inkognitovindu for å forhindre disse ressursene fra å påvirke poengsummene.}other{Det kan være lagrede data som påvirker innlastingsytelsen, på disse plasseringene: {locations}. Utfør en revisjon på denne siden i et inkognitovindu for å forhindre disse ressursene fra å påvirke poengsummene.}}"
   },
@@ -1832,12 +1832,6 @@
   "lighthouse-core/lib/i18n/i18n.js | documentResourceType": {
     "message": "Dokument"
   },
-  "lighthouse-core/lib/i18n/i18n.js | estimatedInputLatencyMetric": {
-    "message": "Anslått tidsforsinkelse for inndata"
-  },
-  "lighthouse-core/lib/i18n/i18n.js | firstCPUIdleMetric": {
-    "message": "Første prosessor ledig"
-  },
   "lighthouse-core/lib/i18n/i18n.js | firstContentfulPaintMetric": {
     "message": "First Contentful Paint"
   },
@@ -1852,6 +1846,15 @@
   },
   "lighthouse-core/lib/i18n/i18n.js | interactiveMetric": {
     "message": "Time to Interactive"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | itemSeverityHigh": {
+    "message": "Høy"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | itemSeverityLow": {
+    "message": "Lav"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | itemSeverityMedium": {
+    "message": "Middels"
   },
   "lighthouse-core/lib/i18n/i18n.js | largestContentfulPaintMetric": {
     "message": "Largest Contentful Paint"
@@ -2060,6 +2063,9 @@
   "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
     "message": "Ukjent"
   },
+  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
+    "message": "Vis revisjoner som er relevant for:"
+  },
   "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
     "message": "Skjul fragment"
   },
@@ -2087,8 +2093,35 @@
   "lighthouse-core/report/html/renderer/util.js | warningHeader": {
     "message": "Advarsler: "
   },
+  "lighthouse-treemap/app/src/util.js | allLabel": {
+    "message": "Alt"
+  },
+  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "Alle skript"
+  },
+  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
+    "message": "Dekning"
+  },
+  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "Duplikatmoduler"
+  },
+  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "Ressursstørrelse i byte"
+  },
+  "lighthouse-treemap/app/src/util.js | tableColumnName": {
+    "message": "Navn"
+  },
+  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "Slå av/på tabell"
+  },
+  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "Ubrukte byte"
+  },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "For animert innhold, bruk [`amp-anim`‏](https://amp.dev/documentation/components/amp-anim/) for å minimere prosessorbruken når innholdet er utenfor skjermen."
+  },
+  "node_modules/lighthouse-stack-packs/packs/amp.js | modern-image-formats": {
+    "message": "Vurder å vise alle [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites)-komponenter i WebP-formater og spesifisere passende reservealternativer for andre nettlesere. [Finn ut mer](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | offscreen-images": {
     "message": "Pass på å bruke [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) for bilder som skal lastes inn med utsettelse automatisk. [Finn ut mer](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)."
@@ -2101,9 +2134,6 @@
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | uses-responsive-images": {
     "message": "[`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites)-komponenten støtter [`srcset`](https://web.dev/use-srcset-to-automatically-choose-the-right-image/)-attributtet, som gjør det mulig å spesifisere hvilke bilderessurser som skal brukes, basert på skjermstørrelsen. [Finn ut mer](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)."
-  },
-  "node_modules/lighthouse-stack-packs/packs/amp.js | uses-webp-images": {
-    "message": "Vurder å vise alle [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites)-komponenter i WebP-formater og spesifisere passende reservealternativer for andre nettlesere. [Finn ut mer](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/angular.js | dom-size": {
     "message": "Vurder å bruke virtuell rulling med Component Dev Kit (CDK) hvis du skal gjengi svært store lister. [Finn ut mer](https://web.dev/virtualize-lists-with-angular-cdk/)."
@@ -2129,13 +2159,16 @@
   "node_modules/lighthouse-stack-packs/packs/drupal.js | font-display": {
     "message": "Angi `@font-display` når du definerer egendefinerte skrifttyper i temaet ditt."
   },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | modern-image-formats": {
+    "message": "Vurder å installere og konfigurere [en modul for å benytte WebP-bildeformater](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search) på nettstedet ditt. Slike moduler genererer automatisk WebP-versjoner av opplastede bilder for å optimalisere innlastingstiden."
+  },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | offscreen-images": {
     "message": "Installer [en Drupal-modul](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) som kan utsette innlastingen av bilder. Slike moduler gir mulighet til å utsette innlasting av bilder som ikke er på skjermen, slik at ytelsen økes."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
     "message": "Vurder å bruke en modul for å bygge inn kritisk CSS- og JavaScript-kode eller potensielt laste inn ressurser asynkront via JavaScript, som for eksempel modulen [avansert CSS-/JS-aggregering](https://www.drupal.org/project/advagg). Vær obs på at optimalisering som gjøres av denne modulen, kan gjøre at nettstedet ditt slutter å fungere, så du må sannsynligvis gjøre kodeendringer."
   },
-  "node_modules/lighthouse-stack-packs/packs/drupal.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Både temaer, moduler og tjenerspesifikasjoner virker inn på tjenerens responstid. Vurder å finne et mer optimalisert tema, velge en optimaliseringsmodul nøye og/eller oppgradere tjeneren. Vertstjenerne dine bør benytte seg av bufring av PHP-operasjonskoder, minnebufring som Redis eller Memcached for å redusere tiden databasespørringer tar, samt optimalisert applikasjonslogikk for å klargjøre sider raskere."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | total-byte-weight": {
@@ -2165,11 +2198,11 @@
   "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-responsive-images": {
     "message": "Pass på at du bruker de innebygde [responsive bildestilene](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) i Drupal (tilgjengelig i Drupal 8 og nyere). Bruk de responsive bildestilene ved gjengivelse av bildefelt gjennom visningsmoduser, visninger eller bilder som lastes opp gjennom WYSIWYG-redigeringsverktøyet."
   },
-  "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-webp-images": {
-    "message": "Vurder å installere og konfigurere [en modul for å benytte WebP-bildeformater](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search) på nettstedet ditt. Slike moduler genererer automatisk WebP-versjoner av opplastede bilder for å optimalisere innlastingstiden."
-  },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "Vurder å laste opp GIF-filen til en tjeneste som gjør det mulig å bygge den inn som en HTML5-video."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | modern-image-formats": {
+    "message": "Vurder å bruke et [programtillegg](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) eller en tjeneste som automatisk konverterer opplastede bilder til de optimale formatene."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
     "message": "Installer et [Joomla-programtillegg for utsatt innlasting](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) som gjør det mulig å utsette innlasting av bilder som ikke er på skjermen, eller bytt til en mal som gir denne funksjonaliteten. Fra og med Joomla 4.0 får alle nye bilder [automatisk](https://github.com/joomla/joomla-cms/pull/30748) `loading`-attributtet fra kjernen."
@@ -2207,9 +2240,6 @@
   "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-text-compression": {
     "message": "Du kan slå på tekstkomprimering ved å slå på Gzip-sidekomprimering i Joomla (System > Global konfigurasjon > Tjener)."
   },
-  "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-webp-images": {
-    "message": "Vurder å bruke et [programtillegg](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) eller en tjeneste som automatisk konverterer opplastede bilder til de optimale formatene."
-  },
   "node_modules/lighthouse-stack-packs/packs/magento.js | critical-request-chains": {
     "message": "Hvis du ikke pakker JavaScript-ressursene dine, bør du vurdere å bruke [baler](https://github.com/magento/baler)."
   },
@@ -2219,10 +2249,13 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | font-display": {
     "message": "Spesifiser `@font-display` når du [definerer tilpassede skrifttyper](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html)."
   },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | modern-image-formats": {
+    "message": "Vurder å søke på [Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp) etter diverse tredjepartsutvidelser som gjør det mulig å bruke nyere bildeformater."
+  },
   "node_modules/lighthouse-stack-packs/packs/magento.js | offscreen-images": {
     "message": "Vurder å endre produkt- og katalogmalene for å nyttiggjøre deg av funksjonaliteten for [utsatt innlasting](https://web.dev/native-lazy-loading) på nettplattformen."
   },
-  "node_modules/lighthouse-stack-packs/packs/magento.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/magento.js | server-response-time": {
     "message": "Bruk Magentos [Varnish-integrasjon](https://devdocs.magento.com/guides/v2.3/config-guide/varnish/config-varnish.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | unminified-css": {
@@ -2243,11 +2276,11 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "`<link rel=preload>`-tagger kan legges til ved å [endre temalayouten](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
-  "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
-    "message": "Vurder å søke på [Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp) etter diverse tredjepartsutvidelser som gjør det mulig å bruke nyere bildeformater."
-  },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Erstatt animerte GIF-er med video](https://web.dev/replace-gifs-with-videos/) for raskere nettsideinnlasteringer, og vurder å bruke moderne filformater, som [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) eller [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), for å øke komprimeringseffektiviteten med mer enn 30 % sammenlignet med den mest avanserte videokodeken, VP9."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | modern-image-formats": {
+    "message": "Vurder å bruke et [programtillegg](https://octobercms.com/plugins?search=image) eller en tjeneste som automatisk konverterer opplastede bilder til de optimale formatene. [Tapsfrie WebP-bilder](https://developers.google.com/speed/webp) er 26 % mindre enn PNG-bilder og 25–34 % mindre enn sammenlignbare JPEG-bilder med tilsvarende SSIM-kvalitetsindeks. Et annet nestegenerasjons bildeformat du kan vurdere, er [AVIF](https://jakearchibald.com/2020/avif-has-landed/)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
     "message": "Vurder å installere et [programtillegg for utsatt innlasting av bilder](https://octobercms.com/plugins?search=lazy) som gjør det mulig å utsette innlasting av bilder som ikke er på skjermen, eller bytt til et tema som gir denne funksjonaliteten. Vurder også å bruke [AMP-programtillegget](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages)."
@@ -2255,7 +2288,7 @@
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
     "message": "Det er mange programtillegg som bidrar til å [bygge inn kritiske elementer](https://octobercms.com/plugins?search=css). Disse programtilleggene kan gjøre at andre programtillegg slutter å fungere, så du bør teste dem grundig."
   },
-  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | server-response-time": {
     "message": "Både temaer, programtillegg og tjenerspesifikasjoner virker inn på tjenerens responstid. Vurder å finne et mer optimalisert tema, velge et programtillegg for optimalisering nøye og/eller oppgradere tjeneren. Med October CMS kan utviklere også bruke [`Queues`](https://octobercms.com/docs/services/queues) for å utsette behandlingen av tidkrevende oppgaver, som å sende e-poster. Dette gjør nettforespørsler betydelig raskere."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
@@ -2285,16 +2318,13 @@
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
     "message": "Slå på tekstkomprimering i konfigurasjonen av nettjeneren."
   },
-  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
-    "message": "Vurder å bruke et [programtillegg](https://octobercms.com/plugins?search=image) eller en tjeneste som automatisk konverterer opplastede bilder til de optimale formatene. [Tapsfrie WebP-bilder](https://developers.google.com/speed/webp) er 26 % mindre enn PNG-bilder og 25–34 % mindre enn sammenlignbare JPEG-bilder med tilsvarende SSIM-kvalitetsindeks. Et annet nestegenerasjons bildeformat du kan vurdere, er [AVIF](https://jakearchibald.com/2020/avif-has-landed/)."
-  },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
     "message": "Vurder å bruke et bibliotek for «vinduer», som `react-window`, for å minimere antallet DOM-noder som opprettes hvis du gjengir mange gjentatte elementer på siden. [Finn ut mer](https://web.dev/virtualize-long-lists-react-window/). Du kan også minimere antallet gjengivelser som gjentas unødvendig, ved å bruke [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) eller [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) og [hoppe over effekter](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) kun frem til visse avhengigheter har endret seg, hvis du bruker `Effect`-hooken for å oppnå bedre ytelse under kjøring."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "Hvis du bruker React Router, kan du minimere bruken av `<Redirect>`-komponenten for [rutenavigasjoner](https://reacttraining.com/react-router/web/api/Redirect)."
   },
-  "node_modules/lighthouse-stack-packs/packs/react.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/react.js | server-response-time": {
     "message": "Hvis du gjengir React-komponenter på tjenersiden, bør du vurdere å bruke `renderToNodeStream()` eller `renderToStaticNodeStream()` for å gi klienten mulighet til å motta og hydrere ulike deler av oppmerkingen i stedet for å gjøre alt på en gang. [Finn ut mer](https://reactjs.org/docs/react-dom-server.html#rendertonodestream)."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | unminified-css": {
@@ -2312,13 +2342,16 @@
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "Vurder å laste opp GIF-filen til en tjeneste som gjør det mulig å bygge den inn som en HTML5-video."
   },
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | modern-image-formats": {
+    "message": "Vurder å bruke et [programtillegg](https://wordpress.org/plugins/search/convert+webp/) eller en tjeneste som automatisk konverterer opplastede bilder til de optimale formatene."
+  },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | offscreen-images": {
     "message": "Installer et [WordPress-programtillegg for utsatt innlasting](https://wordpress.org/plugins/search/lazy+load/) som gjør det mulig å utsette innlasting av bilder som ikke er på skjermen, eller bytt til et tema som gir denne funksjonaliteten. Vurder også å bruke [AMP-programtillegget](https://wordpress.org/plugins/amp/)."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | render-blocking-resources": {
     "message": "Det finnes en rekke WordPress-programtillegg som kan hjelpe deg med å [bygge inn kritiske elementer direkte på siden](https://wordpress.org/plugins/search/critical+css/) eller [utsette innlasting av mindre viktige ressurser](https://wordpress.org/plugins/search/defer+css+javascript/). Vær obs på at optimalisering som gjøres av disse programtilleggene, kan ødelegge funksjonalitet i temaet ditt eller programtilleggene dine, så du må sannsynligvis gjøre kodeendringer."
   },
-  "node_modules/lighthouse-stack-packs/packs/wordpress.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | server-response-time": {
     "message": "Både temaer, programtillegg og tjenerspesifikasjoner virker inn på tjenerens responstid. Vurder å finne et mer optimalisert tema, velge et programtillegg for optimalisering nøye og/eller oppgradere tjeneren."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | total-byte-weight": {
@@ -2347,8 +2380,5 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "Du kan slå på tekstkomprimering i oppsettet av nettjeneren."
-  },
-  "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-webp-images": {
-    "message": "Vurder å bruke et [programtillegg](https://wordpress.org/plugins/search/convert+webp/) eller en tjeneste som automatisk konverterer opplastede bilder til de optimale formatene."
   }
 }

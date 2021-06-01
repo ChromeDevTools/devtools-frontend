@@ -476,6 +476,12 @@
   "lighthouse-core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "หลีกเลี่ยงการแสดง JavaScript ในเบราว์เซอร์สมัยใหม่"
   },
+  "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
+    "message": "รูปแบบรูปภาพอย่างเช่น JPEG 2000, JPEG XR และ WebP มักบีบอัดได้ดีกว่า PNG หรือ JPEG ซึ่งหมายความว่าจะดาวน์โหลดได้เร็วขึ้นและใช้อินเทอร์เน็ตน้อยลง [ดูข้อมูลเพิ่มเติม](https://web.dev/uses-webp-images/)"
+  },
+  "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
+    "message": "แสดงรูปภาพในรูปแบบสมัยใหม่"
+  },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
     "message": "พิจารณาโหลดรูปภาพนอกหน้าจอและรูปภาพที่ซ่อนไว้แบบ Lazy Loading หลังจากที่ทรัพยากรที่สำคัญทั้งหมดโหลดเสร็จแล้วเพื่อลดเวลาในการโต้ตอบ [ดูข้อมูลเพิ่มเติม](https://web.dev/offscreen-images/)"
   },
@@ -554,12 +560,6 @@
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "เปิดใช้การบีบอัดข้อความ"
   },
-  "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
-    "message": "รูปแบบรูปภาพอย่างเช่น JPEG 2000, JPEG XR และ WebP มักบีบอัดได้ดีกว่า PNG หรือ JPEG ซึ่งหมายความว่าจะดาวน์โหลดได้เร็วขึ้นและใช้อินเทอร์เน็ตน้อยลง [ดูข้อมูลเพิ่มเติม](https://web.dev/uses-webp-images/)"
-  },
-  "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
-    "message": "แสดงรูปภาพในรูปแบบสมัยใหม่"
-  },
   "lighthouse-core/audits/content-width.js | description": {
     "message": "หากความกว้างของเนื้อหาในแอปไม่ตรงกับความกว้างของวิวพอร์ต แอปอาจไม่ได้รับการเพิ่มประสิทธิภาพเพื่อหน้าจออุปกรณ์เคลื่อนที่ [ดูข้อมูลเพิ่มเติม](https://web.dev/content-width/)"
   },
@@ -584,8 +584,14 @@
   "lighthouse-core/audits/csp-xss.js | columnDirective": {
     "message": "คำสั่ง"
   },
+  "lighthouse-core/audits/csp-xss.js | columnSeverity": {
+    "message": "Severity"
+  },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "นโยบายรักษาความปลอดภัยเนื้อหา (CSP) ที่มีประสิทธิภาพช่วยลดความเสี่ยงต่อการโจมตี XSS ได้อย่างมาก [ดูข้อมูลเพิ่มเติม](https://csp.withgoogle.com/docs/index.html)"
+    "message": "นโยบายรักษาความปลอดภัยเนื้อหา (CSP) ที่มีประสิทธิภาพช่วยลดความเสี่ยงต่อการโจมตี Cross-site Scripting (XSS) ได้อย่างมาก [ดูข้อมูลเพิ่มเติม](https://web.dev/strict-csp/)"
+  },
+  "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
+    "message": "Syntax"
   },
   "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
     "message": "หน้าเว็บมีการกำหนด CSP ในแท็ก <meta> ลองกำหนด CSP ในส่วนหัว HTTP หากทำได้"
@@ -760,15 +766,6 @@
   },
   "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | failureTitle": {
     "message": "มีไลบรารี JavaScript ส่วนหน้าที่มีช่องโหว่ด้านความปลอดภัย"
-  },
-  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityHigh": {
-    "message": "สูง"
-  },
-  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityLow": {
-    "message": "ต่ำ"
-  },
-  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityMedium": {
-    "message": "ปานกลาง"
   },
   "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | title": {
     "message": "หลีกเลี่ยงการใช้ไลบรารี JavaScript ส่วนหน้าที่มีช่องโหว่ด้านความปลอดภัย"
@@ -1070,14 +1067,8 @@
   "lighthouse-core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "Cumulative Layout Shift จะวัดการเคลื่อนไหวขององค์ประกอบที่มองเห็นได้ภายในวิวพอร์ต [ดูข้อมูลเพิ่มเติม](https://web.dev/cls/)"
   },
-  "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
-    "message": "เวลาตอบสนองต่ออินพุตโดยประมาณเป็นระยะเวลาโดยประมาณที่แอปใช้เพื่อตอบสนองอินพุตของผู้ใช้ระหว่างการโหลดหน้าเว็บในกรอบเวลา 5 วินาทีที่ทำงานหนักที่สุด มีหน่วยเป็นมิลลิวินาที หากเวลาในการตอบสนองนานกว่า 50 มิลลิวินาที ผู้ใช้อาจรู้สึกว่าแอปช้า [ดูข้อมูลเพิ่มเติม](https://web.dev/estimated-input-latency/)"
-  },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
     "message": "First Contentful Paint ระบุเวลาที่มีการแสดงผลข้อความหรือรูปภาพครั้งแรก [ดูข้อมูลเพิ่มเติม](https://web.dev/first-contentful-paint/)"
-  },
-  "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
-    "message": "First CPU Idle ระบุครั้งแรกที่เทรดหลักของหน้าเว็บว่างพอที่จะจัดการกับอินพุต  [ดูข้อมูลเพิ่มเติม](https://web.dev/first-cpu-idle/)"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "การแสดงผลที่มีความหมายครั้งแรกวัดเมื่อเนื้อหาหลักของหน้าเว็บปรากฏ [ดูข้อมูลเพิ่มเติม](https://web.dev/first-meaningful-paint/)"
@@ -1703,6 +1694,15 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "เหมาะกับอุปกรณ์เคลื่อนที่"
   },
+  "lighthouse-core/gather/driver/environment.js | warningSlowHostCpu": {
+    "message": "ดูเหมือนว่า CPU ของอุปกรณ์ที่ใช้ทดสอบจะช้ากว่าที่ Lighthouse คาดไว้ ซึ่งอาจส่งผลเสียต่อคะแนนประสิทธิภาพของคุณ ดูข้อมูลเพิ่มเติมเกี่ยวกับ[การปรับเทียบตัวคูณการชะลอตัวของ CPU ที่เหมาะสม](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
+  },
+  "lighthouse-core/gather/driver/navigation.js | warningRedirected": {
+    "message": "หน้านี้อาจไม่โหลดขึ้นตามที่คาดไว้เนื่องจาก URL ทดสอบของคุณ ({requested}) มีการเปลี่ยนเส้นทางไปยัง {final} ลองทดสอบ URL ที่ 2 โดยตรง"
+  },
+  "lighthouse-core/gather/driver/navigation.js | warningTimeout": {
+    "message": "หน้าโหลดช้าเกินกำหนดเวลา หน้าที่โหลดมาได้อาจไม่ครบถ้วน"
+  },
   "lighthouse-core/gather/driver/storage.js | warningData": {
     "message": "{locationCount,plural, =1{อาจมีข้อมูลที่จัดเก็บไว้ที่ส่งผลกระทบต่อประสิทธิภาพการโหลดในตำแหน่ง {locations} ทดสอบหน้านี้ในหน้าต่างที่ไม่ระบุตัวตนเพื่อป้องกันไม่ให้ทรัพยากรเหล่านั้นส่งผลกระทบต่อคะแนนของคุณ}other{อาจมีข้อมูลที่จัดเก็บไว้ที่ส่งผลกระทบต่อประสิทธิภาพการโหลดในตำแหน่ง {locations} ทดสอบหน้านี้ในหน้าต่างที่ไม่ระบุตัวตนเพื่อป้องกันไม่ให้ทรัพยากรเหล่านั้นส่งผลกระทบต่อคะแนนของคุณ}}"
   },
@@ -1832,12 +1832,6 @@
   "lighthouse-core/lib/i18n/i18n.js | documentResourceType": {
     "message": "เอกสาร"
   },
-  "lighthouse-core/lib/i18n/i18n.js | estimatedInputLatencyMetric": {
-    "message": "เวลาในการตอบสนองต่ออินพุตโดยประมาณ"
-  },
-  "lighthouse-core/lib/i18n/i18n.js | firstCPUIdleMetric": {
-    "message": "CPU ไม่ได้ใช้งานครั้งแรก"
-  },
   "lighthouse-core/lib/i18n/i18n.js | firstContentfulPaintMetric": {
     "message": "First Contentful Paint"
   },
@@ -1852,6 +1846,15 @@
   },
   "lighthouse-core/lib/i18n/i18n.js | interactiveMetric": {
     "message": "Time to Interactive"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | itemSeverityHigh": {
+    "message": "สูง"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | itemSeverityLow": {
+    "message": "ต่ำ"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | itemSeverityMedium": {
+    "message": "ปานกลาง"
   },
   "lighthouse-core/lib/i18n/i18n.js | largestContentfulPaintMetric": {
     "message": "Largest Contentful Paint"
@@ -2060,6 +2063,9 @@
   "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
     "message": "ไม่ทราบ"
   },
+  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
+    "message": "แสดงการตรวจสอบที่เกี่ยวข้องกับรายการต่อไปนี้"
+  },
   "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
     "message": "ยุบตัวอย่างข้อมูล"
   },
@@ -2087,8 +2093,35 @@
   "lighthouse-core/report/html/renderer/util.js | warningHeader": {
     "message": "คำเตือน "
   },
+  "lighthouse-treemap/app/src/util.js | allLabel": {
+    "message": "ทั้งหมด"
+  },
+  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "สคริปต์ทั้งหมด"
+  },
+  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
+    "message": "การครอบคลุม"
+  },
+  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "โมดูลที่ซ้ำกัน"
+  },
+  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "ขนาดไฟล์ทรัพยากร (ไบต์)"
+  },
+  "lighthouse-treemap/app/src/util.js | tableColumnName": {
+    "message": "ชื่อ"
+  },
+  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "ซ่อน/แสดงตาราง"
+  },
+  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "ไบต์ที่ไม่ได้ใช้"
+  },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "สำหรับเนื้อหาที่เป็นภาพเคลื่อนไหว ให้ใช้ [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) เพื่อลดการใช้ CPU ขณะที่เนื้อหาไม่ได้อยู่ในหน้าจอ"
+  },
+  "node_modules/lighthouse-stack-packs/packs/amp.js | modern-image-formats": {
+    "message": "ลองแสดงคอมโพเนนต์ [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) ทั้งหมดในรูปแบบ WebP โดยกำหนดการสำรองที่เหมาะสมให้กับเบราว์เซอร์อื่นด้วย [ดูข้อมูลเพิ่มเติม](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | offscreen-images": {
     "message": "ตรวจสอบว่าคุณกำลังใช้ [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) สำหรับรูปภาพเพื่อโหลดแบบ Lazy Loading โดยอัตโนมัติ [ดูข้อมูลเพิ่มเติม](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)"
@@ -2101,9 +2134,6 @@
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | uses-responsive-images": {
     "message": "คอมโพเนนต์ [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) รองรับแอตทริบิวต์ [`srcset`](https://web.dev/use-srcset-to-automatically-choose-the-right-image/) เพื่อกำหนดเนื้อหารูปภาพที่จะใช้ตามขนาดของหน้าจอ [ดูข้อมูลเพิ่มเติม](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)"
-  },
-  "node_modules/lighthouse-stack-packs/packs/amp.js | uses-webp-images": {
-    "message": "ลองแสดงคอมโพเนนต์ [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) ทั้งหมดในรูปแบบ WebP โดยกำหนดการสำรองที่เหมาะสมให้กับเบราว์เซอร์อื่นด้วย [ดูข้อมูลเพิ่มเติม](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)"
   },
   "node_modules/lighthouse-stack-packs/packs/angular.js | dom-size": {
     "message": "ลองใช้การเลื่อนเสมือนจริงด้วย Component Dev Kit (CDK) หากกำลังแสดงรายการที่ใหญ่มาก [ดูข้อมูลเพิ่มเติม](https://web.dev/virtualize-lists-with-angular-cdk/)"
@@ -2129,13 +2159,16 @@
   "node_modules/lighthouse-stack-packs/packs/drupal.js | font-display": {
     "message": "ระบุ `@font-display` เมื่อกำหนดแบบอักษรที่กำหนดเองในธีม"
   },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | modern-image-formats": {
+    "message": "ลองติดตั้งและกำหนดค่า[โมดูลเพื่อใช้ประโยชน์จากรูปแบบรูปภาพ WebP](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search) ในเว็บไซต์ของคุณ โมดูลดังกล่าวจะสร้างเวอร์ชัน WebP ของรูปภาพที่อัปโหลดโดยอัตโนมัติเพื่อปรับปรุงเวลาที่ใช้ในการโหลด"
+  },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | offscreen-images": {
     "message": "ติดตั้ง[โมดูล Drupal](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) ที่โหลดรูปภาพแบบ Lazy Loading ได้ โมดูลนี้จะช่วยเลื่อนเวลาโหลดรูปภาพนอกจอภาพเพื่อปรับปรุงประสิทธิภาพ"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
     "message": "ลองใช้โมดูลเพื่อแทรก CSS และ JavaScript ที่สำคัญในหน้าหรือโมดูลที่อาจโหลดเนื้อหาแบบไม่พร้อมกันผ่าน JavaScript เช่น โมดูล[การรวม CSS/JS ขั้นสูง](https://www.drupal.org/project/advagg) โปรดระวังว่าการเพิ่มประสิทธิภาพโดยโมดูลนี้อาจทำให้เว็บไซต์เสียหาย ซึ่งน่าจะทำให้คุณต้องแก้ไขโค้ด"
   },
-  "node_modules/lighthouse-stack-packs/packs/drupal.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "ข้อกำหนดของธีม โมดูล และเซิร์ฟเวอร์ล้วนส่งผลต่อเวลาในการตอบสนองของเซิร์ฟเวอร์ ลองหาธีมที่เพิ่มประสิทธิภาพมากขึ้น พยายามเลือกโมดูลการเพิ่มประสิทธิภาพด้วยความระมัดระวัง และ/หรืออัปเกรดเซิร์ฟเวอร์ เซิร์ฟเวอร์โฮสติ้งควรใช้ประโยชน์จากการแคช PHP Opcode, การแคชหน่วยความจำเพื่อลดเวลาในการค้นหาฐานข้อมูล เช่น Redis หรือ Memcached รวมถึงตรรกะของแอปพลิเคชันที่เพิ่มประสิทธิภาพเพื่อให้เตรียมความพร้อมของหน้าได้เร็วขึ้น"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | total-byte-weight": {
@@ -2165,11 +2198,11 @@
   "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-responsive-images": {
     "message": "ตรวจสอบว่าคุณกำลังใช้[สไตล์รูปภาพที่ปรับเปลี่ยนตามอุปกรณ์](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8)แบบเนทีฟจาก Drupal (พร้อมใช้งานใน Drupal 8 ขึ้นไป) ใช้สไตล์รูปภาพที่ปรับเปลี่ยนตามอุปกรณ์เมื่อแสดงผลช่องรูปภาพผ่านโหมดมุมมอง มุมมอง หรือรูปภาพที่อัปโหลดผ่านตัวแก้ไข WYSIWYG"
   },
-  "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-webp-images": {
-    "message": "ลองติดตั้งและกำหนดค่า[โมดูลเพื่อใช้ประโยชน์จากรูปแบบรูปภาพ WebP](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search) ในเว็บไซต์ของคุณ โมดูลดังกล่าวจะสร้างเวอร์ชัน WebP ของรูปภาพที่อัปโหลดโดยอัตโนมัติเพื่อปรับปรุงเวลาที่ใช้ในการโหลด"
-  },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "ลองอัปโหลด GIF ไปยังบริการซึ่งจะทำให้ใช้ GIF เพื่อฝังเป็นวิดีโอ HTML5 ได้"
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | modern-image-formats": {
+    "message": "ลองใช้[ปลั๊กอิน](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp)หรือบริการที่จะแปลงรูปภาพที่อัปโหลดเป็นรูปแบบที่เหมาะสมที่สุดโดยอัตโนมัติ"
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
     "message": "ติดตั้ง[ปลั๊กอินการโหลดแบบ Lazy Loading ของ Joomla](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) ที่จะช่วยให้เลื่อนเวลาโหลดรูปภาพนอกจอภาพได้ หรือเปลี่ยนไปใช้เทมเพลตที่มีฟังก์ชันดังกล่าว เริ่มตั้งแต่ Joomla 4.0 เป็นต้นไป รูปภาพใหม่ทั้งหมดจะได้รับแอตทริบิวต์ `loading` จาก Core [โดยอัตโนมัติ](https://github.com/joomla/joomla-cms/pull/30748)"
@@ -2207,9 +2240,6 @@
   "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-text-compression": {
     "message": "คุณเปิดใช้การบีบอัดข้อความได้โดยเปิดใช้การบีบอัดหน้าของ Gzip ใน Joomla (ระบบ > การกำหนดค่าส่วนกลาง > เซิร์ฟเวอร์)"
   },
-  "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-webp-images": {
-    "message": "ลองใช้[ปลั๊กอิน](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp)หรือบริการที่จะแปลงรูปภาพที่อัปโหลดเป็นรูปแบบที่เหมาะสมที่สุดโดยอัตโนมัติ"
-  },
   "node_modules/lighthouse-stack-packs/packs/magento.js | critical-request-chains": {
     "message": "หากไม่ได้รวมกลุ่มเนื้อหา JavaScript ให้ลองใช้ [Baler](https://github.com/magento/baler)"
   },
@@ -2219,10 +2249,13 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | font-display": {
     "message": "ระบุ `@font-display` เมื่อ [ กำหนดฟอนต์ที่กำหนดเอง ](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html)"
   },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | modern-image-formats": {
+    "message": "ลองค้นหาใน[ตลาดกลางของ Magento](https://marketplace.magento.com/catalogsearch/result/?q=webp) เพื่อหาส่วนขยายต่างๆ ของบุคคลที่สามเพื่อใช้ประโยชน์จากรูปแบบรูปภาพที่ใหม่กว่า"
+  },
   "node_modules/lighthouse-stack-packs/packs/magento.js | offscreen-images": {
     "message": "ลองแก้ไขเทมเพลตผลิตภัณฑ์และแคตตาล็อกเพื่อใช้ประโยชน์จากฟีเจอร์[การโหลดแบบ Lazy Loading](https://web.dev/native-lazy-loading) ของแพลตฟอร์มเว็บ"
   },
-  "node_modules/lighthouse-stack-packs/packs/magento.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/magento.js | server-response-time": {
     "message": "ใช้[การผสานรวม Varnish](https://devdocs.magento.com/guides/v2.3/config-guide/varnish/config-varnish.html) ของ Magento"
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | unminified-css": {
@@ -2243,11 +2276,11 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "เพิ่มแท็ก `<link rel=preload>` ได้โดย[แก้ไขเลย์เอาต์ของธีม](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)"
   },
-  "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
-    "message": "ลองค้นหาใน[ตลาดกลางของ Magento](https://marketplace.magento.com/catalogsearch/result/?q=webp) เพื่อหาส่วนขยายต่างๆ ของบุคคลที่สามเพื่อใช้ประโยชน์จากรูปแบบรูปภาพที่ใหม่กว่า"
-  },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[นำวิดีโอมาแทนที่ GIF แบบภาพเคลื่อนไหว](https://web.dev/replace-gifs-with-videos/)เพื่อให้หน้าเว็บโหลดเร็วขึ้น และลองใช้รูปแบบไฟล์สมัยใหม่ เช่น [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) หรือ [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) เพื่อปรับปรุงประสิทธิภาพในการบีบอัดมากกว่า 30% เมื่อเทียบกับ VP9 ซึ่งเป็นตัวแปลงรหัสวิดีโอที่ทันสมัยซึ่งใช้อยู่ในปัจจุบัน"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | modern-image-formats": {
+    "message": "ลองใช้[ปลั๊กอิน](https://octobercms.com/plugins?search=image)หรือบริการที่จะแปลงรูปภาพที่อัปโหลดเป็นรูปแบบที่เหมาะสมที่สุดโดยอัตโนมัติ [รูปภาพ WebP ที่ไม่เสียรายละเอียด](https://developers.google.com/speed/webp)มีขนาดเล็กกว่ารูปภาพ PNG 26% และมีขนาดเล็กกว่ารูปภาพ JPEG ที่เทียบกันได้ 25-34% ที่ดัชนีคุณภาพ SSIM ที่เทียบเท่า คุณอาจลองใช้รูปแบบสมัยใหม่สำหรับรูปภาพอีกรูปแบบหนึ่ง นั่นคือ [AVIF](https://jakearchibald.com/2020/avif-has-landed/)"
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
     "message": "ลองติดตั้ง[ปลั๊กอินการโหลดรูปภาพแบบ Lazy Loading](https://octobercms.com/plugins?search=lazy) ที่จะช่วยให้เลื่อนเวลาโหลดรูปภาพนอกจอภาพได้ หรือเปลี่ยนไปใช้ธีมที่มีฟังก์ชันดังกล่าว และอาจลองใช้[ปลั๊กอิน AMP](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages) ด้วย"
@@ -2255,7 +2288,7 @@
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
     "message": "มีปลั๊กอินจำนวนมากที่ช่วยให้ใช้งาน[เนื้อหาสำคัญในหน้า](https://octobercms.com/plugins?search=css)ได้ดีขึ้น ปลั๊กอินเหล่านี้อาจทำให้ปลั๊กอินอื่นๆ ทำงานผิดพลาด คุณจึงควรทดสอบอย่างละเอียดถี่ถ้วน"
   },
-  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | server-response-time": {
     "message": "ข้อกำหนดของธีม ปลั๊กอิน และเซิร์ฟเวอร์ล้วนส่งผลต่อเวลาการตอบสนองของเซิร์ฟเวอร์ ลองหาธีมที่เพิ่มประสิทธิภาพมากขึ้น เลือกปลั๊กอินการเพิ่มประสิทธิภาพอย่างระมัดระวัง และ/หรืออัปเกรดเซิร์ฟเวอร์ October CMS ช่วยให้นักพัฒนาซอฟต์แวร์สามารถใช้ [`Queues`](https://octobercms.com/docs/services/queues) เพื่อเลื่อนการประมวลผลงานที่ใช้เวลานานออกไป เช่น การส่งอีเมล ซึ่งทำให้คำขอเว็บทำงานเร็วขึ้นอย่างมาก"
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
@@ -2285,16 +2318,13 @@
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
     "message": "เปิดใช้การบีบอัดข้อความในการกำหนดค่าเว็บเซิร์ฟเวอร์"
   },
-  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
-    "message": "ลองใช้[ปลั๊กอิน](https://octobercms.com/plugins?search=image)หรือบริการที่จะแปลงรูปภาพที่อัปโหลดเป็นรูปแบบที่เหมาะสมที่สุดโดยอัตโนมัติ [รูปภาพ WebP ที่ไม่เสียรายละเอียด](https://developers.google.com/speed/webp)มีขนาดเล็กกว่ารูปภาพ PNG 26% และมีขนาดเล็กกว่ารูปภาพ JPEG ที่เทียบกันได้ 25-34% ที่ดัชนีคุณภาพ SSIM ที่เทียบเท่า คุณอาจลองใช้รูปแบบสมัยใหม่สำหรับรูปภาพอีกรูปแบบหนึ่ง นั่นคือ [AVIF](https://jakearchibald.com/2020/avif-has-landed/)"
-  },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
     "message": "ลองใช้ไลบรารี \"การสร้างกรอบเวลา\" เช่น `react-window` เพื่อลดจำนวนโหนดของ DOM ที่สร้างขึ้นให้เหลือน้อยที่สุดหากคุณแสดงผลองค์ประกอบซ้ำกันหลายรายการในหน้านั้น [ดูข้อมูลเพิ่มเติม](https://web.dev/virtualize-long-lists-react-window/) นอกจากนี้ให้ลดการแสดงผลซ้ำที่ไม่จำเป็นให้เหลือน้อยที่สุดโดยใช้ [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) หรือ [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) และ[ข้ามเอฟเฟกต์](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects)ไปจนกว่าทรัพยากร Dependency บางรายการจะมีการเปลี่ยนแปลงในกรณีที่คุณใช้ฮุก `Effect` เพื่อปรับปรุงประสิทธิภาพของรันไทม์"
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "หากคุณกำลังใช้ React Router ให้ลดการใช้ของคอมโพเนนต์ `<Redirect>` ในการ[ไปยังเส้นทางต่างๆ](https://reacttraining.com/react-router/web/api/Redirect)"
   },
-  "node_modules/lighthouse-stack-packs/packs/react.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/react.js | server-response-time": {
     "message": "หากคุณกำลังแสดงคอมโพเนนต์ของ React ใดๆ บนฝั่งเซิร์ฟเวอร์ ให้ลองใช้ `renderToNodeStream()` หรือ `renderToStaticNodeStream()` เพื่อให้ลูกค้าได้รับและรวมส่วนต่างๆ ของมาร์กอัปแทนที่จะรวมทั้งหมดในคราวเดียว [ดูข้อมูลเพิ่มเติม](https://reactjs.org/docs/react-dom-server.html#rendertonodestream)"
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | unminified-css": {
@@ -2312,13 +2342,16 @@
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "ลองอัปโหลด GIF ไปยังบริการซึ่งจะทำให้ใช้ GIF เพื่อฝังเป็นวิดีโอ HTML5 ได้"
   },
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | modern-image-formats": {
+    "message": "ลองใช้[ปลั๊กอิน](https://wordpress.org/plugins/search/convert+webp/)หรือบริการที่จะแปลงรูปภาพที่อัปโหลดเป็นรูปแบบที่เหมาะสมที่สุดโดยอัตโนมัติ"
+  },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | offscreen-images": {
     "message": "ติดตั้ง[ปลั๊กอินการโหลดแบบ Lazy Loading ของ WordPress](https://wordpress.org/plugins/search/lazy+load/) ที่จะช่วยเลื่อนเวลาโหลดรูปภาพนอกหน้าจอ หรือเปลี่ยนไปใช้ธีมที่มีฟังก์ชันดังกล่าว และอาจลองพิจารณาใช้[ปลั๊กอิน AMP](https://wordpress.org/plugins/amp/)"
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | render-blocking-resources": {
     "message": "มีปลั๊กอิน WordPress หลายรายการที่ช่วยคุณ[แทรกเนื้อหาที่สำคัญ](https://wordpress.org/plugins/search/critical+css/) หรือ[เลื่อนเวลาโหลดทรัพยากรที่สำคัญน้อยกว่า](https://wordpress.org/plugins/search/defer+css+javascript/) โปรดระวังว่าการเพิ่มประสิทธิภาพโดยปลั๊กอินเหล่านี้อาจทำให้ฟีเจอร์ของธีมหรือปลั๊กอินของคุณเสียหาย ซึ่งน่าจะทำให้คุณต้องแก้ไขโค้ด"
   },
-  "node_modules/lighthouse-stack-packs/packs/wordpress.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | server-response-time": {
     "message": "การกำหนดธีม ปลั๊กอิน และเซิร์ฟเวอร์ล้วนส่งผลต่อเวลาการตอบสนองของเซิร์ฟเวอร์ ลองหาธีมที่เพิ่มประสิทธิภาพมากขึ้น พยายามเลือกปลั๊กอินการเพิ่มประสิทธิภาพด้วยความระมัดระวัง และ/หรืออัปเกรดเซิร์ฟเวอร์"
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | total-byte-weight": {
@@ -2347,8 +2380,5 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "คุณเปิดใช้การบีบอัดข้อความในการกำหนดค่าเว็บเซิร์ฟเวอร์ได้"
-  },
-  "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-webp-images": {
-    "message": "ลองใช้[ปลั๊กอิน](https://wordpress.org/plugins/search/convert+webp/)หรือบริการที่จะแปลงรูปภาพที่อัปโหลดเป็นรูปแบบที่เหมาะสมที่สุดโดยอัตโนมัติ"
   }
 }

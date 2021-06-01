@@ -476,6 +476,12 @@
   "lighthouse-core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "레거시 JavaScript를 최신 브라우저에 제공하지 않기"
   },
+  "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
+    "message": "JPEG 2000, JPEG XR, WebP와 같은 이미지 형식을 사용하면 PNG 또는 JPEG보다 압축률이 높으므로 다운로드 속도가 빠르고 데이터 소비량도 줄어듭니다. [자세히 알아보기](https://web.dev/uses-webp-images/)"
+  },
+  "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
+    "message": "차세대 형식을 사용해 이미지 제공하기"
+  },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
     "message": "중요한 리소스의 로드가 모두 완료된 후에는 오프스크린 및 숨겨진 이미지를 지연 로드함으로써 상호작용 시간을 줄이는 것이 좋습니다. [자세히 알아보기](https://web.dev/offscreen-images/)"
   },
@@ -554,12 +560,6 @@
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "텍스트 압축 사용"
   },
-  "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
-    "message": "JPEG 2000, JPEG XR, WebP와 같은 이미지 형식을 사용하면 PNG 또는 JPEG보다 압축률이 높으므로 다운로드 속도가 빠르고 데이터 소비량도 줄어듭니다. [자세히 알아보기](https://web.dev/uses-webp-images/)"
-  },
-  "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
-    "message": "차세대 형식을 사용해 이미지 제공하기"
-  },
   "lighthouse-core/audits/content-width.js | description": {
     "message": "앱 콘텐츠의 너비가 표시 영역의 너비와 일치하지 않을 경우 앱이 휴대기기 화면에 최적화되지 않을 수 있습니다. [자세히 알아보기](https://web.dev/content-width/)"
   },
@@ -584,8 +584,14 @@
   "lighthouse-core/audits/csp-xss.js | columnDirective": {
     "message": "명령어"
   },
+  "lighthouse-core/audits/csp-xss.js | columnSeverity": {
+    "message": "Severity"
+  },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "강력한 콘텐츠 보안 정책(CSP)을 사용하면 XSS 공격을 받을 위험이 크게 줄어듭니다. [자세히 알아보기](https://csp.withgoogle.com/docs/index.html)"
+    "message": "강력한 콘텐츠 보안 정책(CSP)을 사용하면 교차 사이트 스크립팅(XSS) 공격을 받을 위험이 크게 줄어듭니다. [자세히 알아보기](https://web.dev/strict-csp/)"
+  },
+  "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
+    "message": "Syntax"
   },
   "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
     "message": "페이지에 <meta> 태그에서 정의된 CSP가 포함되어 있습니다. 가능하면 HTTP 헤더에서 CSP를 정의하는 것이 좋습니다."
@@ -760,15 +766,6 @@
   },
   "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | failureTitle": {
     "message": "알려진 보안 취약점이 있는 프런트 엔드 JavaScript 라이브러리가 포함됨"
-  },
-  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityHigh": {
-    "message": "높음"
-  },
-  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityLow": {
-    "message": "낮음"
-  },
-  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityMedium": {
-    "message": "보통"
   },
   "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | title": {
     "message": "알려진 보안 취약점이 있는 프런트 엔드 JavaScript 라이브러리를 사용하지 않음"
@@ -1070,14 +1067,8 @@
   "lighthouse-core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "누적 레이아웃 변경은 표시 영역 안에 보이는 요소의 이동을 측정합니다. [자세히 알아보기](https://web.dev/cls/)"
   },
-  "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
-    "message": "예상 입력 대기시간은 페이지 로드가 가장 많은 5초 동안 앱이 사용자 입력에 응답하는 데 걸리는 시간(밀리초)의 추정치입니다. 지연 시간이 50밀리초보다 길면 사용자가 앱이 느리다고 인식할 수 있습니다. [자세히 알아보기](https://web.dev/estimated-input-latency/)"
-  },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
     "message": "콘텐츠가 포함된 첫 페인트는 첫 번째 텍스트 또는 이미지가 표시되는 시간을 나타냅니다. [자세히 알아보기](https://web.dev/first-contentful-paint/)"
-  },
-  "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
-    "message": "최초 CPU 유휴 상태는 페이지의 기본 스레드가 입력을 처리할 수 있을 만큼 조용한 상태가 된 첫 번째 시간을 표시합니다.  [자세히 알아보기](https://web.dev/first-cpu-idle/)"
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "유의미한 첫 페인트는 페이지의 기본 콘텐츠가 표시되는 경우를 측정합니다. [자세히 알아보기](https://web.dev/first-meaningful-paint/)"
@@ -1703,6 +1694,15 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "모바일 친화적"
   },
+  "lighthouse-core/gather/driver/environment.js | warningSlowHostCpu": {
+    "message": "테스트된 기기의 CPU가 Lighthouse의 예상보다 느린 것으로 보입니다. 이는 성능 점수에 부정적인 영향을 줄 수 있습니다. [적절한 CPU 감속 배율기 보정](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)에 관해 자세히 알아보세요."
+  },
+  "lighthouse-core/gather/driver/navigation.js | warningRedirected": {
+    "message": "테스트 URL({requested})이 {final}(으)로 리디렉션되었기 때문에 페이지가 예상대로 로드되지 않을 수 있습니다. 두 번째 URL을 직접 테스트해 보세요."
+  },
+  "lighthouse-core/gather/driver/navigation.js | warningTimeout": {
+    "message": "페이지 로드가 너무 느려 시간 제한 내에 완료되지 않았습니다. 결과가 불완전할 수 있습니다."
+  },
   "lighthouse-core/gather/driver/storage.js | warningData": {
     "message": "{locationCount,plural, =1{{locations}에 저장된 데이터가 로드 성능에 영향을 줄 수 있습니다. 시크릿 창에서 페이지를 감사하여 이러한 리소스가 점수에 영향을 주지 않도록 하세요.}other{{locations}에 저장된 데이터가 로드 성능에 영향을 줄 수 있습니다. 시크릿 창에서 페이지를 감사하여 이러한 리소스가 점수에 영향을 주지 않도록 하세요.}}"
   },
@@ -1832,12 +1832,6 @@
   "lighthouse-core/lib/i18n/i18n.js | documentResourceType": {
     "message": "문서"
   },
-  "lighthouse-core/lib/i18n/i18n.js | estimatedInputLatencyMetric": {
-    "message": "예상 입력 대기시간"
-  },
-  "lighthouse-core/lib/i18n/i18n.js | firstCPUIdleMetric": {
-    "message": "최초 CPU 유휴 상태"
-  },
   "lighthouse-core/lib/i18n/i18n.js | firstContentfulPaintMetric": {
     "message": "First Contentful Paint"
   },
@@ -1852,6 +1846,15 @@
   },
   "lighthouse-core/lib/i18n/i18n.js | interactiveMetric": {
     "message": "Time to Interactive"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | itemSeverityHigh": {
+    "message": "높음"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | itemSeverityLow": {
+    "message": "낮음"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | itemSeverityMedium": {
+    "message": "보통"
   },
   "lighthouse-core/lib/i18n/i18n.js | largestContentfulPaintMetric": {
     "message": "Largest Contentful Paint"
@@ -2060,6 +2063,9 @@
   "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
     "message": "알 수 없음"
   },
+  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
+    "message": "다음과 관련된 감사 표시:"
+  },
   "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
     "message": "스니펫 접기"
   },
@@ -2087,8 +2093,35 @@
   "lighthouse-core/report/html/renderer/util.js | warningHeader": {
     "message": "경고: "
   },
+  "lighthouse-treemap/app/src/util.js | allLabel": {
+    "message": "전체"
+  },
+  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "모든 스크립트"
+  },
+  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
+    "message": "범위"
+  },
+  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "중복 모듈"
+  },
+  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "리소스 바이트"
+  },
+  "lighthouse-treemap/app/src/util.js | tableColumnName": {
+    "message": "이름"
+  },
+  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "표 전환"
+  },
+  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "사용하지 않은 바이트"
+  },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "애니메이션 콘텐츠의 경우 [`amp-anim`](https://amp.dev/documentation/components/amp-anim/)을 사용하여 콘텐츠가 화면에 표시되지 않을 때 CPU 사용량을 최소화하세요."
+  },
+  "node_modules/lighthouse-stack-packs/packs/amp.js | modern-image-formats": {
+    "message": "WebP 형식의 모든 [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) 구성요소를 표시하면서 다른 브라우저의 적절한 대체 텍스트를 지정해 보세요. [자세히 알아보기](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | offscreen-images": {
     "message": "이미지를 자동으로 지연 로드하는 [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites)를 사용하고 있는지 확인하세요. [자세히 알아보기](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)"
@@ -2101,9 +2134,6 @@
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | uses-responsive-images": {
     "message": "[`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) 구성요소는 [`srcset`](https://web.dev/use-srcset-to-automatically-choose-the-right-image/) 속성을 지원하여 화면 크기를 바탕으로 어떤 이미지 애셋을 사용할지 지정합니다. [자세히 알아보기](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)"
-  },
-  "node_modules/lighthouse-stack-packs/packs/amp.js | uses-webp-images": {
-    "message": "WebP 형식의 모든 [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) 구성요소를 표시하면서 다른 브라우저의 적절한 대체 텍스트를 지정해 보세요. [자세히 알아보기](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)"
   },
   "node_modules/lighthouse-stack-packs/packs/angular.js | dom-size": {
     "message": "너무 큰 목록을 렌더링하는 경우 구성요소 개발자 키트(CDK)로 가상 스크롤을 고려해 보세요. [자세히 알아보기](https://web.dev/virtualize-lists-with-angular-cdk/)"
@@ -2129,13 +2159,16 @@
   "node_modules/lighthouse-stack-packs/packs/drupal.js | font-display": {
     "message": "테마에서 맞춤 글꼴을 정의할 때 `@font-display`를 지정합니다."
   },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | modern-image-formats": {
+    "message": "사이트에 [WebP 이미지 형식을 활용하는 모듈](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search)을 설치하고 구성해 보세요. 이러한 모듈은 업로드된 이미지의 WebP 버전을 자동으로 생성하여 로드 시간을 최적화해 줍니다."
+  },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | offscreen-images": {
     "message": "이미지를 지연 로드할 수 있는 [Drupal 모듈](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search)을 설치하세요. 이러한 모듈은 오프스크린 이미지를 지연하여 성능을 개선해 줍니다."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
     "message": "모듈을 사용하여 중요 CSS 및 자바스크립트를 인라인으로 표시해 보세요. 또는 [고급 CSS/JS 집계](https://www.drupal.org/project/advagg) 모듈과 같은 자바스크립트를 통해 애셋을 비동기식으로 로드할 수 있습니다. 이 모듈에서 제공하는 최적화로 인해 사용 중인 사이트가 제대로 작동하지 않을 수 있으므로 코드를 변경해야 할 가능성이 큽니다."
   },
-  "node_modules/lighthouse-stack-packs/packs/drupal.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "테마, 모듈, 서버 사양은 모두 서버 응답 시간에 영향을 미칩니다. 더욱 최적화된 테마를 찾고, 최적화 모듈을 신중하게 선택하고, 서버를 업그레이드해 보세요. 호스팅 서버에서는 PHP opcode 캐싱 및 데이터베이스 쿼리 시간을 단축하기 위한 Redis나 Memcached 등의 메모리 캐싱을 사용하고, 페이지를 더 빠르게 준비하기 위해 최적화된 애플리케이션 로직을 사용해야 합니다."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | total-byte-weight": {
@@ -2165,11 +2198,11 @@
   "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-responsive-images": {
     "message": "Drupal(Drupal 8 이상에서 사용 가능)에서 제공한 네이티브 [반응형 이미지 스타일](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8)을 사용 중인지 확인합니다. 보기 모드, 보기 또는 WYSIWYG 편집기를 통해 업로드된 이미지로 이미지 필드를 렌더링할 경우 반응형 이미지 스타일을 사용합니다."
   },
-  "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-webp-images": {
-    "message": "사이트에 [WebP 이미지 형식을 활용하는 모듈](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search)을 설치하고 구성해 보세요. 이러한 모듈은 업로드된 이미지의 WebP 버전을 자동으로 생성하여 로드 시간을 최적화해 줍니다."
-  },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "GIF를 HTML5 동영상으로 삽입할 수 있게 해 주는 서비스에 GIF를 업로드해 보세요."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | modern-image-formats": {
+    "message": "업로드한 이미지를 최적화된 형식으로 자동 변환해 주는 [플러그인](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) 또는 서비스를 사용해 보세요."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
     "message": "[지연 로드 Joomla 플러그인](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading)을 설치하면 모든 오프스크린 이미지를 지연하거나 이 기능을 제공하는 템플릿으로 전환할 수 있습니다. Joomla 4.0부터 모든 새 이미지가 [자동으로](https://github.com/joomla/joomla-cms/pull/30748) 코어로부터 `loading` 속성을 받게 됩니다."
@@ -2207,9 +2240,6 @@
   "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-text-compression": {
     "message": "Joomla(System(시스템) > Global configuration(전역 구성) > Server(서버))에서 Gzip 페이지 압축을 사용 설정하여 텍스트 압축을 사용할 수 있습니다."
   },
-  "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-webp-images": {
-    "message": "업로드한 이미지를 최적화된 형식으로 자동 변환해 주는 [플러그인](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) 또는 서비스를 사용해 보세요."
-  },
   "node_modules/lighthouse-stack-packs/packs/magento.js | critical-request-chains": {
     "message": "자바스크립트 애셋을 번들로 구성하지 않는 경우 [baler](https://github.com/magento/baler)를 사용해 보세요."
   },
@@ -2219,10 +2249,13 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | font-display": {
     "message": "[맞춤 글꼴을 정의](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html)할 때 `@font-display`을(를) 지정합니다."
   },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | modern-image-formats": {
+    "message": "[Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp)에서 새 이미지 형식을 활용하는 다양한 타사 확장 프로그램을 검색해 보세요."
+  },
   "node_modules/lighthouse-stack-packs/packs/magento.js | offscreen-images": {
     "message": "제품과 카탈로그 템플릿을 수정하여 웹 플랫폼의 [지연 로드](https://web.dev/native-lazy-loading) 기능을 활용해 보세요."
   },
-  "node_modules/lighthouse-stack-packs/packs/magento.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/magento.js | server-response-time": {
     "message": "Magento의 [Varnish 통합](https://devdocs.magento.com/guides/v2.3/config-guide/varnish/config-varnish.html)을 사용합니다."
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | unminified-css": {
@@ -2243,11 +2276,11 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "[테마의 레이아웃을 수정](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)하여 `<link rel=preload>` 태그를 추가할 수 있습니다."
   },
-  "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
-    "message": "[Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp)에서 새 이미지 형식을 활용하는 다양한 타사 확장 프로그램을 검색해 보세요."
-  },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "빠른 웹페이지 로딩을 위해서는 [애니메이션 GIF를 동영상으로 대체](https://web.dev/replace-gifs-with-videos/)하고 [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) 또는 [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder)과 같은 최신 파일 형식을 사용하여 압축 효율성을 현재 최첨단으로 여겨지는 동영상 코덱 VP9 대비 30% 이상 높여 보세요."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | modern-image-formats": {
+    "message": "업로드한 이미지를 최적화된 형식으로 자동 변환해 주는 [플러그인](https://octobercms.com/plugins?search=image) 또는 서비스를 사용해 보세요. [WebP 무손실 이미지](https://developers.google.com/speed/webp)는 동등한 SSIM 품질 색인에서 PNG 이미지보다 26% 더 작고, JPEG 이미지보다 25~34% 더 작습니다. 고려해 볼 만한 또 다른 차세대 이미지 형식으로는 [AVIF](https://jakearchibald.com/2020/avif-has-landed/)가 있습니다."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
     "message": "[이미지 지연 로드 플러그인](https://octobercms.com/plugins?search=lazy)을 설치하면 모든 오프스크린 이미지를 지연하거나 이 기능을 제공하는 테마로 전환할 수 있습니다. [AMP 플러그인](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages) 사용도 고려해 보세요."
@@ -2255,7 +2288,7 @@
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
     "message": "[중요한 애셋을 인라인하게 로드](https://octobercms.com/plugins?search=css)할 수 있도록 도와주는 다양한 플러그인이 있습니다. 이러한 플러그인으로 인해 다른 플러그인이 작동하지 않을 수 있으니 신중하게 테스트해야 합니다."
   },
-  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | server-response-time": {
     "message": "테마, 플러그인, 서버 사양은 모두 서버 응답 시간을 길어지게 만듭니다. 더욱 최적화된 테마를 찾고, 최적화 플러그인을 신중하게 선택하고, 서버를 업그레이드해 보세요. October CMS는 또한 개발자가 [`Queues`](https://octobercms.com/docs/services/queues)을(를) 사용해 이메일 전송과 같이 시간이 많이 소모되는 작업 처리를 지연하도록 도와줍니다. 이는 웹 요청 속도를 크기 높여줍니다."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
@@ -2285,16 +2318,13 @@
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
     "message": "웹 서버 구성에서 텍스트 압축을 사용 설정하세요."
   },
-  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
-    "message": "업로드한 이미지를 최적화된 형식으로 자동 변환해 주는 [플러그인](https://octobercms.com/plugins?search=image) 또는 서비스를 사용해 보세요. [WebP 무손실 이미지](https://developers.google.com/speed/webp)는 동등한 SSIM 품질 색인에서 PNG 이미지보다 26% 더 작고, JPEG 이미지보다 25~34% 더 작습니다. 고려해 볼 만한 또 다른 차세대 이미지 형식으로는 [AVIF](https://jakearchibald.com/2020/avif-has-landed/)가 있습니다."
-  },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
     "message": "페이지에서 많은 반복 구성요소를 렌더링하는 경우 `react-window`와 같은 '윈도윙' 라이브러리를 사용하여 생성된 DOM 노드의 수를 최소화해 보세요. [자세히 알아보기](https://web.dev/virtualize-long-lists-react-window/) 또한 [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) 또는 [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo)를 사용하여 불필요한 재렌더링을 최소화하고 `Effect` 후크를 사용하는 경우 특정 종속 항목이 변경될 때까지만 [효과를 건너뛰어](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) 런타임 성능을 개선하세요."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "React Router를 사용하는 경우 [경로 탐색](https://reacttraining.com/react-router/web/api/Redirect)의 `<Redirect>` 구성요소 사용량을 축소합니다."
   },
-  "node_modules/lighthouse-stack-packs/packs/react.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/react.js | server-response-time": {
     "message": "서버 측에서 React 구성요소를 렌더링하는 경우 `renderToNodeStream()` 또는 `renderToStaticNodeStream()`을(를) 사용하여 클라이언트가 모든 마크업이 아닌 마크업의 서로 다른 부분을 받아서 하이드레이션할 수 있도록 허용해 보세요. [자세히 알아보기](https://reactjs.org/docs/react-dom-server.html#rendertonodestream)"
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | unminified-css": {
@@ -2312,13 +2342,16 @@
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "GIF를 HTML5 동영상으로 삽입할 수 있게 해 주는 서비스에 GIF를 업로드해 보세요."
   },
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | modern-image-formats": {
+    "message": "업로드한 이미지를 최적화된 형식으로 자동 변환해 주는 [플러그인](https://wordpress.org/plugins/search/convert+webp/) 또는 서비스를 사용해 보세요."
+  },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | offscreen-images": {
     "message": "[지연 로드 WordPress 플러그인](https://wordpress.org/plugins/search/lazy+load/)을 설치하면 화면에 모든 오프스크린 이미지를 지연하거나 이 기능을 제공하는 테마로 전환할 수 있습니다. [AMP 플러그인](https://wordpress.org/plugins/amp/) 사용도 고려해 보세요."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | render-blocking-resources": {
     "message": "[중요한 애셋을 인라인](https://wordpress.org/plugins/search/critical+css/)하거나 [덜 중요한 리소스를 지연](https://wordpress.org/plugins/search/defer+css+javascript/)할 수 있게 도와주는 다양한 WordPress 플러그인이 있습니다. 이러한 플러그인에서 제공하는 최적화로 인해 내가 사용하는 테마 또는 플러그인의 기능이 깨질 수 있으므로 코드를 변경해야 할 가능성이 큽니다."
   },
-  "node_modules/lighthouse-stack-packs/packs/wordpress.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | server-response-time": {
     "message": "테마, 플러그인, 서버 사양은 모두 서버 응답 시간을 길어지게 만듭니다. 보다 최적화된 테마를 찾고, 최적화 플러그인을 신중하게 선택하고, 서버 업그레이드를 고려해 보세요."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | total-byte-weight": {
@@ -2347,8 +2380,5 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "웹 서버 구성에서 텍스트 압축을 사용 설정할 수 있습니다."
-  },
-  "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-webp-images": {
-    "message": "업로드한 이미지를 최적화된 형식으로 자동 변환해 주는 [플러그인](https://wordpress.org/plugins/search/convert+webp/) 또는 서비스를 사용해 보세요."
   }
 }

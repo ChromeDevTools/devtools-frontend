@@ -323,8 +323,8 @@ limitations under the License.
       background-color: var(--color-gray-200);
       outline: none;
     }
-    /* save-as-gist option hidden in report */
-    .lh-tools__dropdown .lh-tools--gist {
+    /* save-gist option hidden in report. */
+    .lh-tools__dropdown a[data-action='save-gist'] {
       display: none;
     }
 
@@ -393,8 +393,8 @@ limitations under the License.
         <a role="menuitem" tabindex="-1" href="#" class="report-icon report-icon--copy" data-i18n="dropdownCopyJSON" data-action="copy"></a>
         <a role="menuitem" tabindex="-1" href="#" class="report-icon report-icon--download" data-i18n="dropdownSaveHTML" data-action="save-html"></a>
         <a role="menuitem" tabindex="-1" href="#" class="report-icon report-icon--download" data-i18n="dropdownSaveJSON" data-action="save-json"></a>
-        <a role="menuitem" tabindex="-1" href="#" class="report-icon report-icon--open lh-tools--viewer" data-i18n="dropdownViewer" data-action="open-viewer"></a>
-        <a role="menuitem" tabindex="-1" href="#" class="report-icon report-icon--open lh-tools--gist" data-i18n="dropdownSaveGist" data-action="save-gist"></a>
+        <a role="menuitem" tabindex="-1" href="#" class="report-icon report-icon--open" data-i18n="dropdownViewer" data-action="open-viewer"></a>
+        <a role="menuitem" tabindex="-1" href="#" class="report-icon report-icon--open" data-i18n="dropdownSaveGist" data-action="save-gist"></a>
         <a role="menuitem" tabindex="-1" href="#" class="report-icon report-icon--dark" data-i18n="dropdownDarkTheme" data-action="toggle-dark"></a>
       </div>
     </div>

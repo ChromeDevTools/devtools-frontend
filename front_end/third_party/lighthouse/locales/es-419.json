@@ -476,6 +476,12 @@
   "lighthouse-core/audits/byte-efficiency/legacy-javascript.js | title": {
     "message": "Evita entregar instancias heredadas de JavaScript a navegadores modernos"
   },
+  "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
+    "message": "Los formatos como JPEG 2000, JPEG XR y WebP suelen comprimir mejor las imágenes que los formatos PNG o JPEG, lo que hace que se descarguen más rápido y consuman menos datos. [Obtén más información](https://web.dev/uses-webp-images/)."
+  },
+  "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
+    "message": "Publica imágenes con formatos de próxima generación"
+  },
   "lighthouse-core/audits/byte-efficiency/offscreen-images.js | description": {
     "message": "Te recomendamos que uses la carga diferida para las imágenes ocultas y fuera de pantalla una vez que hayan terminado de cargarse todos los recursos críticos a fin de reducir el tiempo de carga. [Obtén más información](https://web.dev/offscreen-images/)."
   },
@@ -554,12 +560,6 @@
   "lighthouse-core/audits/byte-efficiency/uses-text-compression.js | title": {
     "message": "Habilita la compresión de texto"
   },
-  "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | description": {
-    "message": "Los formatos como JPEG 2000, JPEG XR y WebP suelen comprimir mejor las imágenes que los formatos PNG o JPEG, lo que hace que se descarguen más rápido y consuman menos datos. [Obtén más información](https://web.dev/uses-webp-images/)."
-  },
-  "lighthouse-core/audits/byte-efficiency/uses-webp-images.js | title": {
-    "message": "Publica imágenes con formatos de próxima generación"
-  },
   "lighthouse-core/audits/content-width.js | description": {
     "message": "Si el ancho del contenido de tu app no coincide con el del viewport, es posible que la app no esté optimizada para pantallas de dispositivos móviles. [Obtén más información](https://web.dev/content-width/)."
   },
@@ -584,8 +584,14 @@
   "lighthouse-core/audits/csp-xss.js | columnDirective": {
     "message": "Directiva"
   },
+  "lighthouse-core/audits/csp-xss.js | columnSeverity": {
+    "message": "Gravedad"
+  },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "Una Política de Seguridad del Contenido (CSP) robusta reduce enormemente el riesgo de sufrir ataques XSS. [Más información](https://csp.withgoogle.com/docs/index.html)"
+    "message": "Una Política de Seguridad del Contenido (CSP) potente reduce enormemente el riesgo de los ataques de secuencia de comandos entre sitios (XSS). [Más información](https://web.dev/strict-csp/)"
+  },
+  "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
+    "message": "Sintaxis"
   },
   "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
     "message": "La página contiene una CSP definida por una etiqueta <meta>. Considera definir la CSP en un encabezado HTTP si es posible."
@@ -760,15 +766,6 @@
   },
   "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | failureTitle": {
     "message": "Incluye bibliotecas JavaScript de frontend con vulnerabilidades de seguridad conocidas"
-  },
-  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityHigh": {
-    "message": "Alta"
-  },
-  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityLow": {
-    "message": "Baja"
-  },
-  "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | rowSeverityMedium": {
-    "message": "Media"
   },
   "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | title": {
     "message": "Evita las bibliotecas JavaScript de frontend con vulnerabilidades de seguridad conocidas"
@@ -1070,14 +1067,8 @@
   "lighthouse-core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "El Cambio de diseño acumulado mide el movimiento de los elementos visibles dentro del viewport. [Obtén más información](https://web.dev/cls/)."
   },
-  "lighthouse-core/audits/metrics/estimated-input-latency.js | description": {
-    "message": "La latencia de entrada estimada es el tiempo aproximado, en milisegundos, que tarda tu app en responder a las acciones de los usuarios durante el periodo de 5 s más activo de carga de la página. Si la latencia es superior a 50 ms, es posible que los usuarios piensen que tu app es lenta. [Obtén más información](https://web.dev/estimated-input-latency/)."
-  },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
     "message": "El primer procesamiento de imagen con contenido indica el momento en el que se visualiza en la pantalla el primer texto o imagen. [Obtén más información](https://web.dev/first-contentful-paint/)."
-  },
-  "lighthouse-core/audits/metrics/first-cpu-idle.js | description": {
-    "message": "El primer tiempo inactivo de la CPU indica la primera vez que el subproceso principal de la página está lo suficientemente inactivo para recibir acciones del usuario.  [Obtén más información](https://web.dev/first-cpu-idle/)."
   },
   "lighthouse-core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "La primera pintura significativa mide el momento en que se muestra el contenido principal de la página. [Obtén más información](https://web.dev/first-meaningful-paint/)."
@@ -1703,6 +1694,15 @@
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "Optimizada para dispositivos móviles"
   },
+  "lighthouse-core/gather/driver/environment.js | warningSlowHostCpu": {
+    "message": "El dispositivo probado parece tener una CPU más lenta de lo que espera Lighthouse, lo que puede afectar negativamente la puntuación del rendimiento. Obtén más información para [calibrar un multiplicador adecuado para ralentizar la CPU](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
+  },
+  "lighthouse-core/gather/driver/navigation.js | warningRedirected": {
+    "message": "Es posible que la página no se cargue como se espera porque se redireccionó la URL de prueba ({requested}) a {final}. Como alternativa, prueba directamente la segunda URL."
+  },
+  "lighthouse-core/gather/driver/navigation.js | warningTimeout": {
+    "message": "La página tardó demasiado en cargarse y no finalizó antes del límite de tiempo establecido. Es posible que los resultados estén incompletos."
+  },
   "lighthouse-core/gather/driver/storage.js | warningData": {
     "message": "{locationCount,plural, =1{Es posible que los datos almacenados afecten el rendimiento de carga de esta ubicación: {locations}. Realiza una auditoría de esta página en una ventana de incógnito para evitar que estos recursos afecten el resultado.}other{Es posible que los datos almacenados afecten el rendimiento de carga de estas ubicaciones: {locations}. Realiza una auditoría de esta página en una ventana de incógnito para evitar que estos recursos afecten el resultado.}}"
   },
@@ -1832,12 +1832,6 @@
   "lighthouse-core/lib/i18n/i18n.js | documentResourceType": {
     "message": "Documento"
   },
-  "lighthouse-core/lib/i18n/i18n.js | estimatedInputLatencyMetric": {
-    "message": "Latencia de entrada estimada"
-  },
-  "lighthouse-core/lib/i18n/i18n.js | firstCPUIdleMetric": {
-    "message": "Primer tiempo inactivo de la CPU"
-  },
   "lighthouse-core/lib/i18n/i18n.js | firstContentfulPaintMetric": {
     "message": "First Contentful Paint"
   },
@@ -1852,6 +1846,15 @@
   },
   "lighthouse-core/lib/i18n/i18n.js | interactiveMetric": {
     "message": "Time to Interactive"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | itemSeverityHigh": {
+    "message": "Alta"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | itemSeverityLow": {
+    "message": "Baja"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | itemSeverityMedium": {
+    "message": "Media"
   },
   "lighthouse-core/lib/i18n/i18n.js | largestContentfulPaintMetric": {
     "message": "Largest Contentful Paint"
@@ -2060,6 +2063,9 @@
   "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
     "message": "Desconocido"
   },
+  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
+    "message": "Mostrar las auditorías relevantes para la métrica:"
+  },
   "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
     "message": "Contraer fragmento"
   },
@@ -2087,8 +2093,35 @@
   "lighthouse-core/report/html/renderer/util.js | warningHeader": {
     "message": "Advertencias: "
   },
+  "lighthouse-treemap/app/src/util.js | allLabel": {
+    "message": "Todo"
+  },
+  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "Todas las secuencias de comandos"
+  },
+  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
+    "message": "Cobertura"
+  },
+  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "Módulos duplicados"
+  },
+  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "Bytes de recursos"
+  },
+  "lighthouse-treemap/app/src/util.js | tableColumnName": {
+    "message": "Nombre"
+  },
+  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "Activar o desactivar tabla"
+  },
+  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "Bytes sin usar"
+  },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "En el caso de contenido animado, utiliza [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) para minimizar el uso de CPU mientras el contenido no aparezca en pantalla."
+  },
+  "node_modules/lighthouse-stack-packs/packs/amp.js | modern-image-formats": {
+    "message": "Cuando especifiques un resguardo adecuado para otros navegadores, se recomienda mostrar todos los componentes de [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) en formato WebP. [Obtén más información](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | offscreen-images": {
     "message": "Asegúrate de usar [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) para las imágenes que realizan una carga diferida. [Obtén más información](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)."
@@ -2101,9 +2134,6 @@
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | uses-responsive-images": {
     "message": "El elemento de [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) es compatible con el atributo de [`srcset`](https://web.dev/use-srcset-to-automatically-choose-the-right-image/) para especificar los elementos de imagen que deben usarse en función del tamaño de la pantalla. [Obtén más información](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)."
-  },
-  "node_modules/lighthouse-stack-packs/packs/amp.js | uses-webp-images": {
-    "message": "Cuando especifiques un resguardo adecuado para otros navegadores, se recomienda mostrar todos los componentes de [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) en formato WebP. [Obtén más información](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/angular.js | dom-size": {
     "message": "Si se están procesando listas muy grandes, se recomienda utilizar el desplazamiento virtual con el kit de desarrollo de componentes (CDK). [Obtén más información](https://web.dev/virtualize-lists-with-angular-cdk/)."
@@ -2129,13 +2159,16 @@
   "node_modules/lighthouse-stack-packs/packs/drupal.js | font-display": {
     "message": "Especifica `@font-display` cuando definas fuentes personalizadas en tu tema."
   },
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | modern-image-formats": {
+    "message": "Se recomienda instalar y configurar [un módulo para aprovechar los formatos de imagen WebP](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search) en el sitio. Esos módulos generan de forma automática una versión WebP de las imágenes subidas a fin de optimizar los tiempos de carga."
+  },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | offscreen-images": {
     "message": "Instala [un módulo de Drupal](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) que pueda cargar imágenes de forma diferida. Esos módulos tienen la capacidad de postergar las imágenes fuera de pantalla para mejorar el rendimiento."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
     "message": "Se recomienda usar un módulo para intercalar instancias críticas de CSS y JavaScript, o cargar de manera potencial los elementos de forma asíncrona a través de JavaScript, como el módulo de [Agregación avanzada de CSS/JS](https://www.drupal.org/project/advagg). Ten en cuenta que las optimizaciones que ofrece este módulo pueden generar fallas en el sitio, por lo que seguramente tengas que hacer cambios en el código."
   },
-  "node_modules/lighthouse-stack-packs/packs/drupal.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Los temas, los módulos y las especificaciones del servidor afectan al tiempo de respuesta. Puedes buscar un tema más optimizado, seleccionar un módulo de optimización o actualizar tu servidor. Los servidores de hosting deben usar el almacenamiento en caché del código de operación PHP, el almacenamiento de memoria en caché para reducir los tiempos de búsqueda en la base de datos como Redis o Memcached y la lógica optimizada de la app para preparar páginas más rápido."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | total-byte-weight": {
@@ -2165,11 +2198,11 @@
   "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-responsive-images": {
     "message": "Asegúrate de usar los [estilos de imágenes responsivas](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) que proporciona Drupal (disponibles en Drupal 8 y versiones posteriores). Utiliza los estilos de imágenes responsivas cuando renderices campos de imágenes a través de modos de vista, vistas o imágenes subidas a través del editor WYSIWYG."
   },
-  "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-webp-images": {
-    "message": "Se recomienda instalar y configurar [un módulo para aprovechar los formatos de imagen WebP](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search) en el sitio. Esos módulos generan de forma automática una versión WebP de las imágenes subidas a fin de optimizar los tiempos de carga."
-  },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "Puedes subir tu GIF a un servicio que permita insertarlo como un video HTML5."
+  },
+  "node_modules/lighthouse-stack-packs/packs/joomla.js | modern-image-formats": {
+    "message": "Puedes utilizar un [complemento](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) o servicio que convierta automáticamente las imágenes que subes a los formatos óptimos."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
     "message": "Instala un [complemento de Joomla de carga diferida](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) que proporcione la capacidad de postergar las imágenes fuera de pantalla o bien cambia a una plantilla que proporcione esa funcionalidad. A partir de Joomla 4.0, todas las imágenes nuevas obtendrán el atributo `loading` [de forma automática](https://github.com/joomla/joomla-cms/pull/30748) desde el núcleo."
@@ -2207,9 +2240,6 @@
   "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-text-compression": {
     "message": "Para habilitar la compresión de texto, habilita la compresión de páginas en gzip, en Joomla (Sistema > Configuración general > Servidor)."
   },
-  "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-webp-images": {
-    "message": "Puedes utilizar un [complemento](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) o servicio que convierta automáticamente las imágenes que subes a los formatos óptimos."
-  },
   "node_modules/lighthouse-stack-packs/packs/magento.js | critical-request-chains": {
     "message": "Si no estás creando un paquete con los elementos de JavaScript, se recomienda usar [baler](https://github.com/magento/baler)."
   },
@@ -2219,10 +2249,13 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | font-display": {
     "message": "Specifica `@font-display` cuando [definas fuentes personalizadas](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/css-topics/using-fonts.html)."
   },
+  "node_modules/lighthouse-stack-packs/packs/magento.js | modern-image-formats": {
+    "message": "Para utilizar formatos de imagen más nuevos, se recomienda el [mercado de Magento](https://marketplace.magento.com/catalogsearch/result/?q=webp) donde encontrarás una amplia variedad de extensiones de terceros."
+  },
   "node_modules/lighthouse-stack-packs/packs/magento.js | offscreen-images": {
     "message": "Se recomienda modificar las plantillas de productos y catálogos para utilizar la función de [carga diferida](https://web.dev/native-lazy-loading) de la plataforma web."
   },
-  "node_modules/lighthouse-stack-packs/packs/magento.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/magento.js | server-response-time": {
     "message": "Utiliza la [integración de Varnish](https://devdocs.magento.com/guides/v2.3/config-guide/varnish/config-varnish.html) de Magento."
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | unminified-css": {
@@ -2243,11 +2276,11 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "Para agregar las etiquetas de `<link rel=preload>`, [modifica el diseño de los temas](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
-  "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
-    "message": "Para utilizar formatos de imagen más nuevos, se recomienda el [mercado de Magento](https://marketplace.magento.com/catalogsearch/result/?q=webp) donde encontrarás una amplia variedad de extensiones de terceros."
-  },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Reemplaza los GIF animados con video](https://web.dev/replace-gifs-with-videos/) para que se cargue la página web más rápido y considera utilizar formatos de archivo modernos, como [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) o [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) para mejorar la eficiencia de la compresión en más de un 30% con respecto al VP9, el códec de video de vanguardia actual."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | modern-image-formats": {
+    "message": "Puedes utilizar un [complemento](https://octobercms.com/plugins?search=image) o servicio que convierta automáticamente las imágenes que subes en los formatos óptimos. [Las imágenes WebP sin pérdidas](https://developers.google.com/speed/webp) son un 26% más pequeñas en comparación con las PNG y entre un 25% y un 34% más pequeñas que las imágenes JPEG comparables con índices de calidad SSIM equivalentes. Otro formato de imagen de última generación que se debe tener en cuenta es [AVIF](https://jakearchibald.com/2020/avif-has-landed/)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
     "message": "Puedes instalar un [complemento de carga diferida de imágenes](https://octobercms.com/plugins?search=lazy) que permita diferir las imágenes fuera de pantalla. Otra alternativa es cambiar a un tema que proporcione esa funcionalidad. También puedes utilizar [el complemento AMP](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages)."
@@ -2255,7 +2288,7 @@
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
     "message": "Existen varios complementos que permiten [intercalar elementos fundamentales](https://octobercms.com/plugins?search=css). Estos complementos pueden interferir con otros, por lo que deberás probarlos de forma exhaustiva."
   },
-  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | server-response-time": {
     "message": "Los temas, los complementos y las especificaciones afectan al tiempo de respuesta del servidor. Considera buscar un tema más optimizado, elegir cuidadosamente un complemento de optimización o actualizar el servidor. El CMS October también permite que los desarrolladores utilicen [`Queues`](https://octobercms.com/docs/services/queues) para diferir el procesamiento de una tarea que requiera mucho tiempo, como enviar un correo electrónico. De esta manera, se aceleran drásticamente las solicitudes web."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
@@ -2285,16 +2318,13 @@
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
     "message": "Puedes habilitar la compresión de texto en la configuración de tu servidor web."
   },
-  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
-    "message": "Puedes utilizar un [complemento](https://octobercms.com/plugins?search=image) o servicio que convierta automáticamente las imágenes que subes en los formatos óptimos. [Las imágenes WebP sin pérdidas](https://developers.google.com/speed/webp) son un 26% más pequeñas en comparación con las PNG y entre un 25% y un 34% más pequeñas que las imágenes JPEG comparables con índices de calidad SSIM equivalentes. Otro formato de imagen de última generación que se debe tener en cuenta es [AVIF](https://jakearchibald.com/2020/avif-has-landed/)."
-  },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
     "message": "Si renderizas muchos elementos repetidos en la página, considera utilizar una biblioteca de \"sistema de ventanas\" como `react-window` para minimizar la cantidad de nodos DOM que se crean. [Obtén más información](https://web.dev/virtualize-long-lists-react-window/). Además, minimiza la cantidad de renderizaciones repetidas e innecesarias mediante [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) o [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo), y [omite efectos](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) solo hasta que hayan cambiado ciertas dependencias si usas el enlace de `Effect` para mejorar el rendimiento del tiempo de ejecución."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "Si utilizas React Router, minimiza el uso del componente de `<Redirect>` para las [navegaciones de ruta](https://reacttraining.com/react-router/web/api/Redirect)."
   },
-  "node_modules/lighthouse-stack-packs/packs/react.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/react.js | server-response-time": {
     "message": "Si procesas en el servidor cualquier componente de React, se recomienda usar `renderToNodeStream()` o `renderToStaticNodeStream()` para permitir que el cliente reciba diferentes partes del lenguaje de marcado y las complete en lugar de recibir todas al mismo tiempo. [Obtén más información](https://reactjs.org/docs/react-dom-server.html#rendertonodestream)."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | unminified-css": {
@@ -2312,13 +2342,16 @@
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "Puedes subir tu GIF a un servicio que permita insertarlo como un video HTML5."
   },
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | modern-image-formats": {
+    "message": "Puedes utilizar un [complemento](https://wordpress.org/plugins/search/convert+webp/) o servicio que convierta automáticamente las imágenes que subes a los formatos óptimos."
+  },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | offscreen-images": {
     "message": "Instala un [complemento de carga diferida de WordPress](https://wordpress.org/plugins/search/lazy+load/) con la capacidad de postergar las imágenes fuera de pantalla o bien cambia a un tema que incluya esa función. También puedes usar [el complemento AMP](https://wordpress.org/plugins/amp/)."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | render-blocking-resources": {
     "message": "Existen varios complementos de WordPress que pueden ayudarte a [insertar elementos fundamentales](https://wordpress.org/plugins/search/critical+css/) o a [postergar recursos menos importantes](https://wordpress.org/plugins/search/defer+css+javascript/). Ten en cuenta que las optimizaciones que ofrecen estos complementos pueden interferir con funciones de tu tema o complementos, por lo que seguramente tengas que hacer cambios en el código."
   },
-  "node_modules/lighthouse-stack-packs/packs/wordpress.js | time-to-first-byte": {
+  "node_modules/lighthouse-stack-packs/packs/wordpress.js | server-response-time": {
     "message": "Los temas, los complementos y las especificaciones del servidor afectan al tiempo de respuesta. Puedes buscar un tema más optimizado, seleccionar un complemento de optimización o actualizar tu servidor."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | total-byte-weight": {
@@ -2347,8 +2380,5 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "Puedes habilitar la compresión de texto en la configuración de tu servidor web."
-  },
-  "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-webp-images": {
-    "message": "Puedes utilizar un [complemento](https://wordpress.org/plugins/search/convert+webp/) o servicio que convierta automáticamente las imágenes que subes a los formatos óptimos."
   }
 }

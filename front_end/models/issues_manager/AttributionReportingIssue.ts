@@ -8,16 +8,41 @@ import * as Protocol from '../../generated/protocol.js';
 import {Issue, IssueCategory, IssueKind} from './Issue.js';
 import type {MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 
-function getIssueCode(attributionError: Protocol.Audits.AttributionReportingIssueType): string {
-  return [Protocol.Audits.InspectorIssueCode.AttributionReportingIssue, attributionError].join('::');
+export const enum IssueCode {
+  PermissionPolicyDisabled = 'AttributionReportingIssue::PermissionPolicyDisabled',
+  InvalidAttributionSourceEventId = 'AttributionReportingIssue::InvalidAttributionSourceEventId',
+  InvalidAttributionData = 'AttributionReportingIssue::InvalidAttributionData',
+  MissingAttributionData = 'AttributionReportingIssue::MissingAttributionData',
+  AttributionSourceUntrustworthyFrameOrigin = 'AttributionReportingIssue::AttributionSourceUntrustworthyFrameOrigin',
+  AttributionSourceUntrustworthyOrigin = 'AttributionReportingIssue::AttributionSourceUntrustworthyOrigin',
+  AttributionUntrustworthyFrameOrigin = 'AttributionReportingIssue::AttributionUntrustworthyFrameOrigin',
+  AttributionUntrustworthyOrigin = 'AttributionReportingIssue::AttributionUntrustworthyOrigin',
 }
 
-export class AttributionReportingIssue extends Issue {
+function getIssueCode(details: Protocol.Audits.AttributionReportingIssueDetails): IssueCode {
+  switch (details.violationType) {
+    case Protocol.Audits.AttributionReportingIssueType.PermissionPolicyDisabled:
+      return IssueCode.PermissionPolicyDisabled;
+    case Protocol.Audits.AttributionReportingIssueType.InvalidAttributionSourceEventId:
+      return IssueCode.InvalidAttributionSourceEventId;
+    case Protocol.Audits.AttributionReportingIssueType.InvalidAttributionData:
+      return details.invalidParameter !== undefined ? IssueCode.InvalidAttributionData :
+                                                      IssueCode.MissingAttributionData;
+    case Protocol.Audits.AttributionReportingIssueType.AttributionSourceUntrustworthyOrigin:
+      return details.frame !== undefined ? IssueCode.AttributionSourceUntrustworthyFrameOrigin :
+                                           IssueCode.AttributionSourceUntrustworthyOrigin;
+    case Protocol.Audits.AttributionReportingIssueType.AttributionUntrustworthyOrigin:
+      return details.frame !== undefined ? IssueCode.AttributionUntrustworthyFrameOrigin :
+                                           IssueCode.AttributionUntrustworthyOrigin;
+  }
+}
+
+export class AttributionReportingIssue extends Issue<IssueCode> {
   private issueDetails: Protocol.Audits.AttributionReportingIssueDetails;
 
   constructor(
       issueDetails: Protocol.Audits.AttributionReportingIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
-    super(getIssueCode(issueDetails.violationType), issuesModel);
+    super(getIssueCode(issueDetails), issuesModel);
     this.issueDetails = issueDetails;
   }
 
@@ -25,8 +50,49 @@ export class AttributionReportingIssue extends Issue {
     return IssueCategory.AttributionReporting;
   }
 
-  getDescription(): MarkdownIssueDescription|null {
-    return null;
+  getDescription(): MarkdownIssueDescription {
+    switch (this.code()) {
+      case IssueCode.PermissionPolicyDisabled:
+        return {
+          file: 'arPermissionPolicyDisabled.md',
+          links: [],
+        };
+      case IssueCode.InvalidAttributionSourceEventId:
+        return {
+          file: 'arInvalidAttrubtionSourceEventId.md',
+          links: [],
+        };
+      case IssueCode.InvalidAttributionData:
+        return {
+          file: 'arInvalidAttributionData.md',
+          links: [],
+        };
+      case IssueCode.MissingAttributionData:
+        return {
+          file: 'arMissingAttributionData.md',
+          links: [],
+        };
+      case IssueCode.AttributionSourceUntrustworthyFrameOrigin:
+        return {
+          file: 'arAttributionSourceUntrustworthyFrameOrigin.md',
+          links: [],
+        };
+      case IssueCode.AttributionSourceUntrustworthyOrigin:
+        return {
+          file: 'arAttributionSourceUntrustworthyOrigin.md',
+          links: [],
+        };
+      case IssueCode.AttributionUntrustworthyFrameOrigin:
+        return {
+          file: 'arAttributionUntrustworthyFrameOrigin.md',
+          links: [],
+        };
+      case IssueCode.AttributionUntrustworthyOrigin:
+        return {
+          file: 'arAttributionUntrustworthyOrigin.md',
+          links: [],
+        };
+    }
   }
 
   primaryKey(): string {
@@ -35,5 +101,16 @@ export class AttributionReportingIssue extends Issue {
 
   getKind(): IssueKind {
     return IssueKind.PageError;
+  }
+
+  static fromInspectorIssue(
+      issuesModel: SDK.IssuesModel.IssuesModel,
+      inspectorDetails: Protocol.Audits.InspectorIssueDetails): AttributionReportingIssue[] {
+    const {attributionReportingIssueDetails} = inspectorDetails;
+    if (!attributionReportingIssueDetails) {
+      console.warn('Attribution Reporting issue without details received.');
+      return [];
+    }
+    return [new AttributionReportingIssue(attributionReportingIssueDetails, issuesModel)];
   }
 }

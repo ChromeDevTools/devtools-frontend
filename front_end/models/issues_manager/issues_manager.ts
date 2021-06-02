@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as AttributionReportingIssue from './AttributionReportingIssue.js';
 import * as ContentSecurityPolicyIssue from './ContentSecurityPolicyIssue.js';
 import * as ContrastCheckTrigger from './ContrastCheckTrigger.js';
 import * as CorsIssue from './CorsIssue.js';
@@ -21,6 +22,7 @@ import * as SourceFrameIssuesManager from './SourceFrameIssuesManager.js';
 import * as TrustedWebActivityIssue from './TrustedWebActivityIssue.js';
 
 export {
+  AttributionReportingIssue,
   ContentSecurityPolicyIssue,
   ContrastCheckTrigger,
   CorsIssue,

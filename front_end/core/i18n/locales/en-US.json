@@ -7739,6 +7739,12 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Timestamp"
   },
+  "panels/recorder/recorder-meta.ts | recorder": {
+    "message": "Recorder"
+  },
+  "panels/recorder/recorder-meta.ts | showRecorder": {
+    "message": "Recorder"
+  },
   "panels/screencast/ScreencastApp.ts | toggleScreencast": {
     "message": "Toggle screencast"
   },

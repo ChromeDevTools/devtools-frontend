@@ -132,6 +132,7 @@ export class RecordingScriptWriter {
   }
 
   getScript(recording: UserFlow): string {
+    this.script = [];
     this.appendLineToScript('const puppeteer = require(\'puppeteer\');');
     this.appendLineToScript('');
     this.appendLineToScript('(async () => {');

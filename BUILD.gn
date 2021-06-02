@@ -125,6 +125,7 @@ non_autostart_non_remote_modules = [
   "panels/webauthn/webauthn_module.js",
   "models/workspace_diff/workspace_diff_module.js",
   "emulated_devices/emulated_devices_module.js",
+  "panels/recorder/recorder_module.js",
 ]
 
 gen_non_autostart_non_remote_modules = []

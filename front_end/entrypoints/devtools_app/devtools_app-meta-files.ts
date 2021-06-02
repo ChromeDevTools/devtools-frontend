@@ -24,3 +24,4 @@ import '../../panels/timeline/timeline-meta.js';
 import '../../panels/web_audio/web_audio-meta.js';
 import '../../panels/webauthn/webauthn-meta.js';
 import '../../panels/layer_viewer/layer_viewer-meta.js';
+import '../../panels/recorder/recorder-meta.js';

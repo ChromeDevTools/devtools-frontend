@@ -6,11 +6,9 @@
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Workspace from '../workspace/workspace.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 
-import {RecordingScriptWriter} from './RecordingScriptWriter.js';
 import {RecordingEventHandler} from './RecordingEventHandler.js';
 import {setupRecordingClient} from './RecordingClient.js';
 import type {Condition, Step, StepWithCondition, UserFlow, UserFlowSection} from './Steps.js';
@@ -26,7 +24,6 @@ type RecorderEvent = {
 
 export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper {
   _target: SDK.SDKModel.Target;
-  _uiSourceCode: Workspace.UISourceCode.UISourceCode;
   _runtimeAgent: ProtocolProxyApi.RuntimeApi;
   _accessibilityAgent: ProtocolProxyApi.AccessibilityApi;
   _pageAgent: ProtocolProxyApi.PageApi;
@@ -40,16 +37,14 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper {
   _targets: Map<string, SDK.SDKModel.Target>;
   _newDocumentScriptIdentifiers: Map<string, string>;
   _indentation: string;
-  _scriptWriter: RecordingScriptWriter|null = null;
   _eventQueue: Array<RecorderEvent> = [];
   _isProcessingEvent = false;
   userFlow: UserFlow;
 
-  constructor(target: SDK.SDKModel.Target, uiSourceCode: Workspace.UISourceCode.UISourceCode, indentation: string) {
+  constructor(target: SDK.SDKModel.Target, indentation: string) {
     super();
 
     this._target = target;
-    this._uiSourceCode = uiSourceCode;
     this._indentation = indentation;
 
     this._runtimeAgent = target.runtimeAgent();
@@ -99,8 +94,6 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper {
     const {cssVisualViewport} = await this._target.pageAgent().invoke_getLayoutMetrics();
 
     await this.attachToTarget(this._target);
-
-    this._scriptWriter = new RecordingScriptWriter(this._indentation);
 
     const networkConditions = this._networkManager.networkConditions();
     if (networkConditions !== SDK.NetworkManager.NoThrottlingConditions) {
@@ -410,5 +403,10 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     eventHandler.targetInfoChanged(event.data.url);
+  }
+
+
+  getUserFlow(): UserFlow {
+    return this.userFlow;
   }
 }

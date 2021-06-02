@@ -15,6 +15,7 @@ import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import {RecordingPlayer} from './RecordingPlayer.js';
 import {RecordingSession} from './RecordingSession.js';
 import type {UserFlow} from './Steps.js';
+import {findRecordingsProject} from './RecordingFileSystem.js';
 import {RecordingScriptWriter} from './RecordingScriptWriter.js';
 
 const enum RecorderState {
@@ -65,10 +66,9 @@ export class RecorderModel extends SDK.SDKModel.SDKModel {
     return JSON.parse(source) as UserFlow;
   }
 
-  async replayRecording(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
+  async replayRecording(userFlow: UserFlow): Promise<void> {
     this.updateState(RecorderState.Replaying);
     try {
-      const userFlow = this.parseUserFlow(uiSourceCode.content());
       const player = new RecordingPlayer(userFlow);
       await player.play();
     } finally {
@@ -76,9 +76,9 @@ export class RecorderModel extends SDK.SDKModel.SDKModel {
     }
   }
 
-  async toggleRecording(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<RecordingSession|null> {
+  async toggleRecording(): Promise<RecordingSession|null> {
     if (this._state === RecorderState.Idle) {
-      await this.startRecording(uiSourceCode);
+      await this.startRecording();
       await this.updateState(RecorderState.Recording);
     } else if (this._state === RecorderState.Recording) {
       await this.stopRecording();
@@ -88,8 +88,8 @@ export class RecorderModel extends SDK.SDKModel.SDKModel {
     return this._currentRecordingSession;
   }
 
-  async startRecording(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<RecordingSession> {
-    this._currentRecordingSession = new RecordingSession(this.target(), uiSourceCode, this._indentation);
+  async startRecording(): Promise<RecordingSession> {
+    this._currentRecordingSession = new RecordingSession(this.target(), this._indentation);
     await this._currentRecordingSession.start();
     return this._currentRecordingSession;
   }
@@ -113,6 +113,20 @@ export class RecorderModel extends SDK.SDKModel.SDKModel {
     }
     stream.write(writer.getScript(userFlow));
     stream.close();
+  }
+
+  async getAvailableRecordings(): Promise<UserFlow[]> {
+    const project = findRecordingsProject();
+    const uiSourceCodes = project.uiSourceCodes();
+
+    const userFlows = [];
+    for (const uiSourceCode of uiSourceCodes) {
+      try {
+        userFlows.push(this.parseUserFlow(uiSourceCode.content()));
+      } catch {
+      }
+    }
+    return userFlows;
   }
 }
 

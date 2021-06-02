@@ -627,6 +627,14 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     }
   }
 
+  async _updateUserFlow(uiSourceCode: Workspace.UISourceCode.UISourceCode, userFlow: Recorder.Steps.UserFlow):
+      Promise<void> {
+    const indent = Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get();
+    const content = JSON.stringify(userFlow, null, indent);
+    uiSourceCode.setContent(content, false);
+    await Common.Revealer.reveal(uiSourceCode.uiLocation(content.length), true);
+  }
+
   async _toggleRecording(): Promise<void> {
     const uiSourceCode = this._sourcesView.currentUISourceCode();
     if (!uiSourceCode) {
@@ -640,14 +648,14 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     if (!recorderModel) {
       return;
     }
-    const currentSession = await recorderModel.toggleRecording(uiSourceCode);
+    const currentSession = await recorderModel.toggleRecording();
     if (currentSession) {
       currentSession.addEventListener('recording-updated', async ({data}: {data: Recorder.Steps.UserFlow}) => {
-        const indent = Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get();
-        const content = JSON.stringify(data, null, indent);
-        uiSourceCode.setContent(content, false);
-        await Common.Revealer.reveal(uiSourceCode.uiLocation(content.length), true);
+        this._updateUserFlow(uiSourceCode, data);
       });
+
+      // Render the initial user flow
+      this._updateUserFlow(uiSourceCode, currentSession.getUserFlow());
     }
   }
 
@@ -664,7 +672,8 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     if (!recorderModel) {
       return;
     }
-    recorderModel.replayRecording(uiSourceCode);
+    const userFlow = recorderModel.parseUserFlow(uiSourceCode.content());
+    recorderModel.replayRecording(userFlow);
   }
 
   _exportRecording(): void {

@@ -41,6 +41,7 @@ devtools_entrypoint("bundle") {
     "../../../test/e2e/recorder/*",
     "../../../test/unittests/front_end/models/recorder/*",
     "../../entrypoints/main/*",
+    "../../panels/recorder/*",
     "../../panels/sources/*",
   ]
 

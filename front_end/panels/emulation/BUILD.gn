@@ -18,7 +18,6 @@ devtools_module("emulation") {
     "InspectedPagePlaceholder.ts",
     "LocationsSettingsTab.ts",
     "MediaQueryInspector.ts",
-    "ModuleUIStrings.ts",
     "SensorsView.ts",
     "StructuredHeaders.ts",
     "UserAgentMetadata.ts",

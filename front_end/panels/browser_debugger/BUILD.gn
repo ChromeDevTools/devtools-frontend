@@ -12,7 +12,6 @@ devtools_module("browser_debugger") {
     "CategorizedBreakpointsSidebarPane.ts",
     "DOMBreakpointsSidebarPane.ts",
     "EventListenerBreakpointsSidebarPane.ts",
-    "ModuleUIStrings.ts",
     "ObjectEventListenersSidebarPane.ts",
     "XHRBreakpointsSidebarPane.ts",
   ]

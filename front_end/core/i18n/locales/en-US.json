@@ -4622,15 +4622,6 @@
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "Reveal in source code"
   },
-  "panels/emulation/ModuleUIStrings.ts | laptopWithHiDPI": {
-    "message": "Laptop with HiDPI screen"
-  },
-  "panels/emulation/ModuleUIStrings.ts | laptopWithMDPI": {
-    "message": "Laptop with MDPI screen"
-  },
-  "panels/emulation/ModuleUIStrings.ts | laptopWithTouch": {
-    "message": "Laptop with touch"
-  },
   "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
     "message": "Adjust with mousewheel or up/down keys. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
   },

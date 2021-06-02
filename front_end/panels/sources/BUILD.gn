@@ -23,7 +23,6 @@ devtools_module("sources") {
     "InplaceFormatterEditorAction.ts",
     "JavaScriptBreakpointsSidebarPane.ts",
     "JavaScriptCompilerPlugin.ts",
-    "ModuleUIStrings.ts",
     "NavigatorView.ts",
     "OpenFileQuickOpen.ts",
     "OutlineQuickOpen.ts",

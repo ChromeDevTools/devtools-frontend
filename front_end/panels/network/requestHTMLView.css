@@ -5,10 +5,11 @@
  */
 
 .html-preview-frame {
+  /* We always want a white background, even in dark mode */
+  --override-preview-frame-background: #fff;
+
   box-shadow: var(--drop-shadow);
-  /* We always want a white background, even in dark mode, hence why we don't
-  use our theme variables for this one */
-  background: #fff; /* stylelint-disable-line plugin/use_theme_colors */
+  background: var(--override-preview-frame-background);
   flex-grow: 1;
   margin: 20px;
 }

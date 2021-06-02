@@ -141,3 +141,17 @@ describe('millisToString', () => {
     assert.strictEqual(outputString, '1.2\xA0days');
   });
 });
+
+describe('secondsToString', () => {
+  it('formats infinte numbers correctly', () => {
+    const inputNumber = Infinity;
+    const outputString = i18n.i18n.secondsToString(inputNumber);
+    assert.strictEqual(outputString, '-');
+  });
+
+  it('formats finite numbers correctly', () => {
+    const inputNumber = 7.849;
+    const outputString = i18n.i18n.secondsToString(inputNumber);
+    assert.strictEqual(outputString, '7.85\xA0s');
+  });
+});

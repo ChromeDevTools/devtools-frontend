@@ -314,3 +314,10 @@ export const millisToString = function(ms: number, higherResolution?: boolean): 
   const days = hours / 24;
   return i18nString(UIStrings.fdays, {PH1: (days).toFixed(1)});
 };
+
+export const secondsToString = function(seconds: number, higherResolution?: boolean): string {
+  if (!isFinite(seconds)) {
+    return '-';
+  }
+  return Number.millisToString(seconds * 1000, higherResolution);
+};

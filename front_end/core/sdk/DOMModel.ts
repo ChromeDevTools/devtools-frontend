@@ -51,6 +51,7 @@ import {RuntimeModel} from './RuntimeModel.js';
 import type {Target} from './SDKModel.js';
 import {Capability, SDKModel} from './SDKModel.js';
 import {TargetManager} from './TargetManager.js';
+import {ResourceTreeModel} from './ResourceTreeModel.js';
 
 export class DOMNode {
   _domModel: DOMModel;
@@ -1122,9 +1123,12 @@ export class DOMModel extends SDKModel {
     const parentModel = this.parentModel();
     if (parentModel && !this._frameOwnerNode) {
       await parentModel.requestDocument();
-      const response = await parentModel._agent.invoke_getFrameOwner({frameId: this.target().id()});
-      if (!response.getError() && response.nodeId) {
-        this._frameOwnerNode = parentModel.nodeForId(response.nodeId);
+      const mainFrame = this.target().model(ResourceTreeModel)?.mainFrame;
+      if (mainFrame) {
+        const response = await parentModel._agent.invoke_getFrameOwner({frameId: mainFrame.id});
+        if (!response.getError() && response.nodeId) {
+          this._frameOwnerNode = parentModel.nodeForId(response.nodeId);
+        }
       }
     }
 

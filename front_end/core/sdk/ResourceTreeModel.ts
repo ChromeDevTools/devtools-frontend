@@ -213,6 +213,10 @@ export class ResourceTreeModel extends SDKModel {
     if (frame.isMainFrame()) {
       this.processPendingBackForwardCacheNotUsedEvents(frame);
       this.dispatchEventToListeners(Events.MainFrameNavigated, frame);
+      const networkManager = this.target().model(NetworkManager);
+      if (networkManager) {
+        networkManager.clearRequests();
+      }
     }
 
     // Fill frame with retained resources (the ones loaded using new loader).
@@ -378,6 +382,10 @@ export class ResourceTreeModel extends SDKModel {
       return;
     }
     this._pendingReloadOptions = null;
+    const networkManager = this.target().model(NetworkManager);
+    if (networkManager) {
+      networkManager.clearRequests();
+    }
     this.dispatchEventToListeners(Events.WillReloadPage);
     this._agent.invoke_reload({ignoreCache, scriptToEvaluateOnLoad});
   }

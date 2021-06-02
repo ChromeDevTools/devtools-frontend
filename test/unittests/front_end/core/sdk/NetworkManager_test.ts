@@ -7,6 +7,7 @@ const {assert} = chai;
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Common from '../../../../../front_end/core/common/common.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
+import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 
 describe('MultitargetNetworkManager', () => {
   describe('Trust Token done event', () => {
@@ -30,6 +31,38 @@ describe('MultitargetNetworkManager', () => {
       // 3) Check that the resulting NetworkRequest has the Trust Token Event data associated with it.
       assert.strictEqual(startedRequests.length, 1);
       assert.strictEqual(startedRequests[0].trustTokenOperationDoneEvent(), mockEvent);
+    });
+  });
+});
+
+describe('NetworkDispatcher', () => {
+  describeWithEnvironment('request', () => {
+    let networkDispatcher: SDK.NetworkManager.NetworkDispatcher;
+
+    beforeEach(() => {
+      const networkManager = new Common.ObjectWrapper.ObjectWrapper();
+      networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager as SDK.NetworkManager.NetworkManager);
+    });
+
+    it('is preserved after loadingFinished', () => {
+      networkDispatcher.requestWillBeSent(
+          {requestId: 'mockId', request: {url: 'example.com'}} as Protocol.Network.RequestWillBeSentEvent);
+      networkDispatcher.loadingFinished(
+          {requestId: 'mockId', timestamp: 42, encodedDataLength: 42, shouldReportCorbBlocking: false} as
+          Protocol.Network.LoadingFinishedEvent);
+
+      assert.exists(networkDispatcher.requestForId('mockId'));
+    });
+
+    it('is cleared on clearRequests()', () => {
+      networkDispatcher.requestWillBeSent(
+          {requestId: 'mockId', request: {url: 'example.com'}} as Protocol.Network.RequestWillBeSentEvent);
+      networkDispatcher.loadingFinished(
+          {requestId: 'mockId', timestamp: 42, encodedDataLength: 42, shouldReportCorbBlocking: false} as
+          Protocol.Network.LoadingFinishedEvent);
+
+      networkDispatcher.clearRequests();
+      assert.notExists(networkDispatcher.requestForId('mockId'));
     });
   });
 });

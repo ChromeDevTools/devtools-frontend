@@ -21,6 +21,7 @@ ts_library("sdk") {
     "OverlayPersistentHighlighter_test.ts",
     "PageResourceLoader_test.ts",
     "RemoteObject_test.ts",
+    "ResourceTreeModel_test.ts",
     "ServerTiming_test.ts",
     "SourceMap_test.ts",
     "TracingModel_test.ts",

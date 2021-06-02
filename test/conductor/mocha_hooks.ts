@@ -114,11 +114,9 @@ export const mochaHooks = {
       coverageMap: remappedCoverageMap,
       defaultSummarizer: 'nested',
     });
-    // The types in @types/istanbul-lib-report are incorrectly typing `create`
-    // to return a Visitor instead of a ReportBase.
-    (reports.create('html') as unknown as report.ReportBase).execute(context);
-    (reports.create('json') as unknown as report.ReportBase).execute(context);
-    (reports.create('json-summary') as unknown as report.ReportBase).execute(context);
+    reports.create('html').execute(context);
+    reports.create('json').execute(context);
+    reports.create('json-summary').execute(context);
   },
   // In both modes, run before each test.
   beforeEach: async function(this: Mocha.Suite) {

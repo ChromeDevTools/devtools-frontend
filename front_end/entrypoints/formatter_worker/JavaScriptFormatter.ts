@@ -148,6 +148,9 @@ export class JavaScriptFormatter {
     if (node.type === 'Identifier') {
       return 't';
     }
+    if (node.type === 'PrivateIdentifier') {
+      return 't';
+    }
     if (node.type === 'ReturnStatement') {
       if (AT.punctuator(token, ';')) {
         return 't';
@@ -242,7 +245,6 @@ export class JavaScriptFormatter {
         }
         return !this._inForLoopHeader(node) && allVariablesInitialized ? 'nSSts' : 'ts';
       }
-      // @ts-expect-error Requires updated @types/estree definition
     } else if (node.type === 'PropertyDefinition') {
       if (AT.punctuator(token, '=')) {
         return 'sts';

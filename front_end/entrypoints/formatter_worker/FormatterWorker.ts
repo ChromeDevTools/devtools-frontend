@@ -308,7 +308,9 @@ export function argumentsList(content: string): string[] {
       if (!expression.body.body) {
         break;
       }
-      const constructor = expression.body.body.find(method => method.kind === 'constructor');
+      const constructor =
+          expression.body.body.find(method => method.type === 'MethodDefinition' && method.kind === 'constructor') as
+          Acorn.ESTree.MethodDefinition;
       if (constructor) {
         params = constructor.value.params;
       }

@@ -226,8 +226,8 @@ export class NetworkManager extends SDKModel {
     return newHeaders;
   }
 
-  inflightRequestForURL(url: string): NetworkRequest {
-    return this._dispatcher._inflightRequestsByURL[url];
+  inflightRequestForURL(url: string): NetworkRequest|null {
+    return this._dispatcher.inflightRequestForURL(url);
   }
 
   _cacheDisabledSettingChanged(event: Common.EventTarget.EventTargetEvent): void {
@@ -309,16 +309,14 @@ const MAX_EAGER_POST_REQUEST_BODY_LENGTH = 64 * 1024;  // bytes
 
 export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   _manager: NetworkManager;
-  _inflightRequestsById: Map<string, NetworkRequest>;
-  _inflightRequestsByURL: {
-    [x: string]: NetworkRequest,
-  };
+  private inflightRequestsById: Map<string, NetworkRequest>;
+  private inflightRequestsByURL: Map<string, NetworkRequest>;
   _requestIdToRedirectExtraInfoBuilder: Map<string, RedirectExtraInfoBuilder>;
   _requestIdToTrustTokenEvent: Map<string, Protocol.Network.TrustTokenOperationDoneEvent>;
   constructor(manager: NetworkManager) {
     this._manager = manager;
-    this._inflightRequestsById = new Map();
-    this._inflightRequestsByURL = {};
+    this.inflightRequestsById = new Map();
+    this.inflightRequestsByURL = new Map();
     this._requestIdToRedirectExtraInfoBuilder = new Map();
     /**
      * In case of an early abort or a cache hit, the Trust Token done event is
@@ -420,8 +418,12 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     }
   }
 
+  inflightRequestForURL(url: string): NetworkRequest|null {
+    return this.inflightRequestsByURL.get(url) || null;
+  }
+
   resourceChangedPriority({requestId, newPriority}: Protocol.Network.ResourceChangedPriorityEvent): void {
-    const networkRequest = this._inflightRequestsById.get(requestId);
+    const networkRequest = this.inflightRequestsById.get(requestId);
     if (networkRequest) {
       networkRequest.setPriority(newPriority);
     }
@@ -437,14 +439,14 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     // 3. The second requestWillBeSent is sent with the generated redirect
     //    response and a new redirected request which URL is the inner request
     //    URL of the signed exchange.
-    let networkRequest = this._inflightRequestsById.get(requestId);
+    let networkRequest = this.inflightRequestsById.get(requestId);
     // |requestId| is available only for navigation requests. If the request was
     // sent from a renderer process for prefetching, it is not available. In the
     // case, need to fallback to look for the URL.
     // TODO(crbug/841076): Sends the request ID of prefetching to the browser
     // process and DevTools to find the matching request.
     if (!networkRequest) {
-      networkRequest = this._inflightRequestsByURL[info.outerResponse.url];
+      networkRequest = this.inflightRequestsByURL.get(info.outerResponse.url);
       if (!networkRequest) {
         return;
       }
@@ -461,7 +463,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   requestWillBeSent(
       {requestId, loaderId, documentURL, request, timestamp, wallTime, initiator, redirectResponse, type, frameId}:
           Protocol.Network.RequestWillBeSentEvent): void {
-    let networkRequest = this._inflightRequestsById.get(requestId);
+    let networkRequest = this.inflightRequestsById.get(requestId);
     if (networkRequest) {
       // FIXME: move this check to the backend.
       if (!redirectResponse) {
@@ -507,7 +509,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   }
 
   requestServedFromCache({requestId}: Protocol.Network.RequestServedFromCacheEvent): void {
-    const networkRequest = this._inflightRequestsById.get(requestId);
+    const networkRequest = this.inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
     }
@@ -517,7 +519,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
 
   responseReceived({requestId, loaderId, timestamp, type, response, frameId}: Protocol.Network.ResponseReceivedEvent):
       void {
-    const networkRequest = this._inflightRequestsById.get(requestId);
+    const networkRequest = this.inflightRequestsById.get(requestId);
     const lowercaseHeaders = NetworkManager.lowercaseHeaders(response.headers);
     if (!networkRequest) {
       const lastModifiedHeader = lowercaseHeaders['last-modified'];
@@ -557,7 +559,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   }
 
   dataReceived({requestId, timestamp, dataLength, encodedDataLength}: Protocol.Network.DataReceivedEvent): void {
-    let networkRequest: NetworkRequest|null|undefined = this._inflightRequestsById.get(requestId);
+    let networkRequest: NetworkRequest|null|undefined = this.inflightRequestsById.get(requestId);
     if (!networkRequest) {
       networkRequest = this._maybeAdoptMainResourceRequest(requestId);
     }
@@ -576,7 +578,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
 
   loadingFinished({requestId, timestamp: finishTime, encodedDataLength, shouldReportCorbBlocking}:
                       Protocol.Network.LoadingFinishedEvent): void {
-    let networkRequest: NetworkRequest|null|undefined = this._inflightRequestsById.get(requestId);
+    let networkRequest: NetworkRequest|null|undefined = this.inflightRequestsById.get(requestId);
     if (!networkRequest) {
       networkRequest = this._maybeAdoptMainResourceRequest(requestId);
     }
@@ -597,7 +599,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     blockedReason,
     corsErrorStatus,
   }: Protocol.Network.LoadingFailedEvent): void {
-    const networkRequest = this._inflightRequestsById.get(requestId);
+    const networkRequest = this.inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
     }
@@ -630,7 +632,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
 
   webSocketWillSendHandshakeRequest({requestId, timestamp: time, wallTime, request}:
                                         Protocol.Network.WebSocketWillSendHandshakeRequestEvent): void {
-    const networkRequest = this._inflightRequestsById.get(requestId);
+    const networkRequest = this.inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
     }
@@ -644,7 +646,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
 
   webSocketHandshakeResponseReceived({requestId, timestamp: time, response}:
                                          Protocol.Network.WebSocketHandshakeResponseReceivedEvent): void {
-    const networkRequest = this._inflightRequestsById.get(requestId);
+    const networkRequest = this.inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
     }
@@ -666,7 +668,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   }
 
   webSocketFrameReceived({requestId, timestamp: time, response}: Protocol.Network.WebSocketFrameReceivedEvent): void {
-    const networkRequest = this._inflightRequestsById.get(requestId);
+    const networkRequest = this.inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
     }
@@ -678,7 +680,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   }
 
   webSocketFrameSent({requestId, timestamp: time, response}: Protocol.Network.WebSocketFrameSentEvent): void {
-    const networkRequest = this._inflightRequestsById.get(requestId);
+    const networkRequest = this.inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
     }
@@ -690,7 +692,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   }
 
   webSocketFrameError({requestId, timestamp: time, errorMessage}: Protocol.Network.WebSocketFrameErrorEvent): void {
-    const networkRequest = this._inflightRequestsById.get(requestId);
+    const networkRequest = this.inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
     }
@@ -702,7 +704,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   }
 
   webSocketClosed({requestId, timestamp: time}: Protocol.Network.WebSocketClosedEvent): void {
-    const networkRequest = this._inflightRequestsById.get(requestId);
+    const networkRequest = this.inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
     }
@@ -711,7 +713,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
 
   eventSourceMessageReceived({requestId, timestamp: time, eventName, eventId, data}:
                                  Protocol.Network.EventSourceMessageReceivedEvent): void {
-    const networkRequest = this._inflightRequestsById.get(requestId);
+    const networkRequest = this.inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
     }
@@ -789,7 +791,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   }
 
   _appendRedirect(requestId: string, time: number, redirectURL: string): NetworkRequest {
-    const originalNetworkRequest = this._inflightRequestsById.get(requestId);
+    const originalNetworkRequest = this.inflightRequestsById.get(requestId);
     if (!originalNetworkRequest) {
       throw new Error(`Could not find original network request for ${requestId}`);
     }
@@ -814,17 +816,17 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
       return null;
     }
     const oldDispatcher = (NetworkManager.forRequest(request) as NetworkManager)._dispatcher;
-    oldDispatcher._inflightRequestsById.delete(requestId);
-    delete oldDispatcher._inflightRequestsByURL[request.url()];
-    this._inflightRequestsById.set(requestId, request);
-    this._inflightRequestsByURL[request.url()] = request;
+    oldDispatcher.inflightRequestsById.delete(requestId);
+    oldDispatcher.inflightRequestsByURL.delete(request.url());
+    this.inflightRequestsById.set(requestId, request);
+    this.inflightRequestsByURL.set(request.url(), request);
     requestToManagerMap.set(request, this._manager);
     return request;
   }
 
   _startNetworkRequest(networkRequest: NetworkRequest, originalRequest: Protocol.Network.Request|null): void {
-    this._inflightRequestsById.set(networkRequest.requestId(), networkRequest);
-    this._inflightRequestsByURL[networkRequest.url()] = networkRequest;
+    this.inflightRequestsById.set(networkRequest.requestId(), networkRequest);
+    this.inflightRequestsByURL.set(networkRequest.url(), networkRequest);
     // The following relies on the fact that loaderIds and requestIds are
     // globally unique and that the main request has them equal.
     if (networkRequest.loaderId === networkRequest.requestId()) {
@@ -855,8 +857,8 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
       }
     }
     this._manager.dispatchEventToListeners(Events.RequestFinished, networkRequest);
-    this._inflightRequestsById.delete(networkRequest.requestId());
-    delete this._inflightRequestsByURL[networkRequest.url()];
+    this.inflightRequestsById.delete(networkRequest.requestId());
+    this.inflightRequestsByURL.delete(networkRequest.url());
     MultitargetNetworkManager.instance()._inflightMainResourceRequests.delete(networkRequest.requestId());
 
     if (shouldReportCorbBlocking) {
@@ -906,7 +908,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
 
   webTransportConnectionEstablished({transportId, timestamp: time}:
                                         Protocol.Network.WebTransportConnectionEstablishedEvent): void {
-    const networkRequest = this._inflightRequestsById.get(transportId);
+    const networkRequest = this.inflightRequestsById.get(transportId);
     if (!networkRequest) {
       return;
     }
@@ -921,7 +923,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   }
 
   webTransportClosed({transportId, timestamp: time}: Protocol.Network.WebTransportClosedEvent): void {
-    const networkRequest = this._inflightRequestsById.get(transportId);
+    const networkRequest = this.inflightRequestsById.get(transportId);
     if (!networkRequest) {
       return;
     }
@@ -931,7 +933,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   }
 
   trustTokenOperationDone(event: Protocol.Network.TrustTokenOperationDoneEvent): void {
-    const request = this._inflightRequestsById.get(event.requestId);
+    const request = this.inflightRequestsById.get(event.requestId);
     if (!request) {
       this._requestIdToTrustTokenEvent.set(event.requestId, event);
       return;

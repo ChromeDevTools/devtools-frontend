@@ -57,10 +57,9 @@ export class LowTextContrastIssue extends Issue {
     return IssueKind.Improvement;
   }
 
-  static fromInspectorIssue(
-      _issuesModel: SDK.IssuesModel.IssuesModel,
-      inspectorDetails: Protocol.Audits.InspectorIssueDetails): LowTextContrastIssue[] {
-    const lowTextContrastIssueDetails = inspectorDetails.lowTextContrastIssueDetails;
+  static fromInspectorIssue(_issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
+      LowTextContrastIssue[] {
+    const lowTextContrastIssueDetails = inspectorIssue.details.lowTextContrastIssueDetails;
     if (!lowTextContrastIssueDetails) {
       console.warn('LowTextContrast issue without details received.');
       return [];

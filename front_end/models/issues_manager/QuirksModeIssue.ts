@@ -57,10 +57,9 @@ export class QuirksModeIssue extends Issue {
     return IssueKind.Improvement;
   }
 
-  static fromInspectorIssue(
-      issuesModel: SDK.IssuesModel.IssuesModel,
-      inspectorDetails: Protocol.Audits.InspectorIssueDetails): QuirksModeIssue[] {
-    const quirksModeIssueDetails = inspectorDetails.quirksModeIssueDetails;
+  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
+      QuirksModeIssue[] {
+    const quirksModeIssueDetails = inspectorIssue.details.quirksModeIssueDetails;
     if (!quirksModeIssueDetails) {
       console.warn('Quirks Mode issue without details received.');
       return [];

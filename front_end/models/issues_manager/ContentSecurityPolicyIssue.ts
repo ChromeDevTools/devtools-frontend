@@ -86,10 +86,9 @@ export class ContentSecurityPolicyIssue extends Issue {
     return IssueKind.PageError;
   }
 
-  static fromInsectorIssue(
-      issuesModel: SDK.IssuesModel.IssuesModel,
-      inspectorDetails: Protocol.Audits.InspectorIssueDetails): ContentSecurityPolicyIssue[] {
-    const cspDetails = inspectorDetails.contentSecurityPolicyIssueDetails;
+  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
+      ContentSecurityPolicyIssue[] {
+    const cspDetails = inspectorIssue.details.contentSecurityPolicyIssueDetails;
     if (!cspDetails) {
       console.warn('Content security policy issue without details received.');
       return [];

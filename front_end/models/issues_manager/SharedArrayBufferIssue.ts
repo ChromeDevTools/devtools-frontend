@@ -57,10 +57,9 @@ export class SharedArrayBufferIssue extends Issue {
     return IssueKind.PageError;
   }
 
-  static fromInspectorIssue(
-      issuesModel: SDK.IssuesModel.IssuesModel,
-      inspectorDetails: Protocol.Audits.InspectorIssueDetails): SharedArrayBufferIssue[] {
-    const sabIssueDetails = inspectorDetails.sharedArrayBufferIssueDetails;
+  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
+      SharedArrayBufferIssue[] {
+    const sabIssueDetails = inspectorIssue.details.sharedArrayBufferIssueDetails;
     if (!sabIssueDetails) {
       console.warn('SAB transfer issue without details received.');
       return [];

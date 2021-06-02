@@ -25,8 +25,8 @@ let issuesManagerInstance: IssuesManager|null = null;
 
 function createIssuesForBlockedByResponseIssue(
     issuesModel: SDK.IssuesModel.IssuesModel,
-    inspectorDetails: Protocol.Audits.InspectorIssueDetails): CrossOriginEmbedderPolicyIssue[] {
-  const blockedByResponseIssueDetails = inspectorDetails.blockedByResponseIssueDetails;
+    inspectorIssue: Protocol.Audits.InspectorIssue): CrossOriginEmbedderPolicyIssue[] {
+  const blockedByResponseIssueDetails = inspectorIssue.details.blockedByResponseIssueDetails;
   if (!blockedByResponseIssueDetails) {
     console.warn('BlockedByResponse issue without details received.');
     return [];
@@ -39,7 +39,7 @@ function createIssuesForBlockedByResponseIssue(
 
 const issueCodeHandlers = new Map<
     Protocol.Audits.InspectorIssueCode,
-    (model: SDK.IssuesModel.IssuesModel, details: Protocol.Audits.InspectorIssueDetails) => Issue[]>([
+    (model: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue) => Issue[]>([
   [
     Protocol.Audits.InspectorIssueCode.SameSiteCookieIssue,
     SameSiteCookieIssue.fromInspectorIssue,
@@ -54,7 +54,7 @@ const issueCodeHandlers = new Map<
   ],
   [
     Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue,
-    ContentSecurityPolicyIssue.fromInsectorIssue,
+    ContentSecurityPolicyIssue.fromInspectorIssue,
   ],
   [Protocol.Audits.InspectorIssueCode.BlockedByResponseIssue, createIssuesForBlockedByResponseIssue],
   [
@@ -91,9 +91,8 @@ function createIssuesFromProtocolIssue(
     issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue): Issue[] {
   const handler = issueCodeHandlers.get(inspectorIssue.code);
   if (handler) {
-    return handler(issuesModel, inspectorIssue.details);
+    return handler(issuesModel, inspectorIssue);
   }
-
   console.warn(`No handler registered for issue code ${inspectorIssue.code}`);
   return [];
 }

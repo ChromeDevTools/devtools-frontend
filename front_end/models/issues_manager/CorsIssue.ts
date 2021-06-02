@@ -232,9 +232,9 @@ export class CorsIssue extends Issue<IssueCode> {
     return IssueKind.PageError;
   }
 
-  static fromInspectorIssue(
-      issuesModel: SDK.IssuesModel.IssuesModel, inspectorDetails: Protocol.Audits.InspectorIssueDetails): CorsIssue[] {
-    const corsIssueDetails = inspectorDetails.corsIssueDetails;
+  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
+      CorsIssue[] {
+    const corsIssueDetails = inspectorIssue.details.corsIssueDetails;
     if (!corsIssueDetails) {
       console.warn('Cors issue without details received.');
       return [];

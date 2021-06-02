@@ -73,10 +73,9 @@ export class DeprecationIssue extends Issue<IssueCode> {
     return isCausedByThirdParty(topFrame, this.issueDetails.url);
   }
 
-  static fromInspectorIssue(
-      issuesModel: SDK.IssuesModel.IssuesModel,
-      inspectorDetails: Protocol.Audits.InspectorIssueDetails): DeprecationIssue[] {
-    const details = inspectorDetails.navigatorUserAgentIssueDetails;
+  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
+      DeprecationIssue[] {
+    const details = inspectorIssue.details.navigatorUserAgentIssueDetails;
     if (!details) {
       console.warn('NavigatorUserAgent issue without details received.');
       return [];

@@ -54,10 +54,9 @@ export class TrustedWebActivityIssue extends Issue {
     return IssueKind.PageError;
   }
 
-  static fromInspectorIssue(
-      issuesModel: SDK.IssuesModel.IssuesModel,
-      inspectorDetails: Protocol.Audits.InspectorIssueDetails): TrustedWebActivityIssue[] {
-    const twaQualityEnforcementDetails = inspectorDetails.twaQualityEnforcementDetails;
+  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
+      TrustedWebActivityIssue[] {
+    const twaQualityEnforcementDetails = inspectorIssue.details.twaQualityEnforcementDetails;
     if (!twaQualityEnforcementDetails) {
       console.warn('TWA Quality Enforcement issue without details received.');
       return [];

@@ -197,10 +197,9 @@ export class SameSiteCookieIssue extends Issue {
     return IssueKind.BreakingChange;
   }
 
-  static fromInspectorIssue(
-      issuesModel: SDK.IssuesModel.IssuesModel,
-      inspectorDetails: Protocol.Audits.InspectorIssueDetails): SameSiteCookieIssue[] {
-    const sameSiteDetails = inspectorDetails.sameSiteCookieIssueDetails;
+  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
+      SameSiteCookieIssue[] {
+    const sameSiteDetails = inspectorIssue.details.sameSiteCookieIssueDetails;
     if (!sameSiteDetails) {
       console.warn('SameSite issue without details received.');
       return [];

@@ -61,10 +61,9 @@ export class HeavyAdIssue extends Issue {
     }
   }
 
-  static fromInspectorIssue(
-      issuesModel: SDK.IssuesModel.IssuesModel,
-      inspectorDetails: Protocol.Audits.InspectorIssueDetails): HeavyAdIssue[] {
-    const heavyAdIssueDetails = inspectorDetails.heavyAdIssueDetails;
+  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
+      HeavyAdIssue[] {
+    const heavyAdIssueDetails = inspectorIssue.details.heavyAdIssueDetails;
     if (!heavyAdIssueDetails) {
       console.warn('Heavy Ad issue without details received.');
       return [];

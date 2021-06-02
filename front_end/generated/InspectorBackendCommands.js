@@ -2958,7 +2958,7 @@ export function registerCommands(inspectorBackend) {
   // Profiler.
   inspectorBackend.registerEvent('Profiler.consoleProfileFinished', ['id', 'location', 'profile', 'title']);
   inspectorBackend.registerEvent('Profiler.consoleProfileStarted', ['id', 'location', 'title']);
-  inspectorBackend.registerEvent('Profiler.preciseCoverageDeltaUpdate', ['timestamp', 'occassion', 'result']);
+  inspectorBackend.registerEvent('Profiler.preciseCoverageDeltaUpdate', ['timestamp', 'occasion', 'result']);
   inspectorBackend.registerCommand('Profiler.disable', [], []);
   inspectorBackend.registerCommand('Profiler.enable', [], []);
   inspectorBackend.registerCommand('Profiler.getBestEffortCoverage', [], ['result']);

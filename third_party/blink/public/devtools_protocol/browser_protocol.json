@@ -20679,7 +20679,7 @@
                     "parameters": [
                         {
                             "name": "maxScriptsCacheSize",
-                            "description": "The maximum size in bytes of collected scripts (not referenced by other heap objects)\nthe debugger can hold. Puts no limit if paramter is omitted.",
+                            "description": "The maximum size in bytes of collected scripts (not referenced by other heap objects)\nthe debugger can hold. Puts no limit if parameter is omitted.",
                             "experimental": true,
                             "optional": true,
                             "type": "number"
@@ -21857,7 +21857,7 @@
                         },
                         {
                             "name": "treatGlobalObjectsAsRoots",
-                            "description": "If true, a raw snapshot without artifical roots will be generated",
+                            "description": "If true, a raw snapshot without artificial roots will be generated",
                             "optional": true,
                             "type": "boolean"
                         },
@@ -22442,7 +22442,7 @@
                 },
                 {
                     "name": "preciseCoverageDeltaUpdate",
-                    "description": "Reports coverage delta since the last poll (either from an event like this, or from\n`takePreciseCoverage` for the current isolate. May only be sent if precise code\ncoverage has been started. This event can be trigged by the embedder to, for example,\ntrigger collection of coverage data immediatelly at a certain point in time.",
+                    "description": "Reports coverage delta since the last poll (either from an event like this, or from\n`takePreciseCoverage` for the current isolate. May only be sent if precise code\ncoverage has been started. This event can be trigged by the embedder to, for example,\ntrigger collection of coverage data immediately at a certain point in time.",
                     "experimental": true,
                     "parameters": [
                         {
@@ -22451,7 +22451,7 @@
                             "type": "number"
                         },
                         {
-                            "name": "occassion",
+                            "name": "occasion",
                             "description": "Identifier for distinguishing coverage events.",
                             "type": "string"
                         },
@@ -22924,7 +22924,7 @@
                         },
                         {
                             "name": "uniqueId",
-                            "description": "A system-unique execution context identifier. Unlike the id, this is unique accross\nmultiple processes, so can be reliably used to identify specific context while backend\nperforms a cross-process navigation.",
+                            "description": "A system-unique execution context identifier. Unlike the id, this is unique across\nmultiple processes, so can be reliably used to identify specific context while backend\nperforms a cross-process navigation.",
                             "experimental": true,
                             "type": "string"
                         },
@@ -22990,6 +22990,13 @@
                             "description": "Identifier of the context where exception happened.",
                             "optional": true,
                             "$ref": "ExecutionContextId"
+                        },
+                        {
+                            "name": "exceptionMetaData",
+                            "description": "Dictionary with entries of meta deta that the client associated\nwith this exception, such as information about associated network\nrequests, etc.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "object"
                         }
                     ]
                 },
@@ -23360,7 +23367,7 @@
                         },
                         {
                             "name": "uniqueContextId",
-                            "description": "An alternative way to specify the execution context to evaluate in.\nCompared to contextId that may be reused accross processes, this is guaranteed to be\nsystem-unique, so it can be used to prevent accidental evaluation of the expression\nin context different than intended (e.g. as a result of navigation accross process\nboundaries).\nThis is mutually exclusive with `contextId`.",
+                            "description": "An alternative way to specify the execution context to evaluate in.\nCompared to contextId that may be reused across processes, this is guaranteed to be\nsystem-unique, so it can be used to prevent accidental evaluation of the expression\nin context different than intended (e.g. as a result of navigation across process\nboundaries).\nThis is mutually exclusive with `contextId`.",
                             "experimental": true,
                             "optional": true,
                             "type": "string"

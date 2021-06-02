@@ -759,10 +759,15 @@ export class WasmDisassembler {
       case OperatorCode.br:
       case OperatorCode.br_if:
       case OperatorCode.br_on_null:
+      case OperatorCode.br_on_non_null:
       case OperatorCode.br_on_cast:
+      case OperatorCode.br_on_cast_fail:
       case OperatorCode.br_on_func:
+      case OperatorCode.br_on_non_func:
       case OperatorCode.br_on_data:
+      case OperatorCode.br_on_non_data:
       case OperatorCode.br_on_i31:
+      case OperatorCode.br_on_non_i31:
         this.appendBuffer(" ");
         this.appendBuffer(this.useLabel(operator.brDepth));
         break;
@@ -806,6 +811,11 @@ export class WasmDisassembler {
       case OperatorCode.return_call_indirect:
         this.printFuncType(operator.typeIndex);
         break;
+      case OperatorCode.select_with_type: {
+        const selectType = this.typeToString(operator.selectType);
+        this.appendBuffer(` ${selectType}`);
+        break;
+      }
       case OperatorCode.local_get:
       case OperatorCode.local_set:
       case OperatorCode.local_tee:
@@ -1040,6 +1050,7 @@ export class WasmDisassembler {
       }
       case OperatorCode.rtt_canon:
       case OperatorCode.rtt_sub:
+      case OperatorCode.rtt_fresh_sub:
       case OperatorCode.struct_new_default_with_rtt:
       case OperatorCode.struct_new_with_rtt:
       case OperatorCode.array_new_default_with_rtt:
@@ -1052,6 +1063,11 @@ export class WasmDisassembler {
         const refType = this._nameResolver.getTypeName(operator.refType, true);
         this.appendBuffer(` ${refType}`);
         break;
+      }
+      case OperatorCode.array_copy: {
+        const dstType = this._nameResolver.getTypeName(operator.refType, true);
+        const srcType = this._nameResolver.getTypeName(operator.srcType, true);
+        this.appendBuffer(` ${dstType} ${srcType}`);
       }
     }
   }

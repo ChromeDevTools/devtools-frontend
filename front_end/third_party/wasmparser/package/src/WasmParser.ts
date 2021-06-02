@@ -61,6 +61,7 @@ export const enum OperatorCode {
   catch_all = 0x19,
   drop = 0x1a,
   select = 0x1b,
+  select_with_type = 0x1c,
   local_get = 0x20,
   local_set = 0x21,
   local_tee = 0x22,
@@ -260,6 +261,7 @@ export const enum OperatorCode {
   ref_as_non_null = 0xd3,
   br_on_null = 0xd4,
   ref_eq = 0xd5,
+  br_on_non_null = 0xd6,
 
   atomic_notify = 0xfe00,
   i32_atomic_wait = 0xfe01,
@@ -580,14 +582,17 @@ export const enum OperatorCode {
   array_get_u = 0xfb15,
   array_set = 0xfb16,
   array_len = 0xfb17,
+  array_copy = 0xfb18, // Non-standard experiment in V8.
   i31_new = 0xfb20,
   i31_get_s = 0xfb21,
   i31_get_u = 0xfb22,
   rtt_canon = 0xfb30,
   rtt_sub = 0xfb31,
+  rtt_fresh_sub = 0xfb32, // Non-standard experiment in V8.
   ref_test = 0xfb40,
   ref_cast = 0xfb41,
   br_on_cast = 0xfb42,
+  br_on_cast_fail = 0xfb43,
   ref_is_func = 0xfb50,
   ref_is_data = 0xfb51,
   ref_is_i31 = 0xfb52,
@@ -597,6 +602,9 @@ export const enum OperatorCode {
   br_on_func = 0xfb60,
   br_on_data = 0xfb61,
   br_on_i31 = 0xfb62,
+  br_on_non_func = 0xfb63,
+  br_on_non_data = 0xfb64,
+  br_on_non_i31 = 0xfb65,
 }
 
 export const OperatorCodeNames = [
@@ -628,7 +636,7 @@ export const OperatorCodeNames = [
   "catch_all",
   "drop",
   "select",
-  undefined,
+  "select", // with types.
   undefined,
   undefined,
   undefined,
@@ -814,7 +822,7 @@ export const OperatorCodeNames = [
   "ref.as_non_null",
   "br_on_null",
   "ref.eq",
-  undefined,
+  "br_on_non_null",
   undefined,
   undefined,
   undefined,
@@ -1239,14 +1247,17 @@ OperatorCodeNames[0xfb14] = "array.get_s";
 OperatorCodeNames[0xfb15] = "array.get_u";
 OperatorCodeNames[0xfb16] = "array.set";
 OperatorCodeNames[0xfb17] = "array.len";
+OperatorCodeNames[0xfb18] = "array.copy";
 OperatorCodeNames[0xfb20] = "i31.new";
 OperatorCodeNames[0xfb21] = "i31.get_s";
 OperatorCodeNames[0xfb22] = "i31.get_u";
 OperatorCodeNames[0xfb30] = "rtt.canon";
 OperatorCodeNames[0xfb31] = "rtt.sub";
+OperatorCodeNames[0xfb32] = "rtt.fresh_sub";
 OperatorCodeNames[0xfb40] = "ref.test";
 OperatorCodeNames[0xfb41] = "ref.cast";
 OperatorCodeNames[0xfb42] = "br_on_cast";
+OperatorCodeNames[0xfb43] = "br_on_cast_fail";
 OperatorCodeNames[0xfb50] = "ref.is_func";
 OperatorCodeNames[0xfb51] = "ref.is_data";
 OperatorCodeNames[0xfb52] = "ref.is_i31";
@@ -1256,6 +1267,9 @@ OperatorCodeNames[0xfb5a] = "ref.as_i31";
 OperatorCodeNames[0xfb60] = "br_on_func";
 OperatorCodeNames[0xfb61] = "br_on_data";
 OperatorCodeNames[0xfb62] = "br_on_i31";
+OperatorCodeNames[0xfb63] = "br_on_non_func";
+OperatorCodeNames[0xfb64] = "br_on_non_data";
+OperatorCodeNames[0xfb65] = "br_on_non_i31";
 
 export const enum ExternalKind {
   Function = 0,
@@ -1622,7 +1636,9 @@ export interface IMemoryAddress {
 export interface IOperatorInformation {
   code: OperatorCode;
   blockType?: Type;
+  selectType?: Type;
   refType?: number; // "HeapType" format, a.k.a. s33
+  srcType?: number; // "HeapType" format, a.k.a. s33
   brDepth?: number;
   brTable?: Array<number>;
   relativeDepth?: number;
@@ -2490,14 +2506,18 @@ export class BinaryReader {
     if (!this._eof && !this.hasBytes(MAX_CODE_OPERATOR_0XFB_SIZE)) {
       return false;
     }
-    var code, brDepth, refType, fieldIndex;
+    var code, brDepth, refType, srcType, fieldIndex;
 
     code = this._data[this._pos++] | 0xfb00;
     switch (code) {
       case OperatorCode.br_on_cast:
+      case OperatorCode.br_on_cast_fail:
       case OperatorCode.br_on_func:
+      case OperatorCode.br_on_non_func:
       case OperatorCode.br_on_data:
+      case OperatorCode.br_on_non_data:
       case OperatorCode.br_on_i31:
+      case OperatorCode.br_on_non_i31:
         brDepth = this.readVarUint32() >>> 0;
         break;
       case OperatorCode.array_get:
@@ -2511,7 +2531,12 @@ export class BinaryReader {
       case OperatorCode.struct_new_default_with_rtt:
       case OperatorCode.rtt_canon:
       case OperatorCode.rtt_sub:
+      case OperatorCode.rtt_fresh_sub:
         refType = this.readHeapType();
+        break;
+      case OperatorCode.array_copy:
+        refType = this.readHeapType();
+        srcType = this.readHeapType();
         break;
       case OperatorCode.struct_get:
       case OperatorCode.struct_get_s:
@@ -2543,6 +2568,7 @@ export class BinaryReader {
       code,
       blockType: undefined,
       refType,
+      srcType,
       brDepth,
       brTable: undefined,
       tableIndex: undefined,
@@ -2616,7 +2642,9 @@ export class BinaryReader {
     this.result = {
       code: code,
       blockType: undefined,
+      selectType: undefined,
       refType: undefined,
+      srcType: undefined,
       brDepth: undefined,
       brTable: undefined,
       funcIndex: undefined,
@@ -2901,7 +2929,9 @@ export class BinaryReader {
     this.result = {
       code: code,
       blockType: undefined,
+      selectType: undefined,
       refType: undefined,
+      srcType: undefined,
       brDepth: undefined,
       brTable: undefined,
       funcIndex: undefined,
@@ -3018,7 +3048,9 @@ export class BinaryReader {
     this.result = {
       code: code,
       blockType: undefined,
+      selectType: undefined,
       refType: undefined,
+      srcType: undefined,
       brDepth: undefined,
       brTable: undefined,
       funcIndex: undefined,
@@ -3067,6 +3099,7 @@ export class BinaryReader {
     }
     var code,
       blockType,
+      selectType,
       refType,
       brDepth,
       brTable,
@@ -3114,6 +3147,7 @@ export class BinaryReader {
         case OperatorCode.br:
         case OperatorCode.br_if:
         case OperatorCode.br_on_null:
+        case OperatorCode.br_on_non_null:
           brDepth = this.readVarUint32() >>> 0;
           break;
         case OperatorCode.br_table:
@@ -3215,6 +3249,13 @@ export class BinaryReader {
             this._data.byteOffset
           ).getFloat64(this._pos, true);
           this._pos += 8;
+          break;
+        case OperatorCode.select_with_type:
+          const num_types = this.readVarInt32();
+          // Only 1 is a valid value currently.
+          if (num_types == 1) {
+            selectType = this.readType();
+          }
           break;
         case OperatorCode.prefix_0xfb:
           if (this.readCodeOperator_0xfb()) {
@@ -3392,7 +3433,9 @@ export class BinaryReader {
     this.result = {
       code,
       blockType,
+      selectType,
       refType,
+      srcType: undefined,
       brDepth,
       brTable,
       relativeDepth,

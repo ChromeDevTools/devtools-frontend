@@ -1,3 +1,11 @@
+# [5.2.0](https://github.com/wasdk/wasmparser/compare/v5.1.1...v5.2.0) (2021-05-31)
+
+
+### Features
+
+* implement br_on_non_null too ([e5415ae](https://github.com/wasdk/wasmparser/commit/e5415aed971a6fa1919498dbce5ac537dbf00582))
+* implement more instructions ([08c1f87](https://github.com/wasdk/wasmparser/commit/08c1f877d81cb2b7d603b8998e22840deebd1072))
+
 ## [5.1.1](https://github.com/wasdk/wasmparser/compare/v5.1.0...v5.1.1) (2021-04-26)
 
 

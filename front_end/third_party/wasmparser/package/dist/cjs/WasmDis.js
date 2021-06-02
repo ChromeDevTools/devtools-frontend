@@ -650,10 +650,15 @@ var WasmDisassembler = /** @class */ (function () {
             case 12 /* br */:
             case 13 /* br_if */:
             case 212 /* br_on_null */:
+            case 214 /* br_on_non_null */:
             case 64322 /* br_on_cast */:
+            case 64323 /* br_on_cast_fail */:
             case 64352 /* br_on_func */:
+            case 64355 /* br_on_non_func */:
             case 64353 /* br_on_data */:
+            case 64356 /* br_on_non_data */:
             case 64354 /* br_on_i31 */:
+            case 64357 /* br_on_non_i31 */:
                 this.appendBuffer(" ");
                 this.appendBuffer(this.useLabel(operator.brDepth));
                 break;
@@ -690,6 +695,11 @@ var WasmDisassembler = /** @class */ (function () {
             case 19 /* return_call_indirect */:
                 this.printFuncType(operator.typeIndex);
                 break;
+            case 28 /* select_with_type */: {
+                var selectType = this.typeToString(operator.selectType);
+                this.appendBuffer(" " + selectType);
+                break;
+            }
             case 32 /* local_get */:
             case 33 /* local_set */:
             case 34 /* local_tee */:
@@ -892,6 +902,7 @@ var WasmDisassembler = /** @class */ (function () {
             }
             case 64304 /* rtt_canon */:
             case 64305 /* rtt_sub */:
+            case 64306 /* rtt_fresh_sub */:
             case 64258 /* struct_new_default_with_rtt */:
             case 64257 /* struct_new_with_rtt */:
             case 64274 /* array_new_default_with_rtt */:
@@ -904,6 +915,11 @@ var WasmDisassembler = /** @class */ (function () {
                 var refType = this._nameResolver.getTypeName(operator.refType, true);
                 this.appendBuffer(" " + refType);
                 break;
+            }
+            case 64280 /* array_copy */: {
+                var dstType = this._nameResolver.getTypeName(operator.refType, true);
+                var srcType = this._nameResolver.getTypeName(operator.srcType, true);
+                this.appendBuffer(" " + dstType + " " + srcType);
             }
         }
     };

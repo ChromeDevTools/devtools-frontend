@@ -42,6 +42,7 @@ export declare const enum OperatorCode {
     catch_all = 25,
     drop = 26,
     select = 27,
+    select_with_type = 28,
     local_get = 32,
     local_set = 33,
     local_tee = 34,
@@ -234,6 +235,7 @@ export declare const enum OperatorCode {
     ref_as_non_null = 211,
     br_on_null = 212,
     ref_eq = 213,
+    br_on_non_null = 214,
     atomic_notify = 65024,
     i32_atomic_wait = 65025,
     i64_atomic_wait = 65026,
@@ -550,14 +552,17 @@ export declare const enum OperatorCode {
     array_get_u = 64277,
     array_set = 64278,
     array_len = 64279,
+    array_copy = 64280,
     i31_new = 64288,
     i31_get_s = 64289,
     i31_get_u = 64290,
     rtt_canon = 64304,
     rtt_sub = 64305,
+    rtt_fresh_sub = 64306,
     ref_test = 64320,
     ref_cast = 64321,
     br_on_cast = 64322,
+    br_on_cast_fail = 64323,
     ref_is_func = 64336,
     ref_is_data = 64337,
     ref_is_i31 = 64338,
@@ -566,7 +571,10 @@ export declare const enum OperatorCode {
     ref_as_i31 = 64346,
     br_on_func = 64352,
     br_on_data = 64353,
-    br_on_i31 = 64354
+    br_on_i31 = 64354,
+    br_on_non_func = 64355,
+    br_on_non_data = 64356,
+    br_on_non_i31 = 64357
 }
 export declare const OperatorCodeNames: string[];
 export declare const enum ExternalKind {
@@ -833,7 +841,9 @@ export interface IMemoryAddress {
 export interface IOperatorInformation {
     code: OperatorCode;
     blockType?: Type;
+    selectType?: Type;
     refType?: number;
+    srcType?: number;
     brDepth?: number;
     brTable?: Array<number>;
     relativeDepth?: number;

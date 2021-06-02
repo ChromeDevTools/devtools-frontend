@@ -65,6 +65,7 @@ var OperatorCode;
     OperatorCode[OperatorCode["catch_all"] = 25] = "catch_all";
     OperatorCode[OperatorCode["drop"] = 26] = "drop";
     OperatorCode[OperatorCode["select"] = 27] = "select";
+    OperatorCode[OperatorCode["select_with_type"] = 28] = "select_with_type";
     OperatorCode[OperatorCode["local_get"] = 32] = "local_get";
     OperatorCode[OperatorCode["local_set"] = 33] = "local_set";
     OperatorCode[OperatorCode["local_tee"] = 34] = "local_tee";
@@ -257,6 +258,7 @@ var OperatorCode;
     OperatorCode[OperatorCode["ref_as_non_null"] = 211] = "ref_as_non_null";
     OperatorCode[OperatorCode["br_on_null"] = 212] = "br_on_null";
     OperatorCode[OperatorCode["ref_eq"] = 213] = "ref_eq";
+    OperatorCode[OperatorCode["br_on_non_null"] = 214] = "br_on_non_null";
     OperatorCode[OperatorCode["atomic_notify"] = 65024] = "atomic_notify";
     OperatorCode[OperatorCode["i32_atomic_wait"] = 65025] = "i32_atomic_wait";
     OperatorCode[OperatorCode["i64_atomic_wait"] = 65026] = "i64_atomic_wait";
@@ -574,14 +576,17 @@ var OperatorCode;
     OperatorCode[OperatorCode["array_get_u"] = 64277] = "array_get_u";
     OperatorCode[OperatorCode["array_set"] = 64278] = "array_set";
     OperatorCode[OperatorCode["array_len"] = 64279] = "array_len";
+    OperatorCode[OperatorCode["array_copy"] = 64280] = "array_copy";
     OperatorCode[OperatorCode["i31_new"] = 64288] = "i31_new";
     OperatorCode[OperatorCode["i31_get_s"] = 64289] = "i31_get_s";
     OperatorCode[OperatorCode["i31_get_u"] = 64290] = "i31_get_u";
     OperatorCode[OperatorCode["rtt_canon"] = 64304] = "rtt_canon";
     OperatorCode[OperatorCode["rtt_sub"] = 64305] = "rtt_sub";
+    OperatorCode[OperatorCode["rtt_fresh_sub"] = 64306] = "rtt_fresh_sub";
     OperatorCode[OperatorCode["ref_test"] = 64320] = "ref_test";
     OperatorCode[OperatorCode["ref_cast"] = 64321] = "ref_cast";
     OperatorCode[OperatorCode["br_on_cast"] = 64322] = "br_on_cast";
+    OperatorCode[OperatorCode["br_on_cast_fail"] = 64323] = "br_on_cast_fail";
     OperatorCode[OperatorCode["ref_is_func"] = 64336] = "ref_is_func";
     OperatorCode[OperatorCode["ref_is_data"] = 64337] = "ref_is_data";
     OperatorCode[OperatorCode["ref_is_i31"] = 64338] = "ref_is_i31";
@@ -591,6 +596,9 @@ var OperatorCode;
     OperatorCode[OperatorCode["br_on_func"] = 64352] = "br_on_func";
     OperatorCode[OperatorCode["br_on_data"] = 64353] = "br_on_data";
     OperatorCode[OperatorCode["br_on_i31"] = 64354] = "br_on_i31";
+    OperatorCode[OperatorCode["br_on_non_func"] = 64355] = "br_on_non_func";
+    OperatorCode[OperatorCode["br_on_non_data"] = 64356] = "br_on_non_data";
+    OperatorCode[OperatorCode["br_on_non_i31"] = 64357] = "br_on_non_i31";
 })(OperatorCode = exports.OperatorCode || (exports.OperatorCode = {}));
 exports.OperatorCodeNames = [
     "unreachable",
@@ -621,7 +629,7 @@ exports.OperatorCodeNames = [
     "catch_all",
     "drop",
     "select",
-    undefined,
+    "select",
     undefined,
     undefined,
     undefined,
@@ -807,7 +815,7 @@ exports.OperatorCodeNames = [
     "ref.as_non_null",
     "br_on_null",
     "ref.eq",
-    undefined,
+    "br_on_non_null",
     undefined,
     undefined,
     undefined,
@@ -1228,14 +1236,17 @@ exports.OperatorCodeNames[0xfb14] = "array.get_s";
 exports.OperatorCodeNames[0xfb15] = "array.get_u";
 exports.OperatorCodeNames[0xfb16] = "array.set";
 exports.OperatorCodeNames[0xfb17] = "array.len";
+exports.OperatorCodeNames[0xfb18] = "array.copy";
 exports.OperatorCodeNames[0xfb20] = "i31.new";
 exports.OperatorCodeNames[0xfb21] = "i31.get_s";
 exports.OperatorCodeNames[0xfb22] = "i31.get_u";
 exports.OperatorCodeNames[0xfb30] = "rtt.canon";
 exports.OperatorCodeNames[0xfb31] = "rtt.sub";
+exports.OperatorCodeNames[0xfb32] = "rtt.fresh_sub";
 exports.OperatorCodeNames[0xfb40] = "ref.test";
 exports.OperatorCodeNames[0xfb41] = "ref.cast";
 exports.OperatorCodeNames[0xfb42] = "br_on_cast";
+exports.OperatorCodeNames[0xfb43] = "br_on_cast_fail";
 exports.OperatorCodeNames[0xfb50] = "ref.is_func";
 exports.OperatorCodeNames[0xfb51] = "ref.is_data";
 exports.OperatorCodeNames[0xfb52] = "ref.is_i31";
@@ -1245,6 +1256,9 @@ exports.OperatorCodeNames[0xfb5a] = "ref.as_i31";
 exports.OperatorCodeNames[0xfb60] = "br_on_func";
 exports.OperatorCodeNames[0xfb61] = "br_on_data";
 exports.OperatorCodeNames[0xfb62] = "br_on_i31";
+exports.OperatorCodeNames[0xfb63] = "br_on_non_func";
+exports.OperatorCodeNames[0xfb64] = "br_on_non_data";
+exports.OperatorCodeNames[0xfb65] = "br_on_non_i31";
 var ExternalKind;
 (function (ExternalKind) {
     ExternalKind[ExternalKind["Function"] = 0] = "Function";
@@ -2292,13 +2306,17 @@ var BinaryReader = /** @class */ (function () {
         if (!this._eof && !this.hasBytes(MAX_CODE_OPERATOR_0XFB_SIZE)) {
             return false;
         }
-        var code, brDepth, refType, fieldIndex;
+        var code, brDepth, refType, srcType, fieldIndex;
         code = this._data[this._pos++] | 0xfb00;
         switch (code) {
             case 64322 /* br_on_cast */:
+            case 64323 /* br_on_cast_fail */:
             case 64352 /* br_on_func */:
+            case 64355 /* br_on_non_func */:
             case 64353 /* br_on_data */:
+            case 64356 /* br_on_non_data */:
             case 64354 /* br_on_i31 */:
+            case 64357 /* br_on_non_i31 */:
                 brDepth = this.readVarUint32() >>> 0;
                 break;
             case 64275 /* array_get */:
@@ -2312,7 +2330,12 @@ var BinaryReader = /** @class */ (function () {
             case 64258 /* struct_new_default_with_rtt */:
             case 64304 /* rtt_canon */:
             case 64305 /* rtt_sub */:
+            case 64306 /* rtt_fresh_sub */:
                 refType = this.readHeapType();
+                break;
+            case 64280 /* array_copy */:
+                refType = this.readHeapType();
+                srcType = this.readHeapType();
                 break;
             case 64259 /* struct_get */:
             case 64260 /* struct_get_s */:
@@ -2342,6 +2365,7 @@ var BinaryReader = /** @class */ (function () {
             code: code,
             blockType: undefined,
             refType: refType,
+            srcType: srcType,
             brDepth: brDepth,
             brTable: undefined,
             tableIndex: undefined,
@@ -2412,7 +2436,9 @@ var BinaryReader = /** @class */ (function () {
         this.result = {
             code: code,
             blockType: undefined,
+            selectType: undefined,
             refType: undefined,
+            srcType: undefined,
             brDepth: undefined,
             brTable: undefined,
             funcIndex: undefined,
@@ -2694,7 +2720,9 @@ var BinaryReader = /** @class */ (function () {
         this.result = {
             code: code,
             blockType: undefined,
+            selectType: undefined,
             refType: undefined,
+            srcType: undefined,
             brDepth: undefined,
             brTable: undefined,
             funcIndex: undefined,
@@ -2808,7 +2836,9 @@ var BinaryReader = /** @class */ (function () {
         this.result = {
             code: code,
             blockType: undefined,
+            selectType: undefined,
             refType: undefined,
+            srcType: undefined,
             brDepth: undefined,
             brTable: undefined,
             funcIndex: undefined,
@@ -2850,7 +2880,7 @@ var BinaryReader = /** @class */ (function () {
                 }
                 break;
         }
-        var code, blockType, refType, brDepth, brTable, relativeDepth, funcIndex, typeIndex, tableIndex, localIndex, globalIndex, eventIndex, memoryAddress, literal, reserved;
+        var code, blockType, selectType, refType, brDepth, brTable, relativeDepth, funcIndex, typeIndex, tableIndex, localIndex, globalIndex, eventIndex, memoryAddress, literal, reserved;
         if (this.state === 26 /* INIT_EXPRESSION_OPERATOR */ &&
             this._sectionId === 9 /* Element */ &&
             isExternvalElementSegmentType(this._segmentType)) {
@@ -2884,6 +2914,7 @@ var BinaryReader = /** @class */ (function () {
                 case 12 /* br */:
                 case 13 /* br_if */:
                 case 212 /* br_on_null */:
+                case 214 /* br_on_non_null */:
                     brDepth = this.readVarUint32() >>> 0;
                     break;
                 case 14 /* br_table */:
@@ -2979,6 +3010,13 @@ var BinaryReader = /** @class */ (function () {
                 case 68 /* f64_const */:
                     literal = new DataView(this._data.buffer, this._data.byteOffset).getFloat64(this._pos, true);
                     this._pos += 8;
+                    break;
+                case 28 /* select_with_type */:
+                    var num_types = this.readVarInt32();
+                    // Only 1 is a valid value currently.
+                    if (num_types == 1) {
+                        selectType = this.readType();
+                    }
                     break;
                 case 251 /* prefix_0xfb */:
                     if (this.readCodeOperator_0xfb()) {
@@ -3156,7 +3194,9 @@ var BinaryReader = /** @class */ (function () {
         this.result = {
             code: code,
             blockType: blockType,
+            selectType: selectType,
             refType: refType,
+            srcType: undefined,
             brDepth: brDepth,
             brTable: brTable,
             relativeDepth: relativeDepth,

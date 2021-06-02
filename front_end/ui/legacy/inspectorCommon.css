@@ -398,7 +398,7 @@ input::placeholder {
   --override-extra-box-shadow-focus: 0 0 0 2px rgb(66 133 244 / 40%);
 
   border-color: transparent;
-  box-shadow: var(--override-select-box-shadow), var(--override-extra-box-shadow-focus));
+  box-shadow: var(--override-select-box-shadow), var(--override-extra-box-shadow-focus);
 }
 
 .-theme-with-dark-background .chrome-select:enabled:active,

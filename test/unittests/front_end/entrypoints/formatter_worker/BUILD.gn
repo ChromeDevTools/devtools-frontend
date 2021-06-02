@@ -11,6 +11,7 @@ ts_library("formatter_worker") {
     "FormattedContentBuilder_test.ts",
     "HTMLFormatter_test.ts",
     "HTMLOutline_test.ts",
+    "JSONFormatter_test.ts",
     "JavaScriptFormatter_test.ts",
     "JavaScriptOutline_test.ts",
   ]

@@ -56,7 +56,6 @@ export class ResourceSourceFrame extends SourceFrameImpl {
       codeMirrorOptions?: UI.TextEditor.Options) {
     super(() => resource.requestContent(), codeMirrorOptions);
     this._resource = resource;
-    this.setCanPrettyPrint(this._resource.contentType().isDocumentOrScriptOrStyleSheet(), autoPrettyPrint);
   }
 
   static createSearchableView(
@@ -86,6 +85,9 @@ export class SearchableContainer extends UI.Widget.VBox {
     const sourceFrame = new ResourceSourceFrame(resource, autoPrettyPrint);
     this._sourceFrame = sourceFrame;
     sourceFrame.setHighlighterType(highlighterType);
+    const canPrettyPrint = sourceFrame.resource.contentType().isDocumentOrScriptOrStyleSheet() ||
+        sourceFrame.highlighterType() === 'application/json';
+    sourceFrame.setCanPrettyPrint(canPrettyPrint, autoPrettyPrint);
     const searchableView = new UI.SearchableView.SearchableView(sourceFrame, sourceFrame);
     searchableView.element.classList.add('searchable-view');
     searchableView.setPlaceholder(i18nString(UIStrings.find));

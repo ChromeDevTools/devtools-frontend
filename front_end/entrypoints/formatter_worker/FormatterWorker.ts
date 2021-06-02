@@ -43,6 +43,7 @@ import {FormattedContentBuilder} from './FormattedContentBuilder.js';
 import {HTMLFormatter} from './HTMLFormatter.js';
 import {IdentityFormatter} from './IdentityFormatter.js';
 import {JavaScriptFormatter} from './JavaScriptFormatter.js';
+import {JSONFormatter} from './JSONFormatter.js';
 
 
 export interface Chunk {
@@ -185,6 +186,7 @@ export function format(
     mimeType: string, text: string, indentString?: string): Formatter.FormatterWorkerPool.FormatResult {
   // Default to a 4-space indent.
   indentString = indentString || '    ';
+  mimeType === 'application/json' ? indentString = '  ' : null;
 
   let result: Formatter.FormatterWorkerPool.FormatResult;
   const builder = new FormattedContentBuilder(indentString);
@@ -204,6 +206,11 @@ export function format(
       case 'text/javascript':
       case 'application/javascript': {
         const formatter = new JavaScriptFormatter(builder);
+        formatter.format(text, lineEndings, 0, text.length);
+        break;
+      }
+      case 'application/json': {
+        const formatter = new JSONFormatter(builder);
         formatter.format(text, lineEndings, 0, text.length);
         break;
       }

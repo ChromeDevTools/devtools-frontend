@@ -10,6 +10,7 @@ import * as HTMLFormatter from './HTMLFormatter.js';
 import * as HTMLOutline from './HTMLOutline.js';
 import * as JavaScriptFormatter from './JavaScriptFormatter.js';
 import * as JavaScriptOutline from './JavaScriptOutline.js';
+import * as JSONFormatter from './JSONFormatter.js';
 
 export {
   CSSFormatter,
@@ -20,4 +21,5 @@ export {
   HTMLOutline,
   JavaScriptFormatter,
   JavaScriptOutline,
+  JSONFormatter,
 };

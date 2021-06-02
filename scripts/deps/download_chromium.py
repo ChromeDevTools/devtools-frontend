@@ -66,6 +66,11 @@ def download_and_extract(options):
     # Fix permissions. Do this recursively is necessary for MacOS bundles.
     if os.path.isfile(EXPECTED_BINARY):
         os.chmod(EXPECTED_BINARY, 0o555)
+        # On linux, the crashpad_handler binary needs the +x bit, too.
+        crashpad = os.path.join(os.path.dirname(EXPECTED_BINARY),
+                                'crashpad_handler')
+        if os.path.isfile(crashpad):
+            os.chmod(crashpad, 0o555)
     else:
         for root, dirs, files in os.walk(EXPECTED_BINARY):
             for f in files:

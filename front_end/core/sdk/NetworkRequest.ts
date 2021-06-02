@@ -211,6 +211,8 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper implement
   _initialPriority: Protocol.Network.ResourcePriority|null;
   _currentPriority: Protocol.Network.ResourcePriority|null;
   _signedExchangeInfo: Protocol.Network.SignedExchangeInfo|null;
+  _webBundleInfo: WebBundleInfo|null;
+  _webBundleInnerRequestInfo: WebBundleInnerRequestInfo|null;
   _resourceType: Common.ResourceType.ResourceType;
   _contentData: Promise<ContentData>|null;
   _frames: WebSocketFrame[];
@@ -305,6 +307,8 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper implement
     this._currentPriority = null;
 
     this._signedExchangeInfo = null;
+    this._webBundleInfo = null;
+    this._webBundleInnerRequestInfo = null;
 
     this._resourceType = Common.ResourceType.resourceTypes.Other;
     this._contentData = null;
@@ -1190,6 +1194,23 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper implement
     return this._signedExchangeInfo;
   }
 
+
+  setWebBundleInfo(info: WebBundleInfo|null): void {
+    this._webBundleInfo = info;
+  }
+
+  webBundleInfo(): WebBundleInfo|null {
+    return this._webBundleInfo;
+  }
+
+  setWebBundleInnerRequestInfo(info: WebBundleInnerRequestInfo|null): void {
+    this._webBundleInnerRequestInfo = info;
+  }
+
+  webBundleInnerRequestInfo(): WebBundleInnerRequestInfo|null {
+    return this._webBundleInnerRequestInfo;
+  }
+
   async populateImageSource(image: HTMLImageElement): Promise<void> {
     const {content, encoded} = await this.contentData();
     let imageSrc = TextUtils.ContentProvider.contentAsDataURL(content, this._mimeType, encoded);
@@ -1584,4 +1605,14 @@ export interface ExtraResponseInfo {
   responseHeaders: NameValue[];
   responseHeadersText?: string;
   resourceIPAddressSpace: Protocol.Network.IPAddressSpace;
+}
+
+export interface WebBundleInfo {
+  resourceUrls?: string[];
+  errorMessage?: string;
+}
+
+export interface WebBundleInnerRequestInfo {
+  bundleRequestId?: string;
+  errorMessage?: string;
 }

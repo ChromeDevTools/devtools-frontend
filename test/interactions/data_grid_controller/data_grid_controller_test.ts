@@ -99,6 +99,15 @@ async function activateContextMenuOnBodyCell(cellText: string) {
   return headerCell;
 }
 
+async function waitForFirstBodyCellText(cellText: string) {
+  await waitForFunction(async () => {
+    const dataGrid = await getDataGrid();
+    const firstBodyCell = await $('tbody td', dataGrid);
+    const text = firstBodyCell && await firstBodyCell.evaluate(cell => (cell as HTMLElement).innerText);
+    return text === cellText;
+  });
+}
+
 describe('data grid controller', () => {
   preloadForCodeCoverage('data_grid_controller/basic.html');
 
@@ -151,13 +160,25 @@ describe('data grid controller', () => {
 
     const keyColumnSort = await waitFor('[aria-label="Key"]');
     await keyColumnSort.click();
+    await waitForFirstBodyCellText('Alpha');
 
-    await waitForFunction(async () => {
-      const dataGrid = await getDataGrid();
-      const firstBodyCell = await $('tbody td', dataGrid);
-      const text = firstBodyCell && await firstBodyCell.evaluate(cell => (cell as HTMLElement).innerText);
-      return text === 'Alpha';
-    });
+    const dataGrid = await getDataGrid();
+    const renderedText = await getInnerTextOfDataGridCells(dataGrid, 3);
+    assert.deepEqual(
+        [
+          ['Alpha', 'Letter A'],
+          ['Bravo', 'Letter B'],
+          ['Charlie', 'Letter C'],
+        ],
+        renderedText);
+  });
+
+  it('lets the user click on a column header to sort it', async () => {
+    await loadComponentDocExample('data_grid_controller/basic.html');
+
+    const keyHeaderCell = await waitFor('th[data-grid-header-cell="key"]');
+    await keyHeaderCell.click();
+    await waitForFirstBodyCellText('Alpha');
 
     const dataGrid = await getDataGrid();
     const renderedText = await getInnerTextOfDataGridCells(dataGrid, 3);

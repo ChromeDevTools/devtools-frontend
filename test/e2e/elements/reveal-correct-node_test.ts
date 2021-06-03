@@ -25,7 +25,7 @@ describe('The Issues tab', async () => {
 describe('The Elements panel', async () => {
   it('has a context menu link from an iframe to the corresponding frame details view', async () => {
     await goToResource('application/main-frame.html');
-    await clickOnContextMenu('[aria-label="iframe"]', 'Show iframe details');
+    await clickOnContextMenu('[aria-label="</iframe>"]', 'Show iframe details');
 
     await step('Frame details report with correct title is shown', async () => {
       await waitForFunction(async () => {

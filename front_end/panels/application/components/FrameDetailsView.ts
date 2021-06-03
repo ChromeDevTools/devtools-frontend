@@ -582,6 +582,7 @@ export class FrameDetailsReportView extends HTMLElement {
           width: '16px',
           height: '16px',
         } as IconButton.Icon.IconData}>
+        </${IconButton.Icon.Icon.litTagName}>
       </button>
     `;
     // clang-format on
@@ -752,8 +753,8 @@ export class FrameDetailsReportView extends HTMLElement {
       <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.secureContext)}</${
         ReportView.ReportView.ReportKey.litTagName}>
       <${ReportView.ReportView.ReportValue.litTagName}>
-        ${this.frame.isSecureContext() ? i18nString(UIStrings.yes) : i18nString(UIStrings.no)}
-        ${this.maybeRenderSecureContextExplanation()}
+        ${this.frame.isSecureContext() ? i18nString(UIStrings.yes) : i18nString(UIStrings.no)}\xA0${
+        this.maybeRenderSecureContextExplanation()}
       </${ReportView.ReportView.ReportValue.litTagName}>
       <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.crossoriginIsolated)}</${
         ReportView.ReportView.ReportKey.litTagName}>
@@ -769,9 +770,7 @@ export class FrameDetailsReportView extends HTMLElement {
   private maybeRenderSecureContextExplanation(): LitHtml.TemplateResult|{} {
     const explanation = this.getSecureContextExplanation();
     if (explanation) {
-      return LitHtml.html`
-        <span class="inline-comment">${explanation}</span>
-      `;
+      return LitHtml.html`<span class="inline-comment">${explanation}</span>`;
     }
     return LitHtml.nothing;
   }
@@ -914,8 +913,8 @@ export class FrameDetailsReportView extends HTMLElement {
         <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.measureMemory)}</${
           ReportView.ReportView.ReportKey.litTagName}>
         <${ReportView.ReportView.ReportValue.litTagName}>
-          <span title=${tooltipText}>${availabilityText}</span>
-          <x-link class="link" href="https://web.dev/monitor-total-page-memory-usage/">${
+          <span title=${tooltipText}>${
+          availabilityText}</span>\xA0<x-link class="link" href="https://web.dev/monitor-total-page-memory-usage/">${
           i18nString(UIStrings.learnMore)}</x-link>
         </${ReportView.ReportView.ReportValue.litTagName}>
       `;

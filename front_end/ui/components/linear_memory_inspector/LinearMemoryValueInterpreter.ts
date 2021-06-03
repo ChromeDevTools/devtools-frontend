@@ -170,7 +170,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
                   endianness: this.endianness,
                   valueTypeModes: this.valueTypeModeConfig,
                   memoryLength: this.memoryLength,
-                } as ValueDisplayData}
+                } as ValueDisplayData}>
               </${ValueInterpreterDisplay.litTagName}>`}
         </div>
       </div>

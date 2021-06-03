@@ -86,8 +86,8 @@ describe('StackTrace', () => {
 
     const stackTraceText = getCleanTextContentFromElements(expandableList.shadowRoot, '.stack-trace-row');
     assert.deepEqual(stackTraceText, [
-      'function1 @ www.example.com/script1.js',
-      'function2 @ www.example.com/script2.js',
+      'function1\xA0@\xA0www.example.com/script1.js',
+      'function2\xA0@\xA0www.example.com/script2.js',
     ]);
   });
 
@@ -132,7 +132,7 @@ describe('StackTrace', () => {
 
     let stackTraceText = getCleanTextContentFromElements(expandableList.shadowRoot, '.stack-trace-row');
     assert.deepEqual(stackTraceText, [
-      'function1 @ www.example.com/script.js',
+      'function1\xA0@\xA0www.example.com/script.js',
       'Show 1 more frame',
     ]);
 
@@ -142,8 +142,8 @@ describe('StackTrace', () => {
 
     stackTraceText = getCleanTextContentFromElements(expandableList.shadowRoot, '.stack-trace-row');
     assert.deepEqual(stackTraceText, [
-      'function1 @ www.example.com/script.js',
-      'function2 @ www.example.com/hidden.js',
+      'function1\xA0@\xA0www.example.com/script.js',
+      'function2\xA0@\xA0www.example.com/hidden.js',
     ]);
   });
 });

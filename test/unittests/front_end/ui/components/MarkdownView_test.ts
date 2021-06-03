@@ -13,7 +13,7 @@ describe('MarkdownView', async () => {
   describe('renderToken', async () => {
     it('wraps paragraph tokens in <p> tags', () => {
       const renderResult = MarkdownView.MarkdownView.renderToken({type: 'paragraph', tokens: []});
-      assert.deepStrictEqual(renderResult.strings.raw, ['<p>', '</p>']);
+      assert.deepStrictEqual(renderResult.strings.raw, ['<p>', '']);
     });
 
     it('wraps an unordered list token in <ul> tags', () => {
@@ -23,7 +23,7 @@ describe('MarkdownView', async () => {
 
     it('wraps list items in <li> tags', () => {
       const renderResult = MarkdownView.MarkdownView.renderToken({type: 'list_item', tokens: []});
-      assert.deepStrictEqual(renderResult.strings.raw, ['<li>', '</li>']);
+      assert.deepStrictEqual(renderResult.strings.raw, ['<li>', '']);
     });
 
     it('wraps a codespan token in <code> tags', () => {
@@ -63,7 +63,7 @@ describe('MarkdownView', async () => {
           MarkdownView.MarkdownView.renderToken({type: 'link', text: 'learn more', href: 'exampleLink'});
 
       assert.deepStrictEqual(
-          renderResult.strings.raw, ['<devtools-markdown-link .data=', '></devtools-markdown-link>']);
+          renderResult.strings.raw, ['<devtools-markdown-link .data="', '"></devtools-markdown-link>']);
     });
 
     it('throws an error if invalid link key is provided', () => {
@@ -78,7 +78,7 @@ describe('MarkdownView', async () => {
       const renderResult =
           MarkdownView.MarkdownView.renderToken({type: 'image', text: 'phone', href: 'testExampleImage'});
       assert.deepStrictEqual(
-          renderResult.strings.raw, ['<devtools-markdown-image .data=', '></devtools-markdown-image>']);
+          renderResult.strings.raw, ['<devtools-markdown-image .data="', '"></devtools-markdown-image>']);
     });
 
     it('renders image with valid key', () => {
@@ -88,7 +88,7 @@ describe('MarkdownView', async () => {
       });
       const renderResult = MarkdownView.MarkdownView.renderToken({type: 'image', text: 'phone', href: 'exampleImage'});
       assert.deepStrictEqual(
-          renderResult.strings.raw, ['<devtools-markdown-image .data=', '></devtools-markdown-image>']);
+          renderResult.strings.raw, ['<devtools-markdown-image .data="', '"></devtools-markdown-image>']);
     });
 
     it('throws an error if invalid image key is provided', () => {

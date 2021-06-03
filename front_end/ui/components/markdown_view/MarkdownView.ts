@@ -132,21 +132,21 @@ const renderText = (token: any): LitHtml.TemplateResult => {
 // TODO(crbug.com/1108699): Fix types when they are available.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const tokenRenderers = new Map<string, (token: any) => LitHtml.TemplateResult>([
-  ['paragraph', (token): LitHtml.TemplateResult => html`<p>${renderChildTokens(token)}</p>`],
+  ['paragraph', (token): LitHtml.TemplateResult => html`<p>${renderChildTokens(token)}`],
   ['list', (token): LitHtml.TemplateResult => html`<ul>${token.items.map(renderToken)}</ul>`],
-  ['list_item', (token): LitHtml.TemplateResult => html`<li>${renderChildTokens(token)}</li>`],
+  ['list_item', (token): LitHtml.TemplateResult => html`<li>${renderChildTokens(token)}`],
   ['text', renderText],
   ['codespan', (token): LitHtml.TemplateResult => html`<code>${unescape(token.text)}</code>`],
   ['space', (): LitHtml.TemplateResult => html``],
   [
     'link',
-    (token): LitHtml.TemplateResult => html`<${MarkdownLink.litTagName} .data=${
-        {key: token.href, title: token.text} as MarkdownLinkData}></${MarkdownLink.litTagName}>`,
+    (token): LitHtml.TemplateResult => html`<${MarkdownLink.litTagName} .data="${
+        {key: token.href, title: token.text} as MarkdownLinkData}"></${MarkdownLink.litTagName}>`,
   ],
   [
     'image',
-    (token): LitHtml.TemplateResult => html`<${MarkdownImage.litTagName} .data=${
-        {key: token.href, title: token.text} as MarkdownImageData}></${MarkdownImage.litTagName}>`,
+    (token): LitHtml.TemplateResult => html`<${MarkdownImage.litTagName} .data="${
+        {key: token.href, title: token.text} as MarkdownImageData}"></${MarkdownImage.litTagName}>`,
   ],
 ]);
 

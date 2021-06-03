@@ -858,7 +858,6 @@ export class DataGrid extends HTMLElement {
               if (!col.visible) {
                 return LitHtml.nothing;
               }
-
               return LitHtml.html`<col style=${style} data-col-column-index=${colIndex}>`;
             })}
           </colgroup>

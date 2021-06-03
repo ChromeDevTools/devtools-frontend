@@ -116,12 +116,12 @@ describe('FrameDetailsView', () => {
       'https://www.example.com',
       '<iframe>',
       '',
-      'Yes Localhost is always a secure context',
+      'Yes\xA0Localhost is always a secure context',
       'Yes',
       'None',
       'SameOrigin',
       'available, transferable',
-      'available Learn more',
+      'available\xA0Learn more',
     ]);
 
     const stackTrace = getElementWithinComponent(
@@ -131,6 +131,6 @@ describe('FrameDetailsView', () => {
         getElementWithinComponent(stackTrace, 'devtools-expandable-list', ExpandableList.ExpandableList.ExpandableList);
     assertShadowRoot(expandableList.shadowRoot);
     const expandableListText = getCleanTextContentFromElements(expandableList.shadowRoot, '.stack-trace-row');
-    assert.deepEqual(expandableListText, ['function1 @ www.example.com/script.js:16']);
+    assert.deepEqual(expandableListText, ['function1\xA0@\xA0www.example.com/script.js:16']);
   });
 });

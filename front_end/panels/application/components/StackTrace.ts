@@ -101,7 +101,7 @@ export class StackTrace extends HTMLElement {
                 ${item.functionName}
               </div>
               <div class="stack-trace-source-location">
-                ${item.link ? LitHtml.html`<div class="text-ellipsis">@\xA0${item.link}</div>` : LitHtml.nothing}
+                ${item.link ? LitHtml.html`<div class="text-ellipsis">\xA0@\xA0${item.link}</div>` : LitHtml.nothing}
               </div>
             </div>
           `);

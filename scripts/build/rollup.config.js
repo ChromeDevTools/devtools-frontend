@@ -4,7 +4,9 @@
 
 // @ts-check
 
+import {defaultStrategy} from 'minify-html-literals/src/strategy';  // eslint-disable-line rulesdir/es_modules_import
 import * as path from 'path';
+import minifyHTML from 'rollup-plugin-minify-html-template-literals';
 import {terser} from 'rollup-plugin-terser';
 
 /**
@@ -39,6 +41,27 @@ function dirnameWithSeparator(file) {
   return path.dirname(file) + path.sep;
 }
 
+/**
+ * @type {import("minify-html-literals").Strategy<import("html-minifier").Options, unknown>}
+ */
+const minifyHTMLStrategy = {
+  getPlaceholder() {
+    return 'TEMPLATE_EXPRESSION';
+  },
+  combineHTMLStrings(parts, placeholder) {
+    return defaultStrategy.combineHTMLStrings(parts, placeholder);
+  },
+  minifyHTML(html, options) {
+    return defaultStrategy.minifyHTML(html, options);
+  },
+  minifyCSS(css, options) {
+    return defaultStrategy.minifyCSS(css, options);
+  },
+  splitHTMLByPlaceholder(html, placeholder) {
+    return defaultStrategy.splitHTMLByPlaceholder(html, placeholder);
+  }
+};
+
 /** @type {function({configDCHECK: boolean}): import("rollup").MergedRollupOptions} */
 // eslint-disable-next-line import/no-default-export
 export default commandLineArgs => ({
@@ -48,6 +71,15 @@ export default commandLineArgs => ({
     format: 'esm',
   }],
   plugins: [
+    minifyHTML({
+      options: {
+        strategy: minifyHTMLStrategy,
+        minifyOptions: {
+          minifyCSS: false,
+          removeOptionalTags: true,
+        },
+      },
+    }),
     terser({
       compress: {
         pure_funcs: commandLineArgs.configDCHECK ? ['Platform.DCHECK'] : [],

@@ -44,10 +44,7 @@ export async function getDataGridData(selector: string, columns: string[]) {
 export async function getTrimmedTextContent(selector: string) {
   const elements = await $$(selector);
   return Promise.all(elements.map(element => element.evaluate(e => {
-    return (e.textContent || '')
-        .trim()
-        .replace(/\n/gm, ' ')    // replace new line character with space
-        .replace(/\s+/gm, ' ');  // replace multiple spaces with single space
+    return (e.textContent || '').trim().replace(/[ \n]{2,}/gm, '');  // remove multiple consecutive whitespaces
   })));
 }
 

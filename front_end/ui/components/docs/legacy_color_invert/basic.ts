@@ -3,62 +3,97 @@
 // found in the LICENSE file.
 
 import * as FrontendHelpers from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import * as ThemeSupport from '../../../legacy/theme_support/theme_support.js';
+import * as Common from '../../../../core/common/common.js';
+import * as Platform from '../../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../helpers/helpers.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
-const inputField = document.querySelector<HTMLInputElement>('#text-input input');
-if (!inputField) {
-  throw new Error('could not find input');
+const form = document.querySelector<HTMLFormElement>('form');
+if (!form) {
+  throw new Error('could not find form');
 }
 
-const setting = FrontendHelpers.createFakeSetting('theme', 'dark');
-const themeSupport = ThemeSupport.ThemeSupport.instance({
-  forceNew: true,
-  setting,
+form.addEventListener('submit', event => {
+  event.preventDefault();
+  const property = form.querySelector<HTMLInputElement>('#css-property')?.value;
+  const value = form.querySelector<HTMLInputElement>('#css-value')?.value;
+  if (!property || !value) {
+    return;
+  }
+  const output = legacyInvertVariableForDarkMode(property, value);
+  const outputElem = document.querySelector<HTMLElement>('#output');
+  if (outputElem) {
+    outputElem.innerText = output;
+  }
 });
 
-inputField.addEventListener('input', (event: Event) => {
-  if (!event.target) {
-    return;
-  }
-  let value = (event.target as HTMLInputElement).value;
-  if (!value.endsWith(';')) {
-    value = value + ';';
-  }
-  generateCSS(value);
-});
+/**
+ * This code is largely copy and pasted from the legacy theme_support_impl
+ * around color patching. This is because we are working towards removing the
+ * legacy color patching, but still may need to be able to generate legacy dark
+ * mode values for light colors during the migration. This doc exists for that
+ * reason.
+ */
 
-let generateCSSID = 0;
-function generateCSS(inputValue: string) {
-  generateCSSID++;
-  const outputBox = document.querySelector<HTMLElement>('#output');
-  if (!outputBox) {
-    return;
-  }
-  outputBox.innerText = '';
-  const inputText = `fake-element-selector {
-    color: ${inputValue};
-  }`;
-  const result = themeSupport.themeStyleSheet(`fake-stylesheet-${generateCSSID}`, inputText);
-  if (!result) {
-    return;
-  }
-  const darkModeColor = /fake-element-selector{color:(.+);}/.exec(result);
-  if (!darkModeColor || !darkModeColor[1]) {
-    return;
-  }
-  const darkModeColorValue = darkModeColor[1];
-  const outputCSS = `fake-element-selector {
-  --override-my-custom-value: ${inputValue};
-};
+type ColorUsage = 'unknown'|'foreground'|'background';
 
-.-theme-with-dark-background fake-element-selector,
-:host-context(.-theme-with-dark-background) fake-element-selector {
-  --override-my-custom-value: ${darkModeColorValue};
-}`;
+function patchHSLA(hsla: number[], colorUsage: ColorUsage): void {
+  const hue = hsla[0];
+  const sat = hsla[1];
+  let lit: number = hsla[2];
+  const alpha = hsla[3];
 
-  outputBox.innerText = outputCSS;
+  const minCap = colorUsage === 'background' ? 0.14 : 0;
+  const maxCap = colorUsage === 'foreground' ? 0.9 : 1;
+  lit = 1 - lit;
+  if (lit < minCap * 2) {
+    lit = minCap + lit / 2;
+  } else if (lit > 2 * maxCap - 1) {
+    lit = maxCap - 1 / 2 + lit / 2;
+  }
+  hsla[0] = Platform.NumberUtilities.clamp(hue, 0, 1);
+  hsla[1] = Platform.NumberUtilities.clamp(sat, 0, 1);
+  hsla[2] = Platform.NumberUtilities.clamp(lit, 0, 1);
+  hsla[3] = Platform.NumberUtilities.clamp(alpha, 0, 1);
+}
+
+function patchColor(colorAsText: string, colorUsage: ColorUsage): string {
+  const color = Common.Color.Color.parse(colorAsText);
+  if (!color) {
+    return colorAsText;
+  }
+  const hsla = color.hsla();
+  patchHSLA(hsla, colorUsage);
+
+  const rgba: number[] = [];
+  Common.Color.Color.hsl2rgb(hsla, rgba);
+  const outColor = new Common.Color.Color(rgba, color.format());
+  let outText = outColor.asString(null);
+  if (!outText) {
+    outText = outColor.asString(outColor.hasAlpha() ? Common.Color.Format.RGBA : Common.Color.Format.RGB);
+  }
+  return outText || colorAsText;
+}
+
+function legacyInvertVariableForDarkMode(cssProperty: string, cssValue: string): string {
+  let colorUsage: ColorUsage = 'unknown';
+  if (cssProperty.indexOf('background') === 0 || cssProperty.indexOf('border') === 0) {
+    colorUsage = 'background';
+  }
+  if (cssProperty.indexOf('background') === -1) {
+    colorUsage = 'foreground';
+  }
+
+  const items = cssValue.replace(Common.Color.Regex, '\0$1\0').split('\0');
+  const output = [];
+  for (const item of items) {
+    if (!item) {
+      continue;
+    }
+    const newColor = patchColor(item, colorUsage);
+    output.push(newColor);
+  }
+  return output.join(' ');
 }

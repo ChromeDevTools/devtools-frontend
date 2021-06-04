@@ -102,7 +102,7 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel {
   _agent: ProtocolProxyApi.DOMStorageApi;
   _enabled?: boolean;
 
-  constructor(target: SDK.SDKModel.Target) {
+  constructor(target: SDK.Target.Target) {
     super(target);
 
     this._securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
@@ -240,7 +240,7 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel {
   }
 }
 
-SDK.SDKModel.SDKModel.register(DOMStorageModel, {capabilities: SDK.SDKModel.Capability.DOM, autostart: false});
+SDK.SDKModel.SDKModel.register(DOMStorageModel, {capabilities: SDK.Target.Capability.DOM, autostart: false});
 
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum

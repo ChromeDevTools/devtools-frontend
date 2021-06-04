@@ -14,8 +14,9 @@ import type {DOMNode} from './DOMModel.js';
 import {DOMModel, Events as DOMModelEvents} from './DOMModel.js';  // eslint-disable-line no-unused-vars
 import {RemoteObject} from './RemoteObject.js';
 import {RuntimeModel} from './RuntimeModel.js';
-import type {Target} from './SDKModel.js';
-import {Capability, SDKModel} from './SDKModel.js';
+import type {Target} from './Target.js';
+import {Capability} from './Target.js';
+import {SDKModel} from './SDKModel.js';
 import type {SDKModelObserver} from './TargetManager.js';
 import {TargetManager} from './TargetManager.js';
 

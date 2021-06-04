@@ -24,7 +24,7 @@ const makeFrame =
 
 function mockBuildStackTraceRows(
     stackTrace: Protocol.Runtime.StackTrace,
-    _target: SDK.SDKModel.Target|null,
+    _target: SDK.Target.Target|null,
     _linkifier: Components.Linkifier.Linkifier,
     _tabStops: boolean|undefined,
     _updateCallback?: (arg0: (Components.JSPresentationUtils.StackTraceRegularRow|
@@ -66,7 +66,7 @@ describe('StackTrace', () => {
             },
           ],
         },
-        creationStackTraceTarget: {} as SDK.SDKModel.Target,
+        creationStackTraceTarget: {} as SDK.Target.Target,
       }),
     });
     const component = new ApplicationComponents.StackTrace.StackTrace();
@@ -112,7 +112,7 @@ describe('StackTrace', () => {
             },
           ],
         },
-        creationStackTraceTarget: {} as SDK.SDKModel.Target,
+        creationStackTraceTarget: {} as SDK.Target.Target,
       }),
     });
     const component = new ApplicationComponents.StackTrace.StackTrace();

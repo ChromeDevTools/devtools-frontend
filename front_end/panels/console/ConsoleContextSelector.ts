@@ -125,7 +125,7 @@ export class ConsoleContextSelector implements SDK.TargetManager.SDKModelObserve
     let targetDepth = 0;
     let parentTarget = target.parentTarget();
     // Special casing service workers to be top-level.
-    while (parentTarget && target.type() !== SDK.SDKModel.Type.ServiceWorker) {
+    while (parentTarget && target.type() !== SDK.Target.Type.ServiceWorker) {
       targetDepth++;
       target = parentTarget;
       parentTarget = target.parentTarget();

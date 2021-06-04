@@ -90,7 +90,7 @@ export function displayNameForURL(url: string): string {
 }
 
 export function metadataForURL(
-    target: SDK.SDKModel.Target, frameId: string, url: string): Workspace.UISourceCode.UISourceCodeMetadata|null {
+    target: SDK.Target.Target, frameId: string, url: string): Workspace.UISourceCode.UISourceCodeMetadata|null {
   const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
   if (!resourceTreeModel) {
     return null;

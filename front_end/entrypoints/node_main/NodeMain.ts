@@ -41,7 +41,7 @@ export class NodeMainImpl extends Common.ObjectWrapper.ObjectWrapper implements 
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConnectToNodeJSFromFrontend);
     SDK.Connections.initMainConnection(async () => {
       const target = SDK.TargetManager.TargetManager.instance().createTarget(
-          'main', i18nString(UIStrings.main), SDK.SDKModel.Type.Browser, null);
+          'main', i18nString(UIStrings.main), SDK.Target.Type.Browser, null);
       target.setInspectedURL('Node.js');
     }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);
   }
@@ -51,11 +51,11 @@ Common.Runnable.registerEarlyInitializationRunnable(NodeMainImpl.instance);
 
 export class NodeChildTargetManager extends SDK.SDKModel.SDKModel implements ProtocolProxyApi.TargetDispatcher {
   _targetManager: SDK.TargetManager.TargetManager;
-  _parentTarget: SDK.SDKModel.Target;
+  _parentTarget: SDK.Target.Target;
   _targetAgent: ProtocolProxyApi.TargetApi;
-  _childTargets: Map<string, SDK.SDKModel.Target>;
+  _childTargets: Map<string, SDK.Target.Target>;
   _childConnections: Map<string, NodeConnection>;
-  constructor(parentTarget: SDK.SDKModel.Target) {
+  constructor(parentTarget: SDK.Target.Target) {
     super(parentTarget);
     this._targetManager = parentTarget.targetManager();
     this._parentTarget = parentTarget;
@@ -111,7 +111,7 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel implements Pro
     const connection = new NodeConnection(this._targetAgent, sessionId);
     this._childConnections.set(sessionId, connection);
     const target = this._targetManager.createTarget(
-        targetInfo.targetId, name, SDK.SDKModel.Type.Node, this._parentTarget, undefined, undefined, connection);
+        targetInfo.targetId, name, SDK.Target.Type.Node, this._parentTarget, undefined, undefined, connection);
     this._childTargets.set(sessionId, target);
     target.runtimeAgent().invoke_runIfWaitingForDebugger();
   }
@@ -171,4 +171,4 @@ export class NodeConnection implements ProtocolClient.InspectorBackend.Connectio
   }
 }
 
-SDK.SDKModel.SDKModel.register(NodeChildTargetManager, {capabilities: SDK.SDKModel.Capability.Target, autostart: true});
+SDK.SDKModel.SDKModel.register(NodeChildTargetManager, {capabilities: SDK.Target.Capability.Target, autostart: true});

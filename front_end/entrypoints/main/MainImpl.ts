@@ -803,7 +803,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
 
     if (UI.DockController.DockController.instance().dockSide() === UI.DockController.State.Undocked) {
       const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
-      if (mainTarget && mainTarget.type() === SDK.SDKModel.Type.Frame) {
+      if (mainTarget && mainTarget.type() === SDK.Target.Type.Frame) {
         contextMenu.defaultSection().appendAction('inspector_main.focus-debuggee', i18nString(UIStrings.focusDebuggee));
       }
     }
@@ -888,7 +888,7 @@ export class PauseListener {
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._debuggerPaused, this);
     const debuggerModel = (event.data as SDK.DebuggerModel.DebuggerModel);
     const debuggerPausedDetails = debuggerModel.debuggerPausedDetails();
-    UI.Context.Context.instance().setFlavor(SDK.SDKModel.Target, debuggerModel.target());
+    UI.Context.Context.instance().setFlavor(SDK.Target.Target, debuggerModel.target());
     Common.Revealer.reveal(debuggerPausedDetails);
   }
 }

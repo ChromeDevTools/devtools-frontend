@@ -343,7 +343,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     modelData.callFrameLocations.clear();
   }
 
-  _resetForTest(target: SDK.SDKModel.Target): void {
+  _resetForTest(target: SDK.Target.Target): void {
     const debuggerModel = (target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel);
     const modelData = this._debuggerModelToData.get(debuggerModel);
     if (modelData) {

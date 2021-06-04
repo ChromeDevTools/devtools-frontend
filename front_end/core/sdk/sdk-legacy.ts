@@ -212,12 +212,12 @@ SDK.SourceMapManager = SDKModule.SourceMapManager.SourceMapManager;
 SDK.SourceMapManager.Events = SDKModule.SourceMapManager.Events;
 
 /** @constructor */
-SDK.Target = SDKModule.SDKModel.Target;
+SDK.Target = SDKModule.Target.Target;
 
 /**
  * @enum {string}
  */
-SDK.Target.Type = SDKModule.SDKModel.Type;
+SDK.Target.Type = SDKModule.Target.Type;
 
 /** @constructor */
 SDK.TargetManager = SDKModule.TargetManager.TargetManager;

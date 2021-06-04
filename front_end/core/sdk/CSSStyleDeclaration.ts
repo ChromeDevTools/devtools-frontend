@@ -11,7 +11,7 @@ import {cssMetadata} from './CSSMetadata.js';
 import type {CSSModel, Edit} from './CSSModel.js'; // eslint-disable-line no-unused-vars
 import {CSSProperty} from './CSSProperty.js';
 import type {CSSRule} from './CSSRule.js'; // eslint-disable-line no-unused-vars
-import type {Target} from './SDKModel.js'; // eslint-disable-line no-unused-vars
+import type {Target} from './Target.js';   // eslint-disable-line no-unused-vars
 
 export class CSSStyleDeclaration {
   _cssModel: CSSModel;

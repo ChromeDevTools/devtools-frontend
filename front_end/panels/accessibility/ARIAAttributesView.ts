@@ -67,7 +67,7 @@ export class ARIAAttributesTreeElement extends UI.TreeOutline.TreeElement {
   _valueElement?: Element;
   _prompt?: ARIAAttributePrompt;
 
-  constructor(parentPane: ARIAAttributesPane, attribute: SDK.DOMModel.Attribute, _target: SDK.SDKModel.Target) {
+  constructor(parentPane: ARIAAttributesPane, attribute: SDK.DOMModel.Attribute, _target: SDK.Target.Target) {
     super('');
 
     this._parentPane = parentPane;

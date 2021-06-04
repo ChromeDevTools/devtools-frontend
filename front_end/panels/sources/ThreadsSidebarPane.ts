@@ -32,11 +32,11 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
 
     this._items = new UI.ListModel.ListModel();
     this._list = new UI.ListControl.ListControl(this._items, this, UI.ListControl.ListMode.NonViewport);
-    const currentTarget = UI.Context.Context.instance().flavor(SDK.SDKModel.Target);
+    const currentTarget = UI.Context.Context.instance().flavor(SDK.Target.Target);
     this._selectedModel = currentTarget !== null ? currentTarget.model(SDK.DebuggerModel.DebuggerModel) : null;
     this.contentElement.appendChild(this._list.element);
 
-    UI.Context.Context.instance().addFlavorChangeListener(SDK.SDKModel.Target, this._targetFlavorChanged, this);
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.Target.Target, this._targetFlavorChanged, this);
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.DebuggerModel.DebuggerModel, this);
   }
 
@@ -59,10 +59,10 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
     element.appendChild(UI.Icon.Icon.create('smallicon-thick-right-arrow', 'selected-thread-icon'));
     element.tabIndex = -1;
     self.onInvokeElement(element, event => {
-      UI.Context.Context.instance().setFlavor(SDK.SDKModel.Target, debuggerModel.target());
+      UI.Context.Context.instance().setFlavor(SDK.Target.Target, debuggerModel.target());
       event.consume(true);
     });
-    const isSelected = UI.Context.Context.instance().flavor(SDK.SDKModel.Target) === debuggerModel.target();
+    const isSelected = UI.Context.Context.instance().flavor(SDK.Target.Target) === debuggerModel.target();
     element.classList.toggle('selected', isSelected);
     UI.ARIAUtils.setSelected(element, isSelected);
 
@@ -77,7 +77,7 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
     }
 
     function targetNameChanged(event: Common.EventTarget.EventTargetEvent): void {
-      const target = (event.data as SDK.SDKModel.Target);
+      const target = (event.data as SDK.Target.Target);
       if (target === debuggerModel.target()) {
         updateTitle();
       }
@@ -126,7 +126,7 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
 
   modelAdded(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
     this._items.insert(this._items.length, debuggerModel);
-    const currentTarget = UI.Context.Context.instance().flavor(SDK.SDKModel.Target);
+    const currentTarget = UI.Context.Context.instance().flavor(SDK.Target.Target);
     if (currentTarget === debuggerModel.target()) {
       this._list.selectItem(debuggerModel);
     }
@@ -138,7 +138,7 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
 
   _targetFlavorChanged(event: Common.EventTarget.EventTargetEvent): void {
     const hadFocus = this.hasFocus();
-    const target = (event.data as SDK.SDKModel.Target);
+    const target = (event.data as SDK.Target.Target);
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
     this._list.selectItem(debuggerModel);
     if (debuggerModel) {

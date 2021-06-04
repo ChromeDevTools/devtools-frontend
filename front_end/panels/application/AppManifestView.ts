@@ -346,7 +346,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
   _displayField: HTMLElement;
   _throttler: Common.Throttler.Throttler;
   _registeredListeners: Common.EventTarget.EventDescriptor[];
-  _target?: SDK.SDKModel.Target;
+  _target?: SDK.Target.Target;
   _resourceTreeModel?: SDK.ResourceTreeModel.ResourceTreeModel|null;
   _serviceWorkerManager?: SDK.ServiceWorkerManager.ServiceWorkerManager|null;
   constructor() {
@@ -402,7 +402,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
     this._registeredListeners = [];
   }
 
-  targetAdded(target: SDK.SDKModel.Target): void {
+  targetAdded(target: SDK.Target.Target): void {
     if (this._target) {
       return;
     }
@@ -429,7 +429,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
     ];
   }
 
-  targetRemoved(target: SDK.SDKModel.Target): void {
+  targetRemoved(target: SDK.Target.Target): void {
     if (this._target !== target) {
       return;
     }

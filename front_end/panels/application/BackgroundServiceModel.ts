@@ -13,7 +13,7 @@ export class BackgroundServiceModel extends SDK.SDKModel.SDKModel implements
   _backgroundServiceAgent: ProtocolProxyApi.BackgroundServiceApi;
   _events: Map<Protocol.BackgroundService.ServiceName, Protocol.BackgroundService.BackgroundServiceEvent[]>;
 
-  constructor(target: SDK.SDKModel.Target) {
+  constructor(target: SDK.Target.Target) {
     super(target);
     this._backgroundServiceAgent = target.backgroundServiceAgent();
     target.registerBackgroundServiceDispatcher(this);
@@ -52,8 +52,7 @@ export class BackgroundServiceModel extends SDK.SDKModel.SDKModel implements
   }
 }
 
-SDK.SDKModel.SDKModel.register(
-    BackgroundServiceModel, {capabilities: SDK.SDKModel.Capability.Browser, autostart: false});
+SDK.SDKModel.SDKModel.register(BackgroundServiceModel, {capabilities: SDK.Target.Capability.Browser, autostart: false});
 
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum

@@ -35,7 +35,7 @@ export class RecorderModel extends SDK.SDKModel.SDKModel {
   _currentRecordingSession: RecordingSession|null;
   _indentation: string;
 
-  constructor(target: SDK.SDKModel.Target) {
+  constructor(target: SDK.Target.Target) {
     super(target);
     this._debuggerAgent = target.debuggerAgent();
     this._domDebuggerAgent = target.domdebuggerAgent();
@@ -130,4 +130,4 @@ export class RecorderModel extends SDK.SDKModel.SDKModel {
   }
 }
 
-SDK.SDKModel.SDKModel.register(RecorderModel, {capabilities: SDK.SDKModel.Capability.None, autostart: false});
+SDK.SDKModel.SDKModel.register(RecorderModel, {capabilities: SDK.Target.Capability.None, autostart: false});

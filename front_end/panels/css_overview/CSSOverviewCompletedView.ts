@@ -234,7 +234,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
   _data: OverviewData|null;
   _fragment?: UI.Fragment.Fragment;
 
-  constructor(controller: OverviewController, target: SDK.SDKModel.Target) {
+  constructor(controller: OverviewController, target: SDK.Target.Target) {
     super('css_overview_completed_view');
     this.registerRequiredCSS('panels/css_overview/cssOverviewCompletedView.css', {enableLegacyPatching: false});
 

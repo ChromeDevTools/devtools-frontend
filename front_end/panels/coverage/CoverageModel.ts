@@ -55,7 +55,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
   _cssBacklog: BacklogItem<Protocol.CSS.RuleUsage>[];
   _performanceTraceRecording: boolean|null;
 
-  constructor(target: SDK.SDKModel.Target) {
+  constructor(target: SDK.Target.Target) {
     super(target);
     this._cpuProfilerModel = target.model(SDK.CPUProfilerModel.CPUProfilerModel);
     this._cssModel = target.model(SDK.CSSModel.CSSModel);
@@ -481,7 +481,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
   }
 }
 
-SDK.SDKModel.SDKModel.register(CoverageModel, {capabilities: SDK.SDKModel.Capability.None, autostart: false});
+SDK.SDKModel.SDKModel.register(CoverageModel, {capabilities: SDK.Target.Capability.None, autostart: false});
 
 export interface EntryForExport {
   url: string;

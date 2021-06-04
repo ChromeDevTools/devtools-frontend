@@ -47,7 +47,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel implements ProtocolPro
   _throttler: Common.Throttler.Throttler;
   _enabled?: boolean;
 
-  constructor(target: SDK.SDKModel.Target) {
+  constructor(target: SDK.Target.Target) {
     super(target);
     target.registerStorageDispatcher(this);
     this._securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
@@ -416,7 +416,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel implements ProtocolPro
   }
 }
 
-SDK.SDKModel.SDKModel.register(IndexedDBModel, {capabilities: SDK.SDKModel.Capability.Storage, autostart: false});
+SDK.SDKModel.SDKModel.register(IndexedDBModel, {capabilities: SDK.Target.Capability.Storage, autostart: false});
 
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum

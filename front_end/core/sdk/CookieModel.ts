@@ -12,8 +12,9 @@ import type {Attributes} from './Cookie.js';
 import {Cookie} from './Cookie.js';          // eslint-disable-line no-unused-vars
 import type {Resource} from './Resource.js'; // eslint-disable-line no-unused-vars
 import {ResourceTreeModel} from './ResourceTreeModel.js';
-import type {Target} from './SDKModel.js';
-import {Capability, SDKModel} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {Target} from './Target.js';
+import {Capability} from './Target.js';
+import {SDKModel} from './SDKModel.js';
 
 export class CookieModel extends SDKModel {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration

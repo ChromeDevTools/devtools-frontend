@@ -342,7 +342,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     }
   }
 
-  _targetToString(target: SDK.SDKModel.Target|null): string {
+  _targetToString(target: SDK.Target.Target|null): string {
     if (!target) {
       return '';
     }
@@ -388,7 +388,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
       return;
     }
 
-    const sdkTarget = target as SDK.SDKModel.Target | null;
+    const sdkTarget = target as SDK.Target.Target | null;
     const newRow: DataGrid.DataGridUtils.Row = {
       cells: [
         {columnId: 'method', value: message.method},
@@ -422,7 +422,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     if (this.isRecording) {
       this.messages.push({...message, type: 'send'});
     }
-    const sdkTarget = target as SDK.SDKModel.Target | null;
+    const sdkTarget = target as SDK.Target.Target | null;
     const newRow: DataGrid.DataGridUtils.Row = {
       styles: {
         '--override-data-grid-row-background-color': 'var(--override-data-grid-sent-message-row-background-color)',

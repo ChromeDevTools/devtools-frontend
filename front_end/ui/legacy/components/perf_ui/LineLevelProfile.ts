@@ -132,7 +132,7 @@ export class Memory {
     this._helper.reset();
   }
 
-  appendHeapProfile(profile: Protocol.HeapProfiler.SamplingHeapProfile, target: SDK.SDKModel.Target|null): void {
+  appendHeapProfile(profile: Protocol.HeapProfiler.SamplingHeapProfile, target: SDK.Target.Target|null): void {
     const helper = this._helper;
     processNode(profile.head);
     helper.scheduleUpdate();
@@ -156,7 +156,7 @@ export class Helper {
   _type: string;
   _locationPool: Bindings.LiveLocation.LiveLocationPool;
   _updateTimer: number|null;
-  _lineData!: Map<SDK.SDKModel.Target|null, Map<string|number, Map<number, number>>>;
+  _lineData!: Map<SDK.Target.Target|null, Map<string|number, Map<number, number>>>;
 
   constructor(type: string) {
     this._type = type;
@@ -171,7 +171,7 @@ export class Helper {
     this.scheduleUpdate();
   }
 
-  addLineData(target: SDK.SDKModel.Target|null, scriptIdOrUrl: string|number, line: number, data: number): void {
+  addLineData(target: SDK.Target.Target|null, scriptIdOrUrl: string|number, line: number, data: number): void {
     let targetData = this._lineData.get(target);
     if (!targetData) {
       targetData = new Map();
@@ -200,7 +200,7 @@ export class Helper {
     Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodes().forEach(
         uiSourceCode => uiSourceCode.removeDecorationsForType(this._type));
     for (const targetToScript of this._lineData) {
-      const target = (targetToScript[0] as SDK.SDKModel.Target | null);
+      const target = (targetToScript[0] as SDK.Target.Target | null);
       const debuggerModel = target ? target.model(SDK.DebuggerModel.DebuggerModel) : null;
       const scriptToLineMap = (targetToScript[1] as Map<string|number, Map<number, number>>);
       for (const scriptToLine of scriptToLineMap) {

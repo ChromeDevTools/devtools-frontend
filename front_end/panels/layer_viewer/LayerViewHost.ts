@@ -106,7 +106,7 @@ export class LayerViewHost {
   _hoveredObject: Selection|null;
   _showInternalLayersSetting: Common.Settings.Setting<boolean>;
   _snapshotLayers: Map<SDK.LayerTreeBase.Layer, SnapshotSelection>;
-  _target?: SDK.SDKModel.Target|null;
+  _target?: SDK.Target.Target|null;
   constructor() {
     this._views = [];
     this._selectedObject = null;

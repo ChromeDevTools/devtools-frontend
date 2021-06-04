@@ -13,7 +13,7 @@ export class InputModel extends SDK.SDKModel.SDKModel {
   _activeTouchOffsetTop: number|null;
   _activeTouchParams: Protocol.Input.EmulateTouchFromMouseEventRequest|null;
 
-  constructor(target: SDK.SDKModel.Target) {
+  constructor(target: SDK.Target.Target) {
     super(target);
     this._inputAgent = target.inputAgent();
     this._activeTouchOffsetTop = null;
@@ -118,4 +118,4 @@ export class InputModel extends SDK.SDKModel.SDKModel {
   }
 }
 
-SDK.SDKModel.SDKModel.register(InputModel, {capabilities: SDK.SDKModel.Capability.Input, autostart: false});
+SDK.SDKModel.SDKModel.register(InputModel, {capabilities: SDK.Target.Capability.Input, autostart: false});

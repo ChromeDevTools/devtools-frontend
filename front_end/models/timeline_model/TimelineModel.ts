@@ -260,7 +260,7 @@ export class TimelineModelImpl {
     return {time: this._totalBlockingTime, estimated: false};
   }
 
-  targetByEvent(event: SDK.TracingModel.Event): SDK.SDKModel.Target|null {
+  targetByEvent(event: SDK.TracingModel.Event): SDK.Target.Target|null {
     // FIXME: Consider returning null for loaded traces.
     const workerId = this._workerIdByThread.get(event.thread);
     const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
@@ -582,7 +582,7 @@ export class TimelineModelImpl {
       SDK.CPUProfileDataModel.CPUProfileDataModel|null {
     const events = thread.events();
     let cpuProfile;
-    let target: (SDK.SDKModel.Target|null)|null = null;
+    let target: (SDK.Target.Target|null)|null = null;
 
     // Check for legacy CpuProfile event format first.
     let cpuProfileEvent: (SDK.TracingModel.Event|undefined)|SDK.TracingModel.Event = events[events.length - 1];

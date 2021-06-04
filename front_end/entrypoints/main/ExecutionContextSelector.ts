@@ -14,7 +14,7 @@ export class ExecutionContextSelector implements SDK.TargetManager.SDKModelObser
 
   constructor(targetManager: SDK.TargetManager.TargetManager, context: UI.Context.Context) {
     context.addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this.executionContextChanged, this);
-    context.addFlavorChangeListener(SDK.SDKModel.Target, this.targetChanged, this);
+    context.addFlavorChangeListener(SDK.Target.Target, this.targetChanged, this);
 
     targetManager.addModelListener(
         SDK.RuntimeModel.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextCreated, this.onExecutionContextCreated,
@@ -37,8 +37,8 @@ export class ExecutionContextSelector implements SDK.TargetManager.SDKModelObser
 
     function deferred(this: ExecutionContextSelector): void {
       // We always want the second context for the service worker targets.
-      if (!this.context.flavor(SDK.SDKModel.Target)) {
-        this.context.setFlavor(SDK.SDKModel.Target, runtimeModel.target());
+      if (!this.context.flavor(SDK.Target.Target)) {
+        this.context.setFlavor(SDK.Target.Target, runtimeModel.target());
       }
     }
   }
@@ -50,15 +50,15 @@ export class ExecutionContextSelector implements SDK.TargetManager.SDKModelObser
     }
 
     const models = this.targetManager.models(SDK.RuntimeModel.RuntimeModel);
-    if (this.context.flavor(SDK.SDKModel.Target) === runtimeModel.target() && models.length) {
-      this.context.setFlavor(SDK.SDKModel.Target, models[0].target());
+    if (this.context.flavor(SDK.Target.Target) === runtimeModel.target() && models.length) {
+      this.context.setFlavor(SDK.Target.Target, models[0].target());
     }
   }
 
   private executionContextChanged(event: Common.EventTarget.EventTargetEvent): void {
     const newContext = (event.data as SDK.RuntimeModel.ExecutionContext | null);
     if (newContext) {
-      this.context.setFlavor(SDK.SDKModel.Target, newContext.target());
+      this.context.setFlavor(SDK.Target.Target, newContext.target());
       if (!this.ignoreContextChanged) {
         this.lastSelectedContextId = this.contextPersistentId(newContext);
       }
@@ -70,7 +70,7 @@ export class ExecutionContextSelector implements SDK.TargetManager.SDKModelObser
   }
 
   private targetChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const newTarget = (event.data as SDK.SDKModel.Target | null);
+    const newTarget = (event.data as SDK.Target.Target | null);
     const currentContext = this.context.flavor(SDK.RuntimeModel.ExecutionContext);
 
     if (!newTarget || (currentContext && currentContext.target() === newTarget)) {

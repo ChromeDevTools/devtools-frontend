@@ -791,7 +791,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     const enabledTraceProviders = Extensions.ExtensionServer.ExtensionServer.instance().traceProviders().filter(
         provider => TimelinePanel._settingForTraceProvider(provider).get());
 
-    const mainTarget = (SDK.TargetManager.TargetManager.instance().mainTarget() as SDK.SDKModel.Target);
+    const mainTarget = (SDK.TargetManager.TargetManager.instance().mainTarget() as SDK.Target.Target);
     if (UIDevtoolsUtils.isUiDevTools()) {
       this._controller = new UIDevtoolsController(mainTarget, this);
     } else {

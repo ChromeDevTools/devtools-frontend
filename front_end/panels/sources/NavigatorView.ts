@@ -519,7 +519,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   }
 
   _folderNodeId(
-      project: Workspace.Workspace.Project, target: SDK.SDKModel.Target|null,
+      project: Workspace.Workspace.Project, target: SDK.Target.Target|null,
       frame: SDK.ResourceTreeModel.ResourceTreeFrame|null, projectOrigin: string, path: string): string {
     const targetId = target ? target.id() : '';
     const projectId = project.type() === Workspace.Workspace.projectTypes.FileSystem ? project.id() : '';
@@ -529,7 +529,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
 
   _folderNode(
       uiSourceCode: Workspace.UISourceCode.UISourceCode, project: Workspace.Workspace.Project,
-      target: SDK.SDKModel.Target|null, frame: SDK.ResourceTreeModel.ResourceTreeFrame|null, projectOrigin: string,
+      target: SDK.Target.Target|null, frame: SDK.ResourceTreeModel.ResourceTreeFrame|null, projectOrigin: string,
       path: string[], fromSourceMap: boolean): NavigatorTreeNode {
     if (Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode)) {
       return this._rootNode;
@@ -569,7 +569,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
 
   _domainNode(
       uiSourceCode: Workspace.UISourceCode.UISourceCode, project: Workspace.Workspace.Project,
-      target: SDK.SDKModel.Target, frame: SDK.ResourceTreeModel.ResourceTreeFrame|null,
+      target: SDK.Target.Target, frame: SDK.ResourceTreeModel.ResourceTreeFrame|null,
       projectOrigin: string): NavigatorTreeNode {
     const frameNode = this._frameNode(project, target, frame);
     if (!this._groupByDomain) {
@@ -590,7 +590,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   }
 
   _frameNode(
-      project: Workspace.Workspace.Project, target: SDK.SDKModel.Target,
+      project: Workspace.Workspace.Project, target: SDK.Target.Target,
       frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): NavigatorTreeNode {
     if (!this._groupByFrame || !frame) {
       return this._targetNode(project, target);
@@ -627,7 +627,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     return frameNode;
   }
 
-  _targetNode(project: Workspace.Workspace.Project, target: SDK.SDKModel.Target): NavigatorTreeNode {
+  _targetNode(project: Workspace.Workspace.Project, target: SDK.Target.Target): NavigatorTreeNode {
     if (target === SDK.TargetManager.TargetManager.instance().mainTarget()) {
       return this._rootNode;
     }
@@ -635,14 +635,14 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     let targetNode = this._rootNode.child('target:' + target.id());
     if (!targetNode) {
       targetNode = new NavigatorGroupTreeNode(
-          this, project, 'target:' + target.id(),
-          target.type() === SDK.SDKModel.Type.Frame ? Types.Frame : Types.Worker, target.name());
+          this, project, 'target:' + target.id(), target.type() === SDK.Target.Type.Frame ? Types.Frame : Types.Worker,
+          target.name());
       this._rootNode.appendChild(targetNode);
     }
     return targetNode;
   }
 
-  _computeProjectDisplayName(target: SDK.SDKModel.Target, projectOrigin: string): string {
+  _computeProjectDisplayName(target: SDK.Target.Target, projectOrigin: string): string {
     const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
     const executionContexts = runtimeModel ? runtimeModel.executionContexts() : [];
     for (const context of executionContexts) {
@@ -943,10 +943,10 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     }
   }
 
-  targetAdded(_target: SDK.SDKModel.Target): void {
+  targetAdded(_target: SDK.Target.Target): void {
   }
 
-  targetRemoved(target: SDK.SDKModel.Target): void {
+  targetRemoved(target: SDK.Target.Target): void {
     const targetNode = this._rootNode.child('target:' + target.id());
     if (targetNode) {
       this._rootNode.removeChild(targetNode);
@@ -954,7 +954,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   }
 
   _targetNameChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const target = (event.data as SDK.SDKModel.Target);
+    const target = (event.data as SDK.Target.Target);
     const targetNode = this._rootNode.child('target:' + target.id());
     if (targetNode) {
       targetNode.setTitle(target.name());

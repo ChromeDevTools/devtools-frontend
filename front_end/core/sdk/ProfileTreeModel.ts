@@ -6,7 +6,7 @@
 
 import type * as Protocol from '../../generated/protocol.js';
 
-import type {Target} from './SDKModel.js'; // eslint-disable-line no-unused-vars
+import type {Target} from './Target.js';
 
 export class ProfileNode {
   callFrame: Protocol.Runtime.CallFrame;

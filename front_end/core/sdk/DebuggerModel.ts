@@ -45,8 +45,9 @@ import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTr
 import type {EvaluationOptions, EvaluationResult, ExecutionContext} from './RuntimeModel.js';
 import {RuntimeModel} from './RuntimeModel.js';  // eslint-disable-line no-unused-vars
 import {Script} from './Script.js';
-import type {Target} from './SDKModel.js';
-import {Capability, SDKModel, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {Target} from './Target.js';
+import {Capability, Type} from './Target.js';
+import {SDKModel} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 import {SourceMapManager} from './SourceMapManager.js';
 
 const UIStrings = {

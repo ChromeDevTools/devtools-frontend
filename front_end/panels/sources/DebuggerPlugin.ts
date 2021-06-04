@@ -563,7 +563,7 @@ export class DebuggerPlugin extends Plugin {
     if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlOrMeta(event)) {
       return null;
     }
-    const target = UI.Context.Context.instance().flavor(SDK.SDKModel.Target);
+    const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
     const debuggerModel = target ? target.model(SDK.DebuggerModel.DebuggerModel) : null;
     if (!debuggerModel || !debuggerModel.isPaused()) {
       return null;

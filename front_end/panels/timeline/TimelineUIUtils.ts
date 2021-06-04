@@ -1638,7 +1638,7 @@ export class TimelineUIUtils {
     }
   }
 
-  static async buildDetailsTextForTraceEvent(event: SDK.TracingModel.Event, target: SDK.SDKModel.Target|null):
+  static async buildDetailsTextForTraceEvent(event: SDK.TracingModel.Event, target: SDK.Target.Target|null):
       Promise<string|null> {
     const recordType = TimelineModel.TimelineModel.RecordType;
     let detailsText;
@@ -1792,7 +1792,7 @@ export class TimelineUIUtils {
   }
 
   static async buildDetailsNodeForTraceEvent(
-      event: SDK.TracingModel.Event, target: SDK.SDKModel.Target|null,
+      event: SDK.TracingModel.Event, target: SDK.Target.Target|null,
       linkifier: Components.Linkifier.Linkifier): Promise<Node|null> {
     const recordType = TimelineModel.TimelineModel.RecordType;
     let details: HTMLElement|HTMLSpanElement|(Element | null)|Text|null = null;
@@ -1964,7 +1964,7 @@ export class TimelineUIUtils {
     const maybeTarget = model.targetByEvent(event);
     let relatedNodesMap: (Map<number, SDK.DOMModel.DOMNode|null>|null)|null = null;
     if (maybeTarget) {
-      const target = (maybeTarget as SDK.SDKModel.Target);
+      const target = (maybeTarget as SDK.Target.Target);
       // @ts-ignore TODO(crbug.com/1011811): Remove symbol usage.
       if (typeof event[previewElementSymbol] === 'undefined') {
         let previewElement: (Element|null)|null = null;
@@ -2673,7 +2673,7 @@ export class TimelineUIUtils {
   }
 
   static _generateCauses(
-      event: SDK.TracingModel.Event, target: SDK.SDKModel.Target|null,
+      event: SDK.TracingModel.Event, target: SDK.Target.Target|null,
       relatedNodesMap: Map<number, SDK.DOMModel.DOMNode|null>|null, contentHelper: TimelineDetailsContentHelper): void {
     const recordTypes = TimelineModel.TimelineModel.RecordType;
 
@@ -2745,7 +2745,7 @@ export class TimelineUIUtils {
   }
 
   static _generateInvalidations(
-      event: SDK.TracingModel.Event, target: SDK.SDKModel.Target,
+      event: SDK.TracingModel.Event, target: SDK.Target.Target,
       relatedNodesMap: Map<number, SDK.DOMModel.DOMNode|null>|null, contentHelper: TimelineDetailsContentHelper): void {
     const invalidationTrackingEvents = TimelineModel.TimelineModel.InvalidationTracker.invalidationEventsFor(event);
     if (!invalidationTrackingEvents) {
@@ -2768,7 +2768,7 @@ export class TimelineUIUtils {
   }
 
   static _generateInvalidationsForType(
-      type: string, target: SDK.SDKModel.Target, invalidations: TimelineModel.TimelineModel.InvalidationTrackingEvent[],
+      type: string, target: SDK.Target.Target, invalidations: TimelineModel.TimelineModel.InvalidationTrackingEvent[],
       relatedNodesMap: Map<number, SDK.DOMModel.DOMNode|null>|null, contentHelper: TimelineDetailsContentHelper): void {
     let title;
     switch (type) {
@@ -2879,7 +2879,7 @@ export class TimelineUIUtils {
     return hasChildren;
   }
 
-  static async buildPicturePreviewContent(event: SDK.TracingModel.Event, target: SDK.SDKModel.Target):
+  static async buildPicturePreviewContent(event: SDK.TracingModel.Event, target: SDK.Target.Target):
       Promise<Element|null> {
     const snapshotWithRect =
         await new TimelineModel.TimelineFrameModel.LayerPaintEvent(event, target).snapshotPromise();
@@ -3348,7 +3348,7 @@ export class InvalidationsGroupElement extends UI.TreeOutline.TreeElement {
   _invalidations: TimelineModel.TimelineModel.InvalidationTrackingEvent[];
 
   constructor(
-      target: SDK.SDKModel.Target, relatedNodesMap: Map<number, SDK.DOMModel.DOMNode|null>|null,
+      target: SDK.Target.Target, relatedNodesMap: Map<number, SDK.DOMModel.DOMNode|null>|null,
       contentHelper: TimelineDetailsContentHelper,
       invalidations: TimelineModel.TimelineModel.InvalidationTrackingEvent[]) {
     super('', true);
@@ -3363,7 +3363,7 @@ export class InvalidationsGroupElement extends UI.TreeOutline.TreeElement {
     this.title = this._createTitle(target);
   }
 
-  _createTitle(target: SDK.SDKModel.Target): Element {
+  _createTitle(target: SDK.Target.Target): Element {
     const first = this._invalidations[0];
     const reason = first.cause.reason || i18nString(UIStrings.unknownCause);
     const topFrame = first.cause.stackTrace && first.cause.stackTrace[0];
@@ -3570,11 +3570,11 @@ export namespace TimelineCategory {
 export class TimelineDetailsContentHelper {
   fragment: DocumentFragment;
   _linkifier: Components.Linkifier.Linkifier|null;
-  _target: SDK.SDKModel.Target|null;
+  _target: SDK.Target.Target|null;
   element: HTMLDivElement;
   _tableElement: HTMLElement;
 
-  constructor(target: SDK.SDKModel.Target|null, linkifier: Components.Linkifier.Linkifier|null) {
+  constructor(target: SDK.Target.Target|null, linkifier: Components.Linkifier.Linkifier|null) {
     this.fragment = document.createDocumentFragment();
 
     this._linkifier = linkifier;

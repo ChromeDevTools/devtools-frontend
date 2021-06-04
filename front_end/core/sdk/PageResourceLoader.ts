@@ -15,7 +15,7 @@ import {MultitargetNetworkManager} from './NetworkManager.js';
 import {NetworkManager} from './NetworkManager.js';
 import type {ResourceTreeFrame} from './ResourceTreeModel.js';
 import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
-import type {Target} from './SDKModel.js';
+import type {Target} from './Target.js';
 import {TargetManager} from './TargetManager.js';
 
 const UIStrings = {

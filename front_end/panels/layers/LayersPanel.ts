@@ -126,7 +126,7 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.Target
     super.willHide();
   }
 
-  targetAdded(target: SDK.SDKModel.Target): void {
+  targetAdded(target: SDK.Target.Target): void {
     if (this._model) {
       return;
     }
@@ -141,7 +141,7 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.Target
     }
   }
 
-  targetRemoved(target: SDK.SDKModel.Target): void {
+  targetRemoved(target: SDK.Target.Target): void {
     if (!this._model || this._model.target() !== target) {
       return;
     }

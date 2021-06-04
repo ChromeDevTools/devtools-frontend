@@ -259,11 +259,11 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
 
     this._liveLocationPool = new Bindings.LiveLocation.LiveLocationPool();
 
-    this._setTarget(UI.Context.Context.instance().flavor(SDK.SDKModel.Target));
+    this._setTarget(UI.Context.Context.instance().flavor(SDK.Target.Target));
     Common.Settings.Settings.instance()
         .moduleSetting('breakpointsActive')
         .addChangeListener(this._breakpointsActiveStateChanged, this);
-    UI.Context.Context.instance().addFlavorChangeListener(SDK.SDKModel.Target, this._onCurrentTargetChanged, this);
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.Target.Target, this._onCurrentTargetChanged, this);
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DebuggerModel.CallFrame, this._callFrameChanged, this);
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerWasEnabled, this._debuggerWasEnabled, this);
@@ -312,11 +312,11 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     }
   }
 
-  targetAdded(_target: SDK.SDKModel.Target): void {
+  targetAdded(_target: SDK.Target.Target): void {
     this._showThreadsIfNeeded();
   }
 
-  targetRemoved(_target: SDK.SDKModel.Target): void {
+  targetRemoved(_target: SDK.Target.Target): void {
   }
 
   _showThreadsIfNeeded(): void {
@@ -329,7 +329,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     }
   }
 
-  _setTarget(target: SDK.SDKModel.Target|null): void {
+  _setTarget(target: SDK.Target.Target|null): void {
     if (!target) {
       return;
     }
@@ -349,7 +349,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
   }
 
   _onCurrentTargetChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const target = (event.data as SDK.SDKModel.Target | null);
+    const target = (event.data as SDK.Target.Target | null);
     this._setTarget(target);
   }
   paused(): boolean {
@@ -413,10 +413,10 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
       this._setAsCurrentPanel();
     }
 
-    if (UI.Context.Context.instance().flavor(SDK.SDKModel.Target) === debuggerModel.target()) {
+    if (UI.Context.Context.instance().flavor(SDK.Target.Target) === debuggerModel.target()) {
       this._showDebuggerPausedDetails((details as SDK.DebuggerModel.DebuggerPausedDetails));
     } else if (!this._paused) {
-      UI.Context.Context.instance().setFlavor(SDK.SDKModel.Target, debuggerModel.target());
+      UI.Context.Context.instance().setFlavor(SDK.Target.Target, debuggerModel.target());
     }
   }
 
@@ -432,7 +432,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
 
   _debuggerResumed(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
     const target = debuggerModel.target();
-    if (UI.Context.Context.instance().flavor(SDK.SDKModel.Target) !== target) {
+    if (UI.Context.Context.instance().flavor(SDK.Target.Target) !== target) {
       return;
     }
     this._paused = false;
@@ -443,7 +443,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
 
   _debuggerWasEnabled(event: Common.EventTarget.EventTargetEvent): void {
     const debuggerModel = (event.data as SDK.DebuggerModel.DebuggerModel);
-    if (UI.Context.Context.instance().flavor(SDK.SDKModel.Target) !== debuggerModel.target()) {
+    if (UI.Context.Context.instance().flavor(SDK.Target.Target) !== debuggerModel.target()) {
       return;
     }
 
@@ -552,7 +552,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
   }
 
   async _updateDebuggerButtonsAndStatus(): Promise<void> {
-    const currentTarget = UI.Context.Context.instance().flavor(SDK.SDKModel.Target);
+    const currentTarget = UI.Context.Context.instance().flavor(SDK.Target.Target);
     const currentDebuggerModel = currentTarget ? currentTarget.model(SDK.DebuggerModel.DebuggerModel) : null;
     if (!currentDebuggerModel) {
       this._togglePauseAction.setEnabled(false);
@@ -606,7 +606,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
 
     for (const debuggerModel of SDK.TargetManager.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel)) {
       if (debuggerModel.isPaused()) {
-        UI.Context.Context.instance().setFlavor(SDK.SDKModel.Target, debuggerModel.target());
+        UI.Context.Context.instance().setFlavor(SDK.Target.Target, debuggerModel.target());
         break;
       }
     }
@@ -640,7 +640,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     if (!uiSourceCode) {
       return;
     }
-    const target = UI.Context.Context.instance().flavor(SDK.SDKModel.Target);
+    const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
     if (!target) {
       return;
     }
@@ -664,7 +664,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     if (!uiSourceCode) {
       return;
     }
-    const target = UI.Context.Context.instance().flavor(SDK.SDKModel.Target);
+    const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
     if (!target) {
       return;
     }
@@ -681,7 +681,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     if (!uiSourceCode) {
       return;
     }
-    const target = UI.Context.Context.instance().flavor(SDK.SDKModel.Target);
+    const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
     if (!target) {
       return;
     }
@@ -701,7 +701,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
   }
 
   _togglePause(): boolean {
-    const target = UI.Context.Context.instance().flavor(SDK.SDKModel.Target);
+    const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
     if (!target) {
       return true;
     }
@@ -730,7 +730,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     this._paused = false;
 
     this._clearInterface();
-    const target = UI.Context.Context.instance().flavor(SDK.SDKModel.Target);
+    const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
     return target ? target.model(SDK.DebuggerModel.DebuggerModel) : null;
   }
 
@@ -895,7 +895,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     }
     const contentType = uiSourceCode.contentType();
     if (contentType.hasScripts()) {
-      const target = UI.Context.Context.instance().flavor(SDK.SDKModel.Target);
+      const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
       const debuggerModel = target ? target.model(SDK.DebuggerModel.DebuggerModel) : null;
       if (debuggerModel && debuggerModel.isPaused()) {
         contextMenu.debugSection().appendItem(

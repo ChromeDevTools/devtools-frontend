@@ -143,7 +143,7 @@ export class IsolateSelector extends UI.Widget.VBox implements UI.ListControl.Li
   }
 
   _targetChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const target = (event.data as SDK.SDKModel.Target);
+    const target = (event.data as SDK.Target.Target);
     const model = target.model(SDK.RuntimeModel.RuntimeModel);
     if (!model) {
       return;

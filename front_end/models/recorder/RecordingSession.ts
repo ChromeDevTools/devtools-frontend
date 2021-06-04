@@ -23,7 +23,7 @@ type RecorderEvent = {
 };
 
 export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper {
-  _target: SDK.SDKModel.Target;
+  _target: SDK.Target.Target;
   _runtimeAgent: ProtocolProxyApi.RuntimeApi;
   _accessibilityAgent: ProtocolProxyApi.AccessibilityApi;
   _pageAgent: ProtocolProxyApi.PageApi;
@@ -34,14 +34,14 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper {
   _runtimeModel: SDK.RuntimeModel.RuntimeModel;
   _childTargetManager: SDK.ChildTargetManager.ChildTargetManager|null;
   _eventHandlers: Map<string, RecordingEventHandler>;
-  _targets: Map<string, SDK.SDKModel.Target>;
+  _targets: Map<string, SDK.Target.Target>;
   _newDocumentScriptIdentifiers: Map<string, string>;
   _indentation: string;
   _eventQueue: Array<RecorderEvent> = [];
   _isProcessingEvent = false;
   userFlow: UserFlow;
 
-  constructor(target: SDK.SDKModel.Target, indentation: string) {
+  constructor(target: SDK.Target.Target, indentation: string) {
     super();
 
     this._target = target;
@@ -180,7 +180,7 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper {
       return;
     }
     const executionContextId = params.data.executionContextId;
-    let contextTarget: SDK.SDKModel.Target|undefined;
+    let contextTarget: SDK.Target.Target|undefined;
     let frameId: string|undefined;
     for (const target of this._targets.values()) {
       const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
@@ -205,8 +205,8 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper {
     eventHandler.bindingCalled(frameId, JSON.parse(params.data.payload));
   }
 
-  async attachToTarget(target: SDK.SDKModel.Target): Promise<void> {
-    if (target.type() !== SDK.SDKModel.Type.Frame) {
+  async attachToTarget(target: SDK.Target.Target): Promise<void> {
+    if (target.type() !== SDK.Target.Type.Frame) {
       return;
     }
     this._targets.set(target.id(), target);
@@ -254,7 +254,7 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  async detachFromTarget(target: SDK.SDKModel.Target): Promise<void> {
+  async detachFromTarget(target: SDK.Target.Target): Promise<void> {
     const childTargetManager = target.model(SDK.ChildTargetManager.ChildTargetManager);
 
     if (childTargetManager) {
@@ -284,7 +284,7 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper {
     this._eventHandlers.delete(target.id());
   }
 
-  async evaluateInAllFrames(target: SDK.SDKModel.Target, expression: string): Promise<void> {
+  async evaluateInAllFrames(target: SDK.Target.Target, expression: string): Promise<void> {
     const resourceTreeModel =
         target.model(SDK.ResourceTreeModel.ResourceTreeModel) as SDK.ResourceTreeModel.ResourceTreeModel;
     const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel) as SDK.RuntimeModel.RuntimeModel;

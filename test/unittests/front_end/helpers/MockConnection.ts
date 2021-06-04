@@ -41,7 +41,7 @@ export function clearAllMockConnectionResponseHandlers() {
 }
 
 export function dispatchEvent<E extends keyof ProtocolMapping.Events>(
-    target: SDK.SDKModel.Target, event: E, ...payload: ProtocolMapping.Events[E]) {
+    target: SDK.Target.Target, event: E, ...payload: ProtocolMapping.Events[E]) {
   const [domain, method] = event.split('.');
   if (!target._dispatchers[domain]) {
     throw new Error(`No dispatcher for domain "${domain}" on provided target`);

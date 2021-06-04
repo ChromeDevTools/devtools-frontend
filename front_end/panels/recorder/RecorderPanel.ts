@@ -24,7 +24,7 @@ export class RecorderPanel extends UI.Panel.Panel {
     const mainContainer = new UI.Widget.VBox();
     mainContainer.show(this.element);
 
-    const target = SDK.TargetManager.TargetManager.instance().mainTarget() as SDK.SDKModel.Target;
+    const target = SDK.TargetManager.TargetManager.instance().mainTarget() as SDK.Target.Target;
 
     const recorderModel = target.model(Recorder.RecorderModel.RecorderModel);
     if (!recorderModel) {

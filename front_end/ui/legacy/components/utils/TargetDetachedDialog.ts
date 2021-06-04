@@ -20,7 +20,7 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/utils/TargetDetac
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TargetDetachedDialog extends SDK.SDKModel.SDKModel implements ProtocolProxyApi.InspectorDispatcher {
   _hideCrashedDialog: (() => void)|null;
-  constructor(target: SDK.SDKModel.Target) {
+  constructor(target: SDK.Target.Target) {
     super(target);
     target.registerInspectorDispatcher(this);
     target.inspectorAgent().invoke_enable();
@@ -72,5 +72,4 @@ export class TargetDetachedDialog extends SDK.SDKModel.SDKModel implements Proto
   }
 }
 
-SDK.SDKModel.SDKModel.register(
-    TargetDetachedDialog, {capabilities: SDK.SDKModel.Capability.Inspector, autostart: true});
+SDK.SDKModel.SDKModel.register(TargetDetachedDialog, {capabilities: SDK.Target.Capability.Inspector, autostart: true});

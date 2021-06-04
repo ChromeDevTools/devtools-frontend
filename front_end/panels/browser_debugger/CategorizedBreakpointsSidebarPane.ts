@@ -61,7 +61,7 @@ export class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._update, this);
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this._update, this);
-    UI.Context.Context.instance().addFlavorChangeListener(SDK.SDKModel.Target, this._update, this);
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.Target.Target, this._update, this);
   }
 
   focus(): void {
@@ -123,7 +123,7 @@ export class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
   }
 
   _update(): void {
-    const target = UI.Context.Context.instance().flavor(SDK.SDKModel.Target);
+    const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
     const debuggerModel = target ? target.model(SDK.DebuggerModel.DebuggerModel) : null;
     const details = debuggerModel ? debuggerModel.debuggerPausedDetails() : null;
 

@@ -26,7 +26,7 @@ export class MediaModel extends SDK.SDKModel.SDKModel implements ProtocolProxyAp
   _enabled: boolean;
   _agent: ProtocolProxyApi.MediaApi;
 
-  constructor(target: SDK.SDKModel.Target) {
+  constructor(target: SDK.Target.Target) {
     super(target);
 
     this._enabled = false;
@@ -68,4 +68,4 @@ export class MediaModel extends SDK.SDKModel.SDKModel implements ProtocolProxyAp
   }
 }
 
-SDK.SDKModel.SDKModel.register(MediaModel, {capabilities: SDK.SDKModel.Capability.DOM, autostart: false});
+SDK.SDKModel.SDKModel.register(MediaModel, {capabilities: SDK.Target.Capability.DOM, autostart: false});

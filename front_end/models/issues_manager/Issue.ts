@@ -52,7 +52,7 @@ export function getShowThirdPartyIssuesSetting(): Common.Settings.Setting<boolea
 export interface AffectedElement {
   backendNodeId: number;
   nodeName: string;
-  target: SDK.SDKModel.Target|null;
+  target: SDK.Target.Target|null;
 }
 
 export abstract class Issue<IssueCode extends string = string> extends Common.ObjectWrapper.ObjectWrapper {

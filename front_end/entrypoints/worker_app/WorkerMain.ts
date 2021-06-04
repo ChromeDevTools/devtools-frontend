@@ -37,7 +37,7 @@ export class WorkerMainImpl extends Common.ObjectWrapper.ObjectWrapper implement
   async run(): Promise<void> {
     SDK.Connections.initMainConnection(async () => {
       SDK.TargetManager.TargetManager.instance().createTarget(
-          'main', i18nString(UIStrings.main), SDK.SDKModel.Type.ServiceWorker, null);
+          'main', i18nString(UIStrings.main), SDK.Target.Type.ServiceWorker, null);
     }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);
     new MobileThrottling.NetworkPanelIndicator.NetworkPanelIndicator();
   }
@@ -47,7 +47,7 @@ Common.Runnable.registerEarlyInitializationRunnable(WorkerMainImpl.instance);
 
 SDK.ChildTargetManager.ChildTargetManager.install(async ({target, waitingForDebugger}) => {
   // Only pause the new worker if debugging SW - we are going through the pause on start checkbox.
-  if (target.parentTarget() || target.type() !== SDK.SDKModel.Type.ServiceWorker || !waitingForDebugger) {
+  if (target.parentTarget() || target.type() !== SDK.Target.Type.ServiceWorker || !waitingForDebugger) {
     return;
   }
   const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);

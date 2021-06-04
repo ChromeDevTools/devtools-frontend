@@ -554,7 +554,7 @@ export class Section {
     this._throttler.schedule(this._update.bind(this));
   }
 
-  _targetForVersionId(versionId: string): SDK.SDKModel.Target|null {
+  _targetForVersionId(versionId: string): SDK.Target.Target|null {
     const version = this._manager.findVersion(versionId);
     if (!version || !version.targetId) {
       return null;

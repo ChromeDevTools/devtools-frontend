@@ -46,7 +46,7 @@ export class SASSSourceMapping implements SourceMapping {
   _bindings: Map<string, Binding>;
 
   constructor(
-      target: SDK.SDKModel.Target,
+      target: SDK.Target.Target,
       sourceMapManager: SDK.SourceMapManager.SourceMapManager<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>,
       workspace: Workspace.Workspace.WorkspaceImpl) {
     this._sourceMapManager = sourceMapManager;

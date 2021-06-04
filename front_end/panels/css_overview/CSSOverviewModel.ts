@@ -51,7 +51,7 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
   _domSnapshotAgent: ProtocolProxyApi.DOMSnapshotApi;
   _overlayAgent: ProtocolProxyApi.OverlayApi;
 
-  constructor(target: SDK.SDKModel.Target) {
+  constructor(target: SDK.Target.Target) {
     super(target);
 
     this._runtimeAgent = target.runtimeAgent();
@@ -483,4 +483,4 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
   }
 }
 
-SDK.SDKModel.SDKModel.register(CSSOverviewModel, {capabilities: SDK.SDKModel.Capability.DOM, autostart: false});
+SDK.SDKModel.SDKModel.register(CSSOverviewModel, {capabilities: SDK.Target.Capability.DOM, autostart: false});

@@ -210,7 +210,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   _domains: {
     [x: string]: boolean,
   };
-  _target?: SDK.SDKModel.Target;
+  _target?: SDK.Target.Target;
   _databaseModel?: DatabaseModel|null;
   _applicationCacheModel?: ApplicationCacheModel|null;
   _previousHoveredElement?: FrameTreeElement;
@@ -377,7 +377,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     return treeElement;
   }
 
-  targetAdded(target: SDK.SDKModel.Target): void {
+  targetAdded(target: SDK.Target.Target): void {
     if (this._target) {
       return;
     }
@@ -402,7 +402,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
         SDK.ResourceTreeModel.Events.WillLoadCachedResources, this._resetWithFrames, this);
   }
 
-  targetRemoved(target: SDK.SDKModel.Target): void {
+  targetRemoved(target: SDK.Target.Target): void {
     if (target !== this._target) {
       return;
     }
@@ -1524,7 +1524,7 @@ export class DOMStorageTreeElement extends ApplicationPanelTreeElement {
 }
 
 export class CookieTreeElement extends ApplicationPanelTreeElement {
-  _target: SDK.SDKModel.Target;
+  _target: SDK.Target.Target;
   _cookieDomain: string;
 
   constructor(storagePanel: ResourcesPanel, frame: SDK.ResourceTreeModel.ResourceTreeFrame, cookieDomain: string) {
@@ -1642,13 +1642,13 @@ export class ResourcesSection implements SDK.TargetManager.Observer {
     }
   }
 
-  targetAdded(target: SDK.SDKModel.Target): void {
-    if (target.type() === SDK.SDKModel.Type.Worker || target.type() === SDK.SDKModel.Type.ServiceWorker) {
+  targetAdded(target: SDK.Target.Target): void {
+    if (target.type() === SDK.Target.Type.Worker || target.type() === SDK.Target.Type.ServiceWorker) {
       this._workerAdded(target);
     }
   }
 
-  async _workerAdded(target: SDK.SDKModel.Target): Promise<void> {
+  async _workerAdded(target: SDK.Target.Target): Promise<void> {
     const parentTarget = target.parentTarget();
     if (!parentTarget) {
       return;
@@ -1661,7 +1661,7 @@ export class ResourcesSection implements SDK.TargetManager.Observer {
     }
   }
 
-  targetRemoved(_target: SDK.SDKModel.Target): void {
+  targetRemoved(_target: SDK.Target.Target): void {
   }
 
   _addFrameAndParents(frame: SDK.ResourceTreeModel.ResourceTreeFrame): void {
@@ -1867,7 +1867,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
     if (frame.isTopFrame()) {
       const targets = SDK.TargetManager.TargetManager.instance().targets();
       for (const target of targets) {
-        if (target.type() === SDK.SDKModel.Type.ServiceWorker) {
+        if (target.type() === SDK.Target.Type.ServiceWorker) {
           const agent = frame.resourceTreeModel().target().targetAgent();
           const targetInfo = (await agent.invoke_getTargetInfo({targetId: target.id()})).targetInfo;
           this.workerCreated(targetInfo);

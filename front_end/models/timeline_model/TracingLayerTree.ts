@@ -16,7 +16,7 @@ export class TracingLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
   _tileById: Map<string, TracingLayerTile>;
   _paintProfilerModel: SDK.PaintProfiler.PaintProfilerModel|null;
 
-  constructor(target: SDK.SDKModel.Target|null) {
+  constructor(target: SDK.Target.Target|null) {
     super(target);
     this._tileById = new Map();
     this._paintProfilerModel = target && target.model(SDK.PaintProfiler.PaintProfilerModel);

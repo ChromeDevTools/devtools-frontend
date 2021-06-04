@@ -8,8 +8,9 @@ import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import type * as ProtocolClient from '../protocol_client/protocol_client.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {Target} from './SDKModel.js';
-import type {SDKModel, Type as TargetType} from './SDKModel.js';
+import type {Type as TargetType} from './Target.js';
+import {Target} from './Target.js';
+import type {SDKModel} from './SDKModel.js';
 
 let targetManagerInstance: TargetManager|undefined;
 

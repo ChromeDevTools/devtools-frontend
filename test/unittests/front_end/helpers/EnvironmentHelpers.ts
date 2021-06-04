@@ -42,7 +42,7 @@ function initializeTargetManagerIfNecessary() {
   targetManager = targetManager || SDK.TargetManager.TargetManager.instance({forceNew: true});
 }
 
-export function createTarget({id = 'test', name = 'test', type = SDK.SDKModel.Type.Frame} = {}) {
+export function createTarget({id = 'test', name = 'test', type = SDK.Target.Type.Frame} = {}) {
   initializeTargetManagerIfNecessary();
   return targetManager.createTarget(id, name, type, null);
 }

@@ -167,7 +167,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     this.showView(this._domStorageView);
   }
 
-  showCookies(cookieFrameTarget: SDK.SDKModel.Target, cookieDomain: string): void {
+  showCookies(cookieFrameTarget: SDK.Target.Target, cookieDomain: string): void {
     const model = cookieFrameTarget.model(SDK.CookieModel.CookieModel);
     if (!model) {
       return;
@@ -180,7 +180,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     this.showView(this._cookieView);
   }
 
-  clearCookies(target: SDK.SDKModel.Target, cookieDomain: string): void {
+  clearCookies(target: SDK.Target.Target, cookieDomain: string): void {
     const model = (target.model(SDK.CookieModel.CookieModel) as SDK.CookieModel.CookieModel | null);
     if (!model) {
       return;

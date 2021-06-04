@@ -47,9 +47,9 @@ export class InspectorMainImpl extends Common.ObjectWrapper.ObjectWrapper implem
   async run(): Promise<void> {
     let firstCall = true;
     await SDK.Connections.initMainConnection(async () => {
-      const type = Root.Runtime.Runtime.queryParam('v8only') ? SDK.SDKModel.Type.Node : SDK.SDKModel.Type.Frame;
+      const type = Root.Runtime.Runtime.queryParam('v8only') ? SDK.Target.Type.Node : SDK.Target.Type.Frame;
       const waitForDebuggerInPage =
-          type === SDK.SDKModel.Type.Frame && Root.Runtime.Runtime.queryParam('panel') === 'sources';
+          type === SDK.Target.Type.Frame && Root.Runtime.Runtime.queryParam('panel') === 'sources';
       const target = SDK.TargetManager.TargetManager.instance().createTarget(
           'main', i18nString(UIStrings.main), type, null, undefined, waitForDebuggerInPage);
 
@@ -221,8 +221,8 @@ export class BackendSettingsSync implements SDK.TargetManager.Observer {
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
   }
 
-  _updateTarget(target: SDK.SDKModel.Target): void {
-    if (target.type() !== SDK.SDKModel.Type.Frame || target.parentTarget()) {
+  _updateTarget(target: SDK.Target.Target): void {
+    if (target.type() !== SDK.Target.Type.Frame || target.parentTarget()) {
       return;
     }
     target.pageAgent().invoke_setAdBlockingEnabled({enabled: this._adBlockEnabledSetting.get()});
@@ -239,11 +239,11 @@ export class BackendSettingsSync implements SDK.TargetManager.Observer {
     }
   }
 
-  targetAdded(target: SDK.SDKModel.Target): void {
+  targetAdded(target: SDK.Target.Target): void {
     this._updateTarget(target);
   }
 
-  targetRemoved(_target: SDK.SDKModel.Target): void {
+  targetRemoved(_target: SDK.Target.Target): void {
   }
 }
 

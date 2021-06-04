@@ -57,7 +57,7 @@ export interface PrecomputedFeatures {
 }
 
 export class ImagePreview {
-  static async build(target: SDK.SDKModel.Target, originalImageURL: string, showDimensions: boolean, options: {
+  static async build(target: SDK.Target.Target, originalImageURL: string, showDimensions: boolean, options: {
     precomputedFeatures: (PrecomputedFeatures|undefined),
     imageAltText: (string|undefined),
   }|undefined = {precomputedFeatures: undefined, imageAltText: undefined}): Promise<Element|null> {

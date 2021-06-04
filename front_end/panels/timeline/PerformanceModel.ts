@@ -12,7 +12,7 @@ import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper {
-  _mainTarget: SDK.SDKModel.Target|null;
+  _mainTarget: SDK.Target.Target|null;
   _tracingModel: SDK.TracingModel.TracingModel|null;
   _filters: TimelineModel.TimelineModelFilter.TimelineModelFilter[];
   _timelineModel: TimelineModel.TimelineModel.TimelineModelImpl;
@@ -45,11 +45,11 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper {
     this._recordStartTime = undefined;
   }
 
-  setMainTarget(target: SDK.SDKModel.Target): void {
+  setMainTarget(target: SDK.Target.Target): void {
     this._mainTarget = target;
   }
 
-  mainTarget(): SDK.SDKModel.Target|null {
+  mainTarget(): SDK.Target.Target|null {
     return this._mainTarget;
   }
 

@@ -42,8 +42,9 @@ import {Events as NetworkManagerEvents, NetworkManager} from './NetworkManager.j
 import type {NetworkRequest} from './NetworkRequest.js'; // eslint-disable-line no-unused-vars
 import {Resource} from './Resource.js';
 import {ExecutionContext, RuntimeModel} from './RuntimeModel.js';
-import type {Target} from './SDKModel.js';
-import {Capability, SDKModel} from './SDKModel.js';
+import type {Target} from './Target.js';
+import {Capability} from './Target.js';
+import {SDKModel} from './SDKModel.js';
 import {TargetManager} from './TargetManager.js';
 import {SecurityOriginManager} from './SecurityOriginManager.js';
 

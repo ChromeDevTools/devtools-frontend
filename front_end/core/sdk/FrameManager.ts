@@ -10,7 +10,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import type {Resource} from './Resource.js'; // eslint-disable-line no-unused-vars
 import type {ResourceTreeFrame} from './ResourceTreeModel.js';
 import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
-import type {Target} from './SDKModel.js';
+import type {Target} from './Target.js';
 import type {SDKModelObserver} from './TargetManager.js';
 import {TargetManager} from './TargetManager.js';
 

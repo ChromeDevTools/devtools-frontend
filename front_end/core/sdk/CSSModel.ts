@@ -46,8 +46,9 @@ import {CSSStyleSheetHeader} from './CSSStyleSheetHeader.js';
 import type {DOMNode} from './DOMModel.js';
 import {DOMModel} from './DOMModel.js';  // eslint-disable-line no-unused-vars
 import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
-import type {Target} from './SDKModel.js';
-import {Capability, SDKModel} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {Target} from './Target.js';
+import {Capability} from './Target.js';
+import {SDKModel} from './SDKModel.js';
 import {SourceMapManager} from './SourceMapManager.js';
 
 export class CSSModel extends SDKModel {

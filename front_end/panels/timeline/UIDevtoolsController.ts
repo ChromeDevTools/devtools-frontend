@@ -38,7 +38,7 @@ import {TimelineUIUtils} from './TimelineUIUtils.js';
 import {UIDevtoolsUtils} from './UIDevtoolsUtils.js';
 
 export class UIDevtoolsController extends TimelineController {
-  constructor(target: SDK.SDKModel.Target, client: Client) {
+  constructor(target: SDK.Target.Target, client: Client) {
     super(target, client);
     TimelineUIUtils.setEventStylesMap(UIDevtoolsUtils.categorizeEvents());
     TimelineUIUtils.setCategories(UIDevtoolsUtils.categories());

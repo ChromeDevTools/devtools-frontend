@@ -61,7 +61,7 @@ export class ResourceMapping implements SDK.TargetManager.SDKModelObserver<SDK.R
     }
   }
 
-  _infoForTarget(target: SDK.SDKModel.Target): ModelInfo|null {
+  _infoForTarget(target: SDK.Target.Target): ModelInfo|null {
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     return resourceTreeModel ? this._modelToInfo.get(resourceTreeModel) || null : null;
   }
@@ -151,7 +151,7 @@ export class ResourceMapping implements SDK.TargetManager.SDKModelObserver<SDK.R
         uiLocation.uiSourceCode.url(), uiLocation.lineNumber, uiLocation.columnNumber);
   }
 
-  _resetForTest(target: SDK.SDKModel.Target): void {
+  _resetForTest(target: SDK.Target.Target): void {
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     const info = resourceTreeModel ? this._modelToInfo.get(resourceTreeModel) : null;
     if (info) {

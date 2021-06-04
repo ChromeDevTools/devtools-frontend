@@ -41,8 +41,9 @@ import {HeapProfilerModel} from './HeapProfilerModel.js';
 import type {ScopeRef} from './RemoteObject.js';
 import {RemoteFunction, RemoteObject, RemoteObjectImpl,                     // eslint-disable-line no-unused-vars
         RemoteObjectProperty, ScopeRemoteObject} from './RemoteObject.js';  // eslint-disable-line no-unused-vars
-import type {Target} from './SDKModel.js';
-import {Capability, SDKModel, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import type {Target} from './Target.js';
+import {Capability, Type} from './Target.js';
+import {SDKModel} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 export class RuntimeModel extends SDKModel {
   _agent: ProtocolProxyApi.RuntimeApi;

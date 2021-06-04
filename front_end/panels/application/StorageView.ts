@@ -144,7 +144,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
   private pieColors: Map<Protocol.Storage.StorageType, string>;
   private reportView: UI.ReportView.ReportView;
-  private target: SDK.SDKModel.Target|null;
+  private target: SDK.Target.Target|null;
   private securityOrigin: string|null;
   private settings: Map<Protocol.Storage.StorageType, Common.Settings.Setting<boolean>>;
   private includeThirdPartyCookiesSetting: Common.Settings.Setting<boolean>;
@@ -177,7 +177,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     this.reportView.registerRequiredCSS('panels/application/storageView.css', {enableLegacyPatching: false});
     this.reportView.element.classList.add('clear-storage-header');
     this.reportView.show(this.contentElement);
-    /** @type {?SDK.SDKModel.Target} */
+    /** @type {?SDK.Target.Target} */
     this.target = null;
     /** @type {?string} */
     this.securityOrigin = null;
@@ -268,7 +268,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     }
   }
 
-  targetAdded(target: SDK.SDKModel.Target): void {
+  targetAdded(target: SDK.Target.Target): void {
     if (this.target) {
       return;
     }
@@ -281,7 +281,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
         SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, this.originChanged, this);
   }
 
-  targetRemoved(target: SDK.SDKModel.Target): void {
+  targetRemoved(target: SDK.Target.Target): void {
     if (this.target !== target) {
       return;
     }
@@ -345,7 +345,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
         {origin: this.securityOrigin, quotaSize: quotaInBytes});
   }
 
-  private async clearQuotaForOrigin(target: SDK.SDKModel.Target, origin: string): Promise<void> {
+  private async clearQuotaForOrigin(target: SDK.Target.Target, origin: string): Promise<void> {
     await target.storageAgent().invoke_overrideQuotaForOrigin({origin});
   }
 
@@ -391,7 +391,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   static clear(
-      target: SDK.SDKModel.Target, securityOrigin: string, selectedStorageTypes: string[],
+      target: SDK.Target.Target, securityOrigin: string, selectedStorageTypes: string[],
       includeThirdPartyCookies: boolean): void {
     target.storageAgent().invoke_clearDataForOrigin(
         {origin: securityOrigin, storageTypes: selectedStorageTypes.join(',')});

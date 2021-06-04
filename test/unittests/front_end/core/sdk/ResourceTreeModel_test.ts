@@ -10,7 +10,7 @@ import {describeWithMockConnection, dispatchEvent} from '../../helpers/MockConne
 const {assert} = chai;
 
 describeWithMockConnection('ResourceTreeModel', () => {
-  let target: SDK.SDKModel.Target;
+  let target: SDK.Target.Target;
   let resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel|null;
   let networkManager: SDK.NetworkManager.NetworkManager|null;
 

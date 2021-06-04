@@ -37,7 +37,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineController.ts'
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineController implements SDK.TargetManager.SDKModelObserver<SDK.CPUProfilerModel.CPUProfilerModel>,
                                            SDK.TracingManager.TracingManagerClient {
-  _target: SDK.SDKModel.Target;
+  _target: SDK.Target.Target;
   _tracingManager: SDK.TracingManager.TracingManager|null;
   _performanceModel: PerformanceModel;
   _client: Client;
@@ -52,7 +52,7 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _cpuProfiles?: Map<any, any>|null;
 
-  constructor(target: SDK.SDKModel.Target, client: Client) {
+  constructor(target: SDK.Target.Target, client: Client) {
     this._target = target;
     this._tracingManager = target.model(SDK.TracingManager.TracingManager);
     this._performanceModel = new PerformanceModel();
@@ -70,7 +70,7 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
     SDK.TargetManager.TargetManager.instance().unobserveModels(SDK.CPUProfilerModel.CPUProfilerModel, this);
   }
 
-  mainTarget(): SDK.SDKModel.Target {
+  mainTarget(): SDK.Target.Target {
     return this._target;
   }
 

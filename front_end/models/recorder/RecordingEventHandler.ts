@@ -9,13 +9,13 @@ import {hasCondition, hasFrameContext} from './Steps.js';
 import type {Condition, FrameContext, Step} from './Steps.js';
 
 export class RecordingEventHandler {
-  private target: SDK.SDKModel.Target;
+  private target: SDK.Target.Target;
   private session: RecordingSession;
   private resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel;
   private lastStep: Step|null;
   private lastStepTimeout: number|null;
 
-  constructor(session: RecordingSession, target: SDK.SDKModel.Target) {
+  constructor(session: RecordingSession, target: SDK.Target.Target) {
     this.target = target;
     this.session = session;
     this.lastStep = null;

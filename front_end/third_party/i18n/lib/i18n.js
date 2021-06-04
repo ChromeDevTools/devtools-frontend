@@ -5,7 +5,6 @@
  */
 'use strict';
 
-const isDeepEqual = require('../../lodash-isequal/package/index');
 const MessageFormat = require('../../intl-messageformat/package/dist/umd/intl-messageformat').default;
 const LOCALES = require('./locales.js');
 

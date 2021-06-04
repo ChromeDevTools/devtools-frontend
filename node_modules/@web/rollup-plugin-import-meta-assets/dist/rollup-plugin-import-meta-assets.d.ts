@@ -1,0 +1,18 @@
+/**
+ * Detects assets references relative to modules using patterns such as `new URL('./path/to/asset.ext', import.meta.url)`.
+ * The assets are added to the rollup pipeline, allowing them to be transformed and hash the filenames.
+ *
+ * @param {object} options
+ * @param {string|string[]} [options.include] A picomatch pattern, or array of patterns, which specifies the files in the build the plugin should operate on. By default all files are targeted.
+ * @param {string|string[]} [options.exclude] A picomatch pattern, or array of patterns, which specifies the files in the build the plugin should _ignore_. By default no files are ignored.
+ * @param {boolean} [options.warnOnError] By default, the plugin quits the build process when it encounters an error. If you set this option to true, it will throw a warning instead and leave the code untouched.
+ * @param {function} [options.transform] A function to transform assets.
+ * @return {import('rollup').Plugin} A Rollup Plugin
+ */
+export function importMetaAssets({ include, exclude, warnOnError, transform }?: {
+    include: string | string[] | undefined;
+    exclude: string | string[] | undefined;
+    warnOnError: boolean | undefined;
+    transform: Function | undefined;
+}): import('rollup').Plugin;
+//# sourceMappingURL=rollup-plugin-import-meta-assets.d.ts.map

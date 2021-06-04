@@ -56,6 +56,7 @@ DEPS = {
     "@types/sinon": "10.0.2",
     "@typescript-eslint/parser": "4.21.0",
     "@typescript-eslint/eslint-plugin": "4.21.0",
+    "@web/rollup-plugin-import-meta-assets": "1.0.6",
     "bl": "4.1.0",
     "chai": "4.3.4",
     "convert-source-map": "1.7.0",
@@ -91,6 +92,7 @@ DEPS = {
     "source-map-support": "0.5.19",
     "stylelint": "13.13.1",
     "stylelint-config-standard": "21.0.0",
+    "svgo": "2.3.0",
     "typescript": "4.3.2",
     "yargs": "16.2.0",
 }

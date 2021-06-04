@@ -1,13 +1,8 @@
 /* This file was automatically generated via:
 npm run generate-dark-mode-styles front_end/ui/legacy/components/text_editor/cmdevtools.css
-* Last Updated: Tue May 04 2021 14:55:52 GMT+0100 (British Summer Time)
+* Last Updated: Fri Jun 04 2021 11:25:32 GMT+0000 (Coordinated Universal Time)
 */
 /* stylelint-disable */
-:host-context(.-theme-with-dark-background) .CodeMirror,
-.-theme-with-dark-background .CodeMirror {
-  color:rgb(213 213 213);
-  }
-
 :host-context(.-theme-with-dark-background) .CodeMirror .source-frame-eval-expression,
 .-theme-with-dark-background .CodeMirror .source-frame-eval-expression {
   border-top-color:rgb(221 99 92);
@@ -29,11 +24,6 @@ npm run generate-dark-mode-styles front_end/ui/legacy/components/text_editor/cmd
   border-right-color:rgb(101 155 101);
   border-bottom-color:rgb(101 155 101);
   border-left-color:rgb(101 155 101);
-  }
-
-:host-context(.-theme-with-dark-background) .CodeMirror-cursor,
-.-theme-with-dark-background .CodeMirror-cursor {
-  border-left-color:rgb(230 230 230);
   }
 
 :host-context(.-theme-with-dark-background) .CodeMirror-linenumber,
@@ -80,48 +70,6 @@ npm run generate-dark-mode-styles front_end/ui/legacy/components/text_editor/cmd
   border-bottom-color:rgb(80 80 80);
   }
 
-:host-context(.-theme-with-dark-background) .cm-token-highlight::before,
-.-theme-with-dark-background .cm-token-highlight::before {
-  border-top-color:rgb(127 127 127);
-  border-right-color:rgb(127 127 127);
-  border-bottom-color:rgb(127 127 127);
-  border-left-color:rgb(127 127 127);
-  }
-
-:host-context(.-theme-with-dark-background) .cm-search-highlight::before,
-.-theme-with-dark-background .cm-search-highlight::before {
-  border-top-color:rgb(127 127 127);
-  border-bottom-color:rgb(127 127 127);
-  }
-
-:host-context(.-theme-with-dark-background) .cm-search-highlight-full::before,
-.-theme-with-dark-background .cm-search-highlight-full::before {
-  border-top-color:rgb(127 127 127);
-  border-right-color:rgb(127 127 127);
-  border-bottom-color:rgb(127 127 127);
-  border-left-color:rgb(127 127 127);
-  }
-
-:host-context(.-theme-with-dark-background) .cm-search-highlight-start::before,
-.-theme-with-dark-background .cm-search-highlight-start::before {
-  border-left-color:rgb(127 127 127);
-  }
-
-:host-context(.-theme-with-dark-background) .cm-search-highlight-end::before,
-.-theme-with-dark-background .cm-search-highlight-end::before {
-  border-right-color:rgb(127 127 127);
-  }
-
-:host-context(.-theme-with-dark-background) .CodeMirror .text-editor-line-marker-text span.line-marker-units,
-.-theme-with-dark-background .CodeMirror .text-editor-line-marker-text span.line-marker-units {
-  color:rgb(170 170 170);
-  }
-
-:host-context(.-theme-with-dark-background) .CodeMirror .text-editor-coverage-unused-marker,
-.-theme-with-dark-background .CodeMirror .text-editor-coverage-unused-marker {
-  background-color:rgb(208 38 17);
-  }
-
 :host-context(.-theme-with-dark-background) .CodeMirror .text-editor-coverage-used-marker,
 .-theme-with-dark-background .CodeMirror .text-editor-coverage-used-marker {
   background-color:rgb(65 138 156);
@@ -130,7 +78,6 @@ npm run generate-dark-mode-styles front_end/ui/legacy/components/text_editor/cmd
 :host-context(.-theme-with-dark-background) .CodeMirror .text-editor-value-decoration,
 .-theme-with-dark-background .CodeMirror .text-editor-value-decoration {
   background-color:rgb(99 50 0);
-  color:rgb(213 213 213);
   }
 
 :host-context(.-theme-with-dark-background) .CodeMirror .text-editor-line-with-warning:not(.cm-execution-line):not(.cm-readonly-highlight),
@@ -148,37 +95,8 @@ npm run generate-dark-mode-styles front_end/ui/legacy/components/text_editor/cmd
   background-color:rgb(255 0 0 / 5%);
   }
 
-:host-context(.-theme-with-dark-background) .CodeMirror .auto-complete-text,
-.-theme-with-dark-background .CodeMirror .auto-complete-text {
-  color:rgb(127 127 127);
-  }
-
-:host-context(.-theme-with-dark-background) .CodeMirror .placeholder-text,
-.-theme-with-dark-background .CodeMirror .placeholder-text {
-  color:rgb(127 127 127);
-  }
-
-:host-context(.-theme-with-dark-background) .CodeMirror-scrollbar-filler,
-.-theme-with-dark-background .CodeMirror-scrollbar-filler,
-:host-context(.-theme-with-dark-background) .CodeMirror-gutter-filler,
-.-theme-with-dark-background .CodeMirror-gutter-filler {
-  background-color:rgb(36 36 36);
-  }
-
 :host-context(.-theme-with-dark-background) .CodeMirror div.CodeMirror-secondarycursor,
 .-theme-with-dark-background .CodeMirror div.CodeMirror-secondarycursor {
   border-left-color:rgb(67 67 67);
-  }
-
-:host-context(.-theme-with-dark-background) .CodeMirror-foldmarker::before,
-.-theme-with-dark-background .CodeMirror-foldmarker::before {
-  color:rgb(153 153 153);
-  }
-
-:host-context(.-theme-with-dark-background) .CodeMirror-foldgutter-open::before,
-.-theme-with-dark-background .CodeMirror-foldgutter-open::before,
-:host-context(.-theme-with-dark-background) .CodeMirror-foldgutter-folded::before,
-.-theme-with-dark-background .CodeMirror-foldgutter-folded::before {
-  background-color:rgb(141 141 141);
   }
 /* stylelint-enable */

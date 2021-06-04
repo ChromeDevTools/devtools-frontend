@@ -6,10 +6,11 @@
  */
 
 .CodeMirror {
+  --override-search-highlight-border-color: rgb(128 128 128);
+
   line-height: 1.2em !important; /* stylelint-disable-line declaration-no-important */
   background-color: transparent !important; /* stylelint-disable-line declaration-no-important */
-  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-primary);
   height: 300px;
 }
 
@@ -121,8 +122,7 @@
 }
 
 .CodeMirror-cursor {
-  border-left: 1px solid #000; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-left: 1px solid var(--color-background-inverted);
   border-right: none;
   width: 0;
 }
@@ -393,14 +393,14 @@
 }
 
 div.CodeMirror:focus-within span.CodeMirror-matchingbracket {
-  background-color: rgb(0 0 0 / 7.000000000000001%); /* stylelint-disable-line plugin/use_theme_colors */
+  background-color: rgb(0 0 0 / 7%); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
   border-bottom: 1px solid rgb(0 0 0 / 50%); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
 }
 
 div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
-  background-color: rgb(255 0 0 / 7.000000000000001%); /* stylelint-disable-line plugin/use_theme_colors */
+  background-color: rgb(255 0 0 / 7%); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
   border-bottom: 1px solid rgb(255 0 0 / 50%); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
@@ -483,8 +483,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 
 .cm-token-highlight::before {
   position: absolute;
-  border: 1px solid #808080; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border: 1px solid var(--override-search-highlight-border-color);
   border-radius: 3px;
   top: 0;
   bottom: -1px;
@@ -505,10 +504,8 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
   position: absolute;
   border-top-style: solid;
   border-bottom-style: solid;
-  border-top-color: #808080; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  border-bottom-color: #808080; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-top-color: var(--override-search-highlight-border-color);
+  border-bottom-color: var(--override-search-highlight-border-color);
   border-top-width: 1px;
   border-bottom-width: 1px;
   top: -1px;
@@ -519,8 +516,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .cm-search-highlight-full::before {
-  border: 1px solid #808080; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border: 1px solid var(--override-search-highlight-border-color);
   border-radius: 3px;
 }
 
@@ -529,8 +525,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
   border-top-left-radius: 2px;
   border-bottom-left-radius: 2px;
   border-left-style: solid;
-  border-left-color: #808080; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-left-color: var(--override-search-highlight-border-color);
 }
 
 .cm-search-highlight-end::before {
@@ -538,8 +533,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
   border-top-right-radius: 2px;
   border-bottom-right-radius: 2px;
   border-right-style: solid;
-  border-right-color: #808080; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border-right-color: var(--override-search-highlight-border-color);
 }
 
 .cm-line-with-selection .cm-column-with-selection.cm-search-highlight-full::before {
@@ -580,8 +574,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .CodeMirror .text-editor-line-marker-text span.line-marker-units {
-  color: #555; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
   font-size: 75%;
   margin-left: 3px;
 }
@@ -589,7 +582,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 .CodeMirror .text-editor-coverage-unused-marker {
   text-align: right;
   padding-right: 2px;
-  background-color: #ee442f; /* stylelint-disable-line plugin/use_theme_colors */
+  background-color: var(--color-accent-red);
   /* See: crbug.com/1152736 for color variable migration. */
 }
 
@@ -636,7 +629,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
   /* See: crbug.com/1152736 for color variable migration. */
   margin-left: 10px;
   padding-left: 5px;
-  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
+  color: var(--color-text-primary);
   /* See: crbug.com/1152736 for color variable migration. */
   user-select: text;
 }
@@ -703,14 +696,12 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .CodeMirror .auto-complete-text {
-  color: rgb(128 128 128); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
 }
 
 .CodeMirror .placeholder-text {
   height: 0;
-  color: rgb(128 128 128); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
 }
 /** Prevent the codemirror textarea from stealing PageUp events **/
 
@@ -730,8 +721,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 .CodeMirror-scrollbar-filler,
 .CodeMirror-gutter-filler {
   /* The little square between H and V scrollbars */
-  background-color: white; /* stylelint-disable-line color-named */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background);
 }
 /* Shown when moving in bi-directional text */
 
@@ -754,8 +744,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 .CodeMirror-foldmarker::before {
   content: '\2026';
   font-size: 13px;
-  color: #666; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-text-secondary);
 }
 
 .CodeMirror-foldgutter {
@@ -783,8 +772,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 
 .CodeMirror-foldgutter-open::before,
 .CodeMirror-foldgutter-folded::before {
-  background-color: #727272; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-text-secondary);
   user-select: none;
   -webkit-mask-image: var(--image-file-treeoutlineTriangles);
   -webkit-mask-size: 32px 24px;

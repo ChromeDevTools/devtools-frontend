@@ -86,7 +86,6 @@ def _CheckChangesAreExclusiveToDirectory(input_api, output_api):
         ],
         [
             'node_modules',
-            'package.json',
             'package-lock.json',
             input_api.os_path.join('scripts', 'deps', 'manage_node_deps.py'),
         ],

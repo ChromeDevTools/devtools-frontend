@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {$$, assertNotNull, click, getBrowserAndPages, goToResource, step, waitFor, waitForElementsWithTextContent, waitForElementWithTextContent, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {changeAllocationSampleViewViaDropdown, changeViewViaDropdown, findSearchResult, getDataGridRows, navigateToMemoryTab, setSearchFilter, takeAllocationProfile, takeHeapSnapshot, waitForNonEmptyHeapSnapshotData, waitForRetainerChain, waitForSearchResultNumber, waitUntilRetainerChainSatisfies} from '../helpers/memory-helpers.js';
+import {changeAllocationSampleViewViaDropdown, changeViewViaDropdown, findSearchResult, getDataGridRows, navigateToMemoryTab, setSearchFilter, takeAllocationProfile, takeAllocationTimelineProfile, takeHeapSnapshot, waitForNonEmptyHeapSnapshotData, waitForRetainerChain, waitForSearchResultNumber, waitUntilRetainerChainSatisfies} from '../helpers/memory-helpers.js';
 
 describe('The Memory Panel', async function() {
   // These tests render large chunks of data into DevTools and filter/search
@@ -235,5 +235,19 @@ describe('The Memory Panel', async function() {
     takeAllocationProfile(frontend);
     changeAllocationSampleViewViaDropdown('Chart');
     await waitFor('canvas.flame-chart-canvas');
+  });
+
+  it('shows allocations for an allocation timeline', async () => {
+    const {frontend} = getBrowserAndPages();
+    await goToResource('memory/allocations.html');
+    await navigateToMemoryTab();
+    takeAllocationTimelineProfile(frontend, {recordStacks: true});
+    await changeViewViaDropdown('Allocation');
+
+    const header = await waitForElementWithTextContent('Live Count');
+    const table = await header.evaluateHandle(node => {
+      return node.closest('.data-grid');
+    });
+    await waitFor('.data-grid-data-grid-node', table);
   });
 });

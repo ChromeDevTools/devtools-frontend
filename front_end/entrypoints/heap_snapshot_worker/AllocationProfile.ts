@@ -44,7 +44,7 @@ export class AllocationProfile {
   _idToNode: {[x: number]: BottomUpAllocationNode|null};
   _idToTopDownNode: {[x: number]: TopDownAllocationNode};
   _collapsedTopNodeIdToFunctionInfo: {[x: number]: FunctionAllocationInfo};
-  _traceTops: HeapSnapshotModel.HeapSnapshotModel.SerializedAllocationNode[];
+  _traceTops: HeapSnapshotModel.HeapSnapshotModel.SerializedAllocationNode[]|null;
   _traceTree: TopDownAllocationNode;
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
@@ -62,7 +62,7 @@ export class AllocationProfile {
 
     this._collapsedTopNodeIdToFunctionInfo = {};
 
-    this._traceTops = [];
+    this._traceTops = null;
 
     this._buildFunctionAllocationInfos(profile);
     this._traceTree = this._buildAllocationTree(profile, liveObjectStats);

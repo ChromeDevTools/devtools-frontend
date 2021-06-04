@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer';
 
-import {$, platform, waitForElementWithTextContent} from '../../shared/helper.js';
+import {platform, waitForElementWithTextContent} from '../../shared/helper.js';
 import {$$, click, getBrowserAndPages, pasteText, waitFor, waitForFunction, waitForNone} from '../../shared/helper.js';
 
 
@@ -24,9 +24,25 @@ export async function navigateToMemoryTab() {
 export async function takeAllocationProfile(frontend: puppeteer.Page) {
   const [radioButton] = await frontend.$x('//label[text()="Allocation sampling"]');
   await click(radioButton);
-  await click('button[aria-label="Start heap profiling"');
+  await click('button[aria-label="Start heap profiling"]');
   await new Promise(r => setTimeout(r, 200));
-  await click('button[aria-label="Stop heap profiling"');
+  await click('button[aria-label="Stop heap profiling"]');
+  await waitForNone('.heap-snapshot-sidebar-tree-item.wait');
+  await waitFor('.heap-snapshot-sidebar-tree-item.selected');
+}
+
+export async function takeAllocationTimelineProfile(
+    frontend: puppeteer.Page, {recordStacks}: {recordStacks: boolean} = {
+      recordStacks: false,
+    }) {
+  const [radioButton] = await frontend.$x('//label[text()="Allocation instrumentation on timeline"]');
+  await click(radioButton);
+  if (recordStacks) {
+    await click('input[aria-label="Record stack traces of allocations (extra performance overhead)"]');
+  }
+  await click('button[aria-label="Start recording heap profile"]');
+  await new Promise(r => setTimeout(r, 200));
+  await click('button[aria-label="Stop recording heap profile"]');
   await waitForNone('.heap-snapshot-sidebar-tree-item.wait');
   await waitFor('.heap-snapshot-sidebar-tree-item.selected');
 }
@@ -221,7 +237,7 @@ export async function waitForRetainerChain(expectedRetainers: Array<string>) {
 
 export async function changeViewViaDropdown(newPerspective: string) {
   const perspectiveDropdownSelector = 'select[aria-label="Perspective"]';
-  const dropdown = await $(perspectiveDropdownSelector) as puppeteer.ElementHandle<HTMLSelectElement>;
+  const dropdown = await waitFor(perspectiveDropdownSelector) as puppeteer.ElementHandle<HTMLSelectElement>;
 
   const optionToSelect = await waitForElementWithTextContent(newPerspective, dropdown);
   const optionValue = await optionToSelect.evaluate(opt => opt.getAttribute('value'));

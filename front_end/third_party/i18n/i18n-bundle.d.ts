@@ -30,6 +30,17 @@
  declare function collectAllCustomElementsFromICU<T>(icuElements: ArrayLike<Object>, seenElementsById?: Map<string, T>): T;
  /** @param {ArrayLike<string>} pathInLHR */
  declare function _formatPathAsString(pathInLHR: string[]): string;
+/**
+ * Returns a copy of the `values` object, with the values formatted based on how
+ * they will be used in their icuMessage, e.g. KB or milliseconds. The original
+ * object is unchanged.
+ * @param {string} icuMessageId
+ * @param {MessageFormat} messageFormatter
+ * @param {Readonly<Record<string, string | number>>} values
+ * @param {string} lhlMessage Used for clear error logging.
+ * @return {Record<string, string | number>}
+ */
+declare function _preformatValues(icuMessageId: string, messageFormatter: Object, values: Object, lhlMessage: string): Record<string, string|number|boolean|null|undefined>;
  /**
   * @param {string} locale
   */
@@ -89,6 +100,7 @@ declare function idNotInMainDictionaryException(icuMessage: string): void;
 
  declare var i18n: {
    _formatPathAsString: typeof _formatPathAsString;
+   _preformatValues: typeof _preformatValues;
    lookupLocale: typeof lookupLocale;
    getRendererFormattedStrings: typeof getRendererFormattedStrings;
    createIcuMessageFn: typeof createIcuMessageFn;

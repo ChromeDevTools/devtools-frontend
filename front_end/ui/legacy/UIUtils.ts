@@ -61,36 +61,6 @@ import {registerCustomElement} from './utils/register-custom-element.js';
 
 const UIStrings = {
   /**
-  *@description Micros format in UIUtils
-  *@example {2} PH1
-  */
-  fmms: '{PH1} μs',
-  /**
-  *@description Sub millis format in UIUtils
-  *@example {2.14} PH1
-  */
-  fms: '{PH1} ms',
-  /**
-  *@description Seconds format in UIUtils
-  *@example {2.14} PH1
-  */
-  fs: '{PH1} s',
-  /**
-  *@description Minutes format in UIUtils
-  *@example {2.2} PH1
-  */
-  fmin: '{PH1} min',
-  /**
-  *@description Hours format in UIUtils
-  *@example {2.2} PH1
-  */
-  fhrs: '{PH1} hrs',
-  /**
-  *@description Days format in UIUtils
-  *@example {2.2} PH1
-  */
-  fdays: '{PH1} days',
-  /**
   *@description label to open link externally
   */
   openInNewTab: 'Open in new tab',
@@ -615,49 +585,11 @@ export function handleElementValueModifications(
   return false;
 }
 
-Number.millisToString = function(ms: number, higherResolution?: boolean): string {
-  if (!isFinite(ms)) {
-    return '-';
-  }
-
-  if (ms === 0) {
-    return '0';
-  }
-
-  if (higherResolution && ms < 0.1) {
-    return i18nString(UIStrings.fmms, {PH1: (ms * 1000).toFixed(0)});
-  }
-  if (higherResolution && ms < 1000) {
-    return i18nString(UIStrings.fms, {PH1: (ms).toFixed(2)});
-  }
-  if (ms < 1000) {
-    return i18nString(UIStrings.fms, {PH1: (ms).toFixed(0)});
-  }
-
-  const seconds = ms / 1000;
-  if (seconds < 60) {
-    return i18nString(UIStrings.fs, {PH1: (seconds).toFixed(2)});
-  }
-
-  const minutes = seconds / 60;
-  if (minutes < 60) {
-    return i18nString(UIStrings.fmin, {PH1: (minutes).toFixed(1)});
-  }
-
-  const hours = minutes / 60;
-  if (hours < 24) {
-    return i18nString(UIStrings.fhrs, {PH1: (hours).toFixed(1)});
-  }
-
-  const days = hours / 24;
-  return i18nString(UIStrings.fdays, {PH1: (days).toFixed(1)});
-};
-
 Number.secondsToString = function(seconds: number, higherResolution?: boolean): string {
   if (!isFinite(seconds)) {
     return '-';
   }
-  return Number.millisToString(seconds * 1000, higherResolution);
+  return i18n.i18n.millisToString(seconds * 1000, higherResolution);
 };
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration

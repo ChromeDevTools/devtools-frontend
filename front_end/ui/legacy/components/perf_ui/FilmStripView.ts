@@ -77,7 +77,7 @@ export class FilmStripView extends UI.Widget.HBox {
 
   createFrameElement(frame: SDK.FilmStripModel.Frame): Promise<Element> {
     const time = frame.timestamp;
-    const frameTime = Number.millisToString(time - this._zeroTime);
+    const frameTime = i18n.i18n.millisToString(time - this._zeroTime);
     const element = document.createElement('div');
     element.classList.add('frame');
     UI.Tooltip.Tooltip.install(element, i18nString(UIStrings.doubleclickToZoomImageClickTo));
@@ -308,7 +308,7 @@ export class Dialog {
 
   _render(): Promise<void> {
     const frame = this._frames[this._index];
-    this._fragment.$('time').textContent = Number.millisToString(frame.timestamp - this._zeroTime);
+    this._fragment.$('time').textContent = i18n.i18n.millisToString(frame.timestamp - this._zeroTime);
     return frame.imageDataPromise()
         .then(imageData => {
           const image = (this._fragment.$('image') as HTMLImageElement);

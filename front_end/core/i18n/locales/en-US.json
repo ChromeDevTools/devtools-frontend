@@ -11447,24 +11447,6 @@
   "ui/legacy/UIUtils.ts | copyLinkAddress": {
     "message": "Copy link address"
   },
-  "ui/legacy/UIUtils.ts | fdays": {
-    "message": "{PH1} days"
-  },
-  "ui/legacy/UIUtils.ts | fhrs": {
-    "message": "{PH1} hrs"
-  },
-  "ui/legacy/UIUtils.ts | fmin": {
-    "message": "{PH1} min"
-  },
-  "ui/legacy/UIUtils.ts | fmms": {
-    "message": "{PH1} μs"
-  },
-  "ui/legacy/UIUtils.ts | fms": {
-    "message": "{PH1} ms"
-  },
-  "ui/legacy/UIUtils.ts | fs": {
-    "message": "{PH1} s"
-  },
   "ui/legacy/UIUtils.ts | ok": {
     "message": "OK"
   },

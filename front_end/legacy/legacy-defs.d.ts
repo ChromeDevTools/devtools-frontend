@@ -19,7 +19,6 @@ interface RegExp {
 
 interface NumberConstructor {
   secondsToString(seconds: number, higherResolution?: boolean): string;
-  millisToString(ms: number, higherResolution?: boolean): string;
 }
 
 declare class AnchorBox {

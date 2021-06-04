@@ -319,5 +319,5 @@ export const secondsToString = function(seconds: number, higherResolution?: bool
   if (!isFinite(seconds)) {
     return '-';
   }
-  return Number.millisToString(seconds * 1000, higherResolution);
+  return millisToString(seconds * 1000, higherResolution);
 };

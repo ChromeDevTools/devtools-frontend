@@ -360,7 +360,7 @@ export class PaintProfilerView extends UI.Widget.HBox {
   }
 
   _formatPieChartTime(value: number): string {
-    return Number.millisToString(value * 1000, true);
+    return i18n.i18n.millisToString(value * 1000, true);
   }
 
   selectionWindow(): {left: number, right: number}|null {

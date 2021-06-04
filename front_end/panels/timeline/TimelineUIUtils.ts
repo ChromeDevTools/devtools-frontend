@@ -2028,8 +2028,8 @@ export class TimelineUIUtils {
     }
 
     if (detailed && !Number.isNaN(event.duration || 0)) {
-      contentHelper.appendTextRow(i18nString(UIStrings.totalTime), Number.millisToString(event.duration || 0, true));
-      contentHelper.appendTextRow(i18nString(UIStrings.selfTime), Number.millisToString(event.selfTime, true));
+      contentHelper.appendTextRow(i18nString(UIStrings.totalTime), i18n.i18n.millisToString(event.duration || 0, true));
+      contentHelper.appendTextRow(i18nString(UIStrings.selfTime), i18n.i18n.millisToString(event.selfTime, true));
     }
 
     if (model.isGenericTrace()) {
@@ -2067,7 +2067,7 @@ export class TimelineUIUtils {
       case recordTypes.TimerRemove: {
         contentHelper.appendTextRow(i18nString(UIStrings.timerId), eventData['timerId']);
         if (event.name === recordTypes.TimerInstall) {
-          contentHelper.appendTextRow(i18nString(UIStrings.timeout), Number.millisToString(eventData['timeout']));
+          contentHelper.appendTextRow(i18nString(UIStrings.timeout), i18n.i18n.millisToString(eventData['timeout']));
           contentHelper.appendTextRow(i18nString(UIStrings.repeats), !eventData['singleShot']);
         }
         break;
@@ -2298,7 +2298,7 @@ export class TimelineUIUtils {
       // @ts-ignore Fall-through intended.
       case recordTypes.FireIdleCallback: {
         contentHelper.appendTextRow(
-            i18nString(UIStrings.allottedTime), Number.millisToString(eventData['allottedMilliseconds']));
+            i18nString(UIStrings.allottedTime), i18n.i18n.millisToString(eventData['allottedMilliseconds']));
         contentHelper.appendTextRow(i18nString(UIStrings.invokedByTimeout), eventData['timedOut']);
       }
 
@@ -2382,7 +2382,7 @@ export class TimelineUIUtils {
     if (timelineData.timeWaitingForMainThread) {
       contentHelper.appendTextRow(
           i18nString(UIStrings.timeWaitingForMainThread),
-          Number.millisToString(timelineData.timeWaitingForMainThread, true));
+          i18n.i18n.millisToString(timelineData.timeWaitingForMainThread, true));
     }
 
     for (let i = 0; i < timelineData.backendNodeIds.length; ++i) {
@@ -2580,15 +2580,15 @@ export class TimelineUIUtils {
     // The time from queueing the request until resource processing is finished.
     const fullDuration = request.endTime - (request.getStartTime() || -Infinity);
     if (isFinite(fullDuration)) {
-      let textRow = Number.millisToString(fullDuration, true);
+      let textRow = i18n.i18n.millisToString(fullDuration, true);
       // The time from queueing the request until the download is finished. This
       // corresponds to the total time reported for the request in the network tab.
       const networkDuration = (request.finishTime || request.getStartTime()) - request.getStartTime();
       // The time it takes to make the resource available to the renderer process.
       const processingDuration = request.endTime - (request.finishTime || 0);
       if (isFinite(networkDuration) && isFinite(processingDuration)) {
-        const networkDurationStr = Number.millisToString(networkDuration, true);
-        const processingDurationStr = Number.millisToString(processingDuration, true);
+        const networkDurationStr = i18n.i18n.millisToString(networkDuration, true);
+        const processingDurationStr = i18n.i18n.millisToString(processingDuration, true);
         const cacheOrNetworkLabel =
             request.cached() ? i18nString(UIStrings.loadFromCache) : i18nString(UIStrings.networkTransfer);
         textRow += i18nString(
@@ -2916,7 +2916,7 @@ export class TimelineUIUtils {
   static createEventDivider(event: SDK.TracingModel.Event, zeroTime: number): Element {
     const eventDivider = document.createElement('div');
     eventDivider.classList.add('resources-event-divider');
-    const startTime = Number.millisToString(event.startTime - zeroTime);
+    const startTime = i18n.i18n.millisToString(event.startTime - zeroTime);
     UI.Tooltip.Tooltip.install(
         eventDivider, i18nString(UIStrings.sAtS, {PH1: TimelineUIUtils.eventTitle(event), PH2: startTime}));
     const style = TimelineUIUtils.markerStyleForEvent(event);
@@ -3062,7 +3062,7 @@ export class TimelineUIUtils {
     contentHelper.appendElementRow(i18nString(UIStrings.duration), duration, frame.hasWarnings());
     const durationInMillis = frame.endTime - frame.startTime;
     contentHelper.appendTextRow(i18nString(UIStrings.fps), Math.floor(1000 / durationInMillis));
-    contentHelper.appendTextRow(i18nString(UIStrings.cpuTime), Number.millisToString(frame.cpuTime, true));
+    contentHelper.appendTextRow(i18nString(UIStrings.cpuTime), i18n.i18n.millisToString(frame.cpuTime, true));
     if (filmStripFrame) {
       const filmStripPreview = document.createElement('div');
       filmStripPreview.classList.add('timeline-filmstrip-preview');
@@ -3088,8 +3088,8 @@ export class TimelineUIUtils {
 
   static frameDuration(frame: TimelineModel.TimelineFrameModel.TimelineFrame): Element {
     const durationText = i18nString(UIStrings.sAtSParentheses, {
-      PH1: Number.millisToString(frame.endTime - frame.startTime, true),
-      PH2: Number.millisToString(frame.startTimeOffset, true),
+      PH1: i18n.i18n.millisToString(frame.endTime - frame.startTime, true),
+      PH2: i18n.i18n.millisToString(frame.startTimeOffset, true),
     });
     if (!frame.hasWarnings()) {
       return i18n.i18n.getFormatLocalizedString(str_, UIStrings.emptyPlaceholder, {PH1: durationText});
@@ -3265,20 +3265,20 @@ export class TimelineUIUtils {
       }
 
       case warnings.IdleDeadlineExceeded: {
-        const exceededMs = Number.millisToString((event.duration || 0) - eventData['allottedMilliseconds'], true);
+        const exceededMs = i18n.i18n.millisToString((event.duration || 0) - eventData['allottedMilliseconds'], true);
         span.textContent = i18nString(UIStrings.idleCallbackExecutionExtended, {PH1: exceededMs});
         break;
       }
 
       case warnings.LongHandler: {
         span.textContent =
-            i18nString(UIStrings.handlerTookS, {PH1: Number.millisToString((event.duration || 0), true)});
+            i18nString(UIStrings.handlerTookS, {PH1: i18n.i18n.millisToString((event.duration || 0), true)});
         break;
       }
 
       case warnings.LongRecurringHandler: {
         span.textContent =
-            i18nString(UIStrings.recurringHandlerTookS, {PH1: Number.millisToString((event.duration || 0), true)});
+            i18nString(UIStrings.recurringHandlerTookS, {PH1: i18n.i18n.millisToString((event.duration || 0), true)});
         break;
       }
 
@@ -3286,7 +3286,7 @@ export class TimelineUIUtils {
         const longTaskLink =
             UI.XLink.XLink.create('https://web.dev/rail/#goals-and-guidelines', i18nString(UIStrings.longTask));
         span.appendChild(i18n.i18n.getFormatLocalizedString(
-            str_, UIStrings.sTookS, {PH1: longTaskLink, PH2: Number.millisToString((event.duration || 0), true)}));
+            str_, UIStrings.sTookS, {PH1: longTaskLink, PH2: i18n.i18n.millisToString((event.duration || 0), true)}));
         break;
       }
 

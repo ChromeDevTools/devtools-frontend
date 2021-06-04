@@ -301,7 +301,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     const startTime = request.getStartTime();
     const duration = request.endTime - startTime;
     if (startTime && isFinite(duration)) {
-      contents.createChild('span', 'timeline-info-network-time').textContent = Number.millisToString(duration, true);
+      contents.createChild('span', 'timeline-info-network-time').textContent = i18n.i18n.millisToString(duration, true);
     }
     if (typeof request.priority === 'string') {
       const div = (contents.createChild('span') as HTMLElement);

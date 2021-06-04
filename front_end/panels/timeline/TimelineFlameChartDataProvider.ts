@@ -946,8 +946,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         time = Math.abs(totalTime - selfTime) > eps && selfTime > eps ?
             i18nString(
                 UIStrings.sSelfS,
-                {PH1: Number.millisToString(totalTime, true), PH2: Number.millisToString(selfTime, true)}) :
-            Number.millisToString(totalTime, true);
+                {PH1: i18n.i18n.millisToString(totalTime, true), PH2: i18n.i18n.millisToString(selfTime, true)}) :
+            i18n.i18n.millisToString(totalTime, true);
       }
       if (this._performanceModel && this._performanceModel.timelineModel().isMarkerEvent(event)) {
         title = TimelineUIUtils.eventTitle(event);
@@ -1273,7 +1273,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   _appendFrame(frame: TimelineModel.TimelineFrameModel.TimelineFrame): void {
     const index = this._entryData.length;
     this._entryData.push(frame);
-    this._entryIndexToTitle[index] = Number.millisToString(frame.duration, true);
+    this._entryIndexToTitle[index] = i18n.i18n.millisToString(frame.duration, true);
     if (!this._timelineData) {
       return;
     }

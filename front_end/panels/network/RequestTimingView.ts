@@ -524,7 +524,7 @@ export class RequestTimingView extends UI.Widget.VBox {
         }
       }
       const label = tr.createChild('td').createChild('div', 'network-timing-bar-title');
-      label.textContent = Number.millisToString(serverTiming.value, true);
+      label.textContent = i18n.i18n.millisToString(serverTiming.value, true);
     }
 
     function createHeader(title: string): Element {

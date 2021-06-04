@@ -696,7 +696,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
       if (lastDraw === undefined || gridWidth - lastDraw > 50) {
         lastDraw = gridWidth;
         const label = UI.UIUtils.createSVGChild(this._grid, 'text', 'animation-timeline-grid-label');
-        label.textContent = Number.millisToString(time);
+        label.textContent = i18n.i18n.millisToString(time);
         label.setAttribute('x', (gridWidth + 10).toString());
         label.setAttribute('y', '16');
       }
@@ -788,7 +788,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     if (!this._scrubberPlayer) {
       return;
     }
-    this._currentTime.textContent = Number.millisToString(this._scrubberPlayer.currentTime || 0);
+    this._currentTime.textContent = i18n.i18n.millisToString(this._scrubberPlayer.currentTime || 0);
     if (this._scrubberPlayer.playState.toString() === 'pending' || this._scrubberPlayer.playState === 'running') {
       this.element.window().requestAnimationFrame(this._updateScrubber.bind(this));
     } else if (this._scrubberPlayer.playState === 'finished') {
@@ -842,7 +842,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     if (this._scrubberPlayer) {
       this._scrubberPlayer.currentTime = currentTime;
     }
-    this._currentTime.textContent = Number.millisToString(Math.round(currentTime));
+    this._currentTime.textContent = i18n.i18n.millisToString(Math.round(currentTime));
 
     if (this._selectedGroup) {
       this._selectedGroup.seekTo(currentTime);

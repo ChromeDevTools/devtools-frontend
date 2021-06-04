@@ -28,7 +28,6 @@ Common.Color = CommonModule.Color.Color;
  * @enum {string}
  */
 Common.Color.Format = CommonModule.Color.Format;
-Common.Color.Nicknames = CommonModule.Color.Nicknames;
 
 Common.console = CommonModule.Console.Console.instance();
 

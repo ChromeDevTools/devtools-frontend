@@ -278,7 +278,7 @@ export class CSSMetadata {
     acceptedKeywords.push(...this._specificPropertyValues(propertyName));
     if (this.isColorAwareProperty(propertyName)) {
       acceptedKeywords.push('currentColor');
-      for (const color in Common.Color.Nicknames) {
+      for (const color of Common.Color.Nicknames.keys()) {
         acceptedKeywords.push(color);
       }
     }

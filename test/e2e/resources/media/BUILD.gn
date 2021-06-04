@@ -5,5 +5,9 @@
 import("../../../../scripts/build/ninja/copy.gni")
 
 copy_to_gen("media") {
-  sources = [ "fisch.webm" ]
+  sources = [
+    "codec_worker.html",
+    "codec_worker.js",
+    "fisch.webm",
+  ]
 }

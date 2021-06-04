@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
+import {getBrowserAndPages, goToResource, matchArray, waitFor, waitForFunction, waitForMany} from '../../shared/helper.js';
 
 export async function playMediaFile(media: string) {
   const {target} = getBrowserAndPages();
@@ -33,4 +33,17 @@ export async function getPlayerButton() {
 export async function getPlayerButtonText() {
   const playerEntry = await getPlayerButton();
   return await playerEntry.evaluate(element => element.textContent as string);
+}
+
+export async function waitForPlayerButtonTexts(expectedTexts: (string|RegExp)[]) {
+  return waitForFunction(async () => {
+    const playerEntries = await waitForMany('.player-entry-tree-element', 4);
+    const texts = await Promise.all(
+        playerEntries.map(playerEntry => playerEntry.evaluate(element => element.textContent as string)));
+    texts.sort();
+    if (matchArray(texts, expectedTexts) === true) {
+      return texts;
+    }
+    return undefined;
+  });
 }

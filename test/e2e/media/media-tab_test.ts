@@ -3,9 +3,10 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 
-import {getPlayerButtonText, playMediaFile} from '../helpers/media-helpers.js';
+import {getPlayerButtonText, playMediaFile, waitForPlayerButtonTexts} from '../helpers/media-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 describe('Media Tab', () => {
@@ -16,5 +17,16 @@ describe('Media Tab', () => {
 
     // Names are glitched right now, and display 32-character unguessable tokens.
     assert.strictEqual(entryName.length, 32);
+  });
+
+  it('ensures video playback adds entry for web worker', async () => {
+    await openPanelViaMoreTools('Media');
+    await goToResource('media/codec_worker.html');
+    await waitForPlayerButtonTexts([
+      /AudioEncoder/,
+      /VideoDecoder/,
+      /VideoEncoder/,
+      /codec_worker.js/,
+    ]);
   });
 });

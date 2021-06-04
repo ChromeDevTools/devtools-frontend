@@ -67,5 +67,4 @@ export class MediaModel extends SDK.SDKModel.SDKModel implements ProtocolProxyAp
     this.dispatchEventToListeners(ProtocolTriggers.PlayersCreated, players);
   }
 }
-
-SDK.SDKModel.SDKModel.register(MediaModel, {capabilities: SDK.Target.Capability.DOM, autostart: false});
+SDK.SDKModel.SDKModel.register(MediaModel, {capabilities: SDK.Target.Capability.Media, autostart: false});

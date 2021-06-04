@@ -259,8 +259,8 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
         color: metricInfo.color,
       });
     }
-    const backgroundColor = Common.Color.Color.parse(
-        ThemeSupport.ThemeSupport.instance().patchColorText('white', ThemeSupport.ThemeSupport.ColorUsage.Background));
+    const backgroundColor = Common.Color.Color.parse(UI.Utils.getThemeColorValue('--color-background'));
+
     if (backgroundColor) {
       for (const path of paths.reverse()) {
         const color = path.color;

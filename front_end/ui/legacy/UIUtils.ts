@@ -585,13 +585,6 @@ export function handleElementValueModifications(
   return false;
 }
 
-Number.secondsToString = function(seconds: number, higherResolution?: boolean): string {
-  if (!isFinite(seconds)) {
-    return '-';
-  }
-  return i18n.i18n.millisToString(seconds * 1000, higherResolution);
-};
-
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function formatLocalized(format: string, substitutions: ArrayLike<any>|null): Element {

@@ -1287,8 +1287,8 @@ export class NetworkRequestNode extends NetworkNode {
 
   _renderTimeCell(cell: HTMLElement): void {
     if (this._request.duration > 0) {
-      this._setTextAndTitle(cell, Number.secondsToString(this._request.duration));
-      this._appendSubtitle(cell, Number.secondsToString(this._request.latency));
+      this._setTextAndTitle(cell, i18n.i18n.secondsToString(this._request.duration));
+      this._appendSubtitle(cell, i18n.i18n.secondsToString(this._request.latency));
     } else {
       cell.classList.add('network-dim-cell');
       this._setTextAndTitle(cell, i18nString(UIStrings.pending));

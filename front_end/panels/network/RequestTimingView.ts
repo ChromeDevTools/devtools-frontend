@@ -438,7 +438,7 @@ export class RequestTimingView extends UI.Widget.VBox {
       UI.ARIAUtils.setAccessibleName(
           row, i18nString(UIStrings.startedAtS, {PH1: calculator.formatValue(range.start, 2)}));
       const label = tr.createChild('td').createChild('div', 'network-timing-bar-title');
-      label.textContent = Number.secondsToString(duration, true);
+      label.textContent = i18n.i18n.secondsToString(duration, true);
 
       if (range.name === 'serviceworker-respondwith') {
         timingBarTitleEement.classList.add('network-fetch-timing-bar-clickable');
@@ -463,7 +463,7 @@ export class RequestTimingView extends UI.Widget.VBox {
         'https://developer.chrome.com/docs/devtools/network/reference#timing-explanation',
         i18nString(UIStrings.explanation)));
     footer.createChild('td');
-    UI.UIUtils.createTextChild(footer.createChild('td'), Number.secondsToString(totalDuration, true));
+    UI.UIUtils.createTextChild(footer.createChild('td'), i18n.i18n.secondsToString(totalDuration, true));
 
     const serverTimings = request.serverTimings;
 

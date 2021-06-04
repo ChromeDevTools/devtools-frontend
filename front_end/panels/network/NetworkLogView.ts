@@ -1042,18 +1042,18 @@ export class NetworkLogView extends UI.Widget.VBox implements
 
     if (baseTime !== -1 && maxTime !== -1) {
       this._summaryToolbar.appendSeparator();
-      appendChunk(i18nString(UIStrings.finishS, {PH1: Number.secondsToString(maxTime - baseTime)}));
+      appendChunk(i18nString(UIStrings.finishS, {PH1: i18n.i18n.secondsToString(maxTime - baseTime)}));
       if (this._mainRequestDOMContentLoadedTime !== -1 && this._mainRequestDOMContentLoadedTime > baseTime) {
         this._summaryToolbar.appendSeparator();
         const domContentLoadedText = i18nString(
             UIStrings.domcontentloadedS,
-            {PH1: Number.secondsToString(this._mainRequestDOMContentLoadedTime - baseTime)});
+            {PH1: i18n.i18n.secondsToString(this._mainRequestDOMContentLoadedTime - baseTime)});
         appendChunk(domContentLoadedText).style.color = NetworkLogView.getDCLEventColor();
       }
       if (this._mainRequestLoadTime !== -1) {
         this._summaryToolbar.appendSeparator();
         const loadText =
-            i18nString(UIStrings.loadS, {PH1: Number.secondsToString(this._mainRequestLoadTime - baseTime)});
+            i18nString(UIStrings.loadS, {PH1: i18n.i18n.secondsToString(this._mainRequestLoadTime - baseTime)});
         appendChunk(loadText).style.color = NetworkLogView.getLoadEventColor();
       }
     }

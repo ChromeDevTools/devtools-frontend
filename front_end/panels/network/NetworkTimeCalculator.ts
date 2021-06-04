@@ -123,7 +123,7 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper im
   }
 
   formatValue(value: number, precision?: number): string {
-    return Number.secondsToString(value, Boolean(precision));
+    return i18n.i18n.secondsToString(value, Boolean(precision));
   }
 
   minimumBoundary(): number {
@@ -230,11 +230,11 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper im
   computeBarGraphLabels(request: SDK.NetworkRequest.NetworkRequest): Label {
     let rightLabel = '';
     if (request.responseReceivedTime !== -1 && request.endTime !== -1) {
-      rightLabel = Number.secondsToString(request.endTime - request.responseReceivedTime);
+      rightLabel = i18n.i18n.secondsToString(request.endTime - request.responseReceivedTime);
     }
 
     const hasLatency = request.latency > 0;
-    const leftLabel = hasLatency ? Number.secondsToString(request.latency) : rightLabel;
+    const leftLabel = hasLatency ? i18n.i18n.secondsToString(request.latency) : rightLabel;
 
     if (request.timing) {
       return {left: leftLabel, right: rightLabel, tooltip: undefined};
@@ -242,7 +242,7 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper im
 
     let tooltip;
     if (hasLatency && rightLabel) {
-      const total = Number.secondsToString(request.duration);
+      const total = i18n.i18n.secondsToString(request.duration);
       tooltip = i18nString(UIStrings.sLatencySDownloadSTotal, {PH1: leftLabel, PH2: rightLabel, PH3: total});
     } else if (hasLatency) {
       tooltip = i18nString(UIStrings.sLatency, {PH1: leftLabel});
@@ -312,7 +312,7 @@ export class NetworkTransferTimeCalculator extends NetworkTimeCalculator {
   }
 
   formatValue(value: number, precision?: number): string {
-    return Number.secondsToString(value - this.zeroTime(), Boolean(precision));
+    return i18n.i18n.secondsToString(value - this.zeroTime(), Boolean(precision));
   }
 
   _lowerBound(request: SDK.NetworkRequest.NetworkRequest): number {
@@ -330,7 +330,7 @@ export class NetworkTransferDurationCalculator extends NetworkTimeCalculator {
   }
 
   formatValue(value: number, precision?: number): string {
-    return Number.secondsToString(value, Boolean(precision));
+    return i18n.i18n.secondsToString(value, Boolean(precision));
   }
 
   _upperBound(request: SDK.NetworkRequest.NetworkRequest): number {

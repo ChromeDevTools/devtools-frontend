@@ -17,10 +17,6 @@ interface RegExp {
   __fromRegExpQuery: boolean;
 }
 
-interface NumberConstructor {
-  secondsToString(seconds: number, higherResolution?: boolean): string;
-}
-
 declare class AnchorBox {
   x: number;
   y: number;

@@ -4,6 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
+import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -314,7 +315,7 @@ export class OverviewCalculator implements PerfUI.TimelineGrid.Calculator {
   }
 
   formatValue(value: number, precision?: number): string {
-    return Number.secondsToString(value / 1000, Boolean(precision));
+    return i18n.i18n.secondsToString(value / 1000, Boolean(precision));
   }
 
   maximumBoundary(): number {

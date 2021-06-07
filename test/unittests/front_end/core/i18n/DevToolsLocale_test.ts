@@ -64,4 +64,19 @@ describe('DevToolsLocale', () => {
 
     assert.strictEqual(devToolsLocale.locale, 'zh');
   });
+
+  describe('forceFallbackLocale', () => {
+    it('sets locale to English', () => {
+      const data: i18n.DevToolsLocale.DevToolsLocaleData = {
+        settingLanguage: 'browserLanguage',
+        navigatorLanguage: 'en-GB',
+        lookupClosestDevToolsLocale: identity,
+      };
+      const devToolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance({create: true, data});
+      assert.strictEqual(devToolsLocale.locale, 'en-GB');
+
+      devToolsLocale.forceFallbackLocale();
+      assert.strictEqual(devToolsLocale.locale, 'en-US');
+    });
+  });
 });

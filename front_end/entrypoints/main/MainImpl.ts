@@ -171,17 +171,19 @@ export class MainImpl {
       },
     });
 
-    const localePromises = [i18n.i18n.fetchAndRegisterLocaleData(devToolsLocale.locale)];
     if (devToolsLocale.locale !== 'en-US') {
       // Always load en-US locale data as a fallback. This is important, newly added
-      // strings won't have a translation.
-      localePromises.push(i18n.i18n.fetchAndRegisterLocaleData('en-US'));
+      // strings won't have a translation. If fetching en-US.json fails, something
+      // is seriously wrong and the exception should bubble up.
+      await i18n.i18n.fetchAndRegisterLocaleData('en-US');
     }
 
     try {
-      await Promise.all(localePromises);
+      await i18n.i18n.fetchAndRegisterLocaleData(devToolsLocale.locale);
     } catch (error) {
       console.error(error);
+      // Loading the actual locale data failed, tell DevTools to use 'en-US'.
+      devToolsLocale.forceFallbackLocale();
     }
   }
 

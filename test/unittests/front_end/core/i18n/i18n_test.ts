@@ -54,17 +54,25 @@ describe('serialize/deserialize round-trip', () => {
 });
 
 describe('getLocalizedLanguageRegion', () => {
+  function createMockDevToolsLocale(locale: string): i18n.DevToolsLocale.DevToolsLocale {
+    return {locale, forceFallbackLocale: () => {}};
+  }
+
   it('build the correct language/region string', () => {
     assert.strictEqual(
-        i18n.i18n.getLocalizedLanguageRegion('de-AT', {locale: 'en-US'}), 'German (Austria) - Deutsch (Österreich)');
-    assert.strictEqual(i18n.i18n.getLocalizedLanguageRegion('de', {locale: 'en-US'}), 'German - Deutsch');
-    assert.strictEqual(i18n.i18n.getLocalizedLanguageRegion('en-US', {locale: 'de'}), 'Englisch (USA) - English (US)');
+        i18n.i18n.getLocalizedLanguageRegion('de-AT', createMockDevToolsLocale('en-US')),
+        'German (Austria) - Deutsch (Österreich)');
+    assert.strictEqual(
+        i18n.i18n.getLocalizedLanguageRegion('de', createMockDevToolsLocale('en-US')), 'German - Deutsch');
+    assert.strictEqual(
+        i18n.i18n.getLocalizedLanguageRegion('en-US', createMockDevToolsLocale('de')), 'Englisch (USA) - English (US)');
   });
 
   it('uses english for the target locale if the languages match', () => {
     assert.strictEqual(
-        i18n.i18n.getLocalizedLanguageRegion('de-AT', {locale: 'de'}), 'Deutsch (Österreich) - German (Austria)');
-    assert.strictEqual(i18n.i18n.getLocalizedLanguageRegion('de', {locale: 'de'}), 'Deutsch - German');
+        i18n.i18n.getLocalizedLanguageRegion('de-AT', createMockDevToolsLocale('de')),
+        'Deutsch (Österreich) - German (Austria)');
+    assert.strictEqual(i18n.i18n.getLocalizedLanguageRegion('de', createMockDevToolsLocale('de')), 'Deutsch - German');
   });
 });
 

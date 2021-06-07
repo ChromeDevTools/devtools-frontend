@@ -39,9 +39,7 @@
   display: flex;
   width: 100%;
   font-size: 12px;
-  border-top: 1px solid transparent;
-  border-bottom: 1px solid transparent;
-  padding: 2px 7px 2px 8px;
+  padding: 3px 7px 3px 8px;
   margin: 0 13px 0 0;
   white-space: nowrap;
 }
@@ -64,8 +62,6 @@
 }
 
 .soft-context-menu-item-mouse-over {
-  border-top: 1px solid var(--color-background-elevation-1);
-  border-bottom: 1px solid var(--color-background-elevation-1);
   background-color: var(--color-primary);
   color: var(--override-context-menu-hover-text-color);
 }
@@ -73,8 +69,6 @@
 :host:host-context(.platform-mac):host-context(html:not(.-theme-with-dark-background)) .soft-context-menu-item-mouse-over {
   --override-mac-specific-dark-background: linear-gradient(to right, hsl(214deg 81% 60%), hsl(214deg 100% 56%));
 
-  border-top: 1px solid transparent;
-  border-bottom: 1px solid transparent;
   background-image: var(--override-mac-specific-dark-background);
 }
 
@@ -130,14 +124,13 @@
 
 @media (forced-colors: active) {
   .soft-context-menu-item {
-    forced-color-adjust: none;
+    color: canvastext;
   }
 
   .soft-context-menu-item-mouse-over {
-    border-top-color: Highlight;
-    border-bottom-color: Highlight;
     background-color: Highlight;
     color: HighlightText;
+    forced-color-adjust: none;
   }
 
   .soft-context-menu-shortcut {

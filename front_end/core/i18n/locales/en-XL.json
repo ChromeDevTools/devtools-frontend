@@ -4829,6 +4829,9 @@
   "panels/issues/AffectedElementsView.ts | nElements": {
     "message": "{n, plural, =1 {# êĺêḿêńt̂} other {# él̂ém̂én̂t́ŝ}}"
   },
+  "panels/issues/AffectedElementsView.ts | unavailable": {
+    "message": "ûńâv́âíl̂áb̂ĺê"
+  },
   "panels/issues/AffectedElementsWithLowContrastView.ts | contrastRatio": {
     "message": "Ĉón̂t́r̂áŝt́ r̂át̂íô"
   },

@@ -153,46 +153,6 @@ export class RemoteObject {
     return {value: objectAsProtocolRemoteObject.value};
   }
 
-  static async loadFromObjectPerProto(object: RemoteObject, generatePreview: boolean): Promise<GetPropertiesResult> {
-    const result = await Promise.all([
-      object.getAllProperties(true /* accessorPropertiesOnly */, generatePreview),
-      object.getOwnProperties(generatePreview),
-    ]);
-    const accessorProperties = result[0].properties;
-    const ownProperties = result[1].properties;
-    const internalProperties = result[1].internalProperties;
-    if (!ownProperties || !accessorProperties) {
-      return {properties: null, internalProperties: null} as GetPropertiesResult;
-    }
-    const propertiesMap = new Map<string, RemoteObjectProperty>();
-    const propertySymbols = [];
-    for (let i = 0; i < accessorProperties.length; i++) {
-      const property = accessorProperties[i];
-      if (property.symbol) {
-        propertySymbols.push(property);
-      } else if (property.isOwn || property.name !== '__proto__') {
-        // TODO(crbug/1076820): Eventually we should move away from
-        // showing accessor properties directly on the receiver.
-        propertiesMap.set(property.name, property);
-      }
-    }
-    for (let i = 0; i < ownProperties.length; i++) {
-      const property = ownProperties[i];
-      if (property.isAccessorProperty()) {
-        continue;
-      }
-      if (property.symbol) {
-        propertySymbols.push(property);
-      } else {
-        propertiesMap.set(property.name, property);
-      }
-    }
-    return {
-      properties: [...propertiesMap.values()].concat(propertySymbols),
-      internalProperties: internalProperties ? internalProperties : null,
-    };
-  }
-
   customPreview(): Protocol.Runtime.CustomPreview|null {
     return null;
   }

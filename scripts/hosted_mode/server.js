@@ -5,10 +5,13 @@ const fs = require('fs');
 const https = require('https');
 const path = require('path');
 const parseURL = require('url').parse;
+const promisify = require('util').promisify;
 
 const remoteDebuggingPort = parseInt(process.env.REMOTE_DEBUGGING_PORT, 10) || 9222;
 const port = parseInt(process.env.PORT, 10);
 const requestedPort = port || port === 0 ? port : 8090;
+const readFile = promisify(fs.readFile);
+const exists = promisify(fs.exists);
 
 let pathToOutTargetDir = __dirname;
 /**
@@ -56,98 +59,121 @@ server.once('listening', () => {
 });
 server.listen(requestedPort);
 
-function requestHandler(request, response) {
+async function requestHandler(request, response) {
   const filePath = unescape(parseURL(request.url).pathname);
   if (filePath === '/') {
     const landingURL = `http://localhost:${remoteDebuggingPort}#custom=true`;
-    sendResponse(200, `<html>Please go to <a href="${landingURL}">${landingURL}</a></html>`);
+    sendResponse(200, `<html>Please go to <a href="${landingURL}">${landingURL}</a></html>`, 'utf8');
     return;
   }
 
   const absoluteFilePath = path.join(devtoolsFolder, filePath);
   if (!path.resolve(absoluteFilePath).startsWith(path.join(devtoolsFolder, '..'))) {
     console.log(`File requested (${absoluteFilePath}) is outside of devtools folder: ${devtoolsFolder}`);
-    sendResponse(403, `403 - Access denied. File requested is outside of devtools folder: ${devtoolsFolder}`);
+    sendResponse(403, `403 - Access denied. File requested is outside of devtools folder: ${devtoolsFolder}`, 'utf8');
     return;
   }
 
-  fs.exists(absoluteFilePath, fsExistsCallback);
-
-  function fsExistsCallback(fileExists) {
-    if (!fileExists) {
-      console.log(`Cannot find file ${absoluteFilePath}. Requested URL: ${filePath}`);
-      sendResponse(404, '404 - File not found');
-      return;
-    }
-
-    let encoding = 'utf8';
-    if (absoluteFilePath.endsWith('.wasm') || absoluteFilePath.endsWith('.png') || absoluteFilePath.endsWith('.jpg') ||
-        absoluteFilePath.endsWith('.avif')) {
-      encoding = 'binary';
-    }
-
-    fs.readFile(absoluteFilePath, encoding, readFileCallback);
+  const fileExists = await exists(absoluteFilePath);
+  if (!fileExists) {
+    console.log(`Cannot find file ${absoluteFilePath}. Requested URL: ${filePath}`);
+    sendResponse(404, '404 - File not found', 'utf8');
+    return;
   }
 
-  function readFileCallback(err, file) {
-    if (err) {
-      console.log(`Unable to read local file ${absoluteFilePath}:`, err);
-      sendResponse(500, '500 - Internal Server Error');
-      return;
+  let statusCode, data, headers;
+  const headersFileExists = await exists(absoluteFilePath + '.headers');
+  if (headersFileExists) {
+    try {
+      const headersFile = await readFile(absoluteFilePath + '.headers', 'utf8');
+      ({statusCode, headers} = parseRawResponse(headersFile));
+    } catch (err) {
+      console.log(`Unable to read local file ${absoluteFilePath}.headers:`, err);
+      sendResponse(500, '500 - Internal Server Error', 'utf8');
     }
-    sendResponse(200, file);
   }
 
-  function sendResponse(statusCode, data) {
-    const path = parseURL(request.url).pathname;
+  let encoding = 'utf8';
+  if (absoluteFilePath.endsWith('.wasm') || absoluteFilePath.endsWith('.png') || absoluteFilePath.endsWith('.jpg') ||
+      absoluteFilePath.endsWith('.avif')) {
+    encoding = 'binary';
+  }
 
-    if (path.endsWith('.rawresponse')) {
-      sendRawResponse(data);
-      return;
+  try {
+    data = await readFile(absoluteFilePath, encoding);
+    if (absoluteFilePath.endsWith('.rawresponse')) {
+      ({statusCode, data, headers} = parseRawResponse(data));
     }
+    sendResponse(statusCode || 200, data, encoding, headers);
+  } catch (err) {
+    console.log(`Unable to read local file ${absoluteFilePath}:`, err);
+    sendResponse(500, '500 - Internal Server Error', 'utf8');
+  }
 
-    let encoding = 'utf8';
+  function inferContentType(url) {
+    const path = parseURL(url).pathname;
+
     if (path.endsWith('.js') || path.endsWith('.mjs')) {
-      response.setHeader('Content-Type', 'text/javascript; charset=utf-8');
-    } else if (path.endsWith('.css')) {
-      response.setHeader('Content-Type', 'text/css; charset=utf-8');
-    } else if (path.endsWith('.wasm')) {
-      response.setHeader('Content-Type', 'application/wasm');
-      encoding = 'binary';
-    } else if (path.endsWith('.svg')) {
-      response.setHeader('Content-Type', 'image/svg+xml; charset=utf-8');
-    } else if (path.endsWith('.png')) {
-      response.setHeader('Content-Type', 'image/png');
-      encoding = 'binary';
-    } else if (path.endsWith('.jpg')) {
-      response.setHeader('Content-Type', 'image/jpg');
-      encoding = 'binary';
-    } else if (path.endsWith('.avif')) {
-      response.setHeader('Content-Type', 'image/avif');
-      encoding = 'binary';
+      return 'text/javascript; charset=utf-8';
     }
+    if (path.endsWith('.css')) {
+      return 'text/css; charset=utf-8';
+    }
+    if (path.endsWith('.wasm')) {
+      return 'application/wasm';
+    }
+    if (path.endsWith('.svg')) {
+      return 'image/svg+xml; charset=utf-8';
+    }
+    if (path.endsWith('.png')) {
+      return 'image/png';
+    }
+    if (path.endsWith('.jpg')) {
+      return 'image/jpg';
+    }
+    if (path.endsWith('.avif')) {
+      return 'image/avif';
+    }
+    return null;
+  }
+
+  function sendResponse(statusCode, data, encoding, headers) {
+    if (!headers) {
+      headers = new Map();
+    }
+    if (!headers.get('Content-Type')) {
+      const inferredContentType = inferContentType(request.url);
+      if (inferredContentType) {
+        headers.set('Content-Type', inferredContentType);
+      }
+    }
+    headers.forEach((value, header) => {
+      response.setHeader(header, value);
+    });
 
     response.writeHead(statusCode);
-    response.write(data, encoding);
+    if (data && encoding) {
+      response.write(data, encoding);
+    }
     response.end();
   }
 
-  function sendRawResponse(data) {
-    const lines = data.split('\n');
+  function parseRawResponse(rawResponse) {
+    const lines = rawResponse.split('\n');
 
     let isHeader = true;
     let line = lines.shift();
     const statusCode = parseInt(line, 10);
 
+    const headers = new Map();
+    let data = '';
+
     while ((line = lines.shift()) !== undefined) {
       if (line.trim() === '') {
         isHeader = false;
         if (request.headers['if-none-match'] && response.getHeader('ETag') === request.headers['if-none-match']) {
-          response.writeHead(304);
-          response.end();
-          return;
+          return {statusCode: 304};
         }
-        response.writeHead(statusCode);
         continue;
       }
 
@@ -155,12 +181,12 @@ function requestHandler(request, response) {
         const firstColon = line.indexOf(':');
         let headerValue = line.substring(firstColon + 1).trim();
         headerValue = headerValue.replace('$host_port', `${server.address().port}`);
-        response.setHeader(line.substring(0, firstColon), headerValue);
+        headers.set(line.substring(0, firstColon), headerValue);
       } else {
-        response.write(line);
+        data += line;
       }
     }
 
-    response.end();
+    return {statusCode, data, headers};
   }
 }

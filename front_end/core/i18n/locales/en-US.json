@@ -9734,6 +9734,12 @@
   "panels/timeline/TimelineUIUtils.ts | cumulativeScore": {
     "message": "Cumulative Score"
   },
+  "panels/timeline/TimelineUIUtils.ts | currentClusterId": {
+    "message": "Current Cluster ID"
+  },
+  "panels/timeline/TimelineUIUtils.ts | currentClusterScore": {
+    "message": "Current Cluster Score"
+  },
   "panels/timeline/TimelineUIUtils.ts | decodedBody": {
     "message": "Decoded Body"
   },
@@ -9802,6 +9808,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "Event"
+  },
+  "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
+    "message": "evolved"
   },
   "panels/timeline/TimelineUIUtils.ts | experience": {
     "message": "Experience"
@@ -10169,14 +10178,14 @@
   "panels/timeline/TimelineUIUtils.ts | sBytes": {
     "message": "{n, plural, =1 {# Byte} other {# Bytes}}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCanResultInPoorUserExperiences": {
-    "message": "{PH1} can result in poor user experiences."
-  },
   "panels/timeline/TimelineUIUtils.ts | scheduleStyleRecalculation": {
     "message": "Schedule Style Recalculation"
   },
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (children)"
+  },
+  "panels/timeline/TimelineUIUtils.ts | sCLSInformation": {
+    "message": "{PH1} can result in poor user experiences. It has recently {PH2}."
   },
   "panels/timeline/TimelineUIUtils.ts | sCollected": {
     "message": "{PH1} collected"

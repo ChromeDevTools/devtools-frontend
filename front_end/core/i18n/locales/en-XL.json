@@ -9734,6 +9734,12 @@
   "panels/timeline/TimelineUIUtils.ts | cumulativeScore": {
     "message": "Ĉúm̂úl̂át̂ív̂é Ŝćôŕê"
   },
+  "panels/timeline/TimelineUIUtils.ts | currentClusterId": {
+    "message": "Ĉúr̂ŕêńt̂ Ćl̂úŝt́êŕ ÎD́"
+  },
+  "panels/timeline/TimelineUIUtils.ts | currentClusterScore": {
+    "message": "Ĉúr̂ŕêńt̂ Ćl̂úŝt́êŕ Ŝćôŕê"
+  },
   "panels/timeline/TimelineUIUtils.ts | decodedBody": {
     "message": "D̂éĉód̂éd̂ B́ôd́ŷ"
   },
@@ -9802,6 +9808,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "Êv́êńt̂"
+  },
+  "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
+    "message": "êv́ôĺv̂éd̂"
   },
   "panels/timeline/TimelineUIUtils.ts | experience": {
     "message": "Êx́p̂ér̂íêńĉé"
@@ -10169,14 +10178,14 @@
   "panels/timeline/TimelineUIUtils.ts | sBytes": {
     "message": "{n, plural, =1 {# B̂ýt̂é} other {# B̂ýt̂éŝ}}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCanResultInPoorUserExperiences": {
-    "message": "{PH1} ĉán̂ ŕêśûĺt̂ ín̂ ṕôór̂ úŝér̂ éx̂ṕêŕîén̂ćêś."
-  },
   "panels/timeline/TimelineUIUtils.ts | scheduleStyleRecalculation": {
     "message": "Ŝćĥéd̂úl̂é Ŝt́ŷĺê Ŕêćâĺĉúl̂át̂íôń"
   },
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (ĉh́îĺd̂ŕêń)"
+  },
+  "panels/timeline/TimelineUIUtils.ts | sCLSInformation": {
+    "message": "{PH1} ĉán̂ ŕêśûĺt̂ ín̂ ṕôór̂ úŝér̂ éx̂ṕêŕîén̂ćêś. Ît́ ĥáŝ ŕêćêńt̂ĺŷ {PH2}."
   },
   "panels/timeline/TimelineUIUtils.ts | sCollected": {
     "message": "{PH1} ĉól̂ĺêćt̂éd̂"

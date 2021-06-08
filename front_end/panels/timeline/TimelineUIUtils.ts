@@ -808,10 +808,15 @@ const UIStrings = {
   */
   cumulativeLayoutShifts: 'Cumulative Layout Shifts',
   /**
+  *@description Link to the evolved CLS website
+  */
+  evolvedClsLink: 'evolved',
+  /**
   *@description Warning in Timeline that CLS can cause a poor user experience
   *@example {Link to web.dev/metrics} PH1
+  *@example {Link to web.dev/evolving-cls} PH2
   */
-  sCanResultInPoorUserExperiences: '{PH1} can result in poor user experiences.',
+  sCLSInformation: '{PH1} can result in poor user experiences. It has recently {PH2}.',
   /**
   *@description Text to indicate an item is a warning
   */
@@ -824,6 +829,14 @@ const UIStrings = {
   *@description Text in Timeline for the cumulative CLS score
   */
   cumulativeScore: 'Cumulative Score',
+  /**
+  *@description Text in Timeline for the current CLS score
+  */
+  currentClusterScore: 'Current Cluster Score',
+  /**
+  *@description Text in Timeline for the current CLS cluster
+  */
+  currentClusterId: 'Current Cluster ID',
   /**
   *@description Text in Timeline for whether input happened recently
   */
@@ -2344,13 +2357,19 @@ export class TimelineUIUtils {
       case recordTypes.LayoutShift: {
         const warning = document.createElement('span');
         const clsLink = UI.XLink.XLink.create('https://web.dev/cls/', i18nString(UIStrings.cumulativeLayoutShifts));
+        const evolvedClsLink =
+            UI.XLink.XLink.create('https://web.dev/evolving-cls/', i18nString(UIStrings.evolvedClsLink));
+
         warning.appendChild(
-            i18n.i18n.getFormatLocalizedString(str_, UIStrings.sCanResultInPoorUserExperiences, {PH1: clsLink}));
+            i18n.i18n.getFormatLocalizedString(str_, UIStrings.sCLSInformation, {PH1: clsLink, PH2: evolvedClsLink}));
         contentHelper.appendElementRow(i18nString(UIStrings.warning), warning, true);
 
         contentHelper.appendTextRow(i18nString(UIStrings.score), eventData['score'].toPrecision(4));
         contentHelper.appendTextRow(
             i18nString(UIStrings.cumulativeScore), eventData['cumulative_score'].toPrecision(4));
+        contentHelper.appendTextRow(i18nString(UIStrings.currentClusterId), eventData['_current_cluster_id']);
+        contentHelper.appendTextRow(
+            i18nString(UIStrings.currentClusterScore), eventData['_current_cluster_score'].toPrecision(4));
         contentHelper.appendTextRow(
             i18nString(UIStrings.hadRecentInput),
             eventData['had_recent_input'] ? i18nString(UIStrings.yes) : i18nString(UIStrings.no));

@@ -756,7 +756,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         tailProperties.push(setterProperty);
       }
       const canShowProperty = property.getter || !property.isAccessorProperty();
-      if (canShowProperty && property.name !== '__proto__') {
+      if (canShowProperty) {
         const element = new ObjectPropertyTreeElement(property, linkifier);
         if (property.name === 'memories' && property.value?.className === 'Memories') {
           element._updateExpandable();

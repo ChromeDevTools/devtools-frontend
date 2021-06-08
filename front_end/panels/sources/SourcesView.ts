@@ -178,9 +178,8 @@ export class SourcesView extends UI.Widget.VBox implements TabbedEditorContainer
       }
     }
 
-    element.appendChild(UI.XLink.XLink.create(
-        'https://developer.chrome.com/docs/devtools/panels/sources/?utm_source=devtools&utm_campaign=2018Q1',
-        'Learn more about Workspaces'));
+    element.appendChild(
+        UI.XLink.XLink.create('https://developer.chrome.com/docs/devtools/workspaces/', 'Learn more about Workspaces'));
 
     return element;
   }

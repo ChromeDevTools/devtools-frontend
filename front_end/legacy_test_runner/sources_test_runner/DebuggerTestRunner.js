@@ -31,10 +31,7 @@ SourcesTestRunner.startDebuggerTestPromise = function(quiet) {
 
 SourcesTestRunner.completeDebuggerTest = function() {
   self.Common.settings.moduleSetting('breakpointsActive').set(true);
-  SourcesTestRunner.resumeExecution(async () => {
-    await TestRunner.debuggerModel.suspendModel();
-    TestRunner.completeTest();
-  });
+  SourcesTestRunner.resumeExecution(TestRunner.completeTest.bind(TestRunner));
 };
 
 window.addEventListener('unhandledrejection', e => {

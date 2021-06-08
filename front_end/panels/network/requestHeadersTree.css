@@ -167,6 +167,11 @@
   padding: 2px 4px;
 }
 
+.request-headers-caution {
+  display: flex;
+  gap: 6px;
+}
+
 .header-highlight {
   background-color: var(--override-header-highlight-background-color);
 }

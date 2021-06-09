@@ -183,6 +183,11 @@ const UIStrings = {
   */
   servedFromSignedHttpExchange: 'Served from Signed HTTP Exchange, resource size: {PH1}',
   /**
+  *@description Cell title in Network Data Grid Node of the Network panel
+  *@example {4 B} PH1
+  */
+  servedFromWebBundle: 'Served from Web Bundle, resource size: {PH1}',
+  /**
   *@description Text of a DOM element in Network Data Grid Node of the Network panel
   */
   prefetchCache: '(prefetch cache)',
@@ -208,6 +213,14 @@ const UIStrings = {
   *@description Text describing the depth of a top level node in the network datagrid
   */
   level: 'level 1',
+  /**
+  *@description Text in Network Data Grid Node of the Network panel
+  */
+  webBundleError: 'Web Bundle error',
+  /**
+  *@description Text in Network Data Grid Node of the Network panel
+  */
+  webBundle: '(Web Bundle)',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkDataGridNode.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1013,9 +1026,20 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   _isFailed(): boolean {
+    if (this._request.failed && !this._request.statusCode) {
+      return true;
+    }
+    if (this._request.statusCode >= 400) {
+      return true;
+    }
     const signedExchangeInfo = this._request.signedExchangeInfo();
-    return (this._request.failed && !this._request.statusCode) || (this._request.statusCode >= 400) ||
-        (signedExchangeInfo !== null && Boolean(signedExchangeInfo.errors));
+    if (signedExchangeInfo !== null && Boolean(signedExchangeInfo.errors)) {
+      return true;
+    }
+    if (this._request.webBundleInfo()?.errorMessage || this._request.webBundleInnerRequestInfo()?.errorMessage) {
+      return true;
+    }
+    return false;
   }
 
   _renderPrimaryCell(cell: HTMLElement, columnId: string, text?: string): void {
@@ -1068,7 +1092,11 @@ export class NetworkRequestNode extends NetworkNode {
         'network-dim-cell', !this._isFailed() && (this._request.cached() || !this._request.statusCode));
 
     const corsErrorStatus = this._request.corsErrorStatus();
-    if (this._request.failed && !this._request.canceled && !this._request.wasBlocked() && !corsErrorStatus) {
+    const webBundleErrorMessage =
+        this._request.webBundleInfo()?.errorMessage || this._request.webBundleInnerRequestInfo()?.errorMessage;
+    if (webBundleErrorMessage) {
+      this._setTextAndTitle(cell, i18nString(UIStrings.webBundleError), webBundleErrorMessage);
+    } else if (this._request.failed && !this._request.canceled && !this._request.wasBlocked() && !corsErrorStatus) {
       const failText = i18nString(UIStrings.failed);
       if (this._request.localizedFailDescription) {
         UI.UIUtils.createTextChild(cell, failText);
@@ -1268,6 +1296,10 @@ export class NetworkRequestNode extends NetworkNode {
     } else if (this._request.redirectSourceSignedExchangeInfoHasNoErrors()) {
       UI.UIUtils.createTextChild(cell, i18n.i18n.lockedString('(signed-exchange)'));
       UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.servedFromSignedHttpExchange, {PH1: resourceSize}));
+      cell.classList.add('network-dim-cell');
+    } else if (this._request.webBundleInnerRequestInfo()) {
+      UI.UIUtils.createTextChild(cell, i18nString(UIStrings.webBundle));
+      UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.servedFromWebBundle, {PH1: resourceSize}));
       cell.classList.add('network-dim-cell');
     } else if (this._request.fromPrefetchCache()) {
       UI.UIUtils.createTextChild(cell, i18nString(UIStrings.prefetchCache));

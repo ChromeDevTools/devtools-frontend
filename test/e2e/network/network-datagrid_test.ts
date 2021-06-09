@@ -1,4 +1,4 @@
-// Copyright 2020 The Chromium Authors. All rights reserved.
+// Copyright 2021 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -13,6 +13,9 @@ describe('The Network Tab', async function() {
     // These tests take some time on slow windows machines.
     this.timeout(10000);
   }
+  const formatByteSize = (value: number) => {
+    return `${value}\xA0B`;
+  };
 
   beforeEach(async () => {
     await navigateToNetworkTab('empty.html');
@@ -114,9 +117,6 @@ describe('The Network Tab', async function() {
     const getNetworkRequestMimeTypes = () => frontend.evaluate(() => {
       return Array.from(document.querySelectorAll('.type-column')).slice(1, 3).map(node => node.textContent);
     });
-    const formatByteSize = (value: number) => {
-      return `${value}\xA0B`;
-    };
 
     assert.deepEqual(await getNetworkRequestSize(), [
       `${formatByteSize(361)}${formatByteSize(219)}`,
@@ -204,5 +204,56 @@ describe('The Network Tab', async function() {
         return JSON.stringify(remoteAddressSpaceValues) === expectedValues;
       });
     });
+  });
+
+  it('indicates resources from the web bundle in the size column', async () => {
+    const {target, frontend} = getBrowserAndPages();
+
+    await navigateToNetworkTab('resources-from-webbundle.html');
+
+    await target.reload({waitUntil: 'networkidle0'});
+
+    await waitForSomeRequestsToAppear(3);
+
+    const getNetworkRequestSize = () => frontend.evaluate(() => {
+      return Array.from(document.querySelectorAll('.size-column')).slice(2, 4).map(node => node.textContent);
+    });
+
+    assert.sameMembers(await getNetworkRequestSize(), [
+      `${formatByteSize(645)}${formatByteSize(0)}`,
+      `(Web Bundle)${formatByteSize(27)}`,
+    ]);
+  });
+
+  it('shows web bundle metadata error in the status column', async () => {
+    const {target, frontend} = getBrowserAndPages();
+
+    await navigateToNetworkTab('resources-from-webbundle-with-bad-metadata.html');
+
+    await target.reload({waitUntil: 'networkidle0'});
+
+    await waitForSomeRequestsToAppear(3);
+
+    const getNetworkRequestSize = () => frontend.evaluate(() => {
+      return Array.from(document.querySelectorAll('.status-column')).slice(2, 4).map(node => node.textContent);
+    });
+
+    assert.sameMembers(await getNetworkRequestSize(), ['Web Bundle error', '(failed)net::ERR_INVALID_WEB_BUNDLE']);
+  });
+
+  it('shows web bundle inner request error in the status column', async () => {
+    const {target, frontend} = getBrowserAndPages();
+
+    await navigateToNetworkTab('resources-from-webbundle-with-bad-inner-request.html');
+
+    await target.reload({waitUntil: 'networkidle0'});
+
+    await waitForSomeRequestsToAppear(3);
+
+    const getNetworkRequestSize = () => frontend.evaluate(() => {
+      return Array.from(document.querySelectorAll('.status-column')).slice(2, 4).map(node => node.textContent);
+    });
+
+    assert.sameMembers(await getNetworkRequestSize(), ['200OK', 'Web Bundle error']);
   });
 });

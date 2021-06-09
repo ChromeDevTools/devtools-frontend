@@ -6185,6 +6185,9 @@
   "panels/network/NetworkDataGridNode.ts | servedFromSignedHttpExchange": {
     "message": "Ŝér̂v́êd́ f̂ŕôḿ Ŝíĝńêd́ ĤT́T̂Ṕ Êx́ĉh́âńĝé, r̂éŝóûŕĉé ŝíẑé: {PH1}"
   },
+  "panels/network/NetworkDataGridNode.ts | servedFromWebBundle": {
+    "message": "Ŝér̂v́êd́ f̂ŕôḿ Ŵéb̂ B́ûńd̂ĺê, ŕêśôúr̂ćê śîźê: {PH1}"
+  },
   "panels/network/NetworkDataGridNode.ts | serviceworker": {
     "message": "(ServiceWorker)"
   },
@@ -6193,6 +6196,12 @@
   },
   "panels/network/NetworkDataGridNode.ts | sPreflight": {
     "message": "{PH1} + P̂ŕêf́l̂íĝh́t̂"
+  },
+  "panels/network/NetworkDataGridNode.ts | webBundle": {
+    "message": "(Ŵéb̂ B́ûńd̂ĺê)"
+  },
+  "panels/network/NetworkDataGridNode.ts | webBundleError": {
+    "message": "Ŵéb̂ B́ûńd̂ĺê ér̂ŕôŕ"
   },
   "panels/network/NetworkItemView.ts | cookies": {
     "message": "Ĉóôḱîéŝ"

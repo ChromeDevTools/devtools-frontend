@@ -1,6 +1,6 @@
 # caniuse-lite
 
-> A smaller version of caniuse-db, with only the essentials!
+A smaller version of caniuse-db, with only the essentials!
 
 ## Why?
 
@@ -29,6 +29,7 @@ very small and are detailed in the section below.
 import * as lite from 'caniuse-lite';
 ```
 
+
 ### `lite.agents`
 
 caniuse-db provides a full `data.json` file which contains all of the features
@@ -51,11 +52,13 @@ In addition, the subset contains the `release_date` key with release dates (as t
 }
 ```
 
+
 ### `lite.feature(js)`
 
 The `feature` method takes a file from `data/features` and converts it into
 something that more closely represents the `caniuse-db` format. Note that only
 the `title`, `stats` and `status` keys are kept from the original data.
+
 
 ### `lite.features`
 
@@ -63,28 +66,13 @@ The `features` index is provided as a way to query all of the features that
 are listed in the `caniuse-db` dataset. Note that you will need to use the
 `feature` method on values from this index to get a human-readable format.
 
+
 ### `lite.region(js)`
 
 The `region` method takes a file from `data/regions` and converts it into
 something that more closely represents the `caniuse-db` format. Note that *only*
 the usage data is exposed here (the `data` key in the original files).
 
-
-## Contributors
-
-Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key)):
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore -->
-| [<img src="https://avatars.githubusercontent.com/u/1282980?v=3" width="100px;"/><br /><sub><b>Ben Briggs</b></sub>](http://beneb.info)<br />[💻](https://github.com/ben-eb/caniuse-lite/commits?author=ben-eb "Code") [📖](https://github.com/ben-eb/caniuse-lite/commits?author=ben-eb "Documentation") [👀](#review-ben-eb "Reviewed Pull Requests") [⚠️](https://github.com/ben-eb/caniuse-lite/commits?author=ben-eb "Tests") | [<img src="https://avatars.githubusercontent.com/u/1737375?v=3" width="100px;"/><br /><sub><b>Andy Jansson</b></sub>](https://github.com/andyjansson)<br />[💻](https://github.com/ben-eb/caniuse-lite/commits?author=andyjansson "Code") | [<img src="https://avatars1.githubusercontent.com/u/19343?v=4" width="100px;"/><br /><sub><b>Andrey Sitnik</b></sub>](http://twitter.com/sitnikcode)<br />[💻](https://github.com/ben-eb/caniuse-lite/commits?author=ai "Code") | <img src="https://avatars2.githubusercontent.com/u/947326?v=4" width="100px;"/><br /><sub><b>Igor Deryabin</b></sub><br />[💻](https://github.com/ben-eb/caniuse-lite/commits?author=rodweb "Code") |
-| :---: | :---: | :---: | :---: |
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
-This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!
-
-<img src="https://opensource.nyc3.digitaloceanspaces.com/attribution/assets/SVG/DO_Logo_icon_blue.svg" alt="Digital Ocean logo" width="40" align="left">
-
-Big thanks to [DigitalOcean](https://www.digitalocean.com/?utm_source=opensource&utm_campaign=caniuse-lite) for supporting this project by providing their great infrastructure for us.
 
 ## License
 
@@ -95,6 +83,7 @@ the data for your project please contact me here: http://a.deveria.com/contact
 
 [1]: http://caniuse.com/
 [2]: https://github.com/Fyrd/caniuse/issues/1827
+
 
 ## Security contact information
 

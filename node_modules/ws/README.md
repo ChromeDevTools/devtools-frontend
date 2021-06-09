@@ -1,7 +1,7 @@
 # ws: a Node.js WebSocket library
 
 [![Version npm](https://img.shields.io/npm/v/ws.svg?logo=npm)](https://www.npmjs.com/package/ws)
-[![Build](https://img.shields.io/travis/websockets/ws/master.svg?logo=travis)](https://travis-ci.com/websockets/ws)
+[![Build](https://img.shields.io/github/workflow/status/websockets/ws/CI/master?label=build&logo=github)](https://github.com/websockets/ws/actions?query=workflow%3ACI+branch%3Amaster)
 [![Windows x86 Build](https://img.shields.io/appveyor/ci/lpinca/ws/master.svg?logo=appveyor)](https://ci.appveyor.com/project/lpinca/ws)
 [![Coverage Status](https://img.shields.io/coveralls/websockets/ws/master.svg)](https://coveralls.io/github/websockets/ws)
 
@@ -56,7 +56,7 @@ can use one of the many wrappers available on npm, like
 npm install ws
 ```
 
-### Opt-in for performance and spec compliance
+### Opt-in for performance
 
 There are 2 optional modules that can be installed along side with the ws
 module. These modules are binary addons which improve certain operations.
@@ -67,7 +67,7 @@ necessarily need to have a C++ compiler installed on your machine.
   operations such as masking and unmasking the data payload of the WebSocket
   frames.
 - `npm install --save-optional utf-8-validate`: Allows to efficiently check if a
-  message contains valid UTF-8 as required by the spec.
+  message contains valid UTF-8.
 
 ## API docs
 

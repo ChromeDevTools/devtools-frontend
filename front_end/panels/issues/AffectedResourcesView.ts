@@ -67,10 +67,9 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
   protected affectedResourcesCountElement: HTMLElement;
   protected affectedResources: HTMLElement;
   private affectedResourcesCount: number;
-  private networkListener: Common.EventTarget.EventDescriptor|null;
   private frameListeners: Common.EventTarget.EventDescriptor[];
-  private unresolvedRequestIds: Set<string>;
   private unresolvedFrameIds: Set<string>;
+  protected requestResolver: Logs.RequestResolver.RequestResolver;
 
   /**
    * @param resourceName - Singular and plural of the affected resource name.
@@ -83,9 +82,8 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
 
     this.affectedResources = this.createAffectedResources();
     this.affectedResourcesCount = 0;
-    this.networkListener = null;
+    this.requestResolver = new Logs.RequestResolver.RequestResolver();
     this.frameListeners = [];
-    this.unresolvedRequestIds = new Set();
     this.unresolvedFrameIds = new Set();
   }
 
@@ -121,41 +119,12 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
 
   clear(): void {
     this.affectedResources.textContent = '';
+    this.requestResolver.clear();
   }
 
   expandIfOneResource(): void {
     if (this.affectedResourcesCount === 1) {
       this.expand();
-    }
-  }
-
-  /**
-   * This function resolves a requestId to network requests. If the requestId does not resolve, a listener is installed
-   * that takes care of updating the view if the network request is added. This is useful if the issue is added before
-   * the network request gets reported.
-   */
-  protected resolveRequestId(requestId: string): SDK.NetworkRequest.NetworkRequest[] {
-    const requests = Logs.NetworkLog.NetworkLog.instance().requestsForId(requestId);
-    if (!requests.length) {
-      this.unresolvedRequestIds.add(requestId);
-      if (!this.networkListener) {
-        this.networkListener = Logs.NetworkLog.NetworkLog.instance().addEventListener(
-            Logs.NetworkLog.Events.RequestAdded, this.onRequestAdded, this);
-      }
-    }
-    return requests;
-  }
-
-  private onRequestAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const request = event.data as SDK.NetworkRequest.NetworkRequest;
-    const requestWasUnresolved = this.unresolvedRequestIds.delete(request.requestId());
-    if (this.unresolvedRequestIds.size === 0 && this.networkListener) {
-      // Stop listening once all requests are resolved.
-      Common.EventTarget.EventTarget.removeEventListeners([this.networkListener]);
-      this.networkListener = null;
-    }
-    if (requestWasUnresolved) {
-      this.update();
     }
   }
 
@@ -229,9 +198,9 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     return frameCell;
   }
 
-  protected createRequestCell(request: Protocol.Audits.AffectedRequest, options: CreateRequestCellOptions = {}):
+  protected createRequestCell(affectedRequest: Protocol.Audits.AffectedRequest, options: CreateRequestCellOptions = {}):
       HTMLElement {
-    let url = request.url;
+    let url = affectedRequest.url;
     let filename = url ? extractShortPath(url) : '';
     const requestCell = document.createElement('td');
     requestCell.classList.add('affected-resource-cell');
@@ -240,10 +209,9 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     icon.classList.add('network-panel');
     requestCell.appendChild(icon);
 
-    const requests = this.resolveRequestId(request.requestId);
-    if (requests.length) {
+    const request = this.requestResolver.tryGetNetworkRequest(affectedRequest.requestId, this.update.bind(this));
+    if (request) {
       const linkToPreflight = options.linkToPreflight ?? false;
-      const request = requests[0];
       requestCell.onclick = (): void => {
         const linkedRequest = linkToPreflight ? request.preflightRequest() : request;
         if (!linkedRequest) {

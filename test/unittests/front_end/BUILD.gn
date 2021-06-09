@@ -21,6 +21,7 @@ group("front_end") {
     "models/har",
     "models/issues_manager",
     "models/javascript_metadata",
+    "models/logs",
     "models/persistence",
     "models/recorder",
     "models/text_utils",

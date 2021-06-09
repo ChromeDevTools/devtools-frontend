@@ -278,7 +278,8 @@ class AffectedRequestsView extends AffectedResourcesView {
   _appendAffectedRequests(affectedRequests: Iterable<Protocol.Audits.AffectedRequest>): void {
     let count = 0;
     for (const affectedRequest of affectedRequests) {
-      for (const request of this.resolveRequestId(affectedRequest.requestId)) {
+      const request = this.requestResolver.tryGetNetworkRequest(affectedRequest.requestId, this.update.bind(this));
+      if (request) {
         count++;
         this._appendNetworkRequest(request);
       }
@@ -386,10 +387,12 @@ class AffectedMixedContentView extends AffectedResourcesView {
     for (const issue of mixedContentIssues) {
       const details = issue.getDetails();
       if (details.request) {
-        this.resolveRequestId(details.request.requestId).forEach(networkRequest => {
+        const networkRequest =
+            this.requestResolver.tryGetNetworkRequest(details.request.requestId, this.update.bind(this));
+        if (networkRequest) {
           this.appendAffectedMixedContent(details, networkRequest);
           count++;
-        });
+        }
       } else {
         this.appendAffectedMixedContent(details);
         count++;

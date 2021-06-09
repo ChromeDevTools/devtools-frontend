@@ -690,6 +690,7 @@ grd_files_debug_sources = [
   "front_end/models/javascript_metadata/NativeFunctions.js",
   "front_end/models/logs/LogManager.js",
   "front_end/models/logs/NetworkLog.js",
+  "front_end/models/logs/RequestResolver.js",
   "front_end/models/persistence/Automapping.js",
   "front_end/models/persistence/EditFileSystemView.js",
   "front_end/models/persistence/FileSystemWorkspaceBinding.js",

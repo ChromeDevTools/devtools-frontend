@@ -10,6 +10,7 @@ devtools_module("logs") {
   sources = [
     "LogManager.ts",
     "NetworkLog.ts",
+    "RequestResolver.ts",
   ]
 
   deps = [
@@ -28,6 +29,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
+    "../../../test/unittests/front_end/models/logs/*",
     "../../entrypoints/main/*",
     "../../panels/application/*",
     "../../panels/console/*",

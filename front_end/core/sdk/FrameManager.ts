@@ -31,7 +31,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper implements 
   _topFrame: ResourceTreeFrame|null;
   private creationStackTraceDataForTransferringFrame:
       Map<string, {creationStackTrace: Protocol.Runtime.StackTrace | null, creationStackTraceTarget: Target}>;
-  private awaitedFrames: Map<string, {notInTarget?: Target, resolve: (frame: ResourceTreeFrame) => void}> = new Map();
+  private awaitedFrames: Map<string, {notInTarget?: Target, resolve: (frame: ResourceTreeFrame) => void}[]> = new Map();
 
   constructor() {
     super();
@@ -118,11 +118,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper implements 
     }
 
     this.dispatchEventToListeners(Events.FrameAddedToTarget, {frame});
-    const wasAwaited = this.awaitedFrames.get(frame.id);
-    if (wasAwaited && (!wasAwaited.notInTarget || wasAwaited.notInTarget !== frame.resourceTreeModel().target())) {
-      this.awaitedFrames.delete(frame.id);
-      wasAwaited.resolve(frame);
-    }
+    this.resolveAwaitedFrame(frame);
   }
 
   _frameDetached(event: Common.EventTarget.EventTargetEvent): void {
@@ -213,8 +209,32 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper implements 
       return frame;
     }
     return new Promise<ResourceTreeFrame>(resolve => {
-      this.awaitedFrames.set(frameId, {notInTarget, resolve});
+      const waiting = this.awaitedFrames.get(frameId);
+      if (waiting) {
+        waiting.push({notInTarget, resolve});
+      } else {
+        this.awaitedFrames.set(frameId, [{notInTarget, resolve}]);
+      }
     });
+  }
+
+  private resolveAwaitedFrame(frame: ResourceTreeFrame): void {
+    const waiting = this.awaitedFrames.get(frame.id);
+    if (!waiting) {
+      return;
+    }
+    const newWaiting = waiting.filter(({notInTarget, resolve}) => {
+      if (!notInTarget || notInTarget !== frame.resourceTreeModel().target()) {
+        resolve(frame);
+        return false;
+      }
+      return true;
+    });
+    if (newWaiting.length > 0) {
+      this.awaitedFrames.set(frame.id, newWaiting);
+    } else {
+      this.awaitedFrames.delete(frame.id);
+    }
   }
 }
 

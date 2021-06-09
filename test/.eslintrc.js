@@ -16,6 +16,7 @@ module.exports = {
     'rulesdir/check_test_definitions': 2,
     'rulesdir/avoid_assert_equal': 2,
     'rulesdir/no_repeated_tests': 2,
+    'rulesdir/compare_arrays_with_assert_deepequal': 2,
   },
   'overrides': [{
     'files': ['*.ts'],

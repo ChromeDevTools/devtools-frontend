@@ -28,11 +28,15 @@ describe('Media query inspector', async () => {
     const markersContent = await Promise.all(inspectorMarkers.map(node => {
       return node.evaluate(node => node.textContent);
     }));
-    assert.includeMembers(
+    assert.deepEqual(
         markersContent,
         [
+          // They are duplicated, as the markers are added both on the left and right of the viewport
+          '300px100px',
           '100px300px',
+          '800px500px',
           '500px800px',
+          '801px',
           '801px',
         ],
         'missed media query rule(s)');

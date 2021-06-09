@@ -220,6 +220,10 @@ const UIStrings = {
   /**
   *@description Text in Network Data Grid Node of the Network panel
   */
+  webBundleInnerRequest: 'from Web Bundle',
+  /**
+  *@description Text in Network Data Grid Node of the Network panel
+  */
   webBundle: '(Web Bundle)',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkDataGridNode.ts', UIStrings);
@@ -1076,6 +1080,14 @@ export class NetworkRequestNode extends NetworkNode {
     }
 
     if (columnId === 'name') {
+      if (this._request.webBundleInnerRequestInfo()) {
+        const secondIconElement = document.createElement('img');
+        secondIconElement.classList.add('icon');
+        secondIconElement.alt = i18nString(UIStrings.webBundleInnerRequest);
+        secondIconElement.classList.add('webbundleinnerrequest');
+
+        cell.appendChild(secondIconElement);
+      }
       const name = Platform.StringUtilities.trimMiddle(this._request.name(), 100);
       const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this._request);
       UI.UIUtils.createTextChild(cell, networkManager ? networkManager.target().decorateLabel(name) : name);

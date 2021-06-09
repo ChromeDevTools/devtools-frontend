@@ -94,6 +94,8 @@ devtools_image_files = [
   "resourceJSIcon.png",
   "resourcePlainIcon.png",
   "resourcePlainIconSmall.png",
+  "resourceWebBundle.svg",
+  "resourceWebBundleInnerRequest.svg",
   "resourcesTimeGraphIcon.avif",
   "searchNext.png",
   "searchPrev.png",

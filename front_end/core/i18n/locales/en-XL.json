@@ -6203,6 +6203,9 @@
   "panels/network/NetworkDataGridNode.ts | webBundleError": {
     "message": "Ŵéb̂ B́ûńd̂ĺê ér̂ŕôŕ"
   },
+  "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
+    "message": "f̂ŕôḿ Ŵéb̂ B́ûńd̂ĺê"
+  },
   "panels/network/NetworkItemView.ts | cookies": {
     "message": "Ĉóôḱîéŝ"
   },

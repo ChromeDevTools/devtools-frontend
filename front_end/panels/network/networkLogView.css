@@ -266,6 +266,14 @@
   content: var(--image-file-resourcePlainIcon); /* FIXME: vtt icon */
 }
 
+.network-log-grid.data-grid .icon.webbundle {
+  content: var(--image-file-resourceWebBundle);
+}
+
+.network-log-grid.data-grid .icon.webbundleinnerrequest {
+  content: var(--image-file-resourceWebBundleInnerRequest);
+}
+
 .network-log-grid.data-grid.small .icon.texttrack {
   content: var(--image-file-resourcePlainIconSmall); /* FIXME: vtt icon */
 }

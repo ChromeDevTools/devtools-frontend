@@ -6203,6 +6203,9 @@
   "panels/network/NetworkDataGridNode.ts | webBundleError": {
     "message": "Web Bundle error"
   },
+  "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
+    "message": "from Web Bundle"
+  },
   "panels/network/NetworkItemView.ts | cookies": {
     "message": "Cookies"
   },

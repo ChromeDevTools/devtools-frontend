@@ -256,4 +256,26 @@ describe('The Network Tab', async function() {
 
     assert.sameMembers(await getNetworkRequestSize(), ['200OK', 'Web Bundle error']);
   });
+
+  it('shows web bundle icons', async () => {
+    const {target, frontend} = getBrowserAndPages();
+
+    await navigateToNetworkTab('resources-from-webbundle.html');
+
+    await setCacheDisabled(true);
+    await target.reload({waitUntil: 'networkidle0'});
+
+    await waitForSomeRequestsToAppear(3);
+
+    const getNetworkRequestIcons = () => frontend.evaluate(() => {
+      return Array.from(document.querySelectorAll('.name-column .icon'))
+          .slice(1, 4)
+          .map(node => (node as HTMLImageElement).alt);
+    });
+    assert.sameMembers(await getNetworkRequestIcons(), [
+      'Script',
+      'from Web Bundle',
+      'WebBundle',
+    ]);
+  });
 });

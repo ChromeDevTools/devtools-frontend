@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {$$, assertNotNull, click, getBrowserAndPages, goToResource, step, waitFor, waitForElementsWithTextContent, waitForElementWithTextContent, waitForFunction} from '../../shared/helper.js';
+import {$$, assertNotNull, click, getBrowserAndPages, goToResource, step, waitFor, waitForElementsWithTextContent, waitForElementWithTextContent, waitForFunction, waitForNoElementsWithTextContent} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {changeAllocationSampleViewViaDropdown, changeViewViaDropdown, findSearchResult, getDataGridRows, navigateToMemoryTab, setSearchFilter, takeAllocationProfile, takeAllocationTimelineProfile, takeHeapSnapshot, waitForNonEmptyHeapSnapshotData, waitForRetainerChain, waitForSearchResultNumber, waitUntilRetainerChainSatisfies} from '../helpers/memory-helpers.js';
 
@@ -249,5 +249,14 @@ describe('The Memory Panel', async function() {
       return node.closest('.data-grid');
     });
     await waitFor('.data-grid-data-grid-node', table);
+  });
+
+  it('does not show allocations perspective when stacks not recorded', async () => {
+    const {frontend} = getBrowserAndPages();
+    await goToResource('memory/allocations.html');
+    await navigateToMemoryTab();
+    takeAllocationTimelineProfile(frontend, {recordStacks: false});
+    const dropdown = await waitFor('select[aria-label="Perspective"]');
+    await waitForNoElementsWithTextContent('Allocation', dropdown);
   });
 });

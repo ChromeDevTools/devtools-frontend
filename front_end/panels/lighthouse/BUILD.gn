@@ -25,6 +25,7 @@ devtools_module("lighthouse") {
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
     "../../core/protocol_client:bundle",
+    "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../models/workspace:bundle",
     "../../panels/emulation:bundle",

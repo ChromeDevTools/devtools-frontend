@@ -55,6 +55,8 @@ export const extractShortPath = (path: string): string => {
 export interface CreateRequestCellOptions {
   linkToPreflight?: boolean;
   highlightHeader?: {section: Network.NetworkSearchScope.UIHeaderSection, name: string};
+  networkTab?: Network.NetworkItemView.Tabs;
+  additionalOnClickAction?: () => void;
 }
 
 
@@ -217,12 +219,14 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
         if (!linkedRequest) {
           return;
         }
+        options.additionalOnClickAction?.();
         if (options.highlightHeader) {
           const requestLocation = Network.NetworkSearchScope.UIRequestLocation.header(
               linkedRequest, options.highlightHeader.section, options.highlightHeader.name);
           Network.NetworkPanel.RequestLocationRevealer.instance().reveal(requestLocation);
         } else {
-          Network.NetworkPanel.NetworkPanel.selectAndShowRequest(linkedRequest, Network.NetworkItemView.Tabs.Headers);
+          Network.NetworkPanel.NetworkPanel.selectAndShowRequest(
+              linkedRequest, options.networkTab ?? Network.NetworkItemView.Tabs.Headers);
         }
       };
       requestCell.classList.add('link');

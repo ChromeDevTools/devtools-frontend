@@ -4,10 +4,11 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
-import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
+import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as Host from '../../core/host/host.js';
 
-import {AffectedResourcesView} from './AffectedResourcesView.js';
+import {AffectedResourcesView, AffectedItem} from './AffectedResourcesView.js';
 
 import type {IssueView} from './IssueView.js';
 
@@ -64,7 +65,12 @@ export class AffectedBlockedByResponseView extends AffectedResourcesView {
     const element = document.createElement('tr');
     element.classList.add('affected-resource-row');
 
-    const requestCell = this.createRequestCell(details.request);
+    const requestCell = this.createRequestCell(details.request, {
+      additionalOnClickAction() {
+        Host.userMetrics.issuesPanelResourceOpened(
+            IssuesManager.Issue.IssueCategory.CrossOriginEmbedderPolicy, AffectedItem.Request);
+      },
+    });
     element.appendChild(requestCell);
 
     if (details.parentFrame) {

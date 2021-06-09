@@ -11303,6 +11303,9 @@
   "ui/legacy/InspectorView.ts | closeDrawer": {
     "message": "Close drawer"
   },
+  "ui/legacy/InspectorView.ts | devToolsLanguageMissmatch": {
+    "message": "DevTools is now available in {PH1}!"
+  },
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "More Tools"
   },
@@ -11317,6 +11320,12 @@
   },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
     "message": "Reload DevTools"
+  },
+  "ui/legacy/InspectorView.ts | setToBrowserLanguage": {
+    "message": "Always match Chrome's language"
+  },
+  "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
+    "message": "Switch DevTools to {PH1}"
   },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Add"

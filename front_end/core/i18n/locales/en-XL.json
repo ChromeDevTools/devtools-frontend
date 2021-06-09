@@ -11303,6 +11303,9 @@
   "ui/legacy/InspectorView.ts | closeDrawer": {
     "message": "Ĉĺôśê d́r̂áŵér̂"
   },
+  "ui/legacy/InspectorView.ts | devToolsLanguageMissmatch": {
+    "message": "D̂év̂T́ôól̂ś îś n̂óŵ áv̂áîĺâb́l̂é îń {PH1}!"
+  },
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "M̂ór̂é T̂óôĺŝ"
   },
@@ -11317,6 +11320,12 @@
   },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
     "message": "R̂él̂óâd́ D̂év̂T́ôól̂ś"
+  },
+  "ui/legacy/InspectorView.ts | setToBrowserLanguage": {
+    "message": "Âĺŵáŷś m̂át̂ćĥ Ćĥŕôḿê'ś l̂án̂ǵûáĝé"
+  },
+  "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
+    "message": "Ŝẃît́ĉh́ D̂év̂T́ôól̂ś t̂ó {PH1}"
   },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Âd́d̂"

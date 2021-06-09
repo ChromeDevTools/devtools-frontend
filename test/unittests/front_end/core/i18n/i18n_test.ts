@@ -55,7 +55,7 @@ describe('serialize/deserialize round-trip', () => {
 
 describe('getLocalizedLanguageRegion', () => {
   function createMockDevToolsLocale(locale: string): i18n.DevToolsLocale.DevToolsLocale {
-    return {locale, forceFallbackLocale: () => {}};
+    return {locale, forceFallbackLocale: () => {}} as i18n.DevToolsLocale.DevToolsLocale;
   }
 
   it('build the correct language/region string', () => {

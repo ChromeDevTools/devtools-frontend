@@ -79,6 +79,26 @@ const UIStrings = {
   *@description Text for context menu action to move a tab to the drawer
   */
   moveToBottom: 'Move to bottom',
+  /**
+   * @description Text shown in a prompt to the user when DevTools is started and the
+   * currently selected DevTools locale does not match Chrome's locale.
+   * The placeholder is the current Chrome language.
+   * @example {German} PH1
+   */
+  devToolsLanguageMissmatch: 'DevTools is now available in {PH1}!',
+  /**
+   * @description An option the user can select when we notice that DevTools
+   * is configured with a different locale than Chrome. This option means DevTools will
+   * always try and display the DevTools UI in the same language as Chrome.
+   */
+  setToBrowserLanguage: 'Always match Chrome\'s language',
+  /**
+   * @description An option the user can select when DevTools notices that DevTools
+   * is configured with a different locale than Chrome. This option means DevTools UI
+   * will be switched to the language specified in the placeholder.
+   * @example {German} PH1
+   */
+  setToSpecificLanguage: 'Switch DevTools to {PH1}',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/InspectorView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -156,6 +176,12 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     function showPanel(this: InspectorView, event: Common.EventTarget.EventTargetEvent): void {
       const panelName = (event.data as string);
       this.showPanel(panelName);
+    }
+
+    if (shouldShowLocaleInfobar()) {
+      const infobar = createLocaleInfobar();
+      infobar.setParentView(this);
+      this._attachInfobar(infobar);
     }
   }
 
@@ -371,17 +397,12 @@ export class InspectorView extends VBox implements ViewLocationResolver {
         {
           text: i18nString(UIStrings.reloadDevtools),
           highlight: true,
-          delegate: (): void => {
-            if (DockController.instance().canDock() && DockController.instance().dockSide() === State.Undocked) {
-              Host.InspectorFrontendHost.InspectorFrontendHostInstance.setIsDocked(true, function() {});
-            }
-            Host.InspectorFrontendHost.InspectorFrontendHostInstance.reattach(() => window.location.reload());
-          },
+          delegate: (): void => reloadDevTools(),
           dismiss: false,
         },
       ]);
       infobar.setParentView(this);
-      this._attachReloadRequiredInfobar(infobar);
+      this._attachInfobar(infobar);
       this._reloadRequiredInfobar = infobar;
       infobar.setCloseCallback(() => {
         delete this._reloadRequiredInfobar;
@@ -389,14 +410,85 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     }
   }
 
-  _attachReloadRequiredInfobar(infobar: Infobar): void {
+  _createInfoBarDiv(): void {
     if (!this._infoBarDiv) {
       this._infoBarDiv = (document.createElement('div') as HTMLDivElement);
       this._infoBarDiv.classList.add('flex-none');
       this.contentElement.insertBefore(this._infoBarDiv, this.contentElement.firstChild);
     }
-    this._infoBarDiv.appendChild(infobar.element);
   }
+
+  _attachInfobar(infobar: Infobar): void {
+    this._createInfoBarDiv();
+    this._infoBarDiv?.appendChild(infobar.element);
+  }
+}
+
+function getDisableLocaleInfoBarSetting(): Common.Settings.Setting<boolean> {
+  return Common.Settings.Settings.instance().createSetting('disableLocaleInfoBar', false);
+}
+
+function shouldShowLocaleInfobar(): boolean {
+  if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.LOCALIZED_DEVTOOLS)) {
+    return false;
+  }
+
+  if (getDisableLocaleInfoBarSetting().get()) {
+    return false;
+  }
+
+  const languageSettingValue = Common.Settings.Settings.instance().moduleSetting<string>('language').get();
+  if (languageSettingValue === 'browserLanguage') {
+    return false;
+  }
+
+  // When the selected DevTools locale differs from the locale of the browser UI, we want to notify
+  // users only once, that they have the opportunity to adjust DevTools locale to match Chrome's locale.
+  return !i18n.DevToolsLocale.localeLanguagesMatch(navigator.language, languageSettingValue) &&
+      i18n.DevToolsLocale.DevToolsLocale.instance().languageIsSupportedByDevTools(navigator.language);
+}
+
+function createLocaleInfobar(): Infobar {
+  const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
+  const closestSupportedLocale = devtoolsLocale.lookupClosestDevToolsLocale(navigator.language);
+  // @ts-ignore TODO(crbug.com/1163928) Wait for Intl support.
+  const locale = new Intl.Locale(closestSupportedLocale);
+  const closestSupportedLanguageInCurrentLocale =
+      new Intl.DisplayNames([devtoolsLocale.locale], {type: 'language'}).of(locale.language);
+
+  const languageSetting = Common.Settings.Settings.instance().moduleSetting<string>('language');
+  return new Infobar(
+      InfobarType.Info, i18nString(UIStrings.devToolsLanguageMissmatch, {PH1: closestSupportedLanguageInCurrentLocale}),
+      [
+        {
+          text: i18nString(UIStrings.setToBrowserLanguage),
+          highlight: true,
+          delegate: (): void => {
+            languageSetting.set('browserLanguage');
+            getDisableLocaleInfoBarSetting().set(true);
+            reloadDevTools();
+          },
+          dismiss: true,
+        },
+        {
+          text: i18nString(UIStrings.setToSpecificLanguage, {PH1: closestSupportedLanguageInCurrentLocale}),
+          highlight: true,
+          delegate: (): void => {
+            languageSetting.set(closestSupportedLocale);
+            getDisableLocaleInfoBarSetting().set(true);
+            reloadDevTools();
+          },
+          dismiss: true,
+        },
+      ],
+      getDisableLocaleInfoBarSetting());
+}
+
+function reloadDevTools(): void {
+  if (DockController.instance().canDock() && DockController.instance().dockSide() === State.Undocked) {
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.setIsDocked(true, function() {});
+  }
+  Host.InspectorFrontendHost.InspectorFrontendHostInstance.reattach(() => window.location.reload());
 }
 
 let actionDelegateInstance: ActionDelegate;

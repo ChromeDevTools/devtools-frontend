@@ -8,7 +8,6 @@ import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import {DevToolsLocale} from './DevToolsLocale.js';
-import {LocalizedStringSet} from './LocalizedStringSet.js';
 
 import type * as i18nTypes from './i18nTypes.js';
 
@@ -52,6 +51,20 @@ const i18nString = getLocalizedString.bind(undefined, str_);
 // remotely. Keep this list in sync with "copied_devtools_locale_files" in
 // "all_devtools_files.gni" (except the pseudo locales).
 const BUNDLED_LOCALES = new Set<string>(['en-US', 'en-XL', 'zh']);
+
+/**
+ * The strings from the module.json file
+ */
+let moduleJSONStrings: Object|undefined;
+
+/**
+ * Returns an instance of an object of formatted strings based on locale. If the instance is not
+ * set at the time of calling, it is created.
+ */
+function getOrSetModuleJSONStrings(): Object {
+  moduleJSONStrings = moduleJSONStrings || i18nBundle.getRendererFormattedStrings(DevToolsLocale.instance().locale);
+  return moduleJSONStrings;
+}
 
 /**
  * Look up the best available locale for the requested language through these fall backs:
@@ -101,31 +114,62 @@ export async function fetchAndRegisterLocaleData(locale: Intl.UnicodeBCP47Locale
  * meta files used to register module extensions.
  */
 export function getLazilyComputedLocalizedString(
-    localizedStringSet: LocalizedStringSet, id: string, values: Object = {}): () => Platform.UIString.LocalizedString {
-  return (): Platform.UIString.LocalizedString => getLocalizedString(localizedStringSet, id, values);
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    str_: (id: string, values: Object) => Platform.UIString.LocalizedString, id: string, values: Object = {}): () =>
+    Platform.UIString.LocalizedString {
+  return (): Platform.UIString.LocalizedString => getLocalizedString(str_, id, values);
 }
 
 /**
  * Retrieve the localized string.
  */
 export function getLocalizedString(
-    localizedStringSet: LocalizedStringSet, id: string, values: Object = {}): Platform.UIString.LocalizedString {
-  return localizedStringSet.getLocalizedString(id, values);
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    str_: (id: string, values: Object) => Platform.UIString.LocalizedString, id: string,
+    values: Object = {}): Platform.UIString.LocalizedString {
+  const icuMessage = str_(id, values);
+  return i18nBundle.getFormatted(icuMessage, DevToolsLocale.instance().locale) as Platform.UIString.LocalizedString;
 }
 
 /**
  * Register a file's UIStrings with i18n, return function to generate the string ids.
  */
-export function registerUIStrings(path: string, stringStructure: {[key: string]: string}): LocalizedStringSet {
-  return new LocalizedStringSet(path, stringStructure);
+export function registerUIStrings(path: string, stringStructure: Object): (id: string, values: Object) =>
+    Platform.UIString.LocalizedString {
+  /**
+   * Convert a message string & replacement values into an
+   * indexed id value in the form '{messageid} | # {index}'.
+   * */
+  const str: (id: string, value: Object) => Platform.UIString.LocalizedString = (id: string, value: Object) => {
+    try {
+      const i18nInstance = i18nBundle.createIcuMessageFn(path, stringStructure) as (id: string, values: Object) =>
+                               Platform.UIString.LocalizedString;
+      return i18nInstance(id, value);
+    } catch (e) {
+      // ID was not in the main file search for module.json strings
+      if (e instanceof i18nBundle.idNotInMainDictionaryException) {
+        const stringMappingArray = Object.getOwnPropertyNames(getOrSetModuleJSONStrings());
+        const index = stringMappingArray.indexOf(id);
+        if (index >= 0) {
+          return stringMappingArray[index] as Platform.UIString.LocalizedString;
+        }
+      }
+
+      return id as Platform.UIString.LocalizedString;
+    }
+  };
+
+  return str;
 }
 
 /**
  * Returns a span element that may contains other DOM element as placeholders
  */
 export function getFormatLocalizedString(
-    localizedStringSet: LocalizedStringSet, stringId: string, placeholders: Record<string, Object>): Element {
-  const icuMessage = localizedStringSet.getIcuMessage(stringId, placeholders);
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    str_: (id: string, values: Object) => Platform.UIString.LocalizedString, stringId: string,
+    placeholders: Record<string, Object>): Element {
+  const icuMessage = str_(stringId, placeholders);
   const formatter = i18nBundle.getFormatter(icuMessage, DevToolsLocale.instance().locale);
 
   const icuElements = formatter.getAst().elements;

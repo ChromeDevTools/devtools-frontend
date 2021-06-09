@@ -7,7 +7,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Platform from '../../core/platform/platform.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
@@ -278,11 +278,18 @@ class AffectedRequestsView extends AffectedResourcesView {
   _appendAffectedRequests(affectedRequests: Iterable<Protocol.Audits.AffectedRequest>): void {
     let count = 0;
     for (const affectedRequest of affectedRequests) {
-      const request = this.requestResolver.tryGetNetworkRequest(affectedRequest.requestId, this.update.bind(this));
-      if (request) {
-        count++;
-        this._appendNetworkRequest(request);
-      }
+      const element = document.createElement('tr');
+      element.classList.add('affected-resource-request');
+      const category = this._issue.getCategory();
+      const tab = issueTypeToNetworkHeaderMap.get(category) || Network.NetworkItemView.Tabs.Headers;
+      element.appendChild(this.createRequestCell(affectedRequest, {
+        networkTab: tab,
+        additionalOnClickAction() {
+          Host.userMetrics.issuesPanelResourceOpened(category, AffectedItem.Request);
+        },
+      }));
+      this.affectedResources.appendChild(element);
+      count++;
     }
     this.updateAffectedResourceCount(count);
   }
@@ -291,26 +298,17 @@ class AffectedRequestsView extends AffectedResourcesView {
     return i18nString(UIStrings.nRequests, {n: count});
   }
 
-  _appendNetworkRequest(request: SDK.NetworkRequest.NetworkRequest): void {
-    const nameText = Platform.StringUtilities.trimMiddle(request.name(), 100);
-    const nameElement = document.createElement('td');
-    const tab = issueTypeToNetworkHeaderMap.get(this._issue.getCategory()) || Network.NetworkItemView.Tabs.Headers;
-    nameElement.appendChild(UI.UIUtils.createTextButton(nameText, () => {
-      Host.userMetrics.issuesPanelResourceOpened(this._issue.getCategory(), AffectedItem.Request);
-      Network.NetworkPanel.NetworkPanel.selectAndShowRequest(request, tab);
-    }, 'link-style devtools-link'));
-    const element = document.createElement('tr');
-    element.classList.add('affected-resource-request');
-    element.appendChild(nameElement);
-    this.affectedResources.appendChild(element);
-  }
-
   update(): void {
     this.clear();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     for (const unused of this._issue.getBlockedByResponseDetails()) {
       // If the issue has blockedByResponseDetails, the corresponding AffectedBlockedByResponseView
       // will take care of displaying the request.
+      this.updateAffectedResourceCount(0);
+      return;
+    }
+    if (this._issue.getCategory() === IssuesManager.Issue.IssueCategory.MixedContent) {
+      // The AffectedMixedContentView takes care of displaying the resources.
       this.updateAffectedResourceCount(0);
       return;
     }
@@ -386,17 +384,8 @@ class AffectedMixedContentView extends AffectedResourcesView {
     let count = 0;
     for (const issue of mixedContentIssues) {
       const details = issue.getDetails();
-      if (details.request) {
-        const networkRequest =
-            this.requestResolver.tryGetNetworkRequest(details.request.requestId, this.update.bind(this));
-        if (networkRequest) {
-          this.appendAffectedMixedContent(details, networkRequest);
-          count++;
-        }
-      } else {
-        this.appendAffectedMixedContent(details);
-        count++;
-      }
+      this.appendAffectedMixedContent(details);
+      count++;
     }
     this.updateAffectedResourceCount(count);
   }
@@ -405,33 +394,29 @@ class AffectedMixedContentView extends AffectedResourcesView {
     return i18nString(UIStrings.nResources, {n: count});
   }
 
-  appendAffectedMixedContent(
-      mixedContent: Protocol.Audits.MixedContentIssueDetails,
-      maybeRequest: SDK.NetworkRequest.NetworkRequest|null = null): void {
+  appendAffectedMixedContent(mixedContent: Protocol.Audits.MixedContentIssueDetails): void {
     const element = document.createElement('tr');
     element.classList.add('affected-resource-mixed-content');
-    const filename = extractShortPath(mixedContent.insecureURL);
 
-    const name = document.createElement('td');
-    if (maybeRequest) {
-      const request = maybeRequest;  // re-assignment to make type checker happy
-      const tab = issueTypeToNetworkHeaderMap.get(this._issue.getCategory()) || Network.NetworkItemView.Tabs.Headers;
-      name.appendChild(UI.UIUtils.createTextButton(filename, () => {
-        Host.userMetrics.issuesPanelResourceOpened(this._issue.getCategory(), AffectedItem.Request);
-        Network.NetworkPanel.NetworkPanel.selectAndShowRequest(request, tab);
-      }, 'link-style devtools-link'));
+    if (mixedContent.request) {
+      const networkTab =
+          issueTypeToNetworkHeaderMap.get(this._issue.getCategory()) || Network.NetworkItemView.Tabs.Headers;
+      element.appendChild(this.createRequestCell(mixedContent.request, {
+        networkTab,
+        additionalOnClickAction() {
+          Host.userMetrics.issuesPanelResourceOpened(
+              IssuesManager.Issue.IssueCategory.MixedContent, AffectedItem.Request);
+        },
+      }));
     } else {
-      name.classList.add('affected-resource-mixed-content-info');
-      name.textContent = filename;
+      const filename = extractShortPath(mixedContent.insecureURL);
+      const cell = this.appendIssueDetailCell(element, filename, 'affected-resource-mixed-content-info');
+      UI.Tooltip.Tooltip.install(cell, mixedContent.insecureURL);
     }
-    UI.Tooltip.Tooltip.install(name, mixedContent.insecureURL);
-    element.appendChild(name);
 
-    const status = document.createElement('td');
-    status.classList.add('affected-resource-mixed-content-info');
-    status.textContent = AffectedMixedContentView.translateStatus(mixedContent.resolutionStatus);
-    element.appendChild(status);
-
+    this.appendIssueDetailCell(
+        element, AffectedMixedContentView.translateStatus(mixedContent.resolutionStatus),
+        'affected-resource-mixed-content-info');
     this.affectedResources.appendChild(element);
   }
 

@@ -75,7 +75,7 @@ describe('The Application Tab', async () => {
       'No',
       'None',
       'UnsafeNone',
-      'unavailable requires cross-origin isolated context',
+      'unavailable\xA0requires cross-origin isolated context',
       'unavailable\xA0Learn more',
       'accelerometer',
     ];
@@ -225,7 +225,7 @@ describe('The Application Tab', async () => {
       'No',
       'None',
       'UnsafeNone',
-      'unavailable requires cross-origin isolated context',
+      'unavailable\xA0requires cross-origin isolated context',
       'unavailable\xA0Learn more',
       'accelerometer',
     ];
@@ -268,7 +268,7 @@ describe('The Application Tab', async () => {
       'No',
       'None',
       'UnsafeNone',
-      'unavailable requires cross-origin isolated context',
+      'unavailable\xA0requires cross-origin isolated context',
       'unavailable\xA0Learn more',
       'accelerometer',
     ];

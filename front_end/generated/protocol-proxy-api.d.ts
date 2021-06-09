@@ -537,6 +537,12 @@ declare namespace ProtocolProxyApi {
     invoke_setMediaText(params: Protocol.CSS.SetMediaTextRequest): Promise<Protocol.CSS.SetMediaTextResponse>;
 
     /**
+     * Modifies the expression of a container query.
+     */
+    invoke_setContainerQueryText(params: Protocol.CSS.SetContainerQueryTextRequest):
+        Promise<Protocol.CSS.SetContainerQueryTextResponse>;
+
+    /**
      * Modifies the rule selector.
      */
     invoke_setRuleSelector(params: Protocol.CSS.SetRuleSelectorRequest): Promise<Protocol.CSS.SetRuleSelectorResponse>;

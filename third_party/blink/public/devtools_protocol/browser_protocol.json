@@ -2772,6 +2772,16 @@
                             "items": {
                                 "$ref": "CSSMedia"
                             }
+                        },
+                        {
+                            "name": "containerQueries",
+                            "description": "Container query list array (for rules involving container queries).\nThe array enumerates container queries starting with the innermost one, going outwards.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "CSSContainerQuery"
+                            }
                         }
                     ]
                 },
@@ -3062,6 +3072,31 @@
                             "description": "Computed length of media query expression (if applicable).",
                             "optional": true,
                             "type": "number"
+                        }
+                    ]
+                },
+                {
+                    "id": "CSSContainerQuery",
+                    "description": "CSS container query rule descriptor.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "text",
+                            "description": "Container query text.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "range",
+                            "description": "The associated rule header range in the enclosing stylesheet (if\navailable).",
+                            "optional": true,
+                            "$ref": "SourceRange"
+                        },
+                        {
+                            "name": "styleSheetId",
+                            "description": "Identifier of the stylesheet containing this object (if exists).",
+                            "optional": true,
+                            "$ref": "StyleSheetId"
                         }
                     ]
                 },
@@ -3622,6 +3657,32 @@
                             "name": "media",
                             "description": "The resulting CSS media rule after modification.",
                             "$ref": "CSSMedia"
+                        }
+                    ]
+                },
+                {
+                    "name": "setContainerQueryText",
+                    "description": "Modifies the expression of a container query.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "styleSheetId",
+                            "$ref": "StyleSheetId"
+                        },
+                        {
+                            "name": "range",
+                            "$ref": "SourceRange"
+                        },
+                        {
+                            "name": "text",
+                            "type": "string"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "containerQuery",
+                            "description": "The resulting CSS container query rule after modification.",
+                            "$ref": "CSSContainerQuery"
                         }
                     ]
                 },

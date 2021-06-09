@@ -1845,6 +1845,11 @@ declare namespace Protocol {
        * starting with the innermost one, going outwards.
        */
       media?: CSSMedia[];
+      /**
+       * Container query list array (for rules involving container queries).
+       * The array enumerates container queries starting with the innermost one, going outwards.
+       */
+      containerQueries?: CSSContainerQuery[];
     }
 
     /**
@@ -2062,6 +2067,25 @@ declare namespace Protocol {
        * Computed length of media query expression (if applicable).
        */
       computedLength?: number;
+    }
+
+    /**
+     * CSS container query rule descriptor.
+     */
+    export interface CSSContainerQuery {
+      /**
+       * Container query text.
+       */
+      text: string;
+      /**
+       * The associated rule header range in the enclosing stylesheet (if
+       * available).
+       */
+      range?: SourceRange;
+      /**
+       * Identifier of the stylesheet containing this object (if exists).
+       */
+      styleSheetId?: StyleSheetId;
     }
 
     /**
@@ -2418,6 +2442,19 @@ declare namespace Protocol {
        * The resulting CSS media rule after modification.
        */
       media: CSSMedia;
+    }
+
+    export interface SetContainerQueryTextRequest {
+      styleSheetId: StyleSheetId;
+      range: SourceRange;
+      text: string;
+    }
+
+    export interface SetContainerQueryTextResponse extends ProtocolResponseWithError {
+      /**
+       * The resulting CSS container query rule after modification.
+       */
+      containerQuery: CSSContainerQuery;
     }
 
     export interface SetRuleSelectorRequest {

@@ -500,6 +500,13 @@ export function registerCommands(inspectorBackend) {
       ],
       ['media']);
   inspectorBackend.registerCommand(
+      'CSS.setContainerQueryText',
+      [
+        {'name': 'styleSheetId', 'type': 'string', 'optional': false},
+        {'name': 'range', 'type': 'object', 'optional': false}, {'name': 'text', 'type': 'string', 'optional': false}
+      ],
+      ['containerQuery']);
+  inspectorBackend.registerCommand(
       'CSS.setRuleSelector',
       [
         {'name': 'styleSheetId', 'type': 'string', 'optional': false},

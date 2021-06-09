@@ -996,6 +996,12 @@ export namespace ProtocolMapping {
     'CSS.setMediaText':
         {paramsType: [Protocol.CSS.SetMediaTextRequest]; returnType: Protocol.CSS.SetMediaTextResponse;};
     /**
+     * Modifies the expression of a container query.
+     */
+    'CSS.setContainerQueryText': {
+      paramsType: [Protocol.CSS.SetContainerQueryTextRequest]; returnType: Protocol.CSS.SetContainerQueryTextResponse;
+    };
+    /**
      * Modifies the rule selector.
      */
     'CSS.setRuleSelector':

@@ -1,5 +1,11 @@
 # @web/rollup-plugin-import-meta-assets
 
+## 1.0.7
+
+### Patch Changes
+
+- d3448166: Allow ignoring assets during transformation
+
 ## 1.0.6
 
 ### Patch Changes

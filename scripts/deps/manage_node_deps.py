@@ -56,7 +56,7 @@ DEPS = {
     "@types/sinon": "10.0.2",
     "@typescript-eslint/parser": "4.21.0",
     "@typescript-eslint/eslint-plugin": "4.21.0",
-    "@web/rollup-plugin-import-meta-assets": "1.0.6",
+    "@web/rollup-plugin-import-meta-assets": "1.0.7",
     "bl": "4.1.0",
     "chai": "4.3.4",
     "convert-source-map": "1.7.0",

@@ -499,7 +499,7 @@ async function printStyleSection(section, omitLonghands, includeSelectorGroupMar
 
   TestRunner.addResult(
       '[expanded] ' + ((section.propertiesTreeOutline.element.classList.contains('no-affect') ? '[no-affect] ' : '')));
-  const medias = section._titleElement.querySelectorAll('.media-list .media');
+  const medias = section._titleElement.querySelectorAll('.query-list .media');
 
   for (let i = 0; i < medias.length; ++i) {
     const media = medias[i];

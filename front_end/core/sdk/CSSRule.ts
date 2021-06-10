@@ -7,6 +7,7 @@
 import * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 
+import {CSSContainerQuery} from './CSSContainerQuery.js';
 import {CSSMedia} from './CSSMedia.js';
 
 import type {CSSModel, Edit} from './CSSModel.js'; // eslint-disable-line no-unused-vars
@@ -98,12 +99,16 @@ class CSSValue {
 export class CSSStyleRule extends CSSRule {
   selectors!: CSSValue[];
   media: CSSMedia[];
+  containerQueries: CSSContainerQuery[];
   wasUsed: boolean;
   constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSRule, wasUsed?: boolean) {
     // TODO(crbug.com/1011811): Replace with spread operator or better types once Closure is gone.
     super(cssModel, {origin: payload.origin, style: payload.style, styleSheetId: payload.styleSheetId});
     this._reinitializeSelectors(payload.selectorList);
     this.media = payload.media ? CSSMedia.parseMediaArrayPayload(cssModel, payload.media) : [];
+    this.containerQueries = payload.containerQueries ?
+        CSSContainerQuery.parseContainerQueriesPayload(cssModel, payload.containerQueries) :
+        [];
     this.wasUsed = wasUsed || false;
   }
 
@@ -189,6 +194,9 @@ export class CSSStyleRule extends CSSRule {
     }
     for (const media of this.media) {
       media.rebase(edit);
+    }
+    for (const containerQuery of this.containerQueries) {
+      containerQuery.rebase(edit);
     }
 
     super.rebase(edit);

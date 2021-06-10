@@ -30,6 +30,7 @@ export const INACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="Enable grid mode"]';
 export const ACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="Disable grid mode"]';
 const ELEMENT_CHECKBOX_IN_LAYOUT_PANE_SELECTOR = '.elements input[type=checkbox]';
 const ELEMENT_STYLE_SECTION_SELECTOR = '[aria-label="element.style, css selector"]';
+const STYLE_QUERY_RULE_TEXT_SELECTOR = '.query-list .media-text';
 
 export const openLayoutPane = async () => {
   await step('Open Layout pane', async () => {
@@ -458,6 +459,26 @@ export async function editCSSProperty(selector: string, propertyName: string, ne
       assert.fail(`Could not find property ${propertyName} in rule ${selector}`);
     }
     return await value.evaluate(node => {
+      return !node.classList.contains('text-prompt') && !node.hasAttribute('contenteditable');
+    });
+  });
+}
+
+// Edit a media or container query rule text for the given styles section
+export async function editQueryRuleText(queryStylesSections: puppeteer.ElementHandle<Element>, newQueryText: string) {
+  await click(STYLE_QUERY_RULE_TEXT_SELECTOR, {root: queryStylesSections});
+
+  const {frontend} = getBrowserAndPages();
+  await frontend.keyboard.type(newQueryText, {delay: 100});
+  await frontend.keyboard.press('Enter');
+
+  await waitForFunction(async () => {
+    // Wait until the value element is not a text-prompt anymore.
+    const queryText = await $(STYLE_QUERY_RULE_TEXT_SELECTOR, queryStylesSections);
+    if (!queryText) {
+      assert.fail('Could not find any query in the given styles section');
+    }
+    return await queryText.evaluate(node => {
       return !node.classList.contains('text-prompt') && !node.hasAttribute('contenteditable');
     });
   });

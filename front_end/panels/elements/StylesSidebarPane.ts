@@ -1175,12 +1175,14 @@ export class StylePropertiesSection {
   _selectedSinceMouseDown: boolean;
   _elementToSelectorIndex: WeakMap<Element, number>;
   navigable: boolean|null|undefined;
-  _mediaListElement: HTMLElement;
   _selectorRefElement: HTMLElement;
   _selectorContainer: HTMLDivElement;
   _fontPopoverIcon: FontEditorSectionManager|null;
   _hoverableSelectorsMode: boolean;
   _isHidden: boolean;
+
+  private queryListElement: HTMLElement;
+
   constructor(
       parentPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
       style: SDK.CSSStyleDeclaration.CSSStyleDeclaration) {
@@ -1296,9 +1298,9 @@ export class StylePropertiesSection {
       }
     }
 
-    this._mediaListElement = this._titleElement.createChild('div', 'media-list media-matches');
+    this.queryListElement = this._titleElement.createChild('div', 'query-list query-matches');
     this._selectorRefElement = this._titleElement.createChild('div', 'styles-section-subtitle');
-    this._updateMediaList();
+    this.updateQueryList();
     this._updateRuleOrigin();
     this._titleElement.appendChild(selectorContainer);
     this._selectorContainer = selectorContainer;
@@ -1718,7 +1720,7 @@ export class StylePropertiesSection {
       this._style.rebase(edit);
     }
 
-    this._updateMediaList();
+    this.updateQueryList();
     this._updateRuleOrigin();
   }
 
@@ -1730,7 +1732,7 @@ export class StylePropertiesSection {
       if (isMedia) {
         continue;
       }
-      const mediaDataElement = this._mediaListElement.createChild('div', 'media');
+      const mediaDataElement = this.queryListElement.createChild('div', 'media');
       const mediaContainerElement = mediaDataElement.createChild('span');
       const mediaTextElement = mediaContainerElement.createChild('span', 'media-text');
       switch (media.source) {
@@ -1743,13 +1745,11 @@ export class StylePropertiesSection {
           const decoration = mediaContainerElement.createChild('span');
           mediaContainerElement.insertBefore(decoration, mediaTextElement);
           decoration.textContent = '@media ';
-          // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-          // @ts-expect-error
           mediaTextElement.textContent = media.text;
           if (media.styleSheetId) {
             mediaDataElement.classList.add('editable-media');
             mediaTextElement.addEventListener(
-                'click', this._handleMediaRuleClick.bind(this, media, mediaTextElement), false);
+                'click', this.handleQueryRuleClick.bind(this, media, mediaTextElement), false);
           }
           break;
         }
@@ -1761,10 +1761,32 @@ export class StylePropertiesSection {
     }
   }
 
-  _updateMediaList(): void {
-    this._mediaListElement.removeChildren();
+  protected createContainerQueryList(containerQueries: SDK.CSSContainerQuery.CSSContainerQuery[]): void {
+    for (let i = containerQueries.length - 1; i >= 0; --i) {
+      const containerQuery = containerQueries[i];
+      if (!containerQuery.text) {
+        continue;
+      }
+      const mediaDataElement = this.queryListElement.createChild('div', 'media');
+      const mediaContainerElement = mediaDataElement.createChild('span');
+      const mediaTextElement = mediaContainerElement.createChild('span', 'media-text');
+      const decoration = mediaContainerElement.createChild('span');
+      mediaContainerElement.insertBefore(decoration, mediaTextElement);
+      decoration.textContent = '@container ';
+      mediaTextElement.textContent = containerQuery.text;
+      if (containerQuery.styleSheetId) {
+        mediaDataElement.classList.add('editable-media');
+        mediaTextElement.addEventListener(
+            'click', this.handleQueryRuleClick.bind(this, containerQuery, mediaTextElement), false);
+      }
+    }
+  }
+
+  private updateQueryList(): void {
+    this.queryListElement.removeChildren();
     if (this._style.parentRule && this._style.parentRule instanceof SDK.CSSRule.CSSStyleRule) {
       this._createMediaList(this._style.parentRule.media);
+      this.createContainerQueryList(this._style.parentRule.containerQueries);
     }
   }
 
@@ -1915,7 +1937,7 @@ export class StylePropertiesSection {
       return;
     }
 
-    this._mediaListElement.classList.toggle('media-matches', this._matchedStyles.mediaMatches(this._style));
+    this.queryListElement.classList.toggle('query-matches', this._matchedStyles.mediaMatches(this._style));
 
     const selectorTexts = rule.selectors.map(selector => selector.text);
     const matchingSelectorIndexes = this._matchedStyles.matchingSelectors(rule);
@@ -2037,13 +2059,14 @@ export class StylePropertiesSection {
     event.consume(true);
   }
 
-  _handleMediaRuleClick(media: SDK.CSSMedia.CSSMedia, element: Element, event: Event): void {
+  private handleQueryRuleClick(
+      query: SDK.CSSMedia.CSSMedia|SDK.CSSContainerQuery.CSSContainerQuery, element: Element, event: Event): void {
     if (UI.UIUtils.isBeingEdited(element)) {
       return;
     }
 
     if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlOrMeta((event as MouseEvent)) && this.navigable) {
-      const location = media.rawLocation();
+      const location = query.rawLocation();
       if (!location) {
         event.consume(true);
         return;
@@ -2061,7 +2084,7 @@ export class StylePropertiesSection {
     }
 
     const config = new UI.InplaceEditor.Config(
-        this._editingMediaCommitted.bind(this, media), this._editingMediaCancelled.bind(this, element), undefined,
+        this._editingMediaCommitted.bind(this, query), this._editingMediaCancelled.bind(this, element), undefined,
         this._editingMediaBlurHandler.bind(this));
     UI.InplaceEditor.InplaceEditor.startEditing(element, config);
 
@@ -2098,8 +2121,8 @@ export class StylePropertiesSection {
   }
 
   _editingMediaCommitted(
-      media: SDK.CSSMedia.CSSMedia, element: Element, newContent: string, _oldContent: string,
-      _context: Context|undefined, _moveDirection: string): void {
+      query: SDK.CSSMedia.CSSMedia|SDK.CSSContainerQuery.CSSContainerQuery, element: Element, newContent: string,
+      _oldContent: string, _context: Context|undefined, _moveDirection: string): void {
     this._parentPane.setEditingStyle(false);
     this._editingMediaFinished(element);
 
@@ -2119,8 +2142,10 @@ export class StylePropertiesSection {
     // This gets deleted in finishOperation(), which is called both on success and failure.
     this._parentPane.setUserOperation(true);
     const cssModel = this._parentPane.cssModel();
-    if (cssModel && media.styleSheetId) {
-      cssModel.setMediaText(media.styleSheetId, (media.range as TextUtils.TextRange.TextRange), newContent)
+    if (cssModel && query.styleSheetId) {
+      const setQueryText =
+          query instanceof SDK.CSSMedia.CSSMedia ? cssModel.setMediaText : cssModel.setContainerQueryText;
+      setQueryText.call(cssModel, query.styleSheetId, (query.range as TextUtils.TextRange.TextRange), newContent)
           .then(userCallback.bind(this));
     }
   }
@@ -2384,6 +2409,7 @@ export class BlankStylePropertiesSection extends StylePropertiesSection {
     if (insertAfterStyle && insertAfterStyle.parentRule &&
         insertAfterStyle.parentRule instanceof SDK.CSSRule.CSSStyleRule) {
       this._createMediaList(insertAfterStyle.parentRule.media);
+      this.createContainerQueryList(insertAfterStyle.parentRule.containerQueries);
     }
     this.element.classList.add('blank-section');
   }

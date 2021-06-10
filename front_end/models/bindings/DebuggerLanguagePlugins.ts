@@ -272,7 +272,8 @@ async function formatSourceValue(
   return node;
 
   async function unpackResultObject(object: FormattedValueNode): Promise<FormattedValueNode|null> {
-    const {tag, value, inspectableAddress} = await object.findProperties('tag', 'value', 'inspectableAddress');
+    const {tag, value, inspectableAddress, description} =
+        await object.findProperties('tag', 'value', 'inspectableAddress', 'description');
     if (!tag || !value) {
       return null;
     }
@@ -283,6 +284,11 @@ async function formatSourceValue(
     const resolvedClassName = className.value;
     if (typeof resolvedClassName !== 'string' || typeof symbol.objectId === 'undefined') {
       return null;
+    }
+
+    const descriptionText = description?.value;
+    if (typeof descriptionText === 'string') {
+      value.description = descriptionText;
     }
 
     value.formatterTag = {symbol: symbol.objectId, className: resolvedClassName};

@@ -634,12 +634,18 @@ describe('The Debugger Language Plugins', async () => {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             async getFormatter(expressionOrField: string|{base: EvalBase, field: FieldInfo[]}, context: RawLocation):
                 Promise<{js: string}|null> {
-              function format() {
+              function formatWithDescription(description: string) {
                 const sym = Symbol('sym');
+                const tag = {className: '$tag', symbol: sym};
+                return {tag, value: 27, description};
+              }
+              function format(description?: string) {
+                const sym = Symbol('sym');
+                const tag = {className: '$tag', symbol: sym};
 
                 class $tag {
                   [sym]: EvalBase;
-                  constructor() {
+                  constructor(value: number) {
                     const rootType = {
                       typeNames: ['int'],
                       typeId: 'int',
@@ -650,13 +656,13 @@ describe('The Debugger Language Plugins', async () => {
                       canExpand: false,
                       hasValue: true,
                     };
-                    this[sym] = {payload: {value: 19}, rootType};
+                    this[sym] = {payload: {value}, rootType};
                   }
                 }
 
-                const value = {value: 26, recurse: new $tag()};
+                const value = {value: 26, recurse: new $tag(19), describe: new $tag(20)};
                 Object.setPrototypeOf(value, null);
-                return {tag: {className: '$tag', symbol: sym}, value};
+                return {tag, value, description};
               }
 
               if (typeof expressionOrField === 'string') {
@@ -667,10 +673,13 @@ describe('The Debugger Language Plugins', async () => {
               if (base.payload === 28 && field.length === 2 && field[0].name === 'member' && field[0].offset === 1 &&
                   field[0].typeId === 'TestTypeMember' && field[1].name === 'member2' && field[1].offset === 1 &&
                   field[1].typeId === 'TestTypeMember2') {
-                return {js: `${format.toString()} format()`};
+                return {js: `(${format})()`};
               }
               if ((base.payload as {value: number}).value === 19 && field.length === 0) {
                 return {js: '27'};
+              }
+              if ((base.payload as {value: number}).value === 20 && field.length === 0) {
+                return {js: `(${formatWithDescription})('CustomLabel')`};
               }
               return null;
             }
@@ -687,11 +696,12 @@ describe('The Debugger Language Plugins', async () => {
     await goToResource('sources/wasm/unreachable.html');
     await waitFor(RESUME_BUTTON);
 
-    const locals = await getValuesForScope('LOCAL', 3, 5);
+    const locals = await getValuesForScope('LOCAL', 3, 6);
     assert.deepEqual(locals, [
       'local: TestType',
       'member: TestTypeMember',
       'member2: TestTypeMember2',
+      'describe: CustomLabel',
       'recurse: 27',
       'value: 26',
     ]);

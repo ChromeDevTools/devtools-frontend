@@ -43,7 +43,7 @@ ts_library("shell") {
 
   deps = [
     ":shell-meta-files",
-    "../../Images:generate_css_vars",
+    "../../Images:optimize_images",
     "../../core/common:legacy",
     "../../core/dom_extension:bundle",
     "../../core/host:legacy",

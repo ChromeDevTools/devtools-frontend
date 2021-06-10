@@ -80,6 +80,9 @@ function importMetaAssets({ include, exclude, warnOnError, transform } = {}) {
                 transform != null
                   ? await transform(assetContents, absoluteAssetPath)
                   : assetContents;
+              if (transformedAssetContents === null) {
+                return;
+              }
               const ref = this.emitFile({
                 type: 'asset',
                 name: assetName,

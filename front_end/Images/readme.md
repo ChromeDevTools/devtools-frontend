@@ -20,16 +20,6 @@
    - Update the `devtols_image_files` list in `config/gni/devtools_image_files.gni`.
    - Update the `grd_files_release_sources` list in `config/gni/devtools_grd_files.gni`.
 
-3. Optimize:
-   - `./scripts/optimize_svg_images.py`.
-   - This script produces, for example, `Images/list_icon.svg` from
-     `Images/src/list_icon.svg` by rounding numbers and removing hopefully
-     unnecessary content. However, it might end up distorting/destroying the
-     icon, especially if it is too small. Make sure to open the output of the
-     optimiztion process (e.g. `Images/list_icon.svg`) in Inkscape and inspect
-     it for damage. Enlarging the input image, as desribed in step (1) usually
-     circumvents this.
-
-4. Use Icon component in the DevTools front-end:
+3. Use Icon component in the DevTools front-end:
    - Visit https://docs.google.com/document/d/1EA--IokG6YW51y7unS8dIKUx6EtyjETT0uglmvIpfsg/edit#heading=h.xgjl2srtytjt for more information on that.
 

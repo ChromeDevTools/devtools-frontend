@@ -20,7 +20,6 @@ The newer scripts such as for testing and hosted mode are written in Node.js, wh
 - compile_frontend.py - runs closure compiler to do static type analysis
     - Note: the compiled outputs are not actually used to run DevTools
 - lint_javascript.py - run eslint
-- optimize_svg_images.py - manually run when changing svg images
 
 ### Node.js scripts
 

@@ -397,38 +397,6 @@ def _CheckDarkModeStyleSheetsUpToDate(input_api, output_api):
     return results
 
 
-def _CheckOptimizeSVGHashes(input_api, output_api):
-    if not input_api.platform.startswith('linux'):
-        return [output_api.PresubmitNotifyResult('Skipping SVG hash check')]
-
-    results = [
-        output_api.PresubmitNotifyResult('Running SVG optimization check:')
-    ]
-
-    original_sys_path = sys.path
-    try:
-        sys.path = sys.path + [input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'build')]
-        import devtools_file_hashes
-    finally:
-        sys.path = original_sys_path
-
-    absolute_local_paths = [af.AbsoluteLocalPath() for af in input_api.AffectedFiles(include_deletes=False)]
-    images_src_path = input_api.os_path.join('devtools', 'front_end', 'Images', 'src')
-    image_source_file_paths = [path for path in absolute_local_paths if images_src_path in path and path.endswith('.svg')]
-    image_sources_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end', 'Images', 'src')
-    hashes_file_name = 'optimize_svg.hashes'
-    hashes_file_path = input_api.os_path.join(image_sources_path, hashes_file_name)
-    invalid_hash_file_paths = devtools_file_hashes.files_with_invalid_hashes(hashes_file_path, image_source_file_paths)
-    if len(invalid_hash_file_paths) == 0:
-        return results
-    invalid_hash_file_names = [input_api.os_path.basename(file_path) for file_path in invalid_hash_file_paths]
-    file_paths_str = ', '.join(invalid_hash_file_names)
-    error_message = 'The following SVG files should be optimized using optimize_svg_images script before uploading: \n  - %s' % file_paths_str
-    results.append(output_api.PresubmitError(error_message))
-    return results
-
-
-
 def _CheckGeneratedFiles(input_api, output_api):
     v8_directory_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'v8')
     blink_directory_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'third_party', 'blink')
@@ -579,7 +547,6 @@ def _CommonChecks(input_api, output_api):
 
     results.extend(_CheckDarkModeStyleSheetsUpToDate(input_api, output_api))
     results.extend(_CheckFormat(input_api, output_api))
-    results.extend(_CheckOptimizeSVGHashes(input_api, output_api))
     results.extend(_CheckChangesAreExclusiveToDirectory(input_api, output_api))
     results.extend(_CheckI18nWasBundled(input_api, output_api))
     # Run the canned checks from `depot_tools` after the custom DevTools checks.

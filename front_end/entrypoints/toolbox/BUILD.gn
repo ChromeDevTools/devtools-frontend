@@ -8,7 +8,7 @@ devtools_entrypoint("toolbox") {
   entrypoint = "toolbox.ts"
 
   deps = [
-    "../../Images:generate_css_vars",
+    "../../Images:optimize_images",
     "../../core/dom_extension:bundle",
     "../../core/platform:bundle",
   ]

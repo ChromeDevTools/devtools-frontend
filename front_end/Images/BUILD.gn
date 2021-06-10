@@ -7,7 +7,7 @@ import("../../scripts/build/ninja/devtools_pre_built.gni")
 import("../../scripts/build/ninja/node.gni")
 
 devtools_pre_built("Images") {
-  sources = devtools_image_files
+  sources = devtools_image_files + devtools_src_svg_files
 }
 
 node_action("generate_css_vars") {
@@ -15,18 +15,55 @@ node_action("generate_css_vars") {
 
   args = [
            rebase_path(target_gen_dir, root_build_dir),
-           target_name,
-         ] + devtools_image_files
+           "optimize_images",
+         ] + devtools_image_files + devtools_src_svg_files
 
   outputs = [
-    "$target_gen_dir/Images.js",
-    "$target_gen_dir/$target_name-tsconfig.json",
+    "$target_gen_dir/Images.prebundle.js",
+    "$target_gen_dir/optimize_images-tsconfig.json",
+  ]
+}
+
+node_action("optimize_images") {
+  script = "node_modules/rollup/dist/bin/rollup"
+
+  _bundled_entrypoint = target_gen_dir + "/Images.prebundle.js"
+  _output_file_location = target_gen_dir + "/Images.js"
+
+  inputs = [
+    _bundled_entrypoint,
+    "rollup.config.js",
+  ]
+  foreach(svg_image, devtools_src_svg_files) {
+    inputs += [ "$target_gen_dir/$svg_image" ]
+  }
+
+  public_deps = [
+    ":Images",
+    ":generate_css_vars",
   ]
 
-  data = [ "$target_gen_dir/Images.js" ]
+  args = [
+    # TODO(crbug.com/1098074): We need to hide warnings that are written stderr,
+    # as Chromium does not process the returncode of the subprocess correctly
+    # and instead looks if `stderr` is empty.
+    "--silent",
+    "--config",
+    rebase_path("rollup.config.js", root_build_dir),
+    "--input",
+    rebase_path(_bundled_entrypoint, root_build_dir),
+    "--file",
+    rebase_path(_output_file_location, root_build_dir),
+  ]
+
+  outputs = [ _output_file_location ]
+  foreach(svg_image, devtools_svg_files) {
+    outputs += [ "$target_gen_dir/$svg_image" ]
+  }
+  data = outputs
 
   metadata = {
-    grd_files = data
+    grd_files = outputs
     foreach(_image_file, devtools_image_files) {
       grd_files += [ "$target_gen_dir/$_image_file" ]
     }

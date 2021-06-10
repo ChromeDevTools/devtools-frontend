@@ -55,7 +55,6 @@
   display: none;
 }
 
-.platform-mac .data-grid .corner,
 .data-grid.data-grid-fits-viewport .corner {
   display: none;
 }

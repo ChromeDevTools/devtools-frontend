@@ -28,11 +28,14 @@ export class Adorner extends HTMLElement {
   private isToggle = false;
   private ariaLabelDefault?: string;
   private ariaLabelActive?: string;
+  private content?: HTMLElement;
 
   set data(data: AdornerData) {
     this.name = data.name;
     data.content.slot = 'content';
+    this.content?.remove();
     this.append(data.content);
+    this.content = data.content;
     this.category = data.category;
     this.render();
   }

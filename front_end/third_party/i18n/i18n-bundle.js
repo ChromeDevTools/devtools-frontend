@@ -2514,6 +2514,7 @@ function isObjectOrArrayOfUnknownValues(val) {
 
 var i18n = {
   _formatPathAsString,
+  _preformatValues,
   lookupLocale,
   getRendererFormattedStrings,
   createIcuMessageFn,

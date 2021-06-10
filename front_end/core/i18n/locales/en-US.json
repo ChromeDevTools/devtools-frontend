@@ -2558,6 +2558,9 @@
   "panels/application/DOMStorageItemsView.ts | domStorage": {
     "message": "DOM Storage"
   },
+  "panels/application/DOMStorageItemsView.ts | domStorageItemDeleted": {
+    "message": "The storage item was deleted."
+  },
   "panels/application/DOMStorageItemsView.ts | domStorageItems": {
     "message": "DOM Storage Items"
   },

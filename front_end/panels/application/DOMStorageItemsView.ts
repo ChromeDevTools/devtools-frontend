@@ -61,6 +61,10 @@ const UIStrings = {
   *@description Text in DOMStorage Items View of the Application panel
   */
   selectAValueToPreview: 'Select a value to preview',
+  /**
+   *@description Text for announcing a DOM Storage key/value item has been deleted
+   */
+  domStorageItemDeleted: 'The storage item was deleted.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/DOMStorageItemsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -285,6 +289,8 @@ export class DOMStorageItemsView extends StorageItemsView {
     if (this._domStorage) {
       this._domStorage.removeItem(node.data.key);
     }
+
+    UI.ARIAUtils.alert(i18nString(UIStrings.domStorageItemDeleted));
   }
 
   _showPreview(preview: UI.Widget.Widget|null, value: string|null): void {

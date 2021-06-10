@@ -2558,6 +2558,9 @@
   "panels/application/DOMStorageItemsView.ts | domStorage": {
     "message": "D̂ÓM̂ Śt̂ór̂áĝé"
   },
+  "panels/application/DOMStorageItemsView.ts | domStorageItemDeleted": {
+    "message": "T̂h́ê śt̂ór̂áĝé ît́êḿ ŵáŝ d́êĺêt́êd́."
+  },
   "panels/application/DOMStorageItemsView.ts | domStorageItems": {
     "message": "D̂ÓM̂ Śt̂ór̂áĝé Ît́êḿŝ"
   },

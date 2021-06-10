@@ -930,6 +930,7 @@ grd_files_debug_sources = [
   "front_end/panels/network/NetworkManageCustomHeadersView.js",
   "front_end/panels/network/NetworkOverview.js",
   "front_end/panels/network/NetworkPanel.js",
+  "front_end/panels/network/NetworkRequestId.js",
   "front_end/panels/network/NetworkSearchScope.js",
   "front_end/panels/network/NetworkTimeCalculator.js",
   "front_end/panels/network/NetworkWaterfallColumn.js",

@@ -58,6 +58,7 @@ import type {UIRequestLocation} from './NetworkSearchScope.js';
 import {NetworkSearchScope} from './NetworkSearchScope.js';  // eslint-disable-line no-unused-vars
 import type {NetworkTimeCalculator} from './NetworkTimeCalculator.js';
 import {NetworkTransferTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
+import {NetworkRequestId} from './NetworkRequestId.js';
 
 const UIStrings = {
   /**
@@ -622,6 +623,13 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     }
   }
 
+  revealAndHighlightRequestWithId(request: NetworkRequestId): void {
+    this._hideRequestPanel();
+    if (request) {
+      this._networkLogView.revealAndHighlightRequestWithId(request);
+    }
+  }
+
   async selectAndActivateRequest(
       request: SDK.NetworkRequest.NetworkRequest, shownTab?: NetworkItemViewTabs,
       options?: FilterOptions): Promise<NetworkItemView|null> {
@@ -835,6 +843,29 @@ export class RequestRevealer implements Common.Revealer.Revealer {
     const panel = NetworkPanel._instance();
     return UI.ViewManager.ViewManager.instance().showView('network').then(
         panel.revealAndHighlightRequest.bind(panel, request));
+  }
+}
+
+let requestIdRevealerInstance: RequestIdRevealer;
+export class RequestIdRevealer implements Common.Revealer.Revealer {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): RequestIdRevealer {
+    const {forceNew} = opts;
+    if (!requestIdRevealerInstance || forceNew) {
+      requestIdRevealerInstance = new RequestIdRevealer();
+    }
+
+    return requestIdRevealerInstance;
+  }
+
+  reveal(requestId: Object): Promise<void> {
+    if (!(requestId instanceof NetworkRequestId)) {
+      return Promise.reject(new Error('Internal error: not a network request ID'));
+    }
+    const panel = NetworkPanel._instance();
+    return UI.ViewManager.ViewManager.instance().showView('network').then(
+        panel.revealAndHighlightRequestWithId.bind(panel, requestId));
   }
 }
 

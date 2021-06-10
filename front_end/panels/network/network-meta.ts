@@ -354,7 +354,6 @@ Common.Revealer.registerRevealer({
   },
 });
 
-
 Common.Revealer.registerRevealer({
   contextTypes() {
     return maybeRetrieveContextTypes(Network => [Network.NetworkSearchScope.UIRequestLocation]);
@@ -364,4 +363,15 @@ Common.Revealer.registerRevealer({
     return Network.NetworkPanel.RequestLocationRevealer.instance();
   },
   destination: undefined,
+});
+
+Common.Revealer.registerRevealer({
+  contextTypes() {
+    return maybeRetrieveContextTypes(Network => [Network.NetworkRequestId.NetworkRequestId]);
+  },
+  destination: Common.Revealer.RevealerDestination.NETWORK_PANEL,
+  async loadRevealer() {
+    const Network = await loadNetworkModule();
+    return Network.NetworkPanel.RequestIdRevealer.instance();
+  },
 });

@@ -268,14 +268,20 @@ describe('The Network Tab', async function() {
     await waitForSomeRequestsToAppear(3);
 
     const getNetworkRequestIcons = () => frontend.evaluate(() => {
-      return Array.from(document.querySelectorAll('.name-column .icon'))
+      return Array.from(document.querySelectorAll('.name-column > .icon'))
           .slice(1, 4)
           .map(node => (node as HTMLImageElement).alt);
     });
     assert.sameMembers(await getNetworkRequestIcons(), [
       'Script',
-      'from Web Bundle',
       'WebBundle',
+    ]);
+    const getFromWebBundleIcons = () => frontend.evaluate(() => {
+      return Array.from(document.querySelectorAll('.name-column > [role="link"] > .icon'))
+          .map(node => (node as HTMLImageElement).alt);
+    });
+    assert.sameMembers(await getFromWebBundleIcons(), [
+      'from Web Bundle',
     ]);
   });
 });

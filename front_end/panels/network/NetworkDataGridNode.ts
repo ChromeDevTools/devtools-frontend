@@ -56,6 +56,8 @@ import {Tabs as NetworkItemViewTabs} from './NetworkItemView.js';
 
 import type {NetworkTimeCalculator} from './NetworkTimeCalculator.js'; // eslint-disable-line no-unused-vars
 
+import {NetworkRequestId} from './NetworkRequestId.js';
+
 const UIStrings = {
   /**
   *@description Text in Network Data Grid Node of the Network panel
@@ -1080,13 +1082,20 @@ export class NetworkRequestNode extends NetworkNode {
     }
 
     if (columnId === 'name') {
-      if (this._request.webBundleInnerRequestInfo()) {
+      const webBundleInnerRequestInfo = this._request.webBundleInnerRequestInfo();
+      if (webBundleInnerRequestInfo) {
         const secondIconElement = document.createElement('img');
         secondIconElement.classList.add('icon');
         secondIconElement.alt = i18nString(UIStrings.webBundleInnerRequest);
         secondIconElement.classList.add('webbundleinnerrequest');
 
-        cell.appendChild(secondIconElement);
+        const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this._request);
+        if (webBundleInnerRequestInfo.bundleRequestId && networkManager) {
+          cell.appendChild(Components.Linkifier.Linkifier.linkifyRevealable(
+              new NetworkRequestId(webBundleInnerRequestInfo.bundleRequestId, networkManager), secondIconElement));
+        } else {
+          cell.appendChild(secondIconElement);
+        }
       }
       const name = Platform.StringUtilities.trimMiddle(this._request.name(), 100);
       const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this._request);

@@ -3803,9 +3803,6 @@
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(text)"
   },
-  "panels/elements/components/LayoutPane.ts | feedback": {
-    "message": "Feedback"
-  },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "Flexbox"
   },

@@ -3,9 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../core/common/common.js';
-import * as Host from '../../../core/host/host.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as SurveyLink from '../../../ui/components/survey_link/survey_link.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import type {BooleanSetting, EnumSetting, Setting} from './LayoutPaneUtils.js';
@@ -28,10 +26,6 @@ const UIStrings = {
   *@description Title of a section in the Layout Sidebar pane of the Elements panel
   */
   overlayDisplaySettings: 'Overlay display settings',
-  /**
-  *@description Text of a link to a HaTS survey in the Layout panel
-  */
-  feedback: 'Feedback',
   /**
   *@description Title of a section in Layout sidebar pane
   */
@@ -137,19 +131,7 @@ export class LayoutPane extends HTMLElement {
           ${i18nString(UIStrings.grid)}
         </summary>
         <div class="content-section">
-          <div class="feedback-container">
-            <div>
-              <h3 class="content-section-title">${i18nString(UIStrings.overlayDisplaySettings)}</h3>
-            </div>
-            <div class="feedback">
-              <${SurveyLink.SurveyLink.SurveyLink.litTagName} .data=${{
-                trigger: 'devtools-layout-panel',
-                promptText: i18nString(UIStrings.feedback),
-                canShowSurvey: Host.InspectorFrontendHost.InspectorFrontendHostInstance.canShowSurvey,
-                showSurvey: Host.InspectorFrontendHost.InspectorFrontendHostInstance.showSurvey,
-              } as SurveyLink.SurveyLink.SurveyLinkData}></${SurveyLink.SurveyLink.SurveyLink.litTagName}>
-            </div>
-          </div>
+          <h3 class="content-section-title">${i18nString(UIStrings.overlayDisplaySettings)}</h3>
           <div class="select-settings">
             ${this.getEnumSettings().map(setting => this.renderEnumSetting(setting))}
           </div>

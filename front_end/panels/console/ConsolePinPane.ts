@@ -318,9 +318,10 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
     const throwOnSideEffect = isEditing && text !== this._committedExpression;
     const timeout = throwOnSideEffect ? 250 : undefined;
     const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
+    const preprocessedExpression = ObjectUI.JavaScriptREPL.JavaScriptREPL.preprocessExpression(text);
     const {preview, result} = await ObjectUI.JavaScriptREPL.JavaScriptREPL.evaluateAndBuildPreview(
-        `${text}\n//# sourceURL=watch-expression-${this.consolePinNumber}.devtools`, throwOnSideEffect, timeout,
-        !isEditing /* allowErrors */, 'console');
+        `${preprocessedExpression}\n//# sourceURL=watch-expression-${this.consolePinNumber}.devtools`,
+        throwOnSideEffect, timeout, !isEditing /* allowErrors */, 'console');
     if (this._lastResult && this._lastExecutionContext) {
       this._lastExecutionContext.runtimeModel.releaseEvaluationResult(this._lastResult);
     }

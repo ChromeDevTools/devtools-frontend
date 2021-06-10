@@ -4820,6 +4820,33 @@
   "panels/issues/AffectedCookiesView.ts | path": {
     "message": "Path"
   },
+  "panels/issues/AffectedDirectivesView.ts | blocked": {
+    "message": "blocked"
+  },
+  "panels/issues/AffectedDirectivesView.ts | clickToRevealTheViolatingDomNode": {
+    "message": "Click to reveal the violating DOM node in the Elements panel"
+  },
+  "panels/issues/AffectedDirectivesView.ts | directiveC": {
+    "message": "Directive"
+  },
+  "panels/issues/AffectedDirectivesView.ts | element": {
+    "message": "Element"
+  },
+  "panels/issues/AffectedDirectivesView.ts | nDirectives": {
+    "message": "{n, plural, =1 {# directive} other {# directives}}"
+  },
+  "panels/issues/AffectedDirectivesView.ts | reportonly": {
+    "message": "report-only"
+  },
+  "panels/issues/AffectedDirectivesView.ts | resourceC": {
+    "message": "Resource"
+  },
+  "panels/issues/AffectedDirectivesView.ts | sourceLocation": {
+    "message": "Source Location"
+  },
+  "panels/issues/AffectedDirectivesView.ts | status": {
+    "message": "Status"
+  },
   "panels/issues/AffectedDocumentsInQuirksModeView.ts | documentInTheDOMTree": {
     "message": "Document in the DOM tree"
   },
@@ -5093,23 +5120,11 @@
   "panels/issues/IssueView.ts | blocked": {
     "message": "blocked"
   },
-  "panels/issues/IssueView.ts | clickToRevealTheViolatingDomNode": {
-    "message": "Click to reveal the violating DOM node in the Elements panel"
-  },
-  "panels/issues/IssueView.ts | directiveC": {
-    "message": "Directive"
-  },
-  "panels/issues/IssueView.ts | element": {
-    "message": "Element"
-  },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "Learn more: {PH1}"
   },
   "panels/issues/IssueView.ts | name": {
     "message": "Name"
-  },
-  "panels/issues/IssueView.ts | nDirectives": {
-    "message": "{n, plural, =1 {# directive} other {# directives}}"
   },
   "panels/issues/IssueView.ts | nRequests": {
     "message": "{n, plural, =1 {# request} other {# requests}}"
@@ -5120,20 +5135,8 @@
   "panels/issues/IssueView.ts | nSources": {
     "message": "{n, plural, =1 {# source} other {# sources}}"
   },
-  "panels/issues/IssueView.ts | reportonly": {
-    "message": "report-only"
-  },
-  "panels/issues/IssueView.ts | resourceC": {
-    "message": "Resource"
-  },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "Restriction Status"
-  },
-  "panels/issues/IssueView.ts | sourceLocation": {
-    "message": "Source Location"
-  },
-  "panels/issues/IssueView.ts | status": {
-    "message": "Status"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "Warned"

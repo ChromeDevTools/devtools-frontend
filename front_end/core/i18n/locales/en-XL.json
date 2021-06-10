@@ -4820,6 +4820,33 @@
   "panels/issues/AffectedCookiesView.ts | path": {
     "message": "P̂át̂h́"
   },
+  "panels/issues/AffectedDirectivesView.ts | blocked": {
+    "message": "b̂ĺôćk̂éd̂"
+  },
+  "panels/issues/AffectedDirectivesView.ts | clickToRevealTheViolatingDomNode": {
+    "message": "Ĉĺîćk̂ t́ô ŕêv́êál̂ t́ĥé v̂íôĺât́îńĝ D́ÔḾ n̂ód̂é îń t̂h́ê Él̂ém̂én̂t́ŝ ṕâńêĺ"
+  },
+  "panels/issues/AffectedDirectivesView.ts | directiveC": {
+    "message": "D̂ír̂éĉt́îv́ê"
+  },
+  "panels/issues/AffectedDirectivesView.ts | element": {
+    "message": "Êĺêḿêńt̂"
+  },
+  "panels/issues/AffectedDirectivesView.ts | nDirectives": {
+    "message": "{n, plural, =1 {# d̂ír̂éĉt́îv́ê} other {# d́îŕêćt̂ív̂éŝ}}"
+  },
+  "panels/issues/AffectedDirectivesView.ts | reportonly": {
+    "message": "r̂ép̂ór̂t́-ôńl̂ý"
+  },
+  "panels/issues/AffectedDirectivesView.ts | resourceC": {
+    "message": "R̂éŝóûŕĉé"
+  },
+  "panels/issues/AffectedDirectivesView.ts | sourceLocation": {
+    "message": "Ŝóûŕĉé L̂óĉát̂íôń"
+  },
+  "panels/issues/AffectedDirectivesView.ts | status": {
+    "message": "Ŝt́ât́ûś"
+  },
   "panels/issues/AffectedDocumentsInQuirksModeView.ts | documentInTheDOMTree": {
     "message": "D̂óĉúm̂én̂t́ îń t̂h́ê D́ÔḾ t̂ŕêé"
   },
@@ -5093,23 +5120,11 @@
   "panels/issues/IssueView.ts | blocked": {
     "message": "b̂ĺôćk̂éd̂"
   },
-  "panels/issues/IssueView.ts | clickToRevealTheViolatingDomNode": {
-    "message": "Ĉĺîćk̂ t́ô ŕêv́êál̂ t́ĥé v̂íôĺât́îńĝ D́ÔḾ n̂ód̂é îń t̂h́ê Él̂ém̂én̂t́ŝ ṕâńêĺ"
-  },
-  "panels/issues/IssueView.ts | directiveC": {
-    "message": "D̂ír̂éĉt́îv́ê"
-  },
-  "panels/issues/IssueView.ts | element": {
-    "message": "Êĺêḿêńt̂"
-  },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "L̂éâŕn̂ ḿôŕê: {PH1}"
   },
   "panels/issues/IssueView.ts | name": {
     "message": "N̂ám̂é"
-  },
-  "panels/issues/IssueView.ts | nDirectives": {
-    "message": "{n, plural, =1 {# d̂ír̂éĉt́îv́ê} other {# d́îŕêćt̂ív̂éŝ}}"
   },
   "panels/issues/IssueView.ts | nRequests": {
     "message": "{n, plural, =1 {# r̂éq̂úêśt̂} other {# ŕêq́ûéŝt́ŝ}}"
@@ -5120,20 +5135,8 @@
   "panels/issues/IssueView.ts | nSources": {
     "message": "{n, plural, =1 {# ŝóûŕĉé} other {# ŝóûŕĉéŝ}}"
   },
-  "panels/issues/IssueView.ts | reportonly": {
-    "message": "r̂ép̂ór̂t́-ôńl̂ý"
-  },
-  "panels/issues/IssueView.ts | resourceC": {
-    "message": "R̂éŝóûŕĉé"
-  },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "R̂éŝt́r̂íĉt́îón̂ Śt̂át̂úŝ"
-  },
-  "panels/issues/IssueView.ts | sourceLocation": {
-    "message": "Ŝóûŕĉé L̂óĉát̂íôń"
-  },
-  "panels/issues/IssueView.ts | status": {
-    "message": "Ŝt́ât́ûś"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "Ŵár̂ńêd́"

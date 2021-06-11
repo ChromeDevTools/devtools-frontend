@@ -43,10 +43,6 @@ export interface ChangeStep extends StepWithFrameContext, StepWithCondition {
   value: string;
 }
 
-export interface SubmitStep extends StepWithFrameContext, StepWithCondition {
-  type: 'submit';
-  selector: Selector;
-}
 
 export interface StepWithCondition {
   condition?: Condition;
@@ -73,19 +69,11 @@ export type Key = '0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9'|'Power'|'Eject'|'Abort
 export interface KeyDownStep extends StepWithFrameContext, StepWithCondition {
   type: 'keydown';
   key: Key;
-  altKey?: boolean;
-  ctrlKey?: boolean;
-  metaKey?: boolean;
-  shiftKey?: boolean;
 }
 
 export interface KeyUpStep extends StepWithFrameContext, StepWithCondition {
   type: 'keyup';
   key: Key;
-  altKey?: boolean;
-  ctrlKey?: boolean;
-  metaKey?: boolean;
-  shiftKey?: boolean;
 }
 
 export interface ViewportStep {
@@ -99,8 +87,7 @@ export interface CloseStep {
   target: string;
 }
 
-export type Step =
-    ClickStep|ChangeStep|SubmitStep|EmulateNetworkConditionsStep|KeyDownStep|KeyUpStep|CloseStep|ViewportStep;
+export type Step = ClickStep|ChangeStep|EmulateNetworkConditionsStep|KeyDownStep|KeyUpStep|CloseStep|ViewportStep;
 
 export interface UserFlowSection {
   screenshot: string;
@@ -125,14 +112,6 @@ export function assertAllStepTypesAreHandled(s: Step): never {
 export function createClickStep(context: FrameContext, selector: Selector): ClickStep {
   return {
     type: 'click',
-    context,
-    selector,
-  };
-}
-
-export function createSubmitStep(context: FrameContext, selector: Selector): SubmitStep {
-  return {
-    type: 'submit',
     context,
     selector,
   };
@@ -178,10 +157,10 @@ export function createViewportStep(viewport: {clientWidth: number, clientHeight:
   };
 }
 
-export function hasFrameContext(step: Step): step is ClickStep|ChangeStep|SubmitStep|KeyDownStep|KeyUpStep {
-  return ['click', 'change', 'submit', 'keydown', 'keyup'].includes(step.type);
+export function hasFrameContext(step: Step): step is ClickStep|ChangeStep|KeyDownStep|KeyUpStep {
+  return ['click', 'change', 'keydown', 'keyup'].includes(step.type);
 }
 
-export function hasCondition(step: Step): step is ClickStep|ChangeStep|SubmitStep|KeyDownStep|KeyUpStep {
-  return ['click', 'change', 'submit', 'keydown', 'keyup'].includes(step.type);
+export function hasCondition(step: Step): step is ClickStep|ChangeStep|KeyDownStep|KeyUpStep {
+  return ['click', 'change', 'keydown', 'keyup'].includes(step.type);
 }

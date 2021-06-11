@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {Step, ClickStep, StepWithFrameContext, ChangeStep, SubmitStep, UserFlow, EmulateNetworkConditionsStep, KeyDownStep, KeyUpStep, CloseStep, ViewportStep} from './Steps.js';
+import type {Step, ClickStep, StepWithFrameContext, ChangeStep, UserFlow, EmulateNetworkConditionsStep, KeyDownStep, KeyUpStep, CloseStep, ViewportStep} from './Steps.js';
 import {assertAllStepTypesAreHandled} from './Steps.js';
 
 export class RecordingScriptWriter {
@@ -39,7 +39,7 @@ export class RecordingScriptWriter {
     this.appendFrame(step.context.path);
   }
 
-  appendWaitForSelector(step: ClickStep|ChangeStep|SubmitStep): void {
+  appendWaitForSelector(step: ClickStep|ChangeStep): void {
     if (step.selector instanceof Array) {
       this.appendLineToScript(`let element = await frame.waitForSelector(${JSON.stringify(step.selector[0])});`);
       for (const part of step.selector.slice(1)) {
@@ -58,11 +58,6 @@ export class RecordingScriptWriter {
   appendChangeStep(step: ChangeStep): void {
     this.appendWaitForSelector(step);
     this.appendLineToScript(`await element.type(${JSON.stringify(step.value)});`);
-  }
-
-  appendSubmitStep(step: SubmitStep): void {
-    this.appendWaitForSelector(step);
-    this.appendLineToScript('await element.evaluate(form => form.submit());');
   }
 
   appendEmulateNetworkConditionsStep(step: EmulateNetworkConditionsStep): void {
@@ -97,8 +92,6 @@ export class RecordingScriptWriter {
         return this.appendClickStep(step);
       case 'change':
         return this.appendChangeStep(step);
-      case 'submit':
-        return this.appendSubmitStep(step);
       case 'emulateNetworkConditions':
         return this.appendEmulateNetworkConditionsStep(step);
       case 'keydown':

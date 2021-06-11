@@ -81,10 +81,6 @@ describe('RecordingClient', () => {
     });
     assert.deepStrictEqual(step, {
       type: 'keydown',
-      altKey: false,
-      metaKey: false,
-      shiftKey: false,
-      ctrlKey: false,
       key: 'Escape',
     });
   });
@@ -101,10 +97,6 @@ describe('RecordingClient', () => {
     });
     assert.deepStrictEqual(step, {
       type: 'keyup',
-      altKey: false,
-      metaKey: false,
-      shiftKey: false,
-      ctrlKey: false,
       key: 'Escape',
     });
   });

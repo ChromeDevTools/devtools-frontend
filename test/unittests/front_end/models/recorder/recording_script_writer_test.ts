@@ -78,42 +78,6 @@ await element.type("Hello World");
 `);
     });
 
-    it('should print the correct script for a submit step', () => {
-      const writer = new Recorder.RecordingScriptWriter.RecordingScriptWriter('  ');
-      const script = writer.getScript({
-        title: 'Test Recording',
-        sections: [{
-          title: 'First Section',
-          url: 'https://localhost/',
-          screenshot: '',
-          steps: [{
-            type: 'submit',
-            context: {
-              target: 'main',
-              path: [],
-            },
-            selector: 'aria/Test' as Recorder.Steps.Selector,
-          }],
-        }],
-      });
-      assert.deepEqual(script, `const puppeteer = require('puppeteer');
-
-(async () => {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-
-  {
-    const targetPage = page;
-    let frame = targetPage.mainFrame();
-    const element = await frame.waitForSelector("aria/Test");
-    await element.evaluate(form => form.submit());
-  }
-
-  await browser.close();
-})();
-`);
-    });
-
     it('should print the correct script for a emulateNetworkCondition step', () => {
       const writer = new Recorder.RecordingScriptWriter.RecordingScriptWriter('  ');
       const script = writer.getScript({

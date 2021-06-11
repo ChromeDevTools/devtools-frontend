@@ -225,7 +225,7 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper {
     runtimeModel.addEventListener(SDK.RuntimeModel.Events.BindingCalled, this.bindingCalled, this);
 
     // TODO(alexrudenko): maybe wire this flag up to DEBUG mode or a setting?
-    const debugRecordingClient = true;
+    const debugRecordingClient = false;
     // This setting is set during the test to work around the fact that Puppeteer cannot
     // send trusted change and input events.
     let untrustedRecorderEvents = false;

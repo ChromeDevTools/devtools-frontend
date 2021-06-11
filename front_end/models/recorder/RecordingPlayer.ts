@@ -99,13 +99,6 @@ export class RecordingPlayer {
         }
         await element.click();
       } break;
-      case 'submit': {
-        const element = await waitForSelector(step.selector, frame);
-        if (!element) {
-          throw new Error('Could not find element: ' + step.selector);
-        }
-        await element.evaluate((form: HTMLFormElement) => form.submit());
-      } break;
       case 'emulateNetworkConditions': {
         await page.emulateNetworkConditions(step.conditions);
       } break;

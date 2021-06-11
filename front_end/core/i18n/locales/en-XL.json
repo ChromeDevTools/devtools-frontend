@@ -5909,6 +5909,9 @@
   "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
     "message": "Êńâb́l̂é n̂ét̂ẃôŕk̂ ŕêq́ûéŝt́ b̂ĺôćk̂ín̂ǵ"
   },
+  "panels/network/BlockedURLsPane.ts | itemDeleted": {
+    "message": "Ît́êḿ ŝúĉćêśŝf́ûĺl̂ý d̂él̂ét̂éd̂"
+  },
   "panels/network/BlockedURLsPane.ts | networkRequestsAreNotBlockedS": {
     "message": "N̂ét̂ẃôŕk̂ ŕêq́ûéŝt́ŝ ár̂é n̂ót̂ b́l̂óĉḱêd́. {PH1}"
   },

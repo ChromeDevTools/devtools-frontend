@@ -5909,6 +5909,9 @@
   "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
     "message": "Enable network request blocking"
   },
+  "panels/network/BlockedURLsPane.ts | itemDeleted": {
+    "message": "Item successfully deleted"
+  },
   "panels/network/BlockedURLsPane.ts | networkRequestsAreNotBlockedS": {
     "message": "Network requests are not blocked. {PH1}"
   },

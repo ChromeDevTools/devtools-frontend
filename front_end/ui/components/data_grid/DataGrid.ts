@@ -727,7 +727,7 @@ export class DataGrid extends HTMLElement {
         }
         /* Ensure that vertically we don't overflow */
         .wrapping-container {
-          overflow-y: scroll;
+          overflow-y: auto;
           /* Use max-height instead of height to ensure that the
             table does not use more space than necessary. */
           height: 100%;

@@ -9,13 +9,13 @@ vars = {
   'checkout_reclient': False,
 
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': 'befc4b4b3bba4b76d478c2c8680e6604516fd94b',
+  'build_revision': 'eb4ebdf32cd2cc85d72431e3fda1d53a3e17f4d2',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
-  'buildtools_revision': '9d8449e380d493e074e6cabdaef9a2e5ccd5c4f3',
+  'buildtools_revision': 'c1cef4e23c05c66a4668fc5bdcf7f732a81e766a',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
-  'depot_tools_revision': 'd3a987159d00ffb6c7854342777213abf67654d2',
+  'depot_tools_revision': 'e5d455cca7848b948865330188cf7a4720cdfc51',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
   'inspector_protocol_revision': '35e8d2d89cb017d72cf905362672de77c978e1e6',
@@ -26,7 +26,7 @@ vars = {
   'emscripten_tag': '80d9674f2fafa6b9346d735c42d5c52b8cc8aa8e',
 
   # GN CIPD package version.
-  'gn_version': 'git_revision:39a87c0b36310bdf06b692c098f199a0d97fc810',
+  'gn_version': 'git_revision:393dab000d704a4364d085fa4c01ec7af176c8fa',
 
   # reclient CIPD package version
   'reclient_version': 're_client_version:0.19.2.319f839',

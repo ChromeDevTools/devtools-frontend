@@ -7,7 +7,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
-import * as Network from '../../panels/network/network.js';
+import * as NetworkForward from '../../panels/network/forward/forward.js';
 
 import {AffectedItem, AffectedResourcesView} from './AffectedResourcesView.js';
 
@@ -289,7 +289,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
     const corsError = details.corsErrorStatus.corsError;
 
     const highlightHeader = {
-      section: Network.NetworkSearchScope.UIHeaderSection.Response,
+      section: NetworkForward.UIRequestLocation.UIHeaderSection.Response,
       name: CorsIssueDetailsView.getHeaderFromError(corsError),
     };
 
@@ -328,7 +328,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
         this.appendStatus(element, details.isWarning);
         const specialHighlightHeader = corsError === Protocol.Network.CorsError.PreflightInvalidStatus ?
             {
-              section: Network.NetworkSearchScope.UIHeaderSection.General,
+              section: NetworkForward.UIRequestLocation.UIHeaderSection.General,
               name: 'Status-Code',
             } :
             highlightHeader;
@@ -378,7 +378,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
         element.appendChild(this.createRequestCell(details.request, {
           ...opts,
           highlightHeader: {
-            section: Network.NetworkSearchScope.UIHeaderSection.Request,
+            section: NetworkForward.UIRequestLocation.UIHeaderSection.Request,
             name: corsErrorStatus.failedParameter,
           },
         }));
@@ -387,7 +387,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
           ...opts,
           linkToPreflight: true,
           highlightHeader: {
-            section: Network.NetworkSearchScope.UIHeaderSection.Response,
+            section: NetworkForward.UIRequestLocation.UIHeaderSection.Response,
             name: 'Access-Control-Allow-Headers',
           },
         }));
@@ -397,7 +397,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
         element.appendChild(this.createRequestCell(details.request, {
           ...opts,
           highlightHeader: {
-            section: Network.NetworkSearchScope.UIHeaderSection.Response,
+            section: NetworkForward.UIRequestLocation.UIHeaderSection.Response,
             name: CorsIssueDetailsView.getHeaderFromError(corsError),
           },
         }));
@@ -413,7 +413,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
         element.appendChild(this.createRequestCell(details.request, {
           ...opts,
           highlightHeader: {
-            section: Network.NetworkSearchScope.UIHeaderSection.Response,
+            section: NetworkForward.UIRequestLocation.UIHeaderSection.Response,
             name: CorsIssueDetailsView.getHeaderFromError(corsError),
           },
         }));

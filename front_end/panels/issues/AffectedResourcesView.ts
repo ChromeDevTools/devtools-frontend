@@ -12,6 +12,7 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Network from '../network/network.js';
+import * as NetworkForward from '../../panels/network/forward/forward.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 import type {IssueView} from './IssueView.js';
@@ -54,7 +55,7 @@ export const extractShortPath = (path: string): string => {
 
 export interface CreateRequestCellOptions {
   linkToPreflight?: boolean;
-  highlightHeader?: {section: Network.NetworkSearchScope.UIHeaderSection, name: string};
+  highlightHeader?: {section: NetworkForward.UIRequestLocation.UIHeaderSection, name: string};
   networkTab?: Network.NetworkItemView.Tabs;
   additionalOnClickAction?: () => void;
 }
@@ -221,9 +222,9 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
         }
         options.additionalOnClickAction?.();
         if (options.highlightHeader) {
-          const requestLocation = Network.NetworkSearchScope.UIRequestLocation.header(
+          const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.header(
               linkedRequest, options.highlightHeader.section, options.highlightHeader.name);
-          Network.NetworkPanel.RequestLocationRevealer.instance().reveal(requestLocation);
+          Common.Revealer.reveal(requestLocation);
         } else {
           Network.NetworkPanel.NetworkPanel.selectAndShowRequest(
               linkedRequest, options.networkTab ?? Network.NetworkItemView.Tabs.Headers);

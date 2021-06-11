@@ -8,6 +8,7 @@ import * as Bindings from '../../../models/bindings/bindings.js';
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Network from '../../network/network.js';
+import * as NetworkForward from '../../../panels/network/forward/forward.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
@@ -429,12 +430,11 @@ export class FrameDetailsReportView extends HTMLElement {
           }
           const headerName =
               linkTargetRequest.responseHeaderValue('permissions-policy') ? 'permissions-policy' : 'feature-policy';
-          const requestLocation = Network.NetworkSearchScope.UIRequestLocation.responseHeaderMatch(
+          const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.responseHeaderMatch(
               linkTargetRequest,
               {name: headerName, value: ''},
           );
-          // TODO(crbug.com/1196676) Refactor to use Common.Revealer
-          await Network.NetworkPanel.RequestLocationRevealer.instance().reveal(requestLocation);
+          await Common.Revealer.reveal(requestLocation);
         };
 
         return LitHtml.html`

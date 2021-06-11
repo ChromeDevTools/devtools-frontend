@@ -93,16 +93,6 @@ Network.NetworkPanel.ActionDelegate = NetworkModule.NetworkPanel.ActionDelegate;
 /**
  * @constructor
  */
-Network.NetworkPanel.RequestLocationRevealer = NetworkModule.NetworkPanel.RequestLocationRevealer;
-
-/**
- * @constructor
- */
-Network.UIRequestLocation = NetworkModule.NetworkSearchScope.UIRequestLocation;
-
-/**
- * @constructor
- */
 Network.NetworkTimeCalculator = NetworkModule.NetworkTimeCalculator.NetworkTimeCalculator;
 
 /**

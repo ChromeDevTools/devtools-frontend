@@ -41,6 +41,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import type * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -49,12 +50,12 @@ import * as Search from '../search/search.js';
 
 import {BlockedURLsPane} from './BlockedURLsPane.js';
 import {Events} from './NetworkDataGridNode.js';
+
 import type {Tabs as NetworkItemViewTabs} from './NetworkItemView.js';
 import {NetworkItemView} from './NetworkItemView.js';  // eslint-disable-line no-unused-vars
 import type {FilterType} from './NetworkLogView.js';
 import {NetworkLogView} from './NetworkLogView.js';  // eslint-disable-line no-unused-vars
 import {NetworkOverview} from './NetworkOverview.js';
-import type {UIRequestLocation} from './NetworkSearchScope.js';
 import {NetworkSearchScope} from './NetworkSearchScope.js';  // eslint-disable-line no-unused-vars
 import type {NetworkTimeCalculator} from './NetworkTimeCalculator.js';
 import {NetworkTransferTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
@@ -1017,7 +1018,7 @@ export class RequestLocationRevealer implements Common.Revealer.Revealer {
   }
 
   async reveal(match: Object): Promise<void> {
-    const location = (match as UIRequestLocation);
+    const location = match as NetworkForward.UIRequestLocation.UIRequestLocation;
     const view = await NetworkPanel._instance().selectAndActivateRequest(location.request);
     if (!view) {
       return;

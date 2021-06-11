@@ -358,16 +358,15 @@ class Mouse {
     async click(x, y, options = {}) {
         const { delay = null } = options;
         if (delay !== null) {
-            await Promise.all([this.move(x, y), this.down(options)]);
+            await this.move(x, y);
+            await this.down(options);
             await new Promise((f) => setTimeout(f, delay));
             await this.up(options);
         }
         else {
-            await Promise.all([
-                this.move(x, y),
-                this.down(options),
-                this.up(options),
-            ]);
+            await this.move(x, y);
+            await this.down(options);
+            await this.up(options);
         }
     }
     /**

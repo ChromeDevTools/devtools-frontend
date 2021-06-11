@@ -82,7 +82,9 @@ async function downloadBrowser() {
         if (NPM_NO_PROXY)
             process.env.NO_PROXY = NPM_NO_PROXY;
         function onSuccess(localRevisions) {
-            if (os_1.default.arch() !== 'arm64') {
+            // Use Intel x86 builds on Apple M1 until native macOS arm64
+            // Chromium builds are available.
+            if (os_1.default.platform() !== 'darwin' && os_1.default.arch() !== 'arm64') {
                 logPolitely(`${supportedProducts[product]} (${revisionInfo.revision}) downloaded to ${revisionInfo.folderPath}`);
             }
             localRevisions = localRevisions.filter((revision) => revision !== revisionInfo.revision);

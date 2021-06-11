@@ -23,7 +23,7 @@ export class EventEmitter {
      * Bind an event listener to fire when an event occurs.
      * @param event - the event type you'd like to listen to. Can be a string or symbol.
      * @param handler  - the function to be called when the event occurs.
-     * @returns `this` to enable you to chain calls.
+     * @returns `this` to enable you to chain method calls.
      */
     on(event, handler) {
         this.emitter.on(event, handler);
@@ -33,7 +33,7 @@ export class EventEmitter {
      * Remove an event listener from firing.
      * @param event - the event type you'd like to stop listening to.
      * @param handler  - the function that should be removed.
-     * @returns `this` to enable you to chain calls.
+     * @returns `this` to enable you to chain method calls.
      */
     off(event, handler) {
         this.emitter.off(event, handler);
@@ -41,7 +41,7 @@ export class EventEmitter {
     }
     /**
      * Remove an event listener.
-     * @deprecated please use `off` instead.
+     * @deprecated please use {@link EventEmitter.off} instead.
      */
     removeListener(event, handler) {
         this.off(event, handler);
@@ -49,7 +49,7 @@ export class EventEmitter {
     }
     /**
      * Add an event listener.
-     * @deprecated please use `on` instead.
+     * @deprecated please use {@link EventEmitter.on} instead.
      */
     addListener(event, handler) {
         this.on(event, handler);
@@ -70,7 +70,7 @@ export class EventEmitter {
      * Like `on` but the listener will only be fired once and then it will be removed.
      * @param event - the event you'd like to listen to
      * @param handler - the handler function to run when the event occurs
-     * @returns `this` to enable you to chain calls.
+     * @returns `this` to enable you to chain method calls.
      */
     once(event, handler) {
         const onceHandler = (eventData) => {
@@ -92,7 +92,7 @@ export class EventEmitter {
      * Removes all listeners. If given an event argument, it will remove only
      * listeners for that event.
      * @param event - the event to remove listeners for.
-     * @returns `this` to enable you to chain calls.
+     * @returns `this` to enable you to chain method calls.
      */
     removeAllListeners(event) {
         if (event) {

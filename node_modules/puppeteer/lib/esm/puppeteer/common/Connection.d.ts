@@ -2,7 +2,14 @@ import { Protocol } from 'devtools-protocol';
 import { ProtocolMapping } from 'devtools-protocol/types/protocol-mapping.js';
 import { ConnectionTransport } from './ConnectionTransport.js';
 import { EventEmitter } from './EventEmitter.js';
-interface ConnectionCallback {
+/**
+ * @public
+ */
+export { ConnectionTransport, ProtocolMapping };
+/**
+ * @public
+ */
+export interface ConnectionCallback {
     resolve: Function;
     reject: Function;
     error: Error;
@@ -30,8 +37,8 @@ export declare class Connection extends EventEmitter {
     constructor(url: string, transport: ConnectionTransport, delay?: number);
     static fromSession(session: CDPSession): Connection;
     /**
-     * @param {string} sessionId
-     * @returns {?CDPSession}
+     * @param sessionId - The session id
+     * @returns The current CDP session if it exists
      */
     session(sessionId: string): CDPSession | null;
     url(): string;
@@ -41,12 +48,15 @@ export declare class Connection extends EventEmitter {
     _onClose(): void;
     dispose(): void;
     /**
-     * @param {Protocol.Target.TargetInfo} targetInfo
-     * @returns {!Promise<!CDPSession>}
+     * @param targetInfo - The target info
+     * @returns The CDP session that is created
      */
     createSession(targetInfo: Protocol.Target.TargetInfo): Promise<CDPSession>;
 }
-interface CDPSessionOnMessageObject {
+/**
+ * @public
+ */
+export interface CDPSessionOnMessageObject {
     id?: number;
     method: string;
     params: Record<string, unknown>;
@@ -101,6 +111,7 @@ export declare class CDPSession extends EventEmitter {
      * @internal
      */
     constructor(connection: Connection, targetType: string, sessionId: string);
+    connection(): Connection;
     send<T extends keyof ProtocolMapping.Commands>(method: T, ...paramArgs: ProtocolMapping.Commands[T]['paramsType']): Promise<ProtocolMapping.Commands[T]['returnType']>;
     /**
      * @internal
@@ -116,5 +127,4 @@ export declare class CDPSession extends EventEmitter {
      */
     _onClosed(): void;
 }
-export {};
 //# sourceMappingURL=Connection.d.ts.map

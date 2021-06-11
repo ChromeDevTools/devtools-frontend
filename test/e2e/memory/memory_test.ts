@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import type { puppeteer} from '../../shared/helper.js';
 import {$$, assertNotNull, click, getBrowserAndPages, goToResource, step, waitFor, waitForElementsWithTextContent, waitForElementWithTextContent, waitForFunction, waitForNoElementsWithTextContent} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {changeAllocationSampleViewViaDropdown, changeViewViaDropdown, findSearchResult, getDataGridRows, navigateToMemoryTab, setSearchFilter, takeAllocationProfile, takeAllocationTimelineProfile, takeHeapSnapshot, waitForNonEmptyHeapSnapshotData, waitForRetainerChain, waitForSearchResultNumber, waitUntilRetainerChainSatisfies} from '../helpers/memory-helpers.js';
@@ -184,11 +185,11 @@ describe('The Memory Panel', async function() {
     // Now we want to get the two rows below the "shared in leaking()" row and assert on them.
     // Unfortunately they are not structured in the data-grid as children, despite being children in the UI
     // So the best way to get at them is to grab the two subsequent siblings of the "shared in leaking()" row.
-    const nextRow = await sharedInLeakingElementRow.evaluateHandle(e => e.nextSibling);
+    const nextRow = await sharedInLeakingElementRow.evaluateHandle<puppeteer.ElementHandle<HTMLElement>>(e => e.nextSibling);
     if (!nextRow) {
       assert.fail('Could not find row below "shared in leaking()" row');
     }
-    const nextNextRow = await nextRow.evaluateHandle(e => e.nextSibling);
+    const nextNextRow = await nextRow.evaluateHandle<puppeteer.ElementHandle<HTMLElement>>(e => e.nextSibling);
     if (!nextNextRow) {
       assert.fail('Could not find 2nd row below "shared in leaking()" row');
     }

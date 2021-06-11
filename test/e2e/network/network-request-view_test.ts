@@ -45,7 +45,7 @@ describe('The Network Request view', async () => {
        await step('ensure that the "Timing" tab is shown', async () => {
          const networkView = await waitFor('.network-item-view');
          const selectedTabHeader = await waitFor('[role=tab][aria-selected=true]', networkView);
-         const selectedTabText: string = await selectedTabHeader.evaluate(element => element.textContent);
+         const selectedTabText = await selectedTabHeader.evaluate(element => element.textContent || '');
 
          assert.strictEqual(selectedTabText, 'Timing');
        });

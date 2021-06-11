@@ -14,8 +14,8 @@ const FOCUSED_DEVICE_NAME_FIELD_SELECTOR = '#custom-device-name-field:focus';
 const ERROR_WIDGET_SELECTOR = '.list-widget-input-validation-error';
 const FOCUSED_SELECTOR = '*:focus';
 
-async function elementTextContent(element: puppeteer.JSHandle): Promise<string> {
-  return await element.evaluate(node => node.textContent);
+async function elementTextContent(element: puppeteer.ElementHandle): Promise<string> {
+  return await element.evaluate(node => node.textContent || '');
 }
 
 async function targetTextContent(selector: string): Promise<string> {

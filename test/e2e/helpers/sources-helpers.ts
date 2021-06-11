@@ -132,7 +132,7 @@ export async function openSourceCodeEditorForFile(sourceFile: string, testInput:
 export async function getSelectedSource(): Promise<string> {
   const sourceTabPane = await waitFor('#sources-panel-sources-view .tabbed-pane');
   const sourceTabs = await waitFor('.tabbed-pane-header-tab.selected', sourceTabPane);
-  return sourceTabs.evaluate(node => node.getAttribute('aria-label'));
+  return sourceTabs.evaluate(node => node.getAttribute('aria-label')) as Promise<string>;
 }
 
 export async function getOpenSources() {
@@ -481,7 +481,7 @@ export async function getWatchExpressionsValues() {
   await click('[aria-label="Watch"]');
   await frontend.keyboard.press('ArrowRight');
   await waitFor(WATCH_EXPRESSION_VALUE_SELECTOR);
-  const values = await $$(WATCH_EXPRESSION_VALUE_SELECTOR);
+  const values = await $$(WATCH_EXPRESSION_VALUE_SELECTOR) as puppeteer.ElementHandle<HTMLElement>[];
   return await Promise.all(values.map(value => value.evaluate(element => element.innerText)));
 }
 

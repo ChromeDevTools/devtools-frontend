@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Coverage = void 0;
+exports.CSSCoverage = exports.JSCoverage = exports.Coverage = void 0;
 const assert_js_1 = require("./assert.js");
 const helper_js_1 = require("./helper.js");
 const ExecutionContext_js_1 = require("./ExecutionContext.js");
@@ -61,8 +61,8 @@ class Coverage {
         this._cssCoverage = new CSSCoverage(client);
     }
     /**
-     * @param options - defaults to
-     * `{ resetOnNavigation : true, reportAnonymousScripts : false }`
+     * @param options - Set of configurable options for coverage defaults to `{
+     * resetOnNavigation : true, reportAnonymousScripts : false }`
      * @returns Promise that resolves when coverage is started.
      *
      * @remarks
@@ -86,7 +86,8 @@ class Coverage {
         return await this._jsCoverage.stop();
     }
     /**
-     * @param options - defaults to `{ resetOnNavigation : true }`
+     * @param options - Set of configurable options for coverage, defaults to `{
+     * resetOnNavigation : true }`
      * @returns Promise that resolves when coverage is started.
      */
     async startCSSCoverage(options = {}) {
@@ -104,6 +105,9 @@ class Coverage {
     }
 }
 exports.Coverage = Coverage;
+/**
+ * @public
+ */
 class JSCoverage {
     constructor(client) {
         this._enabled = false;
@@ -116,7 +120,7 @@ class JSCoverage {
     }
     async start(options = {}) {
         assert_js_1.assert(!this._enabled, 'JSCoverage is already enabled');
-        const { resetOnNavigation = true, reportAnonymousScripts = false, } = options;
+        const { resetOnNavigation = true, reportAnonymousScripts = false } = options;
         this._resetOnNavigation = resetOnNavigation;
         this._reportAnonymousScripts = reportAnonymousScripts;
         this._enabled = true;
@@ -189,6 +193,10 @@ class JSCoverage {
         return coverage;
     }
 }
+exports.JSCoverage = JSCoverage;
+/**
+ * @public
+ */
 class CSSCoverage {
     constructor(client) {
         this._enabled = false;
@@ -272,6 +280,7 @@ class CSSCoverage {
         return coverage;
     }
 }
+exports.CSSCoverage = CSSCoverage;
 function convertToDisjointRanges(nestedRanges) {
     const points = [];
     for (const range of nestedRanges) {

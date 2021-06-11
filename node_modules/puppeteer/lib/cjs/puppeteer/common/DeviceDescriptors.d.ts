@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-interface Device {
+/**
+ * @public
+ */
+export interface Device {
     name: string;
     userAgent: string;
     viewport: {
@@ -25,9 +28,14 @@ interface Device {
         isLandscape: boolean;
     };
 }
+/**
+ * @public
+ */
 export declare type DevicesMap = {
     [name: string]: Device;
 };
-declare const devicesMap: DevicesMap;
-export { devicesMap };
+/**
+ * @internal
+ */
+export declare const devicesMap: DevicesMap;
 //# sourceMappingURL=DeviceDescriptors.d.ts.map

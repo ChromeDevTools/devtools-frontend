@@ -939,8 +939,10 @@ const devices = [
         },
     },
 ];
-const devicesMap = {};
+/**
+ * @internal
+ */
+export const devicesMap = {};
 for (const device of devices)
     devicesMap[device.name] = device;
-export { devicesMap };
 //# sourceMappingURL=DeviceDescriptors.js.map

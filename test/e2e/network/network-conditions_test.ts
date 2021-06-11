@@ -20,12 +20,12 @@ describe('The Network Tab', async function() {
     return await waitFor(sectionClassName);
   }
 
-  async function assertDisabled(checkbox: ElementHandle<Element>, expected: boolean) {
+  async function assertDisabled(checkbox: ElementHandle<HTMLInputElement>, expected: boolean) {
     const disabled = await checkbox.evaluate(el => el.disabled);
     assert.strictEqual(disabled, expected);
   }
 
-  async function assertChecked(checkbox: ElementHandle<Element>, expected: boolean) {
+  async function assertChecked(checkbox: ElementHandle<HTMLInputElement>, expected: boolean) {
     const checked = await checkbox.evaluate(el => el.checked);
     assert.strictEqual(checked, expected);
   }

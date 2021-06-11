@@ -19,18 +19,18 @@ async function queryAXTree(client, element, accessibleName, role) {
         accessibleName,
         role,
     });
-    const filteredNodes = nodes.filter((node) => node.role.value !== 'text');
+    const filteredNodes = nodes.filter((node) => node.role.value !== 'StaticText');
     return filteredNodes;
 }
 function parseAriaSelector(selector) {
     const normalize = (value) => value.replace(/ +/g, ' ').trim();
     const knownAttributes = new Set(['name', 'role']);
     const queryOptions = {};
-    const attributeRegexp = /\[\s*(?<attribute>\w+)\s*=\s*"(?<value>\\.|[^"\\]*)"\s*\]/;
+    const attributeRegexp = /\[\s*(?<attribute>\w+)\s*=\s*"(?<value>\\.|[^"\\]*)"\s*\]/g;
     const defaultName = selector.replace(attributeRegexp, (_, attribute, value) => {
         attribute = attribute.trim();
         if (!knownAttributes.has(attribute))
-            throw new Error('Unkown aria attribute "${groups.attribute}" in selector');
+            throw new Error(`Unknown aria attribute "${attribute}" in selector`);
         queryOptions[attribute] = normalize(value);
         return '';
     });

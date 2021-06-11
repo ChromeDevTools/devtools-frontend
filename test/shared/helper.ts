@@ -47,15 +47,15 @@ const globalThis: any = global;
  * the left edge of the bounding box.
  */
 export const getElementPosition =
-    async (selector: string|puppeteer.JSHandle, root?: puppeteer.JSHandle, maxPixelsFromLeft?: number) => {
-  let element;
+    async (selector: string|puppeteer.ElementHandle, root?: puppeteer.JSHandle, maxPixelsFromLeft?: number) => {
+  let element: puppeteer.ElementHandle;
   if (typeof selector === 'string') {
     element = await waitFor(selector, root);
   } else {
     element = selector;
   }
 
-  const rect = await element.evaluate(element => {
+  const rect = await element.evaluate((element: Element) => {
     if (!element) {
       return {};
     }
@@ -84,7 +84,7 @@ interface ClickOptions extends puppeteer.ClickOptions {
 }
 
 export const click = async (
-    selector: string|puppeteer.JSHandle,
+    selector: string|puppeteer.ElementHandle,
     options?: {root?: puppeteer.JSHandle, clickOptions?: ClickOptions, maxPixelsFromLeft?: number}) => {
   const {frontend} = getBrowserAndPages();
   const clickableElement =
@@ -407,7 +407,7 @@ export const waitForAnimationFrame = async () => {
   });
 };
 
-export const activeElement = async () => {
+export const activeElement = async (): Promise<puppeteer.ElementHandle> => {
   const {target} = getBrowserAndPages();
 
   await waitForAnimationFrame();

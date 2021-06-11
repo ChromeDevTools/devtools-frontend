@@ -28,7 +28,7 @@ describe('CSS Overview experiment', async () => {
     const firstIssue = contrastButtons[0];
     await firstIssue.click();
     const gridContainer = await waitFor(CONTRAST_ISSUE_IN_GRID_SELECTOR);
-    const text = await gridContainer.evaluate(el => el.innerText);
+    const text = await gridContainer.evaluate(el => (el as HTMLElement).innerText);
     assert.strictEqual(text.replace(/\n/gmi, ' '), 'Aa 1 AA AAA');
   });
 });

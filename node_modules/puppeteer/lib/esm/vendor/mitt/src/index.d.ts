@@ -1,4 +1,10 @@
+/**
+ * @public
+ */
 export declare type EventType = string | symbol;
+/**
+ * @public
+ */
 export declare type Handler<T = any> = (event?: T) => void;
 export declare type WildcardHandler = (type: EventType, event?: any) => void;
 export declare type EventHandlerList = Array<Handler>;

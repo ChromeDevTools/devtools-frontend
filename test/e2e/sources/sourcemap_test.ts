@@ -10,7 +10,8 @@ import {clickNthChildOfSelectedElementNode, focusElementsTree, waitForContentOfS
 import {addBreakpointForLine, openSourceCodeEditorForFile, retrieveTopCallFrameScriptLocation} from '../helpers/sources-helpers.js';
 
 describe('The Sources Tab', async () => {
-  it('sets multiple breakpoints in case of code-splitting (crbug.com/1142705)', async () => {
+  // Flaky test
+  it.skipOnPlatforms(['mac'], '[crbug.com/1218732] sets multiple breakpoints in case of code-splitting', async () => {
     const {target, frontend} = getBrowserAndPages();
     await openSourceCodeEditorForFile('sourcemap-codesplit.ts', 'sourcemap-codesplit.html');
     await addBreakpointForLine(frontend, 3);

@@ -57,7 +57,7 @@ node_action("optimize_images") {
   ]
 
   outputs = [ _output_file_location ]
-  foreach(svg_image, devtools_svg_files) {
+  foreach(svg_image, devtools_svg_sources) {
     outputs += [ "$target_gen_dir/$svg_image" ]
   }
   data = outputs

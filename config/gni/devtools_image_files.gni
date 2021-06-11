@@ -53,6 +53,7 @@ devtools_svg_files = [
   "error_icon.svg",
   "ic_delete_list.svg",
   "ic_delete_filter.svg",
+  "ic_help_16x16.svg",
   "flex-direction-icon.svg",
   "align-content-center-icon.svg",
   "align-content-start-icon.svg",

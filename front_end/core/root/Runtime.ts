@@ -380,11 +380,11 @@ export class ExperimentsSupport {
     self.localStorage['experiments'] = JSON.stringify(value);
   }
 
-  register(experimentName: string, experimentTitle: string, unstable?: boolean): void {
+  register(experimentName: string, experimentTitle: string, unstable?: boolean, docLink?: string): void {
     Runtime._assert(
         !this._experimentNames.has(experimentName), 'Duplicate registration of experiment ' + experimentName);
     this._experimentNames.add(experimentName);
-    this._experiments.push(new Experiment(this, experimentName, experimentTitle, Boolean(unstable)));
+    this._experiments.push(new Experiment(this, experimentName, experimentTitle, Boolean(unstable), docLink ?? ''));
   }
 
   isEnabled(experimentName: string): boolean {
@@ -470,11 +470,13 @@ export class Experiment {
   name: string;
   title: string;
   unstable: boolean;
+  docLink?: string;
   _experiments: ExperimentsSupport;
-  constructor(experiments: ExperimentsSupport, name: string, title: string, unstable: boolean) {
+  constructor(experiments: ExperimentsSupport, name: string, title: string, unstable: boolean, docLink: string) {
     this.name = name;
     this.title = title;
     this.unstable = unstable;
+    this.docLink = docLink;
     this._experiments = experiments;
   }
 

@@ -34,6 +34,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -86,6 +87,10 @@ const UIStrings = {
   * list of experiments, but no experiments match the filter.
   */
   noResults: 'No experiments match the filter',
+  /**
+  *@description Text that is usually a hyperlink to more documentation
+  */
+  learnMore: 'Learn more',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/settings/SettingsScreen.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -465,8 +470,25 @@ export class ExperimentsSettingsTab extends SettingsTab {
     input.addEventListener('click', listener, false);
 
     const p = document.createElement('p');
-    p.className = experiment.unstable && !experiment.isEnabled() ? 'settings-experiment-unstable' : '';
+    p.classList.add('settings-experiment');
+    if (experiment.unstable && !experiment.isEnabled()) {
+      p.classList.add('settings-experiment-unstable');
+    }
     p.appendChild(label);
+
+    if (experiment.docLink) {
+      const link = UI.XLink.XLink.create(experiment.docLink);
+      link.textContent = '';
+      link.setAttribute('aria-label', i18nString(UIStrings.learnMore));
+
+      const linkIcon = new IconButton.Icon.Icon();
+      linkIcon.data = {iconName: 'ic_help_16x16', color: 'var(--color-text-secondary)', width: '16px', height: '16px'};
+      linkIcon.classList.add('link-icon');
+      link.prepend(linkIcon);
+
+      p.appendChild(link);
+    }
+
     return p;
   }
 }

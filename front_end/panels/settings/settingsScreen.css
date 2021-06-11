@@ -165,7 +165,20 @@ fieldset {
   margin-left: 10px;
 }
 
+.settings-experiment {
+  display: grid;
+  grid-template-columns: auto 1fr;
+}
+
+.settings-experiment .devtools-link {
+  display: flex !important; /* stylelint-disable-line declaration-no-important */
+  align-items: center;
+}
+
+.settings-experiment .link-icon {
+  margin-left: 4px;
+}
+
 .settings-experiment-unstable {
-  display: block;
   color: var(--color-text-secondary);
 }

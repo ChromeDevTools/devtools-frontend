@@ -237,13 +237,18 @@ export class MainImpl {
         'blackboxJSFramesOnTimeline', 'Ignore List for JavaScript frames on Timeline', true);
     Root.Runtime.experiments.register(
         'ignoreListJSFramesOnTimeline', 'Ignore List for JavaScript frames on Timeline', true);
-    Root.Runtime.experiments.register('cssOverview', 'CSS Overview');
+    Root.Runtime.experiments.register(
+        'cssOverview', 'CSS Overview', undefined, 'https://developer.chrome.com/blog/new-in-devtools-87/#css-overview');
     Root.Runtime.experiments.register('emptySourceMapAutoStepping', 'Empty sourcemap auto-stepping');
     Root.Runtime.experiments.register('inputEventsOnTimelineOverview', 'Input events on Timeline overview', true);
     Root.Runtime.experiments.register('liveHeapProfile', 'Live heap profile', true);
-    Root.Runtime.experiments.register('protocolMonitor', 'Protocol Monitor');
+    Root.Runtime.experiments.register(
+        'protocolMonitor', 'Protocol Monitor', undefined,
+        'https://developer.chrome.com/blog/new-in-devtools-92/#protocol-monitor');
     Root.Runtime.experiments.register('developerResourcesView', 'Show developer resources view');
-    Root.Runtime.experiments.register('cspViolationsView', 'Show CSP Violations view');
+    Root.Runtime.experiments.register(
+        'cspViolationsView', 'Show CSP Violations view', undefined,
+        'https://developer.chrome.com/blog/new-in-devtools-89/#csp');
     Root.Runtime.experiments.register(
         'recordCoverageWithPerformanceTracing', 'Record coverage while performance tracing');
     Root.Runtime.experiments.register('samplingHeapProfilerTimeline', 'Sampling heap profiler timeline', true);
@@ -251,11 +256,16 @@ export class MainImpl {
         'showOptionToNotTreatGlobalObjectsAsRoots',
         'Show option to take heap snapshot where globals are not treated as root');
     Root.Runtime.experiments.register('sourceDiff', 'Source diff');
-    Root.Runtime.experiments.register('sourceOrderViewer', 'Source order viewer');
+    Root.Runtime.experiments.register(
+        'sourceOrderViewer', 'Source order viewer', undefined,
+        'https://developer.chrome.com/blog/new-in-devtools-92/#source-order');
     Root.Runtime.experiments.register('spotlight', 'Spotlight', true);
     Root.Runtime.experiments.register('webauthnPane', 'WebAuthn Pane');
-    Root.Runtime.experiments.register('keyboardShortcutEditor', 'Enable keyboard shortcut editor', true);
-    Root.Runtime.experiments.register('recorder', 'Recorder');
+    Root.Runtime.experiments.register(
+        'keyboardShortcutEditor', 'Enable keyboard shortcut editor', true,
+        'https://developer.chrome.com/blog/new-in-devtools-88/#keyboard-shortcuts');
+    Root.Runtime.experiments.register(
+        'recorder', 'Recorder', undefined, 'https://developer.chrome.com/blog/new-in-devtools-92/#puppeteer-recorder');
 
     // Back-forward cache
     Root.Runtime.experiments.register('bfcacheDebugging', 'Enable back-forward cache debugging support');
@@ -268,27 +278,36 @@ export class MainImpl {
         'timelineV8RuntimeCallStats', 'Timeline: V8 Runtime Call Stats on Timeline', true);
     Root.Runtime.experiments.register('timelineWebGL', 'Timeline: WebGL-based flamechart');
     Root.Runtime.experiments.register('timelineReplayEvent', 'Timeline: Replay input events', true);
-    Root.Runtime.experiments.register('wasmDWARFDebugging', 'WebAssembly Debugging: Enable DWARF support');
+    Root.Runtime.experiments.register(
+        'wasmDWARFDebugging', 'WebAssembly Debugging: Enable DWARF support', undefined,
+        'https://developer.chrome.com/blog/wasm-debugging-2020/');
 
     // Dual-screen
-    Root.Runtime.experiments.register('dualScreenSupport', 'Emulation: Support dual screen mode');
+    Root.Runtime.experiments.register(
+        'dualScreenSupport', 'Emulation: Support dual screen mode', undefined,
+        'https://developer.chrome.com/blog/new-in-devtools-89#dual-screen');
     Root.Runtime.experiments.setEnabled('dualScreenSupport', true);
 
     // Advanced Perceptual Contrast Algorithm.
     Root.Runtime.experiments.register(
         'APCA',
-        'Enable new Advanced Perceptual Contrast Algorithm (APCA) replacing previous contrast ratio and AA/AAA guidelines');
+        'Enable new Advanced Perceptual Contrast Algorithm (APCA) replacing previous contrast ratio and AA/AAA guidelines',
+        undefined, 'https://developer.chrome.com/blog/new-in-devtools-89/#apca');
 
     // Full Accessibility Tree
     Root.Runtime.experiments.register(
-        'fullAccessibilityTree', 'Enable full accessibility tree view in the Elements panel');
+        'fullAccessibilityTree', 'Enable full accessibility tree view in the Elements panel', undefined,
+        'https://developer.chrome.com/blog/new-in-devtools-90/#accesibility-tree');
 
     // Font Editor
-    Root.Runtime.experiments.register('fontEditor', 'Enable new Font Editor tool within the Styles Pane.');
+    Root.Runtime.experiments.register(
+        'fontEditor', 'Enable new Font Editor tool within the Styles Pane.', undefined,
+        'https://developer.chrome.com/blog/new-in-devtools-89/#font');
 
     // Contrast issues reported via the Issues panel.
     Root.Runtime.experiments.register(
-        'contrastIssues', 'Enable automatic contrast issue reporting via the Issues panel');
+        'contrastIssues', 'Enable automatic contrast issue reporting via the Issues panel', undefined,
+        'https://developer.chrome.com/blog/new-in-devtools-90/#low-contrast');
 
     // New cookie features.
     Root.Runtime.experiments.register('experimentalCookieFeatures', 'Enable experimental cookie features');

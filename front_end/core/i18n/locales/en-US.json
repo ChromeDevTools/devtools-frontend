@@ -8303,6 +8303,9 @@
   "panels/settings/SettingsScreen.ts | filterExperimentsLabel": {
     "message": "Filter"
   },
+  "panels/settings/SettingsScreen.ts | learnMore": {
+    "message": "Learn more"
+  },
   "panels/settings/SettingsScreen.ts | noResults": {
     "message": "No experiments match the filter"
   },

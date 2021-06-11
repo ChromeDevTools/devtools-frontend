@@ -5975,6 +5975,9 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "T̂ýp̂é"
   },
+  "panels/network/components/WebBundleInfoView.ts | bundledResource": {
+    "message": "B̂ún̂d́l̂éd̂ ŕêśôúr̂ćê"
+  },
   "panels/network/EventSourceMessagesView.ts | copyMessage": {
     "message": "Ĉóp̂ý m̂éŝśâǵê"
   },

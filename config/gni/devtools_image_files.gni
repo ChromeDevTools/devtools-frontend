@@ -117,6 +117,7 @@ devtools_svg_files = [
   "treeoutlineTriangles.svg",
   "warning_icon.svg",
   "feedback_thin_16x16_icon.svg",
+  "help_outline.svg",
 ]
 
 devtools_src_svg_files = []

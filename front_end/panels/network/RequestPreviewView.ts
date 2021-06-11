@@ -39,6 +39,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {RequestHTMLView} from './RequestHTMLView.js';
 import {RequestResponseView} from './RequestResponseView.js';
 import {SignedExchangeInfoView} from './SignedExchangeInfoView.js';
+import {WebBundleInfoView} from './components/WebBundleInfoView.js';
 
 const UIStrings = {
   /**
@@ -96,6 +97,10 @@ export class RequestPreviewView extends RequestResponseView {
   async createPreview(): Promise<UI.Widget.Widget> {
     if (this.request.signedExchangeInfo()) {
       return new SignedExchangeInfoView(this.request);
+    }
+
+    if (this.request.webBundleInfo()) {
+      return new WebBundleInfoView(this.request);
     }
 
     const htmlErrorPreview = await this._htmlPreview();

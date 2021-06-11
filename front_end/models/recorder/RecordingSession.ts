@@ -222,6 +222,11 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper {
       executionContextName: RECORDER_ISOLATED_WORLD_NAME,
     });
 
+    // Enable A11y domain to keep a11y caches alive.
+    const a11yModel =
+        target.model(SDK.AccessibilityModel.AccessibilityModel) as SDK.AccessibilityModel.AccessibilityModel;
+    await a11yModel.resumeModel();
+
     runtimeModel.addEventListener(SDK.RuntimeModel.Events.BindingCalled, this.bindingCalled, this);
 
     // TODO(alexrudenko): maybe wire this flag up to DEBUG mode or a setting?
@@ -264,6 +269,12 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper {
           SDK.ChildTargetManager.Events.TargetDestroyed, this.receiveWindowClosed, this);
       childTargetManager.removeEventListener(
           SDK.ChildTargetManager.Events.TargetInfoChanged, this.receiveNavigation, this);
+    }
+
+    // Enable A11y domain to keep a11y caches alive.
+    const a11yModel = target.model(SDK.AccessibilityModel.AccessibilityModel);
+    if (a11yModel) {
+      await a11yModel.resumeModel();
     }
 
     const newDocumentScriptIdentifier = this._newDocumentScriptIdentifiers.get(target.id());

@@ -54,39 +54,56 @@ export function setupRecordingClient(
     }
   };
 
+  const time = (label: string): void => {
+    if (debug) {
+      console.time(label);  // eslint-disable-line no-console
+    }
+  };
+
+  const timeEnd = (label: string): void => {
+    if (debug) {
+      console.timeEnd(label);  // eslint-disable-line no-console
+    }
+  };
+
   // Queries the DOM tree for elements with matching accessibility name and role.
   // It attempts to mimic https://chromedevtools.github.io/devtools-protocol/tot/Accessibility/#method-queryAXTree.
   const queryA11yTree = (parent: Element|Document, name?: string, role?: string): Element[] => {
-    const result: Element[] = [];
-    if (!name && !role) {
-      throw new Error('Both role and name are empty');
+    time(`queryA11yTree: ${name}[role=${role}]`);
+    try {
+      const result: Element[] = [];
+      if (!name && !role) {
+        throw new Error('Both role and name are empty');
+      }
+      const shouldMatchName = Boolean(name);
+      const shouldMatchRole = Boolean(role);
+      const collect = (root: Element|ShadowRoot): void => {
+        const iter = document.createTreeWalker(
+            root,
+            NodeFilter.SHOW_ELEMENT,
+        );
+        do {
+          const currentNode = iter.currentNode as HTMLElement;
+          if (currentNode.shadowRoot) {
+            collect(currentNode.shadowRoot);
+          }
+          if (currentNode instanceof ShadowRoot) {
+            continue;
+          }
+          if (shouldMatchName && bindings.getAccessibleName(currentNode) !== name) {
+            continue;
+          }
+          if (shouldMatchRole && bindings.getAccessibleRole(currentNode) !== role) {
+            continue;
+          }
+          result.push(currentNode);
+        } while (iter.nextNode());
+      };
+      collect(parent instanceof Document ? document.documentElement : parent);
+      return result;
+    } finally {
+      timeEnd(`queryA11yTree: ${name}[role=${role}]`);
     }
-    const shouldMatchName = Boolean(name);
-    const shouldMatchRole = Boolean(role);
-    const collect = (root: Element|ShadowRoot): void => {
-      const iter = document.createTreeWalker(
-          root,
-          NodeFilter.SHOW_ELEMENT,
-      );
-      do {
-        const currentNode = iter.currentNode as HTMLElement;
-        if (currentNode.shadowRoot) {
-          collect(currentNode.shadowRoot);
-        }
-        if (currentNode instanceof ShadowRoot) {
-          continue;
-        }
-        if (shouldMatchName && bindings.getAccessibleName(currentNode) !== name) {
-          continue;
-        }
-        if (shouldMatchRole && bindings.getAccessibleRole(currentNode) !== role) {
-          continue;
-        }
-        result.push(currentNode);
-      } while (iter.nextNode());
-    };
-    collect(parent instanceof Document ? document.documentElement : parent);
-    return result;
   };
 
   const createStepFromEvent = (event: Event, target: EventTarget|null, isTrusted = false): Step|undefined => {
@@ -167,16 +184,21 @@ export function setupRecordingClient(
   exports.getSelector = getSelector;
 
   const getCSSSelector = (node: Node): Selector => {
-    const selectors: string[] = [];
-    do {
-      const result = cssPath(node, true);
-      selectors.unshift(result.selector);
-      if (result.root instanceof ShadowRoot) {
-        node = result.root.host;
-        continue;
-      }
-      return selectors;
-    } while (true);
+    time(`getCSSSelector: ${node.nodeName}`);
+    try {
+      const selectors: string[] = [];
+      do {
+        const result = cssPath(node, true);
+        selectors.unshift(result.selector);
+        if (result.root instanceof ShadowRoot) {
+          node = result.root.host;
+          continue;
+        }
+        return selectors;
+      } while (true);
+    } finally {
+      timeEnd(`getCSSSelector: ${node.nodeName}`);
+    }
   };
 
   const queryA11yTreeOneByName = (parent: Element|Document, name?: string): Element|null => {
@@ -246,32 +268,37 @@ export function setupRecordingClient(
       };
 
   const getARIASelector = (node: Node): Selector|undefined => {
-    let current: Node|null = node;
-    const elements: {name: string, role: string}[] = [];
-    while (current) {
-      if (current instanceof ShadowRoot) {
-        current = current.host;
-        continue;
-      }
-      const role = bindings.getAccessibleRole(current);
-      const name = bindings.getAccessibleName(current);
-      log('Getting a11y role and name for a node', role, name, current);
-      if (!role && !name) {
+    time(`getARIASelector: ${node.nodeName}`);
+    try {
+      let current: Node|null = node;
+      const elements: {name: string, role: string}[] = [];
+      while (current) {
+        if (current instanceof ShadowRoot) {
+          current = current.host;
+          continue;
+        }
+        const role = bindings.getAccessibleRole(current);
+        const name = bindings.getAccessibleName(current);
+        log('Getting a11y role and name for a node', role, name, current);
+        if (!role && !name) {
+          current = current.parentNode;
+          continue;
+        }
+        elements.unshift({name, role});
+        const selectors = computeUniqueARIASelectorForElements(elements, current !== node);
+        if (selectors) {
+          return selectors;
+        }
+        if (current !== node) {
+          elements.shift();
+        }
         current = current.parentNode;
-        continue;
       }
-      elements.unshift({name, role});
-      const selectors = computeUniqueARIASelectorForElements(elements, current !== node);
-      if (selectors) {
-        return selectors;
-      }
-      if (current !== node) {
-        elements.shift();
-      }
-      current = current.parentNode;
-    }
 
-    return;
+      return;
+    } finally {
+      timeEnd(`getARIASelector: ${node.nodeName}`);
+    }
   };
   exports.getARIASelector = getARIASelector;
 

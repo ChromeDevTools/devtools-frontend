@@ -5,8 +5,10 @@
 import * as SDK from '../../core/sdk/sdk.js';
 
 import type {RecordingSession} from './RecordingSession.js';
-import {hasCondition, hasFrameContext} from './Steps.js';
+import {hasCondition} from './Steps.js';
 import type {Condition, FrameContext, Step} from './Steps.js';
+import type {Step as ClientStep} from './RecordingClient.js';
+import {clientStepHasFrameContext} from './RecordingClient.js';
 
 export class RecordingEventHandler {
   private target: SDK.Target.Target;
@@ -54,7 +56,7 @@ export class RecordingEventHandler {
     };
   }
 
-  bindingCalled(frameId: string, step: Step): void {
+  bindingCalled(frameId: string, step: ClientStep): void {
     const frame = this.resourceTreeModel.frameForId(frameId);
     if (!frame) {
       throw new Error('Could not find frame.');
@@ -62,10 +64,11 @@ export class RecordingEventHandler {
 
     const context = this.getContextForFrame(frame);
 
-    if (hasFrameContext(step)) {
-      this.appendStep({...step, context});
+    // TODO: type-safe parsing from client steps to internal step format.
+    if (clientStepHasFrameContext(step)) {
+      this.appendStep({...step, context} as Step);
     } else {
-      this.appendStep(step);
+      this.appendStep(step as Step);
     }
   }
 

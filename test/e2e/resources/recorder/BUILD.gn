@@ -11,5 +11,6 @@ copy_to_gen("recorder") {
     "recorder.html",
     "recorder2.html",
     "select.html",
+    "shadow-open.html",
   ]
 }

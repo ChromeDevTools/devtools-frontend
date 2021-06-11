@@ -39,18 +39,29 @@ export class RecordingScriptWriter {
     this.appendFrame(step.context.path);
   }
 
+  appendWaitForSelector(step: ClickStep|ChangeStep|SubmitStep): void {
+    if (step.selector instanceof Array) {
+      this.appendLineToScript(`let element = await frame.waitForSelector(${JSON.stringify(step.selector[0])});`);
+      for (const part of step.selector.slice(1)) {
+        this.appendLineToScript(`element = await element.$(${JSON.stringify(part)});`);
+      }
+    } else {
+      this.appendLineToScript(`const element = await frame.waitForSelector(${JSON.stringify(step.selector)});`);
+    }
+  }
+
   appendClickStep(step: ClickStep): void {
-    this.appendLineToScript(`const element = await frame.waitForSelector(${JSON.stringify(step.selector)});`);
+    this.appendWaitForSelector(step);
     this.appendLineToScript('await element.click();');
   }
 
   appendChangeStep(step: ChangeStep): void {
-    this.appendLineToScript(`const element = await frame.waitForSelector(${JSON.stringify(step.selector)});`);
+    this.appendWaitForSelector(step);
     this.appendLineToScript(`await element.type(${JSON.stringify(step.value)});`);
   }
 
   appendSubmitStep(step: SubmitStep): void {
-    this.appendLineToScript(`const element = await frame.waitForSelector(${JSON.stringify(step.selector)});`);
+    this.appendWaitForSelector(step);
     this.appendLineToScript('await element.evaluate(form => form.submit());');
   }
 

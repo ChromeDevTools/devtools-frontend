@@ -191,7 +191,7 @@ describe('Recorder', function() {
     });
   });
 
-  it('should build an aria selector for the parent element that is interactive', async () => {
+  it('should build an ARIA selector for the parent element that is interactive', async () => {
     await startRecording('recorder/recorder.html');
 
     const {target} = getBrowserAndPages();
@@ -209,7 +209,10 @@ describe('Recorder', function() {
           viewportStep,
           {
             type: 'click',
-            selector: 'aria/Hello World' as Selector,
+            selector: [
+              'aria/Hello World',
+              'aria/[role=\"generic\"]',
+            ],
             context: {
               target: 'main',
               path: [],
@@ -239,7 +242,7 @@ describe('Recorder', function() {
              viewportStep,
              {
                type: 'click',
-               selector: 'span#span2' as Selector,
+               selector: '#span2' as Selector,
                context: {
                  target: 'main',
                  path: [],
@@ -268,7 +271,10 @@ describe('Recorder', function() {
           viewportStep,
           {
             type: 'click',
-            selector: 'aria/Hello World' as Selector,
+            selector: [
+              '#shadow-root > span',
+              '#inner-span',
+            ],
             context: {
               target: 'main',
               path: [],

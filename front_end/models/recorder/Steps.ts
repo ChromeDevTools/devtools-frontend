@@ -2,9 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export type Selector = string&{__brand: 'selector'};
+export type Selector = string|string[];
 
 export interface WaitForNavigationCondition {
   type: 'waitForNavigation';

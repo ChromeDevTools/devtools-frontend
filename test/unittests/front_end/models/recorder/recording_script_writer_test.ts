@@ -46,6 +46,22 @@ await element.click();
 `);
     });
 
+    it('should print the correct script with a chain selector', () => {
+      const writer = new Recorder.RecordingScriptWriter.RecordingScriptWriter('  ');
+      writer.appendClickStep({
+        type: 'click',
+        context: {
+          target: 'main',
+          path: [],
+        },
+        selector: ['aria/Test', 'aria/Test2'] as Recorder.Steps.Selector,
+      });
+      assert.deepEqual(writer.getCurrentScript(), `let element = await frame.waitForSelector("aria/Test");
+element = await element.$("aria/Test2");
+await element.click();
+`);
+    });
+
     it('should print the correct script for a change step', () => {
       const writer = new Recorder.RecordingScriptWriter.RecordingScriptWriter('  ');
       writer.appendChangeStep({

@@ -6,7 +6,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as puppeteer from '../../third_party/puppeteer/puppeteer.js';
 import {getPuppeteerConnection as getPuppeteerConnectionToCurrentPage} from './PuppeteerConnection.js';
 
-import type {Step, UserFlow} from './Steps.js';
+import type {Step, UserFlow, Selector} from './Steps.js';
 import {assertAllStepTypesAreHandled} from './Steps.js';
 
 export class RecordingPlayer {
@@ -93,18 +93,18 @@ export class RecordingPlayer {
 
     switch (step.type) {
       case 'click': {
-        const element = await frame.waitForSelector(step.selector);
+        const element = await waitForSelector(step.selector, frame);
         if (!element) {
           throw new Error('Could not find element: ' + step.selector);
         }
         await element.click();
       } break;
       case 'submit': {
-        const element = await frame.waitForSelector(step.selector);
+        const element = await waitForSelector(step.selector, frame);
         if (!element) {
           throw new Error('Could not find element: ' + step.selector);
         }
-        await element.evaluate(form => (form as HTMLFormElement).submit());
+        await element.evaluate((form: HTMLFormElement) => form.submit());
       } break;
       case 'emulateNetworkConditions': {
         await page.emulateNetworkConditions(step.conditions);
@@ -122,7 +122,7 @@ export class RecordingPlayer {
       } break;
       case 'change': {
         // TODO(alexrudenko): currently the change event is only supported for <select>s.
-        const element = await frame.waitForSelector(step.selector);
+        const element = await waitForSelector(step.selector, frame);
         if (!element) {
           throw new Error('Could not find element: ' + step.selector);
         }
@@ -146,4 +146,29 @@ export class RecordingPlayer {
 
     await condition;
   }
+}
+
+async function waitForSelector(selector: Selector, frame: puppeteer.Frame): Promise<puppeteer.ElementHandle> {
+  if (selector instanceof Array) {
+    let element = null;
+    for (const part of selector) {
+      if (!element) {
+        element = await frame.waitForSelector(part);
+      } else {
+        element = await element.$(part);
+      }
+      if (!element) {
+        throw new Error('Could not find element: ' + part);
+      }
+    }
+    if (!element) {
+      throw new Error('Could not find element: ' + selector.join('|'));
+    }
+    return element;
+  }
+  const element = await frame.waitForSelector(selector);
+  if (!element) {
+    throw new Error('Could not find element: ' + selector);
+  }
+  return element;
 }

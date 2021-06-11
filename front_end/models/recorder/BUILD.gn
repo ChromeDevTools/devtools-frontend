@@ -43,6 +43,7 @@ devtools_entrypoint("bundle") {
     "../../entrypoints/main/*",
     "../../panels/recorder/*",
     "../../panels/sources/*",
+    "../../ui/components/docs/recording_client/*",
   ]
 
   visibility += devtools_models_visibility

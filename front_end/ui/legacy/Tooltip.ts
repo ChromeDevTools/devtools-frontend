@@ -102,8 +102,7 @@ export class Tooltip {
       if (element === this._anchorElement) {
         return;
       }
-      // The offsetParent is null when the element or an ancestor has 'display: none'.
-      if (!(element instanceof HTMLElement) || element.offsetParent === null) {
+      if (!(element instanceof HTMLElement) || getComputedStyle(element).display === 'none') {
         continue;
       }
       if (Tooltip.getContent(element)) {

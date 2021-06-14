@@ -330,7 +330,7 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
       const viewRect = scrollParentElement.getBoundingClientRect();
 
       const currentScrollX = viewRect.left - treeRect.left;
-      const currentScrollY = viewRect.top - treeRect.top;
+      const currentScrollY = viewRect.top - treeRect.top + this.contentElement.offsetTop;
 
       // Only scroll into view on each axis if the item is not visible at all
       // but if we do scroll and _centerUponScrollIntoView is true

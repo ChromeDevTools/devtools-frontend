@@ -51,6 +51,7 @@ devtools_module("application") {
     "../../models/workspace:bundle",
     "../../panels/mobile_throttling:bundle",
     "../../panels/network:bundle",
+    "../../panels/network/forward:bundle",
     "../../ui/components/data_grid:bundle",
     "../../ui/components/expandable_list:bundle",
     "../../ui/components/report_view:bundle",

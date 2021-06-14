@@ -16,7 +16,7 @@ import * as MarkdownView from '../../ui/components/markdown_view/markdown_view.j
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ElementsComponents from '../elements/components/components.js';
-import * as Network from '../network/network.js';
+import * as NetworkForward from '../../panels/network/forward/forward.js';
 
 import {AffectedDirectivesView} from './AffectedDirectivesView.js';
 import {AffectedBlockedByResponseView} from './AffectedBlockedByResponseView.js';
@@ -92,7 +92,7 @@ class AffectedRequestsView extends AffectedResourcesView {
       const element = document.createElement('tr');
       element.classList.add('affected-resource-request');
       const category = this._issue.getCategory();
-      const tab = issueTypeToNetworkHeaderMap.get(category) || Network.NetworkItemView.Tabs.Headers;
+      const tab = issueTypeToNetworkHeaderMap.get(category) || NetworkForward.UIRequestLocation.UIRequestTabs.Headers;
       element.appendChild(this.createRequestCell(affectedRequest, {
         networkTab: tab,
         additionalOnClickAction() {
@@ -171,11 +171,21 @@ class AffectedSourcesView extends AffectedResourcesView {
   }
 }
 
-const issueTypeToNetworkHeaderMap = new Map<IssuesManager.Issue.IssueCategory, Network.NetworkItemView.Tabs>([
-  [IssuesManager.Issue.IssueCategory.SameSiteCookie, Network.NetworkItemView.Tabs.Cookies],
-  [IssuesManager.Issue.IssueCategory.CrossOriginEmbedderPolicy, Network.NetworkItemView.Tabs.Headers],
-  [IssuesManager.Issue.IssueCategory.MixedContent, Network.NetworkItemView.Tabs.Headers],
-]);
+const issueTypeToNetworkHeaderMap =
+    new Map<IssuesManager.Issue.IssueCategory, NetworkForward.UIRequestLocation.UIRequestTabs>([
+      [
+        IssuesManager.Issue.IssueCategory.SameSiteCookie,
+        NetworkForward.UIRequestLocation.UIRequestTabs.Cookies,
+      ],
+      [
+        IssuesManager.Issue.IssueCategory.CrossOriginEmbedderPolicy,
+        NetworkForward.UIRequestLocation.UIRequestTabs.Headers,
+      ],
+      [
+        IssuesManager.Issue.IssueCategory.MixedContent,
+        NetworkForward.UIRequestLocation.UIRequestTabs.Headers,
+      ],
+    ]);
 
 class AffectedMixedContentView extends AffectedResourcesView {
   _issue: AggregatedIssue;
@@ -210,8 +220,8 @@ class AffectedMixedContentView extends AffectedResourcesView {
     element.classList.add('affected-resource-mixed-content');
 
     if (mixedContent.request) {
-      const networkTab =
-          issueTypeToNetworkHeaderMap.get(this._issue.getCategory()) || Network.NetworkItemView.Tabs.Headers;
+      const networkTab = issueTypeToNetworkHeaderMap.get(this._issue.getCategory()) ||
+          NetworkForward.UIRequestLocation.UIRequestTabs.Headers;
       element.appendChild(this.createRequestCell(mixedContent.request, {
         networkTab,
         additionalOnClickAction() {

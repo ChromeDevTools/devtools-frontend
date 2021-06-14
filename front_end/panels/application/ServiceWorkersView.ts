@@ -14,6 +14,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as Network from '../network/network.js';
+import * as NetworkForward from '../../panels/network/forward/forward.js';
 
 import {ServiceWorkerUpdateCycleView} from './ServiceWorkerUpdateCycleView.js';
 
@@ -742,8 +743,9 @@ export class Section {
       }
     }
     if (lastRequest) {
-      Network.NetworkPanel.NetworkPanel.selectAndShowRequest(
-          lastRequest, Network.NetworkItemView.Tabs.Timing, {clearFilter: false});
+      const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
+          lastRequest, NetworkForward.UIRequestLocation.UIRequestTabs.Timing, {clearFilter: false});
+      Common.Revealer.reveal(requestLocation);
     }
 
     this._manager.serviceWorkerNetworkRequestsPanelStatus = {

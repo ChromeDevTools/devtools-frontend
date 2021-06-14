@@ -47,12 +47,11 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-
-import {Tabs as NetworkItemViewTabs} from './NetworkItemView.js';
 
 import type {NetworkTimeCalculator} from './NetworkTimeCalculator.js'; // eslint-disable-line no-unused-vars
 
@@ -1187,7 +1186,7 @@ export class NetworkRequestNode extends NetworkNode {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               (this.parentView() as any).dispatchEventToListeners(Events.RequestActivated, {
                 showPanel: true,
-                tab: NetworkItemViewTabs.Headers,
+                tab: NetworkForward.UIRequestLocation.UIRequestTabs.Headers,
               });
             });
       } else {

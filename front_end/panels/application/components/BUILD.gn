@@ -22,6 +22,7 @@ devtools_module("components") {
     "../../../core/sdk:bundle",
     "../../../models/bindings:bundle",
     "../../../panels/network:bundle",
+    "../../../panels/network/forward:bundle",
     "../../../ui/components/data_grid:bundle",
     "../../../ui/components/expandable_list:bundle",
     "../../../ui/components/report_view:bundle",

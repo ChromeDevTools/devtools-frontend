@@ -51,7 +51,6 @@ import * as Search from '../search/search.js';
 import {BlockedURLsPane} from './BlockedURLsPane.js';
 import {Events} from './NetworkDataGridNode.js';
 
-import type {Tabs as NetworkItemViewTabs} from './NetworkItemView.js';
 import {NetworkItemView} from './NetworkItemView.js';  // eslint-disable-line no-unused-vars
 import type {FilterType} from './NetworkLogView.js';
 import {NetworkLogView} from './NetworkLogView.js';  // eslint-disable-line no-unused-vars
@@ -363,7 +362,8 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
   }
 
   static async selectAndShowRequest(
-      request: SDK.NetworkRequest.NetworkRequest, tab: NetworkItemViewTabs, options?: FilterOptions): Promise<void> {
+      request: SDK.NetworkRequest.NetworkRequest, tab: NetworkForward.UIRequestLocation.UIRequestTabs,
+      options?: NetworkForward.UIRequestLocation.FilterOptions): Promise<void> {
     const panel = NetworkPanel._instance();
     await panel.selectAndActivateRequest(request, tab, options);
   }
@@ -632,8 +632,8 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
   }
 
   async selectAndActivateRequest(
-      request: SDK.NetworkRequest.NetworkRequest, shownTab?: NetworkItemViewTabs,
-      options?: FilterOptions): Promise<NetworkItemView|null> {
+      request: SDK.NetworkRequest.NetworkRequest, shownTab?: NetworkForward.UIRequestLocation.UIRequestTabs,
+      options?: NetworkForward.UIRequestLocation.FilterOptions): Promise<NetworkItemView|null> {
     await UI.ViewManager.ViewManager.instance().showView('network');
     this._networkLogView.selectRequest(request, options);
     this._showRequestPanel(shownTab);
@@ -662,7 +662,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
   }): void {
     const eventData = (event.data as {
       showPanel: boolean,
-      tab: NetworkItemViewTabs,
+      tab: NetworkForward.UIRequestLocation.UIRequestTabs,
       takeFocus: (boolean | undefined),
     });
     if (eventData.showPanel) {
@@ -672,7 +672,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     }
   }
 
-  _showRequestPanel(shownTab?: NetworkItemViewTabs, takeFocus?: boolean): void {
+  _showRequestPanel(shownTab?: NetworkForward.UIRequestLocation.UIRequestTabs, takeFocus?: boolean): void {
     if (this._splitWidget.showMode() === UI.SplitWidget.ShowMode.Both && !shownTab && !takeFocus) {
       // If panel is already shown, and we are not forcing a specific tab, return.
       return;
@@ -707,7 +707,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
       this._networkItemView = null;
     }
   }
-  _createNetworkItemView(initialTab?: NetworkItemViewTabs): NetworkItemView|undefined {
+  _createNetworkItemView(initialTab?: NetworkForward.UIRequestLocation.UIRequestTabs): NetworkItemView|undefined {
     if (!this._currentRequest) {
       return;
     }
@@ -1019,7 +1019,8 @@ export class RequestLocationRevealer implements Common.Revealer.Revealer {
 
   async reveal(match: Object): Promise<void> {
     const location = match as NetworkForward.UIRequestLocation.UIRequestLocation;
-    const view = await NetworkPanel._instance().selectAndActivateRequest(location.request);
+    const view =
+        await NetworkPanel._instance().selectAndActivateRequest(location.request, location.tab, location.filterOptions);
     if (!view) {
       return;
     }
@@ -1060,7 +1061,4 @@ export class SearchNetworkView extends Search.SearchView.SearchView {
   createScope(): Search.SearchConfig.SearchScope {
     return new NetworkSearchScope();
   }
-}
-export interface FilterOptions {
-  clearFilter: boolean;
 }

@@ -45,6 +45,7 @@ import * as HAR from '../../models/har/har.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import type * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -55,7 +56,6 @@ import type {NetworkLogViewInterface, NetworkNode} from './NetworkDataGridNode.j
 import {Events, NetworkGroupNode, NetworkRequestNode} from './NetworkDataGridNode.js';  // eslint-disable-line no-unused-vars
 import {NetworkFrameGrouper} from './NetworkFrameGrouper.js';
 import {NetworkLogViewColumns} from './NetworkLogViewColumns.js';
-import type {FilterOptions} from './NetworkPanel.js'; // eslint-disable-line no-unused-vars
 import type {NetworkTimeCalculator} from './NetworkTimeCalculator.js';
 import {NetworkTimeBoundary, NetworkTransferDurationCalculator, NetworkTransferTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
 import type {NetworkRequestId} from './NetworkRequestId.js';
@@ -1813,7 +1813,8 @@ export class NetworkLogView extends UI.Widget.VBox implements
     }
   }
 
-  selectRequest(request: SDK.NetworkRequest.NetworkRequest, options?: FilterOptions): void {
+  selectRequest(request: SDK.NetworkRequest.NetworkRequest, options?: NetworkForward.UIRequestLocation.FilterOptions):
+      void {
     const defaultOptions = {clearFilter: true};
     const {clearFilter} = options || defaultOptions;
     if (clearFilter) {

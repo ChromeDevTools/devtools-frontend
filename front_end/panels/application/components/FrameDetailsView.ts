@@ -559,11 +559,11 @@ export class FrameDetailsReportView extends HTMLElement {
       if (resource && resource.request) {
         const request = resource.request;
         return this.renderIconLink(
-            'network_panel_icon',
-            i18nString(UIStrings.clickToRevealInNetworkPanel),
-            (): Promise<void> =>
-                Network.NetworkPanel.NetworkPanel.selectAndShowRequest(request, Network.NetworkItemView.Tabs.Headers),
-        );
+            'network_panel_icon', i18nString(UIStrings.clickToRevealInNetworkPanel), (): Promise<void> => {
+              const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
+                  request, NetworkForward.UIRequestLocation.UIRequestTabs.Headers);
+              return Common.Revealer.reveal(requestLocation);
+            });
       }
     }
     return LitHtml.nothing;

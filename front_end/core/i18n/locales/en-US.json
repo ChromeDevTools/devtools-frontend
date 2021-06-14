@@ -4865,9 +4865,6 @@
   "panels/issues/AffectedElementsView.ts | nElements": {
     "message": "{n, plural, =1 {# element} other {# elements}}"
   },
-  "panels/issues/AffectedElementsView.ts | unavailable": {
-    "message": "unavailable"
-  },
   "panels/issues/AffectedElementsWithLowContrastView.ts | contrastRatio": {
     "message": "Contrast ratio"
   },
@@ -4921,6 +4918,9 @@
   },
   "panels/issues/AffectedResourcesView.ts | requestUnavailableInTheNetwork": {
     "message": "Request unavailable in the network panel, try reloading the inspected page"
+  },
+  "panels/issues/AffectedResourcesView.ts | unavailable": {
+    "message": "unavailable"
   },
   "panels/issues/AffectedResourcesView.ts | unknown": {
     "message": "unknown"

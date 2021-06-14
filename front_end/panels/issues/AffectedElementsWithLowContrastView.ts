@@ -41,8 +41,9 @@ export class AffectedElementsWithLowContrastView extends AffectedElementsView {
     // TODO: Use the correct target once we report LowContrastIssues for frames
     // besides the main frame.
     const target = SDK.TargetManager.TargetManager.instance().mainTarget();
-    row.appendChild(await this.renderElementCell(
-        {nodeName: details.violatingNodeSelector, backendNodeId: details.violatingNodeId, target}));
+    row.appendChild(await this.createElementCell(
+        {nodeName: details.violatingNodeSelector, backendNodeId: details.violatingNodeId, target},
+        issue.getCategory()));
     this.appendIssueDetailCell(row, String(Platform.NumberUtilities.floor(details.contrastRatio, 2)));
     this.appendIssueDetailCell(row, String(details.thresholdAA));
     this.appendIssueDetailCell(row, String(details.thresholdAAA));

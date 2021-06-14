@@ -33,6 +33,10 @@ const UIStrings = {
   *@description Title for an unavailable link a request in the network panel
   */
   requestUnavailableInTheNetwork: 'Request unavailable in the network panel, try reloading the inspected page',
+  /**
+  *@description Replacement text for a link to an HTML element which is not available (anymore).
+  */
+  unavailable: 'unavailable',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedResourcesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -243,6 +247,34 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     }
     requestCell.appendChild(document.createTextNode(filename));
     return requestCell;
+  }
+
+  protected async createElementCell(
+      {backendNodeId, nodeName, target}: IssuesManager.Issue.AffectedElement,
+      issueCategory: IssuesManager.Issue.IssueCategory): Promise<Element> {
+    if (!target) {
+      const cellElement = document.createElement('td');
+      cellElement.textContent = nodeName || i18nString(UIStrings.unavailable);
+      return cellElement;
+    }
+
+    function sendTelemetry(): void {
+      Host.userMetrics.issuesPanelResourceOpened(issueCategory, AffectedItem.Element);
+    }
+
+    const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(target, backendNodeId);
+    const anchorElement = (await Common.Linkifier.Linkifier.linkify(deferredDOMNode)) as HTMLElement;
+    anchorElement.textContent = nodeName;
+    anchorElement.addEventListener('click', () => sendTelemetry());
+    anchorElement.addEventListener('keydown', (event: Event) => {
+      if ((event as KeyboardEvent).key === 'Enter') {
+        sendTelemetry();
+      }
+    });
+    const cellElement = document.createElement('td');
+    cellElement.classList.add('affected-resource-element', 'devtools-link');
+    cellElement.appendChild(anchorElement);
+    return cellElement;
   }
 
   protected appendSourceLocation(

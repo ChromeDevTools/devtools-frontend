@@ -694,17 +694,17 @@
        id="tspan5864"
        sodipodi:role="line">e</tspan></text>
   <g
-     transform="matrix(0.75,0,0,0.75,63.000002,15)"
+     transform="scale(0.75)"
      id="g5994"
      style="fill:#000000">
     <path
        inkscape:connector-curvature="0"
-       d="M 3,13 H 5 V 11 H 3 Z m 0,4 H 5 V 15 H 3 Z M 3,9 H 5 V 7 H 3 Z m 4,4 H 21 V 11 H 7 Z m 0,4 H 21 V 15 H 7 Z M 7,7 V 9 H 21 V 7 Z"
+       d="M 87 33 h 2 v -2 h -2 z m 0 4 h 2 v -2 h -2 z m 0 -8 h 2 v -2 h -2 z m 4 4 h 14 v -2 h -14 z m 0 4 h 14 v -2 h -14 z m 0 -10 v 2 h 14 v -2 z"
        id="path5984" />
     <path
        style="fill:none"
        inkscape:connector-curvature="0"
-       d="M 0,0 H 24 V 24 H 0 Z"
+       d="M 87,20 h 24 v 24 h -24 z"
        id="path5986" />
   </g>
   <g

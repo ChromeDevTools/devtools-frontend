@@ -4,6 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
+import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js'; // eslint-disable-line no-unused-vars
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -11,6 +12,7 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
+import {imageNameForResourceType} from '../utils/utils.js';
 
 const {render, html} = LitHtml;
 
@@ -48,11 +50,24 @@ export class WebBundleInfoElement extends HTMLElement {
 
   render(): void {
     const rows = this.webBundleInfo.resourceUrls?.map(url => {
+      const mimeType = Common.ResourceType.ResourceType.mimeFromURL(url) || null;
+      const resourceType = Common.ResourceType.ResourceType.fromMimeTypeOverride(mimeType) ||
+          Common.ResourceType.ResourceType.fromMimeType(mimeType);
+      const iconName = imageNameForResourceType(resourceType);
       return {
         cells: [
           {
             columnId: 'url',
-            value: url,
+            value: null,
+            renderer(): LitHtml.TemplateResult {
+              return html`
+                <div style="display: flex;">
+                  <${IconButton.Icon.Icon.litTagName} class="icon"
+                    .data=${{color: '', iconName, width: '18px'} as IconButton.Icon.IconData}>
+                  </${IconButton.Icon.Icon.litTagName}>
+                  <span>${url}</span>
+                </div>`;
+            },
           },
         ],
       };

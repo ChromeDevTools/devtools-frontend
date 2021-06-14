@@ -65,6 +65,7 @@ devtools_module("network") {
     "../../ui/lit-html:bundle",
     "./components:bundle",
     "./forward:bundle",
+    "./utils:bundle",
   ]
 }
 

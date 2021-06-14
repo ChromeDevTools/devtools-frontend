@@ -222,72 +222,8 @@
 /* These rules are grouped by type and therefore do not adhere to the ordering of stylelint */
 /* stylelint-disable no-descending-specificity, no-duplicate-selectors */
 
-.network-log-grid.data-grid .icon {
-  content: var(--image-file-resourcePlainIcon);
-}
-
-.network-log-grid.data-grid.small .icon {
-  content: var(--image-file-resourcePlainIconSmall);
-}
-
-.network-log-grid.data-grid .icon.script {
-  content: var(--image-file-resourceJSIcon);
-}
-
-.network-log-grid.data-grid.small .icon.script {
-  content: var(--image-file-resourceDocumentIconSmall);
-}
-
-.network-log-grid.data-grid .icon.document {
-  content: var(--image-file-resourceDocumentIcon);
-}
-
-.network-log-grid.data-grid.small .icon.document {
-  content: var(--image-file-resourceDocumentIconSmall);
-}
-
-.network-log-grid.data-grid .icon.stylesheet {
-  content: var(--image-file-resourceCSSIcon);
-}
-
-.network-log-grid.data-grid.small .icon.stylesheet {
-  content: var(--image-file-resourceDocumentIconSmall);
-}
-
-.network-log-grid.data-grid .icon.media {
-  content: var(--image-file-resourcePlainIcon); /* FIXME: media icon */
-}
-
-.network-log-grid.data-grid.small .icon.media {
-  content: var(--image-file-resourcePlainIconSmall); /* FIXME: media icon */
-}
-
-.network-log-grid.data-grid .icon.texttrack {
-  content: var(--image-file-resourcePlainIcon); /* FIXME: vtt icon */
-}
-
-.network-log-grid.data-grid .icon.webbundle {
-  content: var(--image-file-resourceWebBundle);
-}
-
-.network-log-grid.data-grid .icon.webbundleinnerrequest {
-  content: var(--image-file-resourceWebBundleInnerRequest);
-}
-
-.network-log-grid.data-grid.small .icon.texttrack {
-  content: var(--image-file-resourcePlainIconSmall); /* FIXME: vtt icon */
-}
-
 .network-log-grid.data-grid .icon.image {
   position: relative;
-  background-image: var(--image-file-resourcePlainIcon);
-  background-repeat: no-repeat;
-  content: "";
-}
-
-.network-log-grid.data-grid.small .icon.image {
-  background-image: var(--image-file-resourcePlainIconSmall);
-  content: "";
 }
 
 .network-log-grid.data-grid .icon {
@@ -299,17 +235,18 @@
 }
 
 .network-log-grid.data-grid.small .icon {
-  width: 16px;
-  height: 16px;
+  margin-top: 0;
+  width: 18px;
+  height: 18px;
 }
 
 .network-log-grid.data-grid .image-network-icon-preview {
   position: absolute;
   margin: auto;
-  top: 3px;
-  bottom: 4px;
-  left: 5px;
-  right: 5px;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   max-width: 18px;
   max-height: 21px;
   min-width: 1px;

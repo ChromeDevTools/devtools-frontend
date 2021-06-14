@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import * as Common from '../../../../../front_end/core/common/common.js';
-import {assertNotNull} from '../../../../../front_end/core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 
 const ResourceType = Common.ResourceType.ResourceType;
@@ -120,7 +120,7 @@ describe('ResourceType class', () => {
 
   it('is able to return an wasm resource from the string "application/wasm"', () => {
     const result = ResourceType.fromMimeTypeOverride('application/wasm');
-    assertNotNull(result);
+    assertNotNullOrUndefined(result);
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
     assert.strictEqual(result.name(), 'wasm', 'name was not set correctly');
     assert.strictEqual(result.title(), 'Wasm', 'title was not set correctly');
@@ -131,7 +131,7 @@ describe('ResourceType class', () => {
 
   it('is able to return an web bundle resource from the string "application/webbundle"', () => {
     const result = ResourceType.fromMimeTypeOverride('application/webbundle');
-    assertNotNull(result);
+    assertNotNullOrUndefined(result);
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
     assert.strictEqual(result.name(), 'webbundle', 'name was not set correctly');
     assert.strictEqual(result.title(), 'WebBundle', 'title was not set correctly');
@@ -152,7 +152,7 @@ describe('ResourceType class', () => {
 
   it('is able to return a resource type from a URL that contains a mapped extension', () => {
     const result = ResourceType.fromURL('http://www.example.com/test/testFile.js');
-    assertNotNull(result);
+    assertNotNullOrUndefined(result);
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
     assert.strictEqual(result.name(), 'script', 'name was not set correctly');
     assert.strictEqual(result.title(), 'Script', 'title was not set correctly');
@@ -163,7 +163,7 @@ describe('ResourceType class', () => {
 
   it('is able to return a resource type from a URL that ends in .avif', () => {
     const result = ResourceType.fromURL('https://host.example/image.avif');
-    assertNotNull(result);
+    assertNotNullOrUndefined(result);
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
     assert.strictEqual(result.name(), 'image', 'name was not set correctly');
     assert.strictEqual(result.title(), 'Image', 'title was not set correctly');
@@ -174,7 +174,7 @@ describe('ResourceType class', () => {
 
   it('is able to return a resource type from a URL that ends in .jxl', () => {
     const result = ResourceType.fromURL('https://host.example/image.jxl');
-    assertNotNull(result);
+    assertNotNullOrUndefined(result);
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
     assert.strictEqual(result.name(), 'image', 'name was not set correctly');
     assert.strictEqual(result.title(), 'Image', 'title was not set correctly');
@@ -185,7 +185,7 @@ describe('ResourceType class', () => {
 
   it('is able to return a resource type from a URL that ends in .woff2', () => {
     const result = ResourceType.fromURL('https://host.example/image.woff2');
-    assertNotNull(result);
+    assertNotNullOrUndefined(result);
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
     assert.strictEqual(result.name(), 'font', 'name was not set correctly');
     assert.strictEqual(result.title(), 'Font', 'title was not set correctly');
@@ -201,7 +201,7 @@ describe('ResourceType class', () => {
 
   it('is able to return a resource type from a mapped name', () => {
     const result = ResourceType.fromName('script');
-    assertNotNull(result);
+    assertNotNullOrUndefined(result);
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
     assert.strictEqual(result.name(), 'script', 'name was not set correctly');
     assert.strictEqual(result.title(), 'Script', 'title was not set correctly');

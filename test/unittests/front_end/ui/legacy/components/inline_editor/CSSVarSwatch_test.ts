@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNull} from '../../../../../../../front_end/core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../../../../../../front_end/core/platform/platform.js';
 import * as InlineEditor from '../../../../../../../front_end/ui/legacy/components/inline_editor/inline_editor.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../../../../helpers/DOMHelpers.js';
 
@@ -17,10 +17,10 @@ function assertSwatch(swatch: InlineEditor.CSSVarSwatchImpl.CSSVarSwatch, expect
 }) {
   assertShadowRoot(swatch.shadowRoot);
   const container = swatch.shadowRoot.querySelector('span');
-  assertNotNull(container);
+  assertNotNullOrUndefined(container);
 
   const link = container.querySelector('.css-var-link');
-  assertNotNull(link);
+  assertNotNullOrUndefined(link);
 
   assert.strictEqual(
       container.getAttribute('title'), expected.valueTooltip || '', 'The computed values appears as a tooltip');

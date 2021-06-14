@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import {assertNotNull} from '../../../../../front_end/core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
 
 describe('Cookie', () => {
@@ -205,7 +205,7 @@ describe('Cookie', () => {
     const expires = Math.floor(now.getTime()) + 3600 * 1000;
     cookie.addAttribute('Max-Age', '3600');
     const expiresDate = cookie.expiresDate(now);
-    assertNotNull(expiresDate);
+    assertNotNullOrUndefined(expiresDate);
     assert.strictEqual(expiresDate.toISOString(), new Date(expires).toISOString());
   });
 
@@ -215,7 +215,7 @@ describe('Cookie', () => {
     const expires = Math.floor(now.getTime()) + 3600 * 1000;
     cookie.addAttribute('Expires', expires);
     const expiresDate = cookie.expiresDate(now);
-    assertNotNull(expiresDate);
+    assertNotNullOrUndefined(expiresDate);
     assert.strictEqual(expiresDate.toISOString(), new Date(expires).toISOString());
   });
 

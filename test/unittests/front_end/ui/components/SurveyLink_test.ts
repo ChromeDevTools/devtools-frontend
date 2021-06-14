@@ -6,7 +6,7 @@ const {assert} = chai;
 
 import * as SurveyLink from '../../../../../front_end/ui/components/survey_link/survey_link.js';
 import * as Common from '../../../../../front_end/core/common/common.js';
-import {assertNotNull} from '../../../../../front_end/core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 
 function canShowSuccessfulCallback(trigger: string, callback: SurveyLink.SurveyLink.CanShowSurveyCallback) {
@@ -63,7 +63,7 @@ describe('SurveyLink', async () => {
 
     assertShadowRoot(link.shadowRoot);
     const linkNode = link.shadowRoot.querySelector('button');
-    assertNotNull(linkNode);
+    assertNotNullOrUndefined(linkNode);
     assert.notInclude(linkNode.textContent?.trim(), '…');
 
     linkNode.click();
@@ -71,7 +71,7 @@ describe('SurveyLink', async () => {
     // The only output signal we have is the link text which we don't want to assert exactly, so we
     // assume that the pending state has an elipsis.
     const pendingLink = link.shadowRoot.querySelector('button');
-    assertNotNull(pendingLink);
+    assertNotNullOrUndefined(pendingLink);
     assert.include(pendingLink.textContent?.trim(), '…');
   });
 
@@ -87,12 +87,12 @@ describe('SurveyLink', async () => {
 
     assertShadowRoot(link.shadowRoot);
     const linkNode = link.shadowRoot.querySelector('button');
-    assertNotNull(linkNode);
+    assertNotNullOrUndefined(linkNode);
 
     linkNode.click();
 
     const successLink = link.shadowRoot.querySelector('button');
-    assertNotNull(successLink);
+    assertNotNullOrUndefined(successLink);
     assert.include(successLink.textContent?.trim(), 'Thank you');
   });
 
@@ -108,12 +108,12 @@ describe('SurveyLink', async () => {
 
     assertShadowRoot(link.shadowRoot);
     const linkNode = link.shadowRoot.querySelector('button');
-    assertNotNull(linkNode);
+    assertNotNullOrUndefined(linkNode);
 
     linkNode.click();
 
     const successLink = link.shadowRoot.querySelector('button');
-    assertNotNull(successLink);
+    assertNotNullOrUndefined(successLink);
     assert.include(successLink.textContent?.trim(), 'error');
   });
 });

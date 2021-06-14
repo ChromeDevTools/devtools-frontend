@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import {assertNotNull} from '../../../../../front_end/core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 
 const fakeInitiator = {
   target: null,
@@ -77,7 +77,7 @@ describe('TextSourceMap', () => {
   function assertMapping(
       actual: SDK.SourceMap.SourceMapEntry|null, expectedSourceURL: string|undefined,
       expectedSourceLineNumber: number|undefined, expectedSourceColumnNumber: number|undefined) {
-    assertNotNull(actual);
+    assertNotNullOrUndefined(actual);
     assert.strictEqual(actual.sourceURL, expectedSourceURL, 'unexpected source URL');
     assert.strictEqual(actual.sourceLineNumber, expectedSourceLineNumber, 'unexpected source line number');
     assert.strictEqual(actual.sourceColumnNumber, expectedSourceColumnNumber, 'unexpected source column number');
@@ -86,7 +86,7 @@ describe('TextSourceMap', () => {
   function assertReverseMapping(
       actual: SDK.SourceMap.SourceMapEntry|null, expectedCompiledLineNumber: number,
       expectedCompiledColumnNumber: number) {
-    assertNotNull(actual);
+    assertNotNullOrUndefined(actual);
     assert.strictEqual(actual.lineNumber, expectedCompiledLineNumber, 'unexpected compiled line number');
     assert.strictEqual(actual.columnNumber, expectedCompiledColumnNumber, 'unexpected compiled column number');
   }
@@ -158,7 +158,7 @@ describe('TextSourceMap', () => {
     assertMapping(sourceMap.findEntry(0, 2), 'example.js', 0, 2);
 
     const emptyEntry = sourceMap.findEntry(0, 1);
-    assertNotNull(emptyEntry);
+    assertNotNullOrUndefined(emptyEntry);
     assert.isUndefined(emptyEntry.sourceURL, 'unexpected url present for empty segment');
     assert.isUndefined(emptyEntry.sourceLineNumber, 'unexpected source line number for empty segment');
     assert.isUndefined(emptyEntry.sourceColumnNumber, 'unexpected source line number for empty segment');

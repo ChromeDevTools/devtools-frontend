@@ -5,13 +5,13 @@
 const {assert} = chai;
 
 import * as Common from '../../../../../front_end/core/common/common.js';
-import {assertNotNull} from '../../../../../front_end/core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 
 const Color = Common.Color;
 
 const parseAndAssertNotNull = (value: string) => {
   const result = Color.Color.parse(value);
-  assertNotNull(result);
+  assertNotNullOrUndefined(result);
   return result;
 };
 
@@ -84,53 +84,53 @@ describe('Color', () => {
 
   it('parses rgb(a) values', () => {
     const colorOne = Color.Color.parse('rgb(255, 255, 0)');
-    assertNotNull(colorOne);
+    assertNotNullOrUndefined(colorOne);
     assert.deepEqual(colorOne.rgba(), [1, 1, 0, 1]);
 
     const colorTwo = Color.Color.parse('rgba(0, 255, 255, 0.5)');
-    assertNotNull(colorTwo);
+    assertNotNullOrUndefined(colorTwo);
     assert.deepEqual(colorTwo.rgba(), [0, 1, 1, 0.5]);
 
     const colorThree = Color.Color.parse('rgb(255 255 255)');
-    assertNotNull(colorThree);
+    assertNotNullOrUndefined(colorThree);
     assert.deepEqual(colorThree.rgba(), [1, 1, 1, 1]);
 
     const colorFour = Color.Color.parse('rgb(10% 10% 10%)');
-    assertNotNull(colorFour);
+    assertNotNullOrUndefined(colorFour);
     assert.deepEqual(colorFour.rgba(), [0.1, 0.1, 0.1, 1]);
 
     const colorFive = Color.Color.parse('rgb(10% 10% 10% / 0.4)');
-    assertNotNull(colorFive);
+    assertNotNullOrUndefined(colorFive);
     assert.deepEqual(colorFive.rgba(), [0.1, 0.1, 0.1, 0.4]);
 
     const colorSix = Color.Color.parse('rgb(10% 10% 10% / 40%)');
-    assertNotNull(colorSix);
+    assertNotNullOrUndefined(colorSix);
     assert.deepEqual(colorSix.rgba(), [0.1, 0.1, 0.1, 0.4]);
   });
 
   it('parses hsl(a) values', () => {
     const colorOne = Color.Color.parse('hsl(0, 100%, 50%)');
-    assertNotNull(colorOne);
+    assertNotNullOrUndefined(colorOne);
     assert.deepEqual(colorOne.rgba(), [1, 0, 0, 1]);
 
     const colorTwo = Color.Color.parse('hsla(0, 100%, 50%, 0.5)');
-    assertNotNull(colorTwo);
+    assertNotNullOrUndefined(colorTwo);
     assert.deepEqual(colorTwo.rgba(), [1, 0, 0, 0.5]);
 
     const colorThree = Color.Color.parse('hsla(50deg 100% 100% / 50%)');
-    assertNotNull(colorThree);
+    assertNotNullOrUndefined(colorThree);
     assert.deepEqual(colorThree.rgba(), [1, 1, 1, 0.5]);
 
     const colorFour = Color.Color.parse('hsl(0 100% 50% / 0.5)');
-    assertNotNull(colorFour);
+    assertNotNullOrUndefined(colorFour);
     assert.deepEqual(colorFour.rgba(), [1, 0, 0, 0.5]);
 
     const colorFive = Color.Color.parse('hsl(0 100% 50% / 50%)');
-    assertNotNull(colorFive);
+    assertNotNullOrUndefined(colorFive);
     assert.deepEqual(colorFive.rgba(), [1, 0, 0, 0.5]);
 
     const colorSix = Color.Color.parse('hsl(0deg 100% 50% / 50%)');
-    assertNotNull(colorSix);
+    assertNotNullOrUndefined(colorSix);
     assert.deepEqual(colorSix.rgba(), [1, 0, 0, 0.5]);
   });
 
@@ -338,10 +338,10 @@ describe('Color', () => {
     for (const {fgColor, bgColor, contrast, result} of colors) {
       const fgParsed = Color.Color.parse(fgColor);
       const bgParsed = Color.Color.parse(bgColor);
-      assertNotNull(fgParsed);
-      assertNotNull(bgParsed);
+      assertNotNullOrUndefined(fgParsed);
+      assertNotNullOrUndefined(bgParsed);
       const suggestedColor = Color.Color.findFgColorForContrast(fgParsed, bgParsed, contrast);
-      assertNotNull(suggestedColor);
+      assertNotNullOrUndefined(suggestedColor);
       assert.strictEqual(
           suggestedColor.asString(), result,
           `incorrect color suggestion for ${fgColor}/${bgColor} with contrast ${contrast}`);
@@ -379,10 +379,10 @@ describe('Color', () => {
     for (const test of tests) {
       const fg = Common.Color.Color.parse(test.fgColor);
       const bg = Common.Color.Color.parse(test.bgColor);
-      assertNotNull(fg);
-      assertNotNull(bg);
+      assertNotNullOrUndefined(fg);
+      assertNotNullOrUndefined(bg);
       const result = Common.Color.Color.findFgColorForContrastAPCA(fg, bg, test.requiredContrast);
-      assertNotNull(result);
+      assertNotNullOrUndefined(result);
       const absContrast = Math.abs(Common.ColorUtils.contrastRatioAPCA(result.rgba() || [], bg.rgba()));
       assert.isTrue(Math.round(absContrast) >= test.requiredContrast);
     }
@@ -404,8 +404,8 @@ describe('Color', () => {
     for (const test of tests) {
       const fg = Common.Color.Color.parse(test.fgColor);
       const bg = Common.Color.Color.parse(test.bgColor);
-      assertNotNull(fg);
-      assertNotNull(bg);
+      assertNotNullOrUndefined(fg);
+      assertNotNullOrUndefined(bg);
       const result = Common.Color.Color.findFgColorForContrastAPCA(fg, bg, test.requiredContrast);
       assert.isNull(result);
     }

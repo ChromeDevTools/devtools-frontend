@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNull} from '../../../../../../front_end/core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../../../../../front_end/core/platform/platform.js';
 import type * as IssuesManager from '../../../../../../front_end/models/issues_manager/issues_manager.js';
 import * as IconButton from '../../../../../../front_end/ui/components/icon_button/icon_button.js';
 import * as IssueCounter from '../../../../../../front_end/ui/components/issue_counter/issue_counter.js';
@@ -25,7 +25,7 @@ export const extractIconGroups =
       const iconButton = shadowRoot.querySelector('icon-button');
       assertElement(iconButton, IconButton.IconButton.IconButton);
       const iconButtonShadowRoot = iconButton.shadowRoot;
-      assertNotNull(iconButtonShadowRoot);
+      assertNotNullOrUndefined(iconButtonShadowRoot);
       const icons = iconButtonShadowRoot.querySelectorAll('.status-icon');
       assertElements(icons, IconButton.Icon.Icon);
       const labels = iconButtonShadowRoot.querySelectorAll('.icon-button-title');

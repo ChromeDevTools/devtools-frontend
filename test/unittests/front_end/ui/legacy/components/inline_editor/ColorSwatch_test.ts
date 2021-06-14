@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../../../../front_end/core/common/common.js';
-import {assertNotNull} from '../../../../../../../front_end/core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../../../../../../front_end/core/platform/platform.js';
 import * as InlineEditor from '../../../../../../../front_end/ui/legacy/components/inline_editor/inline_editor.js';
 import {assertElement, assertShadowRoot, dispatchClickEvent, renderElementIntoDOM} from '../../../../helpers/DOMHelpers.js';
 
@@ -19,7 +19,7 @@ function assertSwatch(
   const slotEl = swatch.shadowRoot.querySelector('slot');
   assertElement(swatchEl, HTMLElement);
   assertElement(swatchInnerEl, HTMLElement);
-  assertNotNull(slotEl);
+  assertNotNullOrUndefined(slotEl);
 
   if (expected.backgroundColor) {
     assert.strictEqual(
@@ -41,7 +41,7 @@ function createSwatch(color: Common.Color.Color|string, formatOrUseUserSetting?:
 }
 
 function getClickTarget(swatch: InlineEditor.ColorSwatchImpl.ColorSwatch) {
-  assertNotNull(swatch.shadowRoot);
+  assertNotNullOrUndefined(swatch.shadowRoot);
   return swatch.shadowRoot.querySelector('.color-swatch-inner') as HTMLElement;
 }
 

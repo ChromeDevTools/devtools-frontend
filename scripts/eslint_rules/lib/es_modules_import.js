@@ -64,7 +64,7 @@ function checkImportExtension(importPath, context, node) {
 
 function nodeSpecifiersSpecialImportsOnly(specifiers) {
   return specifiers.length === 1 && specifiers[0].type === 'ImportSpecifier' &&
-      ['ls', 'assertNotNull'].includes(specifiers[0].imported.name);
+      ['ls', 'assertNotNullOrUndefined'].includes(specifiers[0].imported.name);
 }
 
 function checkStarImport(context, node, importPath, importingFileName, exportingFileName) {

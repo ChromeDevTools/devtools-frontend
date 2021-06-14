@@ -9,7 +9,7 @@ import type * as WorkspaceModule from '../../../../../../../front_end/models/wor
 
 import {createTarget} from '../../../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection, dispatchEvent} from '../../../../helpers/MockConnection.js';
-import {assertNotNull} from '../../../../../../../front_end/core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../../../../../../front_end/core/platform/platform.js';
 
 const {assert} = chai;
 
@@ -44,18 +44,18 @@ describeWithMockConnection('Linkifier', async () => {
     const {target, linkifier} = setUpEnvironment();
 
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
-    assertNotNull(debuggerModel);
+    assertNotNullOrUndefined(debuggerModel);
     debuggerModel.suspendModel();
 
     const scriptId = 'script';
     const lineNumber = 4;
     const url = '';
     const anchor = linkifier.maybeLinkifyScriptLocation(target, scriptId, url, lineNumber);
-    assertNotNull(anchor);
+    assertNotNullOrUndefined(anchor);
     assert.strictEqual(anchor.textContent, '\u200b');
 
     const info = Components.Linkifier.Linkifier.linkInfo(anchor);
-    assertNotNull(info);
+    assertNotNullOrUndefined(info);
     assert.isNull(info.uiLocation);
   });
 
@@ -63,7 +63,7 @@ describeWithMockConnection('Linkifier', async () => {
     const {target, linkifier} = setUpEnvironment();
 
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
-    assertNotNull(debuggerModel);
+    assertNotNullOrUndefined(debuggerModel);
     debuggerModel.suspendModel();
 
     const scriptId = 'script';
@@ -71,7 +71,7 @@ describeWithMockConnection('Linkifier', async () => {
     // Explicitly set url to empty string and let it resolve through the live location.
     const url = '';
     const anchor = linkifier.maybeLinkifyScriptLocation(target, scriptId, url, lineNumber);
-    assertNotNull(anchor);
+    assertNotNullOrUndefined(anchor);
     assert.strictEqual(anchor.textContent, '\u200b');
 
     debuggerModel.resumeModel();
@@ -96,8 +96,8 @@ describeWithMockConnection('Linkifier', async () => {
       for (const mutation of mutations) {
         if (mutation.type === 'childList') {
           const info = Components.Linkifier.Linkifier.linkInfo(anchor);
-          assertNotNull(info);
-          assertNotNull(info.uiLocation);
+          assertNotNullOrUndefined(info);
+          assertNotNullOrUndefined(info.uiLocation);
           assert.strictEqual(anchor.textContent, `script.js:${lineNumber + 1}`);
           observer.disconnect();
           done();
@@ -133,17 +133,17 @@ describeWithMockConnection('Linkifier', async () => {
 
     // Ask for a link to a script that has not been registered yet, but has the same url.
     const anchor = linkifier.maybeLinkifyScriptLocation(target, scriptId + '2', url, lineNumber);
-    assertNotNull(anchor);
+    assertNotNullOrUndefined(anchor);
 
     const callback: MutationCallback = function(mutations: MutationRecord[]) {
       for (const mutation of mutations) {
         if (mutation.type === 'childList') {
           const info = Components.Linkifier.Linkifier.linkInfo(anchor);
-          assertNotNull(info);
-          assertNotNull(info.uiLocation);
+          assertNotNullOrUndefined(info);
+          assertNotNullOrUndefined(info.uiLocation);
 
           // Make sure that a uiSourceCode is linked to that anchor.
-          assertNotNull(info.uiLocation.uiSourceCode);
+          assertNotNullOrUndefined(info.uiLocation.uiSourceCode);
           observer.disconnect();
           done();
         }

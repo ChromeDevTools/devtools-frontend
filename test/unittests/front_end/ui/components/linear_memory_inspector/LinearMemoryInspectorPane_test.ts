@@ -4,7 +4,7 @@
 
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 import type * as LinearMemoryInspectorModule from '../../../../../../front_end/ui/components/linear_memory_inspector/linear_memory_inspector.js';
-import {assertNotNull} from '../../../../../../front_end/core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../../../../../front_end/core/platform/platform.js';
 import {assertElement} from '../../../helpers/DOMHelpers.js';
 
 function createArray() {
@@ -46,7 +46,7 @@ describeWithEnvironment('LinearMemoryInspectorPane', () => {
     instance.create(scriptId, title, arrayWrapper, 10);
 
     const tabbedPane = instance.contentElement.querySelector('.tabbed-pane');
-    assertNotNull(tabbedPane);
+    assertNotNullOrUndefined(tabbedPane);
     const inspector = tabbedPane.querySelector<LinearMemoryInspectorModule.LinearMemoryInspector.LinearMemoryInspector>(
         'devtools-linear-memory-inspector-inspector');
     assertElement(inspector, LinearMemoryInspector.LinearMemoryInspector.LinearMemoryInspector);

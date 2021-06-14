@@ -6,7 +6,7 @@ const {assert} = chai;
 
 import * as UI from '../../../../front_end/ui/legacy/legacy.js';
 
-import {assertNotNull} from '../../../../front_end/core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../../../front_end/core/platform/platform.js';
 import {renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 describe('TreeOutline', () => {
@@ -26,7 +26,7 @@ describe('TreeOutline', () => {
     });
 
     const firstChild = treeOutline.firstChild();
-    assertNotNull(firstChild);
+    assertNotNullOrUndefined(firstChild);
     firstChild.select(false, true);
 
     const distance = 25;
@@ -74,7 +74,7 @@ describe('TreeOutline', () => {
     treeOutline.appendChild(treeElementForNestedTree);
 
     const innerFirstChild = innerTreeOutline.firstChild();
-    assertNotNull(innerFirstChild);
+    assertNotNullOrUndefined(innerFirstChild);
     innerFirstChild.select(false, true);
     sendKey('ArrowRight');
 
@@ -82,7 +82,7 @@ describe('TreeOutline', () => {
 
     function sendKey(key: string) {
       const deepActiveElement = document.deepActiveElement();
-      assertNotNull(deepActiveElement);
+      assertNotNullOrUndefined(deepActiveElement);
       const keyEvent = new KeyboardEvent('keydown', {bubbles: true, cancelable: true, key});
       deepActiveElement.dispatchEvent(keyEvent);
     }

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNull} from '../../../../../../front_end/core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../../../../../front_end/core/platform/platform.js';
 import * as Protocol from '../../../../../../front_end/generated/protocol.js';
 import * as NetworkComponents from '../../../../../../front_end/panels/network/components/components.js';
 import {getElementsWithinComponent, getElementWithinComponent, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
@@ -58,7 +58,7 @@ describe('RequestTrustTokensView', () => {
     };
 
     const simpleText = getElementWithinComponent(component, 'span > strong', HTMLElement);
-    assertNotNull(simpleText);
+    assertNotNullOrUndefined(simpleText);
     assert.strictEqual(simpleText.textContent, 'Success');
   });
 
@@ -73,7 +73,7 @@ describe('RequestTrustTokensView', () => {
     };
 
     const simpleText = getElementWithinComponent(component, 'span > strong', HTMLElement);
-    assertNotNull(simpleText);
+    assertNotNullOrUndefined(simpleText);
     assert.strictEqual(simpleText.textContent, 'Failure');
   });
 });

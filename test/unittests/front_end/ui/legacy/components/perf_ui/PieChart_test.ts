@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNull} from '../../../../../../../front_end/core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../../../../../../front_end/core/platform/platform.js';
 import * as PerfUI from '../../../../../../../front_end/ui/legacy/components/perf_ui/perf_ui.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../../../../helpers/DOMHelpers.js';
 
@@ -36,7 +36,7 @@ describe('PieChart', () => {
       assertShadowRoot(chart.shadowRoot);
 
       const root = chart.shadowRoot.querySelector('[aria-label="Contents of a Pie"]');
-      assertNotNull(root);
+      assertNotNullOrUndefined(root);
       assert.isTrue(root.classList.contains('root'));
     });
 
@@ -93,7 +93,7 @@ describe('PieChart', () => {
       assertShadowRoot(chart.shadowRoot);
 
       const total = chart.shadowRoot.querySelector('.pie-chart-total');
-      assertNotNull(total);
+      assertNotNullOrUndefined(total);
       assert.strictEqual(total.textContent?.trim(), '100 f');
     });
 
@@ -117,7 +117,7 @@ describe('PieChart', () => {
 
       // Chart total display in the center is selected.
       const total = chart.shadowRoot.querySelector('.pie-chart-total');
-      assertNotNull(total);
+      assertNotNullOrUndefined(total);
       assert.isTrue(total.classList.contains('selected'));
     });
 
@@ -129,7 +129,7 @@ describe('PieChart', () => {
       assertShadowRoot(chart.shadowRoot);
 
       const slice = chart.shadowRoot.querySelector('path');
-      assertNotNull(slice);
+      assertNotNullOrUndefined(slice);
       assert.strictEqual(slice.tabIndex, -1);
     });
 
@@ -141,7 +141,7 @@ describe('PieChart', () => {
       assertShadowRoot(chart.shadowRoot);
 
       const legendName = chart.shadowRoot.querySelector<HTMLDivElement>('.pie-chart-name');
-      assertNotNull(legendName);
+      assertNotNullOrUndefined(legendName);
       legendName.click();
 
       const legendRows = chart.shadowRoot.querySelectorAll('.pie-chart-legend-row');
@@ -156,7 +156,7 @@ describe('PieChart', () => {
 
       // Chart total display in the center is not selected.
       const total = chart.shadowRoot.querySelector('.pie-chart-total');
-      assertNotNull(total);
+      assertNotNullOrUndefined(total);
       assert.isFalse(total.classList.contains('selected'));
     });
 
@@ -168,7 +168,7 @@ describe('PieChart', () => {
       assertShadowRoot(chart.shadowRoot);
 
       const slice = chart.shadowRoot.querySelector<SVGPathElement>('[aria-label="Filling"');
-      assertNotNull(slice);
+      assertNotNullOrUndefined(slice);
       slice.dispatchEvent(new Event('click'));
 
       const legendRows = chart.shadowRoot.querySelectorAll('.pie-chart-legend-row');
@@ -183,7 +183,7 @@ describe('PieChart', () => {
 
       // Chart total display in the center is not selected.
       const total = chart.shadowRoot.querySelector('.pie-chart-total');
-      assertNotNull(total);
+      assertNotNullOrUndefined(total);
       assert.isFalse(total.classList.contains('selected'));
     });
 
@@ -195,7 +195,7 @@ describe('PieChart', () => {
       assertShadowRoot(chart.shadowRoot);
 
       const legendName = chart.shadowRoot.querySelector<HTMLDivElement>('.pie-chart-name');
-      assertNotNull(legendName);
+      assertNotNullOrUndefined(legendName);
       legendName.click();
 
       const legendRow = chart.shadowRoot.querySelector('.pie-chart-legend-row:focus-visible');
@@ -210,7 +210,7 @@ describe('PieChart', () => {
       assertShadowRoot(chart.shadowRoot);
 
       const root = chart.shadowRoot.querySelector<HTMLDivElement>('.root');
-      assertNotNull(root);
+      assertNotNullOrUndefined(root);
       root.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowUp'}));
 
       const legendRow = chart.shadowRoot.querySelector('.pie-chart-legend-row:focus-visible');
@@ -239,7 +239,7 @@ describe('PieChart', () => {
 
       // This is different in no-legend mode!
       const total = chart.shadowRoot.querySelector<HTMLDivElement>('.pie-chart-total');
-      assertNotNull(total);
+      assertNotNullOrUndefined(total);
       assert.strictEqual(total.tabIndex, 1);
     });
   });

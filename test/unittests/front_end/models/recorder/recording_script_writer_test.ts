@@ -283,5 +283,59 @@ await element.type("Hello World");
 })();
 `);
     });
+
+    it('should print the correct script for scroll events', () => {
+      const writer = new Recorder.RecordingScriptWriter.RecordingScriptWriter('  ');
+      const script = writer.getScript({
+        title: 'Test Recording',
+        sections: [{
+          title: 'First Section',
+          url: 'https://localhost/',
+          screenshot: '',
+          steps: [
+            {
+              type: 'scroll',
+              context: {
+                path: [],
+                target: 'main',
+              },
+              selector: 'body > div:nth-child(1)',
+              x: 0,
+              y: 40,
+            },
+            {
+              type: 'scroll',
+              context: {
+                path: [],
+                target: 'main',
+              },
+              x: 40,
+              y: 40,
+            },
+          ],
+        }],
+      });
+      assert.deepEqual(script, `const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+
+  {
+    const targetPage = page;
+    let frame = targetPage.mainFrame();
+    const element = await frame.waitForSelector("body > div:nth-child(1)");
+    await element.evaluate((el, x, y) => { el.scrollTop = y; el.scrollLeft = x; }, 0, 40);
+  }
+  {
+    const targetPage = page;
+    let frame = targetPage.mainFrame();
+    await targetPage.evaluate((x, y) => { window.scroll(x, y); }, 40, 40)
+  }
+
+  await browser.close();
+})();
+`);
+    });
   });
 });

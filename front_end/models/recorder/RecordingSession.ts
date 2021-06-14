@@ -160,7 +160,15 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper {
 
   async appendStep(step: Step): Promise<Step> {
     const currentSection = this.userFlow.sections[this.userFlow.sections.length - 1];
-    currentSection.steps.push(step);
+    const lastStep = currentSection.steps[currentSection.steps.length - 1];
+    // Scroll events report the absolute scroll position. Therefore, we can merge
+    // subsequent scroll events.
+    if (lastStep && lastStep.type === 'scroll' && step.type === 'scroll' && step.selector === lastStep.selector) {
+      lastStep.x = step.x;
+      lastStep.y = step.y;
+    } else {
+      currentSection.steps.push(step);
+    }
 
     this.dispatchEventToListeners('recording-updated', this.userFlow);
     return step;

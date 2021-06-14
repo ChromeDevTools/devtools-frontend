@@ -553,4 +553,52 @@ describe('Recorder', function() {
       }],
     });
   });
+
+  it('should record scroll events', async () => {
+    const untrustedEvents = true;
+    const networkCondition = '';
+    await startRecording('recorder/scroll.html', networkCondition, untrustedEvents);
+
+    const {target} = getBrowserAndPages();
+    await target.bringToFront();
+    const element = await target.waitForSelector('#overflow');
+    await element?.evaluate(el => {
+      el.scrollTop = 40;
+    });
+    await target.evaluate(() => {
+      window.scroll(40, 40);
+    });
+
+    await stopRecording();
+    await assertOutput({
+      title: 'New Recording',
+      sections: [{
+        url: 'https://<url>/test/e2e/resources/recorder/scroll.html',
+        screenshot: '<screenshot>',
+        title: '',
+        steps: [
+          viewportStep,
+          {
+            type: 'scroll',
+            context: {
+              path: [],
+              target: 'main',
+            },
+            selector: '#overflow',
+            x: 0,
+            y: 40,
+          },
+          {
+            type: 'scroll',
+            context: {
+              path: [],
+              target: 'main',
+            },
+            x: 40,
+            y: 40,
+          },
+        ],
+      }],
+    });
+  });
 });

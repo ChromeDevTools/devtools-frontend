@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {Step, ClickStep, StepWithFrameContext, ChangeStep, UserFlow, EmulateNetworkConditionsStep, KeyDownStep, KeyUpStep, CloseStep, ViewportStep} from './Steps.js';
+import type {Step, ClickStep, StepWithFrameContext, ChangeStep, UserFlow, EmulateNetworkConditionsStep, KeyDownStep, KeyUpStep, CloseStep, ViewportStep, ScrollStep} from './Steps.js';
 import {assertAllStepTypesAreHandled} from './Steps.js';
 
 export class RecordingScriptWriter {
@@ -39,7 +39,7 @@ export class RecordingScriptWriter {
     this.appendFrame(step.context.path);
   }
 
-  appendWaitForSelector(step: ClickStep|ChangeStep): void {
+  appendWaitForSelector(step: ClickStep|ChangeStep|ScrollStep): void {
     if (step.selector instanceof Array) {
       this.appendLineToScript(`let element = await frame.waitForSelector(${JSON.stringify(step.selector[0])});`);
       for (const part of step.selector.slice(1)) {
@@ -86,6 +86,16 @@ export class RecordingScriptWriter {
         `await targetPage.setViewport(${JSON.stringify({width: step.width, height: step.height})}})`);
   }
 
+  appendScrollStep(step: ScrollStep): void {
+    if (step.selector) {
+      this.appendWaitForSelector(step);
+      this.appendLineToScript(
+          `await element.evaluate((el, x, y) => { el.scrollTop = y; el.scrollLeft = x; }, ${step.x}, ${step.y});`);
+    } else {
+      this.appendLineToScript(`await targetPage.evaluate((x, y) => { window.scroll(x, y); }, ${step.x}, ${step.y})`);
+    }
+  }
+
   appendStepType(step: Step): void {
     switch (step.type) {
       case 'click':
@@ -102,6 +112,8 @@ export class RecordingScriptWriter {
         return this.appendCloseStep(step);
       case 'viewport':
         return this.appendViewportStep(step);
+      case 'scroll':
+        return this.appendScrollStep(step);
       default:
         return assertAllStepTypesAreHandled(step);
     }

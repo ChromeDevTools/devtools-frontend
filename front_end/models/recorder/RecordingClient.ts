@@ -17,10 +17,15 @@ export type Step = {
 }|{
   type: 'keyup',
   key: string,
+}|{
+  type: 'scroll',
+  x: number,
+  y: number,
+  selector?: Selector,
 };
 
 export function clientStepHasFrameContext(step: Step): boolean {
-  return ['click', 'change', 'keydown', 'keyup'].includes(step.type);
+  return ['click', 'change', 'keydown', 'keyup', 'scroll'].includes(step.type);
 }
 
 declare global {
@@ -111,6 +116,16 @@ export function setupRecordingClient(
       return;
     }
     const nodeTarget = target as Node;
+    if (event.type === 'scroll') {
+      const elementTarget = target as Element;
+      const isElementScroll = target !== document;
+      return {
+        type: 'scroll',
+        x: isElementScroll ? elementTarget.scrollLeft : window.pageXOffset,
+        y: isElementScroll ? elementTarget.scrollTop : window.pageYOffset,
+        selector: isElementScroll ? getSelector(elementTarget) : undefined,
+      };
+    }
     if (event.type === 'click') {
       return {
         type: event.type,
@@ -160,6 +175,7 @@ export function setupRecordingClient(
     window.addEventListener('change', recorderEventListener, true);
     window.addEventListener('keydown', recorderEventListener, true);
     window.addEventListener('keyup', recorderEventListener, true);
+    window.addEventListener('scroll', recorderEventListener, true);
     window._recorderEventListener = recorderEventListener;
   } else {
     log('_recorderEventListener was already installed');
@@ -170,6 +186,7 @@ export function setupRecordingClient(
     window.removeEventListener('change', recorderEventListener, true);
     window.removeEventListener('keydown', recorderEventListener, true);
     window.removeEventListener('keyup', recorderEventListener, true);
+    window.removeEventListener('scroll', recorderEventListener, true);
     delete window._recorderEventListener;
   };
   exports.teardown = teardown;

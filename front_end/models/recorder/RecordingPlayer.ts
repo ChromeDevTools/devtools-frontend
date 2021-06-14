@@ -133,6 +133,23 @@ export class RecordingPlayer {
         });
         break;
       }
+      case 'scroll': {
+        if (step.selector) {
+          const element = await waitForSelector(step.selector, frame);
+          if (!element) {
+            throw new Error('Could not find element: ' + step.selector);
+          }
+          await element.evaluate((e, x, y) => {
+            e.scrollTop = y;
+            e.scrollLeft = x;
+          }, step.x, step.y);
+        } else {
+          await targetPage.evaluate((x, y) => {
+            window.scroll(x, y);
+          }, step.x, step.y);
+        }
+        break;
+      }
       default:
         assertAllStepTypesAreHandled(step);
     }

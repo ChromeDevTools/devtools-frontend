@@ -43,6 +43,12 @@ export interface ChangeStep extends StepWithFrameContext, StepWithCondition {
   value: string;
 }
 
+export interface ScrollStep extends StepWithFrameContext, StepWithCondition {
+  type: 'scroll';
+  x: number;
+  y: number;
+  selector?: Selector;
+}
 
 export interface StepWithCondition {
   condition?: Condition;
@@ -87,7 +93,8 @@ export interface CloseStep {
   target: string;
 }
 
-export type Step = ClickStep|ChangeStep|EmulateNetworkConditionsStep|KeyDownStep|KeyUpStep|CloseStep|ViewportStep;
+export type Step =
+    ClickStep|ChangeStep|EmulateNetworkConditionsStep|KeyDownStep|KeyUpStep|CloseStep|ViewportStep|ScrollStep;
 
 export interface UserFlowSection {
   screenshot: string;

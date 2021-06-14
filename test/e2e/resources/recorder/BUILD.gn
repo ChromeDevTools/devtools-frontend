@@ -10,6 +10,7 @@ copy_to_gen("recorder") {
     "popup.html",
     "recorder.html",
     "recorder2.html",
+    "scroll.html",
     "select.html",
     "shadow-open.html",
   ]

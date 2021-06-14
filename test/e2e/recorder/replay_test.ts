@@ -228,5 +228,48 @@ describe('Recorder', function() {
       assert.strictEqual(await target.evaluate(() => window.visualViewport.width), 800);
       assert.strictEqual(await target.evaluate(() => window.visualViewport.height), 600);
     });
+
+    it('should be able to replay scroll events', async () => {
+      const {target} = getBrowserAndPages();
+      await setupRecorderWithScriptAndReplay({
+        title: 'Test Recording',
+        sections: [{
+          url: `${getResourcesPath()}/recorder/scroll.html`,
+          screenshot: '',
+          title: '',
+          steps: [
+            {
+              'type': 'viewport',
+              width: 800,
+              height: 600,
+            },
+            {
+              type: 'scroll',
+              context: {
+                path: [],
+                target: 'main',
+              },
+              selector: 'body > div:nth-child(1)',
+              x: 0,
+              y: 40,
+            },
+            {
+              type: 'scroll',
+              context: {
+                path: [],
+                target: 'main',
+              },
+              x: 40,
+              y: 40,
+            },
+          ],
+        }],
+      });
+
+      assert.strictEqual(await target.evaluate(() => window.pageXOffset), 40);
+      assert.strictEqual(await target.evaluate(() => window.pageYOffset), 40);
+      assert.strictEqual(await target.evaluate(() => document.querySelector('#overflow')?.scrollTop), 40);
+      assert.strictEqual(await target.evaluate(() => document.querySelector('#overflow')?.scrollLeft), 0);
+    });
   });
 });

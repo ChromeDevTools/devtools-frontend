@@ -943,20 +943,19 @@
        id="path1861" />
   </g>
   <g
-     transform="translate(80.000002)"
      id="g1853"
      style="fill:#000000">
     <path
        inkscape:connector-curvature="0"
        fill-rule="evenodd"
        clip-rule="evenodd"
-       d="m 5,6 h 7 v 5 H 5 Z m 1,1 h 5 v 3 H 6 Z"
+       d="M 85,6 h 7 v 5 h -7 z m 1,1 h 5 v 3 h -5 Z"
        id="path1838" />
     <path
        inkscape:connector-curvature="0"
        fill-rule="evenodd"
        clip-rule="evenodd"
-       d="M 2.5,2 C 1.67157,2 1,2.67157 1,3.5 v 9 C 1,13.3284 1.67157,14 2.5,14 H 13 c 0.8284,0 1.5,-0.6716 1.5,-1.5 v -9 C 14.5,2.67157 13.8284,2 13,2 Z m 0,10.5 V 5 H 13 v 7.5 z"
+       d="M 82.5,2 C 81.67157,2 81,2.67157 81,3.5 v 9 C 81,13.3284 81.67157,14 82.5,14 H 93 c 0.8284,0 1.5,-0.6716 1.5,-1.5 v -9 C 94.5,2.67157 93.8284,2 93,2 Z m 0,10.5 V 5 H 93 v 7.5 z"
        id="path1840" />
   </g>
   <g

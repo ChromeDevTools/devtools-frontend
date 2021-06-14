@@ -12,6 +12,14 @@ import {MockIssuesModel} from './MockIssuesModel.js';
 
 describe('AttributionReportingIssue', () => {
   const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
+  function createProtocolIssueWithDetails(
+      attributionReportingIssueDetails: Protocol.Audits.AttributionReportingIssueDetails):
+      Protocol.Audits.InspectorIssue {
+    return {
+      code: Protocol.Audits.InspectorIssueCode.AttributionReportingIssue,
+      details: {attributionReportingIssueDetails},
+    };
+  }
 
   it('creates different frontend issues for the same InvalidAttributionData protocol issue', () => {
     const violationType = Protocol.Audits.AttributionReportingIssueType.InvalidAttributionData;
@@ -20,10 +28,10 @@ describe('AttributionReportingIssue', () => {
 
     const invalidDataFrontendIssue =
         IssuesManager.AttributionReportingIssue.AttributionReportingIssue.fromInspectorIssue(
-            mockModel, {attributionReportingIssueDetails: invalidDataDetails});
+            mockModel, createProtocolIssueWithDetails(invalidDataDetails));
     const missingDataFrontendIssue =
         IssuesManager.AttributionReportingIssue.AttributionReportingIssue.fromInspectorIssue(
-            mockModel, {attributionReportingIssueDetails: missingDataDetails});
+            mockModel, createProtocolIssueWithDetails(missingDataDetails));
 
     assert.notStrictEqual(invalidDataFrontendIssue[0].code(), missingDataFrontendIssue[0].code());
   });
@@ -34,10 +42,10 @@ describe('AttributionReportingIssue', () => {
     const withoutFrameDetails = {violationType};
 
     const frontendIssueWithFrame = IssuesManager.AttributionReportingIssue.AttributionReportingIssue.fromInspectorIssue(
-        mockModel, {attributionReportingIssueDetails: withFrameDetails});
+        mockModel, createProtocolIssueWithDetails(withFrameDetails));
     const frontendIssueWithoutFrame =
         IssuesManager.AttributionReportingIssue.AttributionReportingIssue.fromInspectorIssue(
-            mockModel, {attributionReportingIssueDetails: withoutFrameDetails});
+            mockModel, createProtocolIssueWithDetails(withoutFrameDetails));
 
     assert.notStrictEqual(frontendIssueWithFrame[0].code(), frontendIssueWithoutFrame[0].code());
   });
@@ -48,10 +56,10 @@ describe('AttributionReportingIssue', () => {
     const withoutFrameDetails = {violationType};
 
     const frontendIssueWithFrame = IssuesManager.AttributionReportingIssue.AttributionReportingIssue.fromInspectorIssue(
-        mockModel, {attributionReportingIssueDetails: withFrameDetails});
+        mockModel, createProtocolIssueWithDetails(withFrameDetails));
     const frontendIssueWithoutFrame =
         IssuesManager.AttributionReportingIssue.AttributionReportingIssue.fromInspectorIssue(
-            mockModel, {attributionReportingIssueDetails: withoutFrameDetails});
+            mockModel, createProtocolIssueWithDetails(withoutFrameDetails));
 
     assert.notStrictEqual(frontendIssueWithFrame[0].code(), frontendIssueWithoutFrame[0].code());
   });

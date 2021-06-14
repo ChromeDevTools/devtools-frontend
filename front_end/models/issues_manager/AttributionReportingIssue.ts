@@ -103,10 +103,9 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
     return IssueKind.PageError;
   }
 
-  static fromInspectorIssue(
-      issuesModel: SDK.IssuesModel.IssuesModel,
-      inspectorDetails: Protocol.Audits.InspectorIssueDetails): AttributionReportingIssue[] {
-    const {attributionReportingIssueDetails} = inspectorDetails;
+  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
+      AttributionReportingIssue[] {
+    const {attributionReportingIssueDetails} = inspectorIssue.details;
     if (!attributionReportingIssueDetails) {
       console.warn('Attribution Reporting issue without details received.');
       return [];

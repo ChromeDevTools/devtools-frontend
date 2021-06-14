@@ -29,6 +29,7 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
   private sharedArrayBufferIssues: Set<IssuesManager.SharedArrayBufferIssue.SharedArrayBufferIssue>;
   private trustedWebActivityIssues: Set<IssuesManager.TrustedWebActivityIssue.TrustedWebActivityIssue>;
   private quirksModeIssues: Set<IssuesManager.QuirksModeIssue.QuirksModeIssue>;
+  private attributionReportingIssues: Set<IssuesManager.AttributionReportingIssue.AttributionReportingIssue>;
   private representative: IssuesManager.Issue.Issue|null;
   private aggregatedIssuesCount: number;
 
@@ -47,6 +48,7 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
     this.sharedArrayBufferIssues = new Set();
     this.trustedWebActivityIssues = new Set();
     this.quirksModeIssues = new Set();
+    this.attributionReportingIssues = new Set();
     this.representative = null;
     this.aggregatedIssuesCount = 0;
   }
@@ -108,6 +110,10 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
 
   getQuirksModeIssues(): Iterable<IssuesManager.QuirksModeIssue.QuirksModeIssue> {
     return this.quirksModeIssues;
+  }
+
+  getAttributionReportingIssues(): ReadonlySet<IssuesManager.AttributionReportingIssue.AttributionReportingIssue> {
+    return this.attributionReportingIssues;
   }
 
   getDescription(): IssuesManager.MarkdownIssueDescription.MarkdownIssueDescription|null {
@@ -189,6 +195,9 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
     }
     if (issue instanceof IssuesManager.QuirksModeIssue.QuirksModeIssue) {
       this.quirksModeIssues.add(issue);
+    }
+    if (issue instanceof IssuesManager.AttributionReportingIssue.AttributionReportingIssue) {
+      this.attributionReportingIssues.add(issue);
     }
   }
 

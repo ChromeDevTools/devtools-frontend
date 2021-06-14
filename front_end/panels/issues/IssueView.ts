@@ -415,6 +415,10 @@ export class IssueView extends UI.TreeOutline.TreeElement {
   }
 
   _createReadMoreLinks(): void {
+    if (this._description.links.length === 0) {
+      return;
+    }
+
     const linkWrapper = new UI.TreeOutline.TreeElement();
     linkWrapper.setCollapsible(false);
     linkWrapper.listItemElement.classList.add('link-wrapper');

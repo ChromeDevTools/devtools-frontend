@@ -19,6 +19,7 @@ import {SameSiteCookieIssue} from './SameSiteCookieIssue.js';
 import {SharedArrayBufferIssue} from './SharedArrayBufferIssue.js';
 import {SourceFrameIssuesManager} from './SourceFrameIssuesManager.js';
 import {TrustedWebActivityIssue} from './TrustedWebActivityIssue.js';
+import {AttributionReportingIssue} from './AttributionReportingIssue.js';
 
 let issuesManagerInstance: IssuesManager|null = null;
 
@@ -80,6 +81,10 @@ const issueCodeHandlers = new Map<
   [
     Protocol.Audits.InspectorIssueCode.NavigatorUserAgentIssue,
     DeprecationIssue.fromInspectorIssue,
+  ],
+  [
+    Protocol.Audits.InspectorIssueCode.AttributionReportingIssue,
+    AttributionReportingIssue.fromInspectorIssue,
   ],
 ]);
 

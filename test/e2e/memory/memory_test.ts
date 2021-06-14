@@ -90,19 +90,32 @@ describe('The Memory Panel', async function() {
       });
 
   it('Puts all ActiveDOMObjects with pending activities into one group', async () => {
+    const {frontend} = getBrowserAndPages();
     await goToResource('memory/dom-objects.html');
     await navigateToMemoryTab();
     await takeHeapSnapshot();
     await waitForNonEmptyHeapSnapshotData();
-    await changeViewViaDropdown('Containment');
-    const pendingActiviesElement = await waitForElementWithTextContent('Pending activities');
-
-    // Focus and then expand the pending activities row to show its children
-    await click(pendingActiviesElement);
-    const {frontend} = getBrowserAndPages();
-    await frontend.keyboard.press('ArrowRight');
-
+    // The test ensures that the following structure is present:
+    // Pending activities
+    // -> Pending activities
+    //    -> InternalNode
+    //       -> MediaQueryList
+    //       -> MediaQueryList
+    await setSearchFilter('Pending activities');
+    // Here and below we have to wait until the elements are actually created
+    // and visible.
+    const [pendingActivitiesObject] = await waitForFunction(async () => {
+      const elements = await frontend.$x('//span[text()="Pending activities"]');
+      return elements.length > 0 ? elements : undefined;
+    });
+    click(pendingActivitiesObject);
     await waitForFunction(async () => {
+      await frontend.keyboard.press('ArrowRight');
+      const elements = await pendingActivitiesObject.$x('//span[text()="InternalNode"]');
+      return elements.length === 1;
+    });
+    await waitForFunction(async () => {
+      await frontend.keyboard.press('ArrowRight');
       const pendingActiviesChildren = await waitForElementsWithTextContent('MediaQueryList');
       return pendingActiviesChildren.length === 2;
     });

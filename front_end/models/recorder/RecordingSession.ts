@@ -294,6 +294,8 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper {
       name: 'addStep',
     });
 
+    await this.evaluateInAllFrames(target, '_recorderTeardown();');
+
     const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
 
     if (runtimeModel) {

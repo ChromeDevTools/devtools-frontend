@@ -31,6 +31,7 @@ export function clientStepHasFrameContext(step: Step): boolean {
 declare global {
   interface Window {
     _recorderEventListener?: (event: Event) => void;
+    _recorderTeardown?: () => void;
     addStep(step: string): void;
   }
 }
@@ -188,7 +189,9 @@ export function setupRecordingClient(
     window.removeEventListener('keyup', recorderEventListener, true);
     window.removeEventListener('scroll', recorderEventListener, true);
     delete window._recorderEventListener;
+    delete window._recorderTeardown;
   };
+  window._recorderTeardown = teardown;
   exports.teardown = teardown;
 
   const getSelector = (node: Node): Selector => {

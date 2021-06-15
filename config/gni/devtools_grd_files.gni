@@ -886,6 +886,7 @@ grd_files_debug_sources = [
   "front_end/panels/issues/AffectedResourcesView.js",
   "front_end/panels/issues/AffectedSharedArrayBufferIssueDetailsView.js",
   "front_end/panels/issues/AffectedTrustedWebActivityIssueDetailsView.js",
+  "front_end/panels/issues/AttributionReportingIssueDetailsView.js",
   "front_end/panels/issues/CSPViolationsListView.js",
   "front_end/panels/issues/CSPViolationsView.js",
   "front_end/panels/issues/ComboBoxOfCheckBoxes.js",

@@ -38,7 +38,7 @@ function getIssueCode(details: Protocol.Audits.AttributionReportingIssueDetails)
 }
 
 export class AttributionReportingIssue extends Issue<IssueCode> {
-  private issueDetails: Protocol.Audits.AttributionReportingIssueDetails;
+  issueDetails: Readonly<Protocol.Audits.AttributionReportingIssueDetails>;
 
   constructor(
       issueDetails: Protocol.Audits.AttributionReportingIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {

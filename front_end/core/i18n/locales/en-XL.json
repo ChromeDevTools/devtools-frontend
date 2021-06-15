@@ -4970,6 +4970,18 @@
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | url": {
     "message": "Ûŕl̂"
   },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
+    "message": "Êĺêḿêńt̂"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
+    "message": "F̂ŕâḿê"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
+    "message": "{n, plural, =1 {# v̂íôĺât́îón̂} other {# v́îól̂át̂íôńŝ}}"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | request": {
+    "message": "R̂éq̂úêśt̂"
+  },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials Ĥéâd́êŕ V̂ál̂úê"
   },

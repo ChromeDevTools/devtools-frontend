@@ -34,9 +34,6 @@ TextUtils.TextRange = TextUtilsModule.TextRange.TextRange;
 /** @constructor */
 TextUtils.SourceRange = TextUtilsModule.TextRange.SourceRange;
 
-/** @constructor */
-TextUtils.SourceEdit = TextUtilsModule.TextRange.SourceEdit;
-
 TextUtils.TextUtils = TextUtilsModule.TextUtils.Utils;
 
 /** @constructor */

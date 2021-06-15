@@ -124,17 +124,6 @@ export class SourceMapEntry {
   }
 }
 
-export class EditResult {
-  map: SourceMap;
-  compiledEdits: TextUtils.TextRange.SourceEdit[];
-  newSources: Map<string, string>;
-  constructor(map: SourceMap, compiledEdits: TextUtils.TextRange.SourceEdit[], newSources: Map<string, string>) {
-    this.map = map;
-    this.compiledEdits = compiledEdits;
-    this.newSources = newSources;
-  }
-}
-
 const base64Digits = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 const base64Map = new Map<string, number>();
 

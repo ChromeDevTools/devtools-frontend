@@ -808,13 +808,13 @@ const UIStrings = {
   */
   cumulativeLayoutShifts: 'Cumulative Layout Shifts',
   /**
-  *@description Link to the evolved CLS website
+  *@description Text for the link to the evolved CLS website
   */
   evolvedClsLink: 'evolved',
   /**
-  *@description Warning in Timeline that CLS can cause a poor user experience
+  *@description Warning in Timeline that CLS can cause a poor user experience. It contains a link to inform developers about the recent changes to how CLS is measured. The new CLS metric is said to have evolved from the previous version.
   *@example {Link to web.dev/metrics} PH1
-  *@example {Link to web.dev/evolving-cls} PH2
+  *@example {Link to web.dev/evolving-cls which will always have the text 'evolved'} PH2
   */
   sCLSInformation: '{PH1} can result in poor user experiences. It has recently {PH2}.',
   /**

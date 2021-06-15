@@ -291,6 +291,8 @@ export class Setting<V> {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _value?: any;
+  // TODO(crbug.com/1172300) Type cannot be inferred without changes to consumers. See above.
+  _serializer: Serializer<unknown, V> = JSON;
   _hadUserAction?: boolean;
 
   constructor(name: string, defaultValue: V, eventSupport: ObjectWrapper, storage: SettingsStorage) {
@@ -299,6 +301,10 @@ export class Setting<V> {
     this._eventSupport = eventSupport;
     this._storage = storage;
     this._registration = null;
+  }
+
+  setSerializer(serializer: Serializer<unknown, V>): void {
+    this._serializer = serializer;
   }
 
   addChangeListener(listener: (arg0: EventTargetEvent) => void, thisObject?: Object): EventDescriptor {
@@ -349,7 +355,7 @@ export class Setting<V> {
     this._value = this._defaultValue;
     if (this._storage.has(this._name)) {
       try {
-        this._value = JSON.parse(this._storage.get(this._name));
+        this._value = this._serializer.parse(this._storage.get(this._name));
       } catch (e) {
         this._storage.remove(this._name);
       }
@@ -361,7 +367,7 @@ export class Setting<V> {
     this._hadUserAction = true;
     this._value = value;
     try {
-      const settingString = JSON.stringify(value);
+      const settingString = this._serializer.stringify(value);
       try {
         this._storage.set(this._name, settingString);
       } catch (e) {
@@ -1092,6 +1098,12 @@ export {
   registerSettingsForTest,
   resetSettings,
 };
+
+export interface Serializer<I, O> {
+  stringify: (value: I) => string;
+  parse: (value: string) => O;
+}
+
 export interface SimpleSettingOption {
   value: string|boolean;
   title: string;

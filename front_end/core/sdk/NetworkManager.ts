@@ -46,6 +46,7 @@ import {Capability} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 import type {SDKModelObserver} from './TargetManager.js';
 import {TargetManager} from './TargetManager.js';
+import type {Serializer} from '../common/Settings.js';
 
 const UIStrings = {
   /**
@@ -284,6 +285,7 @@ export enum Events {
 
 export const NoThrottlingConditions: Conditions = {
   title: i18nLazyString(UIStrings.noThrottling),
+  i18nTitleKey: UIStrings.noThrottling,
   download: -1,
   upload: -1,
   latency: 0,
@@ -291,6 +293,7 @@ export const NoThrottlingConditions: Conditions = {
 
 export const OfflineConditions: Conditions = {
   title: i18nLazyString(UIStrings.offline),
+  i18nTitleKey: UIStrings.offline,
   download: 0,
   upload: 0,
   latency: 0,
@@ -298,6 +301,7 @@ export const OfflineConditions: Conditions = {
 
 export const Slow3GConditions: Conditions = {
   title: i18nLazyString(UIStrings.slowG),
+  i18nTitleKey: UIStrings.slowG,
   download: 500 * 1000 / 8 * .8,
   upload: 500 * 1000 / 8 * .8,
   latency: 400 * 5,
@@ -305,6 +309,7 @@ export const Slow3GConditions: Conditions = {
 
 export const Fast3GConditions: Conditions = {
   title: i18nLazyString(UIStrings.fastG),
+  i18nTitleKey: UIStrings.fastG,
   download: 1.6 * 1000 * 1000 / 8 * .9,
   upload: 750 * 1000 / 8 * .9,
   latency: 150 * 3.75,
@@ -1551,11 +1556,50 @@ class ExtraInfoBuilder {
 }
 
 SDKModel.register(NetworkManager, {capabilities: Capability.Network, autostart: true});
+
+export class ConditionsSerializer implements Serializer<Conditions, Conditions> {
+  stringify(value: unknown): string {
+    const conditions = value as Conditions;
+    return JSON.stringify({
+      ...conditions,
+      title: typeof conditions.title === 'function' ? conditions.title() : conditions.title,
+    });
+  }
+
+  parse(serialized: string): Conditions {
+    const parsed = JSON.parse(serialized);
+    return {
+      ...parsed,
+      title: parsed.i18nTitleKey ? i18nLazyString(parsed.i18nTitleKey) : parsed.title,
+    };
+  }
+}
+
+export function networkConditionsEqual(first: Conditions, second: Conditions): boolean {
+  // Caution: titles might be different function instances, which produce
+  // the same value.
+  const firstTitle = typeof first.title === 'function' ? first.title() : first.title;
+  const secondTitle = typeof second.title === 'function' ? second.title() : second.title;
+  return second.download === first.download && second.upload === first.upload && second.latency === first.latency &&
+      secondTitle === firstTitle;
+}
+
 export interface Conditions {
   download: number;
   upload: number;
   latency: number;
+  // TODO(crbug.com/1219425): In the future, it might be worthwhile to
+  // consider avoiding mixing up presentation state (e.g.: displayed
+  // titles) with behavioral state (e.g.: the throttling amounts). In
+  // this particular case, the title (along with other properties)
+  // doubles as both part of group of fields which (loosely) uniquely
+  // identify instances, as well as the literal string displayed in the
+  // UI, which leads to complications around persistance.
   title: string|(() => string);
+  // Instances may be serialized to local storage, so localized titles
+  // should not be irrecoverably baked, just in case the string changes
+  // (or the user switches locales).
+  i18nTitleKey?: string;
 }
 
 export interface BlockedPattern {

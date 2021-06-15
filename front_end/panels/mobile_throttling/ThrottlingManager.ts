@@ -72,7 +72,7 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper implem
   _cpuThrottlingControls: Set<UI.Toolbar.ToolbarComboBox>;
   _cpuThrottlingRates: number[];
   _customNetworkConditionsSetting: Common.Settings.Setting<SDK.NetworkManager.Conditions[]>;
-  _currentNetworkThrottlingConditions: SDK.NetworkManager.Conditions;
+  _currentNetworkThrottlingConditionsSetting: Common.Settings.Setting<SDK.NetworkManager.Conditions>;
   _lastNetworkThrottlingConditions!: SDK.NetworkManager.Conditions;
 
   private constructor() {
@@ -81,14 +81,22 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper implem
     this._cpuThrottlingControls = new Set();
     this._cpuThrottlingRates = ThrottlingPresets.cpuThrottlingPresets;
     this._customNetworkConditionsSetting = Common.Settings.Settings.instance().moduleSetting('customNetworkConditions');
-    this._currentNetworkThrottlingConditions = SDK.NetworkManager.NoThrottlingConditions;
+    this._currentNetworkThrottlingConditionsSetting = Common.Settings.Settings.instance().createSetting(
+        'preferredNetworkCondition', SDK.NetworkManager.NoThrottlingConditions);
+
+    this._currentNetworkThrottlingConditionsSetting.setSerializer(new SDK.NetworkManager.ConditionsSerializer());
 
     SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, () => {
-          this._lastNetworkThrottlingConditions = this._currentNetworkThrottlingConditions;
-          this._currentNetworkThrottlingConditions =
-              SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
+          this._lastNetworkThrottlingConditions = this._currentNetworkThrottlingConditionsSetting.get();
+          this._currentNetworkThrottlingConditionsSetting.set(
+              SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions());
         });
+
+    if (this._isDirty()) {
+      SDK.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(
+          this._currentNetworkThrottlingConditionsSetting.get());
+    }
 
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.EmulationModel.EmulationModel, this);
   }
@@ -277,6 +285,12 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper implem
       }
     }
     return control;
+  }
+
+  _isDirty(): boolean {
+    const networkConditions = SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
+    const knownCurrentConditions = this._currentNetworkThrottlingConditionsSetting.get();
+    return !SDK.NetworkManager.networkConditionsEqual(networkConditions, knownCurrentConditions);
   }
 }
 

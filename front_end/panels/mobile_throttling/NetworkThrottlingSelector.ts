@@ -79,8 +79,7 @@ export class NetworkThrottlingSelector {
     const value = SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
     for (let index = 0; index < this._options.length; ++index) {
       const option = this._options[index];
-      if (option && option.download === value.download && option.upload === value.upload &&
-          option.latency === value.latency && option.title === value.title) {
+      if (option && SDK.NetworkManager.networkConditionsEqual(value, option)) {
         this._selectCallback(index);
         return true;
       }

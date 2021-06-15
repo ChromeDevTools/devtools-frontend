@@ -30,6 +30,7 @@ export interface NetworkConditions {
   download: number;
   upload: number;
   latency: number;
+  i18nTitleKey?: string;
 }
 
 export interface EmulateNetworkConditionsStep {

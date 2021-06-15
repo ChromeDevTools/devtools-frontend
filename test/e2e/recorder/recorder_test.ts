@@ -399,6 +399,7 @@ describe('Recorder', function() {
         screenshot: '<screenshot>',
         title: '',
         networkConditions: {
+          i18nTitleKey: 'Fast 3G',
           download: 180000,
           latency: 562.5,
           upload: 84375,
@@ -416,6 +417,7 @@ describe('Recorder', function() {
           {
             type: 'emulateNetworkConditions',
             conditions: {
+              i18nTitleKey: 'Slow 3G',
               download: 50000,
               latency: 2000,
               upload: 50000,

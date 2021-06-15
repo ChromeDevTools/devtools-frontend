@@ -122,33 +122,24 @@ export interface IssuesManagerCreationOptions {
  */
 export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
     SDK.TargetManager.SDKModelObserver<SDK.IssuesModel.IssuesModel> {
-  private eventListeners: WeakMap<SDK.IssuesModel.IssuesModel, Common.EventTarget.EventDescriptor>;
-  private allIssues: Map<string, Issue>;
-  private filteredIssues: Map<string, Issue>;
-  private issueCounts: Map<IssueKind, number>;
-  private hasSeenTopFrameNavigated: boolean;
-  private sourceFrameIssuesManager: SourceFrameIssuesManager;
-  private showThirdPartyIssuesSetting?: Common.Settings.Setting<boolean>;
+  private eventListeners = new WeakMap<SDK.IssuesModel.IssuesModel, Common.EventTarget.EventDescriptor>();
+  private allIssues = new Map<string, Issue>();
+  private filteredIssues = new Map<string, Issue>();
+  private issueCounts = new Map<IssueKind, number>();
+  private hasSeenTopFrameNavigated = false;
+  private sourceFrameIssuesManager = new SourceFrameIssuesManager(this);
 
-  constructor(showThirdPartyIssuesSetting?: Common.Settings.Setting<boolean>) {
+  constructor(private readonly showThirdPartyIssuesSetting?: Common.Settings.Setting<boolean>) {
     super();
-    this.eventListeners = new WeakMap();
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.IssuesModel.IssuesModel, this);
-    this.allIssues = new Map();
-    this.filteredIssues = new Map();
-    this.issueCounts = new Map();
-    this.hasSeenTopFrameNavigated = false;
     SDK.FrameManager.FrameManager.instance().addEventListener(
         SDK.FrameManager.Events.TopFrameNavigated, this.onTopFrameNavigated, this);
     SDK.FrameManager.FrameManager.instance().addEventListener(
         SDK.FrameManager.Events.FrameAddedToTarget, this.onFrameAddedToTarget, this);
 
-    this.showThirdPartyIssuesSetting = showThirdPartyIssuesSetting;
     // issueFilter uses the 'showThirdPartyIssues' setting. Clients of IssuesManager need
     // a full update when the setting changes to get an up-to-date issues list.
     this.showThirdPartyIssuesSetting?.addChangeListener(() => this.updateFilteredIssues());
-
-    this.sourceFrameIssuesManager = new SourceFrameIssuesManager(this);
   }
 
   static instance(opts: IssuesManagerCreationOptions = {

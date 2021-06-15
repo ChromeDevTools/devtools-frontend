@@ -17,13 +17,10 @@ import type {MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 import {findTitleFromMarkdownAst, getMarkdownFileContent} from './MarkdownIssueDescription.js';
 
 export class SourceFrameIssuesManager {
-  private issuesManager: IssuesManager.IssuesManager;
   private locationPool = new Bindings.LiveLocation.LiveLocationPool();
   private issueMessages = new Array<IssueMessage>();
 
-  constructor(issuesManager: IssuesManager.IssuesManager) {
-    this.issuesManager = issuesManager;
-
+  constructor(private readonly issuesManager: IssuesManager.IssuesManager) {
     this.issuesManager.addEventListener(IssuesManager.Events.IssueAdded, this.onIssueAdded, this);
     this.issuesManager.addEventListener(IssuesManager.Events.FullUpdateRequired, this.onFullUpdateRequired, this);
   }

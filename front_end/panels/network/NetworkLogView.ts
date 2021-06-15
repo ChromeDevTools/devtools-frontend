@@ -58,7 +58,6 @@ import {NetworkFrameGrouper} from './NetworkFrameGrouper.js';
 import {NetworkLogViewColumns} from './NetworkLogViewColumns.js';
 import type {NetworkTimeCalculator} from './NetworkTimeCalculator.js';
 import {NetworkTimeBoundary, NetworkTransferDurationCalculator, NetworkTransferTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
-import type {NetworkRequestId} from './NetworkRequestId.js';
 
 const UIStrings = {
   /**
@@ -1814,7 +1813,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
     }
   }
 
-  revealAndHighlightRequestWithId(requestId: NetworkRequestId): void {
+  revealAndHighlightRequestWithId(requestId: NetworkForward.NetworkRequestId.NetworkRequestId): void {
     const request = Logs.NetworkLog.NetworkLog.instance().requestByManagerAndId(requestId.manager, requestId.requestId);
     if (request) {
       this.revealAndHighlightRequest(request);

@@ -368,7 +368,7 @@ Common.Revealer.registerRevealer({
 
 Common.Revealer.registerRevealer({
   contextTypes() {
-    return maybeRetrieveContextTypes(Network => [Network.NetworkRequestId.NetworkRequestId]);
+    return [NetworkForward.NetworkRequestId.NetworkRequestId];
   },
   destination: Common.Revealer.RevealerDestination.NETWORK_PANEL,
   async loadRevealer() {

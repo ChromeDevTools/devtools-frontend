@@ -57,7 +57,6 @@ import {NetworkOverview} from './NetworkOverview.js';
 import {NetworkSearchScope} from './NetworkSearchScope.js';  // eslint-disable-line no-unused-vars
 import type {NetworkTimeCalculator} from './NetworkTimeCalculator.js';
 import {NetworkTransferTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
-import {NetworkRequestId} from './NetworkRequestId.js';
 
 const UIStrings = {
   /**
@@ -623,7 +622,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     }
   }
 
-  revealAndHighlightRequestWithId(request: NetworkRequestId): void {
+  revealAndHighlightRequestWithId(request: NetworkForward.NetworkRequestId.NetworkRequestId): void {
     this._hideRequestPanel();
     if (request) {
       this._networkLogView.revealAndHighlightRequestWithId(request);
@@ -860,7 +859,7 @@ export class RequestIdRevealer implements Common.Revealer.Revealer {
   }
 
   reveal(requestId: Object): Promise<void> {
-    if (!(requestId instanceof NetworkRequestId)) {
+    if (!(requestId instanceof NetworkForward.NetworkRequestId.NetworkRequestId)) {
       return Promise.reject(new Error('Internal error: not a network request ID'));
     }
     const panel = NetworkPanel._instance();

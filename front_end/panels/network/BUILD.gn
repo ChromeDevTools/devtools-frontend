@@ -20,7 +20,6 @@ devtools_module("network") {
     "NetworkManageCustomHeadersView.ts",
     "NetworkOverview.ts",
     "NetworkPanel.ts",
-    "NetworkRequestId.ts",
     "NetworkSearchScope.ts",
     "NetworkTimeCalculator.ts",
     "NetworkWaterfallColumn.ts",

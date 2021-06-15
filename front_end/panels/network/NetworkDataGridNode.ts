@@ -55,7 +55,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import type {NetworkTimeCalculator} from './NetworkTimeCalculator.js'; // eslint-disable-line no-unused-vars
 
-import {NetworkRequestId} from './NetworkRequestId.js';
 import {imageNameForResourceType} from './utils/utils.js';
 
 const UIStrings = {
@@ -1095,7 +1094,9 @@ export class NetworkRequestNode extends NetworkNode {
         const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this._request);
         if (webBundleInnerRequestInfo.bundleRequestId && networkManager) {
           cell.appendChild(Components.Linkifier.Linkifier.linkifyRevealable(
-              new NetworkRequestId(webBundleInnerRequestInfo.bundleRequestId, networkManager), secondIconElement));
+              new NetworkForward.NetworkRequestId.NetworkRequestId(
+                  webBundleInnerRequestInfo.bundleRequestId, networkManager),
+              secondIconElement));
         } else {
           cell.appendChild(secondIconElement);
         }

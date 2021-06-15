@@ -580,7 +580,7 @@ export class ResourceTreeFrame {
   _securityOrigin: string|null;
   _mimeType: string|null;
   _unreachableUrl: string;
-  _adFrameType: Protocol.Page.AdFrameType;
+  _adFrameStatus?: Protocol.Page.AdFrameStatus;
   _secureContextType: Protocol.Page.SecureContextType|null;
   _crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType|null;
   _gatedAPIFeatures: Protocol.Page.GatedAPIFeatures[]|null;
@@ -605,7 +605,7 @@ export class ResourceTreeFrame {
     this._securityOrigin = payload && payload.securityOrigin;
     this._mimeType = payload && payload.mimeType;
     this._unreachableUrl = (payload && payload.unreachableUrl) || '';
-    this._adFrameType = (payload && payload.adFrameType) || Protocol.Page.AdFrameType.None;
+    this._adFrameStatus = payload?.adFrameStatus;
     this._secureContextType = payload && payload.secureContextType;
     this._crossOriginIsolatedContextType = payload && payload.crossOriginIsolatedContextType;
     this._gatedAPIFeatures = payload && payload.gatedAPIFeatures;
@@ -658,7 +658,7 @@ export class ResourceTreeFrame {
     this._securityOrigin = framePayload.securityOrigin;
     this._mimeType = framePayload.mimeType;
     this._unreachableUrl = framePayload.unreachableUrl || '';
-    this._adFrameType = framePayload.adFrameType || Protocol.Page.AdFrameType.None;
+    this._adFrameStatus = framePayload?.adFrameStatus;
     this._secureContextType = framePayload.secureContextType;
     this._crossOriginIsolatedContextType = framePayload.crossOriginIsolatedContextType;
     this._gatedAPIFeatures = framePayload.gatedAPIFeatures;
@@ -704,7 +704,11 @@ export class ResourceTreeFrame {
   }
 
   adFrameType(): Protocol.Page.AdFrameType {
-    return this._adFrameType;
+    return this._adFrameStatus?.adFrameType || Protocol.Page.AdFrameType.None;
+  }
+
+  adFrameStatus(): Protocol.Page.AdFrameStatus|undefined {
+    return this._adFrameStatus;
   }
 
   get childFrames(): ResourceTreeFrame[] {

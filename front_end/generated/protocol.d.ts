@@ -8165,17 +8165,6 @@ declare namespace Protocol {
       cookies: CookieParam[];
     }
 
-    export interface SetDataSizeLimitsForTestRequest {
-      /**
-       * Maximum total buffer size.
-       */
-      maxTotalSize: integer;
-      /**
-       * Maximum per-resource size.
-       */
-      maxResourceSize: integer;
-    }
-
     export interface SetExtraHTTPHeadersRequest {
       /**
        * Map with extra HTTP headers.
@@ -9564,6 +9553,20 @@ declare namespace Protocol {
       Root = 'root',
     }
 
+    export const enum AdFrameExplanation {
+      ParentIsAd = 'ParentIsAd',
+      CreatedByAdScript = 'CreatedByAdScript',
+      MatchedBlockingRule = 'MatchedBlockingRule',
+    }
+
+    /**
+     * Indicates whether a frame has been identified as an ad and why.
+     */
+    export interface AdFrameStatus {
+      adFrameType: AdFrameType;
+      explanations?: AdFrameExplanation[];
+    }
+
     /**
      * Indicates whether the frame is a secure context and why it is the case.
      */
@@ -9779,9 +9782,9 @@ declare namespace Protocol {
        */
       unreachableUrl?: string;
       /**
-       * Indicates whether this frame was tagged as an ad.
+       * Indicates whether this frame was tagged as an ad and why.
        */
-      adFrameType?: AdFrameType;
+      adFrameStatus?: AdFrameStatus;
       /**
        * Indicates whether the main document is a secure context and explains why that is the case.
        */
@@ -10204,6 +10207,130 @@ declare namespace Protocol {
     export const enum NavigationType {
       Navigation = 'Navigation',
       BackForwardCacheRestore = 'BackForwardCacheRestore',
+    }
+
+    /**
+     * List of not restored reasons for back-forward cache.
+     */
+    export const enum BackForwardCacheNotRestoredReason {
+      NotMainFrame = 'NotMainFrame',
+      BackForwardCacheDisabled = 'BackForwardCacheDisabled',
+      RelatedActiveContentsExist = 'RelatedActiveContentsExist',
+      HTTPStatusNotOK = 'HTTPStatusNotOK',
+      SchemeNotHTTPOrHTTPS = 'SchemeNotHTTPOrHTTPS',
+      Loading = 'Loading',
+      WasGrantedMediaAccess = 'WasGrantedMediaAccess',
+      DisableForRenderFrameHostCalled = 'DisableForRenderFrameHostCalled',
+      DomainNotAllowed = 'DomainNotAllowed',
+      HTTPMethodNotGET = 'HTTPMethodNotGET',
+      SubframeIsNavigating = 'SubframeIsNavigating',
+      Timeout = 'Timeout',
+      CacheLimit = 'CacheLimit',
+      JavaScriptExecution = 'JavaScriptExecution',
+      RendererProcessKilled = 'RendererProcessKilled',
+      RendererProcessCrashed = 'RendererProcessCrashed',
+      GrantedMediaStreamAccess = 'GrantedMediaStreamAccess',
+      SchedulerTrackedFeatureUsed = 'SchedulerTrackedFeatureUsed',
+      ConflictingBrowsingInstance = 'ConflictingBrowsingInstance',
+      CacheFlushed = 'CacheFlushed',
+      ServiceWorkerVersionActivation = 'ServiceWorkerVersionActivation',
+      SessionRestored = 'SessionRestored',
+      ServiceWorkerPostMessage = 'ServiceWorkerPostMessage',
+      EnteredBackForwardCacheBeforeServiceWorkerHostAdded = 'EnteredBackForwardCacheBeforeServiceWorkerHostAdded',
+      RenderFrameHostReused_SameSite = 'RenderFrameHostReused_SameSite',
+      RenderFrameHostReused_CrossSite = 'RenderFrameHostReused_CrossSite',
+      ServiceWorkerClaim = 'ServiceWorkerClaim',
+      IgnoreEventAndEvict = 'IgnoreEventAndEvict',
+      HaveInnerContents = 'HaveInnerContents',
+      TimeoutPuttingInCache = 'TimeoutPuttingInCache',
+      BackForwardCacheDisabledByLowMemory = 'BackForwardCacheDisabledByLowMemory',
+      BackForwardCacheDisabledByCommandLine = 'BackForwardCacheDisabledByCommandLine',
+      NetworkRequestDatAPIpeDrainedAsBytesConsumer = 'NetworkRequestDatapipeDrainedAsBytesConsumer',
+      NetworkRequestRedirected = 'NetworkRequestRedirected',
+      NetworkRequestTimeout = 'NetworkRequestTimeout',
+      NetworkExceedsBufferLimit = 'NetworkExceedsBufferLimit',
+      NavigationCancelledWhileRestoring = 'NavigationCancelledWhileRestoring',
+      NotMostRecentNavigationEntry = 'NotMostRecentNavigationEntry',
+      BackForwardCacheDisabledForPrerender = 'BackForwardCacheDisabledForPrerender',
+      UserAgentOverrideDiffers = 'UserAgentOverrideDiffers',
+      ForegroundCacheLimit = 'ForegroundCacheLimit',
+      BrowsingInstanceNotSwapped = 'BrowsingInstanceNotSwapped',
+      BackForwardCacheDisabledForDelegate = 'BackForwardCacheDisabledForDelegate',
+      OptInUnloadHeaderNotPresent = 'OptInUnloadHeaderNotPresent',
+      UnloadHandlerExistsInMainFrame = 'UnloadHandlerExistsInMainFrame',
+      UnloadHandlerExistsInSubFrame = 'UnloadHandlerExistsInSubFrame',
+      WebSocket = 'WebSocket',
+      WebRTC = 'WebRTC',
+      MainResourceHasCacheControlNoStore = 'MainResourceHasCacheControlNoStore',
+      MainResourceHasCacheControlNoCache = 'MainResourceHasCacheControlNoCache',
+      SubresourceHasCacheControlNoStore = 'SubresourceHasCacheControlNoStore',
+      SubresourceHasCacheControlNoCache = 'SubresourceHasCacheControlNoCache',
+      PageShowEventListener = 'PageShowEventListener',
+      PageHideEventListener = 'PageHideEventListener',
+      BeforeUnloadEventListener = 'BeforeUnloadEventListener',
+      UnloadEventListener = 'UnloadEventListener',
+      FreezeEventListener = 'FreezeEventListener',
+      ResumeEventListener = 'ResumeEventListener',
+      ContainsPlugins = 'ContainsPlugins',
+      DocumentLoaded = 'DocumentLoaded',
+      DedicatedWorkerOrWorklet = 'DedicatedWorkerOrWorklet',
+      OutstandingNetworkRequestOthers = 'OutstandingNetworkRequestOthers',
+      OutstandingIndexedDBTransaction = 'OutstandingIndexedDBTransaction',
+      RequestedGeolocationPermission = 'RequestedGeolocationPermission',
+      RequestedNotificationsPermission = 'RequestedNotificationsPermission',
+      RequestedMIDIPermission = 'RequestedMIDIPermission',
+      RequestedAudioCapturePermission = 'RequestedAudioCapturePermission',
+      RequestedVideoCapturePermission = 'RequestedVideoCapturePermission',
+      RequestedBackForwardCacheBlockedSensors = 'RequestedBackForwardCacheBlockedSensors',
+      RequestedBackgroundWorkPermission = 'RequestedBackgroundWorkPermission',
+      BroadcastChannel = 'BroadcastChannel',
+      IndexedDBConnection = 'IndexedDBConnection',
+      WebXR = 'WebXR',
+      SharedWorker = 'SharedWorker',
+      WebLocks = 'WebLocks',
+      WebHID = 'WebHID',
+      WebShare = 'WebShare',
+      RequestedStorageAccessGrant = 'RequestedStorageAccessGrant',
+      WebNfc = 'WebNfc',
+      WebFileSystem = 'WebFileSystem',
+      OutstandingNetworkRequestFetch = 'OutstandingNetworkRequestFetch',
+      OutstandingNetworkRequestXHR = 'OutstandingNetworkRequestXHR',
+      AppBanner = 'AppBanner',
+      Printing = 'Printing',
+      WebDatabase = 'WebDatabase',
+      PictureInPicture = 'PictureInPicture',
+      Portal = 'Portal',
+      SpeechRecognizer = 'SpeechRecognizer',
+      IdleManager = 'IdleManager',
+      PaymentManager = 'PaymentManager',
+      SpeechSynthesis = 'SpeechSynthesis',
+      KeyboardLock = 'KeyboardLock',
+      WebOTPService = 'WebOTPService',
+      OutstandingNetworkRequestDirectSocket = 'OutstandingNetworkRequestDirectSocket',
+      IsolatedWorldScript = 'IsolatedWorldScript',
+      InjectedStyleSheet = 'InjectedStyleSheet',
+      MediaSessionImplOnServiceCreated = 'MediaSessionImplOnServiceCreated',
+      Unknown = 'Unknown',
+    }
+
+    /**
+     * Types of not restored reasons for back-forward cache.
+     */
+    export const enum BackForwardCacheNotRestoredReasonType {
+      SupportPending = 'SupportPending',
+      PageSupportNeeded = 'PageSupportNeeded',
+      Circumstantial = 'Circumstantial',
+    }
+
+    export interface BackForwardCacheNotRestoredExplanation {
+      /**
+       * Type of the reason
+       */
+      type: BackForwardCacheNotRestoredReasonType;
+      /**
+       * Not restored reason
+       */
+      reason: BackForwardCacheNotRestoredReason;
     }
 
     export interface AddScriptToEvaluateOnLoadRequest {
@@ -11165,6 +11292,10 @@ declare namespace Protocol {
        * The frame id of the associated frame.
        */
       frameId: FrameId;
+      /**
+       * Array of reasons why the page could not be cached. This must not be empty.
+       */
+      notRestoredExplanations: BackForwardCacheNotRestoredExplanation[];
     }
 
     export interface LoadEventFiredEvent {

@@ -12170,23 +12170,6 @@
                     ]
                 },
                 {
-                    "name": "setDataSizeLimitsForTest",
-                    "description": "For testing.",
-                    "experimental": true,
-                    "parameters": [
-                        {
-                            "name": "maxTotalSize",
-                            "description": "Maximum total buffer size.",
-                            "type": "integer"
-                        },
-                        {
-                            "name": "maxResourceSize",
-                            "description": "Maximum per-resource size.",
-                            "type": "integer"
-                        }
-                    ]
-                },
-                {
                     "name": "setExtraHTTPHeaders",
                     "description": "Specifies whether to always send extra HTTP headers with the requests from this page.",
                     "parameters": [
@@ -14087,6 +14070,36 @@
                     ]
                 },
                 {
+                    "id": "AdFrameExplanation",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "ParentIsAd",
+                        "CreatedByAdScript",
+                        "MatchedBlockingRule"
+                    ]
+                },
+                {
+                    "id": "AdFrameStatus",
+                    "description": "Indicates whether a frame has been identified as an ad and why.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "adFrameType",
+                            "$ref": "AdFrameType"
+                        },
+                        {
+                            "name": "explanations",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "AdFrameExplanation"
+                            }
+                        }
+                    ]
+                },
+                {
                     "id": "SecureContextType",
                     "description": "Indicates whether the frame is a secure context and why it is the case.",
                     "experimental": true,
@@ -14407,11 +14420,11 @@
                             "type": "string"
                         },
                         {
-                            "name": "adFrameType",
-                            "description": "Indicates whether this frame was tagged as an ad.",
+                            "name": "adFrameStatus",
+                            "description": "Indicates whether this frame was tagged as an ad and why.",
                             "experimental": true,
                             "optional": true,
-                            "$ref": "AdFrameType"
+                            "$ref": "AdFrameStatus"
                         },
                         {
                             "name": "secureContextType",
@@ -14980,6 +14993,140 @@
                     "enum": [
                         "Navigation",
                         "BackForwardCacheRestore"
+                    ]
+                },
+                {
+                    "id": "BackForwardCacheNotRestoredReason",
+                    "description": "List of not restored reasons for back-forward cache.",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "NotMainFrame",
+                        "BackForwardCacheDisabled",
+                        "RelatedActiveContentsExist",
+                        "HTTPStatusNotOK",
+                        "SchemeNotHTTPOrHTTPS",
+                        "Loading",
+                        "WasGrantedMediaAccess",
+                        "DisableForRenderFrameHostCalled",
+                        "DomainNotAllowed",
+                        "HTTPMethodNotGET",
+                        "SubframeIsNavigating",
+                        "Timeout",
+                        "CacheLimit",
+                        "JavaScriptExecution",
+                        "RendererProcessKilled",
+                        "RendererProcessCrashed",
+                        "GrantedMediaStreamAccess",
+                        "SchedulerTrackedFeatureUsed",
+                        "ConflictingBrowsingInstance",
+                        "CacheFlushed",
+                        "ServiceWorkerVersionActivation",
+                        "SessionRestored",
+                        "ServiceWorkerPostMessage",
+                        "EnteredBackForwardCacheBeforeServiceWorkerHostAdded",
+                        "RenderFrameHostReused_SameSite",
+                        "RenderFrameHostReused_CrossSite",
+                        "ServiceWorkerClaim",
+                        "IgnoreEventAndEvict",
+                        "HaveInnerContents",
+                        "TimeoutPuttingInCache",
+                        "BackForwardCacheDisabledByLowMemory",
+                        "BackForwardCacheDisabledByCommandLine",
+                        "NetworkRequestDatapipeDrainedAsBytesConsumer",
+                        "NetworkRequestRedirected",
+                        "NetworkRequestTimeout",
+                        "NetworkExceedsBufferLimit",
+                        "NavigationCancelledWhileRestoring",
+                        "NotMostRecentNavigationEntry",
+                        "BackForwardCacheDisabledForPrerender",
+                        "UserAgentOverrideDiffers",
+                        "ForegroundCacheLimit",
+                        "BrowsingInstanceNotSwapped",
+                        "BackForwardCacheDisabledForDelegate",
+                        "OptInUnloadHeaderNotPresent",
+                        "UnloadHandlerExistsInMainFrame",
+                        "UnloadHandlerExistsInSubFrame",
+                        "WebSocket",
+                        "WebRTC",
+                        "MainResourceHasCacheControlNoStore",
+                        "MainResourceHasCacheControlNoCache",
+                        "SubresourceHasCacheControlNoStore",
+                        "SubresourceHasCacheControlNoCache",
+                        "PageShowEventListener",
+                        "PageHideEventListener",
+                        "BeforeUnloadEventListener",
+                        "UnloadEventListener",
+                        "FreezeEventListener",
+                        "ResumeEventListener",
+                        "ContainsPlugins",
+                        "DocumentLoaded",
+                        "DedicatedWorkerOrWorklet",
+                        "OutstandingNetworkRequestOthers",
+                        "OutstandingIndexedDBTransaction",
+                        "RequestedGeolocationPermission",
+                        "RequestedNotificationsPermission",
+                        "RequestedMIDIPermission",
+                        "RequestedAudioCapturePermission",
+                        "RequestedVideoCapturePermission",
+                        "RequestedBackForwardCacheBlockedSensors",
+                        "RequestedBackgroundWorkPermission",
+                        "BroadcastChannel",
+                        "IndexedDBConnection",
+                        "WebXR",
+                        "SharedWorker",
+                        "WebLocks",
+                        "WebHID",
+                        "WebShare",
+                        "RequestedStorageAccessGrant",
+                        "WebNfc",
+                        "WebFileSystem",
+                        "OutstandingNetworkRequestFetch",
+                        "OutstandingNetworkRequestXHR",
+                        "AppBanner",
+                        "Printing",
+                        "WebDatabase",
+                        "PictureInPicture",
+                        "Portal",
+                        "SpeechRecognizer",
+                        "IdleManager",
+                        "PaymentManager",
+                        "SpeechSynthesis",
+                        "KeyboardLock",
+                        "WebOTPService",
+                        "OutstandingNetworkRequestDirectSocket",
+                        "IsolatedWorldScript",
+                        "InjectedStyleSheet",
+                        "MediaSessionImplOnServiceCreated",
+                        "Unknown"
+                    ]
+                },
+                {
+                    "id": "BackForwardCacheNotRestoredReasonType",
+                    "description": "Types of not restored reasons for back-forward cache.",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "SupportPending",
+                        "PageSupportNeeded",
+                        "Circumstantial"
+                    ]
+                },
+                {
+                    "id": "BackForwardCacheNotRestoredExplanation",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "type",
+                            "description": "Type of the reason",
+                            "$ref": "BackForwardCacheNotRestoredReasonType"
+                        },
+                        {
+                            "name": "reason",
+                            "description": "Not restored reason",
+                            "$ref": "BackForwardCacheNotRestoredReason"
+                        }
                     ]
                 }
             ],
@@ -16456,6 +16603,14 @@
                             "name": "frameId",
                             "description": "The frame id of the associated frame.",
                             "$ref": "FrameId"
+                        },
+                        {
+                            "name": "notRestoredExplanations",
+                            "description": "Array of reasons why the page could not be cached. This must not be empty.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "BackForwardCacheNotRestoredExplanation"
+                            }
                         }
                     ]
                 },

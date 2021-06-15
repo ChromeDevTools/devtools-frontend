@@ -1737,13 +1737,6 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand(
       'Network.setCookies', [{'name': 'cookies', 'type': 'object', 'optional': false}], []);
   inspectorBackend.registerCommand(
-      'Network.setDataSizeLimitsForTest',
-      [
-        {'name': 'maxTotalSize', 'type': 'number', 'optional': false},
-        {'name': 'maxResourceSize', 'type': 'number', 'optional': false}
-      ],
-      []);
-  inspectorBackend.registerCommand(
       'Network.setExtraHTTPHeaders', [{'name': 'headers', 'type': 'object', 'optional': false}], []);
   inspectorBackend.registerCommand(
       'Network.setAttachDebugStack', [{'name': 'enabled', 'type': 'boolean', 'optional': false}], []);
@@ -1884,6 +1877,9 @@ export function registerCommands(inspectorBackend) {
 
   // Page.
   inspectorBackend.registerEnum('Page.AdFrameType', {None: 'none', Child: 'child', Root: 'root'});
+  inspectorBackend.registerEnum(
+      'Page.AdFrameExplanation',
+      {ParentIsAd: 'ParentIsAd', CreatedByAdScript: 'CreatedByAdScript', MatchedBlockingRule: 'MatchedBlockingRule'});
   inspectorBackend.registerEnum('Page.SecureContextType', {
     Secure: 'Secure',
     SecureLocalhost: 'SecureLocalhost',
@@ -2022,6 +2018,109 @@ export function registerCommands(inspectorBackend) {
   });
   inspectorBackend.registerEnum(
       'Page.NavigationType', {Navigation: 'Navigation', BackForwardCacheRestore: 'BackForwardCacheRestore'});
+  inspectorBackend.registerEnum('Page.BackForwardCacheNotRestoredReason', {
+    NotMainFrame: 'NotMainFrame',
+    BackForwardCacheDisabled: 'BackForwardCacheDisabled',
+    RelatedActiveContentsExist: 'RelatedActiveContentsExist',
+    HTTPStatusNotOK: 'HTTPStatusNotOK',
+    SchemeNotHTTPOrHTTPS: 'SchemeNotHTTPOrHTTPS',
+    Loading: 'Loading',
+    WasGrantedMediaAccess: 'WasGrantedMediaAccess',
+    DisableForRenderFrameHostCalled: 'DisableForRenderFrameHostCalled',
+    DomainNotAllowed: 'DomainNotAllowed',
+    HTTPMethodNotGET: 'HTTPMethodNotGET',
+    SubframeIsNavigating: 'SubframeIsNavigating',
+    Timeout: 'Timeout',
+    CacheLimit: 'CacheLimit',
+    JavaScriptExecution: 'JavaScriptExecution',
+    RendererProcessKilled: 'RendererProcessKilled',
+    RendererProcessCrashed: 'RendererProcessCrashed',
+    GrantedMediaStreamAccess: 'GrantedMediaStreamAccess',
+    SchedulerTrackedFeatureUsed: 'SchedulerTrackedFeatureUsed',
+    ConflictingBrowsingInstance: 'ConflictingBrowsingInstance',
+    CacheFlushed: 'CacheFlushed',
+    ServiceWorkerVersionActivation: 'ServiceWorkerVersionActivation',
+    SessionRestored: 'SessionRestored',
+    ServiceWorkerPostMessage: 'ServiceWorkerPostMessage',
+    EnteredBackForwardCacheBeforeServiceWorkerHostAdded: 'EnteredBackForwardCacheBeforeServiceWorkerHostAdded',
+    RenderFrameHostReused_SameSite: 'RenderFrameHostReused_SameSite',
+    RenderFrameHostReused_CrossSite: 'RenderFrameHostReused_CrossSite',
+    ServiceWorkerClaim: 'ServiceWorkerClaim',
+    IgnoreEventAndEvict: 'IgnoreEventAndEvict',
+    HaveInnerContents: 'HaveInnerContents',
+    TimeoutPuttingInCache: 'TimeoutPuttingInCache',
+    BackForwardCacheDisabledByLowMemory: 'BackForwardCacheDisabledByLowMemory',
+    BackForwardCacheDisabledByCommandLine: 'BackForwardCacheDisabledByCommandLine',
+    NetworkRequestDatAPIpeDrainedAsBytesConsumer: 'NetworkRequestDatapipeDrainedAsBytesConsumer',
+    NetworkRequestRedirected: 'NetworkRequestRedirected',
+    NetworkRequestTimeout: 'NetworkRequestTimeout',
+    NetworkExceedsBufferLimit: 'NetworkExceedsBufferLimit',
+    NavigationCancelledWhileRestoring: 'NavigationCancelledWhileRestoring',
+    NotMostRecentNavigationEntry: 'NotMostRecentNavigationEntry',
+    BackForwardCacheDisabledForPrerender: 'BackForwardCacheDisabledForPrerender',
+    UserAgentOverrideDiffers: 'UserAgentOverrideDiffers',
+    ForegroundCacheLimit: 'ForegroundCacheLimit',
+    BrowsingInstanceNotSwapped: 'BrowsingInstanceNotSwapped',
+    BackForwardCacheDisabledForDelegate: 'BackForwardCacheDisabledForDelegate',
+    OptInUnloadHeaderNotPresent: 'OptInUnloadHeaderNotPresent',
+    UnloadHandlerExistsInMainFrame: 'UnloadHandlerExistsInMainFrame',
+    UnloadHandlerExistsInSubFrame: 'UnloadHandlerExistsInSubFrame',
+    WebSocket: 'WebSocket',
+    WebRTC: 'WebRTC',
+    MainResourceHasCacheControlNoStore: 'MainResourceHasCacheControlNoStore',
+    MainResourceHasCacheControlNoCache: 'MainResourceHasCacheControlNoCache',
+    SubresourceHasCacheControlNoStore: 'SubresourceHasCacheControlNoStore',
+    SubresourceHasCacheControlNoCache: 'SubresourceHasCacheControlNoCache',
+    PageShowEventListener: 'PageShowEventListener',
+    PageHideEventListener: 'PageHideEventListener',
+    BeforeUnloadEventListener: 'BeforeUnloadEventListener',
+    UnloadEventListener: 'UnloadEventListener',
+    FreezeEventListener: 'FreezeEventListener',
+    ResumeEventListener: 'ResumeEventListener',
+    ContainsPlugins: 'ContainsPlugins',
+    DocumentLoaded: 'DocumentLoaded',
+    DedicatedWorkerOrWorklet: 'DedicatedWorkerOrWorklet',
+    OutstandingNetworkRequestOthers: 'OutstandingNetworkRequestOthers',
+    OutstandingIndexedDBTransaction: 'OutstandingIndexedDBTransaction',
+    RequestedGeolocationPermission: 'RequestedGeolocationPermission',
+    RequestedNotificationsPermission: 'RequestedNotificationsPermission',
+    RequestedMIDIPermission: 'RequestedMIDIPermission',
+    RequestedAudioCapturePermission: 'RequestedAudioCapturePermission',
+    RequestedVideoCapturePermission: 'RequestedVideoCapturePermission',
+    RequestedBackForwardCacheBlockedSensors: 'RequestedBackForwardCacheBlockedSensors',
+    RequestedBackgroundWorkPermission: 'RequestedBackgroundWorkPermission',
+    BroadcastChannel: 'BroadcastChannel',
+    IndexedDBConnection: 'IndexedDBConnection',
+    WebXR: 'WebXR',
+    SharedWorker: 'SharedWorker',
+    WebLocks: 'WebLocks',
+    WebHID: 'WebHID',
+    WebShare: 'WebShare',
+    RequestedStorageAccessGrant: 'RequestedStorageAccessGrant',
+    WebNfc: 'WebNfc',
+    WebFileSystem: 'WebFileSystem',
+    OutstandingNetworkRequestFetch: 'OutstandingNetworkRequestFetch',
+    OutstandingNetworkRequestXHR: 'OutstandingNetworkRequestXHR',
+    AppBanner: 'AppBanner',
+    Printing: 'Printing',
+    WebDatabase: 'WebDatabase',
+    PictureInPicture: 'PictureInPicture',
+    Portal: 'Portal',
+    SpeechRecognizer: 'SpeechRecognizer',
+    IdleManager: 'IdleManager',
+    PaymentManager: 'PaymentManager',
+    SpeechSynthesis: 'SpeechSynthesis',
+    KeyboardLock: 'KeyboardLock',
+    WebOTPService: 'WebOTPService',
+    OutstandingNetworkRequestDirectSocket: 'OutstandingNetworkRequestDirectSocket',
+    IsolatedWorldScript: 'IsolatedWorldScript',
+    InjectedStyleSheet: 'InjectedStyleSheet',
+    MediaSessionImplOnServiceCreated: 'MediaSessionImplOnServiceCreated',
+    Unknown: 'Unknown'
+  });
+  inspectorBackend.registerEnum(
+      'Page.BackForwardCacheNotRestoredReasonType',
+      {SupportPending: 'SupportPending', PageSupportNeeded: 'PageSupportNeeded', Circumstantial: 'Circumstantial'});
   inspectorBackend.registerEvent('Page.domContentEventFired', ['timestamp']);
   inspectorBackend.registerEnum(
       'Page.FileChooserOpenedEventMode', {SelectSingle: 'selectSingle', SelectMultiple: 'selectMultiple'});
@@ -2047,7 +2146,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEvent(
       'Page.javascriptDialogOpening', ['url', 'message', 'type', 'hasBrowserHandler', 'defaultPrompt']);
   inspectorBackend.registerEvent('Page.lifecycleEvent', ['frameId', 'loaderId', 'name', 'timestamp']);
-  inspectorBackend.registerEvent('Page.backForwardCacheNotUsed', ['loaderId', 'frameId']);
+  inspectorBackend.registerEvent('Page.backForwardCacheNotUsed', ['loaderId', 'frameId', 'notRestoredExplanations']);
   inspectorBackend.registerEvent('Page.loadEventFired', ['timestamp']);
   inspectorBackend.registerEvent('Page.navigatedWithinDocument', ['frameId', 'url']);
   inspectorBackend.registerEvent('Page.screencastFrame', ['data', 'metadata', 'sessionId']);

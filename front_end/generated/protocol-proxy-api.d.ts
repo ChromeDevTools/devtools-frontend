@@ -1850,12 +1850,6 @@ declare namespace ProtocolProxyApi {
     invoke_setCookies(params: Protocol.Network.SetCookiesRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
-     * For testing.
-     */
-    invoke_setDataSizeLimitsForTest(params: Protocol.Network.SetDataSizeLimitsForTestRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
-
-    /**
      * Specifies whether to always send extra HTTP headers with the requests from this page.
      */
     invoke_setExtraHTTPHeaders(params: Protocol.Network.SetExtraHTTPHeadersRequest):

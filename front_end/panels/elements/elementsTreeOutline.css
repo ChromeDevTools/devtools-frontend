@@ -58,6 +58,7 @@
 }
 
 .elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.selected .selected-hint::before {
+  position: static;
   opacity: 60%;
 }
 

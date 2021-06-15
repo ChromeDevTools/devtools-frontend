@@ -2231,6 +2231,9 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "B̂áĉḱ-f̂ór̂ẃâŕd̂ Ćâćĥé Ŝt́ât́ûś"
   },
+  "panels/application/BackForwardCacheView.ts | explanations": {
+    "message": "Êx́p̂ĺâńât́îón̂ś"
+  },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "L̂áŝt́ M̂áîń F̂ŕâḿê Ńâv́îǵât́îón̂"
   },

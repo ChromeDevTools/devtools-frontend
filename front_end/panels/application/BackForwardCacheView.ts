@@ -8,6 +8,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
 import * as ReportView from '../../ui/components/report_view/report_view.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import type * as Protocol from '../../generated/protocol.js';
 
 const UIStrings = {
   /**
@@ -38,6 +39,10 @@ const UIStrings = {
    * @description Status text for the status of the back-forward cache status
    */
   unknown: 'unknown',
+  /**
+   * @description Text for the row with explanations for the back-forward cache status
+   */
+  explanations: 'Explanations',
   /**
    * @description Status text for the status of the back-forward cache status indicating that
    * the back-forward cache was not used and a normal navigation occured instead.
@@ -105,6 +110,7 @@ export class BackForwardCacheView extends UI.ThrottledWidget.ThrottledWidget {
       <${ReportView.ReportView.ReportValue.litTagName}>${
         this.renderBackForwardCacheStatus(
             mainFrame.backForwardCacheDetails.restoredFromCache)}</${ReportView.ReportView.ReportValue.litTagName}>
+       ${this.maybeRenderExplanations(mainFrame.backForwardCacheDetails.explanations)}
     `;
   }
 
@@ -116,5 +122,17 @@ export class BackForwardCacheView extends UI.ThrottledWidget.ThrottledWidget {
         return i18nString(UIStrings.normalNavigation);
     }
     return i18nString(UIStrings.unknown);
+  }
+
+  private maybeRenderExplanations(explanations: Protocol.Page.BackForwardCacheNotRestoredExplanation[]):
+      LitHtml.TemplateResult|{} {
+    if (explanations.length === 0) {
+      return LitHtml.nothing;
+    }
+    return LitHtml.html`<${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.explanations)}</${
+        ReportView.ReportView.ReportKey.litTagName}>
+    <${ReportView.ReportView.ReportValue.litTagName}>${LitHtml.html`${explanations.map(explanation => {
+      return LitHtml.html`<div>${explanation.reason} (${explanation.type})</div>`;
+    })}`}</${ReportView.ReportView.ReportValue.litTagName}>`;
   }
 }

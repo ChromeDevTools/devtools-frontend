@@ -203,12 +203,12 @@ export class ResourceTreeModel extends SDKModel {
         return;
       }
     }
-    if (type) {
-      frame.backForwardCacheDetails.restoredFromCache = type === Protocol.Page.NavigationType.BackForwardCacheRestore;
-    }
 
     this.dispatchEventToListeners(Events.FrameWillNavigate, frame);
     frame._navigate(framePayload);
+    if (type) {
+      frame.backForwardCacheDetails.restoredFromCache = type === Protocol.Page.NavigationType.BackForwardCacheRestore;
+    }
     this.dispatchEventToListeners(Events.FrameNavigated, frame);
 
     if (frame.isMainFrame()) {
@@ -522,7 +522,7 @@ export class ResourceTreeModel extends SDKModel {
 
   onBackForwardCacheNotUsed(event: Protocol.Page.BackForwardCacheNotUsedEvent): void {
     if (this.mainFrame && this.mainFrame.id === event.frameId && this.mainFrame.loaderId === event.loaderId) {
-      this.mainFrame.backForwardCacheDetails.restoredFromCache = false;
+      this.mainFrame.setBackForwardCacheDetails(event);
       this.dispatchEventToListeners(Events.BackForwardCacheDetailsUpdated, this.mainFrame);
     } else {
       this.pendingBackForwardCacheNotUsedEvents.add(event);
@@ -535,7 +535,7 @@ export class ResourceTreeModel extends SDKModel {
     }
     for (const event of this.pendingBackForwardCacheNotUsedEvents) {
       if (frame.id === event.frameId && frame.loaderId === event.loaderId) {
-        frame.backForwardCacheDetails.restoredFromCache = false;
+        frame.setBackForwardCacheDetails(event);
         this.pendingBackForwardCacheNotUsedEvents.delete(event);
         // No need to dispatch the `BackForwardCacheDetailsUpdated` event here,
         // as this method call is followed by a `MainFrameNavigated` event.
@@ -588,7 +588,10 @@ export class ResourceTreeFrame {
   private creationStackTraceTarget: Target|null;
   _childFrames: Set<ResourceTreeFrame>;
   _resourcesMap: Map<string, Resource>;
-  backForwardCacheDetails: {restoredFromCache: boolean|undefined} = {restoredFromCache: undefined};
+  backForwardCacheDetails: {
+    restoredFromCache: boolean|undefined,
+    explanations: Protocol.Page.BackForwardCacheNotRestoredExplanation[],
+  } = {restoredFromCache: undefined, explanations: []};
 
   constructor(
       model: ResourceTreeModel, parentFrame: ResourceTreeFrame|null, frameId: string, payload: Protocol.Page.Frame|null,
@@ -662,6 +665,7 @@ export class ResourceTreeFrame {
     this._secureContextType = framePayload.secureContextType;
     this._crossOriginIsolatedContextType = framePayload.crossOriginIsolatedContextType;
     this._gatedAPIFeatures = framePayload.gatedAPIFeatures;
+    this.backForwardCacheDetails = {restoredFromCache: undefined, explanations: []};
 
     const mainResource = this._resourcesMap.get(this._url);
     this._resourcesMap.clear();
@@ -921,6 +925,11 @@ export class ResourceTreeFrame {
       void {
     this.creationStackTrace = creationStackTraceData.creationStackTrace;
     this.creationStackTraceTarget = creationStackTraceData.creationStackTraceTarget;
+  }
+
+  setBackForwardCacheDetails(event: Protocol.Page.BackForwardCacheNotUsedEvent): void {
+    this.backForwardCacheDetails.restoredFromCache = false;
+    this.backForwardCacheDetails.explanations = event.notRestoredExplanations;
   }
 }
 

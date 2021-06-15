@@ -2231,6 +2231,9 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Back-forward Cache Status"
   },
+  "panels/application/BackForwardCacheView.ts | explanations": {
+    "message": "Explanations"
+  },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Last Main Frame Navigation"
   },

@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Page Title</title>
+<script>
+document.addEventListener('visibilitychange', function logData() {
+  if (document.visibilityState === 'hidden') {
+    navigator.sendBeacon('/sendBeacon');
+  }
+});
+</script>

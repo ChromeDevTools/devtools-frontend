@@ -6251,6 +6251,12 @@
   "panels/network/NetworkDataGridNode.ts | sPreflight": {
     "message": "{PH1} + P̂ŕêf́l̂íĝh́t̂"
   },
+  "panels/network/NetworkDataGridNode.ts | unknown": {
+    "message": "(ûńk̂ńôẃn̂)"
+  },
+  "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
+    "message": "T̂h́ê ŕêq́ûéŝt́ ŝt́ât́ûś ĉán̂ńôt́ b̂é ŝh́ôẃn̂ h́êŕê b́êćâúŝé t̂h́ê ṕâǵê t́ĥát̂ íŝśûéd̂ ít̂ ún̂ĺôád̂éd̂ ẃĥíl̂é t̂h́ê ŕêq́ûéŝt́ ŵáŝ ín̂ f́l̂íĝh́t̂. Ýôú ĉán̂ úŝé ĉh́r̂óm̂é://n̂ét̂-éx̂ṕôŕt̂ t́ô ćâṕt̂úr̂é â ńêt́ŵór̂ḱ l̂óĝ án̂d́ ŝéê ál̂ĺ r̂éq̂úêśt̂ d́êt́âíl̂ś."
+  },
   "panels/network/NetworkDataGridNode.ts | webBundle": {
     "message": "(Ŵéb̂ B́ûńd̂ĺê)"
   },

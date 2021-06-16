@@ -393,6 +393,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements
     if (preserveLog) {
       for (const request of oldRequestsSet) {
         this._addRequest(request);
+        request.preserved = true;
       }
     }
 

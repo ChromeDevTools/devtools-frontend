@@ -132,6 +132,15 @@ const UIStrings = {
   */
   pendingq: '(pending)',
   /**
+  * @description Status text in the Network panel that indicates a network request state is not known.
+  */
+  unknown: '(unknown)',
+  /**
+  * @description Tooltip providing details on why the request has unknown status.
+  */
+  unknownExplanation:
+      'The request status cannot be shown here because the page that issued it unloaded while the request was in flight. You can use chrome://net-export to capture a network log and see all request details.',
+  /**
   * @description Text in Network Data Grid Node of the Network panel. Noun, short for a 'HTTP server
   * push'.
   */
@@ -1203,6 +1212,8 @@ export class NetworkRequestNode extends NetworkNode {
           i18nString(UIStrings.crossoriginResourceSharingErrorS, {PH1: corsErrorStatus.corsError}));
     } else if (this._request.finished) {
       this._setTextAndTitle(cell, i18nString(UIStrings.finished));
+    } else if (this._request.preserved) {
+      this._setTextAndTitle(cell, i18nString(UIStrings.unknown), i18nString(UIStrings.unknownExplanation));
     } else {
       this._setTextAndTitle(cell, i18nString(UIStrings.pendingq));
     }

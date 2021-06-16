@@ -6,7 +6,7 @@ import {assert} from 'chai';
 
 import {click, getBrowserAndPages, step, waitFor, waitForAria, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {navigateToNetworkTab, setCacheDisabled, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
+import {navigateToNetworkTab, setCacheDisabled, togglePersistLog, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
 
 describe('The Network Tab', async function() {
   if (this.timeout() !== 0.0) {
@@ -234,11 +234,11 @@ describe('The Network Tab', async function() {
 
     await waitForSomeRequestsToAppear(3);
 
-    const getNetworkRequestSize = () => frontend.evaluate(() => {
+    const getNetworkRequestStatus = () => frontend.evaluate(() => {
       return Array.from(document.querySelectorAll('.status-column')).slice(2, 4).map(node => node.textContent);
     });
 
-    assert.sameMembers(await getNetworkRequestSize(), ['Web Bundle error', '(failed)net::ERR_INVALID_WEB_BUNDLE']);
+    assert.sameMembers(await getNetworkRequestStatus(), ['Web Bundle error', '(failed)net::ERR_INVALID_WEB_BUNDLE']);
   });
 
   it('shows web bundle inner request error in the status column', async () => {
@@ -283,5 +283,26 @@ describe('The Network Tab', async function() {
     assert.sameMembers(await getFromWebBundleIcons(), [
       'from Web Bundle',
     ]);
+  });
+
+  it('shows preserved pedning requests as unknown', async () => {
+    const {target, frontend} = getBrowserAndPages();
+
+    await navigateToNetworkTab('send_beacon_on_unload.html');
+
+    await setCacheDisabled(true);
+    await target.reload({waitUntil: 'networkidle0'});
+
+    await waitForSomeRequestsToAppear(1);
+
+    await togglePersistLog();
+
+    await navigateToNetworkTab('fetch.html');
+    await waitForSomeRequestsToAppear(1);
+    const getNetworkRequestStatus = () => frontend.evaluate(() => {
+      return Array.from(document.querySelectorAll('.status-column')).slice(3, 4).map(node => node.textContent);
+    });
+
+    assert.deepEqual(await getNetworkRequestStatus(), ['(unknown)']);
   });
 });

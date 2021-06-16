@@ -12,7 +12,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import type * as Workspace from '../workspace/workspace.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 
-import {RecordingPlayer} from './RecordingPlayer.js';
+import {RecordingPlayer, Events} from './RecordingPlayer.js';
 import {RecordingSession} from './RecordingSession.js';
 import type {UserFlow} from './Steps.js';
 import {findRecordingsProject} from './RecordingFileSystem.js';
@@ -66,14 +66,13 @@ export class RecorderModel extends SDK.SDKModel.SDKModel {
     return JSON.parse(source) as UserFlow;
   }
 
-  async replayRecording(userFlow: UserFlow): Promise<void> {
+  prepareForReplaying(userFlow: UserFlow): RecordingPlayer {
     this.updateState(RecorderState.Replaying);
-    try {
-      const player = new RecordingPlayer(userFlow);
-      await player.play();
-    } finally {
+    const player = new RecordingPlayer(userFlow);
+    player.addEventListener(Events.Done, () => {
       this.updateState(RecorderState.Idle);
-    }
+    });
+    return player;
   }
 
   async toggleRecording(): Promise<RecordingSession|null> {

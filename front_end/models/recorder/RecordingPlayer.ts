@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as puppeteer from '../../third_party/puppeteer/puppeteer.js';
 import {getPuppeteerConnection as getPuppeteerConnectionToCurrentPage} from './PuppeteerConnection.js';
@@ -9,10 +10,17 @@ import {getPuppeteerConnection as getPuppeteerConnectionToCurrentPage} from './P
 import type {Step, UserFlow, Selector} from './Steps.js';
 import {assertAllStepTypesAreHandled} from './Steps.js';
 
-export class RecordingPlayer {
+export const enum Events {
+  Done = 'Done',
+  Step = 'Step',
+  Error = 'Error',
+}
+
+export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper {
   userFlow: UserFlow;
 
   constructor(userFlow: UserFlow) {
+    super();
     this.userFlow = userFlow;
   }
 
@@ -39,6 +47,7 @@ export class RecordingPlayer {
         }
       }
     } catch (err) {
+      this.dispatchEventToListeners(Events.Error, err);
       console.error('ERROR', err.message);
     } finally {
       const pages = await browser.pages();
@@ -53,6 +62,8 @@ export class RecordingPlayer {
       }
       browser.disconnect();
       await SDK.TargetManager.TargetManager.instance().resumeAllTargets();
+
+      this.dispatchEventToListeners(Events.Done);
     }
   }
 
@@ -83,6 +94,8 @@ export class RecordingPlayer {
   }
 
   async step(browser: puppeteer.Browser, page: puppeteer.Page, step: Step): Promise<void> {
+    this.dispatchEventToListeners(Events.Step, step);
+
     const {targetPage, frame} = await this.getTargetPageAndFrame(browser, page, step);
 
     let condition: Promise<unknown>|null = null;

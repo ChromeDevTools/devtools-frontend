@@ -8,6 +8,7 @@ node_ts_library("recorder") {
   sources = [
     "recorder_test.ts",
     "replay_test.ts",
+    "ui_test.ts",
   ]
 
   deps = [

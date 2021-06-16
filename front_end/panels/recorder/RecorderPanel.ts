@@ -16,6 +16,10 @@ let recorderPanelInstance: RecorderPanel;
 
 export class RecorderPanel extends UI.Panel.Panel {
   private recording: Recorder.Steps.UserFlow|null;
+  private isPlaying: boolean = false;
+  private isRecording: boolean = false;
+  private currentStep?: Recorder.Steps.Step;
+  private currentError?: Error;
 
   constructor() {
     super('recorder');
@@ -34,8 +38,7 @@ export class RecorderPanel extends UI.Panel.Panel {
     recorderModel.getAvailableRecordings();
 
     this.recording = {
-      title: 'Recording 1',
-      description: 'This is a description',
+      title: '',
       sections: [],
     } as Recorder.Steps.UserFlow;
 
@@ -43,28 +46,99 @@ export class RecorderPanel extends UI.Panel.Panel {
     recordingView.style.flex = '1';
     recordingView.addEventListener('recordingtoggled', async (e: Event) => {
       const event = e as Components.RecordingView.RecordingToggledEvent;
+      this.isRecording = event.data;
+      recordingView.data = {
+        recording: this.recording as Recorder.Steps.UserFlow,
+        isRecording: this.isRecording,
+        isPlaying: this.isPlaying,
+        currentStep: this.currentStep,
+        currentError: this.currentError,
+      };
+
       const currentSession = await recorderModel.toggleRecording();
 
+      this.recording = (currentSession ? currentSession.getUserFlow() : this.recording) as Recorder.Steps.UserFlow;
       recordingView.data = {
-        recording: (currentSession ? currentSession.getUserFlow() : this.recording) as Recorder.Steps.UserFlow,
-        isRecording: event.data,
+        recording: this.recording,
+        isRecording: this.isRecording,
+        isPlaying: this.isPlaying,
+        currentStep: this.currentStep,
+        currentError: this.currentError,
       };
 
       if (currentSession) {
         currentSession.addEventListener('recording-updated', async ({data}: {data: Recorder.Steps.UserFlow}) => {
           this.recording = data;
           recordingView.data = {
-            recording: data,
-            isRecording: event.data,
+            recording: this.recording,
+            isRecording: this.isRecording,
+            isPlaying: this.isPlaying,
+            currentStep: this.currentStep,
+            currentError: this.currentError,
           };
           recordingView.scrollToBottom();
         });
       }
     });
 
+    recordingView.addEventListener('playrecording', async () => {
+      if (!this.recording) {
+        return;
+      }
+      this.isPlaying = true;
+      this.currentStep = undefined;
+      this.currentError = undefined;
+      recordingView.data = {
+        recording: this.recording,
+        isRecording: this.isRecording,
+        isPlaying: this.isPlaying,
+        currentStep: this.currentStep,
+        currentError: this.currentError,
+      };
+
+      const player = recorderModel.prepareForReplaying(this.recording);
+
+      player.addEventListener(Recorder.RecordingPlayer.Events.Step, ({data: step}) => {
+        this.currentStep = step;
+        recordingView.data = {
+          recording: this.recording as Recorder.Steps.UserFlow,
+          isRecording: this.isRecording,
+          isPlaying: this.isPlaying,
+          currentStep: this.currentStep,
+          currentError: this.currentError,
+        };
+      });
+
+      player.addEventListener(Recorder.RecordingPlayer.Events.Error, ({data: error}) => {
+        this.currentError = error;
+        recordingView.data = {
+          recording: this.recording as Recorder.Steps.UserFlow,
+          isRecording: this.isRecording,
+          isPlaying: this.isPlaying,
+          currentStep: this.currentStep,
+          currentError: this.currentError,
+        };
+      });
+
+      player.addEventListener(Recorder.RecordingPlayer.Events.Done, () => {
+        this.isPlaying = false;
+        recordingView.data = {
+          recording: this.recording as Recorder.Steps.UserFlow,
+          isRecording: this.isRecording,
+          isPlaying: this.isPlaying,
+          currentStep: this.currentStep,
+          currentError: this.currentError,
+        };
+      });
+      await player.play();
+    });
+
     recordingView.data = {
-      recording: this.recording,
-      isRecording: false,
+      recording: this.recording as Recorder.Steps.UserFlow,
+      isRecording: this.isRecording,
+      isPlaying: this.isPlaying,
+      currentStep: this.currentStep,
+      currentError: this.currentError,
     };
 
     mainContainer.element.appendChild(recordingView as Node);

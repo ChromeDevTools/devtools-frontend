@@ -984,6 +984,7 @@ grd_files_debug_sources = [
   "front_end/panels/protocol_monitor/ProtocolMonitor.js",
   "front_end/panels/recorder/RecorderPanel.js",
   "front_end/panels/recorder/components/RecordingView.js",
+  "front_end/panels/recorder/components/StepView.js",
   "front_end/panels/screencast/InputModel.js",
   "front_end/panels/screencast/ScreencastApp.js",
   "front_end/panels/screencast/ScreencastView.js",

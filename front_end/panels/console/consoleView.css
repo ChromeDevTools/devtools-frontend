@@ -31,13 +31,13 @@
   background-color: var(--color-background);
   overflow: hidden;
 
+  --override-error-text-color: var(--color-error-text);
+  --override-console-error-background-color: var(--color-error-background);
+  --override-error-border-color: var(--color-error-border);
   --override-message-border-color: rgb(240 240 240);
   --override-warning-border-color: hsl(50deg 100% 88%);
-  --override-error-border-color: hsl(0deg 100% 92%);
-  --override-error-text-color: #f00;
   --override-focused-message-border-color: hsl(214deg 67% 88%);
   --override-focused-message-background-color: hsl(214deg 48% 95%);
-  --override-console-error-background-color: hsl(0deg 100% 97%);
   --override-console-warning-background-color: hsl(50deg 100% 95%);
   --override-console-warning-text-color: hsl(39deg 100% 18%);
 }
@@ -45,11 +45,8 @@
 .-theme-with-dark-background .console-view {
   --override-message-border-color: rgb(58 58 58);
   --override-warning-border-color: rgb(102 85 0);
-  --override-error-border-color: rgb(92 0 0);
-  --override-error-text-color: hsl(0deg 100% 75%);
   --override-focused-message-border-color: hsl(214deg 47% 48%);
   --override-focused-message-background-color: hsl(214deg 19% 20%);
-  --override-console-error-background-color: hsl(0deg 100% 8%);
   --override-console-warning-background-color: hsl(50deg 100% 10%);
   --override-console-warning-text-color: hsl(39deg 89% 55%);
 }

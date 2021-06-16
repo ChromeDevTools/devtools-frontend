@@ -659,7 +659,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     }
   }
 
-  _replayRecording(): void {
+  async _replayRecording(): Promise<void> {
     const uiSourceCode = this._sourcesView.currentUISourceCode();
     if (!uiSourceCode) {
       return;
@@ -673,7 +673,8 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
       return;
     }
     const userFlow = recorderModel.parseUserFlow(uiSourceCode.content());
-    recorderModel.replayRecording(userFlow);
+    const player = recorderModel.prepareForReplaying(userFlow);
+    await player.play();
   }
 
   _exportRecording(): void {

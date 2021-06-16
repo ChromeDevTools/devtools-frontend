@@ -98,6 +98,11 @@
   --issue-color-blue: rgb(26 115 232);
   /** Used to indicate an input box */
   --input-outline: rgb(202 205 209);
+
+  /** These colors are used to show errors */
+  --color-error-text: #f00;
+  --color-error-border: hsl(0deg 100% 92%);
+  --color-error-background: hsl(0deg 100% 97%);
 }
 
 .-theme-with-dark-background {
@@ -159,4 +164,7 @@
   --color-scrollbar-mac-hover: rgb(75 76 79);
   --color-scrollbar-other: rgb(51 51 51);
   --color-scrollbar-other-hover: rgb(75 76 79);
+  --color-error-text: hsl(0deg 100% 75%);
+  --color-error-border: rgb(92 0 0);
+  --color-error-background: hsl(0deg 100% 8%);
 }

@@ -64,9 +64,7 @@ export class RecordingView extends HTMLElement {
     this.steps = [];
 
     for (const section of this.userFlow.sections) {
-      for (const step of section.steps) {
-        this.steps.push(step);
-      }
+      this.steps.push(...section.steps);
     }
 
     this.currentError = data.currentError;

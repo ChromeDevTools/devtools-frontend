@@ -42,12 +42,18 @@ generate_ci_configs(
             notifiers = ["devtools notifier"],
             priority = 50,
         ),
+        config_section(
+            name = "extended",
+            branch = "refs/heads/chromium/4430",
+            notifiers = ["devtools notifier"],
+            priority = 50,
+        ),
     ],
     builders = [
         builder_descriptor(
             name = "DevTools Linux",
             recipe_name = "chromium_integration",
-            excluded_from = ["beta", "stable"],
+            excluded_from = ["beta", "stable", "extended"],
             execution_timeout = 2 * time.hour,
         ),
         builder_descriptor(
@@ -70,14 +76,14 @@ generate_ci_configs(
         builder_descriptor(
             name = "Linux Compile Full Release",
             recipe_name = "devtools/devtools-frontend",
-            excluded_from = ["chromium", "beta", "stable"],
+            excluded_from = ["chromium", "beta", "stable", "extended"],
             properties = {"clobber": True},
         ),
         builder_descriptor(
             name = "Stand-alone Mac",
             recipe_name = "devtools/devtools-frontend",
             dims = dimensions.mac,
-            excluded_from = ["chromium", "beta", "stable"],
+            excluded_from = ["chromium", "beta", "stable", "extended"],
         ),
         builder_descriptor(
             name = "Linux Official",

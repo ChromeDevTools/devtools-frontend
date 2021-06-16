@@ -1,3 +1,10 @@
+# 3.21.0
+
+**Features:**
+
+* added `getWellKnownSymbolPropertyOfType` to reliably get symbol named properties due to changes in typescript@4.3
+* `getPropertyNameOfWellKnownSymbol` is now deprecated
+
 # 3.20.0
 
 **Features:**

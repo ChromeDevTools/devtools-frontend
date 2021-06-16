@@ -1,6 +1,6 @@
 {
   "name": "tsutils",
-  "version": "3.20.0",
+  "version": "3.21.0",
   "description": "utilities for working with typescript's AST",
   "scripts": {
     "precompile": "rimraf \"{,util,typeguard,test{,/rules}/*.{js,d.ts,js.map}\"",

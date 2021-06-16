@@ -27,7 +27,7 @@ export declare function __read(o: any, n?: number): any[];
 export declare function __spread(...args: any[][]): any[];
 /** @deprecated since TypeScript 4.2 */
 export declare function __spreadArrays(...args: any[][]): any[];
-export declare function __spreadArray(to: any[], from: any[]): any[];
+export declare function __spreadArray(to: any[], from: any[], pack?: boolean): any[];
 export declare function __await(v: any): any;
 export declare function __asyncGenerator(thisArg: any, _arguments: any, generator: Function): any;
 export declare function __asyncDelegator(o: any): any;

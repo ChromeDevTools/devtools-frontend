@@ -126,6 +126,10 @@ module.exports = {
   },
   'overrides': [{
     'files': ['*.ts'],
+    'parserOptions': {
+      'allowAutomaticSingleRunInference': true,
+      'project': './tsconfig.eslint.json',
+    },
     'rules': {
       '@typescript-eslint/explicit-member-accessibility': [2, {'accessibility': 'no-public'}],
       'comma-dangle': 'off',

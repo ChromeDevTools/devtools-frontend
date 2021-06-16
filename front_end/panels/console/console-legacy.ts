@@ -7,6 +7,7 @@
 import * as ConsoleModule from './console.js';
 
 self.Console = self.Console || {};
+// eslint-disable-next-line no-global-assign
 Console = Console || {};
 
 /**

@@ -15,3 +15,4 @@ per-file package-lock.json=file://config/owner/INFRA_OWNERS
 per-file package.json=file://config/owner/INFRA_OWNERS
 per-file tsconfig.base.json=file://config/owner/INFRA_OWNERS
 per-file tsconfig.json=file://config/owner/INFRA_OWNERS
+per-file tsconfig.eslint.json=file://config/owner/INFRA_OWNERS

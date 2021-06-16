@@ -152,7 +152,7 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox implements UI
 
     function validateHeader(
         this: NetworkManageCustomHeadersView, item: CustomHeader, _index: number,
-        _input: HTMLInputElement|HTMLSelectElement): UI.ListWidget.ValidatorResult {
+        _input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
       let valid = true;
       const headerId = editor.control('header').value.trim().toLowerCase();
       if (this._columnConfigs.has(headerId) && item.header !== headerId) {

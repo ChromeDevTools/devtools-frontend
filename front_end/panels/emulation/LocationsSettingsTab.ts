@@ -283,7 +283,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     function titleValidator(
         // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        item: any, index: number, input: HTMLInputElement|HTMLSelectElement): UI.ListWidget.ValidatorResult {
+        item: any, index: number, input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
       const maxLength = 50;
       const value = input.value.trim();
 
@@ -303,7 +303,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     function latValidator(
         // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        item: any, index: number, input: HTMLInputElement|HTMLSelectElement): UI.ListWidget.ValidatorResult {
+        item: any, index: number, input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
       const minLat = -90;
       const maxLat = 90;
       const value = input.value.trim();
@@ -331,7 +331,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     function longValidator(
         // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        item: any, index: number, input: HTMLInputElement|HTMLSelectElement): UI.ListWidget.ValidatorResult {
+        item: any, index: number, input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
       const minLong = -180;
       const maxLong = 180;
       const value = input.value.trim();
@@ -359,7 +359,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     function timezoneIdValidator(
         // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        item: any, index: number, input: HTMLInputElement|HTMLSelectElement): UI.ListWidget.ValidatorResult {
+        item: any, index: number, input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
       const value = input.value.trim();
       // Chromium uses ICU's timezone implementation, which is very
       // liberal in what it accepts. ICU does not simply use an allowlist
@@ -378,7 +378,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     function localeValidator(
         // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        item: any, index: number, input: HTMLInputElement|HTMLSelectElement): UI.ListWidget.ValidatorResult {
+        item: any, index: number, input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
       const value = input.value.trim();
       // Similarly to timezone IDs, there's not much point in validating
       // input locales other than checking if it contains at least two

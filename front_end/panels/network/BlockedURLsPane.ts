@@ -200,22 +200,21 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
     const titles = content.createChild('div', 'blocked-url-edit-row');
     titles.createChild('div').textContent = i18nString(UIStrings.textPatternToBlockMatching);
     const fields = content.createChild('div', 'blocked-url-edit-row');
-    const validator =
-        (_item: SDK.NetworkManager.BlockedPattern, _index: number, input: HTMLInputElement|HTMLSelectElement): {
-          valid: boolean,
-          errorMessage: Common.UIString.LocalizedString|undefined,
-        } => {
-          let valid = true;
-          let errorMessage;
-          if (!input.value) {
-            errorMessage = i18nString(UIStrings.patternInputCannotBeEmpty);
-            valid = false;
-          } else if (this._manager.blockedPatterns().find(pattern => pattern.url === input.value)) {
-            errorMessage = i18nString(UIStrings.patternAlreadyExists);
-            valid = false;
-          }
-          return {valid, errorMessage};
-        };
+    const validator = (_item: SDK.NetworkManager.BlockedPattern, _index: number, input: UI.ListWidget.EditorControl): {
+      valid: boolean,
+      errorMessage: Common.UIString.LocalizedString|undefined,
+    } => {
+      let valid = true;
+      let errorMessage;
+      if (!input.value) {
+        errorMessage = i18nString(UIStrings.patternInputCannotBeEmpty);
+        valid = false;
+      } else if (this._manager.blockedPatterns().find(pattern => pattern.url === input.value)) {
+        errorMessage = i18nString(UIStrings.patternAlreadyExists);
+        valid = false;
+      }
+      return {valid, errorMessage};
+    };
     const urlInput = editor.createInput('url', 'text', '', validator);
     fields.createChild('div', 'blocked-url-edit-value').appendChild(urlInput);
     return editor;

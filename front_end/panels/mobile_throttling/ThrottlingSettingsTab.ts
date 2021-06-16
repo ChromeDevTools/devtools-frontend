@@ -257,9 +257,8 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
 
     return editor;
 
-    function titleValidator(
-        _item: SDK.NetworkManager.Conditions, _index: number,
-        input: HTMLSelectElement|HTMLInputElement): UI.ListWidget.ValidatorResult {
+    function titleValidator(_item: SDK.NetworkManager.Conditions, _index: number, input: UI.ListWidget.EditorControl):
+        UI.ListWidget.ValidatorResult {
       const maxLength = 49;
       const value = input.value.trim();
       const valid = value.length > 0 && value.length <= maxLength;
@@ -272,7 +271,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
 
     function throughputValidator(
         _item: SDK.NetworkManager.Conditions, _index: number,
-        input: HTMLSelectElement|HTMLInputElement): UI.ListWidget.ValidatorResult {
+        input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
       const minThroughput = 0;
       const maxThroughput = 10000000;
       const value = input.value.trim();
@@ -287,9 +286,8 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
       return {valid, errorMessage: undefined};
     }
 
-    function latencyValidator(
-        _item: SDK.NetworkManager.Conditions, _index: number,
-        input: HTMLSelectElement|HTMLInputElement): UI.ListWidget.ValidatorResult {
+    function latencyValidator(_item: SDK.NetworkManager.Conditions, _index: number, input: UI.ListWidget.EditorControl):
+        UI.ListWidget.ValidatorResult {
       const minLatency = 0;
       const maxLatency = 1000000;
       const value = input.value.trim();

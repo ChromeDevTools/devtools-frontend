@@ -94,3 +94,8 @@
 .network-config-ua-custom.checked {
   opacity: 100%;
 }
+
+.client-hints-form {
+  margin-top: 14px;
+  width: min(100%, 400px);
+}

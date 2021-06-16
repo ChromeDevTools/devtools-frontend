@@ -1065,9 +1065,16 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
       return;
     }
 
+    const majorVersion = chromeVersion.split('.', 1)[0];
     for (const brand of userAgentMetadata.brands) {
       if (brand.version.includes('%s')) {
-        brand.version = Platform.StringUtilities.sprintf(brand.version, chromeVersion);
+        brand.version = Platform.StringUtilities.sprintf(brand.version, majorVersion);
+      }
+    }
+
+    if (userAgentMetadata.fullVersion) {
+      if (userAgentMetadata.fullVersion.includes('%s')) {
+        userAgentMetadata.fullVersion = Platform.StringUtilities.sprintf(userAgentMetadata.fullVersion, chromeVersion);
       }
     }
   }

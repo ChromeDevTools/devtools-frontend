@@ -19,8 +19,6 @@ devtools_module("emulation") {
     "LocationsSettingsTab.ts",
     "MediaQueryInspector.ts",
     "SensorsView.ts",
-    "StructuredHeaders.ts",
-    "UserAgentMetadata.ts",
   ]
 
   deps = [
@@ -35,8 +33,10 @@ devtools_module("emulation") {
     "../../models/bindings:bundle",
     "../../models/workspace:bundle",
     "../../panels/mobile_throttling:bundle",
+    "../../ui/components/icon_button:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/utils:bundle",
+    "./components:bundle",
   ]
 
   public_deps =

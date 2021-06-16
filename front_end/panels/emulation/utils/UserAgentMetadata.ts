@@ -5,8 +5,8 @@
 // Helper functions for working with UserAgentMetadata protocol objects, in
 // particular their plain string representation.
 
-import type * as UI from '../../ui/legacy/legacy.js';
-import type * as Protocol from '../../generated/protocol.js';
+import type * as UI from '../../../ui/legacy/legacy.js';
+import type * as Protocol from '../../../generated/protocol.js';
 
 import type {Item, List, Parameters, ParamName, String as SHString} from './StructuredHeaders.js';
 import {parseList, ResultKind, serializeItem, serializeList} from './StructuredHeaders.js';

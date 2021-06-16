@@ -216,7 +216,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
 
     function patternValidator(
         this: FrameworkIgnoreListSettingsTab, item: Common.Settings.RegExpSettingItem, index: number,
-        input: HTMLInputElement|HTMLSelectElement): UI.ListWidget.ValidatorResult {
+        input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
       const pattern = input.value.trim();
       const patterns = this._setting.getAsArray();
 
@@ -243,7 +243,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
 
     function behaviorValidator(
         _item: Common.Settings.RegExpSettingItem, _index: number,
-        _input: HTMLInputElement|HTMLSelectElement): UI.ListWidget.ValidatorResult {
+        _input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
       return {valid: true, errorMessage: undefined};
     }
   }

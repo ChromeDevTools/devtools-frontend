@@ -11,7 +11,6 @@ import {openDeviceToolbar, reloadDockableFrontEnd, selectEdit, selectTestDevice}
 
 const ADD_DEVICE_BUTTON_SELECTOR = '#custom-device-add-button';
 const FOCUSED_DEVICE_NAME_FIELD_SELECTOR = '#custom-device-name-field:focus';
-const ERROR_WIDGET_SELECTOR = '.list-widget-input-validation-error';
 const FOCUSED_SELECTOR = '*:focus';
 
 async function elementTextContent(element: puppeteer.ElementHandle): Promise<string> {
@@ -57,24 +56,25 @@ describe('Custom UA-CH emulation', async () => {
 
     await tabForwardFrontend();  // Focus device type.
     await tabForwardFrontend();  // Focus folder.
-    await pressKey('ArrowRight');
+    await pressKey('Space');
 
     await tabForwardFrontend();  // Focus help button
-    await tabForwardFrontend();  // Focus brand list
+    await tabForwardFrontend();  // Focus brand browser.
+    await typeText('Test browser');
 
-    // Type in partial, but syntactically invalid value for brand list.
-    // The UI should show an error detecting that.
-    await typeText('"Test browser');
+    await tabForwardFrontend();  // Focus brand version.
+    await typeText('1.0');
 
-    const errorWidget = await waitFor(ERROR_WIDGET_SELECTOR);
-    const errorMsg1 = await elementTextContent(errorWidget);
-    assert.strictEqual(errorMsg1, 'Brands list is not a valid structured fields list.');
+    await tabForwardFrontend();  // Focus delete button.
+    await tabForwardFrontend();  // Focus Add brand button.
+    await pressKey('Space');
 
-    // Type the rest of the brand list.
-    await typeText('";v="1.0", "Friendly Dragon";v="1.1"');
-    const errorMsg2 = await elementTextContent(errorWidget);
-    assert.strictEqual(errorMsg2, '');
+    await typeText('Friendly Dragon');
+    await tabForwardFrontend();  //  Focus second row brand version.
+    await typeText('1.1');
 
+    await tabForwardFrontend();  // Focus second row delete button.
+    await tabForwardFrontend();  // Focus Add browser button.
     await tabForwardFrontend();  // Focus full version.
     await typeText('1.1.2345');
 
@@ -91,6 +91,7 @@ describe('Custom UA-CH emulation', async () => {
     await typeText('C-1-Gardener');
 
     await tabForwardFrontend();  // Focus add button.
+
     const finishAdd = await waitFor(FOCUSED_SELECTOR);
     const finishAddText = await elementTextContent(finishAdd);
     assert.strictEqual(finishAddText, 'Add');
@@ -129,7 +130,10 @@ describe('Custom UA-CH emulation', async () => {
     await waitFor(FOCUSED_DEVICE_NAME_FIELD_SELECTOR);
 
     // Skip over to the version field.
-    for (let i = 0; i < 9; ++i) {
+    for (let i = 0; i < 15; ++i) {
+      if (i === 7) {
+        await pressKey('ArrowRight');
+      }
       await tabForwardFrontend();
     }
 

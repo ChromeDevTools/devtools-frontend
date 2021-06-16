@@ -31,6 +31,7 @@ group("front_end") {
     "panels/coverage",
     "panels/elements",
     "panels/emulation",
+    "panels/emulation/components",
     "panels/help",
     "panels/issues",
     "panels/media",

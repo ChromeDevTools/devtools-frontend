@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 const {assert} = chai;
-import * as Emulation from '../../../../../front_end/panels/emulation/emulation.js';
-import StructuredHeaders = Emulation.StructuredHeaders;
+import * as EmulationUtils from '../../../../../front_end/panels/emulation/utils/utils.js';
+import StructuredHeaders = EmulationUtils.StructuredHeaders;
 
 function assertItemError(result: StructuredHeaders.Item|StructuredHeaders.Error): void {
   assert.strictEqual(result.kind, StructuredHeaders.ResultKind.ERROR);

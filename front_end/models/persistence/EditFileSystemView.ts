@@ -184,7 +184,7 @@ export class EditFileSystemView extends UI.Widget.VBox implements UI.ListWidget.
 
     function pathPrefixValidator(
         this: EditFileSystemView, _item: string, index: number,
-        input: HTMLInputElement|HTMLSelectElement): UI.ListWidget.ValidatorResult {
+        input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
       const prefix = this._normalizePrefix(input.value.trim());
 
       if (!prefix) {

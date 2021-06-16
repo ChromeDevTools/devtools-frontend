@@ -4262,6 +4262,60 @@
   "panels/elements/StylesSidebarPane.ts | viaInspector": {
     "message": "v̂íâ ín̂śp̂éĉt́ôŕ"
   },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "Âd́d̂ B́r̂án̂d́"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "Âŕĉh́ît́êćt̂úr̂é"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "Âŕĉh́ît́êćt̂úr̂é (ê.ǵ. x̂86)"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "B̂ŕâńd̂"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "B̂ŕâńd̂ś"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "D̂él̂ét̂é"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "D̂év̂íĉé m̂ód̂él̂"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "F̂úl̂ĺ b̂ŕôẃŝér̂ v́êŕŝíôń"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "F̂úl̂ĺ b̂ŕôẃŝér̂ v́êŕŝíôń (ê.ǵ. 87.0.4280.88)"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "M̂ób̂íl̂é"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "N̂ót̂ ŕêṕr̂éŝén̂t́âb́l̂é âś ŝt́r̂úĉt́ûŕêd́ ĥéâd́êŕŝ śt̂ŕîńĝ."
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "P̂ĺât́f̂ór̂ḿ"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "P̂ĺât́f̂ór̂ḿ (ê.ǵ. Âńd̂ŕôíd̂)"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "P̂ĺât́f̂ór̂ḿ v̂ér̂śîón̂"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "Ûśêŕ âǵêńt̂ ćl̂íêńt̂ h́îńt̂ś"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "Ûṕd̂át̂é"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "Ûśêŕ âǵêńt̂ ćl̂íêńt̂ h́îńt̂ś âŕê án̂ ál̂t́êŕn̂át̂ív̂é t̂ó t̂h́ê úŝér̂ áĝén̂t́ ŝt́r̂ín̂ǵ t̂h́ât́ îd́êńt̂íf̂ý t̂h́ê b́r̂óŵśêŕ âńd̂ t́ĥé d̂év̂íĉé îń â ḿôŕê śt̂ŕûćt̂úr̂éd̂ ẃâý ŵít̂h́ b̂ét̂t́êŕ p̂ŕîv́âćŷ áĉćôún̂t́îńĝ. Ćl̂íĉḱ t̂h́ê b́ût́t̂ón̂ t́ô ĺêár̂ń m̂ór̂é."
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "V̂ér̂śîón̂"
+  },
   "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "D̂év̂íĉé p̂íx̂él̂ ŕât́îó m̂úŝt́ b̂é â ńûḿb̂ér̂ ór̂ b́l̂án̂ḱ."
   },
@@ -4406,20 +4460,8 @@
   "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Âd́d̂ ćûśt̂óm̂ d́êv́îćê..."
   },
-  "panels/emulation/DevicesSettingsTab.ts | architecture": {
-    "message": "Âŕĉh́ît́êćt̂úr̂é (ê.ǵ. x̂86)"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | brandsList": {
-    "message": "B̂ŕâńd̂ś l̂íŝt́ îś n̂ót̂ á v̂ál̂íd̂ śt̂ŕûćt̂úr̂éd̂ f́îél̂d́ŝ ĺîśt̂."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | brandsListMust": {
-    "message": "B̂ŕâńd̂ś l̂íŝt́ m̂úŝt́ ĉón̂śîśt̂ óf̂ śt̂ŕîńĝś, êáĉh́ ŵít̂h́ â v́ p̂ár̂ám̂ét̂ér̂ ẃît́ĥ á ŝt́r̂ín̂ǵ v̂ál̂úê."
-  },
   "panels/emulation/DevicesSettingsTab.ts | device": {
     "message": "D̂év̂íĉé"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceModel": {
-    "message": "D̂év̂íĉé m̂ód̂él̂"
   },
   "panels/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "D̂év̂íĉé N̂ám̂é"
@@ -4436,29 +4478,8 @@
   "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
     "message": "Êḿûĺât́êd́ D̂év̂íĉéŝ"
   },
-  "panels/emulation/DevicesSettingsTab.ts | fullBrowserVersion": {
-    "message": "F̂úl̂ĺ b̂ŕôẃŝér̂ v́êŕŝíôń (ê.ǵ. 87.0.4280.88)"
-  },
   "panels/emulation/DevicesSettingsTab.ts | height": {
     "message": "Ĥéîǵĥt́"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | notRepresentable": {
-    "message": "N̂ót̂ ŕêṕr̂éŝén̂t́âb́l̂é âś ŝt́r̂úĉt́ûŕêd́ ĥéâd́êŕŝ śt̂ŕîńĝ."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | platform": {
-    "message": "P̂ĺât́f̂ór̂ḿ (ê.ǵ. Âńd̂ŕôíd̂)"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | platformVersion": {
-    "message": "P̂ĺât́f̂ór̂ḿ v̂ér̂śîón̂"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | UABrands": {
-    "message": "ÛÁ b̂ŕâńd̂ś l̂íŝt́ (ê.ǵ. \"Chromium\";v=\"87\")"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentClient": {
-    "message": "Ûśêŕ âǵêńt̂ ćl̂íêńt̂ h́îńt̂ś"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentClientHintsAre": {
-    "message": "Ûśêŕ âǵêńt̂ ćl̂íêńt̂ h́îńt̂ś âŕê án̂ ál̂t́êŕn̂át̂ív̂é t̂ó t̂h́ê úŝér̂ áĝén̂t́ ŝt́r̂ín̂ǵ t̂h́ât́ îd́êńt̂íf̂ý t̂h́ê b́r̂óŵśêŕ âńd̂ t́ĥé d̂év̂íĉé îń â ḿôŕê śt̂ŕûćt̂úr̂éd̂ ẃâý ŵít̂h́ b̂ét̂t́êŕ p̂ŕîv́âćŷ áĉćôún̂t́îńĝ. Ćl̂íĉḱ t̂h́ê b́ût́t̂ón̂ t́ô ĺêár̂ń m̂ór̂é."
   },
   "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "Ûśêŕ âǵêńt̂ śt̂ŕîńĝ"

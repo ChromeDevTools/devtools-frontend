@@ -183,7 +183,7 @@ export class NodeConnectionsView extends UI.Widget.VBox implements UI.ListWidget
     fields.createChild('div', 'network-discovery-value network-discovery-address').appendChild(input);
     return editor;
 
-    function addressValidator(_rule: Adb.PortForwardingRule, _index: number, input: HTMLInputElement|HTMLSelectElement):
+    function addressValidator(_rule: Adb.PortForwardingRule, _index: number, input: UI.ListWidget.EditorControl):
         UI.ListWidget.ValidatorResult {
       const match = input.value.trim().match(/^([a-zA-Z0-9\.\-_]+):(\d+)$/);
       if (!match) {

@@ -114,6 +114,24 @@
   background-color: var(--color-background);
 }
 
+.text-prompt-container {
+  padding: 3px 6px;
+  height: 24px;
+  border: none;
+  box-shadow: var(--legacy-focus-ring-inactive-shadow);
+  border-radius: 2px;
+  width: 100%;
+  background-color: var(--color-background);
+}
+
+.text-prompt-container:focus {
+  box-shadow: var(--legacy-focus-ring-active-shadow);
+}
+
+.text-prompt-container .text-prompt {
+  width: 100%;
+}
+
 @media (forced-colors: active) {
   .list-item:focus-within .controls-buttons,
   .list-item:hover .controls-buttons {

@@ -376,3 +376,16 @@ Common.Revealer.registerRevealer({
     return Network.NetworkPanel.RequestIdRevealer.instance();
   },
 });
+
+Common.Revealer.registerRevealer({
+  contextTypes() {
+    return [
+      NetworkForward.UIFilter.UIRequestFilter,
+    ];
+  },
+  destination: Common.Revealer.RevealerDestination.NETWORK_PANEL,
+  async loadRevealer() {
+    const Network = await loadNetworkModule();
+    return Network.NetworkPanel.NetworkLogWithFilterRevealer.instance();
+  },
+});

@@ -7,7 +7,6 @@ import {StackTrace} from './StackTrace.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as Network from '../../network/network.js';
 import * as NetworkForward from '../../../panels/network/forward/forward.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
@@ -627,18 +626,16 @@ export class FrameDetailsReportView extends HTMLElement {
             i18nString(UIStrings.clickToRevealInNetworkPanelMight),
             ():
                 void => {
-                  Network.NetworkPanel.NetworkPanel.revealAndFilter([
+                  Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
                     {
-                      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-                      // @ts-expect-error
-                      filterType: 'domain',
+                      filterType: NetworkForward.UIFilter.FilterType.Domain,
                       filterValue: unreachableUrl.domain(),
                     },
                     {
                       filterType: null,
                       filterValue: unreachableUrl.path,
                     },
-                  ]);
+                  ]));
                 },
         );
       }

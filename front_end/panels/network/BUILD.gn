@@ -81,8 +81,6 @@ devtools_entrypoint("bundle") {
 
     # TODO(crbug.com/1202788): Remove invalid dependents
     "../application/*",
-    "../issues/*",
-    "../security/*",
   ]
 
   visibility += devtools_panels_visibility

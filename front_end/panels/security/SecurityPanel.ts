@@ -9,8 +9,8 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Network from '../network/network.js';
 
 import type {PageSecurityState, PageVisibleSecurityState} from './SecurityModel.js';
 import {Events, SecurityModel, SecurityStyleExplanation, SummaryMessages} from './SecurityModel.js';
@@ -686,13 +686,13 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
       return;
     }
 
-    let filterKey: string = Network.NetworkLogView.MixedContentFilterValues.All;
+    let filterKey: string = NetworkForward.UIFilter.MixedContentFilterValues.All;
     if (request.wasBlocked()) {
-      filterKey = Network.NetworkLogView.MixedContentFilterValues.Blocked;
+      filterKey = NetworkForward.UIFilter.MixedContentFilterValues.Blocked;
     } else if (request.mixedContentType === Protocol.Security.MixedContentType.Blockable) {
-      filterKey = Network.NetworkLogView.MixedContentFilterValues.BlockOverridden;
+      filterKey = NetworkForward.UIFilter.MixedContentFilterValues.BlockOverridden;
     } else if (request.mixedContentType === Protocol.Security.MixedContentType.OptionallyBlockable) {
-      filterKey = Network.NetworkLogView.MixedContentFilterValues.Displayed;
+      filterKey = NetworkForward.UIFilter.MixedContentFilterValues.Displayed;
     }
 
     const currentCount = this._filterRequestCounts.get(filterKey);
@@ -1393,11 +1393,12 @@ export class SecurityMainView extends UI.Widget.VBox {
           case Protocol.Security.MixedContentType.Blockable:
             this._addMixedContentExplanation(
                 this._securityExplanationsMain, explanation,
-                Network.NetworkLogView.MixedContentFilterValues.BlockOverridden);
+                NetworkForward.UIFilter.MixedContentFilterValues.BlockOverridden);
             break;
           case Protocol.Security.MixedContentType.OptionallyBlockable:
             this._addMixedContentExplanation(
-                this._securityExplanationsMain, explanation, Network.NetworkLogView.MixedContentFilterValues.Displayed);
+                this._securityExplanationsMain, explanation,
+                NetworkForward.UIFilter.MixedContentFilterValues.Displayed);
             break;
           default:
             this._addExplanation(this._securityExplanationsMain, explanation);
@@ -1406,7 +1407,7 @@ export class SecurityMainView extends UI.Widget.VBox {
       }
     }
 
-    if (this._panel.filterRequestCount(Network.NetworkLogView.MixedContentFilterValues.Blocked) > 0) {
+    if (this._panel.filterRequestCount(NetworkForward.UIFilter.MixedContentFilterValues.Blocked) > 0) {
       const explanation = {
         securityState: Protocol.Security.SecurityState.Info,
         summary: i18nString(UIStrings.blockedMixedContent),
@@ -1416,7 +1417,7 @@ export class SecurityMainView extends UI.Widget.VBox {
         title: '',
       } as Protocol.Security.SecurityStateExplanation;
       this._addMixedContentExplanation(
-          this._securityExplanationsMain, explanation, Network.NetworkLogView.MixedContentFilterValues.Blocked);
+          this._securityExplanationsMain, explanation, NetworkForward.UIFilter.MixedContentFilterValues.Blocked);
     }
   }
 
@@ -1452,8 +1453,8 @@ export class SecurityMainView extends UI.Widget.VBox {
 
   showNetworkFilter(filterKey: string, e: Event): void {
     e.consume();
-    Network.NetworkPanel.NetworkPanel.revealAndFilter(
-        [{filterType: Network.NetworkLogView.FilterType.MixedContent, filterValue: filterKey}]);
+    Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters(
+        [{filterType: NetworkForward.UIFilter.FilterType.MixedContent, filterValue: filterKey}]));
   }
 }
 
@@ -1484,10 +1485,10 @@ export class SecurityOriginView extends UI.Widget.VBox {
     const originNetworkButton = UI.UIUtils.createTextButton(i18nString(UIStrings.viewRequestsInNetworkPanel), event => {
       event.consume();
       const parsedURL = new Common.ParsedURL.ParsedURL(origin);
-      Network.NetworkPanel.NetworkPanel.revealAndFilter([
-        {filterType: Network.NetworkLogView.FilterType.Domain, filterValue: parsedURL.host},
-        {filterType: Network.NetworkLogView.FilterType.Scheme, filterValue: parsedURL.scheme},
-      ]);
+      Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
+        {filterType: NetworkForward.UIFilter.FilterType.Domain, filterValue: parsedURL.host},
+        {filterType: NetworkForward.UIFilter.FilterType.Scheme, filterValue: parsedURL.scheme},
+      ]));
     });
     originNetworkDiv.appendChild(originNetworkButton);
     UI.ARIAUtils.markAsLink(originNetworkButton);

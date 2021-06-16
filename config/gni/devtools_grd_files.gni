@@ -956,6 +956,7 @@ grd_files_debug_sources = [
   "front_end/panels/network/SignedExchangeInfoView.js",
   "front_end/panels/network/components/RequestTrustTokensView.js",
   "front_end/panels/network/components/WebBundleInfoView.js",
+  "front_end/panels/network/forward/UIFilter.js",
   "front_end/panels/network/forward/UIRequestLocation.js",
   "front_end/panels/performance_monitor/PerformanceMonitor.js",
   "front_end/panels/profiler/BottomUpProfileDataGrid.js",

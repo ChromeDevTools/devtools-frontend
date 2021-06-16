@@ -45,7 +45,7 @@ import * as HAR from '../../models/har/har.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import type * as NetworkForward from '../../panels/network/forward/forward.js';
+import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -528,7 +528,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
   }
 
   static _sortSearchValues(key: string, values: string[]): void {
-    if (key === FilterType.Priority) {
+    if (key === NetworkForward.UIFilter.FilterType.Priority) {
       values.sort((a, b) => {
         const aPriority = (PerfUI.NetworkPriorities.uiLabelToNetworkPriority(a) as Protocol.Network.ResourcePriority);
         const bPriority = (PerfUI.NetworkPriorities.uiLabelToNetworkPriority(b) as Protocol.Network.ResourcePriority);
@@ -603,18 +603,18 @@ export class NetworkLogView extends UI.Widget.VBox implements
     return request.mimeType === value;
   }
 
-  static _requestMixedContentFilter(value: MixedContentFilterValues, request: SDK.NetworkRequest.NetworkRequest):
-      boolean {
-    if (value === MixedContentFilterValues.Displayed) {
+  static _requestMixedContentFilter(
+      value: NetworkForward.UIFilter.MixedContentFilterValues, request: SDK.NetworkRequest.NetworkRequest): boolean {
+    if (value === NetworkForward.UIFilter.MixedContentFilterValues.Displayed) {
       return request.mixedContentType === Protocol.Security.MixedContentType.OptionallyBlockable;
     }
-    if (value === MixedContentFilterValues.Blocked) {
+    if (value === NetworkForward.UIFilter.MixedContentFilterValues.Blocked) {
       return request.mixedContentType === Protocol.Security.MixedContentType.Blockable && request.wasBlocked();
     }
-    if (value === MixedContentFilterValues.BlockOverridden) {
+    if (value === NetworkForward.UIFilter.MixedContentFilterValues.BlockOverridden) {
       return request.mixedContentType === Protocol.Security.MixedContentType.Blockable && !request.wasBlocked();
     }
-    if (value === MixedContentFilterValues.All) {
+    if (value === NetworkForward.UIFilter.MixedContentFilterValues.All) {
       return request.mixedContentType !== Protocol.Security.MixedContentType.None;
     }
 
@@ -818,13 +818,17 @@ export class NetworkLogView extends UI.Widget.VBox implements
 
   _resetSuggestionBuilder(): void {
     this._suggestionBuilder.clear();
-    this._suggestionBuilder.addItem(FilterType.Is, IsFilterType.Running);
-    this._suggestionBuilder.addItem(FilterType.Is, IsFilterType.FromCache);
-    this._suggestionBuilder.addItem(FilterType.Is, IsFilterType.ServiceWorkerIntercepted);
-    this._suggestionBuilder.addItem(FilterType.Is, IsFilterType.ServiceWorkerInitiated);
-    this._suggestionBuilder.addItem(FilterType.LargerThan, '100');
-    this._suggestionBuilder.addItem(FilterType.LargerThan, '10k');
-    this._suggestionBuilder.addItem(FilterType.LargerThan, '1M');
+    this._suggestionBuilder.addItem(
+        NetworkForward.UIFilter.FilterType.Is, NetworkForward.UIFilter.IsFilterType.Running);
+    this._suggestionBuilder.addItem(
+        NetworkForward.UIFilter.FilterType.Is, NetworkForward.UIFilter.IsFilterType.FromCache);
+    this._suggestionBuilder.addItem(
+        NetworkForward.UIFilter.FilterType.Is, NetworkForward.UIFilter.IsFilterType.ServiceWorkerIntercepted);
+    this._suggestionBuilder.addItem(
+        NetworkForward.UIFilter.FilterType.Is, NetworkForward.UIFilter.IsFilterType.ServiceWorkerInitiated);
+    this._suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.LargerThan, '100');
+    this._suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.LargerThan, '10k');
+    this._suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.LargerThan, '1M');
     this._textFilterUI.setSuggestionProvider(this._suggestionBuilder.completions.bind(this._suggestionBuilder));
   }
 
@@ -1368,50 +1372,53 @@ export class NetworkLogView extends UI.Widget.VBox implements
 
   _refreshRequest(request: SDK.NetworkRequest.NetworkRequest): void {
     NetworkLogView._subdomains(request.domain)
-        .forEach(this._suggestionBuilder.addItem.bind(this._suggestionBuilder, FilterType.Domain));
-    this._suggestionBuilder.addItem(FilterType.Method, request.requestMethod);
-    this._suggestionBuilder.addItem(FilterType.MimeType, request.mimeType);
-    this._suggestionBuilder.addItem(FilterType.Scheme, String(request.scheme));
-    this._suggestionBuilder.addItem(FilterType.StatusCode, String(request.statusCode));
-    this._suggestionBuilder.addItem(FilterType.ResourceType, request.resourceType().name());
-    this._suggestionBuilder.addItem(FilterType.Url, request.securityOrigin());
+        .forEach(
+            this._suggestionBuilder.addItem.bind(this._suggestionBuilder, NetworkForward.UIFilter.FilterType.Domain));
+    this._suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.Method, request.requestMethod);
+    this._suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.MimeType, request.mimeType);
+    this._suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.Scheme, String(request.scheme));
+    this._suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.StatusCode, String(request.statusCode));
+    this._suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.ResourceType, request.resourceType().name());
+    this._suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.Url, request.securityOrigin());
 
     const priority = request.priority();
     if (priority) {
       this._suggestionBuilder.addItem(
-          FilterType.Priority, PerfUI.NetworkPriorities.uiLabelForNetworkPriority(priority));
+          NetworkForward.UIFilter.FilterType.Priority, PerfUI.NetworkPriorities.uiLabelForNetworkPriority(priority));
     }
 
     if (request.mixedContentType !== Protocol.Security.MixedContentType.None) {
-      this._suggestionBuilder.addItem(FilterType.MixedContent, MixedContentFilterValues.All);
+      this._suggestionBuilder.addItem(
+          NetworkForward.UIFilter.FilterType.MixedContent, NetworkForward.UIFilter.MixedContentFilterValues.All);
     }
 
     if (request.mixedContentType === Protocol.Security.MixedContentType.OptionallyBlockable) {
-      this._suggestionBuilder.addItem(FilterType.MixedContent, MixedContentFilterValues.Displayed);
+      this._suggestionBuilder.addItem(
+          NetworkForward.UIFilter.FilterType.MixedContent, NetworkForward.UIFilter.MixedContentFilterValues.Displayed);
     }
 
     if (request.mixedContentType === Protocol.Security.MixedContentType.Blockable) {
-      const suggestion =
-          request.wasBlocked() ? MixedContentFilterValues.Blocked : MixedContentFilterValues.BlockOverridden;
-      this._suggestionBuilder.addItem(FilterType.MixedContent, suggestion);
+      const suggestion = request.wasBlocked() ? NetworkForward.UIFilter.MixedContentFilterValues.Blocked :
+                                                NetworkForward.UIFilter.MixedContentFilterValues.BlockOverridden;
+      this._suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.MixedContent, suggestion);
     }
 
     const responseHeaders = request.responseHeaders;
     for (let i = 0, l = responseHeaders.length; i < l; ++i) {
-      this._suggestionBuilder.addItem(FilterType.HasResponseHeader, responseHeaders[i].name);
+      this._suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.HasResponseHeader, responseHeaders[i].name);
     }
 
     for (const cookie of request.responseCookies) {
-      this._suggestionBuilder.addItem(FilterType.SetCookieDomain, cookie.domain());
-      this._suggestionBuilder.addItem(FilterType.SetCookieName, cookie.name());
-      this._suggestionBuilder.addItem(FilterType.SetCookieValue, cookie.value());
+      this._suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.SetCookieDomain, cookie.domain());
+      this._suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.SetCookieName, cookie.name());
+      this._suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.SetCookieValue, cookie.value());
     }
 
     for (const cookie of request.allCookiesIncludingBlockedOnes()) {
-      this._suggestionBuilder.addItem(FilterType.CookieDomain, cookie.domain());
-      this._suggestionBuilder.addItem(FilterType.CookieName, cookie.name());
-      this._suggestionBuilder.addItem(FilterType.CookiePath, cookie.path());
-      this._suggestionBuilder.addItem(FilterType.CookieValue, cookie.value());
+      this._suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.CookieDomain, cookie.domain());
+      this._suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.CookieName, cookie.name());
+      this._suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.CookiePath, cookie.path());
+      this._suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.CookieValue, cookie.value());
     }
 
     this._staleRequests.add(request);
@@ -1674,7 +1681,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
       let filter;
       if (key) {
         const defaultText = Platform.StringUtilities.escapeForRegExp(key + ':' + text);
-        filter = this._createSpecialFilter((key as FilterType), text) ||
+        filter = this._createSpecialFilter((key as NetworkForward.UIFilter.FilterType), text) ||
             NetworkLogView._requestPathFilter.bind(null, new RegExp(defaultText, 'i'));
       } else if (descriptor.regex) {
         filter = NetworkLogView._requestPathFilter.bind(null, (regex as RegExp));
@@ -1686,76 +1693,77 @@ export class NetworkLogView extends UI.Widget.VBox implements
     });
   }
 
-  _createSpecialFilter(type: FilterType, value: string): Filter|null {
+  _createSpecialFilter(type: NetworkForward.UIFilter.FilterType, value: string): Filter|null {
     switch (type) {
-      case FilterType.Domain:
+      case NetworkForward.UIFilter.FilterType.Domain:
         return NetworkLogView._createRequestDomainFilter(value);
 
-      case FilterType.HasResponseHeader:
+      case NetworkForward.UIFilter.FilterType.HasResponseHeader:
         return NetworkLogView._requestResponseHeaderFilter.bind(null, value);
 
-      case FilterType.Is:
-        if (value.toLowerCase() === IsFilterType.Running) {
+      case NetworkForward.UIFilter.FilterType.Is:
+        if (value.toLowerCase() === NetworkForward.UIFilter.IsFilterType.Running) {
           return NetworkLogView._runningRequestFilter;
         }
-        if (value.toLowerCase() === IsFilterType.FromCache) {
+        if (value.toLowerCase() === NetworkForward.UIFilter.IsFilterType.FromCache) {
           return NetworkLogView._fromCacheRequestFilter;
         }
-        if (value.toLowerCase() === IsFilterType.ServiceWorkerIntercepted) {
+        if (value.toLowerCase() === NetworkForward.UIFilter.IsFilterType.ServiceWorkerIntercepted) {
           return NetworkLogView._interceptedByServiceWorkerFilter;
         }
-        if (value.toLowerCase() === IsFilterType.ServiceWorkerInitiated) {
+        if (value.toLowerCase() === NetworkForward.UIFilter.IsFilterType.ServiceWorkerInitiated) {
           return NetworkLogView._initiatedByServiceWorkerFilter;
         }
         break;
 
-      case FilterType.LargerThan:
+      case NetworkForward.UIFilter.FilterType.LargerThan:
         return this._createSizeFilter(value.toLowerCase());
 
-      case FilterType.Method:
+      case NetworkForward.UIFilter.FilterType.Method:
         return NetworkLogView._requestMethodFilter.bind(null, value);
 
-      case FilterType.MimeType:
+      case NetworkForward.UIFilter.FilterType.MimeType:
         return NetworkLogView._requestMimeTypeFilter.bind(null, value);
 
-      case FilterType.MixedContent:
-        return NetworkLogView._requestMixedContentFilter.bind(null, (value as MixedContentFilterValues));
+      case NetworkForward.UIFilter.FilterType.MixedContent:
+        return NetworkLogView._requestMixedContentFilter.bind(
+            null, (value as NetworkForward.UIFilter.MixedContentFilterValues));
 
-      case FilterType.Scheme:
+      case NetworkForward.UIFilter.FilterType.Scheme:
         return NetworkLogView._requestSchemeFilter.bind(null, value);
 
-      case FilterType.SetCookieDomain:
+      case NetworkForward.UIFilter.FilterType.SetCookieDomain:
         return NetworkLogView._requestSetCookieDomainFilter.bind(null, value);
 
-      case FilterType.SetCookieName:
+      case NetworkForward.UIFilter.FilterType.SetCookieName:
         return NetworkLogView._requestSetCookieNameFilter.bind(null, value);
 
-      case FilterType.SetCookieValue:
+      case NetworkForward.UIFilter.FilterType.SetCookieValue:
         return NetworkLogView._requestSetCookieValueFilter.bind(null, value);
 
-      case FilterType.CookieDomain:
+      case NetworkForward.UIFilter.FilterType.CookieDomain:
         return NetworkLogView._requestCookieDomainFilter.bind(null, value);
 
-      case FilterType.CookieName:
+      case NetworkForward.UIFilter.FilterType.CookieName:
         return NetworkLogView._requestCookieNameFilter.bind(null, value);
 
-      case FilterType.CookiePath:
+      case NetworkForward.UIFilter.FilterType.CookiePath:
         return NetworkLogView._requestCookiePathFilter.bind(null, value);
 
-      case FilterType.CookieValue:
+      case NetworkForward.UIFilter.FilterType.CookieValue:
         return NetworkLogView._requestCookieValueFilter.bind(null, value);
 
-      case FilterType.Priority:
+      case NetworkForward.UIFilter.FilterType.Priority:
         return NetworkLogView._requestPriorityFilter.bind(
             null, PerfUI.NetworkPriorities.uiLabelToNetworkPriority(value));
 
-      case FilterType.StatusCode:
+      case NetworkForward.UIFilter.FilterType.StatusCode:
         return NetworkLogView._statusCodeFilter.bind(null, value);
 
-      case FilterType.ResourceType:
+      case NetworkForward.UIFilter.FilterType.ResourceType:
         return NetworkLogView._resourceTypeFilter.bind(null, value);
 
-      case FilterType.Url:
+      case NetworkForward.UIFilter.FilterType.Url:
         return NetworkLogView._requestUrlFilter.bind(null, value);
     }
     return null;
@@ -2152,51 +2160,10 @@ export const HTTPSchemas = {
   'wss': true,
 };
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum FilterType {
-  Domain = 'domain',
-  HasResponseHeader = 'has-response-header',
-  Is = 'is',
-  LargerThan = 'larger-than',
-  Method = 'method',
-  MimeType = 'mime-type',
-  MixedContent = 'mixed-content',
-  Priority = 'priority',
-  Scheme = 'scheme',
-  SetCookieDomain = 'set-cookie-domain',
-  SetCookieName = 'set-cookie-name',
-  SetCookieValue = 'set-cookie-value',
-  ResourceType = 'resource-type',
-  CookieDomain = 'cookie-domain',
-  CookieName = 'cookie-name',
-  CookiePath = 'cookie-path',
-  CookieValue = 'cookie-value',
-  StatusCode = 'status-code',
-  Url = 'url',
-}
-
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum MixedContentFilterValues {
-  All = 'all',
-  Displayed = 'displayed',
-  Blocked = 'blocked',
-  BlockOverridden = 'block-overridden',
-}
-
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum IsFilterType {
-  Running = 'running',
-  FromCache = 'from-cache',
-  ServiceWorkerIntercepted = 'service-worker-intercepted',
-  ServiceWorkerInitiated = 'service-worker-initiated',
-}
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export const _searchKeys: string[] = Object.values(FilterType);
+export const _searchKeys: string[] = Object.values(NetworkForward.UIFilter.FilterType);
 
 export interface GroupLookupInterface {
   groupNodeForRequest(request: SDK.NetworkRequest.NetworkRequest): NetworkGroupNode|null;

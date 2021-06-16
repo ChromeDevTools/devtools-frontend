@@ -13,7 +13,6 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
-import * as Network from '../network/network.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 
 import {ServiceWorkerUpdateCycleView} from './ServiceWorkerUpdateCycleView.js';
@@ -250,7 +249,7 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
         if (isOpen) {
           const networkLocation = UI.ViewManager.ViewManager.instance().locationNameForViewId('network');
           UI.ViewManager.ViewManager.instance().showViewInLocation('network', networkLocation, false);
-          Network.NetworkPanel.NetworkPanel.revealAndFilter([]);
+          Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([]));
 
           const currentTime = Date.now();
           const timeDifference = currentTime - openedAt;
@@ -722,12 +721,12 @@ export class Section {
     const networkTabLocation = applicationTabLocation === 'drawer-view' ? 'panel' : 'drawer-view';
     UI.ViewManager.ViewManager.instance().showViewInLocation('network', networkTabLocation);
 
-    Network.NetworkPanel.NetworkPanel.revealAndFilter([
+    Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
       {
-        filterType: Network.NetworkLogView.FilterType.Is,
-        filterValue: Network.NetworkLogView.IsFilterType.ServiceWorkerIntercepted,
+        filterType: NetworkForward.UIFilter.FilterType.Is,
+        filterValue: NetworkForward.UIFilter.IsFilterType.ServiceWorkerIntercepted,
       },
-    ]);
+    ]));
 
     const requests = Logs.NetworkLog.NetworkLog.instance().requests();
     let lastRequest: SDK.NetworkRequest.NetworkRequest|null = null;

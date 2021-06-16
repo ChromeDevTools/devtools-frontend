@@ -37,7 +37,6 @@ devtools_module("issues") {
     "../../models/logs:bundle",
     "../../panels/console_counters:bundle",
     "../../panels/elements/components:bundle",
-    "../../panels/network:bundle",
     "../../panels/network/forward:bundle",
     "../../ui/components/data_grid:bundle",
     "../../ui/components/linkifier:bundle",

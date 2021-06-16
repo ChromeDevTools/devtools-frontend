@@ -17,6 +17,7 @@ devtools_module("cookie_table") {
     "../../../../core/sdk:bundle",
     "../../../../generated:protocol",
     "../../../../models/issues_manager:bundle",
+    "../../../../panels/network/forward:bundle",
     "../../../../ui/legacy:bundle",
     "../../../../ui/legacy/components/data_grid:bundle",
   ]

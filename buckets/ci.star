@@ -19,6 +19,7 @@ generate_ci_configs(
             view = "Main",
             name_suffix = "",
             notifiers = ["devtools tree closer"],
+            priority = 30, # default
         ),
         config_section(
             name = "chromium",
@@ -27,16 +28,19 @@ generate_ci_configs(
             name_suffix = " (chromium)",
             builder_group = "chromium.devtools-frontend",
             notifiers = ["devtools tree closer"],
+            priority = 30, # default
         ),
         config_section(
             name = "beta",
             branch = "refs/heads/chromium/4515",
             notifiers = ["devtools notifier"],
+            priority = 50,
         ),
         config_section(
             name = "stable",
             branch = "refs/heads/chromium/4472",
             notifiers = ["devtools notifier"],
+            priority = 50,
         ),
     ],
     builders = [

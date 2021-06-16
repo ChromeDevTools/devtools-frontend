@@ -103,7 +103,8 @@ def config_section(
         name_suffix = None,
         builder_group = "client.devtools-frontend.integration",
         repo = defaults.repo,
-        notifiers = []):
+        notifiers = [],
+        priority = None):
     view = view or name.capitalize()
     if name_suffix == None:
         name_suffix = " %s" % name
@@ -115,6 +116,7 @@ def config_section(
         name_suffix = name_suffix,
         builder_group = builder_group,
         notifiers = notifiers,
+        priority = priority,
     )
 
 def builder_descriptor(
@@ -186,6 +188,7 @@ def generate_ci_configs(configurations, builders):
                     console_category = "Linux",
                     notifies = [] if b.notification_muted else c.notifiers,
                     properties = b.properties or {},
+                    priority = c.priority,
                 )
 
         luci.console_view(

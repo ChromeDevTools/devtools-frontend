@@ -57,7 +57,7 @@ const spec = testFiles.map(fileName => {
 
 // When we are debugging, we don't want to timeout any test. This allows to inspect the state
 // of the application at the moment of the timeout. Here, 0 denotes "indefinite timeout".
-const timeout = process.env['DEBUG'] ? 0 : 5 * 1000;
+const timeout = process.env['DEBUG_TEST'] ? 0 : 5 * 1000;
 module.exports = {
   require: path.join(__dirname, '..', 'conductor', 'mocha_hooks.js'),
   spec,

@@ -28,7 +28,7 @@ const width = 1280;
 const height = 720;
 let unhandledRejectionSet = false;
 
-const headless = !process.env['DEBUG'];
+const headless = !process.env['DEBUG_TEST'];
 const envSlowMo = process.env['STRESS'] ? 50 : undefined;
 const envThrottleRate = process.env['STRESS'] ? 3 : 1;
 

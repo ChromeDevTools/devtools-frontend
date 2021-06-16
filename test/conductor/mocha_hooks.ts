@@ -73,7 +73,7 @@ export const mochaHooks = {
 
     // Pause when running interactively in debug mode. This is mututally
     // exclusive with parallel mode.
-    if (process.env['DEBUG']) {
+    if (process.env['DEBUG_TEST']) {
       console.log('Running in debug mode.');
       console.log(' - Press enter to run the test suite.');
       console.log(' - Press ctrl + c to quit.');

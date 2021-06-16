@@ -177,7 +177,7 @@ function executeTestSuite({
   const argumentsForNode = [
     mochaExecutablePath(),
   ];
-  if (process.env.DEBUG) {
+  if (process.env.DEBUG_TEST) {
     argumentsForNode.unshift('--inspect');
   }
 

@@ -12,7 +12,7 @@ const rimraf = require('rimraf');
 const debugCheck = require('./debug-check.js');
 
 // false by default
-const DEBUG_ENABLED = Boolean(process.env['DEBUG']);
+const DEBUG_ENABLED = Boolean(process.env['DEBUG_TEST']);
 const REPEAT_ENABLED = Boolean(process.env['REPEAT']);
 const COVERAGE_ENABLED = Boolean(process.env['COVERAGE']);
 const EXPANDED_REPORTING = Boolean(process.env['EXPANDED_REPORTING']);

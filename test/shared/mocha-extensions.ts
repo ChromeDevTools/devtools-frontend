@@ -91,7 +91,7 @@ async function timeoutHook(this: Mocha.Runnable, done: Mocha.Done|undefined, err
   if (stacks.length > 0) {
     console.error(`Pending async operations during failure:\n${stacks.join('\n\n')}`);
   }
-  if (err && !getEnvVar('DEBUG')) {
+  if (err && !getEnvVar('DEBUG_TEST')) {
     await takeScreenshots();
   }
   if (done) {

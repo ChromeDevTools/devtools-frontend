@@ -92,10 +92,10 @@ function createMochaConfig({suiteName, extraMochaConfig = {}}) {
 
   // When we are debugging, we don't want to timeout any test. This allows to inspect the state
   // of the application at the moment of the timeout. Here, 0 denotes "indefinite timeout".
-  const timeout = process.env['DEBUG'] ? 0 : 5 * 1000;
+  const timeout = process.env['DEBUG_TEST'] ? 0 : 5 * 1000;
 
   const jobs = Number(process.env['JOBS']) || 1;
-  const parallel = !process.env['DEBUG'] && jobs > 1;
+  const parallel = !process.env['DEBUG_TEST'] && jobs > 1;
 
   return {
     require: [path.join(__dirname, 'conductor', 'mocha_hooks.js'), 'source-map-support/register'],

@@ -99,7 +99,7 @@ def run_tests(chrome_binary,
 
     exec_command = [devtools_paths.node_path()]
 
-    if 'DEBUG' in env:
+    if 'DEBUG_TEST' in env:
         exec_command.append('--inspect')
 
     exec_command = exec_command + [

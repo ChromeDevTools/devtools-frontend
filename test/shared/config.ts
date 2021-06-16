@@ -10,7 +10,7 @@ interface SupportedEnvVars {
   THROTTLE: number;         // CPU throttle multiplier.
   TEST_LIST: string;        // Absolute path to the test list.
   TEST_PATTERNS: string;    // A semicolon-separated list of extglob pattern to filter the tests.
-  DEBUG: boolean;           // Debug mode. When enabled, has longer timeouts and runs Chrome in head mode.
+  DEBUG_TEST: boolean;      // Debug mode. When enabled, has longer timeouts and runs Chrome in head mode.
   ITERATIONS: number;       // Number of test iterations.
   JOBS: number;             // Number of workers to use.
   SLOWMO: number;           // Number of milliseconds between actions. Recommended value: 50.

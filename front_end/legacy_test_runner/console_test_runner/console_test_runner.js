@@ -691,7 +691,7 @@ ConsoleTestRunner.visibleIndices = function() {
       continue;
     }
     const itemRect = item._element.getBoundingClientRect();
-    const isVisible = (itemRect.bottom > viewportRect.top + 1) && (itemRect.top <= viewportRect.bottom - 1);
+    const isVisible = (itemRect.bottom > viewportRect.top + 0.5) && (itemRect.top < viewportRect.bottom - 0.5);
     if (isVisible) {
       first = first === -1 ? i : first;
       last = i;

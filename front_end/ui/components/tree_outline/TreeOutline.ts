@@ -447,6 +447,10 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
       // clang-format off
       LitHtml.render(LitHtml.html`
       <style>
+        :host {
+          --list-group-padding: 16px;
+        }
+
         li {
           list-style: none;
           text-overflow: ellipsis;
@@ -477,7 +481,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
         }
 
         ul[role="group"] {
-          padding-left: 16px;
+          padding-left: var(--list-group-padding);
         }
 
         li:not(.parent) > .arrow-and-key-wrapper > .arrow-icon {

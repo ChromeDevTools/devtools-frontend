@@ -8813,6 +8813,9 @@
   "panels/sources/sources-meta.ts | disableAutocompletion": {
     "message": "D̂íŝáb̂ĺê áût́ôćôḿp̂ĺêt́îón̂"
   },
+  "panels/sources/sources-meta.ts | disableAutoFocusOnDebuggerPaused": {
+    "message": "D̂ó n̂ót̂ f́ôćûś Ŝóûŕĉéŝ ṕâńêĺ ŵh́êń t̂ŕîǵĝér̂ín̂ǵ â b́r̂éâḱp̂óîńt̂"
+  },
   "panels/sources/sources-meta.ts | disableBracketMatching": {
     "message": "D̂íŝáb̂ĺê b́r̂áĉḱêt́ m̂át̂ćĥín̂ǵ"
   },
@@ -8851,6 +8854,9 @@
   },
   "panels/sources/sources-meta.ts | enableAutocompletion": {
     "message": "Êńâb́l̂é âút̂óĉóm̂ṕl̂ét̂íôń"
+  },
+  "panels/sources/sources-meta.ts | enableAutoFocusOnDebuggerPaused": {
+    "message": "F̂óĉúŝ Śôúr̂ćêś p̂án̂él̂ ẃĥén̂ t́r̂íĝǵêŕîńĝ á b̂ŕêák̂ṕôín̂t́"
   },
   "panels/sources/sources-meta.ts | enableBracketMatching": {
     "message": "Êńâb́l̂é b̂ŕâćk̂ét̂ ḿât́ĉh́îńĝ"

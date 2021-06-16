@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {click, waitFor, waitForAria} from '../../shared/helper.js';
+import {click, scrollElementIntoView, waitFor, waitForAria, waitForFunction} from '../../shared/helper.js';
 
 export const openPanelViaMoreTools = async (panelTitle: string, isLocalized = false) => {
   // Head to the triple dot menu.
@@ -41,6 +41,19 @@ export const openSettingsTab = async (tabTitle: string) => {
 
 export const togglePreferenceInSettingsTab = async (label: string) => {
   await openSettingsTab('Preferences');
-  await click(`[aria-label="${label}"`);
+
+  const selector = `[aria-label="${label}"`;
+  await scrollElementIntoView(selector);
+  const preference = await waitFor(selector);
+
+  const value = await preference.evaluate(checkbox => (checkbox as HTMLInputElement).checked);
+
+  await click(preference);
+
+  await waitForFunction(async () => {
+    const newValue = await preference.evaluate(checkbox => (checkbox as HTMLInputElement).checked);
+    return newValue !== value;
+  });
+
   await click('.dialog-close-button');
 };

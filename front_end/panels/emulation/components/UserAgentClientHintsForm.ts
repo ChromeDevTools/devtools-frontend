@@ -409,7 +409,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
           />
           <${IconButton.Icon.Icon.litTagName}
             .data=${
-          {color: 'var(--color-text-primary)', iconName: 'trash_bin_icon', width: '10px', height: '14px'} as
+          {color: 'var(--client-hints-form-icon-color)', iconName: 'trash_bin_icon', width: '10px', height: '14px'} as
           IconButton.Icon.IconData}
             title="${i18nString(UIStrings.deleteTooltip)}"
             class="delete-icon"
@@ -434,7 +434,8 @@ export class UserAgentClientHintsForm extends HTMLElement {
       >
         <${IconButton.Icon.Icon.litTagName}
           aria-hidden="true"
-          .data=${{color: 'var(--color-text-primary)', iconName: 'add-icon', width: '10px'} as IconButton.Icon.IconData}
+          .data=${
+        {color: 'var(--client-hints-form-icon-color)', iconName: 'add-icon', width: '10px'} as IconButton.Icon.IconData}
         >
         </${IconButton.Icon.Icon.litTagName}>
         ${i18nString(UIStrings.addBrand)}
@@ -464,6 +465,10 @@ export class UserAgentClientHintsForm extends HTMLElement {
                                                  LitHtml.html``;
     const output = LitHtml.html`
       <style>
+        :host {
+          --client-hints-form-icon-color: var(--color-text-primary);
+        }
+
         .root {
           color: var(--color-text-primary);
           width: 100%;
@@ -575,8 +580,16 @@ export class UserAgentClientHintsForm extends HTMLElement {
         }
 
         @media (forced-colors: active) {
+          :host {
+            --client-hints-form-icon-color: fieldtext;
+          }
+
           .input-field {
             border: 1px solid;
+          }
+
+          .tree-title[aria-disabled='true'] {
+            color: GrayText;
           }
         }
       </style>
@@ -589,11 +602,14 @@ export class UserAgentClientHintsForm extends HTMLElement {
           @keypress="${this.handleTreeExpand}"
           aria-expanded="${this.isFormOpened}"
           aria-controls="form-container"
+          @disabled="${this.isFormDisabled}"
+          aria-disabled="${this.isFormDisabled}"
         >
           <${IconButton.Icon.Icon.litTagName}
             class="${this.isFormOpened ? '' : 'rotate-icon'}"
             .data=${
-        {color: 'var(--color-text-primary)', iconName: 'chromeSelect', width: '20px'} as IconButton.Icon.IconData}
+        {color: 'var(--client-hints-form-icon-color)', iconName: 'chromeSelect', width: '20px'} as
+        IconButton.Icon.IconData}
           >
           </${IconButton.Icon.Icon.litTagName}>
           ${i18nString(UIStrings.title)}
@@ -607,7 +623,8 @@ export class UserAgentClientHintsForm extends HTMLElement {
           >
             <${IconButton.Icon.Icon.litTagName}
               .data=${
-        {color: 'var(--color-text-primary)', iconName: 'ic_info_black_18dp', width: '14px'} as IconButton.Icon.IconData}
+        {color: 'var(--client-hints-form-icon-color)', iconName: 'ic_info_black_18dp', width: '14px'} as
+        IconButton.Icon.IconData}
             >
             </${IconButton.Icon.Icon.litTagName}>
           </x-link>

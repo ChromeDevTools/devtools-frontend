@@ -112,7 +112,7 @@ export class CSSModel extends SDKModel {
 
   headersForSourceURL(sourceURL: string): CSSStyleSheetHeader[] {
     const headers = [];
-    for (const headerId of this.styleSheetIdsForURL(sourceURL)) {
+    for (const headerId of this.getStyleSheetIdsForURL(sourceURL)) {
       const header = this.styleSheetHeaderForId(headerId);
       if (header) {
         headers.push(header);
@@ -565,7 +565,7 @@ export class CSSModel extends SDKModel {
     this.dispatchEventToListeners(Events.StyleSheetRemoved, header);
   }
 
-  styleSheetIdsForURL(url: string): string[] {
+  getStyleSheetIdsForURL(url: string): string[] {
     const frameIdToStyleSheetIds = this._styleSheetIdsForURL.get(url);
     if (!frameIdToStyleSheetIds) {
       return [];

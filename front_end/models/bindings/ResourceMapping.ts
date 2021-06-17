@@ -316,7 +316,7 @@ class Binding implements TextUtils.ContentProvider.ContentProvider {
     }
     const cssModel = target.model(SDK.CSSModel.CSSModel);
     if (cssModel) {
-      for (const headerId of cssModel.styleSheetIdsForURL(this._uiSourceCode.url())) {
+      for (const headerId of cssModel.getStyleSheetIdsForURL(this._uiSourceCode.url())) {
         const header = cssModel.styleSheetHeaderForId(headerId);
         if (header) {
           stylesheets.push(header);

@@ -180,7 +180,7 @@ export class CSSStyleDeclaration {
     // For style-based properties, generate shorthands with values when possible.
     for (const property of this._allProperties) {
       // For style-based properties, try generating shorthands.
-      const shorthands = cssMetadata().shorthands(property.name) || [];
+      const shorthands = cssMetadata().getShorthands(property.name) || [];
       for (const shorthand of shorthands) {
         if (propertiesSet.has(shorthand)) {
           continue;
@@ -212,7 +212,7 @@ export class CSSStyleDeclaration {
 
     const leadingProperties = [];
     for (const property of this._allProperties) {
-      const shorthands = cssMetadata().shorthands(property.name) || [];
+      const shorthands = cssMetadata().getShorthands(property.name) || [];
       let belongToAnyShorthand = false;
       for (const shorthand of shorthands) {
         if (this._shorthandValues.get(shorthand)) {
@@ -253,7 +253,7 @@ export class CSSStyleDeclaration {
       }
       const metadata = cssMetadata();
       const canonicalName = metadata.canonicalPropertyName(property.name);
-      const longhands = metadata.longhands(canonicalName);
+      const longhands = metadata.getLonghands(canonicalName);
       if (longhands) {
         for (const longhand of longhands) {
           const activeLonghand = activeProperties.get(longhand);
@@ -300,7 +300,7 @@ export class CSSStyleDeclaration {
   }
 
   longhandProperties(name: string): CSSProperty[] {
-    const longhands = cssMetadata().longhands(name.toLowerCase());
+    const longhands = cssMetadata().getLonghands(name.toLowerCase());
     const result = [];
     for (let i = 0; longhands && i < longhands.length; ++i) {
       const property = this._activePropertyMap.get(longhands[i]);

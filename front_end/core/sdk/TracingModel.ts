@@ -297,21 +297,21 @@ export class TracingModel {
     return Sorter.sort([...this._processById.values()]);
   }
 
-  processByName(name: string): Process|null {
+  getProcessByName(name: string): Process|null {
     return this._processByName.get(name);
   }
 
-  processById(pid: number): Process|null {
+  getProcessById(pid: number): Process|null {
     return this._processById.get(pid) || null;
   }
 
-  threadByName(processName: string, threadName: string): Thread|null {
-    const process = this.processByName(processName);
+  getThreadByName(processName: string, threadName: string): Thread|null {
+    const process = this.getProcessByName(processName);
     return process && process.threadByName(threadName);
   }
 
   extractEventsFromThreadByName(processName: string, threadName: string, eventName: string): Event[] {
-    const thread = this.threadByName(processName, threadName);
+    const thread = this.getThreadByName(processName, threadName);
     if (!thread) {
       return [];
     }

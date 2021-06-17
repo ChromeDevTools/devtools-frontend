@@ -289,7 +289,7 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
     }
     const mainFrame = frames.find(frame => !frame.parent);
     const mainRendererProcessId = mainFrame.processId;
-    const mainProcess = this._tracingModel.processById(mainRendererProcessId);
+    const mainProcess = this._tracingModel.getProcessById(mainRendererProcessId);
     if (mainProcess) {
       const target = SDK.TargetManager.TargetManager.instance().mainTarget();
       if (target) {
@@ -314,7 +314,7 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
         if (!pid) {
           continue;
         }
-        const process = this._tracingModel.processById(pid);
+        const process = this._tracingModel.getProcessById(pid);
         const thread =
             process && process.threadByName(TimelineModel.TimelineModel.TimelineModelImpl.RendererMainThreadName);
         if (thread) {

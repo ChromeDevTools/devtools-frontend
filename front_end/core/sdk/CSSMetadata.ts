@@ -155,11 +155,11 @@ export class CSSMetadata {
     return this._svgProperties.has(name);
   }
 
-  longhands(shorthand: string): string[]|null {
+  getLonghands(shorthand: string): string[]|null {
     return this._longhands.get(shorthand) || null;
   }
 
-  shorthands(longhand: string): string[]|null {
+  getShorthands(longhand: string): string[]|null {
     return this._shorthands.get(longhand) || null;
   }
 
@@ -272,7 +272,7 @@ export class CSSMetadata {
     return keywords;
   }
 
-  propertyValues(propertyName: string): string[] {
+  getPropertyValues(propertyName: string): string[] {
     const acceptedKeywords = ['inherit', 'initial', 'revert', 'unset'];
     propertyName = propertyName.toLowerCase();
     acceptedKeywords.push(...this._specificPropertyValues(propertyName));

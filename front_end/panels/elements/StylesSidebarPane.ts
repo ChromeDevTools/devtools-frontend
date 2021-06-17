@@ -1940,7 +1940,7 @@ export class StylePropertiesSection {
     this.queryListElement.classList.toggle('query-matches', this._matchedStyles.mediaMatches(this._style));
 
     const selectorTexts = rule.selectors.map(selector => selector.text);
-    const matchingSelectorIndexes = this._matchedStyles.matchingSelectors(rule);
+    const matchingSelectorIndexes = this._matchedStyles.getMatchingSelectors(rule);
     const matchingSelectors = (new Array(selectorTexts.length).fill(false) as boolean[]);
     for (const matchingIndex of matchingSelectorIndexes) {
       matchingSelectors[matchingIndex] = true;
@@ -2332,7 +2332,7 @@ export class StylePropertiesSection {
     }
 
     function updateSourceRanges(this: StylePropertiesSection, rule: SDK.CSSRule.CSSStyleRule): void {
-      const doesAffectSelectedNode = this._matchedStyles.matchingSelectors(rule).length > 0;
+      const doesAffectSelectedNode = this._matchedStyles.getMatchingSelectors(rule).length > 0;
       this.propertiesTreeOutline.element.classList.toggle('no-affect', !doesAffectSelectedNode);
       this._matchedStyles.resetActiveProperties();
       this._parentPane._refreshUpdate(this);
@@ -2449,7 +2449,7 @@ export class BlankStylePropertiesSection extends StylePropertiesSection {
     }
 
     function onAddedToCascade(this: BlankStylePropertiesSection, newRule: SDK.CSSRule.CSSStyleRule): void {
-      const doesSelectorAffectSelectedNode = this._matchedStyles.matchingSelectors(newRule).length > 0;
+      const doesSelectorAffectSelectedNode = this._matchedStyles.getMatchingSelectors(newRule).length > 0;
       this._makeNormal(newRule);
 
       if (!doesSelectorAffectSelectedNode) {
@@ -2581,7 +2581,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
         this._cssCompletions = this._cssCompletions.filter(property => !cssMetadata.isSVGProperty(property));
       }
     } else {
-      this._cssCompletions = cssMetadata.propertyValues(treeElement.property.name);
+      this._cssCompletions = cssMetadata.getPropertyValues(treeElement.property.name);
       if (node && cssMetadata.isFontFamilyProperty(treeElement.property.name)) {
         const fontFamilies = node.domModel().cssModel().fontFaces().map(font => quoteFamilyName(font.getFontFamily()));
         this._cssCompletions.unshift(...fontFamilies);

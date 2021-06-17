@@ -340,7 +340,7 @@ export class CSSPlugin extends Plugin {
 
     const line = this._textEditor.line(prefixRange.startLine);
     const tokenContent = line.substring(propertyToken.startColumn, propertyToken.endColumn);
-    const propertyValues = SDK.CSSMetadata.cssMetadata().propertyValues(tokenContent);
+    const propertyValues = SDK.CSSMetadata.cssMetadata().getPropertyValues(tokenContent);
     return Promise.resolve(propertyValues.filter(value => value.startsWith(prefix)).map(value => {
       return {
         text: value,

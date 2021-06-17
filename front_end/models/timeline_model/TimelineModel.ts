@@ -526,7 +526,7 @@ export class TimelineModelImpl {
   }
 
   _buildGPUEvents(tracingModel: SDK.TracingModel.TracingModel): void {
-    const thread = tracingModel.threadByName('GPU Process', 'CrGpuMain');
+    const thread = tracingModel.getThreadByName('GPU Process', 'CrGpuMain');
     if (!thread) {
       return;
     }
@@ -537,7 +537,7 @@ export class TimelineModelImpl {
   }
 
   _buildLoadingEvents(tracingModel: SDK.TracingModel.TracingModel, events: SDK.TracingModel.Event[]): void {
-    const thread = tracingModel.threadByName('Renderer', 'CrRendererMain');
+    const thread = tracingModel.getThreadByName('Renderer', 'CrRendererMain');
     if (!thread) {
       return;
     }

@@ -301,7 +301,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     if (!progress) {
       return;
     }
-    progress.worked(worked);
+    progress.incrementWorked(worked);
     if (progress.isCanceled()) {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.stopIndexing(requestId);
       this._onIndexingDone(event);

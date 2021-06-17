@@ -82,7 +82,7 @@ export class NetworkSearchScope implements Search.SearchConfig.SearchScope {
     for (const match of bodyMatches) {
       locations.push(NetworkForward.UIRequestLocation.UIRequestLocation.bodyMatch(request, match));
     }
-    progress.worked();
+    progress.incrementWorked();
     return new NetworkSearchResult(request, locations);
 
     function headerMatchesQuery(header: SDK.NetworkRequest.NameValue): boolean {

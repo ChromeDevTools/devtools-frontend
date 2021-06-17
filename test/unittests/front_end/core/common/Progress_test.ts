@@ -50,7 +50,7 @@ class MockProgressIndicator implements Common.Progress.Progress {
     this.title = title;
   }
 
-  worked(worked: number) {
+  incrementWorked(worked: number) {
     this.totalWork += worked;
   }
 
@@ -195,7 +195,7 @@ describe('Composite Progress Bar', () => {
     assert.strictEqual(indicator.getTotalWork, 1);
     assert.strictEqual(subProgress._worked, 0);
 
-    subProgress.worked();
+    subProgress.incrementWorked();
 
     assert.strictEqual(indicator.getTitle, undefined);
     assert.strictEqual(indicator.getWorkCompleted, 0);
@@ -265,7 +265,7 @@ describe('Composite Progress Bar', () => {
     const subProgress = composite.createSubProgress();
     const progressProxy = new ProgressProxy(subProgress);
 
-    progressProxy.worked(1);
+    progressProxy.incrementWorked(1);
     assert.strictEqual(subProgress._worked, 1);
   });
 });

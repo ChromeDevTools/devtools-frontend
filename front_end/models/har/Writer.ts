@@ -107,7 +107,7 @@ export class Writer {
     }
 
     function contentLoaded(entry: EntryDTO, contentData: SDK.NetworkRequest.ContentData): void {
-      progress.worked();
+      progress.incrementWorked();
       let encoded: true|boolean = contentData.encoded;
       if (contentData.content !== null) {
         let content: string = contentData.content;
@@ -132,7 +132,7 @@ export class Writer {
     for (let i = 0; i < fileContent.length && !progress.isCanceled(); i += _chunkSize) {
       const chunk = fileContent.substr(i, _chunkSize);
       await stream.write(chunk);
-      progress.worked(chunk.length);
+      progress.incrementWorked(chunk.length);
     }
     progress.done();
   }

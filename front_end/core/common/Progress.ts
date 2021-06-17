@@ -37,7 +37,7 @@ export class Progress {
   }
   setWorked(worked: number, title?: string): void {
   }
-  worked(worked?: number): void {
+  incrementWorked(worked?: number): void {
   }
   done(): void {
   }
@@ -126,7 +126,7 @@ export class SubProgress implements Progress {
     this._composite._update();
   }
 
-  worked(worked?: number): void {
+  incrementWorked(worked?: number): void {
     this.setWorked(this._worked + (worked || 1));
   }
 }
@@ -170,9 +170,9 @@ export class ProgressProxy implements Progress {
     }
   }
 
-  worked(worked?: number): void {
+  incrementWorked(worked?: number): void {
     if (this._delegate) {
-      this._delegate.worked(worked);
+      this._delegate.incrementWorked(worked);
     }
   }
 }

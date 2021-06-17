@@ -514,7 +514,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
 
       function innerCallback(files: string[]): void {
         resolve(files.map(path => Common.ParsedURL.ParsedURL.platformPathToURL(path)));
-        progress.worked(1);
+        progress.incrementWorked(1);
       }
     });
   }

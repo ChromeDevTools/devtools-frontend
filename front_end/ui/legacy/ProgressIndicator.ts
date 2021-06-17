@@ -98,7 +98,7 @@ export class ProgressIndicator implements Common.Progress.Progress {
     }
   }
 
-  worked(worked?: number): void {
+  incrementWorked(worked?: number): void {
     this.setWorked(this._worked + (worked || 1));
   }
 }

@@ -252,7 +252,7 @@ export class SourcesSearchScope implements Search.SearchConfig.SearchScope {
         return a.lineNumber - b.lineNumber;
       }
 
-      progress.worked(1);
+      progress.incrementWorked(1);
       let matches: TextUtils.ContentProvider.SearchMatch[] = [];
       const searchConfig = (this._searchConfig as Workspace.Workspace.ProjectSearchConfig);
       const queries = searchConfig.queries();

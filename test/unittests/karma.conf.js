@@ -11,10 +11,12 @@ const fs = require('fs');
 const rimraf = require('rimraf');
 const debugCheck = require('./debug-check.js');
 
+const USER_DEFINED_COVERAGE_FOLDERS = process.env['COVERAGE_FOLDERS'];
+
 // false by default
 const DEBUG_ENABLED = Boolean(process.env['DEBUG_TEST']);
 const REPEAT_ENABLED = Boolean(process.env['REPEAT']);
-const COVERAGE_ENABLED = Boolean(process.env['COVERAGE']);
+const COVERAGE_ENABLED = Boolean(process.env['COVERAGE']) || Boolean(USER_DEFINED_COVERAGE_FOLDERS);
 const EXPANDED_REPORTING = Boolean(process.env['EXPANDED_REPORTING']);
 
 // true by default
@@ -90,6 +92,24 @@ const TEST_FILES =
 
 const TEST_FILES_SOURCE_MAPS = TEST_FILES.map(fileName => `${fileName}.map`);
 
+const DEFAULT_PREPROCESSING_FOLDERS = {
+  // We need to exclude `ui/components/docs/` from the coverage report, as it uses top-leve await,
+  // which the processor can't handle. However, minimatch patterns don't allow for exclusions of
+  // nested folders. Therefore, we have to manually exclude `ui` first, add another rule to explicitly
+  // include `ui`, but exclude `ui/components` and then a last rule to include `ui/components`, but not
+  // `ui/components/docs`.
+  [path.join(GEN_DIRECTORY, 'front_end/!(third_party|ui)/**/*.{js,mjs}')]: [...coveragePreprocessors],
+  [path.join(GEN_DIRECTORY, 'front_end/ui/!(components)/**/*.{js,mjs}')]: [...coveragePreprocessors],
+  [path.join(GEN_DIRECTORY, 'front_end/ui/components/!(docs)/**/*.{js,mjs}')]: [...coveragePreprocessors],
+  [path.join(GEN_DIRECTORY, 'inspector_overlay/**/*.{js,mjs}')]: [...coveragePreprocessors],
+};
+const USER_DEFINED_PROCESSING_FOLDERS = {
+  [path.join(GEN_DIRECTORY, `${USER_DEFINED_COVERAGE_FOLDERS}/**/*.{js,mjs}`)]: [...coveragePreprocessors]
+};
+
+const COVERAGE_PREPROCESSING_FOLDERS =
+    USER_DEFINED_COVERAGE_FOLDERS ? USER_DEFINED_PROCESSING_FOLDERS : DEFAULT_PREPROCESSING_FOLDERS;
+
 // Locate the test setup file in all the gathered files. This is so we can
 // ensure that it goes first and registers its global hooks before anything else.
 const testSetupFilePattern = {
@@ -164,15 +184,7 @@ module.exports = function(config) {
 
     preprocessors: {
       '**/*.{js,mjs}': ['sourcemap'],
-      // We need to exclude `ui/components/docs/` from the coverage report, as it uses top-leve await,
-      // which the processor can't handle. However, minimatch patterns don't allow for exclusions of
-      // nested folders. Therefore, we have to manually exclude `ui` first, add another rule to explicitly
-      // include `ui`, but exclude `ui/components` and then a last rule to include `ui/components`, but not
-      // `ui/components/docs`.
-      [path.join(GEN_DIRECTORY, 'front_end/!(third_party|ui)/**/*.{js,mjs}')]: [...coveragePreprocessors],
-      [path.join(GEN_DIRECTORY, 'front_end/ui/!(components)/**/*.{js,mjs}')]: [...coveragePreprocessors],
-      [path.join(GEN_DIRECTORY, 'front_end/ui/components/!(docs)/**/*.{js,mjs}')]: [...coveragePreprocessors],
-      [path.join(GEN_DIRECTORY, 'inspector_overlay/**/*.{js,mjs}')]: [...coveragePreprocessors],
+      ...COVERAGE_PREPROCESSING_FOLDERS,
     },
 
     proxies: {

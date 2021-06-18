@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {click, getBrowserAndPages, step, waitFor, waitForAria, waitForFunction} from '../../shared/helper.js';
+import {click, getBrowserAndPages, step, waitFor, waitForAria, waitForElementWithTextContent, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToNetworkTab, setCacheDisabled, togglePersistLog, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
 
@@ -214,6 +214,7 @@ describe('The Network Tab', async function() {
     await target.reload({waitUntil: 'networkidle0'});
 
     await waitForSomeRequestsToAppear(3);
+    await waitForElementWithTextContent(`(Web Bundle)${formatByteSize(27)}`);
 
     const getNetworkRequestSize = () => frontend.evaluate(() => {
       return Array.from(document.querySelectorAll('.size-column')).slice(2, 4).map(node => node.textContent);
@@ -233,6 +234,7 @@ describe('The Network Tab', async function() {
     await target.reload({waitUntil: 'networkidle0'});
 
     await waitForSomeRequestsToAppear(3);
+    await waitForElementWithTextContent('Web Bundle error');
 
     const getNetworkRequestStatus = () => frontend.evaluate(() => {
       return Array.from(document.querySelectorAll('.status-column')).slice(2, 4).map(node => node.textContent);
@@ -249,6 +251,7 @@ describe('The Network Tab', async function() {
     await target.reload({waitUntil: 'networkidle0'});
 
     await waitForSomeRequestsToAppear(3);
+    await waitForElementWithTextContent('Web Bundle error');
 
     const getNetworkRequestSize = () => frontend.evaluate(() => {
       return Array.from(document.querySelectorAll('.status-column')).slice(2, 4).map(node => node.textContent);
@@ -266,6 +269,7 @@ describe('The Network Tab', async function() {
     await target.reload({waitUntil: 'networkidle0'});
 
     await waitForSomeRequestsToAppear(3);
+    await waitFor('.name-column > [role="link"] > .icon');
 
     const getNetworkRequestIcons = () => frontend.evaluate(() => {
       return Array.from(document.querySelectorAll('.name-column > .icon'))

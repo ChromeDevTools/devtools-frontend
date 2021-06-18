@@ -285,7 +285,7 @@ describe('The Network Tab', async function() {
           .map(node => (node as HTMLImageElement).alt);
     });
     assert.sameMembers(await getFromWebBundleIcons(), [
-      'from Web Bundle',
+      'Served from Web Bundle',
     ]);
   });
 

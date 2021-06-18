@@ -450,7 +450,7 @@ export class RequestTimingView extends UI.Widget.VBox {
       }
     }
 
-    if (!request.finished) {
+    if (!request.finished && !request.preserved) {
       const cell = (tableElement.createChild('tr').createChild('td', 'caution') as HTMLTableCellElement);
       cell.colSpan = 3;
       UI.UIUtils.createTextChild(cell, i18nString(UIStrings.cautionRequestIsNotFinishedYet));

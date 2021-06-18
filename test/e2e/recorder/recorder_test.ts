@@ -66,11 +66,19 @@ async function startRecording(path: string, networkCondition: string = '', untru
   await frontend.waitForSelector('aria/Stop');
 }
 
-async function stopRecording() {
-  const {frontend} = getBrowserAndPages();
-  await frontend.bringToFront();
-  await frontend.waitForSelector('aria/Stop', {timeout: 0});
-  await frontend.click('aria/Stop');
+async function stopRecording(attempt = 0, error = new Error()) {
+  // We attempt to stop the recording multiple times due to crbug/1219505.
+  if (attempt >= 3) {
+    throw error;
+  }
+  try {
+    const {frontend} = getBrowserAndPages();
+    await frontend.bringToFront();
+    await frontend.waitForSelector('aria/Stop', {timeout: 0});
+    await frontend.click('aria/Stop');
+  } catch (err) {
+    stopRecording(attempt + 1, err);
+  }
 }
 
 async function assertOutput(expected: UserFlow) {
@@ -556,8 +564,7 @@ describe('Recorder', function() {
     });
   });
 
-  // Flakes occasionally on Mac.
-  it.skipOnPlatforms(['mac'], '[crbug.com/1219505] should record scroll events', async () => {
+  it('should record scroll events', async () => {
     const untrustedEvents = true;
     const networkCondition = '';
     await startRecording('recorder/scroll.html', networkCondition, untrustedEvents);

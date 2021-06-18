@@ -234,6 +234,10 @@
   margin-right: 3px;
 }
 
+.network-log-grid.data-grid .data-grid-data-grid-node.selected .icon {
+  filter: brightness(0) invert(1);
+}
+
 .network-log-grid.data-grid.small .icon {
   margin-top: 0;
   width: 18px;

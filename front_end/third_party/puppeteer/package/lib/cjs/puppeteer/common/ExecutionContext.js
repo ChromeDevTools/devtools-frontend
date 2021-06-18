@@ -216,7 +216,7 @@ class ExecutionContext {
                 error.message += ' Are you passing a nested JSHandle?';
             throw error;
         }
-        const { exceptionDetails, result: remoteObject, } = await callFunctionOnPromise.catch(rewriteError);
+        const { exceptionDetails, result: remoteObject } = await callFunctionOnPromise.catch(rewriteError);
         if (exceptionDetails)
             throw new Error('Evaluation failed: ' + helper_js_1.helper.getExceptionMessage(exceptionDetails));
         return returnByValue

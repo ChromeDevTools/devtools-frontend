@@ -100,13 +100,15 @@ export class HTTPRequest {
         return this._headers;
     }
     /**
-     * @returns the response for this request, if a response has been received.
+     * @returns A matching `HTTPResponse` object, or null if the response has not
+     * been received yet.
      */
     response() {
         return this._response;
     }
     /**
-     * @returns the frame that initiated the request.
+     * @returns the frame that initiated the request, or null if navigating to
+     * error pages.
      */
     frame() {
         return this._frame;
@@ -118,6 +120,7 @@ export class HTTPRequest {
         return this._isNavigationRequest;
     }
     /**
+     * A `redirectChain` is a chain of requests initiated to fetch a resource.
      * @remarks
      *
      * `redirectChain` is shared between all the requests of the same chain.

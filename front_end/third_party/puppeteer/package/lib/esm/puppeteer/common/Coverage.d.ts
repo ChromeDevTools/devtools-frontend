@@ -115,8 +115,8 @@ export declare class Coverage {
     _cssCoverage: CSSCoverage;
     constructor(client: CDPSession);
     /**
-     * @param options - defaults to
-     * `{ resetOnNavigation : true, reportAnonymousScripts : false }`
+     * @param options - Set of configurable options for coverage defaults to `{
+     * resetOnNavigation : true, reportAnonymousScripts : false }`
      * @returns Promise that resolves when coverage is started.
      *
      * @remarks
@@ -136,7 +136,8 @@ export declare class Coverage {
      */
     stopJSCoverage(): Promise<CoverageEntry[]>;
     /**
-     * @param options - defaults to `{ resetOnNavigation : true }`
+     * @param options - Set of configurable options for coverage, defaults to `{
+     * resetOnNavigation : true }`
      * @returns Promise that resolves when coverage is started.
      */
     startCSSCoverage(options?: CSSCoverageOptions): Promise<void>;

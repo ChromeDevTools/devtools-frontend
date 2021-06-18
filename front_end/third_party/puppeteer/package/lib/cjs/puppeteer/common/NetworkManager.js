@@ -40,16 +40,45 @@ exports.NetworkManagerEmittedEvents = {
 class NetworkManager extends EventEmitter_js_1.EventEmitter {
     constructor(client, ignoreHTTPSErrors, frameManager) {
         super();
-        this._requestIdToRequest = new Map();
+        /*
+         * There are four possible orders of events:
+         *  A. `_onRequestWillBeSent`
+         *  B. `_onRequestWillBeSent`, `_onRequestPaused`
+         *  C. `_onRequestPaused`, `_onRequestWillBeSent`
+         *  D. `_onRequestPaused`, `_onRequestWillBeSent`, `_onRequestPaused`
+         *     (see crbug.com/1196004)
+         *
+         * For `_onRequest` we need the event from `_onRequestWillBeSent` and
+         * optionally the `interceptionId` from `_onRequestPaused`.
+         *
+         * If request interception is disabled, call `_onRequest` once per call to
+         * `_onRequestWillBeSent`.
+         * If request interception is enabled, call `_onRequest` once per call to
+         * `_onRequestPaused` (once per `interceptionId`).
+         *
+         * Events are stored to allow for subsequent events to call `_onRequest`.
+         *
+         * Note that (chains of) redirect requests have the same `requestId` (!) as
+         * the original request. We have to anticipate series of events like these:
+         *  A. `_onRequestWillBeSent`,
+         *     `_onRequestWillBeSent`, ...
+         *  B. `_onRequestWillBeSent`, `_onRequestPaused`,
+         *     `_onRequestWillBeSent`, `_onRequestPaused`, ...
+         *  C. `_onRequestWillBeSent`, `_onRequestPaused`,
+         *     `_onRequestPaused`, `_onRequestWillBeSent`, ...
+         *  D. `_onRequestPaused`, `_onRequestWillBeSent`,
+         *     `_onRequestPaused`, `_onRequestWillBeSent`, `_onRequestPaused`, ...
+         *     (see crbug.com/1196004)
+         */
         this._requestIdToRequestWillBeSentEvent = new Map();
+        this._requestIdToRequestPausedEvent = new Map();
+        this._requestIdToRequest = new Map();
         this._extraHTTPHeaders = {};
         this._credentials = null;
         this._attemptedAuthentications = new Set();
         this._userRequestInterceptionEnabled = false;
-        this._userRequestInterceptionCacheSafe = false;
         this._protocolRequestInterceptionEnabled = false;
         this._userCacheDisabled = false;
-        this._requestIdToInterceptionId = new Map();
         this._emulatedNetworkConditions = {
             offline: false,
             upload: -1,
@@ -123,9 +152,8 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         this._userCacheDisabled = !enabled;
         await this._updateProtocolCacheDisabled();
     }
-    async setRequestInterception(value, cacheSafe = false) {
+    async setRequestInterception(value) {
         this._userRequestInterceptionEnabled = value;
-        this._userRequestInterceptionCacheSafe = cacheSafe;
         await this._updateProtocolRequestInterception();
     }
     async _updateProtocolRequestInterception() {
@@ -149,11 +177,12 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
             ]);
         }
     }
+    _cacheDisabled() {
+        return this._userCacheDisabled;
+    }
     async _updateProtocolCacheDisabled() {
         await this._client.send('Network.setCacheDisabled', {
-            cacheDisabled: this._userCacheDisabled ||
-                (this._userRequestInterceptionEnabled &&
-                    !this._userRequestInterceptionCacheSafe),
+            cacheDisabled: this._cacheDisabled(),
         });
     }
     _onRequestWillBeSent(event) {
@@ -161,13 +190,12 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         if (this._userRequestInterceptionEnabled &&
             !event.request.url.startsWith('data:')) {
             const requestId = event.requestId;
-            const interceptionId = this._requestIdToInterceptionId.get(requestId);
-            if (interceptionId) {
+            const requestPausedEvent = this._requestIdToRequestPausedEvent.get(requestId);
+            this._requestIdToRequestWillBeSentEvent.set(requestId, event);
+            if (requestPausedEvent) {
+                const interceptionId = requestPausedEvent.requestId;
                 this._onRequest(event, interceptionId);
-                this._requestIdToInterceptionId.delete(requestId);
-            }
-            else {
-                this._requestIdToRequestWillBeSentEvent.set(event.requestId, event);
+                this._requestIdToRequestPausedEvent.delete(requestId);
             }
             return;
         }
@@ -204,13 +232,23 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         }
         const requestId = event.networkId;
         const interceptionId = event.requestId;
-        if (requestId && this._requestIdToRequestWillBeSentEvent.has(requestId)) {
-            const requestWillBeSentEvent = this._requestIdToRequestWillBeSentEvent.get(requestId);
+        if (!requestId) {
+            return;
+        }
+        let requestWillBeSentEvent = this._requestIdToRequestWillBeSentEvent.get(requestId);
+        // redirect requests have the same `requestId`,
+        if (requestWillBeSentEvent &&
+            (requestWillBeSentEvent.request.url !== event.request.url ||
+                requestWillBeSentEvent.request.method !== event.request.method)) {
+            this._requestIdToRequestWillBeSentEvent.delete(requestId);
+            requestWillBeSentEvent = null;
+        }
+        if (requestWillBeSentEvent) {
             this._onRequest(requestWillBeSentEvent, interceptionId);
             this._requestIdToRequestWillBeSentEvent.delete(requestId);
         }
         else {
-            this._requestIdToInterceptionId.set(requestId, interceptionId);
+            this._requestIdToRequestPausedEvent.set(requestId, event);
         }
     }
     _onRequest(event, interceptionId) {
@@ -242,8 +280,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         request._response = response;
         request._redirectChain.push(request);
         response._resolveBody(new Error('Response body is unavailable for redirect responses'));
-        this._requestIdToRequest.delete(request._requestId);
-        this._attemptedAuthentications.delete(request._interceptionId);
+        this._forgetRequest(request, false);
         this.emit(exports.NetworkManagerEmittedEvents.Response, response);
         this.emit(exports.NetworkManagerEmittedEvents.RequestFinished, request);
     }
@@ -256,6 +293,16 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         request._response = response;
         this.emit(exports.NetworkManagerEmittedEvents.Response, response);
     }
+    _forgetRequest(request, events) {
+        const requestId = request._requestId;
+        const interceptionId = request._interceptionId;
+        this._requestIdToRequest.delete(requestId);
+        this._attemptedAuthentications.delete(interceptionId);
+        if (events) {
+            this._requestIdToRequestWillBeSentEvent.delete(requestId);
+            this._requestIdToRequestPausedEvent.delete(requestId);
+        }
+    }
     _onLoadingFinished(event) {
         const request = this._requestIdToRequest.get(event.requestId);
         // For certain requestIds we never receive requestWillBeSent event.
@@ -266,8 +313,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         // event from protocol. @see https://crbug.com/883475
         if (request.response())
             request.response()._resolveBody(null);
-        this._requestIdToRequest.delete(request._requestId);
-        this._attemptedAuthentications.delete(request._interceptionId);
+        this._forgetRequest(request, true);
         this.emit(exports.NetworkManagerEmittedEvents.RequestFinished, request);
     }
     _onLoadingFailed(event) {
@@ -280,8 +326,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         const response = request.response();
         if (response)
             response._resolveBody(null);
-        this._requestIdToRequest.delete(request._requestId);
-        this._attemptedAuthentications.delete(request._interceptionId);
+        this._forgetRequest(request, true);
         this.emit(exports.NetworkManagerEmittedEvents.RequestFailed, request);
     }
 }

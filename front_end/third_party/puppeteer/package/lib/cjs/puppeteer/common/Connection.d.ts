@@ -111,6 +111,7 @@ export declare class CDPSession extends EventEmitter {
      * @internal
      */
     constructor(connection: Connection, targetType: string, sessionId: string);
+    connection(): Connection;
     send<T extends keyof ProtocolMapping.Commands>(method: T, ...paramArgs: ProtocolMapping.Commands[T]['paramsType']): Promise<ProtocolMapping.Commands[T]['returnType']>;
     /**
      * @internal

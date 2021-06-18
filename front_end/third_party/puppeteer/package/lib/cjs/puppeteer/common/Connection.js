@@ -87,12 +87,22 @@ class Connection extends EventEmitter_js_1.EventEmitter {
             const sessionId = object.params.sessionId;
             const session = new CDPSession(this, object.params.targetInfo.type, sessionId);
             this._sessions.set(sessionId, session);
+            this.emit('sessionattached', session);
+            const parentSession = this._sessions.get(object.sessionId);
+            if (parentSession) {
+                parentSession.emit('sessionattached', session);
+            }
         }
         else if (object.method === 'Target.detachedFromTarget') {
             const session = this._sessions.get(object.params.sessionId);
             if (session) {
                 session._onClosed();
                 this._sessions.delete(object.params.sessionId);
+                this.emit('sessiondetached', session);
+                const parentSession = this._sessions.get(object.sessionId);
+                if (parentSession) {
+                    parentSession.emit('sessiondetached', session);
+                }
             }
         }
         if (object.sessionId) {
@@ -190,6 +200,9 @@ class CDPSession extends EventEmitter_js_1.EventEmitter {
         this._targetType = targetType;
         this._sessionId = sessionId;
     }
+    connection() {
+        return this._connection;
+    }
     send(method, ...paramArgs) {
         if (!this._connection)
             return Promise.reject(new Error(`Protocol error (${method}): Session closed. Most likely the ${this._targetType} has been closed.`));
@@ -198,11 +211,7 @@ class CDPSession extends EventEmitter_js_1.EventEmitter {
         const id = this._connection._rawSend({
             sessionId: this._sessionId,
             method,
-            /* TODO(jacktfranklin@): once this Firefox bug is solved
-             * we no longer need the `|| {}` check
-             * https://bugzilla.mozilla.org/show_bug.cgi?id=1631570
-             */
-            params: params || {},
+            params,
         });
         return new Promise((resolve, reject) => {
             this._callbacks.set(id, { resolve, reject, error: new Error(), method });

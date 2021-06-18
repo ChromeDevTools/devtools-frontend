@@ -61,16 +61,15 @@ export declare class NetworkManager extends EventEmitter {
     _client: CDPSession;
     _ignoreHTTPSErrors: boolean;
     _frameManager: FrameManager;
-    _requestIdToRequest: Map<string, HTTPRequest>;
     _requestIdToRequestWillBeSentEvent: Map<string, Protocol.Network.RequestWillBeSentEvent>;
+    _requestIdToRequestPausedEvent: Map<string, Protocol.Fetch.RequestPausedEvent>;
+    _requestIdToRequest: Map<string, HTTPRequest>;
     _extraHTTPHeaders: Record<string, string>;
     _credentials?: Credentials;
     _attemptedAuthentications: Set<string>;
     _userRequestInterceptionEnabled: boolean;
-    _userRequestInterceptionCacheSafe: boolean;
     _protocolRequestInterceptionEnabled: boolean;
     _userCacheDisabled: boolean;
-    _requestIdToInterceptionId: Map<string, string>;
     _emulatedNetworkConditions: InternalNetworkConditions;
     constructor(client: CDPSession, ignoreHTTPSErrors: boolean, frameManager: FrameManager);
     initialize(): Promise<void>;
@@ -82,8 +81,9 @@ export declare class NetworkManager extends EventEmitter {
     _updateNetworkConditions(): Promise<void>;
     setUserAgent(userAgent: string): Promise<void>;
     setCacheEnabled(enabled: boolean): Promise<void>;
-    setRequestInterception(value: boolean, cacheSafe?: boolean): Promise<void>;
+    setRequestInterception(value: boolean): Promise<void>;
     _updateProtocolRequestInterception(): Promise<void>;
+    _cacheDisabled(): boolean;
     _updateProtocolCacheDisabled(): Promise<void>;
     _onRequestWillBeSent(event: Protocol.Network.RequestWillBeSentEvent): void;
     _onAuthRequired(event: Protocol.Fetch.AuthRequiredEvent): void;
@@ -92,6 +92,7 @@ export declare class NetworkManager extends EventEmitter {
     _onRequestServedFromCache(event: Protocol.Network.RequestServedFromCacheEvent): void;
     _handleRequestRedirect(request: HTTPRequest, responsePayload: Protocol.Network.Response): void;
     _onResponseReceived(event: Protocol.Network.ResponseReceivedEvent): void;
+    _forgetRequest(request: HTTPRequest, events: boolean): void;
     _onLoadingFinished(event: Protocol.Network.LoadingFinishedEvent): void;
     _onLoadingFailed(event: Protocol.Network.LoadingFailedEvent): void;
 }

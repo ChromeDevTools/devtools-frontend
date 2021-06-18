@@ -472,8 +472,6 @@ export declare class Page extends EventEmitter {
     workers(): WebWorker[];
     /**
      * @param value - Whether to enable request interception.
-     * @param cacheSafe - Whether to trust browser caching. If set to false,
-     * enabling request interception disables page caching. Defaults to false.
      *
      * @remarks
      * Activating request interception enables {@link HTTPRequest.abort},
@@ -503,7 +501,7 @@ export declare class Page extends EventEmitter {
      * })();
      * ```
      */
-    setRequestInterception(value: boolean, cacheSafe?: boolean): Promise<void>;
+    setRequestInterception(value: boolean): Promise<void>;
     /**
      * @param enabled - When `true`, enables offline mode for the page.
      */
@@ -524,7 +522,7 @@ export declare class Page extends EventEmitter {
      * @remarks
      * Shortcut for {@link Frame.$ | Page.mainFrame().$(selector) }.
      *
-     * @param selector - A
+     * @param selector - A `selector` to query page for
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
      * to query page for.
      */

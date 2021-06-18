@@ -245,7 +245,8 @@ export declare class Browser extends EventEmitter {
      */
     wsEndpoint(): string;
     /**
-     * Creates a {@link Page} in the default browser context.
+     * Promise which resolves to a new {@link Page} object. The Page is created in
+     * a default browser context.
      */
     newPage(): Promise<Page>;
     /**
@@ -579,11 +580,13 @@ export declare class BrowserFetcher {
     constructor(projectRoot: string, options?: BrowserFetcherOptions);
     private setPlatform;
     /**
-     * @returns Returns the current `Platform`.
+     * @returns Returns the current `Platform`, which is one of `mac`, `linux`,
+     * `win32` or `win64`.
      */
     platform(): Platform;
     /**
-     * @returns Returns the current `Product`.
+     * @returns Returns the current `Product`, which is one of `chrome` or
+     * `firefox`.
      */
     product(): Product;
     /**
@@ -724,6 +727,7 @@ export declare class CDPSession extends EventEmitter {
      * @internal
      */
     constructor(connection: Connection, targetType: string, sessionId: string);
+    connection(): Connection;
     send<T extends keyof ProtocolMapping.Commands>(method: T, ...paramArgs: ProtocolMapping.Commands[T]['paramsType']): Promise<ProtocolMapping.Commands[T]['returnType']>;
     /**
      * @internal
@@ -797,7 +801,7 @@ export declare interface CommonEventEmitter {
     off(event: EventType, handler: Handler): CommonEventEmitter;
     addListener(event: EventType, handler: Handler): CommonEventEmitter;
     removeListener(event: EventType, handler: Handler): CommonEventEmitter;
-    emit(event: EventType, eventData?: any): boolean;
+    emit(event: EventType, eventData?: unknown): boolean;
     once(event: EventType, handler: Handler): CommonEventEmitter;
     listenerCount(event: string): number;
     removeAllListeners(event?: EventType): CommonEventEmitter;
@@ -1037,8 +1041,8 @@ export declare class Coverage {
     _cssCoverage: CSSCoverage;
     constructor(client: CDPSession);
     /**
-     * @param options - defaults to
-     * `{ resetOnNavigation : true, reportAnonymousScripts : false }`
+     * @param options - Set of configurable options for coverage defaults to `{
+     * resetOnNavigation : true, reportAnonymousScripts : false }`
      * @returns Promise that resolves when coverage is started.
      *
      * @remarks
@@ -1058,7 +1062,8 @@ export declare class Coverage {
      */
     stopJSCoverage(): Promise<CoverageEntry[]>;
     /**
-     * @param options - defaults to `{ resetOnNavigation : true }`
+     * @param options - Set of configurable options for coverage, defaults to `{
+     * resetOnNavigation : true }`
      * @returns Promise that resolves when coverage is started.
      */
     startCSSCoverage(options?: CSSCoverageOptions): Promise<void>;
@@ -1425,7 +1430,7 @@ export declare class DOMWorld {
  *
  * @public
  */
-export declare class ElementHandle<ElementType extends Element = Element> extends JSHandle {
+export declare class ElementHandle<ElementType extends Element = Element> extends JSHandle<ElementType> {
     private _page;
     private _frameManager;
     /**
@@ -1663,24 +1668,24 @@ export declare class EventEmitter implements CommonEventEmitter {
      * Bind an event listener to fire when an event occurs.
      * @param event - the event type you'd like to listen to. Can be a string or symbol.
      * @param handler  - the function to be called when the event occurs.
-     * @returns `this` to enable you to chain calls.
+     * @returns `this` to enable you to chain method calls.
      */
     on(event: EventType, handler: Handler): EventEmitter;
     /**
      * Remove an event listener from firing.
      * @param event - the event type you'd like to stop listening to.
      * @param handler  - the function that should be removed.
-     * @returns `this` to enable you to chain calls.
+     * @returns `this` to enable you to chain method calls.
      */
     off(event: EventType, handler: Handler): EventEmitter;
     /**
      * Remove an event listener.
-     * @deprecated please use `off` instead.
+     * @deprecated please use {@link EventEmitter.off} instead.
      */
     removeListener(event: EventType, handler: Handler): EventEmitter;
     /**
      * Add an event listener.
-     * @deprecated please use `on` instead.
+     * @deprecated please use {@link EventEmitter.on} instead.
      */
     addListener(event: EventType, handler: Handler): EventEmitter;
     /**
@@ -1690,12 +1695,12 @@ export declare class EventEmitter implements CommonEventEmitter {
      * @param eventData - any data you'd like to emit with the event
      * @returns `true` if there are any listeners, `false` if there are not.
      */
-    emit(event: EventType, eventData?: any): boolean;
+    emit(event: EventType, eventData?: unknown): boolean;
     /**
      * Like `on` but the listener will only be fired once and then it will be removed.
      * @param event - the event you'd like to listen to
      * @param handler - the handler function to run when the event occurs
-     * @returns `this` to enable you to chain calls.
+     * @returns `this` to enable you to chain method calls.
      */
     once(event: EventType, handler: Handler): EventEmitter;
     /**
@@ -1709,7 +1714,7 @@ export declare class EventEmitter implements CommonEventEmitter {
      * Removes all listeners. If given an event argument, it will remove only
      * listeners for that event.
      * @param event - the event to remove listeners for.
-     * @returns `this` to enable you to chain calls.
+     * @returns `this` to enable you to chain method calls.
      */
     removeAllListeners(event?: EventType): EventEmitter;
     private eventListenersCount;
@@ -2771,11 +2776,13 @@ export declare class HTTPRequest {
      */
     headers(): Record<string, string>;
     /**
-     * @returns the response for this request, if a response has been received.
+     * @returns A matching `HTTPResponse` object, or null if the response has not
+     * been received yet.
      */
     response(): HTTPResponse | null;
     /**
-     * @returns the frame that initiated the request.
+     * @returns the frame that initiated the request, or null if navigating to
+     * error pages.
      */
     frame(): Frame | null;
     /**
@@ -2783,6 +2790,7 @@ export declare class HTTPRequest {
      */
     isNavigationRequest(): boolean;
     /**
+     * A `redirectChain` is a chain of requests initiated to fetch a resource.
      * @remarks
      *
      * `redirectChain` is shared between all the requests of the same chain.
@@ -3069,7 +3077,7 @@ export declare interface JSCoverageOptions {
  *
  * @public
  */
-export declare class JSHandle {
+export declare class JSHandle<HandleObjectType = unknown> {
     /**
      * @internal
      */
@@ -3104,7 +3112,7 @@ export declare class JSHandle {
      * expect(await tweetHandle.evaluate(node => node.innerText)).toBe('10');
      * ```
      */
-    evaluate<T extends EvaluateFn>(pageFunction: T | string, ...args: SerializableOrJSHandle[]): Promise<UnwrapPromiseLike<EvaluateFnReturnType<T>>>;
+    evaluate<T extends EvaluateFn<HandleObjectType>>(pageFunction: T | string, ...args: SerializableOrJSHandle[]): Promise<UnwrapPromiseLike<EvaluateFnReturnType<T>>>;
     /**
      * This method passes this handle as the first argument to `pageFunction`.
      *
@@ -3143,8 +3151,8 @@ export declare class JSHandle {
      */
     getProperties(): Promise<Map<string, JSHandle>>;
     /**
-     * Returns a JSON representation of the object.
-     *
+     * @returns Returns a JSON representation of the object.If the object has a
+     * `toJSON` function, it will not be called.
      * @remarks
      *
      * The JSON is generated by running {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify | JSON.stringify}
@@ -3153,8 +3161,8 @@ export declare class JSHandle {
      */
     jsonValue<T = unknown>(): Promise<T>;
     /**
-     * Returns either `null` or the object handle itself, if the object handle is
-     * an instance of {@link ElementHandle}.
+     * @returns Either `null` or the object handle itself, if the object
+     * handle is an instance of {@link ElementHandle}.
      */
     asElement(): ElementHandle | null;
     /**
@@ -3449,6 +3457,12 @@ export declare interface LaunchOptions {
      * {@link https://developer.mozilla.org/en-US/docs/Mozilla/Preferences/Preference_reference | Additional preferences } that can be passed when launching with Firefox.
      */
     extraPrefsFirefox?: Record<string, unknown>;
+    /**
+     * Whether to wait for the initial page to be ready.
+     * Useful when a user explicitly disables that (e.g. `--no-startup-window` for Chrome).
+     * @defaultValue true
+     */
+    waitForInitialPage?: boolean;
 }
 
 /**
@@ -3675,16 +3689,15 @@ export declare class NetworkManager extends EventEmitter {
     _client: CDPSession;
     _ignoreHTTPSErrors: boolean;
     _frameManager: FrameManager;
-    _requestIdToRequest: Map<string, HTTPRequest>;
     _requestIdToRequestWillBeSentEvent: Map<string, Protocol.Network.RequestWillBeSentEvent>;
+    _requestIdToRequestPausedEvent: Map<string, Protocol.Fetch.RequestPausedEvent>;
+    _requestIdToRequest: Map<string, HTTPRequest>;
     _extraHTTPHeaders: Record<string, string>;
     _credentials?: Credentials;
     _attemptedAuthentications: Set<string>;
     _userRequestInterceptionEnabled: boolean;
-    _userRequestInterceptionCacheSafe: boolean;
     _protocolRequestInterceptionEnabled: boolean;
     _userCacheDisabled: boolean;
-    _requestIdToInterceptionId: Map<string, string>;
     _emulatedNetworkConditions: InternalNetworkConditions;
     constructor(client: CDPSession, ignoreHTTPSErrors: boolean, frameManager: FrameManager);
     initialize(): Promise<void>;
@@ -3696,8 +3709,9 @@ export declare class NetworkManager extends EventEmitter {
     _updateNetworkConditions(): Promise<void>;
     setUserAgent(userAgent: string): Promise<void>;
     setCacheEnabled(enabled: boolean): Promise<void>;
-    setRequestInterception(value: boolean, cacheSafe?: boolean): Promise<void>;
+    setRequestInterception(value: boolean): Promise<void>;
     _updateProtocolRequestInterception(): Promise<void>;
+    _cacheDisabled(): boolean;
     _updateProtocolCacheDisabled(): Promise<void>;
     _onRequestWillBeSent(event: Protocol.Network.RequestWillBeSentEvent): void;
     _onAuthRequired(event: Protocol.Fetch.AuthRequiredEvent): void;
@@ -3706,6 +3720,7 @@ export declare class NetworkManager extends EventEmitter {
     _onRequestServedFromCache(event: Protocol.Network.RequestServedFromCacheEvent): void;
     _handleRequestRedirect(request: HTTPRequest, responsePayload: Protocol.Network.Response): void;
     _onResponseReceived(event: Protocol.Network.ResponseReceivedEvent): void;
+    _forgetRequest(request: HTTPRequest, events: boolean): void;
     _onLoadingFinished(event: Protocol.Network.LoadingFinishedEvent): void;
     _onLoadingFailed(event: Protocol.Network.LoadingFailedEvent): void;
 }
@@ -3859,8 +3874,6 @@ export declare class Page extends EventEmitter {
     workers(): WebWorker[];
     /**
      * @param value - Whether to enable request interception.
-     * @param cacheSafe - Whether to trust browser caching. If set to false,
-     * enabling request interception disables page caching. Defaults to false.
      *
      * @remarks
      * Activating request interception enables {@link HTTPRequest.abort},
@@ -3890,7 +3903,7 @@ export declare class Page extends EventEmitter {
      * })();
      * ```
      */
-    setRequestInterception(value: boolean, cacheSafe?: boolean): Promise<void>;
+    setRequestInterception(value: boolean): Promise<void>;
     /**
      * @param enabled - When `true`, enables offline mode for the page.
      */
@@ -3911,7 +3924,7 @@ export declare class Page extends EventEmitter {
      * @remarks
      * Shortcut for {@link Frame.$ | Page.mainFrame().$(selector) }.
      *
-     * @param selector - A
+     * @param selector - A `selector` to query page for
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
      * to query page for.
      */
@@ -8065,7 +8078,7 @@ export declare namespace Protocol {
 
         /**
          * Details for a issue arising from an SAB being instantiated in, or
-         * transfered to a context that is not cross-origin isolated.
+         * transferred to a context that is not cross-origin isolated.
          */
         export interface SharedArrayBufferIssueDetails {
             sourceCodeLocation: SourceCodeLocation;
@@ -8112,9 +8125,40 @@ export declare namespace Protocol {
             corsErrorStatus: Network.CorsErrorStatus;
             isWarning: boolean;
             request: AffectedRequest;
+            location?: SourceCodeLocation;
             initiatorOrigin?: string;
             resourceIPAddressSpace?: Network.IPAddressSpace;
             clientSecurityState?: Network.ClientSecurityState;
+        }
+
+        export type AttributionReportingIssueType = ('PermissionPolicyDisabled' | 'InvalidAttributionSourceEventId' | 'InvalidAttributionData' | 'AttributionSourceUntrustworthyOrigin' | 'AttributionUntrustworthyOrigin');
+
+        /**
+         * Details for issues around "Attribution Reporting API" usage.
+         * Explainer: https://github.com/WICG/conversion-measurement-api
+         */
+        export interface AttributionReportingIssueDetails {
+            violationType: AttributionReportingIssueType;
+            frame?: AffectedFrame;
+            request?: AffectedRequest;
+            violatingNodeId?: DOM.BackendNodeId;
+            invalidParameter?: string;
+        }
+
+        /**
+         * Details for issues about documents in Quirks Mode
+         * or Limited Quirks Mode that affects page layouting.
+         */
+        export interface QuirksModeIssueDetails {
+            /**
+             * If false, it means the document's mode is "quirks"
+             * instead of "limited-quirks".
+             */
+            isLimitedQuirksMode: boolean;
+            documentNodeId: DOM.BackendNodeId;
+            url: string;
+            frameId: Page.FrameId;
+            loaderId: Network.LoaderId;
         }
 
         /**
@@ -8122,7 +8166,7 @@ export declare namespace Protocol {
          * optional fields in InspectorIssueDetails to convey more specific
          * information about the kind of issue.
          */
-        export type InspectorIssueCode = ('SameSiteCookieIssue' | 'MixedContentIssue' | 'BlockedByResponseIssue' | 'HeavyAdIssue' | 'ContentSecurityPolicyIssue' | 'SharedArrayBufferIssue' | 'TrustedWebActivityIssue' | 'LowTextContrastIssue' | 'CorsIssue');
+        export type InspectorIssueCode = ('SameSiteCookieIssue' | 'MixedContentIssue' | 'BlockedByResponseIssue' | 'HeavyAdIssue' | 'ContentSecurityPolicyIssue' | 'SharedArrayBufferIssue' | 'TrustedWebActivityIssue' | 'LowTextContrastIssue' | 'CorsIssue' | 'AttributionReportingIssue' | 'QuirksModeIssue');
 
         /**
          * This struct holds a list of optional fields with additional information
@@ -8139,6 +8183,8 @@ export declare namespace Protocol {
             twaQualityEnforcementDetails?: TrustedWebActivityIssueDetails;
             lowTextContrastIssueDetails?: LowTextContrastIssueDetails;
             corsIssueDetails?: CorsIssueDetails;
+            attributionReportingIssueDetails?: AttributionReportingIssueDetails;
+            quirksModeIssueDetails?: QuirksModeIssueDetails;
         }
 
         /**
@@ -8461,10 +8507,14 @@ export declare namespace Protocol {
              */
             browserContextId?: BrowserContextID;
             /**
-             * The default path to save downloaded files to. This is requred if behavior is set to 'allow'
+             * The default path to save downloaded files to. This is required if behavior is set to 'allow'
              * or 'allowAndName'.
              */
             downloadPath?: string;
+            /**
+             * Whether to emit download events (defaults to false).
+             */
+            eventsEnabled?: boolean;
         }
 
         export interface CancelDownloadRequest {
@@ -8602,6 +8652,56 @@ export declare namespace Protocol {
 
         export interface ExecuteBrowserCommandRequest {
             commandId: BrowserCommandId;
+        }
+
+        /**
+         * Fired when page is about to start a download.
+         */
+        export interface DownloadWillBeginEvent {
+            /**
+             * Id of the frame that caused the download to begin.
+             */
+            frameId: Page.FrameId;
+            /**
+             * Global unique identifier of the download.
+             */
+            guid: string;
+            /**
+             * URL of the resource being downloaded.
+             */
+            url: string;
+            /**
+             * Suggested file name of the resource (the actual name of the file saved on disk may differ).
+             */
+            suggestedFilename: string;
+        }
+
+        export const enum DownloadProgressEventState {
+            InProgress = 'inProgress',
+            Completed = 'completed',
+            Canceled = 'canceled',
+        }
+
+        /**
+         * Fired when download makes progress. Last call has |done| == true.
+         */
+        export interface DownloadProgressEvent {
+            /**
+             * Global unique identifier of the download.
+             */
+            guid: string;
+            /**
+             * Total expected bytes to download.
+             */
+            totalBytes: number;
+            /**
+             * Total bytes received.
+             */
+            receivedBytes: number;
+            /**
+             * Download status. (DownloadProgressEventState enum)
+             */
+            state: ('inProgress' | 'completed' | 'canceled');
         }
     }
 
@@ -9733,6 +9833,11 @@ export declare namespace Protocol {
         export type ShadowRootType = ('user-agent' | 'open' | 'closed');
 
         /**
+         * Document compatibility mode.
+         */
+        export type CompatibilityMode = ('QuirksMode' | 'LimitedQuirksMode' | 'NoQuirksMode');
+
+        /**
          * DOM interaction is implemented in terms of mirror objects that represent the actual DOM nodes.
          * DOMNode is a base node mirror type.
          */
@@ -9840,7 +9945,9 @@ export declare namespace Protocol {
              */
             pseudoElements?: Node[];
             /**
-             * Import document for the HTMLImport links.
+             * Deprecated, as the HTML Imports API has been removed (crbug.com/937746).
+             * This property used to return the imported document for the HTMLImport links.
+             * The property is always undefined now.
              */
             importedDocument?: Node;
             /**
@@ -9851,6 +9958,7 @@ export declare namespace Protocol {
              * Whether the node is SVG.
              */
             isSVG?: boolean;
+            compatibilityMode?: CompatibilityMode;
         }
 
         /**
@@ -10711,11 +10819,11 @@ export declare namespace Protocol {
         }
 
         /**
-         * Called when distrubution is changed.
+         * Called when distribution is changed.
          */
         export interface DistributedNodesUpdatedEvent {
             /**
-             * Insertion point where distrubuted nodes were updated.
+             * Insertion point where distributed nodes were updated.
              */
             insertionPointId: NodeId;
             /**
@@ -11385,6 +11493,14 @@ export declare namespace Protocol {
              * The client rect of nodes. Only available when includeDOMRects is set to true
              */
             clientRects?: Rectangle[];
+            /**
+             * The list of background colors that are blended with colors of overlapping elements.
+             */
+            blendedBackgroundColors?: StringIndex[];
+            /**
+             * The list of computed text opacities.
+             */
+            textColorOpacities?: number[];
         }
 
         /**
@@ -11459,6 +11575,18 @@ export declare namespace Protocol {
              * Whether to include DOM rectangles (offsetRects, clientRects, scrollRects) into the snapshot
              */
             includeDOMRects?: boolean;
+            /**
+             * Whether to include blended background colors in the snapshot (default: false).
+             * Blended background color is achieved by blending background colors of all elements
+             * that overlap with the current element.
+             */
+            includeBlendedBackgroundColors?: boolean;
+            /**
+             * Whether to include text color opacity in the snapshot (default: false).
+             * An element might have the opacity property set that affects the text color of the element.
+             * The final text color opacity is computed based on the opacity of all overlapping elements.
+             */
+            includeTextColorOpacities?: boolean;
         }
 
         export interface CaptureSnapshotResponse {
@@ -11715,7 +11843,7 @@ export declare namespace Protocol {
         /**
          * Enum of image types that can be disabled.
          */
-        export type DisabledImageType = ('avif' | 'webp');
+        export type DisabledImageType = ('avif' | 'jxl' | 'webp');
 
         export interface CanEmulateResponse {
             /**
@@ -11937,7 +12065,7 @@ export declare namespace Protocol {
              */
             waitForNavigation?: boolean;
             /**
-             * If set, base::Time::Now will be overriden to initially return this value.
+             * If set, base::Time::Now will be overridden to initially return this value.
              */
             initialVirtualTime?: Network.TimeSinceEpoch;
         }
@@ -12083,7 +12211,7 @@ export declare namespace Protocol {
     export namespace IO {
 
         /**
-         * This is either obtained from another method or specifed as `blob:&lt;uuid&gt;` where
+         * This is either obtained from another method or specified as `blob:&lt;uuid&gt;` where
          * `&lt;uuid&gt` is an UUID of a Blob.
          */
         export type StreamHandle = string;
@@ -12121,7 +12249,7 @@ export declare namespace Protocol {
              */
             data: string;
             /**
-             * Set if the end-of-file condition occured while reading.
+             * Set if the end-of-file condition occurred while reading.
              */
             eof: boolean;
         }
@@ -12809,6 +12937,10 @@ export declare namespace Protocol {
             ignore: boolean;
         }
 
+        export interface SetInterceptDragsRequest {
+            enabled: boolean;
+        }
+
         export interface SynthesizePinchGestureRequest {
             /**
              * X coordinate of the start of the gesture in CSS pixels.
@@ -12909,6 +13041,14 @@ export declare namespace Protocol {
              * for the preferred input type).
              */
             gestureSourceType?: GestureSourceType;
+        }
+
+        /**
+         * Emitted only when `Input.setInterceptDrags` is enabled. Use this data with `Input.dispatchDragEvent` to
+         * restore normal drag and drop behavior.
+         */
+        export interface DragInterceptedEvent {
+            data: DragData;
         }
     }
 
@@ -13765,7 +13905,7 @@ export declare namespace Protocol {
         /**
          * The reason why request was blocked.
          */
-        export type CorsError = ('DisallowedByMode' | 'InvalidResponse' | 'WildcardOriginNotAllowed' | 'MissingAllowOriginHeader' | 'MultipleAllowOriginValues' | 'InvalidAllowOriginValue' | 'AllowOriginMismatch' | 'InvalidAllowCredentials' | 'CorsDisabledScheme' | 'PreflightInvalidStatus' | 'PreflightDisallowedRedirect' | 'PreflightWildcardOriginNotAllowed' | 'PreflightMissingAllowOriginHeader' | 'PreflightMultipleAllowOriginValues' | 'PreflightInvalidAllowOriginValue' | 'PreflightAllowOriginMismatch' | 'PreflightInvalidAllowCredentials' | 'PreflightMissingAllowExternal' | 'PreflightInvalidAllowExternal' | 'InvalidAllowMethodsPreflightResponse' | 'InvalidAllowHeadersPreflightResponse' | 'MethodDisallowedByPreflightResponse' | 'HeaderDisallowedByPreflightResponse' | 'RedirectContainsCredentials' | 'InsecurePrivateNetwork');
+        export type CorsError = ('DisallowedByMode' | 'InvalidResponse' | 'WildcardOriginNotAllowed' | 'MissingAllowOriginHeader' | 'MultipleAllowOriginValues' | 'InvalidAllowOriginValue' | 'AllowOriginMismatch' | 'InvalidAllowCredentials' | 'CorsDisabledScheme' | 'PreflightInvalidStatus' | 'PreflightDisallowedRedirect' | 'PreflightWildcardOriginNotAllowed' | 'PreflightMissingAllowOriginHeader' | 'PreflightMultipleAllowOriginValues' | 'PreflightInvalidAllowOriginValue' | 'PreflightAllowOriginMismatch' | 'PreflightInvalidAllowCredentials' | 'PreflightMissingAllowExternal' | 'PreflightInvalidAllowExternal' | 'InvalidAllowMethodsPreflightResponse' | 'InvalidAllowHeadersPreflightResponse' | 'MethodDisallowedByPreflightResponse' | 'HeaderDisallowedByPreflightResponse' | 'RedirectContainsCredentials' | 'InsecurePrivateNetwork' | 'NoCorsRedirectModeNotFollow');
 
         export interface CorsErrorStatus {
             corsError: CorsError;
@@ -14260,8 +14400,8 @@ export declare namespace Protocol {
          */
         export interface RequestPattern {
             /**
-             * Wildcards ('*' -> zero or more, '?' -> exactly one) are allowed. Escape character is
-             * backslash. Omitting is equivalent to "*".
+             * Wildcards (`'*'` -> zero or more, `'?'` -> exactly one) are allowed. Escape character is
+             * backslash. Omitting is equivalent to `"*"`.
              */
             urlPattern?: string;
             /**
@@ -14269,7 +14409,7 @@ export declare namespace Protocol {
              */
             resourceType?: ResourceType;
             /**
-             * Stage at wich to begin intercepting requests. Default is Request.
+             * Stage at which to begin intercepting requests. Default is Request.
              */
             interceptionStage?: InterceptionStage;
         }
@@ -16120,9 +16260,9 @@ export declare namespace Protocol {
 
         /**
          * All Permissions Policy features. This enum should match the one defined
-         * in renderer/core/feature_policy/feature_policy_features.json5.
+         * in third_party/blink/renderer/core/permissions_policy/permissions_policy_features.json5.
          */
-        export type PermissionsPolicyFeature = ('accelerometer' | 'ambient-light-sensor' | 'autoplay' | 'camera' | 'ch-dpr' | 'ch-device-memory' | 'ch-downlink' | 'ch-ect' | 'ch-lang' | 'ch-rtt' | 'ch-ua' | 'ch-ua-arch' | 'ch-ua-platform' | 'ch-ua-model' | 'ch-ua-mobile' | 'ch-ua-full-version' | 'ch-ua-platform-version' | 'ch-viewport-width' | 'ch-width' | 'clipboard-read' | 'clipboard-write' | 'conversion-measurement' | 'cross-origin-isolated' | 'display-capture' | 'document-domain' | 'encrypted-media' | 'execution-while-out-of-viewport' | 'execution-while-not-rendered' | 'focus-without-user-activation' | 'fullscreen' | 'frobulate' | 'gamepad' | 'geolocation' | 'gyroscope' | 'hid' | 'idle-detection' | 'interest-cohort' | 'magnetometer' | 'microphone' | 'midi' | 'otp-credentials' | 'payment' | 'picture-in-picture' | 'publickey-credentials-get' | 'screen-wake-lock' | 'serial' | 'storage-access-api' | 'sync-xhr' | 'trust-token-redemption' | 'usb' | 'vertical-scroll' | 'web-share' | 'xr-spatial-tracking');
+        export type PermissionsPolicyFeature = ('accelerometer' | 'ambient-light-sensor' | 'attribution-reporting' | 'autoplay' | 'camera' | 'ch-dpr' | 'ch-device-memory' | 'ch-downlink' | 'ch-ect' | 'ch-lang' | 'ch-prefers-color-scheme' | 'ch-rtt' | 'ch-ua' | 'ch-ua-arch' | 'ch-ua-platform' | 'ch-ua-model' | 'ch-ua-mobile' | 'ch-ua-full-version' | 'ch-ua-platform-version' | 'ch-viewport-width' | 'ch-width' | 'clipboard-read' | 'clipboard-write' | 'cross-origin-isolated' | 'direct-sockets' | 'display-capture' | 'document-domain' | 'encrypted-media' | 'execution-while-out-of-viewport' | 'execution-while-not-rendered' | 'focus-without-user-activation' | 'fullscreen' | 'frobulate' | 'gamepad' | 'geolocation' | 'gyroscope' | 'hid' | 'idle-detection' | 'interest-cohort' | 'magnetometer' | 'microphone' | 'midi' | 'otp-credentials' | 'payment' | 'picture-in-picture' | 'publickey-credentials-get' | 'screen-wake-lock' | 'serial' | 'shared-autofill' | 'storage-access-api' | 'sync-xhr' | 'trust-token-redemption' | 'usb' | 'vertical-scroll' | 'web-share' | 'xr-spatial-tracking');
 
         /**
          * Reason for a permissions policy feature to be disabled.
@@ -16138,6 +16278,44 @@ export declare namespace Protocol {
             feature: PermissionsPolicyFeature;
             allowed: boolean;
             locator?: PermissionsPolicyBlockLocator;
+        }
+
+        /**
+         * Origin Trial(https://www.chromium.org/blink/origin-trials) support.
+         * Status for an Origin Trial token.
+         */
+        export type OriginTrialTokenStatus = ('Success' | 'NotSupported' | 'Insecure' | 'Expired' | 'WrongOrigin' | 'InvalidSignature' | 'Malformed' | 'WrongVersion' | 'FeatureDisabled' | 'TokenDisabled' | 'FeatureDisabledForUser');
+
+        /**
+         * Status for an Origin Trial.
+         */
+        export type OriginTrialStatus = ('Enabled' | 'ValidTokenNotProvided' | 'OSNotSupported' | 'TrialNotAllowed');
+
+        export type OriginTrialUsageRestriction = ('None' | 'Subset');
+
+        export interface OriginTrialToken {
+            origin: string;
+            matchSubDomains: boolean;
+            trialName: string;
+            expiryTime: Network.TimeSinceEpoch;
+            isThirdParty: boolean;
+            usageRestriction: OriginTrialUsageRestriction;
+        }
+
+        export interface OriginTrialTokenWithStatus {
+            rawTokenText: string;
+            /**
+             * `parsedToken` is present only when the token is extractable and
+             * parsable.
+             */
+            parsedToken?: OriginTrialToken;
+            status: OriginTrialTokenStatus;
+        }
+
+        export interface OriginTrial {
+            trialName: string;
+            status: OriginTrialStatus;
+            tokensWithStatus: OriginTrialTokenWithStatus[];
         }
 
         /**
@@ -16203,6 +16381,10 @@ export declare namespace Protocol {
              * Indicated which gated APIs / features are available.
              */
             gatedAPIFeatures: GatedAPIFeatures[];
+            /**
+             * Frame document's origin trials with at least one token present.
+             */
+            originTrials?: OriginTrial[];
         }
 
         /**
@@ -16561,6 +16743,11 @@ export declare namespace Protocol {
             eager?: boolean;
         }
 
+        /**
+         * The type of a frameNavigated event.
+         */
+        export type NavigationType = ('Navigation' | 'BackForwardCacheRestore');
+
         export interface AddScriptToEvaluateOnLoadRequest {
             scriptSource: string;
         }
@@ -16580,6 +16767,11 @@ export declare namespace Protocol {
              * event is emitted.
              */
             worldName?: string;
+            /**
+             * Specifies whether command line API should be available to the script, defaults
+             * to false.
+             */
+            includeCommandLineAPI?: boolean;
         }
 
         export interface AddScriptToEvaluateOnNewDocumentResponse {
@@ -17116,7 +17308,7 @@ export declare namespace Protocol {
              */
             behavior: ('deny' | 'allow' | 'default');
             /**
-             * The default path to save downloaded files to. This is requred if behavior is set to 'allow'
+             * The default path to save downloaded files to. This is required if behavior is set to 'allow'
              */
             downloadPath?: string;
         }
@@ -17312,6 +17504,7 @@ export declare namespace Protocol {
              * Frame object.
              */
             frame: Frame;
+            type: NavigationType;
         }
 
         /**
@@ -17392,6 +17585,7 @@ export declare namespace Protocol {
 
         /**
          * Fired when page is about to start a download.
+         * Deprecated. Use Browser.downloadWillBegin instead.
          */
         export interface DownloadWillBeginEvent {
             /**
@@ -17420,6 +17614,7 @@ export declare namespace Protocol {
 
         /**
          * Fired when download makes progress. Last call has |done| == true.
+         * Deprecated. Use Browser.downloadProgress instead.
          */
         export interface DownloadProgressEvent {
             /**
@@ -17498,6 +17693,23 @@ export declare namespace Protocol {
             loaderId: Network.LoaderId;
             name: string;
             timestamp: Network.MonotonicTime;
+        }
+
+        /**
+         * Fired for failed bfcache history navigations if BackForwardCache feature is enabled. Do
+         * not assume any ordering with the Page.frameNavigated event. This event is fired only for
+         * main-frame history navigation where the document changes (non-same-document navigations),
+         * when bfcache navigation fails.
+         */
+        export interface BackForwardCacheNotUsedEvent {
+            /**
+             * The loader id for the associated navgation.
+             */
+            loaderId: Network.LoaderId;
+            /**
+             * The frame id of the associated frame.
+             */
+            frameId: FrameId;
         }
 
         export interface LoadEventFiredEvent {
@@ -18244,7 +18456,7 @@ export declare namespace Protocol {
             origin: string;
             /**
              * The quota size (in bytes) to override the original quota with.
-             * If this is called multiple times, the overriden quota will be equal to
+             * If this is called multiple times, the overridden quota will be equal to
              * the quotaSize provided in the final call. If this is called without
              * specifying a quotaSize, the quota will be reset to the default value for
              * the specified origin. If this is called multiple times with different
@@ -19139,8 +19351,8 @@ export declare namespace Protocol {
 
         export interface RequestPattern {
             /**
-             * Wildcards ('*' -> zero or more, '?' -> exactly one) are allowed. Escape character is
-             * backslash. Omitting is equivalent to "*".
+             * Wildcards (`'*'` -> zero or more, `'?'` -> exactly one) are allowed. Escape character is
+             * backslash. Omitting is equivalent to `"*"`.
              */
             urlPattern?: string;
             /**
@@ -19148,7 +19360,7 @@ export declare namespace Protocol {
              */
             resourceType?: Network.ResourceType;
             /**
-             * Stage at wich to begin intercepting requests. Default is Request.
+             * Stage at which to begin intercepting requests. Default is Request.
              */
             requestStage?: RequestStage;
         }
@@ -19461,7 +19673,7 @@ export declare namespace Protocol {
              */
             currentTime: number;
             /**
-             * The time spent on rendering graph divided by render qunatum duration,
+             * The time spent on rendering graph divided by render quantum duration,
              * and multiplied by 100. 100 means the audio renderer reached the full
              * capacity and glitch may occur.
              */
@@ -19688,6 +19900,12 @@ export declare namespace Protocol {
              */
             hasLargeBlob?: boolean;
             /**
+             * If set to true, the authenticator will support the credBlob extension.
+             * https://fidoalliance.org/specs/fido-v2.1-rd-20201208/fido-client-to-authenticator-protocol-v2.1-rd-20201208.html#sctn-credBlob-extension
+             * Defaults to false.
+             */
+            hasCredBlob?: boolean;
+            /**
              * If set to true, tests of user presence will succeed immediately.
              * Otherwise, they will not be resolved. Defaults to true.
              */
@@ -19896,8 +20114,8 @@ export declare namespace Protocol {
         }
 
         /**
-         * Called whenever a player is created, or when a new agent joins and recieves
-         * a list of active players. If an agent is restored, it will recieve the full
+         * Called whenever a player is created, or when a new agent joins and receives
+         * a list of active players. If an agent is restored, it will receive the full
          * list of player ids and all events again.
          */
         export interface PlayersCreatedEvent {
@@ -20024,6 +20242,14 @@ export declare namespace ProtocolMapping {
          */
         'BackgroundService.backgroundServiceEventReceived': [Protocol.BackgroundService.BackgroundServiceEventReceivedEvent];
         /**
+         * Fired when page is about to start a download.
+         */
+        'Browser.downloadWillBegin': [Protocol.Browser.DownloadWillBeginEvent];
+        /**
+         * Fired when download makes progress. Last call has |done| == true.
+         */
+        'Browser.downloadProgress': [Protocol.Browser.DownloadProgressEvent];
+        /**
          * Fires whenever a web font is updated.  A non-empty font parameter indicates a successfully loaded
          * web font
          */
@@ -20080,7 +20306,7 @@ export declare namespace ProtocolMapping {
          */
         'DOM.childNodeRemoved': [Protocol.DOM.ChildNodeRemovedEvent];
         /**
-         * Called when distrubution is changed.
+         * Called when distribution is changed.
          */
         'DOM.distributedNodesUpdated': [Protocol.DOM.DistributedNodesUpdatedEvent];
         /**
@@ -20127,6 +20353,11 @@ export declare namespace ProtocolMapping {
          * beginFrame to detect whether the frames were suppressed.
          */
         'HeadlessExperimental.needsBeginFramesChanged': [Protocol.HeadlessExperimental.NeedsBeginFramesChangedEvent];
+        /**
+         * Emitted only when `Input.setInterceptDrags` is enabled. Use this data with `Input.dispatchDragEvent` to
+         * restore normal drag and drop behavior.
+         */
+        'Input.dragIntercepted': [Protocol.Input.DragInterceptedEvent];
         /**
          * Fired when remote debugging connection is about to be terminated. Contains detach reason.
          */
@@ -20309,10 +20540,12 @@ export declare namespace ProtocolMapping {
         'Page.frameStoppedLoading': [Protocol.Page.FrameStoppedLoadingEvent];
         /**
          * Fired when page is about to start a download.
+         * Deprecated. Use Browser.downloadWillBegin instead.
          */
         'Page.downloadWillBegin': [Protocol.Page.DownloadWillBeginEvent];
         /**
          * Fired when download makes progress. Last call has |done| == true.
+         * Deprecated. Use Browser.downloadProgress instead.
          */
         'Page.downloadProgress': [Protocol.Page.DownloadProgressEvent];
         /**
@@ -20337,6 +20570,13 @@ export declare namespace ProtocolMapping {
          * Fired for top level page lifecycle events such as navigation, load, paint, etc.
          */
         'Page.lifecycleEvent': [Protocol.Page.LifecycleEventEvent];
+        /**
+         * Fired for failed bfcache history navigations if BackForwardCache feature is enabled. Do
+         * not assume any ordering with the Page.frameNavigated event. This event is fired only for
+         * main-frame history navigation where the document changes (non-same-document navigations),
+         * when bfcache navigation fails.
+         */
+        'Page.backForwardCacheNotUsed': [Protocol.Page.BackForwardCacheNotUsedEvent];
         'Page.loadEventFired': [Protocol.Page.LoadEventFiredEvent];
         /**
          * Fired when same-document navigation happens, e.g. due to history API usage or anchor navigation.
@@ -20533,8 +20773,8 @@ export declare namespace ProtocolMapping {
          */
         'Media.playerErrorsRaised': [Protocol.Media.PlayerErrorsRaisedEvent];
         /**
-         * Called whenever a player is created, or when a new agent joins and recieves
-         * a list of active players. If an agent is restored, it will recieve the full
+         * Called whenever a player is created, or when a new agent joins and receives
+         * a list of active players. If an agent is restored, it will receive the full
          * list of player ids and all events again.
          */
         'Media.playersCreated': [Protocol.Media.PlayersCreatedEvent];
@@ -22223,14 +22463,14 @@ export declare namespace ProtocolMapping {
             returnType: Protocol.Emulation.CanEmulateResponse;
         };
         /**
-         * Clears the overriden device metrics.
+         * Clears the overridden device metrics.
          */
         'Emulation.clearDeviceMetricsOverride': {
             paramsType: [];
             returnType: void;
         };
         /**
-         * Clears the overriden Geolocation Position and Error.
+         * Clears the overridden Geolocation Position and Error.
          */
         'Emulation.clearGeolocationOverride': {
             paramsType: [];
@@ -22548,6 +22788,14 @@ export declare namespace ProtocolMapping {
          */
         'Input.setIgnoreInputEvents': {
             paramsType: [Protocol.Input.SetIgnoreInputEventsRequest];
+            returnType: void;
+        };
+        /**
+         * Prevents default drag and drop behavior and instead emits `Input.dragIntercepted` events.
+         * Drag and drop behavior can be directly controlled via `Input.dispatchDragEvent`.
+         */
+        'Input.setInterceptDrags': {
+            paramsType: [Protocol.Input.SetInterceptDragsRequest];
             returnType: void;
         };
         /**
@@ -23204,7 +23452,7 @@ export declare namespace ProtocolMapping {
             returnType: Protocol.Page.CaptureSnapshotResponse;
         };
         /**
-         * Clears the overriden device metrics.
+         * Clears the overridden device metrics.
          */
         'Page.clearDeviceMetricsOverride': {
             paramsType: [];
@@ -23218,7 +23466,7 @@ export declare namespace ProtocolMapping {
             returnType: void;
         };
         /**
-         * Clears the overriden Geolocation Position and Error.
+         * Clears the overridden Geolocation Position and Error.
          */
         'Page.clearGeolocationOverride': {
             paramsType: [];
@@ -24744,6 +24992,9 @@ export declare class Target {
      * Get the browser the target belongs to.
      */
     browser(): Browser;
+    /**
+     * Get the browser context the target belongs to.
+     */
     browserContext(): BrowserContext;
     /**
      * Get the target that opened this target. Top-level targets return `null`.
@@ -24758,7 +25009,7 @@ export declare class Target {
 /**
  * @public
  */
-export declare type TargetFilterCallback = (target: Protocol.Target.TargetInfo) => Promise<boolean> | boolean;
+export declare type TargetFilterCallback = (target: Protocol.Target.TargetInfo) => boolean;
 
 /**
  * TimeoutError is emitted whenever certain operations are terminated due to timeout.
@@ -25080,7 +25331,7 @@ export declare class WebWorker extends EventEmitter {
     /**
      * The only difference between `worker.evaluate` and `worker.evaluateHandle`
      * is that `worker.evaluateHandle` returns in-page object (JSHandle). If the
-     * function passed to the `worker.evaluateHandle` returns a [Promise], then
+     * function passed to the `worker.evaluateHandle` returns a `Promise`, then
      * `worker.evaluateHandle` would wait for the promise to resolve and return
      * its value. Shortcut for
      * `await worker.executionContext()).evaluateHandle(pageFunction, ...args)`

@@ -45,7 +45,7 @@ export class BrowserRunner {
         this._tempDirectory = tempDirectory;
     }
     start(options) {
-        const { handleSIGINT, handleSIGTERM, handleSIGHUP, dumpio, env, pipe, } = options;
+        const { handleSIGINT, handleSIGTERM, handleSIGHUP, dumpio, env, pipe } = options;
         let stdio = ['pipe', 'pipe', 'pipe'];
         if (pipe) {
             if (dumpio)

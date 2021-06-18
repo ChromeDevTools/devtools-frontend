@@ -136,7 +136,7 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper {
         // We need blur and focus to make the select dropdown to close.
         // Otherwise, it remains open until a blur event. This is not very
         // nice because user actions don't actually generate those events.
-        await element.evaluate(e => e.blur());
+        await element.evaluate(e => (e as HTMLElement).blur());
         await element.focus();
       } break;
       case 'viewport': {

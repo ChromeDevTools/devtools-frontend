@@ -35,7 +35,7 @@ class ChromeLauncher {
         this._isPuppeteerCore = isPuppeteerCore;
     }
     async launch(options = {}) {
-        const { ignoreDefaultArgs = false, args = [], dumpio = false, executablePath = null, pipe = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, slowMo = 0, timeout = 30000, } = options;
+        const { ignoreDefaultArgs = false, args = [], dumpio = false, executablePath = null, pipe = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, slowMo = 0, timeout = 30000, waitForInitialPage = true, } = options;
         const profilePath = path.join(os.tmpdir(), 'puppeteer_dev_chrome_profile-');
         const chromeArguments = [];
         if (!ignoreDefaultArgs)
@@ -83,7 +83,8 @@ class ChromeLauncher {
                 preferredRevision: this._preferredRevision,
             });
             const browser = await Browser.create(connection, [], ignoreHTTPSErrors, defaultViewport, runner.proc, runner.close.bind(runner));
-            await browser.waitForTarget((t) => t.type() === 'page');
+            if (waitForInitialPage)
+                await browser.waitForTarget((t) => t.type() === 'page');
             return browser;
         }
         catch (error) {
@@ -150,7 +151,7 @@ class FirefoxLauncher {
         this._isPuppeteerCore = isPuppeteerCore;
     }
     async launch(options = {}) {
-        const { ignoreDefaultArgs = false, args = [], dumpio = false, executablePath = null, pipe = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, slowMo = 0, timeout = 30000, extraPrefsFirefox = {}, } = options;
+        const { ignoreDefaultArgs = false, args = [], dumpio = false, executablePath = null, pipe = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, slowMo = 0, timeout = 30000, extraPrefsFirefox = {}, waitForInitialPage = true, } = options;
         const firefoxArguments = [];
         if (!ignoreDefaultArgs)
             firefoxArguments.push(...this.defaultArgs(options));
@@ -192,7 +193,8 @@ class FirefoxLauncher {
                 preferredRevision: this._preferredRevision,
             });
             const browser = await Browser.create(connection, [], ignoreHTTPSErrors, defaultViewport, runner.proc, runner.close.bind(runner));
-            await browser.waitForTarget((t) => t.type() === 'page');
+            if (waitForInitialPage)
+                await browser.waitForTarget((t) => t.type() === 'page');
             return browser;
         }
         catch (error) {

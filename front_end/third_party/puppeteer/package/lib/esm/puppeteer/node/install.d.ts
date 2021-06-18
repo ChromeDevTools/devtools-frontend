@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 export declare function downloadBrowser(): Promise<void>;
-export declare function logPolitely(toBeLogged: any): void;
+export declare function logPolitely(toBeLogged: unknown): void;
 //# sourceMappingURL=install.d.ts.map

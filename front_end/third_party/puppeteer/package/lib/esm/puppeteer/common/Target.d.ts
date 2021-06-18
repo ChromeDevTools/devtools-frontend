@@ -85,6 +85,9 @@ export declare class Target {
      * Get the browser the target belongs to.
      */
     browser(): Browser;
+    /**
+     * Get the browser context the target belongs to.
+     */
     browserContext(): BrowserContext;
     /**
      * Get the target that opened this target. Top-level targets return `null`.

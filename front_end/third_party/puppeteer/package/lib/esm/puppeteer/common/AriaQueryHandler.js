@@ -19,7 +19,7 @@ async function queryAXTree(client, element, accessibleName, role) {
         accessibleName,
         role,
     });
-    const filteredNodes = nodes.filter((node) => node.role.value !== 'text');
+    const filteredNodes = nodes.filter((node) => node.role.value !== 'StaticText');
     return filteredNodes;
 }
 function parseAriaSelector(selector) {

@@ -30,7 +30,7 @@ export declare type BrowserCloseCallback = () => Promise<void> | void;
 /**
  * @public
  */
-export declare type TargetFilterCallback = (target: Protocol.Target.TargetInfo) => Promise<boolean> | boolean;
+export declare type TargetFilterCallback = (target: Protocol.Target.TargetInfo) => boolean;
 /**
  * @public
  */
@@ -216,7 +216,8 @@ export declare class Browser extends EventEmitter {
      */
     wsEndpoint(): string;
     /**
-     * Creates a {@link Page} in the default browser context.
+     * Promise which resolves to a new {@link Page} object. The Page is created in
+     * a default browser context.
      */
     newPage(): Promise<Page>;
     /**

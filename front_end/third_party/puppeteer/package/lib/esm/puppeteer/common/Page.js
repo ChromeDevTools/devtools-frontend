@@ -114,8 +114,14 @@ export class Page extends EventEmitter {
         this._screenshotTaskQueue = new ScreenshotTaskQueue();
         this._viewport = null;
         client.on('Target.attachedToTarget', (event) => {
-            if (event.targetInfo.type !== 'worker') {
+            if (event.targetInfo.type !== 'worker' &&
+                event.targetInfo.type !== 'iframe') {
                 // If we don't detach from service workers, they will never die.
+                // We still want to attach to workers for emitting events.
+                // We still want to attach to iframes so sessions may interact with them.
+                // We detach from all other types out of an abundance of caution.
+                // See https://source.chromium.org/chromium/chromium/src/+/master:content/browser/devtools/devtools_agent_host_impl.cc?q=f:devtools%20-f:out%20%22::kTypePage%5B%5D%22&ss=chromium
+                // for the complete list of available types.
                 client
                     .send('Target.detachFromTarget', {
                     sessionId: event.sessionId,
@@ -324,8 +330,6 @@ export class Page extends EventEmitter {
     }
     /**
      * @param value - Whether to enable request interception.
-     * @param cacheSafe - Whether to trust browser caching. If set to false,
-     * enabling request interception disables page caching. Defaults to false.
      *
      * @remarks
      * Activating request interception enables {@link HTTPRequest.abort},
@@ -355,10 +359,8 @@ export class Page extends EventEmitter {
      * })();
      * ```
      */
-    async setRequestInterception(value, cacheSafe = false) {
-        return this._frameManager
-            .networkManager()
-            .setRequestInterception(value, cacheSafe);
+    async setRequestInterception(value) {
+        return this._frameManager.networkManager().setRequestInterception(value);
     }
     /**
      * @param enabled - When `true`, enables offline mode for the page.
@@ -390,7 +392,7 @@ export class Page extends EventEmitter {
      * @remarks
      * Shortcut for {@link Frame.$ | Page.mainFrame().$(selector) }.
      *
-     * @param selector - A
+     * @param selector - A `selector` to query page for
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
      * to query page for.
      */
@@ -1129,7 +1131,7 @@ export class Page extends EventEmitter {
             // Overwrite clip for full page.
             clip = { x: 0, y: 0, width, height, scale: 1 };
             if (!captureBeyondViewport) {
-                const { isMobile = false, deviceScaleFactor = 1, isLandscape = false } = this._viewport || {};
+                const { isMobile = false, deviceScaleFactor = 1, isLandscape = false, } = this._viewport || {};
                 const screenOrientation = isLandscape
                     ? { angle: 90, type: 'landscapePrimary' }
                     : { angle: 0, type: 'portraitPrimary' };

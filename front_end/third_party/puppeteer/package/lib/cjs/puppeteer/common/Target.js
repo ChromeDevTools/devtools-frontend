@@ -113,6 +113,9 @@ class Target {
     browser() {
         return this._browserContext.browser();
     }
+    /**
+     * Get the browser context the target belongs to.
+     */
     browserContext() {
         return this._browserContext;
     }

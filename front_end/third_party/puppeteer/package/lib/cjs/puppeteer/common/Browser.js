@@ -176,7 +176,7 @@ class Browser extends EventEmitter_js_1.EventEmitter {
         const context = browserContextId && this._contexts.has(browserContextId)
             ? this._contexts.get(browserContextId)
             : this._defaultContext;
-        const shouldAttachToTarget = await this._targetFilterCallback(targetInfo);
+        const shouldAttachToTarget = this._targetFilterCallback(targetInfo);
         if (!shouldAttachToTarget) {
             return;
         }
@@ -234,7 +234,8 @@ class Browser extends EventEmitter_js_1.EventEmitter {
         return this._connection.url();
     }
     /**
-     * Creates a {@link Page} in the default browser context.
+     * Promise which resolves to a new {@link Page} object. The Page is created in
+     * a default browser context.
      */
     async newPage() {
         return this._defaultContext.newPage();

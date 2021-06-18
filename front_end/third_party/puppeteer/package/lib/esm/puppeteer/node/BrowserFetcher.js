@@ -157,13 +157,15 @@ export class BrowserFetcher {
             assert(this._platform, 'Unsupported platform: ' + os.platform());
     }
     /**
-     * @returns Returns the current `Platform`.
+     * @returns Returns the current `Platform`, which is one of `mac`, `linux`,
+     * `win32` or `win64`.
      */
     platform() {
         return this._platform;
     }
     /**
-     * @returns Returns the current `Product`.
+     * @returns Returns the current `Product`, which is one of `chrome` or
+     * `firefox`.
      */
     product() {
         return this._product;

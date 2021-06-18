@@ -4,6 +4,16 @@
 
 export type Selector = string|string[];
 
+type KeydownStep = {
+  type: 'keydown',
+  key: string,
+};
+
+type KeyupStep = {
+  type: 'keyup',
+  key: string,
+};
+
 export type Step = {
   type: 'click',
   selector: Selector,
@@ -11,21 +21,17 @@ export type Step = {
   type: 'change',
   selector: Selector,
   value: string,
-}|{
-  type: 'keydown',
-  key: string,
-}|{
-  type: 'keyup',
-  key: string,
-}|{
+}|KeydownStep|KeyupStep|{
   type: 'scroll',
   x: number,
   y: number,
   selector?: Selector,
 };
 
+const frameContextStepTypes = new Set(['click', 'change', 'keydown', 'keyup', 'scroll']);
+
 export function clientStepHasFrameContext(step: Step): boolean {
-  return ['click', 'change', 'keydown', 'keyup', 'scroll'].includes(step.type);
+  return frameContextStepTypes.has(step.type);
 }
 
 declare global {
@@ -134,12 +140,6 @@ export function setupRecordingClient(
       };
     }
     if (event.type === 'change') {
-      // Currently we support a Change event only for the select element.
-      // Perhaps eventually we need to create a select-change event to
-      // capture select-specific logic.
-      if (nodeTarget.nodeName.toLowerCase() !== 'select') {
-        return;
-      }
       return {type: event.type, selector: getSelector(nodeTarget), value: (target as HTMLInputElement).value};
     }
     if (event.type === 'keydown' || event.type === 'keyup') {
@@ -153,21 +153,132 @@ export function setupRecordingClient(
   };
   exports.createStepFromEvent = createStepFromEvent;
 
-  let lastStep: Step|undefined;
+  const inputNodeNames = new Set(['input', 'select', 'textarea']);
+  const nonInputElementTypes = new Set(['checkbox', 'radio']);
+
+  /**
+   * We consider input, select and textarea elements to be input elements.
+   * The exception is made for input types checkbox and radio that only
+   * receive clicks or keyboard events like Space/Enter.
+   */
+  const isInput = (node: Node): boolean => {
+    if (!node || !node.nodeName || !inputNodeNames.has(node.nodeName.toLowerCase())) {
+      return false;
+    }
+    if (nonInputElementTypes.has((node as HTMLInputElement).type)) {
+      return false;
+    }
+    return true;
+  };
+
+  const bufferableStepTypes = new Set(['keyup', 'keydown']);
+  const isStepBufferableInInputMode = (step: Step): step is KeydownStep|KeyupStep => {
+    return bufferableStepTypes.has(step.type);
+  };
+
+  /**
+   * Is true while an input element has focus.
+   */
+  let inputMode = false;
+  /**
+   * Buffer of steps is kept while an input element has focus.
+   * It helps to analyze and distinguish between navigation keyboard
+   * events and convert the rest into change events.
+   */
+  let buffer: Array<KeydownStep|KeyupStep> = [];
+
+  /**
+   * The following is the order of events for different kinds of ways for entering and leaving an element:
+   * # Click navigation to Element and Tab to navigate away
+   * focus FocusEvent
+   * click PointerEvent
+   * keydown KeyboardEvent
+   * input InputEvent
+   * keyup KeyboardEvent
+   * keydown KeyboardEvent [Tab]
+   * change Event
+   * blur FocusEvent
+   *
+   * # Keyboard navigation (Shift + Tab) to Element and click to navigate away
+   * focus FocusEvent
+   * keyup KeyboardEvent [Tab]
+   * keyup KeyboardEvent [Shift]
+   * keydown KeyboardEvent
+   * input InputEvent
+   * keyup KeyboardEvent
+   * change Event
+   * blur FocusEvent
+   *
+   * # Implicit form navigation
+   * focus FocusEvent
+   * click PointerEvent
+   * keydown KeyboardEvent
+   * input InputEvent
+   * keyup KeyboardEvent
+   * keydown KeyboardEvent [Enter]
+   * change Event
+   * Navigated to http://localhost:8000/form.html?name=a
+   */
+  const flushBuffer = (): void => {
+    const maybeTabOrEnter = buffer[buffer.length - 1];
+    const maybeShiftDown = buffer[buffer.length - 2];
+    log('flush buffer', maybeShiftDown, maybeTabOrEnter);
+    if (maybeTabOrEnter && maybeTabOrEnter.key === 'Tab') {
+      if (maybeShiftDown && maybeShiftDown.key === 'Shift') {
+        window.addStep(JSON.stringify(maybeShiftDown));
+      }
+      window.addStep(JSON.stringify(maybeTabOrEnter));
+    }
+    if (maybeTabOrEnter && maybeTabOrEnter.key === 'Enter') {
+      window.addStep(JSON.stringify(maybeTabOrEnter));
+    }
+    buffer = [];
+  };
+
+  const appendToBuffer = (step: KeydownStep|KeyupStep): void => {
+    buffer.push(step);
+    log('appendToBuffer', buffer);
+  };
+
   const recorderEventListener = (event: Event): void => {
     const target = event.composedPath()[0] as HTMLButtonElement;
-    log(target.nodeName, target.type);
+    log('eventType', event.type, 'id', target.id, inputMode, buffer);
+
+    // Turn one special handling for keyboard events for input fields.
+    // The buffer is flushed on blur or on change (if it happens).
+    if (isInput(target) && !inputMode) {
+      inputMode = true;
+      const onBlur = (): void => {
+        flushBuffer();
+        inputMode = false;
+        target.removeEventListener('blur', onBlur);
+      };
+      target.addEventListener('blur', onBlur, true);
+    }
+
     const step = createStepFromEvent(event, target, event.isTrusted);
     if (!step) {
       return;
     }
-    // If you click on a select option both the change event and click event fire.
-    // Therefore, we ignore the click.
-    if (lastStep && step.type === 'click' && lastStep.type === 'change' && step.selector === lastStep.selector) {
+    // Write keyboard events to the buffer except for the keyup event
+    // when the buffer is empty
+    // that might be there from the previous keyboard navigation.
+    if (inputMode && (isStepBufferableInInputMode(step) || step.type === 'change')) {
+      if (step.type === 'change') {
+        window.addStep(JSON.stringify(step));
+        flushBuffer();
+        inputMode = false;
+        return;
+      }
+      if (!buffer.length && step.type === 'keyup') {
+        window.addStep(JSON.stringify(step));
+        return;
+      }
+      appendToBuffer(step);
       return;
     }
+
     window.addStep(JSON.stringify(step));
-    lastStep = step;
   };
 
   if (!window._recorderEventListener) {
@@ -177,17 +288,20 @@ export function setupRecordingClient(
     window.addEventListener('keydown', recorderEventListener, true);
     window.addEventListener('keyup', recorderEventListener, true);
     window.addEventListener('scroll', recorderEventListener, true);
+    window.addEventListener('focus', recorderEventListener, true);
     window._recorderEventListener = recorderEventListener;
   } else {
     log('_recorderEventListener was already installed');
   }
 
   const teardown = (): void => {
+    flushBuffer();
     window.removeEventListener('click', recorderEventListener, true);
     window.removeEventListener('change', recorderEventListener, true);
     window.removeEventListener('keydown', recorderEventListener, true);
     window.removeEventListener('keyup', recorderEventListener, true);
     window.removeEventListener('scroll', recorderEventListener, true);
+    window.removeEventListener('focus', recorderEventListener, true);
     delete window._recorderEventListener;
     delete window._recorderTeardown;
   };

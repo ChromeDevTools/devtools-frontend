@@ -125,15 +125,6 @@ export function createClickStep(context: FrameContext, selector: Selector): Clic
   };
 }
 
-export function createChangeStep(context: FrameContext, selector: Selector, value: string): ChangeStep {
-  return {
-    type: 'change',
-    context,
-    selector,
-    value,
-  };
-}
-
 export function createEmulateNetworkConditionsStep(conditions: NetworkConditions): EmulateNetworkConditionsStep {
   return {
     type: 'emulateNetworkConditions',

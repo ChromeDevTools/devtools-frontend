@@ -271,5 +271,34 @@ describe('Recorder', function() {
       assert.strictEqual(await target.evaluate(() => document.querySelector('#overflow')?.scrollTop), 40);
       assert.strictEqual(await target.evaluate(() => document.querySelector('#overflow')?.scrollLeft), 0);
     });
+
+    it('should be able to replay ARIA selectors on inputs', async () => {
+      const {target} = getBrowserAndPages();
+      await setupRecorderWithScriptAndReplay({
+        title: 'Test Recording',
+        sections: [{
+          url: `${getResourcesPath()}/recorder/form.html`,
+          screenshot: '',
+          title: '',
+          steps: [
+            {
+              type: 'viewport',
+              width: 800,
+              height: 600,
+            },
+            {
+              type: 'click',
+              context: {
+                path: [],
+                target: 'main',
+              },
+              selector: 'aria/Name:',
+            },
+          ],
+        }],
+      });
+
+      assert.strictEqual(await target.evaluate(() => document.activeElement?.id), 'name');
+    });
   });
 });

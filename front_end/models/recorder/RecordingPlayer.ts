@@ -127,17 +127,12 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper {
         await page.close();
       } break;
       case 'change': {
-        // TODO(alexrudenko): currently the change event is only supported for <select>s.
         const element = await waitForSelector(step.selector, frame);
         if (!element) {
           throw new Error('Could not find element: ' + step.selector);
         }
-        await element.select(step.value);
-        // We need blur and focus to make the select dropdown to close.
-        // Otherwise, it remains open until a blur event. This is not very
-        // nice because user actions don't actually generate those events.
-        await element.evaluate(e => (e as HTMLElement).blur());
         await element.focus();
+        await element.type(step.value);
       } break;
       case 'viewport': {
         await targetPage.setViewport({

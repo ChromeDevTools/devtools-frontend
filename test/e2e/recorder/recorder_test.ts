@@ -170,6 +170,66 @@ describe('Recorder', function() {
     });
   });
 
+  it('should capture implicit form submissions', async () => {
+    await startRecording('recorder/form.html');
+
+    const {target} = getBrowserAndPages();
+    await target.bringToFront();
+    await target.click('#name');
+    await target.type('#name', 'test');
+    await target.keyboard.press('Enter');
+
+    await stopRecording();
+    await assertOutput({
+      title: 'New Recording',
+      sections: [{
+        url: 'https://<url>/test/e2e/resources/recorder/form.html',
+        screenshot: '<screenshot>',
+        title: '',
+        steps: [
+          viewportStep,
+          {
+            type: 'click',
+            selector: 'aria/Name:',
+            context: {
+              target: 'main',
+              path: [],
+            },
+          },
+          {
+            type: 'change',
+            selector: 'aria/Name:',
+            context: {
+              target: 'main',
+              path: [],
+            },
+            value: 'test',
+          },
+          {
+            type: 'keydown',
+            context: {
+              target: 'main',
+              path: [],
+            },
+            key: 'Enter',
+          },
+          {
+            type: 'keyup',
+            context: {
+              target: 'main',
+              path: [],
+            },
+            key: 'Enter',
+            condition: {
+              expectedUrl: 'https://<url>/test/e2e/resources/recorder/form.html?name=test',
+              type: 'waitForNavigation',
+            },
+          },
+        ],
+      }],
+    });
+  });
+
   it('should capture clicks on submit buttons inside of forms as click steps', async () => {
     await startRecording('recorder/recorder.html');
 
@@ -453,6 +513,9 @@ describe('Recorder', function() {
     await target.keyboard.type('1');
     await target.keyboard.press('Tab');
     await target.keyboard.type('2');
+    // TODO(alexrudenko): for some reason the headless test does not flush the buffer
+    // when recording is stopped.
+    await target.evaluate(() => (document.querySelector('#two') as HTMLElement).blur());
 
     await stopRecording();
     await assertOutput({
@@ -484,16 +547,9 @@ describe('Recorder', function() {
               path: [],
               target: 'main',
             },
-            key: '1',
-            type: 'keydown',
-          },
-          {
-            context: {
-              path: [],
-              target: 'main',
-            },
-            key: '1',
-            type: 'keyup',
+            selector: '#one',
+            value: '1',
+            type: 'change',
           },
           {
             context: {
@@ -516,7 +572,40 @@ describe('Recorder', function() {
               path: [],
               target: 'main',
             },
-            key: '2',
+            selector: '#two',
+            value: '2',
+            type: 'change',
+          },
+        ],
+      }],
+    });
+  });
+
+  it('should capture navigation without change', async () => {
+    await startRecording('recorder/input.html');
+
+    const {target} = getBrowserAndPages();
+    await target.bringToFront();
+    await target.keyboard.press('Tab');
+    await target.keyboard.down('Shift');
+    await target.keyboard.press('Tab');
+    await target.keyboard.up('Shift');
+
+    await stopRecording();
+    await assertOutput({
+      title: 'New Recording',
+      sections: [{
+        url: 'https://<url>/test/e2e/resources/recorder/input.html',
+        screenshot: '<screenshot>',
+        title: '',
+        steps: [
+          viewportStep,
+          {
+            context: {
+              path: [],
+              target: 'main',
+            },
+            key: 'Tab',
             type: 'keydown',
           },
           {
@@ -524,7 +613,39 @@ describe('Recorder', function() {
               path: [],
               target: 'main',
             },
-            key: '2',
+            key: 'Tab',
+            type: 'keyup',
+          },
+          {
+            context: {
+              path: [],
+              target: 'main',
+            },
+            key: 'Shift',
+            type: 'keydown',
+          },
+          {
+            context: {
+              path: [],
+              target: 'main',
+            },
+            key: 'Tab',
+            type: 'keydown',
+          },
+          {
+            context: {
+              path: [],
+              target: 'main',
+            },
+            key: 'Tab',
+            type: 'keyup',
+          },
+          {
+            context: {
+              path: [],
+              target: 'main',
+            },
+            key: 'Shift',
             type: 'keyup',
           },
         ],
@@ -539,7 +660,11 @@ describe('Recorder', function() {
 
     const {target} = getBrowserAndPages();
     await target.bringToFront();
+    await target.click('#select');
     await target.select('#select', 'O2');
+    // TODO(alexrudenko): for some reason the headless test does not flush the buffer
+    // when recording is stopped.
+    await target.evaluate(() => (document.querySelector('#select') as HTMLSelectElement).blur());
 
     await stopRecording();
     await assertOutput({
@@ -551,12 +676,20 @@ describe('Recorder', function() {
         steps: [
           viewportStep,
           {
+            'type': 'click',
+            'context': {
+              'path': [],
+              'target': 'main',
+            },
+            'selector': 'aria/Select',
+          },
+          {
             'type': 'change',
             'context': {
               'path': [],
               'target': 'main',
             },
-            'selector': 'aria/Select' as Selector,
+            'selector': 'aria/Select',
             'value': 'O2',
           },
         ],

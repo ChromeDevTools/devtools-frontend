@@ -98,7 +98,7 @@ export class RecorderModel extends SDK.SDKModel.SDKModel {
       return;
     }
 
-    this._currentRecordingSession.stop();
+    await this._currentRecordingSession.stop();
     this._currentRecordingSession = null;
   }
 

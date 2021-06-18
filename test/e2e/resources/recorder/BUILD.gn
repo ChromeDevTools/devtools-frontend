@@ -6,6 +6,7 @@ import("../../../../scripts/build/ninja/copy.gni")
 
 copy_to_gen("recorder") {
   sources = [
+    "form.html",
     "input.html",
     "popup.html",
     "recorder.html",

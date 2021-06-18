@@ -1175,7 +1175,7 @@ ElementsTestRunner.dumpBreadcrumb = function(message) {
 
 ElementsTestRunner.matchingSelectors = function(matchedStyles, rule) {
   const selectors = [];
-  const matchingSelectors = matchedStyles.matchingSelectors(rule);
+  const matchingSelectors = matchedStyles.getMatchingSelectors(rule);
 
   for (let i = 0; i < matchingSelectors.length; ++i) {
     selectors.push(rule.selectors[matchingSelectors[i]].text);

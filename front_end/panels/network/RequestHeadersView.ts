@@ -430,7 +430,9 @@ export class RequestHeadersView extends UI.Widget.VBox {
   }
 
   _refreshURL(): void {
-    this._urlItem.title = this._formatHeader(i18nString(UIStrings.requestUrl), this._request.url());
+    const requestURL = this._request.url();
+    this._urlItem.title = this._formatHeader(i18nString(UIStrings.requestUrl), requestURL);
+    this._addEntryContextMenuHandler(this._urlItem, requestURL);
   }
 
   _refreshQueryString(): void {

@@ -14,6 +14,7 @@ import * as TextEditor from '../../ui/legacy/components/text_editor/text_editor.
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {ConsolePanel} from './ConsolePanel.js';
+import styles from './consolePrompt.css.js';
 
 const UIStrings = {
   /**
@@ -42,7 +43,6 @@ export class ConsolePrompt extends UI.Widget.Widget {
 
   constructor() {
     super();
-    this.registerRequiredCSS('panels/console/consolePrompt.css', {enableLegacyPatching: false});
     this._addCompletionsFromHistory = true;
     this._history = new ConsoleHistoryManager();
 
@@ -156,6 +156,10 @@ export class ConsolePrompt extends UI.Widget.Widget {
     if (result && executionContext) {
       executionContext.runtimeModel.releaseEvaluationResult(result);
     }
+  }
+
+  wasShown(): void {
+    this.registerCSSFiles([styles]);
   }
 
   willHide(): void {

@@ -17,6 +17,10 @@ interface ImportMeta {
   url: string;
 }
 
+interface Document {
+  adoptedStyleSheets: CSSStyleSheet[]
+}
+
 declare module '*.css.js' {
   const styles: CSSStyleSheet;
   export default styles;

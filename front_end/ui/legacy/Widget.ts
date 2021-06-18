@@ -32,6 +32,8 @@
 
 import * as Common from '../../core/common/common.js';
 import * as DOMExtension from '../../core/dom_extension/dom_extension.js';
+import * as Platform from '../../core/platform/platform.js';
+
 import {Constraints, Size} from './Geometry.js';
 import {appendStyle} from './utils/append-style.js';
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
@@ -63,6 +65,7 @@ export class Widget extends Common.ObjectWrapper.ObjectWrapper {
   _invalidationsSuspended: number;
   _defaultFocusedChild: Widget|null;
   _parentWidget: Widget|null;
+  _registeredCSSFiles: boolean;
   _defaultFocusedElement?: Element|null;
   _cachedConstraints?: Constraints;
   _constraints?: Constraints;
@@ -96,6 +99,7 @@ export class Widget extends Common.ObjectWrapper.ObjectWrapper {
     this._invalidationsSuspended = 0;
     this._defaultFocusedChild = null;
     this._parentWidget = null;
+    this._registeredCSSFiles = false;
   }
 
   static _incrementWidgetCounter(parentElement: WidgetElement, childElement: WidgetElement): void {
@@ -468,6 +472,24 @@ export class Widget extends Common.ObjectWrapper.ObjectWrapper {
     } else {
       appendStyle(this.element, cssFile, options);
     }
+  }
+
+  registerCSSFiles(cssFiles: CSSStyleSheet[]): void {
+    if (this._registeredCSSFiles) {
+      return;
+    }
+    let root: ShadowRoot|Document;
+    if (this._isWebComponent && this._shadowRoot !== undefined) {
+      root = this._shadowRoot;
+    } else {
+      const potentialRoot = this.contentElement.getRootNode();
+      Platform.DCHECK(
+          () => potentialRoot instanceof Document || potentialRoot instanceof ShadowRoot,
+          `Expected root of widget to be a document or shadowRoot, but was "${potentialRoot.nodeName}"`);
+      root = potentialRoot as ShadowRoot | Document;
+    }
+    root.adoptedStyleSheets = root.adoptedStyleSheets.concat(cssFiles);
+    this._registeredCSSFiles = true;
   }
 
   printWidgetHierarchy(): void {

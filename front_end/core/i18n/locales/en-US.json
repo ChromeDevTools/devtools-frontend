@@ -11184,7 +11184,7 @@
     "message": "Quick open prompt"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
-    "message": "Open File"
+    "message": "Open file"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | runCommand": {
     "message": "Run command"

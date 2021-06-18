@@ -10,7 +10,7 @@ const UIStrings = {
   /**
   *@description Title of action that opens a file
   */
-  openFile: 'Open File',
+  openFile: 'Open file',
   /**
   *@description Title of command that runs a Quick Open command
   */

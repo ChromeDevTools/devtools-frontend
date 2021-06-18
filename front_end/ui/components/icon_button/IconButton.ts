@@ -4,7 +4,9 @@
 
 import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
+
 import {Icon} from './Icon.js';
+import styles from './IconButton.css.js';
 
 import type {IconData} from './Icon.js';
 
@@ -48,6 +50,10 @@ export class IconButton extends HTMLElement {
     this.render();
   }
 
+  connectedCallback(): void {
+    this.shadow.adoptedStyleSheets = [styles];
+  }
+
   private onClickHandler(event: Event): void {
     if (this.clickHandler) {
       event.preventDefault();
@@ -63,62 +69,6 @@ export class IconButton extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(LitHtml.html`
-      <style>
-        :host {
-          white-space: normal;
-          display: inline-block;
-        }
-
-        .icon-button {
-          border: none;
-          margin-right: 2px;
-          display: inline-flex;
-          align-items: center;
-          color: inherit;
-          font-size: inherit;
-          font-family: inherit;
-          background-color: var(--color-background-elevation-1);
-        }
-
-        .icon-button.with-click-handler {
-          cursor: pointer;
-          border: 1px solid var(--color-details-hairline);
-          border-radius: 2px;
-        }
-
-        .icon-button.with-click-handler:hover {
-          background-color: var(--legacy-toolbar-hover-bg-color);
-        }
-
-        .icon-button:focus-visible {
-          background-color: var(--legacy-toolbar-hover-bg-color);
-          border: 1px solid var(--color-details-hairline);
-        }
-
-        .icon-button-title {
-          margin-left: 0.5ex;
-        }
-
-        .status-icon {
-          margin-left: 1ex;
-        }
-
-        .status-icon:first-child {
-          margin-left: inherit;
-        }
-
-        @media (forced-colors: active) {
-          .icon-button {
-            forced-color-adjust: none;
-            background-color: ButtonFace;
-          }
-
-          .icon-button.with-click-handler:hover {
-            background-color: Highlight;
-            color: HighlightText;
-          }
-        }
-      </style>
       <button class="${buttonClasses}" @click=${this.onClickHandler}>
       ${this.leadingText ? LitHtml.html`<span class="icon-button-title">${this.leadingText}</span>` : LitHtml.nothing}
       ${this.groups.filter(counter => counter.text !== undefined).map(counter =>

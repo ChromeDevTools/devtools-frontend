@@ -5,6 +5,7 @@
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
+import styles from './Icon.css.js';
 
 export interface IconWithPath {
   iconPath: string;
@@ -35,6 +36,10 @@ export class Icon extends HTMLElement {
   private width: Readonly<string> = '100%';
   private height: Readonly<string> = '100%';
   private iconName?: Readonly<string>;
+
+  connectedCallback(): void {
+    this.shadow.adoptedStyleSheets = [styles];
+  }
 
   set data(data: IconData) {
     const {width, height} = data;
@@ -100,12 +105,6 @@ export class Icon extends HTMLElement {
     coordinator.write(() => {
       // clang-format off
       LitHtml.render(LitHtml.html`
-        <style>
-          :host {
-            display: inline-block;
-            white-space: nowrap;
-          }
-        </style>
         <div class="icon-basic" style=${LitHtml.Directives.styleMap(this.getStyles())}></div>
       `, this.shadow);
       // clang-format on

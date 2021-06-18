@@ -16,3 +16,8 @@ interface ShadowRoot {
 interface ImportMeta {
   url: string;
 }
+
+declare module '*.css.js' {
+  const styles: CSSStyleSheet;
+  export default styles;
+}

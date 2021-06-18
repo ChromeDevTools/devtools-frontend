@@ -30,6 +30,11 @@ const UIStrings = {
    * @description Noun, label for the column showing the associated network request in the issue details table.
    */
   request: 'Request',
+  /**
+   * @description Label for the column showing the invalid value used as the 'attributionsourceeventid' attribute
+   * on an anchor HTML element ("a link").
+   */
+  invalidSourceEventId: 'Invalid `attributionsourceeventid`',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AttributionReportingIssueDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -58,6 +63,11 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
       issues: Iterable<IssuesManager.AttributionReportingIssue.AttributionReportingIssue>): void {
     const header = document.createElement('tr');
     switch (issueCode) {
+      case IssuesManager.AttributionReportingIssue.IssueCode.InvalidAttributionSourceEventId:
+        this.appendColumnTitle(header, i18nString(UIStrings.frame));
+        this.appendColumnTitle(header, i18nString(UIStrings.element));
+        this.appendColumnTitle(header, i18nString(UIStrings.invalidSourceEventId));
+        break;
       case IssuesManager.AttributionReportingIssue.IssueCode.PermissionPolicyDisabled:
         this.appendColumnTitle(header, i18nString(UIStrings.frame));
         this.appendColumnTitle(header, i18nString(UIStrings.element));
@@ -70,7 +80,6 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
             IssuesManager.AttributionReportingIssue.IssueCode.AttributionUntrustworthyFrameOrigin|
             IssuesManager.AttributionReportingIssue.IssueCode.AttributionUntrustworthyOrigin|
             IssuesManager.AttributionReportingIssue.IssueCode.InvalidAttributionData|
-            IssuesManager.AttributionReportingIssue.IssueCode.InvalidAttributionSourceEventId|
             IssuesManager.AttributionReportingIssue.IssueCode.MissingAttributionData>(issueCode);
     }
 
@@ -99,21 +108,14 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
     const details = issue.issueDetails;
 
     switch (issueCode) {
+      case IssuesManager.AttributionReportingIssue.IssueCode.InvalidAttributionSourceEventId:
+        this.appendFrameOrEmptyCell(element, issue);
+        await this.appendElementOrEmptyCell(element, issue);
+        this.appendIssueDetailCell(element, details.invalidParameter || '');
+        break;
       case IssuesManager.AttributionReportingIssue.IssueCode.PermissionPolicyDisabled:
-        if (details.frame) {
-          element.appendChild(this.createFrameCell(details.frame.frameId, issue));
-        } else {
-          this.appendIssueDetailCell(element, '');
-        }
-
-        if (details.violatingNodeId !== undefined) {
-          const target = issue.model()?.target() || null;
-          element.appendChild(await this.createElementCell(
-              {backendNodeId: details.violatingNodeId, target, nodeName: 'Attribution source element'},
-              issue.getCategory()));
-        } else {
-          this.appendIssueDetailCell(element, '');
-        }
+        this.appendFrameOrEmptyCell(element, issue);
+        await this.appendElementOrEmptyCell(element, issue);
 
         if (details.request) {
           element.appendChild(this.createRequestCell(details.request, opts));
@@ -124,5 +126,28 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
     }
 
     this.affectedResources.appendChild(element);
+  }
+
+  private appendFrameOrEmptyCell(
+      parent: HTMLElement, issue: IssuesManager.AttributionReportingIssue.AttributionReportingIssue): void {
+    const details = issue.issueDetails;
+    if (details.frame) {
+      parent.appendChild(this.createFrameCell(details.frame.frameId, issue));
+    } else {
+      this.appendIssueDetailCell(parent, '');
+    }
+  }
+
+  private async appendElementOrEmptyCell(
+      parent: HTMLElement, issue: IssuesManager.AttributionReportingIssue.AttributionReportingIssue): Promise<void> {
+    const details = issue.issueDetails;
+    if (details.violatingNodeId !== undefined) {
+      const target = issue.model()?.target() || null;
+      parent.appendChild(await this.createElementCell(
+          {backendNodeId: details.violatingNodeId, target, nodeName: 'Attribution source element'},
+          issue.getCategory()));
+    } else {
+      this.appendIssueDetailCell(parent, '');
+    }
   }
 }

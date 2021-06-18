@@ -59,7 +59,7 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
         };
       case IssueCode.InvalidAttributionSourceEventId:
         return {
-          file: 'arInvalidAttrubtionSourceEventId.md',
+          file: 'arInvalidAttributionSourceEventId.md',
           links: [],
         };
       case IssueCode.InvalidAttributionData:

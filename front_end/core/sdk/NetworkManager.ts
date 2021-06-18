@@ -959,22 +959,42 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
 
   subresourceWebBundleMetadataReceived({requestId, urls}: Protocol.Network.SubresourceWebBundleMetadataReceivedEvent):
       void {
-    this._getExtraInfoBuilder(requestId).setWebBundleInfo({resourceUrls: urls});
+    const extraInfoBuilder = this._getExtraInfoBuilder(requestId);
+    extraInfoBuilder.setWebBundleInfo({resourceUrls: urls});
+    const finalRequest = extraInfoBuilder.finalRequest();
+    if (finalRequest) {
+      this._updateNetworkRequest(finalRequest);
+    }
   }
 
   subresourceWebBundleMetadataError({requestId, errorMessage}: Protocol.Network.SubresourceWebBundleMetadataErrorEvent):
       void {
-    this._getExtraInfoBuilder(requestId).setWebBundleInfo({errorMessage});
+    const extraInfoBuilder = this._getExtraInfoBuilder(requestId);
+    extraInfoBuilder.setWebBundleInfo({errorMessage});
+    const finalRequest = extraInfoBuilder.finalRequest();
+    if (finalRequest) {
+      this._updateNetworkRequest(finalRequest);
+    }
   }
 
   subresourceWebBundleInnerResponseParsed({innerRequestId, bundleRequestId}:
                                               Protocol.Network.SubresourceWebBundleInnerResponseParsedEvent): void {
-    this._getExtraInfoBuilder(innerRequestId).setWebBundleInnerRequestInfo({bundleRequestId});
+    const extraInfoBuilder = this._getExtraInfoBuilder(innerRequestId);
+    extraInfoBuilder.setWebBundleInnerRequestInfo({bundleRequestId});
+    const finalRequest = extraInfoBuilder.finalRequest();
+    if (finalRequest) {
+      this._updateNetworkRequest(finalRequest);
+    }
   }
 
   subresourceWebBundleInnerResponseError({innerRequestId, errorMessage}:
                                              Protocol.Network.SubresourceWebBundleInnerResponseErrorEvent): void {
-    this._getExtraInfoBuilder(innerRequestId).setWebBundleInnerRequestInfo({errorMessage});
+    const extraInfoBuilder = this._getExtraInfoBuilder(innerRequestId);
+    extraInfoBuilder.setWebBundleInnerRequestInfo({errorMessage});
+    const finalRequest = extraInfoBuilder.finalRequest();
+    if (finalRequest) {
+      this._updateNetworkRequest(finalRequest);
+    }
   }
 }
 
@@ -1552,11 +1572,18 @@ class ExtraInfoBuilder {
     }
   }
 
+  finalRequest(): NetworkRequest|null {
+    if (!this._finished) {
+      return null;
+    }
+    return this._requests[this._requests.length - 1] || null;
+  }
+
   private updateFinalRequest(): void {
     if (!this._finished) {
       return;
     }
-    const finalRequest = this._requests[this._requests.length - 1];
+    const finalRequest = this.finalRequest();
     finalRequest?.setWebBundleInfo(this.webBundleInfo);
     finalRequest?.setWebBundleInnerRequestInfo(this.webBundleInnerRequestInfo);
   }

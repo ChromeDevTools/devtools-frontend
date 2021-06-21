@@ -287,7 +287,7 @@ export class RemoteObjectPreviewFormatter {
     }
 
     if (type === 'string') {
-      UI.UIUtils.createTextChildren(span, Platform.StringUtilities.formatAsJSLiteral(description));
+      UI.UIUtils.createTextChildren(span, JSON.stringify(description));
       return span;
     }
 

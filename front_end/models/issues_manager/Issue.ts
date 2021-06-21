@@ -58,12 +58,15 @@ export interface AffectedElement {
 export abstract class Issue<IssueCode extends string = string> extends Common.ObjectWrapper.ObjectWrapper {
   private issueCode: IssueCode;
   private issuesModel: SDK.IssuesModel.IssuesModel|null;
+  protected issueId: string|undefined = undefined;
 
   constructor(
-      code: IssueCode|{code: IssueCode, umaCode: string}, issuesModel: SDK.IssuesModel.IssuesModel|null = null) {
+      code: IssueCode|{code: IssueCode, umaCode: string}, issuesModel: SDK.IssuesModel.IssuesModel|null = null,
+      issueId?: string) {
     super();
     this.issueCode = typeof code === 'object' ? code.code : code;
     this.issuesModel = issuesModel;
+    this.issueId = issueId;
     Host.userMetrics.issueCreated(typeof code === 'string' ? code : code.umaCode);
   }
 
@@ -114,6 +117,10 @@ export abstract class Issue<IssueCode extends string = string> extends Common.Ob
 
   isCausedByThirdParty(): boolean {
     return false;
+  }
+
+  getIssueId(): string|undefined {
+    return this.issueId;
   }
 }
 

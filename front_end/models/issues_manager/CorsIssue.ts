@@ -94,8 +94,10 @@ function getIssueCode(details: Protocol.Audits.CorsIssueDetails): IssueCode {
 export class CorsIssue extends Issue<IssueCode> {
   private issueDetails: Protocol.Audits.CorsIssueDetails;
 
-  constructor(issueDetails: Protocol.Audits.CorsIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
-    super(getIssueCode(issueDetails), issuesModel);
+  constructor(
+      issueDetails: Protocol.Audits.CorsIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel,
+      issueId: string|undefined) {
+    super(getIssueCode(issueDetails), issuesModel, issueId);
     this.issueDetails = issueDetails;
   }
 
@@ -239,6 +241,6 @@ export class CorsIssue extends Issue<IssueCode> {
       console.warn('Cors issue without details received.');
       return [];
     }
-    return [new CorsIssue(corsIssueDetails, issuesModel)];
+    return [new CorsIssue(corsIssueDetails, issuesModel, inspectorIssue.issueId)];
   }
 }

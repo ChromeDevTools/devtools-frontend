@@ -89,9 +89,9 @@ const issueCodeHandlers = new Map<
 ]);
 
 /**
-   * Each issue reported by the backend can result in multiple {!Issue} instances.
-   * Handlers are simple functions hard-coded into a map.
-   */
+ * Each issue reported by the backend can result in multiple `Issue` instances.
+ * Handlers are simple functions hard-coded into a map.
+ */
 function createIssuesFromProtocolIssue(
     issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue): Issue[] {
   const handler = issueCodeHandlers.get(inspectorIssue.code);
@@ -128,6 +128,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
   private issueCounts = new Map<IssueKind, number>();
   private hasSeenTopFrameNavigated = false;
   private sourceFrameIssuesManager = new SourceFrameIssuesManager(this);
+  private issuesById: Map<string, Issue> = new Map();
 
   constructor(private readonly showThirdPartyIssuesSetting?: Common.Settings.Setting<boolean>) {
     super();
@@ -233,6 +234,10 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
     if (this.issueFilter(issue)) {
       this.filteredIssues.set(primaryKey, issue);
       this.issueCounts.set(issue.getKind(), 1 + (this.issueCounts.get(issue.getKind()) || 0));
+      const issueId = issue.getIssueId();
+      if (issueId) {
+        this.issuesById.set(issueId, issue);
+      }
       this.dispatchEventToListeners(Events.IssueAdded, {issuesModel, issue});
     }
     // Always fire the "count" event even if the issue was filtered out.
@@ -262,15 +267,24 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
   private updateFilteredIssues(): void {
     this.filteredIssues.clear();
     this.issueCounts.clear();
+    this.issuesById.clear();
     for (const [key, issue] of this.allIssues) {
       if (this.issueFilter(issue)) {
         this.filteredIssues.set(key, issue);
         this.issueCounts.set(issue.getKind(), 1 + (this.issueCounts.get(issue.getKind()) ?? 0));
+        const issueId = issue.getIssueId();
+        if (issueId) {
+          this.issuesById.set(issueId, issue);
+        }
       }
     }
 
     this.dispatchEventToListeners(Events.FullUpdateRequired);
     this.dispatchEventToListeners(Events.IssuesCountUpdated);
+  }
+
+  getIssueById(id: string): Issue|undefined {
+    return this.issuesById.get(id);
   }
 }
 

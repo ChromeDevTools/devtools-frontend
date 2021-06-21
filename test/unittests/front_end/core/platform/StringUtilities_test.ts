@@ -689,4 +689,87 @@ describe('StringUtilities', () => {
       assert.strictEqual(Platform.StringUtilities.base64ToSize(base64String), inputString.length);
     });
   });
+
+  describe('formatAsJSLiteral', () => {
+    it('wraps plain string in single quotes', () => {
+      const inputString = 'foo';
+      assert.strictEqual(String.raw`'foo'`, Platform.StringUtilities.formatAsJSLiteral(inputString));
+    });
+
+    it('wraps string containing single quotes in double quotes', () => {
+      const inputString = String.raw`'foo' and 'bar'`;
+      assert.strictEqual(String.raw`"'foo' and 'bar'"`, Platform.StringUtilities.formatAsJSLiteral(inputString));
+    });
+
+    it('wraps string containing both single and double quotes in back ticks', () => {
+      const inputString = String.raw`'foo' and "bar"`;
+      assert.strictEqual('`\'foo\' and "bar"`', Platform.StringUtilities.formatAsJSLiteral(inputString));
+    });
+
+    it('wraps string containing all three quotes in single quotes', () => {
+      const inputString = '\'foo\' `and` "bar"';
+      assert.strictEqual('\'\\\'foo\\\' `and` "bar"\'', Platform.StringUtilities.formatAsJSLiteral(inputString));
+    });
+
+    it('does not use back ticks when content contains ${', () => {
+      const inputString = '\'foo\' "and" ${bar}';
+      assert.strictEqual('\'\\\'foo\\\' "and" ${bar}\'', Platform.StringUtilities.formatAsJSLiteral(inputString));
+    });
+
+    it('should escape lone leading surrogates', () => {
+      const inputString = '\uD800 \uDA00 \uDBFF';
+      assert.strictEqual('\'\\uD800 \\uDA00 \\uDBFF\'', Platform.StringUtilities.formatAsJSLiteral(inputString));
+    });
+
+    it('should escape lone trail surrogates', () => {
+      const inputString = '\uDC00 \uDEEE \uDFFF';
+      assert.strictEqual('\'\\uDC00 \\uDEEE \\uDFFF\'', Platform.StringUtilities.formatAsJSLiteral(inputString));
+    });
+
+    it('should not escape valid surrogate pairs', () => {
+      const inputString = '\uD800\uDC00 \uDA00\uDEEE \uDBFF\uDFFF';
+      assert.strictEqual(`'${inputString}'`, Platform.StringUtilities.formatAsJSLiteral(inputString));
+    });
+
+    it('should escape invalid surrogate pairs', () => {
+      const inputString = '\uDC00\uD800 \uDA00\uDA00 \uDEEE\uDEEE';
+      const expectedString = '\'\\uDC00\\uD800 \\uDA00\\uDA00 \\uDEEE\\uDEEE\'';
+      assert.strictEqual(expectedString, Platform.StringUtilities.formatAsJSLiteral(inputString));
+    });
+
+    it('escapes whitespace characters appropriately', () => {
+      const inputString =
+          '\t\n\v\f\r \x85\xA0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u2028\u2029\u202F\u205F\u3000';
+      const expectedString =
+          '\\t\\n\\v\\f\\r \\x85\xA0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u2028\u2029\u202F\u205F\u3000';
+      assert.strictEqual('\'' + expectedString + '\'', Platform.StringUtilities.formatAsJSLiteral(inputString));
+    });
+
+    it('escapes problematic script tags', () => {
+      const inputString = '<!-- <script </script';
+      const expectedString = String.raw`<\!-- <\script <\/script`;
+      assert.strictEqual('\'' + expectedString + '\'', Platform.StringUtilities.formatAsJSLiteral(inputString));
+    });
+
+    it('escapes \\x00-\\x1F and \\x7F-\\x9F', () => {
+      const inputStrings = [
+        '\x00', '\x01', '\x02', '\x03', '\x04', '\x05', '\x06', '\x07', '\b',   '\v',   '\f',   '\x0E', '\x0F',
+        '\x10', '\x11', '\x12', '\x13', '\x14', '\x15', '\x16', '\x17', '\x18', '\x19', '\x1A', '\x1B', '\x1C',
+        '\x1D', '\x1E', '\x1F', '\x80', '\x81', '\x82', '\x83', '\x84', '\x85', '\x86', '\x87', '\x88', '\x89',
+        '\x8A', '\x8B', '\x8C', '\x8D', '\x8E', '\x8F', '\x90', '\x91', '\x92', '\x93', '\x94', '\x95', '\x96',
+        '\x97', '\x98', '\x99', '\x9A', '\x9B', '\x9C', '\x9D', '\x9E', '\x9F',
+      ];
+      const expectedStrings = [
+        '\'\\x00\'', '\'\\x01\'', '\'\\x02\'', '\'\\x03\'', '\'\\x04\'', '\'\\x05\'', '\'\\x06\'', '\'\\x07\'',
+        '\'\\b\'',   '\'\\v\'',   '\'\\f\'',   '\'\\x0E\'', '\'\\x0F\'', '\'\\x10\'', '\'\\x11\'', '\'\\x12\'',
+        '\'\\x13\'', '\'\\x14\'', '\'\\x15\'', '\'\\x16\'', '\'\\x17\'', '\'\\x18\'', '\'\\x19\'', '\'\\x1A\'',
+        '\'\\x1B\'', '\'\\x1C\'', '\'\\x1D\'', '\'\\x1E\'', '\'\\x1F\'', '\'\\x80\'', '\'\\x81\'', '\'\\x82\'',
+        '\'\\x83\'', '\'\\x84\'', '\'\\x85\'', '\'\\x86\'', '\'\\x87\'', '\'\\x88\'', '\'\\x89\'', '\'\\x8A\'',
+        '\'\\x8B\'', '\'\\x8C\'', '\'\\x8D\'', '\'\\x8E\'', '\'\\x8F\'', '\'\\x90\'', '\'\\x91\'', '\'\\x92\'',
+        '\'\\x93\'', '\'\\x94\'', '\'\\x95\'', '\'\\x96\'', '\'\\x97\'', '\'\\x98\'', '\'\\x99\'', '\'\\x9A\'',
+        '\'\\x9B\'', '\'\\x9C\'', '\'\\x9D\'', '\'\\x9E\'', '\'\\x9F\'',
+      ];
+      assert.strictEqual(expectedStrings.join(), inputStrings.map(Platform.StringUtilities.formatAsJSLiteral).join());
+    });
+  });
 });

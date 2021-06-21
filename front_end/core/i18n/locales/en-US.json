@@ -4274,6 +4274,9 @@
   "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "Brand"
   },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "Brand properties"
+  },
   "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
     "message": "Brands"
   },
@@ -4282,6 +4285,9 @@
   },
   "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Device model"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "Device properties"
   },
   "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
     "message": "Full browser version"
@@ -4300,6 +4306,9 @@
   },
   "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
     "message": "Platform (e.g. Android)"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "Platform properties"
   },
   "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
     "message": "Platform version"

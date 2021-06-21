@@ -22,6 +22,11 @@ const UIStrings = {
     */
   brands: 'Brands',
   /**
+    * @description Name for a brand list. A brand list includes a brand name input field, a version
+    * input field and a delete icon.
+    */
+  brandProperties: 'Brand properties',
+  /**
     * @description Input field placeholder for brands browser name.
     * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge etc.
     */
@@ -54,6 +59,10 @@ const UIStrings = {
     */
   platformLabel: 'Platform',
   /**
+    * @description Platform row, including platform name and platform version input field.
+    */
+  platformProperties: 'Platform properties',
+  /**
     * @description Version for platform input field, platform relates to OS like Android, Windows etc.
     */
   platformVersion: 'Platform version',
@@ -69,6 +78,10 @@ const UIStrings = {
     * @description Placeholder for architecture (Eg: x86, x64, arm) input field.
     */
   architecturePlaceholder: 'Architecture (e.g. x86)',
+  /**
+    * @description Device model row, including device model input field and mobile checkbox
+    */
+  deviceProperties: 'Device properties',
   /**
     * @description Label for Device Model input field.
     */
@@ -311,22 +324,24 @@ export class UserAgentClientHintsForm extends HTMLElement {
     };
     return LitHtml.html`
       <span class="full-row label">${i18nString(UIStrings.platformLabel)}</span>
-      <input
-        class="input-field half-row"
-        type="text"
-        @input="${handlePlatformNameChange}"
-        .value="${platform}"
-        placeholder="${i18nString(UIStrings.platformPlaceholder)}"
-        aria-label="${i18nString(UIStrings.platformLabel)}"
-      />
-      <input
-        class="input-field half-row"
-        type="text"
-        @input="${handlePlatformVersionChange}"
-        .value="${platformVersion}"
-        placeholder="${i18nString(UIStrings.platformVersion)}"
-        aria-label="${i18nString(UIStrings.platformVersion)}"
-      />
+      <div class="full-row brand-row" aria-label="${i18nString(UIStrings.platformProperties)}" role="group">
+        <input
+          class="input-field half-row"
+          type="text"
+          @input="${handlePlatformNameChange}"
+          .value="${platform}"
+          placeholder="${i18nString(UIStrings.platformPlaceholder)}"
+          aria-label="${i18nString(UIStrings.platformLabel)}"
+        />
+        <input
+          class="input-field half-row"
+          type="text"
+          @input="${handlePlatformVersionChange}"
+          .value="${platformVersion}"
+          placeholder="${i18nString(UIStrings.platformVersion)}"
+          aria-label="${i18nString(UIStrings.platformVersion)}"
+        />
+      </div>
     `;
   }
 
@@ -349,14 +364,16 @@ export class UserAgentClientHintsForm extends HTMLElement {
                                                           LitHtml.html``;
     return LitHtml.html`
       <span class="full-row label">${i18nString(UIStrings.deviceModel)}</span>
-      <input
-        class="input-field ${this.showMobileCheckbox ? 'device-model-input' : 'full-row'}"
-        type="text"
-        @input="${handleDeviceModelChange}"
-        .value="${model}"
-        placeholder="${i18nString(UIStrings.deviceModel)}"
-      />
-      ${mobileCheckboxInput}
+      <div class="full-row brand-row" aria-label="${i18nString(UIStrings.deviceProperties)}" role="group">
+        <input
+          class="input-field ${this.showMobileCheckbox ? 'device-model-input' : 'full-row'}"
+          type="text"
+          @input="${handleDeviceModelChange}"
+          .value="${model}"
+          placeholder="${i18nString(UIStrings.deviceModel)}"
+        />
+        ${mobileCheckboxInput}
+      </div>
     `;
   }
 
@@ -390,7 +407,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
         this.handleBrandInputChange(value, index, 'brandVersion');
       };
       return LitHtml.html`
-        <div class="full-row brand-row">
+        <div class="full-row brand-row" aria-label="${i18nString(UIStrings.brandProperties)}" role="group">
           <input
             class="input-field brand-name-input"
             type="text"

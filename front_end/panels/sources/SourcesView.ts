@@ -90,7 +90,7 @@ export class SourcesView extends UI.Widget.VBox implements TabbedEditorContainer
     if (!Root.Runtime.experiments.isEnabled('sourcesPrettyPrint')) {
       const toolbarEditorActions = new UI.Toolbar.Toolbar('', this._toolbarContainerElement);
       for (const action of getRegisteredEditorActions()) {
-        toolbarEditorActions.appendToolbarItem(action.button(this));
+        toolbarEditorActions.appendToolbarItem(action.getOrCreateButton(this));
       }
     }
     this._scriptViewToolbar = new UI.Toolbar.Toolbar('', this._toolbarContainerElement);
@@ -583,7 +583,7 @@ export  // TODO(crbug.com/1167717): Make this a const enum again
  * @interface
  */
 export interface EditorAction {
-  button(sourcesView: SourcesView): UI.Toolbar.ToolbarButton;
+  getOrCreateButton(sourcesView: SourcesView): UI.Toolbar.ToolbarButton;
 }
 
 const registeredEditorActions: (() => EditorAction)[] = [];

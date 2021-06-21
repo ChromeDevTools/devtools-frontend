@@ -37,6 +37,7 @@ export class FilePathScoreFunction {
   _sequence: Int32Array;
   _dataUpperCase: string;
   _fileNameIndex: number;
+
   constructor(query: string) {
     this._query = query;
     this._queryUpperCase = query.toUpperCase();
@@ -46,7 +47,7 @@ export class FilePathScoreFunction {
     this._fileNameIndex = 0;
   }
 
-  score(data: string, matchIndexes: number[]|null): number {
+  calculateScore(data: string, matchIndexes: number[]|null): number {
     if (!data || !this._query) {
       return 0;
     }

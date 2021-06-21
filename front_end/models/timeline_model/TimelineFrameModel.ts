@@ -69,10 +69,11 @@ export class TimelineFrameModel {
     this.reset();
   }
 
-  frames(startTime?: number, endTime?: number): TimelineFrame[] {
-    if (!startTime && !endTime) {
-      return this._frames;
-    }
+  getFrames(): TimelineFrame[] {
+    return this._frames;
+  }
+
+  getFramesWithinWindow(startTime: number, endTime: number): TimelineFrame[] {
     const firstFrame =
         Platform.ArrayUtilities.lowerBound(this._frames, startTime || 0, (time, frame) => time - frame.endTime);
     const lastFrame =

@@ -1159,7 +1159,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         if (!this._performanceModel) {
           return null;
         }
-        return this._performanceModel.frameModel().frames(selection._endTime, selection._endTime)[0];
+        return this._performanceModel.frameModel().getFramesWithinWindow(selection._endTime, selection._endTime)[0];
       default:
         console.assert(false, 'Should never be reached');
         return null;

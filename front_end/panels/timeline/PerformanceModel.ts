@@ -139,7 +139,7 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   frames(): TimelineModel.TimelineFrameModel.TimelineFrame[] {
-    return this._frameModel.frames();
+    return this._frameModel.getFrames();
   }
 
   frameModel(): TimelineModel.TimelineFrameModel.TimelineFrameModel {

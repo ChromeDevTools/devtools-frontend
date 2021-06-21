@@ -963,7 +963,7 @@ export abstract class HeapSnapshot {
     const filter = this._createFilter(nodeFilter);
     // @ts-ignore key is added in _createFilter
     const key = filter ? filter.key : 'allObjects';
-    return this.aggregates(false, key, filter);
+    return this.getAggregatesByClassName(false, key, filter);
   }
 
   _createNodeIdFilter(minNodeId: number, maxNodeId: number): (arg0: HeapSnapshotNode) => boolean {
@@ -994,7 +994,7 @@ export abstract class HeapSnapshot {
     return traceIdFilter;
   }
 
-  aggregates(sortedIndexes: boolean, key?: string, filter?: ((arg0: HeapSnapshotNode) => boolean)):
+  getAggregatesByClassName(sortedIndexes: boolean, key?: string, filter?: ((arg0: HeapSnapshotNode) => boolean)):
       {[x: string]: HeapSnapshotModel.HeapSnapshotModel.Aggregate} {
     const aggregates = this._buildAggregates(filter);
 
@@ -1043,7 +1043,7 @@ export abstract class HeapSnapshot {
       return this._aggregatesForDiff;
     }
 
-    const aggregatesByClassName = this.aggregates(true, 'allObjects');
+    const aggregatesByClassName = this.getAggregatesByClassName(true, 'allObjects');
     this._aggregatesForDiff = {};
 
     const node = this.createNode();
@@ -1848,7 +1848,7 @@ export abstract class HeapSnapshot {
       [x: string]: HeapSnapshotModel.HeapSnapshotModel.Diff,
     });
 
-    const aggregates = this.aggregates(true, 'allObjects');
+    const aggregates = this.getAggregatesByClassName(true, 'allObjects');
     for (const className in baseSnapshotAggregates) {
       const baseAggregate = baseSnapshotAggregates[className];
       const diff = this._calculateDiffForClass(baseAggregate, aggregates[className]);

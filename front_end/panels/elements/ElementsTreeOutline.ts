@@ -92,7 +92,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
   _visibleWidth?: number;
   _clipboardNodeData?: ClipboardData;
   _isXMLMimeType?: boolean|null;
-  _suppressRevealAndSelect?: boolean;
+  suppressRevealAndSelect: boolean = false;
   _previousHoveredElement?: UI.TreeOutline.TreeElement;
   _treeElementBeingDragged?: ElementsTreeElement;
   _dragOverTreeElement?: ElementsTreeElement;
@@ -522,15 +522,8 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
     return treeElement ? this._showChild(treeElement, node) : null;
   }
 
-  set suppressRevealAndSelect(x: boolean) {
-    if (this._suppressRevealAndSelect === x) {
-      return;
-    }
-    this._suppressRevealAndSelect = x;
-  }
-
   _revealAndSelectNode(node: SDK.DOMModel.DOMNode|null, omitFocus: boolean): void {
-    if (this._suppressRevealAndSelect) {
+    if (this.suppressRevealAndSelect) {
       return;
     }
 

@@ -1072,7 +1072,7 @@ export class TimelineModelImpl {
       }
 
       case RecordType.Paint: {
-        this._invalidationTracker.didPaint(event);
+        this._invalidationTracker.didPaint = true;
         timelineData.backendNodeIds.push(eventData['nodeId']);
         // Only keep layer paint events, skip paints for subframes that get painted to the same layer as parent.
         if (!eventData['layerId']) {
@@ -1987,7 +1987,7 @@ export class InvalidationTrackingEvent {
 export class InvalidationTracker {
   _lastRecalcStyle: SDK.TracingModel.Event|null;
   _lastPaintWithLayer: SDK.TracingModel.Event|null;
-  _didPaint: boolean;
+  didPaint: boolean;
   _invalidations: {
     [x: string]: InvalidationTrackingEvent[],
   };
@@ -1997,7 +1997,7 @@ export class InvalidationTracker {
   constructor() {
     this._lastRecalcStyle = null;
     this._lastPaintWithLayer = null;
-    this._didPaint = false;
+    this.didPaint = false;
     this._initializePerFrameState();
     this._invalidations = {};
     this._invalidationsByNodeId = {};
@@ -2152,10 +2152,6 @@ export class InvalidationTracker {
     }
   }
 
-  didPaint(_paintEvent: SDK.TracingModel.Event): void {
-    this._didPaint = true;
-  }
-
   _addInvalidationToEvent(event: SDK.TracingModel.Event, eventFrameId: number, invalidation: InvalidationTrackingEvent):
       void {
     if (eventFrameId !== invalidation.frame) {
@@ -2189,7 +2185,7 @@ export class InvalidationTracker {
   }
 
   _startNewFrameIfNeeded(): void {
-    if (!this._didPaint) {
+    if (!this.didPaint) {
       return;
     }
 
@@ -2202,7 +2198,7 @@ export class InvalidationTracker {
 
     this._lastRecalcStyle = null;
     this._lastPaintWithLayer = null;
-    this._didPaint = false;
+    this.didPaint = false;
   }
 }
 

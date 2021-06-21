@@ -109,7 +109,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
     }
 
     const fullDisplayName = uiSourceCode.fullDisplayName();
-    return score + multiplier * this._scorer.score(fullDisplayName, null);
+    return score + multiplier * this._scorer.calculateScore(fullDisplayName, null);
   }
 
   renderItem(itemIndex: number, query: string, titleElement: Element, subtitleElement: Element): void {
@@ -117,7 +117,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
     const uiSourceCode = this._uiSourceCodes[itemIndex];
     const fullDisplayName = uiSourceCode.fullDisplayName();
     const indexes: number[] = [];
-    new FilePathScoreFunction(query).score(fullDisplayName, indexes);
+    new FilePathScoreFunction(query).calculateScore(fullDisplayName, indexes);
     const fileNameIndex = fullDisplayName.lastIndexOf('/');
 
     titleElement.classList.add('monospace');

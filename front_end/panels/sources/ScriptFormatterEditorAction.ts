@@ -85,7 +85,7 @@ export class ScriptFormatterEditorAction implements EditorAction {
     }
   }
 
-  button(sourcesView: SourcesView): UI.Toolbar.ToolbarButton {
+  getOrCreateButton(sourcesView: SourcesView): UI.Toolbar.ToolbarButton {
     if (this._button) {
       return this._button;
     }

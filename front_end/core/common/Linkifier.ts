@@ -2,21 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 export abstract class Linkifier {
   abstract linkify(object: Object, options?: Options): Node;
 
-  static linkify(object: Object|null, options?: Options): Promise<Node> {
+  static async linkify(object: Object|null, options?: Options): Promise<Node> {
     if (!object) {
-      return Promise.reject(new Error('Can\'t linkify ' + object));
+      throw new Error('Can\'t linkify ' + object);
     }
     const linkifierRegistration = getApplicableRegisteredlinkifiers(object)[0];
     if (!linkifierRegistration) {
-      return Promise.reject(new Error('No linkifiers registered for object ' + object));
+      throw new Error('No linkifiers registered for object ' + object);
     }
-    return linkifierRegistration.loadLinkifier().then(
-        linkifier => /** @type {!Linkifier} */ (linkifier).linkify(/** @type {!Object} */ (object), options));
+    const linkifier = await linkifierRegistration.loadLinkifier();
+    return linkifier.linkify(object, options);
   }
 }
 export interface Options {

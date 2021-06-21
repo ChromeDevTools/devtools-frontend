@@ -710,7 +710,7 @@
 
     function onResultOfInput(value) {
       // Console adds "" around the response.
-      test.assertEquals('\'Abbf\'', value);
+      test.assertEquals('"Abbf"', value);
       test.releaseControl();
     }
 

@@ -35,7 +35,7 @@ describe('Logging and preview of Trusted Types objects in the Console', async ()
       const evaluateResult = await frontend.evaluate(() => {
         return document.querySelectorAll('.console-user-command-result')[1].textContent;
       });
-      assert.strictEqual(evaluateResult, 'TrustedHTML \'<foo>\'', 'Trusted Type log is not the expected.');
+      assert.strictEqual(evaluateResult, 'TrustedHTML "<foo>"', 'Trusted Type log is not the expected.');
     });
   });
 

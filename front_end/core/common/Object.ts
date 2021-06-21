@@ -27,41 +27,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
+import type {EventDescriptor, EventTarget, EventTargetEvent} from './EventTarget.js';
 
-import type {EventDescriptor, EventTarget, EventTargetEvent} from './EventTarget.js'; // eslint-disable-line no-unused-vars
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-interface _listenerCallbackTuple {
+interface ListenerCallbackTuple {
   thisObject?: Object;
   listener: (arg0: EventTargetEvent) => void;
   disposed?: boolean;
 }
 
 export class ObjectWrapper implements EventTarget {
-  _listeners!: Map<string|symbol, _listenerCallbackTuple[]>|undefined;
-
-  constructor() {
-  }
+  listeners?: Map<string|symbol, Set<ListenerCallbackTuple>>;
 
   addEventListener(eventType: string|symbol, listener: (arg0: EventTargetEvent) => void, thisObject?: Object):
       EventDescriptor {
-    if (!listener) {
-      console.assert(false);
+    if (!this.listeners) {
+      this.listeners = new Map();
     }
 
-    if (!this._listeners) {
-      this._listeners = new Map();
+    let listenersForEventType = this.listeners.get(eventType);
+    if (!listenersForEventType) {
+      listenersForEventType = new Set();
+      this.listeners.set(eventType, listenersForEventType);
     }
-
-    if (!this._listeners.has(eventType)) {
-      this._listeners.set(eventType, []);
-    }
-    const listenerForEventType = this._listeners.get(eventType);
-    if (listenerForEventType) {
-      listenerForEventType.push({thisObject: thisObject, listener: listener, disposed: undefined});
-    }
-    return {eventTarget: this, eventType: eventType, thisObject: thisObject, listener: listener};
+    listenersForEventType.add({thisObject, listener});
+    return {eventTarget: this, eventType, thisObject, listener};
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
@@ -76,41 +65,37 @@ export class ObjectWrapper implements EventTarget {
   }
 
   removeEventListener(eventType: string|symbol, listener: (arg0: EventTargetEvent) => void, thisObject?: Object): void {
-    console.assert(Boolean(listener));
-
-    if (!this._listeners || !this._listeners.has(eventType)) {
+    const listeners = this.listeners?.get(eventType);
+    if (!listeners) {
       return;
     }
-    const listeners = this._listeners.get(eventType) || [];
-    for (let i = 0; i < listeners.length; ++i) {
-      if (listeners[i].listener === listener && listeners[i].thisObject === thisObject) {
-        listeners[i].disposed = true;
-        listeners.splice(i--, 1);
+    for (const listenerTuple of listeners) {
+      if (listenerTuple.listener === listener && listenerTuple.thisObject === thisObject) {
+        listenerTuple.disposed = true;
+        listeners.delete(listenerTuple);
       }
     }
 
-    if (!listeners.length) {
-      this._listeners.delete(eventType);
+    if (!listeners.size) {
+      this.listeners?.delete(eventType);
     }
   }
 
   hasEventListeners(eventType: string|symbol): boolean {
-    return Boolean(this._listeners && this._listeners.has(eventType));
+    return Boolean(this.listeners && this.listeners.has(eventType));
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  dispatchEventToListeners(eventType: string|symbol, eventData?: any): void {
-    if (!this._listeners || !this._listeners.has(eventType)) {
+  dispatchEventToListeners(eventType: string|symbol, eventData?: unknown): void {
+    const listeners = this.listeners?.get(eventType);
+    if (!listeners) {
       return;
     }
-
-    const event = ({data: eventData} as EventTargetEvent);
-    // @ts-ignore we do the check for undefined above
-    const listeners = this._listeners.get(eventType).slice(0) || [];
-    for (let i = 0; i < listeners.length; ++i) {
-      if (!listeners[i].disposed) {
-        listeners[i].listener.call(listeners[i].thisObject, event);
+    const event = {data: eventData} as EventTargetEvent;
+    // Work on a snapshot of the current listeners, callbacks might remove/add
+    // new listeners.
+    for (const listener of [...listeners]) {
+      if (!listener.disposed) {
+        listener.listener.call(listener.thisObject, event);
       }
     }
   }

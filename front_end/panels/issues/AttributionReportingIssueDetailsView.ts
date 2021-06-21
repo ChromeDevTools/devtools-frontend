@@ -35,6 +35,11 @@ const UIStrings = {
    * on an anchor HTML element ("a link").
    */
   invalidSourceEventId: 'Invalid `attributionsourceeventid`',
+  /**
+   * @description Label for the column showing the invalid URL used in an HTML anchor element ("a link").
+   * A origin is (roughly said) the front part of a URL.
+   */
+  untrustworthyOrigin: 'Untrustworthy origin',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AttributionReportingIssueDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -63,6 +68,15 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
       issues: Iterable<IssuesManager.AttributionReportingIssue.AttributionReportingIssue>): void {
     const header = document.createElement('tr');
     switch (issueCode) {
+      case IssuesManager.AttributionReportingIssue.IssueCode.AttributionSourceUntrustworthyFrameOrigin:
+        this.appendColumnTitle(header, i18nString(UIStrings.frame));
+        this.appendColumnTitle(header, i18nString(UIStrings.element));
+        this.appendColumnTitle(header, i18nString(UIStrings.untrustworthyOrigin));
+        break;
+      case IssuesManager.AttributionReportingIssue.IssueCode.AttributionSourceUntrustworthyOrigin:
+        this.appendColumnTitle(header, i18nString(UIStrings.element));
+        this.appendColumnTitle(header, i18nString(UIStrings.untrustworthyOrigin));
+        break;
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidAttributionSourceEventId:
         this.appendColumnTitle(header, i18nString(UIStrings.frame));
         this.appendColumnTitle(header, i18nString(UIStrings.element));
@@ -75,8 +89,6 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
         break;
       default:
         Platform.assertUnhandled<
-            IssuesManager.AttributionReportingIssue.IssueCode.AttributionSourceUntrustworthyFrameOrigin|
-            IssuesManager.AttributionReportingIssue.IssueCode.AttributionSourceUntrustworthyOrigin|
             IssuesManager.AttributionReportingIssue.IssueCode.AttributionUntrustworthyFrameOrigin|
             IssuesManager.AttributionReportingIssue.IssueCode.AttributionUntrustworthyOrigin|
             IssuesManager.AttributionReportingIssue.IssueCode.InvalidAttributionData|
@@ -108,6 +120,11 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
     const details = issue.issueDetails;
 
     switch (issueCode) {
+      case IssuesManager.AttributionReportingIssue.IssueCode.AttributionSourceUntrustworthyOrigin:
+        await this.appendElementOrEmptyCell(element, issue);
+        this.appendIssueDetailCell(element, details.invalidParameter || '');
+        break;
+      case IssuesManager.AttributionReportingIssue.IssueCode.AttributionSourceUntrustworthyFrameOrigin:
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidAttributionSourceEventId:
         this.appendFrameOrEmptyCell(element, issue);
         await this.appendElementOrEmptyCell(element, issue);

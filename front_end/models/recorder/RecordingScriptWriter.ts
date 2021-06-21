@@ -44,6 +44,8 @@ export class RecordingScriptWriter {
       this.appendLineToScript(`let element = await frame.waitForSelector(${JSON.stringify(step.selector[0])});`);
       for (const part of step.selector.slice(1)) {
         this.appendLineToScript(`element = await element.$(${JSON.stringify(part)});`);
+        this.appendLineToScript(
+            'element = (await element.evaluateHandle(el => el.shadowRoot ? el.shadowRoot : el)).asElement();');
       }
     } else {
       this.appendLineToScript(`const element = await frame.waitForSelector(${JSON.stringify(step.selector)});`);

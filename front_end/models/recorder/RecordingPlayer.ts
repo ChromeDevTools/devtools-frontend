@@ -178,6 +178,7 @@ async function waitForSelector(selector: Selector, frame: puppeteer.Frame): Prom
       if (!element) {
         throw new Error('Could not find element: ' + part);
       }
+      element = (await element.evaluateHandle(el => el.shadowRoot ? el.shadowRoot : el)).asElement();
     }
     if (!element) {
       throw new Error('Could not find element: ' + selector.join('|'));

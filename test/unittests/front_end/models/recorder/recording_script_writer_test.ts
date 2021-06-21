@@ -58,6 +58,7 @@ await element.click();
       });
       assert.deepEqual(writer.getCurrentScript(), `let element = await frame.waitForSelector("aria/Test");
 element = await element.$("aria/Test2");
+element = (await element.evaluateHandle(el => el.shadowRoot ? el.shadowRoot : el)).asElement();
 await element.click();
 `);
     });

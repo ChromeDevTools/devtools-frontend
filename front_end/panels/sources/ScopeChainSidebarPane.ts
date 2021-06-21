@@ -233,7 +233,8 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
 
     const extraProperties = [];
     if (thisObject) {
-      extraProperties.push(new SDK.RemoteObject.RemoteObjectProperty('this', thisObject));
+      extraProperties.push(new SDK.RemoteObject.RemoteObjectProperty(
+          'this', thisObject, undefined, undefined, undefined, undefined, undefined, /* synthetic */ true));
     }
     if (isFirstScope) {
       const exception = details.exception();

@@ -140,8 +140,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
   _skipProto?: boolean;
   constructor(
       object: SDK.RemoteObject.RemoteObject, title?: string|Element|null, linkifier?: Components.Linkifier.Linkifier,
-      emptyPlaceholder?: string|null, ignoreHasOwnProperty?: boolean,
-      extraProperties?: SDK.RemoteObject.RemoteObjectProperty[], showOverflow?: boolean) {
+      showOverflow?: boolean) {
     super();
     this._object = object;
     this._editable = true;
@@ -150,8 +149,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     }
     this.setFocusable(true);
     this.setShowSelectionOnKeyboardFocus(true);
-    this._objectTreeElement =
-        new RootElement(object, linkifier, emptyPlaceholder, ignoreHasOwnProperty, extraProperties);
+    this._objectTreeElement = new RootElement(object, linkifier);
     this.appendChild(this._objectTreeElement);
     if (typeof title === 'string' || !title) {
       this.titleElement = this.element.createChild('span');
@@ -209,18 +207,16 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
 
   static compareProperties(
       propertyA: SDK.RemoteObject.RemoteObjectProperty, propertyB: SDK.RemoteObject.RemoteObjectProperty): number {
-    const a = propertyA.name;
-    const b = propertyB.name;
+    if (!propertyA.synthetic && propertyB.synthetic) {
+      return 1;
+    }
+    if (!propertyB.synthetic && propertyA.synthetic) {
+      return -1;
+    }
     if (!propertyA.enumerable && propertyB.enumerable) {
       return 1;
     }
     if (!propertyB.enumerable && propertyA.enumerable) {
-      return -1;
-    }
-    if (a.startsWith('_') && !b.startsWith('_')) {
-      return 1;
-    }
-    if (b.startsWith('_') && !a.startsWith('_')) {
       return -1;
     }
     if (propertyA.symbol && !propertyB.symbol) {
@@ -233,6 +229,14 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       return 1;
     }
     if (propertyB.private && !propertyA.private) {
+      return -1;
+    }
+    const a = propertyA.name;
+    const b = propertyB.name;
+    if (a.startsWith('_') && !b.startsWith('_')) {
+      return 1;
+    }
+    if (b.startsWith('_') && !a.startsWith('_')) {
       return -1;
     }
     return Platform.StringUtilities.naturalOrderComparator(a, b);
@@ -590,13 +594,13 @@ export class RootElement extends UI.TreeOutline.TreeElement {
   _linkifier: Components.Linkifier.Linkifier|undefined;
   constructor(
       object: SDK.RemoteObject.RemoteObject, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string|null,
-      ignoreHasOwnProperty?: boolean, extraProperties?: SDK.RemoteObject.RemoteObjectProperty[]) {
+      ignoreHasOwnProperty: boolean = false, extraProperties: SDK.RemoteObject.RemoteObjectProperty[] = []) {
     const contentElement = document.createElement('slot');
     super(contentElement);
 
     this._object = object;
-    this._extraProperties = extraProperties || [];
-    this._ignoreHasOwnProperty = Boolean(ignoreHasOwnProperty);
+    this._extraProperties = extraProperties;
+    this._ignoreHasOwnProperty = ignoreHasOwnProperty;
     this._emptyPlaceholder = emptyPlaceholder;
 
     this.setExpandable(true);
@@ -707,9 +711,8 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
 
-    extraProperties = extraProperties || [];
-    for (let i = 0; i < extraProperties.length; ++i) {
-      properties.push(extraProperties[i]);
+    if (extraProperties !== undefined) {
+      properties.push(...extraProperties);
     }
 
     ObjectPropertyTreeElement.populateWithProperties(

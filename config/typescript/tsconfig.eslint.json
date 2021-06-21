@@ -1,5 +1,5 @@
 {
-  "extends": "./config/typescript/tsconfig.base.json",
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "lib": [
       "esnext",
@@ -11,11 +11,12 @@
     "outDir": "ignored-for-vscode"
   },
   "include": [
-    "front_end/",
-    "test/",
-    "inspector_overlay"
+    "../../front_end/**/*.ts",
+    "../../inspector_overlay/**/*.ts",
+    "../../scripts/protocol_typescript/*.ts",
+    "../../test/**/*.ts"
   ],
   "exclude": [
-    "front_end/**/*-legacy.ts"
+    "../../front_end/third_party"
   ]
 }

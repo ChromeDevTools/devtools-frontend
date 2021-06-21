@@ -52,7 +52,7 @@ template("ts_library") {
                            ])
 
     inputs += [
-      devtools_location_prepend + "tsconfig.base.json",
+      devtools_location_prepend + "config/typescript/tsconfig.base.json",
       devtools_location_prepend + "node_modules/typescript/lib/tsc.js",
       devtools_location_prepend + "front_end/legacy/legacy-defs.d.ts",
       devtools_location_prepend + "front_end/global_typings/global_defs.d.ts",

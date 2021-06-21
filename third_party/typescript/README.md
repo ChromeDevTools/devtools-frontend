@@ -73,7 +73,7 @@ To instruct Ninja to execute the `ts_library` task, make sure that there is a de
 
 ## Implementation details
 
-A `ts_library` task will generate a `tsconfig.json` based on `/tsconfig.base.json` and write it to disk in the `gen` directory.
+A `ts_library` task will generate a `tsconfig.json` based on `/config/typescript/tsconfig.base.json` and write it to disk in the `gen` directory.
 Ater that, it will instruct `tsc` to compile the project based on the `tsconfig.json`.
 
 All `deps` are desugared to [project references].

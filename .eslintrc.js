@@ -128,7 +128,7 @@ module.exports = {
     'files': ['*.ts'],
     'parserOptions': {
       'allowAutomaticSingleRunInference': true,
-      'project': './tsconfig.eslint.json',
+      'project': './config/typescript/tsconfig.eslint.json',
     },
     'rules': {
       '@typescript-eslint/explicit-member-accessibility': [2, {'accessibility': 'no-public'}],

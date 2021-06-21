@@ -14,5 +14,5 @@
       "path": "../e2e/tsconfig.json"
     }
   ],
-  "extends": "../../tsconfig.base.json"
+  "extends": "../../config/typescript/tsconfig.base.json"
 }

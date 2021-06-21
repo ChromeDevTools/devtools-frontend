@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Protocol from '../../generated/protocol.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -40,6 +41,11 @@ const UIStrings = {
    * A origin is (roughly said) the front part of a URL.
    */
   untrustworthyOrigin: 'Untrustworthy origin',
+  /**
+   * @description Label for the column showing the invalid value used for the 'trigger-data' query
+   * parameter.
+   */
+  invalidTriggerData: 'Invalid `trigger-data`',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AttributionReportingIssueDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -77,10 +83,17 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
         this.appendColumnTitle(header, i18nString(UIStrings.element));
         this.appendColumnTitle(header, i18nString(UIStrings.untrustworthyOrigin));
         break;
+      case IssuesManager.AttributionReportingIssue.IssueCode.InvalidAttributionData:
+        this.appendColumnTitle(header, i18nString(UIStrings.request));
+        this.appendColumnTitle(header, i18nString(UIStrings.invalidTriggerData));
+        break;
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidAttributionSourceEventId:
         this.appendColumnTitle(header, i18nString(UIStrings.frame));
         this.appendColumnTitle(header, i18nString(UIStrings.element));
         this.appendColumnTitle(header, i18nString(UIStrings.invalidSourceEventId));
+        break;
+      case IssuesManager.AttributionReportingIssue.IssueCode.MissingAttributionData:
+        this.appendColumnTitle(header, i18nString(UIStrings.request));
         break;
       case IssuesManager.AttributionReportingIssue.IssueCode.PermissionPolicyDisabled:
         this.appendColumnTitle(header, i18nString(UIStrings.frame));
@@ -90,9 +103,7 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
       default:
         Platform.assertUnhandled<
             IssuesManager.AttributionReportingIssue.IssueCode.AttributionUntrustworthyFrameOrigin|
-            IssuesManager.AttributionReportingIssue.IssueCode.AttributionUntrustworthyOrigin|
-            IssuesManager.AttributionReportingIssue.IssueCode.InvalidAttributionData|
-            IssuesManager.AttributionReportingIssue.IssueCode.MissingAttributionData>(issueCode);
+            IssuesManager.AttributionReportingIssue.IssueCode.AttributionUntrustworthyOrigin>(issueCode);
     }
 
     this.affectedResources.appendChild(header);
@@ -110,18 +121,15 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
     const element = document.createElement('tr');
     element.classList.add('affected-resource-directive');
 
-    const opts = {
-      additionalOnClickAction(): void {
-        Host.userMetrics.issuesPanelResourceOpened(
-            IssuesManager.Issue.IssueCategory.AttributionReporting, AffectedItem.Element);
-      },
-    };
-
     const details = issue.issueDetails;
 
     switch (issueCode) {
       case IssuesManager.AttributionReportingIssue.IssueCode.AttributionSourceUntrustworthyOrigin:
         await this.appendElementOrEmptyCell(element, issue);
+        this.appendIssueDetailCell(element, details.invalidParameter || '');
+        break;
+      case IssuesManager.AttributionReportingIssue.IssueCode.InvalidAttributionData:
+        this.appendRequestOrEmptyCell(element, details.request);
         this.appendIssueDetailCell(element, details.invalidParameter || '');
         break;
       case IssuesManager.AttributionReportingIssue.IssueCode.AttributionSourceUntrustworthyFrameOrigin:
@@ -130,15 +138,13 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
         await this.appendElementOrEmptyCell(element, issue);
         this.appendIssueDetailCell(element, details.invalidParameter || '');
         break;
+      case IssuesManager.AttributionReportingIssue.IssueCode.MissingAttributionData:
+        this.appendRequestOrEmptyCell(element, details.request);
+        break;
       case IssuesManager.AttributionReportingIssue.IssueCode.PermissionPolicyDisabled:
         this.appendFrameOrEmptyCell(element, issue);
         await this.appendElementOrEmptyCell(element, issue);
-
-        if (details.request) {
-          element.appendChild(this.createRequestCell(details.request, opts));
-        } else {
-          this.appendIssueDetailCell(element, '');
-        }
+        this.appendRequestOrEmptyCell(element, details.request);
         break;
     }
 
@@ -166,5 +172,20 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
     } else {
       this.appendIssueDetailCell(parent, '');
     }
+  }
+
+  private appendRequestOrEmptyCell(parent: HTMLElement, request?: Protocol.Audits.AffectedRequest): void {
+    if (!request) {
+      this.appendIssueDetailCell(parent, '');
+      return;
+    }
+
+    const opts = {
+      additionalOnClickAction(): void {
+        Host.userMetrics.issuesPanelResourceOpened(
+            IssuesManager.Issue.IssueCategory.AttributionReporting, AffectedItem.Request);
+      },
+    };
+    parent.appendChild(this.createRequestCell(request, opts));
   }
 }

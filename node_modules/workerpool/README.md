@@ -408,6 +408,7 @@ Following properties are available for convenience:
 
 ## Related libraries
 
+- https://github.com/piscinajs/piscina
 - https://github.com/learnboost/cluster
 - https://github.com/adambom/parallel.js
 - https://github.com/padolsey/operative

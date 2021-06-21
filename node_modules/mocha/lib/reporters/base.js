@@ -10,6 +10,7 @@ var diff = require('diff');
 var milliseconds = require('ms');
 var utils = require('../utils');
 var supportsColor = require('supports-color');
+var symbols = require('log-symbols');
 var constants = require('../runner').constants;
 var EVENT_TEST_PASS = constants.EVENT_TEST_PASS;
 var EVENT_TEST_FAIL = constants.EVENT_TEST_FAIL;
@@ -88,19 +89,12 @@ exports.colors = {
  */
 
 exports.symbols = {
-  ok: '✓',
-  err: '✖',
-  dot: '․',
+  ok: symbols.success,
+  err: symbols.err,
+  dot: '.',
   comma: ',',
   bang: '!'
 };
-
-// With node.js on Windows: use symbols available in terminal default fonts
-if (process.platform === 'win32') {
-  exports.symbols.ok = '\u221A';
-  exports.symbols.err = '\u00D7';
-  exports.symbols.dot = '.';
-}
 
 /**
  * Color `str` with the given `type`,
@@ -196,6 +190,13 @@ function stringifyDiffObjs(err) {
  */
 var generateDiff = (exports.generateDiff = function(actual, expected) {
   try {
+    const diffSize = 2048;
+    if (actual.length > diffSize) {
+      actual = actual.substring(0, diffSize) + ' ... Lines skipped';
+    }
+    if (expected.length > diffSize) {
+      expected = expected.substring(0, diffSize) + ' ... Lines skipped';
+    }
     return exports.inlineDiffs
       ? inlineDiff(actual, expected)
       : unifiedDiff(actual, expected);
@@ -242,10 +243,10 @@ exports.list = function(failures) {
       err = test.err;
     }
     var message;
-    if (err.message && typeof err.message.toString === 'function') {
-      message = err.message + '';
-    } else if (typeof err.inspect === 'function') {
+    if (typeof err.inspect === 'function') {
       message = err.inspect() + '';
+    } else if (err.message && typeof err.message.toString === 'function') {
+      message = err.message + '';
     } else {
       message = '';
     }

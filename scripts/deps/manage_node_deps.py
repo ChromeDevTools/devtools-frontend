@@ -78,7 +78,7 @@ DEPS = {
     "karma-sourcemap-loader": "0.3.8",
     "karma-spec-reporter": "0.0.32",
     "license-checker": "25.0.1",
-    "mocha": "8.3.2",
+    "mocha": "9.0.0",
     # Purposefully not the latest; we keep this in sync with what stylelint
     # depends on
     "postcss": "7.0.35",

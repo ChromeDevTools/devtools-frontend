@@ -8,8 +8,8 @@ Includes fallbacks for Windows CMD which only supports a [limited character set]
 import logSymbols = require('log-symbols');
 
 console.log(logSymbols.success, 'Finished successfully!');
-// On good OSes:  ✔ Finished successfully!
-// On Windows:    √ Finished successfully!
+// Terminals with Unicode support:     ✔ Finished successfully!
+// Terminals without Unicode support:  √ Finished successfully!
 ```
 */
 declare const logSymbols: {

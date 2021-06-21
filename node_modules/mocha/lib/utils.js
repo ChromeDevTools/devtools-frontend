@@ -13,7 +13,6 @@ const {nanoid} = require('nanoid/non-secure');
 var path = require('path');
 var util = require('util');
 var he = require('he');
-const errors = require('./errors');
 
 const MOCHA_ID_PROP_NAME = '__mocha_id__';
 
@@ -520,44 +519,6 @@ exports.clamp = function clamp(value, range) {
 };
 
 /**
- * Single quote text by combining with undirectional ASCII quotation marks.
- *
- * @description
- * Provides a simple means of markup for quoting text to be used in output.
- * Use this to quote names of variables, methods, and packages.
- *
- * <samp>package 'foo' cannot be found</samp>
- *
- * @private
- * @param {string} str - Value to be quoted.
- * @returns {string} quoted value
- * @example
- * sQuote('n') // => 'n'
- */
-exports.sQuote = function(str) {
-  return "'" + str + "'";
-};
-
-/**
- * Double quote text by combining with undirectional ASCII quotation marks.
- *
- * @description
- * Provides a simple means of markup for quoting text to be used in output.
- * Use this to quote names of datatypes, classes, pathnames, and strings.
- *
- * <samp>argument 'value' must be "string" or "number"</samp>
- *
- * @private
- * @param {string} str - Value to be quoted.
- * @returns {string} quoted value
- * @example
- * dQuote('number') // => "number"
- */
-exports.dQuote = function(str) {
-  return '"' + str + '"';
-};
-
-/**
  * It's a noop.
  * @public
  */
@@ -648,35 +609,6 @@ exports.cwd = function cwd() {
  */
 exports.isBrowser = function isBrowser() {
   return Boolean(process.browser);
-};
-
-/**
- * Lookup file names at the given `path`.
- *
- * @description
- * Filenames are returned in _traversal_ order by the OS/filesystem.
- * **Make no assumption that the names will be sorted in any fashion.**
- *
- * @public
- * @alias module:lib/cli.lookupFiles
- * @param {string} filepath - Base path to start searching from.
- * @param {string[]} [extensions=[]] - File extensions to look for.
- * @param {boolean} [recursive=false] - Whether to recurse into subdirectories.
- * @return {string[]} An array of paths.
- * @throws {Error} if no files match pattern.
- * @throws {TypeError} if `filepath` is directory and `extensions` not provided.
- * @deprecated Moved to {@link module:lib/cli.lookupFiles}
- */
-exports.lookupFiles = (...args) => {
-  if (exports.isBrowser()) {
-    throw errors.createUnsupportedError(
-      'lookupFiles() is only supported in Node.js!'
-    );
-  }
-  errors.deprecate(
-    '`lookupFiles()` in module `mocha/lib/utils` has moved to module `mocha/lib/cli` and will be removed in the next major revision of Mocha'
-  );
-  return require('./cli').lookupFiles(...args);
 };
 
 /*

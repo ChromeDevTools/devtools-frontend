@@ -94,11 +94,16 @@
 }
 
 .styles-section .styles-section-subtitle .devtools-link {
-  color: var(--color-text-primary);
+  color: var(--color-text-secondary);
   text-decoration-color: hsl(0deg 0% 60%);
 }
 
 .styles-section .selector {
+  color: var(--color-text-disabled);
+}
+
+.styles-section .simple-selector.selector-matches,
+.styles-section.keyframe-key {
   color: var(--color-text-primary);
 }
 

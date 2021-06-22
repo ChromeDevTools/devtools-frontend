@@ -121,13 +121,7 @@ export async function extractTableFromResourceSection(resourceContentElement: pu
       for (const tableRow of table.childNodes) {
         const row = [];
         for (const cell of tableRow.childNodes) {
-          const requestLinkIcon = cell instanceof HTMLElement && cell.querySelector('devtools-request-link-icon');
-          if (requestLinkIcon) {
-            const label = requestLinkIcon.shadowRoot?.querySelector('[aria-label="Shortened URL"]');
-            row.push(label?.textContent || '');
-          } else {
-            row.push(cell.textContent || '');
-          }
+          row.push(cell.textContent || '');
         }
         rows.push(row);
       }

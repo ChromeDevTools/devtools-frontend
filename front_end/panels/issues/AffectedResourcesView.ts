@@ -11,9 +11,8 @@ import * as Logs from '../../models/logs/logs.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import type * as NetworkForward from '../../panels/network/forward/forward.js';
+import * as NetworkForward from '../../panels/network/forward/forward.js';
 import type * as Protocol from '../../generated/protocol.js';
-import * as RequestLinkIcon from '../../ui/components/request_link_icon/request_link_icon.js';
 
 import type {IssueView} from './IssueView.js';
 
@@ -26,6 +25,14 @@ const UIStrings = {
   *@description Tooltip for button linking to the Elements panel
   */
   clickToRevealTheFramesDomNodeIn: 'Click to reveal the frame\'s DOM node in the Elements panel',
+  /**
+  *@description Title for a link to a request in the network panel
+  */
+  clickToShowRequestInTheNetwork: 'Click to show request in the network panel',
+  /**
+  *@description Title for an unavailable link a request in the network panel
+  */
+  requestUnavailableInTheNetwork: 'Request unavailable in the network panel, try reloading the inspected page',
   /**
   *@description Replacement text for a link to an HTML element which is not available (anymore).
   */
@@ -199,11 +206,46 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
 
   protected createRequestCell(affectedRequest: Protocol.Audits.AffectedRequest, options: CreateRequestCellOptions = {}):
       HTMLElement {
+    let url = affectedRequest.url;
+    let filename = url ? extractShortPath(url) : '';
     const requestCell = document.createElement('td');
     requestCell.classList.add('affected-resource-cell');
-    const requestLinkIcon = new RequestLinkIcon.RequestLinkIcon.RequestLinkIcon();
-    requestLinkIcon.data = {...options, affectedRequest, requestResolver: this.requestResolver, displayURL: true};
-    requestCell.appendChild(requestLinkIcon);
+    const icon = new IconButton.Icon.Icon();
+    icon.data = {iconName: 'network_panel_icon', color: 'var(--color-link)', width: '16px', height: '16px'};
+    icon.classList.add('network-panel');
+    requestCell.appendChild(icon);
+
+    const request = this.requestResolver.tryGetNetworkRequest(affectedRequest.requestId, this.update.bind(this));
+    if (request) {
+      const linkToPreflight = options.linkToPreflight ?? false;
+      requestCell.onclick = (): void => {
+        const linkedRequest = linkToPreflight ? request.preflightRequest() : request;
+        if (!linkedRequest) {
+          return;
+        }
+        options.additionalOnClickAction?.();
+        if (options.highlightHeader) {
+          const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.header(
+              linkedRequest, options.highlightHeader.section, options.highlightHeader.name);
+          Common.Revealer.reveal(requestLocation);
+        } else {
+          const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
+              linkedRequest, options.networkTab ?? NetworkForward.UIRequestLocation.UIRequestTabs.Headers);
+          Common.Revealer.reveal(requestLocation);
+        }
+      };
+      requestCell.classList.add('link');
+      url = request.url();
+      filename = extractShortPath(url);
+      UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.clickToShowRequestInTheNetwork));
+    } else {
+      UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.requestUnavailableInTheNetwork));
+      icon.data = {...icon.data, color: 'var(--issue-color-yellow)'};
+    }
+    if (url) {
+      UI.Tooltip.Tooltip.install(requestCell, url);
+    }
+    requestCell.appendChild(document.createTextNode(filename));
     return requestCell;
   }
 

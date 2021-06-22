@@ -4955,6 +4955,12 @@
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "Click to reveal the frame's DOM node in the Elements panel"
   },
+  "panels/issues/AffectedResourcesView.ts | clickToShowRequestInTheNetwork": {
+    "message": "Click to show request in the network panel"
+  },
+  "panels/issues/AffectedResourcesView.ts | requestUnavailableInTheNetwork": {
+    "message": "Request unavailable in the network panel, try reloading the inspected page"
+  },
   "panels/issues/AffectedResourcesView.ts | unavailable": {
     "message": "unavailable"
   },
@@ -10756,15 +10762,6 @@
   },
   "ui/components/linear_memory_inspector/ValueInterpreterSettings.ts | otherGroup": {
     "message": "Other"
-  },
-  "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
-    "message": "Click to show request in the network panel"
-  },
-  "ui/components/request_link_icon/RequestLinkIcon.ts | requestUnavailableInTheNetwork": {
-    "message": "Request unavailable in the network panel, try reloading the inspected page"
-  },
-  "ui/components/request_link_icon/RequestLinkIcon.ts | shortenedURL": {
-    "message": "Shortened URL"
   },
   "ui/components/survey_link/SurveyLink.ts | anErrorOccurredWithTheSurvey": {
     "message": "An error occurred with the survey"

@@ -4955,6 +4955,12 @@
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "Ĉĺîćk̂ t́ô ŕêv́êál̂ t́ĥé f̂ŕâḿê'ś D̂ÓM̂ ńôd́ê ín̂ t́ĥé Êĺêḿêńt̂ś p̂án̂él̂"
   },
+  "panels/issues/AffectedResourcesView.ts | clickToShowRequestInTheNetwork": {
+    "message": "Ĉĺîćk̂ t́ô śĥóŵ ŕêq́ûéŝt́ îń t̂h́ê ńêt́ŵór̂ḱ p̂án̂él̂"
+  },
+  "panels/issues/AffectedResourcesView.ts | requestUnavailableInTheNetwork": {
+    "message": "R̂éq̂úêśt̂ ún̂áv̂áîĺâb́l̂é îń t̂h́ê ńêt́ŵór̂ḱ p̂án̂él̂, t́r̂ý r̂él̂óâd́îńĝ t́ĥé îńŝṕêćt̂éd̂ ṕâǵê"
+  },
   "panels/issues/AffectedResourcesView.ts | unavailable": {
     "message": "ûńâv́âíl̂áb̂ĺê"
   },
@@ -10756,15 +10762,6 @@
   },
   "ui/components/linear_memory_inspector/ValueInterpreterSettings.ts | otherGroup": {
     "message": "Ôt́ĥér̂"
-  },
-  "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
-    "message": "Ĉĺîćk̂ t́ô śĥóŵ ŕêq́ûéŝt́ îń t̂h́ê ńêt́ŵór̂ḱ p̂án̂él̂"
-  },
-  "ui/components/request_link_icon/RequestLinkIcon.ts | requestUnavailableInTheNetwork": {
-    "message": "R̂éq̂úêśt̂ ún̂áv̂áîĺâb́l̂é îń t̂h́ê ńêt́ŵór̂ḱ p̂án̂él̂, t́r̂ý r̂él̂óâd́îńĝ t́ĥé îńŝṕêćt̂éd̂ ṕâǵê"
-  },
-  "ui/components/request_link_icon/RequestLinkIcon.ts | shortenedURL": {
-    "message": "Ŝh́ôŕt̂én̂éd̂ ÚR̂Ĺ"
   },
   "ui/components/survey_link/SurveyLink.ts | anErrorOccurredWithTheSurvey": {
     "message": "Âń êŕr̂ór̂ óĉćûŕr̂éd̂ ẃît́ĥ t́ĥé ŝúr̂v́êý"

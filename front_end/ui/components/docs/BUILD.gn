@@ -29,7 +29,6 @@ group("docs") {
     "./perf_piechart",
     "./recording_client",
     "./report",
-    "./request_link_icon",
     "./style_property_editor",
     "./survey_link",
     "./theme_colors",

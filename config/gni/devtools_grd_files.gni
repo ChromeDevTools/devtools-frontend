@@ -1202,6 +1202,7 @@ grd_files_debug_sources = [
   "front_end/ui/components/helpers/component-server-setup.js",
   "front_end/ui/components/helpers/custom-elements.js",
   "front_end/ui/components/helpers/directives.js",
+  "front_end/ui/components/helpers/get-root-node.js",
   "front_end/ui/components/helpers/get-stylesheet.js",
   "front_end/ui/components/helpers/scheduled-render.js",
   "front_end/ui/components/helpers/set-css-property.js",

@@ -8,7 +8,11 @@ import("../../../scripts/build/ninja/generate_css.gni")
 import("../visibility.gni")
 
 generate_css("css_files") {
-  sources = [ "./consolePrompt.css" ]
+  sources = [
+    "./consolePinPane.css",
+    "./consolePrompt.css",
+    "./consoleView.css",
+  ]
 }
 
 devtools_module("console") {
@@ -38,6 +42,7 @@ devtools_module("console") {
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/data_grid:bundle",
     "../../ui/legacy/components/object_ui:bundle",
+    "../../ui/legacy/components/object_ui:css_files",
     "../../ui/legacy/components/text_editor:bundle",
     "../../ui/legacy/components/utils:bundle",
     "../../ui/legacy/theme_support:bundle",
@@ -61,6 +66,7 @@ devtools_entrypoint("bundle") {
   deps = [
     ":console",
     ":css_files",
+    "../../ui/legacy/components/object_ui:css_files",
   ]
 
   visibility = [

@@ -44,10 +44,13 @@ import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
+// eslint-disable-next-line rulesdir/es_modules_import
+import ObjectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {ConsoleContextSelector} from './ConsoleContextSelector.js';
+import ConsoleViewStyles from './consoleView.css.js';
 
 import type {LevelsMask} from './ConsoleFilter.js';
 import {ConsoleFilter, FilterType} from './ConsoleFilter.js';
@@ -287,8 +290,6 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   constructor() {
     super();
     this.setMinimumSize(0, 35);
-    this.registerRequiredCSS('panels/console/consoleView.css', {enableLegacyPatching: false});
-    this.registerRequiredCSS('ui/legacy/components/object_ui/objectValue.css', {enableLegacyPatching: false});
 
     this._searchableView = new UI.SearchableView.SearchableView(this, null);
     this._searchableView.element.classList.add('console-searchable-view');
@@ -657,6 +658,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   wasShown(): void {
     this._updateIssuesToolbarItem();
     this._viewport.refresh();
+    this.registerCSSFiles([ConsoleViewStyles, ObjectValueStyles]);
   }
 
   focus(): void {

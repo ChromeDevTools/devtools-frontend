@@ -271,6 +271,9 @@ export const waitForNoElementsWithTextContent =
 export const waitForFunction = async<T>(fn: () => Promise<T|undefined>, asyncScope = new AsyncScope()): Promise<T> => {
   return await asyncScope.exec(async () => {
     while (true) {
+      if (asyncScope.isCanceled()) {
+        throw new Error('Test timed out');
+      }
       const result = await fn();
       if (result) {
         return result;

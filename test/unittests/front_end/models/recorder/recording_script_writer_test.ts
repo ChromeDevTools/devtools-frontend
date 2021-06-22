@@ -40,9 +40,20 @@ describe('Recorder', () => {
           path: [],
         },
         selector: 'aria/Test' as Recorder.Steps.Selector,
+        offsetX: 1,
+        offsetY: 1,
       });
       assert.deepEqual(writer.getCurrentScript(), `const element = await frame.waitForSelector("aria/Test");
-await element.click();
+const {offsetLeft, offsetTop} = await element.evaluate(el => {
+  const styles = getComputedStyle(el);
+  const borderTop = parseFloat(styles.getPropertyValue('border-top-width'));
+  const borderLeft = parseFloat(styles.getPropertyValue('border-left-width'));
+  return {
+    offsetTop: el.offsetTop + borderTop,
+    offsetLeft: el.offsetLeft + borderLeft,
+  };
+});
+await page.mouse.click(offsetLeft + 1, offsetTop + 1);
 `);
     });
 
@@ -55,11 +66,22 @@ await element.click();
           path: [],
         },
         selector: ['aria/Test', 'aria/Test2'] as Recorder.Steps.Selector,
+        offsetX: 1,
+        offsetY: 1,
       });
       assert.deepEqual(writer.getCurrentScript(), `let element = await frame.waitForSelector("aria/Test");
 element = await element.$("aria/Test2");
 element = (await element.evaluateHandle(el => el.shadowRoot ? el.shadowRoot : el)).asElement();
-await element.click();
+const {offsetLeft, offsetTop} = await element.evaluate(el => {
+  const styles = getComputedStyle(el);
+  const borderTop = parseFloat(styles.getPropertyValue('border-top-width'));
+  const borderLeft = parseFloat(styles.getPropertyValue('border-left-width'));
+  return {
+    offsetTop: el.offsetTop + borderTop,
+    offsetLeft: el.offsetLeft + borderLeft,
+  };
+});
+await page.mouse.click(offsetLeft + 1, offsetTop + 1);
 `);
     });
 
@@ -132,6 +154,8 @@ await element.type("Hello World");
               path: [],
             },
             selector: 'aria/Test' as Recorder.Steps.Selector,
+            offsetX: 1,
+            offsetY: 1,
           }],
         }],
       });
@@ -146,7 +170,16 @@ await element.type("Hello World");
     const targetPage = await target.page();
     let frame = targetPage.mainFrame();
     const element = await frame.waitForSelector("aria/Test");
-    await element.click();
+    const {offsetLeft, offsetTop} = await element.evaluate(el => {
+      const styles = getComputedStyle(el);
+      const borderTop = parseFloat(styles.getPropertyValue('border-top-width'));
+      const borderLeft = parseFloat(styles.getPropertyValue('border-left-width'));
+      return {
+        offsetTop: el.offsetTop + borderTop,
+        offsetLeft: el.offsetLeft + borderLeft,
+      };
+    });
+    await page.mouse.click(offsetLeft + 1, offsetTop + 1);
   }
 
   await browser.close();
@@ -169,6 +202,8 @@ await element.type("Hello World");
               path: [1, 1],
             },
             selector: 'aria/Test' as Recorder.Steps.Selector,
+            offsetX: 1,
+            offsetY: 1,
           }],
         }],
       });
@@ -184,7 +219,16 @@ await element.type("Hello World");
     frame = frame.childFrames()[1];
     frame = frame.childFrames()[1];
     const element = await frame.waitForSelector("aria/Test");
-    await element.click();
+    const {offsetLeft, offsetTop} = await element.evaluate(el => {
+      const styles = getComputedStyle(el);
+      const borderTop = parseFloat(styles.getPropertyValue('border-top-width'));
+      const borderLeft = parseFloat(styles.getPropertyValue('border-left-width'));
+      return {
+        offsetTop: el.offsetTop + borderTop,
+        offsetLeft: el.offsetLeft + borderLeft,
+      };
+    });
+    await page.mouse.click(offsetLeft + 1, offsetTop + 1);
   }
 
   await browser.close();

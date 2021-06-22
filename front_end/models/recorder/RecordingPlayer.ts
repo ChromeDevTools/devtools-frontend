@@ -110,7 +110,16 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper {
         if (!element) {
           throw new Error('Could not find element: ' + step.selector);
         }
-        await element.click();
+        const {offsetLeft, offsetTop} = await element.evaluate(el => {
+          const styles = getComputedStyle(el);
+          const borderTop = parseFloat(styles.getPropertyValue('border-top-width'));
+          const borderLeft = parseFloat(styles.getPropertyValue('border-left-width'));
+          return {
+            offsetTop: (el as HTMLElement).offsetTop + borderTop,
+            offsetLeft: (el as HTMLElement).offsetLeft + borderLeft,
+          };
+        });
+        await page.mouse.click(offsetLeft + step.offsetX, offsetTop + step.offsetY);
       } break;
       case 'emulateNetworkConditions': {
         await page.emulateNetworkConditions(step.conditions);

@@ -91,7 +91,7 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper {
         SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, this.addNetworkConditionsChangedStep,
         this);
 
-    const {cssVisualViewport} = await this._target.pageAgent().invoke_getLayoutMetrics();
+    const {cssLayoutViewport} = await this._target.pageAgent().invoke_getLayoutMetrics();
 
     await this.attachToTarget(this._target);
 
@@ -101,7 +101,7 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     await this.appendNewSection(true);
-    this.addViewportStep(cssVisualViewport);
+    this.addViewportStep(cssLayoutViewport);
 
     // Focus the target so that events can be captured without additional actions.
     await this._pageAgent.invoke_bringToFront();
@@ -149,7 +149,7 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper {
         this);
   }
 
-  addViewportStep(viewport: Protocol.Page.VisualViewport): void {
+  addViewportStep(viewport: Protocol.Page.LayoutViewport): void {
     this.appendStep(createViewportStep(viewport));
   }
 

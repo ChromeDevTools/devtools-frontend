@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import type {UserFlow, Selector} from '../../../front_end/models/recorder/Steps.js';
+import type {UserFlow} from '../../../front_end/models/recorder/Steps.js';
 
 import {enableExperiment, getBrowserAndPages, getResourcesPath, goToResource, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
@@ -93,7 +93,9 @@ describe('Recorder', function() {
               path: [],
               target: 'main',
             },
-            selector: 'a[href="recorder2.html"]' as Selector,
+            selector: 'a[href="recorder2.html"]',
+            offsetX: 1,
+            offsetY: 1,
           }],
         }],
       });
@@ -196,7 +198,7 @@ describe('Recorder', function() {
                 'path': [],
                 'target': 'main',
               },
-              'selector': 'aria/Select' as Selector,
+              'selector': 'aria/Select',
               'value': 'O2',
             },
           ],
@@ -293,6 +295,8 @@ describe('Recorder', function() {
                 target: 'main',
               },
               selector: 'aria/Name:',
+              offsetX: 1,
+              offsetY: 1,
             },
           ],
         }],

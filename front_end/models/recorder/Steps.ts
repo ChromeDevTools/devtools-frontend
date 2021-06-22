@@ -24,6 +24,8 @@ export interface StepWithFrameContext {
 export interface ClickStep extends StepWithFrameContext, StepWithCondition {
   type: 'click';
   selector: Selector;
+  offsetX: number;
+  offsetY: number;
 }
 
 export interface NetworkConditions {
@@ -114,15 +116,6 @@ export interface UserFlow {
 export function assertAllStepTypesAreHandled(s: never): never;
 export function assertAllStepTypesAreHandled(s: Step): never {
   throw new Error(`Unknown step type: ${s.type}`);
-}
-
-
-export function createClickStep(context: FrameContext, selector: Selector): ClickStep {
-  return {
-    type: 'click',
-    context,
-    selector,
-  };
 }
 
 export function createEmulateNetworkConditionsStep(conditions: NetworkConditions): EmulateNetworkConditionsStep {

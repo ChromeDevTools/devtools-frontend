@@ -17,6 +17,8 @@ type KeyupStep = {
 export type Step = {
   type: 'click',
   selector: Selector,
+  offsetX: number,
+  offsetY: number,
 }|{
   type: 'change',
   selector: Selector,
@@ -137,6 +139,8 @@ export function setupRecordingClient(
       return {
         type: event.type,
         selector: getSelector(nodeTarget),
+        offsetX: (event as MouseEvent).offsetX,
+        offsetY: (event as MouseEvent).offsetY,
       };
     }
     if (event.type === 'change') {

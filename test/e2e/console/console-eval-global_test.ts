@@ -50,8 +50,8 @@ describe('The Console Tab', async () => {
       const messages = await getCurrentConsoleMessages();
       assert.deepEqual(messages, [
         'undefined',
-        '"fooValue"',
-        '{a: "b"}',
+        '\'fooValue\'',
+        '{a: \'b\'}',
       ]);
     });
   });

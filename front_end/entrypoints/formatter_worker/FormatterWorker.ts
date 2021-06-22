@@ -198,6 +198,7 @@ export function format(
         formatter.format(text, lineEndings);
         break;
       }
+      case 'text/x-scss':
       case 'text/css': {
         const formatter = new CSSFormatter(builder);
         formatter.format(text, lineEndings, 0, text.length);

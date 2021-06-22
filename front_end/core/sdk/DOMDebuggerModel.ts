@@ -191,6 +191,10 @@ const UIStrings = {
   *@example {"script-src 'self'"} PH1
   */
   scriptBlockedDueToContent: 'Script blocked due to Content Security Policy directive: {PH1}',
+  /**
+  *@description Text for the service worker type.
+  */
+  worker: 'Worker',
 };
 const str_ = i18n.i18n.registerUIStrings('core/sdk/DOMDebuggerModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -863,7 +867,7 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
         ['*']);
     this._createEventListenerBreakpoints(
         i18nString(UIStrings.touch), ['touchstart', 'touchmove', 'touchend', 'touchcancel'], ['*']);
-    this._createEventListenerBreakpoints(i18nString('Worker'), ['message', 'messageerror'], ['*']);
+    this._createEventListenerBreakpoints(i18nString(UIStrings.worker), ['message', 'messageerror'], ['*']);
     this._createEventListenerBreakpoints(
         i18nString(UIStrings.xhr),
         ['readystatechange', 'load', 'loadstart', 'loadend', 'abort', 'error', 'progress', 'timeout'],

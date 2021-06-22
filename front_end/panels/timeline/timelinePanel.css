@@ -620,3 +620,8 @@
 .timeline-tree-view .data-grid .name-container div {
   flex: none;
 }
+
+.status-pane-container > .small-dialog {
+  width: 100%;
+  height: 100%;
+}

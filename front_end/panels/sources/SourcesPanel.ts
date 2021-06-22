@@ -927,6 +927,9 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
       if (remoteObject.subtype === 'node') {
         return 'outerHTML';
       }
+      if (remoteObject.type === 'string') {
+        return 'string content';
+      }
       return remoteObject.type;
     }
     const copyContextMenuTitle = getObjectTitle();
@@ -935,8 +938,14 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
         i18nString(UIStrings.storeSAsGlobalVariable, {PH1: copyContextMenuTitle}),
         () => SDK.ConsoleModel.ConsoleModel.instance().saveToTempVariable(executionContext, remoteObject));
 
-    // Copy object context menu.
-    if (remoteObject.type !== 'function') {
+    // We are trying to copy a primitive value.
+    if (remoteObject.value) {
+      contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyS, {PH1: copyContextMenuTitle}), () => {
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(remoteObject.value);
+      });
+    }
+    // We are trying to copy a remote object.
+    else if (remoteObject.type === 'object') {
       const copyDecodedValueHandler = async(): Promise<void> => {
         const result = await remoteObject.callFunctionJSON(toStringForClipboard, [{
                                                              value: {
@@ -951,7 +960,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
           i18nString(UIStrings.copyS, {PH1: copyContextMenuTitle}), copyDecodedValueHandler);
     }
 
-    if (remoteObject.type === 'function') {
+    else if (remoteObject.type === 'function') {
       contextMenu.debugSection().appendItem(
           i18nString(UIStrings.showFunctionDefinition), this._showFunctionDefinition.bind(this, remoteObject));
     }

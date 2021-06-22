@@ -523,9 +523,6 @@ export class RemoteObjectImpl extends RemoteObject {
       returnByValue: true,
     });
 
-    if (!this._objectId) {
-      return this.value;
-    }
     return response.getError() || response.exceptionDetails ? null : response.result.value;
   }
 

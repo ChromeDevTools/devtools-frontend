@@ -48,6 +48,7 @@ const UIStrings = {
   *@description We pause exactly when the promise rejection is happening, so that the user can see where in the code it comes from.
   * A Promise is a Web API object (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise),
   * that will either be 'fulfilled' or 'rejected' at some unknown time in the future.
+  * The subject of the term is omited but it is "Execution", that is, "Execution was paused on <event>".
   */
   pausedOnPromiseRejection: 'Paused on `promise` rejection',
   /**

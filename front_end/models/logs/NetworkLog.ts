@@ -38,8 +38,9 @@ import * as Protocol from '../../generated/protocol.js';
 
 const UIStrings = {
   /**
-  *@description Text in Network Log
-  */
+   * @description When DevTools doesn't know the URL that initiated a network request, we
+   * show this phrase instead. 'unknown' would also work in this context.
+   */
   anonymous: '<anonymous>',
 };
 const str_ = i18n.i18n.registerUIStrings('models/logs/NetworkLog.ts', UIStrings);

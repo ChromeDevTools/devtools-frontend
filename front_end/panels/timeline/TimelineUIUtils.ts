@@ -101,7 +101,9 @@ const UIStrings = {
   */
   hitTest: 'Hit Test',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Noun for an event in the Performance panel. The browser has decided
+  *that the styles for some elements need to be recalculated and scheduled that
+  *recalculation process at some time in the future.
   */
   scheduleStyleRecalculation: 'Schedule Style Recalculation',
   /**
@@ -407,8 +409,9 @@ const UIStrings = {
   */
   decryptReply: 'Decrypt Reply',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
+   * @description Noun phrase meaning 'the browser was preparing the digest'.
+   * Digest: https://developer.mozilla.org/en-US/docs/Glossary/Digest
+   */
   digest: 'Digest',
   /**
   *@description Noun phrase meaning 'the browser was preparing the digest
@@ -497,7 +500,7 @@ const UIStrings = {
   */
   flingHalt: 'Fling Halt',
   /**
-  *@description Text in Timeline UIUtils of the Performance panel
+  *@description Noun for a tap event (tap on a touch screen device) in the Performance panel.
   */
   tap: 'Tap',
   /**

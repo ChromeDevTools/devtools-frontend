@@ -84,6 +84,11 @@ export default commandLineArgs => ({
       compress: {
         pure_funcs: commandLineArgs.configDCHECK ? ['Platform.DCHECK'] : [],
       },
+      mangle: {
+        properties: {
+          regex: /^#\w+/,
+        },
+      },
     }),
     {
       name: 'devtools-plugin',

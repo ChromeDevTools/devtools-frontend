@@ -234,7 +234,7 @@
   margin-right: 3px;
 }
 
-.network-log-grid.data-grid .data-grid-data-grid-node.selected .icon {
+.network-log-grid.data-grid .data-grid-data-grid-node.selected img.icon {
   filter: brightness(0) invert(1);
 }
 

@@ -17,9 +17,7 @@ export interface LinkifierData {
 }
 
 export class LinkifierClick extends Event {
-  data: LinkifierData;
-
-  constructor(data: LinkifierData) {
+  constructor(public data: LinkifierData) {
     super('linkifieractivated', {
       bubbles: true,
       composed: true,
@@ -31,17 +29,17 @@ export class LinkifierClick extends Event {
 export class Linkifier extends HTMLElement {
   static litTagName = LitHtml.literal`devtools-linkifier`;
 
-  private readonly shadow = this.attachShadow({mode: 'open'});
-  private url: string = '';
-  private lineNumber?: number;
-  private columnNumber?: number;
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  #url: string = '';
+  #lineNumber?: number;
+  #columnNumber?: number;
 
   set data(data: LinkifierData) {
-    this.url = data.url;
-    this.lineNumber = data.lineNumber;
-    this.columnNumber = data.columnNumber;
+    this.#url = data.url;
+    this.#lineNumber = data.lineNumber;
+    this.#columnNumber = data.columnNumber;
 
-    if (!this.url) {
+    if (!this.#url) {
       throw new Error('Cannot construct a Linkifier without providing a valid string URL.');
     }
 
@@ -51,9 +49,9 @@ export class Linkifier extends HTMLElement {
   private onLinkActivation(event: Event): void {
     event.preventDefault();
     const linkifierClickEvent = new LinkifierClick({
-      url: this.url,
-      lineNumber: this.lineNumber,
-      columnNumber: this.columnNumber,
+      url: this.#url,
+      lineNumber: this.#lineNumber,
+      columnNumber: this.#columnNumber,
     });
     this.dispatchEvent(linkifierClickEvent);
   }
@@ -71,8 +69,8 @@ export class Linkifier extends HTMLElement {
             cursor: pointer;
           }
         </style>
-        <a class="link" href=${this.url} @click=${this.onLinkActivation}>${LinkifierUtils.linkText(this.url, this.lineNumber)}</a>
-      `, this.shadow, { host: this});
+        <a class="link" href=${this.#url} @click=${this.onLinkActivation}>${LinkifierUtils.linkText(this.#url, this.#lineNumber)}</a>
+      `, this.#shadow, { host: this});
       // clang-format on
     });
   }

@@ -5,7 +5,6 @@
 import type * as Protocol from '../../generated/protocol.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Platform from '../../core/platform/platform.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 
 import {AffectedItem, AffectedResourcesView} from './AffectedResourcesView.js';
@@ -74,6 +73,15 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
       issues: Iterable<IssuesManager.AttributionReportingIssue.AttributionReportingIssue>): void {
     const header = document.createElement('tr');
     switch (issueCode) {
+      case IssuesManager.AttributionReportingIssue.IssueCode.AttributionUntrustworthyFrameOrigin:
+        this.appendColumnTitle(header, i18nString(UIStrings.frame));
+        this.appendColumnTitle(header, i18nString(UIStrings.request));
+        this.appendColumnTitle(header, i18nString(UIStrings.untrustworthyOrigin));
+        break;
+      case IssuesManager.AttributionReportingIssue.IssueCode.AttributionUntrustworthyOrigin:
+        this.appendColumnTitle(header, i18nString(UIStrings.request));
+        this.appendColumnTitle(header, i18nString(UIStrings.untrustworthyOrigin));
+        break;
       case IssuesManager.AttributionReportingIssue.IssueCode.AttributionSourceUntrustworthyFrameOrigin:
         this.appendColumnTitle(header, i18nString(UIStrings.frame));
         this.appendColumnTitle(header, i18nString(UIStrings.element));
@@ -100,10 +108,6 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
         this.appendColumnTitle(header, i18nString(UIStrings.element));
         this.appendColumnTitle(header, i18nString(UIStrings.request));
         break;
-      default:
-        Platform.assertUnhandled<
-            IssuesManager.AttributionReportingIssue.IssueCode.AttributionUntrustworthyFrameOrigin|
-            IssuesManager.AttributionReportingIssue.IssueCode.AttributionUntrustworthyOrigin>(issueCode);
     }
 
     this.affectedResources.appendChild(header);
@@ -124,10 +128,16 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
     const details = issue.issueDetails;
 
     switch (issueCode) {
+      case IssuesManager.AttributionReportingIssue.IssueCode.AttributionUntrustworthyFrameOrigin:
+        this.appendFrameOrEmptyCell(element, issue);
+        this.appendRequestOrEmptyCell(element, details.request);
+        this.appendIssueDetailCell(element, details.invalidParameter || '');
+        break;
       case IssuesManager.AttributionReportingIssue.IssueCode.AttributionSourceUntrustworthyOrigin:
         await this.appendElementOrEmptyCell(element, issue);
         this.appendIssueDetailCell(element, details.invalidParameter || '');
         break;
+      case IssuesManager.AttributionReportingIssue.IssueCode.AttributionUntrustworthyOrigin:
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidAttributionData:
         this.appendRequestOrEmptyCell(element, details.request);
         this.appendIssueDetailCell(element, details.invalidParameter || '');

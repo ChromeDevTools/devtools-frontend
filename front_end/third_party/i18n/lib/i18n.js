@@ -54,6 +54,13 @@ function lookupLocale(locales) {
 }
 
 /**
+ * @return {!Array<!LH.Locale>} list of all supported locale codes
+ */
+function getAllSupportedLocales() {
+  return Object.keys(LOCALES);
+}
+
+/**
  * Function to retrieve all 'argumentElement's from an ICU message. An argumentElement
  * is an ICU element with an argument in it, like '{varName}' or '{varName, number, bytes}'. This
  * differs from 'messageElement's which are just arbitrary text in a message.
@@ -496,4 +503,5 @@ module.exports = {
   registerLocaleData,
   isStringOrIcuMessage,
   idNotInMainDictionaryException,
+  getAllSupportedLocales,
 };

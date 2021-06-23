@@ -10,9 +10,52 @@
  */
 
 const locales = {
+  'ar': {'title': 'value'},
+  'bg': {'title': 'value'},
+  'ca': {'title': 'value'},
+  'cs': {'title': 'value'},
+  'da': {'title': 'value'},
+  'de': {'title': 'value'},
+  'el': {'title': 'value'},
+  'en-GB': {'title': 'value'},
   'en-US': {'title': 'value'}, // The 'source' strings, with descriptions
   'en-XL': {'title': 'value'}, // local pseudolocalization
+  'es-419': {'title': 'value'},
+  'es': {'title': 'value'},
+  'fi': {'title': 'value'},
+  'fil': {'title': 'value'},
+  'fr': {'title': 'value'},
+  'he': {'title': 'value'},
+  'hi': {'title': 'value'},
+  'hr': {'title': 'value'},
+  'hu': {'title': 'value'},
+  'id': {'title': 'value'},
+  'it': {'title': 'value'},
+  'ja': {'title': 'value'},
+  'ko': {'title': 'value'},
+  'lt': {'title': 'value'},
+  'lv': {'title': 'value'},
+  'nl': {'title': 'value'},
+  'no': {'title': 'value'},
+  'pl': {'title': 'value'},
+  'pt-PT': {'title': 'value'},
+  'pt': {'title': 'value'},
+  'ro': {'title': 'value'},
+  'ru': {'title': 'value'},
+  'sk': {'title': 'value'},
+  'sl': {'title': 'value'},
+  'sr-Latn': {'title': 'value'},
+  'sr': {'title': 'value'},
+  'sv': {'title': 'value'},
+  'ta': {'title': 'value'},
+  'te': {'title': 'value'},
+  'th': {'title': 'value'},
+  'tr': {'title': 'value'},
+  'uk': {'title': 'value'},
+  'vi': {'title': 'value'},
   'zh': {'title': 'value'},
+  'zh-HK': {'title': 'value'},
+  'zh-TW': {'title': 'value'},
 };
 
-export default locales;
+module.exports = locales;

@@ -8,7 +8,10 @@
  * @return {LH.Locale}
  */
  declare function lookupLocale(locales?: string|string[]): string;
-
+/**
+ * @return {!Array<!LH.Locale>} list of all supported locale codes
+ */
+declare function getAllSupportedLocales(): string[];
  /**
   * Function to retrieve all 'argumentElement's from an ICU message. An argumentElement
   * is an ICU element with an argument in it, like '{varName}' or '{varName, number, bytes}'. This
@@ -111,5 +114,6 @@ declare function idNotInMainDictionaryException(icuMessage: string): void;
    collectAllCustomElementsFromICU: typeof collectAllCustomElementsFromICU;
    registerLocaleData: typeof registerLocaleData;
    idNotInMainDictionaryException: typeof idNotInMainDictionaryException;
+   getAllSupportedLocales: typeof getAllSupportedLocales;
  };
  export default i18n;

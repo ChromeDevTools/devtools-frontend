@@ -3,21 +3,6 @@
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
-function getAugmentedNamespace(n) {
-	if (n.__esModule) return n;
-	var a = Object.defineProperty({}, '__esModule', {value: true});
-	Object.keys(n).forEach(function (k) {
-		var d = Object.getOwnPropertyDescriptor(n, k);
-		Object.defineProperty(a, k, d.get ? d : {
-			enumerable: true,
-			get: function () {
-				return n[k];
-			}
-		});
-	});
-	return a;
-}
-
 function createCommonjsModule(fn) {
   var module = { exports: {} };
 	return fn(module, module.exports), module.exports;
@@ -2018,17 +2003,55 @@ var intlMessageformat = createCommonjsModule(function (module, exports) {
  */
 
 const locales = {
+  'ar': {'title': 'value'},
+  'bg': {'title': 'value'},
+  'ca': {'title': 'value'},
+  'cs': {'title': 'value'},
+  'da': {'title': 'value'},
+  'de': {'title': 'value'},
+  'el': {'title': 'value'},
+  'en-GB': {'title': 'value'},
   'en-US': {'title': 'value'}, // The 'source' strings, with descriptions
   'en-XL': {'title': 'value'}, // local pseudolocalization
+  'es-419': {'title': 'value'},
+  'es': {'title': 'value'},
+  'fi': {'title': 'value'},
+  'fil': {'title': 'value'},
+  'fr': {'title': 'value'},
+  'he': {'title': 'value'},
+  'hi': {'title': 'value'},
+  'hr': {'title': 'value'},
+  'hu': {'title': 'value'},
+  'id': {'title': 'value'},
+  'it': {'title': 'value'},
+  'ja': {'title': 'value'},
+  'ko': {'title': 'value'},
+  'lt': {'title': 'value'},
+  'lv': {'title': 'value'},
+  'nl': {'title': 'value'},
+  'no': {'title': 'value'},
+  'pl': {'title': 'value'},
+  'pt-PT': {'title': 'value'},
+  'pt': {'title': 'value'},
+  'ro': {'title': 'value'},
+  'ru': {'title': 'value'},
+  'sk': {'title': 'value'},
+  'sl': {'title': 'value'},
+  'sr-Latn': {'title': 'value'},
+  'sr': {'title': 'value'},
+  'sv': {'title': 'value'},
+  'ta': {'title': 'value'},
+  'te': {'title': 'value'},
+  'th': {'title': 'value'},
+  'tr': {'title': 'value'},
+  'uk': {'title': 'value'},
+  'vi': {'title': 'value'},
   'zh': {'title': 'value'},
+  'zh-HK': {'title': 'value'},
+  'zh-TW': {'title': 'value'},
 };
 
-var locales$1 = /*#__PURE__*/Object.freeze({
-	__proto__: null,
-	'default': locales
-});
-
-var LOCALES = /*@__PURE__*/getAugmentedNamespace(locales$1);
+var locales_1 = locales;
 
 /**
  * @license Copyright 2018 The Lighthouse Authors. All Rights Reserved.
@@ -2080,8 +2103,15 @@ function lookupLocale(locales) {
   // TODO: could do more work to sniff out default locale
   const canonicalLocales = Intl.getCanonicalLocales(locales);
 
-  const closestLocale = lookupClosestLocale(canonicalLocales[0], LOCALES);
+  const closestLocale = lookupClosestLocale(canonicalLocales[0], locales_1);
   return closestLocale || DEFAULT_LOCALE;
+}
+
+/**
+ * @return {!Array<!LH.Locale>} list of all supported locale codes
+ */
+function getAllSupportedLocales() {
+  return Object.keys(locales_1);
 }
 
 /**
@@ -2220,7 +2250,7 @@ function _preformatValues(icuMessageId, messageFormatter, values, lhlMessage) {
  * @return {string}
  */
  function _localizeIcuMessage(icuMessage, locale) {
-  const localeMessages = LOCALES[locale];
+  const localeMessages = locales_1[locale];
   if (!localeMessages) throw new Error(`Unsupported locale '${locale}'`);
   const localeMessage = localeMessages[icuMessage.i18nId];
 
@@ -2243,7 +2273,7 @@ function _preformatValues(icuMessageId, messageFormatter, values, lhlMessage) {
  * @return {MessageFormat | string}
  */
  function _localizeIcuMessageFormatter(icuMessage, locale) {
-  const localeMessages = LOCALES[locale];
+  const localeMessages = locales_1[locale];
   if (!localeMessages) throw new Error(`Unsupported locale '${locale}'`);
   const localeMessage = localeMessages[icuMessage.i18nId];
 
@@ -2281,7 +2311,7 @@ function _formatPathAsString(pathInLHR) {
  * @return {LH.I18NRendererStrings}
  */
 function getRendererFormattedStrings(locale) {
-  const localeMessages = LOCALES[locale];
+  const localeMessages = locales_1[locale];
   if (!localeMessages) throw new Error(`Unsupported locale '${locale}'`);
 
   const icuMessageIds = Object.keys(localeMessages).filter(f => f.includes('ModuleUIStrings'));
@@ -2457,7 +2487,7 @@ function getRendererFormattedStrings(locale) {
  * @param {LhlMessages} lhlMessages
  */
 function registerLocaleData(locale, lhlMessages) {
-  LOCALES[locale] = lhlMessages;
+  locales_1[locale] = lhlMessages;
 }
 
 /**
@@ -2526,6 +2556,7 @@ var i18n = {
   registerLocaleData,
   isStringOrIcuMessage,
   idNotInMainDictionaryException,
+  getAllSupportedLocales,
 };
 
 export default i18n;

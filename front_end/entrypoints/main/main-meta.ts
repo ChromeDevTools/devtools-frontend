@@ -731,6 +731,20 @@ function createLazyLocalizedLocaleSettingText(localeString: string): () => Commo
              i18n.i18n.getLocalizedLanguageRegion(localeString, i18n.DevToolsLocale.DevToolsLocale.instance());
 }
 
+function createOptionForLocale(localeString: string): Common.Settings.SettingExtensionOption {
+  return {
+    value: localeString,
+    title: createLazyLocalizedLocaleSettingText(localeString),
+    text: createLazyLocalizedLocaleSettingText(localeString),
+  };
+}
+
+// Not all locales that are supported should also be made available in the
+// settings. Filter out pseudo locales e.g.
+function filterLocalesForSettings(): string[] {
+  return i18n.i18n.getAllSupportedDevToolsLocales().filter(locale => locale !== 'en-XL');
+}
+
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
   settingName: 'language',
@@ -743,16 +757,7 @@ Common.Settings.registerSettingExtension({
       title: i18nLazyString(UIStrings.browserLanguage),
       text: i18nLazyString(UIStrings.browserLanguage),
     },
-    {
-      value: 'en-US',
-      title: createLazyLocalizedLocaleSettingText('en-US'),
-      text: createLazyLocalizedLocaleSettingText('en-US'),
-    },
-    {
-      value: 'zh',
-      title: createLazyLocalizedLocaleSettingText('zh'),
-      text: createLazyLocalizedLocaleSettingText('zh'),
-    },
+    ...filterLocalesForSettings().map(locale => createOptionForLocale(locale)),
   ],
   reloadRequired: true,
   experiment: Root.Runtime.ExperimentName.LOCALIZED_DEVTOOLS,

@@ -66,6 +66,13 @@ export function lookupClosestSupportedDevToolsLocale(locale: string): string {
 }
 
 /**
+ * Returns a list of all supported DevTools locales, including pseudo locales.
+ */
+export function getAllSupportedDevToolsLocales(): string[] {
+  return i18nBundle.getAllSupportedLocales();
+}
+
+/**
  * Returns the Url from which a locale can be fetched. This depends on the
  * specific locale, as some are bundled with DevTools while others
  * have to be fetched remotely.

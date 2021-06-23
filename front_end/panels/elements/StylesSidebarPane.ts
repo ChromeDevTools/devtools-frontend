@@ -245,7 +245,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     this._noMatchesElement.textContent = i18nString(UIStrings.noMatchingSelectorOrStyle);
 
     this._sectionsContainer = this.contentElement.createChild('div');
-    UI.ARIAUtils.markAsTree(this._sectionsContainer);
+    UI.ARIAUtils.markAsList(this._sectionsContainer);
     this._sectionsContainer.addEventListener('keydown', this._sectionsContainerKeyDown.bind(this), false);
     this._sectionsContainer.addEventListener('focusin', this._sectionsContainerFocusChanged.bind(this), false);
     this._sectionsContainer.addEventListener('focusout', this._sectionsContainerFocusChanged.bind(this), false);
@@ -1202,7 +1202,7 @@ export class StylePropertiesSection {
     this.element.classList.add('monospace');
     UI.ARIAUtils.setAccessibleName(this.element, `${this._headerText()}, css selector`);
     this.element.tabIndex = -1;
-    UI.ARIAUtils.markAsTreeitem(this.element);
+    UI.ARIAUtils.markAsListitem(this.element);
     this.element.addEventListener('keydown', this._onKeyDown.bind(this), false);
     parentPane.sectionByElement.set(this.element, this);
     this._innerElement = this.element.createChild('div');

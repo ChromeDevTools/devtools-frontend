@@ -122,6 +122,5 @@ export const CSS_RESOURCES_TO_LOAD_INTO_RUNTIME = [
   'third_party/codemirror/codemirror.css',
   'ui/legacy/components/text_editor/autocompleteTooltip.css',
   'ui/legacy/components/text_editor/cmdevtools.css',
-  'ui/legacy/components/text_editor/cmdevtools.darkmode.css',
   'panels/application/serviceWorkerUpdateCycleView.css',
 ];

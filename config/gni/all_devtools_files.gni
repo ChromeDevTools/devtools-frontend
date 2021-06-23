@@ -327,7 +327,6 @@ all_devtools_files = [
   "front_end/panels/sources/watchExpressionsSidebarPane.css",
   "front_end/ui/legacy/components/text_editor/autocompleteTooltip.css",
   "front_end/ui/legacy/components/text_editor/cmdevtools.css",
-  "front_end/ui/legacy/components/text_editor/cmdevtools.darkmode.css",
   "front_end/ui/legacy/components/text_editor/module.json",
   "front_end/third_party/lighthouse/report-assets/report.css",
   "front_end/third_party/lighthouse/report-assets/template.html",

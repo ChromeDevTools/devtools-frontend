@@ -29,7 +29,6 @@ copy_to_gen("legacy_css") {
   sources = [
     "autocompleteTooltip.css",
     "cmdevtools.css",
-    "cmdevtools.darkmode.css",
   ]
 }
 

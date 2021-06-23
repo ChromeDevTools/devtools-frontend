@@ -370,33 +370,6 @@ def _CheckDevToolsPythonLikeFileLicenseHeaders(input_api, output_api):
     return results
 
 
-def _CheckDarkModeStyleSheetsUpToDate(input_api, output_api):
-    devtools_root = input_api.PresubmitLocalPath()
-    devtools_front_end = input_api.os_path.join(devtools_root, 'front_end')
-    dark_mode_scripts_folder = input_api.os_path.join(devtools_root, 'scripts',
-                                                      'dark_mode')
-    dark_mode_script_files = _getAffectedFiles(input_api,
-                                               dark_mode_scripts_folder, [],
-                                               ['.js'])
-    script_arguments = []
-    if len(dark_mode_script_files) > 0:
-        # If the scripts have changed, we should check all darkmode files as they may need to be updated.
-        script_arguments += ['--check-all-files']
-    else:
-        affected_css_files = _getAffectedFiles(input_api, [devtools_front_end],
-                                               [], ['.css'])
-        script_arguments += affected_css_files
-
-    results = [output_api.PresubmitNotifyResult('Dark Mode CSS check:')]
-    script_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
-                                         'scripts', 'dark_mode',
-                                         'check_darkmode_css_up_to_date.js')
-    results.extend(
-        _checkWithNodeScript(input_api, output_api, script_path,
-                             script_arguments))
-    return results
-
-
 def _CheckGeneratedFiles(input_api, output_api):
     v8_directory_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'v8')
     blink_directory_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'third_party', 'blink')
@@ -546,7 +519,6 @@ def _CommonChecks(input_api, output_api):
     results.extend(
         _CheckDevToolsPythonLikeFileLicenseHeaders(input_api, output_api))
 
-    results.extend(_CheckDarkModeStyleSheetsUpToDate(input_api, output_api))
     results.extend(_CheckFormat(input_api, output_api))
     results.extend(_CheckChangesAreExclusiveToDirectory(input_api, output_api))
     results.extend(_CheckI18nWasBundled(input_api, output_api))

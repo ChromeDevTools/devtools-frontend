@@ -437,8 +437,10 @@ function shouldShowLocaleInfobar(): boolean {
     return false;
   }
 
+  // If the language setting is different than 'en-US', the user already
+  // used the setting before, so don't show the toolbar.
   const languageSettingValue = Common.Settings.Settings.instance().moduleSetting<string>('language').get();
-  if (languageSettingValue === 'browserLanguage') {
+  if (languageSettingValue !== 'en-US') {
     return false;
   }
 

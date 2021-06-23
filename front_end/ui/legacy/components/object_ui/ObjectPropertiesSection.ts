@@ -702,7 +702,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     if (flattenProtoChain) {
       allProperties = await value.getAllProperties(false /* accessorPropertiesOnly */, true /* generatePreview */);
     } else {
-      allProperties = await value.getOwnProperties(true /* generatePreview */);
+      allProperties = await SDK.RemoteObject.RemoteObject.loadFromObjectPerProto(value, true /* generatePreview */);
     }
     const properties = allProperties.properties;
     const internalProperties = allProperties.internalProperties;

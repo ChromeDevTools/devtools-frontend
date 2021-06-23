@@ -102,6 +102,10 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
     return !this.resourceURL() && !this._cssModel.sourceMapManager().sourceMapForClient(this);
   }
 
+  isConstructedByNew(): boolean {
+    return this.isConstructed && this.sourceURL.length === 0;
+  }
+
   resourceURL(): string {
     return this.isViaInspector() ? this._viaInspectorResourceURL() : this.sourceURL;
   }

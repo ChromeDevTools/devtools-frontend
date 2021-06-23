@@ -9,10 +9,13 @@
 <style>
   #properties-to-inspect { text-align: center; }
 </style>
-<script>
+<script type="module">
   document.querySelector('#mutated').sheet.insertRule('#properties-to-inspect { width: 10%; }');
-  const sheet = new CSSStyleSheet();
-  sheet.insertRule('#properties-to-inspect { color: grey; }');
-  document.adoptedStyleSheets = [sheet];
+  const constructedStyleSheet = new CSSStyleSheet();
+  constructedStyleSheet.insertRule('#properties-to-inspect { color: grey; }');
+
+  import cssModuleStyleSheet from "./css-module.css" assert { type: "css" };
+
+  document.adoptedStyleSheets = [constructedStyleSheet, cssModuleStyleSheet];
 </script>
 <div id="properties-to-inspect"></div>

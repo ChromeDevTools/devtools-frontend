@@ -203,6 +203,24 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Unbekannter Fehler"
   },
+  "core/i18n/i18nImpl.ts | fdays": {
+    "message": "{PH1} Tage"
+  },
+  "core/i18n/i18nImpl.ts | fhrs": {
+    "message": "{PH1} Std."
+  },
+  "core/i18n/i18nImpl.ts | fmin": {
+    "message": "{PH1} min"
+  },
+  "core/i18n/i18nImpl.ts | fmms": {
+    "message": "{PH1} μs"
+  },
+  "core/i18n/i18nImpl.ts | fms": {
+    "message": "{PH1} ms"
+  },
+  "core/i18n/i18nImpl.ts | fs": {
+    "message": "{PH1} s"
+  },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
     "message": "DevTools: Der CPU-Profil-Parser behebt {PH1} fehlende Samples."
   },
@@ -4124,9 +4142,6 @@
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(Text)"
   },
-  "panels/elements/components/LayoutPane.ts | feedback": {
-    "message": "Feedback"
-  },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "Flexbox"
   },
@@ -4440,13 +4455,13 @@
     "message": "Breite"
   },
   "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "Laptop mit HiDPI-Bildschirm"
+    "message": "Laptop with HiDPI screen"
   },
   "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "Laptop mit MDPI-Bildschirm"
+    "message": "Laptop with MDPI screen"
   },
   "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "Laptop mit Touchfunktion"
+    "message": "Laptop with touch"
   },
   "panels/emulation/LocationsSettingsTab.ts | addLocation": {
     "message": "Speicherort hinzufügen..."
@@ -4507,15 +4522,6 @@
   },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "Im Quellcode anzeigen"
-  },
-  "panels/emulation/ModuleUIStrings.ts | laptopWithHiDPI": {
-    "message": "Laptop mit HiDPI-Bildschirm"
-  },
-  "panels/emulation/ModuleUIStrings.ts | laptopWithMDPI": {
-    "message": "Laptop mit MDPI-Bildschirm"
-  },
-  "panels/emulation/ModuleUIStrings.ts | laptopWithTouch": {
-    "message": "Laptop mit Touchfunktion"
   },
   "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
     "message": "Mit Mausrad oder Auf/Ab-Tasten anpassen. {PH1}: ±10, Umschalttaste: ±1, Alt: ±0,01"
@@ -4828,6 +4834,9 @@
   },
   "panels/issues/AffectedElementsView.ts | nElements": {
     "message": "{n,plural, =1{# Element}other{# Elemente}}"
+  },
+  "panels/issues/AffectedElementsView.ts | unavailable": {
+    "message": "unavailable"
   },
   "panels/issues/AffectedElementsWithLowContrastView.ts | contrastRatio": {
     "message": "Kontrastverhältnis"
@@ -6053,11 +6062,23 @@
   "panels/network/NetworkDataGridNode.ts | servedFromSignedHttpExchange": {
     "message": "Von Signed HTTP Exchange bereitgestellt, Ressourcengröße: {PH1}"
   },
+  "panels/network/NetworkDataGridNode.ts | servedFromWebBundle": {
+    "message": "Served from Web Bundle, resource size: {PH1}"
+  },
   "panels/network/NetworkDataGridNode.ts | serviceworker": {
     "message": "(ServiceWorker)"
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "signed-exchange"
+  },
+  "panels/network/NetworkDataGridNode.ts | webBundle": {
+    "message": "(Web Bundle)"
+  },
+  "panels/network/NetworkDataGridNode.ts | webBundleError": {
+    "message": "Web Bundle error"
+  },
+  "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
+    "message": "from Web Bundle"
   },
   "panels/network/NetworkItemView.ts | cookies": {
     "message": "Cookies"
@@ -7733,6 +7754,12 @@
   "panels/protocol_monitor/protocol_monitor-meta.ts | showProtocolMonitor": {
     "message": "Protokollmonitor anzeigen"
   },
+  "panels/recorder/recorder-meta.ts | recorder": {
+    "message": "Recorder"
+  },
+  "panels/recorder/recorder-meta.ts | showRecorder": {
+    "message": "Recorder"
+  },
   "panels/screencast/ScreencastApp.ts | toggleScreencast": {
     "message": "Screencast umschalten"
   },
@@ -7865,14 +7892,8 @@
   "panels/security/SecurityPanel.ts | contentWithCertificateErrors": {
     "message": "Inhalt mit Zertifikatfehlern"
   },
-  "panels/security/SecurityPanel.ts | dataWasEnteredInAFieldOnA": {
-    "message": "Daten wurden in einem Feld auf einer nicht sicheren Seite eingegeben. Der URL-Leiste wurde eine Warnung hinzugefügt."
-  },
   "panels/security/SecurityPanel.ts | flaggedByGoogleSafeBrowsing": {
     "message": "Von Google-Nutzern gemeldet"
-  },
-  "panels/security/SecurityPanel.ts | formFieldEditedOnANonsecurePage": {
-    "message": "Formularfeld wurde auf einer nicht sicheren Seite bearbeitet"
   },
   "panels/security/SecurityPanel.ts | hashAlgorithm": {
     "message": "Hash-Algorithmus"
@@ -9662,6 +9683,12 @@
   "panels/timeline/TimelineUIUtils.ts | cumulativeScore": {
     "message": "Kumulatives Ergebnis"
   },
+  "panels/timeline/TimelineUIUtils.ts | currentClusterId": {
+    "message": "Current Cluster ID"
+  },
+  "panels/timeline/TimelineUIUtils.ts | currentClusterScore": {
+    "message": "Current Cluster Score"
+  },
   "panels/timeline/TimelineUIUtils.ts | decodedBody": {
     "message": "Decodierter Body"
   },
@@ -9730,6 +9757,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "Ereignis"
+  },
+  "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
+    "message": "evolved"
   },
   "panels/timeline/TimelineUIUtils.ts | experience": {
     "message": "Erfahrung"
@@ -10085,8 +10115,8 @@
   "panels/timeline/TimelineUIUtils.ts | sBytes": {
     "message": "{n,plural, =1{# Byte}other{# Byte}}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCanResultInPoorUserExperiences": {
-    "message": "{PH1} kann zu einer schlechten Nutzererfahrung führen."
+  "panels/timeline/TimelineUIUtils.ts | sCLSInformation": {
+    "message": "{PH1} can result in poor user experiences. It has recently {PH2}."
   },
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (untergeordnet)"
@@ -10694,6 +10724,9 @@
   "ui/legacy/InspectorView.ts | closeDrawer": {
     "message": "Leiste schließen"
   },
+  "ui/legacy/InspectorView.ts | devToolsLanguageMissmatch": {
+    "message": "DevTools is now available in {PH1}!"
+  },
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "Weitere Tools"
   },
@@ -10708,6 +10741,12 @@
   },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
     "message": "Entwicklertools neu laden"
+  },
+  "ui/legacy/InspectorView.ts | setToBrowserLanguage": {
+    "message": "Always match Chrome's language"
+  },
+  "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
+    "message": "Switch DevTools to {PH1}"
   },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Hinzufügen"
@@ -10837,24 +10876,6 @@
   },
   "ui/legacy/UIUtils.ts | copyLinkAddress": {
     "message": "Linkadresse kopieren"
-  },
-  "ui/legacy/UIUtils.ts | fdays": {
-    "message": "{PH1} Tage"
-  },
-  "ui/legacy/UIUtils.ts | fhrs": {
-    "message": "{PH1} Std."
-  },
-  "ui/legacy/UIUtils.ts | fmin": {
-    "message": "{PH1} min"
-  },
-  "ui/legacy/UIUtils.ts | fmms": {
-    "message": "{PH1} μs"
-  },
-  "ui/legacy/UIUtils.ts | fms": {
-    "message": "{PH1} ms"
-  },
-  "ui/legacy/UIUtils.ts | fs": {
-    "message": "{PH1} s"
   },
   "ui/legacy/UIUtils.ts | ok": {
     "message": "OK"

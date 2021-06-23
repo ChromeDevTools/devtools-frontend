@@ -2576,6 +2576,9 @@
   "panels/application/DOMStorageItemsView.ts | domStorageItems": {
     "message": "DOM Storage Items"
   },
+  "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
+    "message": "Number of entries shown in table: {PH1}"
+  },
   "panels/application/DOMStorageItemsView.ts | key": {
     "message": "Key"
   },

@@ -8,6 +8,7 @@ import type * as puppeteer from '../../third_party/puppeteer/puppeteer.js';
 import {getPuppeteerConnection as getPuppeteerConnectionToCurrentPage} from './PuppeteerConnection.js';
 
 import type {Step, UserFlow, Selector} from './Steps.js';
+import {typeableInputTypes} from './Steps.js';
 import {assertAllStepTypesAreHandled} from './Steps.js';
 
 export const enum Events {
@@ -140,8 +141,18 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper {
         if (!element) {
           throw new Error('Could not find element: ' + step.selector);
         }
-        await element.focus();
-        await element.type(step.value);
+        const inputType = await element.evaluate(el => (el as HTMLInputElement).type);
+        if (typeableInputTypes.has(inputType)) {
+          await element.type(step.value);
+        } else {
+          await element.focus();
+          await element.evaluate((el, value) => {
+            const input = el as HTMLInputElement;
+            input.value = value;
+            input.dispatchEvent(new Event('input', {bubbles: true}));
+            input.dispatchEvent(new Event('change', {bubbles: true}));
+          }, step.value);
+        }
       } break;
       case 'viewport': {
         await targetPage.setViewport({

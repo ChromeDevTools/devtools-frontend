@@ -156,3 +156,15 @@ export function hasFrameContext(step: Step): step is ClickStep|ChangeStep|KeyDow
 export function hasCondition(step: Step): step is ClickStep|ChangeStep|KeyDownStep|KeyUpStep {
   return ['click', 'change', 'keydown', 'keyup'].includes(step.type);
 }
+
+export const typeableInputTypes = new Set([
+  'textarea',
+  'select-one',
+  'text',
+  'url',
+  'tel',
+  'search',
+  'password',
+  'number',
+  'email',
+]);

@@ -144,7 +144,11 @@ export function setupRecordingClient(
       };
     }
     if (event.type === 'change') {
-      return {type: event.type, selector: getSelector(nodeTarget), value: (target as HTMLInputElement).value};
+      return {
+        type: event.type,
+        selector: getSelector(nodeTarget),
+        value: (target as HTMLInputElement).value,
+      };
     }
     if (event.type === 'keydown' || event.type === 'keyup') {
       const keyboardEvent = event as KeyboardEvent;
@@ -274,7 +278,8 @@ export function setupRecordingClient(
         inputMode = false;
         return;
       }
-      if (!buffer.length && step.type === 'keyup') {
+      if (!buffer.length && step.type === 'keyup' &&
+          (step.key === 'Enter' || step.key === 'Shift' || step.key === 'Tab')) {
         window.addStep(JSON.stringify(step));
         return;
       }

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import type {Step, ClickStep, StepWithFrameContext, ChangeStep, UserFlow, EmulateNetworkConditionsStep, KeyDownStep, KeyUpStep, CloseStep, ViewportStep, ScrollStep} from './Steps.js';
-import {assertAllStepTypesAreHandled} from './Steps.js';
+import {assertAllStepTypesAreHandled, typeableInputTypes} from './Steps.js';
 
 export class RecordingScriptWriter {
   private indentation: string;
@@ -68,7 +68,17 @@ export class RecordingScriptWriter {
 
   appendChangeStep(step: ChangeStep): void {
     this.appendWaitForSelector(step);
-    this.appendLineToScript(`await element.type(${JSON.stringify(step.value)});`);
+    this.appendLineToScript('const type = await element.evaluate(el => el.type);');
+    this.appendLineToScript(`if (${JSON.stringify(Array.from(typeableInputTypes))}.includes(type)) {`);
+    this.appendLineToScript(`  await element.type(${JSON.stringify(step.value)});`);
+    this.appendLineToScript('} else {');
+    this.appendLineToScript('  await element.focus();');
+    this.appendLineToScript('  await element.evaluate((el, value) => {');
+    this.appendLineToScript('    el.value = value;');
+    this.appendLineToScript('    el.dispatchEvent(new Event(\'input\', { bubbles: true }));');
+    this.appendLineToScript('    el.dispatchEvent(new Event(\'change\', { bubbles: true }));');
+    this.appendLineToScript(`  }, ${JSON.stringify(step.value)});`);
+    this.appendLineToScript('}');
   }
 
   appendEmulateNetworkConditionsStep(step: EmulateNetworkConditionsStep): void {

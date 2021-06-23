@@ -193,13 +193,13 @@ describe('Recorder', function() {
           title: '',
           steps: [
             {
-              'type': 'change',
-              'context': {
-                'path': [],
-                'target': 'main',
+              type: 'change',
+              context: {
+                path: [],
+                target: 'main',
               },
-              'selector': 'aria/Select',
-              'value': 'O2',
+              selector: 'aria/Select',
+              value: 'O2',
             },
           ],
         }],
@@ -207,6 +207,32 @@ describe('Recorder', function() {
 
       const value = await target.$eval('#select', e => (e as HTMLSelectElement).value);
       assert.strictEqual(value, 'O2');
+    });
+
+    it('should be able to replay events on non text inputs', async () => {
+      const {target} = getBrowserAndPages();
+      await setupRecorderWithScriptAndReplay({
+        title: 'Test Recording',
+        sections: [{
+          url: `${getResourcesPath()}/recorder/input.html`,
+          screenshot: '',
+          title: '',
+          steps: [
+            {
+              type: 'change',
+              context: {
+                path: [],
+                target: 'main',
+              },
+              selector: '#color',
+              value: '#333333',
+            },
+          ],
+        }],
+      });
+
+      const value = await target.$eval('#color', e => (e as HTMLSelectElement).value);
+      assert.strictEqual(value, '#333333');
     });
 
     it('should be able to replay viewport change', async () => {

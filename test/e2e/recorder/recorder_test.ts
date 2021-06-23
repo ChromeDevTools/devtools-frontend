@@ -647,6 +647,44 @@ describe('Recorder', function() {
     });
   });
 
+  it('should capture keyboard events on non-text inputs', async () => {
+    await startRecording('recorder/input.html', '', true);
+
+    const {target} = getBrowserAndPages();
+    await target.bringToFront();
+    const color = await target.waitForSelector('#color');
+    await color?.evaluate(el => {
+      const element = el as HTMLInputElement;
+      element.focus();
+      element.value = '#333333';
+      element.dispatchEvent(new Event('input', {bubbles: true}));
+      element.dispatchEvent(new Event('change', {bubbles: true}));
+      element.blur();
+    });
+
+    await stopRecording();
+    await assertOutput({
+      title: 'New Recording',
+      sections: [{
+        url: 'https://<url>/test/e2e/resources/recorder/input.html',
+        screenshot: '<screenshot>',
+        title: '',
+        steps: [
+          viewportStep,
+          {
+            context: {
+              path: [],
+              target: 'main',
+            },
+            selector: '#color',
+            value: '#333333',
+            type: 'change',
+          },
+        ],
+      }],
+    });
+  });
+
   it('should capture navigation without change', async () => {
     await startRecording('recorder/input.html');
 

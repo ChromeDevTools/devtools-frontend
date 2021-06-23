@@ -97,7 +97,43 @@ await page.mouse.click(offsetLeft + 1, offsetTop + 1);
         value: 'Hello World',
       });
       assert.deepEqual(writer.getCurrentScript(), `const element = await frame.waitForSelector("aria/Test");
-await element.type("Hello World");
+const type = await element.evaluate(el => el.type);
+if (["textarea","select-one","text","url","tel","search","password","number","email"].includes(type)) {
+  await element.type("Hello World");
+} else {
+  await element.focus();
+  await element.evaluate((el, value) => {
+    el.value = value;
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+  }, "Hello World");
+}
+`);
+    });
+
+    it('should print the correct script for a change step for non-text inputs', () => {
+      const writer = new Recorder.RecordingScriptWriter.RecordingScriptWriter('  ');
+      writer.appendChangeStep({
+        type: 'change',
+        context: {
+          target: 'main',
+          path: [],
+        },
+        selector: 'aria/Test' as Recorder.Steps.Selector,
+        value: '#333333',
+      });
+      assert.deepEqual(writer.getCurrentScript(), `const element = await frame.waitForSelector("aria/Test");
+const type = await element.evaluate(el => el.type);
+if (["textarea","select-one","text","url","tel","search","password","number","email"].includes(type)) {
+  await element.type("#333333");
+} else {
+  await element.focus();
+  await element.evaluate((el, value) => {
+    el.value = value;
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+  }, "#333333");
+}
 `);
     });
 

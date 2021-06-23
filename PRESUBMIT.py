@@ -455,7 +455,9 @@ def _CollectStrings(input_api, output_api):
     ]
     script_path = input_api.os_path.join(devtools_root, 'third_party', 'i18n',
                                          'collect-strings.js')
-    results.extend(_checkWithNodeScript(input_api, output_api, script_path))
+    results.extend(
+        _checkWithNodeScript(input_api, output_api, script_path,
+                             [devtools_front_end]))
     results.append(
         output_api.PresubmitNotifyResult(
             'Please commit en-US.json/en-XL.json if changes are generated.'))

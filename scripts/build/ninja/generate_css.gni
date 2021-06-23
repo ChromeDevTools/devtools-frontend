@@ -24,5 +24,13 @@ template("generate_css") {
     foreach(_input, sources) {
       outputs += [ "$target_gen_dir/$_input.js" ]
     }
+
+    data = outputs
+
+    if (is_debug) {
+      metadata = {
+        grd_files = outputs
+      }
+    }
   }
 }

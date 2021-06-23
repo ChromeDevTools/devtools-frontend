@@ -9,7 +9,6 @@ import("./visibility.gni")
 
 generate_css("css_files") {
   sources = [
-    "inspectorCommon.css",
     "inspectorScrollbars.css",
     "textButton.css",
     "themeColors.css",

@@ -4,7 +4,7 @@
 
 import type * as puppeteer from 'puppeteer';
 
-import {$, $$, assertNotNull, click, getBrowserAndPages, goToResource, pasteText, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
+import {$, $$, assertNotNull, click, getBrowserAndPages, goToResource, pasteText, timeout, waitFor, waitForAria, waitForFunction} from '../../shared/helper.js';
 import {AsyncScope} from '../../shared/mocha-extensions.js';
 
 export const CONSOLE_TAB_SELECTOR = '#tab-console';
@@ -243,4 +243,11 @@ export async function waitForIssueButtonLabel(expectedLabel: string) {
     const label = await getIssueButtonLabel();
     return expectedLabel === label;
   });
+}
+
+export async function clickOnContextMenu(selectorForNode: string, ctxMenuItemName: string) {
+  const node = await waitFor(selectorForNode);
+  await click(node, {clickOptions: {button: 'right'}});
+  const copyButton = await waitForAria(ctxMenuItemName);
+  await copyButton.click();
 }

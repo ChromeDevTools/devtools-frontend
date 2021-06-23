@@ -9140,6 +9140,15 @@
   "panels/sources/SourcesPanel.ts | copyS": {
     "message": "Ĉóp̂ý {PH1}"
   },
+  "panels/sources/SourcesPanel.ts | copyStringAsJSLiteral": {
+    "message": "Ĉóp̂ý ŝt́r̂ín̂ǵ âś Ĵáv̂áŜćr̂íp̂t́ l̂ít̂ér̂ál̂"
+  },
+  "panels/sources/SourcesPanel.ts | copyStringAsJSONLiteral": {
+    "message": "Ĉóp̂ý ŝt́r̂ín̂ǵ âś ĴŚÔŃ l̂ít̂ér̂ál̂"
+  },
+  "panels/sources/SourcesPanel.ts | copyStringContents": {
+    "message": "Ĉóp̂ý ŝt́r̂ín̂ǵ ĉón̂t́êńt̂ś"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "D̂ón̂'t́ p̂áûśê ón̂ éx̂ćêṕt̂íôńŝ"
   },

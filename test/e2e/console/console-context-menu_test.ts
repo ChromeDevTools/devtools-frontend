@@ -2,42 +2,87 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNull, click, getBrowserAndPages, typeText, waitFor, waitForAria} from '../../shared/helper.js';
+import {assert} from 'chai';
+
+import {click, getBrowserAndPages, typeText} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
+import {clickOnContextMenu, CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', async function() {
-  it('shows copy button for strings', async () => {
+  beforeEach(async () => {
     const {frontend} = getBrowserAndPages();
-    await click(CONSOLE_TAB_SELECTOR);
-    await focusConsolePrompt();
-
-    const stringToEvaluate = '"string content"';
-
-    await typeText(stringToEvaluate);
-    await frontend.keyboard.press('Enter');
-
-    const result = await waitFor('.console-message-text');
-    await click(result, {clickOptions: {button: 'right'}});
-    const copyButton = await waitForAria('Copy string content');
-
-    assertNotNull(copyButton);
+    await frontend.evaluate('{ navigator.clipboard.writeText = (data) => { globalThis._clipboardData = data; }};');
   });
 
-  it('shows copy button for numbers', async () => {
+  const RESULT_SELECTOR = '.console-message-text';
+
+  it('can copy contents for strings', async () => {
     const {frontend} = getBrowserAndPages();
     await click(CONSOLE_TAB_SELECTOR);
     await focusConsolePrompt();
+    await typeText('\'string\\ncontent\'\n');
+    await clickOnContextMenu(RESULT_SELECTOR, 'Copy string contents');
+    const copiedContent = await frontend.evaluate('globalThis._clipboardData');
+    assert.deepEqual(copiedContent, 'string\ncontent');
+  });
 
-    const numToEvaluate = '500';
+  it('can copy strings as JS literals', async () => {
+    const {frontend} = getBrowserAndPages();
+    await click(CONSOLE_TAB_SELECTOR);
+    await focusConsolePrompt();
+    await typeText('\'string\\ncontent\'\n');
+    await clickOnContextMenu(RESULT_SELECTOR, 'Copy string as JavaScript literal');
+    const copiedContent = await frontend.evaluate('globalThis._clipboardData');
+    assert.deepEqual(copiedContent, '\'string\\ncontent\'');
+  });
 
-    await typeText(numToEvaluate);
-    await frontend.keyboard.press('Enter');
+  it('can copy strings as JSON literals', async () => {
+    const {frontend} = getBrowserAndPages();
+    await click(CONSOLE_TAB_SELECTOR);
+    await focusConsolePrompt();
+    await typeText('\'string\\ncontent\'\n');
+    await clickOnContextMenu(RESULT_SELECTOR, 'Copy string as JSON literal');
+    const copiedContent = await frontend.evaluate('globalThis._clipboardData');
+    assert.deepEqual(copiedContent, '"string\\ncontent"');
+  });
 
-    const result = await waitFor('.console-message-text');
-    await click(result, {clickOptions: {button: 'right'}});
-    const copyButton = await waitForAria('Copy number');
+  it('can copy numbers', async () => {
+    const {frontend} = getBrowserAndPages();
+    await click(CONSOLE_TAB_SELECTOR);
+    await focusConsolePrompt();
+    await typeText('500\n');
+    await clickOnContextMenu(RESULT_SELECTOR, 'Copy number');
+    const copiedContent = await frontend.evaluate('globalThis._clipboardData');
+    assert.deepEqual(copiedContent, '500');
+  });
 
-    assertNotNull(copyButton);
+  it('can copy bigints', async () => {
+    const {frontend} = getBrowserAndPages();
+    await click(CONSOLE_TAB_SELECTOR);
+    await focusConsolePrompt();
+    await typeText('500n\n');
+    await clickOnContextMenu(RESULT_SELECTOR, 'Copy bigint');
+    const copiedContent = await frontend.evaluate('globalThis._clipboardData');
+    assert.deepEqual(copiedContent, '500n');
+  });
+
+  it('can copy booleans', async () => {
+    const {frontend} = getBrowserAndPages();
+    await click(CONSOLE_TAB_SELECTOR);
+    await focusConsolePrompt();
+    await typeText('true\n');
+    await clickOnContextMenu(RESULT_SELECTOR, 'Copy boolean');
+    const copiedContent = await frontend.evaluate('globalThis._clipboardData');
+    assert.deepEqual(copiedContent, 'true');
+  });
+
+  it('can copy undefined', async () => {
+    const {frontend} = getBrowserAndPages();
+    await click(CONSOLE_TAB_SELECTOR);
+    await focusConsolePrompt();
+    await typeText('undefined\n');
+    await clickOnContextMenu(RESULT_SELECTOR, 'Copy undefined');
+    const copiedContent = await frontend.evaluate('globalThis._clipboardData');
+    assert.deepEqual(copiedContent, 'undefined');
   });
 });

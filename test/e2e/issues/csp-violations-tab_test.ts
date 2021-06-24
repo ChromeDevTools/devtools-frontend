@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import type {ElementHandle} from 'puppeteer';
 
-import {click, enableExperiment, goToResource, matchArray, typeText, waitFor, waitForFunction} from '../../shared/helper.js';
+import {click, enableExperiment, goToResource, matchStringArray, typeText, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {getDataGridRows} from '../helpers/datagrid-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
@@ -40,7 +40,7 @@ async function waitForDataGridText(selector: string, expectedRows: string[][]) {
     const cspViolationsPane = await waitFor('.csp-violations-pane');
     const actualRows = await getDataGridText(await getDataGridRows(expectedRows.length, cspViolationsPane));
     for (let i = 0; i < actualRows.length; ++i) {
-      const result = matchArray(actualRows[i], expectedRows[i]);
+      const result = matchStringArray(actualRows[i], expectedRows[i]);
       if (result !== true) {
         return undefined;
       }

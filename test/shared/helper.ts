@@ -410,7 +410,7 @@ export const waitForAnimationFrame = async () => {
   });
 };
 
-export const activeElement = async (): Promise<puppeteer.ElementHandle> => {
+export const activeElement = async(): Promise<puppeteer.ElementHandle> => {
   const {target} = getBrowserAndPages();
 
   await waitForAnimationFrame();
@@ -572,30 +572,53 @@ export function assertNotNull<T>(val: T): asserts val is NonNullable<T> {
 // on Node modules resolution to import it.
 export {getBrowserAndPages, getTestServerPort, reloadDevTools, puppeteer};
 
-export function matchArray(actual: Array<string>, expected: Array<string|RegExp>): true|string {
+export function matchString(actual: string, expected: string|RegExp): true|string {
+  if (typeof expected === 'string') {
+    if (actual !== expected) {
+      return `Expected item "${actual}" to equal "${expected}"`;
+    }
+  } else if (!expected.test(actual)) {
+    return `Expected item "${actual}" to match "${expected}"`;
+  }
+  return true;
+}
+
+export function matchArray<A, E>(
+    actual: A[], expected: E[], comparator: (actual: A, expected: E) => true | string): true|string {
   if (actual.length !== expected.length) {
     return `Expected [${actual.map(x => `"${x}"`).join(', ')}] to have length ${expected.length}`;
   }
 
   for (let i = 0; i < expected.length; ++i) {
-    const expectedItem = expected[i];
-    if (typeof expectedItem === 'string') {
-      if (actual[i] !== expectedItem) {
-        return `Expected item at position ${i} which was "${actual[i]}" to equal "${expectedItem}"`;
-      }
-    } else if (!expectedItem.test(actual[i])) {
-      return `Expected item at position ${i} which was "${actual[i]}" to match "${expectedItem}"`;
+    const result = comparator(actual[i], expected[i]);
+    if (result !== true) {
+      return `Mismatch in row ${i}: ${result}`;
     }
   }
   return true;
 }
 
-export function assertMatchArray(actual: Array<string>, expected: Array<string|RegExp>) {
-  const result = matchArray(actual, expected);
-  if (result !== true) {
-    throw new AssertionError(result);
-  }
+export function assertOk<Args extends unknown[]>(check: (...args: Args) => true | string) {
+  return (...args: Args) => {
+    const result = check(...args);
+    if (result !== true) {
+      throw new AssertionError(result);
+    }
+  };
 }
+
+export function matchTable<A, E>(
+    actual: A[][], expected: E[][], comparator: (actual: A, expected: E) => true | string) {
+  return matchArray(actual, expected, (actual, expected) => matchArray<A, E>(actual, expected, comparator));
+}
+
+export const matchStringArray = (actual: string[], expected: (string|RegExp)[]) =>
+    matchArray(actual, expected, matchString);
+
+export const assertMatchArray = assertOk(matchStringArray);
+
+export const matchStringTable = (actual: string[][], expected: (string|RegExp)[][]) =>
+    matchTable(actual, expected, matchString);
 
 export async function renderCoordinatorQueueEmpty(): Promise<void> {
   const {frontend} = await getBrowserAndPages();

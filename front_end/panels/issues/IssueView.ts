@@ -13,7 +13,6 @@ import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as MarkdownView from '../../ui/components/markdown_view/markdown_view.js';
-import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ElementsComponents from '../elements/components/components.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
@@ -27,6 +26,7 @@ import {AffectedElementsWithLowContrastView} from './AffectedElementsWithLowCont
 import {AffectedHeavyAdView} from './AffectedHeavyAdView.js';
 import {AffectedItem, AffectedResourcesView, extractShortPath} from './AffectedResourcesView.js';
 import {AffectedSharedArrayBufferIssueDetailsView} from './AffectedSharedArrayBufferIssueDetailsView.js';
+import {AffectedSourcesView} from './AffectedSourcesView.js';
 import {AffectedTrustedWebActivityIssueDetailsView} from './AffectedTrustedWebActivityIssueDetailsView.js';
 import {CorsIssueDetailsView} from './CorsIssueDetailsView.js';
 import {AttributionReportingIssueDetailsView} from './AttributionReportingIssueDetailsView.js';
@@ -46,10 +46,6 @@ const UIStrings = {
   *@description Label for a type of issue that can appear in the Issues view. Noun for singular or plural number of network requests.
   */
   nRequests: '{n, plural, =1 {# request} other {# requests}}',
-  /**
-  *@description Singular or Plural label for number of affected sources (consisting of (source) file name + line number) in issue view
-  */
-  nSources: '{n, plural, =1 {# source} other {# sources}}',
   /**
   *@description Label for singular or plural number of affected resources in issue view
   */
@@ -125,50 +121,6 @@ class AffectedRequestsView extends AffectedResourcesView {
       return;
     }
     this._appendAffectedRequests(this._issue.requests());
-  }
-}
-
-class AffectedSourcesView extends AffectedResourcesView {
-  _issue: IssuesManager.Issue.Issue;
-  constructor(parent: IssueView, issue: IssuesManager.Issue.Issue) {
-    super(parent);
-    this._issue = issue;
-  }
-
-  _appendAffectedSources(affectedSources: Iterable<Protocol.Audits.SourceCodeLocation>): void {
-    let count = 0;
-    for (const source of affectedSources) {
-      this._appendAffectedSource(source);
-      count++;
-    }
-    this.updateAffectedResourceCount(count);
-  }
-
-  protected getResourceNameWithCount(count: number): Platform.UIString.LocalizedString {
-    return i18nString(UIStrings.nSources, {n: count});
-  }
-
-  _appendAffectedSource({url, lineNumber, columnNumber}: Protocol.Audits.SourceCodeLocation): void {
-    const cellElement = document.createElement('td');
-    // TODO(chromium:1072331): Check feasibility of plumping through scriptId for `linkifyScriptLocation`
-    //                         to support source maps and formatted scripts.
-    const linkifierURLOptions = ({columnNumber, lineNumber, tabStop: true} as Components.Linkifier.LinkifyURLOptions);
-    // An element created with linkifyURL can subscribe to the events
-    // 'click' neither 'keydown' if that key is the 'Enter' key.
-    // Also, this element has a context menu, so we should be able to
-    // track when the user use the context menu too.
-    // TODO(crbug.com/1108503): Add some mechanism to be able to add telemetry to this element.
-    const anchorElement = Components.Linkifier.Linkifier.linkifyURL(url, linkifierURLOptions);
-    cellElement.appendChild(anchorElement);
-    const rowElement = document.createElement('tr');
-    rowElement.classList.add('affected-resource-source');
-    rowElement.appendChild(cellElement);
-    this.affectedResources.appendChild(rowElement);
-  }
-
-  update(): void {
-    this.clear();
-    this._appendAffectedSources(this._issue.sources());
   }
 }
 

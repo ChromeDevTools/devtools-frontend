@@ -17,6 +17,7 @@ devtools_module("issues") {
     "AffectedHeavyAdView.ts",
     "AffectedResourcesView.ts",
     "AffectedSharedArrayBufferIssueDetailsView.ts",
+    "AffectedSourcesView.ts",
     "AffectedTrustedWebActivityIssueDetailsView.ts",
     "AttributionReportingIssueDetailsView.ts",
     "CSPViolationsListView.ts",

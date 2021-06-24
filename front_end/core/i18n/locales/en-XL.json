@@ -4994,6 +4994,9 @@
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | warning": {
     "message": "ŵár̂ńîńĝ"
   },
+  "panels/issues/AffectedSourcesView.ts | nSources": {
+    "message": "{n, plural, =1 {# ŝóûŕĉé} other {# ŝóûŕĉéŝ}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n, plural, =1 {# r̂éŝóûŕĉé} other {# r̂éŝóûŕĉéŝ}}"
   },
@@ -5194,9 +5197,6 @@
   },
   "panels/issues/IssueView.ts | nResources": {
     "message": "{n, plural, =1 {# r̂éŝóûŕĉé} other {# r̂éŝóûŕĉéŝ}}"
-  },
-  "panels/issues/IssueView.ts | nSources": {
-    "message": "{n, plural, =1 {# ŝóûŕĉé} other {# ŝóûŕĉéŝ}}"
   },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "R̂éŝt́r̂íĉt́îón̂ Śt̂át̂úŝ"

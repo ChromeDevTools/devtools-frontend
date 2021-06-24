@@ -4994,6 +4994,9 @@
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | warning": {
     "message": "warning"
   },
+  "panels/issues/AffectedSourcesView.ts | nSources": {
+    "message": "{n, plural, =1 {# source} other {# sources}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n, plural, =1 {# resource} other {# resources}}"
   },
@@ -5194,9 +5197,6 @@
   },
   "panels/issues/IssueView.ts | nResources": {
     "message": "{n, plural, =1 {# resource} other {# resources}}"
-  },
-  "panels/issues/IssueView.ts | nSources": {
-    "message": "{n, plural, =1 {# source} other {# sources}}"
   },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "Restriction Status"

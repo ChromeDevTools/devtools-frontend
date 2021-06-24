@@ -2,11 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert} from 'chai';
-
 import {assertNotNull, getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {ensureResourceSectionIsExpanded, expandIssue, extractTableFromResourceSection, getIssueByTitle, getResourcesElement, navigateToIssuesTab} from '../helpers/issues-helpers.js';
+import {ensureResourceSectionIsExpanded, expandIssue, getIssueByTitle, getResourcesElement, navigateToIssuesTab, waitForTableFromResourceSectionContents} from '../helpers/issues-helpers.js';
 
 describe('Cors Private Network issue', async () => {
   beforeEach(async () => {
@@ -60,30 +58,31 @@ describe('Cors Private Network issue', async () => {
     assertNotNull(issueElement);
     const section = await getResourcesElement('2 requests', issueElement, '.cors-issue-affected-resource-label');
     await ensureResourceSectionIsExpanded(section);
-    const table = await extractTableFromResourceSection(section.content);
-    assertNotNull(table);
-    assert.strictEqual(table.length, 3);
-    assert.deepEqual(table[0], [
-      'Request',
-      'Status',
-      'Resource Address',
-      'Initiator Address',
-      'Initiator Context',
-    ]);
-    assert.deepEqual(table[1], [
-      'localhost/',
-      'warning',
-      'Local',
-      'Public',
-      'insecure',
-    ]);
-    assert.deepEqual(table[2], [
-      'example.com/',
-      'warning',
-      'Local',
-      'Unknown',
-      'insecure',
-    ]);
+
+    const expectedTableRows = [
+      [
+        'Request',
+        'Status',
+        'Resource Address',
+        'Initiator Address',
+        'Initiator Context',
+      ],
+      [
+        'localhost/',
+        'warning',
+        'Local',
+        'Public',
+        'insecure',
+      ],
+      [
+        'example.com/',
+        'warning',
+        'Local',
+        'Unknown',
+        'insecure',
+      ],
+    ];
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 
   it('should display correct information for secure contexts', async () => {
@@ -134,29 +133,29 @@ describe('Cors Private Network issue', async () => {
     assertNotNull(issueElement);
     const section = await getResourcesElement('2 requests', issueElement, '.cors-issue-affected-resource-label');
     await ensureResourceSectionIsExpanded(section);
-    const table = await extractTableFromResourceSection(section.content);
-    assertNotNull(table);
-    assert.strictEqual(table.length, 3);
-    assert.deepEqual(table[0], [
-      'Request',
-      'Status',
-      'Resource Address',
-      'Initiator Address',
-      'Initiator Context',
-    ]);
-    assert.deepEqual(table[1], [
-      'localhost/',
-      'warning',
-      'Local',
-      'Public',
-      'secure',
-    ]);
-    assert.deepEqual(table[2], [
-      'example.com/',
-      'warning',
-      'Local',
-      'Unknown',
-      'secure',
-    ]);
+    const expectedTableRows = [
+      [
+        'Request',
+        'Status',
+        'Resource Address',
+        'Initiator Address',
+        'Initiator Context',
+      ],
+      [
+        'localhost/',
+        'warning',
+        'Local',
+        'Public',
+        'secure',
+      ],
+      [
+        'example.com/',
+        'warning',
+        'Local',
+        'Unknown',
+        'secure',
+      ],
+    ];
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 });

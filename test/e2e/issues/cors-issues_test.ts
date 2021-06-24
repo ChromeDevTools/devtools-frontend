@@ -4,9 +4,9 @@
 
 import {assert} from 'chai';
 
-import {assertMatchArray, assertNotNull, getBrowserAndPages, goToResource} from '../../shared/helper.js';
+import {assertNotNull, getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {ensureResourceSectionIsExpanded, expandIssue, extractTableFromResourceSection, getIssueByTitle, getResourcesElement, navigateToIssuesTab} from '../helpers/issues-helpers.js';
+import {ensureResourceSectionIsExpanded, expandIssue, getIssueByTitle, getResourcesElement, navigateToIssuesTab, waitForTableFromResourceSectionContents} from '../helpers/issues-helpers.js';
 
 describe('CORS issues', async () => {
   it('should display CORS violations with the correct affected resources', async () => {
@@ -24,41 +24,41 @@ describe('CORS issues', async () => {
     const text = await section.label.evaluate(el => el.textContent);
     assert.strictEqual(text, '3 requests');
     await ensureResourceSectionIsExpanded(section);
-    const table = await extractTableFromResourceSection(section.content);
-    assertNotNull(table);
-    assert.strictEqual(table.length, 4);
-    assert.deepEqual(table[0], [
-      'Request',
-      'Status',
-      'Preflight Request (if problematic)',
-      'Header',
-      'Problem',
-      'Invalid Value (if available)',
-    ]);
-    assertMatchArray(table[1], [
-      /^devtools.oopif.test:.*/,
-      'blocked',
-      '',
-      'Access-Control-Allow-Origin',
-      'Missing Header',
-      '',
-    ]);
-    assertMatchArray(table[2], [
-      /^devtools.oopif.test:.*/,
-      'blocked',
-      /^devtools.oopif.test:.*/,
-      'Access-Control-Allow-Origin',
-      'Missing Header',
-      '',
-    ]);
-    assertMatchArray(table[3], [
-      /.*invalid-preflight.*/,
-      'blocked',
-      /.*invalid-preflight.*/,
-      'Access-Control-Allow-Origin',
-      'Missing Header',
-      '',
-    ]);
+    const expectedTableRows = [
+      [
+        'Request',
+        'Status',
+        'Preflight Request (if problematic)',
+        'Header',
+        'Problem',
+        'Invalid Value (if available)',
+      ],
+      [
+        /^devtools.oopif.test:.*/,
+        'blocked',
+        '',
+        'Access-Control-Allow-Origin',
+        'Missing Header',
+        '',
+      ],
+      [
+        /^devtools.oopif.test:.*/,
+        'blocked',
+        /^devtools.oopif.test:.*/,
+        'Access-Control-Allow-Origin',
+        'Missing Header',
+        '',
+      ],
+      [
+        /.*invalid-preflight.*/,
+        'blocked',
+        /.*invalid-preflight.*/,
+        'Access-Control-Allow-Origin',
+        'Missing Header',
+        '',
+      ],
+    ];
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 
   it('should display credentialed+wildcard CORS issues with the correct affected resources', async () => {
@@ -82,19 +82,19 @@ describe('CORS issues', async () => {
     const text = await section.label.evaluate(el => el.textContent);
     assert.strictEqual(text, '1 request');
     await ensureResourceSectionIsExpanded(section);
-    const table = await extractTableFromResourceSection(section.content);
-    assertNotNull(table);
-    assert.strictEqual(table.length, 2);
-    assert.deepEqual(table[0], [
-      'Request',
-      'Status',
-      'Preflight Request (if problematic)',
-    ]);
-    assertMatchArray(table[1], [
-      'origin-wildcard.rawresponse',
-      'blocked',
-      '',
-    ]);
+    const expectedTableRows = [
+      [
+        'Request',
+        'Status',
+        'Preflight Request (if problematic)',
+      ],
+      [
+        'origin-wildcard.rawresponse',
+        'blocked',
+        '',
+      ],
+    ];
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 
   it('should display invalid CORS preflight response codes with the correct affected resources', async () => {
@@ -129,27 +129,27 @@ describe('CORS issues', async () => {
     const text = await section.label.evaluate(el => el.textContent);
     assert.strictEqual(text, '2 requests');
     await ensureResourceSectionIsExpanded(section);
-    const table = await extractTableFromResourceSection(section.content);
-    assertNotNull(table);
-    assert.strictEqual(table.length, 3);
-    assert.deepEqual(table[0], [
-      'Request',
-      'Status',
-      'Preflight Request',
-      'Problem',
-    ]);
-    assertMatchArray(table[1], [
-      'invalid-response-code.rawresponse',
-      'blocked',
-      'invalid-response-code.rawresponse',
-      'HTTP status of preflight request didn\'t indicate success',
-    ]);
-    assertMatchArray(table[2], [
-      'redirect.rawresponse',
-      'blocked',
-      'redirect.rawresponse',
-      'Response to preflight was a redirect',
-    ]);
+    const expectedTableRows = [
+      [
+        'Request',
+        'Status',
+        'Preflight Request',
+        'Problem',
+      ],
+      [
+        'invalid-response-code.rawresponse',
+        'blocked',
+        'invalid-response-code.rawresponse',
+        'HTTP status of preflight request didn\'t indicate success',
+      ],
+      [
+        'redirect.rawresponse',
+        'blocked',
+        'redirect.rawresponse',
+        'Response to preflight was a redirect',
+      ],
+    ];
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 
   it('should display CORS ACAO mismatches with the correct affected resources', async () => {
@@ -181,30 +181,30 @@ describe('CORS issues', async () => {
     const text = await section.label.evaluate(el => el.textContent);
     assert.strictEqual(text, '2 requests');
     await ensureResourceSectionIsExpanded(section);
-    const table = await extractTableFromResourceSection(section.content);
-    assertNotNull(table);
-    assert.strictEqual(table.length, 3);
-    assert.deepEqual(table[0], [
-      'Request',
-      'Status',
-      'Preflight Request (if problematic)',
-      'Initiator Context',
-      'Allowed Origin (from header)',
-    ]);
-    assertMatchArray(table[1], [
-      'acao-mismatch.rawresponse',
-      'blocked',
-      'acao-mismatch.rawresponse',
-      /^https:\/\/localhost.*/,
-      'https://devtools.oopif.test',
-    ]);
-    assertMatchArray(table[2], [
-      'acao-mismatch.rawresponse',
-      'blocked',
-      '',
-      /^https:\/\/localhost.*/,
-      'https://devtools.oopif.test',
-    ]);
+    const expectedTableRows = [
+      [
+        'Request',
+        'Status',
+        'Preflight Request (if problematic)',
+        'Initiator Context',
+        'Allowed Origin (from header)',
+      ],
+      [
+        'acao-mismatch.rawresponse',
+        'blocked',
+        'acao-mismatch.rawresponse',
+        /^https:\/\/localhost.*/,
+        'https://devtools.oopif.test',
+      ],
+      [
+        'acao-mismatch.rawresponse',
+        'blocked',
+        '',
+        /^https:\/\/localhost.*/,
+        'https://devtools.oopif.test',
+      ],
+    ];
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 
   it('should display invalid CORS ACAC values with the correct affected resources', async () => {
@@ -236,27 +236,27 @@ describe('CORS issues', async () => {
     const text = await section.label.evaluate(el => el.textContent);
     assert.strictEqual(text, '2 requests');
     await ensureResourceSectionIsExpanded(section);
-    const table = await extractTableFromResourceSection(section.content);
-    assertNotNull(table);
-    assert.strictEqual(table.length, 3);
-    assert.deepEqual(table[0], [
-      'Request',
-      'Status',
-      'Preflight Request (if problematic)',
-      'Access-Control-Allow-Credentials Header Value',
-    ]);
-    assertMatchArray(table[1], [
-      'acac-invalid.rawresponse',
-      'blocked',
-      'acac-invalid.rawresponse',
-      'false',
-    ]);
-    assertMatchArray(table[2], [
-      'acac-invalid.rawresponse',
-      'blocked',
-      '',
-      'false',
-    ]);
+    const expectedTableRows = [
+      [
+        'Request',
+        'Status',
+        'Preflight Request (if problematic)',
+        'Access-Control-Allow-Credentials Header Value',
+      ],
+      [
+        'acac-invalid.rawresponse',
+        'blocked',
+        'acac-invalid.rawresponse',
+        'false',
+      ],
+      [
+        'acac-invalid.rawresponse',
+        'blocked',
+        '',
+        'false',
+      ],
+    ];
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 
   it('should display CORS requests using disallowed methods with the correct affected resources', async () => {
@@ -283,21 +283,21 @@ describe('CORS issues', async () => {
     const text = await section.label.evaluate(el => el.textContent);
     assert.strictEqual(text, '1 request');
     await ensureResourceSectionIsExpanded(section);
-    const table = await extractTableFromResourceSection(section.content);
-    assertNotNull(table);
-    assert.strictEqual(table.length, 2);
-    assert.deepEqual(table[0], [
-      'Request',
-      'Status',
-      'Preflight Request',
-      'Disallowed Request Method',
-    ]);
-    assertMatchArray(table[1], [
-      'method-disallowed.rawresponse',
-      'blocked',
-      'method-disallowed.rawresponse',
-      'PUT',
-    ]);
+    const expectedTableRows = [
+      [
+        'Request',
+        'Status',
+        'Preflight Request',
+        'Disallowed Request Method',
+      ],
+      [
+        'method-disallowed.rawresponse',
+        'blocked',
+        'method-disallowed.rawresponse',
+        'PUT',
+      ],
+    ];
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 
   it('should display CORS requests using disallowed headers with the correct affected resources', async () => {
@@ -323,21 +323,22 @@ describe('CORS issues', async () => {
     const text = await section.label.evaluate(el => el.textContent);
     assert.strictEqual(text, '1 request');
     await ensureResourceSectionIsExpanded(section);
-    const table = await extractTableFromResourceSection(section.content);
-    assertNotNull(table);
-    assert.strictEqual(table.length, 2);
-    assert.deepEqual(table[0], [
-      'Request',
-      'Status',
-      'Preflight Request',
-      'Disallowed Request Header',
-    ]);
-    assertMatchArray(table[1], [
-      'method-disallowed.rawresponse',
-      'blocked',
-      'method-disallowed.rawresponse',
-      'x-foo',
-    ]);
+
+    const expectedTableRows = [
+      [
+        'Request',
+        'Status',
+        'Preflight Request',
+        'Disallowed Request Header',
+      ],
+      [
+        'method-disallowed.rawresponse',
+        'blocked',
+        'method-disallowed.rawresponse',
+        'x-foo',
+      ],
+    ];
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 
   it('should display CORS requests redirecting to credentialed URLs', async () => {
@@ -361,17 +362,17 @@ describe('CORS issues', async () => {
     const text = await section.label.evaluate(el => el.textContent);
     assert.strictEqual(text, '1 request');
     await ensureResourceSectionIsExpanded(section);
-    const table = await extractTableFromResourceSection(section.content);
-    assertNotNull(table);
-    assert.strictEqual(table.length, 2);
-    assert.deepEqual(table[0], [
-      'Request',
-      'Status',
-    ]);
-    assertMatchArray(table[1], [
-      'credentialed-redirect.rawresponse',
-      'blocked',
-    ]);
+    const expectedTableRows = [
+      [
+        'Request',
+        'Status',
+      ],
+      [
+        'credentialed-redirect.rawresponse',
+        'blocked',
+      ],
+    ];
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 
   it('should display CORS issues that are disallowed by the mode', async () => {
@@ -393,21 +394,21 @@ describe('CORS issues', async () => {
     const text = await section.label.evaluate(el => el.textContent);
     assert.strictEqual(text, '1 request');
     await ensureResourceSectionIsExpanded(section);
-    const table = await extractTableFromResourceSection(section.content);
-    assertNotNull(table);
-    assert.strictEqual(table.length, 2);
-    assert.deepEqual(table[0], [
-      'Request',
-      'Status',
-      'Initiator Context',
-      'Source Location',
-    ]);
-    assertMatchArray(table[1], [
-      /^devtools.oopif.test.*\//,
-      'blocked',
-      /^https:\/\/localhost.*/,
-      /.*:\d+/,
-    ]);
+    const expectedTableRows = [
+      [
+        'Request',
+        'Status',
+        'Initiator Context',
+        'Source Location',
+      ],
+      [
+        /^devtools.oopif.test.*\//,
+        'blocked',
+        /^https:\/\/localhost.*/,
+        /.*:\d+/,
+      ],
+    ];
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 
   it('should display CORS issues that are unsupported by the scheme', async () => {
@@ -430,23 +431,23 @@ describe('CORS issues', async () => {
     const text = await section.label.evaluate(el => el.textContent);
     assert.strictEqual(text, '1 request');
     await ensureResourceSectionIsExpanded(section);
-    const table = await extractTableFromResourceSection(section.content);
-    assertNotNull(table);
-    assert.strictEqual(table.length, 2);
-    assert.deepEqual(table[0], [
-      'Request',
-      'Status',
-      'Initiator Context',
-      'Source Location',
-      'Unsupported Scheme',
-    ]);
-    assertMatchArray(table[1], [
-      /^devtools.oopif.test.*\//,
-      'blocked',
-      /^https:\/\/localhost.*/,
-      /.*:\d+/,
-      'webdav',
-    ]);
+    const expectedTableRows = [
+      [
+        'Request',
+        'Status',
+        'Initiator Context',
+        'Source Location',
+        'Unsupported Scheme',
+      ],
+      [
+        /^devtools.oopif.test.*\//,
+        'blocked',
+        /^https:\/\/localhost.*/,
+        /.*:\d+/,
+        'webdav',
+      ],
+    ];
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 
   it('should display CORS issues that are misconfiguring the redirect mode', async () => {
@@ -469,18 +470,18 @@ describe('CORS issues', async () => {
     const text = await section.label.evaluate(el => el.textContent);
     assert.strictEqual(text, '1 request');
     await ensureResourceSectionIsExpanded(section);
-    const table = await extractTableFromResourceSection(section.content);
-    assertNotNull(table);
-    assert.strictEqual(table.length, 2);
-    assert.deepEqual(table[0], [
-      'Request',
-      'Status',
-      'Source Location',
-    ]);
-    assertMatchArray(table[1], [
-      /^devtools.oopif.test.*\//,
-      'blocked',
-      /.*:\d+/,
-    ]);
+    const expectedTableRows = [
+      [
+        'Request',
+        'Status',
+        'Source Location',
+      ],
+      [
+        /^devtools.oopif.test.*\//,
+        'blocked',
+        /.*:\d+/,
+      ],
+    ];
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 });

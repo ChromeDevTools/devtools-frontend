@@ -5,7 +5,7 @@
 import { assert } from 'chai';
 import type * as puppeteer from 'puppeteer';
 
-import { $$, click, hasClass, waitFor, waitForClass, waitForFunction } from '../../shared/helper.js';
+import {$$, click, hasClass, matchStringTable, waitFor, waitForClass, waitForFunction} from '../../shared/helper.js';
 import { openPanelViaMoreTools } from './settings-helpers.js';
 
 export const CATEGORY = '.issue-category';
@@ -113,7 +113,8 @@ export async function ensureResourceSectionIsExpanded(section: IssueResourceSect
   await waitForClass(section.content, 'expanded');
 }
 
-export async function extractTableFromResourceSection(resourceContentElement: puppeteer.ElementHandle<Element>) {
+export async function extractTableFromResourceSection(resourceContentElement: puppeteer.ElementHandle<Element>):
+    Promise<string[][]|undefined> {
   const table = await resourceContentElement.$('.affected-resource-list');
   if (table) {
     return await table.evaluate(table => {
@@ -128,7 +129,18 @@ export async function extractTableFromResourceSection(resourceContentElement: pu
       return rows;
     });
   }
-  return null;
+  return undefined;
+}
+
+export async function waitForTableFromResourceSectionContents(
+    resourceContentElement: puppeteer.ElementHandle<Element>, expected: (string|RegExp)[][]): Promise<string[][]> {
+  return await waitForFunction(async () => {
+    const table = await extractTableFromResourceSection(resourceContentElement);
+    if (!table || matchStringTable(table, expected) !== true) {
+      return undefined;
+    }
+    return table;
+  });
 }
 
 export async function getGroupByCategoryChecked() {

@@ -1,6 +1,4 @@
 #!/usr/bin/env node
-/* eslint-disable no-console, max-len, rulesdir/check_license_header */
-
 /**
  * @license Copyright 2018 The Lighthouse Authors. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
@@ -8,13 +6,15 @@
  */
 'use strict';
 
+/* eslint-disable no-console, max-len */
+
 const fs = require('fs');
 const glob = require('glob');
 const path = require('path');
 const tsc = require('typescript');
 const {collectAndBakeCtcStrings} = require('./bake-ctc-to-lhl.js');
 
-const SRC_ROOT = process.argv[2] || path.join(process.cwd(), 'front_end');
+const SRC_ROOT = path.join(__dirname, '../../');
 const UISTRINGS_REGEX = /UIStrings = .*?\};\n/s;
 
 /** @typedef {import('./bake-ctc-to-lhl.js').CtcMessage} CtcMessage */
@@ -58,9 +58,8 @@ function computeDescription(ast, message) {
       }
     }
 
-    if (description.length === 0) {
+    if (description.length === 0)
       throw Error(`Empty @description for message "${message}"`);
-    }
     return {description, examples};
   }
 
@@ -90,9 +89,8 @@ function coerceToSingleLineAndTrim(comment = '') {
  */
 function parseExampleJsDoc(rawExample) {
   const match = rawExample.match(/^{(?<exampleValue>[^}]+)} (?<placeholderName>.+)$/);
-  if (!match || !match.groups) {
+  if (!match || !match.groups)
     throw new Error(`Incorrectly formatted @example: "${rawExample}"`);
-  }
   const {placeholderName, exampleValue} = match.groups;
   return {placeholderName, exampleValue};
 }
@@ -239,9 +237,8 @@ function _splitMarkdownCodeSpans(text) {
   for (let i = 0; i < parts.length; i++) {
     const text = parts[i];
     // Empty strings are an artifact of splitting, not meaningful.
-    if (!text) {
+    if (!text)
       continue;
-    }
     // Alternates between plain text and code segments.
     const isCode = i % 2 !== 0;
     segments.push({
@@ -313,9 +310,8 @@ function _processPlaceholderCustomFormattedIcu(icu) {
     const [preambleText, rawName, format, formatType] = parts.splice(0, 4);
     icu.message += preambleText;
 
-    if (!rawName || !format || !formatType) {
+    if (!rawName || !format || !formatType)
       continue;
-    }
     // Check that custom-formatted ICU not using non-supported format ex:
     // * using a second arg anything other than "number"
     // * using a third arg that is not millis, secs, bytes, %, or extended %
@@ -373,7 +369,7 @@ function _checkPluralGroupsIcu(message, pluralMatches) {
   if (!pluralMatches[1].includes('=1 {') || !pluralMatches[1].includes('other {')) {
     throw Error(
         `Message with plural "${message}" doesn't have the required "=1" ` +
-        'and "other" plural groups.');
+        'and "other" plural groups.')
   }
 }
 
@@ -472,13 +468,12 @@ function createPsuedoLocaleStrings(messages) {
       // becomes "{itemCount, plural, =1 {1 l̂ín̂ḱ f̂óûńd̂} other {# ĺîńk̂ś f̂óûńd̂}}"
       // ex: "{itemCount, plural, =1 {1 link {nested_replacement} found} other {# links {nested_replacement} found}}"
       // becomes: "{itemCount, plural, =1 {1 l̂ín̂ḱ {nested_replacement} f̂óûńd̂} other {# ĺîńk̂ś {nested_replacement} f̂óûńd̂}}"
-      if (braceCount % 2 === 1) {
+      if (braceCount % 2 === 1)
         continue;
-      }
 
       // Add diacritical marks to the preceding letter, alternating between a hat ( ̂ ) and an acute (´).
       if (/[a-z]/i.test(char)) {
-        psuedoLocalizedString.push(useHatForAccentMark ? '\u0302' : '\u0301');
+        psuedoLocalizedString.push(useHatForAccentMark ? `\u0302` : `\u0301`);
         useHatForAccentMark = !useHatForAccentMark;
       }
     }
@@ -497,9 +492,8 @@ function createPsuedoLocaleStrings(messages) {
  * @return {string}
  */
 function getIdentifier(node) {
-  if (!node.name || !tsc.isIdentifier(node.name)) {
+  if (!node.name || !tsc.isIdentifier(node.name))
     throw new Error('no Identifier found');
-  }
 
   return node.name.text;
 }
@@ -510,9 +504,8 @@ function getIdentifier(node) {
  * @return {string}
  */
 function getToken(node) {
-  if (!node.initializer) {
+  if (!node.initializer)
     throw new Error('no Token found');
-  }
   let token = '';
   getTokenHelper(node.initializer);
   function getTokenHelper(node) {
@@ -535,25 +528,20 @@ function parseUIStrings(sourceStr) {
 
   const extractionError = new Error('UIStrings declaration was not extracted correctly by the collect-strings regex.');
   const uiStringsStatement = tsAst.statements[0];
-  if (tsAst.statements.length !== 1) {
+  if (tsAst.statements.length !== 1)
     throw extractionError;
-  }
-  if (!tsc.isVariableStatement(uiStringsStatement)) {
+  if (!tsc.isVariableStatement(uiStringsStatement))
     throw extractionError;
-  }
 
   const uiStringsDeclaration = uiStringsStatement.declarationList.declarations[0];
-  if (!tsc.isVariableDeclaration(uiStringsDeclaration)) {
+  if (!tsc.isVariableDeclaration(uiStringsDeclaration))
     throw extractionError;
-  }
-  if (getIdentifier(uiStringsDeclaration) !== 'UIStrings') {
+  if (getIdentifier(uiStringsDeclaration) !== 'UIStrings')
     throw extractionError;
-  }
 
   const uiStringsObject = uiStringsDeclaration.initializer;
-  if (!uiStringsObject || !tsc.isObjectLiteralExpression(uiStringsObject)) {
+  if (!uiStringsObject || !tsc.isObjectLiteralExpression(uiStringsObject))
     throw extractionError;
-  }
 
   /** @type {Record<string, ParsedUIString>} */
   const parsedMessages = {};
@@ -597,12 +585,14 @@ function collectAllStringsInDir(dir) {
   /** @type {Record<string, CtcMessage>} */
   const strings = {};
 
-  const globPattern = path.join(dir, '/**/*.{js,ts}');
+  const globPattern = path.join(path.relative(SRC_ROOT, dir), '/**/*.{js,ts}');
   const files = glob.sync(globPattern, {
     cwd: SRC_ROOT,
     ignore: ignoredPathComponents,
   });
-  for (const absolutePath of files) {
+  for (const relativeToRootPath of files) {
+    const absolutePath = path.join(SRC_ROOT, relativeToRootPath);
+
     const content = fs.readFileSync(absolutePath, 'utf8');
     const regexMatch = content.match(UISTRINGS_REGEX);
 
@@ -641,7 +631,7 @@ function collectAllStringsInDir(dir) {
         placeholders,
       };
       // slice out "front_end/" and use the path relative to front_end as id
-      const pathRelativeToFrontend = path.relative(SRC_ROOT, absolutePath);
+      const pathRelativeToFrontend = relativeToRootPath.slice('front_end/'.length);
       const messageKey = `${pathRelativeToFrontend} | ${key}`;
       strings[messageKey] = ctc;
 
@@ -670,7 +660,7 @@ function collectAllStringsInDir(dir) {
  * @param {Record<string, CtcMessage>} strings
  */
 function writeStringsToCtcFiles(locale, strings) {
-  const fullPath = path.join(SRC_ROOT, `core/i18n/locales/${locale}.ctc.json`);
+  const fullPath = path.join(SRC_ROOT, `front_end/core/i18n/locales/${locale}.ctc.json`);
   /** @type {Record<string, CtcMessage>} */
   const output = {};
   const sortedEntries = Object.entries(strings).sort(([keyA], [keyB]) => keyA.localeCompare(keyB));
@@ -683,8 +673,8 @@ function writeStringsToCtcFiles(locale, strings) {
 
 // @ts-ignore Test if called from the CLI or as a module.
 if (require.main === module) {
-  const frontendStrings = collectAllStringsInDir(SRC_ROOT);
-  console.log('Collected from front_end!');
+  const frontendStrings = collectAllStringsInDir(path.join(SRC_ROOT, 'front_end'));
+  console.log(`Collected from front_end!`);
 
   const strings = {...frontendStrings};
   writeStringsToCtcFiles('en-US', strings);
@@ -692,8 +682,8 @@ if (require.main === module) {
   writeStringsToCtcFiles('en-XL', createPsuedoLocaleStrings(strings));
 
   // Bake the ctc en-US and en-XL files into en-US and en-XL LHL format
-  const lhl =
-      collectAndBakeCtcStrings(path.join(SRC_ROOT, 'core/i18n/locales/'), path.join(SRC_ROOT, 'core/i18n/locales/'));
+  const lhl = collectAndBakeCtcStrings(
+      path.join(SRC_ROOT, 'front_end/core/i18n/locales/'), path.join(SRC_ROOT, 'front_end/core/i18n/locales/'));
 }
 
 module.exports = {

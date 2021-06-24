@@ -2,11 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert} from 'chai';
-
-import {getBrowserAndPages, goToResource} from '../../shared/helper.js';
+import {assertNotNull, getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {ensureResourceSectionIsExpanded, expandIssue, extractTableFromResourceSection, getIssueByTitle, getResourcesElement, navigateToIssuesTab} from '../helpers/issues-helpers.js';
+import {ensureResourceSectionIsExpanded, expandIssue, getIssueByTitle, getResourcesElement, navigateToIssuesTab, waitForTableFromResourceSectionContents} from '../helpers/issues-helpers.js';
 
 describe('Heavy Ad issue', async () => {
   beforeEach(async () => {
@@ -44,18 +42,14 @@ describe('Heavy Ad issue', async () => {
     });
     await expandIssue();
     const issueElement = await getIssueByTitle('An ad on your site has exceeded resource limits');
-    assert.isNotNull(issueElement);
-    if (issueElement) {
-      const section = await getResourcesElement('2 resources', issueElement);
-      await ensureResourceSectionIsExpanded(section);
-      const table = await extractTableFromResourceSection(section.content);
-      assert.isNotNull(table);
-      if (table) {
-        assert.strictEqual(table.length, 3);
-        assert.deepEqual(table[0], ['Limit exceeded', 'Resolution Status', 'Frame URL']);
-        assert.deepEqual(table[1].slice(0, 2), ['Network limit', 'Removed']);
-        assert.deepEqual(table[2].slice(0, 2), ['CPU peak limit', 'Warned']);
-      }
-    }
+    assertNotNull(issueElement);
+    const section = await getResourcesElement('2 resources', issueElement);
+    await ensureResourceSectionIsExpanded(section);
+    const expectedTableRows = [
+      ['Limit exceeded', 'Resolution Status', 'Frame URL'],
+      ['Network limit', 'Removed', /.*/],
+      ['CPU peak limit', 'Warned', /.*/],
+    ];
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 });

@@ -2,11 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert} from 'chai';
-
 import {assertNotNull, enableExperiment, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {assertIssueTitle, expandIssue, extractTableFromResourceSection, getIssueByTitle, getResourcesElement, navigateToIssuesTab} from '../helpers/issues-helpers.js';
+import {assertIssueTitle, expandIssue, getIssueByTitle, getResourcesElement, navigateToIssuesTab, waitForTableFromResourceSectionContents} from '../helpers/issues-helpers.js';
 
 describe('Low contrast issues', async () => {
   it('should report low contrast issues', async () => {
@@ -19,40 +17,40 @@ describe('Low contrast issues', async () => {
     const issueElement = await getIssueByTitle(issueTitle);
     assertNotNull(issueElement);
     const section = await getResourcesElement('3 elements', issueElement);
-    const table = await extractTableFromResourceSection(section.content);
-    assertNotNull(table);
-    assert.strictEqual(table.length, 4);
-    assert.deepEqual(table[0], [
-      'Element',
-      'Contrast ratio',
-      'Minimum AA ratio',
-      'Minimum AAA ratio',
-      'Text size',
-      'Text weight',
-    ]);
-    assert.deepEqual(table[1], [
-      'div#el1',
-      '1',
-      '4.5',
-      '7',
-      '16px',
-      '400',
-    ]);
-    assert.deepEqual(table[2], [
-      'span#el2',
-      '1',
-      '4.5',
-      '7',
-      '16px',
-      '400',
-    ]);
-    assert.deepEqual(table[3], [
-      'span#el3',
-      '1.49',
-      '4.5',
-      '7',
-      '16px',
-      '400',
-    ]);
+    const expectedTableRows = [
+      [
+        'Element',
+        'Contrast ratio',
+        'Minimum AA ratio',
+        'Minimum AAA ratio',
+        'Text size',
+        'Text weight',
+      ],
+      [
+        'div#el1',
+        '1',
+        '4.5',
+        '7',
+        '16px',
+        '400',
+      ],
+      [
+        'span#el2',
+        '1',
+        '4.5',
+        '7',
+        '16px',
+        '400',
+      ],
+      [
+        'span#el3',
+        '1.49',
+        '4.5',
+        '7',
+        '16px',
+        '400',
+      ],
+    ];
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 });

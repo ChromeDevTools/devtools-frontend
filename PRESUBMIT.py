@@ -441,9 +441,10 @@ def _CheckGeneratedFiles(input_api, output_api):
 def _CollectStrings(input_api, output_api):
     devtools_root = input_api.PresubmitLocalPath()
     devtools_front_end = input_api.os_path.join(devtools_root, 'front_end')
-    affected_front_end_files = _getAffectedFiles(input_api,
-                                                 [devtools_front_end], [],
-                                                 ['.js', '.ts'])
+    script_path = input_api.os_path.join(devtools_root, 'third_party', 'i18n',
+                                         'collect-strings.js')
+    affected_front_end_files = _getAffectedFiles(
+        input_api, [devtools_front_end, script_path], [], ['.js', '.ts'])
     if len(affected_front_end_files) == 0:
         return [
             output_api.PresubmitNotifyResult(
@@ -453,9 +454,9 @@ def _CollectStrings(input_api, output_api):
     results = [
         output_api.PresubmitNotifyResult('Collecting strings from front_end:')
     ]
-    script_path = input_api.os_path.join(devtools_root, 'third_party', 'i18n',
-                                         'collect-strings.js')
-    results.extend(_checkWithNodeScript(input_api, output_api, script_path))
+    results.extend(
+        _checkWithNodeScript(input_api, output_api, script_path,
+                             [devtools_front_end]))
     results.append(
         output_api.PresubmitNotifyResult(
             'Please commit en-US.json/en-XL.json if changes are generated.'))
@@ -470,7 +471,7 @@ def _CheckNoUncheckedFiles(input_api, output_api):
     out, _ = process.communicate()
     if process.returncode != 0:
         files_changed_process = input_api.subprocess.Popen(
-            ['git', 'diff', '--name-only'],
+            ['git', 'diff'],
             stdout=input_api.subprocess.PIPE,
             stderr=input_api.subprocess.STDOUT)
         files_changed, _ = files_changed_process.communicate()

@@ -54,14 +54,14 @@ describe('Recorder', function() {
         await frontend.bringToFront();
         await frontend.waitForSelector('pierce/.section');
         const element = await target.waitForSelector('a[href="recorder2.html"]');
-        await element?.press('Enter');
+        await element?.click();
         await frontend.bringToFront();
 
         await frontend.click('aria/End recording');
 
         const steps =
             await frontend.$$eval('pierce/.step .action', actions => actions.map(e => (e as HTMLElement).innerText));
-        assert.deepEqual(steps, ['viewport', 'keydown', 'click', 'keyup']);
+        assert.deepEqual(steps, ['viewport', 'click']);
 
         await target.goto('about:blank');
         const button = await frontend.$('aria/Play recording') as puppeteer.ElementHandle<HTMLButtonElement>;

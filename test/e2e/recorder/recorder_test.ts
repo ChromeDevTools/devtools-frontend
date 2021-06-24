@@ -183,6 +183,44 @@ describe('Recorder', function() {
     });
   });
 
+  it('should capture Enter key presses on buttons', async () => {
+    await startRecording('recorder/recorder.html');
+
+    const {target} = getBrowserAndPages();
+    await target.bringToFront();
+    const button = await target.waitForSelector('#test');
+    await button?.press('Enter');
+
+    await stopRecording();
+    await assertOutput({
+      title: 'New Recording',
+      sections: [{
+        url: 'https://<url>/test/e2e/resources/recorder/recorder.html',
+        screenshot: '<screenshot>',
+        title: '',
+        steps: [
+          viewportStep,
+          {
+            type: 'keydown',
+            key: 'Enter',
+            context: {
+              target: 'main',
+              path: [],
+            },
+          },
+          {
+            type: 'keyup',
+            key: 'Enter',
+            context: {
+              target: 'main',
+              path: [],
+            },
+          },
+        ],
+      }],
+    });
+  });
+
   it('should not capture synthetic events', async () => {
     await startRecording('recorder/recorder.html');
 

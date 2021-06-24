@@ -136,11 +136,20 @@ export function setupRecordingClient(
       };
     }
     if (event.type === 'click') {
+      const mouseEvent = event as MouseEvent;
+      const elementTarget = target as Element;
+      // If both offsets are zero, it's very likely that the event was
+      // sent as a result of keyboard interactions which are handled
+      // separately.
+      if (mouseEvent.offsetX === 0 && mouseEvent.offsetY === 0) {
+        return;
+      }
+      const rect = elementTarget.getBoundingClientRect();
       return {
         type: event.type,
         selector: getSelector(nodeTarget),
-        offsetX: (event as MouseEvent).offsetX,
-        offsetY: (event as MouseEvent).offsetY,
+        offsetX: lastClientX - rect.x,
+        offsetY: lastClientY - rect.y,
       };
     }
     if (event.type === 'change') {
@@ -290,6 +299,14 @@ export function setupRecordingClient(
     window.addStep(JSON.stringify(step));
   };
 
+  let lastClientX = 0;
+  let lastClientY = 0;
+  const mouseUpListeners = (event: Event): void => {
+    const mouseEvent = event as MouseEvent;
+    lastClientX = mouseEvent.clientX;
+    lastClientY = mouseEvent.clientY;
+  };
+
   if (!window._recorderEventListener) {
     log('Setting _recorderEventListener');
     window.addEventListener('click', recorderEventListener, true);
@@ -298,6 +315,7 @@ export function setupRecordingClient(
     window.addEventListener('keyup', recorderEventListener, true);
     window.addEventListener('scroll', recorderEventListener, true);
     window.addEventListener('focus', recorderEventListener, true);
+    window.addEventListener('mouseup', mouseUpListeners, true);
     window._recorderEventListener = recorderEventListener;
   } else {
     log('_recorderEventListener was already installed');
@@ -311,6 +329,7 @@ export function setupRecordingClient(
     window.removeEventListener('keyup', recorderEventListener, true);
     window.removeEventListener('scroll', recorderEventListener, true);
     window.removeEventListener('focus', recorderEventListener, true);
+    window.removeEventListener('mouseup', mouseUpListeners, true);
     delete window._recorderEventListener;
     delete window._recorderTeardown;
   };

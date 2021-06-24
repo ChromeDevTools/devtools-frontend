@@ -58,7 +58,7 @@ describe('RecordingClient', () => {
   it('should create click steps from events', async () => {
     const {frontend} = getBrowserAndPages();
     const step = await frontend.evaluate(() => {
-      const event = new Event('click');
+      const event = new Event('click') as MouseEvent;
       const target = document.querySelector('#button');
       // @ts-ignore
       return window.createStepFromEvent(event, target, true);
@@ -66,6 +66,8 @@ describe('RecordingClient', () => {
     assert.deepStrictEqual(step, {
       type: 'click',
       selector: 'aria/testButton',
+      offsetX: 0,
+      offsetY: -11,
     });
   });
 

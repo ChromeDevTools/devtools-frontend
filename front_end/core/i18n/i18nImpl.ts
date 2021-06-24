@@ -108,15 +108,16 @@ export async function fetchAndRegisterLocaleData(locale: Intl.UnicodeBCP47Locale
  * meta files used to register module extensions.
  */
 export function getLazilyComputedLocalizedString(
-    localizedStringSet: LocalizedStringSet, id: string, values: Object = {}): () => Platform.UIString.LocalizedString {
+    localizedStringSet: LocalizedStringSet, id: string, values: i18nTypes.Values = {}): () =>
+    Platform.UIString.LocalizedString {
   return (): Platform.UIString.LocalizedString => getLocalizedString(localizedStringSet, id, values);
 }
 
 /**
  * Retrieve the localized string.
  */
-export function getLocalizedString(
-    localizedStringSet: LocalizedStringSet, id: string, values: Object = {}): Platform.UIString.LocalizedString {
+export function getLocalizedString(localizedStringSet: LocalizedStringSet, id: string, values: i18nTypes.Values = {}):
+    Platform.UIString.LocalizedString {
   return localizedStringSet.getLocalizedString(id, values);
 }
 

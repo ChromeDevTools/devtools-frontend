@@ -45,12 +45,10 @@ describe('Recorder', () => {
       });
       assert.deepEqual(writer.getCurrentScript(), `const element = await frame.waitForSelector("aria/Test");
 const {offsetLeft, offsetTop} = await element.evaluate(el => {
-  const styles = getComputedStyle(el);
-  const borderTop = parseFloat(styles.getPropertyValue('border-top-width'));
-  const borderLeft = parseFloat(styles.getPropertyValue('border-left-width'));
+  const rect = el.getBoundingClientRect();
   return {
-    offsetTop: el.offsetTop + borderTop,
-    offsetLeft: el.offsetLeft + borderLeft,
+    offsetTop: rect.y,
+    offsetLeft: rect.x,
   };
 });
 await page.mouse.click(offsetLeft + 1, offsetTop + 1);
@@ -73,12 +71,10 @@ await page.mouse.click(offsetLeft + 1, offsetTop + 1);
 element = await element.$("aria/Test2");
 element = (await element.evaluateHandle(el => el.shadowRoot ? el.shadowRoot : el)).asElement();
 const {offsetLeft, offsetTop} = await element.evaluate(el => {
-  const styles = getComputedStyle(el);
-  const borderTop = parseFloat(styles.getPropertyValue('border-top-width'));
-  const borderLeft = parseFloat(styles.getPropertyValue('border-left-width'));
+  const rect = el.getBoundingClientRect();
   return {
-    offsetTop: el.offsetTop + borderTop,
-    offsetLeft: el.offsetLeft + borderLeft,
+    offsetTop: rect.y,
+    offsetLeft: rect.x,
   };
 });
 await page.mouse.click(offsetLeft + 1, offsetTop + 1);
@@ -207,12 +203,10 @@ if (["textarea","select-one","text","url","tel","search","password","number","em
     let frame = targetPage.mainFrame();
     const element = await frame.waitForSelector("aria/Test");
     const {offsetLeft, offsetTop} = await element.evaluate(el => {
-      const styles = getComputedStyle(el);
-      const borderTop = parseFloat(styles.getPropertyValue('border-top-width'));
-      const borderLeft = parseFloat(styles.getPropertyValue('border-left-width'));
+      const rect = el.getBoundingClientRect();
       return {
-        offsetTop: el.offsetTop + borderTop,
-        offsetLeft: el.offsetLeft + borderLeft,
+        offsetTop: rect.y,
+        offsetLeft: rect.x,
       };
     });
     await page.mouse.click(offsetLeft + 1, offsetTop + 1);
@@ -256,12 +250,10 @@ if (["textarea","select-one","text","url","tel","search","password","number","em
     frame = frame.childFrames()[1];
     const element = await frame.waitForSelector("aria/Test");
     const {offsetLeft, offsetTop} = await element.evaluate(el => {
-      const styles = getComputedStyle(el);
-      const borderTop = parseFloat(styles.getPropertyValue('border-top-width'));
-      const borderLeft = parseFloat(styles.getPropertyValue('border-left-width'));
+      const rect = el.getBoundingClientRect();
       return {
-        offsetTop: el.offsetTop + borderTop,
-        offsetLeft: el.offsetLeft + borderLeft,
+        offsetTop: rect.y,
+        offsetLeft: rect.x,
       };
     });
     await page.mouse.click(offsetLeft + 1, offsetTop + 1);

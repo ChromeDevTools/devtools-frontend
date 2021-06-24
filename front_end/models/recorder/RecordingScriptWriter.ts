@@ -55,12 +55,10 @@ export class RecordingScriptWriter {
   appendClickStep(step: ClickStep): void {
     this.appendWaitForSelector(step);
     this.appendLineToScript('const {offsetLeft, offsetTop} = await element.evaluate(el => {');
-    this.appendLineToScript('  const styles = getComputedStyle(el);');
-    this.appendLineToScript('  const borderTop = parseFloat(styles.getPropertyValue(\'border-top-width\'));');
-    this.appendLineToScript('  const borderLeft = parseFloat(styles.getPropertyValue(\'border-left-width\'));');
+    this.appendLineToScript('  const rect = el.getBoundingClientRect();');
     this.appendLineToScript('  return {');
-    this.appendLineToScript('    offsetTop: el.offsetTop + borderTop,');
-    this.appendLineToScript('    offsetLeft: el.offsetLeft + borderLeft,');
+    this.appendLineToScript('    offsetTop: rect.y,');
+    this.appendLineToScript('    offsetLeft: rect.x,');
     this.appendLineToScript('  };');
     this.appendLineToScript('});');
     this.appendLineToScript(`await page.mouse.click(offsetLeft + ${step.offsetX}, offsetTop + ${step.offsetY});`);

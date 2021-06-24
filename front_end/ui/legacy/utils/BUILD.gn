@@ -16,7 +16,6 @@ devtools_module("ui_utils") {
   ]
 
   deps = [
-    "../:css_files",
     "../../../core/root:bundle",
     "../../../ui/legacy/theme_support:bundle",
     "../../components/helpers:bundle",
@@ -26,10 +25,7 @@ devtools_module("ui_utils") {
 devtools_entrypoint("bundle") {
   entrypoint = "utils.ts"
 
-  deps = [
-    ":ui_utils",
-    "../:css_files",
-  ]
+  deps = [ ":ui_utils" ]
 
   visibility = [ "../*" ]
 }

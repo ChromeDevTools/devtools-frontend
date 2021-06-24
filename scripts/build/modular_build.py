@@ -70,7 +70,10 @@ class Descriptors:
             return self._cached_sorted_modules
 
         result = []
-        unvisited_modules = set(self.modules)
+
+        # Use dict instead of set for deterministic iteration order.
+        unvisited_modules = {module: None for module in self.modules}
+
         temp_modules = set()
 
         def visit(parent, name):
@@ -87,7 +90,7 @@ class Descriptors:
                     bad_dep = visit(name, dep_name)
                     if bad_dep:
                         return bad_dep
-            unvisited_modules.remove(name)
+            del unvisited_modules[name]
             temp_modules.remove(name)
             result.append(name)
             return None

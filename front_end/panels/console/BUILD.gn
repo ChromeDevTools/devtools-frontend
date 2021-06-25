@@ -39,6 +39,7 @@ devtools_module("console") {
     "../../models/issues_manager:bundle",
     "../../models/logs:bundle",
     "../../models/text_utils:bundle",
+    "../../ui/components/request_link_icon:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/data_grid:bundle",
     "../../ui/legacy/components/object_ui:bundle",

@@ -544,6 +544,10 @@ export class ConsoleMessage {
     this._exceptionId = undefined;
   }
 
+  getAffectedResources(): AffectedResources|undefined {
+    return this.affectedResources;
+  }
+
   get type(): MessageType {
     return this._type;
   }

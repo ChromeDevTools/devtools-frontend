@@ -43,6 +43,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as RequestLinkIcon from '../../ui/components/request_link_icon/request_link_icon.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as TextEditor from '../../ui/legacy/components/text_editor/text_editor.js';
@@ -219,6 +220,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   _lastInSimilarGroup: boolean;
   _groupKey: string;
   _repeatCountElement: UI.UIUtils.DevToolsSmallBubble|null;
+  private requestResolver = new Logs.RequestResolver.RequestResolver();
+
 
   constructor(
       consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier, nestingLevel: number,
@@ -404,6 +407,22 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return messageElement;
   }
 
+  private createAffectedResourceLinks(): HTMLElement[] {
+    const elements = [];
+    const requestId = this._message.getAffectedResources()?.requestId;
+    if (requestId) {
+      const icon = new RequestLinkIcon.RequestLinkIcon.RequestLinkIcon();
+      icon.classList.add('resource-links');
+      icon.data = {
+        affectedRequest: {requestId},
+        requestResolver: this.requestResolver,
+        displayURL: false,
+      };
+      elements.push(icon);
+    }
+    return elements;
+  }
+
   _buildMessageAnchor(): HTMLElement|null {
     const linkify = (message: SDK.ConsoleModel.ConsoleMessage): HTMLElement|null => {
       if (message.scriptId) {
@@ -428,6 +447,12 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       const anchorWrapperElement = (document.createElement('span') as HTMLElement);
       anchorWrapperElement.classList.add('console-message-anchor');
       anchorWrapperElement.appendChild(anchorElement);
+
+      for (const element of this.createAffectedResourceLinks()) {
+        UI.UIUtils.createTextChild(anchorWrapperElement, ' ');
+        anchorWrapperElement.append(element);
+      }
+
       UI.UIUtils.createTextChild(anchorWrapperElement, ' ');
       return anchorWrapperElement;
     }

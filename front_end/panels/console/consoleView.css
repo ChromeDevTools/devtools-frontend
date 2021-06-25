@@ -354,6 +354,10 @@
   word-break: break-all;
 }
 
+#console-messages .resource-links {
+  vertical-align: bottom;
+}
+
 #console-messages .link:hover,
 #console-messages .devtools-link:hover {
   color: var(--color-text-primary);

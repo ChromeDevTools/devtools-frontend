@@ -100,7 +100,7 @@ describe('The Application Tab', async () => {
       if (stackTraceRows.length === 3) {
         return stackTraceRows;
       }
-      return stackTraceRows;
+      return undefined;
     });
     const expected = [
       'second\xA0@\xA0js-oopif.html:17',

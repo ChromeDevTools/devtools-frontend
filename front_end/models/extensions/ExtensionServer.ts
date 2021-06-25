@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
 /* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/naming-convention,rulesdir/no_underscored_properties */
 
@@ -67,13 +64,13 @@ const kAllowedOrigins = [
 let extensionServerInstance: ExtensionServer|null;
 
 export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
-  _clientObjects: {};
-  _handlers: {};
+  _clientObjects: {[key: string]: any};
+  _handlers: {[key: string]: any};
   _subscribers: Map<string, Set<MessagePort>>;
-  _subscriptionStartHandlers: {};
-  _subscriptionStopHandlers: {};
+  _subscriptionStartHandlers: {[key: string]: any};
+  _subscriptionStopHandlers: {[key: string]: any};
   _extraHeaders: Map<string, Map<string, any>>;
-  _requests: {};
+  _requests: {[key: string]: any};
   _lastRequestId: number;
   _registeredExtensions: Map<string, {
     name: string,
@@ -132,6 +129,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     window.addEventListener('message', this._onWindowMessage.bind(this), false);  // Only for main window.
 
     const existingTabId =
+        // @ts-ignore
         window.DevToolsAPI && window.DevToolsAPI.getInspectedTabId && window.DevToolsAPI.getInspectedTabId();
 
     if (existingTabId) {
@@ -219,7 +217,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     return this._subscribers.has(type);
   }
 
-  _postNotification(type: string, _vararg: any): void {
+  _postNotification(type: string, ..._vararg: any[]): void {
     if (!this._extensionsEnabled) {
       return;
     }
@@ -282,12 +280,14 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     SDK.NetworkManager.MultitargetNetworkManager.instance().setExtraHTTPHeaders(allHeaders);
+    return undefined;
   }
 
   _onApplyStyleSheet(message: any): void {
     if (!Root.Runtime.experiments.isEnabled('applyCustomStylesheet')) {
       return;
     }
+    // @ts-ignore
     const styleSheet = createElement('style');
     styleSheet.textContent = message.styleSheet;
     document.head.appendChild(styleSheet);
@@ -309,7 +309,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
       return this._status.E_EXISTS(id);
     }
 
-    const page = this._expandResourcePath(port[extensionOriginSymbol], message.page);
+    const page = this._expandResourcePath(port[extensionOriginSymbol], message.page) as string;
     let persistentId = port[extensionOriginSymbol] + message.title;
     persistentId = persistentId.replace(/\s/g, '');
     const panelView =
@@ -334,6 +334,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
       return this._status.E_NOTFOUND(message.panel);
     }
     const button = new ExtensionButton(
+        // @ts-ignore
         this, message.id, this._expandResourcePath(port[extensionOriginSymbol], message.icon), message.tooltip,
         message.disabled);
     this._clientObjects[message.id] = button;
@@ -353,17 +354,19 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
       return this._status.E_NOTFOUND(message.id);
     }
     button.update(
+        // @ts-ignore
         this._expandResourcePath(port[extensionOriginSymbol], message.icon), message.tooltip, message.disabled);
     return this._status.OK();
   }
 
-  _onCompleteTraceSession(message: Object): Record|undefined {
+  _onCompleteTraceSession(message: any): Record|undefined {
     const session = this._traceSessions.get(message.id);
     if (!session) {
       return this._status.E_NOTFOUND(message.id);
     }
     this._traceSessions.delete(message.id);
     session.complete(message.url, message.timeOffset);
+    return undefined;
   }
 
   _onCreateSidebarPane(message: any): Record {
@@ -416,6 +419,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
       return this._status.E_NOTFOUND(message.id);
     }
     sidebar.setPage(this._expandResourcePath(port[extensionOriginSymbol], message.page));
+    return undefined;
   }
 
   _onOpenResource(message: any): Record {
@@ -441,6 +445,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   _onSetOpenResourceHandler(message: any, port: any): void {
+    // @ts-ignore
     const name = this._registeredExtensions.get(port[extensionOriginSymbol]).name;
     if (message.handlerPresent) {
       Components.Linkifier.Linkifier.registerLinkHandler(name, this._handleOpenURL.bind(this, port));
@@ -473,6 +478,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         wasThrown: boolean): void {
       let result;
       if (error || !object) {
+        // @ts-ignore
         result = this._status.E_PROTOCOLERROR(error.toString());
       } else if (wasThrown) {
         result = {isException: true, value: object.description};
@@ -490,6 +496,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     const requests = Logs.NetworkLog.NetworkLog.instance().requests();
     const harLog = await HAR.Log.Log.build(requests);
     for (let i = 0; i < harLog.entries.length; ++i) {
+      // @ts-ignore
       harLog.entries[i]._requestId = this._requestId(requests[i]);
     }
     return harLog;
@@ -520,13 +527,15 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     uiSourceCodes.forEach(pushResourceData.bind(this));
     for (const resourceTreeModel of SDK.TargetManager.TargetManager.instance().models(
              SDK.ResourceTreeModel.ResourceTreeModel)) {
+      // @ts-ignore
       resourceTreeModel.forAllResources(pushResourceData.bind(this));
     }
+    // @ts-ignore
     return [...resources.values()];
   }
 
   async _getResourceContent(
-      contentProvider: TextUtils.ContentProvider.ContentProvider, message: Object, port: MessagePort): Promise<void> {
+      contentProvider: TextUtils.ContentProvider.ContentProvider, message: any, port: MessagePort): Promise<void> {
     const {content} = await contentProvider.requestContent();
     const encoded = await contentProvider.contentEncoded();
     this._dispatchCallback(message.requestId, port, {encoding: encoded ? 'base64' : '', content: content});
@@ -538,6 +547,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
       return this._status.E_NOTFOUND(message.id);
     }
     this._getResourceContent(request, message, port);
+    return undefined;
   }
 
   _onGetResourceContent(message: any, port: any): Record|undefined {
@@ -548,6 +558,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
       return this._status.E_NOTFOUND(url);
     }
     this._getResourceContent(contentProvider, message, port);
+    return undefined;
   }
 
   _onSetResourceContent(message: any, port: any): Record|undefined {
@@ -570,6 +581,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
       uiSourceCode.commitWorkingCopy();
     }
     callbackWrapper.call(this, null);
+    return undefined;
   }
 
   _requestId(request: any): any {
@@ -584,8 +596,9 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     return this._requests[id];
   }
 
-  _onAddTraceProvider(message: Object, port: MessagePort): void {
+  _onAddTraceProvider(message: any, port: MessagePort): void {
     const provider = new ExtensionTraceProvider(
+        // @ts-ignore
         port[extensionOriginSymbol], message.id, message.categoryName, message.categoryTooltip);
     this._clientObjects[message.id] = provider;
     this._traceProviders.push(provider);
@@ -612,6 +625,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         shiftKey: entry.shiftKey,
         metaKey: entry.metaKey,
       });
+      // @ts-ignore
       event.__keyCode = keyCodeForEntry(entry);
       document.dispatchEvent(event);
     }
@@ -699,7 +713,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
   _addExtension(extensionInfo: Host.InspectorFrontendHostAPI.ExtensionDescriptor): boolean|undefined {
     const startPage = extensionInfo.startPage;
 
-    const inspectedURL = SDK.TargetManager.TargetManager.instance().mainTarget().inspectedURL();
+    const inspectedURL = SDK.TargetManager.TargetManager.instance().mainTarget()?.inspectedURL() ?? '';
     if (inspectedURL !== '' && !this._canInspectURL(inspectedURL)) {
       this._disableExtensions();
     }
@@ -712,19 +726,17 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
       if (!this._registeredExtensions.get(extensionOrigin)) {
         // See ExtensionAPI.js for details.
         const injectedAPI = self.buildExtensionAPIInjectedScript(
-            (extensionInfo as {
-              startPage: string,
-              name: string,
-              exposeExperimentalAPIs: boolean,
-            }),
-            this._inspectedTabId, ThemeSupport.ThemeSupport.instance().themeName(),
+            // @ts-ignore
+            extensionInfo, this._inspectedTabId, ThemeSupport.ThemeSupport.instance().themeName(),
             UI.ShortcutRegistry.ShortcutRegistry.instance().globalShortcutKeys(),
+            // @ts-ignore
             ExtensionServer.instance()['_extensionAPITestHook']);
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.setInjectedScriptForOrigin(
             extensionOrigin, injectedAPI);
         const name = extensionInfo.name || `Extension ${extensionOrigin}`;
         this._registeredExtensions.set(extensionOrigin, {name});
       }
+      // @ts-ignore
       const iframe = createElement('iframe');
       iframe.src = startPage;
       iframe.dataset.devtoolsExtension = extensionInfo.name;
@@ -783,7 +795,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   _registerAutosubscriptionHandler(
-      eventTopic: string, eventTarget: Object, frontendEventType: symbol,
+      eventTopic: string, eventTarget: any, frontendEventType: string,
       handler: (arg0: Common.EventTarget.EventTargetEvent) => any): void {
     this._registerSubscriptionHandler(
         eventTopic, eventTarget.addEventListener.bind(eventTarget, frontendEventType, handler, this),
@@ -791,12 +803,14 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   _registerAutosubscriptionTargetManagerHandler(
-      eventTopic: string, modelClass: Function, frontendEventType: symbol,
+      eventTopic: string, modelClass: Function, frontendEventType: string,
       handler: (arg0: Common.EventTarget.EventTargetEvent) => any): void {
     this._registerSubscriptionHandler(
         eventTopic,
+        // @ts-ignore
         SDK.TargetManager.TargetManager.instance().addModelListener.bind(
             SDK.TargetManager.TargetManager.instance(), modelClass, frontendEventType, handler, this),
+        // @ts-ignore
         SDK.TargetManager.TargetManager.instance().removeModelListener.bind(
             SDK.TargetManager.TargetManager.instance(), modelClass, frontendEventType, handler, this));
   }
@@ -848,12 +862,12 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   evaluate(
-      expression: string, exposeCommandLineAPI: boolean, returnByValue: boolean, options: Object|null,
+      expression: string, exposeCommandLineAPI: boolean, returnByValue: boolean, options: any|null,
       securityOrigin: string,
       callback: (arg0: string|null, arg1: SDK.RemoteObject.RemoteObject|null, arg2: boolean) => any): Record|undefined {
     let context;
 
-    function resolveURLToFrame(url: string): boolean {
+    function resolveURLToFrame(url: string): any {
       let found;
       function hasMatchingURL(frame: any): any {
         found = (frame.url === url) ? frame : null;
@@ -936,12 +950,13 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         .then(onEvaluate);
 
     function onEvaluate(result: SDK.RuntimeModel.EvaluationResult): void {
-      if (result.error) {
+      if ('error' in result) {
         callback(result.error, null, false);
         return;
       }
       callback(null, result.object || null, Boolean(result.exceptionDetails));
     }
+    return undefined;
   }
 
   _canInspectURL(url: string): boolean {
@@ -1013,6 +1028,7 @@ export class ExtensionStatus {
       const details = Array.prototype.slice.call(arguments, 2);
       const status = {code: code, description: description, details: details};
       if (code !== 'OK') {
+        // @ts-ignore
         status.isError = true;
         console.error('Extension server error: ' + Platform.StringUtilities.vsprintf(description, details));
       }

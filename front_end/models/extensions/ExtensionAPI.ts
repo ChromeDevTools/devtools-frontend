@@ -29,6 +29,7 @@
  */
 
 import type * as PublicAPI from '../../../extension-api/ExtensionAPI'; // eslint-disable-line rulesdir/es_modules_import
+import type * as HAR from '../har/har.js';
 
 /* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/naming-convention,@typescript-eslint/no-non-null-assertion */
 export namespace PrivateAPI {
@@ -247,6 +248,14 @@ namespace APIImpl {
     _fire(..._vararg: Parameters<ListenerT>): void;
     _dispatch(request: {arguments: unknown[]}): void;
   }
+
+  export interface Network extends PublicAPI.Chrome.DevTools.Network {
+    addRequestHeaders(headers: {[key: string]: string}): void;
+  }
+
+  export interface Request extends PublicAPI.Chrome.DevTools.Request, HAR.Log.EntryDTO {
+    _id: number;
+  }
 }
 
 self.injectedExtensionAPI = function(
@@ -339,8 +348,7 @@ self.injectedExtensionAPI = function(
     this.inspectedWindow = new InspectedWindow();
     // @ts-ignore
     this.panels = new Panels();
-    // @ts-ignore
-    this.network = new Network();
+    this.network = new (Constructor(Network))();
     // @ts-ignore
     this.timeline = new Timeline();
     // @ts-ignore
@@ -352,48 +360,53 @@ self.injectedExtensionAPI = function(
    * @constructor
    */
 
-  function Network(this: any): void {
-    function dispatchRequestEvent(this: any, message: any): void {
-      const request = message.arguments[1];
-      // @ts-ignore
-      request.__proto__ = new Request(message.arguments[0]);
+  function Network(this: APIImpl.Network): void {
+    function dispatchRequestEvent(
+        this: APIImpl.EventSink<(request: PublicAPI.Chrome.DevTools.Request) => unknown>,
+        message: {arguments: unknown[]}): void {
+      const request = message.arguments[1] as APIImpl.Request & {__proto__: APIImpl.Request};
+
+      request.__proto__ = new (Constructor(Request))(message.arguments[0] as number);
       this._fire(request);
     }
-    // @ts-ignore
-    this.onRequestFinished = new EventSink(PrivateAPI.Events.NetworkRequestFinished, dispatchRequestEvent);
+
+    this.onRequestFinished =
+        new (Constructor(EventSink))(PrivateAPI.Events.NetworkRequestFinished, dispatchRequestEvent);
     defineDeprecatedProperty(this, 'network', 'onFinished', 'onRequestFinished');
-    // @ts-ignore
-    this.onNavigated = new EventSink(PrivateAPI.Events.InspectedURLChanged);
+
+    this.onNavigated = new (Constructor(EventSink))(PrivateAPI.Events.InspectedURLChanged);
   }
 
-  Network.prototype = {
-    getHAR: function(callback: any): void {
-      function callbackWrapper(result: any): void {
+  (Network.prototype as Pick<APIImpl.Network, 'getHAR'|'addRequestHeaders'>) = {
+    getHAR: function(this: PublicAPI.Chrome.DevTools.Network, callback?: (harLog: Object) => unknown): void {
+      function callbackWrapper(response: unknown): void {
+        const result =
+            response as ({entries: Array<HAR.Log.EntryDTO&{__proto__?: APIImpl.Request, _requestId?: number}>});
         const entries = (result && result.entries) || [];
         for (let i = 0; i < entries.length; ++i) {
-          // @ts-ignore
-          entries[i].__proto__ = new Request(entries[i]._requestId);
+          entries[i].__proto__ = new (Constructor(Request))(entries[i]._requestId as number);
           delete entries[i]._requestId;
         }
-        callback(result);
+        callback && callback(result as Object);
       }
       extensionServer.sendRequest({command: PrivateAPI.Commands.GetHAR}, callback && callbackWrapper);
     },
 
-    addRequestHeaders: function(headers: any): void {
+    addRequestHeaders: function(headers: {[key: string]: string}): void {
       extensionServer.sendRequest(
           {command: PrivateAPI.Commands.AddRequestHeaders, headers: headers, extensionId: window.location.hostname});
     },
   };
 
-  function RequestImpl(this: any, id: any): void {
+  function RequestImpl(this: APIImpl.Request, id: number): void {
     this._id = id;
   }
 
-  RequestImpl.prototype = {
-    getContent: function(callback: any): void {
-      function callbackWrapper(response: any): void {
-        callback(response.content, response.encoding);
+  (RequestImpl.prototype as Pick<APIImpl.Request, 'getContent'>) = {
+    getContent: function(this: APIImpl.Request, callback?: (content: string, encoding: string) => unknown): void {
+      function callbackWrapper(response: unknown): void {
+        const {content, encoding} = response as {content: string, encoding: string};
+        callback && callback(content, encoding);
       }
       extensionServer.sendRequest(
           {command: PrivateAPI.Commands.GetRequestContent, id: this._id}, callback && callbackWrapper);

@@ -256,6 +256,47 @@ namespace APIImpl {
   export interface Request extends PublicAPI.Chrome.DevTools.Request, HAR.Log.EntryDTO {
     _id: number;
   }
+
+  export interface Panels extends PublicAPI.Chrome.DevTools.Panels {
+    get SearchAction(): {[key: string]: string};
+    applyStyleSheet(styleSheet: string): void;
+    setOpenResourceHandler(callback?: (resource: PublicAPI.Chrome.DevTools.Resource, lineNumber: number) => unknown):
+        void;
+  }
+
+  export interface ExtensionView extends PublicAPI.Chrome.DevTools.ExtensionView {
+    _id: string|null;
+  }
+
+  export interface ExtensionSidebarPane extends ExtensionView, PublicAPI.Chrome.DevTools.ExtensionSidebarPane {
+    setExpression(
+        expression: string, rootTitle?: string, evaluteOptions?: PrivateAPI.EvaluateOptions,
+        callback?: () => unknown): void;
+  }
+
+  export interface PanelWithSidebar extends ExtensionView, PublicAPI.Chrome.DevTools.PanelWithSidebar {
+    _hostPanelName: string;
+  }
+
+  export interface LanguageExtensions extends PublicAPI.Chrome.DevTools.LanguageExtensions {
+    _plugins: Map<PublicAPI.Chrome.DevTools.LanguageExtensionPlugin, MessagePort>;
+  }
+
+  export interface ExtensionPanel extends ExtensionView, PublicAPI.Chrome.DevTools.ExtensionPanel {
+    show(): void;
+  }
+
+  export interface Button extends PublicAPI.Chrome.DevTools.Button {
+    _id: string;
+  }
+
+  export type ResourceData = {url: string, type: string};
+  export interface Resource extends PublicAPI.Chrome.DevTools.Resource {
+    _type: string;
+    _url: string;
+
+    get type(): string;
+  }
 }
 
 self.injectedExtensionAPI = function(
@@ -346,8 +387,7 @@ self.injectedExtensionAPI = function(
   function InspectorExtensionAPI(this: APIImpl.InspectorExtensionAPI): void {
     // @ts-ignore
     this.inspectedWindow = new InspectedWindow();
-    // @ts-ignore
-    this.panels = new Panels();
+    this.panels = new (Constructor(Panels))();
     this.network = new (Constructor(Network))();
     // @ts-ignore
     this.timeline = new Timeline();
@@ -416,40 +456,43 @@ self.injectedExtensionAPI = function(
   /**
    * @constructor
    */
-  function Panels(this: any): void {
-    const panels: {[key: string]: any} = {
+  function Panels(this: APIImpl.Panels): void {
+    const panels: {[key: string]: ElementsPanel|SourcesPanel} = {
       elements: new ElementsPanel(),
       sources: new SourcesPanel(),
     };
 
-    function panelGetter(name: any): any {
+    function panelGetter(name: string): ElementsPanel|SourcesPanel {
       return panels[name];
     }
     for (const panel in panels) {
       Object.defineProperty(this, panel, {get: panelGetter.bind(null, panel), enumerable: true});
     }
-    this.applyStyleSheet = function(styleSheet: any): void {
+    this.applyStyleSheet = function(styleSheet: string): void {
       extensionServer.sendRequest({command: PrivateAPI.Commands.ApplyStyleSheet, styleSheet: styleSheet});
     };
   }
 
-  Panels.prototype = {
-    create: function(title: any, icon: any, page: any, callback: any): void {
+  (Panels.prototype as Pick<APIImpl.Panels, 'create'|'setOpenResourceHandler'|'openResource'|'SearchAction'>) = {
+    create: function(
+        title: string, icon: string, page: string,
+        callback: (panel: PublicAPI.Chrome.DevTools.ExtensionPanel) => unknown): void {
       const id = 'extension-panel-' + extensionServer.nextObjectId();
-      const request = {command: PrivateAPI.Commands.CreatePanel, id: id, title: title, icon: icon, page: page};
-      // @ts-ignore
-      extensionServer.sendRequest(request, callback && callback.bind(this, new ExtensionPanel(id)));
+      extensionServer.sendRequest(
+          {command: PrivateAPI.Commands.CreatePanel, id, title, page},
+          callback && callback.bind(this, new (Constructor(ExtensionPanel))(id)));
     },
 
-    setOpenResourceHandler: function(callback: any): void {
+    setOpenResourceHandler: function(
+        callback: (resource: PublicAPI.Chrome.DevTools.Resource, lineNumber: number) => unknown): void {
       const hadHandler = extensionServer.hasHandler(PrivateAPI.Events.OpenResource);
 
-      function callbackWrapper(message: any): void {
+      function callbackWrapper(message: unknown): void {
         // Allow the panel to show itself when handling the event.
         userAction = true;
         try {
-          // @ts-ignore
-          callback.call(null, new Resource(message.resource), message.lineNumber);
+          const {resource, lineNumber} = message as {resource: APIImpl.ResourceData, lineNumber: number};
+          callback.call(null, new (Constructor(Resource))(resource), lineNumber);
         } finally {
           userAction = false;
         }
@@ -468,12 +511,11 @@ self.injectedExtensionAPI = function(
       }
     },
 
-    openResource: function(url: any, lineNumber: any, callback: any): void {
-      extensionServer.sendRequest(
-          {command: PrivateAPI.Commands.OpenResource, 'url': url, 'lineNumber': lineNumber}, callback);
+    openResource: function(url: string, lineNumber: number, callback?: (response: unknown) => unknown): void {
+      extensionServer.sendRequest({command: PrivateAPI.Commands.OpenResource, url, lineNumber}, callback);
     },
 
-    get SearchAction(): any {
+    get SearchAction(): {[key: string]: string} {
       return {
         CancelSearch: PrivateAPI.Panels.SearchAction.CancelSearch,
         PerformSearch: PrivateAPI.Panels.SearchAction.PerformSearch,
@@ -486,10 +528,11 @@ self.injectedExtensionAPI = function(
   /**
    * @constructor
    */
-  function ExtensionViewImpl(this: any, id: any): void {
+  function ExtensionViewImpl(this: APIImpl.ExtensionView, id: string|null): void {
     this._id = id;
 
-    function dispatchShowEvent(this: any, message: any): void {
+    function dispatchShowEvent(
+        this: APIImpl.EventSink<(window?: Window) => unknown>, message: {arguments: unknown[]}): void {
       const frameIndex = message.arguments[0];
       if (typeof frameIndex === 'number') {
         this._fire(window.parent.frames[frameIndex]);
@@ -499,10 +542,9 @@ self.injectedExtensionAPI = function(
     }
 
     if (id) {
-      // @ts-ignore
-      this.onShown = new EventSink(PrivateAPI.Events.ViewShown + id, dispatchShowEvent);
-      // @ts-ignore
-      this.onHidden = new EventSink(PrivateAPI.Events.ViewHidden + id);
+      this.onShown = new (Constructor(EventSink))(PrivateAPI.Events.ViewShown + id, dispatchShowEvent);
+
+      this.onHidden = new (Constructor(EventSink))(PrivateAPI.Events.ViewHidden + id);
     }
   }
 
@@ -510,22 +552,24 @@ self.injectedExtensionAPI = function(
    * @constructor
    * @extends {ExtensionViewImpl}
    */
-  function PanelWithSidebarImpl(this: any, hostPanelName: string): void {
+  function PanelWithSidebarImpl(this: APIImpl.PanelWithSidebar, hostPanelName: string): void {
     ExtensionViewImpl.call(this, null);
     this._hostPanelName = hostPanelName;
-    // @ts-ignore
-    this.onSelectionChanged = new EventSink(PrivateAPI.Events.PanelObjectSelected + hostPanelName);
+
+    this.onSelectionChanged = new (Constructor(EventSink))(PrivateAPI.Events.PanelObjectSelected + hostPanelName);
   }
 
-  PanelWithSidebarImpl.prototype = {
-    createSidebarPane: function(title: any, callback: any): void {
+  (PanelWithSidebarImpl.prototype as Pick<APIImpl.PanelWithSidebar, 'createSidebarPane'>&
+   {__proto__: APIImpl.ExtensionView}) = {
+    createSidebarPane: function(
+        this: APIImpl.PanelWithSidebar, title: string,
+        callback?: (pane: PublicAPI.Chrome.DevTools.ExtensionSidebarPane) => unknown): void {
       const id = 'extension-sidebar-' + extensionServer.nextObjectId();
       function callbackWrapper(): void {
-        // @ts-ignore
-        callback(new ExtensionSidebarPane(id));
+        callback && callback(new (Constructor(ExtensionSidebarPane))(id));
       }
       extensionServer.sendRequest(
-          {command: PrivateAPI.Commands.CreateSidebarPane, panel: this._hostPanelName, id: id, title: title},
+          {command: PrivateAPI.Commands.CreateSidebarPane, panel: this._hostPanelName, id, title},
           callback && callbackWrapper);
     },
 
@@ -660,15 +704,15 @@ self.injectedExtensionAPI = function(
   const Resource = declareInterfaceClass(ResourceImpl);
   const TraceSession = declareInterfaceClass(TraceSessionImpl);
 
-  // @ts-ignore
-  class ElementsPanel extends PanelWithSidebarClass {
+
+  class ElementsPanel extends (Constructor(PanelWithSidebarClass)) {
     constructor() {
       super('elements');
     }
   }
 
-  // @ts-ignore
-  class SourcesPanel extends PanelWithSidebarClass {
+
+  class SourcesPanel extends (Constructor(PanelWithSidebarClass)) {
     constructor() {
       super('sources');
     }
@@ -678,33 +722,36 @@ self.injectedExtensionAPI = function(
    * @constructor
    * @extends {ExtensionViewImpl}
    */
-  function ExtensionPanelImpl(this: any, id: any): void {
+  function ExtensionPanelImpl(this: APIImpl.ExtensionPanel, id: string): void {
     ExtensionViewImpl.call(this, id);
-    // @ts-ignore
-    this.onSearch = new EventSink(PrivateAPI.Events.PanelSearch + id);
+
+    this.onSearch = new (Constructor(EventSink))(PrivateAPI.Events.PanelSearch + id);
   }
 
-  ExtensionPanelImpl.prototype = {
-    createStatusBarButton: function(iconPath: any, tooltipText: any, disabled: any): Object {
-      const id = 'button-' + extensionServer.nextObjectId();
-      extensionServer.sendRequest({
-        command: PrivateAPI.Commands.CreateToolbarButton,
-        panel: this._id,
-        id: id,
-        icon: iconPath,
-        tooltip: tooltipText,
-        disabled: Boolean(disabled),
-      });
-      // @ts-ignore
-      return new Button(id);
-    },
+  (ExtensionPanelImpl.prototype as Pick<APIImpl.ExtensionPanel, 'createStatusBarButton'|'show'>&
+   {__proto__: APIImpl.ExtensionView}) = {
+    createStatusBarButton: function(
+                               this: APIImpl.ExtensionPanel, iconPath: string, tooltipText: string, disabled: boolean):
+                               PublicAPI.Chrome.DevTools.Button {
+                                 const id = 'button-' + extensionServer.nextObjectId();
+                                 extensionServer.sendRequest({
+                                   command: PrivateAPI.Commands.CreateToolbarButton,
+                                   panel: this._id as string,
+                                   id: id,
+                                   icon: iconPath,
+                                   tooltip: tooltipText,
+                                   disabled: Boolean(disabled),
+                                 });
 
-    show: function(): void {
+                                 return new (Constructor(Button))(id);
+                               },
+
+    show: function(this: APIImpl.ExtensionPanel): void {
       if (!userAction) {
         return;
       }
 
-      extensionServer.sendRequest({command: PrivateAPI.Commands.ShowPanel, id: this._id});
+      extensionServer.sendRequest({command: PrivateAPI.Commands.ShowPanel, id: this._id as string});
     },
 
     __proto__: ExtensionViewImpl.prototype,
@@ -714,36 +761,47 @@ self.injectedExtensionAPI = function(
    * @constructor
    * @extends {ExtensionViewImpl}
    */
-  function ExtensionSidebarPaneImpl(this: any, id: any): void {
+  function ExtensionSidebarPaneImpl(this: APIImpl.ExtensionSidebarPane, id: string): void {
     ExtensionViewImpl.call(this, id);
   }
 
-  ExtensionSidebarPaneImpl.prototype = {
-    setHeight: function(height: any): void {
-      extensionServer.sendRequest({command: PrivateAPI.Commands.SetSidebarHeight, id: this._id, height: height});
+  (ExtensionSidebarPaneImpl.prototype as
+       Pick<APIImpl.ExtensionSidebarPane, 'setHeight'|'setExpression'|'setObject'|'setPage'>&
+   {__proto__: APIImpl.ExtensionView}) = {
+    setHeight: function(this: APIImpl.ExtensionSidebarPane, height: string): void {
+      extensionServer.sendRequest(
+          {command: PrivateAPI.Commands.SetSidebarHeight, id: this._id as string, height: height});
     },
 
-    setExpression: function(expression: any, rootTitle: any, evaluateOptions: any): void {
+    setExpression: function(
+        this: APIImpl.ExtensionSidebarPane, expression: string, rootTitle: string,
+        evaluateOptions?: PrivateAPI.EvaluateOptions, _callback?: () => unknown): void {
       extensionServer.sendRequest(
           {
             command: PrivateAPI.Commands.SetSidebarContent,
-            id: this._id,
+            id: this._id as string,
             expression: expression,
             rootTitle: rootTitle,
             evaluateOnPage: true,
-            evaluateOptions: (typeof evaluateOptions === 'object' ? evaluateOptions : undefined),
+            evaluateOptions: (typeof evaluateOptions === 'object' ? evaluateOptions : {}),
           },
           extractCallbackArgument(arguments));
     },
 
-    setObject: function(jsonObject: any, rootTitle: any, callback: any): void {
+    setObject: function(
+        this: APIImpl.ExtensionSidebarPane, jsonObject: string, rootTitle?: string, callback?: () => unknown): void {
       extensionServer.sendRequest(
-          {command: PrivateAPI.Commands.SetSidebarContent, id: this._id, expression: jsonObject, rootTitle: rootTitle},
+          {
+            command: PrivateAPI.Commands.SetSidebarContent,
+            id: this._id as string,
+            expression: jsonObject,
+            rootTitle: rootTitle,
+          },
           callback);
     },
 
-    setPage: function(page: any): void {
-      extensionServer.sendRequest({command: PrivateAPI.Commands.SetSidebarPage, id: this._id, page: page});
+    setPage: function(this: APIImpl.ExtensionSidebarPane, page: string): void {
+      extensionServer.sendRequest({command: PrivateAPI.Commands.SetSidebarPage, id: this._id as string, page: page});
     },
 
     __proto__: ExtensionViewImpl.prototype,
@@ -752,14 +810,14 @@ self.injectedExtensionAPI = function(
   /**
    * @constructor
    */
-  function ButtonImpl(this: any, id: any): void {
+  function ButtonImpl(this: APIImpl.Button, id: string): void {
     this._id = id;
-    // @ts-ignore
-    this.onClicked = new EventSink(PrivateAPI.Events.ButtonClicked + id);
+
+    this.onClicked = new (Constructor(EventSink))(PrivateAPI.Events.ButtonClicked + id);
   }
 
-  ButtonImpl.prototype = {
-    update: function(iconPath: any, tooltipText: any, disabled: any): void {
+  (ButtonImpl.prototype as Pick<APIImpl.Button, 'update'>) = {
+    update: function(this: APIImpl.Button, iconPath?: string, tooltipText?: string, disabled?: boolean): void {
       extensionServer.sendRequest({
         command: PrivateAPI.Commands.UpdateButton,
         id: this._id,
@@ -897,33 +955,35 @@ self.injectedExtensionAPI = function(
   /**
    * @constructor
    */
-  function ResourceImpl(this: any, resourceData: any): void {
+  function ResourceImpl(this: APIImpl.Resource, resourceData: APIImpl.ResourceData): void {
     this._url = resourceData.url;
     this._type = resourceData.type;
   }
 
-  ResourceImpl.prototype = {
+  (ResourceImpl.prototype as Pick<APIImpl.Resource, 'url'|'type'|'getContent'|'setContent'>) = {
     get url(): string {
-      return this._url;
+      return (this as APIImpl.Resource)._url;
     },
 
     get type(): string {
-      return this._type;
+      return (this as APIImpl.Resource)._type;
     },
 
-    getContent: function(callback: any): void {
-      function callbackWrapper(response: any): void {
-        callback(response.content, response.encoding);
+    getContent: function(this: APIImpl.Resource, callback?: (content: string, encoding: string) => unknown): void {
+      function callbackWrapper(response: unknown): void {
+        const {content, encoding} = response as {content: string, encoding: string};
+        callback && callback(content, encoding);
       }
 
       extensionServer.sendRequest(
           {command: PrivateAPI.Commands.GetResourceContent, url: this._url}, callback && callbackWrapper);
     },
 
-    setContent: function(content: any, commit: any, callback: any): void {
+    setContent: function(
+        this: APIImpl.Resource, content: string, commit: boolean, callback: (error?: Object) => unknown): void {
       extensionServer.sendRequest(
           {command: PrivateAPI.Commands.SetResourceContent, url: this._url, content: content, commit: commit},
-          callback);
+          callback as (response: unknown) => unknown);
     },
   };
 

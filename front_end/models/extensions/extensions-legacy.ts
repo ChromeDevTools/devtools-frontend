@@ -9,9 +9,6 @@ import * as ExtensionsModule from './extensions.js';
 self.Extensions = self.Extensions || {};
 Extensions = Extensions || {};
 
-Extensions.extensionAPI = {};
-ExtensionsModule.ExtensionAPI.defineCommonExtensionSymbols(Extensions.extensionAPI);
-
 /** @constructor */
 Extensions.ExtensionSidebarPane = ExtensionsModule.ExtensionPanel.ExtensionSidebarPane;
 

@@ -6,7 +6,7 @@ import {assert} from 'chai';
 
 import {goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {ensureResourceSectionIsExpanded, expandIssue, extractTableFromResourceSection, getIssueByTitle, getResourcesElement, navigateToIssuesTab} from '../helpers/issues-helpers.js';
+import {ensureResourceSectionIsExpanded, expandIssue, getIssueByTitle, getResourcesElement, navigateToIssuesTab, waitForTableFromResourceSectionContents} from '../helpers/issues-helpers.js';
 
 describe('SAB issues test', async () => {
   beforeEach(async () => {
@@ -23,18 +23,12 @@ describe('SAB issues test', async () => {
       const text = await section.label.evaluate(el => el.textContent);
       assert.strictEqual(text, '2 violations');
       await ensureResourceSectionIsExpanded(section);
-      const table = await extractTableFromResourceSection(section.content);
-      assert.isNotNull(table);
-      if (table) {
-        assert.strictEqual(table.length, 3);
-        assert.deepEqual(table[0], ['Source Location', 'Trigger', 'Status']);
-        assert.deepEqual(table[1].slice(0, 2), ['corp-frame.rawresponse:1', 'Instantiation']);
-        // Accept both values in the status column as that depends on chromium flags.
-        assert.include(['warning', 'blocked'], table[1][2]);
-        assert.deepEqual(table[2].slice(0, 2), ['corp-frame.rawresponse:1', 'Transfer']);
-        // Accept both values in the status column as that depends on chromium flags.
-        assert.include(['warning', 'blocked'], table[2][2]);
-      }
+      const expectedTableRows = [
+        ['Source Location', 'Trigger', 'Status'],
+        ['corp-frame.rawresponse:1', 'Instantiation', /warning|blocked/],
+        ['corp-frame.rawresponse:1', 'Transfer', /warning|blocked/],
+      ];
+      await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
     }
   });
 });

@@ -31,7 +31,7 @@
 import type * as PublicAPI from '../../../extension-api/ExtensionAPI'; // eslint-disable-line rulesdir/es_modules_import
 import type * as HAR from '../har/har.js';
 
-/* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/naming-convention,@typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/naming-convention,@typescript-eslint/no-non-null-assertion */
 export namespace PrivateAPI {
   export namespace Panels {
     export const enum SearchAction {
@@ -467,8 +467,7 @@ self.injectedExtensionAPI = function(
    */
 
   function InspectorExtensionAPI(this: APIImpl.InspectorExtensionAPI): void {
-    // @ts-ignore
-    this.inspectedWindow = new InspectedWindow();
+    this.inspectedWindow = new (Constructor(InspectedWindow))();
     this.panels = new (Constructor(Panels))();
     this.network = new (Constructor(Network))();
     this.timeline = new (Constructor(Timeline))();
@@ -973,28 +972,35 @@ self.injectedExtensionAPI = function(
   /**
    * @constructor
    */
-  function InspectedWindow(this: any): void {
-    function dispatchResourceEvent(this: any, message: any): void {
-      // @ts-ignore
-      this._fire(new Resource(message.arguments[0]));
+  function InspectedWindow(this: PublicAPI.Chrome.DevTools.InspectedWindow): void {
+    function dispatchResourceEvent(
+        this: APIImpl.EventSink<(resource: APIImpl.Resource) => unknown>, message: {arguments: unknown[]}): void {
+      this._fire(new (Constructor(Resource))(message.arguments[0] as APIImpl.ResourceData));
     }
 
-    function dispatchResourceContentEvent(this: any, message: any): void {
-      // @ts-ignore
-      this._fire(new Resource(message.arguments[0]), message.arguments[1]);
+    function dispatchResourceContentEvent(
+        this: APIImpl.EventSink<(resource: APIImpl.Resource, content: string) => unknown>,
+        message: {arguments: unknown[]}): void {
+      this._fire(
+          new (Constructor(Resource))(message.arguments[0] as APIImpl.ResourceData), message.arguments[1] as string);
     }
 
-    // @ts-ignore
-    this.onResourceAdded = new EventSink(PrivateAPI.Events.ResourceAdded, dispatchResourceEvent);
+
+    this.onResourceAdded = new (Constructor(EventSink))(PrivateAPI.Events.ResourceAdded, dispatchResourceEvent);
     this.onResourceContentCommitted =
-        // @ts-ignore
-        new EventSink(PrivateAPI.Events.ResourceContentCommitted, dispatchResourceContentEvent);
+        new (Constructor(EventSink))(PrivateAPI.Events.ResourceContentCommitted, dispatchResourceContentEvent);
   }
 
-  InspectedWindow.prototype = {
-    reload: function(optionsOrUserAgent: any): void {
+  (InspectedWindow.prototype as Pick<PublicAPI.Chrome.DevTools.InspectedWindow, 'reload'|'eval'|'getResources'>) = {
+    reload: function(optionsOrUserAgent: {
+      ignoreCache?: boolean,
+      injectedScript?: string,
+      userAgent?: string,
+    }): void {
       let options: {
-        userAgent: string,
+        ignoreCache?: boolean,
+        injectedScript?: string,
+        userAgent?: string,
       }|null = null;
       if (typeof optionsOrUserAgent === 'object') {
         options = optionsOrUserAgent;
@@ -1007,14 +1013,21 @@ self.injectedExtensionAPI = function(
       extensionServer.sendRequest({command: PrivateAPI.Commands.Reload, options: options});
     },
 
-    eval: function(expression: any, evaluateOptions: any): Object |
+    eval: function(
+              expression: string,
+              evaluateOptions: {contextSecurityOrigin?: string, frameURL?: string, useContentScriptContext?: boolean}):
+              Object |
         null {
           const callback = extractCallbackArgument(arguments);
-          function callbackWrapper(result: any): void {
-            if (result.isError || result.isException) {
+          function callbackWrapper(result: unknown): void {
+            const {isError, isException, value} = result as {
+              isError?: boolean,
+              isException?: boolean, value: unknown,
+            };
+            if (isError || isException) {
               callback && callback(undefined, result);
             } else {
-              callback && callback(result.value);
+              callback && callback(value);
             }
           }
           extensionServer.sendRequest(
@@ -1027,13 +1040,12 @@ self.injectedExtensionAPI = function(
           return null;
         },
 
-    getResources: function(callback: any): void {
-      function wrapResource(resourceData: any): any {
-        // @ts-ignore
-        return new Resource(resourceData);
+    getResources: function(callback?: (resources: PublicAPI.Chrome.DevTools.Resource[]) => unknown): void {
+      function wrapResource(resourceData: APIImpl.ResourceData): APIImpl.Resource {
+        return new (Constructor(Resource))(resourceData);
       }
-      function callbackWrapper(resources: any): void {
-        callback(resources.map(wrapResource));
+      function callbackWrapper(resources: unknown): void {
+        callback && callback((resources as APIImpl.ResourceData[]).map(wrapResource));
       }
       extensionServer.sendRequest({command: PrivateAPI.Commands.GetPageResources}, callback && callbackWrapper);
     },

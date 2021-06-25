@@ -114,7 +114,7 @@ export async function ensureResourceSectionIsExpanded(section: IssueResourceSect
   await waitForClass(section.content, 'expanded');
 }
 
-export async function extractTableFromResourceSection(resourceContentElement: puppeteer.ElementHandle<Element>):
+async function extractTableFromResourceSection(resourceContentElement: puppeteer.ElementHandle<Element>):
     Promise<string[][]|undefined> {
   const table = await resourceContentElement.$('.affected-resource-list');
   if (table) {

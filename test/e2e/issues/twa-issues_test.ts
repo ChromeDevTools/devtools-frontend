@@ -2,11 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert} from 'chai';
-
 import {assertNotNull, getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {expandIssue, extractTableFromResourceSection, getIssueByTitle, getResourcesElement, navigateToIssuesTab} from '../helpers/issues-helpers.js';
+import {expandIssue, getIssueByTitle, getResourcesElement, navigateToIssuesTab, waitForTableFromResourceSectionContents} from '../helpers/issues-helpers.js';
 
 describe('Trusted Web Activity issue', async () => {
   beforeEach(async () => {
@@ -35,11 +33,11 @@ describe('Trusted Web Activity issue', async () => {
         'Trusted Web Activity navigations must succeed or be handled by the ServiceWorker. Your app may crash in the future.');
     assertNotNull(issueElement);
     const section = await getResourcesElement('1 resource', issueElement);
-    const table = await extractTableFromResourceSection(section.content);
-    assertNotNull(table);
-    assert.strictEqual(table.length, 2);
-    assert.deepEqual(table[0], ['Status code', 'Url']);
-    assert.deepEqual(table[1], ['404', 'test1.example.com']);
+    const expectedTableRows = [
+      ['Status code', 'Url'],
+      ['404', 'test1.example.com'],
+    ];
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 
   it('should display correct information for type kUnavailableOffline', async () => {
@@ -63,11 +61,11 @@ describe('Trusted Web Activity issue', async () => {
         'Trusted Web Activity does not work offline. In the future, your app may crash if the user’s device goes offline.');
     assertNotNull(issueElement);
     const section = await getResourcesElement('1 resource', issueElement);
-    const table = await extractTableFromResourceSection(section.content);
-    assertNotNull(table);
-    assert.strictEqual(table.length, 2);
-    assert.deepEqual(table[0], ['Url']);
-    assert.deepEqual(table[1], ['test2.example.com']);
+    const expectedTableRows = [
+      ['Url'],
+      ['test2.example.com'],
+    ];
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 
   it('should display correct information for type kDigitalAssetLinks', async () => {
@@ -93,10 +91,10 @@ describe('Trusted Web Activity issue', async () => {
         'Digital asset links of the Trusted Web Activity failed verification. Your app may crash in the future.');
     assertNotNull(issueElement);
     const section = await getResourcesElement('1 resource', issueElement);
-    const table = await extractTableFromResourceSection(section.content);
-    assertNotNull(table);
-    assert.strictEqual(table.length, 2);
-    assert.deepEqual(table[0], ['Package name', 'Url', 'Package signature']);
-    assert.deepEqual(table[1], ['test.package', 'test3.example.com', '1A:2B:3C']);
+    const expectedTableRows = [
+      ['Package name', 'Url', 'Package signature'],
+      ['test.package', 'test3.example.com', '1A:2B:3C'],
+    ];
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 });

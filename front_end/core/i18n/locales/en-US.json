@@ -11528,6 +11528,9 @@
   "ui/legacy/SuggestBox.ts | sSuggestionSOfS": {
     "message": "{PH1}, suggestion {PH2} of {PH3}"
   },
+  "ui/legacy/SuggestBox.ts | sSuggestionSSelected": {
+    "message": "{PH1}, suggestion selected"
+  },
   "ui/legacy/TabbedPane.ts | close": {
     "message": "Close"
   },

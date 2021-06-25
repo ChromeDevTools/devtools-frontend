@@ -102,16 +102,101 @@ export namespace PrivateAPI {
   export const enum LanguageExtensionPluginEvents {
     UnregisteredLanguageExtensionPlugin = 'unregisteredLanguageExtensionPlugin',
   }
+
+  export interface EvaluateOptions {
+    frameURL?: string;
+    useContentScriptContext?: boolean;
+    scriptExecutionContext?: string;
+  }
+
+  export interface SupportedScriptTypes {
+    language: string;
+    symbol_types: string[];
+  }
+
+  type RegisterLanguageExtensionPluginRequest = {
+    command: Commands.RegisterLanguageExtensionPlugin,
+    pluginName: string,
+    port: MessagePort,
+    supportedScriptTypes: SupportedScriptTypes,
+  };
+  type SubscribeRequest = {command: Commands.Subscribe, type: string};
+  type UnsubscribeRequest = {command: Commands.Unsubscribe, type: string};
+  type AddRequestHeadersRequest = {
+    command: Commands.AddRequestHeaders,
+    extensionId: string,
+    headers: {[key: string]: string},
+  };
+  type ApplyStyleSheetRequest = {command: Commands.ApplyStyleSheet, styleSheet: string};
+  type CreatePanelRequest = {command: Commands.CreatePanel, id: string, title: string, page: string};
+  type ShowPanelRequest = {command: Commands.ShowPanel, id: string};
+  type CreateToolbarButtonRequest = {
+    command: Commands.CreateToolbarButton,
+    id: string,
+    icon: string,
+    panel: string,
+    tooltip?: string,
+    disabled?: boolean,
+  };
+  type UpdateButtonRequest =
+      {command: Commands.UpdateButton, id: string, icon?: string, tooltip?: string, disabled?: boolean};
+  type CompleteTraceSessionRequest =
+      {command: Commands.CompleteTraceSession, id: string, url: string, timeOffset: number};
+  type CreateSidebarPaneRequest = {command: Commands.CreateSidebarPane, id: string, panel: string, title: string};
+  type SetSidebarHeightRequest = {command: Commands.SetSidebarHeight, id: string, height: string};
+  type SetSidebarContentRequest = {
+    command: Commands.SetSidebarContent,
+    id: string,
+    evaluateOnPage?: boolean, expression: string,
+    rootTitle?: string,
+    evaluateOptions?: EvaluateOptions,
+  };
+  type SetSidebarPageRequest = {command: Commands.SetSidebarPage, id: string, page: string};
+  type OpenResourceRequest = {command: Commands.OpenResource, url: string, lineNumber: number};
+  type SetOpenResourceHandlerRequest = {command: Commands.SetOpenResourceHandler, handlerPresent: boolean};
+  type ReloadRequest = {
+    command: Commands.Reload,
+    options: null|{
+      userAgent?: string,
+      injectedScript?: string,
+      ignoreCache?: boolean,
+    },
+  };
+  type EvaluateOnInspectedPageRequest = {
+    command: Commands.EvaluateOnInspectedPage,
+    expression: string,
+    evaluateOptions?: EvaluateOptions,
+  };
+  type GetRequestContentRequest = {command: Commands.GetRequestContent, id: number};
+  type GetResourceContentRequest = {command: Commands.GetResourceContent, url: string};
+  type SetResourceContentRequest =
+      {command: Commands.SetResourceContent, url: string, content: string, commit: boolean};
+  type AddTraceProviderRequest =
+      {command: Commands.AddTraceProvider, id: string, categoryName: string, categoryTooltip: string};
+  type ForwardKeyboardEventRequest = {
+    command: Commands.ForwardKeyboardEvent,
+    entries: Array<KeyboardEventInit&{eventType: string}>,
+  };
+  type GetHARRequest = {command: Commands.GetHAR};
+  type GetPageResourcesRequest = {command: Commands.GetPageResources};
+
+  export type ServerRequests = RegisterLanguageExtensionPluginRequest|SubscribeRequest|UnsubscribeRequest|
+      AddRequestHeadersRequest|ApplyStyleSheetRequest|CreatePanelRequest|ShowPanelRequest|CreateToolbarButtonRequest|
+      UpdateButtonRequest|CompleteTraceSessionRequest|CreateSidebarPaneRequest|SetSidebarHeightRequest|
+      SetSidebarContentRequest|SetSidebarPageRequest|OpenResourceRequest|SetOpenResourceHandlerRequest|ReloadRequest|
+      EvaluateOnInspectedPageRequest|GetRequestContentRequest|GetResourceContentRequest|SetResourceContentRequest|
+      AddTraceProviderRequest|ForwardKeyboardEventRequest|GetHARRequest|GetPageResourcesRequest;
+  export type ExtensionServerRequestMessage = PrivateAPI.ServerRequests&{requestId?: number};
 }
 
 declare global {
   interface Window {
     injectedExtensionAPI:
         (extensionInfo: ExtensionDescriptor, inspectedTabId: string, themeName: string, keysToForward: number[],
-         testHook: (server: any, api: any) => unknown, injectedScriptId: number) => void;
+         testHook: (extensionServer: any, extensionAPI: any) => unknown, injectedScriptId: number) => void;
     buildExtensionAPIInjectedScript(
         extensionInfo: ExtensionDescriptor, inspectedTabId: string, themeName: string, keysToForward: number[],
-        testHook: (server: any, api: any) => unknown): string;
+        testHook: undefined|((extensionServer: unknown, extensionAPI: unknown) => unknown)): string;
     chrome?: any;
     webInspector?: any;
   }
@@ -127,7 +212,7 @@ export type ExtensionDescriptor = {
 
 self.injectedExtensionAPI = function(
     extensionInfo: any, inspectedTabId: string, themeName: string, keysToForward: number[],
-    testHook: (arg0: Object, arg1: Object) => any, injectedScriptId: number): void {
+    testHook: (extensionServer: unknown, extensionAPI: unknown) => unknown, injectedScriptId: number): void {
   const keysToForwardSet = new Set<number>(keysToForward);
   const chrome = window.chrome || {};
 
@@ -394,10 +479,8 @@ self.injectedExtensionAPI = function(
   }
 
   LanguageServicesAPIImpl.prototype = {
-    registerLanguageExtensionPlugin: async function(plugin: any, pluginName: string, supportedScriptTypes: {
-      language: string,
-      symbol_types: string[],
-    }): Promise<void> {
+    registerLanguageExtensionPlugin: async function(
+        plugin: any, pluginName: string, supportedScriptTypes: PrivateAPI.SupportedScriptTypes): Promise<void> {
       if (this._plugins.has(plugin)) {
         throw new Error(`Tried to register plugin '${pluginName}' twice`);
       }
@@ -870,13 +953,14 @@ self.injectedExtensionAPI = function(
   }
 
   ExtensionServerClient.prototype = {
-    sendRequest: function(message: Object, callback?: (() => any), transfers?: any[]): void {
-      if (typeof callback === 'function') {
-        // @ts-ignore
-        message.requestId = this._registerCallback(callback);
-      }
-      this._port.postMessage(message, transfers);
-    },
+    sendRequest: function(message: PrivateAPI.ServerRequests, callback?: (() => unknown), transfers?: Transferable[]):
+        void {
+          if (typeof callback === 'function') {
+            // @ts-ignore
+            message.requestId = this._registerCallback(callback);
+          }
+          this._port.postMessage(message, transfers);
+        },
 
     hasHandler: function(command: any): boolean {
       return Boolean(this._handlers[command]);
@@ -984,7 +1068,7 @@ self.buildExtensionAPIInjectedScript = function(
       exposeExperimentalAPIs: boolean,
     },
     inspectedTabId: string, themeName: string, keysToForward: number[],
-    testHook: ((arg0: Object, arg1: Object) => any)|undefined): string {
+    testHook: ((extensionServer: Object, extensionAPI: Object) => any)|undefined): string {
   const argumentsJSON =
       [extensionInfo, inspectedTabId || null, themeName, keysToForward].map(_ => JSON.stringify(_)).join(',');
   if (!testHook) {

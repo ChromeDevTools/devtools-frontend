@@ -109,7 +109,7 @@ export class ExtensionButton {
     this.update(iconURL, tooltip, disabled);
   }
 
-  update(iconURL: string, tooltip?: string, disabled?: boolean): void {
+  update(iconURL?: string, tooltip?: string, disabled?: boolean): void {
     if (typeof iconURL === 'string') {
       this._toolbarButton.setBackgroundImage(iconURL);
     }
@@ -148,13 +148,13 @@ export class ExtensionSidebarPane extends UI.View.SimpleView {
     return this._panelName;
   }
 
-  setObject(object: Object, title: string, callback: (arg0?: (string|null)|undefined) => void): void {
+  setObject(object: Object, title: string|undefined, callback: (arg0?: (string|null)|undefined) => void): void {
     this._createObjectPropertiesView();
     this._setObject(SDK.RemoteObject.RemoteObject.fromLocalObject(object), title, callback);
   }
 
   setExpression(
-      expression: string, title: string, evaluateOptions: Object, securityOrigin: string,
+      expression: string, title: string|undefined, evaluateOptions: Object|undefined, securityOrigin: string,
       callback: (arg0?: (string|null)|undefined) => void): void {
     this._createObjectPropertiesView();
     this._server.evaluate(
@@ -183,7 +183,7 @@ export class ExtensionSidebarPane extends UI.View.SimpleView {
   }
 
   _onEvaluate(
-      title: string, callback: (arg0?: (string|null)|undefined) => void, error: string|null,
+      title: string|undefined, callback: (arg0?: (string|null)|undefined) => void, error: string|null,
       result: SDK.RemoteObject.RemoteObject|null, _wasThrown?: boolean): void {
     if (error) {
       callback(error.toString());
@@ -206,8 +206,9 @@ export class ExtensionSidebarPane extends UI.View.SimpleView {
     this._objectPropertiesView.show(this.element);
   }
 
-  _setObject(object: SDK.RemoteObject.RemoteObject, title: string, callback: (arg0?: (string|null)|undefined) => void):
-      void {
+  _setObject(
+      object: SDK.RemoteObject.RemoteObject, title: string|undefined,
+      callback: (arg0?: (string|null)|undefined) => void): void {
     const objectPropertiesView = this._objectPropertiesView;
     // This may only happen if setPage() was called while we were evaluating the expression.
     if (!objectPropertiesView) {

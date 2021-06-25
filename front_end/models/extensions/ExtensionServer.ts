@@ -29,7 +29,7 @@
  */
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-/* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/naming-convention,rulesdir/no_underscored_properties */
+/* eslint-disable @typescript-eslint/naming-convention,rulesdir/no_underscored_properties */
 
 
 import * as Common from '../../core/common/common.js';
@@ -54,7 +54,13 @@ import {ExtensionTraceProvider} from './ExtensionTraceProvider.js';  // eslint-d
 import {LanguageExtensionEndpoint} from './LanguageExtensionEndpoint.js';
 import {PrivateAPI} from './ExtensionAPI.js';
 
-const extensionOriginSymbol = Symbol('extensionOrigin');
+const extensionOrigins: WeakMap<MessagePort, string> = new WeakMap();
+
+declare global {
+  interface Window {
+    DevToolsAPI?: {getInspectedTabId?(): string|undefined};
+  }
+}
 
 const kAllowedOrigins = [
   'chrome://newtab',
@@ -64,13 +70,14 @@ const kAllowedOrigins = [
 let extensionServerInstance: ExtensionServer|null;
 
 export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
-  _clientObjects: {[key: string]: any};
-  _handlers: {[key: string]: any};
+  _clientObjects: Map<string, unknown>;
+  _handlers: Map<string, (message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort) => unknown>;
   _subscribers: Map<string, Set<MessagePort>>;
-  _subscriptionStartHandlers: {[key: string]: any};
-  _subscriptionStopHandlers: {[key: string]: any};
-  _extraHeaders: Map<string, Map<string, any>>;
-  _requests: {[key: string]: any};
+  _subscriptionStartHandlers: Map<string, () => unknown>;
+  _subscriptionStopHandlers: Map<string, () => unknown>;
+  _extraHeaders: Map<string, Map<string, unknown>>;
+  _requests: Map<number, TextUtils.ContentProvider.ContentProvider>;
+  _requestIds: Map<TextUtils.ContentProvider.ContentProvider, number>;
   _lastRequestId: number;
   _registeredExtensions: Map<string, {
     name: string,
@@ -80,17 +87,19 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
   _traceProviders: ExtensionTraceProvider[];
   _traceSessions: Map<string, TracingSession>;
   _extensionsEnabled: boolean;
-  _languageExtensionRequests: Map<any, any>;
   _inspectedTabId?: string;
+  _extensionAPITestHook?: (server: unknown, api: unknown) => unknown;
+
   private constructor() {
     super();
-    this._clientObjects = {};
-    this._handlers = {};
+    this._clientObjects = new Map();
+    this._handlers = new Map();
     this._subscribers = new Map();
-    this._subscriptionStartHandlers = {};
-    this._subscriptionStopHandlers = {};
+    this._subscriptionStartHandlers = new Map();
+    this._subscriptionStopHandlers = new Map();
     this._extraHeaders = new Map();
-    this._requests = {};
+    this._requests = new Map();
+    this._requestIds = new Map();
     this._lastRequestId = 0;
     this._registeredExtensions = new Map();
     this._status = new ExtensionStatus();
@@ -129,7 +138,6 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     window.addEventListener('message', this._onWindowMessage.bind(this), false);  // Only for main window.
 
     const existingTabId =
-        // @ts-ignore
         window.DevToolsAPI && window.DevToolsAPI.getInspectedTabId && window.DevToolsAPI.getInspectedTabId();
 
     if (existingTabId) {
@@ -138,7 +146,6 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.SetInspectedTabId, this._setInspectedTabId, this);
 
-    this._languageExtensionRequests = new Map();
     this._initExtensions();
   }
 
@@ -177,7 +184,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     this._postNotification(PrivateAPI.Events.ButtonClicked + identifier);
   }
 
-  _registerLanguageExtensionEndpoint(message: any, _shared_port: any): Record {
+  _registerLanguageExtensionEndpoint(message: PrivateAPI.ExtensionServerRequestMessage, _shared_port: MessagePort):
+      Record {
+    if (message.command !== PrivateAPI.Commands.RegisterLanguageExtensionPlugin) {
+      return this._status.E_BADARG('command', `expected ${PrivateAPI.Commands.Subscribe}`);
+    }
     const {pluginManager} = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
     if (!pluginManager) {
       return this._status.E_FAILED('WebAssembly DWARF support needs to be enabled to use this extension');
@@ -185,13 +196,13 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
 
     const {pluginName, port, supportedScriptTypes: {language, symbol_types}} = message;
     const symbol_types_array =
-        (Array.isArray(symbol_types) && symbol_types.every(e => typeof e === 'string') ? symbol_types : [] as any);
+        (Array.isArray(symbol_types) && symbol_types.every(e => typeof e === 'string') ? symbol_types : []);
     const endpoint = new LanguageExtensionEndpoint(pluginName, {language, symbol_types: symbol_types_array}, port);
     pluginManager.addPlugin(endpoint);
     return this._status.OK();
   }
 
-  _inspectedURLChanged(event: any): void {
+  _inspectedURLChanged(event: Common.EventTarget.EventTargetEvent): void {
     if (!this._canInspectURL(event.data.inspectedURL())) {
       this._disableExtensions();
       return;
@@ -199,7 +210,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     if (event.data !== SDK.TargetManager.TargetManager.instance().mainTarget()) {
       return;
     }
-    this._requests = {};
+    this._requests = new Map();
     const url = event.data.inspectedURL();
     this._postNotification(PrivateAPI.Events.InspectedURLChanged, url);
   }
@@ -217,7 +228,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     return this._subscribers.has(type);
   }
 
-  _postNotification(type: string, ..._vararg: any[]): void {
+  _postNotification(type: string, ..._vararg: unknown[]): void {
     if (!this._extensionsEnabled) {
       return;
     }
@@ -231,19 +242,27 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  _onSubscribe(message: any, port: any): void {
+  _onSubscribe(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
+    if (message.command !== PrivateAPI.Commands.Subscribe) {
+      return this._status.E_BADARG('command', `expected ${PrivateAPI.Commands.Subscribe}`);
+    }
     const subscribers = this._subscribers.get(message.type);
     if (subscribers) {
       subscribers.add(port);
     } else {
       this._subscribers.set(message.type, new Set([port]));
-      if (this._subscriptionStartHandlers[message.type]) {
-        this._subscriptionStartHandlers[message.type]();
+      const handler = this._subscriptionStartHandlers.get(message.type);
+      if (handler) {
+        handler();
       }
     }
+    return undefined;
   }
 
-  _onUnsubscribe(message: any, port: any): void {
+  _onUnsubscribe(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
+    if (message.command !== PrivateAPI.Commands.Unsubscribe) {
+      return this._status.E_BADARG('command', `expected ${PrivateAPI.Commands.Unsubscribe}`);
+    }
     const subscribers = this._subscribers.get(message.type);
     if (!subscribers) {
       return;
@@ -251,13 +270,18 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     subscribers.delete(port);
     if (!subscribers.size) {
       this._subscribers.delete(message.type);
-      if (this._subscriptionStopHandlers[message.type]) {
-        this._subscriptionStopHandlers[message.type]();
+      const handler = this._subscriptionStopHandlers.get(message.type);
+      if (handler) {
+        handler();
       }
     }
+    return undefined;
   }
 
-  _onAddRequestHeaders(message: any): Record|undefined {
+  _onAddRequestHeaders(message: PrivateAPI.ExtensionServerRequestMessage): Record|undefined {
+    if (message.command !== PrivateAPI.Commands.AddRequestHeaders) {
+      return this._status.E_BADARG('command', `expected ${PrivateAPI.Commands.AddRequestHeaders}`);
+    }
     const id = message.extensionId;
     if (typeof id !== 'string') {
       return this._status.E_BADARGTYPE('extensionId', typeof id, 'string');
@@ -272,9 +296,9 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     }
     const allHeaders = ({} as Protocol.Network.Headers);
     for (const headers of this._extraHeaders.values()) {
-      for (const name of headers.keys()) {
-        if (name !== '__proto__' && typeof headers.get(name) === 'string') {
-          allHeaders[name] = headers.get(name);
+      for (const [name, value] of headers) {
+        if (name !== '__proto__' && typeof value === 'string') {
+          allHeaders[name] = value;
         }
       }
     }
@@ -283,12 +307,15 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     return undefined;
   }
 
-  _onApplyStyleSheet(message: any): void {
+  _onApplyStyleSheet(message: PrivateAPI.ExtensionServerRequestMessage): Record|undefined {
+    if (message.command !== PrivateAPI.Commands.ApplyStyleSheet) {
+      return this._status.E_BADARG('command', `expected ${PrivateAPI.Commands.ApplyStyleSheet}`);
+    }
     if (!Root.Runtime.experiments.isEnabled('applyCustomStylesheet')) {
       return;
     }
-    // @ts-ignore
-    const styleSheet = createElement('style');
+
+    const styleSheet = document.createElement('style');
     styleSheet.textContent = message.styleSheet;
     document.head.appendChild(styleSheet);
 
@@ -299,45 +326,64 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         ThemeSupport.ThemeSupport.instance().injectCustomStyleSheets(node);
       }
     }
+    return undefined;
   }
 
-  _onCreatePanel(message: any, port: any): Record {
+  private getExtensionOrigin(port: MessagePort): string {
+    const origin = extensionOrigins.get(port);
+    if (!origin) {
+      throw new Error('Received a message from an unregistered extension');
+    }
+    return origin;
+  }
+
+  _onCreatePanel(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record {
+    if (message.command !== PrivateAPI.Commands.CreatePanel) {
+      return this._status.E_BADARG('command', `expected ${PrivateAPI.Commands.CreatePanel}`);
+    }
     const id = message.id;
     // The ids are generated on the client API side and must be unique, so the check below
     // shouldn't be hit unless someone is bypassing the API.
-    if (id in this._clientObjects || UI.InspectorView.InspectorView.instance().hasPanel(id)) {
+    if (this._clientObjects.has(id) || UI.InspectorView.InspectorView.instance().hasPanel(id)) {
       return this._status.E_EXISTS(id);
     }
 
-    const page = this._expandResourcePath(port[extensionOriginSymbol], message.page) as string;
-    let persistentId = port[extensionOriginSymbol] + message.title;
+    const page = this._expandResourcePath(this.getExtensionOrigin(port), message.page) as string;
+    let persistentId = this.getExtensionOrigin(port) + message.title;
     persistentId = persistentId.replace(/\s/g, '');
     const panelView =
         new ExtensionServerPanelView(persistentId, message.title, new ExtensionPanel(this, persistentId, id, page));
-    this._clientObjects[id] = panelView;
+    this._clientObjects.set(id, panelView);
     UI.InspectorView.InspectorView.instance().addPanel(panelView);
     return this._status.OK();
   }
 
-  _onShowPanel(message: any): void {
+  _onShowPanel(message: PrivateAPI.ExtensionServerRequestMessage): Record|undefined {
+    if (message.command !== PrivateAPI.Commands.ShowPanel) {
+      return this._status.E_BADARG('command', `expected ${PrivateAPI.Commands.ShowPanel}`);
+    }
+
     let panelViewId = message.id;
-    const panelView = this._clientObjects[message.id];
+    const panelView = this._clientObjects.get(message.id);
     if (panelView && panelView instanceof ExtensionServerPanelView) {
       panelViewId = panelView.viewId();
     }
     UI.InspectorView.InspectorView.instance().showPanel(panelViewId);
+    return undefined;
   }
 
-  _onCreateToolbarButton(message: any, port: any): Record {
-    const panelView = this._clientObjects[message.panel];
+  _onCreateToolbarButton(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record {
+    if (message.command !== PrivateAPI.Commands.CreateToolbarButton) {
+      return this._status.E_BADARG('command', `expected ${PrivateAPI.Commands.CreateToolbarButton}`);
+    }
+    const panelView = this._clientObjects.get(message.panel);
     if (!panelView || !(panelView instanceof ExtensionServerPanelView)) {
       return this._status.E_NOTFOUND(message.panel);
     }
     const button = new ExtensionButton(
-        // @ts-ignore
-        this, message.id, this._expandResourcePath(port[extensionOriginSymbol], message.icon), message.tooltip,
+        this, message.id, this._expandResourcePath(this.getExtensionOrigin(port), message.icon), message.tooltip,
         message.disabled);
-    this._clientObjects[message.id] = button;
+    this._clientObjects.set(message.id, button);
 
     panelView.widget().then(appendButton);
 
@@ -348,18 +394,24 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     return this._status.OK();
   }
 
-  _onUpdateButton(message: any, port: any): Record {
-    const button = this._clientObjects[message.id];
+  _onUpdateButton(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record {
+    if (message.command !== PrivateAPI.Commands.UpdateButton) {
+      return this._status.E_BADARG('command', `expected ${PrivateAPI.Commands.UpdateButton}`);
+    }
+    const button = this._clientObjects.get(message.id);
     if (!button || !(button instanceof ExtensionButton)) {
       return this._status.E_NOTFOUND(message.id);
     }
     button.update(
-        // @ts-ignore
-        this._expandResourcePath(port[extensionOriginSymbol], message.icon), message.tooltip, message.disabled);
+        message.icon && this._expandResourcePath(this.getExtensionOrigin(port), message.icon), message.tooltip,
+        message.disabled);
     return this._status.OK();
   }
 
-  _onCompleteTraceSession(message: any): Record|undefined {
+  _onCompleteTraceSession(message: PrivateAPI.ExtensionServerRequestMessage): Record|undefined {
+    if (message.command !== PrivateAPI.Commands.CompleteTraceSession) {
+      return this._status.E_BADARG('command', `expected ${PrivateAPI.Commands.CompleteTraceSession}`);
+    }
     const session = this._traceSessions.get(message.id);
     if (!session) {
       return this._status.E_NOTFOUND(message.id);
@@ -369,14 +421,14 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     return undefined;
   }
 
-  _onCreateSidebarPane(message: any): Record {
-    if (message.panel !== 'elements' && message.panel !== 'sources') {
-      return this._status.E_NOTFOUND(message.panel);
+  _onCreateSidebarPane(message: PrivateAPI.ExtensionServerRequestMessage): Record {
+    if (message.command !== PrivateAPI.Commands.CreateSidebarPane) {
+      return this._status.E_BADARG('command', `expected ${PrivateAPI.Commands.CreateSidebarPane}`);
     }
     const id = message.id;
     const sidebar = new ExtensionSidebarPane(this, message.panel, message.title, id);
     this._sidebarPanes.push(sidebar);
-    this._clientObjects[id] = sidebar;
+    this._clientObjects.set(id, sidebar);
     this.dispatchEventToListeners(Events.SidebarPaneAdded, sidebar);
 
     return this._status.OK();
@@ -386,43 +438,56 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     return this._sidebarPanes;
   }
 
-  _onSetSidebarHeight(message: any): Record {
-    const sidebar = this._clientObjects[message.id];
-    if (!sidebar) {
+  _onSetSidebarHeight(message: PrivateAPI.ExtensionServerRequestMessage): Record {
+    if (message.command !== PrivateAPI.Commands.SetSidebarHeight) {
+      return this._status.E_BADARG('command', `expected ${PrivateAPI.Commands.SetSidebarHeight}`);
+    }
+    const sidebar = this._clientObjects.get(message.id);
+    if (!sidebar || !(sidebar instanceof ExtensionSidebarPane)) {
       return this._status.E_NOTFOUND(message.id);
     }
     sidebar.setHeight(message.height);
     return this._status.OK();
   }
 
-  _onSetSidebarContent(message: any, port: any): any {
-    const sidebar = this._clientObjects[message.id];
-    if (!sidebar) {
+  _onSetSidebarContent(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
+    if (message.command !== PrivateAPI.Commands.SetSidebarContent) {
+      return this._status.E_BADARG('command', `expected ${PrivateAPI.Commands.SetSidebarContent}`);
+    }
+    const {requestId, id, rootTitle, expression, evaluateOptions, evaluateOnPage} = message;
+    const sidebar = this._clientObjects.get(id);
+    if (!sidebar || !(sidebar instanceof ExtensionSidebarPane)) {
       return this._status.E_NOTFOUND(message.id);
     }
 
-    function callback(this: ExtensionServer, error: any): void {
+    function callback(this: ExtensionServer, error: unknown): void {
       const result = error ? this._status.E_FAILED(error) : this._status.OK();
-      this._dispatchCallback(message.requestId, port, result);
+      this._dispatchCallback(requestId, port, result);
     }
-    if (message.evaluateOnPage) {
-      return sidebar.setExpression(
-          message.expression, message.rootTitle, message.evaluateOptions, port[extensionOriginSymbol],
-          callback.bind(this));
+    if (evaluateOnPage) {
+      sidebar.setExpression(expression, rootTitle, evaluateOptions, this.getExtensionOrigin(port), callback.bind(this));
+      return undefined;
     }
     sidebar.setObject(message.expression, message.rootTitle, callback.bind(this));
-  }
-
-  _onSetSidebarPage(message: any, port: any): Record|undefined {
-    const sidebar = this._clientObjects[message.id];
-    if (!sidebar) {
-      return this._status.E_NOTFOUND(message.id);
-    }
-    sidebar.setPage(this._expandResourcePath(port[extensionOriginSymbol], message.page));
     return undefined;
   }
 
-  _onOpenResource(message: any): Record {
+  _onSetSidebarPage(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
+    if (message.command !== PrivateAPI.Commands.SetSidebarPage) {
+      return this._status.E_BADARG('command', `expected ${PrivateAPI.Commands.SetSidebarPage}`);
+    }
+    const sidebar = this._clientObjects.get(message.id);
+    if (!sidebar || !(sidebar instanceof ExtensionSidebarPane)) {
+      return this._status.E_NOTFOUND(message.id);
+    }
+    sidebar.setPage(this._expandResourcePath(this.getExtensionOrigin(port), message.page));
+    return undefined;
+  }
+
+  _onOpenResource(message: PrivateAPI.ExtensionServerRequestMessage): Record {
+    if (message.command !== PrivateAPI.Commands.OpenResource) {
+      return this._status.E_BADARG('command', `expected ${PrivateAPI.Commands.OpenResource}`);
+    }
     const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(message.url);
     if (uiSourceCode) {
       Common.Revealer.reveal(uiSourceCode.uiLocation(message.lineNumber, 0));
@@ -444,23 +509,34 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     return this._status.E_NOTFOUND(message.url);
   }
 
-  _onSetOpenResourceHandler(message: any, port: any): void {
-    // @ts-ignore
-    const name = this._registeredExtensions.get(port[extensionOriginSymbol]).name;
+  _onSetOpenResourceHandler(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
+    if (message.command !== PrivateAPI.Commands.SetOpenResourceHandler) {
+      return this._status.E_BADARG('command', `expected ${PrivateAPI.Commands.SetOpenResourceHandler}`);
+    }
+    const extension = this._registeredExtensions.get(this.getExtensionOrigin(port));
+    if (!extension) {
+      throw new Error('Received a message from an unregistered extension');
+    }
+    const {name} = extension;
     if (message.handlerPresent) {
       Components.Linkifier.Linkifier.registerLinkHandler(name, this._handleOpenURL.bind(this, port));
     } else {
       Components.Linkifier.Linkifier.unregisterLinkHandler(name);
     }
+    return undefined;
   }
 
-  _handleOpenURL(port: any, contentProvider: any, lineNumber: any): void {
+  _handleOpenURL(port: MessagePort, contentProvider: TextUtils.ContentProvider.ContentProvider, lineNumber: number):
+      void {
     port.postMessage(
         {command: 'open-resource', resource: this._makeResource(contentProvider), lineNumber: lineNumber + 1});
   }
 
-  _onReload(message: any): Record {
-    const options = (message.options || {} as any);
+  _onReload(message: PrivateAPI.ExtensionServerRequestMessage): Record {
+    if (message.command !== PrivateAPI.Commands.Reload) {
+      return this._status.E_BADARG('command', `expected ${PrivateAPI.Commands.Reload}`);
+    }
+    const options = (message.options || {});
 
     SDK.NetworkManager.MultitargetNetworkManager.instance().setUserAgentOverride(
         typeof options.userAgent === 'string' ? options.userAgent : '', null);
@@ -472,27 +548,33 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     return this._status.OK();
   }
 
-  _onEvaluateOnInspectedPage(message: any, port: any): Record|undefined {
+  _onEvaluateOnInspectedPage(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
+    if (message.command !== PrivateAPI.Commands.EvaluateOnInspectedPage) {
+      return this._status.E_BADARG('command', `expected ${PrivateAPI.Commands.EvaluateOnInspectedPage}`);
+    }
+
+    const {requestId, expression, evaluateOptions} = message;
     function callback(
         this: ExtensionServer, error: string|null, object: SDK.RemoteObject.RemoteObject|null,
         wasThrown: boolean): void {
       let result;
       if (error || !object) {
-        // @ts-ignore
-        result = this._status.E_PROTOCOLERROR(error.toString());
+        result = this._status.E_PROTOCOLERROR(error?.toString());
       } else if (wasThrown) {
         result = {isException: true, value: object.description};
       } else {
         result = {value: object.value};
       }
 
-      this._dispatchCallback(message.requestId, port, result);
+      this._dispatchCallback(requestId, port, result);
     }
-    return this.evaluate(
-        message.expression, true, true, message.evaluateOptions, port[extensionOriginSymbol], callback.bind(this));
+    return this.evaluate(expression, true, true, evaluateOptions, this.getExtensionOrigin(port), callback.bind(this));
   }
 
-  async _onGetHAR(): Promise<HAR.Log.LogDTO> {
+  async _onGetHAR(message: PrivateAPI.ExtensionServerRequestMessage): Promise<Record|HAR.Log.LogDTO> {
+    if (message.command !== PrivateAPI.Commands.GetHAR) {
+      return this._status.E_BADARG('command', `expected ${PrivateAPI.Commands.GetHAR}`);
+    }
     const requests = Logs.NetworkLog.NetworkLog.instance().requests();
     const harLog = await HAR.Log.Log.build(requests);
     for (let i = 0; i < harLog.entries.length; ++i) {
@@ -509,16 +591,18 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     return {url: contentProvider.contentURL(), type: contentProvider.contentType().name()};
   }
 
-  _onGetPageResources(): TextUtils.ContentProvider.ContentProvider[] {
-    const resources = new Map<any, {
+  _onGetPageResources(): {url: string, type: string}[] {
+    const resources = new Map<unknown, {
       url: string,
       type: string,
     }>();
 
-    function pushResourceData(this: ExtensionServer, contentProvider: any): void {
+    function pushResourceData(
+        this: ExtensionServer, contentProvider: TextUtils.ContentProvider.ContentProvider): boolean {
       if (!resources.has(contentProvider.contentURL())) {
         resources.set(contentProvider.contentURL(), this._makeResource(contentProvider));
       }
+      return false;
     }
     let uiSourceCodes = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodesForProjectType(
         Workspace.Workspace.projectTypes.Network);
@@ -527,21 +611,24 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     uiSourceCodes.forEach(pushResourceData.bind(this));
     for (const resourceTreeModel of SDK.TargetManager.TargetManager.instance().models(
              SDK.ResourceTreeModel.ResourceTreeModel)) {
-      // @ts-ignore
       resourceTreeModel.forAllResources(pushResourceData.bind(this));
     }
-    // @ts-ignore
+
     return [...resources.values()];
   }
 
   async _getResourceContent(
-      contentProvider: TextUtils.ContentProvider.ContentProvider, message: any, port: MessagePort): Promise<void> {
+      contentProvider: TextUtils.ContentProvider.ContentProvider, message: PrivateAPI.ExtensionServerRequestMessage,
+      port: MessagePort): Promise<void> {
     const {content} = await contentProvider.requestContent();
     const encoded = await contentProvider.contentEncoded();
     this._dispatchCallback(message.requestId, port, {encoding: encoded ? 'base64' : '', content: content});
   }
 
-  _onGetRequestContent(message: any, port: any): Record|undefined {
+  _onGetRequestContent(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
+    if (message.command !== PrivateAPI.Commands.GetRequestContent) {
+      return this._status.E_BADARG('command', `expected ${PrivateAPI.Commands.GetRequestContent}`);
+    }
     const request = this._requestById(message.id);
     if (!request) {
       return this._status.E_NOTFOUND(message.id);
@@ -550,7 +637,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     return undefined;
   }
 
-  _onGetResourceContent(message: any, port: any): Record|undefined {
+  _onGetResourceContent(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
+    if (message.command !== PrivateAPI.Commands.GetResourceContent) {
+      return this._status.E_BADARG('command', `expected ${PrivateAPI.Commands.GetResourceContent}`);
+    }
     const url = (message.url as string);
     const contentProvider = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url) ||
         Bindings.ResourceUtils.resourceForURL(url);
@@ -561,13 +651,17 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     return undefined;
   }
 
-  _onSetResourceContent(message: any, port: any): Record|undefined {
-    function callbackWrapper(this: ExtensionServer, error: string|null): void {
-      const response = error ? this._status.E_FAILED(error) : this._status.OK();
-      this._dispatchCallback(message.requestId, port, response);
+  _onSetResourceContent(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
+    if (message.command !== PrivateAPI.Commands.SetResourceContent) {
+      return this._status.E_BADARG('command', `expected ${PrivateAPI.Commands.SetResourceContent}`);
     }
 
-    const url = (message.url as string);
+    const {url, requestId, content, commit} = message;
+    function callbackWrapper(this: ExtensionServer, error: string|null): void {
+      const response = error ? this._status.E_FAILED(error) : this._status.OK();
+      this._dispatchCallback(requestId, port, response);
+    }
+
     const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url);
     if (!uiSourceCode || !uiSourceCode.contentType().isDocumentOrScriptOrStyleSheet()) {
       const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
@@ -576,43 +670,52 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
       }
       return this._status.E_NOTSUPPORTED('Resource is not editable');
     }
-    uiSourceCode.setWorkingCopy(message.content);
-    if (message.commit) {
+    uiSourceCode.setWorkingCopy(content);
+    if (commit) {
       uiSourceCode.commitWorkingCopy();
     }
     callbackWrapper.call(this, null);
     return undefined;
   }
 
-  _requestId(request: any): any {
-    if (!request._extensionRequestId) {
-      request._extensionRequestId = ++this._lastRequestId;
-      this._requests[request._extensionRequestId] = request;
+  _requestId(request: TextUtils.ContentProvider.ContentProvider): number {
+    const requestId = this._requestIds.get(request);
+    if (requestId === undefined) {
+      const newId = ++this._lastRequestId;
+      this._requestIds.set(request, newId);
+      this._requests.set(newId, request);
+      return newId;
     }
-    return request._extensionRequestId;
+    return requestId;
   }
 
-  _requestById(id: any): any {
-    return this._requests[id];
+  _requestById(id: number): TextUtils.ContentProvider.ContentProvider|undefined {
+    return this._requests.get(id);
   }
 
-  _onAddTraceProvider(message: any, port: MessagePort): void {
+  _onAddTraceProvider(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
+    if (message.command !== PrivateAPI.Commands.AddTraceProvider) {
+      return this._status.E_BADARG('command', `expected ${PrivateAPI.Commands.AddTraceProvider}`);
+    }
     const provider = new ExtensionTraceProvider(
-        // @ts-ignore
-        port[extensionOriginSymbol], message.id, message.categoryName, message.categoryTooltip);
-    this._clientObjects[message.id] = provider;
+        this.getExtensionOrigin(port), message.id, message.categoryName, message.categoryTooltip);
+    this._clientObjects.set(message.id, provider);
     this._traceProviders.push(provider);
     this.dispatchEventToListeners(Events.TraceProviderAdded, provider);
+    return undefined;
   }
 
   traceProviders(): ExtensionTraceProvider[] {
     return this._traceProviders;
   }
 
-  _onForwardKeyboardEvent(message: any): void {
+  _onForwardKeyboardEvent(message: PrivateAPI.ExtensionServerRequestMessage): Record|undefined {
+    if (message.command !== PrivateAPI.Commands.ForwardKeyboardEvent) {
+      return this._status.E_BADARG('command', `expected ${PrivateAPI.Commands.ForwardKeyboardEvent}`);
+    }
     message.entries.forEach(handleEventEntry);
 
-    function handleEventEntry(entry: any): void {
+    function handleEventEntry(entry: KeyboardEventInit&{eventType: string}): void {
       // Fool around closure compiler -- it has its own notion of both KeyboardEvent constructor
       // and initKeyboardEvent methods and overriding these in externs.js does not have effect.
       const event = new window.KeyboardEvent(entry.eventType, {
@@ -625,12 +728,13 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         shiftKey: entry.shiftKey,
         metaKey: entry.metaKey,
       });
+
       // @ts-ignore
       event.__keyCode = keyCodeForEntry(entry);
       document.dispatchEvent(event);
     }
 
-    function keyCodeForEntry(entry: any): any {
+    function keyCodeForEntry(entry: KeyboardEventInit): unknown {
       let keyCode = entry.keyCode;
       if (!keyCode) {
         // This is required only for synthetic events (e.g. dispatched in tests).
@@ -640,9 +744,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
       }
       return keyCode || 0;
     }
+    return undefined;
   }
 
-  _dispatchCallback(requestId: any, port: any, result: any): void {
+  _dispatchCallback(requestId: unknown, port: MessagePort, result: unknown): void {
     if (requestId) {
       port.postMessage({command: 'callback', requestId: requestId, result: result});
     }
@@ -675,19 +780,22 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         SDK.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
   }
 
-  _notifyResourceAdded(event: any): void {
-    const uiSourceCode = (event.data as Workspace.UISourceCode.UISourceCode);
+  _notifyResourceAdded(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
+    const uiSourceCode = event.data;
     this._postNotification(PrivateAPI.Events.ResourceAdded, this._makeResource(uiSourceCode));
   }
 
-  _notifyUISourceCodeContentCommitted(event: any): void {
-    const uiSourceCode = (event.data.uiSourceCode as Workspace.UISourceCode.UISourceCode);
-    const content = (event.data.content as string);
+  _notifyUISourceCodeContentCommitted(
+      event: Common.EventTarget
+          .EventTargetEvent<{uiSourceCode: Workspace.UISourceCode.UISourceCode, content: string, encoded: boolean}>):
+      void {
+    const {uiSourceCode, content} = event.data;
     this._postNotification(PrivateAPI.Events.ResourceContentCommitted, this._makeResource(uiSourceCode), content);
   }
 
-  async _notifyRequestFinished(event: any): Promise<void> {
-    const request = (event.data as SDK.NetworkRequest.NetworkRequest);
+  async _notifyRequestFinished(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>):
+      Promise<void> {
+    const request = event.data;
     const entry = await HAR.Log.Entry.build(request);
     this._postNotification(PrivateAPI.Events.NetworkRequestFinished, this._requestId(request), entry);
   }
@@ -726,18 +834,16 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
       if (!this._registeredExtensions.get(extensionOrigin)) {
         // See ExtensionAPI.js for details.
         const injectedAPI = self.buildExtensionAPIInjectedScript(
-            // @ts-ignore
-            extensionInfo, this._inspectedTabId, ThemeSupport.ThemeSupport.instance().themeName(),
+            extensionInfo, this._inspectedTabId as string, ThemeSupport.ThemeSupport.instance().themeName(),
             UI.ShortcutRegistry.ShortcutRegistry.instance().globalShortcutKeys(),
-            // @ts-ignore
-            ExtensionServer.instance()['_extensionAPITestHook']);
+            ExtensionServer.instance()._extensionAPITestHook);
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.setInjectedScriptForOrigin(
             extensionOrigin, injectedAPI);
         const name = extensionInfo.name || `Extension ${extensionOrigin}`;
         this._registeredExtensions.set(extensionOrigin, {name});
       }
-      // @ts-ignore
-      const iframe = createElement('iframe');
+
+      const iframe = document.createElement('iframe');
       iframe.src = startPage;
       iframe.dataset.devtoolsExtension = extensionInfo.name;
       iframe.style.display = 'none';
@@ -749,73 +855,78 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     return true;
   }
 
-  _registerExtension(origin: any, port: any): void {
+  _registerExtension(origin: string, port: MessagePort): void {
     if (!this._registeredExtensions.has(origin)) {
       if (origin !== window.location.origin) {  // Just ignore inspector frames.
         console.error('Ignoring unauthorized client request from ' + origin);
       }
       return;
     }
-    port[extensionOriginSymbol] = origin;
+    extensionOrigins.set(port, origin);
     port.addEventListener('message', this._onmessage.bind(this), false);
     port.start();
   }
 
-  _onWindowMessage(event: any): void {
+  _onWindowMessage(event: MessageEvent): void {
     if (event.data === 'registerExtension') {
       this._registerExtension(event.origin, event.ports[0]);
     }
   }
 
-  async _onmessage(event: any): Promise<void> {
+  async _onmessage(event: MessageEvent): Promise<void> {
     const message = event.data;
     let result;
 
-    if (!(message.command in this._handlers)) {
+    const handler = this._handlers.get(message.command);
+
+    if (!handler) {
       result = this._status.E_NOTSUPPORTED(message.command);
     } else if (!this._extensionsEnabled) {
       result = this._status.E_FAILED('Permission denied');
     } else {
-      result = await this._handlers[message.command](message, event.target);
+      result = await handler(message, event.target as MessagePort);
     }
 
     if (result && message.requestId) {
-      this._dispatchCallback(message.requestId, event.target, result);
+      this._dispatchCallback(message.requestId, event.target as MessagePort, result);
     }
   }
 
-  _registerHandler(command: any, callback: any): void {
-    console.assert(command);
-    this._handlers[command] = callback;
+  _registerHandler(
+      command: string,
+      callback: (message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort) => unknown): void {
+    console.assert(Boolean(command));
+    this._handlers.set(command, callback);
   }
 
-  _registerSubscriptionHandler(eventTopic: any, onSubscribeFirst: any, onUnsubscribeLast: any): void {
-    this._subscriptionStartHandlers[eventTopic] = onSubscribeFirst;
-    this._subscriptionStopHandlers[eventTopic] = onUnsubscribeLast;
+  _registerSubscriptionHandler(eventTopic: string, onSubscribeFirst: () => unknown, onUnsubscribeLast: () => unknown):
+      void {
+    this._subscriptionStartHandlers.set(eventTopic, onSubscribeFirst);
+    this._subscriptionStopHandlers.set(eventTopic, onUnsubscribeLast);
   }
 
   _registerAutosubscriptionHandler(
-      eventTopic: string, eventTarget: any, frontendEventType: string,
-      handler: (arg0: Common.EventTarget.EventTargetEvent) => any): void {
+      eventTopic: string, eventTarget: Common.EventTarget.EventTarget, frontendEventType: string,
+      handler: (arg0: Common.EventTarget.EventTargetEvent) => unknown): void {
     this._registerSubscriptionHandler(
         eventTopic, eventTarget.addEventListener.bind(eventTarget, frontendEventType, handler, this),
         eventTarget.removeEventListener.bind(eventTarget, frontendEventType, handler, this));
   }
 
   _registerAutosubscriptionTargetManagerHandler(
-      eventTopic: string, modelClass: Function, frontendEventType: string,
-      handler: (arg0: Common.EventTarget.EventTargetEvent) => any): void {
+      eventTopic: string, modelClass: new(arg1: SDK.Target.Target) => SDK.SDKModel.SDKModel, frontendEventType: string,
+      handler: (arg0: Common.EventTarget.EventTargetEvent) => unknown): void {
     this._registerSubscriptionHandler(
         eventTopic,
-        // @ts-ignore
+
         SDK.TargetManager.TargetManager.instance().addModelListener.bind(
             SDK.TargetManager.TargetManager.instance(), modelClass, frontendEventType, handler, this),
-        // @ts-ignore
+
         SDK.TargetManager.TargetManager.instance().removeModelListener.bind(
             SDK.TargetManager.TargetManager.instance(), modelClass, frontendEventType, handler, this));
   }
 
-  _registerResourceContentCommittedHandler(handler: any): void {
+  _registerResourceContentCommittedHandler(handler: (arg0: Common.EventTarget.EventTargetEvent) => unknown): void {
     function addFirstEventListener(this: ExtensionServer): void {
       Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
           Workspace.Workspace.Events.WorkingCopyCommittedByUser, handler, this);
@@ -833,14 +944,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         removeLastEventListener.bind(this));
   }
 
-  _expandResourcePath(extensionPath: any, resourcePath: any): string|undefined {
-    if (!resourcePath) {
-      return;
-    }
+  _expandResourcePath(extensionPath: string, resourcePath: string): string {
     return extensionPath + this._normalizePath(resourcePath);
   }
 
-  _normalizePath(path: any): string {
+  _normalizePath(path: string): string {
     const source = path.split('/');
     const result = [];
 
@@ -862,14 +970,16 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   evaluate(
-      expression: string, exposeCommandLineAPI: boolean, returnByValue: boolean, options: any|null,
-      securityOrigin: string,
-      callback: (arg0: string|null, arg1: SDK.RemoteObject.RemoteObject|null, arg2: boolean) => any): Record|undefined {
+      expression: string, exposeCommandLineAPI: boolean, returnByValue: boolean,
+      options: PrivateAPI.EvaluateOptions|undefined, securityOrigin: string,
+      callback: (arg0: string|null, arg1: SDK.RemoteObject.RemoteObject|null, arg2: boolean) => unknown): Record
+      |undefined {
     let context;
 
-    function resolveURLToFrame(url: string): any {
-      let found;
-      function hasMatchingURL(frame: any): any {
+    function resolveURLToFrame(url: string): SDK.ResourceTreeModel.ResourceTreeFrame|null {
+      let found = null;
+      function hasMatchingURL(frame: SDK.ResourceTreeModel.ResourceTreeFrame): SDK.ResourceTreeModel.ResourceTreeFrame|
+          null {
         found = (frame.url === url) ? frame : null;
         return found;
       }
@@ -1014,21 +1124,20 @@ class ExtensionServerPanelView extends UI.View.SimpleView {
 }
 
 export class ExtensionStatus {
-  OK: (...args: any[]) => Record;
-  E_EXISTS: (...args: any[]) => Record;
-  E_BADARG: (...args: any[]) => Record;
-  E_BADARGTYPE: (...args: any[]) => Record;
-  E_NOTFOUND: (...args: any[]) => Record;
-  E_NOTSUPPORTED: (...args: any[]) => Record;
-  E_PROTOCOLERROR: (...args: any[]) => Record;
-  E_FAILED: (...args: any[]) => Record;
+  OK: (...args: unknown[]) => Record;
+  E_EXISTS: (...args: unknown[]) => Record;
+  E_BADARG: (...args: unknown[]) => Record;
+  E_BADARGTYPE: (...args: unknown[]) => Record;
+  E_NOTFOUND: (...args: unknown[]) => Record;
+  E_NOTSUPPORTED: (...args: unknown[]) => Record;
+  E_PROTOCOLERROR: (...args: unknown[]) => Record;
+  E_FAILED: (...args: unknown[]) => Record;
 
   constructor() {
     function makeStatus(code: string, description: string): Record {
       const details = Array.prototype.slice.call(arguments, 2);
-      const status = {code: code, description: description, details: details};
+      const status: Record = {code, description, details};
       if (code !== 'OK') {
-        // @ts-ignore
         status.isError = true;
         console.error('Extension server error: ' + Platform.StringUtilities.vsprintf(description, details));
       }
@@ -1048,5 +1157,6 @@ export class ExtensionStatus {
 export interface Record {
   code: string;
   description: string;
-  details: any[];
+  details: unknown[];
+  isError?: boolean;
 }

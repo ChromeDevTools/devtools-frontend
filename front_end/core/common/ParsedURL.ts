@@ -45,9 +45,9 @@ export class ParsedURL {
   fragment: string;
   folderPathComponents: string;
   lastPathComponent: string;
-  _blobInnerScheme: string|undefined;
-  _displayName?: string;
-  _dataURLDisplayName?: string;
+  readonly blobInnerScheme: string|undefined;
+  private displayNameInternal?: string;
+  private dataURLDisplayNameInternal?: string;
 
   constructor(url: string) {
     this.isValid = false;
@@ -68,7 +68,7 @@ export class ParsedURL {
     if (match) {
       this.isValid = true;
       if (isBlobUrl) {
-        this._blobInnerScheme = match[2].toLowerCase();
+        this.blobInnerScheme = match[2].toLowerCase();
         this.scheme = 'blob';
       } else {
         this.scheme = match[2].toLowerCase();
@@ -324,8 +324,8 @@ export class ParsedURL {
   }
 
   get displayName(): string {
-    if (this._displayName) {
-      return this._displayName;
+    if (this.displayNameInternal) {
+      return this.displayNameInternal;
     }
 
     if (this.isDataURL()) {
@@ -338,25 +338,25 @@ export class ParsedURL {
       return this.url;
     }
 
-    this._displayName = this.lastPathComponent;
-    if (!this._displayName) {
-      this._displayName = (this.host || '') + '/';
+    this.displayNameInternal = this.lastPathComponent;
+    if (!this.displayNameInternal) {
+      this.displayNameInternal = (this.host || '') + '/';
     }
-    if (this._displayName === '/') {
-      this._displayName = this.url;
+    if (this.displayNameInternal === '/') {
+      this.displayNameInternal = this.url;
     }
-    return this._displayName;
+    return this.displayNameInternal;
   }
 
   dataURLDisplayName(): string {
-    if (this._dataURLDisplayName) {
-      return this._dataURLDisplayName;
+    if (this.dataURLDisplayNameInternal) {
+      return this.dataURLDisplayNameInternal;
     }
     if (!this.isDataURL()) {
       return '';
     }
-    this._dataURLDisplayName = Platform.StringUtilities.trimEndWithMaxLength(this.url, 20);
-    return this._dataURLDisplayName;
+    this.dataURLDisplayNameInternal = Platform.StringUtilities.trimEndWithMaxLength(this.url, 20);
+    return this.dataURLDisplayNameInternal;
   }
 
   isAboutBlank(): boolean {
@@ -390,7 +390,7 @@ export class ParsedURL {
     if (this.isDataURL()) {
       return 'data:';
     }
-    const scheme = this.isBlobURL() ? this._blobInnerScheme : this.scheme;
+    const scheme = this.isBlobURL() ? this.blobInnerScheme : this.scheme;
     return scheme + '://' + this.domain();
   }
 

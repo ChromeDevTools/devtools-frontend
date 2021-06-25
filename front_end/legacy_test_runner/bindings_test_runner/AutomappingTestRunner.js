@@ -113,7 +113,7 @@ BindingsTestRunner.AutomappingTest.prototype = {
   },
 
   _checkStabilized: function() {
-    if (!this._stabilizedCallback || this._automapping._sweepThrottler._process) {
+    if (!this._stabilizedCallback || this._automapping._sweepThrottler.process) {
       return;
     }
 

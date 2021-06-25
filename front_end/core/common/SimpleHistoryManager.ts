@@ -40,27 +40,27 @@ export interface HistoryEntry {
 }
 
 export class SimpleHistoryManager {
-  _entries: HistoryEntry[];
-  _activeEntryIndex: number;
-  _coalescingReadonly: number;
-  _historyDepth: number;
+  private entries: HistoryEntry[];
+  private activeEntryIndex: number;
+  private coalescingReadonly: number;
+  private readonly historyDepth: number;
   constructor(historyDepth: number) {
-    this._entries = [];
-    this._activeEntryIndex = -1;
+    this.entries = [];
+    this.activeEntryIndex = -1;
 
     // Lock is used to make sure that reveal() does not
     // make any changes to the history while we are
     // rolling back or rolling over.
-    this._coalescingReadonly = 0;
-    this._historyDepth = historyDepth;
+    this.coalescingReadonly = 0;
+    this.historyDepth = historyDepth;
   }
 
   _readOnlyLock(): void {
-    ++this._coalescingReadonly;
+    ++this.coalescingReadonly;
   }
 
   _releaseReadOnlyLock(): void {
-    --this._coalescingReadonly;
+    --this.coalescingReadonly;
   }
 
   _getPreviousValidIndex(): number {
@@ -68,8 +68,8 @@ export class SimpleHistoryManager {
       return -1;
     }
 
-    let revealIndex = this._activeEntryIndex - 1;
-    while (revealIndex >= 0 && !this._entries[revealIndex].valid()) {
+    let revealIndex = this.activeEntryIndex - 1;
+    while (revealIndex >= 0 && !this.entries[revealIndex].valid()) {
       --revealIndex;
     }
     if (revealIndex < 0) {
@@ -80,12 +80,12 @@ export class SimpleHistoryManager {
   }
 
   _getNextValidIndex(): number {
-    let revealIndex = this._activeEntryIndex + 1;
+    let revealIndex = this.activeEntryIndex + 1;
 
-    while (revealIndex < this._entries.length && !this._entries[revealIndex].valid()) {
+    while (revealIndex < this.entries.length && !this.entries[revealIndex].valid()) {
       ++revealIndex;
     }
-    if (revealIndex >= this._entries.length) {
+    if (revealIndex >= this.entries.length) {
       return -1;
     }
 
@@ -93,7 +93,7 @@ export class SimpleHistoryManager {
   }
 
   _readOnly(): boolean {
-    return Boolean(this._coalescingReadonly);
+    return Boolean(this.coalescingReadonly);
   }
 
   filterOut(filterOutCallback: (arg0: HistoryEntry) => boolean): void {
@@ -102,23 +102,23 @@ export class SimpleHistoryManager {
     }
     const filteredEntries = [];
     let removedBeforeActiveEntry = 0;
-    for (let i = 0; i < this._entries.length; ++i) {
-      if (!filterOutCallback(this._entries[i])) {
-        filteredEntries.push(this._entries[i]);
-      } else if (i <= this._activeEntryIndex) {
+    for (let i = 0; i < this.entries.length; ++i) {
+      if (!filterOutCallback(this.entries[i])) {
+        filteredEntries.push(this.entries[i]);
+      } else if (i <= this.activeEntryIndex) {
         ++removedBeforeActiveEntry;
       }
     }
-    this._entries = filteredEntries;
-    this._activeEntryIndex = Math.max(0, this._activeEntryIndex - removedBeforeActiveEntry);
+    this.entries = filteredEntries;
+    this.activeEntryIndex = Math.max(0, this.activeEntryIndex - removedBeforeActiveEntry);
   }
 
   empty(): boolean {
-    return !this._entries.length;
+    return !this.entries.length;
   }
 
   active(): HistoryEntry|null {
-    return this.empty() ? null : this._entries[this._activeEntryIndex];
+    return this.empty() ? null : this.entries[this.activeEntryIndex];
   }
 
   push(entry: HistoryEntry): void {
@@ -126,13 +126,13 @@ export class SimpleHistoryManager {
       return;
     }
     if (!this.empty()) {
-      this._entries.splice(this._activeEntryIndex + 1);
+      this.entries.splice(this.activeEntryIndex + 1);
     }
-    this._entries.push(entry);
-    if (this._entries.length > this._historyDepth) {
-      this._entries.shift();
+    this.entries.push(entry);
+    if (this.entries.length > this.historyDepth) {
+      this.entries.shift();
     }
-    this._activeEntryIndex = this._entries.length - 1;
+    this.activeEntryIndex = this.entries.length - 1;
   }
 
   canRollback(): boolean {
@@ -149,8 +149,8 @@ export class SimpleHistoryManager {
       return false;
     }
     this._readOnlyLock();
-    this._activeEntryIndex = revealIndex;
-    this._entries[revealIndex].reveal();
+    this.activeEntryIndex = revealIndex;
+    this.entries[revealIndex].reveal();
     this._releaseReadOnlyLock();
 
     return true;
@@ -163,8 +163,8 @@ export class SimpleHistoryManager {
     }
 
     this._readOnlyLock();
-    this._activeEntryIndex = revealIndex;
-    this._entries[revealIndex].reveal();
+    this.activeEntryIndex = revealIndex;
+    this.entries[revealIndex].reveal();
     this._releaseReadOnlyLock();
 
     return true;

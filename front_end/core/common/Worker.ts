@@ -31,11 +31,11 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 export class WorkerWrapper {
-  _workerPromise: Promise<Worker>;
-  _disposed?: boolean;
+  private readonly workerPromise: Promise<Worker>;
+  private disposed?: boolean;
 
   private constructor(workerLocation: URL) {
-    this._workerPromise = new Promise(fulfill => {
+    this.workerPromise = new Promise(fulfill => {
       const worker = new Worker(workerLocation, {type: 'module'});
       worker.onmessage = (event: MessageEvent<unknown>): void => {
         console.assert(event.data === 'workerReady');
@@ -50,16 +50,16 @@ export class WorkerWrapper {
   }
 
   postMessage(message: unknown): void {
-    this._workerPromise.then(worker => {
-      if (!this._disposed) {
+    this.workerPromise.then(worker => {
+      if (!this.disposed) {
         worker.postMessage(message);
       }
     });
   }
 
   dispose(): void {
-    this._disposed = true;
-    this._workerPromise.then(worker => worker.terminate());
+    this.disposed = true;
+    this.workerPromise.then(worker => worker.terminate());
   }
 
   terminate(): void {
@@ -67,13 +67,13 @@ export class WorkerWrapper {
   }
 
   set onmessage(listener: (event: MessageEvent) => void) {
-    this._workerPromise.then(worker => {
+    this.workerPromise.then(worker => {
       worker.onmessage = listener;
     });
   }
 
   set onerror(listener: (event: Event) => void) {
-    this._workerPromise.then(worker => {
+    this.workerPromise.then(worker => {
       worker.onerror = listener;
     });
   }

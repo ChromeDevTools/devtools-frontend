@@ -12,8 +12,8 @@ const Trie = Common.Trie.Trie;
 describe('Text Dictionary', () => {
   it('can be created with its basic attributes', () => {
     const textDic = new TextDictionary();
-    assert.instanceOf(textDic._words, Map, 'did not create a Map named _words');
-    assert.instanceOf(textDic._index, Trie, 'did not create a Trie named _index');
+    assert.instanceOf(textDic.words, Map, 'did not create a Map named _words');
+    assert.instanceOf(textDic.index, Trie, 'did not create a Trie named _index');
   });
 
   it('can add a word successfully', () => {

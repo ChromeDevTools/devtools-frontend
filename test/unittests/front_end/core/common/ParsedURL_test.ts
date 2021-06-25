@@ -35,7 +35,7 @@ describe('Parsed URL', () => {
     const parsedUrl = new ParsedURL('blob:http://www.example.com/');
     assert.isTrue(parsedUrl.isValid, 'the URL should be valid');
     assert.strictEqual(parsedUrl.scheme, 'blob', 'the URL scheme is not blob');
-    assert.strictEqual(parsedUrl._blobInnerScheme, 'http', 'the URL inner scheme is not http');
+    assert.strictEqual(parsedUrl.blobInnerScheme, 'http', 'the URL inner scheme is not http');
   });
 
   it('parses a URL with no path', () => {

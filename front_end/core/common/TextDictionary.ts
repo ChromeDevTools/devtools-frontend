@@ -33,48 +33,48 @@
 import {Trie} from './Trie.js';
 
 export class TextDictionary {
-  _words: Map<string, number>;
-  _index: Trie;
+  readonly words: Map<string, number>;
+  readonly index: Trie;
   constructor() {
-    this._words = new Map();
-    this._index = new Trie();
+    this.words = new Map();
+    this.index = new Trie();
   }
 
   addWord(word: string): void {
-    let count = this._words.get(word) || 0;
+    let count = this.words.get(word) || 0;
     ++count;
-    this._words.set(word, count);
-    this._index.add(word);
+    this.words.set(word, count);
+    this.index.add(word);
   }
 
   removeWord(word: string): void {
-    let count = this._words.get(word) || 0;
+    let count = this.words.get(word) || 0;
     if (!count) {
       return;
     }
     if (count === 1) {
-      this._words.delete(word);
-      this._index.remove(word);
+      this.words.delete(word);
+      this.index.remove(word);
       return;
     }
     --count;
-    this._words.set(word, count);
+    this.words.set(word, count);
   }
 
   wordsWithPrefix(prefix: string): string[] {
-    return this._index.words(prefix);
+    return this.index.words(prefix);
   }
 
   hasWord(word: string): boolean {
-    return this._words.has(word);
+    return this.words.has(word);
   }
 
   wordCount(word: string): number {
-    return this._words.get(word) || 0;
+    return this.words.get(word) || 0;
   }
 
   reset(): void {
-    this._words.clear();
-    this._index.clear();
+    this.words.clear();
+    this.index.clear();
   }
 }

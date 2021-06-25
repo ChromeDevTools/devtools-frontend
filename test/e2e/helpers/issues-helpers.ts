@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import { assert } from 'chai';
+import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer';
 
 import {$$, click, hasClass, matchStringTable, waitFor, waitForClass, waitForFunction} from '../../shared/helper.js';
-import { openPanelViaMoreTools } from './settings-helpers.js';
+import {openPanelViaMoreTools} from './settings-helpers.js';
 
 export const CATEGORY = '.issue-category';
 export const CATEGORY_NAME = '.issue-category .title';
@@ -37,11 +37,12 @@ export async function assertIssueTitle(issueMessage: string) {
   assert.strictEqual(selectedIssueMessage, issueMessage);
 }
 
-export async function getIssueByTitle(issueMessage: string): Promise<puppeteer.ElementHandle<HTMLElement> | undefined> {
+export async function getIssueByTitle(issueMessage: string): Promise<puppeteer.ElementHandle<HTMLElement>|undefined> {
   const issueMessageElement = await waitFor(ISSUE_TITLE);
   const selectedIssueMessage = await issueMessageElement.evaluate(node => node.textContent);
   assert.strictEqual(selectedIssueMessage, issueMessage);
-  const header = await issueMessageElement.evaluateHandle(el => el.parentElement) as puppeteer.ElementHandle<HTMLElement>;
+  const header =
+      await issueMessageElement.evaluateHandle(el => el.parentElement) as puppeteer.ElementHandle<HTMLElement>;
   if (header) {
     const headerClassList = await header.evaluate(el => el.classList.toString());
     assert.include(headerClassList, 'header');
@@ -53,7 +54,7 @@ export async function getIssueByTitle(issueMessage: string): Promise<puppeteer.E
   return undefined;
 }
 
-export async function assertStatus(status: 'blocked' | 'report-only') {
+export async function assertStatus(status: 'blocked'|'report-only') {
   const classStatus = status === 'blocked' ? BLOCKED_STATUS : REPORT_ONLY_STATUS;
   const issueMessageElement = await waitFor(classStatus);
   const selectedIssueMessage = await issueMessageElement.evaluate(node => node.textContent);
@@ -87,15 +88,15 @@ interface IssueResourceSection {
 }
 
 export async function getResourcesElement(
-  resourceName: string, issueElement?: puppeteer.ElementHandle<Element> | undefined,
-  className?: string): Promise<IssueResourceSection> {
+    resourceName: string, issueElement?: puppeteer.ElementHandle<Element>|undefined,
+    className?: string): Promise<IssueResourceSection> {
   return await waitForFunction(async () => {
     const elements = await $$(className ?? RESOURCES_LABEL, issueElement);
     for (const el of elements) {
       const text = await el.evaluate(el => el.textContent);
       if (text && text.includes(resourceName)) {
         const content = await el.evaluateHandle(el => el.parentElement && el.parentElement.nextSibling);
-        return { label: el, content: content as puppeteer.ElementHandle<Element> };
+        return {label: el, content: content as puppeteer.ElementHandle<Element>};
       }
     }
     return undefined;
@@ -138,15 +139,23 @@ export async function extractTableFromResourceSection(resourceContentElement: pu
   return undefined;
 }
 
-export async function waitForTableFromResourceSectionContents(
-    resourceContentElement: puppeteer.ElementHandle<Element>, expected: (string|RegExp)[][]): Promise<string[][]> {
+
+export async function waitForTableFromResourceSection(
+    resourceContentElement: puppeteer.ElementHandle<Element>,
+    predicate: (table: string[][]) => true | undefined): Promise<string[][]> {
   return await waitForFunction(async () => {
     const table = await extractTableFromResourceSection(resourceContentElement);
-    if (!table || matchStringTable(table, expected) !== true) {
+    if (!table || predicate(table) !== true) {
       return undefined;
     }
     return table;
   });
+}
+
+export function waitForTableFromResourceSectionContents(
+    resourceContentElement: puppeteer.ElementHandle<Element>, expected: (string|RegExp)[][]): Promise<string[][]> {
+  return waitForTableFromResourceSection(
+      resourceContentElement, table => matchStringTable(table, expected) === true ? true : undefined);
 }
 
 export async function getGroupByCategoryChecked() {

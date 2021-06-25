@@ -2,11 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert} from 'chai';
-
-import {assertNotNull, getResourcesPath, goToResource} from '../../shared/helper.js';
+import {assertNotNull, getResourcesPath, goToResource, matchStringArray} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {assertIssueTitle, expandIssue, extractTableFromResourceSection, getIssueByTitle, getResourcesElement, navigateToIssuesTab} from '../helpers/issues-helpers.js';
+import {assertIssueTitle, expandIssue, getIssueByTitle, getResourcesElement, navigateToIssuesTab, waitForTableFromResourceSection, waitForTableFromResourceSectionContents} from '../helpers/issues-helpers.js';
 
 const triggerQuirksModeIssueInIssuesTab = async (path: string) => {
   await goToResource(path);
@@ -23,60 +21,69 @@ describe('Quirks Mode issues', async () => {
   it('should report Quirks Mode issues', async () => {
     const issueElement = await triggerQuirksModeIssueInIssuesTab('elements/quirks-mode.html');
     const section = await getResourcesElement('1 element', issueElement);
-    const table = await extractTableFromResourceSection(section.content);
-    assertNotNull(table);
-    assert.strictEqual(table.length, 2);
-    assert.deepEqual(table[0], [
-      'Document in the DOM tree',
-      'Mode',
-      'URL',
-    ]);
-    assert.deepEqual(table[1], [
-      'document',
-      'Quirks Mode',
-      `${getResourcesPath()}/elements/quirks-mode.html`,
-    ]);
+    const expectedTableRows = [
+      [
+        'Document in the DOM tree',
+        'Mode',
+        'URL',
+      ],
+      [
+        'document',
+        'Quirks Mode',
+        `${getResourcesPath()}/elements/quirks-mode.html`,
+      ],
+    ];
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 
   it('should report Limited Quirks Mode issues', async () => {
     const issueElement = await triggerQuirksModeIssueInIssuesTab('elements/limited-quirks-mode.html');
     const section = await getResourcesElement('1 element', issueElement);
-    const table = await extractTableFromResourceSection(section.content);
-    assertNotNull(table);
-    assert.strictEqual(table.length, 2);
-    assert.deepEqual(table[0], [
-      'Document in the DOM tree',
-      'Mode',
-      'URL',
-    ]);
-    assert.deepEqual(table[1], [
-      'document',
-      'Limited Quirks Mode',
-      `${getResourcesPath()}/elements/limited-quirks-mode.html`,
-    ]);
+    const expectedTableRows = [
+      [
+        'Document in the DOM tree',
+        'Mode',
+        'URL',
+      ],
+      [
+        'document',
+        'Limited Quirks Mode',
+        `${getResourcesPath()}/elements/limited-quirks-mode.html`,
+      ],
+    ];
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 
   it('should report Quirks Mode issues in iframes', async () => {
     const issueElement = await triggerQuirksModeIssueInIssuesTab('elements/quirks-mode-iframes.html');
     const section = await getResourcesElement('2 elements', issueElement);
-    const table = await extractTableFromResourceSection(section.content);
-    assertNotNull(table);
-    assert.strictEqual(table.length, 3);
-    assert.deepEqual(table[0], [
-      'Document in the DOM tree',
-      'Mode',
-      'URL',
-    ]);
-    const [limitedQuirksMode, quirksMode] = table.slice(1).sort((rowA, rowB) => rowA[1].localeCompare(rowB[1]));
-    assert.deepEqual(limitedQuirksMode, [
-      'document',
-      'Limited Quirks Mode',
-      `${getResourcesPath()}/elements/limited-quirks-mode.html`,
-    ]);
-    assert.deepEqual(quirksMode, [
-      'document',
-      'Quirks Mode',
-      `${getResourcesPath()}/elements/quirks-mode.html`,
-    ]);
+    await waitForTableFromResourceSection(section.content, table => {
+      if (table.length !== 3) {
+        return undefined;
+      }
+      if (matchStringArray(table[0], [
+            'Document in the DOM tree',
+            'Mode',
+            'URL',
+          ]) !== true) {
+        return undefined;
+      }
+      const [limitedQuirksMode, quirksMode] = table.slice(1).sort((rowA, rowB) => rowA[1].localeCompare(rowB[1]));
+      if (matchStringArray(limitedQuirksMode, [
+            'document',
+            'Limited Quirks Mode',
+            `${getResourcesPath()}/elements/limited-quirks-mode.html`,
+          ]) !== true) {
+        return undefined;
+      }
+      if (matchStringArray(quirksMode, [
+            'document',
+            'Quirks Mode',
+            `${getResourcesPath()}/elements/quirks-mode.html`,
+          ]) !== true) {
+        return undefined;
+      }
+      return true;
+    });
   });
 });

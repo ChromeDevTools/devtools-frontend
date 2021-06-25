@@ -44,11 +44,16 @@ export class LogManager implements SDK.TargetManager.SDKModelObserver<SDK.LogMod
       entry: Protocol.Log.LogEntry,
     };
     const target = data.logModel.target();
-
+    const details = {
+      url: data.entry.url,
+      line: data.entry.lineNumber,
+      parameters: [data.entry.text, ...(data.entry.args || [])],
+      stackTrace: data.entry.stackTrace,
+      timestamp: data.entry.timestamp,
+      workerId: data.entry.workerId,
+    };
     const consoleMessage = new SDK.ConsoleModel.ConsoleMessage(
-        target.model(SDK.RuntimeModel.RuntimeModel), data.entry.source, data.entry.level, data.entry.text, undefined,
-        data.entry.url, data.entry.lineNumber, undefined, [data.entry.text, ...(data.entry.args || [])],
-        data.entry.stackTrace, data.entry.timestamp, undefined, undefined, data.entry.workerId);
+        target.model(SDK.RuntimeModel.RuntimeModel), data.entry.source, data.entry.level, data.entry.text, details);
 
     if (data.entry.networkRequestId) {
       NetworkLog.instance().associateConsoleMessageWithRequest(consoleMessage, data.entry.networkRequestId);

@@ -21,8 +21,7 @@ describe('ConsoleMessage', () => {
   }) {
     return new SDK.ConsoleModel.ConsoleMessage(
         null, options.source || SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI, null, options.message || 'Message',
-        undefined, options.url, undefined, undefined, undefined, undefined, undefined, options.executionContextId,
-        options.scriptId);
+        {url: options.url, executionContextId: options.executionContextId, scriptId: options.scriptId});
   }
 
   it('compares using message', () => {

@@ -636,8 +636,8 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     }
 
     const consoleMessage = new SDK.ConsoleModel.ConsoleMessage(
-        null, Protocol.Log.LogEntrySource.Other, level, message.text, SDK.ConsoleModel.FrontendMessageType.System,
-        undefined, undefined, undefined, undefined, undefined, message.timestamp);
+        null, Protocol.Log.LogEntrySource.Other, level, message.text,
+        {type: SDK.ConsoleModel.FrontendMessageType.System, timestamp: message.timestamp});
     this._addConsoleMessage(consoleMessage);
   }
 
@@ -1131,7 +1131,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
       if (!startGroupViewMessage) {
         const startGroupMessage = new SDK.ConsoleModel.ConsoleMessage(
             null, message.source, message.level, viewMessage.groupTitle(),
-            Protocol.Runtime.ConsoleAPICalledEventType.StartGroupCollapsed);
+            {type: Protocol.Runtime.ConsoleAPICalledEventType.StartGroupCollapsed});
         startGroupViewMessage = this._createViewMessage(startGroupMessage);
         this._groupableMessageTitle.set(key, startGroupViewMessage);
       }
@@ -1147,7 +1147,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
 
       const endGroupMessage = new SDK.ConsoleModel.ConsoleMessage(
           null, message.source, message.level, message.messageText,
-          Protocol.Runtime.ConsoleAPICalledEventType.EndGroup);
+          {type: Protocol.Runtime.ConsoleAPICalledEventType.EndGroup});
       this._appendMessageToEnd(this._createViewMessage(endGroupMessage));
     }
   }
@@ -1220,7 +1220,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     if (!exceptionDetails) {
       message = new SDK.ConsoleModel.ConsoleMessage(
           result.runtimeModel(), Protocol.Log.LogEntrySource.Javascript, level, '',
-          SDK.ConsoleModel.FrontendMessageType.Result, undefined, undefined, undefined, [result]);
+          {type: SDK.ConsoleModel.FrontendMessageType.Result, parameters: [result]});
     } else {
       message = SDK.ConsoleModel.ConsoleMessage.fromException(
           result.runtimeModel(), exceptionDetails, SDK.ConsoleModel.FrontendMessageType.Result, undefined, undefined);

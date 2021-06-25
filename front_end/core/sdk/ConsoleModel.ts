@@ -198,7 +198,8 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper implements 
 
   addCommandMessage(executionContext: ExecutionContext, text: string): ConsoleMessage {
     const commandMessage = new ConsoleMessage(
-        executionContext.runtimeModel, Protocol.Log.LogEntrySource.Javascript, null, text, FrontendMessageType.Command);
+        executionContext.runtimeModel, Protocol.Log.LogEntrySource.Javascript, null, text,
+        {type: FrontendMessageType.Command});
     commandMessage.setExecutionContextId(executionContext.id);
     this.addMessage(commandMessage);
     return commandMessage;
@@ -270,11 +271,19 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper implements 
       message = call.args[0].description;
     }
     const callFrame = call.stackTrace && call.stackTrace.callFrames.length ? call.stackTrace.callFrames[0] : null;
-    const consoleMessage = new ConsoleMessage(
-        runtimeModel, FrontendMessageSource.ConsoleAPI, level, (message as string), call.type,
-        callFrame ? callFrame.url : undefined, callFrame ? callFrame.lineNumber : undefined,
-        callFrame ? callFrame.columnNumber : undefined, call.args, call.stackTrace, call.timestamp,
-        call.executionContextId, undefined, undefined, call.context);
+    const details = {
+      type: call.type,
+      url: callFrame?.url,
+      line: callFrame?.lineNumber,
+      column: callFrame?.columnNumber,
+      parameters: call.args,
+      stackTrace: call.stackTrace,
+      timestamp: call.timestamp,
+      executionContextId: call.executionContextId,
+      context: call.context,
+    };
+    const consoleMessage =
+        new ConsoleMessage(runtimeModel, FrontendMessageSource.ConsoleAPI, level, (message as string), details);
     this.addMessage(consoleMessage);
   }
 
@@ -284,7 +293,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper implements 
     });
     const consoleMessage = new ConsoleMessage(
         runtimeModel, FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Info, '',
-        FrontendMessageType.QueryObjectResult, undefined, undefined, undefined, [data.objects]);
+        {type: FrontendMessageType.QueryObjectResult, parameters: [data.objects]});
     this.addMessage(consoleMessage);
   }
 
@@ -327,7 +336,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper implements 
     }];
     this.addMessage(new ConsoleMessage(
         cpuProfilerModel.runtimeModel(), FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Info, messageText,
-        type, undefined, undefined, undefined, undefined, {callFrames}));
+        {type, stackTrace: {callFrames}}));
   }
 
   _incrementErrorWarningCount(msg: ConsoleMessage): void {
@@ -442,6 +451,19 @@ export enum Events {
   CommandEvaluated = 'CommandEvaluated',
 }
 
+interface ConsoleMessageDetails {
+  type?: MessageType;
+  url?: string|null;
+  line?: number;
+  column?: number;
+  parameters?: (string|RemoteObject|Protocol.Runtime.RemoteObject)[];
+  stackTrace?: Protocol.Runtime.StackTrace;
+  timestamp?: number;
+  executionContextId?: number;
+  scriptId?: string|null;
+  workerId?: string|null;
+  context?: string;
+}
 
 export class ConsoleMessage {
   _runtimeModel: RuntimeModel|null;
@@ -465,24 +487,21 @@ export class ConsoleMessage {
 
   constructor(
       runtimeModel: RuntimeModel|null, source: MessageSource, level: Protocol.Log.LogEntryLevel|null,
-      messageText: string, type?: MessageType, url?: string|null, line?: number, column?: number,
-      parameters?: (string|RemoteObject|Protocol.Runtime.RemoteObject)[], stackTrace?: Protocol.Runtime.StackTrace,
-      timestamp?: number, executionContextId?: number, scriptId?: string|null, workerId?: string|null,
-      context?: string) {
+      messageText: string, details?: ConsoleMessageDetails) {
     this._runtimeModel = runtimeModel;
     this.source = source;
     this.level = (level as Protocol.Log.LogEntryLevel | null);
     this.messageText = messageText;
-    this._type = type || Protocol.Runtime.ConsoleAPICalledEventType.Log;
-    this.url = url || undefined;
-    this.line = line || 0;
-    this.column = column || 0;
-    this.parameters = parameters;
-    this.stackTrace = stackTrace;
-    this.timestamp = timestamp || Date.now();
-    this.executionContextId = executionContextId || 0;
-    this.scriptId = scriptId || null;
-    this.workerId = workerId || null;
+    this._type = details?.type || Protocol.Runtime.ConsoleAPICalledEventType.Log;
+    this.url = details?.url || undefined;
+    this.line = details?.line || 0;
+    this.column = details?.column || 0;
+    this.parameters = details?.parameters;
+    this.stackTrace = details?.stackTrace;
+    this.timestamp = details?.timestamp || Date.now();
+    this.executionContextId = details?.executionContextId || 0;
+    this.scriptId = details?.scriptId || null;
+    this.workerId = details?.workerId || null;
 
     if (!this.executionContextId && this._runtimeModel) {
       if (this.scriptId) {
@@ -492,8 +511,8 @@ export class ConsoleMessage {
       }
     }
 
-    if (context) {
-      const match = context.match(/[^#]*/);
+    if (details?.context) {
+      const match = details?.context.match(/[^#]*/);
       this.context = match && match[0];
     }
     this._originatingConsoleMessage = null;
@@ -509,13 +528,22 @@ export class ConsoleMessage {
       runtimeModel: RuntimeModel, exceptionDetails: Protocol.Runtime.ExceptionDetails,
       messageType?: Protocol.Runtime.ConsoleAPICalledEventType|FrontendMessageType, timestamp?: number,
       forceUrl?: string): ConsoleMessage {
+    const details = {
+      type: messageType,
+      url: forceUrl || exceptionDetails.url,
+      line: exceptionDetails.lineNumber,
+      column: exceptionDetails.columnNumber,
+      parameters: exceptionDetails.exception ?
+          [RemoteObject.fromLocalObject(exceptionDetails.text), exceptionDetails.exception] :
+          undefined,
+      stackTrace: exceptionDetails.stackTrace,
+      timestamp,
+      executionContextId: exceptionDetails.executionContextId,
+      scriptId: exceptionDetails.scriptId,
+    };
     return new ConsoleMessage(
         runtimeModel, Protocol.Log.LogEntrySource.Javascript, Protocol.Log.LogEntryLevel.Error,
-        RuntimeModel.simpleTextFromException(exceptionDetails), messageType, forceUrl || exceptionDetails.url,
-        exceptionDetails.lineNumber, exceptionDetails.columnNumber,
-        exceptionDetails.exception ? [RemoteObject.fromLocalObject(exceptionDetails.text), exceptionDetails.exception] :
-                                     undefined,
-        exceptionDetails.stackTrace, timestamp, exceptionDetails.executionContextId, exceptionDetails.scriptId);
+        RuntimeModel.simpleTextFromException(exceptionDetails), details);
   }
 
   runtimeModel(): RuntimeModel|null {

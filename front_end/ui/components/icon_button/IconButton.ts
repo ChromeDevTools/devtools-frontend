@@ -6,7 +6,7 @@ import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 
 import {Icon} from './Icon.js';
-import styles from './IconButton.css.js';
+import iconButtonStyles from './iconButton.css.js';
 
 import type {IconData} from './Icon.js';
 
@@ -51,7 +51,7 @@ export class IconButton extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [styles];
+    this.shadow.adoptedStyleSheets = [iconButtonStyles];
   }
 
   private onClickHandler(event: Event): void {

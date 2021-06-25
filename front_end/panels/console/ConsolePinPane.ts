@@ -10,11 +10,11 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 // eslint-disable-next-line rulesdir/es_modules_import
-import ObjectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
+import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as TextEditor from '../../ui/legacy/components/text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../../ui/legacy/legacy.js';
 
-import ConsolePinPaneStyles from './consolePinPane.css.js';
+import consolePinPaneStyles from './consolePinPane.css.js';
 
 const UIStrings = {
   /**
@@ -73,8 +73,9 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
     }
   }
 
-  wasShow(): void {
-    this.registerCSSFiles([ConsolePinPaneStyles, ObjectValueStyles]);
+  wasShown(): void {
+    this.registerCSSFiles([consolePinPaneStyles, objectValueStyles]);
+    super.wasShown();
   }
 
   willHide(): void {

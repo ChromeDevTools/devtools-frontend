@@ -9,8 +9,8 @@ import("../visibility.gni")
 
 generate_css("css_files") {
   sources = [
-    "./Icon.css",
-    "./IconButton.css",
+    "icon.css",
+    "iconButton.css",
   ]
 }
 

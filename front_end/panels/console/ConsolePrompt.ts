@@ -14,7 +14,7 @@ import * as TextEditor from '../../ui/legacy/components/text_editor/text_editor.
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {ConsolePanel} from './ConsolePanel.js';
-import styles from './consolePrompt.css.js';
+import consolePromptStyles from './consolePrompt.css.js';
 
 const UIStrings = {
   /**
@@ -159,7 +159,8 @@ export class ConsolePrompt extends UI.Widget.Widget {
   }
 
   wasShown(): void {
-    this.registerCSSFiles([styles]);
+    this.registerCSSFiles([consolePromptStyles]);
+    super.wasShown();
   }
 
   willHide(): void {

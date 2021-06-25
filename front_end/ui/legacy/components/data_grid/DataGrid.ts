@@ -99,6 +99,10 @@ const UIStrings = {
   *@description Text exposed to screen readers on checked items.
   */
   checked: 'checked',
+  /**
+   *@description Accessible text indicating an empty row is created.
+   */
+  emptyRowCreated: 'An empty table row has been created. You may double click or use context menu to edit.',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/data_grid/DataGrid.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1043,6 +1047,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper {
       emptyData[column] = null;
     }
     this.creationNode = new CreationDataGridNode(emptyData, hasChildren);
+    UI.ARIAUtils.alert(i18nString(UIStrings.emptyRowCreated));
     this.rootNode().appendChild(this.creationNode);
   }
 

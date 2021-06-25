@@ -10919,6 +10919,9 @@
   "ui/legacy/components/data_grid/DataGrid.ts | editS": {
     "message": "Edit \"{PH1}\""
   },
+  "ui/legacy/components/data_grid/DataGrid.ts | emptyRowCreated": {
+    "message": "An empty table row has been created. You may double click or use context menu to edit."
+  },
   "ui/legacy/components/data_grid/DataGrid.ts | expanded": {
     "message": "expanded"
   },

@@ -10919,6 +10919,9 @@
   "ui/legacy/components/data_grid/DataGrid.ts | editS": {
     "message": "Êd́ît́ \"{PH1}\""
   },
+  "ui/legacy/components/data_grid/DataGrid.ts | emptyRowCreated": {
+    "message": "Âń êḿp̂t́ŷ t́âb́l̂é r̂óŵ h́âś b̂éêń ĉŕêát̂éd̂. Ýôú m̂áŷ d́ôúb̂ĺê ćl̂íĉḱ ôŕ ûśê ćôńt̂éx̂t́ m̂én̂ú t̂ó êd́ît́."
+  },
   "ui/legacy/components/data_grid/DataGrid.ts | expanded": {
     "message": "êx́p̂án̂d́êd́"
   },

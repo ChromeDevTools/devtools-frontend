@@ -2,11 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert} from 'chai';
-
 import {assertNotNull, getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {ensureResourceSectionIsExpanded, expandIssue, extractTableFromResourceSection, getIssueByTitle, getResourcesElement, navigateToIssuesTab} from '../helpers/issues-helpers.js';
+import {ensureResourceSectionIsExpanded, expandIssue, getIssueByTitle, getResourcesElement, navigateToIssuesTab, waitForTableFromResourceSectionContents} from '../helpers/issues-helpers.js';
 
 describe('Navigator User Agent Issues', async () => {
   beforeEach(async () => {
@@ -40,11 +38,9 @@ describe('Navigator User Agent Issues', async () => {
     assertNotNull(issueElement);
     const section = await getResourcesElement('1 source', issueElement, '.affected-resource-label');
     await ensureResourceSectionIsExpanded(section);
-    const table = await extractTableFromResourceSection(section.content);
-    assertNotNull(table);
-    assert.strictEqual(table.length, 1);
-    assert.deepEqual(table[0], [
-      'empty.html:2',
-    ]);
+    const expectedTableRows = [
+      ['empty.html:2'],
+    ];
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 });

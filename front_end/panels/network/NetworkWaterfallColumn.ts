@@ -420,7 +420,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
         }
       }
     }
-    this._drawLayers(context);
+    this._drawLayers(context, useTimingBars);
 
     context.save();
     context.fillStyle =
@@ -447,7 +447,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     this._didDrawForTest();
   }
 
-  _drawLayers(context: CanvasRenderingContext2D): void {
+  _drawLayers(context: CanvasRenderingContext2D, useTimingBars: boolean): void {
     for (const entry of this._pathForStyle) {
       const style = (entry[0] as _LayerStyle);
       const path = (entry[1] as Path2D);
@@ -461,7 +461,8 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
         context.stroke(path);
       }
       if (style.fillStyle) {
-        context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue(style.fillStyle);
+        context.fillStyle =
+            useTimingBars ? ThemeSupport.ThemeSupport.instance().getComputedValue(style.fillStyle) : style.fillStyle;
         context.fill(path);
       }
       context.restore();

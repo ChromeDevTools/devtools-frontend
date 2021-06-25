@@ -447,6 +447,7 @@ export class NetworkLogViewColumns {
     // css classes.
     window.requestAnimationFrame(() => {
       this._waterfallColumn.setHeaderHeight(this._waterfallScroller.offsetTop);
+      this._waterfallColumn.scheduleDraw();
     });
   }
 

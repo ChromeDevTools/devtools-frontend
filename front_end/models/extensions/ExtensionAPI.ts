@@ -277,6 +277,7 @@ export type ExtensionDescriptor = {
 namespace APIImpl {
   export interface InspectorExtensionAPI {
     languageServices: PublicAPI.Chrome.DevTools.LanguageExtensions;
+    timeline: Timeline;
     network: PublicAPI.Chrome.DevTools.Network;
     panels: PublicAPI.Chrome.DevTools.Panels;
     inspectedWindow: PublicAPI.Chrome.DevTools.InspectedWindow;
@@ -354,6 +355,21 @@ namespace APIImpl {
 
   export interface Button extends PublicAPI.Chrome.DevTools.Button {
     _id: string;
+  }
+
+  export interface TraceSession {
+    _id: string;
+
+    complete(url?: string, timeOffset?: number): void;
+  }
+
+  export interface TraceProvider {
+    onRecordingStarted: EventSink<(session: TraceSession) => unknown>;
+    onRecordingStopped: EventSink<() => unknown>;
+  }
+
+  export interface Timeline {
+    addTraceProvider(categoryName: string, categoryTooltip: string): TraceProvider;
   }
 
   export type ResourceData = {url: string, type: string};
@@ -455,8 +471,7 @@ self.injectedExtensionAPI = function(
     this.inspectedWindow = new InspectedWindow();
     this.panels = new (Constructor(Panels))();
     this.network = new (Constructor(Network))();
-    // @ts-ignore
-    this.timeline = new Timeline();
+    this.timeline = new (Constructor(Timeline))();
     this.languageServices = new (Constructor(LanguageServicesAPI))();
     defineDeprecatedProperty(this, 'webInspector', 'resources', 'network');
   }
@@ -901,33 +916,33 @@ self.injectedExtensionAPI = function(
   /**
    * @constructor
    */
-  function Timeline(): void {
+  function Timeline(this: APIImpl.Timeline): void {
   }
 
-  Timeline.prototype = {
-    // @ts-ignore
-    addTraceProvider: function(categoryName: string, categoryTooltip: string): TraceProvider {
-      const id = 'extension-trace-provider-' + extensionServer.nextObjectId();
-      extensionServer.sendRequest({
-        command: PrivateAPI.Commands.AddTraceProvider,
-        id: id,
-        categoryName: categoryName,
-        categoryTooltip: categoryTooltip,
-      });
-      // @ts-ignore
-      return new TraceProvider(id);
-    },
+  (Timeline.prototype as Pick<APIImpl.Timeline, 'addTraceProvider'>) = {
+    addTraceProvider: function(this: APIImpl.Timeline, categoryName: string, categoryTooltip: string):
+                          APIImpl.TraceProvider {
+                            const id = 'extension-trace-provider-' + extensionServer.nextObjectId();
+                            extensionServer.sendRequest({
+                              command: PrivateAPI.Commands.AddTraceProvider,
+                              id: id,
+                              categoryName: categoryName,
+                              categoryTooltip: categoryTooltip,
+                            });
+
+                            return new (Constructor(TraceProvider))(id);
+                          },
   };
 
   /**
    * @constructor
    */
-  function TraceSessionImpl(this: any, id: string): void {
+  function TraceSessionImpl(this: APIImpl.TraceSession, id: string): void {
     this._id = id;
   }
 
-  TraceSessionImpl.prototype = {
-    complete: function(url?: string, timeOffset?: number): void {
+  (TraceSessionImpl.prototype as Pick<APIImpl.TraceSession, 'complete'>) = {
+    complete: function(this: APIImpl.TraceSession, url?: string, timeOffset?: number): void {
       extensionServer.sendRequest({
         command: PrivateAPI.Commands.CompleteTraceSession,
         id: this._id,
@@ -940,17 +955,19 @@ self.injectedExtensionAPI = function(
   /**
    * @constructor
    */
-  function TraceProvider(id: string): void {
-    function dispatchRecordingStarted(this: any, message: any): void {
-      const sessionId = message.arguments[0];
-      // @ts-ignore
-      this._fire(new TraceSession(sessionId));
+  function TraceProvider(this: APIImpl.TraceProvider, id: string): void {
+    function dispatchRecordingStarted(
+        this: APIImpl.EventSink<APIImpl.Callable>, message: {arguments: unknown[]}): void {
+      const sessionId = message.arguments[0] as string;
+
+      this._fire(new (Constructor(TraceSession))(sessionId));
     }
 
-    // @ts-ignore
-    this.onRecordingStarted = new EventSink(PrivateAPI.Events.RecordingStarted + id, dispatchRecordingStarted);
-    // @ts-ignore
-    this.onRecordingStopped = new EventSink(PrivateAPI.Events.RecordingStopped + id);
+
+    this.onRecordingStarted =
+        new (Constructor(EventSink))(PrivateAPI.Events.RecordingStarted + id, dispatchRecordingStarted);
+
+    this.onRecordingStopped = new (Constructor(EventSink))(PrivateAPI.Events.RecordingStopped + id);
   }
 
   /**

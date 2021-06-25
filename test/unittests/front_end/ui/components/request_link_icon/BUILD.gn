@@ -1,0 +1,20 @@
+# Copyright 2020 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../../../third_party/typescript/typescript.gni")
+
+ts_library("request_link_icon") {
+  testonly = true
+  sources = [ "RequestLinkIcon_test.ts" ]
+
+  deps = [
+    "../../../../../../front_end/core/common:bundle",
+    "../../../../../../front_end/core/platform:bundle",
+    "../../../../../../front_end/core/sdk:bundle",
+    "../../../../../../front_end/models/logs:bundle",
+    "../../../../../../front_end/ui/components/icon_button:bundle",
+    "../../../../../../front_end/ui/components/request_link_icon:bundle",
+    "../../../helpers",
+  ]
+}

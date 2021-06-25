@@ -78,6 +78,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
     "../../entrypoints/*",
+    "../../ui/components/request_link_icon/*",
 
     # TODO(crbug.com/1202788): Remove invalid dependents
     "../application/*",

@@ -2069,18 +2069,59 @@ export class NetworkLogView extends UI.Widget.VBox implements
 
   async _generatePowerShellCommand(request: SDK.NetworkRequest.NetworkRequest): Promise<string> {
     const command = [];
-    const ignoredHeaders = new Set<string>(
-        ['host', 'connection', 'proxy-connection', 'content-length', 'expect', 'range', 'content-type']);
+    const ignoredHeaders = new Set<string>([
+      'host',
+      'connection',
+      'proxy-connection',
+      'content-length',
+      'expect',
+      'range',
+      'content-type',
+      'user-agent',
+      'cookie',
+    ]);
 
     function escapeString(str: string): string {
       return '"' +
           str.replace(/[`\$"]/g, '`$&').replace(/[^\x20-\x7E]/g, char => '$([char]' + char.charCodeAt(0) + ')') + '"';
     }
 
+    // Generate a WebRequestSession object with the UserAgent and Cookie header values.
+    // This is used to pass the user-agent and cookie headers to Invoke-WebRequest because the Invoke-WebRequest
+    // command does not allow setting these headers through the -Headers parameter. See docs at:
+    // https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/invoke-webrequest?view=powershell-7.1#parameters
+    function generatePowerShellSession(request: SDK.NetworkRequest.NetworkRequest): string|null {
+      const requestHeaders = request.requestHeaders();
+      const props = [];
+
+      const userAgentHeader = requestHeaders.find(({name}) => name.toLowerCase() === 'user-agent');
+      if (userAgentHeader) {
+        props.push(`$session.UserAgent = ${escapeString(userAgentHeader.value)}`);
+      }
+
+      for (const cookie of request.includedRequestCookies()) {
+        const name = escapeString(cookie.name());
+        const value = escapeString(cookie.value());
+        const domain = escapeString(cookie.domain());
+        props.push(`$session.Cookies.Add((New-Object System.Net.Cookie(${name}, ${value}, "/", ${domain})))`);
+      }
+
+      if (props.length) {
+        return '$session = New-Object Microsoft.PowerShell.Commands.WebRequestSession\n' + props.join('\n') + '\n';
+      }
+
+      return null;
+    }
+
     command.push('-Uri ' + escapeString(request.url()));
 
     if (request.requestMethod !== 'GET') {
       command.push('-Method ' + escapeString(request.requestMethod));
+    }
+
+    const session = generatePowerShellSession(request);
+    if (session) {
+      command.push('-WebSession $session');
     }
 
     const requestHeaders = request.requestHeaders();
@@ -2111,7 +2152,11 @@ export class NetworkLogView extends UI.Widget.VBox implements
       }
     }
 
-    return 'Invoke-WebRequest ' + command.join(command.length >= 3 ? ' `\n' : ' ');
+    // The -UseBasicParsing parameter prevents Invoke-WebRequest from using the IE engine for parsing. Basic
+    // parsing is the default behavior in PowerShell 6.0.0+ and the parameter is included here for backwards
+    // compatibility only.
+    const prelude = session || '';
+    return prelude + 'Invoke-WebRequest -UseBasicParsing ' + command.join(command.length >= 3 ? ' `\n' : ' ');
   }
 
   async _generateAllPowerShellCommand(requests: SDK.NetworkRequest.NetworkRequest[]): Promise<string> {

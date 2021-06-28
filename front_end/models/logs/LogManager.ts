@@ -47,7 +47,7 @@ export class LogManager implements SDK.TargetManager.SDKModelObserver<SDK.LogMod
     const details = {
       url: data.entry.url,
       line: data.entry.lineNumber,
-      parameters: [data.entry.text, ...(data.entry.args || [])],
+      parameters: [data.entry.text, ...(data.entry.args ?? [])],
       stackTrace: data.entry.stackTrace,
       timestamp: data.entry.timestamp,
       workerId: data.entry.workerId,

@@ -228,8 +228,10 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper implements 
 
   _exceptionThrown(runtimeModel: RuntimeModel, event: Common.EventTarget.EventTargetEvent): void {
     const exceptionWithTimestamp = (event.data as ExceptionWithTimestamp);
+    const affectedResources = extractExceptionMetaData(exceptionWithTimestamp.details.exceptionMetaData);
     const consoleMessage = ConsoleMessage.fromException(
-        runtimeModel, exceptionWithTimestamp.details, undefined, exceptionWithTimestamp.timestamp, undefined);
+        runtimeModel, exceptionWithTimestamp.details, undefined, exceptionWithTimestamp.timestamp, undefined,
+        affectedResources);
     consoleMessage.setExceptionId(exceptionWithTimestamp.details.exceptionId);
     this.addMessage(consoleMessage);
   }
@@ -451,7 +453,26 @@ export enum Events {
   CommandEvaluated = 'CommandEvaluated',
 }
 
-interface ConsoleMessageDetails {
+export interface AffectedResources {
+  requestId?: Protocol.Network.RequestId;
+  issueId?: string;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function extractExceptionMetaData(metaData: any|undefined): AffectedResources|undefined {
+  if (!metaData) {
+    return undefined;
+  }
+  return {requestId: metaData.requestId || undefined, issueId: metaData.issueId || undefined};
+}
+
+
+function areAffectedResourcesEquivalent(a?: AffectedResources, b?: AffectedResources): boolean {
+  // Not considering issueId, as that would prevent de-duplication of console messages.
+  return a?.requestId === b?.requestId;
+}
+
+export interface ConsoleMessageDetails {
   type?: MessageType;
   url?: string|null;
   line?: number;
@@ -463,6 +484,7 @@ interface ConsoleMessageDetails {
   scriptId?: string|null;
   workerId?: string|null;
   context?: string;
+  affectedResources?: AffectedResources;
 }
 
 export class ConsoleMessage {
@@ -484,6 +506,7 @@ export class ConsoleMessage {
   _originatingConsoleMessage: ConsoleMessage|null;
   _pageLoadSequenceNumber: number|undefined;
   _exceptionId: number|undefined;
+  private affectedResources?: AffectedResources;
 
   constructor(
       runtimeModel: RuntimeModel|null, source: MessageSource, level: Protocol.Log.LogEntryLevel|null,
@@ -502,6 +525,7 @@ export class ConsoleMessage {
     this.executionContextId = details?.executionContextId || 0;
     this.scriptId = details?.scriptId || null;
     this.workerId = details?.workerId || null;
+    this.affectedResources = details?.affectedResources;
 
     if (!this.executionContextId && this._runtimeModel) {
       if (this.scriptId) {
@@ -527,7 +551,7 @@ export class ConsoleMessage {
   static fromException(
       runtimeModel: RuntimeModel, exceptionDetails: Protocol.Runtime.ExceptionDetails,
       messageType?: Protocol.Runtime.ConsoleAPICalledEventType|FrontendMessageType, timestamp?: number,
-      forceUrl?: string): ConsoleMessage {
+      forceUrl?: string, affectedResources?: AffectedResources): ConsoleMessage {
     const details = {
       type: messageType,
       url: forceUrl || exceptionDetails.url,
@@ -540,6 +564,7 @@ export class ConsoleMessage {
       timestamp,
       executionContextId: exceptionDetails.executionContextId,
       scriptId: exceptionDetails.scriptId,
+      affectedResources,
     };
     return new ConsoleMessage(
         runtimeModel, Protocol.Log.LogEntrySource.Javascript, Protocol.Log.LogEntryLevel.Error,
@@ -638,7 +663,8 @@ export class ConsoleMessage {
     return (this.runtimeModel() === msg.runtimeModel()) && (this.source === msg.source) && (this.type === msg.type) &&
         (this.level === msg.level) && (this.line === msg.line) && (this.url === msg.url) &&
         (bothAreWatchExpressions || this.scriptId === msg.scriptId) && (this.messageText === msg.messageText) &&
-        (this.executionContextId === msg.executionContextId);
+        (this.executionContextId === msg.executionContextId) &&
+        areAffectedResourcesEquivalent(this.affectedResources, msg.affectedResources);
   }
 
   _isEqualStackTraces(

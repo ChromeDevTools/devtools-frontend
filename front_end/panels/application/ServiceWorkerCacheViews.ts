@@ -91,7 +91,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
   }>|null;
   constructor(model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel, cache: SDK.ServiceWorkerCacheModel.Cache) {
     super(i18nString(UIStrings.cache));
-    this.registerRequiredCSS('panels/application/serviceWorkerCacheViews.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/application/serviceWorkerCacheViews.css');
 
     this._model = model;
     this._entriesForTest = null;

@@ -2806,8 +2806,7 @@ export class TimelineUIUtils {
     }
 
     const invalidationsTreeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-    invalidationsTreeOutline.registerRequiredCSS(
-        'panels/timeline/invalidationsTree.css', {enableLegacyPatching: false});
+    invalidationsTreeOutline.registerRequiredCSS('panels/timeline/invalidationsTree.css');
     invalidationsTreeOutline.element.classList.add('invalidations-tree');
 
     const invalidationGroups = groupInvalidationsByCause(invalidations);
@@ -2915,7 +2914,7 @@ export class TimelineUIUtils {
       return null;
     }
     const container = document.createElement('div');
-    UI.Utils.appendStyle(container, 'ui/legacy/components/utils/imagePreview.css', {enableLegacyPatching: false});
+    UI.Utils.appendStyle(container, 'ui/legacy/components/utils/imagePreview.css');
     container.classList.add('image-preview-container', 'vbox', 'link');
     const img = (container.createChild('img') as HTMLImageElement);
     img.src = imageURL;

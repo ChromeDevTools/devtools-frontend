@@ -315,7 +315,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   _selection?: TimelineSelection|null;
   constructor() {
     super('timeline');
-    this.registerRequiredCSS('panels/timeline/timelinePanel.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/timeline/timelinePanel.css');
     this.element.addEventListener('contextmenu', this._contextMenu.bind(this), false);
     this._dropTarget = new UI.DropTarget.DropTarget(
         this.element, [UI.DropTarget.Type.File, UI.DropTarget.Type.URI],
@@ -1357,7 +1357,7 @@ export class StatusPane extends UI.Widget.VBox {
       },
       buttonCallback: () => (Promise<void>| void)) {
     super(true);
-    this.registerRequiredCSS('panels/timeline/timelineStatusDialog.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/timeline/timelineStatusDialog.css');
     this.contentElement.classList.add('timeline-status-dialog');
 
     const statusLine = this.contentElement.createChild('div', 'status-dialog-line status');

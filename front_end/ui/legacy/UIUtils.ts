@@ -1217,8 +1217,8 @@ export class CheckboxLabel extends HTMLSpanElement {
     super();
     CheckboxLabel._lastId = CheckboxLabel._lastId + 1;
     const id = 'ui-checkbox-label' + CheckboxLabel._lastId;
-    this._shadowRoot = createShadowRootWithCoreStyles(
-        this, {cssFile: 'ui/legacy/checkboxTextLabel.css', enableLegacyPatching: false, delegatesFocus: undefined});
+    this._shadowRoot =
+        createShadowRootWithCoreStyles(this, {cssFile: 'ui/legacy/checkboxTextLabel.css', delegatesFocus: undefined});
     this.checkboxElement = (this._shadowRoot.createChild('input') as HTMLInputElement);
     this.checkboxElement.type = 'checkbox';
     this.checkboxElement.setAttribute('id', id);
@@ -1270,7 +1270,6 @@ export class DevToolsIconLabel extends HTMLSpanElement {
   constructor() {
     super();
     const root = createShadowRootWithCoreStyles(this, {
-      enableLegacyPatching: false,
       cssFile: undefined,
       delegatesFocus: undefined,
     });
@@ -1300,8 +1299,8 @@ export class DevToolsRadioButton extends HTMLSpanElement {
     this.radioElement.id = id;
     this.radioElement.type = 'radio';
     this.labelElement.htmlFor = id;
-    const root = createShadowRootWithCoreStyles(
-        this, {cssFile: 'ui/legacy/radioButton.css', enableLegacyPatching: false, delegatesFocus: undefined});
+    const root =
+        createShadowRootWithCoreStyles(this, {cssFile: 'ui/legacy/radioButton.css', delegatesFocus: undefined});
     root.createChild('slot');
     this.addEventListener('click', this.radioClickHandler.bind(this), false);
   }
@@ -1323,8 +1322,7 @@ export class DevToolsSlider extends HTMLSpanElement {
 
   constructor() {
     super();
-    const root = createShadowRootWithCoreStyles(
-        this, {cssFile: 'ui/legacy/slider.css', enableLegacyPatching: false, delegatesFocus: undefined});
+    const root = createShadowRootWithCoreStyles(this, {cssFile: 'ui/legacy/slider.css', delegatesFocus: undefined});
     this.sliderElement = document.createElement('input');
     this.sliderElement.classList.add('dt-range-input');
     this.sliderElement.type = 'range';
@@ -1347,8 +1345,8 @@ export class DevToolsSmallBubble extends HTMLSpanElement {
 
   constructor() {
     super();
-    const root = createShadowRootWithCoreStyles(
-        this, {cssFile: 'ui/legacy/smallBubble.css', enableLegacyPatching: false, delegatesFocus: undefined});
+    const root =
+        createShadowRootWithCoreStyles(this, {cssFile: 'ui/legacy/smallBubble.css', delegatesFocus: undefined});
     this._textElement = root.createChild('div');
     this._textElement.className = 'info';
     this._textElement.createChild('slot');
@@ -1368,8 +1366,8 @@ export class DevToolsCloseButton extends HTMLDivElement {
 
   constructor() {
     super();
-    const root = createShadowRootWithCoreStyles(
-        this, {cssFile: 'ui/legacy/closeButton.css', enableLegacyPatching: false, delegatesFocus: undefined});
+    const root =
+        createShadowRootWithCoreStyles(this, {cssFile: 'ui/legacy/closeButton.css', delegatesFocus: undefined});
     this._buttonElement = (root.createChild('div', 'close-button') as HTMLElement);
     ARIAUtils.setAccessibleName(this._buttonElement, i18nString(UIStrings.close));
     ARIAUtils.markAsButton(this._buttonElement);
@@ -1599,8 +1597,7 @@ export class MessageDialog {
     dialog.setSizeBehavior(SizeBehavior.MeasureContent);
     dialog.setDimmed(true);
     const shadowRoot = createShadowRootWithCoreStyles(
-        dialog.contentElement,
-        {cssFile: 'ui/legacy/confirmDialog.css', enableLegacyPatching: false, delegatesFocus: undefined});
+        dialog.contentElement, {cssFile: 'ui/legacy/confirmDialog.css', delegatesFocus: undefined});
     const content = shadowRoot.createChild('div', 'widget');
     await new Promise(resolve => {
       const okButton = createTextButton(i18nString(UIStrings.ok), resolve, '', true);
@@ -1624,8 +1621,7 @@ export class ConfirmDialog {
     dialog.setDimmed(true);
     ARIAUtils.setAccessibleName(dialog.contentElement, message);
     const shadowRoot = createShadowRootWithCoreStyles(
-        dialog.contentElement,
-        {cssFile: 'ui/legacy/confirmDialog.css', enableLegacyPatching: false, delegatesFocus: undefined});
+        dialog.contentElement, {cssFile: 'ui/legacy/confirmDialog.css', delegatesFocus: undefined});
     const content = shadowRoot.createChild('div', 'widget');
     content.createChild('div', 'message').createChild('span').textContent = message;
     const buttonsBar = content.createChild('div', 'button');
@@ -1649,8 +1645,8 @@ export class ConfirmDialog {
 
 export function createInlineButton(toolbarButton: ToolbarButton): Element {
   const element = document.createElement('span');
-  const shadowRoot = createShadowRootWithCoreStyles(
-      element, {cssFile: 'ui/legacy/inlineButton.css', enableLegacyPatching: false, delegatesFocus: undefined});
+  const shadowRoot =
+      createShadowRootWithCoreStyles(element, {cssFile: 'ui/legacy/inlineButton.css', delegatesFocus: undefined});
   element.classList.add('inline-button');
   const toolbar = new Toolbar('');
   toolbar.appendToolbarItem(toolbarButton);

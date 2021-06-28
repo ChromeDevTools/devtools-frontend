@@ -48,7 +48,7 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
   _lastRequestedNode?: SDK.DOMModel.DOMNode;
   constructor() {
     super(true /* isWebComponent */);
-    this.registerRequiredCSS('panels/elements/propertiesWidget.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/elements/propertiesWidget.css');
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrModified, this._onNodeChange, this);

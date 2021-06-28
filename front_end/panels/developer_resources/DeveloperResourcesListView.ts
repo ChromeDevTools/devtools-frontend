@@ -76,8 +76,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
     this._nodeForItem = new Map();
     this._isVisibleFilter = isVisibleFilter;
     this._highlightRegExp = null;
-    this.registerRequiredCSS(
-        'panels/developer_resources/developerResourcesListView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/developer_resources/developerResourcesListView.css');
 
     const columns = [
       {id: 'status', title: i18nString(UIStrings.status), width: '60px', fixedWidth: true, sortable: true},

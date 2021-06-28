@@ -3,9 +3,8 @@
 // found in the LICENSE file.
 
 import * as Root from '../../../core/root/root.js';
-import * as ThemeSupport from '../../legacy/theme_support/theme_support.js';
 
-const sheetsCache = new Map<string, {sheets: CSSStyleSheet[], enableLegacyPatching: false}>();
+const sheetsCache = new Map<string, {sheets: CSSStyleSheet[]}>();
 
 /**
  * Helper for importing a legacy stylesheet into a component.
@@ -13,11 +12,9 @@ const sheetsCache = new Map<string, {sheets: CSSStyleSheet[], enableLegacyPatchi
  * Given a path to a stylesheet, it returns a CSSStyleSheet that can then be
  * adopted by your component.
  */
-export function getStyleSheets(path: string, {enableLegacyPatching}: {enableLegacyPatching: false} = {
-  enableLegacyPatching: false,
-}): CSSStyleSheet[] {
+export function getStyleSheets(path: string): CSSStyleSheet[] {
   const cachedResult = sheetsCache.get(path);
-  if (cachedResult && cachedResult.enableLegacyPatching === enableLegacyPatching) {
+  if (cachedResult) {
     return cachedResult.sheets;
   }
 
@@ -25,22 +22,10 @@ export function getStyleSheets(path: string, {enableLegacyPatching}: {enableLega
   if (!content) {
     throw new Error(`${path} not preloaded.`);
   }
-
   const originalStylesheet = new CSSStyleSheet();
   originalStylesheet.replaceSync(content);
-
-  const themeStyleSheet = ThemeSupport.ThemeSupport.instance().themeStyleSheet(path, content);
-  if (!enableLegacyPatching || !themeStyleSheet) {
-    sheetsCache.set(path, {enableLegacyPatching, sheets: [originalStylesheet]});
-    return [originalStylesheet];
-  }
-
-  const patchedStyleSheet = new CSSStyleSheet();
-
-  patchedStyleSheet.replaceSync(themeStyleSheet + '\n' + Root.Runtime.Runtime.resolveSourceURL(path + '.theme'));
-  sheetsCache.set(path, {enableLegacyPatching, sheets: [originalStylesheet, patchedStyleSheet]});
-
-  return [originalStylesheet, patchedStyleSheet];
+  sheetsCache.set(path, {sheets: [originalStylesheet]});
+  return [originalStylesheet];
 }
 
 /*

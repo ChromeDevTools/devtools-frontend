@@ -28,7 +28,7 @@ export class CSPViolationsView extends UI.Widget.VBox {
    */
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/issues/cspViolationsView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/issues/cspViolationsView.css');
     this.contentElement.classList.add('csp-violations-pane');
 
     const topToolbar = new UI.Toolbar.Toolbar('csp-violations-toolbar', this.contentElement);

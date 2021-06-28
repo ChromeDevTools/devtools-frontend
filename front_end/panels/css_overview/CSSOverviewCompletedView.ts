@@ -236,7 +236,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
 
   constructor(controller: OverviewController, target: SDK.Target.Target) {
     super('css_overview_completed_view');
-    this.registerRequiredCSS('panels/css_overview/cssOverviewCompletedView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/css_overview/cssOverviewCompletedView.css');
 
     this._controller = controller;
     this._formatter = new Intl.NumberFormat('en-US');
@@ -253,8 +253,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     });
 
     // Dupe the styles into the main container because of the shadow root will prevent outer styles.
-    this._mainContainer.registerRequiredCSS(
-        'panels/css_overview/cssOverviewCompletedView.css', {enableLegacyPatching: false});
+    this._mainContainer.registerRequiredCSS('panels/css_overview/cssOverviewCompletedView.css');
 
     this._mainContainer.setMainWidget(this._resultsContainer);
     this._mainContainer.setSidebarWidget(this._elementContainer);

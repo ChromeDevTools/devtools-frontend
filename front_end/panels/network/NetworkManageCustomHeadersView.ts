@@ -52,14 +52,14 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox implements UI
       changeHeaderColumnCallback: (arg0: string, arg1: string) => boolean,
       removeHeaderColumnCallback: (arg0: string) => boolean) {
     super(true);
-    this.registerRequiredCSS('panels/network/networkManageCustomHeadersView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/network/networkManageCustomHeadersView.css');
 
     this.contentElement.classList.add('custom-headers-wrapper');
     this.contentElement.createChild('div', 'header').textContent = i18nString(UIStrings.manageHeaderColumns);
 
     this._list = new UI.ListWidget.ListWidget(this);
     this._list.element.classList.add('custom-headers-list');
-    this._list.registerRequiredCSS('panels/network/networkManageCustomHeadersView.css', {enableLegacyPatching: false});
+    this._list.registerRequiredCSS('panels/network/networkManageCustomHeadersView.css');
 
     const placeholder = document.createElement('div');
     placeholder.classList.add('custom-headers-list-list-empty');

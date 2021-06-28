@@ -60,10 +60,8 @@ export class XWidget extends XElement {
     return this._visible;
   }
 
-  registerRequiredCSS(cssFile: string, options: {
-    enableLegacyPatching: false,
-  }): void {
-    appendStyle(this._shadowRoot || this, cssFile, options);
+  registerRequiredCSS(cssFile: string): void {
+    appendStyle(this._shadowRoot || this, cssFile);
   }
 
   setOnShown(callback: (() => void)|null): void {

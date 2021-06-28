@@ -50,7 +50,7 @@ export class Dialog extends GlassPane {
 
   constructor() {
     super();
-    this.registerRequiredCSS('ui/legacy/dialog.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('ui/legacy/dialog.css');
     this.contentElement.tabIndex = 0;
     this.contentElement.addEventListener('focus', () => this.widget().focus(), false);
     this.widget().setDefaultFocusedElement(this.contentElement);

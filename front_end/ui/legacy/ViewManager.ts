@@ -410,7 +410,7 @@ export class _ExpandableContainerWidget extends VBox {
   constructor(view: View) {
     super(true);
     this.element.classList.add('flex-none');
-    this.registerRequiredCSS('ui/legacy/viewContainers.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('ui/legacy/viewContainers.css');
 
     this._titleElement = document.createElement('div');
     this._titleElement.classList.add('expandable-view-title');

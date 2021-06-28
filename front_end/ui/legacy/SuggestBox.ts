@@ -110,8 +110,7 @@ export class SuggestBox implements ListDelegate<Suggestion> {
     this._glassPane.setAnchorBehavior(AnchorBehavior.PreferBottom);
     this._glassPane.setOutsideClickCallback(this.hide.bind(this));
     const shadowRoot = createShadowRootWithCoreStyles(
-        this._glassPane.contentElement,
-        {cssFile: 'ui/legacy/suggestBox.css', enableLegacyPatching: false, delegatesFocus: undefined});
+        this._glassPane.contentElement, {cssFile: 'ui/legacy/suggestBox.css', delegatesFocus: undefined});
     shadowRoot.appendChild(this._element);
   }
 

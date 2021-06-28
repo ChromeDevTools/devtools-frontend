@@ -744,9 +744,7 @@ export class RowMessageBucket {
 
   _messageDescription(levels: Set<Workspace.UISourceCode.Message.Level>): Element {
     this._messagesDescriptionElement.removeChildren();
-    UI.Utils.appendStyle(
-        this._messagesDescriptionElement, 'ui/legacy/components/source_frame/messagesPopover.css',
-        {enableLegacyPatching: false});
+    UI.Utils.appendStyle(this._messagesDescriptionElement, 'ui/legacy/components/source_frame/messagesPopover.css');
     for (const message of this._messages.filter(m => levels.has(m.getMessage().level()))) {
       this._messagesDescriptionElement.append(message.element);
     }

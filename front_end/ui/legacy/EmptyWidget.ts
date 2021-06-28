@@ -50,7 +50,7 @@ export class EmptyWidget extends VBox {
 
   constructor(text: string) {
     super();
-    this.registerRequiredCSS('ui/legacy/emptyWidget.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('ui/legacy/emptyWidget.css');
     this.element.classList.add('empty-view-scroller');
     this._contentElement = this.element.createChild('div', 'empty-view');
     this._textElement = this._contentElement.createChild('div', 'empty-bold-text');

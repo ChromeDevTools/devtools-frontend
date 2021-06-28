@@ -79,7 +79,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
 
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/performance_monitor/performanceMonitor.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/performance_monitor/performanceMonitor.css');
     this.contentElement.classList.add('perfmon-pane');
     this._metricsBuffer = [];
     /** @const */

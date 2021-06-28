@@ -168,8 +168,7 @@ export class DataGrid extends HTMLElement {
   constructor() {
     super();
     this.shadow.adoptedStyleSheets = [
-      ...ComponentHelpers.GetStylesheet.getStyleSheets(
-          'ui/legacy/inspectorScrollbars.css', {enableLegacyPatching: false}),
+      ...ComponentHelpers.GetStylesheet.getStyleSheets('ui/legacy/inspectorScrollbars.css'),
     ];
   }
   connectedCallback(): void {

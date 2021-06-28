@@ -166,7 +166,7 @@ export class IssuesPane extends UI.Widget.VBox {
 
   private constructor() {
     super(true);
-    this.registerRequiredCSS('panels/issues/issuesPane.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/issues/issuesPane.css');
     this.contentElement.classList.add('issues-pane');
 
     this.categoryViews = new Map();
@@ -176,7 +176,7 @@ export class IssuesPane extends UI.Widget.VBox {
     this.createToolbars();
 
     this.issuesTree = new UI.TreeOutline.TreeOutlineInShadow();
-    this.issuesTree.registerRequiredCSS('panels/issues/issuesTree.css', {enableLegacyPatching: false});
+    this.issuesTree.registerRequiredCSS('panels/issues/issuesTree.css');
     this.issuesTree.setShowSelectionOnKeyboardFocus(true);
     this.issuesTree.contentElement.classList.add('issues');
     this.contentElement.appendChild(this.issuesTree.element);

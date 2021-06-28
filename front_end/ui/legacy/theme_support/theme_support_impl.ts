@@ -114,9 +114,9 @@ export class ThemeSupport {
 
   injectHighlightStyleSheets(element: Element|ShadowRoot): void {
     this._injectingStyleSheet = true;
-    this._appendStyle(element, 'ui/legacy/inspectorSyntaxHighlight.css', {enableLegacyPatching: false});
+    this._appendStyle(element, 'ui/legacy/inspectorSyntaxHighlight.css');
     if (this._themeName === 'dark') {
-      this._appendStyle(element, 'ui/legacy/inspectorSyntaxHighlightDark.css', {enableLegacyPatching: false});
+      this._appendStyle(element, 'ui/legacy/inspectorSyntaxHighlightDark.css');
     }
     this._injectingStyleSheet = false;
   }
@@ -125,29 +125,14 @@ export class ThemeSupport {
    * Note: this is a duplicate of the function in ui/utils. It exists here
    * so there is no circular dependency between ui/utils and theme_support.
    */
-  _appendStyle(node: Node, cssFile: string, options: {
-    enableLegacyPatching: false,
-  } = {enableLegacyPatching: false}): void {
+  _appendStyle(node: Node, cssFile: string): void {
     const content = Root.Runtime.cachedResources.get(cssFile) || '';
     if (!content) {
       console.error(cssFile + ' not preloaded. Check module.json');
     }
-    let styleElement = document.createElement('style');
+    const styleElement = document.createElement('style');
     styleElement.textContent = content;
     node.appendChild(styleElement);
-
-    /**
-     * We are incrementally removing patching support in favour of CSS variables for supporting dark mode.
-     * See https://docs.google.com/document/d/1QrSSRsJRzaQBY3zz73ZL84bTcFUV60yMtE5cuu6ED14 for details.
-     */
-    if (options.enableLegacyPatching) {
-      const themeStyleSheet = ThemeSupport.instance().themeStyleSheet(cssFile, content);
-      if (themeStyleSheet) {
-        styleElement = document.createElement('style');
-        styleElement.textContent = themeStyleSheet + '\n' + Root.Runtime.Runtime.resolveSourceURL(cssFile + '.theme');
-        node.appendChild(styleElement);
-      }
-    }
   }
 
   injectCustomStyleSheets(element: Element|ShadowRoot): void {

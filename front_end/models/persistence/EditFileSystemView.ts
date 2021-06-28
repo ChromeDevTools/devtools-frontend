@@ -81,7 +81,7 @@ export class EditFileSystemView extends UI.Widget.VBox implements UI.ListWidget.
   _excludedFolderEditor?: UI.ListWidget.Editor<string>;
   constructor(fileSystemPath: string) {
     super(true);
-    this.registerRequiredCSS('models/persistence/editFileSystemView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('models/persistence/editFileSystemView.css');
     this._fileSystemPath = fileSystemPath;
 
     this._excludedFolders = [];
@@ -98,8 +98,7 @@ export class EditFileSystemView extends UI.Widget.VBox implements UI.ListWidget.
         i18nString(UIStrings.add), this._addExcludedFolderButtonClicked.bind(this), 'add-button'));
     this._excludedFoldersList = new UI.ListWidget.ListWidget(this);
     this._excludedFoldersList.element.classList.add('file-system-list');
-    this._excludedFoldersList.registerRequiredCSS(
-        'models/persistence/editFileSystemView.css', {enableLegacyPatching: false});
+    this._excludedFoldersList.registerRequiredCSS('models/persistence/editFileSystemView.css');
     const excludedFoldersPlaceholder = document.createElement('div');
     excludedFoldersPlaceholder.classList.add('file-system-list-empty');
     excludedFoldersPlaceholder.textContent = i18nString(UIStrings.none);

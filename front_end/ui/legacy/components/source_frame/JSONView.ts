@@ -56,7 +56,7 @@ export class JSONView extends UI.Widget.VBox implements UI.SearchableView.Search
   constructor(parsedJSON: ParsedJSON, startCollapsed?: boolean) {
     super();
     this._initialized = false;
-    this.registerRequiredCSS('ui/legacy/components/source_frame/jsonView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('ui/legacy/components/source_frame/jsonView.css');
     this._parsedJSON = parsedJSON;
     this._startCollapsed = Boolean(startCollapsed);
     this.element.classList.add('json-view');

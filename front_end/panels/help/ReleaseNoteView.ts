@@ -29,7 +29,7 @@ export class ReleaseNoteView extends UI.Widget.VBox {
   _releaseNoteElement: Element;
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/help/releaseNote.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/help/releaseNote.css');
     this._releaseNoteElement = this._createReleaseNoteElement(latestReleaseNote());
     const topSection = this.contentElement.createChild('div', 'release-note-top-section');
     topSection.textContent = latestReleaseNote().header;

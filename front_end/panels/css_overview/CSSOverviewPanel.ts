@@ -42,7 +42,7 @@ export class CSSOverviewPanel extends UI.Panel.Panel {
 
   private constructor() {
     super('css_overview');
-    this.registerRequiredCSS('panels/css_overview/cssOverview.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/css_overview/cssOverview.css');
     this.element.classList.add('css-overview-panel');
 
     const [model] = SDK.TargetManager.TargetManager.instance().models(CSSOverviewModel);

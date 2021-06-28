@@ -189,7 +189,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
   sidebarPaneView?: UI.Widget.VBox|UI.SplitWidget.SplitWidget;
   constructor() {
     super('sources');
-    this.registerRequiredCSS('panels/sources/sourcesPanel.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/sources/sourcesPanel.css');
     new UI.DropTarget.DropTarget(
         this.element, [UI.DropTarget.Type.Folder], i18nString(UIStrings.dropWorkspaceFolderHere),
         this._handleDrop.bind(this));

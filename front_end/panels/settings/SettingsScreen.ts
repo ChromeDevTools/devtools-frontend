@@ -104,7 +104,7 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
 
   private constructor() {
     super(true);
-    this.registerRequiredCSS('panels/settings/settingsScreen.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/settings/settingsScreen.css');
 
     this.contentElement.classList.add('settings-window-main');
     this.contentElement.classList.add('vbox');
@@ -113,8 +113,7 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
     const settingsTitleElement =
         UI.Utils
             .createShadowRootWithCoreStyles(
-                settingsLabelElement,
-                {cssFile: 'panels/settings/settingsScreen.css', enableLegacyPatching: false, delegatesFocus: undefined})
+                settingsLabelElement, {cssFile: 'panels/settings/settingsScreen.css', delegatesFocus: undefined})
             .createChild('div', 'settings-window-title');
 
     UI.ARIAUtils.markAsHeading(settingsTitleElement, 1);

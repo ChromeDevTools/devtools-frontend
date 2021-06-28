@@ -146,8 +146,7 @@ export class NodeIndicator implements UI.Toolbar.Provider {
   private constructor() {
     const element = document.createElement('div');
     const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
-        element,
-        {cssFile: 'entrypoints/inspector_main/nodeIcon.css', enableLegacyPatching: false, delegatesFocus: undefined});
+        element, {cssFile: 'entrypoints/inspector_main/nodeIcon.css', delegatesFocus: undefined});
     this._element = shadowRoot.createChild('div', 'node-icon');
     element.addEventListener(
         'click', () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openNodeFrontend(), false);

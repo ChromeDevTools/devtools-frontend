@@ -335,7 +335,6 @@ export class DropDown implements UI.ListControl.ListDelegate<PerformanceModel> {
 
     const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(this._glassPane.contentElement, {
       cssFile: 'panels/timeline/timelineHistoryManager.css',
-      enableLegacyPatching: false,
       delegatesFocus: undefined,
     });
     const contentElement = shadowRoot.createChild('div', 'drop-down');
@@ -468,7 +467,7 @@ export class ToolbarButton extends UI.Toolbar.ToolbarItem {
     const element = document.createElement('button');
     element.classList.add('history-dropdown-button');
     super(element);
-    UI.Utils.appendStyle(this.element, 'panels/timeline/historyToolbarButton.css', {enableLegacyPatching: false});
+    UI.Utils.appendStyle(this.element, 'panels/timeline/historyToolbarButton.css');
     this._contentElement = this.element.createChild('span', 'content');
     const dropdownArrowIcon = UI.Icon.Icon.create('smallicon-triangle-down');
     this.element.appendChild(dropdownArrowIcon);

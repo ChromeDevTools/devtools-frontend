@@ -108,7 +108,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
 
   private constructor() {
     super(true);
-    this.registerRequiredCSS('panels/emulation/locationsSettingsTab.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/emulation/locationsSettingsTab.css');
 
     this.contentElement.createChild('div', 'header').textContent = i18nString(UIStrings.customLocations);
 
@@ -118,7 +118,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
 
     this._list = new UI.ListWidget.ListWidget(this);
     this._list.element.classList.add('locations-list');
-    this._list.registerRequiredCSS('panels/emulation/locationsSettingsTab.css', {enableLegacyPatching: false});
+    this._list.registerRequiredCSS('panels/emulation/locationsSettingsTab.css');
     this._list.show(this.contentElement);
     this._customSetting =
         (Common.Settings.Settings.instance().moduleSetting('emulation.locations') as

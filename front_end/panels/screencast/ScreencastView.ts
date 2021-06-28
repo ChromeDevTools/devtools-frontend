@@ -130,7 +130,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     this._inputModel = screenCaptureModel.target().model(InputModel);
 
     this.setMinimumSize(150, 150);
-    this.registerRequiredCSS('panels/screencast/screencastView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/screencast/screencastView.css');
     this._shortcuts = {} as {
       [x: number]: (arg0?: Event|undefined) => boolean,
     };

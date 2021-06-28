@@ -32,7 +32,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RemoteDebuggingTerminatedScreen extends VBox {
   constructor(reason: string) {
     super(true);
-    this.registerRequiredCSS('ui/legacy/remoteDebuggingTerminatedScreen.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('ui/legacy/remoteDebuggingTerminatedScreen.css');
     const message = this.contentElement.createChild('div', 'message');
     const reasonElement = message.createChild('span', 'reason');
     reasonElement.textContent = reason;

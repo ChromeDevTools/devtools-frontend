@@ -56,7 +56,7 @@ export class DeveloperResourcesView extends UI.Widget.VBox {
   _loader: SDK.PageResourceLoader.PageResourceLoader;
   private constructor() {
     super(true);
-    this.registerRequiredCSS('panels/developer_resources/developerResourcesView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/developer_resources/developerResourcesView.css');
 
     const toolbarContainer = this.contentElement.createChild('div', 'developer-resource-view-toolbar-container');
     const toolbar = new UI.Toolbar.Toolbar('developer-resource-view-toolbar', toolbarContainer);

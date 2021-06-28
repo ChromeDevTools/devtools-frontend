@@ -98,7 +98,7 @@ export class ImageView extends UI.View.SimpleView {
   _cachedContent?: string|null;
   constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider) {
     super(i18nString(UIStrings.image));
-    this.registerRequiredCSS('ui/legacy/components/source_frame/imageView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('ui/legacy/components/source_frame/imageView.css');
     this.element.tabIndex = -1;
     this.element.classList.add('image-view');
     this._url = contentProvider.contentURL();

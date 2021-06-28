@@ -158,11 +158,11 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   _groupByFolder?: any;
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/sources/navigatorView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/sources/navigatorView.css');
 
     this._placeholder = null;
     this._scriptsTree = new UI.TreeOutline.TreeOutlineInShadow();
-    this._scriptsTree.registerRequiredCSS('panels/sources/navigatorTree.css', {enableLegacyPatching: false});
+    this._scriptsTree.registerRequiredCSS('panels/sources/navigatorTree.css');
     this._scriptsTree.setComparator(NavigatorView._treeElementsCompare);
     this._scriptsTree.setFocusable(false);
     this.contentElement.appendChild(this._scriptsTree.element);

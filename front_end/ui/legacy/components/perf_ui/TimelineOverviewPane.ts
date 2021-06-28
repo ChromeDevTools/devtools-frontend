@@ -420,7 +420,6 @@ export class OverviewInfo {
     this._element = UI.Utils
                         .createShadowRootWithCoreStyles(this._glassPane.contentElement, {
                           cssFile: 'ui/legacy/components/perf_ui/timelineOverviewInfo.css',
-                          enableLegacyPatching: false,
                           delegatesFocus: undefined,
                         })
                         .createChild('div', 'overview-info');

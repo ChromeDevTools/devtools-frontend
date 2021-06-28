@@ -67,7 +67,7 @@ export class ChangesView extends UI.Widget.VBox {
 
   private constructor() {
     super(true);
-    this.registerRequiredCSS('panels/changes/changesView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/changes/changesView.css');
     const splitWidget = new UI.SplitWidget.SplitWidget(true /* vertical */, false /* sidebar on left */);
     const mainWidget = new UI.Widget.Widget();
     splitWidget.setMainWidget(mainWidget);

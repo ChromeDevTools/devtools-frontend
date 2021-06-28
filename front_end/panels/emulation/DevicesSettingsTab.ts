@@ -76,7 +76,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements UI.ListWidget.
     super();
     this.element.classList.add('settings-tab-container');
     this.element.classList.add('devices-settings-tab');
-    this.registerRequiredCSS('panels/emulation/devicesSettingsTab.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/emulation/devicesSettingsTab.css');
 
     const header = this.element.createChild('header');
     UI.UIUtils.createTextChild(header.createChild('h1'), i18nString(UIStrings.emulatedDevices));
@@ -90,7 +90,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements UI.ListWidget.
     buttonsRow.appendChild(this._addCustomButton);
 
     this._list = new UI.ListWidget.ListWidget(this, false /* delegatesFocus */);
-    this._list.registerRequiredCSS('panels/emulation/devicesSettingsTab.css', {enableLegacyPatching: false});
+    this._list.registerRequiredCSS('panels/emulation/devicesSettingsTab.css');
     this._list.element.classList.add('devices-list');
     this._list.show(this.containerElement);
 

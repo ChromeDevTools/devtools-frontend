@@ -43,7 +43,7 @@ export class NodeConnectionsPanel extends UI.Panel.Panel {
   _networkDiscoveryView: NodeConnectionsView;
   private constructor() {
     super('node-connection');
-    this.registerRequiredCSS('entrypoints/node_main/nodeConnectionsPanel.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('entrypoints/node_main/nodeConnectionsPanel.css');
     this.contentElement.classList.add('node-panel');
 
     const container = this.contentElement.createChild('div', 'node-panel-center');
@@ -104,7 +104,7 @@ export class NodeConnectionsView extends UI.Widget.VBox implements UI.ListWidget
         i18n.i18n.getFormatLocalizedString(str_, UIStrings.specifyNetworkEndpointAnd, {PH1: documentationLink}));
 
     this._list = new UI.ListWidget.ListWidget(this);
-    this._list.registerRequiredCSS('entrypoints/node_main/nodeConnectionsPanel.css', {enableLegacyPatching: false});
+    this._list.registerRequiredCSS('entrypoints/node_main/nodeConnectionsPanel.css');
     this._list.element.classList.add('network-discovery-list');
     const placeholder = document.createElement('div');
     placeholder.classList.add('network-discovery-list-empty');

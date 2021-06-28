@@ -180,7 +180,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
   constructor() {
     super('elements');
-    this.registerRequiredCSS('panels/elements/elementsPanel.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/elements/elementsPanel.css');
     this._splitWidget = new UI.SplitWidget.SplitWidget(true, true, 'elementsPanelSplitViewState', 325, 325);
     this._splitWidget.addEventListener(
         UI.SplitWidget.Events.SidebarSizeChanged, this._updateTreeOutlineVisibleWidth.bind(this));

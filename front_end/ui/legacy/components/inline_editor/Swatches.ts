@@ -19,7 +19,6 @@ export class BezierSwatch extends HTMLSpanElement {
     super();
     const root = UI.Utils.createShadowRootWithCoreStyles(this, {
       cssFile: 'ui/legacy/components/inline_editor/bezierSwatch.css',
-      enableLegacyPatching: false,
       delegatesFocus: undefined,
     });
     this._iconElement = UI.Icon.Icon.create('smallicon-bezier', 'bezier-swatch-icon');
@@ -67,7 +66,6 @@ export class CSSShadowSwatch extends HTMLSpanElement {
     super();
     const root = UI.Utils.createShadowRootWithCoreStyles(this, {
       cssFile: 'ui/legacy/components/inline_editor/cssShadowSwatch.css',
-      enableLegacyPatching: false,
       delegatesFocus: undefined,
     });
     this._iconElement = UI.Icon.Icon.create('smallicon-shadow', 'shadow-swatch-icon');

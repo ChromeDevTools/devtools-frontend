@@ -24,7 +24,7 @@ export class CSSOverviewProcessingView extends UI.Widget.Widget {
   fragment?: UI.Fragment.Fragment;
   constructor(controller: OverviewController) {
     super();
-    this.registerRequiredCSS('panels/css_overview/cssOverviewProcessingView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/css_overview/cssOverviewProcessingView.css');
 
     this._formatter = new Intl.NumberFormat('en-US');
     this._controller = controller;

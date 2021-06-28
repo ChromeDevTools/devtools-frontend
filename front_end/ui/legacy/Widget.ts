@@ -81,7 +81,6 @@ export class Widget extends Common.ObjectWrapper.ObjectWrapper {
       this.element.classList.add('flex-auto');
       this._shadowRoot = createShadowRootWithCoreStyles(this.element, {
         cssFile: undefined,
-        enableLegacyPatching: false,
         delegatesFocus,
       });
       this._shadowRoot.appendChild(this.contentElement);
@@ -464,13 +463,11 @@ export class Widget extends Common.ObjectWrapper.ObjectWrapper {
     this.doResize();
   }
 
-  registerRequiredCSS(cssFile: string, options: {
-    enableLegacyPatching: false,
-  }): void {
+  registerRequiredCSS(cssFile: string): void {
     if (this._isWebComponent) {
-      appendStyle((this._shadowRoot as DocumentFragment), cssFile, options);
+      appendStyle((this._shadowRoot as DocumentFragment), cssFile);
     } else {
-      appendStyle(this.element, cssFile, options);
+      appendStyle(this.element, cssFile);
     }
   }
 

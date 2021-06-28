@@ -78,7 +78,7 @@ export class PlayerEventsView extends UI.Widget.VBox {
     super();
 
     // Set up element styles.
-    this.registerRequiredCSS('panels/media/eventDisplayTable.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/media/eventDisplayTable.css');
     this.contentElement.classList.add('event-display-table-contents-table-container');
 
     this._dataGrid = this._createDataGrid([

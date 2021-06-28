@@ -32,8 +32,7 @@ export class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
       detailsPausedReason: Protocol.Debugger.PausedEventReason) {
     super(true);
     this._categoriesTreeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-    this._categoriesTreeOutline.registerRequiredCSS(
-        'panels/browser_debugger/categorizedBreakpointsSidebarPane.css', {enableLegacyPatching: false});
+    this._categoriesTreeOutline.registerRequiredCSS('panels/browser_debugger/categorizedBreakpointsSidebarPane.css');
     this._categoriesTreeOutline.setShowSelectionOnKeyboardFocus(/* show */ true);
     this.contentElement.appendChild(this._categoriesTreeOutline.element);
     this._viewId = viewId;

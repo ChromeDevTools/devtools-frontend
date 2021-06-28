@@ -62,7 +62,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
                                                                                          condition: string,
                                                                                        }) => Promise<void>) {
     super(true);
-    this.registerRequiredCSS('panels/sources/breakpointEditDialog.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/sources/breakpointEditDialog.css');
     this._onFinish = onFinish;
     this._finished = false;
     this._editor = null;

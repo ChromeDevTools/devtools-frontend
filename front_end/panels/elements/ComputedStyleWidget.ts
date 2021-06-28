@@ -190,7 +190,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
 
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/elements/computedStyleSidebarPane.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/elements/computedStyleSidebarPane.css');
 
     this._computedStyleModel = new ComputedStyleModel();
     this._computedStyleModel.addEventListener(Events.ComputedStyleChanged, this.update, this);
@@ -226,8 +226,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     this._propertiesOutline.hideOverflow();
     this._propertiesOutline.setShowSelectionOnKeyboardFocus(true);
     this._propertiesOutline.setFocusable(true);
-    this._propertiesOutline.registerRequiredCSS(
-        'panels/elements/computedStyleWidgetTree.css', {enableLegacyPatching: false});
+    this._propertiesOutline.registerRequiredCSS('panels/elements/computedStyleWidgetTree.css');
     this._propertiesOutline.element.classList.add('monospace', 'computed-properties');
     this._propertiesOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, this._onTreeElementToggled, this);
     this._propertiesOutline.addEventListener(UI.TreeOutline.Events.ElementCollapsed, this._onTreeElementToggled, this);

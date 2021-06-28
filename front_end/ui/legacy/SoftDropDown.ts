@@ -49,7 +49,7 @@ export class SoftDropDown<T> implements ListDelegate<T> {
 
     this.element = document.createElement('button');
     this.element.classList.add('soft-dropdown');
-    appendStyle(this.element, 'ui/legacy/softDropDownButton.css', {enableLegacyPatching: false});
+    appendStyle(this.element, 'ui/legacy/softDropDownButton.css');
     this._titleElement = this.element.createChild('span', 'title');
     const dropdownArrowIcon = Icon.create('smallicon-triangle-down');
     this.element.appendChild(dropdownArrowIcon);
@@ -66,7 +66,6 @@ export class SoftDropDown<T> implements ListDelegate<T> {
     this._width = 315;
     createShadowRootWithCoreStyles(this._glassPane.contentElement, {
       cssFile: 'ui/legacy/softDropDown.css',
-      enableLegacyPatching: false,
       delegatesFocus: undefined,
     }).appendChild(this._list.element);
     ARIAUtils.markAsMenu(this._list.element);

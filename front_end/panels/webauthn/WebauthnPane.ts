@@ -244,7 +244,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
 
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/webauthn/webauthnPane.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/webauthn/webauthnPane.css');
     this.contentElement.classList.add('webauthn-pane');
     this._enabled = false;
     this._activeAuthId = null;

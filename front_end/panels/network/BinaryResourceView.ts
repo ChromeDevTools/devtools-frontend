@@ -71,7 +71,7 @@ export class BinaryResourceView extends UI.Widget.VBox {
 
   constructor(base64content: string, contentUrl: string, resourceType: Common.ResourceType.ResourceType) {
     super();
-    this.registerRequiredCSS('panels/network/binaryResourceView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/network/binaryResourceView.css');
 
     this._binaryResourceViewFactory =
         new SourceFrame.BinaryResourceViewFactory.BinaryResourceViewFactory(base64content, contentUrl, resourceType);

@@ -191,7 +191,6 @@ export class CustomPreviewComponent {
     this.element.classList.add('source-code');
     const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(this.element, {
       cssFile: 'ui/legacy/components/object_ui/customPreviewComponent.css',
-      enableLegacyPatching: false,
       delegatesFocus: undefined,
     });
     this.element.addEventListener('contextmenu', this._contextMenuEventFired.bind(this), false);

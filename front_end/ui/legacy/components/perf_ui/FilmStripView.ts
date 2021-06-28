@@ -44,7 +44,7 @@ export class FilmStripView extends UI.Widget.HBox {
 
   constructor() {
     super(true);
-    this.registerRequiredCSS('ui/legacy/components/perf_ui/filmStripView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('ui/legacy/components/perf_ui/filmStripView.css');
     this.contentElement.classList.add('film-strip-view');
     this._statusLabel = this.contentElement.createChild('div', 'label');
     this.reset();

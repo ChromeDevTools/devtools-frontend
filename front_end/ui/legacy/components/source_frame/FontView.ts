@@ -61,7 +61,7 @@ export class FontView extends UI.View.SimpleView {
   _inResize!: boolean|null;
   constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider) {
     super(i18nString(UIStrings.font));
-    this.registerRequiredCSS('ui/legacy/components/source_frame/fontView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('ui/legacy/components/source_frame/fontView.css');
     this.element.classList.add('font-view');
     this._url = contentProvider.contentURL();
     UI.ARIAUtils.setAccessibleName(this.element, i18nString(UIStrings.previewOfFontFromS, {PH1: this._url}));

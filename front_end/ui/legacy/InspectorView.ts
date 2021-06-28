@@ -156,7 +156,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
 
     this._tabbedPane = this._tabbedLocation.tabbedPane();
     this._tabbedPane.element.classList.add('main-tabbed-pane');
-    this._tabbedPane.registerRequiredCSS('ui/legacy/inspectorViewTabbedPane.css', {enableLegacyPatching: false});
+    this._tabbedPane.registerRequiredCSS('ui/legacy/inspectorViewTabbedPane.css');
     this._tabbedPane.addEventListener(TabbedPaneEvents.TabSelected, this._tabSelected, this);
     this._tabbedPane.setAccessibleName(i18nString(UIStrings.panels));
     this._tabbedPane.setTabDelegate(this._tabDelegate);

@@ -23,7 +23,7 @@ export class RecorderPanel extends UI.Panel.Panel {
 
   constructor() {
     super('recorder');
-    this.registerRequiredCSS('panels/recorder/recorderPanel.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/recorder/recorderPanel.css');
 
     const mainContainer = new UI.Widget.VBox();
     mainContainer.show(this.element);

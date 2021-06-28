@@ -36,7 +36,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
   constructor() {
     super(true, 1000);
     this.element.classList.add('web-audio-drawer');
-    this.registerRequiredCSS('panels/web_audio/webAudio.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/web_audio/webAudio.css');
 
     // Creates the toolbar.
     const toolbarContainer = this.contentElement.createChild('div', 'web-audio-toolbar-container vbox');

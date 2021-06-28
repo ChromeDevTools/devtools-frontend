@@ -12,7 +12,7 @@ export class InspectedPagePlaceholder extends UI.Widget.Widget {
   _updateId?: number;
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/emulation/inspectedPagePlaceholder.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/emulation/inspectedPagePlaceholder.css');
     UI.ZoomManager.ZoomManager.instance().addEventListener(UI.ZoomManager.Events.ZoomChanged, this.onResize, this);
     this.restoreMinimumSize();
   }

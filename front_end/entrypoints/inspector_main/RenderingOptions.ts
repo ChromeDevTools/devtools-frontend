@@ -210,7 +210,7 @@ let renderingOptionsViewInstance: RenderingOptionsView;
 export class RenderingOptionsView extends UI.Widget.VBox {
   private constructor() {
     super(true);
-    this.registerRequiredCSS('entrypoints/inspector_main/renderingOptions.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('entrypoints/inspector_main/renderingOptions.css');
 
     this._appendCheckbox(
         i18nString(UIStrings.paintFlashing), i18nString(UIStrings.highlightsAreasOfThePageGreen),

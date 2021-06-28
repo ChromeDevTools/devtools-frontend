@@ -69,7 +69,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
 
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/network/blockedURLsPane.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/network/blockedURLsPane.css');
 
     this._manager = SDK.NetworkManager.MultitargetNetworkManager.instance();
     this._manager.addEventListener(SDK.NetworkManager.MultitargetNetworkManager.Events.BlockedPatternsChanged, () => {
@@ -90,7 +90,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
 
     this._list = new UI.ListWidget.ListWidget(this);
     this._list.element.classList.add('blocked-urls');
-    this._list.registerRequiredCSS('panels/network/blockedURLsPane.css', {enableLegacyPatching: false});
+    this._list.registerRequiredCSS('panels/network/blockedURLsPane.css');
     this._list.setEmptyPlaceholder(this._createEmptyPlaceholder());
     this._list.show(this.contentElement);
 

@@ -124,7 +124,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
 
   private constructor() {
     super(true);
-    this.registerRequiredCSS('panels/animation/animationTimeline.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/animation/animationTimeline.css');
     this.element.classList.add('animations-timeline');
 
     this._gridWrapper = this.contentElement.createChild('div', 'grid-overflow-wrapper');

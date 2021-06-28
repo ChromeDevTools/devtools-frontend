@@ -25,7 +25,7 @@ export class AddSourceMapURLDialog extends UI.Widget.HBox {
   _callback: (arg0: string) => void;
   constructor(callback: (arg0: string) => void) {
     super(/* isWebComponent */ true);
-    this.registerRequiredCSS('panels/sources/dialog.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/sources/dialog.css');
     this.contentElement.createChild('label').textContent = i18nString(UIStrings.sourceMapUrl);
 
     this._input = UI.UIUtils.createInput('add-source-map', 'text');

@@ -131,7 +131,7 @@ export class CoverageView extends UI.Widget.VBox {
     this._decorationManager = null;
     this._resourceTreeModel = null;
 
-    this.registerRequiredCSS('panels/coverage/coverageView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/coverage/coverageView.css');
 
     const toolbarContainer = this.contentElement.createChild('div', 'coverage-toolbar-container');
     const toolbar = new UI.Toolbar.Toolbar('coverage-toolbar', toolbarContainer);

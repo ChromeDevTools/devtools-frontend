@@ -351,7 +351,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
   _serviceWorkerManager?: SDK.ServiceWorkerManager.ServiceWorkerManager|null;
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/application/appManifestView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/application/appManifestView.css');
     this.contentElement.classList.add('manifest-container');
 
     Common.Settings.Settings.instance()
@@ -366,7 +366,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
 
     // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     this._reportView = new UI.ReportView.ReportView(i18nString(UIStrings.appManifest));
-    this._reportView.registerRequiredCSS('panels/application/appManifestView.css', {enableLegacyPatching: false});
+    this._reportView.registerRequiredCSS('panels/application/appManifestView.css');
     this._reportView.element.classList.add('manifest-view-header');
     this._reportView.show(this.contentElement);
     this._reportView.hideWidget();

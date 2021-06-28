@@ -49,7 +49,7 @@ export class TimelineGrid {
 
   constructor() {
     this.element = document.createElement('div');
-    UI.Utils.appendStyle(this.element, 'ui/legacy/components/perf_ui/timelineGrid.css', {enableLegacyPatching: false});
+    UI.Utils.appendStyle(this.element, 'ui/legacy/components/perf_ui/timelineGrid.css');
 
     this._dividersElement = this.element.createChild('div', 'resources-dividers');
 

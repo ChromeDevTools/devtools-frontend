@@ -36,7 +36,7 @@ export class RequestHTMLView extends UI.Widget.VBox {
   _dataURL: string;
   constructor(dataURL: string) {
     super(true);
-    this.registerRequiredCSS('panels/network/requestHTMLView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/network/requestHTMLView.css');
     this._dataURL = encodeURI(dataURL).replace(/#/g, '%23');
     this.contentElement.classList.add('html', 'request-view');
   }

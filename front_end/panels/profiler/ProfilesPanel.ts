@@ -100,9 +100,9 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
   constructor(name: string, profileTypes: ProfileType[], recordingActionId: string) {
     super(name);
     this._profileTypes = profileTypes;
-    this.registerRequiredCSS('panels/profiler/heapProfiler.css', {enableLegacyPatching: false});
-    this.registerRequiredCSS('panels/profiler/profilesPanel.css', {enableLegacyPatching: false});
-    this.registerRequiredCSS('ui/legacy/components/object_ui/objectValue.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/profiler/heapProfiler.css');
+    this.registerRequiredCSS('panels/profiler/profilesPanel.css');
+    this.registerRequiredCSS('ui/legacy/components/object_ui/objectValue.css');
 
     const mainContainer = new UI.Widget.VBox();
     this.splitWidget().setMainWidget(mainContainer);
@@ -110,7 +110,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     this.profilesItemTreeElement = new ProfilesSidebarTreeElement(this);
 
     this._sidebarTree = new UI.TreeOutline.TreeOutlineInShadow();
-    this._sidebarTree.registerRequiredCSS('panels/profiler/profilesSidebarTree.css', {enableLegacyPatching: false});
+    this._sidebarTree.registerRequiredCSS('panels/profiler/profilesSidebarTree.css');
     this._sidebarTree.element.classList.add('profiles-sidebar-tree-box');
     this.panelSidebarElement().appendChild(this._sidebarTree.element);
 

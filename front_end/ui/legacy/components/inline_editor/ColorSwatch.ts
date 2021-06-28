@@ -41,7 +41,7 @@ export class ColorSwatch extends HTMLElement {
   constructor() {
     super();
     this.shadow.adoptedStyleSheets = [
-      ...getStyleSheets('ui/legacy/components/inline_editor/colorSwatch.css', {enableLegacyPatching: false}),
+      ...getStyleSheets('ui/legacy/components/inline_editor/colorSwatch.css'),
     ];
   }
 

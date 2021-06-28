@@ -185,7 +185,7 @@ export class Spectrum extends UI.Widget.VBox {
   _colorFormat?: string;
   constructor(contrastInfo?: ContrastInfo|null) {
     super(true);
-    this.registerRequiredCSS('ui/legacy/components/color_picker/spectrum.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('ui/legacy/components/color_picker/spectrum.css');
 
     this.contentElement.tabIndex = 0;
     this._colorElement = this.contentElement.createChild('div', 'spectrum-color');

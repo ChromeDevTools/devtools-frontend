@@ -59,8 +59,8 @@ export class Infobar {
   constructor(type: Type, text: string, actions?: InfobarAction[], disableSetting?: Common.Settings.Setting<any>) {
     this.element = (document.createElement('div') as HTMLElement);
     this.element.classList.add('flex-none');
-    this._shadowRoot = createShadowRootWithCoreStyles(
-        this.element, {cssFile: 'ui/legacy/infobar.css', enableLegacyPatching: false, delegatesFocus: undefined});
+    this._shadowRoot =
+        createShadowRootWithCoreStyles(this.element, {cssFile: 'ui/legacy/infobar.css', delegatesFocus: undefined});
 
     this._contentElement = this._shadowRoot.createChild('div', 'infobar infobar-' + type) as HTMLDivElement;
 

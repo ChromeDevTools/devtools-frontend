@@ -93,9 +93,9 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
   _infoElement: HTMLDivElement;
   private constructor() {
     super(true);
-    this.registerRequiredCSS('panels/sources/scopeChainSidebarPane.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/sources/scopeChainSidebarPane.css');
     this._treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
-    this._treeOutline.registerRequiredCSS('panels/sources/scopeChainSidebarPane.css', {enableLegacyPatching: false});
+    this._treeOutline.registerRequiredCSS('panels/sources/scopeChainSidebarPane.css');
     this._treeOutline.setShowSelectionOnKeyboardFocus(/* show */ true);
     this._expandController =
         new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController(this._treeOutline);

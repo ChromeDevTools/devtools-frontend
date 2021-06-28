@@ -439,7 +439,7 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
   constructor() {
     super();
     this.contentElement.classList.add('media-properties-frame');
-    this.registerRequiredCSS('panels/media/playerPropertiesView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/media/playerPropertiesView.css');
     this._mediaElements = [];
     this._videoDecoderElements = [];
     this._audioDecoderElements = [];

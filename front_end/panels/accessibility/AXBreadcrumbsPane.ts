@@ -60,7 +60,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
     this._rootElement.addEventListener('click', this._onClick.bind(this), false);
     this._rootElement.addEventListener('contextmenu', this._contextMenuEventFired.bind(this), false);
     this._rootElement.addEventListener('focusout', this._onFocusOut.bind(this), false);
-    this.registerRequiredCSS('panels/accessibility/axBreadcrumbs.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/accessibility/axBreadcrumbs.css');
   }
 
   focus(): void {

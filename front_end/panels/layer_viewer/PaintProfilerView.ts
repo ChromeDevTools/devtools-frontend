@@ -97,7 +97,7 @@ export class PaintProfilerView extends UI.Widget.HBox {
 
   constructor(showImageCallback: (arg0?: string|undefined) => void) {
     super(true);
-    this.registerRequiredCSS('panels/layer_viewer/paintProfiler.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/layer_viewer/paintProfiler.css');
     this.contentElement.classList.add('paint-profiler-overview');
     this._canvasContainer = this.contentElement.createChild('div', 'paint-profiler-canvas-container');
     this._progressBanner = this.contentElement.createChild('div', 'full-widget-dimmed-banner hidden');

@@ -26,7 +26,7 @@ export class CSSOverviewStartView extends UI.Widget.Widget {
   _controller: OverviewController;
   constructor(controller: OverviewController) {
     super();
-    this.registerRequiredCSS('panels/css_overview/cssOverviewStartView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/css_overview/cssOverviewStartView.css');
 
     this._controller = controller;
     this._render();

@@ -202,8 +202,7 @@ export function buildStackTracePreviewContents(
   element.classList.add('monospace');
   element.style.display = 'inline-block';
   const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
-      element,
-      {cssFile: 'ui/legacy/components/utils/jsUtils.css', enableLegacyPatching: false, delegatesFocus: undefined});
+      element, {cssFile: 'ui/legacy/components/utils/jsUtils.css', delegatesFocus: undefined});
   const contentElement = shadowRoot.createChild('table', 'stack-preview-container');
   if (!stackTrace) {
     return {element, links: []};

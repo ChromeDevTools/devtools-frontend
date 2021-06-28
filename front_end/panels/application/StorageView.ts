@@ -160,7 +160,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
 
   constructor() {
     super(true, 1000);
-    this.registerRequiredCSS('panels/application/storageView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/application/storageView.css');
     this.contentElement.classList.add('clear-storage-container');
     this.pieColors = new Map([
       [Protocol.Storage.StorageType.Appcache, 'rgb(110, 161, 226)'],        // blue
@@ -174,7 +174,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
 
     // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     this.reportView = new UI.ReportView.ReportView(i18nString(UIStrings.storageTitle));
-    this.reportView.registerRequiredCSS('panels/application/storageView.css', {enableLegacyPatching: false});
+    this.reportView.registerRequiredCSS('panels/application/storageView.css');
     this.reportView.element.classList.add('clear-storage-header');
     this.reportView.show(this.contentElement);
     /** @type {?SDK.Target.Target} */

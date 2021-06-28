@@ -187,7 +187,7 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
 
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/application/serviceWorkersView.css', {enableLegacyPatching: false});
+    this.registerRequiredCSS('panels/application/serviceWorkersView.css');
 
     // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     this._currentWorkersView = new UI.ReportView.ReportView(i18n.i18n.lockedString('Service Workers'));
@@ -814,9 +814,9 @@ export class Section {
   }
 
   _wrapWidget(container: Element): Element {
-    const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
-        container, {cssFile: undefined, enableLegacyPatching: false, delegatesFocus: undefined});
-    UI.Utils.appendStyle(shadowRoot, 'panels/application/serviceWorkersView.css', {enableLegacyPatching: false});
+    const shadowRoot =
+        UI.Utils.createShadowRootWithCoreStyles(container, {cssFile: undefined, delegatesFocus: undefined});
+    UI.Utils.appendStyle(shadowRoot, 'panels/application/serviceWorkersView.css');
     const contentElement = document.createElement('div');
     shadowRoot.appendChild(contentElement);
     return contentElement;

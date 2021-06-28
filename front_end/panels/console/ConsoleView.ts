@@ -656,10 +656,10 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   }
 
   wasShown(): void {
+    super.wasShown();
     this._updateIssuesToolbarItem();
     this._viewport.refresh();
     this.registerCSSFiles([consoleViewStyles, objectValueStyles]);
-    super.wasShown();
   }
 
   focus(): void {

@@ -9,9 +9,10 @@ import("../visibility.gni")
 
 generate_css("css_files") {
   sources = [
-    "./consolePinPane.css",
-    "./consolePrompt.css",
-    "./consoleView.css",
+    "consolePinPane.css",
+    "consolePrompt.css",
+    "consoleSidebar.css",
+    "consoleView.css",
   ]
 }
 

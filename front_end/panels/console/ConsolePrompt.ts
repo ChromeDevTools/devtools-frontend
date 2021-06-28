@@ -159,8 +159,8 @@ export class ConsolePrompt extends UI.Widget.Widget {
   }
 
   wasShown(): void {
-    this.registerCSSFiles([consolePromptStyles]);
     super.wasShown();
+    this.registerCSSFiles([consolePromptStyles]);
   }
 
   willHide(): void {

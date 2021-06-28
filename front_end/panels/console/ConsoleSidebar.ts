@@ -14,6 +14,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import type {LevelsMask} from './ConsoleFilter.js';
 import {ConsoleFilter, FilterType} from './ConsoleFilter.js';
 import type {ConsoleViewMessage} from './ConsoleViewMessage.js';
+import consoleSidebarStyles from './consoleSidebar.css.js';
 
 const UIStrings = {
   /**
@@ -61,7 +62,6 @@ export class ConsoleSidebar extends UI.Widget.VBox {
     this.setMinimumSize(125, 0);
 
     this._tree = new UI.TreeOutline.TreeOutlineInShadow();
-    this._tree.registerRequiredCSS('panels/console/consoleSidebar.css', {enableLegacyPatching: false});
     this._tree.addEventListener(UI.TreeOutline.Events.ElementSelected, this._selectionChanged.bind(this));
     this.contentElement.appendChild(this._tree.element);
     this._selectedTreeElement = null;
@@ -132,6 +132,11 @@ export class ConsoleSidebar extends UI.Widget.VBox {
   _selectionChanged(event: Common.EventTarget.EventTargetEvent): void {
     this._selectedTreeElement = (event.data as UI.TreeOutline.TreeElement);
     this.dispatchEventToListeners(Events.FilterSelected);
+  }
+
+  wasShown(): void {
+    super.wasShown();
+    this._tree.registerCSSFiles([consoleSidebarStyles]);
   }
 }
 

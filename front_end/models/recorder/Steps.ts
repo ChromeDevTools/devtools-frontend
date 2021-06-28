@@ -9,7 +9,11 @@ export interface WaitForNavigationCondition {
   expectedUrl: string;
 }
 
-export type Condition = WaitForNavigationCondition;
+export interface BeforeUnloadCondition {
+  type: 'beforeUnload';
+}
+
+export type Condition = WaitForNavigationCondition|BeforeUnloadCondition;
 
 
 export interface FrameContext {

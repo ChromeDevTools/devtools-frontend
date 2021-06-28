@@ -6,7 +6,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 
 import type {RecordingSession} from './RecordingSession.js';
 import {hasCondition} from './Steps.js';
-import type {Condition, FrameContext, Step} from './Steps.js';
+import type {FrameContext, Step} from './Steps.js';
 import type {Step as ClientStep} from './RecordingClient.js';
 import {clientStepHasFrameContext} from './RecordingClient.js';
 
@@ -15,13 +15,11 @@ export class RecordingEventHandler {
   private session: RecordingSession;
   private resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel;
   private lastStep: Step|null;
-  private lastStepTimeout: number|null;
 
   constructor(session: RecordingSession, target: SDK.Target.Target) {
     this.target = target;
     this.session = session;
     this.lastStep = null;
-    this.lastStepTimeout = null;
 
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     if (!resourceTreeModel) {
@@ -64,6 +62,15 @@ export class RecordingEventHandler {
 
     const context = this.getContextForFrame(frame);
 
+    if (step.type === 'beforeunload') {
+      if (this.lastStep && hasCondition(this.lastStep)) {
+        this.lastStep.condition = {
+          type: 'beforeUnload',
+        };
+      }
+      return;
+    }
+
     // TODO: type-safe parsing from client steps to internal step format.
     if (clientStepHasFrameContext(step)) {
       this.appendStep({...step, context} as Step);
@@ -74,23 +81,6 @@ export class RecordingEventHandler {
 
   async appendStep(step: Step): Promise<void> {
     this.lastStep = await this.session.appendStep(step);
-    if (this.lastStepTimeout) {
-      window.clearTimeout(this.lastStepTimeout);
-    }
-    this.lastStepTimeout = window.setTimeout(() => {
-      this.lastStep = null;
-      this.lastStepTimeout = null;
-    }, 1000);
-  }
-
-  addConditionToLastStep(condition: Condition): void {
-    if (!this.lastStep) {
-      return;
-    }
-
-    if (hasCondition(this.lastStep)) {
-      this.session.addConditionToStep(this.lastStep, condition);
-    }
   }
 
   targetDestroyed(): void {
@@ -99,7 +89,7 @@ export class RecordingEventHandler {
   }
 
   targetInfoChanged(url: string): void {
-    this.addConditionToLastStep({
+    this.session.replaceUnloadWithNavigation({
       type: 'waitForNavigation',
       expectedUrl: url,
     });

@@ -28,6 +28,8 @@ export type Step = {
   x: number,
   y: number,
   selector?: Selector,
+}|{
+  type: 'beforeunload',
 };
 
 const frameContextStepTypes = new Set(['click', 'change', 'keydown', 'keyup', 'scroll']);
@@ -299,6 +301,13 @@ export function setupRecordingClient(
     window.addStep(JSON.stringify(step));
   };
 
+  const beforeUnloadListener = (): void => {
+    const step = {
+      type: 'beforeunload',
+    };
+    window.addStep(JSON.stringify(step));
+  };
+
   let lastClientX = 0;
   let lastClientY = 0;
   const mouseUpListeners = (event: Event): void => {
@@ -316,6 +325,7 @@ export function setupRecordingClient(
     window.addEventListener('scroll', recorderEventListener, true);
     window.addEventListener('focus', recorderEventListener, true);
     window.addEventListener('mouseup', mouseUpListeners, true);
+    window.addEventListener('beforeunload', beforeUnloadListener, true);
     window._recorderEventListener = recorderEventListener;
   } else {
     log('_recorderEventListener was already installed');
@@ -330,6 +340,7 @@ export function setupRecordingClient(
     window.removeEventListener('scroll', recorderEventListener, true);
     window.removeEventListener('focus', recorderEventListener, true);
     window.removeEventListener('mouseup', mouseUpListeners, true);
+    window.removeEventListener('beforeunload', beforeUnloadListener, true);
     delete window._recorderEventListener;
     delete window._recorderTeardown;
   };

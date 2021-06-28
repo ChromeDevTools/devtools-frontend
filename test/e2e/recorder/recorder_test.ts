@@ -296,6 +296,10 @@ describe('Recorder', function() {
               path: [],
             },
             key: 'Enter',
+            condition: {
+              expectedUrl: 'https://<url>/test/e2e/resources/recorder/form.html?name=test',
+              type: 'waitForNavigation',
+            },
           },
           {
             type: 'keyup',
@@ -304,10 +308,6 @@ describe('Recorder', function() {
               path: [],
             },
             key: 'Enter',
-            condition: {
-              expectedUrl: 'https://<url>/test/e2e/resources/recorder/form.html?name=test',
-              type: 'waitForNavigation',
-            },
           },
         ],
       }],

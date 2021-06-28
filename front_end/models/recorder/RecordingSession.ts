@@ -11,7 +11,7 @@ import type * as Protocol from '../../generated/protocol.js';
 
 import {RecordingEventHandler} from './RecordingEventHandler.js';
 import {setupRecordingClient} from './RecordingClient.js';
-import type {Condition, Step, StepWithCondition, UserFlow, UserFlowSection} from './Steps.js';
+import type {Step, UserFlow, UserFlowSection, WaitForNavigationCondition} from './Steps.js';
 import {createViewportStep} from './Steps.js';
 import {createEmulateNetworkConditionsStep} from './Steps.js';
 
@@ -174,9 +174,16 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper {
     return step;
   }
 
-  addConditionToStep(step: StepWithCondition, condition: Condition): void {
-    step.condition = condition;
-    this.dispatchEventToListeners('recording-updated', this.userFlow);
+  replaceUnloadWithNavigation(condition: WaitForNavigationCondition): void {
+    const currentSection = this.userFlow.sections[this.userFlow.sections.length - 1];
+    for (let i = currentSection.steps.length - 1; i >= 0; i--) {
+      const step = currentSection.steps[i];
+      if ('condition' in step && step.condition?.type === 'beforeUnload') {
+        step.condition = condition;
+        this.dispatchEventToListeners('recording-updated', this.userFlow);
+        break;
+      }
+    }
   }
 
   bindingCalled(event: Common.EventTarget.EventTargetEvent): void {

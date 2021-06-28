@@ -28,8 +28,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-/* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/naming-convention */
+import type * as PublicAPI from '../../../extension-api/ExtensionAPI'; // eslint-disable-line rulesdir/es_modules_import
+
+/* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/naming-convention,@typescript-eslint/no-non-null-assertion */
 export namespace PrivateAPI {
   export namespace Panels {
     export const enum SearchAction {
@@ -109,16 +110,11 @@ export namespace PrivateAPI {
     scriptExecutionContext?: string;
   }
 
-  export interface SupportedScriptTypes {
-    language: string;
-    symbol_types: string[];
-  }
-
   type RegisterLanguageExtensionPluginRequest = {
     command: Commands.RegisterLanguageExtensionPlugin,
     pluginName: string,
     port: MessagePort,
-    supportedScriptTypes: SupportedScriptTypes,
+    supportedScriptTypes: PublicAPI.Chrome.DevTools.SupportedScriptTypes,
   };
   type SubscribeRequest = {command: Commands.Subscribe, type: string};
   type UnsubscribeRequest = {command: Commands.Unsubscribe, type: string};
@@ -193,12 +189,14 @@ declare global {
   interface Window {
     injectedExtensionAPI:
         (extensionInfo: ExtensionDescriptor, inspectedTabId: string, themeName: string, keysToForward: number[],
-         testHook: (extensionServer: any, extensionAPI: any) => unknown, injectedScriptId: number) => void;
+         testHook:
+             (extensionServer: APIImpl.ExtensionServerClient, extensionAPI: APIImpl.InspectorExtensionAPI) => unknown,
+         injectedScriptId: number) => void;
     buildExtensionAPIInjectedScript(
         extensionInfo: ExtensionDescriptor, inspectedTabId: string, themeName: string, keysToForward: number[],
         testHook: undefined|((extensionServer: unknown, extensionAPI: unknown) => unknown)): string;
-    chrome?: any;
-    webInspector?: any;
+    chrome: PublicAPI.Chrome.DevTools.Chrome;
+    webInspector?: APIImpl.InspectorExtensionAPI;
   }
 }
 
@@ -209,10 +207,52 @@ export type ExtensionDescriptor = {
   exposeWebInspectorNamespace?: boolean,
 };
 
+namespace APIImpl {
+  export interface InspectorExtensionAPI {
+    languageServices: PublicAPI.Chrome.DevTools.LanguageExtensions;
+    network: PublicAPI.Chrome.DevTools.Network;
+    panels: PublicAPI.Chrome.DevTools.Panels;
+    inspectedWindow: PublicAPI.Chrome.DevTools.InspectedWindow;
+  }
+
+  export interface ExtensionServerClient {
+    _callbacks: {[key: string]: (response: unknown) => unknown};
+    _handlers: {[key: string]: (request: {arguments: unknown[]}) => unknown};
+    _lastRequestId: number;
+    _lastObjectId: number;
+    _port: MessagePort;
+
+    _onCallback(request: unknown): void;
+    _onMessage(event: MessageEvent<{command: string, requestId: number, arguments: unknown[]}>): void;
+    _registerCallback(callback: (response: unknown) => unknown): number;
+    registerHandler(command: string, handler: (request: {arguments: unknown[]}) => unknown): void;
+    unregisterHandler(command: string): void;
+    hasHandler(command: string): boolean;
+    sendRequest(request: PrivateAPI.ServerRequests, callback?: ((response: unknown) => unknown), transfers?: unknown[]):
+        void;
+    nextObjectId(): string;
+  }
+
+  // We cannot use the stronger `unknown` type in place of `any` in the following type definition. The type is used as
+  // the right-hand side of `extends` in a few places, which doesn't narrow `unknown`. Without narrowing, overload
+  // resolution and meaningful type inference of arguments break, for example.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  export type Callable = (...args: any) => any;
+
+  export interface EventSink<ListenerT extends Callable> extends PublicAPI.Chrome.DevTools.EventSink<ListenerT> {
+    _type: string;
+    _listeners: ListenerT[];
+    _customDispatch: undefined|((this: EventSink<ListenerT>, request: {arguments: unknown[]}) => unknown);
+
+    _fire(..._vararg: Parameters<ListenerT>): void;
+    _dispatch(request: {arguments: unknown[]}): void;
+  }
+}
 
 self.injectedExtensionAPI = function(
-    extensionInfo: any, inspectedTabId: string, themeName: string, keysToForward: number[],
-    testHook: (extensionServer: unknown, extensionAPI: unknown) => unknown, injectedScriptId: number): void {
+    extensionInfo: ExtensionDescriptor, inspectedTabId: string, themeName: string, keysToForward: number[],
+    testHook: (extensionServer: APIImpl.ExtensionServerClient, extensionAPI: APIImpl.InspectorExtensionAPI) => unknown,
+    injectedScriptId: number): void {
   const keysToForwardSet = new Set<number>(keysToForward);
   const chrome = window.chrome || {};
 
@@ -228,28 +268,30 @@ self.injectedExtensionAPI = function(
   // by Foo consutrctor to re-bind publicly exported members to an instance
   // of Foo.
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/naming-convention
-  function EventSinkImpl(this: any, type: any, customDispatch: any): void {
+  function EventSinkImpl<ListenerT extends APIImpl.Callable>(
+      this: APIImpl.EventSink<ListenerT>, type: string,
+      customDispatch?: (this: APIImpl.EventSink<ListenerT>, request: {arguments: unknown[]}) => unknown): void {
     this._type = type;
     this._listeners = [];
     this._customDispatch = customDispatch;
   }
 
   EventSinkImpl.prototype = {
+    addListener: function<ListenerT extends APIImpl.Callable>(this: APIImpl.EventSink<ListenerT>, callback: ListenerT):
+        void {
+          if (typeof callback !== 'function') {
+            throw 'addListener: callback is not a function';
+          }
+          if (this._listeners.length === 0) {
+            extensionServer.sendRequest({command: PrivateAPI.Commands.Subscribe, type: this._type});
+          }
+          this._listeners.push(callback);
+          extensionServer.registerHandler('notify-' + this._type, this._dispatch.bind(this));
+        },
 
-    addListener: function(callback: any): void {
-      if (typeof callback !== 'function') {
-        throw 'addListener: callback is not a function';
-      }
-      if (this._listeners.length === 0) {
-        extensionServer.sendRequest({command: PrivateAPI.Commands.Subscribe, type: this._type});
-      }
-      this._listeners.push(callback);
-      extensionServer.registerHandler('notify-' + this._type, this._dispatch.bind(this));
-    },
 
-
-    removeListener: function(callback: any): void {
+    removeListener: function<ListenerT extends APIImpl.Callable>(
+        this: APIImpl.EventSink<ListenerT>, callback: ListenerT): void {
       const listeners = this._listeners;
 
       for (let i = 0; i < listeners.length; ++i) {
@@ -264,28 +306,35 @@ self.injectedExtensionAPI = function(
     },
 
 
-    _fire: function _(_vararg: any): void {
+    _fire: function<ListenerT extends APIImpl.Callable>(
+        this: APIImpl.EventSink<ListenerT>, ..._vararg: Parameters<ListenerT>): void {
       const listeners = this._listeners.slice();
       for (let i = 0; i < listeners.length; ++i) {
-        listeners[i].apply(null, arguments);
+        listeners[i].apply(null, Array.from(arguments));
       }
     },
 
 
-    _dispatch: function(request: any): void {
+    _dispatch: function<ListenerT extends APIImpl.Callable>(
+        this: APIImpl.EventSink<ListenerT>, request: {arguments: unknown[]}): void {
       if (this._customDispatch) {
         this._customDispatch.call(this, request);
       } else {
-        this._fire.apply(this, request.arguments);
+        this._fire.apply(this, request.arguments as Parameters<ListenerT>);
       }
     },
   };
+
+  function Constructor<NewT extends APIImpl.Callable>(ctor: NewT): new (...args: Parameters<NewT>) =>
+      ThisParameterType<NewT> {
+    return ctor as unknown as new (...args: Parameters<NewT>) => ThisParameterType<NewT>;
+  }
 
   /**
    * @constructor
    */
 
-  function InspectorExtensionAPI(this: any): void {
+  function InspectorExtensionAPI(this: APIImpl.InspectorExtensionAPI): void {
     // @ts-ignore
     this.inspectedWindow = new InspectedWindow();
     // @ts-ignore
@@ -458,13 +507,13 @@ self.injectedExtensionAPI = function(
   PanelWithSidebarImpl.prototype = {
     createSidebarPane: function(title: any, callback: any): void {
       const id = 'extension-sidebar-' + extensionServer.nextObjectId();
-      const request =
-          {command: PrivateAPI.Commands.CreateSidebarPane, panel: this._hostPanelName, id: id, title: title};
       function callbackWrapper(): void {
         // @ts-ignore
         callback(new ExtensionSidebarPane(id));
       }
-      extensionServer.sendRequest(request, callback && callbackWrapper);
+      extensionServer.sendRequest(
+          {command: PrivateAPI.Commands.CreateSidebarPane, panel: this._hostPanelName, id: id, title: title},
+          callback && callbackWrapper);
     },
 
     __proto__: ExtensionViewImpl.prototype,
@@ -480,70 +529,71 @@ self.injectedExtensionAPI = function(
 
   LanguageServicesAPIImpl.prototype = {
     registerLanguageExtensionPlugin: async function(
-        plugin: any, pluginName: string, supportedScriptTypes: PrivateAPI.SupportedScriptTypes): Promise<void> {
-      if (this._plugins.has(plugin)) {
-        throw new Error(`Tried to register plugin '${pluginName}' twice`);
-      }
-      const channel = new MessageChannel();
-      const port = channel.port1;
-      this._plugins.set(plugin, port);
-      port.onmessage = ({data: {requestId, method, parameters}}: MessageEvent<any>): void => {
-        console.time(`${requestId}: ${method}`);
-        dispatchMethodCall(method, parameters)
-            .then(result => port.postMessage({requestId, result}))
-            .catch(error => port.postMessage({requestId, error: {message: error.message}}))
-            .finally(() => console.timeEnd(`${requestId}: ${method}`));
-      };
+        plugin: any, pluginName: string, supportedScriptTypes: PublicAPI.Chrome.DevTools.SupportedScriptTypes):
+        Promise<void> {
+          if (this._plugins.has(plugin)) {
+            throw new Error(`Tried to register plugin '${pluginName}' twice`);
+          }
+          const channel = new MessageChannel();
+          const port = channel.port1;
+          this._plugins.set(plugin, port);
+          port.onmessage = ({data: {requestId, method, parameters}}: MessageEvent<any>): void => {
+            console.time(`${requestId}: ${method}`);
+            dispatchMethodCall(method, parameters)
+                .then(result => port.postMessage({requestId, result}))
+                .catch(error => port.postMessage({requestId, error: {message: error.message}}))
+                .finally(() => console.timeEnd(`${requestId}: ${method}`));
+          };
 
-      function dispatchMethodCall(method: string, parameters: any): Promise<any> {
-        switch (method) {
-          case PrivateAPI.LanguageExtensionPluginCommands.AddRawModule:
-            return plugin.addRawModule(parameters.rawModuleId, parameters.symbolsURL, parameters.rawModule);
-          case PrivateAPI.LanguageExtensionPluginCommands.RemoveRawModule:
-            return plugin.removeRawModule(parameters.rawModuleId);
-          case PrivateAPI.LanguageExtensionPluginCommands.SourceLocationToRawLocation:
-            return plugin.sourceLocationToRawLocation(parameters.sourceLocation);
-          case PrivateAPI.LanguageExtensionPluginCommands.RawLocationToSourceLocation:
-            return plugin.rawLocationToSourceLocation(parameters.rawLocation);
-          case PrivateAPI.LanguageExtensionPluginCommands.GetScopeInfo:
-            return plugin.getScopeInfo(parameters.type);
-          case PrivateAPI.LanguageExtensionPluginCommands.ListVariablesInScope:
-            return plugin.listVariablesInScope(parameters.rawLocation);
-          case PrivateAPI.LanguageExtensionPluginCommands.GetTypeInfo:
-            return plugin.getTypeInfo(parameters.expression, parameters.context);
-          case PrivateAPI.LanguageExtensionPluginCommands.GetFormatter:
-            return plugin.getFormatter(parameters.expressionOrField, parameters.context);
-          case PrivateAPI.LanguageExtensionPluginCommands.GetInspectableAddress:
-            if ('getInspectableAddress' in plugin) {
-              return plugin.getInspectableAddress(parameters.field);
+          function dispatchMethodCall(method: string, parameters: any): Promise<any> {
+            switch (method) {
+              case PrivateAPI.LanguageExtensionPluginCommands.AddRawModule:
+                return plugin.addRawModule(parameters.rawModuleId, parameters.symbolsURL, parameters.rawModule);
+              case PrivateAPI.LanguageExtensionPluginCommands.RemoveRawModule:
+                return plugin.removeRawModule(parameters.rawModuleId);
+              case PrivateAPI.LanguageExtensionPluginCommands.SourceLocationToRawLocation:
+                return plugin.sourceLocationToRawLocation(parameters.sourceLocation);
+              case PrivateAPI.LanguageExtensionPluginCommands.RawLocationToSourceLocation:
+                return plugin.rawLocationToSourceLocation(parameters.rawLocation);
+              case PrivateAPI.LanguageExtensionPluginCommands.GetScopeInfo:
+                return plugin.getScopeInfo(parameters.type);
+              case PrivateAPI.LanguageExtensionPluginCommands.ListVariablesInScope:
+                return plugin.listVariablesInScope(parameters.rawLocation);
+              case PrivateAPI.LanguageExtensionPluginCommands.GetTypeInfo:
+                return plugin.getTypeInfo(parameters.expression, parameters.context);
+              case PrivateAPI.LanguageExtensionPluginCommands.GetFormatter:
+                return plugin.getFormatter(parameters.expressionOrField, parameters.context);
+              case PrivateAPI.LanguageExtensionPluginCommands.GetInspectableAddress:
+                if ('getInspectableAddress' in plugin) {
+                  return plugin.getInspectableAddress(parameters.field);
+                }
+                return Promise.resolve({js: ''});
+              case PrivateAPI.LanguageExtensionPluginCommands.GetFunctionInfo:
+                return plugin.getFunctionInfo(parameters.rawLocation);
+              case PrivateAPI.LanguageExtensionPluginCommands.GetInlinedFunctionRanges:
+                return plugin.getInlinedFunctionRanges(parameters.rawLocation);
+              case PrivateAPI.LanguageExtensionPluginCommands.GetInlinedCalleesRanges:
+                return plugin.getInlinedCalleesRanges(parameters.rawLocation);
+              case PrivateAPI.LanguageExtensionPluginCommands.GetMappedLines:
+                if ('getMappedLines' in plugin) {
+                  return plugin.getMappedLines(parameters.rawModuleId, parameters.sourceFileURL);
+                }
+                return Promise.resolve(undefined);
             }
-            return Promise.resolve({js: ''});
-          case PrivateAPI.LanguageExtensionPluginCommands.GetFunctionInfo:
-            return plugin.getFunctionInfo(parameters.rawLocation);
-          case PrivateAPI.LanguageExtensionPluginCommands.GetInlinedFunctionRanges:
-            return plugin.getInlinedFunctionRanges(parameters.rawLocation);
-          case PrivateAPI.LanguageExtensionPluginCommands.GetInlinedCalleesRanges:
-            return plugin.getInlinedCalleesRanges(parameters.rawLocation);
-          case PrivateAPI.LanguageExtensionPluginCommands.GetMappedLines:
-            if ('getMappedLines' in plugin) {
-              return plugin.getMappedLines(parameters.rawModuleId, parameters.sourceFileURL);
-            }
-            return Promise.resolve(undefined);
-        }
-        throw new Error(`Unknown language plugin method ${method}`);
-      }
+            throw new Error(`Unknown language plugin method ${method}`);
+          }
 
-      await new Promise<void>(resolve => {
-        extensionServer.sendRequest(
-            {
-              command: PrivateAPI.Commands.RegisterLanguageExtensionPlugin,
-              pluginName,
-              port: channel.port2,
-              supportedScriptTypes,
-            },
-            () => resolve(), [channel.port2]);
-      });
-    },
+          await new Promise<void>(resolve => {
+            extensionServer.sendRequest(
+                {
+                  command: PrivateAPI.Commands.RegisterLanguageExtensionPlugin,
+                  pluginName,
+                  port: channel.port2,
+                  supportedScriptTypes,
+                },
+                () => resolve(), [channel.port2]);
+          });
+        },
 
     unregisterLanguageExtensionPlugin: async function(plugin: any): Promise<void> {
       const port = this._plugins.get(plugin);
@@ -556,17 +606,19 @@ self.injectedExtensionAPI = function(
     },
   };
 
-  function declareInterfaceClass(implConstructor: any): (...args: any[]) => void {
-    return function(this: any): void {
+  function declareInterfaceClass<ImplT extends APIImpl.Callable>(implConstructor: ImplT): (
+      this: ThisParameterType<ImplT>, ...args: Parameters<ImplT>) => void {
+    return function(this: ThisParameterType<ImplT>, ...args: Parameters<ImplT>): void {
       const impl = {__proto__: implConstructor.prototype};
-      implConstructor.apply(impl, arguments);
-      populateInterfaceClass(this, impl);
+      implConstructor.apply(impl, args);
+      populateInterfaceClass(this as {[key: string]: unknown}, impl);
     };
   }
 
-  function defineDeprecatedProperty(object: any, className: any, oldName: any, newName: any): void {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function defineDeprecatedProperty(object: any, className: string, oldName: string, newName: string): void {
     let warningGiven = false;
-    function getter(): any {
+    function getter(): unknown {
       if (!warningGiven) {
         console.warn(className + '.' + oldName + ' is deprecated. Use ' + className + '.' + newName + ' instead');
         warningGiven = true;
@@ -576,9 +628,9 @@ self.injectedExtensionAPI = function(
     object.__defineGetter__(oldName, getter);
   }
 
-  function extractCallbackArgument(args: any): any {
+  function extractCallbackArgument(args: IArguments): ((...args: unknown[]) => unknown)|undefined {
     const lastArgument = args[args.length - 1];
-    return typeof lastArgument === 'function' ? lastArgument : undefined;
+    return typeof lastArgument === 'function' ? lastArgument as (...args: unknown[]) => unknown : undefined;
   }
 
   const LanguageServicesAPI = declareInterfaceClass(LanguageServicesAPIImpl);
@@ -622,15 +674,14 @@ self.injectedExtensionAPI = function(
   ExtensionPanelImpl.prototype = {
     createStatusBarButton: function(iconPath: any, tooltipText: any, disabled: any): Object {
       const id = 'button-' + extensionServer.nextObjectId();
-      const request = {
+      extensionServer.sendRequest({
         command: PrivateAPI.Commands.CreateToolbarButton,
         panel: this._id,
         id: id,
         icon: iconPath,
         tooltip: tooltipText,
         disabled: Boolean(disabled),
-      };
-      extensionServer.sendRequest(request);
+      });
       // @ts-ignore
       return new Button(id);
     },
@@ -640,8 +691,7 @@ self.injectedExtensionAPI = function(
         return;
       }
 
-      const request = {command: PrivateAPI.Commands.ShowPanel, id: this._id};
-      extensionServer.sendRequest(request);
+      extensionServer.sendRequest({command: PrivateAPI.Commands.ShowPanel, id: this._id});
     },
 
     __proto__: ExtensionViewImpl.prototype,
@@ -661,18 +711,16 @@ self.injectedExtensionAPI = function(
     },
 
     setExpression: function(expression: any, rootTitle: any, evaluateOptions: any): void {
-      const request = {
-        command: PrivateAPI.Commands.SetSidebarContent,
-        id: this._id,
-        expression: expression,
-        rootTitle: rootTitle,
-        evaluateOnPage: true,
-        evaluateOptions: undefined,
-      };
-      if (typeof evaluateOptions === 'object') {
-        request.evaluateOptions = evaluateOptions;
-      }
-      extensionServer.sendRequest(request, extractCallbackArgument(arguments));
+      extensionServer.sendRequest(
+          {
+            command: PrivateAPI.Commands.SetSidebarContent,
+            id: this._id,
+            expression: expression,
+            rootTitle: rootTitle,
+            evaluateOnPage: true,
+            evaluateOptions: (typeof evaluateOptions === 'object' ? evaluateOptions : undefined),
+          },
+          extractCallbackArgument(arguments));
     },
 
     setObject: function(jsonObject: any, rootTitle: any, callback: any): void {
@@ -699,14 +747,13 @@ self.injectedExtensionAPI = function(
 
   ButtonImpl.prototype = {
     update: function(iconPath: any, tooltipText: any, disabled: any): void {
-      const request = {
+      extensionServer.sendRequest({
         command: PrivateAPI.Commands.UpdateButton,
         id: this._id,
         icon: iconPath,
         tooltip: tooltipText,
         disabled: Boolean(disabled),
-      };
-      extensionServer.sendRequest(request);
+      });
     },
   };
 
@@ -740,13 +787,12 @@ self.injectedExtensionAPI = function(
 
   TraceSessionImpl.prototype = {
     complete: function(url?: string, timeOffset?: number): void {
-      const request = {
+      extensionServer.sendRequest({
         command: PrivateAPI.Commands.CompleteTraceSession,
         id: this._id,
         url: url || '',
         timeOffset: timeOffset || 0,
-      };
-      extensionServer.sendRequest(request);
+      });
     },
   };
 
@@ -808,20 +854,18 @@ self.injectedExtensionAPI = function(
           const callback = extractCallbackArgument(arguments);
           function callbackWrapper(result: any): void {
             if (result.isError || result.isException) {
-              callback(undefined, result);
+              callback && callback(undefined, result);
             } else {
-              callback(result.value);
+              callback && callback(result.value);
             }
           }
-          const request = {
-            command: PrivateAPI.Commands.EvaluateOnInspectedPage,
-            expression: expression,
-            evaluateOptions: undefined,
-          };
-          if (typeof evaluateOptions === 'object') {
-            request.evaluateOptions = evaluateOptions;
-          }
-          extensionServer.sendRequest(request, callback && callbackWrapper);
+          extensionServer.sendRequest(
+              {
+                command: PrivateAPI.Commands.EvaluateOnInspectedPage,
+                expression: expression,
+                evaluateOptions: (typeof evaluateOptions === 'object' ? evaluateOptions : undefined),
+              },
+              callback && callbackWrapper);
           return null;
         },
 
@@ -874,9 +918,9 @@ self.injectedExtensionAPI = function(
     return inspectedTabId;
   }
 
-  let keyboardEventRequestQueue: any[] = [];
+  let keyboardEventRequestQueue: KeyboardEventInit&{eventType: string}[] = [];
   let forwardTimer: number|null = null;
-  function forwardKeyboardEvent(event: any): void {
+  function forwardKeyboardEvent(event: KeyboardEvent): void {
     // Check if the event should be forwarded.
     // This is a workaround for crbug.com/923338.
     const focused = document.activeElement;
@@ -912,6 +956,7 @@ self.injectedExtensionAPI = function(
       altKey: event.altKey,
       metaKey: event.metaKey,
       shiftKey: event.shiftKey,
+      // @ts-expect-error keyIdentifier is a deprecated non-standard property that typescript doesn't know about.
       keyIdentifier: event.keyIdentifier,
       key: event.key,
       code: event.code,
@@ -926,8 +971,8 @@ self.injectedExtensionAPI = function(
 
   function forwardEventQueue(): void {
     forwardTimer = null;
-    const request = {command: PrivateAPI.Commands.ForwardKeyboardEvent, entries: keyboardEventRequestQueue};
-    extensionServer.sendRequest(request);
+    extensionServer.sendRequest(
+        {command: PrivateAPI.Commands.ForwardKeyboardEvent, entries: keyboardEventRequestQueue});
     keyboardEventRequestQueue = [];
   }
 
@@ -936,7 +981,7 @@ self.injectedExtensionAPI = function(
   /**
    * @constructor
    */
-  function ExtensionServerClient(this: any): void {
+  function ExtensionServerClient(this: APIImpl.ExtensionServerClient): void {
     this._callbacks = {};
     this._handlers = {};
     this._lastRequestId = 0;
@@ -952,39 +997,45 @@ self.injectedExtensionAPI = function(
     window.parent.postMessage('registerExtension', '*', [channel.port2]);
   }
 
-  ExtensionServerClient.prototype = {
-    sendRequest: function(message: PrivateAPI.ServerRequests, callback?: (() => unknown), transfers?: Transferable[]):
-        void {
-          if (typeof callback === 'function') {
-            // @ts-ignore
-            message.requestId = this._registerCallback(callback);
-          }
-          this._port.postMessage(message, transfers);
-        },
+  (ExtensionServerClient.prototype as Pick<
+       APIImpl.ExtensionServerClient,
+       'sendRequest'|'hasHandler'|'registerHandler'|'unregisterHandler'|'nextObjectId'|'_registerCallback'|
+       '_onCallback'|'_onMessage'>) = {
+    sendRequest: function(
+        this: APIImpl.ExtensionServerClient, message: PrivateAPI.ServerRequests,
+        callback?: (response: unknown) => unknown, transfers?: Transferable[]): void {
+      if (typeof callback === 'function') {
+        (message as PrivateAPI.ExtensionServerRequestMessage).requestId = this._registerCallback(callback);
+      }
+      // @ts-expect-error
+      this._port.postMessage(message, transfers);
+    },
 
-    hasHandler: function(command: any): boolean {
+    hasHandler: function(this: APIImpl.ExtensionServerClient, command: string): boolean {
       return Boolean(this._handlers[command]);
     },
 
-    registerHandler: function(command: any, handler: any): void {
-      this._handlers[command] = handler;
-    },
+    registerHandler: function(
+        this: APIImpl.ExtensionServerClient, command: string, handler: (request: {arguments: unknown[]}) => unknown):
+        void {
+          this._handlers[command] = handler;
+        },
 
-    unregisterHandler: function(command: any): void {
+    unregisterHandler: function(this: APIImpl.ExtensionServerClient, command: string): void {
       delete this._handlers[command];
     },
 
-    nextObjectId: function(): string {
+    nextObjectId: function(this: APIImpl.ExtensionServerClient): string {
       return injectedScriptId.toString() + '_' + ++this._lastObjectId;
     },
 
-    _registerCallback: function(callback: any): number {
+    _registerCallback: function(this: APIImpl.ExtensionServerClient, callback: (response: unknown) => unknown): number {
       const id = ++this._lastRequestId;
       this._callbacks[id] = callback;
       return id;
     },
 
-    _onCallback: function(request: any): void {
+    _onCallback: function(this: APIImpl.ExtensionServerClient, request: {requestId: number, result: unknown}): void {
       if (request.requestId in this._callbacks) {
         const callback = this._callbacks[request.requestId];
         delete this._callbacks[request.requestId];
@@ -992,7 +1043,9 @@ self.injectedExtensionAPI = function(
       }
     },
 
-    _onMessage: function(event: any): void {
+    _onMessage: function(
+        this: APIImpl.ExtensionServerClient,
+        event: MessageEvent<{command: string, requestId: number, arguments: unknown[]}>): void {
       const request = event.data;
       const handler = this._handlers[request.command];
       if (handler) {
@@ -1001,14 +1054,14 @@ self.injectedExtensionAPI = function(
     },
   };
 
-  function populateInterfaceClass(interfaze: any, implementation: any): void {
+  function populateInterfaceClass(interfaze: {[key: string]: unknown}, implementation: {[key: string]: unknown}): void {
     for (const member in implementation) {
       if (member.charAt(0) === '_') {
         continue;
       }
       let descriptor: (PropertyDescriptor|undefined)|null = null;
       // Traverse prototype chain until we find the owner.
-      for (let owner = implementation; owner && !descriptor; owner = owner.__proto__) {
+      for (let owner = implementation; owner && !descriptor; owner = owner.__proto__ as {[key: string]: unknown}) {
         descriptor = Object.getOwnPropertyDescriptor(owner, member);
       }
       if (!descriptor) {
@@ -1017,6 +1070,7 @@ self.injectedExtensionAPI = function(
       if (typeof descriptor.value === 'function') {
         interfaze[member] = descriptor.value.bind(implementation);
       } else if (typeof descriptor.get === 'function') {
+        // @ts-expect-error
         interfaze.__defineGetter__(member, descriptor.get.bind(implementation));
       } else {
         Object.defineProperty(interfaze, member, descriptor);
@@ -1024,21 +1078,23 @@ self.injectedExtensionAPI = function(
     }
   }
 
-  // @ts-ignore
-  const extensionServer = new ExtensionServerClient();
-  // @ts-ignore
-  const coreAPI = new InspectorExtensionAPI();
+
+  const extensionServer = new (Constructor(ExtensionServerClient))();
+
+  const coreAPI = new (Constructor(InspectorExtensionAPI))();
 
   Object.defineProperty(chrome, 'devtools', {value: {}, enumerable: true});
 
   // Only expose tabId on chrome.devtools.inspectedWindow, not webInspector.inspectedWindow.
-  chrome.devtools.inspectedWindow = {};
-  Object.defineProperty(chrome.devtools.inspectedWindow, 'tabId', {get: getTabId});
-  chrome.devtools.inspectedWindow.__proto__ = coreAPI.inspectedWindow;
-  chrome.devtools.network = coreAPI.network;
-  chrome.devtools.panels = coreAPI.panels;
-  chrome.devtools.panels.themeName = themeName;
-  chrome.devtools.languageServices = coreAPI.languageServices;
+  // @ts-expect-error
+  chrome.devtools!.inspectedWindow = {};
+  Object.defineProperty(chrome.devtools!.inspectedWindow, 'tabId', {get: getTabId});
+  // @ts-expect-error
+  chrome.devtools!.inspectedWindow.__proto__ = coreAPI.inspectedWindow;
+  chrome.devtools!.network = coreAPI.network;
+  chrome.devtools!.panels = coreAPI.panels;
+  chrome.devtools!.panels.themeName = themeName;
+  chrome.devtools!.languageServices = coreAPI.languageServices;
 
   // default to expose experimental APIs for now.
   if (extensionInfo.exposeExperimentalAPIs !== false) {
@@ -1068,7 +1124,9 @@ self.buildExtensionAPIInjectedScript = function(
       exposeExperimentalAPIs: boolean,
     },
     inspectedTabId: string, themeName: string, keysToForward: number[],
-    testHook: ((extensionServer: Object, extensionAPI: Object) => any)|undefined): string {
+    testHook:
+        ((extensionServer: APIImpl.ExtensionServerClient, extensionAPI: APIImpl.InspectorExtensionAPI) => unknown)|
+    undefined): string {
   const argumentsJSON =
       [extensionInfo, inspectedTabId || null, themeName, keysToForward].map(_ => JSON.stringify(_)).join(',');
   if (!testHook) {

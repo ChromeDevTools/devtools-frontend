@@ -66,6 +66,13 @@
   color: var(--override-context-menu-hover-text-color);
 }
 
+.-theme-with-dark-background .soft-context-menu-item-mouse-over,
+:host-context(.-theme-with-dark-background) .soft-context-menu-item-mouse-over {
+  --override-dark-mode-focus-color: #1a73e8;
+
+  background-color: var(--override-dark-mode-focus-color);
+}
+
 :host:host-context(.platform-mac):host-context(html:not(.-theme-with-dark-background)) .soft-context-menu-item-mouse-over {
   --override-mac-specific-dark-background: linear-gradient(to right, hsl(214deg 81% 60%), hsl(214deg 100% 56%));
 

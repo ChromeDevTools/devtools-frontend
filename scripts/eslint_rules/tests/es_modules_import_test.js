@@ -63,7 +63,7 @@ ruleTester.run('es_modules_import', rule, {
     },
     // the `assertNotNull` helper from Platform is an exception
     {
-      code: 'import {assertNotNull} from \'../platform/platform.js\';',
+      code: 'import {assertNotNullOrUndefined} from \'../platform/platform.js\';',
       filename: 'front_end/elements/ElementsBreadcrumbs.ts',
     },
     // Importing test helpers directly is allowed in the test setup

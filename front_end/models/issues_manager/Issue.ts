@@ -26,8 +26,22 @@ export enum IssueCategory {
 
 // eslint-disable-next-line rulesdir/const_enum
 export enum IssueKind {
-  BreakingChange = 'BreakingChange',
+  /**
+   * Something is not working in the page right now. Issues of this kind need
+   * usually be fixed right away. They usually indicate that a Web API is being
+   * used in a wrong way, or that a network request was misconfigured.
+   */
   PageError = 'PageError',
+  /**
+   * The page is using a Web API or relying on browser behavior that is going
+   * to change in the future. If possible, the message associated with issues
+   * of this kind should include a time when the behavior is going to change.
+   */
+  BreakingChange = 'BreakingChange',
+  /**
+   * Anything that can be improved about the page, but isn't urgent and doesn't
+   * impair functionality in a major way.
+   */
   Improvement = 'Improvement',
 }
 

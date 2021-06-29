@@ -60,6 +60,7 @@ export class Linkifier extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     await coordinator.write(() => {
       // clang-format off
+      // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
       LitHtml.render(LitHtml.html`
         <style>
           .link:link,

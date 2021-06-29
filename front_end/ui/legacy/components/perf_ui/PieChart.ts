@@ -64,6 +64,7 @@ export class PieChart extends HTMLElement {
   private render(): void {
     this.lastAngle = -Math.PI / 2;
     // clang-format off
+    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
     const output = html`
       <style>
         .root {

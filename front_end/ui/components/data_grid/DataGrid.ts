@@ -742,6 +742,7 @@ export class DataGrid extends HTMLElement {
     await coordinator.write(() => {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
+      // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
       LitHtml.render(LitHtml.html`
       <style>
         :host {

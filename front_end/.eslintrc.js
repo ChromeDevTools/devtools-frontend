@@ -28,6 +28,7 @@ module.exports = {
         'rulesdir/lit_no_style_interpolation': 2,
         'rulesdir/ban_literal_devtools_component_tag_names': 2,
         'rulesdir/ban_self_closing_custom_element_tagnames': 2,
+        'rulesdir/ban_style_tags_in_lit_html': 2,
         'rulesdir/check_component_naming': 2,
         '@typescript-eslint/naming-convention': [
           'error', {

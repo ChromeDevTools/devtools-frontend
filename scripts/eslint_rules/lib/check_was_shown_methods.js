@@ -19,7 +19,7 @@ module.exports = {
     return {
       MethodDefinition(node) {
         const nodeName = node.key.name;
-        if (node.parent.parent.superClass.property?.name === 'Widget' && nodeName === 'wasShown') {
+        if (node.parent.parent.superClass?.property?.name === 'Widget' && nodeName === 'wasShown') {
           const topBodyNode = node.value.body.body[0];
           if (!(topBodyNode.type === 'ExpressionStatement' && topBodyNode.expression.type === 'CallExpression' &&
                 topBodyNode.expression.callee.object.type === 'Super' &&

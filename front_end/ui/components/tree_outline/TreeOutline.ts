@@ -445,6 +445,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     await coordinator.write('TreeOutline render', () => {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
+      // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
       LitHtml.render(LitHtml.html`
       <style>
         :host {

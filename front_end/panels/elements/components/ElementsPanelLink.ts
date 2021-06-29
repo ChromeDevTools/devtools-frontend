@@ -30,6 +30,7 @@ export class ElementsPanelLink extends HTMLElement {
 
   private render(): void {
     // clang-format off
+    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
       LitHtml.render(LitHtml.html`
       <style>
         .element-reveal-icon {

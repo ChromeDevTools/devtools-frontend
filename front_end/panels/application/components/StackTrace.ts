@@ -71,6 +71,7 @@ export class StackTrace extends HTMLElement {
     for (const item of this.stackTraceRows) {
       if (this.showHidden || (!item.ignoreListHide && !item.rowCountHide)) {
         if ('functionName' in item) {
+          // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
           expandableRows.push(LitHtml.html`
             <style>
               .stack-trace-row {
@@ -119,6 +120,7 @@ export class StackTrace extends HTMLElement {
     if (hiddenCallFramesCount) {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
+      // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
       expandableRows.push(LitHtml.html`
         <style>
           button.link {

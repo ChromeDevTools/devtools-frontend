@@ -90,6 +90,7 @@ export class StepView extends HTMLElement {
 
     const {type} = this.step;
     // clang-format off
+    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
     LitHtml.render(LitHtml.html`
     <style>
       .step {

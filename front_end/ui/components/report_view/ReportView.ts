@@ -45,6 +45,7 @@ export class Report extends HTMLElement {
   private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
+    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
     LitHtml.render(LitHtml.html`
       <style>
         :host {
@@ -95,6 +96,7 @@ export class ReportSectionHeader extends HTMLElement {
   private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
+    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
     LitHtml.render(LitHtml.html`
       <style>
         :host {
@@ -133,6 +135,7 @@ export class ReportSectionDivider extends HTMLElement {
   private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
+    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
     LitHtml.render(LitHtml.html`
       <style>
         :host {
@@ -161,6 +164,7 @@ export class ReportKey extends HTMLElement {
   private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
+    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
     LitHtml.render(LitHtml.html`
       <style>
         :host {
@@ -192,6 +196,7 @@ export class ReportValue extends HTMLElement {
   private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
+    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
     LitHtml.render(LitHtml.html`
       <style>
         :host {

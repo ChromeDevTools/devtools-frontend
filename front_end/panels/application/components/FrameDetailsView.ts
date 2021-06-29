@@ -305,6 +305,7 @@ export class FrameDetailsReportView extends HTMLElement {
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
+    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
     LitHtml.render(LitHtml.html`
       <style>
         .text-ellipsis {
@@ -482,6 +483,7 @@ export class FrameDetailsReportView extends HTMLElement {
         `;
       }));
 
+      // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
       return LitHtml.html`
         <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.disabledFeatures)}</${
           ReportView.ReportView.ReportKey.litTagName}>
@@ -677,6 +679,7 @@ export class FrameDetailsReportView extends HTMLElement {
       if (linkTargetDOMNode) {
         // Disabled until https://crbug.com/1079231 is fixed.
         // clang-format off
+        // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
         return LitHtml.html`
           <style>
             .button-icon-with-text {

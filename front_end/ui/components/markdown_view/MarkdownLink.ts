@@ -36,6 +36,7 @@ export class MarkdownLink extends HTMLElement {
 
   private render(): void {
     // clang-format off
+    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
     const output = LitHtml.html`
       <style>
         .devtools-link {

@@ -202,6 +202,7 @@ export class IssueCounter extends HTMLElement {
       leadingText: this.leadingText,
     };
     LitHtml.render(
+        // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
         LitHtml.html`
         <style>
             :host {

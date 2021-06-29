@@ -59,6 +59,7 @@ export class TrustTokensView extends HTMLElement {
 
   private render(): void {
     LitHtml.render(
+        // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
         LitHtml.html`
       <style>
         :host {
@@ -160,6 +161,7 @@ export class TrustTokensView extends HTMLElement {
 
   private deleteButtonRenderer(issuer: DataGrid.DataGridUtils.CellValue): LitHtml.TemplateResult {
     // clang-format off
+    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
     return LitHtml.html`
       <style>
         .delete-button {

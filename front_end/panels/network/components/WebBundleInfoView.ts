@@ -73,6 +73,7 @@ export class WebBundleInfoElement extends HTMLElement {
       };
     });
     render(
+        // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
         html`
       <style>
         :host {

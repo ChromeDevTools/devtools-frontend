@@ -54,6 +54,7 @@ export class MarkdownImage extends HTMLElement {
       return LitHtml.html``;
     }
     const {src, width = '100%', height = '100%'} = this.imageData;
+    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
     return LitHtml.html`
       <style>
         .markdown-image {

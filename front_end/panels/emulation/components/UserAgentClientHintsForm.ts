@@ -480,6 +480,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
       </button>
     ` :
                                                  LitHtml.html``;
+    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
     const output = LitHtml.html`
       <style>
         :host {

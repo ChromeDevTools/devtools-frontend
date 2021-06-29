@@ -89,6 +89,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
   private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
+    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
     render(html`
       <style>
         :host {

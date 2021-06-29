@@ -178,6 +178,7 @@ export class RequestLinkIcon extends HTMLElement {
   private render(): Promise<void> {
     return coordinator.write(() => {
       // clang-format off
+      // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
       LitHtml.render(LitHtml.html`
         <style>
           :host {

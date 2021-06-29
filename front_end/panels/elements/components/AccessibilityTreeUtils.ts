@@ -103,6 +103,7 @@ export function accessibilityNodeRenderer(node: AXTreeNode): LitHtml.TemplateRes
     nodeContent = unignoredNodeTemplate(axNode);
   }
 
+  // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
   return LitHtml.html`
       <style>
           .ax-readable-string {

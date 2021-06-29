@@ -370,6 +370,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       event.stopPropagation();
     };
     UI.Tooltip.Tooltip.install(memoryIcon, 'Reveal in Memory Inspector panel');
+    element.classList.add('object-value-with-memory-icon');
     element.appendChild(memoryIcon);
   }
 

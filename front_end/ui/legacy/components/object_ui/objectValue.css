@@ -52,10 +52,7 @@
   display: inline-block;
 }
 
-.object-value-arraybuffer,
-.object-value-dataview,
-.object-value-typedarray,
-.object-value-webassemblymemory {
+.object-value-with-memory-icon {
   display: inline-flex;
 }
 

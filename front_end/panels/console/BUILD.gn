@@ -9,6 +9,7 @@ import("../visibility.gni")
 
 generate_css("css_files") {
   sources = [
+    "consoleContextSelector.css",
     "consolePinPane.css",
     "consolePrompt.css",
     "consoleSidebar.css",
@@ -49,16 +50,6 @@ devtools_module("console") {
     "../../ui/legacy/components/utils:bundle",
     "../../ui/legacy/theme_support:bundle",
     "../console_counters:bundle",
-  ]
-}
-
-copy_to_gen("legacy_css") {
-  sources = [
-    "consoleContextSelector.css",
-    "consolePinPane.css",
-    "consolePrompt.css",
-    "consoleSidebar.css",
-    "consoleView.css",
   ]
 }
 

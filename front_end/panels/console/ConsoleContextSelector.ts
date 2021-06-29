@@ -10,6 +10,8 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import consoleContextSelectorStyles from './consoleContextSelector.css.js';
+
 const UIStrings = {
   /**
   *@description Title of toolbar item in console context selector of the console panel
@@ -206,7 +208,7 @@ export class ConsoleContextSelector implements SDK.TargetManager.SDKModelObserve
   createElementForItem(item: SDK.RuntimeModel.ExecutionContext): Element {
     const element = document.createElement('div');
     const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
-        element, {cssFile: 'panels/console/consoleContextSelector.css', delegatesFocus: undefined});
+        element, {cssFile: [consoleContextSelectorStyles], delegatesFocus: undefined});
     const title = shadowRoot.createChild('div', 'title');
     UI.UIUtils.createTextChild(title, Platform.StringUtilities.trimEndWithMaxLength(this.titleFor(item), 100));
     const subTitle = shadowRoot.createChild('div', 'subtitle');

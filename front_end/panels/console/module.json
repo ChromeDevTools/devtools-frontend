@@ -4,12 +4,5 @@
     "ui/legacy/components/data_grid",
     "ui/legacy/components/object_ui",
     "ui/legacy/components/text_editor"
-  ],
-    "resources": [
-    "consoleContextSelector.css",
-    "consolePinPane.css",
-    "consolePrompt.css",
-    "consoleSidebar.css",
-    "consoleView.css"
   ]
 }

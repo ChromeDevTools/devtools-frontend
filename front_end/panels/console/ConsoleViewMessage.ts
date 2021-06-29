@@ -1681,9 +1681,18 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     }
     const container = document.createDocumentFragment();
     const tokens = ConsoleViewMessage._tokenizeMessageText(string);
+    let isBlob = false;
     for (const token of tokens) {
       if (!token.text) {
         continue;
+      }
+      if (isBlob) {
+        token.text = `blob:${token.text}`;
+        isBlob = !isBlob;
+      }
+      if (token.text === '\'blob:' && token === tokens[0]) {
+        isBlob = true;
+        token.text = '\'';
       }
       switch (token.type) {
         case 'url': {

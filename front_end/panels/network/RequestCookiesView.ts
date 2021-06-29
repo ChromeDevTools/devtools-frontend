@@ -275,6 +275,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
   }
 
   wasShown(): void {
+    super.wasShown();
     this._request.addEventListener(
         SDK.NetworkRequest.Events.RequestHeadersChanged, this._refreshRequestCookiesView, this);
     this._request.addEventListener(

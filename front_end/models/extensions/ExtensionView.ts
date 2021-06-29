@@ -61,6 +61,7 @@ export class ExtensionView extends UI.Widget.Widget {
   }
 
   wasShown(): void {
+    super.wasShown();
     if (typeof this._frameIndex === 'number') {
       this._server.notifyViewShown(this._id, this._frameIndex);
     }

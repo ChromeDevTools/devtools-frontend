@@ -99,6 +99,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
   }
 
   wasShown(): void {
+    super.wasShown();
     this._update();
   }
 

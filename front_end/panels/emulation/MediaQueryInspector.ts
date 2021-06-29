@@ -267,6 +267,7 @@ export class MediaQueryInspector extends UI.Widget.Widget implements
   }
 
   wasShown(): void {
+    super.wasShown();
     this._scheduleMediaQueriesUpdate();
   }
 

@@ -56,6 +56,13 @@ ruleTester.run('check_was_shown_methods', rule, {
       `,
       filename: 'front_end/components/test.ts'
     },
+    {
+      code: `
+      export class CharacterIdMap<T> {
+      }
+      `,
+      filename: 'front_end/components/test.ts'
+    },
   ],
   invalid: [
     {

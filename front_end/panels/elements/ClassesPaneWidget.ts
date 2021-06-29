@@ -152,6 +152,7 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
   }
 
   wasShown(): void {
+    super.wasShown();
     this._update();
   }
 

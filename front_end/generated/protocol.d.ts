@@ -1082,6 +1082,12 @@ declare namespace Protocol {
     }
 
     /**
+     * A unique id for a DevTools inspector issue. Allows other entities (e.g.
+     * exceptions, CDP message, console messages, etc.) to reference an issue.
+     */
+    export type IssueId = string;
+
+    /**
      * An inspector issue reported from the back-end.
      */
     export interface InspectorIssue {
@@ -1091,7 +1097,7 @@ declare namespace Protocol {
        * A unique id for this issue. May be omitted if no other entity (e.g.
        * exception, CDP message, etc.) is referencing this issue.
        */
-      issueId?: string;
+      issueId?: IssueId;
     }
 
     export const enum GetEncodedResponseRequestEncoding {
@@ -1754,7 +1760,9 @@ declare namespace Protocol {
        */
       frameId: Page.FrameId;
       /**
-       * Stylesheet resource URL.
+       * Stylesheet resource URL. Empty if this is a constructed stylesheet created using
+       * new CSSStyleSheet() (but non-empty if this is a constructed sylesheet imported
+       * as a CSS module script).
        */
       sourceURL: string;
       /**
@@ -1794,7 +1802,8 @@ declare namespace Protocol {
        */
       isMutable: boolean;
       /**
-       * Whether this stylesheet is a constructed stylesheet (created using new CSSStyleSheet()).
+       * True if this stylesheet is created through new CSSStyleSheet() or imported as a
+       * CSS module script.
        */
       isConstructed: boolean;
       /**
@@ -2086,6 +2095,10 @@ declare namespace Protocol {
        * Identifier of the stylesheet containing this object (if exists).
        */
       styleSheetId?: StyleSheetId;
+      /**
+       * Optional name for the container.
+       */
+      name?: string;
     }
 
     /**
@@ -3741,6 +3754,18 @@ declare namespace Protocol {
       backendNodeId: BackendNodeId;
       /**
        * Id of the node at given coordinates, only when enabled and requested document.
+       */
+      nodeId?: NodeId;
+    }
+
+    export interface GetContainerForNodeRequest {
+      nodeId: NodeId;
+      containerName?: string;
+    }
+
+    export interface GetContainerForNodeResponse extends ProtocolResponseWithError {
+      /**
+       * The container node for the given node, or null if not found.
        */
       nodeId?: NodeId;
     }
@@ -9612,6 +9637,7 @@ declare namespace Protocol {
       ChRtt = 'ch-rtt',
       ChUa = 'ch-ua',
       ChUaArch = 'ch-ua-arch',
+      ChUaBitness = 'ch-ua-bitness',
       ChUaPlatform = 'ch-ua-platform',
       ChUaModel = 'ch-ua-model',
       ChUaMobile = 'ch-ua-mobile',
@@ -10257,20 +10283,14 @@ declare namespace Protocol {
       BrowsingInstanceNotSwapped = 'BrowsingInstanceNotSwapped',
       BackForwardCacheDisabledForDelegate = 'BackForwardCacheDisabledForDelegate',
       OptInUnloadHeaderNotPresent = 'OptInUnloadHeaderNotPresent',
-      UnloadHandlerExistsInMainFrame = 'UnloadHandlerExistsInMainFrame',
       UnloadHandlerExistsInSubFrame = 'UnloadHandlerExistsInSubFrame',
+      ServiceWorkerUnregistration = 'ServiceWorkerUnregistration',
       WebSocket = 'WebSocket',
       WebRTC = 'WebRTC',
       MainResourceHasCacheControlNoStore = 'MainResourceHasCacheControlNoStore',
       MainResourceHasCacheControlNoCache = 'MainResourceHasCacheControlNoCache',
       SubresourceHasCacheControlNoStore = 'SubresourceHasCacheControlNoStore',
       SubresourceHasCacheControlNoCache = 'SubresourceHasCacheControlNoCache',
-      PageShowEventListener = 'PageShowEventListener',
-      PageHideEventListener = 'PageHideEventListener',
-      BeforeUnloadEventListener = 'BeforeUnloadEventListener',
-      UnloadEventListener = 'UnloadEventListener',
-      FreezeEventListener = 'FreezeEventListener',
-      ResumeEventListener = 'ResumeEventListener',
       ContainsPlugins = 'ContainsPlugins',
       DocumentLoaded = 'DocumentLoaded',
       DedicatedWorkerOrWorklet = 'DedicatedWorkerOrWorklet',
@@ -10369,6 +10389,7 @@ declare namespace Protocol {
     export const enum CaptureScreenshotRequestFormat {
       Jpeg = 'jpeg',
       Png = 'png',
+      Webp = 'webp',
     }
 
     export interface CaptureScreenshotRequest {

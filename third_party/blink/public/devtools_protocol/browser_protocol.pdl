@@ -793,6 +793,10 @@ experimental domain Audits
       optional QuirksModeIssueDetails quirksModeIssueDetails
       optional NavigatorUserAgentIssueDetails navigatorUserAgentIssueDetails
 
+  # A unique id for a DevTools inspector issue. Allows other entities (e.g.
+  # exceptions, CDP message, console messages, etc.) to reference an issue.
+  type IssueId extends string
+
   # An inspector issue reported from the back-end.
   type InspectorIssue extends object
     properties
@@ -800,7 +804,7 @@ experimental domain Audits
       InspectorIssueDetails details
       # A unique id for this issue. May be omitted if no other entity (e.g.
       # exception, CDP message, etc.) is referencing this issue.
-      optional string issueId
+      optional IssueId issueId
 
   # Returns the response body and size if it were re-encoded with the specified settings. Only
   # applies to images.
@@ -1265,7 +1269,9 @@ experimental domain CSS
       StyleSheetId styleSheetId
       # Owner frame identifier.
       Page.FrameId frameId
-      # Stylesheet resource URL.
+      # Stylesheet resource URL. Empty if this is a constructed stylesheet created using
+      # new CSSStyleSheet() (but non-empty if this is a constructed sylesheet imported
+      # as a CSS module script).
       string sourceURL
       # URL of source map associated with the stylesheet (if any).
       optional string sourceMapURL
@@ -1287,7 +1293,8 @@ experimental domain CSS
       # <link> element's stylesheets become mutable only if DevTools modifies them.
       # Constructed stylesheets (new CSSStyleSheet()) are mutable immediately after creation.
       boolean isMutable
-      # Whether this stylesheet is a constructed stylesheet (created using new CSSStyleSheet()).
+      # True if this stylesheet is created through new CSSStyleSheet() or imported as a
+      # CSS module script.
       boolean isConstructed
       # Line offset of the stylesheet within the resource (zero based).
       number startLine
@@ -1451,6 +1458,8 @@ experimental domain CSS
       optional SourceRange range
       # Identifier of the stylesheet containing this object (if exists).
       optional StyleSheetId styleSheetId
+      # Optional name for the container.
+      optional string name
 
   # Information about amount of glyphs that were rendered with given font.
   type PlatformFontUsage extends object
@@ -2603,6 +2612,17 @@ domain DOM
       # Resulting node.
       BackendNodeId backendNodeId
       # Id of the node at given coordinates, only when enabled and requested document.
+      optional NodeId nodeId
+
+  # Returns the container of the given node based on container query conditions.
+  # If containerName is given, it will find the nearest container with a matching name;
+  # otherwise it will find the nearest container regardless of its container name.
+  experimental command getContainerForNode
+    parameters
+      NodeId nodeId
+      optional string containerName
+    returns
+      # The container node for the given node, or null if not found.
       optional NodeId nodeId
 
   # Fired when `Element`'s attribute is modified.
@@ -6546,6 +6566,7 @@ domain Page
       ch-rtt
       ch-ua
       ch-ua-arch
+      ch-ua-bitness
       ch-ua-platform
       ch-ua-model
       ch-ua-mobile
@@ -6971,6 +6992,7 @@ domain Page
       optional enum format
         jpeg
         png
+        webp
       # Compression quality from range [0..100] (jpeg only).
       optional integer quality
       # Capture the screenshot of a given region only.
@@ -7684,21 +7706,15 @@ domain Page
       BrowsingInstanceNotSwapped
       BackForwardCacheDisabledForDelegate
       OptInUnloadHeaderNotPresent
-      UnloadHandlerExistsInMainFrame
       UnloadHandlerExistsInSubFrame
-      # Blocklisted features
+      ServiceWorkerUnregistration
+      #Blocklisted features
       WebSocket
       WebRTC
       MainResourceHasCacheControlNoStore
       MainResourceHasCacheControlNoCache
       SubresourceHasCacheControlNoStore
       SubresourceHasCacheControlNoCache
-      PageShowEventListener
-      PageHideEventListener
-      BeforeUnloadEventListener
-      UnloadEventListener
-      FreezeEventListener
-      ResumeEventListener
       ContainsPlugins
       DocumentLoaded
       DedicatedWorkerOrWorklet

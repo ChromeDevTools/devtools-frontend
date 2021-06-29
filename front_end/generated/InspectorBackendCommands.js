@@ -828,6 +828,13 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand('DOM.undo', [], []);
   inspectorBackend.registerCommand(
       'DOM.getFrameOwner', [{'name': 'frameId', 'type': 'string', 'optional': false}], ['backendNodeId', 'nodeId']);
+  inspectorBackend.registerCommand(
+      'DOM.getContainerForNode',
+      [
+        {'name': 'nodeId', 'type': 'number', 'optional': false},
+        {'name': 'containerName', 'type': 'string', 'optional': true}
+      ],
+      ['nodeId']);
 
   // DOMDebugger.
   inspectorBackend.registerEnum(
@@ -1910,6 +1917,7 @@ export function registerCommands(inspectorBackend) {
     ChRtt: 'ch-rtt',
     ChUa: 'ch-ua',
     ChUaArch: 'ch-ua-arch',
+    ChUaBitness: 'ch-ua-bitness',
     ChUaPlatform: 'ch-ua-platform',
     ChUaModel: 'ch-ua-model',
     ChUaMobile: 'ch-ua-mobile',
@@ -2063,20 +2071,14 @@ export function registerCommands(inspectorBackend) {
     BrowsingInstanceNotSwapped: 'BrowsingInstanceNotSwapped',
     BackForwardCacheDisabledForDelegate: 'BackForwardCacheDisabledForDelegate',
     OptInUnloadHeaderNotPresent: 'OptInUnloadHeaderNotPresent',
-    UnloadHandlerExistsInMainFrame: 'UnloadHandlerExistsInMainFrame',
     UnloadHandlerExistsInSubFrame: 'UnloadHandlerExistsInSubFrame',
+    ServiceWorkerUnregistration: 'ServiceWorkerUnregistration',
     WebSocket: 'WebSocket',
     WebRTC: 'WebRTC',
     MainResourceHasCacheControlNoStore: 'MainResourceHasCacheControlNoStore',
     MainResourceHasCacheControlNoCache: 'MainResourceHasCacheControlNoCache',
     SubresourceHasCacheControlNoStore: 'SubresourceHasCacheControlNoStore',
     SubresourceHasCacheControlNoCache: 'SubresourceHasCacheControlNoCache',
-    PageShowEventListener: 'PageShowEventListener',
-    PageHideEventListener: 'PageHideEventListener',
-    BeforeUnloadEventListener: 'BeforeUnloadEventListener',
-    UnloadEventListener: 'UnloadEventListener',
-    FreezeEventListener: 'FreezeEventListener',
-    ResumeEventListener: 'ResumeEventListener',
     ContainsPlugins: 'ContainsPlugins',
     DocumentLoaded: 'DocumentLoaded',
     DedicatedWorkerOrWorklet: 'DedicatedWorkerOrWorklet',
@@ -2165,7 +2167,7 @@ export function registerCommands(inspectorBackend) {
       ],
       ['identifier']);
   inspectorBackend.registerCommand('Page.bringToFront', [], []);
-  inspectorBackend.registerEnum('Page.CaptureScreenshotRequestFormat', {Jpeg: 'jpeg', Png: 'png'});
+  inspectorBackend.registerEnum('Page.CaptureScreenshotRequestFormat', {Jpeg: 'jpeg', Png: 'png', Webp: 'webp'});
   inspectorBackend.registerCommand(
       'Page.captureScreenshot',
       [

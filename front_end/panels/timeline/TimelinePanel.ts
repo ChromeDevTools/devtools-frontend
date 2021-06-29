@@ -535,7 +535,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, this._updateShowSettingsToolbarButton,
         this);
-    MobileThrottling.ThrottlingManager.throttlingManager().addEventListener(
+    SDK.CPUThrottlingManager.CPUThrottlingManager.instance().addEventListener(
         MobileThrottling.ThrottlingManager.Events.RateChanged, this._updateShowSettingsToolbarButton, this);
     this._disableCaptureJSProfileSetting.addChangeListener(this._updateShowSettingsToolbarButton, this);
     this._captureLayersAndPicturesSetting.addChangeListener(this._updateShowSettingsToolbarButton, this);
@@ -732,7 +732,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   _updateShowSettingsToolbarButton(): void {
     const messages: string[] = [];
-    if (MobileThrottling.ThrottlingManager.throttlingManager().cpuThrottlingRate() !== 1) {
+    if (SDK.CPUThrottlingManager.CPUThrottlingManager.instance().cpuThrottlingRate() !== 1) {
       messages.push(i18nString(UIStrings.CpuThrottlingIsEnabled));
     }
     if (SDK.NetworkManager.MultitargetNetworkManager.instance().isThrottling()) {

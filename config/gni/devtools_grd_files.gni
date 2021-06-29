@@ -561,6 +561,7 @@ grd_files_debug_sources = [
   "front_end/core/sdk/AccessibilityModel.js",
   "front_end/core/sdk/CPUProfileDataModel.js",
   "front_end/core/sdk/CPUProfilerModel.js",
+  "front_end/core/sdk/CPUThrottlingManager.js",
   "front_end/core/sdk/CSSContainerQuery.js",
   "front_end/core/sdk/CSSFontFace.js",
   "front_end/core/sdk/CSSMatchedStyles.js",

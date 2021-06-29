@@ -14,7 +14,7 @@ import {MobileThrottlingSelector} from './MobileThrottlingSelector.js';
 import {NetworkThrottlingSelector} from './NetworkThrottlingSelector.js';
 
 import type {Conditions, ConditionsList, MobileThrottlingConditionsGroup, NetworkThrottlingConditionsGroup} from './ThrottlingPresets.js';
-import {CPUThrottlingRates, ThrottlingPresets} from './ThrottlingPresets.js';
+import {ThrottlingPresets} from './ThrottlingPresets.js';
 
 const UIStrings = {
   /**
@@ -66,18 +66,16 @@ const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/ThrottlingMan
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let throttlingManagerInstance: ThrottlingManager;
 
-export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper implements
-    SDK.TargetManager.SDKModelObserver<SDK.EmulationModel.EmulationModel> {
-  _cpuThrottlingRate: number;
+export class ThrottlingManager {
   _cpuThrottlingControls: Set<UI.Toolbar.ToolbarComboBox>;
   _cpuThrottlingRates: number[];
   _customNetworkConditionsSetting: Common.Settings.Setting<SDK.NetworkManager.Conditions[]>;
   _currentNetworkThrottlingConditionsSetting: Common.Settings.Setting<SDK.NetworkManager.Conditions>;
   _lastNetworkThrottlingConditions!: SDK.NetworkManager.Conditions;
+  _cpuThrottlingManager: SDK.CPUThrottlingManager.CPUThrottlingManager;
 
   private constructor() {
-    super();
-    this._cpuThrottlingRate = CPUThrottlingRates.NoThrottling;
+    this._cpuThrottlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
     this._cpuThrottlingControls = new Set();
     this._cpuThrottlingRates = ThrottlingPresets.cpuThrottlingPresets;
     this._customNetworkConditionsSetting = Common.Settings.Settings.instance().moduleSetting('customNetworkConditions');
@@ -98,7 +96,6 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper implem
           this._currentNetworkThrottlingConditionsSetting.get());
     }
 
-    SDK.TargetManager.TargetManager.instance().observeModels(SDK.EmulationModel.EmulationModel, this);
   }
 
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): ThrottlingManager {
@@ -236,36 +233,19 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper implem
     }
   }
 
-  cpuThrottlingRate(): number {
-    return this._cpuThrottlingRate;
-  }
-
   setCPUThrottlingRate(rate: number): void {
-    this._cpuThrottlingRate = rate;
-    for (const emulationModel of SDK.TargetManager.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
-      emulationModel.setCPUThrottlingRate(this._cpuThrottlingRate);
-    }
+    this._cpuThrottlingManager.setCPUThrottlingRate(rate);
     let icon: UI.Icon.Icon|null = null;
-    if (this._cpuThrottlingRate !== CPUThrottlingRates.NoThrottling) {
+    if (rate !== SDK.CPUThrottlingManager.CPUThrottlingRates.NoThrottling) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.CpuThrottlingEnabled);
       icon = UI.Icon.Icon.create('smallicon-warning');
       UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.cpuThrottlingIsEnabled));
     }
-    const index = this._cpuThrottlingRates.indexOf(this._cpuThrottlingRate);
+    const index = this._cpuThrottlingRates.indexOf(rate);
     for (const control of this._cpuThrottlingControls) {
       control.setSelectedIndex(index);
     }
     UI.InspectorView.InspectorView.instance().setPanelIcon('timeline', icon);
-    this.dispatchEventToListeners(Events.RateChanged, this._cpuThrottlingRate);
-  }
-
-  modelAdded(emulationModel: SDK.EmulationModel.EmulationModel): void {
-    if (this._cpuThrottlingRate !== CPUThrottlingRates.NoThrottling) {
-      emulationModel.setCPUThrottlingRate(this._cpuThrottlingRate);
-    }
-  }
-
-  modelRemoved(_emulationModel: SDK.EmulationModel.EmulationModel): void {
   }
 
   createCPUThrottlingSelector(): UI.Toolbar.ToolbarComboBox {
@@ -273,7 +253,7 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper implem
         event => this.setCPUThrottlingRate(this._cpuThrottlingRates[(event.target as HTMLSelectElement).selectedIndex]),
         i18nString(UIStrings.cpuThrottling));
     this._cpuThrottlingControls.add(control);
-    const currentRate = this._cpuThrottlingRate;
+    const currentRate = this._cpuThrottlingManager.cpuThrottlingRate();
 
     for (let i = 0; i < this._cpuThrottlingRates.length; ++i) {
       const rate = this._cpuThrottlingRates[i];

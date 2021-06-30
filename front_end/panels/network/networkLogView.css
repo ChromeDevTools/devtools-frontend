@@ -244,13 +244,17 @@
   height: 18px;
 }
 
-.network-log-grid.data-grid .image-network-icon-preview {
-  position: absolute;
-  margin: auto;
+.image-network-icon-preview {
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
+  margin: auto;
+  border: 1px solid var(--color-details-hairline);
+}
+
+.network-log-grid.data-grid .image-network-icon-preview {
+  position: absolute;
   max-width: 18px;
   max-height: 21px;
   min-width: 1px;
@@ -258,8 +262,6 @@
 }
 
 .network-log-grid.data-grid.small .image-network-icon-preview {
-  top: 2px;
-  bottom: 1px;
   left: 3px;
   right: 3px;
   max-width: 8px;

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import type { puppeteer} from '../../shared/helper.js';
+import type {puppeteer} from '../../shared/helper.js';
 import {$$, assertNotNull, click, getBrowserAndPages, goToResource, step, waitFor, waitForElementsWithTextContent, waitForElementWithTextContent, waitForFunction, waitForNoElementsWithTextContent} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {changeAllocationSampleViewViaDropdown, changeViewViaDropdown, findSearchResult, getDataGridRows, navigateToMemoryTab, setSearchFilter, takeAllocationProfile, takeAllocationTimelineProfile, takeHeapSnapshot, waitForNonEmptyHeapSnapshotData, waitForRetainerChain, waitForSearchResultNumber, waitUntilRetainerChainSatisfies} from '../helpers/memory-helpers.js';
@@ -104,18 +104,30 @@ describe('The Memory Panel', async function() {
     await setSearchFilter('Pending activities');
     // Here and below we have to wait until the elements are actually created
     // and visible.
-    const [pendingActivitiesObject] = await waitForFunction(async () => {
+    const [pendingActivitiesSpan] = await waitForFunction(async () => {
       const elements = await frontend.$x('//span[text()="Pending activities"]');
       return elements.length > 0 ? elements : undefined;
     });
-    click(pendingActivitiesObject);
+    const [pendingActiviesRow] = await pendingActivitiesSpan.$x('ancestor-or-self::tr');
     await waitForFunction(async () => {
-      await frontend.keyboard.press('ArrowRight');
-      const elements = await pendingActivitiesObject.$x('//span[text()="InternalNode"]');
-      return elements.length === 1;
+      await click(pendingActivitiesSpan);
+      const res = await pendingActiviesRow.evaluate(x => x.classList.toString());
+      return res.includes('selected');
     });
+    await frontend.keyboard.press('ArrowRight');
+    const [internalNodeSpan] = await waitForFunction(async () => {
+      const elements = await frontend.$x(
+          '//span[text()="InternalNode"][ancestor-or-self::tr[preceding-sibling::*[1][//span[text()="Pending activities"]]]]');
+      return elements.length === 1 ? elements : undefined;
+    });
+    const [internalNodeRow] = await internalNodeSpan.$x('ancestor-or-self::tr');
     await waitForFunction(async () => {
-      await frontend.keyboard.press('ArrowRight');
+      await click(internalNodeSpan);
+      const res = await internalNodeRow.evaluate(x => x.classList.toString());
+      return res.includes('selected');
+    });
+    await frontend.keyboard.press('ArrowRight');
+    await waitForFunction(async () => {
       const pendingActiviesChildren = await waitForElementsWithTextContent('MediaQueryList');
       return pendingActiviesChildren.length === 2;
     });
@@ -198,7 +210,8 @@ describe('The Memory Panel', async function() {
     // Now we want to get the two rows below the "shared in leaking()" row and assert on them.
     // Unfortunately they are not structured in the data-grid as children, despite being children in the UI
     // So the best way to get at them is to grab the two subsequent siblings of the "shared in leaking()" row.
-    const nextRow = await sharedInLeakingElementRow.evaluateHandle<puppeteer.ElementHandle<HTMLElement>>(e => e.nextSibling);
+    const nextRow =
+        await sharedInLeakingElementRow.evaluateHandle<puppeteer.ElementHandle<HTMLElement>>(e => e.nextSibling);
     if (!nextRow) {
       assert.fail('Could not find row below "shared in leaking()" row');
     }

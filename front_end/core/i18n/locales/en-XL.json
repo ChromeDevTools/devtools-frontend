@@ -422,9 +422,6 @@
   "core/sdk/NetworkManager.ts | requestWasBlockedByDevtoolsS": {
     "message": "R̂éq̂úêśt̂ ẃâś b̂ĺôćk̂éd̂ b́ŷ D́êv́T̂óôĺŝ: \"{PH1}\""
   },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Ŝét̂-Ćôók̂íê h́êád̂ér̂ íŝ íĝńôŕêd́ îń r̂éŝṕôńŝé f̂ŕôḿ ûŕl̂: {PH1}. Ćôók̂íê ĺêńĝt́ĥ śĥóûĺd̂ b́ê ĺêśŝ t́ĥán̂ ór̂ éq̂úâĺ t̂ó 4096 ĉh́âŕâćt̂ér̂ś."
-  },
   "core/sdk/NetworkManager.ts | sFailedLoadingSS": {
     "message": "{PH1} f̂áîĺêd́ l̂óâd́îńĝ: {PH2} \"{PH3}\"."
   },
@@ -493,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "T̂h́îś ĉóôḱîé ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê ít̂ h́âd́ t̂h́ê \"Secure\" át̂t́r̂íb̂út̂é âńd̂ t́ĥé ĉón̂ńêćt̂íôń ŵáŝ ńôt́ ŝéĉúr̂é."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "Ŝét̂-Ćôók̂íê h́êád̂ér̂ íŝ íĝńôŕêd́ îń r̂éŝṕôńŝé f̂ŕôḿ ûŕl̂: {PH1}. Ćôók̂íê ĺêńĝt́ĥ śĥóûĺd̂ b́ê ĺêśŝ t́ĥán̂ ór̂ éq̂úâĺ t̂ó 4096 ĉh́âŕâćt̂ér̂ś."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "T̂h́ê śĉh́êḿê óf̂ t́ĥíŝ ćôńn̂éĉt́îón̂ íŝ ńôt́ âĺl̂óŵéd̂ t́ô śt̂ór̂é ĉóôḱîéŝ."

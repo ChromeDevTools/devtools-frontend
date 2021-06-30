@@ -81,12 +81,6 @@ const UIStrings = {
   *@description Text in Network Manager
   *@example {https://example.com} PH1
   */
-  setcookieHeaderIsIgnoredIn:
-      'Set-Cookie header is ignored in response from url: {PH1}. Cookie length should be less than or equal to 4096 characters.',
-  /**
-  *@description Text in Network Manager
-  *@example {https://example.com} PH1
-  */
   requestWasBlockedByDevtoolsS: 'Request was blocked by DevTools: "{PH1}"',
   /**
   *@description Text in Network Manager
@@ -607,19 +601,6 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
 
     networkRequest.responseReceivedTime = timestamp;
     networkRequest.setResourceType(Common.ResourceType.resourceTypes[type]);
-
-    // net::ParsedCookie::kMaxCookieSize = 4096 (net/cookies/parsed_cookie.h)
-    if ('set-cookie' in lowercaseHeaders && lowercaseHeaders['set-cookie'].length > 4096) {
-      const values = lowercaseHeaders['set-cookie'].split('\n');
-      for (let i = 0; i < values.length; ++i) {
-        if (values[i].length <= 4096) {
-          continue;
-        }
-        const message = i18nString(UIStrings.setcookieHeaderIsIgnoredIn, {PH1: response.url});
-        this._manager.dispatchEventToListeners(
-            Events.MessageGenerated, {message: message, requestId: requestId, warning: true});
-      }
-    }
 
     this._updateNetworkRequestWithResponse(networkRequest, response);
 

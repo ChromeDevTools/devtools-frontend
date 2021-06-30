@@ -422,9 +422,6 @@
   "core/sdk/NetworkManager.ts | requestWasBlockedByDevtoolsS": {
     "message": "Request was blocked by DevTools: \"{PH1}\""
   },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Set-Cookie header is ignored in response from url: {PH1}. Cookie length should be less than or equal to 4096 characters."
-  },
   "core/sdk/NetworkManager.ts | sFailedLoadingSS": {
     "message": "{PH1} failed loading: {PH2} \"{PH3}\"."
   },
@@ -493,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "This cookie was blocked because it had the \"Secure\" attribute and the connection was not secure."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "Set-Cookie header is ignored in response from url: {PH1}. Cookie length should be less than or equal to 4096 characters."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "The scheme of this connection is not allowed to store cookies."

@@ -350,8 +350,12 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
           .then(result => {
             if ('object' in result) {
               this._createWatchExpression(result.object, result.exceptionDetails);
+            } else {
+              this._createWatchExpression();
             }
           });
+    } else {
+      this._createWatchExpression();
     }
   }
 

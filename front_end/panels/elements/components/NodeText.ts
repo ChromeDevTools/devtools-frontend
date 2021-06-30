@@ -14,7 +14,7 @@ export interface NodeTextData {
 }
 
 export class NodeText extends HTMLElement {
-  static litTagName = LitHtml.literal`devtools-node-text`;
+  static readonly litTagName = LitHtml.literal`devtools-node-text`;
 
   private readonly shadow = this.attachShadow({mode: 'open'});
   private nodeTitle: string = '';

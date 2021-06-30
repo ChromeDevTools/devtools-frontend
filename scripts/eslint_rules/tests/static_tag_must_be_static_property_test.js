@@ -13,7 +13,7 @@ ruleTester.run('static_tag_must_be_static_property', rule, {
   valid: [
     {
       code: `class Foo extends HTMLElement {
-        static litTagName = LitHtml.literal\`foo-bar\`;
+        static readonly litTagName = LitHtml.literal\`foo-bar\`;
       };
 
       LitHtml.html\`<\${Foo.litTagName}></\${Foo.litTagName}>\`
@@ -22,7 +22,7 @@ ruleTester.run('static_tag_must_be_static_property', rule, {
     },
     {
       code: `class Foo extends HTMLElement {
-        static litTagName = LitHtml.literal\`foo-bar\`;
+        static readonly litTagName = LitHtml.literal\`foo-bar\`;
       };
 
       LitHtml.html\`<\${Foo.litTagName}><p>\${someValue}</p></\${Foo.litTagName}>\`
@@ -38,7 +38,7 @@ ruleTester.run('static_tag_must_be_static_property', rule, {
   invalid: [
     {
       code: `class Foo extends HTMLElement {
-        static litTagName = LitHtml.literal\`foo-bar\`;
+        static readonly litTagName = LitHtml.literal\`foo-bar\`;
       };
 
       LitHtml.html\`<\${Foo}></\${Foo}>\`
@@ -52,7 +52,7 @@ ruleTester.run('static_tag_must_be_static_property', rule, {
     },
     {
       code: `class Foo extends HTMLElement {
-        static litTagName = LitHtml.literal\`foo-bar\`;
+        static readonly litTagName = LitHtml.literal\`foo-bar\`;
       };
 
       LitHtml.html\`<\${Foo.litTagName}></\${Foo}>\`
@@ -63,7 +63,7 @@ ruleTester.run('static_tag_must_be_static_property', rule, {
     },
     {
       code: `class Foo extends HTMLElement {
-        static litTagName = LitHtml.literal\`foo-bar\`;
+        static readonly litTagName = LitHtml.literal\`foo-bar\`;
       };
 
       LitHtml.html\`<\${Foo.invalidTagName}></\${Foo.otherInvalidName}>\`
@@ -77,7 +77,7 @@ ruleTester.run('static_tag_must_be_static_property', rule, {
     },
     {
       code: `class Foo extends HTMLElement {
-        static litTagName = LitHtml.literal\`foo-bar\`;
+        static readonly litTagName = LitHtml.literal\`foo-bar\`;
       };
 
       LitHtml.html\`<\${foo.litTagName}></\${litTagName}>\`

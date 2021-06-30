@@ -148,7 +148,7 @@ const DEFAULT_METADATA = {
  * and network conditions panel. It is customizable through showMobileCheckbox and showSubmitButton.
  */
 export class UserAgentClientHintsForm extends HTMLElement {
-  static litTagName = LitHtml.literal`devtools-user-agent-client-hints-form`;
+  static readonly litTagName = LitHtml.literal`devtools-user-agent-client-hints-form`;
   private readonly shadow = this.attachShadow({mode: 'open'});
 
   private isFormOpened: boolean = false;

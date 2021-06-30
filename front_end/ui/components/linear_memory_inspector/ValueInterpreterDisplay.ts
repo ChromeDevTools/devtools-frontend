@@ -71,7 +71,7 @@ export class JumpToPointerAddressEvent extends Event {
 }
 
 export class ValueInterpreterDisplay extends HTMLElement {
-  static litTagName = LitHtml.literal`devtools-linear-memory-inspector-interpreter-display`;
+  static readonly litTagName = LitHtml.literal`devtools-linear-memory-inspector-interpreter-display`;
 
   private readonly shadow = this.attachShadow({mode: 'open'});
   private endianness = Endianness.Little;

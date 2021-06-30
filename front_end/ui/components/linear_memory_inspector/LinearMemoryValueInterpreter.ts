@@ -60,7 +60,7 @@ export interface LinearMemoryValueInterpreterData {
 }
 
 export class LinearMemoryValueInterpreter extends HTMLElement {
-  static litTagName = LitHtml.literal`devtools-linear-memory-inspector-interpreter`;
+  static readonly litTagName = LitHtml.literal`devtools-linear-memory-inspector-interpreter`;
 
   private readonly shadow = this.attachShadow({mode: 'open'});
   private endianness = Endianness.Little;

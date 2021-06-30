@@ -31,7 +31,7 @@ export interface StepViewData {
 }
 
 export class StepView extends HTMLElement {
-  static litTagName = LitHtml.literal`devtools-step-view`;
+  static readonly litTagName = LitHtml.literal`devtools-step-view`;
 
   private readonly shadow = this.attachShadow({mode: 'open'});
   private step!: Recorder.Steps.Step;

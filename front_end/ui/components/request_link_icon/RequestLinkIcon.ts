@@ -51,7 +51,7 @@ export const extractShortPath = (path: string): string => {
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export class RequestLinkIcon extends HTMLElement {
-  static litTagName = LitHtml.literal`devtools-request-link-icon`;
+  static readonly litTagName = LitHtml.literal`devtools-request-link-icon`;
   private readonly shadow = this.attachShadow({mode: 'open'});
   private linkToPreflight?: boolean;
   // The value `null` indicates that the request is not available,

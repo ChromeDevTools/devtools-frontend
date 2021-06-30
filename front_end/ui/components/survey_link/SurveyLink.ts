@@ -48,7 +48,7 @@ const enum State {
 // A link to a survey. The link is rendered aysnchronously because we need to first check if
 // canShowSurvey succeeds.
 export class SurveyLink extends HTMLElement {
-  static litTagName = LitHtml.literal`devtools-survey-link`;
+  static readonly litTagName = LitHtml.literal`devtools-survey-link`;
 
   private readonly shadow = this.attachShadow({mode: 'open'});
   private trigger = '';

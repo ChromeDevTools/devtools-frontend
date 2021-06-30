@@ -20,7 +20,8 @@ module.exports = {
       noTSInterface: 'Could not find the TS interface declaration for the component.',
       noDefineCall: 'Could not find a defineComponent() call for the component.',
       defineCallNonLiteral: 'defineComponent() first argument must be a string literal.',
-      staticLiteralInvalid: 'static litTagName must use a literal string, with no interpolation.'
+      staticLiteralInvalid: 'static readonly litTagName must use a literal string, with no interpolation.',
+      staticLiteralNotReadonly: 'static litTagName must be readonly.'
     }
   },
   create: function(context) {
@@ -90,6 +91,12 @@ module.exports = {
           // This means that there's >1 template parts, which means they are
           // being split by an interpolated value, which is not allowed.
           context.report({node: componentTagNameNode, messageId: 'staticLiteralInvalid'});
+          return;
+        }
+
+        // Enforce that the property is declared as readonly (static readonly litTagName = ...)
+        if (!componentTagNameNode.readonly) {
+          context.report({node: componentTagNameNode, messageId: 'staticLiteralNotReadonly'});
           return;
         }
 

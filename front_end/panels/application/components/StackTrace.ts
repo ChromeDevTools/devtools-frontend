@@ -36,7 +36,7 @@ export interface StackTraceData {
 }
 
 export class StackTrace extends HTMLElement {
-  static litTagName = LitHtml.literal`devtools-resources-stack-trace`;
+  static readonly litTagName = LitHtml.literal`devtools-resources-stack-trace`;
 
   private readonly shadow = this.attachShadow({mode: 'open'});
   private readonly linkifier = new Components.Linkifier.Linkifier();

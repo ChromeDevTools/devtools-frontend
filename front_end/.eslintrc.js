@@ -45,7 +45,7 @@ module.exports = {
           {
             'selector': 'classProperty',
             'modifiers': ['static', 'readonly'],
-            'format': ['UPPER_CASE'],
+            'format': ['UPPER_CASE', 'camelCase'],
           },
           {
             'selector': 'method',

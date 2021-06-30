@@ -14,7 +14,7 @@ ruleTester.run('check_component_naming', rule, {
   valid: [
     {
       code: `class Foo extends HTMLElement {
-        static litTagName = LitHtml.literal\`devtools-foo\`
+        static readonly litTagName = LitHtml.literal\`devtools-foo\`
       }
 
       ComponentHelpers.CustomElements.defineComponent('devtools-foo', Foo);
@@ -28,7 +28,7 @@ ruleTester.run('check_component_naming', rule, {
     },
     {
       code: `class Foo extends HTMLElement {
-        static litTagName = LitHtml.literal\`devtools-foo\`
+        static readonly litTagName = LitHtml.literal\`devtools-foo\`
       }
 
       defineComponent('devtools-foo', Foo);
@@ -63,7 +63,7 @@ ruleTester.run('check_component_naming', rule, {
     // static is not a string
     {
       code: `class Foo extends HTMLElement {
-        static litTagName = LitHtml.literal\`\${someVar}\`
+        static readonly litTagName = LitHtml.literal\`\${someVar}\`
       }
 
       ComponentHelpers.CustomElements.defineComponent('devtools-foo', Foo);
@@ -79,10 +79,29 @@ ruleTester.run('check_component_naming', rule, {
 
       }]
     },
+    // Static is not readonly
+    {
+      code: `class Foo extends HTMLElement {
+        static litTagName = LitHtml.literal\`devtools-foo\`;
+      }
+
+      ComponentHelpers.CustomElements.defineComponent('devtools-foo', Foo);
+
+      declare global {
+        interface HTMLElementTagNameMap {
+          'devtools-foo': Foo
+        }
+      }`,
+      filename: 'front_end/ui/components/Foo.ts',
+      errors: [{
+        messageId: 'staticLiteralNotReadonly'
+
+      }]
+    },
     // defineComponent call uses wrong name
     {
       code: `class Foo extends HTMLElement {
-        static litTagName = LitHtml.literal\`devtools-foo\`
+        static readonly litTagName = LitHtml.literal\`devtools-foo\`
       }
 
       ComponentHelpers.CustomElements.defineComponent('devtools-not-foo', Foo);
@@ -101,7 +120,7 @@ ruleTester.run('check_component_naming', rule, {
     // defineComponent call uses non literal
     {
       code: `class Foo extends HTMLElement {
-        static litTagName = LitHtml.literal\`devtools-foo\`
+        static readonly litTagName = LitHtml.literal\`devtools-foo\`
       }
 
       const name = 'devtools-foo';
@@ -121,7 +140,7 @@ ruleTester.run('check_component_naming', rule, {
     // defineComponent call missing
     {
       code: `class Foo extends HTMLElement {
-        static litTagName = LitHtml.literal\`devtools-foo\`
+        static readonly litTagName = LitHtml.literal\`devtools-foo\`
       }
 
       declare global {
@@ -138,7 +157,7 @@ ruleTester.run('check_component_naming', rule, {
     // TS interface is incorrect
     {
       code: `class Foo extends HTMLElement {
-        static litTagName = LitHtml.literal\`devtools-foo\`
+        static readonly litTagName = LitHtml.literal\`devtools-foo\`
       }
 
       ComponentHelpers.CustomElements.defineComponent('devtools-foo', Foo);
@@ -154,7 +173,7 @@ ruleTester.run('check_component_naming', rule, {
     // TS interface is missing
     {
       code: `class Foo extends HTMLElement {
-        static litTagName = LitHtml.literal\`devtools-foo\`
+        static readonly litTagName = LitHtml.literal\`devtools-foo\`
       }
 
       ComponentHelpers.CustomElements.defineComponent('devtools-foo', Foo);`,

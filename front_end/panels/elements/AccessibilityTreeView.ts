@@ -143,8 +143,12 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
   }
 
   // Selected node in the DOM has changed, and the corresponding accessibility node may be
-  // unloaded. We probably only want to do this when the AccessibilityTree is visible.
+  // unloaded.
   async selectedNodeChanged(inspectedNode: SDK.DOMModel.DOMNode): Promise<void> {
+    // We only want to do this when the AccessibilityTree is visible.
+    if (!this._visible) {
+      return;
+    }
     if (inspectedNode === this.inspectedDOMNode) {
       return;
     }

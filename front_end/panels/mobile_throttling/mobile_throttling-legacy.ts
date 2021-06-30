@@ -21,8 +21,6 @@ MobileThrottling.NetworkThrottlingSelector = MobileThrottlingModule.NetworkThrot
 /** @constructor */
 MobileThrottling.ThrottlingManager = MobileThrottlingModule.ThrottlingManager.ThrottlingManager;
 
-MobileThrottling.ThrottlingManager.Events = MobileThrottlingModule.ThrottlingManager.Events;
-
 /** @constructor */
 MobileThrottling.ThrottlingManager.ActionDelegate = MobileThrottlingModule.ThrottlingManager.ActionDelegate;
 

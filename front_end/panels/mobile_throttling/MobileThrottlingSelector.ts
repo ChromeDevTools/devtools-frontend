@@ -7,7 +7,7 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 
-import {Events, throttlingManager} from './ThrottlingManager.js';
+import {throttlingManager} from './ThrottlingManager.js';
 
 import type {Conditions, ConditionsList, MobileThrottlingConditionsGroup} from './ThrottlingPresets.js';
 import {ThrottlingPresets} from './ThrottlingPresets.js';
@@ -43,7 +43,7 @@ export class MobileThrottlingSelector {
     this._populateCallback = populateCallback;
     this._selectCallback = selectCallback;
     SDK.CPUThrottlingManager.CPUThrottlingManager.instance().addEventListener(
-        Events.RateChanged, this._conditionsChanged, this);
+        SDK.CPUThrottlingManager.Events.RateChanged, this._conditionsChanged, this);
     SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, this._conditionsChanged, this);
     this._options = this._populateOptions();

@@ -536,7 +536,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, this._updateShowSettingsToolbarButton,
         this);
     SDK.CPUThrottlingManager.CPUThrottlingManager.instance().addEventListener(
-        MobileThrottling.ThrottlingManager.Events.RateChanged, this._updateShowSettingsToolbarButton, this);
+        SDK.CPUThrottlingManager.Events.RateChanged, this._updateShowSettingsToolbarButton, this);
     this._disableCaptureJSProfileSetting.addChangeListener(this._updateShowSettingsToolbarButton, this);
     this._captureLayersAndPicturesSetting.addChangeListener(this._updateShowSettingsToolbarButton, this);
 

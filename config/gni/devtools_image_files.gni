@@ -57,6 +57,7 @@ devtools_svg_sources = [
   "chevrons.svg",
   "chromeSelect.svg",
   "chromeSelectDark.svg",
+  "close-icon.svg",
   "dropdown_7x6_icon.svg",
   "elements_panel_icon.svg",
   "errorWave.svg",

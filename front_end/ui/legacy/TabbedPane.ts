@@ -33,6 +33,7 @@
 import type * as Common from '../../core/common/common.js'; // eslint-disable-line no-unused-vars
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as IconButton from '../components/icon_button/icon_button.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu} from './ContextMenu.js';
@@ -1075,11 +1076,8 @@ export class TabbedPaneTab {
     }
 
     if (this._closeable) {
-      const closeButton = tabElement.createChild('div', 'tabbed-pane-close-button', 'dt-close-button');
-      // @ts-ignore dt-close-button custom element has a `gray` attribute.
-      closeButton.gray = true;
-      // @ts-ignore dt-close-button custom element has its own custom `setAccessibleName`.
-      closeButton.setAccessibleName(i18nString(UIStrings.closeS, {PH1: this.title}));
+      const closeIcon = this.createCloseIconButton();
+      tabElement.appendChild(closeIcon);
       tabElement.classList.add('closeable');
     }
 
@@ -1102,11 +1100,31 @@ export class TabbedPaneTab {
     return tabElement as HTMLElement;
   }
 
+  private createCloseIconButton(): HTMLDivElement {
+    const closeIconContainer = document.createElement('div');
+    closeIconContainer.classList.add('close-button', 'tabbed-pane-close-button');
+    const closeIcon = new IconButton.Icon.Icon();
+    closeIcon.data = {
+      iconName: 'close-icon',
+      color: 'var(--tabbed-pane-close-icon-color)',
+      width: '7px',
+    };
+    closeIconContainer.appendChild(closeIcon);
+    closeIconContainer.setAttribute('role', 'button');
+    closeIconContainer.setAttribute('title', i18nString(UIStrings.closeS, {PH1: this.title}));
+    closeIconContainer.setAttribute('aria-label', i18nString(UIStrings.closeS, {PH1: this.title}));
+    return closeIconContainer;
+  }
+
+  private isCloseIconClicked(element: HTMLElement): boolean {
+    return element?.classList.contains('tabbed-pane-close-button') ||
+        element?.parentElement?.classList.contains('tabbed-pane-close-button') || false;
+  }
+
   _tabClicked(ev: Event): void {
     const event = (ev as MouseEvent);
     const middleButton = event.button === 1;
-    const shouldClose = this._closeable &&
-        (middleButton || (event.target as HTMLElement).classList.contains('tabbed-pane-close-button'));
+    const shouldClose = this._closeable && (middleButton || this.isCloseIconClicked(event.target as HTMLElement));
     if (!shouldClose) {
       this._tabbedPane.focus();
       return;
@@ -1117,7 +1135,7 @@ export class TabbedPaneTab {
 
   _tabMouseDown(ev: Event): void {
     const event = ev as MouseEvent;
-    if ((event.target as HTMLElement).classList.contains('tabbed-pane-close-button') || event.button !== 0) {
+    if (this.isCloseIconClicked(event.target as HTMLElement) || event.button !== 0) {
       return;
     }
     this._tabbedPane.selectTab(this.id, true);
@@ -1171,7 +1189,7 @@ export class TabbedPaneTab {
 
   _startTabDragging(ev: Event): boolean {
     const event = (ev as MouseEvent);
-    if ((event.target as HTMLElement).classList.contains('tabbed-pane-close-button')) {
+    if (this.isCloseIconClicked(event.target as HTMLElement)) {
       return false;
     }
     this._dragStartX = event.pageX;

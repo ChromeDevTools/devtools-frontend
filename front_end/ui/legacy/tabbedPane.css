@@ -308,6 +308,23 @@
   flex: none;
 }
 
+.close-button {
+  --tabbed-pane-close-icon-color: var(--color-text-primary);
+
+  width: 14px;
+  height: 14px;
+  cursor: default;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.close-button:hover,
+.close-button:active {
+  background-color: var(--color-details-hairline);
+}
+
 @media (forced-colors: active) {
   .tabbed-pane-tab-slider {
     forced-color-adjust: none;
@@ -348,5 +365,18 @@
   .tabbed-pane-header-tabs-drop-down-container:hover > .chevron-icon,
   .tabbed-pane-header-tabs-drop-down-container:focus-visible > .chevron-icon {
     background-color: HighlightText;
+  }
+
+  .close-button {
+    --tabbed-pane-close-icon-color: ButtonText;
+
+    forced-color-adjust: none;
+  }
+
+  .close-button:hover,
+  .close-button:active {
+    --tabbed-pane-close-icon-color: HighlightText;
+
+    background-color: Highlight;
   }
 }

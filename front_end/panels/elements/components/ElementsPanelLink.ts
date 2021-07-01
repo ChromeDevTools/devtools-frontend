@@ -4,6 +4,7 @@
 
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import elementsPanelLinkStyles from './elementsPanelLink.css.js';
 
 export interface ElementsPanelLinkData {
   onElementRevealIconClick: (event?: Event) => void;
@@ -29,21 +30,13 @@ export class ElementsPanelLink extends HTMLElement {
     this.render();
   }
 
+  connectedCallback(): void {
+    this.shadow.adoptedStyleSheets = [elementsPanelLinkStyles];
+  }
+
   private render(): void {
     // clang-format off
-    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
       LitHtml.render(LitHtml.html`
-      <style>
-        .element-reveal-icon {
-          display: inline-block;
-          width: 28px;
-          height: 24px;
-          -webkit-mask-position: -140px 96px;
-          -webkit-mask-image: var(--image-file-largeIcons);
-          background-color: rgb(110 110 110); /* stylelint-disable-line plugin/use_theme_colors */
-          /* See: crbug.com/1152736 for color variable migration. */
-        }
-      </style>
       <span
         class="element-reveal-icon"
         @click=${this.onElementRevealIconClick}

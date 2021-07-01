@@ -8,7 +8,7 @@ import type * as SDKModule from '../../../../../../../front_end/core/sdk/sdk.js'
 import type * as WorkspaceModule from '../../../../../../../front_end/models/workspace/workspace.js';
 
 import {createTarget} from '../../../../helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection, dispatchEvent, setMockConnectionResponseHandler} from '../../../../helpers/MockConnection.js';
+import {describeWithMockConnection, dispatchEvent} from '../../../../helpers/MockConnection.js';
 import {assertNotNullOrUndefined} from '../../../../../../../front_end/core/platform/platform.js';
 
 const {assert} = chai;
@@ -24,18 +24,6 @@ describeWithMockConnection('Linkifier', async () => {
     Components = await import('../../../../../../../front_end/ui/legacy/components/utils/utils.js');
     Bindings = await import('../../../../../../../front_end/models/bindings/bindings.js');
     Workspace = await import('../../../../../../../front_end/models/workspace/workspace.js');
-  });
-
-  beforeEach(() => {
-    setMockConnectionResponseHandler('Debugger.enable', () => {
-      return {};
-    });
-    setMockConnectionResponseHandler('Debugger.disable', () => {
-      return {};
-    });
-    setMockConnectionResponseHandler('Debugger.setAsyncCallStackDepth', () => {
-      return {};
-    });
   });
 
   function setUpEnvironment() {
@@ -71,12 +59,12 @@ describeWithMockConnection('Linkifier', async () => {
     assert.isNull(info.uiLocation);
   });
 
-  it('resolves url and updates link as soon as debugger is enabled', async () => {
+  it('resolves url and updates link as soon as debugger is enabled', done => {
     const {target, linkifier} = setUpEnvironment();
 
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
     assertNotNullOrUndefined(debuggerModel);
-    await debuggerModel.suspendModel();
+    debuggerModel.suspendModel();
 
     const scriptId = 'script';
     const lineNumber = 4;
@@ -86,7 +74,7 @@ describeWithMockConnection('Linkifier', async () => {
     assertNotNullOrUndefined(anchor);
     assert.strictEqual(anchor.textContent, '\u200b');
 
-    await debuggerModel.resumeModel();
+    debuggerModel.resumeModel();
     const scriptParsedEvent = {
       scriptId,
       url: 'https://www.google.com/script.js',
@@ -103,35 +91,28 @@ describeWithMockConnection('Linkifier', async () => {
       length: 10,
     };
     dispatchEvent(target, 'Debugger.scriptParsed', scriptParsedEvent);
-    return new Promise(resolve => {
-      const callback: MutationCallback = function(mutations: MutationRecord[]) {
-        for (const mutation of mutations) {
-          if (mutation.type === 'childList') {
-            if (anchor.textContent === `script.js:${lineNumber + 1}`) {
-              const info = Components.Linkifier.Linkifier.linkInfo(anchor);
-              assertNotNullOrUndefined(info);
-              assertNotNullOrUndefined(info.uiLocation);
 
-              observer.disconnect();
-              resolve();
-            }
-          }
+    const callback: MutationCallback = function(mutations: MutationRecord[]) {
+      for (const mutation of mutations) {
+        if (mutation.type === 'childList') {
+          const info = Components.Linkifier.Linkifier.linkInfo(anchor);
+          assertNotNullOrUndefined(info);
+          assertNotNullOrUndefined(info.uiLocation);
+          assert.strictEqual(anchor.textContent, `script.js:${lineNumber + 1}`);
+          observer.disconnect();
+          done();
         }
-      };
-      const observer = new MutationObserver(callback);
-      observer.observe(anchor, {childList: true});
-    });
+      }
+    };
+    const observer = new MutationObserver(callback);
+    observer.observe(anchor, {childList: true});
   });
 
-  it('uses url to identify script if scriptId cannot be found', async () => {
+  it('uses url to identify script if scriptId cannot be found', done => {
     const {target, linkifier} = setUpEnvironment();
     const scriptId = 'script';
     const lineNumber = 4;
     const url = 'https://www.google.com/script.js';
-
-    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
-    assertNotNullOrUndefined(debuggerModel);
-    await debuggerModel.resumeModel();
 
     const scriptParsedEvent = {
       scriptId,
@@ -154,23 +135,21 @@ describeWithMockConnection('Linkifier', async () => {
     const anchor = linkifier.maybeLinkifyScriptLocation(target, scriptId + '2', url, lineNumber);
     assertNotNullOrUndefined(anchor);
 
-    return new Promise(resolve => {
-      const callback: MutationCallback = function(mutations: MutationRecord[]) {
-        for (const mutation of mutations) {
-          if (mutation.type === 'childList') {
-            const info = Components.Linkifier.Linkifier.linkInfo(anchor);
-            assertNotNullOrUndefined(info);
-            assertNotNullOrUndefined(info.uiLocation);
+    const callback: MutationCallback = function(mutations: MutationRecord[]) {
+      for (const mutation of mutations) {
+        if (mutation.type === 'childList') {
+          const info = Components.Linkifier.Linkifier.linkInfo(anchor);
+          assertNotNullOrUndefined(info);
+          assertNotNullOrUndefined(info.uiLocation);
 
-            // Make sure that a uiSourceCode is linked to that anchor.
-            assertNotNullOrUndefined(info.uiLocation.uiSourceCode);
-            observer.disconnect();
-            resolve();
-          }
+          // Make sure that a uiSourceCode is linked to that anchor.
+          assertNotNullOrUndefined(info.uiLocation.uiSourceCode);
+          observer.disconnect();
+          done();
         }
-      };
-      const observer = new MutationObserver(callback);
-      observer.observe(anchor, {childList: true});
-    });
+      }
+    };
+    const observer = new MutationObserver(callback);
+    observer.observe(anchor, {childList: true});
   });
 });

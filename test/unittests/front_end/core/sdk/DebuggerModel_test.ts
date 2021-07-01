@@ -4,9 +4,8 @@
 
 import type * as SDKModule from '../../../../../front_end/core/sdk/sdk.js';
 
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import {createTarget, describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
-import {clearMockConnectionResponseHandler, describeWithMockConnection, dispatchEvent, setMockConnectionResponseHandler} from '../../helpers/MockConnection.js';
+import {describeWithMockConnection, dispatchEvent, setMockConnectionResponseHandler} from '../../helpers/MockConnection.js';
 
 const {assert} = chai;
 
@@ -18,13 +17,8 @@ describeWithMockConnection('DebuggerModel', () => {
 
   describe('createRawLocationFromURL', () => {
     it('yields correct location in the presence of multiple scripts with the same URL', async () => {
-      setMockConnectionResponseHandler('Debugger.enable', () => {
-        return {};
-      });
       const target = createTarget();
       const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
-      assertNotNullOrUndefined(debuggerModel);
-      await debuggerModel.resumeModel();
       const url = 'http://localhost/index.html';
       dispatchEvent(target, 'Debugger.scriptParsed', {
         scriptId: '1',
@@ -75,57 +69,6 @@ describeWithMockConnection('DebuggerModel', () => {
       const {breakpointId} = await model.setBreakpointByURL('fs.js', 1);
       assert.strictEqual(breakpointId, 'fs.js:1');
     });
-  });
-
-  // This tests if 'debuggerEnabled' is only true, if the Debugger.enable response has
-  // been received.
-  it('resumeModel properly awaits the debugger to be enabled', async () => {
-    const enum Events {
-      WaitingStarted = 'WaitingStarted',
-      WaitingDone = 'WaitingDone',
-      DebuggerEnabled = 'DebuggerEnabled',
-    }
-
-    const events: Events[] = [];
-    const dummy = () => {
-      return {};
-    };
-
-    // Declare the mock connection response handler. Required such that
-    // we can await the enable/disable Debugger functions.
-    setMockConnectionResponseHandler('Debugger.disable', dummy);
-    setMockConnectionResponseHandler('Debugger.setAsyncCallStackDepth', dummy);
-    setMockConnectionResponseHandler('Debugger.enable', dummy);
-
-    const target = createTarget();
-    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
-    assertNotNullOrUndefined(debuggerModel);
-
-    // Create a clean state and suspend the model.
-    await debuggerModel.suspendModel();
-    assert(!debuggerModel.debuggerEnabled());
-
-    // Resume the model and kick off enabling the Debugger.
-    clearMockConnectionResponseHandler('Debugger.enable');
-    setMockConnectionResponseHandler('Debugger.enable', async () => {
-      // schedule later execution to allow waiting function to progress
-      await new Promise(r => setTimeout(r, 0));
-      events.push(Events.DebuggerEnabled);
-      return {'getError': () => {}};
-    });
-
-    const debuggerEnabledFlagFlippedPromise = (async () => {
-      events.push(Events.WaitingStarted);
-      while (!debuggerModel.debuggerEnabled()) {
-        await new Promise(r => setTimeout(r, 0));
-      }
-      events.push(Events.WaitingDone);
-    })();
-
-    await debuggerModel.resumeModel();
-    await debuggerEnabledFlagFlippedPromise;
-
-    assert.deepEqual(events, [Events.WaitingStarted, Events.DebuggerEnabled, Events.WaitingDone]);
   });
 });
 

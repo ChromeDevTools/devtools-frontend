@@ -129,7 +129,6 @@ export class DebuggerModel extends SDKModel {
   _continueToLocationCallback: ((arg0: DebuggerPausedDetails) => boolean)|null;
   _selectedCallFrame: CallFrame|null;
   _debuggerEnabled: boolean;
-  _debuggerEnabledPromise: Promise<Protocol.Debugger.EnableResponse>|null;
   _debuggerId: string|null;
   _skipAllPausesTimeout: number;
   _beforePausedCallback: ((arg0: DebuggerPausedDetails) => boolean)|null;
@@ -160,7 +159,6 @@ export class DebuggerModel extends SDKModel {
     this._continueToLocationCallback = null;
     this._selectedCallFrame = null;
     this._debuggerEnabled = false;
-    this._debuggerEnabledPromise = null;
     this._debuggerId = null;
     this._skipAllPausesTimeout = 0;
     this._beforePausedCallback = null;
@@ -224,29 +222,24 @@ export class DebuggerModel extends SDKModel {
     if (this._debuggerEnabled) {
       return;
     }
-    if (this._debuggerEnabledPromise) {
-      await this._debuggerEnabledPromise;
-      return;
-    }
+    this._debuggerEnabled = true;
 
     // Set a limit for the total size of collected script sources retained by debugger.
     // 10MB for remote frontends, 100MB for others.
     const isRemoteFrontend = Root.Runtime.Runtime.queryParam('remoteFrontend') || Root.Runtime.Runtime.queryParam('ws');
     const maxScriptsCacheSize = isRemoteFrontend ? 10e6 : 100e6;
-    this._debuggerEnabledPromise = this._agent.invoke_enable({maxScriptsCacheSize});
+    const enablePromise = this._agent.invoke_enable({maxScriptsCacheSize});
+    enablePromise.then(this._registerDebugger.bind(this));
     this._pauseOnExceptionStateChanged();
     this._asyncStackTracesStateChanged();
-    if (_scheduledPauseOnAsyncCall) {
-      this._pauseOnAsyncCall(_scheduledPauseOnAsyncCall);
-    }
-    const enabledResponse = await this._debuggerEnabledPromise;
-    this._debuggerEnabled = true;
-    this._debuggerEnabledPromise = null;
     if (!Common.Settings.Settings.instance().moduleSetting('breakpointsActive').get()) {
       this._breakpointsActiveChanged();
     }
-    this._registerDebugger(enabledResponse);
+    if (_scheduledPauseOnAsyncCall) {
+      this._pauseOnAsyncCall(_scheduledPauseOnAsyncCall);
+    }
     this.dispatchEventToListeners(Events.DebuggerWasEnabled, this);
+    await enablePromise;
   }
 
   async syncDebuggerId(): Promise<Protocol.Debugger.EnableResponse> {
@@ -297,13 +290,11 @@ export class DebuggerModel extends SDKModel {
   }
 
   async _disableDebugger(): Promise<void> {
-    if (this._debuggerEnabledPromise) {
-      await this._debuggerEnabledPromise;
-    }
     if (!this._debuggerEnabled) {
       return;
     }
     this._debuggerEnabled = false;
+
     await this._asyncStackTracesStateChanged();
     await this._agent.invoke_disable();
     this._isPausing = false;
@@ -346,8 +337,8 @@ export class DebuggerModel extends SDKModel {
 
   _asyncStackTracesStateChanged(): Promise<Protocol.ProtocolResponseWithError> {
     const maxAsyncStackChainDepth = 32;
-    const enabled = !Common.Settings.Settings.instance().moduleSetting('disableAsyncStackTraces').get() &&
-        (this._debuggerEnabled || this._debuggerEnabledPromise);
+    const enabled =
+        !Common.Settings.Settings.instance().moduleSetting('disableAsyncStackTraces').get() && this._debuggerEnabled;
     const maxDepth = enabled ? maxAsyncStackChainDepth : 0;
     return this._agent.invoke_setAsyncCallStackDepth({maxDepth});
   }
@@ -1037,18 +1028,13 @@ class DebuggerDispatcher implements ProtocolProxyApi.DebuggerDispatcher {
     debugSymbols,
     embedderName,
   }: Protocol.Debugger.ScriptParsedEvent): void {
-    (async(): Promise<void> => {
-      if (this._debuggerModel._debuggerEnabledPromise) {
-        await this._debuggerModel._debuggerEnabledPromise;
-      }
-      if (!this._debuggerModel.debuggerEnabled()) {
-        return;
-      }
-      this._debuggerModel._parsedScriptSource(
-          scriptId, url, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData,
-          Boolean(isLiveEdit), sourceMapURL, Boolean(hasSourceURL), false, length || 0, isModule || null,
-          stackTrace || null, codeOffset || null, scriptLanguage || null, debugSymbols || null, embedderName || null);
-    })();
+    if (!this._debuggerModel.debuggerEnabled()) {
+      return;
+    }
+    this._debuggerModel._parsedScriptSource(
+        scriptId, url, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData,
+        Boolean(isLiveEdit), sourceMapURL, Boolean(hasSourceURL), false, length || 0, isModule || null,
+        stackTrace || null, codeOffset || null, scriptLanguage || null, debugSymbols || null, embedderName || null);
   }
 
   scriptFailedToParse({

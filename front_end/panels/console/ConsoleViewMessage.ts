@@ -40,9 +40,11 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as RequestLinkIcon from '../../ui/components/request_link_icon/request_link_icon.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
@@ -418,6 +420,17 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         requestResolver: this.requestResolver,
         displayURL: false,
       };
+      elements.push(icon);
+    }
+    const issueId = this._message.getAffectedResources()?.issueId;
+    if (issueId) {
+      const icon = new IconButton.Icon.Icon();
+      icon.classList.add('resource-links');
+      const clickHandler = (): void => {
+        IssuesManager.RelatedIssue.reveal(issueId);
+      };
+      icon.data = {iconName: 'issue-text-icon', color: 'var(--color-link)', width: '16px', height: '16px'};
+      icon.onclick = clickHandler;
       elements.push(icon);
     }
     return elements;

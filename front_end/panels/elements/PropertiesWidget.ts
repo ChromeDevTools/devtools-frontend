@@ -163,8 +163,9 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
     titleElement.classList.add('tree-element-title');
     titleElement.textContent = title;
 
-    const section =
-        new ObjectUI.ObjectPropertiesSection.RootElement(property, undefined, undefined, undefined, undefined, object);
+    const section = new ObjectUI.ObjectPropertiesSection.RootElement(
+        property, undefined, undefined, ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OwnOnly, undefined,
+        object);
     section.title = titleElement;
     this._expandController.watchSection(title, section);
 

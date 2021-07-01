@@ -214,7 +214,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
 
     const section = new ObjectUI.ObjectPropertiesSection.RootElement(
         resolveScopeInObject(scope), this._linkifier, emptyPlaceholder,
-        /* ignoreHasOwnProperty */ true, extraProperties);
+        ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.All, extraProperties);
     section.title = titleElement;
     section.listItemElement.classList.add('scope-chain-sidebar-pane-section');
     section.listItemElement.setAttribute('aria-label', title);

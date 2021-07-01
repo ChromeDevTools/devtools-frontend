@@ -583,25 +583,34 @@ export class ObjectPropertiesSectionsTreeOutline extends UI.TreeOutline.TreeOutl
   }
 }
 
+export const enum ObjectPropertiesMode {
+  All = 0,                         // All properties, including prototype properties
+  OwnOnly = 1,                     // Own properties, excluding internal properties
+  OwnAndInternalAndInherited = 2,  // Own, internal, and inherited properties
+}
+
+
 export class RootElement extends UI.TreeOutline.TreeElement {
   _object: SDK.RemoteObject.RemoteObject;
-  _extraProperties: SDK.RemoteObject.RemoteObjectProperty[];
-  _ignoreHasOwnProperty: boolean;
-  _emptyPlaceholder: string|null|undefined;
-  toggleOnClick: boolean;
   _linkifier: Components.Linkifier.Linkifier|undefined;
-  _targetObject: SDK.RemoteObject.RemoteObject;
+  _emptyPlaceholder: string|null|undefined;
+  _propertiesMode: ObjectPropertiesMode;
+  _extraProperties: SDK.RemoteObject.RemoteObjectProperty[];
+  _targetObject: SDK.RemoteObject.RemoteObject|undefined;
+  toggleOnClick: boolean;
   constructor(
       object: SDK.RemoteObject.RemoteObject, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string|null,
-      ignoreHasOwnProperty: boolean = false, extraProperties: SDK.RemoteObject.RemoteObjectProperty[] = [],
+      propertiesMode: ObjectPropertiesMode = ObjectPropertiesMode.OwnAndInternalAndInherited,
+      extraProperties: SDK.RemoteObject.RemoteObjectProperty[] = [],
       targetObject: SDK.RemoteObject.RemoteObject = object) {
     const contentElement = document.createElement('slot');
     super(contentElement);
 
     this._object = object;
-    this._extraProperties = extraProperties;
-    this._ignoreHasOwnProperty = ignoreHasOwnProperty;
+    this._linkifier = linkifier;
     this._emptyPlaceholder = emptyPlaceholder;
+    this._propertiesMode = propertiesMode;
+    this._extraProperties = extraProperties;
     this._targetObject = targetObject;
 
     this.setExpandable(true);
@@ -609,7 +618,6 @@ export class RootElement extends UI.TreeOutline.TreeElement {
     this.toggleOnClick = true;
     this.listItemElement.classList.add('object-properties-section-root-element');
     this.listItemElement.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
-    this._linkifier = linkifier;
   }
 
   onexpand(): void {
@@ -652,7 +660,7 @@ export class RootElement extends UI.TreeOutline.TreeElement {
     const treeOutline = (this.treeOutline as ObjectPropertiesSection | null);
     const skipProto = treeOutline ? Boolean(treeOutline._skipProto) : false;
     return ObjectPropertyTreeElement._populate(
-        this, this._object, skipProto, this._linkifier, this._emptyPlaceholder, this._ignoreHasOwnProperty,
+        this, this._object, skipProto, this._linkifier, this._emptyPlaceholder, this._propertiesMode,
         this._extraProperties, this._targetObject);
   }
 }
@@ -690,7 +698,8 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
 
   static async _populate(
       treeElement: UI.TreeOutline.TreeElement, value: SDK.RemoteObject.RemoteObject, skipProto: boolean,
-      linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string|null, flattenProtoChain?: boolean,
+      linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string|null,
+      propertiesMode: ObjectPropertiesMode = ObjectPropertiesMode.OwnAndInternalAndInherited,
       extraProperties?: SDK.RemoteObject.RemoteObjectProperty[],
       targetValue?: SDK.RemoteObject.RemoteObject): Promise<void> {
     if (value.arrayLength() > ARRAY_LOAD_THRESHOLD) {
@@ -699,14 +708,19 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
 
-    let allProperties;
-    if (flattenProtoChain) {
-      allProperties = await value.getAllProperties(false /* accessorPropertiesOnly */, true /* generatePreview */);
-    } else {
-      allProperties = await SDK.RemoteObject.RemoteObject.loadFromObjectPerProto(value, true /* generatePreview */);
+    let properties, internalProperties = null;
+    switch (propertiesMode) {
+      case ObjectPropertiesMode.All:
+        ({properties} = await value.getAllProperties(false /* accessorPropertiesOnly */, true /* generatePreview */));
+        break;
+      case ObjectPropertiesMode.OwnOnly:
+        ({properties} = await value.getOwnProperties(true /* generatePreview */));
+        break;
+      case ObjectPropertiesMode.OwnAndInternalAndInherited:
+        ({properties, internalProperties} =
+             await SDK.RemoteObject.RemoteObject.loadFromObjectPerProto(value, true /* generatePreview */));
+        break;
     }
-    const properties = allProperties.properties;
-    const internalProperties = allProperties.internalProperties;
     treeElement.removeChildren();
     if (!properties) {
       return;

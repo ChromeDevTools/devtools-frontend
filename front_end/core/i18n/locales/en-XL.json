@@ -392,6 +392,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "Ŵín̂d́ôẃ"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "Ŵór̂ḱêŕ"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "X̂H́R̂"
   },
@@ -868,6 +871,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "M̂áîń"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Ôṕêń d̂éd̂íĉát̂éd̂ D́êv́T̂óôĺŝ f́ôŕ Node.js"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Ĉór̂é Ŵéb̂ V́ît́âĺŝ"

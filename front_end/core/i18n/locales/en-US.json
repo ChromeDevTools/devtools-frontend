@@ -392,6 +392,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "Window"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "Worker"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -868,6 +871,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "Main"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Open dedicated DevTools for Node.js"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Core Web Vitals"

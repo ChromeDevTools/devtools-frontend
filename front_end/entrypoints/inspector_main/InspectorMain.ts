@@ -27,6 +27,10 @@ const UIStrings = {
   * DevTools is connected to.
   */
   javascriptIsDisabled: 'JavaScript is disabled',
+  /**
+  * @description A message that prompts the user to open devtools for a specific environment (Node.js)
+  */
+  openDedicatedTools: 'Open dedicated DevTools for `Node.js`',
 };
 const str_ = i18n.i18n.registerUIStrings('entrypoints/inspector_main/InspectorMain.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -151,7 +155,7 @@ export class NodeIndicator implements UI.Toolbar.Provider {
     element.addEventListener(
         'click', () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openNodeFrontend(), false);
     this._button = new UI.Toolbar.ToolbarItem(element);
-    this._button.setTitle(i18nString('Open dedicated DevTools for Node.js'));
+    this._button.setTitle(i18nString(UIStrings.openDedicatedTools));
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.AvailableTargetsChanged,
         event => this._update((event.data as Protocol.Target.TargetInfo[])));

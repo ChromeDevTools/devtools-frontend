@@ -122,6 +122,7 @@ devtools_svg_sources = [
   "smallIcons.svg",
   "sources_panel_icon.svg",
   "switcherIcon.svg",
+  "three_dots_menu_icon.svg",
   "trash_bin_icon.svg",
   "treeoutlineTriangles.svg",
   "warning_icon.svg",

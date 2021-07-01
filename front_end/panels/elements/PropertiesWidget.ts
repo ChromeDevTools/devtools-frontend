@@ -107,7 +107,6 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
     }
 
     const result = await object.callFunction(protoList);
-    object.release();
 
     if (!result.object || result.wasThrown) {
       return;
@@ -138,7 +137,7 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
       }
       title = title.replace(/Prototype$/, '');
 
-      const section = this._createSectionTreeElement(value, title);
+      const section = this._createSectionTreeElement(value, title, object);
       this._treeOutline.appendChild(section);
       if (!selected) {
         section.select(/* omitFocus= */ true, /* selectedByUser= */ false);
@@ -155,13 +154,15 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
     }
   }
 
-  _createSectionTreeElement(property: SDK.RemoteObject.RemoteObject, title: string):
-      ObjectUI.ObjectPropertiesSection.RootElement {
+  _createSectionTreeElement(
+      property: SDK.RemoteObject.RemoteObject, title: string,
+      object: SDK.RemoteObject.RemoteObject): ObjectUI.ObjectPropertiesSection.RootElement {
     const titleElement = document.createElement('span');
     titleElement.classList.add('tree-element-title');
     titleElement.textContent = title;
 
-    const section = new ObjectUI.ObjectPropertiesSection.RootElement(property);
+    const section =
+        new ObjectUI.ObjectPropertiesSection.RootElement(property, undefined, undefined, undefined, undefined, object);
     section.title = titleElement;
     this._expandController.watchSection(title, section);
 

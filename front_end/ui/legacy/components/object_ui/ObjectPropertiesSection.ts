@@ -590,9 +590,11 @@ export class RootElement extends UI.TreeOutline.TreeElement {
   _emptyPlaceholder: string|null|undefined;
   toggleOnClick: boolean;
   _linkifier: Components.Linkifier.Linkifier|undefined;
+  _targetObject: SDK.RemoteObject.RemoteObject;
   constructor(
       object: SDK.RemoteObject.RemoteObject, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string|null,
-      ignoreHasOwnProperty: boolean = false, extraProperties: SDK.RemoteObject.RemoteObjectProperty[] = []) {
+      ignoreHasOwnProperty: boolean = false, extraProperties: SDK.RemoteObject.RemoteObjectProperty[] = [],
+      targetObject: SDK.RemoteObject.RemoteObject = object) {
     const contentElement = document.createElement('slot');
     super(contentElement);
 
@@ -600,6 +602,7 @@ export class RootElement extends UI.TreeOutline.TreeElement {
     this._extraProperties = extraProperties;
     this._ignoreHasOwnProperty = ignoreHasOwnProperty;
     this._emptyPlaceholder = emptyPlaceholder;
+    this._targetObject = targetObject;
 
     this.setExpandable(true);
     this.selectable = true;
@@ -650,7 +653,7 @@ export class RootElement extends UI.TreeOutline.TreeElement {
     const skipProto = treeOutline ? Boolean(treeOutline._skipProto) : false;
     return ObjectPropertyTreeElement._populate(
         this, this._object, skipProto, this._linkifier, this._emptyPlaceholder, this._ignoreHasOwnProperty,
-        this._extraProperties);
+        this._extraProperties, this._targetObject);
   }
 }
 

@@ -19,6 +19,7 @@ export interface MarkdownViewData {
 }
 
 export class MarkdownView extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-markdown-view`;
   private readonly shadow = this.attachShadow({mode: 'open'});
 
   // TODO(crbug.com/1108699): Replace with `Marked.Marked.Token[]` once AST types are fixed upstream.

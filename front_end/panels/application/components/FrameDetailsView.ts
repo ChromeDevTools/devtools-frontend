@@ -284,6 +284,7 @@ export interface FrameDetailsReportViewData {
 }
 
 export class FrameDetailsReportView extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-resources-frame-details-view`;
   private readonly shadow = this.attachShadow({mode: 'open'});
   private frame?: SDK.ResourceTreeModel.ResourceTreeFrame;
   private protocolMonitorExperimentEnabled = false;

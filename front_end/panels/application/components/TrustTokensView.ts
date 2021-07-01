@@ -43,6 +43,7 @@ export interface TrustTokensViewData {
 }
 
 export class TrustTokensView extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-trust-tokens-storage-view`;
   private readonly shadow = this.attachShadow({mode: 'open'});
   private tokens: Protocol.Storage.TrustTokens[] = [];
   private deleteClickHandler: (issuerOrigin: string) => void = () => {};

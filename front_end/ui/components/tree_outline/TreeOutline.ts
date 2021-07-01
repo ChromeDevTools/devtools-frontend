@@ -61,6 +61,7 @@ export class ItemMouseOutEvent<TreeNodeDataType> extends Event {
 }
 
 export class TreeOutline<TreeNodeDataType> extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-tree-outline`;
   private readonly shadow = this.attachShadow({mode: 'open'});
   private treeData: readonly TreeNode<TreeNodeDataType>[] = [];
   private nodeExpandedMap: WeakMap<TreeNode<TreeNodeDataType>, boolean> = new WeakMap();

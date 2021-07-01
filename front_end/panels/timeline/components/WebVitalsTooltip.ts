@@ -16,6 +16,7 @@ export interface WebVitalsTooltipData {
 }
 
 export class WebVitalsTooltip extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-timeline-webvitals-tooltip`;
   private readonly shadow = this.attachShadow({mode: 'open'});
   private content: LitHtml.TemplateResult|null = null;
 

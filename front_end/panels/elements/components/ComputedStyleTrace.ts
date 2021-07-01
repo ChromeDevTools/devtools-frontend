@@ -14,6 +14,7 @@ export interface ComputedStyleTraceData {
 }
 
 export class ComputedStyleTrace extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-computed-style-trace`;
   private readonly shadow = this.attachShadow({mode: 'open'});
 
   private selector = '';

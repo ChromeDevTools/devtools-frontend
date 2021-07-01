@@ -39,6 +39,7 @@ export class WebBundleInfoView extends UI.Widget.VBox {
 }
 
 export class WebBundleInfoElement extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-web-bundle-info`;
   private readonly shadow = this.attachShadow({mode: 'open'});
   private webBundleInfo: Readonly<SDK.NetworkRequest.WebBundleInfo>;
   private webBundleName: Readonly<string>;

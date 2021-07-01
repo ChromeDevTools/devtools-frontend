@@ -14,6 +14,7 @@ export interface ComputedStylePropertyData {
 }
 
 export class ComputedStyleProperty extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-computed-style-property`;
   private readonly shadow = this.attachShadow({mode: 'open'});
 
   private inherited = false;

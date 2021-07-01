@@ -32,6 +32,7 @@ export class FormatChangedEvent extends Event {
 }
 
 export class ColorSwatch extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-color-swatch`;
   private readonly shadow = this.attachShadow({mode: 'open'});
   private tooltip: string = i18nString(UIStrings.shiftclickToChangeColorFormat);
   private text: string|null = null;

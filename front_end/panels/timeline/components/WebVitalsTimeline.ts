@@ -137,6 +137,7 @@ export function assertInstanceOf<T>(instance: any, constructor: Constructor<T>):
 }
 
 export class WebVitalsTimeline extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-timeline-webvitals`;
   private readonly shadow = this.attachShadow({mode: 'open'});
   private mainFrameNavigations: readonly number[] = [];
   private startTime = 0;

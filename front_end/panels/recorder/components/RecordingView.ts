@@ -39,6 +39,7 @@ export class PlayRecordingEvent extends Event {
 }
 
 export class RecordingView extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-recording-view`;
   private readonly shadow = this.attachShadow({mode: 'open'});
   private userFlow: Recorder.Steps.UserFlow|null = null;
   private isRecording: boolean = false;

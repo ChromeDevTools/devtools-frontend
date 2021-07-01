@@ -25,10 +25,24 @@ module.exports = {
     }
   },
   create: function(context) {
+    function nodeIsHTMLElementClassDeclaration(node) {
+      return node.type === 'ClassDeclaration' && node.superClass && node.superClass.name === 'HTMLElement';
+    }
+
     function findComponentClassDefinition(programNode) {
-      return programNode.body.find(node => {
-        return node.type === 'ClassDeclaration' && node.superClass && node.superClass.name === 'HTMLElement';
+      const nodeWithClassDeclaration = programNode.body.find(node => {
+        if (node.type === 'ExportNamedDeclaration' && node.declaration) {
+          return nodeIsHTMLElementClassDeclaration(node.declaration);
+        }
+        return nodeIsHTMLElementClassDeclaration(node);
       });
+
+      if (!nodeWithClassDeclaration) {
+        return null;
+      }
+
+      return nodeWithClassDeclaration.type === 'ExportNamedDeclaration' ? nodeWithClassDeclaration.declaration :
+                                                                          nodeWithClassDeclaration;
     }
 
     function findComponentTagNameFromStaticProperty(classBodyNode) {

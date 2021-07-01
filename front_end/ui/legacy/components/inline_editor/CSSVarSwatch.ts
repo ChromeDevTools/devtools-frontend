@@ -33,6 +33,7 @@ interface ParsedVariableFunction {
 }
 
 export class CSSVarSwatch extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-css-var-swatch`;
   private readonly shadow = this.attachShadow({mode: 'open'});
   private text: string = '';
   private computedValue: string|null = null;

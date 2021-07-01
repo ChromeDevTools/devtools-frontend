@@ -21,6 +21,7 @@ export interface AdornerData extends AdornerDefinition {
 }
 
 export class Adorner extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-adorner`;
   name = '';
   category = AdornerCategories.DEFAULT;
 

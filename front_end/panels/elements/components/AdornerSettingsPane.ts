@@ -41,6 +41,7 @@ export interface AdornerSettingsPaneData {
 }
 
 export class AdornerSettingsPane extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-adorner-settings-pane`;
   private readonly shadow = this.attachShadow({mode: 'open'});
   private settings: AdornerSettingsMap = new Map();
 

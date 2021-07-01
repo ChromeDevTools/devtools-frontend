@@ -36,6 +36,7 @@ export interface PieChartData {
 // the correct initial size. This avoids a layout shift when the slices are
 // later populated.
 export class PieChart extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-perf-piechart`;
   private readonly shadow = this.attachShadow({mode: 'open'});
   private chartName = '';
   private size = 0;

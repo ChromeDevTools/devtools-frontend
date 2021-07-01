@@ -121,6 +121,7 @@ export interface RequestTrustTokensReportData {
 }
 
 export class RequestTrustTokensReport extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-trust-token-report`;
   private readonly shadow = this.attachShadow({mode: 'open'});
   private trustTokenData?: Readonly<RequestTrustTokensReportData>;
 

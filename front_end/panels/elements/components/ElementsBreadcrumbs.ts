@@ -31,6 +31,7 @@ export interface ElementsBreadcrumbs extends HTMLElement {
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export class ElementsBreadcrumbs extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-elements-breadcrumbs`;
   private readonly shadow = this.attachShadow({mode: 'open'});
   private readonly resizeObserver = new ResizeObserver(() => this.checkForOverflowOnResize());
 

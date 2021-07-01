@@ -99,6 +99,7 @@ class AddressHistoryEntry implements Common.SimpleHistoryManager.HistoryEntry {
 }
 
 export class LinearMemoryInspector extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-linear-memory-inspector-inspector`;
   private readonly shadow = this.attachShadow({mode: 'open'});
   private readonly history = new Common.SimpleHistoryManager.SimpleHistoryManager(10);
 

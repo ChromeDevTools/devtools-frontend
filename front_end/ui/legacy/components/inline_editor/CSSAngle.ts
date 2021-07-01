@@ -58,6 +58,7 @@ const DefaultAngle = {
 };
 
 export class CSSAngle extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-css-angle`;
   private readonly shadow = this.attachShadow({mode: 'open'});
   private angle: Angle = DefaultAngle;
   private displayedAngle: Angle = DefaultAngle;

@@ -82,6 +82,7 @@ export interface LayoutPaneData {
 }
 
 export class LayoutPane extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-layout-pane`;
   private readonly shadow = this.attachShadow({mode: 'open'});
   private settings: Readonly<Setting[]> = [];
   private gridElements: Readonly<LayoutElement[]> = [];

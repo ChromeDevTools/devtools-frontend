@@ -57,7 +57,7 @@ export class Infobar {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(type: Type, text: string, actions?: InfobarAction[], disableSetting?: Common.Settings.Setting<any>) {
-    this.element = (document.createElement('div') as HTMLElement);
+    this.element = document.createElement('div');
     this.element.classList.add('flex-none');
     this._shadowRoot =
         createShadowRootWithCoreStyles(this.element, {cssFile: 'ui/legacy/infobar.css', delegatesFocus: undefined});

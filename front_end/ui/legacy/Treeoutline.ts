@@ -381,7 +381,7 @@ export class TreeOutlineInShadow extends TreeOutline {
   constructor() {
     super();
     this.contentElement.classList.add('tree-outline');
-    this.element = (document.createElement('div') as HTMLElement);
+    this.element = document.createElement('div');
     this._shadowRoot =
         createShadowRootWithCoreStyles(this.element, {cssFile: 'ui/legacy/treeoutline.css', delegatesFocus: undefined});
     this._disclosureElement = this._shadowRoot.createChild('div', 'tree-outline-disclosure');
@@ -447,7 +447,7 @@ export class TreeElement {
     this.nextSibling = null;
     this._boundOnFocus = this._onFocus.bind(this);
     this._boundOnBlur = this._onBlur.bind(this);
-    this._listItemNode = (document.createElement('li') as HTMLLIElement);
+    this._listItemNode = document.createElement('li');
 
     this.titleElement = this._listItemNode.createChild('span', 'tree-element-title');
     treeElementBylistItemNode.set(this._listItemNode, this);
@@ -774,7 +774,7 @@ export class TreeElement {
       return;
     }
     if (!this._leadingIconsElement) {
-      this._leadingIconsElement = (document.createElement('div') as HTMLElement);
+      this._leadingIconsElement = document.createElement('div');
       this._leadingIconsElement.classList.add('leading-icons');
       this._leadingIconsElement.classList.add('icons-container');
       this._listItemNode.insertBefore(this._leadingIconsElement, this.titleElement);
@@ -791,7 +791,7 @@ export class TreeElement {
       return;
     }
     if (!this._trailingIconsElement) {
-      this._trailingIconsElement = (document.createElement('div') as HTMLElement);
+      this._trailingIconsElement = document.createElement('div');
       this._trailingIconsElement.classList.add('trailing-icons');
       this._trailingIconsElement.classList.add('icons-container');
       this._listItemNode.appendChild(this._trailingIconsElement);
@@ -881,7 +881,7 @@ export class TreeElement {
       return;
     }
     if (!this._selectionElement) {
-      this._selectionElement = (document.createElement('div') as HTMLElement);
+      this._selectionElement = document.createElement('div');
       this._selectionElement.classList.add('selection');
       this._selectionElement.classList.add('fill');
     }

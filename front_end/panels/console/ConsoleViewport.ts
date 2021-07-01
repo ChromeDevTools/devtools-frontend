@@ -70,7 +70,7 @@ export class ConsoleViewport {
   _cachedProviderElements?: (ConsoleViewportElement|null)[];
 
   constructor(provider: ConsoleViewportProvider) {
-    this.element = (document.createElement('div') as HTMLElement);
+    this.element = document.createElement('div');
     this.element.style.overflow = 'auto';
     this._topGapElement = this.element.createChild('div');
     this._topGapElement.style.height = '0px';

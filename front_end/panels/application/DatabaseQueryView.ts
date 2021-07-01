@@ -288,7 +288,7 @@ export class DatabaseQueryView extends UI.Widget.VBox {
   }
 
   _appendQueryResult(query: string): HTMLDivElement {
-    const element = (document.createElement('div') as HTMLElement);
+    const element = document.createElement('div');
     element.className = 'database-user-query';
     element.tabIndex = -1;
 

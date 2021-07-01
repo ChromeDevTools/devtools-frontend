@@ -1846,7 +1846,7 @@ export class DataGridNode<T> extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   createTDWithClass(className: string): HTMLElement {
-    const cell = (document.createElement('td') as HTMLElement);
+    const cell = document.createElement('td');
     if (className) {
       cell.className = className;
     }

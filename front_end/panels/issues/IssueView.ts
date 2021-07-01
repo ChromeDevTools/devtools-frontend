@@ -299,7 +299,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     const kind = this._issue.getKind();
     icon.data = IssueCounter.IssueCounter.getIssueKindIconData(kind);
     icon.classList.add('leading-issue-icon');
-    this._aggregatedIssuesCount = (document.createElement('span') as HTMLElement);
+    this._aggregatedIssuesCount = document.createElement('span');
     const countAdorner = new ElementsComponents.Adorner.Adorner();
     countAdorner.data = {
       name: 'countWrapper',

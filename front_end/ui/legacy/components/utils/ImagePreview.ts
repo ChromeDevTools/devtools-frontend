@@ -88,7 +88,7 @@ export class ImagePreview {
     const promise = new Promise<Element|null>(x => {
       fulfill = x;
     });
-    const imageElement = (document.createElement('img') as HTMLImageElement);
+    const imageElement = document.createElement('img');
     imageElement.addEventListener('load', buildContent, false);
     imageElement.addEventListener('error', () => fulfill(null), false);
     if (imageAltText) {

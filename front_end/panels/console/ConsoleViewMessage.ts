@@ -358,7 +358,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     }
     messageElement.classList.add('console-message-text');
 
-    const formattedMessage = (document.createElement('span') as HTMLElement);
+    const formattedMessage = document.createElement('span');
     formattedMessage.classList.add('source-code');
     this._anchorElement = this._buildMessageAnchor();
     if (this._anchorElement) {
@@ -373,7 +373,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     if (!request) {
       return null;
     }
-    const messageElement = (document.createElement('span') as HTMLElement);
+    const messageElement = document.createElement('span');
     if (this._message.level === Protocol.Log.LogEntryLevel.Error) {
       UI.UIUtils.createTextChild(messageElement, request.requestMethod + ' ');
       const linkElement = Components.Linkifier.Linkifier.linkifyRevealable(request, request.url(), request.url());
@@ -444,7 +444,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         element: anchorElement,
         forceSelect: (): void => anchorElement.focus(),
       });
-      const anchorWrapperElement = (document.createElement('span') as HTMLElement);
+      const anchorWrapperElement = document.createElement('span');
       anchorWrapperElement.classList.add('console-message-anchor');
       anchorWrapperElement.appendChild(anchorElement);
 
@@ -460,7 +460,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   _buildMessageWithStackTrace(runtimeModel: SDK.RuntimeModel.RuntimeModel): HTMLElement {
-    const toggleElement = (document.createElement('div') as HTMLElement);
+    const toggleElement = document.createElement('div');
     toggleElement.classList.add('console-message-stack-trace-toggle');
     const contentElement = toggleElement.createChild('div', 'console-message-stack-trace-wrapper');
     UI.ARIAUtils.markAsTree(contentElement);
@@ -539,7 +539,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   _format(rawParameters: (string|SDK.RemoteObject.RemoteObject|Protocol.Runtime.RemoteObject|undefined)[]):
       HTMLElement {
     // This node is used like a Builder. Values are continually appended onto it.
-    const formattedResult = (document.createElement('span') as HTMLElement);
+    const formattedResult = document.createElement('span');
     if (this._messagePrefix) {
       formattedResult.createChild('span').textContent = this._messagePrefix;
     }
@@ -645,7 +645,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   _formatParameterAsValue(obj: SDK.RemoteObject.RemoteObject): HTMLElement {
-    const result = (document.createElement('span') as HTMLElement);
+    const result = document.createElement('span');
     const description = obj.description || '';
     if (description.length > getMaxTokenizableStringLength()) {
       const propertyValue = new ObjectUI.ObjectPropertiesSection.ExpandableTextPropertyValue(
@@ -659,7 +659,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   _formatParameterAsTrustedType(obj: SDK.RemoteObject.RemoteObject): HTMLElement {
-    const result = (document.createElement('span') as HTMLElement);
+    const result = document.createElement('span');
     const trustedContentSpan = document.createElement('span');
     trustedContentSpan.appendChild(this._formatParameterAsString(obj));
     trustedContentSpan.classList.add('object-value-string');
@@ -669,7 +669,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   _formatParameterAsObject(obj: SDK.RemoteObject.RemoteObject, includePreview?: boolean): HTMLElement {
-    const titleElement = (document.createElement('span') as HTMLElement);
+    const titleElement = document.createElement('span');
     titleElement.classList.add('console-object');
     if (includePreview && obj.preview) {
       titleElement.classList.add('console-object-preview');
@@ -707,7 +707,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   _formatParameterAsFunction(func: SDK.RemoteObject.RemoteObject, includePreview?: boolean): HTMLElement {
-    const result = (document.createElement('span') as HTMLElement);
+    const result = document.createElement('span');
     SDK.RemoteObject.RemoteFunction.objectAsFunction(func).targetFunction().then(formatTargetFunction.bind(this));
     return result;
 
@@ -781,14 +781,14 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   _formatParameterAsString(output: SDK.RemoteObject.RemoteObject): HTMLElement {
     const description = output.description ?? '';
     const text = Platform.StringUtilities.formatAsJSLiteral(description);
-    const result = (document.createElement('span') as HTMLElement);
+    const result = document.createElement('span');
     result.addEventListener('contextmenu', this._contextMenuEventFired.bind(this, output), false);
     result.appendChild(this._linkifyStringAsFragment(text));
     return result;
   }
 
   _formatParameterAsError(output: SDK.RemoteObject.RemoteObject): HTMLElement {
-    const result = (document.createElement('span') as HTMLElement);
+    const result = document.createElement('span');
     const errorSpan = this._tryFormatAsError(output.description || '');
     result.appendChild(errorSpan ? errorSpan : this._linkifyStringAsFragment(output.description || ''));
     return result;
@@ -973,7 +973,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
         const lineFragment = this._linkifyStringAsFragment(line);
-        const wrapper = (document.createElement('span') as HTMLElement);
+        const wrapper = document.createElement('span');
         wrapper.style.setProperty('contain', 'paint');
         wrapper.style.setProperty('display', 'inline-block');
         wrapper.style.setProperty('max-width', '100%');
@@ -1044,7 +1044,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
     if (Common.Settings.Settings.instance().moduleSetting('consoleTimestampsEnabled').get()) {
       if (!this._timestampElement) {
-        this._timestampElement = (document.createElement('span') as HTMLElement);
+        this._timestampElement = document.createElement('span');
         this._timestampElement.classList.add('console-timestamp');
       }
       this._timestampElement.textContent = UI.UIUtils.formatTimestamp(this._message.timestamp, false) + ' ';
@@ -1067,7 +1067,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       this._similarGroupMarker.remove();
       this._similarGroupMarker = null;
     } else if (this._element && !this._similarGroupMarker && inSimilarGroup) {
-      this._similarGroupMarker = (document.createElement('div') as HTMLElement);
+      this._similarGroupMarker = document.createElement('div');
       this._similarGroupMarker.classList.add('nesting-level-marker');
       this._element.insertBefore(this._similarGroupMarker, this._element.firstChild);
       this._similarGroupMarker.classList.toggle('group-closed', this._lastInSimilarGroup);
@@ -1210,7 +1210,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       return this._contentElement;
     }
 
-    const contentElement = (document.createElement('div') as HTMLElement);
+    const contentElement = document.createElement('div');
     contentElement.classList.add('console-message');
     if (this._messageLevelIcon) {
       contentElement.appendChild(this._messageLevelIcon);
@@ -1240,7 +1240,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     if (this._element) {
       return this._element;
     }
-    this._element = (document.createElement('div') as HTMLElement);
+    this._element = document.createElement('div');
     this._element.tabIndex = -1;
     this._element.addEventListener('keydown', (this._onKeyDown.bind(this) as EventListener));
     this.updateMessageElement();
@@ -1850,14 +1850,14 @@ export class ConsoleCommand extends ConsoleViewMessage {
     if (contentElement) {
       return contentElement;
     }
-    const newContentElement = (document.createElement('div') as HTMLElement);
+    const newContentElement = document.createElement('div');
     this.setContentElement(newContentElement);
     newContentElement.classList.add('console-user-command');
     const icon = UI.Icon.Icon.create('smallicon-user-command', 'command-result-icon');
     newContentElement.appendChild(icon);
 
     elementToMessage.set(newContentElement, this);
-    this._formattedCommand = (document.createElement('span') as HTMLElement);
+    this._formattedCommand = document.createElement('span');
     this._formattedCommand.classList.add('source-code');
     this._formattedCommand.textContent = Platform.StringUtilities.replaceControlCharacters(this.text);
     newContentElement.appendChild(this._formattedCommand);
@@ -1925,7 +1925,7 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
       return contentElement;
     }
 
-    const newContentElement = (document.createElement('div') as HTMLElement);
+    const newContentElement = document.createElement('div');
     newContentElement.classList.add('console-message');
     if (this._messageLevelIcon) {
       newContentElement.appendChild(this._messageLevelIcon);
@@ -1938,7 +1938,7 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
   }
 
   _buildTableMessage(): HTMLElement {
-    const formattedMessage = (document.createElement('span') as HTMLElement);
+    const formattedMessage = document.createElement('span');
     formattedMessage.classList.add('source-code');
     this._anchorElement = this._buildMessageAnchor();
     if (this._anchorElement) {

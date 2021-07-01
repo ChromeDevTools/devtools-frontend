@@ -412,7 +412,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
 
   _createInfoBarDiv(): void {
     if (!this._infoBarDiv) {
-      this._infoBarDiv = (document.createElement('div') as HTMLDivElement);
+      this._infoBarDiv = document.createElement('div');
       this._infoBarDiv.classList.add('flex-none');
       this.contentElement.insertBefore(this._infoBarDiv, this.contentElement.firstChild);
     }

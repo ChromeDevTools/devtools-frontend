@@ -91,13 +91,13 @@ export class FontView extends UI.View.SimpleView {
     }
 
     const uniqueFontName = 'WebInspectorFontPreview' + (++_fontId);
-    this.fontStyleElement = (document.createElement('style') as HTMLStyleElement);
+    this.fontStyleElement = document.createElement('style');
     this._contentProvider.requestContent().then(deferredContent => {
       this._onFontContentLoaded(uniqueFontName, deferredContent);
     });
     this.element.appendChild(this.fontStyleElement);
 
-    const fontPreview = (document.createElement('div') as HTMLDivElement);
+    const fontPreview = document.createElement('div');
     for (let i = 0; i < _fontPreviewLines.length; ++i) {
       if (i > 0) {
         fontPreview.createChild('br');

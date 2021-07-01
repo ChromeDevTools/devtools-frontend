@@ -529,7 +529,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
     const maxLength = options.maxLength || UI.UIUtils.MaxLengthForDisplayedURLs;
     const bypassURLTrimming = options.bypassURLTrimming;
     if (!url || url.trim().toLowerCase().startsWith('javascript:')) {
-      const element = (document.createElement('span') as HTMLElement);
+      const element = document.createElement('span');
       if (className) {
         element.className = className;
       }
@@ -587,7 +587,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
       bypassURLTrimming: undefined,
     };
     const {maxLength, title, href, preventClick, tabStop, bypassURLTrimming} = options;
-    const link = (document.createElement('span') as HTMLElement);
+    const link = document.createElement('span');
     if (className) {
       link.className = className;
     }

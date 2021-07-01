@@ -64,7 +64,7 @@ export class Fragment {
     }
     html += strings[strings.length - 1];
 
-    const template = (document.createElement('template') as HTMLTemplateElement);
+    const template = document.createElement('template');
     template.innerHTML = html;
     const walker = template.ownerDocument.createTreeWalker(
         template.content, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, null, false);

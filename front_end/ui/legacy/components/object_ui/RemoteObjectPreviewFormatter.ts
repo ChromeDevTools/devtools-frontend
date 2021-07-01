@@ -261,7 +261,7 @@ export class RemoteObjectPreviewFormatter {
   }
 
   renderPropertyPreview(type: string, subtype?: string, className?: string|null, description?: string): HTMLElement {
-    const span = (document.createElement('span') as HTMLElement);
+    const span = document.createElement('span');
     span.classList.add('object-value-' + (subtype || type));
     description = description || '';
 

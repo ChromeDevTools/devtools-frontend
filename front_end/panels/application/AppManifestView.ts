@@ -759,7 +759,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
   }|null> {
     const wrapper = document.createElement('div');
     wrapper.classList.add('image-wrapper');
-    const image = (document.createElement('img') as HTMLImageElement);
+    const image = document.createElement('img');
     const result = new Promise((resolve, reject) => {
       image.onload = resolve;
       image.onerror = reject;

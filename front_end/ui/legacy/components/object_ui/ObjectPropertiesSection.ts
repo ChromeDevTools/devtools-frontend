@@ -449,7 +449,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     }
 
     function createTrustedTypeElement(): ObjectPropertyValue {
-      const valueElement = (document.createElement('span') as HTMLElement);
+      const valueElement = document.createElement('span');
       valueElement.classList.add('object-value-trustedtype');
       const text = `${className} "${description}"`;
       let propertyValue;
@@ -804,7 +804,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
   static createRemoteObjectAccessorPropertySpan(
       object: SDK.RemoteObject.RemoteObject|null, propertyPath: string[],
       callback: (arg0: SDK.RemoteObject.CallFunctionResult) => void): HTMLElement {
-    const rootElement = (document.createElement('span') as HTMLElement);
+    const rootElement = document.createElement('span');
     const element = rootElement.createChild('span');
     element.textContent = i18nString(UIStrings.dots);
     if (!object) {
@@ -989,7 +989,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     const isInternalEntries = this.property.synthetic && this.property.name === '[[Entries]]';
     if (isInternalEntries) {
-      this.valueElement = (document.createElement('span') as HTMLElement);
+      this.valueElement = document.createElement('span');
       this.valueElement.classList.add('value');
     } else if (this.property.value) {
       const showPreview = this.property.name !== '[[Prototype]]';
@@ -1001,7 +1001,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
           (parentMap.get(this.property) as SDK.RemoteObject.RemoteObject), [this.property.name],
           this._onInvokeGetterClick.bind(this));
     } else {
-      this.valueElement = (document.createElement('span') as HTMLElement);
+      this.valueElement = document.createElement('span');
       this.valueElement.classList.add('object-value-undefined');
       this.valueElement.textContent = i18nString(UIStrings.unreadable);
       UI.Tooltip.Tooltip.install(this.valueElement, i18nString(UIStrings.noPropertyGetter));

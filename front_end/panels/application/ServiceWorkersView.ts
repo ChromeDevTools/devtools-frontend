@@ -692,7 +692,7 @@ export class Section {
   }
 
   _createLink(parent: Element, title: string, listener: () => void, className?: string, useCapture?: boolean): Element {
-    const button = (document.createElement('button') as HTMLElement);
+    const button = document.createElement('button');
     if (className) {
       button.className = className;
     }

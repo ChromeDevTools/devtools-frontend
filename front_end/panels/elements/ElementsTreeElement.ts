@@ -970,7 +970,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     const initialValue = this._convertWhitespaceToEntities(maybeInitialValue).text;
-    this._htmlEditElement = (document.createElement('div') as HTMLElement);
+    this._htmlEditElement = document.createElement('div');
     this._htmlEditElement.className = 'source-code elements-tree-editor';
 
     // Hide header items.
@@ -1906,7 +1906,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
   // TODO: add unit tests for adorner-related methods after component and TypeScript works are done
   adorn({name, category}: ElementsComponents.Adorner.AdornerDefinition): ElementsComponents.Adorner.Adorner {
-    const adornerContent = (document.createElement('span') as HTMLElement);
+    const adornerContent = document.createElement('span');
     adornerContent.textContent = name;
     const adorner = new ElementsComponents.Adorner.Adorner();
     adorner.data = {

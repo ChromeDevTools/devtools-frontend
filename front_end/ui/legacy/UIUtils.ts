@@ -1114,7 +1114,7 @@ export function createTextButton(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     text: string, eventHandler?: ((arg0: Event) => any), className?: string, primary?: boolean,
     alternativeEvent?: string): HTMLButtonElement {
-  const element = (document.createElement('button') as HTMLButtonElement);
+  const element = document.createElement('button');
   if (className) {
     element.className = className;
   }
@@ -1576,7 +1576,7 @@ export function loadImageFromData(data: string|null): Promise<HTMLImageElement|n
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function createFileSelectorElement(callback: (arg0: File) => any): HTMLInputElement {
-  const fileSelectorElement = (document.createElement('input') as HTMLInputElement);
+  const fileSelectorElement = document.createElement('input');
   fileSelectorElement.type = 'file';
   fileSelectorElement.style.display = 'none';
   fileSelectorElement.tabIndex = -1;

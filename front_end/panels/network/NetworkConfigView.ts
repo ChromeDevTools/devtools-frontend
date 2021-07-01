@@ -90,7 +90,7 @@ export class NetworkConfigView extends UI.Widget.VBox {
     const userAgentMetadataSetting =
         Common.Settings.Settings.instance().createSetting<Protocol.Emulation.UserAgentMetadata|null>(
             'customUserAgentMetadata', null);
-    const userAgentSelectElement = (document.createElement('select') as HTMLSelectElement);
+    const userAgentSelectElement = document.createElement('select');
     UI.ARIAUtils.setAccessibleName(userAgentSelectElement, title);
 
     const customOverride = {title: i18nString(UIStrings.custom), value: 'custom'};
@@ -115,7 +115,7 @@ export class NetworkConfigView extends UI.Widget.VBox {
     otherUserAgentElement.required = true;
     UI.ARIAUtils.setAccessibleName(otherUserAgentElement, otherUserAgentElement.placeholder);
 
-    const errorElement = (document.createElement('div') as HTMLElement);
+    const errorElement = document.createElement('div');
     errorElement.classList.add('network-config-input-validation-error');
     UI.ARIAUtils.markAsAlert(errorElement);
     if (!otherUserAgentElement.value) {

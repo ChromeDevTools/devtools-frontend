@@ -596,7 +596,7 @@ export class SensorsView extends UI.Widget.VBox {
 
   _createDeviceOrientationOverrideElement(deviceOrientation: SDK.EmulationModel.DeviceOrientation):
       HTMLFieldSetElement {
-    const fieldsetElement = (document.createElement('fieldset') as HTMLFieldSetElement);
+    const fieldsetElement = document.createElement('fieldset');
     fieldsetElement.classList.add('device-orientation-override-section');
     const cellElement = fieldsetElement.createChild('td', 'orientation-inputs-cell');
 

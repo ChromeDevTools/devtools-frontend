@@ -332,7 +332,7 @@ export class Editor<T> {
   createSelect(
       name: string, options: string[], validator: (arg0: T, arg1: number, arg2: EditorControl) => ValidatorResult,
       title?: string): HTMLSelectElement {
-    const select = (document.createElement('select') as HTMLSelectElement);
+    const select = document.createElement('select');
     select.classList.add('chrome-select');
     for (let index = 0; index < options.length; ++index) {
       const option = (select.createChild('option') as HTMLOptionElement);

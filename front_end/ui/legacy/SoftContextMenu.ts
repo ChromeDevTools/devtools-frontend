@@ -178,7 +178,7 @@ export class SoftContextMenu {
       return this._createSubMenu(item);
     }
 
-    const menuItemElement = (document.createElement('div') as HTMLElement);
+    const menuItemElement = document.createElement('div');
     menuItemElement.classList.add('soft-context-menu-item');
     menuItemElement.tabIndex = -1;
     ARIAUtils.markAsMenuItem(menuItemElement);
@@ -237,7 +237,7 @@ export class SoftContextMenu {
   }
 
   _createSubMenu(item: SoftContextMenuDescriptor): HTMLElement {
-    const menuItemElement = (document.createElement('div') as HTMLElement);
+    const menuItemElement = document.createElement('div');
     menuItemElement.classList.add('soft-context-menu-item');
     menuItemElement.tabIndex = -1;
     ARIAUtils.markAsMenuItemSubMenu(menuItemElement);
@@ -279,7 +279,7 @@ export class SoftContextMenu {
   }
 
   _createSeparator(): HTMLElement {
-    const separatorElement = (document.createElement('div') as HTMLElement);
+    const separatorElement = document.createElement('div');
     separatorElement.classList.add('soft-context-menu-separator');
     this.detailsForElementMap.set(separatorElement, {
       subItems: undefined,

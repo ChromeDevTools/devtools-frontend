@@ -169,7 +169,7 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     this._chartViewport.show(this.contentElement);
 
     this._dataProvider = dataProvider;
-    this._candyStripeCanvas = (document.createElement('canvas') as HTMLCanvasElement);
+    this._candyStripeCanvas = document.createElement('canvas');
     this._createCandyStripePattern();
 
     this._viewportElement = this._chartViewport.viewportElement;

@@ -39,6 +39,8 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+const OBJECT_GROUP_NAME = 'properties-sidebar-pane';
+
 let propertiesWidgetInstance: PropertiesWidget;
 
 export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
@@ -91,7 +93,7 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
 
   async doUpdate(): Promise<void> {
     if (this._lastRequestedNode) {
-      this._lastRequestedNode.domModel().runtimeModel().releaseObjectGroup(_objectGroupName);
+      this._lastRequestedNode.domModel().runtimeModel().releaseObjectGroup(OBJECT_GROUP_NAME);
       delete this._lastRequestedNode;
     }
 
@@ -101,7 +103,7 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
     }
 
     this._lastRequestedNode = this._node;
-    const object = await this._node.resolveToObject(_objectGroupName);
+    const object = await this._node.resolveToObject(OBJECT_GROUP_NAME);
     if (!object) {
       return;
     }
@@ -182,6 +184,3 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
   }
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const _objectGroupName = 'properties-sidebar-pane';

@@ -57,6 +57,11 @@
   border-width: 0;
 }
 
+.issue.selected,
+.issue.expanded.selected {
+  background-color: var(--legacy-focus-bg-color);
+}
+
 p {
   margin-block-start: 2px;
   margin-block-end: 2px;

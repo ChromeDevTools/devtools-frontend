@@ -4274,14 +4274,23 @@
   "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Âŕĉh́ît́êćt̂úr̂é (ê.ǵ. x̂86)"
   },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "D̂él̂ét̂é {PH1}"
+  },
   "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "B̂ŕâńd̂"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "B̂ŕâńd̂ {PH1}"
   },
   "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "B̂ŕâńd̂ ṕr̂óp̂ér̂t́îéŝ"
   },
   "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
     "message": "B̂ŕâńd̂ś"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "V̂ér̂śîón̂ {PH1}"
   },
   "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "D̂él̂ét̂é"

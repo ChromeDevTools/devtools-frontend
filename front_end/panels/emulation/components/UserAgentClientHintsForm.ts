@@ -32,10 +32,22 @@ const UIStrings = {
     */
   brandName: 'Brand',
   /**
+    * @description Aria label for brands browser name input field.
+    * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge etc.
+    * @example {index} PH1
+    */
+  brandNameAriaLabel: 'Brand {PH1}',
+  /**
     * @description Input field placeholder for brands version.
     * Brands here relate to different browser brands/vendors like Google Chrome (v89), Microsoft Edge (v92) etc.
     */
   version: 'Version',
+  /**
+    * @description Aria label for brands browser version input field.
+    * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge etc.
+    * @example {index} PH1
+    */
+  brandVersionAriaLabel: 'Version {PH1}',
   /**
     * @description Button title for adding another brand in brands section to client hints.
     * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge etc.
@@ -46,6 +58,12 @@ const UIStrings = {
     * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge etc.
     */
   deleteTooltip: 'Delete',
+  /**
+    * @description Aria label for delete icon for deleting browser brand in brands section.
+    * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge etc.
+    * @example {index} PH1
+    */
+  brandDeleteAriaLabel: 'Delete {PH1}',
   /**
     * @description Label for full browser version input field.
     */
@@ -414,7 +432,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
             @input="${handleBrandBrowserChange}"
             .value="${brand}"
             placeholder="${i18nString(UIStrings.brandName)}"
-            aria-label="${i18nString(UIStrings.brandName)}"
+            aria-label="${i18nString(UIStrings.brandNameAriaLabel, {
+        PH1: index + 1,
+      })}"
           />
           <input
             class="input-field"
@@ -422,7 +442,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
             @input="${handleBrandVersionChange}"
             .value="${version}"
             placeholder="${i18nString(UIStrings.version)}"
-            aria-label="${i18nString(UIStrings.version)}"
+            aria-label="${i18nString(UIStrings.brandVersionAriaLabel, {
+        PH1: index + 1,
+      })}"
           />
           <${IconButton.Icon.Icon.litTagName}
             .data=${
@@ -434,6 +456,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
             role="button"
             @click="${handleDeleteClick}"
             @keypress="${handleKeyPress}"
+            aria-label="${i18nString(UIStrings.brandDeleteAriaLabel, {
+        PH1: index + 1,
+      })}"
           >
           </${IconButton.Icon.Icon.litTagName}>
         </div>

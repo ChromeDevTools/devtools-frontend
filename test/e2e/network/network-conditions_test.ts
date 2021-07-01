@@ -272,7 +272,7 @@ describe('The Network Tab', async function() {
     });
 
     // Delete a brand
-    const brand = await waitForAria('Brand', section);  // move focus back to first brand
+    const brand = await waitForAria('Brand 1', section);  // move focus back to first brand
     await brand.click();
     await tabForwardFrontend();  // focus brand version
     await tabForwardFrontend();  // focus delete brand button

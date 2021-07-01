@@ -1144,7 +1144,8 @@ export function createInput(className?: string, type?: string): HTMLInputElement
 }
 
 export function createSelect(name: string, options: string[]|Map<string, string[]>[]|Set<string>): HTMLSelectElement {
-  const select = (document.createElementWithClass('select', 'chrome-select') as HTMLSelectElement);
+  const select = document.createElement('select');
+  select.classList.add('chrome-select');
   ARIAUtils.setAccessibleName(select, name);
   for (const option of options) {
     if (option instanceof Map) {

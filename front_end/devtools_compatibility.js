@@ -1324,30 +1324,6 @@
           this.name = selector;
         }
       });
-
-      function overrideCreateElementWithClass() {
-        window.removeEventListener('DOMContentLoaded', overrideCreateElementWithClass);
-
-        const origCreateElementWithClass = Document.prototype.createElementWithClass;
-        Document.prototype.createElementWithClass = function(tagName, className, ...rest) {
-          if (tagName !== 'button' || (className !== 'soft-dropdown' && className !== 'dropdown-button')) {
-            return origCreateElementWithClass.call(this, tagName, className, ...rest);
-          }
-          const element = origCreateElementWithClass.call(this, 'div', className, ...rest);
-          element.tabIndex = 0;
-          element.role = 'button';
-          return element;
-        };
-      }
-
-      // Document.prototype.createElementWithClass is a DevTools method, so we
-      // need to wait for DOMContentLoaded in order to override it.
-      if (window.document.head &&
-          (window.document.readyState === 'complete' || window.document.readyState === 'interactive')) {
-        overrideCreateElementWithClass();
-      } else {
-        window.addEventListener('DOMContentLoaded', overrideCreateElementWithClass);
-      }
     }
 
     // Custom Elements V0 polyfill

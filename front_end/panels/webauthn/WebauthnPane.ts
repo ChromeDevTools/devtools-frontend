@@ -633,7 +633,8 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
 
     this._createAuthenticatorFields(section, authenticatorId, options);
 
-    const label = document.createElementWithClass('div', 'credentials-title');
+    const label = document.createElement('div');
+    label.classList.add('credentials-title');
     label.textContent = i18nString(UIStrings.credentials);
     section.appendChild(label);
 

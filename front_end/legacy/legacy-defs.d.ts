@@ -76,7 +76,6 @@ declare namespace Adb {
 }
 
 interface Document {
-  createElementWithClass(elementName: string, className?: string, customElementType?: string): Element;
   deepActiveElement(): Element|null;
 }
 

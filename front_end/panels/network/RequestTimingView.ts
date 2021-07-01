@@ -573,7 +573,8 @@ export class RequestTimingView extends UI.Widget.VBox {
       detailsView.appendChild(responseTreeElement);
     }
 
-    const serviceWorkerResponseSource = document.createElementWithClass('div', 'network-fetch-details-treeitem');
+    const serviceWorkerResponseSource = document.createElement('div');
+    serviceWorkerResponseSource.classList.add('network-fetch-details-treeitem');
     let swResponseSourceString = i18nString(UIStrings.unknown);
     const swResponseSource = this._request.serviceWorkerResponseSource();
     if (swResponseSource) {
@@ -584,7 +585,8 @@ export class RequestTimingView extends UI.Widget.VBox {
     const responseSourceTreeElement = new UI.TreeOutline.TreeElement(serviceWorkerResponseSource);
     detailsView.appendChild(responseSourceTreeElement);
 
-    const cacheNameElement = document.createElementWithClass('div', 'network-fetch-details-treeitem');
+    const cacheNameElement = document.createElement('div');
+    cacheNameElement.classList.add('network-fetch-details-treeitem');
     const responseCacheStorageName = this._request.getResponseCacheStorageCacheName();
     if (responseCacheStorageName) {
       cacheNameElement.textContent = i18nString(UIStrings.cacheStorageCacheNameS, {PH1: responseCacheStorageName});
@@ -597,7 +599,8 @@ export class RequestTimingView extends UI.Widget.VBox {
 
     const retrievalTime = this._request.getResponseRetrievalTime();
     if (retrievalTime) {
-      const responseTimeElement = document.createElementWithClass('div', 'network-fetch-details-treeitem');
+      const responseTimeElement = document.createElement('div');
+      responseTimeElement.classList.add('network-fetch-details-treeitem');
       responseTimeElement.textContent = i18nString(UIStrings.retrievalTimeS, {PH1: retrievalTime});
       const responseTimeTreeElement = new UI.TreeOutline.TreeElement(responseTimeElement);
       detailsView.appendChild(responseTimeTreeElement);

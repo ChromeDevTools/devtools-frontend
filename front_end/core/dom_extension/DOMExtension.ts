@@ -286,21 +286,15 @@ self.createTextNode = function(data: string|number): Text {
   return document.createTextNode(data);
 };
 
-Document.prototype.createElementWithClass = function(
-    elementName: string, className?: string, customElementType?: string): Element {
-  const element = this.createElement(elementName, {is: customElementType});
-  if (className) {
-    element.className = className;
-  }
-  return element;
-};
-
 self.createDocumentFragment = function(): DocumentFragment {
   return document.createDocumentFragment();
 };
 
 Element.prototype.createChild = function(elementName: string, className?: string, customElementType?: string): Element {
-  const element = this.ownerDocument.createElementWithClass(elementName, className, customElementType);
+  const element = document.createElement(elementName, {is: customElementType});
+  if (className) {
+    element.className = className;
+  }
   this.appendChild(element);
   return element;
 };

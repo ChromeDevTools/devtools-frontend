@@ -8,6 +8,7 @@ import * as IssuesManager from '../../../models/issues_manager/issues_manager.js
 import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 import type * as IconButton from '../icon_button/icon_button.js';
+import issueCounterStyles from './issueCounter.css.js';
 
 const UIStrings = {
   /**
@@ -123,6 +124,10 @@ export class IssueCounter extends HTMLElement {
     }
   }
 
+  connectedCallback(): void {
+    this.shadow.adoptedStyleSheets = [issueCounterStyles];
+  }
+
   set data(data: IssueCounterData) {
     this.clickHandler = data.clickHandler;
     this.leadingText = data.leadingText ?? '';
@@ -203,14 +208,7 @@ export class IssueCounter extends HTMLElement {
       leadingText: this.leadingText,
     };
     LitHtml.render(
-        // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
         LitHtml.html`
-        <style>
-            :host {
-              white-space: normal;
-              display: inline-block;
-            }
-        </style>
         <icon-button .data=${data as IconButton.IconButton.IconButtonData}
           aria-label="${LitHtml.Directives.ifDefined(this.accessibleName)}"></icon-button>
         `,

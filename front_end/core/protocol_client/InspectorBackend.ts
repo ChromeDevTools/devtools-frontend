@@ -113,19 +113,22 @@ export class InspectorBackend {
   }
 
   _agentPrototype(domain: string): _AgentPrototype {
-    if (!this._agentPrototypes.has(domain)) {
-      this._agentPrototypes.set(domain, new _AgentPrototype(domain));
+    let prototype = this._agentPrototypes.get(domain);
+    if (!prototype) {
+      prototype = new _AgentPrototype(domain);
+      this._agentPrototypes.set(domain, prototype);
       this._addAgentGetterMethodToProtocolTargetPrototype(domain);
     }
-
-    return /** @type {!_AgentPrototype} */ this._agentPrototypes.get(domain) as _AgentPrototype;
+    return prototype;
   }
 
   _dispatcherPrototype(domain: string): _DispatcherPrototype {
-    if (!this._dispatcherPrototypes.has(domain)) {
-      this._dispatcherPrototypes.set(domain, new _DispatcherPrototype());
+    let prototype = this._dispatcherPrototypes.get(domain);
+    if (!prototype) {
+      prototype = new _DispatcherPrototype();
+      this._dispatcherPrototypes.set(domain, prototype);
     }
-    return /** @type {!_DispatcherPrototype} */ this._dispatcherPrototypes.get(domain) as _DispatcherPrototype;
+    return prototype;
   }
 
   registerCommand(

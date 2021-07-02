@@ -9,15 +9,11 @@ import * as Host from '../host/host.js';
 
 export class NodeURL {
   static patch(object: {
-    url: string,
+    url?: string,
   }): void {
     process(object, '');
 
-    function process(
-        object: {
-          url: string,
-        },
-        path: string): void {
+    function process(object: {url?: string}, path: string): void {
       if (object.url && NodeURL._isPlatformPath(object.url, Host.Platform.isWin())) {
         object.url = Common.ParsedURL.ParsedURL.platformPathToURL(object.url);
       }

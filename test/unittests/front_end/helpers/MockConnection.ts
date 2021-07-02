@@ -52,7 +52,7 @@ export function dispatchEvent<E extends keyof ProtocolMapping.Events>(
     target._dispatchers[domain].registerEvent(method, {});
   }
 
-  target._dispatchers[domain].dispatch(method, {method, params: payload[0]});
+  target._dispatchers[domain].dispatch(method, {method: event, params: payload[0]});
 }
 
 function enable({reset = true} = {}) {

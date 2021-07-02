@@ -42,12 +42,13 @@ export type ProtocolError = string;
 export const DevToolsStubErrorCode = -32015;
 // TODO(dgozman): we are not reporting generic errors in tests, but we should
 // instead report them and just have some expected errors in test expectations.
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const _GenericError = -32000;
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const _ConnectionClosedErrorCode = -32001;
+const GenericError = -32000;
+const ConnectionClosedErrorCode = -32001;
+
+type MessageParams = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [x: string]: any,
+};
 
 export type Message = {
   sessionId?: string,
@@ -56,8 +57,13 @@ export type Message = {
   error?: Object|null,
   result?: Object|null,
   method?: string,
-  params?: Array<string>,
+  params?: MessageParams|null,
 };
+
+interface EventMessage extends Message {
+  method: string;
+  params?: MessageParams|null;
+}
 
 export class InspectorBackend {
   _agentPrototypes: Map<string, _AgentPrototype>;
@@ -272,7 +278,7 @@ export class SessionRouter {
   _domainToLogger: Map<any, any>;
   _sessions: Map<string, {
     target: TargetBase,
-    callbacks: Map<number, _CallbackWithDebugInfo>,
+    callbacks: Map<number, CallbackWithDebugInfo>,
     proxyConnection: ((Connection | undefined)|null),
   }>;
   _pendingScripts: (() => void)[];
@@ -343,7 +349,7 @@ export class SessionRouter {
     return this._connection;
   }
 
-  sendMessage(sessionId: string, domain: string, method: string, params: Object|null, callback: _Callback): void {
+  sendMessage(sessionId: string, domain: string, method: string, params: Object|null, callback: Callback): void {
     const messageId = this._nextMessageId();
     const messageObject: Message = {
       id: messageId,
@@ -351,8 +357,6 @@ export class SessionRouter {
     };
 
     if (params) {
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // @ts-expect-error
       messageObject.params = params;
     }
     if (sessionId) {
@@ -400,7 +404,7 @@ export class SessionRouter {
       test.onMessageReceived((messageObjectCopy as Object), this._getTargetBySessionId(messageObjectCopy.sessionId));
     }
 
-    const messageObject = ((typeof message === 'string') ? JSON.parse(message) : message as Message);
+    const messageObject = ((typeof message === 'string') ? JSON.parse(message) : message) as Message;
 
     // Send all messages to proxy connections.
     let suppressUnknownMessageErrors = false;
@@ -437,7 +441,7 @@ export class SessionRouter {
       NodeURL.patch(messageObject);
     }
 
-    if ('id' in messageObject) {  // just a response for some request
+    if (messageObject.id !== undefined) {  // just a response for some request
       const callback = session.callbacks.get(messageObject.id);
       session.callbacks.delete(messageObject.id);
       if (!callback) {
@@ -447,7 +451,7 @@ export class SessionRouter {
         return;
       }
 
-      callback.callback(messageObject.error, messageObject.result);
+      callback.callback(messageObject.error || null, messageObject.result || null);
       --this._pendingResponsesCount;
       this._pendingLongPollingMessageIds.delete(messageObject.id);
 
@@ -455,23 +459,20 @@ export class SessionRouter {
         this._deprecatedRunAfterPendingDispatches();
       }
     } else {
-      if (!('method' in messageObject)) {
+      if (messageObject.method === undefined) {
         InspectorBackend.reportProtocolError('Protocol Error: the message without method', messageObject);
         return;
       }
-
-      const method = messageObject.method.split('.');
-      const domainName = method[0];
+      // This cast is justified as we just checked for the presence of messageObject.method.
+      const eventMessage = messageObject as EventMessage;
+      const [domainName, method] = eventMessage.method.split('.');
       if (!(domainName in session.target._dispatchers)) {
         InspectorBackend.reportProtocolError(
-            `Protocol Error: the message ${messageObject.method} is for non-existing domain '${domainName}'`,
-            messageObject);
+            `Protocol Error: the message ${eventMessage.method} is for non-existing domain '${domainName}'`,
+            eventMessage);
         return;
       }
-      session.target._dispatchers[domainName].dispatch(method[1], (messageObject as {
-                                                         method: string,
-                                                         params: Array<string>| null,
-                                                       }));
+      session.target._dispatchers[domainName].dispatch(method, eventMessage);
     }
   }
 
@@ -504,19 +505,19 @@ export class SessionRouter {
     }
   }
 
-  static dispatchConnectionError(callback: _Callback, method: string): void {
+  static dispatchConnectionError(callback: Callback, method: string): void {
     const error = {
       message: `Connection is closed, can\'t dispatch pending call to ${method}`,
-      code: _ConnectionClosedErrorCode,
+      code: ConnectionClosedErrorCode,
       data: null,
     };
     setTimeout(() => callback(error, null), 0);
   }
 
-  static dispatchUnregisterSessionError({callback, method}: _CallbackWithDebugInfo): void {
+  static dispatchUnregisterSessionError({callback, method}: CallbackWithDebugInfo): void {
     const error = {
       message: `Session is unregistering, can\'t dispatch pending call to ${method}`,
-      code: _ConnectionClosedErrorCode,
+      code: ConnectionClosedErrorCode,
       data: null,
     };
     setTimeout(() => callback(error, null), 0);
@@ -980,8 +981,8 @@ class _AgentPrototype {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const callback = (error: any, result: any): void => {
         if (error) {
-          if (!test.suppressRequestErrors && error.code !== DevToolsStubErrorCode && error.code !== _GenericError &&
-              error.code !== _ConnectionClosedErrorCode) {
+          if (!test.suppressRequestErrors && error.code !== DevToolsStubErrorCode && error.code !== GenericError &&
+              error.code !== ConnectionClosedErrorCode) {
             console.error('Request ' + method + ' failed. ' + JSON.stringify(error));
           }
 
@@ -1009,7 +1010,7 @@ class _AgentPrototype {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const callback = (error: any, result: any): void => {
         if (error && !test.suppressRequestErrors && error.code !== DevToolsStubErrorCode &&
-            error.code !== _GenericError && error.code !== _ConnectionClosedErrorCode) {
+            error.code !== GenericError && error.code !== ConnectionClosedErrorCode) {
           console.error('Request ' + method + ' failed. ' + JSON.stringify(error));
         }
 
@@ -1072,43 +1073,35 @@ class _DispatcherPrototype {
     this._dispatchers.splice(index, 1);
   }
 
-  dispatch(functionName: string, messageObject: {
-    method: string,
-    params: ({
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      [x: string]: any,
-    }|undefined)|null,
-  }): void {
+  dispatch(method: string, messageObject: EventMessage): void {
     if (!this._dispatchers.length) {
       return;
     }
 
-    if (!this._eventArgs[messageObject.method]) {
+    const qualifiedMethod = messageObject.method;
+
+    if (!this._eventArgs[qualifiedMethod]) {
       InspectorBackend.reportProtocolWarning(
-          `Protocol Warning: Attempted to dispatch an unspecified method '${messageObject.method}'`, messageObject);
+          `Protocol Warning: Attempted to dispatch an unspecified method '${qualifiedMethod}'`, messageObject);
       return;
     }
 
-    const messageArgument = {...messageObject.params};
+    const messageParams = {...messageObject.params};
 
     for (let index = 0; index < this._dispatchers.length; ++index) {
       const dispatcher = this._dispatchers[index];
 
-      if (functionName in dispatcher) {
-        dispatcher[functionName].call(dispatcher, messageArgument);
+      if (method in dispatcher) {
+        dispatcher[method].call(dispatcher, messageParams);
       }
     }
   }
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export type _Callback = (arg0: Object|null, arg1: Object|null) => void;
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export interface _CallbackWithDebugInfo {
-  callback: (arg0: Object|null, arg1: Object|null) => void;
+type Callback = (arg0: Object|null, arg1: Object|null) => void;
+
+interface CallbackWithDebugInfo {
+  callback: Callback;
   method: string;
 }
 

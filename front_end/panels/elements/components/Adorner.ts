@@ -4,7 +4,6 @@
 
 import type * as Platform from '../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import {AdornerCategories} from './AdornerManager.js';
@@ -43,7 +42,7 @@ export class Adorner extends HTMLElement {
 
   connectedCallback(): void {
     if (!this.getAttribute('aria-label')) {
-      UI.ARIAUtils.setAccessibleName(this, this.name);
+      this.setAttribute('aria-label', this.name);
     }
   }
 
@@ -60,9 +59,8 @@ export class Adorner extends HTMLElement {
       return;
     }
     const shouldBecomeActive = forceActiveState === undefined ? !this.isActive() : forceActiveState;
-    UI.ARIAUtils.setPressed(this, shouldBecomeActive);
-    UI.ARIAUtils.setAccessibleName(
-        this, (shouldBecomeActive ? this.ariaLabelActive : this.ariaLabelDefault) || this.name);
+    this.setAttribute('aria-pressed', Boolean(shouldBecomeActive).toString());
+    this.setAttribute('aria-label', (shouldBecomeActive ? this.ariaLabelActive : this.ariaLabelDefault) || this.name);
   }
 
   show(): void {
@@ -88,7 +86,7 @@ export class Adorner extends HTMLElement {
     this.isToggle = isToggle;
     this.ariaLabelDefault = ariaLabelDefault;
     this.ariaLabelActive = ariaLabelActive;
-    UI.ARIAUtils.setAccessibleName(this, ariaLabelDefault);
+    this.setAttribute('aria-label', ariaLabelDefault);
 
     if (isToggle) {
       this.addEventListener('click', () => {
@@ -101,7 +99,7 @@ export class Adorner extends HTMLElement {
 
     // Simulate an ARIA-capable toggle button
     this.classList.add('clickable');
-    UI.ARIAUtils.markAsButton(this);
+    this.setAttribute('role', 'button');
     this.tabIndex = 0;
     this.addEventListener('keydown', event => {
       if (event.code === 'Enter' || event.code === 'Space') {

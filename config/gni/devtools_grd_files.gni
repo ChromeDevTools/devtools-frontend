@@ -1239,6 +1239,7 @@ grd_files_debug_sources = [
   "front_end/ui/components/linear_memory_inspector/ValueInterpreterSettings.js",
   "front_end/ui/components/linkifier/LinkifierImpl.js",
   "front_end/ui/components/linkifier/LinkifierUtils.js",
+  "front_end/ui/components/linkifier/linkifierImpl.css.js",
   "front_end/ui/components/markdown_view/MarkdownImage.js",
   "front_end/ui/components/markdown_view/MarkdownImagesMap.js",
   "front_end/ui/components/markdown_view/MarkdownLink.js",

@@ -4,11 +4,17 @@
 
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../scripts/build/ninja/generate_css.gni")
 import("../visibility.gni")
+
+generate_css("css_files") {
+  sources = [ "expandableList.css" ]
+}
 
 devtools_module("expandable_list") {
   sources = [ "ExpandableList.ts" ]
   deps = [
+    ":css_files",
     "../../../ui/components/helpers:bundle",
     "../../../ui/lit-html:bundle",
   ]
@@ -19,7 +25,10 @@ devtools_module("expandable_list") {
 devtools_entrypoint("bundle") {
   entrypoint = "expandable_list.ts"
 
-  deps = [ ":expandable_list" ]
+  deps = [
+    ":css_files",
+    ":expandable_list",
+  ]
 
   visibility = default_components_visibility
 }

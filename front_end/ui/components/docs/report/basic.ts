@@ -19,7 +19,6 @@ if (!container) {
 }
 
 LitHtml.render(
-    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
     LitHtml.html`
         <style>
           .source-code {

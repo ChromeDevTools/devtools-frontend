@@ -6,7 +6,6 @@ import * as LitHtml from '../../lit-html/lit-html.js';
 export function init(): void {
   const container = document.createElement('ul');
   // clang-format off
-  // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
   LitHtml.render(LitHtml.html`
 
   <style>

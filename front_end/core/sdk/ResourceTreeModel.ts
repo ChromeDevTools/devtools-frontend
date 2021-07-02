@@ -584,6 +584,7 @@ export class ResourceTreeFrame {
   _secureContextType: Protocol.Page.SecureContextType|null;
   _crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType|null;
   _gatedAPIFeatures: Protocol.Page.GatedAPIFeatures[]|null;
+  private originTrials: Protocol.Page.OriginTrial[]|null;
   private creationStackTrace: Protocol.Runtime.StackTrace|null;
   private creationStackTraceTarget: Target|null;
   _childFrames: Set<ResourceTreeFrame>;
@@ -612,6 +613,7 @@ export class ResourceTreeFrame {
     this._secureContextType = payload && payload.secureContextType;
     this._crossOriginIsolatedContextType = payload && payload.crossOriginIsolatedContextType;
     this._gatedAPIFeatures = payload && payload.gatedAPIFeatures;
+    this.originTrials = (payload && payload.originTrials) || null;
 
     this.creationStackTrace = creationStackTrace;
     this.creationStackTraceTarget = null;
@@ -645,6 +647,10 @@ export class ResourceTreeFrame {
     return this._gatedAPIFeatures;
   }
 
+  getOriginTrials(): Protocol.Page.OriginTrial[]|null {
+    return this.originTrials;
+  }
+
   getCreationStackTraceData():
       {creationStackTrace: Protocol.Runtime.StackTrace|null, creationStackTraceTarget: Target} {
     return {
@@ -666,6 +672,7 @@ export class ResourceTreeFrame {
     this._crossOriginIsolatedContextType = framePayload.crossOriginIsolatedContextType;
     this._gatedAPIFeatures = framePayload.gatedAPIFeatures;
     this.backForwardCacheDetails = {restoredFromCache: undefined, explanations: []};
+    this.originTrials = framePayload.originTrials || null;
 
     const mainResource = this._resourcesMap.get(this._url);
     this._resourcesMap.clear();

@@ -63,6 +63,24 @@ const makeFrame = (): SDK.ResourceTreeModel.ResourceTreeFrame => {
       },
       creationStackTraceTarget: null,
     }),
+    getOriginTrials: () => ([
+      {
+        trialName: 'AppCache',
+        status: 'Enabled',
+        tokensWithStatus: [{
+          status: 'Success',
+          rawTokenText: 'Text',
+          parsedToken: {
+            trialName: 'AppCache',
+            origin: 'https://foo.com',
+            expiryTime: 1000,
+            usageRestriction: 'None',
+            isThirdParty: false,
+            matchSubDomains: false,
+          },
+        }],
+      },
+    ]),
   } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
   return newFrame;
 };

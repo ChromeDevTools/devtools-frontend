@@ -9,6 +9,7 @@ import("../../visibility.gni")
 devtools_module("components") {
   sources = [
     "FrameDetailsView.ts",
+    "OriginTrialTreeView.ts",
     "StackTrace.ts",
     "TrustTokensView.ts",
   ]
@@ -26,8 +27,10 @@ devtools_module("components") {
     "../../../ui/components/expandable_list:bundle",
     "../../../ui/components/icon_button:bundle",
     "../../../ui/components/report_view:bundle",
+    "../../../ui/components/tree_outline:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/legacy/components/utils:bundle",
+    "../../elements/components:bundle",
   ]
 }
 

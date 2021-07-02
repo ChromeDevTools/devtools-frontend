@@ -2432,6 +2432,9 @@
   "panels/application/components/FrameDetailsView.ts | origin": {
     "message": "Origin"
   },
+  "panels/application/components/FrameDetailsView.ts | originTrials": {
+    "message": "Origin Trials"
+  },
   "panels/application/components/FrameDetailsView.ts | ownerElement": {
     "message": "Owner Element"
   },
@@ -2494,6 +2497,33 @@
   },
   "panels/application/components/FrameDetailsView.ts | yes": {
     "message": "Yes"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
+    "message": "Expiry Time"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | isThirdParty": {
+    "message": "Third Party"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
+    "message": "Match Sub-Domains"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | origin": {
+    "message": "Origin"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | rawTokenText": {
+    "message": "Raw Token"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | status": {
+    "message": "Status"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | token": {
+    "message": "Token"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | tokens": {
+    "message": "tokens"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
+    "message": "Usage Restriction"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Cannot render stack trace"

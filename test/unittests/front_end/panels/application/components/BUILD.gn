@@ -8,6 +8,7 @@ ts_library("components") {
   testonly = true
   sources = [
     "FrameDetailsView_test.ts",
+    "OriginTrialTreeView_test.ts",
     "StackTrace_test.ts",
     "TrustTokensView_test.ts",
   ]

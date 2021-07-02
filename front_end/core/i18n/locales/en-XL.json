@@ -2432,6 +2432,9 @@
   "panels/application/components/FrameDetailsView.ts | origin": {
     "message": "Ôŕîǵîń"
   },
+  "panels/application/components/FrameDetailsView.ts | originTrials": {
+    "message": "Ôŕîǵîń T̂ŕîál̂ś"
+  },
   "panels/application/components/FrameDetailsView.ts | ownerElement": {
     "message": "Ôẃn̂ér̂ Él̂ém̂én̂t́"
   },
@@ -2494,6 +2497,33 @@
   },
   "panels/application/components/FrameDetailsView.ts | yes": {
     "message": "Ŷéŝ"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
+    "message": "Êx́p̂ír̂ý T̂ím̂é"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | isThirdParty": {
+    "message": "T̂h́îŕd̂ Ṕâŕt̂ý"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
+    "message": "M̂át̂ćĥ Śûb́-D̂óm̂áîńŝ"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | origin": {
+    "message": "Ôŕîǵîń"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | rawTokenText": {
+    "message": "R̂áŵ T́ôḱêń"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | status": {
+    "message": "Ŝt́ât́ûś"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | token": {
+    "message": "T̂ók̂én̂"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | tokens": {
+    "message": "t̂ók̂én̂ś"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
+    "message": "Ûśâǵê Ŕêśt̂ŕîćt̂íôń"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Ĉán̂ńôt́ r̂én̂d́êŕ ŝt́âćk̂ t́r̂áĉé"

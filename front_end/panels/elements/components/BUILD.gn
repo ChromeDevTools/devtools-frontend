@@ -61,6 +61,7 @@ devtools_entrypoint("bundle") {
     "..:*",
     "../../../../test/unittests/front_end/panels/elements/components",
     "../../../ui/components/docs/*",
+    "../../application/components/*",
     "../../issues/*",
   ]
 }

@@ -156,13 +156,13 @@ def _CheckBuildGN(input_api, output_api):
 def _CheckExperimentTelemetry(input_api, output_api):
     experiment_telemetry_files = [
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end',
-                               'main', 'MainImpl.ts'),
+                               'entrypoints', 'main', 'MainImpl.ts'),
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end',
                                'core', 'host', 'UserMetrics.ts')
     ]
     affected_main_files = _getAffectedFiles(input_api,
                                             experiment_telemetry_files, [],
-                                            ['.js'])
+                                            ['.ts'])
     if len(affected_main_files) == 0:
         return [
             output_api.PresubmitNotifyResult(

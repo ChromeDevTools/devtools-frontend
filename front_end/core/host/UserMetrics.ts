@@ -578,7 +578,6 @@ export const DevtoolsExperiments: {
   'showOptionToNotTreatGlobalObjectsAsRoots': 18,
   'sourceDiff': 19,
   'sourceOrderViewer': 20,
-  'spotlight': 21,
   'webauthnPane': 22,
   'timelineEventInitiators': 24,
   'timelineInvalidationTracking': 26,

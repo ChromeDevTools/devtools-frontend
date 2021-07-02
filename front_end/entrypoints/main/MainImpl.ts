@@ -259,7 +259,6 @@ export class MainImpl {
     Root.Runtime.experiments.register(
         'sourceOrderViewer', 'Source order viewer', undefined,
         'https://developer.chrome.com/blog/new-in-devtools-92/#source-order');
-    Root.Runtime.experiments.register('spotlight', 'Spotlight', true);
     Root.Runtime.experiments.register('webauthnPane', 'WebAuthn Pane');
     Root.Runtime.experiments.register(
         'keyboardShortcutEditor', 'Enable keyboard shortcut editor', true,

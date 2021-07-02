@@ -3149,9 +3149,6 @@
   "panels/console_counters/WarningErrorCounter.ts | openIssuesToView": {
     "message": "{n, plural, =1 {Ôṕêń Îśŝúêś t̂ó v̂íêẃ # îśŝúê:} other {Óp̂én̂ Íŝśûéŝ t́ô v́îéŵ # íŝśûéŝ:}}"
   },
-  "panels/console_counters/WarningErrorCounter.ts | openLighthouseToView": {
-    "message": "{n, plural, =1 {Ôṕêń L̂íĝh́t̂h́ôúŝé t̂ó v̂íêẃ # v̂íôĺât́îón̂} other {Óp̂én̂ Ĺîǵĥt́ĥóûśê t́ô v́îéŵ # v́îól̂át̂íôńŝ}}"
-  },
   "panels/console_counters/WarningErrorCounter.ts | sErrors": {
     "message": "{n, plural, =1 {# êŕr̂ór̂} other {# ér̂ŕôŕŝ}}"
   },

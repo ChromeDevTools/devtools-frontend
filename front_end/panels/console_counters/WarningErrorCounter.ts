@@ -7,7 +7,6 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
@@ -29,11 +28,6 @@ const UIStrings = {
   */
   openConsoleToViewS: 'Open Console to view {PH1}',
   /**
-  *@description Title for the Lighthouse violations count in the Warning Error Counter shown in the main toolbar (top-left in DevTools). The violations count refers to the number of violations that were detected by Lighthouse.
-  */
-  openLighthouseToView:
-      '{n, plural, =1 {Open Lighthouse to view # violation} other {Open Lighthouse to view # violations}}',
-  /**
   *@description Title for the issues count in the Issues Error Counter shown in the main toolbar (top-left in DevTools). The issues count refers to the number of issues in the issues tab.
   */
   openIssuesToView: '{n, plural, =1 {Open Issues to view # issue:} other {Open Issues to view # issues:}}',
@@ -45,7 +39,6 @@ let warningErrorCounterInstance: WarningErrorCounter;
 export class WarningErrorCounter implements UI.Toolbar.Provider {
   _toolbarItem: UI.Toolbar.ToolbarItem;
   _consoleCounter: IconButton.IconButton.IconButton;
-  _violationCounter: IconButton.IconButton.IconButton|null;
   _issueCounter: IssueCounter.IssueCounter.IssueCounter;
   _throttler: Common.Throttler.Throttler;
   _updatingForTest?: boolean;
@@ -63,16 +56,6 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
       clickHandler: Common.Console.Console.instance().show.bind(Common.Console.Console.instance()),
       groups: [{iconName: 'error_icon'}, {iconName: 'warning_icon'}],
     };
-
-    this._violationCounter = null;
-    if (Root.Runtime.experiments.isEnabled('spotlight')) {
-      this._violationCounter = new IconButton.IconButton.IconButton();
-      countersWrapper.appendChild(this._violationCounter);
-      this._violationCounter.data = {
-        clickHandler: (): Promise<void> => UI.ViewManager.ViewManager.instance().showView('lighthouse'),
-        groups: [{iconName: 'ic_info_black_18dp', iconColor: '#2a53cd'}],
-      };
-    }
 
     const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
     this._issueCounter = new IssueCounter.IssueCounter.IssueCounter();
@@ -124,7 +107,6 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
   async _updateThrottled(): Promise<void> {
     const errors = SDK.ConsoleModel.ConsoleModel.instance().errors();
     const warnings = SDK.ConsoleModel.ConsoleModel.instance().warnings();
-    const violations = this._violationCounter ? SDK.ConsoleModel.ConsoleModel.instance().violations() : 0;
     const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
     const issues = issuesManager.numberOfIssues();
 
@@ -148,16 +130,6 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
     UI.ARIAUtils.setAccessibleName(this._consoleCounter, consoleTitle);
     this._consoleCounter.classList.toggle('hidden', !(errors || warnings));
 
-    /* Update violationCounter items. */
-    if (this._violationCounter) {
-      this._violationCounter.setTexts([countToText(violations)]);
-      const violationTitle = i18nString(UIStrings.openLighthouseToView, {n: violations});
-      // TODO(chromium:1167711): Let the component handle the title and ARIA label.
-      UI.Tooltip.Tooltip.install(this._violationCounter, violationTitle);
-      UI.ARIAUtils.setAccessibleName(this._violationCounter, violationTitle);
-      this._violationCounter.classList.toggle('hidden', !violations);
-    }
-
     /* Update issuesCounter items. */
     const issueEnumeration = IssueCounter.IssueCounter.getIssueCountsEnumeration(issuesManager);
     const issuesTitleLead = i18nString(UIStrings.openIssuesToView, {n: issues});
@@ -167,7 +139,7 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
     UI.ARIAUtils.setAccessibleName(this._issueCounter, issuesTitle);
     this._issueCounter.classList.toggle('hidden', !issues);
 
-    this._toolbarItem.setVisible(Boolean(errors || warnings || violations || issues));
+    this._toolbarItem.setVisible(Boolean(errors || warnings || issues));
 
     UI.InspectorView.InspectorView.instance().toolbarItemResized();
     this._updatingForTest = false;

@@ -3149,9 +3149,6 @@
   "panels/console_counters/WarningErrorCounter.ts | openIssuesToView": {
     "message": "{n, plural, =1 {Open Issues to view # issue:} other {Open Issues to view # issues:}}"
   },
-  "panels/console_counters/WarningErrorCounter.ts | openLighthouseToView": {
-    "message": "{n, plural, =1 {Open Lighthouse to view # violation} other {Open Lighthouse to view # violations}}"
-  },
   "panels/console_counters/WarningErrorCounter.ts | sErrors": {
     "message": "{n, plural, =1 {# error} other {# errors}}"
   },

@@ -1,3 +1,23 @@
+## 8.4.1 (2021-06-24)
+
+### Bug fixes
+
+Fix a bug where `allowAwaitOutsideFunction` would allow `await` in class field initializers, and setting `ecmaVersion` to 13 or higher would allow top-level await in non-module sources.
+
+## 8.4.0 (2021-06-11)
+
+### New features
+
+A new option, `allowSuperOutsideMethod`, can be used to suppress the error when `super` is used in the wrong context.
+
+## 8.3.0 (2021-05-31)
+
+### New features
+
+Default `allowAwaitOutsideFunction` to true for ECMAScript 2022 an higher.
+
+Add support for the `p` ([indices](https://github.com/tc39/proposal-regexp-match-indices)) regexp flag.
+
 ## 8.2.4 (2021-05-04)
 
 ### Bug fixes

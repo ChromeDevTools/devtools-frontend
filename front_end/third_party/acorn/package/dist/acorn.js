@@ -321,9 +321,10 @@
   var defaultOptions = {
     // `ecmaVersion` indicates the ECMAScript version to parse. Must be
     // either 3, 5, 6 (or 2015), 7 (2016), 8 (2017), 9 (2018), 10
-    // (2019), 11 (2020), 12 (2021), or `"latest"` (the latest version
-    // the library supports). This influences support for strict mode,
-    // the set of reserved words, and support for new syntax features.
+    // (2019), 11 (2020), 12 (2021), 13 (2022), or `"latest"` (the
+    // latest version the library supports). This influences support
+    // for strict mode, the set of reserved words, and support for
+    // new syntax features.
     ecmaVersion: null,
     // `sourceType` indicates the mode the code should be parsed in.
     // Can be either `"script"` or `"module"`. This influences global
@@ -350,9 +351,13 @@
     // appearing at the top of the program, and an import.meta expression
     // in a script isn't considered an error.
     allowImportExportEverywhere: false,
+    // By default, await identifiers are allowed to appear at the top-level scope only if ecmaVersion >= 2022.
     // When enabled, await identifiers are allowed to appear at the top-level scope,
     // but they are still not allowed in non-async functions.
-    allowAwaitOutsideFunction: false,
+    allowAwaitOutsideFunction: null,
+    // When enabled, super identifiers are not constrained to
+    // appearing in methods and do not raise an error when they appear elsewhere.
+    allowSuperOutsideMethod: null,
     // When enabled, hashbang directive in the beginning of file
     // is allowed and treated as a line comment.
     allowHashBang: false,
@@ -565,7 +570,7 @@
     this.privateNameStack = [];
   };
 
-  var prototypeAccessors = { inFunction: { configurable: true },inGenerator: { configurable: true },inAsync: { configurable: true },allowSuper: { configurable: true },allowDirectSuper: { configurable: true },treatFunctionsAsVar: { configurable: true },inNonArrowFunction: { configurable: true } };
+  var prototypeAccessors = { inFunction: { configurable: true },inGenerator: { configurable: true },inAsync: { configurable: true },canAwait: { configurable: true },allowSuper: { configurable: true },allowDirectSuper: { configurable: true },treatFunctionsAsVar: { configurable: true },inNonArrowFunction: { configurable: true } };
 
   Parser.prototype.parse = function parse () {
     var node = this.options.program || this.startNode();
@@ -576,11 +581,19 @@
   prototypeAccessors.inFunction.get = function () { return (this.currentVarScope().flags & SCOPE_FUNCTION) > 0 };
   prototypeAccessors.inGenerator.get = function () { return (this.currentVarScope().flags & SCOPE_GENERATOR) > 0 && !this.currentVarScope().inClassFieldInit };
   prototypeAccessors.inAsync.get = function () { return (this.currentVarScope().flags & SCOPE_ASYNC) > 0 && !this.currentVarScope().inClassFieldInit };
+  prototypeAccessors.canAwait.get = function () {
+    for (var i = this.scopeStack.length - 1; i >= 0; i--) {
+      var scope = this.scopeStack[i];
+      if (scope.inClassFieldInit) { return false }
+      if (scope.flags & SCOPE_FUNCTION) { return (scope.flags & SCOPE_ASYNC) > 0 }
+    }
+    return (this.inModule && this.options.ecmaVersion >= 13) || this.options.allowAwaitOutsideFunction
+  };
   prototypeAccessors.allowSuper.get = function () {
     var ref = this.currentThisScope();
       var flags = ref.flags;
       var inClassFieldInit = ref.inClassFieldInit;
-    return (flags & SCOPE_SUPER) > 0 || inClassFieldInit
+    return (flags & SCOPE_SUPER) > 0 || inClassFieldInit || this.options.allowSuperOutsideMethod
   };
   prototypeAccessors.allowDirectSuper.get = function () { return (this.currentThisScope().flags & SCOPE_DIRECT_SUPER) > 0 };
   prototypeAccessors.treatFunctionsAsVar.get = function () { return this.treatFunctionsAsVarInScope(this.currentScope()) };
@@ -805,13 +818,14 @@
     // Statement) is allowed here. If context is not empty then only a Statement
     // is allowed. However, `let [` is an explicit negative lookahead for
     // ExpressionStatement, so special-case it first.
-    if (nextCh === 91) { return true } // '['
+    if (nextCh === 91 || nextCh === 92 || nextCh > 0xd7ff && nextCh < 0xdc00) { return true } // '[', '/', astral
     if (context) { return false }
 
     if (nextCh === 123) { return true } // '{'
     if (isIdentifierStart(nextCh, true)) {
       var pos = next + 1;
-      while (isIdentifierChar(this.input.charCodeAt(pos), true)) { ++pos; }
+      while (isIdentifierChar(nextCh = this.input.charCodeAt(pos), true)) { ++pos; }
+      if (nextCh === 92 || nextCh > 0xd7ff && nextCh < 0xdc00) { return true }
       var ident = this.input.slice(next, pos);
       if (!keywordRelationalOperator.test(ident)) { return true }
     }
@@ -827,10 +841,11 @@
 
     skipWhiteSpace.lastIndex = this.pos;
     var skip = skipWhiteSpace.exec(this.input);
-    var next = this.pos + skip[0].length;
+    var next = this.pos + skip[0].length, after;
     return !lineBreak.test(this.input.slice(this.pos, next)) &&
       this.input.slice(next, next + 8) === "function" &&
-      (next + 8 === this.input.length || !isIdentifierChar(this.input.charAt(next + 8)))
+      (next + 8 === this.input.length ||
+       !(isIdentifierChar(after = this.input.charCodeAt(next + 8)) || after > 0xd7ff && after < 0xdc00))
   };
 
   // Parse a single statement.
@@ -970,7 +985,7 @@
 
   pp$1.parseForStatement = function(node) {
     this.next();
-    var awaitAt = (this.options.ecmaVersion >= 9 && (this.inAsync || (!this.inFunction && this.options.allowAwaitOutsideFunction)) && this.eatContextual("await")) ? this.lastTokStart : -1;
+    var awaitAt = (this.options.ecmaVersion >= 9 && this.canAwait && this.eatContextual("await")) ? this.lastTokStart : -1;
     this.labels.push(loopLabel);
     this.enterScope(0);
     this.expect(types.parenL);
@@ -2330,7 +2345,7 @@
 
   pp$3.parseMaybeUnary = function(refDestructuringErrors, sawUnary, incDec) {
     var startPos = this.start, startLoc = this.startLoc, expr;
-    if (this.isContextual("await") && (this.inAsync || (!this.inFunction && this.options.allowAwaitOutsideFunction))) {
+    if (this.isContextual("await") && this.canAwait) {
       expr = this.parseAwait();
       sawUnary = true;
     } else if (this.type.prefix) {
@@ -3567,7 +3582,7 @@
 
   var RegExpValidationState = function RegExpValidationState(parser) {
     this.parser = parser;
-    this.validFlags = "gim" + (parser.options.ecmaVersion >= 6 ? "uy" : "") + (parser.options.ecmaVersion >= 9 ? "s" : "");
+    this.validFlags = "gim" + (parser.options.ecmaVersion >= 6 ? "uy" : "") + (parser.options.ecmaVersion >= 9 ? "s" : "") + (parser.options.ecmaVersion >= 13 ? "d" : "");
     this.unicodeProperties = data[parser.options.ecmaVersion >= 12 ? 12 : parser.options.ecmaVersion];
     this.source = "";
     this.flags = "";
@@ -5432,7 +5447,7 @@
 
   // Acorn is a tiny, fast JavaScript parser written in JavaScript.
 
-  var version = "8.2.4";
+  var version = "8.4.1";
 
   Parser.acorn = {
     Parser: Parser,

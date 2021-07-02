@@ -54,9 +54,10 @@ required):
 
 - **ecmaVersion**: Indicates the ECMAScript version to parse. Must be
   either 3, 5, 6 (or 2015), 7 (2016), 8 (2017), 9 (2018), 10 (2019),
-  11 (2020), or 12 (2021, partial support), or `"latest"` (the latest
-  the library supports). This influences support for strict mode, the
-  set of reserved words, and support for new syntax features.
+  11 (2020), 12 (2021, partial support), 13 (2022, partial support)
+  or `"latest"` (the latest the library supports). This influences
+  support for strict mode, the set of reserved words, and support
+  for new syntax features.
 
   **NOTE**: Only 'stage 4' (finalized) ECMAScript features are being
   implemented by Acorn. Other proposed new features must be
@@ -94,10 +95,14 @@ required):
   and also allows `import.meta` expressions to appear in scripts
   (when `sourceType` is not `"module"`).
 
-- **allowAwaitOutsideFunction**: By default, `await` expressions can
-  only appear inside `async` functions. Setting this option to
+- **allowAwaitOutsideFunction**: If `false`, `await` expressions can
+  only appear inside `async` functions. Defaults to `true` for
+  `ecmaVersion` 2022 and later, `false` for lower versions. Setting this option to
   `true` allows to have top-level `await` expressions. They are
   still not allowed in non-`async` functions, though.
+
+- **allowSuperOutsideMethod**: By default, `super` outside a method
+  raises an error. Set this to `true` to accept such code.
 
 - **allowHashBang**: When this is enabled (off by default), if the
   code starts with the characters `#!` (as in a shellscript), the

@@ -9,6 +9,7 @@ import type {SortState, Column, Row, ContextMenuColumnSortClickEvent} from './Da
 import {SortDirection, getRowEntryForColumnId} from './DataGridUtils.js';
 import type {DataGridData, ColumnHeaderClickEvent, DataGridContextMenusConfiguration} from './DataGrid.js';
 import {DataGrid} from './DataGrid.js';
+import dataGridControllerStyles from './dataGridController.css.js';
 
 export interface DataGridControllerData {
   columns: Column[];
@@ -43,6 +44,10 @@ export class DataGridController extends HTMLElement {
 
   private sortState: Readonly<SortState>|null = null;
   private filters: readonly TextUtils.TextUtils.ParsedFilter[] = [];
+
+  connectedCallback(): void {
+    this.shadow.adoptedStyleSheets = [dataGridControllerStyles];
+  }
 
   get data(): DataGridControllerData {
     return {
@@ -197,15 +202,7 @@ export class DataGridController extends HTMLElement {
   private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
     LitHtml.render(LitHtml.html`
-      <style>
-        :host {
-          display: block;
-          height: 100%;
-          overflow: hidden;
-        }
-      </style>
       <${DataGrid.litTagName} .data=${{
           columns: this.columns,
           rows: this.rows,

@@ -1210,6 +1210,8 @@ grd_files_debug_sources = [
   "front_end/ui/components/data_grid/DataGridControllerIntegrator.js",
   "front_end/ui/components/data_grid/DataGridRenderers.js",
   "front_end/ui/components/data_grid/DataGridUtils.js",
+  "front_end/ui/components/data_grid/dataGrid.css.js",
+  "front_end/ui/components/data_grid/dataGridController.css.js",
   "front_end/ui/components/expandable_list/ExpandableList.js",
   "front_end/ui/components/expandable_list/expandableList.css.js",
   "front_end/ui/components/helpers/component-server-setup.js",

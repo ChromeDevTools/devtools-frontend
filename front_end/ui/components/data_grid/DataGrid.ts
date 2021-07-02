@@ -8,6 +8,7 @@ import * as UI from '../../legacy/legacy.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
+import dataGridStyles from './dataGrid.css.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -172,6 +173,7 @@ export class DataGrid extends HTMLElement {
     ];
   }
   connectedCallback(): void {
+    this.shadow.adoptedStyleSheets = [dataGridStyles];
     ComponentHelpers.SetCSSProperty.set(this, '--table-row-height', `${ROW_HEIGHT_PIXELS}px`);
   }
 
@@ -742,125 +744,7 @@ export class DataGrid extends HTMLElement {
     await coordinator.write(() => {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
       LitHtml.render(LitHtml.html`
-      <style>
-        :host {
-          height: 100%;
-          display: block;
-          position: relative;
-        }
-        /* Ensure that vertically we don't overflow */
-        .wrapping-container {
-          overflow-y: auto;
-          /* Use max-height instead of height to ensure that the
-            table does not use more space than necessary. */
-          height: 100%;
-        }
-
-        table {
-          border-spacing: 0;
-          width: 100%;
-          height: 100%;
-          /* To make sure that we properly hide overflowing text
-            when horizontal space is too narrow. */
-          table-layout: fixed;
-        }
-
-        tr {
-          outline: none;
-        }
-
-        tbody tr {
-          background-color: var(--override-data-grid-row-background-color, --color-background);
-        }
-
-        tbody tr.selected {
-          background-color: var(--color-background-elevation-1);
-        }
-
-        td,
-        th {
-          padding: 1px 4px;
-          /* Divider between each cell, except the first one (see below) */
-          border-left: 1px solid var(--color-details-hairline);
-          color: var(--color-text-primary);
-          line-height: var(--table-row-height);
-          height: var(--table-row-height);
-          user-select: text;
-          /* Ensure that text properly cuts off if horizontal space is too narrow */
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          overflow: hidden;
-        }
-
-        th {
-          font-weight: normal;
-          text-align: left;
-          border-bottom: 1px solid var(--color-details-hairline);
-          position: sticky;
-          top: 0;
-          z-index: 2;
-          background-color: var(--color-background-elevation-1);
-        }
-
-        td:focus,
-        th:focus {
-          outline: var(--color-primary) auto 1px;
-        }
-
-        .cell-resize-handle {
-          top: 0;
-          height: 100%;
-          z-index: 3;
-          width: 20px;
-          cursor: col-resize;
-          position: absolute;
-        }
-        /* There is no divider before the first cell */
-        td.firstVisibleColumn,
-        th.firstVisibleColumn {
-          border-left: none;
-        }
-
-        .hidden {
-          display: none;
-        }
-
-        .filler-row td {
-          /* By making the filler row cells 100% they take up any extra height,
-          * leaving the cells with content to be the regular height, and the
-          * final filler row to be as high as it needs to be to fill the empty
-          * space.
-          */
-          height: 100%;
-          pointer-events: none;
-        }
-
-        [aria-sort]:hover {
-          cursor: pointer;
-        }
-
-        [aria-sort="descending"]::after {
-          content: " ";
-          border-left: 0.3em solid transparent;
-          border-right: 0.3em solid transparent;
-          border-top: 0.3em solid var(--color-text-primary);
-          position: absolute;
-          right: 0.5em;
-          top: 0.6em;
-        }
-
-        [aria-sort="ascending"]::after {
-          content: " ";
-          border-bottom: 0.3em solid var(--color-text-primary);
-          border-left: 0.3em solid transparent;
-          border-right: 0.3em solid transparent;
-          position: absolute;
-          right: 0.5em;
-          top: 0.6em;
-        }
-      </style>
       ${this.columns.map((col, columnIndex) => {
         /**
         * We render the resizers outside of the table. One is rendered for each

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as IconButton from '../../../../../front_end/ui/components/icon_button/icon_button.js';
 
 import {assertElement, assertElements, assertShadowRoot, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
@@ -199,6 +200,26 @@ describe('IconButton', () => {
       const {shadowRoot} = renderIconButton({clickHandler: () => {}, groups: [defaultIcon]});
       const texts = Array.from(shadowRoot.querySelectorAll('.icon-button-title'));
       assert.deepEqual(texts.map(x => x.textContent), ['1']);
+    });
+  });
+
+  describe('accessible name', () => {
+    it('is rendered if provided', () => {
+      const expectedAccessibleName = 'AccessibleName';
+      const {shadowRoot} =
+          renderIconButton({clickHandler: () => {}, groups: [defaultIcon], accessibleName: expectedAccessibleName});
+      const button = shadowRoot.querySelector('button');
+      assertNotNullOrUndefined(button);
+      const accessibleName = button.getAttribute('aria-label');
+      assert.deepEqual(accessibleName, expectedAccessibleName);
+    });
+
+    it('is omitted if not provided', () => {
+      const {shadowRoot} = renderIconButton({clickHandler: () => {}, groups: [defaultIcon]});
+      const button = shadowRoot.querySelector('button');
+      assertNotNullOrUndefined(button);
+      const accessibleName = button.getAttribute('aria-label');
+      assert.isNull(accessibleName);
     });
   });
 });

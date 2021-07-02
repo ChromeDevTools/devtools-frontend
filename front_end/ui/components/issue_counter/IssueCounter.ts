@@ -206,11 +206,12 @@ export class IssueCounter extends HTMLElement {
       ],
       clickHandler: this.clickHandler,
       leadingText: this.leadingText,
+      accessibleName: this.accessibleName,
     };
     LitHtml.render(
         LitHtml.html`
-        <icon-button .data=${data as IconButton.IconButton.IconButtonData}
-          aria-label="${LitHtml.Directives.ifDefined(this.accessibleName)}"></icon-button>
+        <icon-button .data=${data as IconButton.IconButton.IconButtonData} .accessibleName="${
+            this.accessibleName}"></icon-button>
         `,
         this.shadow);
     this.tooltipCallback?.();

@@ -23,6 +23,7 @@ export interface IconButtonData {
   groups: IconWithTextData[];
   leadingText?: string;
   trailingText?: string;
+  accessibleName?: string;
 }
 
 export class IconButton extends HTMLElement {
@@ -32,13 +33,25 @@ export class IconButton extends HTMLElement {
   private groups: IconWithTextData[] = [];
   private leadingText: string = '';
   private trailingText: string = '';
+  private accessibleName: string|undefined;
 
   set data(data: IconButtonData) {
     this.groups = data.groups.map(group => ({...group}));  // Ensure we make a deep copy.
     this.clickHandler = data.clickHandler;
     this.trailingText = data.trailingText ?? '';
     this.leadingText = data.leadingText ?? '';
+    this.accessibleName = data.accessibleName;
     this.render();
+  }
+
+  get data(): IconButtonData {
+    return {
+      groups: this.groups.map(group => ({...group})),  // Ensure we make a deep copy.
+      accessibleName: this.accessibleName,
+      clickHandler: this.clickHandler,
+      leadingText: this.leadingText,
+      trailingText: this.trailingText,
+    };
   }
 
   setTexts(texts: (string|undefined)[]): void {
@@ -70,7 +83,7 @@ export class IconButton extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(LitHtml.html`
-      <button class="${buttonClasses}" @click=${this.onClickHandler}>
+      <button class="${buttonClasses}" @click=${this.onClickHandler} aria-label="${LitHtml.Directives.ifDefined(this.accessibleName)}">
       ${this.leadingText ? LitHtml.html`<span class="icon-button-title">${this.leadingText}</span>` : LitHtml.nothing}
       ${this.groups.filter(counter => counter.text !== undefined).map(counter =>
       LitHtml.html`

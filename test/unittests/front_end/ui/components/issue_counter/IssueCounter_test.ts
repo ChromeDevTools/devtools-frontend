@@ -38,6 +38,16 @@ export const extractIconGroups =
       return iconGroups;
     };
 
+export const extractButton = (shadowRoot: ShadowRoot): HTMLButtonElement => {
+  const iconButton = shadowRoot.querySelector('icon-button');
+  assertElement(iconButton, IconButton.IconButton.IconButton);
+  const iconButtonShadowRoot = iconButton.shadowRoot;
+  assertNotNullOrUndefined(iconButtonShadowRoot);
+  const button = iconButtonShadowRoot.querySelector('button');
+  assertElement(button, HTMLButtonElement);
+  return button;
+};
+
 describe('IssueCounter', () => {
   describe('with omitting zero-count issue kinds', () => {
     it('renders correctly', () => {
@@ -78,6 +88,21 @@ describe('IssueCounter', () => {
         const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
         assert.deepEqual(iconNames, ['issue-cross-icon', 'issue-exclamation-icon', 'issue-text-icon']);
       }
+    });
+
+    it('Aria label is added correctly', () => {
+      const expectedAccessibleName = 'Accessible Name';
+      const issuesManager = new MockIssuesManager([]);
+      const {shadowRoot} = renderIssueCounter({
+        issuesManager: issuesManager as unknown as IssuesManager.IssuesManager.IssuesManager,
+        throttlerTimeout: 0,
+        accessibleName: expectedAccessibleName,
+      });
+
+      const button = extractButton(shadowRoot);
+      const accessibleName = button.getAttribute('aria-label');
+
+      assert.strictEqual(accessibleName, expectedAccessibleName);
     });
   });
 

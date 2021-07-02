@@ -7,7 +7,10 @@ import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/ninja/generate_css.gni")
 
 generate_css("css_files") {
-  sources = [ "elementsPanelLink.css" ]
+  sources = [
+    "cssQuery.css",
+    "elementsPanelLink.css",
+  ]
 }
 
 devtools_module("components") {
@@ -17,6 +20,7 @@ devtools_module("components") {
     "AdornerManager.ts",
     "AdornerSettingsPane.ts",
     "CSSPropertyIconResolver.ts",
+    "CSSQuery.ts",
     "ComputedStyleProperty.ts",
     "ComputedStyleTrace.ts",
     "ElementsBreadcrumbs.ts",

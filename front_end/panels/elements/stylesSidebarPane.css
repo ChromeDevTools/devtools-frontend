@@ -58,20 +58,6 @@
   color: var(--color-text-disabled);
 }
 
-.styles-section-title .editable-media .media-text {
-  color: var(--color-text-primary);
-}
-
-.styles-section-title .media .subtitle {
-  float: right;
-  color: var(--color-text-secondary);
-}
-
-.styles-section-title .media:not(.editing-media),
-.styles-section-title .media:not(.editing-media) .subtitle {
-  overflow: hidden;
-}
-
 .styles-section-subtitle {
   color: var(--color-text-secondary);
   float: right;
@@ -200,10 +186,15 @@
   color: var(--color-text-secondary);
 }
 
-.styles-section.styles-panel-hovered:not(.read-only) span.simple-selector:hover,
-.styles-section.styles-panel-hovered:not(.read-only) .media-text :hover {
-  text-decoration: underline;
-  cursor: default;
+.styles-section.styles-panel-hovered:not(.read-only),
+.styles-section.styles-panel-hovered:not(.read-only) devtools-css-query {
+  --override-styles-section-text-hover-text-decoration: underline;
+  --override-styles-section-text-hover-cursor: default;
+}
+
+.styles-section span.simple-selector:hover {
+  text-decoration: var(--override-styles-section-text-hover-text-decoration);
+  cursor: var(--override-styles-section-text-hover-cursor);
 }
 
 .sidebar-separator {

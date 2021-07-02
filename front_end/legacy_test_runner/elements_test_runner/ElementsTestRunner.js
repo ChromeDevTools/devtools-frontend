@@ -250,7 +250,8 @@ ElementsTestRunner.firstMatchedStyleSection = function() {
 };
 
 ElementsTestRunner.firstMediaTextElementInSection = function(section) {
-  return section.element.querySelector('.media-text');
+  const cssQueryElement = section.element.querySelector('devtools-css-query');
+  return cssQueryElement.shadowRoot.querySelector('.query-text');
 };
 
 ElementsTestRunner.querySelector = async function(selector, callback) {
@@ -499,11 +500,11 @@ async function printStyleSection(section, omitLonghands, includeSelectorGroupMar
 
   TestRunner.addResult(
       '[expanded] ' + ((section.propertiesTreeOutline.element.classList.contains('no-affect') ? '[no-affect] ' : '')));
-  const medias = section._titleElement.querySelectorAll('.query-list .media');
+  const queries = section._titleElement.querySelectorAll('devtools-css-query');
 
-  for (let i = 0; i < medias.length; ++i) {
-    const media = medias[i];
-    TestRunner.addResult(text(media));
+  for (const query of queries) {
+    const queryElement = query.shadowRoot.querySelector('.query');
+    TestRunner.addResult(text(queryElement));
   }
 
   const selector =

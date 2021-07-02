@@ -1731,32 +1731,37 @@ export class StylePropertiesSection {
       if (isMedia) {
         continue;
       }
-      const mediaDataElement = this.queryListElement.createChild('div', 'media');
-      const mediaContainerElement = mediaDataElement.createChild('span');
-      const mediaTextElement = mediaContainerElement.createChild('span', 'media-text');
+
+      let queryPrefix = '';
+      let queryText = '';
+      let onQueryTextClick;
       switch (media.source) {
         case SDK.CSSMedia.Source.LINKED_SHEET:
         case SDK.CSSMedia.Source.INLINE_SHEET: {
-          mediaTextElement.textContent = `media="${media.text}"`;
+          queryText = `media="${media.text}"`;
           break;
         }
         case SDK.CSSMedia.Source.MEDIA_RULE: {
-          const decoration = mediaContainerElement.createChild('span');
-          mediaContainerElement.insertBefore(decoration, mediaTextElement);
-          decoration.textContent = '@media ';
-          mediaTextElement.textContent = media.text;
+          queryPrefix = '@media';
+          queryText = media.text;
           if (media.styleSheetId) {
-            mediaDataElement.classList.add('editable-media');
-            mediaTextElement.addEventListener(
-                'click', this.handleQueryRuleClick.bind(this, media, mediaTextElement), false);
+            onQueryTextClick = this.handleQueryRuleClick.bind(this, media);
           }
           break;
         }
         case SDK.CSSMedia.Source.IMPORT_RULE: {
-          mediaTextElement.textContent = `@import ${media.text}`;
+          queryText = `@import ${media.text}`;
           break;
         }
       }
+
+      const mediaQueryElement = new ElementsComponents.CSSQuery.CSSQuery();
+      mediaQueryElement.data = {
+        queryPrefix,
+        queryText,
+        onQueryTextClick,
+      };
+      this.queryListElement.append(mediaQueryElement);
     }
   }
 
@@ -1766,18 +1771,20 @@ export class StylePropertiesSection {
       if (!containerQuery.text) {
         continue;
       }
-      const mediaDataElement = this.queryListElement.createChild('div', 'media');
-      const mediaContainerElement = mediaDataElement.createChild('span');
-      const mediaTextElement = mediaContainerElement.createChild('span', 'media-text');
-      const decoration = mediaContainerElement.createChild('span');
-      mediaContainerElement.insertBefore(decoration, mediaTextElement);
-      decoration.textContent = '@container ';
-      mediaTextElement.textContent = containerQuery.text;
+
+      let onQueryTextClick;
       if (containerQuery.styleSheetId) {
-        mediaDataElement.classList.add('editable-media');
-        mediaTextElement.addEventListener(
-            'click', this.handleQueryRuleClick.bind(this, containerQuery, mediaTextElement), false);
+        onQueryTextClick = this.handleQueryRuleClick.bind(this, containerQuery);
       }
+
+      const containerQueryElement = new ElementsComponents.CSSQuery.CSSQuery();
+      containerQueryElement.data = {
+        queryPrefix: '@container',
+        queryName: containerQuery.name,
+        queryText: containerQuery.text,
+        onQueryTextClick,
+      };
+      this.queryListElement.append(containerQueryElement);
     }
   }
 
@@ -2044,7 +2051,7 @@ export class StylePropertiesSection {
     const target = (event.target as Element);
 
     if (target.classList.contains('header') || this.element.classList.contains('read-only') ||
-        target.enclosingNodeOrSelfWithClass('media')) {
+        target.enclosingNodeOrSelfWithClass('query')) {
       event.consume();
       return;
     }
@@ -2058,8 +2065,9 @@ export class StylePropertiesSection {
     event.consume(true);
   }
 
-  private handleQueryRuleClick(
-      query: SDK.CSSMedia.CSSMedia|SDK.CSSContainerQuery.CSSContainerQuery, element: Element, event: Event): void {
+  private handleQueryRuleClick(query: SDK.CSSMedia.CSSMedia|SDK.CSSContainerQuery.CSSContainerQuery, event: Event):
+      void {
+    const element = event.currentTarget as Element;
     if (UI.UIUtils.isBeingEdited(element)) {
       return;
     }
@@ -2092,16 +2100,16 @@ export class StylePropertiesSection {
       selection.selectAllChildren(element);
     }
     this._parentPane.setEditingStyle(true);
-    const parentMediaElement = element.enclosingNodeOrSelfWithClass('media');
-    parentMediaElement.classList.add('editing-media');
+    const parentMediaElement = element.enclosingNodeOrSelfWithClass('query');
+    parentMediaElement.classList.add('editing-query');
 
     event.consume(true);
   }
 
   _editingMediaFinished(element: Element): void {
     this._parentPane.setEditingStyle(false);
-    const parentMediaElement = element.enclosingNodeOrSelfWithClass('media');
-    parentMediaElement.classList.remove('editing-media');
+    const parentMediaElement = element.enclosingNodeOrSelfWithClass('query');
+    parentMediaElement.classList.remove('editing-query');
   }
 
   _editingMediaCancelled(element: Element): void {

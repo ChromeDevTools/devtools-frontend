@@ -30,7 +30,7 @@ export const INACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="Enable grid mode"]';
 export const ACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="Disable grid mode"]';
 const ELEMENT_CHECKBOX_IN_LAYOUT_PANE_SELECTOR = '.elements input[type=checkbox]';
 const ELEMENT_STYLE_SECTION_SELECTOR = '[aria-label="element.style, css selector"]';
-const STYLE_QUERY_RULE_TEXT_SELECTOR = '.query-list .media-text';
+const STYLE_QUERY_RULE_TEXT_SELECTOR = '.query-text';
 
 export const openLayoutPane = async () => {
   await step('Open Layout pane', async () => {

@@ -12,6 +12,7 @@ import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import requestLinkIconStyles from './requestLinkIcon.css.js';
 
 const UIStrings = {
   /**
@@ -84,6 +85,10 @@ export class RequestLinkIcon extends HTMLElement {
       this.requestResolvedPromise = this.resolveRequest(data.affectedRequest.requestId);
     }
     this.render();
+  }
+
+  connectedCallback(): void {
+    this.shadow.adoptedStyleSheets = [requestLinkIconStyles];
   }
 
   private resolveRequest(requestId: string): Promise<void> {
@@ -178,29 +183,7 @@ export class RequestLinkIcon extends HTMLElement {
   private render(): Promise<void> {
     return coordinator.write(() => {
       // clang-format off
-      // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
       LitHtml.render(LitHtml.html`
-        <style>
-          :host {
-            display: inline-block;
-            white-space: nowrap;
-            color: inherit;
-            font-size: inherit;
-            font-family: inherit;
-          }
-
-          devtools-icon {
-            vertical-align: middle;
-          }
-
-          .link {
-            cursor: pointer;
-          }
-
-          .link span {
-            color: var(--color-link);
-          }
-        </style>
         ${LitHtml.Directives.until(this.requestResolvedPromise.then(() => this.renderComponent()), this.renderComponent())}
       `,
       this.shadow, {host: this});

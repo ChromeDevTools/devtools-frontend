@@ -48,8 +48,8 @@ export function dispatchEvent<E extends keyof ProtocolMapping.Events>(
   }
 
   // Register the event if it doesn't exist already.
-  if (!(method in target._dispatchers[domain]._eventArgs)) {
-    target._dispatchers[domain].registerEvent(method, {});
+  if (!target._dispatchers[domain].hasRegisteredEvent(method)) {
+    target._dispatchers[domain].registerEvent(method, []);
   }
 
   target._dispatchers[domain].dispatch(method, {method: event, params: payload[0]});

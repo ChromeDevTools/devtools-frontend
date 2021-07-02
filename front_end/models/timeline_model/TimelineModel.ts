@@ -1209,7 +1209,7 @@ export class TimelineModelImpl {
     }
 
     if (event.name === RecordType.ResourceWillSendRequest) {
-      const requestId = event.args['data']['requestId'];
+      const requestId = event.args?.data?.requestId;
       if (typeof requestId === 'string') {
         this._requestsFromBrowser.set(requestId, event);
       }
@@ -1401,8 +1401,8 @@ export class TimelineModelImpl {
         continue;
       }
       const id = TimelineModelImpl.globalEventId(e, 'requestId');
-      if (e.name === RecordType.ResourceSendRequest && this._requestsFromBrowser.has(e.args.data.requestId)) {
-        const requestId = e.args.data.requestId;
+      const requestId = e.args?.data?.requestId;
+      if (e.name === RecordType.ResourceSendRequest && requestId && this._requestsFromBrowser.has(requestId)) {
         const event = this._requestsFromBrowser.get(requestId);
         if (event) {
           addRequest(event, id);

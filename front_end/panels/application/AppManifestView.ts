@@ -6,6 +6,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -266,7 +267,7 @@ const UIStrings = {
   *@example {Image} PH1
   *@example {https://example.com/image.png} PH2
   */
-  sSShouldSpecifyItsSizeAs: '{PH1} {PH2} should specify its size as `{width}x{height}`',
+  sSShouldSpecifyItsSizeAs: '{PH1} {PH2} should specify its size as `[width]x[height]`',
   /**
   *@description Warning message for image resources from the manifest
   */
@@ -323,9 +324,25 @@ const UIStrings = {
   *@example {https://example.com/image.png} PH2
   */
   sSHeightDoesNotComplyWithRatioRequirement: '{PH1} {PH2} height can\'t be more than 2.3 times as long as the width',
+  /**
+  *@description Manifest installability error in the Application panel
+  *@example {https://example.com/image.png} url
+  */
+  screenshotPixelSize:
+      'Screenshot {url} should specify a pixel size `[width]x[height]` instead of `"any"` as first size.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/AppManifestView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+type ParsedSize = {
+  any: 'any',
+  formatted: string,
+}|{
+  width: number,
+  height: number,
+  formatted: string,
+};
+
 export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager.Observer {
   _emptyView: UI.EmptyWidget.EmptyWidget;
   _reportView: UI.ReportView.ReportView;
@@ -536,7 +553,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
       screenshotSection.detach(/** overrideHideOnDetach= */ true);
     }
 
-    const imageErrors = [];
+    const imageErrors: Platform.UIString.LocalizedString[] = [];
 
     const setIconMaskedCheckbox = UI.UIUtils.CheckboxLabel.create(i18nString(UIStrings.showOnlyTheMinimumSafeAreaFor));
     setIconMaskedCheckbox.classList.add('mask-checkbox');
@@ -563,18 +580,14 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
       field.appendChild(wrapper);
     }
 
-    let hasSquareIcon = false;
+    let squareSizedIconAvailable = false;
     for (const icon of icons) {
-      const iconErrors =
+      const result =
           await this._appendImageResourceToSection(url, icon, this._iconsSection, /** isScreenshot= */ false);
-      imageErrors.push(...iconErrors);
-
-      if (!hasSquareIcon) {
-        const [width, height] = icon.sizes.split('x').map((x: string) => parseInt(x, 10));
-        hasSquareIcon = width === height;
-      }
+      imageErrors.push(...result.imageResourceErrors);
+      squareSizedIconAvailable = result.squareSizedIconAvailable || squareSizedIconAvailable;
     }
-    if (!hasSquareIcon) {
+    if (!squareSizedIconAvailable) {
       imageErrors.push(i18nString(UIStrings.sSShouldHaveSquareIcon));
     }
 
@@ -600,7 +613,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
       const shortcutIcons = shortcut.icons || [];
       let hasShorcutIconLargeEnough = false;
       for (const shortcutIcon of shortcutIcons) {
-        const shortcutIconErrors =
+        const {imageResourceErrors: shortcutIconErrors} =
             await this._appendImageResourceToSection(url, shortcutIcon, shortcutSection, /** isScreenshot= */ false);
         imageErrors.push(...shortcutIconErrors);
         if (!hasShorcutIconLargeEnough && shortcutIcon.sizes) {
@@ -621,7 +634,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
       const screenshotSection =
           this._reportView.appendSection(i18nString(UIStrings.screenshotS, {PH1: screenshotIndex}));
       this._screenshotsSections.push(screenshotSection);
-      const screenshotErrors =
+      const {imageResourceErrors: screenshotErrors} =
           await this._appendImageResourceToSection(url, screenshot, screenshotSection, /** isScreenshot= */ true);
       imageErrors.push(...screenshotErrors);
       screenshotIndex++;
@@ -775,69 +788,130 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
     return null;
   }
 
+  parseSizes(
+      sizes: string, resourceName: Platform.UIString.LocalizedString, imageUrl: string,
+      imageResourceErrors: Platform.UIString.LocalizedString[]): ParsedSize[] {
+    const rawSizeArray = sizes.split(/\s+/);
+    const parsedSizes: ParsedSize[] = [];
+    for (const size of rawSizeArray) {
+      if (size === 'any') {
+        if (!parsedSizes.find(x => 'any' in x)) {
+          parsedSizes.push({any: 'any', formatted: 'any'});
+        }
+        continue;
+      }
+      const match = size.match(/^(?<width>\d+)[xX](?<height>\d+)$/);
+      if (match) {
+        const width = parseInt(match.groups?.width || '', 10);
+        const height = parseInt(match.groups?.height || '', 10);
+        const formatted = `${width}×${height}px`;
+        parsedSizes.push({width, height, formatted});
+      } else {
+        imageResourceErrors.push(i18nString(UIStrings.sSShouldSpecifyItsSizeAs, {PH1: resourceName, PH2: imageUrl}));
+      }
+    }
+    return parsedSizes;
+  }
+
+  checkSizeProblem(
+      size: ParsedSize, type: string|undefined, image: HTMLImageElement,
+      resourceName: Platform.UIString.LocalizedString,
+      imageUrl: string): {error?: Platform.UIString.LocalizedString, hasSquareSize: boolean} {
+    if ('any' in size) {
+      return {hasSquareSize: image.naturalWidth === image.naturalHeight};
+    }
+    const hasSquareSize = size.width === size.height;
+    if (image.naturalWidth !== size.width && image.naturalHeight !== size.height) {
+      return {
+        error: i18nString(UIStrings.actualSizeSspxOfSSDoesNotMatch, {
+          PH1: image.naturalWidth,
+          PH2: image.naturalHeight,
+          PH3: resourceName,
+          PH4: imageUrl,
+          PH5: size.width,
+          PH6: size.height,
+        }),
+        hasSquareSize,
+      };
+    }
+    if (image.naturalWidth !== size.width) {
+      return {
+        error: i18nString(
+            UIStrings.actualWidthSpxOfSSDoesNotMatch,
+            {PH1: image.naturalWidth, PH2: resourceName, PH3: imageUrl, PH4: size.width}),
+        hasSquareSize,
+      };
+    }
+    if (image.naturalHeight !== size.height) {
+      return {
+        error: i18nString(
+            UIStrings.actualHeightSpxOfSSDoesNotMatch,
+            {PH1: image.naturalHeight, PH2: resourceName, PH3: imageUrl, PH4: size.height}),
+        hasSquareSize,
+      };
+    }
+    return {hasSquareSize};
+  }
+
   async _appendImageResourceToSection(
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      baseUrl: string, imageResource: any, section: UI.ReportView.Section, isScreenshot: boolean): Promise<string[]> {
-    const imageResourceErrors = [];
+      baseUrl: string, imageResource: any, section: UI.ReportView.Section, isScreenshot: boolean):
+      Promise<{imageResourceErrors: Platform.UIString.LocalizedString[], squareSizedIconAvailable?: boolean}> {
+    const imageResourceErrors: Platform.UIString.LocalizedString[] = [];
     const resourceName = isScreenshot ? i18nString(UIStrings.screenshot) : i18nString(UIStrings.icon);
     if (!imageResource.src) {
       imageResourceErrors.push(i18nString(UIStrings.sSrcIsNotSet, {PH1: resourceName}));
-      return imageResourceErrors;
+      return {imageResourceErrors};
     }
     const imageUrl = Common.ParsedURL.ParsedURL.completeURL(baseUrl, imageResource['src']);
     if (!imageUrl) {
       imageResourceErrors.push(
           i18nString(UIStrings.sUrlSFailedToParse, {PH1: resourceName, PH2: imageResource['src']}));
-      return imageResourceErrors;
+      return {imageResourceErrors};
     }
     const result = await this._loadImage(imageUrl);
     if (!result) {
       imageResourceErrors.push(i18nString(UIStrings.sSFailedToLoad, {PH1: resourceName, PH2: imageUrl}));
-      return imageResourceErrors;
+      return {imageResourceErrors};
     }
     const {wrapper, image} = result;
-    const sizes = imageResource['sizes'] ? imageResource['sizes'].replace('x', '×') + 'px' : '';
-    const title = sizes + '\n' + (imageResource['type'] || '');
+    const sizes = this.parseSizes(imageResource['sizes'], resourceName, imageUrl, imageResourceErrors);
+    const title = sizes.map(x => x.formatted).join(' ') + '\n' + (imageResource['type'] || '');
     const field = section.appendFlexedField(title);
+    let squareSizedIconAvailable = false;
     if (!imageResource.sizes) {
       imageResourceErrors.push(i18nString(UIStrings.sSDoesNotSpecifyItsSizeInThe, {PH1: resourceName, PH2: imageUrl}));
-    } else if (!/^\d+x\d+$/.test(imageResource.sizes)) {
-      imageResourceErrors.push(i18nString(UIStrings.sSShouldSpecifyItsSizeAs, {PH1: resourceName, PH2: imageUrl}));
     } else {
-      const [width, height] = imageResource.sizes.split('x').map((x: string) => parseInt(x, 10));
-      if (image.naturalWidth !== width && image.naturalHeight !== height) {
-        imageResourceErrors.push(i18nString(UIStrings.actualSizeSspxOfSSDoesNotMatch, {
-          PH1: image.naturalWidth,
-          PH2: image.naturalHeight,
-          PH3: resourceName,
-          PH4: imageUrl,
-          PH5: width,
-          PH6: height,
-        }));
-      } else if (image.naturalWidth !== width) {
-        imageResourceErrors.push(i18nString(
-            UIStrings.actualWidthSpxOfSSDoesNotMatch,
-            {PH1: image.naturalWidth, PH2: resourceName, PH3: imageUrl, PH4: width}));
-      } else if (image.naturalHeight !== height) {
-        imageResourceErrors.push(i18nString(
-            UIStrings.actualHeightSpxOfSSDoesNotMatch,
-            {PH1: image.naturalHeight, PH2: resourceName, PH3: imageUrl, PH4: height}));
-      } else if (isScreenshot) {
-        if (width < 320 || height < 320) {
-          imageResourceErrors.push(i18nString(UIStrings.sSSizeShouldBeAtLeast320, {PH1: resourceName, PH2: imageUrl}));
-        } else if (width > 3840 || height > 3840) {
-          imageResourceErrors.push(i18nString(UIStrings.sSSizeShouldBeAtMost3840, {PH1: resourceName, PH2: imageUrl}));
-        } else if (width > (height * 2.3)) {
-          imageResourceErrors.push(
-              i18nString(UIStrings.sSWidthDoesNotComplyWithRatioRequirement, {PH1: resourceName, PH2: imageUrl}));
-        } else if (height > (width * 2.3)) {
-          imageResourceErrors.push(
-              i18nString(UIStrings.sSHeightDoesNotComplyWithRatioRequirement, {PH1: resourceName, PH2: imageUrl}));
+      if (isScreenshot && sizes.length > 0 && 'any' in sizes[0]) {
+        imageResourceErrors.push(i18nString(UIStrings.screenshotPixelSize, {url: imageUrl}));
+      }
+      for (const size of sizes) {
+        const {error, hasSquareSize} =
+            this.checkSizeProblem(size, imageResource['type'], image, resourceName, imageUrl);
+        squareSizedIconAvailable = squareSizedIconAvailable || hasSquareSize;
+        if (error) {
+          imageResourceErrors.push(error);
+        } else if (isScreenshot) {
+          const width = 'any' in size ? image.naturalWidth : size.width;
+          const height = 'any' in size ? image.naturalHeight : size.height;
+          if (width < 320 || height < 320) {
+            imageResourceErrors.push(
+                i18nString(UIStrings.sSSizeShouldBeAtLeast320, {PH1: resourceName, PH2: imageUrl}));
+          } else if (width > 3840 || height > 3840) {
+            imageResourceErrors.push(
+                i18nString(UIStrings.sSSizeShouldBeAtMost3840, {PH1: resourceName, PH2: imageUrl}));
+          } else if (width > (height * 2.3)) {
+            imageResourceErrors.push(
+                i18nString(UIStrings.sSWidthDoesNotComplyWithRatioRequirement, {PH1: resourceName, PH2: imageUrl}));
+          } else if (height > (width * 2.3)) {
+            imageResourceErrors.push(
+                i18nString(UIStrings.sSHeightDoesNotComplyWithRatioRequirement, {PH1: resourceName, PH2: imageUrl}));
+          }
         }
       }
     }
     field.appendChild(wrapper);
-    return imageResourceErrors;
+    return {imageResourceErrors, squareSizedIconAvailable};
   }
 }

@@ -2165,6 +2165,9 @@
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "Screenshot"
   },
+  "panels/application/AppManifestView.ts | screenshotPixelSize": {
+    "message": "Screenshot {url} should specify a pixel size [width]x[height] instead of \"any\" as first size."
+  },
   "panels/application/AppManifestView.ts | screenshotS": {
     "message": "Screenshot #{PH1}"
   },
@@ -2196,7 +2199,7 @@
     "message": "Most operating systems require square icons. Please include at least one square icon in the array."
   },
   "panels/application/AppManifestView.ts | sSShouldSpecifyItsSizeAs": {
-    "message": "{PH1} {PH2} should specify its size as {width}x{height}"
+    "message": "{PH1} {PH2} should specify its size as [width]x[height]"
   },
   "panels/application/AppManifestView.ts | sSSizeShouldBeAtLeast320": {
     "message": "{PH1} {PH2} size should be at least 320×320"

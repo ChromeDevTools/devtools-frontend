@@ -2165,6 +2165,9 @@
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "Ŝćr̂éêńŝh́ôt́"
   },
+  "panels/application/AppManifestView.ts | screenshotPixelSize": {
+    "message": "Ŝćr̂éêńŝh́ôt́ {url} ŝh́ôúl̂d́ ŝṕêćîf́ŷ á p̂íx̂él̂ śîźê [width]x[height] ín̂śt̂éâd́ ôf́ \"any\" âś f̂ír̂śt̂ śîźê."
+  },
   "panels/application/AppManifestView.ts | screenshotS": {
     "message": "Ŝćr̂éêńŝh́ôt́ #{PH1}"
   },
@@ -2196,7 +2199,7 @@
     "message": "M̂óŝt́ ôṕêŕât́îńĝ śŷśt̂ém̂ś r̂éq̂úîŕê śq̂úâŕê íĉón̂ś. P̂ĺêáŝé îńĉĺûd́ê át̂ ĺêáŝt́ ôńê śq̂úâŕê íĉón̂ ín̂ t́ĥé âŕr̂áŷ."
   },
   "panels/application/AppManifestView.ts | sSShouldSpecifyItsSizeAs": {
-    "message": "{PH1} {PH2} ŝh́ôúl̂d́ ŝṕêćîf́ŷ ít̂ś ŝíẑé âś {width}x{height}"
+    "message": "{PH1} {PH2} ŝh́ôúl̂d́ ŝṕêćîf́ŷ ít̂ś ŝíẑé âś [width]x[height]"
   },
   "panels/application/AppManifestView.ts | sSSizeShouldBeAtLeast320": {
     "message": "{PH1} {PH2} ŝíẑé ŝh́ôúl̂d́ b̂é ât́ l̂éâśt̂ 320×320"

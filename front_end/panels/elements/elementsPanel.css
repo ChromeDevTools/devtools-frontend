@@ -73,3 +73,7 @@ devtools-adorner-settings-pane {
   border-bottom: 1px solid var(--color-details-hairline);
   overflow: auto;
 }
+
+devtools-tree-outline {
+  overflow: auto;
+}

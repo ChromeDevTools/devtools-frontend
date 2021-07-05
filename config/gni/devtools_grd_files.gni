@@ -1254,6 +1254,7 @@ grd_files_debug_sources = [
   "front_end/ui/components/request_link_icon/RequestLinkIcon.js",
   "front_end/ui/components/request_link_icon/requestLinkIcon.css.js",
   "front_end/ui/components/survey_link/SurveyLink.js",
+  "front_end/ui/components/survey_link/surveyLink.css.js",
   "front_end/ui/components/tree_outline/TreeOutline.js",
   "front_end/ui/components/tree_outline/TreeOutlineUtils.js",
   "front_end/ui/legacy/ARIAUtils.js",

@@ -174,6 +174,28 @@ def maybe_reset_timestamps_on_generated_files(
                 os.utime(gen_path, (old_mtime, old_mtime))
 
 
+# TypeScript generates `.tsbuildinfo` files for its incremental compilation. These files are used for
+# the internal compiler "build" mode which can incrementally compile based on the declaration files of
+# any project references. However, since GN "runs the world", GN determines when it should recompile
+# certain targets.
+#
+# We don't include the `.tsbuildinfo` files in the GN `outputs`, since they have historically introduced
+# non-determinism in the build system and we don't actually need them. However, a side-effect of not
+# including these files in `outputs` is that `ninja -C out/Default -t clean` does not clean up these
+# files. This could mean that after cleaning the out directory, a recompilation will start to break,
+# since the TypeScript compiler looks at the `.tsbuildinfo` file and sees that none of the source files
+# are changed, but it doesn't check that the output files are still there. Therefore, the output files
+# are gone and any compilation of a project that depends on the outputs will start to fail.
+#
+# To avoid any problems, we should simply delete these files. We don't need any information from them,
+# since GN already knows what to do. This should also provide a small performance improvement, as the
+# TypeScript compiler now no longer need to check for up-to-dateness, which saves a couple of CPU cycles.
+def remove_generated_tsbuildinfo_file(tsbuildinfo_output_location):
+    # Should technically not happen, but let's code defensively here just in case
+    if os.path.exists(tsbuildinfo_output_location):
+        os.remove(tsbuildinfo_output_location)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', '--sources', nargs='*', help='List of TypeScript source files')
@@ -261,6 +283,8 @@ def main():
 
     maybe_reset_timestamps_on_generated_files(
         previously_generated_file_metadata, tsconfig_output_directory)
+    remove_generated_tsbuildinfo_file(
+        path.join(tsconfig_output_directory, tsbuildinfo_name))
 
     if found_errors:
         print('')

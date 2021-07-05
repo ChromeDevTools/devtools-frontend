@@ -124,6 +124,7 @@ builder(
             "bugs": "none",
         },
     },
+    notifies = ["autoroll sheriff notifier"],
 )
 
 builder(
@@ -150,6 +151,7 @@ builder(
             "bugs": "none",
         },
     },
+    notifies = ["autoroll sheriff notifier"],
 )
 
 luci.list_view(

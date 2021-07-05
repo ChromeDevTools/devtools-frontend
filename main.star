@@ -153,6 +153,15 @@ luci.tree_closer(
     ] + EXCLUDED_STEPS,
 )
 
+luci.notifier(
+    name = "autoroll sheriff notifier",
+    on_occurrence = ["FAILURE"],
+    failed_step_regexp = [
+        "Previous roll failed",
+    ],
+    notify_emails = ["liviurau@chromium.org", "devtools-waterfall-sheriff-onduty@grotations.appspotmail.com"],
+)
+
 luci.milo(
     logo = "https://storage.googleapis.com/chrome-infra-public/logo/devtools.svg",
 )

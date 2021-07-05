@@ -5,6 +5,7 @@
 import * as LitHtml from '../../lit-html/lit-html.js';
 import type * as Marked from '../../../third_party/marked/marked.js';
 import * as ComponentHelpers from '../../components/helpers/helpers.js';
+import markdownViewStyles from './markdownView.css.js';
 
 import type {MarkdownImageData} from './MarkdownImage.js';
 import type {MarkdownLinkData} from './MarkdownLink.js';
@@ -25,6 +26,10 @@ export class MarkdownView extends HTMLElement {
   // TODO(crbug.com/1108699): Replace with `Marked.Marked.Token[]` once AST types are fixed upstream.
   private tokenData: readonly Object[] = [];
 
+  connectedCallback(): void {
+    this.shadow.adoptedStyleSheets = [markdownViewStyles];
+  }
+
   set data(data: MarkdownViewData) {
     this.tokenData = data.tokens;
     this.update();
@@ -37,49 +42,7 @@ export class MarkdownView extends HTMLElement {
   private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
     render(html`
-      <style>
-      .message {
-        line-height: 20px;
-        font-size: 14px;
-        color: var(--color-text-secondary);
-        margin-bottom: 4px;
-        user-select: text;
-      }
-
-      .message p {
-        margin-bottom: 16px;
-        margin-block-start: 2px;
-      }
-
-      .message ul {
-        list-style-type: none;
-        list-style-position: inside;
-        padding-inline-start: 0;
-      }
-
-      .message li {
-        margin-top: 8px;
-        display: list-item;
-      }
-
-      .message li::before {
-        content: "→";
-        -webkit-mask-image: none;
-        padding-right: 5px;
-        position: relative;
-        top: -1px;
-      }
-
-      .message code {
-        color: var(--color-text-primary);
-        font-size: 12px;
-        user-select: text;
-        cursor: text;
-        background: var(--color-background-elevation-1);
-      }
-      </style>
       <div class='message'>
         ${this.tokenData.map(renderToken)}
       </div>

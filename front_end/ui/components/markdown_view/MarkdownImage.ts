@@ -5,6 +5,7 @@
 import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as IconButton from '../../components/icon_button/icon_button.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
+import markdownImageStyles from './markdownImage.css.js';
 
 import type {ImageData} from './MarkdownImagesMap.js';
 import {getMarkdownImage} from './MarkdownImagesMap.js';
@@ -28,6 +29,10 @@ export class MarkdownImage extends HTMLElement {
 
   constructor() {
     super();
+  }
+
+  connectedCallback(): void {
+    this.shadow.adoptedStyleSheets = [markdownImageStyles];
   }
 
   set data(data: MarkdownImageData) {
@@ -54,13 +59,7 @@ export class MarkdownImage extends HTMLElement {
       return LitHtml.html``;
     }
     const {src, width = '100%', height = '100%'} = this.imageData;
-    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
     return LitHtml.html`
-      <style>
-        .markdown-image {
-          display: block;
-        }
-      </style>
       <img class="markdown-image" src=${src} alt=${this.imageTitle} width=${width} height=${height}/>
     `;
   }

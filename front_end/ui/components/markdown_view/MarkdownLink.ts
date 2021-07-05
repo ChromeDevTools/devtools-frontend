@@ -6,6 +6,7 @@ import '../../legacy/legacy.js'; // Required for <x-link>.
 
 import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
+import markdownLinkStyles from './markdownLink.css.js';
 
 import {getMarkdownLink} from './MarkdownLinksMap.js';
 
@@ -26,6 +27,10 @@ export class MarkdownLink extends HTMLElement {
   private linkText: string = '';
   private linkUrl: string = '';
 
+  connectedCallback(): void {
+    this.shadow.adoptedStyleSheets = [markdownLinkStyles];
+  }
+
   set data(data: MarkdownLinkData) {
     const {key, title} = data;
     const markdownLink = getMarkdownLink(key);
@@ -36,18 +41,7 @@ export class MarkdownLink extends HTMLElement {
 
   private render(): void {
     // clang-format off
-    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
     const output = LitHtml.html`
-      <style>
-        .devtools-link {
-          color: var(--color-link);
-          text-decoration: none;
-        }
-
-        .devtools-link:hover {
-          text-decoration: underline;
-        }
-      </style>
       <x-link class="devtools-link" href=${this.linkUrl}>${this.linkText}</x-link>
     `;
     LitHtml.render(output, this.shadow);

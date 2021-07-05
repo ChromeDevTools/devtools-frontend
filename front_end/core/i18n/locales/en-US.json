@@ -9842,6 +9842,9 @@
   "panels/timeline/TimelineUIUtils.ts | compile": {
     "message": "Compile"
   },
+  "panels/timeline/TimelineUIUtils.ts | compileCode": {
+    "message": "Compile Code"
+  },
   "panels/timeline/TimelineUIUtils.ts | compiledWasmModule": {
     "message": "Compiled Wasm Module"
   },
@@ -10189,6 +10192,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | onloadEvent": {
     "message": "Onload Event"
+  },
+  "panels/timeline/TimelineUIUtils.ts | optimizeCode": {
+    "message": "Optimize Code"
   },
   "panels/timeline/TimelineUIUtils.ts | other": {
     "message": "Other"

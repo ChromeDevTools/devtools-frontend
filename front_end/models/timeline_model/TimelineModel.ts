@@ -1479,6 +1479,8 @@ export enum RecordType {
   XHRReadyStateChange = 'XHRReadyStateChange',
   XHRLoad = 'XHRLoad',
   CompileScript = 'v8.compile',
+  CompileCode = 'V8.CompileCode',
+  OptimizeCode = 'V8.OptimizeCode',
   EvaluateScript = 'EvaluateScript',
   CompileModule = 'v8.compileModule',
   EvaluateModule = 'v8.evaluateModule',

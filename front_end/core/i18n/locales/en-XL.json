@@ -9842,6 +9842,9 @@
   "panels/timeline/TimelineUIUtils.ts | compile": {
     "message": "Ĉóm̂ṕîĺê"
   },
+  "panels/timeline/TimelineUIUtils.ts | compileCode": {
+    "message": "Ĉóm̂ṕîĺê Ćôd́ê"
+  },
   "panels/timeline/TimelineUIUtils.ts | compiledWasmModule": {
     "message": "Ĉóm̂ṕîĺêd́ Ŵáŝḿ M̂ód̂úl̂é"
   },
@@ -10189,6 +10192,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | onloadEvent": {
     "message": "Ôńl̂óâd́ Êv́êńt̂"
+  },
+  "panels/timeline/TimelineUIUtils.ts | optimizeCode": {
+    "message": "Ôṕt̂ím̂íẑé Ĉód̂é"
   },
   "panels/timeline/TimelineUIUtils.ts | other": {
     "message": "Ôt́ĥér̂"

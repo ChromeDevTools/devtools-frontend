@@ -198,6 +198,14 @@ const UIStrings = {
   /**
   *@description Text in Timeline UIUtils of the Performance panel
   */
+  compileCode: 'Compile Code',
+  /**
+  *@description Text in Timeline UIUtils of the Performance panel
+  */
+  optimizeCode: 'Optimize Code',
+  /**
+  *@description Text in Timeline UIUtils of the Performance panel
+  */
   evaluateScript: 'Evaluate Script',
   /**
   *@description Text in Timeline UIUtils of the Performance panel
@@ -1280,6 +1288,8 @@ export class TimelineUIUtils {
         new TimelineRecordStyle(i18nString(UIStrings.xhrReadyStateChange), scripting);
     eventStyles[type.XHRLoad] = new TimelineRecordStyle(i18nString(UIStrings.xhrLoad), scripting);
     eventStyles[type.CompileScript] = new TimelineRecordStyle(i18nString(UIStrings.compileScript), scripting);
+    eventStyles[type.CompileCode] = new TimelineRecordStyle(i18nString(UIStrings.compileCode), scripting);
+    eventStyles[type.OptimizeCode] = new TimelineRecordStyle(i18nString(UIStrings.optimizeCode), scripting);
     eventStyles[type.EvaluateScript] = new TimelineRecordStyle(i18nString(UIStrings.evaluateScript), scripting);
     eventStyles[type.CompileModule] = new TimelineRecordStyle(i18nString(UIStrings.compileModule), scripting);
     eventStyles[type.EvaluateModule] = new TimelineRecordStyle(i18nString(UIStrings.evaluateModule), scripting);

@@ -273,7 +273,8 @@ export function registerCommands(inspectorBackend) {
     CorsIssue: 'CorsIssue',
     AttributionReportingIssue: 'AttributionReportingIssue',
     QuirksModeIssue: 'QuirksModeIssue',
-    NavigatorUserAgentIssue: 'NavigatorUserAgentIssue'
+    NavigatorUserAgentIssue: 'NavigatorUserAgentIssue',
+    WasmCrossOriginModuleSharingIssue: 'WasmCrossOriginModuleSharingIssue'
   });
   inspectorBackend.registerEvent('Audits.issueAdded', ['issue']);
   inspectorBackend.registerEnum('Audits.GetEncodedResponseRequestEncoding', {Webp: 'webp', Jpeg: 'jpeg', Png: 'png'});
@@ -591,6 +592,7 @@ export function registerCommands(inspectorBackend) {
     TargetText: 'target-text',
     SpellingError: 'spelling-error',
     GrammarError: 'grammar-error',
+    Highlight: 'highlight',
     FirstLineInherited: 'first-line-inherited',
     Scrollbar: 'scrollbar',
     ScrollbarThumb: 'scrollbar-thumb',

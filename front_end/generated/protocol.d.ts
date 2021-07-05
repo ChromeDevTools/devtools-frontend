@@ -1041,6 +1041,13 @@ declare namespace Protocol {
       location?: SourceCodeLocation;
     }
 
+    export interface WasmCrossOriginModuleSharingIssueDetails {
+      wasmModuleUrl: string;
+      sourceOrigin: string;
+      targetOrigin: string;
+      isWarning: boolean;
+    }
+
     /**
      * A unique identifier for the type of issue. Each type may use one of the
      * optional fields in InspectorIssueDetails to convey more specific
@@ -1059,6 +1066,7 @@ declare namespace Protocol {
       AttributionReportingIssue = 'AttributionReportingIssue',
       QuirksModeIssue = 'QuirksModeIssue',
       NavigatorUserAgentIssue = 'NavigatorUserAgentIssue',
+      WasmCrossOriginModuleSharingIssue = 'WasmCrossOriginModuleSharingIssue',
     }
 
     /**
@@ -1079,6 +1087,7 @@ declare namespace Protocol {
       attributionReportingIssueDetails?: AttributionReportingIssueDetails;
       quirksModeIssueDetails?: QuirksModeIssueDetails;
       navigatorUserAgentIssueDetails?: NavigatorUserAgentIssueDetails;
+      wasmCrossOriginModuleSharingIssue?: WasmCrossOriginModuleSharingIssueDetails;
     }
 
     /**
@@ -2840,6 +2849,7 @@ declare namespace Protocol {
       TargetText = 'target-text',
       SpellingError = 'spelling-error',
       GrammarError = 'grammar-error',
+      Highlight = 'highlight',
       FirstLineInherited = 'first-line-inherited',
       Scrollbar = 'scrollbar',
       ScrollbarThumb = 'scrollbar-thumb',
@@ -6928,6 +6938,11 @@ declare namespace Protocol {
        * passed by the developer (e.g. via "fetch") as understood by the backend.
        */
       trustTokenParams?: TrustTokenParams;
+      /**
+       * True if this resource request is considered to be the 'same site' as the
+       * request correspondinfg to the main frame.
+       */
+      isSameSite?: boolean;
     }
 
     /**

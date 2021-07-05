@@ -77,3 +77,14 @@ devtools-adorner-settings-pane {
 devtools-tree-outline {
   overflow: auto;
 }
+
+.axtree-button {
+  position: absolute;
+  padding: 4px;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}

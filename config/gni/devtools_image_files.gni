@@ -36,6 +36,7 @@ devtools_image_files = [
 devtools_svg_sources = [
   "accelerometer-back.svg",
   "accelerometer-front.svg",
+  "accessibility-icon.svg",
   "add-icon.svg",
   "align-content-center-icon.svg",
   "align-content-end-icon.svg",

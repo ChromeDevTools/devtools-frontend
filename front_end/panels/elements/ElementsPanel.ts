@@ -40,6 +40,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Extensions from '../../models/extensions/extensions.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -141,6 +142,23 @@ const legacyNodeToNewBreadcrumbsNode = (node: SDK.DOMModel.DOMNode): ElementsCom
   };
 };
 
+const createAccessibilityTreeToggleButton = (isActive: boolean): HTMLButtonElement => {
+  const button = document.createElement('button');
+  if (isActive) {
+    button.classList.add('axtree-button', 'axtree-button-active');
+  } else {
+    button.classList.add('axtree-button');
+  }
+  button.tabIndex = 0;
+  button.title =
+      isActive ? i18nString(UIStrings.switchToDomTreeView) : i18nString(UIStrings.switchToAccessibilityTreeView);
+  const icon = new IconButton.Icon.Icon();
+  const bgColor = isActive ? 'var(--color-primary)' : 'var(--color-text-secondary)';
+  icon.data = {iconName: 'accessibility-icon', color: bgColor, width: '16px', height: '16px'};
+  button.appendChild(icon);
+  return button;
+};
+
 let elementsPanelInstance: ElementsPanel;
 
 export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.Searchable,
@@ -168,7 +186,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   _adornerManager: ElementsComponents.AdornerManager.AdornerManager;
   _adornerSettingsPane: ElementsComponents.AdornerSettingsPane.AdornerSettingsPane|null;
   _adornersByName: Map<string, Set<ElementsComponents.Adorner.Adorner>>;
-  _accessibilityTreeButton?: HTMLButtonElement;
+  accessibilityTreeButton?: HTMLButtonElement;
   domTreeButton?: HTMLButtonElement;
   _selectedNodeOnReset?: SDK.DOMModel.DOMNode;
   _hasNonDefaultSelectedNode?: boolean;
@@ -255,15 +273,13 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   }
 
   _initializeFullAccessibilityTreeView(stackElement: UI.Widget.WidgetElement): void {
-    this._accessibilityTreeButton = document.createElement('button');
-    this._accessibilityTreeButton.textContent = i18nString(UIStrings.switchToAccessibilityTreeView);
-    this._accessibilityTreeButton.addEventListener('click', this._showAccessibilityTree.bind(this));
+    this.accessibilityTreeButton = createAccessibilityTreeToggleButton(false);
+    this.accessibilityTreeButton.addEventListener('click', this._showAccessibilityTree.bind(this));
 
-    this.domTreeButton = document.createElement('button');
-    this.domTreeButton.textContent = i18nString(UIStrings.switchToDomTreeView);
+    this.domTreeButton = createAccessibilityTreeToggleButton(true);
     this.domTreeButton.addEventListener('click', this._showDOMTree.bind(this));
 
-    stackElement.appendChild(this._accessibilityTreeButton);
+    stackElement.appendChild(this.accessibilityTreeButton);
   }
 
   _showAccessibilityTree(): void {

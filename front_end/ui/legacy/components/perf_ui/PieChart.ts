@@ -4,6 +4,7 @@
 
 import * as ComponentHelpers from '../../../components/helpers/helpers.js';
 import * as LitHtml from '../../../lit-html/lit-html.js';
+import pieChartStyles from './pieChart.css.js';
 
 const {render, html, svg} = LitHtml;
 
@@ -51,6 +52,10 @@ export class PieChart extends HTMLElement {
   private readonly innerR = 0.618;
   private lastAngle = -Math.PI / 2;
 
+  connectedCallback(): void {
+    this.shadow.adoptedStyleSheets = [pieChartStyles];
+  }
+
   set data(data: PieChartData) {
     this.chartName = data.chartName;
     this.size = data.size;
@@ -65,107 +70,7 @@ export class PieChart extends HTMLElement {
   private render(): void {
     this.lastAngle = -Math.PI / 2;
     // clang-format off
-    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
     const output = html`
-      <style>
-        .root {
-          align-items: center;
-          display: flex;
-          min-width: fit-content;
-          white-space: nowrap;
-        }
-
-        .chart-root {
-          position: relative;
-          overflow: hidden;
-        }
-
-        .pie-chart-foreground {
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          z-index: 10;
-          top: 0;
-          display: flex;
-          pointer-events: none;
-        }
-
-        .pie-chart-total {
-          margin: auto;
-          padding: 2px 5px;
-          pointer-events: auto;
-        }
-
-        :focus {
-          outline-width: 0;
-        }
-
-        .pie-chart-total.selected {
-          font-weight: bold;
-        }
-
-        .chart-root .slice.selected {
-          stroke: var(--legacy-selection-bg-color);
-          stroke-opacity: 1;
-          stroke-width: 0.04;
-          stroke-linecap: round;
-          stroke-linejoin: round;
-        }
-
-        .pie-chart-legend {
-          margin-left: 30px;
-        }
-
-        .pie-chart-legend-row {
-          margin: 5px 2px 5px auto;
-          padding-right: 25px;
-        }
-
-        .pie-chart-legend-row.selected {
-          font-weight: bold;
-        }
-
-        .pie-chart-legend-row:focus-visible {
-          box-shadow: 0 0 0 2px var(--legacy-selection-bg-color) !important; /* stylelint-disable-line declaration-no-important */
-        }
-
-        .pie-chart-swatch {
-          display: inline-block;
-          width: 11px;
-          height: 11px;
-          margin: 0 6px;
-          top: 1px;
-          position: relative;
-          border: 1px solid rgb(100 100 100 / 20%); /* stylelint-disable-line plugin/use_theme_colors */
-          /* See: crbug.com/1152736 for color variable migration. */
-        }
-
-        .pie-chart-swatch.pie-chart-empty-swatch {
-          border: none;
-        }
-
-        .pie-chart-name {
-          display: inline-block;
-        }
-
-        .pie-chart-size {
-          display: inline-block;
-          text-align: right;
-          width: 70px;
-        }
-
-        @media (forced-colors: active) {
-          .pie-chart-swatch {
-            forced-color-adjust: none;
-            border-color: ButtonText;
-          }
-
-          .pie-chart-total {
-            forced-color-adjust: none;
-            background-color: canvas;
-          }
-        }
-      </style>
       <div class="root" role="group" @keydown=${this.onKeyDown} aria-label=${this.chartName}>
         <div class="chart-root" style="width: ${this.size}px; height: ${this.size}px;">
           ${svg`

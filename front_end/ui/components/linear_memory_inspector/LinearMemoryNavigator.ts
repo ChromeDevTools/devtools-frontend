@@ -6,6 +6,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 import * as IconButton from '../icon_button/icon_button.js';
+import linearMemoryNavigatorStyles from './linearMemoryNavigator.css.js';
 
 const UIStrings = {
   /**
@@ -101,6 +102,10 @@ export class LinearMemoryNavigator extends HTMLElement {
   private canGoBackInHistory = false;
   private canGoForwardInHistory = false;
 
+  connectedCallback(): void {
+    this.shadow.adoptedStyleSheets = [linearMemoryNavigatorStyles];
+  }
+
   set data(data: LinearMemoryNavigatorData) {
     this.address = data.address;
     this.error = data.error;
@@ -122,67 +127,7 @@ export class LinearMemoryNavigator extends HTMLElement {
   private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
     const result = html`
-      <style>
-        .navigator {
-          min-height: 24px;
-          display: flex;
-          flex-wrap: nowrap;
-          justify-content: space-between;
-          overflow: hidden;
-          align-items: center;
-          background-color: var(--color-background);
-          color: var(--color-text-primary);
-        }
-
-        .navigator-item {
-          display: flex;
-          white-space: nowrap;
-          overflow: hidden;
-        }
-
-        .address-input {
-          text-align: center;
-          outline: none;
-          color: var(--color-text-primary);
-          border: 1px solid var(--color-background-elevation-2);
-          background: transparent;
-        }
-
-        .address-input.invalid {
-          color: var(--color-accent-red);
-        }
-
-        .navigator-button {
-          display: flex;
-          width: 20px;
-          height: 20px;
-          background: transparent;
-          overflow: hidden;
-          border: none;
-          padding: 0;
-          outline: none;
-          justify-content: center;
-          align-items: center;
-          cursor: pointer;
-        }
-
-        .navigator-button devtools-icon {
-          height: 14px;
-          width: 14px;
-          min-height: 14px;
-          min-width: 14px;
-        }
-
-        .navigator-button:enabled:hover devtools-icon {
-          --icon-color: var(--color-text-primary);
-        }
-
-        .navigator-button:enabled:focus devtools-icon {
-          --icon-color: var(--color-text-secondary);
-        }
-        </style>
       <div class="navigator">
         <div class="navigator-item">
           ${this.createButton({icon: 'ic_undo_16x16_icon', title: i18nString(UIStrings.goBackInAddressHistory),

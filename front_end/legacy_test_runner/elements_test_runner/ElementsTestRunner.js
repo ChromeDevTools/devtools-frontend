@@ -504,7 +504,11 @@ async function printStyleSection(section, omitLonghands, includeSelectorGroupMar
 
   for (const query of queries) {
     const queryElement = query.shadowRoot.querySelector('.query');
-    TestRunner.addResult(text(queryElement));
+    // InnerText is used here to ensure test output consistency
+    // between debug and release blink tests, since textContent
+    // will preserve more DOM structural information, which would
+    // be easy to flake later.
+    TestRunner.addResult(queryElement.innerText);
   }
 
   const selector =

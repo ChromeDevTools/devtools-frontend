@@ -316,7 +316,7 @@ export class MainImpl {
     ]);
 
     // Localized DevTools, hide "locale selector" setting behind an experiment.
-    Root.Runtime.experiments.register('localizedDevTools', 'Enable localized DevTools');
+    Root.Runtime.experiments.register(Root.Runtime.ExperimentName.LOCALIZED_DEVTOOLS, 'Enable localized DevTools');
 
     Root.Runtime.experiments.cleanUpStaleExperiments();
     const enabledExperiments = Root.Runtime.Runtime.queryParam('enabledExperiments');

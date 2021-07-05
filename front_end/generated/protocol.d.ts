@@ -15634,7 +15634,7 @@ declare namespace Protocol {
        */
       executionContextId?: ExecutionContextId;
       /**
-       * Dictionary with entries of meta deta that the client associated
+       * Dictionary with entries of meta data that the client associated
        * with this exception, such as information about associated network
        * requests, etc.
        */
@@ -15787,6 +15787,10 @@ declare namespace Protocol {
        * specified and objectId is, objectGroup will be inherited from object.
        */
       objectGroup?: string;
+      /**
+       * Whether to throw an exception if side effect cannot be ruled out during evaluation.
+       */
+      throwOnSideEffect?: boolean;
     }
 
     export interface CallFunctionOnResponse extends ProtocolResponseWithError {

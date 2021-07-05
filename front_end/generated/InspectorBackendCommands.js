@@ -3240,7 +3240,8 @@ export function registerCommands(inspectorBackend) {
         {'name': 'userGesture', 'type': 'boolean', 'optional': true},
         {'name': 'awaitPromise', 'type': 'boolean', 'optional': true},
         {'name': 'executionContextId', 'type': 'number', 'optional': true},
-        {'name': 'objectGroup', 'type': 'string', 'optional': true}
+        {'name': 'objectGroup', 'type': 'string', 'optional': true},
+        {'name': 'throwOnSideEffect', 'type': 'boolean', 'optional': true}
       ],
       ['result', 'exceptionDetails']);
   inspectorBackend.registerCommand(

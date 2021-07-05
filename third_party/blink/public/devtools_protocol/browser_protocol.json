@@ -23276,7 +23276,7 @@
                         },
                         {
                             "name": "exceptionMetaData",
-                            "description": "Dictionary with entries of meta deta that the client associated\nwith this exception, such as information about associated network\nrequests, etc.",
+                            "description": "Dictionary with entries of meta data that the client associated\nwith this exception, such as information about associated network\nrequests, etc.",
                             "experimental": true,
                             "optional": true,
                             "type": "object"
@@ -23486,6 +23486,13 @@
                             "description": "Symbolic group name that can be used to release multiple objects. If objectGroup is not\nspecified and objectId is, objectGroup will be inherited from object.",
                             "optional": true,
                             "type": "string"
+                        },
+                        {
+                            "name": "throwOnSideEffect",
+                            "description": "Whether to throw an exception if side effect cannot be ruled out during evaluation.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ],
                     "returns": [

@@ -6,9 +6,9 @@
 
 /**
  * @typedef {{
- *  registerCommand: function(string, !Array.<!{name: string, type: string, optional: boolean}>, !Array.<string>):void,
- *  registerEnum: function(string, !Object<string, string>):void,
- *  registerEvent: function(string, !Array<string>):void,
+ *  registerCommand: function(string&any, !Array.<!{name: string, type: string, optional: boolean}>, !Array.<string>):void,
+ *  registerEnum: function(string&any, !Object<string, string>):void,
+ *  registerEvent: function(string&any, !Array<string>):void,
  * }}
  */
 // @ts-ignore typedef

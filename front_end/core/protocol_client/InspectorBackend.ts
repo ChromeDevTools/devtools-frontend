@@ -56,16 +56,30 @@ export type Message = {
   id?: number,
   error?: Object|null,
   result?: Object|null,
-  method?: string,
+  method?: QualifiedName,
   params?: MessageParams|null,
 };
 
 interface EventMessage extends Message {
-  method: string;
+  method: QualifiedName;
   params?: MessageParams|null;
 }
 
-type EventParameterNames = Map<string, string[]>;
+/** A qualified name, e.g. Domain.method */
+export type QualifiedName = string&{qualifiedEventNameTag: string | undefined};
+/** A qualified name, e.g. method */
+export type UnqualifiedName = string&{unqualifiedEventNameTag: string | undefined};
+
+export const splitQualifiedName = (string: QualifiedName): [string, UnqualifiedName] => {
+  const [domain, eventName] = string.split('.');
+  return [domain, eventName as UnqualifiedName];
+};
+
+export const qualifyName = (domain: string, name: UnqualifiedName): QualifiedName => {
+  return `${domain}.${name}` as QualifiedName;
+};
+
+type EventParameterNames = Map<QualifiedName, string[]>;
 
 export class InspectorBackend {
   _agentPrototypes: Map<string, _AgentPrototype>;
@@ -140,20 +154,19 @@ export class InspectorBackend {
   }
 
   registerCommand(
-      method: string, signature: {
+      method: QualifiedName, signature: {
         name: string,
         type: string,
         optional: boolean,
       }[],
       replyArgs: string[]): void {
-    const domainAndMethod = method.split('.');
+    const domainAndMethod = splitQualifiedName(method);
     this._agentPrototype(domainAndMethod[0]).registerCommand(domainAndMethod[1], signature, replyArgs);
     this._initialized = true;
   }
 
-  registerEnum(type: string, values: Object): void {
-    const domainAndName = type.split('.');
-    const domain = domainAndName[0];
+  registerEnum(type: QualifiedName, values: Object): void {
+    const [domain, name] = splitQualifiedName(type);
     // @ts-ignore Protocol global namespace pollution
     if (!Protocol[domain]) {
       // @ts-ignore Protocol global namespace pollution
@@ -161,12 +174,12 @@ export class InspectorBackend {
     }
 
     // @ts-ignore Protocol global namespace pollution
-    Protocol[domain][domainAndName[1]] = values;
+    Protocol[domain][name] = values;
     this._initialized = true;
   }
 
-  registerEvent(eventName: string, params: string[]): void {
-    const domain = eventName.split('.')[0];
+  registerEvent(eventName: QualifiedName, params: string[]): void {
+    const [domain] = splitQualifiedName(eventName);
     this._dispatcherPrototype(domain).registerEvent(eventName, params);
     this._initialized = true;
   }
@@ -245,7 +258,7 @@ export const test = {
    * Sends a raw message over main connection.
    * ProtocolClient.test.sendRawMessage('Page.enable', {}, console.log)
    */
-  sendRawMessage: null as ((arg0: string, arg1: Object|null, arg2: SendRawMessageCallback) => void) | null,
+  sendRawMessage: null as ((method: QualifiedName, args: Object|null, arg2: SendRawMessageCallback) => void) | null,
 
   /**
    * Set to true to not log any errors.
@@ -351,7 +364,7 @@ export class SessionRouter {
     return this._connection;
   }
 
-  sendMessage(sessionId: string, domain: string, method: string, params: Object|null, callback: Callback): void {
+  sendMessage(sessionId: string, domain: string, method: QualifiedName, params: Object|null, callback: Callback): void {
     const messageId = this._nextMessageId();
     const messageObject: Message = {
       id: messageId,
@@ -391,7 +404,8 @@ export class SessionRouter {
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _sendRawMessageForTesting(method: string, params: Object|null, callback: ((...arg0: any[]) => void)|null): void {
+  _sendRawMessageForTesting(method: QualifiedName, params: Object|null, callback: ((...arg0: any[]) => void)|null):
+      void {
     const domain = method.split('.')[0];
     this.sendMessage('', domain, method, params, callback || ((): void => {}));
   }
@@ -467,7 +481,7 @@ export class SessionRouter {
       }
       // This cast is justified as we just checked for the presence of messageObject.method.
       const eventMessage = messageObject as EventMessage;
-      const [domainName, method] = eventMessage.method.split('.');
+      const [domainName, method] = splitQualifiedName(eventMessage.method);
       if (!(domainName in session.target._dispatchers)) {
         InspectorBackend.reportProtocolError(
             `Protocol Error: the message ${eventMessage.method} is for non-existing domain '${domainName}'`,
@@ -873,13 +887,13 @@ class _AgentPrototype {
   }
 
   registerCommand(
-      methodName: string, signature: {
+      methodName: UnqualifiedName, signature: {
         name: string,
         type: string,
         optional: boolean,
       }[],
       replyArgs: string[]): void {
-    const domainAndMethod = this._domain + '.' + methodName;
+    const domainAndMethod = qualifyName(this._domain, methodName);
 
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -956,7 +970,7 @@ class _AgentPrototype {
   }
 
   _sendMessageToBackendPromise(
-      method: string, signature: {
+      method: QualifiedName, signature: {
         name: string,
         type: string,
         optional: boolean,
@@ -1004,7 +1018,7 @@ class _AgentPrototype {
     });
   }
 
-  _invoke(method: string, request: Object|null): Promise<Object> {
+  _invoke(method: QualifiedName, request: Object|null): Promise<Object> {
     return new Promise(fulfill => {
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1052,12 +1066,12 @@ class _DispatcherPrototype {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _dispatchers!: any[];
 
-  registerEvent(eventName: string, params: string[]): void {
-    this.eventArgs.set(eventName, params);
+  registerEvent(event: QualifiedName, params: string[]): void {
+    this.eventArgs.set(event, params);
   }
 
-  hasRegisteredEvent(eventName: string): boolean {
-    return this.eventArgs.has(eventName);
+  hasRegisteredEvent(event: QualifiedName): boolean {
+    return this.eventArgs.has(event);
   }
 
   addDomainDispatcher(dispatcher: Object): void {
@@ -1072,7 +1086,7 @@ class _DispatcherPrototype {
     this._dispatchers.splice(index, 1);
   }
 
-  dispatch(method: string, messageObject: EventMessage): void {
+  dispatch(method: UnqualifiedName, messageObject: EventMessage): void {
     if (!this._dispatchers.length) {
       return;
     }

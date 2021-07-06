@@ -1568,8 +1568,8 @@ export class ConsoleViewFilter {
       isAll = isAll && levels[name] === allValue[name];
       isDefault = isDefault && levels[name] === defaultValue[name];
       if (levels[name]) {
-        text =
-            text ? i18nString(UIStrings.customLevels) : i18nString(UIStrings.sOnly, {PH1: this._levelLabels.get(name)});
+        text = text ? i18nString(UIStrings.customLevels) :
+                      i18nString(UIStrings.sOnly, {PH1: String(this._levelLabels.get(name))});
       }
     }
     if (isAll) {

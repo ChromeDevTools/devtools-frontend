@@ -949,7 +949,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     const copyContextMenuTitle = getObjectTitle();
 
     contextMenu.debugSection().appendItem(
-        i18nString(UIStrings.storeSAsGlobalVariable, {PH1: copyContextMenuTitle}),
+        i18nString(UIStrings.storeSAsGlobalVariable, {PH1: String(copyContextMenuTitle)}),
         () => SDK.ConsoleModel.ConsoleModel.instance().saveToTempVariable(executionContext, remoteObject));
 
     const ctxMenuClipboardSection = contextMenu.clipboardSection();
@@ -968,7 +968,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     }
     // We are trying to copy a primitive value.
     else if (primitiveRemoteObjectTypes.has(remoteObject.type)) {
-      ctxMenuClipboardSection.appendItem(i18nString(UIStrings.copyS, {PH1: copyContextMenuTitle}), () => {
+      ctxMenuClipboardSection.appendItem(i18nString(UIStrings.copyS, {PH1: String(copyContextMenuTitle)}), () => {
         inspectorFrontendHost.copyText(remoteObject.description);
       });
     }
@@ -985,7 +985,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
       };
 
       ctxMenuClipboardSection.appendItem(
-          i18nString(UIStrings.copyS, {PH1: copyContextMenuTitle}), copyDecodedValueHandler);
+          i18nString(UIStrings.copyS, {PH1: String(copyContextMenuTitle)}), copyDecodedValueHandler);
     }
 
     else if (remoteObject.type === 'function') {

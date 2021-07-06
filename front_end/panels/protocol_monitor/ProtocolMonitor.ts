@@ -86,7 +86,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/protocol_monitor/ProtocolMonito
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const timestampRenderer = (value: DataGrid.DataGridUtils.CellValue): LitHtml.TemplateResult => {
-  return LitHtml.html`${i18nString(UIStrings.sMs, {PH1: value})}`;
+  return LitHtml.html`${i18nString(UIStrings.sMs, {PH1: String(value)})}`;
 };
 
 export interface Message {

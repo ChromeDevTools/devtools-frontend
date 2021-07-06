@@ -258,11 +258,11 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
   }
 
   static opCodeDescription(opCode: number, mask: boolean): string {
-    const localizedDescription = opCodeDescriptions[opCode] || '';
+    const localizedDescription = opCodeDescriptions[opCode] || ((): string => '');
     if (mask) {
-      return i18nString(UIStrings.sOpcodeSMask, {PH1: localizedDescription, PH2: opCode});
+      return i18nString(UIStrings.sOpcodeSMask, {PH1: localizedDescription(), PH2: opCode});
     }
-    return i18nString(UIStrings.sOpcodeS, {PH1: localizedDescription, PH2: opCode});
+    return i18nString(UIStrings.sOpcodeS, {PH1: localizedDescription(), PH2: opCode});
   }
 
   wasShown(): void {

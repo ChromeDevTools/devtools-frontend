@@ -311,7 +311,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
           }
           UI.Tooltip.Tooltip.install(
               messageElement, i18nString(UIStrings.clearAllMessagesWithS, {
-                PH1: UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction('console.clear'),
+                PH1: String(UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction('console.clear')),
               }));
           break;
         case Protocol.Runtime.ConsoleAPICalledEventType.Dir: {

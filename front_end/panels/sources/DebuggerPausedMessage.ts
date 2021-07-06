@@ -142,8 +142,8 @@ export class DebuggerPausedMessage {
     const mainElement = messageWrapper.createChild('div', 'status-main');
     mainElement.appendChild(UI.Icon.Icon.create('smallicon-info', 'status-icon'));
     const breakpointType = BreakpointTypeNouns.get(data.type);
-    mainElement.appendChild(
-        document.createTextNode(i18nString(UIStrings.pausedOnS, {PH1: breakpointType ? breakpointType() : null})));
+    mainElement.appendChild(document.createTextNode(
+        i18nString(UIStrings.pausedOnS, {PH1: breakpointType ? breakpointType() : String(null)})));
 
     const subElement = messageWrapper.createChild('div', 'status-sub monospace');
     const linkifiedNode = await Common.Linkifier.Linkifier.linkify(data.node);

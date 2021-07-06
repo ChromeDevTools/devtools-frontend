@@ -601,7 +601,7 @@ export class RequestTimingView extends UI.Widget.VBox {
     if (retrievalTime) {
       const responseTimeElement = document.createElement('div');
       responseTimeElement.classList.add('network-fetch-details-treeitem');
-      responseTimeElement.textContent = i18nString(UIStrings.retrievalTimeS, {PH1: retrievalTime});
+      responseTimeElement.textContent = i18nString(UIStrings.retrievalTimeS, {PH1: retrievalTime.toString()});
       const responseTimeTreeElement = new UI.TreeOutline.TreeElement(responseTimeElement);
       detailsView.appendChild(responseTimeTreeElement);
     }

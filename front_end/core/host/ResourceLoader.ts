@@ -174,7 +174,7 @@ export function netErrorToMessage(
   }
   if (netError !== 0) {
     if (isHTTPError(netError)) {
-      return i18nString(UIStrings.httpErrorStatusCodeSS, {PH1: httpStatusCode, PH2: netErrorName});
+      return i18nString(UIStrings.httpErrorStatusCodeSS, {PH1: String(httpStatusCode), PH2: netErrorName});
     }
     const errorCategory = getNetErrorCategory(netError);
     // We don't localize here, as `errorCategory` is already localized,

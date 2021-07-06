@@ -251,7 +251,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper imp
                           .map(i18nStringFn => i18nStringFn ? i18nStringFn() : undefined)
                           .filter(Boolean);
     if (locations.length === 1) {
-      return i18nString(UIStrings.thereMayBeStoredDataAffectingSingular, {PH1: locations[0]});
+      return i18nString(UIStrings.thereMayBeStoredDataAffectingSingular, {PH1: String(locations[0])});
     }
     if (locations.length > 1) {
       return i18nString(UIStrings.thereMayBeStoredDataAffectingLoadingPlural, {PH1: locations.join(', ')});

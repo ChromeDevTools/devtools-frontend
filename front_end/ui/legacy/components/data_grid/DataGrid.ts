@@ -1346,7 +1346,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper {
             const firstColumn = this.visibleColumnsArray[firstEditColumnIndex];
             if (firstColumn && firstColumn.editable) {
               contextMenu.defaultSection().appendItem(
-                  i18nString(UIStrings.editS, {PH1: firstColumn.title}),
+                  i18nString(UIStrings.editS, {PH1: String(firstColumn.title)}),
                   this._startEditingColumnOfDataGridNode.bind(this, gridNode, firstEditColumnIndex));
             }
           }
@@ -1354,7 +1354,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper {
           const columnId = this.columnIdFromNode(target);
           if (columnId && this._columns[columnId].editable) {
             contextMenu.defaultSection().appendItem(
-                i18nString(UIStrings.editS, {PH1: this._columns[columnId].title}),
+                i18nString(UIStrings.editS, {PH1: String(this._columns[columnId].title)}),
                 this._startEditing.bind(this, target));
           }
         }

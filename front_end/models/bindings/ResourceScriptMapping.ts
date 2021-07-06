@@ -346,7 +346,7 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper {
     }
     if (!exceptionDetails) {
       Common.Console.Console.instance().addMessage(
-          i18nString(UIStrings.liveEditFailed, {PH1: error}), Common.Console.MessageLevel.Warning);
+          i18nString(UIStrings.liveEditFailed, {PH1: String(error)}), Common.Console.MessageLevel.Warning);
       return;
     }
     const messageText = i18nString(UIStrings.liveEditCompileFailed, {PH1: exceptionDetails.text});

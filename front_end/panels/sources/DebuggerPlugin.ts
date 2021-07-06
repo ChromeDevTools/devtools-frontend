@@ -1734,9 +1734,9 @@ export class DebuggerPlugin extends Plugin {
       return;
     }
     this._sourceMapInfobar.createDetailsRowMessage(i18nString(UIStrings.associatedFilesShouldBeAdded));
-    this._sourceMapInfobar.createDetailsRowMessage(i18nString(
-        UIStrings.associatedFilesAreAvailable,
-        {PH1: UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction('quickOpen.show')}));
+    this._sourceMapInfobar.createDetailsRowMessage(i18nString(UIStrings.associatedFilesAreAvailable, {
+      PH1: String(UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction('quickOpen.show')),
+    }));
     this._sourceMapInfobar.setCloseCallback(() => {
       this._sourceMapInfobar = null;
     });

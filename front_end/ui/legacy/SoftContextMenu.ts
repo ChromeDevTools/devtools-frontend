@@ -223,12 +223,12 @@ export class SoftContextMenu {
     if (item.type === 'checkbox') {
       const checkedState = item.checked ? i18nString(UIStrings.checked) : i18nString(UIStrings.unchecked);
       if (item.shortcut) {
-        accessibleName = i18nString(UIStrings.sSS, {PH1: item.label, PH2: item.shortcut, PH3: checkedState});
+        accessibleName = i18nString(UIStrings.sSS, {PH1: String(item.label), PH2: item.shortcut, PH3: checkedState});
       } else {
-        accessibleName = i18nString(UIStrings.sS, {PH1: item.label, PH2: checkedState});
+        accessibleName = i18nString(UIStrings.sS, {PH1: String(item.label), PH2: checkedState});
       }
     } else if (item.shortcut) {
-      accessibleName = i18nString(UIStrings.sS, {PH1: item.label, PH2: item.shortcut});
+      accessibleName = i18nString(UIStrings.sS, {PH1: String(item.label), PH2: item.shortcut});
     }
     ARIAUtils.setAccessibleName(menuItemElement, accessibleName);
 

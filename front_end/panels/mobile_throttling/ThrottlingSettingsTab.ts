@@ -280,7 +280,8 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
       const valid = !Number.isNaN(parsedValue) && parsedValue >= minThroughput && parsedValue <= maxThroughput;
       if (!valid) {
         const errorMessage = i18nString(
-            UIStrings.sMustBeANumberBetweenSkbsToSkbs, {PH1: throughput, PH2: minThroughput, PH3: maxThroughput});
+            UIStrings.sMustBeANumberBetweenSkbsToSkbs,
+            {PH1: String(throughput), PH2: minThroughput, PH3: maxThroughput});
         return {valid, errorMessage};
       }
       return {valid, errorMessage: undefined};

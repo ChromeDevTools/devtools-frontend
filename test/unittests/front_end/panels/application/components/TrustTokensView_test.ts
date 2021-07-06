@@ -6,7 +6,7 @@ import * as ApplicationComponents from '../../../../../../front_end/panels/appli
 import * as DataGrid from '../../../../../../front_end/ui/components/data_grid/data_grid.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import type * as Protocol from '../../../../../../front_end/generated/protocol.js';
-import {assertElement, assertShadowRoot, getElementWithinComponent, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import {assertElement, assertShadowRoot, dispatchClickEvent, getElementWithinComponent, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
 import {getCellByIndexes, getValuesOfAllBodyRows} from '../../../ui/components/DataGridHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
@@ -104,9 +104,12 @@ describe('TrustTokensView', () => {
 
     const dataGridShadowRoot = getInternalDataGridShadowRoot(component);
     const deleteCell = getCellByIndexes(dataGridShadowRoot, {column: 2, row: 1});
-    const button = deleteCell.querySelector('button');
-    assertElement(button, HTMLButtonElement);
-    button.click();
+    const deleteButtonComponent = deleteCell.querySelector('devtools-trust-tokens-delete-button');
+    assertElement(deleteButtonComponent, HTMLElement);
+    assertShadowRoot(deleteButtonComponent.shadowRoot);
+    const deleteButton = deleteButtonComponent.shadowRoot.querySelector('button');
+    assertElement(deleteButton, HTMLButtonElement);
+    dispatchClickEvent(deleteButton);
 
     const actualIssuer = await deleteButtonClicked;
     assert.strictEqual(actualIssuer, 'bar.org');

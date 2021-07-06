@@ -1,0 +1,26 @@
+# Copyright 2020 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../../scripts/build/ninja/copy.gni")
+import("../../../../../third_party/typescript/typescript.gni")
+
+ts_library("ts") {
+  testonly = true
+  sources = [ "basic.ts" ]
+
+  deps = [
+    "../../../../../test/unittests/front_end/helpers",
+    "../../../../generated:protocol",
+    "../../../../panels/application/components:bundle",
+    "../../../../ui/components/helpers:bundle",
+    "../../../../ui/lit-html:bundle",
+  ]
+}
+
+copy_to_gen("trust_tokens_view") {
+  testonly = true
+  sources = [ "basic.html" ]
+
+  deps = [ ":ts" ]
+}

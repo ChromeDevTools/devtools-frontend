@@ -30,6 +30,8 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
   private trustedWebActivityIssues = new Set<IssuesManager.TrustedWebActivityIssue.TrustedWebActivityIssue>();
   private quirksModeIssues = new Set<IssuesManager.QuirksModeIssue.QuirksModeIssue>();
   private attributionReportingIssues = new Set<IssuesManager.AttributionReportingIssue.AttributionReportingIssue>();
+  private wasmCrossOriginModuleSharingIssues =
+      new Set<IssuesManager.WasmCrossOriginModuleSharingIssue.WasmCrossOriginModuleSharingIssue>();
   private representative?: IssuesManager.Issue.Issue;
   private aggregatedIssuesCount = 0;
 
@@ -94,6 +96,11 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
 
   getAttributionReportingIssues(): ReadonlySet<IssuesManager.AttributionReportingIssue.AttributionReportingIssue> {
     return this.attributionReportingIssues;
+  }
+
+  getWasmCrossOriginModuleSharingIssue():
+      ReadonlySet<IssuesManager.WasmCrossOriginModuleSharingIssue.WasmCrossOriginModuleSharingIssue> {
+    return this.wasmCrossOriginModuleSharingIssues;
   }
 
   getDescription(): IssuesManager.MarkdownIssueDescription.MarkdownIssueDescription|null {
@@ -178,6 +185,9 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
     }
     if (issue instanceof IssuesManager.AttributionReportingIssue.AttributionReportingIssue) {
       this.attributionReportingIssues.add(issue);
+    }
+    if (issue instanceof IssuesManager.WasmCrossOriginModuleSharingIssue.WasmCrossOriginModuleSharingIssue) {
+      this.wasmCrossOriginModuleSharingIssues.add(issue);
     }
   }
 

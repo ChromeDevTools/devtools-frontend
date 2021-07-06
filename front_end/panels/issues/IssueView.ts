@@ -29,6 +29,7 @@ import {AffectedSharedArrayBufferIssueDetailsView} from './AffectedSharedArrayBu
 import {AffectedSourcesView} from './AffectedSourcesView.js';
 import {AffectedTrustedWebActivityIssueDetailsView} from './AffectedTrustedWebActivityIssueDetailsView.js';
 import {CorsIssueDetailsView} from './CorsIssueDetailsView.js';
+import {WasmCrossOriginModuleSharingAffectedResourcesView} from './WasmCrossOriginModuleSharingAffectedResourcesView.js';
 import {AttributionReportingIssueDetailsView} from './AttributionReportingIssueDetailsView.js';
 
 import type {AggregatedIssue} from './IssueAggregator.js';
@@ -254,6 +255,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       new CorsIssueDetailsView(this, this._issue),
       new AffectedDocumentsInQuirksModeView(this, this._issue),
       new AttributionReportingIssueDetailsView(this, this._issue),
+      new WasmCrossOriginModuleSharingAffectedResourcesView(this, this._issue),
     ];
 
     this._aggregatedIssuesCount = null;

@@ -20,6 +20,7 @@ import * as SameSiteCookieIssue from './SameSiteCookieIssue.js';
 import * as SharedArrayBufferIssue from './SharedArrayBufferIssue.js';
 import * as SourceFrameIssuesManager from './SourceFrameIssuesManager.js';
 import * as TrustedWebActivityIssue from './TrustedWebActivityIssue.js';
+import * as WasmCrossOriginModuleSharingIssue from './WasmCrossOriginModuleSharingIssue.js';
 
 export {
   AttributionReportingIssue,
@@ -40,4 +41,5 @@ export {
   SharedArrayBufferIssue,
   SourceFrameIssuesManager,
   TrustedWebActivityIssue,
+  WasmCrossOriginModuleSharingIssue,
 };

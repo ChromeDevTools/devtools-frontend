@@ -16,5 +16,7 @@ copy_to_gen("issues") {
     "origin-wildcard.rawresponse",
     "redirect.rawresponse",
     "sab-issue.rawresponse",
+    "wasm-co-iframe.html",
+    "wasm-co-sharing.html",
   ]
 }

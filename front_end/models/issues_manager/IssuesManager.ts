@@ -20,6 +20,7 @@ import {SharedArrayBufferIssue} from './SharedArrayBufferIssue.js';
 import {SourceFrameIssuesManager} from './SourceFrameIssuesManager.js';
 import {TrustedWebActivityIssue} from './TrustedWebActivityIssue.js';
 import {AttributionReportingIssue} from './AttributionReportingIssue.js';
+import {WasmCrossOriginModuleSharingIssue} from './WasmCrossOriginModuleSharingIssue.js';
 
 let issuesManagerInstance: IssuesManager|null = null;
 
@@ -85,6 +86,10 @@ const issueCodeHandlers = new Map<
   [
     Protocol.Audits.InspectorIssueCode.AttributionReportingIssue,
     AttributionReportingIssue.fromInspectorIssue,
+  ],
+  [
+    Protocol.Audits.InspectorIssueCode.WasmCrossOriginModuleSharingIssue,
+    WasmCrossOriginModuleSharingIssue.fromInspectorIssue,
   ],
 ]);
 

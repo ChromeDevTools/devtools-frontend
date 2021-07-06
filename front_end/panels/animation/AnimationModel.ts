@@ -357,8 +357,8 @@ export class AnimationEffect {
     return new SDK.DOMModel.DeferredDOMNode(this._animationModel.target(), this.backendNodeId());
   }
 
-  backendNodeId(): number {
-    return this._payload.backendNodeId as number;
+  backendNodeId(): Protocol.DOM.BackendNodeId {
+    return this._payload.backendNodeId as Protocol.DOM.BackendNodeId;
   }
 
   keyframesRule(): KeyframesRule|null {

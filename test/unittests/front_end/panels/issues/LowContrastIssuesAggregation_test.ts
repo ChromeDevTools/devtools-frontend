@@ -7,6 +7,7 @@ const {assert} = chai;
 import * as Issues from '../../../../../front_end/panels/issues/issues.js';
 import * as IssuesManager from '../../../../../front_end/models/issues_manager/issues_manager.js';
 import type * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {MockIssuesModel} from '../../models/issues_manager/MockIssuesModel.js';
 import {MockIssuesManager} from '../../models/issues_manager/MockIssuesManager.js';
 
@@ -25,15 +26,15 @@ describe('AggregatedIssue', async () => {
     const issueDetails = [
       {
         ...commonDetails,
-        violatingNodeId: 1,
+        violatingNodeId: 1 as Protocol.DOM.BackendNodeId,
       },
       {
         ...commonDetails,
-        violatingNodeId: 2,
+        violatingNodeId: 2 as Protocol.DOM.BackendNodeId,
       },
       {
         ...commonDetails,
-        violatingNodeId: 3,
+        violatingNodeId: 3 as Protocol.DOM.BackendNodeId,
       },
     ];
     const issues = issueDetails.map(details => new IssuesManager.LowTextContrastIssue.LowTextContrastIssue(details));

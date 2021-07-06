@@ -102,7 +102,7 @@ export class CSSOverviewPanel extends UI.Panel.Panel {
   }
 
   _requestNodeHighlight(evt: Common.EventTarget.EventTargetEvent): void {
-    this._model.highlightNode((evt.data as number));
+    this._model.highlightNode((evt.data as Protocol.DOM.BackendNodeId));
   }
 
   _renderInitialView(): void {

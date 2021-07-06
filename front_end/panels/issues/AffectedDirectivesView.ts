@@ -8,6 +8,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -99,7 +100,8 @@ export class AffectedDirectivesView extends AffectedResourcesView {
     element.appendChild(info);
   }
 
-  _appendBlockedElement(element: Element, nodeId: number|undefined, model: SDK.IssuesModel.IssuesModel): void {
+  _appendBlockedElement(
+      element: Element, nodeId: Protocol.DOM.BackendNodeId|undefined, model: SDK.IssuesModel.IssuesModel): void {
     const elementsPanelLinkComponent = new ElementsComponents.ElementsPanelLink.ElementsPanelLink();
     if (nodeId) {
       const violatingNodeId = nodeId;

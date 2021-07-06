@@ -2298,7 +2298,7 @@ export class TimelineData {
   warning: string|null;
   previewElement: Element|null;
   url: string|null;
-  backendNodeIds: number[];
+  backendNodeIds: Protocol.DOM.BackendNodeId[];
   stackTrace: Protocol.Runtime.CallFrame[]|null;
   picture: SDK.TracingModel.ObjectSnapshot|null;
   _initiator: SDK.TracingModel.Event|null;

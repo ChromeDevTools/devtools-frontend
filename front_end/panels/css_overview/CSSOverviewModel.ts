@@ -61,7 +61,7 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
     this._overlayAgent = target.overlayAgent();
   }
 
-  highlightNode(node: number): void {
+  highlightNode(node: Protocol.DOM.BackendNodeId): void {
     const highlightConfig = {
       contentColor: Common.Color.PageHighlight.Content.toProtocolRGBA(),
       showInfo: true,

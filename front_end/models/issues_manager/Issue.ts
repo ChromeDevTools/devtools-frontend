@@ -64,7 +64,7 @@ export function getShowThirdPartyIssuesSetting(): Common.Settings.Setting<boolea
 }
 
 export interface AffectedElement {
-  backendNodeId: number;
+  backendNodeId: Protocol.DOM.BackendNodeId;
   nodeName: string;
   target: SDK.Target.Target|null;
 }

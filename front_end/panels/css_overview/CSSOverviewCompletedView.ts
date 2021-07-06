@@ -829,7 +829,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
   }
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  static readonly pushedNodes = new Set<unknown>();
+  static readonly pushedNodes = new Set<Protocol.DOM.BackendNodeId>();
 }
 export class DetailsView extends UI.Widget.VBox {
   _tabbedPane: UI.TabbedPane.TabbedPane;
@@ -987,7 +987,8 @@ export class ElementDetailsView extends UI.Widget.Widget {
     this._controller.dispatchEventToListeners(Events.RequestNodeHighlight, backendNodeId);
   }
 
-  async populateNodes(data: {nodeId: number, hasChildren: boolean, [x: string]: unknown}[]): Promise<void> {
+  async populateNodes(data: {nodeId: Protocol.DOM.BackendNodeId, hasChildren: boolean, [x: string]: unknown}[]):
+      Promise<void> {
     this._elementGrid.rootNode().removeChildren();
 
     if (!data.length) {
@@ -1011,7 +1012,7 @@ export class ElementDetailsView extends UI.Widget.Widget {
         }
         CSSOverviewCompletedView.pushedNodes.add(curr.nodeId);
         return prev.add(curr.nodeId);
-      }, new Set<number>()));
+      }, new Set<Protocol.DOM.BackendNodeId>()));
       relatedNodesMap = await this._domModel.pushNodesByBackendIdsToFrontend(nodeIds);
     }
 

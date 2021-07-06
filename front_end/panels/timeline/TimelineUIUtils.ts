@@ -2007,7 +2007,7 @@ export class TimelineUIUtils {
         event[previewElementSymbol] = previewElement;
       }
 
-      const nodeIdsToResolve = new Set<number>();
+      const nodeIdsToResolve = new Set<Protocol.DOM.BackendNodeId>();
       const timelineData = TimelineModel.TimelineModel.TimelineData.forEvent(event);
       if (timelineData.backendNodeIds) {
         for (let i = 0; i < timelineData.backendNodeIds.length; ++i) {

@@ -61,7 +61,7 @@ export class DOMNode {
   _isInShadowTree!: boolean;
   id!: Protocol.DOM.NodeId;
   index: number|undefined;
-  _backendNodeId!: number;
+  _backendNodeId!: Protocol.DOM.BackendNodeId;
   _nodeType!: number;
   _nodeName!: string;
   _localName!: string;
@@ -244,7 +244,7 @@ export class DOMNode {
     return this._domModel;
   }
 
-  backendNodeId(): number {
+  backendNodeId(): Protocol.DOM.BackendNodeId {
     return this._backendNodeId;
   }
 
@@ -961,9 +961,9 @@ export namespace DOMNode {
 
 export class DeferredDOMNode {
   _domModel: DOMModel;
-  _backendNodeId: number;
+  _backendNodeId: Protocol.DOM.BackendNodeId;
 
-  constructor(target: Target, backendNodeId: number) {
+  constructor(target: Target, backendNodeId: Protocol.DOM.BackendNodeId) {
     this._domModel = (target.model(DOMModel) as DOMModel);
     this._backendNodeId = backendNodeId;
   }
@@ -977,7 +977,7 @@ export class DeferredDOMNode {
     return nodeIds && nodeIds.get(this._backendNodeId) || null;
   }
 
-  backendNodeId(): number {
+  backendNodeId(): Protocol.DOM.BackendNodeId {
     return this._backendNodeId;
   }
 
@@ -994,7 +994,7 @@ export class DOMNodeShortcut {
   nodeType: number;
   nodeName: string;
   deferredNode: DeferredDOMNode;
-  constructor(target: Target, backendNodeId: number, nodeType: number, nodeName: string) {
+  constructor(target: Target, backendNodeId: Protocol.DOM.BackendNodeId, nodeType: number, nodeName: string) {
     this.nodeType = nodeType;
     this.nodeName = nodeName;
     this.deferredNode = new DeferredDOMNode(target, backendNodeId);
@@ -1165,14 +1165,15 @@ export class DOMModel extends SDKModel {
         .then(({nodeId}) => nodeId);
   }
 
-  async pushNodesByBackendIdsToFrontend(backendNodeIds: Set<number>): Promise<Map<number, DOMNode|null>|null> {
+  async pushNodesByBackendIdsToFrontend(backendNodeIds: Set<Protocol.DOM.BackendNodeId>):
+      Promise<Map<Protocol.DOM.BackendNodeId, DOMNode|null>|null> {
     await this.requestDocument();
     const backendNodeIdsArray = [...backendNodeIds];
     const {nodeIds} = await this._agent.invoke_pushNodesByBackendIdsToFrontend({backendNodeIds: backendNodeIdsArray});
     if (!nodeIds) {
       return null;
     }
-    const map = new Map<number, DOMNode|null>();
+    const map = new Map<Protocol.DOM.BackendNodeId, DOMNode|null>();
     for (let i = 0; i < nodeIds.length; ++i) {
       if (nodeIds[i]) {
         map.set(backendNodeIdsArray[i], this.nodeForId(nodeIds[i]));

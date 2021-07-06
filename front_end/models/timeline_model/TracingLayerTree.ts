@@ -24,7 +24,7 @@ export class TracingLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
 
   async setLayers(root: TracingLayerPayload|null, layers: TracingLayerPayload[]|null, paints: LayerPaintEvent[]):
       Promise<void> {
-    const idsToResolve = new Set<number>();
+    const idsToResolve = new Set<Protocol.DOM.BackendNodeId>();
     if (root) {
       // This is a legacy code path for compatibility, as cc is removing
       // layer tree hierarchy, this code will eventually be removed.
@@ -110,7 +110,8 @@ export class TracingLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
     return layer;
   }
 
-  _extractNodeIdsToResolve(nodeIdsToResolve: Set<number>, seenNodeIds: Object, payload: TracingLayerPayload): void {
+  _extractNodeIdsToResolve(
+      nodeIdsToResolve: Set<Protocol.DOM.BackendNodeId>, seenNodeIds: Object, payload: TracingLayerPayload): void {
     const backendNodeId = payload.owner_node;
     if (backendNodeId && !this.backendNodeIdToNode().has(backendNodeId)) {
       nodeIdsToResolve.add(backendNodeId);
@@ -378,7 +379,7 @@ export interface TracingLayerPayload {
   draws_content: number;
   gpu_memory_usage: number;
   transform: number[];
-  owner_node: number;
+  owner_node: Protocol.DOM.BackendNodeId;
   reasons: string[];
   compositing_reason: string[];
   compositing_reason_ids: string[];

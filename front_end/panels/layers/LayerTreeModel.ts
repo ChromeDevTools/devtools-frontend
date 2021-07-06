@@ -164,7 +164,7 @@ export class AgentLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
       this._innerSetLayers(payload);
       return;
     }
-    const idsToResolve = new Set<number>();
+    const idsToResolve = new Set<Protocol.DOM.BackendNodeId>();
     for (let i = 0; i < payload.length; ++i) {
       const backendNodeId = payload[i].backendNodeId;
       if (!backendNodeId || this.backendNodeIdToNode().has(backendNodeId)) {

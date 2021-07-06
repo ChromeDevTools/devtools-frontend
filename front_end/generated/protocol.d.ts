@@ -2820,7 +2820,7 @@ declare namespace Protocol {
      * Unique DOM node identifier used to reference a node that may not have been pushed to the
      * front-end.
      */
-    export type BackendNodeId = integer;
+    export type BackendNodeId = OpaqueIdentifier<integer, 'Protocol.DOM.BackendNodeId'>;
 
     /**
      * Backend node with a friendly name.

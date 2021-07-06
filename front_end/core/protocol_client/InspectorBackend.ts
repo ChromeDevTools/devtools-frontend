@@ -50,6 +50,8 @@ type MessageParams = {
   [x: string]: any,
 };
 
+type ApiDomain = keyof ProtocolProxyApi.ProtocolApi;
+
 export type Message = {
   sessionId?: string,
   url?: string,
@@ -89,7 +91,7 @@ interface CommandParameter {
 }
 
 export class InspectorBackend {
-  _agentPrototypes: Map<string, _AgentPrototype> = new Map();
+  _agentPrototypes: Map<ApiDomain, _AgentPrototype> = new Map();
   private initialized: boolean = false;
   private eventParameterNamesForDomain = new Map<string, EventParameterNames>();
 
@@ -123,20 +125,6 @@ export class InspectorBackend {
   }
 
   _addAgentGetterMethodToProtocolTargetPrototype(domain: string): void {
-    let upperCaseLength = 0;
-    while (upperCaseLength < domain.length && domain[upperCaseLength].toLowerCase() !== domain[upperCaseLength]) {
-      ++upperCaseLength;
-    }
-
-    const methodName = domain.substr(0, upperCaseLength).toLowerCase() + domain.slice(upperCaseLength) + 'Agent';
-
-    function agentGetter(this: TargetBase): _AgentPrototype {
-      return this._agents[domain];
-    }
-
-    // @ts-ignore Method code generation
-    TargetBase.prototype[methodName] = agentGetter;
-
     function registerDispatcher(this: TargetBase, dispatcher: Object): void {
       this.registerDispatcher(domain, dispatcher);
     }
@@ -152,7 +140,7 @@ export class InspectorBackend {
     TargetBase.prototype['unregister' + domain + 'Dispatcher'] = unregisterDispatcher;
   }
 
-  _agentPrototype(domain: string): _AgentPrototype {
+  _agentPrototype(domain: ApiDomain): _AgentPrototype {
     let prototype = this._agentPrototypes.get(domain);
     if (!prototype) {
       prototype = new _AgentPrototype(domain);
@@ -164,7 +152,7 @@ export class InspectorBackend {
 
   registerCommand(method: QualifiedName, parameters: CommandParameter[], replyArgs: string[]): void {
     const [domain, command] = splitQualifiedName(method);
-    this._agentPrototype(domain).registerCommand(command, parameters, replyArgs);
+    this._agentPrototype(domain as ApiDomain).registerCommand(command, parameters, replyArgs);
     this.initialized = true;
   }
 
@@ -544,13 +532,16 @@ export class SessionRouter {
   }
 }
 
+interface AgentsMap extends Map<ApiDomain, ProtocolProxyApi.ProtocolApi[ApiDomain]> {
+  get<Domain extends ApiDomain>(key: Domain): ProtocolProxyApi.ProtocolApi[Domain]|undefined;
+  set<Domain extends ApiDomain>(key: Domain, value: ProtocolProxyApi.ProtocolApi[Domain]): this;
+}
+
 export class TargetBase {
   _needsNodeJSPatching: boolean;
   _sessionId: string;
   _router: SessionRouter|null;
-  _agents: {
-    [x: string]: _AgentPrototype,
-  };
+  private agents: AgentsMap = new Map();
   _dispatchers: {
     // TODO(crbug.com/1172300): Replace {} with the respective ProtocolProxyApi.${x}Dispatcher type.
     [x: string]: DispatcherManager<{}>,
@@ -577,10 +568,10 @@ export class TargetBase {
 
     router.registerSession(this, this._sessionId);
 
-    this._agents = {};
     for (const [domain, agentPrototype] of inspectorBackend._agentPrototypes) {
-      this._agents[domain] = Object.create((agentPrototype as _AgentPrototype));
-      this._agents[domain]._target = this;
+      const agent = Object.create((agentPrototype as _AgentPrototype));
+      agent._target = this;
+      this.agents.set(domain, agent);
     }
 
     this._dispatchers = {};
@@ -625,152 +616,164 @@ export class TargetBase {
 
   // Agent accessors, keep alphabetically sorted.
 
+  getAgent<Domain extends ApiDomain>(domain: Domain): ProtocolProxyApi.ProtocolApi[Domain] {
+    const agent = this.agents.get<Domain>(domain);
+    if (!agent) {
+      throw new Error('Accessing undefined agent');
+    }
+    return agent;
+  }
+
   accessibilityAgent(): ProtocolProxyApi.AccessibilityApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('Accessibility');
   }
 
   animationAgent(): ProtocolProxyApi.AnimationApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('Animation');
   }
 
   applicationCacheAgent(): ProtocolProxyApi.ApplicationCacheApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('ApplicationCache');
   }
 
   auditsAgent(): ProtocolProxyApi.AuditsApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('Audits');
+  }
+
+  browserAgent(): ProtocolProxyApi.BrowserApi {
+    return this.getAgent('Browser');
   }
 
   backgroundServiceAgent(): ProtocolProxyApi.BackgroundServiceApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('BackgroundService');
   }
 
   cacheStorageAgent(): ProtocolProxyApi.CacheStorageApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('CacheStorage');
   }
 
   cssAgent(): ProtocolProxyApi.CSSApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('CSS');
   }
 
   databaseAgent(): ProtocolProxyApi.DatabaseApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('Database');
   }
 
   debuggerAgent(): ProtocolProxyApi.DebuggerApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('Debugger');
   }
 
   deviceOrientationAgent(): ProtocolProxyApi.DeviceOrientationApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('DeviceOrientation');
   }
 
   domAgent(): ProtocolProxyApi.DOMApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('DOM');
   }
 
   domdebuggerAgent(): ProtocolProxyApi.DOMDebuggerApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('DOMDebugger');
   }
 
   domsnapshotAgent(): ProtocolProxyApi.DOMSnapshotApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('DOMSnapshot');
   }
 
   domstorageAgent(): ProtocolProxyApi.DOMStorageApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('DOMStorage');
   }
 
   emulationAgent(): ProtocolProxyApi.EmulationApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('Emulation');
   }
 
   heapProfilerAgent(): ProtocolProxyApi.HeapProfilerApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('HeapProfiler');
   }
 
   indexedDBAgent(): ProtocolProxyApi.IndexedDBApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('IndexedDB');
   }
 
   inputAgent(): ProtocolProxyApi.InputApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('Input');
   }
 
   ioAgent(): ProtocolProxyApi.IOApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('IO');
   }
 
   inspectorAgent(): ProtocolProxyApi.InspectorApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('Inspector');
   }
 
   layerTreeAgent(): ProtocolProxyApi.LayerTreeApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('LayerTree');
   }
 
   logAgent(): ProtocolProxyApi.LogApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('Log');
   }
 
   mediaAgent(): ProtocolProxyApi.MediaApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('Media');
   }
 
   memoryAgent(): ProtocolProxyApi.MemoryApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('Memory');
   }
 
   networkAgent(): ProtocolProxyApi.NetworkApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('Network');
   }
 
   overlayAgent(): ProtocolProxyApi.OverlayApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('Overlay');
   }
 
   pageAgent(): ProtocolProxyApi.PageApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('Page');
   }
 
   profilerAgent(): ProtocolProxyApi.ProfilerApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('Profiler');
   }
 
   performanceAgent(): ProtocolProxyApi.PerformanceApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('Performance');
   }
 
   runtimeAgent(): ProtocolProxyApi.RuntimeApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('Runtime');
   }
 
   securityAgent(): ProtocolProxyApi.SecurityApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('Security');
   }
 
   serviceWorkerAgent(): ProtocolProxyApi.ServiceWorkerApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('ServiceWorker');
   }
 
   storageAgent(): ProtocolProxyApi.StorageApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('Storage');
   }
 
   targetAgent(): ProtocolProxyApi.TargetApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('Target');
   }
 
   tracingAgent(): ProtocolProxyApi.TracingApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('Tracing');
   }
 
   webAudioAgent(): ProtocolProxyApi.WebAudioApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('WebAudio');
   }
 
   webAuthnAgent(): ProtocolProxyApi.WebAuthnApi {
-    throw new Error('Implemented in InspectorBackend.js');
+    return this.getAgent('WebAuthn');
   }
 
   // Dispatcher registration, keep alphabetically sorted.

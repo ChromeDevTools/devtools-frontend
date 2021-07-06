@@ -16,6 +16,7 @@ copy_to_gen("console") {
     "dom-interactions.html",
     "error-with-async-frame.html",
     "escaping.html",
+    "focus-interaction.html",
     "ignoreMe.js",
     "log-source.js",
     "navigation/after-navigation.html",

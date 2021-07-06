@@ -4,9 +4,9 @@
 
 import {assert} from 'chai';
 
-import {getBrowserAndPages, waitForFunction} from '../../shared/helper.js';
+import {activeElement, activeElementAccessibleName, activeElementTextContent, getBrowserAndPages, tabBackward, tabForward, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {getStructuredConsoleMessages, navigateToConsoleTab, showVerboseMessages} from '../helpers/console-helpers.js';
+import {focusConsolePrompt, getConsoleMessages, getStructuredConsoleMessages, navigateToConsoleTab, showVerboseMessages, waitForLastConsoleMessageToHaveContent} from '../helpers/console-helpers.js';
 
 /* eslint-disable no-console */
 
@@ -238,4 +238,67 @@ describe('The Console Tab', async () => {
       assert.deepEqual(actualMessages, test.expectedMessages, 'Console message does not match the expected message');
     });
   }
+
+  describe('keyboard navigation', () => {
+    it('can navigate between individual messages', async () => {
+      const {frontend} = getBrowserAndPages();
+      await getConsoleMessages('focus-interaction');
+      await focusConsolePrompt();
+
+      await tabBackward();
+      assert.strictEqual(await activeElementTextContent(), 'focus-interaction.html:9');
+
+      await frontend.keyboard.press('ArrowUp');
+      assert.strictEqual(await activeElementTextContent(), 'focus-interaction.html:9 Third message');
+
+      await frontend.keyboard.press('ArrowUp');
+      assert.strictEqual(await activeElementTextContent(), 'focus-interaction.html:8');
+
+      await frontend.keyboard.press('ArrowDown');
+      assert.strictEqual(await activeElementTextContent(), 'focus-interaction.html:9 Third message');
+
+      await tabBackward();  // Focus should now be on the console settings, e.g. out of the list of console messages
+      assert.strictEqual(await activeElementAccessibleName(), 'Console settings');
+
+      await tabForward();  // Focus is now back to the list, selecting the last message source URL
+      assert.strictEqual(await activeElementTextContent(), 'focus-interaction.html:9');
+
+      await tabForward();
+      assert.strictEqual(await activeElementAccessibleName(), 'Console prompt');
+    });
+
+    it('should not lose focus on prompt when logging and scrolling', async () => {
+      const {target, frontend} = getBrowserAndPages();
+
+      await getConsoleMessages('focus-interaction');
+      await focusConsolePrompt();
+
+      await target.evaluate(() => {
+        console.log('New message');
+      });
+      await waitForLastConsoleMessageToHaveContent('New message');
+      assert.strictEqual(await activeElementAccessibleName(), 'Console prompt');
+
+      await target.evaluate(() => {
+        for (let i = 0; i < 100; i++) {
+          console.log(`Message ${i}`);
+        }
+      });
+      await waitForLastConsoleMessageToHaveContent('Message 99');
+      assert.strictEqual(await activeElementAccessibleName(), 'Console prompt');
+
+      const consolePrompt = await activeElement();
+      const wrappingBox = await consolePrompt.boundingBox();
+      if (!wrappingBox) {
+        throw new Error('Can\'t compute bounding box of console prompt.');
+      }
+
+      // +20 to move from the top left point so we are definitely scrolling
+      // within the container
+      await frontend.mouse.move(wrappingBox.x + 20, wrappingBox.y + 5);
+      await frontend.mouse.wheel({deltaY: -500});
+
+      assert.strictEqual(await activeElementAccessibleName(), 'Console prompt');
+    });
+  });
 });

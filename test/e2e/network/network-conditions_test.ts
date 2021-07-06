@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 import type {ElementHandle, Page} from 'puppeteer';
-import {getBrowserAndPages, pressKey, typeText, waitFor, waitForAria} from '../../shared/helper.js';
+import {getBrowserAndPages, pressKey, typeText, waitFor, waitForAria, tabForward} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToNetworkTab} from '../helpers/network-helpers.js';
 import type * as Protocol from '../../../front_end/generated/protocol.js';
@@ -54,11 +54,6 @@ describe('The Network Tab', async function() {
     };
     const getUserAgentMetaDataStr = `(${getUserAgentMetaData.toString()})()`;
     return await target.evaluate(getUserAgentMetaDataStr);
-  }
-
-  async function tabForwardFrontend() {
-    const {frontend} = getBrowserAndPages();
-    await frontend.keyboard.press('Tab');
   }
 
   it('can change accepted content encodings', async () => {
@@ -219,42 +214,42 @@ describe('The Network Tab', async function() {
     const userAgent = await waitForAria('Enter a custom user agent');
     await userAgent.click();
     await userAgent.type('Test User Agent String');
-    await tabForwardFrontend();  // focus help button
+    await tabForward();          // focus help button
     await pressKey('Space');     // open client hints section
-    await tabForwardFrontend();  // focus help link
-    await tabForwardFrontend();  // focus brand name
+    await tabForward();          // focus help link
+    await tabForward();          // focus brand name
     await typeText('Test Brand 1');
-    await tabForwardFrontend();  // focus brand version
+    await tabForward();  // focus brand version
     await typeText('99');
-    await tabForwardFrontend();  // focus delete brand button
-    await tabForwardFrontend();  // focus add brand button
+    await tabForward();          // focus delete brand button
+    await tabForward();          // focus add brand button
     await pressKey('Enter');     // add a second brand
 
     await typeText('Test Brand 2');
-    await tabForwardFrontend();  // focus brand version
+    await tabForward();  // focus brand version
     await typeText('100');
-    await tabForwardFrontend();  // focus delete brand button
-    await tabForwardFrontend();  // focus add brand button
+    await tabForward();          // focus delete brand button
+    await tabForward();          // focus add brand button
     await pressKey('Enter');     // add a third brand
 
     await typeText('Test Brand 3');
-    await tabForwardFrontend();  // focus brand version
+    await tabForward();  // focus brand version
     await typeText('101');
-    await tabForwardFrontend();  // focus delete brand button
-    await tabForwardFrontend();  // focus add brand button
-    await tabForwardFrontend();  // focus browser full version
+    await tabForward();  // focus delete brand button
+    await tabForward();  // focus add brand button
+    await tabForward();  // focus browser full version
     await typeText('99.99');
-    await tabForwardFrontend();  // focus platform name
+    await tabForward();  // focus platform name
     await typeText('Test Platform');
-    await tabForwardFrontend();  // focus platform version
+    await tabForward();  // focus platform version
     await typeText('10');
-    await tabForwardFrontend();  // focus architecture
+    await tabForward();  // focus architecture
     await typeText('Test Architecture');
-    await tabForwardFrontend();  // focus device model
+    await tabForward();  // focus device model
     await typeText('Test Model');
-    await tabForwardFrontend();  // focus mobile checkbox
+    await tabForward();  // focus mobile checkbox
     await pressKey('Space');
-    await tabForwardFrontend();  // focus update button
+    await tabForward();  // focus update button
     await pressKey('Enter');
     const userAgentMetadata = await getUserAgentMetadataFromTarget(target);
     assert.deepEqual(userAgentMetadata, {
@@ -274,8 +269,8 @@ describe('The Network Tab', async function() {
     // Delete a brand
     const brand = await waitForAria('Brand 1', section);  // move focus back to first brand
     await brand.click();
-    await tabForwardFrontend();  // focus brand version
-    await tabForwardFrontend();  // focus delete brand button
+    await tabForward();  // focus brand version
+    await tabForward();  // focus delete brand button
     await pressKey('Enter');
 
     // Edit a value
@@ -284,10 +279,10 @@ describe('The Network Tab', async function() {
     await typeText('11');
 
     // Update
-    await tabForwardFrontend();  // focus architecture
-    await tabForwardFrontend();  // focus device model
-    await tabForwardFrontend();  // focus mobile checkbox
-    await tabForwardFrontend();  // focus update button
+    await tabForward();  // focus architecture
+    await tabForward();  // focus device model
+    await tabForward();  // focus mobile checkbox
+    await tabForward();  // focus update button
     await pressKey('Enter');
     const updatedUserAgentMetadata = await getUserAgentMetadataFromTarget(target);
     assert.deepEqual(updatedUserAgentMetadata, {

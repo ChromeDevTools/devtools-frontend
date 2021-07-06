@@ -401,9 +401,9 @@ export const step = async (description: string, step: Function) => {
 };
 
 export const waitForAnimationFrame = async () => {
-  const {target} = getBrowserAndPages();
+  const {frontend} = getBrowserAndPages();
 
-  await target.waitForFunction(() => {
+  await frontend.waitForFunction(() => {
     return new Promise(resolve => {
       requestAnimationFrame(resolve);
     });
@@ -411,11 +411,11 @@ export const waitForAnimationFrame = async () => {
 };
 
 export const activeElement = async(): Promise<puppeteer.ElementHandle> => {
-  const {target} = getBrowserAndPages();
+  const {frontend} = getBrowserAndPages();
 
   await waitForAnimationFrame();
 
-  return target.evaluateHandle(() => {
+  return frontend.evaluateHandle(() => {
     let activeElement = document.activeElement;
 
     while (activeElement && activeElement.shadowRoot) {
@@ -431,18 +431,35 @@ export const activeElementTextContent = async () => {
   return element.evaluate(node => node.textContent);
 };
 
-export const tabForward = async () => {
-  const {target} = getBrowserAndPages();
-
-  await target.keyboard.press('Tab');
+export const activeElementAccessibleName = async () => {
+  const element = await activeElement();
+  return element.evaluate(node => node.getAttribute('aria-label'));
 };
 
-export const tabBackward = async () => {
-  const {target} = getBrowserAndPages();
+export const tabForward = async (page?: puppeteer.Page) => {
+  let targetPage: puppeteer.Page;
+  if (page) {
+    targetPage = page;
+  } else {
+    const {frontend} = getBrowserAndPages();
+    targetPage = frontend;
+  }
 
-  await target.keyboard.down('Shift');
-  await target.keyboard.press('Tab');
-  await target.keyboard.up('Shift');
+  await targetPage.keyboard.press('Tab');
+};
+
+export const tabBackward = async (page?: puppeteer.Page) => {
+  let targetPage: puppeteer.Page;
+  if (page) {
+    targetPage = page;
+  } else {
+    const {frontend} = getBrowserAndPages();
+    targetPage = frontend;
+  }
+
+  await targetPage.keyboard.down('Shift');
+  await targetPage.keyboard.press('Tab');
+  await targetPage.keyboard.up('Shift');
 };
 
 export const selectTextFromNodeToNode = async (

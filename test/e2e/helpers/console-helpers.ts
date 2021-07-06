@@ -55,6 +55,17 @@ export async function waitForConsoleMessagesToBeNonEmpty(numberOfMessages: numbe
   });
 }
 
+export async function waitForLastConsoleMessageToHaveContent(expectedTextContent: string) {
+  await waitForFunction(async () => {
+    const messages = await $$(CONSOLE_FIRST_MESSAGES_SELECTOR);
+    if (messages.length === 0) {
+      return false;
+    }
+    const lastMessageContent = await messages[messages.length - 1].evaluate(message => message.textContent);
+    return lastMessageContent === expectedTextContent;
+  });
+}
+
 export async function getConsoleMessages(testName: string, withAnchor = false, callback?: () => Promise<void>) {
   // Ensure Console is loaded before the page is loaded to avoid a race condition.
   await getCurrentConsoleMessages();

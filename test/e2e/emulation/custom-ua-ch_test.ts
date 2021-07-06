@@ -4,7 +4,7 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer';
 
-import {click, getBrowserAndPages, goToResource, pressKey, typeText, waitFor} from '../../shared/helper.js';
+import {click, getBrowserAndPages, goToResource, pressKey, typeText, waitFor, tabForward} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {waitForDomNodeToBeVisible} from '../helpers/elements-helpers.js';
 import {openDeviceToolbar, reloadDockableFrontEnd, selectEdit, selectTestDevice} from '../helpers/emulation-helpers.js';
@@ -26,11 +26,6 @@ async function targetTextContent(selector: string): Promise<string> {
   return elementTextContent(handle);
 }
 
-export const tabForwardFrontend = async () => {
-  const {frontend} = getBrowserAndPages();
-  await frontend.keyboard.press('Tab');
-};
-
 describe('Custom UA-CH emulation', async () => {
   beforeEach(async function() {
     await reloadDockableFrontEnd();
@@ -46,51 +41,51 @@ describe('Custom UA-CH emulation', async () => {
     await waitFor(FOCUSED_DEVICE_NAME_FIELD_SELECTOR);
     await typeText('Test device');
 
-    await tabForwardFrontend();  // Focus width.
-    await tabForwardFrontend();  // Focus height.
-    await tabForwardFrontend();  // Focus DPR.
+    await tabForward();  // Focus width.
+    await tabForward();  // Focus height.
+    await tabForward();  // Focus DPR.
     await typeText('1.0');
 
-    await tabForwardFrontend();  // Focus UA string.
+    await tabForward();  // Focus UA string.
     await typeText('Test device browser 1.0');
 
-    await tabForwardFrontend();  // Focus device type.
-    await tabForwardFrontend();  // Focus folder.
+    await tabForward();  // Focus device type.
+    await tabForward();  // Focus folder.
     await pressKey('Space');
 
-    await tabForwardFrontend();  // Focus help button
-    await tabForwardFrontend();  // Focus brand browser.
+    await tabForward();  // Focus help button
+    await tabForward();  // Focus brand browser.
     await typeText('Test browser');
 
-    await tabForwardFrontend();  // Focus brand version.
+    await tabForward();  // Focus brand version.
     await typeText('1.0');
 
-    await tabForwardFrontend();  // Focus delete button.
-    await tabForwardFrontend();  // Focus Add brand button.
+    await tabForward();  // Focus delete button.
+    await tabForward();  // Focus Add brand button.
     await pressKey('Space');
 
     await typeText('Friendly Dragon');
-    await tabForwardFrontend();  //  Focus second row brand version.
+    await tabForward();  //  Focus second row brand version.
     await typeText('1.1');
 
-    await tabForwardFrontend();  // Focus second row delete button.
-    await tabForwardFrontend();  // Focus Add browser button.
-    await tabForwardFrontend();  // Focus full version.
+    await tabForward();  // Focus second row delete button.
+    await tabForward();  // Focus Add browser button.
+    await tabForward();  // Focus full version.
     await typeText('1.1.2345');
 
-    await tabForwardFrontend();  // Focus platform.
+    await tabForward();  // Focus platform.
     await typeText('Cyborg');
 
-    await tabForwardFrontend();  // Focus platform version.
+    await tabForward();  // Focus platform version.
     await typeText('C-1');
 
-    await tabForwardFrontend();  // Focus architecture.
+    await tabForward();  // Focus architecture.
     await typeText('Bipedal');
 
-    await tabForwardFrontend();  // Focus device model.
+    await tabForward();  // Focus device model.
     await typeText('C-1-Gardener');
 
-    await tabForwardFrontend();  // Focus add button.
+    await tabForward();  // Focus add button.
 
     const finishAdd = await waitFor(FOCUSED_SELECTOR);
     const finishAddText = await elementTextContent(finishAdd);
@@ -134,7 +129,7 @@ describe('Custom UA-CH emulation', async () => {
       if (i === 7) {
         await pressKey('ArrowRight');
       }
-      await tabForwardFrontend();
+      await tabForward();
     }
 
     // Change the value.

@@ -217,7 +217,12 @@ const emitInlineEnums = (prefix: string, propertyTypes?: Protocol.PropertyType[]
   }
 };
 
-const knownIdentifierTypes = ['CacheStorage.CacheId'];
+
+// Please keep `knownIdentifierTypes` sorted.
+const knownIdentifierTypes = [
+  'CacheStorage.CacheId',
+  'DOM.NodeId',
+];
 
 const emitDomainType = (domain: Protocol.Domain, type: Protocol.DomainType) => {
   // Check if this type is an object that declares inline enum types for some of its properties.

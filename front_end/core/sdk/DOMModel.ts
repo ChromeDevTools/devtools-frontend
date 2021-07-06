@@ -59,7 +59,7 @@ export class DOMNode {
   _agent: ProtocolProxyApi.DOMApi;
   ownerDocument!: DOMDocument|null;
   _isInShadowTree!: boolean;
-  id!: number;
+  id!: Protocol.DOM.NodeId;
   index: number|undefined;
   _backendNodeId!: number;
   _nodeType!: number;
@@ -1022,7 +1022,7 @@ export class DOMModel extends SDKModel {
     [x: number]: DOMNode,
   };
   _document: DOMDocument|null;
-  _attributeLoadNodeIds: Set<number>;
+  _attributeLoadNodeIds: Set<Protocol.DOM.NodeId>;
   _runtimeModel: RuntimeModel;
   _lastMutationId!: number;
   _pendingDocumentRequestPromise: Promise<DOMDocument|null>|null;
@@ -1442,15 +1442,15 @@ export class DOMModel extends SDKModel {
     delete this._searchId;
   }
 
-  classNamesPromise(nodeId: number): Promise<string[]> {
+  classNamesPromise(nodeId: Protocol.DOM.NodeId): Promise<string[]> {
     return this._agent.invoke_collectClassNamesFromSubtree({nodeId}).then(({classNames}) => classNames || []);
   }
 
-  querySelector(nodeId: number, selector: string): Promise<number|null> {
+  querySelector(nodeId: Protocol.DOM.NodeId, selector: string): Promise<number|null> {
     return this._agent.invoke_querySelector({nodeId, selector}).then(({nodeId}) => nodeId);
   }
 
-  querySelectorAll(nodeId: number, selector: string): Promise<number[]|null> {
+  querySelectorAll(nodeId: Protocol.DOM.NodeId, selector: string): Promise<number[]|null> {
     return this._agent.invoke_querySelectorAll({nodeId, selector}).then(({nodeIds}) => nodeIds);
   }
 

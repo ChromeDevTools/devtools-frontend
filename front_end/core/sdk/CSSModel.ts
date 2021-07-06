@@ -277,7 +277,7 @@ export class CSSModel extends SDKModel {
     this.dispatchEventToListeners(Events.ModelWasEnabled);
   }
 
-  async matchedStylesPromise(nodeId: number): Promise<CSSMatchedStyles|null> {
+  async matchedStylesPromise(nodeId: Protocol.DOM.NodeId): Promise<CSSMatchedStyles|null> {
     const response = await this._agent.invoke_getMatchedStylesForNode({nodeId});
 
     if (response.getError()) {
@@ -300,11 +300,11 @@ export class CSSModel extends SDKModel {
     return classNames || [];
   }
 
-  computedStylePromise(nodeId: number): Promise<Map<string, string>|null> {
+  computedStylePromise(nodeId: Protocol.DOM.NodeId): Promise<Map<string, string>|null> {
     return this._styleLoader.computedStylePromise(nodeId);
   }
 
-  async backgroundColorsPromise(nodeId: number): Promise<ContrastInfo|null> {
+  async backgroundColorsPromise(nodeId: Protocol.DOM.NodeId): Promise<ContrastInfo|null> {
     const response = await this._agent.invoke_getBackgroundColors({nodeId});
     if (response.getError()) {
       return null;
@@ -317,7 +317,7 @@ export class CSSModel extends SDKModel {
     };
   }
 
-  async platformFontsPromise(nodeId: number): Promise<Protocol.CSS.PlatformFontUsage[]|null> {
+  async platformFontsPromise(nodeId: Protocol.DOM.NodeId): Promise<Protocol.CSS.PlatformFontUsage[]|null> {
     const {fonts} = await this._agent.invoke_getPlatformFontsForNode({nodeId});
     return fonts;
   }
@@ -338,7 +338,7 @@ export class CSSModel extends SDKModel {
     return values;
   }
 
-  async inlineStylesPromise(nodeId: number): Promise<InlineStyleResult|null> {
+  async inlineStylesPromise(nodeId: Protocol.DOM.NodeId): Promise<InlineStyleResult|null> {
     const response = await this._agent.invoke_getInlineStylesForNode({nodeId});
 
     if (response.getError() || !response.inlineStyle) {
@@ -639,7 +639,7 @@ export class CSSModel extends SDKModel {
     return this._enable();
   }
 
-  setEffectivePropertyValueForNode(nodeId: number, propertyName: string, value: string): void {
+  setEffectivePropertyValueForNode(nodeId: Protocol.DOM.NodeId, propertyName: string, value: string): void {
     this._agent.invoke_setEffectivePropertyValueForNode({nodeId, propertyName, value});
   }
 
@@ -809,7 +809,7 @@ class ComputedStyleLoader {
     this._nodeIdToPromise = new Map();
   }
 
-  computedStylePromise(nodeId: number): Promise<Map<string, string>|null> {
+  computedStylePromise(nodeId: Protocol.DOM.NodeId): Promise<Map<string, string>|null> {
     let promise = this._nodeIdToPromise.get(nodeId);
     if (promise) {
       return promise;

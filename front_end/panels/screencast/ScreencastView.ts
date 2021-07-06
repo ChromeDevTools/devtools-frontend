@@ -333,7 +333,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
 
     if (event.type === 'mousemove') {
       this._updateHighlightInOverlayAndRepaint({node, selectorList: undefined}, this._inspectModeConfig);
-      this._domModel.overlayModel().nodeHighlightRequested({nodeId: node.id as number});
+      this._domModel.overlayModel().nodeHighlightRequested({nodeId: node.id});
     } else if (event.type === 'click') {
       this._domModel.overlayModel().inspectNodeRequested({backendNodeId: node.backendNodeId()});
     }

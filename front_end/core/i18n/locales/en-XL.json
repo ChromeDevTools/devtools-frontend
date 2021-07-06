@@ -1412,12 +1412,6 @@
   "models/persistence/WorkspaceSettingsTab.ts | workspace": {
     "message": "Ŵór̂ḱŝṕâćê"
   },
-  "models/recorder/RecordingFileSystem.ts | defaultRecordingName": {
-    "message": "R̂éĉór̂d́îńĝ #{nextId}"
-  },
-  "models/recorder/RecordingFileSystem.ts | linkedToS": {
-    "message": "L̂ín̂ḱêd́ t̂ó {PH1}"
-  },
   "models/timeline_model/TimelineIRModel.ts | twoFlingsAtTheSameTimeSVsS": {
     "message": "T̂ẃô f́l̂ín̂ǵŝ át̂ t́ĥé ŝám̂é t̂ím̂é? {PH1} v̂ś {PH2}"
   },
@@ -7895,12 +7889,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "T̂ím̂éŝt́âḿp̂"
   },
-  "panels/recorder/recorder-meta.ts | recorder": {
-    "message": "R̂éĉór̂d́êŕ"
-  },
-  "panels/recorder/recorder-meta.ts | showRecorder": {
-    "message": "R̂éĉór̂d́êŕ"
-  },
   "panels/screencast/ScreencastApp.ts | toggleScreencast": {
     "message": "T̂óĝǵl̂é ŝćr̂éêńĉáŝt́"
   },
@@ -8813,15 +8801,6 @@
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Ôṕêń â J́âv́âŚĉŕîṕt̂ ór̂ ĆŜŚ f̂íl̂é t̂ó ŝéê śŷḿb̂ól̂ś"
   },
-  "panels/sources/RecorderPlugin.ts | export": {
-    "message": "Êx́p̂ór̂t́"
-  },
-  "panels/sources/RecorderPlugin.ts | play": {
-    "message": "R̂ép̂ĺâý"
-  },
-  "panels/sources/RecorderPlugin.ts | record": {
-    "message": "R̂éĉór̂d́"
-  },
   "panels/sources/ScopeChainSidebarPane.ts | closure": {
     "message": "Ĉĺôśûŕê"
   },
@@ -8981,9 +8960,6 @@
   "panels/sources/sources-meta.ts | evaluateSelectedTextInConsole": {
     "message": "Êv́âĺûát̂é ŝél̂éĉt́êd́ t̂éx̂t́ îń ĉón̂śôĺê"
   },
-  "panels/sources/sources-meta.ts | exportRecording": {
-    "message": "Êx́p̂ór̂t́"
-  },
   "panels/sources/sources-meta.ts | filesystem": {
     "message": "F̂íl̂éŝýŝt́êḿ"
   },
@@ -9023,17 +8999,8 @@
   "panels/sources/sources-meta.ts | quickSource": {
     "message": "Q̂úîćk̂ śôúr̂ćê"
   },
-  "panels/sources/sources-meta.ts | record": {
-    "message": "R̂éĉór̂d́"
-  },
-  "panels/sources/sources-meta.ts | recordings": {
-    "message": "R̂éĉór̂d́îńĝś"
-  },
   "panels/sources/sources-meta.ts | rename": {
     "message": "R̂én̂ám̂é"
-  },
-  "panels/sources/sources-meta.ts | replayRecording": {
-    "message": "R̂ép̂ĺâý"
   },
   "panels/sources/sources-meta.ts | resumeScriptExecution": {
     "message": "R̂éŝúm̂é ŝćr̂íp̂t́ êx́êćût́îón̂"
@@ -9068,9 +9035,6 @@
   "panels/sources/sources-meta.ts | showQuickSource": {
     "message": "Ŝh́ôẃ Q̂úîćk̂ śôúr̂ćê"
   },
-  "panels/sources/sources-meta.ts | showRecordings": {
-    "message": "Ŝh́ôẃ R̂éĉór̂d́îńĝś"
-  },
   "panels/sources/sources-meta.ts | showScope": {
     "message": "Ŝh́ôẃ Ŝćôṕê"
   },
@@ -9101,9 +9065,6 @@
   "panels/sources/sources-meta.ts | sources": {
     "message": "Ŝóûŕĉéŝ"
   },
-  "panels/sources/sources-meta.ts | startRecording": {
-    "message": "Ŝt́âŕt̂ Ŕêćôŕd̂ín̂ǵ"
-  },
   "panels/sources/sources-meta.ts | step": {
     "message": "Ŝt́êṕ"
   },
@@ -9115,9 +9076,6 @@
   },
   "panels/sources/sources-meta.ts | stepOverNextFunctionCall": {
     "message": "Ŝt́êṕ ôv́êŕ n̂éx̂t́ f̂ún̂ćt̂íôń ĉál̂ĺ"
-  },
-  "panels/sources/sources-meta.ts | stop": {
-    "message": "Ŝt́ôṕ"
   },
   "panels/sources/sources-meta.ts | switchFile": {
     "message": "Ŝẃît́ĉh́ f̂íl̂é"
@@ -9139,9 +9097,6 @@
   },
   "panels/sources/sources-meta.ts | watch": {
     "message": "Ŵát̂ćĥ"
-  },
-  "panels/sources/SourcesNavigator.ts | addRecording": {
-    "message": "Âd́d̂ ŕêćôŕd̂ín̂ǵ"
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Ĉĺêár̂ ćôńf̂íĝúr̂át̂íôń"
@@ -9166,9 +9121,6 @@
   },
   "panels/sources/SourcesNavigator.ts | overridePageAssetsWithFilesFromA": {
     "message": "Ôv́êŕr̂íd̂é p̂áĝé âśŝét̂ś ŵít̂h́ f̂íl̂éŝ f́r̂óm̂ á l̂óĉál̂ f́ôĺd̂ér̂"
-  },
-  "panels/sources/SourcesNavigator.ts | recordAndReplayBrowser": {
-    "message": "R̂éĉór̂d́ âńd̂ ŕêṕl̂áŷ b́r̂óŵśêŕ îńt̂ér̂áĉt́îón̂ś"
   },
   "panels/sources/SourcesNavigator.ts | remove": {
     "message": "R̂ém̂óv̂é"

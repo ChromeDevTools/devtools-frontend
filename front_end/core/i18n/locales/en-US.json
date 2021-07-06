@@ -1412,12 +1412,6 @@
   "models/persistence/WorkspaceSettingsTab.ts | workspace": {
     "message": "Workspace"
   },
-  "models/recorder/RecordingFileSystem.ts | defaultRecordingName": {
-    "message": "Recording #{nextId}"
-  },
-  "models/recorder/RecordingFileSystem.ts | linkedToS": {
-    "message": "Linked to {PH1}"
-  },
   "models/timeline_model/TimelineIRModel.ts | twoFlingsAtTheSameTimeSVsS": {
     "message": "Two flings at the same time? {PH1} vs {PH2}"
   },
@@ -7895,12 +7889,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Timestamp"
   },
-  "panels/recorder/recorder-meta.ts | recorder": {
-    "message": "Recorder"
-  },
-  "panels/recorder/recorder-meta.ts | showRecorder": {
-    "message": "Recorder"
-  },
   "panels/screencast/ScreencastApp.ts | toggleScreencast": {
     "message": "Toggle screencast"
   },
@@ -8813,15 +8801,6 @@
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Open a JavaScript or CSS file to see symbols"
   },
-  "panels/sources/RecorderPlugin.ts | export": {
-    "message": "Export"
-  },
-  "panels/sources/RecorderPlugin.ts | play": {
-    "message": "Replay"
-  },
-  "panels/sources/RecorderPlugin.ts | record": {
-    "message": "Record"
-  },
   "panels/sources/ScopeChainSidebarPane.ts | closure": {
     "message": "Closure"
   },
@@ -8981,9 +8960,6 @@
   "panels/sources/sources-meta.ts | evaluateSelectedTextInConsole": {
     "message": "Evaluate selected text in console"
   },
-  "panels/sources/sources-meta.ts | exportRecording": {
-    "message": "Export"
-  },
   "panels/sources/sources-meta.ts | filesystem": {
     "message": "Filesystem"
   },
@@ -9023,17 +8999,8 @@
   "panels/sources/sources-meta.ts | quickSource": {
     "message": "Quick source"
   },
-  "panels/sources/sources-meta.ts | record": {
-    "message": "Record"
-  },
-  "panels/sources/sources-meta.ts | recordings": {
-    "message": "Recordings"
-  },
   "panels/sources/sources-meta.ts | rename": {
     "message": "Rename"
-  },
-  "panels/sources/sources-meta.ts | replayRecording": {
-    "message": "Replay"
   },
   "panels/sources/sources-meta.ts | resumeScriptExecution": {
     "message": "Resume script execution"
@@ -9068,9 +9035,6 @@
   "panels/sources/sources-meta.ts | showQuickSource": {
     "message": "Show Quick source"
   },
-  "panels/sources/sources-meta.ts | showRecordings": {
-    "message": "Show Recordings"
-  },
   "panels/sources/sources-meta.ts | showScope": {
     "message": "Show Scope"
   },
@@ -9101,9 +9065,6 @@
   "panels/sources/sources-meta.ts | sources": {
     "message": "Sources"
   },
-  "panels/sources/sources-meta.ts | startRecording": {
-    "message": "Start Recording"
-  },
   "panels/sources/sources-meta.ts | step": {
     "message": "Step"
   },
@@ -9115,9 +9076,6 @@
   },
   "panels/sources/sources-meta.ts | stepOverNextFunctionCall": {
     "message": "Step over next function call"
-  },
-  "panels/sources/sources-meta.ts | stop": {
-    "message": "Stop"
   },
   "panels/sources/sources-meta.ts | switchFile": {
     "message": "Switch file"
@@ -9139,9 +9097,6 @@
   },
   "panels/sources/sources-meta.ts | watch": {
     "message": "Watch"
-  },
-  "panels/sources/SourcesNavigator.ts | addRecording": {
-    "message": "Add recording"
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Clear configuration"
@@ -9166,9 +9121,6 @@
   },
   "panels/sources/SourcesNavigator.ts | overridePageAssetsWithFilesFromA": {
     "message": "Override page assets with files from a local folder"
-  },
-  "panels/sources/SourcesNavigator.ts | recordAndReplayBrowser": {
-    "message": "Record and replay browser interactions"
   },
   "panels/sources/SourcesNavigator.ts | remove": {
     "message": "Remove"

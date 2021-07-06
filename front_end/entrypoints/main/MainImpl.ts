@@ -46,7 +46,6 @@ import * as Extensions from '../../models/extensions/extensions.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as Persistence from '../../models/persistence/persistence.js';
-import * as Recorder from '../../models/recorder/recorder.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Snippets from '../../panels/snippets/snippets.js';
 import * as Timeline from '../../panels/timeline/timeline.js';
@@ -263,8 +262,6 @@ export class MainImpl {
     Root.Runtime.experiments.register(
         'keyboardShortcutEditor', 'Enable keyboard shortcut editor', true,
         'https://developer.chrome.com/blog/new-in-devtools-88/#keyboard-shortcuts');
-    Root.Runtime.experiments.register(
-        'recorder', 'Recorder', undefined, 'https://developer.chrome.com/blog/new-in-devtools-92/#puppeteer-recorder');
 
     // Back-forward cache
     Root.Runtime.experiments.register('bfcacheDebugging', 'Enable back-forward cache debugging support');
@@ -447,12 +444,6 @@ export class MainImpl {
     Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addPlatformFileSystem(
         // @ts-ignore https://github.com/microsoft/TypeScript/issues/41397
         'snippet://', new Snippets.ScriptSnippetFileSystem.SnippetFileSystem());
-
-    if (Root.Runtime.experiments.isEnabled('recorder')) {
-      Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addPlatformFileSystem(
-          // @ts-ignore https://github.com/microsoft/TypeScript/issues/41397
-          'recording://', new Recorder.RecordingFileSystem.RecordingFileSystem());
-    }
 
     // @ts-ignore layout test global
     self.Persistence.persistence = Persistence.Persistence.PersistenceImpl.instance({

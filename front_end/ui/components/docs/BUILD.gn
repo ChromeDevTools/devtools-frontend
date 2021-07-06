@@ -27,7 +27,6 @@ group("docs") {
     "./markdown_link",
     "./markdown_view",
     "./perf_piechart",
-    "./recording_client",
     "./report",
     "./request_link_icon",
     "./style_property_editor",

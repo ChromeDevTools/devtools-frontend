@@ -54,7 +54,6 @@ devtools_entrypoint("bundle") {
     "../../entrypoints/main/*",
     "../../panels/snippets/*",
     "../../panels/sources/*",
-    "../recorder/*",
     "../workspace_diff/*",
   ]
 

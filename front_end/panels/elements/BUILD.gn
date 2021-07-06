@@ -90,7 +90,6 @@ devtools_entrypoint("bundle") {
     "../../ui/components/docs/layout_pane/*",
 
     # TODO(crbug.com/1202788): Remove invalid dependents
-    "../../models/recorder/*",
     "../issues/*",
     "../network/*",
   ]

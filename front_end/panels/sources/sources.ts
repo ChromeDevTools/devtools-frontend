@@ -21,7 +21,6 @@ import * as NavigatorView from './NavigatorView.js';
 import * as OpenFileQuickOpen from './OpenFileQuickOpen.js';
 import * as OutlineQuickOpen from './OutlineQuickOpen.js';
 import * as Plugin from './Plugin.js';
-import * as RecorderPlugin from './RecorderPlugin.js';
 import * as ScopeChainSidebarPane from './ScopeChainSidebarPane.js';
 import * as ScriptFormatterEditorAction from './ScriptFormatterEditorAction.js';
 import * as ScriptOriginPlugin from './ScriptOriginPlugin.js';
@@ -57,7 +56,6 @@ export {
   OpenFileQuickOpen,
   OutlineQuickOpen,
   Plugin,
-  RecorderPlugin,
   ScopeChainSidebarPane,
   ScriptFormatterEditorAction,
   ScriptOriginPlugin,

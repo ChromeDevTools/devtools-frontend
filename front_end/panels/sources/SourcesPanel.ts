@@ -34,11 +34,9 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Extensions from '../../models/extensions/extensions.js';
-import * as Recorder from '../../models/recorder/recorder.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -47,7 +45,7 @@ import * as Snippets from '../snippets/snippets.js';
 import {CallStackSidebarPane} from './CallStackSidebarPane.js';
 import {DebuggerPausedMessage} from './DebuggerPausedMessage.js';
 import type {NavigatorView} from './NavigatorView.js'; // eslint-disable-line no-unused-vars
-import {ContentScriptsNavigatorView, FilesNavigatorView, NetworkNavigatorView, OverridesNavigatorView, RecordingsNavigatorView, SnippetsNavigatorView} from './SourcesNavigator.js';
+import {ContentScriptsNavigatorView, FilesNavigatorView, NetworkNavigatorView, OverridesNavigatorView, SnippetsNavigatorView} from './SourcesNavigator.js';
 import {Events, SourcesView} from './SourcesView.js';
 import {ThreadsSidebarPane} from './ThreadsSidebarPane.js';
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';
@@ -642,72 +640,6 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     if (uiSourceCode) {
       Snippets.ScriptSnippetFileSystem.evaluateScriptSnippet(uiSourceCode);
     }
-  }
-
-  async _updateUserFlow(uiSourceCode: Workspace.UISourceCode.UISourceCode, userFlow: Recorder.Steps.UserFlow):
-      Promise<void> {
-    const indent = Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get();
-    const content = JSON.stringify(userFlow, null, indent);
-    uiSourceCode.setContent(content, false);
-    await Common.Revealer.reveal(uiSourceCode.uiLocation(content.length), true);
-  }
-
-  async _toggleRecording(): Promise<void> {
-    const uiSourceCode = this._sourcesView.currentUISourceCode();
-    if (!uiSourceCode) {
-      return;
-    }
-    const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
-    if (!target) {
-      return;
-    }
-    const recorderModel = target.model(Recorder.RecorderModel.RecorderModel);
-    if (!recorderModel) {
-      return;
-    }
-    const currentSession = await recorderModel.toggleRecording();
-    if (currentSession) {
-      currentSession.addEventListener('recording-updated', async ({data}: {data: Recorder.Steps.UserFlow}) => {
-        this._updateUserFlow(uiSourceCode, data);
-      });
-
-      // Render the initial user flow
-      this._updateUserFlow(uiSourceCode, currentSession.getUserFlow());
-    }
-  }
-
-  async _replayRecording(): Promise<void> {
-    const uiSourceCode = this._sourcesView.currentUISourceCode();
-    if (!uiSourceCode) {
-      return;
-    }
-    const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
-    if (!target) {
-      return;
-    }
-    const recorderModel = target.model(Recorder.RecorderModel.RecorderModel);
-    if (!recorderModel) {
-      return;
-    }
-    const userFlow = recorderModel.parseUserFlow(uiSourceCode.content());
-    const player = recorderModel.prepareForReplaying(userFlow);
-    await player.play();
-  }
-
-  _exportRecording(): void {
-    const uiSourceCode = this._sourcesView.currentUISourceCode();
-    if (!uiSourceCode) {
-      return;
-    }
-    const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
-    if (!target) {
-      return;
-    }
-    const recorderModel = target.model(Recorder.RecorderModel.RecorderModel);
-    if (!recorderModel) {
-      return;
-    }
-    recorderModel.exportRecording(uiSourceCode);
   }
 
   _editorSelected(event: Common.EventTarget.EventTargetEvent): void {
@@ -1343,19 +1275,6 @@ export class DebuggingActionDelegate implements UI.ActionRegistration.ActionDele
         panel._runSnippet();
         return true;
       }
-      case 'recorder.toggle-recording': {
-        // TODO: Handle dangling promise
-        panel._toggleRecording();
-        return true;
-      }
-      case 'recorder.replay-recording': {
-        panel._replayRecording();
-        return true;
-      }
-      case 'recorder.export-recording': {
-        panel._exportRecording();
-        return true;
-      }
       case 'debugger.toggle-breakpoints-active': {
         panel._toggleBreakpointsActive();
         return true;
@@ -1435,11 +1354,6 @@ const registeredNavigatorViews: NavigatorViewRegistration[] = [
     viewId: 'navigator-snippets',
     navigatorView: SnippetsNavigatorView.instance,
     experiment: undefined,
-  },
-  {
-    viewId: 'navigator-recordings',
-    navigatorView: RecordingsNavigatorView.instance,
-    experiment: Root.Runtime.ExperimentName.RECORDER,
   },
   {
     viewId: 'navigator-overrides',

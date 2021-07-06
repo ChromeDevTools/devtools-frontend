@@ -26,7 +26,6 @@ group("resources") {
     "pages",
     "performance",
     "profiler",
-    "recorder",
     "search",
     "sensors",
     "sources",

@@ -564,7 +564,6 @@ export enum ExperimentName {
   ALL = '*',
   PROTOCOL_MONITOR = 'protocolMonitor',
   WEBAUTHN_PANE = 'webauthnPane',
-  RECORDER = 'recorder',
   LOCALIZED_DEVTOOLS = 'localizedDevTools',
 }
 

@@ -141,7 +141,6 @@ devtools_entrypoint("bundle") {
     # TODO(crbug.com/1202788): Remove invalid dependents
     "../../models/extensions:*",
     "../../models/persistence:*",
-    "../../models/recorder:*",
     "../components/data_grid:*",
     "../components/linear_memory_inspector:*",
     "../components/markdown_view:*",

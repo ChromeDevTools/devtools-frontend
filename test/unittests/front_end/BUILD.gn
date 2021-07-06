@@ -23,7 +23,6 @@ group("front_end") {
     "models/javascript_metadata",
     "models/logs",
     "models/persistence",
-    "models/recorder",
     "models/text_utils",
     "models/timeline_model",
     "panels/animation",

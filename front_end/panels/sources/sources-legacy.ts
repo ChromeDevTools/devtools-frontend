@@ -154,9 +154,6 @@ Sources.SearchSourcesView.ActionDelegate = SourcesModule.SearchSourcesView.Actio
 /** @constructor */
 Sources.SnippetsPlugin = SourcesModule.SnippetsPlugin.SnippetsPlugin;
 
-/** @constructor */
-Sources.RecorderPlugin = SourcesModule.RecorderPlugin.RecorderPlugin;
-
 
 Sources.SourceMapNamesResolver = {};
 
@@ -195,9 +192,6 @@ Sources.ContentScriptsNavigatorView = SourcesModule.SourcesNavigator.ContentScri
 
 /** @constructor */
 Sources.SnippetsNavigatorView = SourcesModule.SourcesNavigator.SnippetsNavigatorView;
-
-/** @constructor */
-Sources.RecordingsNavigatorView = SourcesModule.SourcesNavigator.RecordingsNavigatorView;
 
 /** @constructor */
 Sources.ActionDelegate = SourcesModule.SourcesNavigator.ActionDelegate;

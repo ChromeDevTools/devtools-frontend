@@ -35,7 +35,6 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Persistence from '../../models/persistence/persistence.js';
-import * as Recorder from '../../models/recorder/recorder.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Snippets from '../snippets/snippets.js';
@@ -102,14 +101,6 @@ const UIStrings = {
   *@description Text to save content as a specific file type
   */
   saveAs: 'Save as...',
-  /**
-  *@description Text that describes what the recording feature does
-  */
-  recordAndReplayBrowser: 'Record and replay browser interactions',
-  /**
-  *@description Label for the button to add a new recording
-  */
-  addRecording: 'Add recording',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesNavigator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -199,8 +190,7 @@ export class FilesNavigatorView extends NavigatorView {
   acceptProject(project: Workspace.Workspace.Project): boolean {
     return project.type() === Workspace.Workspace.projectTypes.FileSystem &&
         Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) !== 'overrides' &&
-        !Snippets.ScriptSnippetFileSystem.isSnippetsProject(project) &&
-        !Recorder.RecordingFileSystem.isRecordingProject(project);
+        !Snippets.ScriptSnippetFileSystem.isSnippetsProject(project);
   }
 
   handleContextMenu(event: Event): void {
@@ -380,63 +370,6 @@ export class SnippetsNavigatorView extends NavigatorView {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.headerSection().appendItem(
         i18nString(UIStrings.run), () => Snippets.ScriptSnippetFileSystem.evaluateScriptSnippet(uiSourceCode));
-    contextMenu.editSection().appendItem(i18nString(UIStrings.rename), () => this.rename(node, false));
-    contextMenu.editSection().appendItem(
-        i18nString(UIStrings.remove), () => uiSourceCode.project().deleteFile(uiSourceCode));
-    contextMenu.saveSection().appendItem(i18nString(UIStrings.saveAs), this._handleSaveAs.bind(this, uiSourceCode));
-    contextMenu.show();
-  }
-
-  async _handleSaveAs(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
-    uiSourceCode.commitWorkingCopy();
-    const {content} = await uiSourceCode.requestContent();
-    Workspace.FileManager.FileManager.instance().save(uiSourceCode.url(), content || '', true);
-    Workspace.FileManager.FileManager.instance().close(uiSourceCode.url());
-  }
-}
-
-let recordingsNavigatorViewInstance: RecordingsNavigatorView;
-
-export class RecordingsNavigatorView extends NavigatorView {
-  private constructor() {
-    super();
-    const placeholder = new UI.EmptyWidget.EmptyWidget('');
-    this.setPlaceholder(placeholder);
-    const p = (placeholder.appendParagraph() as HTMLElement);
-    p.innerText = i18nString(UIStrings.recordAndReplayBrowser);
-
-    const toolbar = new UI.Toolbar.Toolbar('navigator-toolbar');
-    const newButton = new UI.Toolbar.ToolbarButton(
-        i18nString(UIStrings.addRecording), 'largeicon-add', i18nString(UIStrings.addRecording));
-    newButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
-      this.create(Recorder.RecordingFileSystem.findRecordingsProject(), '{"steps": []}');
-    });
-    toolbar.appendToolbarItem(newButton);
-    this.contentElement.insertBefore(toolbar.element, this.contentElement.firstChild);
-  }
-
-  static instance(): RecordingsNavigatorView {
-    if (!recordingsNavigatorViewInstance) {
-      recordingsNavigatorViewInstance = new RecordingsNavigatorView();
-    }
-    return recordingsNavigatorViewInstance;
-  }
-
-  acceptProject(project: Workspace.Workspace.Project): boolean {
-    return Recorder.RecordingFileSystem.isRecordingProject(project);
-  }
-
-  handleContextMenu(event: Event): void {
-    const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.headerSection().appendItem(
-        i18nString(UIStrings.addRecording),
-        () => this.create(Recorder.RecordingFileSystem.findRecordingsProject(), ''));
-    contextMenu.show();
-  }
-
-  handleFileContextMenu(event: Event, node: NavigatorUISourceCodeTreeNode): void {
-    const uiSourceCode = node.uiSourceCode();
-    const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.editSection().appendItem(i18nString(UIStrings.rename), () => this.rename(node, false));
     contextMenu.editSection().appendItem(
         i18nString(UIStrings.remove), () => uiSourceCode.project().deleteFile(uiSourceCode));

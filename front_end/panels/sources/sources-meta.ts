@@ -49,14 +49,6 @@ const UIStrings = {
   */
   search: 'Search',
   /**
-  *@description Command for showing the 'Recordings' tool
-  */
-  showRecordings: 'Show Recordings',
-  /**
-  *@description Title of the 'Recorder' tool in the Recorder Navigator View, which is part of the Sources tool
-  */
-  recordings: 'Recordings',
-  /**
   *@description Command for showing the 'Quick source' tool
   */
   showQuickSource: 'Show Quick source',
@@ -124,26 +116,6 @@ const UIStrings = {
   *@description Text to run a code snippet
   */
   runSnippet: 'Run snippet',
-  /**
-  *@description Label for the button to start a recording
-  */
-  startRecording: 'Start Recording',
-  /**
-  *@description Text to record a series of actions for analysis
-  */
-  record: 'Record',
-  /**
-  *@description Text to replay a recorded series of actions
-  */
-  replayRecording: 'Replay',
-  /**
-  *@description Title of a button to export a recorded series of actions as a Puppeteer script
-  */
-  exportRecording: 'Export',
-  /**
-  *@description Text of an item that stops the running task
-  */
-  stop: 'Stop',
   /**
   *@description Text in Java Script Breakpoints Sidebar Pane of the Sources panel
   */
@@ -467,20 +439,6 @@ UI.ViewManager.registerViewExtension({
 });
 
 UI.ViewManager.registerViewExtension({
-  location: UI.ViewManager.ViewLocationValues.NAVIGATOR_VIEW,
-  id: 'navigator-recordings',
-  commandPrompt: i18nLazyString(UIStrings.showRecordings),
-  title: i18nLazyString(UIStrings.recordings),
-  order: 8,
-  persistence: UI.ViewManager.ViewPersistence.PERMANENT,
-  experiment: Root.Runtime.ExperimentName.RECORDER,
-  async loadView() {
-    const Sources = await loadSourcesModule();
-    return Sources.SourcesNavigator.RecordingsNavigatorView.instance();
-  },
-});
-
-UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'sources.quick',
   commandPrompt: i18nLazyString(UIStrings.showQuickSource),
@@ -734,80 +692,6 @@ UI.ActionRegistration.registerActionExtension({
       shortcut: 'Meta+Enter',
     },
   ],
-});
-
-UI.ActionRegistration.registerActionExtension({
-  actionId: 'recorder.toggle-recording',
-  experiment: Root.Runtime.ExperimentName.RECORDER,
-  category: UI.ActionRegistration.ActionCategory.RECORDER,
-  async loadActionDelegate() {
-    const Sources = await loadSourcesModule();
-    return Sources.SourcesPanel.DebuggingActionDelegate.instance();
-  },
-  title: i18nLazyString(UIStrings.startRecording),
-  iconClass: UI.ActionRegistration.IconClass.LARGEICON_START_RECORDING,
-  toggleable: true,
-  toggledIconClass: UI.ActionRegistration.IconClass.LARGEICON_STOP_RECORDING,
-  toggleWithRedColor: true,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString(UIStrings.record),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.stop),
-    },
-  ],
-  contextTypes() {
-    return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
-  },
-  bindings: [
-    {
-      platform: UI.ActionRegistration.Platforms.WindowsLinux,
-      shortcut: 'Ctrl+E',
-    },
-    {
-      platform: UI.ActionRegistration.Platforms.Mac,
-      shortcut: 'Meta+E',
-    },
-  ],
-});
-
-UI.ActionRegistration.registerActionExtension({
-  actionId: 'recorder.replay-recording',
-  experiment: Root.Runtime.ExperimentName.RECORDER,
-  category: UI.ActionRegistration.ActionCategory.RECORDER,
-  async loadActionDelegate() {
-    const Sources = await loadSourcesModule();
-    return Sources.SourcesPanel.DebuggingActionDelegate.instance();
-  },
-  title: i18nLazyString(UIStrings.replayRecording),
-  iconClass: UI.ActionRegistration.IconClass.LARGEICON_PLAY,
-  contextTypes() {
-    return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
-  },
-  bindings: [
-    {
-      shortcut: 'Ctrl+Enter',
-    },
-  ],
-});
-
-UI.ActionRegistration.registerActionExtension({
-  actionId: 'recorder.export-recording',
-  experiment: Root.Runtime.ExperimentName.RECORDER,
-  category: UI.ActionRegistration.ActionCategory.RECORDER,
-  async loadActionDelegate() {
-    const Sources = await loadSourcesModule();
-    return Sources.SourcesPanel.DebuggingActionDelegate.instance();
-  },
-  title: i18nLazyString(UIStrings.exportRecording),
-  iconClass: UI.ActionRegistration.IconClass.LARGEICON_DOWNLOAD,
-  contextTypes() {
-    return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
-  },
-  bindings: [],
 });
 
 UI.ActionRegistration.registerActionExtension({

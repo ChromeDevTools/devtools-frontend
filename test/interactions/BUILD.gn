@@ -19,7 +19,6 @@ ts_library("tests") {
     "data_grid",
     "data_grid_controller",
     "helpers",
-    "recording_client",
     "tree_outline",
   ]
 }

@@ -271,9 +271,11 @@ export class Cache {
   _model: ServiceWorkerCacheModel;
   securityOrigin: string;
   cacheName: string;
-  cacheId: string;
+  cacheId: Protocol.CacheStorage.CacheId;
 
-  constructor(model: ServiceWorkerCacheModel, securityOrigin: string, cacheName: string, cacheId: string) {
+  constructor(
+      model: ServiceWorkerCacheModel, securityOrigin: string, cacheName: string,
+      cacheId: Protocol.CacheStorage.CacheId) {
     this._model = model;
     this.securityOrigin = securityOrigin;
     this.cacheName = cacheName;

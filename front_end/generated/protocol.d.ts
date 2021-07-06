@@ -15,6 +15,8 @@ declare namespace Protocol {
     /** Returns an error message if the request failed. */
     getError(): string|undefined;
   }
+  type OpaqueType<Tag extends string> = {protocolOpaqueTypeTag: Tag};
+  type OpaqueIdentifier<RepresentationType, Tag extends string> = RepresentationType&OpaqueType<Tag>;
 
   export namespace Accessibility {
 
@@ -2578,7 +2580,7 @@ declare namespace Protocol {
     /**
      * Unique identifier of the Cache object.
      */
-    export type CacheId = string;
+    export type CacheId = OpaqueIdentifier<string, 'Protocol.CacheStorage.CacheId'>;
 
     /**
      * type of HTTP response cached

@@ -13,9 +13,11 @@ import * as CSSQuery from './CSSQuery.js';
 import * as ElementsBreadcrumbs from './ElementsBreadcrumbs.js';
 import * as ElementsBreadcrumbsUtils from './ElementsBreadcrumbsUtils.js';
 import * as ElementsPanelLink from './ElementsPanelLink.js';
+import * as Helper from './Helper.js';
 import * as LayoutPane from './LayoutPane.js';
 import * as LayoutPaneUtils from './LayoutPaneUtils.js';
 import * as NodeText from './NodeText.js';
+import * as QueryContainer from './QueryContainer.js';
 import * as StylePropertyEditor from './StylePropertyEditor.js';
 
 export {
@@ -30,8 +32,10 @@ export {
   ElementsBreadcrumbs,
   ElementsBreadcrumbsUtils,
   ElementsPanelLink,
+  Helper,
   LayoutPane,
   LayoutPaneUtils,
   NodeText,
+  QueryContainer,
   StylePropertyEditor,
 };

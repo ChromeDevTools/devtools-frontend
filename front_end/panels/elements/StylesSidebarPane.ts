@@ -51,6 +51,7 @@ import {FontEditorSectionManager} from './ColorSwatchPopoverIcon.js';
 import * as ElementsComponents from './components/components.js';
 import {ComputedStyleModel} from './ComputedStyleModel.js';
 import {linkifyDeferredNodeReference} from './DOMLinkifier.js';
+import {ElementsPanel} from './ElementsPanel.js';
 import {ElementsSidebarPane} from './ElementsSidebarPane.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {StyleEditorWidget} from './StyleEditorWidget.js';
@@ -1785,7 +1786,27 @@ export class StylePropertiesSection {
         onQueryTextClick,
       };
       this.queryListElement.append(containerQueryElement);
+
+      this.addContainerForContainerQuery(containerQuery);
     }
+  }
+
+  private async addContainerForContainerQuery(containerQuery: SDK.CSSContainerQuery.CSSContainerQuery): Promise<void> {
+    const container = await containerQuery.getContainerForNode(this._matchedStyles.node().id);
+    if (!container) {
+      return;
+    }
+
+    const containerElement = new ElementsComponents.QueryContainer.QueryContainer();
+    containerElement.data = {
+      container: ElementsComponents.Helper.legacyNodeToElementsComponentsNode(container),
+      queryName: containerQuery.name,
+      onContainerLinkClick: (): void => {
+        ElementsPanel.instance().revealAndSelectNode(container, true, true);
+        container.scrollIntoView();
+      },
+    };
+    this.queryListElement.prepend(containerElement);
   }
 
   private updateQueryList(): void {

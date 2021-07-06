@@ -1,0 +1,7 @@
+.container-link {
+  color: var(--color-text-primary);
+}
+
+.container-link:hover {
+  background-color: var(--color-match-highlight);
+}

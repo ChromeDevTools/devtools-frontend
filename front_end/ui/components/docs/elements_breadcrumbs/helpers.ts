@@ -3,14 +3,14 @@
 // found in the LICENSE file.
 import type * as Elements from '../../../../panels/elements/components/components.js';
 
-interface CrumbOverrides extends Partial<Elements.ElementsBreadcrumbsUtils.DOMNode> {
+interface CrumbOverrides extends Partial<Elements.Helper.DOMNode> {
   attributes?: {[x: string]: string|undefined};
 }
 
 let id = 0;
-export const makeCrumb = (overrides: CrumbOverrides = {}): Elements.ElementsBreadcrumbsUtils.DOMNode => {
+export const makeCrumb = (overrides: CrumbOverrides = {}): Elements.Helper.DOMNode => {
   const attributes = overrides.attributes || {};
-  const newCrumb: Elements.ElementsBreadcrumbsUtils.DOMNode = {
+  const newCrumb: Elements.Helper.DOMNode = {
     nodeType: Node.ELEMENT_NODE,
     id: id++,
     pseudoType: '',

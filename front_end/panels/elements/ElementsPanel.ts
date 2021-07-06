@@ -126,22 +126,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementsPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const legacyNodeToNewBreadcrumbsNode = (node: SDK.DOMModel.DOMNode): ElementsComponents.ElementsBreadcrumbs.DOMNode => {
-  return {
-    parentNode: node.parentNode ? legacyNodeToNewBreadcrumbsNode(node.parentNode) : null,
-    id: (node.id as number),
-    nodeType: node.nodeType(),
-    pseudoType: node.pseudoType(),
-    shadowRootType: node.shadowRootType(),
-    nodeName: node.nodeName(),
-    nodeNameNicelyCased: node.nodeNameInCorrectCase(),
-    legacyDomNode: node,
-    highlightNode: (): void => node.highlight(),
-    clearHighlight: (): void => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(),
-    getAttribute: node.getAttribute.bind(node),
-  };
-};
-
 const createAccessibilityTreeToggleButton = (isActive: boolean): HTMLButtonElement => {
   const button = document.createElement('button');
   if (isActive) {
@@ -495,16 +479,16 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     }
 
     if (selectedNode) {
-      const activeNode = legacyNodeToNewBreadcrumbsNode(selectedNode);
+      const activeNode = ElementsComponents.Helper.legacyNodeToElementsComponentsNode(selectedNode);
       const crumbs = [activeNode];
 
       for (let current: (SDK.DOMModel.DOMNode|null) = selectedNode.parentNode; current; current = current.parentNode) {
-        crumbs.push(legacyNodeToNewBreadcrumbsNode(current));
+        crumbs.push(ElementsComponents.Helper.legacyNodeToElementsComponentsNode(current));
       }
 
       this._breadcrumbs.data = {
         crumbs,
-        selectedNode: legacyNodeToNewBreadcrumbsNode(selectedNode),
+        selectedNode: ElementsComponents.Helper.legacyNodeToElementsComponentsNode(selectedNode),
       };
     } else {
       this._breadcrumbs.data = {crumbs: [], selectedNode: null};
@@ -799,15 +783,15 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
      */
 
     // Get the current set of active crumbs
-    const activeNode = legacyNodeToNewBreadcrumbsNode(selectedNode);
+    const activeNode = ElementsComponents.Helper.legacyNodeToElementsComponentsNode(selectedNode);
     const existingCrumbs = [activeNode];
     for (let current: (SDK.DOMModel.DOMNode|null) = selectedNode.parentNode; current; current = current.parentNode) {
-      existingCrumbs.push(legacyNodeToNewBreadcrumbsNode(current));
+      existingCrumbs.push(ElementsComponents.Helper.legacyNodeToElementsComponentsNode(current));
     }
 
     /* Get the change nodes from the event & convert them to breadcrumb nodes */
-    const newNodes = nodes.map(legacyNodeToNewBreadcrumbsNode);
-    const nodesThatHaveChangedMap = new Map<number, ElementsComponents.ElementsBreadcrumbs.DOMNode>();
+    const newNodes = nodes.map(ElementsComponents.Helper.legacyNodeToElementsComponentsNode);
+    const nodesThatHaveChangedMap = new Map<number, ElementsComponents.Helper.DOMNode>();
     newNodes.forEach(crumb => nodesThatHaveChangedMap.set(crumb.id, crumb));
 
     /* Loop over our existing crumbs, and if any have an ID that matches an ID from the new nodes

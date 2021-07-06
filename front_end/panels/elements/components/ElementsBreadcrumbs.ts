@@ -7,11 +7,11 @@ import * as Coordinator from '../../../ui/components/render_coordinator/render_c
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import type {UserScrollPosition} from './ElementsBreadcrumbsUtils.js';
-import {crumbsToRender, DOMNode, NodeSelectedEvent} from './ElementsBreadcrumbsUtils.js';
+import {crumbsToRender, NodeSelectedEvent} from './ElementsBreadcrumbsUtils.js';
+import type {DOMNode} from './Helper.js';
 
 import {NodeText} from './NodeText.js';
 import type {NodeTextData} from './NodeText.js';
-export {DOMNode};
 
 export interface ElementsBreadcrumbsData {
   selectedNode: DOMNode|null;

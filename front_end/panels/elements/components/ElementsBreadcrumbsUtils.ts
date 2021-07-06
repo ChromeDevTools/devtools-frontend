@@ -3,6 +3,9 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
+
+import type {DOMNode} from './Helper.js';
+
 const UIStrings = {
   /**
   * @description Text in Elements Breadcrumbs of the Elements panel. Indicates that a HTML element
@@ -12,19 +15,6 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/ElementsBreadcrumbsUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export interface DOMNode {
-  parentNode: DOMNode|null;
-  id: number;
-  nodeType: number;
-  pseudoType?: string;
-  shadowRootType: string|null;
-  nodeName: string;
-  nodeNameNicelyCased: string;
-  legacyDomNode: unknown;
-  highlightNode: () => void;
-  clearHighlight: () => void;
-  getAttribute: (attr: string) => string | undefined;
-}
 
 export type UserScrollPosition = 'start'|'middle'|'end';
 

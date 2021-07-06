@@ -11,13 +11,13 @@ const {assert} = chai;
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 
-interface MakeCrumbOptions extends Partial<ElementsComponents.ElementsBreadcrumbsUtils.DOMNode> {
+interface MakeCrumbOptions extends Partial<ElementsComponents.Helper.DOMNode> {
   attributes?: {[x: string]: string};
 }
 
 const makeCrumb = (overrides: MakeCrumbOptions = {}) => {
   const attributes = overrides.attributes || {};
-  const newCrumb: ElementsComponents.ElementsBreadcrumbsUtils.DOMNode = {
+  const newCrumb: ElementsComponents.Helper.DOMNode = {
     parentNode: null,
     nodeType: Node.ELEMENT_NODE,
     id: 1,
@@ -229,8 +229,7 @@ describe('ElementsBreadcrumbs', () => {
       });
 
       await withNoMutations(shadowRoot, async shadowRoot => {
-        const newDiv: ElementsComponents.ElementsBreadcrumbsUtils
-            .DOMNode = {...divCrumb, nodeName: 'span', nodeNameNicelyCased: 'span'};
+        const newDiv: ElementsComponents.Helper.DOMNode = {...divCrumb, nodeName: 'span', nodeNameNicelyCased: 'span'};
         component.data = {
           crumbs: [newDiv, bodyCrumb],
           selectedNode: bodyCrumb,

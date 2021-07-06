@@ -7,6 +7,7 @@ import type * as Protocol from '../../generated/protocol.js';
 
 import type {CSSModel} from './CSSModel.js';
 import {CSSQuery} from './CSSQuery.js';
+import type {DOMNode} from './DOMModel.js';
 
 export class CSSContainerQuery extends CSSQuery {
   name?: string;
@@ -30,5 +31,9 @@ export class CSSContainerQuery extends CSSQuery {
 
   active(): boolean {
     return true;
+  }
+
+  async getContainerForNode(nodeId: Protocol.DOM.NodeId): Promise<DOMNode|null> {
+    return this.cssModel.domModel().getContainerForNode(nodeId, this.name);
   }
 }

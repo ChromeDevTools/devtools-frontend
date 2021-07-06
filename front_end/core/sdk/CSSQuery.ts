@@ -15,7 +15,7 @@ export abstract class CSSQuery {
   text = '';
   range?: TextUtils.TextRange.TextRange|null;
   styleSheetId?: string;
-  private cssModel: CSSModel;
+  protected cssModel: CSSModel;
 
   constructor(cssModel: CSSModel) {
     this.cssModel = cssModel;

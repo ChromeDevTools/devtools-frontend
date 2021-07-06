@@ -5,14 +5,11 @@
 import * as ElementsComponents from '../../../../../../front_end/panels/elements/components/components.js';
 import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
 
+import {assertNodeTextContent} from './ElementsComponentsHelper.js';
+
 const {assert} = chai;
 
 describe('NodeText', async () => {
-  function assertNodeTextContent(component: HTMLElement, expectedContent: string) {
-    assertShadowRoot(component.shadowRoot);
-    const content = Array.from(component.shadowRoot.querySelectorAll('span')).map(span => span.textContent).join('');
-    assert.strictEqual(content, expectedContent);
-  }
   it('renders element with a title', async () => {
     const component = new ElementsComponents.NodeText.NodeText();
     renderElementIntoDOM(component);

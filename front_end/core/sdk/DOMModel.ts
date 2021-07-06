@@ -1467,6 +1467,14 @@ export class DOMModel extends SDKModel {
     return this.nodeForId(response.nodeId);
   }
 
+  async getContainerForNode(nodeId: Protocol.DOM.NodeId, containerName?: string): Promise<DOMNode|null> {
+    const {nodeId: containerNodeId} = await this._agent.invoke_getContainerForNode({nodeId, containerName});
+    if (!containerNodeId) {
+      return null;
+    }
+    return this.nodeForId(containerNodeId);
+  }
+
   pushObjectAsNodeToFrontend(object: RemoteObject): Promise<DOMNode|null> {
     return object.isNode() ? this.pushNodeToFrontend((object.objectId as string)) : Promise.resolve(null);
   }

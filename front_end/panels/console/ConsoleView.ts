@@ -446,7 +446,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     this._pinPane.show(this._contentsElement);
     this._pinPane.element.addEventListener('keydown', event => {
       if ((event.key === 'Enter' &&
-           UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlOrMeta((event as KeyboardEvent))) ||
+           UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey((event as KeyboardEvent))) ||
           event.keyCode === UI.KeyboardShortcut.Keys.Esc.code) {
         this._prompt.focus();
         event.consume();

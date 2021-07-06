@@ -1074,7 +1074,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
     function keydown(this: ElementsTreeElement, event: Event): void {
       const keyboardEvent = (event as KeyboardEvent);
-      const isMetaOrCtrl = UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlOrMeta(keyboardEvent) &&
+      const isMetaOrCtrl = UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(keyboardEvent) &&
           !keyboardEvent.altKey && !keyboardEvent.shiftKey;
       if (keyboardEvent.key === 'Enter' && (isMetaOrCtrl || keyboardEvent.isMetaOrCtrlForTest)) {
         keyboardEvent.consume(true);

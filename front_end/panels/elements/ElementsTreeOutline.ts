@@ -606,7 +606,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
 
     this.setHoverEffect(element);
     this._highlightTreeElement(
-        (element as UI.TreeOutline.TreeElement), !UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlOrMeta(event));
+        (element as UI.TreeOutline.TreeElement), !UI.KeyboardShortcut.KeyboardShortcut.eventHasEitherCtrlOrMeta(event));
   }
 
   _highlightTreeElement(element: UI.TreeOutline.TreeElement, showInfo: boolean): void {
@@ -824,7 +824,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
       return;
     }
 
-    if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlOrMeta(keyboardEvent) && node.parentNode) {
+    if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(keyboardEvent) && node.parentNode) {
       if (keyboardEvent.key === 'ArrowUp' && node.previousSibling) {
         node.moveTo(node.parentNode, node.previousSibling, this.selectNodeAfterEdit.bind(this, treeElement.expanded));
         keyboardEvent.consume(true);

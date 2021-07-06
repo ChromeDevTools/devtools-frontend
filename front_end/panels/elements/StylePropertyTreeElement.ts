@@ -725,7 +725,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         StylesSidebarPane.createExclamationMark(this.property, warnings.join(' ')), this.listItemElement.firstChild);
   }
 
-  _mouseUp(event: Event): void {
+  _mouseUp(event: MouseEvent): void {
     const activeTreeElement = parentMap.get(this._parentPane);
     parentMap.delete(this._parentPane);
     if (!activeTreeElement) {
@@ -745,8 +745,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     const section = this.section();
-    if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlOrMeta((event as MouseEvent)) && section &&
-        section.navigable) {
+    if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event) && section && section.navigable) {
       this._navigateToSource((event.target as Element));
       return;
     }

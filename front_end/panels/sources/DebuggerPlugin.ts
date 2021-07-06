@@ -560,7 +560,7 @@ export class DebuggerPlugin extends Plugin {
   }
 
   _getPopoverRequest(event: MouseEvent): UI.PopoverHelper.PopoverRequest|null {
-    if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlOrMeta(event)) {
+    if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event)) {
       return null;
     }
     const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
@@ -756,7 +756,7 @@ export class DebuggerPlugin extends Plugin {
   }
 
   _onWheel(event: WheelEvent): void {
-    if (this._executionLocation && UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlOrMeta(event)) {
+    if (this._executionLocation && UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event)) {
       event.preventDefault();
     }
   }
@@ -774,7 +774,7 @@ export class DebuggerPlugin extends Plugin {
       return;
     }
 
-    if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlOrMeta(event) && this._executionLocation) {
+    if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event) && this._executionLocation) {
       this._controlDown = true;
       if (event.key === (Host.Platform.isMac() ? 'Meta' : 'Control')) {
         this._controlTimeout = window.setTimeout(() => {
@@ -788,7 +788,7 @@ export class DebuggerPlugin extends Plugin {
 
   _onMouseMove(event: MouseEvent): void {
     if (this._executionLocation && this._controlDown &&
-        UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlOrMeta(event)) {
+        UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event)) {
       if (!this._continueToLocationDecorations) {
         this._showContinueToLocations();
       }
@@ -816,7 +816,7 @@ export class DebuggerPlugin extends Plugin {
   }
 
   _onMouseDown(event: MouseEvent): void {
-    if (!this._executionLocation || !UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlOrMeta(event)) {
+    if (!this._executionLocation || !UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event)) {
       return;
     }
     if (!this._continueToLocationDecorations) {

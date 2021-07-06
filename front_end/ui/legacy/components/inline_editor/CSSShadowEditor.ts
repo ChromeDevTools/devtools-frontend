@@ -335,7 +335,7 @@ export class CSSShadowEditor extends UI.Widget.VBox {
       if (!event.altKey) {
         this._model.setOffsetX(new CSSLength(newX, this._model.offsetX().unit || defaultUnit));
       }
-      if (!UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlOrMeta(event)) {
+      if (!UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event)) {
         this._model.setOffsetY(new CSSLength(newY, this._model.offsetY().unit || defaultUnit));
       }
     }

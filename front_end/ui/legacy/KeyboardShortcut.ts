@@ -130,8 +130,14 @@ export class KeyboardShortcut {
     return KeyboardShortcut._makeKeyFromCodeAndModifiers(keyCode, Modifiers.None);
   }
 
-  static eventHasCtrlOrMeta(event: KeyboardEvent|MouseEvent): boolean {
+  // This checks if a "control equivalent" key is pressed. For non-mac platforms this means checking
+  // if control is pressed but not meta. On mac, we instead check if meta is pressed but not control.
+  static eventHasCtrlEquivalentKey(event: KeyboardEvent|MouseEvent): boolean {
     return Host.Platform.isMac() ? event.metaKey && !event.ctrlKey : event.ctrlKey && !event.metaKey;
+  }
+
+  static eventHasEitherCtrlOrMeta(event: KeyboardEvent|MouseEvent): boolean {
+    return event.metaKey || event.ctrlKey;
   }
 
   static hasNoModifiers(event: Event): boolean {

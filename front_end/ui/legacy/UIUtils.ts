@@ -429,7 +429,7 @@ function _modifiedHexValue(hexString: string, event: Event): string|null {
   // If no shortcut keys are pressed then increase hex value by 1.
   // Keys can be pressed together to increase RGB channels. e.g trying different shades.
   let delta = 0;
-  if (KeyboardShortcut.eventHasCtrlOrMeta(mouseEvent)) {
+  if (KeyboardShortcut.eventHasCtrlEquivalentKey(mouseEvent)) {
     delta += Math.pow(16, channelLen * 2);
   }
   if (mouseEvent.shiftKey) {
@@ -473,7 +473,7 @@ function _modifiedFloatNumber(number: number, event: Event, modifierMultiplier?:
   // When alt is pressed, increase by 0.1.
   // Otherwise increase by 1.
   let delta = 1;
-  if (KeyboardShortcut.eventHasCtrlOrMeta(mouseEvent)) {
+  if (KeyboardShortcut.eventHasCtrlEquivalentKey(mouseEvent)) {
     delta = 100;
   } else if (mouseEvent.shiftKey) {
     delta = 10;

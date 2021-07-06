@@ -327,7 +327,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
 
   _keyDown(event: Event): void {
     const keyboardEvent = (event as KeyboardEvent);
-    if (!KeyboardShortcut.eventHasCtrlOrMeta(keyboardEvent) || keyboardEvent.altKey || keyboardEvent.shiftKey) {
+    if (!KeyboardShortcut.eventHasCtrlEquivalentKey(keyboardEvent) || keyboardEvent.altKey || keyboardEvent.shiftKey) {
       return;
     }
 

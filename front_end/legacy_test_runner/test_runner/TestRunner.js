@@ -502,9 +502,16 @@ export async function evaluateInPageAsync(code) {
   if (!error && !response.exceptionDetails) {
     return response.result.value;
   }
-  addResult(
-      'Error: ' +
-      (error || response.exceptionDetails && response.exceptionDetails.text || 'exception while evaluation in page.'));
+  let errorMessage = 'Error: ';
+  if (error) {
+    errorMessage += error;
+  } else if (response.exceptionDetails) {
+    errorMessage += response.exceptionDetails.text;
+    if (response.exceptionDetails.exception) {
+      errorMessage += ' ' + response.exceptionDetails.exception.description;
+    }
+  }
+  addResult(errorMessage);
   completeTest();
 }
 

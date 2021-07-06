@@ -82,6 +82,12 @@ export const qualifyName = (domain: string, name: UnqualifiedName): QualifiedNam
 type EventParameterNames = Map<QualifiedName, string[]>;
 type ReadonlyEventParameterNames = ReadonlyMap<QualifiedName, string[]>;
 
+interface CommandParameter {
+  name: string;
+  type: string;
+  optional: boolean;
+}
+
 export class InspectorBackend {
   _agentPrototypes: Map<string, _AgentPrototype> = new Map();
   private initialized: boolean = false;
@@ -156,15 +162,9 @@ export class InspectorBackend {
     return prototype;
   }
 
-  registerCommand(
-      method: QualifiedName, signature: {
-        name: string,
-        type: string,
-        optional: boolean,
-      }[],
-      replyArgs: string[]): void {
-    const domainAndMethod = splitQualifiedName(method);
-    this._agentPrototype(domainAndMethod[0]).registerCommand(domainAndMethod[1], signature, replyArgs);
+  registerCommand(method: QualifiedName, parameters: CommandParameter[], replyArgs: string[]): void {
+    const [domain, command] = splitQualifiedName(method);
+    this._agentPrototype(domain).registerCommand(command, parameters, replyArgs);
     this.initialized = true;
   }
 
@@ -890,13 +890,7 @@ class _AgentPrototype {
     this._domain = domain;
   }
 
-  registerCommand(
-      methodName: UnqualifiedName, signature: {
-        name: string,
-        type: string,
-        optional: boolean,
-      }[],
-      replyArgs: string[]): void {
+  registerCommand(methodName: UnqualifiedName, parameters: CommandParameter[], replyArgs: string[]): void {
     const domainAndMethod = qualifyName(this._domain, methodName);
 
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
@@ -904,8 +898,8 @@ class _AgentPrototype {
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     function sendMessagePromise(this: _AgentPrototype, _vararg: any): Promise<any> {
-      const params = Array.prototype.slice.call(arguments);
-      return _AgentPrototype.prototype._sendMessageToBackendPromise.call(this, domainAndMethod, signature, params);
+      const args = Array.prototype.slice.call(arguments);
+      return _AgentPrototype.prototype._sendMessageToBackendPromise.call(this, domainAndMethod, parameters, args);
     }
 
     // @ts-ignore Method code generation
@@ -922,11 +916,7 @@ class _AgentPrototype {
   }
 
   _prepareParameters(
-      method: string, signature: {
-        name: string,
-        type: string,
-        optional: boolean,
-      }[],
+      method: string, parameters: CommandParameter[],
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       args: any[], errorCallback: (arg0: string) => void): Object|null {
@@ -937,15 +927,15 @@ class _AgentPrototype {
     } = {};
     let hasParams = false;
 
-    for (const param of signature) {
-      const paramName = param['name'];
-      const typeName = param['type'];
-      const optionalFlag = param['optional'];
+    for (const param of parameters) {
+      const paramName = param.name;
+      const typeName = param.type;
+      const optionalFlag = param.optional;
 
       if (!args.length && !optionalFlag) {
         errorCallback(
             `Protocol Error: Invalid number of arguments for method '${method}' call. ` +
-            `It must have the following arguments ${JSON.stringify(signature)}'.`);
+            `It must have the following arguments ${JSON.stringify(parameters)}'.`);
         return null;
       }
 
@@ -974,11 +964,7 @@ class _AgentPrototype {
   }
 
   _sendMessageToBackendPromise(
-      method: QualifiedName, signature: {
-        name: string,
-        type: string,
-        optional: boolean,
-      }[],
+      method: QualifiedName, parameters: CommandParameter[],
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
@@ -989,7 +975,7 @@ class _AgentPrototype {
       console.error(message);
       errorMessage = message;
     }
-    const params = this._prepareParameters(method, signature, args, onError);
+    const params = this._prepareParameters(method, parameters, args, onError);
     if (errorMessage) {
       return Promise.resolve(null);
     }

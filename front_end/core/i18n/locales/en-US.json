@@ -2045,6 +2045,9 @@
   "panels/application/AppManifestView.ts | aUrlInTheManifestContainsA": {
     "message": "A URL in the manifest contains a username, password, or port"
   },
+  "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
+    "message": "Declaring an icon with purpose: \"any maskable\" is discouraged. It is likely to look incorrect on some platforms due to too much or too little padding."
+  },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "Background color"
   },
@@ -2100,7 +2103,7 @@
     "message": "Manifest does not contain a 'name' or 'short_name' field"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "Manifest does not contain a suitable icon - PNG, SVG or WebP format of at least {PH1}px is required, the sizes attribute must be set, and the purpose attribute, if set, must include \"any\" and should not include \"maskable\"."
+    "message": "Manifest does not contain a suitable icon - PNG, SVG or WebP format of at least {PH1}px is required, the sizes attribute must be set, and the purpose attribute, if set, must include \"any\"."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "Manifest specifies prefer_related_applications: true"

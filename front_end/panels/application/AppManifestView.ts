@@ -152,7 +152,12 @@ const UIStrings = {
   *@example {100} PH1
   */
   manifestDoesNotContainASuitable:
-      'Manifest does not contain a suitable icon - PNG, SVG or WebP format of at least {PH1}px is required, the `sizes` attribute must be set, and the `purpose` attribute, if set, must include `"any"` and should not include `"maskable"`.',
+      'Manifest does not contain a suitable icon - PNG, SVG or WebP format of at least {PH1}px is required, the `sizes` attribute must be set, and the `purpose` attribute, if set, must include `"any"`.',
+  /**
+  *@description Manifest installability error in the Application panel
+  */
+  avoidPurposeAnyAndMaskable:
+      'Declaring an icon with `purpose: "any maskable"` is discouraged. It is likely to look incorrect on some platforms due to too much or too little padding.',
   /**
   *@description Manifest installability error in the Application panel
   */
@@ -911,6 +916,12 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
         }
       }
     }
+
+    const purpose = typeof imageResource['purpose'] === 'string' ? imageResource['purpose'].toLowerCase() : '';
+    if (purpose.includes('any') && purpose.includes('maskable')) {
+      imageResourceErrors.push(i18nString(UIStrings.avoidPurposeAnyAndMaskable));
+    }
+
     field.appendChild(wrapper);
     return {imageResourceErrors, squareSizedIconAvailable};
   }

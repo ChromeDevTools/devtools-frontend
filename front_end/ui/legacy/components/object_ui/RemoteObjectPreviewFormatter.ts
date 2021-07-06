@@ -69,14 +69,11 @@ export class RemoteObjectPreviewFormatter {
     ]);
     if (preview.type !== Protocol.Runtime.ObjectPreviewType.Object ||
         (preview.subtype && subTypesWithoutValuePreview.has(preview.subtype)) || isEntry) {
-      parentElement.appendChild(
-          // @ts-ignore https://bugs.chromium.org/p/v8/issues/detail?id=11143
-          this.renderPropertyPreview(preview.type, preview.subtype, preview.className, description));
+      parentElement.appendChild(this.renderPropertyPreview(preview.type, preview.subtype, undefined, description));
       return;
     }
-    const isArrayOrTypedArray = preview.subtype === Protocol.Runtime.ObjectPreviewSubtype.Array
-        // @ts-ignore https://bugs.chromium.org/p/v8/issues/detail?id=11143
-        || preview.subtype === 'typedarray';
+    const isArrayOrTypedArray = preview.subtype === Protocol.Runtime.ObjectPreviewSubtype.Array ||
+        preview.subtype === Protocol.Runtime.ObjectPreviewSubtype.Typedarray;
     if (description) {
       let text;
       if (isArrayOrTypedArray) {
@@ -128,8 +125,7 @@ export class RemoteObjectPreviewFormatter {
       const property = properties[i];
       const name = property.name;
       // Internal properties are given special formatting, e.g. Promises `<rejected>: 123`.
-      // @ts-ignore https://bugs.chromium.org/p/v8/issues/detail?id=11143
-      if (preview.subtype === 'promise' && name === InternalName.PromiseState) {
+      if (preview.subtype === Protocol.Runtime.ObjectPreviewSubtype.Promise && name === InternalName.PromiseState) {
         parentElement.appendChild(this._renderDisplayName('<' + property.value + '>'));
         const nextProperty = i + 1 < properties.length ? properties[i + 1] : null;
         if (nextProperty && nextProperty.name === InternalName.PromiseResult) {

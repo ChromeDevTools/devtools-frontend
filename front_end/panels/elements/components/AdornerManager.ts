@@ -15,35 +15,69 @@ export interface AdornerSetting {
 
 export type AdornerSettingsMap = Map<string, boolean>;
 
+export interface RegisteredAdorner {
+  readonly name: string;
+  readonly category: AdornerCategories;
+  readonly enabledByDefault: boolean;
+}
+
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum RegisteredAdorners {
+  GRID = 'grid',
+  FLEX = 'flex',
+  AD = 'ad',
+  SCROLL_SNAP = 'scroll-snap',
+}
+
 // This enum-like const object serves as the authoritative registry for all the
 // adorners available.
-export const AdornerRegistry = {
-  GRID: {
-    name: 'grid',
-    category: AdornerCategories.LAYOUT,
-    enabledByDefault: true,
-  },
-  FLEX: {
-    name: 'flex',
-    category: AdornerCategories.LAYOUT,
-    enabledByDefault: true,
-  },
-  AD: {
-    name: 'ad',
-    category: AdornerCategories.SECURITY,
-    enabledByDefault: true,
-  },
-  SCROLL_SNAP: {
-    name: 'scroll-snap',
-    category: AdornerCategories.LAYOUT,
-    enabledByDefault: true,
-  },
-} as const;
+export function getRegisteredAdorner(which: RegisteredAdorners): RegisteredAdorner {
+  switch (which) {
+    case RegisteredAdorners.GRID:
+      return {
+        name: 'grid',
+        category: AdornerCategories.LAYOUT,
+        enabledByDefault: true,
+      };
+    case RegisteredAdorners.FLEX:
+      return {
+        name: 'flex',
+        category: AdornerCategories.LAYOUT,
+        enabledByDefault: true,
+      };
+    case RegisteredAdorners.AD:
+      return {
+        name: 'ad',
+        category: AdornerCategories.SECURITY,
+        enabledByDefault: true,
+      };
+    case RegisteredAdorners.SCROLL_SNAP:
+      return {
+        name: 'scroll-snap',
+        category: AdornerCategories.LAYOUT,
+        enabledByDefault: true,
+      };
+  }
+}
 
-export const DefaultAdornerSettings = Object.values(AdornerRegistry).map(({name, enabledByDefault}) => ({
-                                                                           adorner: name,
-                                                                           isEnabled: enabledByDefault,
-                                                                         }));
+let adornerNameToCategoryMap: Map<string, AdornerCategories>|undefined = undefined;
+
+function getCategoryFromAdornerName(name: string): AdornerCategories {
+  if (!adornerNameToCategoryMap) {
+    adornerNameToCategoryMap = new Map();
+    for (const {name, category} of Object.values(RegisteredAdorners).map(getRegisteredAdorner)) {
+      adornerNameToCategoryMap.set(name, category);
+    }
+  }
+  return adornerNameToCategoryMap.get(name) || AdornerCategories.DEFAULT;
+}
+
+export const DefaultAdornerSettings: AdornerSetting[] =
+    Object.values(RegisteredAdorners).map(getRegisteredAdorner).map(({name, enabledByDefault}) => ({
+                                                                      adorner: name,
+                                                                      isEnabled: enabledByDefault,
+                                                                    }));
 
 interface SettingStore<Setting> {
   get(): Setting;
@@ -104,4 +138,19 @@ export class AdornerManager {
 
     this.persistCurrentSettings();
   }
+}
+
+const OrderedAdornerCategories = [
+  AdornerCategories.SECURITY,
+  AdornerCategories.LAYOUT,
+  AdornerCategories.DEFAULT,
+];
+
+// Use idx + 1 for the order to avoid JavaScript's 0 == false issue
+export const AdornerCategoryOrder = new Map(OrderedAdornerCategories.map((category, idx) => [category, idx + 1]));
+
+export function compareAdornerNamesByCategory(nameA: string, nameB: string): number {
+  const orderA = AdornerCategoryOrder.get(getCategoryFromAdornerName(nameA)) || Number.POSITIVE_INFINITY;
+  const orderB = AdornerCategoryOrder.get(getCategoryFromAdornerName(nameB)) || Number.POSITIVE_INFINITY;
+  return orderA - orderB;
 }

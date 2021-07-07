@@ -29,7 +29,8 @@ describe('Adorner', async () => {
     const adorner = new ElementsComponents.Adorner.Adorner();
     adorner.data = {
       content,
-      ...ElementsComponents.AdornerManager.AdornerRegistry.GRID,
+      ...ElementsComponents.AdornerManager.getRegisteredAdorner(
+          ElementsComponents.AdornerManager.RegisteredAdorners.GRID),
     };
     assert.isNull(adorner.getAttribute('role'), 'non-interactive adorner had wrong aria role value');
 
@@ -86,7 +87,8 @@ describe('Adorner', async () => {
     const adorner = new ElementsComponents.Adorner.Adorner();
     adorner.data = {
       content,
-      ...ElementsComponents.AdornerManager.AdornerRegistry.GRID,
+      ...ElementsComponents.AdornerManager.getRegisteredAdorner(
+          ElementsComponents.AdornerManager.RegisteredAdorners.GRID),
     };
     adorner.addInteraction(() => {}, {
       isToggle: true,
@@ -116,15 +118,18 @@ describe('Adorner', async () => {
     const adorner = new ElementsComponents.Adorner.Adorner();
     adorner.data = {
       content: content1,
-      ...ElementsComponents.AdornerManager.AdornerRegistry.GRID,
+      ...ElementsComponents.AdornerManager.getRegisteredAdorner(
+          ElementsComponents.AdornerManager.RegisteredAdorners.GRID),
     };
     adorner.data = {
       content: content2,
-      ...ElementsComponents.AdornerManager.AdornerRegistry.GRID,
+      ...ElementsComponents.AdornerManager.getRegisteredAdorner(
+          ElementsComponents.AdornerManager.RegisteredAdorners.GRID),
     };
     adorner.data = {
       content: content3,
-      ...ElementsComponents.AdornerManager.AdornerRegistry.GRID,
+      ...ElementsComponents.AdornerManager.getRegisteredAdorner(
+          ElementsComponents.AdornerManager.RegisteredAdorners.GRID),
     };
 
     const slottedChildren = adorner.querySelectorAll('[slot="content"]');

@@ -265,7 +265,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       this.updateStyleAdorners();
 
       if (node.isAdFrameNode()) {
-        const adorner = this.adorn(ElementsComponents.AdornerManager.AdornerRegistry.AD);
+        const config = ElementsComponents.AdornerManager.getRegisteredAdorner(
+            ElementsComponents.AdornerManager.RegisteredAdorners.AD);
+        const adorner = this.adorn(config);
         UI.Tooltip.Tooltip.install(adorner, i18nString(UIStrings.thisFrameWasIdentifiedAsAnAd));
       }
     }
@@ -1905,14 +1907,13 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   // TODO: add unit tests for adorner-related methods after component and TypeScript works are done
-  adorn({name, category}: ElementsComponents.Adorner.AdornerDefinition): ElementsComponents.Adorner.Adorner {
+  adorn({name}: {name: string}): ElementsComponents.Adorner.Adorner {
     const adornerContent = document.createElement('span');
     adornerContent.textContent = name;
     const adorner = new ElementsComponents.Adorner.Adorner();
     adorner.data = {
       name,
       content: adornerContent,
-      category,
     };
     this._adorners.push(adorner);
     ElementsPanel.instance().registerAdorner(adorner);
@@ -2016,7 +2017,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       return null;
     }
 
-    const adorner = this.adorn(ElementsComponents.AdornerManager.AdornerRegistry.GRID);
+    const config = ElementsComponents.AdornerManager.getRegisteredAdorner(
+        ElementsComponents.AdornerManager.RegisteredAdorners.GRID);
+    const adorner = this.adorn(config);
     adorner.classList.add('grid');
 
     const onClick = (((): void => {
@@ -2051,7 +2054,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     if (!nodeId) {
       return null;
     }
-    const adorner = this.adorn(ElementsComponents.AdornerManager.AdornerRegistry.SCROLL_SNAP);
+    const config = ElementsComponents.AdornerManager.getRegisteredAdorner(
+        ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL_SNAP);
+    const adorner = this.adorn(config);
     adorner.classList.add('scroll-snap');
 
     const onClick = (((): void => {
@@ -2088,7 +2093,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     if (!nodeId) {
       return null;
     }
-    const adorner = this.adorn(ElementsComponents.AdornerManager.AdornerRegistry.FLEX);
+    const config = ElementsComponents.AdornerManager.getRegisteredAdorner(
+        ElementsComponents.AdornerManager.RegisteredAdorners.FLEX);
+    const adorner = this.adorn(config);
     adorner.classList.add('flex');
 
     const onClick = (((): void => {
@@ -2132,22 +2139,14 @@ export const ForbiddenClosingTagElements = new Set<string>([
 // These tags we do not allow editing their tag name.
 export const EditTagBlocklist = new Set<string>(['html', 'head', 'body']);
 
-const OrderedAdornerCategories = [
-  ElementsComponents.AdornerManager.AdornerCategories.SECURITY,
-  ElementsComponents.AdornerManager.AdornerCategories.LAYOUT,
-  ElementsComponents.AdornerManager.AdornerCategories.DEFAULT,
-];
-// Use idx + 1 for the order to avoid JavaScript's 0 == false issue
-const AdornerCategoryOrder = new Map(OrderedAdornerCategories.map((category, idx) => [category, idx + 1]));
-
-function adornerComparator(
+export function adornerComparator(
     adornerA: ElementsComponents.Adorner.Adorner, adornerB: ElementsComponents.Adorner.Adorner): number {
-  const orderA = AdornerCategoryOrder.get(adornerA.category) || Number.POSITIVE_INFINITY;
-  const orderB = AdornerCategoryOrder.get(adornerB.category) || Number.POSITIVE_INFINITY;
-  if (orderA === orderB) {
+  const compareCategories =
+      ElementsComponents.AdornerManager.compareAdornerNamesByCategory(adornerB.name, adornerB.name);
+  if (compareCategories === 0) {
     return adornerA.name.localeCompare(adornerB.name);
   }
-  return orderA - orderB;
+  return compareCategories;
 }
 export interface EditorHandles {
   commit: () => void;

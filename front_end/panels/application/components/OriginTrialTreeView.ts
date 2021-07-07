@@ -68,7 +68,6 @@ export class Badge extends HTMLElement {
     this.adorner.data = {
       name: 'badge',
       content: adornerContent,
-      category: Components.AdornerManager.AdornerCategories.DEFAULT,
     };
     this.adorner.classList.add(`badge-${data.style}`);
 

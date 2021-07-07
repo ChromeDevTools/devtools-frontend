@@ -6,23 +6,16 @@ import type * as Platform from '../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
-import {AdornerCategories} from './AdornerManager.js';
-
 const {render, html} = LitHtml;
 
-export interface AdornerDefinition {
+export interface AdornerData {
   name: string;
-  category: AdornerCategories;
-}
-
-export interface AdornerData extends AdornerDefinition {
   content: HTMLElement;
 }
 
 export class Adorner extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-adorner`;
   name = '';
-  category = AdornerCategories.DEFAULT;
 
   private readonly shadow = this.attachShadow({mode: 'open'});
   private isToggle = false;
@@ -36,7 +29,6 @@ export class Adorner extends HTMLElement {
     this.content?.remove();
     this.append(data.content);
     this.content = data.content;
-    this.category = data.category;
     this.render();
   }
 

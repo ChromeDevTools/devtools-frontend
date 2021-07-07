@@ -32,6 +32,7 @@
 
 import {NodeURL} from './NodeURL.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import * as Protocol from '../../generated/protocol.js';
 
 export const ProtocolError = Symbol('Protocol.Error');
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
@@ -52,11 +53,17 @@ type MessageParams = {
 
 type ProtocolDomainName = ProtocolProxyApi.ProtocolDomainName;
 
+export interface MessageError {
+  code: number;
+  message: string;
+  data?: string|null;
+}
+
 export type Message = {
   sessionId?: string,
   url?: string,
   id?: number,
-  error?: Object|null,
+  error?: MessageError|null,
   result?: Object|null,
   method?: QualifiedName,
   params?: MessageParams|null,
@@ -88,6 +95,20 @@ interface CommandParameter {
   name: string;
   type: string;
   optional: boolean;
+}
+
+// TODO(crbug.com/1011811): Remove old lookup of ProtocolError and then remove
+// this interface.
+interface ProtocolResultWithError extends Protocol.ProtocolResponseWithError {
+  [ProtocolError]?: ProtocolError;
+  getError(): string|undefined;
+}
+
+type Callback = (error: MessageError|null, arg1: Object|null) => void;
+
+interface CallbackWithDebugInfo {
+  callback: Callback;
+  method: string;
 }
 
 export class InspectorBackend {
@@ -174,29 +195,6 @@ export class InspectorBackend {
     const eventParameterNames = this.getOrCreateEventParameterNamesForDomain(domain as ProtocolDomainName);
     eventParameterNames.set(eventName, params);
     this.initialized = true;
-  }
-
-  wrapClientCallback<T, S>(
-      clientCallback: (arg0: (T|undefined)) => void, errorPrefix: string, constructor?: (new(arg1: S) => T),
-      defaultValue?: T): (arg0: string|null, arg1: S) => void {
-    /**
-     * @template S
-     */
-    function callbackWrapper(error: string|null, value: S): void {
-      if (error) {
-        console.error(errorPrefix + error);
-        clientCallback(defaultValue);
-        return;
-      }
-      if (constructor) {
-        // @ts-ignore Special casting
-        clientCallback(new constructor(value));
-      } else {
-        // @ts-ignore Special casting
-        clientCallback(value);
-      }
-    }
-    return callbackWrapper;
   }
 }
 
@@ -409,7 +407,7 @@ export class SessionRouter {
 
     if (test.onMessageReceived) {
       const messageObjectCopy = JSON.parse((typeof message === 'string') ? message : JSON.stringify(message));
-      test.onMessageReceived((messageObjectCopy as Object), this._getTargetBySessionId(messageObjectCopy.sessionId));
+      test.onMessageReceived(messageObjectCopy, this._getTargetBySessionId(messageObjectCopy.sessionId));
     }
 
     const messageObject = ((typeof message === 'string') ? JSON.parse(message) : message) as Message;
@@ -919,7 +917,7 @@ class _AgentPrototype {
     // @ts-ignore Method code generation
     this[methodName] = sendMessagePromise;
 
-    function invoke(this: _AgentPrototype, request: Object|undefined = {}): Promise<Object|null> {
+    function invoke(this: _AgentPrototype, request: Object|undefined = {}): Promise<ProtocolResultWithError> {
       return this._invoke(domainAndMethod, request);
     }
 
@@ -1022,35 +1020,20 @@ class _AgentPrototype {
     });
   }
 
-  _invoke(method: QualifiedName, request: Object|null): Promise<Object> {
+  _invoke(method: QualifiedName, request: Object|null): Promise<ProtocolResultWithError> {
     return new Promise(fulfill => {
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const callback = (error: any, result: any): void => {
+      const callback: Callback = (error: MessageError|undefined|null, result: Object|null): void => {
         if (error && !test.suppressRequestErrors && error.code !== DevToolsStubErrorCode &&
             error.code !== GenericError && error.code !== ConnectionClosedErrorCode) {
           console.error('Request ' + method + ' failed. ' + JSON.stringify(error));
         }
 
-        if (!result) {
-          result = {};
-        }
         if (error) {
-          // TODO(crbug.com/1011811): Remove Old lookup of ProtocolError
-          result[ProtocolError] = error.message;
-          // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          result.getError = (): any => {
-            return error.message;
-          };
+          const errorMessage = error.message;
+          fulfill({...result, [ProtocolError]: errorMessage, getError: (): string => errorMessage});
         } else {
-          result.getError = (): undefined => {
-            return undefined;
-          };
+          fulfill({...result, getError: (): undefined => undefined});
         }
-        fulfill(result);
       };
 
       if (!this._target._router) {
@@ -1113,13 +1096,6 @@ class DispatcherManager<Domain extends ProtocolDomainName> {
       }
     }
   }
-}
-
-type Callback = (arg0: Object|null, arg1: Object|null) => void;
-
-interface CallbackWithDebugInfo {
-  callback: Callback;
-  method: string;
 }
 
 export const inspectorBackend = new InspectorBackend();

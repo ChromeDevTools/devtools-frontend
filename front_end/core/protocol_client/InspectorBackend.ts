@@ -132,28 +132,11 @@ export class InspectorBackend {
     return this.initialized;
   }
 
-  _addAgentGetterMethodToProtocolTargetPrototype(domain: string): void {
-    function registerDispatcher(this: TargetBase, dispatcher: Object): void {
-      this.registerDispatcher(domain as ProtocolDomainName, dispatcher);
-    }
-
-    // @ts-ignore Method code generation
-    TargetBase.prototype['register' + domain + 'Dispatcher'] = registerDispatcher;
-
-    function unregisterDispatcher(this: TargetBase, dispatcher: Object): void {
-      this.unregisterDispatcher(domain as ProtocolDomainName, dispatcher);
-    }
-
-    // @ts-ignore Method code generation
-    TargetBase.prototype['unregister' + domain + 'Dispatcher'] = unregisterDispatcher;
-  }
-
   _agentPrototype(domain: ProtocolDomainName): _AgentPrototype {
     let prototype = this._agentPrototypes.get(domain);
     if (!prototype) {
       prototype = new _AgentPrototype(domain);
       this._agentPrototypes.set(domain, prototype);
-      this._addAgentGetterMethodToProtocolTargetPrototype(domain);
     }
     return prototype;
   }
@@ -510,11 +493,19 @@ export class SessionRouter {
   }
 }
 
+/**
+  * Make sure that `Domain` in get/set is only ever instantiated with one protocol domain
+  * name, because if `Domain` allows multiple domains, the type is unsound.
+  */
 interface AgentsMap extends Map<ProtocolDomainName, ProtocolProxyApi.ProtocolApi[ProtocolDomainName]> {
   get<Domain extends ProtocolDomainName>(key: Domain): ProtocolProxyApi.ProtocolApi[Domain]|undefined;
   set<Domain extends ProtocolDomainName>(key: Domain, value: ProtocolProxyApi.ProtocolApi[Domain]): this;
 }
 
+/**
+  * Make sure that `Domain` in get/set is only ever instantiated with one protocol domain
+  * name, because if `Domain` allows multiple domains, the type is unsound.
+  */
 interface DispatcherMap extends Map<ProtocolDomainName, ProtocolProxyApi.ProtocolDispatchers[ProtocolDomainName]> {
   get<Domain extends ProtocolDomainName>(key: Domain): DispatcherManager<Domain>|undefined;
   set<Domain extends ProtocolDomainName>(key: Domain, value: DispatcherManager<Domain>): this;
@@ -572,24 +563,6 @@ export class TargetBase {
     dispatcher.dispatch(method, eventMessage);
   }
 
-  registerDispatcher<Domain extends ProtocolDomainName>(
-      domain: Domain, dispatcher: ProtocolProxyApi.ProtocolDispatchers[Domain]): void {
-    const manager = this.dispatchers.get(domain);
-    if (!manager) {
-      return;
-    }
-    manager.addDomainDispatcher(dispatcher);
-  }
-
-  unregisterDispatcher<Domain extends ProtocolDomainName>(
-      domain: Domain, dispatcher: ProtocolProxyApi.ProtocolDispatchers[Domain]): void {
-    const manager = this.dispatchers.get(domain);
-    if (!manager) {
-      return;
-    }
-    manager.removeDomainDispatcher(dispatcher);
-  }
-
   dispose(_reason: string): void {
     if (!this._router) {
       return;
@@ -612,7 +585,11 @@ export class TargetBase {
 
   // Agent accessors, keep alphabetically sorted.
 
-  getAgent<Domain extends ProtocolDomainName>(domain: Domain): ProtocolProxyApi.ProtocolApi[Domain] {
+  /**
+   * Make sure that `Domain` is only ever instantiated with one protocol domain
+   * name, because if `Domain` allows multiple domains, the type is unsound.
+   */
+  private getAgent<Domain extends ProtocolDomainName>(domain: Domain): ProtocolProxyApi.ProtocolApi[Domain] {
     const agent = this.agents.get<Domain>(domain);
     if (!agent) {
       throw new Error('Accessing undefined agent');
@@ -772,107 +749,136 @@ export class TargetBase {
     return this.getAgent('WebAuthn');
   }
 
-  // Dispatcher registration, keep alphabetically sorted.
-  registerAnimationDispatcher(_dispatcher: ProtocolProxyApi.AnimationDispatcher): void {
-    throw new Error('Implemented in InspectorBackend.js');
+  // Dispatcher registration and de-registration, keep alphabetically sorted.
+
+  /**
+   * Make sure that `Domain` is only ever instantiated with one protocol domain
+   * name, because if `Domain` allows multiple domains, the type is unsound.
+   */
+  private registerDispatcher<Domain extends ProtocolDomainName>(
+      domain: Domain, dispatcher: ProtocolProxyApi.ProtocolDispatchers[Domain]): void {
+    const manager = this.dispatchers.get(domain);
+    if (!manager) {
+      return;
+    }
+    manager.addDomainDispatcher(dispatcher);
   }
 
-  registerApplicationCacheDispatcher(_dispatcher: ProtocolProxyApi.ApplicationCacheDispatcher): void {
-    throw new Error('Implemented in InspectorBackend.js');
+  /**
+   * Make sure that `Domain` is only ever instantiated with one protocol domain
+   * name, because if `Domain` allows multiple domains, the type is unsound.
+   */
+  private unregisterDispatcher<Domain extends ProtocolDomainName>(
+      domain: Domain, dispatcher: ProtocolProxyApi.ProtocolDispatchers[Domain]): void {
+    const manager = this.dispatchers.get(domain);
+    if (!manager) {
+      return;
+    }
+    manager.removeDomainDispatcher(dispatcher);
   }
 
-  registerAuditsDispatcher(_dispatcher: ProtocolProxyApi.AuditsDispatcher): void {
-    throw new Error('Implemented in InspectorBackend.js');
+  registerAnimationDispatcher(dispatcher: ProtocolProxyApi.AnimationDispatcher): void {
+    this.registerDispatcher('Animation', dispatcher);
   }
 
-  registerCSSDispatcher(_dispatcher: ProtocolProxyApi.CSSDispatcher): void {
-    throw new Error('Implemented in InspectorBackend.js');
+  registerApplicationCacheDispatcher(dispatcher: ProtocolProxyApi.ApplicationCacheDispatcher): void {
+    this.registerDispatcher('ApplicationCache', dispatcher);
   }
 
-  registerDatabaseDispatcher(_dispatcher: ProtocolProxyApi.DatabaseDispatcher): void {
-    throw new Error('Implemented in InspectorBackend.js');
+  registerAuditsDispatcher(dispatcher: ProtocolProxyApi.AuditsDispatcher): void {
+    this.registerDispatcher('Audits', dispatcher);
   }
 
-  registerBackgroundServiceDispatcher(_dispatcher: ProtocolProxyApi.BackgroundServiceDispatcher): void {
-    throw new Error('Implemented in InspectorBackend.js');
+  registerCSSDispatcher(dispatcher: ProtocolProxyApi.CSSDispatcher): void {
+    this.registerDispatcher('CSS', dispatcher);
   }
 
-  registerDebuggerDispatcher(_dispatcher: ProtocolProxyApi.DebuggerDispatcher): void {
-    throw new Error('Implemented in InspectorBackend.js');
+  registerDatabaseDispatcher(dispatcher: ProtocolProxyApi.DatabaseDispatcher): void {
+    this.registerDispatcher('Database', dispatcher);
   }
 
-  unregisterDebuggerDispatcher(_dispatcher: ProtocolProxyApi.DebuggerDispatcher): void {
-    throw new Error('Implemented in InspectorBackend.js');
+  registerBackgroundServiceDispatcher(dispatcher: ProtocolProxyApi.BackgroundServiceDispatcher): void {
+    this.registerDispatcher('BackgroundService', dispatcher);
   }
 
-  registerDOMDispatcher(_dispatcher: ProtocolProxyApi.DOMDispatcher): void {
-    throw new Error('Implemented in InspectorBackend.js');
+  registerDebuggerDispatcher(dispatcher: ProtocolProxyApi.DebuggerDispatcher): void {
+    this.registerDispatcher('Debugger', dispatcher);
   }
 
-  registerDOMStorageDispatcher(_dispatcher: ProtocolProxyApi.DOMStorageDispatcher): void {
-    throw new Error('Implemented in InspectorBackend.js');
+  unregisterDebuggerDispatcher(dispatcher: ProtocolProxyApi.DebuggerDispatcher): void {
+    this.unregisterDispatcher('Debugger', dispatcher);
   }
 
-  registerHeapProfilerDispatcher(_dispatcher: ProtocolProxyApi.HeapProfilerDispatcher): void {
-    throw new Error('Implemented in InspectorBackend.js');
-  }
-  registerInspectorDispatcher(_dispatcher: ProtocolProxyApi.InspectorDispatcher): void {
-    throw new Error('Implemented in InspectorBackend.js');
-  }
-  registerLayerTreeDispatcher(_dispatcher: ProtocolProxyApi.LayerTreeDispatcher): void {
-    throw new Error('Implemented in InspectorBackend.js');
+  registerDOMDispatcher(dispatcher: ProtocolProxyApi.DOMDispatcher): void {
+    this.registerDispatcher('DOM', dispatcher);
   }
 
-  registerLogDispatcher(_dispatcher: ProtocolProxyApi.LogDispatcher): void {
-    throw new Error('Implemented in InspectorBackend.js');
+  registerDOMStorageDispatcher(dispatcher: ProtocolProxyApi.DOMStorageDispatcher): void {
+    this.registerDispatcher('DOMStorage', dispatcher);
   }
 
-  registerMediaDispatcher(_dispatcher: ProtocolProxyApi.MediaDispatcher): void {
-    throw new Error('Implemented in InspectorBackend.js');
+  registerHeapProfilerDispatcher(dispatcher: ProtocolProxyApi.HeapProfilerDispatcher): void {
+    this.registerDispatcher('HeapProfiler', dispatcher);
   }
 
-  registerNetworkDispatcher(_dispatcher: ProtocolProxyApi.NetworkDispatcher): void {
-    throw new Error('Implemented in InspectorBackend.js');
+  registerInspectorDispatcher(dispatcher: ProtocolProxyApi.InspectorDispatcher): void {
+    this.registerDispatcher('Inspector', dispatcher);
   }
 
-  registerOverlayDispatcher(_dispatcher: ProtocolProxyApi.OverlayDispatcher): void {
-    throw new Error('Implemented in InspectorBackend.js');
+  registerLayerTreeDispatcher(dispatcher: ProtocolProxyApi.LayerTreeDispatcher): void {
+    this.registerDispatcher('LayerTree', dispatcher);
   }
 
-  registerPageDispatcher(_dispatcher: ProtocolProxyApi.PageDispatcher): void {
-    throw new Error('Implemented in InspectorBackend.js');
+  registerLogDispatcher(dispatcher: ProtocolProxyApi.LogDispatcher): void {
+    this.registerDispatcher('Log', dispatcher);
   }
 
-  registerProfilerDispatcher(_dispatcher: ProtocolProxyApi.ProfilerDispatcher): void {
-    throw new Error('Implemented in InspectorBackend.js');
+  registerMediaDispatcher(dispatcher: ProtocolProxyApi.MediaDispatcher): void {
+    this.registerDispatcher('Media', dispatcher);
   }
 
-  registerRuntimeDispatcher(_dispatcher: ProtocolProxyApi.RuntimeDispatcher): void {
-    throw new Error('Implemented in InspectorBackend.js');
+  registerNetworkDispatcher(dispatcher: ProtocolProxyApi.NetworkDispatcher): void {
+    this.registerDispatcher('Network', dispatcher);
   }
 
-  registerSecurityDispatcher(_dispatcher: ProtocolProxyApi.SecurityDispatcher): void {
-    throw new Error('Implemented in InspectorBackend.js');
+  registerOverlayDispatcher(dispatcher: ProtocolProxyApi.OverlayDispatcher): void {
+    this.registerDispatcher('Overlay', dispatcher);
   }
 
-  registerServiceWorkerDispatcher(_dispatcher: ProtocolProxyApi.ServiceWorkerDispatcher): void {
-    throw new Error('Implemented in InspectorBackend.js');
+  registerPageDispatcher(dispatcher: ProtocolProxyApi.PageDispatcher): void {
+    this.registerDispatcher('Page', dispatcher);
   }
 
-  registerStorageDispatcher(_dispatcher: ProtocolProxyApi.StorageDispatcher): void {
-    throw new Error('Implemented in InspectorBackend.js');
+  registerProfilerDispatcher(dispatcher: ProtocolProxyApi.ProfilerDispatcher): void {
+    this.registerDispatcher('Profiler', dispatcher);
   }
 
-  registerTargetDispatcher(_dispatcher: ProtocolProxyApi.TargetDispatcher): void {
-    throw new Error('Implemented in InspectorBackend.js');
+  registerRuntimeDispatcher(dispatcher: ProtocolProxyApi.RuntimeDispatcher): void {
+    this.registerDispatcher('Runtime', dispatcher);
   }
 
-  registerTracingDispatcher(_dispatcher: ProtocolProxyApi.TracingDispatcher): void {
-    throw new Error('Implemented in InspectorBackend.js');
+  registerSecurityDispatcher(dispatcher: ProtocolProxyApi.SecurityDispatcher): void {
+    this.registerDispatcher('Security', dispatcher);
   }
 
-  registerWebAudioDispatcher(_dispatcher: ProtocolProxyApi.WebAudioDispatcher): void {
-    throw new Error('Implemented in InspectorBackend.js');
+  registerServiceWorkerDispatcher(dispatcher: ProtocolProxyApi.ServiceWorkerDispatcher): void {
+    this.registerDispatcher('ServiceWorker', dispatcher);
+  }
+
+  registerStorageDispatcher(dispatcher: ProtocolProxyApi.StorageDispatcher): void {
+    this.registerDispatcher('Storage', dispatcher);
+  }
+
+  registerTargetDispatcher(dispatcher: ProtocolProxyApi.TargetDispatcher): void {
+    this.registerDispatcher('Target', dispatcher);
+  }
+
+  registerTracingDispatcher(dispatcher: ProtocolProxyApi.TracingDispatcher): void {
+    this.registerDispatcher('Tracing', dispatcher);
+  }
+
+  registerWebAudioDispatcher(dispatcher: ProtocolProxyApi.WebAudioDispatcher): void {
+    this.registerDispatcher('WebAudio', dispatcher);
   }
 }
 
@@ -1030,11 +1036,11 @@ class _AgentPrototype {
 }
 
 /**
- * A `DispatcherManager` has a collection of dispatchers that implement the a `DispatcherType`,
- * which in practice is one of the `ProtocolProxyApi.{Foo}Dispatcher` interfaces. Each target
- * uses one of these per domain to manage the registered dispatchers. The class knows the
- * parameter names of the events via `eventArgs`, which is a map managed by the inspector
- * back-end so that there is only one map per domain that is shared among all DispatcherManagers.
+ * A `DispatcherManager` has a collection of dispatchers that implement one of the
+ * `ProtocolProxyApi.{Foo}Dispatcher` interfaces. Each target uses one of these per
+ * domain to manage the registered dispatchers. The class knows the parameter names
+ * of the events via `eventArgs`, which is a map managed by the inspector back-end
+ * so that there is only one map per domain that is shared among all DispatcherManagers.
  */
 class DispatcherManager<Domain extends ProtocolDomainName> {
   private eventArgs: ReadonlyEventParameterNames;

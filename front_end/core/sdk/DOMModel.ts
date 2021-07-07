@@ -38,7 +38,6 @@
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
-import type * as ProtocolClient from '../protocol_client/protocol_client.js'; // eslint-disable-line no-unused-vars
 import * as Root from '../root/root.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -399,7 +398,7 @@ export class DOMNode {
       name: string,
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      callback?: ((arg0: ProtocolClient.InspectorBackend.ProtocolError|null, arg1: DOMNode|null) => any)): void {
+      callback?: ((arg0: string|null, arg1: DOMNode|null) => any)): void {
     this._agent.invoke_setNodeName({nodeId: this.id, name}).then(response => {
       if (!response.getError()) {
         this._domModel.markUndoableState();
@@ -420,7 +419,7 @@ export class DOMNode {
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setNodeValue(value: string, callback?: ((arg0: ProtocolClient.InspectorBackend.ProtocolError|null) => any)): void {
+  setNodeValue(value: string, callback?: ((arg0: string|null) => any)): void {
     this._agent.invoke_setNodeValue({nodeId: this.id, value}).then(response => {
       if (!response.getError()) {
         this._domModel.markUndoableState();
@@ -440,7 +439,7 @@ export class DOMNode {
       name: string, text: string,
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      callback?: ((arg0: ProtocolClient.InspectorBackend.ProtocolError|null) => any)): void {
+      callback?: ((arg0: string|null) => any)): void {
     this._agent.invoke_setAttributesAsText({nodeId: this.id, text, name}).then(response => {
       if (!response.getError()) {
         this._domModel.markUndoableState();
@@ -455,7 +454,7 @@ export class DOMNode {
       name: string, value: string,
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      callback?: ((arg0: ProtocolClient.InspectorBackend.ProtocolError|null) => any)): void {
+      callback?: ((arg0: string|null) => any)): void {
     this._agent.invoke_setAttributeValue({nodeId: this.id, name, value}).then(response => {
       if (!response.getError()) {
         this._domModel.markUndoableState();
@@ -505,7 +504,7 @@ export class DOMNode {
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setOuterHTML(html: string, callback?: ((arg0: ProtocolClient.InspectorBackend.ProtocolError|null) => any)): void {
+  setOuterHTML(html: string, callback?: ((arg0: string|null) => any)): void {
     this._agent.invoke_setOuterHTML({nodeId: this.id, outerHTML: html}).then(response => {
       if (!response.getError()) {
         this._domModel.markUndoableState();
@@ -519,8 +518,7 @@ export class DOMNode {
   removeNode(callback?: (
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (arg0: ProtocolClient.InspectorBackend.ProtocolError|null, arg1?: Protocol.DOM.NodeId|undefined) => any)):
-      Promise<void> {
+      (arg0: string|null, arg1?: Protocol.DOM.NodeId|undefined) => any)): Promise<void> {
     return this._agent.invoke_removeNode({nodeId: this.id}).then(response => {
       if (!response.getError()) {
         this._domModel.markUndoableState();
@@ -724,7 +722,7 @@ export class DOMNode {
       targetNode: DOMNode, anchorNode: DOMNode|null,
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      callback?: ((arg0: ProtocolClient.InspectorBackend.ProtocolError|null, arg1: DOMNode|null) => any)): void {
+      callback?: ((arg0: string|null, arg1: DOMNode|null) => any)): void {
     this._agent
         .invoke_copyTo(
             {nodeId: this.id, targetNodeId: targetNode.id, insertBeforeNodeId: anchorNode ? anchorNode.id : undefined})
@@ -742,7 +740,7 @@ export class DOMNode {
       targetNode: DOMNode, anchorNode: DOMNode|null,
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      callback?: ((arg0: ProtocolClient.InspectorBackend.ProtocolError|null, arg1: DOMNode|null) => any)): void {
+      callback?: ((arg0: string|null, arg1: DOMNode|null) => any)): void {
     this._agent
         .invoke_moveTo(
             {nodeId: this.id, targetNodeId: targetNode.id, insertBeforeNodeId: anchorNode ? anchorNode.id : undefined})

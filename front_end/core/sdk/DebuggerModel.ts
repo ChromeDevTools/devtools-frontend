@@ -34,7 +34,6 @@ import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import type * as ProtocolClient from '../protocol_client/protocol_client.js'; // eslint-disable-line no-unused-vars
 import * as Root from '../root/root.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -560,9 +559,7 @@ export class DebuggerModel extends SDKModel {
 
   setScriptSource(
       scriptId: string, newSource: string,
-      callback:
-          (arg0: ProtocolClient.InspectorBackend.ProtocolError|null,
-           arg1?: Protocol.Runtime.ExceptionDetails|undefined) => void): void {
+      callback: (error: string|null, arg1?: Protocol.Runtime.ExceptionDetails|undefined) => void): void {
     const script = this._scripts.get(scriptId);
     if (script) {
       script.editSource(newSource, this._didEditScriptSource.bind(this, scriptId, newSource, callback));
@@ -571,12 +568,10 @@ export class DebuggerModel extends SDKModel {
 
   _didEditScriptSource(
       scriptId: string, newSource: string,
-      callback:
-          (arg0: ProtocolClient.InspectorBackend.ProtocolError|null,
-           arg1?: Protocol.Runtime.ExceptionDetails|undefined) => void,
-      error: string|null, exceptionDetails?: Protocol.Runtime.ExceptionDetails,
-      callFrames?: Protocol.Debugger.CallFrame[], asyncStackTrace?: Protocol.Runtime.StackTrace,
-      asyncStackTraceId?: Protocol.Runtime.StackTraceId, needsStepIn?: boolean): void {
+      callback: (error: string|null, arg1?: Protocol.Runtime.ExceptionDetails|undefined) => void, error: string|null,
+      exceptionDetails?: Protocol.Runtime.ExceptionDetails, callFrames?: Protocol.Debugger.CallFrame[],
+      asyncStackTrace?: Protocol.Runtime.StackTrace, asyncStackTraceId?: Protocol.Runtime.StackTraceId,
+      needsStepIn?: boolean): void {
     callback(error, exceptionDetails);
     if (needsStepIn) {
       this.stepInto();

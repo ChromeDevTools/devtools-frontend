@@ -29,11 +29,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
+import * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
-import type * as ProtocolClient from '../protocol_client/protocol_client.js'; // eslint-disable-line no-unused-vars
-import * as Protocol from '../../generated/protocol.js';
 
 import type {DebuggerModel} from './DebuggerModel.js';
 import {Location} from './DebuggerModel.js';  // eslint-disable-line no-unused-vars
@@ -259,7 +258,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
   async editSource(
       newSource: string,
       callback:
-          (arg0: ProtocolClient.InspectorBackend.ProtocolError|null, arg1?: Protocol.Runtime.ExceptionDetails|undefined,
+          (error: string|null, arg1?: Protocol.Runtime.ExceptionDetails|undefined,
            arg2?: Array<Protocol.Debugger.CallFrame>|undefined, arg3?: Protocol.Runtime.StackTrace|undefined,
            arg4?: Protocol.Runtime.StackTraceId|undefined, arg5?: boolean|undefined) => void): Promise<void> {
     newSource = Script._trimSourceURLComment(newSource);

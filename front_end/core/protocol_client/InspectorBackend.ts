@@ -34,12 +34,6 @@ import {NodeURL} from './NodeURL.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
-export const ProtocolError = Symbol('Protocol.Error');
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// ProtocolError has previously been typed as string and needs to
-// be updated in the generated code like protocol.d.ts too.
-export type ProtocolError = string;
-
 export const DevToolsStubErrorCode = -32015;
 // TODO(dgozman): we are not reporting generic errors in tests, but we should
 // instead report them and just have some expected errors in test expectations.
@@ -95,13 +89,6 @@ interface CommandParameter {
   name: string;
   type: string;
   optional: boolean;
-}
-
-// TODO(crbug.com/1011811): Remove old lookup of ProtocolError and then remove
-// this interface.
-interface ProtocolResultWithError extends Protocol.ProtocolResponseWithError {
-  [ProtocolError]?: ProtocolError;
-  getError(): string|undefined;
 }
 
 type Callback = (error: MessageError|null, arg1: Object|null) => void;
@@ -917,7 +904,8 @@ class _AgentPrototype {
     // @ts-ignore Method code generation
     this[methodName] = sendMessagePromise;
 
-    function invoke(this: _AgentPrototype, request: Object|undefined = {}): Promise<ProtocolResultWithError> {
+    function invoke(
+        this: _AgentPrototype, request: Object|undefined = {}): Promise<Protocol.ProtocolResponseWithError> {
       return this._invoke(domainAndMethod, request);
     }
 
@@ -1020,7 +1008,7 @@ class _AgentPrototype {
     });
   }
 
-  _invoke(method: QualifiedName, request: Object|null): Promise<ProtocolResultWithError> {
+  _invoke(method: QualifiedName, request: Object|null): Promise<Protocol.ProtocolResponseWithError> {
     return new Promise(fulfill => {
       const callback: Callback = (error: MessageError|undefined|null, result: Object|null): void => {
         if (error && !test.suppressRequestErrors && error.code !== DevToolsStubErrorCode &&
@@ -1028,12 +1016,8 @@ class _AgentPrototype {
           console.error('Request ' + method + ' failed. ' + JSON.stringify(error));
         }
 
-        if (error) {
-          const errorMessage = error.message;
-          fulfill({...result, [ProtocolError]: errorMessage, getError: (): string => errorMessage});
-        } else {
-          fulfill({...result, getError: (): undefined => undefined});
-        }
+        const errorMessage = error?.message;
+        fulfill({...result, getError: (): string | undefined => errorMessage});
       };
 
       if (!this._target._router) {

@@ -410,8 +410,7 @@
   margin: 6px;
   cursor: pointer;
   position: relative;
-  border: 1px solid rgb(0 0 0 / 10%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border: 1px solid var(--color-details-hairline);
   background-position: -1px !important; /* stylelint-disable-line declaration-no-important */
   z-index: 14;
 }

@@ -398,9 +398,9 @@ The GRD file is placed in `gen/third_party/devtools-frontend/src/front_end/` in 
 <!-- Third-party packages -->
 [Chrome DevTools Protocol]: https://chromedevtools.github.io/devtools-protocol/
 [ESLint]: https://eslint.org/
-[GN]: https://gn.googlesource.com/gn/+/master/
-[GN `visibility` rules]: https://gn.googlesource.com/gn/+/master/docs/reference.md#var_visibility
-[GN `metadata` definitions]: https://gn.googlesource.com/gn/+/master/docs/reference.md#var_metadata
+[GN]: https://gn.googlesource.com/gn/+/main/
+[GN `visibility` rules]: https://gn.googlesource.com/gn/+/main/docs/reference.md#var_visibility
+[GN `metadata` definitions]: https://gn.googlesource.com/gn/+/main/docs/reference.md#var_metadata
 [GRIT]: https://www.chromium.org/developers/tools-we-use-in-chromium/grit/grit-users-guide
 [ndb]: https://github.com/GoogleChromeLabs/ndb
 [Ninja]: https://ninja-build.org/

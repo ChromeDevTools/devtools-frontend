@@ -33,7 +33,7 @@ while (!fs.existsSync(path.join(pathToOutTargetDir, 'args.gn'))) {
 const devtoolsFolder = path.resolve(path.join(pathToOutTargetDir, 'gen'));
 
 // The certificate is taken from
-// https://source.chromium.org/chromium/chromium/src/+/master:third_party/blink/tools/apache_config/webkit-httpd.pem
+// https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/tools/apache_config/webkit-httpd.pem
 const options = {
   key: fs.readFileSync(__dirname + '/key.pem'),
   cert: fs.readFileSync(__dirname + '/cert.pem'),

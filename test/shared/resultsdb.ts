@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import * as http from 'http';
 
 // This type mirrors test_result.proto.
-// https://source.chromium.org/chromium/infra/infra/+/master:recipes-py/recipe_proto/go.chromium.org/luci/resultdb/proto/sink/v1/test_result.proto
+// https://source.chromium.org/chromium/infra/infra/+/main:recipes-py/recipe_proto/go.chromium.org/luci/resultdb/proto/sink/v1/test_result.proto
 export interface TestResult {
   testId: SanitizedTestId;
   expected?: boolean;
@@ -22,7 +22,7 @@ class SanitizedTestIdTag {
 export type SanitizedTestId = string&SanitizedTestIdTag;
 
 // ResultSink checks the testId against the regex /^[[print]]{1,512}$/:
-// https://source.chromium.org/chromium/infra/infra/+/master:go/src/go.chromium.org/luci/resultdb/pbutil/test_result.go;l=43;drc=7ba090da753a71be5a0f37785558e9102e57fa10
+// https://source.chromium.org/chromium/infra/infra/+/main:go/src/go.chromium.org/luci/resultdb/pbutil/test_result.go;l=43;drc=7ba090da753a71be5a0f37785558e9102e57fa10
 //
 // This function removees non-printable characters and truncates the string
 // to the max allowed length.

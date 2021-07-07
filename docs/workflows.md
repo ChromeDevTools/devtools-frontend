@@ -38,7 +38,7 @@ To update to latest tip of tree version:
 
 ```bash
 git fetch origin
-git checkout origin/master
+git checkout origin/main
 gclient sync
 ```
 
@@ -237,7 +237,7 @@ third_party/blink/tools/run_web_tests.py -t Default http/tests/devtools
 
 ## Creating a change
 
-Usual [steps](https://chromium.googlesource.com/chromium/src/+/master/docs/contributing.md#creating-a-change) for creating a change work out of the box, when executed in the DevTools frontend repository.
+Usual [steps](https://chromium.googlesource.com/chromium/src/+/main/docs/contributing.md#creating-a-change) for creating a change work out of the box, when executed in the DevTools frontend repository.
 
 ## Managing dependencies
 

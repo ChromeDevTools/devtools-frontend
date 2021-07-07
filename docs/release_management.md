@@ -50,4 +50,4 @@ Example: [CL](https://chromium-review.googlesource.com/c/devtools/devtools-front
 ## Rolling/Integrating into Chromium
 
 The [Skia
-autoroller](https://skia.googlesource.com/buildbot/+/master/autoroll/README.md) is used. The DevTools-Frontend auto-roller state can be seen and controlled [here](https://autoroll.skia.org/r/devtools-frontend-chromium?tab=status).
+autoroller](https://skia.googlesource.com/buildbot/+/main/autoroll/README.md) is used. The DevTools-Frontend auto-roller state can be seen and controlled [here](https://autoroll.skia.org/r/devtools-frontend-chromium?tab=status).

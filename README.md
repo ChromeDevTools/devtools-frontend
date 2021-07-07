@@ -51,7 +51,7 @@ The version number of the npm package (e.g. `1.0.373466`) refers to the Chromium
 - Chrome DevTools mailing list: [groups.google.com/forum/google-chrome-developer-tools](https://groups.google.com/forum/#!forum/google-chrome-developer-tools)
 
   [devtools-reviews@chromium.org]: https://groups.google.com/a/chromium.org/forum/#!forum/devtools-reviews
-  [View the log]: https://chromium.googlesource.com/devtools/devtools-frontend/+log/master
+  [View the log]: https://chromium.googlesource.com/devtools/devtools-frontend/+log/main
   [@ChromeDevTools]: http://twitter.com/ChromeDevTools
   [@DevToolsCommits]: http://twitter.com/DevToolsCommits
   [All open DevTools tickets]: https://bugs.chromium.org/p/chromium/issues/list?can=2&q=component%3APlatform%3EDevTools&sort=&groupby=&colspec=ID+Stars+Owner+Summary+Modified+Opened

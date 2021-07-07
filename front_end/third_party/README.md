@@ -18,7 +18,7 @@ This will be determined on a case-by-case basis, taking into account the portion
 1. Open a single CL with only the source of the third_party package and required Ninja build configuration.
     1. Add chromium-third-party@google.com as a reviewer. The `gwsq` bot will choose an appropriate reviewer for the CL.
     1. All existing Chromium third_party policies about documenting the code's context still apply.
-    You can read the "Document the code's context" section [here](https://chromium.googlesource.com/chromium/src.git/+/master/docs/adding_to_third_party.md#document-the-code_s-context).
+    You can read the "Document the code's context" section [here](https://chromium.googlesource.com/chromium/src.git/+/main/docs/adding_to_third_party.md#document-the-code_s-context).
     1. You will be responsible for keeping the package up-to-date.
     As such, add yourself as OWNER.
     1. Wait for approval from both the securty- and the third-party reviewer before landing the CL.

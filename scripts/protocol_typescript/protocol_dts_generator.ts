@@ -224,6 +224,7 @@ const knownIdentifierTypes = [
   'CacheStorage.CacheId',
   'DOM.BackendNodeId',
   'DOM.NodeId',
+  'Fetch.RequestId',
 ];
 
 const emitDomainType = (domain: Protocol.Domain, type: Protocol.DomainType) => {

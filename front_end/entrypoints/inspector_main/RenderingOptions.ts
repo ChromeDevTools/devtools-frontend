@@ -189,7 +189,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 // `front_end/sdk/module.json` to make this feature available in the
 // Command Menu.
 const supportsPrefersReducedData = (): boolean => {
-  const query = '(prefers-reduced-data: reduce)';
+  const query = '(prefers-reduced-data)';
   // Note: `media` serializes to `'not all'` for unsupported queries.
   return window.matchMedia(query).media === query;
 };

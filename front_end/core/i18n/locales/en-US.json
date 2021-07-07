@@ -6500,6 +6500,9 @@
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlocked": {
     "message": "Only show requests with blocked response cookies"
   },
+  "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
+    "message": "Shows only requests with origin different from page origin"
+  },
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Perform a request or hit {PH1} to record the reload."
   },
@@ -6547,6 +6550,9 @@
   },
   "panels/network/NetworkLogView.ts | sTransferred": {
     "message": "{PH1} transferred"
+  },
+  "panels/network/NetworkLogView.ts | thirdParty": {
+    "message": "3rd-party requests"
   },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "Unblock {PH1}"

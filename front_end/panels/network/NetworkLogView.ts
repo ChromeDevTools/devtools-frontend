@@ -91,6 +91,14 @@ const UIStrings = {
   */
   onlyShowBlockedRequests: 'Only show blocked requests',
   /**
+  *@description Label for a filter in the Network panel
+  */
+  thirdParty: '3rd-party requests',
+  /**
+  *@description Tooltip for a filter in the Network panel
+  */
+  onlyShowThirdPartyRequests: 'Shows only requests with origin different from page origin',
+  /**
   *@description Text that appears when user drag and drop something (for example, a file) in Network Log View of the Network panel
   */
   dropHarFilesHere: 'Drop HAR files here',
@@ -334,6 +342,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
   _networkHideDataURLSetting: Common.Settings.Setting<boolean>;
   _networkShowIssuesOnlySetting: Common.Settings.Setting<boolean>;
   _networkOnlyBlockedRequestsSetting: Common.Settings.Setting<boolean>;
+  _networkOnlyThirdPartySetting: Common.Settings.Setting<boolean>;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _networkResourceTypeFiltersSetting: Common.Settings.Setting<any>;
@@ -368,6 +377,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
   _resourceCategoryFilterUI: UI.FilterBar.NamedBitSetFilterUI;
   _onlyIssuesFilterUI: UI.FilterBar.CheckboxFilterUI;
   _onlyBlockedRequestsUI: UI.FilterBar.CheckboxFilterUI;
+  _onlyThirdPartyFilterUI: UI.FilterBar.CheckboxFilterUI;
   _filterParser: TextUtils.TextUtils.FilterParser;
   _suggestionBuilder: UI.FilterSuggestionBuilder.FilterSuggestionBuilder;
   _dataGrid: DataGrid.SortableDataGrid.SortableDataGrid<NetworkNode>;
@@ -390,6 +400,8 @@ export class NetworkLogView extends UI.Widget.VBox implements
         Common.Settings.Settings.instance().createSetting('networkShowIssuesOnly', false);
     this._networkOnlyBlockedRequestsSetting =
         Common.Settings.Settings.instance().createSetting('networkOnlyBlockedRequests', false);
+    this._networkOnlyThirdPartySetting =
+        Common.Settings.Settings.instance().createSetting('networkOnlyThirdPartySetting', false);
     this._networkResourceTypeFiltersSetting =
         Common.Settings.Settings.instance().createSetting('networkResourceTypeFilters', {});
 
@@ -478,6 +490,14 @@ export class NetworkLogView extends UI.Widget.VBox implements
         UI.FilterBar.FilterUI.Events.FilterChanged, this._filterChanged.bind(this), this);
     UI.Tooltip.Tooltip.install(this._onlyBlockedRequestsUI.element(), i18nString(UIStrings.onlyShowBlockedRequests));
     filterBar.addFilter(this._onlyBlockedRequestsUI);
+
+    this._onlyThirdPartyFilterUI = new UI.FilterBar.CheckboxFilterUI(
+        'only-show-third-party', i18nString(UIStrings.thirdParty), true, this._networkOnlyThirdPartySetting);
+    this._onlyThirdPartyFilterUI.addEventListener(
+        UI.FilterBar.FilterUI.Events.FilterChanged, this._filterChanged.bind(this), this);
+    UI.Tooltip.Tooltip.install(
+        this._onlyThirdPartyFilterUI.element(), i18nString(UIStrings.onlyShowThirdPartyRequests));
+    filterBar.addFilter(this._onlyThirdPartyFilterUI);
 
     this._filterParser = new TextUtils.TextUtils.FilterParser(_searchKeys);
     this._suggestionBuilder =
@@ -1661,6 +1681,9 @@ export class NetworkLogView extends UI.Widget.VBox implements
       return false;
     }
     if (this._onlyBlockedRequestsUI.checked() && !request.wasBlocked() && !request.corsErrorStatus()) {
+      return false;
+    }
+    if (this._onlyThirdPartyFilterUI.checked() && request.isSameSite()) {
       return false;
     }
     for (let i = 0; i < this._filters.length; ++i) {

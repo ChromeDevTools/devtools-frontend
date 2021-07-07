@@ -18,6 +18,7 @@ copy_to_gen("network") {
     "resources-from-webbundle-with-bad-metadata.html",
     "resources-from-webbundle.html",
     "send_beacon_on_unload.html",
+    "third-party-resources.html",
     "trusted-type-policy-violation-report-only.rawresponse",
     "trusted-type-violations-enforced.rawresponse",
     "trusted-type-violations-report-only-in-html.rawresponse",

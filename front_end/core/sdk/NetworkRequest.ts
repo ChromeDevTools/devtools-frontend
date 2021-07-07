@@ -273,6 +273,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper implement
   _queryString?: string|null;
   _parsedQueryParameters?: NameValue[];
   _contentDataProvider?: (() => Promise<ContentData>);
+  _isSameSite: boolean|null;
 
   constructor(
       requestId: string, url: string, documentURL: string, frameId: string, loaderId: string,
@@ -344,6 +345,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper implement
     this._blockedResponseCookies = [];
 
     this.localizedFailDescription = null;
+    this._isSameSite = null;
   }
 
   identityCompare(other: NetworkRequest): number {
@@ -1389,6 +1391,14 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper implement
 
   trustTokenOperationDoneEvent(): Protocol.Network.TrustTokenOperationDoneEvent|undefined {
     return this._trustTokenOperationDoneEvent;
+  }
+
+  setIsSameSite(isSameSite: boolean): void {
+    this._isSameSite = isSameSite;
+  }
+
+  isSameSite(): boolean|null {
+    return this._isSameSite;
   }
 }
 

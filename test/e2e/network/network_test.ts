@@ -20,6 +20,15 @@ async function getCategoryXHRFilter() {
   return categoryXHRFilter;
 }
 
+async function getThirdPartyFilter() {
+  const filters = await waitFor('.filter-bar');
+  const thirdPartyFilter = await $textContent('3rd-party requests', filters);
+  if (!thirdPartyFilter) {
+    assert.fail('Could not find category third-party filter to click.');
+  }
+  return thirdPartyFilter;
+}
+
 describe('The Network Tab', async function() {
   // The tests here tend to take time because they wait for requests to appear in the request panel.
   this.timeout(5000);
@@ -95,5 +104,18 @@ describe('The Network Tab', async function() {
     categoryXHRFilter = await getCategoryXHRFilter();
     const xhrHasSelectedClass = await categoryXHRFilter.evaluate(x => x.classList.contains('selected'));
     assert.isTrue(xhrHasSelectedClass);
+  });
+
+  it('can show only third-party requests', async () => {
+    await navigateToNetworkTab('third-party-resources.html');
+    await waitForSomeRequestsToAppear(3);
+
+    let names = await getAllRequestNames();
+    /* assert.deepStrictEqual(names, [], 'The right request names should appear in the list'); */
+    const thirdPartyFilter = await getThirdPartyFilter();
+    await thirdPartyFilter.click();
+
+    names = await getAllRequestNames();
+    assert.deepStrictEqual(names, ['external_image.svg'], 'The right request names should appear in the list');
   });
 });

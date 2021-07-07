@@ -6500,6 +6500,9 @@
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlocked": {
     "message": "Ôńl̂ý ŝh́ôẃ r̂éq̂úêśt̂ś ŵít̂h́ b̂ĺôćk̂éd̂ ŕêśp̂ón̂śê ćôók̂íêś"
   },
+  "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
+    "message": "Ŝh́ôẃŝ ón̂ĺŷ ŕêq́ûéŝt́ŝ ẃît́ĥ ór̂íĝín̂ d́îf́f̂ér̂én̂t́ f̂ŕôḿ p̂áĝé ôŕîǵîń"
+  },
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "P̂ér̂f́ôŕm̂ á r̂éq̂úêśt̂ ór̂ h́ît́ {PH1} t̂ó r̂éĉór̂d́ t̂h́ê ŕêĺôád̂."
   },
@@ -6547,6 +6550,9 @@
   },
   "panels/network/NetworkLogView.ts | sTransferred": {
     "message": "{PH1} t̂ŕâńŝf́êŕr̂éd̂"
+  },
+  "panels/network/NetworkLogView.ts | thirdParty": {
+    "message": "3r̂d́-p̂ár̂t́ŷ ŕêq́ûéŝt́ŝ"
   },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "Ûńb̂ĺôćk̂ {PH1}"

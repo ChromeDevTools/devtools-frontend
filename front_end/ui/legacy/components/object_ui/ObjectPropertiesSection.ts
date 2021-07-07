@@ -731,14 +731,15 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     ObjectPropertyTreeElement.populateWithProperties(
-        treeElement, properties, internalProperties, skipProto, targetValue || value, linkifier, emptyPlaceholder);
+        treeElement, properties, internalProperties, skipProto, targetValue || value, linkifier, emptyPlaceholder,
+        propertiesMode === ObjectPropertiesMode.OwnOnly);
   }
 
   static populateWithProperties(
       treeNode: UI.TreeOutline.TreeElement, properties: SDK.RemoteObject.RemoteObjectProperty[],
       internalProperties: SDK.RemoteObject.RemoteObjectProperty[]|null, skipProto: boolean,
       value: SDK.RemoteObject.RemoteObject|null, linkifier?: Components.Linkifier.Linkifier,
-      emptyPlaceholder?: string|null): void {
+      emptyPlaceholder?: string|null, skipGettersAndSetters?: boolean): void {
     properties.sort(ObjectPropertiesSection.compareProperties);
     internalProperties = internalProperties || [];
 
@@ -761,18 +762,21 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         continue;
       }
 
-      if (property.isOwn && property.getter) {
-        const getterProperty =
-            new SDK.RemoteObject.RemoteObjectProperty('get ' + property.name, property.getter, false);
-        parentMap.set(getterProperty, value);
-        tailProperties.push(getterProperty);
+      if (property.isOwn && !skipGettersAndSetters) {
+        if (property.getter) {
+          const getterProperty =
+              new SDK.RemoteObject.RemoteObjectProperty('get ' + property.name, property.getter, false);
+          parentMap.set(getterProperty, value);
+          tailProperties.push(getterProperty);
+        }
+        if (property.setter) {
+          const setterProperty =
+              new SDK.RemoteObject.RemoteObjectProperty('set ' + property.name, property.setter, false);
+          parentMap.set(setterProperty, value);
+          tailProperties.push(setterProperty);
+        }
       }
-      if (property.isOwn && property.setter) {
-        const setterProperty =
-            new SDK.RemoteObject.RemoteObjectProperty('set ' + property.name, property.setter, false);
-        parentMap.set(setterProperty, value);
-        tailProperties.push(setterProperty);
-      }
+
       const canShowProperty = property.getter || !property.isAccessorProperty();
       if (canShowProperty) {
         const element = new ObjectPropertyTreeElement(property, linkifier);

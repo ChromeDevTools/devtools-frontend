@@ -23,7 +23,7 @@ declare namespace Protocol {
     /**
      * Unique accessibility node identifier.
      */
-    export type AXNodeId = string;
+    export type AXNodeId = OpaqueIdentifier<string, 'Protocol.Accessibility.AXNodeId'>;
 
     /**
      * Enum of possible property types.

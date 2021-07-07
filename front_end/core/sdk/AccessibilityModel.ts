@@ -30,7 +30,7 @@ export interface CoreOrProtocolAxProperty {
 export class AccessibilityNode {
   _accessibilityModel: AccessibilityModel;
   _agent: ProtocolProxyApi.AccessibilityApi;
-  _id: string;
+  _id: Protocol.Accessibility.AXNodeId;
   _backendDOMNodeId: number|null;
   _deferredDOMNode: DeferredDOMNode|null;
   _ignored: boolean;
@@ -71,7 +71,7 @@ export class AccessibilityNode {
     this._parentNode = null;
   }
 
-  id(): string {
+  id(): Protocol.Accessibility.AXNodeId {
     return this._id;
   }
 
@@ -248,7 +248,7 @@ export class AccessibilityModel extends SDKModel {
     return axNodes[0];
   }
 
-  async requestAXChildren(nodeId: string): Promise<AccessibilityNode[]> {
+  async requestAXChildren(nodeId: Protocol.Accessibility.AXNodeId): Promise<AccessibilityNode[]> {
     const {nodes} = await this._agent.invoke_getChildAXNodes({id: nodeId});
     if (!nodes) {
       return [];

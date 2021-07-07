@@ -220,6 +220,7 @@ const emitInlineEnums = (prefix: string, propertyTypes?: Protocol.PropertyType[]
 
 // Please keep `knownIdentifierTypes` sorted.
 const knownIdentifierTypes = [
+  'Accessibility.AXNodeId',
   'CacheStorage.CacheId',
   'DOM.BackendNodeId',
   'DOM.NodeId',

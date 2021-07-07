@@ -249,12 +249,13 @@
 }
 
 .image-network-icon-preview {
-  top: 0;
+  border: 1px solid var(--color-details-hairline);
   bottom: 0;
   left: 0;
-  right: 0;
   margin: auto;
-  border: 1px solid var(--color-details-hairline);
+  overflow: hidden;
+  right: 0;
+  top: 0;
 }
 
 .network-log-grid.data-grid .image-network-icon-preview {

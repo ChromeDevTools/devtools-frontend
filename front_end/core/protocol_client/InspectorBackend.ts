@@ -50,7 +50,7 @@ type MessageParams = {
   [x: string]: any,
 };
 
-type ApiDomain = keyof ProtocolProxyApi.ProtocolApi;
+type ProtocolDomainName = ProtocolProxyApi.ProtocolDomainName;
 
 export type Message = {
   sessionId?: string,
@@ -91,11 +91,11 @@ interface CommandParameter {
 }
 
 export class InspectorBackend {
-  _agentPrototypes: Map<ApiDomain, _AgentPrototype> = new Map();
+  _agentPrototypes: Map<ProtocolDomainName, _AgentPrototype> = new Map();
   private initialized: boolean = false;
-  private eventParameterNamesForDomain = new Map<string, EventParameterNames>();
+  private eventParameterNamesForDomain = new Map<ProtocolDomainName, EventParameterNames>();
 
-  private getOrCreateEventParameterNamesForDomain(domain: string): EventParameterNames {
+  private getOrCreateEventParameterNamesForDomain(domain: ProtocolDomainName): EventParameterNames {
     let map = this.eventParameterNamesForDomain.get(domain);
     if (!map) {
       map = new Map();
@@ -104,11 +104,11 @@ export class InspectorBackend {
     return map;
   }
 
-  getOrCreateEventParameterNamesForDomainForTesting(domain: string): EventParameterNames {
+  getOrCreateEventParameterNamesForDomainForTesting(domain: ProtocolDomainName): EventParameterNames {
     return this.getOrCreateEventParameterNamesForDomain(domain);
   }
 
-  getEventParamterNames(): ReadonlyMap<string, ReadonlyEventParameterNames> {
+  getEventParamterNames(): ReadonlyMap<ProtocolDomainName, ReadonlyEventParameterNames> {
     return this.eventParameterNamesForDomain;
   }
 
@@ -126,21 +126,21 @@ export class InspectorBackend {
 
   _addAgentGetterMethodToProtocolTargetPrototype(domain: string): void {
     function registerDispatcher(this: TargetBase, dispatcher: Object): void {
-      this.registerDispatcher(domain, dispatcher);
+      this.registerDispatcher(domain as ProtocolDomainName, dispatcher);
     }
 
     // @ts-ignore Method code generation
     TargetBase.prototype['register' + domain + 'Dispatcher'] = registerDispatcher;
 
     function unregisterDispatcher(this: TargetBase, dispatcher: Object): void {
-      this.unregisterDispatcher(domain, dispatcher);
+      this.unregisterDispatcher(domain as ProtocolDomainName, dispatcher);
     }
 
     // @ts-ignore Method code generation
     TargetBase.prototype['unregister' + domain + 'Dispatcher'] = unregisterDispatcher;
   }
 
-  _agentPrototype(domain: ApiDomain): _AgentPrototype {
+  _agentPrototype(domain: ProtocolDomainName): _AgentPrototype {
     let prototype = this._agentPrototypes.get(domain);
     if (!prototype) {
       prototype = new _AgentPrototype(domain);
@@ -152,7 +152,7 @@ export class InspectorBackend {
 
   registerCommand(method: QualifiedName, parameters: CommandParameter[], replyArgs: string[]): void {
     const [domain, command] = splitQualifiedName(method);
-    this._agentPrototype(domain as ApiDomain).registerCommand(command, parameters, replyArgs);
+    this._agentPrototype(domain as ProtocolDomainName).registerCommand(command, parameters, replyArgs);
     this.initialized = true;
   }
 
@@ -171,7 +171,7 @@ export class InspectorBackend {
 
   registerEvent(eventName: QualifiedName, params: string[]): void {
     const domain = eventName.split('.')[0];
-    const eventParameterNames = this.getOrCreateEventParameterNamesForDomain(domain);
+    const eventParameterNames = this.getOrCreateEventParameterNamesForDomain(domain as ProtocolDomainName);
     eventParameterNames.set(eventName, params);
     this.initialized = true;
   }
@@ -473,14 +473,7 @@ export class SessionRouter {
       }
       // This cast is justified as we just checked for the presence of messageObject.method.
       const eventMessage = messageObject as EventMessage;
-      const [domainName, method] = splitQualifiedName(eventMessage.method);
-      if (!(domainName in session.target._dispatchers)) {
-        InspectorBackend.reportProtocolError(
-            `Protocol Error: the message ${eventMessage.method} is for non-existing domain '${domainName}'`,
-            eventMessage);
-        return;
-      }
-      session.target._dispatchers[domainName].dispatch(method, eventMessage);
+      session.target.dispatch(eventMessage);
     }
   }
 
@@ -532,9 +525,14 @@ export class SessionRouter {
   }
 }
 
-interface AgentsMap extends Map<ApiDomain, ProtocolProxyApi.ProtocolApi[ApiDomain]> {
-  get<Domain extends ApiDomain>(key: Domain): ProtocolProxyApi.ProtocolApi[Domain]|undefined;
-  set<Domain extends ApiDomain>(key: Domain, value: ProtocolProxyApi.ProtocolApi[Domain]): this;
+interface AgentsMap extends Map<ProtocolDomainName, ProtocolProxyApi.ProtocolApi[ProtocolDomainName]> {
+  get<Domain extends ProtocolDomainName>(key: Domain): ProtocolProxyApi.ProtocolApi[Domain]|undefined;
+  set<Domain extends ProtocolDomainName>(key: Domain, value: ProtocolProxyApi.ProtocolApi[Domain]): this;
+}
+
+interface DispatcherMap extends Map<ProtocolDomainName, ProtocolProxyApi.ProtocolDispatchers[ProtocolDomainName]> {
+  get<Domain extends ProtocolDomainName>(key: Domain): DispatcherManager<Domain>|undefined;
+  set<Domain extends ProtocolDomainName>(key: Domain, value: DispatcherManager<Domain>): this;
 }
 
 export class TargetBase {
@@ -542,10 +540,8 @@ export class TargetBase {
   _sessionId: string;
   _router: SessionRouter|null;
   private agents: AgentsMap = new Map();
-  _dispatchers: {
-    // TODO(crbug.com/1172300): Replace {} with the respective ProtocolProxyApi.${x}Dispatcher type.
-    [x: string]: DispatcherManager<{}>,
-  };
+  private dispatchers: DispatcherMap = new Map();
+
   constructor(
       needsNodeJSPatching: boolean, parentTarget: TargetBase|null, sessionId: string, connection: Connection|null) {
     this._needsNodeJSPatching = needsNodeJSPatching;
@@ -574,24 +570,39 @@ export class TargetBase {
       this.agents.set(domain, agent);
     }
 
-    this._dispatchers = {};
     for (const [domain, eventParameterNames] of inspectorBackend.getEventParamterNames().entries()) {
-      this._dispatchers[domain] = new DispatcherManager(eventParameterNames);
+      this.dispatchers.set(domain, new DispatcherManager(eventParameterNames));
     }
   }
 
-  registerDispatcher(domain: string, dispatcher: Object): void {
-    if (!this._dispatchers[domain]) {
+  dispatch(eventMessage: EventMessage): void {
+    const [domainName, method] = splitQualifiedName(eventMessage.method);
+    const dispatcher = this.dispatchers.get(domainName as ProtocolDomainName);
+    if (!dispatcher) {
+      InspectorBackend.reportProtocolError(
+          `Protocol Error: the message ${eventMessage.method} is for non-existing domain '${domainName}'`,
+          eventMessage);
       return;
     }
-    this._dispatchers[domain].addDomainDispatcher(dispatcher);
+    dispatcher.dispatch(method, eventMessage);
   }
 
-  unregisterDispatcher(domain: string, dispatcher: Object): void {
-    if (!this._dispatchers[domain]) {
+  registerDispatcher<Domain extends ProtocolDomainName>(
+      domain: Domain, dispatcher: ProtocolProxyApi.ProtocolDispatchers[Domain]): void {
+    const manager = this.dispatchers.get(domain);
+    if (!manager) {
       return;
     }
-    this._dispatchers[domain].removeDomainDispatcher(dispatcher);
+    manager.addDomainDispatcher(dispatcher);
+  }
+
+  unregisterDispatcher<Domain extends ProtocolDomainName>(
+      domain: Domain, dispatcher: ProtocolProxyApi.ProtocolDispatchers[Domain]): void {
+    const manager = this.dispatchers.get(domain);
+    if (!manager) {
+      return;
+    }
+    manager.removeDomainDispatcher(dispatcher);
   }
 
   dispose(_reason: string): void {
@@ -616,7 +627,7 @@ export class TargetBase {
 
   // Agent accessors, keep alphabetically sorted.
 
-  getAgent<Domain extends ApiDomain>(domain: Domain): ProtocolProxyApi.ProtocolApi[Domain] {
+  getAgent<Domain extends ProtocolDomainName>(domain: Domain): ProtocolProxyApi.ProtocolApi[Domain] {
     const agent = this.agents.get<Domain>(domain);
     if (!agent) {
       throw new Error('Accessing undefined agent');
@@ -1058,22 +1069,21 @@ class _AgentPrototype {
  * parameter names of the events via `eventArgs`, which is a map managed by the inspector
  * back-end so that there is only one map per domain that is shared among all DispatcherManagers.
  */
-class DispatcherManager<
-    DispatcherType extends {[handler: string]: (this: DispatcherType, ...args: unknown[]) => void}> {
+class DispatcherManager<Domain extends ProtocolDomainName> {
   private eventArgs: ReadonlyEventParameterNames;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private dispatchers: DispatcherType[] = [];
+  private dispatchers: ProtocolProxyApi.ProtocolDispatchers[Domain][] = [];
 
   constructor(eventArgs: ReadonlyEventParameterNames) {
     this.eventArgs = eventArgs;
   }
 
-  addDomainDispatcher(dispatcher: DispatcherType): void {
+  addDomainDispatcher(dispatcher: ProtocolProxyApi.ProtocolDispatchers[Domain]): void {
     this.dispatchers.push(dispatcher);
   }
 
-  removeDomainDispatcher(dispatcher: DispatcherType): void {
+  removeDomainDispatcher(dispatcher: ProtocolProxyApi.ProtocolDispatchers[Domain]): void {
     const index = this.dispatchers.indexOf(dispatcher);
     if (index === -1) {
       return;
@@ -1097,7 +1107,9 @@ class DispatcherManager<
       const dispatcher = this.dispatchers[index];
 
       if (event in dispatcher) {
-        dispatcher[event].call(dispatcher, messageParams);
+        const f = dispatcher[event as string as keyof ProtocolProxyApi.ProtocolDispatchers[Domain]];
+        // @ts-ignore Can't type check the dispatch.
+        f.call(dispatcher, messageParams);
       }
     }
   }

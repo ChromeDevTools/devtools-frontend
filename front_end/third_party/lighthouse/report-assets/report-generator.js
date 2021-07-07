@@ -29,7 +29,7 @@ module.exports = {
     return cachedResources.get('third_party/lighthouse/report-assets/report.js');
   },
   get REPORT_TEMPLATE() {
-    return cachedResources.get('third_party/lighthouse/report-assets/template.html');
+    return cachedResources.get('third_party/lighthouse/report-assets/standalone-template.html');
   },
   get REPORT_TEMPLATES() {
     return cachedResources.get('third_party/lighthouse/report-assets/templates.html');

@@ -4,6 +4,7 @@
 
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import computedStylePropertyStyles from './computedStyleProperty.css.js';
 
 const {render, html} = LitHtml;
 
@@ -21,6 +22,10 @@ export class ComputedStyleProperty extends HTMLElement {
   private traceable = false;
   private onNavigateToSource: ((event?: Event) => void) = () => {};
 
+  connectedCallback(): void {
+    this.shadow.adoptedStyleSheets = [computedStylePropertyStyles];
+  }
+
   set data(data: ComputedStylePropertyData) {
     this.inherited = data.inherited;
     this.traceable = data.traceable;
@@ -31,102 +36,7 @@ export class ComputedStyleProperty extends HTMLElement {
   private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
     render(html`
-      <style>
-        :host {
-          position: relative;
-          overflow: hidden;
-          flex: auto;
-          text-overflow: ellipsis;
-        }
-
-        .computed-style-property {
-          min-height: 16px;
-          box-sizing: border-box;
-          padding-top: 2px;
-          white-space: nowrap;
-        }
-
-        .computed-style-property.inherited {
-          opacity: 50%;
-        }
-
-        slot[name="property-name"],
-        slot[name="property-value"] {
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        slot[name="property-name"] {
-          width: 16em;
-          max-width: 52%;
-          display: inline-block;
-          vertical-align: text-top;
-        }
-
-        slot[name="property-value"] {
-          margin-left: 2em;
-        }
-
-        .goto {
-          --size: 16px;
-
-          display: none;
-          position: absolute;
-          width: var(--size);
-          height: var(--size);
-          margin: -1px 0 0 calc(-1 * var(--size));
-          -webkit-mask-image: var(--image-file-mediumIcons);
-          -webkit-mask-position: -32px 48px;
-          background-color: var(--legacy-active-control-bg-color);
-        }
-
-        .computed-style-property:hover .goto {
-          display: inline-block;
-        }
-
-        .hidden {
-          display: none;
-        }
-        /* narrowed styles */
-        :host-context(.computed-narrow) .computed-style-property {
-          white-space: normal;
-        }
-
-        :host-context(.computed-narrow) slot[name="property-name"],
-        :host-context(.computed-narrow) slot[name="property-value"] {
-          display: inline-block;
-          width: 100%;
-          max-width: 100%;
-          margin-left: 0;
-          white-space: nowrap;
-        }
-
-        :host-context(.computed-narrow) .goto {
-          display: none;
-        }
-        /* high-contrast styles */
-        @media (forced-colors: active) {
-          .computed-style-property.inherited {
-            opacity: 100%;
-          }
-
-          :host-context(.monospace.computed-properties) .computed-style-property:hover {
-            forced-color-adjust: none;
-            background-color: Highlight;
-          }
-
-          :host-context(.monospace.computed-properties) .computed-style-property:hover * {
-            color: HighlightText;
-          }
-
-          :host-context(.monospace.computed-properties) .goto {
-            background-color: HighlightText;
-          }
-        }
-      </style>
-
       <div class="computed-style-property ${this.inherited ? 'inherited' : ''}">
         <slot name="property-name"></slot>
         <span class="hidden" aria-hidden="false">: </span>

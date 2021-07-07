@@ -6,6 +6,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import stylePropertyEditorStyles from './stylePropertyEditor.css.js';
 
 import type {IconInfo} from './CSSPropertyIconResolver.js';
 import {findFlexContainerIcon, findGridContainerIcon} from './CSSPropertyIconResolver.js';
@@ -75,6 +76,10 @@ export class StylePropertyEditor extends HTMLElement {
     super();
   }
 
+  connectedCallback(): void {
+    this.shadow.adoptedStyleSheets = [stylePropertyEditorStyles];
+  }
+
   getEditableProperties(): EditableProperty[] {
     return this.editableProperties;
   }
@@ -88,85 +93,7 @@ export class StylePropertyEditor extends HTMLElement {
   private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
     render(html`
-      <style>
-        .container {
-          padding: 12px;
-          min-width: 170px;
-        }
-
-        .row {
-          padding: 0;
-          color: var(--color-text-primary);
-          padding-bottom: 16px;
-        }
-
-        .row:last-child {
-          padding-bottom: 0;
-        }
-
-        .property {
-          padding-bottom: 4px;
-          white-space: nowrap;
-        }
-
-        .property-name {
-          color: var(--color-syntax-1);
-        }
-
-        .property-value {
-          color: var(--color-text-primary);
-        }
-
-        .property-value.not-authored {
-          color: var(--color-text-disabled);
-        }
-
-        .buttons {
-          display: flex;
-          flex-direction: row;
-        }
-
-        .buttons > :first-child {
-          border-radius: 3px 0 0 3px;
-        }
-
-        .buttons > :last-child {
-          border-radius: 0 3px 3px 0;
-        }
-
-        .button {
-          border: 1px solid var(--color-background-elevation-2);
-          background-color: var(--color-background);
-          width: 24px;
-          height: 24px;
-          min-width: 24px;
-          min-height: 24px;
-          padding: 0;
-          margin: 0;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          cursor: pointer;
-        }
-
-        .button:focus-visible {
-          outline: auto 5px -webkit-focus-ring-color;
-        }
-
-        .button devtools-icon {
-          --icon-color: var(--color-text-secondary);
-        }
-
-        .button.selected {
-          background-color: var(--color-background-elevation-1);
-        }
-
-        .button.selected devtools-icon {
-          --icon-color: var(--color-primary);
-        }
-      </style>
       <div class="container">
         ${this.editableProperties.map(prop => this.renderProperty(prop))}
       </div>

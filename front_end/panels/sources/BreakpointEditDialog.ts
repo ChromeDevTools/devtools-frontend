@@ -116,7 +116,8 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     this._editor.setSelection(this._editor.fullRange());
     this._editor.widget().element.addEventListener('keydown', this._onKeyDown.bind(this), true);
     this.element.addEventListener('blur', event => {
-      if (event.relatedTarget && !(event.relatedTarget as Node).isSelfOrDescendant(this.element)) {
+      if (!event.relatedTarget ||
+          (event.relatedTarget && !(event.relatedTarget as Node).isSelfOrDescendant(this.element))) {
         this._finishEditing(true);
       }
     }, true);

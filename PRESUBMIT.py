@@ -324,14 +324,14 @@ def _CheckDevToolsStyleCSS(input_api, output_api):
     return results
 
 
-def _CheckDevToolsPythonLikeFileLicenseHeaders(input_api, output_api):
+def _CheckDevToolsNonJSFileLicenseHeaders(input_api, output_api):
     results = [
         output_api.PresubmitNotifyResult(
             'Python-like file license header check:')
     ]
-    lint_path = input_api.os_path.join(
-        input_api.PresubmitLocalPath(), 'scripts', 'test',
-        'run_header_check_python_like_files.js')
+    lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
+                                       'scripts', 'test',
+                                       'run_header_check_non_js_files.js')
 
     front_end_directory = input_api.os_path.join(
         input_api.PresubmitLocalPath(), 'front_end')
@@ -356,7 +356,7 @@ def _CheckDevToolsPythonLikeFileLicenseHeaders(input_api, output_api):
 
     should_bail_out, files_to_lint = _getFilesToLint(
         input_api, output_api, lint_config_files, default_linted_directories,
-        ['BUILD.gn', '.gni'], results)
+        ['BUILD.gn', '.gni', '.css'], results)
     if should_bail_out:
         return results
 
@@ -516,8 +516,8 @@ def _CommonChecks(input_api, output_api):
     results.extend(_CheckJSON(input_api, output_api))
     results.extend(_CheckDevToolsStyleJS(input_api, output_api))
     results.extend(_CheckDevToolsStyleCSS(input_api, output_api))
-    results.extend(
-        _CheckDevToolsPythonLikeFileLicenseHeaders(input_api, output_api))
+    results.extend(_CheckDevToolsNonJSFileLicenseHeaders(
+        input_api, output_api))
 
     results.extend(_CheckFormat(input_api, output_api))
     results.extend(_CheckChangesAreExclusiveToDirectory(input_api, output_api))

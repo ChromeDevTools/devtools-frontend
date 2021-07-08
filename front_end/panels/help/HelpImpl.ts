@@ -79,7 +79,6 @@ export class HelpLateInitialization implements Common.Runnable.Runnable {
     }
   }
 }
-Common.Runnable.registerLateInitializationRunnable(HelpLateInitialization.instance);
 
 let releaseNotesActionDelegateInstance: ReleaseNotesActionDelegate;
 export class ReleaseNotesActionDelegate implements UI.ActionRegistration.ActionDelegate {

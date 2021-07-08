@@ -534,7 +534,10 @@ export class MainImpl {
     MainImpl.time('Main._lateInitialization');
     Extensions.ExtensionServer.ExtensionServer.instance().initializeExtensions();
     const promises: Promise<void>[] =
-        Common.Runnable.lateInitializationRunnables().map(runnableInstance => runnableInstance().run());
+        Common.Runnable.lateInitializationRunnables().map(async lateInitializationLoader => {
+          const runnable = await lateInitializationLoader();
+          return runnable.run();
+        });
     if (Root.Runtime.experiments.isEnabled('liveHeapProfile')) {
       const setting = 'memoryLiveHeapProfile';
       if (Common.Settings.Settings.instance().moduleSetting(setting).get()) {

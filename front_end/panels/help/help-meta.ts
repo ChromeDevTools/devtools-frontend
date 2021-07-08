@@ -117,3 +117,11 @@ UI.ContextMenu.registerItem({
   actionId: 'help.report-issue',
   order: 11,
 });
+
+Common.Runnable.registerLateInitializationRunnable({
+  id: 'whats-new',
+  async loadRunnable() {
+    const Help = await loadHelpModule();
+    return Help.Help.HelpLateInitialization.instance();
+  },
+});

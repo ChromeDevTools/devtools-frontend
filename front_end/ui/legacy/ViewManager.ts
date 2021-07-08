@@ -146,7 +146,7 @@ export class ViewManager {
       views.sort((firstView, secondView) => {
         const firstViewOrder = firstView.order();
         const secondViewOrder = secondView.order();
-        if (firstViewOrder && secondViewOrder) {
+        if (firstViewOrder !== undefined && secondViewOrder !== undefined) {
           return firstViewOrder - secondViewOrder;
         }
         return 0;

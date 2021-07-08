@@ -13,6 +13,7 @@ import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
 import {imageNameForResourceType} from '../utils/utils.js';
+import webBundleInfoViewStyles from './WebBundleInfoView.css.js';
 
 const {render, html} = LitHtml;
 
@@ -49,6 +50,10 @@ export class WebBundleInfoElement extends HTMLElement {
     this.webBundleName = webBundleName;
   }
 
+  connectedCallback(): void {
+    this.shadow.adoptedStyleSheets = [webBundleInfoViewStyles];
+  }
+
   render(): void {
     const rows = this.webBundleInfo.resourceUrls?.map(url => {
       const mimeType = Common.ResourceType.ResourceType.mimeFromURL(url) || null;
@@ -74,24 +79,7 @@ export class WebBundleInfoElement extends HTMLElement {
       };
     });
     render(
-        // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
         html`
-      <style>
-        :host {
-          --icon-padding: 4px;
-        }
-
-        .header {
-          display: flex;
-          font-weight: bold;
-          padding: calc(2 * var(--icon-padding)) var(--icon-padding);
-        }
-
-        .icon {
-          margin: 0 var(--icon-padding);
-        }
-
-      </style>
       <div class="header">
         <${IconButton.Icon.Icon.litTagName} class="icon"
           .data=${{color: '', iconName: 'resourceWebBundle', width: '16px'} as IconButton.Icon.IconData}>

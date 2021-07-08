@@ -634,7 +634,6 @@ export class DebuggerModel extends SDKModel {
       breakpointIds: string[], asyncStackTrace?: Protocol.Runtime.StackTrace,
       asyncStackTraceId?: Protocol.Runtime.StackTraceId,
       asyncCallStackTraceId?: Protocol.Runtime.StackTraceId): Promise<void> {
-
     if (asyncCallStackTraceId) {
       // Note: this is only to support old backends. Newer ones do not send asyncCallStackTraceId.
       _scheduledPauseOnAsyncCall = asyncCallStackTraceId;
@@ -1218,6 +1217,7 @@ export class CallFrame {
   _functionName: string;
   _functionLocation: Location|undefined;
   _returnValue: RemoteObject|null;
+  readonly warnings: string[] = [];
 
   constructor(
       debuggerModel: DebuggerModel, script: Script, payload: Protocol.Debugger.CallFrame, inlineFrameIndex?: number,
@@ -1256,8 +1256,12 @@ export class CallFrame {
     return result;
   }
 
-  createVirtualCallFrame(inlineFrameIndex?: number, functionName?: string): CallFrame {
-    return new CallFrame(this.debuggerModel, this._script, this._payload, inlineFrameIndex, functionName);
+  createVirtualCallFrame(inlineFrameIndex: number, name: string): CallFrame {
+    return new CallFrame(this.debuggerModel, this._script, this._payload, inlineFrameIndex, name);
+  }
+
+  addWarning(warning: string): void {
+    this.warnings.push(warning);
   }
 
   get script(): Script {

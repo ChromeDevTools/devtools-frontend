@@ -115,6 +115,13 @@
   display: block;
 }
 
+.call-frame-warning-icon {
+  display: block;
+  position: absolute;
+  top: 5px;
+  right: 4px;
+}
+
 @media (forced-colors: active) {
   .call-frame-item:focus-visible,
   .call-frame-item:not(.async-header):hover {

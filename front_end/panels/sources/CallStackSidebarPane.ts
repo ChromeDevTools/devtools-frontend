@@ -289,12 +289,30 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
         UI.ARIAUtils.setDisabled(element, true);
       }
     }
-    const isSelected = itemToCallFrame.get(item) === UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame);
+    const callframe = itemToCallFrame.get(item);
+    const isSelected = callframe === UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame);
+
     element.classList.toggle('selected', isSelected);
     UI.ARIAUtils.setSelected(element, isSelected);
     element.classList.toggle('hidden', !this._showIgnoreListed && item.isIgnoreListed);
     element.appendChild(UI.Icon.Icon.create('smallicon-thick-right-arrow', 'selected-call-frame-icon'));
     element.tabIndex = item === this._list.selectedItem() ? 0 : -1;
+
+    if (callframe && callframe.warnings.length) {
+      const icon = UI.Icon.Icon.create('smallicon-warning', 'call-frame-warning-icon');
+      // Build span of all warnings separated by breaks
+      const warningsText = document.createElement('span');
+      let first = true;
+      for (const warning of callframe.warnings) {
+        if (!first) {
+          warningsText.createChild('br');
+        }
+        first = false;
+        warningsText.appendChild(document.createTextNode(warning));
+      }
+      UI.Tooltip.Tooltip.install(icon, warningsText);
+      element.appendChild(icon);
+    }
     return element;
   }
 

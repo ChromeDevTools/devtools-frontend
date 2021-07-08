@@ -55,6 +55,16 @@ const UIStrings = {
   *@example {File not found} PH3
   */
   failedToLoadDebugSymbolsFor: '[{PH1}] Failed to load debug symbols for {PH2} ({PH3})',
+  /**
+  *@description Error message that is displayed in UI debugging information cannot be found for a call frame
+  *@example {main} PH1
+  */
+  failedToLoadDebugSymbolsForFunction: 'Missing debug symbols for function "{PH1}"',
+  /**
+  *@description Error message that is displayed in UI when a file needed for debugging information for a call frame is missing
+  *@example {src/myapp.debug.wasm.dwp} PH1
+  */
+  symbolFileNotFound: 'Symbol file "{PH1}" not found',
 };
 const str_ = i18n.i18n.registerUIStrings('models/bindings/DebuggerLanguagePlugins.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -807,9 +817,19 @@ export class DebuggerLanguagePluginManager implements
   _expandCallFrames(callFrames: SDK.DebuggerModel.CallFrame[]): Promise<SDK.DebuggerModel.CallFrame[]> {
     return Promise
         .all(callFrames.map(async callFrame => {
-          const {frames} = await this.getFunctionInfo(callFrame.script, callFrame.location());
-          if (frames.length) {
-            return frames.map(({name}, index) => callFrame.createVirtualCallFrame(index, name));
+          const functionInfo = await this.getFunctionInfo(callFrame.script, callFrame.location());
+          if (functionInfo) {
+            const {frames, missingSymbolFiles} = functionInfo;
+            if (frames.length) {
+              return frames.map(({name}, index) => callFrame.createVirtualCallFrame(index, name));
+            }
+            if (missingSymbolFiles && missingSymbolFiles.length) {
+              for (const file of missingSymbolFiles) {
+                callFrame.addWarning(i18nString(UIStrings.symbolFileNotFound, {PH1: file}));
+              }
+            }
+            callFrame.addWarning(
+                i18nString(UIStrings.failedToLoadDebugSymbolsForFunction, {PH1: callFrame.functionName}));
           }
           return callFrame;
         }))
@@ -1144,11 +1164,11 @@ export class DebuggerLanguagePluginManager implements
 
   async getFunctionInfo(script: SDK.Script.Script, location: SDK.DebuggerModel.Location): Promise<{
     frames: Array<FunctionInfo>,
-  }> {
-    const noDwarfInfo = {frames: []};
+    missingSymbolFiles?: Array<string>,
+  }|null> {
     const {rawModuleId, plugin} = await this._rawModuleIdAndPluginForScript(script);
     if (!plugin) {
-      return noDwarfInfo;
+      return null;
     }
 
     const rawLocation: RawLocation = {
@@ -1161,7 +1181,7 @@ export class DebuggerLanguagePluginManager implements
       return await plugin.getFunctionInfo(rawLocation);
     } catch (error) {
       Common.Console.Console.instance().warn(i18nString(UIStrings.errorInDebuggerLanguagePlugin, {PH1: error.message}));
-      return noDwarfInfo;
+      return {frames: []};
     }
   }
 
@@ -1481,6 +1501,7 @@ export class DebuggerLanguagePlugin {
    */
   async getFunctionInfo(_rawLocation: RawLocation): Promise<{
     frames: Array<FunctionInfo>,
+    missingSymbolFiles?: Array<string>,
   }> {
     throw new Error('Not implemented yet');
   }

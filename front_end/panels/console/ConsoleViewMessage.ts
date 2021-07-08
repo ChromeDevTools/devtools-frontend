@@ -1661,6 +1661,11 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       if (debuggerModel.scriptsForSourceURL(url).length) {
         return url;
       }
+      // nodejs stack traces contain (absolute) file paths, but v8 reports them as file: urls.
+      const fileUrl = new URL(url, 'file://');
+      if (debuggerModel.scriptsForSourceURL(fileUrl.href).length) {
+        return fileUrl.href;
+      }
       return null;
     }
   }

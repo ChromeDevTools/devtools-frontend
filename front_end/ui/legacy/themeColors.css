@@ -103,6 +103,7 @@
   --color-error-text: #f00;
   --color-error-border: hsl(0deg 100% 92%);
   --color-error-background: hsl(0deg 100% 97%);
+  --color-image-preview-background: rgb(255 255 255);
 }
 
 .-theme-with-dark-background {

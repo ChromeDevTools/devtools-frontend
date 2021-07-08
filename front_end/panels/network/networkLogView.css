@@ -249,6 +249,7 @@
 }
 
 .image-network-icon-preview {
+  background: var(--color-image-preview-background);
   border: 1px solid var(--color-details-hairline);
   bottom: 0;
   left: 0;

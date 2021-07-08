@@ -15,7 +15,6 @@ devtools_module("components") {
   sources = [ "UserAgentClientHintsForm.ts" ]
 
   deps = [
-    ":css_files",
     "../../../core/i18n:bundle",
     "../../../generated:protocol",
     "../../../ui/components/helpers:bundle",

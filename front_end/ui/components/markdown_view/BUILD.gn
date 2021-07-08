@@ -24,7 +24,6 @@ devtools_module("markdown_view") {
     "MarkdownView.ts",
   ]
   deps = [
-    ":css_files",
     "../../../core/common:bundle",
     "../../../core/host:bundle",
     "../../../core/platform:bundle",

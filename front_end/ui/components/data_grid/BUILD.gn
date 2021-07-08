@@ -24,7 +24,6 @@ devtools_module("data_grid") {
     "DataGridUtils.ts",
   ]
   deps = [
-    ":css_files",
     "../../../core/common:bundle",
     "../../../core/host:bundle",
     "../../../core/i18n:bundle",

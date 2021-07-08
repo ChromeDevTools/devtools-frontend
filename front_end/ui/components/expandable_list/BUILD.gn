@@ -14,7 +14,6 @@ generate_css("css_files") {
 devtools_module("expandable_list") {
   sources = [ "ExpandableList.ts" ]
   deps = [
-    ":css_files",
     "../../../ui/components/helpers:bundle",
     "../../../ui/lit-html:bundle",
   ]

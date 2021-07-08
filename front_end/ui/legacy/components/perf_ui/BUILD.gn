@@ -27,7 +27,6 @@ devtools_module("perf_ui") {
   ]
 
   deps = [
-    ":css_files",
     "../../../../core/common:bundle",
     "../../../../core/host:bundle",
     "../../../../core/i18n:bundle",

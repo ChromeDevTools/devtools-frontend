@@ -15,7 +15,6 @@ devtools_module("request_link_icon") {
   sources = [ "RequestLinkIcon.ts" ]
 
   deps = [
-    ":css_files",
     "../../../core/common:bundle",
     "../../../core/i18n:bundle",
     "../../../core/platform:bundle",

@@ -37,7 +37,6 @@ devtools_module("components") {
   ]
 
   deps = [
-    ":css_files",
     "../../../core/common:bundle",
     "../../../core/host:bundle",
     "../../../core/i18n:bundle",

@@ -32,7 +32,6 @@ devtools_module("linear_memory_inspector") {
   ]
 
   deps = [
-    ":css_files",
     "../../../core/common:bundle",
     "../../../core/host:bundle",
     "../../../core/i18n:bundle",

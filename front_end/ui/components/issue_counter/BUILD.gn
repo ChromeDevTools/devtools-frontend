@@ -15,7 +15,6 @@ devtools_module("issue_counter") {
   sources = [ "IssueCounter.ts" ]
 
   deps = [
-    ":css_files",
     "../../../core/common:bundle",
     "../../../core/i18n:bundle",
     "../../../models/issues_manager:bundle",

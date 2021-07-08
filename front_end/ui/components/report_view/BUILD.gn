@@ -20,7 +20,6 @@ generate_css("css_files") {
 devtools_module("report_view") {
   sources = [ "ReportView.ts" ]
   deps = [
-    ":css_files",
     "../../../ui/lit-html:bundle",
     "../../components/helpers:bundle",
   ]

@@ -18,6 +18,7 @@ devtools_module("components") {
   sources = [
     "FrameDetailsView.ts",
     "OriginTrialTreeView.ts",
+    "PermissionsPolicySection.ts",
     "StackTrace.ts",
     "TrustTokensView.ts",
   ]

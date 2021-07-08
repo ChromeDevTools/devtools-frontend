@@ -81,6 +81,7 @@ const makeFrame = (): SDK.ResourceTreeModel.ResourceTreeFrame => {
         }],
       },
     ]),
+    getPermissionsPolicyState: () => null,
   } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
   return newFrame;
 };
@@ -95,6 +96,7 @@ describe('FrameDetailsView', () => {
     };
 
     assertShadowRoot(component.shadowRoot);
+    await coordinator.done();
     const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
     assertShadowRoot(report.shadowRoot);
 

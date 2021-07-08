@@ -2336,9 +2336,6 @@
   "panels/application/components/FrameDetailsView.ts | aFrameAncestorIsAnInsecure": {
     "message": "Â f́r̂ám̂é âńĉéŝt́ôŕ îś âń îńŝéĉúr̂é ĉón̂t́êx́t̂"
   },
-  "panels/application/components/FrameDetailsView.ts | allowedFeatures": {
-    "message": "Âĺl̂óŵéd̂ F́êát̂úr̂éŝ"
-  },
   "panels/application/components/FrameDetailsView.ts | apiAvailability": {
     "message": "ÂṔÎ áv̂áîĺâb́îĺît́ŷ"
   },
@@ -2372,12 +2369,6 @@
   "panels/application/components/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
     "message": "Ĉĺîćk̂ t́ô ŕêv́êál̂ ín̂ Śôúr̂ćêś p̂án̂él̂"
   },
-  "panels/application/components/FrameDetailsView.ts | clickToShowHeader": {
-    "message": "Ĉĺîćk̂ t́ô ŕêv́êál̂ t́ĥé r̂éq̂úêśt̂ ẃĥóŝé \"Permissions-Policy\" ĤT́T̂Ṕ ĥéâd́êŕ d̂íŝáb̂ĺêś t̂h́îś f̂éât́ûŕê."
-  },
-  "panels/application/components/FrameDetailsView.ts | clickToShowIframe": {
-    "message": "Ĉĺîćk̂ t́ô ŕêv́êál̂ t́ĥé t̂óp̂-ḿôśt̂ íf̂ŕâḿê ẃĥíĉh́ d̂óêś n̂ót̂ ál̂ĺôẃ t̂h́îś f̂éât́ûŕê ín̂ t́ĥé êĺêḿêńt̂ś p̂án̂él̂."
-  },
   "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
     "message": "T̂h́êŕê ẃâś âń âd́ ŝćr̂íp̂t́ îń t̂h́ê (áŝýn̂ć) ŝt́âćk̂ ẃĥén̂ t́ĥíŝ f́r̂ám̂é ŵáŝ ćr̂éât́êd́. Êx́âḿîńîńĝ t́ĥé ĉŕêát̂íôń ŝt́âćk̂ t́r̂áĉé ôf́ t̂h́îś f̂ŕâḿê ḿîǵĥt́ p̂ŕôv́îd́ê ḿôŕê ín̂śîǵĥt́."
   },
@@ -2396,23 +2387,11 @@
   "panels/application/components/FrameDetailsView.ts | crossoriginOpenerPolicy": {
     "message": "Ĉŕôśŝ-Ór̂íĝín̂ Óp̂én̂ér̂ Ṕôĺîćŷ"
   },
-  "panels/application/components/FrameDetailsView.ts | disabledByHeader": {
-    "message": "d̂íŝáb̂ĺêd́ b̂ý \"Permissions-Policy\" ĥéâd́êŕ"
-  },
-  "panels/application/components/FrameDetailsView.ts | disabledByIframe": {
-    "message": "m̂íŝśîńĝ ín̂ íf̂ŕâḿê \"allow\" át̂t́r̂íb̂út̂é"
-  },
-  "panels/application/components/FrameDetailsView.ts | disabledFeatures": {
-    "message": "D̂íŝáb̂ĺêd́ F̂éât́ûŕêś"
-  },
   "panels/application/components/FrameDetailsView.ts | document": {
     "message": "D̂óĉúm̂én̂t́"
   },
   "panels/application/components/FrameDetailsView.ts | frameId": {
     "message": "F̂ŕâḿê ÍD̂"
-  },
-  "panels/application/components/FrameDetailsView.ts | hideDetails": {
-    "message": "Ĥíd̂é d̂ét̂áîĺŝ"
   },
   "panels/application/components/FrameDetailsView.ts | learnMore": {
     "message": "L̂éâŕn̂ ḿôŕê"
@@ -2464,9 +2443,6 @@
   },
   "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
     "message": "Ŝh́âŕêd́Âŕr̂áŷB́ûf́f̂ér̂ ćôńŝt́r̂úĉt́ôŕ îś âv́âíl̂áb̂ĺê b́ût́ ŜÁB̂ś ĉán̂ńôt́ b̂é t̂ŕâńŝf́êŕr̂éd̂ v́îá p̂óŝt́M̂éŝśâǵê"
-  },
-  "panels/application/components/FrameDetailsView.ts | showDetails": {
-    "message": "Ŝh́ôẃ d̂ét̂áîĺŝ"
   },
   "panels/application/components/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
     "message": "T̂h́ê f́r̂ám̂é'ŝ śĉh́êḿê íŝ ín̂śêćûŕê"
@@ -2524,6 +2500,30 @@
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Ûśâǵê Ŕêśt̂ŕîćt̂íôń"
+  },
+  "panels/application/components/PermissionsPolicySection.ts | allowedFeatures": {
+    "message": "Âĺl̂óŵéd̂ F́êát̂úr̂éŝ"
+  },
+  "panels/application/components/PermissionsPolicySection.ts | clickToShowHeader": {
+    "message": "Ĉĺîćk̂ t́ô ŕêv́êál̂ t́ĥé r̂éq̂úêśt̂ ẃĥóŝé \"Permissions-Policy\" ĤT́T̂Ṕ ĥéâd́êŕ d̂íŝáb̂ĺêś t̂h́îś f̂éât́ûŕê."
+  },
+  "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
+    "message": "Ĉĺîćk̂ t́ô ŕêv́êál̂ t́ĥé t̂óp̂-ḿôśt̂ íf̂ŕâḿê ẃĥíĉh́ d̂óêś n̂ót̂ ál̂ĺôẃ t̂h́îś f̂éât́ûŕê ín̂ t́ĥé êĺêḿêńt̂ś p̂án̂él̂."
+  },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByHeader": {
+    "message": "d̂íŝáb̂ĺêd́ b̂ý \"Permissions-Policy\" ĥéâd́êŕ"
+  },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByIframe": {
+    "message": "m̂íŝśîńĝ ín̂ íf̂ŕâḿê \"allow\" át̂t́r̂íb̂út̂é"
+  },
+  "panels/application/components/PermissionsPolicySection.ts | disabledFeatures": {
+    "message": "D̂íŝáb̂ĺêd́ F̂éât́ûŕêś"
+  },
+  "panels/application/components/PermissionsPolicySection.ts | hideDetails": {
+    "message": "Ĥíd̂é d̂ét̂áîĺŝ"
+  },
+  "panels/application/components/PermissionsPolicySection.ts | showDetails": {
+    "message": "Ŝh́ôẃ d̂ét̂áîĺŝ"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Ĉán̂ńôt́ r̂én̂d́êŕ ŝt́âćk̂ t́r̂áĉé"

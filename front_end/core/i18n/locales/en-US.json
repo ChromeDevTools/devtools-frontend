@@ -2336,9 +2336,6 @@
   "panels/application/components/FrameDetailsView.ts | aFrameAncestorIsAnInsecure": {
     "message": "A frame ancestor is an insecure context"
   },
-  "panels/application/components/FrameDetailsView.ts | allowedFeatures": {
-    "message": "Allowed Features"
-  },
   "panels/application/components/FrameDetailsView.ts | apiAvailability": {
     "message": "API availability"
   },
@@ -2372,12 +2369,6 @@
   "panels/application/components/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
     "message": "Click to reveal in Sources panel"
   },
-  "panels/application/components/FrameDetailsView.ts | clickToShowHeader": {
-    "message": "Click to reveal the request whose \"Permissions-Policy\" HTTP header disables this feature."
-  },
-  "panels/application/components/FrameDetailsView.ts | clickToShowIframe": {
-    "message": "Click to reveal the top-most iframe which does not allow this feature in the elements panel."
-  },
   "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
     "message": "There was an ad script in the (async) stack when this frame was created. Examining the creation stack trace of this frame might provide more insight."
   },
@@ -2396,23 +2387,11 @@
   "panels/application/components/FrameDetailsView.ts | crossoriginOpenerPolicy": {
     "message": "Cross-Origin Opener Policy"
   },
-  "panels/application/components/FrameDetailsView.ts | disabledByHeader": {
-    "message": "disabled by \"Permissions-Policy\" header"
-  },
-  "panels/application/components/FrameDetailsView.ts | disabledByIframe": {
-    "message": "missing in iframe \"allow\" attribute"
-  },
-  "panels/application/components/FrameDetailsView.ts | disabledFeatures": {
-    "message": "Disabled Features"
-  },
   "panels/application/components/FrameDetailsView.ts | document": {
     "message": "Document"
   },
   "panels/application/components/FrameDetailsView.ts | frameId": {
     "message": "Frame ID"
-  },
-  "panels/application/components/FrameDetailsView.ts | hideDetails": {
-    "message": "Hide details"
   },
   "panels/application/components/FrameDetailsView.ts | learnMore": {
     "message": "Learn more"
@@ -2464,9 +2443,6 @@
   },
   "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
     "message": "SharedArrayBuffer constructor is available but SABs cannot be transferred via postMessage"
-  },
-  "panels/application/components/FrameDetailsView.ts | showDetails": {
-    "message": "Show details"
   },
   "panels/application/components/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
     "message": "The frame's scheme is insecure"
@@ -2524,6 +2500,30 @@
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Usage Restriction"
+  },
+  "panels/application/components/PermissionsPolicySection.ts | allowedFeatures": {
+    "message": "Allowed Features"
+  },
+  "panels/application/components/PermissionsPolicySection.ts | clickToShowHeader": {
+    "message": "Click to reveal the request whose \"Permissions-Policy\" HTTP header disables this feature."
+  },
+  "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
+    "message": "Click to reveal the top-most iframe which does not allow this feature in the elements panel."
+  },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByHeader": {
+    "message": "disabled by \"Permissions-Policy\" header"
+  },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByIframe": {
+    "message": "missing in iframe \"allow\" attribute"
+  },
+  "panels/application/components/PermissionsPolicySection.ts | disabledFeatures": {
+    "message": "Disabled Features"
+  },
+  "panels/application/components/PermissionsPolicySection.ts | hideDetails": {
+    "message": "Hide details"
+  },
+  "panels/application/components/PermissionsPolicySection.ts | showDetails": {
+    "message": "Show details"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Cannot render stack trace"

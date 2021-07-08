@@ -74,6 +74,12 @@ export const selectEdit = async () => {
   await click(edit);
 };
 
+export const selectDevice = async (name: string) => {
+  await clickDevicesDropDown();
+  const edit = await waitFor(`[aria-label*="${name}"]`);
+  await click(edit);
+};
+
 export const selectTestDevice = async () => {
   await clickDevicesDropDown();
   const edit = await waitFor(TEST_DEVICE_MENU_ITEM_SELECTOR);

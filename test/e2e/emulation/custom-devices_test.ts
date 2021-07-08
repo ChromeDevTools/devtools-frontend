@@ -4,13 +4,14 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer';
 
-import {click, getBrowserAndPages, goToResource, pressKey, typeText, waitFor, tabForward} from '../../shared/helper.js';
+import {click, tabForward, waitForAria, getBrowserAndPages, goToResource, pressKey, typeText, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {waitForDomNodeToBeVisible} from '../helpers/elements-helpers.js';
-import {openDeviceToolbar, reloadDockableFrontEnd, selectEdit, selectTestDevice} from '../helpers/emulation-helpers.js';
+import {openDeviceToolbar, selectDevice, reloadDockableFrontEnd, selectEdit, selectTestDevice} from '../helpers/emulation-helpers.js';
 
 const ADD_DEVICE_BUTTON_SELECTOR = '#custom-device-add-button';
 const FOCUSED_DEVICE_NAME_FIELD_SELECTOR = '#custom-device-name-field:focus';
+const EDITOR_ADD_BUTTON_SELECTOR = '.editor-buttons > button:first-child';
 const FOCUSED_SELECTOR = '*:focus';
 
 async function elementTextContent(element: puppeteer.ElementHandle): Promise<string> {
@@ -26,7 +27,7 @@ async function targetTextContent(selector: string): Promise<string> {
   return elementTextContent(handle);
 }
 
-describe('Custom UA-CH emulation', async () => {
+describe('Custom devices', async () => {
   beforeEach(async function() {
     await reloadDockableFrontEnd();
     await goToResource('emulation/custom-ua-ch.html');
@@ -34,7 +35,7 @@ describe('Custom UA-CH emulation', async () => {
     await openDeviceToolbar();
   });
 
-  it('Adding and then editing a custom device', async () => {
+  it('can add and then edit a custom device with UA-CH emulation', async () => {
     await selectEdit();
     const add = await waitFor(ADD_DEVICE_BUTTON_SELECTOR);
     await click(add);
@@ -154,5 +155,33 @@ describe('Custom UA-CH emulation', async () => {
     assert.strictEqual(await targetTextContent('#res-architecture'), 'Bipedal');
     assert.strictEqual(await targetTextContent('#res-model'), 'C-1-Gardener');
     assert.strictEqual(await targetTextContent('#res-ua-full-version'), '1.1.5');
+  });
+
+  it('can add and properly display a device with a custom resolution', async () => {
+    await selectEdit();
+    const add = await waitFor(ADD_DEVICE_BUTTON_SELECTOR);
+    await click(add);
+    await waitFor(FOCUSED_DEVICE_NAME_FIELD_SELECTOR);
+    await typeText('Prime numbers');
+
+    await tabForward();  // Focus width.
+    await typeText('863');
+    await tabForward();  // Focus height.
+    await typeText('1223');
+    await tabForward();  // Focus DPR.
+    await typeText('1.0');
+    await tabForward();  // Focus UA string.
+    await typeText('Test device browser 1.0');
+
+    const finishAdd = await waitFor(EDITOR_ADD_BUTTON_SELECTOR);
+    const finishAddText = await elementTextContent(finishAdd);
+    assert.strictEqual(finishAddText, 'Add');
+    await click(finishAdd);
+
+    // Select the device in the menu.
+    await selectDevice('Prime numbers');
+
+    const zoomButton = await waitForAria('Zoom');
+    assert.strictEqual(await elementTextContent(zoomButton), '51%');
   });
 });

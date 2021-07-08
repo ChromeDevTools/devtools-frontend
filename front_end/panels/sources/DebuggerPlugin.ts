@@ -603,6 +603,32 @@ export class DebuggerPlugin extends Plugin {
       editorLineNumber = textPosition.startLine;
       startHighlight = token.startColumn;
       endHighlight = token.endColumn - 1;
+
+      // For $label identifiers we can't show a meaningful preview (https://crbug.com/1155548),
+      // so we suppress them for now. Label identifiers can only appear as operands to control
+      // instructions[1], so we just check the first token on the line and filter them out.
+      //
+      // [1]: https://webassembly.github.io/spec/core/text/instructions.html#control-instructions
+      for (let firstColumn = 0; firstColumn < startHighlight; ++firstColumn) {
+        const firstToken = this._textEditor.tokenAtTextPosition(editorLineNumber, firstColumn);
+        if (firstToken && firstToken.type === 'keyword') {
+          const line = this._textEditor.line(editorLineNumber);
+          switch (line.substring(firstToken.startColumn, firstToken.endColumn)) {
+            case 'block':
+            case 'loop':
+            case 'if':
+            case 'else':
+            case 'end':
+            case 'br':
+            case 'br_if':
+            case 'br_table':
+              return null;
+            default:
+              break;
+          }
+          break;
+        }
+      }
     } else {
       let token = this._textEditor.tokenAtTextPosition(textPosition.startLine, textPosition.startColumn);
       if (!token) {

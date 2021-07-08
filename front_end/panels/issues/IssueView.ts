@@ -14,7 +14,7 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as MarkdownView from '../../ui/components/markdown_view/markdown_view.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as ElementsComponents from '../elements/components/components.js';
+import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 
 import {AffectedDirectivesView} from './AffectedDirectivesView.js';
@@ -302,7 +302,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     icon.data = IssueCounter.IssueCounter.getIssueKindIconData(kind);
     icon.classList.add('leading-issue-icon');
     this._aggregatedIssuesCount = document.createElement('span');
-    const countAdorner = new ElementsComponents.Adorner.Adorner();
+    const countAdorner = new Adorners.Adorner.Adorner();
     countAdorner.data = {
       name: 'countWrapper',
       content: this._aggregatedIssuesCount,

@@ -52,6 +52,7 @@ devtools_module("elements") {
     "../../panels/emulation:bundle",
     "../../panels/event_listeners:bundle",
     "../../panels/mobile_throttling:bundle",
+    "../../ui/components/adorners:bundle",
     "../../ui/components/tree_outline:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/color_picker:bundle",

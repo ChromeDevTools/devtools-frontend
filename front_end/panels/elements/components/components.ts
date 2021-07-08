@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as AccessibilityTreeUtils from './AccessibilityTreeUtils.js';
-import * as Adorner from './Adorner.js';
 import * as AdornerManager from './AdornerManager.js';
 import * as AdornerSettingsPane from './AdornerSettingsPane.js';
 import * as ComputedStyleProperty from './ComputedStyleProperty.js';
@@ -22,7 +21,6 @@ import * as StylePropertyEditor from './StylePropertyEditor.js';
 
 export {
   AccessibilityTreeUtils,
-  Adorner,
   AdornerManager,
   AdornerSettingsPane,
   ComputedStyleProperty,

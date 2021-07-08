@@ -40,6 +40,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Extensions from '../../models/extensions/extensions.js';
+import type * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -47,6 +48,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {AccessibilityTreeView} from './AccessibilityTreeView.js';
 import * as ElementsComponents from './components/components.js';
 import {ComputedStyleWidget} from './ComputedStyleWidget.js';
+
 import type {ElementsTreeElement} from './ElementsTreeElement.js'; // eslint-disable-line no-unused-vars
 import {ElementsTreeElementHighlighter} from './ElementsTreeElementHighlighter.js';
 import {ElementsTreeOutline} from './ElementsTreeOutline.js';
@@ -169,7 +171,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   _pendingNodeReveal: boolean;
   _adornerManager: ElementsComponents.AdornerManager.AdornerManager;
   _adornerSettingsPane: ElementsComponents.AdornerSettingsPane.AdornerSettingsPane|null;
-  _adornersByName: Map<string, Set<ElementsComponents.Adorner.Adorner>>;
+  _adornersByName: Map<string, Set<Adorners.Adorner.Adorner>>;
   accessibilityTreeButton?: HTMLButtonElement;
   domTreeButton?: HTMLButtonElement;
   _selectedNodeOnReset?: SDK.DOMModel.DOMNode;
@@ -1121,7 +1123,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     return this._adornerManager.isAdornerEnabled(adornerText);
   }
 
-  registerAdorner(adorner: ElementsComponents.Adorner.Adorner): void {
+  registerAdorner(adorner: Adorners.Adorner.Adorner): void {
     let adornerSet = this._adornersByName.get(adorner.name);
     if (!adornerSet) {
       adornerSet = new Set();
@@ -1133,7 +1135,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     }
   }
 
-  deregisterAdorner(adorner: ElementsComponents.Adorner.Adorner): void {
+  deregisterAdorner(adorner: Adorners.Adorner.Adorner): void {
     const adornerSet = this._adornersByName.get(adorner.name);
     if (!adornerSet) {
       return;

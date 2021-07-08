@@ -8,7 +8,6 @@ ts_library("components") {
   testonly = true
   sources = [
     "AdornerManager_test.ts",
-    "Adorner_test.ts",
     "CSSPropertyIconResolver_test.ts",
     "CSSQuery_test.ts",
     "ComputedStyleProperty_test.ts",

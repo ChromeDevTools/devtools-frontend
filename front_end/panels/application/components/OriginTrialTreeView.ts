@@ -4,7 +4,7 @@
 
 // eslint-disable-next-line rulesdir/check_component_naming
 import * as Protocol from '../../../generated/protocol.js';
-import * as Components from '../../../panels/elements/components/components.js';
+import * as Adorners from '../../../ui/components/adorners/adorners.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as TreeOutline from '../../../ui/components/tree_outline/tree_outline.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -56,7 +56,7 @@ export interface BadgeData {
 export class Badge extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-resources-origin-trial-tree-view-badge`;
   private readonly shadow = this.attachShadow({mode: 'open'});
-  private adorner = new Components.Adorner.Adorner();
+  private adorner = new Adorners.Adorner.Adorner();
 
   set data(data: BadgeData) {
     this.render(data);

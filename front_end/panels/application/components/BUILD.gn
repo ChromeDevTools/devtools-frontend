@@ -32,6 +32,7 @@ devtools_module("components") {
     "../../../core/sdk:bundle",
     "../../../models/bindings:bundle",
     "../../../panels/network/forward:bundle",
+    "../../../ui/components/adorners:bundle",
     "../../../ui/components/data_grid:bundle",
     "../../../ui/components/expandable_list:bundle",
     "../../../ui/components/icon_button:bundle",
@@ -39,7 +40,6 @@ devtools_module("components") {
     "../../../ui/components/tree_outline:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/legacy/components/utils:bundle",
-    "../../elements/components:bundle",
   ]
 }
 

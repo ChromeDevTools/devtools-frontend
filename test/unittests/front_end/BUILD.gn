@@ -40,6 +40,7 @@ group("front_end") {
     "test_setup",
     "ui",
     "ui/components",
+    "ui/components/adorners",
     "ui/components/helpers",
     "ui/components/issue_counter",
     "ui/components/linear_memory_inspector",

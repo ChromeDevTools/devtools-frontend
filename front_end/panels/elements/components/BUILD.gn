@@ -19,7 +19,6 @@ generate_css("css_files") {
 devtools_module("components") {
   sources = [
     "AccessibilityTreeUtils.ts",
-    "Adorner.ts",
     "AdornerManager.ts",
     "AdornerSettingsPane.ts",
     "CSSPropertyIconResolver.ts",

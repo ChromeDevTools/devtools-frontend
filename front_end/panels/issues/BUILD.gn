@@ -40,6 +40,7 @@ devtools_module("issues") {
     "../../panels/console_counters:bundle",
     "../../panels/elements/components:bundle",
     "../../panels/network/forward:bundle",
+    "../../ui/components/adorners:bundle",
     "../../ui/components/data_grid:bundle",
     "../../ui/components/linkifier:bundle",
     "../../ui/components/markdown_view:bundle",

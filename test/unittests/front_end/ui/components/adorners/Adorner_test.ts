@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import * as Common from '../../../../../../front_end/core/common/common.js';
-import * as ElementsComponents from '../../../../../../front_end/panels/elements/components/components.js';
+import * as Adorners from '../../../../../../front_end/ui/components/adorners/adorners.js';
 import type * as Platform from '../../../../../../front_end/core/platform/platform.js';
 
 const ADORNER_TAG_NAME = 'DEVTOOLS-ADORNER';
@@ -13,9 +13,9 @@ const ADORNER_TAG_NAME = 'DEVTOOLS-ADORNER';
 describe('Adorner', async () => {
   function assertIsAdorner(element: HTMLElement) {
     assert.strictEqual(element.tagName, ADORNER_TAG_NAME, `element tag name is not ${ADORNER_TAG_NAME}`);
-    assert.isTrue(element instanceof ElementsComponents.Adorner.Adorner, 'element is not an instance of Adorner');
+    assert.isTrue(element instanceof Adorners.Adorner.Adorner, 'element is not an instance of Adorner');
     assert.strictEqual(
-        Object.getPrototypeOf(element), ElementsComponents.Adorner.Adorner.prototype,
+        Object.getPrototypeOf(element), Adorners.Adorner.Adorner.prototype,
         'element is not on Adorner\'s prototype chain');
   }
 
@@ -26,11 +26,10 @@ describe('Adorner', async () => {
 
   it('can interacts as a toggle button with proper ARIA setup', () => {
     const content = document.createElement('span');
-    const adorner = new ElementsComponents.Adorner.Adorner();
+    const adorner = new Adorners.Adorner.Adorner();
     adorner.data = {
       content,
-      ...ElementsComponents.AdornerManager.getRegisteredAdorner(
-          ElementsComponents.AdornerManager.RegisteredAdorners.GRID),
+      name: 'foo',
     };
     assert.isNull(adorner.getAttribute('role'), 'non-interactive adorner had wrong aria role value');
 
@@ -84,11 +83,10 @@ describe('Adorner', async () => {
 
   it('can be toggled programmatically', () => {
     const content = document.createElement('span');
-    const adorner = new ElementsComponents.Adorner.Adorner();
+    const adorner = new Adorners.Adorner.Adorner();
     adorner.data = {
       content,
-      ...ElementsComponents.AdornerManager.getRegisteredAdorner(
-          ElementsComponents.AdornerManager.RegisteredAdorners.GRID),
+      name: 'foo',
     };
     adorner.addInteraction(() => {}, {
       isToggle: true,
@@ -115,21 +113,18 @@ describe('Adorner', async () => {
     const content3 = document.createElement('span');
     content3.textContent = 'content 3';
 
-    const adorner = new ElementsComponents.Adorner.Adorner();
+    const adorner = new Adorners.Adorner.Adorner();
     adorner.data = {
       content: content1,
-      ...ElementsComponents.AdornerManager.getRegisteredAdorner(
-          ElementsComponents.AdornerManager.RegisteredAdorners.GRID),
+      name: 'foo',
     };
     adorner.data = {
       content: content2,
-      ...ElementsComponents.AdornerManager.getRegisteredAdorner(
-          ElementsComponents.AdornerManager.RegisteredAdorners.GRID),
+      name: 'foo',
     };
     adorner.data = {
       content: content3,
-      ...ElementsComponents.AdornerManager.getRegisteredAdorner(
-          ElementsComponents.AdornerManager.RegisteredAdorners.GRID),
+      name: 'foo',
     };
 
     const slottedChildren = adorner.querySelectorAll('[slot="content"]');

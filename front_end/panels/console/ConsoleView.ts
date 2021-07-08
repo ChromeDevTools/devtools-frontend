@@ -225,6 +225,11 @@ const UIStrings = {
   *@description A context menu item in the Console View of the Console panel
   */
   default: 'Default',
+  /**
+  *@description Text summary to indicate total number of messages in console for accessibility/screen readers.
+  *@example {5} PH1
+  */
+  filteredMessagesInConsole: '{PH1} messages in console',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -261,6 +266,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   _pinPane: ConsolePinPane;
   _viewport: ConsoleViewport;
   _messagesElement: HTMLElement;
+  _messagesCountElement: HTMLElement;
   _viewportThrottler: Common.Throttler.Throttler;
   _pendingBatchResize: boolean;
   _onMessageResizedBound: (e: Common.EventTarget.EventTargetEvent) => void;
@@ -463,8 +469,8 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     this._messagesElement.addEventListener('click', this._messagesClicked.bind(this), false);
     this._messagesElement.addEventListener('paste', this._messagesPasted.bind(this), true);
     this._messagesElement.addEventListener('clipboard-paste', this._messagesPasted.bind(this), true);
-    UI.ARIAUtils.markAsLog(this._messagesElement);
-    UI.ARIAUtils.markAsPoliteLiveRegion(this._messagesElement, false);
+    this._messagesCountElement = this._consoleToolbarContainer.createChild('div', 'message-count');
+    UI.ARIAUtils.markAsPoliteLiveRegion(this._messagesCountElement, false);
 
     this._viewportThrottler = new Common.Throttler.Throttler(50);
     this._pendingBatchResize = false;
@@ -1088,6 +1094,8 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     this._updateFilterStatus();
     this._searchableView.updateSearchMatchesCount(this._regexMatchRanges.length);
     this._viewport.invalidate();
+    this._messagesCountElement.textContent =
+        i18nString(UIStrings.filteredMessagesInConsole, {PH1: this._visibleViewMessages.length});
   }
 
   _addGroupableMessagesToEnd(): void {

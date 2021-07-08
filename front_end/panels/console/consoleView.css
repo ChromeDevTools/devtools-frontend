@@ -451,6 +451,14 @@
   max-height: 50%;
 }
 
+/* We are setting width and height to 0px to essentially hide the html element on the UI but visible to the screen reader.
+ This html element is used by screen readers when console messages are filtered, instead of screen readers reading
+ contents of the filtered messages we only want the screen readers to read the count of filtered messages. */
+.message-count {
+  width: 0;
+  height: 0;
+}
+
 @media (forced-colors: active) {
   .console-message-expand-icon,
   .console-warning-level [is=ui-icon].icon-mask.expand-group-icon {

@@ -3347,6 +3347,9 @@
   "panels/console/ConsoleView.ts | filter": {
     "message": "F̂íl̂t́êŕ"
   },
+  "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
+    "message": "{PH1} m̂éŝśâǵêś îń ĉón̂śôĺê"
+  },
   "panels/console/ConsoleView.ts | findStringInLogs": {
     "message": "F̂ín̂d́ ŝt́r̂ín̂ǵ îń l̂óĝś"
   },

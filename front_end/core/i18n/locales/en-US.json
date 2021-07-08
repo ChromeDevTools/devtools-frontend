@@ -3347,6 +3347,9 @@
   "panels/console/ConsoleView.ts | filter": {
     "message": "Filter"
   },
+  "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
+    "message": "{PH1} messages in console"
+  },
   "panels/console/ConsoleView.ts | findStringInLogs": {
     "message": "Find string in logs"
   },

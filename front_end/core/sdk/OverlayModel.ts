@@ -480,7 +480,7 @@ export class OverlayModel extends SDKModel implements ProtocolProxyApi.OverlayDi
     const colorFormat = Common.Settings.Settings.instance().moduleSetting('colorFormat').get();
 
     const highlightConfig: Protocol.Overlay.HighlightConfig = {
-      showInfo: mode === 'all',
+      showInfo: mode === 'all' || mode === 'container-outline',
       showRulers: showRulers,
       showStyles: showDetailedToolip,
       showAccessibilityInfo: showDetailedToolip,
@@ -685,6 +685,15 @@ export class OverlayModel extends SDKModel implements ProtocolProxyApi.OverlayDi
         },
         flexibilityArrow: {
           color: Common.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
+        },
+      };
+    }
+
+    if (mode === 'container-outline') {
+      highlightConfig.containerQueryContainerHighlightConfig = {
+        containerBorder: {
+          color: Common.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
+          pattern: Protocol.Overlay.LineStylePattern.Dashed,
         },
       };
     }

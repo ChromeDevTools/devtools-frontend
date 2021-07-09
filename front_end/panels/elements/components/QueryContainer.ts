@@ -37,7 +37,7 @@ export class QueryContainer extends HTMLElement {
   }
 
   private onContainerLinkMouseEnter(): void {
-    this.container?.highlightNode();
+    this.container?.highlightNode('container-outline');
   }
 
   private onContainerLinkMouseLeave(): void {

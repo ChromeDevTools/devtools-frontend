@@ -39,6 +39,8 @@ import {drawLayoutFlexContainerHighlight, drawLayoutFlexItemHighlight} from './h
 import type {GridHighlight} from './highlight_grid_common.js';
 import {drawLayoutGridHighlight} from './highlight_grid_common.js';
 import type {ScrollSnapHighlight} from './highlight_scroll_snap.js';
+import type {ContainerQueryContainerHighlight} from './highlight_container_query.js';
+import {drawContainerQueryContainerHighlight} from './highlight_container_query.js';
 import {PersistentOverlay} from './tool_persistent.js';
 
 interface Path {
@@ -82,6 +84,7 @@ interface Highlight {
   gridInfo: GridHighlight[];
   flexInfo: FlexContainerHighlight[];
   flexItemInfo: FlexItemHighlight[];
+  containerQueryInfo: ContainerQueryContainerHighlight[];
 }
 
 export class HighlightOverlay extends Overlay {
@@ -191,6 +194,12 @@ export class HighlightOverlay extends Overlay {
       for (const flex of highlight.flexInfo) {
         drawLayoutFlexContainerHighlight(
             flex, this.context, this.deviceScaleFactor, this.canvasWidth, this.canvasHeight, this.emulationScaleFactor);
+      }
+    }
+
+    if (highlight.containerQueryInfo) {
+      for (const containerQuery of highlight.containerQueryInfo) {
+        drawContainerQueryContainerHighlight(containerQuery, this.context, this.emulationScaleFactor);
       }
     }
 

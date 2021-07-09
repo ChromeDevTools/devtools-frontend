@@ -13,7 +13,7 @@ export interface DOMNode {
   nodeName: string;
   nodeNameNicelyCased: string;
   legacyDomNode: unknown;
-  highlightNode: () => void;
+  highlightNode: (mode?: string) => void;
   clearHighlight: () => void;
   getAttribute: (attr: string) => string | undefined;
 }
@@ -28,7 +28,7 @@ export const legacyNodeToElementsComponentsNode = (node: SDK.DOMModel.DOMNode): 
     nodeName: node.nodeName(),
     nodeNameNicelyCased: node.nodeNameInCorrectCase(),
     legacyDomNode: node,
-    highlightNode: (): void => node.highlight(),
+    highlightNode: (mode?: string): void => node.highlight(mode),
     clearHighlight: (): void => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(),
     getAttribute: node.getAttribute.bind(node),
   };

@@ -5,6 +5,7 @@
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as ComponentHelpers from '../../../components/helpers/helpers.js';
 import * as LitHtml from '../../../lit-html/lit-html.js';
+import cssVarSwatchStyles from './cssVarSwatch.css.js';
 
 const UIStrings = {
   /**
@@ -52,6 +53,10 @@ export class CSSVarSwatch extends HTMLElement {
         link.focus();
       }
     });
+  }
+
+  connectedCallback(): void {
+    this.shadow.adoptedStyleSheets = [cssVarSwatchStyles];
   }
 
   set data(data: SwatchRenderData) {
@@ -124,27 +129,7 @@ export class CSSVarSwatch extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(
-      // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
-      html`<style>
-      .css-var-link:not(.undefined) {
-        cursor: pointer;
-        text-underline-offset: 2px;
-        color: var(--color-link);
-      }
-
-      .css-var-link:hover:not(.undefined) {
-        text-decoration: underline;
-      }
-
-      .css-var-link:focus:not(:focus-visible) {
-        outline: none;
-      }
-
-      .css-var-link.undefined {
-        /* stylelint-disable-next-line plugin/use_theme_colors */
-        color: hsl(0deg 0% 46%);
-      }
-      </style><span title="${this.computedValue || ''}">${functionParts.pre}${link}${functionParts.post}</span>`,
+      html`<span title="${this.computedValue || ''}">${functionParts.pre}${link}${functionParts.post}</span>`,
       this.shadow, { host: this });
     // clang-format on
   }

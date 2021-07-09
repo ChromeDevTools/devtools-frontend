@@ -5,6 +5,7 @@
 import * as Common from '../../../../core/common/common.js';
 import * as ComponentHelpers from '../../../components/helpers/helpers.js';
 import * as LitHtml from '../../../lit-html/lit-html.js';
+import cssAngleEditorStyles from './cssAngleEditor.css.js';
 
 import type {Angle} from './CSSAngleUtils.js';
 import {AngleUnit, get2DTranslationsForAngle, getAngleFromRadians, getNewAngleFromEvent, getRadiansFromAngle} from './CSSAngleUtils.js';
@@ -35,6 +36,7 @@ export class CSSAngleEditor extends HTMLElement {
   private mousemoveListener = this.onMousemove.bind(this);
 
   connectedCallback(): void {
+    this.shadow.adoptedStyleSheets = [cssAngleEditorStyles];
     ComponentHelpers.SetCSSProperty.set(this, '--clock-dial-length', `${CLOCK_DIAL_LENGTH}px`);
   }
   set data(data: CSSAngleEditorData) {
@@ -121,118 +123,7 @@ export class CSSAngleEditor extends HTMLElement {
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
     render(html`
-      <style>
-        .editor.interacting::before {
-          content: '';
-          position: fixed;
-          inset: 0;
-        }
-
-        .clock,
-        .pointer,
-        .center,
-        .hand,
-        .dial {
-          position: absolute;
-        }
-
-        .clock {
-          top: 6px;
-          width: 6em;
-          height: 6em;
-          background-color: var(--color-background);
-          border: 0.5em solid var(--border-color); /* stylelint-disable-line plugin/use_theme_colors */
-          /* See: crbug.com/1152736 for color variable migration. */
-          border-radius: 9em;
-          box-shadow: var(--drop-shadow), inset 0 0 15px hsl(0deg 0% 0% / 25%); /* stylelint-disable-line plugin/use_theme_colors */
-          /* See: crbug.com/1152736 for color variable migration. */
-          transform: translateX(-3em);
-        }
-
-        .center,
-        .hand {
-          box-shadow: 0 0 2px hsl(0deg 0% 0% / 20%); /* stylelint-disable-line plugin/use_theme_colors */
-          /* See: crbug.com/1152736 for color variable migration. */
-        }
-
-        .pointer {
-          margin: auto;
-          top: 0;
-          left: -0.4em;
-          right: 0;
-          width: 0;
-          height: 0;
-          border-style: solid;
-          border-width: 0 0.9em 0.9em 0.9em;
-          border-color: transparent transparent var(--border-color) transparent; /* stylelint-disable-line plugin/use_theme_colors */
-          /* See: crbug.com/1152736 for color variable migration. */
-        }
-
-        .center,
-        .hand,
-        .dial {
-          margin: auto;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-        }
-
-        .center {
-          width: 0.7em;
-          height: 0.7em;
-          border-radius: 10px;
-        }
-
-        .dial {
-          width: 2px;
-          height: var(--clock-dial-length);
-          background-color: var(--dial-color); /* stylelint-disable-line plugin/use_theme_colors */
-          /* See: crbug.com/1152736 for color variable migration. */
-          border-radius: 1px;
-        }
-
-        .hand {
-          height: 50%;
-          width: 0.3em;
-          background: var(--legacy-accent-fg-color);
-        }
-
-        .hand::before {
-          content: '';
-          display: inline-block;
-          position: absolute;
-          top: -0.6em;
-          left: -0.35em;
-          width: 1em;
-          height: 1em;
-          border-radius: 50%;
-          cursor: pointer;
-          box-shadow: 0 0 5px hsl(0deg 0% 0% / 30%); /* stylelint-disable-line plugin/use_theme_colors */
-          /* See: crbug.com/1152736 for color variable migration. */
-        }
-
-        .hand::before,
-        .center {
-          background-color: var(--legacy-accent-fg-color);
-        }
-
-        :host-context(.-theme-with-dark-background) .hand::before {
-          box-shadow: 0 0 5px hsl(0deg 0% 0% / 80%);
-        }
-
-        :host-context(.-theme-with-dark-background) .center,
-        :host-context(.-theme-with-dark-background) .hand {
-          box-shadow: 0 0 2px hsl(0deg 0% 0% / 60%);
-        }
-
-        :host-context(.-theme-with-dark-background) .clock {
-          background-color: hsl(225deg 5% 27%);
-        }
-      </style>
-
       <div class="editor">
         <span class="pointer"></span>
         <div

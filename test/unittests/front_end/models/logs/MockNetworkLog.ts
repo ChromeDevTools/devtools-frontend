@@ -15,6 +15,9 @@ export function createNetworkRequest(requestId: string): SDK.NetworkRequest.Netw
     requestId() {
       return requestId;
     },
+    backendRequestId() {
+      return requestId;
+    },
   } as unknown as SDK.NetworkRequest.NetworkRequest;
 }
 

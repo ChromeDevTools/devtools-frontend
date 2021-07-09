@@ -5,16 +5,19 @@
 const {assert} = chai;
 
 import type * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Logs from '../../../../../front_end/models/logs/logs.js';
 import {MockNetworkLog, createNetworkRequest} from './MockNetworkLog.js';
 
 describe('RequestResolver', () => {
+  const requestId1 = 'foo' as Protocol.Network.RequestId;
+
   describe('tryGetNetworkRequest', () => {
     it('should resolve an existing request', () => {
-      const mockRequest = createNetworkRequest('foo');
+      const mockRequest = createNetworkRequest(requestId1);
       const networkLog = new MockNetworkLog([mockRequest]) as unknown as Logs.NetworkLog.NetworkLog;
       const requestResolver = new Logs.RequestResolver.RequestResolver(networkLog);
-      const request = requestResolver.tryGetNetworkRequest('foo', () => {
+      const request = requestResolver.tryGetNetworkRequest(requestId1, () => {
         throw new Error('This should not get called');
       });
       assert.isFalse(networkLog.hasEventListeners(Logs.NetworkLog.Events.RequestAdded));
@@ -24,7 +27,7 @@ describe('RequestResolver', () => {
     it('should not resolve an unknown request', () => {
       const networkLog = new MockNetworkLog([]) as unknown as Logs.NetworkLog.NetworkLog;
       const requestResolver = new Logs.RequestResolver.RequestResolver(networkLog);
-      const request = requestResolver.tryGetNetworkRequest('foo', () => {
+      const request = requestResolver.tryGetNetworkRequest(requestId1, () => {
         throw new Error('This should not get called');
       });
       assert.isTrue(networkLog.hasEventListeners(Logs.NetworkLog.Events.RequestAdded));
@@ -36,11 +39,11 @@ describe('RequestResolver', () => {
       const networkLog = mockNetworkLog as unknown as Logs.NetworkLog.NetworkLog;
       const requestResolver = new Logs.RequestResolver.RequestResolver(networkLog);
       const waitForCall = new Promise<SDK.NetworkRequest.NetworkRequest>(resolve => {
-        const request = requestResolver.tryGetNetworkRequest('foo', resolve);
+        const request = requestResolver.tryGetNetworkRequest(requestId1, resolve);
         assert.strictEqual(request, null);
       });
       assert.isTrue(networkLog.hasEventListeners(Logs.NetworkLog.Events.RequestAdded));
-      const mockRequest = createNetworkRequest('foo');
+      const mockRequest = createNetworkRequest(requestId1);
       mockNetworkLog.addRequest(mockRequest);
       const request = await waitForCall;
       assert.isFalse(networkLog.hasEventListeners(Logs.NetworkLog.Events.RequestAdded));
@@ -50,10 +53,10 @@ describe('RequestResolver', () => {
 
   describe('waitForNetworkRequest', () => {
     it('should resolve an existing request', async () => {
-      const mockRequest = createNetworkRequest('foo');
+      const mockRequest = createNetworkRequest(requestId1);
       const networkLog = new MockNetworkLog([mockRequest]) as unknown as Logs.NetworkLog.NetworkLog;
       const requestResolver = new Logs.RequestResolver.RequestResolver(networkLog);
-      const request = await requestResolver.waitForNetworkRequest('foo');
+      const request = await requestResolver.waitForNetworkRequest(requestId1);
       assert.isFalse(networkLog.hasEventListeners(Logs.NetworkLog.Events.RequestAdded));
       assert.strictEqual(request, mockRequest);
     });
@@ -61,7 +64,7 @@ describe('RequestResolver', () => {
     it('should reject the promise after `clear` has been called', async () => {
       const networkLog = new MockNetworkLog([]) as unknown as Logs.NetworkLog.NetworkLog;
       const requestResolver = new Logs.RequestResolver.RequestResolver(networkLog);
-      const request = requestResolver.waitForNetworkRequest('foo');
+      const request = requestResolver.waitForNetworkRequest(requestId1);
       assert.isTrue(networkLog.hasEventListeners(Logs.NetworkLog.Events.RequestAdded));
       requestResolver.clear();
       assert.isFalse(networkLog.hasEventListeners(Logs.NetworkLog.Events.RequestAdded));
@@ -77,9 +80,9 @@ describe('RequestResolver', () => {
       const mockNetworkLog = new MockNetworkLog([]);
       const networkLog = mockNetworkLog as unknown as Logs.NetworkLog.NetworkLog;
       const requestResolver = new Logs.RequestResolver.RequestResolver(networkLog);
-      const requestPromise = requestResolver.waitForNetworkRequest('foo');
+      const requestPromise = requestResolver.waitForNetworkRequest(requestId1);
       assert.isTrue(networkLog.hasEventListeners(Logs.NetworkLog.Events.RequestAdded));
-      const mockRequest = createNetworkRequest('foo');
+      const mockRequest = createNetworkRequest(requestId1);
       mockNetworkLog.addRequest(mockRequest);
       const request = await requestPromise;
       assert.isFalse(networkLog.hasEventListeners(Logs.NetworkLog.Events.RequestAdded));

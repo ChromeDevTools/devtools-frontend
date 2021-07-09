@@ -8,9 +8,11 @@ import * as Common from '../../../../../front_end/core/common/common.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import * as HAR from '../../../../../front_end/models/har/har.js';
+import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 
 const simulateRequestWithStartTime = (startTime: number): SDK.NetworkRequest.NetworkRequest => {
-  const request = new SDK.NetworkRequest.NetworkRequest('r0', 'p0.com', '', '', '', null);
+  const requestId = 'r0' as Protocol.Network.RequestId;
+  const request = SDK.NetworkRequest.NetworkRequest.create(requestId, 'p0.com', '', '', '', null);
   request.setIssueTime(startTime, startTime);
   request.setContentDataProvider(() => Promise.resolve({error: null, content: '', encoded: false}));
   return request;

@@ -10,6 +10,7 @@ import * as NetworkForward from '../../../panels/network/forward/forward.js';
 import type * as Logs from '../../../models/logs/logs.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import type * as Protocol from '../../../generated/protocol.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import requestLinkIconStyles from './requestLinkIcon.css.js';
@@ -34,7 +35,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface RequestLinkIconData {
   linkToPreflight?: boolean;
   request?: SDK.NetworkRequest.NetworkRequest|null;
-  affectedRequest?: {requestId: string, url?: string};
+  affectedRequest?: {requestId: Protocol.Network.RequestId, url?: string};
   highlightHeader?: {section: NetworkForward.UIRequestLocation.UIHeaderSection, name: string};
   networkTab?: NetworkForward.UIRequestLocation.UIRequestTabs;
   requestResolver?: Logs.RequestResolver.RequestResolver;
@@ -62,7 +63,7 @@ export class RequestLinkIcon extends HTMLElement {
   private requestResolver?: Logs.RequestResolver.RequestResolver;
   private displayURL: boolean = false;
   private networkTab?: NetworkForward.UIRequestLocation.UIRequestTabs;
-  private affectedRequest?: {requestId: string, url?: string};
+  private affectedRequest?: {requestId: Protocol.Network.RequestId, url?: string};
   private additionalOnClickAction?: () => void;
   private reveal = Common.Revealer.reveal;
   private requestResolvedPromise = Promise.resolve<void>(undefined);
@@ -91,7 +92,7 @@ export class RequestLinkIcon extends HTMLElement {
     this.shadow.adoptedStyleSheets = [requestLinkIconStyles];
   }
 
-  private resolveRequest(requestId: string): Promise<void> {
+  private resolveRequest(requestId: Protocol.Network.RequestId): Promise<void> {
     if (!this.requestResolver) {
       throw new Error('A `RequestResolver` must be provided if an `affectedRequest` is provided.');
     }

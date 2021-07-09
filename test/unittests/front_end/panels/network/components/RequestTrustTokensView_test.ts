@@ -10,6 +10,8 @@ import {getElementsWithinComponent, getElementWithinComponent, renderElementInto
 const {assert} = chai;
 
 describe('RequestTrustTokensView', () => {
+  const mockId = 'mockId' as Protocol.Network.RequestId;
+
   const renderRequestTrustTokensView = () => {
     const component = new NetworkComponents.RequestTrustTokensView.RequestTrustTokensReport();
     renderElementIntoDOM(component);
@@ -53,7 +55,7 @@ describe('RequestTrustTokensView', () => {
       result: {
         status: Protocol.Network.TrustTokenOperationDoneEventStatus.Ok,
         type: Protocol.Network.TrustTokenOperationType.Issuance,
-        requestId: 'mockId',
+        requestId: mockId,
       },
     };
 
@@ -68,7 +70,7 @@ describe('RequestTrustTokensView', () => {
       result: {
         status: Protocol.Network.TrustTokenOperationDoneEventStatus.BadResponse,
         type: Protocol.Network.TrustTokenOperationType.Issuance,
-        requestId: 'mockId',
+        requestId: mockId,
       },
     };
 

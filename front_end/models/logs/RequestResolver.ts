@@ -37,7 +37,7 @@ export class RequestResolver {
   /**
    * Returns a promise that resolves once the `requestId` can be resolved to a network request.
    */
-  waitForNetworkRequest(requestId: string): Promise<SDK.NetworkRequest.NetworkRequest> {
+  waitForNetworkRequest(requestId: Protocol.Network.RequestId): Promise<SDK.NetworkRequest.NetworkRequest> {
     const requests = this.networkLog.requestsForId(requestId);
     if (!requests.length) {
       return this.getOrCreatePromise(requestId);
@@ -50,7 +50,8 @@ export class RequestResolver {
    * is available, and otherwise waits for the request to appear and calls
    * `callback` once it is resolved.
    */
-  tryGetNetworkRequest(requestId: string, callback: Callback): SDK.NetworkRequest.NetworkRequest|null {
+  tryGetNetworkRequest(requestId: Protocol.Network.RequestId, callback: Callback): SDK.NetworkRequest.NetworkRequest
+      |null {
     const requests = this.networkLog.requestsForId(requestId);
     if (!requests.length) {
       const swallowTheError = (): void => {};
@@ -75,7 +76,7 @@ export class RequestResolver {
     this.unresolvedRequestIds.clear();
   }
 
-  private getOrCreatePromise(requestId: string): Promise<SDK.NetworkRequest.NetworkRequest> {
+  private getOrCreatePromise(requestId: Protocol.Network.RequestId): Promise<SDK.NetworkRequest.NetworkRequest> {
     const promiseInfo = this.unresolvedRequestIds.get(requestId);
     if (promiseInfo) {
       return promiseInfo.promise;
@@ -93,8 +94,12 @@ export class RequestResolver {
 
   private onRequestAdded(event: Common.EventTarget.EventTargetEvent): void {
     const request = event.data as SDK.NetworkRequest.NetworkRequest;
-    const promiseInfo = this.unresolvedRequestIds.get(request.requestId());
-    this.unresolvedRequestIds.delete(request.requestId());
+    const backendRequestId = request.backendRequestId();
+    if (!backendRequestId) {
+      return;
+    }
+    const promiseInfo = this.unresolvedRequestIds.get(backendRequestId);
+    this.unresolvedRequestIds.delete(backendRequestId);
     if (this.unresolvedRequestIds.size === 0) {
       this.stopListening();
     }

@@ -29,7 +29,7 @@ export class StubIssue extends Issue {
 
   requests() {
     return this.requestIds.map(id => {
-      return {requestId: id, url: ''};
+      return {requestId: id as Protocol.Network.RequestId, url: ''};
     });
   }
 

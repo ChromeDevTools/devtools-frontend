@@ -6689,7 +6689,7 @@ declare namespace Protocol {
     /**
      * Unique request identifier.
      */
-    export type RequestId = string;
+    export type RequestId = OpaqueIdentifier<string, 'Protocol.Network.RequestId'>;
 
     /**
      * Unique intercepted request identifier.

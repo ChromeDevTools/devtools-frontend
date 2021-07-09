@@ -146,26 +146,28 @@ export class NetworkManager extends SDKModel {
   }
 
   static canReplayRequest(request: NetworkRequest): boolean {
-    return Boolean(requestToManagerMap.get(request)) &&
+    return Boolean(requestToManagerMap.get(request)) && Boolean(request.backendRequestId()) && !request.isRedirect() &&
         request.resourceType() === Common.ResourceType.resourceTypes.XHR;
   }
 
   static replayRequest(request: NetworkRequest): void {
     const manager = requestToManagerMap.get(request);
-    if (!manager) {
+    const requestId = request.backendRequestId();
+    if (!manager || !requestId || request.isRedirect()) {
       return;
     }
-    manager._networkAgent.invoke_replayXHR({requestId: request.requestId()});
+    manager._networkAgent.invoke_replayXHR({requestId});
   }
 
   static async searchInRequest(request: NetworkRequest, query: string, caseSensitive: boolean, isRegex: boolean):
       Promise<TextUtils.ContentProvider.SearchMatch[]> {
     const manager = NetworkManager.forRequest(request);
-    if (!manager) {
+    const requestId = request.backendRequestId();
+    if (!manager || !requestId || request.isRedirect()) {
       return [];
     }
     const response = await manager._networkAgent.invoke_searchInResponseBody(
-        {requestId: request.requestId(), query: query, caseSensitive: caseSensitive, isRegex: isRegex});
+        {requestId, query: query, caseSensitive: caseSensitive, isRegex: isRegex});
     return response.result || [];
   }
 
@@ -176,28 +178,39 @@ export class NetworkManager extends SDKModel {
     if (!request.finished) {
       await request.once(NetworkRequestEvents.FinishedLoading);
     }
+    if (request.isRedirect()) {
+      return {error: 'No content available because this request was redirected', content: null, encoded: false};
+    }
     const manager = NetworkManager.forRequest(request);
     if (!manager) {
       return {error: 'No network manager for request', content: null, encoded: false};
     }
-    const response = await manager._networkAgent.invoke_getResponseBody({requestId: request.requestId()});
+    const requestId = request.backendRequestId();
+    if (!requestId) {
+      return {error: 'No backend request id for request', content: null, encoded: false};
+    }
+    const response = await manager._networkAgent.invoke_getResponseBody({requestId});
     const error = response.getError() || null;
     return {error: error, content: error ? null : response.body, encoded: response.base64Encoded};
   }
 
   static async requestPostData(request: NetworkRequest): Promise<string|null> {
     const manager = NetworkManager.forRequest(request);
-    if (manager) {
-      try {
-        const {postData} =
-            await manager._networkAgent.invoke_getRequestPostData({requestId: request.backendRequestId()});
-        return postData;
-      } catch (e) {
-        return e.message;
-      }
+    if (!manager) {
+      console.error('No network manager for request');
+      return null;
     }
-    console.error('No network manager for request');
-    return null;
+    const requestId = request.backendRequestId();
+    if (!requestId) {
+      console.error('No backend request id for request');
+      return null;
+    }
+    try {
+      const {postData} = await manager._networkAgent.invoke_getRequestPostData({requestId});
+      return postData;
+    } catch (e) {
+      return e.message;
+    }
   }
 
   static _connectionType(conditions: Conditions): Protocol.Network.ConnectionType {
@@ -501,8 +514,8 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
       networkRequest = this._appendRedirect(requestId, timestamp, request.url);
       this._manager.dispatchEventToListeners(Events.RequestRedirected, networkRequest);
     } else {
-      networkRequest =
-          this._createNetworkRequest(requestId, frameId || '', loaderId, request.url, documentURL, initiator);
+      networkRequest = NetworkRequest.create(requestId, request.url, documentURL, frameId || '', loaderId, initiator);
+      requestToManagerMap.set(networkRequest, this._manager);
     }
     networkRequest.hasNetworkData = true;
     this._updateNetworkRequestWithRequest(networkRequest, request);
@@ -639,7 +652,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   }
 
   webSocketCreated({requestId, url: requestURL, initiator}: Protocol.Network.WebSocketCreatedEvent): void {
-    const networkRequest = new NetworkRequest(requestId, requestURL, '', '', '', initiator || null);
+    const networkRequest = NetworkRequest.createForWebSocket(requestId, requestURL, initiator);
     requestToManagerMap.set(networkRequest, this._manager);
     networkRequest.setResourceType(Common.ResourceType.resourceTypes.WebSocket);
     this._startNetworkRequest(networkRequest, null);
@@ -802,7 +815,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     return builder;
   }
 
-  _appendRedirect(requestId: string, time: number, redirectURL: string): NetworkRequest {
+  _appendRedirect(requestId: Protocol.Network.RequestId, time: number, redirectURL: string): NetworkRequest {
     const originalNetworkRequest = this.requestsById.get(requestId);
     if (!originalNetworkRequest) {
       throw new Error(`Could not find original network request for ${requestId}`);
@@ -814,9 +827,10 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
 
     originalNetworkRequest.markAsRedirect(redirectCount);
     this._finishNetworkRequest(originalNetworkRequest, time, -1);
-    const newNetworkRequest = this._createNetworkRequest(
-        requestId, originalNetworkRequest.frameId, originalNetworkRequest.loaderId, redirectURL,
-        originalNetworkRequest.documentURL, originalNetworkRequest.initiator());
+    const newNetworkRequest = NetworkRequest.create(
+        requestId, redirectURL, originalNetworkRequest.documentURL, originalNetworkRequest.frameId,
+        originalNetworkRequest.loaderId, originalNetworkRequest.initiator());
+    requestToManagerMap.set(newNetworkRequest, this._manager);
     newNetworkRequest.setRedirectSource(originalNetworkRequest);
     originalNetworkRequest.setRedirectDestination(newNetworkRequest);
     return newNetworkRequest;
@@ -897,14 +911,6 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     }
   }
 
-  _createNetworkRequest(
-      requestId: string, frameId: string, loaderId: string, url: string, documentURL: string,
-      initiator: Protocol.Network.Initiator|null): NetworkRequest {
-    const request = new NetworkRequest(requestId, url, documentURL, frameId, loaderId, initiator);
-    requestToManagerMap.set(request, this._manager);
-    return request;
-  }
-
   clearRequests(): void {
     this.requestsById.clear();
     this.requestsByURL.clear();
@@ -913,7 +919,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
 
   webTransportCreated({transportId, url: requestURL, timestamp: time, initiator}:
                           Protocol.Network.WebTransportCreatedEvent): void {
-    const networkRequest = new NetworkRequest(transportId, requestURL, '', '', '', initiator || null);
+    const networkRequest = NetworkRequest.createForWebSocket(transportId, requestURL, initiator);
     networkRequest.hasNetworkData = true;
     requestToManagerMap.set(networkRequest, this._manager);
     networkRequest.setResourceType(Common.ResourceType.resourceTypes.WebTransport);
@@ -996,6 +1002,18 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     if (finalRequest) {
       this._updateNetworkRequest(finalRequest);
     }
+  }
+
+  /**
+   * @deprecated
+   * This method is only kept for usage in a web test.
+   */
+  _createNetworkRequest(
+      requestId: Protocol.Network.RequestId, frameId: string, loaderId: string, url: string, documentURL: string,
+      initiator: Protocol.Network.Initiator|null): NetworkRequest {
+    const request = NetworkRequest.create(requestId, url, documentURL, frameId, loaderId, initiator);
+    requestToManagerMap.set(request, this._manager);
+    return request;
   }
 }
 

@@ -225,6 +225,7 @@ const knownIdentifierTypes = [
   'DOM.BackendNodeId',
   'DOM.NodeId',
   'Fetch.RequestId',
+  'Network.RequestId',
 ];
 
 const emitDomainType = (domain: Protocol.Domain, type: Protocol.DomainType) => {

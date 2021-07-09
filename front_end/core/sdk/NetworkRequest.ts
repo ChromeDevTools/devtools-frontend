@@ -187,7 +187,7 @@ export enum MIME_TYPE {
 export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper implements
     TextUtils.ContentProvider.ContentProvider {
   _requestId: string;
-  _backendRequestId: string;
+  _backendRequestId?: Protocol.Network.RequestId;
   _documentURL: string;
   _frameId: string;
   _loaderId: string;
@@ -275,13 +275,13 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper implement
   _contentDataProvider?: (() => Promise<ContentData>);
   _isSameSite: boolean|null;
 
-  constructor(
-      requestId: string, url: string, documentURL: string, frameId: string, loaderId: string,
-      initiator: Protocol.Network.Initiator|null) {
+  private constructor(
+      requestId: string, backendRequestId: Protocol.Network.RequestId|undefined, url: string, documentURL: string,
+      frameId: string, loaderId: string, initiator: Protocol.Network.Initiator|null) {
     super();
 
     this._requestId = requestId;
-    this._backendRequestId = requestId;
+    this._backendRequestId = backendRequestId;
     this.setUrl(url);
     this._documentURL = documentURL;
     this._frameId = frameId;
@@ -351,7 +351,18 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper implement
   static create(
       backendRequestId: Protocol.Network.RequestId, url: string, documentURL: string, frameId: string, loaderId: string,
       initiator: Protocol.Network.Initiator|null): NetworkRequest {
-    return new NetworkRequest(backendRequestId, url, documentURL, frameId, loaderId, initiator);
+    return new NetworkRequest(backendRequestId, backendRequestId, url, documentURL, frameId, loaderId, initiator);
+  }
+
+  static createForWebSocket(
+      backendRequestId: Protocol.Network.RequestId, requestURL: string,
+      initiator?: Protocol.Network.Initiator): NetworkRequest {
+    return new NetworkRequest(backendRequestId, backendRequestId, requestURL, '', '', '', initiator || null);
+  }
+
+  static createWithoutBackendRequest(
+      requestId: string, url: string, documentURL: string, initiator: Protocol.Network.Initiator|null): NetworkRequest {
+    return new NetworkRequest(requestId, undefined, url, documentURL, '', '', initiator);
   }
 
   identityCompare(other: NetworkRequest): number {
@@ -370,7 +381,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper implement
     return this._requestId;
   }
 
-  backendRequestId(): string {
+  backendRequestId(): Protocol.Network.RequestId|undefined {
     return this._backendRequestId;
   }
 
@@ -1290,7 +1301,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper implement
     return this._isRedirect;
   }
 
-  setRequestIdForTest(requestId: string): void {
+  setRequestIdForTest(requestId: Protocol.Network.RequestId): void {
     this._backendRequestId = requestId;
     this._requestId = requestId;
   }

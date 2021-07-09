@@ -5,29 +5,33 @@
 const {assert} = chai;
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as IssuesManager from '../../../../../front_end/models/issues_manager/issues_manager.js';
 import {StubIssue} from './StubIssue.js';
 
 describe('issuesAssociatedWith', () => {
+  const requestId1 = 'r0' as Protocol.Network.RequestId;
+  const requestId2 = 'r1' as Protocol.Network.RequestId;
+
   it('should return no issues if no issues exist', () => {
-    const request = new SDK.NetworkRequest.NetworkRequest('', '', '', '', '', null);
+    const request = SDK.NetworkRequest.NetworkRequest.create(requestId1, '', '', '', '', null);
     assert.strictEqual(IssuesManager.RelatedIssue.issuesAssociatedWith([], request).length, 0);
   });
 
   it('should return no issues if issues dont affect any resources', () => {
     const issue = new StubIssue('code', [], []);
-    const request = new SDK.NetworkRequest.NetworkRequest('', '', '', '', '', null);
+    const request = SDK.NetworkRequest.NetworkRequest.create(requestId1, '', '', '', '', null);
 
     assert.strictEqual(IssuesManager.RelatedIssue.issuesAssociatedWith([issue], request).length, 0);
   });
 
   it('should correctly filter issues associated with a given request id', () => {
-    const issue1 = StubIssue.createFromRequestIds(['id1', 'id2']);
-    const issue2 = StubIssue.createFromRequestIds(['id1']);
+    const issue1 = StubIssue.createFromRequestIds([requestId1, requestId2]);
+    const issue2 = StubIssue.createFromRequestIds([requestId1]);
     const issues = [issue1, issue2];
 
-    const request1 = new SDK.NetworkRequest.NetworkRequest('id1', '', '', '', '', null);
-    const request2 = new SDK.NetworkRequest.NetworkRequest('id2', '', '', '', '', null);
+    const request1 = SDK.NetworkRequest.NetworkRequest.create(requestId1, '', '', '', '', null);
+    const request2 = SDK.NetworkRequest.NetworkRequest.create(requestId2, '', '', '', '', null);
 
     assert.deepStrictEqual(IssuesManager.RelatedIssue.issuesAssociatedWith(issues, request1), issues);
     assert.deepStrictEqual(IssuesManager.RelatedIssue.issuesAssociatedWith(issues, request2), [issue1]);

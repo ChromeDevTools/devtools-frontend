@@ -5,6 +5,7 @@
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import elementsBreadcrumbsStyles from './elementsBreadcrumbs.css.js';
 
 import type {UserScrollPosition} from './ElementsBreadcrumbsUtils.js';
 import {crumbsToRender, NodeSelectedEvent} from './ElementsBreadcrumbsUtils.js';
@@ -41,6 +42,10 @@ export class ElementsBreadcrumbs extends HTMLElement {
   private userScrollPosition: UserScrollPosition = 'start';
   private isObservingResize = false;
   private userHasManuallyScrolled = false;
+
+  connectedCallback(): void {
+    this.shadow.adoptedStyleSheets = [elementsBreadcrumbsStyles];
+  }
 
   set data(data: ElementsBreadcrumbsData) {
     this.selectedDOMNode = data.selectedNode;
@@ -258,96 +263,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
     await coordinator.write('Breadcrumbs render', () => {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
       LitHtml.render(LitHtml.html`
-        <style>
-          :host {
-            --node-text-label-color: var(--color-syntax-2);
-            --node-text-class-color: var(--color-syntax-4);
-            --node-text-id-color: var(--color-syntax-4);
-            --node-text-multiple-descriptors-id: var(--color-syntax-7);
-          }
-
-          .crumbs {
-            display: inline-flex;
-            align-items: stretch;
-            width: 100%;
-            overflow: hidden;
-            pointer-events: auto;
-            cursor: default;
-            white-space: nowrap;
-            position: relative;
-            background: var(--color-background);
-          }
-
-          .crumbs-window {
-            flex-grow: 2;
-            overflow: hidden;
-          }
-
-          .crumbs-scroll-container {
-            display: inline-flex;
-            margin: 0;
-            padding: 0;
-          }
-
-          .crumb {
-            display: block;
-            padding: 0 7px;
-            line-height: 23px;
-            white-space: nowrap;
-          }
-
-          .overflow {
-            padding: 0 7px;
-            font-weight: bold;
-            display: block;
-            border: none;
-            flex-grow: 0;
-            flex-shrink: 0;
-            text-align: center;
-            background-color: var(--color-background-elevation-1);
-            color: var(--color-text-secondary);
-            margin: 1px;
-            outline: var(--color-background-elevation-1) solid 1px;
-          }
-
-          .overflow.hidden {
-            display: none;
-          }
-
-          .overflow:disabled {
-            opacity: 50%;
-          }
-
-          .overflow:focus {
-            outline-color: var(--color-primary);
-          }
-
-          .overflow:not(:disabled):hover {
-            background-color: var(--color-background-elevation-2);
-            color: var(--color-text-primary);
-            cursor: pointer;
-          }
-
-          .crumb-link {
-            text-decoration: none;
-            color: inherit;
-          }
-
-          .crumb:hover {
-            background: var(--color-background-elevation-2);
-          }
-
-          .crumb.selected {
-            background: var(--color-background-elevation-1);
-          }
-
-          .crumb:focus {
-            outline: var(--color-primary) auto 1px;
-          }
-        </style>
-
         <nav class="crumbs">
           ${this.renderOverflowButton('left', this.userScrollPosition === 'start')}
 

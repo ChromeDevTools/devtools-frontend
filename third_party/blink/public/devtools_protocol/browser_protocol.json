@@ -13526,6 +13526,12 @@
                             "description": "The contrast algorithm to use for the contrast ratio (default: aa).",
                             "optional": true,
                             "$ref": "ContrastAlgorithm"
+                        },
+                        {
+                            "name": "containerQueryContainerHighlightConfig",
+                            "description": "The container query container highlight configuration (default: all transparent).",
+                            "optional": true,
+                            "$ref": "ContainerQueryContainerHighlightConfig"
                         }
                     ]
                 },
@@ -13638,6 +13644,34 @@
                             "description": "The content box highlight outline color (default: transparent).",
                             "optional": true,
                             "$ref": "DOM.RGBA"
+                        }
+                    ]
+                },
+                {
+                    "id": "ContainerQueryHighlightConfig",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "containerQueryContainerHighlightConfig",
+                            "description": "A descriptor for the highlight appearance of container query containers.",
+                            "$ref": "ContainerQueryContainerHighlightConfig"
+                        },
+                        {
+                            "name": "nodeId",
+                            "description": "Identifier of the container node to highlight.",
+                            "$ref": "DOM.NodeId"
+                        }
+                    ]
+                },
+                {
+                    "id": "ContainerQueryContainerHighlightConfig",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "containerBorder",
+                            "description": "The style of the container border",
+                            "optional": true,
+                            "$ref": "LineStyle"
                         }
                     ]
                 },
@@ -13992,6 +14026,19 @@
                             "type": "array",
                             "items": {
                                 "$ref": "ScrollSnapHighlightConfig"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "setShowContainerQueryOverlays",
+                    "parameters": [
+                        {
+                            "name": "containerQueryHighlightConfigs",
+                            "description": "An array of node identifiers and descriptors for the highlight appearance.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "ContainerQueryHighlightConfig"
                             }
                         }
                     ]

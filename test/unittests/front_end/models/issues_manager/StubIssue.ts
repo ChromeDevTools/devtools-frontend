@@ -10,6 +10,7 @@ export class StubIssue extends Issue {
   private cookieNames: string[];
   private issueKind: IssueKind;
   private locations: Protocol.Audits.SourceCodeLocation[] = [];
+  private mockIssueId?: Protocol.Audits.IssueId;
 
   constructor(code: string, requestIds: string[], cookieNames: string[], issueKind = IssueKind.Improvement) {
     super(code);
@@ -51,6 +52,10 @@ export class StubIssue extends Issue {
     });
   }
 
+  getIssueId() {
+    return this.mockIssueId;
+  }
+
   static createFromRequestIds(requestIds: string[]) {
     return new StubIssue('StubIssue', requestIds, []);
   }
@@ -66,6 +71,12 @@ export class StubIssue extends Issue {
   static createFromAffectedLocations(locations: Protocol.Audits.SourceCodeLocation[]) {
     const issue = new StubIssue('StubIssue', [], []);
     issue.locations = locations;
+    return issue;
+  }
+
+  static createFromIssueId(issueId: Protocol.Audits.IssueId) {
+    const issue = new StubIssue('StubIssue', [], []);
+    issue.mockIssueId = issueId;
     return issue;
   }
 }

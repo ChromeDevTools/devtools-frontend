@@ -4,9 +4,10 @@
 
 import * as Common from '../../../../../front_end/core/common/common.js';
 import * as IssuesManager from '../../../../../front_end/models/issues_manager/issues_manager.js';
+import type {StubIssue} from './StubIssue.js';
 
 export class MockIssuesManager extends Common.ObjectWrapper.ObjectWrapper {
-  private mockIssues: Iterable<IssuesManager.Issue.Issue>;
+  private mockIssues: IssuesManager.Issue.Issue[];
   private issueCounts = new Map<IssuesManager.Issue.IssueKind, number>([
     [IssuesManager.Issue.IssueKind.Improvement, 0],
     [IssuesManager.Issue.IssueKind.BreakingChange, 1],
@@ -15,10 +16,20 @@ export class MockIssuesManager extends Common.ObjectWrapper.ObjectWrapper {
 
   constructor(issues: Iterable<IssuesManager.Issue.Issue>) {
     super();
-    this.mockIssues = issues;
+    this.mockIssues = Array.from(issues);
   }
+
   issues() {
     return this.mockIssues;
+  }
+
+  getIssueById(id: string): IssuesManager.Issue.Issue|null {
+    for (const issue of this.mockIssues) {
+      if (issue.getIssueId() === id) {
+        return issue;
+      }
+    }
+    return null;
   }
 
   numberOfIssues(kind?: IssuesManager.Issue.IssueKind): number {
@@ -33,5 +44,10 @@ export class MockIssuesManager extends Common.ObjectWrapper.ObjectWrapper {
       this.issueCounts.set(key, value + 1);
     }
     this.dispatchEventToListeners(IssuesManager.IssuesManager.Events.IssuesCountUpdated);
+  }
+
+  addIssue(mockIssue: StubIssue) {
+    this.mockIssues.push(mockIssue as IssuesManager.Issue.Issue);
+    this.dispatchEventToListeners(IssuesManager.IssuesManager.Events.IssueAdded, mockIssue);
   }
 }

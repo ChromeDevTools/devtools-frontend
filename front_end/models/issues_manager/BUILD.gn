@@ -18,6 +18,7 @@ devtools_module("issues_manager") {
     "DeprecationIssue.ts",
     "HeavyAdIssue.ts",
     "Issue.ts",
+    "IssueResolver.ts",
     "IssuesManager.ts",
     "LowTextContrastIssue.ts",
     "MarkdownIssueDescription.ts",

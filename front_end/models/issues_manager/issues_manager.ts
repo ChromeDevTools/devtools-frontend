@@ -10,6 +10,7 @@ import * as CrossOriginEmbedderPolicyIssue from './CrossOriginEmbedderPolicyIssu
 import * as DeprecationIssue from './DeprecationIssue.js';
 import * as HeavyAdIssue from './HeavyAdIssue.js';
 import * as Issue from './Issue.js';
+import * as IssueResolver from './IssueResolver.js';
 import * as IssuesManager from './IssuesManager.js';
 import * as LowTextContrastIssue from './LowTextContrastIssue.js';
 import * as MarkdownIssueDescription from './MarkdownIssueDescription.js';
@@ -31,6 +32,7 @@ export {
   DeprecationIssue,
   HeavyAdIssue,
   Issue,
+  IssueResolver,
   IssuesManager,
   LowTextContrastIssue,
   MarkdownIssueDescription,

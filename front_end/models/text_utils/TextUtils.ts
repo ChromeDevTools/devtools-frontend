@@ -352,8 +352,9 @@ export const performSearchInContent = function(
   for (let i = 0; i < text.lineCount(); ++i) {
     const lineContent = text.lineAt(i);
     regex.lastIndex = 0;
-    if (regex.exec(lineContent)) {
-      result.push(new SearchMatch(i, lineContent));
+    const match = regex.exec(lineContent);
+    if (match) {
+      result.push(new SearchMatch(i, lineContent, match.index));
     }
   }
   return result;

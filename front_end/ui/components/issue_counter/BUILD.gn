@@ -8,11 +8,17 @@ import("../../../../scripts/build/ninja/generate_css.gni")
 import("../visibility.gni")
 
 generate_css("css_files") {
-  sources = [ "issueCounter.css" ]
+  sources = [
+    "issueCounter.css",
+    "issueLinkIcon.css",
+  ]
 }
 
 devtools_module("issue_counter") {
-  sources = [ "IssueCounter.ts" ]
+  sources = [
+    "IssueCounter.ts",
+    "IssueLinkIcon.ts",
+  ]
 
   deps = [
     "../../../core/common:bundle",

@@ -6,7 +6,10 @@ import("../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("issue_counter") {
   testonly = true
-  sources = [ "IssueCounter_test.ts" ]
+  sources = [
+    "IssueCounter_test.ts",
+    "IssueLinkIcon_test.ts",
+  ]
 
   deps = [
     "../../../../../../front_end/core/common:bundle",

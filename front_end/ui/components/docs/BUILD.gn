@@ -19,6 +19,7 @@ group("docs") {
     "./icon_button",
     "./icon_component",
     "./issue_counter",
+    "./issue_link_icon",
     "./layout_pane",
     "./legacy_color_invert",
     "./linear_memory_inspector",

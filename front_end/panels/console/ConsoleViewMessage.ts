@@ -40,11 +40,11 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
-import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
+import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as RequestLinkIcon from '../../ui/components/request_link_icon/request_link_icon.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
@@ -223,15 +223,17 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   _groupKey: string;
   _repeatCountElement: UI.UIUtils.DevToolsSmallBubble|null;
   private requestResolver: Logs.RequestResolver.RequestResolver;
+  private issueResolver: IssuesManager.IssueResolver.IssueResolver;
 
 
   constructor(
       consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier,
-      requestResolver: Logs.RequestResolver.RequestResolver, nestingLevel: number,
-      onResize: (arg0: Common.EventTarget.EventTargetEvent) => void) {
+      requestResolver: Logs.RequestResolver.RequestResolver, issueResolver: IssuesManager.IssueResolver.IssueResolver,
+      nestingLevel: number, onResize: (arg0: Common.EventTarget.EventTargetEvent) => void) {
     this._message = consoleMessage;
     this._linkifier = linkifier;
     this.requestResolver = requestResolver;
+    this.issueResolver = issueResolver;
     this._repeatCount = 1;
     this._closeGroupDecorationCount = 0;
     this._nestingLevel = nestingLevel;
@@ -426,13 +428,9 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     }
     const issueId = this._message.getAffectedResources()?.issueId;
     if (issueId) {
-      const icon = new IconButton.Icon.Icon();
+      const icon = new IssueCounter.IssueLinkIcon.IssueLinkIcon();
       icon.classList.add('resource-links');
-      const clickHandler = (): void => {
-        IssuesManager.RelatedIssue.reveal(issueId);
-      };
-      icon.data = {iconName: 'issue-text-icon', color: 'var(--color-link)', width: '16px', height: '16px'};
-      icon.onclick = clickHandler;
+      icon.data = {issueId, issueResolver: this.issueResolver};
       elements.push(icon);
     }
     return elements;
@@ -1798,10 +1796,10 @@ export class ConsoleGroupViewMessage extends ConsoleViewMessage {
 
   constructor(
       consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier,
-      requestResolver: Logs.RequestResolver.RequestResolver, nestingLevel: number, onToggle: () => void,
-      onResize: (arg0: Common.EventTarget.EventTargetEvent) => void) {
+      requestResolver: Logs.RequestResolver.RequestResolver, issueResolver: IssuesManager.IssueResolver.IssueResolver,
+      nestingLevel: number, onToggle: () => void, onResize: (arg0: Common.EventTarget.EventTargetEvent) => void) {
     console.assert(consoleMessage.isGroupStartMessage());
-    super(consoleMessage, linkifier, requestResolver, nestingLevel, onResize);
+    super(consoleMessage, linkifier, requestResolver, issueResolver, nestingLevel, onResize);
     this._collapsed = consoleMessage.type === Protocol.Runtime.ConsoleAPICalledEventType.StartGroupCollapsed;
     this._expandGroupIcon = null;
     this._onToggle = onToggle;
@@ -1861,9 +1859,9 @@ export class ConsoleCommand extends ConsoleViewMessage {
 
   constructor(
       consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier,
-      requestResolver: Logs.RequestResolver.RequestResolver, nestingLevel: number,
-      onResize: (arg0: Common.EventTarget.EventTargetEvent) => void) {
-    super(consoleMessage, linkifier, requestResolver, nestingLevel, onResize);
+      requestResolver: Logs.RequestResolver.RequestResolver, issueResolver: IssuesManager.IssueResolver.IssueResolver,
+      nestingLevel: number, onResize: (arg0: Common.EventTarget.EventTargetEvent) => void) {
+    super(consoleMessage, linkifier, requestResolver, issueResolver, nestingLevel, onResize);
     this._formattedCommand = null;
   }
 
@@ -1919,9 +1917,9 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
 
   constructor(
       consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier,
-      requestResolver: Logs.RequestResolver.RequestResolver, nestingLevel: number,
-      onResize: (arg0: Common.EventTarget.EventTargetEvent) => void) {
-    super(consoleMessage, linkifier, requestResolver, nestingLevel, onResize);
+      requestResolver: Logs.RequestResolver.RequestResolver, issueResolver: IssuesManager.IssueResolver.IssueResolver,
+      nestingLevel: number, onResize: (arg0: Common.EventTarget.EventTargetEvent) => void) {
+    super(consoleMessage, linkifier, requestResolver, issueResolver, nestingLevel, onResize);
     console.assert(consoleMessage.type === Protocol.Runtime.ConsoleAPICalledEventType.Table);
     this._dataGrid = null;
   }

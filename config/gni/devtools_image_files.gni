@@ -95,6 +95,7 @@ devtools_svg_sources = [
   "ic_warning_black_18dp.svg",
   "issue-cross-icon.svg",
   "issue-exclamation-icon.svg",
+  "issue-questionmark-icon.svg",
   "issue-text-icon.svg",
   "justify-content-center-icon.svg",
   "justify-content-flex-end-icon.svg",

@@ -293,6 +293,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   private userHasOpenedSidebarAtLeastOnce = false;
   private issueToolbarThrottle: Common.Throttler.Throttler;
   private requestResolver = new Logs.RequestResolver.RequestResolver();
+  private issueResolver = new IssuesManager.IssueResolver.IssueResolver();
 
   constructor() {
     super();
@@ -909,21 +910,25 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     switch (message.type) {
       case SDK.ConsoleModel.FrontendMessageType.Command:
         return new ConsoleCommand(
-            message, this._linkifier, this.requestResolver, nestingLevel, this._onMessageResizedBound);
+            message, this._linkifier, this.requestResolver, this.issueResolver, nestingLevel,
+            this._onMessageResizedBound);
       case SDK.ConsoleModel.FrontendMessageType.Result:
         return new ConsoleCommandResult(
-            message, this._linkifier, this.requestResolver, nestingLevel, this._onMessageResizedBound);
+            message, this._linkifier, this.requestResolver, this.issueResolver, nestingLevel,
+            this._onMessageResizedBound);
       case Protocol.Runtime.ConsoleAPICalledEventType.StartGroupCollapsed:
       case Protocol.Runtime.ConsoleAPICalledEventType.StartGroup:
         return new ConsoleGroupViewMessage(
-            message, this._linkifier, this.requestResolver, nestingLevel, this._updateMessageList.bind(this),
-            this._onMessageResizedBound);
+            message, this._linkifier, this.requestResolver, this.issueResolver, nestingLevel,
+            this._updateMessageList.bind(this), this._onMessageResizedBound);
       case Protocol.Runtime.ConsoleAPICalledEventType.Table:
         return new ConsoleTableMessageView(
-            message, this._linkifier, this.requestResolver, nestingLevel, this._onMessageResizedBound);
+            message, this._linkifier, this.requestResolver, this.issueResolver, nestingLevel,
+            this._onMessageResizedBound);
       default:
         return new ConsoleViewMessage(
-            message, this._linkifier, this.requestResolver, nestingLevel, this._onMessageResizedBound);
+            message, this._linkifier, this.requestResolver, this.issueResolver, nestingLevel,
+            this._onMessageResizedBound);
     }
   }
 

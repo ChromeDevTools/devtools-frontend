@@ -6,6 +6,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
+import treeOutlineStyles from './treeOutline.css.js';
 
 import type {TreeNode, TreeNodeWithChildren} from './TreeOutlineUtils.js';
 import {findNextNodeForTreeOutlineKeyboardNavigation, getNodeChildren, getPathToTreeNode, isExpandableNode, trackDOMNodeToTreeNode} from './TreeOutlineUtils.js';
@@ -115,6 +116,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
   connectedCallback(): void {
     this.setTopLevelNodeBorderColorCSSVariable(this.getAttribute('toplevelbordercolor'));
     this.setNodeKeyNoWrapCSSVariable(this.getAttribute('nowrap'));
+    this.shadow.adoptedStyleSheets = [treeOutlineStyles];
   }
 
   get data(): TreeOutlineData<TreeNodeDataType> {
@@ -446,100 +448,8 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     await coordinator.write('TreeOutline render', () => {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
       LitHtml.render(LitHtml.html`
-      <style>
-        :host {
-          --list-group-padding: 16px;
-        }
-
-        li {
-          list-style: none;
-          text-overflow: ellipsis;
-          min-height: 12px;
-        }
-
-        .tree-node-key {
-          white-space: var(--override-key-whitespace-wrapping);
-          /* Override the default |min-width: auto| to avoid overflows of flex items */
-          min-width: 0;
-        }
-
-        .arrow-icon {
-          display: block;
-          user-select: none;
-          -webkit-mask-image: var(--image-file-treeoutlineTriangles);
-          -webkit-mask-size: 32px 24px;
-          -webkit-mask-position: 0 0;
-          background-color: var(--color-text-primary);
-          content: "";
-          text-shadow: none;
-          height: 12px;
-          width: 13px;
-          overflow: hidden;
-        }
-
-        ul {
-          margin: 0;
-          padding: 0;
-        }
-
-        ul[role="group"] {
-          padding-left: var(--list-group-padding);
-        }
-
-        li:not(.parent) > .arrow-and-key-wrapper > .arrow-icon {
-          -webkit-mask-size: 0;
-        }
-
-        li.parent.expanded > .arrow-and-key-wrapper > .arrow-icon {
-          -webkit-mask-position: -16px 0;
-        }
-
-        li.is-top-level {
-          border-top: var(--override-top-node-border);
-        }
-
-        li.is-top-level:last-child {
-          border-bottom: var(--override-top-node-border);
-        }
-
-        :host([animated]) li:not(.is-top-level) {
-          animation-name: slideIn;
-          animation-duration: 150ms;
-          animation-timing-function: cubic-bezier(0, 0, 0.3, 1);
-          animation-fill-mode: forwards;
-        }
-
-        @keyframes slideIn {
-          from {
-            transform: translateY(-5px);
-            opacity: 0%;
-          }
-
-          to {
-            transform: none;
-            opacity: 100%;
-          }
-        }
-
-        .arrow-and-key-wrapper {
-          border: 2px solid transparent;
-          display: flex;
-          align-content: center;
-          align-items: center;
-        }
-
-        [role="treeitem"]:focus {
-          outline: 0;
-        }
-
-        [role="treeitem"].selected > .arrow-and-key-wrapper {
-          /* stylelint-disable-next-line color-named */
-          background-color: var(--legacy-selection-bg-color);
-        }
-      </style>
-      <div class="wrapping-container">
+            <div class="wrapping-container">
       <ul role="tree" @keydown=${this.onTreeKeyDown}>
         ${this.treeData.map((topLevelNode, index) => {
           return this.renderNode(topLevelNode, {

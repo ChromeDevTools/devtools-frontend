@@ -6,6 +6,8 @@ import type * as Platform from '../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
+import adornerStyles from './adorner.css.js';
+
 const {render, html} = LitHtml;
 
 export interface AdornerData {
@@ -36,6 +38,7 @@ export class Adorner extends HTMLElement {
     if (!this.getAttribute('aria-label')) {
       this.setAttribute('aria-label', this.name);
     }
+    this.shadow.adoptedStyleSheets = [adornerStyles];
   }
 
   isActive(): boolean {
@@ -106,48 +109,7 @@ export class Adorner extends HTMLElement {
   private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
     render(html`
-      <style>
-        :host {
-          display: inline-flex;
-        }
-
-        :host(.hidden) {
-          display: none;
-        }
-
-        :host(.clickable) {
-          cursor: pointer;
-        }
-
-        slot {
-          display: inline-flex;
-          box-sizing: border-box;
-          height: 13px;
-          line-height: 13px;
-          padding: 0 6px;
-          font-size: 8.5px;
-          color: var(--override-adorner-text-color, var(--color-text-primary));
-          background-color: var(--override-adorner-background-color, var(--color-background-elevation-1));
-          border: 1px solid var(--override-adorner-border-color, var(--color-details-hairline));
-          border-radius: 10px;
-        }
-
-        :host(:focus) slot {
-          border-color: var(--override-adorner-focus-border-color, var(--color-primary));
-        }
-
-        :host([aria-pressed=true]) slot {
-          color: var(--override-adorner-active-text-color, var(--color-background));
-          background-color: var(--override-adorner-active-background-color, var(--color-primary));
-        }
-
-        ::slotted(*) {
-          height: 10px;
-        }
-      </style>
-
       <slot name="content"></slot>
     `, this.shadow, {
       host: this,

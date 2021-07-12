@@ -7,6 +7,10 @@ import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/ninja/generate_css.gni")
 import("../visibility.gni")
 
+generate_css("css_files") {
+  sources = [ "adorner.css" ]
+}
+
 devtools_module("adorners") {
   sources = [ "Adorner.ts" ]
 
@@ -20,7 +24,10 @@ devtools_module("adorners") {
 devtools_entrypoint("bundle") {
   entrypoint = "adorners.ts"
 
-  deps = [ ":adorners" ]
+  deps = [
+    ":adorners",
+    ":css_files",
+  ]
 
   visibility = default_components_visibility
 }

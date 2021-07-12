@@ -18,6 +18,7 @@ import * as ObjectWrapper from './Object.js';
 import * as ParsedURL from './ParsedURL.js';
 import * as Progress from './Progress.js';
 import * as QueryParamHandler from './QueryParamHandler.js';
+import * as ResolverBase from './ResolverBase.js';
 import * as ResourceType from './ResourceType.js';
 import * as Revealer from './Revealer.js';
 import * as Runnable from './Runnable.js';
@@ -61,6 +62,7 @@ export {
   ParsedURL,
   Progress,
   QueryParamHandler,
+  ResolverBase,
   ResourceType,
   Revealer,
   Runnable,

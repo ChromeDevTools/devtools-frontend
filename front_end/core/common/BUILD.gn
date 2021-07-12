@@ -26,6 +26,7 @@ devtools_module("common") {
     "ParsedURL.ts",
     "Progress.ts",
     "QueryParamHandler.ts",
+    "ResolverBase.ts",
     "ResourceType.ts",
     "Revealer.ts",
     "Runnable.ts",

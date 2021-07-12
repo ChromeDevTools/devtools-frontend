@@ -96,7 +96,7 @@ export class RequestLinkIcon extends HTMLElement {
     if (!this.requestResolver) {
       throw new Error('A `RequestResolver` must be provided if an `affectedRequest` is provided.');
     }
-    return this.requestResolver.waitForNetworkRequest(requestId)
+    return this.requestResolver.waitFor(requestId)
         .then(request => {
           this.request = request;
         })

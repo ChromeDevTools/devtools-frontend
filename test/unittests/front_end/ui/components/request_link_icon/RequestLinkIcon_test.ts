@@ -71,7 +71,7 @@ interface MockRequestResolverEntry {
 class MockRequestResolver {
   private promiseMap: Map<string, MockRequestResolverEntry> = new Map();
 
-  waitForNetworkRequest(requestId?: string) {
+  waitFor(requestId?: string) {
     if (!requestId) {
       if (this.promiseMap.size !== 1) {
         throw new Error('more than one request being awaited, specify a request id');
@@ -123,7 +123,7 @@ describe('RequestLinkIcon', () => {
     };
 
     const failingRequestResolver = {
-      async waitForNetworkRequest() {
+      async waitFor() {
         throw new Error('Couldn\'t resolve');
       },
     };

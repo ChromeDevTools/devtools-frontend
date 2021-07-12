@@ -123,6 +123,15 @@ node_action("html_entrypoints") {
 
   script = "scripts/build/generate_html_entrypoint.js"
 
+  _devtools_templates = [
+    "devtools_app",
+    "inspector",
+    "js_app",
+    "ndb_app",
+    "node_app",
+    "toolbox",
+    "worker_app",
+  ]
   args = [
     "--template",
     rebase_path("entrypoint_template.html", root_build_dir),
@@ -130,15 +139,14 @@ node_action("html_entrypoints") {
     rebase_path(target_gen_dir, root_build_dir),
   ]
 
-  outputs = [
-    "$target_gen_dir/devtools_app.html",
-    "$target_gen_dir/inspector.html",
-    "$target_gen_dir/js_app.html",
-    "$target_gen_dir/ndb_app.html",
-    "$target_gen_dir/node_app.html",
-    "$target_gen_dir/toolbox.html",
-    "$target_gen_dir/worker_app.html",
-  ]
+  outputs = []
+  foreach(_devtools_template, _devtools_templates) {
+    outputs += [ "$target_gen_dir/$_devtools_template.html" ]
+    args += [
+      "--entrypoints",
+      _devtools_template,
+    ]
+  }
 
   metadata = {
     grd_files = outputs

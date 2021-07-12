@@ -570,15 +570,13 @@ export class ModelBreakpoint {
     }
 
     this._isUpdating = true;
-    this._updateInDebugger(this._didUpdateInDebugger.bind(this));
-  }
-
-  _didUpdateInDebugger(): void {
-    this._isUpdating = false;
-    if (this._hasPendingUpdate) {
-      this._hasPendingUpdate = false;
-      this._scheduleUpdateInDebugger();
-    }
+    this._updateInDebugger().then(() => {
+      this._isUpdating = false;
+      if (this._hasPendingUpdate) {
+        this._hasPendingUpdate = false;
+        this._scheduleUpdateInDebugger();
+      }
+    });
   }
 
   _scriptDiverged(): boolean {
@@ -591,10 +589,9 @@ export class ModelBreakpoint {
     return false;
   }
 
-  async _updateInDebugger(callback: () => void): Promise<void> {
+  async _updateInDebugger(): Promise<void> {
     if (this._debuggerModel.target().isDisposed()) {
       this._cleanUpAfterDebuggerIsGone();
-      callback();
       return;
     }
 
@@ -637,19 +634,16 @@ export class ModelBreakpoint {
     }
 
     if (this._breakpointIds.length && Breakpoint.State.equals(newState, this._currentState)) {
-      callback();
       return;
     }
     this._breakpoint._currentState = newState;
 
     if (this._breakpointIds.length) {
       await this._refreshBreakpoint();
-      callback();
       return;
     }
 
     if (!newState) {
-      callback();
       return;
     }
 
@@ -662,14 +656,27 @@ export class ModelBreakpoint {
           pos.scriptId as string, pos.scriptHash as string, pos.lineNumber, pos.columnNumber, condition);
     }));
     const breakpointIds: string[] = [];
-    let combinedLocations: SDK.DebuggerModel.Location[] = [];
-    for (const {breakpointId, locations} of results) {
-      if (breakpointId) {
-        breakpointIds.push(breakpointId);
-        combinedLocations = combinedLocations.concat(locations);
+    let locations: SDK.DebuggerModel.Location[] = [];
+    for (const result of results) {
+      if (result.breakpointId) {
+        breakpointIds.push(result.breakpointId);
+        locations = locations.concat(result.locations);
       }
     }
-    await this._didSetBreakpointInDebugger(callback, breakpointIds, combinedLocations);
+    if (this._cancelCallback) {
+      this._cancelCallback = false;
+      return;
+    }
+
+    if (!breakpointIds.length) {
+      this._breakpoint.remove(true);
+      return;
+    }
+
+    this._breakpointIds = breakpointIds;
+    this._breakpointIds.forEach(
+        breakpointId => this._debuggerModel.addBreakpointListener(breakpointId, this._breakpointResolved, this));
+    await Promise.all(locations.map(location => this._addResolvedLocation(location)));
   }
 
   async _refreshBreakpoint(): Promise<void> {
@@ -683,33 +690,6 @@ export class ModelBreakpoint {
     this._scheduleUpdateInDebugger();
   }
 
-  async _didSetBreakpointInDebugger(
-      callback: () => void, breakpointIds: string[], locations: SDK.DebuggerModel.Location[]): Promise<void> {
-    if (this._cancelCallback) {
-      this._cancelCallback = false;
-      callback();
-      return;
-    }
-
-    if (!breakpointIds.length) {
-      this._breakpoint.remove(true);
-      callback();
-      return;
-    }
-
-    this._breakpointIds = breakpointIds;
-    for (const debuggerId of this._breakpointIds) {
-      this._debuggerModel.addBreakpointListener(
-          debuggerId, (event: Common.EventTarget.EventTargetEvent) => this._breakpointResolved(event), this);
-    }
-    for (const location of locations) {
-      if (!(await this._addResolvedLocation(location))) {
-        break;
-      }
-    }
-    callback();
-  }
-
   _didRemoveFromDebugger(): void {
     if (this._cancelCallback) {
       this._cancelCallback = false;
@@ -717,10 +697,8 @@ export class ModelBreakpoint {
     }
 
     this._resetLocations();
-    for (const debuggerId of this._breakpointIds) {
-      this._debuggerModel.removeBreakpointListener(
-          debuggerId, (event: Common.EventTarget.EventTargetEvent) => this._breakpointResolved(event), this);
-    }
+    this._breakpointIds.forEach(
+        breakpointId => this._debuggerModel.removeBreakpointListener(breakpointId, this._breakpointResolved, this));
     this._breakpointIds = [];
   }
 
@@ -744,20 +722,19 @@ export class ModelBreakpoint {
     }
   }
 
-  async _addResolvedLocation(location: SDK.DebuggerModel.Location): Promise<boolean> {
+  async _addResolvedLocation(location: SDK.DebuggerModel.Location): Promise<void> {
     const uiLocation = await this._debuggerWorkspaceBinding.rawLocationToUILocation(location);
     if (!uiLocation) {
-      return false;
+      return;
     }
     const breakpointLocation = this._breakpoint._breakpointManager.findBreakpoint(uiLocation);
     if (breakpointLocation && breakpointLocation.breakpoint !== this._breakpoint) {
       // location clash
       this._breakpoint.remove(false /* keepInStorage */);
-      return false;
+      return;
     }
     await this._debuggerWorkspaceBinding.createLiveLocation(
         location, this._locationUpdated.bind(this), this._liveLocations);
-    return true;
   }
 
   _cleanUpAfterDebuggerIsGone(): void {

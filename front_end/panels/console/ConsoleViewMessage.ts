@@ -222,14 +222,16 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   _lastInSimilarGroup: boolean;
   _groupKey: string;
   _repeatCountElement: UI.UIUtils.DevToolsSmallBubble|null;
-  private requestResolver = new Logs.RequestResolver.RequestResolver();
+  private requestResolver: Logs.RequestResolver.RequestResolver;
 
 
   constructor(
-      consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier, nestingLevel: number,
+      consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier,
+      requestResolver: Logs.RequestResolver.RequestResolver, nestingLevel: number,
       onResize: (arg0: Common.EventTarget.EventTargetEvent) => void) {
     this._message = consoleMessage;
     this._linkifier = linkifier;
+    this.requestResolver = requestResolver;
     this._repeatCount = 1;
     this._closeGroupDecorationCount = 0;
     this._nestingLevel = nestingLevel;
@@ -1795,10 +1797,11 @@ export class ConsoleGroupViewMessage extends ConsoleViewMessage {
   _onToggle: () => void;
 
   constructor(
-      consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier, nestingLevel: number,
-      onToggle: () => void, onResize: (arg0: Common.EventTarget.EventTargetEvent) => void) {
+      consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier,
+      requestResolver: Logs.RequestResolver.RequestResolver, nestingLevel: number, onToggle: () => void,
+      onResize: (arg0: Common.EventTarget.EventTargetEvent) => void) {
     console.assert(consoleMessage.isGroupStartMessage());
-    super(consoleMessage, linkifier, nestingLevel, onResize);
+    super(consoleMessage, linkifier, requestResolver, nestingLevel, onResize);
     this._collapsed = consoleMessage.type === Protocol.Runtime.ConsoleAPICalledEventType.StartGroupCollapsed;
     this._expandGroupIcon = null;
     this._onToggle = onToggle;
@@ -1857,9 +1860,10 @@ export class ConsoleCommand extends ConsoleViewMessage {
   _formattedCommand: HTMLElement|null;
 
   constructor(
-      consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier, nestingLevel: number,
+      consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier,
+      requestResolver: Logs.RequestResolver.RequestResolver, nestingLevel: number,
       onResize: (arg0: Common.EventTarget.EventTargetEvent) => void) {
-    super(consoleMessage, linkifier, nestingLevel, onResize);
+    super(consoleMessage, linkifier, requestResolver, nestingLevel, onResize);
     this._formattedCommand = null;
   }
 
@@ -1914,9 +1918,10 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
   _dataGrid: DataGrid.SortableDataGrid.SortableDataGrid<unknown>|null;
 
   constructor(
-      consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier, nestingLevel: number,
+      consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier,
+      requestResolver: Logs.RequestResolver.RequestResolver, nestingLevel: number,
       onResize: (arg0: Common.EventTarget.EventTargetEvent) => void) {
-    super(consoleMessage, linkifier, nestingLevel, onResize);
+    super(consoleMessage, linkifier, requestResolver, nestingLevel, onResize);
     console.assert(consoleMessage.type === Protocol.Runtime.ConsoleAPICalledEventType.Table);
     this._dataGrid = null;
   }

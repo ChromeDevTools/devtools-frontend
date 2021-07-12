@@ -292,6 +292,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   private pendingSidebarMessages: ConsoleViewMessage[] = [];
   private userHasOpenedSidebarAtLeastOnce = false;
   private issueToolbarThrottle: Common.Throttler.Throttler;
+  private requestResolver = new Logs.RequestResolver.RequestResolver();
 
   constructor() {
     super();
@@ -907,17 +908,22 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     const nestingLevel = this._currentGroup.nestingLevel();
     switch (message.type) {
       case SDK.ConsoleModel.FrontendMessageType.Command:
-        return new ConsoleCommand(message, this._linkifier, nestingLevel, this._onMessageResizedBound);
+        return new ConsoleCommand(
+            message, this._linkifier, this.requestResolver, nestingLevel, this._onMessageResizedBound);
       case SDK.ConsoleModel.FrontendMessageType.Result:
-        return new ConsoleCommandResult(message, this._linkifier, nestingLevel, this._onMessageResizedBound);
+        return new ConsoleCommandResult(
+            message, this._linkifier, this.requestResolver, nestingLevel, this._onMessageResizedBound);
       case Protocol.Runtime.ConsoleAPICalledEventType.StartGroupCollapsed:
       case Protocol.Runtime.ConsoleAPICalledEventType.StartGroup:
         return new ConsoleGroupViewMessage(
-            message, this._linkifier, nestingLevel, this._updateMessageList.bind(this), this._onMessageResizedBound);
+            message, this._linkifier, this.requestResolver, nestingLevel, this._updateMessageList.bind(this),
+            this._onMessageResizedBound);
       case Protocol.Runtime.ConsoleAPICalledEventType.Table:
-        return new ConsoleTableMessageView(message, this._linkifier, nestingLevel, this._onMessageResizedBound);
+        return new ConsoleTableMessageView(
+            message, this._linkifier, this.requestResolver, nestingLevel, this._onMessageResizedBound);
       default:
-        return new ConsoleViewMessage(message, this._linkifier, nestingLevel, this._onMessageResizedBound);
+        return new ConsoleViewMessage(
+            message, this._linkifier, this.requestResolver, nestingLevel, this._onMessageResizedBound);
     }
   }
 
@@ -951,6 +957,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     this._viewport.setStickToBottom(true);
     this._linkifier.reset();
     this._filter.clear();
+    this.requestResolver.clear();
     if (hadFocus) {
       this._prompt.focus();
     }

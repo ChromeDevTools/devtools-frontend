@@ -27,6 +27,10 @@ export function registerLateInitializationRunnable(setting: LateInitializableRun
   registeredLateInitializationRunnables.set(id, loadRunnable);
 }
 
+export function maybeRemoveLateInitializationRunnable(runnableId: string): boolean {
+  return registeredLateInitializationRunnables.delete(runnableId);
+}
+
 export function lateInitializationRunnables(): Array<LateInitializationLoader> {
   return [...registeredLateInitializationRunnables.values()];
 }

@@ -268,10 +268,10 @@
 }
 
 .network-log-grid.data-grid.small .image-network-icon-preview {
-  left: 3px;
-  right: 3px;
-  max-width: 8px;
-  max-height: 11px;
+  left: 2px;
+  right: 2px;
+  max-width: 10px;
+  max-height: 12px;
 }
 
 .network-log-grid.data-grid .trailing-link-icon {

@@ -297,7 +297,7 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
       return;
     }
 
-    Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners.get(serviceWorkerManager) || []);
+    Common.EventTarget.removeEventListeners(this._eventListeners.get(serviceWorkerManager) || []);
     this._eventListeners.delete(serviceWorkerManager);
     this._manager = null;
     this._securityOriginManager = null;

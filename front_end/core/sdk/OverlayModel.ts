@@ -252,7 +252,7 @@ export class OverlayModel extends SDKModel implements ProtocolProxyApi.OverlayDi
   }
 
   async suspendModel(): Promise<void> {
-    Common.EventTarget.EventTarget.removeEventListeners(this._registeredListeners);
+    Common.EventTarget.removeEventListeners(this._registeredListeners);
     await this._overlayAgent.invoke_disable();
   }
 

@@ -312,7 +312,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     if (model === this._model) {
       return;
     }
-    Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.removeEventListeners(this._eventListeners);
     this._model = model;
     this._selectedTrack = null;
     this._mainDataProvider.setModel(this._model);

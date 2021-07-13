@@ -40,7 +40,7 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
     if (this._cssModel === cssModel) {
       return;
     }
-    Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.removeEventListeners(this._eventListeners);
     this._cssModel = cssModel;
     const domModel = cssModel ? cssModel.domModel() : null;
     const resourceTreeModel = cssModel ? cssModel.target().model(SDK.ResourceTreeModel.ResourceTreeModel) : null;

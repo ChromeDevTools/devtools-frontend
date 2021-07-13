@@ -75,7 +75,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper implements 
   modelRemoved(resourceTreeModel: ResourceTreeModel): void {
     const listeners = this._eventListeners.get(resourceTreeModel);
     if (listeners) {
-      Common.EventTarget.EventTarget.removeEventListeners(listeners);
+      Common.EventTarget.removeEventListeners(listeners);
     }
 
     // Iterate over this model's frames and decrease their count or remove them.

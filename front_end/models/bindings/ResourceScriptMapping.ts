@@ -243,7 +243,7 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
   }
 
   dispose(): void {
-    Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.removeEventListeners(this._eventListeners);
     const scripts = Array.from(this._acceptedScripts);
     for (const script of scripts) {
       this._removeScript(script);

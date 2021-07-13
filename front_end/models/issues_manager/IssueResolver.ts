@@ -43,7 +43,7 @@ export class IssueResolver extends Common.ResolverBase.ResolverBase<Protocol.Aud
     if (!this.issuesListener) {
       return;
     }
-    Common.EventTarget.EventTarget.removeEventListeners([this.issuesListener]);
+    Common.EventTarget.removeEventListeners([this.issuesListener]);
     this.issuesListener = null;
   }
 }

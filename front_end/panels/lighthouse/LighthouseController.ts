@@ -184,7 +184,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper imp
       return;
     }
     if (this._serviceWorkerListeners) {
-      Common.EventTarget.EventTarget.removeEventListeners(this._serviceWorkerListeners);
+      Common.EventTarget.removeEventListeners(this._serviceWorkerListeners);
     }
     this._manager = null;
     this.recomputePageAuditability();

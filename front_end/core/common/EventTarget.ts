@@ -39,8 +39,6 @@ export class EventTarget {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dispatchEventToListeners(eventType: string|symbol, eventData?: any): void {
   }
-
-  static removeEventListeners = removeEventListeners;
 }
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration

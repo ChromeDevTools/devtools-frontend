@@ -144,6 +144,6 @@ export class UISourceCodeTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   dispose(): void {
-    Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.removeEventListeners(this._eventListeners);
   }
 }

@@ -745,7 +745,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
     }
 
     this._securityModel = null;
-    Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.removeEventListeners(this._eventListeners);
   }
 
   _onMainFrameNavigated(event: Common.EventTarget.EventTargetEvent): void {

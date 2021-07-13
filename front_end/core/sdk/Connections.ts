@@ -67,7 +67,7 @@ export class MainConnection implements ProtocolClient.InspectorBackend.Connectio
 
   async disconnect(): Promise<void> {
     const onDisconnect = this._onDisconnect;
-    Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.removeEventListeners(this._eventListeners);
     this._onDisconnect = null;
     this._onMessage = null;
 

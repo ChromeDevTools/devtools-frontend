@@ -128,7 +128,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements
   }
 
   _removeNetworkManagerListeners(networkManager: SDK.NetworkManager.NetworkManager): void {
-    Common.EventTarget.EventTarget.removeEventListeners(this._modelListeners.get(networkManager) || []);
+    Common.EventTarget.removeEventListeners(this._modelListeners.get(networkManager) || []);
   }
 
   setIsRecording(enabled: boolean): void {

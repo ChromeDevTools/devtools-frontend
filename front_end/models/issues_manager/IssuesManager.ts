@@ -210,7 +210,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
   modelRemoved(issuesModel: SDK.IssuesModel.IssuesModel): void {
     const listener = this.eventListeners.get(issuesModel);
     if (listener) {
-      Common.EventTarget.EventTarget.removeEventListeners([listener]);
+      Common.EventTarget.removeEventListeners([listener]);
     }
   }
 

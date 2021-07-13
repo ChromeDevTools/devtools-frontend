@@ -155,7 +155,7 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     const frameWasUnresolved = this.unresolvedFrameIds.delete(frame.id);
     if (this.unresolvedFrameIds.size === 0 && this.frameListeners.length) {
       // Stop listening once all requests are resolved.
-      Common.EventTarget.EventTarget.removeEventListeners(this.frameListeners);
+      Common.EventTarget.removeEventListeners(this.frameListeners);
       this.frameListeners = [];
     }
     if (frameWasUnresolved) {

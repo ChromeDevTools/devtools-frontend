@@ -265,7 +265,7 @@ export class ModelInfo {
   }
 
   _dispose(): void {
-    Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.removeEventListeners(this._eventListeners);
     this._stylesSourceMapping.dispose();
     this._sassSourceMapping.dispose();
   }

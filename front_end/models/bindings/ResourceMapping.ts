@@ -281,7 +281,7 @@ class ModelInfo {
   }
 
   dispose(): void {
-    Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.removeEventListeners(this._eventListeners);
     for (const binding of this._bindings.values()) {
       binding.dispose();
     }

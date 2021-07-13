@@ -157,7 +157,7 @@ export class SASSSourceMapping implements SourceMapping {
   }
 
   dispose(): void {
-    Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.removeEventListeners(this._eventListeners);
     this._project.dispose();
   }
 }

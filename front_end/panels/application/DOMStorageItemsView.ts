@@ -132,7 +132,7 @@ export class DOMStorageItemsView extends StorageItemsView {
   }
 
   setStorage(domStorage: DOMStorage): void {
-    Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.removeEventListeners(this._eventListeners);
     this._domStorage = domStorage;
     this._eventListeners = [
       this._domStorage.addEventListener(DOMStorage.Events.DOMStorageItemsCleared, this._domStorageItemsCleared, this),

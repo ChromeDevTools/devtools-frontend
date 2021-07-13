@@ -148,7 +148,7 @@ export class FileSystemWorkspaceBinding {
   }
 
   dispose(): void {
-    Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.removeEventListeners(this._eventListeners);
     for (const fileSystem of this._boundFileSystems.values()) {
       fileSystem.dispose();
       this._boundFileSystems.delete(fileSystem._fileSystem.path());

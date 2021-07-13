@@ -109,7 +109,7 @@ export class EditFileSystemView extends UI.Widget.VBox implements UI.ListWidget.
   }
 
   dispose(): void {
-    Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.removeEventListeners(this._eventListeners);
   }
 
   _getFileSystem(): PlatformFileSystem {

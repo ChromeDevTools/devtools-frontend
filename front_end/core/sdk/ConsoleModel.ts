@@ -119,7 +119,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper implements 
     }
 
     const eventListener = resourceTreeModel.addEventListener(ResourceTreeModelEvents.CachedResourcesLoaded, () => {
-      Common.EventTarget.EventTarget.removeEventListeners([eventListener]);
+      Common.EventTarget.removeEventListeners([eventListener]);
       this._initTarget(target);
     });
   }
@@ -165,7 +165,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper implements 
     if (runtimeModel) {
       this._messageByExceptionId.delete(runtimeModel);
     }
-    Common.EventTarget.EventTarget.removeEventListeners(this._targetListeners.get(target) || []);
+    Common.EventTarget.removeEventListeners(this._targetListeners.get(target) || []);
   }
 
   async evaluateCommandInConsole(

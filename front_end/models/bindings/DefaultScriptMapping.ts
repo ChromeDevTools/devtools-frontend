@@ -139,7 +139,7 @@ export class DefaultScriptMapping implements DebuggerSourceMapping {
   }
 
   dispose(): void {
-    Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.removeEventListeners(this._eventListeners);
     this._debuggerReset();
     this._project.dispose();
   }

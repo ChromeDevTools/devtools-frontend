@@ -173,8 +173,8 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
     for (const message of this._allMessages()) {
       this._removeMessageFromSource(message);
     }
-    Common.EventTarget.EventTarget.removeEventListeners(this._messageAndDecorationListeners);
-    Common.EventTarget.EventTarget.removeEventListeners(this._uiSourceCodeEventListeners);
+    Common.EventTarget.removeEventListeners(this._messageAndDecorationListeners);
+    Common.EventTarget.removeEventListeners(this._uiSourceCodeEventListeners);
     this._uiSourceCode.removeWorkingCopyGetter();
     Persistence.Persistence.PersistenceImpl.instance().unsubscribeFromBindingEvent(
         this._uiSourceCode, this._boundOnBindingChanged);

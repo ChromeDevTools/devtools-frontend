@@ -167,7 +167,7 @@ export class StylesSourceMapping implements SourceMapping {
       styleFile.dispose();
     }
     this._styleFiles.clear();
-    Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.removeEventListeners(this._eventListeners);
     this._project.removeProject();
   }
 }
@@ -293,7 +293,7 @@ export class StyleFile implements TextUtils.ContentProvider.ContentProvider {
     }
     this._terminated = true;
     this._project.removeFile(this._uiSourceCode.url());
-    Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.removeEventListeners(this._eventListeners);
   }
 
   contentURL(): string {

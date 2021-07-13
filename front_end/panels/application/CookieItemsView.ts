@@ -221,7 +221,7 @@ export class CookieItemsView extends StorageItemsView {
     this._model = model;
     this._cookieDomain = domain;
     this.refreshItems();
-    Common.EventTarget.EventTarget.removeEventListeners(this._eventDescriptors);
+    Common.EventTarget.removeEventListeners(this._eventDescriptors);
     const networkManager = model.target().model(SDK.NetworkManager.NetworkManager);
     if (networkManager) {
       this._eventDescriptors = [

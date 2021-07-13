@@ -39,11 +39,11 @@ export class ContrastCheckTrigger extends Common.ObjectWrapper.ObjectWrapper {
   modelRemoved(resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel): void {
     const pageLoadListener = this.pageLoadListeners.get(resourceTreeModel);
     if (pageLoadListener) {
-      Common.EventTarget.EventTarget.removeEventListeners([pageLoadListener]);
+      Common.EventTarget.removeEventListeners([pageLoadListener]);
     }
     const frameAddedListeners = this.frameAddedListeners.get(resourceTreeModel);
     if (frameAddedListeners) {
-      Common.EventTarget.EventTarget.removeEventListeners([frameAddedListeners]);
+      Common.EventTarget.removeEventListeners([frameAddedListeners]);
     }
   }
 

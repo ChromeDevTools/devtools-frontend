@@ -34,7 +34,7 @@ export class LogManager implements SDK.TargetManager.SDKModelObserver<SDK.LogMod
   modelRemoved(logModel: SDK.LogModel.LogModel): void {
     const eventListeners = modelToEventListeners.get(logModel);
     if (eventListeners) {
-      Common.EventTarget.EventTarget.removeEventListeners(eventListeners);
+      Common.EventTarget.removeEventListeners(eventListeners);
     }
   }
 

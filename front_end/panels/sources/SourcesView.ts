@@ -448,7 +448,7 @@ export class SourcesView extends UI.Widget.VBox implements TabbedEditorContainer
 
   _removeToolbarChangedListener(): void {
     if (this._toolbarChangedListener) {
-      Common.EventTarget.EventTarget.removeEventListeners([this._toolbarChangedListener]);
+      Common.EventTarget.removeEventListeners([this._toolbarChangedListener]);
     }
     this._toolbarChangedListener = null;
   }

@@ -1360,7 +1360,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
   }
 
   dispose(): void {
-    Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.removeEventListeners(this._eventListeners);
   }
 
   reveal(select?: boolean): void {

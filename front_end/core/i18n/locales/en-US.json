@@ -3842,7 +3842,7 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
     "message": "Open shadow editor"
   },
-  "panels/elements/components/AccessibilityTreeUtils.ts | ignored": {
+  "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ignored"
   },
   "panels/elements/components/AdornerSettingsPane.ts | closeButton": {

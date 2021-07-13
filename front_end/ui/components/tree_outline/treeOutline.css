@@ -91,5 +91,5 @@ li.is-top-level:last-child {
 
 [role="treeitem"].selected > .arrow-and-key-wrapper {
   /* stylelint-disable-next-line color-named */
-  background-color: var(--legacy-selection-bg-color);
+  background-color: var(--legacy-item-selection-bg-color);
 }

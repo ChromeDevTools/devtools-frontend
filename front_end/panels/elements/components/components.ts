@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as AccessibilityTreeUtils from './AccessibilityTreeUtils.js';
+import * as AccessibilityTreeNode from './AccessibilityTreeNode.js';
 import * as AdornerManager from './AdornerManager.js';
 import * as AdornerSettingsPane from './AdornerSettingsPane.js';
 import * as ComputedStyleProperty from './ComputedStyleProperty.js';
@@ -20,7 +20,7 @@ import * as QueryContainer from './QueryContainer.js';
 import * as StylePropertyEditor from './StylePropertyEditor.js';
 
 export {
-  AccessibilityTreeUtils,
+  AccessibilityTreeNode,
   AdornerManager,
   AdornerSettingsPane,
   ComputedStyleProperty,

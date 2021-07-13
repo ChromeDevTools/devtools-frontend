@@ -318,8 +318,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       this._accessibilityTreeView.setAccessibilityModel(
           domModel.target().model(SDK.AccessibilityModel.AccessibilityModel));
     }
-    let treeOutline: ElementsTreeOutline|(ElementsTreeOutline | null) =
-        parentModel ? ElementsTreeOutline.forDOMModel(parentModel) : null;
+    let treeOutline: ElementsTreeOutline|null = parentModel ? ElementsTreeOutline.forDOMModel(parentModel) : null;
     if (!treeOutline) {
       treeOutline = new ElementsTreeOutline(true, true);
       treeOutline.setWordWrap(Common.Settings.Settings.instance().moduleSetting('domWordWrap').get());

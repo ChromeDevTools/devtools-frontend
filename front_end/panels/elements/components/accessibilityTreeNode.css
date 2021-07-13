@@ -1,0 +1,8 @@
+.ax-readable-string {
+  font-style: italic;
+}
+
+.monospace {
+  font-family: var(--monospace-font-family);
+  font-size: var(--monospace-font-size);
+}

@@ -3842,7 +3842,7 @@
   "panels/elements/ColorSwatchPopoverIcon.ts | openShadowEditor": {
     "message": "Ôṕêń ŝh́âd́ôẃ êd́ît́ôŕ"
   },
-  "panels/elements/components/AccessibilityTreeUtils.ts | ignored": {
+  "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Îǵn̂ór̂éd̂"
   },
   "panels/elements/components/AdornerSettingsPane.ts | closeButton": {

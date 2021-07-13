@@ -6,18 +6,17 @@ import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as AccessibilityTreeUtils from './AccessibilityTreeUtils.js';
 import type * as LitHtml from '../../ui/lit-html/lit-html.js';
-
-import * as ElementsComponents from './components/components.js';
 
 export class AccessibilityTreeView extends UI.Widget.VBox {
   private readonly accessibilityTreeComponent =
-      new TreeOutline.TreeOutline.TreeOutline<SDK.AccessibilityModel.AccessibilityNode>();
-  private treeData: ElementsComponents.AccessibilityTreeUtils.AXTreeNode[] = [];
+      new TreeOutline.TreeOutline.TreeOutline<AccessibilityTreeUtils.AXTreeNodeData>();
+  private treeData: AccessibilityTreeUtils.AXTreeNode[] = [];
   private readonly toggleButton: HTMLButtonElement;
   private accessibilityModel: SDK.AccessibilityModel.AccessibilityModel|null = null;
   private rootAXNode: SDK.AccessibilityModel.AccessibilityNode|null = null;
-  private selectedTreeNode: ElementsComponents.AccessibilityTreeUtils.AXTreeNode|null = null;
+  private selectedTreeNode: AccessibilityTreeUtils.AXTreeNode|null = null;
   private inspectedDOMNode: SDK.DOMModel.DOMNode|null = null;
 
   constructor(toggleButton: HTMLButtonElement) {
@@ -32,7 +31,7 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
     // on node selection, update the currently inspected node and reveal in the
     // DOM tree.
     this.accessibilityTreeComponent.addEventListener('itemselected', (event: Event) => {
-      const evt = event as TreeOutline.TreeOutline.ItemSelectedEvent<SDK.AccessibilityModel.AccessibilityNode>;
+      const evt = event as TreeOutline.TreeOutline.ItemSelectedEvent<AccessibilityTreeUtils.AXTreeNodeData>;
       const axNode = evt.data.node.treeNodeData;
       if (!axNode.isDOMNode()) {
         return;
@@ -48,11 +47,11 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
       }
 
       // Highlight the node as well, for keyboard navigation.
-      evt.data.node.treeNodeData.highlightDOMNode();
+      axNode.highlightDOMNode();
     });
 
     this.accessibilityTreeComponent.addEventListener('itemmouseover', (event: Event) => {
-      const evt = event as TreeOutline.TreeOutline.ItemMouseOverEvent<SDK.AccessibilityModel.AccessibilityNode>;
+      const evt = event as TreeOutline.TreeOutline.ItemMouseOverEvent<AccessibilityTreeUtils.AXTreeNodeData>;
       evt.data.node.treeNodeData.highlightDOMNode();
     });
 
@@ -83,11 +82,10 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
     }
 
     this.rootAXNode = root;
-    this.treeData = [ElementsComponents.AccessibilityTreeUtils.sdkNodeToAXTreeNode(this.rootAXNode)];
+    this.treeData = [AccessibilityTreeUtils.sdkNodeToAXTreeNode(this.rootAXNode)];
 
     this.accessibilityTreeComponent.data = {
-      defaultRenderer: (node): LitHtml.TemplateResult =>
-          ElementsComponents.AccessibilityTreeUtils.accessibilityNodeRenderer(node),
+      defaultRenderer: (node): LitHtml.TemplateResult => AccessibilityTreeUtils.accessibilityNodeRenderer(node),
       tree: this.treeData,
     };
 
@@ -122,8 +120,7 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
     }
 
     this.accessibilityTreeComponent.data = {
-      defaultRenderer: (node): LitHtml.TemplateResult =>
-          ElementsComponents.AccessibilityTreeUtils.accessibilityNodeRenderer(node),
+      defaultRenderer: (node): LitHtml.TemplateResult => AccessibilityTreeUtils.accessibilityNodeRenderer(node),
       tree: this.treeData,
     };
 
@@ -138,7 +135,7 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
       return;
     }
 
-    this.selectedTreeNode = ElementsComponents.AccessibilityTreeUtils.sdkNodeToAXTreeNode(inspectedAXNode);
+    this.selectedTreeNode = AccessibilityTreeUtils.sdkNodeToAXTreeNode(inspectedAXNode);
     this.accessibilityTreeComponent.expandToAndSelectTreeNode(this.selectedTreeNode);
   }
 

@@ -168,9 +168,7 @@ export class InspectorBackend {
   }
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-let _factory: () => Connection;
+let connectionFactory: () => Connection;
 
 export class Connection {
   _onMessage!: ((arg0: Object) => void)|null;
@@ -191,11 +189,11 @@ export class Connection {
   }
 
   static setFactory(factory: () => Connection): void {
-    _factory = factory;
+    connectionFactory = factory;
   }
 
   static getFactory(): () => Connection {
-    return _factory;
+    return connectionFactory;
   }
 }
 
@@ -246,11 +244,6 @@ export class SessionRouter {
   _lastMessageId: number;
   _pendingResponsesCount: number;
   _pendingLongPollingMessageIds: Set<number>;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _domainToLogger: Map<any, any>;
   _sessions: Map<string, {
     target: TargetBase,
     callbacks: Map<number, CallbackWithDebugInfo>,
@@ -263,7 +256,6 @@ export class SessionRouter {
     this._lastMessageId = 1;
     this._pendingResponsesCount = 0;
     this._pendingLongPollingMessageIds = new Set();
-    this._domainToLogger = new Map();
 
     this._sessions = new Map();
 
@@ -362,10 +354,7 @@ export class SessionRouter {
     this._connection.sendRawMessage(JSON.stringify(messageObject));
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _sendRawMessageForTesting(method: QualifiedName, params: Object|null, callback: ((...arg0: any[]) => void)|null):
-      void {
+  _sendRawMessageForTesting(method: QualifiedName, params: Object|null, callback: Callback|null): void {
     const domain = method.split('.')[0];
     this.sendMessage('', domain, method, params, callback || ((): void => {}));
   }
@@ -533,7 +522,7 @@ export class TargetBase {
     } else if (connection) {
       router = new SessionRouter(connection);
     } else {
-      router = new SessionRouter(_factory());
+      router = new SessionRouter(connectionFactory());
     }
 
     this._router = router;
@@ -882,6 +871,15 @@ export class TargetBase {
   }
 }
 
+/**
+ * This is a class that serves as the prototype for a domains agents (every target
+ * has it's own set of agents). The InspectorBackend keeps an instance of this class
+ * per domain, and each TargetBase creates its agents (via Object.create) and installs
+ * this instance as prototype.
+ *
+ * The reasons this is done is so that on the prototypes we can install the implementations
+ * of the invoke_enable, etc. methods that the front-end uses.
+ */
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
 // eslint-disable-next-line @typescript-eslint/naming-convention
 class _AgentPrototype {
@@ -898,12 +896,7 @@ class _AgentPrototype {
   registerCommand(methodName: UnqualifiedName, parameters: CommandParameter[], replyArgs: string[]): void {
     const domainAndMethod = qualifyName(this._domain, methodName);
 
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    function sendMessagePromise(this: _AgentPrototype, _vararg: any): Promise<any> {
-      const args = Array.prototype.slice.call(arguments);
+    function sendMessagePromise(this: _AgentPrototype, ...args: unknown[]): Promise<unknown> {
       return _AgentPrototype.prototype._sendMessageToBackendPromise.call(this, domainAndMethod, parameters, args);
     }
 
@@ -922,15 +915,9 @@ class _AgentPrototype {
   }
 
   _prepareParameters(
-      method: string, parameters: CommandParameter[],
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      args: any[], errorCallback: (arg0: string) => void): Object|null {
-    const params: {
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      [x: string]: any,
-    } = {};
+      method: string, parameters: CommandParameter[], args: unknown[], errorCallback: (arg0: string) => void): Object
+      |null {
+    const params: {[x: string]: unknown} = {};
     let hasParams = false;
 
     for (const param of parameters) {
@@ -969,13 +956,8 @@ class _AgentPrototype {
     return hasParams ? params : null;
   }
 
-  _sendMessageToBackendPromise(
-      method: QualifiedName, parameters: CommandParameter[],
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      args: any[]): Promise<any> {
+  _sendMessageToBackendPromise(method: QualifiedName, parameters: CommandParameter[], args: unknown[]):
+      Promise<unknown> {
     let errorMessage;
     function onError(message: string): void {
       console.error(message);
@@ -989,9 +971,7 @@ class _AgentPrototype {
     return new Promise(resolve => {
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const callback = (error: any, result: any): void => {
+      const callback: Callback = (error: MessageError|null, result: any|null): void => {
         if (error) {
           if (!test.suppressRequestErrors && error.code !== DevToolsStubErrorCode && error.code !== GenericError &&
               error.code !== ConnectionClosedErrorCode) {
@@ -1044,8 +1024,6 @@ class _AgentPrototype {
  */
 class DispatcherManager<Domain extends ProtocolDomainName> {
   private eventArgs: ReadonlyEventParameterNames;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private dispatchers: ProtocolProxyApi.ProtocolDispatchers[Domain][] = [];
 
   constructor(eventArgs: ReadonlyEventParameterNames) {

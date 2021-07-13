@@ -119,7 +119,7 @@ export class Tooltip {
 
     this._hide(true);
     const keyboardEvent = (event as KeyboardEvent);
-    if (keyboardEvent.key === 'Escape') {
+    if (keyboardEvent.key === Platform.KeyboardUtilities.ESCAPE_KEY) {
       keyboardEvent.consume(true);
     }
   }

@@ -5,6 +5,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Common from '../../../../core/common/common.js';
+import * as Platform from '../../../../core/platform/platform.js';
 import * as UI from '../../legacy.js';
 
 import {ColorSwatch} from './ColorSwatch.js';
@@ -137,7 +138,7 @@ export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper {
       event.consume(true);
       return;
     }
-    if (event.key === 'Escape') {
+    if (event.key === Platform.KeyboardUtilities.ESCAPE_KEY) {
       this.hide(false);
       event.consume(true);
     }

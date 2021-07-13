@@ -1177,7 +1177,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       this._editingCommitted(originalContent);
       return;
     }
-    if (keyboardEvent.key === 'Escape') {
+    if (keyboardEvent.key === Platform.KeyboardUtilities.ESCAPE_KEY) {
       keyboardEvent.consume();
       this._editingCancelled();
       return;

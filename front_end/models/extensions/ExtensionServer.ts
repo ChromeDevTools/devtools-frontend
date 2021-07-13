@@ -738,7 +738,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
       let keyCode = entry.keyCode;
       if (!keyCode) {
         // This is required only for synthetic events (e.g. dispatched in tests).
-        if (entry.key === 'Escape') {
+        if (entry.key === Platform.KeyboardUtilities.ESCAPE_KEY) {
           keyCode = 27;
         }
       }

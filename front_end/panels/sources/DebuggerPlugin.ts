@@ -33,6 +33,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -40,6 +41,7 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
+
 import type * as TextEditor from '../../ui/legacy/components/text_editor/text_editor.js'; // eslint-disable-line no-unused-vars
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -792,7 +794,7 @@ export class DebuggerPlugin extends Plugin {
       this._clearControlDown();
     }
 
-    if (event.key === 'Escape') {
+    if (event.key === Platform.KeyboardUtilities.ESCAPE_KEY) {
       if (this._popoverHelper.isPopoverVisible()) {
         this._popoverHelper.hidePopover();
         event.consume();

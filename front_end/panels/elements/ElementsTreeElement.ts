@@ -1081,7 +1081,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       if (keyboardEvent.key === 'Enter' && (isMetaOrCtrl || keyboardEvent.isMetaOrCtrlForTest)) {
         keyboardEvent.consume(true);
         this._editing && this._editing.commit();
-      } else if (keyboardEvent.keyCode === UI.KeyboardShortcut.Keys.Esc.code || keyboardEvent.key === 'Escape') {
+      } else if (
+          keyboardEvent.keyCode === UI.KeyboardShortcut.Keys.Esc.code ||
+          keyboardEvent.key === Platform.KeyboardUtilities.ESCAPE_KEY) {
         keyboardEvent.consume(true);
         this._editing && this._editing.cancel();
       }

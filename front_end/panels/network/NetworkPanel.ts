@@ -37,6 +37,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Logs from '../../models/logs/logs.js';
@@ -50,11 +51,11 @@ import * as Search from '../search/search.js';
 
 import {BlockedURLsPane} from './BlockedURLsPane.js';
 import {Events} from './NetworkDataGridNode.js';
-
 import {NetworkItemView} from './NetworkItemView.js';  // eslint-disable-line no-unused-vars
-import {NetworkLogView} from './NetworkLogView.js';  // eslint-disable-line no-unused-vars
+import {NetworkLogView} from './NetworkLogView.js';    // eslint-disable-line no-unused-vars
 import {NetworkOverview} from './NetworkOverview.js';
 import {NetworkSearchScope} from './NetworkSearchScope.js';  // eslint-disable-line no-unused-vars
+
 import type {NetworkTimeCalculator} from './NetworkTimeCalculator.js';
 import {NetworkTransferTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
 
@@ -263,7 +264,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     tabbedPane.setMinimumSize(100, 25);
     tabbedPane.element.classList.add('network-tabbed-pane');
     tabbedPane.element.addEventListener('keydown', event => {
-      if (event.key !== 'Escape') {
+      if (event.key !== Platform.KeyboardUtilities.ESCAPE_KEY) {
         return;
       }
       splitWidget.hideSidebar();

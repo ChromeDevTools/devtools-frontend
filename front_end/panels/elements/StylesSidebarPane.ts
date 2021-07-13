@@ -372,7 +372,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
 
     function keydownHandler(event: Event): void {
       const keyboardEvent = (event as KeyboardEvent);
-      if (keyboardEvent.key !== 'Escape' || !input.value) {
+      if (keyboardEvent.key !== Platform.KeyboardUtilities.ESCAPE_KEY || !input.value) {
         return;
       }
       keyboardEvent.consume(true);

@@ -7,11 +7,7 @@ import("../visibility.gni")
 devtools_entrypoint("toolbox") {
   entrypoint = "toolbox.ts"
 
-  deps = [
-    "../../Images:optimize_images",
-    "../../core/dom_extension:bundle",
-    "../../core/platform:bundle",
-  ]
+  deps = [ "../device_mode_emulation_frame" ]
 
   visibility = [ "../../../front_end" ]
 

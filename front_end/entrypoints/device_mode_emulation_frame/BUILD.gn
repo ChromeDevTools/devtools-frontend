@@ -1,0 +1,24 @@
+# Copyright 2021 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../visibility.gni")
+
+devtools_entrypoint("device_mode_emulation_frame") {
+  entrypoint = "device_mode_emulation_frame.ts"
+
+  deps = [
+    "../../Images:optimize_images",
+    "../../core/dom_extension:bundle",
+    "../../core/platform:bundle",
+  ]
+
+  visibility = [
+    "../../../front_end",
+
+    # TODO(crbug.com/1228264): remove
+    "../toolbox/*",
+  ]
+
+  visibility += devtools_entrypoints_visibility
+}

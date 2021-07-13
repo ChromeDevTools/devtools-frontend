@@ -90,7 +90,7 @@ export class AdvancedApp implements Common.App.App {
     this._toolboxWindow = window.open(url, undefined);
   }
 
-  toolboxLoaded(toolboxDocument: Document): void {
+  deviceModeEmulationFrameLoaded(toolboxDocument: Document): void {
     UI.UIUtils.initializeUIUtils(
         toolboxDocument, Common.Settings.Settings.instance().createSetting('uiTheme', 'default'));
     UI.UIUtils.installComponentRootStyles((toolboxDocument.body as Element));

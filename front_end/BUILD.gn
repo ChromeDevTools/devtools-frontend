@@ -16,6 +16,7 @@ group("front_end") {
     ":legacy_css",
     ":legacy_entrypoints",
     "Images",
+    "entrypoints/device_mode_emulation_frame",
     "entrypoints/devtools_app",
     "entrypoints/formatter_worker:worker_entrypoint",
     "entrypoints/heap_snapshot_worker:worker_entrypoint",
@@ -25,10 +26,12 @@ group("front_end") {
     "entrypoints/ndb_app",
     "entrypoints/node_app",
     "entrypoints/shell",
-    "entrypoints/toolbox",
     "entrypoints/wasmparser_worker:worker_entrypoint",
     "entrypoints/worker_app",
     "legacy_test_runner",
+
+    # TODO(crbug.com/1228264): remove
+    "entrypoints/toolbox",
   ]
 }
 
@@ -129,8 +132,11 @@ node_action("html_entrypoints") {
     "js_app",
     "ndb_app",
     "node_app",
-    "toolbox",
     "worker_app",
+    "device_mode_emulation_frame",
+
+    # TODO(crbug.com/1228264): remove
+    "toolbox",
   ]
   args = [
     "--template",

@@ -13,12 +13,7 @@ devtools_entrypoint("device_mode_emulation_frame") {
     "../../core/platform:bundle",
   ]
 
-  visibility = [
-    "../../../front_end",
-
-    # TODO(crbug.com/1228264): remove
-    "../toolbox/*",
-  ]
+  visibility = [ "../../../front_end" ]
 
   visibility += devtools_entrypoints_visibility
 }

@@ -84,7 +84,7 @@ export class AdvancedApp implements Common.App.App {
       return;
     }
 
-    const url = window.location.href.replace('devtools_app.html', 'toolbox.html');
+    const url = window.location.href.replace('devtools_app.html', 'device_mode_emulation_frame.html');
     this._toolboxWindow = window.open(url, undefined);
   }
 

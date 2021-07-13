@@ -29,9 +29,6 @@ group("front_end") {
     "entrypoints/wasmparser_worker:worker_entrypoint",
     "entrypoints/worker_app",
     "legacy_test_runner",
-
-    # TODO(crbug.com/1228264): remove
-    "entrypoints/toolbox",
   ]
 }
 
@@ -134,9 +131,6 @@ node_action("html_entrypoints") {
     "node_app",
     "worker_app",
     "device_mode_emulation_frame",
-
-    # TODO(crbug.com/1228264): remove
-    "toolbox",
   ]
   args = [
     "--template",

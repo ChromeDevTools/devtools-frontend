@@ -9,7 +9,7 @@ import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
-import type * as IssuesManager from '../../../models/issues_manager/issues_manager.js';
+import * as IssuesManager from '../../../models/issues_manager/issues_manager.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import IssueLinkIconStyles from './issueLinkIcon.css.js';
 
@@ -17,9 +17,14 @@ import {getIssueKindIconData} from './IssueCounter.js';
 
 const UIStrings = {
   /**
-   *@description Title for a link to show an issue in the issues tab
+   * @description Title for a link to show an issue in the issues tab
    */
   clickToShowIssue: 'Click to show issue in the issues tab',
+  /**
+   * @description Title for a link to show an issue in the issues tab
+   * @example {A title of an Issue} title
+   */
+  clickToShowIssueWithTitle: 'Click to open the issue tab and show issue \'{title}\'',
   /**
    *@description Title for an link to show an issue that is unavailable because the issue couldn't be resolved
    */
@@ -50,6 +55,8 @@ export class IssueLinkIcon extends HTMLElement {
   // The value `null` indicates that the issue is not available,
   // `undefined` that it is still being resolved.
   private issue?: IssuesManager.Issue.Issue|null;
+  private issueTitle: string|null = null;
+  private issueTitlePromise = Promise.resolve<void>(undefined);
   private issueId?: Protocol.Audits.IssueId;
   private issueResolver?: IssuesManager.IssueResolver.IssueResolver;
   private additionalOnClickAction?: () => void;
@@ -69,8 +76,22 @@ export class IssueLinkIcon extends HTMLElement {
     }
     if (!this.issue && this.issueId) {
       this.issueResolvedPromise = this.resolveIssue(this.issueId);
+      this.issueTitlePromise = this.issueResolvedPromise.then(() => this.fetchIssueTitle());
+    } else {
+      this.issueTitlePromise = this.fetchIssueTitle();
     }
     this.render();
+  }
+
+  private async fetchIssueTitle(): Promise<void> {
+    const description = this.issue?.getDescription();
+    if (!description) {
+      return;
+    }
+    const title = await IssuesManager.MarkdownIssueDescription.getIssueTitleFromMarkdownDescription(description);
+    if (title) {
+      this.issueTitle = title;
+    }
   }
 
   connectedCallback(): void {
@@ -118,6 +139,9 @@ export class IssueLinkIcon extends HTMLElement {
   }
 
   private getTooltip(): Platform.UIString.LocalizedString {
+    if (this.issueTitle) {
+      return i18nString(UIStrings.clickToShowIssueWithTitle, {title: this.issueTitle});
+    }
     if (this.issue) {
       return i18nString(UIStrings.clickToShowIssue);
     }
@@ -128,7 +152,7 @@ export class IssueLinkIcon extends HTMLElement {
     return coordinator.write(() => {
       // clang-format off
       LitHtml.render(LitHtml.html`
-        ${LitHtml.Directives.until(this.issueResolvedPromise.then(() => this.renderComponent()), this.renderComponent())}
+        ${LitHtml.Directives.until(this.issueTitlePromise.then(() => this.renderComponent()), this.issueResolvedPromise.then(() => this.renderComponent()), this.renderComponent())}
       `,
       this.shadow, {host: this});
       // clang-format on

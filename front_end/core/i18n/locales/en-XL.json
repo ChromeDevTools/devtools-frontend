@@ -10748,6 +10748,9 @@
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssue": {
     "message": "Ĉĺîćk̂ t́ô śĥóŵ íŝśûé îń t̂h́ê íŝśûéŝ t́âb́"
   },
+  "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
+    "message": "Ĉĺîćk̂ t́ô óp̂én̂ t́ĥé îśŝúê t́âb́ âńd̂ śĥóŵ íŝśûé '{title}'"
+  },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Îśŝúê ún̂áv̂áîĺâb́l̂é ât́ t̂h́îś t̂ím̂é"
   },

@@ -144,3 +144,10 @@ export function findTitleFromMarkdownAst(markdownAst: Marked.Marked.Token[]): st
   }
   return markdownAst[0].text;
 }
+
+export async function getIssueTitleFromMarkdownDescription(description: MarkdownIssueDescription):
+    Promise<string|null> {
+  const rawMarkdown = await getMarkdownFileContent(description.file);
+  const markdownAst = Marked.Marked.lexer(rawMarkdown);
+  return findTitleFromMarkdownAst(markdownAst);
+}

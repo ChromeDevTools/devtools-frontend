@@ -7,14 +7,12 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import * as Marked from '../../third_party/marked/marked.js';
 
 import {ContentSecurityPolicyIssue, trustedTypesPolicyViolationCode, trustedTypesSinkViolationCode} from './ContentSecurityPolicyIssue.js';
 import type {Issue, IssueKind} from './Issue.js';
 import {toZeroBasedLocation} from './Issue.js';
 import * as IssuesManager from './IssuesManager.js';
-import type {MarkdownIssueDescription} from './MarkdownIssueDescription.js';
-import {findTitleFromMarkdownAst, getMarkdownFileContent} from './MarkdownIssueDescription.js';
+import {getIssueTitleFromMarkdownDescription} from './MarkdownIssueDescription.js';
 
 export class SourceFrameIssuesManager {
   private locationPool = new Bindings.LiveLocation.LiveLocationPool();
@@ -58,16 +56,10 @@ export class SourceFrameIssuesManager {
     }
   }
 
-  private async getIssueTitleFromMarkdownDescription(description: MarkdownIssueDescription): Promise<string|null> {
-    const rawMarkdown = await getMarkdownFileContent(description.file);
-    const markdownAst = Marked.Marked.lexer(rawMarkdown);
-    return findTitleFromMarkdownAst(markdownAst);
-  }
-
   private async addIssueMessageToScript(issue: Issue, rawLocation: SDK.DebuggerModel.Location): Promise<void> {
     const description = issue.getDescription();
     if (description) {
-      const title = await this.getIssueTitleFromMarkdownDescription(description);
+      const title = await getIssueTitleFromMarkdownDescription(description);
       if (title) {
         const clickHandler = (): void => {
           Common.Revealer.reveal(issue);

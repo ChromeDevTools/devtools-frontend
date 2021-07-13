@@ -10748,6 +10748,9 @@
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssue": {
     "message": "Click to show issue in the issues tab"
   },
+  "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
+    "message": "Click to open the issue tab and show issue '{title}'"
+  },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Issue unavailable at this time"
   },

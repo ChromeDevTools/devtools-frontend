@@ -419,22 +419,16 @@ text.animation-timeline-grid-label {
 }
 
 .animation-playback-rate-button.selected {
-  color: var(--color-background);
+  color: var(--legacy-selection-fg-color);
   background-color: var(--legacy-selection-bg-color);
   border-color: var(--legacy-selection-bg-color);
   z-index: 1;
-}
-
-.animation-playback-rate-button.selected:first-child {
-  color: var(--legacy-selection-bg-color);
-  background-color: var(--color-background);
 }
 
 .animation-playback-rate-button.selected:focus-visible {
   color: var(--color-text-primary);
 }
 
-.animation-playback-rate-button.selected:first-child:focus-visible,
 .animation-playback-rate-button:focus-visible {
   background-color: var(--legacy-focus-bg-color);
 }

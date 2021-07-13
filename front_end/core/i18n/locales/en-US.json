@@ -10809,7 +10809,7 @@
     "message": "Other"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
-    "message": "Click to show request in the network panel"
+    "message": "Click to open the network panel and show request for URL: {url}"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | requestUnavailableInTheNetwork": {
     "message": "Request unavailable in the network panel, try reloading the inspected page"

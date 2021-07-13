@@ -10809,7 +10809,7 @@
     "message": "Ôt́ĥér̂"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
-    "message": "Ĉĺîćk̂ t́ô śĥóŵ ŕêq́ûéŝt́ îń t̂h́ê ńêt́ŵór̂ḱ p̂án̂él̂"
+    "message": "Ĉĺîćk̂ t́ô óp̂én̂ t́ĥé n̂ét̂ẃôŕk̂ ṕâńêĺ âńd̂ śĥóŵ ŕêq́ûéŝt́ f̂ór̂ ÚR̂Ĺ: {url}"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | requestUnavailableInTheNetwork": {
     "message": "R̂éq̂úêśt̂ ún̂áv̂áîĺâb́l̂é îń t̂h́ê ńêt́ŵór̂ḱ p̂án̂él̂, t́r̂ý r̂él̂óâd́îńĝ t́ĥé îńŝṕêćt̂éd̂ ṕâǵê"

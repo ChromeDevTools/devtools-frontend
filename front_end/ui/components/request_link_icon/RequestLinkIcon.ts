@@ -17,15 +17,16 @@ import requestLinkIconStyles from './requestLinkIcon.css.js';
 
 const UIStrings = {
   /**
-   *@description Title for a link to show a request in the network panel
+   * @description Title for a link to show a request in the network panel
+   * @example {https://example.org/index.html} url
    */
-  clickToShowRequestInTheNetwork: 'Click to show request in the network panel',
+  clickToShowRequestInTheNetwork: 'Click to open the network panel and show request for URL: {url}',
   /**
-   *@description Title for an link to show a request that is unavailable because the request couldn't be resolved
+   * @description Title for an link to show a request that is unavailable because the request couldn't be resolved
    */
   requestUnavailableInTheNetwork: 'Request unavailable in the network panel, try reloading the inspected page',
   /**
-   *@description Label for the shortened URL displayed in a link to show a request in the network panel
+   * @description Label for the shortened URL displayed in a link to show a request in the network panel
    */
   shortenedURL: 'Shortened URL',
 };
@@ -157,7 +158,7 @@ export class RequestLinkIcon extends HTMLElement {
 
   private getTooltip(): Platform.UIString.LocalizedString {
     if (this.request) {
-      return i18nString(UIStrings.clickToShowRequestInTheNetwork);
+      return i18nString(UIStrings.clickToShowRequestInTheNetwork, {url: this.request.url()});
     }
     return i18nString(UIStrings.requestUnavailableInTheNetwork);
   }

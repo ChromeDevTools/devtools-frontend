@@ -1799,13 +1799,21 @@ export class StylePropertiesSection {
 
     const containerElement = new ElementsComponents.QueryContainer.QueryContainer();
     containerElement.data = {
-      container: ElementsComponents.Helper.legacyNodeToElementsComponentsNode(container),
+      container: ElementsComponents.Helper.legacyNodeToElementsComponentsNode(container.containerNode),
       queryName: containerQuery.name,
       onContainerLinkClick: (): void => {
-        ElementsPanel.instance().revealAndSelectNode(container, true, true);
-        container.scrollIntoView();
+        ElementsPanel.instance().revealAndSelectNode(container.containerNode, true, true);
+        container.containerNode.scrollIntoView();
       },
     };
+
+    containerElement.addEventListener('queriedsizerequested', async () => {
+      const details = await container.getContainerSizeDetails();
+      if (details) {
+        containerElement.updateContainerQueriedSizeDetails(details);
+      }
+    });
+
     this.queryListElement.prepend(containerElement);
   }
 

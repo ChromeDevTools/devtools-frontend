@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
 import * as ElementsComponents from '../../../../../../front_end/panels/elements/components/components.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
 
@@ -51,7 +52,7 @@ describe('QueryContainer', () => {
       onContainerLinkClick: clickListener,
     };
 
-    assertContainerContent(component, '#container.class-1.class-2');
+    assertContainerContent(component, 'body#container.class-1.class-2');
     component.shadowRoot?.querySelector('a')?.click();
     assert.strictEqual(clickListener.callCount, 1, 'container link click listener should be triggered by clicking');
   });
@@ -88,5 +89,70 @@ describe('QueryContainer', () => {
 
     containerLink.dispatchEvent(new Event('mouseleave'));
     assert.strictEqual(onHighlightNode.callCount, 1, 'onClearHighlight callback should be triggered by mouseleave');
+  });
+
+  it('dispatches QueriedSizeRequestedEvent when hovered correctly', () => {
+    const component = new ElementsComponents.QueryContainer.QueryContainer();
+    renderElementIntoDOM(component);
+
+    const queriedSizeRequestedListener = sinon.spy();
+    component.data = {
+      container: containerTemplate,
+      onContainerLinkClick: () => {},
+    };
+    component.addEventListener('queriedsizerequested', queriedSizeRequestedListener);
+
+    assertShadowRoot(component.shadowRoot);
+
+    component.shadowRoot.querySelector('a')?.dispatchEvent(new Event('mouseenter'));
+    assert.strictEqual(
+        queriedSizeRequestedListener.callCount, 1, 'queried size requested listener should be triggered by hovering');
+  });
+
+  it('renders queried size details correctly', () => {
+    const component = new ElementsComponents.QueryContainer.QueryContainer();
+    renderElementIntoDOM(component);
+
+    component.data = {
+      container: containerTemplate,
+      onContainerLinkClick: () => {},
+    };
+
+    assertShadowRoot(component.shadowRoot);
+
+    component.shadowRoot.querySelector('a')?.dispatchEvent(new Event('mouseenter'));
+
+    component.updateContainerQueriedSizeDetails({
+      physicalAxis: SDK.CSSContainerQuery.PhysicalAxis.None,
+      queryAxis: SDK.CSSContainerQuery.QueryAxis.None,
+      width: '500px',
+      height: '300px',
+    });
+    const nonExistentDetailsElement = component.shadowRoot.querySelector<HTMLElement>('.queried-size-details');
+    assert.strictEqual(nonExistentDetailsElement, null, 'query details without any axis should not be rendered');
+
+    component.updateContainerQueriedSizeDetails({
+      physicalAxis: SDK.CSSContainerQuery.PhysicalAxis.Horizontal,
+      queryAxis: SDK.CSSContainerQuery.QueryAxis.Inline,
+      width: '500px',
+    });
+    const detailsElement = component.shadowRoot.querySelector<HTMLElement>('.queried-size-details');
+    assert.strictEqual(detailsElement?.innerText, '(inline-size) 500px', 'queried size details are not correct');
+
+    component.updateContainerQueriedSizeDetails({
+      physicalAxis: SDK.CSSContainerQuery.PhysicalAxis.Horizontal,
+      queryAxis: SDK.CSSContainerQuery.QueryAxis.Block,
+      width: '200px',
+    });
+    assert.strictEqual(detailsElement?.innerText, '(block-size) 200px', 'queried size details are not correct');
+
+    component.updateContainerQueriedSizeDetails({
+      physicalAxis: SDK.CSSContainerQuery.PhysicalAxis.Both,
+      queryAxis: SDK.CSSContainerQuery.QueryAxis.Both,
+      width: '500px',
+      height: '300px',
+    });
+    assert.strictEqual(
+        detailsElement?.innerText, '(size) width: 500px height: 300px', 'queried size details are not correct');
   });
 });

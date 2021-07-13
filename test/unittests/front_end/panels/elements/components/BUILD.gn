@@ -21,6 +21,7 @@ ts_library("components") {
   ]
 
   deps = [
+    "../../../../../../front_end/core/sdk:bundle",
     "../../../../../../front_end/panels/elements/components:bundle",
     "../../../../../../front_end/ui/components/render_coordinator:bundle",
     "../../../../../../front_end/ui/legacy/components/inline_editor:bundle",

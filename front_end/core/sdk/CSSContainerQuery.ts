@@ -33,7 +33,110 @@ export class CSSContainerQuery extends CSSQuery {
     return true;
   }
 
-  async getContainerForNode(nodeId: Protocol.DOM.NodeId): Promise<DOMNode|null> {
-    return this.cssModel.domModel().getContainerForNode(nodeId, this.name);
+  async getContainerForNode(nodeId: Protocol.DOM.NodeId): Promise<CSSContainerQueryContainer|undefined> {
+    const containerNode = await this.cssModel.domModel().getContainerForNode(nodeId, this.name);
+    if (!containerNode) {
+      return;
+    }
+    return new CSSContainerQueryContainer(containerNode);
   }
+}
+
+export class CSSContainerQueryContainer {
+  readonly containerNode: DOMNode;
+
+  constructor(containerNode: DOMNode) {
+    this.containerNode = containerNode;
+  }
+
+  async getContainerSizeDetails(): Promise<ContainerQueriedSizeDetails|undefined> {
+    const styles = await this.containerNode.domModel().cssModel().computedStylePromise(this.containerNode.id);
+    if (!styles) {
+      return;
+    }
+    const containerType = styles.get('container-type');
+    const contain = styles.get('contain');
+    const writingMode = styles.get('writing-mode');
+    if (!containerType || !contain || !writingMode) {
+      return;
+    }
+
+    // The final queried axes are the union of both properties.
+    const queryAxis = getQueryAxis(`${containerType} ${contain}`);
+    const physicalAxis = getPhysicalAxisFromQueryAxis(queryAxis, writingMode);
+    let width, height;
+    if (physicalAxis === PhysicalAxis.Both || physicalAxis === PhysicalAxis.Horizontal) {
+      width = styles.get('width');
+    }
+    if (physicalAxis === PhysicalAxis.Both || physicalAxis === PhysicalAxis.Vertical) {
+      height = styles.get('height');
+    }
+
+    return {
+      queryAxis,
+      physicalAxis,
+      width,
+      height,
+    };
+  }
+}
+
+export const getQueryAxis = (propertyValue: string): QueryAxis => {
+  const segments = propertyValue.split(' ');
+  let isInline = false;
+  let isBlock = false;
+  for (const segment of segments) {
+    if (segment === 'size') {
+      return QueryAxis.Both;
+    }
+    isInline = isInline || segment === 'inline-size';
+    isBlock = isBlock || segment === 'block-size';
+  }
+
+  if (isInline && isBlock) {
+    return QueryAxis.Both;
+  }
+  if (isInline) {
+    return QueryAxis.Inline;
+  }
+  if (isBlock) {
+    return QueryAxis.Block;
+  }
+
+  return QueryAxis.None;
+};
+
+export const getPhysicalAxisFromQueryAxis = (queryAxis: QueryAxis, writingMode: string): PhysicalAxis => {
+  const isVerticalWritingMode = writingMode.startsWith('vertical');
+  switch (queryAxis) {
+    case QueryAxis.None:
+      return PhysicalAxis.None;
+    case QueryAxis.Both:
+      return PhysicalAxis.Both;
+    case QueryAxis.Inline:
+      return isVerticalWritingMode ? PhysicalAxis.Vertical : PhysicalAxis.Horizontal;
+    case QueryAxis.Block:
+      return isVerticalWritingMode ? PhysicalAxis.Horizontal : PhysicalAxis.Vertical;
+  }
+};
+
+export interface ContainerQueriedSizeDetails {
+  queryAxis: QueryAxis;
+  physicalAxis: PhysicalAxis;
+  width?: string;
+  height?: string;
+}
+
+export const enum QueryAxis {
+  None = '',
+  Inline = 'inline-size',
+  Block = 'block-size',
+  Both = 'size',
+}
+
+export const enum PhysicalAxis {
+  None = '',
+  Horizontal = 'Horizontal',
+  Vertical = 'Vertical',
+  Both = 'Both',
 }

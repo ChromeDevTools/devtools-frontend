@@ -5,9 +5,28 @@
  */
 
 .container-link {
-  color: var(--color-text-primary);
+  color: var(--color-text-disabled);
 }
 
 .container-link:hover {
-  background-color: var(--color-match-highlight);
+  color: var(--color-link);
+}
+
+.queried-size-details {
+  color: var(--color-text-primary);
+}
+
+.axis-icon {
+  margin-left: 0.4em;
+  width: 1em;
+  height: 1em;
+  vertical-align: text-top;
+}
+
+.axis-icon.hidden {
+  display: none;
+}
+
+.axis-icon.vertical {
+  transform: rotate(90deg);
 }

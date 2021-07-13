@@ -313,4 +313,25 @@ describe('The Styles pane', async () => {
     ];
     assert.deepEqual(computedStyles, ['0px', '10px'], 'Styles are not correct after the update');
   });
+
+  it('can display container link', async () => {
+    const {frontend} = getBrowserAndPages();
+    await goToResourceAndWaitForStyleSection('elements/css-container-queries.html');
+
+    // Select the child that has container queries.
+    await frontend.keyboard.press('ArrowDown');
+    await waitForContentOfSelectedElementsNode('<div class=\u200B"rule1 rule2">\u200B</div>\u200B');
+
+    const rule1PropertiesSection = await getStyleRule(RULE1_SELECTOR);
+    const containerLink = await waitFor('.container-link', rule1PropertiesSection);
+    const nodeLabelName = await waitFor('.node-label-name', containerLink);
+    const nodeLabelNameContent = await nodeLabelName.evaluate(node => node.textContent as string);
+    assert.strictEqual(nodeLabelNameContent, 'body', 'container link name does not match');
+    containerLink.hover();
+    const queriedSizeDetails = await waitFor('.queried-size-details');
+    const queriedSizeDetailsContent =
+        await queriedSizeDetails.evaluate(node => (node as HTMLElement).innerText as string);
+    assert.strictEqual(
+        queriedSizeDetailsContent, '(size) width: 200px height: 0px', 'container queried details does not match');
+  });
 });

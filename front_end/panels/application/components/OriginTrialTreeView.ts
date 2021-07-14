@@ -37,7 +37,7 @@ const UIStrings = {
   /**
    *@description Label for `status` field in an Origin Trial Token.
    */
-  status: 'Status',
+  status: 'Token Status',
   /**
    *@description Label for tokenWithStatus node.
    */

@@ -2502,7 +2502,7 @@
     "message": "Raw Token"
   },
   "panels/application/components/OriginTrialTreeView.ts | status": {
-    "message": "Status"
+    "message": "Token Status"
   },
   "panels/application/components/OriginTrialTreeView.ts | token": {
     "message": "Token"

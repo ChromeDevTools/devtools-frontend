@@ -87,8 +87,6 @@ function getApplicableRegisteredRevealers(revealable: Object): RevealerRegistrat
       return true;
     }
     for (const contextType of revealerRegistration.contextTypes()) {
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // @ts-expect-error
       if (revealable instanceof contextType) {
         return true;
       }
@@ -97,7 +95,7 @@ function getApplicableRegisteredRevealers(revealable: Object): RevealerRegistrat
   }
 }
 export interface RevealerRegistration {
-  contextTypes: () => Array<unknown>;
+  contextTypes: () => Array<Function>;
   loadRevealer: () => Promise<Revealer>;
   destination?: RevealerDestination;
 }

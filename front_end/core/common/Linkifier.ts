@@ -36,8 +36,6 @@ export function getApplicableRegisteredlinkifiers(object: Object): LinkifierRegi
       return true;
     }
     for (const contextType of linkifierRegistration.contextTypes()) {
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // @ts-expect-error
       if (object instanceof contextType) {
         return true;
       }
@@ -47,5 +45,5 @@ export function getApplicableRegisteredlinkifiers(object: Object): LinkifierRegi
 }
 export interface LinkifierRegistration {
   loadLinkifier: () => Promise<Linkifier>;
-  contextTypes?: (() => Array<unknown>);
+  contextTypes?: (() => Array<Function>);
 }

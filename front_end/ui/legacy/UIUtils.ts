@@ -1776,8 +1776,6 @@ export function getApplicableRegisteredRenderers(object: Object): RendererRegist
       return true;
     }
     for (const contextType of rendererRegistration.contextTypes()) {
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // @ts-expect-error
       if (object instanceof contextType) {
         return true;
       }
@@ -1787,5 +1785,5 @@ export function getApplicableRegisteredRenderers(object: Object): RendererRegist
 }
 export interface RendererRegistration {
   loadRenderer: () => Promise<Renderer>;
-  contextTypes: () => Array<unknown>;
+  contextTypes: () => Array<Function>;
 }

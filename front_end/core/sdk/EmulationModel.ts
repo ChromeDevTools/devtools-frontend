@@ -21,9 +21,7 @@ export class EmulationModel extends SDKModel {
   _deviceOrientationAgent: ProtocolProxyApi.DeviceOrientationApi;
   _cssModel: CSSModel|null;
   _overlayModel: OverlayModel|null;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _mediaConfiguration: Map<string, any>;
+  _mediaConfiguration: Map<string, string>;
   _touchEnabled: boolean;
   _touchMobile: boolean;
   _customTouchEnabled: boolean;
@@ -75,15 +73,15 @@ export class EmulationModel extends SDKModel {
       await this.setIdleOverride(emulationParams);
     });
 
-    const mediaTypeSetting = Common.Settings.Settings.instance().moduleSetting('emulatedCSSMedia');
+    const mediaTypeSetting = Common.Settings.Settings.instance().moduleSetting<string>('emulatedCSSMedia');
     const mediaFeaturePrefersColorSchemeSetting =
-        Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersColorScheme');
+        Common.Settings.Settings.instance().moduleSetting<string>('emulatedCSSMediaFeaturePrefersColorScheme');
     const mediaFeaturePrefersReducedMotionSetting =
-        Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersReducedMotion');
+        Common.Settings.Settings.instance().moduleSetting<string>('emulatedCSSMediaFeaturePrefersReducedMotion');
     const mediaFeaturePrefersReducedDataSetting =
-        Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersReducedData');
+        Common.Settings.Settings.instance().moduleSetting<string>('emulatedCSSMediaFeaturePrefersReducedData');
     const mediaFeatureColorGamutSetting =
-        Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeatureColorGamut');
+        Common.Settings.Settings.instance().moduleSetting<string>('emulatedCSSMediaFeatureColorGamut');
     // Note: this uses a different format than what the CDP API expects,
     // because we want to update these values per media type/feature
     // without having to search the `features` array (inefficient) or
@@ -172,9 +170,7 @@ export class EmulationModel extends SDKModel {
     await this._emulationAgent.invoke_resetPageScaleFactor();
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async emulateDevice(metrics: Protocol.Page.SetDeviceMetricsOverrideRequest|null): Promise<any> {
+  async emulateDevice(metrics: Protocol.Page.SetDeviceMetricsOverrideRequest|null): Promise<void> {
     if (metrics) {
       await this._emulationAgent.invoke_setDeviceMetricsOverride(metrics);
     } else {
@@ -196,9 +192,7 @@ export class EmulationModel extends SDKModel {
             {userAgent: MultitargetNetworkManager.instance().currentUserAgent()}),
       ]);
     } else {
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      function processEmulationResult(errorType: string, result: any): Promise<void> {
+      function processEmulationResult(errorType: string, result: Protocol.ProtocolResponseWithError): Promise<void> {
         const errorMessage = result.getError();
         if (errorMessage) {
           return Promise.reject({
@@ -214,7 +208,7 @@ export class EmulationModel extends SDKModel {
             .invoke_setGeolocationOverride({
               latitude: location.latitude,
               longitude: location.longitude,
-              accuracy: Location.DefaultGeoMockAccuracy,
+              accuracy: Location.defaultGeoMockAccuracy,
             })
             .then(result => processEmulationResult('emulation-set-location', result)),
         this._emulationAgent
@@ -333,23 +327,23 @@ export class EmulationModel extends SDKModel {
 
   _updateCssMedia(): void {
     // See the note above, where this._mediaConfiguration is defined.
-    const type = this._mediaConfiguration.get('type');
+    const type = this._mediaConfiguration.get('type') ?? '';
     const features = [
       {
         name: 'prefers-color-scheme',
-        value: this._mediaConfiguration.get('prefers-color-scheme'),
+        value: this._mediaConfiguration.get('prefers-color-scheme') ?? '',
       },
       {
         name: 'prefers-reduced-motion',
-        value: this._mediaConfiguration.get('prefers-reduced-motion'),
+        value: this._mediaConfiguration.get('prefers-reduced-motion') ?? '',
       },
       {
         name: 'prefers-reduced-data',
-        value: this._mediaConfiguration.get('prefers-reduced-data'),
+        value: this._mediaConfiguration.get('prefers-reduced-data') ?? '',
       },
       {
         name: 'color-gamut',
-        value: this._mediaConfiguration.get('color-gamut'),
+        value: this._mediaConfiguration.get('color-gamut') ?? '',
       },
     ];
     this._emulateCSSMedia(type, features);
@@ -448,9 +442,7 @@ export class Location {
     return `${this.latitude}@${this.longitude}:${this.timezoneId}:${this.locale}:${this.error || ''}`;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  static DefaultGeoMockAccuracy = 150;
+  static defaultGeoMockAccuracy = 150;
 }
 
 export class DeviceOrientation {

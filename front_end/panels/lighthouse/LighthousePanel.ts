@@ -304,7 +304,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     if (!resourceTreeModel) {
       return;
     }
-    return resourceTreeModel.once(SDK.ResourceTreeModel.Events.Load);
+    await resourceTreeModel.once(SDK.ResourceTreeModel.Events.Load);
   }
 
   _buildReportUI(lighthouseResult: ReportRenderer.ReportJSON, artifacts?: ReportRenderer.RunnerResultArtifacts): void {

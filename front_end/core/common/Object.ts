@@ -53,9 +53,7 @@ export class ObjectWrapper implements EventTarget {
     return {eventTarget: this, eventType, thisObject, listener};
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  once(eventType: string|symbol): Promise<any> {
+  once(eventType: string|symbol): Promise<unknown> {
     return new Promise(resolve => {
       const descriptor = this.addEventListener(eventType, event => {
         this.removeEventListener(eventType, descriptor.listener);
@@ -90,7 +88,7 @@ export class ObjectWrapper implements EventTarget {
     if (!listeners) {
       return;
     }
-    const event = {data: eventData} as EventTargetEvent;
+    const event = {data: eventData};
     // Work on a snapshot of the current listeners, callbacks might remove/add
     // new listeners.
     for (const listener of [...listeners]) {

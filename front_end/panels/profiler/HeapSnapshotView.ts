@@ -780,7 +780,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     const option = this._perspectiveSelect.options().find(option => option.value === String(perspectiveIndex));
     this._perspectiveSelect.select((option as Element));
     this._changePerspective(perspectiveIndex);
-    return promise;
+    await promise;
   }
 
   async _updateDataSourceAndView(): Promise<void> {

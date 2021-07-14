@@ -909,7 +909,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
       eventTopic: string, eventTarget: Common.EventTarget.EventTarget, frontendEventType: string,
       handler: (arg0: Common.EventTarget.EventTargetEvent) => unknown): void {
     this._registerSubscriptionHandler(
-        eventTopic, eventTarget.addEventListener.bind(eventTarget, frontendEventType, handler, this),
+        eventTopic, () => eventTarget.addEventListener(frontendEventType, handler, this),
         eventTarget.removeEventListener.bind(eventTarget, frontendEventType, handler, this));
   }
 

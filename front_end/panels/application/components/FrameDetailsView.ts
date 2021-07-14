@@ -26,6 +26,8 @@ import type {OriginTrialTreeViewData} from './OriginTrialTreeView.js';
 import {OriginTrialTreeView} from './OriginTrialTreeView.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
+import frameDetailsReportViewStyles from './frameDetailsReportView.css.js';
+
 const UIStrings = {
   /**
   *@description Section header in the Frame Details view
@@ -269,6 +271,7 @@ export class FrameDetailsReportView extends HTMLElement {
 
   connectedCallback(): void {
     this.protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled('protocolMonitor');
+    this.shadow.adoptedStyleSheets = [frameDetailsReportViewStyles];
   }
 
   set data(data: FrameDetailsReportViewData) {
@@ -287,68 +290,7 @@ export class FrameDetailsReportView extends HTMLElement {
 
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
       LitHtml.render(LitHtml.html`
-        <style>
-          .text-ellipsis {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-          }
-
-          button ~ .text-ellipsis {
-            padding-left: 2px;
-          }
-
-          .link,
-          .devtools-link {
-            color: var(--color-link);
-            text-decoration: underline;
-            cursor: pointer;
-            padding: 2px 0; /* adjust focus ring size */
-          }
-
-          button.link {
-            border: none;
-            background: none;
-            font-family: inherit;
-            font-size: inherit;
-          }
-
-          .inline-comment {
-            padding-left: 1ex;
-            white-space: pre-line;
-          }
-
-          .inline-comment::before {
-            content: "(";
-          }
-
-          .inline-comment::after {
-            content: ")";
-          }
-
-          .inline-name {
-            color: var(--color-text-secondary);
-            padding-left: 2ex;
-            user-select: none;
-            white-space: pre-line;
-          }
-
-          .inline-name::after {
-            content: ':\u00a0';
-          }
-
-          .inline-items {
-            display: flex;
-          }
-
-          .span-cols {
-            grid-column-start: span 2;
-            margin: 0 0 8px 30px;
-            line-height: 28px;
-          }
-        </style>
         <${ReportView.ReportView.Report.litTagName} .data=${{reportTitle: this.frame.displayName()} as ReportView.ReportView.ReportData}>
           ${this.renderDocumentSection()}
           ${this.renderIsolationSection()}
@@ -516,17 +458,7 @@ export class FrameDetailsReportView extends HTMLElement {
       if (linkTargetDOMNode) {
         // Disabled until https://crbug.com/1079231 is fixed.
         // clang-format off
-        // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
         return LitHtml.html`
-          <style>
-            .button-icon-with-text {
-              vertical-align: sub;
-            }
-
-            .without-min-width {
-              min-width: auto;
-            }
-          </style>
             <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.ownerElement)}</${ReportView.ReportView.ReportKey.litTagName}>
           <${ReportView.ReportView.ReportValue.litTagName} class="without-min-width">
               <button class="link" role="link" tabindex=0 title=${i18nString(UIStrings.clickToRevealInElementsPanel)}

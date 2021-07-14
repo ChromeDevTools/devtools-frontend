@@ -11,6 +11,7 @@ import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../ui/components/report_view/report_view.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import permissionsPolicySectionStyles from './permissionsPolicySection.css.js';
 
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Common from '../../../core/common/common.js';
@@ -89,6 +90,10 @@ export class PermissionsPolicySection extends HTMLElement {
   set data(data: PermissionsPolicySectionData) {
     this.permissionsPolicySectionData = data;
     this.render();
+  }
+
+  connectedCallback(): void {
+    this.shadow.adoptedStyleSheets = [permissionsPolicySectionStyles];
   }
 
   private toggleShowPermissionsDisallowedDetails(): void {
@@ -187,33 +192,10 @@ export class PermissionsPolicySection extends HTMLElement {
       `;
     }));
 
-    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
     return LitHtml.html`
       <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.disabledFeatures)}</${
         ReportView.ReportView.ReportKey.litTagName}>
       <${ReportView.ReportView.ReportValue.litTagName} class="policies-list">
-        <style>
-          .permissions-row {
-            display: flex;
-            line-height: 22px;
-          }
-
-          .permissions-row div {
-            padding-right: 5px;
-          }
-
-          .feature-name {
-            width: 135px;
-          }
-
-          .allowed-icon {
-            padding: 2.5px 0;
-          }
-
-          .block-reason {
-            width: 215px;
-          }
-        </style>
         ${featureRows}
         <div class="permissions-row">
           <button class="link" @click=${(): void => this.toggleShowPermissionsDisallowedDetails()}>
@@ -229,38 +211,7 @@ export class PermissionsPolicySection extends HTMLElement {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       LitHtml.render(
-        // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
         LitHtml.html`
-          <style>
-            :host {
-              display: contents;
-            }
-
-            .text-ellipsis {
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-            }
-
-            .link,
-            .devtools-link {
-              color: var(--color-link);
-              text-decoration: underline;
-              cursor: pointer;
-              padding: 2px 0; /* adjust focus ring size */
-            }
-
-            button.link {
-              border: none;
-              background: none;
-              font-family: inherit;
-              font-size: inherit;
-            }
-
-            .policies-list {
-              padding-top: 3px;
-            }
-          </style>
           <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18n.i18n.lockedString('Permissions Policy')}</${
             ReportView.ReportView.ReportSectionHeader.litTagName}>
           ${this.renderAllowed()}

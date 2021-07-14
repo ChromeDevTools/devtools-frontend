@@ -12,6 +12,7 @@ generate_css("css_files") {
     "linearMemoryInspector.css",
     "linearMemoryNavigator.css",
     "linearMemoryValueInterpreter.css",
+    "linearMemoryViewer.css",
     "valueInterpreterDisplay.css",
     "valueInterpreterSettings.css",
   ]

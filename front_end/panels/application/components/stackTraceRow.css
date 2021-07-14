@@ -1,0 +1,28 @@
+/*
+ * Copyright (c) 2021 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.stack-trace-row {
+  display: flex;
+}
+
+.stack-trace-function-name {
+  width: 100px;
+}
+
+.stack-trace-source-location {
+  display: flex;
+  overflow: hidden;
+}
+
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ignore-list-link {
+  opacity: 60%;
+}

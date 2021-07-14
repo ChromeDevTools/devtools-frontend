@@ -785,6 +785,8 @@ grd_files_debug_sources = [
   "front_end/panels/application/components/PermissionsPolicySection.js",
   "front_end/panels/application/components/StackTrace.js",
   "front_end/panels/application/components/TrustTokensView.js",
+  "front_end/panels/application/components/stackTraceLinkButton.css.js",
+  "front_end/panels/application/components/stackTraceRow.css.js",
   "front_end/panels/application/components/trustTokensView.css.js",
   "front_end/panels/application/components/trustTokensViewDeleteButton.css.js",
   "front_end/panels/browser_debugger/CSPViolationBreakpointsSidebarPane.js",

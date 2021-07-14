@@ -10,6 +10,9 @@ import * as Components from '../../../ui/legacy/components/utils/utils.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import type * as Protocol from '../../../generated/protocol.js';
 
+import stackTraceRowStyles from './stackTraceRow.css.js';
+import stackTraceLinkButtonStyles from './stackTraceLinkButton.css.js';
+
 const UIStrings = {
   /**
   *@description Error message stating that something went wrong when tring to render stack trace
@@ -33,6 +36,88 @@ export interface StackTraceData {
       updateCallback?: (arg0: (Components.JSPresentationUtils.StackTraceRegularRow|
                                Components.JSPresentationUtils.StackTraceAsyncRow)[]) => void,
       ) => (Components.JSPresentationUtils.StackTraceRegularRow | Components.JSPresentationUtils.StackTraceAsyncRow)[];
+}
+
+interface StackTraceRowData {
+  stackTraceRowItem: Components.JSPresentationUtils.StackTraceRegularRow;
+}
+
+export class StackTraceRow extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-stack-trace-row`;
+  private readonly shadow = this.attachShadow({mode: 'open'});
+
+  private stackTraceRowItem: Components.JSPresentationUtils.StackTraceRegularRow|null = null;
+
+  set data(data: StackTraceRowData) {
+    this.stackTraceRowItem = data.stackTraceRowItem;
+    this.render();
+  }
+
+  connectedCallback(): void {
+    this.shadow.adoptedStyleSheets = [stackTraceRowStyles];
+  }
+
+  private render(): void {
+    if (!this.stackTraceRowItem) {
+      return;
+    }
+    LitHtml.render(
+        LitHtml.html`
+      <div class="stack-trace-row">
+              <div class="stack-trace-function-name text-ellipsis" title="${this.stackTraceRowItem.functionName}">
+                ${this.stackTraceRowItem.functionName}
+              </div>
+              <div class="stack-trace-source-location">
+                ${
+            this.stackTraceRowItem.link ?
+                LitHtml.html`<div class="text-ellipsis">\xA0@\xA0${this.stackTraceRowItem.link}</div>` :
+                LitHtml.nothing}
+              </div>
+            </div>
+    `,
+        this.shadow, {host: this});
+  }
+}
+
+interface StackTraceLinkButtonData {
+  onShowAllClick: () => void;
+  hiddenCallFramesCount: number;
+}
+
+export class StackTraceLinkButton extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-stack-trace-link-button`;
+  private readonly shadow = this.attachShadow({mode: 'open'});
+
+  private onShowAllClick: () => void = () => {};
+  private hiddenCallFramesCount: number|null = null;
+
+  set data(data: StackTraceLinkButtonData) {
+    this.onShowAllClick = data.onShowAllClick;
+    this.hiddenCallFramesCount = data.hiddenCallFramesCount;
+    this.render();
+  }
+
+  connectedCallback(): void {
+    this.shadow.adoptedStyleSheets = [stackTraceLinkButtonStyles];
+  }
+
+  private render(): void {
+    if (!this.hiddenCallFramesCount) {
+      return;
+    }
+
+    LitHtml.render(
+        LitHtml.html`
+      <div class="stack-trace-row">
+          <button class="link" @click=${(): void => this.onShowAllClick()}>
+            ${i18nString(UIStrings.showSMoreFrames, {
+          n: this.hiddenCallFramesCount,
+        })}
+          </button>
+        </div>
+    `,
+        this.shadow, {host: this});
+  }
 }
 
 export class StackTrace extends HTMLElement {
@@ -71,41 +156,10 @@ export class StackTrace extends HTMLElement {
     for (const item of this.stackTraceRows) {
       if (this.showHidden || (!item.ignoreListHide && !item.rowCountHide)) {
         if ('functionName' in item) {
-          // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
           expandableRows.push(LitHtml.html`
-            <style>
-              .stack-trace-row {
-                display: flex;
-              }
-
-              .stack-trace-function-name {
-                width: 100px;
-              }
-
-              .stack-trace-source-location {
-                display: flex;
-                overflow: hidden;
-              }
-
-              .text-ellipsis {
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-              }
-
-              .ignore-list-link {
-                opacity: 60%;
-              }
-            </style>
-            <div class="stack-trace-row">
-              <div class="stack-trace-function-name text-ellipsis" title="${item.functionName}">
-                ${item.functionName}
-              </div>
-              <div class="stack-trace-source-location">
-                ${item.link ? LitHtml.html`<div class="text-ellipsis">\xA0@\xA0${item.link}</div>` : LitHtml.nothing}
-              </div>
-            </div>
-          `);
+          <${StackTraceRow.litTagName} data-stack-trace-row .data=${{
+            stackTraceRowItem: item,
+          } as StackTraceRowData}></${StackTraceRow.litTagName}>`);
         }
         if ('asyncDescription' in item) {
           expandableRows.push(LitHtml.html`
@@ -120,28 +174,12 @@ export class StackTrace extends HTMLElement {
     if (hiddenCallFramesCount) {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
       expandableRows.push(LitHtml.html`
-        <style>
-          button.link {
-            color: var(--color-link);
-            text-decoration: underline;
-            cursor: pointer;
-            padding: 2px 0; /* adjust focus ring size */
-            border: none;
-            background: none;
-            font-family: inherit;
-            font-size: inherit;
-          }
-        </style>
-        <div class="stack-trace-row">
-          <button class="link" @click=${(): void => this.onShowAllClick()}>
-            ${i18nString(UIStrings.showSMoreFrames, {n: hiddenCallFramesCount})}
-          </button>
-        </div>
+      <${StackTraceLinkButton.litTagName} data-stack-trace-row .data=${{onShowAllClick: this.onShowAllClick.bind(this), hiddenCallFramesCount: hiddenCallFramesCount} as StackTraceLinkButtonData}></${StackTraceLinkButton.litTagName}>
       `);
       // clang-format on
     }
+
     return expandableRows;
   }
 
@@ -169,11 +207,18 @@ export class StackTrace extends HTMLElement {
   }
 }
 
+
+// TODO(jacktfranklin): re-enable once https://crbug.com/1226741 is resolved.
+// eslint-disable-next-line rulesdir/check_component_naming
+ComponentHelpers.CustomElements.defineComponent('devtools-stack-trace-row', StackTraceRow);
+ComponentHelpers.CustomElements.defineComponent('devtools-stack-trace-link-button', StackTraceLinkButton);
 ComponentHelpers.CustomElements.defineComponent('devtools-resources-stack-trace', StackTrace);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
+    'devtools-stack-trace-row': StackTraceRow;
+    'devtools-stack-trace-link-button': StackTraceLinkButton;
     'devtools-resources-stack-trace': StackTrace;
   }
 }

@@ -17,9 +17,7 @@ export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper {
   _isHidden: boolean;
   _anchorElement: Element|null;
   _view?: UI.Widget.Widget;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _hiddenCallback?: ((arg0: boolean) => any);
+  _hiddenCallback?: ((arg0: boolean) => void);
   _focusRestorer?: UI.Widget.WidgetFocusRestorer;
 
   constructor() {
@@ -50,9 +48,7 @@ export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper {
     return this._popover.isShowing();
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  show(view: UI.Widget.Widget, anchorElement: Element, hiddenCallback?: ((arg0: boolean) => any)): void {
+  show(view: UI.Widget.Widget, anchorElement: Element, hiddenCallback?: ((arg0: boolean) => void)): void {
     if (this._popover.isShowing()) {
       if (this._anchorElement === anchorElement) {
         return;

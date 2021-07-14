@@ -63,7 +63,7 @@
     "message": "ARIA `meter` öğelerinin erişilebilir özellikli adları var"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "Bir öğenin erişilebilir özellikli adı olmadığında ekran okuyucular tarafından genel adla okunur ve öğe, ekran okuyuculardan yararlanan kullanıcılar için kullanılamaz hale gelir. [Daha fazla bilgi](https://web.dev/aria-name/)."
+    "message": "`progressbar` öğesinin erişilebilir özellikli adı olmadığında ekran okuyucular tarafından genel adla okunur, dolayısıyla ekran okuyuculardan yararlananlar için kullanışsız olur. [Daha fazla bilgi](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "ARIA `progressbar` öğelerinin erişilebilir özellikli adları yok."
@@ -585,13 +585,13 @@
     "message": "Yönerge"
   },
   "lighthouse-core/audits/csp-xss.js | columnSeverity": {
-    "message": "Severity"
+    "message": "Önem derecesi"
   },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "Güçlü bir İçerik Güvenliği Politikası (İGP), siteler arası komut dosyası çalıştırma (XSS) saldırısı riskini önemli ölçüde azaltır. [Daha fazla bilgi](https://web.dev/strict-csp/)"
+    "message": "Güçlü bir İçerik Güvenliği Politikası (İGP), siteler arası komut dosyası çalıştırma (XSS) saldırısı riskini önemli ölçüde azaltır. [Daha fazla bilgi](https://web.dev/csp-xss/)"
   },
   "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
-    "message": "Syntax"
+    "message": "Söz dizimi"
   },
   "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
     "message": "Bu sayfa <meta> etikette tanımlanmış bir CSP içeriyor. Mümkünse CSP'yi bir HTTP başlığında tanımlayın."
@@ -903,10 +903,10 @@
     "message": "Manifest dosyası bir \"name\" veya \"short_name\" alanı içermiyor"
   },
   "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "Manifest dosyası uygun bir simge içermiyor. En az {value0} piksel değerinde bir PNG, SVG veya WebP biçimi gerekli olup sizes özelliği ayarlanmalıdır. Ayrıca purpose özelliği ayarlanacaksa \"any\" veya \"maskable\" değerini içermelidir."
+    "message": "Manifest dosyası uygun bir simge içermiyor. En az {value0} piksel değerinde bir PNG, SVG veya WebP biçimi gerekli olup sizes özelliği ayarlanmalıdır. Ayrıca purpose özelliği ayarlanacaksa \"any\" ifadesini içermelidir."
   },
   "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "Sağlanan simgelerden hiçbiri en az {value0} piksel kare değerinde ve PNG, SVG ya da WebP biçiminde değil"
+    "message": "Sağlananlar arasında PNG, SVG veya WebP biçiminde, en az {value0} piksel ölçüsünde bir kare şeklinde, amaç özelliği ayarlanmamış ya da \"any\" olarak ayarlanmış bir simge yok"
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
     "message": "İndirilen simge boş veya bozuktu"
@@ -1955,144 +1955,6 @@
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Sağladığınız URL'nin geçersiz olduğu anlaşılıyor."
   },
-  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
-    "message": "Hesap makinesini göster."
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
-    "message": "İlk Gezinme"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "Maksimum kritik yol gecikmesi:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
-    "message": "JSON nesnesini kopyala"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "Koyu Temayı aç/kapat"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
-    "message": "Yazdırma Genişletmesi"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
-    "message": "Yazdırma Özeti"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
-    "message": "Gist olarak kaydet"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
-    "message": "HTML olarak kaydet"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
-    "message": "JSON nesnesi olarak kaydet"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
-    "message": "Görüntüleyicide aç"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
-    "message": "Hata!"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
-    "message": "Bildirme hatası: denetim bilgisi yok"
-  },
-  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
-    "message": "Sorun bildir"
-  },
-  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
-    "message": "Test Verileri"
-  },
-  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
-    "message": "Mevcut sayfanın mobil ağ kullanılarak gerçekleştirilen [Lighthouse](https://developers.google.com/web/tools/lighthouse/) analizi. Değerler tahminidir ve değişiklik gösterebilir."
-  },
-  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
-    "message": "Manuel olarak kontrol edilecek ek öğeler"
-  },
-  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
-    "message": "Geçerli değil"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
-    "message": "Fırsat"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
-    "message": "Tahmini Tasarruf Miktarı"
-  },
-  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
-    "message": "Başarılı denetimler"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
-    "message": "Emülasyonlu Masaüstü"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
-    "message": "Emülasyonlu Moto G4"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
-    "message": "Emülasyon yok"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
-    "message": "Axe sürümü"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
-    "message": "CPU/Bellek Gücü"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
-    "message": "CPU kısıtlaması"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Kanal"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
-    "message": "Cihaz"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Alınma Zamanı"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
-    "message": "Ağ sınırlama"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Çalışma Zamanı Ayarları"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
-    "message": "Kullanıcı aracısı (ana makine)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
-    "message": "Kullanıcı aracısı (ağ)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
-    "message": "Bilinmiyor"
-  },
-  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
-    "message": "Şunlarla alakalı denetimleri göster:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
-    "message": "Snippet'i daralt"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
-    "message": "Snippet'i genişlet"
-  },
-  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "3. taraf kaynaklarını göster"
-  },
-  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
-    "message": "Ortam tarafından sağlandı"
-  },
-  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
-    "message": "Şu Lighthouse çalışmasını etkileyen sorunlar vardı:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "Değerler tahminidir ve değişiklik gösterebilir. [Performance skorunun hesaplanması ](https://web.dev/performance-scoring/), doğrudan bu metriklerle yapılır."
-  },
-  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
-    "message": "Ağaç grafiği göster"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
-    "message": "Kontrollerden geçti, ancak uyarılar var"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
-    "message": "Uyarılar: "
-  },
   "lighthouse-treemap/app/src/util.js | allLabel": {
     "message": "Tümü"
   },
@@ -2380,5 +2242,143 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "Web sunucunuzun yapılandırmasında metin sıkıştırmayı etkinleştirebilirsiniz."
+  },
+  "report/renderer/util.js | calculatorLink": {
+    "message": "Hesap makinesini göster."
+  },
+  "report/renderer/util.js | crcInitialNavigation": {
+    "message": "İlk Gezinme"
+  },
+  "report/renderer/util.js | crcLongestDurationLabel": {
+    "message": "Maksimum kritik yol gecikmesi:"
+  },
+  "report/renderer/util.js | dropdownCopyJSON": {
+    "message": "JSON nesnesini kopyala"
+  },
+  "report/renderer/util.js | dropdownDarkTheme": {
+    "message": "Koyu Temayı aç/kapat"
+  },
+  "report/renderer/util.js | dropdownPrintExpanded": {
+    "message": "Yazdırma Genişletmesi"
+  },
+  "report/renderer/util.js | dropdownPrintSummary": {
+    "message": "Yazdırma Özeti"
+  },
+  "report/renderer/util.js | dropdownSaveGist": {
+    "message": "Gist olarak kaydet"
+  },
+  "report/renderer/util.js | dropdownSaveHTML": {
+    "message": "HTML olarak kaydet"
+  },
+  "report/renderer/util.js | dropdownSaveJSON": {
+    "message": "JSON nesnesi olarak kaydet"
+  },
+  "report/renderer/util.js | dropdownViewer": {
+    "message": "Görüntüleyicide aç"
+  },
+  "report/renderer/util.js | errorLabel": {
+    "message": "Hata!"
+  },
+  "report/renderer/util.js | errorMissingAuditInfo": {
+    "message": "Bildirme hatası: denetim bilgisi yok"
+  },
+  "report/renderer/util.js | footerIssue": {
+    "message": "Sorun bildir"
+  },
+  "report/renderer/util.js | labDataTitle": {
+    "message": "Test Verileri"
+  },
+  "report/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "Mevcut sayfanın mobil ağ kullanılarak gerçekleştirilen [Lighthouse](https://developers.google.com/web/tools/lighthouse/) analizi. Değerler tahminidir ve değişiklik gösterebilir."
+  },
+  "report/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "Manuel olarak kontrol edilecek ek öğeler"
+  },
+  "report/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "Geçerli değil"
+  },
+  "report/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "Fırsat"
+  },
+  "report/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "Tahmini Tasarruf Miktarı"
+  },
+  "report/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "Başarılı denetimler"
+  },
+  "report/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "Emülasyonlu Masaüstü"
+  },
+  "report/renderer/util.js | runtimeMobileEmulation": {
+    "message": "Emülasyonlu Moto G4"
+  },
+  "report/renderer/util.js | runtimeNoEmulation": {
+    "message": "Emülasyon yok"
+  },
+  "report/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "Axe sürümü"
+  },
+  "report/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "CPU/Bellek Gücü"
+  },
+  "report/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "CPU kısıtlaması"
+  },
+  "report/renderer/util.js | runtimeSettingsChannel": {
+    "message": "Kanal"
+  },
+  "report/renderer/util.js | runtimeSettingsDevice": {
+    "message": "Cihaz"
+  },
+  "report/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "Alınma Zamanı"
+  },
+  "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "Ağ sınırlama"
+  },
+  "report/renderer/util.js | runtimeSettingsTitle": {
+    "message": "Çalışma Zamanı Ayarları"
+  },
+  "report/renderer/util.js | runtimeSettingsUA": {
+    "message": "Kullanıcı aracısı (ana makine)"
+  },
+  "report/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "Kullanıcı aracısı (ağ)"
+  },
+  "report/renderer/util.js | runtimeSettingsUrl": {
+    "message": "URL"
+  },
+  "report/renderer/util.js | runtimeUnknown": {
+    "message": "Bilinmiyor"
+  },
+  "report/renderer/util.js | showRelevantAudits": {
+    "message": "Şunlarla alakalı denetimleri göster:"
+  },
+  "report/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "Snippet'i daralt"
+  },
+  "report/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "Snippet'i genişlet"
+  },
+  "report/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "3. taraf kaynaklarını göster"
+  },
+  "report/renderer/util.js | throttlingProvided": {
+    "message": "Ortam tarafından sağlandı"
+  },
+  "report/renderer/util.js | toplevelWarningsMessage": {
+    "message": "Şu Lighthouse çalışmasını etkileyen sorunlar vardı:"
+  },
+  "report/renderer/util.js | varianceDisclaimer": {
+    "message": "Değerler tahminidir ve değişiklik gösterebilir. [Performance skorunun hesaplanması ](https://web.dev/performance-scoring/), doğrudan bu metriklerle yapılır."
+  },
+  "report/renderer/util.js | viewTreemapLabel": {
+    "message": "Ağaç grafiği göster"
+  },
+  "report/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "Kontrollerden geçti, ancak uyarılar var"
+  },
+  "report/renderer/util.js | warningHeader": {
+    "message": "Uyarılar: "
   }
 }

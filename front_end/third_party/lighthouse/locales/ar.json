@@ -63,7 +63,7 @@
     "message": "تتوفّر لعناصر ARIA `meter` أسماء يمكن الوصول إليها"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "إذا لم يتوفّر لأحد العناصر اسم يمكن الوصول إليه، ستقرأه برامج قراءة الشاشة مستخدمةً اسمًا عامًا له، ما يجعله غير قابل للاستخدام لدى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [مزيد من المعلومات](https://web.dev/aria-name/)"
+    "message": "عندما لا يكون اسم أحد عناصر `progressbar` ظاهرًا على واجهة المستخدم، تشير برامج قراءة الشاشة إلى هذا العنصر بصفة عامة، ما يجعله غير قابل للاستخدام بالنسبة إلى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [يُرجى الاطّلاع على مزيد من المعلومات.](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "لا تتوفّر لعناصر ARIA `progressbar` أسماء يمكن الوصول إليها"
@@ -585,13 +585,13 @@
     "message": "أمر توجيهي"
   },
   "lighthouse-core/audits/csp-xss.js | columnSeverity": {
-    "message": "Severity"
+    "message": "درجة الخطورة"
   },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "تقلِّل سياسة Content Security Policy (CSP) القوية بشكل كبير من خطر هجمات cross-site scripting (XSS). [مزيد من المعلومات](https://web.dev/strict-csp/)"
+    "message": "تقلِّل سياسة Content Security Policy (CSP) القوية بشكل كبير من خطر هجمات cross-site scripting (XSS). [مزيد من المعلومات](https://web.dev/csp-xss/)"
   },
   "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
-    "message": "Syntax"
+    "message": "البنية"
   },
   "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
     "message": "تحتوي الصفحة على سياسة CSP تم تحديدها في علامة <meta>. ننصحك بتحديد سياسة CSP في عنوان HTTP إذا كان ذلك ممكنًا."
@@ -903,10 +903,10 @@
     "message": "لا يتضمّن ملف البيان حقل \"name\" أو \"short_name\"."
   },
   "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "لا يتضمّن ملف البيان رمزًا مناسبًا. يجب استخدام تنسيق PNG أو SVG أو WebP بحجم {value0} بكسل على الأقل، ويجب ضبط السمة \"sizes\" (الأحجام) وأن تتضمّن السمة \"purpose\" (الغرض) القيمة \"any\" أو \"maskable\" حال ضبطها."
+    "message": "لا يتضمّن ملف البيان رمزًا مناسبًا. يجب استخدام رمز بتنسيق PNG أو SVG أو WebP بحجم {value0} بكسل على الأقل، ويجب ضبط السمة \"sizes\"، وأن تتضمّن السمة \"purpose\" القيمة \"any\"."
   },
   "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "لا يتوفّر رمز بحجم {value0} بكسل مربّع على الأقل بتنسيق PNG أو SVG أو WebP."
+    "message": "لا يتوفّر رمز بحجم {value0} بكسل مربّع على الأقل بتنسيق PNG أو SVG أو WebP، بغرض عدم ضبط السمة أو ضبطها على \"أي تنسيق\"."
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
     "message": "الرمز الذي تم تحميله فارغ أو تالف."
@@ -1955,144 +1955,6 @@
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "يبدو أن عنوان URL الذي قدمته غير صحيح."
   },
-  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
-    "message": "اطّلِع على الآلة الحاسبة."
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
-    "message": "التنقل الأوّلي"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "الحد الأقصى لوقت استجابة المسار المهم:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
-    "message": "نسخ كائن JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "تبديل المظهر الداكن"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
-    "message": "توسيع مدى الطباعة"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
-    "message": "طباعة ملخّص التقرير"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
-    "message": "حفظ بتنسيق Gist"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
-    "message": "حفظ بتنسيق HTML"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
-    "message": "حفظ بتنسيق JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
-    "message": "فتح في العارِض"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
-    "message": "خطأ!"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
-    "message": "الإبلاغ عن خطأ: لا تتوفَّر معلومات تدقيق"
-  },
-  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
-    "message": "الإبلاغ عن مشكلة"
-  },
-  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
-    "message": "بيانات المختبَر"
-  },
-  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
-    "message": "أجرت أداة [Lighthouse](https://developers.google.com/web/tools/lighthouse/) تحليلًا للصفحة الحالية على شبكة الجوّال في وضع المحاكاة. القيم تقديرية وقابلة للتغيير."
-  },
-  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
-    "message": "عناصر إضافية للتحقُّق يدويًا"
-  },
-  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
-    "message": "غير سارٍ"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
-    "message": "فرصة تحسين الأداء"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
-    "message": "التوفيرات المُقدرة"
-  },
-  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
-    "message": "اجتياز عمليات التدقيق بنجاح"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
-    "message": "محاكاة سطح المكتب"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
-    "message": "محاكاة Moto G4"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
-    "message": "بلا محاكاة"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
-    "message": "إصدار Axe"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
-    "message": "طاقة وحدة المعالجة المركزية (CPU)/الذاكرة"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
-    "message": "تقييد وحدة المعالجة المركزية (CPU)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
-    "message": "قناة"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
-    "message": "جهاز"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "وقت الإجراء"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
-    "message": "ضبط الحد الأقصى المسموح لعرض نطاق الشبكة"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
-    "message": "إعدادات وقت التشغيل"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
-    "message": "وكيل المستخدم (مضيف)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
-    "message": "وكيل المستخدم (شبكة)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
-    "message": "عنوان URL"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
-    "message": "غير معروف"
-  },
-  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
-    "message": "عرض عمليات التدقيق المرتبطة بالمقاييس:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
-    "message": "تصغير المقتطف"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
-    "message": "توسيع المقتطف"
-  },
-  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "عرض موارد الجهات الخارجية"
-  },
-  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
-    "message": "مقدَّم من البيئة"
-  },
-  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
-    "message": "حدثت مشاكل تؤثر في تشغيل Lighthouse:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "القيم تقديرية وقابلة للتغيير. ويتم [حساب نتيجة الأداء](https://web.dev/performance-scoring/) مباشرة من خلال هذه المقاييس."
-  },
-  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
-    "message": "عرض \"المخطّط الهيكلي\""
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
-    "message": "عمليات التدقيق التي تم اجتيازها، ولكن تتضمّن التحذيرات"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
-    "message": "التحذيرات: "
-  },
   "lighthouse-treemap/app/src/util.js | allLabel": {
     "message": "الكل"
   },
@@ -2380,5 +2242,143 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "يمكنك تفعيل ضغط النص في إعداد خادم الويب."
+  },
+  "report/renderer/util.js | calculatorLink": {
+    "message": "اطّلِع على الآلة الحاسبة."
+  },
+  "report/renderer/util.js | crcInitialNavigation": {
+    "message": "التنقل الأوّلي"
+  },
+  "report/renderer/util.js | crcLongestDurationLabel": {
+    "message": "الحد الأقصى لوقت استجابة المسار المهم:"
+  },
+  "report/renderer/util.js | dropdownCopyJSON": {
+    "message": "نسخ كائن JSON"
+  },
+  "report/renderer/util.js | dropdownDarkTheme": {
+    "message": "تبديل المظهر الداكن"
+  },
+  "report/renderer/util.js | dropdownPrintExpanded": {
+    "message": "توسيع مدى الطباعة"
+  },
+  "report/renderer/util.js | dropdownPrintSummary": {
+    "message": "طباعة ملخّص التقرير"
+  },
+  "report/renderer/util.js | dropdownSaveGist": {
+    "message": "حفظ بتنسيق Gist"
+  },
+  "report/renderer/util.js | dropdownSaveHTML": {
+    "message": "حفظ بتنسيق HTML"
+  },
+  "report/renderer/util.js | dropdownSaveJSON": {
+    "message": "حفظ بتنسيق JSON"
+  },
+  "report/renderer/util.js | dropdownViewer": {
+    "message": "فتح في العارِض"
+  },
+  "report/renderer/util.js | errorLabel": {
+    "message": "خطأ!"
+  },
+  "report/renderer/util.js | errorMissingAuditInfo": {
+    "message": "الإبلاغ عن خطأ: لا تتوفَّر معلومات تدقيق"
+  },
+  "report/renderer/util.js | footerIssue": {
+    "message": "الإبلاغ عن مشكلة"
+  },
+  "report/renderer/util.js | labDataTitle": {
+    "message": "بيانات المختبَر"
+  },
+  "report/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "أجرت أداة [Lighthouse](https://developers.google.com/web/tools/lighthouse/) تحليلًا للصفحة الحالية على شبكة الجوّال في وضع المحاكاة. القيم تقديرية وقابلة للتغيير."
+  },
+  "report/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "عناصر إضافية للتحقُّق يدويًا"
+  },
+  "report/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "غير سارٍ"
+  },
+  "report/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "فرصة تحسين الأداء"
+  },
+  "report/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "التوفيرات المُقدرة"
+  },
+  "report/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "اجتياز عمليات التدقيق بنجاح"
+  },
+  "report/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "محاكاة سطح المكتب"
+  },
+  "report/renderer/util.js | runtimeMobileEmulation": {
+    "message": "محاكاة Moto G4"
+  },
+  "report/renderer/util.js | runtimeNoEmulation": {
+    "message": "بلا محاكاة"
+  },
+  "report/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "إصدار Axe"
+  },
+  "report/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "طاقة وحدة المعالجة المركزية (CPU)/الذاكرة"
+  },
+  "report/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "تقييد وحدة المعالجة المركزية (CPU)"
+  },
+  "report/renderer/util.js | runtimeSettingsChannel": {
+    "message": "قناة"
+  },
+  "report/renderer/util.js | runtimeSettingsDevice": {
+    "message": "جهاز"
+  },
+  "report/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "وقت الإجراء"
+  },
+  "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "ضبط الحد الأقصى المسموح لعرض نطاق الشبكة"
+  },
+  "report/renderer/util.js | runtimeSettingsTitle": {
+    "message": "إعدادات وقت التشغيل"
+  },
+  "report/renderer/util.js | runtimeSettingsUA": {
+    "message": "وكيل المستخدم (مضيف)"
+  },
+  "report/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "وكيل المستخدم (شبكة)"
+  },
+  "report/renderer/util.js | runtimeSettingsUrl": {
+    "message": "عنوان URL"
+  },
+  "report/renderer/util.js | runtimeUnknown": {
+    "message": "غير معروف"
+  },
+  "report/renderer/util.js | showRelevantAudits": {
+    "message": "عرض عمليات التدقيق المرتبطة بالمقاييس:"
+  },
+  "report/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "تصغير المقتطف"
+  },
+  "report/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "توسيع المقتطف"
+  },
+  "report/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "عرض موارد الجهات الخارجية"
+  },
+  "report/renderer/util.js | throttlingProvided": {
+    "message": "مقدَّم من البيئة"
+  },
+  "report/renderer/util.js | toplevelWarningsMessage": {
+    "message": "حدثت مشاكل تؤثر في تشغيل Lighthouse:"
+  },
+  "report/renderer/util.js | varianceDisclaimer": {
+    "message": "القيم تقديرية وقابلة للتغيير. ويتم [حساب نتيجة الأداء](https://web.dev/performance-scoring/) مباشرة من خلال هذه المقاييس."
+  },
+  "report/renderer/util.js | viewTreemapLabel": {
+    "message": "عرض \"المخطّط الهيكلي\""
+  },
+  "report/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "عمليات التدقيق التي تم اجتيازها، ولكن تتضمّن التحذيرات"
+  },
+  "report/renderer/util.js | warningHeader": {
+    "message": "التحذيرات: "
   }
 }

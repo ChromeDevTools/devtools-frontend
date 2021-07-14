@@ -63,7 +63,7 @@
     "message": "ARIA `meter` elements have accessible names"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "When an element doesn't have an accessible name, screen readers announce it with a generic name, making it unusable for users who rely on screen readers. [Learn more](https://web.dev/aria-name/)."
+    "message": "When a `progressbar` element doesn't have an accessible name, screen readers announce it with a generic name, making it unusable for users who rely on screen readers. [Learn more](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "ARIA `progressbar` elements do not have accessible names."
@@ -477,7 +477,7 @@
     "message": "Avoid serving legacy JavaScript to modern browsers"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "Image formats like JPEG 2000, JPEG XR, and WebP often provide better compression than PNG or JPEG, which means faster downloads and less data consumption. [Learn more](https://web.dev/uses-webp-images/)."
+    "message": "Image formats like WebP and AVIF often provide better compression than PNG or JPEG, which means faster downloads and less data consumption. [Learn more](https://web.dev/uses-webp-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "Serve images in next-gen formats"
@@ -548,6 +548,12 @@
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Efficiently encode images"
   },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "Actual dimensions"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "Displayed dimensions"
+  },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Serve images that are appropriately-sized to save cellular data and improve load time. [Learn more](https://web.dev/uses-responsive-images/)."
   },
@@ -588,7 +594,7 @@
     "message": "Severity"
   },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "A strong Content Security Policy (CSP) significantly reduces the risk of cross-site scripting (XSS) attacks. [Learn more](https://web.dev/strict-csp/)"
+    "message": "A strong Content Security Policy (CSP) significantly reduces the risk of cross-site scripting (XSS) attacks. [Learn more](https://web.dev/csp-xss/)"
   },
   "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
     "message": "Syntax"
@@ -903,10 +909,10 @@
     "message": "Manifest does not contain a 'name' or 'short_name' field"
   },
   "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "Manifest does not contain a suitable icon - PNG, SVG or WebP format of at least {value0} px is required, the sizes attribute must be set, and the purpose attribute, if set, must include \"any\" or \"maskable\"."
+    "message": "Manifest does not contain a suitable icon - PNG, SVG or WebP format of at least {value0} px is required, the sizes attribute must be set, and the purpose attribute, if set, must include \"any\"."
   },
   "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "No supplied icon is at least {value0} px square in PNG, SVG or WebP format"
+    "message": "No supplied icon is at least {value0} px square in PNG, SVG or WebP format, with the purpose attribute unset or set to \"any\""
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
     "message": "Downloaded icon was empty or corrupted"
@@ -1200,7 +1206,7 @@
     "message": "Points to another `hreflang` location ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "Relative URL ({url})"
+    "message": "Is not an absolute URL ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "Points to the domain's root URL (the homepage), instead of an equivalent page of content"
@@ -1955,144 +1961,6 @@
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "The URL you have provided appears to be invalid."
   },
-  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
-    "message": "See calculator."
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
-    "message": "Initial Navigation"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "Maximum critical path latency:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
-    "message": "Copy JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "Toggle Dark Theme"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
-    "message": "Print Expanded"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
-    "message": "Print Summary"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
-    "message": "Save as Gist"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
-    "message": "Save as HTML"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
-    "message": "Save as JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
-    "message": "Open in Viewer"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
-    "message": "Error!"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
-    "message": "Report error: no audit information"
-  },
-  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
-    "message": "File an issue"
-  },
-  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
-    "message": "Lab Data"
-  },
-  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
-    "message": "[Lighthouse](https://developers.google.com/web/tools/lighthouse/) analysis of the current page on an emulated mobile network. Values are estimated and may vary."
-  },
-  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
-    "message": "Additional items to manually check"
-  },
-  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
-    "message": "Not applicable"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
-    "message": "Opportunity"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
-    "message": "Estimated Savings"
-  },
-  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
-    "message": "Passed audits"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
-    "message": "Emulated Desktop"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
-    "message": "Emulated Moto G4"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
-    "message": "No emulation"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
-    "message": "Axe version"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
-    "message": "CPU/Memory Power"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Channel"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
-    "message": "CPU throttling"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
-    "message": "Device"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Fetch Time"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
-    "message": "Network throttling"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Runtime Settings"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
-    "message": "User agent (host)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
-    "message": "User agent (network)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
-    "message": "Unknown"
-  },
-  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
-    "message": "Show audits relevant to:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
-    "message": "Collapse snippet"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
-    "message": "Expand snippet"
-  },
-  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "Show 3rd-party resources"
-  },
-  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
-    "message": "Provided by environment"
-  },
-  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
-    "message": "There were issues affecting this run of Lighthouse:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "Values are estimated and may vary. The [performance score is calculated](https://web.dev/performance-scoring/) directly from these metrics."
-  },
-  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
-    "message": "View Treemap"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
-    "message": "Passed audits but with warnings"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
-    "message": "Warnings: "
-  },
   "lighthouse-treemap/app/src/util.js | allLabel": {
     "message": "All"
   },
@@ -2380,5 +2248,143 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "You can enable text compression in your web server configuration."
+  },
+  "report/renderer/util.js | calculatorLink": {
+    "message": "See calculator."
+  },
+  "report/renderer/util.js | crcInitialNavigation": {
+    "message": "Initial Navigation"
+  },
+  "report/renderer/util.js | crcLongestDurationLabel": {
+    "message": "Maximum critical path latency:"
+  },
+  "report/renderer/util.js | dropdownCopyJSON": {
+    "message": "Copy JSON"
+  },
+  "report/renderer/util.js | dropdownDarkTheme": {
+    "message": "Toggle Dark Theme"
+  },
+  "report/renderer/util.js | dropdownPrintExpanded": {
+    "message": "Print Expanded"
+  },
+  "report/renderer/util.js | dropdownPrintSummary": {
+    "message": "Print Summary"
+  },
+  "report/renderer/util.js | dropdownSaveGist": {
+    "message": "Save as Gist"
+  },
+  "report/renderer/util.js | dropdownSaveHTML": {
+    "message": "Save as HTML"
+  },
+  "report/renderer/util.js | dropdownSaveJSON": {
+    "message": "Save as JSON"
+  },
+  "report/renderer/util.js | dropdownViewer": {
+    "message": "Open in Viewer"
+  },
+  "report/renderer/util.js | errorLabel": {
+    "message": "Error!"
+  },
+  "report/renderer/util.js | errorMissingAuditInfo": {
+    "message": "Report error: no audit information"
+  },
+  "report/renderer/util.js | footerIssue": {
+    "message": "File an issue"
+  },
+  "report/renderer/util.js | labDataTitle": {
+    "message": "Lab Data"
+  },
+  "report/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "[Lighthouse](https://developers.google.com/web/tools/lighthouse/) analysis of the current page on an emulated mobile network. Values are estimated and may vary."
+  },
+  "report/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "Additional items to manually check"
+  },
+  "report/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "Not applicable"
+  },
+  "report/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "Opportunity"
+  },
+  "report/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "Estimated Savings"
+  },
+  "report/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "Passed audits"
+  },
+  "report/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "Emulated Desktop"
+  },
+  "report/renderer/util.js | runtimeMobileEmulation": {
+    "message": "Emulated Moto G4"
+  },
+  "report/renderer/util.js | runtimeNoEmulation": {
+    "message": "No emulation"
+  },
+  "report/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "Axe version"
+  },
+  "report/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "CPU/Memory Power"
+  },
+  "report/renderer/util.js | runtimeSettingsChannel": {
+    "message": "Channel"
+  },
+  "report/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "CPU throttling"
+  },
+  "report/renderer/util.js | runtimeSettingsDevice": {
+    "message": "Device"
+  },
+  "report/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "Fetch Time"
+  },
+  "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "Network throttling"
+  },
+  "report/renderer/util.js | runtimeSettingsTitle": {
+    "message": "Runtime Settings"
+  },
+  "report/renderer/util.js | runtimeSettingsUA": {
+    "message": "User agent (host)"
+  },
+  "report/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "User agent (network)"
+  },
+  "report/renderer/util.js | runtimeSettingsUrl": {
+    "message": "URL"
+  },
+  "report/renderer/util.js | runtimeUnknown": {
+    "message": "Unknown"
+  },
+  "report/renderer/util.js | showRelevantAudits": {
+    "message": "Show audits relevant to:"
+  },
+  "report/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "Collapse snippet"
+  },
+  "report/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "Expand snippet"
+  },
+  "report/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "Show 3rd-party resources"
+  },
+  "report/renderer/util.js | throttlingProvided": {
+    "message": "Provided by environment"
+  },
+  "report/renderer/util.js | toplevelWarningsMessage": {
+    "message": "There were issues affecting this run of Lighthouse:"
+  },
+  "report/renderer/util.js | varianceDisclaimer": {
+    "message": "Values are estimated and may vary. The [performance score is calculated](https://web.dev/performance-scoring/) directly from these metrics."
+  },
+  "report/renderer/util.js | viewTreemapLabel": {
+    "message": "View Treemap"
+  },
+  "report/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "Passed audits but with warnings"
+  },
+  "report/renderer/util.js | warningHeader": {
+    "message": "Warnings: "
   }
 }

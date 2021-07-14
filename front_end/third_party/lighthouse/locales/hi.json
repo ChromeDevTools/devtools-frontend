@@ -63,7 +63,7 @@
     "message": "ARIA `meter` एलिमेंट के नाम ऐक्सेस किए जा सकते हैं"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "अगर किसी एलिमेंट का कोई ऐसा नाम नहीं है जिसे ऐक्सेस किया जा सकता हो, तो स्क्रीन रीडर उस एलिमेंट को किसी सामान्य नाम से बुलाते हैं. इस वजह से, एलिमेंट का मूल नाम उन लोगों के लिए किसी काम का नहीं रहता जो स्क्रीन रीडर की मदद से ही टेक्स्ट पढ़ या समझ सकते हैं. [ज़्यादा जानें](https://web.dev/aria-name/)."
+    "message": "अगर किसी `progressbar` एलिमेंट का नाम ऐसा है जिसे ऐक्सेस नहीं किया जा सकता, तो स्क्रीन रीडर उसे किसी सामान्य नाम से बुलाते हैं. इस वजह से, यह उन उपयोगकर्ताओं के लिए किसी काम का नहीं रहता जो स्क्रीन रीडर की मदद से ही टेक्स्ट पढ़ या समझ सकते हैं. [ज़्यादा जानें](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "ARIA `progressbar` एलिमेंट के नाम ऐक्सेस नहीं किए जा सकते."
@@ -585,13 +585,13 @@
     "message": "डायरेक्टिव"
   },
   "lighthouse-core/audits/csp-xss.js | columnSeverity": {
-    "message": "Severity"
+    "message": "गंभीरता"
   },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "कॉन्टेंट की सुरक्षा के बारे में एक मज़बूत नीति (CSP) से, क्रॉस-साइट स्क्रिप्टिंग (XSS) हमलाें का खतरा काफ़ी हद तक कम हो जाता है. [ज़्यादा जानें](https://web.dev/strict-csp/)"
+    "message": "कॉन्टेंट की सुरक्षा के बारे में एक मज़बूत नीति (CSP) से, क्रॉस-साइट स्क्रिप्टिंग (XSS) हमलाें का खतरा काफ़ी हद तक कम हो जाता है. [ज़्यादा जानें](https://web.dev/csp-xss/)"
   },
   "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
-    "message": "Syntax"
+    "message": "सिंटैक्स"
   },
   "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
     "message": "इस पेज पर एक <meta> टैग में CSP की जानकारी दी गई है. अगर हो पाए, तो CSP की जानकारी किसी एचटीटीपी हेडर में दें."
@@ -903,10 +903,10 @@
     "message": "मेनिफ़ेस्ट में 'name' या 'short_name' फ़ील्ड नहीं है"
   },
   "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "मेनिफ़ेस्ट में सही आइकॉन नहीं है. इसमें PNG, SVG या WebP फ़ॉर्मैट में ऐसा आइकॉन होना ज़रूरी है जो कम से कम {value0} पिक्सल का हो. साथ ही, sizes एट्रिब्यूट को सेट करना ज़रूरी है. अगर purpose एट्रिब्यूट को भी सेट किया जाता है, तो उसमें \"any\" या \"maskable\" शामिल करना ज़रूरी है."
+    "message": "मेनिफ़ेस्ट में सही आइकॉन नहीं है. इसमें PNG, SVG या WebP फ़ॉर्मैट में ऐसा आइकॉन होना ज़रूरी है जो कम से कम {value0} पिक्सल का हो. साथ ही, sizes एट्रिब्यूट को सेट करना ज़रूरी है. अगर purpose एट्रिब्यूट को भी सेट किया जाता है, तो यह ज़रूरी है कि उसमें \"any\" शामिल हो."
   },
   "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "दिया गया कोई भी आइकॉन ऐसे PNG, SVG या WebP फ़ॉर्मैट में नहीं है जो कम से कम {value0} पिक्सल स्क्वेयर का हो"
+    "message": "सेट न करें या \"any\" पर सेट करें वाले purpose एट्रिब्यूट के साथ दिया गया कोई भी आइकॉन, ऐसे PNG, SVG या WebP फ़ॉर्मैट में नहीं है जो कम से कम {value0} पिक्सल स्क्वेयर का हो"
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
     "message": "डाउनलोड किया गया आइकॉन खाली या खराब था"
@@ -1955,144 +1955,6 @@
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "आपका दिया हुआ यूआरएल गलत लगता है."
   },
-  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
-    "message": "कैलकुलेटर देखें."
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
-    "message": "शुरुआती नेविगेशन"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "पाथ का ज़्यादा से ज़्यादा अहम प्रतीक्षा समय:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
-    "message": "JSON कॉपी करें"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "गहरे रंग वाली थीम को टॉगल करें"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
-    "message": "प्रिंट को बड़ा किया गया"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
-    "message": "प्रिंट के बारे में खास जानकारी"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
-    "message": "Gist के रूप में सेव करें"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
-    "message": "एचटीएमएल के रूप में सेव करें"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
-    "message": "JSON के रूप में सेव करें"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
-    "message": "व्यूअर में खोलें"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
-    "message": "गड़बड़ी!"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
-    "message": "गड़बड़ी की रिपोर्ट करें: कोई ऑडिट जानकारी नहीं"
-  },
-  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
-    "message": "समस्या की रिपोर्ट करें"
-  },
-  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
-    "message": "किसी नई या दुबारा जाँची जाने वाली ऐप्लिकेशन के लिए तैयार किया गया डेटा"
-  },
-  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
-    "message": "एम्युलेट किए गए मोबाइल नेटवर्क पर मौजूद पेज का [Lighthouse](https://developers.google.com/web/tools/lighthouse/) विश्लेषण. मान अनुमान के हिसाब से लिखे गए हैं और इनमें अंतर हो सकता है."
-  },
-  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
-    "message": "मैन्युअल रूप से देखे जाने वाले और ज़्यादा आइटम"
-  },
-  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
-    "message": "लागू नहीं"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
-    "message": "अवसर"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
-    "message": "अनुमानित बचत"
-  },
-  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
-    "message": "पास हुए ऑडिट"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
-    "message": "एम्युलेट किया गया डेस्कटॉप"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
-    "message": "एम्युलेट किया गया Moto G4"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
-    "message": "कोई भी एम्युलेशन नहीं"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
-    "message": "Axe वर्शन"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
-    "message": "सीपीयू/मेमोरी पावर"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
-    "message": "सीपीयू थ्रॉटलिंग"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
-    "message": "चैनल"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
-    "message": "डिवाइस"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Lighthouse के चलाए जाने का समय"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
-    "message": "नेटवर्क थ्रॉटलिंग"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
-    "message": "रनटाइम सेटिंग"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
-    "message": "उपयोगकर्ता एजेंट (होस्ट)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
-    "message": "उपयोगकर्ता एजेंट (नेटवर्क)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
-    "message": "यूआरएल"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
-    "message": "अज्ञात"
-  },
-  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
-    "message": "वे ऑडिट दिखाएं जो इनके लिए काम के हों:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
-    "message": "स्निपेट को छोटा करें"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
-    "message": "स्निपेट को बड़ा करें"
-  },
-  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "तीसरे पक्ष के संसाधन दिखाएं"
-  },
-  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
-    "message": "रनटाइम एनवायरमेंट से मिला"
-  },
-  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
-    "message": "कुछ समस्याएं आने के कारण Lighthouse के इस रन पर असर पड़ा है:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "मान अनुमानित हैं और इनमें बदलाव हो सकता है. सीधे तौर पर इन मेट्रिक से [परफ़ॉर्मेंस स्कोर तय किए ](https://web.dev/performance-scoring/) जाते हैं."
-  },
-  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
-    "message": "Treemap देखें"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
-    "message": "चेतावनियों के साथ पास हुए ऑडिट"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
-    "message": "चेतावनियां: "
-  },
   "lighthouse-treemap/app/src/util.js | allLabel": {
     "message": "सभी"
   },
@@ -2380,5 +2242,143 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "आप अपने वेब सर्वर कॉन्फ़िगरेशन में टेक्स्ट कंप्रेस करने की सुविधा चालू कर सकते हैं."
+  },
+  "report/renderer/util.js | calculatorLink": {
+    "message": "कैलकुलेटर देखें."
+  },
+  "report/renderer/util.js | crcInitialNavigation": {
+    "message": "शुरुआती नेविगेशन"
+  },
+  "report/renderer/util.js | crcLongestDurationLabel": {
+    "message": "पाथ का ज़्यादा से ज़्यादा अहम प्रतीक्षा समय:"
+  },
+  "report/renderer/util.js | dropdownCopyJSON": {
+    "message": "JSON कॉपी करें"
+  },
+  "report/renderer/util.js | dropdownDarkTheme": {
+    "message": "गहरे रंग वाली थीम को टॉगल करें"
+  },
+  "report/renderer/util.js | dropdownPrintExpanded": {
+    "message": "प्रिंट को बड़ा किया गया"
+  },
+  "report/renderer/util.js | dropdownPrintSummary": {
+    "message": "प्रिंट के बारे में खास जानकारी"
+  },
+  "report/renderer/util.js | dropdownSaveGist": {
+    "message": "Gist के रूप में सेव करें"
+  },
+  "report/renderer/util.js | dropdownSaveHTML": {
+    "message": "एचटीएमएल के रूप में सेव करें"
+  },
+  "report/renderer/util.js | dropdownSaveJSON": {
+    "message": "JSON के रूप में सेव करें"
+  },
+  "report/renderer/util.js | dropdownViewer": {
+    "message": "व्यूअर में खोलें"
+  },
+  "report/renderer/util.js | errorLabel": {
+    "message": "गड़बड़ी!"
+  },
+  "report/renderer/util.js | errorMissingAuditInfo": {
+    "message": "गड़बड़ी की रिपोर्ट करें: कोई ऑडिट जानकारी नहीं"
+  },
+  "report/renderer/util.js | footerIssue": {
+    "message": "समस्या की रिपोर्ट करें"
+  },
+  "report/renderer/util.js | labDataTitle": {
+    "message": "किसी नई या दुबारा जाँची जाने वाली ऐप्लिकेशन के लिए तैयार किया गया डेटा"
+  },
+  "report/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "एम्युलेट किए गए मोबाइल नेटवर्क पर मौजूद पेज का [Lighthouse](https://developers.google.com/web/tools/lighthouse/) विश्लेषण. मान अनुमान के हिसाब से लिखे गए हैं और इनमें अंतर हो सकता है."
+  },
+  "report/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "मैन्युअल रूप से देखे जाने वाले और ज़्यादा आइटम"
+  },
+  "report/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "लागू नहीं"
+  },
+  "report/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "अवसर"
+  },
+  "report/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "अनुमानित बचत"
+  },
+  "report/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "पास हुए ऑडिट"
+  },
+  "report/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "एम्युलेट किया गया डेस्कटॉप"
+  },
+  "report/renderer/util.js | runtimeMobileEmulation": {
+    "message": "एम्युलेट किया गया Moto G4"
+  },
+  "report/renderer/util.js | runtimeNoEmulation": {
+    "message": "कोई भी एम्युलेशन नहीं"
+  },
+  "report/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "Axe वर्शन"
+  },
+  "report/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "सीपीयू/मेमोरी पावर"
+  },
+  "report/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "सीपीयू थ्रॉटलिंग"
+  },
+  "report/renderer/util.js | runtimeSettingsChannel": {
+    "message": "चैनल"
+  },
+  "report/renderer/util.js | runtimeSettingsDevice": {
+    "message": "डिवाइस"
+  },
+  "report/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "Lighthouse के चलाए जाने का समय"
+  },
+  "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "नेटवर्क थ्रॉटलिंग"
+  },
+  "report/renderer/util.js | runtimeSettingsTitle": {
+    "message": "रनटाइम सेटिंग"
+  },
+  "report/renderer/util.js | runtimeSettingsUA": {
+    "message": "उपयोगकर्ता एजेंट (होस्ट)"
+  },
+  "report/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "उपयोगकर्ता एजेंट (नेटवर्क)"
+  },
+  "report/renderer/util.js | runtimeSettingsUrl": {
+    "message": "यूआरएल"
+  },
+  "report/renderer/util.js | runtimeUnknown": {
+    "message": "अज्ञात"
+  },
+  "report/renderer/util.js | showRelevantAudits": {
+    "message": "वे ऑडिट दिखाएं जो इनके लिए काम के हों:"
+  },
+  "report/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "स्निपेट को छोटा करें"
+  },
+  "report/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "स्निपेट को बड़ा करें"
+  },
+  "report/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "तीसरे पक्ष के संसाधन दिखाएं"
+  },
+  "report/renderer/util.js | throttlingProvided": {
+    "message": "रनटाइम एनवायरमेंट से मिला"
+  },
+  "report/renderer/util.js | toplevelWarningsMessage": {
+    "message": "कुछ समस्याएं आने के कारण Lighthouse के इस रन पर असर पड़ा है:"
+  },
+  "report/renderer/util.js | varianceDisclaimer": {
+    "message": "मान अनुमानित हैं और इनमें बदलाव हो सकता है. सीधे तौर पर इन मेट्रिक से [परफ़ॉर्मेंस स्कोर तय किए ](https://web.dev/performance-scoring/) जाते हैं."
+  },
+  "report/renderer/util.js | viewTreemapLabel": {
+    "message": "Treemap देखें"
+  },
+  "report/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "चेतावनियों के साथ पास हुए ऑडिट"
+  },
+  "report/renderer/util.js | warningHeader": {
+    "message": "चेतावनियां: "
   }
 }

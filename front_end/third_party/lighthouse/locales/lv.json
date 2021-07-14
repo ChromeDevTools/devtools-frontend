@@ -63,7 +63,7 @@
     "message": "ARIA elementiem “`meter`” ir pieejami nosaukumi"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "Ja elementam nav pieejama nosaukuma, ekrāna lasītāji nolasa to ar vispārīgu nosaukumu, padarot to nelietojamu ekrāna lasītāju lietotājiem. [Uzziniet vairāk](https://web.dev/aria-name/)."
+    "message": "Ja `progressbar` elementam nav pieejama nosaukuma, ekrāna lasītāji nolasa to ar vispārīgu nosaukumu, līdz ar to elements kļūst nelietojams ekrāna lasītāju lietotājiem. [Uzziniet vairāk](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "ARIA elementiem “`progressbar`” nav pieejamu nosaukumu"
@@ -585,13 +585,13 @@
     "message": "Direktīva"
   },
   "lighthouse-core/audits/csp-xss.js | columnSeverity": {
-    "message": "Severity"
+    "message": "Nozīmīgums"
   },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "Stingra satura drošības politika (SDP) ievērojami samazina starpvietņu skriptēšanas (cross-site scripting — XSS) uzbrukumu risku. [Uzziniet vairāk](https://web.dev/strict-csp/)."
+    "message": "Stingra satura drošības politika (SDP) ievērojami samazina starpvietņu skriptēšanas (cross-site scripting — XSS) uzbrukumu risku. [Uzziniet vairāk](https://web.dev/csp-xss/)."
   },
   "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
-    "message": "Syntax"
+    "message": "Sintakse"
   },
   "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
     "message": "Lapā ir SDP, kas definēta tagā <meta>. Ja varat, SDP ieteicams definēt HTTP galvenē."
@@ -903,10 +903,10 @@
     "message": "Manifestā nav lauka “name” vai “short_name”"
   },
   "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "Manifestā nav piemērotas ikonas. Nepieciešams PNG, SVG vai WebP formāta fails, kura izmēram jābūt vismaz {value0} px un atribūtam “sizes” jābūt iestatītam. Ja ir iestatīts atribūts “purpose”, tā vērtībām jāietver “any” vai “maskable”."
+    "message": "Manifestā nav piemērotas ikonas. Nepieciešams PNG, SVG vai WebP formāta fails, kura izmēriem jābūt vismaz {value0} piks. un atribūtam “sizes” jābūt iestatītam. Ja ir iestatīts atribūts “purpose”, tā vērtībai jāietver “any”."
   },
   "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "Nav norādīta PNG, SVG vai WebP formāta ikona, kurai abi izmēri būtu vismaz {value0} px"
+    "message": "Nav nodrošināta neviena PNG, SVG vai WebP formāta ikona, kura ir vismaz {value0} piks. liels kvadrāts un kuras atribūts “purpose” nav iestatīts vai tam iestatīta vērtība “any”."
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
     "message": "Lejupielādētā ikona bija tukša vai bojāta."
@@ -1779,7 +1779,7 @@
     "message": "Atrašanās vieta"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnName": {
-    "message": "Vārds"
+    "message": "Nosaukums"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnOverBudget": {
     "message": "Pārsniegts budžets"
@@ -1954,144 +1954,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Šķiet, ka jūsu norādītais URL nav derīgs."
-  },
-  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
-    "message": "Skatiet kalkulatoru."
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
-    "message": "Sākotnējā navigācija"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "Maksimālais kritiskais ceļa latentums:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
-    "message": "Kopēt JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "Pārslēgt tumšo motīvu"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
-    "message": "Drukājamā kopija izvērsta"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
-    "message": "Drukāt kopsavilkumu"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
-    "message": "Saglabāt kā Gist"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
-    "message": "Saglabāt kā HTML"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
-    "message": "Saglabāt kā JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
-    "message": "Atvērt skatītājā"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
-    "message": "Kļūda!"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
-    "message": "Pārskata kļūda: nav pārbaudes informācijas"
-  },
-  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
-    "message": "Iesniegt problēmu"
-  },
-  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
-    "message": "Laboratorijas dati"
-  },
-  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
-    "message": "[Lighthouse](https://developers.google.com/web/tools/lighthouse/) pašreizējās lapas analīze emulētajā mobilajā tīklā. Vērtības ir aptuvenas un var atšķirties."
-  },
-  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
-    "message": "Papildu vienumi manuālai pārbaudei"
-  },
-  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
-    "message": "Nav piemērojams"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
-    "message": "Iespēja"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
-    "message": "Aptuvenais ietaupījums"
-  },
-  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
-    "message": "Izpildītās pārbaudes"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
-    "message": "Emulēts dators"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
-    "message": "Emulēts tālrunis Moto G4"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
-    "message": "Nav emulācijas"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
-    "message": "Axe versija"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
-    "message": "Centrālā procesora/atmiņas jauda"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
-    "message": "Centrālā procesora ierobežošana"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Kanāls"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
-    "message": "Ierīce"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Izgūšanas laiks"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
-    "message": "Tīkla ierobežošana"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Izpildlaika iestatījumi"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
-    "message": "Lietotāja aģents (saimniekdators)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
-    "message": "Lietotāja aģents (tīkls)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
-    "message": "Nezināms"
-  },
-  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
-    "message": "Rādīt pārbaudes, kas atbilst:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
-    "message": "Sakļaut fragmentu"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
-    "message": "Izvērst fragmentu"
-  },
-  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "Parādīt trešās puses resursus"
-  },
-  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
-    "message": "Nodrošināts atbilstoši videi"
-  },
-  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
-    "message": "Radās problēmas, kas ietekmēja šo Lighthouse palaišanu:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "Vērtības ir aptuvenas un var atšķirties. [Veiktspējas rezultāts tiek aprēķināts](https://web.dev/performance-scoring/), pamatojoties tieši uz šiem metrikas veidiem."
-  },
-  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
-    "message": "Skatīt koka struktūru"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
-    "message": "Veiktās pārbaudes ar brīdinājumiem"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
-    "message": "Brīdinājumi: "
   },
   "lighthouse-treemap/app/src/util.js | allLabel": {
     "message": "Visi"
@@ -2380,5 +2242,143 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "Varat iespējot teksta saspiešanu tīmekļa servera konfigurācijā."
+  },
+  "report/renderer/util.js | calculatorLink": {
+    "message": "Skatiet kalkulatoru."
+  },
+  "report/renderer/util.js | crcInitialNavigation": {
+    "message": "Sākotnējā navigācija"
+  },
+  "report/renderer/util.js | crcLongestDurationLabel": {
+    "message": "Maksimālais kritiskais ceļa latentums:"
+  },
+  "report/renderer/util.js | dropdownCopyJSON": {
+    "message": "Kopēt JSON"
+  },
+  "report/renderer/util.js | dropdownDarkTheme": {
+    "message": "Pārslēgt tumšo motīvu"
+  },
+  "report/renderer/util.js | dropdownPrintExpanded": {
+    "message": "Drukājamā kopija izvērsta"
+  },
+  "report/renderer/util.js | dropdownPrintSummary": {
+    "message": "Drukāt kopsavilkumu"
+  },
+  "report/renderer/util.js | dropdownSaveGist": {
+    "message": "Saglabāt kā Gist"
+  },
+  "report/renderer/util.js | dropdownSaveHTML": {
+    "message": "Saglabāt kā HTML"
+  },
+  "report/renderer/util.js | dropdownSaveJSON": {
+    "message": "Saglabāt kā JSON"
+  },
+  "report/renderer/util.js | dropdownViewer": {
+    "message": "Atvērt skatītājā"
+  },
+  "report/renderer/util.js | errorLabel": {
+    "message": "Kļūda!"
+  },
+  "report/renderer/util.js | errorMissingAuditInfo": {
+    "message": "Pārskata kļūda: nav pārbaudes informācijas"
+  },
+  "report/renderer/util.js | footerIssue": {
+    "message": "Iesniegt problēmu"
+  },
+  "report/renderer/util.js | labDataTitle": {
+    "message": "Laboratorijas dati"
+  },
+  "report/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "[Lighthouse](https://developers.google.com/web/tools/lighthouse/) pašreizējās lapas analīze emulētajā mobilajā tīklā. Vērtības ir aptuvenas un var atšķirties."
+  },
+  "report/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "Papildu vienumi manuālai pārbaudei"
+  },
+  "report/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "Nav piemērojams"
+  },
+  "report/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "Iespēja"
+  },
+  "report/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "Aptuvenais ietaupījums"
+  },
+  "report/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "Izpildītās pārbaudes"
+  },
+  "report/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "Emulēts dators"
+  },
+  "report/renderer/util.js | runtimeMobileEmulation": {
+    "message": "Emulēts tālrunis Moto G4"
+  },
+  "report/renderer/util.js | runtimeNoEmulation": {
+    "message": "Nav emulācijas"
+  },
+  "report/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "Axe versija"
+  },
+  "report/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "Centrālā procesora/atmiņas jauda"
+  },
+  "report/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "Centrālā procesora ierobežošana"
+  },
+  "report/renderer/util.js | runtimeSettingsChannel": {
+    "message": "Kanāls"
+  },
+  "report/renderer/util.js | runtimeSettingsDevice": {
+    "message": "Ierīce"
+  },
+  "report/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "Izgūšanas laiks"
+  },
+  "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "Tīkla ierobežošana"
+  },
+  "report/renderer/util.js | runtimeSettingsTitle": {
+    "message": "Izpildlaika iestatījumi"
+  },
+  "report/renderer/util.js | runtimeSettingsUA": {
+    "message": "Lietotāja aģents (saimniekdators)"
+  },
+  "report/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "Lietotāja aģents (tīkls)"
+  },
+  "report/renderer/util.js | runtimeSettingsUrl": {
+    "message": "URL"
+  },
+  "report/renderer/util.js | runtimeUnknown": {
+    "message": "Nezināms"
+  },
+  "report/renderer/util.js | showRelevantAudits": {
+    "message": "Rādīt pārbaudes, kas atbilst:"
+  },
+  "report/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "Sakļaut fragmentu"
+  },
+  "report/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "Izvērst fragmentu"
+  },
+  "report/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "Parādīt trešās puses resursus"
+  },
+  "report/renderer/util.js | throttlingProvided": {
+    "message": "Nodrošināts atbilstoši videi"
+  },
+  "report/renderer/util.js | toplevelWarningsMessage": {
+    "message": "Radās problēmas, kas ietekmēja šo Lighthouse palaišanu:"
+  },
+  "report/renderer/util.js | varianceDisclaimer": {
+    "message": "Vērtības ir aptuvenas un var atšķirties. [Veiktspējas rezultāts tiek aprēķināts](https://web.dev/performance-scoring/), pamatojoties tieši uz šiem metrikas veidiem."
+  },
+  "report/renderer/util.js | viewTreemapLabel": {
+    "message": "Skatīt koka struktūru"
+  },
+  "report/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "Veiktās pārbaudes ar brīdinājumiem"
+  },
+  "report/renderer/util.js | warningHeader": {
+    "message": "Brīdinājumi: "
   }
 }

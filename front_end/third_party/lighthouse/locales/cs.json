@@ -63,7 +63,7 @@
     "message": "Prvky ARIA `meter` mají přístupné názvy"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "Když prvek nemá přístupný název, čtečky obrazovek oznamují obecný název a pro jejich uživatele je pak tento prvek v podstatě nepoužitelný. [Další informace](https://web.dev/aria-name/)"
+    "message": "Když prvek `progressbar` nemá přístupný název, čtečky obrazovek oznamují obecný název a pro jejich uživatele je pak tento prvek v podstatě nepoužitelný. [Další informace](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "Prvky ARIA `progressbar` nemají přístupné názvy."
@@ -588,7 +588,7 @@
     "message": "Závažnost"
   },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "Silné zásady zabezpečení obsahu (CSP) významně snižují riziko útoků skriptováním mezi weby (XSS). [Další informace](https://web.dev/strict-csp/)"
+    "message": "Silné zásady zabezpečení obsahu (CSP) významně snižují riziko útoků skriptováním mezi weby (XSS). [Další informace](https://web.dev/csp-xss/)"
   },
   "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
     "message": "Syntaxe"
@@ -903,10 +903,10 @@
     "message": "Manifest neobsahuje pole „name“ nebo „short_name“"
   },
   "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "Manifest neobsahuje vhodnou ikonu – je vyžadován formát PNG, SVG nebo WebP o velikosti alespoň {value0} px, musí být nastaven atribut velikostí a atribut účelu, pokud je nastaven, musí zahrnovat hodnoty „any“ nebo „maskable“."
+    "message": "Manifest neobsahuje vhodnou ikonu – je vyžadován formát PNG, SVG nebo WebP o velikosti alespoň {value0} px, musí být nastaven atribut velikostí a atribut účelu, pokud je nastaven, musí zahrnovat hodnoty „any“."
   },
   "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "Žádná z dodaných ikon není čtverec o straně alespoň {value0} px ve formátu PNG, SVG nebo WebP"
+    "message": "Žádná poskytnutá ikona není čtverec se stranou {value0} px ve formátu PNG, SVG nebo WebP s atributem účelu nenastaveným nebo nastaveným na hodnotu „any“"
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
     "message": "Stažená ikona byla prázdná nebo poškozená"
@@ -1955,144 +1955,6 @@
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Adresa URL, kterou jste poskytli, se zdá být neplatná."
   },
-  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
-    "message": "Zobrazit kalkulačku."
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
-    "message": "Počáteční navigace"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "Maximální latence kritické trasy:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
-    "message": "Kopírovat JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "Přepnout tmavý motiv"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
-    "message": "Vytisknout úplný přehled"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
-    "message": "Vytisknout souhrn"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
-    "message": "Uložit jako gist"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
-    "message": "Uložit jako HTML"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
-    "message": "Uložit jako JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
-    "message": "Otevřít v prohlížeči"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
-    "message": "Chyba!"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
-    "message": "Chyba přehledu: žádné informace o auditu"
-  },
-  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
-    "message": "Zaznamenat problém"
-  },
-  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
-    "message": "Laboratorní data"
-  },
-  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
-    "message": "Analýza aktuální stránky pomocí nástroje [Lighthouse](https://developers.google.com/web/tools/lighthouse/) v emulované mobilní síti. Hodnoty jsou odhady a mohou se lišit."
-  },
-  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
-    "message": "Další položky k ruční kontrole"
-  },
-  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
-    "message": "Není relevantní"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
-    "message": "Příležitost"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
-    "message": "Odhadovaná úspora"
-  },
-  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
-    "message": "Úspěšné audity"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
-    "message": "Emulovaná plocha"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
-    "message": "Emulované zařízení Moto G4"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
-    "message": "Bez emulace"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
-    "message": "Verze knihovny Axe"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
-    "message": "Výkon procesoru/paměti"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
-    "message": "Omezení procesoru"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Kanál"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
-    "message": "Zařízení"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Čas načtení"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
-    "message": "Omezení sítě"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Nastavení za běhu"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
-    "message": "User agent (hostitel)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
-    "message": "User agent (síť)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
-    "message": "Není známo"
-  },
-  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
-    "message": "Zobrazit audity relevantní pro:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
-    "message": "Sbalit úryvek"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
-    "message": "Rozbalit úryvek"
-  },
-  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "Zobrazit zdroje třetích stran"
-  },
-  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
-    "message": "Poskytnuto prostředím"
-  },
-  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
-    "message": "Při tomto spuštění nástroje Lighthouse se vyskytly problémy:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "Hodnoty jsou odhady a mohou se lišit. [Skóre výkonu se počítá](https://web.dev/performance-scoring/) přímo z těchto metrik."
-  },
-  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
-    "message": "Zobrazit stromovou mapu"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
-    "message": "Úspěšné audity s upozorněními"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
-    "message": "Upozornění: "
-  },
   "lighthouse-treemap/app/src/util.js | allLabel": {
     "message": "Vše"
   },
@@ -2380,5 +2242,143 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "Můžete v konfiguraci webového serveru zapnout kompresi textu."
+  },
+  "report/renderer/util.js | calculatorLink": {
+    "message": "Zobrazit kalkulačku."
+  },
+  "report/renderer/util.js | crcInitialNavigation": {
+    "message": "Počáteční navigace"
+  },
+  "report/renderer/util.js | crcLongestDurationLabel": {
+    "message": "Maximální latence kritické trasy:"
+  },
+  "report/renderer/util.js | dropdownCopyJSON": {
+    "message": "Kopírovat JSON"
+  },
+  "report/renderer/util.js | dropdownDarkTheme": {
+    "message": "Přepnout tmavý motiv"
+  },
+  "report/renderer/util.js | dropdownPrintExpanded": {
+    "message": "Vytisknout úplný přehled"
+  },
+  "report/renderer/util.js | dropdownPrintSummary": {
+    "message": "Vytisknout souhrn"
+  },
+  "report/renderer/util.js | dropdownSaveGist": {
+    "message": "Uložit jako gist"
+  },
+  "report/renderer/util.js | dropdownSaveHTML": {
+    "message": "Uložit jako HTML"
+  },
+  "report/renderer/util.js | dropdownSaveJSON": {
+    "message": "Uložit jako JSON"
+  },
+  "report/renderer/util.js | dropdownViewer": {
+    "message": "Otevřít v prohlížeči"
+  },
+  "report/renderer/util.js | errorLabel": {
+    "message": "Chyba!"
+  },
+  "report/renderer/util.js | errorMissingAuditInfo": {
+    "message": "Chyba přehledu: žádné informace o auditu"
+  },
+  "report/renderer/util.js | footerIssue": {
+    "message": "Zaznamenat problém"
+  },
+  "report/renderer/util.js | labDataTitle": {
+    "message": "Laboratorní data"
+  },
+  "report/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "Analýza aktuální stránky pomocí nástroje [Lighthouse](https://developers.google.com/web/tools/lighthouse/) v emulované mobilní síti. Hodnoty jsou odhady a mohou se lišit."
+  },
+  "report/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "Další položky k ruční kontrole"
+  },
+  "report/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "Není relevantní"
+  },
+  "report/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "Příležitost"
+  },
+  "report/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "Odhadovaná úspora"
+  },
+  "report/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "Úspěšné audity"
+  },
+  "report/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "Emulovaná plocha"
+  },
+  "report/renderer/util.js | runtimeMobileEmulation": {
+    "message": "Emulované zařízení Moto G4"
+  },
+  "report/renderer/util.js | runtimeNoEmulation": {
+    "message": "Bez emulace"
+  },
+  "report/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "Verze knihovny Axe"
+  },
+  "report/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "Výkon procesoru/paměti"
+  },
+  "report/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "Omezení procesoru"
+  },
+  "report/renderer/util.js | runtimeSettingsChannel": {
+    "message": "Kanál"
+  },
+  "report/renderer/util.js | runtimeSettingsDevice": {
+    "message": "Zařízení"
+  },
+  "report/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "Čas načtení"
+  },
+  "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "Omezení sítě"
+  },
+  "report/renderer/util.js | runtimeSettingsTitle": {
+    "message": "Nastavení za běhu"
+  },
+  "report/renderer/util.js | runtimeSettingsUA": {
+    "message": "User agent (hostitel)"
+  },
+  "report/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "User agent (síť)"
+  },
+  "report/renderer/util.js | runtimeSettingsUrl": {
+    "message": "URL"
+  },
+  "report/renderer/util.js | runtimeUnknown": {
+    "message": "Není známo"
+  },
+  "report/renderer/util.js | showRelevantAudits": {
+    "message": "Zobrazit audity relevantní pro:"
+  },
+  "report/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "Sbalit úryvek"
+  },
+  "report/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "Rozbalit úryvek"
+  },
+  "report/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "Zobrazit zdroje třetích stran"
+  },
+  "report/renderer/util.js | throttlingProvided": {
+    "message": "Poskytnuto prostředím"
+  },
+  "report/renderer/util.js | toplevelWarningsMessage": {
+    "message": "Při tomto spuštění nástroje Lighthouse se vyskytly problémy:"
+  },
+  "report/renderer/util.js | varianceDisclaimer": {
+    "message": "Hodnoty jsou odhady a mohou se lišit. [Skóre výkonu se počítá](https://web.dev/performance-scoring/) přímo z těchto metrik."
+  },
+  "report/renderer/util.js | viewTreemapLabel": {
+    "message": "Zobrazit stromovou mapu"
+  },
+  "report/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "Úspěšné audity s upozorněními"
+  },
+  "report/renderer/util.js | warningHeader": {
+    "message": "Upozornění: "
   }
 }

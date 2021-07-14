@@ -63,7 +63,7 @@
     "message": "Τα στοιχεία ARIA `meter` έχουν προσβάσιμα ονόματα"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "Όταν ένα στοιχείο δεν έχει προσβάσιμο όνομα, οι αναγνώστες οθόνης το ανακοινώνουν με ένα γενικό όνομα, με αποτέλεσμα να μην μπορεί να χρησιμοποιηθεί από χρήστες που βασίζονται σε αναγνώστες οθόνης. [Μάθετε περισσότερα](https://web.dev/aria-name/)."
+    "message": "Όταν ένα `progressbar` στοιχείο δεν έχει προσβάσιμο όνομα, οι αναγνώστες οθόνης το ανακοινώνουν με ένα γενικό όνομα, με αποτέλεσμα να μην μπορεί να χρησιμοποιηθεί από χρήστες που βασίζονται σε αναγνώστες οθόνης. [Μάθετε περισσότερα](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "Τα στοιχεία ARIA `progressbar` δεν έχουν προσβάσιμα ονόματα"
@@ -588,7 +588,7 @@
     "message": "Σοβαρότητα"
   },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "Μια ισχυρή Πολιτική ασφάλειας περιεχομένου (CSP) μειώνει σημαντικά τον κίνδυνο επιθέσεων μέσω δέσμης ενεργειών από άλλο ιστότοπο (XSS). [Μάθετε περισσότερα](https://web.dev/strict-csp/)"
+    "message": "Μια ισχυρή Πολιτική ασφάλειας περιεχομένου (CSP) μειώνει σημαντικά τον κίνδυνο επιθέσεων μέσω δέσμης ενεργειών από άλλο ιστότοπο (XSS). [Μάθετε περισσότερα](https://web.dev/csp-xss/)"
   },
   "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
     "message": "Σύνταξη"
@@ -903,10 +903,10 @@
     "message": "Το μανιφέστο δεν περιέχει το πεδίο \"name\" η \"short_name\"."
   },
   "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "Το μανιφέστο δεν περιέχει κατάλληλο εικονίδιο. Απαιτείται μορφή PNG, SVG ή WebP, μεγέθους τουλάχιστον {value0} px. Το χαρακτηριστικό μεγέθους θα πρέπει να οριστεί και το χαρακτηριστικό σκοπού, εάν οριστεί, θα πρέπει να περιλαμβάνει τις τιμές \"any\" ή \"maskable\"."
+    "message": "Το μανιφέστο δεν περιέχει κατάλληλο εικονίδιο. Απαιτείται μορφή PNG, SVG ή WebP, μεγέθους τουλάχιστον {value0} px. Το χαρακτηριστικό μεγέθους θα πρέπει να οριστεί και το χαρακτηριστικό σκοπού, εάν οριστεί, θα πρέπει να περιλαμβάνει την τιμή \"any\"."
   },
   "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "Κανένα παρεχόμενο εικονίδιο δεν είναι τετράγωνο μεγέθους τουλάχιστον {value0} px σε μορφή PNG, SVG ή WebP."
+    "message": "Κανένα παρεχόμενο εικονίδιο δεν είναι τετράγωνο μεγέθους τουλάχιστον {value0} px σε μορφή PNG, SVG ή WebP, με το στοιχείο σκοπού μη ορισμένο ή ορισμένο σε \"any\""
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
     "message": "Το εικονίδιο λήψης ήταν κενό ή κατεστραμμένο."
@@ -1955,144 +1955,6 @@
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Το URL που παρείχατε φαίνεται ότι δεν είναι έγκυρο."
   },
-  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
-    "message": "Προβολή αριθμομηχανής."
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
-    "message": "Αρχική πλοήγηση"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "Μέγιστος λανθάνων χρόνος κρίσιμης διαδρομής:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
-    "message": "Αντιγραφή JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "Εναλλαγή σκούρου θέματος"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
-    "message": "Πλήρης εκτύπωση"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
-    "message": "Συνοπτική εκτύπωση"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
-    "message": "Αποθήκευση ως Gist"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
-    "message": "Αποθήκευση ως HTML"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
-    "message": "Αποθήκευση ως JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
-    "message": "Άνοιγμα στο πρόγραμμα προβολής"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
-    "message": "Σφάλμα!"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
-    "message": "Σφάλμα αναφοράς: Δεν υπάρχουν πληροφορίες ελέγχου"
-  },
-  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
-    "message": "Υποβολή προβλήματος"
-  },
-  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
-    "message": "Εργαστηριακά δεδομένα"
-  },
-  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
-    "message": "Ανάλυση της τρέχουσας σελίδας από το [Lighthouse](https://developers.google.com/web/tools/lighthouse/) σε ένα προσομειωμένο δίκτυο κινητής τηλεφωνίας. Οι τιμές είναι κατ' εκτίμηση και μπορεί να διαφέρουν."
-  },
-  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
-    "message": "Επιπλέον στοιχεία για μη αυτόματο έλεγχο"
-  },
-  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
-    "message": "Δεν ισχύει"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
-    "message": "Ευκαιρία"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
-    "message": "Εκτιμώμενες εξοικονομήσεις"
-  },
-  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
-    "message": "Έλεγχοι που ολοκληρώθηκαν επιτυχώς"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
-    "message": "Προσομοιωμένη επιφάνεια εργασίας"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
-    "message": "Προσομοιωμένο Moto G4"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
-    "message": "Χωρίς προσομοίωση"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
-    "message": "'Εκδοση Axe"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
-    "message": "Ισχύς CPU/μνήμης"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
-    "message": "Περιορισμός CPU"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Κανάλι"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
-    "message": "Συσκευή"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Ώρα ανάκτησης"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
-    "message": "Περιορισμός δικτύου"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Ρυθμίσεις χρόνου εκτέλεσης (runtime)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
-    "message": "Παράγοντας χρήστη (κεντρικός υπολογιστής)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
-    "message": "Παράγοντας χρήστη (δίκτυο)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
-    "message": "Άγνωστη"
-  },
-  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
-    "message": "Εμφάνιση ελέγχων που σχετίζονται με:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
-    "message": "Σύμπτυξη αποσπάσματος"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
-    "message": "Ανάπτυξη αποσπάσματος"
-  },
-  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "Εμφάνιση πόρων τρίτων"
-  },
-  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
-    "message": "Παρέχεται από το περιβάλλον"
-  },
-  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
-    "message": "Παρουσιάστηκαν ορισμένα ζητήματα τα οποία επηρεάζουν αυτήν την εκτέλεση του Lighthouse:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "Οι τιμές εκτιμώνται και μπορεί να ποικίλουν. Η [βαθμολογία απόδοσης υπολογίζεται](https://web.dev/performance-scoring/) απευθείας από αυτές τις μετρήσεις."
-  },
-  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
-    "message": "Προβολή δενδροειδούς χάρτη"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
-    "message": "Έλεγχοι που ολοκληρώθηκαν αλλά με προειδοποιήσεις"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
-    "message": "Προειδοποιήσεις: "
-  },
   "lighthouse-treemap/app/src/util.js | allLabel": {
     "message": "Όλα"
   },
@@ -2380,5 +2242,143 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "Μπορείτε να ενεργοποιήσετε τη συμπίεση κειμένου στη διαμόρφωση του διακομιστή ιστού σας."
+  },
+  "report/renderer/util.js | calculatorLink": {
+    "message": "Προβολή αριθμομηχανής."
+  },
+  "report/renderer/util.js | crcInitialNavigation": {
+    "message": "Αρχική πλοήγηση"
+  },
+  "report/renderer/util.js | crcLongestDurationLabel": {
+    "message": "Μέγιστος λανθάνων χρόνος κρίσιμης διαδρομής:"
+  },
+  "report/renderer/util.js | dropdownCopyJSON": {
+    "message": "Αντιγραφή JSON"
+  },
+  "report/renderer/util.js | dropdownDarkTheme": {
+    "message": "Εναλλαγή σκούρου θέματος"
+  },
+  "report/renderer/util.js | dropdownPrintExpanded": {
+    "message": "Πλήρης εκτύπωση"
+  },
+  "report/renderer/util.js | dropdownPrintSummary": {
+    "message": "Συνοπτική εκτύπωση"
+  },
+  "report/renderer/util.js | dropdownSaveGist": {
+    "message": "Αποθήκευση ως Gist"
+  },
+  "report/renderer/util.js | dropdownSaveHTML": {
+    "message": "Αποθήκευση ως HTML"
+  },
+  "report/renderer/util.js | dropdownSaveJSON": {
+    "message": "Αποθήκευση ως JSON"
+  },
+  "report/renderer/util.js | dropdownViewer": {
+    "message": "Άνοιγμα στο πρόγραμμα προβολής"
+  },
+  "report/renderer/util.js | errorLabel": {
+    "message": "Σφάλμα!"
+  },
+  "report/renderer/util.js | errorMissingAuditInfo": {
+    "message": "Σφάλμα αναφοράς: Δεν υπάρχουν πληροφορίες ελέγχου"
+  },
+  "report/renderer/util.js | footerIssue": {
+    "message": "Υποβολή προβλήματος"
+  },
+  "report/renderer/util.js | labDataTitle": {
+    "message": "Εργαστηριακά δεδομένα"
+  },
+  "report/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "Ανάλυση της τρέχουσας σελίδας από το [Lighthouse](https://developers.google.com/web/tools/lighthouse/) σε ένα προσομειωμένο δίκτυο κινητής τηλεφωνίας. Οι τιμές είναι κατ' εκτίμηση και μπορεί να διαφέρουν."
+  },
+  "report/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "Επιπλέον στοιχεία για μη αυτόματο έλεγχο"
+  },
+  "report/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "Δεν ισχύει"
+  },
+  "report/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "Ευκαιρία"
+  },
+  "report/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "Εκτιμώμενες εξοικονομήσεις"
+  },
+  "report/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "Έλεγχοι που ολοκληρώθηκαν επιτυχώς"
+  },
+  "report/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "Προσομοιωμένη επιφάνεια εργασίας"
+  },
+  "report/renderer/util.js | runtimeMobileEmulation": {
+    "message": "Προσομοιωμένο Moto G4"
+  },
+  "report/renderer/util.js | runtimeNoEmulation": {
+    "message": "Χωρίς προσομοίωση"
+  },
+  "report/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "'Εκδοση Axe"
+  },
+  "report/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "Ισχύς CPU/μνήμης"
+  },
+  "report/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "Περιορισμός CPU"
+  },
+  "report/renderer/util.js | runtimeSettingsChannel": {
+    "message": "Κανάλι"
+  },
+  "report/renderer/util.js | runtimeSettingsDevice": {
+    "message": "Συσκευή"
+  },
+  "report/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "Ώρα ανάκτησης"
+  },
+  "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "Περιορισμός δικτύου"
+  },
+  "report/renderer/util.js | runtimeSettingsTitle": {
+    "message": "Ρυθμίσεις χρόνου εκτέλεσης (runtime)"
+  },
+  "report/renderer/util.js | runtimeSettingsUA": {
+    "message": "Παράγοντας χρήστη (κεντρικός υπολογιστής)"
+  },
+  "report/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "Παράγοντας χρήστη (δίκτυο)"
+  },
+  "report/renderer/util.js | runtimeSettingsUrl": {
+    "message": "URL"
+  },
+  "report/renderer/util.js | runtimeUnknown": {
+    "message": "Άγνωστη"
+  },
+  "report/renderer/util.js | showRelevantAudits": {
+    "message": "Εμφάνιση ελέγχων που σχετίζονται με:"
+  },
+  "report/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "Σύμπτυξη αποσπάσματος"
+  },
+  "report/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "Ανάπτυξη αποσπάσματος"
+  },
+  "report/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "Εμφάνιση πόρων τρίτων"
+  },
+  "report/renderer/util.js | throttlingProvided": {
+    "message": "Παρέχεται από το περιβάλλον"
+  },
+  "report/renderer/util.js | toplevelWarningsMessage": {
+    "message": "Παρουσιάστηκαν ορισμένα ζητήματα τα οποία επηρεάζουν αυτήν την εκτέλεση του Lighthouse:"
+  },
+  "report/renderer/util.js | varianceDisclaimer": {
+    "message": "Οι τιμές εκτιμώνται και μπορεί να ποικίλουν. Η [βαθμολογία απόδοσης υπολογίζεται](https://web.dev/performance-scoring/) απευθείας από αυτές τις μετρήσεις."
+  },
+  "report/renderer/util.js | viewTreemapLabel": {
+    "message": "Προβολή δενδροειδούς χάρτη"
+  },
+  "report/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "Έλεγχοι που ολοκληρώθηκαν αλλά με προειδοποιήσεις"
+  },
+  "report/renderer/util.js | warningHeader": {
+    "message": "Προειδοποιήσεις: "
   }
 }

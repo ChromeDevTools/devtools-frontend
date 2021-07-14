@@ -63,7 +63,7 @@
     "message": "Các phần tử `meter` của ARIA có tên dễ đọc"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "Khi một phần tử không có tên dễ đọc, trình đọc màn hình sẽ gọi phần tử đó bằng một tên gọi chung, khiến người dùng trình đọc màn hình không sử dụng được phần tử này. [Tìm hiểu thêm](https://web.dev/aria-name/)."
+    "message": "Khi một phần tử `progressbar` không có tên thành phần hỗ trợ tiếp cận, trình đọc màn hình sẽ gọi phần tử đó bằng một tên gọi chung, dẫn đến việc người dùng trình đọc màn hình không sử dụng được phần tử này. [Tìm hiểu thêm](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "Các phần tử `progressbar` của ARIA không có tên dễ đọc."
@@ -585,13 +585,13 @@
     "message": "Lệnh"
   },
   "lighthouse-core/audits/csp-xss.js | columnSeverity": {
-    "message": "Severity"
+    "message": "Mức độ nghiêm trọng"
   },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "Một Chính sách bảo mật nội dung (CSP) mạnh sẽ làm giảm đáng kể nguy cơ bị tấn công thông qua tập lệnh trên nhiều trang web (XSS). [Tìm hiểu thêm](https://web.dev/strict-csp/)"
+    "message": "Một Chính sách bảo mật nội dung (CSP) mạnh sẽ làm giảm đáng kể nguy cơ bị tấn công thông qua tập lệnh trên nhiều trang web (XSS). [Tìm hiểu thêm](https://web.dev/csp-xss/)"
   },
   "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
-    "message": "Syntax"
+    "message": "Cú pháp"
   },
   "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
     "message": "Trang này chứa CSP được xác định trong thẻ <meta>. Hãy cân nhắc xác định CSP trong tiêu đề HTTP, nếu có thể."
@@ -903,10 +903,10 @@
     "message": "Tệp kê khai không chứa trường \"name\" hoặc \"short_name\""
   },
   "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "Tệp kê khai chứa biểu tượng không phù hợp. Yêu cầu tệp phải ở định dạng PNG, SVG hoặc WebP với kích thước tối thiểu {value0} px, thuộc tính \"sizes\" phải được đặt, còn thuộc tính \"purpose\" (nếu được đặt) phải bao gồm \"any\" hoặc \"maskable\"."
+    "message": "Tệp kê khai chứa biểu tượng không phù hợp. Yêu cầu tệp phải ở định dạng PNG, SVG hoặc WebP có kích thước tối thiểu là {value0} px, thuộc tính \"sizes\" phải được đặt, còn thuộc tính \"purpose\" (nếu được đặt) phải bao gồm \"any\"."
   },
   "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "Không có biểu tượng nào được cung cấp ở định dạng PNG, SVG hoặc WebP với kích thước tối thiểu {value0} px vuông"
+    "message": "Không có biểu tượng nào được cung cấp ở định dạng PNG, SVG hoặc WebP với kích thước tối thiểu là {value0} px vuông, còn thuộc tính \"purpose\" không được đặt hoặc được đặt thành \"any\""
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
     "message": "Biểu tượng đã tải xuống bị trống hoặc hỏng"
@@ -1955,144 +1955,6 @@
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "URL bạn cung cấp có vẻ không hợp lệ."
   },
-  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
-    "message": "Xem máy tính."
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
-    "message": "Điều hướng ban đầu"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "Độ trễ tối đa của đường dẫn quan trọng:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
-    "message": "Sao chép đối tượng JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "Bật/tắt Giao diện tối"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
-    "message": "Mở rộng trong hộp thoại in"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
-    "message": "Báo cáo tóm tắt trong hộp thoại in"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
-    "message": "Lưu dưới dạng Gist"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
-    "message": "Lưu dưới dạng HTML"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
-    "message": "Lưu dưới dạng JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
-    "message": "Mở trong trình xem"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
-    "message": "Lỗi!"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
-    "message": "Lỗi báo cáo: không có thông tin kiểm tra"
-  },
-  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
-    "message": "Tạo vấn đề"
-  },
-  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
-    "message": "Dữ liệu của phòng thí nghiệm"
-  },
-  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
-    "message": "Kết quả phân tích [Lighthouse](https://developers.google.com/web/tools/lighthouse/) cho trang hiện tại dựa trên một mạng di động mô phỏng. Các giá trị chỉ là ước tính và có thể thay đổi."
-  },
-  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
-    "message": "Các mục bổ sung cần kiểm tra theo cách thủ công"
-  },
-  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
-    "message": "Không áp dụng"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
-    "message": "Cơ hội"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
-    "message": "Thời lượng tiết kiệm được theo ước tính"
-  },
-  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
-    "message": "Số lần kiểm tra đạt yêu cầu"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
-    "message": "Màn hình mô phỏng"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
-    "message": "Mô phỏng Moto G4"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
-    "message": "Chưa đặt tùy chọn mô phỏng"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
-    "message": "Phiên bản Axe"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
-    "message": "Công suất CPU/Bộ nhớ"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
-    "message": "Điều tiết CPU"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Kênh"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
-    "message": "Thiết bị"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Thời gian tìm nạp"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
-    "message": "Hạn chế băng thông mạng"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Các tùy chọn cài đặt thời gian chạy"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
-    "message": "Tác nhân người dùng (máy chủ)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
-    "message": "Tác nhân người dùng (mạng)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
-    "message": "Không xác định"
-  },
-  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
-    "message": "Hiển thị các lượt kiểm tra liên quan đến:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
-    "message": "Thu gọn đoạn mã"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
-    "message": "Mở rộng đoạn mã"
-  },
-  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "Hiển thị tài nguyên của bên thứ ba"
-  },
-  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
-    "message": "Cung cấp theo môi trường"
-  },
-  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
-    "message": "Đã xảy ra sự cố ảnh hưởng đến lần chạy Lighthouse này:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "Các giá trị chỉ là ước tính và có thể thay đổi. [Điểm hiệu quả được tính](https://web.dev/performance-scoring/) trực tiếp từ những chỉ số này."
-  },
-  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
-    "message": "Xem Biểu đồ dạng cây"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
-    "message": "Đã vượt qua bài kiểm tra nhưng có cảnh báo"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
-    "message": "Cảnh báo: "
-  },
   "lighthouse-treemap/app/src/util.js | allLabel": {
     "message": "Tất cả"
   },
@@ -2380,5 +2242,143 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "Bạn có thể bật tính năng nén văn bản trong cấu hình máy chủ web."
+  },
+  "report/renderer/util.js | calculatorLink": {
+    "message": "Xem máy tính."
+  },
+  "report/renderer/util.js | crcInitialNavigation": {
+    "message": "Điều hướng ban đầu"
+  },
+  "report/renderer/util.js | crcLongestDurationLabel": {
+    "message": "Độ trễ tối đa của đường dẫn quan trọng:"
+  },
+  "report/renderer/util.js | dropdownCopyJSON": {
+    "message": "Sao chép đối tượng JSON"
+  },
+  "report/renderer/util.js | dropdownDarkTheme": {
+    "message": "Bật/tắt Giao diện tối"
+  },
+  "report/renderer/util.js | dropdownPrintExpanded": {
+    "message": "Mở rộng trong hộp thoại in"
+  },
+  "report/renderer/util.js | dropdownPrintSummary": {
+    "message": "Báo cáo tóm tắt trong hộp thoại in"
+  },
+  "report/renderer/util.js | dropdownSaveGist": {
+    "message": "Lưu dưới dạng Gist"
+  },
+  "report/renderer/util.js | dropdownSaveHTML": {
+    "message": "Lưu dưới dạng HTML"
+  },
+  "report/renderer/util.js | dropdownSaveJSON": {
+    "message": "Lưu dưới dạng JSON"
+  },
+  "report/renderer/util.js | dropdownViewer": {
+    "message": "Mở trong trình xem"
+  },
+  "report/renderer/util.js | errorLabel": {
+    "message": "Lỗi!"
+  },
+  "report/renderer/util.js | errorMissingAuditInfo": {
+    "message": "Lỗi báo cáo: không có thông tin kiểm tra"
+  },
+  "report/renderer/util.js | footerIssue": {
+    "message": "Tạo vấn đề"
+  },
+  "report/renderer/util.js | labDataTitle": {
+    "message": "Dữ liệu của phòng thí nghiệm"
+  },
+  "report/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "Kết quả phân tích [Lighthouse](https://developers.google.com/web/tools/lighthouse/) cho trang hiện tại dựa trên một mạng di động mô phỏng. Các giá trị chỉ là ước tính và có thể thay đổi."
+  },
+  "report/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "Các mục bổ sung cần kiểm tra theo cách thủ công"
+  },
+  "report/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "Không áp dụng"
+  },
+  "report/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "Cơ hội"
+  },
+  "report/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "Thời lượng tiết kiệm được theo ước tính"
+  },
+  "report/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "Số lần kiểm tra đạt yêu cầu"
+  },
+  "report/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "Màn hình mô phỏng"
+  },
+  "report/renderer/util.js | runtimeMobileEmulation": {
+    "message": "Mô phỏng Moto G4"
+  },
+  "report/renderer/util.js | runtimeNoEmulation": {
+    "message": "Chưa đặt tùy chọn mô phỏng"
+  },
+  "report/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "Phiên bản Axe"
+  },
+  "report/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "Công suất CPU/Bộ nhớ"
+  },
+  "report/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "Điều tiết CPU"
+  },
+  "report/renderer/util.js | runtimeSettingsChannel": {
+    "message": "Kênh"
+  },
+  "report/renderer/util.js | runtimeSettingsDevice": {
+    "message": "Thiết bị"
+  },
+  "report/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "Thời gian tìm nạp"
+  },
+  "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "Hạn chế băng thông mạng"
+  },
+  "report/renderer/util.js | runtimeSettingsTitle": {
+    "message": "Các tùy chọn cài đặt thời gian chạy"
+  },
+  "report/renderer/util.js | runtimeSettingsUA": {
+    "message": "Tác nhân người dùng (máy chủ)"
+  },
+  "report/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "Tác nhân người dùng (mạng)"
+  },
+  "report/renderer/util.js | runtimeSettingsUrl": {
+    "message": "URL"
+  },
+  "report/renderer/util.js | runtimeUnknown": {
+    "message": "Không xác định"
+  },
+  "report/renderer/util.js | showRelevantAudits": {
+    "message": "Hiển thị các lượt kiểm tra liên quan đến:"
+  },
+  "report/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "Thu gọn đoạn mã"
+  },
+  "report/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "Mở rộng đoạn mã"
+  },
+  "report/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "Hiển thị tài nguyên của bên thứ ba"
+  },
+  "report/renderer/util.js | throttlingProvided": {
+    "message": "Cung cấp theo môi trường"
+  },
+  "report/renderer/util.js | toplevelWarningsMessage": {
+    "message": "Đã xảy ra sự cố ảnh hưởng đến lần chạy Lighthouse này:"
+  },
+  "report/renderer/util.js | varianceDisclaimer": {
+    "message": "Các giá trị chỉ là ước tính và có thể thay đổi. [Điểm hiệu quả được tính](https://web.dev/performance-scoring/) trực tiếp từ những chỉ số này."
+  },
+  "report/renderer/util.js | viewTreemapLabel": {
+    "message": "Xem Biểu đồ dạng cây"
+  },
+  "report/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "Đã vượt qua bài kiểm tra nhưng có cảnh báo"
+  },
+  "report/renderer/util.js | warningHeader": {
+    "message": "Cảnh báo: "
   }
 }

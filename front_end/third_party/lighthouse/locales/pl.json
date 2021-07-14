@@ -63,7 +63,7 @@
     "message": "Elementy ARIA `meter` mają nazwy na potrzeby ułatwień dostępu"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "Gdy element nie ma nazwy na potrzeby ułatwień dostępu, czytniki ekranu określają go nazwą ogólną, przez co jest on bezużyteczny dla ich użytkowników. [Więcej informacji](https://web.dev/aria-name/)"
+    "message": "Gdy element `progressbar` nie ma nazwy na potrzeby ułatwień dostępu, czytniki ekranu określają go nazwą ogólną, przez co jest on bezużyteczny dla ich użytkowników. [Więcej informacji](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "Elementy ARIA `progressbar` nie mają nazw na potrzeby ułatwień dostępu."
@@ -588,7 +588,7 @@
     "message": "Waga"
   },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "Ścisłe przestrzeganie standardu Content Security Policy (CSP) znacznie zmniejsza ryzyko ataków typu cross-site scripting (XSS). [Więcej informacji](https://web.dev/strict-csp/)"
+    "message": "Ścisłe przestrzeganie standardu Content Security Policy (CSP) znacznie zmniejsza ryzyko ataków typu cross-site scripting (XSS). [Więcej informacji](https://web.dev/csp-xss/)"
   },
   "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
     "message": "Składnia"
@@ -903,10 +903,10 @@
     "message": "Plik manifestu nie zawiera pola „name” ani „short_name”"
   },
   "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "Plik manifestu nie zawiera odpowiedniej ikony – ikona musi być w formacie PNG, SVG lub WebP, mieć co najmniej {value0} piks., mieć ustawiony atrybut rozmiarów, a jeśli jest ustawiony atrybut przeznaczenia, musi on zawierać wartość „any” lub „maskable”."
+    "message": "Plik manifestu nie zawiera odpowiedniej ikony. Ikona musi być w formacie PNG, SVG lub WebP, mieć co najmniej {value0} piks. i ustawiony atrybut rozmiarów. Jeśli jest ustawiony atrybut przeznaczenia, to musi zawierać wartość „any”."
   },
   "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "Żadna z podanych ikon nie jest kwadratem o boku długości {value0} piks. w formacie PNG, SVG lub WebP"
+    "message": "Żadna z podanych ikon nie jest kwadratem z bokiem o długości co najmniej {value0} piks. w formacie PNG, SVG lub WebP, z atrybutem przeznaczenia o nieustawionej wartości lub wartości „any”"
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
     "message": "Pobrana ikona była pusta lub uszkodzona"
@@ -1955,144 +1955,6 @@
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Podany URL jest nieprawidłowy."
   },
-  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
-    "message": "Zobacz kalkulator."
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
-    "message": "Początkowa nawigacja"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "Maksymalne opóźnienie ścieżki krytycznej:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
-    "message": "Skopiuj JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "Przełącz ciemny motyw"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
-    "message": "Drukuj rozwinięty"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
-    "message": "Drukuj podsumowanie"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
-    "message": "Zapisz jako Gist"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
-    "message": "Zapisz jako HTML"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
-    "message": "Zapisz jako JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
-    "message": "Otwórz w przeglądarce"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
-    "message": "Błąd"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
-    "message": "Błąd raportu: brak informacji o audycie"
-  },
-  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
-    "message": "Zgłoś problem"
-  },
-  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
-    "message": "Dane laboratoryjne"
-  },
-  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
-    "message": "Bieżąca strona została przeanalizowana przez narzędzie [Lighthouse](https://developers.google.com/web/tools/lighthouse/) wraz z emulacją sieci komórkowej. Wartości są szacunkowe i mogą się zmieniać."
-  },
-  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
-    "message": "Dodatkowe elementy do ręcznego sprawdzenia"
-  },
-  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
-    "message": "Nie dotyczy"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
-    "message": "Możliwość"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
-    "message": "Szacowane oszczędności"
-  },
-  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
-    "message": "Zaliczone audyty"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
-    "message": "Emulacja pulpitu"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
-    "message": "Emulacja Moto G4"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
-    "message": "Bez emulacji"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
-    "message": "Wersja biblioteki Axe"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
-    "message": "Moc procesora/pamięci"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
-    "message": "Ograniczanie wykorzystania procesora"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Kanał"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
-    "message": "Urządzenie"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Czas pobrania"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
-    "message": "Ograniczanie wykorzystania sieci"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Ustawienia czasu działania"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
-    "message": "Klient użytkownika (host)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
-    "message": "Klient użytkownika (sieć)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
-    "message": "Nieznane"
-  },
-  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
-    "message": "Pokaż audyty dotyczące:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
-    "message": "Zwiń fragment"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
-    "message": "Rozwiń fragment"
-  },
-  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "Pokaż zasoby zewnętrzne"
-  },
-  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
-    "message": "Obsługiwane przez środowisko"
-  },
-  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
-    "message": "Podczas tego uruchomienia Lighthouse wystąpiły problemy:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "Wartości są szacunkowe i mogą się zmieniać. [Wynik wydajności jest obliczony](https://web.dev/performance-scoring/) bezpośrednio na podstawie tych danych."
-  },
-  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
-    "message": "Pokaż diagram"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
-    "message": "Audyty zaliczone z ostrzeżeniami"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
-    "message": "Ostrzeżenia "
-  },
   "lighthouse-treemap/app/src/util.js | allLabel": {
     "message": "Wszystko"
   },
@@ -2380,5 +2242,143 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "Możesz włączyć kompresję tekstu w konfiguracji swojego serwera WWW."
+  },
+  "report/renderer/util.js | calculatorLink": {
+    "message": "Zobacz kalkulator."
+  },
+  "report/renderer/util.js | crcInitialNavigation": {
+    "message": "Początkowa nawigacja"
+  },
+  "report/renderer/util.js | crcLongestDurationLabel": {
+    "message": "Maksymalne opóźnienie ścieżki krytycznej:"
+  },
+  "report/renderer/util.js | dropdownCopyJSON": {
+    "message": "Skopiuj JSON"
+  },
+  "report/renderer/util.js | dropdownDarkTheme": {
+    "message": "Przełącz ciemny motyw"
+  },
+  "report/renderer/util.js | dropdownPrintExpanded": {
+    "message": "Drukuj rozwinięty"
+  },
+  "report/renderer/util.js | dropdownPrintSummary": {
+    "message": "Drukuj podsumowanie"
+  },
+  "report/renderer/util.js | dropdownSaveGist": {
+    "message": "Zapisz jako Gist"
+  },
+  "report/renderer/util.js | dropdownSaveHTML": {
+    "message": "Zapisz jako HTML"
+  },
+  "report/renderer/util.js | dropdownSaveJSON": {
+    "message": "Zapisz jako JSON"
+  },
+  "report/renderer/util.js | dropdownViewer": {
+    "message": "Otwórz w przeglądarce"
+  },
+  "report/renderer/util.js | errorLabel": {
+    "message": "Błąd"
+  },
+  "report/renderer/util.js | errorMissingAuditInfo": {
+    "message": "Błąd raportu: brak informacji o audycie"
+  },
+  "report/renderer/util.js | footerIssue": {
+    "message": "Zgłoś problem"
+  },
+  "report/renderer/util.js | labDataTitle": {
+    "message": "Dane laboratoryjne"
+  },
+  "report/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "Bieżąca strona została przeanalizowana przez narzędzie [Lighthouse](https://developers.google.com/web/tools/lighthouse/) wraz z emulacją sieci komórkowej. Wartości są szacunkowe i mogą się zmieniać."
+  },
+  "report/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "Dodatkowe elementy do ręcznego sprawdzenia"
+  },
+  "report/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "Nie dotyczy"
+  },
+  "report/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "Możliwość"
+  },
+  "report/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "Szacowane oszczędności"
+  },
+  "report/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "Zaliczone audyty"
+  },
+  "report/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "Emulacja pulpitu"
+  },
+  "report/renderer/util.js | runtimeMobileEmulation": {
+    "message": "Emulacja Moto G4"
+  },
+  "report/renderer/util.js | runtimeNoEmulation": {
+    "message": "Bez emulacji"
+  },
+  "report/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "Wersja biblioteki Axe"
+  },
+  "report/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "Moc procesora/pamięci"
+  },
+  "report/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "Ograniczanie wykorzystania procesora"
+  },
+  "report/renderer/util.js | runtimeSettingsChannel": {
+    "message": "Kanał"
+  },
+  "report/renderer/util.js | runtimeSettingsDevice": {
+    "message": "Urządzenie"
+  },
+  "report/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "Czas pobrania"
+  },
+  "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "Ograniczanie wykorzystania sieci"
+  },
+  "report/renderer/util.js | runtimeSettingsTitle": {
+    "message": "Ustawienia czasu działania"
+  },
+  "report/renderer/util.js | runtimeSettingsUA": {
+    "message": "Klient użytkownika (host)"
+  },
+  "report/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "Klient użytkownika (sieć)"
+  },
+  "report/renderer/util.js | runtimeSettingsUrl": {
+    "message": "URL"
+  },
+  "report/renderer/util.js | runtimeUnknown": {
+    "message": "Nieznane"
+  },
+  "report/renderer/util.js | showRelevantAudits": {
+    "message": "Pokaż audyty dotyczące:"
+  },
+  "report/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "Zwiń fragment"
+  },
+  "report/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "Rozwiń fragment"
+  },
+  "report/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "Pokaż zasoby zewnętrzne"
+  },
+  "report/renderer/util.js | throttlingProvided": {
+    "message": "Obsługiwane przez środowisko"
+  },
+  "report/renderer/util.js | toplevelWarningsMessage": {
+    "message": "Podczas tego uruchomienia Lighthouse wystąpiły problemy:"
+  },
+  "report/renderer/util.js | varianceDisclaimer": {
+    "message": "Wartości są szacunkowe i mogą się zmieniać. [Wynik wydajności jest obliczony](https://web.dev/performance-scoring/) bezpośrednio na podstawie tych danych."
+  },
+  "report/renderer/util.js | viewTreemapLabel": {
+    "message": "Pokaż diagram"
+  },
+  "report/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "Audyty zaliczone z ostrzeżeniami"
+  },
+  "report/renderer/util.js | warningHeader": {
+    "message": "Ostrzeżenia "
   }
 }

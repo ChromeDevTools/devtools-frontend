@@ -63,7 +63,7 @@
     "message": "A(z) `meter` ARIA-elemek akadálymentes névvel rendelkeznek"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "Ha valamelyik elem nem rendelkezik akadálymentes névvel, a képernyőolvasók általános néven olvassák fel, ami használhatatlan a képernyőolvasóra hagyatkozó felhasználók számára. [További információ](https://web.dev/aria-name/)."
+    "message": "Ha egy `progressbar` elem nem rendelkezik kisegítő névvel, a képernyőolvasók általános néven olvassák fel, ami használhatatlan a képernyőolvasóra hagyatkozó felhasználók számára. [További információ](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "A(z) `progressbar` ARIA-elemek nem rendelkeznek akadálymentes névvel."
@@ -585,13 +585,13 @@
     "message": "Utasítás"
   },
   "lighthouse-core/audits/csp-xss.js | columnSeverity": {
-    "message": "Severity"
+    "message": "Súlyosság"
   },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "A hatékony tartalombiztonsági irányelvek jelentősen csökkentik az XSS-támadások (webhelyek közötti, parancsfájlt alkalmazó támadások) kockázatát. [További információ](https://web.dev/strict-csp/)"
+    "message": "A hatékony tartalombiztonsági irányelvek jelentősen csökkentik az XSS-támadások (webhelyek közötti, parancsfájlt alkalmazó támadások) kockázatát. [További információ](https://web.dev/csp-xss/)"
   },
   "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
-    "message": "Syntax"
+    "message": "Szintaxis"
   },
   "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
     "message": "Az oldal tartalmaz egy <meta> címkében definiált CSP-t. Ha lehet, inkább a HTTP-fejlécben határozza meg a CSP-t."
@@ -903,10 +903,10 @@
     "message": "A manifest nem tartalmaz „name” vagy „short_name” mezőt."
   },
   "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "A manifest nem tartalmaz megfelelő ikont. PNG-, SVG- vagy WebP-formátumra van szükség legalább {value0} px méretben. Be kell állítani a méretek attribútumát. Ha be van állítva a cél attribútuma, tartalmaznia kell az „any” (bármilyen) vagy a „maskable” (maszkolható) értéket."
+    "message": "A manifest nem tartalmaz megfelelő ikont. PNG-, SVG- vagy WebP-formátumra van szükség legalább {value0} px méretben. Be kell állítani a méretek attribútumát. Ha be van állítva a cél attribútuma, tartalmaznia kell az „any” (bármilyen) értéket."
   },
   "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "Nincs megadva ikon legalább {value0} px négyzetes méretben PNG-, SVG- vagy WebP-formátumban."
+    "message": "Nincs megadva olyan ikon legalább {value0} képpontos, négyzetes méretben, PNG-, SVG- vagy WebP-formátumban, amelynek célattribútuma nincs beállítva, vagy „any” (bármely) értékre van állítva."
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
     "message": "A letöltött ikon üres vagy sérült"
@@ -1955,144 +1955,6 @@
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Úgy tűnik, a megadott URL érvénytelen."
   },
-  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
-    "message": "Számológép megtekintése"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
-    "message": "Kezdeti navigáció"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "Kritikus elérési út maximális várakozási ideje:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
-    "message": "JSON másolása"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "Sötét téma be-/kikapcsolása"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
-    "message": "Teljes jelentés nyomtatása"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
-    "message": "Összefoglalás nyomtatása"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
-    "message": "Mentés Gistként"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
-    "message": "Mentés HTML-ként"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
-    "message": "Mentés JSON-ként"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
-    "message": "Megnyitás a megtekintőben"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
-    "message": "Hiba!"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
-    "message": "Jelentési hiba: nincs ellenőrzési információ"
-  },
-  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
-    "message": "Probléma beküldése"
-  },
-  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
-    "message": "Laboradatok"
-  },
-  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
-    "message": "Az aktuális oldal [Lighthouse](https://developers.google.com/web/tools/lighthouse/)-elemzése emulált mobilhálózaton. Az értékek becsültek és változhatnak."
-  },
-  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
-    "message": "További manuálisan elemzendő elemek"
-  },
-  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
-    "message": "Nem alkalmazható"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
-    "message": "Lehetőség"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
-    "message": "Becsült megtakarítás"
-  },
-  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
-    "message": "Sikeresen teljesített ellenőrzések"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
-    "message": "Emulált asztal"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
-    "message": "Emulált Moto G4"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
-    "message": "Emuláció nélkül"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
-    "message": "Axe-verzió"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
-    "message": "CPU/memória teljesítménye"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
-    "message": "CPU-korlátozás"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Csatorna"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
-    "message": "Eszköz"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Lekérdezési idő"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
-    "message": "Hálózatkorlátozás"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Futási időre vonatkozó beállítások"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
-    "message": "Felhasználói ügynök (gazdagép)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
-    "message": "Felhasználói ügynök (hálózat)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
-    "message": "Ismeretlen"
-  },
-  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
-    "message": "A következővel kapcsolatos naplóbejegyzések megjelenítése:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
-    "message": "Kódrészlet összecsukása"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
-    "message": "Kódrészlet kibontása"
-  },
-  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "Harmadik féltől származó források megjelenítése"
-  },
-  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
-    "message": "A környezettől származik"
-  },
-  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
-    "message": "A Lighthouse-futtatást befolyásoló problémák fordultak elő:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "Az értékek becsültek és változhatnak. A [teljesítménypontszám kiszámítása](https://web.dev/performance-scoring/) közvetlenül e mutatók alapján történik."
-  },
-  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
-    "message": "Fastruktúra megtekintése"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
-    "message": "Átment az ellenőrzéseken – figyelmeztetésekkel"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
-    "message": "Figyelmeztetések: "
-  },
   "lighthouse-treemap/app/src/util.js | allLabel": {
     "message": "Összes"
   },
@@ -2380,5 +2242,143 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "A szövegtömörítést a webszerver konfigurációjában engedélyezheti."
+  },
+  "report/renderer/util.js | calculatorLink": {
+    "message": "Számológép megtekintése"
+  },
+  "report/renderer/util.js | crcInitialNavigation": {
+    "message": "Kezdeti navigáció"
+  },
+  "report/renderer/util.js | crcLongestDurationLabel": {
+    "message": "Kritikus elérési út maximális várakozási ideje:"
+  },
+  "report/renderer/util.js | dropdownCopyJSON": {
+    "message": "JSON másolása"
+  },
+  "report/renderer/util.js | dropdownDarkTheme": {
+    "message": "Sötét téma be-/kikapcsolása"
+  },
+  "report/renderer/util.js | dropdownPrintExpanded": {
+    "message": "Teljes jelentés nyomtatása"
+  },
+  "report/renderer/util.js | dropdownPrintSummary": {
+    "message": "Összefoglalás nyomtatása"
+  },
+  "report/renderer/util.js | dropdownSaveGist": {
+    "message": "Mentés Gistként"
+  },
+  "report/renderer/util.js | dropdownSaveHTML": {
+    "message": "Mentés HTML-ként"
+  },
+  "report/renderer/util.js | dropdownSaveJSON": {
+    "message": "Mentés JSON-ként"
+  },
+  "report/renderer/util.js | dropdownViewer": {
+    "message": "Megnyitás a megtekintőben"
+  },
+  "report/renderer/util.js | errorLabel": {
+    "message": "Hiba!"
+  },
+  "report/renderer/util.js | errorMissingAuditInfo": {
+    "message": "Jelentési hiba: nincs ellenőrzési információ"
+  },
+  "report/renderer/util.js | footerIssue": {
+    "message": "Probléma beküldése"
+  },
+  "report/renderer/util.js | labDataTitle": {
+    "message": "Laboradatok"
+  },
+  "report/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "Az aktuális oldal [Lighthouse](https://developers.google.com/web/tools/lighthouse/)-elemzése emulált mobilhálózaton. Az értékek becsültek és változhatnak."
+  },
+  "report/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "További manuálisan elemzendő elemek"
+  },
+  "report/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "Nem alkalmazható"
+  },
+  "report/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "Lehetőség"
+  },
+  "report/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "Becsült megtakarítás"
+  },
+  "report/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "Sikeresen teljesített ellenőrzések"
+  },
+  "report/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "Emulált asztal"
+  },
+  "report/renderer/util.js | runtimeMobileEmulation": {
+    "message": "Emulált Moto G4"
+  },
+  "report/renderer/util.js | runtimeNoEmulation": {
+    "message": "Emuláció nélkül"
+  },
+  "report/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "Axe-verzió"
+  },
+  "report/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "CPU/memória teljesítménye"
+  },
+  "report/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "CPU-korlátozás"
+  },
+  "report/renderer/util.js | runtimeSettingsChannel": {
+    "message": "Csatorna"
+  },
+  "report/renderer/util.js | runtimeSettingsDevice": {
+    "message": "Eszköz"
+  },
+  "report/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "Lekérdezési idő"
+  },
+  "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "Hálózatkorlátozás"
+  },
+  "report/renderer/util.js | runtimeSettingsTitle": {
+    "message": "Futási időre vonatkozó beállítások"
+  },
+  "report/renderer/util.js | runtimeSettingsUA": {
+    "message": "Felhasználói ügynök (gazdagép)"
+  },
+  "report/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "Felhasználói ügynök (hálózat)"
+  },
+  "report/renderer/util.js | runtimeSettingsUrl": {
+    "message": "URL"
+  },
+  "report/renderer/util.js | runtimeUnknown": {
+    "message": "Ismeretlen"
+  },
+  "report/renderer/util.js | showRelevantAudits": {
+    "message": "A következővel kapcsolatos naplóbejegyzések megjelenítése:"
+  },
+  "report/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "Kódrészlet összecsukása"
+  },
+  "report/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "Kódrészlet kibontása"
+  },
+  "report/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "Harmadik féltől származó források megjelenítése"
+  },
+  "report/renderer/util.js | throttlingProvided": {
+    "message": "A környezettől származik"
+  },
+  "report/renderer/util.js | toplevelWarningsMessage": {
+    "message": "A Lighthouse-futtatást befolyásoló problémák fordultak elő:"
+  },
+  "report/renderer/util.js | varianceDisclaimer": {
+    "message": "Az értékek becsültek és változhatnak. A [teljesítménypontszám kiszámítása](https://web.dev/performance-scoring/) közvetlenül e mutatók alapján történik."
+  },
+  "report/renderer/util.js | viewTreemapLabel": {
+    "message": "Fastruktúra megtekintése"
+  },
+  "report/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "Átment az ellenőrzéseken – figyelmeztetésekkel"
+  },
+  "report/renderer/util.js | warningHeader": {
+    "message": "Figyelmeztetések: "
   }
 }

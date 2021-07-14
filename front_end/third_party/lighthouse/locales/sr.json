@@ -63,7 +63,7 @@
     "message": "ARIA елементи `meter` имају називе прилагођене функцијама приступачности"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "Када елемент нема назив прилагођен функцији приступачности, читачи екрана га најављују помоћу генеричког назива, па корисници који се ослањају на читаче екрана не могу да га користе. [Сазнајте више](https://web.dev/aria-name/)."
+    "message": "Када `progressbar` нема назив прилагођен функцији приступачности, читачи екрана га најављују помоћу генеричког назива, па корисници који се ослањају на читаче екрана не могу да га користе. [Сазнајте више](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "ARIA елементи `progressbar` немају називе прилагођене функцијама приступачности."
@@ -585,13 +585,13 @@
     "message": "Директива"
   },
   "lighthouse-core/audits/csp-xss.js | columnSeverity": {
-    "message": "Severity"
+    "message": "Озбиљност"
   },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "Снажне смернице за безбедност садржаја знатно смањују ризик од напада скриптовањем динамички генерисаних веб-страница. [Сазнајте више](https://web.dev/strict-csp/)"
+    "message": "Снажне смернице за безбедност садржаја знатно смањују ризик од напада скриптовањем динамички генерисаних веб-страница. [Сазнајте више](https://web.dev/csp-xss/)"
   },
   "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
-    "message": "Syntax"
+    "message": "Синтакса"
   },
   "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
     "message": "Страница садржи CSP дефинисан у <meta> ознаци. Саветујемо вам да дефинишете CSP у HTTP заглављу ако можете."
@@ -903,10 +903,10 @@
     "message": "Манифест не садржи поље „name“ или „short_name“"
   },
   "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "Манифест не садржи одговарајућу икону – обавезан је PNG, SVG или WebP формат који има најмање {value0} пиксела, атрибут за величине мора да буде подешен, а атрибут за сврху мора да обухвата „any“ или „maskable“ ако је подешен."
+    "message": "Манифест не садржи одговарајућу икону – обавезан је PNG, SVG или WebP формат који има најмање {value0} пиксела, атрибут за величине мора да буде подешен, а атрибут за сврху, ако је подешен, мора да обухвата „Било који“."
   },
   "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "Ниједна од наведених икона није у облику квадрата од најмање {value0} пиксела у PNG, SVG или WebP формату"
+    "message": "Ниједна од наведених икона није у облику квадрата од најмање {value0} пиксела у PNG, SVG или WebP формату, са атрибутом сврхе који није подешен или је подешен на „Било који“"
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
     "message": "Преузета икона је била празна или оштећена"
@@ -1955,144 +1955,6 @@
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Изгледа да је URL који сте навели неважећи."
   },
-  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
-    "message": "Погледајте калкулатор."
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
-    "message": "Почетна навигација"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "Максимално кашњење критичне путање:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
-    "message": "Копирај JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "Укључи/искључи тамну тему"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
-    "message": "Прошири дијалог за штампање"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
-    "message": "Штампај резиме"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
-    "message": "Сачувај као Gist"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
-    "message": "Сачувај као HTML"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
-    "message": "Сачувај као JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
-    "message": "Отвори у приказивачу"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
-    "message": "Грешка!"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
-    "message": "Пријављивање грешке: нема информација о провери"
-  },
-  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
-    "message": "Пријавите проблем"
-  },
-  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
-    "message": "Подаци о експерименталним функцијама"
-  },
-  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
-    "message": "[Lighthouse](https://developers.google.com/web/tools/lighthouse/) анализа актуелне странице емулиране помоћу мобилне мреже. Вредности представљају процене и могу да варирају."
-  },
-  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
-    "message": "Додатне ставке за ручну проверу"
-  },
-  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
-    "message": "Није примењиво"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
-    "message": "Могућност"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
-    "message": "Процењена уштеда"
-  },
-  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
-    "message": "Провере са задовољавајућом оценом"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
-    "message": "Емулирани рачунар"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
-    "message": "Емулирани Moto G4"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
-    "message": "Без емулације"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
-    "message": "Axe верзија"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
-    "message": "Јачина процесора/меморије"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
-    "message": "Ограничавање процесора"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Канал"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
-    "message": "Уређај"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Време преузимања"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
-    "message": "Ограничавање мреже"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Подешавања времена извршавања"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
-    "message": "Кориснички агент (хост)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
-    "message": "Кориснички агент (мрежа)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
-    "message": "Непознато"
-  },
-  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
-    "message": "Прикажи ревизије релевантне за:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
-    "message": "Скупи фрагмент"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
-    "message": "Прошири фрагмент"
-  },
-  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "Прикажи независне ресурсе"
-  },
-  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
-    "message": "Пружа окружење"
-  },
-  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
-    "message": "Било је извесних проблема који су утицали на ово покретање Lighthouse-а:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "Вредности представљају процене и могу да варирају. [Оцена учинка са израчунава](https://web.dev/performance-scoring/) директно на основу тих показатеља."
-  },
-  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
-    "message": "Прикажи Treemap"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
-    "message": "Провере са задовољавајућом оценом које садрже упозорења"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
-    "message": "Упозорења: "
-  },
   "lighthouse-treemap/app/src/util.js | allLabel": {
     "message": "Све"
   },
@@ -2380,5 +2242,143 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "Можете да омогућите компримовање текста у конфигурацији веб-сервера."
+  },
+  "report/renderer/util.js | calculatorLink": {
+    "message": "Погледајте калкулатор."
+  },
+  "report/renderer/util.js | crcInitialNavigation": {
+    "message": "Почетна навигација"
+  },
+  "report/renderer/util.js | crcLongestDurationLabel": {
+    "message": "Максимално кашњење критичне путање:"
+  },
+  "report/renderer/util.js | dropdownCopyJSON": {
+    "message": "Копирај JSON"
+  },
+  "report/renderer/util.js | dropdownDarkTheme": {
+    "message": "Укључи/искључи тамну тему"
+  },
+  "report/renderer/util.js | dropdownPrintExpanded": {
+    "message": "Прошири дијалог за штампање"
+  },
+  "report/renderer/util.js | dropdownPrintSummary": {
+    "message": "Штампај резиме"
+  },
+  "report/renderer/util.js | dropdownSaveGist": {
+    "message": "Сачувај као Gist"
+  },
+  "report/renderer/util.js | dropdownSaveHTML": {
+    "message": "Сачувај као HTML"
+  },
+  "report/renderer/util.js | dropdownSaveJSON": {
+    "message": "Сачувај као JSON"
+  },
+  "report/renderer/util.js | dropdownViewer": {
+    "message": "Отвори у приказивачу"
+  },
+  "report/renderer/util.js | errorLabel": {
+    "message": "Грешка!"
+  },
+  "report/renderer/util.js | errorMissingAuditInfo": {
+    "message": "Пријављивање грешке: нема информација о провери"
+  },
+  "report/renderer/util.js | footerIssue": {
+    "message": "Пријавите проблем"
+  },
+  "report/renderer/util.js | labDataTitle": {
+    "message": "Подаци о експерименталним функцијама"
+  },
+  "report/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "[Lighthouse](https://developers.google.com/web/tools/lighthouse/) анализа актуелне странице емулиране помоћу мобилне мреже. Вредности представљају процене и могу да варирају."
+  },
+  "report/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "Додатне ставке за ручну проверу"
+  },
+  "report/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "Није примењиво"
+  },
+  "report/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "Могућност"
+  },
+  "report/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "Процењена уштеда"
+  },
+  "report/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "Провере са задовољавајућом оценом"
+  },
+  "report/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "Емулирани рачунар"
+  },
+  "report/renderer/util.js | runtimeMobileEmulation": {
+    "message": "Емулирани Moto G4"
+  },
+  "report/renderer/util.js | runtimeNoEmulation": {
+    "message": "Без емулације"
+  },
+  "report/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "Axe верзија"
+  },
+  "report/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "Јачина процесора/меморије"
+  },
+  "report/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "Ограничавање процесора"
+  },
+  "report/renderer/util.js | runtimeSettingsChannel": {
+    "message": "Канал"
+  },
+  "report/renderer/util.js | runtimeSettingsDevice": {
+    "message": "Уређај"
+  },
+  "report/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "Време преузимања"
+  },
+  "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "Ограничавање мреже"
+  },
+  "report/renderer/util.js | runtimeSettingsTitle": {
+    "message": "Подешавања времена извршавања"
+  },
+  "report/renderer/util.js | runtimeSettingsUA": {
+    "message": "Кориснички агент (хост)"
+  },
+  "report/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "Кориснички агент (мрежа)"
+  },
+  "report/renderer/util.js | runtimeSettingsUrl": {
+    "message": "URL"
+  },
+  "report/renderer/util.js | runtimeUnknown": {
+    "message": "Непознато"
+  },
+  "report/renderer/util.js | showRelevantAudits": {
+    "message": "Прикажи ревизије релевантне за:"
+  },
+  "report/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "Скупи фрагмент"
+  },
+  "report/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "Прошири фрагмент"
+  },
+  "report/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "Прикажи независне ресурсе"
+  },
+  "report/renderer/util.js | throttlingProvided": {
+    "message": "Пружа окружење"
+  },
+  "report/renderer/util.js | toplevelWarningsMessage": {
+    "message": "Било је извесних проблема који су утицали на ово покретање Lighthouse-а:"
+  },
+  "report/renderer/util.js | varianceDisclaimer": {
+    "message": "Вредности представљају процене и могу да варирају. [Оцена учинка са израчунава](https://web.dev/performance-scoring/) директно на основу тих показатеља."
+  },
+  "report/renderer/util.js | viewTreemapLabel": {
+    "message": "Прикажи Treemap"
+  },
+  "report/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "Провере са задовољавајућом оценом које садрже упозорења"
+  },
+  "report/renderer/util.js | warningHeader": {
+    "message": "Упозорења: "
   }
 }

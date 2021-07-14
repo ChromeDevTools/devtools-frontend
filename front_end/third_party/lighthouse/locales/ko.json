@@ -63,7 +63,7 @@
     "message": "ARIA `meter` 요소에 접근성을 위한 이름이 있음"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "접근성을 위한 이름이 요소에 없는 경우 스크린 리더가 일반적인 이름으로 읽기 때문에 스크린 리더에 의존하는 사용자는 이용할 수 없게 됩니다. [자세히 알아보기](https://web.dev/aria-name/)"
+    "message": "`progressbar` 요소에 접근성을 위한 이름이 없는 경우 스크린 리더가 일반적인 이름으로 읽기 때문에 스크린 리더에 의존하는 사용자는 이용할 수 없게 됩니다. [자세히 알아보기](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "ARIA `progressbar` 요소에 접근성을 위한 이름이 없음"
@@ -585,13 +585,13 @@
     "message": "명령어"
   },
   "lighthouse-core/audits/csp-xss.js | columnSeverity": {
-    "message": "Severity"
+    "message": "심각도"
   },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "강력한 콘텐츠 보안 정책(CSP)을 사용하면 교차 사이트 스크립팅(XSS) 공격을 받을 위험이 크게 줄어듭니다. [자세히 알아보기](https://web.dev/strict-csp/)"
+    "message": "강력한 콘텐츠 보안 정책(CSP)을 사용하면 교차 사이트 스크립팅(XSS) 공격을 받을 위험이 크게 줄어듭니다. [자세히 알아보기](https://web.dev/csp-xss/)"
   },
   "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
-    "message": "Syntax"
+    "message": "구문"
   },
   "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
     "message": "페이지에 <meta> 태그에서 정의된 CSP가 포함되어 있습니다. 가능하면 HTTP 헤더에서 CSP를 정의하는 것이 좋습니다."
@@ -903,10 +903,10 @@
     "message": "매니페스트에 'name' 또는 'short_name' 필드가 포함되어 있지 않습니다."
   },
   "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "매니페스트에 적절한 아이콘이 포함되어 있지 않습니다. 아이콘은 최소 {value0}px 크기의 PNG, SVG 또는 WebP 형식으로 sizes 속성이 설정되어야 하며 purpose 속성이 설정된 경우 'any' 또는 'maskable'을 포함해야 합니다."
+    "message": "매니페스트에 적절한 아이콘이 포함되어 있지 않습니다. 아이콘은 최소 {value0}px 크기의 PNG, SVG 또는 WebP 형식으로 sizes 속성이 설정되어야 하며 purpose 속성이 설정된 경우 'any'를 포함해야 합니다."
   },
   "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "지원되는 아이콘이 없습니다. 아이콘은 최소 {value0}px 크기의 정사각형으로 PNG, SVG 또는 WebP 형식이어야 합니다."
+    "message": "제공된 아이콘 중 최소 {value0}px인 PNG, SVG, WebP 형식의 정사각형이며, purpose 속성이 설정되어 있지 않거나 'any'로 설정되어 있는 아이콘이 없습니다."
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
     "message": "다운로드된 아이콘이 비어 있거나 손상됨"
@@ -1955,144 +1955,6 @@
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "사용자가 제공한 URL이 잘못되었습니다."
   },
-  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
-    "message": "계산기 보기"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
-    "message": "초기 탐색"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "최상 경로 최대 지연 시간:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
-    "message": "JSON 복사"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "어두운 테마 전환"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
-    "message": "인쇄 확장됨"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
-    "message": "인쇄 요약"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
-    "message": "Gist로 저장"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
-    "message": "HTML로 저장"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
-    "message": "JSON으로 저장"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
-    "message": "뷰어에서 열기"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
-    "message": "오류!"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
-    "message": "보고 오류: 감사 정보 없음"
-  },
-  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
-    "message": "문제 신고"
-  },
-  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
-    "message": "실험실 데이터"
-  },
-  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
-    "message": "에뮬레이션된 모바일 네트워크에서 분석한 현재 페이지의 [Lighthouse](https://developers.google.com/web/tools/lighthouse/) 결과입니다. 값은 추정치이며 달라질 수 있습니다."
-  },
-  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
-    "message": "직접 확인해야 하는 추가 항목"
-  },
-  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
-    "message": "해당 사항 없음"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
-    "message": "추천"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
-    "message": "예상 절감치"
-  },
-  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
-    "message": "통과한 감사"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
-    "message": "에뮬레이션된 데스크톱"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
-    "message": "에뮬레이션된 Moto G4"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
-    "message": "에뮬레이션 없음"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
-    "message": "Axe 버전"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
-    "message": "CPU/메모리 성능"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
-    "message": "CPU 제한"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
-    "message": "채널"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
-    "message": "기기"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "가져온 시간"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
-    "message": "네트워크 제한"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
-    "message": "런타임 설정"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
-    "message": "사용자 에이전트(호스트)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
-    "message": "사용자 에이전트(네트워크)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
-    "message": "알 수 없음"
-  },
-  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
-    "message": "다음과 관련된 감사 표시:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
-    "message": "스니펫 접기"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
-    "message": "스니펫 펼치기"
-  },
-  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "타사 리소스 표시"
-  },
-  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
-    "message": "런타임 환경을 통해 제공"
-  },
-  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
-    "message": "Lighthouse 실행에 영향을 미치는 문제가 발생했습니다."
-  },
-  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "값은 추정치이며 달라질 수 있습니다. 이러한 측정항목에서 [성능 점수가 직접 계산됩니다](https://web.dev/performance-scoring/)."
-  },
-  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
-    "message": "트리맵 보기"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
-    "message": "감사를 통과했으나 경고를 받음"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
-    "message": "경고: "
-  },
   "lighthouse-treemap/app/src/util.js | allLabel": {
     "message": "전체"
   },
@@ -2380,5 +2242,143 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "웹 서버 구성에서 텍스트 압축을 사용 설정할 수 있습니다."
+  },
+  "report/renderer/util.js | calculatorLink": {
+    "message": "계산기 보기"
+  },
+  "report/renderer/util.js | crcInitialNavigation": {
+    "message": "초기 탐색"
+  },
+  "report/renderer/util.js | crcLongestDurationLabel": {
+    "message": "최상 경로 최대 지연 시간:"
+  },
+  "report/renderer/util.js | dropdownCopyJSON": {
+    "message": "JSON 복사"
+  },
+  "report/renderer/util.js | dropdownDarkTheme": {
+    "message": "어두운 테마 전환"
+  },
+  "report/renderer/util.js | dropdownPrintExpanded": {
+    "message": "인쇄 확장됨"
+  },
+  "report/renderer/util.js | dropdownPrintSummary": {
+    "message": "인쇄 요약"
+  },
+  "report/renderer/util.js | dropdownSaveGist": {
+    "message": "Gist로 저장"
+  },
+  "report/renderer/util.js | dropdownSaveHTML": {
+    "message": "HTML로 저장"
+  },
+  "report/renderer/util.js | dropdownSaveJSON": {
+    "message": "JSON으로 저장"
+  },
+  "report/renderer/util.js | dropdownViewer": {
+    "message": "뷰어에서 열기"
+  },
+  "report/renderer/util.js | errorLabel": {
+    "message": "오류!"
+  },
+  "report/renderer/util.js | errorMissingAuditInfo": {
+    "message": "보고 오류: 감사 정보 없음"
+  },
+  "report/renderer/util.js | footerIssue": {
+    "message": "문제 신고"
+  },
+  "report/renderer/util.js | labDataTitle": {
+    "message": "실험실 데이터"
+  },
+  "report/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "에뮬레이션된 모바일 네트워크에서 분석한 현재 페이지의 [Lighthouse](https://developers.google.com/web/tools/lighthouse/) 결과입니다. 값은 추정치이며 달라질 수 있습니다."
+  },
+  "report/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "직접 확인해야 하는 추가 항목"
+  },
+  "report/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "해당 사항 없음"
+  },
+  "report/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "추천"
+  },
+  "report/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "예상 절감치"
+  },
+  "report/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "통과한 감사"
+  },
+  "report/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "에뮬레이션된 데스크톱"
+  },
+  "report/renderer/util.js | runtimeMobileEmulation": {
+    "message": "에뮬레이션된 Moto G4"
+  },
+  "report/renderer/util.js | runtimeNoEmulation": {
+    "message": "에뮬레이션 없음"
+  },
+  "report/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "Axe 버전"
+  },
+  "report/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "CPU/메모리 성능"
+  },
+  "report/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "CPU 제한"
+  },
+  "report/renderer/util.js | runtimeSettingsChannel": {
+    "message": "채널"
+  },
+  "report/renderer/util.js | runtimeSettingsDevice": {
+    "message": "기기"
+  },
+  "report/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "가져온 시간"
+  },
+  "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "네트워크 제한"
+  },
+  "report/renderer/util.js | runtimeSettingsTitle": {
+    "message": "런타임 설정"
+  },
+  "report/renderer/util.js | runtimeSettingsUA": {
+    "message": "사용자 에이전트(호스트)"
+  },
+  "report/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "사용자 에이전트(네트워크)"
+  },
+  "report/renderer/util.js | runtimeSettingsUrl": {
+    "message": "URL"
+  },
+  "report/renderer/util.js | runtimeUnknown": {
+    "message": "알 수 없음"
+  },
+  "report/renderer/util.js | showRelevantAudits": {
+    "message": "다음과 관련된 감사 표시:"
+  },
+  "report/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "스니펫 접기"
+  },
+  "report/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "스니펫 펼치기"
+  },
+  "report/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "타사 리소스 표시"
+  },
+  "report/renderer/util.js | throttlingProvided": {
+    "message": "런타임 환경을 통해 제공"
+  },
+  "report/renderer/util.js | toplevelWarningsMessage": {
+    "message": "Lighthouse 실행에 영향을 미치는 문제가 발생했습니다."
+  },
+  "report/renderer/util.js | varianceDisclaimer": {
+    "message": "값은 추정치이며 달라질 수 있습니다. 이러한 측정항목에서 [성능 점수가 직접 계산됩니다](https://web.dev/performance-scoring/)."
+  },
+  "report/renderer/util.js | viewTreemapLabel": {
+    "message": "트리맵 보기"
+  },
+  "report/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "감사를 통과했으나 경고를 받음"
+  },
+  "report/renderer/util.js | warningHeader": {
+    "message": "경고: "
   }
 }

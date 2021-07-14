@@ -63,7 +63,7 @@
     "message": "ARIA `meter`-elementen hebben toegankelijke namen"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "Als een element geen toegankelijke naam heeft, kondigen schermlezers dit aan met een generieke naam, waardoor het veld onbruikbaar wordt voor gebruikers die afhankelijk zijn van schermlezers. [Meer informatie](https://web.dev/aria-name/)"
+    "message": "Als een `progressbar`-element geen toegankelijke naam heeft, kondigen schermlezers dit aan met een generieke naam, waardoor het veld onbruikbaar wordt voor gebruikers die afhankelijk zijn van schermlezers. [Meer informatie](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "ARIA `progressbar`-elementen hebben geen toegankelijke namen."
@@ -588,7 +588,7 @@
     "message": "Ernst"
   },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "Een sterke Content Security Policy (CSP) verlaagt het risico op aanvallen met cross-site scripting (XSS) aanzienlijk. [Meer informatie](https://web.dev/strict-csp/)"
+    "message": "Een sterke Content Security Policy (CSP) verlaagt het risico op aanvallen met cross-site scripting (XSS) aanzienlijk. [Meer informatie](https://web.dev/csp-xss/)"
   },
   "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
     "message": "Syntaxis"
@@ -903,10 +903,10 @@
     "message": "Het manifest bevat geen veld 'name' of 'short_name'"
   },
   "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "Het manifest bevat geen geschikt icoon. Een png-, svg- of webp-indeling van ten minste {value0} pixels is vereist, het kenmerk voor de afmetingen moet zijn ingesteld en het doelkenmerk (indien ingesteld) moet 'any' of 'maskable' bevatten."
+    "message": "Het manifest bevat geen geschikt icoon. Een png-, svg- of webp-indeling van ten minste {value0} pixels is vereist, het formaatkenmerk moet zijn ingesteld en het doelkenmerk (indien ingesteld) moet 'any' bevatten."
   },
   "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "Geen van de opgegeven iconen is een vierkant van ten minste {value0} pixels in png-, svg- of webp-indeling"
+    "message": "Geen enkel geleverd icoon is een vierkant van minstens {value0} pixels in png-, svg- of webp-indeling met het doelkenmerk niet ingesteld of ingesteld op 'any'."
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
     "message": "Het gedownloade icoon is leeg of beschadigd"
@@ -1955,144 +1955,6 @@
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Het lijkt erop dat je een ongeldige URL hebt opgegeven."
   },
-  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
-    "message": "Rekenmachine bekijken"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
-    "message": "Beginnavigatie"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "Maximum latentie voor kritiek pad:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
-    "message": "Json kopiëren"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "Donker thema aan-/uitzetten"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
-    "message": "Afdrukvenster uitvouwen"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
-    "message": "Afdrukoverzicht"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
-    "message": "Opslaan als gist"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
-    "message": "Opslaan als HTML"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
-    "message": "Opslaan als json"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
-    "message": "Openen in viewer"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
-    "message": "Fout"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
-    "message": "Rapportfout: geen controlegegevens"
-  },
-  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
-    "message": "Een probleem melden"
-  },
-  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
-    "message": "Labgegevens"
-  },
-  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
-    "message": "Analyse met [Lighthouse](https://developers.google.com/web/tools/lighthouse/) van de huidige pagina via een geëmuleerd mobiel netwerk. Waarden worden geschat en kunnen variëren."
-  },
-  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
-    "message": "Aanvullende items om handmatig te controleren"
-  },
-  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
-    "message": "N.v.t."
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
-    "message": "Aanbeveling"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
-    "message": "Geschatte besparing"
-  },
-  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
-    "message": "Geslaagde controles"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
-    "message": "Desktopemulatie"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
-    "message": "Emulatie van Moto G4"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
-    "message": "Geen emulatie"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
-    "message": "Axe-versie"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
-    "message": "CPU/geheugen"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
-    "message": "CPU-throttling"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Kanaal"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
-    "message": "Apparaat"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Ophaaltijd"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
-    "message": "Netwerkbeperking"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Runtime-instellingen"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
-    "message": "User-agent (host)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
-    "message": "User-agent (netwerk)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
-    "message": "Onbekend"
-  },
-  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
-    "message": "Audits laten zien die relevant zijn voor:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
-    "message": "Fragment samenvouwen"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
-    "message": "Fragment uitvouwen"
-  },
-  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "Bronnen van derden tonen"
-  },
-  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
-    "message": "Bepaald door omgeving"
-  },
-  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
-    "message": "Er zijn problemen opgetreden bij deze uitvoering van Lighthouse:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "Waarden worden geschat en kunnen variëren. De [prestatiescore wordt rechtstreeks berekend](https://web.dev/performance-scoring/) op basis van deze statistieken."
-  },
-  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
-    "message": "Treemap bekijken"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
-    "message": "Geslaagd voor controles maar met waarschuwingen"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
-    "message": "Waarschuwingen: "
-  },
   "lighthouse-treemap/app/src/util.js | allLabel": {
     "message": "Alle"
   },
@@ -2380,5 +2242,143 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "Je kunt tekstcompressie in de webserverinstellingen aanzetten."
+  },
+  "report/renderer/util.js | calculatorLink": {
+    "message": "Rekenmachine bekijken"
+  },
+  "report/renderer/util.js | crcInitialNavigation": {
+    "message": "Beginnavigatie"
+  },
+  "report/renderer/util.js | crcLongestDurationLabel": {
+    "message": "Maximum latentie voor kritiek pad:"
+  },
+  "report/renderer/util.js | dropdownCopyJSON": {
+    "message": "Json kopiëren"
+  },
+  "report/renderer/util.js | dropdownDarkTheme": {
+    "message": "Donker thema aan-/uitzetten"
+  },
+  "report/renderer/util.js | dropdownPrintExpanded": {
+    "message": "Afdrukvenster uitvouwen"
+  },
+  "report/renderer/util.js | dropdownPrintSummary": {
+    "message": "Afdrukoverzicht"
+  },
+  "report/renderer/util.js | dropdownSaveGist": {
+    "message": "Opslaan als gist"
+  },
+  "report/renderer/util.js | dropdownSaveHTML": {
+    "message": "Opslaan als HTML"
+  },
+  "report/renderer/util.js | dropdownSaveJSON": {
+    "message": "Opslaan als json"
+  },
+  "report/renderer/util.js | dropdownViewer": {
+    "message": "Openen in viewer"
+  },
+  "report/renderer/util.js | errorLabel": {
+    "message": "Fout"
+  },
+  "report/renderer/util.js | errorMissingAuditInfo": {
+    "message": "Rapportfout: geen controlegegevens"
+  },
+  "report/renderer/util.js | footerIssue": {
+    "message": "Een probleem melden"
+  },
+  "report/renderer/util.js | labDataTitle": {
+    "message": "Labgegevens"
+  },
+  "report/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "Analyse met [Lighthouse](https://developers.google.com/web/tools/lighthouse/) van de huidige pagina via een geëmuleerd mobiel netwerk. Waarden worden geschat en kunnen variëren."
+  },
+  "report/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "Aanvullende items om handmatig te controleren"
+  },
+  "report/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "N.v.t."
+  },
+  "report/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "Aanbeveling"
+  },
+  "report/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "Geschatte besparing"
+  },
+  "report/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "Geslaagde controles"
+  },
+  "report/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "Desktopemulatie"
+  },
+  "report/renderer/util.js | runtimeMobileEmulation": {
+    "message": "Emulatie van Moto G4"
+  },
+  "report/renderer/util.js | runtimeNoEmulation": {
+    "message": "Geen emulatie"
+  },
+  "report/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "Axe-versie"
+  },
+  "report/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "CPU/geheugen"
+  },
+  "report/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "CPU-throttling"
+  },
+  "report/renderer/util.js | runtimeSettingsChannel": {
+    "message": "Kanaal"
+  },
+  "report/renderer/util.js | runtimeSettingsDevice": {
+    "message": "Apparaat"
+  },
+  "report/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "Ophaaltijd"
+  },
+  "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "Netwerkbeperking"
+  },
+  "report/renderer/util.js | runtimeSettingsTitle": {
+    "message": "Runtime-instellingen"
+  },
+  "report/renderer/util.js | runtimeSettingsUA": {
+    "message": "User-agent (host)"
+  },
+  "report/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "User-agent (netwerk)"
+  },
+  "report/renderer/util.js | runtimeSettingsUrl": {
+    "message": "URL"
+  },
+  "report/renderer/util.js | runtimeUnknown": {
+    "message": "Onbekend"
+  },
+  "report/renderer/util.js | showRelevantAudits": {
+    "message": "Audits laten zien die relevant zijn voor:"
+  },
+  "report/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "Fragment samenvouwen"
+  },
+  "report/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "Fragment uitvouwen"
+  },
+  "report/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "Bronnen van derden tonen"
+  },
+  "report/renderer/util.js | throttlingProvided": {
+    "message": "Bepaald door omgeving"
+  },
+  "report/renderer/util.js | toplevelWarningsMessage": {
+    "message": "Er zijn problemen opgetreden bij deze uitvoering van Lighthouse:"
+  },
+  "report/renderer/util.js | varianceDisclaimer": {
+    "message": "Waarden worden geschat en kunnen variëren. De [prestatiescore wordt rechtstreeks berekend](https://web.dev/performance-scoring/) op basis van deze statistieken."
+  },
+  "report/renderer/util.js | viewTreemapLabel": {
+    "message": "Treemap bekijken"
+  },
+  "report/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "Geslaagd voor controles maar met waarschuwingen"
+  },
+  "report/renderer/util.js | warningHeader": {
+    "message": "Waarschuwingen: "
   }
 }

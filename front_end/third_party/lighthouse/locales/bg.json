@@ -63,7 +63,7 @@
     "message": "ARIA елементите `meter` имат достъпни имена"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "Когато даден елемент няма достъпно име, екранните четци ще произнасят за него общо име и той ще бъде неизползваем за потребителите, разчитащи на тази технология. [Научете повече](https://web.dev/aria-name/)."
+    "message": "Когато елемент за `progressbar` няма достъпно име, екранните четци ще произнасят за него общо име и той ще бъде неизползваем за потребителите, разчитащи на тази технология. [Научете повече](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "ARIA елементите `progressbar` нямат достъпни имена"
@@ -585,13 +585,13 @@
     "message": "Директива"
   },
   "lighthouse-core/audits/csp-xss.js | columnSeverity": {
-    "message": "Severity"
+    "message": "Сериозност"
   },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "Строги правила за сигурност на съдържанието (CSP) значително намаляват риска от атаки чрез изпълняване на скриптове между сайтове (XSS). [Научете повече](https://web.dev/strict-csp/)"
+    "message": "Строги правила за сигурност на съдържанието (CSP) значително намаляват риска от атаки чрез изпълняване на скриптове между сайтове (XSS). [Научете повече](https://web.dev/csp-xss/)"
   },
   "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
-    "message": "Syntax"
+    "message": "Синтактична грешка"
   },
   "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
     "message": "Страницата съдържа CSP, дефинирани в <meta> маркер. Обмислете дали да не дефинирате CSP в HTTP заглавка, ако можете."
@@ -903,10 +903,10 @@
     "message": "Манифестът не съдържа поле name или short_name"
   },
   "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "Манифестът не съдържа подходяща икона – изисква се файл във формат PNG, SVG или WebP с поне {value0} пиксела, атрибутът за размери трябва да е зададен, а атрибутът за предназначение, ако е зададен, трябва да включва стойността any или maskable."
+    "message": "Манифестът не съдържа подходяща икона – изисква се файл във формат PNG, SVG или WebP с поне {value0} пкс, атрибутът за размери трябва да е зададен, а атрибутът за предназначение, ако е зададен, трябва да включва стойността any."
   },
   "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "Никоя от предоставените икони не е квадрат с размери поне {value0} пиксела във формат PNG, SVG или WebP"
+    "message": "Никоя от предоставените икони не е квадрат с размери поне {value0} пиксела във формат PNG, SVG или WebP, за който атрибутът за предназначение не е зададен или е със стойност any"
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
     "message": "Изтегленият файл за икона бе празен или повреден"
@@ -1955,144 +1955,6 @@
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Предоставеният от вас URL адрес изглежда невалиден."
   },
-  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
-    "message": "Вижте калкулатора."
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
-    "message": "Първоначална навигация"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "Максимално забавяне в критичния път:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
-    "message": "Копиране на JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "Превключване на тъмната тема"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
-    "message": "Отпечатване на пълен отчет"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
-    "message": "Отпечатване на обобщен отчет"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
-    "message": "Запазване като Gist"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
-    "message": "Запазване като HTML"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
-    "message": "Запазване като JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
-    "message": "Отваряне във визуализатора"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
-    "message": "Грешка!"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
-    "message": "Грешка в отчета: няма информация за проверката"
-  },
-  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
-    "message": "Добавяне на проблем"
-  },
-  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
-    "message": "Данни от контролиран тест"
-  },
-  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
-    "message": "Анализът с [Lighthouse](https://developers.google.com/web/tools/lighthouse/) на текущата страница бе извършен през емулирана мобилна мрежа. Стойностите са приблизителни и може да варират."
-  },
-  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
-    "message": "Допълнителни елементи, които да проверите ръчно"
-  },
-  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
-    "message": "Не е приложимо"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
-    "message": "Възможност"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
-    "message": "Прогнозна икономия"
-  },
-  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
-    "message": "Успешно преминати проверки"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
-    "message": "Емулиран компютър"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
-    "message": "Емулирано устройство Moto G4"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
-    "message": "Без емулация"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
-    "message": "Версия на Axe"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
-    "message": "Мощност на процесора/паметта"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
-    "message": "Ограничаване на процесора"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Канал"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
-    "message": "Устройство"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Час на извличането"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
-    "message": "Ограничаване на мрежата"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Настройки за времето на изпълнение"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
-    "message": "Потребителски агент (хост)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
-    "message": "Потребителски агент (мрежа)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL адрес"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
-    "message": "Неизвестно"
-  },
-  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
-    "message": "Показване на проверките, уместни за:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
-    "message": "Свиване на фрагмента"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
-    "message": "Разгъване на фрагмента"
-  },
-  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "Показване на ресурсите от трети страни"
-  },
-  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
-    "message": "Предоставено от средата"
-  },
-  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
-    "message": "Възникнаха проблеми при изготвянето на този отчет от Lighthouse:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "Стойностите са приблизителни и може да варират. [Рейтингът за ефективността се изчислява](https://web.dev/performance-scoring/) директно от тези показатели."
-  },
-  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
-    "message": "Преглед на дървовидната карта"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
-    "message": "Проверките бяха преминати успешно, но има предупреждения"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
-    "message": "Предупреждения: "
-  },
   "lighthouse-treemap/app/src/util.js | allLabel": {
     "message": "Всички"
   },
@@ -2380,5 +2242,143 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "Можете да активирате компресирането на текста в конфигурацията на уеб сървъра си."
+  },
+  "report/renderer/util.js | calculatorLink": {
+    "message": "Вижте калкулатора."
+  },
+  "report/renderer/util.js | crcInitialNavigation": {
+    "message": "Първоначална навигация"
+  },
+  "report/renderer/util.js | crcLongestDurationLabel": {
+    "message": "Максимално забавяне в критичния път:"
+  },
+  "report/renderer/util.js | dropdownCopyJSON": {
+    "message": "Копиране на JSON"
+  },
+  "report/renderer/util.js | dropdownDarkTheme": {
+    "message": "Превключване на тъмната тема"
+  },
+  "report/renderer/util.js | dropdownPrintExpanded": {
+    "message": "Отпечатване на пълен отчет"
+  },
+  "report/renderer/util.js | dropdownPrintSummary": {
+    "message": "Отпечатване на обобщен отчет"
+  },
+  "report/renderer/util.js | dropdownSaveGist": {
+    "message": "Запазване като Gist"
+  },
+  "report/renderer/util.js | dropdownSaveHTML": {
+    "message": "Запазване като HTML"
+  },
+  "report/renderer/util.js | dropdownSaveJSON": {
+    "message": "Запазване като JSON"
+  },
+  "report/renderer/util.js | dropdownViewer": {
+    "message": "Отваряне във визуализатора"
+  },
+  "report/renderer/util.js | errorLabel": {
+    "message": "Грешка!"
+  },
+  "report/renderer/util.js | errorMissingAuditInfo": {
+    "message": "Грешка в отчета: няма информация за проверката"
+  },
+  "report/renderer/util.js | footerIssue": {
+    "message": "Добавяне на проблем"
+  },
+  "report/renderer/util.js | labDataTitle": {
+    "message": "Данни от контролиран тест"
+  },
+  "report/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "Анализът с [Lighthouse](https://developers.google.com/web/tools/lighthouse/) на текущата страница бе извършен през емулирана мобилна мрежа. Стойностите са приблизителни и може да варират."
+  },
+  "report/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "Допълнителни елементи, които да проверите ръчно"
+  },
+  "report/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "Не е приложимо"
+  },
+  "report/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "Възможност"
+  },
+  "report/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "Прогнозна икономия"
+  },
+  "report/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "Успешно преминати проверки"
+  },
+  "report/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "Емулиран компютър"
+  },
+  "report/renderer/util.js | runtimeMobileEmulation": {
+    "message": "Емулирано устройство Moto G4"
+  },
+  "report/renderer/util.js | runtimeNoEmulation": {
+    "message": "Без емулация"
+  },
+  "report/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "Версия на Axe"
+  },
+  "report/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "Мощност на процесора/паметта"
+  },
+  "report/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "Ограничаване на процесора"
+  },
+  "report/renderer/util.js | runtimeSettingsChannel": {
+    "message": "Канал"
+  },
+  "report/renderer/util.js | runtimeSettingsDevice": {
+    "message": "Устройство"
+  },
+  "report/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "Час на извличането"
+  },
+  "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "Ограничаване на мрежата"
+  },
+  "report/renderer/util.js | runtimeSettingsTitle": {
+    "message": "Настройки за времето на изпълнение"
+  },
+  "report/renderer/util.js | runtimeSettingsUA": {
+    "message": "Потребителски агент (хост)"
+  },
+  "report/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "Потребителски агент (мрежа)"
+  },
+  "report/renderer/util.js | runtimeSettingsUrl": {
+    "message": "URL адрес"
+  },
+  "report/renderer/util.js | runtimeUnknown": {
+    "message": "Неизвестно"
+  },
+  "report/renderer/util.js | showRelevantAudits": {
+    "message": "Показване на проверките, уместни за:"
+  },
+  "report/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "Свиване на фрагмента"
+  },
+  "report/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "Разгъване на фрагмента"
+  },
+  "report/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "Показване на ресурсите от трети страни"
+  },
+  "report/renderer/util.js | throttlingProvided": {
+    "message": "Предоставено от средата"
+  },
+  "report/renderer/util.js | toplevelWarningsMessage": {
+    "message": "Възникнаха проблеми при изготвянето на този отчет от Lighthouse:"
+  },
+  "report/renderer/util.js | varianceDisclaimer": {
+    "message": "Стойностите са приблизителни и може да варират. [Рейтингът за ефективността се изчислява](https://web.dev/performance-scoring/) директно от тези показатели."
+  },
+  "report/renderer/util.js | viewTreemapLabel": {
+    "message": "Преглед на дървовидната карта"
+  },
+  "report/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "Проверките бяха преминати успешно, но има предупреждения"
+  },
+  "report/renderer/util.js | warningHeader": {
+    "message": "Предупреждения: "
   }
 }

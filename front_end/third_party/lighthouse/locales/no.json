@@ -63,7 +63,7 @@
     "message": "ARIA-`meter`-elementer har tilgjengelige navn"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "Når elementer ikke har tilgjengelige navn, beskriver skjermlesere dem med generiske navn. Dermed er de ubrukelige for brukere som er avhengige av skjermlesere. [Finn ut mer](https://web.dev/aria-name/)."
+    "message": "Når `progressbar` elementer ikke har tilgjengelige navn, beskriver skjermlesere dem med generiske navn. Dermed er de ubrukelige for brukere som er avhengige av skjermlesere. [Finn ut mer](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "ARIA-`progressbar`-elementer har ikke tilgjengelige navn."
@@ -588,7 +588,7 @@
     "message": "Intensitet"
   },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "En sterk regel for innholdssikkerhet (CSP) reduserer faren for skriptangrep på tvers av nettsteder (XSS) betydelig. [Finn ut mer](https://web.dev/strict-csp/)"
+    "message": "En sterk regel for innholdssikkerhet (CSP) reduserer faren for skriptangrep på tvers av nettsteder (XSS) betydelig. [Finn ut mer](https://web.dev/csp-xss/)"
   },
   "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
     "message": "Syntaks"
@@ -903,10 +903,10 @@
     "message": "Manifestet inneholder ikke noen av feltene «name» eller «short_name»"
   },
   "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "Manifestet inneholder ikke noe egnet ikon. Ikonet må være i PNG-, SVG- eller WebP-format og ha en størrelse på minst {value0} px, sizes-attributtet må være angitt, og hvis purpose-attributtet er angitt, må det inneholde «any» eller «maskable»."
+    "message": "Manifestet inneholder ikke noe egnet ikon. Ikonet må være i PNG-, SVG- eller WebP-format og ha en størrelse på minst {value0} px, sizes-attributtet må være angitt, og hvis purpose-attributtet er angitt, må det inneholde «any»."
   },
   "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "Ingen oppgitte ikoner har en størrelse på minst {value0} px (kvadrat) og er i PNG-, SVG- eller WebP-format"
+    "message": "Ingen oppgitte ikoner har en størrelse på minst {value0} px (kvadrat) og er i PNG-, SVG- eller WebP-format med purpose-attributtet satt til «any» eller ikke angitt"
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
     "message": "Det nedlastede ikonet var tomt eller skadet"
@@ -1955,144 +1955,6 @@
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Nettadressen du oppga, ser ut til å være ugyldig."
   },
-  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
-    "message": "Se kalkulatoren."
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
-    "message": "Navigasjonsstart"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "Maksimum kritisk baneforsinkelse:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
-    "message": "Kopiér JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "Slå av/på mørkt tema"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
-    "message": "Skriv ut utvidet rapport"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
-    "message": "Skriv ut sammendrag"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
-    "message": "Lagre som Gist"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
-    "message": "Lagre som HTML"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
-    "message": "Lagre som JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
-    "message": "Åpne i Viewer"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
-    "message": "Feil!"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
-    "message": "Rapportfeil: ingen revisjonsinformasjon"
-  },
-  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
-    "message": "Opprett sak"
-  },
-  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
-    "message": "Prøvefunksjonsdata"
-  },
-  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
-    "message": "[Lighthouse](https://developers.google.com/web/tools/lighthouse/)-analyse av den nåværende siden på et emulert mobilnettverk. Verdiene er anslått og kan variere."
-  },
-  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
-    "message": "Tilleggselementer for manuell kontroll"
-  },
-  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
-    "message": "Ikke relevant"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
-    "message": "Mulighet"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
-    "message": "Estimerte besparelser"
-  },
-  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
-    "message": "Beståtte revisjoner"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
-    "message": "Emulert skrivebord"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
-    "message": "Emulert Moto G4"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
-    "message": "Ingen emulering"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
-    "message": "Axe-versjon"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
-    "message": "Prosessor-/minnekraft"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
-    "message": "Prosessorstruping"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Kanal"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
-    "message": "Enhet"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Tidspunkt for henting"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
-    "message": "Struping av nettverkshastighet"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Kjøringsinnstillinger"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
-    "message": "Brukeragent (vert)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
-    "message": "Brukeragent (nettverk)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
-    "message": "Nettadresse"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
-    "message": "Ukjent"
-  },
-  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
-    "message": "Vis revisjoner som er relevant for:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
-    "message": "Skjul fragment"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
-    "message": "Vis fragment"
-  },
-  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "Vis tredjepartsressurser"
-  },
-  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
-    "message": "Utført av kjøretidsmiljøet"
-  },
-  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
-    "message": "Det oppsto problemer som påvirker denne kjøringen av Lighthouse:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "Verdiene er anslått og kan variere. [Beregningen av ytelsespoengsummen](https://web.dev/performance-scoring/) er basert direkte på disse verdiene."
-  },
-  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
-    "message": "Vis trekart"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
-    "message": "Revisjoner som er bestått, men med advarsler"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
-    "message": "Advarsler: "
-  },
   "lighthouse-treemap/app/src/util.js | allLabel": {
     "message": "Alt"
   },
@@ -2380,5 +2242,143 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "Du kan slå på tekstkomprimering i oppsettet av nettjeneren."
+  },
+  "report/renderer/util.js | calculatorLink": {
+    "message": "Se kalkulatoren."
+  },
+  "report/renderer/util.js | crcInitialNavigation": {
+    "message": "Navigasjonsstart"
+  },
+  "report/renderer/util.js | crcLongestDurationLabel": {
+    "message": "Maksimum kritisk baneforsinkelse:"
+  },
+  "report/renderer/util.js | dropdownCopyJSON": {
+    "message": "Kopiér JSON"
+  },
+  "report/renderer/util.js | dropdownDarkTheme": {
+    "message": "Slå av/på mørkt tema"
+  },
+  "report/renderer/util.js | dropdownPrintExpanded": {
+    "message": "Skriv ut utvidet rapport"
+  },
+  "report/renderer/util.js | dropdownPrintSummary": {
+    "message": "Skriv ut sammendrag"
+  },
+  "report/renderer/util.js | dropdownSaveGist": {
+    "message": "Lagre som Gist"
+  },
+  "report/renderer/util.js | dropdownSaveHTML": {
+    "message": "Lagre som HTML"
+  },
+  "report/renderer/util.js | dropdownSaveJSON": {
+    "message": "Lagre som JSON"
+  },
+  "report/renderer/util.js | dropdownViewer": {
+    "message": "Åpne i Viewer"
+  },
+  "report/renderer/util.js | errorLabel": {
+    "message": "Feil!"
+  },
+  "report/renderer/util.js | errorMissingAuditInfo": {
+    "message": "Rapportfeil: ingen revisjonsinformasjon"
+  },
+  "report/renderer/util.js | footerIssue": {
+    "message": "Opprett sak"
+  },
+  "report/renderer/util.js | labDataTitle": {
+    "message": "Prøvefunksjonsdata"
+  },
+  "report/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "[Lighthouse](https://developers.google.com/web/tools/lighthouse/)-analyse av den nåværende siden på et emulert mobilnettverk. Verdiene er anslått og kan variere."
+  },
+  "report/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "Tilleggselementer for manuell kontroll"
+  },
+  "report/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "Ikke relevant"
+  },
+  "report/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "Mulighet"
+  },
+  "report/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "Estimerte besparelser"
+  },
+  "report/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "Beståtte revisjoner"
+  },
+  "report/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "Emulert skrivebord"
+  },
+  "report/renderer/util.js | runtimeMobileEmulation": {
+    "message": "Emulert Moto G4"
+  },
+  "report/renderer/util.js | runtimeNoEmulation": {
+    "message": "Ingen emulering"
+  },
+  "report/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "Axe-versjon"
+  },
+  "report/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "Prosessor-/minnekraft"
+  },
+  "report/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "Prosessorstruping"
+  },
+  "report/renderer/util.js | runtimeSettingsChannel": {
+    "message": "Kanal"
+  },
+  "report/renderer/util.js | runtimeSettingsDevice": {
+    "message": "Enhet"
+  },
+  "report/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "Tidspunkt for henting"
+  },
+  "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "Struping av nettverkshastighet"
+  },
+  "report/renderer/util.js | runtimeSettingsTitle": {
+    "message": "Kjøringsinnstillinger"
+  },
+  "report/renderer/util.js | runtimeSettingsUA": {
+    "message": "Brukeragent (vert)"
+  },
+  "report/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "Brukeragent (nettverk)"
+  },
+  "report/renderer/util.js | runtimeSettingsUrl": {
+    "message": "Nettadresse"
+  },
+  "report/renderer/util.js | runtimeUnknown": {
+    "message": "Ukjent"
+  },
+  "report/renderer/util.js | showRelevantAudits": {
+    "message": "Vis revisjoner som er relevant for:"
+  },
+  "report/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "Skjul fragment"
+  },
+  "report/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "Vis fragment"
+  },
+  "report/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "Vis tredjepartsressurser"
+  },
+  "report/renderer/util.js | throttlingProvided": {
+    "message": "Utført av kjøretidsmiljøet"
+  },
+  "report/renderer/util.js | toplevelWarningsMessage": {
+    "message": "Det oppsto problemer som påvirker denne kjøringen av Lighthouse:"
+  },
+  "report/renderer/util.js | varianceDisclaimer": {
+    "message": "Verdiene er anslått og kan variere. [Beregningen av ytelsespoengsummen](https://web.dev/performance-scoring/) er basert direkte på disse verdiene."
+  },
+  "report/renderer/util.js | viewTreemapLabel": {
+    "message": "Vis trekart"
+  },
+  "report/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "Revisjoner som er bestått, men med advarsler"
+  },
+  "report/renderer/util.js | warningHeader": {
+    "message": "Advarsler: "
   }
 }

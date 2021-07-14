@@ -63,7 +63,7 @@
     "message": "לרכיבי `meter` מסוג ARIA יש שמות נגישים"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "כשאין לרכיב שם נגיש, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בשדה. [למידע נוסף](https://web.dev/aria-name/)."
+    "message": "כשאין לרכיב `progressbar` תווית נגישות, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בו. [מידע נוסף](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "לרכיבי `progressbar` מסוג ARIA אין שמות נגישים."
@@ -588,7 +588,7 @@
     "message": "מידת החומרה"
   },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "שימוש במדיניות חזקה מסוג Content Security Policy (‏CSP) מפחית באופן משמעותי את הסיכון למתקפות שמקורן בפרצת אבטחה מסוג XSS ‏(cross-site scripting). [למידע נוסף](https://web.dev/strict-csp/)"
+    "message": "שימוש במדיניות חזקה מסוג Content Security Policy (‏CSP) מפחית באופן משמעותי את הסיכון למתקפות שמקורן בפרצת אבטחה מסוג XSS ‏(cross-site scripting). [למידע נוסף](https://web.dev/csp-xss/)"
   },
   "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
     "message": "תחביר"
@@ -903,10 +903,10 @@
     "message": "קובץ המניפסט אינו מכיל את השדות 'שם' או 'שם מקוצר'"
   },
   "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "קובץ המניפסט אינו מכיל סמל מתאים. דרוש פורמט PNG ‏, SVG או WebP ברזולוציה של ‎{value0}px לפחות, ויש להגדיר את מאפיין הגודל. אם הוגדר המאפיין 'שימוש', יש לציין אם הוא \"הכול\" או \"ניתן למיסוך\"."
+    "message": "קובץ המניפסט אינו מכיל סמל מתאים. דרוש פורמט PNG‏, SVG או WebP ברזולוציה של ‎{value0}px לפחות, ויש להגדיר את מאפיין הגודל. אם הוגדר המאפיין 'שימוש', הוא חייב לציין \"הכול\"."
   },
   "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "לא סופק סמל ברזולוצייה של {value0}‏ px לפחות, בצורת ריבוע, בפורמט PNG‏, SVG או WebP"
+    "message": "לא סופק סמל ברזולוציה של {value0}px לפחות, בצורת ריבוע, בפורמט PNG‏, SVG או WebP, עם מאפיין מטרה לא מוגדר או מוגדר ל\"הכול\""
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
     "message": "הסמל שהורד היה ריק או פגום"
@@ -1955,144 +1955,6 @@
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "נראה שכתובת ה-URL שסיפקת אינה חוקית."
   },
-  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
-    "message": "להצגת המחשבון."
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
-    "message": "ניווט התחלתי"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "זמן אחזור מקסימלי של נתיב קריטי:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
-    "message": "העתקת ה-JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "מעבר לעיצוב כהה"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
-    "message": "פרטי הדפסה מורחבים"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
-    "message": "סיכום הדפסות"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
-    "message": "שמירה כ-Gist"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
-    "message": "שמירה כ-HTML"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
-    "message": "שמירה כ-JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
-    "message": "פתיחה ב-Viewer"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
-    "message": "שגיאה!"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
-    "message": "שגיאה בדוח: אין מידע על הבדיקה"
-  },
-  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
-    "message": "דיווח על בעיה"
-  },
-  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
-    "message": "נתוני בדיקה"
-  },
-  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
-    "message": "ניתוח [Lighthouse](https://developers.google.com/web/tools/lighthouse/) של הדף הנוכחי באמולציה של רשת סלולרית. הערכים מהווים אומדן והם עשויים להשתנות."
-  },
-  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
-    "message": "פריטים נוספים שיש לבדוק באופן ידני"
-  },
-  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
-    "message": "לא רלוונטי"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
-    "message": "הזדמנות"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
-    "message": "אומדן חיסכון"
-  },
-  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
-    "message": "בדיקות עם ציון 'עובר'"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
-    "message": "אמולציה של מחשב שולחני"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
-    "message": "אמולציה של Moto G4"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
-    "message": "ללא אמולציה"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
-    "message": "גרסת Axe"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
-    "message": "יכולת זיכרון/יחידת עיבוד מרכזית (CPU)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
-    "message": "ויסות נתונים (throttle) של יחידת עיבוד מרכזית (CPU)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
-    "message": "ערוץ"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
-    "message": "מכשיר"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "מועד האחזור"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
-    "message": "הגבלת רוחב פס"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
-    "message": "הגדרות זמן ריצה"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
-    "message": "סוכן משתמש (מארח)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
-    "message": "סוכן משתמש (רשת)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
-    "message": "כתובת ה-URL"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
-    "message": "ערך לא ידוע"
-  },
-  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
-    "message": "הצגת הביקורות שרלוונטיות למדדים:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
-    "message": "כיווץ קטע הטקסט"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
-    "message": "הרחבת קטע הטקסט"
-  },
-  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "הצגה של משאבי צד שלישי"
-  },
-  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
-    "message": "שסיפקה הסביבה"
-  },
-  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
-    "message": "היו בעיות שהשפיעו על ההרצה הזו של Lighthouse:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "הערכים משוערים והם עשויים להשתנות. [ציון הביצועים מחושב](https://web.dev/performance-scoring/) ישירות לפי הערכים האלה."
-  },
-  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
-    "message": "הצגת תרשים Treemap"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
-    "message": "בדיקות שהסתיימו בציון 'עובר', אבל עם אזהרות"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
-    "message": "אזהרות: "
-  },
   "lighthouse-treemap/app/src/util.js | allLabel": {
     "message": "הכול"
   },
@@ -2380,5 +2242,143 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "אפשר להפעיל דחיסת טקסט בהגדרות שרת האינטרנט."
+  },
+  "report/renderer/util.js | calculatorLink": {
+    "message": "להצגת המחשבון."
+  },
+  "report/renderer/util.js | crcInitialNavigation": {
+    "message": "ניווט התחלתי"
+  },
+  "report/renderer/util.js | crcLongestDurationLabel": {
+    "message": "זמן אחזור מקסימלי של נתיב קריטי:"
+  },
+  "report/renderer/util.js | dropdownCopyJSON": {
+    "message": "העתקת ה-JSON"
+  },
+  "report/renderer/util.js | dropdownDarkTheme": {
+    "message": "מעבר לעיצוב כהה"
+  },
+  "report/renderer/util.js | dropdownPrintExpanded": {
+    "message": "פרטי הדפסה מורחבים"
+  },
+  "report/renderer/util.js | dropdownPrintSummary": {
+    "message": "סיכום הדפסות"
+  },
+  "report/renderer/util.js | dropdownSaveGist": {
+    "message": "שמירה כ-Gist"
+  },
+  "report/renderer/util.js | dropdownSaveHTML": {
+    "message": "שמירה כ-HTML"
+  },
+  "report/renderer/util.js | dropdownSaveJSON": {
+    "message": "שמירה כ-JSON"
+  },
+  "report/renderer/util.js | dropdownViewer": {
+    "message": "פתיחה ב-Viewer"
+  },
+  "report/renderer/util.js | errorLabel": {
+    "message": "שגיאה!"
+  },
+  "report/renderer/util.js | errorMissingAuditInfo": {
+    "message": "שגיאה בדוח: אין מידע על הבדיקה"
+  },
+  "report/renderer/util.js | footerIssue": {
+    "message": "דיווח על בעיה"
+  },
+  "report/renderer/util.js | labDataTitle": {
+    "message": "נתוני בדיקה"
+  },
+  "report/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "ניתוח [Lighthouse](https://developers.google.com/web/tools/lighthouse/) של הדף הנוכחי באמולציה של רשת סלולרית. הערכים מהווים אומדן והם עשויים להשתנות."
+  },
+  "report/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "פריטים נוספים שיש לבדוק באופן ידני"
+  },
+  "report/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "לא רלוונטי"
+  },
+  "report/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "הזדמנות"
+  },
+  "report/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "אומדן חיסכון"
+  },
+  "report/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "בדיקות עם ציון 'עובר'"
+  },
+  "report/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "אמולציה של מחשב שולחני"
+  },
+  "report/renderer/util.js | runtimeMobileEmulation": {
+    "message": "אמולציה של Moto G4"
+  },
+  "report/renderer/util.js | runtimeNoEmulation": {
+    "message": "ללא אמולציה"
+  },
+  "report/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "גרסת Axe"
+  },
+  "report/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "יכולת זיכרון/יחידת עיבוד מרכזית (CPU)"
+  },
+  "report/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "ויסות נתונים (throttle) של יחידת עיבוד מרכזית (CPU)"
+  },
+  "report/renderer/util.js | runtimeSettingsChannel": {
+    "message": "ערוץ"
+  },
+  "report/renderer/util.js | runtimeSettingsDevice": {
+    "message": "מכשיר"
+  },
+  "report/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "מועד האחזור"
+  },
+  "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "הגבלת רוחב פס"
+  },
+  "report/renderer/util.js | runtimeSettingsTitle": {
+    "message": "הגדרות זמן ריצה"
+  },
+  "report/renderer/util.js | runtimeSettingsUA": {
+    "message": "סוכן משתמש (מארח)"
+  },
+  "report/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "סוכן משתמש (רשת)"
+  },
+  "report/renderer/util.js | runtimeSettingsUrl": {
+    "message": "כתובת ה-URL"
+  },
+  "report/renderer/util.js | runtimeUnknown": {
+    "message": "ערך לא ידוע"
+  },
+  "report/renderer/util.js | showRelevantAudits": {
+    "message": "הצגת הביקורות שרלוונטיות למדדים:"
+  },
+  "report/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "כיווץ קטע הטקסט"
+  },
+  "report/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "הרחבת קטע הטקסט"
+  },
+  "report/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "הצגה של משאבי צד שלישי"
+  },
+  "report/renderer/util.js | throttlingProvided": {
+    "message": "שסיפקה הסביבה"
+  },
+  "report/renderer/util.js | toplevelWarningsMessage": {
+    "message": "היו בעיות שהשפיעו על ההרצה הזו של Lighthouse:"
+  },
+  "report/renderer/util.js | varianceDisclaimer": {
+    "message": "הערכים משוערים והם עשויים להשתנות. [ציון הביצועים מחושב](https://web.dev/performance-scoring/) ישירות לפי הערכים האלה."
+  },
+  "report/renderer/util.js | viewTreemapLabel": {
+    "message": "הצגת תרשים Treemap"
+  },
+  "report/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "בדיקות שהסתיימו בציון 'עובר', אבל עם אזהרות"
+  },
+  "report/renderer/util.js | warningHeader": {
+    "message": "אזהרות: "
   }
 }

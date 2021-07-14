@@ -63,7 +63,7 @@
     "message": "ARIA `meter` ఎలిమెంట్‌లు యాక్సెస్ చేయగల పేర్లను కలిగి ఉన్నాయి"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "ఒక ఎలిమెంట్‌కు యాక్సెస్ చేయగల పేరు లేనప్పుడు, స్క్రీన్ రీడర్‌లు దానిని సాధారణ పేరుతో ప్రకటిస్తాయి, తద్వారా వాటిని స్క్రీన్ రీడర్‌లపై ఆధారపడే యూజర్‌లకు నిరుపయోగమైనవిగా చేస్తాయి. [మరింత తెలుసుకోండి](https://web.dev/aria-name/)."
+    "message": "ఒక `progressbar` ఎలిమెంట్‌కు యాక్సెస్ చేయదగిన పేరు లేనప్పుడు, స్క్రీన్ రీడర్‌లు దానిని సాధారణ పేరుతో ప్రకటిస్తాయి, తద్వారా స్క్రీన్ రీడర్‌లపై ఆధారపడే యూజర్‌లకు దాన్ని నిరుపయోగమైనవిగా చేస్తాయి. [మరింత తెలుసుకోండి](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "ARIA `progressbar` ఎలిమెంట్‌లు యాక్సెస్ చేయగల పేర్లను కలిగి లేవు."
@@ -585,13 +585,13 @@
     "message": "డైరెక్టివ్"
   },
   "lighthouse-core/audits/csp-xss.js | columnSeverity": {
-    "message": "Severity"
+    "message": "తీవ్రత"
   },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "బలమైన కంటెంట్ సెక్యూరిటీ పాలసీ (CSP), క్రాస్-సైట్ స్క్రిప్టింగ్ (XSS) దాడుల ప్రమాదాన్ని గణనీయంగా తగ్గిస్తుంది. [మరింత తెలుసుకోండి](https://web.dev/strict-csp/)"
+    "message": "బలమైన కంటెంట్ సెక్యూరిటీ పాలసీ (CSP), క్రాస్-సైట్ స్క్రిప్టింగ్ (XSS) దాడుల ప్రమాదాన్ని గణనీయంగా తగ్గిస్తుంది. [మరింత తెలుసుకోండి](https://web.dev/csp-xss/)"
   },
   "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
-    "message": "Syntax"
+    "message": "సింటాక్స్"
   },
   "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
     "message": "పేజీ <meta> ట్యాగ్‌లో నిర్వచించబడిన CSPని కలిగి ఉంది. మీకు సాధ్యమైతే CSPని HTTP హెడర్‌లో నిర్వచించడాన్ని పరిగణించండి."
@@ -903,10 +903,10 @@
     "message": "మ్యానిఫెస్ట్‌లో 'name' లేదా 'short_name' ఫీల్డ్‌ను అందించలేదు"
   },
   "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "మ్యానిఫెస్ట్‌లో తగిన చిహ్నం లేదు - కనీసం {value0} px ఉండే PNG, SVG లేదా WebP ఫార్మాట్ అవసరం, సైజ్‌ల లక్షణాన్ని తప్పనిసరిగా సెట్ చేయాలి, అలాగే ప్రయోజన లక్షణం, సెట్ చేసి ఉంటే, తప్పనిసరిగా \"ఏదైనా\" లేదా \"మాస్క్ ఉండేది\" ఎంపికను కలిగి ఉండాలి."
+    "message": "మ్యానిఫెస్ట్‌లో తగిన చిహ్నం లేదు - కనీసం {value0} px ఉండే PNG, SVG లేదా WebP ఫార్మాట్ అవసరం, సైజ్‌ల లక్షణాన్ని తప్పనిసరిగా సెట్ చేయాలి, అలాగే ప్రయోజన లక్షణం, సెట్ చేసి ఉంటే, తప్పనిసరిగా \"ఏదైనా\" ఎంపికను కలిగి ఉండాలి."
   },
   "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "కనీసం {value0} px స్క్వేర్‌తో PNG, SVG లేదా WebP ఫార్మాట్ చిహ్నం ఏదీ అందించలేదు"
+    "message": "దాని ప్రయోజన లక్షణం అన్‌సెట్ చేయబడి గానీ లేదా \"ఏదైనా\"కు సెట్ చేయబడి గానీ ఉన్న, కనీసం {value0}px స్క్వేర్‌తో PNG, SVG లేదా WebP ఫార్మాట్‌లోని చిహ్నం ఏదీ అందించబడలేదు"
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
     "message": "డౌన్‌లోడ్ చేయబడిన చిహ్నం ఖాళీగా ఉంది లేదా పాడైంది"
@@ -1955,144 +1955,6 @@
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "మీరు అందించిన URL చెల్లనిదిగా కనిపిస్తోంది."
   },
-  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
-    "message": "కాలిక్యులేటర్‌ను చూడండి."
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
-    "message": "ప్రారంభ నావిగేషన్"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "గరిష్ట క్లిష్టమైన మార్గ ప్రతిస్పందన సమయం:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
-    "message": "JSONను కాపీ చేయి"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "ముదురు రంగు థీమ్‌ను టోగుల్ చేయి"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
-    "message": "ప్రింట్ విస్తరించబడింది"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
-    "message": "ప్రింట్ సారాంశం"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
-    "message": "Gist లాగా సేవ్ చేయి"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
-    "message": "HTML లాగా సేవ్ చేయి"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
-    "message": "JSON లాగా సేవ్ చేయి"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
-    "message": "వ్యూయర్‌లో తెరువు"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
-    "message": "ఎర్రర్ ఏర్పడింది!"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
-    "message": "నివేదిక ఎర్రర్: ఆడిట్ సమాచారం లేదు"
-  },
-  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
-    "message": "సమస్యను ఫైల్ చేయండి"
-  },
-  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
-    "message": "ల్యాబ్ డేటా"
-  },
-  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
-    "message": "అనుకరణ మొబైల్ నెట్‌వర్క్‌లో ప్రస్తుత పేజీకి సంబంధించిన [Lighthouse](https://developers.google.com/web/tools/lighthouse/) విశ్లేషణ. విలువలు కేవలం అంచనా మాత్రమే, ఇవి మారే అవకాశం ఉంది."
-  },
-  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
-    "message": "మాన్యువల్‌గా తనిఖీ చేయవలసిన అదనపు అంశాలు"
-  },
-  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
-    "message": "వర్తించదు"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
-    "message": "అవకాశం"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
-    "message": "అంచనా వేసిన పొదుపులు"
-  },
-  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
-    "message": "ఉత్తీర్ణత సాధించిన ఆడిట్‌లు"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
-    "message": "అనుకరణ డెస్క్‌టాప్"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
-    "message": "అనుకరణ Moto G4"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
-    "message": "అనుకరణ లేదు"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
-    "message": "Axe వెర్షన్"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
-    "message": "CPU/మెమరీ పవర్"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
-    "message": "CPU త్రోట్లింగ్"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
-    "message": "ఛానెల్"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
-    "message": "పరికరం"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "పొందే సమయం"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
-    "message": "నెట్‌వర్క్ త్రోట్లింగ్"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
-    "message": "రన్‌టైమ్ సెట్టింగ్‌లు"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
-    "message": "వెబ్‌సైట్ యాక్సెస్ సాధనం (హోస్ట్)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
-    "message": "వెబ్‌సైట్ యాక్సెస్ సాధనం (నెట్‌వర్క్)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
-    "message": "తెలియదు"
-  },
-  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
-    "message": "వీటికి సంబంధించిన ఆడిట్‌లను చూపండి:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
-    "message": "స్నిప్పెట్‌ను కుదించు"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
-    "message": "స్నిప్పెట్‌ను విస్తరించు"
-  },
-  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "3వ పక్షం వనరులను చూపు"
-  },
-  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
-    "message": "ఎన్విరాన్మెంట్ ద్వారా అందించబడింది"
-  },
-  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
-    "message": "Lighthouse యొక్క ఈ అమలును ప్రభావితం చేసిన సమస్యలు ఉన్నాయి:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "విలువలు కేవలం అంచనా మాత్రమే, ఇవి మారే అవకాశం ఉంది. నేరుగా ఈ కొలమానాల ఆధారంగా [పనితీరు స్కోరు లెక్కించబడుతుంది](https://web.dev/performance-scoring/)."
-  },
-  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
-    "message": "ట్రీమ్యాప్‌ను చూడండి"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
-    "message": "ఆడిట్‌లు పాస్ అయ్యాయి కానీ హెచ్చరికలు ఉన్నాయి"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
-    "message": "హెచ్చరికలు: "
-  },
   "lighthouse-treemap/app/src/util.js | allLabel": {
     "message": "అన్నీ"
   },
@@ -2380,5 +2242,143 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "మీరు మీ వెబ్ సర్వర్ కన్ఫిగరేషన్‌లో వచన కుదింపును ప్రారంభించవచ్చు."
+  },
+  "report/renderer/util.js | calculatorLink": {
+    "message": "కాలిక్యులేటర్‌ను చూడండి."
+  },
+  "report/renderer/util.js | crcInitialNavigation": {
+    "message": "ప్రారంభ నావిగేషన్"
+  },
+  "report/renderer/util.js | crcLongestDurationLabel": {
+    "message": "గరిష్ట క్లిష్టమైన మార్గ ప్రతిస్పందన సమయం:"
+  },
+  "report/renderer/util.js | dropdownCopyJSON": {
+    "message": "JSONను కాపీ చేయి"
+  },
+  "report/renderer/util.js | dropdownDarkTheme": {
+    "message": "ముదురు రంగు థీమ్‌ను టోగుల్ చేయి"
+  },
+  "report/renderer/util.js | dropdownPrintExpanded": {
+    "message": "ప్రింట్ విస్తరించబడింది"
+  },
+  "report/renderer/util.js | dropdownPrintSummary": {
+    "message": "ప్రింట్ సారాంశం"
+  },
+  "report/renderer/util.js | dropdownSaveGist": {
+    "message": "Gist లాగా సేవ్ చేయి"
+  },
+  "report/renderer/util.js | dropdownSaveHTML": {
+    "message": "HTML లాగా సేవ్ చేయి"
+  },
+  "report/renderer/util.js | dropdownSaveJSON": {
+    "message": "JSON లాగా సేవ్ చేయి"
+  },
+  "report/renderer/util.js | dropdownViewer": {
+    "message": "వ్యూయర్‌లో తెరువు"
+  },
+  "report/renderer/util.js | errorLabel": {
+    "message": "ఎర్రర్ ఏర్పడింది!"
+  },
+  "report/renderer/util.js | errorMissingAuditInfo": {
+    "message": "నివేదిక ఎర్రర్: ఆడిట్ సమాచారం లేదు"
+  },
+  "report/renderer/util.js | footerIssue": {
+    "message": "సమస్యను ఫైల్ చేయండి"
+  },
+  "report/renderer/util.js | labDataTitle": {
+    "message": "ల్యాబ్ డేటా"
+  },
+  "report/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "అనుకరణ మొబైల్ నెట్‌వర్క్‌లో ప్రస్తుత పేజీకి సంబంధించిన [Lighthouse](https://developers.google.com/web/tools/lighthouse/) విశ్లేషణ. విలువలు కేవలం అంచనా మాత్రమే, ఇవి మారే అవకాశం ఉంది."
+  },
+  "report/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "మాన్యువల్‌గా తనిఖీ చేయవలసిన అదనపు అంశాలు"
+  },
+  "report/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "వర్తించదు"
+  },
+  "report/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "అవకాశం"
+  },
+  "report/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "అంచనా వేసిన పొదుపులు"
+  },
+  "report/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "ఉత్తీర్ణత సాధించిన ఆడిట్‌లు"
+  },
+  "report/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "అనుకరణ డెస్క్‌టాప్"
+  },
+  "report/renderer/util.js | runtimeMobileEmulation": {
+    "message": "అనుకరణ Moto G4"
+  },
+  "report/renderer/util.js | runtimeNoEmulation": {
+    "message": "అనుకరణ లేదు"
+  },
+  "report/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "Axe వెర్షన్"
+  },
+  "report/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "CPU/మెమరీ పవర్"
+  },
+  "report/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "CPU త్రోట్లింగ్"
+  },
+  "report/renderer/util.js | runtimeSettingsChannel": {
+    "message": "ఛానెల్"
+  },
+  "report/renderer/util.js | runtimeSettingsDevice": {
+    "message": "పరికరం"
+  },
+  "report/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "పొందే సమయం"
+  },
+  "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "నెట్‌వర్క్ త్రోట్లింగ్"
+  },
+  "report/renderer/util.js | runtimeSettingsTitle": {
+    "message": "రన్‌టైమ్ సెట్టింగ్‌లు"
+  },
+  "report/renderer/util.js | runtimeSettingsUA": {
+    "message": "వెబ్‌సైట్ యాక్సెస్ సాధనం (హోస్ట్)"
+  },
+  "report/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "వెబ్‌సైట్ యాక్సెస్ సాధనం (నెట్‌వర్క్)"
+  },
+  "report/renderer/util.js | runtimeSettingsUrl": {
+    "message": "URL"
+  },
+  "report/renderer/util.js | runtimeUnknown": {
+    "message": "తెలియదు"
+  },
+  "report/renderer/util.js | showRelevantAudits": {
+    "message": "వీటికి సంబంధించిన ఆడిట్‌లను చూపండి:"
+  },
+  "report/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "స్నిప్పెట్‌ను కుదించు"
+  },
+  "report/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "స్నిప్పెట్‌ను విస్తరించు"
+  },
+  "report/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "3వ పక్షం వనరులను చూపు"
+  },
+  "report/renderer/util.js | throttlingProvided": {
+    "message": "ఎన్విరాన్మెంట్ ద్వారా అందించబడింది"
+  },
+  "report/renderer/util.js | toplevelWarningsMessage": {
+    "message": "Lighthouse యొక్క ఈ అమలును ప్రభావితం చేసిన సమస్యలు ఉన్నాయి:"
+  },
+  "report/renderer/util.js | varianceDisclaimer": {
+    "message": "విలువలు కేవలం అంచనా మాత్రమే, ఇవి మారే అవకాశం ఉంది. నేరుగా ఈ కొలమానాల ఆధారంగా [పనితీరు స్కోరు లెక్కించబడుతుంది](https://web.dev/performance-scoring/)."
+  },
+  "report/renderer/util.js | viewTreemapLabel": {
+    "message": "ట్రీమ్యాప్‌ను చూడండి"
+  },
+  "report/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "ఆడిట్‌లు పాస్ అయ్యాయి కానీ హెచ్చరికలు ఉన్నాయి"
+  },
+  "report/renderer/util.js | warningHeader": {
+    "message": "హెచ్చరికలు: "
   }
 }

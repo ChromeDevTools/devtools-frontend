@@ -63,7 +63,7 @@
     "message": "Elementele ARIA `meter` au nume accesibile"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "Când un element nu are un nume accesibil, cititoarele de ecran îl anunță cu o denumire generică, făcându-l inutil pentru utilizatorii care se bazează pe cititoarele de ecran. [Află mai multe](https://web.dev/aria-name/)."
+    "message": "Când un element `progressbar` nu are un nume accesibil, cititoarele de ecran îl anunță cu o denumire generică, făcându-l inutil pentru utilizatorii care se bazează pe cititoarele de ecran. [Află mai multe](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "Elementele ARIA `progressbar` nu au nume accesibile."
@@ -585,13 +585,13 @@
     "message": "Directivă"
   },
   "lighthouse-core/audits/csp-xss.js | columnSeverity": {
-    "message": "Severity"
+    "message": "Severitate"
   },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "O politică eficientă privind securitatea conținutului (CSP) reduce semnificativ riscul de atacuri de tip cross-site scripting (XSS). [Află mai multe](https://web.dev/strict-csp/)"
+    "message": "O politică eficientă privind securitatea conținutului (CSP) reduce semnificativ riscul de atacuri de tip cross-site scripting (XSS). [Află mai multe](https://web.dev/csp-xss/)"
   },
   "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
-    "message": "Syntax"
+    "message": "Sintaxă"
   },
   "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
     "message": "Pagina conține o politică CSP definită într-o etichetă <meta>. Îți recomandăm să definești CSP într-un antet HTTP, dacă este posibil."
@@ -903,10 +903,10 @@
     "message": "Manifestul nu conține câmpul „name” sau „short_name”"
   },
   "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "Manifestul nu conține o pictogramă potrivită. Este necesară o pictogramă în format PNG, SVG sau WebP, de minimum {value0} px, care să aibă atributul dimensiuni setat și, dacă are atributul scop setat, acesta trebuie să includă „oricare” sau „care poate fi mascată”."
+    "message": "Manifestul nu conține o pictogramă potrivită. Este necesară o pictogramă în format PNG, SVG sau WebP, de minimum {value0} px, care să aibă atributul „dimensiuni” setat și, dacă are atributul „scop” setat, acesta trebuie să includă „oricare”."
   },
   "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "Nicio pictogramă adăugată nu întrunește următoarele cerințe: minimum {value0} px, pătrată, în format PNG, SVG sau WebP"
+    "message": "Nicio pictogramă adăugată nu întrunește următoarele cerințe: minimum {value0} px, pătrată, în format PNG, SVG sau WebP, cu atributul scop nesetat sau setat la „oricare”."
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
     "message": "Pictograma descărcată este goală sau deteriorată"
@@ -1955,144 +1955,6 @@
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Adresa URL furnizată pare să fie nevalidă."
   },
-  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
-    "message": "Accesează calculatorul."
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
-    "message": "Navigare inițială"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "Latența maximă a căii critice:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
-    "message": "Copiază JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "Activează/dezactivează Tema întunecată"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
-    "message": "Printează în formă extinsă"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
-    "message": "Rezumatul printării"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
-    "message": "Salvează ca Gist"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
-    "message": "Salvează ca HTML"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
-    "message": "Salvează ca JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
-    "message": "Deschide în vizualizator"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
-    "message": "Eroare!"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
-    "message": "Eroare de raport: nu există informații de auditare"
-  },
-  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
-    "message": "Raportează o problemă"
-  },
-  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
-    "message": "Datele testului"
-  },
-  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
-    "message": "Analiza în [Lighthouse](https://developers.google.com/web/tools/lighthouse/) a paginii actuale cu o rețea mobilă simulată. Valorile sunt estimate și pot varia."
-  },
-  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
-    "message": "Elemente suplimentare de verificat manual"
-  },
-  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
-    "message": "Nu se aplică"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
-    "message": "Oportunitate"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
-    "message": "Economii estimate"
-  },
-  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
-    "message": "Auditări trecute"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
-    "message": "Computer simulat"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
-    "message": "Moto G4 simulat"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
-    "message": "Fără simulare"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
-    "message": "Versiunea Axe"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
-    "message": "Puterea CPU/memoriei"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
-    "message": "Limitarea CPU"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Canal"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
-    "message": "Dispozitiv"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Momentul preluării"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
-    "message": "Limitarea rețelei"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Setări pentru execuție"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
-    "message": "User Agent (gazdă)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
-    "message": "User Agent (rețea)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
-    "message": "Adresă URL"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
-    "message": "Necunoscută"
-  },
-  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
-    "message": "Vezi audituri relevante pentru:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
-    "message": "Restrânge fragmentul"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
-    "message": "Extinde fragmentul"
-  },
-  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "Afișează resursele terță parte"
-  },
-  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
-    "message": "Oferită de mediu"
-  },
-  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
-    "message": "Au apărut probleme care au afectat această rulare Lighthouse:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "Valorile sunt estimate și pot varia. [Scorul de performanță este calculat](https://web.dev/performance-scoring/) direct folosind aceste valori."
-  },
-  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
-    "message": "Afișează Treemap"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
-    "message": "Auditări trecute, dar cu avertismente"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
-    "message": "Avertismente: "
-  },
   "lighthouse-treemap/app/src/util.js | allLabel": {
     "message": "Toate"
   },
@@ -2380,5 +2242,143 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "Poți activa comprimarea textului în configurarea serverului web."
+  },
+  "report/renderer/util.js | calculatorLink": {
+    "message": "Accesează calculatorul."
+  },
+  "report/renderer/util.js | crcInitialNavigation": {
+    "message": "Navigare inițială"
+  },
+  "report/renderer/util.js | crcLongestDurationLabel": {
+    "message": "Latența maximă a căii critice:"
+  },
+  "report/renderer/util.js | dropdownCopyJSON": {
+    "message": "Copiază JSON"
+  },
+  "report/renderer/util.js | dropdownDarkTheme": {
+    "message": "Activează/dezactivează Tema întunecată"
+  },
+  "report/renderer/util.js | dropdownPrintExpanded": {
+    "message": "Printează în formă extinsă"
+  },
+  "report/renderer/util.js | dropdownPrintSummary": {
+    "message": "Rezumatul printării"
+  },
+  "report/renderer/util.js | dropdownSaveGist": {
+    "message": "Salvează ca Gist"
+  },
+  "report/renderer/util.js | dropdownSaveHTML": {
+    "message": "Salvează ca HTML"
+  },
+  "report/renderer/util.js | dropdownSaveJSON": {
+    "message": "Salvează ca JSON"
+  },
+  "report/renderer/util.js | dropdownViewer": {
+    "message": "Deschide în vizualizator"
+  },
+  "report/renderer/util.js | errorLabel": {
+    "message": "Eroare!"
+  },
+  "report/renderer/util.js | errorMissingAuditInfo": {
+    "message": "Eroare de raport: nu există informații de auditare"
+  },
+  "report/renderer/util.js | footerIssue": {
+    "message": "Raportează o problemă"
+  },
+  "report/renderer/util.js | labDataTitle": {
+    "message": "Datele testului"
+  },
+  "report/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "Analiza în [Lighthouse](https://developers.google.com/web/tools/lighthouse/) a paginii actuale cu o rețea mobilă simulată. Valorile sunt estimate și pot varia."
+  },
+  "report/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "Elemente suplimentare de verificat manual"
+  },
+  "report/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "Nu se aplică"
+  },
+  "report/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "Oportunitate"
+  },
+  "report/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "Economii estimate"
+  },
+  "report/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "Auditări trecute"
+  },
+  "report/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "Computer simulat"
+  },
+  "report/renderer/util.js | runtimeMobileEmulation": {
+    "message": "Moto G4 simulat"
+  },
+  "report/renderer/util.js | runtimeNoEmulation": {
+    "message": "Fără simulare"
+  },
+  "report/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "Versiunea Axe"
+  },
+  "report/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "Puterea CPU/memoriei"
+  },
+  "report/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "Limitarea CPU"
+  },
+  "report/renderer/util.js | runtimeSettingsChannel": {
+    "message": "Canal"
+  },
+  "report/renderer/util.js | runtimeSettingsDevice": {
+    "message": "Dispozitiv"
+  },
+  "report/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "Momentul preluării"
+  },
+  "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "Limitarea rețelei"
+  },
+  "report/renderer/util.js | runtimeSettingsTitle": {
+    "message": "Setări pentru execuție"
+  },
+  "report/renderer/util.js | runtimeSettingsUA": {
+    "message": "User Agent (gazdă)"
+  },
+  "report/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "User Agent (rețea)"
+  },
+  "report/renderer/util.js | runtimeSettingsUrl": {
+    "message": "Adresă URL"
+  },
+  "report/renderer/util.js | runtimeUnknown": {
+    "message": "Necunoscută"
+  },
+  "report/renderer/util.js | showRelevantAudits": {
+    "message": "Vezi audituri relevante pentru:"
+  },
+  "report/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "Restrânge fragmentul"
+  },
+  "report/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "Extinde fragmentul"
+  },
+  "report/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "Afișează resursele terță parte"
+  },
+  "report/renderer/util.js | throttlingProvided": {
+    "message": "Oferită de mediu"
+  },
+  "report/renderer/util.js | toplevelWarningsMessage": {
+    "message": "Au apărut probleme care au afectat această rulare Lighthouse:"
+  },
+  "report/renderer/util.js | varianceDisclaimer": {
+    "message": "Valorile sunt estimate și pot varia. [Scorul de performanță este calculat](https://web.dev/performance-scoring/) direct folosind aceste valori."
+  },
+  "report/renderer/util.js | viewTreemapLabel": {
+    "message": "Afișează Treemap"
+  },
+  "report/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "Auditări trecute, dar cu avertismente"
+  },
+  "report/renderer/util.js | warningHeader": {
+    "message": "Avertismente: "
   }
 }

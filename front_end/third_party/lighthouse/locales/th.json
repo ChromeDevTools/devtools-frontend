@@ -63,7 +63,7 @@
     "message": "องค์ประกอบ ARIA `meter` มีชื่อสำหรับการช่วยเหลือพิเศษ"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "เมื่อองค์ประกอบไม่มีชื่อสำหรับการช่วยเหลือพิเศษ โปรแกรมอ่านหน้าจอจะอ่านองค์ประกอบนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้องค์ประกอบดังกล่าวไม่ได้ [ดูข้อมูลเพิ่มเติม](https://web.dev/aria-name/)"
+    "message": "เมื่อองค์ประกอบ `progressbar` ไม่มีชื่อสำหรับการช่วยเหลือพิเศษ โปรแกรมอ่านหน้าจอจะอ่านองค์ประกอบนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้องค์ประกอบดังกล่าวไม่ได้ [ดูข้อมูลเพิ่มเติม](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "องค์ประกอบ ARIA `progressbar` ไม่มีชื่อสำหรับการช่วยเหลือพิเศษ"
@@ -585,13 +585,13 @@
     "message": "คำสั่ง"
   },
   "lighthouse-core/audits/csp-xss.js | columnSeverity": {
-    "message": "Severity"
+    "message": "ความรุนแรง"
   },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "นโยบายรักษาความปลอดภัยเนื้อหา (CSP) ที่มีประสิทธิภาพช่วยลดความเสี่ยงต่อการโจมตี Cross-site Scripting (XSS) ได้อย่างมาก [ดูข้อมูลเพิ่มเติม](https://web.dev/strict-csp/)"
+    "message": "นโยบายรักษาความปลอดภัยเนื้อหา (CSP) ที่มีประสิทธิภาพช่วยลดความเสี่ยงต่อการโจมตี Cross-site Scripting (XSS) ได้อย่างมาก [ดูข้อมูลเพิ่มเติม](https://web.dev/csp-xss/)"
   },
   "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
-    "message": "Syntax"
+    "message": "ไวยากรณ์"
   },
   "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
     "message": "หน้าเว็บมีการกำหนด CSP ในแท็ก <meta> ลองกำหนด CSP ในส่วนหัว HTTP หากทำได้"
@@ -903,10 +903,10 @@
     "message": "ไฟล์ Manifest ไม่มีช่อง \"name\" หรือ \"short_name\""
   },
   "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "ไฟล์ Manifest ไม่มีไอคอนที่เหมาะสม ซึ่งต้องอยู่ในรูปแบบ PNG, SVG หรือ WebP และมีขนาดอย่างน้อย {value0} พิกเซล ต้องตั้งค่าแอตทริบิวต์ขนาด และหากมีการตั้งค่าแอตทริบิวต์จุดประสงค์ แอตทริบิวต์นั้นต้องมี \"any\" หรือ \"maskable\" รวมอยู่ด้วย"
+    "message": "ไฟล์ Manifest ไม่มีไอคอนที่เหมาะสม ซึ่งต้องอยู่ในรูปแบบ PNG, SVG หรือ WebP และมีขนาดอย่างน้อย {value0} พิกเซล ต้องตั้งค่าแอตทริบิวต์ขนาด และหากมีการตั้งค่าแอตทริบิวต์จุดประสงค์ แอตทริบิวต์นั้นต้องมี \"any\""
   },
   "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "ไม่ได้ให้ไอคอนที่เป็นรูปสี่เหลี่ยมจัตุรัสและมีขนาดอย่างน้อย {value0} พิกเซลในรูปแบบ PNG, SVG หรือ WebP"
+    "message": "ไม่ได้ให้ไอคอนที่เป็นรูปสี่เหลี่ยมจัตุรัสและมีขนาดอย่างน้อย {value0} พิกเซลในรูปแบบ PNG, SVG หรือ WebP ซึ่งไม่ได้ตั้งค่าแอตทริบิวต์วัตถุประสงค์เอาไว้หรือตั้งค่าเป็น \"any\""
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
     "message": "ไอคอนที่ดาวน์โหลดว่างเปล่าหรือเกิดความเสียหาย"
@@ -1955,144 +1955,6 @@
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "ดูเหมือนว่า URL ที่ระบุจะไม่ถูกต้อง"
   },
-  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
-    "message": "ดูเครื่องคิดเลข"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
-    "message": "การนำทางเริ่มต้น"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "เวลาในการตอบสนองของเส้นทางสำคัญที่ยาวที่สุด"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
-    "message": "คัดลอก JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "เปิด/ปิดธีมมืด"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
-    "message": "ขยายข้อมูลการพิมพ์"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
-    "message": "สรุปการพิมพ์"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
-    "message": "บันทึกเป็น Gist"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
-    "message": "บันทึกเป็น HTML"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
-    "message": "บันทึกเป็น JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
-    "message": "เปิดในโปรแกรมดู"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
-    "message": "ข้อผิดพลาด!"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
-    "message": "ข้อผิดพลาดในรายงาน: ไม่มีข้อมูลการตรวจสอบ"
-  },
-  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
-    "message": "รายงานปัญหา"
-  },
-  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
-    "message": "ข้อมูลในห้องทดลอง"
-  },
-  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
-    "message": "การวิเคราะห์หน้าปัจจุบันในเครือข่ายมือถือจำลองโดย [Lighthouse](https://developers.google.com/web/tools/lighthouse/) ค่ามาจากการประมาณและอาจแตกต่างกันไป"
-  },
-  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
-    "message": "รายการเพิ่มเติมที่ควรตรวจสอบด้วยตนเอง"
-  },
-  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
-    "message": "ไม่เกี่ยวข้อง"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
-    "message": "โอกาส"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
-    "message": "เวลาที่ประหยัดได้โดยประมาณ"
-  },
-  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
-    "message": "การตรวจสอบที่ผ่านแล้ว"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
-    "message": "เดสก์ท็อปจำลอง"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
-    "message": "Moto G4 จำลอง"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
-    "message": "ไม่มีการจำลอง"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
-    "message": "เวอร์ชัน Axe"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
-    "message": "ความแรงของ CPU/หน่วยความจำ"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
-    "message": "การควบคุม CPU"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
-    "message": "ช่อง"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
-    "message": "อุปกรณ์"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "เวลาในการดึงข้อมูล"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
-    "message": "การควบคุมเครือข่าย"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
-    "message": "การตั้งค่ารันไทม์"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
-    "message": "User Agent (โฮสต์)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
-    "message": "User Agent (เครือข่าย)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
-    "message": "ไม่ทราบ"
-  },
-  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
-    "message": "แสดงการตรวจสอบที่เกี่ยวข้องกับรายการต่อไปนี้"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
-    "message": "ยุบตัวอย่างข้อมูล"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
-    "message": "ขยายตัวอย่างข้อมูล"
-  },
-  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "แสดงทรัพยากรของบุคคลที่สาม"
-  },
-  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
-    "message": "ให้บริการโดยสภาพแวดล้อม"
-  },
-  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
-    "message": "เกิดปัญหาที่มีผลต่อการทำงานนี้ของ Lighthouse"
-  },
-  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "ค่ามาจากการประมาณและอาจแตกต่างกันไป [คะแนนประสิทธิภาพคำนวณ](https://web.dev/performance-scoring/)จากเมตริกเหล่านี้โดยตรง"
-  },
-  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
-    "message": "ดูแผนภูมิทรีแม็ป"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
-    "message": "ผ่านการตรวจสอบแต่มีคำเตือน"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
-    "message": "คำเตือน "
-  },
   "lighthouse-treemap/app/src/util.js | allLabel": {
     "message": "ทั้งหมด"
   },
@@ -2380,5 +2242,143 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "คุณเปิดใช้การบีบอัดข้อความในการกำหนดค่าเว็บเซิร์ฟเวอร์ได้"
+  },
+  "report/renderer/util.js | calculatorLink": {
+    "message": "ดูเครื่องคิดเลข"
+  },
+  "report/renderer/util.js | crcInitialNavigation": {
+    "message": "การนำทางเริ่มต้น"
+  },
+  "report/renderer/util.js | crcLongestDurationLabel": {
+    "message": "เวลาในการตอบสนองของเส้นทางสำคัญที่ยาวที่สุด"
+  },
+  "report/renderer/util.js | dropdownCopyJSON": {
+    "message": "คัดลอก JSON"
+  },
+  "report/renderer/util.js | dropdownDarkTheme": {
+    "message": "เปิด/ปิดธีมมืด"
+  },
+  "report/renderer/util.js | dropdownPrintExpanded": {
+    "message": "ขยายข้อมูลการพิมพ์"
+  },
+  "report/renderer/util.js | dropdownPrintSummary": {
+    "message": "สรุปการพิมพ์"
+  },
+  "report/renderer/util.js | dropdownSaveGist": {
+    "message": "บันทึกเป็น Gist"
+  },
+  "report/renderer/util.js | dropdownSaveHTML": {
+    "message": "บันทึกเป็น HTML"
+  },
+  "report/renderer/util.js | dropdownSaveJSON": {
+    "message": "บันทึกเป็น JSON"
+  },
+  "report/renderer/util.js | dropdownViewer": {
+    "message": "เปิดในโปรแกรมดู"
+  },
+  "report/renderer/util.js | errorLabel": {
+    "message": "ข้อผิดพลาด!"
+  },
+  "report/renderer/util.js | errorMissingAuditInfo": {
+    "message": "ข้อผิดพลาดในรายงาน: ไม่มีข้อมูลการตรวจสอบ"
+  },
+  "report/renderer/util.js | footerIssue": {
+    "message": "รายงานปัญหา"
+  },
+  "report/renderer/util.js | labDataTitle": {
+    "message": "ข้อมูลในห้องทดลอง"
+  },
+  "report/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "การวิเคราะห์หน้าปัจจุบันในเครือข่ายมือถือจำลองโดย [Lighthouse](https://developers.google.com/web/tools/lighthouse/) ค่ามาจากการประมาณและอาจแตกต่างกันไป"
+  },
+  "report/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "รายการเพิ่มเติมที่ควรตรวจสอบด้วยตนเอง"
+  },
+  "report/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "ไม่เกี่ยวข้อง"
+  },
+  "report/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "โอกาส"
+  },
+  "report/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "เวลาที่ประหยัดได้โดยประมาณ"
+  },
+  "report/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "การตรวจสอบที่ผ่านแล้ว"
+  },
+  "report/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "เดสก์ท็อปจำลอง"
+  },
+  "report/renderer/util.js | runtimeMobileEmulation": {
+    "message": "Moto G4 จำลอง"
+  },
+  "report/renderer/util.js | runtimeNoEmulation": {
+    "message": "ไม่มีการจำลอง"
+  },
+  "report/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "เวอร์ชัน Axe"
+  },
+  "report/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "ความแรงของ CPU/หน่วยความจำ"
+  },
+  "report/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "การควบคุม CPU"
+  },
+  "report/renderer/util.js | runtimeSettingsChannel": {
+    "message": "ช่อง"
+  },
+  "report/renderer/util.js | runtimeSettingsDevice": {
+    "message": "อุปกรณ์"
+  },
+  "report/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "เวลาในการดึงข้อมูล"
+  },
+  "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "การควบคุมเครือข่าย"
+  },
+  "report/renderer/util.js | runtimeSettingsTitle": {
+    "message": "การตั้งค่ารันไทม์"
+  },
+  "report/renderer/util.js | runtimeSettingsUA": {
+    "message": "User Agent (โฮสต์)"
+  },
+  "report/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "User Agent (เครือข่าย)"
+  },
+  "report/renderer/util.js | runtimeSettingsUrl": {
+    "message": "URL"
+  },
+  "report/renderer/util.js | runtimeUnknown": {
+    "message": "ไม่ทราบ"
+  },
+  "report/renderer/util.js | showRelevantAudits": {
+    "message": "แสดงการตรวจสอบที่เกี่ยวข้องกับรายการต่อไปนี้"
+  },
+  "report/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "ยุบตัวอย่างข้อมูล"
+  },
+  "report/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "ขยายตัวอย่างข้อมูล"
+  },
+  "report/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "แสดงทรัพยากรของบุคคลที่สาม"
+  },
+  "report/renderer/util.js | throttlingProvided": {
+    "message": "ให้บริการโดยสภาพแวดล้อม"
+  },
+  "report/renderer/util.js | toplevelWarningsMessage": {
+    "message": "เกิดปัญหาที่มีผลต่อการทำงานนี้ของ Lighthouse"
+  },
+  "report/renderer/util.js | varianceDisclaimer": {
+    "message": "ค่ามาจากการประมาณและอาจแตกต่างกันไป [คะแนนประสิทธิภาพคำนวณ](https://web.dev/performance-scoring/)จากเมตริกเหล่านี้โดยตรง"
+  },
+  "report/renderer/util.js | viewTreemapLabel": {
+    "message": "ดูแผนภูมิทรีแม็ป"
+  },
+  "report/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "ผ่านการตรวจสอบแต่มีคำเตือน"
+  },
+  "report/renderer/util.js | warningHeader": {
+    "message": "คำเตือน "
   }
 }

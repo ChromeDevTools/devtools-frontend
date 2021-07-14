@@ -63,7 +63,7 @@
     "message": "Elemen `meter` ARIA memiliki nama yang dapat diakses"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "Jika elemen tidak memiliki nama yang dapat diakses, pembaca layar akan mengucapkannya dengan nama umum, sehingga tidak dapat digunakan oleh pengguna yang mengandalkan pembaca layar. [Pelajari lebih lanjut](https://web.dev/aria-name/)."
+    "message": "Jika elemen `progressbar` tidak memiliki label aksesibilitas, pembaca layar akan mengucapkannya dengan nama umum, sehingga tidak dapat digunakan oleh pengguna yang mengandalkan pembaca layar. [Pelajari lebih lanjut](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "Elemen `progressbar` ARIA tidak memiliki nama yang dapat diakses."
@@ -585,13 +585,13 @@
     "message": "Perintah"
   },
   "lighthouse-core/audits/csp-xss.js | columnSeverity": {
-    "message": "Severity"
+    "message": "Keparahan"
   },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "Kebijakan Keamanan Konten (CSP) yang kuat mengurangi risiko serangan pembuatan skrip lintas situs (XSS) secara signifikan. [Pelajari lebih lanjut](https://web.dev/strict-csp/)"
+    "message": "Kebijakan Keamanan Konten (CSP) yang kuat mengurangi risiko serangan pembuatan skrip lintas situs (XSS) secara signifikan. [Pelajari lebih lanjut](https://web.dev/csp-xss/)"
   },
   "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
-    "message": "Syntax"
+    "message": "Sintaksis"
   },
   "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
     "message": "Halaman ini memuat CSP yang ditentukan dalam tag <meta>. Sebaiknya tentukan CSP di header HTTP jika Anda dapat melakukannya."
@@ -903,10 +903,10 @@
     "message": "Manifes tidak berisi kolom 'name' atau 'short_name'"
   },
   "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "Manifes tidak berisi ikon yang cocok - perlu format PNG, SVG, atau WebP minimal {value0} piksel, atribut sizes harus disetel, dan atribut purpose harus menyertakan \"any\" atau \"maskable\" jika disetel."
+    "message": "Manifes tidak berisi ikon yang cocok - perlu format PNG, SVG, atau WebP minimal {value0} px, atribut sizes harus disetel, dan atribut purpose harus menyertakan \"any\" jika disetel."
   },
   "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "Tidak tersedia ikon berukuran minimal {value0} piksel persegi dalam format PNG, SVG, atau WebP"
+    "message": "Tidak ada ikon yang disediakan berukuran minimal {value0} px persegi dalam format PNG, SVG, atau WebP, dengan atribut purpose yang tidak disetel atau disetel ke \"any\""
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
     "message": "Ikon yang didownload kosong atau rusak"
@@ -1955,144 +1955,6 @@
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "URL yang Anda berikan tampaknya tidak valid."
   },
-  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
-    "message": "Lihat kalkulator."
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
-    "message": "Navigasi Awal"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "Latensi jalur kritis maksimal:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
-    "message": "Salin JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "Tombol Tema Gelap"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
-    "message": "Cetak Lengkap"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
-    "message": "Cetak Ringkasan"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
-    "message": "Simpan sebagai Gist"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
-    "message": "Simpan sebagai HTML"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
-    "message": "Simpan sebagai JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
-    "message": "Buka di Penampil"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
-    "message": "Error!"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
-    "message": "Error laporan: tidak ada informasi audit"
-  },
-  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
-    "message": "Laporkan masalah"
-  },
-  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
-    "message": "Data Lab"
-  },
-  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
-    "message": "Analisis [Lighthouse](https://developers.google.com/web/tools/lighthouse/) untuk halaman saat ini di jaringan seluler teremulasi. Nilai adalah hasil perkiraan dan dapat berbeda-beda."
-  },
-  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
-    "message": "Item tambahan untuk diperiksa secara manual"
-  },
-  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
-    "message": "Tidak berlaku"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
-    "message": "Peluang"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
-    "message": "Perkiraan Penghematan"
-  },
-  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
-    "message": "Lulus audit"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
-    "message": "Desktop Emulasi"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
-    "message": "Moto G4 Emulasi"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
-    "message": "Tidak ada emulasi"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
-    "message": "Versi Axe"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
-    "message": "Daya CPU/Memori"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
-    "message": "Throttling CPU"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Saluran"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
-    "message": "Perangkat"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Waktu Pengambilan"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
-    "message": "Throttling jaringan"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Setelan Runtime"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
-    "message": "Agen pengguna (host)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
-    "message": "Agen pengguna (jaringan)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
-    "message": "Tidak dikenal"
-  },
-  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
-    "message": "Tampilkan audit yang relevan dengan:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
-    "message": "Ciutkan cuplikan"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
-    "message": "Luaskan cuplikan"
-  },
-  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "Tampilkan resource pihak ketiga"
-  },
-  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
-    "message": "Disediakan oleh lingkungan"
-  },
-  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
-    "message": "Ada masalah yang memengaruhi jalannya Lighthouse ini:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "Nilai adalah hasil perkiraan dan dapat bervariasi. [Skor performa dihitung](https://web.dev/performance-scoring/) secara langsung dari metrik ini."
-  },
-  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
-    "message": "Lihat Peta Hierarki"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
-    "message": "Lulus audit tetapi dengan peringatan"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
-    "message": "Peringatan: "
-  },
   "lighthouse-treemap/app/src/util.js | allLabel": {
     "message": "Semua"
   },
@@ -2380,5 +2242,143 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "Anda dapat mengaktifkan kompresi teks di konfigurasi server web."
+  },
+  "report/renderer/util.js | calculatorLink": {
+    "message": "Lihat kalkulator."
+  },
+  "report/renderer/util.js | crcInitialNavigation": {
+    "message": "Navigasi Awal"
+  },
+  "report/renderer/util.js | crcLongestDurationLabel": {
+    "message": "Latensi jalur kritis maksimal:"
+  },
+  "report/renderer/util.js | dropdownCopyJSON": {
+    "message": "Salin JSON"
+  },
+  "report/renderer/util.js | dropdownDarkTheme": {
+    "message": "Tombol Tema Gelap"
+  },
+  "report/renderer/util.js | dropdownPrintExpanded": {
+    "message": "Cetak Lengkap"
+  },
+  "report/renderer/util.js | dropdownPrintSummary": {
+    "message": "Cetak Ringkasan"
+  },
+  "report/renderer/util.js | dropdownSaveGist": {
+    "message": "Simpan sebagai Gist"
+  },
+  "report/renderer/util.js | dropdownSaveHTML": {
+    "message": "Simpan sebagai HTML"
+  },
+  "report/renderer/util.js | dropdownSaveJSON": {
+    "message": "Simpan sebagai JSON"
+  },
+  "report/renderer/util.js | dropdownViewer": {
+    "message": "Buka di Penampil"
+  },
+  "report/renderer/util.js | errorLabel": {
+    "message": "Error!"
+  },
+  "report/renderer/util.js | errorMissingAuditInfo": {
+    "message": "Error laporan: tidak ada informasi audit"
+  },
+  "report/renderer/util.js | footerIssue": {
+    "message": "Laporkan masalah"
+  },
+  "report/renderer/util.js | labDataTitle": {
+    "message": "Data Lab"
+  },
+  "report/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "Analisis [Lighthouse](https://developers.google.com/web/tools/lighthouse/) untuk halaman saat ini di jaringan seluler teremulasi. Nilai adalah hasil perkiraan dan dapat berbeda-beda."
+  },
+  "report/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "Item tambahan untuk diperiksa secara manual"
+  },
+  "report/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "Tidak berlaku"
+  },
+  "report/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "Peluang"
+  },
+  "report/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "Perkiraan Penghematan"
+  },
+  "report/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "Lulus audit"
+  },
+  "report/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "Desktop Emulasi"
+  },
+  "report/renderer/util.js | runtimeMobileEmulation": {
+    "message": "Moto G4 Emulasi"
+  },
+  "report/renderer/util.js | runtimeNoEmulation": {
+    "message": "Tidak ada emulasi"
+  },
+  "report/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "Versi Axe"
+  },
+  "report/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "Daya CPU/Memori"
+  },
+  "report/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "Throttling CPU"
+  },
+  "report/renderer/util.js | runtimeSettingsChannel": {
+    "message": "Saluran"
+  },
+  "report/renderer/util.js | runtimeSettingsDevice": {
+    "message": "Perangkat"
+  },
+  "report/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "Waktu Pengambilan"
+  },
+  "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "Throttling jaringan"
+  },
+  "report/renderer/util.js | runtimeSettingsTitle": {
+    "message": "Setelan Runtime"
+  },
+  "report/renderer/util.js | runtimeSettingsUA": {
+    "message": "Agen pengguna (host)"
+  },
+  "report/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "Agen pengguna (jaringan)"
+  },
+  "report/renderer/util.js | runtimeSettingsUrl": {
+    "message": "URL"
+  },
+  "report/renderer/util.js | runtimeUnknown": {
+    "message": "Tidak dikenal"
+  },
+  "report/renderer/util.js | showRelevantAudits": {
+    "message": "Tampilkan audit yang relevan dengan:"
+  },
+  "report/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "Ciutkan cuplikan"
+  },
+  "report/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "Luaskan cuplikan"
+  },
+  "report/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "Tampilkan resource pihak ketiga"
+  },
+  "report/renderer/util.js | throttlingProvided": {
+    "message": "Disediakan oleh lingkungan"
+  },
+  "report/renderer/util.js | toplevelWarningsMessage": {
+    "message": "Ada masalah yang memengaruhi jalannya Lighthouse ini:"
+  },
+  "report/renderer/util.js | varianceDisclaimer": {
+    "message": "Nilai adalah hasil perkiraan dan dapat bervariasi. [Skor performa dihitung](https://web.dev/performance-scoring/) secara langsung dari metrik ini."
+  },
+  "report/renderer/util.js | viewTreemapLabel": {
+    "message": "Lihat Peta Hierarki"
+  },
+  "report/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "Lulus audit tetapi dengan peringatan"
+  },
+  "report/renderer/util.js | warningHeader": {
+    "message": "Peringatan: "
   }
 }

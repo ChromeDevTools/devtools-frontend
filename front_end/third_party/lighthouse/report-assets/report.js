@@ -375,7 +375,7 @@ class Util {
   /**
    * Returns a primary domain for provided hostname (e.g. www.example.com -> example.com).
    * @param {string|URL} url hostname or URL object
-   * @returns {string}
+   * @return {string}
    */
   static getRootDomain(url) {
     const hostname = Util.createOrReturnURL(url).hostname;
@@ -581,7 +581,7 @@ Util.UIStrings = {
 
   /** This label is for a checkbox above a table of items loaded by a web page. The checkbox is used to show or hide third-party (or "3rd-party") resources in the table, where "third-party resources" refers to items loaded by a web page from URLs that aren't controlled by the owner of the web page. */
   thirdPartyResourcesLabel: 'Show 3rd-party resources',
-  /** This label is for a button that opens a new tab to a webapp called "Treemap", which is a nested visual representation of a heierarchy of data releated to the reports (script bytes and coverage, resource breakdown, etc.) */
+  /** This label is for a button that opens a new tab to a webapp called "Treemap", which is a nested visual representation of a heierarchy of data related to the reports (script bytes and coverage, resource breakdown, etc.) */
   viewTreemapLabel: 'View Treemap',
 
   /** Option in a dropdown menu that opens a small, summary report in a print dialog.  */
@@ -596,7 +596,7 @@ Util.UIStrings = {
   dropdownSaveJSON: 'Save as JSON',
   /** Option in a dropdown menu that opens the current report in the Lighthouse Viewer Application. */
   dropdownViewer: 'Open in Viewer',
-  /** Option in a dropdown menu that saves the current report as a new Github Gist. */
+  /** Option in a dropdown menu that saves the current report as a new GitHub Gist. */
   dropdownSaveGist: 'Save as Gist',
   /** Option in a dropdown menu that toggles the themeing of the report between Light(default) and Dark themes. */
   dropdownDarkTheme: 'Toggle Dark Theme',
@@ -624,7 +624,7 @@ Util.UIStrings = {
   /** Label for a row in a table that shows the version of the Axe library used. Example row values: 2.1.0, 3.2.3 */
   runtimeSettingsAxeVersion: 'Axe version',
 
-  /** Label for button to create an issue against the Lighthouse Github project. */
+  /** Label for button to create an issue against the Lighthouse GitHub project. */
   footerIssue: 'File an issue',
 
   /** Descriptive explanation for emulation setting when no device emulation is set. */
@@ -645,6 +645,9 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
   self.Util = Util;
 }
+
+// TODO(esmodules): export these strings too, then collect-strings will work when this file is esm.
+// export const UIStrings = Util.UIStrings;
 ;
 /**
  * @license
@@ -1254,7 +1257,7 @@ class DetailsRenderer {
    * @return {LH.Audit.Details.OpportunityColumnHeading['subItemsHeading']}
    */
   _getCanonicalizedsubItemsHeading(subItemsHeading, parentHeading) {
-    // Low-friction way to prevent commiting a falsy key (which is never allowed for
+    // Low-friction way to prevent committing a falsy key (which is never allowed for
     // a subItemsHeading) from passing in CI.
     if (!subItemsHeading.key) {
       // eslint-disable-next-line no-console
@@ -3430,7 +3433,7 @@ class DropDown {
   /**
    * @param {Array<Node>} allNodes
    * @param {?HTMLElement=} startNode
-   * @returns {HTMLElement}
+   * @return {HTMLElement}
    */
   _getNextSelectableNode(allNodes, startNode) {
     const nodes = allNodes.filter(/** @return {node is HTMLElement} */ (node) => {
@@ -3461,7 +3464,7 @@ class DropDown {
 
   /**
    * @param {?HTMLElement=} startEl
-   * @returns {HTMLElement}
+   * @return {HTMLElement}
    */
   _getNextMenuItem(startEl) {
     const nodes = Array.from(this._menuEl.childNodes);
@@ -3470,7 +3473,7 @@ class DropDown {
 
   /**
    * @param {?HTMLElement=} startEl
-   * @returns {HTMLElement}
+   * @return {HTMLElement}
    */
   _getPreviousMenuItem(startEl) {
     const nodes = Array.from(this._menuEl.childNodes).reverse();
@@ -4944,7 +4947,7 @@ class I18n {
   }
 
   /**
-   * Format bytes with a constant number of fractional digits, i.e for a granularity of 0.1, 10 becomes '10.0'
+   * Format bytes with a constant number of fractional digits, i.e. for a granularity of 0.1, 10 becomes '10.0'
    * @param {number} granularity Controls how coarse the displayed value is
    * @return {Intl.NumberFormat}
    */
@@ -5127,4 +5130,59 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = {toBase64, fromBase64};
 } else {
   self.TextEncoding = {toBase64, fromBase64};
+}
+;
+/**
+ * @license Copyright 2021 The Lighthouse Authors. All Rights Reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+'use strict';
+
+/* global document window ga DOM ReportRenderer ReportUIFeatures Logger */
+
+// Used by standalone.html
+// eslint-disable-next-line no-unused-vars
+function __initLighthouseReport__() {
+  const dom = new DOM(document);
+  const renderer = new ReportRenderer(dom);
+  const container = dom.find('main', document);
+  /** @type {LH.ReportResult} */
+  // @ts-expect-error
+  const lhr = window.__LIGHTHOUSE_JSON__;
+  renderer.renderReport(lhr, container);
+
+  // Hook in JS features and page-level event listeners after the report
+  // is in the document.
+  const features = new ReportUIFeatures(dom);
+  features.initFeatures(lhr);
+
+  document.addEventListener('lh-analytics', /** @param {Event} e */ e => {
+    // @ts-expect-error
+    if (window.ga) ga(e.detail.cmd, e.detail.fields);
+  });
+
+  document.addEventListener('lh-log', /** @param {Event} e */ e => {
+    const el = document.querySelector('#lh-log');
+    if (!el) return;
+
+    const logger = new Logger(el);
+    // @ts-expect-error
+    const detail = e.detail;
+
+    switch (detail.cmd) {
+      case 'log':
+        logger.log(detail.msg);
+        break;
+      case 'warn':
+        logger.warn(detail.msg);
+        break;
+      case 'error':
+        logger.error(detail.msg);
+        break;
+      case 'hide':
+        logger.hide();
+        break;
+    }
+  });
 }

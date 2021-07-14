@@ -63,7 +63,7 @@
     "message": "Els elements `meter` d'ARIA tenen noms accessibles"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "Si un element no té un nom accessible, els lectors de pantalla el llegeixen amb un nom genèric, de manera que resulta inservible per als usuaris que depenen d'aquesta tecnologia. [Obtén més informació](https://web.dev/aria-name/)."
+    "message": "Si un element del tipus `progressbar` no té un nom accessible, els lectors de pantalla el llegeixen amb un nom genèric, de manera que resulta inservible per als usuaris que depenen d'aquesta tecnologia. [Obtén més informació](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "Els elements `progressbar` d'ARIA no tenen noms accessibles"
@@ -588,7 +588,7 @@
     "message": "Gravetat"
   },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "Una política de seguretat del contingut (CSP) sòlida redueix significativament el risc de patir atacs d'injecció indirecta de scripts (XSS). [Més informació](https://web.dev/strict-csp/)"
+    "message": "Una política de seguretat del contingut (CSP) sòlida redueix significativament el risc de patir atacs d'injecció indirecta de scripts (XSS). [Més informació](https://web.dev/csp-xss/)"
   },
   "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
     "message": "Sintaxi"
@@ -903,10 +903,10 @@
     "message": "El fitxer de manifest no conté cap camp \"name\" o \"short_name\""
   },
   "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "El fitxer de manifest no conté cap icona adequada. Es requereix un format PNG, SVG o WebP de com a mínim {value0} píxels, l'atribut sizes ha d'estar establert i l'atribut purpose, si s'estableix, ha de ser \"any\" o \"maskable\"."
+    "message": "El manifest no conté cap icona adequada. Es requereix un format PNG, SVG o WebP de com a mínim {value0} píxels, l'atribut \"sizes\" ha d'estar establert i l'atribut \"purpose\", si s'estableix, ha d'incloure \"any\"."
   },
   "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "No s'ha proporcionat cap icona que tingui com a mínim {value0} píxels quadrats en format PNG, SVG o WebP"
+    "message": "No s'ha proporcionat cap icona que tingui com a mínim {value0} píxels quadrats en format PNG, SVG o WebP i que tingui l'atribut \"purpose\" sense establir o definit en \"any\""
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
     "message": "La icona baixada era buida o estava malmesa"
@@ -1955,144 +1955,6 @@
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Sembla que l'URL que has proporcionat no és vàlid."
   },
-  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
-    "message": "Consulta la calculadora."
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
-    "message": "Navegació inicial"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "Latència de camí crítica màxima:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
-    "message": "Copia l'objecte JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "Commuta el tema fosc"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
-    "message": "Imprimeix desplegat"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
-    "message": "Resum d'impressió"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
-    "message": "Desa com a Gist"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
-    "message": "Desa com a HTML"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
-    "message": "Desa com a JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
-    "message": "Obre al visualitzador"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
-    "message": "Error"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
-    "message": "Error de l'informe: no hi ha informació d'auditoria"
-  },
-  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
-    "message": "Informa d'un problema"
-  },
-  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
-    "message": "Dades de laboratori"
-  },
-  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
-    "message": "Anàlisi amb [Lighthouse](https://developers.google.com/web/tools/lighthouse/) de la pàgina actual mitjançant una xarxa mòbil emulada. Els valors són estimacions i poden variar."
-  },
-  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
-    "message": "Elements addicionals per comprovar manualment"
-  },
-  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
-    "message": "No aplicable"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
-    "message": "Oportunitat"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
-    "message": "Estalvi estimat"
-  },
-  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
-    "message": "Auditories aprovades"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
-    "message": "Escriptori emulat"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
-    "message": "Moto G4 emulat"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
-    "message": "Sense emulació"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
-    "message": "Versió d'axe"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
-    "message": "Rendiment de la CPU/memòria"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
-    "message": "Limitació de CPU"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Canal"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
-    "message": "Dispositiu"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Data i hora d'obtenció"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
-    "message": "Limitació de xarxa"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Configuració del temps d'execució"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
-    "message": "Agent d'usuari (amfitrió)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
-    "message": "Agent d'usuari (xarxa)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
-    "message": "Desconegut"
-  },
-  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
-    "message": "Mostra auditories relacionades amb:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
-    "message": "Replega el fragment"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
-    "message": "Desplega el fragment"
-  },
-  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "Mostra els recursos de tercers"
-  },
-  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
-    "message": "Proporcionada per l'entorn"
-  },
-  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
-    "message": "Hi ha hagut problemes que afecten aquesta execució de Lighthouse:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "Els valors són estimacions i poden variar. El [resultat del rendiment es calcula](https://web.dev/performance-scoring/) directament a partir d'aquestes mètriques."
-  },
-  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
-    "message": "Mostra un mapa d'arbre"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
-    "message": "Auditories aprovades però amb advertiments"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
-    "message": "Advertiments: "
-  },
   "lighthouse-treemap/app/src/util.js | allLabel": {
     "message": "Tot"
   },
@@ -2380,5 +2242,143 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "Pots activar la compressió de text a la configuració del servidor web."
+  },
+  "report/renderer/util.js | calculatorLink": {
+    "message": "Consulta la calculadora."
+  },
+  "report/renderer/util.js | crcInitialNavigation": {
+    "message": "Navegació inicial"
+  },
+  "report/renderer/util.js | crcLongestDurationLabel": {
+    "message": "Latència de camí crítica màxima:"
+  },
+  "report/renderer/util.js | dropdownCopyJSON": {
+    "message": "Copia l'objecte JSON"
+  },
+  "report/renderer/util.js | dropdownDarkTheme": {
+    "message": "Commuta el tema fosc"
+  },
+  "report/renderer/util.js | dropdownPrintExpanded": {
+    "message": "Imprimeix desplegat"
+  },
+  "report/renderer/util.js | dropdownPrintSummary": {
+    "message": "Resum d'impressió"
+  },
+  "report/renderer/util.js | dropdownSaveGist": {
+    "message": "Desa com a Gist"
+  },
+  "report/renderer/util.js | dropdownSaveHTML": {
+    "message": "Desa com a HTML"
+  },
+  "report/renderer/util.js | dropdownSaveJSON": {
+    "message": "Desa com a JSON"
+  },
+  "report/renderer/util.js | dropdownViewer": {
+    "message": "Obre al visualitzador"
+  },
+  "report/renderer/util.js | errorLabel": {
+    "message": "Error"
+  },
+  "report/renderer/util.js | errorMissingAuditInfo": {
+    "message": "Error de l'informe: no hi ha informació d'auditoria"
+  },
+  "report/renderer/util.js | footerIssue": {
+    "message": "Informa d'un problema"
+  },
+  "report/renderer/util.js | labDataTitle": {
+    "message": "Dades de laboratori"
+  },
+  "report/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "Anàlisi amb [Lighthouse](https://developers.google.com/web/tools/lighthouse/) de la pàgina actual mitjançant una xarxa mòbil emulada. Els valors són estimacions i poden variar."
+  },
+  "report/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "Elements addicionals per comprovar manualment"
+  },
+  "report/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "No aplicable"
+  },
+  "report/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "Oportunitat"
+  },
+  "report/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "Estalvi estimat"
+  },
+  "report/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "Auditories aprovades"
+  },
+  "report/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "Escriptori emulat"
+  },
+  "report/renderer/util.js | runtimeMobileEmulation": {
+    "message": "Moto G4 emulat"
+  },
+  "report/renderer/util.js | runtimeNoEmulation": {
+    "message": "Sense emulació"
+  },
+  "report/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "Versió d'axe"
+  },
+  "report/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "Rendiment de la CPU/memòria"
+  },
+  "report/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "Limitació de CPU"
+  },
+  "report/renderer/util.js | runtimeSettingsChannel": {
+    "message": "Canal"
+  },
+  "report/renderer/util.js | runtimeSettingsDevice": {
+    "message": "Dispositiu"
+  },
+  "report/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "Data i hora d'obtenció"
+  },
+  "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "Limitació de xarxa"
+  },
+  "report/renderer/util.js | runtimeSettingsTitle": {
+    "message": "Configuració del temps d'execució"
+  },
+  "report/renderer/util.js | runtimeSettingsUA": {
+    "message": "Agent d'usuari (amfitrió)"
+  },
+  "report/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "Agent d'usuari (xarxa)"
+  },
+  "report/renderer/util.js | runtimeSettingsUrl": {
+    "message": "URL"
+  },
+  "report/renderer/util.js | runtimeUnknown": {
+    "message": "Desconegut"
+  },
+  "report/renderer/util.js | showRelevantAudits": {
+    "message": "Mostra auditories relacionades amb:"
+  },
+  "report/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "Replega el fragment"
+  },
+  "report/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "Desplega el fragment"
+  },
+  "report/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "Mostra els recursos de tercers"
+  },
+  "report/renderer/util.js | throttlingProvided": {
+    "message": "Proporcionada per l'entorn"
+  },
+  "report/renderer/util.js | toplevelWarningsMessage": {
+    "message": "Hi ha hagut problemes que afecten aquesta execució de Lighthouse:"
+  },
+  "report/renderer/util.js | varianceDisclaimer": {
+    "message": "Els valors són estimacions i poden variar. El [resultat del rendiment es calcula](https://web.dev/performance-scoring/) directament a partir d'aquestes mètriques."
+  },
+  "report/renderer/util.js | viewTreemapLabel": {
+    "message": "Mostra un mapa d'arbre"
+  },
+  "report/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "Auditories aprovades però amb advertiments"
+  },
+  "report/renderer/util.js | warningHeader": {
+    "message": "Advertiments: "
   }
 }

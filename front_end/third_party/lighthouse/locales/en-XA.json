@@ -63,7 +63,7 @@
     "message": "[ÅŔÎÅ ᐅ`meter`ᐊ éļéméñţš ĥåvé åççéššîбļé ñåméš one two three four five six seven eight]"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "[Ŵĥéñ åñ éļéméñţ ðöéšñ'ţ ĥåvé åñ åççéššîбļé ñåmé, šçŕééñ ŕéåðéŕš åññöûñçé îţ ŵîţĥ å ĝéñéŕîç ñåmé, måķîñĝ îţ ûñûšåбļé ƒöŕ ûšéŕš ŵĥö ŕéļý öñ šçŕééñ ŕéåðéŕš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/aria-name/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour]"
+    "message": "[Ŵĥéñ å ᐅ`progressbar`ᐊ éļéméñţ ðöéšñ'ţ ĥåvé åñ åççéššîбļé ñåmé, šçŕééñ ŕéåðéŕš åññöûñçé îţ ŵîţĥ å ĝéñéŕîç ñåmé, måķîñĝ îţ ûñûšåбļé ƒöŕ ûšéŕš ŵĥö ŕéļý öñ šçŕééñ ŕéåðéŕš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/aria-name/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour]"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "[ÅŔÎÅ ᐅ`progressbar`ᐊ éļéméñţš ðö ñöţ ĥåvé åççéššîбļé ñåméš. one two three four five six seven eight nine ten]"
@@ -588,7 +588,7 @@
     "message": "[Šévéŕîţý one]"
   },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "[Å šţŕöñĝ Çöñţéñţ Šéçûŕîţý Þöļîçý (ÇŠÞ) šîĝñîƒîçåñţļý ŕéðûçéš ţĥé ŕîšķ öƒ çŕöšš-šîţé šçŕîþţîñĝ (XŠŠ) åţţåçķš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/strict-csp/)ᐊ one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"
+    "message": "[Å šţŕöñĝ Çöñţéñţ Šéçûŕîţý Þöļîçý (ÇŠÞ) šîĝñîƒîçåñţļý ŕéðûçéš ţĥé ŕîšķ öƒ çŕöšš-šîţé šçŕîþţîñĝ (XŠŠ) åţţåçķš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/csp-xss/)ᐊ one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"
   },
   "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
     "message": "[Šýñţåx one]"
@@ -903,10 +903,10 @@
     "message": "[Måñîƒéšţ ðöéš ñöţ çöñţåîñ å 'ñåmé' öŕ 'šĥöŕţ_ñåmé' ƒîéļð one two three four five six seven eight nine ten eleven]"
   },
   "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "[Måñîƒéšţ ðöéš ñöţ çöñţåîñ å šûîţåбļé îçöñ - ÞÑĜ, ŠVĜ öŕ ŴéбÞ ƒöŕmåţ öƒ åţ ļéåšţ ᐅ{value0}ᐊ þx îš ŕéqûîŕéð, ţĥé šîžéš åţţŕîбûţé mûšţ бé šéţ, åñð ţĥé þûŕþöšé åţţŕîбûţé, îƒ šéţ, mûšţ îñçļûðé \"åñý\" öŕ \"måšķåбļé\". one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven]"
+    "message": "[Måñîƒéšţ ðöéš ñöţ çöñţåîñ å šûîţåбļé îçöñ - ÞÑĜ, ŠVĜ öŕ ŴéбÞ ƒöŕmåţ öƒ åţ ļéåšţ ᐅ{value0}ᐊ þx îš ŕéqûîŕéð, ţĥé šîžéš åţţŕîбûţé mûšţ бé šéţ, åñð ţĥé þûŕþöšé åţţŕîбûţé, îƒ šéţ, mûšţ îñçļûðé \"åñý\". one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix]"
   },
   "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "[Ñö šûþþļîéð îçöñ îš åţ ļéåšţ ᐅ{value0}ᐊ þx šqûåŕé îñ ÞÑĜ, ŠVĜ öŕ ŴéбÞ ƒöŕmåţ one two three four five six seven eight nine ten eleven twelve thirteen]"
+    "message": "[Ñö šûþþļîéð îçöñ îš åţ ļéåšţ ᐅ{value0}ᐊ þx šqûåŕé îñ ÞÑĜ, ŠVĜ öŕ ŴéбÞ ƒöŕmåţ, ŵîţĥ ţĥé þûŕþöšé åţţŕîбûţé ûñšéţ öŕ šéţ ţö \"åñý\" one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
     "message": "[Ðöŵñļöåðéð îçöñ ŵåš émþţý öŕ çöŕŕûþţéð one two three four five six seven eight]"
@@ -1955,144 +1955,6 @@
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "[Ţĥé ÛŔĻ ýöû ĥåvé þŕövîðéð åþþéåŕš ţö бé îñvåļîð. one two three four five six seven eight nine ten]"
   },
-  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
-    "message": "[Šéé çåļçûļåţöŕ. one two]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
-    "message": "[Îñîţîåļ Ñåvîĝåţîöñ one two three]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "[Måxîmûm çŕîţîçåļ þåţĥ ļåţéñçý: one two three four five six seven]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
-    "message": "[Çöþý ĴŠÖÑ one two]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "[Ţöĝĝļé Ðåŕķ Ţĥémé one two three]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
-    "message": "[Þŕîñţ Éxþåñðéð one two]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
-    "message": "[Þŕîñţ Šûmmåŕý one two]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
-    "message": "[Šåvé åš Ĝîšţ one two]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
-    "message": "[Šåvé åš ĤŢMĻ one two]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
-    "message": "[Šåvé åš ĴŠÖÑ one two]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
-    "message": "[Öþéñ îñ Vîéŵéŕ one two]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
-    "message": "[Éŕŕöŕ¡ one]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
-    "message": "[Ŕéþöŕţ éŕŕöŕ: ñö åûðîţ îñƒöŕmåţîöñ one two three four five six seven]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
-    "message": "[Fîļé åñ îššûé one two]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
-    "message": "[Ļåб Ðåţå one]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
-    "message": "[ᐅ[ᐊĻîĝĥţĥöûšéᐅ](https://developers.google.com/web/tools/lighthouse/)ᐊ åñåļýšîš öƒ ţĥé çûŕŕéñţ þåĝé öñ åñ émûļåţéð möбîļé ñéţŵöŕķ. Våļûéš åŕé éšţîmåţéð åñð måý våŕý. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
-    "message": "[Åððîţîöñåļ îţémš ţö måñûåļļý çĥéçķ one two three four five six seven]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
-    "message": "[Ñöţ åþþļîçåбļé one two]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
-    "message": "[Öþþöŕţûñîţý one two]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
-    "message": "[Éšţîmåţéð Šåvîñĝš one two three]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
-    "message": "[Þåššéð åûðîţš one two]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
-    "message": "[Émûļåţéð Ðéšķţöþ one two]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
-    "message": "[Émûļåţéð Möţö Ĝ4 one two]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
-    "message": "[Ñö émûļåţîöñ one two]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
-    "message": "[Åxé véŕšîöñ one two]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
-    "message": "[ÇÞÛ/Mémöŕý Þöŵéŕ one two]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
-    "message": "[ÇÞÛ ţĥŕöţţļîñĝ one two]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
-    "message": "[Çĥåññéļ one]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
-    "message": "[Ðévîçé one]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "[Féţçĥ Ţîmé one two]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
-    "message": "[Ñéţŵöŕķ ţĥŕöţţļîñĝ one two three]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
-    "message": "[Ŕûñţîmé Šéţţîñĝš one two]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
-    "message": "[Ûšéŕ åĝéñţ (ĥöšţ) one two three]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
-    "message": "[Ûšéŕ åĝéñţ (ñéţŵöŕķ) one two three]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
-    "message": "[ÛŔĻ one]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
-    "message": "[Ûñķñöŵñ one]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
-    "message": "[Šĥöŵ åûðîţš ŕéļévåñţ ţö: one two three four five]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
-    "message": "[Çöļļåþšé šñîþþéţ one two]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
-    "message": "[Éxþåñð šñîþþéţ one two]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "[Šĥöŵ 3ŕð-þåŕţý ŕéšöûŕçéš one two three]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
-    "message": "[Þŕövîðéð бý éñvîŕöñméñţ one two three]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
-    "message": "[Ţĥéŕé ŵéŕé îššûéš åƒƒéçţîñĝ ţĥîš ŕûñ öƒ Ļîĝĥţĥöûšé: one two three four five six seven eight nine ten eleven]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "[Våļûéš åŕé éšţîmåţéð åñð måý våŕý. Ţĥé ᐅ[ᐊþéŕƒöŕmåñçé šçöŕé îš çåļçûļåţéðᐅ](https://web.dev/performance-scoring/)ᐊ ðîŕéçţļý ƒŕöm ţĥéšé méţŕîçš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
-    "message": "[Vîéŵ Ţŕéémåþ one two]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
-    "message": "[Þåššéð åûðîţš бûţ ŵîţĥ ŵåŕñîñĝš one two three four five six seven]"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
-    "message": "[Ŵåŕñîñĝš:  one two]"
-  },
   "lighthouse-treemap/app/src/util.js | allLabel": {
     "message": "[Åļļ one]"
   },
@@ -2380,5 +2242,143 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "[Ýöû çåñ éñåбļé ţéxţ çömþŕéššîöñ îñ ýöûŕ ŵéб šéŕvéŕ çöñƒîĝûŕåţîöñ. one two three four five six seven eight nine ten eleven twelve thirteen]"
+  },
+  "report/renderer/util.js | calculatorLink": {
+    "message": "[Šéé çåļçûļåţöŕ. one two]"
+  },
+  "report/renderer/util.js | crcInitialNavigation": {
+    "message": "[Îñîţîåļ Ñåvîĝåţîöñ one two three]"
+  },
+  "report/renderer/util.js | crcLongestDurationLabel": {
+    "message": "[Måxîmûm çŕîţîçåļ þåţĥ ļåţéñçý: one two three four five six seven]"
+  },
+  "report/renderer/util.js | dropdownCopyJSON": {
+    "message": "[Çöþý ĴŠÖÑ one two]"
+  },
+  "report/renderer/util.js | dropdownDarkTheme": {
+    "message": "[Ţöĝĝļé Ðåŕķ Ţĥémé one two three]"
+  },
+  "report/renderer/util.js | dropdownPrintExpanded": {
+    "message": "[Þŕîñţ Éxþåñðéð one two]"
+  },
+  "report/renderer/util.js | dropdownPrintSummary": {
+    "message": "[Þŕîñţ Šûmmåŕý one two]"
+  },
+  "report/renderer/util.js | dropdownSaveGist": {
+    "message": "[Šåvé åš Ĝîšţ one two]"
+  },
+  "report/renderer/util.js | dropdownSaveHTML": {
+    "message": "[Šåvé åš ĤŢMĻ one two]"
+  },
+  "report/renderer/util.js | dropdownSaveJSON": {
+    "message": "[Šåvé åš ĴŠÖÑ one two]"
+  },
+  "report/renderer/util.js | dropdownViewer": {
+    "message": "[Öþéñ îñ Vîéŵéŕ one two]"
+  },
+  "report/renderer/util.js | errorLabel": {
+    "message": "[Éŕŕöŕ¡ one]"
+  },
+  "report/renderer/util.js | errorMissingAuditInfo": {
+    "message": "[Ŕéþöŕţ éŕŕöŕ: ñö åûðîţ îñƒöŕmåţîöñ one two three four five six seven]"
+  },
+  "report/renderer/util.js | footerIssue": {
+    "message": "[Fîļé åñ îššûé one two]"
+  },
+  "report/renderer/util.js | labDataTitle": {
+    "message": "[Ļåб Ðåţå one]"
+  },
+  "report/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "[ᐅ[ᐊĻîĝĥţĥöûšéᐅ](https://developers.google.com/web/tools/lighthouse/)ᐊ åñåļýšîš öƒ ţĥé çûŕŕéñţ þåĝé öñ åñ émûļåţéð möбîļé ñéţŵöŕķ. Våļûéš åŕé éšţîmåţéð åñð måý våŕý. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen]"
+  },
+  "report/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "[Åððîţîöñåļ îţémš ţö måñûåļļý çĥéçķ one two three four five six seven]"
+  },
+  "report/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "[Ñöţ åþþļîçåбļé one two]"
+  },
+  "report/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "[Öþþöŕţûñîţý one two]"
+  },
+  "report/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "[Éšţîmåţéð Šåvîñĝš one two three]"
+  },
+  "report/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "[Þåššéð åûðîţš one two]"
+  },
+  "report/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "[Émûļåţéð Ðéšķţöþ one two]"
+  },
+  "report/renderer/util.js | runtimeMobileEmulation": {
+    "message": "[Émûļåţéð Möţö Ĝ4 one two]"
+  },
+  "report/renderer/util.js | runtimeNoEmulation": {
+    "message": "[Ñö émûļåţîöñ one two]"
+  },
+  "report/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "[Åxé véŕšîöñ one two]"
+  },
+  "report/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "[ÇÞÛ/Mémöŕý Þöŵéŕ one two]"
+  },
+  "report/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "[ÇÞÛ ţĥŕöţţļîñĝ one two]"
+  },
+  "report/renderer/util.js | runtimeSettingsChannel": {
+    "message": "[Çĥåññéļ one]"
+  },
+  "report/renderer/util.js | runtimeSettingsDevice": {
+    "message": "[Ðévîçé one]"
+  },
+  "report/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "[Féţçĥ Ţîmé one two]"
+  },
+  "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "[Ñéţŵöŕķ ţĥŕöţţļîñĝ one two three]"
+  },
+  "report/renderer/util.js | runtimeSettingsTitle": {
+    "message": "[Ŕûñţîmé Šéţţîñĝš one two]"
+  },
+  "report/renderer/util.js | runtimeSettingsUA": {
+    "message": "[Ûšéŕ åĝéñţ (ĥöšţ) one two three]"
+  },
+  "report/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "[Ûšéŕ åĝéñţ (ñéţŵöŕķ) one two three]"
+  },
+  "report/renderer/util.js | runtimeSettingsUrl": {
+    "message": "[ÛŔĻ one]"
+  },
+  "report/renderer/util.js | runtimeUnknown": {
+    "message": "[Ûñķñöŵñ one]"
+  },
+  "report/renderer/util.js | showRelevantAudits": {
+    "message": "[Šĥöŵ åûðîţš ŕéļévåñţ ţö: one two three four five]"
+  },
+  "report/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "[Çöļļåþšé šñîþþéţ one two]"
+  },
+  "report/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "[Éxþåñð šñîþþéţ one two]"
+  },
+  "report/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "[Šĥöŵ 3ŕð-þåŕţý ŕéšöûŕçéš one two three]"
+  },
+  "report/renderer/util.js | throttlingProvided": {
+    "message": "[Þŕövîðéð бý éñvîŕöñméñţ one two three]"
+  },
+  "report/renderer/util.js | toplevelWarningsMessage": {
+    "message": "[Ţĥéŕé ŵéŕé îššûéš åƒƒéçţîñĝ ţĥîš ŕûñ öƒ Ļîĝĥţĥöûšé: one two three four five six seven eight nine ten eleven]"
+  },
+  "report/renderer/util.js | varianceDisclaimer": {
+    "message": "[Våļûéš åŕé éšţîmåţéð åñð måý våŕý. Ţĥé ᐅ[ᐊþéŕƒöŕmåñçé šçöŕé îš çåļçûļåţéðᐅ](https://web.dev/performance-scoring/)ᐊ ðîŕéçţļý ƒŕöm ţĥéšé méţŕîçš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "report/renderer/util.js | viewTreemapLabel": {
+    "message": "[Vîéŵ Ţŕéémåþ one two]"
+  },
+  "report/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "[Þåššéð åûðîţš бûţ ŵîţĥ ŵåŕñîñĝš one two three four five six seven]"
+  },
+  "report/renderer/util.js | warningHeader": {
+    "message": "[Ŵåŕñîñĝš:  one two]"
   }
 }

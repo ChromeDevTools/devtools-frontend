@@ -63,7 +63,7 @@
     "message": "May mga naa-access na pangalan ang mga element ng `meter` ng ARIA"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "Kapag walang naa-access na pangalan ang isang element, iaanunsyo ito ng mga screen reader gamit ang generic na pangalan, kaya hindi ito magagamit ng mga user na umaasa sa mga screen reader. [Matuto pa](https://web.dev/aria-name/)."
+    "message": "Kapag walang naa-access na pangalan ang isang `progressbar` element, iaanunsyo ito ng mga screen reader gamit ang generic na pangalan, kaya hindi ito magagamit ng mga user na umaasa sa mga screen reader. [Matuto pa](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "Walang naa-access na pangalan ang mga element ng `progressbar` ng ARIA."
@@ -585,10 +585,10 @@
     "message": "Direktiba"
   },
   "lighthouse-core/audits/csp-xss.js | columnSeverity": {
-    "message": "Severity"
+    "message": "Tindi"
   },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "Malaki ang nagagawa ng mahigpit na Patakaran sa Seguridad ng Content (Content Security Policy o CSP) para mabawasan ang panganib ng mga cross-site scripting (XSS) na pag-atake. [Matuto pa](https://web.dev/strict-csp/)"
+    "message": "Malaki ang nagagawa ng mahigpit na Patakaran sa Seguridad ng Content (Content Security Policy o CSP) para mabawasan ang panganib ng mga cross-site scripting (XSS) na pag-atake. [Matuto pa](https://web.dev/csp-xss/)"
   },
   "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
     "message": "Syntax"
@@ -903,10 +903,10 @@
     "message": "Walang field na 'name' o 'short_name' ang manifest"
   },
   "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "Walang naaangkop na icon sa manifest - kinakailangang nasa format na PNG, SVG, o WebP at may sukat na hindi bababa sa {value0} px, dapat nakatakda ang attribute na sizes, at kung nakatakda ang attribute na purpose, dapat ay \"any\" o \"maskable\" ang nakalagay dito."
+    "message": "Walang lamang naaangkop na icon ang manifest - kinakailangang nasa format na PNG, SVG, o WebP at hindi bababa sa {value0} px dapat nakatakda ang attribute ng mga laki, at kung nakatakda ang attribute ng layunin, may \"any.\""
   },
   "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "Wala sa mga ibinigay na icon ang may sukat na kahit {value0} px square, at nasa format na PNG, SVG, o WebP"
+    "message": "Walang ibinigay na icon na may sukat na kahit {value0} px square at nasa format na PNG, SVG, o WebP, na may attribute ng layunin na naka-unset o nakatakda sa \"any\""
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
     "message": "Walang laman o sira ang na-download na icon"
@@ -1955,144 +1955,6 @@
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Mukhang invalid ang URL na ibinigay mo."
   },
-  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
-    "message": "Tingnan ang calculator."
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
-    "message": "Unang Navigation"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "Maximum na latency ng critical path:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
-    "message": "Kopyahin ang JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "I-toggle ang Madilim na Tema"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
-    "message": "Pinalawak ang Pag-print"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
-    "message": "Buod sa Pag-print"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
-    "message": "I-save bilang Gist"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
-    "message": "I-save bilang HTML"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
-    "message": "I-save bilang JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
-    "message": "Buksan sa Viewer"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
-    "message": "Nagka-error!"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
-    "message": "Error sa ulat: walang impormasyon sa pag-audit"
-  },
-  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
-    "message": "Mag-file ng isyu"
-  },
-  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
-    "message": "Data ng Lab"
-  },
-  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
-    "message": "Ang pagsusuri ng [Lighthouse](https://developers.google.com/web/tools/lighthouse/) ng kasalukuyang page sa isang na-emulate na mobile network. Tinantya at puwedeng mag-iba ang mga value."
-  },
-  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
-    "message": "Mga karagdagang item na manual na susuriin"
-  },
-  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
-    "message": "Hindi naaangkop"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
-    "message": "Pagkakataon"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
-    "message": "Tinatayang Matitipid"
-  },
-  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
-    "message": "Mga pumasang pag-audit"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
-    "message": "Na-emulate na Desktop"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
-    "message": "Na-emulate na Moto G4"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
-    "message": "Walang pag-emulate"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
-    "message": "Bersyon ng Axe"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
-    "message": "Power ng CPU/Memory"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
-    "message": "Pag-throttle ng CPU"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Channel"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
-    "message": "Device"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Oras ng Pagkuha"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
-    "message": "Pag-throttle ng network"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Mga Setting ng Runtime"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
-    "message": "User agent (host)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
-    "message": "User agent (network)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
-    "message": "Hindi alam"
-  },
-  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
-    "message": "Ipakita ang mga audit na may kaugnayan sa:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
-    "message": "I-collapse ang snippet"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
-    "message": "I-expand ang snippet"
-  },
-  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "Ipakita ang mga resource ng 3rd party"
-  },
-  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
-    "message": "Ibinigay ng environment"
-  },
-  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
-    "message": "May mga isyung nakakaapekto sa pagpapatakbong ito ng Lighthouse:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "Tinantya at puwedeng mag-iba ang mga value. [Kinakalkula ang score ng performance](https://web.dev/performance-scoring/) nang direkta mula sa mga sukatang ito."
-  },
-  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
-    "message": "Tingnan ang Treemap"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
-    "message": "Pumasa sa mga pag-audit ngunit may mga babala"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
-    "message": "Mga Babala: "
-  },
   "lighthouse-treemap/app/src/util.js | allLabel": {
     "message": "Lahat"
   },
@@ -2380,5 +2242,143 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "Puwede mong i-enable ang pag-compress ng text sa configuration ng iyong server sa web."
+  },
+  "report/renderer/util.js | calculatorLink": {
+    "message": "Tingnan ang calculator."
+  },
+  "report/renderer/util.js | crcInitialNavigation": {
+    "message": "Unang Navigation"
+  },
+  "report/renderer/util.js | crcLongestDurationLabel": {
+    "message": "Maximum na latency ng critical path:"
+  },
+  "report/renderer/util.js | dropdownCopyJSON": {
+    "message": "Kopyahin ang JSON"
+  },
+  "report/renderer/util.js | dropdownDarkTheme": {
+    "message": "I-toggle ang Madilim na Tema"
+  },
+  "report/renderer/util.js | dropdownPrintExpanded": {
+    "message": "Pinalawak ang Pag-print"
+  },
+  "report/renderer/util.js | dropdownPrintSummary": {
+    "message": "Buod sa Pag-print"
+  },
+  "report/renderer/util.js | dropdownSaveGist": {
+    "message": "I-save bilang Gist"
+  },
+  "report/renderer/util.js | dropdownSaveHTML": {
+    "message": "I-save bilang HTML"
+  },
+  "report/renderer/util.js | dropdownSaveJSON": {
+    "message": "I-save bilang JSON"
+  },
+  "report/renderer/util.js | dropdownViewer": {
+    "message": "Buksan sa Viewer"
+  },
+  "report/renderer/util.js | errorLabel": {
+    "message": "Nagka-error!"
+  },
+  "report/renderer/util.js | errorMissingAuditInfo": {
+    "message": "Error sa ulat: walang impormasyon sa pag-audit"
+  },
+  "report/renderer/util.js | footerIssue": {
+    "message": "Mag-file ng isyu"
+  },
+  "report/renderer/util.js | labDataTitle": {
+    "message": "Data ng Lab"
+  },
+  "report/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "Ang pagsusuri ng [Lighthouse](https://developers.google.com/web/tools/lighthouse/) ng kasalukuyang page sa isang na-emulate na mobile network. Tinantya at puwedeng mag-iba ang mga value."
+  },
+  "report/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "Mga karagdagang item na manual na susuriin"
+  },
+  "report/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "Hindi naaangkop"
+  },
+  "report/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "Pagkakataon"
+  },
+  "report/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "Tinatayang Matitipid"
+  },
+  "report/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "Mga pumasang pag-audit"
+  },
+  "report/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "Na-emulate na Desktop"
+  },
+  "report/renderer/util.js | runtimeMobileEmulation": {
+    "message": "Na-emulate na Moto G4"
+  },
+  "report/renderer/util.js | runtimeNoEmulation": {
+    "message": "Walang pag-emulate"
+  },
+  "report/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "Bersyon ng Axe"
+  },
+  "report/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "Power ng CPU/Memory"
+  },
+  "report/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "Pag-throttle ng CPU"
+  },
+  "report/renderer/util.js | runtimeSettingsChannel": {
+    "message": "Channel"
+  },
+  "report/renderer/util.js | runtimeSettingsDevice": {
+    "message": "Device"
+  },
+  "report/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "Oras ng Pagkuha"
+  },
+  "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "Pag-throttle ng network"
+  },
+  "report/renderer/util.js | runtimeSettingsTitle": {
+    "message": "Mga Setting ng Runtime"
+  },
+  "report/renderer/util.js | runtimeSettingsUA": {
+    "message": "User agent (host)"
+  },
+  "report/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "User agent (network)"
+  },
+  "report/renderer/util.js | runtimeSettingsUrl": {
+    "message": "URL"
+  },
+  "report/renderer/util.js | runtimeUnknown": {
+    "message": "Hindi alam"
+  },
+  "report/renderer/util.js | showRelevantAudits": {
+    "message": "Ipakita ang mga audit na may kaugnayan sa:"
+  },
+  "report/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "I-collapse ang snippet"
+  },
+  "report/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "I-expand ang snippet"
+  },
+  "report/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "Ipakita ang mga resource ng 3rd party"
+  },
+  "report/renderer/util.js | throttlingProvided": {
+    "message": "Ibinigay ng environment"
+  },
+  "report/renderer/util.js | toplevelWarningsMessage": {
+    "message": "May mga isyung nakakaapekto sa pagpapatakbong ito ng Lighthouse:"
+  },
+  "report/renderer/util.js | varianceDisclaimer": {
+    "message": "Tinantya at puwedeng mag-iba ang mga value. [Kinakalkula ang score ng performance](https://web.dev/performance-scoring/) nang direkta mula sa mga sukatang ito."
+  },
+  "report/renderer/util.js | viewTreemapLabel": {
+    "message": "Tingnan ang Treemap"
+  },
+  "report/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "Pumasa sa mga pag-audit ngunit may mga babala"
+  },
+  "report/renderer/util.js | warningHeader": {
+    "message": "Mga Babala: "
   }
 }

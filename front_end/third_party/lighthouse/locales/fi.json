@@ -63,7 +63,7 @@
     "message": "ARIA-elementeillä (`meter`) on esteettömät nimet"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "Jos elementin nimi ei ole esteetön, näytönlukuohjelmat sanovat sen kohdalla geneerisen nimen, jolloin näytönlukuohjelmien käyttäjät eivät voi käyttää sitä. [Lue lisää](https://web.dev/aria-name/)."
+    "message": "Jos elementin (`progressbar`) nimi ei ole esteetön, näytönlukuohjelmat sanovat sen kohdalla geneerisen nimen, jolloin näytönlukuohjelmien käyttäjät eivät voi käyttää sitä. [Lue lisää](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "ARIA-elementeillä (`progressbar`) ei ole esteettömiä nimiä"
@@ -585,13 +585,13 @@
     "message": "Sääntö"
   },
   "lighthouse-core/audits/csp-xss.js | columnSeverity": {
-    "message": "Severity"
+    "message": "Vakavuus"
   },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "Vahva Content Security Policy ‑käytäntö (CSP) vähentää merkittävästi cross-site scripting (XSS) ‑hyökkäyksien riskiä. [Lue lisää](https://web.dev/strict-csp/)"
+    "message": "Vahva Content Security Policy ‑käytäntö (CSP) vähentää merkittävästi cross-site scripting (XSS) ‑hyökkäyksien riskiä. [Lue lisää](https://web.dev/csp-xss/)"
   },
   "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
-    "message": "Syntax"
+    "message": "Syntaksi"
   },
   "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
     "message": "Sivu sisältää <meta>-tagissa määritetyn CSP:n. Harkitse CSP:n määrittämistä HTTP-ylätunnisteessa, jos mahdollista."
@@ -903,10 +903,10 @@
     "message": "Manifestiin ei sisälly \"name\"- tai \"short_name\"-kenttää"
   },
   "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "Manifestiin ei ole sisälly sopivaa kuvaketta, siinä on oltava vähintään {value0} pikselin kokoinen PNG-, SVG- tai WebP-tiedosto, kokomäärite on lisättävä ja mahdollisen tarkoitusmääritteen on oltava \"any\" tai \"maskable\"."
+    "message": "Manifestissa ei ole sopivaa kuvaketta, siinä on oltava vähintään {value0} pikselin kokoinen PNG-, SVG- tai WebP-tiedosto, kokomäärite on lisättävä ja mahdollisen tarkoitusmääritteen on oltava \"any\"."
   },
   "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "Mikään kuvakkeista ei ole vähintään {value0} pikselin kokoinen PNG-, SVG- tai WebP-tiedosto"
+    "message": "Mikään kuvakkeista ei ole vähintään {value0} pikselin kokoinen PNG-, SVG- tai WebP-tiedosto, kun tarkoitusmääritettä ei ole lisätty tai se on \"any\"."
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
     "message": "Ladattu kuvake oli tyhjä tai vioittunut"
@@ -1955,144 +1955,6 @@
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Kirjoittamasi URL-osoite näyttää olevan virheellinen."
   },
-  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
-    "message": "Katso laskin."
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
-    "message": "Ensimmäinen navigointi"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "Kriittisen polun enimmäisviive:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
-    "message": "Kopioi JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "Tumma teema päälle/pois"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
-    "message": "Laajennettu tulostus"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
-    "message": "Tulosta yhteenveto"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
-    "message": "Tallenna Gistinä"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
-    "message": "Tallenna HTML-muodossa"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
-    "message": "Tallenna JSON-tiedostona"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
-    "message": "Avaa katseluohjelmassa"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
-    "message": "Virhe!"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
-    "message": "Raporttivirhe: ei tarkastustietoja"
-  },
-  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
-    "message": "Ilmoita ongelmasta"
-  },
-  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
-    "message": "Laboratoriodata"
-  },
-  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
-    "message": "[Lighthouse](https://developers.google.com/web/tools/lighthouse/) analysoi nykyisen sivun mobiiliverkon emulaation avulla. Arvot ovat arvioita ja voivat vaihdella."
-  },
-  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
-    "message": "Lisää manuaalisesti tarkistettavia kohteita"
-  },
-  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
-    "message": "Ei sovellu"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
-    "message": "Suositus"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
-    "message": "Arvioitu säästö"
-  },
-  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
-    "message": "Hyväksytyt tarkastukset"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
-    "message": "Emuloitu työpöytä"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
-    "message": "Emuloitu Moto G4"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
-    "message": "Ei emulointia"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
-    "message": "Axe-versio"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
-    "message": "Suorittimen/muistin teho"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
-    "message": "Suorittimen rajoittaminen"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Kanava"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
-    "message": "Laite"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Noutoaika"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
-    "message": "Verkon hidastaminen"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Suoritusajan asetukset"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
-    "message": "Käyttäjäagentti (isäntä)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
-    "message": "Käyttäjäagentti (verkko)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL-osoite"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
-    "message": "Ei tietoa"
-  },
-  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
-    "message": "Näytä tähän liittyvät tarkastukset:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
-    "message": "Tiivistä koodinpätkä"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
-    "message": "Laajenna koodinpätkä"
-  },
-  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "Näytä kolmannen osapuolen resurssit"
-  },
-  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
-    "message": "Ympäristön tarjoama"
-  },
-  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
-    "message": "Lighthousen suorituksessa havaittiin ongelmia:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "Arvot ovat arvioita ja voivat vaihdella. [Tehokkuusprosentti lasketaan](https://web.dev/performance-scoring/) suoraan näistä mittareista."
-  },
-  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
-    "message": "Katso Treemap"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
-    "message": "Läpäisi tarkastukset, mutta sai varoituksia"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
-    "message": "Varoitukset: "
-  },
   "lighthouse-treemap/app/src/util.js | allLabel": {
     "message": "Kaikki"
   },
@@ -2380,5 +2242,143 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "Voit ottaa tekstin pakkaamisen käyttöön palvelimen määrityksistä."
+  },
+  "report/renderer/util.js | calculatorLink": {
+    "message": "Katso laskin."
+  },
+  "report/renderer/util.js | crcInitialNavigation": {
+    "message": "Ensimmäinen navigointi"
+  },
+  "report/renderer/util.js | crcLongestDurationLabel": {
+    "message": "Kriittisen polun enimmäisviive:"
+  },
+  "report/renderer/util.js | dropdownCopyJSON": {
+    "message": "Kopioi JSON"
+  },
+  "report/renderer/util.js | dropdownDarkTheme": {
+    "message": "Tumma teema päälle/pois"
+  },
+  "report/renderer/util.js | dropdownPrintExpanded": {
+    "message": "Laajennettu tulostus"
+  },
+  "report/renderer/util.js | dropdownPrintSummary": {
+    "message": "Tulosta yhteenveto"
+  },
+  "report/renderer/util.js | dropdownSaveGist": {
+    "message": "Tallenna Gistinä"
+  },
+  "report/renderer/util.js | dropdownSaveHTML": {
+    "message": "Tallenna HTML-muodossa"
+  },
+  "report/renderer/util.js | dropdownSaveJSON": {
+    "message": "Tallenna JSON-tiedostona"
+  },
+  "report/renderer/util.js | dropdownViewer": {
+    "message": "Avaa katseluohjelmassa"
+  },
+  "report/renderer/util.js | errorLabel": {
+    "message": "Virhe!"
+  },
+  "report/renderer/util.js | errorMissingAuditInfo": {
+    "message": "Raporttivirhe: ei tarkastustietoja"
+  },
+  "report/renderer/util.js | footerIssue": {
+    "message": "Ilmoita ongelmasta"
+  },
+  "report/renderer/util.js | labDataTitle": {
+    "message": "Laboratoriodata"
+  },
+  "report/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "[Lighthouse](https://developers.google.com/web/tools/lighthouse/) analysoi nykyisen sivun mobiiliverkon emulaation avulla. Arvot ovat arvioita ja voivat vaihdella."
+  },
+  "report/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "Lisää manuaalisesti tarkistettavia kohteita"
+  },
+  "report/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "Ei sovellu"
+  },
+  "report/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "Suositus"
+  },
+  "report/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "Arvioitu säästö"
+  },
+  "report/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "Hyväksytyt tarkastukset"
+  },
+  "report/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "Emuloitu työpöytä"
+  },
+  "report/renderer/util.js | runtimeMobileEmulation": {
+    "message": "Emuloitu Moto G4"
+  },
+  "report/renderer/util.js | runtimeNoEmulation": {
+    "message": "Ei emulointia"
+  },
+  "report/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "Axe-versio"
+  },
+  "report/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "Suorittimen/muistin teho"
+  },
+  "report/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "Suorittimen rajoittaminen"
+  },
+  "report/renderer/util.js | runtimeSettingsChannel": {
+    "message": "Kanava"
+  },
+  "report/renderer/util.js | runtimeSettingsDevice": {
+    "message": "Laite"
+  },
+  "report/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "Noutoaika"
+  },
+  "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "Verkon hidastaminen"
+  },
+  "report/renderer/util.js | runtimeSettingsTitle": {
+    "message": "Suoritusajan asetukset"
+  },
+  "report/renderer/util.js | runtimeSettingsUA": {
+    "message": "Käyttäjäagentti (isäntä)"
+  },
+  "report/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "Käyttäjäagentti (verkko)"
+  },
+  "report/renderer/util.js | runtimeSettingsUrl": {
+    "message": "URL-osoite"
+  },
+  "report/renderer/util.js | runtimeUnknown": {
+    "message": "Ei tietoa"
+  },
+  "report/renderer/util.js | showRelevantAudits": {
+    "message": "Näytä tähän liittyvät tarkastukset:"
+  },
+  "report/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "Tiivistä koodinpätkä"
+  },
+  "report/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "Laajenna koodinpätkä"
+  },
+  "report/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "Näytä kolmannen osapuolen resurssit"
+  },
+  "report/renderer/util.js | throttlingProvided": {
+    "message": "Ympäristön tarjoama"
+  },
+  "report/renderer/util.js | toplevelWarningsMessage": {
+    "message": "Lighthousen suorituksessa havaittiin ongelmia:"
+  },
+  "report/renderer/util.js | varianceDisclaimer": {
+    "message": "Arvot ovat arvioita ja voivat vaihdella. [Tehokkuusprosentti lasketaan](https://web.dev/performance-scoring/) suoraan näistä mittareista."
+  },
+  "report/renderer/util.js | viewTreemapLabel": {
+    "message": "Katso Treemap"
+  },
+  "report/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "Läpäisi tarkastukset, mutta sai varoituksia"
+  },
+  "report/renderer/util.js | warningHeader": {
+    "message": "Varoitukset: "
   }
 }

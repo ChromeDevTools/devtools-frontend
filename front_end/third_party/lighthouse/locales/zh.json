@@ -63,7 +63,7 @@
     "message": "ARIA `meter` 元素都有可供访问的名称"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "如果某个元素没有可供访问的名称，屏幕阅读器会将它读为通用名称，这会导致依赖屏幕阅读器的用户无法使用它。[了解详情](https://web.dev/aria-name/)。"
+    "message": "如果某个 `progressbar` 元素没有无障碍名称，屏幕阅读器会将它读为通用名称，这会导致依赖屏幕阅读器的用户无法使用它。[了解详情](https://web.dev/aria-name/)。"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "ARIA `progressbar` 元素缺少可供访问的名称。"
@@ -585,13 +585,13 @@
     "message": "指令"
   },
   "lighthouse-core/audits/csp-xss.js | columnSeverity": {
-    "message": "Severity"
+    "message": "严重程度"
   },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "强有力的内容安全政策 (CSP) 可显著降低遭遇跨站脚本攻击 (XSS) 的风险。[了解详情](https://web.dev/strict-csp/)"
+    "message": "强有力的内容安全政策 (CSP) 可显著降低遭遇跨站脚本攻击 (XSS) 的风险。[了解详情](https://web.dev/csp-xss/)"
   },
   "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
-    "message": "Syntax"
+    "message": "语法"
   },
   "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
     "message": "该页面包含一个在 <meta> 标记中定义的 CSP。如果可以的话，不妨考虑在 HTTP 标头中定义该 CSP。"
@@ -903,10 +903,10 @@
     "message": "清单未包含“name”或“short_name”字段"
   },
   "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "清单未包含合适的图标 - 必须提供不小于 {value0} 像素的 PNG、SVG 或 WebP 格式图标，必须设置 sizes 属性，并且 purpose 属性（若已设置）必须包含“any”或“maskable”。"
+    "message": "清单未包含合适的图标 - 必须提供不小于 {value0} 像素的 PNG、SVG 或 WebP 格式图标；必须设置 sizes 属性；如果设置了 purpose 属性，其中必须包含“any”。"
   },
   "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "清单未提供不小于 {value0} 正方形像素的 PNG、SVG 或 WebP 格式图标"
+    "message": "清单未提供不小于 {value0} 正方形像素的 PNG、SVG 或 WebP 格式图标，而且 purpose 属性设为“any”或未设置"
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
     "message": "下载的图标为空或已损坏"
@@ -1955,144 +1955,6 @@
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "您提供的网址似乎无效。"
   },
-  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
-    "message": "查看计算器。"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
-    "message": "初始导航"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "关键路径延迟时间上限："
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
-    "message": "复制 JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "开启/关闭深色主题"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
-    "message": "展开打印对话框"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
-    "message": "打印摘要"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
-    "message": "另存为 Gist"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
-    "message": "另存为 HTML"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
-    "message": "另存为 JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
-    "message": "在查看器中打开"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
-    "message": "出错了！"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
-    "message": "报告错误：没有任何审核信息"
-  },
-  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
-    "message": "提交问题"
-  },
-  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
-    "message": "实验室数据"
-  },
-  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
-    "message": "[Lighthouse](https://developers.google.com/web/tools/lighthouse/) 使用模拟的移动网络对当前页面进行的分析。这些值都是估算值，且可能会因时而异。"
-  },
-  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
-    "message": "待手动检查的其他项"
-  },
-  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
-    "message": "不适用"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
-    "message": "优化建议"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
-    "message": "有望节省的总时间（估算值）"
-  },
-  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
-    "message": "已通过的审核"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
-    "message": "模拟桌面设备"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
-    "message": "模拟 Moto G4"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
-    "message": "无模拟"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
-    "message": "Axe 版本"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
-    "message": "CPU/内存能力"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
-    "message": "CPU 节流"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
-    "message": "所用工具"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
-    "message": "设备"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "提取时间"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
-    "message": "网络节流"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
-    "message": "运行时设置"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
-    "message": "用户代理（主机）"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
-    "message": "用户代理（网络）"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
-    "message": "网址"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
-    "message": "不明"
-  },
-  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
-    "message": "显示与所选指标相关的评估结果："
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
-    "message": "收起代码段"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
-    "message": "展开代码段"
-  },
-  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "显示第三方资源"
-  },
-  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
-    "message": "由环境提供"
-  },
-  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
-    "message": "此次 Lighthouse 运行并不顺利，原因如下："
-  },
-  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "这些都是估算值，且可能会因时而异。系统会直接基于这些指标来[计算性能得分](https://web.dev/performance-scoring/)。"
-  },
-  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
-    "message": "查看树状图"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
-    "message": "已顺利通过审核，但有警告消息"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
-    "message": "警告： "
-  },
   "lighthouse-treemap/app/src/util.js | allLabel": {
     "message": "全部"
   },
@@ -2380,5 +2242,143 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "您可以在网络服务器配置中启用文本压缩。"
+  },
+  "report/renderer/util.js | calculatorLink": {
+    "message": "查看计算器。"
+  },
+  "report/renderer/util.js | crcInitialNavigation": {
+    "message": "初始导航"
+  },
+  "report/renderer/util.js | crcLongestDurationLabel": {
+    "message": "关键路径延迟时间上限："
+  },
+  "report/renderer/util.js | dropdownCopyJSON": {
+    "message": "复制 JSON"
+  },
+  "report/renderer/util.js | dropdownDarkTheme": {
+    "message": "开启/关闭深色主题"
+  },
+  "report/renderer/util.js | dropdownPrintExpanded": {
+    "message": "展开打印对话框"
+  },
+  "report/renderer/util.js | dropdownPrintSummary": {
+    "message": "打印摘要"
+  },
+  "report/renderer/util.js | dropdownSaveGist": {
+    "message": "另存为 Gist"
+  },
+  "report/renderer/util.js | dropdownSaveHTML": {
+    "message": "另存为 HTML"
+  },
+  "report/renderer/util.js | dropdownSaveJSON": {
+    "message": "另存为 JSON"
+  },
+  "report/renderer/util.js | dropdownViewer": {
+    "message": "在查看器中打开"
+  },
+  "report/renderer/util.js | errorLabel": {
+    "message": "出错了！"
+  },
+  "report/renderer/util.js | errorMissingAuditInfo": {
+    "message": "报告错误：没有任何审核信息"
+  },
+  "report/renderer/util.js | footerIssue": {
+    "message": "提交问题"
+  },
+  "report/renderer/util.js | labDataTitle": {
+    "message": "实验室数据"
+  },
+  "report/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "[Lighthouse](https://developers.google.com/web/tools/lighthouse/) 使用模拟的移动网络对当前页面进行的分析。这些值都是估算值，且可能会因时而异。"
+  },
+  "report/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "待手动检查的其他项"
+  },
+  "report/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "不适用"
+  },
+  "report/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "优化建议"
+  },
+  "report/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "有望节省的总时间（估算值）"
+  },
+  "report/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "已通过的审核"
+  },
+  "report/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "模拟桌面设备"
+  },
+  "report/renderer/util.js | runtimeMobileEmulation": {
+    "message": "模拟 Moto G4"
+  },
+  "report/renderer/util.js | runtimeNoEmulation": {
+    "message": "无模拟"
+  },
+  "report/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "Axe 版本"
+  },
+  "report/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "CPU/内存能力"
+  },
+  "report/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "CPU 节流"
+  },
+  "report/renderer/util.js | runtimeSettingsChannel": {
+    "message": "所用工具"
+  },
+  "report/renderer/util.js | runtimeSettingsDevice": {
+    "message": "设备"
+  },
+  "report/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "提取时间"
+  },
+  "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "网络节流"
+  },
+  "report/renderer/util.js | runtimeSettingsTitle": {
+    "message": "运行时设置"
+  },
+  "report/renderer/util.js | runtimeSettingsUA": {
+    "message": "用户代理（主机）"
+  },
+  "report/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "用户代理（网络）"
+  },
+  "report/renderer/util.js | runtimeSettingsUrl": {
+    "message": "网址"
+  },
+  "report/renderer/util.js | runtimeUnknown": {
+    "message": "不明"
+  },
+  "report/renderer/util.js | showRelevantAudits": {
+    "message": "显示与所选指标相关的评估结果："
+  },
+  "report/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "收起代码段"
+  },
+  "report/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "展开代码段"
+  },
+  "report/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "显示第三方资源"
+  },
+  "report/renderer/util.js | throttlingProvided": {
+    "message": "由环境提供"
+  },
+  "report/renderer/util.js | toplevelWarningsMessage": {
+    "message": "此次 Lighthouse 运行并不顺利，原因如下："
+  },
+  "report/renderer/util.js | varianceDisclaimer": {
+    "message": "这些都是估算值，且可能会因时而异。系统会直接基于这些指标来[计算性能得分](https://web.dev/performance-scoring/)。"
+  },
+  "report/renderer/util.js | viewTreemapLabel": {
+    "message": "查看树状图"
+  },
+  "report/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "已顺利通过审核，但有警告消息"
+  },
+  "report/renderer/util.js | warningHeader": {
+    "message": "警告： "
   }
 }

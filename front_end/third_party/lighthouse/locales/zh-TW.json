@@ -63,7 +63,7 @@
     "message": "ARIA `meter` 元素具有可解讀的名稱"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "如果沒有可解讀的元素名稱，螢幕閱讀器只會讀出通用名稱，這樣仰賴螢幕閱讀器的使用者就無法知道這個元素的用途。[瞭解詳情](https://web.dev/aria-name/)"
+    "message": "如果 `progressbar` 元素沒有無障礙元素名稱，螢幕閱讀器只會讀出通用名稱，這樣仰賴螢幕閱讀器的使用者就無法知道這個元素的用途。[瞭解詳情](https://web.dev/aria-name/)。"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "ARIA `progressbar` 元素沒有可解讀的名稱。"
@@ -585,13 +585,13 @@
     "message": "指令"
   },
   "lighthouse-core/audits/csp-xss.js | columnSeverity": {
-    "message": "Severity"
+    "message": "嚴重程度"
   },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "強大的內容安全政策 (CSP) 可以大幅降低遭到跨網站指令碼 (XSS) 攻擊的風險。[瞭解詳情](https://web.dev/strict-csp/)"
+    "message": "強大的內容安全政策 (CSP) 可以大幅降低遭到跨網站指令碼 (XSS) 攻擊的風險。[瞭解詳情](https://web.dev/csp-xss/)"
   },
   "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
-    "message": "Syntax"
+    "message": "語法"
   },
   "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
     "message": "該網頁包含在 <meta> 標記中定義的 CSP。如果可以，請考慮在 HTTP 標頭中定義 CSP。"
@@ -903,10 +903,10 @@
     "message": "資訊清單未包含「name」或「short_name」欄位"
   },
   "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "資訊清單未包含適當圖示；圖示必須為 {value0} px 以上的 PNG、SVG 或 WebP 檔案，同時必須設定 sizes 屬性，且如果設有 purpose 屬性，當中必須包含「any」或「maskable」。"
+    "message": "資訊清單未包含適當圖示；圖示必須為 {value0} px 以上的 PNG、SVG 或 WebP 檔案，同時必須設定 sizes 屬性，且如果設有 purpose 屬性，當中必須包含「any」。"
   },
   "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "未提供任何大小在 {value0} px 以上，且格式為 PNG、SVG 或 WebP 的正方形圖示"
+    "message": "未提供任何大小在 {value0} px 以上的 PNG、SVG 或 WebP 格式正方形圖示，而且 purpose 屬性未設定或設為「any」"
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
     "message": "下載的圖示空白或已損毀"
@@ -1955,144 +1955,6 @@
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "你所提供的網址無效。"
   },
-  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
-    "message": "查看計算機。"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
-    "message": "起始導覽"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "關鍵路徑延遲時間上限："
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
-    "message": "複製 JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "切換深色主題"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
-    "message": "已展開列印"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
-    "message": "列印摘要"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
-    "message": "另存為 Gist"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
-    "message": "另存為 HTML"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
-    "message": "另存為 JSON"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
-    "message": "在檢視器中開啟"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
-    "message": "發生錯誤！"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
-    "message": "回報錯誤：無稽核資訊"
-  },
-  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
-    "message": "回報問題"
-  },
-  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
-    "message": "研究資料"
-  },
-  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
-    "message": "[Lighthouse](https://developers.google.com/web/tools/lighthouse/) 在模擬行動網路上對目前網頁進行的分析。此為預估值，可能與實際情況有所不同。"
-  },
-  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
-    "message": "其他手動檢查項目"
-  },
-  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
-    "message": "不適用"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
-    "message": "最佳化建議"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
-    "message": "預估減少量"
-  },
-  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
-    "message": "通過稽核項目"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
-    "message": "模擬電腦"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
-    "message": "模擬 Moto G4"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
-    "message": "沒有任何模擬的裝置"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
-    "message": "Axe 版本"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
-    "message": "CPU/記憶體效能"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
-    "message": "CPU 溫控降頻"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
-    "message": "管道"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
-    "message": "裝置"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "擷取時間"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
-    "message": "網路節流"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
-    "message": "執行階段設定"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
-    "message": "使用者代理程式 (主機)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
-    "message": "使用者代理程式 (網路)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
-    "message": "網址"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
-    "message": "不明"
-  },
-  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
-    "message": "顯示與下列指標相關的稽核項目："
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
-    "message": "收合程式碼片段"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
-    "message": "展開程式碼片段"
-  },
-  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "顯示第三方資源"
-  },
-  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
-    "message": "由執行階段環境提供"
-  },
-  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
-    "message": "有問題導致 Lighthouse 無法順利執行這項作業："
-  },
-  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "此為預估值，可能與實際情況有所不同。系統會直接根據這些指標[計算效能分數](https://web.dev/performance-scoring/)。"
-  },
-  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
-    "message": "查看矩形式樹狀結構圖"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
-    "message": "通過稽核，但附有警告訊息"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
-    "message": "警告： "
-  },
   "lighthouse-treemap/app/src/util.js | allLabel": {
     "message": "全部"
   },
@@ -2380,5 +2242,143 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "你可以在網路伺服器設定中啟用文字壓縮功能。"
+  },
+  "report/renderer/util.js | calculatorLink": {
+    "message": "查看計算機。"
+  },
+  "report/renderer/util.js | crcInitialNavigation": {
+    "message": "起始導覽"
+  },
+  "report/renderer/util.js | crcLongestDurationLabel": {
+    "message": "關鍵路徑延遲時間上限："
+  },
+  "report/renderer/util.js | dropdownCopyJSON": {
+    "message": "複製 JSON"
+  },
+  "report/renderer/util.js | dropdownDarkTheme": {
+    "message": "切換深色主題"
+  },
+  "report/renderer/util.js | dropdownPrintExpanded": {
+    "message": "已展開列印"
+  },
+  "report/renderer/util.js | dropdownPrintSummary": {
+    "message": "列印摘要"
+  },
+  "report/renderer/util.js | dropdownSaveGist": {
+    "message": "另存為 Gist"
+  },
+  "report/renderer/util.js | dropdownSaveHTML": {
+    "message": "另存為 HTML"
+  },
+  "report/renderer/util.js | dropdownSaveJSON": {
+    "message": "另存為 JSON"
+  },
+  "report/renderer/util.js | dropdownViewer": {
+    "message": "在檢視器中開啟"
+  },
+  "report/renderer/util.js | errorLabel": {
+    "message": "發生錯誤！"
+  },
+  "report/renderer/util.js | errorMissingAuditInfo": {
+    "message": "回報錯誤：無稽核資訊"
+  },
+  "report/renderer/util.js | footerIssue": {
+    "message": "回報問題"
+  },
+  "report/renderer/util.js | labDataTitle": {
+    "message": "研究資料"
+  },
+  "report/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "[Lighthouse](https://developers.google.com/web/tools/lighthouse/) 在模擬行動網路上對目前網頁進行的分析。此為預估值，可能與實際情況有所不同。"
+  },
+  "report/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "其他手動檢查項目"
+  },
+  "report/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "不適用"
+  },
+  "report/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "最佳化建議"
+  },
+  "report/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "預估減少量"
+  },
+  "report/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "通過稽核項目"
+  },
+  "report/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "模擬電腦"
+  },
+  "report/renderer/util.js | runtimeMobileEmulation": {
+    "message": "模擬 Moto G4"
+  },
+  "report/renderer/util.js | runtimeNoEmulation": {
+    "message": "沒有任何模擬的裝置"
+  },
+  "report/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "Axe 版本"
+  },
+  "report/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "CPU/記憶體效能"
+  },
+  "report/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "CPU 溫控降頻"
+  },
+  "report/renderer/util.js | runtimeSettingsChannel": {
+    "message": "管道"
+  },
+  "report/renderer/util.js | runtimeSettingsDevice": {
+    "message": "裝置"
+  },
+  "report/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "擷取時間"
+  },
+  "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "網路節流"
+  },
+  "report/renderer/util.js | runtimeSettingsTitle": {
+    "message": "執行階段設定"
+  },
+  "report/renderer/util.js | runtimeSettingsUA": {
+    "message": "使用者代理程式 (主機)"
+  },
+  "report/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "使用者代理程式 (網路)"
+  },
+  "report/renderer/util.js | runtimeSettingsUrl": {
+    "message": "網址"
+  },
+  "report/renderer/util.js | runtimeUnknown": {
+    "message": "不明"
+  },
+  "report/renderer/util.js | showRelevantAudits": {
+    "message": "顯示與下列指標相關的稽核項目："
+  },
+  "report/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "收合程式碼片段"
+  },
+  "report/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "展開程式碼片段"
+  },
+  "report/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "顯示第三方資源"
+  },
+  "report/renderer/util.js | throttlingProvided": {
+    "message": "由執行階段環境提供"
+  },
+  "report/renderer/util.js | toplevelWarningsMessage": {
+    "message": "有問題導致 Lighthouse 無法順利執行這項作業："
+  },
+  "report/renderer/util.js | varianceDisclaimer": {
+    "message": "此為預估值，可能與實際情況有所不同。系統會直接根據這些指標[計算效能分數](https://web.dev/performance-scoring/)。"
+  },
+  "report/renderer/util.js | viewTreemapLabel": {
+    "message": "查看矩形式樹狀結構圖"
+  },
+  "report/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "通過稽核，但附有警告訊息"
+  },
+  "report/renderer/util.js | warningHeader": {
+    "message": "警告： "
   }
 }

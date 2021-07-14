@@ -63,7 +63,7 @@
     "message": "У элементов `meter` ARIA есть названия, доступные программам чтения с экрана"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "Если у элемента нет названия, доступного программам чтения с экрана, пользователи услышат слово \"элемент\", но не поймут, для чего он нужен. [Подробнее…](https://web.dev/aria-name/)"
+    "message": "Если у элемента \"`progressbar`\" нет названия, доступного программам чтения с экрана, пользователи услышат только общее название элемента интерфейса и не поймут, для чего он нужен. [Подробнее…](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "У элементов `progressbar` ARIA нет названий, доступных программам чтения с экрана"
@@ -585,13 +585,13 @@
     "message": "Директива"
   },
   "lighthouse-core/audits/csp-xss.js | columnSeverity": {
-    "message": "Severity"
+    "message": "Уровень серьезности"
   },
   "lighthouse-core/audits/csp-xss.js | description": {
-    "message": "Надежная политика безопасности контента (Content Security Policy, CSP) существенно снижает риск атак XSS (межсайтовый скриптинг). [Подробнее…](https://web.dev/strict-csp/)"
+    "message": "Надежная политика безопасности контента (Content Security Policy, CSP) существенно снижает риск атак XSS (межсайтовый скриптинг). [Подробнее…](https://web.dev/csp-xss/)"
   },
   "lighthouse-core/audits/csp-xss.js | itemSeveritySyntax": {
-    "message": "Syntax"
+    "message": "Синтаксис"
   },
   "lighthouse-core/audits/csp-xss.js | metaTagMessage": {
     "message": "На странице есть политика CSP, определенная в теге <meta>. При возможности определите CSP в заголовке HTTP."
@@ -903,10 +903,10 @@
     "message": "Файл манифеста не содержит поле name или short_name."
   },
   "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
-    "message": "В файле манифеста отсутствует допустимый значок. Добавьте значок в формате PNG, SVG или WebP с разрешением не менее {value0} пкс и атрибутом sizes. Атрибут purpose, если он есть, должен иметь значение any или maskable."
+    "message": "В файле манифеста отсутствует допустимый значок. Добавьте значок в формате PNG, SVG или WebP с разрешением не менее {value0} пкс и атрибутом sizes. Если есть атрибут purpose, у него должно быть значение any."
   },
   "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "В файле манифеста нет значка в формате PNG, SVG или WebP с разрешением не менее {value0} пкс."
+    "message": "В файле манифеста нет значка в формате PNG, SVG или WebP в форме квадрата с разрешением не менее {value0} пкс, у которого атрибут purpose не задан или задан со значением any."
   },
   "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
     "message": "Скачанный значок пуст или поврежден."
@@ -1955,144 +1955,6 @@
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Недействительный URL."
   },
-  "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
-    "message": "Показать калькулятор"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcInitialNavigation": {
-    "message": "Начальная навигация"
-  },
-  "lighthouse-core/report/html/renderer/util.js | crcLongestDurationLabel": {
-    "message": "Максимальная задержка критического пути:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownCopyJSON": {
-    "message": "Копировать JSON-файл"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownDarkTheme": {
-    "message": "Включить/выключить тёмную тему"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintExpanded": {
-    "message": "Печать полного отчета"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownPrintSummary": {
-    "message": "Печать сводных данных"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveGist": {
-    "message": "Сохранить как Gist"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveHTML": {
-    "message": "Сохранить как HTML-файл"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownSaveJSON": {
-    "message": "Сохранить как JSON-файл"
-  },
-  "lighthouse-core/report/html/renderer/util.js | dropdownViewer": {
-    "message": "Открыть в Viewer"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorLabel": {
-    "message": "Ошибка"
-  },
-  "lighthouse-core/report/html/renderer/util.js | errorMissingAuditInfo": {
-    "message": "Ошибка отчета: информация аудита отсутствует"
-  },
-  "lighthouse-core/report/html/renderer/util.js | footerIssue": {
-    "message": "Сообщить о проблеме"
-  },
-  "lighthouse-core/report/html/renderer/util.js | labDataTitle": {
-    "message": "Имитация загрузки страницы"
-  },
-  "lighthouse-core/report/html/renderer/util.js | lsPerformanceCategoryDescription": {
-    "message": "Результаты анализа [Lighthouse](https://developers.google.com/web/tools/lighthouse/), проведенного для текущей страницы в эмулированной мобильной сети. Значения приблизительные и могут изменяться."
-  },
-  "lighthouse-core/report/html/renderer/util.js | manualAuditsGroupTitle": {
-    "message": "Дополнительные объекты для проверки вручную"
-  },
-  "lighthouse-core/report/html/renderer/util.js | notApplicableAuditsGroupTitle": {
-    "message": "Неприменимо"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunityResourceColumnLabel": {
-    "message": "Возможности"
-  },
-  "lighthouse-core/report/html/renderer/util.js | opportunitySavingsColumnLabel": {
-    "message": "Приблизительная экономия"
-  },
-  "lighthouse-core/report/html/renderer/util.js | passedAuditsGroupTitle": {
-    "message": "Успешные аудиты"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeDesktopEmulation": {
-    "message": "Эмуляция компьютера"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeMobileEmulation": {
-    "message": "Эмуляция Moto G4"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeNoEmulation": {
-    "message": "Без эмуляции"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsAxeVersion": {
-    "message": "Версия Axe"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsBenchmark": {
-    "message": "Производительность ЦП/ОЗУ"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsCPUThrottling": {
-    "message": "Ограничение пропускной способности ЦП"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Канал"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsDevice": {
-    "message": "Устройство"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Время запуска"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsNetworkThrottling": {
-    "message": "Ограничение пропускной способности сети"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Настройки среды выполнения"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUA": {
-    "message": "Агент пользователя (хост)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUANetwork": {
-    "message": "Агент пользователя (сеть)"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL"
-  },
-  "lighthouse-core/report/html/renderer/util.js | runtimeUnknown": {
-    "message": "Неизвестно"
-  },
-  "lighthouse-core/report/html/renderer/util.js | showRelevantAudits": {
-    "message": "Показать аудиты"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel": {
-    "message": "Свернуть фрагмент"
-  },
-  "lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel": {
-    "message": "Развернуть фрагмент"
-  },
-  "lighthouse-core/report/html/renderer/util.js | thirdPartyResourcesLabel": {
-    "message": "Показывать сторонние ресурсы"
-  },
-  "lighthouse-core/report/html/renderer/util.js | throttlingProvided": {
-    "message": "Предоставлено средой"
-  },
-  "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage": {
-    "message": "Во время работы Lighthouse возникли следующие проблемы:"
-  },
-  "lighthouse-core/report/html/renderer/util.js | varianceDisclaimer": {
-    "message": "Значения приблизительные и могут изменяться. [Уровень производительности рассчитывается](https://web.dev/performance-scoring/) непосредственно на основании этих показателей."
-  },
-  "lighthouse-core/report/html/renderer/util.js | viewTreemapLabel": {
-    "message": "Открыть карту эффективности"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningAuditsGroupTitle": {
-    "message": "Пройденные проверки с предупреждениями"
-  },
-  "lighthouse-core/report/html/renderer/util.js | warningHeader": {
-    "message": "Предупреждения: "
-  },
   "lighthouse-treemap/app/src/util.js | allLabel": {
     "message": "Все"
   },
@@ -2380,5 +2242,143 @@
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-text-compression": {
     "message": "Включить сжатие текста можно в настройках веб-сервера."
+  },
+  "report/renderer/util.js | calculatorLink": {
+    "message": "Показать калькулятор"
+  },
+  "report/renderer/util.js | crcInitialNavigation": {
+    "message": "Начальная навигация"
+  },
+  "report/renderer/util.js | crcLongestDurationLabel": {
+    "message": "Максимальная задержка критического пути:"
+  },
+  "report/renderer/util.js | dropdownCopyJSON": {
+    "message": "Копировать JSON-файл"
+  },
+  "report/renderer/util.js | dropdownDarkTheme": {
+    "message": "Включить/выключить тёмную тему"
+  },
+  "report/renderer/util.js | dropdownPrintExpanded": {
+    "message": "Печать полного отчета"
+  },
+  "report/renderer/util.js | dropdownPrintSummary": {
+    "message": "Печать сводных данных"
+  },
+  "report/renderer/util.js | dropdownSaveGist": {
+    "message": "Сохранить как Gist"
+  },
+  "report/renderer/util.js | dropdownSaveHTML": {
+    "message": "Сохранить как HTML-файл"
+  },
+  "report/renderer/util.js | dropdownSaveJSON": {
+    "message": "Сохранить как JSON-файл"
+  },
+  "report/renderer/util.js | dropdownViewer": {
+    "message": "Открыть в Viewer"
+  },
+  "report/renderer/util.js | errorLabel": {
+    "message": "Ошибка"
+  },
+  "report/renderer/util.js | errorMissingAuditInfo": {
+    "message": "Ошибка отчета: информация аудита отсутствует"
+  },
+  "report/renderer/util.js | footerIssue": {
+    "message": "Сообщить о проблеме"
+  },
+  "report/renderer/util.js | labDataTitle": {
+    "message": "Имитация загрузки страницы"
+  },
+  "report/renderer/util.js | lsPerformanceCategoryDescription": {
+    "message": "Результаты анализа [Lighthouse](https://developers.google.com/web/tools/lighthouse/), проведенного для текущей страницы в эмулированной мобильной сети. Значения приблизительные и могут изменяться."
+  },
+  "report/renderer/util.js | manualAuditsGroupTitle": {
+    "message": "Дополнительные объекты для проверки вручную"
+  },
+  "report/renderer/util.js | notApplicableAuditsGroupTitle": {
+    "message": "Неприменимо"
+  },
+  "report/renderer/util.js | opportunityResourceColumnLabel": {
+    "message": "Возможности"
+  },
+  "report/renderer/util.js | opportunitySavingsColumnLabel": {
+    "message": "Приблизительная экономия"
+  },
+  "report/renderer/util.js | passedAuditsGroupTitle": {
+    "message": "Успешные аудиты"
+  },
+  "report/renderer/util.js | runtimeDesktopEmulation": {
+    "message": "Эмуляция компьютера"
+  },
+  "report/renderer/util.js | runtimeMobileEmulation": {
+    "message": "Эмуляция Moto G4"
+  },
+  "report/renderer/util.js | runtimeNoEmulation": {
+    "message": "Без эмуляции"
+  },
+  "report/renderer/util.js | runtimeSettingsAxeVersion": {
+    "message": "Версия Axe"
+  },
+  "report/renderer/util.js | runtimeSettingsBenchmark": {
+    "message": "Производительность ЦП/ОЗУ"
+  },
+  "report/renderer/util.js | runtimeSettingsCPUThrottling": {
+    "message": "Ограничение пропускной способности ЦП"
+  },
+  "report/renderer/util.js | runtimeSettingsChannel": {
+    "message": "Канал"
+  },
+  "report/renderer/util.js | runtimeSettingsDevice": {
+    "message": "Устройство"
+  },
+  "report/renderer/util.js | runtimeSettingsFetchTime": {
+    "message": "Время запуска"
+  },
+  "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
+    "message": "Ограничение пропускной способности сети"
+  },
+  "report/renderer/util.js | runtimeSettingsTitle": {
+    "message": "Настройки среды выполнения"
+  },
+  "report/renderer/util.js | runtimeSettingsUA": {
+    "message": "Агент пользователя (хост)"
+  },
+  "report/renderer/util.js | runtimeSettingsUANetwork": {
+    "message": "Агент пользователя (сеть)"
+  },
+  "report/renderer/util.js | runtimeSettingsUrl": {
+    "message": "URL"
+  },
+  "report/renderer/util.js | runtimeUnknown": {
+    "message": "Неизвестно"
+  },
+  "report/renderer/util.js | showRelevantAudits": {
+    "message": "Показать аудиты"
+  },
+  "report/renderer/util.js | snippetCollapseButtonLabel": {
+    "message": "Свернуть фрагмент"
+  },
+  "report/renderer/util.js | snippetExpandButtonLabel": {
+    "message": "Развернуть фрагмент"
+  },
+  "report/renderer/util.js | thirdPartyResourcesLabel": {
+    "message": "Показывать сторонние ресурсы"
+  },
+  "report/renderer/util.js | throttlingProvided": {
+    "message": "Предоставлено средой"
+  },
+  "report/renderer/util.js | toplevelWarningsMessage": {
+    "message": "Во время работы Lighthouse возникли следующие проблемы:"
+  },
+  "report/renderer/util.js | varianceDisclaimer": {
+    "message": "Значения приблизительные и могут изменяться. [Уровень производительности рассчитывается](https://web.dev/performance-scoring/) непосредственно на основании этих показателей."
+  },
+  "report/renderer/util.js | viewTreemapLabel": {
+    "message": "Открыть карту эффективности"
+  },
+  "report/renderer/util.js | warningAuditsGroupTitle": {
+    "message": "Пройденные проверки с предупреждениями"
+  },
+  "report/renderer/util.js | warningHeader": {
+    "message": "Предупреждения: "
   }
 }

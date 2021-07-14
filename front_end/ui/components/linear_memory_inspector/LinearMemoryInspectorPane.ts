@@ -8,7 +8,7 @@ import type * as Common from '../../../core/common/common.js'; // eslint-disable
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as UI from '../../legacy/legacy.js';
 
-import type {Settings} from './LinearMemoryInspector.js';
+import type {AddressChangedEvent, MemoryRequestEvent, Settings, SettingsChangedEvent} from './LinearMemoryInspector.js';
 import {LinearMemoryInspector} from './LinearMemoryInspector.js';  // eslint-disable-line no-unused-vars
 import type {LazyUint8Array} from './LinearMemoryInspectorController.js';
 import {LinearMemoryInspectorController} from './LinearMemoryInspectorController.js';  // eslint-disable-line no-unused-vars
@@ -129,22 +129,16 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
     this._memoryWrapper = memoryWrapper;
     this._address = address;
     this._inspector = new LinearMemoryInspector();
-    this._inspector.addEventListener('memoryrequest', (event: Event) => {
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      this._memoryRequested((event as any));
+    this._inspector.addEventListener('memoryrequest', (event: MemoryRequestEvent) => {
+      this._memoryRequested(event);
     });
-    this._inspector.addEventListener('addresschanged', (event: Event) => {
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      this.updateAddress((event as any).data);
+    this._inspector.addEventListener('addresschanged', (event: AddressChangedEvent) => {
+      this.updateAddress(event.data);
     });
-    this._inspector.addEventListener('settingschanged', (event: Event) => {
+    this._inspector.addEventListener('settingschanged', (event: SettingsChangedEvent) => {
       // Stop event from bubbling up, since no element further up needs the event.
       event.stopPropagation();
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      this.saveSettings((event as any).data);
+      this.saveSettings(event.data);
     });
     this.contentElement.appendChild(this._inspector);
     this.firstTimeOpen = true;

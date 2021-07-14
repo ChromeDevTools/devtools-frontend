@@ -11,9 +11,7 @@ export class Cookie {
   _value: string;
   _type: Type|null|undefined;
   _attributes: {
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [x: string]: any,
+    [x: string]: string|number|boolean|undefined,
   };
   _size: number;
   _priority: Protocol.Network.CookiePriority;

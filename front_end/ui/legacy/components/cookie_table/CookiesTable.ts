@@ -107,7 +107,7 @@ export class CookiesTable extends UI.Widget.VBox {
   _lastEditedColumnId: string|null;
   _data: {folderName: string|null, cookies: Array<SDK.Cookie.Cookie>|null}[];
   _cookieDomain: string;
-  _cookieToBlockedReasons: Map<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>|null;
+  _cookieToBlockedReasons: ReadonlyMap<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>|null;
   constructor(
       renderInline?: boolean,
       saveCallback?: ((arg0: SDK.Cookie.Cookie, arg1: SDK.Cookie.Cookie|null) => Promise<boolean>),
@@ -279,13 +279,13 @@ export class CookiesTable extends UI.Widget.VBox {
 
   setCookies(
       cookies: SDK.Cookie.Cookie[],
-      cookieToBlockedReasons?: Map<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>): void {
+      cookieToBlockedReasons?: ReadonlyMap<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>): void {
     this.setCookieFolders([{cookies: cookies, folderName: null}], cookieToBlockedReasons);
   }
 
   setCookieFolders(
       cookieFolders: {folderName: string|null, cookies: Array<SDK.Cookie.Cookie>|null}[],
-      cookieToBlockedReasons?: Map<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>): void {
+      cookieToBlockedReasons?: ReadonlyMap<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>): void {
     this._data = cookieFolders;
     this._cookieToBlockedReasons = cookieToBlockedReasons || null;
     this._rebuildTable();
@@ -547,7 +547,7 @@ export class CookiesTable extends UI.Widget.VBox {
     data[SDK.Cookie.Attributes.SourceScheme] = cookie.sourceScheme();
     data[SDK.Cookie.Attributes.Priority] = cookie.priority() || '';
 
-    const blockedReasons = this._cookieToBlockedReasons ? this._cookieToBlockedReasons.get(cookie) : null;
+    const blockedReasons = this._cookieToBlockedReasons?.get(cookie);
     const node = new DataGridNode(data, cookie, blockedReasons || null);
     node.selectable = true;
     return node;

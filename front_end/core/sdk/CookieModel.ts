@@ -17,16 +17,8 @@ import {Capability} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 
 export class CookieModel extends SDKModel {
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _blockedCookies: Map<any, any>;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _cookieToBlockedReasons: Map<any, any>;
+  _blockedCookies: Map<string, Cookie>;
+  _cookieToBlockedReasons: Map<Cookie, BlockedReason[]>;
   constructor(target: Target) {
     super(target);
 
@@ -39,17 +31,17 @@ export class CookieModel extends SDKModel {
     const key = cookie.key();
     const previousCookie = this._blockedCookies.get(key);
     this._blockedCookies.set(key, cookie);
-    this._cookieToBlockedReasons.set(cookie, blockedReasons);
+    if (blockedReasons) {
+      this._cookieToBlockedReasons.set(cookie, blockedReasons);
+    } else {
+      this._cookieToBlockedReasons.delete(cookie);
+    }
     if (previousCookie) {
-      this._cookieToBlockedReasons.delete(key);
+      this._cookieToBlockedReasons.delete(previousCookie);
     }
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getCookieToBlockedReasonsMap(): Map<any, any> {
+  getCookieToBlockedReasonsMap(): ReadonlyMap<Cookie, BlockedReason[]> {
     return this._cookieToBlockedReasons;
   }
 

@@ -12,6 +12,8 @@
 }
 
 .computed-style-property {
+  --goto-size: 16px;
+
   min-height: 16px;
   box-sizing: border-box;
   padding-top: 2px;
@@ -31,6 +33,7 @@ slot[name="property-value"] {
 slot[name="property-name"] {
   width: 16em;
   max-width: 52%;
+  margin-right: calc(var(--goto-size) / 2);
   display: inline-block;
   vertical-align: text-top;
 }
@@ -40,13 +43,11 @@ slot[name="property-value"] {
 }
 
 .goto {
-  --size: 16px;
-
   display: none;
   position: absolute;
-  width: var(--size);
-  height: var(--size);
-  margin: -1px 0 0 calc(-1 * var(--size));
+  width: var(--goto-size);
+  height: var(--goto-size);
+  margin: -1px 0 0 calc(-1 * var(--goto-size));
   -webkit-mask-image: var(--image-file-mediumIcons);
   -webkit-mask-position: -32px 48px;
   background-color: var(--legacy-active-control-bg-color);

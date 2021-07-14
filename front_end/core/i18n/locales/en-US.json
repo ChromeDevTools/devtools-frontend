@@ -2117,6 +2117,9 @@
   "panels/application/AppManifestView.ts | needHelpReadOurS": {
     "message": "Need help? Read {PH1}."
   },
+  "panels/application/AppManifestView.ts | newNoteUrl": {
+    "message": "New note URL"
+  },
   "panels/application/AppManifestView.ts | noManifestDetected": {
     "message": "No manifest detected"
   },

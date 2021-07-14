@@ -2117,6 +2117,9 @@
   "panels/application/AppManifestView.ts | needHelpReadOurS": {
     "message": "N̂éêd́ ĥél̂ṕ? R̂éâd́ {PH1}."
   },
+  "panels/application/AppManifestView.ts | newNoteUrl": {
+    "message": "N̂éŵ ńôt́ê ÚR̂Ĺ"
+  },
   "panels/application/AppManifestView.ts | noManifestDetected": {
     "message": "N̂ó m̂án̂íf̂éŝt́ d̂ét̂éĉt́êd́"
   },

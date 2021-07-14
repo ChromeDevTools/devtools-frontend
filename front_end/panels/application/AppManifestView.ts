@@ -78,6 +78,10 @@ const UIStrings = {
   */
   display: 'Display',
   /**
+  *@description Title of the new_note_url attribute in the Application panel
+  */
+  newNoteUrl: 'New note URL',
+  /**
   *@description Text in App Manifest View of the Application panel
   */
   descriptionMayBeTruncated: 'Description may be truncated.',
@@ -366,6 +370,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
   _backgroundColorSwatch: InlineEditor.ColorSwatch.ColorSwatch;
   _orientationField: HTMLElement;
   _displayField: HTMLElement;
+  _newNoteUrlField: HTMLElement;
   _throttler: Common.Throttler.Throttler;
   _registeredListeners: Common.EventTarget.EventDescriptor[];
   _target?: SDK.Target.Target;
@@ -418,6 +423,8 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
 
     this._orientationField = this._presentationSection.appendField(i18nString(UIStrings.orientation));
     this._displayField = this._presentationSection.appendField(i18nString(UIStrings.display));
+
+    this._newNoteUrlField = this._presentationSection.appendField(i18nString(UIStrings.newNoteUrl));
 
     this._throttler = new Common.Throttler.Throttler(1000);
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
@@ -544,6 +551,19 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
     this._orientationField.textContent = stringProperty('orientation');
     const displayType = stringProperty('display');
     this._displayField.textContent = displayType;
+
+    const noteTaking = parsedManifest['note_taking'] || {};
+    const newNoteUrl = noteTaking['new_note_url'];
+    const hasNewNoteUrl = typeof newNoteUrl === 'string';
+    this._newNoteUrlField.parentElement?.classList.toggle('hidden', !hasNewNoteUrl);
+    this._newNoteUrlField.removeChildren();
+    if (hasNewNoteUrl) {
+      const completeURL = (Common.ParsedURL.ParsedURL.completeURL(url, newNoteUrl) as string);
+      const link = Components.Linkifier.Linkifier.linkifyURL(
+          completeURL, ({text: newNoteUrl} as Components.Linkifier.LinkifyURLOptions));
+      link.tabIndex = 0;
+      this._newNoteUrlField.appendChild(link);
+    }
 
     const icons = parsedManifest['icons'] || [];
     this._iconsSection.clearContent();

@@ -497,7 +497,7 @@ class NodeCascade {
 class DOMInheritanceCascade {
   _nodeCascades: NodeCascade[];
   _propertiesState: Map<CSSProperty, PropertyState>;
-  _availableCSSVariables: Map<NodeCascade, Map<string, string>>;
+  _availableCSSVariables: Map<NodeCascade, Map<string, string|null>>;
   _computedCSSVariables: Map<NodeCascade, Map<string, string|null>>;
   _initialized: boolean;
   _styleToNodeCascade: Map<CSSStyleDeclaration, NodeCascade>;
@@ -586,7 +586,7 @@ class DOMInheritanceCascade {
   }
 
   _innerComputeCSSVariable(
-      availableCSSVariables: Map<string, string>, computedCSSVariables: Map<string, string|null>,
+      availableCSSVariables: Map<string, string|null>, computedCSSVariables: Map<string, string|null>,
       variableName: string): string|null {
     if (!availableCSSVariables.has(variableName)) {
       return null;
@@ -606,8 +606,8 @@ class DOMInheritanceCascade {
   }
 
   _innerComputeValue(
-      availableCSSVariables: Map<string, string>, computedCSSVariables: Map<string, string|null>, value: string): string
-      |null {
+      availableCSSVariables: Map<string, string|null>, computedCSSVariables: Map<string, string|null>,
+      value: string): string|null {
     const results = TextUtils.TextUtils.Utils.splitStringByRegexes(value, [VariableRegex]);
     const tokens = [];
     for (const result of results) {
@@ -703,7 +703,7 @@ class DOMInheritanceCascade {
     }
 
     // Work inheritance chain backwards to compute visible CSS Variables.
-    const accumulatedCSSVariables = new Map<string, string>();
+    const accumulatedCSSVariables = new Map<string, string|null>();
     for (let i = this._nodeCascades.length - 1; i >= 0; --i) {
       const nodeCascade = this._nodeCascades[i];
       const variableNames = [];
@@ -722,8 +722,6 @@ class DOMInheritanceCascade {
       for (const variableName of variableNames) {
         accumulatedCSSVariables.delete(variableName);
         accumulatedCSSVariables.set(
-            // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-            // @ts-expect-error
             variableName, this._innerComputeCSSVariable(availableCSSVariablesMap, computedVariablesMap, variableName));
       }
     }

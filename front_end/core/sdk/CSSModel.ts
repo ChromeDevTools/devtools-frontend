@@ -266,9 +266,7 @@ export class CSSModel extends SDKModel {
     return this._isEnabled;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async _enable(): Promise<any> {
+  async _enable(): Promise<void> {
     await this._agent.invoke_enable();
     this._isEnabled = true;
     if (this._isRuleUsageTrackingEnabled) {
@@ -624,18 +622,14 @@ export class CSSModel extends SDKModel {
     this._fontFaces.clear();
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async suspendModel(): Promise<any> {
+  async suspendModel(): Promise<void> {
     this._isEnabled = false;
     await this._agent.invoke_disable();
     this._resetStyleSheets();
     this._resetFontFaces();
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async resumeModel(): Promise<any> {
+  async resumeModel(): Promise<void> {
     return this._enable();
   }
 

@@ -60,9 +60,7 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
     this.disabled = payload.disabled;
     this.isInline = payload.isInline;
     this.isMutable = payload.isMutable;
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.isConstructed = (payload as any).isConstructed;
+    this.isConstructed = payload.isConstructed;
     this.startLine = payload.startLine;
     this.startColumn = payload.startColumn;
     this.endLine = payload.endLine;

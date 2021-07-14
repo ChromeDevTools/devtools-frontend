@@ -121,7 +121,7 @@ export type FormatterFunction<T> = (input: string|{description: string}|undefine
 
 export const format = function<T, U>(
     formatString: string, substitutions: ArrayLike<U>|null, formatters: Record<string, FormatterFunction<U>>,
-    initialValue: T, append: (initialValue: T, newString?: string) => T, tokenizedFormat?: FormatterToken[]): {
+    initialValue: T, append: (initialValue: T, newString: string) => T, tokenizedFormat?: FormatterToken[]): {
   formattedResult: T,
   unusedSubstitutions: ArrayLike<U>|null,
 } {

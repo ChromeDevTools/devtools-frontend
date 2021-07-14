@@ -372,9 +372,7 @@ export function markBeingEdited(element: Element, value: boolean): boolean {
 const elementsBeingEdited = new Set<Element>();
 
 // Avoids Infinity, NaN, and scientific notation (e.g. 1e20), see crbug.com/81165.
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const _numberRegex = /^(-?(?:\d+(?:\.\d+)?|\.\d+))$/;
+const numberRegex = /^(-?(?:\d+(?:\.\d+)?|\.\d+))$/;
 
 export const StyleValueDelimiters = ' \xA0\t\n"\':;,/()';
 
@@ -400,9 +398,7 @@ export function getValueModificationDirection(event: Event): string|null {
   return direction;
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-function _modifiedHexValue(hexString: string, event: Event): string|null {
+function modifiedHexValue(hexString: string, event: Event): string|null {
   const direction = getValueModificationDirection(event);
   if (!direction) {
     return null;
@@ -457,9 +453,7 @@ function _modifiedHexValue(hexString: string, event: Event): string|null {
   return resultString;
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-function _modifiedFloatNumber(number: number, event: Event, modifierMultiplier?: number): number|null {
+function modifiedFloatNumber(number: number, event: Event, modifierMultiplier?: number): number|null {
   const direction = getValueModificationDirection(event);
   if (!direction) {
     return null;
@@ -491,7 +485,7 @@ function _modifiedFloatNumber(number: number, event: Event, modifierMultiplier?:
   // Make the new number and constrain it to a precision of 6, this matches numbers the engine returns.
   // Use the Number constructor to forget the fixed precision, so 1.100000 will print as 1.1.
   const result = Number((number + delta).toFixed(6));
-  if (!String(result).match(_numberRegex)) {
+  if (!String(result).match(numberRegex)) {
     return null;
   }
   return result;
@@ -508,7 +502,7 @@ export function createReplacementString(
   if (matches && matches.length) {
     prefix = matches[1];
     suffix = matches[3];
-    number = _modifiedHexValue(matches[2], event);
+    number = modifiedHexValue(matches[2], event);
     if (number !== null) {
       replacementString = prefix + number + suffix;
     }
@@ -517,7 +511,7 @@ export function createReplacementString(
     if (matches && matches.length) {
       prefix = matches[1];
       suffix = matches[3];
-      number = _modifiedFloatNumber(parseFloat(matches[2]), event);
+      number = modifiedFloatNumber(parseFloat(matches[2]), event);
       if (number !== null) {
         replacementString =
             customNumberHandler ? customNumberHandler(prefix, number, suffix) : prefix + number + suffix;
@@ -585,15 +579,11 @@ export function handleElementValueModifications(
   return false;
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function formatLocalized(format: string, substitutions: ArrayLike<any>|null): Element {
+export function formatLocalized<U>(format: string, substitutions: ArrayLike<U>|null): Element {
   const formatters = {
     s: (substitution: unknown): unknown => substitution,
   };
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function append(a: Element, b: any): Element {
+  function append(a: Element, b: string|Element): Element {
     a.appendChild(typeof b === 'string' ? document.createTextNode(b) : b as Element);
     return a;
   }
@@ -640,17 +630,13 @@ export function installComponentRootStyles(element: Element): void {
   }
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-function _windowFocused(document: Document, event: Event): void {
+function windowFocused(document: Document, event: Event): void {
   if (event.target instanceof Window && event.target.document.nodeType === Node.DOCUMENT_NODE) {
     document.body.classList.remove('inactive');
   }
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-function _windowBlurred(document: Document, event: Event): void {
+function windowBlurred(document: Document, event: Event): void {
   if (event.target instanceof Window && event.target.document.nodeType === Node.DOCUMENT_NODE) {
     document.body.classList.add('inactive');
   }
@@ -677,10 +663,8 @@ export class ElementFocusRestorer {
   }
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function highlightSearchResult(element: Element, offset: number, length: number, domChanges?: any[]): Element|
-    null {
+export function highlightSearchResult(
+    element: Element, offset: number, length: number, domChanges?: HighlightChange[]): Element|null {
   const result = highlightSearchResults(element, [new TextUtils.TextRange.SourceRange(offset, length)], domChanges);
   return result.length ? result[0] : null;
 }
@@ -779,9 +763,7 @@ export function highlightRangesWithStyleClass(
           ownerDocument.createTextNode(lastText.substring(0, startOffset - nodeRanges[startIndex].offset));
       lastTextNode.parentElement.insertBefore(prefixNode, highlightNode);
       changes.push({
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        node: (prefixNode as any),
+        node: prefixNode,
         type: 'added',
         nextSibling: highlightNode,
         parent: lastTextNode.parentElement,
@@ -837,25 +819,21 @@ export function highlightRangesWithStyleClass(
   return highlightNodes;
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function applyDomChanges(domChanges: any[]): void {
+export function applyDomChanges(domChanges: HighlightChange[]): void {
   for (let i = 0, size = domChanges.length; i < size; ++i) {
     const entry = domChanges[i];
     switch (entry.type) {
       case 'added':
-        entry.parent.insertBefore(entry.node, entry.nextSibling);
+        entry.parent?.insertBefore(entry.node, entry.nextSibling ?? null);
         break;
       case 'changed':
-        entry.node.textContent = entry.newText;
+        entry.node.textContent = entry.newText ?? null;
         break;
     }
   }
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function revertDomChanges(domChanges: any[]): void {
+export function revertDomChanges(domChanges: HighlightChange[]): void {
   for (let i = domChanges.length - 1; i >= 0; --i) {
     const entry = domChanges[i];
     switch (entry.type) {
@@ -863,7 +841,7 @@ export function revertDomChanges(domChanges: any[]): void {
         entry.node.remove();
         break;
       case 'changed':
-        entry.node.textContent = entry.oldText;
+        entry.node.textContent = entry.oldText ?? null;
         break;
     }
   }
@@ -887,11 +865,7 @@ export function measurePreferredSize(element: Element, containerElement?: Elemen
 }
 
 class InvokeOnceHandlers {
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _handlers: Map<any, any>|null;
+  _handlers: Map<Object, Set<Function>>|null;
   _autoInvoke: boolean;
   constructor(autoInvoke: boolean) {
     this._handlers = null;
@@ -919,45 +893,43 @@ class InvokeOnceHandlers {
   }
 
   _invoke(): void {
-    const handlers = this._handlers || new Map();  // Make closure happy. This should not be null.
+    const handlers = this._handlers;
     this._handlers = null;
-    for (const [object, methods] of handlers) {
-      for (const method of methods) {
-        method.call(object);
+    if (handlers) {
+      for (const [object, methods] of handlers) {
+        for (const method of methods) {
+          method.call(object);
+        }
       }
     }
   }
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-let _coalescingLevel = 0;
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-let _postUpdateHandlers: InvokeOnceHandlers|null = null;
+let coalescingLevel = 0;
+let postUpdateHandlers: InvokeOnceHandlers|null = null;
 
 export function startBatchUpdate(): void {
-  if (!_coalescingLevel++) {
-    _postUpdateHandlers = new InvokeOnceHandlers(false);
+  if (!coalescingLevel++) {
+    postUpdateHandlers = new InvokeOnceHandlers(false);
   }
 }
 
 export function endBatchUpdate(): void {
-  if (--_coalescingLevel) {
+  if (--coalescingLevel) {
     return;
   }
 
-  if (_postUpdateHandlers) {
-    _postUpdateHandlers.scheduleInvoke();
-    _postUpdateHandlers = null;
+  if (postUpdateHandlers) {
+    postUpdateHandlers.scheduleInvoke();
+    postUpdateHandlers = null;
   }
 }
 
 export function invokeOnceAfterBatchUpdate(object: Object, method: () => void): void {
-  if (!_postUpdateHandlers) {
-    _postUpdateHandlers = new InvokeOnceHandlers(true);
+  if (!postUpdateHandlers) {
+    postUpdateHandlers = new InvokeOnceHandlers(true);
   }
-  _postUpdateHandlers.add(object, method);
+  postUpdateHandlers.add(object, method);
 }
 
 export function animateFunction(
@@ -965,9 +937,7 @@ export function animateFunction(
       from: number,
       to: number,
     }[],
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    duration: number, animationComplete?: (() => any)): () => void {
+    duration: number, animationComplete?: (() => void)): () => void {
   const start = window.performance.now();
   let raf = window.requestAnimationFrame(animationStep);
 
@@ -1071,16 +1041,14 @@ export class LongClickController extends Common.ObjectWrapper.ObjectWrapper {
     delete this._longClickData;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  static TIME_MS = 200;
+  static readonly TIME_MS = 200;
 }
 
 export function initializeUIUtils(document: Document, themeSetting: Common.Settings.Setting<string>): void {
   document.body.classList.toggle('inactive', !document.hasFocus());
   if (document.defaultView) {
-    document.defaultView.addEventListener('focus', _windowFocused.bind(undefined, document), false);
-    document.defaultView.addEventListener('blur', _windowBlurred.bind(undefined, document), false);
+    document.defaultView.addEventListener('focus', windowFocused.bind(undefined, document), false);
+    document.defaultView.addEventListener('blur', windowBlurred.bind(undefined, document), false);
   }
   document.addEventListener('focus', focusChanged.bind(undefined), true);
 
@@ -1110,9 +1078,7 @@ export const createTextChildren = (element: Element|DocumentFragment, ...childre
 };
 
 export function createTextButton(
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    text: string, eventHandler?: ((arg0: Event) => any), className?: string, primary?: boolean,
+    text: string, eventHandler?: ((arg0: Event) => void), className?: string, primary?: boolean,
     alternativeEvent?: string): HTMLButtonElement {
   const element = document.createElement('button');
   if (className) {
@@ -1442,7 +1408,7 @@ export function bindInput(
       return;
     }
 
-    const value = _modifiedFloatNumber(parseFloat(input.value), event, modifierMultiplier);
+    const value = modifiedFloatNumber(parseFloat(input.value), event, modifierMultiplier);
     const stringValue = value ? String(value) : '';
     const {valid} = validate(stringValue);
     if (!valid || !value) {
@@ -1574,9 +1540,7 @@ export function loadImageFromData(data: string|null): Promise<HTMLImageElement|n
   return data ? loadImage('data:image/jpg;base64,' + data) : Promise.resolve(null);
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function createFileSelectorElement(callback: (arg0: File) => any): HTMLInputElement {
+export function createFileSelectorElement(callback: (arg0: File) => void): HTMLInputElement {
   const fileSelectorElement = document.createElement('input');
   fileSelectorElement.type = 'file';
   fileSelectorElement.style.display = 'none';
@@ -1696,7 +1660,7 @@ export interface Options {
 }
 
 export interface HighlightChange {
-  node: Element;
+  node: Element|Text;
   type: string;
   oldText?: string;
   newText?: string;

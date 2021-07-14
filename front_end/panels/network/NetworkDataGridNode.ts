@@ -1028,7 +1028,7 @@ export class NetworkRequestNode extends NetworkNode {
     }
     // Ensure element is created.
     this.element();
-    const domChanges: Object[] = [];
+    const domChanges: UI.UIUtils.HighlightChange[] = [];
     const matchInfo = this._nameCell.textContent.match(regexp);
     if (matchInfo) {
       UI.UIUtils.highlightSearchResult(this._nameCell, matchInfo.index || 0, matchInfo[0].length, domChanges);

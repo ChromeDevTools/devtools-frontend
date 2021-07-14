@@ -29,7 +29,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import type * as Common from '../../core/common/common.js'; // eslint-disable-line no-unused-vars
+import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
@@ -37,7 +37,8 @@ import * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 import type {ApplicationCacheModel} from './ApplicationCacheModel.js';
-import {CHECKING, DOWNLOADING, IDLE, OBSOLETE, UNCACHED, UPDATEREADY} from './ApplicationCacheModel.js';  // eslint-disable-line no-unused-vars
+import {CHECKING, DOWNLOADING, IDLE, OBSOLETE, UNCACHED, UPDATEREADY} from './ApplicationCacheModel.js';
+
 
 const UIStrings = {
   /**
@@ -260,22 +261,22 @@ export class ApplicationCacheItemsView extends UI.View.SimpleView {
     const sortDirection = this._dataGrid.isSortOrderAscending() ? 1 : -1;
 
     function numberCompare(
-        field: string, resource1: Protocol.ApplicationCache.ApplicationCacheResource,
+        field: keyof Platform.TypeScriptUtilities
+            .PickFieldsThatExtend<Protocol.ApplicationCache.ApplicationCacheResource, number>,
+        resource1: Protocol.ApplicationCache.ApplicationCacheResource,
         resource2: Protocol.ApplicationCache.ApplicationCacheResource): number {
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return sortDirection * ((resource1 as any)[field] - (resource2 as any)[field]);
+      return sortDirection * (resource1[field] - resource2[field]);
     }
 
     function localeCompare(
-        field: string, resource1: Protocol.ApplicationCache.ApplicationCacheResource,
+        field: keyof Platform.TypeScriptUtilities
+            .PickFieldsThatExtend<Protocol.ApplicationCache.ApplicationCacheResource, string>,
+        resource1: Protocol.ApplicationCache.ApplicationCacheResource,
         resource2: Protocol.ApplicationCache.ApplicationCacheResource): number {
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return sortDirection * String((resource1 as any)[field]).localeCompare(String((resource2 as any)[field]));
+      return sortDirection * resource1[field].localeCompare(resource2[field]);
     }
 
-    let comparator;
+    let comparator = null;
     switch (this._dataGrid.sortColumnId()) {
       case 'resource':
         comparator = localeCompare.bind(null, 'url');
@@ -286,15 +287,15 @@ export class ApplicationCacheItemsView extends UI.View.SimpleView {
       case 'size':
         comparator = numberCompare.bind(null, 'size');
         break;
-      default:
-        localeCompare.bind(null, 'resource');  // FIXME: comparator = ?
     }
 
     this._dataGrid.rootNode().removeChildren();
     if (!this._resources) {
       return;
     }
-    this._resources.sort(comparator);
+    if (comparator) {
+      this._resources.sort(comparator);
+    }
 
     let nodeToSelect;
     for (let i = 0; i < this._resources.length; ++i) {

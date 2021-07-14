@@ -21,3 +21,9 @@ export function assertNotNullOrUndefined<T>(val: T): asserts val is NonNullable<
 export function assertUnhandled<T>(_caseVariable: T): T {
   return _caseVariable;
 }
+
+export type FieldsThatExtend<Type, Selector> = {
+  [Key in keyof Type]: Type[Key] extends Selector ? Key : never;
+}[keyof Type];
+
+export type PickFieldsThatExtend<Type, Selector> = Pick<Type, FieldsThatExtend<Type, Selector>>;

@@ -51,6 +51,11 @@ export interface PageResource {
 
 let pageResourceLoader: PageResourceLoader|null = null;
 
+interface LoadQueueEntry {
+  resolve: () => void;
+  reject: (arg0: Error) => void;
+}
+
 /**
  * The page resource loader is a bottleneck for all DevTools-initiated resource loads. For each such load, it keeps a
  * `PageResource` object around that holds meta information. This can be as the basis for reporting to the user which
@@ -60,14 +65,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
   _currentlyLoading: number;
   _maxConcurrentLoads: number;
   _pageResources: Map<string, PageResource>;
-  _queuedLoads: {
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolve: (arg0: any) => void,
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    reject: (arg0: any) => void,
-  }[];
+  _queuedLoads: LoadQueueEntry[];
   _loadOverride: ((arg0: string) => Promise<{
                     success: boolean,
                     content: string,
@@ -114,9 +112,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
     return pageResourceLoader;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _onMainFrameNavigated(event: any): void {
+  _onMainFrameNavigated(event: Common.EventTarget.EventTargetEvent): void {
     const mainFrame = (event.data as ResourceTreeFrame);
     if (!mainFrame.isTopFrame()) {
       return;
@@ -149,19 +145,12 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
   async _acquireLoadSlot(): Promise<void> {
     this._currentlyLoading++;
     if (this._currentlyLoading > this._maxConcurrentLoads) {
-      const pair: {
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        resolve: (arg0: any) => void,
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        reject: (arg0: any) => void,
-      } = {resolve: (): void => {}, reject: (): void => {}};
-      const waitForCapacity = new Promise((resolve, reject) => {
-        pair.resolve = resolve;
-        pair.reject = reject;
+      const entry: LoadQueueEntry = {resolve: (): void => {}, reject: (): void => {}};
+      const waitForCapacity = new Promise<void>((resolve, reject) => {
+        entry.resolve = resolve;
+        entry.reject = reject;
       });
-      this._queuedLoads.push(pair);
+      this._queuedLoads.push(entry);
       await waitForCapacity;
     }
   }
@@ -170,7 +159,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
     this._currentlyLoading--;
     const entry = this._queuedLoads.shift();
     if (entry) {
-      entry.resolve(undefined);
+      entry.resolve();
     }
   }
 

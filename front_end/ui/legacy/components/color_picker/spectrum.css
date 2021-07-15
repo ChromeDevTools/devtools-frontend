@@ -21,7 +21,7 @@
 .spectrum-color {
   position: relative;
   width: 232px;
-  height: 127px;
+  height: 124px;
   border-radius: 2px 2px 0 0;
   overflow: hidden;
   flex: none;
@@ -62,7 +62,7 @@
 
 .spectrum-tools {
   position: relative;
-  height: 110px;
+  height: 111px;
   width: 100%;
   flex: none;
 }
@@ -502,6 +502,7 @@
 
 .palette-panel {
   width: 100%;
+  height: 100%;
   position: absolute;
   top: 100%;
   display: flex;
@@ -514,7 +515,7 @@
 }
 
 .palette-panel-showing > .palette-panel {
-  transform: translateY(-100%);
+  transform: translateY(min(-192px, -100% + 124px));
   transition-delay: 0s;
   visibility: visible;
 }

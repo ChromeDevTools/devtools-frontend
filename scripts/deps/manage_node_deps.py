@@ -59,6 +59,7 @@ DEPS = {
     "@web/rollup-plugin-import-meta-assets": "1.0.7",
     "bl": "4.1.0",
     "chai": "4.3.4",
+    "chokidar": "3.5.1",
     "convert-source-map": "1.7.0",
     "escodegen": "2.0.0",
     "eslint": "7.28.0",

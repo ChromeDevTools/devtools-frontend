@@ -1753,7 +1753,7 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
   }
 
   _drawCollapsedOverviewForGroup(group: Group, y: number, endLevel: number): void {
-    const range = new Common.SegmentedRange.SegmentedRange(mergeCallback);
+    const range = new Common.SegmentedRange.SegmentedRange<string>(mergeCallback);
     const timeWindowLeft = this._chartViewport.windowLeftTime();
     const timeWindowRight = this._chartViewport.windowRightTime();
     const context = (this._canvas.getContext('2d') as CanvasRenderingContext2D);
@@ -1816,8 +1816,8 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     }
     context.fill();
 
-    function mergeCallback(
-        a: Common.SegmentedRange.Segment, b: Common.SegmentedRange.Segment): Common.SegmentedRange.Segment|null {
+    function mergeCallback<T>(a: Common.SegmentedRange.Segment<T>, b: Common.SegmentedRange.Segment<T>):
+        Common.SegmentedRange.Segment<T>|null {
       return a.data === b.data && a.end + 0.4 > b.end ? a : null;
     }
   }

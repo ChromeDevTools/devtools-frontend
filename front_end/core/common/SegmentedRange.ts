@@ -6,9 +6,7 @@
 
 import * as Platform from '../platform/platform.js';
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class Segment<T = any> {
+export class Segment<T> {
   begin: number;
   end: number;
   data: T;
@@ -22,15 +20,13 @@ export class Segment<T = any> {
     this.data = data;
   }
 
-  intersects(that: Segment): boolean {
+  intersects(that: Segment<T>): boolean {
     return this.begin < that.end && that.begin < this.end;
   }
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class SegmentedRange<T = any> {
-  private segmentsInternal: Segment[];
+export class SegmentedRange<T> {
+  private segmentsInternal: Segment<T>[];
   private readonly mergeCallback: ((arg0: Segment<T>, arg1: Segment<T>) => Segment<T>| null)|undefined;
 
   constructor(mergeCallback?: ((arg0: Segment<T>, arg1: Segment<T>) => Segment<T>| null)) {

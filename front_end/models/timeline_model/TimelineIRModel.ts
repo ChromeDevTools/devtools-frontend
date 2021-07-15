@@ -28,11 +28,11 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const eventToPhase = new WeakMap<SDK.TracingModel.Event, Phases>();
 
 export class TimelineIRModel {
-  _segments!: Common.SegmentedRange.Segment[];
-  _drags!: Common.SegmentedRange.SegmentedRange;
-  _cssAnimations!: Common.SegmentedRange.SegmentedRange;
-  _responses!: Common.SegmentedRange.SegmentedRange;
-  _scrolls!: Common.SegmentedRange.SegmentedRange;
+  _segments!: Common.SegmentedRange.Segment<Phases>[];
+  _drags!: Common.SegmentedRange.SegmentedRange<Phases>;
+  _cssAnimations!: Common.SegmentedRange.SegmentedRange<Phases>;
+  _responses!: Common.SegmentedRange.SegmentedRange<Phases>;
+  _scrolls!: Common.SegmentedRange.SegmentedRange<Phases>;
 
   constructor() {
     this.reset();
@@ -51,7 +51,7 @@ export class TimelineIRModel {
     if (animations) {
       this._processAnimations(animations);
     }
-    const range = new Common.SegmentedRange.SegmentedRange();
+    const range = new Common.SegmentedRange.SegmentedRange<Phases>();
     range.appendRange(this._drags);  // Drags take lower precedence than animation, as we can't detect them reliably.
     range.appendRange(this._cssAnimations);
     range.appendRange(this._scrolls);
@@ -208,14 +208,14 @@ export class TimelineIRModel {
     }
   }
 
-  _segmentForEvent(event: SDK.TracingModel.AsyncEvent, phase: Phases): Common.SegmentedRange.Segment {
+  _segmentForEvent(event: SDK.TracingModel.AsyncEvent, phase: Phases): Common.SegmentedRange.Segment<Phases> {
     this._setPhaseForEvent(event, phase);
-    return new Common.SegmentedRange.Segment(
+    return new Common.SegmentedRange.Segment<Phases>(
         event.startTime, event.endTime !== undefined ? event.endTime : Number.MAX_SAFE_INTEGER, phase);
   }
 
   _segmentForEventRange(startEvent: SDK.TracingModel.AsyncEvent, endEvent: SDK.TracingModel.AsyncEvent, phase: Phases):
-      Common.SegmentedRange.Segment {
+      Common.SegmentedRange.Segment<Phases> {
     this._setPhaseForEvent(startEvent, phase);
     this._setPhaseForEvent(endEvent, phase);
     return new Common.SegmentedRange.Segment(
@@ -226,7 +226,7 @@ export class TimelineIRModel {
     eventToPhase.set(asyncEvent.steps[0], phase);
   }
 
-  interactionRecords(): Common.SegmentedRange.Segment[] {
+  interactionRecords(): Common.SegmentedRange.Segment<Phases>[] {
     return this._segments;
   }
 
@@ -239,8 +239,9 @@ export class TimelineIRModel {
     this._responses = new Common.SegmentedRange.SegmentedRange(merge.bind(null, 0));
     this._scrolls = new Common.SegmentedRange.SegmentedRange(merge.bind(null, thresholdsMs.animation));
 
-    function merge(threshold: number, first: Common.SegmentedRange.Segment, second: Common.SegmentedRange.Segment):
-        Common.SegmentedRange.Segment|null {
+    function merge(
+        threshold: number, first: Common.SegmentedRange.Segment<Phases>,
+        second: Common.SegmentedRange.Segment<Phases>): Common.SegmentedRange.Segment<Phases>|null {
       return first.end + threshold >= second.begin && first.data === second.data ? first : null;
     }
   }

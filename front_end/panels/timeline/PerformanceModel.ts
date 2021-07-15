@@ -146,7 +146,7 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper {
     return this._frameModel;
   }
 
-  interactionRecords(): Common.SegmentedRange.Segment[] {
+  interactionRecords(): Common.SegmentedRange.Segment<TimelineModel.TimelineIRModel.Phases>[] {
     return this._irModel.interactionRecords();
   }
 

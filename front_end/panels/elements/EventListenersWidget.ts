@@ -147,7 +147,7 @@ export class EventListenersWidget extends UI.ThrottledWidget.ThrottledWidget imp
 
   doUpdate(): Promise<void> {
     if (this._lastRequestedNode) {
-      this._lastRequestedNode.domModel().runtimeModel().releaseObjectGroup(_objectGroupName);
+      this._lastRequestedNode.domModel().runtimeModel().releaseObjectGroup(objectGroupName);
       delete this._lastRequestedNode;
     }
     const node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
@@ -159,11 +159,11 @@ export class EventListenersWidget extends UI.ThrottledWidget.ThrottledWidget imp
     this._lastRequestedNode = node;
     const selectedNodeOnly = !this._showForAncestorsSetting.get();
     const promises = [];
-    promises.push(node.resolveToObject(_objectGroupName));
+    promises.push(node.resolveToObject(objectGroupName));
     if (!selectedNodeOnly) {
       let currentNode: (SDK.DOMModel.DOMNode|null) = node.parentNode;
       while (currentNode) {
-        promises.push(currentNode.resolveToObject(_objectGroupName));
+        promises.push(currentNode.resolveToObject(objectGroupName));
         currentNode = currentNode.parentNode;
       }
       promises.push(this._windowObjectInNodeContext(node));
@@ -206,7 +206,7 @@ export class EventListenersWidget extends UI.ThrottledWidget.ThrottledWidget imp
         .evaluate(
             {
               expression: 'self',
-              objectGroup: _objectGroupName,
+              objectGroup: objectGroupName,
               includeCommandLineAPI: false,
               silent: true,
               returnByValue: false,
@@ -237,6 +237,4 @@ export const DispatchFilterBy = {
   Passive: 'Passive',
 };
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const _objectGroupName = 'event-listeners-panel';
+const objectGroupName = 'event-listeners-panel';

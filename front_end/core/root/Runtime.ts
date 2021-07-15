@@ -156,9 +156,7 @@ export class Runtime {
     }
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static _assert(value: any, message: string): void {
+  static _assert(value: boolean|undefined, message: string): void {
     if (value) {
       return;
     }
@@ -497,14 +495,12 @@ export function loadResourcePromise(url: string): Promise<string> {
     xhr.open('GET', url, true);
     xhr.onreadystatechange = onreadystatechange;
 
-    function onreadystatechange(e: Event): void {
+    function onreadystatechange(this: XMLHttpRequest, _e: Event): void {
       if (xhr.readyState !== XMLHttpRequest.DONE) {
         return;
       }
 
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const {response} = (e.target as any);
+      const response: string = this.response;
 
       // DevTools Proxy server can mask 404s as 200s, check the body to be sure
       const status = /^HTTP\/1.1 404/.test(response) ? 404 : xhr.status;

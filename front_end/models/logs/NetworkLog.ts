@@ -46,9 +46,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/logs/NetworkLog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-let _instance: NetworkLog;
+let networkLogInstance: NetworkLog;
 
 export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements
     SDK.TargetManager.SDKModelObserver<SDK.NetworkManager.NetworkManager> {
@@ -88,10 +86,10 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements
   }
 
   static instance(): NetworkLog {
-    if (!_instance) {
-      _instance = new NetworkLog();
+    if (!networkLogInstance) {
+      networkLogInstance = new NetworkLog();
     }
-    return _instance;
+    return networkLogInstance;
   }
 
   modelAdded(networkManager: SDK.NetworkManager.NetworkManager): void {
@@ -199,7 +197,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements
     return initiatorInfo;
   }
 
-  initiatorInfoForRequest(request: SDK.NetworkRequest.NetworkRequest): _InitiatorInfo {
+  initiatorInfoForRequest(request: SDK.NetworkRequest.NetworkRequest): InitiatorInfo {
     const initiatorInfo = this._initializeInitiatorSymbolIfNeeded(request);
     if (initiatorInfo.info) {
       return initiatorInfo.info;
@@ -383,10 +381,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements
     requestsToAdd.push(...serviceWorkerRequestsToAdd);
 
     for (const request of requestsToAdd) {
-      // TODO: Use optional chaining here once closure is gone.
-      if (currentPageLoad) {
-        currentPageLoad.bindRequest(request);
-      }
+      currentPageLoad?.bindRequest(request);
       oldRequestsSet.delete(request);
       this._addRequest(request);
     }
@@ -574,7 +569,7 @@ export const Events = {
 };
 
 interface InitiatorData {
-  info: _InitiatorInfo|null;
+  info: InitiatorInfo|null;
   chain: Set<SDK.NetworkRequest.NetworkRequest>|null;
   request?: SDK.NetworkRequest.NetworkRequest|null;
 }
@@ -584,9 +579,7 @@ export interface InitiatorGraph {
   initiated: Map<SDK.NetworkRequest.NetworkRequest, SDK.NetworkRequest.NetworkRequest>;
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export interface _InitiatorInfo {
+interface InitiatorInfo {
   type: SDK.NetworkRequest.InitiatorType;
   url: string;
   lineNumber: number;

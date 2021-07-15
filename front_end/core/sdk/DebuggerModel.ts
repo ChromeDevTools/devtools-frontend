@@ -302,6 +302,7 @@ export class DebuggerModel extends SDKModel {
     if (typeof this._debuggerId === 'string') {
       _debuggerIdToModel.delete(this._debuggerId);
     }
+    this._debuggerId = null;
   }
 
   _skipAllPauses(skip: boolean): void {

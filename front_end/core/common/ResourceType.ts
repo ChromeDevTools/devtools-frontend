@@ -230,7 +230,7 @@ export class ResourceType {
   }
 
   static fromURL(url: string): ResourceType|null {
-    return _resourceTypeByExtension.get(ParsedURL.extractExtension(url)) || null;
+    return resourceTypeByExtension.get(ParsedURL.extractExtension(url)) || null;
   }
 
   static fromName(name: string): ResourceType|null {
@@ -247,16 +247,16 @@ export class ResourceType {
 
   static mimeFromURL(url: string): string|undefined {
     const name = ParsedURL.extractName(url);
-    if (_mimeTypeByName.has(name)) {
-      return _mimeTypeByName.get(name);
+    if (mimeTypeByName.has(name)) {
+      return mimeTypeByName.get(name);
     }
 
     const ext = ParsedURL.extractExtension(url).toLowerCase();
-    return _mimeTypeByExtension.get(ext);
+    return mimeTypeByExtension.get(ext);
   }
 
   static mimeFromExtension(ext: string): string|undefined {
-    return _mimeTypeByExtension.get(ext);
+    return mimeTypeByExtension.get(ext);
   }
 
   name(): string {
@@ -380,17 +380,13 @@ export const resourceTypes = {
   WebBundle: new ResourceType('webbundle', i18nLazyString(UIStrings.webbundle), resourceCategories.Other, false),
 };
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const _mimeTypeByName = new Map([
+const mimeTypeByName = new Map([
   // CoffeeScript
   ['Cakefile', 'text/x-coffeescript'],
 ]);
 
 // clang-format off
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const _resourceTypeByExtension = new Map([
+export const resourceTypeByExtension = new Map([
   ['js', resourceTypes.Script],
   ['mjs', resourceTypes.Script],
 
@@ -422,9 +418,7 @@ export const _resourceTypeByExtension = new Map([
 ]);
 // clang-format on
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const _mimeTypeByExtension = new Map([
+export const mimeTypeByExtension = new Map([
   // Web extensions
   ['js', 'text/javascript'],
   ['mjs', 'text/javascript'],

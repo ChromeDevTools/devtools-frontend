@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const fs = require('fs');
+const chokidar = require('chokidar');
 const path = require('path');
 const childProcess = require('child_process');
 const cwd = process.cwd();
@@ -57,5 +57,5 @@ const onFileChange = (_, fileName) => {
 
 // Watch the front_end and test folder and build on any change.
 console.log(`Watching for changes in ${frontEndDir} and ${testsDir}; building to out/${target}`);
-fs.watch(`${frontEndDir}`, {recursive: true}, onFileChange);
-fs.watch(`${testsDir}`, {recursive: true}, onFileChange);
+chokidar.watch(frontEndDir).on('all', onFileChange);
+chokidar.watch(testsDir).on('all', onFileChange);

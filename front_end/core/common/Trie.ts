@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 export class Trie {
   private size!: number;
   private root: number;
@@ -13,9 +11,9 @@ export class Trie {
   private isWord!: boolean[];
   private wordsInSubtree!: number[];
   private freeNodes!: number[];
+
   constructor() {
     this.root = 0;
-
     this.clear();
   }
 
@@ -32,9 +30,7 @@ export class Trie {
           next = this.size++;
           this.isWord.push(false);
           this.wordsInSubtree.push(0);
-          // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          this.edges.push(({__proto__: null} as any));
+          this.edges.push(Object.create(null));
         }
         this.edges[node][edge] = next;
       }
@@ -84,17 +80,17 @@ export class Trie {
       }
     }
     const results: string[] = [];
-    this._dfs(node, prefix, results);
+    this.dfs(node, prefix, results);
     return results;
   }
 
-  _dfs(node: number, prefix: string, results: string[]): void {
+  private dfs(node: number, prefix: string, results: string[]): void {
     if (this.isWord[node]) {
       results.push(prefix);
     }
     const edges = this.edges[node];
     for (const edge in edges) {
-      this._dfs(edges[edge], prefix + edge, results);
+      this.dfs(edges[edge], prefix + edge, results);
     }
   }
 
@@ -116,9 +112,7 @@ export class Trie {
   clear(): void {
     this.size = 1;
     this.root = 0;
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.edges = [({__proto__: null} as any)];
+    this.edges = [Object.create(null)];
     this.isWord = [false];
     this.wordsInSubtree = [0];
     this.freeNodes = [];

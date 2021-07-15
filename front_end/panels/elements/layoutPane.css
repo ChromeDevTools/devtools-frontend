@@ -95,8 +95,7 @@
 
 .elements {
   margin-top: 12px;
-  color: var(--dom-tag-name-color); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--override-dom-tag-name-color);
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
   gap: 8px;

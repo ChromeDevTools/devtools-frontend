@@ -138,7 +138,7 @@
 
 .screencast-tag-name {
   --override-tag-name-color: rgb(163 18 128);
-  /* Keep this in sync with inspectorSyntaxHighlight.css (--dom-tag-name-color) */
+  /* Keep this in sync with inspectorSyntaxHighlight.css (--override-dom-tag-name-color) */
   color: var(--override-tag-name-color);
 }
 

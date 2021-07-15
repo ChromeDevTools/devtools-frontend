@@ -21,7 +21,7 @@
 }
 
 .cm-js-def {
-  color: var(--dom-tag-name-color); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--override-dom-tag-name-color);
 }
 
 .cm-js-keyword {
@@ -57,7 +57,7 @@
 }
 
 .cm-js-tag {
-  color: var(--dom-tag-name-color); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--override-dom-tag-name-color);
 }
 
 .cm-js-variable {
@@ -161,11 +161,11 @@
 }
 
 .cm-xml-tag {
-  color: var(--dom-tag-name-color); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--override-dom-tag-name-color);
 }
 
 .cm-xml-attribute {
-  color: var(--dom-attribute-name-color); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--override-dom-attribute-name-color);
 }
 
 .cm-xml-link {
@@ -173,7 +173,7 @@
 }
 
 .webkit-html-attribute-name {
-  color: var(--dom-attribute-name-color); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--override-dom-attribute-name-color);
 }
 
 .webkit-html-attribute-value {
@@ -185,15 +185,15 @@
 }
 
 .webkit-html-tag {
-  color: var(--dom-tag-name-color); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--override-dom-tag-name-color);
 }
 
 .webkit-html-tag-name {
-  color: var(--dom-tag-name-color); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--override-dom-tag-name-color);
 }
 
 .webkit-html-close-tag-name {
-  color: var(--dom-tag-name-color); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--override-dom-tag-name-color);
 }
 
 .webkit-html-text-node {
@@ -217,11 +217,11 @@
 }
 
 .cm-def {
-  color: var(--dom-tag-name-color); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--override-dom-tag-name-color);
 }
 
 .cm-header {
-  color: var(--dom-tag-name-color); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--override-dom-tag-name-color);
 }
 
 .cm-variable-2 {
@@ -254,7 +254,7 @@
 }
 
 .cm-tag {
-  color: var(--dom-tag-name-color); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--override-dom-tag-name-color);
 }
 
 .cm-attribute {
@@ -270,6 +270,6 @@
 }
 
 :root {
-  --dom-tag-name-color: rgb(93 176 215);
-  --dom-attribute-name-color: rgb(155 187 220);
+  --override-dom-tag-name-color: rgb(93 176 215);
+  --override-dom-attribute-name-color: rgb(155 187 220);
 }

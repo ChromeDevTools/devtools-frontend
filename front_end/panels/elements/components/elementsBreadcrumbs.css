@@ -5,10 +5,11 @@
  */
 
 :host {
-  --node-text-label-color: var(--color-syntax-2);
-  --node-text-class-color: var(--color-syntax-4);
-  --node-text-id-color: var(--color-syntax-4);
-  --node-text-multiple-descriptors-id: var(--color-syntax-7);
+  --override-node-text-label-color: var(--color-syntax-2);
+  --override-node-text-class-color: var(--color-syntax-4);
+  --override-node-text-id-color: var(--color-syntax-4);
+  --override-node-text-multiple-descriptors-id: var(--color-syntax-7);
+  --override-node-text-multiple-descriptors-class: var(--color-syntax-4);
 }
 
 .crumbs {

@@ -129,7 +129,7 @@
 }
 
 .cm-xml-tag {
-  color: var(--dom-tag-name-color); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--override-dom-tag-name-color);
 }
 
 .cm-xml-attribute {
@@ -141,8 +141,8 @@
 }
 
 :root {
-  --dom-tag-name-color: rgb(136 18 128);
-  --dom-attribute-name-color: rgb(153 69 0);
+  --override-dom-tag-name-color: rgb(136 18 128);
+  --override-dom-attribute-name-color: rgb(153 69 0);
 }
 
 .webkit-html-comment {
@@ -159,8 +159,7 @@
 .webkit-html-tag-name,
 .webkit-html-close-tag-name {
   /* Keep this in sync with view-source.css (.webkit-html-tag) */
-  color: var(--dom-tag-name-color); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--override-dom-tag-name-color);
 }
 
 .webkit-html-pseudo-element {
@@ -193,7 +192,7 @@
 
 .webkit-html-attribute-name {
   /* Keep this in sync with view-source.css (.webkit-html-attribute-name) */
-  color: var(--dom-attribute-name-color); /* stylelint-disable-line plugin/use_theme_colors */
+  color: var(--override-dom-attribute-name-color); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
   unicode-bidi: -webkit-isolate;
 }

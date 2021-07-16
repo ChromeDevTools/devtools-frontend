@@ -56,16 +56,15 @@
 }
 
 .filter-bitset-filter span {
-  --override-background-color-base: 0 0 0;
-
+  color: var(--color-text-primary);
   display: inline-block;
   flex: none;
   margin: auto 2px;
   padding: 3px;
   background: transparent;
-  text-shadow: var(--color-background-opacity-50) 0 1px 0;
   border-radius: 6px;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .filter-bitset-filter span:focus-visible {
@@ -80,28 +79,13 @@
   display: inline-block;
 }
 
-.filter-bitset-filter span.selected,
-.filter-bitset-filter span:hover,
-.filter-bitset-filter span:active {
-  color: var(--color-background);
-  text-shadow: rgb(var(--override-background-color-base) / 40%) 0 1px 0;
-}
-
 .filter-bitset-filter span:hover {
-  background: rgb(var(--override-background-color-base) / 20%);
+  background: var(--color-background-elevation-2);
 }
 
-.filter-bitset-filter span.selected {
-  background: rgb(var(--override-background-color-base) / 30%);
-}
-
+.filter-bitset-filter span.selected,
 .filter-bitset-filter span:active {
-  background: rgb(var(--override-background-color-base) / 50%);
-}
-
-.-theme-with-dark-background .filter-bitset-filter span,
-:host-context(.-theme-with-dark-background) .filter-bitset-filter span {
-  --override-background-color-base: 255 255 255;
+  background: var(--color-background-highlight);
 }
 
 .filter-checkbox-filter {

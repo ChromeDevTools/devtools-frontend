@@ -11,9 +11,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {DeviceModeWrapper} from './DeviceModeWrapper.js';
 import {Events, InspectedPagePlaceholder} from './InspectedPagePlaceholder.js';  // eslint-disable-line no-unused-vars
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-let _appInstance: AdvancedApp;
+let appInstance: AdvancedApp;
 
 interface Event {
   data: {
@@ -43,10 +41,10 @@ export class AdvancedApp implements Common.App.App {
    * Note: it's used by toolbox.ts without real type checks.
    */
   static _instance(): AdvancedApp {
-    if (!_appInstance) {
-      _appInstance = new AdvancedApp();
+    if (!appInstance) {
+      appInstance = new AdvancedApp();
     }
-    return _appInstance;
+    return appInstance;
   }
 
   presentUI(document: Document): void {

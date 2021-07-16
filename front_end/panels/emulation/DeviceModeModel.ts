@@ -560,7 +560,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper implemen
           screenHeight >= screenWidth ? Protocol.Emulation.ScreenOrientationType.PortraitPrimary :
                                         Protocol.Emulation.ScreenOrientationType.LandscapePrimary,
           resetPageScaleFactor);
-      this._applyUserAgent(mobile ? _defaultMobileUserAgent : '', mobile ? _defaultMobileUserAgentMetadata : null);
+      this._applyUserAgent(mobile ? defaultMobileUserAgent : '', mobile ? defaultMobileUserAgentMetadata : null);
       this._applyTouch(
           this._uaSetting.get() === UA.DesktopTouch || this._uaSetting.get() === UA.Mobile,
           this._uaSetting.get() === UA.Mobile);
@@ -849,18 +849,12 @@ export const MinDeviceScaleFactor = 0;
 export const MaxDeviceScaleFactor = 10;
 export const MaxDeviceNameLength = 50;
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const _mobileUserAgent =
+const mobileUserAgent =
     'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36';
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const _defaultMobileUserAgent =
-    SDK.NetworkManager.MultitargetNetworkManager.patchUserAgentWithChromeVersion(_mobileUserAgent);
+const defaultMobileUserAgent =
+    SDK.NetworkManager.MultitargetNetworkManager.patchUserAgentWithChromeVersion(mobileUserAgent);
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const _defaultMobileUserAgentMetadata = {
+const defaultMobileUserAgentMetadata = {
   platform: 'Android',
   platformVersion: '6.0',
   architecture: '',

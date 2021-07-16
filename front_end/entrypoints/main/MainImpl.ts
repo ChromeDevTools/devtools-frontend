@@ -909,9 +909,7 @@ export class PauseListener {
 }
 
 export function sendOverProtocol(
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    method: ProtocolClient.InspectorBackend.QualifiedName, params: Object|null): Promise<any[]|null> {
+    method: ProtocolClient.InspectorBackend.QualifiedName, params: Object|null): Promise<unknown[]|null> {
   return new Promise((resolve, reject) => {
     const sendRawMessage = ProtocolClient.InspectorBackend.test.sendRawMessage;
     if (!sendRawMessage) {

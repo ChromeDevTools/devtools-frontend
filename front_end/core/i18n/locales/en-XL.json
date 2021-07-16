@@ -2846,6 +2846,9 @@
   "panels/application/ServiceWorkersView.ts | sDeleted": {
     "message": "{PH1} - d̂él̂ét̂éd̂"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "Ŝéê ál̂ĺ r̂éĝíŝt́r̂át̂íôńŝ"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker f̂ór̂ {PH1}"
   },
@@ -2989,6 +2992,9 @@
   },
   "panels/application/StorageView.ts | sFailedToLoad": {
     "message": "{PH1} (f̂áîĺêd́ t̂ó l̂óâd́)"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "Ŝím̂úl̂át̂é ĉúŝt́ôḿ ŝt́ôŕâǵê q́ûót̂á"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "Ŝt́ôŕâǵê q́ûót̂á îś l̂ím̂ít̂éd̂ ín̂ Ín̂ćôǵn̂ít̂ó m̂ód̂é"

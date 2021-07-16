@@ -134,6 +134,11 @@ const UIStrings = {
    * @description Text in Application Panel Sidebar of the Application panel
    */
   serviceWorkers: 'Service Workers',
+  /**
+   * @description Checkbox label in Application Panel Sidebar of the Application panel.
+   * Storage quota refers to the amount of disk available for the website or app.
+   */
+  simulateCustomStorage: 'Simulate custom storage quota',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/StorageView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -207,7 +212,8 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
 
     this.previousOverrideFieldValue = '';
     const quotaOverrideCheckboxRow = quota.appendRow();
-    this.quotaOverrideCheckbox = UI.UIUtils.CheckboxLabel.create('Simulate custom storage quota', false, '');
+    this.quotaOverrideCheckbox =
+        UI.UIUtils.CheckboxLabel.create(i18nString(UIStrings.simulateCustomStorage), false, '');
     quotaOverrideCheckboxRow.appendChild(this.quotaOverrideCheckbox);
     this.quotaOverrideCheckbox.checkboxElement.addEventListener('click', this.onClickCheckbox.bind(this), false);
     this.quotaOverrideControlRow = quota.appendRow();

@@ -167,6 +167,10 @@ const UIStrings = {
   * the focus is moved to the service worker's client page.
   */
   focus: 'focus',
+  /**
+  *@description Link to view all the Service Workers that have been registered.
+  */
+  seeAllRegistrations: 'See all registrations',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/ServiceWorkersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -215,7 +219,8 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
     const othersSectionRow = othersSection.appendRow();
     const seeOthers =
         UI.Fragment
-            .html`<a class="devtools-link" role="link" tabindex="0" href="chrome://serviceworker-internals" target="_blank" style="display: inline; cursor: pointer;">See all registrations</a>`;
+            .html`<a class="devtools-link" role="link" tabindex="0" href="chrome://serviceworker-internals" target="_blank" style="display: inline; cursor: pointer;">${
+                i18nString(UIStrings.seeAllRegistrations)}</a>`;
     self.onInvokeElement(seeOthers, event => {
       const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
       mainTarget && mainTarget.targetAgent().invoke_createTarget({url: 'chrome://serviceworker-internals?devtools'});

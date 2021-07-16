@@ -2846,6 +2846,9 @@
   "panels/application/ServiceWorkersView.ts | sDeleted": {
     "message": "{PH1} - deleted"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "See all registrations"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker for {PH1}"
   },
@@ -2989,6 +2992,9 @@
   },
   "panels/application/StorageView.ts | sFailedToLoad": {
     "message": "{PH1} (failed to load)"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "Simulate custom storage quota"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "Storage quota is limited in Incognito mode"

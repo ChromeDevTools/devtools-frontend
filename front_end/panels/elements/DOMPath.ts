@@ -21,7 +21,7 @@ export const cssPath = function(node: SDK.DOMModel.DOMNode, optimized?: boolean)
   const steps = [];
   let contextNode: (SDK.DOMModel.DOMNode|null) = (node as SDK.DOMModel.DOMNode | null);
   while (contextNode) {
-    const step = _cssPathStep(contextNode, Boolean(optimized), contextNode === node);
+    const step = cssPathStep(contextNode, Boolean(optimized), contextNode === node);
     if (!step) {
       break;
     }  // Error - bail out early.
@@ -72,9 +72,7 @@ export const jsPath = function(node: SDK.DOMModel.DOMNode, optimized?: boolean):
   return result;
 };
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const _cssPathStep = function(node: SDK.DOMModel.DOMNode, optimized: boolean, isTargetNode: boolean): Step|null {
+const cssPathStep = function(node: SDK.DOMModel.DOMNode, optimized: boolean, isTargetNode: boolean): Step|null {
   if (node.nodeType() !== Node.ELEMENT_NODE) {
     return null;
   }
@@ -182,7 +180,7 @@ export const xPath = function(node: SDK.DOMModel.DOMNode, optimized?: boolean): 
   const steps = [];
   let contextNode: (SDK.DOMModel.DOMNode|null) = (node as SDK.DOMModel.DOMNode | null);
   while (contextNode) {
-    const step = _xPathValue(contextNode, optimized);
+    const step = xPathValue(contextNode, optimized);
     if (!step) {
       break;
     }  // Error - bail out early.
@@ -197,11 +195,9 @@ export const xPath = function(node: SDK.DOMModel.DOMNode, optimized?: boolean): 
   return (steps.length && steps[0].optimized ? '' : '/') + steps.join('/');
 };
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const _xPathValue = function(node: SDK.DOMModel.DOMNode, optimized?: boolean): Step|null {
+const xPathValue = function(node: SDK.DOMModel.DOMNode, optimized?: boolean): Step|null {
   let ownValue;
-  const ownIndex = _xPathIndex(node);
+  const ownIndex = xPathIndex(node);
   if (ownIndex === -1) {
     return null;
   }  // Error.
@@ -241,9 +237,7 @@ export const _xPathValue = function(node: SDK.DOMModel.DOMNode, optimized?: bool
   return new Step(ownValue, node.nodeType() === Node.DOCUMENT_NODE);
 };
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const _xPathIndex = function(node: SDK.DOMModel.DOMNode): number {
+const xPathIndex = function(node: SDK.DOMModel.DOMNode): number {
   /**
    * Returns -1 in case of error, 0 if no siblings matching the same expression,
    * <XPath index among the same expression-matching sibling nodes> otherwise.

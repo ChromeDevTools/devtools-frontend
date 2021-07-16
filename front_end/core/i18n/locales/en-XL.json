@@ -6848,6 +6848,9 @@
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "Q̂úêŕŷ Śt̂ŕîńĝ Ṕâŕâḿêt́êŕŝ"
   },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "R̂éĉór̂d́êd́ ât́t̂ŕîb́ût́îón̂ ẃît́ĥ trigger-data: {PH1}"
+  },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "R̂éf̂ér̂ŕêŕ P̂ól̂íĉý"
   },

@@ -232,6 +232,13 @@ const UIStrings = {
   */
   toUseThisResourceFromADifferentOrigin:
       'To use this resource from a different origin, the server may relax the cross-origin resource policy response header:',
+  /**
+   * @description Shown in the network panel for network requests that meet special criteria.
+   * 'Attribution' is a term used by the "Attribution Reporting API" and refers to an event, e.g.
+   * buying an item in an online store after an ad was clicked.
+   * @example {foo} PH1
+   */
+  recordedAttribution: 'Recorded attribution with `trigger-data`: {PH1}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestHeadersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -353,7 +360,22 @@ export class RequestHeadersView extends UI.Widget.VBox {
   _formatHeaderObject(header: BlockedReasonDetailDescriptor): DocumentFragment {
     const fragment = document.createDocumentFragment();
     if (header.headerNotSet) {
-      fragment.createChild('div', 'header-badge header-badge-text').textContent = 'not-set';
+      fragment.createChild('div', 'header-badge header-badge-error header-badge-text').textContent = 'not-set';
+    }
+    // Highlight successful Attribution Reporting API redirects. If the request was
+    // not canceled, then something went wrong.
+    if (header.name.toLowerCase() === 'location' && this._request.canceled) {
+      const url = new URL(header.value?.toString() || '', this._request.parsedURL.securityOrigin());
+      const triggerData = getTriggerDataFromAttributionRedirect(url);
+      if (triggerData) {
+        fragment.createChild('div', 'header-badge header-badge-success header-badge-text').textContent =
+            'Attribution Reporting API';
+        header.details = {
+          explanation: (): string => i18nString(UIStrings.recordedAttribution, {PH1: triggerData}),
+          examples: [],
+          link: null,
+        };
+      }
     }
     const colon = header.value ? ': ' : '';
     fragment.createChild('div', 'header-name').textContent = header.name + colon;
@@ -1065,6 +1087,20 @@ export class Category extends UI.TreeOutline.TreeElement {
     this._expandedSetting.set(false);
   }
 }
+
+/**
+ * Returns the value for the `trigger-data` search parameter iff the provided
+ * url is a valid attribution redirect as specified by the Attribution
+ * Reporting API.
+ */
+function getTriggerDataFromAttributionRedirect(url: URL): string|null {
+  if (url.pathname === '/.well-known/attribution-reporting/trigger-attribution' &&
+      url.searchParams.has('trigger-data')) {
+    return url.searchParams.get('trigger-data');
+  }
+  return null;
+}
+
 interface BlockedReasonDetailDescriptor {
   name: string;
   value: Object|null;

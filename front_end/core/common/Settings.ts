@@ -149,9 +149,7 @@ export class Settings {
     return setting;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  createSetting<T = any>(key: string, defaultValue: T, storageType?: SettingStorageType): Setting<T> {
+  createSetting<T>(key: string, defaultValue: T, storageType?: SettingStorageType): Setting<T> {
     const storage = this._storageFromType(storageType);
     let setting = (this.registry.get(key) as Setting<T>);
     if (!setting) {
@@ -161,9 +159,7 @@ export class Settings {
     return setting;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  createLocalSetting<T = any>(key: string, defaultValue: T): Setting<T> {
+  createLocalSetting<T>(key: string, defaultValue: T): Setting<T> {
     return this.createSetting(key, defaultValue, SettingStorageType.Local);
   }
 
@@ -179,7 +175,7 @@ export class Settings {
   clearAll(): void {
     this.globalStorage.removeAll();
     this.localStorage.removeAll();
-    const versionSetting = Settings.instance().createSetting(VersionController._currentVersionName, 0);
+    const versionSetting = Settings.instance().createSetting(VersionController.currentVersionName, 0);
     versionSetting.set(VersionController.currentVersion);
   }
 
@@ -291,9 +287,7 @@ export class Setting<V> {
   private titleInternal!: string;
   private registration: SettingRegistration|null;
   private requiresUserAction?: boolean;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private value?: any;
+  private value?: V;
   // TODO(crbug.com/1172300) Type cannot be inferred without changes to consumers. See above.
   private serializer: Serializer<unknown, V> = JSON;
   private hadUserAction?: boolean;
@@ -507,9 +501,7 @@ export class RegExpSetting extends Setting<any> {
 }
 
 export class VersionController {
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  static get _currentVersionName(): string {
+  static get currentVersionName(): string {
     return 'inspectorVersion';
   }
 
@@ -518,8 +510,8 @@ export class VersionController {
   }
 
   updateVersion(): void {
-    const localStorageVersion = window.localStorage ? window.localStorage[VersionController._currentVersionName] : 0;
-    const versionSetting = Settings.instance().createSetting(VersionController._currentVersionName, 0);
+    const localStorageVersion = window.localStorage ? window.localStorage[VersionController.currentVersionName] : 0;
+    const versionSetting = Settings.instance().createSetting(VersionController.currentVersionName, 0);
     const currentVersion = VersionController.currentVersion;
     const oldVersion = versionSetting.get() || parseInt(localStorageVersion || '0', 10);
     if (oldVersion === 0) {
@@ -591,7 +583,7 @@ export class VersionController {
       const newName = settingNames[oldName];
       const oldNameH = oldName + 'H';
 
-      let newValue: {}|{}|null = null;
+      let newValue: {}|null = null;
       const oldSetting = Settings.instance().createSetting(oldName, empty);
       if (oldSetting.get() !== empty) {
         newValue = newValue || {};
@@ -666,9 +658,8 @@ export class VersionController {
 
     const empty = {};
     for (const name in settingNames) {
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const setting = Settings.instance().createSetting<any>(name, empty);
+      const setting =
+          Settings.instance().createSetting<{vertical?: {size?: number}, horizontal?: {size?: number}}>(name, empty);
       const value = setting.get();
       if (value === empty) {
         continue;
@@ -691,9 +682,7 @@ export class VersionController {
     const settingNames = ['skipStackFramesPattern', 'workspaceFolderExcludePattern'];
 
     for (let i = 0; i < settingNames.length; ++i) {
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const setting = Settings.instance().createSetting<any>(settingNames[i], '');
+      const setting = Settings.instance().createSetting<string|unknown[]>(settingNames[i], '');
       let value = setting.get();
       if (!value) {
         return;
@@ -725,9 +714,7 @@ export class VersionController {
   _updateVersionFrom10To11(): void {
     const oldSettingName = 'customDevicePresets';
     const newSettingName = 'customEmulatedDeviceList';
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const oldSetting = Settings.instance().createSetting<any>(oldSettingName, undefined);
+    const oldSetting = Settings.instance().createSetting<unknown>(oldSettingName, undefined);
     const list = oldSetting.get();
     if (!Array.isArray(list)) {
       return;
@@ -760,9 +747,7 @@ export class VersionController {
       newList.push(device);
     }
     if (newList.length) {
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      Settings.instance().createSetting<any>(newSettingName, []).set(newList);
+      Settings.instance().createSetting<unknown[]>(newSettingName, []).set(newList);
     }
     removeSetting(oldSetting);
   }

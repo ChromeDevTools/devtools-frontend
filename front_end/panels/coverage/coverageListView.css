@@ -56,7 +56,7 @@
 
 .data-grid td .percent-value {
   color: var(--color-text-secondary);
-  width: 45px;
+  width: 6ex;
   display: inline-block;
 }
 

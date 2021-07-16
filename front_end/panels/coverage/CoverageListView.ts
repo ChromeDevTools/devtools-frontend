@@ -73,11 +73,6 @@ const UIStrings = {
   */
   sBytes: '{n, plural, =1 {# byte} other {# bytes}}',
   /**
-  *@description Message in Coverage View of the Coverage tab
-  *@example {12.34} PH1
-  */
-  sPercent: '{PH1} %',
-  /**
   *@description Accessible text for the unused bytes column in the coverage tool that describes the total unused bytes and percentage of the file unused.
   *@example {88%} percentage
   */
@@ -87,27 +82,26 @@ const UIStrings = {
   *@example {1000} PH1
   *@example {12.34} PH2
   */
-  sBytesSBelongToFunctionsThatHave: '{PH1} bytes ({PH2} %) belong to functions that have not (yet) been executed.',
+  sBytesSBelongToFunctionsThatHave: '{PH1} bytes ({PH2}) belong to functions that have not (yet) been executed.',
   /**
   *@description Tooltip text for the bar in the coverage list view of the coverage tool that illustrates the relation between used and unused bytes.
   *@example {1000} PH1
   *@example {12.34} PH2
   */
-  sBytesSBelongToBlocksOf: '{PH1} bytes ({PH2} %) belong to blocks of JavaScript that have not (yet) been executed.',
+  sBytesSBelongToBlocksOf: '{PH1} bytes ({PH2}) belong to blocks of JavaScript that have not (yet) been executed.',
   /**
   *@description Message in Coverage View of the Coverage tab
   *@example {1000} PH1
   *@example {12.34} PH2
   */
-  sBytesSBelongToFunctionsThatHaveExecuted:
-      '{PH1} bytes ({PH2} %) belong to functions that have executed at least once.',
+  sBytesSBelongToFunctionsThatHaveExecuted: '{PH1} bytes ({PH2}) belong to functions that have executed at least once.',
   /**
   *@description Message in Coverage View of the Coverage tab
   *@example {1000} PH1
   *@example {12.34} PH2
   */
   sBytesSBelongToBlocksOfJavascript:
-      '{PH1} bytes ({PH2} %) belong to blocks of JavaScript that have executed at least once.',
+      '{PH1} bytes ({PH2}) belong to blocks of JavaScript that have executed at least once.',
   /**
   *@description Accessible text for the visualization column of coverage tool. Contains percentage of unused bytes to used bytes.
   *@example {12.3} PH1
@@ -293,12 +287,25 @@ export class CoverageListView extends UI.Widget.VBox {
   }
 }
 
+let percentageFormatter: Intl.NumberFormat|null = null;
+
+function getPercentageFormatter(): Intl.NumberFormat {
+  if (!percentageFormatter) {
+    percentageFormatter = new Intl.NumberFormat(i18n.DevToolsLocale.DevToolsLocale.instance().locale, {
+      style: 'percent',
+      maximumFractionDigits: 1,
+    });
+  }
+  return percentageFormatter;
+}
+
 export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<GridNode> {
   _coverageInfo: URLCoverageInfo;
   _lastUsedSize!: number|undefined;
   _url: string;
   _maxSize: number;
   _highlightRegExp: RegExp|null;
+
   constructor(coverageInfo: URLCoverageInfo, maxSize: number) {
     super();
     this._coverageInfo = coverageInfo;
@@ -363,9 +370,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
         const unusedSizeSpan = cell.createChild('span');
         const unusedPercentsSpan = cell.createChild('span', 'percent-value');
         unusedSizeSpan.textContent = Platform.NumberUtilities.withThousandsSeparator(unusedSize);
-        // TODO(l10n): Don't concatenate the % string here. Do we need to use Intl number formatter instead?
-        const unusedPercentFormatted =
-            i18nString(UIStrings.sPercent, {PH1: this._percentageString(this._coverageInfo.unusedPercentage())});
+        const unusedPercentFormatted = getPercentageFormatter().format(this._coverageInfo.unusedPercentage());
         unusedPercentsSpan.textContent = unusedPercentFormatted;
         const unusedAccessibleName = i18nString(UIStrings.sBytesS, {n: unusedSize, percentage: unusedPercentFormatted});
         this.setCellAccessibleName(unusedAccessibleName, cell, columnId);
@@ -373,8 +378,8 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
       }
       case 'bars': {
         const barContainer = cell.createChild('div', 'bar-container');
-        const unusedPercent = this._percentageString(this._coverageInfo.unusedPercentage());
-        const usedPercent = this._percentageString(this._coverageInfo.usedPercentage());
+        const unusedPercent = getPercentageFormatter().format(this._coverageInfo.unusedPercentage());
+        const usedPercent = getPercentageFormatter().format(this._coverageInfo.usedPercentage());
         if (this._coverageInfo.unusedSize() > 0) {
           const unusedSizeBar = barContainer.createChild('div', 'bar bar-unused-size');
           unusedSizeBar.style.width = ((this._coverageInfo.unusedSize() / this._maxSize) * 100 || 0) + '%';
@@ -413,10 +418,6 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
       }
     }
     return cell;
-  }
-
-  _percentageString(value: number): string {
-    return value.toFixed(1);
   }
 
   _highlight(element: Element, textContent: string): void {

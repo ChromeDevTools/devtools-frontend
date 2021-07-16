@@ -3552,22 +3552,19 @@
     "message": "{n, plural, =1 {# byte, {percentage}} other {# bytes, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} bytes ({PH2} %) belong to blocks of JavaScript that have not (yet) been executed."
+    "message": "{PH1} bytes ({PH2}) belong to blocks of JavaScript that have not (yet) been executed."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} bytes ({PH2} %) belong to blocks of JavaScript that have executed at least once."
+    "message": "{PH1} bytes ({PH2}) belong to blocks of JavaScript that have executed at least once."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} bytes ({PH2} %) belong to functions that have not (yet) been executed."
+    "message": "{PH1} bytes ({PH2}) belong to functions that have not (yet) been executed."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} bytes ({PH2} %) belong to functions that have executed at least once."
+    "message": "{PH1} bytes ({PH2}) belong to functions that have executed at least once."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "{PH1} % of file unused, {PH2} % of file used"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1} %"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "Total Bytes"

@@ -538,7 +538,7 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper {
     if (this._size === 0) {
       return 0;
     }
-    return this.usedSize() / this.size() * 100;
+    return this.usedSize() / this.size();
   }
 
   unusedPercentage(): number {
@@ -546,7 +546,7 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper {
     if (this._size === 0) {
       return 100;
     }
-    return this.unusedSize() / this.size() * 100;
+    return this.unusedSize() / this.size();
   }
 
   isContentScript(): boolean {

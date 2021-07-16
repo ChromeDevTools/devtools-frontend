@@ -3552,22 +3552,19 @@
     "message": "{n, plural, =1 {# b̂ýt̂é, {percentage}} other {# b̂ýt̂éŝ, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} b̂ýt̂éŝ ({PH2} %) b́êĺôńĝ t́ô b́l̂óĉḱŝ óf̂ J́âv́âŚĉŕîṕt̂ t́ĥát̂ h́âv́ê ńôt́ (ŷét̂) b́êén̂ éx̂éĉút̂éd̂."
+    "message": "{PH1} b̂ýt̂éŝ ({PH2}) b́êĺôńĝ t́ô b́l̂óĉḱŝ óf̂ J́âv́âŚĉŕîṕt̂ t́ĥát̂ h́âv́ê ńôt́ (ŷét̂) b́êén̂ éx̂éĉút̂éd̂."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} b̂ýt̂éŝ ({PH2} %) b́êĺôńĝ t́ô b́l̂óĉḱŝ óf̂ J́âv́âŚĉŕîṕt̂ t́ĥát̂ h́âv́ê éx̂éĉút̂éd̂ át̂ ĺêáŝt́ ôńĉé."
+    "message": "{PH1} b̂ýt̂éŝ ({PH2}) b́êĺôńĝ t́ô b́l̂óĉḱŝ óf̂ J́âv́âŚĉŕîṕt̂ t́ĥát̂ h́âv́ê éx̂éĉút̂éd̂ át̂ ĺêáŝt́ ôńĉé."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} b̂ýt̂éŝ ({PH2} %) b́êĺôńĝ t́ô f́ûńĉt́îón̂ś t̂h́ât́ ĥáv̂é n̂ót̂ (ýêt́) b̂éêń êx́êćût́êd́."
+    "message": "{PH1} b̂ýt̂éŝ ({PH2}) b́êĺôńĝ t́ô f́ûńĉt́îón̂ś t̂h́ât́ ĥáv̂é n̂ót̂ (ýêt́) b̂éêń êx́êćût́êd́."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} b̂ýt̂éŝ ({PH2} %) b́êĺôńĝ t́ô f́ûńĉt́îón̂ś t̂h́ât́ ĥáv̂é êx́êćût́êd́ ât́ l̂éâśt̂ ón̂ćê."
+    "message": "{PH1} b̂ýt̂éŝ ({PH2}) b́êĺôńĝ t́ô f́ûńĉt́îón̂ś t̂h́ât́ ĥáv̂é êx́êćût́êd́ ât́ l̂éâśt̂ ón̂ćê."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "{PH1} % ôf́ f̂íl̂é ûńûśêd́, {PH2} % ôf́ f̂íl̂é ûśêd́"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1} %"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "T̂ót̂ál̂ B́ŷt́êś"

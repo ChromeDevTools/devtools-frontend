@@ -248,10 +248,6 @@ export enum Events {
 }
 
 export abstract class NetworkLogViewInterface {
-  static HTTPRequestsFilter(request: SDK.NetworkRequest.NetworkRequest): boolean {
-    throw new Error('not implemented');
-  }
-
   async onLoadFromFile(file: File): Promise<void> {
   }
 
@@ -334,14 +330,6 @@ export abstract class NetworkLogViewInterface {
   }
 
   removeAllNodeHighlights(): void {
-  }
-
-  static getDCLEventColor(): string {
-    throw new Error('not implemented');
-  }
-
-  static getLoadEventColor(): string {
-    throw new Error('not implemented');
   }
 
   modelAdded(model: SDK.NetworkManager.NetworkManager): void {

@@ -64,7 +64,7 @@ export class ChunkedFileReader implements ChunkedReader {
   _chunkTransferredCallback: ((arg0: ChunkedReader) => void)|undefined;
   _decoder: TextDecoder;
   _isCanceled: boolean;
-  _error: DOMError|null;
+  _error: DOMException|null;
   _transferFinished!: (arg0: boolean) => void;
   _output?: Common.StringOutputStream.OutputStream;
   _reader?: FileReader|null;
@@ -122,7 +122,7 @@ export class ChunkedFileReader implements ChunkedReader {
     return this._file.name;
   }
 
-  error(): DOMError|null {
+  error(): DOMException|null {
     return this._error;
   }
 
@@ -204,7 +204,7 @@ export class ChunkedFileReader implements ChunkedReader {
 
   _onError(event: Event): void {
     const eventTarget = (event.target as FileReader);
-    this._error = (eventTarget.error as DOMError);
+    this._error = eventTarget.error;
     this._transferFinished(false);
   }
 }

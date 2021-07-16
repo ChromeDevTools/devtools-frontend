@@ -343,9 +343,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
   _networkShowIssuesOnlySetting: Common.Settings.Setting<boolean>;
   _networkOnlyBlockedRequestsSetting: Common.Settings.Setting<boolean>;
   _networkOnlyThirdPartySetting: Common.Settings.Setting<boolean>;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _networkResourceTypeFiltersSetting: Common.Settings.Setting<any>;
+  _networkResourceTypeFiltersSetting: Common.Settings.Setting<{[key: string]: boolean}>;
   _rawRowHeight: number;
   _progressBarContainer: Element;
   _networkLogLargeRowsSetting: Common.Settings.Setting<boolean>;
@@ -357,9 +355,6 @@ export class NetworkLogView extends UI.Widget.VBox implements
   _staleRequests: Set<SDK.NetworkRequest.NetworkRequest>;
   _mainRequestLoadTime: number;
   _mainRequestDOMContentLoadedTime: number;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _highlightedSubstringChanges: any;
   _filters: Filter[];
   _timeFilter: Filter|null;
   _hoveredNode: NetworkNode|null;
@@ -423,15 +418,12 @@ export class NetworkLogView extends UI.Widget.VBox implements
     this._calculator = this._timeCalculator;
 
     this._columns =
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-        // @ts-expect-error
         new NetworkLogViewColumns(this, this._timeCalculator, this._durationCalculator, networkLogLargeRowsSetting);
     this._columns.show(this.element);
 
     this._staleRequests = new Set();
     this._mainRequestLoadTime = -1;
     this._mainRequestDOMContentLoadedTime = -1;
-    this._highlightedSubstringChanges = [];
 
     this._filters = [];
     this._timeFilter = null;
@@ -499,9 +491,9 @@ export class NetworkLogView extends UI.Widget.VBox implements
         this._onlyThirdPartyFilterUI.element(), i18nString(UIStrings.onlyShowThirdPartyRequests));
     filterBar.addFilter(this._onlyThirdPartyFilterUI);
 
-    this._filterParser = new TextUtils.TextUtils.FilterParser(_searchKeys);
+    this._filterParser = new TextUtils.TextUtils.FilterParser(searchKeys);
     this._suggestionBuilder =
-        new UI.FilterSuggestionBuilder.FilterSuggestionBuilder(_searchKeys, NetworkLogView._sortSearchValues);
+        new UI.FilterSuggestionBuilder.FilterSuggestionBuilder(searchKeys, NetworkLogView._sortSearchValues);
     this._resetSuggestionBuilder();
 
     this._dataGrid = this._columns.dataGrid();
@@ -680,9 +672,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
     return (String(request.statusCode)) === value;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  static HTTPRequestsFilter(request: SDK.NetworkRequest.NetworkRequest): boolean {
+  static getHTTPRequestsFilter(request: SDK.NetworkRequest.NetworkRequest): boolean {
     return request.parsedURL.isValid && (request.scheme in HTTPSchemas);
   }
 
@@ -745,9 +735,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
     if (!success) {
       const error = reader.error();
       if (error) {
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        this._harLoadFailed((error as any).message);
+        this._harLoadFailed(error.message);
       }
       return;
     }
@@ -1581,7 +1569,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
   _harRequests(): SDK.NetworkRequest.NetworkRequest[] {
     return Logs.NetworkLog.NetworkLog.instance()
         .requests()
-        .filter(NetworkLogView.HTTPRequestsFilter)
+        .filter(NetworkLogView.getHTTPRequestsFilter)
         .filter(request => {
           return request.finished ||
               (request.resourceType() === Common.ResourceType.resourceTypes.WebSocket && request.responseReceivedTime);
@@ -1658,10 +1646,6 @@ export class NetworkLogView extends UI.Widget.VBox implements
 
   _removeAllHighlights(): void {
     this.removeAllNodeHighlights();
-    for (let i = 0; i < this._highlightedSubstringChanges.length; ++i) {
-      UI.UIUtils.revertDomChanges(this._highlightedSubstringChanges[i]);
-    }
-    this._highlightedSubstringChanges = [];
   }
 
   _applyFilter(node: NetworkRequestNode): boolean {
@@ -2228,9 +2212,7 @@ export const HTTPSchemas = {
 };
 
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const _searchKeys: string[] = Object.values(NetworkForward.UIFilter.FilterType);
+const searchKeys: string[] = Object.values(NetworkForward.UIFilter.FilterType);
 
 export interface GroupLookupInterface {
   groupNodeForRequest(request: SDK.NetworkRequest.NetworkRequest): NetworkGroupNode|null;

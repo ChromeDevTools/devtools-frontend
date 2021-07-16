@@ -153,7 +153,7 @@ export class NetworkLogViewColumns {
       title: string,
     },
   }>;
-  _networkLogLargeRowsSetting: Common.Settings.Setting<number>;
+  _networkLogLargeRowsSetting: Common.Settings.Setting<boolean>;
   _eventDividers: Map<string, number[]>;
   _eventDividersShown: boolean;
   _gridMode: boolean;
@@ -179,7 +179,7 @@ export class NetworkLogViewColumns {
   constructor(
       networkLogView: NetworkLogView, timeCalculator: NetworkTransferTimeCalculator,
       durationCalculator: NetworkTransferDurationCalculator,
-      networkLogLargeRowsSetting: Common.Settings.Setting<number>) {
+      networkLogLargeRowsSetting: Common.Settings.Setting<boolean>) {
     this._networkLogView = networkLogView;
 
     this._persistantSettings = Common.Settings.Settings.instance().createSetting('networkLogColumns', {});

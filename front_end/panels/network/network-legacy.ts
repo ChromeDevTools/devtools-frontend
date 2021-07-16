@@ -49,6 +49,7 @@ Network.NetworkItemView = NetworkModule.NetworkItemView.NetworkItemView;
 Network.NetworkLogView = NetworkModule.NetworkLogView.NetworkLogView;
 
 Network.NetworkLogView.isRequestFilteredOut = NetworkModule.NetworkLogView.isRequestFilteredOut;
+Network.NetworkLogView.HTTPRequestsFilter = NetworkModule.NetworkLogView.NetworkLogView.getHTTPRequestsFilter;
 
 /** @enum {string} */
 Network.NetworkLogView.FilterType = NetworkForwardModule.UIFilter.FilterType;

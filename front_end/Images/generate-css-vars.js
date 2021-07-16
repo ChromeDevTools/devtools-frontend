@@ -14,8 +14,8 @@ function generateCSSVariableDefinition(fileName) {
       // We have to remove the `src/` part from any SVG file names for the CSS variables, while
       // we still use the full URL for the meta.url import. That's because the rollup-plugin-import-meta-assets
       // rewrites the image URLs to the new location, but doesn't modify the generated CSS variable name
-      fileName.replace('src\/', '').replace(path.extname(fileName), '')}', 'url(' + new URL('./${
-      fileName}', import.meta.url).toString() + ')');`;
+      fileName.replace('src\/', '').replace(path.extname(fileName), '')}', 'url(\\"' + new URL('./${
+      fileName}', import.meta.url).toString() + '\\")');`;
 }
 
 const CURRENT_YEAR = new Date().getFullYear();

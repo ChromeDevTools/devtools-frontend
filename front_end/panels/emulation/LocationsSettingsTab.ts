@@ -97,14 +97,10 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/emulation/LocationsSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidget.Delegate<Item> {
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _list: UI.ListWidget.ListWidget<any>;
+export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidget.Delegate<LocationDescription> {
+  _list: UI.ListWidget.ListWidget<LocationDescription>;
   _customSetting: Common.Settings.Setting<LocationDescription[]>;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _editor?: UI.ListWidget.Editor<any>;
+  _editor?: UI.ListWidget.Editor<LocationDescription>;
 
   private constructor() {
     super(true);
@@ -121,12 +117,9 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     this._list.registerRequiredCSS('panels/emulation/locationsSettingsTab.css');
     this._list.show(this.contentElement);
     this._customSetting =
-        (Common.Settings.Settings.instance().moduleSetting('emulation.locations') as
-         Common.Settings.Setting<LocationDescription[]>);
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const list = (this._customSetting.get() as any[])
-                     .map(location => replaceLocationTitles(location, this._customSetting.defaultValue()));
+        Common.Settings.Settings.instance().moduleSetting<LocationDescription[]>('emulation.locations');
+    const list =
+        this._customSetting.get().map(location => replaceLocationTitles(location, this._customSetting.defaultValue()));
 
     function replaceLocationTitles(
         location: LocationDescription, defaultValues: LocationDescription[]): LocationDescription {
@@ -183,7 +176,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     this._list.addNewItem(this._customSetting.get().length, {title: '', lat: 0, long: 0, timezoneId: '', locale: ''});
   }
 
-  renderItem(location: Item, _editable: boolean): Element {
+  renderItem(location: LocationDescription, _editable: boolean): Element {
     const element = document.createElement('div');
     element.classList.add('locations-list-item');
     const title = element.createChild('div', 'locations-list-text locations-list-title');
@@ -201,15 +194,13 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     return element;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  removeItemRequested(item: any, index: number): void {
+  removeItemRequested(item: LocationDescription, index: number): void {
     const list = this._customSetting.get();
     list.splice(index, 1);
     this._customSetting.set(list);
   }
 
-  commitEdit(location: Item, editor: UI.ListWidget.Editor<Item>, isNew: boolean): void {
+  commitEdit(location: LocationDescription, editor: UI.ListWidget.Editor<LocationDescription>, isNew: boolean): void {
     location.title = editor.control('title').value.trim();
     const lat = editor.control('lat').value.trim();
     location.lat = lat ? parseFloat(lat) : 0;
@@ -227,7 +218,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     this._customSetting.set(list);
   }
 
-  beginEdit(location: Item): UI.ListWidget.Editor<Item> {
+  beginEdit(location: LocationDescription): UI.ListWidget.Editor<LocationDescription> {
     const editor = this._createEditor();
     editor.control('title').value = location.title;
     editor.control('lat').value = String(location.lat);
@@ -237,12 +228,12 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     return editor;
   }
 
-  _createEditor(): UI.ListWidget.Editor<Item> {
+  _createEditor(): UI.ListWidget.Editor<LocationDescription> {
     if (this._editor) {
       return this._editor;
     }
 
-    const editor = new UI.ListWidget.Editor<Item>();
+    const editor = new UI.ListWidget.Editor<LocationDescription>();
     this._editor = editor;
     const content = editor.contentElement();
 
@@ -281,9 +272,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     return editor;
 
     function titleValidator(
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        item: any, index: number, input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
+        item: LocationDescription, index: number, input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
       const maxLength = 50;
       const value = input.value.trim();
 
@@ -301,9 +290,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     }
 
     function latValidator(
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        item: any, index: number, input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
+        item: LocationDescription, index: number, input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
       const minLat = -90;
       const maxLat = 90;
       const value = input.value.trim();
@@ -329,9 +316,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     }
 
     function longValidator(
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        item: any, index: number, input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
+        item: LocationDescription, index: number, input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
       const minLong = -180;
       const maxLong = 180;
       const value = input.value.trim();
@@ -357,9 +342,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     }
 
     function timezoneIdValidator(
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        item: any, index: number, input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
+        item: LocationDescription, index: number, input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
       const value = input.value.trim();
       // Chromium uses ICU's timezone implementation, which is very
       // liberal in what it accepts. ICU does not simply use an allowlist
@@ -376,9 +359,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     }
 
     function localeValidator(
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        item: any, index: number, input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
+        item: LocationDescription, index: number, input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
       const value = input.value.trim();
       // Similarly to timezone IDs, there's not much point in validating
       // input locales other than checking if it contains at least two
@@ -394,15 +375,8 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     }
   }
 }
-export interface Item {
-  title: string;
-  lat: number;
-  long: number;
-  timezoneId: string;
-  locale: string;
-}
 export interface LocationDescription {
-  title?: string;
+  title: string;
   lat: number;
   long: number;
   timezoneId: string;

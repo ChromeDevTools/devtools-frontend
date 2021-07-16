@@ -46,7 +46,7 @@ export class CoverageDecorationManager {
 
   update(updatedEntries: CoverageInfo[]): void {
     for (const entry of updatedEntries) {
-      for (const uiSourceCode of this._uiSourceCodeByContentProvider.get(entry.contentProvider())) {
+      for (const uiSourceCode of this._uiSourceCodeByContentProvider.get(entry.getContentProvider())) {
         uiSourceCode.removeDecorationsForType(decoratorType);
         uiSourceCode.addLineDecoration(0, decoratorType, this);
       }

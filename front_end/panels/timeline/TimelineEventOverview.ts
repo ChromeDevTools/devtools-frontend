@@ -735,7 +735,7 @@ export class TimelineEventOverviewCoverage extends TimelineEventOverview {
     const totalByTimestamp = new Map<number, Set<Coverage.CoverageModel.CoverageInfo>>();
     for (const urlInfo of this._coverageModel.entries()) {
       for (const info of urlInfo.entries()) {
-        total += info.size();
+        total += info.getSize();
         for (const [stamp, used] of info.usedByTimestamp()) {
           total_used += used;
 
@@ -770,7 +770,7 @@ export class TimelineEventOverviewCoverage extends TimelineEventOverview {
         }
 
         seen.add(info);
-        sumTotal += info.size();
+        sumTotal += info.getSize();
       }
       sumUsed += usedByTimestamp.get(stamp) || 0;
       coverageByTimestamp.set(stamp, sumUsed / sumTotal);
@@ -802,7 +802,7 @@ export class TimelineEventOverviewCoverage extends TimelineEventOverview {
     ctx.lineTo(-lineWidth, height - yOffset);
 
     let previous: (number|null)|null = null;
-    for (const stamp of this._coverageModel.coverageUpdateTimes()) {
+    for (const stamp of this._coverageModel.getCoverageUpdateTimes()) {
       const coverage: number|null = coverageByTimestamp.get(stamp) || previous;
       previous = coverage;
       if (!coverage) {
@@ -830,7 +830,7 @@ export class TimelineEventOverviewCoverage extends TimelineEventOverview {
     ctx.stroke();
 
     previous = null;
-    for (const stamp of this._coverageModel.coverageUpdateTimes()) {
+    for (const stamp of this._coverageModel.getCoverageUpdateTimes()) {
       const coverage: number|null = coverageByTimestamp.get(stamp) || previous;
       previous = coverage;
       if (!coverage) {

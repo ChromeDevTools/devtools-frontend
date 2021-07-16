@@ -54,7 +54,7 @@ CoverageTestRunner.pollCoverage = async function() {
   const coverageView = Coverage.CoverageView.instance();
   // Make sure not to have two instances of _pollAndCallback running at the same time.
   await coverageView._model._currentPollPromise;
-  return coverageView._model._pollAndCallback();
+  return coverageView._model.pollAndCallback();
 };
 
 /**

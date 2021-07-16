@@ -88,9 +88,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     UI.ActionRegistration.ActionDelegate, UI.Toolbar.ItemsProvider, UI.ContextMenu.Provider {
   _watchExpressions: WatchExpression[];
   _emptyElement!: HTMLElement;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _watchExpressionsSetting: Common.Settings.Setting<any>;
+  _watchExpressionsSetting: Common.Settings.Setting<string[]>;
   _addButton: UI.Toolbar.ToolbarButton;
   _refreshButton: UI.Toolbar.ToolbarButton;
   _treeOutline: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline;
@@ -105,7 +103,8 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     // panels/sources/debugger-ui/watch-expressions-preserve-expansion.js is either converted
     // to an e2e test or no longer accesses this variable directly.
     this._watchExpressions = [];
-    this._watchExpressionsSetting = Common.Settings.Settings.instance().createLocalSetting('watchExpressions', []);
+    this._watchExpressionsSetting =
+        Common.Settings.Settings.instance().createLocalSetting<string[]>('watchExpressions', []);
 
     this._addButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.addWatchExpression), 'largeicon-add');
     this._addButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
@@ -156,8 +155,9 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
   _saveExpressions(): void {
     const toSave = [];
     for (let i = 0; i < this._watchExpressions.length; i++) {
-      if (this._watchExpressions[i].expression()) {
-        toSave.push(this._watchExpressions[i].expression());
+      const expression = this._watchExpressions[i].expression();
+      if (expression) {
+        toSave.push(expression);
       }
     }
 
@@ -170,9 +170,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     this._createWatchExpression(null).startEditing();
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  doUpdate(): Promise<any> {
+  doUpdate(): Promise<void> {
     this._linkifier.reset();
     this.contentElement.removeChildren();
     this._treeOutline.removeChildren();
@@ -334,7 +332,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
           .evaluate(
               {
                 expression: this._expression,
-                objectGroup: WatchExpression._watchObjectGroupId,
+                objectGroup: WatchExpression.watchObjectGroupId,
                 includeCommandLineAPI: false,
                 silent: true,
                 returnByValue: false,
@@ -547,9 +545,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this._valueElement.textContent);
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  static readonly _watchObjectGroupId = 'watch-group';
+  private static readonly watchObjectGroupId = 'watch-group';
 }
 
 export namespace WatchExpression {

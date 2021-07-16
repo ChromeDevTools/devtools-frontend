@@ -6,7 +6,7 @@ import * as Protocol from '../../../../../../front_end/generated/protocol.js';
 import * as ApplicationComponents from '../../../../../../front_end/panels/application/components/components.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import * as TreeOutline from '../../../../../../front_end/ui/components/tree_outline/tree_outline.js';
-import {assertShadowRoot, getElementWithinComponent, renderElementIntoDOM, stripLitHtmlCommentNodes} from '../../../helpers/DOMHelpers.js';
+import {assertElement, assertShadowRoot, getElementWithinComponent, renderElementIntoDOM, stripLitHtmlCommentNodes} from '../../../helpers/DOMHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -145,7 +145,7 @@ function extractBadgeTextFromTreeNode(node: HTMLLIElement): string[] {
   });
 }
 
-function nodeKeyInnerHTML(node: HTMLLIElement) {
+function nodeKeyInnerHTML(node: HTMLLIElement|ShadowRoot) {
   const keyNode = node.querySelector('[data-node-key]');
   if (!keyNode) {
     throw new Error('Found tree node without a key within it.');
@@ -284,8 +284,10 @@ describe('OriginTrialTreeView', () => {
     }
     assert.lengthOf(tokenDetailNodes, 2);
     const tokenFieldsNode = tokenDetailNodes[0];
-
-    const innerHTML = nodeKeyInnerHTML(tokenFieldsNode.nodeElement);
+    const rowsComponent = tokenFieldsNode.nodeElement.querySelector('devtools-resources-origin-trial-token-rows');
+    assertElement(rowsComponent, ApplicationComponents.OriginTrialTreeView.OriginTrialTokenRows);
+    assertShadowRoot(rowsComponent.shadowRoot);
+    const innerHTML = rowsComponent.shadowRoot.innerHTML;
     const parsedToken = trialWithSingleToken.tokensWithStatus[0].parsedToken;
     assert.isDefined(parsedToken);
     if (parsedToken === undefined) {

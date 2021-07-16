@@ -9,7 +9,9 @@ import("../../visibility.gni")
 
 generate_css("css_files") {
   sources = [
+    "badge.css",
     "frameDetailsReportView.css",
+    "originTrialTokenRows.css",
     "permissionsPolicySection.css",
     "stackTraceLinkButton.css",
     "stackTraceRow.css",

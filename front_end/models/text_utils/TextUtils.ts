@@ -201,38 +201,62 @@ export class FilterParser {
   }
 
   parse(query: string): ParsedFilter[] {
-    const splitResult = Utils.splitStringByRegexes(
+    const splitFilters = Utils.splitStringByRegexes(
         query, [Utils._keyValueFilterRegex, Utils._regexFilterRegex, Utils._textFilterRegex]);
-    const filters: ParsedFilter[] = [];
-    for (let i = 0; i < splitResult.length; i++) {
-      const regexIndex = splitResult[i].regexIndex;
+    const parsedFilters: ParsedFilter[] = [];
+    for (const {regexIndex, captureGroups} of splitFilters) {
       if (regexIndex === -1) {
         continue;
       }
-      const result = splitResult[i].captureGroups;
       if (regexIndex === 0) {
-        if (this._keys.indexOf((result[1] as string)) !== -1) {
-          filters.push({key: result[1], regex: undefined, text: result[2], negative: Boolean(result[0])});
+        const startsWithMinus = captureGroups[0];
+        const parsedKey = captureGroups[1];
+        const parsedValue = captureGroups[2];
+        if (this._keys.indexOf((parsedKey as string)) !== -1) {
+          parsedFilters.push({
+            key: parsedKey,
+            regex: undefined,
+            text: parsedValue,
+            negative: Boolean(startsWithMinus),
+          });
         } else {
-          filters.push(
-              {key: undefined, regex: undefined, text: result[1] + ':' + result[2], negative: Boolean(result[0])});
+          parsedFilters.push({
+            key: undefined,
+            regex: undefined,
+            text: `${parsedKey}:${parsedValue}`,
+            negative: Boolean(startsWithMinus),
+          });
         }
       } else if (regexIndex === 1) {
+        const startsWithMinus = captureGroups[0];
+        const parsedRegex = captureGroups[1];
         try {
-          filters.push({
+          parsedFilters.push({
             key: undefined,
-            regex: new RegExp((result[1] as string), 'i'),
+            regex: new RegExp((parsedRegex as string), 'i'),
             text: undefined,
-            negative: Boolean(result[0]),
+            negative: Boolean(startsWithMinus),
           });
         } catch (e) {
-          filters.push({key: undefined, regex: undefined, text: '/' + result[1] + '/', negative: Boolean(result[0])});
+          parsedFilters.push({
+            key: undefined,
+            regex: undefined,
+            text: `/${parsedRegex}/`,
+            negative: Boolean(startsWithMinus),
+          });
         }
       } else if (regexIndex === 2) {
-        filters.push({key: undefined, regex: undefined, text: result[1], negative: Boolean(result[0])});
+        const startsWithMinus = captureGroups[0];
+        const parsedText = captureGroups[1];
+        parsedFilters.push({
+          key: undefined,
+          regex: undefined,
+          text: parsedText,
+          negative: Boolean(startsWithMinus),
+        });
       }
     }
-    return filters;
+    return parsedFilters;
   }
 }
 

@@ -6497,6 +6497,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "Hides data: and blob: URLs"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "Invert"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "Inverts the search filter"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "Learn more"
   },

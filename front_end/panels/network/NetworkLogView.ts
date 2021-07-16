@@ -63,6 +63,14 @@ const UIStrings = {
   /**
   *@description Text in Network Log View of the Network panel
   */
+  invertFilter: 'Invert',
+  /**
+  *@description Tooltip for the 'invert' checkbox in the Network panel.
+  */
+  invertsFilter: 'Inverts the search filter',
+  /**
+  *@description Text in Network Log View of the Network panel
+  */
   hideDataUrls: 'Hide data URLs',
   /**
   *@description Data urlfilter ui element title in Network Log View of the Network panel
@@ -339,6 +347,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkLogView.ts', UIS
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class NetworkLogView extends UI.Widget.VBox implements
     SDK.TargetManager.SDKModelObserver<SDK.NetworkManager.NetworkManager>, NetworkLogViewInterface {
+  _networkInvertFilterSetting: Common.Settings.Setting<boolean>;
   _networkHideDataURLSetting: Common.Settings.Setting<boolean>;
   _networkShowIssuesOnlySetting: Common.Settings.Setting<boolean>;
   _networkOnlyBlockedRequestsSetting: Common.Settings.Setting<boolean>;
@@ -368,6 +377,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
   _groupLookups: Map<string, GroupLookupInterface>;
   _activeGroupLookup: GroupLookupInterface|null;
   _textFilterUI: UI.FilterBar.TextFilterUI;
+  _invertFilterUI: UI.FilterBar.CheckboxFilterUI;
   _dataURLFilterUI: UI.FilterBar.CheckboxFilterUI;
   _resourceCategoryFilterUI: UI.FilterBar.NamedBitSetFilterUI;
   _onlyIssuesFilterUI: UI.FilterBar.CheckboxFilterUI;
@@ -390,6 +400,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
     this.element.id = 'network-container';
     this.element.classList.add('no-node-selected');
 
+    this._networkInvertFilterSetting = Common.Settings.Settings.instance().createSetting('networkInvertFilter', false);
     this._networkHideDataURLSetting = Common.Settings.Settings.instance().createSetting('networkHideDataURL', false);
     this._networkShowIssuesOnlySetting =
         Common.Settings.Settings.instance().createSetting('networkShowIssuesOnly', false);
@@ -447,6 +458,13 @@ export class NetworkLogView extends UI.Widget.VBox implements
     this._textFilterUI = new UI.FilterBar.TextFilterUI();
     this._textFilterUI.addEventListener(UI.FilterBar.FilterUI.Events.FilterChanged, this._filterChanged, this);
     filterBar.addFilter(this._textFilterUI);
+
+    this._invertFilterUI = new UI.FilterBar.CheckboxFilterUI(
+        'invert-filter', i18nString(UIStrings.invertFilter), true, this._networkInvertFilterSetting);
+    this._invertFilterUI.addEventListener(
+        UI.FilterBar.FilterUI.Events.FilterChanged, this._filterChanged.bind(this), this);
+    UI.Tooltip.Tooltip.install(this._invertFilterUI.element(), i18nString(UIStrings.invertsFilter));
+    filterBar.addFilter(this._invertFilterUI);
 
     this._dataURLFilterUI = new UI.FilterBar.CheckboxFilterUI(
         'hide-data-url', i18nString(UIStrings.hideDataUrls), true, this._networkHideDataURLSetting);
@@ -841,7 +859,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
 
   _filterChanged(_event: Common.EventTarget.EventTargetEvent): void {
     this.removeAllNodeHighlights();
-    this._parseFilterQuery(this._textFilterUI.value());
+    this._parseFilterQuery(this._textFilterUI.value(), this._invertFilterUI.checked());
     this._filterRequests();
     this._textFilterSetting.set(this._textFilterUI.value());
   }
@@ -1678,7 +1696,11 @@ export class NetworkLogView extends UI.Widget.VBox implements
     return true;
   }
 
-  _parseFilterQuery(query: string): void {
+  _parseFilterQuery(query: string, invert: boolean): void {
+    // A query string can have multiple filters, some of them regular
+    // expressions, some not. Each one of those filters can be negated with a
+    // "-" prefix, including the regular expressions. The top-level `invert`
+    // checkbox therefore inverts each one of those individual filters.
     const descriptors = this._filterParser.parse(query);
     this._filters = descriptors.map(descriptor => {
       const key = descriptor.key;
@@ -1695,7 +1717,10 @@ export class NetworkLogView extends UI.Widget.VBox implements
         filter = NetworkLogView._requestPathFilter.bind(
             null, new RegExp(Platform.StringUtilities.escapeForRegExp(text), 'i'));
       }
-      return descriptor.negative ? NetworkLogView._negativeFilter.bind(null, filter) : filter;
+      if ((descriptor.negative && !invert) || (!descriptor.negative && invert)) {
+        return NetworkLogView._negativeFilter.bind(null, filter);
+      }
+      return filter;
     });
   }
 

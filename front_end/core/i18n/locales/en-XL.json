@@ -6497,6 +6497,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "Ĥíd̂éŝ d́ât́â: án̂d́ b̂ĺôb́: ÛŔL̂ś"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "Îńv̂ér̂t́"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "Îńv̂ér̂t́ŝ t́ĥé ŝéâŕĉh́ f̂íl̂t́êŕ"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "L̂éâŕn̂ ḿôŕê"
   },

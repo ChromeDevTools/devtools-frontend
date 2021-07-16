@@ -25,7 +25,7 @@ export class IssueResolver extends Common.ResolverBase.ResolverBase<Protocol.Aud
   }
 
   private onIssueAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const issue = event.data as Issue;
+    const issue = event.data.issue as Issue;
     const id = issue.getIssueId();
     if (id) {
       this.onResolve(id, issue);

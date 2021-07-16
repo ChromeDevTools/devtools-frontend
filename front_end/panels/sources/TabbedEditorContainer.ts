@@ -73,29 +73,17 @@ export interface TabbedEditorContainerDelegate {
 export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
   _delegate: TabbedEditorContainerDelegate;
   _tabbedPane: UI.TabbedPane.TabbedPane;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _tabIds: Map<any, any>;
+  _tabIds: Map<Workspace.UISourceCode.UISourceCode, string>;
   _files: Map<string, Workspace.UISourceCode.UISourceCode>;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _previouslyViewedFilesSetting: Common.Settings.Setting<any[]>;
+  _previouslyViewedFilesSetting: Common.Settings.Setting<SerializedHistoryItem[]>;
   _history: History;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _uriToUISourceCode: Map<any, any>;
+  _uriToUISourceCode: Map<string, Workspace.UISourceCode.UISourceCode>;
   _currentFile!: Workspace.UISourceCode.UISourceCode|null;
   _currentView!: UI.Widget.Widget|null;
   _scrollTimer?: number;
   constructor(
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      delegate: TabbedEditorContainerDelegate, setting: Common.Settings.Setting<any[]>, placeholderElement: Element,
-      focusedPlaceholderElement?: Element) {
+      delegate: TabbedEditorContainerDelegate, setting: Common.Settings.Setting<SerializedHistoryItem[]>,
+      placeholderElement: Element, focusedPlaceholderElement?: Element) {
     super();
     this._delegate = delegate;
 
@@ -367,9 +355,10 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
 
   _canonicalUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): Workspace.UISourceCode.UISourceCode {
     // Check if we have already a UISourceCode for this url
-    if (this._uriToUISourceCode.has(uiSourceCode.url())) {
+    const existingSourceCode = this._uriToUISourceCode.get(uiSourceCode.url());
+    if (existingSourceCode) {
       // Ignore incoming uiSourceCode, we already have this file.
-      return this._uriToUISourceCode.get(uiSourceCode.url());
+      return existingSourceCode;
     }
     this._uriToUISourceCode.set(uiSourceCode.url(), uiSourceCode);
     return uiSourceCode;
@@ -530,7 +519,9 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
       this._currentView = null;
       this._currentFile = null;
     }
-    this._tabIds.delete(uiSourceCode);
+    if (uiSourceCode) {
+      this._tabIds.delete(uiSourceCode);
+    }
     this._files.delete(tabId);
 
     if (uiSourceCode) {
@@ -617,22 +608,29 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
   }
 }
 
-export  // TODO(crbug.com/1167717): Make this a const enum again
-    // eslint-disable-next-line rulesdir/const_enum
-    enum Events {
-      EditorSelected = 'EditorSelected',
-      EditorClosed = 'EditorClosed',
-    }
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
+  EditorSelected = 'EditorSelected',
+  EditorClosed = 'EditorClosed',
+}
 
 
 export let tabId = 0;
 export const maximalPreviouslyViewedFilesCount = 30;
+
+interface SerializedHistoryItem {
+  url: string;
+  selectionRange?: TextUtils.TextRange.SerializedTextRange;
+  scrollLineNumber?: number;
+}
 
 export class HistoryItem {
   url: string;
   _isSerializable: boolean;
   selectionRange: TextUtils.TextRange.TextRange|undefined;
   scrollLineNumber: number|undefined;
+
   constructor(url: string, selectionRange?: TextUtils.TextRange.TextRange, scrollLineNumber?: number) {
     this.url = url;
     this._isSerializable = url.length < HistoryItem.serializableUrlLengthLimit;
@@ -640,16 +638,14 @@ export class HistoryItem {
     this.scrollLineNumber = scrollLineNumber;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static fromObject(serializedHistoryItem: any): HistoryItem {
-    const selectionRange = 'selectionRange' in serializedHistoryItem ?
+  static fromObject(serializedHistoryItem: SerializedHistoryItem): HistoryItem {
+    const selectionRange = serializedHistoryItem.selectionRange ?
         TextUtils.TextRange.TextRange.fromObject(serializedHistoryItem.selectionRange) :
         undefined;
     return new HistoryItem(serializedHistoryItem.url, selectionRange, serializedHistoryItem.scrollLineNumber);
   }
 
-  serializeToObject(): Object|null {
+  serializeToObject(): SerializedHistoryItem|null {
     if (!this._isSerializable) {
       return null;
     }
@@ -661,8 +657,6 @@ export class HistoryItem {
     return serializedHistoryItem;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   static readonly serializableUrlLengthLimit = 4096;
 }
 
@@ -670,15 +664,14 @@ export class HistoryItem {
 export class History {
   _items: HistoryItem[];
   _itemsIndex: Map<string, number>;
+
   constructor(items: HistoryItem[]) {
     this._items = items;
     this._itemsIndex = new Map();
     this._rebuildItemIndex();
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static fromObject(serializedHistory: any[]): History {
+  static fromObject(serializedHistory: SerializedHistoryItem[]): History {
     const items = [];
     for (let i = 0; i < serializedHistory.length; ++i) {
       // crbug.com/876265 Old versions of DevTools don't have urls set in their localStorage
@@ -757,13 +750,11 @@ export class History {
     }
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  save(setting: Common.Settings.Setting<any[]>): void {
+  save(setting: Common.Settings.Setting<SerializedHistoryItem[]>): void {
     setting.set(this._serializeToObject());
   }
 
-  _serializeToObject(): Object[] {
+  _serializeToObject(): SerializedHistoryItem[] {
     const serializedHistory = [];
     for (let i = 0; i < this._items.length; ++i) {
       const serializedItem = this._items[i].serializeToObject();
@@ -788,6 +779,7 @@ export class History {
 
 export class EditorContainerTabDelegate implements UI.TabbedPane.TabbedPaneTabDelegate {
   _editorContainer: TabbedEditorContainer;
+
   constructor(editorContainer: TabbedEditorContainer) {
     this._editorContainer = editorContainer;
   }

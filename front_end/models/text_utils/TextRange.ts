@@ -30,6 +30,13 @@
 
 import * as Platform from '../../core/platform/platform.js';
 
+export interface SerializedTextRange {
+  startLine: number;
+  startColumn: number;
+  endLine: number;
+  endColumn: number;
+}
+
 export class TextRange {
   constructor(public startLine: number, public startColumn: number, public endLine: number, public endColumn: number) {
   }
@@ -38,12 +45,7 @@ export class TextRange {
     return new TextRange(line, column, line, column);
   }
 
-  static fromObject(serializedTextRange: {
-    startLine: number,
-    startColumn: number,
-    endLine: number,
-    endColumn: number,
-  }): TextRange {
+  static fromObject(serializedTextRange: SerializedTextRange): TextRange {
     return new TextRange(
         serializedTextRange.startLine, serializedTextRange.startColumn, serializedTextRange.endLine,
         serializedTextRange.endColumn);

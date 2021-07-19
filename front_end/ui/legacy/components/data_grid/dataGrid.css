@@ -173,7 +173,7 @@
 }
 
 .data-grid th.sortable:hover {
-  background-color: var(--color-background-elevation-2);
+  background-color: var(--color-background-highlight);
 }
 
 .data-grid .top-filler-td {

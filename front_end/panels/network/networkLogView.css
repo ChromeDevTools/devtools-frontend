@@ -353,7 +353,7 @@
 }
 
 .network-waterfall-header:hover {
-  background-color: var(--color-background-hover-overlay);
+  background-color: var(--color-background-highlight);
 }
 
 .network-waterfall-header div {

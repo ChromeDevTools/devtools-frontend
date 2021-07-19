@@ -160,7 +160,8 @@
 
 .network-error-row,
 .network-error-row .network-cell-subtitle {
-  color: var(--color-red);
+  /* stylelint-disable-next-line declaration-no-important */
+  color: var(--color-red) !important;
 }
 
 .network-log-grid.data-grid tr.selected.network-error-row,

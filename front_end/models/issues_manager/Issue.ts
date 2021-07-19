@@ -69,7 +69,7 @@ export interface AffectedElement {
   target: SDK.Target.Target|null;
 }
 
-export abstract class Issue<IssueCode extends string = string> extends Common.ObjectWrapper.ObjectWrapper {
+export abstract class Issue<IssueCode extends string = string> {
   private issueCode: IssueCode;
   private issuesModel: SDK.IssuesModel.IssuesModel|null;
   protected issueId: string|undefined = undefined;
@@ -77,7 +77,6 @@ export abstract class Issue<IssueCode extends string = string> extends Common.Ob
   constructor(
       code: IssueCode|{code: IssueCode, umaCode: string}, issuesModel: SDK.IssuesModel.IssuesModel|null = null,
       issueId?: string) {
-    super();
     this.issueCode = typeof code === 'object' ? code.code : code;
     this.issuesModel = issuesModel;
     this.issueId = issueId;

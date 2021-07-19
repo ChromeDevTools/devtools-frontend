@@ -8,14 +8,13 @@ import * as SDK from '../../core/sdk/sdk.js';
 
 let contrastCheckTriggerInstance: ContrastCheckTrigger|null = null;
 
-export class ContrastCheckTrigger extends Common.ObjectWrapper.ObjectWrapper {
+export class ContrastCheckTrigger {
   private pageLoadListeners: WeakMap<SDK.ResourceTreeModel.ResourceTreeModel, Common.EventTarget.EventDescriptor> =
       new WeakMap();
   private frameAddedListeners: WeakMap<SDK.ResourceTreeModel.ResourceTreeModel, Common.EventTarget.EventDescriptor> =
       new WeakMap();
 
   constructor() {
-    super();
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.ResourceTreeModel.ResourceTreeModel, this);
   }
 

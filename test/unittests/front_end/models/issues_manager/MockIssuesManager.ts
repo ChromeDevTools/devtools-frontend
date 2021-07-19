@@ -8,7 +8,7 @@ import type {StubIssue} from './StubIssue.js';
 import type * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import {MockIssuesModel} from './MockIssuesModel.js';
 
-export class MockIssuesManager extends Common.ObjectWrapper.ObjectWrapper {
+export class MockIssuesManager extends Common.ObjectWrapper.ObjectWrapper<IssuesManager.IssuesManager.EventTypes> {
   private mockIssues: IssuesManager.Issue.Issue[];
   private issueCounts = new Map<IssuesManager.Issue.IssueKind, number>([
     [IssuesManager.Issue.IssueKind.Improvement, 0],

@@ -125,7 +125,7 @@ export interface IssuesManagerCreationOptions {
  * Issues that are accepted by the filter cause events to be fired or are returned by
  * `IssuesManager#issues()`.
  */
-export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
+export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     SDK.TargetManager.SDKModelObserver<SDK.IssuesModel.IssuesModel> {
   private eventListeners = new WeakMap<SDK.IssuesModel.IssuesModel, Common.EventTarget.EventDescriptor>();
   private allIssues = new Map<string, Issue>();
@@ -293,13 +293,22 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper implements
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum Events {
+export const enum Events {
   IssuesCountUpdated = 'IssuesCountUpdated',
   IssueAdded = 'IssueAdded',
   FullUpdateRequired = 'FullUpdateRequired',
 }
+
+export interface IssueAddedEvent {
+  issuesModel: SDK.IssuesModel.IssuesModel;
+  issue: Issue;
+}
+
+export type EventTypes = {
+  [Events.IssuesCountUpdated]: void,
+  [Events.FullUpdateRequired]: void,
+  [Events.IssueAdded]: IssueAddedEvent,
+};
 
 // @ts-ignore
 globalThis.addIssueForTest = (issue: Protocol.Audits.InspectorIssue): void => {

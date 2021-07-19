@@ -5,7 +5,7 @@
 // TODO(crbug.com/1228674) Remove defaults for generic type parameters once
 //                         all event emitters and sinks have been migrated.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface EventDescriptor<Events = unknown, T extends EventType<Events> = any> {
+export interface EventDescriptor<Events = any, T extends EventType<Events> = any> {
   eventTarget: EventTarget<Events>;
   eventType: T;
   thisObject?: Object;

@@ -23,9 +23,8 @@ export class SourceFrameIssuesManager {
     this.issuesManager.addEventListener(IssuesManager.Events.FullUpdateRequired, this.onFullUpdateRequired, this);
   }
 
-  private onIssueAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const {issue} =
-        /** @type {!{issue: !Issue}} */ (event.data);
+  private onIssueAdded(event: Common.EventTarget.EventTargetEvent<IssuesManager.IssueAddedEvent>): void {
+    const {issue} = event.data;
     this.addIssue(issue);
   }
 

@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import type * as SDK from '../../core/sdk/sdk.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import type * as Protocol from '../../generated/protocol.js';
 
@@ -209,12 +208,8 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  private onIssueAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const {issue} = (event.data as {
-      issuesModel: SDK.IssuesModel.IssuesModel,
-      issue: IssuesManager.Issue.Issue,
-    });
-    this.aggregateIssue(issue);
+  private onIssueAdded(event: Common.EventTarget.EventTargetEvent<IssuesManager.IssuesManager.IssueAddedEvent>): void {
+    this.aggregateIssue(event.data.issue);
   }
 
   private onFullUpdateRequired(): void {

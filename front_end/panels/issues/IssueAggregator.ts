@@ -195,7 +195,7 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
   }
 }
 
-export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper {
+export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly aggregatedIssuesByCode = new Map<string, AggregatedIssue>();
 
   constructor(private readonly issuesManager: IssuesManager.IssuesManager.IssuesManager) {
@@ -244,3 +244,8 @@ export const enum Events {
   AggregatedIssueUpdated = 'AggregatedIssueUpdated',
   FullUpdateRequired = 'FullUpdateRequired',
 }
+
+export type EventTypes = {
+  [Events.AggregatedIssueUpdated]: AggregatedIssue,
+  [Events.FullUpdateRequired]: void,
+};

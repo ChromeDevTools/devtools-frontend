@@ -249,9 +249,8 @@ export class IssuesPane extends UI.Widget.VBox {
     return {toolbarContainer};
   }
 
-  private issueUpdated(event: Common.EventTarget.EventTargetEvent): void {
-    const issue = event.data as AggregatedIssue;
-    this.scheduleIssueViewUpdate(issue);
+  private issueUpdated(event: Common.EventTarget.EventTargetEvent<AggregatedIssue>): void {
+    this.scheduleIssueViewUpdate(event.data);
   }
 
   private scheduleIssueViewUpdate(issue: AggregatedIssue): void {

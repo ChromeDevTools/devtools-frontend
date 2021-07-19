@@ -60,6 +60,7 @@ DEPS = {
     "bl": "4.1.0",
     "chai": "4.3.4",
     "chokidar": "3.5.1",
+    "clean-css": "4.2.3",
     "convert-source-map": "1.7.0",
     "escodegen": "2.0.0",
     "eslint": "7.28.0",

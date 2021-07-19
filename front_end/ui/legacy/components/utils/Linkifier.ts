@@ -190,7 +190,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
       if (fallback) {
         // @ts-ignore
         anchor.href = fallback.href;
-        UI.Tooltip.Tooltip.install(anchor, UI.Tooltip.Tooltip.getContent(fallback));
+        UI.Tooltip.Tooltip.install(anchor, fallback.title);
         anchor.className = fallback.className;
         anchor.textContent = fallback.textContent;
         const fallbackInfo = infoByAnchor.get(fallback);

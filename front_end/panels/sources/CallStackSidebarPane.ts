@@ -300,17 +300,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
 
     if (callframe && callframe.warnings.length) {
       const icon = UI.Icon.Icon.create('smallicon-warning', 'call-frame-warning-icon');
-      // Build span of all warnings separated by breaks
-      const warningsText = document.createElement('span');
-      let first = true;
-      for (const warning of callframe.warnings) {
-        if (!first) {
-          warningsText.createChild('br');
-        }
-        first = false;
-        warningsText.appendChild(document.createTextNode(warning));
-      }
-      UI.Tooltip.Tooltip.install(icon, warningsText);
+      UI.Tooltip.Tooltip.install(icon, callframe.warnings.join('\n'));
       element.appendChild(icon);
     }
     return element;

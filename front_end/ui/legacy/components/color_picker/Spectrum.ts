@@ -555,9 +555,9 @@ export class Spectrum extends UI.Widget.VBox {
         shadow.style.background = palette.colors[i];
         shadow = colorElement.createChild('div', 'spectrum-palette-color spectrum-palette-color-shadow');
         shadow.style.background = palette.colors[i];
-        UI.Tooltip.Tooltip.install(
-            colorElement, i18nString(UIStrings.longclickOrLongpressSpaceToShow, {PH1: palette.colors[i]}));
-        UI.ARIAUtils.setAccessibleName(colorElement, UI.Tooltip.Tooltip.getContent(colorElement));
+        const tooltipText = i18nString(UIStrings.longclickOrLongpressSpaceToShow, {PH1: palette.colors[i]});
+        UI.Tooltip.Tooltip.install(colorElement, tooltipText);
+        UI.ARIAUtils.setAccessibleName(colorElement, tooltipText);
         new UI.UIUtils.LongClickController(
             colorElement, this._showLightnessShades.bind(this, colorElement, palette.colors[i]));
       }

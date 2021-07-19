@@ -120,7 +120,6 @@ copy_to_gen("legacy_css") {
     "textPrompt.css",
     "themeColors.css",
     "toolbar.css",
-    "tooltip.css",
     "treeoutline.css",
     "viewContainers.css",
   ]

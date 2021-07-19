@@ -404,13 +404,13 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
         const previewFormatter = new RemoteObjectPreviewFormatter();
         previewFormatter.appendObjectPreview(valueElement, value.preview, false /* isEntry */);
         propertyValue = new ObjectPropertyValue(valueElement);
-        UI.Tooltip.Tooltip.install(propertyValue.element, description || '');
+        UI.Tooltip.Tooltip.install(propertyValue.element as HTMLElement, description || '');
       } else if (description.length > maxRenderableStringLength) {
         propertyValue = new ExpandableTextPropertyValue(valueElement, description, EXPANDABLE_MAX_LENGTH);
       } else {
         propertyValue = new ObjectPropertyValue(valueElement);
         propertyValue.element.textContent = description;
-        UI.Tooltip.Tooltip.install(propertyValue.element, description);
+        UI.Tooltip.Tooltip.install(propertyValue.element as HTMLElement, description);
       }
       this.appendMemoryIcon(valueElement, value);
     }
@@ -1042,7 +1042,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   _updatePropertyPath(): void {
-    if (UI.Tooltip.Tooltip.getContent(this.nameElement)) {
+    if (this.nameElement.title) {
       return;
     }
 
@@ -1059,7 +1059,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     const parentPath = (this.parent instanceof ObjectPropertyTreeElement && this.parent.nameElement &&
                         !this.parent.property.synthetic) ?
-        UI.Tooltip.Tooltip.getContent(this.parent.nameElement) :
+        this.parent.nameElement.title :
         '';
 
     if (this.property.private || useDotNotation.test(name)) {
@@ -1089,9 +1089,9 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyValue), copyValueHandler);
       }
     }
-    if (!this.property.synthetic && this.nameElement && UI.Tooltip.Tooltip.getContent(this.nameElement)) {
+    if (!this.property.synthetic && this.nameElement && this.nameElement.title) {
       const copyPathHandler = Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(
-          Host.InspectorFrontendHost.InspectorFrontendHostInstance, UI.Tooltip.Tooltip.getContent(this.nameElement));
+          Host.InspectorFrontendHost.InspectorFrontendHostInstance, this.nameElement.title);
       contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyPropertyPath), copyPathHandler);
     }
     if (parentMap.get(this.property) instanceof SDK.RemoteObject.LocalJSONObject) {
@@ -1249,7 +1249,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   path(): string {
-    return UI.Tooltip.Tooltip.getContent(this.nameElement);
+    return this.nameElement.title;
   }
 }
 
@@ -1707,7 +1707,7 @@ export class ExpandableTextPropertyValue extends ObjectPropertyValue {
     this._text = text;
     this._maxLength = maxLength;
     container.textContent = text.slice(0, maxLength);
-    UI.Tooltip.Tooltip.install(container, `${text.slice(0, maxLength)}…`);
+    UI.Tooltip.Tooltip.install(container as HTMLElement, `${text.slice(0, maxLength)}…`);
 
     this._expandElement = container.createChild('span');
     this._maxDisplayableTextLength = 10000000;

@@ -93,7 +93,6 @@ export class AdvancedApp implements Common.App.App {
         toolboxDocument, Common.Settings.Settings.instance().createSetting('uiTheme', 'default'));
     UI.UIUtils.installComponentRootStyles((toolboxDocument.body as Element));
     UI.ContextMenu.ContextMenu.installHandler(toolboxDocument);
-    UI.Tooltip.Tooltip.installHandler(toolboxDocument);
 
     this._toolboxRootView = new UI.RootView.RootView();
     this._toolboxRootView.attachToDocument(toolboxDocument);

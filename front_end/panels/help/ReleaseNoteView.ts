@@ -89,13 +89,14 @@ export class ReleaseNoteView extends UI.Widget.VBox {
 
     const imageLink = UI.XLink.XLink.create(releaseNote.link, ' ') as HTMLElement;
     imageLink.classList.add('release-note-image');
-    UI.Tooltip.Tooltip.install(imageLink, latestReleaseNote().header);
+    const tooltipText = latestReleaseNote().header;
+    UI.Tooltip.Tooltip.install(imageLink, tooltipText);
 
     hbox.appendChild(imageLink);
     const image = imageLink.createChild('img') as HTMLImageElement;
     image.src = new URL('../../Images/whatsnew.avif', import.meta.url).toString();
-    UI.Tooltip.Tooltip.install(image, UI.Tooltip.Tooltip.getContent(imageLink));
-    image.alt = UI.Tooltip.Tooltip.getContent(image);
+    UI.Tooltip.Tooltip.install(image, tooltipText);
+    image.alt = tooltipText;
 
     return hbox;
   }

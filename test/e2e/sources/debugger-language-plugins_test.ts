@@ -917,9 +917,13 @@ describe('The Debugger Language Plugins', async () => {
     const watchTexts = await Promise.all(watchResults.map(async watch => await watch.evaluate(e => e.textContent)));
     assert.deepStrictEqual(watchTexts, ['foo: 23', 'bar: <not available>']);
 
-    await watchResults[1].hover();
-    const tooltip = await waitFor('.tooltip');
-    const tooltipText = await tooltip.evaluate(e => e.textContent);
+    const tooltipText = await watchResults[1].evaluate(e => {
+      const errorElement = e.querySelector('.watch-expression-error');
+      if (!errorElement) {
+        return 'NO ERROR COULD BE FOUND';
+      }
+      return errorElement.getAttribute('title');
+    });
     assert.strictEqual(tooltipText, 'No typeinfo for bar');
 
 

@@ -1412,7 +1412,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       if (!this.expanded) {
         processColors.call(this, descendantColors, 'elements-gutter-decoration elements-has-decorated-children');
       }
-      UI.Tooltip.Tooltip.install(this._decorationsElement, titles);
+      UI.Tooltip.Tooltip.install(this._decorationsElement, titles.textContent);
       UI.ARIAUtils.setAccessibleName(this._decorationsElement, titles.textContent || '');
 
       function processColors(this: ElementsTreeElement, colors: Set<string>, className: string): void {

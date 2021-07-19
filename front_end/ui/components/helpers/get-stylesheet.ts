@@ -74,7 +74,6 @@ export const CSS_RESOURCES_TO_LOAD_INTO_RUNTIME = [
   'ui/legacy/targetCrashedScreen.css',
   'ui/legacy/textButton.css',
   'ui/legacy/textPrompt.css',
-  'ui/legacy/tooltip.css',
   'ui/legacy/treeoutline.css',
   'ui/legacy/viewContainers.css',
   'panels/elements/layoutPane.css',

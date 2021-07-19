@@ -377,8 +377,6 @@ export class MainImpl {
     self.UI.inspectorView = UI.InspectorView.InspectorView.instance();
     UI.ContextMenu.ContextMenu.initialize();
     UI.ContextMenu.ContextMenu.installHandler(document);
-    UI.Tooltip.Tooltip.installHandler(document);
-
 
     // These instances need to be created early so they don't miss any events about requests/issues/etc.
     Logs.NetworkLog.NetworkLog.instance();

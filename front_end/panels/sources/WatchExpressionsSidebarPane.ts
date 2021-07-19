@@ -453,7 +453,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
       this._valueElement.textContent = i18nString(UIStrings.notAvailable);
       if (exceptionDetails !== undefined && exceptionDetails.exception !== undefined &&
           exceptionDetails.exception.description !== undefined) {
-        UI.Tooltip.Tooltip.install(this._valueElement, exceptionDetails.exception.description);
+        UI.Tooltip.Tooltip.install(this._valueElement as HTMLElement, exceptionDetails.exception.description);
       }
     } else {
       const propertyValue =

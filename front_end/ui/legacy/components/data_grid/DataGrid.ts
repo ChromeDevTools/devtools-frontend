@@ -283,18 +283,18 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper {
   static setElementText(element: Element, newText: string, longText: boolean): void {
     if (longText && newText.length > 1000) {
       element.textContent = Platform.StringUtilities.trimEndWithMaxLength(newText, 1000);
-      UI.Tooltip.Tooltip.install(element, newText);
+      UI.Tooltip.Tooltip.install(element as HTMLElement, newText);
       elementToLongTextMap.set(element, newText);
     } else {
       element.textContent = newText;
-      UI.Tooltip.Tooltip.install(element, '');
+      UI.Tooltip.Tooltip.install(element as HTMLElement, '');
       elementToLongTextMap.delete(element);
     }
   }
 
   static setElementBoolean(element: Element, value: boolean): void {
     element.textContent = value ? '\u2713' : '';
-    UI.Tooltip.Tooltip.install(element, '');
+    UI.Tooltip.Tooltip.install(element as HTMLElement, '');
   }
 
   setStriped(isStriped: boolean): void {

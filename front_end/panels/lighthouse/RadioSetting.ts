@@ -35,8 +35,8 @@ export class RadioSetting {
 
       this.element.appendChild(fragment.element());
       if (description) {
-        UI.Tooltip.Tooltip.install(fragment.$('input'), description);
-        UI.Tooltip.Tooltip.install(fragment.$('span'), description);
+        UI.Tooltip.Tooltip.install(fragment.$('input') as HTMLElement, description);
+        UI.Tooltip.Tooltip.install(fragment.$('span') as HTMLElement, description);
       }
       const radioElement = fragment.$('input') as HTMLInputElement;
       radioElement.addEventListener('change', this._valueChanged.bind(this));

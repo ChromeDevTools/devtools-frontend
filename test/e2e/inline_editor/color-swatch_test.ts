@@ -128,9 +128,10 @@ describe('The color swatch', async () => {
     if (!property) {
       assert.fail('Property not found');
     }
-    await shiftClickColorSwatch(property, 0);
 
     await waitForPropertyValueInComputedPane('color', 'rgb(255, 0, 0)');
+    await shiftClickColorSwatch(property, 0);
+    await waitForPropertyValueInComputedPane('color', 'hsl(0deg 100% 50%)');
   });
 
   it('supports shift-clicking for colors next to var() functions', async () => {

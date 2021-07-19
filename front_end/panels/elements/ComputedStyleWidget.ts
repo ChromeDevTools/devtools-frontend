@@ -96,7 +96,7 @@ const createPropertyElement = (node: SDK.DOMModel.DOMNode, propertyName: string,
   const propertyElement = new ElementsComponents.ComputedStyleProperty.ComputedStyleProperty();
 
   const renderer = new StylesSidebarPropertyRenderer(null, node, propertyName, propertyValue);
-  renderer.setColorHandler(processComputedColor);
+  renderer.setColorHandler(processColor.bind(null, false /* computed styles don't provide the original format */));
 
   const propertyNameElement = renderer.renderName();
   propertyNameElement.slot = 'property-name';
@@ -116,7 +116,7 @@ const createTraceElement =
       const trace = new ElementsComponents.ComputedStyleTrace.ComputedStyleTrace();
 
       const renderer = new StylesSidebarPropertyRenderer(null, node, property.name, (property.value as string));
-      renderer.setColorHandler(processColor);
+      renderer.setColorHandler(processColor.bind(null, true));
       const valueElement = renderer.renderValue();
       valueElement.slot = 'trace-value';
       trace.appendChild(valueElement);
@@ -137,18 +137,18 @@ const createTraceElement =
       return trace;
     };
 
-const processColor = (text: string): Node => {
+const processColor = (autoDetectFormat: boolean, text: string): Node => {
   const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
-  swatch.renderColor(text, true);
-  swatch.createChild('span').textContent = text;
-  return swatch;
-};
+  swatch.renderColor(text, autoDetectFormat || Common.Color.Format.RGB);
+  const valueElement = document.createElement('span');
+  valueElement.textContent = text;
+  swatch.append(valueElement);
 
-const processComputedColor = (text: string): Node => {
-  const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
-  // Computed styles don't provide the original format, so switch to RGB.
-  swatch.renderColor(text, Common.Color.Format.RGB);
-  swatch.createChild('span').textContent = text;
+  swatch.addEventListener('formatchanged', (event: Event) => {
+    const {data} = (event as InlineEditor.ColorSwatch.FormatChangedEvent);
+    valueElement.textContent = data.text;
+  });
+
   return swatch;
 };
 

@@ -48,7 +48,7 @@ import {SDKModel} from './SDKModel.js';
 import {TargetManager} from './TargetManager.js';
 import {SecurityOriginManager} from './SecurityOriginManager.js';
 
-export class ResourceTreeModel extends SDKModel {
+export class ResourceTreeModel extends SDKModel<EventTypes> {
   _agent: ProtocolProxyApi.PageApi;
   _securityOriginManager: SecurityOriginManager;
   _frames: Map<string, ResourceTreeFrame>;
@@ -567,6 +567,25 @@ export enum Events {
   BackForwardCacheDetailsUpdated = 'BackForwardCacheDetailsUpdated',
 }
 
+export type EventTypes = {
+  [Events.FrameAdded]: ResourceTreeFrame,
+  [Events.FrameNavigated]: ResourceTreeFrame,
+  [Events.FrameDetached]: {frame: ResourceTreeFrame, isSwap: boolean},
+  [Events.FrameResized]: void,
+  [Events.FrameWillNavigate]: ResourceTreeFrame,
+  [Events.MainFrameNavigated]: ResourceTreeFrame,
+  [Events.ResourceAdded]: Resource,
+  [Events.WillLoadCachedResources]: void,
+  [Events.CachedResourcesLoaded]: ResourceTreeModel,
+  [Events.DOMContentLoaded]: number,
+  [Events.LifecycleEvent]: {frameId: string, name: string},
+  [Events.Load]: {resourceTreeModel: ResourceTreeModel, loadTime: number},
+  [Events.PageReloadRequested]: ResourceTreeModel,
+  [Events.WillReloadPage]: void,
+  [Events.InterstitialShown]: void,
+  [Events.InterstitialHidden]: void,
+  [Events.BackForwardCacheDetailsUpdated]: ResourceTreeFrame,
+};
 
 export class ResourceTreeFrame {
   _model: ResourceTreeModel;
@@ -997,7 +1016,7 @@ export class PageDispatcher implements ProtocolProxyApi.PageDispatcher {
   }
 
   frameResized(): void {
-    this._resourceTreeModel.dispatchEventToListeners(Events.FrameResized, null);
+    this._resourceTreeModel.dispatchEventToListeners(Events.FrameResized);
   }
 
   javascriptDialogOpening({hasBrowserHandler}: Protocol.Page.JavascriptDialogOpeningEvent): void {

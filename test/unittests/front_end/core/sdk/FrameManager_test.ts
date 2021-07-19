@@ -62,9 +62,10 @@ describe('FrameManager', () => {
     return mockModel;
   }
 
-  function addMockFrame(model: ResourceTreeModel, frameId: string): MockResourceTreeFrame {
+  function addMockFrame(model: ResourceTreeModel, frameId: string): SDK.ResourceTreeModel.ResourceTreeFrame {
     const targetId = model.target().id();
-    const mockFrame = new MockResourceTreeFrame(frameId, targetId);
+    const mockFrame =
+        new MockResourceTreeFrame(frameId, targetId) as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
     model.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameAdded, mockFrame);
     return mockFrame;
   }

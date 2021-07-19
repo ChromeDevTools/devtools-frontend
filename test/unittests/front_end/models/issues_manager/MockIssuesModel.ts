@@ -4,8 +4,9 @@
 
 import * as Common from '../../../../../front_end/core/common/common.js';
 import type * as IssuesManager from '../../../../../front_end/models/issues_manager/issues_manager.js';
+import type * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 
-export class MockIssuesModel extends Common.ObjectWrapper.ObjectWrapper {
+export class MockIssuesModel extends Common.ObjectWrapper.ObjectWrapper<SDK.IssuesModel.EventTypes> {
   private mockIssues: Iterable<IssuesManager.Issue.Issue>;
 
   constructor(issues: Iterable<IssuesManager.Issue.Issue>) {

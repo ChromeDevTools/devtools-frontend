@@ -15,17 +15,13 @@ import {SDKModel} from './SDKModel.js';
  * We chose this approach here because the lifetime of the Model is tied to the target, but DevTools
  * wants to preserve issues for targets (e.g. iframes) that are already gone as well.
  */
-export class IssuesModel extends SDKModel implements ProtocolProxyApi.AuditsDispatcher {
-  private disposed: boolean;
-  private enabled: boolean;
-  private auditsAgent: ProtocolProxyApi.AuditsApi|null;
+export class IssuesModel extends SDKModel<EventTypes> implements ProtocolProxyApi.AuditsDispatcher {
+  private disposed = false;
+  private enabled = false;
 
   constructor(target: Target) {
     super(target);
-    this.enabled = false;
-    this.auditsAgent = null;
     this.ensureEnabled();
-    this.disposed = false;
   }
 
   private async ensureEnabled(): Promise<void> {
@@ -35,8 +31,8 @@ export class IssuesModel extends SDKModel implements ProtocolProxyApi.AuditsDisp
 
     this.enabled = true;
     this.target().registerAuditsDispatcher(this);
-    this.auditsAgent = this.target().auditsAgent();
-    await this.auditsAgent.invoke_enable();
+    const auditsAgent = this.target().auditsAgent();
+    await auditsAgent.invoke_enable();
   }
 
   issueAdded(issueAddedEvent: Protocol.Audits.IssueAddedEvent): void {
@@ -56,9 +52,17 @@ export class IssuesModel extends SDKModel implements ProtocolProxyApi.AuditsDisp
   }
 }
 
+export const enum Events {
+  IssueAdded = 'IssueAdded',
+}
 
-export const Events = {
-  IssueAdded: Symbol('IssueAdded'),
+export interface IssueAddedEvent {
+  issuesModel: IssuesModel;
+  inspectorIssue: Protocol.Audits.InspectorIssue;
+}
+
+export type EventTypes = {
+  [Events.IssueAdded]: IssueAddedEvent,
 };
 
 SDKModel.register(IssuesModel, {capabilities: Capability.Audits, autostart: true});

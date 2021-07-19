@@ -214,11 +214,8 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     }
   }
 
-  private onIssueAddedEvent(event: Common.EventTarget.EventTargetEvent): void {
-    const {issuesModel, inspectorIssue} = event.data as {
-      issuesModel: SDK.IssuesModel.IssuesModel,
-      inspectorIssue: Protocol.Audits.InspectorIssue,
-    };
+  private onIssueAddedEvent(event: Common.EventTarget.EventTargetEvent<SDK.IssuesModel.IssueAddedEvent>): void {
+    const {issuesModel, inspectorIssue} = event.data;
     const issues = createIssuesFromProtocolIssue(issuesModel, inspectorIssue);
     for (const issue of issues) {
       this.addIssue(issuesModel, issue);

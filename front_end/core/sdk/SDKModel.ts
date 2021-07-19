@@ -15,7 +15,10 @@ export interface RegistrationInfo {
 
 const registeredModels = new Map<new (arg1: Target) => SDKModel, RegistrationInfo>();
 
-export class SDKModel extends Common.ObjectWrapper.ObjectWrapper {
+// TODO(crbug.com/1228674) Remove defaults for generic type parameters once
+//                         all event emitters and sinks have been migrated.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export class SDKModel<Events = any> extends Common.ObjectWrapper.ObjectWrapper<Events> {
   _target: Target;
 
   constructor(target: Target) {

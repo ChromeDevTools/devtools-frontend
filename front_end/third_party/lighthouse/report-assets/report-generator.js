@@ -76,11 +76,10 @@ class ReportGenerator {
       .replace(/</g, '\\u003c') // replaces opening script tags
       .replace(/\u2028/g, '\\u2028') // replaces line separators ()
       .replace(/\u2029/g, '\\u2029'); // replaces paragraph separators
-    const sanitizedJavascript = htmlReportAssets.REPORT_JAVASCRIPT.replace(/<\//g, '\\u003c/');
 
     return ReportGenerator.replaceStrings(htmlReportAssets.REPORT_TEMPLATE, [
       {search: '%%LIGHTHOUSE_JSON%%', replacement: sanitizedJson},
-      {search: '%%LIGHTHOUSE_JAVASCRIPT%%', replacement: sanitizedJavascript},
+      {search: '%%LIGHTHOUSE_JAVASCRIPT%%', replacement: htmlReportAssets.REPORT_JAVASCRIPT},
       {search: '/*%%LIGHTHOUSE_CSS%%*/', replacement: htmlReportAssets.REPORT_CSS},
       {search: '%%LIGHTHOUSE_TEMPLATES%%', replacement: htmlReportAssets.REPORT_TEMPLATES},
     ]);

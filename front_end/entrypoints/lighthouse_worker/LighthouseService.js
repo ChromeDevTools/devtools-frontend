@@ -58,7 +58,7 @@ async function start(params) {
     params.flags.maxWaitForLoad = 2 * 1000;
   }
 
-  // @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
+  // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
   self.listenForStatus(message => {
     notifyFrontendViaWorkerMessage('statusUpdate', {message: message[1]});
   });
@@ -70,13 +70,13 @@ async function start(params) {
     flags.channel = 'devtools';
     flags.locale = locale;
 
-    // @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
+    // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
     const connection = self.setUpWorkerConnection(port);
-    // @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
+    // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
     const config = self.createConfig(params.categoryIDs, flags.emulatedFormFactor);
     const url = params.url;
 
-    // @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
+    // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
     return self.runLighthouse(url, flags, config, connection);
   } catch (err) {
     return ({
@@ -95,7 +95,7 @@ async function start(params) {
  * @return {!Promise<(string|undefined)>}
  */
 async function fetchLocaleData(locales) {
-  // @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
+  // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
   const locale = self.lookupLocale(locales);
 
   // If the locale is en-US, no need to fetch locale data.
@@ -119,7 +119,7 @@ async function fetchLocaleData(locales) {
         new Promise((resolve, reject) => setTimeout(() => reject(new Error('timed out fetching locale')), 5000));
     const localeDataText = await Promise.race([timeoutPromise, localeDataTextPromise]);
     const localeData = JSON.parse(localeDataText);
-    // @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
+    // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
     self.registerLocaleData(locale, localeData);
     return locale;
   } catch (err) {
@@ -156,13 +156,13 @@ self.onmessage = async event => {
 
 // Make lighthouse and traceviewer happy.
 globalThis.global = self;
-// @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
+// @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
 globalThis.global.isVinn = true;
-// @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
+// @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
 globalThis.global.document = {};
-// @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
+// @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
 globalThis.global.document.documentElement = {};
-// @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
+// @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
 globalThis.global.document.documentElement.style = {
   WebkitAppearance: 'WebkitAppearance'
 };

@@ -15,7 +15,8 @@ import * as Emulation from '../emulation/emulation.js';
 import {Events, LighthouseController} from './LighthouseController.js';
 import {ProtocolService} from './LighthouseProtocolService.js';
 
-import type * as ReportRenderer from './LighthouseReporterTypes.js';
+import type {ReportJSON, RunnerResultArtifacts} from './LighthouseReporterTypes.js';
+import * as LighthouseReport from '../../third_party/lighthouse/report/report.js';
 import {LighthouseReportRenderer, LighthouseReportUIFeatures} from './LighthouseReportRenderer.js';
 import {Item, ReportSelector} from './LighthouseReportSelector.js';
 import {StartView} from './LighthouseStartView.js';
@@ -63,7 +64,7 @@ export class LighthousePanel extends UI.Panel.Panel {
   _statusView: StatusView;
   _warningText: null;
   _unauditableExplanation: null;
-  _cachedRenderedReports: Map<ReportRenderer.ReportJSON, HTMLElement>;
+  _cachedRenderedReports: Map<ReportJSON, HTMLElement>;
   _dropTarget: UI.DropTarget.DropTarget;
   _auditResultsElement: HTMLElement;
   _clearButton!: UI.Toolbar.ToolbarButton;
@@ -244,7 +245,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     this._statusView.toggleCancelButton(true);
   }
 
-  _renderReport(lighthouseResult: ReportRenderer.ReportJSON, artifacts?: ReportRenderer.RunnerResultArtifacts): void {
+  _renderReport(lighthouseResult: ReportJSON, artifacts?: RunnerResultArtifacts): void {
     this._toggleSettingsDisplay(false);
     this.contentElement.classList.toggle('in-progress', false);
     this._startView.hideWidget();
@@ -261,8 +262,8 @@ export class LighthousePanel extends UI.Panel.Panel {
 
     const reportContainer = this._auditResultsElement.createChild('div', 'lh-vars lh-root lh-devtools');
 
-    const dom = new DOM(this._auditResultsElement.ownerDocument as Document);
-    const renderer = new LighthouseReportRenderer(dom) as ReportRenderer.ReportRenderer;
+    const dom = new LighthouseReport.DOM(this._auditResultsElement.ownerDocument as Document);
+    const renderer = new LighthouseReportRenderer(dom) as LighthouseReport.ReportRenderer;
 
     const templatesHTML = Root.Runtime.cachedResources.get('third_party/lighthouse/report-assets/templates.html');
     if (!templatesHTML) {
@@ -307,7 +308,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     await resourceTreeModel.once(SDK.ResourceTreeModel.Events.Load);
   }
 
-  _buildReportUI(lighthouseResult: ReportRenderer.ReportJSON, artifacts?: ReportRenderer.RunnerResultArtifacts): void {
+  _buildReportUI(lighthouseResult: ReportJSON, artifacts?: RunnerResultArtifacts): void {
     if (lighthouseResult === null) {
       return;
     }
@@ -343,7 +344,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     if (!data['lighthouseVersion']) {
       return;
     }
-    this._buildReportUI(data as ReportRenderer.ReportJSON);
+    this._buildReportUI(data as ReportJSON);
   }
 
   async _startLighthouse(_event: Common.EventTarget.EventTargetEvent): Promise<void> {

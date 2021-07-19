@@ -6,52 +6,6 @@
 
 import type * as SDK from '../../core/sdk/sdk.js';
 
-export abstract class ReportRenderer {
-  constructor(_dom: DOM) {
-  }
-
-  abstract renderReport(_report: ReportJSON, _container: Element): Element;
-
-  setTemplateContext(_context: Element|Document): void {
-  }
-}
-
-export abstract class ReportUIFeatures {
-  json!: ReportJSON;
-  _document!: Document;
-
-  constructor(_dom: DOM) {
-  }
-
-  setTemplateContext(_context: Element|Document): void {
-  }
-
-  initFeatures(_report: ReportJSON): void {
-  }
-
-  abstract addButton(_opts: {text: string, icon?: string, onClick: () => void}): HTMLButtonElement;
-
-  _resetUIState(): void {
-  }
-  setBeforePrint(_beforePrint: (() => void)|null): void {
-  }
-
-  setAfterPrint(_afterPrint: (() => void)|null): void {
-  }
-}
-
-export class CategoryRenderer {
-  constructor(_dom: DOM, _detailsRenderer: DetailsRenderer) {
-  }
-}
-
-export abstract class DetailsRenderer {
-  constructor(_dom: DOM) {
-  }
-
-  abstract renderNode(_item: NodeDetailsJSON): Element;
-}
-
 export class LighthouseReportGenerator {
   generateReportHtml(_lhr: ReportJSON): string {
     return '';

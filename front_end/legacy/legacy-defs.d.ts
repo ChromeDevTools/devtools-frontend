@@ -9,10 +9,6 @@ interface Window {
   UI: {themeSupport: unknown}
 }
 
-declare class DOM {
-  constructor(doc: Document);
-}
-
 interface RegExp {
   __fromRegExpQuery: boolean;
 }

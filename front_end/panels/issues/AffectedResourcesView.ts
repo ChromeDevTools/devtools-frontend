@@ -147,8 +147,9 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     return frame;
   }
 
-  private onFrameChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const frame = event.data.frame as SDK.ResourceTreeModel.ResourceTreeFrame;
+  private onFrameChanged(event: Common.EventTarget.EventTargetEvent<{frame: SDK.ResourceTreeModel.ResourceTreeFrame}>):
+      void {
+    const frame = event.data.frame;
     if (!frame.url) {
       return;
     }

@@ -174,10 +174,9 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     return !this.hasSeenTopFrameNavigated;
   }
 
-  private onTopFrameNavigated(event: Common.EventTarget.EventTargetEvent): void {
-    const {frame} = event.data as {
-      frame: SDK.ResourceTreeModel.ResourceTreeFrame,
-    };
+  private onTopFrameNavigated(
+      event: Common.EventTarget.EventTargetEvent<{frame: SDK.ResourceTreeModel.ResourceTreeFrame}>): void {
+    const {frame} = event.data;
     const keptIssues = new Map<string, Issue>();
     for (const [key, issue] of this.allIssues.entries()) {
       if (issue.isAssociatedWithRequestId(frame.loaderId)) {
@@ -189,10 +188,9 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     this.updateFilteredIssues();
   }
 
-  private onFrameAddedToTarget(event: Common.EventTarget.EventTargetEvent): void {
-    const {frame} = event.data as {
-      frame: SDK.ResourceTreeModel.ResourceTreeFrame,
-    };
+  private onFrameAddedToTarget(
+      event: Common.EventTarget.EventTargetEvent<{frame: SDK.ResourceTreeModel.ResourceTreeFrame}>): void {
+    const {frame} = event.data;
     // Determining third-party status usually requires the registered domain of the top frame.
     // When DevTools is opened after navigation has completed, issues may be received
     // before the top frame is available. Thus, we trigger a recalcuation of third-party-ness

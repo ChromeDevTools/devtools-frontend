@@ -21,7 +21,8 @@ let frameManagerInstance: FrameManager|null = null;
  * ResourceTreeModel-instances (one per target), so that frames can be found by id
  * without needing to know their target.
  */
-export class FrameManager extends Common.ObjectWrapper.ObjectWrapper implements SDKModelObserver<ResourceTreeModel> {
+export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
+    SDKModelObserver<ResourceTreeModel> {
   _eventListeners: WeakMap<ResourceTreeModel, Common.EventTarget.EventDescriptor[]>;
   _frames: Map<string, {
     frame: ResourceTreeFrame,
@@ -252,3 +253,11 @@ export enum Events {
   ResourceAdded = 'ResourceAdded',
   TopFrameNavigated = 'TopFrameNavigated',
 }
+
+export type EventTypes = {
+  [Events.FrameAddedToTarget]: {frame: ResourceTreeFrame},
+  [Events.FrameNavigated]: {frame: ResourceTreeFrame},
+  [Events.FrameRemoved]: {frameId: string},
+  [Events.ResourceAdded]: {resource: Resource},
+  [Events.TopFrameNavigated]: {frame: ResourceTreeFrame},
+};

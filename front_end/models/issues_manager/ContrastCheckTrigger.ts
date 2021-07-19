@@ -58,11 +58,12 @@ export class ContrastCheckTrigger {
     this.checkContrast(resourceTreeModel);
   }
 
-  private async frameAdded(event: Common.EventTarget.EventTargetEvent): Promise<void> {
+  private async frameAdded(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>):
+      Promise<void> {
     if (!Root.Runtime.experiments.isEnabled('contrastIssues')) {
       return;
     }
-    const frame = event.data as SDK.ResourceTreeModel.ResourceTreeFrame;
+    const frame = event.data;
     if (!frame.isMainFrame()) {
       return;
     }

@@ -276,8 +276,8 @@ export class ConsoleContextSelector implements SDK.TargetManager.SDKModelObserve
     }
   }
 
-  _frameNavigated(event: Common.EventTarget.EventTargetEvent): void {
-    const frame = (event.data as SDK.ResourceTreeModel.ResourceTreeFrame);
+  _frameNavigated(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>): void {
+    const frame = event.data;
     const runtimeModel = frame.resourceTreeModel().target().model(SDK.RuntimeModel.RuntimeModel);
     if (!runtimeModel) {
       return;

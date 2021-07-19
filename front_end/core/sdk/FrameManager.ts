@@ -91,8 +91,8 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     this._framesForTarget.delete(resourceTreeModel.target().id());
   }
 
-  _frameAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const frame = (event.data as ResourceTreeFrame);
+  _frameAdded(event: Common.EventTarget.EventTargetEvent<ResourceTreeFrame>): void {
+    const frame = event.data;
     const frameData = this._frames.get(frame.id);
     // If the frame is already in the map, increase its count, otherwise add it to the map.
     if (frameData) {

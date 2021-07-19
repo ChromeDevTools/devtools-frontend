@@ -63,12 +63,13 @@ export class ApplicationCacheModel extends SDK.SDKModel.SDKModel {
     this._onLine = true;
   }
 
-  _frameNavigatedCallback(event: Common.EventTarget.EventTargetEvent): void {
+  _frameNavigatedCallback(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>): void {
     this._frameNavigated(event);
   }
 
-  async _frameNavigated(event: Common.EventTarget.EventTargetEvent): Promise<void> {
-    const frame = (event.data as SDK.ResourceTreeModel.ResourceTreeFrame);
+  async _frameNavigated(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>):
+      Promise<void> {
+    const frame = event.data;
     if (frame.isMainFrame()) {
       this._mainFrameNavigated();
       return;

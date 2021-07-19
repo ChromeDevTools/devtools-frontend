@@ -20,6 +20,7 @@ devtools_module("issues_manager") {
     "Issue.ts",
     "IssueResolver.ts",
     "IssuesManager.ts",
+    "IssuesManagerEvents.ts",
     "LowTextContrastIssue.ts",
     "MarkdownIssueDescription.ts",
     "MixedContentIssue.ts",

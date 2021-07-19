@@ -12,6 +12,7 @@ import {CrossOriginEmbedderPolicyIssue, isCrossOriginEmbedderPolicyIssue} from '
 import {DeprecationIssue} from './DeprecationIssue.js';
 import {HeavyAdIssue} from './HeavyAdIssue.js';
 import type {Issue, IssueKind} from './Issue.js';
+import {Events} from './IssuesManagerEvents.js';
 import {LowTextContrastIssue} from './LowTextContrastIssue.js';
 import {MixedContentIssue} from './MixedContentIssue.js';
 import {QuirksModeIssue} from './QuirksModeIssue.js';
@@ -21,6 +22,8 @@ import {SourceFrameIssuesManager} from './SourceFrameIssuesManager.js';
 import {TrustedWebActivityIssue} from './TrustedWebActivityIssue.js';
 import {AttributionReportingIssue} from './AttributionReportingIssue.js';
 import {WasmCrossOriginModuleSharingIssue} from './WasmCrossOriginModuleSharingIssue.js';
+
+export {Events} from './IssuesManagerEvents.js';
 
 let issuesManagerInstance: IssuesManager|null = null;
 
@@ -286,12 +289,6 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   getIssueById(id: string): Issue|undefined {
     return this.issuesById.get(id);
   }
-}
-
-export const enum Events {
-  IssuesCountUpdated = 'IssuesCountUpdated',
-  IssueAdded = 'IssueAdded',
-  FullUpdateRequired = 'FullUpdateRequired',
 }
 
 export interface IssueAddedEvent {

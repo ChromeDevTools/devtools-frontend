@@ -11,19 +11,20 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import {ContentSecurityPolicyIssue, trustedTypesPolicyViolationCode, trustedTypesSinkViolationCode} from './ContentSecurityPolicyIssue.js';
 import type {Issue, IssueKind} from './Issue.js';
 import {toZeroBasedLocation} from './Issue.js';
-import * as IssuesManager from './IssuesManager.js';
+import type {IssueAddedEvent, IssuesManager} from './IssuesManager.js';
+import {Events} from './IssuesManagerEvents.js';
 import {getIssueTitleFromMarkdownDescription} from './MarkdownIssueDescription.js';
 
 export class SourceFrameIssuesManager {
   private locationPool = new Bindings.LiveLocation.LiveLocationPool();
   private issueMessages = new Array<IssueMessage>();
 
-  constructor(private readonly issuesManager: IssuesManager.IssuesManager) {
-    this.issuesManager.addEventListener(IssuesManager.Events.IssueAdded, this.onIssueAdded, this);
-    this.issuesManager.addEventListener(IssuesManager.Events.FullUpdateRequired, this.onFullUpdateRequired, this);
+  constructor(private readonly issuesManager: IssuesManager) {
+    this.issuesManager.addEventListener(Events.IssueAdded, this.onIssueAdded, this);
+    this.issuesManager.addEventListener(Events.FullUpdateRequired, this.onFullUpdateRequired, this);
   }
 
-  private onIssueAdded(event: Common.EventTarget.EventTargetEvent<IssuesManager.IssueAddedEvent>): void {
+  private onIssueAdded(event: Common.EventTarget.EventTargetEvent<IssueAddedEvent>): void {
     const {issue} = event.data;
     this.addIssue(issue);
   }

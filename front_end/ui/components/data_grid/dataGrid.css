@@ -42,7 +42,6 @@ tbody tr.selected {
 td,
 th {
   padding: 1px 4px;
-  /* Divider between each cell, except the first one (see below) */
   border-left: 1px solid var(--color-details-hairline);
   color: var(--color-text-primary);
   line-height: var(--table-row-height);
@@ -77,6 +76,7 @@ th:focus {
   cursor: col-resize;
   position: absolute;
 }
+
 /* There is no divider before the first cell */
 td.firstVisibleColumn,
 th.firstVisibleColumn {
@@ -95,6 +95,16 @@ th.firstVisibleColumn {
   */
   height: 100%;
   pointer-events: none;
+  padding: 0;
+}
+
+.filler-row.empty-table td {
+  /* If the table is empty and we have no renderable rows, the filler row cell
+   * needs to have some form of padding to make it have some height, else it
+   * stays at a height of 0px and doesn't fill the table. With this padding set,
+   * it will then have some height & expand the row it's in to 100% high as
+   * desired. */
+  padding: 1px;
 }
 
 [aria-sort]:hover {

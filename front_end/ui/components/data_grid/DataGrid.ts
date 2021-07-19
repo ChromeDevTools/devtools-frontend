@@ -376,7 +376,7 @@ export class DataGrid extends HTMLElement {
     return undefined;
   }
 
-  private renderEmptyFillerRow(): LitHtml.TemplateResult {
+  private renderEmptyFillerRow(numberOfVisibleRows: number): LitHtml.TemplateResult {
     const emptyCells = this.columns.map((col, colIndex) => {
       if (!col.visible) {
         return LitHtml.nothing;
@@ -386,7 +386,12 @@ export class DataGrid extends HTMLElement {
       });
       return LitHtml.html`<td tabindex="-1" class=${emptyCellClasses} data-filler-row-column-index=${colIndex}></td>`;
     });
-    return LitHtml.html`<tr tabindex="-1" class="filler-row padding-row">${emptyCells}</tr>`;
+    const emptyRowClasses = LitHtml.Directives.classMap({
+      'filler-row': true,
+      'padding-row': true,
+      'empty-table': numberOfVisibleRows === 0,
+    });
+    return LitHtml.html`<tr tabindex="-1" class=${emptyRowClasses}>${emptyCells}</tr>`;
   }
 
   private cleanUpAfterResizeColumnComplete(): void {
@@ -857,7 +862,7 @@ export class DataGrid extends HTMLElement {
                 })}
               `;
             })}
-            ${this.renderEmptyFillerRow()}
+            ${this.renderEmptyFillerRow(renderableRows.length)}
             <tr class="filler-row-bottom padding-row" style=${LitHtml.Directives.styleMap({
               height: `${Math.max(0, nonHiddenRows.length - bottomVisibleRow) * ROW_HEIGHT_PIXELS}px`,
             })}></tr>

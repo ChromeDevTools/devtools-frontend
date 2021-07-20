@@ -3,10 +3,13 @@
 // found in the LICENSE file.
 const fs = require('fs');
 const path = require('path');
-const [, , targetName, srcDir, targetGenDir, files] = process.argv;
+const CleanCSS = require('clean-css');
+const [, , isDebugString, targetName, srcDir, targetGenDir, files] = process.argv;
 
 const filenames = files.split(',');
 const configFiles = [];
+const cleanCSS = new CleanCSS();
+const isDebug = isDebugString === 'true';
 
 for (const fileName of filenames) {
   const output = fs.readFileSync(path.join(srcDir, fileName), {encoding: 'utf8', flag: 'r'});
@@ -18,7 +21,7 @@ for (const fileName of filenames) {
 // found in the LICENSE file.
 const styles = new CSSStyleSheet();
 styles.replaceSync(
-\`${output}
+\`${isDebug ? output : cleanCSS.minify(output).styles}
 /*# sourceURL=${fileName} */
 \`);
 export default styles;

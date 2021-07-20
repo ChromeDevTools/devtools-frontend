@@ -510,6 +510,14 @@
       valid_type: "bool",
     },
 
+    // - is_border_radius
+    // The property, when used by the author, will disable any native
+    // appearance on UI elements.
+    is_border_radius: {
+      default: false,
+      valid_type: "bool",
+    },
+
     // - tree_scoped_value: true
     // Whether the property takes a tree-scoped reference as its value.
     // https://drafts.csswg.org/css-scoping/#css-tree-scoped-reference
@@ -994,6 +1002,7 @@
     },
     {
       name: "forced-color-adjust",
+      field_group: "*",
       property_methods: ["CSSValueFromComputedStyleInternal"],
       inherited: true,
       runtime_flag: "ForcedColors",
@@ -1406,6 +1415,7 @@
       typedom_types: ["Length", "Percentage"],
       valid_for_first_letter: true,
       is_border: true,
+      is_border_radius: true,
       logical_property_group: {
         name: "border-radius",
         resolver: "bottom-left",
@@ -1424,6 +1434,7 @@
       typedom_types: ["Length", "Percentage"],
       valid_for_first_letter: true,
       is_border: true,
+      is_border_radius: true,
       logical_property_group: {
         name: "border-radius",
         resolver: "bottom-right",
@@ -1691,6 +1702,7 @@
       typedom_types: ["Length", "Percentage"],
       valid_for_first_letter: true,
       is_border: true,
+      is_border_radius: true,
       logical_property_group: {
         name: "border-radius",
         resolver: "top-left",
@@ -1709,6 +1721,7 @@
       typedom_types: ["Length", "Percentage"],
       valid_for_first_letter: true,
       is_border: true,
+      is_border_radius: true,
       logical_property_group: {
         name: "border-radius",
         resolver: "top-right",
@@ -2642,21 +2655,8 @@
       type_name: "ListStyleTypeData",
       keywords: [
         "disc", "circle", "square", "disclosure-open", "disclosure-closed",
-        "decimal", "decimal-leading-zero",
-        "arabic-indic", "bengali", "cambodian", "khmer", "devanagari",
-        "gujarati", "gurmukhi", "kannada", "lao", "malayalam", "mongolian",
-        "myanmar", "oriya", "persian", "urdu", "telugu", "tibetan", "thai",
-        "lower-roman", "upper-roman", "lower-greek", "lower-alpha",
-        "lower-latin", "upper-alpha", "upper-latin", "cjk-earthly-branch",
-        "cjk-heavenly-stem", "ethiopic-halehame", "ethiopic-halehame-am",
-        "ethiopic-halehame-ti-er", "ethiopic-halehame-ti-et", "hangul",
-        "hangul-consonant", "korean-hangul-formal", "korean-hanja-formal",
-        "korean-hanja-informal", "hebrew", "armenian", "lower-armenian",
-        "upper-armenian", "georgian", "cjk-ideographic", "simp-chinese-formal",
-        "simp-chinese-informal", "trad-chinese-formal", "trad-chinese-informal",
-        "hiragana", "katakana", "hiragana-iroha", "katakana-iroha", "none"
+        "decimal", "none"
       ],
-      computed_style_custom_functions: ["getter"],
       style_builder_custom_functions: ["initial", "inherit", "value"],
       tree_scoped_value: true,
     },
@@ -2799,6 +2799,7 @@
     {
       name: "math-shift",
       property_methods: ["CSSValueFromComputedStyleInternal"],
+      field_group: "*",
       field_template: "keyword",
       inherited: true,
       keywords: ["normal", "compact"],
@@ -2809,6 +2810,7 @@
     {
       name: "math-style",
       property_methods: ["CSSValueFromComputedStyleInternal"],
+      field_group: "*",
       field_template: "keyword",
       inherited: true,
       keywords: ["normal", "compact"],
@@ -3463,7 +3465,7 @@
       type_name: "unsigned",
       converter: "ConvertScrollbarGutter",
       keywords: [
-        "auto", "stable", "always"
+        "auto", "stable", "both-edges"
       ],
       typedom_types: ["Keyword"],
       runtime_flag: "ScrollbarGutter",
@@ -5947,6 +5949,14 @@
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
     },
     {
+      name: "container",
+      longhands: [
+        "container-type", "container-name"
+      ],
+      property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      runtime_flag: "CSSContainerQueries",
+    },
+    {
       name: "flex",
       longhands: ["flex-grow", "flex-shrink", "flex-basis"],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
@@ -6299,7 +6309,7 @@
       visited_property_for: "caret-color",
       property_methods: ["ParseSingleValue", "ColorIncludingFallback"],
       inherited: true,
-      field_group: "*",
+      field_group: "*->inherited_visited",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/css/style_auto_color.h"],
       default_value: "StyleAutoColor::AutoColor()",
@@ -6316,7 +6326,7 @@
       name: "-internal-visited-column-rule-color",
       visited_property_for: "column-rule-color",
       property_methods: ["ParseSingleValue", "ColorIncludingFallback"],
-      field_group: "*->multi-col",
+      field_group: "*->visited",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/css/style_color.h"],
       default_value: "StyleColor::CurrentColor()",
@@ -6329,7 +6339,7 @@
       name: "-internal-visited-background-color",
       visited_property_for: "background-color",
       property_methods: ["ParseSingleValue", "ColorIncludingFallback"],
-      field_group: "*",
+      field_group: "*->visited",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/css/style_color.h"],
       default_value: "StyleColor(Color::kTransparent)",
@@ -6349,7 +6359,7 @@
       name: "-internal-visited-border-left-color",
       visited_property_for: "border-left-color",
       property_methods: ["ParseSingleValue", "ColorIncludingFallback"],
-      field_group: "*",
+      field_group: "*->visited",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/css/style_color.h"],
       default_value: "StyleColor::CurrentColor()",
@@ -6367,7 +6377,7 @@
       name: "-internal-visited-border-right-color",
       visited_property_for: "border-right-color",
       property_methods: ["ParseSingleValue", "ColorIncludingFallback"],
-      field_group: "*",
+      field_group: "*->visited",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/css/style_color.h"],
       default_value: "StyleColor::CurrentColor()",
@@ -6385,7 +6395,7 @@
       name: "-internal-visited-border-top-color",
       visited_property_for: "border-top-color",
       property_methods: ["ParseSingleValue", "ColorIncludingFallback"],
-      field_group: "*",
+      field_group: "*->visited",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/css/style_color.h"],
       default_value: "StyleColor::CurrentColor()",
@@ -6403,7 +6413,7 @@
       name: "-internal-visited-border-bottom-color",
       visited_property_for: "border-bottom-color",
       property_methods: ["ParseSingleValue", "ColorIncludingFallback"],
-      field_group: "*",
+      field_group: "*->visited",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/css/style_color.h"],
       default_value: "StyleColor::CurrentColor()",
@@ -6479,7 +6489,7 @@
       name: "-internal-visited-outline-color",
       visited_property_for: "outline-color",
       property_methods: ["ParseSingleValue", "ColorIncludingFallback"],
-      field_group: "*",
+      field_group: "*->visited",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/css/style_color.h"],
       default_value: "StyleColor::CurrentColor()",
@@ -6511,7 +6521,7 @@
       name: "-internal-visited-text-decoration-color",
       visited_property_for: "text-decoration-color",
       property_methods: ["ParseSingleValue", "ColorIncludingFallback"],
-      field_group: "*",
+      field_group: "*->visited",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/css/style_color.h"],
       default_value: "StyleColor::CurrentColor()",
@@ -6529,7 +6539,7 @@
       visited_property_for: "-webkit-text-emphasis-color",
       property_methods: ["ParseSingleValue", "ColorIncludingFallback"],
       inherited: true,
-      field_group: "*",
+      field_group: "*->inherited_visited",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/css/style_color.h"],
       default_value: "StyleColor::CurrentColor()",
@@ -6544,7 +6554,7 @@
       visited_property_for: "-webkit-text-fill-color",
       property_methods: ["ParseSingleValue", "ColorIncludingFallback"],
       inherited: true,
-      field_group: "*",
+      field_group: "*->inherited_visited",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/css/style_color.h"],
       default_value: "StyleColor::CurrentColor()",
@@ -6559,7 +6569,7 @@
       visited_property_for: "-webkit-text-stroke-color",
       property_methods: ["ParseSingleValue", "ColorIncludingFallback"],
       inherited: true,
-      field_group: "*",
+      field_group: "*->inherited_visited",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/css/style_color.h"],
       default_value: "StyleColor::CurrentColor()",
@@ -6574,7 +6584,7 @@
     {
       name: "-internal-forced-background-color",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "ColorIncludingFallback"],
-      field_group: "*",
+      field_group: "*->forced_colors",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/layout/layout_theme.h"],
       default_value: "StyleColor(CSSValueID::kCanvas)",
@@ -6592,7 +6602,7 @@
     {
       name: "-internal-forced-border-color",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "ColorIncludingFallback"],
-      field_group: "*",
+      field_group: "*->forced_colors",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/css/style_color.h"],
       default_value: "StyleColor::CurrentColor()",
@@ -6606,7 +6616,7 @@
       name: "-internal-forced-color",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "ColorIncludingFallback"],
       inherited: true,
-      field_group: "*",
+      field_group: "*->inherited_forced_colors",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/layout/layout_theme.h"],
       default_value: "StyleColor(CSSValueID::kCanvastext)",
@@ -6621,7 +6631,7 @@
     {
       name: "-internal-forced-outline-color",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "ColorIncludingFallback"],
-      field_group: "*",
+      field_group: "*->forced_colors",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/css/style_color.h"],
       default_value: "StyleColor::CurrentColor()",
@@ -6636,7 +6646,7 @@
       visited_property_for: "-internal-forced-color",
       property_methods: ["ParseSingleValue", "ColorIncludingFallback"],
       inherited: true,
-      field_group: "*",
+      field_group: "*->inherited_forced_colors",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/layout/layout_theme.h"],
       default_value: "StyleColor(CSSValueID::kCanvastext)",

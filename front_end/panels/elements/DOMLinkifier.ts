@@ -8,6 +8,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import domLinkifierStyles from './domLinkifier.css.js';
 
 const UIStrings = {
   /**
@@ -82,8 +83,8 @@ export const linkifyNodeReference = function(
 
   const root = document.createElement('span');
   root.classList.add('monospace');
-  const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
-      root, {cssFile: 'panels/elements/domLinkifier.css', delegatesFocus: undefined});
+  const shadowRoot =
+      UI.Utils.createShadowRootWithCoreStyles(root, {cssFile: [domLinkifierStyles], delegatesFocus: undefined});
   const link = (shadowRoot.createChild('div', 'node-link') as HTMLDivElement);
 
   decorateNodeLabel(node, link, options.tooltip);

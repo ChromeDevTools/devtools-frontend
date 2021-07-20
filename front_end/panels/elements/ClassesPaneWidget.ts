@@ -10,6 +10,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import classesPaneWidgetStyles from './classesPaneWidget.css.js';
 import {ElementsPanel} from './ElementsPanel.js';
 
 const UIStrings = {
@@ -47,7 +48,6 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
 
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/elements/classesPaneWidget.css');
     this.contentElement.className = 'styles-element-classes-pane';
     const container = this.contentElement.createChild('div', 'title-container');
     this._input = container.createChild('div', 'new-class-input monospace');
@@ -154,6 +154,7 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
   wasShown(): void {
     super.wasShown();
     this._update();
+    this.registerCSSFiles([classesPaneWidgetStyles]);
   }
 
   _update(): void {

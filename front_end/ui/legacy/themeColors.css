@@ -106,6 +106,13 @@
   --color-error-border: hsl(0deg 100% 92%);
   --color-error-background: hsl(0deg 100% 97%);
   --color-image-preview-background: rgb(255 255 255);
+
+  /* Colors for styling inputs */
+  --color-input-outline: rgb(128 134 139);
+  --color-input-outline-active: rgb(26 115 232);
+  --color-input-outline-error: rgb(217 48 37);
+  --color-input-outline-disabled: rgba(128 134 139 / 20%);
+  --color-input-text-disabled: rgba(128 134 139 / 50%);
 }
 
 .-theme-with-dark-background {
@@ -170,4 +177,10 @@
   --color-error-text: hsl(0deg 100% 75%);
   --color-error-border: rgb(92 0 0);
   --color-error-background: hsl(0deg 100% 8%);
+  /* Colors for styling inputs */
+  --color-input-outline: rgb(189 193 198);
+  --color-input-outline-active: rgb(138 180 248);
+  --color-input-outline-error: rgb(242 139 130);
+  --color-input-outline-disabled: rgba(189 193 198 / 20%);
+  --color-input-text-disabled: rgba(128 134 139 / 70%);
 }

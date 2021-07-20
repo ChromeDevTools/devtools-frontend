@@ -168,7 +168,8 @@ describe('The Application Tab', async () => {
     assert.deepEqual(fieldValuesTextContent, expected);
   });
 
-  it('shows service workers in the frame tree', async () => {
+  // Flaky test
+  it.skipOnPlatforms(['win32'], '[crbug.com/1231056]: shows service workers in the frame tree', async () => {
     await goToResource('application/service-worker-network.html');
     await click('#tab-resources');
     await doubleClickSourceTreeItem(TOP_FRAME_SELECTOR);

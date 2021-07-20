@@ -5,6 +5,8 @@
 use_relative_paths = True
 
 vars = {
+  'build_with_chromium': False,
+
   # By default, do not checkout the re-client binaries.
   'checkout_reclient': False,
 
@@ -104,7 +106,7 @@ hooks = [
   {
     'name': 'node_linux64',
     'pattern': '.',
-    'condition': 'host_os == "linux"',
+    'condition': 'host_os == "linux" and build_with_chromium == False',
     'action': [ 'python',
                 'third_party/depot_tools/download_from_google_storage.py',
                 '--no_resume',
@@ -117,7 +119,7 @@ hooks = [
   {
     'name': 'node_mac',
     'pattern': '.',
-    'condition': 'host_os == "mac"',
+    'condition': 'host_os == "mac" and build_with_chromium == False',
     'action': [ 'python',
                 'third_party/depot_tools/download_from_google_storage.py',
                 '--no_resume',
@@ -130,7 +132,7 @@ hooks = [
   {
     'name': 'node_win',
     'pattern': '.',
-    'condition': 'host_os == "win"',
+    'condition': 'host_os == "win" and build_with_chromium == False',
     'action': [ 'python',
                 'third_party/depot_tools/download_from_google_storage.py',
                 '--no_resume',
@@ -156,7 +158,7 @@ hooks = [
   {
     'name': 'clang_format_win',
     'pattern': '.',
-    'condition': 'host_os == "win"',
+    'condition': 'host_os == "win" and build_with_chromium == False',
     'action': [ 'python',
                 'third_party/depot_tools/download_from_google_storage.py',
                 '--no_resume',
@@ -168,7 +170,7 @@ hooks = [
   {
     'name': 'clang_format_mac',
     'pattern': '.',
-    'condition': 'host_os == "mac"',
+    'condition': 'host_os == "mac" and build_with_chromium == False',
     'action': [ 'python',
                 'third_party/depot_tools/download_from_google_storage.py',
                 '--no_resume',
@@ -180,7 +182,7 @@ hooks = [
   {
     'name': 'clang_format_linux',
     'pattern': '.',
-    'condition': 'host_os == "linux"',
+    'condition': 'host_os == "linux" and build_with_chromium == False',
     'action': [ 'python',
                 'third_party/depot_tools/download_from_google_storage.py',
                 '--no_resume',
@@ -194,7 +196,7 @@ hooks = [
   {
     'name': 'download_chromium_win',
     'pattern': '.',
-    'condition': 'host_os == "win"',
+    'condition': 'host_os == "win" and build_with_chromium == False',
     'action': [ 'python',
                 'scripts/deps/download_chromium.py',
                 'https://commondatastorage.googleapis.com/chromium-browser-snapshots/Win_x64/' + Var('chromium_win') + '/chrome-win.zip',
@@ -206,7 +208,7 @@ hooks = [
   {
     'name': 'download_chromium_mac',
     'pattern': '.',
-    'condition': 'host_os == "mac"',
+    'condition': 'host_os == "mac" and build_with_chromium == False',
     'action': [ 'python',
                 'scripts/deps/download_chromium.py',
                 'https://commondatastorage.googleapis.com/chromium-browser-snapshots/Mac/' + Var('chromium_mac') + '/chrome-mac.zip',
@@ -218,7 +220,7 @@ hooks = [
   {
     'name': 'download_chromium_linux',
     'pattern': '.',
-    'condition': 'host_os == "linux"',
+    'condition': 'host_os == "linux" and build_with_chromium == False',
     'action': [ 'python',
                 'scripts/deps/download_chromium.py',
                 'https://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/' + Var('chromium_linux') + '/chrome-linux.zip',
@@ -237,11 +239,13 @@ hooks = [
   {
     'name': 'emscripten',
     'pattern': '.',
+    'condition': 'build_with_chromium == False',
     'action': ['python', 'scripts/deps/download_emscripten.py', Var('emscripten_tag'), 'third_party/emscripten-releases'],
   },
   {
     'name': 'VS Code settings',
     'pattern': '.',
+    'condition': 'build_with_chromium == False',
     'action': ['python', 'third_party/node/node.py', '--output', 'scripts/deps/sync-vscode-settings.js']
   },
 ]

@@ -3,11 +3,13 @@
 // found in the LICENSE file.
 
 // eslint-disable-next-line rulesdir/check_component_naming
+import * as i18n from '../../../core/i18n/i18n.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as Adorners from '../../../ui/components/adorners/adorners.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as TreeOutline from '../../../ui/components/tree_outline/tree_outline.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+
 import badgeStyles from './badge.css.js';
 import originTrialTokenRowsStyles from './originTrialTokenRows.css.js';
 
@@ -194,6 +196,10 @@ export class OriginTrialTokenRows extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private tokenWithStatus: Protocol.Page.OriginTrialTokenWithStatus|null = null;
   private parsedTokenDetails: TokenField[] = [];
+  private dateFormatter: Intl.DateTimeFormat = new Intl.DateTimeFormat(
+      i18n.DevToolsLocale.DevToolsLocale.instance().locale,
+      {dateStyle: 'long', timeStyle: 'long'},
+  );
 
   set data(data: OriginTrialTokenRowsData) {
     this.tokenWithStatus = data.node.treeNodeData as Protocol.Page.OriginTrialTokenWithStatus;
@@ -224,7 +230,7 @@ export class OriginTrialTokenRows extends HTMLElement {
       {
         name: UIStrings.expiryTime,
         value: this.renderTokenField(
-            new Date(this.tokenWithStatus.parsedToken.expiryTime * 1000).toLocaleString(),
+            this.dateFormatter.format(this.tokenWithStatus.parsedToken.expiryTime * 1000),
             this.tokenWithStatus.status === Protocol.Page.OriginTrialTokenStatus.Expired),
       },
       {

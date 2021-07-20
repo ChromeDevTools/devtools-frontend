@@ -52,7 +52,7 @@
 
 .toolbar-item,
 .toolbar-item .devtools-link {
-  color: var(--color-text-primary);
+  color: var(--color-text-secondary);
 }
 
 .toolbar-shadow.vertical .toolbar-item {

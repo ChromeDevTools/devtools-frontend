@@ -28,6 +28,7 @@ node_ts_library("sources") {
   ]
 
   deps = [
+    "../../../extension-api",
     "../../shared",
     "../helpers",
   ]

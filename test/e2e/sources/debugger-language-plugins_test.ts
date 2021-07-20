@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
 import {$, click, enableExperiment, getBrowserAndPages, getResourcesPath, goToResource, pasteText, waitFor, waitForFunction, waitForMany, waitForNone} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, getCurrentConsoleMessages, getStructuredConsoleMessages} from '../helpers/console-helpers.js';
@@ -14,103 +15,9 @@ import {addBreakpointForLine, getCallFrameLocations, getCallFrameNames, getNonBr
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const globalThis: any = global;
 
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  interface Window {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    __sourceFilesAddedEvents: string[];
-  }
-}
-
-type RawModule = {
-  url: string,
-  code?: ArrayBuffer,
-};
-
-type RawLocationRange = {
-  rawModuleId: string,
-  startOffset: number,
-  endOffset: number,
-};
-
-type RawLocation = {
-  rawModuleId: string,
-  codeOffset: number,
-  inlineFrameIndex?: number,
-};
-
-type SourceLocation = {
-  rawModuleId: string,
-  sourceFileURL: string,
-  lineNumber: number,
-  columnNumber: number,
-};
-
-type Variable = {
-  scope: string,
-  name: string,
-  type: string,
-  nestedName?: Array<string>,
-};
-
-type ScopeInfo = {
-  type: string,
-  typeName: string,
-  icon?: string,
-};
-
-interface EvalBase {
-  rootType: TypeInfo;
-  payload: unknown;
-}
-
-interface FieldInfo {
-  name?: string;
-  offset: number;
-  typeId: unknown;
-}
-
-interface TypeInfo {
-  typeNames: string[];
-  typeId: unknown;
-  members: FieldInfo[];
-  alignment: number;
-  arraySize: number;
-  size: number;
-  canExpand: boolean;
-  hasValue: boolean;
-}
-type FunctionInfo = {
-  name?: string,
-};
-
-interface TestPluginImpl {
-  addRawModule?(rawModuleId: string, symbolsURL: string, rawModule: {url: string}): Promise<Array<string>>;
-
-  removeRawModule?(rawModuleId: string): Promise<void>;
-
-  sourceLocationToRawLocation?(sourceLocation: SourceLocation): Promise<Array<RawLocationRange>>;
-
-  rawLocationToSourceLocation?(rawLocation: RawLocation): Promise<Array<SourceLocation>>;
-
-  getScopeInfo?(type: string): Promise<ScopeInfo>;
-
-  listVariablesInScope?(rawLocation: RawLocation): Promise<Array<Variable>>;
-
-  getTypeInfo?(expression: string, context: RawLocation): Promise<{typeInfos: TypeInfo[], base: EvalBase}|null>;
-
-  getFormatter?(expressionOrField: string|{base: EvalBase, field: FieldInfo[]}, context: RawLocation):
-      Promise<{js: string}|null>;
-  getFunctionInfo?(rawLocation: RawLocation): Promise<{frames: Array<FunctionInfo>}|null>;
-
-  getMappedLines?(rawModuleId: string, sourceFileURL: string): Promise<number[]|undefined>;
-
-  dispose?(): void;
-}
-
 // eslint-disable-next-line @typescript-eslint/naming-convention
 declare function RegisterExtension(
-    extensionAPI: unknown, pluginImpl: TestPluginImpl, name: string,
+    extensionAPI: unknown, pluginImpl: Partial<Chrome.DevTools.LanguageExtensionPlugin>, name: string,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     supportedScriptTypes: {language: string, symbol_types: string[]}): void;
 
@@ -166,7 +73,7 @@ describe('The Debugger Language Plugins', async () => {
         () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
           // A simple plugin that resolves to a single source file
           class SingleFilePlugin {
-            async addRawModule(rawModuleId: string, symbols: string, rawModule: RawModule) {
+            async addRawModule(rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
               const fileUrl = new URL('/source_file.c', rawModule.url || symbols);
               return [fileUrl.href];
             }
@@ -193,12 +100,14 @@ describe('The Debugger Language Plugins', async () => {
     await frontend.evaluate(
         () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
           class LocationMappingPlugin {
-            private modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocation?: SourceLocation}>;
+            private modules: Map<
+                string,
+                {rawLocationRange?: Chrome.DevTools.RawLocationRange, sourceLocation?: Chrome.DevTools.SourceLocation}>;
             constructor() {
               this.modules = new Map();
             }
 
-            async addRawModule(rawModuleId: string, symbols: string, rawModule: RawModule) {
+            async addRawModule(rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
               const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
               this.modules.set(rawModuleId, {
                 rawLocationRange: {rawModuleId, startOffset: 6, endOffset: 7},
@@ -207,7 +116,7 @@ describe('The Debugger Language Plugins', async () => {
               return [sourceFileURL];
             }
 
-            async rawLocationToSourceLocation(rawLocation: RawLocation) {
+            async rawLocationToSourceLocation(rawLocation: Chrome.DevTools.RawLocation) {
               const {rawLocationRange, sourceLocation} = this.modules.get(rawLocation.rawModuleId) || {};
               if (rawLocationRange && sourceLocation && rawLocationRange.startOffset <= rawLocation.codeOffset &&
                   rawLocation.codeOffset < rawLocationRange.endOffset) {
@@ -247,12 +156,14 @@ describe('The Debugger Language Plugins', async () => {
           // This plugin will emulate a source mapping with a single file and a single corresponding source line and byte
           // code offset pair.
           class LocationMappingPlugin {
-            private modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocation?: SourceLocation}>;
+            private modules: Map<
+                string,
+                {rawLocationRange?: Chrome.DevTools.RawLocationRange, sourceLocation?: Chrome.DevTools.SourceLocation}>;
             constructor() {
               this.modules = new Map();
             }
 
-            async addRawModule(rawModuleId: string, symbols: string, rawModule: RawModule) {
+            async addRawModule(rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
               const sourceFileURL = new URL('global_variable.ll', rawModule.url || symbols).href;
               this.modules.set(rawModuleId, {
                 rawLocationRange: {rawModuleId, startOffset: 25, endOffset: 26},
@@ -261,7 +172,7 @@ describe('The Debugger Language Plugins', async () => {
               return [sourceFileURL];
             }
 
-            async rawLocationToSourceLocation(rawLocation: RawLocation) {
+            async rawLocationToSourceLocation(rawLocation: Chrome.DevTools.RawLocation) {
               const {rawLocationRange, sourceLocation} = this.modules.get(rawLocation.rawModuleId) || {};
               if (rawLocationRange && sourceLocation && rawLocationRange.startOffset <= rawLocation.codeOffset &&
                   rawLocation.codeOffset < rawLocationRange.endOffset) {
@@ -271,7 +182,7 @@ describe('The Debugger Language Plugins', async () => {
             }
 
 
-            async sourceLocationToRawLocation(sourceLocationArg: SourceLocation) {
+            async sourceLocationToRawLocation(sourceLocationArg: Chrome.DevTools.SourceLocation) {
               const {rawLocationRange, sourceLocation} = this.modules.get(sourceLocationArg.rawModuleId) || {};
               if (rawLocationRange && sourceLocation &&
                   JSON.stringify(sourceLocation) === JSON.stringify(sourceLocationArg)) {
@@ -320,12 +231,14 @@ describe('The Debugger Language Plugins', async () => {
     await frontend.evaluateHandle(
         () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
           class VariableListingPlugin {
-            private modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocation?: SourceLocation}>;
+            private modules: Map<
+                string,
+                {rawLocationRange?: Chrome.DevTools.RawLocationRange, sourceLocation?: Chrome.DevTools.SourceLocation}>;
             constructor() {
               this.modules = new Map();
             }
 
-            async addRawModule(rawModuleId: string, symbols: string, rawModule: RawModule) {
+            async addRawModule(rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
               const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
               this.modules.set(rawModuleId, {
                 rawLocationRange: {rawModuleId, startOffset: 6, endOffset: 7},
@@ -334,7 +247,7 @@ describe('The Debugger Language Plugins', async () => {
               return [sourceFileURL];
             }
 
-            async rawLocationToSourceLocation(rawLocation: RawLocation) {
+            async rawLocationToSourceLocation(rawLocation: Chrome.DevTools.RawLocation) {
               const {rawLocationRange, sourceLocation} = this.modules.get(rawLocation.rawModuleId) || {};
               if (rawLocationRange && sourceLocation && rawLocationRange.startOffset <= rawLocation.codeOffset &&
                   rawLocation.codeOffset < rawLocationRange.endOffset) {
@@ -347,7 +260,7 @@ describe('The Debugger Language Plugins', async () => {
               return {type, typeName: type};
             }
 
-            async listVariablesInScope(rawLocation: RawLocation) {
+            async listVariablesInScope(rawLocation: Chrome.DevTools.RawLocation) {
               const {rawLocationRange} = this.modules.get(rawLocation.rawModuleId) || {};
               if (rawLocationRange && rawLocationRange.startOffset <= rawLocation.codeOffset &&
                   rawLocation.codeOffset < rawLocationRange.endOffset) {
@@ -381,12 +294,15 @@ describe('The Debugger Language Plugins', async () => {
     await frontend.evaluateHandle(
         () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
           class InliningPlugin {
-            private modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocations?: SourceLocation[]}>;
+            private modules: Map<string, {
+              rawLocationRange?: Chrome.DevTools.RawLocationRange,
+              sourceLocations?: Chrome.DevTools.SourceLocation[],
+            }>;
             constructor() {
               this.modules = new Map();
             }
 
-            async addRawModule(rawModuleId: string, symbols: string, rawModule: RawModule) {
+            async addRawModule(rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
               const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
               this.modules.set(rawModuleId, {
                 rawLocationRange: {rawModuleId, startOffset: 6, endOffset: 7},
@@ -399,7 +315,7 @@ describe('The Debugger Language Plugins', async () => {
               return [sourceFileURL];
             }
 
-            async rawLocationToSourceLocation(rawLocation: RawLocation) {
+            async rawLocationToSourceLocation(rawLocation: Chrome.DevTools.RawLocation) {
               const {rawLocationRange, sourceLocations} = this.modules.get(rawLocation.rawModuleId) || {};
               if (rawLocationRange && sourceLocations && rawLocationRange.startOffset <= rawLocation.codeOffset &&
                   rawLocation.codeOffset < rawLocationRange.endOffset) {
@@ -408,20 +324,20 @@ describe('The Debugger Language Plugins', async () => {
               return [];
             }
 
-            async getFunctionInfo(rawLocation: RawLocation) {
+            async getFunctionInfo(rawLocation: Chrome.DevTools.RawLocation) {
               const {rawLocationRange} = this.modules.get(rawLocation.rawModuleId) || {};
               if (rawLocationRange && rawLocationRange.startOffset <= rawLocation.codeOffset &&
                   rawLocation.codeOffset < rawLocationRange.endOffset) {
                 return {frames: [{name: 'inner_inline_func'}, {name: 'outer_inline_func'}, {name: 'Main'}]};
               }
-              return null;
+              return {frames: []};
             }
 
             async getScopeInfo(type: string) {
               return {type, typeName: type};
             }
 
-            async listVariablesInScope(rawLocation: RawLocation) {
+            async listVariablesInScope(rawLocation: Chrome.DevTools.RawLocation) {
               const {rawLocationRange} = this.modules.get(rawLocation.rawModuleId) || {};
               const frame = rawLocation.inlineFrameIndex || 0;
               if (rawLocationRange && rawLocationRange.startOffset <= rawLocation.codeOffset &&
@@ -482,12 +398,15 @@ describe('The Debugger Language Plugins', async () => {
     await frontend.evaluateHandle(
         () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
           class InliningPlugin {
-            private modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocations?: SourceLocation[]}>;
+            private modules: Map<string, {
+              rawLocationRange?: Chrome.DevTools.RawLocationRange,
+              sourceLocations?: Chrome.DevTools.SourceLocation[],
+            }>;
             constructor() {
               this.modules = new Map();
             }
 
-            async addRawModule(rawModuleId: string, symbols: string, rawModule: RawModule) {
+            async addRawModule(rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
               const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
               this.modules.set(rawModuleId, {
                 rawLocationRange: {rawModuleId, startOffset: 6, endOffset: 7},
@@ -498,7 +417,7 @@ describe('The Debugger Language Plugins', async () => {
               return [sourceFileURL];
             }
 
-            async rawLocationToSourceLocation(rawLocation: RawLocation) {
+            async rawLocationToSourceLocation(rawLocation: Chrome.DevTools.RawLocation) {
               const {rawLocationRange, sourceLocations} = this.modules.get(rawLocation.rawModuleId) || {};
               if (rawLocationRange && sourceLocations && rawLocationRange.startOffset <= rawLocation.codeOffset &&
                   rawLocation.codeOffset < rawLocationRange.endOffset) {
@@ -507,20 +426,20 @@ describe('The Debugger Language Plugins', async () => {
               return [];
             }
 
-            async getFunctionInfo(rawLocation: RawLocation) {
+            async getFunctionInfo(rawLocation: Chrome.DevTools.RawLocation) {
               const {rawLocationRange} = this.modules.get(rawLocation.rawModuleId) || {};
               if (rawLocationRange && rawLocationRange.startOffset <= rawLocation.codeOffset &&
                   rawLocation.codeOffset < rawLocationRange.endOffset) {
                 return {frames: []};
               }
-              return null;
+              return {frames: []};
             }
 
             async getScopeInfo(type: string) {
               return {type, typeName: type};
             }
 
-            async listVariablesInScope(_rawLocation: RawLocation) {
+            async listVariablesInScope(_rawLocation: Chrome.DevTools.RawLocation) {
               return [];
             }
           }
@@ -546,12 +465,14 @@ describe('The Debugger Language Plugins', async () => {
     await frontend.evaluateHandle(
         () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
           class VariableListingPlugin {
-            private modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocation?: SourceLocation}>;
+            private modules: Map<
+                string,
+                {rawLocationRange?: Chrome.DevTools.RawLocationRange, sourceLocation?: Chrome.DevTools.SourceLocation}>;
             constructor() {
               this.modules = new Map();
             }
 
-            async addRawModule(rawModuleId: string, symbols: string, rawModule: RawModule) {
+            async addRawModule(rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
               const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
               this.modules.set(rawModuleId, {
                 rawLocationRange: {rawModuleId, startOffset: 6, endOffset: 7},
@@ -560,7 +481,7 @@ describe('The Debugger Language Plugins', async () => {
               return [sourceFileURL];
             }
 
-            async rawLocationToSourceLocation(rawLocation: RawLocation) {
+            async rawLocationToSourceLocation(rawLocation: Chrome.DevTools.RawLocation) {
               const {rawLocationRange, sourceLocation} = this.modules.get(rawLocation.rawModuleId) || {};
               if (rawLocationRange && sourceLocation && rawLocationRange.startOffset <= rawLocation.codeOffset &&
                   rawLocation.codeOffset < rawLocationRange.endOffset) {
@@ -570,7 +491,7 @@ describe('The Debugger Language Plugins', async () => {
             }
 
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            async listVariablesInScope(rawLocation: RawLocation) {
+            async listVariablesInScope(rawLocation: Chrome.DevTools.RawLocation) {
               return [{scope: 'LOCAL', name: 'local', type: 'TestType'}];
             }
 
@@ -579,8 +500,8 @@ describe('The Debugger Language Plugins', async () => {
             }
 
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            async getTypeInfo(expression: string, context: RawLocation):
-                Promise<{typeInfos: TypeInfo[], base: EvalBase}|null> {
+            async getTypeInfo(expression: string, context: Chrome.DevTools.RawLocation):
+                Promise<{typeInfos: Chrome.DevTools.TypeInfo[], base: Chrome.DevTools.EvalBase}|null> {
               if (expression === 'local') {
                 const typeInfos = [
                   {
@@ -631,9 +552,10 @@ describe('The Debugger Language Plugins', async () => {
               return null;
             }
 
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            async getFormatter(expressionOrField: string|{base: EvalBase, field: FieldInfo[]}, context: RawLocation):
-                Promise<{js: string}|null> {
+            async getFormatter(
+                expressionOrField: string|{base: Chrome.DevTools.EvalBase, field: Chrome.DevTools.FieldInfo[]},
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                context: Chrome.DevTools.RawLocation): Promise<{js: string}|null> {
               function formatWithDescription(description: string) {
                 const sym = Symbol('sym');
                 const tag = {className: '$tag', symbol: sym};
@@ -644,7 +566,7 @@ describe('The Debugger Language Plugins', async () => {
                 const tag = {className: '$tag', symbol: sym};
 
                 class $tag {
-                  [sym]: EvalBase;
+                  [sym]: Chrome.DevTools.EvalBase;
                   constructor(value: number) {
                     const rootType = {
                       typeNames: ['int'],
@@ -712,12 +634,14 @@ describe('The Debugger Language Plugins', async () => {
     await frontend.evaluateHandle(
         () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
           class VariableListingPlugin {
-            private modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocation?: SourceLocation}>;
+            private modules: Map<
+                string,
+                {rawLocationRange?: Chrome.DevTools.RawLocationRange, sourceLocation?: Chrome.DevTools.SourceLocation}>;
             constructor() {
               this.modules = new Map();
             }
 
-            async addRawModule(rawModuleId: string, symbols: string, rawModule: RawModule) {
+            async addRawModule(rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
               const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
               this.modules.set(rawModuleId, {
                 rawLocationRange: {rawModuleId, startOffset: 6, endOffset: 7},
@@ -726,7 +650,7 @@ describe('The Debugger Language Plugins', async () => {
               return [sourceFileURL];
             }
 
-            async rawLocationToSourceLocation(rawLocation: RawLocation) {
+            async rawLocationToSourceLocation(rawLocation: Chrome.DevTools.RawLocation) {
               const {rawLocationRange, sourceLocation} = this.modules.get(rawLocation.rawModuleId) || {};
               if (rawLocationRange && sourceLocation && rawLocationRange.startOffset <= rawLocation.codeOffset &&
                   rawLocation.codeOffset < rawLocationRange.endOffset) {
@@ -739,7 +663,7 @@ describe('The Debugger Language Plugins', async () => {
               return {type, typeName: type};
             }
 
-            async listVariablesInScope(rawLocation: RawLocation) {
+            async listVariablesInScope(rawLocation: Chrome.DevTools.RawLocation) {
               const {rawLocationRange} = this.modules.get(rawLocation.rawModuleId) || {};
               const {codeOffset} = rawLocation;
               if (!rawLocationRange || rawLocationRange.startOffset > codeOffset ||
@@ -755,8 +679,8 @@ describe('The Debugger Language Plugins', async () => {
             }
 
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            async getTypeInfo(expression: string, context: RawLocation):
-                Promise<{typeInfos: TypeInfo[], base: EvalBase}|null> {
+            async getTypeInfo(expression: string, context: Chrome.DevTools.RawLocation):
+                Promise<{typeInfos: Chrome.DevTools.TypeInfo[], base: Chrome.DevTools.EvalBase}|null> {
               if (expression === 'unreachable') {
                 const typeInfos = [{
                   typeNames: ['int'],
@@ -775,9 +699,11 @@ describe('The Debugger Language Plugins', async () => {
               return null;
             }
 
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            async getFormatter(expressionOrField: string|{base: EvalBase, field: FieldInfo[]}, context: RawLocation):
-                Promise<{js: string}|null> {
+            async getFormatter(
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                expressionOrField: string|{base: Chrome.DevTools.EvalBase, field: Chrome.DevTools.FieldInfo[]},
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                context: Chrome.DevTools.RawLocation): Promise<{js: string}|null> {
               return {js: '23'};
             }
           }
@@ -810,12 +736,14 @@ describe('The Debugger Language Plugins', async () => {
     await frontend.evaluateHandle(
         () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
           class FormattingErrorsPlugin {
-            private modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocation?: SourceLocation}>;
+            private modules: Map<
+                string,
+                {rawLocationRange?: Chrome.DevTools.RawLocationRange, sourceLocation?: Chrome.DevTools.SourceLocation}>;
             constructor() {
               this.modules = new Map();
             }
 
-            async addRawModule(rawModuleId: string, symbols: string, rawModule: RawModule) {
+            async addRawModule(rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
               const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
               this.modules.set(rawModuleId, {
                 rawLocationRange: {rawModuleId, startOffset: 6, endOffset: 7},
@@ -824,7 +752,7 @@ describe('The Debugger Language Plugins', async () => {
               return [sourceFileURL];
             }
 
-            async rawLocationToSourceLocation(rawLocation: RawLocation) {
+            async rawLocationToSourceLocation(rawLocation: Chrome.DevTools.RawLocation) {
               const {rawLocationRange, sourceLocation} = this.modules.get(rawLocation.rawModuleId) || {};
               if (rawLocationRange && sourceLocation && rawLocationRange.startOffset <= rawLocation.codeOffset &&
                   rawLocation.codeOffset < rawLocationRange.endOffset) {
@@ -837,7 +765,7 @@ describe('The Debugger Language Plugins', async () => {
               return {type, typeName: type};
             }
 
-            async listVariablesInScope(rawLocation: RawLocation) {
+            async listVariablesInScope(rawLocation: Chrome.DevTools.RawLocation) {
               const {rawLocationRange} = this.modules.get(rawLocation.rawModuleId) || {};
               const {codeOffset} = rawLocation;
               if (!rawLocationRange || rawLocationRange.startOffset > codeOffset ||
@@ -849,8 +777,8 @@ describe('The Debugger Language Plugins', async () => {
             }
 
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            async getTypeInfo(expression: string, context: RawLocation):
-                Promise<{typeInfos: TypeInfo[], base: EvalBase}|null> {
+            async getTypeInfo(expression: string, context: Chrome.DevTools.RawLocation):
+                Promise<{typeInfos: Chrome.DevTools.TypeInfo[], base: Chrome.DevTools.EvalBase}|null> {
               if (expression === 'foo') {
                 const typeInfos = [{
                   typeNames: ['int'],
@@ -869,9 +797,10 @@ describe('The Debugger Language Plugins', async () => {
               throw new Error(`No typeinfo for ${expression}`);
             }
 
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            async getFormatter(expressionOrField: string|{base: EvalBase, field: FieldInfo[]}, context: RawLocation):
-                Promise<{js: string}|null> {
+            async getFormatter(
+                expressionOrField: string|{base: Chrome.DevTools.EvalBase, field: Chrome.DevTools.FieldInfo[]},
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                context: Chrome.DevTools.RawLocation): Promise<{js: string}|null> {
               if (typeof expressionOrField !== 'string' && expressionOrField.base.payload as number === 28 &&
                   expressionOrField.field.length === 0) {
                 return {js: '23'};

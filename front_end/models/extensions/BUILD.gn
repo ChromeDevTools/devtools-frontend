@@ -17,6 +17,7 @@ devtools_module("extensions") {
   ]
 
   deps = [
+    "../../../extension-api",
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/platform:bundle",

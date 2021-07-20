@@ -1,0 +1,12 @@
+# Copyright 2021 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../scripts/build/ninja/devtools_pre_built.gni")
+
+devtools_pre_built("extension-api") {
+  sources = [
+    "ExtensionAPI.d.ts",
+    "extension-api-tsconfig.json",
+  ]
+}

@@ -798,7 +798,7 @@ export class Layers3DView extends UI.Widget.VBox implements LayerView {
   _createVisibilitySetting(caption: string, name: string, value: boolean, toolbar: UI.Toolbar.Toolbar):
       Common.Settings.Setting<boolean> {
     const setting = Common.Settings.Settings.instance().createSetting(name, value);
-    setting.setTitle(i18nString(caption));
+    setting.setTitle(caption);
     setting.addChangeListener(this._update, this);
     toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(setting));
     return setting;

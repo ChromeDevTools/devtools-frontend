@@ -545,6 +545,9 @@
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "Disable AVIF format"
   },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "Disable cache (while DevTools is open)"
+  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Disable JavaScript"
   },
@@ -3994,6 +3997,9 @@
   },
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Show Stack Trace"
+  },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "Show user agent shadow DOM"
   },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Stack Trace"
@@ -8930,8 +8936,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Deactivate breakpoints"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "Decrement CSS unit by 10"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "Decrement CSS unit by {PH1}"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "Detect indentation"
@@ -9014,8 +9020,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "Go to symbol"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "Increment CSS unit by 10"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "Increment CSS unit by {PH1}"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Jump to next editing location"

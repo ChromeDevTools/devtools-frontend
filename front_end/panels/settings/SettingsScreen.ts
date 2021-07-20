@@ -453,6 +453,7 @@ export class ExperimentsSettingsTab extends SettingsTab {
   }
 
   _createExperimentCheckbox(experiment: Root.Runtime.Experiment): HTMLParagraphElement {
+    // eslint-disable-next-line rulesdir/l10n_i18nString_call_only_with_uistrings
     const label = UI.UIUtils.CheckboxLabel.create(i18nString(experiment.title), experiment.isEnabled());
     const input = label.checkboxElement;
     input.name = experiment.name;

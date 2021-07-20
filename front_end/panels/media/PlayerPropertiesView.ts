@@ -163,12 +163,12 @@ export const enum PlayerPropertyKeys {
 }
 
 export class PropertyRenderer extends UI.Widget.VBox {
-  _title: string;
+  _title: Platform.UIString.LocalizedString;
   _contents: HTMLElement;
   _value: string|null;
   _pseudoColorProtectionElement: HTMLDivElement|null;
 
-  constructor(title: string) {
+  constructor(title: Platform.UIString.LocalizedString) {
     super();
     this.contentElement.classList.add('media-property-renderer');
     const titleElement = this.contentElement.createChild('span', 'media-property-renderer-title');
@@ -232,8 +232,8 @@ export class PropertyRenderer extends UI.Widget.VBox {
 
 export class FormattedPropertyRenderer extends PropertyRenderer {
   _formatfunction: (arg0: string) => string;
-  constructor(title: string, formatfunction: (arg0: string) => string) {
-    super(i18nString(title));
+  constructor(title: Platform.UIString.LocalizedString, formatfunction: (arg0: string) => string) {
+    super(title);
     this._formatfunction = formatfunction;
   }
 
@@ -247,8 +247,8 @@ export class FormattedPropertyRenderer extends PropertyRenderer {
 }
 
 export class DefaultPropertyRenderer extends PropertyRenderer {
-  constructor(title: string, defaultText: string) {
-    super(i18nString(title));
+  constructor(title: Platform.UIString.LocalizedString, defaultText: string) {
+    super(title);
     this.changeContents(defaultText);
   }
 }
@@ -257,8 +257,8 @@ export class DimensionPropertyRenderer extends PropertyRenderer {
   _width: number;
   _height: number;
 
-  constructor(title: string) {
-    super(i18nString(title));
+  constructor(title: Platform.UIString.LocalizedString) {
+    super(title);
     this._width = 0;
     this._height = 0;
   }
@@ -330,7 +330,7 @@ export class TrackManager {
   addNewTab(tabs: GenericTrackMenu|NoTracksPlaceholderMenu, tabData: TabData, tabNumber: number): void {
     const tabElements = [];
     for (const [name, data] of Object.entries(tabData)) {
-      tabElements.push(new DefaultPropertyRenderer(name, data));
+      tabElements.push(new DefaultPropertyRenderer(i18n.i18n.lockedString(name), data));
     }
     const newTab = new AttributesView(tabElements);
 

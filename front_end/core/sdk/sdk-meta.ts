@@ -309,6 +309,10 @@ const UIStrings = {
   *@description Title of a setting under the Network category that can be invoked through the Command Menu
   */
   enableCache: 'Enable cache',
+  /**
+   * @description Title of a setting under the Network category that can be invoked through the Command Menu
+   */
+  disableCache: 'Disable cache (while DevTools is open)',
 };
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -940,7 +944,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.NETWORK,
-  title: i18nLazyString('Disable cache (while DevTools is open)'),
+  title: i18nLazyString(UIStrings.disableCache),
   settingName: 'cacheDisabled',
   settingType: Common.Settings.SettingType.BOOLEAN,
   order: 0,
@@ -949,7 +953,7 @@ Common.Settings.registerSettingExtension({
   options: [
     {
       value: true,
-      title: i18nLazyString('Disable cache (while DevTools is open)'),
+      title: i18nLazyString(UIStrings.disableCache),
     },
     {
       value: false,

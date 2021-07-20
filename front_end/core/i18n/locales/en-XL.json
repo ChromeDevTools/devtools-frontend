@@ -545,6 +545,9 @@
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "D̂íŝáb̂ĺê AVIF f́ôŕm̂át̂"
   },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "D̂íŝáb̂ĺê ćâćĥé (ŵh́îĺê D́êv́T̂óôĺŝ íŝ óp̂én̂)"
+  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "D̂íŝáb̂ĺê J́âv́âŚĉŕîṕt̂"
   },
@@ -3994,6 +3997,9 @@
   },
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Ŝh́ôẃ Ŝt́âćk̂ T́r̂áĉé"
+  },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "Ŝh́ôẃ ûśêŕ âǵêńt̂ śĥád̂óŵ DOM"
   },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Ŝt́âćk̂ T́r̂áĉé"
@@ -8930,8 +8936,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "D̂éâćt̂ív̂át̂é b̂ŕêák̂ṕôín̂t́ŝ"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "D̂éĉŕêḿêńt̂ ĆŜŚ ûńît́ b̂ý 10"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "D̂éĉŕêḿêńt̂ ĆŜŚ ûńît́ b̂ý {PH1}"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "D̂ét̂éĉt́ îńd̂én̂t́ât́îón̂"
@@ -9014,8 +9020,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "Ĝó t̂ó ŝým̂b́ôĺ"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "Îńĉŕêḿêńt̂ ĆŜŚ ûńît́ b̂ý 10"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "Îńĉŕêḿêńt̂ ĆŜŚ ûńît́ b̂ý {PH1}"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Ĵúm̂ṕ t̂ó n̂éx̂t́ êd́ît́îńĝ ĺôćât́îón̂"

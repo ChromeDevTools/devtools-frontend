@@ -132,8 +132,8 @@ export class StylePropertyEditor extends HTMLElement {
       'button': true,
       'selected': selected,
     });
-    const title =
-        i18nString(selected ? UIStrings.deselectButton : UIStrings.selectButton, {propertyName, propertyValue});
+    const values = {propertyName, propertyValue};
+    const title = selected ? i18nString(UIStrings.deselectButton, values) : i18nString(UIStrings.selectButton, values);
     return html`<button title=${title} class=${classes} @click=${
         (): void => this.onButtonClick(propertyName, propertyValue, selected)}>
        <${IconButton.Icon.Icon.litTagName} style=${transform} .data=${

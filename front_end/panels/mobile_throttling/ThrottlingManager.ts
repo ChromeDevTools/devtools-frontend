@@ -207,6 +207,7 @@ export class ThrottlingManager {
           continue;
         }
         contextMenu.defaultSection().appendCheckboxItem(
+            // eslint-disable-next-line rulesdir/l10n_i18nString_call_only_with_uistrings
             i18nString(conditions.title), selector.optionSelected.bind(selector, conditions as Conditions),
             selectedIndex === index);
       }

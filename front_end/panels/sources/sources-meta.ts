@@ -201,13 +201,15 @@ const UIStrings = {
   */
   nextCallFrame: 'Next call frame',
   /**
-  *@description Text in the Shortcuts page to explain a keyboard shortcut (increment CSS unit by 10 in Styles pane)
+  *@description Text in the Shortcuts page to explain a keyboard shortcut (increment CSS unit by the amount passed in the placeholder in Styles pane)
+  *@example {10} PH1
   */
-  incrementCssUnitByTen: 'Increment CSS unit by 10',
+  incrementCssUnitBy: 'Increment CSS unit by {PH1}',
   /**
-  *@description Text in the Shortcuts page to explain a keyboard shortcut (decrement CSS unit by 10 in Styles pane)
+  *@description Text in the Shortcuts page to explain a keyboard shortcut (decrement CSS unit by the amount passed in the placeholder in Styles pane)
+  *@example {10} PH1
   */
-  decrementCssUnitByTen: 'Decrement CSS unit by 10',
+  decrementCssUnitBy: 'Decrement CSS unit by {PH1}',
   /**
   *@description Title of a setting under the Sources category that can be invoked through the Command Menu
   */
@@ -1189,7 +1191,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'sources.increment-css',
   category: UI.ActionRegistration.ActionCategory.SOURCES,
-  title: i18nLazyString('Increment CSS unit by 1'),
+  title: i18nLazyString(UIStrings.incrementCssUnitBy, {PH1: 1}),
   bindings: [
     {
       shortcut: 'Alt+Up',
@@ -1199,7 +1201,7 @@ UI.ActionRegistration.registerActionExtension({
 
 UI.ActionRegistration.registerActionExtension({
   actionId: 'sources.increment-css-by-ten',
-  title: i18nLazyString(UIStrings.incrementCssUnitByTen),
+  title: i18nLazyString(UIStrings.incrementCssUnitBy, {PH1: 10}),
   category: UI.ActionRegistration.ActionCategory.SOURCES,
   bindings: [
     {
@@ -1211,7 +1213,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'sources.decrement-css',
   category: UI.ActionRegistration.ActionCategory.SOURCES,
-  title: i18nLazyString('Decrement CSS unit by 1'),
+  title: i18nLazyString(UIStrings.decrementCssUnitBy, {PH1: 1}),
   bindings: [
     {
       shortcut: 'Alt+Down',
@@ -1222,7 +1224,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'sources.decrement-css-by-ten',
   category: UI.ActionRegistration.ActionCategory.SOURCES,
-  title: i18nLazyString(UIStrings.decrementCssUnitByTen),
+  title: i18nLazyString(UIStrings.decrementCssUnitBy, {PH1: 10}),
   bindings: [
     {
       shortcut: 'Alt+PageDown',

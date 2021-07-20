@@ -128,6 +128,11 @@ const UIStrings = {
   * the HTML element.
   */
   copyStyles: 'Copy styles',
+  /**
+   * @description Title of a setting under the Elements category. Whether to show/hide hide
+   * the shadow DOM nodes of HTML elements that are built into the browser (e.g. the <input> element).
+   */
+  showUserAgentShadowDOM: 'Show user agent shadow `DOM`',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/elements-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -375,7 +380,7 @@ UI.ActionRegistration.registerActionExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.ELEMENTS,
   order: 1,
-  title: i18nLazyString('Show user agent shadow DOM'),
+  title: i18nLazyString(UIStrings.showUserAgentShadowDOM),
   settingName: 'showUAShadowDOM',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,

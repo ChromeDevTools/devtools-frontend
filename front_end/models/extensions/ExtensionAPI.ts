@@ -184,6 +184,72 @@ export namespace PrivateAPI {
       EvaluateOnInspectedPageRequest|GetRequestContentRequest|GetResourceContentRequest|SetResourceContentRequest|
       AddTraceProviderRequest|ForwardKeyboardEventRequest|GetHARRequest|GetPageResourcesRequest;
   export type ExtensionServerRequestMessage = PrivateAPI.ServerRequests&{requestId?: number};
+
+  type AddRawModuleRequest = {
+    method: LanguageExtensionPluginCommands.AddRawModule,
+    parameters: {rawModuleId: string, symbolsURL: string|undefined, rawModule: PublicAPI.Chrome.DevTools.RawModule},
+  };
+  type SourceLocationToRawLocationRequest = {
+    method: LanguageExtensionPluginCommands.SourceLocationToRawLocation,
+    parameters: {sourceLocation: PublicAPI.Chrome.DevTools.SourceLocation},
+  };
+  type RawLocationToSourceLocationRequest = {
+    method: LanguageExtensionPluginCommands.RawLocationToSourceLocation,
+    parameters: {rawLocation: PublicAPI.Chrome.DevTools.RawLocation},
+  };
+  type GetScopeInfoRequest = {method: LanguageExtensionPluginCommands.GetScopeInfo, parameters: {type: string}};
+  type ListVariablesInScopeRequest = {
+    method: LanguageExtensionPluginCommands.ListVariablesInScope,
+    parameters: {rawLocation: PublicAPI.Chrome.DevTools.RawLocation},
+  };
+  type RemoveRawModuleRequest = {
+    method: LanguageExtensionPluginCommands.RemoveRawModule,
+    parameters: {rawModuleId: string},
+  };
+  type GetTypeInfoRequest = {
+    method: LanguageExtensionPluginCommands.GetTypeInfo,
+    parameters: {expression: string, context: PublicAPI.Chrome.DevTools.RawLocation},
+  };
+  type GetFormatterRequest = {
+    method: LanguageExtensionPluginCommands.GetFormatter,
+    parameters: {
+      expressionOrField: string|{
+        base: PublicAPI.Chrome.DevTools.EvalBase,
+        field: Array<PublicAPI.Chrome.DevTools.FieldInfo>,
+      },
+      context: PublicAPI.Chrome.DevTools.RawLocation,
+    },
+  };
+  type GetInspectableAddressRequest = {
+    method: LanguageExtensionPluginCommands.GetInspectableAddress,
+    parameters: {
+      field: {
+        base: PublicAPI.Chrome.DevTools.EvalBase,
+        field: Array<PublicAPI.Chrome.DevTools.FieldInfo>,
+      },
+    },
+  };
+  type GetFunctionInfoRequest = {
+    method: LanguageExtensionPluginCommands.GetFunctionInfo,
+    parameters: {rawLocation: PublicAPI.Chrome.DevTools.RawLocation},
+  };
+  type GetInlinedFunctionRangesRequest = {
+    method: LanguageExtensionPluginCommands.GetInlinedFunctionRanges,
+    parameters: {rawLocation: PublicAPI.Chrome.DevTools.RawLocation},
+  };
+  type GetInlinedCalleesRangesRequest = {
+    method: LanguageExtensionPluginCommands.GetInlinedCalleesRanges,
+    parameters: {rawLocation: PublicAPI.Chrome.DevTools.RawLocation},
+  };
+  type GetMappedLinesRequest = {
+    method: LanguageExtensionPluginCommands.GetMappedLines,
+    parameters: {rawModuleId: string, sourceFileURL: string},
+  };
+
+  export type LanguageExtensionRequests = AddRawModuleRequest|SourceLocationToRawLocationRequest|
+      RawLocationToSourceLocationRequest|GetScopeInfoRequest|ListVariablesInScopeRequest|RemoveRawModuleRequest|
+      GetTypeInfoRequest|GetFormatterRequest|GetInspectableAddressRequest|GetFunctionInfoRequest|
+      GetInlinedFunctionRangesRequest|GetInlinedCalleesRangesRequest|GetMappedLinesRequest;
 }
 
 declare global {
@@ -391,8 +457,7 @@ self.injectedExtensionAPI = function(
     this.network = new (Constructor(Network))();
     // @ts-ignore
     this.timeline = new Timeline();
-    // @ts-ignore
-    this.languageServices = new LanguageServicesAPI();
+    this.languageServices = new (Constructor(LanguageServicesAPI))();
     defineDeprecatedProperty(this, 'webInspector', 'resources', 'network');
   }
 
@@ -579,80 +644,85 @@ self.injectedExtensionAPI = function(
   /**
    * @constructor
    */
-  function LanguageServicesAPIImpl(this: any): void {
+  function LanguageServicesAPIImpl(this: APIImpl.LanguageExtensions): void {
     /** @type {!Map<*, !MessagePort>} */
     this._plugins = new Map();
   }
 
-  LanguageServicesAPIImpl.prototype = {
+  (LanguageServicesAPIImpl.prototype as
+   Pick<APIImpl.LanguageExtensions, 'registerLanguageExtensionPlugin'|'unregisterLanguageExtensionPlugin'>) = {
     registerLanguageExtensionPlugin: async function(
-        plugin: any, pluginName: string, supportedScriptTypes: PublicAPI.Chrome.DevTools.SupportedScriptTypes):
-        Promise<void> {
-          if (this._plugins.has(plugin)) {
-            throw new Error(`Tried to register plugin '${pluginName}' twice`);
-          }
-          const channel = new MessageChannel();
-          const port = channel.port1;
-          this._plugins.set(plugin, port);
-          port.onmessage = ({data: {requestId, method, parameters}}: MessageEvent<any>): void => {
-            console.time(`${requestId}: ${method}`);
-            dispatchMethodCall(method, parameters)
-                .then(result => port.postMessage({requestId, result}))
-                .catch(error => port.postMessage({requestId, error: {message: error.message}}))
-                .finally(() => console.timeEnd(`${requestId}: ${method}`));
-          };
+        this: APIImpl.LanguageExtensions, plugin: PublicAPI.Chrome.DevTools.LanguageExtensionPlugin, pluginName: string,
+        supportedScriptTypes: PublicAPI.Chrome.DevTools.SupportedScriptTypes): Promise<void> {
+      if (this._plugins.has(plugin)) {
+        throw new Error(`Tried to register plugin '${pluginName}' twice`);
+      }
+      const channel = new MessageChannel();
+      const port = channel.port1;
+      this._plugins.set(plugin, port);
+      port.onmessage = ({data}: MessageEvent<{requestId: number}&PrivateAPI.LanguageExtensionRequests>): void => {
+        const {requestId} = data;
+        console.time(`${requestId}: ${data.method}`);
+        dispatchMethodCall(data)
+            .then(result => port.postMessage({requestId, result}))
+            .catch(error => port.postMessage({requestId, error: {message: error.message}}))
+            .finally(() => console.timeEnd(`${requestId}: ${data.method}`));
+      };
 
-          function dispatchMethodCall(method: string, parameters: any): Promise<any> {
-            switch (method) {
-              case PrivateAPI.LanguageExtensionPluginCommands.AddRawModule:
-                return plugin.addRawModule(parameters.rawModuleId, parameters.symbolsURL, parameters.rawModule);
-              case PrivateAPI.LanguageExtensionPluginCommands.RemoveRawModule:
-                return plugin.removeRawModule(parameters.rawModuleId);
-              case PrivateAPI.LanguageExtensionPluginCommands.SourceLocationToRawLocation:
-                return plugin.sourceLocationToRawLocation(parameters.sourceLocation);
-              case PrivateAPI.LanguageExtensionPluginCommands.RawLocationToSourceLocation:
-                return plugin.rawLocationToSourceLocation(parameters.rawLocation);
-              case PrivateAPI.LanguageExtensionPluginCommands.GetScopeInfo:
-                return plugin.getScopeInfo(parameters.type);
-              case PrivateAPI.LanguageExtensionPluginCommands.ListVariablesInScope:
-                return plugin.listVariablesInScope(parameters.rawLocation);
-              case PrivateAPI.LanguageExtensionPluginCommands.GetTypeInfo:
-                return plugin.getTypeInfo(parameters.expression, parameters.context);
-              case PrivateAPI.LanguageExtensionPluginCommands.GetFormatter:
-                return plugin.getFormatter(parameters.expressionOrField, parameters.context);
-              case PrivateAPI.LanguageExtensionPluginCommands.GetInspectableAddress:
-                if ('getInspectableAddress' in plugin) {
-                  return plugin.getInspectableAddress(parameters.field);
-                }
-                return Promise.resolve({js: ''});
-              case PrivateAPI.LanguageExtensionPluginCommands.GetFunctionInfo:
-                return plugin.getFunctionInfo(parameters.rawLocation);
-              case PrivateAPI.LanguageExtensionPluginCommands.GetInlinedFunctionRanges:
-                return plugin.getInlinedFunctionRanges(parameters.rawLocation);
-              case PrivateAPI.LanguageExtensionPluginCommands.GetInlinedCalleesRanges:
-                return plugin.getInlinedCalleesRanges(parameters.rawLocation);
-              case PrivateAPI.LanguageExtensionPluginCommands.GetMappedLines:
-                if ('getMappedLines' in plugin) {
-                  return plugin.getMappedLines(parameters.rawModuleId, parameters.sourceFileURL);
-                }
-                return Promise.resolve(undefined);
+      function dispatchMethodCall(request: PrivateAPI.LanguageExtensionRequests): Promise<unknown> {
+        switch (request.method) {
+          case PrivateAPI.LanguageExtensionPluginCommands.AddRawModule:
+            return plugin.addRawModule(
+                request.parameters.rawModuleId, request.parameters.symbolsURL, request.parameters.rawModule);
+          case PrivateAPI.LanguageExtensionPluginCommands.RemoveRawModule:
+            return plugin.removeRawModule(request.parameters.rawModuleId);
+          case PrivateAPI.LanguageExtensionPluginCommands.SourceLocationToRawLocation:
+            return plugin.sourceLocationToRawLocation(request.parameters.sourceLocation);
+          case PrivateAPI.LanguageExtensionPluginCommands.RawLocationToSourceLocation:
+            return plugin.rawLocationToSourceLocation(request.parameters.rawLocation);
+          case PrivateAPI.LanguageExtensionPluginCommands.GetScopeInfo:
+            return plugin.getScopeInfo(request.parameters.type);
+          case PrivateAPI.LanguageExtensionPluginCommands.ListVariablesInScope:
+            return plugin.listVariablesInScope(request.parameters.rawLocation);
+          case PrivateAPI.LanguageExtensionPluginCommands.GetTypeInfo:
+            return plugin.getTypeInfo(request.parameters.expression, request.parameters.context);
+          case PrivateAPI.LanguageExtensionPluginCommands.GetFormatter:
+            return plugin.getFormatter(request.parameters.expressionOrField, request.parameters.context);
+          case PrivateAPI.LanguageExtensionPluginCommands.GetInspectableAddress:
+            if ('getInspectableAddress' in plugin) {
+              return plugin.getInspectableAddress(request.parameters.field);
             }
-            throw new Error(`Unknown language plugin method ${method}`);
-          }
+            return Promise.resolve({js: ''});
+          case PrivateAPI.LanguageExtensionPluginCommands.GetFunctionInfo:
+            return plugin.getFunctionInfo(request.parameters.rawLocation);
+          case PrivateAPI.LanguageExtensionPluginCommands.GetInlinedFunctionRanges:
+            return plugin.getInlinedFunctionRanges(request.parameters.rawLocation);
+          case PrivateAPI.LanguageExtensionPluginCommands.GetInlinedCalleesRanges:
+            return plugin.getInlinedCalleesRanges(request.parameters.rawLocation);
+          case PrivateAPI.LanguageExtensionPluginCommands.GetMappedLines:
+            if ('getMappedLines' in plugin) {
+              return plugin.getMappedLines(request.parameters.rawModuleId, request.parameters.sourceFileURL);
+            }
+            return Promise.resolve(undefined);
+        }
+        // @ts-expect-error
+        throw new Error(`Unknown language plugin method ${request.method}`);
+      }
 
-          await new Promise<void>(resolve => {
-            extensionServer.sendRequest(
-                {
-                  command: PrivateAPI.Commands.RegisterLanguageExtensionPlugin,
-                  pluginName,
-                  port: channel.port2,
-                  supportedScriptTypes,
-                },
-                () => resolve(), [channel.port2]);
-          });
-        },
+      await new Promise<void>(resolve => {
+        extensionServer.sendRequest(
+            {
+              command: PrivateAPI.Commands.RegisterLanguageExtensionPlugin,
+              pluginName,
+              port: channel.port2,
+              supportedScriptTypes,
+            },
+            () => resolve(), [channel.port2]);
+      });
+    },
 
-    unregisterLanguageExtensionPlugin: async function(plugin: any): Promise<void> {
+    unregisterLanguageExtensionPlugin: async function(
+        this: APIImpl.LanguageExtensions, plugin: PublicAPI.Chrome.DevTools.LanguageExtensionPlugin): Promise<void> {
       const port = this._plugins.get(plugin);
       if (!port) {
         throw new Error('Tried to unregister a plugin that was not previously registered');

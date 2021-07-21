@@ -23,8 +23,8 @@ const UIStrings = {
     */
   brands: 'Brands',
   /**
-    * @description Name for a brand list. A brand list includes a brand name input field, a version
-    * input field and a delete icon.
+    * @description ARIA label for a form with properties for a single brand in a brand list. The form includes a brand name input field, a version
+    * input field and a delete icon. Brand refer to different browser brands/vendors like Google Chrome, Microsoft Edge etc.
     */
   brandProperties: 'Brand properties',
   /**

@@ -202,7 +202,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     return this._status.OK();
   }
 
-  _inspectedURLChanged(event: Common.EventTarget.EventTargetEvent): void {
+  _inspectedURLChanged(event: Common.EventTarget.EventTargetEvent<SDK.Target.Target>): void {
     if (!this._canInspectURL(event.data.inspectedURL())) {
       this._disableExtensions();
       return;

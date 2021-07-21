@@ -953,8 +953,8 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     }
   }
 
-  _targetNameChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const target = (event.data as SDK.Target.Target);
+  _targetNameChanged(event: Common.EventTarget.EventTargetEvent<SDK.Target.Target>): void {
+    const target = event.data;
     const targetNode = this._rootNode.child('target:' + target.id());
     if (targetNode) {
       targetNode.setTitle(target.name());

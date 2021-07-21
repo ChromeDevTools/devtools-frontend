@@ -157,8 +157,7 @@ export class NodeIndicator implements UI.Toolbar.Provider {
     this._button = new UI.Toolbar.ToolbarItem(element);
     this._button.setTitle(i18nString(UIStrings.openDedicatedTools));
     SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.AvailableTargetsChanged,
-        event => this._update((event.data as Protocol.Target.TargetInfo[])));
+        SDK.TargetManager.Events.AvailableTargetsChanged, event => this._update(event.data));
     this._button.setVisible(false);
     this._update([]);
   }

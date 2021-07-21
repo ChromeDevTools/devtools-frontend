@@ -68,7 +68,7 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
     }
   }
 
-  _inspectedURLChanged(event: Common.EventTarget.EventTargetEvent): void {
+  _inspectedURLChanged(event: Common.EventTarget.EventTargetEvent<Target>): void {
     if (event.data !== this._target) {
       return;
     }

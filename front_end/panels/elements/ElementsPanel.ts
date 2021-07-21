@@ -240,7 +240,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     this._gridStyleTrackerByCSSModel = new Map();
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.DOMModel.DOMModel, this);
     SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.NameChanged, event => this._targetNameChanged((event.data as SDK.Target.Target)));
+        SDK.TargetManager.Events.NameChanged, event => this._targetNameChanged(event.data));
     Common.Settings.Settings.instance()
         .moduleSetting('showUAShadowDOM')
         .addChangeListener(this._showUAShadowDOMChanged.bind(this));

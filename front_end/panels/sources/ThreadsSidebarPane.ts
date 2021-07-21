@@ -76,8 +76,8 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
       pausedState.textContent = debuggerModel.isPaused() ? i18nString(UIStrings.paused) : '';
     }
 
-    function targetNameChanged(event: Common.EventTarget.EventTargetEvent): void {
-      const target = (event.data as SDK.Target.Target);
+    function targetNameChanged(event: Common.EventTarget.EventTargetEvent<SDK.Target.Target>): void {
+      const target = event.data;
       if (target === debuggerModel.target()) {
         updateTitle();
       }

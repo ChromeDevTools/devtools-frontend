@@ -130,7 +130,7 @@ export class NetworkNavigatorView extends NavigatorView {
     return project.type() === Workspace.Workspace.projectTypes.Network;
   }
 
-  _inspectedURLChanged(event: Common.EventTarget.EventTargetEvent): void {
+  _inspectedURLChanged(event: Common.EventTarget.EventTargetEvent<SDK.Target.Target>): void {
     const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
     if (event.data !== mainTarget) {
       return;

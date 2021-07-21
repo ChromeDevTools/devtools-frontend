@@ -14,7 +14,7 @@ import type {SDKModel} from './SDKModel.js';
 
 let targetManagerInstance: TargetManager|undefined;
 
-export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
+export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   _targets: Set<Target>;
   _observers: Set<Observer>;
   _modelListeners: Platform.MapUtilities.Multimap<string|symbol, {
@@ -246,6 +246,13 @@ export enum Events {
   NameChanged = 'NameChanged',
   SuspendStateChanged = 'SuspendStateChanged',
 }
+
+export type EventTypes = {
+  [Events.AvailableTargetsChanged]: Protocol.Target.TargetInfo[],
+  [Events.InspectedURLChanged]: Target,
+  [Events.NameChanged]: Target,
+  [Events.SuspendStateChanged]: void,
+};
 
 export class Observer {
   targetAdded(_target: Target): void {

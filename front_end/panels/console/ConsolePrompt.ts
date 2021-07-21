@@ -140,8 +140,8 @@ export class ConsolePrompt extends UI.Widget.Widget {
     }
     const text = this._editor.textWithCurrentSuggestion().trim();
     const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
-    const {preview, result} =
-        await ObjectUI.JavaScriptREPL.JavaScriptREPL.evaluateAndBuildPreview(text, true /* throwOnSideEffect */, 500);
+    const {preview, result} = await ObjectUI.JavaScriptREPL.JavaScriptREPL.evaluateAndBuildPreview(
+        text, true /* throwOnSideEffect */, true /* replMode */, 500 /* timeout */);
     this._innerPreviewElement.removeChildren();
     if (preview.deepTextContent() !== this._editor.textWithCurrentSuggestion().trim()) {
       this._innerPreviewElement.appendChild(preview);

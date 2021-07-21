@@ -30,6 +30,10 @@ const UIStrings = {
   *@description Phrase used to describe the security of a context. Substitued like 'an insecure context' or 'an insecure origin'.
   */
   anInsecure: 'an insecure',
+  /**
+   * @description Label for a link for SameParty Issues.
+   */
+  firstPartySetsExplained: '`First-Party Sets` explained',
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/SameSiteCookieIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -419,6 +423,14 @@ function sameSiteExcludeContextDowngradeSet(isSecure: boolean): LazyMarkdownIssu
   };
 }
 
+const sameSiteInvalidSameParty: LazyMarkdownIssueDescription = {
+  file: 'SameSiteInvalidSameParty.md',
+  links: [{
+    link: 'https://developer.chrome.com/docs/privacy-sandbox/first-party-sets/',
+    linkTitle: i18nLazyString(UIStrings.firstPartySetsExplained),
+  }],
+};
+
 const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
   ['SameSiteCookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::ReadCookie', sameSiteUnspecifiedErrorRead],
   ['SameSiteCookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::SetCookie', sameSiteUnspecifiedErrorSet],
@@ -446,4 +458,5 @@ const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
   ['SameSiteCookieIssue::ExcludeContextDowngrade::ReadCookie::Insecure', sameSiteExcludeContextDowngradeRead(false)],
   ['SameSiteCookieIssue::ExcludeContextDowngrade::SetCookie::Secure', sameSiteExcludeContextDowngradeSet(true)],
   ['SameSiteCookieIssue::ExcludeContextDowngrade::SetCookie::Insecure', sameSiteExcludeContextDowngradeSet(false)],
+  ['SameSiteCookieIssue::ExcludeInvalidSameParty::SetCookie', sameSiteInvalidSameParty],
 ]);

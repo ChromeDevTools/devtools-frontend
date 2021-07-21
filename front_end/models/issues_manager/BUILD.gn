@@ -89,6 +89,7 @@ devtools_issue_description_files = [
   "SameSiteExcludeContextDowngradeRead.md",
   "SameSiteExcludeContextDowngradeSet.md",
   "SameSiteExcludeNavigationContextDowngrade.md",
+  "SameSiteInvalidSameParty.md",
   "SameSiteNoneInsecureErrorRead.md",
   "SameSiteNoneInsecureErrorSet.md",
   "SameSiteNoneInsecureWarnRead.md",

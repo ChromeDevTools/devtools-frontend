@@ -1277,6 +1277,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | aSecure": {
     "message": "a secure"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets explained"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "How Schemeful Same-Site Works"
   },

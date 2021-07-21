@@ -24,18 +24,24 @@ type TestEvents = {
 
 class TypedEventEmitter extends Common.ObjectWrapper.ObjectWrapper<TestEvents> {
   testValidArgumentTypes() {
-    this.dispatchEventToListeners(Events.VoidEvent, undefined);
+    this.dispatchEventToListeners(Events.VoidEvent);
     this.dispatchEventToListeners(Events.NumberEvent, 5.0);
     this.dispatchEventToListeners(Events.KeyValueEvent, {key: 'key', value: 42});
     this.dispatchEventToListeners(Events.BooleanEvent, true);
   }
 
   testInvalidArgumentTypes() {
+    // @ts-expect-error undefined instead of no argument provided
+    this.dispatchEventToListeners(Events.VoidEvent, undefined);
+
     // @ts-expect-error string instead of undefined provided
     this.dispatchEventToListeners(Events.VoidEvent, 'void');
 
     // @ts-expect-error string instead of number provided
     this.dispatchEventToListeners(Events.NumberEvent, 'expected number');
+
+    // @ts-expect-error argument missing
+    this.dispatchEventToListeners(Events.NumberEvent);
 
     // @ts-expect-error wrong object type provided as payload
     this.dispatchEventToListeners(Events.KeyValueEvent, {key: 'key', foo: 'foo'});

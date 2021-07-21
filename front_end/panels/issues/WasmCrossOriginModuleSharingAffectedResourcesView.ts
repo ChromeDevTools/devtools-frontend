@@ -24,12 +24,16 @@ const UIStrings = {
   */
   wasmModuleUrl: 'Wasm Module URL',
   /**
-  *@description Title for a column in an Wasm cross-origin module sharing affected resource view
-  */
+   * @description Title for a column in an Wasm cross-origin module sharing affected resource view.
+   * The issue is about a transfer of a module between different origins (see  https://developer.mozilla.org/en-US/docs/Glossary/Origin).
+   * The transfer occurs from a source origin to a target origin.
+   */
   sourceOrigin: 'Source Origin',
   /**
-  *@description Title for a column in an Wasm cross-origin module sharing affected resource view
-  */
+   * @description Title for a column in an Wasm cross-origin module sharing affected resource view.
+   * The issue is about a transfer of a module between different origins (see  https://developer.mozilla.org/en-US/docs/Glossary/Origin).
+   * The transfer occurs from a source origin to a target origin.
+   */
   targetOrigin: 'Target Origin',
   /**
   *@description Title for a column in an Wasm cross-origin module sharing affected resource view

@@ -90,6 +90,15 @@ const typedEmitter = new TypedEventEmitter();
   typedEmitter.addEventListener(Symbol('foo'), genericListener());
 })();
 
+(function testUnionTypeOnDispatch() {
+  // @ts-expect-error
+  typedEmitter.dispatchEventToListeners<Events.VoidEvent|Events.NumberEvent>(Events.NumberEvent, 5);
+
+  const event: Events = Math.random() < 0.5 ? Events.NumberEvent : Events.BooleanEvent;
+  // @ts-expect-error
+  typedEmitter.dispatchEventToListeners(event, true);
+})();
+
 const untypedEmitter = new UntypedEventEmitter();
 
 (function testUntypedListeners() {

@@ -221,7 +221,7 @@ export class LayerTreeOutline extends Common.ObjectWrapper.ObjectWrapper impleme
       if (this._layerSnapshotMap.has(layer)) {
         contextMenu.defaultSection().appendItem(
             i18nString(UIStrings.showPaintProfiler),
-            this.dispatchEventToListeners.bind(this, Events.PaintProfilerRequested, selection), false);
+            () => this.dispatchEventToListeners(Events.PaintProfilerRequested, selection), false);
       }
     }
     this._layerViewHost.showContextMenu(contextMenu, selection);

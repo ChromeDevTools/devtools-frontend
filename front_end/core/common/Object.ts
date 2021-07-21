@@ -28,6 +28,7 @@
  */
 
 import type {EventDescriptor, EventTarget, EventTargetEvent, EventType, EventPayload} from './EventTarget.js';
+import type * as Platform from '../platform/platform.js';
 
 interface ListenerCallbackTuple {
   thisObject?: Object;
@@ -88,7 +89,8 @@ export class ObjectWrapper<Events = any> implements EventTarget<Events> {
     return Boolean(this.listeners && this.listeners.has(eventType));
   }
 
-  dispatchEventToListeners<T extends EventType<Events>>(eventType: T, eventData?: EventPayload<Events, T>): void {
+  dispatchEventToListeners<T extends EventType<Events>>(
+      eventType: Platform.TypeScriptUtilities.NoUnion<T>, eventData?: EventPayload<Events, T>): void {
     const listeners = this.listeners?.get(eventType);
     if (!listeners) {
       return;

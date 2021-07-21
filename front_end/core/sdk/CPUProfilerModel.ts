@@ -111,7 +111,9 @@ export class CPUProfilerModel extends SDKModel implements ProtocolProxyApi.Profi
       title: title,
       cpuProfilerModel: this,
     } as EventData);
-    this.dispatchEventToListeners(eventName, data);
+    // TODO(crbug.com/1228674): Use type-safe event dispatch and remove <any>.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.dispatchEventToListeners<any>(eventName, data);
   }
 
   isRecordingProfile(): boolean {

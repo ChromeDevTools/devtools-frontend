@@ -825,7 +825,7 @@ export class Layers3DView extends UI.Widget.VBox implements LayerView {
     if (selection && selection.type() === Type.Snapshot) {
       contextMenu.defaultSection().appendItem(
           i18nString(UIStrings.showPaintProfiler),
-          this.dispatchEventToListeners.bind(this, Events.PaintProfilerRequested, selection), false);
+          () => this.dispatchEventToListeners(Events.PaintProfilerRequested, selection), false);
     }
     this._layerViewHost.showContextMenu(contextMenu, selection);
   }

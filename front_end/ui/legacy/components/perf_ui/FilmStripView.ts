@@ -169,7 +169,9 @@ export class FilmStripView extends UI.Widget.HBox {
   }
 
   _onMouseEvent(eventName: string|symbol, timestamp: number): void {
-    this.dispatchEventToListeners(eventName, timestamp);
+    // TODO(crbug.com/1228674): Use type-safe event dispatch and remove <any>.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.dispatchEventToListeners<any>(eventName, timestamp);
   }
 
   _onDoubleClick(filmStripFrame: SDK.FilmStripModel.Frame): void {

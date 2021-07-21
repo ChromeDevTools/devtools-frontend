@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../platform/platform.js';
+
 // TODO(crbug.com/1228674) Remove defaults for generic type parameters once
 //                         all event emitters and sinks have been migrated.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -38,7 +40,8 @@ export interface EventTarget<Events = any> {
   removeEventListener<T extends EventType<Events>>(
       eventType: T, listener: (arg0: EventTargetEvent<EventPayload<Events, T>>) => void, thisObject?: Object): void;
   hasEventListeners(eventType: EventType<Events>): boolean;
-  dispatchEventToListeners<T extends EventType<Events>>(eventType: T, eventData?: EventPayload<Events, T>): void;
+  dispatchEventToListeners<T extends EventType<Events>>(
+      eventType: Platform.TypeScriptUtilities.NoUnion<T>, eventData?: EventPayload<Events, T>): void;
 }
 
 export function fireEvent(name: string, detail: unknown = {}, target: HTMLElement|Window = window): void {

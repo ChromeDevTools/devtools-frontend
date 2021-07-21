@@ -61,7 +61,7 @@ interface LoadQueueEntry {
  * `PageResource` object around that holds meta information. This can be as the basis for reporting to the user which
  * resources were loaded, and whether there was a load error.
  */
-export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
+export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   _currentlyLoading: number;
   _maxConcurrentLoads: number;
   _pageResources: Map<string, PageResource>;
@@ -331,3 +331,7 @@ export function getLoadThroughTargetSetting(): Common.Settings.Setting<boolean> 
 export enum Events {
   Update = 'Update',
 }
+
+export type EventTypes = {
+  [Events.Update]: void,
+};

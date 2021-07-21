@@ -18,6 +18,8 @@ SDK.CPUProfilerModel = SDKModule.CPUProfilerModel.CPUProfilerModel;
 /** @constructor */
 SDK.CPUThrottlingManager = SDKModule.CPUThrottlingManager.CPUThrottlingManager;
 
+SDK.CPUThrottlingManager.CPUThrottlingRates = SDKModule.CPUThrottlingManager.CPUThrottlingRates;
+
 SDK.cssMetadata = SDKModule.CSSMetadata.cssMetadata;
 
 /** @constructor */

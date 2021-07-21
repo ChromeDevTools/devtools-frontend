@@ -2,14 +2,10 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("//build/config/devtools.gni")
+
 declare_args() {
   devtools_dcheck_always_on = is_debug
-
-  if (defined(use_devtools_typescript) && use_devtools_typescript) {
-    devtools_location = ""
-  } else {
-    devtools_location = "third_party/devtools-frontend/src/"
-  }
 }
 
 # Introduce a new variable to make sure that string

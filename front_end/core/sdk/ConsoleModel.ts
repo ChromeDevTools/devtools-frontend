@@ -45,7 +45,7 @@ import {Events as DebuggerModelEvents} from './DebuggerModel.js';  // eslint-dis
 import {LogModel} from './LogModel.js';
 import {RemoteObject} from './RemoteObject.js';
 import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
-import type {ExecutionContext} from './RuntimeModel.js';
+import type {ConsoleAPICall, ExceptionWithTimestamp, ExecutionContext} from './RuntimeModel.js';
 import {Events as RuntimeModelEvents, RuntimeModel} from './RuntimeModel.js';  // eslint-disable-line no-unused-vars
 import type {Target} from './Target.js';
 import {TargetManager} from './TargetManager.js';
@@ -227,8 +227,9 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper implements 
     this.dispatchEventToListeners(Events.MessageAdded, msg);
   }
 
-  _exceptionThrown(runtimeModel: RuntimeModel, event: Common.EventTarget.EventTargetEvent): void {
-    const exceptionWithTimestamp = (event.data as ExceptionWithTimestamp);
+  _exceptionThrown(runtimeModel: RuntimeModel, event: Common.EventTarget.EventTargetEvent<ExceptionWithTimestamp>):
+      void {
+    const exceptionWithTimestamp = event.data;
     const affectedResources = extractExceptionMetaData(exceptionWithTimestamp.details.exceptionMetaData);
     const consoleMessage = ConsoleMessage.fromException(
         runtimeModel, exceptionWithTimestamp.details, undefined, exceptionWithTimestamp.timestamp, undefined,
@@ -237,8 +238,8 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper implements 
     this.addMessage(consoleMessage);
   }
 
-  _exceptionRevoked(runtimeModel: RuntimeModel, event: Common.EventTarget.EventTargetEvent): void {
-    const exceptionId = (event.data as number);
+  _exceptionRevoked(runtimeModel: RuntimeModel, event: Common.EventTarget.EventTargetEvent<number>): void {
+    const exceptionId = event.data;
     const modelMap = this._messageByExceptionId.get(runtimeModel);
     const exceptionMessage = modelMap ? modelMap.get(exceptionId) : null;
     if (!exceptionMessage) {
@@ -249,8 +250,8 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper implements 
     this.dispatchEventToListeners(Events.MessageUpdated, exceptionMessage);
   }
 
-  _consoleAPICalled(runtimeModel: RuntimeModel, event: Common.EventTarget.EventTargetEvent): void {
-    const call = (event.data as ConsoleAPICall);
+  _consoleAPICalled(runtimeModel: RuntimeModel, event: Common.EventTarget.EventTargetEvent<ConsoleAPICall>): void {
+    const call = event.data;
     let level: Protocol.Log.LogEntryLevel = Protocol.Log.LogEntryLevel.Info;
     if (call.type === Protocol.Runtime.ConsoleAPICalledEventType.Debug) {
       level = Protocol.Log.LogEntryLevel.Verbose;
@@ -722,17 +723,3 @@ export const MessageSourceDisplayName = new Map<MessageSource, string>(([
   [Protocol.Log.LogEntrySource.Recommendation, 'recommendation'],
   [Protocol.Log.LogEntrySource.Other, 'other'],
 ]));
-
-export interface ConsoleAPICall {
-  type: MessageType;
-  args: Protocol.Runtime.RemoteObject[];
-  executionContextId: number;
-  timestamp: number;
-  stackTrace?: Protocol.Runtime.StackTrace;
-  context?: string;
-}
-
-export interface ExceptionWithTimestamp {
-  timestamp: number;
-  details: Protocol.Runtime.ExceptionDetails;
-}

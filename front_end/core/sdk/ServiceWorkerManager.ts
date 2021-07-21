@@ -583,8 +583,8 @@ class ServiceWorkerContextNamer {
     this._updateAllContextLabels();
   }
 
-  _executionContextCreated(event: Common.EventTarget.EventTargetEvent): void {
-    const executionContext = (event.data as ExecutionContext);
+  _executionContextCreated(event: Common.EventTarget.EventTargetEvent<ExecutionContext>): void {
+    const executionContext = event.data;
     const serviceWorkerTargetId = this._serviceWorkerTargetId(executionContext.target());
     if (!serviceWorkerTargetId) {
       return;

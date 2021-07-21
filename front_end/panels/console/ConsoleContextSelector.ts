@@ -144,13 +144,13 @@ export class ConsoleContextSelector implements SDK.TargetManager.SDKModelObserve
     }
   }
 
-  _onExecutionContextCreated(event: Common.EventTarget.EventTargetEvent): void {
-    const executionContext = (event.data as SDK.RuntimeModel.ExecutionContext);
+  _onExecutionContextCreated(event: Common.EventTarget.EventTargetEvent<SDK.RuntimeModel.ExecutionContext>): void {
+    const executionContext = event.data;
     this._executionContextCreated(executionContext);
   }
 
-  _onExecutionContextChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const executionContext = (event.data as SDK.RuntimeModel.ExecutionContext);
+  _onExecutionContextChanged(event: Common.EventTarget.EventTargetEvent<SDK.RuntimeModel.ExecutionContext>): void {
+    const executionContext = event.data;
     if (this._items.indexOf(executionContext) === -1) {
       return;
     }
@@ -166,8 +166,8 @@ export class ConsoleContextSelector implements SDK.TargetManager.SDKModelObserve
     this._items.remove(index);
   }
 
-  _onExecutionContextDestroyed(event: Common.EventTarget.EventTargetEvent): void {
-    const executionContext = (event.data as SDK.RuntimeModel.ExecutionContext);
+  _onExecutionContextDestroyed(event: Common.EventTarget.EventTargetEvent<SDK.RuntimeModel.ExecutionContext>): void {
+    const executionContext = event.data;
     this._executionContextDestroyed(executionContext);
   }
 

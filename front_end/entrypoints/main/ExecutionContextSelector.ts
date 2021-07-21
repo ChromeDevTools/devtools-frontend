@@ -118,19 +118,22 @@ export class ExecutionContextSelector implements SDK.TargetManager.SDKModelObser
     return Boolean(frame?.isTopFrame());
   }
 
-  private onExecutionContextCreated(event: Common.EventTarget.EventTargetEvent): void {
-    this.switchContextIfNecessary((event.data as SDK.RuntimeModel.ExecutionContext));
+  private onExecutionContextCreated(event: Common.EventTarget.EventTargetEvent<SDK.RuntimeModel.ExecutionContext>):
+      void {
+    this.switchContextIfNecessary(event.data);
   }
 
-  private onExecutionContextDestroyed(event: Common.EventTarget.EventTargetEvent): void {
-    const executionContext = (event.data as SDK.RuntimeModel.ExecutionContext);
+  private onExecutionContextDestroyed(event: Common.EventTarget.EventTargetEvent<SDK.RuntimeModel.ExecutionContext>):
+      void {
+    const executionContext = event.data;
     if (this.context.flavor(SDK.RuntimeModel.ExecutionContext) === executionContext) {
       this.currentExecutionContextGone();
     }
   }
 
-  private onExecutionContextOrderChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const runtimeModel = (event.data as SDK.RuntimeModel.RuntimeModel);
+  private onExecutionContextOrderChanged(event: Common.EventTarget.EventTargetEvent<SDK.RuntimeModel.RuntimeModel>):
+      void {
+    const runtimeModel = event.data;
     const executionContexts = runtimeModel.executionContexts();
     for (let i = 0; i < executionContexts.length; i++) {
       if (this.switchContextIfNecessary(executionContexts[i])) {

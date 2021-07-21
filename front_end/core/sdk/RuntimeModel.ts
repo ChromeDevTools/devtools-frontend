@@ -45,7 +45,7 @@ import type {Target} from './Target.js';
 import {Capability, Type} from './Target.js';
 import {SDKModel} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
-export class RuntimeModel extends SDKModel {
+export class RuntimeModel extends SDKModel<EventTypes> {
   _agent: ProtocolProxyApi.RuntimeApi;
   _executionContextById: Map<number, ExecutionContext>;
   _executionContextComparator: (arg0: ExecutionContext, arg1: ExecutionContext) => number;
@@ -385,8 +385,8 @@ export class RuntimeModel extends SDKModel {
   }
 
   _consoleAPICalled(
-      type: string, args: Protocol.Runtime.RemoteObject[], executionContextId: number, timestamp: number,
-      stackTrace?: Protocol.Runtime.StackTrace, context?: string): void {
+      type: Protocol.Runtime.ConsoleAPICalledEventType, args: Protocol.Runtime.RemoteObject[],
+      executionContextId: number, timestamp: number, stackTrace?: Protocol.Runtime.StackTrace, context?: string): void {
     const consoleAPICall = {
       type: type,
       args: args,
@@ -467,6 +467,33 @@ export enum Events {
   ConsoleAPICalled = 'ConsoleAPICalled',
   QueryObjectRequested = 'QueryObjectRequested',
 }
+
+export interface ConsoleAPICall {
+  type: Protocol.Runtime.ConsoleAPICalledEventType;
+  args: Protocol.Runtime.RemoteObject[];
+  executionContextId: number;
+  timestamp: number;
+  stackTrace?: Protocol.Runtime.StackTrace;
+  context?: string;
+}
+
+export interface ExceptionWithTimestamp {
+  timestamp: number;
+  details: Protocol.Runtime.ExceptionDetails;
+}
+
+
+export type EventTypes = {
+  [Events.BindingCalled]: Protocol.Runtime.BindingCalledEvent,
+  [Events.ExecutionContextCreated]: Protocol.Runtime.ExecutionContextDescription,
+  [Events.ExecutionContextDestroyed]: ExecutionContext,
+  [Events.ExecutionContextChanged]: ExecutionContext,
+  [Events.ExecutionContextOrderChanged]: RuntimeModel,
+  [Events.ExceptionThrown]: ExceptionWithTimestamp,
+  [Events.ExceptionRevoked]: number,
+  [Events.ConsoleAPICalled]: ConsoleAPICall,
+  [Events.QueryObjectRequested]: {objects: RemoteObject},
+};
 
 
 class RuntimeDispatcher implements ProtocolProxyApi.RuntimeDispatcher {

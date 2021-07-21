@@ -35,7 +35,8 @@ const UIStrings = {
   */
   pauseOnlyWhenTheConditionIsTrue: 'Pause only when the condition is true',
   /**
-  *@description Text in Breakpoint Edit Dialog of the Sources panel. Provides the user with
+  *@description Text in Breakpoint Edit Dialog of the Sources panel. It is used as
+  *the placeholder for a text input field before the user enters text. Provides the user with
   *an example on how to use Logpoints. 'Log' is a verb and 'message' is a noun.
   *See: https://developer.chrome.com/blog/new-in-devtools-73/#logpoints
   */

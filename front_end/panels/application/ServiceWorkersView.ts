@@ -52,8 +52,9 @@ const UIStrings = {
   */
   networkRequests: 'Network requests',
   /**
-  *@description Text in Service Workers View of the Application panel
-  */
+   * @description Label for a button in the Service Workers View of the Application panel.
+   * Imperative noun. Clicking the button will refresh the list of service worker registrations.
+   */
   update: 'Update',
   /**
   *@description Text in Service Workers View of the Application panel

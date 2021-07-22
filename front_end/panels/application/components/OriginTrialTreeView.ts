@@ -31,11 +31,14 @@ const UIStrings = {
    */
   isThirdParty: 'Third Party',
   /**
-   *@description Label for `matchSubDomains` field in a parsed Origin Trial Token.
+   *@description Label for a field containing info about an Origin Trial Token's `matchSubDomains` field.
+   *An Origin Trial Token contains an origin URL. The `matchSubDomains` field describes whether the token
+   *only applies to the origin URL or to all subdomains of the origin URL as well.
+   *The field contains either 'true' or 'false'.
    */
-  matchSubDomains: 'Match Sub-Domains',
+  matchSubDomains: 'Subdomain Matching',
   /**
-   *@description Label for `rawTokenText` field in an Origin Trial Token.
+   *@description Label for the raw(= encoded / not human-readable) Origin Trial Token.
    */
   rawTokenText: 'Raw Token',
   /**
@@ -47,10 +50,13 @@ const UIStrings = {
    */
   token: 'Token',
   /**
-   *@description suffix for tokenCountBadge.
+   *@description Label for a badge showing the number of Origin Trial Tokens. This number is always greater than 1.
+   *@example {2} PH1
    */
-  tokens: 'tokens',
+  tokens: '{PH1} tokens',
 };
+const str_ = i18n.i18n.registerUIStrings('panels/application/components/OriginTrialTreeView.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface BadgeData {
   badgeContent: string;
@@ -108,7 +114,7 @@ function constructOriginTrialTree(originTrial: Protocol.Page.OriginTrial): TreeN
       const trial = node.treeNodeData as Protocol.Page.OriginTrial;
       const tokenCountBadge = LitHtml.html`
         <${Badge.litTagName} .data=${{
-        badgeContent: `${trial.tokensWithStatus.length} ${UIStrings.tokens}`,
+        badgeContent: i18nString(UIStrings.tokens, {PH1: trial.tokensWithStatus.length}),
         style: 'secondary',
       } as BadgeData}></${Badge.litTagName}>
       `;
@@ -138,7 +144,7 @@ function constructTokenNode(token: Protocol.Page.OriginTrialTokenWithStatus): Tr
       } as BadgeData}></${Badge.litTagName}>
       `;
       // Only display token status for convenience when the node is not expanded.
-      return LitHtml.html`${UIStrings.token} ${state.isExpanded ? LitHtml.nothing : statusBadge}`;
+      return LitHtml.html`${i18nString(UIStrings.token)} ${state.isExpanded ? LitHtml.nothing : statusBadge}`;
     },
   };
 }
@@ -168,7 +174,7 @@ function constructTokenDetailsNodes(token: Protocol.Page.OriginTrialTokenWithSta
 
 function constructRawTokenTextNode(tokenText: string): TreeNode<OriginTrialTreeNodeData> {
   return {
-    treeNodeData: UIStrings.rawTokenText,
+    treeNodeData: i18nString(UIStrings.rawTokenText),
     children: async(): Promise<TreeNode<OriginTrialTreeNodeData>[]> => [{
       treeNodeData: tokenText,
       renderer: (data: TreeNode<OriginTrialTreeNodeData>): LitHtml.TemplateResult => {
@@ -222,27 +228,27 @@ export class OriginTrialTokenRows extends HTMLElement {
     }
     this.parsedTokenDetails = [
       {
-        name: UIStrings.origin,
+        name: i18nString(UIStrings.origin),
         value: this.renderTokenField(
             this.tokenWithStatus.parsedToken.origin,
             this.tokenWithStatus.status === Protocol.Page.OriginTrialTokenStatus.WrongOrigin),
       },
       {
-        name: UIStrings.expiryTime,
+        name: i18nString(UIStrings.expiryTime),
         value: this.renderTokenField(
             this.dateFormatter.format(this.tokenWithStatus.parsedToken.expiryTime * 1000),
             this.tokenWithStatus.status === Protocol.Page.OriginTrialTokenStatus.Expired),
       },
       {
-        name: UIStrings.usageRestriction,
+        name: i18nString(UIStrings.usageRestriction),
         value: this.renderTokenField(this.tokenWithStatus.parsedToken.usageRestriction),
       },
       {
-        name: UIStrings.isThirdParty,
+        name: i18nString(UIStrings.isThirdParty),
         value: this.renderTokenField(this.tokenWithStatus.parsedToken.isThirdParty.toString()),
       },
       {
-        name: UIStrings.matchSubDomains,
+        name: i18nString(UIStrings.matchSubDomains),
         value: this.renderTokenField(this.tokenWithStatus.parsedToken.matchSubDomains.toString()),
       },
     ];
@@ -255,7 +261,7 @@ export class OriginTrialTokenRows extends HTMLElement {
 
     const tokenDetails: TokenField[] = [
       {
-        name: UIStrings.status,
+        name: i18nString(UIStrings.status),
         value: LitHtml.html`
           <${Badge.litTagName} .data=${{
           badgeContent: this.tokenWithStatus.status,

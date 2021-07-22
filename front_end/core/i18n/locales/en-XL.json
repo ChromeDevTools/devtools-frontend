@@ -2505,7 +2505,7 @@
     "message": "T̂h́îŕd̂ Ṕâŕt̂ý"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "M̂át̂ćĥ Śûb́-D̂óm̂áîńŝ"
+    "message": "Ŝúb̂d́ôḿâín̂ Ḿât́ĉh́îńĝ"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "Ôŕîǵîń"
@@ -2520,7 +2520,7 @@
     "message": "T̂ók̂én̂"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "t̂ók̂én̂ś"
+    "message": "{PH1} t̂ók̂én̂ś"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Ûśâǵê Ŕêśt̂ŕîćt̂íôń"

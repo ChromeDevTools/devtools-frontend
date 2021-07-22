@@ -4451,6 +4451,9 @@
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Device type"
   },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "Dimensions"
+  },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Edit…"
   },

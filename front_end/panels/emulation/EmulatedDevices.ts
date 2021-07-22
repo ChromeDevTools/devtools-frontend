@@ -636,6 +636,57 @@ export interface JSONMode {
 
 const emulatedDevices = [
   {
+    'order': 52,
+    'show-by-default': true,
+    'title': 'Nest Hub Max',
+    'screen': {
+      'horizontal': {
+        'outline': {
+          'image': '@url(optimized/google-nest-hub-max-horizontal.avif)',
+          'insets': {'left': 92, 'top': 96, 'right': 91, 'bottom': 248},
+        },
+        'width': 1280,
+        'height': 800,
+      },
+      'device-pixel-ratio': 2,
+      'vertical': {
+        'width': 1280,
+        'height': 800,
+      },
+    },
+    'capabilities': ['touch', 'mobile'],
+    'user-agent':
+        'Mozilla/5.0 (X11; Linux aarch64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.188 Safari/537.36 CrKey/1.54.250320',
+    'type': 'tablet',
+    'modes': [{'title': 'default', 'orientation': 'horizontal'}],
+  },
+
+  {
+    'order': 50,
+    'show-by-default': true,
+    'title': 'Nest Hub',
+    'screen': {
+      'horizontal': {
+        'outline': {
+          'image': '@url(optimized/google-nest-hub-horizontal.avif)',
+          'insets': {'left': 82, 'top': 74, 'right': 83, 'bottom': 222},
+        },
+        'width': 1024,
+        'height': 600,
+      },
+      'device-pixel-ratio': 2,
+      'vertical': {
+        'width': 1024,
+        'height': 600,
+      },
+    },
+    'capabilities': ['touch', 'mobile'],
+    'user-agent':
+        'Mozilla/5.0 (Linux; Android) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.109 Safari/537.36 CrKey/1.54.248666',
+    'type': 'tablet',
+    'modes': [{'title': 'default', 'orientation': 'horizontal'}],
+  },
+  {
     'show-by-default': false,
     'title': 'iPhone 4',
     'screen': {

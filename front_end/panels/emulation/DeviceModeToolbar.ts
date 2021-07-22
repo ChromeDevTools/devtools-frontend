@@ -17,6 +17,11 @@ import {EmulatedDevice, EmulatedDevicesList, Events, Horizontal, Vertical} from 
 
 const UIStrings = {
   /**
+  * @description Title of the device dimensions selection iteam in the Device Mode Toolbar.
+  * webpage in pixels.
+  */
+  dimensions: 'Dimensions',
+  /**
   * @description Title of the width input textbox in the Device Mode Toolbar, for the width of the
   * webpage in pixels.
   */
@@ -784,7 +789,7 @@ export class DeviceModeToolbar {
     if (this._model.type() === Type.Device && device) {
       deviceItemTitle = device.title;
     }
-    this._deviceSelectItem.setText(deviceItemTitle);
+    this._deviceSelectItem.setText(`${i18nString(UIStrings.dimensions)}: ${deviceItemTitle}`);
 
     if (this._model.device() !== this._cachedModelDevice) {
       const device = this._model.device();

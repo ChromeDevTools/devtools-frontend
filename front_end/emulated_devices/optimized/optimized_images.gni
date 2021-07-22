@@ -4,6 +4,8 @@
 import("../../../scripts/build/ninja/vars.gni")
 
 devtools_emulated_devices_images = [
+  "google-nest-hub-max-horizontal.avif",
+  "google-nest-hub-horizontal.avif",
   "google-nexus-5-horizontal-default-1x.avif",
   "google-nexus-5-horizontal-default-2x.avif",
   "google-nexus-5-horizontal-keyboard-1x.avif",

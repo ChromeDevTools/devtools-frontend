@@ -4,8 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import type * as SDK from '../../core/sdk/sdk.js';    // eslint-disable-line no-unused-vars
-import * as Bindings from '../bindings/bindings.js';  // eslint-disable-line no-unused-vars
+import type * as SDK from '../../core/sdk/sdk.js';                  // eslint-disable-line no-unused-vars
+import * as Bindings from '../bindings/bindings.js';                // eslint-disable-line no-unused-vars
+import type {Chrome} from '../../../extension-api/ExtensionAPI.js'; // eslint-disable-line rulesdir/es_modules_import
 
 import {PrivateAPI} from './ExtensionAPI.js';
 
@@ -100,9 +101,8 @@ export class LanguageExtensionEndpoint extends Bindings.DebuggerLanguagePlugins.
 
   /** Notify the plugin about a new script
      */
-  addRawModule(rawModuleId: string, symbolsURL: string, rawModule: Bindings.DebuggerLanguagePlugins.RawModule):
-      Promise<string[]> {
-    return /** @type {!Promise<!Array<string>>} */ this._sendRequest(
+  addRawModule(rawModuleId: string, symbolsURL: string, rawModule: Chrome.DevTools.RawModule): Promise<string[]> {
+    return this._sendRequest(
                PrivateAPI.LanguageExtensionPluginCommands.AddRawModule, {rawModuleId, symbolsURL, rawModule}) as
         Promise<string[]>;
   }
@@ -111,114 +111,101 @@ export class LanguageExtensionEndpoint extends Bindings.DebuggerLanguagePlugins.
    * Notifies the plugin that a script is removed.
    */
   removeRawModule(rawModuleId: string): Promise<void> {
-    return /** @type {!Promise<void>} */ this._sendRequest(
-               PrivateAPI.LanguageExtensionPluginCommands.RemoveRawModule, {rawModuleId}) as Promise<void>;
+    return this._sendRequest(PrivateAPI.LanguageExtensionPluginCommands.RemoveRawModule, {rawModuleId}) as
+        Promise<void>;
   }
 
   /** Find locations in raw modules from a location in a source file
      */
-  sourceLocationToRawLocation(sourceLocation: Bindings.DebuggerLanguagePlugins.SourceLocation):
-      Promise<Bindings.DebuggerLanguagePlugins.RawLocationRange[]> {
-    return /** @type {!Promise<!Array<!Bindings.DebuggerLanguagePlugins.RawLocationRange>>} */ this._sendRequest(
+  sourceLocationToRawLocation(sourceLocation: Chrome.DevTools.SourceLocation):
+      Promise<Chrome.DevTools.RawLocationRange[]> {
+    return this._sendRequest(
                PrivateAPI.LanguageExtensionPluginCommands.SourceLocationToRawLocation, {sourceLocation}) as
-        Promise<Bindings.DebuggerLanguagePlugins.RawLocationRange[]>;
+        Promise<Chrome.DevTools.RawLocationRange[]>;
   }
 
   /** Find locations in source files from a location in a raw module
      */
-  rawLocationToSourceLocation(rawLocation: Bindings.DebuggerLanguagePlugins.RawLocation):
-      Promise<Bindings.DebuggerLanguagePlugins.SourceLocation[]> {
-    return /** @type {!Promise<!Array<!Bindings.DebuggerLanguagePlugins.SourceLocation>>} */ this._sendRequest(
-               PrivateAPI.LanguageExtensionPluginCommands.RawLocationToSourceLocation, {rawLocation}) as
-        Promise<Bindings.DebuggerLanguagePlugins.SourceLocation[]>;
+  rawLocationToSourceLocation(rawLocation: Chrome.DevTools.RawLocation): Promise<Chrome.DevTools.SourceLocation[]> {
+    return this._sendRequest(PrivateAPI.LanguageExtensionPluginCommands.RawLocationToSourceLocation, {rawLocation}) as
+        Promise<Chrome.DevTools.SourceLocation[]>;
   }
 
-  getScopeInfo(type: string): Promise<Bindings.DebuggerLanguagePlugins.ScopeInfo> {
-    return /** @type {!Promise<!Bindings.DebuggerLanguagePlugins.ScopeInfo>} */ this._sendRequest(
-               PrivateAPI.LanguageExtensionPluginCommands.GetScopeInfo, {type}) as
-        Promise<Bindings.DebuggerLanguagePlugins.ScopeInfo>;
+  getScopeInfo(type: string): Promise<Chrome.DevTools.ScopeInfo> {
+    return this._sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetScopeInfo, {type}) as
+        Promise<Chrome.DevTools.ScopeInfo>;
   }
 
   /** List all variables in lexical scope at a given location in a raw module
      */
-  listVariablesInScope(rawLocation: Bindings.DebuggerLanguagePlugins.RawLocation):
-      Promise<Bindings.DebuggerLanguagePlugins.Variable[]> {
-    return /** @type {!Promise<!Array<!Bindings.DebuggerLanguagePlugins.Variable>>} */ this._sendRequest(
-               PrivateAPI.LanguageExtensionPluginCommands.ListVariablesInScope, {rawLocation}) as
-        Promise<Bindings.DebuggerLanguagePlugins.Variable[]>;
+  listVariablesInScope(rawLocation: Chrome.DevTools.RawLocation): Promise<Chrome.DevTools.Variable[]> {
+    return this._sendRequest(PrivateAPI.LanguageExtensionPluginCommands.ListVariablesInScope, {rawLocation}) as
+        Promise<Chrome.DevTools.Variable[]>;
   }
 
   /** List all function names (including inlined frames) at location
      */
-  getFunctionInfo(rawLocation: Bindings.DebuggerLanguagePlugins.RawLocation): Promise<{
-    frames: Array<Bindings.DebuggerLanguagePlugins.FunctionInfo>,
+  getFunctionInfo(rawLocation: Chrome.DevTools.RawLocation): Promise<{
+    frames: Array<Chrome.DevTools.FunctionInfo>,
   }> {
-    return /** @type {!Promise<!{frames: !Array<!Bindings.DebuggerLanguagePlugins.FunctionInfo>}>} */ this._sendRequest(
-               PrivateAPI.LanguageExtensionPluginCommands.GetFunctionInfo, {rawLocation}) as Promise<{
-             frames: Array<Bindings.DebuggerLanguagePlugins.FunctionInfo>,
+    return this._sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetFunctionInfo, {rawLocation}) as Promise<{
+             frames: Array<Chrome.DevTools.FunctionInfo>,
            }>;
   }
 
   /** Find locations in raw modules corresponding to the inline function
      *  that rawLocation is in.
      */
-  getInlinedFunctionRanges(rawLocation: Bindings.DebuggerLanguagePlugins.RawLocation):
-      Promise<Bindings.DebuggerLanguagePlugins.RawLocationRange[]> {
-    return /** @type {!Promise<!Array<!Bindings.DebuggerLanguagePlugins.RawLocationRange>>} */ this._sendRequest(
-               PrivateAPI.LanguageExtensionPluginCommands.GetInlinedFunctionRanges, {rawLocation}) as
-        Promise<Bindings.DebuggerLanguagePlugins.RawLocationRange[]>;
+  getInlinedFunctionRanges(rawLocation: Chrome.DevTools.RawLocation): Promise<Chrome.DevTools.RawLocationRange[]> {
+    return this._sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetInlinedFunctionRanges, {rawLocation}) as
+        Promise<Chrome.DevTools.RawLocationRange[]>;
   }
 
   /** Find locations in raw modules corresponding to inline functions
      *  called by the function or inline frame that rawLocation is in.
      */
-  getInlinedCalleesRanges(rawLocation: Bindings.DebuggerLanguagePlugins.RawLocation):
-      Promise<Bindings.DebuggerLanguagePlugins.RawLocationRange[]> {
-    return /** @type {!Promise<!Array<!Bindings.DebuggerLanguagePlugins.RawLocationRange>>} */ this._sendRequest(
-               PrivateAPI.LanguageExtensionPluginCommands.GetInlinedCalleesRanges, {rawLocation}) as
-        Promise<Bindings.DebuggerLanguagePlugins.RawLocationRange[]>;
+  getInlinedCalleesRanges(rawLocation: Chrome.DevTools.RawLocation): Promise<Chrome.DevTools.RawLocationRange[]> {
+    return this._sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetInlinedCalleesRanges, {rawLocation}) as
+        Promise<Chrome.DevTools.RawLocationRange[]>;
   }
 
-  getTypeInfo(expression: string, context: Bindings.DebuggerLanguagePlugins.RawLocation): Promise<{
-    typeInfos: Array<Bindings.DebuggerLanguagePlugins.TypeInfo>,
-    base: Bindings.DebuggerLanguagePlugins.EvalBase,
+  getTypeInfo(expression: string, context: Chrome.DevTools.RawLocation): Promise<{
+    typeInfos: Array<Chrome.DevTools.TypeInfo>,
+    base: Chrome.DevTools.EvalBase,
   }|null> {
-    return /** @type {!Promise<?{typeInfos: !Array<!Bindings.DebuggerLanguagePlugins.TypeInfo>, base: !Bindings.DebuggerLanguagePlugins.EvalBase}>} */ this
-               ._sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetTypeInfo, {expression, context}) as Promise<{
-             typeInfos: Array<Bindings.DebuggerLanguagePlugins.TypeInfo>,
-             base: Bindings.DebuggerLanguagePlugins.EvalBase,
+    return this._sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetTypeInfo, {expression, context}) as Promise<{
+             typeInfos: Array<Chrome.DevTools.TypeInfo>,
+             base: Chrome.DevTools.EvalBase,
            }|null>;
   }
 
   getFormatter(
       expressionOrField: string|{
-        base: Bindings.DebuggerLanguagePlugins.EvalBase,
-        field: Array<Bindings.DebuggerLanguagePlugins.FieldInfo>,
+        base: Chrome.DevTools.EvalBase,
+        field: Array<Chrome.DevTools.FieldInfo>,
       },
-      context: Bindings.DebuggerLanguagePlugins.RawLocation): Promise<{
+      context: Chrome.DevTools.RawLocation): Promise<{
     js: string,
   }> {
-    return /** @type {!Promise<!{js: string}>} */ this._sendRequest(
-               PrivateAPI.LanguageExtensionPluginCommands.GetFormatter, {expressionOrField, context}) as Promise<{
+    return this._sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetFormatter, {expressionOrField, context}) as
+        Promise<{
              js: string,
            }>;
   }
 
   getInspectableAddress(field: {
-    base: Bindings.DebuggerLanguagePlugins.EvalBase,
-    field: Array<Bindings.DebuggerLanguagePlugins.FieldInfo>,
+    base: Chrome.DevTools.EvalBase,
+    field: Array<Chrome.DevTools.FieldInfo>,
   }): Promise<{
     js: string,
   }> {
-    return /** @type {!Promise<!{js: string}>}} */ this._sendRequest(
-               PrivateAPI.LanguageExtensionPluginCommands.GetInspectableAddress, {field}) as Promise<{
+    return this._sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetInspectableAddress, {field}) as Promise<{
              js: string,
            }>;
   }
 
   async getMappedLines(rawModuleId: string, sourceFileURL: string): Promise<number[]|undefined> {
-    return /** {!Promise<!Array<number>|undefined>} */ (
-        this._sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetMappedLines, {rawModuleId, sourceFileURL}));
+    return this._sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetMappedLines, {rawModuleId, sourceFileURL});
   }
 
   dispose(): void {

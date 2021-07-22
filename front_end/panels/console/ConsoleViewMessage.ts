@@ -52,6 +52,7 @@ import * as TextEditor from '../../ui/legacy/components/text_editor/text_editor.
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import type {Chrome} from '../../../extension-api/ExtensionAPI.js'; // eslint-disable-line rulesdir/es_modules_import
 
 import type {ConsoleViewportElement} from './ConsoleViewport.js';
 
@@ -1466,7 +1467,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
   async _getInlineFrames(
       debuggerModel: SDK.DebuggerModel.DebuggerModel, url: string, lineNumber: number|undefined,
-      columnNumber: number|undefined): Promise<{frames: Bindings.DebuggerLanguagePlugins.FunctionInfo[]}> {
+      columnNumber: number|undefined): Promise<{frames: Chrome.DevTools.FunctionInfo[]}> {
     const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
     if (debuggerWorkspaceBinding.pluginManager) {
       const projects = Workspace.Workspace.WorkspaceImpl.instance().projects();

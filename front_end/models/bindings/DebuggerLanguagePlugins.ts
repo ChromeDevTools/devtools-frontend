@@ -9,6 +9,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Workspace from '../workspace/workspace.js';
+import type {Chrome} from '../../../extension-api/ExtensionAPI.js'; // eslint-disable-line rulesdir/es_modules_import
 
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 
@@ -70,7 +71,7 @@ const str_ = i18n.i18n.registerUIStrings('models/bindings/DebuggerLanguagePlugin
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 class SourceType {
-  typeInfo: TypeInfo;
+  typeInfo: Chrome.DevTools.TypeInfo;
   members: SourceType[];
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -78,7 +79,7 @@ class SourceType {
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(typeInfo: TypeInfo, members: SourceType[], typeMap: Map<any, SourceType>) {
+  constructor(typeInfo: Chrome.DevTools.TypeInfo, members: SourceType[], typeMap: Map<any, SourceType>) {
     this.typeInfo = typeInfo;
     this.members = members;
     this.typeMap = typeMap;
@@ -87,7 +88,7 @@ class SourceType {
   /**
    * Create a type graph
    */
-  static create(typeInfos: TypeInfo[]): SourceType|null {
+  static create(typeInfos: Chrome.DevTools.TypeInfo[]): SourceType|null {
     if (typeInfos.length === 0) {
       return null;
     }
@@ -124,7 +125,7 @@ function rawModuleIdForScript(script: SDK.Script.Script): string {
   return `${script.sourceURL}@${script.hash}`;
 }
 
-function getRawLocation(callFrame: SDK.DebuggerModel.CallFrame): RawLocation {
+function getRawLocation(callFrame: SDK.DebuggerModel.CallFrame): Chrome.DevTools.RawLocation {
   const {script} = callFrame;
   return {
     rawModuleId: rawModuleIdForScript(script),
@@ -237,8 +238,9 @@ async function getValueTreeForExpression(
 /** Run the formatter for the value defined by the pair of base and fieldChain.
  */
 async function formatSourceValue(
-    callFrame: SDK.DebuggerModel.CallFrame, plugin: DebuggerLanguagePlugin, sourceType: SourceType, base: EvalBase,
-    field: FieldInfo[], evalOptions: SDK.RuntimeModel.EvaluationOptions): Promise<FormattedValueNode> {
+    callFrame: SDK.DebuggerModel.CallFrame, plugin: DebuggerLanguagePlugin, sourceType: SourceType,
+    base: Chrome.DevTools.EvalBase, field: Chrome.DevTools.FieldInfo[],
+    evalOptions: SDK.RuntimeModel.EvaluationOptions): Promise<FormattedValueNode> {
   const location = getRawLocation(callFrame);
 
   let evalCode: {
@@ -392,7 +394,7 @@ class FormattedValueNode extends ValueNode {
   /**
    * Check whether an object is a marker and if so return the EvalBase it contains.
    */
-  async _getEvalBaseFromObject(object: Protocol.Runtime.RemoteObject): Promise<EvalBase|null> {
+  async _getEvalBaseFromObject(object: Protocol.Runtime.RemoteObject): Promise<Chrome.DevTools.EvalBase|null> {
     const {objectId} = object;
     if (!object || !this.formatterTag) {
       return null;
@@ -466,15 +468,15 @@ class StaticallyTypedValueNode extends ValueNode {
   _variableType: string;
   _plugin: DebuggerLanguagePlugin;
   _sourceType: SourceType;
-  _base: EvalBase|null;
-  _fieldChain: FieldInfo[];
+  _base: Chrome.DevTools.EvalBase|null;
+  _fieldChain: Chrome.DevTools.FieldInfo[];
   _hasChildren: boolean;
   _evalOptions: SDK.RuntimeModel.EvaluationOptions;
 
   constructor(
       callFrame: SDK.DebuggerModel.CallFrame, plugin: DebuggerLanguagePlugin, sourceType: SourceType,
-      base: EvalBase|null, fieldChain: FieldInfo[], evalOptions: SDK.RuntimeModel.EvaluationOptions,
-      inspectableAddress: number|undefined) {
+      base: Chrome.DevTools.EvalBase|null, fieldChain: Chrome.DevTools.FieldInfo[],
+      evalOptions: SDK.RuntimeModel.EvaluationOptions, inspectableAddress: number|undefined) {
     const typeName = sourceType.typeInfo.typeNames[0] || '<anonymous>';
     const variableType = 'object';
     super(
@@ -496,7 +498,8 @@ class StaticallyTypedValueNode extends ValueNode {
     return this._variableType;
   }
 
-  async _expandMember(sourceType: SourceType, fieldInfo: FieldInfo): Promise<SDK.RemoteObject.RemoteObject> {
+  async _expandMember(sourceType: SourceType, fieldInfo: Chrome.DevTools.FieldInfo):
+      Promise<SDK.RemoteObject.RemoteObject> {
     const fieldChain = this._fieldChain.concat(fieldInfo);
     if (sourceType.typeInfo.hasValue && !sourceType.typeInfo.canExpand && this._base) {
       return formatSourceValue(this.callFrame, this._plugin, sourceType, this._base, fieldChain, this._evalOptions);
@@ -508,8 +511,8 @@ class StaticallyTypedValueNode extends ValueNode {
   }
 
   static async getInspectableAddress(
-      callFrame: SDK.DebuggerModel.CallFrame, plugin: DebuggerLanguagePlugin, base: EvalBase|null, field: FieldInfo[],
-      evalOptions: SDK.RuntimeModel.EvaluationOptions): Promise<number|undefined> {
+      callFrame: SDK.DebuggerModel.CallFrame, plugin: DebuggerLanguagePlugin, base: Chrome.DevTools.EvalBase|null,
+      field: Chrome.DevTools.FieldInfo[], evalOptions: SDK.RuntimeModel.EvaluationOptions): Promise<number|undefined> {
     if (!base) {
       return undefined;
     }
@@ -607,12 +610,13 @@ class NamespaceObject extends SDK.RemoteObject.LocalJSONObject {
 }
 
 class SourceScopeRemoteObject extends SDK.RemoteObject.RemoteObjectImpl {
-  variables: Variable[];
+  variables: Chrome.DevTools.Variable[];
   _callFrame: SDK.DebuggerModel.CallFrame;
   _plugin: DebuggerLanguagePlugin;
-  _location: RawLocation;
+  _location: Chrome.DevTools.RawLocation;
 
-  constructor(callFrame: SDK.DebuggerModel.CallFrame, plugin: DebuggerLanguagePlugin, location: RawLocation) {
+  constructor(
+      callFrame: SDK.DebuggerModel.CallFrame, plugin: DebuggerLanguagePlugin, location: Chrome.DevTools.RawLocation) {
     super(callFrame.debuggerModel.runtimeModel(), undefined, 'object', undefined, null);
     this.variables = [];
     this._callFrame = callFrame;
@@ -691,7 +695,7 @@ export class SourceScope implements SDK.DebuggerModel.ScopeChainEntry {
   _endLocation: SDK.DebuggerModel.Location|null;
   constructor(
       callFrame: SDK.DebuggerModel.CallFrame, type: string, typeName: string, icon: string|undefined,
-      plugin: DebuggerLanguagePlugin, location: RawLocation) {
+      plugin: DebuggerLanguagePlugin, location: Chrome.DevTools.RawLocation) {
     this._callFrame = callFrame;
     this._type = type;
     this._typeName = typeName;
@@ -1163,7 +1167,7 @@ export class DebuggerLanguagePluginManager implements
   }
 
   async getFunctionInfo(script: SDK.Script.Script, location: SDK.DebuggerModel.Location): Promise<{
-    frames: Array<FunctionInfo>,
+    frames: Array<Chrome.DevTools.FunctionInfo>,
     missingSymbolFiles?: Array<string>,
   }|null> {
     const {rawModuleId, plugin} = await this._rawModuleIdAndPluginForScript(script);
@@ -1171,7 +1175,7 @@ export class DebuggerLanguagePluginManager implements
       return null;
     }
 
-    const rawLocation: RawLocation = {
+    const rawLocation: Chrome.DevTools.RawLocation = {
       rawModuleId,
       codeOffset: location.columnNumber - (script.codeOffset() || 0),
       inlineFrameIndex: 0,
@@ -1348,76 +1352,6 @@ class ModelData {
     this._project.dispose();
   }
 }
-export interface RawModule {
-  url: string;
-  code?: ArrayBuffer;
-}
-export interface RawLocationRange {
-  rawModuleId: string;
-  startOffset: number;
-  endOffset: number;
-}
-export interface RawLocation {
-  rawModuleId: string;
-  codeOffset: number;
-  inlineFrameIndex: number;
-}
-export interface SourceLocation {
-  rawModuleId: string;
-  sourceFileURL: string;
-  lineNumber: number;
-  columnNumber: number;
-}
-export interface Variable {
-  scope: string;
-  name: string;
-  type: string;
-  nestedName: string[]|null;
-}
-export interface VariableValue {
-  value: string|VariableValue[];
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  js_type: string;
-  type: string;
-  name: string;
-}
-export interface EvaluatorModule {
-  code?: ArrayBuffer;
-  constantValue?: VariableValue;
-}
-export interface ScopeInfo {
-  type: string;
-  typeName: string;
-  icon?: string;
-}
-export interface FunctionInfo {
-  name: string;
-}
-export interface FieldInfo {
-  name?: string;
-  offset: number;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  typeId: any;
-}
-export interface TypeInfo {
-  typeNames: string[];
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  typeId: any;
-  members: FieldInfo[];
-  alignment: number;
-  arraySize: number;
-  size: number;
-  canExpand: boolean;
-  hasValue: boolean;
-}
-export interface EvalBase {
-  rootType: TypeInfo;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  payload: any;
-}
 
 export class DebuggerLanguagePlugin {
   name: string;
@@ -1434,31 +1368,34 @@ export class DebuggerLanguagePlugin {
 
   /** Notify the plugin about a new script
     */
-  async addRawModule(_rawModuleId: string, _symbolsURL: string, _rawModule: RawModule): Promise<string[]> {
+  async addRawModule(_rawModuleId: string, _symbolsURL: string, _rawModule: Chrome.DevTools.RawModule):
+      Promise<string[]> {
     throw new Error('Not implemented yet');
   }
 
   /** Find locations in raw modules from a location in a source file
     */
-  async sourceLocationToRawLocation(_sourceLocation: SourceLocation): Promise<RawLocationRange[]> {
+  async sourceLocationToRawLocation(_sourceLocation: Chrome.DevTools.SourceLocation):
+      Promise<Chrome.DevTools.RawLocationRange[]> {
     throw new Error('Not implemented yet');
   }
 
   /** Find locations in source files from a location in a raw module
     */
-  async rawLocationToSourceLocation(_rawLocation: RawLocation): Promise<SourceLocation[]> {
+  async rawLocationToSourceLocation(_rawLocation: Chrome.DevTools.RawLocation):
+      Promise<Chrome.DevTools.SourceLocation[]> {
     throw new Error('Not implemented yet');
   }
 
   /** Return detailed information about a scope
      */
-  async getScopeInfo(_type: string): Promise<ScopeInfo> {
+  async getScopeInfo(_type: string): Promise<Chrome.DevTools.ScopeInfo> {
     throw new Error('Not implemented yet');
   }
 
   /** List all variables in lexical scope at a given location in a raw module
     */
-  async listVariablesInScope(_rawLocation: RawLocation): Promise<Variable[]> {
+  async listVariablesInScope(_rawLocation: Chrome.DevTools.RawLocation): Promise<Chrome.DevTools.Variable[]> {
     throw new Error('Not implemented yet');
   }
 
@@ -1469,27 +1406,27 @@ export class DebuggerLanguagePlugin {
     throw new Error('Not implemented yet');
   }
 
-  getTypeInfo(_expression: string, _context: RawLocation): Promise<{
-    typeInfos: Array<TypeInfo>,
-    base: EvalBase,
+  getTypeInfo(_expression: string, _context: Chrome.DevTools.RawLocation): Promise<{
+    typeInfos: Array<Chrome.DevTools.TypeInfo>,
+    base: Chrome.DevTools.EvalBase,
   }|null> {
     throw new Error('Not implemented yet');
   }
 
   getFormatter(
       _expressionOrField: string|{
-        base: EvalBase,
-        field: Array<FieldInfo>,
+        base: Chrome.DevTools.EvalBase,
+        field: Array<Chrome.DevTools.FieldInfo>,
       },
-      _context: RawLocation): Promise<{
+      _context: Chrome.DevTools.RawLocation): Promise<{
     js: string,
   }|null> {
     throw new Error('Not implemented yet');
   }
 
   getInspectableAddress(_field: {
-    base: EvalBase,
-    field: Array<FieldInfo>,
+    base: Chrome.DevTools.EvalBase,
+    field: Array<Chrome.DevTools.FieldInfo>,
   }): Promise<{
     js: string,
   }> {
@@ -1499,8 +1436,8 @@ export class DebuggerLanguagePlugin {
   /**
    * Find locations in source files from a location in a raw module
    */
-  async getFunctionInfo(_rawLocation: RawLocation): Promise<{
-    frames: Array<FunctionInfo>,
+  async getFunctionInfo(_rawLocation: Chrome.DevTools.RawLocation): Promise<{
+    frames: Array<Chrome.DevTools.FunctionInfo>,
     missingSymbolFiles?: Array<string>,
   }> {
     throw new Error('Not implemented yet');
@@ -1510,7 +1447,8 @@ export class DebuggerLanguagePlugin {
    * Find locations in raw modules corresponding to the inline function
    * that rawLocation is in. Used for stepping out of an inline function.
    */
-  async getInlinedFunctionRanges(_rawLocation: RawLocation): Promise<RawLocationRange[]> {
+  async getInlinedFunctionRanges(_rawLocation: Chrome.DevTools.RawLocation):
+      Promise<Chrome.DevTools.RawLocationRange[]> {
     throw new Error('Not implemented yet');
   }
 
@@ -1519,7 +1457,8 @@ export class DebuggerLanguagePlugin {
    * called by the function or inline frame that rawLocation is in.
    * Used for stepping over inline functions.
    */
-  async getInlinedCalleesRanges(_rawLocation: RawLocation): Promise<RawLocationRange[]> {
+  async getInlinedCalleesRanges(_rawLocation: Chrome.DevTools.RawLocation):
+      Promise<Chrome.DevTools.RawLocationRange[]> {
     throw new Error('Not implemented yet');
   }
 

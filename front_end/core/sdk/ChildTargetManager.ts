@@ -27,12 +27,12 @@ let _attachCallback: ((arg0: {
                         waitingForDebugger: boolean,
                       }) => Promise<void>)|undefined;
 
-export class ChildTargetManager extends SDKModel implements ProtocolProxyApi.TargetDispatcher {
+export class ChildTargetManager extends SDKModel<EventTypes> implements ProtocolProxyApi.TargetDispatcher {
   _targetManager: TargetManager;
   _parentTarget: Target;
   _targetAgent: ProtocolProxyApi.TargetApi;
-  _targetInfos: Map<string, Protocol.Target.TargetInfo>;
-  _childTargets: Map<string, Target>;
+  _targetInfos: Map<Protocol.Target.TargetID, Protocol.Target.TargetInfo>;
+  _childTargets: Map<Protocol.Target.SessionID, Target>;
   _parallelConnections: Map<string, ProtocolClient.InspectorBackend.Connection>;
   _parentTargetId: string|null;
 
@@ -217,3 +217,9 @@ export enum Events {
   TargetDestroyed = 'TargetDestroyed',
   TargetInfoChanged = 'TargetInfoChanged',
 }
+
+export type EventTypes = {
+  [Events.TargetCreated]: Protocol.Target.TargetInfo,
+  [Events.TargetDestroyed]: Protocol.Target.TargetID,
+  [Events.TargetInfoChanged]: Protocol.Target.TargetInfo,
+};

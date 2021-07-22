@@ -582,8 +582,9 @@ export class Section {
     this._section.setFieldVisible(i18nString(UIStrings.clients), Boolean(version.controlledClients.length));
     for (const client of version.controlledClients) {
       const clientLabelText = this._clientsField.createChild('div', 'service-worker-client');
-      if (this._clientInfoCache.has(client)) {
-        this._updateClientInfo(clientLabelText, (this._clientInfoCache.get(client) as Protocol.Target.TargetInfo));
+      const info = this._clientInfoCache.get(client);
+      if (info) {
+        this._updateClientInfo(clientLabelText, info);
       }
       this._manager.target()
           .targetAgent()

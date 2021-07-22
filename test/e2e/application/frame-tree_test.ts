@@ -33,6 +33,12 @@ const ensureApplicationPanel = async () => {
   }
 };
 
+declare global {
+  interface Window {
+    iFrameWindow: Window|null|undefined;
+  }
+}
+
 describe('The Application Tab', async () => {
   afterEach(async () => {
     const {target} = getBrowserAndPages();
@@ -117,7 +123,7 @@ describe('The Application Tab', async () => {
     await doubleClickSourceTreeItem(TOP_FRAME_SELECTOR);
 
     await target.evaluate(() => {
-      window.open('iframe.html');
+      window.iFrameWindow = window.open('iframe.html');
     });
 
     await doubleClickSourceTreeItem(OPENED_WINDOWS_SELECTOR);
@@ -138,6 +144,9 @@ describe('The Application Tab', async () => {
       'Yes',
     ];
     assert.deepEqual(fieldValuesTextContent, expected);
+    await target.evaluate(() => {
+      window.iFrameWindow?.close();
+    });
   });
 
   it('shows dedicated workers in the frame tree', async () => {

@@ -1636,7 +1636,7 @@ export class ResourcesSection implements SDK.TargetManager.Observer {
       const childTargetManager = frame.resourceTreeModel().target().model(SDK.ChildTargetManager.ChildTargetManager);
       if (childTargetManager) {
         for (const targetInfo of childTargetManager.targetInfos()) {
-          this._windowOpened({data: {targetInfo}});
+          this._windowOpened({data: targetInfo});
         }
       }
     }
@@ -1761,8 +1761,8 @@ export class ResourcesSection implements SDK.TargetManager.Observer {
     frameTreeElement.appendResource(resource);
   }
 
-  _windowOpened(event: Common.EventTarget.EventTargetEvent): void {
-    const targetInfo = (event.data as Protocol.Target.TargetInfo);
+  _windowOpened(event: Common.EventTarget.EventTargetEvent<Protocol.Target.TargetInfo>): void {
+    const targetInfo = event.data;
     // Events for DevTools windows are ignored because they do not have an openerId
     if (targetInfo.openerId && targetInfo.type === 'page') {
       const frameTreeElement = this._treeElementForFrameId.get(targetInfo.openerId);
@@ -1773,8 +1773,8 @@ export class ResourcesSection implements SDK.TargetManager.Observer {
     }
   }
 
-  _windowDestroyed(event: Common.EventTarget.EventTargetEvent): void {
-    const targetId = (event.data as string);
+  _windowDestroyed(event: Common.EventTarget.EventTargetEvent<Protocol.Target.TargetID>): void {
+    const targetId = event.data;
     const frameTreeElement = this._treeElementForTargetId.get(targetId);
     if (frameTreeElement) {
       frameTreeElement.windowDestroyed(targetId);
@@ -1782,8 +1782,8 @@ export class ResourcesSection implements SDK.TargetManager.Observer {
     }
   }
 
-  _windowChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const targetInfo = (event.data as Protocol.Target.TargetInfo);
+  _windowChanged(event: Common.EventTarget.EventTargetEvent<Protocol.Target.TargetInfo>): void {
+    const targetInfo = event.data;
     // Events for DevTools windows are ignored because they do not have an openerId
     if (targetInfo.openerId && targetInfo.type === 'page') {
       const frameTreeElement = this._treeElementForFrameId.get(targetInfo.openerId);

@@ -135,7 +135,7 @@ export class WebVitalsEventLane extends WebVitalsLane {
   private getMarker(event: Event): Marker {
     const markerType = this.getMarkerType(event);
     const timestamp = this.timeline.getTimeSinceLastMainFrameNavigation(event.timestamp);
-    const timestampLabel = i18n.i18n.preciseMillisToString(timestamp, 1);
+    const timestampLabel = i18n.TimeUtilities.preciseMillisToString(timestamp, 1);
     const timestampMetrics = this.measureTimestamp(timestampLabel);
     const widthIncludingLabel = 10 + 5 + this.labelMetrics.width + 5;
     const widthIncludingTimestamp = widthIncludingLabel + 5 + timestampMetrics.width;

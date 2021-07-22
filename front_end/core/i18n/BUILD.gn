@@ -13,6 +13,7 @@ devtools_module("i18n") {
     "LocalizedStringSet.ts",
     "i18nImpl.ts",
     "i18nTypes.ts",
+    "time-utilities.ts",
   ]
 
   deps = [

@@ -984,10 +984,11 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       const eps = 1e-6;
       if (typeof totalTime === 'number') {
         time = Math.abs(totalTime - selfTime) > eps && selfTime > eps ?
-            i18nString(
-                UIStrings.sSelfS,
-                {PH1: i18n.i18n.millisToString(totalTime, true), PH2: i18n.i18n.millisToString(selfTime, true)}) :
-            i18n.i18n.millisToString(totalTime, true);
+            i18nString(UIStrings.sSelfS, {
+              PH1: i18n.TimeUtilities.millisToString(totalTime, true),
+              PH2: i18n.TimeUtilities.millisToString(selfTime, true),
+            }) :
+            i18n.TimeUtilities.millisToString(totalTime, true);
       }
       if (this._performanceModel && this._performanceModel.timelineModel().isMarkerEvent(event)) {
         title = TimelineUIUtils.eventTitle(event);
@@ -1014,7 +1015,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       const frame = (this._entryData[entryIndex] as TimelineModel.TimelineFrameModel.TimelineFrame);
       time = i18nString(
           UIStrings.sFfps,
-          {PH1: i18n.i18n.preciseMillisToString(frame.duration, 1), PH2: (1000 / frame.duration).toFixed(0)});
+          {PH1: i18n.TimeUtilities.preciseMillisToString(frame.duration, 1), PH2: (1000 / frame.duration).toFixed(0)});
 
       if (frame.idle) {
         title = i18nString(UIStrings.idleFrame);
@@ -1121,7 +1122,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         frame.idle ? 'white' : frame.dropped ? '#f0b7b1' : (frame.hasWarnings() ? '#fad1d1' : '#d7f0d1');
     context.fillRect(barX, barY, barWidth, barHeight);
 
-    const frameDurationText = i18n.i18n.preciseMillisToString(frame.duration, 1);
+    const frameDurationText = i18n.TimeUtilities.preciseMillisToString(frame.duration, 1);
     const textWidth = context.measureText(frameDurationText).width;
     if (textWidth <= barWidth) {
       context.fillStyle = this.textColor(entryIndex);
@@ -1312,7 +1313,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   _appendFrame(frame: TimelineModel.TimelineFrameModel.TimelineFrame): void {
     const index = this._entryData.length;
     this._entryData.push(frame);
-    this._entryIndexToTitle[index] = i18n.i18n.millisToString(frame.duration, true);
+    this._entryIndexToTitle[index] = i18n.TimeUtilities.millisToString(frame.duration, true);
     if (!this._timelineData) {
       return;
     }
@@ -1337,7 +1338,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   formatValue(value: number, precision?: number): string {
-    return i18n.i18n.preciseMillisToString(value, precision);
+    return i18n.TimeUtilities.preciseMillisToString(value, precision);
   }
 
   canJumpToEntry(_entryIndex: number): boolean {

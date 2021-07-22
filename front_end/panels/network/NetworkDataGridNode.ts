@@ -1344,8 +1344,8 @@ export class NetworkRequestNode extends NetworkNode {
 
   _renderTimeCell(cell: HTMLElement): void {
     if (this._request.duration > 0) {
-      this._setTextAndTitle(cell, i18n.i18n.secondsToString(this._request.duration));
-      this._appendSubtitle(cell, i18n.i18n.secondsToString(this._request.latency));
+      this._setTextAndTitle(cell, i18n.TimeUtilities.secondsToString(this._request.duration));
+      this._appendSubtitle(cell, i18n.TimeUtilities.secondsToString(this._request.latency));
     } else if (this._request.preserved) {
       this._setTextAndTitle(cell, i18nString(UIStrings.unknown), i18nString(UIStrings.unknownExplanation));
     } else {

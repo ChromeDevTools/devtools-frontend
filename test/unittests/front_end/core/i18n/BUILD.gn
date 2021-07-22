@@ -9,6 +9,7 @@ ts_library("i18n") {
   sources = [
     "DevToolsLocale_test.ts",
     "i18n_test.ts",
+    "time-utilities_test.ts",
   ]
 
   deps = [

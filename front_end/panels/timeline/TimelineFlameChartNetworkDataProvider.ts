@@ -300,7 +300,8 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     const startTime = request.getStartTime();
     const duration = request.endTime - startTime;
     if (startTime && isFinite(duration)) {
-      contents.createChild('span', 'timeline-info-network-time').textContent = i18n.i18n.millisToString(duration, true);
+      contents.createChild('span', 'timeline-info-network-time').textContent =
+          i18n.TimeUtilities.millisToString(duration, true);
     }
     if (typeof request.priority === 'string') {
       const div = (contents.createChild('span') as HTMLElement);
@@ -386,7 +387,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
   }
 
   formatValue(value: number, precision?: number): string {
-    return i18n.i18n.preciseMillisToString(value, precision);
+    return i18n.TimeUtilities.preciseMillisToString(value, precision);
   }
 
   canJumpToEntry(_entryIndex: number): boolean {

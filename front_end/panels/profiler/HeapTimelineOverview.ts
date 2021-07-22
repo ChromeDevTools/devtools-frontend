@@ -315,7 +315,7 @@ export class OverviewCalculator implements PerfUI.TimelineGrid.Calculator {
   }
 
   formatValue(value: number, precision?: number): string {
-    return i18n.i18n.secondsToString(value / 1000, Boolean(precision));
+    return i18n.TimeUtilities.secondsToString(value / 1000, Boolean(precision));
   }
 
   maximumBoundary(): number {

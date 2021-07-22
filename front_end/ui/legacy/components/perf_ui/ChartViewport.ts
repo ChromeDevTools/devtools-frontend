@@ -296,7 +296,7 @@ export class ChartViewport extends UI.Widget.VBox {
     style.left = left + 'px';
     style.width = (right - left) + 'px';
     const timeSpan = rangeSelectionEnd - rangeSelectionStart;
-    this._selectedTimeSpanLabel.textContent = i18n.i18n.preciseMillisToString(timeSpan, 2);
+    this._selectedTimeSpanLabel.textContent = i18n.TimeUtilities.preciseMillisToString(timeSpan, 2);
   }
 
   _onScroll(): void {

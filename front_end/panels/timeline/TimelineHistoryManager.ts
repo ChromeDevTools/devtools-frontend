@@ -252,7 +252,7 @@ export class TimelineHistoryManager {
     UI.ARIAUtils.setAccessibleName(nameSpan, title);
     const tracingModel = performanceModel.tracingModel();
     const duration =
-        i18n.i18n.millisToString(tracingModel.maximumRecordTime() - tracingModel.minimumRecordTime(), false);
+        i18n.TimeUtilities.millisToString(tracingModel.maximumRecordTime() - tracingModel.minimumRecordTime(), false);
     const timeContainer = container.createChild('span', 'time');
     timeContainer.appendChild(document.createTextNode(duration));
     timeContainer.appendChild(timeElement);

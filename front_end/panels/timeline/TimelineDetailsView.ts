@@ -320,7 +320,8 @@ export class TimelineDetailsView extends UI.Widget.VBox {
 
     const contentHelper = new TimelineDetailsContentHelper(null, null);
     contentHelper.addSection(i18nString(
-        UIStrings.rangeSS, {PH1: i18n.i18n.millisToString(startOffset), PH2: i18n.i18n.millisToString(endOffset)}));
+        UIStrings.rangeSS,
+        {PH1: i18n.TimeUtilities.millisToString(startOffset), PH2: i18n.TimeUtilities.millisToString(endOffset)}));
     const pieChart = TimelineUIUtils.generatePieChart(aggregatedStats);
     contentHelper.appendElementRow('', pieChart);
     this._setContent(contentHelper.fragment);

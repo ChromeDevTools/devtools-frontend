@@ -526,7 +526,7 @@ export class CookiesTable extends UI.Widget.VBox {
     }
 
     if (cookie.maxAge()) {
-      data[SDK.Cookie.Attributes.Expires] = i18n.i18n.secondsToString(Math.floor(cookie.maxAge()));
+      data[SDK.Cookie.Attributes.Expires] = i18n.TimeUtilities.secondsToString(Math.floor(cookie.maxAge()));
     } else if (cookie.expires()) {
       if (cookie.expires() < 0) {
         data[SDK.Cookie.Attributes.Expires] = expiresSessionValue();

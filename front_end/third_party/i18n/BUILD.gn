@@ -2,12 +2,27 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
 
-devtools_pre_built("bundle") {
+devtools_pre_built("i18n-lh") {
   sources = [
-    "bundle-tsconfig.json",
     "i18n-bundle.d.ts",
     "i18n-bundle.js",
+    "i18n-lh-tsconfig.json",
   ]
+}
+
+devtools_module("i18n") {
+  sources = []
+
+  deps = [ ":i18n-lh" ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "i18n.ts"
+  deps = [ ":i18n" ]
+
+  visibility = [ "*" ]
 }

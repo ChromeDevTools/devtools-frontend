@@ -446,6 +446,7 @@ grd_files_release_sources = [
   "front_end/third_party/diff/diff-legacy.js",
   "front_end/third_party/diff/diff.js",
   "front_end/third_party/i18n/i18n-bundle.js",
+  "front_end/third_party/i18n/i18n.js",
   "front_end/third_party/lighthouse/lighthouse-dt-bundle.js",
   "front_end/third_party/lighthouse/report/report.js",
   "front_end/third_party/lit-html/lit-html.js",

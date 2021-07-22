@@ -38,6 +38,7 @@ group("front_end") {
     "panels/sources",
     "panels/timeline/components",
     "test_setup",
+    "third_party/i18n",
     "ui",
     "ui/components",
     "ui/components/adorners",

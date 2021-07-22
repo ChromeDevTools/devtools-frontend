@@ -101,6 +101,8 @@ declare function _preformatValues(icuMessageId: string, messageFormatter: Object
  */
 declare function idNotInMainDictionaryException(icuMessage: string): void;
 
+import type {IntlMessageFormat} from '../intl-messageformat/package/lib/index.js';
+
  declare var i18n: {
    _formatPathAsString: typeof _formatPathAsString;
    _preformatValues: typeof _preformatValues;
@@ -115,5 +117,6 @@ declare function idNotInMainDictionaryException(icuMessage: string): void;
    registerLocaleData: typeof registerLocaleData;
    idNotInMainDictionaryException: typeof idNotInMainDictionaryException;
    getAllSupportedLocales: typeof getAllSupportedLocales;
+   MessageFormat: typeof IntlMessageFormat,
  };
  export default i18n;

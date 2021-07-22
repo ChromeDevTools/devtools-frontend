@@ -504,4 +504,5 @@ module.exports = {
   isStringOrIcuMessage,
   idNotInMainDictionaryException,
   getAllSupportedLocales,
+  MessageFormat,
 };

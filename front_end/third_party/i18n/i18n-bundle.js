@@ -2557,6 +2557,7 @@ var i18n = {
   isStringOrIcuMessage,
   idNotInMainDictionaryException,
   getAllSupportedLocales,
+  MessageFormat,
 };
 
 export default i18n;

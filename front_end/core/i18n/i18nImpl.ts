@@ -4,13 +4,15 @@
 
 // eslint-disable-next-line
 import i18nBundle from '../../third_party/i18n/i18n-bundle.js';
+import * as I18n from '../../third_party/i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import {DevToolsLocale} from './DevToolsLocale.js';
-import {LocalizedStringSet} from './LocalizedStringSet.js';
 
 import type * as i18nTypes from './i18nTypes.js';
+
+const i18nInstance = new I18n.I18n.I18n();
 
 // All the locales that are part of the DevTools bundle and should not be fetched
 // remotely. Keep this list in sync with "copied_devtools_locale_files" in
@@ -61,7 +63,7 @@ export async function fetchAndRegisterLocaleData(locale: Intl.UnicodeBCP47Locale
       new Promise((resolve, reject) => setTimeout(() => reject(new Error('timed out fetching locale')), 5000));
   const localeDataText = await Promise.race([timeoutPromise, localeDataTextPromise]);
   const localeData = JSON.parse(localeDataText as string);
-  i18nBundle.registerLocaleData(locale, localeData);
+  i18nInstance.registerLocaleData(locale, localeData);
 }
 
 /**
@@ -72,33 +74,37 @@ export async function fetchAndRegisterLocaleData(locale: Intl.UnicodeBCP47Locale
  * meta files used to register module extensions.
  */
 export function getLazilyComputedLocalizedString(
-    localizedStringSet: LocalizedStringSet, id: string, values: i18nTypes.Values = {}): () =>
+    registeredStrings: I18n.LocalizedStringSet.RegisteredFileStrings, id: string, values: i18nTypes.Values = {}): () =>
     Platform.UIString.LocalizedString {
-  return (): Platform.UIString.LocalizedString => getLocalizedString(localizedStringSet, id, values);
+  return (): Platform.UIString.LocalizedString => getLocalizedString(registeredStrings, id, values);
 }
 
 /**
  * Retrieve the localized string.
  */
-export function getLocalizedString(localizedStringSet: LocalizedStringSet, id: string, values: i18nTypes.Values = {}):
-    Platform.UIString.LocalizedString {
-  return localizedStringSet.getLocalizedString(id, values);
+export function getLocalizedString(
+    registeredStrings: I18n.LocalizedStringSet.RegisteredFileStrings, id: string,
+    values: i18nTypes.Values = {}): Platform.UIString.LocalizedString {
+  return registeredStrings.getLocalizedStringSetFor(DevToolsLocale.instance().locale).getLocalizedString(id, values) as
+      Platform.UIString.LocalizedString;
 }
 
 /**
  * Register a file's UIStrings with i18n, return function to generate the string ids.
  */
-export function registerUIStrings(path: string, stringStructure: {[key: string]: string}): LocalizedStringSet {
-  return new LocalizedStringSet(path, stringStructure);
+export function registerUIStrings(
+    path: string, stringStructure: {[key: string]: string}): I18n.LocalizedStringSet.RegisteredFileStrings {
+  return i18nInstance.registerFileStrings(path, stringStructure);
 }
 
 /**
  * Returns a span element that may contains other DOM element as placeholders
  */
 export function getFormatLocalizedString(
-    localizedStringSet: LocalizedStringSet, stringId: string, placeholders: Record<string, Object>): Element {
-  const icuMessage = localizedStringSet.getIcuMessage(stringId, placeholders);
-  const formatter = i18nBundle.getFormatter(icuMessage, DevToolsLocale.instance().locale);
+    registeredStrings: I18n.LocalizedStringSet.RegisteredFileStrings, stringId: string,
+    placeholders: Record<string, Object>): Element {
+  const formatter =
+      registeredStrings.getLocalizedStringSetFor(DevToolsLocale.instance().locale).getMessageFormatterFor(stringId);
 
   const icuElements = formatter.getAst().elements;
   const args: Array<Object> = [];

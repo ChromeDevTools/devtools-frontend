@@ -104,7 +104,7 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
         });
       }
       const linesCount = sourceFrame.textEditor.linesCount;
-      return i18nString(UIStrings.currentLineSTypeALineNumber, {PH1: currentLineNumber, PH2: linesCount});
+      return i18nString(UIStrings.currentLineSTypeALineNumber, {PH1: currentLineNumber + 1, PH2: linesCount});
     }
 
     if (sourceFrame && sourceFrame.wasmDisassembly) {

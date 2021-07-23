@@ -271,7 +271,7 @@ export class RuntimeModel extends SDKModel<EventTypes> {
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _inspectRequested(payload: Protocol.Runtime.RemoteObject, hints?: any): void {
+  _inspectRequested(payload: Protocol.Runtime.RemoteObject, hints?: any, executionContextId?: number): void {
     const object = this.createRemoteObject(payload);
 
     if (hints && 'copyToClipboard' in hints && Boolean(hints.copyToClipboard)) {
@@ -280,7 +280,7 @@ export class RuntimeModel extends SDKModel<EventTypes> {
     }
 
     if (hints && 'queryObjects' in hints && hints.queryObjects) {
-      this._queryObjectsRequested(object);
+      this._queryObjectsRequested(object, executionContextId);
       return;
     }
 
@@ -353,14 +353,14 @@ export class RuntimeModel extends SDKModel<EventTypes> {
     }
   }
 
-  async _queryObjectsRequested(object: RemoteObject): Promise<void> {
+  async _queryObjectsRequested(object: RemoteObject, executionContextId?: number): Promise<void> {
     const result = await this.queryObjects(object);
     object.release();
     if ('error' in result) {
       Common.Console.Console.instance().error(result.error);
       return;
     }
-    this.dispatchEventToListeners(Events.QueryObjectRequested, {objects: result.objects});
+    this.dispatchEventToListeners(Events.QueryObjectRequested, {objects: result.objects, executionContextId});
   }
 
   static simpleTextFromException(exceptionDetails: Protocol.Runtime.ExceptionDetails): string {
@@ -482,6 +482,10 @@ export interface ExceptionWithTimestamp {
   details: Protocol.Runtime.ExceptionDetails;
 }
 
+export interface QueryObjectRequestedEvent {
+  objects: RemoteObject;
+  executionContextId?: number;
+}
 
 export type EventTypes = {
   [Events.BindingCalled]: Protocol.Runtime.BindingCalledEvent,
@@ -492,7 +496,7 @@ export type EventTypes = {
   [Events.ExceptionThrown]: ExceptionWithTimestamp,
   [Events.ExceptionRevoked]: number,
   [Events.ConsoleAPICalled]: ConsoleAPICall,
-  [Events.QueryObjectRequested]: {objects: RemoteObject},
+  [Events.QueryObjectRequested]: QueryObjectRequestedEvent,
 };
 
 
@@ -527,8 +531,8 @@ class RuntimeDispatcher implements ProtocolProxyApi.RuntimeDispatcher {
     this._runtimeModel._consoleAPICalled(type, args, executionContextId, timestamp, stackTrace, context);
   }
 
-  inspectRequested({object, hints}: Protocol.Runtime.InspectRequestedEvent): void {
-    this._runtimeModel._inspectRequested(object, hints);
+  inspectRequested({object, hints, executionContextId}: Protocol.Runtime.InspectRequestedEvent): void {
+    this._runtimeModel._inspectRequested(object, hints, executionContextId);
   }
 
   bindingCalled(event: Protocol.Runtime.BindingCalledEvent): void {

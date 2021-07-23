@@ -45,7 +45,7 @@ import {Events as DebuggerModelEvents} from './DebuggerModel.js';  // eslint-dis
 import {LogModel} from './LogModel.js';
 import {RemoteObject} from './RemoteObject.js';
 import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
-import type {ConsoleAPICall, ExceptionWithTimestamp, ExecutionContext} from './RuntimeModel.js';
+import type {ConsoleAPICall, ExceptionWithTimestamp, ExecutionContext, QueryObjectRequestedEvent} from './RuntimeModel.js';
 import {Events as RuntimeModelEvents, RuntimeModel} from './RuntimeModel.js';  // eslint-disable-line no-unused-vars
 import type {Target} from './Target.js';
 import {TargetManager} from './TargetManager.js';
@@ -291,13 +291,16 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper implements 
     this.addMessage(consoleMessage);
   }
 
-  _queryObjectRequested(runtimeModel: RuntimeModel, event: Common.EventTarget.EventTargetEvent): void {
-    const data = (event.data as {
-      objects: RemoteObject,
-    });
+  _queryObjectRequested(
+      runtimeModel: RuntimeModel, event: Common.EventTarget.EventTargetEvent<QueryObjectRequestedEvent>): void {
+    const {objects, executionContextId} = event.data;
+    const details = {
+      type: FrontendMessageType.QueryObjectResult,
+      parameters: [objects],
+      executionContextId,
+    };
     const consoleMessage = new ConsoleMessage(
-        runtimeModel, FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Info, '',
-        {type: FrontendMessageType.QueryObjectResult, parameters: [data.objects]});
+        runtimeModel, FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Info, '', details);
     this.addMessage(consoleMessage);
   }
 

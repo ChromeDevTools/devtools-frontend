@@ -24180,6 +24180,13 @@
                         {
                             "name": "hints",
                             "type": "object"
+                        },
+                        {
+                            "name": "executionContextId",
+                            "description": "Identifier of the context where the call was made.",
+                            "experimental": true,
+                            "optional": true,
+                            "$ref": "ExecutionContextId"
                         }
                     ]
                 }

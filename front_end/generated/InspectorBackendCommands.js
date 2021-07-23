@@ -3222,7 +3222,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEvent('Runtime.executionContextCreated', ['context']);
   inspectorBackend.registerEvent('Runtime.executionContextDestroyed', ['executionContextId']);
   inspectorBackend.registerEvent('Runtime.executionContextsCleared', []);
-  inspectorBackend.registerEvent('Runtime.inspectRequested', ['object', 'hints']);
+  inspectorBackend.registerEvent('Runtime.inspectRequested', ['object', 'hints', 'executionContextId']);
   inspectorBackend.registerCommand(
       'Runtime.awaitPromise',
       [

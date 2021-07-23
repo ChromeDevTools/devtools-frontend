@@ -16268,6 +16268,10 @@ declare namespace Protocol {
     export interface InspectRequestedEvent {
       object: RemoteObject;
       hints: any;
+      /**
+       * Identifier of the context where the call was made.
+       */
+      executionContextId?: ExecutionContextId;
     }
   }
 

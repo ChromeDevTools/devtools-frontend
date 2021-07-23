@@ -2,9 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert} from 'chai';
+import {assert, expect} from 'chai';
+import type {ElementHandle} from 'puppeteer';
 
-import {click, step, waitFor, waitForElementWithTextContent} from '../../shared/helper.js';
+import {click, step, typeText, waitFor, waitForElementWithTextContent, waitForMany} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
 import {navigateToNetworkTab, selectRequestByName, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
@@ -51,7 +52,7 @@ describe('The Network Request view', async () => {
        });
      });
 
-  it('show webbundle content on opreview tab', async () => {
+  it('shows webbundle content on preview tab', async () => {
     await navigateToNetworkTab('resources-from-webbundle.html');
 
     await waitForSomeRequestsToAppear(3);
@@ -59,12 +60,54 @@ describe('The Network Request view', async () => {
     await selectRequestByName('webbundle.wbn');
 
     const networkView = await waitFor('.network-item-view');
-    const previewTabHeader = await waitFor('[aria-label=Preview][role="tab"]', networkView);
+    const previewTabHeader = await waitFor('[aria-label=Preview][role=tab]', networkView);
     await click(previewTabHeader);
     await waitFor('[aria-label=Preview][role=tab][aria-selected=true]', networkView);
 
     await waitForElementWithTextContent('webbundle.wbn', networkView);
     await waitForElementWithTextContent('urn:uuid:429fcc4e-0696-4bad-b099-ee9175f023ae', networkView);
     await waitForElementWithTextContent('urn:uuid:020111b3-437a-4c5c-ae07-adb6bbffb720', networkView);
+  });
+
+  it('stores websocket filter', async () => {
+    const navigateToWebsocketMessages = async () => {
+      await navigateToNetworkTab('websocket.html');
+
+      await waitForSomeRequestsToAppear(2);
+
+      await selectRequestByName('localhost');
+
+      const networkView = await waitFor('.network-item-view');
+      const messagesTabHeader = await waitFor('[aria-label=Messages][role=tab]', networkView);
+      await click(messagesTabHeader);
+      await waitFor('[aria-label=Messages][role=tab][aria-selected=true]', networkView);
+      return waitFor('.websocket-frame-view');
+    };
+
+    let messagesView = await navigateToWebsocketMessages();
+    let messages = await waitForMany('.data-column.websocket-frame-view-td', 4, messagesView);
+
+    const filterInput =
+        await waitFor('[aria-label="Enter regex, for example: (web)?socket"][role=textbox]', messagesView);
+    filterInput.click();
+    filterInput.focus();
+    typeText('ping');
+
+    async function elementTextContent(element: ElementHandle): Promise<string> {
+      return await element.evaluate(node => node.textContent || '');
+    }
+
+    messages = await waitForMany('.data-column.websocket-frame-view-td', 2, messagesView);
+    expect(messages.length).to.equal(2);
+    expect(await elementTextContent(messages[0])).to.equal('ping');
+    expect(await elementTextContent(messages[1])).to.equal('ping');
+
+
+    messagesView = await navigateToWebsocketMessages();
+    messages = await waitForMany('.data-column.websocket-frame-view-td', 2, messagesView);
+
+    expect(messages.length).to.equal(2);
+    expect(await elementTextContent(messages[0])).to.equal('ping');
+    expect(await elementTextContent(messages[1])).to.equal('ping');
   });
 });

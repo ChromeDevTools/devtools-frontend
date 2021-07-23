@@ -1,5 +1,6 @@
 front_end/third_party
 karma-coverage
+interactions-coverage
 node_modules
 out
 test/**/fixtures

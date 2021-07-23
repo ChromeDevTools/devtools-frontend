@@ -6,7 +6,7 @@
 
 import * as Common from '../common/common.js';
 
-import type {EventPayload} from './TracingManager.js'; // eslint-disable-line no-unused-vars
+import type {EventPayload} from './TracingManager.js';
 
 type IgnoreListArgs = {
   [key: string]: string|number|ObjectSnapshot,

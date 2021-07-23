@@ -9,10 +9,10 @@ import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import type * as Protocol from '../../generated/protocol.js';
 
-import type {CSSModel} from './CSSModel.js'; // eslint-disable-line no-unused-vars
+import type {CSSModel} from './CSSModel.js';
 import {DeferredDOMNode} from './DOMModel.js';
 import type {FrameAssociated} from './FrameAssociated.js';
-import type {PageResourceLoadInitiator} from './PageResourceLoader.js'; // eslint-disable-line no-unused-vars
+import type {PageResourceLoadInitiator} from './PageResourceLoader.js';
 import {ResourceTreeModel} from './ResourceTreeModel.js';
 
 const UIStrings = {

@@ -4,10 +4,10 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import type * as SDK from '../../core/sdk/sdk.js';                        // eslint-disable-line no-unused-vars
-import type * as Extensions from '../../models/extensions/extensions.js'; // eslint-disable-line no-unused-vars
+import type * as SDK from '../../core/sdk/sdk.js';
+import type * as Extensions from '../../models/extensions/extensions.js';
 
-import type {PerformanceModel} from './PerformanceModel.js'; // eslint-disable-line no-unused-vars
+import type {PerformanceModel} from './PerformanceModel.js';
 import type {Client} from './TimelineLoader.js';
 import {TimelineLoader} from './TimelineLoader.js';  // eslint-disable-line no-unused-vars
 

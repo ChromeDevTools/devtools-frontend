@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import type * as Common from '../../core/common/common.js'; // eslint-disable-line no-unused-vars
-import type * as SDK from '../../core/sdk/sdk.js';          // eslint-disable-line no-unused-vars
-import type * as TimelineModel from '../../models/timeline_model/timeline_model.js'; // eslint-disable-line no-unused-vars
+import type * as Common from '../../core/common/common.js';
+import type * as SDK from '../../core/sdk/sdk.js';
+import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as LayerViewer from '../layer_viewer/layer_viewer.js';
 

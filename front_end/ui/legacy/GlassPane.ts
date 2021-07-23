@@ -7,7 +7,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 
-import type {Size} from './Geometry.js'; // eslint-disable-line no-unused-vars
+import type {Size} from './Geometry.js';
 import {Icon} from './Icon.js';
 import {deepElementFromEvent} from './UIUtils.js';
 import {measuredScrollbarWidth} from './utils/measured-scrollbar-width.js';

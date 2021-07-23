@@ -32,7 +32,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import type {SearchableView} from './SearchableView.js'; // eslint-disable-line no-unused-vars
+import type {SearchableView} from './SearchableView.js';
 import {SplitWidget} from './SplitWidget.js';
 import {VBox} from './Widget.js';
 

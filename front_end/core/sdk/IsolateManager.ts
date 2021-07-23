@@ -6,7 +6,7 @@
 
 import * as Common from '../common/common.js';
 
-import type {HeapProfilerModel} from './HeapProfilerModel.js'; // eslint-disable-line no-unused-vars
+import type {HeapProfilerModel} from './HeapProfilerModel.js';
 import {RuntimeModel} from './RuntimeModel.js';
 import type {SDKModelObserver} from './TargetManager.js';
 import {TargetManager} from './TargetManager.js';

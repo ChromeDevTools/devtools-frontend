@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import type * as SDK from '../../../core/sdk/sdk.js'; // eslint-disable-line no-unused-vars
+import type * as SDK from '../../../core/sdk/sdk.js';
 import * as ExpandableList from '../../../ui/components/expandable_list/expandable_list.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Components from '../../../ui/legacy/components/utils/utils.js';

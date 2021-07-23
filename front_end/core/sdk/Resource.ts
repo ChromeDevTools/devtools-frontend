@@ -39,7 +39,7 @@ import type * as Protocol from '../../generated/protocol.js';
 
 import type {NetworkRequest} from './NetworkRequest.js';
 import {Events} from './NetworkRequest.js';                                       // eslint-disable-line no-unused-vars
-import type {ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js'; // eslint-disable-line no-unused-vars
+import type {ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js';
 
 export class Resource implements TextUtils.ContentProvider.ContentProvider {
   _resourceTreeModel: ResourceTreeModel;

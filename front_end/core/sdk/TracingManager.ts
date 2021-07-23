@@ -9,7 +9,7 @@ import * as Protocol from '../../generated/protocol.js';
 import type {Target} from './Target.js';
 import {Capability} from './Target.js';
 import {SDKModel} from './SDKModel.js';                // eslint-disable-line no-unused-vars
-import type {ObjectSnapshot} from './TracingModel.js'; // eslint-disable-line no-unused-vars
+import type {ObjectSnapshot} from './TracingModel.js';
 
 export class TracingManager extends SDKModel {
   _tracingAgent: ProtocolProxyApi.TracingApi;

@@ -9,10 +9,10 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
-import type * as Diff from '../../third_party/diff/diff.js'; // eslint-disable-line no-unused-vars
+import type * as Diff from '../../third_party/diff/diff.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
-import type * as TextEditor from '../../ui/legacy/components/text_editor/text_editor.js'; // eslint-disable-line no-unused-vars
-import type * as UI from '../../ui/legacy/legacy.js'; // eslint-disable-line no-unused-vars
+import type * as TextEditor from '../../ui/legacy/components/text_editor/text_editor.js';
+import type * as UI from '../../ui/legacy/legacy.js';
 
 import {Plugin} from './Plugin.js';
 

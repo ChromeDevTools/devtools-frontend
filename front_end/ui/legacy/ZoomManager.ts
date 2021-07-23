@@ -5,7 +5,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Common from '../../core/common/common.js';
-import type * as Host from '../../core/host/host.js'; // eslint-disable-line no-unused-vars
+import type * as Host from '../../core/host/host.js';
 
 let zoomManagerInstance: ZoomManager|undefined;
 

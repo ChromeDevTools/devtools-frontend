@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import type * as Common from '../../core/common/common.js'; // eslint-disable-line no-unused-vars
+import type * as Common from '../../core/common/common.js';
 
-import type {ContentProvider, DeferredContent, SearchMatch} from './ContentProvider.js'; // eslint-disable-line no-unused-vars
+import type {ContentProvider, DeferredContent, SearchMatch} from './ContentProvider.js';
 import {performSearchInContent} from './TextUtils.js';
 
 export class StaticContentProvider implements ContentProvider {

@@ -8,11 +8,11 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 import {cssMetadata, CustomVariableRegex, VariableRegex} from './CSSMetadata.js';
-import type {CSSModel} from './CSSModel.js';       // eslint-disable-line no-unused-vars
-import type {CSSProperty} from './CSSProperty.js'; // eslint-disable-line no-unused-vars
+import type {CSSModel} from './CSSModel.js';
+import type {CSSProperty} from './CSSProperty.js';
 import {CSSKeyframesRule, CSSStyleRule} from './CSSRule.js';
 import {CSSStyleDeclaration, Type} from './CSSStyleDeclaration.js';
-import type {DOMNode} from './DOMModel.js'; // eslint-disable-line no-unused-vars
+import type {DOMNode} from './DOMModel.js';
 
 export class CSSMatchedStyles {
   _cssModel: CSSModel;

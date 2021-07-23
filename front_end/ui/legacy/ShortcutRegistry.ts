@@ -11,7 +11,7 @@ import * as Root from '../../core/root/root.js';
 
 import type {Action} from './ActionRegistration.js';
 import {getRegisteredActionExtensions, KeybindSet} from './ActionRegistration.js';  // eslint-disable-line no-unused-vars
-import type {ActionRegistry} from './ActionRegistry.js'; // eslint-disable-line no-unused-vars
+import type {ActionRegistry} from './ActionRegistry.js';
 import {Context} from './Context.js';
 import {Dialog} from './Dialog.js';
 import {KeyboardShortcut, Modifiers, Type} from './KeyboardShortcut.js';  // eslint-disable-line no-unused-vars

@@ -9,7 +9,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as ComponentHelpers from '../components/helpers/helpers.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
-import type {ContextMenu, Provider} from './ContextMenu.js'; // eslint-disable-line no-unused-vars
+import type {ContextMenu, Provider} from './ContextMenu.js';
 import {html} from './Fragment.js';
 import {Tooltip} from './Tooltip.js';
 import {addReferrerToURLIfNecessary, copyLinkAddressLabel, MaxLengthForDisplayedURLs, openLinkExternallyLabel} from './UIUtils.js';

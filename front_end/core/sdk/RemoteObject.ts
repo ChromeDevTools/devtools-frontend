@@ -33,8 +33,8 @@
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 
-import type {DebuggerModel, FunctionDetails} from './DebuggerModel.js'; // eslint-disable-line no-unused-vars
-import type {RuntimeModel} from './RuntimeModel.js';                    // eslint-disable-line no-unused-vars
+import type {DebuggerModel, FunctionDetails} from './DebuggerModel.js';
+import type {RuntimeModel} from './RuntimeModel.js';
 
 export class RemoteObject {
   /**

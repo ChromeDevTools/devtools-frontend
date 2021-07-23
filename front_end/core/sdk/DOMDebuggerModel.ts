@@ -9,7 +9,7 @@ import * as i18n from '../i18n/i18n.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
-import type {Location} from './DebuggerModel.js'; // eslint-disable-line no-unused-vars
+import type {Location} from './DebuggerModel.js';
 import type {DOMNode} from './DOMModel.js';
 import {DOMModel, Events as DOMModelEvents} from './DOMModel.js';  // eslint-disable-line no-unused-vars
 import {RemoteObject} from './RemoteObject.js';

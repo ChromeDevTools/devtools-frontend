@@ -37,10 +37,10 @@ import * as i18n from '../i18n/i18n.js';
 import type {DebuggerModel} from './DebuggerModel.js';
 import {Location} from './DebuggerModel.js';  // eslint-disable-line no-unused-vars
 import type {FrameAssociated} from './FrameAssociated.js';
-import type {PageResourceLoadInitiator} from './PageResourceLoader.js'; // eslint-disable-line no-unused-vars
+import type {PageResourceLoadInitiator} from './PageResourceLoader.js';
 import {ResourceTreeModel} from './ResourceTreeModel.js';
-import type {ExecutionContext} from './RuntimeModel.js'; // eslint-disable-line no-unused-vars
-import type {Target} from './Target.js';                 // eslint-disable-line no-unused-vars
+import type {ExecutionContext} from './RuntimeModel.js';
+import type {Target} from './Target.js';
 
 const UIStrings = {
   /**

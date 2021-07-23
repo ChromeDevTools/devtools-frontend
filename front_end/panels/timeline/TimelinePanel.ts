@@ -46,7 +46,7 @@ import * as Extensions from '../../models/extensions/extensions.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import type * as Coverage from '../coverage/coverage.js'; // eslint-disable-line no-unused-vars
+import type * as Coverage from '../coverage/coverage.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
 import type {Window} from './PerformanceModel.js';

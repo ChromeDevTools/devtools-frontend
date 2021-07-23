@@ -10,9 +10,9 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import {CSSContainerQuery} from './CSSContainerQuery.js';
 import {CSSMedia} from './CSSMedia.js';
 
-import type {CSSModel, Edit} from './CSSModel.js'; // eslint-disable-line no-unused-vars
+import type {CSSModel, Edit} from './CSSModel.js';
 import {CSSStyleDeclaration, Type} from './CSSStyleDeclaration.js';
-import type {CSSStyleSheetHeader} from './CSSStyleSheetHeader.js'; // eslint-disable-line no-unused-vars
+import type {CSSStyleSheetHeader} from './CSSStyleSheetHeader.js';
 
 export class CSSRule {
   _cssModel: CSSModel;

@@ -31,12 +31,12 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Common from '../../../../core/common/common.js';
-import type * as SDK from '../../../../core/sdk/sdk.js'; // eslint-disable-line no-unused-vars
+import type * as SDK from '../../../../core/sdk/sdk.js';
 import * as UI from '../../legacy.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 
 import {Events as OverviewGridEvents, OverviewGrid} from './OverviewGrid.js';
-import type {Calculator} from './TimelineGrid.js'; // eslint-disable-line no-unused-vars
+import type {Calculator} from './TimelineGrid.js';
 
 export class TimelineOverviewPane extends UI.Widget.VBox {
   _overviewCalculator: TimelineOverviewCalculator;

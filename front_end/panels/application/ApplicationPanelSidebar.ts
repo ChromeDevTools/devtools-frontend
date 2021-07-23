@@ -63,7 +63,7 @@ import type {Database as IndexedDBModelDatabase, DatabaseId, Index, ObjectStore}
 import {Events as IndexedDBModelEvents, IndexedDBModel} from './IndexedDBModel.js';  // eslint-disable-line no-unused-vars
 import {IDBDatabaseView, IDBDataView} from './IndexedDBViews.js';
 import {OpenedWindowDetailsView, WorkerDetailsView} from './OpenedWindowDetailsView.js';
-import type {ResourcesPanel} from './ResourcesPanel.js'; // eslint-disable-line no-unused-vars
+import type {ResourcesPanel} from './ResourcesPanel.js';
 import {ServiceWorkersView} from './ServiceWorkersView.js';
 import {StorageView} from './StorageView.js';
 import {TrustTokensTreeElement} from './TrustTokensTreeElement.js';

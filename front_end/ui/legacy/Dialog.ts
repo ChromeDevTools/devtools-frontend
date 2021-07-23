@@ -34,8 +34,8 @@ import * as ARIAUtils from './ARIAUtils.js';
 import {GlassPane, PointerEventsBehavior} from './GlassPane.js';
 import {InspectorView} from './InspectorView.js';
 import {KeyboardShortcut, Keys} from './KeyboardShortcut.js';
-import type {SplitWidget} from './SplitWidget.js';     // eslint-disable-line no-unused-vars
-import type {DevToolsCloseButton} from './UIUtils.js'; // eslint-disable-line no-unused-vars
+import type {SplitWidget} from './SplitWidget.js';
+import type {DevToolsCloseButton} from './UIUtils.js';
 import type {WidgetElement} from './Widget.js';
 import {WidgetFocusRestorer} from './Widget.js';
 

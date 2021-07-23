@@ -13,7 +13,7 @@ import type {Chrome} from '../../../extension-api/ExtensionAPI.js'; // eslint-di
 
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 
-import type {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js'; // eslint-disable-line no-unused-vars
+import type {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
 import {NetworkProject} from './NetworkProject.js';
 
 const UIStrings = {

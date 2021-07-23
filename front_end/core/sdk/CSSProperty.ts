@@ -12,8 +12,8 @@ import type * as Protocol from '../../generated/protocol.js';
 import type * as CodeMirrorModule from '../../third_party/codemirror/codemirror-legacy.js'; // eslint-disable-line @typescript-eslint/no-unused-vars
 
 import {cssMetadata, GridAreaRowRegex} from './CSSMetadata.js';
-import type {Edit} from './CSSModel.js';                           // eslint-disable-line no-unused-vars
-import type {CSSStyleDeclaration} from './CSSStyleDeclaration.js'; // eslint-disable-line no-unused-vars
+import type {Edit} from './CSSModel.js';
+import type {CSSStyleDeclaration} from './CSSStyleDeclaration.js';
 
 export class CSSProperty {
   ownerStyle: CSSStyleDeclaration;

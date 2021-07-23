@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import type * as Workspace from '../workspace/workspace.js'; // eslint-disable-line no-unused-vars
+import type * as Workspace from '../workspace/workspace.js';
 
 export interface LiveLocation {
   update(): Promise<void>;

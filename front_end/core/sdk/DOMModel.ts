@@ -45,7 +45,7 @@ import * as Protocol from '../../generated/protocol.js';
 import {CSSModel} from './CSSModel.js';
 import {FrameManager} from './FrameManager.js';
 import {OverlayModel} from './OverlayModel.js';
-import type {RemoteObject} from './RemoteObject.js'; // eslint-disable-line no-unused-vars
+import type {RemoteObject} from './RemoteObject.js';
 import {RuntimeModel} from './RuntimeModel.js';
 import type {Target} from './Target.js';
 import {Capability} from './Target.js';

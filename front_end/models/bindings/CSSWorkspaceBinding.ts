@@ -7,7 +7,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Workspace from '../workspace/workspace.js'; // eslint-disable-line no-unused-vars
+import type * as Workspace from '../workspace/workspace.js';
 
 import type {LiveLocation as LiveLocationInterface, LiveLocationPool} from './LiveLocation.js';
 import {LiveLocationWithPool} from './LiveLocation.js';  // eslint-disable-line no-unused-vars

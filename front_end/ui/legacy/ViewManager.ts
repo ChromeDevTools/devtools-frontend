@@ -9,13 +9,13 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
-import type {ContextMenu} from './ContextMenu.js'; // eslint-disable-line no-unused-vars
+import type {ContextMenu} from './ContextMenu.js';
 import {Icon} from './Icon.js';
 import {Events as TabbedPaneEvents, TabbedPane} from './TabbedPane.js';
 import type {ToolbarItem} from './Toolbar.js';
 import {Toolbar, ToolbarMenuButton} from './Toolbar.js';  // eslint-disable-line no-unused-vars
 import {createTextChild} from './UIUtils.js';
-import type {TabbedViewLocation, View, ViewLocation, ViewLocationResolver} from './View.js'; // eslint-disable-line no-unused-vars
+import type {TabbedViewLocation, View, ViewLocation, ViewLocationResolver} from './View.js';
 import {getRegisteredLocationResolvers, getRegisteredViewExtensions, maybeRemoveViewExtension, registerLocationResolver, registerViewExtension, ViewLocationCategoryValues, ViewLocationValues, ViewPersistence, ViewRegistration} from './ViewRegistration.js';
 import type {Widget, WidgetElement} from './Widget.js';
 import {VBox} from './Widget.js';  // eslint-disable-line no-unused-vars

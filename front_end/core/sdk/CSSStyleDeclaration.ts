@@ -8,10 +8,10 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 import {cssMetadata} from './CSSMetadata.js';
-import type {CSSModel, Edit} from './CSSModel.js'; // eslint-disable-line no-unused-vars
+import type {CSSModel, Edit} from './CSSModel.js';
 import {CSSProperty} from './CSSProperty.js';
-import type {CSSRule} from './CSSRule.js'; // eslint-disable-line no-unused-vars
-import type {Target} from './Target.js';   // eslint-disable-line no-unused-vars
+import type {CSSRule} from './CSSRule.js';
+import type {Target} from './Target.js';
 
 export class CSSStyleDeclaration {
   _cssModel: CSSModel;

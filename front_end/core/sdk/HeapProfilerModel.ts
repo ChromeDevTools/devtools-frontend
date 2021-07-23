@@ -7,8 +7,8 @@
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 
-import type {DebuggerModel} from './DebuggerModel.js';       // eslint-disable-line no-unused-vars
-import type {RemoteObject} from './RemoteObject.js';         // eslint-disable-line no-unused-vars
+import type {DebuggerModel} from './DebuggerModel.js';
+import type {RemoteObject} from './RemoteObject.js';
 import {RuntimeModel} from './RuntimeModel.js';              // eslint-disable-line no-unused-vars
 import type {Target} from './Target.js';
 import {Capability} from './Target.js';

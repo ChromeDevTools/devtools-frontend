@@ -8,8 +8,8 @@ import type * as Protocol from '../../generated/protocol.js';
 
 import type {DOMNode} from './DOMModel.js';
 import {DOMModel} from './DOMModel.js';                   // eslint-disable-line no-unused-vars
-import type {SnapshotWithRect} from './PaintProfiler.js'; // eslint-disable-line no-unused-vars
-import type {Target} from './Target.js';                  // eslint-disable-line no-unused-vars
+import type {SnapshotWithRect} from './PaintProfiler.js';
+import type {Target} from './Target.js';
 
 export interface Layer {
   id(): string;

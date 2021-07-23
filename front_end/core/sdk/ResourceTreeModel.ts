@@ -39,7 +39,7 @@ import type {DeferredDOMNode, DOMNode} from './DOMModel.js';
 import {DOMModel} from './DOMModel.js';  // eslint-disable-line no-unused-vars
 import type {RequestUpdateDroppedEventData} from './NetworkManager.js';
 import {Events as NetworkManagerEvents, NetworkManager} from './NetworkManager.js';  // eslint-disable-line no-unused-vars
-import type {NetworkRequest} from './NetworkRequest.js'; // eslint-disable-line no-unused-vars
+import type {NetworkRequest} from './NetworkRequest.js';
 import {Resource} from './Resource.js';
 import {ExecutionContext, RuntimeModel} from './RuntimeModel.js';
 import type {Target} from './Target.js';

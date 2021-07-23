@@ -52,7 +52,7 @@ import * as ThemeSupport from './theme_support/theme_support.js';  // eslint-dis
 import type {ToolbarButton} from './Toolbar.js';
 import {Toolbar} from './Toolbar.js';  // eslint-disable-line no-unused-vars
 import {Tooltip} from './Tooltip.js';
-import type {TreeOutline} from './Treeoutline.js'; // eslint-disable-line no-unused-vars
+import type {TreeOutline} from './Treeoutline.js';
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
 import {focusChanged} from './utils/focus-changed.js';
 import {injectCoreStyles} from './utils/inject-core-styles.js';

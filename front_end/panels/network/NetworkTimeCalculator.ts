@@ -36,8 +36,8 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as SDK from '../../core/sdk/sdk.js';                            // eslint-disable-line no-unused-vars
-import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js'; // eslint-disable-line no-unused-vars
+import type * as SDK from '../../core/sdk/sdk.js';
+import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
 const UIStrings = {
   /**

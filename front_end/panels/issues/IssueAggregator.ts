@@ -235,6 +235,18 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.aggregatedIssuesByCode.values();
   }
 
+  aggregatedIssueCodes(): Set<string> {
+    return new Set(this.aggregatedIssuesByCode.keys());
+  }
+
+  aggregatedIssueCategories(): Set<IssuesManager.Issue.IssueCategory> {
+    const result = new Set<IssuesManager.Issue.IssueCategory>();
+    for (const issue of this.aggregatedIssuesByCode.values()) {
+      result.add(issue.getCategory());
+    }
+    return result;
+  }
+
   numberOfAggregatedIssues(): number {
     return this.aggregatedIssuesByCode.size;
   }

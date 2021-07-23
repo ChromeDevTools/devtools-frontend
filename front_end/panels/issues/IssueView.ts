@@ -221,6 +221,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
   affectedResources: UI.TreeOutline.TreeElement;
   _affectedResourceViews: AffectedResourcesView[];
   _aggregatedIssuesCount: HTMLElement|null;
+  private issueKindIcon: IconButton.Icon.Icon|null = null;
   _hasBeenExpandedBefore: boolean;
   private throttle: Common.Throttler.Throttler;
   private needsUpdateOnExpand = true;
@@ -297,10 +298,10 @@ export class IssueView extends UI.TreeOutline.TreeElement {
   _appendHeader(): void {
     const header = document.createElement('div');
     header.classList.add('header');
-    const icon = new IconButton.Icon.Icon();
+    this.issueKindIcon = new IconButton.Icon.Icon();
     const kind = this._issue.getKind();
-    icon.data = IssueCounter.IssueCounter.getIssueKindIconData(kind);
-    icon.classList.add('leading-issue-icon');
+    this.issueKindIcon.data = IssueCounter.IssueCounter.getIssueKindIconData(kind);
+    this.issueKindIcon.classList.add('leading-issue-icon');
     this._aggregatedIssuesCount = document.createElement('span');
     const countAdorner = new Adorners.Adorner.Adorner();
     countAdorner.data = {
@@ -309,8 +310,8 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     };
     countAdorner.classList.add('aggregated-issues-count');
     this._aggregatedIssuesCount.textContent = `${this._issue.getAggregatedIssuesCount()}`;
-    header.appendChild(icon);
-    UI.Tooltip.Tooltip.install(icon, IssueCounter.IssueCounter.getIssueKindDescription(kind));
+    header.appendChild(this.issueKindIcon);
+    UI.Tooltip.Tooltip.install(this.issueKindIcon, IssueCounter.IssueCounter.getIssueKindDescription(kind));
     header.appendChild(countAdorner);
 
     const title = document.createElement('div');
@@ -336,7 +337,11 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     }
   }
 
-  _updateAggregatedIssuesCount(): void {
+  private updateFromIssue(): void {
+    if (this.issueKindIcon) {
+      const kind = this._issue.getKind();
+      this.issueKindIcon.data = IssueCounter.IssueCounter.getIssueKindIconData(kind);
+    }
     if (this._aggregatedIssuesCount) {
       this._aggregatedIssuesCount.textContent = `${this._issue.getAggregatedIssuesCount()}`;
     }
@@ -402,7 +407,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       this.updateAffectedResourceVisibility();
     }
     this.needsUpdateOnExpand = !this.expanded;
-    this._updateAggregatedIssuesCount();
+    this.updateFromIssue();
   }
 
   update(): void {

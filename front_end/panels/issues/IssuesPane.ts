@@ -188,7 +188,7 @@ export class IssuesPane extends UI.Widget.VBox {
     this.issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
     this.aggregator = new IssueAggregator(this.issuesManager);
     this.aggregator.addEventListener(IssueAggregatorEvents.AggregatedIssueUpdated, this.issueUpdated, this);
-    this.aggregator.addEventListener(IssueAggregatorEvents.FullUpdateRequired, this.fullUpdate, this);
+    this.aggregator.addEventListener(IssueAggregatorEvents.FullUpdateRequired, this.onFullUpdate, this);
     for (const issue of this.aggregator.aggregatedIssues()) {
       this.scheduleIssueViewUpdate(issue);
     }
@@ -221,7 +221,7 @@ export class IssuesPane extends UI.Widget.VBox {
     groupByCategoryCheckbox.setVisible(false);
     rightToolbar.appendToolbarItem(groupByCategoryCheckbox);
     groupByCategorySetting.addChangeListener(() => {
-      this.fullUpdate();
+      this.fullUpdate(true);
     });
 
     const thirdPartySetting = IssuesManager.Issue.getShowThirdPartyIssuesSetting();
@@ -305,16 +305,23 @@ export class IssuesPane extends UI.Widget.VBox {
     return newView;
   }
 
-  private clearViews(views: Map<unknown, UI.TreeOutline.TreeElement>): void {
-    for (const view of views.values()) {
+  private clearViews<T>(views: Map<T, UI.TreeOutline.TreeElement>, preservedSet?: Set<T>): void {
+    for (const [key, view] of Array.from(views.entries())) {
+      if (preservedSet?.has(key)) {
+        continue;
+      }
       view.parent && view.parent.removeChild(view);
+      views.delete(key);
     }
-    views.clear();
   }
 
-  private fullUpdate(): void {
-    this.clearViews(this.categoryViews);
-    this.clearViews(this.issueViews);
+  private onFullUpdate(): void {
+    this.fullUpdate(false);
+  }
+
+  private fullUpdate(force: boolean): void {
+    this.clearViews(this.categoryViews, force ? undefined : this.aggregator.aggregatedIssueCategories());
+    this.clearViews(this.issueViews, force ? undefined : this.aggregator.aggregatedIssueCodes());
     if (this.aggregator) {
       for (const issue of this.aggregator.aggregatedIssues()) {
         this.scheduleIssueViewUpdate(issue);

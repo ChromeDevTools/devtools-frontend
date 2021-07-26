@@ -15,4 +15,4 @@ wget -qO- https://registry.npmjs.org/intl-messageformat/-/intl-messageformat-9.8
 ```
 
 Local Modifications:
-None
+Copied package/index.d.ts to package/intl-messageformat.esm.d.ts for type checking.

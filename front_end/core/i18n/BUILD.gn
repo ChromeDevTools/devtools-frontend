@@ -19,6 +19,7 @@ devtools_module("i18n") {
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../third_party/i18n:bundle",
+    "../../third_party/intl-messageformat:bundle",
   ]
 
   public_deps = [

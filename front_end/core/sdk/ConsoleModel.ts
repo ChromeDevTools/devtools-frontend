@@ -39,14 +39,14 @@ import {FrontendMessageSource, FrontendMessageType} from './ConsoleModelTypes.js
 export {FrontendMessageSource, FrontendMessageType} from './ConsoleModelTypes.js';
 
 import type {EventData} from './CPUProfilerModel.js';
-import {CPUProfilerModel, Events as CPUProfilerModelEvents} from './CPUProfilerModel.js';  // eslint-disable-line no-unused-vars
+import {CPUProfilerModel, Events as CPUProfilerModelEvents} from './CPUProfilerModel.js';
 import type {Location} from './DebuggerModel.js';
-import {Events as DebuggerModelEvents} from './DebuggerModel.js';  // eslint-disable-line no-unused-vars
+import {Events as DebuggerModelEvents} from './DebuggerModel.js';
 import {LogModel} from './LogModel.js';
 import {RemoteObject} from './RemoteObject.js';
 import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
 import type {ConsoleAPICall, ExceptionWithTimestamp, ExecutionContext, QueryObjectRequestedEvent} from './RuntimeModel.js';
-import {Events as RuntimeModelEvents, RuntimeModel} from './RuntimeModel.js';  // eslint-disable-line no-unused-vars
+import {Events as RuntimeModelEvents, RuntimeModel} from './RuntimeModel.js';
 import type {Target} from './Target.js';
 import {TargetManager} from './TargetManager.js';
 import type {Observer} from './TargetManager.js';

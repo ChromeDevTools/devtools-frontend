@@ -36,7 +36,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 
 import type {Action} from './ActionRegistration.js';
-import {Events as ActionEvents} from './ActionRegistration.js';  // eslint-disable-line no-unused-vars
+import {Events as ActionEvents} from './ActionRegistration.js';
 import {ActionRegistry} from './ActionRegistry.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu} from './ContextMenu.js';

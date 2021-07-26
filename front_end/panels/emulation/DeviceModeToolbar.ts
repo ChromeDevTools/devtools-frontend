@@ -13,7 +13,7 @@ import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
 import {defaultMobileScaleFactor, DeviceModeModel, Type, UA} from './DeviceModeModel.js';
 import type {Mode} from './EmulatedDevices.js';
-import {EmulatedDevice, EmulatedDevicesList, Events, Horizontal, Vertical} from './EmulatedDevices.js';  // eslint-disable-line no-unused-vars
+import {EmulatedDevice, EmulatedDevicesList, Events, Horizontal, Vertical} from './EmulatedDevices.js';
 
 const UIStrings = {
   /**

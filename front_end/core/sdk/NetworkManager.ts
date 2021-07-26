@@ -40,7 +40,7 @@ import * as Protocol from '../../generated/protocol.js';
 
 import {Cookie} from './Cookie.js';
 import type {BlockedCookieWithReason, ContentData, ExtraRequestInfo, ExtraResponseInfo, MIME_TYPE, NameValue, WebBundleInfo, WebBundleInnerRequestInfo} from './NetworkRequest.js';
-import {Events as NetworkRequestEvents, NetworkRequest} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
+import {Events as NetworkRequestEvents, NetworkRequest} from './NetworkRequest.js';
 import type {Target} from './Target.js';
 import {Capability} from './Target.js';
 import {SDKModel} from './SDKModel.js';

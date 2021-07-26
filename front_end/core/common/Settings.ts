@@ -34,11 +34,11 @@ import type * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import type {Color} from './Color.js';
-import {Format} from './Color.js';  // eslint-disable-line no-unused-vars
+import {Format} from './Color.js';
 import {Console} from './Console.js';
 import type {EventDescriptor, EventTargetEvent} from './EventTarget.js';
 import {ObjectWrapper} from './Object.js';
-import {getLocalizedSettingsCategory, getRegisteredSettings, maybeRemoveSettingExtension, RegExpSettingItem, registerSettingExtension, registerSettingsForTest, resetSettings, SettingCategory, SettingExtensionOption, SettingRegistration, SettingType} from './SettingRegistration.js';  // eslint-disable-line no-unused-vars
+import {getLocalizedSettingsCategory, getRegisteredSettings, maybeRemoveSettingExtension, RegExpSettingItem, registerSettingExtension, registerSettingsForTest, resetSettings, SettingCategory, SettingExtensionOption, SettingRegistration, SettingType} from './SettingRegistration.js';
 
 let settingsInstance: Settings|undefined;
 

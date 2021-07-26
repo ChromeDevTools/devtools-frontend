@@ -9,7 +9,7 @@ import * as Platform from '../../core/platform/platform.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import type {ListModel} from './ListModel.js';
-import {Events as ListModelEvents} from './ListModel.js';  // eslint-disable-line no-unused-vars
+import {Events as ListModelEvents} from './ListModel.js';
 import {measurePreferredSize} from './UIUtils.js';
 
 export interface ListDelegate<T> {

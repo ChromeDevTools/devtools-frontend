@@ -9,7 +9,7 @@ import * as Common from '../common/common.js';
 import * as Root from '../root/root.js';
 
 import type {Attributes} from './Cookie.js';
-import {Cookie} from './Cookie.js';          // eslint-disable-line no-unused-vars
+import {Cookie} from './Cookie.js';
 import type {Resource} from './Resource.js';
 import {ResourceTreeModel} from './ResourceTreeModel.js';
 import type {Target} from './Target.js';

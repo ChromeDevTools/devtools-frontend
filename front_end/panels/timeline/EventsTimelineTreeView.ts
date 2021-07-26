@@ -13,7 +13,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import {Category, IsLong} from './TimelineFilters.js';
 import type {TimelineModeViewDelegate} from './TimelinePanel.js';
-import {TimelineSelection} from './TimelinePanel.js';  // eslint-disable-line no-unused-vars
+import {TimelineSelection} from './TimelinePanel.js';
 import {TimelineTreeView} from './TimelineTreeView.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 

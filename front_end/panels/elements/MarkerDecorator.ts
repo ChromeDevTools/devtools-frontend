@@ -8,7 +8,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 
-import {PseudoStateMarkerDecorator} from './ElementsPanel.js';  // eslint-disable-line no-unused-vars
+import {PseudoStateMarkerDecorator} from './ElementsPanel.js';
 
 const UIStrings = {
   /**

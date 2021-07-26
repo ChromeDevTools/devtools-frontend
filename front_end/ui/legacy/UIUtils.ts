@@ -50,7 +50,7 @@ import {Icon} from './Icon.js';
 import {KeyboardShortcut} from './KeyboardShortcut.js';
 import * as ThemeSupport from './theme_support/theme_support.js';  // eslint-disable-line rulesdir/es_modules_import
 import type {ToolbarButton} from './Toolbar.js';
-import {Toolbar} from './Toolbar.js';  // eslint-disable-line no-unused-vars
+import {Toolbar} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import type {TreeOutline} from './Treeoutline.js';
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';

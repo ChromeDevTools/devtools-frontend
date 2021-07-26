@@ -12,9 +12,9 @@ import {Size} from './Geometry.js';
 import {AnchorBehavior, GlassPane, MarginBehavior, PointerEventsBehavior} from './GlassPane.js';
 import {Icon} from './Icon.js';
 import type {ListDelegate} from './ListControl.js';
-import {ListControl, ListMode} from './ListControl.js';  // eslint-disable-line no-unused-vars
+import {ListControl, ListMode} from './ListControl.js';
 import type {ListModel} from './ListModel.js';
-import {Events as ListModelEvents} from './ListModel.js';  // eslint-disable-line no-unused-vars
+import {Events as ListModelEvents} from './ListModel.js';
 import {appendStyle} from './utils/append-style.js';
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
 

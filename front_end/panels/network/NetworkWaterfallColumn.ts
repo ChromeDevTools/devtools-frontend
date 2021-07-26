@@ -14,7 +14,7 @@ import type {NetworkNode} from './NetworkDataGridNode.js';
 import {RequestTimeRangeNameToColor} from './NetworkOverview.js';
 import type {Label, NetworkTimeCalculator} from './NetworkTimeCalculator.js';
 import type {RequestTimeRange} from './RequestTimingView.js';
-import {RequestTimeRangeNames, RequestTimingView} from './RequestTimingView.js';  // eslint-disable-line no-unused-vars
+import {RequestTimeRangeNames, RequestTimingView} from './RequestTimingView.js';
 
 const BAR_SPACING = 1;
 

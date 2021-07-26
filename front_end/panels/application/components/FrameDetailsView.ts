@@ -12,7 +12,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as NetworkForward from '../../../panels/network/forward/forward.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
-import * as SDK from '../../../core/sdk/sdk.js';  // eslint-disable-line no-unused-vars
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as ExpandableList from '../../../ui/components/expandable_list/expandable_list.js';
 import * as ReportView from '../../../ui/components/report_view/report_view.js';

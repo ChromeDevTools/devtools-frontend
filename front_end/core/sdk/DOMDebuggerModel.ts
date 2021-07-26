@@ -11,7 +11,7 @@ import * as Protocol from '../../generated/protocol.js';
 
 import type {Location} from './DebuggerModel.js';
 import type {DOMNode} from './DOMModel.js';
-import {DOMModel, Events as DOMModelEvents} from './DOMModel.js';  // eslint-disable-line no-unused-vars
+import {DOMModel, Events as DOMModelEvents} from './DOMModel.js';
 import {RemoteObject} from './RemoteObject.js';
 import {RuntimeModel} from './RuntimeModel.js';
 import type {Target} from './Target.js';

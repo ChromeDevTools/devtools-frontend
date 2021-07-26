@@ -10,11 +10,11 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 
 import type {Action} from './ActionRegistration.js';
-import {getRegisteredActionExtensions, KeybindSet} from './ActionRegistration.js';  // eslint-disable-line no-unused-vars
+import {getRegisteredActionExtensions, KeybindSet} from './ActionRegistration.js';
 import type {ActionRegistry} from './ActionRegistry.js';
 import {Context} from './Context.js';
 import {Dialog} from './Dialog.js';
-import {KeyboardShortcut, Modifiers, Type} from './KeyboardShortcut.js';  // eslint-disable-line no-unused-vars
+import {KeyboardShortcut, Modifiers, Type} from './KeyboardShortcut.js';
 import {isEditing} from './UIUtils.js';
 
 let shortcutRegistryInstance: ShortcutRegistry|undefined;

@@ -10,7 +10,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Workspace from '../workspace/workspace.js';
 
 import type {LiveLocation as LiveLocationInterface, LiveLocationPool} from './LiveLocation.js';
-import {LiveLocationWithPool} from './LiveLocation.js';  // eslint-disable-line no-unused-vars
+import {LiveLocationWithPool} from './LiveLocation.js';
 import {ResourceMapping} from './ResourceMapping.js';
 import {SASSSourceMapping} from './SASSSourceMapping.js';
 import {StylesSourceMapping} from './StylesSourceMapping.js';

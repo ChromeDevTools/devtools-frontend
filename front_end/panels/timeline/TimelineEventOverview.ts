@@ -41,7 +41,7 @@ import * as Protocol from '../../generated/protocol.js';
 
 import type {PerformanceModel} from './PerformanceModel.js';
 import type {EventDispatchTypeDescriptor, TimelineCategory} from './TimelineUIUtils.js';
-import {TimelineUIUtils} from './TimelineUIUtils.js';  // eslint-disable-line no-unused-vars
+import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 const UIStrings = {
   /**

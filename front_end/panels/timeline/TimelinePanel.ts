@@ -50,11 +50,11 @@ import type * as Coverage from '../coverage/coverage.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
 import type {Window} from './PerformanceModel.js';
-import {Events, PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
+import {Events, PerformanceModel} from './PerformanceModel.js';
 import type {Client} from './TimelineController.js';
-import {TimelineController} from './TimelineController.js';  // eslint-disable-line no-unused-vars
+import {TimelineController} from './TimelineController.js';
 import type {TimelineEventOverview} from './TimelineEventOverview.js';
-import {TimelineEventOverviewCoverage, TimelineEventOverviewCPUActivity, TimelineEventOverviewFrames, TimelineEventOverviewInput, TimelineEventOverviewMemory, TimelineEventOverviewNetwork, TimelineEventOverviewResponsiveness, TimelineFilmStripOverview} from './TimelineEventOverview.js';  // eslint-disable-line no-unused-vars
+import {TimelineEventOverviewCoverage, TimelineEventOverviewCPUActivity, TimelineEventOverviewFrames, TimelineEventOverviewInput, TimelineEventOverviewMemory, TimelineEventOverviewNetwork, TimelineEventOverviewResponsiveness, TimelineFilmStripOverview} from './TimelineEventOverview.js';
 import {TimelineFlameChartView} from './TimelineFlameChartView.js';
 import {TimelineHistoryManager} from './TimelineHistoryManager.js';
 import {TimelineLoader} from './TimelineLoader.js';

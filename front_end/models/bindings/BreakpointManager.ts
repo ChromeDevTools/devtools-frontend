@@ -35,9 +35,9 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
-import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
+import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
 import type {LiveLocation} from './LiveLocation.js';
-import {LiveLocationPool} from './LiveLocation.js';  // eslint-disable-line no-unused-vars
+import {LiveLocationPool} from './LiveLocation.js';
 
 let breakpointManagerInstance: BreakpointManager;
 

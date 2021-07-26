@@ -30,12 +30,12 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../../core/common/common.js';  // eslint-disable-line no-unused-vars
+import * as Common from '../../core/common/common.js';
 
 import type * as SDK from '../../core/sdk/sdk.js';
 
 import type {ChunkedReader} from './FileUtils.js';
-import {ChunkedFileReader} from './FileUtils.js';  // eslint-disable-line no-unused-vars
+import {ChunkedFileReader} from './FileUtils.js';
 
 export class TempFile {
   _lastBlob: Blob|null;

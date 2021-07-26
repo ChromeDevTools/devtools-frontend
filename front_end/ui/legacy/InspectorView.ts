@@ -52,7 +52,7 @@ import {ToolbarButton} from './Toolbar.js';
 import type {TabbedViewLocation, View, ViewLocation, ViewLocationResolver} from './View.js';
 import {ViewManager} from './ViewManager.js';
 import type {Widget} from './Widget.js';
-import {VBox, WidgetFocusRestorer} from './Widget.js';  // eslint-disable-line no-unused-vars
+import {VBox, WidgetFocusRestorer} from './Widget.js';
 
 const UIStrings = {
   /**

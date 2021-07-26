@@ -36,9 +36,9 @@ import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
 import type {DeferredDOMNode, DOMNode} from './DOMModel.js';
-import {DOMModel} from './DOMModel.js';  // eslint-disable-line no-unused-vars
+import {DOMModel} from './DOMModel.js';
 import type {RequestUpdateDroppedEventData} from './NetworkManager.js';
-import {Events as NetworkManagerEvents, NetworkManager} from './NetworkManager.js';  // eslint-disable-line no-unused-vars
+import {Events as NetworkManagerEvents, NetworkManager} from './NetworkManager.js';
 import type {NetworkRequest} from './NetworkRequest.js';
 import {Resource} from './Resource.js';
 import {ExecutionContext, RuntimeModel} from './RuntimeModel.js';

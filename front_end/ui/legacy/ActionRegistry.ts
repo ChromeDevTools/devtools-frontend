@@ -5,8 +5,8 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import type {Action} from './ActionRegistration.js';
-import {getRegisteredActionExtensions} from './ActionRegistration.js';          // eslint-disable-line no-unused-vars
-import {Context} from './Context.js';                                           // eslint-disable-line no-unused-vars
+import {getRegisteredActionExtensions} from './ActionRegistration.js';
+import {Context} from './Context.js';
 
 let actionRegistryInstance: ActionRegistry|undefined;
 

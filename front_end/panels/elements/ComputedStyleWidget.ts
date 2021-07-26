@@ -45,11 +45,11 @@ import computedStyleSidebarPaneStyles from './computedStyleSidebarPane.css.js';
 import computedStyleWidgetTreeStyles from './computedStyleWidgetTree.css.js';
 
 import type {ComputedStyle} from './ComputedStyleModel.js';
-import {ComputedStyleModel, Events} from './ComputedStyleModel.js';  // eslint-disable-line no-unused-vars
+import {ComputedStyleModel, Events} from './ComputedStyleModel.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {PlatformFontsWidget} from './PlatformFontsWidget.js';
 import type {Category} from './PropertyNameCategories.js';
-import {categorizePropertyName, DefaultCategoryOrder} from './PropertyNameCategories.js';  // eslint-disable-line no-unused-vars
+import {categorizePropertyName, DefaultCategoryOrder} from './PropertyNameCategories.js';
 import {IdleCallbackManager, StylePropertiesSection, StylesSidebarPane, StylesSidebarPropertyRenderer} from './StylesSidebarPane.js';
 
 const UIStrings = {

@@ -30,11 +30,11 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../../core/common/common.js';  // eslint-disable-line no-unused-vars
+import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 
 import type {FormatMapping, FormatResult} from './FormatterWorkerPool.js';
-import {formatterWorkerPool} from './FormatterWorkerPool.js';  // eslint-disable-line no-unused-vars
+import {formatterWorkerPool} from './FormatterWorkerPool.js';
 
 export class FormatterInterface {
   static format(

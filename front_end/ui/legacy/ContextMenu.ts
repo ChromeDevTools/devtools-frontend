@@ -37,7 +37,7 @@ import * as Root from '../../core/root/root.js';
 import {ActionRegistry} from './ActionRegistry.js';
 import {ShortcutRegistry} from './ShortcutRegistry.js';
 import type {SoftContextMenuDescriptor} from './SoftContextMenu.js';
-import {SoftContextMenu} from './SoftContextMenu.js';  // eslint-disable-line no-unused-vars
+import {SoftContextMenu} from './SoftContextMenu.js';
 import {deepElementFromEvent} from './UIUtils.js';
 
 export class Item {

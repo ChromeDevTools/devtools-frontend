@@ -4,12 +4,12 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Common from '../../core/common/common.js';  // eslint-disable-line no-unused-vars
+import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {DeviceModeWrapper} from './DeviceModeWrapper.js';
-import {Events, InspectedPagePlaceholder} from './InspectedPagePlaceholder.js';  // eslint-disable-line no-unused-vars
+import {Events, InspectedPagePlaceholder} from './InspectedPagePlaceholder.js';
 
 let appInstance: AdvancedApp;
 

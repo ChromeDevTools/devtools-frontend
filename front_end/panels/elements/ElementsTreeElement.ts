@@ -41,7 +41,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
-import * as TextEditor from '../../ui/legacy/components/text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
+import * as TextEditor from '../../ui/legacy/components/text_editor/text_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Emulation from '../emulation/emulation.js';
@@ -49,10 +49,10 @@ import * as ElementsComponents from './components/components.js';
 import {canGetJSPath, cssPath, jsPath, xPath} from './DOMPath.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import type {ElementsTreeOutline, UpdateRecord} from './ElementsTreeOutline.js';
-import {MappedCharToEntity} from './ElementsTreeOutline.js';  // eslint-disable-line no-unused-vars
+import {MappedCharToEntity} from './ElementsTreeOutline.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import type {MarkerDecorator, MarkerDecoratorRegistration} from './MarkerDecorator.js';
-import {getRegisteredDecorators} from './MarkerDecorator.js';  // eslint-disable-line no-unused-vars
+import {getRegisteredDecorators} from './MarkerDecorator.js';
 
 const UIStrings = {
   /**

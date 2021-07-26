@@ -39,14 +39,14 @@ import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
 import type {GetPropertiesResult, RemoteObject} from './RemoteObject.js';
-import {ScopeRef} from './RemoteObject.js';  // eslint-disable-line no-unused-vars
-import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
+import {ScopeRef} from './RemoteObject.js';
+import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
 import type {EvaluationOptions, EvaluationResult, ExecutionContext} from './RuntimeModel.js';
-import {RuntimeModel} from './RuntimeModel.js';  // eslint-disable-line no-unused-vars
+import {RuntimeModel} from './RuntimeModel.js';
 import {Script} from './Script.js';
 import type {Target} from './Target.js';
 import {Capability, Type} from './Target.js';
-import {SDKModel} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import {SDKModel} from './SDKModel.js';
 import {SourceMapManager} from './SourceMapManager.js';
 
 const UIStrings = {

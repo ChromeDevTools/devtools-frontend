@@ -36,7 +36,7 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as UI from '../../legacy.js';
 
 import type {Calculator} from './TimelineGrid.js';
-import {TimelineGrid} from './TimelineGrid.js';  // eslint-disable-line no-unused-vars
+import {TimelineGrid} from './TimelineGrid.js';
 
 const UIStrings = {
   /**

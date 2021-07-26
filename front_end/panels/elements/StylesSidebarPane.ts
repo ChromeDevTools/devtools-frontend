@@ -58,7 +58,7 @@ import {StyleEditorWidget} from './StyleEditorWidget.js';
 import {StylePropertyHighlighter} from './StylePropertyHighlighter.js';
 
 import type {Context} from './StylePropertyTreeElement.js';
-import {StylePropertyTreeElement} from './StylePropertyTreeElement.js';  // eslint-disable-line no-unused-vars
+import {StylePropertyTreeElement} from './StylePropertyTreeElement.js';
 
 const UIStrings = {
   /**

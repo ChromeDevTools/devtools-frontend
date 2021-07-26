@@ -38,7 +38,7 @@ import * as Protocol from '../../generated/protocol.js';
 
 import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
 import type {LiveLocation} from './LiveLocation.js';
-import {LiveLocationPool} from './LiveLocation.js';  // eslint-disable-line no-unused-vars
+import {LiveLocationPool} from './LiveLocation.js';
 
 const debuggerModelToMessageHelperMap =
     new WeakMap<SDK.DebuggerModel.DebuggerModel, PresentationConsoleMessageHelper>();

@@ -9,7 +9,7 @@ import type * as Extensions from '../../models/extensions/extensions.js';
 
 import type {PerformanceModel} from './PerformanceModel.js';
 import type {Client} from './TimelineLoader.js';
-import {TimelineLoader} from './TimelineLoader.js';  // eslint-disable-line no-unused-vars
+import {TimelineLoader} from './TimelineLoader.js';
 
 export class ExtensionTracingSession implements Extensions.ExtensionTraceProvider.TracingSession, Client {
   _provider: Extensions.ExtensionTraceProvider.ExtensionTraceProvider;

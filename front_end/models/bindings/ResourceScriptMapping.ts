@@ -37,7 +37,7 @@ import * as Workspace from '../workspace/workspace.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 import type {Breakpoint} from './BreakpointManager.js';
-import {BreakpointManager} from './BreakpointManager.js';  // eslint-disable-line no-unused-vars
+import {BreakpointManager} from './BreakpointManager.js';
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 import type {DebuggerSourceMapping, DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
 import {NetworkProject} from './NetworkProject.js';

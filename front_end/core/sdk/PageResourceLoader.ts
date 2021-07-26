@@ -5,7 +5,7 @@
 /* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Common from '../common/common.js';
-import * as Host from '../host/host.js';  // eslint-disable-line no-unused-vars
+import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import type * as Protocol from '../../generated/protocol.js';
 
@@ -14,7 +14,7 @@ import {IOModel} from './IOModel.js';
 import {MultitargetNetworkManager} from './NetworkManager.js';
 import {NetworkManager} from './NetworkManager.js';
 import type {ResourceTreeFrame} from './ResourceTreeModel.js';
-import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
+import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
 import type {Target} from './Target.js';
 import {TargetManager} from './TargetManager.js';
 

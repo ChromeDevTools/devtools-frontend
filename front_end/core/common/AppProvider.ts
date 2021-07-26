@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
-import * as Root from '../root/root.js';  // eslint-disable-line no-unused-vars
+import * as Root from '../root/root.js';
 
 import type {App} from './App.js';
 

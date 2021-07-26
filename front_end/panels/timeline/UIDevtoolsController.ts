@@ -33,7 +33,7 @@
 import type * as SDK from '../../core/sdk/sdk.js';
 
 import type {Client} from './TimelineController.js';
-import {TimelineController} from './TimelineController.js';  // eslint-disable-line no-unused-vars
+import {TimelineController} from './TimelineController.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 import {UIDevtoolsUtils} from './UIDevtoolsUtils.js';
 

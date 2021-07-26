@@ -13,7 +13,7 @@ import * as SourceFrame from '../../ui/legacy/components/source_frame/source_fra
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type {EditorAction, SourcesView} from './SourcesView.js';
-import {Events, registerEditorAction} from './SourcesView.js';  // eslint-disable-line no-unused-vars
+import {Events, registerEditorAction} from './SourcesView.js';
 
 const UIStrings = {
   /**

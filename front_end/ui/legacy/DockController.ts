@@ -37,7 +37,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type {ActionDelegate} from './ActionRegistration.js';
 import type {Context} from './Context.js';
 import type {Provider, ToolbarItem} from './Toolbar.js';
-import {ToolbarButton} from './Toolbar.js';  // eslint-disable-line no-unused-vars
+import {ToolbarButton} from './Toolbar.js';
 
 const UIStrings = {
   /**

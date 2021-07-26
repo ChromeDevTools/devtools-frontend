@@ -1201,7 +1201,7 @@ class CategoryRenderer {
    * @param {Record<string, LH.Result.ReportGroup>} groupDefinitions
    * @return {DocumentFragment}
    */
-  renderScoreGauge(category, groupDefinitions) { // eslint-disable-line no-unused-vars
+  renderScoreGauge(category, groupDefinitions) {
     const tmpl = this.dom.cloneTemplate('#tmpl-lh-gauge', this.templateContext);
     const wrapper = this.dom.find('a.lh-gauge__wrapper', tmpl);
     wrapper.href = `#${category.id}`;

@@ -33,7 +33,7 @@
 import * as Acorn from '../../third_party/acorn/acorn.js';
 
 import type {TokenOrComment} from './AcornTokenizer.js';
-import {AcornTokenizer, ECMA_VERSION} from './AcornTokenizer.js';  // eslint-disable-line no-unused-vars
+import {AcornTokenizer, ECMA_VERSION} from './AcornTokenizer.js';
 import {ESTreeWalker} from './ESTreeWalker.js';
 import type {FormattedContentBuilder} from './FormattedContentBuilder.js';
 

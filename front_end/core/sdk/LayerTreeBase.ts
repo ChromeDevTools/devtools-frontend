@@ -7,7 +7,7 @@
 import type * as Protocol from '../../generated/protocol.js';
 
 import type {DOMNode} from './DOMModel.js';
-import {DOMModel} from './DOMModel.js';                   // eslint-disable-line no-unused-vars
+import {DOMModel} from './DOMModel.js';
 import type {SnapshotWithRect} from './PaintProfiler.js';
 import type {Target} from './Target.js';
 

@@ -4,7 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-import * as UI from '../../ui/legacy/legacy.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {releaseNoteText} from './ReleaseNoteText.js';
 

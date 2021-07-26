@@ -10,9 +10,9 @@ import * as Platform from '../platform/platform.js';
 
 import type {FrameAssociated} from './FrameAssociated.js';
 import type {Target} from './Target.js';
-import {Events as TargetManagerEvents, TargetManager} from './TargetManager.js';  // eslint-disable-line no-unused-vars
+import {Events as TargetManagerEvents, TargetManager} from './TargetManager.js';
 import type {SourceMap} from './SourceMap.js';
-import {TextSourceMap} from './SourceMap.js';  // eslint-disable-line no-unused-vars
+import {TextSourceMap} from './SourceMap.js';
 
 const UIStrings = {
   /**

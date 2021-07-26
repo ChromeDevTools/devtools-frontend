@@ -9,7 +9,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type {SearchResult, SearchScope} from './SearchConfig.js';
-import {SearchConfig} from './SearchConfig.js';  // eslint-disable-line no-unused-vars
+import {SearchConfig} from './SearchConfig.js';
 import {SearchResultsPane} from './SearchResultsPane.js';
 
 const UIStrings = {

@@ -9,7 +9,7 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as UI from '../../legacy.js';
 
 import type {CSSShadowModel} from './CSSShadowModel.js';
-import {CSSLength} from './CSSShadowModel.js';  // eslint-disable-line no-unused-vars
+import {CSSLength} from './CSSShadowModel.js';
 
 const UIStrings = {
   /**

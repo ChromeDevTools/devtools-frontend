@@ -37,7 +37,7 @@ import * as Platform from '../platform/platform.js';
 
 import {CompilerSourceMappingContentProvider} from './CompilerSourceMappingContentProvider.js';
 import type {PageResourceLoadInitiator} from './PageResourceLoader.js';
-import {PageResourceLoader} from './PageResourceLoader.js';  // eslint-disable-line no-unused-vars
+import {PageResourceLoader} from './PageResourceLoader.js';
 
 const UIStrings = {
   /**

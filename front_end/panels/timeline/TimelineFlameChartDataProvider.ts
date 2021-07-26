@@ -46,7 +46,7 @@ import type {PerformanceModel} from './PerformanceModel.js';
 import {FlameChartStyle, Selection, TimelineFlameChartMarker} from './TimelineFlameChartView.js';
 import {TimelineSelection} from './TimelinePanel.js';
 import type {TimelineCategory} from './TimelineUIUtils.js';
-import {TimelineUIUtils} from './TimelineUIUtils.js';  // eslint-disable-line no-unused-vars
+import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 const UIStrings = {
   /**

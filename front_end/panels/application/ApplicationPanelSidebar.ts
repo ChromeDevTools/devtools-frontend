@@ -54,13 +54,13 @@ import {BackgroundServiceView} from './BackgroundServiceView.js';
 import * as ApplicationComponents from './components/components.js';
 
 import type {Database as DatabaseModelDatabase} from './DatabaseModel.js';
-import {DatabaseModel, Events as DatabaseModelEvents} from './DatabaseModel.js';  // eslint-disable-line no-unused-vars
+import {DatabaseModel, Events as DatabaseModelEvents} from './DatabaseModel.js';
 import {DatabaseQueryView, Events as DatabaseQueryViewEvents} from './DatabaseQueryView.js';
 import {DatabaseTableView} from './DatabaseTableView.js';
 import type {DOMStorage} from './DOMStorageModel.js';
-import {DOMStorageModel, Events as DOMStorageModelEvents} from './DOMStorageModel.js';  // eslint-disable-line no-unused-vars
+import {DOMStorageModel, Events as DOMStorageModelEvents} from './DOMStorageModel.js';
 import type {Database as IndexedDBModelDatabase, DatabaseId, Index, ObjectStore} from './IndexedDBModel.js';
-import {Events as IndexedDBModelEvents, IndexedDBModel} from './IndexedDBModel.js';  // eslint-disable-line no-unused-vars
+import {Events as IndexedDBModelEvents, IndexedDBModel} from './IndexedDBModel.js';
 import {IDBDatabaseView, IDBDataView} from './IndexedDBViews.js';
 import {OpenedWindowDetailsView, WorkerDetailsView} from './OpenedWindowDetailsView.js';
 import type {ResourcesPanel} from './ResourcesPanel.js';

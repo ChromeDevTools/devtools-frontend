@@ -39,7 +39,7 @@ import type * as Workspace from '../../../../models/workspace/workspace.js';
 import * as UI from '../../legacy.js';
 
 import type {SourcesTextEditorDelegate} from './SourcesTextEditor.js';
-import {Events, SourcesTextEditor} from './SourcesTextEditor.js';  // eslint-disable-line no-unused-vars
+import {Events, SourcesTextEditor} from './SourcesTextEditor.js';
 
 const UIStrings = {
   /**

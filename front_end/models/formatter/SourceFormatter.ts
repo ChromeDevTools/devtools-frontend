@@ -11,7 +11,7 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import type {FormatterSourceMapping} from './ScriptFormatter.js';
-import {FormatterInterface} from './ScriptFormatter.js';  // eslint-disable-line no-unused-vars
+import {FormatterInterface} from './ScriptFormatter.js';
 
 const objectToFormattingResult = new WeakMap<Object, SourceFormatData>();
 

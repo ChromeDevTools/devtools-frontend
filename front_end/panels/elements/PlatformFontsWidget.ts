@@ -36,7 +36,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 import type {ComputedStyleModel} from './ComputedStyleModel.js';
-import {Events} from './ComputedStyleModel.js';  // eslint-disable-line no-unused-vars
+import {Events} from './ComputedStyleModel.js';
 
 const UIStrings = {
   /**

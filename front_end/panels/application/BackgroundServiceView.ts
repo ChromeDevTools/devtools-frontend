@@ -14,7 +14,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Protocol from '../../generated/protocol.js';
 
 import type {BackgroundServiceModel} from './BackgroundServiceModel.js';
-import {Events} from './BackgroundServiceModel.js';  // eslint-disable-line no-unused-vars
+import {Events} from './BackgroundServiceModel.js';
 
 const UIStrings = {
   /**

@@ -36,7 +36,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as _ProtocolClient from '../../core/protocol_client/protocol_client.js';  // eslint-disable-line @typescript-eslint/no-unused-vars
-import * as Root from '../../core/root/root.js';                                   // eslint-disable-line no-unused-vars
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -50,7 +50,7 @@ import type * as Protocol from '../../generated/protocol.js';
 
 import {ExtensionButton, ExtensionPanel, ExtensionSidebarPane} from './ExtensionPanel.js';
 import type {TracingSession} from './ExtensionTraceProvider.js';
-import {ExtensionTraceProvider} from './ExtensionTraceProvider.js';  // eslint-disable-line no-unused-vars
+import {ExtensionTraceProvider} from './ExtensionTraceProvider.js';
 import {LanguageExtensionEndpoint} from './LanguageExtensionEndpoint.js';
 import {PrivateAPI} from './ExtensionAPI.js';
 

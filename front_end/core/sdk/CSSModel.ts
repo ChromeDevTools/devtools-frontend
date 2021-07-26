@@ -44,7 +44,7 @@ import {CSSStyleRule} from './CSSRule.js';
 import {CSSStyleDeclaration, Type} from './CSSStyleDeclaration.js';
 import {CSSStyleSheetHeader} from './CSSStyleSheetHeader.js';
 import type {DOMNode} from './DOMModel.js';
-import {DOMModel} from './DOMModel.js';  // eslint-disable-line no-unused-vars
+import {DOMModel} from './DOMModel.js';
 import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
 import type {Target} from './Target.js';
 import {Capability} from './Target.js';

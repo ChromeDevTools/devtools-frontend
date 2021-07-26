@@ -43,7 +43,7 @@ import {Toolbar} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import {installDragHandle, invokeOnceAfterBatchUpdate} from './UIUtils.js';
 import type {Widget} from './Widget.js';
-import {VBox} from './Widget.js';  // eslint-disable-line no-unused-vars
+import {VBox} from './Widget.js';
 import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';
 
 const UIStrings = {

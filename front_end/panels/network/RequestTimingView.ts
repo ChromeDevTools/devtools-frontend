@@ -40,7 +40,7 @@ import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type {NetworkTimeCalculator} from './NetworkTimeCalculator.js';
-import {Events} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
+import {Events} from './NetworkTimeCalculator.js';
 
 const UIStrings = {
   /**

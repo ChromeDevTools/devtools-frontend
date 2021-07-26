@@ -16,16 +16,16 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import {CountersGraph} from './CountersGraph.js';
 import type {PerformanceModel, Window} from './PerformanceModel.js';
-import {Events as PerformanceModelEvents} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
+import {Events as PerformanceModelEvents} from './PerformanceModel.js';
 import {TimelineDetailsView} from './TimelineDetailsView.js';
 import {TimelineRegExp} from './TimelineFilters.js';
 import {Events as TimelineFlameChartDataProviderEvents, TimelineFlameChartDataProvider} from './TimelineFlameChartDataProvider.js';
 import {TimelineFlameChartNetworkDataProvider} from './TimelineFlameChartNetworkDataProvider.js';
 import type {TimelineModeViewDelegate} from './TimelinePanel.js';
-import {TimelineSelection} from './TimelinePanel.js';  // eslint-disable-line no-unused-vars
+import {TimelineSelection} from './TimelinePanel.js';
 import {AggregatedTimelineTreeView} from './TimelineTreeView.js';
 import type {TimelineMarkerStyle} from './TimelineUIUtils.js';
-import {TimelineUIUtils} from './TimelineUIUtils.js';  // eslint-disable-line no-unused-vars
+import {TimelineUIUtils} from './TimelineUIUtils.js';
 import {WebVitalsIntegrator} from './WebVitalsTimelineUtils.js';
 
 const UIStrings = {

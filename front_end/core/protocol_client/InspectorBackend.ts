@@ -197,7 +197,7 @@ export class Connection {
   }
 }
 
-type SendRawMessageCallback = (...args: unknown[]) => void;  // eslint-disable-line no-unused-vars
+type SendRawMessageCallback = (...args: unknown[]) => void;
 
 export const test = {
   /**

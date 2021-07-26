@@ -40,7 +40,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Snippets from '../snippets/snippets.js';
 
 import type {NavigatorUISourceCodeTreeNode} from './NavigatorView.js';
-import {NavigatorView} from './NavigatorView.js';  // eslint-disable-line no-unused-vars
+import {NavigatorView} from './NavigatorView.js';
 
 const UIStrings = {
   /**

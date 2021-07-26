@@ -6,7 +6,7 @@
 
 import type * as SDK from '../../core/sdk/sdk.js';
 
-import {StylePropertyTreeElement} from './StylePropertyTreeElement.js';            // eslint-disable-line no-unused-vars
+import {StylePropertyTreeElement} from './StylePropertyTreeElement.js';
 import type {StylePropertiesSection, StylesSidebarPane} from './StylesSidebarPane.js';
 
 export class StylePropertyHighlighter {

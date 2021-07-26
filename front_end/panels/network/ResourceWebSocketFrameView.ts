@@ -223,11 +223,12 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
     const placeholder = i18nString(UIStrings.enterRegex);
     this._filterTextInput = new UI.Toolbar.ToolbarInput(placeholder, '', 0.4);
     this._filterTextInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this._updateFilterSetting, this);
-    if (this.messageFilterSetting.get()) {
-      this._filterTextInput.setValue(this.messageFilterSetting.get());
+    const filter = this.messageFilterSetting.get();
+    if (filter) {
+      this._filterTextInput.setValue(filter);
     }
-    this._mainToolbar.appendToolbarItem(this._filterTextInput);
     this._filterRegex = null;
+    this._mainToolbar.appendToolbarItem(this._filterTextInput);
 
     const mainContainer = new UI.Widget.VBox();
     mainContainer.element.appendChild(this._mainToolbar.element);
@@ -239,6 +240,9 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
     this._splitWidget.setSidebarWidget(this._frameEmptyWidget);
 
     this._selectedNode = null;
+    if (filter) {
+      this._applyFilter(filter);
+    }
 
     function onRowContextMenu(
         this: ResourceWebSocketFrameView, contextMenu: UI.ContextMenu.ContextMenu,
@@ -298,6 +302,10 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
   _updateFilterSetting(): void {
     const text = this._filterTextInput.value();
     this.messageFilterSetting.set(text);
+    this._applyFilter(text);
+  }
+
+  _applyFilter(text: string): void {
     const type = (this._filterTypeCombobox.selectedOption() as HTMLOptionElement).value;
     this._filterRegex = text ? new RegExp(text, 'i') : null;
     this._filterType = type === 'all' ? null : type;

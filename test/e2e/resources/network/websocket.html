@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<body>
+  <script>
+    const protocol = location.protocol.replace('http', 'ws');
+    const url = protocol + '//' + location.host + '/'
+    const ws = new WebSocket(url);
+    ws.onopen = () => ws.send('ping');
+
+    ws.onmessage = (msg) => {
+      if (msg.data == 'ping') ws.send('pong')
+    };
+  </script>
+</body>

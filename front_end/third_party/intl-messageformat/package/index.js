@@ -1,8 +1,13 @@
-'use strict';
-var IntlMessageFormat = require('./dist').default;
-
-// Re-export `IntlMessageFormat` as the CommonJS default exports with all the
-// locale data registered, and with English set as the default locale. Define
-// the `default` prop for use with other compiled ES6 Modules.
-exports = module.exports = IntlMessageFormat;
-exports['default'] = exports;
+"use strict";
+/*
+Copyright (c) 2014, Yahoo! Inc. All rights reserved.
+Copyrights licensed under the New BSD License.
+See the accompanying LICENSE file for terms.
+*/
+Object.defineProperty(exports, "__esModule", { value: true });
+var tslib_1 = require("tslib");
+var core_1 = require("./src/core");
+tslib_1.__exportStar(require("./src/formatters"), exports);
+tslib_1.__exportStar(require("./src/core"), exports);
+tslib_1.__exportStar(require("./src/error"), exports);
+exports.default = core_1.IntlMessageFormat;

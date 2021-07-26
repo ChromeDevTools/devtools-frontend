@@ -118,7 +118,7 @@ export class LocalizedStringSet {
     }
 
     const formatter = this.getMessageFormatterFor(message);
-    const translatedString = formatter.format();
+    const translatedString = formatter.format() as string;
     this.cachedSimpleStrings.set(message, translatedString);
     return translatedString;
   }
@@ -132,6 +132,6 @@ export class LocalizedStringSet {
 
     // TODO(crbug.com/1231873): Replace call to i18nBundle with a native impl in TS.
     const preformattedValues = i18nBundle._preformatValues(message, formatter, values, '');
-    return formatter.format(preformattedValues);
+    return formatter.format(preformattedValues) as string;
   }
 }

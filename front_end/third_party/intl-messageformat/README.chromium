@@ -1,7 +1,7 @@
 Name: intl-messageformat
 Short Name: intl-messageformat
 URL: https://github.com/formatjs/formatjs
-Version: 4.4.0
+Version: 9.8.0
 License: New BSD
 Security Critical: no
 
@@ -11,7 +11,7 @@ This package is a dependency of the DevTools localization pipeline.
 
 To update this package, run the following command (replace version number with updated version number):
 ```bash
-wget -qO- https://registry.npmjs.org/intl-messageformat/-/intl-messageformat-4.4.0.tgz | tar xzf -
+wget -qO- https://registry.npmjs.org/intl-messageformat/-/intl-messageformat-9.8.0.tgz | tar xzf -
 ```
 
 Local Modifications:

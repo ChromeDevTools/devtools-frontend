@@ -15,7 +15,10 @@ devtools_pre_built("i18n-lh") {
 }
 
 devtools_module("i18n") {
-  sources = []
+  sources = [
+    "i18n-impl.ts",
+    "localized-string-set.ts",
+  ]
 
   deps = [ ":i18n-lh" ]
 }

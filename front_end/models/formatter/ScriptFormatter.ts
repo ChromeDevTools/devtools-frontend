@@ -33,7 +33,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 
-import type {FormatMapping, FormatResult} from './FormatterWorkerPool.js';
+import type {FormatMapping} from './FormatterWorkerPool.js';
 import {formatterWorkerPool} from './FormatterWorkerPool.js';
 
 function locationToPosition(lineEndings: number[], lineNumber: number, columnNumber: number): number {
@@ -57,53 +57,32 @@ export function format(
     contentType: Common.ResourceType.ResourceType, mimeType: string, content: string,
     callback: (arg0: string, arg1: FormatterSourceMapping) => Promise<void>): void {
   if (contentType.isDocumentOrScriptOrStyleSheet()) {
-    new ScriptFormatter(mimeType, content, callback);
+    formatScriptContent(mimeType, content, callback);
   } else {
-    new ScriptIdentityFormatter(mimeType, content, callback);
-  }
-}
-
-export class ScriptFormatter {
-  _mimeType: string;
-  _originalContent: string;
-  _callback: (arg0: string, arg1: FormatterSourceMapping) => Promise<void>;
-
-  constructor(
-      mimeType: string, content: string, callback: (arg0: string, arg1: FormatterSourceMapping) => Promise<void>) {
-    this._mimeType = mimeType;
-    this._originalContent = content.replace(/\r\n?|[\n\u2028\u2029]/g, '\n').replace(/^\uFEFF/, '');
-    this._callback = callback;
-
-    this._initialize();
-  }
-
-  async _initialize(): Promise<void> {
-    const pool = formatterWorkerPool();
-    const indent = Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get();
-
-    const formatResult = await pool.format(this._mimeType, this._originalContent, indent);
-    if (!formatResult) {
-      this._callback(this._originalContent, new IdentityFormatterSourceMapping());
-    } else {
-      this._didFormatContent(formatResult);
-    }
-  }
-
-  _didFormatContent(formatResult: FormatResult): void {
-    const originalContentLineEndings = Platform.StringUtilities.findLineEndingIndexes(this._originalContent);
-    const formattedContentLineEndings = Platform.StringUtilities.findLineEndingIndexes(formatResult.content);
-
-    const sourceMapping =
-        new FormatterSourceMappingImpl(originalContentLineEndings, formattedContentLineEndings, formatResult.mapping);
-    this._callback(formatResult.content, sourceMapping);
-  }
-}
-
-class ScriptIdentityFormatter {
-  constructor(
-      mimeType: string, content: string, callback: (arg0: string, arg1: FormatterSourceMapping) => Promise<void>) {
     callback(content, new IdentityFormatterSourceMapping());
   }
+}
+
+export async function formatScriptContent(
+    mimeType: string, content: string,
+    callback: (arg0: string, arg1: FormatterSourceMapping) => Promise<void>): Promise<void> {
+  const originalContent = content.replace(/\r\n?|[\n\u2028\u2029]/g, '\n').replace(/^\uFEFF/, '');
+
+  const pool = formatterWorkerPool();
+  const indent = Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get();
+
+  const formatResult = await pool.format(mimeType, originalContent, indent);
+  if (!formatResult) {
+    callback(originalContent, new IdentityFormatterSourceMapping());
+    return;
+  }
+
+  const originalContentLineEndings = Platform.StringUtilities.findLineEndingIndexes(originalContent);
+  const formattedContentLineEndings = Platform.StringUtilities.findLineEndingIndexes(formatResult.content);
+
+  const sourceMapping =
+      new FormatterSourceMappingImpl(originalContentLineEndings, formattedContentLineEndings, formatResult.mapping);
+  callback(formatResult.content, sourceMapping);
 }
 
 export abstract class FormatterSourceMapping {

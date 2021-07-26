@@ -450,7 +450,7 @@ export class SourceFrameImpl extends UI.View.SimpleView implements UI.Searchable
     this._formattedContentPromise = new Promise(x => {
       fulfill = x;
     });
-    new Formatter.ScriptFormatter.ScriptFormatter(
+    Formatter.ScriptFormatter.formatScriptContent(
         this._highlighterType, this._rawContent || '', async (content, map) => {
           fulfill({content, map});
         });

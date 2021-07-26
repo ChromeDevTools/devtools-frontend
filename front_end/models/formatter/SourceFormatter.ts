@@ -11,7 +11,7 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import type {FormatterSourceMapping} from './ScriptFormatter.js';
-import {FormatterInterface} from './ScriptFormatter.js';
+import {format} from './ScriptFormatter.js';
 
 const objectToFormattingResult = new WeakMap<Object, SourceFormatData>();
 
@@ -119,7 +119,7 @@ export class SourceFormatter {
     const resultPromise = new Promise<SourceFormatData>(async resolve => {
       const {content} = await uiSourceCode.requestContent();
 
-      FormatterInterface.format(
+      format(
           uiSourceCode.contentType(), uiSourceCode.mimeType(), content || '',
           async (formattedContent, formatterMapping) => {
             const cacheEntry = this._formattedSourceCodes.get(uiSourceCode);

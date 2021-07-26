@@ -36,42 +36,40 @@ import * as Platform from '../../core/platform/platform.js';
 import type {FormatMapping, FormatResult} from './FormatterWorkerPool.js';
 import {formatterWorkerPool} from './FormatterWorkerPool.js';
 
-export class FormatterInterface {
-  static format(
-      contentType: Common.ResourceType.ResourceType, mimeType: string, content: string,
-      callback: (arg0: string, arg1: FormatterSourceMapping) => Promise<void>): void {
-    if (contentType.isDocumentOrScriptOrStyleSheet()) {
-      new ScriptFormatter(mimeType, content, callback);
-    } else {
-      new ScriptIdentityFormatter(mimeType, content, callback);
-    }
+function locationToPosition(lineEndings: number[], lineNumber: number, columnNumber: number): number {
+  const position = lineNumber ? lineEndings[lineNumber - 1] + 1 : 0;
+  return position + columnNumber;
+}
+
+function positionToLocation(lineEndings: number[], position: number): number[] {
+  const lineNumber =
+      Platform.ArrayUtilities.upperBound(lineEndings, position - 1, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
+  let columnNumber;
+  if (!lineNumber) {
+    columnNumber = position;
+  } else {
+    columnNumber = position - lineEndings[lineNumber - 1] - 1;
   }
-  static locationToPosition(lineEndings: number[], lineNumber: number, columnNumber: number): number {
-    const position = lineNumber ? lineEndings[lineNumber - 1] + 1 : 0;
-    return position + columnNumber;
-  }
-  static positionToLocation(lineEndings: number[], position: number): number[] {
-    const lineNumber =
-        Platform.ArrayUtilities.upperBound(lineEndings, position - 1, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
-    let columnNumber;
-    if (!lineNumber) {
-      columnNumber = position;
-    } else {
-      columnNumber = position - lineEndings[lineNumber - 1] - 1;
-    }
-    return [lineNumber, columnNumber];
+  return [lineNumber, columnNumber];
+}
+
+export function format(
+    contentType: Common.ResourceType.ResourceType, mimeType: string, content: string,
+    callback: (arg0: string, arg1: FormatterSourceMapping) => Promise<void>): void {
+  if (contentType.isDocumentOrScriptOrStyleSheet()) {
+    new ScriptFormatter(mimeType, content, callback);
+  } else {
+    new ScriptIdentityFormatter(mimeType, content, callback);
   }
 }
 
-export class ScriptFormatter extends FormatterInterface {
+export class ScriptFormatter {
   _mimeType: string;
   _originalContent: string;
   _callback: (arg0: string, arg1: FormatterSourceMapping) => Promise<void>;
 
   constructor(
       mimeType: string, content: string, callback: (arg0: string, arg1: FormatterSourceMapping) => Promise<void>) {
-    super();
-
     this._mimeType = mimeType;
     this._originalContent = content.replace(/\r\n?|[\n\u2028\u2029]/g, '\n').replace(/^\uFEFF/, '');
     this._callback = callback;
@@ -101,11 +99,9 @@ export class ScriptFormatter extends FormatterInterface {
   }
 }
 
-class ScriptIdentityFormatter extends FormatterInterface {
+class ScriptIdentityFormatter {
   constructor(
       mimeType: string, content: string, callback: (arg0: string, arg1: FormatterSourceMapping) => Promise<void>) {
-    super();
-
     callback(content, new IdentityFormatterSourceMapping());
   }
 }
@@ -139,18 +135,16 @@ class FormatterSourceMappingImpl extends FormatterSourceMapping {
   }
 
   originalToFormatted(lineNumber: number, columnNumber?: number): number[] {
-    const originalPosition =
-        FormatterInterface.locationToPosition(this._originalLineEndings, lineNumber, columnNumber || 0);
+    const originalPosition = locationToPosition(this._originalLineEndings, lineNumber, columnNumber || 0);
     const formattedPosition =
         this._convertPosition(this._mapping.original, this._mapping.formatted, originalPosition || 0);
-    return FormatterInterface.positionToLocation(this._formattedLineEndings, formattedPosition);
+    return positionToLocation(this._formattedLineEndings, formattedPosition);
   }
 
   formattedToOriginal(lineNumber: number, columnNumber?: number): number[] {
-    const formattedPosition =
-        FormatterInterface.locationToPosition(this._formattedLineEndings, lineNumber, columnNumber || 0);
+    const formattedPosition = locationToPosition(this._formattedLineEndings, lineNumber, columnNumber || 0);
     const originalPosition = this._convertPosition(this._mapping.formatted, this._mapping.original, formattedPosition);
-    return FormatterInterface.positionToLocation(this._originalLineEndings, originalPosition || 0);
+    return positionToLocation(this._originalLineEndings, originalPosition || 0);
   }
 
   _convertPosition(positions1: number[], positions2: number[], position: number): number {

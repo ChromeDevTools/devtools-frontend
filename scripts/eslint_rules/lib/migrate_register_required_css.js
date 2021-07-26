@@ -98,8 +98,8 @@ module.exports = {
           } catch (error) {
             context.report({
               node,
-              message:
-                  `Please manually migrate ${filenameWithExtension} as it has edge cases not covered by this script.`,
+              message: `Please manually migrate ${
+                  filenameWithExtension} as it has edge cases not covered by this script. Got error: ${error.message} `,
             });
           }
         }

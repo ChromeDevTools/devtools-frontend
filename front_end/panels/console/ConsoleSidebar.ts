@@ -10,6 +10,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as ConsoleComponents from './components/components.js';
 
 import type {LevelsMask} from './ConsoleFilter.js';
 import {ConsoleFilter, FilterType} from './ConsoleFilter.js';
@@ -63,6 +64,9 @@ export class ConsoleSidebar extends UI.Widget.VBox {
 
     this._tree = new UI.TreeOutline.TreeOutlineInShadow();
     this._tree.addEventListener(UI.TreeOutline.Events.ElementSelected, this._selectionChanged.bind(this));
+
+    const deprecationWarning = new ConsoleComponents.SidebarDeprecation.SidebarDeprecation();
+    this.contentElement.appendChild(deprecationWarning);
     this.contentElement.appendChild(this._tree.element);
     this._selectedTreeElement = null;
     this._treeElements = [];

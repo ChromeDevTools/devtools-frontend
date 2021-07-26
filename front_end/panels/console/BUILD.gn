@@ -49,6 +49,7 @@ devtools_module("console") {
     "../../ui/legacy/components/utils:bundle",
     "../../ui/legacy/theme_support:bundle",
     "../console_counters:bundle",
+    "./components:bundle",
   ]
 }
 

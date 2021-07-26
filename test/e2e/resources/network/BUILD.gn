@@ -31,6 +31,5 @@ copy_to_gen("network") {
     "webbundle_bad_inner_request.wbn.headers",
     "webbundle_bad_metadata.wbn",
     "webbundle_bad_metadata.wbn.headers",
-    "websocket.html",
   ]
 }

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 'use strict';
+process.env.ESLINT_SKIP_GRD_UPDATE = 1;
 
 const rule = require('../lib/migrate_register_required_css.js');
 const ruleTester = new (require('eslint').RuleTester)({

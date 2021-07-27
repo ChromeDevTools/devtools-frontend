@@ -5,6 +5,7 @@
 'use strict';
 
 const path = require('path');
+const fs = require('fs');
 
 function lookForParentClassBodyNode(node) {
   if (!node.parent) {
@@ -62,6 +63,17 @@ function lookForRegisterCSSFilesCall(node, privatePropertyName) {
   return null;
 }
 
+function updateGRDFile(cssFilePath) {
+  if (process.env.ESLINT_SKIP_GRD_UPDATE) {
+    return;
+  }
+  const contents = fs.readFileSync('config/gni/devtools_grd_files.gni', 'utf-8').split('\n');
+  const index = contents.findIndex(line => line.includes('.css.js'));
+  contents.splice(index, 0, JSON.stringify(cssFilePath + '.js') + ',');
+  const finalContents = contents.join('\n');
+  fs.writeFileSync('config/gni/devtools_grd_files.gni', finalContents, 'utf-8');
+}
+
 module.exports = {
   meta: {
     type: 'problem',
@@ -76,7 +88,7 @@ module.exports = {
   create: function(context) {
     return {
       ExpressionStatement(node) {
-        if (node.expression.type === 'CallExpression' &&
+        if (node.expression.type === 'CallExpression' && node.expression.callee.object &&
             (node.expression.callee.object.type === 'ThisExpression' ||
              node.expression.callee.object.type === 'MemberExpression') &&
             node.expression.callee.property.name === 'registerRequiredCSS') {
@@ -121,6 +133,7 @@ module.exports = {
                   }
                 });
 
+                updateGRDFile(filenameWithExtension);
                 return;
               }
 
@@ -136,6 +149,7 @@ module.exports = {
                 }
               });
 
+              updateGRDFile(filenameWithExtension);
               return;
             }
 
@@ -154,6 +168,7 @@ module.exports = {
               }
             });
 
+            updateGRDFile(filenameWithExtension);
           } catch (error) {
             /* Any errors will be expected to be migrated manually. */
             context.report({

@@ -5,6 +5,7 @@
 'use strict';
 
 const path = require('path');
+const fs = require('fs');
 
 function lookForCSSFileProperty(node) {
   for (let i = 0; i < node.length; i++) {
@@ -14,6 +15,17 @@ function lookForCSSFileProperty(node) {
     }
   }
   return null;
+}
+
+function updateGRDFile(cssFilePath) {
+  if (process.env.ESLINT_SKIP_GRD_UPDATE) {
+    return;
+  }
+  const contents = fs.readFileSync('config/gni/devtools_grd_files.gni', 'utf-8').split('\n');
+  const index = contents.findIndex(line => line.includes('.css.js'));
+  contents.splice(index, 0, JSON.stringify(cssFilePath + '.js') + ',');
+  const finalContents = contents.join('\n');
+  fs.writeFileSync('config/gni/devtools_grd_files.gni', finalContents, 'utf-8');
 }
 
 module.exports = {
@@ -55,6 +67,7 @@ module.exports = {
                   ];
                 }
               });
+              updateGRDFile(filenameWithExtension);
             }
 
           } catch (error) {

@@ -67,7 +67,12 @@ function updateGRDFile(cssFilePath) {
   if (process.env.ESLINT_SKIP_GRD_UPDATE) {
     return;
   }
+
   const contents = fs.readFileSync('config/gni/devtools_grd_files.gni', 'utf-8').split('\n');
+  if (contents.includes(cssFilePath + '.js')) {
+    return;
+  }
+
   const index = contents.findIndex(line => line.includes('.css.js'));
   contents.splice(index, 0, JSON.stringify(cssFilePath + '.js') + ',');
   const finalContents = contents.join('\n');
@@ -98,6 +103,7 @@ module.exports = {
           const newFileName = filename + 'Styles';
           const importStatement = `import ${newFileName} from \'./${filename + '.css.js'}\';\n`;
           const programNode = context.getAncestors()[0];
+          const containsImport = context.getSourceCode().getText().includes(importStatement);
 
           /* Some calls are this._widget.registerRequiredCSS() so we need to store the private property that the function is called on. */
           const privateProperty = node.expression.callee.object.type === 'MemberExpression';
@@ -122,6 +128,19 @@ module.exports = {
 
                 const firstArg = registerCSSFilesCall.arguments[0].elements[0];
 
+                if (containsImport) {
+                  // File is already imported so does not need another import statement or to be added to devtools_grd_files
+                  context.report({
+                    node,
+                    message: 'Import CSS file instead of using registerRequiredCSS and edit wasShown method',
+                    fix(fixer) {
+                      return [fixer.insertTextBefore(firstArg, newFileName + ', '), fixer.remove(node)];
+                    }
+                  });
+
+                  return;
+                }
+
                 context.report({
                   node,
                   message: 'Import CSS file instead of using registerRequiredCSS and edit wasShown method',
@@ -138,6 +157,22 @@ module.exports = {
               }
 
               /* If a wasShown() method exists then it adds the registerCSSFiles() to the second line. */
+              if (containsImport) {
+                // File is already imported so does not need another import statement or to be added to devtools_grd_files
+                context.report({
+                  node,
+                  message: 'Import CSS file instead of using registerRequiredCSS and edit wasShown method',
+                  fix(fixer) {
+                    return [
+                      fixer.insertTextAfter(wasShownFunction.value.body.body[0], registerCSSFilesText),
+                      fixer.remove(node)
+                    ];
+                  }
+                });
+
+                return;
+              }
+
               context.report({
                 node,
                 message: 'Import CSS file instead of using registerRequiredCSS and edit wasShown method',
@@ -157,6 +192,19 @@ module.exports = {
             const lastMethodDeclarationNode = classBodyNode.body[classBodyNode.body.length - 1];
             const wasShownText = `\n  wasShown(): void {
     super.wasShown();${registerCSSFilesText}\n  }`;
+
+            if (containsImport) {
+              context.report({
+                node,
+                message: 'Import CSS file instead of using registerRequiredCSS and add wasShown method',
+                fix(fixer) {
+                  return [fixer.insertTextAfter(lastMethodDeclarationNode, wasShownText), fixer.remove(node)];
+                }
+              });
+
+              return;
+            }
+
             context.report({
               node,
               message: 'Import CSS file instead of using registerRequiredCSS and add wasShown method',

@@ -421,5 +421,33 @@ export class Component extends UI.Widget.Widget {
   }
 }`
     },
+    {
+      // Second pass of two different registerRequiredCSS to different fields but for same file
+      code: `import testStyles from './test.css.js';
+export class Component extends UI.Widget.Widget {
+  constructor(){
+
+this._tree.registerRequiredCSS('front_end/components/test.css')
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([testStyles]);
+  }
+}`,
+      filename: 'front_end/components/test.ts',
+      errors: [{message: EDIT_WAS_SHOW_EXPECTED_ERROR_MESSAGE}],
+      output: `import testStyles from './test.css.js';
+export class Component extends UI.Widget.Widget {
+  constructor(){
+
+
+  }
+  wasShown(): void {
+    super.wasShown();
+    this._tree.registerCSSFiles([testStyles]);
+    this.registerCSSFiles([testStyles]);
+  }
+}`
+    },
   ]
 });

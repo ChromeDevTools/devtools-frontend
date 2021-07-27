@@ -184,6 +184,28 @@ constructor(){
 }`
     },
     {
+      code: `import smallBubbleStyles from './smallBubble.css.js';
+export class Component extends UI.Widget.Widget {
+constructor(){
+  const shadow = UI.Utils.createShadowRootWithCoreStyles(this,
+    {cssFile: [smallBubbleStyles], delegatesFocus: undefined});
+  const root = UI.Utils.createShadowRootWithCoreStyles(this,
+    {cssFile: 'ui/legacy/smallBubble.css', delegatesFocus: undefined});
+}
+}`,
+      filename: 'front_end/components/test.ts',
+      errors: [{message: MIGRATION_ERROR_MESSAGE}],
+      output: `import smallBubbleStyles from './smallBubble.css.js';
+export class Component extends UI.Widget.Widget {
+constructor(){
+  const shadow = UI.Utils.createShadowRootWithCoreStyles(this,
+    {cssFile: [smallBubbleStyles], delegatesFocus: undefined});
+  const root = UI.Utils.createShadowRootWithCoreStyles(this,
+    {cssFile: [smallBubbleStyles], delegatesFocus: undefined});
+}
+}`
+    },
+    {
       code: `
       export class Component extends UI.Widget.Widget {
         constructor(){

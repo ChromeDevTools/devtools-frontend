@@ -21,7 +21,12 @@ function updateGRDFile(cssFilePath) {
   if (process.env.ESLINT_SKIP_GRD_UPDATE) {
     return;
   }
+
   const contents = fs.readFileSync('config/gni/devtools_grd_files.gni', 'utf-8').split('\n');
+  if (contents.includes(cssFilePath + '.js')) {
+    return;
+  }
+
   const index = contents.findIndex(line => line.includes('.css.js'));
   contents.splice(index, 0, JSON.stringify(cssFilePath + '.js') + ',');
   const finalContents = contents.join('\n');
@@ -56,6 +61,20 @@ module.exports = {
               const newFileName = filename + 'Styles';
               const importStatement = `import ${newFileName} from \'./${filename + '.css.js'}\';\n`;
               const programNode = context.getAncestors()[0];
+              const sourceCode = context.getSourceCode().getText();
+
+              if (sourceCode.includes(importStatement)) {
+                // File is already imported so does not need to be imported or added to devtools_grd_files again.
+                context.report({
+                  node,
+                  message: 'Import CSS file instead of passing a string into createShadowRootWithStyles',
+                  fix(fixer) {
+                    return [fixer.replaceText(propertyNode.value, `[${newFileName}]`)];
+                  }
+                });
+
+                return;
+              }
 
               context.report({
                 node,

@@ -1,4 +1,4 @@
-import { MessageFormatElement } from '@formatjs/icu-messageformat-parser';
+import { MessageFormatElement } from 'icu-messageformat-parser/index';
 export interface Formats {
     number: Record<string, Intl.NumberFormatOptions>;
     date: Record<string, Intl.DateTimeFormatOptions>;

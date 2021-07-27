@@ -1,4 +1,4 @@
-import { MessageFormatElement , parse} from '@formatjs/icu-messageformat-parser';
+import { MessageFormatElement , parse} from 'icu-messageformat-parser/index';
 
 import { Formats, Formatters, FormatXMLElementFn, MessageFormatPart , PrimitiveType} from './formatters';
 

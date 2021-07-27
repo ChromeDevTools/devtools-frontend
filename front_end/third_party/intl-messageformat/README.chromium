@@ -15,4 +15,5 @@ wget -qO- https://registry.npmjs.org/intl-messageformat/-/intl-messageformat-9.8
 ```
 
 Local Modifications:
-Copied package/index.d.ts to package/intl-messageformat.esm.d.ts for type checking.
+  - Copied package/index.d.ts to package/intl-messageformat.esm.d.ts for type checking.
+  - Copied .d.ts files of icu-message-parser and adjusted import paths in intl-messasgeformat .d.ts files

@@ -15,6 +15,7 @@ const nodeAttributes = new Map([
   ['class', 'class-1 class-2'],
 ]);
 
+const FAKE_LEGACY_SDK_DOM_NODE = {} as unknown as SDK.DOMModel.DOMNode;
 const containerTemplate: ElementsComponents.Helper.DOMNode = {
   parentNode: null,
   nodeType: Node.ELEMENT_NODE,
@@ -23,7 +24,7 @@ const containerTemplate: ElementsComponents.Helper.DOMNode = {
   shadowRootType: '',
   nodeName: 'body',
   nodeNameNicelyCased: 'body',
-  legacyDomNode: {},
+  legacyDomNode: FAKE_LEGACY_SDK_DOM_NODE,
   highlightNode: () => {},
   clearHighlight: () => {},
   getAttribute: x => nodeAttributes.get(x) || '',

@@ -220,7 +220,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       this._accessibilityTreeView = new AccessibilityTreeView(this.domTreeButton);
     }
     this._breadcrumbs = new ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs();
-    this._breadcrumbs.addEventListener('breadcrumbsnodeselected', (event: Common.EventTarget.EventTargetEvent) => {
+    this._breadcrumbs.addEventListener('breadcrumbsnodeselected', event => {
       this._crumbNodeSelected(event);
     });
 
@@ -809,9 +809,8 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     };
   }
 
-  _crumbNodeSelected(event: Common.EventTarget.EventTargetEvent): void {
-    const node = (event.data as SDK.DOMModel.DOMNode);
-    this.selectDOMNode(node, true);
+  _crumbNodeSelected(event: ElementsComponents.ElementsBreadcrumbs.NodeSelectedEvent): void {
+    this.selectDOMNode(event.data, true);
   }
 
   _treeOutlineForNode(node: SDK.DOMModel.DOMNode|null): ElementsTreeOutline|null {

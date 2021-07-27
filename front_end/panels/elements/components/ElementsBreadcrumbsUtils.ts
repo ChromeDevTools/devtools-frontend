@@ -58,15 +58,6 @@ const makeCrumbTitle = (main: string, extras = {}): CrumbTitle => {
   };
 };
 
-export class NodeSelectedEvent extends Event {
-  data: unknown;
-
-  constructor(node: DOMNode) {
-    super('breadcrumbsnodeselected', {});
-    this.data = node.legacyDomNode;
-  }
-}
-
 export const determineElementTitle = (domNode: DOMNode): CrumbTitle => {
   switch (domNode.nodeType) {
     case Node.ELEMENT_NODE: {

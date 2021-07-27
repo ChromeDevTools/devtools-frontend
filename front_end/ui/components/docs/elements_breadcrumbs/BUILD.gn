@@ -14,7 +14,10 @@ ts_library("ts") {
     "scroll.ts",
   ]
 
-  deps = [ "../../../../panels/elements/components:bundle" ]
+  deps = [
+    "../../../../core/sdk:bundle",
+    "../../../../panels/elements/components:bundle",
+  ]
 }
 
 copy_to_gen("elements_breadcrumbs") {

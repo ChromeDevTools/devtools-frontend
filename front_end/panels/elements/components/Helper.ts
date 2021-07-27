@@ -12,7 +12,7 @@ export interface DOMNode {
   shadowRootType: string|null;
   nodeName: string;
   nodeNameNicelyCased: string;
-  legacyDomNode: unknown;
+  legacyDomNode: SDK.DOMModel.DOMNode;
   highlightNode: (mode?: string) => void;
   clearHighlight: () => void;
   getAttribute: (attr: string) => string | undefined;

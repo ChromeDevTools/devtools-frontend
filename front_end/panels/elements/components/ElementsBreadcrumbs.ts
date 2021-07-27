@@ -8,27 +8,27 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import elementsBreadcrumbsStyles from './elementsBreadcrumbs.css.js';
 
 import type {UserScrollPosition} from './ElementsBreadcrumbsUtils.js';
-import {crumbsToRender, NodeSelectedEvent} from './ElementsBreadcrumbsUtils.js';
+import {crumbsToRender} from './ElementsBreadcrumbsUtils.js';
+import type * as SDK from '../../../core/sdk/sdk.js';
 import type {DOMNode} from './Helper.js';
 
 import {NodeText} from './NodeText.js';
 import type {NodeTextData} from './NodeText.js';
 
+export class NodeSelectedEvent extends Event {
+  data: SDK.DOMModel.DOMNode;
+
+  constructor(node: DOMNode) {
+    super('breadcrumbsnodeselected', {});
+    this.data = node.legacyDomNode;
+  }
+}
+
+
 export interface ElementsBreadcrumbsData {
   selectedNode: DOMNode|null;
   crumbs: DOMNode[];
 }
-export interface ElementsBreadcrumbs extends HTMLElement {
-  addEventListener<K extends keyof HTMLElementEventMap>(
-      type: K,
-      listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) =>
-          any,  // eslint-disable-line @typescript-eslint/no-explicit-any
-      options?: boolean|AddEventListenerOptions): void;
-  addEventListener(
-      type: string, listener: EventListenerOrEventListenerObject, options?: boolean|AddEventListenerOptions): void;
-  addEventListener(type: 'breadcrumbsnodeselected', callback: (event: NodeSelectedEvent) => void): void;
-}
-
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export class ElementsBreadcrumbs extends HTMLElement {
@@ -337,8 +337,11 @@ export class ElementsBreadcrumbs extends HTMLElement {
 ComponentHelpers.CustomElements.defineComponent('devtools-elements-breadcrumbs', ElementsBreadcrumbs);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-elements-breadcrumbs': ElementsBreadcrumbs;
+  }
+
+  interface HTMLElementEventMap {
+    'breadcrumbsnodeselected': NodeSelectedEvent;
   }
 }

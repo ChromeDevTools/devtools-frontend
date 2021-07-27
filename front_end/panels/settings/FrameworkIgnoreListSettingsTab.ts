@@ -8,6 +8,8 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import frameworkIgnoreListSettingsTabStyles from './frameworkIgnoreListSettingsTab.css.js';
+
 const UIStrings = {
   /**
   *@description Header text content in Framework Ignore List Settings Tab of the Settings
@@ -86,7 +88,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
 
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/settings/frameworkIgnoreListSettingsTab.css');
+
 
     const header = this.contentElement.createChild('div', 'header');
     header.textContent = i18nString(UIStrings.frameworkIgnoreList);
@@ -104,7 +106,6 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
 
     this._list = new UI.ListWidget.ListWidget(this);
     this._list.element.classList.add('ignore-list');
-    this._list.registerRequiredCSS('panels/settings/frameworkIgnoreListSettingsTab.css');
 
     const placeholder = document.createElement('div');
     placeholder.classList.add('ignore-list-empty');
@@ -133,6 +134,8 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
 
   wasShown(): void {
     super.wasShown();
+    this._list.registerCSSFiles([frameworkIgnoreListSettingsTabStyles]);
+    this.registerCSSFiles([frameworkIgnoreListSettingsTabStyles]);
     this._settingUpdated();
   }
 

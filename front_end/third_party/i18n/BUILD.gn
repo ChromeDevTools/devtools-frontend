@@ -21,7 +21,10 @@ devtools_module("i18n") {
     "localized-string-set.ts",
   ]
 
-  deps = [ ":i18n-lh" ]
+  deps = [
+    ":i18n-lh",
+    "../intl-messageformat:bundle",
+  ]
 }
 
 devtools_entrypoint("bundle") {

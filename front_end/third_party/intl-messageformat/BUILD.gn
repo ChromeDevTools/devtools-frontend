@@ -21,7 +21,10 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":intl-messageformat" ]
 
-  visibility = [ "../../core/i18n/*" ]
+  visibility = [
+    "../../core/i18n/*",
+    "../i18n/*",
+  ]
 
   visibility += devtools_third_party_visibility
 }

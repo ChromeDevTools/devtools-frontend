@@ -104,22 +104,20 @@ export function getFormatLocalizedString(
   const formatter =
       registeredStrings.getLocalizedStringSetFor(DevToolsLocale.instance().locale).getMessageFormatterFor(stringId);
 
-  // We use wrong types temporarly where the version of intl-messageformat in third_party
-  // differs from the version part of i18n-bundle.
-  // TODO(crbug.com/1231873): Fix the usage of getAst() once all versions are aligned.
-  // @ts-ignore
-  const icuElements = formatter.getAst().elements;
+  const icuElements = formatter.getAst();
   const args: Array<Object> = [];
   let formattedString = '';
   for (const element of icuElements) {
-    if (element.type === 'argumentElement') {
-      const placeholderValue = placeholders[element.id];
+    if (element.type === /* argumentElement */ 1) {
+      const placeholderValue = placeholders[element.value];
       if (placeholderValue) {
         args.push(placeholderValue);
         element.value = '%s';  // convert the {PH} back to %s to use Platform.UIString
       }
     }
-    formattedString += element.value;
+    if ('value' in element) {
+      formattedString += element.value;
+    }
   }
   return formatLocalized(formattedString, args);
 }

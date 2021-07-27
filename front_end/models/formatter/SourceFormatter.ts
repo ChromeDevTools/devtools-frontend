@@ -119,7 +119,7 @@ export class SourceFormatter {
     const resultPromise = new Promise<SourceFormatData>(async resolve => {
       const {content} = await uiSourceCode.requestContent();
 
-      const {content: formattedContent, mapping: formatterMapping} =
+      const {formattedContent, formattedMapping} =
           await format(uiSourceCode.contentType(), uiSourceCode.mimeType(), content || '');
       const cacheEntry = this._formattedSourceCodes.get(uiSourceCode);
       if (!cacheEntry || cacheEntry.promise !== resultPromise) {
@@ -135,7 +135,7 @@ export class SourceFormatter {
       const contentProvider = TextUtils.StaticContentProvider.StaticContentProvider.fromString(
           formattedURL, uiSourceCode.contentType(), formattedContent);
       const formattedUISourceCode = this._project.createUISourceCode(formattedURL, contentProvider.contentType());
-      const formatData = new SourceFormatData(uiSourceCode, formattedUISourceCode, formatterMapping);
+      const formatData = new SourceFormatData(uiSourceCode, formattedUISourceCode, formattedMapping);
       objectToFormattingResult.set(formattedUISourceCode, formatData);
       this._project.addUISourceCodeWithProvider(
           formattedUISourceCode, contentProvider, /* metadata */ null, uiSourceCode.mimeType());
@@ -145,8 +145,8 @@ export class SourceFormatter {
 
       for (const decoration of uiSourceCode.allDecorations()) {
         const range = decoration.range();
-        const startLocation = formatterMapping.originalToFormatted(range.startLine, range.startColumn);
-        const endLocation = formatterMapping.originalToFormatted(range.endLine, range.endColumn);
+        const startLocation = formattedMapping.originalToFormatted(range.startLine, range.startColumn);
+        const endLocation = formattedMapping.originalToFormatted(range.endLine, range.endColumn);
         formattedUISourceCode.addDecoration(
             new TextUtils.TextRange.TextRange(startLocation[0], startLocation[1], endLocation[0], endLocation[1]),
             (decoration.type() as string), decoration.data());

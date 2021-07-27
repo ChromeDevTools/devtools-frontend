@@ -123,8 +123,7 @@ export class FormatterWorkerPool {
 
   format(mimeType: string, content: string, indentString: string): Promise<FormatResult> {
     const parameters = {mimeType: mimeType, content: content, indentString: indentString};
-    return /** @type {!Promise<!FormatResult>} */ this._runTask(FormatterActions.FormatterActions.FORMAT, parameters) as
-        Promise<FormatResult>;
+    return this._runTask(FormatterActions.FormatterActions.FORMAT, parameters) as Promise<FormatResult>;
   }
 
   javaScriptIdentifiers(content: string): Promise<{

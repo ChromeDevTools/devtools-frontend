@@ -31,6 +31,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
+    "../../../test/unittests/front_end/models/formatter/*",
     "../../entrypoints/formatter_worker/*",
     "../../panels/coverage/*",
     "../../panels/sources/*",

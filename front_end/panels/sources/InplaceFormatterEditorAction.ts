@@ -113,9 +113,9 @@ export class InplaceFormatterEditorAction implements EditorAction {
 
   async _contentLoaded(uiSourceCode: Workspace.UISourceCode.UISourceCode, content: string): Promise<void> {
     const highlighterType = uiSourceCode.mimeType();
-    const {content: formattedContent, mapping: formatterMapping} =
+    const {formattedContent, formattedMapping} =
         await Formatter.ScriptFormatter.format(uiSourceCode.contentType(), highlighterType, content);
-    this._formattingComplete(uiSourceCode, formattedContent, formatterMapping);
+    this._formattingComplete(uiSourceCode, formattedContent, formattedMapping);
   }
 
   /**

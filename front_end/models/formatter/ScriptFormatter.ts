@@ -54,36 +54,36 @@ function positionToLocation(lineEndings: number[], position: number): number[] {
 }
 
 export interface FormattedContent {
-  content: string;
-  mapping: FormatterSourceMapping;
+  formattedContent: string;
+  formattedMapping: FormatterSourceMapping;
 }
 
 export async function format(
-    contentType: Common.ResourceType.ResourceType, mimeType: string, content: string): Promise<FormattedContent> {
+    contentType: Common.ResourceType.ResourceType, mimeType: string, content: string,
+    indent: string =
+        Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get()): Promise<FormattedContent> {
   if (contentType.isDocumentOrScriptOrStyleSheet()) {
-    return formatScriptContent(mimeType, content);
+    return formatScriptContent(mimeType, content, indent);
   }
 
-  return {content, mapping: new IdentityFormatterSourceMapping()};
+  return {formattedContent: content, formattedMapping: new IdentityFormatterSourceMapping()};
 }
 
-export async function formatScriptContent(mimeType: string, content: string): Promise<FormattedContent> {
+export async function formatScriptContent(
+    mimeType: string, content: string,
+    indent: string =
+        Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get()): Promise<FormattedContent> {
   const originalContent = content.replace(/\r\n?|[\n\u2028\u2029]/g, '\n').replace(/^\uFEFF/, '');
 
   const pool = formatterWorkerPool();
-  const indent = Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get();
 
   const formatResult = await pool.format(mimeType, originalContent, indent);
-  if (!formatResult) {
-    return {content: originalContent, mapping: new IdentityFormatterSourceMapping()};
-  }
-
   const originalContentLineEndings = Platform.StringUtilities.findLineEndingIndexes(originalContent);
   const formattedContentLineEndings = Platform.StringUtilities.findLineEndingIndexes(formatResult.content);
 
   const sourceMapping =
       new FormatterSourceMappingImpl(originalContentLineEndings, formattedContentLineEndings, formatResult.mapping);
-  return {content: formatResult.content, mapping: sourceMapping};
+  return {formattedContent: formatResult.content, formattedMapping: sourceMapping};
 }
 
 export interface FormatterSourceMapping {
@@ -92,12 +92,12 @@ export interface FormatterSourceMapping {
 }
 
 class IdentityFormatterSourceMapping implements FormatterSourceMapping {
-  originalToFormatted(lineNumber: number, columnNumber?: number): number[] {
-    return [lineNumber, columnNumber || 0];
+  originalToFormatted(lineNumber: number, columnNumber = 0): number[] {
+    return [lineNumber, columnNumber];
   }
 
-  formattedToOriginal(lineNumber: number, columnNumber?: number): number[] {
-    return [lineNumber, columnNumber || 0];
+  formattedToOriginal(lineNumber: number, columnNumber = 0): number[] {
+    return [lineNumber, columnNumber];
   }
 }
 
@@ -114,15 +114,14 @@ class FormatterSourceMappingImpl implements FormatterSourceMapping {
 
   originalToFormatted(lineNumber: number, columnNumber?: number): number[] {
     const originalPosition = locationToPosition(this._originalLineEndings, lineNumber, columnNumber || 0);
-    const formattedPosition =
-        this._convertPosition(this._mapping.original, this._mapping.formatted, originalPosition || 0);
+    const formattedPosition = this._convertPosition(this._mapping.original, this._mapping.formatted, originalPosition);
     return positionToLocation(this._formattedLineEndings, formattedPosition);
   }
 
   formattedToOriginal(lineNumber: number, columnNumber?: number): number[] {
     const formattedPosition = locationToPosition(this._formattedLineEndings, lineNumber, columnNumber || 0);
     const originalPosition = this._convertPosition(this._mapping.formatted, this._mapping.original, formattedPosition);
-    return positionToLocation(this._originalLineEndings, originalPosition || 0);
+    return positionToLocation(this._originalLineEndings, originalPosition);
   }
 
   _convertPosition(positions1: number[], positions2: number[], position: number): number {

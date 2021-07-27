@@ -18,6 +18,7 @@ group("front_end") {
     "entrypoints/meta",
     "entrypoints/missing_entrypoints",
     "models/bindings",
+    "models/formatter",
     "models/har",
     "models/issues_manager",
     "models/javascript_metadata",

@@ -122,4 +122,24 @@ describe('i18n', () => {
       assert.throws(() => stringSet.getLocalizedString(uiStrings.plural));
     });
   });
+
+  describe('locales', () => {
+    it('should provide the exact locale if it is supported', () => {
+      const instance = new i18n.I18n.I18n(['en-US', 'de-DE'], 'en-US');
+
+      assert.strictEqual(instance.lookupClosestSupportedLocale('de-DE'), 'de-DE');
+    });
+
+    it('should provide the closest related locale if its not supported', () => {
+      const instance = new i18n.I18n.I18n(['en-US', 'de'], 'en-US');
+
+      assert.strictEqual(instance.lookupClosestSupportedLocale('de-AT'), 'de');
+    });
+
+    it('should provide the default locale if no closely related locale was found', () => {
+      const instance = new i18n.I18n.I18n(['en-US'], 'en-US');
+
+      assert.strictEqual(instance.lookupClosestSupportedLocale('de-AT'), 'en-US');
+    });
+  });
 });

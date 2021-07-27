@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// eslint-disable-next-line
-import i18nBundle from '../../third_party/i18n/i18n-bundle.js';
 import * as I18n from '../../third_party/i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
@@ -28,14 +26,14 @@ const BUNDLED_LOCALES = new Set<string>(['en-US', 'en-XL', 'zh']);
  * If `locale` isn't provided, the default is used.
  */
 export function lookupClosestSupportedDevToolsLocale(locale: string): string {
-  return i18nBundle.lookupLocale(locale);
+  return i18nInstance.lookupClosestSupportedLocale(locale);
 }
 
 /**
  * Returns a list of all supported DevTools locales, including pseudo locales.
  */
 export function getAllSupportedDevToolsLocales(): string[] {
-  return i18nBundle.getAllSupportedLocales();
+  return [...i18nInstance.supportedLocales];
 }
 
 /**

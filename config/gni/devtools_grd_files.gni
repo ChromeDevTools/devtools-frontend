@@ -1145,6 +1145,7 @@ grd_files_debug_sources = [
   "front_end/third_party/diff/DiffWrapper.js",
   "front_end/third_party/diff/diff_match_patch.js",
   "front_end/third_party/i18n/i18n-impl.js",
+  "front_end/third_party/i18n/locales.js",
   "front_end/third_party/i18n/localized-string-set.js",
   "front_end/third_party/intl-messageformat/package/intl-messageformat.esm.js",
   "front_end/third_party/lighthouse/report-assets/report-generator.js",

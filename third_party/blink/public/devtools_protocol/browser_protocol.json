@@ -6644,6 +6644,12 @@
                             }
                         },
                         {
+                            "name": "shadowRootType",
+                            "description": "Type of the shadow root the `Node` is in. String values are equal to the `ShadowRootType` enum.",
+                            "optional": true,
+                            "$ref": "RareStringData"
+                        },
+                        {
                             "name": "nodeName",
                             "description": "`Node`'s nodeName.",
                             "optional": true,
@@ -8696,6 +8702,15 @@
                             "type": "array",
                             "items": {
                                 "$ref": "DragDataItem"
+                            }
+                        },
+                        {
+                            "name": "files",
+                            "description": "List of filenames that should be included when dropping",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "type": "string"
                             }
                         },
                         {
@@ -12980,6 +12995,11 @@
                             "$ref": "IPAddressSpace"
                         },
                         {
+                            "name": "statusCode",
+                            "description": "The status code of the response. This is useful in cases the request failed and no responseReceived\nevent is triggered, which is the case for, e.g., CORS errors.",
+                            "type": "integer"
+                        },
+                        {
                             "name": "headersText",
                             "description": "Raw response header text as it was received over the wire. The raw text may not always be\navailable, such as in the case of HTTP/2 or QUIC.",
                             "optional": true,
@@ -13783,7 +13803,8 @@
                 },
                 {
                     "name": "highlightFrame",
-                    "description": "Highlights owner element of the frame with given id.",
+                    "description": "Highlights owner element of the frame with given id.\nDeprecated: Doesn't work reliablity and cannot be fixed due to process\nseparatation (the owner node might be in a different process). Determine\nthe owner node in the client and use highlightNode.",
+                    "deprecated": true,
                     "parameters": [
                         {
                             "name": "frameId",
@@ -15166,6 +15187,9 @@
                         "OptInUnloadHeaderNotPresent",
                         "UnloadHandlerExistsInSubFrame",
                         "ServiceWorkerUnregistration",
+                        "CacheControlNoStore",
+                        "CacheControlNoStoreCookieModified",
+                        "CacheControlNoStoreHTTPOnlyCookieModified",
                         "WebSocket",
                         "WebRTC",
                         "MainResourceHasCacheControlNoStore",
@@ -15177,7 +15201,6 @@
                         "DedicatedWorkerOrWorklet",
                         "OutstandingNetworkRequestOthers",
                         "OutstandingIndexedDBTransaction",
-                        "RequestedGeolocationPermission",
                         "RequestedNotificationsPermission",
                         "RequestedMIDIPermission",
                         "RequestedAudioCapturePermission",

@@ -3050,6 +3050,8 @@ experimental domain DOMSnapshot
       optional array of integer parentIndex
       # `Node`'s nodeType.
       optional array of integer nodeType
+      # Type of the shadow root the `Node` is in. String values are equal to the `ShadowRootType` enum.
+      optional RareStringData shadowRootType
       # `Node`'s nodeName.
       optional array of StringIndex nodeName
       # `Node`'s nodeValue.
@@ -3942,6 +3944,8 @@ domain Input
   experimental type DragData extends object
     properties
       array of DragDataItem items
+      # List of filenames that should be included when dropping
+      optional array of string files
       # Bit field representing allowed drag operations. Copy = 1, Link = 2, Move = 16
       integer dragOperationsMask
 
@@ -5922,6 +5926,9 @@ domain Network
       # The IP address space of the resource. The address space can only be determined once the transport
       # established the connection, so we can't send it in `requestWillBeSentExtraInfo`.
       IPAddressSpace resourceIPAddressSpace
+      # The status code of the response. This is useful in cases the request failed and no responseReceived
+      # event is triggered, which is the case for, e.g., CORS errors.
+      integer statusCode
       # Raw response header text as it was received over the wire. The raw text may not always be
       # available, such as in the case of HTTP/2 or QUIC.
       optional string headersText
@@ -6340,7 +6347,10 @@ experimental domain Overlay
   command hideHighlight
 
   # Highlights owner element of the frame with given id.
-  command highlightFrame
+  # Deprecated: Doesn't work reliablity and cannot be fixed due to process
+  # separatation (the owner node might be in a different process). Determine
+  # the owner node in the client and use highlightNode.
+  deprecated command highlightFrame
     parameters
       # Identifier of the frame to highlight.
       Page.FrameId frameId
@@ -7740,6 +7750,9 @@ domain Page
       OptInUnloadHeaderNotPresent
       UnloadHandlerExistsInSubFrame
       ServiceWorkerUnregistration
+      CacheControlNoStore
+      CacheControlNoStoreCookieModified
+      CacheControlNoStoreHTTPOnlyCookieModified
       #Blocklisted features
       WebSocket
       WebRTC
@@ -7752,7 +7765,6 @@ domain Page
       DedicatedWorkerOrWorklet
       OutstandingNetworkRequestOthers
       OutstandingIndexedDBTransaction
-      RequestedGeolocationPermission
       RequestedNotificationsPermission
       RequestedMIDIPermission
       RequestedAudioCapturePermission

@@ -4459,6 +4459,10 @@ declare namespace Protocol {
        */
       nodeType?: integer[];
       /**
+       * Type of the shadow root the `Node` is in. String values are equal to the `ShadowRootType` enum.
+       */
+      shadowRootType?: RareStringData;
+      /**
        * `Node`'s nodeName.
        */
       nodeName?: StringIndex[];
@@ -5734,6 +5738,10 @@ declare namespace Protocol {
 
     export interface DragData {
       items: DragDataItem[];
+      /**
+       * List of filenames that should be included when dropping
+       */
+      files?: string[];
       /**
        * Bit field representing allowed drag operations. Copy = 1, Link = 2, Move = 16
        */
@@ -8794,6 +8802,11 @@ declare namespace Protocol {
        */
       resourceIPAddressSpace: IPAddressSpace;
       /**
+       * The status code of the response. This is useful in cases the request failed and no responseReceived
+       * event is triggered, which is the case for, e.g., CORS errors.
+       */
+      statusCode: integer;
+      /**
        * Raw response header text as it was received over the wire. The raw text may not always be
        * available, such as in the case of HTTP/2 or QUIC.
        */
@@ -10331,6 +10344,9 @@ declare namespace Protocol {
       OptInUnloadHeaderNotPresent = 'OptInUnloadHeaderNotPresent',
       UnloadHandlerExistsInSubFrame = 'UnloadHandlerExistsInSubFrame',
       ServiceWorkerUnregistration = 'ServiceWorkerUnregistration',
+      CacheControlNoStore = 'CacheControlNoStore',
+      CacheControlNoStoreCookieModified = 'CacheControlNoStoreCookieModified',
+      CacheControlNoStoreHTTPOnlyCookieModified = 'CacheControlNoStoreHTTPOnlyCookieModified',
       WebSocket = 'WebSocket',
       WebRTC = 'WebRTC',
       MainResourceHasCacheControlNoStore = 'MainResourceHasCacheControlNoStore',
@@ -10342,7 +10358,6 @@ declare namespace Protocol {
       DedicatedWorkerOrWorklet = 'DedicatedWorkerOrWorklet',
       OutstandingNetworkRequestOthers = 'OutstandingNetworkRequestOthers',
       OutstandingIndexedDBTransaction = 'OutstandingIndexedDBTransaction',
-      RequestedGeolocationPermission = 'RequestedGeolocationPermission',
       RequestedNotificationsPermission = 'RequestedNotificationsPermission',
       RequestedMIDIPermission = 'RequestedMIDIPermission',
       RequestedAudioCapturePermission = 'RequestedAudioCapturePermission',

@@ -1626,7 +1626,7 @@ export function registerCommands(inspectorBackend) {
       'Network.requestWillBeSentExtraInfo', ['requestId', 'associatedCookies', 'headers', 'clientSecurityState']);
   inspectorBackend.registerEvent(
       'Network.responseReceivedExtraInfo',
-      ['requestId', 'blockedCookies', 'headers', 'resourceIPAddressSpace', 'headersText']);
+      ['requestId', 'blockedCookies', 'headers', 'resourceIPAddressSpace', 'statusCode', 'headersText']);
   inspectorBackend.registerEnum('Network.TrustTokenOperationDoneEventStatus', {
     Ok: 'Ok',
     InvalidArgument: 'InvalidArgument',
@@ -2078,6 +2078,9 @@ export function registerCommands(inspectorBackend) {
     OptInUnloadHeaderNotPresent: 'OptInUnloadHeaderNotPresent',
     UnloadHandlerExistsInSubFrame: 'UnloadHandlerExistsInSubFrame',
     ServiceWorkerUnregistration: 'ServiceWorkerUnregistration',
+    CacheControlNoStore: 'CacheControlNoStore',
+    CacheControlNoStoreCookieModified: 'CacheControlNoStoreCookieModified',
+    CacheControlNoStoreHTTPOnlyCookieModified: 'CacheControlNoStoreHTTPOnlyCookieModified',
     WebSocket: 'WebSocket',
     WebRTC: 'WebRTC',
     MainResourceHasCacheControlNoStore: 'MainResourceHasCacheControlNoStore',
@@ -2089,7 +2092,6 @@ export function registerCommands(inspectorBackend) {
     DedicatedWorkerOrWorklet: 'DedicatedWorkerOrWorklet',
     OutstandingNetworkRequestOthers: 'OutstandingNetworkRequestOthers',
     OutstandingIndexedDBTransaction: 'OutstandingIndexedDBTransaction',
-    RequestedGeolocationPermission: 'RequestedGeolocationPermission',
     RequestedNotificationsPermission: 'RequestedNotificationsPermission',
     RequestedMIDIPermission: 'RequestedMIDIPermission',
     RequestedAudioCapturePermission: 'RequestedAudioCapturePermission',

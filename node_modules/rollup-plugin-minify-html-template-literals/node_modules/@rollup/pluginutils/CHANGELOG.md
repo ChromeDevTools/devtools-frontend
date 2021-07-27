@@ -1,5 +1,17 @@
 # @rollup/pluginutils ChangeLog
 
+## v4.1.1
+
+_2021-07-16_
+
+### Bugfixes
+
+- fix
+
+### Updates
+
+- chore
+
 ## v4.1.0
 
 _2020-10-27_

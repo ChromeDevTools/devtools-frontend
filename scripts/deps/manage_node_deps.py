@@ -38,7 +38,6 @@ LICENSES = [
 
 # List all DEPS here.
 DEPS = {
-    "@rollup/plugin-commonjs": "17.1.0",
     "@types/chai": "4.2.18",
     "@types/codemirror": "0.0.108",
     "@types/karma-chai-sinon": "0.1.15",

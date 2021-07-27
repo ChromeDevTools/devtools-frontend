@@ -6,7 +6,7 @@ import {assert} from 'chai';
 
 import {click, getBrowserAndPages, step, waitFor, waitForAria, waitForElementWithTextContent, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {navigateToNetworkTab, setCacheDisabled, togglePersistLog, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
+import {navigateToNetworkTab, setCacheDisabled, setPersistLog, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
 
 describe('The Network Tab', async function() {
   if (this.timeout() !== 0.0) {
@@ -20,6 +20,7 @@ describe('The Network Tab', async function() {
   beforeEach(async () => {
     await navigateToNetworkTab('empty.html');
     await setCacheDisabled(true);
+    await setPersistLog(false);
   });
 
   it('can click on checkbox label to toggle checkbox', async () => {
@@ -289,7 +290,7 @@ describe('The Network Tab', async function() {
     ]);
   });
 
-  it('shows preserved pedning requests as unknown', async () => {
+  it('shows preserved pending requests as unknown', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await navigateToNetworkTab('send_beacon_on_unload.html');
@@ -299,19 +300,30 @@ describe('The Network Tab', async function() {
 
     await waitForSomeRequestsToAppear(1);
 
-    await togglePersistLog();
+    await setPersistLog(true);
 
     await navigateToNetworkTab('fetch.html');
     await waitForSomeRequestsToAppear(1);
-    const getNetworkRequestStatus = () => frontend.evaluate(() => {
-      return Array.from(document.querySelectorAll('.status-column')).slice(3, 4).map(node => node.textContent);
-    });
 
-    const getNetworkRequestTime = () => frontend.evaluate(() => {
-      return Array.from(document.querySelectorAll('.time-column')).slice(3, 4).map(node => node.textContent);
-    });
+    async function getStatusAndTime(name: string) {
+      const statusColumn = await frontend.evaluate(() => {
+        return Array.from(document.querySelectorAll('.status-column')).map(node => node.textContent);
+      });
+      const timeColumn = await frontend.evaluate(() => {
+        return Array.from(document.querySelectorAll('.time-column')).map(node => node.textContent);
+      });
+      const nameColumn = await frontend.evaluate(() => {
+        return Array.from(document.querySelectorAll('.name-column')).map(node => node.textContent);
+      });
+      const index = nameColumn.findIndex(x => x === name);
+      return {status: statusColumn[index], time: timeColumn[index]};
+    }
 
-    assert.deepEqual(await getNetworkRequestStatus(), ['(unknown)']);
-    assert.deepEqual(await getNetworkRequestTime(), ['(unknown)']);
+    // We need to wait for the network log to update.
+    await waitForFunction(async () => {
+      const {status, time} = await getStatusAndTime('sendBeacon');
+      // Depending on timing of the reporting, the status infomation (404) might reach DevTools in time.
+      return (status === '(unknown)' || status === '404') && time === '(unknown)';
+    });
   });
 });

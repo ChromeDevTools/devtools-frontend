@@ -6,7 +6,7 @@ import {assert} from 'chai';
 
 import {$textContent, goTo, reloadDevTools, typeText, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {getAllRequestNames, getSelectedRequestName, navigateToNetworkTab, selectRequestByName, togglePersistLog, waitForSelectedRequestChange, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
+import {getAllRequestNames, getSelectedRequestName, navigateToNetworkTab, selectRequestByName, setCacheDisabled, setPersistLog, waitForSelectedRequestChange, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
 
 const SIMPLE_PAGE_REQUEST_NUMBER = 10;
 const SIMPLE_PAGE_URL = `requests.html?num=${SIMPLE_PAGE_REQUEST_NUMBER}`;
@@ -32,6 +32,12 @@ async function getThirdPartyFilter() {
 describe('The Network Tab', async function() {
   // The tests here tend to take time because they wait for requests to appear in the request panel.
   this.timeout(5000);
+
+  beforeEach(async () => {
+    await navigateToNetworkTab('empty.html');
+    await setCacheDisabled(true);
+    await setPersistLog(false);
+  });
 
   // Flakey test
   it.skip('[crbug.com/1093287] displays requests', async () => {
@@ -78,7 +84,7 @@ describe('The Network Tab', async function() {
     await waitForSomeRequestsToAppear(SIMPLE_PAGE_REQUEST_NUMBER + 1);
     const firstPageRequestNames = await getAllRequestNames();
 
-    await togglePersistLog();
+    await setPersistLog(true);
 
     // Navigate to a new page, and wait for the same requests to still be there.
     await goTo('about:blank');

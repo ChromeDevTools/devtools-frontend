@@ -1372,6 +1372,10 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper implement
     }
     this._remoteAddressSpace = extraResponseInfo.resourceIPAddressSpace;
 
+    if (extraResponseInfo.statusCode) {
+      this.statusCode = extraResponseInfo.statusCode;
+    }
+
     this._hasExtraResponseInfo = true;
   }
 
@@ -1640,6 +1644,7 @@ export interface ExtraResponseInfo {
   responseHeaders: NameValue[];
   responseHeadersText?: string;
   resourceIPAddressSpace: Protocol.Network.IPAddressSpace;
+  statusCode: number|undefined;
 }
 
 export interface WebBundleInfo {

@@ -787,7 +787,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     this._getExtraInfoBuilder(requestId).addRequestExtraInfo(extraRequestInfo);
   }
 
-  responseReceivedExtraInfo({requestId, blockedCookies, headers, headersText, resourceIPAddressSpace}:
+  responseReceivedExtraInfo({requestId, blockedCookies, headers, headersText, resourceIPAddressSpace, statusCode}:
                                 Protocol.Network.ResponseReceivedExtraInfoEvent): void {
     const extraResponseInfo: ExtraResponseInfo = {
       blockedResponseCookies: blockedCookies.map(blockedCookie => {
@@ -800,6 +800,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
       responseHeaders: this._headersMapToHeadersArray(headers),
       responseHeadersText: headersText,
       resourceIPAddressSpace,
+      statusCode,
     };
     this._getExtraInfoBuilder(requestId).addResponseExtraInfo(extraResponseInfo);
   }

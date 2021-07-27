@@ -60,15 +60,19 @@ export async function waitForSelectedRequestChange(initialRequestName: string|nu
   });
 }
 
-export async function togglePersistLog() {
-  await click('[aria-label="Preserve log"]');
+export async function setCheckBox(selector: string, wantChecked: boolean): Promise<void> {
+  const checkbox = await waitFor(selector);
+  const checked = await checkbox.evaluate(box => (box as HTMLInputElement).checked);
+  if (checked !== wantChecked) {
+    await click(`${selector} + label`);
+  }
+  assert.strictEqual(await checkbox.evaluate(box => (box as HTMLInputElement).checked), wantChecked);
+}
+
+export async function setPersistLog(persist: boolean) {
+  await setCheckBox('[aria-label="Preserve log"]', persist);
 }
 
 export async function setCacheDisabled(disabled: boolean): Promise<void> {
-  const checkbox = await waitFor('[aria-label="Disable cache"]');
-  const checked = await checkbox.evaluate(box => (box as HTMLInputElement).checked);
-  if (checked !== disabled) {
-    await click('[aria-label="Disable cache"] + label');
-  }
-  assert.strictEqual(await checkbox.evaluate(box => (box as HTMLInputElement).checked), disabled);
+  await setCheckBox('[aria-label="Disable cache"]', disabled);
 }

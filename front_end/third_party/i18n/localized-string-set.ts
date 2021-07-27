@@ -11,27 +11,6 @@ import type {IntlMessageFormat} from '../intl-messageformat/package/lib/index.js
 
 const EMPTY_VALUES_OBJECT = {};
 
-const FORMATS = {
-  number: {
-    bytes: {
-      maximumFractionDigits: 0,
-    },
-    milliseconds: {
-      maximumFractionDigits: 0,
-    },
-    seconds: {
-      // Force the seconds to the tenths place for limited output and ease of scanning
-      minimumFractionDigits: 1,
-      maximumFractionDigits: 1,
-    },
-    extendedPercent: {
-      // Force allow up to two digits after decimal place in percentages. (Intl.NumberFormat options)
-      maximumFractionDigits: 2,
-      style: 'percent',
-    },
-  },
-};
-
 /**
  * This class is usually created at module instantiation time and
  * holds the filename, the UIStrings object and a reference to
@@ -108,7 +87,7 @@ export class LocalizedStringSet {
     // The requested string might not yet have been collected into en-US.json or
     // been translated yet. Fall back to the original TypeScript UIStrings message.
     const messageToTranslate = localeMessage ? localeMessage.message : message;
-    return new i18nBundle.MessageFormat(messageToTranslate, this.localeForFormatter, FORMATS);
+    return new i18nBundle.MessageFormat(messageToTranslate, this.localeForFormatter);
   }
 
   private getSimpleLocalizedString(message: string): string {
@@ -130,8 +109,6 @@ export class LocalizedStringSet {
       this.cachedMessageFormatters.set(message, formatter);
     }
 
-    // TODO(crbug.com/1231873): Replace call to i18nBundle with a native impl in TS.
-    const preformattedValues = i18nBundle._preformatValues(message, formatter, values, '');
-    return formatter.format(preformattedValues) as string;
+    return formatter.format(values) as string;
   }
 }

@@ -84,4 +84,42 @@ describe('i18n', () => {
     assert.strictEqual(bar1, 'a german placeholder: ok');
     assert.strictEqual(bar2, 'a german placeholder: nice');
   });
+
+  describe('placeholder formatting', () => {
+    beforeEach(() => {
+      i18nInstance.registerLocaleData('en-US', {});  // Always fall-through to UIStrings.
+    });
+
+    it('should throw an error when values are needed but not provided', () => {
+      const uiStrings = {foo: 'message with {PH1}'};
+      const stringSet = stringSetWith('test.ts', uiStrings, 'en-US');
+
+      assert.throws(() => stringSet.getLocalizedString(uiStrings.foo), /message with \{PH1\}/);
+    });
+
+    it('should throw an error when a value is missing', () => {
+      const uiStrings = {foo: 'message {PH1} with {PH2}'};
+      const stringSet = stringSetWith('test.ts', uiStrings, 'en-US');
+
+      assert.throws(() => stringSet.getLocalizedString(uiStrings.foo, {PH1: 'bar'}), /message \{PH1\} with \{PH2\}/);
+    });
+
+    it('should format a message with plurals', () => {
+      const uiStrings = {plural: '{count, plural, =1 {1 row} other {# rows}}'};
+      const stringSet = stringSetWith('test.ts', uiStrings, 'en-US');
+
+      const pluralString1 = stringSet.getLocalizedString(uiStrings.plural, {count: 1});
+      const pluralString3 = stringSet.getLocalizedString(uiStrings.plural, {count: 3});
+
+      assert.strictEqual(pluralString1, '1 row');
+      assert.strictEqual(pluralString3, '3 rows');
+    });
+
+    it('should throw an error when a plural control value is missing', () => {
+      const uiStrings = {plural: '{count, plural, =1 {1 row} other {# rows}}'};
+      const stringSet = stringSetWith('test.ts', uiStrings, 'en-US');
+
+      assert.throws(() => stringSet.getLocalizedString(uiStrings.plural));
+    });
+  });
 });

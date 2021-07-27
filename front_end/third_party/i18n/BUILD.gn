@@ -4,15 +4,6 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
-import("../../../scripts/build/ninja/devtools_pre_built.gni")
-
-devtools_pre_built("i18n-lh") {
-  sources = [
-    "i18n-bundle.d.ts",
-    "i18n-bundle.js",
-    "i18n-lh-tsconfig.json",
-  ]
-}
 
 devtools_module("i18n") {
   sources = [
@@ -21,10 +12,7 @@ devtools_module("i18n") {
     "localized-string-set.ts",
   ]
 
-  deps = [
-    ":i18n-lh",
-    "../intl-messageformat:bundle",
-  ]
+  deps = [ "../intl-messageformat:bundle" ]
 }
 
 devtools_entrypoint("bundle") {

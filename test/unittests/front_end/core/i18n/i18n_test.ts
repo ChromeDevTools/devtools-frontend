@@ -5,6 +5,9 @@
 const {assert} = chai;
 
 import * as i18n from '../../../../../front_end/core/i18n/i18n.js';
+import * as i18nRaw from '../../../../../front_end/third_party/i18n/i18n.js';
+
+import {assertElement} from '../../helpers/DOMHelpers.js';
 
 describe('serializeUIString', () => {
   it('serializes strings without placeholders', () => {
@@ -73,5 +76,47 @@ describe('getLocalizedLanguageRegion', () => {
         i18n.i18n.getLocalizedLanguageRegion('de-AT', createMockDevToolsLocale('de')),
         'Deutsch (Österreich) - German (Austria)');
     assert.strictEqual(i18n.i18n.getLocalizedLanguageRegion('de', createMockDevToolsLocale('de')), 'Deutsch - German');
+  });
+});
+
+describe('getFormatLocalizedString', () => {
+  let i18nInstance: i18nRaw.I18n.I18n;
+  beforeEach(() => {
+    i18nInstance = new i18nRaw.I18n.I18n();
+    i18nInstance.registerLocaleData('en-US', {});  // Always fall back to UIStrings.
+  });
+
+  it('returns an HTML element', () => {
+    const uiStrings = {simple: 'a simple message'};
+    const registeredStrings = i18nInstance.registerFileStrings('test.ts', uiStrings);
+
+    const messageElement = i18n.i18n.getFormatLocalizedString(registeredStrings, uiStrings.simple, {});
+
+    assertElement(messageElement, HTMLElement);
+    assert.strictEqual(messageElement.innerText, 'a simple message');
+  });
+
+  it('nests HTML placeholders in the message element', () => {
+    const uiStrings = {placeholder: 'a message with a {PH1} placeholder'};
+    const registeredStrings = i18nInstance.registerFileStrings('test.ts', uiStrings);
+    const placeholder = document.createElement('span');
+    placeholder.innerText = 'very pretty';
+
+    const messageElement =
+        i18n.i18n.getFormatLocalizedString(registeredStrings, uiStrings.placeholder, {PH1: placeholder});
+
+    assertElement(messageElement, HTMLElement);
+    assert.strictEqual(messageElement.innerHTML, 'a message with a <span>very pretty</span> placeholder');
+  });
+
+  it('nests string placeholders in the message element', () => {
+    const uiStrings = {placeholder: 'a message with a {PH1} placeholder'};
+    const registeredStrings = i18nInstance.registerFileStrings('test.ts', uiStrings);
+
+    const messageElement =
+        i18n.i18n.getFormatLocalizedString(registeredStrings, uiStrings.placeholder, {PH1: 'somewhat nice'});
+
+    assertElement(messageElement, HTMLElement);
+    assert.strictEqual(messageElement.innerHTML, 'a message with a somewhat nice placeholder');
   });
 });

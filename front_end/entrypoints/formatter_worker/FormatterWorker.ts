@@ -186,7 +186,6 @@ export function format(
     mimeType: string, text: string, indentString?: string): Formatter.FormatterWorkerPool.FormatResult {
   // Default to a 4-space indent.
   indentString = indentString || '    ';
-  mimeType === 'application/json' ? indentString = '  ' : null;
 
   let result: Formatter.FormatterWorkerPool.FormatResult;
   const builder = new FormattedContentBuilder(indentString);

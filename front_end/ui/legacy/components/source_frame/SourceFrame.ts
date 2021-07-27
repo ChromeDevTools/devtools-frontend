@@ -93,10 +93,7 @@ export class SourceFrameImpl extends UI.View.SimpleView implements UI.Searchable
   _lazyContent: () => Promise<TextUtils.ContentProvider.DeferredContent>;
   _pretty: boolean;
   _rawContent: string|null;
-  _formattedContentPromise: Promise<{
-    content: string,
-    map: Formatter.ScriptFormatter.FormatterSourceMapping,
-  }>|null;
+  _formattedContentPromise: Promise<Formatter.ScriptFormatter.FormattedContent>|null;
   _formattedMap: Formatter.ScriptFormatter.FormatterSourceMapping|null;
   _prettyToggle: UI.Toolbar.ToolbarToggle;
   _shouldAutoPrettyPrint: boolean;
@@ -229,7 +226,7 @@ export class SourceFrameImpl extends UI.View.SimpleView implements UI.Searchable
     let newSelection;
     if (this._pretty) {
       const formatInfo = await this._requestFormattedContent();
-      this._formattedMap = formatInfo.map;
+      this._formattedMap = formatInfo.mapping;
       this.setContent(formatInfo.content, null);
       this._prettyCleanGeneration = this._textEditor.markClean();
       const start = this._rawToPrettyLocation(selection.startLine, selection.startColumn);
@@ -436,24 +433,12 @@ export class SourceFrameImpl extends UI.View.SimpleView implements UI.Searchable
     }
   }
 
-  _requestFormattedContent(): Promise<{
-    content: string,
-    map: Formatter.ScriptFormatter.FormatterSourceMapping,
-  }> {
+  _requestFormattedContent(): Promise<Formatter.ScriptFormatter.FormattedContent> {
     if (this._formattedContentPromise) {
       return this._formattedContentPromise;
     }
-    let fulfill: (arg0: {
-      content: string,
-      map: Formatter.ScriptFormatter.FormatterSourceMapping,
-    }) => void;
-    this._formattedContentPromise = new Promise(x => {
-      fulfill = x;
-    });
-    Formatter.ScriptFormatter.formatScriptContent(
-        this._highlighterType, this._rawContent || '', async (content, map) => {
-          fulfill({content, map});
-        });
+    this._formattedContentPromise =
+        Formatter.ScriptFormatter.formatScriptContent(this._highlighterType, this._rawContent || '');
     return this._formattedContentPromise;
   }
 

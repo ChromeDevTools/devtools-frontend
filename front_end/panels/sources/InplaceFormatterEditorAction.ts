@@ -111,12 +111,11 @@ export class InplaceFormatterEditorAction implements EditorAction {
     }
   }
 
-  _contentLoaded(uiSourceCode: Workspace.UISourceCode.UISourceCode, content: string): void {
+  async _contentLoaded(uiSourceCode: Workspace.UISourceCode.UISourceCode, content: string): Promise<void> {
     const highlighterType = uiSourceCode.mimeType();
-    Formatter.ScriptFormatter.format(
-        uiSourceCode.contentType(), highlighterType, content, async (formattedContent, formatterMapping) => {
-          this._formattingComplete(uiSourceCode, formattedContent, formatterMapping);
-        });
+    const {content: formattedContent, mapping: formatterMapping} =
+        await Formatter.ScriptFormatter.format(uiSourceCode.contentType(), highlighterType, content);
+    this._formattingComplete(uiSourceCode, formattedContent, formatterMapping);
   }
 
   /**

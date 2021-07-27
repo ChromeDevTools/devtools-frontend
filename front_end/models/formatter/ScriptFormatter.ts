@@ -53,19 +53,21 @@ function positionToLocation(lineEndings: number[], position: number): number[] {
   return [lineNumber, columnNumber];
 }
 
-export function format(
-    contentType: Common.ResourceType.ResourceType, mimeType: string, content: string,
-    callback: (arg0: string, arg1: FormatterSourceMapping) => Promise<void>): void {
-  if (contentType.isDocumentOrScriptOrStyleSheet()) {
-    formatScriptContent(mimeType, content, callback);
-  } else {
-    callback(content, new IdentityFormatterSourceMapping());
-  }
+export interface FormattedContent {
+  content: string;
+  mapping: FormatterSourceMapping;
 }
 
-export async function formatScriptContent(
-    mimeType: string, content: string,
-    callback: (arg0: string, arg1: FormatterSourceMapping) => Promise<void>): Promise<void> {
+export async function format(
+    contentType: Common.ResourceType.ResourceType, mimeType: string, content: string): Promise<FormattedContent> {
+  if (contentType.isDocumentOrScriptOrStyleSheet()) {
+    return formatScriptContent(mimeType, content);
+  }
+
+  return {content, mapping: new IdentityFormatterSourceMapping()};
+}
+
+export async function formatScriptContent(mimeType: string, content: string): Promise<FormattedContent> {
   const originalContent = content.replace(/\r\n?|[\n\u2028\u2029]/g, '\n').replace(/^\uFEFF/, '');
 
   const pool = formatterWorkerPool();
@@ -73,8 +75,7 @@ export async function formatScriptContent(
 
   const formatResult = await pool.format(mimeType, originalContent, indent);
   if (!formatResult) {
-    callback(originalContent, new IdentityFormatterSourceMapping());
-    return;
+    return {content: originalContent, mapping: new IdentityFormatterSourceMapping()};
   }
 
   const originalContentLineEndings = Platform.StringUtilities.findLineEndingIndexes(originalContent);
@@ -82,15 +83,15 @@ export async function formatScriptContent(
 
   const sourceMapping =
       new FormatterSourceMappingImpl(originalContentLineEndings, formattedContentLineEndings, formatResult.mapping);
-  callback(formatResult.content, sourceMapping);
+  return {content: formatResult.content, mapping: sourceMapping};
 }
 
-export abstract class FormatterSourceMapping {
-  abstract originalToFormatted(lineNumber: number, columnNumber?: number): number[];
-  abstract formattedToOriginal(lineNumber: number, columnNumber?: number): number[];
+export interface FormatterSourceMapping {
+  originalToFormatted(lineNumber: number, columnNumber?: number): number[];
+  formattedToOriginal(lineNumber: number, columnNumber?: number): number[];
 }
 
-class IdentityFormatterSourceMapping extends FormatterSourceMapping {
+class IdentityFormatterSourceMapping implements FormatterSourceMapping {
   originalToFormatted(lineNumber: number, columnNumber?: number): number[] {
     return [lineNumber, columnNumber || 0];
   }
@@ -100,14 +101,12 @@ class IdentityFormatterSourceMapping extends FormatterSourceMapping {
   }
 }
 
-class FormatterSourceMappingImpl extends FormatterSourceMapping {
+class FormatterSourceMappingImpl implements FormatterSourceMapping {
   _originalLineEndings: number[];
   _formattedLineEndings: number[];
   _mapping: FormatMapping;
 
   constructor(originalLineEndings: number[], formattedLineEndings: number[], mapping: FormatMapping) {
-    super();
-
     this._originalLineEndings = originalLineEndings;
     this._formattedLineEndings = formattedLineEndings;
     this._mapping = mapping;

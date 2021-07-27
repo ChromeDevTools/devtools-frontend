@@ -119,42 +119,40 @@ export class SourceFormatter {
     const resultPromise = new Promise<SourceFormatData>(async resolve => {
       const {content} = await uiSourceCode.requestContent();
 
-      format(
-          uiSourceCode.contentType(), uiSourceCode.mimeType(), content || '',
-          async (formattedContent, formatterMapping) => {
-            const cacheEntry = this._formattedSourceCodes.get(uiSourceCode);
-            if (!cacheEntry || cacheEntry.promise !== resultPromise) {
-              return;
-            }
-            let formattedURL;
-            let count = 0;
-            let suffix = '';
-            do {
-              formattedURL = `${uiSourceCode.url()}:formatted${suffix}`;
-              suffix = `:${count++}`;
-            } while (this._project.uiSourceCodeForURL(formattedURL));
-            const contentProvider = TextUtils.StaticContentProvider.StaticContentProvider.fromString(
-                formattedURL, uiSourceCode.contentType(), formattedContent);
-            const formattedUISourceCode = this._project.createUISourceCode(formattedURL, contentProvider.contentType());
-            const formatData = new SourceFormatData(uiSourceCode, formattedUISourceCode, formatterMapping);
-            objectToFormattingResult.set(formattedUISourceCode, formatData);
-            this._project.addUISourceCodeWithProvider(
-                formattedUISourceCode, contentProvider, /* metadata */ null, uiSourceCode.mimeType());
-            await this._scriptMapping._setSourceMappingEnabled(formatData, true);
-            await this._styleMapping._setSourceMappingEnabled(formatData, true);
-            cacheEntry.formatData = formatData;
+      const {content: formattedContent, mapping: formatterMapping} =
+          await format(uiSourceCode.contentType(), uiSourceCode.mimeType(), content || '');
+      const cacheEntry = this._formattedSourceCodes.get(uiSourceCode);
+      if (!cacheEntry || cacheEntry.promise !== resultPromise) {
+        return;
+      }
+      let formattedURL;
+      let count = 0;
+      let suffix = '';
+      do {
+        formattedURL = `${uiSourceCode.url()}:formatted${suffix}`;
+        suffix = `:${count++}`;
+      } while (this._project.uiSourceCodeForURL(formattedURL));
+      const contentProvider = TextUtils.StaticContentProvider.StaticContentProvider.fromString(
+          formattedURL, uiSourceCode.contentType(), formattedContent);
+      const formattedUISourceCode = this._project.createUISourceCode(formattedURL, contentProvider.contentType());
+      const formatData = new SourceFormatData(uiSourceCode, formattedUISourceCode, formatterMapping);
+      objectToFormattingResult.set(formattedUISourceCode, formatData);
+      this._project.addUISourceCodeWithProvider(
+          formattedUISourceCode, contentProvider, /* metadata */ null, uiSourceCode.mimeType());
+      await this._scriptMapping._setSourceMappingEnabled(formatData, true);
+      await this._styleMapping._setSourceMappingEnabled(formatData, true);
+      cacheEntry.formatData = formatData;
 
-            for (const decoration of uiSourceCode.allDecorations()) {
-              const range = decoration.range();
-              const startLocation = formatterMapping.originalToFormatted(range.startLine, range.startColumn);
-              const endLocation = formatterMapping.originalToFormatted(range.endLine, range.endColumn);
-              formattedUISourceCode.addDecoration(
-                  new TextUtils.TextRange.TextRange(startLocation[0], startLocation[1], endLocation[0], endLocation[1]),
-                  (decoration.type() as string), decoration.data());
-            }
+      for (const decoration of uiSourceCode.allDecorations()) {
+        const range = decoration.range();
+        const startLocation = formatterMapping.originalToFormatted(range.startLine, range.startColumn);
+        const endLocation = formatterMapping.originalToFormatted(range.endLine, range.endColumn);
+        formattedUISourceCode.addDecoration(
+            new TextUtils.TextRange.TextRange(startLocation[0], startLocation[1], endLocation[0], endLocation[1]),
+            (decoration.type() as string), decoration.data());
+      }
 
-            resolve(formatData);
-          });
+      resolve(formatData);
     });
 
     this._formattedSourceCodes.set(uiSourceCode, {promise: resultPromise, formatData: null});

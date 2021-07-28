@@ -321,23 +321,17 @@ export class LinearMemoryInspector extends HTMLElement {
   }
 }
 
-export interface LinearMemoryInspectorEventMap extends HTMLElementEventMap {
-  'memoryrequest': MemoryRequestEvent;
-  'addresschanged': AddressChangedEvent;
-  'settingschanged': SettingsChangedEvent;
-}
-
-export interface LinearMemoryInspector extends HTMLElement {
-  addEventListener<K extends keyof LinearMemoryInspectorEventMap>(
-      type: K, listener: (this: HTMLElement, ev: LinearMemoryInspectorEventMap[K]) => unknown,
-      options?: boolean|AddEventListenerOptions): void;
-}
 
 ComponentHelpers.CustomElements.defineComponent('devtools-linear-memory-inspector-inspector', LinearMemoryInspector);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-linear-memory-inspector-inspector': LinearMemoryInspector;
+  }
+
+  interface HTMLElementEventMap {
+    'memoryrequest': MemoryRequestEvent;
+    'addresschanged': AddressChangedEvent;
+    'settingschanged': SettingsChangedEvent;
   }
 }

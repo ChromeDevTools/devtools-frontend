@@ -9,12 +9,13 @@ import * as LitHtml from '../../lit-html/lit-html.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
 import dataGridStyles from './dataGrid.css.js';
+import {BodyCellFocusedEvent, ColumnHeaderClickEvent, ContextMenuHeaderResetClickEvent} from './DataGridEvents.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 import {addColumnVisibilityCheckboxes, addSortableColumnItems} from './DataGridContextMenuUtils.js';
-import type {Cell, CellPosition, Column, Row, SortState} from './DataGridUtils.js';
-import {calculateColumnWidthPercentageFromWeighting, calculateFirstFocusableCell, ContextMenuHeaderResetClickEvent, getRowEntryForColumnId, handleArrowKeyNavigation, renderCellValue, SortDirection} from './DataGridUtils.js';
+import type {CellPosition, Column, Row, SortState} from './DataGridUtils.js';
+import {calculateColumnWidthPercentageFromWeighting, calculateFirstFocusableCell, getRowEntryForColumnId, handleArrowKeyNavigation, renderCellValue, SortDirection} from './DataGridUtils.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 const UIStrings = {
@@ -43,58 +44,6 @@ export interface DataGridData {
   rows: Row[];
   activeSort: SortState|null;
   contextMenus?: DataGridContextMenusConfiguration;
-}
-
-export class ColumnHeaderClickEvent extends Event {
-  data: {
-    column: Column,
-    columnIndex: number,
-  };
-
-  constructor(column: Column, columnIndex: number) {
-    super('columnheaderclick');
-    this.data = {
-      column,
-      columnIndex,
-    };
-  }
-}
-
-export class NewUserFilterTextEvent extends Event {
-  data: {filterText: string};
-
-  constructor(filterText: string) {
-    super('newuserfiltertext', {
-      composed: true,
-    });
-
-    this.data = {
-      filterText,
-    };
-  }
-}
-
-export class BodyCellFocusedEvent extends Event {
-  /**
-   * Although the DataGrid cares only about the focused cell, and has no concept
-   * of a focused row, many components that render a data grid want to know what
-   * row is active, so on the cell focused event we also send the row that the
-   * cell is part of.
-   */
-  data: {
-    cell: Cell,
-    row: Row,
-  };
-
-  constructor(cell: Cell, row: Row) {
-    super('cellfocused', {
-      composed: true,
-    });
-    this.data = {
-      cell,
-      row,
-    };
-  }
 }
 
 const enum UserScrollState {
@@ -902,7 +851,6 @@ export class DataGrid extends HTMLElement {
 ComponentHelpers.CustomElements.defineComponent('devtools-data-grid', DataGrid);
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-data-grid': DataGrid;
   }

@@ -4,7 +4,7 @@
 import type * as UI from '../../legacy/legacy.js';
 
 import type {DataGrid} from './DataGrid.js';
-import {ContextMenuColumnSortClickEvent} from './DataGridUtils.js';
+import {ContextMenuColumnSortClickEvent} from './DataGridEvents.js';
 import type {Column} from './DataGridUtils.js';
 
 function toggleColumnVisibility(dataGrid: DataGrid, column: Column): void {

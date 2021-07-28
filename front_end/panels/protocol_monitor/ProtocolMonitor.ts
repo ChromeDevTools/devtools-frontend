@@ -251,9 +251,8 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     this._dataGridIntegrator =
         new DataGrid.DataGridControllerIntegrator.DataGridControllerIntegrator(dataGridInitialData);
 
-    this._dataGridIntegrator.dataGrid.addEventListener('cellfocused', (event: Event) => {
-      const focusedEvent = event as DataGrid.DataGrid.BodyCellFocusedEvent;
-      const focusedRow = focusedEvent.data.row;
+    this._dataGridIntegrator.dataGrid.addEventListener('cellfocused', event => {
+      const focusedRow = event.data.row;
       const infoWidgetData = {
         request: DataGrid.DataGridUtils.getRowEntryForColumnId(focusedRow, 'request'),
         response: DataGrid.DataGridUtils.getRowEntryForColumnId(focusedRow, 'response'),
@@ -262,9 +261,8 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
       this._infoWidget.render(infoWidgetData);
     });
 
-    this._dataGridIntegrator.dataGrid.addEventListener('newuserfiltertext', (event: Event) => {
-      const filterTextEvent = event as DataGrid.DataGrid.NewUserFilterTextEvent;
-      this._textFilterUI.setValue(filterTextEvent.data.filterText, /* notify listeners */ true);
+    this._dataGridIntegrator.dataGrid.addEventListener('newuserfiltertext', event => {
+      this._textFilterUI.setValue(event.data.filterText, /* notify listeners */ true);
     });
     split.setMainWidget(this._dataGridIntegrator);
     split.setSidebarWidget(this._infoWidget);

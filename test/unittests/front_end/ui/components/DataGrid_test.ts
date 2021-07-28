@@ -504,7 +504,7 @@ describe('DataGrid', () => {
     await coordinator.done();
 
     const columnHeaderClickEvent =
-        getEventPromise<DataGrid.DataGrid.ColumnHeaderClickEvent>(component, 'columnheaderclick');
+        getEventPromise<DataGrid.DataGridEvents.ColumnHeaderClickEvent>(component, 'columnheaderclick');
     const cityColumn = getHeaderCellForColumnId(component.shadowRoot, 'city');
     dispatchClickEvent(cityColumn);
 
@@ -519,7 +519,7 @@ describe('DataGrid', () => {
     await coordinator.done();
 
     const columnHeaderClickEvent =
-        getEventPromise<DataGrid.DataGrid.ColumnHeaderClickEvent>(component, 'columnheaderclick');
+        getEventPromise<DataGrid.DataGridEvents.ColumnHeaderClickEvent>(component, 'columnheaderclick');
     const focusableCell = getFocusableCell(component.shadowRoot);
     // Check that the focusable cell is the header cell as it's a table with
     // sortable columns.
@@ -541,7 +541,8 @@ describe('DataGrid', () => {
     assertShadowRoot(component.shadowRoot);
     await coordinator.done();
 
-    const bodyCellFocusedEvent = getEventPromise<DataGrid.DataGrid.BodyCellFocusedEvent>(component, 'cellfocused');
+    const bodyCellFocusedEvent =
+        getEventPromise<DataGrid.DataGridEvents.BodyCellFocusedEvent>(component, 'cellfocused');
     const focusableCell = getFocusableCell(component.shadowRoot);
     focusableCell.focus();
     const cellFocusedEvent = await bodyCellFocusedEvent;

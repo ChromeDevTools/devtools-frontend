@@ -20,6 +20,7 @@ devtools_module("data_grid") {
     "DataGridContextMenuUtils.ts",
     "DataGridController.ts",
     "DataGridControllerIntegrator.ts",
+    "DataGridEvents.ts",
     "DataGridRenderers.ts",
     "DataGridUtils.ts",
   ]

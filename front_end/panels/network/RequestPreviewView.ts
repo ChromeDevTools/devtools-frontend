@@ -73,7 +73,7 @@ export class RequestPreviewView extends RequestResponseView {
   async _htmlPreview(): Promise<UI.Widget.Widget|null> {
     const contentData = await this.request.contentData();
     if (contentData.error) {
-      return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.failedToLoadResponseData));
+      return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.failedToLoadResponseData) + ': ' + contentData.error);
     }
 
     const allowlist = new Set<string>(['text/html', 'text/plain', 'application/xhtml+xml']);

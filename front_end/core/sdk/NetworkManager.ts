@@ -50,6 +50,18 @@ import type {Serializer} from '../common/Settings.js';
 
 const UIStrings = {
   /**
+  *@description Explanation why no content is shown for WebSocket connection.
+  */
+  noContentForWebSocket: 'Content for WebSockets is currently not supported',
+  /**
+  *@description Explanation why no content is shown for redirect response.
+  */
+  noContentForRedirect: 'No content available because this request was redirected',
+  /**
+  *@description Explanation why no content is shown for preflight request.
+  */
+  noContentForPreflight: 'No content available for preflight request',
+  /**
   *@description Text to indicate that network throttling is disabled
   */
   noThrottling: 'No throttling',
@@ -173,13 +185,16 @@ export class NetworkManager extends SDKModel {
 
   static async requestContentData(request: NetworkRequest): Promise<ContentData> {
     if (request.resourceType() === Common.ResourceType.resourceTypes.WebSocket) {
-      return {error: 'Content for WebSockets is currently not supported', content: null, encoded: false};
+      return {error: i18nString(UIStrings.noContentForWebSocket), content: null, encoded: false};
     }
     if (!request.finished) {
       await request.once(NetworkRequestEvents.FinishedLoading);
     }
     if (request.isRedirect()) {
-      return {error: 'No content available because this request was redirected', content: null, encoded: false};
+      return {error: i18nString(UIStrings.noContentForRedirect), content: null, encoded: false};
+    }
+    if (request.isPreflightRequest()) {
+      return {error: i18nString(UIStrings.noContentForPreflight), content: null, encoded: false};
     }
     const manager = NetworkManager.forRequest(request);
     if (!manager) {

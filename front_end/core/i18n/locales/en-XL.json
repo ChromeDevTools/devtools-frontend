@@ -404,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "F̂áŝt́ 3Ĝ"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "N̂ó ĉón̂t́êńt̂ áv̂áîĺâb́l̂é f̂ór̂ ṕr̂éf̂ĺîǵĥt́ r̂éq̂úêśt̂"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "N̂ó ĉón̂t́êńt̂ áv̂áîĺâb́l̂é b̂éĉáûśê t́ĥíŝ ŕêq́ûéŝt́ ŵáŝ ŕêd́îŕêćt̂éd̂"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "Ĉón̂t́êńt̂ f́ôŕ Ŵéb̂Śôćk̂ét̂ś îś ĉúr̂ŕêńt̂ĺŷ ńôt́ ŝúp̂ṕôŕt̂éd̂"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "N̂ó t̂h́r̂ót̂t́l̂ín̂ǵ"
   },

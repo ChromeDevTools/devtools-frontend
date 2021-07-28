@@ -404,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "Fast 3G"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "No content available for preflight request"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "No content available because this request was redirected"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "Content for WebSockets is currently not supported"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "No throttling"
   },

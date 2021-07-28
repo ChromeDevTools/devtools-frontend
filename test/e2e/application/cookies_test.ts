@@ -144,7 +144,6 @@ describe('The Application Tab', async () => {
       },
     ]);
 
-
     await filterStorageItems('foo2');
     await clearStorageItems();
     await clearStorageItemsFilter();

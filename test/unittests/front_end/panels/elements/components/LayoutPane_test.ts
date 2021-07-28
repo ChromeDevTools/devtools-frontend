@@ -64,7 +64,6 @@ describe('LayoutPane', async () => {
       ],
     };
 
-
     assert.deepEqual(queryLabels(component, '[data-enum-setting]'), [{label: 'Enum setting title', input: 'SELECT'}]);
     assert.deepEqual(
         queryLabels(component, '[data-boolean-setting]'), [{label: 'Boolean setting title', input: 'INPUT'}]);

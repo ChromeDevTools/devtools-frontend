@@ -209,7 +209,6 @@ export class FilterTreeElement extends ConsoleSidebarTreeElement {
     this._updateCounter();
   }
 
-
   clear(): void {
     this._urlTreeElements.clear();
     this.removeChildren();

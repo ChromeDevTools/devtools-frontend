@@ -333,7 +333,6 @@ export enum Action {
   PerfPanelTraceExported = 55,
 }
 
-
 export const ContrastThresholds: {
   [x: string]: number,
 } = {
@@ -535,7 +534,6 @@ export enum DualScreenDeviceEmulated {
   SpanButtonClicked = 1,
   PlatformSupportUsed = 2,  // user starts to use platform dual screen support feature.
 }
-
 
 export const CssEditorOpened: {
   [x: string]: number,

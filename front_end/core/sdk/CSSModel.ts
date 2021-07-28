@@ -727,7 +727,6 @@ export enum Events {
   StyleSheetRemoved = 'StyleSheetRemoved',
 }
 
-
 const PseudoStateMarker = 'pseudo-state-marker';
 
 export class Edit {
@@ -862,7 +861,6 @@ const StylePollingInterval = 1000;  // throttling interval for style polling, in
 export enum CSSPropertyTrackerEvents {
   TrackedCSSPropertiesUpdated = 'TrackedCSSPropertiesUpdated',
 }
-
 
 SDKModel.register(CSSModel, {capabilities: Capability.DOM, autostart: true});
 export interface ContrastInfo {

@@ -70,7 +70,6 @@ const renderDataGrid = (data: Partial<DataGrid.DataGrid.DataGridData>): DataGrid
   return component;
 };
 
-
 describe('DataGrid', () => {
   describe('rendering and hiding rows/columns', () => {
     it('renders the right headers and values', async () => {

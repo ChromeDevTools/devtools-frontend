@@ -482,7 +482,6 @@ export enum Phase {
   DeleteObject = 'D',
 }
 
-
 export const MetadataEvent = {
   ProcessSortIndex: 'process_sort_index',
   ProcessName: 'process_name',

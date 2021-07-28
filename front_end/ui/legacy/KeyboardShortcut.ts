@@ -362,7 +362,6 @@ export enum Type {
   KeybindSetShortcut = 'KeybindSetShortcut',
 }
 
-
 export const KeyBindings: {
   [x: string]: Key,
 } = {};

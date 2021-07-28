@@ -35,7 +35,6 @@ const nodeShouldBeIgnored = (node: Node): boolean => {
   return false;
 };
 
-
 const observedMutationsThatMatchExpected =
     (expectedMutation: ExpectedMutation, observedMutations: ObservedMutation[]): ObservedMutation[] => {
       const matching: ObservedMutation[] = [];
@@ -126,7 +125,6 @@ const storeRelevantMutationEntries = (entries: MutationRecord[], storageArray: O
     }
   }
 };
-
 
 const generateOutputForMutationList = (observedMutations: ObservedMutation[]): string => {
   const debugOutput: string[] = [];
@@ -224,7 +222,6 @@ export const withMutations = async<T extends Node>(
           expectedMutation.target}, but got ${amountOfMatchingMutations}`);
     }
   }
-
 
   // These are mutations that happened but the user did not explicitly list as
   // expected, so we want to fail the test on them.

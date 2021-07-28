@@ -179,7 +179,6 @@ export enum Events {
   DatabasesRemoved = 'DatabasesRemoved',
 }
 
-
 export class DatabaseDispatcher implements ProtocolProxyApi.DatabaseDispatcher {
   _model: DatabaseModel;
   constructor(model: DatabaseModel) {

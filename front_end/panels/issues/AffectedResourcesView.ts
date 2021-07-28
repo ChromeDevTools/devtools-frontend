@@ -56,7 +56,6 @@ export interface CreateRequestCellOptions {
   additionalOnClickAction?: () => void;
 }
 
-
 /**
  * The base class for all affected resource views. It provides basic scaffolding
  * as well as machinery for resolving request and frame ids to SDK objects.

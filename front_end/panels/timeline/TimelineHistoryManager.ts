@@ -459,7 +459,6 @@ export class DropDown implements UI.ListControl.ListDelegate<PerformanceModel> {
   static _instance: DropDown|null = null;
 }
 
-
 export class ToolbarButton extends UI.Toolbar.ToolbarItem {
   _contentElement: HTMLElement;
 

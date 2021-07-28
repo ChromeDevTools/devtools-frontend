@@ -166,7 +166,6 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
   }
 }
 
-
 ComponentHelpers.CustomElements.defineComponent(
     'devtools-linear-memory-inspector-interpreter', LinearMemoryValueInterpreter);
 

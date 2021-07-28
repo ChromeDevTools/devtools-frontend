@@ -154,7 +154,6 @@ Sources.SearchSourcesView.ActionDelegate = SourcesModule.SearchSourcesView.Actio
 /** @constructor */
 Sources.SnippetsPlugin = SourcesModule.SnippetsPlugin.SnippetsPlugin;
 
-
 Sources.SourceMapNamesResolver = {};
 
 Sources.SourceMapNamesResolver.setScopeResolvedForTest = SourcesModule.SourceMapNamesResolver.setScopeResolvedForTest;

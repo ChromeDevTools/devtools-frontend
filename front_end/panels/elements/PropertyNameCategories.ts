@@ -19,7 +19,6 @@ export const enum Category {
   Other = 'Other',
 }
 
-
 export const DefaultCategoryOrder = [
   Category.Layout,
   Category.Text,

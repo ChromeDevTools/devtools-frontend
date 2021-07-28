@@ -116,7 +116,6 @@ export const getHeaderCellForColumnId = (shadowRoot: ShadowRoot, columnId: strin
   return cell;
 };
 
-
 export const getValuesForColumn = (shadowRoot: ShadowRoot, columnId: string): string[] => {
   const cells = shadowRoot.querySelectorAll(`[data-grid-value-cell-for-column=${columnId}]`);
   assertElements(cells, HTMLTableCellElement);

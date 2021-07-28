@@ -318,7 +318,6 @@ export enum Events {
   SchemaUpdated = 'SchemaUpdated',
 }
 
-
 export const SQL_BUILT_INS = [
   'SELECT ',
   'FROM ',

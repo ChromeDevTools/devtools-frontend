@@ -488,7 +488,6 @@ describe('CSSPropertyIconResolver', async () => {
         });
   });
 
-
   it('can find an icon for justify-content properties', () => {
     const tests = [
       // flexbox
@@ -607,7 +606,6 @@ describe('CSSPropertyIconResolver', async () => {
           scaleY: 1,
         });
   });
-
 
   it('can find an icon for align-items properties', () => {
     const tests = [

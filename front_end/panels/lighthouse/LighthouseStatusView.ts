@@ -481,7 +481,6 @@ export const StatusPhases: StatusPhase[] = [
   },
 ];
 
-
 const LoadingMessages = [
   {
     deviceType: 'mobile',

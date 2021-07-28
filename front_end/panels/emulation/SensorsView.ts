@@ -760,7 +760,6 @@ export const enum DeviceOrientationModificationSource {
   SelectPreset = 'selectPreset',
 }
 
-
 /** {string} */
 export const NonPresetOptions = {
   NoOverride: 'noOverride',

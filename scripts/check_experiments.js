@@ -29,7 +29,6 @@ function isClassNameDeclaration(node, className) {
   return isClassDeclaration;
 }
 
-
 /**
  * Determines if a node is an typescript enum declaration.
  * If enumName is provided, node must also match enum name.

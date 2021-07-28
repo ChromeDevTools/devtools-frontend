@@ -7,7 +7,6 @@
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as CssOverviewModule from '../../../../panels/css_overview/css_overview.js';
 
-
 // The following regexes are used within in the StylesSidebarPropertyRenderer class
 // and will parse both invalid and valid values.
 // ^[^- ][a-zA-Z-]+ matches property key values (e.g. smaller, x-large, initial)

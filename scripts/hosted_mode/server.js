@@ -8,7 +8,6 @@ const parseURL = require('url').parse;
 const promisify = require('util').promisify;
 const WebSocketServer = require('ws').Server;
 
-
 const remoteDebuggingPort = parseInt(process.env.REMOTE_DEBUGGING_PORT, 10) || 9222;
 const port = parseInt(process.env.PORT, 10);
 const requestedPort = port || port === 0 ? port : 8090;

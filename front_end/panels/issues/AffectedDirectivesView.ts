@@ -14,7 +14,6 @@ import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ElementsComponents from '../elements/components/components.js';
 
-
 import {AffectedItem, AffectedResourcesView} from './AffectedResourcesView.js';
 
 import type {AggregatedIssue} from './IssueAggregator.js';
@@ -62,7 +61,6 @@ const UIStrings = {
 
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedDirectivesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-
 
 export class AffectedDirectivesView extends AffectedResourcesView {
   _issue: AggregatedIssue;

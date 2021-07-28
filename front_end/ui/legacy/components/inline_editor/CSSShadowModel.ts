@@ -231,7 +231,6 @@ const enum Part {
   Important = 'M',
 }
 
-
 export class CSSLength {
   amount: number;
   unit: string;

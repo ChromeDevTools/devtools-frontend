@@ -821,7 +821,6 @@ export const enum Events {
   Updated = 'Updated',
 }
 
-
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum Type {
@@ -829,7 +828,6 @@ export enum Type {
   Responsive = 'Responsive',
   Device = 'Device',
 }
-
 
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
@@ -841,7 +839,6 @@ export enum UA {
   Desktop = 'Desktop',
   DesktopTouch = 'Desktop (touch)',
 }
-
 
 export const MinDeviceSize = 50;
 export const MaxDeviceSize = 9999;

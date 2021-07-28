@@ -8,7 +8,6 @@ import type * as SDK from '../../core/sdk/sdk.js';
 import {Issue, IssueCategory, IssueKind} from './Issue.js';
 import type {MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 
-
 const UIStrings = {
   /**
    * @description Label for the link in the description of Wasm cross-origin module sharing issues, that is, issues

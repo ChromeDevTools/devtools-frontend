@@ -246,7 +246,6 @@ export class CPUProfileType extends ProfileType {
   static readonly TypeId = 'CPU';
 }
 
-
 export class CPUProfileHeader extends WritableProfileHeader {
   _cpuProfilerModel: SDK.CPUProfilerModel.CPUProfilerModel|null;
   _profileModel?: SDK.CPUProfileDataModel.CPUProfileDataModel;

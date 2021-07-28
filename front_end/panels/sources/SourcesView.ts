@@ -578,7 +578,6 @@ export  // TODO(crbug.com/1167717): Make this a const enum again
       EditorSelected = 'EditorSelected',
     }
 
-
 /**
  * @interface
  */

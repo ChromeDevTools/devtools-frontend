@@ -9,7 +9,6 @@ import type * as Protocol from '../../generated/protocol.js';
 import {Issue, IssueCategory, IssueKind} from './Issue.js';
 import type {MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 
-
 const UIStrings = {
   /**
   *@description Link title for the Low Text Contrast issue in the Issues panel

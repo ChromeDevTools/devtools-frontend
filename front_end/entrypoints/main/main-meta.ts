@@ -678,7 +678,6 @@ Common.Settings.registerSettingExtension({
   defaultValue: false,
 });
 
-
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.GLOBAL,
   settingName: 'currentDockState',

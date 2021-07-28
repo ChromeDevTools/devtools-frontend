@@ -131,7 +131,6 @@ export enum Events {
   ResizeEnd = 'ResizeEnd',
 }
 
-
 export class SimpleResizerWidget extends ResizerWidget {
   _isVertical: boolean;
   constructor() {

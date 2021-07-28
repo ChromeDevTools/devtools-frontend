@@ -111,7 +111,6 @@ iconTable?.appendChild(row3);
   document.body.append(div);
 })();
 
-
 const iconInFlex = document.getElementById('icon-in-flex') as IconButton.Icon.Icon;
 iconInFlex.data = {
   iconName: 'error_icon',

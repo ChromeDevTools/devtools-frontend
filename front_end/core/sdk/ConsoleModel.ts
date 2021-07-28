@@ -471,7 +471,6 @@ function extractExceptionMetaData(metaData: any|undefined): AffectedResources|un
   return {requestId: metaData.requestId || undefined, issueId: metaData.issueId || undefined};
 }
 
-
 function areAffectedResourcesEquivalent(a?: AffectedResources, b?: AffectedResources): boolean {
   // Not considering issueId, as that would prevent de-duplication of console messages.
   return a?.requestId === b?.requestId;

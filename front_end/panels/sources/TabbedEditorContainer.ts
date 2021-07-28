@@ -615,7 +615,6 @@ export enum Events {
   EditorClosed = 'EditorClosed',
 }
 
-
 export let tabId = 0;
 export const maximalPreviouslyViewedFilesCount = 30;
 
@@ -659,7 +658,6 @@ export class HistoryItem {
 
   static readonly serializableUrlLengthLimit = 4096;
 }
-
 
 export class History {
   _items: HistoryItem[];

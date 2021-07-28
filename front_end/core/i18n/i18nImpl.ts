@@ -127,7 +127,6 @@ export function formatLocalized(formattedString: string, args: Array<Object>): E
     return substitution;
   };
 
-
   function append(a: Element, b: undefined|string|Node): Element {
     if (b) {
       a.appendChild(typeof b === 'string' ? document.createTextNode(b) : b);

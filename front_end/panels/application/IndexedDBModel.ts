@@ -428,7 +428,6 @@ export enum Events {
   IndexedDBContentUpdated = 'IndexedDBContentUpdated',
 }
 
-
 export class Entry {
   key: SDK.RemoteObject.RemoteObject;
   primaryKey: SDK.RemoteObject.RemoteObject;

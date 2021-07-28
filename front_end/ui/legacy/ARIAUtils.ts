@@ -256,7 +256,6 @@ export enum AutocompleteInteractionModel {
   none = 'none',
 }
 
-
 export function setAutocomplete(
     element: Element,
     interactionModel: AutocompleteInteractionModel|undefined = AutocompleteInteractionModel.none): void {

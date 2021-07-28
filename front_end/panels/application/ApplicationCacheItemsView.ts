@@ -39,7 +39,6 @@ import type * as Protocol from '../../generated/protocol.js';
 import type {ApplicationCacheModel} from './ApplicationCacheModel.js';
 import {CHECKING, DOWNLOADING, IDLE, OBSOLETE, UNCACHED, UPDATEREADY} from './ApplicationCacheModel.js';
 
-
 const UIStrings = {
   /**
   *@description Text in Application Cache Items View of the Application panel

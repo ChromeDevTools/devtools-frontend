@@ -66,7 +66,6 @@ export enum Events {
   MessageAdded = 'messageAdded',
 }
 
-
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum MessageLevel {
@@ -74,7 +73,6 @@ export enum MessageLevel {
   Warning = 'warning',
   Error = 'error',
 }
-
 
 export class Message {
   text: string;

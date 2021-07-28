@@ -145,7 +145,6 @@ ApplicationTestRunner.deleteCacheFromInspector = async function(cacheName, optio
     throw 'Error: Could not find CacheStorage cache ' + cacheName;
   }
 
-
   for (let i = 0; i < cachesTreeElement.childCount(); i++) {
     const cacheTreeElement = cachesTreeElement.childAt(i);
     const title = cacheTreeElement.title;

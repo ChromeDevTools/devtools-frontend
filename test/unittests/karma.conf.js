@@ -89,7 +89,6 @@ const TEST_FILES =
         })
         .flat();
 
-
 const TEST_FILES_SOURCE_MAPS = TEST_FILES.map(fileName => `${fileName}.map`);
 
 const DEFAULT_PREPROCESSING_FOLDERS = {

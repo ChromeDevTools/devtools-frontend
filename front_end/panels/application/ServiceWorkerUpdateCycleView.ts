@@ -340,7 +340,6 @@ export class ServiceWorkerUpdateCycleView {
     this.focusRow(this.rows[this.selectedRowIndex]);
   }
 
-
   private onClick(event: Event, startRow: Element, endRow: Element): void {
     const tr = event.target as Element;
     if (!tr) {
@@ -363,7 +362,6 @@ export const enum ServiceWorkerUpdateNames {
   Wait = 'Wait',
   Activate = 'Activate',
 }
-
 
 export interface ServiceWorkerUpdateRange {
   id: string;

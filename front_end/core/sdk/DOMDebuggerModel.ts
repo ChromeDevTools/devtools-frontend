@@ -451,7 +451,6 @@ export enum Events {
   DOMBreakpointsRemoved = 'DOMBreakpointsRemoved',
 }
 
-
 const Marker = 'breakpoint-marker';
 
 export class DOMBreakpoint {

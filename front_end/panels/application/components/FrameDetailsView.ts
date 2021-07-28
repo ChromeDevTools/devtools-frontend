@@ -525,7 +525,6 @@ export class FrameDetailsReportView extends HTMLElement {
     }
   }
 
-
   private maybeRenderAdStatus(): LitHtml.TemplateResult|{} {
     if (!this.frame) {
       return LitHtml.nothing;

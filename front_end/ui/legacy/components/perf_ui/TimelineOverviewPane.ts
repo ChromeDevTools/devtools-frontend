@@ -258,7 +258,6 @@ export enum Events {
   WindowChanged = 'WindowChanged',
 }
 
-
 export class TimelineOverviewCalculator implements Calculator {
   _minimumBoundary!: number;
   _maximumBoundary!: number;

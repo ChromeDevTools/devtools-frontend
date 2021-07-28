@@ -235,7 +235,6 @@ export enum Type {
   Response = 1,
 }
 
-
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum Attributes {
@@ -253,7 +252,6 @@ export enum Attributes {
   SourcePort = 'sourcePort',
   Priority = 'priority',
 }
-
 
 /**
  * A `CookieReference` uniquely identifies a cookie by the triple (name,domain,path). Additionally, a context may be

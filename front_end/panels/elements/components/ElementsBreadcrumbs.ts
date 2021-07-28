@@ -24,7 +24,6 @@ export class NodeSelectedEvent extends Event {
   }
 }
 
-
 export interface ElementsBreadcrumbsData {
   selectedNode: DOMNode|null;
   crumbs: DOMNode[];

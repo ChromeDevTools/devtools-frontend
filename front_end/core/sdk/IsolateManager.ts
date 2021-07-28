@@ -145,7 +145,6 @@ export enum Events {
   MemoryChanged = 'MemoryChanged',
 }
 
-
 export const MemoryTrendWindowMs = 120e3;
 const PollIntervalMs = 2e3;
 

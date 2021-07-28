@@ -3375,7 +3375,6 @@ export enum NetworkCategory {
   Other = 'Other',
 }
 
-
 export const aggregatedStatsKey = Symbol('aggregatedStats');
 
 export class InvalidationsGroupElement extends UI.TreeOutline.TreeElement {

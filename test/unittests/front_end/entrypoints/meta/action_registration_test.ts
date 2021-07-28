@@ -48,7 +48,6 @@ describe('Action registration', () => {
     UI.Context.Context.instance().setFlavor(MockContextType, null);
   });
 
-
   it('retrieves a registered action', () => {
     const preRegisteredAction = UI.ActionRegistry.ActionRegistry.instance().action(actionId);
     assert.isNotNull(preRegisteredAction, 'Failed to find action registration');

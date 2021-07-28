@@ -89,7 +89,6 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
   constructor() {
     super(true);
 
-
     const header = this.contentElement.createChild('div', 'header');
     header.textContent = i18nString(UIStrings.frameworkIgnoreList);
     UI.ARIAUtils.markAsHeading(header, 1);

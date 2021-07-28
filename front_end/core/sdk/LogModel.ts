@@ -49,5 +49,4 @@ export enum Events {
   EntryAdded = 'EntryAdded',
 }
 
-
 SDKModel.register(LogModel, {capabilities: Capability.Log, autostart: true});

@@ -88,7 +88,6 @@ describe('The Elements tab', async () => {
       await waitForContentOfSelectedElementsNode('<div id=\u200B"focus" tabindex=\u200B"0">\u200B…\u200B</div>\u200B');
     });
 
-
     await forcePseudoState(':focus');
     await assertGutterDecorationForDomNodeExists();
     await waitForDomNodeToBeVisible(TARGET_SHOWN_ON_FOCUS_SELECTOR);

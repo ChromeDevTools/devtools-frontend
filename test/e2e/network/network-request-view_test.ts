@@ -105,7 +105,6 @@ describe('The Network Request view', async () => {
     messages = await waitForMessages(2);
     assert.deepEqual(messages, ['ping', 'ping']);
 
-
     messagesView = await navigateToWebsocketMessages();
     messages = await waitForMessages(2);
 

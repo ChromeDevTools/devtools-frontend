@@ -1329,7 +1329,6 @@ export class HeapSnapshotProfileType extends ProfileType implements
   static readonly SnapshotReceived = 'SnapshotReceived';
 }
 
-
 export class TrackingHeapSnapshotProfileType extends HeapSnapshotProfileType {
   _recordAllocationStacksSetting: Common.Settings.Setting<boolean>;
   _customContent: UI.UIUtils.CheckboxLabel|null;

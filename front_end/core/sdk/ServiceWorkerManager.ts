@@ -307,7 +307,6 @@ export enum Events {
   RegistrationDeleted = 'RegistrationDeleted',
 }
 
-
 class ServiceWorkerDispatcher implements ProtocolProxyApi.ServiceWorkerDispatcher {
   _manager: ServiceWorkerManager;
   constructor(manager: ServiceWorkerManager) {

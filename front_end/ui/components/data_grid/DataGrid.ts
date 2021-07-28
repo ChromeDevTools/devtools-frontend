@@ -74,7 +74,6 @@ export class NewUserFilterTextEvent extends Event {
   }
 }
 
-
 export class BodyCellFocusedEvent extends Event {
   /**
    * Although the DataGrid cares only about the focused cell, and has no concept
@@ -874,7 +873,6 @@ export class DataGrid extends HTMLElement {
       });
     });
     // clang-format on
-
 
     // This ensures if the user has a cell focused, but then scrolls so that
     // the focused cell is now not rendered, that when it then gets scrolled

@@ -347,7 +347,6 @@ export const enum Section {
   Min = 2,
 }
 
-
 export class MediaQueryUIModel {
   _cssMedia: SDK.CSSMedia.CSSMedia;
   _minWidthExpression: SDK.CSSMedia.CSSMediaQueryExpression|null;

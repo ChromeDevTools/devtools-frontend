@@ -74,7 +74,6 @@ export const binaryIndexOf = <T, S>(array: T[], value: S, comparator: (a: S, b: 
   return index < array.length && comparator(value, array[index]) === 0 ? index : -1;
 };
 
-
 function mergeOrIntersect<T>(
     array1: T[], array2: T[], comparator: (a: T, b: T) => number, mergeNotIntersect: boolean): T[] {
   const result = [];

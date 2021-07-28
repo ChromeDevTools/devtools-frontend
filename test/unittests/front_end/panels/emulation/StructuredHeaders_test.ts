@@ -431,7 +431,6 @@ describe('StructuredHeaders', () => {
         ])),
         '?1, (1 2), (3 4;p1);o1="val"');
 
-
     assertSerializeError(StructuredHeaders.serializeList(makeList([
       makeItem({kind: StructuredHeaders.ResultKind.STRING, value: '\u0000'}),
       makeItem({kind: StructuredHeaders.ResultKind.BOOLEAN, value: true}),

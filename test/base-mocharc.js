@@ -89,7 +89,6 @@ function createMochaConfig({suiteName, extraMochaConfig = {}}) {
     return generatedFile;
   });
 
-
   // When we are debugging, we don't want to timeout any test. This allows to inspect the state
   // of the application at the moment of the timeout. Here, 0 denotes "indefinite timeout".
   const timeout = process.env['DEBUG_TEST'] ? 0 : 5 * 1000;

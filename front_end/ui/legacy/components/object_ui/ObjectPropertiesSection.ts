@@ -589,7 +589,6 @@ export const enum ObjectPropertiesMode {
   OwnAndInternalAndInherited = 2,  // Own, internal, and inherited properties
 }
 
-
 export class RootElement extends UI.TreeOutline.TreeElement {
   _object: SDK.RemoteObject.RemoteObject;
   _linkifier: Components.Linkifier.Linkifier|undefined;
@@ -1557,7 +1556,6 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
   static _sparseIterationThreshold = 250000;
   static _getOwnPropertyNamesThreshold = 500000;
 }
-
 
 export class ObjectPropertyPrompt extends UI.TextPrompt.TextPrompt {
   constructor() {

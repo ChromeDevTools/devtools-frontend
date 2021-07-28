@@ -197,7 +197,6 @@ export enum Events {
   FrameExit = 'FrameExit',
 }
 
-
 export const Modes = {
   TimeBased: 'TimeBased',
   FrameBased: 'FrameBased',

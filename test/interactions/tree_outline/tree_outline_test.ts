@@ -9,7 +9,6 @@ import {$, $$, click, waitFor, waitForFunction} from '../../shared/helper.js';
 import {it} from '../../shared/mocha-extensions.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../helpers/shared.js';
 
-
 async function getTreeOutline(root?: ElementHandle) {
   const treeOutline = await waitFor('devtools-tree-outline', root);
   if (!treeOutline) {

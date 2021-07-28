@@ -6,7 +6,6 @@ import * as FrontendHelpers from '../../../../../test/unittests/front_end/helper
 import * as InlineEditor from '../../../legacy/components/inline_editor/inline_editor.js';
 import * as ComponentHelpers from '../../helpers/helpers.js';
 
-
 const container = document.querySelector('#container');
 const picker = document.querySelector<HTMLInputElement>('#picker');
 

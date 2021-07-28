@@ -47,7 +47,6 @@ describe('DataGrid', () => {
         * </div>
         */
 
-
     let node: HTMLElement = component1;
     assert.strictEqual(node.nodeValue, null, 'root node value is incorrect');
     assert.strictEqual(node.nodeName, 'DIV', 'root node name is incorrect');

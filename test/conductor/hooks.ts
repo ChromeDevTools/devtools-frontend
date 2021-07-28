@@ -202,7 +202,6 @@ async function loadTargetPageAndFrontend(testServerPort: number) {
     await frontend.goto(frontendUrl, {waitUntil: DEVTOOLS_WAITUNTIL_EVENTS});
   }
 
-
   if (TEST_SERVER_TYPE === 'component-docs') {
     /**
      * In the component docs mode it points to the page where we load component

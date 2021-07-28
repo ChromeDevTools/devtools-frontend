@@ -759,7 +759,6 @@ export enum Events {
   PersistentScrollSnapOverlayStateChanged = 'PersistentScrollSnapOverlayStateChanged',
 }
 
-
 export interface Highlighter {
   highlightInOverlay(data: HighlightData, config: Protocol.Overlay.HighlightConfig): void;
 

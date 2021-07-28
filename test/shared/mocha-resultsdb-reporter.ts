@@ -63,5 +63,4 @@ class ResultsDbReporter extends Mocha.reporters.Spec {
   }
 }
 
-
 exports = module.exports = ResultsDbReporter;

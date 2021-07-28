@@ -687,7 +687,6 @@ export enum RequestTimeRangeNames {
   Waiting = 'waiting',
 }
 
-
 export const ServiceWorkerRangeNames = new Set<RequestTimeRangeNames>([
   RequestTimeRangeNames.ServiceWorker,
   RequestTimeRangeNames.ServiceWorkerPreparation,

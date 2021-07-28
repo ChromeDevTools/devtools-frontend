@@ -741,7 +741,6 @@ export enum HeapSnapshotRetainmentDataGridEvents {
   ExpandRetainersComplete = 'ExpandRetainersComplete',
 }
 
-
 export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGrid {
   _profileIndex: number;
   _objectIdToSelect: string|null;

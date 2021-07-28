@@ -45,7 +45,6 @@ import {IdentityFormatter} from './IdentityFormatter.js';
 import {JavaScriptFormatter} from './JavaScriptFormatter.js';
 import {JSONFormatter} from './JSONFormatter.js';
 
-
 export interface Chunk {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

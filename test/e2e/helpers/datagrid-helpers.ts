@@ -39,7 +39,6 @@ export async function getDataGridController() {
   return dataGrid;
 }
 
-
 export async function getInnerTextOfDataGridCells(
     dataGridElement: ElementHandle<Element>, expectedNumberOfRows: number): Promise<string[][]> {
   const gridRows = await getDataGridRows(expectedNumberOfRows, dataGridElement);

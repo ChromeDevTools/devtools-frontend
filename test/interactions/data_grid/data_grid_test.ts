@@ -30,7 +30,6 @@ async function clickAndDragResizeHandlerHorizontally(handler: ElementHandle<Elem
   await frontend.mouse.up();
 }
 
-
 async function getColumnPixelWidths(columns: ElementHandle<Element>[]) {
   return Promise.all(columns.map(col => {
     return col.evaluate(cell => cell.clientWidth);
@@ -281,7 +280,6 @@ describe('data grid', async () => {
       }
       await addButton.click();
     }
-
 
     beforeEach(async function() {
       await loadComponentDocExample('data_grid/adding-data.html');

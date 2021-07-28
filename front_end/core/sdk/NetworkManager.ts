@@ -295,7 +295,6 @@ export enum Events {
   LoadingFinished = 'LoadingFinished',
 }
 
-
 export const NoThrottlingConditions: Conditions = {
   title: i18nLazyString(UIStrings.noThrottling),
   i18nTitleKey: UIStrings.noThrottling,
@@ -963,7 +962,6 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     }
     request.setTrustTokenOperationDoneEvent(event);
   }
-
 
   subresourceWebBundleMetadataReceived({requestId, urls}: Protocol.Network.SubresourceWebBundleMetadataReceivedEvent):
       void {

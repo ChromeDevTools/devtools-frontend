@@ -10,7 +10,6 @@ import {Issue, IssueCategory, IssueKind} from './Issue.js';
 import type {LazyMarkdownIssueDescription, MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 import {resolveLazyDescription} from './MarkdownIssueDescription.js';
 
-
 const UIStrings = {
   /**
   *@description Label for the link for Trusted Web Activity issue
@@ -103,7 +102,6 @@ export const assetlinkViolationCode: string = [
   Protocol.Audits.InspectorIssueCode.TrustedWebActivityIssue,
   Protocol.Audits.TwaQualityEnforcementViolationType.KDigitalAssetLinks,
 ].join('::');
-
 
 const issueDescriptions: Map<Protocol.Audits.TwaQualityEnforcementViolationType, LazyMarkdownIssueDescription> =
     new Map([

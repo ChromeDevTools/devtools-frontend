@@ -10,7 +10,6 @@ import {Issue, IssueCategory, IssueKind} from './Issue.js';
 import type {MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 import {isCausedByThirdParty} from './SameSiteCookieIssue.js';
 
-
 const UIStrings = {
   /**
    * @description Label for the link for User-Agent String reduction issues, that is, issues that are related to an

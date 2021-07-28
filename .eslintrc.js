@@ -86,7 +86,7 @@ module.exports = {
     'template-curly-spacing': [2, 'never'],
 
     // file whitespace
-    'no-multiple-empty-lines': [2, {'max': 2}],
+    'no-multiple-empty-lines': [2, {'max': 1}],
     'no-mixed-spaces-and-tabs': 2,
     'no-trailing-spaces': 2,
     'linebreak-style': [2, 'unix'],

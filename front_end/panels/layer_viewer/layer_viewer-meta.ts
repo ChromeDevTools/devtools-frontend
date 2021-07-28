@@ -46,7 +46,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/layer_viewer-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
-
 UI.ActionRegistration.registerActionExtension({
   actionId: 'layers.reset-view',
   category: UI.ActionRegistration.ActionCategory.LAYERS,

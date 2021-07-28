@@ -83,7 +83,6 @@ export function renderCellValue(cell: Cell): LitHtml.TemplateResult|typeof LitHt
   return DataGridRenderers.primitiveRenderer(cell.value);
 }
 
-
 /**
  * When the user passes in columns we want to know how wide each one should be.
  * We don't work in exact percentages, or pixel values, because it's then
@@ -242,7 +241,6 @@ export const calculateFirstFocusableCell =
 
       return [focusableColIndex, focusableRowIndex];
     };
-
 
 export class ContextMenuColumnSortClickEvent extends Event {
   data: {

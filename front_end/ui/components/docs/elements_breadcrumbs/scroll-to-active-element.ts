@@ -64,7 +64,6 @@ component.data = {
   selectedNode: bodyCrumb,
 };
 
-
 const button = component.shadowRoot?.querySelector?.('button.overflow.right');
 button?.dispatchEvent(new MouseEvent('click'));
 // Each subsequent click is timed out to allow the smooth scroll to finish.

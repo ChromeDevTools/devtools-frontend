@@ -957,7 +957,6 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper implement
     ].filter(v => Boolean(v)) as Cookie[];
   }
 
-
   get serverTimings(): ServerTiming[]|null {
     if (typeof this._serverTimings === 'undefined') {
       this._serverTimings = ServerTiming.parseHeaders(this.responseHeaders);
@@ -1222,7 +1221,6 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper implement
     return this._signedExchangeInfo;
   }
 
-
   setWebBundleInfo(info: WebBundleInfo|null): void {
     this._webBundleInfo = info;
   }
@@ -1436,7 +1434,6 @@ export enum Events {
   TrustTokenResultAdded = 'TrustTokenResultAdded',
 }
 
-
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum InitiatorType {
@@ -1449,7 +1446,6 @@ export enum InitiatorType {
   Preflight = 'preflight',
 }
 
-
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum WebSocketFrameType {
@@ -1457,7 +1453,6 @@ export enum WebSocketFrameType {
   Receive = 'receive',
   Error = 'error',
 }
-
 
 export const cookieBlockedReasonToUiString = function(blockedReason: Protocol.Network.CookieBlockedReason): string {
   switch (blockedReason) {

@@ -142,7 +142,6 @@ const enum Events {
   RemoveCredential = 'RemoveCredential',
 }
 
-
 class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
   constructor(credential: Protocol.WebAuthn.Credential) {
     super(credential);

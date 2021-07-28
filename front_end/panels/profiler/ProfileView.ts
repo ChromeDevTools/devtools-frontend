@@ -549,7 +549,6 @@ export const enum ViewTypes {
   Heavy = 'Heavy',
 }
 
-
 export class WritableProfileHeader extends ProfileHeader implements Common.StringOutputStream.OutputStream {
   _debuggerModel: SDK.DebuggerModel.DebuggerModel|null;
   _fileName?: string;

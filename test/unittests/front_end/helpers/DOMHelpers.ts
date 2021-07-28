@@ -105,7 +105,6 @@ export function waitForScrollLeft<T extends Element>(element: T, desiredScrollLe
 
   const timeBetweenPolls = 50;
 
-
   return new Promise(resolve => {
     const pollForScrollLeft = () => {
       const newScrollLeft = element.scrollLeft;

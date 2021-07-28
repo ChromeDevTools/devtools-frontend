@@ -1510,7 +1510,6 @@ export enum Events {
   MarkersChanged = 'MarkersChanged',
 }
 
-
 class DOMDispatcher implements ProtocolProxyApi.DOMDispatcher {
   _domModel: DOMModel;
   constructor(domModel: DOMModel) {

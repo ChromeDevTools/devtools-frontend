@@ -14,7 +14,6 @@ const defaultIstanbulSchema = require('@istanbuljs/schema');
 
 const {getTestRunnerConfigSetting} = require('../test/test_config_helpers.js');
 
-
 const serverPort = parseInt(process.env.PORT, 10) || 8090;
 const target = argv.target || process.env.TARGET || 'Default';
 

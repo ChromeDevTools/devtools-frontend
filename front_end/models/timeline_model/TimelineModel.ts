@@ -1714,7 +1714,6 @@ export enum TrackType {
   Other = 'Other',
 }
 
-
 export class PageFrame {
   frameId: any;
   url: any;

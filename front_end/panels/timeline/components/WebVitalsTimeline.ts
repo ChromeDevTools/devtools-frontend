@@ -243,7 +243,6 @@ export class WebVitalsTimeline extends HTMLElement {
     this.layoutShiftsLane.handlePointerMove(this.hoverLane === 3 ? x : null);
     this.longTasksLane.handlePointerMove(this.hoverLane === 4 ? x : null);
 
-
     this.scheduleRender();
   }
 

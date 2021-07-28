@@ -139,7 +139,6 @@ async function extractTableFromResourceSection(resourceContentElement: puppeteer
   return undefined;
 }
 
-
 export async function waitForTableFromResourceSection(
     resourceContentElement: puppeteer.ElementHandle<Element>,
     predicate: (table: string[][]) => true | undefined): Promise<string[][]> {

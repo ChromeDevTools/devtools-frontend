@@ -23,7 +23,6 @@ UI.DockController.ToggleDockActionDelegate = UIModule.DockController.ToggleDockA
 /** @constructor */
 UI.DockController.CloseButtonProvider = UIModule.DockController.CloseButtonProvider;
 
-
 /** @constructor */
 UI.Context = UIModule.Context.Context;
 
@@ -149,7 +148,6 @@ UI.SettingUI = UIModule.SettingsUI.SettingUI;
 /** @constructor */
 UI.ShortcutRegistry = UIModule.ShortcutRegistry.ShortcutRegistry;
 
-
 UI.ShortcutRegistry.ForwardedShortcut = UIModule.ShortcutRegistry.ForwardedShortcut;
 
 /** @constructor */
@@ -246,7 +244,6 @@ UI.XLink.ContextMenuProvider = UIModule.XLink.ContextMenuProvider;
 
 /** @type {!UIModule.Context.Context} */
 self.UI.context = UIModule.Context.Context.instance();
-
 
 /**
  * @type {!UI.DockController}

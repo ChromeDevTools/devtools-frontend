@@ -2236,7 +2236,6 @@ export const HTTPSchemas = {
   'wss': true,
 };
 
-
 const searchKeys: string[] = Object.values(NetworkForward.UIFilter.FilterType);
 
 export interface GroupLookupInterface {

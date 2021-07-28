@@ -63,7 +63,6 @@ class TrackDOMNodeToTreeNode extends LitHtml.Directive.Directive {
 
 export const trackDOMNodeToTreeNode = LitHtml.Directive.directive(TrackDOMNodeToTreeNode);
 
-
 /**
  * Finds the next sibling of the node's parent, recursing up the tree if
  * required.
@@ -183,7 +182,6 @@ export const getNodeChildren =
   treeNodeChildrenWeakMap.set(node as TreeNode<unknown>, children as TreeNode<unknown>[]);
   return children;
 };
-
 
 /**
  * Searches the tree and returns a path to the given node.

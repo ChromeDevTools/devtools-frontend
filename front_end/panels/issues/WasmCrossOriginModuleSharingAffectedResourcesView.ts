@@ -12,7 +12,6 @@ import {AffectedResourcesView} from './AffectedResourcesView.js';
 import type {AggregatedIssue} from './IssueAggregator.js';
 import type {IssueView} from './IssueView.js';
 
-
 const UIStrings = {
   /**
    * @description Label for number of affected resources indication in issue view. The number designates the number of attempts to transfer a module to cross-origin context.

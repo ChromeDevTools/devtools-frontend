@@ -136,7 +136,6 @@ export function maybeRemoveViewExtension(viewId: string): boolean {
   return true;
 }
 
-
 const registeredLocationResolvers: Array<LocationResolverRegistration> = [];
 
 const viewLocationNameSet = new Set<ViewLocationValues>();

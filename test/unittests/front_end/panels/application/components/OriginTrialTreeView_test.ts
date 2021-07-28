@@ -126,7 +126,6 @@ const trialWithUnparsableToken: Protocol.Page.OriginTrial = {
   ],
 };
 
-
 function extractBadgeTextFromTreeNode(node: HTMLLIElement): string[] {
   return [...node.querySelectorAll('devtools-resources-origin-trial-tree-view-badge')].map(badgeElement => {
     assertShadowRoot(badgeElement.shadowRoot);

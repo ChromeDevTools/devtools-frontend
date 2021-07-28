@@ -125,7 +125,6 @@ export const enum Events {
   ComputedStyleChanged = 'ComputedStyleChanged',
 }
 
-
 export class ComputedStyle {
   node: SDK.DOMModel.DOMNode;
   computedStyle: Map<string, string>;

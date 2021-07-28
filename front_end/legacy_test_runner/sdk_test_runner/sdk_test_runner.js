@@ -139,7 +139,6 @@ SDKTestRunner.PageMock = class {
       this._fireEvent('Runtime.executionContextDestroyed', {executionContextId: context.id});
     }
 
-
     this._scripts = [];
     this._scriptContents.clear();
     this._executionContexts = [];
@@ -149,7 +148,6 @@ SDKTestRunner.PageMock = class {
     for (const context of this._executionContexts) {
       this._fireEvent('Runtime.executionContextCreated', {context: context});
     }
-
 
     this._fireEvent('Page.frameNavigated', {frame: this._mainFrame});
 

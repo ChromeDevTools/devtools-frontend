@@ -487,7 +487,6 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
   static readonly Padding = 2;
 }
 
-
 export class TimelineEventOverviewFrames extends TimelineEventOverview {
   constructor() {
     super('framerate', i18nString(UIStrings.fps));

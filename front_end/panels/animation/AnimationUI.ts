@@ -471,7 +471,6 @@ export const enum Events {
   FinishEndpointMove = 'FinishEndpointMove',
 }
 
-
 export const Options = {
   AnimationHeight: 26,
   AnimationSVGHeight: 50,

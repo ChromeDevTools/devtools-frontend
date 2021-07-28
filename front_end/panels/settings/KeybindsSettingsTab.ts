@@ -88,7 +88,6 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
   constructor() {
     super(true);
 
-
     const header = this.contentElement.createChild('header');
     header.createChild('h1').textContent = i18nString(UIStrings.shortcuts);
     const keybindsSetSetting = Common.Settings.Settings.instance().moduleSetting('activeKeybindSet');
@@ -133,7 +132,6 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
 
     return keybindsSettingsTabInstance;
   }
-
 
   createElementForItem(item: KeybindsItem): Element {
     let itemElement = document.createElement('div');

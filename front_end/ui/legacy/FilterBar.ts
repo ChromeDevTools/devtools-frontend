@@ -447,7 +447,6 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper impl
   static readonly ALL_TYPES = 'all';
 }
 
-
 export class CheckboxFilterUI extends Common.ObjectWrapper.ObjectWrapper implements FilterUI {
   _filterElement: HTMLDivElement;
   _activeWhenChecked: boolean;

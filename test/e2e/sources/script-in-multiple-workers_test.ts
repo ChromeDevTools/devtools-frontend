@@ -26,7 +26,6 @@ async function validateSourceTabs() {
   });
 }
 
-
 describe('Multi-Workers', async function() {
   // The tests in this suite are particularly slow, as they perform a lot of actions
   this.timeout(10000);

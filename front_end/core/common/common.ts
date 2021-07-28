@@ -38,7 +38,6 @@ import * as Worker from './Worker.js';
  */
 export {UIString} from '../platform/platform.js';
 
-
 /**
  * @type {!Settings.Settings}
  */

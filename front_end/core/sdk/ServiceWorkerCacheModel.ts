@@ -266,7 +266,6 @@ export enum Events {
   CacheStorageContentUpdated = 'CacheStorageContentUpdated',
 }
 
-
 export class Cache {
   _model: ServiceWorkerCacheModel;
   securityOrigin: string;

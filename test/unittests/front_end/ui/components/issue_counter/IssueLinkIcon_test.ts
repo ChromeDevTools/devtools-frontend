@@ -28,7 +28,6 @@ const renderIssueLinkIcon = async(data: IssueCounter.IssueLinkIcon.IssueLinkIcon
   return {component, shadowRoot: component.shadowRoot};
 };
 
-
 export const extractElements = (shadowRoot: ShadowRoot): {
   icon: IconButton.Icon.Icon,
   container: HTMLSpanElement,

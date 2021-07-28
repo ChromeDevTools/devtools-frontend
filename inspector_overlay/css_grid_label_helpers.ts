@@ -104,7 +104,6 @@ interface TrackSize {
   y: number;
 }
 
-
 export interface GridHighlightOptions {
   gridBorderDash: boolean;
   rowLineDash: boolean;
@@ -803,7 +802,6 @@ function flipArrowTypeIfNeeded(arrowType: string, flipIn: boolean): string {
 
   return arrowType;
 }
-
 
 /**
  * Given an arrow type for the standard horizontal-tb writing-mode, return the corresponding type for a differnet

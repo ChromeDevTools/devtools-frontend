@@ -421,7 +421,6 @@ self.injectedExtensionAPI = function(
           extensionServer.registerHandler('notify-' + this._type, this._dispatch.bind(this));
         },
 
-
     removeListener: function<ListenerT extends APIImpl.Callable>(
         this: APIImpl.EventSink<ListenerT>, callback: ListenerT): void {
       const listeners = this._listeners;
@@ -437,7 +436,6 @@ self.injectedExtensionAPI = function(
       }
     },
 
-
     _fire: function<ListenerT extends APIImpl.Callable>(
         this: APIImpl.EventSink<ListenerT>, ..._vararg: Parameters<ListenerT>): void {
       const listeners = this._listeners.slice();
@@ -445,7 +443,6 @@ self.injectedExtensionAPI = function(
         listeners[i].apply(null, Array.from(arguments));
       }
     },
-
 
     _dispatch: function<ListenerT extends APIImpl.Callable>(
         this: APIImpl.EventSink<ListenerT>, request: {arguments: unknown[]}): void {
@@ -788,13 +785,11 @@ self.injectedExtensionAPI = function(
   const Resource = declareInterfaceClass(ResourceImpl);
   const TraceSession = declareInterfaceClass(TraceSessionImpl);
 
-
   class ElementsPanel extends (Constructor(PanelWithSidebarClass)) {
     constructor() {
       super('elements');
     }
   }
-
 
   class SourcesPanel extends (Constructor(PanelWithSidebarClass)) {
     constructor() {
@@ -962,7 +957,6 @@ self.injectedExtensionAPI = function(
       this._fire(new (Constructor(TraceSession))(sessionId));
     }
 
-
     this.onRecordingStarted =
         new (Constructor(EventSink))(PrivateAPI.Events.RecordingStarted + id, dispatchRecordingStarted);
 
@@ -984,7 +978,6 @@ self.injectedExtensionAPI = function(
       this._fire(
           new (Constructor(Resource))(message.arguments[0] as APIImpl.ResourceData), message.arguments[1] as string);
     }
-
 
     this.onResourceAdded = new (Constructor(EventSink))(PrivateAPI.Events.ResourceAdded, dispatchResourceEvent);
     this.onResourceContentCommitted =
@@ -1249,7 +1242,6 @@ self.injectedExtensionAPI = function(
       }
     }
   }
-
 
   const extensionServer = new (Constructor(ExtensionServerClient))();
 

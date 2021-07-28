@@ -23,7 +23,6 @@ Persistence.AutomappingStatus.prototype.toString = function() {
   return lines.join('\n');
 };
 
-
 BindingsTestRunner.waitForBinding = function(fileName) {
   const uiSourceCodes = self.Workspace.workspace.uiSourceCodes();
 

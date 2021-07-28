@@ -21,7 +21,6 @@ TextUtils.ContentProvider.SearchMatch = TextUtilsModule.ContentProvider.SearchMa
 TextUtils.ContentProvider.contentAsDataURL = TextUtilsModule.ContentProvider.contentAsDataURL;
 TextUtils.StaticContentProvider = TextUtilsModule.StaticContentProvider.StaticContentProvider;
 
-
 /** @constructor */
 TextUtils.Text = TextUtilsModule.Text.Text;
 

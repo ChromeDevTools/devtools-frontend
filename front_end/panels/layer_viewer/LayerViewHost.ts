@@ -19,7 +19,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/LayerViewHost.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-
 export abstract class LayerView {
   abstract hoverObject(selection: Selection|null): void;
   abstract selectObject(selection: Selection|null): void;
@@ -57,7 +56,6 @@ export const enum Type {
   ScrollRect = 'ScrollRect',
   Snapshot = 'Snapshot',
 }
-
 
 export class LayerSelection extends Selection {
   constructor(layer: SDK.LayerTreeBase.Layer) {

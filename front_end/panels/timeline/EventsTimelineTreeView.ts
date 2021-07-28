@@ -221,7 +221,6 @@ export class Filters extends Common.ObjectWrapper.ObjectWrapper {
   static readonly _durationFilterPresetsMs = [0, 1, 15];
 }
 
-
 export namespace Filters {
   // TODO(crbug.com/1167717): Make this a const enum again
   // eslint-disable-next-line rulesdir/const_enum

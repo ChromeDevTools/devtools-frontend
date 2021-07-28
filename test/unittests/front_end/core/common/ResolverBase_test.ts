@@ -44,7 +44,6 @@ export class ResolverTestImpl extends Common.ResolverBase.ResolverBase<string, T
   }
 }
 
-
 describe('ResolverBase', () => {
   const id = 'foo';
   const testObj = new TestClass();

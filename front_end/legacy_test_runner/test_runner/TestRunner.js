@@ -707,7 +707,6 @@ export function addScriptForFrame(url, content, frame) {
 
 export const formatters = {
 
-
   /**
  * @param {*} value
  * @return {string}

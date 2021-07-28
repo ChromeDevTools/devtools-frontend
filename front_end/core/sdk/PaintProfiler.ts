@@ -105,7 +105,6 @@ export class PaintProfilerSnapshot {
   }
 }
 
-
 export class PaintProfilerLogItem {
   method: string;
   params: RawPaintProfilerLogItemParams|null;

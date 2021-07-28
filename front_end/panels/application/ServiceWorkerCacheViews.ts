@@ -426,7 +426,6 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
 
 const networkRequestToPreview = new WeakMap<SDK.NetworkRequest.NetworkRequest, RequestView>();
 
-
 export class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
   _number: number;
   _name: string;

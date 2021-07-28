@@ -31,7 +31,6 @@ for (let i = 0; i < 1000; i++) {
   rows.push(newRow);
 }
 
-
 component.data = {
   columns: [
     {id: 'key', title: 'Key', widthWeighting: 1, visible: true, hideable: false, sortable: true},

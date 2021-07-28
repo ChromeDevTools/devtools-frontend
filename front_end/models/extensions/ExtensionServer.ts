@@ -31,7 +31,6 @@
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
 /* eslint-disable @typescript-eslint/naming-convention,rulesdir/no_underscored_properties */
 
-
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -1102,7 +1101,6 @@ export enum Events {
   SidebarPaneAdded = 'SidebarPaneAdded',
   TraceProviderAdded = 'TraceProviderAdded',
 }
-
 
 class ExtensionServerPanelView extends UI.View.SimpleView {
   _name: string;

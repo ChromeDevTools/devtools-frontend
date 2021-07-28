@@ -4,7 +4,6 @@
 
 import * as Marked from '../../third_party/marked/marked.js';
 
-
 /**
  * The description that subclasses of `Issue` use define the issue appearance:
  * `file` specifies the markdown file, substitutions can be used to replace

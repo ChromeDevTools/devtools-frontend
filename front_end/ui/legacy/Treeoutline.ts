@@ -372,7 +372,6 @@ export enum Events {
   ElementSelected = 'ElementSelected',
 }
 
-
 export class TreeOutlineInShadow extends TreeOutline {
   element: HTMLElement;
   _shadowRoot: ShadowRoot;

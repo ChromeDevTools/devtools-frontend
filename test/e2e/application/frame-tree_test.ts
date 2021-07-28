@@ -89,7 +89,6 @@ describe('The Application Tab', async () => {
     assert.deepEqual(fieldValuesTextContent, expected);
   });
 
-
   it('shows stack traces for OOPIF', async () => {
     await goToResource('application/js-oopif.html');
     await ensureApplicationPanel();

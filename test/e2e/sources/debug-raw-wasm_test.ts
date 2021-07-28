@@ -330,7 +330,6 @@ describe('Sources Tab', async function() {
       await openSourceCodeEditorForFile(fileName, 'wasm/stepping-with-state-and-threads.html');
     });
 
-
     await step('check that the main thread is selected', async () => {
       const selectedThreadElement = await waitFor(SELECTED_THREAD_SELECTOR);
       const selectedThreadName = await selectedThreadElement.evaluate(element => {

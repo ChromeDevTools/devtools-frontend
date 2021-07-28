@@ -39,7 +39,6 @@ async function prettyPrintMinifiedFile(frontend: puppeteer.Page) {
   await waitForSourceLoadedEvent(frontend, source);
 }
 
-
 describe('The Sources Tab', async function() {
   // The tests in this suite are particularly slow, as they perform a lot of actions
   this.timeout(10000);

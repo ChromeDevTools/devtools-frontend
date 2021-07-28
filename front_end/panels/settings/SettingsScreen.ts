@@ -107,7 +107,6 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
   private constructor() {
     super(true);
 
-
     this.contentElement.classList.add('settings-window-main');
     this.contentElement.classList.add('vbox');
 
@@ -261,7 +260,6 @@ class SettingsTab extends UI.Widget.VBox {
 
 let genericSettingsTabInstance: GenericSettingsTab;
 
-
 export class GenericSettingsTab extends SettingsTab {
   private categoryToSection = new Map<Common.Settings.SettingCategory, Element>();
 
@@ -380,7 +378,6 @@ export class GenericSettingsTab extends SettingsTab {
   }
 }
 
-
 let experimentsSettingsTabInstance: ExperimentsSettingsTab;
 
 export class ExperimentsSettingsTab extends SettingsTab {
@@ -446,7 +443,6 @@ export class ExperimentsSettingsTab extends SettingsTab {
 
     return experimentsSettingsTabInstance;
   }
-
 
   _createExperimentsWarningSubsection(warningMessage: string): Element {
     const subsection = document.createElement('div');

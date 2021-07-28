@@ -862,7 +862,6 @@ export enum Events {
   ShowModeChanged = 'ShowModeChanged',
 }
 
-
 const MinPadding = 20;
 export interface SettingForOrientation {
   showMode: string;

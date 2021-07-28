@@ -11,7 +11,6 @@ import * as Protocol from '../../generated/protocol.js';
 
 import type {LayerPaintEvent} from './TimelineFrameModel.js';
 
-
 export class TracingLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
   _tileById: Map<string, TracingLayerTile>;
   _paintProfilerModel: SDK.PaintProfiler.PaintProfilerModel|null;

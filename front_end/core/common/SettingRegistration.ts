@@ -75,7 +75,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let registeredSettings: Array<SettingRegistration> = [];
 const settingNameSet = new Set<string>();
 
-
 export function registerSettingExtension(registration: SettingRegistration): void {
   const settingName = registration.settingName;
   if (settingNameSet.has(settingName)) {

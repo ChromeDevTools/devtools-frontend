@@ -59,7 +59,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let performanceMonitorImplInstance: PerformanceMonitorImpl;
 
-
 export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     SDK.TargetManager.SDKModelObserver<SDK.PerformanceMetricsModel.PerformanceMetricsModel> {
   _metricsBuffer: {timestamp: number, metrics: Map<string, number>}[];

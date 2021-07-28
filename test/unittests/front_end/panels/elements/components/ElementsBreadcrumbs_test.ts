@@ -11,7 +11,6 @@ import {withNoMutations} from '../../../helpers/MutationHelpers.js';
 const {assert} = chai;
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-
 interface MakeCrumbOptions extends Partial<ElementsComponents.Helper.DOMNode> {
   attributes?: {[x: string]: string};
 }

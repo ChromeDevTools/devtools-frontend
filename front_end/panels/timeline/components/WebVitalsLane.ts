@@ -249,7 +249,6 @@ export class WebVitalsEventLane extends WebVitalsLane {
       const tWidth = widthIncludingTimestamp + 2 * 5;
       const tHeight = this.timeline.getLineHeight() - 2;
 
-
       this.context.fillStyle = this.theme.background;
       this.context.fillRect(tX, tY, tWidth, tHeight);
 

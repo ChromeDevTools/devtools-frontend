@@ -93,7 +93,6 @@ async function loadTimelineModule(): Promise<typeof Timeline> {
   return loadedTimelineModule;
 }
 
-
 // The profiler module is imported here because the js profiler tab is implemented
 // in the profiler module. Since the tab doesn't belong to all apps that extend
 // the shell app, it cannot be registered in profiler's meta file, as profiler is
@@ -125,7 +124,6 @@ function maybeRetrieveContextTypes<T = unknown>(getClassCallBack: (timelineModul
   }
   return getClassCallBack(loadedTimelineModule);
 }
-
 
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
@@ -187,7 +185,6 @@ UI.ActionRegistration.registerActionExtension({
     },
   ],
 });
-
 
 UI.ActionRegistration.registerActionExtension({
   actionId: 'timeline.record-reload',

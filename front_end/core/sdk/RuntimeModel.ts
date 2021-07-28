@@ -498,7 +498,6 @@ export type EventTypes = {
   [Events.QueryObjectRequested]: QueryObjectRequestedEvent,
 };
 
-
 class RuntimeDispatcher implements ProtocolProxyApi.RuntimeDispatcher {
   _runtimeModel: RuntimeModel;
   constructor(runtimeModel: RuntimeModel) {

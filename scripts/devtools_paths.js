@@ -44,7 +44,6 @@ function pathIsMostTopLevelPath(filePath) {
   return filePath === path.sep || path.dirname(filePath) === filePath;
 }
 
-
 const _lookUpCaches = new Map(
     [['chromium', null]],
 );

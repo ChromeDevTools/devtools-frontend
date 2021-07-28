@@ -58,7 +58,6 @@ describe('SegmentedRange', () => {
     const segmentA = new Segment(1, 2, 'A');
     const segmentB = new Segment(1.5, 3, 'A');
 
-
     segmentedRange.append(segmentA);
     segmentedRange.append(segmentB);
 

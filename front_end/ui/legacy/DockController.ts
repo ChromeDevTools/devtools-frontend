@@ -212,7 +212,6 @@ export const enum Events {
   AfterDockSideChanged = 'AfterDockSideChanged',
 }
 
-
 let toggleDockActionDelegateInstance: ToggleDockActionDelegate;
 
 export class ToggleDockActionDelegate implements ActionDelegate {

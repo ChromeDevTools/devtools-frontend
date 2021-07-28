@@ -292,7 +292,6 @@ export const sprintf = function(format: string, ...varArg: unknown[]): string {
   return vsprintf(format, varArg);
 };
 
-
 export const toBase64 = (inputString: string): string => {
   /* note to the reader: we can't use btoa here because we need to
    * support Unicode correctly. See the test cases for this function and

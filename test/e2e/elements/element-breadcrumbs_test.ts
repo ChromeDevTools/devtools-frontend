@@ -10,7 +10,6 @@ import {assertSelectedElementsNodeTextIncludes, expandSelectedNodeRecursively, g
 
 const EXPECTED_TEXT_CONTENT = '<div class=\u200B"div2">\u200B last child \u200B</div>\u200B';
 
-
 describe('Element breadcrumbs', async () => {
   beforeEach(async function() {
     await goToResource('elements/element-breadcrumbs.html');

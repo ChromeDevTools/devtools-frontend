@@ -38,7 +38,6 @@ const str_ = i18n.i18n.registerUIStrings('ui/components/linear_memory_inspector/
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {render, html} = LitHtml;
 
-
 export const enum Navigation {
   Backward = 'Backward',
   Forward = 'Forward',

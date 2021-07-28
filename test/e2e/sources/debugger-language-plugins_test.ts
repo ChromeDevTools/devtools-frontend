@@ -10,7 +10,6 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, getCurrentConsoleMessages, getStructuredConsoleMessages} from '../helpers/console-helpers.js';
 import {addBreakpointForLine, getCallFrameLocations, getCallFrameNames, getNonBreakableLines, getValuesForScope, isBreakpointSet, listenForSourceFilesAdded, openFileInEditor, openFileInSourcesPanel, openSourceCodeEditorForFile, openSourcesPanel, PAUSE_ON_EXCEPTION_BUTTON, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, switchToCallFrame, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
 
-
 // TODO: Remove once Chromium updates its version of Node.js to 12+.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const globalThis: any = global;
@@ -38,7 +37,6 @@ describe('The Debugger Language Plugins', async () => {
           name: 'TestExtension',
         };
         extensionServer._addExtension(extensionInfo);
-
 
         const extensionIFrames = document.body.querySelectorAll(`[data-devtools-extension="${extensionInfo.name}"]`);
         const injectedAPI = globalThis.buildExtensionAPIInjectedScript(
@@ -92,7 +90,6 @@ describe('The Debugger Language Plugins', async () => {
     const capturedFileNames = await retrieveSourceFilesAdded(frontend);
     assert.deepEqual(capturedFileNames, ['/test/e2e/resources/sources/wasm/global_variable.wasm', '/source_file.c']);
   });
-
 
   // Resolve a single code offset to a source line to test the correctness of offset computations.
   it('use correct code offsets to interpret raw locations', async () => {
@@ -180,7 +177,6 @@ describe('The Debugger Language Plugins', async () => {
               }
               return [];
             }
-
 
             async sourceLocationToRawLocation(sourceLocationArg: Chrome.DevTools.SourceLocation) {
               const {rawLocationRange, sourceLocation} = this.modules.get(sourceLocationArg.rawModuleId) || {};
@@ -607,7 +603,6 @@ describe('The Debugger Language Plugins', async () => {
             }
           }
 
-
           RegisterExtension(
               extensionAPI, new VariableListingPlugin(), 'Location Mapping',
               {language: 'WebAssembly', symbol_types: ['None']});
@@ -821,7 +816,6 @@ describe('The Debugger Language Plugins', async () => {
     const locals = await getValuesForScope('LOCAL', 0, 1);
     assert.deepStrictEqual(locals, ['unreachable: undefined']);
 
-
     const watchPane = await waitFor('[aria-label="Watch"]');
     const isExpanded = await watchPane.evaluate(element => {
       return element.getAttribute('aria-expanded') === 'true';
@@ -854,7 +848,6 @@ describe('The Debugger Language Plugins', async () => {
       return errorElement.getAttribute('title');
     });
     assert.strictEqual(tooltipText, 'No typeinfo for bar');
-
 
     await click(CONSOLE_TAB_SELECTOR);
     await focusConsolePrompt();

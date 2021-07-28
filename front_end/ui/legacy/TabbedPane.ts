@@ -931,7 +931,6 @@ export enum Events {
   TabOrderChanged = 'TabOrderChanged',
 }
 
-
 export class TabbedPaneTab {
   _closeable: boolean;
   _tabbedPane: TabbedPane;

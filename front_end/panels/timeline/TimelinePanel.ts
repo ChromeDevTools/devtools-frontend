@@ -1257,7 +1257,6 @@ export enum State {
   RecordingFailed = 'RecordingFailed',
 }
 
-
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum ViewMode {
@@ -1266,7 +1265,6 @@ export enum ViewMode {
   CallTree = 'CallTree',
   EventLog = 'EventLog',
 }
-
 
 // Define row and header height, should be in sync with styles for timeline graphs.
 export const rowHeight = 18;

@@ -94,7 +94,6 @@ UI.ActionRegistration.registerActionExtension({
   },
 });
 
-
 UI.ActionRegistration.registerActionExtension({
   actionId: 'background-service.toggle-recording',
   iconClass: UI.ActionRegistration.IconClass.LARGEICON_START_RECORDING,

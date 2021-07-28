@@ -194,7 +194,6 @@ module.exports = stylelint.createPlugin(RULE_NAME, function(primary, secondary, 
             previousNode.text.startsWith('stylelint-disable-next-line plugin/use_theme_colors');
         const alreadyFixed = nextNodeIsDisableComment || previousNodeIsDisableComment;
 
-
         /**
          * If we're checking a border-{top/bottom/left/right}, we need to regex
          * out just the color part of the declaration to check.

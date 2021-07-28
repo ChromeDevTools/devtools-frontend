@@ -11,7 +11,6 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import accessibilityTreeNodeStyles from './accessibilityTreeNode.css.js';
 
-
 const UIStrings = {
   /**
   *@description Ignored node element text content in Accessibility Tree View of the Elements panel
@@ -31,7 +30,6 @@ function truncateTextIfNeeded(text: string): string {
   }
   return text;
 }
-
 
 export interface AccessibilityTreeNodeData {
   ignored: boolean;

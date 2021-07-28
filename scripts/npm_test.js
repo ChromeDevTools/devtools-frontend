@@ -43,7 +43,6 @@ function main() {
 }
 main();
 
-
 function getChromiumSrcPath(isThirdParty) {
   if (isThirdParty)
   // Assume we're in `chromium/src/third_party/devtools-frontend/src`.

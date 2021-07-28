@@ -511,7 +511,6 @@ describe('User Metrics for CSS Overview', () => {
   });
 });
 
-
 describe('User Metrics for CSS Editors in Styles Pane', () => {
   it('dispatch CssEditorOpened events', async () => {
     const {frontend} = getBrowserAndPages();

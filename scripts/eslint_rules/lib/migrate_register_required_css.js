@@ -69,12 +69,13 @@ function updateGRDFile(cssFilePath) {
   }
 
   const contents = fs.readFileSync('config/gni/devtools_grd_files.gni', 'utf-8').split('\n');
-  if (contents.includes(cssFilePath + '.js')) {
+  const newGRDFileEntry = JSON.stringify(`front_end/${cssFilePath}.js`) + ',';
+  if (contents.includes(newGRDFileEntry)) {
     return;
   }
 
   const index = contents.findIndex(line => line.includes('.css.js'));
-  contents.splice(index, 0, JSON.stringify(cssFilePath + '.js') + ',');
+  contents.splice(index, 0, newGRDFileEntry);
   const finalContents = contents.join('\n');
   fs.writeFileSync('config/gni/devtools_grd_files.gni', finalContents, 'utf-8');
 }
@@ -101,7 +102,14 @@ module.exports = {
           const filenameWithExtension = node.expression.arguments[0].value;
           const filename = path.basename(filenameWithExtension, '.css');
           const newFileName = filename + 'Styles';
-          const importStatement = `import ${newFileName} from \'./${filename + '.css.js'}\';\n`;
+
+          const importDir = path.dirname(filenameWithExtension);
+          const fileDir = path.dirname(context.getFilename());
+          const relativeImport = path.relative(fileDir, importDir);
+          const importStatement = relativeImport === '' ?
+              `import ${newFileName} from \'./${filename}.css.js\';\n` :
+              `import ${newFileName} from \'${relativeImport}/${filename}.css.js\';\n`;
+
           const programNode = context.getAncestors()[0];
           const containsImport = context.getSourceCode().getText().includes(importStatement);
 

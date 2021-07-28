@@ -80,6 +80,26 @@ export class Component extends UI.Widget.Widget {
 }`
     },
     {
+      // Add wasShown method containing import and resolves path correctly
+      code: `export class Component extends UI.Widget.Widget {
+  constructor(){
+this.registerRequiredCSS('front_end/ui/test.css')
+  }
+}`,
+      filename: 'front_end/components/test.ts',
+      errors: [{message: ADD_WAS_SHOW_EXPECTED_ERROR_MESSAGE}],
+      output: `import testStyles from '../ui/test.css.js';
+export class Component extends UI.Widget.Widget {
+  constructor(){
+
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([testStyles]);
+  }
+}`
+    },
+    {
       // Adds wasShown method as last method in class
       code: `export class Component extends UI.Widget.Widget {
   constructor(){

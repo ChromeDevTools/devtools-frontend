@@ -65,7 +65,7 @@ constructor(){
       code: `export class Component extends UI.Widget.Widget {
   constructor(){
     const shadow = createShadowRootWithCoreStyles(this,
-      {cssFile: 'ui/legacy/smallBubble.css', delegatesFocus: undefined});
+      {cssFile: 'front_end/components/smallBubble.css', delegatesFocus: undefined});
   }
 }`,
       filename: 'front_end/components/test.ts',
@@ -82,7 +82,7 @@ export class Component extends UI.Widget.Widget {
       code: `export class Component extends UI.Widget.Widget {
   constructor(){
     const shadow = UI.Utils.createShadowRootWithCoreStyles(this,
-      {cssFile: 'ui/legacy/smallBubble.css', delegatesFocus: undefined});
+      {cssFile: 'front_end/components/smallBubble.css', delegatesFocus: undefined});
   }
 }`,
       filename: 'front_end/components/test.ts',
@@ -97,11 +97,45 @@ export class Component extends UI.Widget.Widget {
     },
     {
       code: `export class Component extends UI.Widget.Widget {
+  constructor(){
+    const shadow = UI.Utils.createShadowRootWithCoreStyles(this,
+      {cssFile: 'front_end/ui/smallBubble.css', delegatesFocus: undefined});
+  }
+}`,
+      filename: 'front_end/components/test.ts',
+      errors: [{message: MIGRATION_ERROR_MESSAGE}],
+      output: `import smallBubbleStyles from '../ui/smallBubble.css.js';
+export class Component extends UI.Widget.Widget {
+  constructor(){
+    const shadow = UI.Utils.createShadowRootWithCoreStyles(this,
+      {cssFile: [smallBubbleStyles], delegatesFocus: undefined});
+  }
+}`
+    },
+    {
+      code: `export class Component extends UI.Widget.Widget {
+  constructor(){
+    const shadow = UI.Utils.createShadowRootWithCoreStyles(this,
+      {cssFile: 'ui/legacy/smallBubble.css', delegatesFocus: undefined});
+  }
+}`,
+      filename: 'front_end/components/test.ts',
+      errors: [{message: MIGRATION_ERROR_MESSAGE}],
+      output: `import smallBubbleStyles from '../../ui/legacy/smallBubble.css.js';
+export class Component extends UI.Widget.Widget {
+  constructor(){
+    const shadow = UI.Utils.createShadowRootWithCoreStyles(this,
+      {cssFile: [smallBubbleStyles], delegatesFocus: undefined});
+  }
+}`
+    },
+    {
+      code: `export class Component extends UI.Widget.Widget {
 constructor(){
   const shadow = createShadowRootWithCoreStyles(this,
-    {cssFile: 'ui/legacy/smallBubble.css', delegatesFocus: undefined});
+    {cssFile: 'front_end/components/smallBubble.css', delegatesFocus: undefined});
   const root = createShadowRootWithCoreStyles(this,
-    {cssFile: 'ui/legacy/test.css', delegatesFocus: undefined});
+    {cssFile: 'front_end/components/test.css', delegatesFocus: undefined});
 }
 }`,
       filename: 'front_end/components/test.ts',
@@ -112,7 +146,7 @@ constructor(){
   const shadow = createShadowRootWithCoreStyles(this,
     {cssFile: [smallBubbleStyles], delegatesFocus: undefined});
   const root = createShadowRootWithCoreStyles(this,
-    {cssFile: 'ui/legacy/test.css', delegatesFocus: undefined});
+    {cssFile: 'front_end/components/test.css', delegatesFocus: undefined});
 }
 }`
     },
@@ -123,7 +157,7 @@ constructor(){
   const shadow = createShadowRootWithCoreStyles(this,
     {cssFile: [smallBubbleStyles], delegatesFocus: undefined});
   const root = createShadowRootWithCoreStyles(this,
-    {cssFile: 'ui/legacy/test.css', delegatesFocus: undefined});
+    {cssFile: 'front_end/components/test.css', delegatesFocus: undefined});
 }
 }`,
       filename: 'front_end/components/test.ts',
@@ -143,9 +177,9 @@ constructor(){
       code: `export class Component extends UI.Widget.Widget {
 constructor(){
   const shadow = UI.Utils.createShadowRootWithCoreStyles(this,
-    {cssFile: 'ui/legacy/smallBubble.css', delegatesFocus: undefined});
+    {cssFile: 'front_end/components/smallBubble.css', delegatesFocus: undefined});
   const root = UI.Utils.createShadowRootWithCoreStyles(this,
-    {cssFile: 'ui/legacy/test.css', delegatesFocus: undefined});
+    {cssFile: 'front_end/components/test.css', delegatesFocus: undefined});
 }
 }`,
       filename: 'front_end/components/test.ts',
@@ -156,7 +190,7 @@ constructor(){
   const shadow = UI.Utils.createShadowRootWithCoreStyles(this,
     {cssFile: [smallBubbleStyles], delegatesFocus: undefined});
   const root = UI.Utils.createShadowRootWithCoreStyles(this,
-    {cssFile: 'ui/legacy/test.css', delegatesFocus: undefined});
+    {cssFile: 'front_end/components/test.css', delegatesFocus: undefined});
 }
 }`
     },
@@ -167,7 +201,7 @@ constructor(){
   const shadow = UI.Utils.createShadowRootWithCoreStyles(this,
     {cssFile: [smallBubbleStyles], delegatesFocus: undefined});
   const root = UI.Utils.createShadowRootWithCoreStyles(this,
-    {cssFile: 'ui/legacy/test.css', delegatesFocus: undefined});
+    {cssFile: 'front_end/components/test.css', delegatesFocus: undefined});
 }
 }`,
       filename: 'front_end/components/test.ts',
@@ -190,7 +224,7 @@ constructor(){
   const shadow = UI.Utils.createShadowRootWithCoreStyles(this,
     {cssFile: [smallBubbleStyles], delegatesFocus: undefined});
   const root = UI.Utils.createShadowRootWithCoreStyles(this,
-    {cssFile: 'ui/legacy/smallBubble.css', delegatesFocus: undefined});
+    {cssFile: 'front_end/components/smallBubble.css', delegatesFocus: undefined});
 }
 }`,
       filename: 'front_end/components/test.ts',

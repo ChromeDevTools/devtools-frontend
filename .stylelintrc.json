@@ -11,6 +11,7 @@
     "comment-empty-line-before": null,
     "declaration-no-important": true,
     "color-named": "never",
+    "max-empty-lines": 1,
     "property-no-vendor-prefix": [
       true,
       {

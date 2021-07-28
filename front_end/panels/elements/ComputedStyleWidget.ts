@@ -146,10 +146,11 @@ const processColor = (autoDetectFormat: boolean, text: string): Node => {
   valueElement.textContent = text;
   swatch.append(valueElement);
 
-  swatch.addEventListener('formatchanged', (event: Event) => {
-    const {data} = (event as InlineEditor.ColorSwatch.FormatChangedEvent);
-    valueElement.textContent = data.text;
-  });
+  swatch.addEventListener(
+      InlineEditor.ColorSwatch.FormatChangedEvent.eventName, (event: InlineEditor.ColorSwatch.FormatChangedEvent) => {
+        const {data} = event;
+        valueElement.textContent = data.text;
+      });
 
   return swatch;
 };

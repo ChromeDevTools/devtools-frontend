@@ -22,4 +22,4 @@ picker?.addEventListener('input', e => {
   component.renderColor((e.target as HTMLInputElement).value);
 });
 
-component.addEventListener('swatch-click', () => picker?.click());
+component.addEventListener(InlineEditor.ColorSwatch.ClickEvent.eventName, () => picker?.click());

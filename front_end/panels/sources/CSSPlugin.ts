@@ -212,7 +212,8 @@ export class CSSPlugin extends Plugin {
     value.textContent = text;
     value.setAttribute('hidden', 'true');
 
-    swatch.addEventListener('swatch-click', this._swatchIconClicked.bind(this, swatch), false);
+    swatch.addEventListener(
+        InlineEditor.ColorSwatch.ClickEvent.eventName, this._swatchIconClicked.bind(this, swatch), false);
     return swatch;
   }
 

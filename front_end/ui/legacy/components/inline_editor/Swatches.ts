@@ -8,7 +8,7 @@ import * as Common from '../../../../core/common/common.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as UI from '../../legacy.js';
 
-import {ColorSwatch} from './ColorSwatch.js';
+import {ColorSwatch, FormatChangedEvent} from './ColorSwatch.js';
 import type {CSSShadowModel} from './CSSShadowModel.js';
 
 export class BezierSwatch extends HTMLSpanElement {
@@ -99,10 +99,8 @@ export class CSSShadowSwatch extends HTMLSpanElement {
         if (!this._colorSwatch) {
           this._colorSwatch = new ColorSwatch();
           const value = this._colorSwatch.createChild('span');
-          this._colorSwatch.addEventListener('formatchanged', (event: Event) => {
-            // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            value.textContent = (event as any).data.text;
+          this._colorSwatch.addEventListener(FormatChangedEvent.eventName, (event: FormatChangedEvent) => {
+            value.textContent = event.data.text;
           });
         }
 

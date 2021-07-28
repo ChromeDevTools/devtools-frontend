@@ -219,15 +219,13 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
     swatch.appendChild(valueChild);
 
-    const onFormatchanged = (event: Event): void => {
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const {data} = (event as any);
+    const onFormatchanged = (event: InlineEditor.ColorSwatch.FormatChangedEvent): void => {
+      const {data} = event;
       swatch.firstElementChild && swatch.firstElementChild.remove();
       swatch.createChild('span').textContent = data.text;
     };
 
-    swatch.addEventListener('formatchanged', onFormatchanged);
+    swatch.addEventListener(InlineEditor.ColorSwatch.FormatChangedEvent.eventName, onFormatchanged);
 
     if (this._editable()) {
       this._addColorContrastInfo(swatch);

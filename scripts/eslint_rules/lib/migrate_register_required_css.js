@@ -40,7 +40,8 @@ function lookForWasShownMethod(node) {
 
 function lookForRegisterCSSFilesCall(node, privatePropertyName) {
   for (const expressionStatement of node.body) {
-    if (expressionStatement.expression.callee.property.name === 'registerCSSFiles') {
+    if (expressionStatement.expression && expressionStatement.expression.callee &&
+        expressionStatement.expression.callee.property.name === 'registerCSSFiles') {
       /**
         * Once we find a registerCSSFiles call in wasShown(), we need to check that the objects they are being called on the same. If the call is
         * a `this.registerCSSFiles()` then privatePropertyName is ''. Otherwise, we check that the privatePropertyName is the same as the one we are
@@ -127,7 +128,6 @@ module.exports = {
             if (wasShownFunction) {
               const registerCSSFilesCall =
                   lookForRegisterCSSFilesCall(wasShownFunction.value.body, privatePropertyName);
-
               if (registerCSSFilesCall) {
                 /*
                  * If a wasShown() method exists and there is already a call to registerCSSFiles on the

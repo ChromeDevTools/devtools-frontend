@@ -6,6 +6,8 @@
 
 import * as UI from '../../ui/legacy/legacy.js';
 
+import animationScreenshotPopoverStyles from './animationScreenshotPopover.css.js';
+
 export class AnimationScreenshotPopover extends UI.Widget.VBox {
   _frames: HTMLImageElement[];
   _rafId: number;
@@ -16,7 +18,7 @@ export class AnimationScreenshotPopover extends UI.Widget.VBox {
   constructor(images: HTMLImageElement[]) {
     super(true);
     console.assert(images.length > 0);
-    this.registerRequiredCSS('panels/animation/animationScreenshotPopover.css');
+
     this.contentElement.classList.add('animation-screenshot-popover');
     this._frames = images;
     for (const image of images) {
@@ -31,6 +33,7 @@ export class AnimationScreenshotPopover extends UI.Widget.VBox {
 
   wasShown(): void {
     this._rafId = this.contentElement.window().requestAnimationFrame(this._changeFrame.bind(this));
+    this.registerCSSFiles([animationScreenshotPopoverStyles]);
   }
 
   willHide(): void {

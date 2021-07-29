@@ -12,6 +12,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {AnimationGroupPreviewUI} from './AnimationGroupPreviewUI.js';
+import animationTimelineStyles from './animationTimeline.css.js';
 
 import type {AnimationEffect, AnimationGroup, AnimationImpl} from './AnimationModel.js';
 import {AnimationModel, Events} from './AnimationModel.js';
@@ -124,7 +125,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
 
   private constructor() {
     super(true);
-    this.registerRequiredCSS('panels/animation/animationTimeline.css');
+
     this.element.classList.add('animations-timeline');
 
     this._gridWrapper = this.contentElement.createChild('div', 'grid-overflow-wrapper');
@@ -163,6 +164,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     for (const animationModel of SDK.TargetManager.TargetManager.instance().models(AnimationModel)) {
       this._addEventListeners(animationModel);
     }
+    this.registerCSSFiles([animationTimelineStyles]);
   }
 
   willHide(): void {

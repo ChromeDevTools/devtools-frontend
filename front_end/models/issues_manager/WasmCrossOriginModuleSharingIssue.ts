@@ -14,7 +14,7 @@ const UIStrings = {
    * @description Label for the link in the description of Wasm cross-origin module sharing issues, that is, issues
    * that are related to the upcoming deprecation of cross-origin sharing of Wasm modules.
    */
-  linkTitle: 'Wasm cross-origin module sharing deprecation',
+  linkTitle: 'Restricting Wasm module sharing to same-origin',
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/WasmCrossOriginModuleSharingIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -39,11 +39,10 @@ export class WasmCrossOriginModuleSharingIssue extends
   }
 
   getDescription(): MarkdownIssueDescription|null {
-    const withoutLinks = true;
     return {
       file: 'wasmCrossOriginModuleSharing.md',
-      links: withoutLinks ? [] : [{
-        link: 'https://web.dev/tbd',
+      links: [{
+        link: 'https://developer.chrome.com/blog/wasm-module-sharing-restricted-to-same-origin/',
         linkTitle: i18nString(UIStrings.linkTitle),
       }],
     };

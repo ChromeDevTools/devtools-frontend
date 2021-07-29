@@ -16,7 +16,7 @@ describe('Wasm cross-origin sharing issue', async () => {
   it('should appear when cross-origin sharing a wasm module', async () => {
     await navigateToIssuesTab();
     await expandIssue();
-    const issueElement = await getIssueByTitle('Share WebAssembly modules only between same-origin contexts');
+    const issueElement = await getIssueByTitle('Share WebAssembly modules only between same-origin environments');
     assertNotNull(issueElement);
     const section = await getResourcesElement('module', issueElement);
     const text = await section.label.evaluate(el => el.textContent);

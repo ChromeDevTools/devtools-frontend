@@ -31,6 +31,16 @@ interface Flatted {
     replacer?: (number | string)[] | null,
     space?: string | number
   ): string;
+  /**
+   * Helper to allow explicit conversions with classes.
+   * @param value The JSON to convert to JavaScript value
+   */
+  fromJSON(value: any): any;
+  /**
+   * Helper to allow explicit conversions with classes.
+   * @param value A JavaScript value, usually an object or array, to be converted.
+   */
+  toJSON(value: any): any;
 }
 
 /**

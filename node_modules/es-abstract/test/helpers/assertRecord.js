@@ -4,7 +4,7 @@ var forEach = require('foreach');
 var debug = require('object-inspect');
 
 var assertRecord = require('../../helpers/assertRecord');
-var v = require('./values');
+var v = require('es-value-fixtures');
 
 module.exports = function assertRecordTests(ES, test) {
 	test('Property Descriptor', function (t) {

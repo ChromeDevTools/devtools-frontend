@@ -1,7 +1,7 @@
 # import/no-extraneous-dependencies: Forbid the use of extraneous packages
 
 Forbid the import of external modules that are not declared in the `package.json`'s `dependencies`, `devDependencies`, `optionalDependencies`, `peerDependencies`, or `bundledDependencies`.
-The closest parent `package.json` will be used. If no `package.json` is found, the rule will not lint anything. This behaviour can be changed with the rule option `packageDir`.
+The closest parent `package.json` will be used. If no `package.json` is found, the rule will not lint anything. This behavior can be changed with the rule option `packageDir`.
 
 Modules have to be installed for this rule to work.
 
@@ -13,7 +13,7 @@ This rule supports the following options:
 
 `optionalDependencies`: If set to `false`, then the rule will show an error when `optionalDependencies` are imported. Defaults to `true`.
 
-`peerDependencies`: If set to `false`, then the rule will show an error when `peerDependencies` are imported. Defaults to `false`.
+`peerDependencies`: If set to `false`, then the rule will show an error when `peerDependencies` are imported. Defaults to `true`.
 
 `bundledDependencies`: If set to `false`, then the rule will show an error when `bundledDependencies` are imported. Defaults to `true`.
 

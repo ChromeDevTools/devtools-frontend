@@ -1,3 +1,11 @@
+1.2.3 / 2021-01-31
+=================
+  * [Fix] `document.all` is callable (do not use `document.all`!)
+  * [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `tape`
+  * [Tests] migrate tests to Github Actions
+  * [actions] add "Allow Edits" workflow
+  * [actions] switch Automatic Rebase workflow to `pull_request_target` event
+
 1.2.2 / 2020-09-21
 =================
   * [Fix] include actual fix from 579179e

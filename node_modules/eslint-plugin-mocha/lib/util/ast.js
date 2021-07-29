@@ -13,8 +13,16 @@ const isDefined = complement(isNil);
 const isCallExpression = both(isDefined, propEq('type', 'CallExpression'));
 
 const hooks = [
-    'before', 'after', 'beforeEach', 'afterEach', 'beforeAll', 'afterAll',
-    'setup', 'teardown', 'suiteSetup', 'suiteTeardown'
+    'before',
+    'after',
+    'beforeEach',
+    'afterEach',
+    'beforeAll',
+    'afterAll',
+    'setup',
+    'teardown',
+    'suiteSetup',
+    'suiteTeardown'
 ];
 const suiteConfig = [ 'timeout', 'slow', 'retries' ];
 
@@ -26,15 +34,13 @@ function getPropertyName(property) {
 
 function getNodeName(node) {
     if (node.type === 'MemberExpression') {
-        return `${getNodeName(node.object) }.${ getPropertyName(node.property)}`;
+        return `${getNodeName(node.object)}.${getPropertyName(node.property)}`;
     }
     return node.name;
 }
 
 function isHookIdentifier(node) {
-    return node &&
-      node.type === 'Identifier' &&
-      hooks.includes(node.name);
+    return node && node.type === 'Identifier' && hooks.includes(node.name);
 }
 
 function isHookCall(node) {
@@ -50,11 +56,16 @@ function findReference(scope, node) {
 function isShadowed(scope, identifier) {
     const reference = findReference(scope, identifier);
 
-    return reference && reference.resolved && reference.resolved.defs.length > 0;
+    return (
+        reference && reference.resolved && reference.resolved.defs.length > 0
+    );
 }
 
 function isCallToShadowedReference(node, scope) {
-    const identifier = node.callee.type === 'MemberExpression' ? node.callee.object : node.callee;
+    const identifier =
+        node.callee.type === 'MemberExpression' ?
+            node.callee.object :
+            node.callee;
 
     return isShadowed(scope, identifier);
 }
@@ -67,9 +78,13 @@ function isFunctionCallWithName(node, names) {
 function createAstUtils(settings) {
     const additionalCustomNames = getAddtionalNames(settings);
 
-    function buildIsDescribeAnswerer(options) {
+    function buildIsDescribeAnswerer(options = {}) {
         const { modifiers = [ 'skip', 'only' ], modifiersOnly = false } = options;
-        const describeAliases = getSuiteNames({ modifiersOnly, modifiers, additionalCustomNames });
+        const describeAliases = getSuiteNames({
+            modifiersOnly,
+            modifiers,
+            additionalCustomNames
+        });
 
         return (node) => isFunctionCallWithName(node, describeAliases);
     }
@@ -80,7 +95,11 @@ function createAstUtils(settings) {
 
     function buildIsTestCaseAnswerer(options = {}) {
         const { modifiers = [ 'skip', 'only' ], modifiersOnly = false } = options;
-        const testCaseNames = getTestCaseNames({ modifiersOnly, modifiers, additionalCustomNames });
+        const testCaseNames = getTestCaseNames({
+            modifiersOnly,
+            modifiers,
+            additionalCustomNames
+        });
 
         return (node) => isFunctionCallWithName(node, testCaseNames);
     }
@@ -107,16 +126,29 @@ function createAstUtils(settings) {
         return isCallExpression(node) && isSuiteConfigExpression(node.callee);
     }
 
-    function isMochaFunctionCall(node, scope) {
-        if (isCallToShadowedReference(node, scope)) {
-            return false;
+    function buildIsMochaFunctionCallAnswerer(_isTestCase, _isDescribe) {
+        function isMochaFunctionCall(node) {
+            return _isTestCase(node) || _isDescribe(node) || isHookCall(node);
         }
 
-        return isTestCase(node) || isDescribe(node) || isHookCall(node);
+        return (node, context) => {
+            if (isMochaFunctionCall(node)) {
+                const scope = context.getScope();
+
+                if (!isCallToShadowedReference(node, scope)) {
+                    return true;
+                }
+            }
+
+            return false;
+        };
     }
 
     function hasParentMochaFunctionCall(functionExpression, options) {
-        return isTestCase(functionExpression.parent, options) || isHookCall(functionExpression.parent);
+        return (
+            isTestCase(functionExpression.parent, options) ||
+            isHookCall(functionExpression.parent)
+        );
     }
 
     function isExplicitUndefined(node) {
@@ -136,14 +168,14 @@ function createAstUtils(settings) {
         isTestCase,
         getPropertyName,
         getNodeName,
-        isMochaFunctionCall,
         isHookCall,
         isSuiteConfigCall,
         hasParentMochaFunctionCall,
         findReturnStatement,
         isReturnOfUndefined,
         buildIsDescribeAnswerer,
-        buildIsTestCaseAnswerer
+        buildIsTestCaseAnswerer,
+        buildIsMochaFunctionCallAnswerer
     };
 }
 

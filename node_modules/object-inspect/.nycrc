@@ -4,10 +4,6 @@
   "instrumentation": false,
   "sourceMap": false,
   "reporter": ["text-summary", "text", "html", "json"],
-  "lines": 93,
-  "statements": 93,
-  "functions": 96,
-  "branches": 89,
   "exclude": [
     "coverage",
     "example",

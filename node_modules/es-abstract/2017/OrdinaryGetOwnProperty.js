@@ -1,11 +1,11 @@
 'use strict';
 
-var GetIntrinsic = require('../GetIntrinsic');
+var GetIntrinsic = require('get-intrinsic');
 
 var $gOPD = require('../helpers/getOwnPropertyDescriptor');
 var $TypeError = GetIntrinsic('%TypeError%');
 
-var callBound = require('../helpers/callBound');
+var callBound = require('call-bind/callBound');
 
 var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
 
@@ -17,7 +17,7 @@ var IsRegExp = require('./IsRegExp');
 var ToPropertyDescriptor = require('./ToPropertyDescriptor');
 var Type = require('./Type');
 
-// https://www.ecma-international.org/ecma-262/6.0/#sec-ordinarygetownproperty
+// https://ecma-international.org/ecma-262/6.0/#sec-ordinarygetownproperty
 
 module.exports = function OrdinaryGetOwnProperty(O, P) {
 	if (Type(O) !== 'Object') {

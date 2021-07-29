@@ -1,10 +1,10 @@
 'use strict';
 
-var GetIntrinsic = require('../GetIntrinsic');
+var GetIntrinsic = require('get-intrinsic');
 
 var $TypeError = GetIntrinsic('%TypeError%');
 
-var callBound = require('../helpers/callBound');
+var callBound = require('call-bind/callBound');
 var regexTester = require('../helpers/regexTester');
 var every = require('../helpers/every');
 
@@ -30,7 +30,7 @@ var isStringOrHole = function (capture, index, arr) {
 	return Type(capture) === 'String' || (canDistinguishSparseFromUndefined ? !(index in arr) : Type(capture) === 'Undefined');
 };
 
-// http://www.ecma-international.org/ecma-262/9.0/#sec-getsubstitution
+// http://262.ecma-international.org/9.0/#sec-getsubstitution
 
 // eslint-disable-next-line max-statements, max-params, max-lines-per-function
 module.exports = function GetSubstitution(matched, str, position, captures, namedCaptures, replacement) {
@@ -88,14 +88,14 @@ module.exports = function GetSubstitution(matched, str, position, captures, name
 					// $1 through $9, and not followed by a digit
 					var n = $parseInt(next, 10);
 					// if (n > m, impl-defined)
-					result += (n <= m && Type(captures[n - 1]) === 'Undefined') ? '' : captures[n - 1];
+					result += n <= m && Type(captures[n - 1]) === 'Undefined' ? '' : captures[n - 1];
 					i += 1;
 				} else if (isDigit(next) && (nextIsLast || isDigit(nextNext))) {
 					// $00 through $99
 					var nn = next + nextNext;
 					var nnI = $parseInt(nn, 10) - 1;
 					// if nn === '00' or nn > m, impl-defined
-					result += (nn <= m && Type(captures[nnI]) === 'Undefined') ? '' : captures[nnI];
+					result += nn <= m && Type(captures[nnI]) === 'Undefined' ? '' : captures[nnI];
 					i += 2;
 				} else if (next === '<') {
 					// eslint-disable-next-line max-depth
@@ -106,13 +106,13 @@ module.exports = function GetSubstitution(matched, str, position, captures, name
 						var endIndex = $indexOf(replacement, '>', i);
 						// eslint-disable-next-line max-depth
 						if (endIndex > -1) {
-							var groupName = $strSlice(replacement, i, endIndex);
+							var groupName = $strSlice(replacement, i + '$<'.length, endIndex);
 							var capture = Get(namedCaptures, groupName);
 							// eslint-disable-next-line max-depth
 							if (Type(capture) !== 'Undefined') {
 								result += ToString(capture);
 							}
-							i += '$<' + groupName + '>'.length;
+							i += ('<' + groupName + '>').length;
 						}
 					}
 				} else {

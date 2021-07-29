@@ -1,6 +1,6 @@
 'use strict';
 
-var GetIntrinsic = require('../GetIntrinsic');
+var GetIntrinsic = require('get-intrinsic');
 
 var $gOPD = require('../helpers/getOwnPropertyDescriptor');
 var $SyntaxError = GetIntrinsic('%SyntaxError%');
@@ -17,7 +17,7 @@ var SameValue = require('./SameValue');
 var Type = require('./Type');
 var ValidateAndApplyPropertyDescriptor = require('./ValidateAndApplyPropertyDescriptor');
 
-// https://www.ecma-international.org/ecma-262/6.0/#sec-ordinarydefineownproperty
+// https://ecma-international.org/ecma-262/6.0/#sec-ordinarydefineownproperty
 
 module.exports = function OrdinaryDefineOwnProperty(O, P, Desc) {
 	if (Type(O) !== 'Object') {

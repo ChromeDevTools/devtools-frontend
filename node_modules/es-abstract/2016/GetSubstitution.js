@@ -1,7 +1,7 @@
 
 'use strict';
 
-var GetIntrinsic = require('../GetIntrinsic');
+var GetIntrinsic = require('get-intrinsic');
 
 var $TypeError = GetIntrinsic('%TypeError%');
 var $parseInt = GetIntrinsic('%parseInt%');
@@ -9,7 +9,7 @@ var $parseInt = GetIntrinsic('%parseInt%');
 var inspect = require('object-inspect');
 
 var regexTester = require('../helpers/regexTester');
-var callBound = require('../helpers/callBound');
+var callBound = require('call-bind/callBound');
 var every = require('../helpers/every');
 
 var isDigit = regexTester(/^[0-9]$/);
@@ -27,7 +27,7 @@ var isStringOrHole = function (capture, index, arr) {
 	return Type(capture) === 'String' || (canDistinguishSparseFromUndefined ? !(index in arr) : Type(capture) === 'Undefined');
 };
 
-// https://www.ecma-international.org/ecma-262/6.0/#sec-getsubstitution
+// https://ecma-international.org/ecma-262/6.0/#sec-getsubstitution
 
 // eslint-disable-next-line max-statements, max-params, max-lines-per-function
 module.exports = function GetSubstitution(matched, str, position, captures, replacement) {
@@ -82,14 +82,14 @@ module.exports = function GetSubstitution(matched, str, position, captures, repl
 					// $1 through $9, and not followed by a digit
 					var n = $parseInt(next, 10);
 					// if (n > m, impl-defined)
-					result += (n <= m && Type(captures[n - 1]) === 'Undefined') ? '' : captures[n - 1];
+					result += n <= m && Type(captures[n - 1]) === 'Undefined' ? '' : captures[n - 1];
 					i += 1;
 				} else if (isDigit(next) && (nextIsLast || isDigit(nextNext))) {
 					// $00 through $99
 					var nn = next + nextNext;
 					var nnI = $parseInt(nn, 10) - 1;
 					// if nn === '00' or nn > m, impl-defined
-					result += (nn <= m && Type(captures[nnI]) === 'Undefined') ? '' : captures[nnI];
+					result += nn <= m && Type(captures[nnI]) === 'Undefined' ? '' : captures[nnI];
 					i += 2;
 				} else {
 					result += '$';

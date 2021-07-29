@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.0.4](https://github.com/es-shims/String.prototype.trimEnd/compare/v1.0.3...v1.0.4) - 2021-02-23
+
+### Commits
+
+- [meta] do not publish github action workflow files [`08e735c`](https://github.com/es-shims/String.prototype.trimEnd/commit/08e735cd55b00ae78a9dc16c6b4e786f7931085b)
+- [readme] remove travis badge [`10e0e47`](https://github.com/es-shims/String.prototype.trimEnd/commit/10e0e47cb2ecfd171e68b40f8486c5d007dcf3ef)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `functions-have-names`, `has-strict-mode`, `tape` [`0871432`](https://github.com/es-shims/String.prototype.trimEnd/commit/0871432c70c2f6a3929acd740a5d1f57c939f345)
+- [Tests] increase coverage [`711e6a6`](https://github.com/es-shims/String.prototype.trimEnd/commit/711e6a66660f30f7a30fef536be435af1a13d05c)
+- [actions] update workflows [`deb0d06`](https://github.com/es-shims/String.prototype.trimEnd/commit/deb0d06f41ac1c3e1e640ecd1cf0e69303ab5799)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `tape` [`e250b4a`](https://github.com/es-shims/String.prototype.trimEnd/commit/e250b4a38401e7c02a067dab26cc68316da47ef7)
+- [meta] gitignore coverage output [`55231df`](https://github.com/es-shims/String.prototype.trimEnd/commit/55231dfd9829277ba5c3f07be5434dc385703ca9)
+- [Deps] update `call-bind` [`0580f5f`](https://github.com/es-shims/String.prototype.trimEnd/commit/0580f5f915ecb87677764d03fe3cf023e3bee7d8)
+
 ## [v1.0.3](https://github.com/es-shims/String.prototype.trimEnd/compare/v1.0.2...v1.0.3) - 2020-11-21
 
 ### Commits

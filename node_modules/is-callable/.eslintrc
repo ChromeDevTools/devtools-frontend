@@ -5,7 +5,7 @@
 
 	"rules": {
 		"id-length": 0,
-		"max-statements": [2, 12],
+		"max-statements": [2, 14],
 		"max-statements-per-line": [2, { "max": 2 }],
 		"operator-linebreak": [2, "before"],
 	},

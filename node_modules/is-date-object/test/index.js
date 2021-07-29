@@ -2,7 +2,7 @@
 
 var test = require('tape');
 var isDate = require('../');
-var hasSymbols = typeof Symbol === 'function' && typeof Symbol('') === 'symbol';
+var hasSymbols = typeof Symbol === 'function' && typeof Symbol.iterator !== 'undefined';
 
 test('not Dates', function (t) {
 	t.notOk(isDate(), 'undefined is not Date');

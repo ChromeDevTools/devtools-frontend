@@ -32,6 +32,9 @@ module.exports = {
     },
     create(context) {
         const astUtils = createAstUtils(context.settings);
+        const isTestCase = astUtils.buildIsTestCaseAnswerer();
+        const isDescribe = astUtils.buildIsDescribeAnswerer();
+
         const options = context.options[0] || {};
         const allowedHooks = options.allow || [];
         let layers = [];
@@ -57,7 +60,7 @@ module.exports = {
                         .forEach(function (hookNode) {
                             context.report({
                                 node: hookNode,
-                                message: `Unexpected use of Mocha \`${ hookNode.name }\` hook for a single test case`
+                                message: `Unexpected use of Mocha \`${hookNode.name}\` hook for a single test case`
                             });
                         });
                 }
@@ -71,13 +74,13 @@ module.exports = {
             },
 
             CallExpression(node) {
-                if (astUtils.isDescribe(node)) {
+                if (isDescribe(node)) {
                     increaseTestCount();
                     layers.push(newDescribeLayer(node));
                     return;
                 }
 
-                if (astUtils.isTestCase(node)) {
+                if (isTestCase(node)) {
                     increaseTestCount();
                 }
 

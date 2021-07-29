@@ -12,7 +12,7 @@ try {
 	DefinePropertyOrThrow = null;
 }
 
-// https://www.ecma-international.org/ecma-262/6.0/#sec-isconstructor
+// https://ecma-international.org/ecma-262/6.0/#sec-isconstructor
 
 if (DefinePropertyOrThrow && $construct) {
 	var isConstructorMarker = {};

@@ -10,7 +10,11 @@ function newLayer() {
 }
 
 function isFirstArgLiteral(node) {
-    return node.arguments && node.arguments[0] && node.arguments[0].type === 'Literal';
+    return (
+        node.arguments &&
+        node.arguments[0] &&
+        node.arguments[0].type === 'Literal'
+    );
 }
 
 module.exports = {
@@ -22,14 +26,18 @@ module.exports = {
     },
     create(context) {
         const astUtils = createAstUtils(context.settings);
+        const isTestCase = astUtils.buildIsTestCaseAnswerer();
+        const isDescribe = astUtils.buildIsDescribeAnswerer();
+
         const titleLayers = [ newLayer() ];
 
         function handlTestCaseTitles(titles, node, title) {
-            if (astUtils.isTestCase(node)) {
+            if (isTestCase(node)) {
                 if (titles.includes(title)) {
                     context.report({
                         node,
-                        message: 'Test title is used multiple times in the same test suite.'
+                        message:
+                            'Test title is used multiple times in the same test suite.'
                     });
                 }
                 titles.push(title);
@@ -37,7 +45,7 @@ module.exports = {
         }
 
         function handlTestSuiteTitles(titles, node, title) {
-            if (!astUtils.isDescribe(node)) {
+            if (!isDescribe(node)) {
                 return;
             }
             if (titles.includes(title)) {
@@ -53,7 +61,7 @@ module.exports = {
             CallExpression(node) {
                 const currentLayer = titleLayers[titleLayers.length - 1];
 
-                if (astUtils.isDescribe(node)) {
+                if (isDescribe(node)) {
                     titleLayers.push(newLayer());
                 }
                 if (!isFirstArgLiteral(node)) {
@@ -65,7 +73,7 @@ module.exports = {
                 handlTestSuiteTitles(currentLayer.describeTitles, node, title);
             },
             'CallExpression:exit'(node) {
-                if (astUtils.isDescribe(node)) {
+                if (isDescribe(node)) {
                     titleLayers.pop();
                 }
             }

@@ -1,3 +1,9 @@
+v0.4.3 - July 17, 2021
+
+* [`ce78027`](https://github.com/eslint/eslintrc/commit/ce78027f6a319a29fdf0b78ac1e7071373acffc4) Fix: ensure config files are files (#42) (Tom Jenkinson)
+* [`95b1c9b`](https://github.com/eslint/eslintrc/commit/95b1c9b30267479a75cd07768f8f9e9cfa63c105) Chore: pin fs-teardown@0.1.1 (#45) (Milos Djermanovic)
+* [`593fbe3`](https://github.com/eslint/eslintrc/commit/593fbe3c2c1c5f723f71810963ed21a56caed4c1) Chore: fix failing test (#44) (Tom Jenkinson)
+
 v0.4.2 - June 4, 2021
 
 * [`cc79a4d`](https://github.com/eslint/eslintrc/commit/cc79a4db45a2ca0236a846ed8eba28eea07d4db5) Upgrade: update globals to version 13.6 (#32) (Rouven Weßling)

@@ -14,6 +14,7 @@ const map = require('ramda/src/map');
 const view = require('ramda/src/view');
 const assoc = require('ramda/src/assoc');
 const allPass = require('ramda/src/allPass');
+const memoizeWith = require('ramda/src/memoizeWith');
 
 const INTERFACES = {
     BDD: 'BDD',
@@ -115,12 +116,14 @@ function getNamesByType(type, filterOptions = {}) {
     return extractNames(filteredNames);
 }
 
+const getNamesByTypeMemoized = memoizeWith((type, options) => JSON.stringify({ type, options }), getNamesByType);
+
 function getTestCaseNames(options) {
-    return getNamesByType(TYPES.testCase, options);
+    return getNamesByTypeMemoized(TYPES.testCase, options);
 }
 
 function getSuiteNames(options) {
-    return getNamesByType(TYPES.suite, options);
+    return getNamesByTypeMemoized(TYPES.suite, options);
 }
 
 module.exports = {

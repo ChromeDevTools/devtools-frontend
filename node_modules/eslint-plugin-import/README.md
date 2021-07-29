@@ -27,6 +27,7 @@ This plugin intends to support linting of ES2015+ (ES6+) import/export syntax, a
 * Forbid a module from importing a module with a dependency path back to itself ([`no-cycle`])
 * Prevent unnecessary path segments in import and require statements ([`no-useless-path-segments`])
 * Forbid importing modules from parent directories ([`no-relative-parent-imports`])
+* Prevent importing packages through relative paths ([`no-relative-packages`])
 
 [`no-unresolved`]: ./docs/rules/no-unresolved.md
 [`named`]: ./docs/rules/named.md
@@ -41,6 +42,7 @@ This plugin intends to support linting of ES2015+ (ES6+) import/export syntax, a
 [`no-cycle`]: ./docs/rules/no-cycle.md
 [`no-useless-path-segments`]: ./docs/rules/no-useless-path-segments.md
 [`no-relative-parent-imports`]: ./docs/rules/no-relative-parent-imports.md
+[`no-relative-packages`]: ./docs/rules/no-relative-packages.md
 
 ### Helpful warnings
 
@@ -67,11 +69,13 @@ This plugin intends to support linting of ES2015+ (ES6+) import/export syntax, a
 * Report CommonJS `require` calls and `module.exports` or `exports.*`. ([`no-commonjs`])
 * Report AMD `require` and `define` calls. ([`no-amd`])
 * No Node.js builtin modules. ([`no-nodejs-modules`])
+* Forbid imports with CommonJS exports ([`no-import-module-exports`])
 
 [`unambiguous`]: ./docs/rules/unambiguous.md
 [`no-commonjs`]: ./docs/rules/no-commonjs.md
 [`no-amd`]: ./docs/rules/no-amd.md
 [`no-nodejs-modules`]: ./docs/rules/no-nodejs-modules.md
+[`no-import-module-exports`]: ./docs/rules/no-import-module-exports.md
 
 
 ### Style guide
@@ -136,6 +140,8 @@ in your `.eslintrc.(yml|json|js)`, or extend one of the canned configs:
 ---
 extends:
   - eslint:recommended
+  - plugin:import/recommended
+  # alternatively, 'recommended' is the combination of these two rule sets:
   - plugin:import/errors
   - plugin:import/warnings
 
@@ -161,8 +167,7 @@ Make sure you have installed [`@typescript-eslint/parser`] which is used in the 
 ```yaml
 extends:
   - eslint:recommended
-  - plugin:import/errors
-  - plugin:import/warnings
+  - plugin:import/recommended
   - plugin:import/typescript # this line does the trick
 ```
 

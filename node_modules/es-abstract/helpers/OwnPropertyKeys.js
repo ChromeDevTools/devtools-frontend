@@ -1,9 +1,9 @@
 'use strict';
 
-var GetIntrinsic = require('../GetIntrinsic');
+var GetIntrinsic = require('get-intrinsic');
 
-var callBind = require('./callBind');
-var callBound = require('./callBound');
+var callBind = require('call-bind');
+var callBound = require('call-bind/callBound');
 
 var $ownKeys = GetIntrinsic('%Reflect.ownKeys%', true);
 var $pushApply = callBind.apply(GetIntrinsic('%Array.prototype.push%'));

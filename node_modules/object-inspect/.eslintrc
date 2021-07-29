@@ -8,7 +8,7 @@
         "max-lines": 1,
         "max-lines-per-function": 1,
         "max-params": [2, 4],
-        "max-statements": [2, 100],
+        "max-statements": 0,
         "max-statements-per-line": [2, { "max": 2 }],
         "no-magic-numbers": 0,
         "no-param-reassign": 1,

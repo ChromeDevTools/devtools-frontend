@@ -5,7 +5,7 @@ var debug = require('object-inspect');
 var forEach = require('foreach');
 var has = require('has');
 
-var v = require('./values');
+var v = require('es-value-fixtures');
 var getSymbolDescription = require('../../helpers/getSymbolDescription');
 var getInferredName = require('../../helpers/getInferredName');
 

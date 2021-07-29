@@ -1,13 +1,20 @@
 'use strict';
 
-var GetIntrinsic = require('../GetIntrinsic');
-var callBound = require('../helpers/callBound');
+var GetIntrinsic = require('get-intrinsic');
+var callBound = require('call-bind/callBound');
+
+var $TypeError = GetIntrinsic('%TypeError%');
+
+var IsArray = require('./IsArray');
 
 var $apply = GetIntrinsic('%Reflect.apply%', true) || callBound('%Function.prototype.apply%');
 
-// https://www.ecma-international.org/ecma-262/6.0/#sec-call
+// https://ecma-international.org/ecma-262/6.0/#sec-call
 
 module.exports = function Call(F, V) {
-	var args = arguments.length > 2 ? arguments[2] : [];
-	return $apply(F, V, args);
+	var argumentsList = arguments.length > 2 ? arguments[2] : [];
+	if (!IsArray(argumentsList)) {
+		throw new $TypeError('Assertion failed: optional `argumentsList`, if provided, must be a List');
+	}
+	return $apply(F, V, argumentsList);
 };

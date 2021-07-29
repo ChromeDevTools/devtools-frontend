@@ -6,15 +6,15 @@
 ## Install
 
 ```
-$ npm install --save parse-json
+$ npm install parse-json
 ```
 
 
 ## Usage
 
 ```js
-var parseJson = require('parse-json');
-var json = '{\n\t"foo": true,\n}';
+const parseJson = require('parse-json');
+const json = '{\n\t"foo": true,\n}';
 
 
 JSON.parse(json);
@@ -36,13 +36,13 @@ JSONError: Trailing comma in object at 3:1
 
 parseJson(json, 'foo.json');
 /*
-JSONError: Trailing comma in object at 3:1 in foo.json
+JSONError: Trailing comma in object in foo.json:3:1
 }
 ^
 */
 
 
-// you can also add the filename at a later point
+// You can also add the filename at a later point
 try {
 	parseJson(json);
 } catch (err) {
@@ -50,7 +50,7 @@ try {
 	throw err;
 }
 /*
-JSONError: Trailing comma in object at 3:1 in foo.json
+JSONError: Trailing comma in object in foo.json:3:1
 }
 ^
 */
@@ -66,7 +66,7 @@ Type: `string`
 
 #### reviver
 
-Type: `function`
+Type: `Function`
 
 Prescribes how the value originally produced by parsing is transformed, before being returned. See [`JSON.parse` docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse#Using_the_reviver_parameter
 ) for more.
@@ -80,4 +80,4 @@ Filename displayed in the error message.
 
 ## License
 
-MIT © [Sindre Sorhus](http://sindresorhus.com)
+MIT © [Sindre Sorhus](https://sindresorhus.com)

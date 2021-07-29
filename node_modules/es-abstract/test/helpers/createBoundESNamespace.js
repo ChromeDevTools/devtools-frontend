@@ -13,6 +13,8 @@ module.exports = function createBoundESNamespace(ES) {
 		var prop = ES[key];
 		if (typeof prop === 'function') {
 			prop = bind.call(prop, undefined);
+		} else if (prop && typeof prop === 'object') {
+			prop = createBoundESNamespace(prop);
 		}
 		result[key] = prop;
 	}

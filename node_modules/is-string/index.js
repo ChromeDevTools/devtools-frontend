@@ -11,7 +11,7 @@ var tryStringObject = function tryStringObject(value) {
 };
 var toStr = Object.prototype.toString;
 var strClass = '[object String]';
-var hasToStringTag = typeof Symbol === 'function' && typeof Symbol.toStringTag === 'symbol';
+var hasToStringTag = typeof Symbol === 'function' && !!Symbol.toStringTag;
 
 module.exports = function isString(value) {
 	if (typeof value === 'string') {

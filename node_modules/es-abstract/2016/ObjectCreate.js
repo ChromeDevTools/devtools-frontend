@@ -1,6 +1,6 @@
 'use strict';
 
-var GetIntrinsic = require('../GetIntrinsic');
+var GetIntrinsic = require('get-intrinsic');
 
 var $ObjectCreate = GetIntrinsic('%Object.create%', true);
 var $TypeError = GetIntrinsic('%TypeError%');
@@ -10,7 +10,7 @@ var Type = require('./Type');
 
 var hasProto = !({ __proto__: null } instanceof Object);
 
-// https://www.ecma-international.org/ecma-262/6.0/#sec-objectcreate
+// https://ecma-international.org/ecma-262/6.0/#sec-objectcreate
 
 module.exports = function ObjectCreate(proto, internalSlotsList) {
 	if (proto !== null && Type(proto) !== 'Object') {

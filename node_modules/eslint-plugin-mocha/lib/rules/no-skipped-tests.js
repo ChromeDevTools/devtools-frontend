@@ -11,14 +11,18 @@ module.exports = {
     },
     create(context) {
         const astUtils = createAstUtils(context.settings);
+        const options = { modifiers: [ 'skip' ], modifiersOnly: true };
+        const isTestCase = astUtils.buildIsTestCaseAnswerer(options);
+        const isDescribe = astUtils.buildIsDescribeAnswerer(options);
 
         return {
             CallExpression(node) {
-                const options = { modifiers: [ 'skip' ], modifiersOnly: true };
-
-                if (astUtils.isDescribe(node, options) || astUtils.isTestCase(node, options)) {
+                if (isDescribe(node) || isTestCase(node)) {
                     const callee = node.callee;
-                    const nodeToReport = callee.type === 'MemberExpression' ? callee.property : callee;
+                    const nodeToReport =
+                        callee.type === 'MemberExpression' ?
+                            callee.property :
+                            callee;
 
                     context.report({
                         node: nodeToReport,

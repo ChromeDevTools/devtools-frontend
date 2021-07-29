@@ -1,6 +1,6 @@
 {
   "name": "parse-json",
-  "version": "2.2.0",
+  "version": "4.0.0",
   "description": "Parse JSON with more helpful errors",
   "license": "MIT",
   "repository": "sindresorhus/parse-json",
@@ -10,10 +10,10 @@
     "url": "sindresorhus.com"
   },
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=4"
   },
   "scripts": {
-    "test": "xo && node test.js"
+    "test": "xo && nyc ava"
   },
   "files": [
     "index.js",
@@ -32,15 +32,12 @@
     "str"
   ],
   "dependencies": {
-    "error-ex": "^1.2.0"
+    "error-ex": "^1.3.1",
+    "json-parse-better-errors": "^1.0.1"
   },
   "devDependencies": {
-    "ava": "0.0.4",
+    "ava": "*",
+    "nyc": "^11.2.1",
     "xo": "*"
-  },
-  "xo": {
-    "ignores": [
-      "vendor/**"
-    ]
   }
 }

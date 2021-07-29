@@ -9,7 +9,7 @@ export namespace Chrome {
     }
 
     export interface Resource {
-      get url(): string;
+      readonly url: string;
 
       getContent(callback: (content: string, encoding: string) => unknown): void;
       setContent(content: string, commit: boolean, callback?: (error?: Object) => unknown): void;

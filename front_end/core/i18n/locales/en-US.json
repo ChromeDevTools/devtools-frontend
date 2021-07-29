@@ -1305,7 +1305,7 @@
     "message": "Changes to quality criteria for PWAs using Trusted Web Activity"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Wasm cross-origin module sharing deprecation"
+    "message": "Restricting Wasm module sharing to same-origin"
   },
   "models/logs/logs-meta.ts | clear": {
     "message": "clear"

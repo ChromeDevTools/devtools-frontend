@@ -20,7 +20,7 @@ import {ResourceMapping} from './ResourceMapping.js';
 import type {ResourceScriptFile} from './ResourceScriptMapping.js';
 import {ResourceScriptMapping} from './ResourceScriptMapping.js';
 
-let debuggerWorkspaceBindingInstance: DebuggerWorkspaceBinding;
+let debuggerWorkspaceBindingInstance: DebuggerWorkspaceBinding|undefined;
 
 export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
   _workspace: Workspace.Workspace.WorkspaceImpl;
@@ -63,6 +63,10 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     }
 
     return debuggerWorkspaceBindingInstance;
+  }
+
+  static removeInstance(): void {
+    debuggerWorkspaceBindingInstance = undefined;
   }
 
   addSourceMapping(sourceMapping: DebuggerSourceMapping): void {

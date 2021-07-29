@@ -194,7 +194,7 @@ export class ProjectStore {
   }
 }
 
-let workspaceInstance: WorkspaceImpl;
+let workspaceInstance: WorkspaceImpl|undefined;
 
 export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper {
   _projects: Map<string, Project>;
@@ -213,6 +213,10 @@ export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     return workspaceInstance;
+  }
+
+  static removeInstance(): void {
+    workspaceInstance = undefined;
   }
 
   uiSourceCode(projectId: string, url: string): UISourceCode|null {

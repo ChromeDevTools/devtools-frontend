@@ -15,7 +15,7 @@ import {ResourceMapping} from './ResourceMapping.js';
 import {SASSSourceMapping} from './SASSSourceMapping.js';
 import {StylesSourceMapping} from './StylesSourceMapping.js';
 
-let cssWorkspaceBindingInstance: CSSWorkspaceBinding;
+let cssWorkspaceBindingInstance: CSSWorkspaceBinding|undefined;
 
 export class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<SDK.CSSModel.CSSModel> {
   _workspace: Workspace.Workspace.WorkspaceImpl;
@@ -49,6 +49,10 @@ export class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<S
     }
 
     return cssWorkspaceBindingInstance;
+  }
+
+  static removeInstance(): void {
+    cssWorkspaceBindingInstance = undefined;
   }
 
   _getCSSModelInfo(cssModel: SDK.CSSModel.CSSModel): ModelInfo {

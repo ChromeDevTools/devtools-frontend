@@ -15,7 +15,7 @@ const ADD_WAS_SHOW_EXPECTED_ERROR_MESSAGE =
 const EDIT_WAS_SHOW_EXPECTED_ERROR_MESSAGE =
     'Import CSS file instead of using registerRequiredCSS and edit wasShown method';
 const MANUALLY_MIGRATE_ERROR_ESSAGE =
-    'Please manually migrate front_end/components/test.css as it has edge cases not covered by this script. Got error: Cannot read property \'range\' of undefined.';
+    'Please manually migrate components/test.css as it has edge cases not covered by this script. Got error: Cannot read property \'range\' of undefined.';
 
 ruleTester.run('check_migrate_RegisterRequiredCSS', rule, {
   valid: [
@@ -63,7 +63,7 @@ ruleTester.run('check_migrate_RegisterRequiredCSS', rule, {
       // Add wasShown method containing import
       code: `export class Component extends UI.Widget.Widget {
   constructor(){
-this.registerRequiredCSS('front_end/components/test.css')
+this.registerRequiredCSS('components/test.css')
   }
 }`,
       filename: 'front_end/components/test.ts',
@@ -83,7 +83,7 @@ export class Component extends UI.Widget.Widget {
       // Add wasShown method containing import and resolves path correctly
       code: `export class Component extends UI.Widget.Widget {
   constructor(){
-this.registerRequiredCSS('front_end/ui/test.css')
+this.registerRequiredCSS('ui/test.css')
   }
 }`,
       filename: 'front_end/components/test.ts',
@@ -103,7 +103,7 @@ export class Component extends UI.Widget.Widget {
       // Adds wasShown method as last method in class
       code: `export class Component extends UI.Widget.Widget {
   constructor(){
-this.registerRequiredCSS('front_end/components/test.css')
+this.registerRequiredCSS('components/test.css')
   }
   willHide() : void {
 
@@ -129,7 +129,7 @@ export class Component extends UI.Widget.Widget {
       // Adds this.registerRequiredCSS to already existing wasShown method
       code: `export class Component extends UI.Widget.Widget {
   constructor(){
-this.registerRequiredCSS('front_end/components/test.css')
+this.registerRequiredCSS('components/test.css')
   }
   willHide() : void {
 
@@ -158,7 +158,7 @@ export class Component extends UI.Widget.Widget {
       // Adds this.registerRequiredCSS to already existing wasShown method in the 2nd line
       code: `export class Component extends UI.Widget.Widget {
   constructor(){
-this.registerRequiredCSS('front_end/components/test.css')
+this.registerRequiredCSS('components/test.css')
   }
   willHide() : void {
 
@@ -189,7 +189,7 @@ export class Component extends UI.Widget.Widget {
       // Tests this works on UI.Widget.VBox as well
       code: `export class Component extends UI.Widget.VBox {
   constructor(){
-this.registerRequiredCSS('front_end/components/test.css')
+this.registerRequiredCSS('components/test.css')
   }
   willHide() : void {
 
@@ -220,8 +220,8 @@ export class Component extends UI.Widget.VBox {
       // First pass of two calls to registerRequiredCSS in same file
       code: `export class Component extends UI.Widget.VBox {
   constructor(){
-this.registerRequiredCSS('front_end/components/test.css')
-this.registerRequiredCSS('front_end/components/styles.css')
+this.registerRequiredCSS('components/test.css')
+this.registerRequiredCSS('components/styles.css')
   }
   wasShown(): void {
     super.wasShown();
@@ -233,7 +233,7 @@ this.registerRequiredCSS('front_end/components/styles.css')
 export class Component extends UI.Widget.VBox {
   constructor(){
 
-this.registerRequiredCSS('front_end/components/styles.css')
+this.registerRequiredCSS('components/styles.css')
   }
   wasShown(): void {
     super.wasShown();
@@ -247,7 +247,7 @@ this.registerRequiredCSS('front_end/components/styles.css')
 export class Component extends UI.Widget.VBox {
   constructor(){
 
-this.registerRequiredCSS('front_end/components/styles.css')
+this.registerRequiredCSS('components/styles.css')
   }
   wasShown(): void {
     super.wasShown();
@@ -275,7 +275,7 @@ export class Component extends UI.Widget.VBox {
       // Errors on empty wasShown and tells you to migrate manually.
       code: `export class Component extends UI.Widget.VBox {
   constructor(){
-this.registerRequiredCSS('front_end/components/test.css')
+this.registerRequiredCSS('components/test.css')
   }
   willHide() : void {
 
@@ -290,7 +290,7 @@ this.registerRequiredCSS('front_end/components/test.css')
     {
       code: `export class Component extends UI.Widget.Widget {
   constructor(){
-this._widget.registerRequiredCSS('front_end/components/test.css')
+this._widget.registerRequiredCSS('components/test.css')
   }
 }`,
       filename: 'front_end/components/test.ts',
@@ -309,7 +309,7 @@ export class Component extends UI.Widget.Widget {
     {
       code: `export class Component extends UI.Widget.Widget {
   constructor(){
-this._tree.registerRequiredCSS('front_end/components/test.css')
+this._tree.registerRequiredCSS('components/test.css')
   }
   willHide() : void {
 
@@ -338,8 +338,8 @@ export class Component extends UI.Widget.Widget {
       // First migration of two different registerRequiredCSS to same private field
       code: `export class Component extends UI.Widget.Widget {
   constructor(){
-this._tree.registerRequiredCSS('front_end/components/test.css')
-this._tree.registerRequiredCSS('front_end/components/styles.css')
+this._tree.registerRequiredCSS('components/test.css')
+this._tree.registerRequiredCSS('components/styles.css')
   }
   wasShown(): void {
     super.wasShown();
@@ -351,7 +351,7 @@ this._tree.registerRequiredCSS('front_end/components/styles.css')
 export class Component extends UI.Widget.Widget {
   constructor(){
 
-this._tree.registerRequiredCSS('front_end/components/styles.css')
+this._tree.registerRequiredCSS('components/styles.css')
   }
   wasShown(): void {
     super.wasShown();
@@ -365,7 +365,7 @@ this._tree.registerRequiredCSS('front_end/components/styles.css')
 export class Component extends UI.Widget.Widget {
   constructor(){
 
-this._tree.registerRequiredCSS('front_end/components/styles.css')
+this._tree.registerRequiredCSS('components/styles.css')
   }
   wasShown(): void {
     super.wasShown();
@@ -391,8 +391,8 @@ export class Component extends UI.Widget.Widget {
       // First pass of two different registerRequiredCSS to different fields
       code: `export class Component extends UI.Widget.Widget {
   constructor(){
-this.registerRequiredCSS('front_end/components/test.css')
-this._tree.registerRequiredCSS('front_end/components/styles.css')
+this.registerRequiredCSS('components/test.css')
+this._tree.registerRequiredCSS('components/styles.css')
   }
   wasShown(): void {
     super.wasShown();
@@ -404,7 +404,7 @@ this._tree.registerRequiredCSS('front_end/components/styles.css')
 export class Component extends UI.Widget.Widget {
   constructor(){
 
-this._tree.registerRequiredCSS('front_end/components/styles.css')
+this._tree.registerRequiredCSS('components/styles.css')
   }
   wasShown(): void {
     super.wasShown();
@@ -418,7 +418,7 @@ this._tree.registerRequiredCSS('front_end/components/styles.css')
 export class Component extends UI.Widget.Widget {
   constructor(){
 
-this._tree.registerRequiredCSS('front_end/components/styles.css')
+this._tree.registerRequiredCSS('components/styles.css')
   }
   wasShown(): void {
     super.wasShown();
@@ -447,7 +447,7 @@ export class Component extends UI.Widget.Widget {
 export class Component extends UI.Widget.Widget {
   constructor(){
 
-this._tree.registerRequiredCSS('front_end/components/test.css')
+this._tree.registerRequiredCSS('components/test.css')
   }
   wasShown(): void {
     super.wasShown();

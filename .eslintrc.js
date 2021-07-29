@@ -36,7 +36,6 @@ module.exports = {
      * Enforced rules
      */
 
-
     // syntax preferences
     'quotes': [2, 'single', {'avoidEscape': true, 'allowTemplateLiterals': false}],
     'semi': 2,

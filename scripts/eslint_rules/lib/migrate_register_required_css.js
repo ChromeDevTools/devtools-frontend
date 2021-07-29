@@ -103,7 +103,7 @@ module.exports = {
           const filename = path.basename(filenameWithExtension, '.css');
           const newFileName = filename + 'Styles';
 
-          const importDir = path.dirname(filenameWithExtension);
+          const importDir = 'front_end/' + path.dirname(filenameWithExtension);
           const fileDir = path.dirname(context.getFilename());
           const relativeImport = path.relative(fileDir, importDir);
           const importStatement = relativeImport === '' ?

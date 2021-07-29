@@ -9,6 +9,8 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {latestReleaseNote, releaseNoteViewId} from './HelpImpl.js';
+import releaseNoteStyles from './releaseNote.css.js';
+
 import type {ReleaseNote} from './HelpImpl.js';
 
 const UIStrings = {
@@ -29,7 +31,7 @@ export class ReleaseNoteView extends UI.Widget.VBox {
   _releaseNoteElement: Element;
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/help/releaseNote.css');
+
     this._releaseNoteElement = this._createReleaseNoteElement(latestReleaseNote());
     const topSection = this.contentElement.createChild('div', 'release-note-top-section');
     topSection.textContent = latestReleaseNote().header;
@@ -99,5 +101,9 @@ export class ReleaseNoteView extends UI.Widget.VBox {
     image.alt = tooltipText;
 
     return hbox;
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([releaseNoteStyles]);
   }
 }

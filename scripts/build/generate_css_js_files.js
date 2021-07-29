@@ -12,7 +12,8 @@ const cleanCSS = new CleanCSS();
 const isDebug = isDebugString === 'true';
 
 for (const fileName of filenames) {
-  const output = fs.readFileSync(path.join(srcDir, fileName), {encoding: 'utf8', flag: 'r'});
+  let output = fs.readFileSync(path.join(srcDir, fileName), {encoding: 'utf8', flag: 'r'});
+  output = output.replace(/\`/g, '\\\'');
 
   fs.writeFileSync(
       path.join(targetGenDir, fileName + '.js'),

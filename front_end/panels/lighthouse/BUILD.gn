@@ -4,7 +4,16 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/generate_css.gni")
 import("../visibility.gni")
+
+generate_css("css_files") {
+  sources = [
+    "lighthouseDialog.css",
+    "lighthousePanel.css",
+    "lighthouseStartView.css",
+  ]
+}
 
 devtools_module("lighthouse") {
   sources = [
@@ -40,8 +49,10 @@ devtools_entrypoint("bundle") {
   entrypoint = "lighthouse.ts"
 
   deps = [
+    ":css_files",
     ":lighthouse",
     "../../third_party/lighthouse",
+    "../../third_party/lighthouse:css_files",
   ]
 
   visibility = [

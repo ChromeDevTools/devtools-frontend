@@ -4,6 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
+import lighthouseStartViewStyles from './lighthouseStartView.css.js';
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -51,7 +52,7 @@ export class StartView extends UI.Widget.Widget {
 
   constructor(controller: LighthouseController) {
     super();
-    this.registerRequiredCSS('panels/lighthouse/lighthouseStartView.css');
+
     this._controller = controller;
     this._settingsToolbar = new UI.Toolbar.Toolbar('');
     this._render();
@@ -209,5 +210,9 @@ export class StartView extends UI.Widget.Widget {
       this._warningText.classList.toggle('hidden', !text);
       this._shouldConfirm = Boolean(text);
     }
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([lighthouseStartViewStyles]);
   }
 }

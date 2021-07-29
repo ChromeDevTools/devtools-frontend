@@ -216,7 +216,7 @@
     "message": "{PH1} мкс"
   },
   "core/i18n/i18nImpl.ts | fms": {
-    "message": "{PH1} ms"
+    "message": "{PH1} мс"
   },
   "core/i18n/i18nImpl.ts | fs": {
     "message": "{PH1} с"
@@ -1193,6 +1193,9 @@
   "models/bindings/DebuggerLanguagePlugins.ts | failedToLoadDebugSymbolsFor": {
     "message": "[{PH1}] Не вдалося завантажити символи налагодження для {PH2} ({PH3})"
   },
+  "models/bindings/DebuggerLanguagePlugins.ts | failedToLoadDebugSymbolsForFunction": {
+    "message": "Немає символів налагодження для функції \"{PH1}\""
+  },
   "models/bindings/DebuggerLanguagePlugins.ts | loadedDebugSymbolsForButDidnt": {
     "message": "[{PH1}] Завантажено символи налагодження для {PH2}, але вихідних файлів не виявлено"
   },
@@ -1204,6 +1207,9 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] Завантаження символів налагодження для {PH2} (через {PH3})…"
+  },
+  "models/bindings/DebuggerLanguagePlugins.ts | symbolFileNotFound": {
+    "message": "Файл із символами \"{PH1}\" не знайдено"
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "Не вдалося компілювати LiveEdit: {PH1}"
@@ -1276,6 +1282,9 @@
   },
   "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
     "message": "Зміни критеріїв якості для прогресивних веб-додатків з надійною діяльністю в Інтернеті"
+  },
+  "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
+    "message": "Припинення міждоменного доступу до модулів Wasm"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<анонімно>"
@@ -1408,12 +1417,6 @@
   },
   "models/persistence/persistence-meta.ts | workspace": {
     "message": "Робоча область"
-  },
-  "models/recorder/RecordingFileSystem.ts | defaultRecordingName": {
-    "message": "Запис №{nextId}"
-  },
-  "models/recorder/RecordingFileSystem.ts | linkedToS": {
-    "message": "Зв'язано з адресою {PH1}"
   },
   "models/timeline_model/TimelineIRModel.ts | twoFlingsAtTheSameTimeSVsS": {
     "message": "Два гортання одночасно? {PH1} – {PH2}"
@@ -1913,6 +1916,9 @@
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Маніфест додатка"
   },
+  "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
+    "message": "Не рекомендується задавати значок із purpose: \"any maskable\". Найімовірніше, він матиме неправильний вигляд на деяких платформах через завеликі або замалі відступи."
+  },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "Колір фону"
   },
@@ -1968,7 +1974,7 @@
     "message": "Маніфест не містить полів name або short_name"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "У маніфесті немає відповідного значка. Потрібен значок у форматі PNG, SVG або WebP з роздільною здатністю принаймні {PH1} пікс. і визначеним атрибутом sizes. Якщо задається атрибут purpose, для нього слід указати значення \"any\" та виключити значення \"maskable\"."
+    "message": "У маніфесті немає відповідного значка. Потрібен значок у форматі PNG, SVG або WebP з роздільною здатністю принаймні {PH1} пікс. і визначеним атрибутом sizes. Якщо задається атрибут purpose, для нього слід указати значення \"any\"."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "Значення атрибута prefer_related_applications у маніфесті: true"
@@ -1981,6 +1987,9 @@
   },
   "panels/application/AppManifestView.ts | needHelpReadOurS": {
     "message": "Потрібна допомога? Перегляньте сторінку {PH1}."
+  },
+  "panels/application/AppManifestView.ts | newNoteUrl": {
+    "message": "URL-адреса нової нотатки"
   },
   "panels/application/AppManifestView.ts | noManifestDetected": {
     "message": "Маніфест не виявлено"
@@ -2040,7 +2049,7 @@
     "message": "Для більшості операційних систем потрібні квадратні значки. Додайте в масив принаймні один значок такого формату."
   },
   "panels/application/AppManifestView.ts | sSShouldSpecifyItsSizeAs": {
-    "message": "{PH1} ({PH2}): слід зазначати розмір як {width}x{height}"
+    "message": "{PH1} ({PH2}): слід зазначати розмір як [width]x[height]"
   },
   "panels/application/AppManifestView.ts | sSSizeShouldBeAtLeast320": {
     "message": "{PH1} ({PH2}): розмір має становити принаймні 320×320"
@@ -2059,6 +2068,9 @@
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "Знімок екрана"
+  },
+  "panels/application/AppManifestView.ts | screenshotPixelSize": {
+    "message": "Для знімка екрана {url} першим має вказуватися розмір у пікселях [width]x[height], а не \"any\"."
   },
   "panels/application/AppManifestView.ts | screenshotS": {
     "message": "Знімок екрана №{PH1}"
@@ -2210,6 +2222,9 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Статус зворотного кешу"
   },
+  "panels/application/BackForwardCacheView.ts | explanations": {
+    "message": "Пояснення"
+  },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Остання навігація основним фреймом"
   },
@@ -2330,8 +2345,14 @@
   "panels/application/DOMStorageItemsView.ts | domStorage": {
     "message": "Пам'ять DOM"
   },
+  "panels/application/DOMStorageItemsView.ts | domStorageItemDeleted": {
+    "message": "Елемент у пам’яті видалено."
+  },
   "panels/application/DOMStorageItemsView.ts | domStorageItems": {
     "message": "Елементи сховища DOM"
+  },
+  "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
+    "message": "Кількість записів, показаних у таблиці: {PH1}"
   },
   "panels/application/DOMStorageItemsView.ts | key": {
     "message": "Ключ"
@@ -2783,9 +2804,6 @@
   "panels/application/components/FrameDetailsView.ts | additionalInformation": {
     "message": "Додаткова інформація"
   },
-  "panels/application/components/FrameDetailsView.ts | allowedFeatures": {
-    "message": "Дозволені функції"
-  },
   "panels/application/components/FrameDetailsView.ts | apiAvailability": {
     "message": "Доступність API"
   },
@@ -2804,6 +2822,9 @@
   "panels/application/components/FrameDetailsView.ts | child": {
     "message": "дочірній"
   },
+  "panels/application/components/FrameDetailsView.ts | childDescription": {
+    "message": "Цей фрейм є дочірнім для оголошення"
+  },
   "panels/application/components/FrameDetailsView.ts | clickToRevealInElementsPanel": {
     "message": "Натисніть, щоб показати на панелі \"Елементи\""
   },
@@ -2816,11 +2837,8 @@
   "panels/application/components/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
     "message": "Натисніть, щоб показати на панелі \"Джерела\""
   },
-  "panels/application/components/FrameDetailsView.ts | clickToShowHeader": {
-    "message": "Натисніть, щоб показати запит, заголовок HTTP Permissions-Policy якого вимикає цю функцію."
-  },
-  "panels/application/components/FrameDetailsView.ts | clickToShowIframe": {
-    "message": "Натисніть, щоб переглянути найвищий iframe, що не дозволяє цю функцію, на панелі елементів."
+  "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
+    "message": "При створенні цього фрейму в (асинхронному) стеку був скрипт оголошення. Більше можна дізнатися, проаналізувавши трасування стека створення цього фрейму."
   },
   "panels/application/components/FrameDetailsView.ts | creationStackTrace": {
     "message": "Трасування стека для створення фрейму"
@@ -2837,29 +2855,20 @@
   "panels/application/components/FrameDetailsView.ts | crossoriginOpenerPolicy": {
     "message": "Cross-Origin Opener Policy"
   },
-  "panels/application/components/FrameDetailsView.ts | disabledByHeader": {
-    "message": "вимкнено заголовком Permissions-Policy"
-  },
-  "panels/application/components/FrameDetailsView.ts | disabledByIframe": {
-    "message": "немає в атрибуті iframe allow"
-  },
-  "panels/application/components/FrameDetailsView.ts | disabledFeatures": {
-    "message": "Вимкнені функції"
-  },
   "panels/application/components/FrameDetailsView.ts | document": {
     "message": "Документ"
   },
   "panels/application/components/FrameDetailsView.ts | frameId": {
     "message": "Ідентифікатор фрейму"
   },
-  "panels/application/components/FrameDetailsView.ts | hideDetails": {
-    "message": "Сховати деталі"
-  },
   "panels/application/components/FrameDetailsView.ts | learnMore": {
     "message": "Докладніше"
   },
   "panels/application/components/FrameDetailsView.ts | localhostIsAlwaysASecureContext": {
     "message": "Локальний хост є завжди захищеним контекстом"
+  },
+  "panels/application/components/FrameDetailsView.ts | matchedBlockingRuleExplanation": {
+    "message": "Цей фрейм вважається фреймом оголошення, оскільки його поточний (або минулий) основний документ – це рекламний ресурс."
   },
   "panels/application/components/FrameDetailsView.ts | measureMemory": {
     "message": "Вимірювання пам'яті"
@@ -2870,8 +2879,14 @@
   "panels/application/components/FrameDetailsView.ts | origin": {
     "message": "Джерело"
   },
+  "panels/application/components/FrameDetailsView.ts | originTrials": {
+    "message": "Пробні версії джерел"
+  },
   "panels/application/components/FrameDetailsView.ts | ownerElement": {
     "message": "Елемент власника"
+  },
+  "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
+    "message": "Цей фрейм вважається фреймом оголошення, оскільки таким є його батьківський фрейм."
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "отримувач звітів:"
@@ -2881,6 +2896,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | root": {
     "message": "кореневий"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootDescription": {
+    "message": "Цей фрейм є кореневим для оголошення"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "Безпечний контекст"
@@ -2894,9 +2912,6 @@
   "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
     "message": "Конструктор SharedArrayBuffer доступний, але об'єкти SAB не можна передавати через postMessage"
   },
-  "panels/application/components/FrameDetailsView.ts | showDetails": {
-    "message": "Показати деталі"
-  },
   "panels/application/components/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
     "message": "Схема фрейму ненадійна"
   },
@@ -2908,12 +2923,6 @@
   },
   "panels/application/components/FrameDetailsView.ts | thisAdditionalDebugging": {
     "message": "Цю додаткову інформацію (про налагодження) показано, оскільки ввімкнено експеримент \"Монітор протоколу\"."
-  },
-  "panels/application/components/FrameDetailsView.ts | thisFrameHasBeenIdentifiedAsThe": {
-    "message": "Цей фрейм є кореневим для оголошення"
-  },
-  "panels/application/components/FrameDetailsView.ts | thisFrameHasBeenIdentifiedAsTheA": {
-    "message": "Цей фрейм є дочірнім для оголошення"
   },
   "panels/application/components/FrameDetailsView.ts | transferRequiresCrossoriginIsolatedPermission": {
     "message": "Щоб перенести об’єкт SharedArrayBuffer, потрібно ввімкнути правило щодо дозволів:"
@@ -2932,6 +2941,57 @@
   },
   "panels/application/components/FrameDetailsView.ts | yes": {
     "message": "Так"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
+    "message": "Термін дії"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | isThirdParty": {
+    "message": "Сторонні розробники"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
+    "message": "Зіставити субдомени"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | origin": {
+    "message": "Джерело"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | rawTokenText": {
+    "message": "Необроблений маркер"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | status": {
+    "message": "Статус маркера"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | token": {
+    "message": "Маркер"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | tokens": {
+    "message": "маркери"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
+    "message": "Обмеження використання"
+  },
+  "panels/application/components/PermissionsPolicySection.ts | allowedFeatures": {
+    "message": "Дозволені функції"
+  },
+  "panels/application/components/PermissionsPolicySection.ts | clickToShowHeader": {
+    "message": "Натисніть, щоб показати запит, заголовок HTTP Permissions-Policy якого вимикає цю функцію."
+  },
+  "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
+    "message": "Натисніть, щоб переглянути найвищий iframe, що не дозволяє цю функцію, на панелі елементів."
+  },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByHeader": {
+    "message": "вимкнено заголовком Permissions-Policy"
+  },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByIframe": {
+    "message": "немає в атрибуті iframe allow"
+  },
+  "panels/application/components/PermissionsPolicySection.ts | disabledFeatures": {
+    "message": "Вимкнені функції"
+  },
+  "panels/application/components/PermissionsPolicySection.ts | hideDetails": {
+    "message": "Сховати деталі"
+  },
+  "panels/application/components/PermissionsPolicySection.ts | showDetails": {
+    "message": "Показати деталі"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Не вдається відобразити трасування стека"
@@ -3218,6 +3278,9 @@
   "panels/console/ConsoleView.ts | filter": {
     "message": "Фільтр"
   },
+  "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
+    "message": "Кількість повідомлень у консолі: {PH1}"
+  },
   "panels/console/ConsoleView.ts | findStringInLogs": {
     "message": "Знайти сегмент у журналах"
   },
@@ -3442,9 +3505,6 @@
   },
   "panels/console_counters/WarningErrorCounter.ts | openIssuesToView": {
     "message": "{n,plural, =1{Відкрийте панель \"Проблеми\", щоб переглянути # проблему:}one{Відкрийте панель \"Проблеми\", щоб переглянути # проблему:}few{Відкрийте панель \"Проблеми\", щоб переглянути # проблеми:}many{Відкрийте панель \"Проблеми\", щоб переглянути # проблем:}other{Відкрийте панель \"Проблеми\", щоб переглянути # проблеми:}}"
-  },
-  "panels/console_counters/WarningErrorCounter.ts | openLighthouseToView": {
-    "message": "{n,plural, =1{Відкрийте Lighthouse, щоб переглянути # порушення}one{Відкрийте Lighthouse, щоб переглянути # порушення}few{Відкрийте Lighthouse, щоб переглянути # порушення}many{Відкрийте Lighthouse, щоб переглянути # порушень}other{Відкрийте Lighthouse, щоб переглянути # порушення}}"
   },
   "panels/console_counters/WarningErrorCounter.ts | sErrors": {
     "message": "{n,plural, =1{# помилка}one{# помилка}few{# помилки}many{# помилок}other{# помилки}}"
@@ -4130,7 +4190,7 @@
   "panels/elements/StylesSidebarPane.ts | viaInspector": {
     "message": "через інспектор"
   },
-  "panels/elements/components/AccessibilityTreeUtils.ts | ignored": {
+  "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ігнорується"
   },
   "panels/elements/components/AdornerSettingsPane.ts | closeButton": {
@@ -4388,26 +4448,11 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Планшет"
   },
-  "panels/emulation/DevicesSettingsTab.ts | UABrands": {
-    "message": "Список брендів агента користувача (наприклад, \"Chromium\";v=\"87\")"
-  },
   "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Додати власний пристрій…"
   },
-  "panels/emulation/DevicesSettingsTab.ts | architecture": {
-    "message": "Архітектура (наприклад, x86)"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | brandsList": {
-    "message": "Список брендів не є дійсним списком зі структурованими полями."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | brandsListMust": {
-    "message": "Список брендів має складатись із сегментів, кожен з яких повинен містити параметр v зі значенням сегмента."
-  },
   "panels/emulation/DevicesSettingsTab.ts | device": {
     "message": "Пристрій"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceModel": {
-    "message": "Модель пристрою"
   },
   "panels/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Назва пристрою"
@@ -4424,26 +4469,8 @@
   "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
     "message": "Емульовані пристрої"
   },
-  "panels/emulation/DevicesSettingsTab.ts | fullBrowserVersion": {
-    "message": "Повна версія веб-переглядача (наприклад, 87.0.4280.88)"
-  },
   "panels/emulation/DevicesSettingsTab.ts | height": {
     "message": "Висота"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | notRepresentable": {
-    "message": "Не можна показати як сегмент структурованих заголовків."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | platform": {
-    "message": "Платформа (наприклад, Android)"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | platformVersion": {
-    "message": "Версія платформи"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentClient": {
-    "message": "Підказки клієнта щодо агента користувача"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentClientHintsAre": {
-    "message": "Підказки клієнта щодо агента користувача використовуються замість сегментів агента користувача. Вони більш структуровано визначають веб-переглядач і пристрій та посилюють захист конфіденційності. Натисніть кнопку, щоб дізнатися докладніше."
   },
   "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "Сегмент агента користувача"
@@ -4455,13 +4482,13 @@
     "message": "Ширина"
   },
   "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "Laptop with HiDPI screen"
+    "message": "Ноутбук з екраном HiDPI"
   },
   "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "Laptop with MDPI screen"
+    "message": "Ноутбук з екраном MDPI"
   },
   "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "Laptop with touch"
+    "message": "Ноутбук із сенсорним пристроєм"
   },
   "panels/emulation/LocationsSettingsTab.ts | addLocation": {
     "message": "Додати місце…"
@@ -4621,6 +4648,78 @@
   },
   "panels/emulation/SensorsView.ts | timezoneId": {
     "message": "Ідентифікатор часового поясу"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "Додати бренд"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "Архітектура"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "Архітектура (наприклад, x86)"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "Видалити ({PH1})"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "Бренд"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "Бренд: {PH1}"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "Властивості бренду"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "Версія {PH1}"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "Бренди"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "Видалити"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "Модель пристрою"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "Властивості пристрою"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "Повна версія веб-переглядача"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "Повна версія веб-переглядача (наприклад, 87.0.4280.88)"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "Мобільний пристрій"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "Не можна показати як сегмент структурованих заголовків."
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "Платформа"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "Платформа (наприклад, Android)"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "Властивості платформи"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "Версія платформи"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "Підказки клієнта щодо агента користувача"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "Оновити"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "Підказки клієнта щодо агента користувача використовуються замість сегментів агента користувача. Вони більш структуровано визначають веб-переглядач і пристрій та посилюють захист конфіденційності. Натисніть кнопку, щоб дізнатися докладніше."
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "Версія"
   },
   "panels/emulation/emulation-meta.ts | accelerometer": {
     "message": "акселерометр"
@@ -4820,6 +4919,33 @@
   "panels/issues/AffectedCookiesView.ts | path": {
     "message": "Шлях"
   },
+  "panels/issues/AffectedDirectivesView.ts | blocked": {
+    "message": "заблоковано"
+  },
+  "panels/issues/AffectedDirectivesView.ts | clickToRevealTheViolatingDomNode": {
+    "message": "Натисніть, щоб переглянути вузол DOM із порушеннями на панелі \"Елементи\""
+  },
+  "panels/issues/AffectedDirectivesView.ts | directiveC": {
+    "message": "Директива"
+  },
+  "panels/issues/AffectedDirectivesView.ts | element": {
+    "message": "Елемент"
+  },
+  "panels/issues/AffectedDirectivesView.ts | nDirectives": {
+    "message": "{n,plural, =1{# директива}one{# директива}few{# директиви}many{# директив}other{# директиви}}"
+  },
+  "panels/issues/AffectedDirectivesView.ts | reportonly": {
+    "message": "лише звіти"
+  },
+  "panels/issues/AffectedDirectivesView.ts | resourceC": {
+    "message": "Ресурс"
+  },
+  "panels/issues/AffectedDirectivesView.ts | sourceLocation": {
+    "message": "Місцезнаходження джерела"
+  },
+  "panels/issues/AffectedDirectivesView.ts | status": {
+    "message": "Статус"
+  },
   "panels/issues/AffectedDocumentsInQuirksModeView.ts | documentInTheDOMTree": {
     "message": "Документ у дереві DOM"
   },
@@ -4834,9 +4960,6 @@
   },
   "panels/issues/AffectedElementsView.ts | nElements": {
     "message": "{n,plural, =1{# елемент}one{# елемент}few{# елементи}many{# елементів}other{# елемента}}"
-  },
-  "panels/issues/AffectedElementsView.ts | unavailable": {
-    "message": "unavailable"
   },
   "panels/issues/AffectedElementsWithLowContrastView.ts | contrastRatio": {
     "message": "Коефіцієнт контрастності"
@@ -4886,11 +5009,8 @@
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "Натисніть, щоб показати вузол DOM фрейму на панелі \"Елементи\""
   },
-  "panels/issues/AffectedResourcesView.ts | clickToShowRequestInTheNetwork": {
-    "message": "Натисніть, щоб переглянути запит на панелі \"Мережа\""
-  },
-  "panels/issues/AffectedResourcesView.ts | requestUnavailableInTheNetwork": {
-    "message": "Запит недоступний на панелі \"Мережа\", спробуйте оновити сторінку, що перевіряється"
+  "panels/issues/AffectedResourcesView.ts | unavailable": {
+    "message": "недоступно"
   },
   "panels/issues/AffectedResourcesView.ts | unknown": {
     "message": "невідомо"
@@ -4925,6 +5045,9 @@
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | warning": {
     "message": "попередження"
   },
+  "panels/issues/AffectedSourcesView.ts | nSources": {
+    "message": "{n,plural, =1{# джерело}one{# джерело}few{# джерела}many{# джерел}other{# джерела}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# ресурс}one{# ресурс}few{# ресурси}many{# ресурсів}other{# ресурсу}}"
   },
@@ -4939,6 +5062,27 @@
   },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | url": {
     "message": "URL-адреса"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
+    "message": "Елемент"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
+    "message": "Фрейм"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourceEventId": {
+    "message": "attributionsourceeventid: недійсне значення"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidTriggerData": {
+    "message": "trigger-data: недійсне значення"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
+    "message": "{n,plural, =1{# порушення}one{# порушення}few{# порушення}many{# порушень}other{# порушення}}"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | request": {
+    "message": "Запит"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | untrustworthyOrigin": {
+    "message": "Ненадійне джерело"
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Фільтр"
@@ -5030,20 +5174,8 @@
   "panels/issues/IssueView.ts | blocked": {
     "message": "заблоковано"
   },
-  "panels/issues/IssueView.ts | clickToRevealTheViolatingDomNode": {
-    "message": "Натисніть, щоб переглянути вузол DOM із порушеннями на панелі \"Елементи\""
-  },
-  "panels/issues/IssueView.ts | directiveC": {
-    "message": "Директива"
-  },
-  "panels/issues/IssueView.ts | element": {
-    "message": "Елемент"
-  },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "Докладніше: {PH1}"
-  },
-  "panels/issues/IssueView.ts | nDirectives": {
-    "message": "{n,plural, =1{# директива}one{# директива}few{# директиви}many{# директив}other{# директиви}}"
   },
   "panels/issues/IssueView.ts | nRequests": {
     "message": "{n,plural, =1{# запит}one{# запит}few{# запити}many{# запитів}other{# запиту}}"
@@ -5051,26 +5183,11 @@
   "panels/issues/IssueView.ts | nResources": {
     "message": "{n,plural, =1{# ресурс}one{# ресурс}few{# ресурси}many{# ресурсів}other{# ресурсу}}"
   },
-  "panels/issues/IssueView.ts | nSources": {
-    "message": "{n,plural, =1{# джерело}one{# джерело}few{# джерела}many{# джерел}other{# джерела}}"
-  },
   "panels/issues/IssueView.ts | name": {
     "message": "Назва"
   },
-  "panels/issues/IssueView.ts | reportonly": {
-    "message": "лише звіти"
-  },
-  "panels/issues/IssueView.ts | resourceC": {
-    "message": "Ресурс"
-  },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "Статус обмеження"
-  },
-  "panels/issues/IssueView.ts | sourceLocation": {
-    "message": "Місцезнаходження джерела"
-  },
-  "panels/issues/IssueView.ts | status": {
-    "message": "Статус"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "Попереджено"
@@ -5125,6 +5242,27 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Надійна діяльність в Інтернеті"
+  },
+  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
+    "message": "заблоковано"
+  },
+  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | nModuleTransfers": {
+    "message": "{n,plural, =1{# модуль}one{# модуль}few{# модулі}many{# модулів}other{# модуля}}"
+  },
+  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | sourceOrigin": {
+    "message": "Вихідне джерело"
+  },
+  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | status": {
+    "message": "Статус"
+  },
+  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | targetOrigin": {
+    "message": "Цільове джерело"
+  },
+  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | warned": {
+    "message": "попередження"
+  },
+  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
+    "message": "URL-адреса модуля Wasm"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "Порушення правил щодо безпеки контенту"
@@ -5903,6 +6041,9 @@
   "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
     "message": "Увімкнути блокування запитів мережі"
   },
+  "panels/network/BlockedURLsPane.ts | itemDeleted": {
+    "message": "Пункт видалено"
+  },
   "panels/network/BlockedURLsPane.ts | networkRequestsAreNotBlockedS": {
     "message": "Запити мережі не блокуються. {PH1}"
   },
@@ -6063,7 +6204,7 @@
     "message": "Показано за допомогою технології Signed HTTP Exchange, розмір ресурсу: {PH1}"
   },
   "panels/network/NetworkDataGridNode.ts | servedFromWebBundle": {
-    "message": "Served from Web Bundle, resource size: {PH1}"
+    "message": "Показано з Web Bundle, розмір ресурсу: {PH1}"
   },
   "panels/network/NetworkDataGridNode.ts | serviceworker": {
     "message": "(ServiceWorker)"
@@ -6071,14 +6212,20 @@
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "Технологія SXG"
   },
+  "panels/network/NetworkDataGridNode.ts | unknown": {
+    "message": "(невідомо)"
+  },
+  "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
+    "message": "Не можна відобразити статус запиту, оскільки сторінку, яка його відправила, було вивантажено під час виконання запиту. На сторінці chrome://net-export можна записати журнал мережі та переглянути деталі запиту."
+  },
   "panels/network/NetworkDataGridNode.ts | webBundle": {
     "message": "(Web Bundle)"
   },
   "panels/network/NetworkDataGridNode.ts | webBundleError": {
-    "message": "Web Bundle error"
+    "message": "Помилка Web Bundle"
   },
   "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
-    "message": "from Web Bundle"
+    "message": "Отримано з Web Bundle"
   },
   "panels/network/NetworkItemView.ts | cookies": {
     "message": "Файли cookie"
@@ -6242,6 +6389,9 @@
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlocked": {
     "message": "Показувати лише запити з файлами cookie, які блокують відповідь"
   },
+  "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
+    "message": "Показує лише запити, джерело яких відрізняється від джерела сторінки"
+  },
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Виконайте запит або натисніть {PH1}, щоб записати оновлення сторінки."
   },
@@ -6289,6 +6439,9 @@
   },
   "panels/network/NetworkLogView.ts | saveAllAsHarWithContent": {
     "message": "Зберегти все як HAR із контентом"
+  },
+  "panels/network/NetworkLogView.ts | thirdParty": {
+    "message": "Сторонні запити"
   },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "Розблокувати {PH1}"
@@ -6970,6 +7123,9 @@
   },
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "Тип"
+  },
+  "panels/network/components/WebBundleInfoView.ts | bundledResource": {
+    "message": "Ресурс у пакеті"
   },
   "panels/network/network-meta.ts | colorCode": {
     "message": "позначати кольором"
@@ -7754,12 +7910,6 @@
   "panels/protocol_monitor/protocol_monitor-meta.ts | showProtocolMonitor": {
     "message": "Показати монітор протоколу"
   },
-  "panels/recorder/recorder-meta.ts | recorder": {
-    "message": "Recorder"
-  },
-  "panels/recorder/recorder-meta.ts | showRecorder": {
-    "message": "Recorder"
-  },
   "panels/screencast/ScreencastApp.ts | toggleScreencast": {
     "message": "Перемкнути скрінкаст"
   },
@@ -8267,6 +8417,9 @@
   "panels/settings/SettingsScreen.ts | filterExperimentsLabel": {
     "message": "Фільтр"
   },
+  "panels/settings/SettingsScreen.ts | learnMore": {
+    "message": "Докладніше"
+  },
   "panels/settings/SettingsScreen.ts | noResults": {
     "message": "Немає експериментів, що збігаються з фільтром"
   },
@@ -8358,7 +8511,7 @@
     "message": "Реєструвати повідомлення на консолі без зупинки"
   },
   "panels/sources/BreakpointEditDialog.ts | logMessageEgXIsX": {
-    "message": "Запис у журналі, наприклад, \"x є\", x"
+    "message": "Зробити запис у журналі, наприклад 'x is', x"
   },
   "panels/sources/BreakpointEditDialog.ts | logpoint": {
     "message": "Точка запису в журнал"
@@ -8669,15 +8822,6 @@
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Щоб переглянути символи, відкрийте файл JavaScript або CSS"
   },
-  "panels/sources/RecorderPlugin.ts | export": {
-    "message": "Експортувати"
-  },
-  "panels/sources/RecorderPlugin.ts | play": {
-    "message": "Повторити"
-  },
-  "panels/sources/RecorderPlugin.ts | record": {
-    "message": "Записати"
-  },
   "panels/sources/ScopeChainSidebarPane.ts | closure": {
     "message": "Замикання"
   },
@@ -8723,9 +8867,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
-  "panels/sources/SourcesNavigator.ts | addRecording": {
-    "message": "Додати запис"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Очистити конфігурацію"
   },
@@ -8750,9 +8891,6 @@
   "panels/sources/SourcesNavigator.ts | overridePageAssetsWithFilesFromA": {
     "message": "Замінити об'єкти на сторінці файлами з локальної папки"
   },
-  "panels/sources/SourcesNavigator.ts | recordAndReplayBrowser": {
-    "message": "Записати й відтворити взаємодії з веб-переглядачем"
-  },
   "panels/sources/SourcesNavigator.ts | remove": {
     "message": "Видалити"
   },
@@ -8776,6 +8914,15 @@
   },
   "panels/sources/SourcesPanel.ts | copyS": {
     "message": "Копіювати {PH1}"
+  },
+  "panels/sources/SourcesPanel.ts | copyStringAsJSLiteral": {
+    "message": "Копіювати сегмент як літерал JavaScript"
+  },
+  "panels/sources/SourcesPanel.ts | copyStringAsJSONLiteral": {
+    "message": "Копіювати сегмент як літерал JSON"
+  },
+  "panels/sources/SourcesPanel.ts | copyStringContents": {
+    "message": "Копіювати вміст сегмента"
   },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Не призупиняти на непередбачених помилках"
@@ -8921,6 +9068,9 @@
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "Виявляти відступ"
   },
+  "panels/sources/sources-meta.ts | disableAutoFocusOnDebuggerPaused": {
+    "message": "Не відкривати панель \"Джерела\", коли активується точка зупину"
+  },
   "panels/sources/sources-meta.ts | disableAutocompletion": {
     "message": "Вимкнути автозавершення"
   },
@@ -8960,6 +9110,9 @@
   "panels/sources/sources-meta.ts | doNotShowWhitespaceCharacters": {
     "message": "Не показувати пробіли"
   },
+  "panels/sources/sources-meta.ts | enableAutoFocusOnDebuggerPaused": {
+    "message": "Відкривати панель \"Джерела\", коли активується точка зупину"
+  },
   "panels/sources/sources-meta.ts | enableAutocompletion": {
     "message": "Увімкнути автозавершення"
   },
@@ -8980,9 +9133,6 @@
   },
   "panels/sources/sources-meta.ts | evaluateSelectedTextInConsole": {
     "message": "Оцінити вибраний текст у консолі"
-  },
-  "panels/sources/sources-meta.ts | exportRecording": {
-    "message": "Експортувати"
   },
   "panels/sources/sources-meta.ts | filesystem": {
     "message": "Файлова система"
@@ -9023,17 +9173,8 @@
   "panels/sources/sources-meta.ts | quickSource": {
     "message": "Швидке джерело"
   },
-  "panels/sources/sources-meta.ts | record": {
-    "message": "Записати"
-  },
-  "panels/sources/sources-meta.ts | recordings": {
-    "message": "Записи"
-  },
   "panels/sources/sources-meta.ts | rename": {
     "message": "Перейменувати"
-  },
-  "panels/sources/sources-meta.ts | replayRecording": {
-    "message": "Повторити"
   },
   "panels/sources/sources-meta.ts | resumeScriptExecution": {
     "message": "Продовжити виконання скрипта"
@@ -9068,9 +9209,6 @@
   "panels/sources/sources-meta.ts | showQuickSource": {
     "message": "Показати швидке джерело"
   },
-  "panels/sources/sources-meta.ts | showRecordings": {
-    "message": "Показати записи"
-  },
   "panels/sources/sources-meta.ts | showScope": {
     "message": "Показати область дії"
   },
@@ -9101,9 +9239,6 @@
   "panels/sources/sources-meta.ts | sources": {
     "message": "Джерела"
   },
-  "panels/sources/sources-meta.ts | startRecording": {
-    "message": "Почати запис"
-  },
   "panels/sources/sources-meta.ts | step": {
     "message": "Крок"
   },
@@ -9115,9 +9250,6 @@
   },
   "panels/sources/sources-meta.ts | stepOverNextFunctionCall": {
     "message": "Пропустити наступний виклик функції"
-  },
-  "panels/sources/sources-meta.ts | stop": {
-    "message": "Зупинити"
   },
   "panels/sources/sources-meta.ts | switchFile": {
     "message": "Змінити файл"
@@ -9647,6 +9779,9 @@
   "panels/timeline/TimelineUIUtils.ts | compile": {
     "message": "Компілювання"
   },
+  "panels/timeline/TimelineUIUtils.ts | compileCode": {
+    "message": "Компілювання коду"
+  },
   "panels/timeline/TimelineUIUtils.ts | compileModule": {
     "message": "Компілювати модуль"
   },
@@ -9684,10 +9819,10 @@
     "message": "Сукупна оцінка"
   },
   "panels/timeline/TimelineUIUtils.ts | currentClusterId": {
-    "message": "Current Cluster ID"
+    "message": "Ідентифікатор поточного кластера"
   },
   "panels/timeline/TimelineUIUtils.ts | currentClusterScore": {
-    "message": "Current Cluster Score"
+    "message": "Оцінка поточного кластера"
   },
   "panels/timeline/TimelineUIUtils.ts | decodedBody": {
     "message": "Розкодований контент"
@@ -9759,7 +9894,7 @@
     "message": "Подія"
   },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
-    "message": "evolved"
+    "message": "покращений"
   },
   "panels/timeline/TimelineUIUtils.ts | experience": {
     "message": "Зручність"
@@ -9983,6 +10118,9 @@
   "panels/timeline/TimelineUIUtils.ts | onloadEvent": {
     "message": "Подія onload"
   },
+  "panels/timeline/TimelineUIUtils.ts | optimizeCode": {
+    "message": "Оптимізація коду"
+  },
   "panels/timeline/TimelineUIUtils.ts | other": {
     "message": "Інше"
   },
@@ -10116,7 +10254,7 @@
     "message": "{n,plural, =1{# байт}one{# байт}few{# байти}many{# байтів}other{# байта}}"
   },
   "panels/timeline/TimelineUIUtils.ts | sCLSInformation": {
-    "message": "{PH1} can result in poor user experiences. It has recently {PH2}."
+    "message": "{PH1}: взаємодія з користувачем може погіршитися. Нещодавно: {PH2}."
   },
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (дочірні елементи)"
@@ -10616,6 +10754,15 @@
   "ui/components/issue_counter/IssueCounter.ts | possibleImprovements": {
     "message": "{issueCount,plural, =1{# можливе покращення}one{# можливе покращення}few{# можливі покращення}many{# можливих покращень}other{# можливого покращення}}"
   },
+  "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssue": {
+    "message": "Натисніть, щоб відкрити проблему на вкладці \"Проблеми\""
+  },
+  "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
+    "message": "Натисніть, щоб відкрити вкладку \"Проблеми\" й показати проблему \"{title}\""
+  },
+  "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
+    "message": "Проблема наразі недоступна"
+  },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Адреса має бути числом від {PH1} до {PH2}"
   },
@@ -10673,6 +10820,15 @@
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
     "message": "Показати \"Інспектор пам'яті\""
   },
+  "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
+    "message": "Натисніть, щоб відкрити панель \"Мережа\" й показати запит для URL-адреси: {url}"
+  },
+  "ui/components/request_link_icon/RequestLinkIcon.ts | requestUnavailableInTheNetwork": {
+    "message": "Запит недоступний на панелі \"Мережа\", спробуйте оновити сторінку, що перевіряється"
+  },
+  "ui/components/request_link_icon/RequestLinkIcon.ts | shortenedURL": {
+    "message": "Скорочена URL-адреса"
+  },
   "ui/components/survey_link/SurveyLink.ts | anErrorOccurredWithTheSurvey": {
     "message": "З опитуванням сталася помилка"
   },
@@ -10725,7 +10881,7 @@
     "message": "Закрити висувну панель"
   },
   "ui/legacy/InspectorView.ts | devToolsLanguageMissmatch": {
-    "message": "DevTools is now available in {PH1}!"
+    "message": "Інструменти розробника тепер доступні такою мовою: {PH1}."
   },
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "Інші інструменти"
@@ -10743,10 +10899,10 @@
     "message": "Перезавантажити Інструменти розробника"
   },
   "ui/legacy/InspectorView.ts | setToBrowserLanguage": {
-    "message": "Always match Chrome's language"
+    "message": "Завжди зіставляти з мовою Chrome"
   },
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
-    "message": "Switch DevTools to {PH1}"
+    "message": "Змінити мову Інструментів розробника на таку: {PH1}"
   },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Додати"
@@ -10825,6 +10981,9 @@
   },
   "ui/legacy/SuggestBox.ts | sSuggestionSOfS": {
     "message": "{PH1}, пропозиція {PH2} з {PH3}"
+  },
+  "ui/legacy/SuggestBox.ts | sSuggestionSSelected": {
+    "message": "{PH1}, пропозицію вибрано"
   },
   "ui/legacy/TabbedPane.ts | close": {
     "message": "Закрити"
@@ -11026,6 +11185,9 @@
   },
   "ui/legacy/components/data_grid/DataGrid.ts | editS": {
     "message": "Змінити \"{PH1}\""
+  },
+  "ui/legacy/components/data_grid/DataGrid.ts | emptyRowCreated": {
+    "message": "Створено порожній рядок у таблиці. Щоб редагувати його, двічі натисніть або скористайтеся контекстним меню."
   },
   "ui/legacy/components/data_grid/DataGrid.ts | expanded": {
     "message": "розгорнуто"

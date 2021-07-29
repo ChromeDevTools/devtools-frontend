@@ -141,7 +141,7 @@
     "message": "ग्रिड"
   },
   "core/common/SettingRegistration.ts | memory": {
-    "message": "मेमोरी"
+    "message": "स्टोरेज"
   },
   "core/common/SettingRegistration.ts | mobile": {
     "message": "मोबाइल"
@@ -216,7 +216,7 @@
     "message": "{PH1} μs"
   },
   "core/i18n/i18nImpl.ts | fms": {
-    "message": "{PH1} ms"
+    "message": "{PH1} मि॰से॰"
   },
   "core/i18n/i18nImpl.ts | fs": {
     "message": "{PH1} से॰"
@@ -1193,6 +1193,9 @@
   "models/bindings/DebuggerLanguagePlugins.ts | failedToLoadDebugSymbolsFor": {
     "message": "[{PH1}], {PH2} ({PH3}) के लिए सिंबल डीबगल नहीं कर पाया"
   },
+  "models/bindings/DebuggerLanguagePlugins.ts | failedToLoadDebugSymbolsForFunction": {
+    "message": "\"{PH1}\" फ़ंक्शन के लिए डीबग सिंबल नहीं हैं"
+  },
   "models/bindings/DebuggerLanguagePlugins.ts | loadedDebugSymbolsForButDidnt": {
     "message": "[{PH1}] ने {PH2} के लिए डीबग सिंबल लोड किए, लेकिन सोर्स फ़ाइलें नहीं मिलीं"
   },
@@ -1204,6 +1207,9 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] {PH2} के लिए डीबग सिंबल लोड कर रहा है ({PH3} के ज़रिए)..."
+  },
+  "models/bindings/DebuggerLanguagePlugins.ts | symbolFileNotFound": {
+    "message": "\"{PH1}\" सिंबल फ़ाइल नहीं मिली"
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "LiveEdit को कंपाइल नहीं किया जा सका: {PH1}"
@@ -1276,6 +1282,9 @@
   },
   "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
     "message": "भरोसेमंद वेब गतिविधि का इस्तेमाल करके PWA के लिए क्वालिटी से जुड़ी शर्तों में बदलाव"
+  },
+  "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
+    "message": "Wasm के क्रॉस-ऑरिजिन मॉड्यूल को शेयर नहीं किया जा सकता"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<पहचान छिपाई गई>"
@@ -1408,12 +1417,6 @@
   },
   "models/persistence/persistence-meta.ts | workspace": {
     "message": "Workspace"
-  },
-  "models/recorder/RecordingFileSystem.ts | defaultRecordingName": {
-    "message": "रिकॉर्डिंग #{nextId}"
-  },
-  "models/recorder/RecordingFileSystem.ts | linkedToS": {
-    "message": "{PH1} से जोड़ा गया"
   },
   "models/timeline_model/TimelineIRModel.ts | twoFlingsAtTheSameTimeSVsS": {
     "message": "क्या एक ही समय पर दो फ़्लिंग हैं? {PH1} बनाम {PH2}"
@@ -1913,6 +1916,9 @@
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "ऐप्लिकेशन मेनिफ़ेस्ट"
   },
+  "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
+    "message": "purpose: \"any maskable\" से आइकॉन नहीं बताना चाहिए. बहुत ज़्यादा या बहुत कम पैडिंग की वजह से यह कुछ प्लैटफ़ॉर्म पर गलत दिख सकता है."
+  },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "बैकग्राउंड का रंग"
   },
@@ -1968,7 +1974,7 @@
     "message": "मेनिफ़ेस्ट में 'name' या 'short_name' फ़ील्ड शामिल नहीं है"
   },
   "panels/application/AppManifestView.ts | manifestDoesNotContainASuitable": {
-    "message": "मेनिफ़ेस्ट में सही आइकॉन नहीं है. इसमें PNG, एसवीजी या WebP फ़ॉर्मैट में ऐसा आइकॉन होना ज़रूरी है जो कम से कम {PH1} पिक्सल का हो. साथ ही, sizes एट्रिब्यूट को सेट करना ज़रूरी है. अगर purpose एट्रिब्यूट को भी सेट किया जाता है, तो यह ज़रूरी है कि उसमें \"any\" शामिल हो और \"maskable\" शामिल नहीं हो."
+    "message": "मेनिफ़ेस्ट में सही आइकॉन नहीं है. इसमें PNG, SVG या WebP फ़ॉर्मैट में ऐसा आइकॉन होना ज़रूरी है जो कम से कम {PH1} पिक्सल का हो. साथ ही, sizes एट्रिब्यूट को सेट करना ज़रूरी है. अगर purpose एट्रिब्यूट को भी सेट किया जाता है, तो यह ज़रूरी है कि उसमें \"any\" शामिल हो."
   },
   "panels/application/AppManifestView.ts | manifestSpecifies": {
     "message": "मेनिफ़ेस्ट prefer_related_applications के बारे में बताता है: सही"
@@ -1981,6 +1987,9 @@
   },
   "panels/application/AppManifestView.ts | needHelpReadOurS": {
     "message": "मदद चाहिए? {PH1} पढ़ें."
+  },
+  "panels/application/AppManifestView.ts | newNoteUrl": {
+    "message": "नए नोट का यूआरएल"
   },
   "panels/application/AppManifestView.ts | noManifestDetected": {
     "message": "कोई मेनिफ़ेस्ट नहीं मिला"
@@ -2040,7 +2049,7 @@
     "message": "ज़्यादातर ऑपरेटिंग सिस्टम के लिए स्क्वेयर आइकॉन ज़रूरी है. कृपया इस कैटगरी में कम से कम एक स्क्वेयर आइकॉन शामिल करें."
   },
   "panels/application/AppManifestView.ts | sSShouldSpecifyItsSizeAs": {
-    "message": "{PH1} {PH2} {width}x{height} के तौर पर इसका साइज़ तय करना चाहिए"
+    "message": "{PH1} {PH2} [width]x[height] के तौर पर इसका साइज़ तय करना चाहिए"
   },
   "panels/application/AppManifestView.ts | sSSizeShouldBeAtLeast320": {
     "message": "{PH1} {PH2} का साइज़ कम से कम 320×320 होना चाहिए"
@@ -2059,6 +2068,9 @@
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "स्क्रीनशॉट"
+  },
+  "panels/application/AppManifestView.ts | screenshotPixelSize": {
+    "message": "{url} स्क्रीनशॉट का शुरुआती आकार \"any\" के बजाय [width]x[height] पिक्सल पर सेट किया जाना चाहिए."
   },
   "panels/application/AppManifestView.ts | screenshotS": {
     "message": "स्क्रीनशॉट #{PH1}"
@@ -2166,7 +2178,7 @@
     "message": "स्थानीय फ़ाइलें"
   },
   "panels/application/ApplicationPanelSidebar.ts | localStorage": {
-    "message": "लोकल मेमोरी"
+    "message": "लोकल स्टोरेज"
   },
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "मेनिफ़ेस्ट"
@@ -2178,7 +2190,7 @@
     "message": "IndexedDB रीफ़्रेश करें"
   },
   "panels/application/ApplicationPanelSidebar.ts | sessionStorage": {
-    "message": "सेशन मेमोरी"
+    "message": "सेशन स्टोरेज"
   },
   "panels/application/ApplicationPanelSidebar.ts | storage": {
     "message": "स्टोरेज"
@@ -2209,6 +2221,9 @@
   },
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "बैक-फ़ॉरवर्ड कैश मेमोरी की स्थिति"
+  },
+  "panels/application/BackForwardCacheView.ts | explanations": {
+    "message": "जानकारी"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "आखिरी मुख्य फ़्रेम नेविगेशन"
@@ -2328,10 +2343,16 @@
     "message": "डिकोड किया गया यूआरएल दिखाएं"
   },
   "panels/application/DOMStorageItemsView.ts | domStorage": {
-    "message": "डीओएम मेमोरी"
+    "message": "डीओएम स्टोरेज"
+  },
+  "panels/application/DOMStorageItemsView.ts | domStorageItemDeleted": {
+    "message": "स्टोरेज आइटम मिटाया गया."
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItems": {
     "message": "DOM स्टोरेज आइटम"
+  },
+  "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
+    "message": "टेबल में दिखाई गई एंट्री: {PH1}"
   },
   "panels/application/DOMStorageItemsView.ts | key": {
     "message": "कुंजी"
@@ -2703,7 +2724,7 @@
     "message": "ज़्यादा जानें"
   },
   "panels/application/StorageView.ts | localAndSessionStorage": {
-    "message": "लोकल और सेशन मेमोरी"
+    "message": "लोकल और सेशन स्टोरेज"
   },
   "panels/application/StorageView.ts | mb": {
     "message": "एमबी"
@@ -2724,19 +2745,19 @@
     "message": "सर्विस वर्कर"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
-    "message": "गुप्त मोड में मेमोरी सीमित होती है"
+    "message": "गुप्त मोड में स्टोरेज सीमित होता है"
   },
   "panels/application/StorageView.ts | storageQuotaUsed": {
-    "message": "{PH2} मेमोरी के कोटा से {PH1} का इस्तेमाल किया गया"
+    "message": "{PH2} स्टोरेज के कोटा से {PH1} का इस्तेमाल किया गया"
   },
   "panels/application/StorageView.ts | storageQuotaUsedWithBytes": {
-    "message": "{PH2} बाइट मेमोरी कोटा में से {PH1} इस्तेमाल की गईं"
+    "message": "{PH2} बाइट स्टोरेज कोटा में से {PH1} इस्तेमाल की गईं"
   },
   "panels/application/StorageView.ts | storageTitle": {
     "message": "स्टोरेज"
   },
   "panels/application/StorageView.ts | storageUsage": {
-    "message": "मेमोरी का इस्तेमाल"
+    "message": "स्टोरेज का इस्तेमाल"
   },
   "panels/application/StorageView.ts | storageWithCustomMarker": {
     "message": "{PH1} (कस्टम)"
@@ -2783,9 +2804,6 @@
   "panels/application/components/FrameDetailsView.ts | additionalInformation": {
     "message": "अन्य जानकारी"
   },
-  "panels/application/components/FrameDetailsView.ts | allowedFeatures": {
-    "message": "वे सुविधाएं जिन्हें अनुमति मिली है"
-  },
   "panels/application/components/FrameDetailsView.ts | apiAvailability": {
     "message": "एपीआई की उपलब्धता"
   },
@@ -2804,6 +2822,9 @@
   "panels/application/components/FrameDetailsView.ts | child": {
     "message": "बच्चा"
   },
+  "panels/application/components/FrameDetailsView.ts | childDescription": {
+    "message": "इस फ़्रेम की पहचान किसी विज्ञापन के चाइल्ड फ़्रेम के तौर पर की गई"
+  },
   "panels/application/components/FrameDetailsView.ts | clickToRevealInElementsPanel": {
     "message": "एलिमेंट पैनल में दिखाने के लिए क्लिक करें"
   },
@@ -2816,11 +2837,8 @@
   "panels/application/components/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
     "message": "स्रोत पैनल में दिखाने के लिए क्लिक करें"
   },
-  "panels/application/components/FrameDetailsView.ts | clickToShowHeader": {
-    "message": "जिस अनुरोध का \"Permissions-Policy\" एचटीटीपी हेडर इस सुविधा को बंद करता है उसे दिखाने के लिए क्लिक करें."
-  },
-  "panels/application/components/FrameDetailsView.ts | clickToShowIframe": {
-    "message": "सबसे ऊपर का iframe दिखाने के लिए क्लिक करें. यह iframe इस सुविधा को एलिमेंट पैनल में अनुमति नहीं देता."
+  "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
+    "message": "जब यह फ़्रेम बनाया गया था, तब स्टैक (एक साथ काम नहीं करने वाली प्रोसेस) में विज्ञापन स्क्रिप्ट थी. इस फ़्रेम के स्टैक ट्रेस को बनाए जाने की जांच से ज़्यादा जानकारी मिल सकती है."
   },
   "panels/application/components/FrameDetailsView.ts | creationStackTrace": {
     "message": "फ़्रेम क्रिएशन के लिए स्टैक ट्रेस"
@@ -2837,23 +2855,11 @@
   "panels/application/components/FrameDetailsView.ts | crossoriginOpenerPolicy": {
     "message": "क्रॉस-ओरिजन ओपनर पॉलिसी"
   },
-  "panels/application/components/FrameDetailsView.ts | disabledByHeader": {
-    "message": "\"Permissions-Policy\" हेडर से बंद किया गया"
-  },
-  "panels/application/components/FrameDetailsView.ts | disabledByIframe": {
-    "message": "iframe \"allow\" एट्रिब्यूट में शामिल नहीं है"
-  },
-  "panels/application/components/FrameDetailsView.ts | disabledFeatures": {
-    "message": "बंद की गई सुविधाएं"
-  },
   "panels/application/components/FrameDetailsView.ts | document": {
     "message": "दस्तावेज़"
   },
   "panels/application/components/FrameDetailsView.ts | frameId": {
     "message": "फ़्रेम आईडी"
-  },
-  "panels/application/components/FrameDetailsView.ts | hideDetails": {
-    "message": "ब्यौरा छिपाएं"
   },
   "panels/application/components/FrameDetailsView.ts | learnMore": {
     "message": "ज़्यादा जानें"
@@ -2861,8 +2867,11 @@
   "panels/application/components/FrameDetailsView.ts | localhostIsAlwaysASecureContext": {
     "message": "स्थानीय होस्ट (लोकल होस्ट) हमेशा से एक सुरक्षित कॉन्टेक्स्ट है"
   },
+  "panels/application/components/FrameDetailsView.ts | matchedBlockingRuleExplanation": {
+    "message": "इस फ़्रेम को विज्ञापन फ़्रेम के तौर पर माना जाता है, क्योंकि इसका मौजूदा (या पिछला) मुख्य दस्तावेज़ विज्ञापन संसाधन है."
+  },
   "panels/application/components/FrameDetailsView.ts | measureMemory": {
-    "message": "मेमोरी मापें"
+    "message": "स्टोरेज मापें"
   },
   "panels/application/components/FrameDetailsView.ts | no": {
     "message": "नहीं"
@@ -2870,8 +2879,14 @@
   "panels/application/components/FrameDetailsView.ts | origin": {
     "message": "ओरिजन"
   },
+  "panels/application/components/FrameDetailsView.ts | originTrials": {
+    "message": "ऑरिजिन ट्रायल"
+  },
   "panels/application/components/FrameDetailsView.ts | ownerElement": {
     "message": "ऑनर एलिमेंट"
+  },
+  "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
+    "message": "इस फ़्रेम को विज्ञापन फ़्रेम के तौर पर माना जाता है, क्योंकि इसका पैरंट फ़्रेम एक विज्ञापन फ़्रेम है."
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "इसे रिपोर्ट करता है"
@@ -2881,6 +2896,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | root": {
     "message": "रूट"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootDescription": {
+    "message": "इस फ़्रेम की पहचान किसी विज्ञापन के मूल फ़्रेम के तौर पर की गई"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "सुरक्षित कॉन्टेक्स्ट"
@@ -2894,9 +2912,6 @@
   "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
     "message": "SharedArrayBuffer कंस्ट्रक्टर उपलब्ध है, लेकिन इसे (SABs) postMessage के ज़रिए ट्रांसफ़र नहीं किया जा सकता"
   },
-  "panels/application/components/FrameDetailsView.ts | showDetails": {
-    "message": "ब्यौरा देखें"
-  },
   "panels/application/components/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
     "message": "फ़्रेम की स्कीम असुरक्षित है"
   },
@@ -2908,12 +2923,6 @@
   },
   "panels/application/components/FrameDetailsView.ts | thisAdditionalDebugging": {
     "message": "यह अतिरिक्त (डीबगिंग) जानकारी इसलिए दिखाई जा रही, क्योंकि 'प्रोटोकॉल मॉनिटर' प्रयोग चालू है."
-  },
-  "panels/application/components/FrameDetailsView.ts | thisFrameHasBeenIdentifiedAsThe": {
-    "message": "इस फ़्रेम की पहचान किसी विज्ञापन के मूल फ़्रेम के तौर पर की गई"
-  },
-  "panels/application/components/FrameDetailsView.ts | thisFrameHasBeenIdentifiedAsTheA": {
-    "message": "इस फ़्रेम की पहचान किसी विज्ञापन के चाइल्ड फ़्रेम के तौर पर की गई"
   },
   "panels/application/components/FrameDetailsView.ts | transferRequiresCrossoriginIsolatedPermission": {
     "message": "SharedArrayBuffer ट्रांसफ़र के लिए, अनुमति नीति का चालू होना ज़रूरी है:"
@@ -2932,6 +2941,57 @@
   },
   "panels/application/components/FrameDetailsView.ts | yes": {
     "message": "हां"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
+    "message": "समय-सीमा खत्म होने का समय"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | isThirdParty": {
+    "message": "तीसरा पक्ष"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
+    "message": "सब-डोमेन मिलाएं"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | origin": {
+    "message": "ऑरिजिन"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | rawTokenText": {
+    "message": "रॉ टोकन"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | status": {
+    "message": "टोकन की स्थिति"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | token": {
+    "message": "टोकन"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | tokens": {
+    "message": "टोकन"
+  },
+  "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
+    "message": "इस्तेमाल पर पाबंदी"
+  },
+  "panels/application/components/PermissionsPolicySection.ts | allowedFeatures": {
+    "message": "वे सुविधाएं जिन्हें अनुमति मिली है"
+  },
+  "panels/application/components/PermissionsPolicySection.ts | clickToShowHeader": {
+    "message": "जिस अनुरोध का \"Permissions-Policy\" एचटीटीपी हेडर इस सुविधा को बंद करता है उसे दिखाने के लिए क्लिक करें."
+  },
+  "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
+    "message": "सबसे ऊपर का iframe दिखाने के लिए क्लिक करें. यह iframe इस सुविधा को एलिमेंट पैनल में अनुमति नहीं देता."
+  },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByHeader": {
+    "message": "\"Permissions-Policy\" हेडर से बंद किया गया"
+  },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByIframe": {
+    "message": "iframe \"allow\" एट्रिब्यूट में शामिल नहीं है"
+  },
+  "panels/application/components/PermissionsPolicySection.ts | disabledFeatures": {
+    "message": "बंद की गई सुविधाएं"
+  },
+  "panels/application/components/PermissionsPolicySection.ts | hideDetails": {
+    "message": "ब्यौरा छिपाएं"
+  },
+  "panels/application/components/PermissionsPolicySection.ts | showDetails": {
+    "message": "ब्यौरा देखें"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "स्टैक ट्रेस को रेंडर नहीं कर पा रहे हैं"
@@ -3218,6 +3278,9 @@
   "panels/console/ConsoleView.ts | filter": {
     "message": "फ़िल्टर करें"
   },
+  "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
+    "message": "कंसोल में {PH1} मैसेज"
+  },
   "panels/console/ConsoleView.ts | findStringInLogs": {
     "message": "लॉग में स्ट्रिंग ढूंढें"
   },
@@ -3442,9 +3505,6 @@
   },
   "panels/console_counters/WarningErrorCounter.ts | openIssuesToView": {
     "message": "{n,plural, =1{# गड़बड़ी देखने के लिए 'गड़बड़ियां' खोलें:}one{# गड़बड़ी देखने के लिए 'गड़बड़ियां' खोलें}other{# गड़बड़ियों को देखने के लिए 'गड़बड़ियां' खोलें}}"
-  },
-  "panels/console_counters/WarningErrorCounter.ts | openLighthouseToView": {
-    "message": "{n,plural, =1{# उल्लंघन को देखने के लिए लाइटहाउस खोलें}one{# उल्लंघन को देखने के लिए लाइटहाउस खोलें}other{# उल्लंघन देखने के लिए लाइटहाउस खोलें}}"
   },
   "panels/console_counters/WarningErrorCounter.ts | sErrors": {
     "message": "{n,plural, =1{# गड़बड़ी}one{# गड़बड़ी}other{# गड़बड़ियां}}"
@@ -4130,7 +4190,7 @@
   "panels/elements/StylesSidebarPane.ts | viaInspector": {
     "message": "इंस्पेक्टर के ज़रिए"
   },
-  "panels/elements/components/AccessibilityTreeUtils.ts | ignored": {
+  "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "अनदेखा किया गया"
   },
   "panels/elements/components/AdornerSettingsPane.ts | closeButton": {
@@ -4388,26 +4448,11 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "टैबलेट"
   },
-  "panels/emulation/DevicesSettingsTab.ts | UABrands": {
-    "message": "UA ब्रैंड सूची (उदाहरण के लिए, \"Chromium\";v=\"87\")"
-  },
   "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "अपनी पसंद का डिवाइस जोड़ें..."
   },
-  "panels/emulation/DevicesSettingsTab.ts | architecture": {
-    "message": "आर्किटेक्चर (e.g. x86)"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | brandsList": {
-    "message": "ब्रैंड की सूची, स्ट्रक्चर किए गए मान्य फ़ील्ड की सूची नहीं है."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | brandsListMust": {
-    "message": "ब्रैंड की सूची में स्ट्रिंग वैल्यू वाले हर ए वी पैरामीटर के साथ स्ट्रिंग होनी चाहिए."
-  },
   "panels/emulation/DevicesSettingsTab.ts | device": {
     "message": "डिवाइस"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceModel": {
-    "message": "डिवाइस का मॉडल"
   },
   "panels/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "डिवाइस का नाम"
@@ -4424,26 +4469,8 @@
   "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
     "message": "एम्युलेट किए गए डिवाइस"
   },
-  "panels/emulation/DevicesSettingsTab.ts | fullBrowserVersion": {
-    "message": "फ़ुल ब्राउज़र वर्शन (उदाहरण के लिए, 87.0.4280.88)"
-  },
   "panels/emulation/DevicesSettingsTab.ts | height": {
     "message": "लंबाई"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | notRepresentable": {
-    "message": "इसे स्ट्रक्चर्ड हेडर स्ट्रिंग के तौर पर पेश नहीं किया जा सकता."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | platform": {
-    "message": "प्लैटफ़ॉर्म (उदाहरण के लिए, Android)"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | platformVersion": {
-    "message": "प्लैटफ़ॉर्म वर्शन"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentClient": {
-    "message": "उपयोगकर्ता एजेंट क्लाइंट के संकेत"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentClientHintsAre": {
-    "message": "उपयोगकर्ता एजेंट क्लाइंट के दिए संकेत उन उपयोगकर्ता एजेंट स्ट्रिंग के विकल्प होते हैं जो ब्राउज़र और डिवाइस की पहचान, ज़्यादा व्यवस्थित तरीके से बेहतर निजता के साथ करते हैं. ज़्यादा जानने के लिए बटन पर क्लिक करें."
   },
   "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "उपयोगकर्ता एजेंट स्ट्रिंग"
@@ -4455,13 +4482,13 @@
     "message": "चौड़ाई"
   },
   "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "Laptop with HiDPI screen"
+    "message": "HiDPI स्क्रीन वाला लैपटॉप"
   },
   "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "Laptop with MDPI screen"
+    "message": "MDPI स्क्रीन वाला लैपटॉप"
   },
   "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "Laptop with touch"
+    "message": "टच की सुविधा वाला लैपटॉप"
   },
   "panels/emulation/LocationsSettingsTab.ts | addLocation": {
     "message": "लोकेशन जोड़ें..."
@@ -4621,6 +4648,78 @@
   },
   "panels/emulation/SensorsView.ts | timezoneId": {
     "message": "समय-क्षेत्र आईडी"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "ब्रैंड जोड़ें"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "आर्किटेक्चर"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "आर्किटेक्चर (e.g. x86)"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "{PH1} को मिटाएं"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "ब्रैंड"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "{PH1} ब्रैंड"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "ब्रैंड प्रॉपर्टी"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "वर्शन {PH1}"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "ब्रैंड"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "मिटाएं"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "डिवाइस का मॉडल"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "डिवाइस की प्रॉपर्टी"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "ब्राउज़र का पूरा वर्शन"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "फ़ुल ब्राउज़र वर्शन (उदाहरण के लिए, 87.0.4280.88)"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "मोबाइल"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "इसे स्ट्रक्चर्ड हेडर स्ट्रिंग के तौर पर पेश नहीं किया जा सकता."
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "प्लैटफ़ॉर्म"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "प्लैटफ़ॉर्म (उदाहरण के लिए, Android)"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "प्लैटफ़ॉर्म प्रॉपर्टी"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "प्लैटफ़ॉर्म वर्शन"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "उपयोगकर्ता एजेंट क्लाइंट के संकेत"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "अपडेट करें"
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "उपयोगकर्ता एजेंट क्लाइंट के दिए संकेत उन उपयोगकर्ता एजेंट स्ट्रिंग के विकल्प होते हैं जो ब्राउज़र और डिवाइस की पहचान, ज़्यादा व्यवस्थित तरीके से बेहतर निजता के साथ करते हैं. ज़्यादा जानने के लिए बटन पर क्लिक करें."
+  },
+  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "वर्शन"
   },
   "panels/emulation/emulation-meta.ts | accelerometer": {
     "message": "एक्सलरोमीटर"
@@ -4820,6 +4919,33 @@
   "panels/issues/AffectedCookiesView.ts | path": {
     "message": "पाथ"
   },
+  "panels/issues/AffectedDirectivesView.ts | blocked": {
+    "message": "ब्लॉक किया गया"
+  },
+  "panels/issues/AffectedDirectivesView.ts | clickToRevealTheViolatingDomNode": {
+    "message": "एलिमेंट पैनल में उल्लंघन करने वाले डीओएम नोड दिखाने के लिए क्लिक करें"
+  },
+  "panels/issues/AffectedDirectivesView.ts | directiveC": {
+    "message": "निर्देश"
+  },
+  "panels/issues/AffectedDirectivesView.ts | element": {
+    "message": "एलिमेंट"
+  },
+  "panels/issues/AffectedDirectivesView.ts | nDirectives": {
+    "message": "{n,plural, =1{# डायरेक्टिव}one{# डायरेक्टिव}other{# डायरेक्टिव}}"
+  },
+  "panels/issues/AffectedDirectivesView.ts | reportonly": {
+    "message": "सिर्फ़ रिपोर्ट"
+  },
+  "panels/issues/AffectedDirectivesView.ts | resourceC": {
+    "message": "संसाधन"
+  },
+  "panels/issues/AffectedDirectivesView.ts | sourceLocation": {
+    "message": "स्रोत की जगह"
+  },
+  "panels/issues/AffectedDirectivesView.ts | status": {
+    "message": "स्थिति"
+  },
   "panels/issues/AffectedDocumentsInQuirksModeView.ts | documentInTheDOMTree": {
     "message": "डीओएम ट्री में दस्तावेज़"
   },
@@ -4834,9 +4960,6 @@
   },
   "panels/issues/AffectedElementsView.ts | nElements": {
     "message": "{n,plural, =1{# एलिमेंट}one{# एलिमेंट}other{# एलिमेंट}}"
-  },
-  "panels/issues/AffectedElementsView.ts | unavailable": {
-    "message": "unavailable"
   },
   "panels/issues/AffectedElementsWithLowContrastView.ts | contrastRatio": {
     "message": "कंट्रास्ट का अनुपात"
@@ -4886,11 +5009,8 @@
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "एलिमेंट पैनल में फ़्रेम के डीओएम नोड दिखाने के लिए क्लिक करें"
   },
-  "panels/issues/AffectedResourcesView.ts | clickToShowRequestInTheNetwork": {
-    "message": "नेटवर्क पैनल में अनुरोध दिखाने के लिए क्लिक करें"
-  },
-  "panels/issues/AffectedResourcesView.ts | requestUnavailableInTheNetwork": {
-    "message": "अनुरोध, नेटवर्क पैनल में उपलब्ध नहीं है, जांच किए गए पेज को फिर से लोड करें"
+  "panels/issues/AffectedResourcesView.ts | unavailable": {
+    "message": "उपलब्ध नहीं है"
   },
   "panels/issues/AffectedResourcesView.ts | unknown": {
     "message": "नहीं पता"
@@ -4925,6 +5045,9 @@
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | warning": {
     "message": "चेतावनी"
   },
+  "panels/issues/AffectedSourcesView.ts | nSources": {
+    "message": "{n,plural, =1{# सोर्स}one{# सोर्स}other{# सोर्स}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# संसाधन}one{# संसाधन}other{# संसाधन}}"
   },
@@ -4939,6 +5062,27 @@
   },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | url": {
     "message": "यूआरएल"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
+    "message": "एलिमेंट"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
+    "message": "फ़्रेम"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourceEventId": {
+    "message": "attributionsourceeventid अमान्य है"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidTriggerData": {
+    "message": "trigger-data अमान्य है"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
+    "message": "{n,plural, =1{# उल्लंघन}one{# उल्लंघन}other{# उल्लंघन}}"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | request": {
+    "message": "अनुरोध"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | untrustworthyOrigin": {
+    "message": "गैर-भरोसेमंद ऑरिजिन"
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "फ़िल्टर करें"
@@ -5030,20 +5174,8 @@
   "panels/issues/IssueView.ts | blocked": {
     "message": "ब्लॉक किया गया"
   },
-  "panels/issues/IssueView.ts | clickToRevealTheViolatingDomNode": {
-    "message": "एलिमेंट पैनल में उल्लंघन करने वाले डीओएम नोड दिखाने के लिए क्लिक करें"
-  },
-  "panels/issues/IssueView.ts | directiveC": {
-    "message": "निर्देश"
-  },
-  "panels/issues/IssueView.ts | element": {
-    "message": "एलिमेंट"
-  },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "ज़्यादा जानें: {PH1}"
-  },
-  "panels/issues/IssueView.ts | nDirectives": {
-    "message": "{n,plural, =1{# डायरेक्टिव}one{# डायरेक्टिव}other{# डायरेक्टिव}}"
   },
   "panels/issues/IssueView.ts | nRequests": {
     "message": "{n,plural, =1{# अनुरोध}one{# अनुरोध}other{# अनुरोध}}"
@@ -5051,26 +5183,11 @@
   "panels/issues/IssueView.ts | nResources": {
     "message": "{n,plural, =1{# संसाधन}one{# संसाधन}other{# संसाधन}}"
   },
-  "panels/issues/IssueView.ts | nSources": {
-    "message": "{n,plural, =1{# सोर्स}one{# सोर्स}other{# सोर्स}}"
-  },
   "panels/issues/IssueView.ts | name": {
     "message": "नाम"
   },
-  "panels/issues/IssueView.ts | reportonly": {
-    "message": "सिर्फ़ रिपोर्ट"
-  },
-  "panels/issues/IssueView.ts | resourceC": {
-    "message": "संसाधन"
-  },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "प्रतिबंध की स्थिति"
-  },
-  "panels/issues/IssueView.ts | sourceLocation": {
-    "message": "स्रोत की जगह"
-  },
-  "panels/issues/IssueView.ts | status": {
-    "message": "स्थिति"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "चेतावनी दी गई"
@@ -5126,6 +5243,27 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "भरोसेमंद वेब गतिविधि"
   },
+  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
+    "message": "ब्लॉक किया गया"
+  },
+  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | nModuleTransfers": {
+    "message": "{n,plural, =1{# मॉड्यूल}one{# मॉड्यूल}other{# मॉड्यूल}}"
+  },
+  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | sourceOrigin": {
+    "message": "स्रोत का ऑरिजिन"
+  },
+  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | status": {
+    "message": "स्थिति"
+  },
+  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | targetOrigin": {
+    "message": "टारगेट ऑरिजिन"
+  },
+  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | warned": {
+    "message": "चेतावनी"
+  },
+  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
+    "message": "Wasm मॉड्यूल का यूआरएल"
+  },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "सीएसपी के उल्लंघन"
   },
@@ -5157,7 +5295,7 @@
     "message": "मुख्य थ्रेड के स्क्रोल करने की वजह"
   },
   "panels/layer_viewer/LayerDetailsView.ts | memoryEstimate": {
-    "message": "मेमोरी का अनुमान"
+    "message": "स्टोरेज का अनुमान"
   },
   "panels/layer_viewer/LayerDetailsView.ts | nearestLayerShiftingContaining": {
     "message": "सबसे नज़दीकी ब्लॉक जिसमें लेयर शिफ़्टिंग की सुविधा शामिल है"
@@ -5337,7 +5475,7 @@
     "message": "सिर्फ़ एचटीटीपी/एचटीटीपीएस पेजों और Chrome एक्सटेंशन को ऑडिट किया जा सकता है. ऑडिट शुरू करने के लिए, किसी दूसरे पेज पर जाएं."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
-    "message": "मेमोरी मिटाएं"
+    "message": "स्टोरेज मिटाएं"
   },
   "panels/lighthouse/LighthouseController.ts | desktop": {
     "message": "डेस्कटॉप"
@@ -5364,7 +5502,7 @@
     "message": "क्या इस पेज को दिव्यांगता या किसी शारीरिक समस्या वाले लोग इस्तेमाल कर सकते हैं"
   },
   "panels/lighthouse/LighthouseController.ts | localStorage": {
-    "message": "लोकल मेमोरी"
+    "message": "लोकल स्टोरेज"
   },
   "panels/lighthouse/LighthouseController.ts | mobile": {
     "message": "मोबाइल"
@@ -5903,6 +6041,9 @@
   "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
     "message": "नेटवर्क अनुरोध ब्लॉक करने की सुविधा चालू करें"
   },
+  "panels/network/BlockedURLsPane.ts | itemDeleted": {
+    "message": "आइटम मिटाया गया"
+  },
   "panels/network/BlockedURLsPane.ts | networkRequestsAreNotBlockedS": {
     "message": "नेटवर्क के अनुरोध ब्लॉक नहीं हैं. {PH1}"
   },
@@ -6063,7 +6204,7 @@
     "message": "साइन किए हुए एचटीटीपी एक्सचेंज से दिखाया गया, रिसॉर्स का साइज़ {PH1} है"
   },
   "panels/network/NetworkDataGridNode.ts | servedFromWebBundle": {
-    "message": "Served from Web Bundle, resource size: {PH1}"
+    "message": "वेब बंडल से पेश किया गया, रिसॉर्स का साइज़: {PH1}"
   },
   "panels/network/NetworkDataGridNode.ts | serviceworker": {
     "message": "(ServiceWorker)"
@@ -6071,14 +6212,20 @@
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "साइन किया गया एक्सचेंज"
   },
+  "panels/network/NetworkDataGridNode.ts | unknown": {
+    "message": "(जानकारी नहीं है)"
+  },
+  "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
+    "message": "यहां अनुरोध की स्थिति नहीं दिखाई जा सकी, क्योंकि इसे जारी करने वाला पेज, अनुरोध प्रोसेस होते समय अनलोड हो गया. किसी नेटवर्क लॉग को कैप्चर करने और सभी अनुरोधों की जानकारी देखने के लिए, आप chrome://net-export का इस्तेमाल कर सकते हैं."
+  },
   "panels/network/NetworkDataGridNode.ts | webBundle": {
-    "message": "(Web Bundle)"
+    "message": "(वेब बंडल)"
   },
   "panels/network/NetworkDataGridNode.ts | webBundleError": {
-    "message": "Web Bundle error"
+    "message": "वेब बंडल की गड़बड़ी"
   },
   "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
-    "message": "from Web Bundle"
+    "message": "वेब बंडल से मिला"
   },
   "panels/network/NetworkItemView.ts | cookies": {
     "message": "कुकी"
@@ -6242,6 +6389,9 @@
   "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlocked": {
     "message": "सिर्फ़ ब्लॉक की गई रिस्पॉन्स कुकी वाले अनुरोध दिखाएं"
   },
+  "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
+    "message": "सिर्फ़ ऐसे ऑरिजिन वाले अनुरोध दिखाता है जो पेज ऑरिजिन से अलग हैं"
+  },
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "फिर से लोड करने की गतिविधि को रिकॉर्ड करने के लिए, अनुरोध करें या {PH1} को हिट करें."
   },
@@ -6289,6 +6439,9 @@
   },
   "panels/network/NetworkLogView.ts | saveAllAsHarWithContent": {
     "message": "सभी को कॉन्टेंट वाले HAR के तौर पर सेव करें"
+  },
+  "panels/network/NetworkLogView.ts | thirdParty": {
+    "message": "तीसरे पक्ष के अनुरोध"
   },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "{PH1} को अनब्लॉक करें"
@@ -6971,6 +7124,9 @@
   "panels/network/components/RequestTrustTokensView.ts | type": {
     "message": "टाइप"
   },
+  "panels/network/components/WebBundleInfoView.ts | bundledResource": {
+    "message": "बंडल किए गए संसाधन"
+  },
   "panels/network/network-meta.ts | colorCode": {
     "message": "कलर कोड"
   },
@@ -7158,7 +7314,7 @@
     "message": "प्रोफ़ाइल {PH1}"
   },
   "panels/profiler/HeapProfileView.ts | recordMemoryAllocations": {
-    "message": "सैंपलिंग का तरीका इस्तेमाल करके मेमोरी का बंटवारा रिकॉर्ड करें."
+    "message": "सैंपलिंग का तरीका इस्तेमाल करके स्टोरेज के बंटवारे का रिकॉर्ड करें."
   },
   "panels/profiler/HeapProfileView.ts | recording": {
     "message": "रिकॉर्ड हो रहा है…"
@@ -7308,7 +7464,7 @@
     "message": "मेथड '{PH1}' को कॉल करने के अनुरोध के दौरान कोई गड़बड़ी हुई"
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
-    "message": "समय के साथ, ऐलोकेशन टाइमलाइन इंस्ट्रूमेंटेड JavaScript मेमोरी के ऐलोकेशन को दिखाती है. प्रोफ़ाइल रिकॉर्ड हो जाने पर, आप वे ऑब्जेक्ट देखने के लिए कोई समय अंतराल चुन सकते हैं जो उसी दौरान आवंटित किए गए हों और रिकॉर्डिंग के आखिर तक हैं. मेमोरी लीक अलग हटाने के लिए इस तरह की प्रोफ़ाइल का इस्तेमाल करें."
+    "message": "समय के साथ, ऐलोकेशन टाइमलाइन इंस्ट्रूमेंटेड JavaScript स्टोरेज के ऐलोकेशन को दिखाता है. प्रोफ़ाइल रिकॉर्ड हो जाने पर, आप वे ऑब्जेक्ट देखने के लिए कोई समय अंतराल चुन सकते हैं जो उसी दौरान आवंटित किए गए हों और रिकॉर्डिंग के आखिर तक हैं. स्टोरेज लीक अलग हटाने के लिए इस तरह की प्रोफ़ाइल का इस्तेमाल करें."
   },
   "panels/profiler/HeapSnapshotView.ts | allObjects": {
     "message": "सभी ऑब्‍जेक्‍ट"
@@ -7356,7 +7512,7 @@
     "message": "हीप स्नैपशॉट"
   },
   "panels/profiler/HeapSnapshotView.ts | heapSnapshotProfilesShowMemory": {
-    "message": "हीप स्नैपशॉट प्रोफ़ाइलों से आपको अपने पेज के JavaScript ऑब्जेक्ट और उनसे जुड़े डीओएम नोड के बीच मेमोरी डिस्ट्रिब्यूशन का पता चलता है."
+    "message": "हीप स्नैपशॉट प्रोफ़ाइलों से आपको अपने पेज के JavaScript ऑब्जेक्ट और उनसे जुड़े डीओएम नोड के बीच स्टोरेज डिस्ट्रिब्यूशन का पता चलता है."
   },
   "panels/profiler/HeapSnapshotView.ts | heapSnapshots": {
     "message": "हीप स्नैपशॉट"
@@ -7680,13 +7836,13 @@
     "message": "लाइव हीप प्रोफ़ाइल"
   },
   "panels/profiler/profiler-meta.ts | memory": {
-    "message": "मेमोरी"
+    "message": "स्टोरेज"
   },
   "panels/profiler/profiler-meta.ts | showLiveHeapProfile": {
     "message": "लाइव हीप प्रोफ़ाइल देखें"
   },
   "panels/profiler/profiler-meta.ts | showMemory": {
-    "message": "मेमोरी दिखाएं"
+    "message": "स्टोरेज दिखाएं"
   },
   "panels/profiler/profiler-meta.ts | showNativeFunctions": {
     "message": "JS प्रोफ़ाइल में नेटिव फ़ंक्शन देखें"
@@ -7753,12 +7909,6 @@
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | showProtocolMonitor": {
     "message": "प्रोटोकॉल मॉनिटर दिखाएं"
-  },
-  "panels/recorder/recorder-meta.ts | recorder": {
-    "message": "Recorder"
-  },
-  "panels/recorder/recorder-meta.ts | showRecorder": {
-    "message": "Recorder"
   },
   "panels/screencast/ScreencastApp.ts | toggleScreencast": {
     "message": "स्क्रीनकास्ट टॉगल करें"
@@ -8267,6 +8417,9 @@
   "panels/settings/SettingsScreen.ts | filterExperimentsLabel": {
     "message": "फ़िल्टर"
   },
+  "panels/settings/SettingsScreen.ts | learnMore": {
+    "message": "ज़्यादा जानें"
+  },
   "panels/settings/SettingsScreen.ts | noResults": {
     "message": "कोई भी एक्सपेरिमेंट, फ़िल्टर से मेल नहीं खाता"
   },
@@ -8433,7 +8586,7 @@
     "message": "नोड हटाना"
   },
   "panels/sources/DebuggerPausedMessage.ts | pausedBeforePotentialOutofmemory": {
-    "message": "मेमोरी खत्म होने की वजह से होने वाले संभावित क्रैश से पहले रोका गया"
+    "message": "स्टोरेज खत्म होने की वजह से होने वाले संभावित क्रैश से पहले रोका गया"
   },
   "panels/sources/DebuggerPausedMessage.ts | pausedOnAssertion": {
     "message": "दावे पर रोका गया"
@@ -8669,15 +8822,6 @@
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "सिंबल देखने के लिए, कोई JavaScript या सीएसएस फ़ाइल खोलें"
   },
-  "panels/sources/RecorderPlugin.ts | export": {
-    "message": "एक्सपोर्ट करें"
-  },
-  "panels/sources/RecorderPlugin.ts | play": {
-    "message": "फिर से चलाएं"
-  },
-  "panels/sources/RecorderPlugin.ts | record": {
-    "message": "रिकॉर्ड करें"
-  },
   "panels/sources/ScopeChainSidebarPane.ts | closure": {
     "message": "बंद होना"
   },
@@ -8685,7 +8829,7 @@
     "message": "बंद होना ({PH1})"
   },
   "panels/sources/ScopeChainSidebarPane.ts | couldNotOpenLinearMemory": {
-    "message": "लीनियर मेमोरी इंस्पेक्टर नहीं खोला जा सका: बफ़र की लोकेशन पता नहीं लग सकी."
+    "message": "लीनियर स्टोरेज इंस्पेक्टर नहीं खोला जा सका: बफ़र की लोकेशन पता नहीं लग सकी."
   },
   "panels/sources/ScopeChainSidebarPane.ts | exception": {
     "message": "अपवाद"
@@ -8703,7 +8847,7 @@
     "message": "रिटर्न वैल्यू"
   },
   "panels/sources/ScopeChainSidebarPane.ts | revealInMemoryInspectorPanel": {
-    "message": "मेमोरी इंस्पेक्टर पैनल में दिखाएं"
+    "message": "स्टोरेज इंस्पेक्टर पैनल में दिखाएं"
   },
   "panels/sources/ScriptFormatterEditorAction.ts | prettyPrint": {
     "message": "प्रिटी प्रिंट"
@@ -8722,9 +8866,6 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
-  },
-  "panels/sources/SourcesNavigator.ts | addRecording": {
-    "message": "रिकॉर्डिंग जोड़ें"
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "कॉन्फ़िगरेशन मिटाएं"
@@ -8750,9 +8891,6 @@
   "panels/sources/SourcesNavigator.ts | overridePageAssetsWithFilesFromA": {
     "message": "पेज की एसेट किसी स्थानीय फ़ोल्डर से बदलें"
   },
-  "panels/sources/SourcesNavigator.ts | recordAndReplayBrowser": {
-    "message": "ब्राउज़र इंटरैक्शन के जवाब दें और रिकॉर्ड करें"
-  },
   "panels/sources/SourcesNavigator.ts | remove": {
     "message": "हटाएं"
   },
@@ -8776,6 +8914,15 @@
   },
   "panels/sources/SourcesPanel.ts | copyS": {
     "message": "{PH1} कॉपी करें"
+  },
+  "panels/sources/SourcesPanel.ts | copyStringAsJSLiteral": {
+    "message": "स्ट्रिंग को JavaScript लिटरल के तौर पर कॉपी करें"
+  },
+  "panels/sources/SourcesPanel.ts | copyStringAsJSONLiteral": {
+    "message": "स्ट्रिंग को JSON लिटरल के तौर पर कॉपी करें"
+  },
+  "panels/sources/SourcesPanel.ts | copyStringContents": {
+    "message": "स्ट्रिंग के कॉन्टेंट कॉपी करें"
   },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "अपवादों पर न रुकें"
@@ -8921,6 +9068,9 @@
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "इंडेंटेशन का पता लगाएं"
   },
+  "panels/sources/sources-meta.ts | disableAutoFocusOnDebuggerPaused": {
+    "message": "ब्रेकपॉइंट ट्रिगर करते समय स्रोत पैनल पर फ़ोकस न करें"
+  },
   "panels/sources/sources-meta.ts | disableAutocompletion": {
     "message": "अपने-आप पूरा होने की सुविधा बंद करें"
   },
@@ -8960,6 +9110,9 @@
   "panels/sources/sources-meta.ts | doNotShowWhitespaceCharacters": {
     "message": "खाली सफ़ेद जगह न दिखाएं"
   },
+  "panels/sources/sources-meta.ts | enableAutoFocusOnDebuggerPaused": {
+    "message": "ब्रेकपॉइंट ट्रिगर करते समय स्रोत पैनल पर फ़ोकस करें"
+  },
   "panels/sources/sources-meta.ts | enableAutocompletion": {
     "message": "अपने-आप पूरा होने की सुविधा चालू करना"
   },
@@ -8980,9 +9133,6 @@
   },
   "panels/sources/sources-meta.ts | evaluateSelectedTextInConsole": {
     "message": "कंसोल में चुने हुए टेक्स्ट को इवैलुएट करें"
-  },
-  "panels/sources/sources-meta.ts | exportRecording": {
-    "message": "एक्सपोर्ट करें"
   },
   "panels/sources/sources-meta.ts | filesystem": {
     "message": "फ़ाइल सिस्टम"
@@ -9023,17 +9173,8 @@
   "panels/sources/sources-meta.ts | quickSource": {
     "message": "क्विक सोर्स"
   },
-  "panels/sources/sources-meta.ts | record": {
-    "message": "रिकॉर्ड करें"
-  },
-  "panels/sources/sources-meta.ts | recordings": {
-    "message": "रिकॉर्डिंग"
-  },
   "panels/sources/sources-meta.ts | rename": {
     "message": "नाम बदलें"
-  },
-  "panels/sources/sources-meta.ts | replayRecording": {
-    "message": "फिर से चलाएं"
   },
   "panels/sources/sources-meta.ts | resumeScriptExecution": {
     "message": "स्क्रिप्ट एक्ज़ीक्यूशन फिर शुरू करें"
@@ -9068,9 +9209,6 @@
   "panels/sources/sources-meta.ts | showQuickSource": {
     "message": "क्विक सोर्स दिखाएं"
   },
-  "panels/sources/sources-meta.ts | showRecordings": {
-    "message": "रिकॉर्डिंग दिखाएं"
-  },
   "panels/sources/sources-meta.ts | showScope": {
     "message": "दायरा दिखाएं"
   },
@@ -9101,9 +9239,6 @@
   "panels/sources/sources-meta.ts | sources": {
     "message": "सोर्स"
   },
-  "panels/sources/sources-meta.ts | startRecording": {
-    "message": "रिकॉर्डिंग शुरू करें"
-  },
   "panels/sources/sources-meta.ts | step": {
     "message": "चरण"
   },
@@ -9115,9 +9250,6 @@
   },
   "panels/sources/sources-meta.ts | stepOverNextFunctionCall": {
     "message": "अगले फ़ंक्शन कॉल पर जाएं"
-  },
-  "panels/sources/sources-meta.ts | stop": {
-    "message": "रोकें"
   },
   "panels/sources/sources-meta.ts | switchFile": {
     "message": "फ़ाइल स्विच करें"
@@ -9420,7 +9552,7 @@
     "message": "प्रोफ़ाइल लोड हो रही है…"
   },
   "panels/timeline/TimelinePanel.ts | memory": {
-    "message": "मेमोरी"
+    "message": "स्टोरेज"
   },
   "panels/timeline/TimelinePanel.ts | network": {
     "message": "नेटवर्क:"
@@ -9450,7 +9582,7 @@
     "message": "स्क्रीनशॉट"
   },
   "panels/timeline/TimelinePanel.ts | showMemoryTimeline": {
-    "message": "मेमोरी टाइमलाइन दिखाएं"
+    "message": "स्टोरेज टाइमलाइन दिखाएं"
   },
   "panels/timeline/TimelinePanel.ts | showWebVitals": {
     "message": "दिखाएं कि वेबसाइट कैसा प्रदर्शन कर रही है"
@@ -9647,6 +9779,9 @@
   "panels/timeline/TimelineUIUtils.ts | compile": {
     "message": "कंपाइल करें"
   },
+  "panels/timeline/TimelineUIUtils.ts | compileCode": {
+    "message": "कंपाइल कोड"
+  },
   "panels/timeline/TimelineUIUtils.ts | compileModule": {
     "message": "कंपाइल मॉड्यूल"
   },
@@ -9684,10 +9819,10 @@
     "message": "कुल स्कोर"
   },
   "panels/timeline/TimelineUIUtils.ts | currentClusterId": {
-    "message": "Current Cluster ID"
+    "message": "मौजूदा क्लस्टर का आईडी"
   },
   "panels/timeline/TimelineUIUtils.ts | currentClusterScore": {
-    "message": "Current Cluster Score"
+    "message": "मौजूदा क्लस्टर का स्कोर"
   },
   "panels/timeline/TimelineUIUtils.ts | decodedBody": {
     "message": "डिकोड किया गया मुख्य हिस्सा"
@@ -9759,7 +9894,7 @@
     "message": "इवेंट"
   },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
-    "message": "evolved"
+    "message": "बनाया गया"
   },
   "panels/timeline/TimelineUIUtils.ts | experience": {
     "message": "अनुभव"
@@ -9983,6 +10118,9 @@
   "panels/timeline/TimelineUIUtils.ts | onloadEvent": {
     "message": "इवेंट ऑनलोड"
   },
+  "panels/timeline/TimelineUIUtils.ts | optimizeCode": {
+    "message": "कोड ऑप्टिमाइज़ करें"
+  },
   "panels/timeline/TimelineUIUtils.ts | other": {
     "message": "अन्य"
   },
@@ -10116,7 +10254,7 @@
     "message": "{n,plural, =1{# बाइट}one{# बाइट}other{# बाइट}}"
   },
   "panels/timeline/TimelineUIUtils.ts | sCLSInformation": {
-    "message": "{PH1} can result in poor user experiences. It has recently {PH2}."
+    "message": "{PH1} की वजह से उपयोगकर्ता अनुभव खराब हो सकते हैं. इसमें हाल ही में {PH2} हुआ था."
   },
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (बच्चे)"
@@ -10616,6 +10754,15 @@
   "ui/components/issue_counter/IssueCounter.ts | possibleImprovements": {
     "message": "{issueCount,plural, =1{# चीज़ को बेहतर बनाया जा सकता है}one{# चीज़ को बेहतर बनाया जा सकता है}other{# चीज़ों को बेहतर बनाया जा सकता है}}"
   },
+  "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssue": {
+    "message": "समस्याओं के टैब में समस्या दिखाने के लिए, क्लिक करें"
+  },
+  "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
+    "message": "समस्या टैब खोलने और समस्या '{title}' देखने के लिए, क्लिक करें"
+  },
+  "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
+    "message": "इस समय समस्या उपलब्ध नहीं है"
+  },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "पता {PH1} और {PH2} के बीच की कोई संख्या होनी चाहिए"
   },
@@ -10668,10 +10815,19 @@
     "message": "अन्य"
   },
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | memoryInspector": {
-    "message": "मेमोरी इंस्पेक्टर"
+    "message": "स्टोरेज इंस्पेक्टर"
   },
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
-    "message": "मेमोरी की जांच करने वाला टूल देखें"
+    "message": "स्टोरेज की जांच करने वाला टूल देखें"
+  },
+  "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
+    "message": "यूआरएल का अनुरोध दिखाने और नेटवर्क पैनल खोलने के लिए, क्लिक करें: {url}"
+  },
+  "ui/components/request_link_icon/RequestLinkIcon.ts | requestUnavailableInTheNetwork": {
+    "message": "अनुरोध, नेटवर्क पैनल में उपलब्ध नहीं है, जांच किए गए पेज को फिर से लोड करें"
+  },
+  "ui/components/request_link_icon/RequestLinkIcon.ts | shortenedURL": {
+    "message": "छोटा किया गया यूआरएल"
   },
   "ui/components/survey_link/SurveyLink.ts | anErrorOccurredWithTheSurvey": {
     "message": "सर्वे में कोई गड़बड़ी हुई"
@@ -10725,7 +10881,7 @@
     "message": "दराज बंद करें"
   },
   "ui/legacy/InspectorView.ts | devToolsLanguageMissmatch": {
-    "message": "DevTools is now available in {PH1}!"
+    "message": "DevTools अब {PH1} में उपलब्ध है!"
   },
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "ज़्यादा टूल"
@@ -10743,10 +10899,10 @@
     "message": "DevTools फिर से लोड करें"
   },
   "ui/legacy/InspectorView.ts | setToBrowserLanguage": {
-    "message": "Always match Chrome's language"
+    "message": "DevTool हमेशा Chrome की भाषा में दिखाएं"
   },
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
-    "message": "Switch DevTools to {PH1}"
+    "message": "DevTools को {PH1} पर स्विच करें"
   },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "जोड़ें"
@@ -10825,6 +10981,9 @@
   },
   "ui/legacy/SuggestBox.ts | sSuggestionSOfS": {
     "message": "{PH1}, {PH3} में से {PH2} सुझाव"
+  },
+  "ui/legacy/SuggestBox.ts | sSuggestionSSelected": {
+    "message": "{PH1}, सुझाव को चुना गया"
   },
   "ui/legacy/TabbedPane.ts | close": {
     "message": "बंद करें"
@@ -11027,6 +11186,9 @@
   "ui/legacy/components/data_grid/DataGrid.ts | editS": {
     "message": "\"{PH1}\" में बदलाव करें"
   },
+  "ui/legacy/components/data_grid/DataGrid.ts | emptyRowCreated": {
+    "message": "खाली टेबल पंक्ति बनाई गई है. बदलाव करने के लिए, आप दो बार क्लिक या संदर्भ मेन्यू का इस्तेमाल कर सकते हैं."
+  },
   "ui/legacy/components/data_grid/DataGrid.ts | expanded": {
     "message": "बड़ा किया गया"
   },
@@ -11094,7 +11256,7 @@
     "message": "सीएसएस प्रॉपर्टी"
   },
   "ui/legacy/components/inline_editor/FontEditor.ts | deleteS": {
-    "message": "{PH1} मिटाएं"
+    "message": "{PH1} को मिटाएं"
   },
   "ui/legacy/components/inline_editor/FontEditor.ts | fallbackS": {
     "message": "फ़ॉलबैक {PH1}"
@@ -11289,16 +11451,16 @@
     "message": "फ़्लेमचार्ट माउस व्हील ऐक्शन:"
   },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
-    "message": "लाइव मेमोरी के बंटवारे की जानकारी छिपाएं"
+    "message": "लाइव स्टोरेज के बंटवारे की जानकारी छिपाएं"
   },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
-    "message": "लाइव मेमोरी ऐलोकेशन एनोटेशंस"
+    "message": "लाइव स्टोरेज ऐलोकेशन एनोटेशंस"
   },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | scroll": {
     "message": "स्क्रोल करें"
   },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
-    "message": "लाइव मेमोरी ऐलोकेशन एनोटेशंस दिखाएं"
+    "message": "लाइव स्टोरेज ऐलोकेशन एनोटेशंस दिखाएं"
   },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | zoom": {
     "message": "ज़ूम करें"

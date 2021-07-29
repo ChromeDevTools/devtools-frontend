@@ -4,7 +4,15 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/generate_css.gni")
 import("../visibility.gni")
+
+generate_css("css_files") {
+  sources = [
+    "developerResourcesListView.css",
+    "developerResourcesView.css",
+  ]
+}
 
 devtools_module("developer_resources") {
   sources = [
@@ -27,7 +35,10 @@ devtools_module("developer_resources") {
 devtools_entrypoint("bundle") {
   entrypoint = "developer_resources.ts"
 
-  deps = [ ":developer_resources" ]
+  deps = [
+    ":css_files",
+    ":developer_resources",
+  ]
 
   visibility = [
     ":*",

@@ -8,6 +8,8 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Diff from '../../third_party/diff/diff.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import changesViewStyles from './changesView.css.js';
+
 import type * as Workspace from '../../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
 
@@ -67,7 +69,7 @@ export class ChangesView extends UI.Widget.VBox {
 
   private constructor() {
     super(true);
-    this.registerRequiredCSS('panels/changes/changesView.css');
+
     const splitWidget = new UI.SplitWidget.SplitWidget(true /* vertical */, false /* sidebar on left */);
     const mainWidget = new UI.Widget.Widget();
     splitWidget.setMainWidget(mainWidget);
@@ -171,6 +173,7 @@ export class ChangesView extends UI.Widget.VBox {
 
   wasShown(): void {
     this._refreshDiff();
+    this.registerCSSFiles([changesViewStyles]);
   }
 
   _refreshDiff(): void {

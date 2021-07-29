@@ -13,6 +13,8 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import coverageViewStyles from './coverageView.css.js';
+
 import type * as Workspace from '../../models/workspace/workspace.js';
 
 import {CoverageDecorationManager, decoratorType} from './CoverageDecorationManager.js';
@@ -130,8 +132,6 @@ export class CoverageView extends UI.Widget.VBox {
     this._model = null;
     this._decorationManager = null;
     this._resourceTreeModel = null;
-
-    this.registerRequiredCSS('panels/coverage/coverageView.css');
 
     const toolbarContainer = this.contentElement.createChild('div', 'coverage-toolbar-container');
     const toolbar = new UI.Toolbar.Toolbar('coverage-toolbar', toolbarContainer);
@@ -525,6 +525,10 @@ export class CoverageView extends UI.Widget.VBox {
   }
 
   static readonly EXTENSION_BINDINGS_URL_PREFIX = 'extensions::';
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([coverageViewStyles]);
+  }
 }
 
 let actionDelegateInstance: ActionDelegate;

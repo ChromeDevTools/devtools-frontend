@@ -17,6 +17,15 @@ function restoreFromOptimizing(properties, restoreCallback) {
   for (i = properties.length - 1; i >= 0; i--) {
     property = properties[i];
 
+    if (property.dynamic && property.important) {
+      restoreImportant(property);
+      continue;
+    }
+
+    if (property.dynamic) {
+      continue;
+    }
+
     if (property.unused) {
       continue;
     }
@@ -25,7 +34,7 @@ function restoreFromOptimizing(properties, restoreCallback) {
       continue;
     }
 
-    if (restoreCallback) {
+    if (property.optimizable && restoreCallback) {
       restored = restoreCallback(property);
       property.value = restored;
     } else {

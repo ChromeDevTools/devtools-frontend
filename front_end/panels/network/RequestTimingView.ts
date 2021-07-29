@@ -503,7 +503,7 @@ export class RequestTimingView extends UI.Widget.VBox {
       const colorGenerator =
           new Common.Color.Generator({min: 0, max: 360, count: 36}, {min: 50, max: 80, count: undefined}, 80);
       const isTotal = serverTiming.metric.toLowerCase() === 'total';
-      const tr = tableElement.createChild('tr', isTotal ? 'network-timing-footer' : '');
+      const tr = tableElement.createChild('tr', isTotal ? 'network-timing-footer' : 'server-timing-row');
       const metric = tr.createChild('td', 'network-timing-metric');
       const description = serverTiming.description || serverTiming.metric;
       UI.UIUtils.createTextChild(metric, description);

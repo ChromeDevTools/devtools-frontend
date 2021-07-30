@@ -198,7 +198,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('core/sdk/DOMDebuggerModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class DOMDebuggerModel extends SDKModel {
+export class DOMDebuggerModel extends SDKModel<EventTypes> {
   _agent: ProtocolProxyApi.DOMDebuggerApi;
   _runtimeModel: RuntimeModel;
   _domModel: DOMModel;
@@ -450,6 +450,12 @@ export enum Events {
   DOMBreakpointToggled = 'DOMBreakpointToggled',
   DOMBreakpointsRemoved = 'DOMBreakpointsRemoved',
 }
+
+export type EventTypes = {
+  [Events.DOMBreakpointAdded]: DOMBreakpoint,
+  [Events.DOMBreakpointToggled]: DOMBreakpoint,
+  [Events.DOMBreakpointsRemoved]: DOMBreakpoint[],
+};
 
 const Marker = 'breakpoint-marker';
 

@@ -251,22 +251,22 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
     }
   }
 
-  _breakpointAdded(event: Common.EventTarget.EventTargetEvent): void {
-    this._addBreakpoint(event.data as SDK.DOMDebuggerModel.DOMBreakpoint);
+  _breakpointAdded(event: Common.EventTarget.EventTargetEvent<SDK.DOMDebuggerModel.DOMBreakpoint>): void {
+    this._addBreakpoint(event.data);
   }
 
-  _breakpointToggled(event: Common.EventTarget.EventTargetEvent): void {
+  _breakpointToggled(event: Common.EventTarget.EventTargetEvent<SDK.DOMDebuggerModel.DOMBreakpoint>): void {
     const hadFocus = this.hasFocus();
-    const breakpoint = event.data as SDK.DOMDebuggerModel.DOMBreakpoint;
+    const breakpoint = event.data;
     this._list.refreshItem(breakpoint);
     if (hadFocus) {
       this.focus();
     }
   }
 
-  _breakpointsRemoved(event: Common.EventTarget.EventTargetEvent): void {
+  _breakpointsRemoved(event: Common.EventTarget.EventTargetEvent<SDK.DOMDebuggerModel.DOMBreakpoint[]>): void {
     const hadFocus = this.hasFocus();
-    const breakpoints = event.data as SDK.DOMDebuggerModel.DOMBreakpoint[];
+    const breakpoints = event.data;
     let lastIndex = -1;
     for (const breakpoint of breakpoints) {
       const index = this._breakpoints.indexOf(breakpoint);

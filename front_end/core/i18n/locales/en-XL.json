@@ -4961,6 +4961,9 @@
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n, plural, =1 {# ĉóôḱîé} other {# ĉóôḱîéŝ}}"
   },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n, plural, =1 {1 R̂áŵ Set-Cookie h́êád̂ér̂} other {# Ŕâẃ Set-Cookie ĥéâd́êŕŝ}}"
+  },
   "panels/issues/AffectedCookiesView.ts | path": {
     "message": "P̂át̂h́"
   },

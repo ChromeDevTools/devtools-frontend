@@ -21,7 +21,7 @@ import * as Components from './components/components.js';
 
 import {AffectedDirectivesView} from './AffectedDirectivesView.js';
 import {AffectedBlockedByResponseView} from './AffectedBlockedByResponseView.js';
-import {AffectedCookiesView} from './AffectedCookiesView.js';
+import {AffectedCookiesView, AffectedRawCookieLinesView} from './AffectedCookiesView.js';
 import {AffectedDocumentsInQuirksModeView} from './AffectedDocumentsInQuirksModeView.js';
 import {AffectedElementsView} from './AffectedElementsView.js';
 import {AffectedElementsWithLowContrastView} from './AffectedElementsWithLowContrastView.js';
@@ -261,6 +261,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       new AffectedDocumentsInQuirksModeView(this, this._issue),
       new AttributionReportingIssueDetailsView(this, this._issue),
       new WasmCrossOriginModuleSharingAffectedResourcesView(this, this._issue),
+      new AffectedRawCookieLinesView(this, this._issue),
     ];
     if (Root.Runtime.experiments.isEnabled('hideIssuesFeature')) {
       this.hiddenIssuesMenu = new Components.HideIssuesMenu.HideIssuesMenu();

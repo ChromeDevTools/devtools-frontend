@@ -169,6 +169,13 @@ export class SameSiteCookieIssue extends Issue {
     return [];
   }
 
+  rawCookieLines(): Iterable<string> {
+    if (this.issueDetails.rawCookieLine) {
+      return [this.issueDetails.rawCookieLine];
+    }
+    return [];
+  }
+
   requests(): Iterable<Protocol.Audits.AffectedRequest> {
     if (this.issueDetails.request) {
       return [this.issueDetails.request];

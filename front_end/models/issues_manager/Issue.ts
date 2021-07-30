@@ -131,6 +131,10 @@ export abstract class Issue<IssueCode extends string = string> {
     return [];
   }
 
+  rawCookieLines(): Iterable<string> {
+    return [];
+  }
+
   elements(): Iterable<AffectedElement> {
     return [];
   }

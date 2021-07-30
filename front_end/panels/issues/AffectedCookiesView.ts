@@ -30,6 +30,10 @@ const UIStrings = {
   *@description Noun, singular. Label for a column in a table which lists cookies in the affected resources section of a DevTools issue. Cookies may have a 'Path' attribute: https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies.#define_where_cookies_are_sent
   */
   path: 'Path',
+  /**
+  *@description Label for the the number of affected `Set-Cookie` lines associated with a DevTools issue. `Set-Cookie` is a specific header line in an HTTP network request and consists of a single line of text.
+  */
+  nRawCookieLines: '{n, plural, =1 {1 Raw `Set-Cookie` header} other {# Raw `Set-Cookie` headers}}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedCookiesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -97,5 +101,29 @@ export class AffectedCookiesView extends AffectedResourcesView {
   update(): void {
     this.clear();
     this.appendAffectedCookies(this.issue.cookiesWithRequestIndicator());
+  }
+}
+
+export class AffectedRawCookieLinesView extends AffectedResourcesView {
+  private issue: AggregatedIssue;
+  constructor(parent: IssueView, issue: AggregatedIssue) {
+    super(parent);
+    this.issue = issue;
+  }
+
+  protected override getResourceNameWithCount(count: number): Platform.UIString.LocalizedString {
+    return i18nString(UIStrings.nRawCookieLines, {n: count});
+  }
+
+  override update(): void {
+    this.clear();
+    const rawCookieLines = this.issue.getRawCookieLines();
+    for (const rawCookieLine of rawCookieLines) {
+      const row = document.createElement('tr');
+      row.classList.add('affected-resource-directive');
+      this.appendIssueDetailCell(row, rawCookieLine);
+      this.affectedResources.appendChild(row);
+    }
+    this.updateAffectedResourceCount(rawCookieLines.size);
   }
 }

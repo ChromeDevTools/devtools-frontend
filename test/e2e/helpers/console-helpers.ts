@@ -4,7 +4,7 @@
 
 import type * as puppeteer from 'puppeteer';
 
-import {$, $$, assertNotNull, click, getBrowserAndPages, goToResource, pasteText, timeout, waitFor, waitForAria, waitForFunction} from '../../shared/helper.js';
+import {$, $$, assertNotNullOrUndefined, click, getBrowserAndPages, goToResource, pasteText, timeout, waitFor, waitForAria, waitForFunction} from '../../shared/helper.js';
 import {AsyncScope} from '../../shared/mocha-extensions.js';
 
 export const CONSOLE_TAB_SELECTOR = '#tab-console';
@@ -244,7 +244,7 @@ async function getIssueButtonLabel(): Promise<string|null> {
   const infobarButton = await waitFor('#console-issues-counter');
   const iconButton = await waitFor('icon-button', infobarButton);
   const titleElement = await waitFor('.icon-button-title', iconButton);
-  assertNotNull(titleElement);
+  assertNotNullOrUndefined(titleElement);
   const infobarButtonText = await titleElement.evaluate(node => (node as HTMLElement).textContent);
   return infobarButtonText;
 }

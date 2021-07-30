@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNull, getBrowserAndPages, goToResource} from '../../shared/helper.js';
+import {assertNotNullOrUndefined, getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {ensureResourceSectionIsExpanded, expandIssue, getIssueByTitle, getResourcesElement, navigateToIssuesTab, waitForTableFromResourceSectionContents} from '../helpers/issues-helpers.js';
 
@@ -55,7 +55,7 @@ describe('Cors Private Network issue', async () => {
 
     await expandIssue();
     const issueElement = await getIssueByTitle('Ensure private network requests are made from secure contexts');
-    assertNotNull(issueElement);
+    assertNotNullOrUndefined(issueElement);
     const section = await getResourcesElement('2 requests', issueElement, '.cors-issue-affected-resource-label');
     await ensureResourceSectionIsExpanded(section);
 
@@ -130,7 +130,7 @@ describe('Cors Private Network issue', async () => {
     await expandIssue();
     const issueElement =
         await getIssueByTitle('Ensure private network requests are only made to resources that allow them');
-    assertNotNull(issueElement);
+    assertNotNullOrUndefined(issueElement);
     const section = await getResourcesElement('2 requests', issueElement, '.cors-issue-affected-resource-label');
     await ensureResourceSectionIsExpanded(section);
     const expectedTableRows = [

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNull, getBrowserAndPages, goToResource} from '../../shared/helper.js';
+import {assertNotNullOrUndefined, getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {ensureResourceSectionIsExpanded, expandIssue, getIssueByTitle, getResourcesElement, navigateToIssuesTab, waitForTableFromResourceSectionContents} from '../helpers/issues-helpers.js';
 
@@ -35,7 +35,7 @@ describe('Navigator User Agent Issues', async () => {
     await expandIssue();
     const issueElement =
         await getIssueByTitle('Audit usage of navigator.userAgent, navigator.appVersion, and navigator.platform');
-    assertNotNull(issueElement);
+    assertNotNullOrUndefined(issueElement);
     const section = await getResourcesElement('1 source', issueElement, '.affected-resource-label');
     await ensureResourceSectionIsExpanded(section);
     const expectedTableRows = [

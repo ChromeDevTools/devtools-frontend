@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {assertNotNull, getBrowserAndPages, goToResource} from '../../shared/helper.js';
+import {assertNotNullOrUndefined, getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {ensureResourceSectionIsExpanded, expandIssue, getIssueByTitle, getResourcesElement, navigateToIssuesTab, waitForTableFromResourceSectionContents} from '../helpers/issues-helpers.js';
 
@@ -19,7 +19,7 @@ describe('CORS issues', async () => {
     await navigateToIssuesTab();
     await expandIssue();
     const issueElement = await getIssueByTitle('Ensure CORS response header values are valid');
-    assertNotNull(issueElement);
+    assertNotNullOrUndefined(issueElement);
     const section = await getResourcesElement('requests', issueElement, '.cors-issue-affected-resource-label');
     const text = await section.label.evaluate(el => el.textContent);
     assert.strictEqual(text, '3 requests');
@@ -77,7 +77,7 @@ describe('CORS issues', async () => {
     await expandIssue();
     const issueElement =
         await getIssueByTitle('Ensure credentialed requests are not sent to CORS resources with origin wildcards');
-    assertNotNull(issueElement);
+    assertNotNullOrUndefined(issueElement);
     const section = await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label');
     const text = await section.label.evaluate(el => el.textContent);
     assert.strictEqual(text, '1 request');
@@ -124,7 +124,7 @@ describe('CORS issues', async () => {
     await navigateToIssuesTab();
     await expandIssue();
     const issueElement = await getIssueByTitle('Ensure preflight responses are valid');
-    assertNotNull(issueElement);
+    assertNotNullOrUndefined(issueElement);
     const section = await getResourcesElement('requests', issueElement, '.cors-issue-affected-resource-label');
     const text = await section.label.evaluate(el => el.textContent);
     assert.strictEqual(text, '2 requests');
@@ -176,7 +176,7 @@ describe('CORS issues', async () => {
     await navigateToIssuesTab();
     await expandIssue();
     const issueElement = await getIssueByTitle('Ensure CORS requesting origin matches resource\'s allowed origin');
-    assertNotNull(issueElement);
+    assertNotNullOrUndefined(issueElement);
     const section = await getResourcesElement('requests', issueElement, '.cors-issue-affected-resource-label');
     const text = await section.label.evaluate(el => el.textContent);
     assert.strictEqual(text, '2 requests');
@@ -231,7 +231,7 @@ describe('CORS issues', async () => {
     await navigateToIssuesTab();
     await expandIssue();
     const issueElement = await getIssueByTitle('Ensure CORS requests include credentials only when allowed');
-    assertNotNull(issueElement);
+    assertNotNullOrUndefined(issueElement);
     const section = await getResourcesElement('requests', issueElement, '.cors-issue-affected-resource-label');
     const text = await section.label.evaluate(el => el.textContent);
     assert.strictEqual(text, '2 requests');
@@ -278,7 +278,7 @@ describe('CORS issues', async () => {
     await navigateToIssuesTab();
     await expandIssue();
     const issueElement = await getIssueByTitle('Ensure CORS request uses allowed method');
-    assertNotNull(issueElement);
+    assertNotNullOrUndefined(issueElement);
     const section = await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label');
     const text = await section.label.evaluate(el => el.textContent);
     assert.strictEqual(text, '1 request');
@@ -318,7 +318,7 @@ describe('CORS issues', async () => {
     await navigateToIssuesTab();
     await expandIssue();
     const issueElement = await getIssueByTitle('Ensure CORS request includes only allowed headers');
-    assertNotNull(issueElement);
+    assertNotNullOrUndefined(issueElement);
     const section = await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label');
     const text = await section.label.evaluate(el => el.textContent);
     assert.strictEqual(text, '1 request');
@@ -357,7 +357,7 @@ describe('CORS issues', async () => {
     await expandIssue();
     const issueElement =
         await getIssueByTitle('Ensure CORS requests are not redirected to URLs containing credentials');
-    assertNotNull(issueElement);
+    assertNotNullOrUndefined(issueElement);
     const section = await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label');
     const text = await section.label.evaluate(el => el.textContent);
     assert.strictEqual(text, '1 request');
@@ -389,7 +389,7 @@ describe('CORS issues', async () => {
     await expandIssue();
     const issueElement =
         await getIssueByTitle('Ensure only same-origin resources are fetched with same-origin request mode');
-    assertNotNull(issueElement);
+    assertNotNullOrUndefined(issueElement);
     const section = await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label');
     const text = await section.label.evaluate(el => el.textContent);
     assert.strictEqual(text, '1 request');
@@ -426,7 +426,7 @@ describe('CORS issues', async () => {
     await navigateToIssuesTab();
     await expandIssue();
     const issueElement = await getIssueByTitle('Ensure CORS requests are made on supported schemes');
-    assertNotNull(issueElement);
+    assertNotNullOrUndefined(issueElement);
     const section = await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label');
     const text = await section.label.evaluate(el => el.textContent);
     assert.strictEqual(text, '1 request');
@@ -465,7 +465,7 @@ describe('CORS issues', async () => {
     await navigateToIssuesTab();
     await expandIssue();
     const issueElement = await getIssueByTitle('Ensure no-cors requests configure redirect mode follow');
-    assertNotNull(issueElement);
+    assertNotNullOrUndefined(issueElement);
     const section = await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label');
     const text = await section.label.evaluate(el => el.textContent);
     assert.strictEqual(text, '1 request');

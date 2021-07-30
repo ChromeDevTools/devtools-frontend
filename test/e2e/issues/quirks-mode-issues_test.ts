@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNull, getResourcesPath, goToResource, matchStringArray} from '../../shared/helper.js';
+import {assertNotNullOrUndefined, getResourcesPath, goToResource, matchStringArray} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {assertIssueTitle, expandIssue, getIssueByTitle, getResourcesElement, navigateToIssuesTab, waitForTableFromResourceSection, waitForTableFromResourceSectionContents} from '../helpers/issues-helpers.js';
 
@@ -13,7 +13,7 @@ const triggerQuirksModeIssueInIssuesTab = async (path: string) => {
   const issueTitle = 'Page layout may be unexpected due to Quirks Mode';
   await assertIssueTitle(issueTitle);
   const issueElement = await getIssueByTitle(issueTitle);
-  assertNotNull(issueElement);
+  assertNotNullOrUndefined(issueElement);
   return issueElement;
 };
 

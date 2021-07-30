@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNull, getBrowserAndPages, goToResource} from '../../shared/helper.js';
+import {assertNotNullOrUndefined, getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {ensureResourceSectionIsExpanded, expandIssue, getIssueByTitle, getResourcesElement, navigateToIssuesTab, waitForTableFromResourceSectionContents} from '../helpers/issues-helpers.js';
 
@@ -42,7 +42,7 @@ describe('Heavy Ad issue', async () => {
     });
     await expandIssue();
     const issueElement = await getIssueByTitle('An ad on your site has exceeded resource limits');
-    assertNotNull(issueElement);
+    assertNotNullOrUndefined(issueElement);
     const section = await getResourcesElement('2 resources', issueElement);
     await ensureResourceSectionIsExpanded(section);
     const expectedTableRows = [

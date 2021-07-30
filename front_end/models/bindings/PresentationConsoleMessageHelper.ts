@@ -153,8 +153,8 @@ export class PresentationConsoleMessageHelper {
     }
   }
 
-  _parsedScriptSource(event: Common.EventTarget.EventTargetEvent): void {
-    const script = (event.data as SDK.Script.Script);
+  _parsedScriptSource(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): void {
+    const script = event.data;
 
     const messages = this._pendingConsoleMessages.get(script.sourceURL);
     if (!messages) {

@@ -166,8 +166,8 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
     return true;
   }
 
-  async _parsedScriptSource(event: Common.EventTarget.EventTargetEvent): Promise<void> {
-    const script = (event.data as SDK.Script.Script);
+  async _parsedScriptSource(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): Promise<void> {
+    const script = event.data;
     if (!this._acceptsScript(script)) {
       return;
     }
@@ -228,7 +228,7 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
     }
   }
 
-  _globalObjectCleared(_event: Common.EventTarget.EventTargetEvent): void {
+  _globalObjectCleared(): void {
     const scripts = Array.from(this._acceptedScripts);
     for (const script of scripts) {
       this._removeScript(script);

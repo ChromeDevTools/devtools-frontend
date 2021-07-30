@@ -893,10 +893,10 @@ export class PauseListener {
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._debuggerPaused, this);
   }
 
-  _debuggerPaused(event: Common.EventTarget.EventTargetEvent): void {
+  _debuggerPaused(event: Common.EventTarget.EventTargetEvent<SDK.DebuggerModel.DebuggerModel>): void {
     SDK.TargetManager.TargetManager.instance().removeModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._debuggerPaused, this);
-    const debuggerModel = (event.data as SDK.DebuggerModel.DebuggerModel);
+    const debuggerModel = event.data;
     const debuggerPausedDetails = debuggerModel.debuggerPausedDetails();
     UI.Context.Context.instance().setFlavor(SDK.Target.Target, debuggerModel.target());
     Common.Revealer.reveal(debuggerPausedDetails);

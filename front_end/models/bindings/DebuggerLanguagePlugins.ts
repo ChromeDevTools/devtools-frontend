@@ -872,8 +872,8 @@ export class DebuggerLanguagePluginManager implements
     });
   }
 
-  _globalObjectCleared(event: Common.EventTarget.EventTargetEvent): void {
-    const debuggerModel = (event.data as SDK.DebuggerModel.DebuggerModel);
+  _globalObjectCleared(event: Common.EventTarget.EventTargetEvent<SDK.DebuggerModel.DebuggerModel>): void {
+    const debuggerModel = event.data;
     this.modelRemoved(debuggerModel);
     this.modelAdded(debuggerModel);
   }
@@ -1059,8 +1059,8 @@ export class DebuggerLanguagePluginManager implements
     return [];
   }
 
-  _parsedScriptSource(event: Common.EventTarget.EventTargetEvent): void {
-    const script = (event.data as SDK.Script.Script);
+  _parsedScriptSource(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): void {
+    const script = event.data;
     if (!script.sourceURL) {
       return;
     }

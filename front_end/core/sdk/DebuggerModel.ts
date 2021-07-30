@@ -116,7 +116,7 @@ export enum StepMode {
   StepOver = 'StepOver',
 }
 
-export class DebuggerModel extends SDKModel {
+export class DebuggerModel extends SDKModel<EventTypes> {
   _agent: ProtocolProxyApi.DebuggerApi;
   _runtimeModel: RuntimeModel;
   _sourceMapManager: SourceMapManager<Script>;
@@ -971,13 +971,23 @@ export enum Events {
   DebuggerPaused = 'DebuggerPaused',
   DebuggerResumed = 'DebuggerResumed',
   ParsedScriptSource = 'ParsedScriptSource',
-  FailedToParseScriptSource = 'FailedToParseScriptSource',
   DiscardedAnonymousScriptSource = 'DiscardedAnonymousScriptSource',
   GlobalObjectCleared = 'GlobalObjectCleared',
   CallFrameSelected = 'CallFrameSelected',
-  ConsoleCommandEvaluatedInSelectedCallFrame = 'ConsoleCommandEvaluatedInSelectedCallFrame',
   DebuggerIsReadyToPause = 'DebuggerIsReadyToPause',
 }
+
+export type EventTypes = {
+  [Events.DebuggerWasEnabled]: DebuggerModel,
+  [Events.DebuggerWasDisabled]: void,
+  [Events.DebuggerPaused]: DebuggerModel,
+  [Events.DebuggerResumed]: DebuggerModel,
+  [Events.ParsedScriptSource]: Script,
+  [Events.DiscardedAnonymousScriptSource]: Script,
+  [Events.GlobalObjectCleared]: DebuggerModel,
+  [Events.CallFrameSelected]: DebuggerModel,
+  [Events.DebuggerIsReadyToPause]: DebuggerModel,
+};
 
 class DebuggerDispatcher implements ProtocolProxyApi.DebuggerDispatcher {
   _debuggerModel: DebuggerModel;

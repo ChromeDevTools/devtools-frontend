@@ -286,10 +286,10 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._debuggerPaused, this);
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed,
-        event => this._debuggerResumed((event.data as SDK.DebuggerModel.DebuggerModel)));
+        event => this._debuggerResumed(event.data));
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared,
-        event => this._debuggerResumed((event.data as SDK.DebuggerModel.DebuggerModel)));
+        event => this._debuggerResumed(event.data));
     Extensions.ExtensionServer.ExtensionServer.instance().addEventListener(
         Extensions.ExtensionServer.Events.SidebarPaneAdded, this._extensionSidebarPaneAdded, this);
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
@@ -421,8 +421,8 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     return this._sourcesView.searchableView();
   }
 
-  _debuggerPaused(event: Common.EventTarget.EventTargetEvent): void {
-    const debuggerModel = (event.data as SDK.DebuggerModel.DebuggerModel);
+  _debuggerPaused(event: Common.EventTarget.EventTargetEvent<SDK.DebuggerModel.DebuggerModel>): void {
+    const debuggerModel = event.data;
     const details = debuggerModel.debuggerPausedDetails();
     if (!this._paused) {
       this._setAsCurrentPanel();
@@ -456,8 +456,8 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     this._switchToPausedTargetTimeout = window.setTimeout(this._switchToPausedTarget.bind(this, debuggerModel), 500);
   }
 
-  _debuggerWasEnabled(event: Common.EventTarget.EventTargetEvent): void {
-    const debuggerModel = (event.data as SDK.DebuggerModel.DebuggerModel);
+  _debuggerWasEnabled(event: Common.EventTarget.EventTargetEvent<SDK.DebuggerModel.DebuggerModel>): void {
+    const debuggerModel = event.data;
     if (UI.Context.Context.instance().flavor(SDK.Target.Target) !== debuggerModel.target()) {
       return;
     }

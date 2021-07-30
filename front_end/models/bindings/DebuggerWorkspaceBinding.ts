@@ -331,9 +331,8 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     return modelData._compilerMapping.sourceMapForScript(script);
   }
 
-  _globalObjectCleared(event: Common.EventTarget.EventTargetEvent): void {
-    const debuggerModel = (event.data as SDK.DebuggerModel.DebuggerModel);
-    this._reset(debuggerModel);
+  _globalObjectCleared(event: Common.EventTarget.EventTargetEvent<SDK.DebuggerModel.DebuggerModel>): void {
+    this._reset(event.data);
   }
 
   _reset(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
@@ -370,9 +369,8 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     }
   }
 
-  _debuggerResumed(event: Common.EventTarget.EventTargetEvent): void {
-    const debuggerModel = (event.data as SDK.DebuggerModel.DebuggerModel);
-    this._reset(debuggerModel);
+  _debuggerResumed(event: Common.EventTarget.EventTargetEvent<SDK.DebuggerModel.DebuggerModel>): void {
+    this._reset(event.data);
   }
 }
 

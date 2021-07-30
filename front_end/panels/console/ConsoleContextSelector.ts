@@ -267,8 +267,8 @@ export class ConsoleContextSelector implements SDK.TargetManager.SDKModelObserve
     }
   }
 
-  _callFrameSelectedInModel(event: Common.EventTarget.EventTargetEvent): void {
-    const debuggerModel = (event.data as SDK.DebuggerModel.DebuggerModel);
+  _callFrameSelectedInModel(event: Common.EventTarget.EventTargetEvent<SDK.DebuggerModel.DebuggerModel>): void {
+    const debuggerModel = event.data;
     for (const executionContext of this._items) {
       if (executionContext.debuggerModel === debuggerModel) {
         this._dropDown.refreshItem(executionContext);

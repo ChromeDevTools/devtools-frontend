@@ -98,8 +98,8 @@ export class DefaultScriptMapping implements DebuggerSourceMapping {
     return [this._debuggerModel.createRawLocation(script, lineNumber, columnNumber)];
   }
 
-  _parsedScriptSource(event: Common.EventTarget.EventTargetEvent): void {
-    const script = (event.data as SDK.Script.Script);
+  _parsedScriptSource(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): void {
+    const script = event.data;
     const name = Common.ParsedURL.ParsedURL.extractName(script.sourceURL);
     const url = 'debugger:///VM' + script.scriptId + (name ? ' ' + name : '');
 
@@ -116,8 +116,8 @@ export class DefaultScriptMapping implements DebuggerSourceMapping {
     this._debuggerWorkspaceBinding.updateLocations(script);
   }
 
-  _discardedScriptSource(event: Common.EventTarget.EventTargetEvent): void {
-    const script = (event.data as SDK.Script.Script);
+  _discardedScriptSource(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): void {
+    const script = event.data;
     const uiSourceCode = scriptToUISourceCodeMap.get(script);
     if (!uiSourceCode) {
       return;

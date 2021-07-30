@@ -189,8 +189,8 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     }
   }
 
-  private onDebuggerPause(event: Common.EventTarget.EventTargetEvent): void {
-    const debuggerModel = event.data as SDK.DebuggerModel.DebuggerModel;
+  private onDebuggerPause(event: Common.EventTarget.EventTargetEvent<SDK.DebuggerModel.DebuggerModel>): void {
+    const debuggerModel = event.data;
     for (const [bufferId, remoteObject] of this.bufferIdToRemoteObject) {
       if (debuggerModel.runtimeModel() === remoteObject.runtimeModel()) {
         this.paneInstance.refreshView(bufferId);
@@ -198,9 +198,8 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     }
   }
 
-  private onGlobalObjectClear(event: Common.EventTarget.EventTargetEvent): void {
-    const debuggerModel = event.data as SDK.DebuggerModel.DebuggerModel;
-    this.modelRemoved(debuggerModel.runtimeModel());
+  private onGlobalObjectClear(event: Common.EventTarget.EventTargetEvent<SDK.DebuggerModel.DebuggerModel>): void {
+    this.modelRemoved(event.data.runtimeModel());
   }
 
   private viewClosed(event: Common.EventTarget.EventTargetEvent): void {

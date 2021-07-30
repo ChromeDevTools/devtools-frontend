@@ -7,7 +7,6 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as AccessibilityTreeUtils from './AccessibilityTreeUtils.js';
-import type * as LitHtml from '../../ui/lit-html/lit-html.js';
 
 export class AccessibilityTreeView extends UI.Widget.VBox {
   private readonly accessibilityTreeComponent =
@@ -63,20 +62,35 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
   wasShown(): void {
     if (this.selectedTreeNode) {
       this.accessibilityTreeComponent.expandToAndSelectTreeNode(this.selectedTreeNode);
+    } else {
+      // FIXME(jobay): enable once we have a stable way of expanding across reloads
+      // this.accessibilityTreeComponent.expandRecursively(2);
+      this.selectedTreeNode = this.treeData[0];
     }
   }
 
   setAccessibilityModel(model: SDK.AccessibilityModel.AccessibilityModel|null): void {
     this.accessibilityModel = model;
-    this.refreshAccessibilityTree();
   }
 
-  async refreshAccessibilityTree(): Promise<void> {
-    if (!this.accessibilityModel) {
-      return;
-    }
+  wireToDOMModel(domModel: SDK.DOMModel.DOMModel): void {
+    domModel.addEventListener(SDK.DOMModel.Events.DocumentUpdated, this.documentUpdated, this);
+  }
 
-    const root = await this.accessibilityModel.requestRootNode();
+  unwireFromDOMModel(domModel: SDK.DOMModel.DOMModel): void {
+    domModel.removeEventListener(SDK.DOMModel.Events.DocumentUpdated, this.documentUpdated, this);
+  }
+
+  documentUpdated(event: Common.EventTarget.EventTargetEvent): void {
+    const domModel = (event.data as SDK.DOMModel.DOMModel);
+    const axModel = domModel.target().model(SDK.AccessibilityModel.AccessibilityModel);
+    if (domModel.existingDocument() && !domModel.parentModel() && axModel) {
+      this.refreshAccessibilityTree(axModel);
+    }
+  }
+
+  async refreshAccessibilityTree(accessibilityModel: SDK.AccessibilityModel.AccessibilityModel): Promise<void> {
+    const root = await accessibilityModel.requestRootNode();
     if (!root) {
       return;
     }
@@ -85,12 +99,9 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
     this.treeData = [AccessibilityTreeUtils.sdkNodeToAXTreeNode(this.rootAXNode)];
 
     this.accessibilityTreeComponent.data = {
-      defaultRenderer: (node): LitHtml.TemplateResult => AccessibilityTreeUtils.accessibilityNodeRenderer(node),
+      defaultRenderer: AccessibilityTreeUtils.accessibilityNodeRenderer,
       tree: this.treeData,
     };
-
-    this.accessibilityTreeComponent.expandRecursively(2);
-    this.selectedTreeNode = this.treeData[0];
   }
 
   // Given a selected DOM node, asks the model to load the missing subtree from the root to the
@@ -120,7 +131,7 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
     }
 
     this.accessibilityTreeComponent.data = {
-      defaultRenderer: (node): LitHtml.TemplateResult => AccessibilityTreeUtils.accessibilityNodeRenderer(node),
+      defaultRenderer: AccessibilityTreeUtils.accessibilityNodeRenderer,
       tree: this.treeData,
     };
 

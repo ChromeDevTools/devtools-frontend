@@ -5,7 +5,7 @@ import {assert} from 'chai';
 import {performance} from 'perf_hooks';
 import type * as puppeteer from 'puppeteer';
 
-import {$, $$, click, getBrowserAndPages, step, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
+import {$, $$, click, getBrowserAndPages, step, timeout, waitFor, waitForAria, waitForFunction} from '../../shared/helper.js';
 
 const SELECTED_TREE_ELEMENT_SELECTOR = '.selected[role="treeitem"]';
 const CSS_PROPERTY_NAME_SELECTOR = '.webkit-css-property';
@@ -607,4 +607,20 @@ export const assertSelectedNodeClasses = async (expectedClasses: string[]) => {
   for (const expectedClass of expectedClasses) {
     assert.include(classes, expectedClass, `Could not find class ${expectedClass} on the element`);
   }
+};
+
+export const toggleAccessibilityPane = async () => {
+  let a11yPane = await $('Accessibility', undefined, 'aria');
+  if (!a11yPane) {
+    const elementsPanel = await waitForAria('Elements panel');
+    const moreTabs = await waitForAria('More tabs', elementsPanel);
+    await click(moreTabs);
+    a11yPane = await waitForAria('Accessibility');
+  }
+  await click(a11yPane);
+};
+
+export const toggleAccessibilityTree = async () => {
+  const treeToggleButton = await waitForAria('Switch to Accessibility Tree view');
+  await click(treeToggleButton);
 };

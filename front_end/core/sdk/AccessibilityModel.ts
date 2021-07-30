@@ -180,7 +180,7 @@ export class AccessibilityNode {
       return false;
     }
 
-    return !this._childIds.some(id => this._accessibilityModel.axNodeForId(id) !== null);
+    return this._childIds.every(id => this._accessibilityModel.axNodeForId(id) === null);
   }
 }
 

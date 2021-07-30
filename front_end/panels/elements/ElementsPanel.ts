@@ -314,9 +314,8 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
     // Different frames will have different DOMModels, we only want to add the accessibility model
     // for the top level frame, as the accessibility tree does not yet support exploring IFrames.
-    if (!parentModel && this._accessibilityTreeView) {
-      this._accessibilityTreeView.setAccessibilityModel(
-          domModel.target().model(SDK.AccessibilityModel.AccessibilityModel));
+    if (this._accessibilityTreeView) {
+      this._accessibilityTreeView.wireToDOMModel(domModel);
     }
     let treeOutline: ElementsTreeOutline|null = parentModel ? ElementsTreeOutline.forDOMModel(parentModel) : null;
     if (!treeOutline) {

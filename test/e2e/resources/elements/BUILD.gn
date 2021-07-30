@@ -6,6 +6,8 @@ import("../../../../scripts/build/ninja/copy.gni")
 
 copy_to_gen("elements") {
   sources = [
+    "accessibility-iframe-page.html",
+    "accessibility-simple-page.html",
     "adornment-scroll-snap.html",
     "adornment-shadow.html",
     "adornment.html",

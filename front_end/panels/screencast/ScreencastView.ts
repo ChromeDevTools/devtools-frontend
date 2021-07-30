@@ -723,7 +723,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     this._canvasElement.focus();
   }
 
-  _requestNavigationHistoryEvent(_event: Common.EventTarget.EventTargetEvent): void {
+  _requestNavigationHistoryEvent(): void {
     this._requestNavigationHistory();
   }
 

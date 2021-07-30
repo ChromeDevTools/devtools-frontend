@@ -50,6 +50,7 @@ import {Events as RuntimeModelEvents, RuntimeModel} from './RuntimeModel.js';
 import type {Target} from './Target.js';
 import {TargetManager} from './TargetManager.js';
 import type {Observer} from './TargetManager.js';
+import type {ResourceTreeFrame} from './ResourceTreeModel.js';
 
 const UIStrings = {
   /**
@@ -311,7 +312,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper implements 
     ++this.pageLoadSequenceNumber;
   }
 
-  _mainFrameNavigated(event: Common.EventTarget.EventTargetEvent): void {
+  _mainFrameNavigated(event: Common.EventTarget.EventTargetEvent<ResourceTreeFrame>): void {
     if (Common.Settings.Settings.instance().moduleSetting('preserveConsoleLog').get()) {
       Common.Console.Console.instance().log(i18nString(UIStrings.navigatedToS, {PH1: event.data.url}));
     }

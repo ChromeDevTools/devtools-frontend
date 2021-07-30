@@ -528,7 +528,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     }
   }
 
-  _willReloadPage(_event: Common.EventTarget.EventTargetEvent): void {
+  _willReloadPage(): void {
     if (this._pendingStopTimer) {
       clearTimeout(this._pendingStopTimer);
       delete this._pendingStopTimer;
@@ -538,7 +538,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     }
   }
 
-  _load(_event: Common.EventTarget.EventTargetEvent): void {
+  _load(): void {
     if (this._filmStripRecorder && this._filmStripRecorder.isRecording()) {
       this._pendingStopTimer = window.setTimeout(this._stopFilmStripRecording.bind(this), displayScreenshotDelay);
     }

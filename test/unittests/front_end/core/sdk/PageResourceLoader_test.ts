@@ -65,7 +65,7 @@ describe('PageResourceLoader', () => {
         isTopFrame() {
           return true;
         },
-      },
+      } as SDK.ResourceTreeModel.ResourceTreeFrame,
     });
     assert.deepEqual(loader.getNumberOfResources(), {loading: 3, queued: 0, resources: 0});
 

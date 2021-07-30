@@ -66,16 +66,18 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
     this.scheduleUpdate();
   }
 
-  _loadEventFired(event: Common.EventTarget.EventTargetEvent): void {
-    const time = (event.data.loadTime as number);
+  _loadEventFired(
+      event: Common.EventTarget
+          .EventTargetEvent<{resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel, loadTime: number}>): void {
+    const time = event.data.loadTime;
     if (time) {
       this._loadEvents.push(time * 1000);
     }
     this.scheduleUpdate();
   }
 
-  _domContentLoadedEventFired(event: Common.EventTarget.EventTargetEvent): void {
-    const data = (event.data as number);
+  _domContentLoadedEventFired(event: Common.EventTarget.EventTargetEvent<number>): void {
+    const {data} = event;
     if (data) {
       this._domContentLoadedEvents.push(data * 1000);
     }

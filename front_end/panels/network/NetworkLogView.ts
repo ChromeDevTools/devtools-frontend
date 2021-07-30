@@ -1156,23 +1156,25 @@ export class NetworkLogView extends UI.Widget.VBox implements
     this._invalidateAllItems();
   }
 
-  _loadEventFired(event: Common.EventTarget.EventTargetEvent): void {
+  _loadEventFired(
+      event: Common.EventTarget
+          .EventTargetEvent<{resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel, loadTime: number}>): void {
     if (!this._recording) {
       return;
     }
 
-    const time = (event.data.loadTime as number);
+    const time = event.data.loadTime;
     if (time) {
       this._mainRequestLoadTime = time;
       this._columns.addEventDividers([time], 'network-load-divider');
     }
   }
 
-  _domContentLoadedEventFired(event: Common.EventTarget.EventTargetEvent): void {
+  _domContentLoadedEventFired(event: Common.EventTarget.EventTargetEvent<number>): void {
     if (!this._recording) {
       return;
     }
-    const data = (event.data as number);
+    const {data} = event;
     if (data) {
       this._mainRequestDOMContentLoadedTime = data;
       this._columns.addEventDividers([data], 'network-dcl-divider');

@@ -53,8 +53,10 @@ export class ContrastCheckTrigger {
     resourceTreeModel.target().auditsAgent().invoke_checkContrast({});
   }
 
-  private pageLoaded(event: Common.EventTarget.EventTargetEvent): void {
-    const {resourceTreeModel} = event.data as {resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel};
+  private pageLoaded(
+      event: Common.EventTarget
+          .EventTargetEvent<{resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel, loadTime: number}>): void {
+    const {resourceTreeModel} = event.data;
     this.checkContrast(resourceTreeModel);
   }
 

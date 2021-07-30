@@ -748,8 +748,8 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
     Common.EventTarget.removeEventListeners(this._eventListeners);
   }
 
-  _onMainFrameNavigated(event: Common.EventTarget.EventTargetEvent): void {
-    const frame = event.data as Protocol.Page.Frame;
+  _onMainFrameNavigated(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>): void {
+    const frame = event.data;
     const request = this._lastResponseReceivedForLoaderId.get(frame.loaderId);
 
     this.selectAndSwitchToMainView();

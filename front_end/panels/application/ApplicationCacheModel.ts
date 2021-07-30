@@ -82,9 +82,9 @@ export class ApplicationCacheModel extends SDK.SDKModel.SDKModel {
     }
   }
 
-  _frameDetached(event: Common.EventTarget.EventTargetEvent): void {
-    const frame = (event.data.frame as SDK.ResourceTreeModel.ResourceTreeFrame);
-    this._frameManifestRemoved(frame.id);
+  _frameDetached(event: Common.EventTarget
+                     .EventTargetEvent<{frame: SDK.ResourceTreeModel.ResourceTreeFrame, isSwap: boolean}>): void {
+    this._frameManifestRemoved(event.data.frame.id);
   }
 
   reset(): void {

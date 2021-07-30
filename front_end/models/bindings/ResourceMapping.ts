@@ -230,8 +230,8 @@ class ModelInfo {
     return true;
   }
 
-  _resourceAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const resource = (event.data as SDK.Resource.Resource);
+  _resourceAdded(event: Common.EventTarget.EventTargetEvent<SDK.Resource.Resource>): void {
+    const resource = event.data;
     if (!this._acceptsResource(resource)) {
       return;
     }
@@ -263,14 +263,13 @@ class ModelInfo {
     }
   }
 
-  _frameWillNavigate(event: Common.EventTarget.EventTargetEvent): void {
-    const frame = (event.data as SDK.ResourceTreeModel.ResourceTreeFrame);
-    this._removeFrameResources(frame);
+  _frameWillNavigate(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>): void {
+    this._removeFrameResources(event.data);
   }
 
-  _frameDetached(event: Common.EventTarget.EventTargetEvent): void {
-    const frame = (event.data.frame as SDK.ResourceTreeModel.ResourceTreeFrame);
-    this._removeFrameResources(frame);
+  _frameDetached(event: Common.EventTarget
+                     .EventTargetEvent<{frame: SDK.ResourceTreeModel.ResourceTreeFrame, isSwap: boolean}>): void {
+    this._removeFrameResources(event.data.frame);
   }
 
   _resetForTest(): void {

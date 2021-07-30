@@ -74,7 +74,7 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
     this._onComputedStyleChanged(null);
   }
 
-  _onFrameResized(_event: Common.EventTarget.EventTargetEvent): void {
+  _onFrameResized(): void {
     function refreshContents(this: ComputedStyleModel): void {
       this._onComputedStyleChanged(null);
       delete this._frameResizedTimer;

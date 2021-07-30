@@ -122,9 +122,8 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     this.resolveAwaitedFrame(frame);
   }
 
-  _frameDetached(event: Common.EventTarget.EventTargetEvent): void {
-    const frame = event.data.frame as ResourceTreeFrame;
-    const isSwap = event.data.isSwap as boolean;
+  _frameDetached(event: Common.EventTarget.EventTargetEvent<{frame: ResourceTreeFrame, isSwap: boolean}>): void {
+    const {frame, isSwap} = event.data;
     // Decrease the frame's count or remove it entirely from the map.
     this._decreaseOrRemoveFrame(frame.id);
 
@@ -153,9 +152,8 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     }
   }
 
-  _resourceAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const resource = (event.data as Resource);
-    this.dispatchEventToListeners(Events.ResourceAdded, {resource});
+  _resourceAdded(event: Common.EventTarget.EventTargetEvent<Resource>): void {
+    this.dispatchEventToListeners(Events.ResourceAdded, {resource: event.data});
   }
 
   _decreaseOrRemoveFrame(frameId: string): void {

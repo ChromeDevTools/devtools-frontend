@@ -1133,7 +1133,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this._overviewPane.setMarkers(markers);
   }
 
-  async _loadEventFired(event: Common.EventTarget.EventTargetEvent): Promise<void> {
+  async _loadEventFired(
+      event: Common.EventTarget
+          .EventTargetEvent<{resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel, loadTime: number}>):
+      Promise<void> {
     if (this._state !== State.Recording || !this._recordingPageReload || !this._controller ||
         this._controller.mainTarget() !== event.data.resourceTreeModel.target()) {
       return;

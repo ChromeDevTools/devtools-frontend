@@ -51,7 +51,7 @@ import {Capability} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 import {SourceMapManager} from './SourceMapManager.js';
 
-export class CSSModel extends SDKModel {
+export class CSSModel extends SDKModel<EventTypes> {
   _isEnabled: boolean;
   _cachedMatchedCascadeNode: DOMNode|null;
   _cachedMatchedCascadePromise: Promise<CSSMatchedStyles|null>|null;
@@ -726,6 +726,16 @@ export enum Events {
   StyleSheetChanged = 'StyleSheetChanged',
   StyleSheetRemoved = 'StyleSheetRemoved',
 }
+
+export type EventTypes = {
+  [Events.FontsUpdated]: void,
+  [Events.MediaQueryResultChanged]: void,
+  [Events.ModelWasEnabled]: void,
+  [Events.PseudoStateForced]: {node: DOMNode, pseudoClass: string, enable: boolean},
+  [Events.StyleSheetAdded]: CSSStyleSheetHeader,
+  [Events.StyleSheetChanged]: {styleSheetId: string, edit?: Edit},
+  [Events.StyleSheetRemoved]: CSSStyleSheetHeader,
+};
 
 const PseudoStateMarker = 'pseudo-state-marker';
 

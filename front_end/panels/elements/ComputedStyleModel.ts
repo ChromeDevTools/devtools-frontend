@@ -59,7 +59,7 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  _onComputedStyleChanged(event: Common.EventTarget.EventTargetEvent|null): void {
+  _onComputedStyleChanged(event: Common.EventTarget.EventTargetEvent<unknown>|null): void {
     delete this._computedStylePromise;
     this.dispatchEventToListeners(Events.ComputedStyleChanged, event ? event.data : null);
   }

@@ -191,7 +191,8 @@ class ModelInfo {
     ];
   }
 
-  async _styleSheetChanged(event: Common.EventTarget.EventTargetEvent): Promise<void> {
+  async _styleSheetChanged(
+      event: Common.EventTarget.EventTargetEvent<{styleSheetId: string, edit?: SDK.CSSModel.Edit}>): Promise<void> {
     const header = this._cssModel.styleSheetHeaderForId(event.data.styleSheetId);
     if (!header || !header.isInline || (header.isInline && header.isMutable)) {
       return;
@@ -200,7 +201,7 @@ class ModelInfo {
     if (!binding) {
       return;
     }
-    await binding._styleSheetChanged(header, event.data.edit);
+    await binding._styleSheetChanged(header, event.data.edit || null);
   }
 
   _acceptsResource(resource: SDK.Resource.Resource): boolean {

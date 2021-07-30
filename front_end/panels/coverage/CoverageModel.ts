@@ -319,10 +319,9 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
     return updatedEntries;
   }
 
-  private handleStyleSheetAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const styleSheetHeader = event.data as SDK.CSSStyleSheetHeader.CSSStyleSheetHeader;
-
-    this.addStyleSheetToCSSCoverage(styleSheetHeader);
+  private handleStyleSheetAdded(
+      event: Common.EventTarget.EventTargetEvent<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>): void {
+    this.addStyleSheetToCSSCoverage(event.data);
   }
 
   private async takeCSSCoverage(): Promise<CoverageInfo[]> {

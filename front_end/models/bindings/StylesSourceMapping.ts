@@ -118,8 +118,8 @@ export class StylesSourceMapping implements SourceMapping {
     return true;
   }
 
-  _styleSheetAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const header = (event.data as SDK.CSSStyleSheetHeader.CSSStyleSheetHeader);
+  _styleSheetAdded(event: Common.EventTarget.EventTargetEvent<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>): void {
+    const header = event.data;
     if (!this._acceptsHeader(header)) {
       return;
     }
@@ -134,8 +134,8 @@ export class StylesSourceMapping implements SourceMapping {
     }
   }
 
-  _styleSheetRemoved(event: Common.EventTarget.EventTargetEvent): void {
-    const header = (event.data as SDK.CSSStyleSheetHeader.CSSStyleSheetHeader);
+  _styleSheetRemoved(event: Common.EventTarget.EventTargetEvent<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>): void {
+    const header = event.data;
     if (!this._acceptsHeader(header)) {
       return;
     }
@@ -151,7 +151,8 @@ export class StylesSourceMapping implements SourceMapping {
     }
   }
 
-  _styleSheetChanged(event: Common.EventTarget.EventTargetEvent): void {
+  _styleSheetChanged(event: Common.EventTarget.EventTargetEvent<{styleSheetId: string, edit?: SDK.CSSModel.Edit}>):
+      void {
     const header = this._cssModel.styleSheetHeaderForId(event.data.styleSheetId);
     if (!header || !this._acceptsHeader(header)) {
       return;

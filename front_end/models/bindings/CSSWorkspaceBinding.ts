@@ -220,8 +220,9 @@ export class ModelInfo {
     return Promise.all(promises);
   }
 
-  async _styleSheetAdded(event: Common.EventTarget.EventTargetEvent): Promise<void> {
-    const header = (event.data as SDK.CSSStyleSheetHeader.CSSStyleSheetHeader);
+  async _styleSheetAdded(event: Common.EventTarget.EventTargetEvent<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>):
+      Promise<void> {
+    const header = event.data;
     if (!header.sourceURL) {
       return;
     }
@@ -236,8 +237,9 @@ export class ModelInfo {
     this._unboundLocations.deleteAll(header.sourceURL);
   }
 
-  async _styleSheetRemoved(event: Common.EventTarget.EventTargetEvent): Promise<void> {
-    const header = (event.data as SDK.CSSStyleSheetHeader.CSSStyleSheetHeader);
+  async _styleSheetRemoved(event: Common.EventTarget.EventTargetEvent<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>):
+      Promise<void> {
+    const header = event.data;
     const promises = [];
     for (const location of this._locations.get(header)) {
       location._header = null;

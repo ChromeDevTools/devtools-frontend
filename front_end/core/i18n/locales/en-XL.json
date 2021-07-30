@@ -5120,6 +5120,12 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | untrustworthyOrigin": {
     "message": "Ûńt̂ŕûśt̂ẃôŕt̂h́ŷ ór̂íĝín̂"
   },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "Ĥíd̂é îśŝúêś l̂ík̂é t̂h́îś"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "Ĥíd̂é îśŝúêś m̂én̂ú"
+  },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials Ĥéâd́êŕ V̂ál̂úê"
   },
@@ -5263,6 +5269,9 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "T̂ŕûśt̂éd̂ Ẃêb́ Âćt̂ív̂ít̂ý"
+  },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "Ûńĥíd̂é âĺl̂ h́îd́d̂én̂ íŝśûéŝ"
   },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Âf́f̂éĉt́êd́ R̂éŝóûŕĉéŝ"

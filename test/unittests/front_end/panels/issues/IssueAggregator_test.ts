@@ -5,12 +5,14 @@
 const {assert} = chai;
 
 import * as Issues from '../../../../../front_end/panels/issues/issues.js';
+import type * as Common from '../../../../../front_end/core/common/common.js';
 import * as IssuesManager from '../../../../../front_end/models/issues_manager/issues_manager.js';
 import type * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import {StubIssue} from '../../models/issues_manager/StubIssue.js';
 import {MockIssuesModel} from '../../models/issues_manager/MockIssuesModel.js';
 import {MockIssuesManager} from '../../models/issues_manager/MockIssuesManager.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
+import {createFakeSetting, enableFeatureForTest} from '../../helpers/EnvironmentHelpers.js';
 
 describe('AggregatedIssue', async () => {
   it('deduplicates network requests across issues', () => {
@@ -216,5 +218,98 @@ describe('IssueAggregator', async () => {
         {url: 'foo', lineNumber: 2, columnNumber: 1},
       ]);
     });
+  });
+});
+
+describe('IssueAggregator', () => {
+  enableFeatureForTest('hideIssuesFeature');
+  let hideIssueByCodeSetting: Common.Settings.Setting<IssuesManager.IssuesManager.HideIssueMenuSetting>;
+  let showThirdPartyIssuesSetting: Common.Settings.Setting<boolean>;
+  let issuesManager: IssuesManager.IssuesManager.IssuesManager;
+  let mockModel: SDK.IssuesModel.IssuesModel;
+  let aggregator: Issues.IssueAggregator.IssueAggregator;
+
+  beforeEach(() => {
+    hideIssueByCodeSetting =
+        createFakeSetting('hide by code', ({} as IssuesManager.IssuesManager.HideIssueMenuSetting));
+    showThirdPartyIssuesSetting = createFakeSetting('third party flag', false);
+    issuesManager = new IssuesManager.IssuesManager.IssuesManager(showThirdPartyIssuesSetting, hideIssueByCodeSetting);
+    mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
+    issuesManager.modelAdded(mockModel);
+    aggregator = new Issues.IssueAggregator.IssueAggregator(issuesManager);
+  });
+
+  it('aggregates hidden issues correctly', () => {
+    const issues = [
+      new StubIssue('HiddenStubIssue1', [], []),
+      new StubIssue('HiddenStubIssue2', [], []),
+      new StubIssue('UnhiddenStubIssue1', [], []),
+      new StubIssue('UnhiddenStubIssue2', [], []),
+    ];
+
+    hideIssueByCodeSetting.set({
+      'HiddenStubIssue1': IssuesManager.IssuesManager.IssueStatus.Hidden,
+      'HiddenStubIssue2': IssuesManager.IssuesManager.IssueStatus.Hidden,
+    });
+
+    for (const issue of issues) {
+      issuesManager.addIssue(mockModel, issue);
+    }
+    assert.strictEqual(aggregator.numberOfAggregatedIssues(), 2);
+    assert.strictEqual(aggregator.numberOfHiddenAggregatedIssues(), 2);
+  });
+
+  it('aggregates hidden issues correctly on updating settings', () => {
+    const issues = [
+      new StubIssue('HiddenStubIssue1', [], []),
+      new StubIssue('HiddenStubIssue2', [], []),
+      new StubIssue('UnhiddenStubIssue1', [], []),
+      new StubIssue('UnhiddenStubIssue2', [], []),
+    ];
+
+    for (const issue of issues) {
+      issuesManager.addIssue(mockModel, issue);
+    }
+
+    hideIssueByCodeSetting.set({
+      'HiddenStubIssue1': IssuesManager.IssuesManager.IssueStatus.Hidden,
+    });
+    assert.strictEqual(aggregator.numberOfAggregatedIssues(), 3);
+    assert.strictEqual(aggregator.numberOfHiddenAggregatedIssues(), 1);
+
+    hideIssueByCodeSetting.set({
+      'HiddenStubIssue1': IssuesManager.IssuesManager.IssueStatus.Hidden,
+      'HiddenStubIssue2': IssuesManager.IssuesManager.IssueStatus.Hidden,
+    });
+    assert.strictEqual(aggregator.numberOfAggregatedIssues(), 2);
+    assert.strictEqual(aggregator.numberOfHiddenAggregatedIssues(), 2);
+  });
+
+  it('aggregates hidden issues correctly when all issues get unhidden', () => {
+    const issues = [
+      new StubIssue('HiddenStubIssue1', [], []),
+      new StubIssue('HiddenStubIssue2', [], []),
+      new StubIssue('UnhiddenStubIssue1', [], []),
+      new StubIssue('UnhiddenStubIssue2', [], []),
+    ];
+
+    hideIssueByCodeSetting.set({
+      'HiddenStubIssue1': IssuesManager.IssuesManager.IssueStatus.Hidden,
+      'HiddenStubIssue2': IssuesManager.IssuesManager.IssueStatus.Hidden,
+      'UnhiddenStubIssue1': IssuesManager.IssuesManager.IssueStatus.Hidden,
+      'UnhiddenStubIssue2': IssuesManager.IssuesManager.IssueStatus.Hidden,
+    });
+
+    for (const issue of issues) {
+      issuesManager.addIssue(mockModel, issue);
+    }
+
+    assert.strictEqual(aggregator.numberOfHiddenAggregatedIssues(), 4);
+    assert.strictEqual(aggregator.numberOfAggregatedIssues(), 0);
+
+    issuesManager.unhideAllIssues();
+
+    assert.strictEqual(aggregator.numberOfAggregatedIssues(), 4);
+    assert.strictEqual(aggregator.numberOfHiddenAggregatedIssues(), 0);
   });
 });

@@ -73,6 +73,7 @@ export abstract class Issue<IssueCode extends string = string> {
   private issueCode: IssueCode;
   private issuesModel: SDK.IssuesModel.IssuesModel|null;
   protected issueId: string|undefined = undefined;
+  private hidden: boolean;
 
   constructor(
       code: IssueCode|{code: IssueCode, umaCode: string}, issuesModel: SDK.IssuesModel.IssuesModel|null = null,
@@ -81,6 +82,7 @@ export abstract class Issue<IssueCode extends string = string> {
     this.issuesModel = issuesModel;
     this.issueId = issueId;
     Host.userMetrics.issueCreated(typeof code === 'string' ? code : code.umaCode);
+    this.hidden = false;
   }
 
   code(): IssueCode {
@@ -134,6 +136,14 @@ export abstract class Issue<IssueCode extends string = string> {
 
   getIssueId(): string|undefined {
     return this.issueId;
+  }
+
+  isHidden(): boolean {
+    return this.hidden;
+  }
+
+  setHidden(hidden: boolean): void {
+    this.hidden = hidden;
   }
 }
 

@@ -197,7 +197,7 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
 
 export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly aggregatedIssuesByCode = new Map<string, AggregatedIssue>();
-
+  private readonly hiddenAggregatedIssuesByCode = new Map<string, AggregatedIssue>();
   constructor(private readonly issuesManager: IssuesManager.IssuesManager.IssuesManager) {
     super();
     this.issuesManager.addEventListener(IssuesManager.IssuesManager.Events.IssueAdded, this.onIssueAdded, this);
@@ -214,6 +214,7 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   private onFullUpdateRequired(): void {
     this.aggregatedIssuesByCode.clear();
+    this.hiddenAggregatedIssuesByCode.clear();
     for (const issue of this.issuesManager.issues()) {
       this.aggregateIssue(issue);
     }
@@ -221,13 +222,22 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   private aggregateIssue(issue: IssuesManager.Issue.Issue): AggregatedIssue {
-    let aggregatedIssue = this.aggregatedIssuesByCode.get(issue.code());
+    if (issue.isHidden()) {
+      return this.aggregateIssueByStatus(this.hiddenAggregatedIssuesByCode, issue);
+    }
+    const aggregatedIssue = this.aggregateIssueByStatus(this.aggregatedIssuesByCode, issue);
+    this.dispatchEventToListeners(Events.AggregatedIssueUpdated, aggregatedIssue);
+    return aggregatedIssue;
+  }
+
+  private aggregateIssueByStatus(aggregatedIssuesMap: Map<string, AggregatedIssue>, issue: IssuesManager.Issue.Issue):
+      AggregatedIssue {
+    let aggregatedIssue = aggregatedIssuesMap.get(issue.code());
     if (!aggregatedIssue) {
       aggregatedIssue = new AggregatedIssue(issue.code());
-      this.aggregatedIssuesByCode.set(issue.code(), aggregatedIssue);
+      aggregatedIssuesMap.set(issue.code(), aggregatedIssue);
     }
     aggregatedIssue.addInstance(issue);
-    this.dispatchEventToListeners(Events.AggregatedIssueUpdated, aggregatedIssue);
     return aggregatedIssue;
   }
 
@@ -249,6 +259,10 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   numberOfAggregatedIssues(): number {
     return this.aggregatedIssuesByCode.size;
+  }
+
+  numberOfHiddenAggregatedIssues(): number {
+    return this.hiddenAggregatedIssuesByCode.size;
   }
 }
 

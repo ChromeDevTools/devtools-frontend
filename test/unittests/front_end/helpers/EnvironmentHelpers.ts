@@ -182,3 +182,7 @@ export function createFakeSetting<T>(name: string, defaultValue: T): Common.Sett
       'test');
   return new Common.Settings.Setting(name, defaultValue, new Common.ObjectWrapper.ObjectWrapper(), storage);
 }
+
+export function enableFeatureForTest(feature: string): void {
+  Root.Runtime.experiments.enableForTest(feature);
+}

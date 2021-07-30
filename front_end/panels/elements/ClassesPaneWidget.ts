@@ -133,8 +133,8 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
     this._installNodeClasses(node);
   }
 
-  _onDOMMutated(event: Common.EventTarget.EventTargetEvent): void {
-    const node = (event.data as SDK.DOMModel.DOMNode);
+  _onDOMMutated(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
+    const node = event.data;
     if (this._mutatingNodes.has(node)) {
       return;
     }

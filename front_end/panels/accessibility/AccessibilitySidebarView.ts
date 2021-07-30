@@ -149,7 +149,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
     this.setNode(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode));
   }
 
-  _onAttrChange(event: Common.EventTarget.EventTargetEvent): void {
+  _onAttrChange(event: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode, name: string}>): void {
     if (!this.node()) {
       return;
     }
@@ -160,7 +160,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
     this.update();
   }
 
-  _onNodeChange(event: Common.EventTarget.EventTargetEvent): void {
+  _onNodeChange(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
     if (!this.node()) {
       return;
     }

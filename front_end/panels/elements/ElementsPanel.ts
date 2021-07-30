@@ -518,8 +518,8 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     }
   }
 
-  _documentUpdatedEvent(event: Common.EventTarget.EventTargetEvent): void {
-    const domModel = (event.data as SDK.DOMModel.DOMModel);
+  _documentUpdatedEvent(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMModel>): void {
+    const domModel = event.data;
     this._documentUpdated(domModel);
     this._removeStyleTracking(domModel.cssModel());
     this._setupStyleTracking(domModel.cssModel());

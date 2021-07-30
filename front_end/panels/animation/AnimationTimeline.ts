@@ -666,8 +666,9 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     this._animationsMap.set(animation.id(), animation);
   }
 
-  _nodeRemoved(event: Common.EventTarget.EventTargetEvent): void {
-    const node = event.data.node;
+  _nodeRemoved(event: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode, parent: SDK.DOMModel.DOMNode}>):
+      void {
+    const {node} = event.data;
     const nodeUI = nodeUIsByNode.get(node);
     if (nodeUI) {
       nodeUI.nodeRemoved();

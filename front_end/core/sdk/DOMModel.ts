@@ -1014,7 +1014,7 @@ export class DOMDocument extends DOMNode {
   }
 }
 
-export class DOMModel extends SDKModel {
+export class DOMModel extends SDKModel<EventTypes> {
   _agent: ProtocolProxyApi.DOMApi;
   _idToDOMNode: {
     [x: number]: DOMNode,
@@ -1509,6 +1509,19 @@ export enum Events {
   DistributedNodesChanged = 'DistributedNodesChanged',
   MarkersChanged = 'MarkersChanged',
 }
+
+export type EventTypes = {
+  [Events.AttrModified]: {node: DOMNode, name: string},
+  [Events.AttrRemoved]: {node: DOMNode, name: string},
+  [Events.CharacterDataModified]: DOMNode,
+  [Events.DOMMutated]: DOMNode,
+  [Events.NodeInserted]: DOMNode,
+  [Events.NodeRemoved]: {node: DOMNode, parent: DOMNode},
+  [Events.DocumentUpdated]: DOMModel,
+  [Events.ChildNodeCountUpdated]: DOMNode,
+  [Events.DistributedNodesChanged]: DOMNode,
+  [Events.MarkersChanged]: DOMNode,
+};
 
 class DOMDispatcher implements ProtocolProxyApi.DOMDispatcher {
   _domModel: DOMModel;

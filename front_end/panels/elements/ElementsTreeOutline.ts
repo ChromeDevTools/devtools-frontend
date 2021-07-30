@@ -1028,28 +1028,28 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
     return this._updateRecords.get(node) || null;
   }
 
-  _documentUpdated(event: Common.EventTarget.EventTargetEvent): void {
-    const domModel = (event.data as SDK.DOMModel.DOMModel);
+  _documentUpdated(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMModel>): void {
+    const domModel = event.data;
     this._reset();
     if (domModel.existingDocument()) {
       this.rootDOMNode = domModel.existingDocument();
     }
   }
 
-  _attributeModified(event: Common.EventTarget.EventTargetEvent): void {
-    const node = (event.data.node as SDK.DOMModel.DOMNode);
+  _attributeModified(event: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode, name: string}>): void {
+    const {node} = event.data;
     this._addUpdateRecord(node).attributeModified(event.data.name);
     this._updateModifiedNodesSoon();
   }
 
-  _attributeRemoved(event: Common.EventTarget.EventTargetEvent): void {
-    const node = (event.data.node as SDK.DOMModel.DOMNode);
+  _attributeRemoved(event: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode, name: string}>): void {
+    const {node} = event.data;
     this._addUpdateRecord(node).attributeRemoved(event.data.name);
     this._updateModifiedNodesSoon();
   }
 
-  _characterDataModified(event: Common.EventTarget.EventTargetEvent): void {
-    const node = (event.data as SDK.DOMModel.DOMNode);
+  _characterDataModified(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
+    const node = event.data;
     this._addUpdateRecord(node).charDataModified();
     // Text could be large and force us to render itself as the child in the tree outline.
     if (node.parentNode && node.parentNode.firstChild === node.parentNode.lastChild) {
@@ -1058,28 +1058,28 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
     this._updateModifiedNodesSoon();
   }
 
-  _nodeInserted(event: Common.EventTarget.EventTargetEvent): void {
-    const node = (event.data as SDK.DOMModel.DOMNode);
+  _nodeInserted(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
+    const node = event.data;
     this._addUpdateRecord((node.parentNode as SDK.DOMModel.DOMNode)).nodeInserted(node);
     this._updateModifiedNodesSoon();
   }
 
-  _nodeRemoved(event: Common.EventTarget.EventTargetEvent): void {
-    const node = (event.data.node as SDK.DOMModel.DOMNode);
-    const parentNode = (event.data.parent as SDK.DOMModel.DOMNode);
+  _nodeRemoved(event: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode, parent: SDK.DOMModel.DOMNode}>):
+      void {
+    const {node, parent} = event.data;
     this.resetClipboardIfNeeded(node);
-    this._addUpdateRecord(parentNode).nodeRemoved(node);
+    this._addUpdateRecord(parent).nodeRemoved(node);
     this._updateModifiedNodesSoon();
   }
 
-  _childNodeCountUpdated(event: Common.EventTarget.EventTargetEvent): void {
-    const node = (event.data as SDK.DOMModel.DOMNode);
+  _childNodeCountUpdated(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
+    const node = event.data;
     this._addUpdateRecord(node).childrenModified();
     this._updateModifiedNodesSoon();
   }
 
-  _distributedNodesChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const node = (event.data as SDK.DOMModel.DOMNode);
+  _distributedNodesChanged(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
+    const node = event.data;
     this._addUpdateRecord(node).childrenModified();
     this._updateModifiedNodesSoon();
   }
@@ -1406,8 +1406,8 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
     this._treeElementsBeingUpdated.delete(treeElement);
   }
 
-  _markersChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const node = (event.data as SDK.DOMModel.DOMNode);
+  _markersChanged(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
+    const node = event.data;
     const treeElement = this.treeElementByNode.get(node);
     if (treeElement) {
       treeElement.updateDecorations();

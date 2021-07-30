@@ -64,9 +64,9 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
     this.dispatchEventToListeners(Events.ComputedStyleChanged, event ? event.data : null);
   }
 
-  _onDOMModelChanged(event: Common.EventTarget.EventTargetEvent): void {
+  _onDOMModelChanged(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
     // Any attribute removal or modification can affect the styles of "related" nodes.
-    const node = (event.data as SDK.DOMModel.DOMNode);
+    const node = event.data;
     if (!this._node ||
         this._node !== node && node.parentNode !== this._node.parentNode && !node.isAncestor(this._node)) {
       return;

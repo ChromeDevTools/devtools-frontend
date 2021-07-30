@@ -172,7 +172,8 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
     return section;
   }
 
-  _onNodeChange(event: Common.EventTarget.EventTargetEvent): void {
+  _onNodeChange(event: Common.EventTarget
+                    .EventTargetEvent<{node: SDK.DOMModel.DOMNode, name: string}|SDK.DOMModel.DOMNode>): void {
     if (!this._node) {
       return;
     }

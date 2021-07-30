@@ -421,11 +421,11 @@ export class DOMDebuggerModel extends SDKModel<EventTypes> {
     this.dispatchEventToListeners(Events.DOMBreakpointsRemoved, removed);
   }
 
-  _nodeRemoved(event: Common.EventTarget.EventTargetEvent): void {
+  _nodeRemoved(event: Common.EventTarget.EventTargetEvent<{node: DOMNode, parent: DOMNode}>): void {
     if (this.suspended) {
       return;
     }
-    const node = (event.data.node as DOMNode);
+    const {node} = event.data;
     const children = node.children() || [];
     this._removeDOMBreakpoints(breakpoint => breakpoint.node === node || children.indexOf(breakpoint.node) !== -1);
   }

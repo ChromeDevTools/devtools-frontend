@@ -59,17 +59,12 @@ export class AccessibilityTreeNode extends HTMLElement {
   private async render(): Promise<void> {
     await Coordinator.RenderCoordinator.RenderCoordinator.instance().write('Accessibility node render', () => {
       // clang-format off
-      LitHtml.render(LitHtml.html`
-      ${this.ignored?
-          LitHtml.html`<span class='monospace ignored-node'>${i18nString(UIStrings.ignored)}</span>`:
-          LitHtml.html`
-             <span class='monospace'>${truncateTextIfNeeded(this.role)}</span>
-             <span class='separator'>\xA0</span>
-             <span class='ax-readable-string'>"${this.name}"</span>
-          `}
-     `, this.shadow, {
-        host: this,
-      });
+      LitHtml.render(
+        LitHtml.html`${this.ignored?
+          LitHtml.html`<span>${i18nString(UIStrings.ignored)}</span>`:
+          LitHtml.html`<span class='role-value'>${truncateTextIfNeeded(this.role)}</span>&nbsp"<span class='attribute-value'>${this.name}</span>"`}`,
+        this.shadow,
+        {host: this});
       // clang-format on
     });
   }

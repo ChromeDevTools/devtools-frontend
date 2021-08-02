@@ -44,6 +44,10 @@ export class MockIssuesManager extends Common.ObjectWrapper.ObjectWrapper<Issues
     return Array.from(this.issueCounts.values()).reduce((sum, v) => sum + v, 0);
   }
 
+  setNumberOfIssues(counts: Map<IssuesManager.Issue.IssueKind, number>): void {
+    this.issueCounts = counts;
+  }
+
   incrementIssueCountsOfAllKinds() {
     for (const [key, value] of this.issueCounts) {
       this.issueCounts.set(key, value + 1);

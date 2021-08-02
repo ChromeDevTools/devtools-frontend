@@ -323,7 +323,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     countAdorner.classList.add('aggregated-issues-count');
     this._aggregatedIssuesCount.textContent = `${this._issue.getAggregatedIssuesCount()}`;
     header.appendChild(this.issueKindIcon);
-    UI.Tooltip.Tooltip.install(this.issueKindIcon, IssueCounter.IssueCounter.getIssueKindDescription(kind));
+    UI.Tooltip.Tooltip.install(this.issueKindIcon, IssuesManager.Issue.getIssueKindDescription(kind));
     header.appendChild(countAdorner);
 
     const title = document.createElement('div');

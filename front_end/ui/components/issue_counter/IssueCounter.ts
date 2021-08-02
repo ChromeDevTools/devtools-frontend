@@ -12,18 +12,6 @@ import issueCounterStyles from './issueCounter.css.js';
 
 const UIStrings = {
   /**
-   *@description A description for a kind of issue we display in the issues tab.
-   */
-  pageErrorIssue: 'A page error issue: the page is not working correctly',
-  /**
-   *@description A description for a kind of issue we display in the issues tab.
-   */
-  breakingChangeIssue: 'A breaking change issue: the page may stop working in an upcoming version of Chrome',
-  /**
-   *@description A description for a kind of issue we display in the issues tab.
-   */
-  improvementIssue: 'An improvement issue: there is an opportunity to improve the page',
-  /**
   *@description Label for link to Issues tab, specifying how many issues there are.
   */
   pageErrors: '{issueCount, plural, =1 {# page error} other {# page errors}}',
@@ -58,17 +46,6 @@ function toIconGroup({iconName, color, width, height}: IconButton.Icon.IconWithN
   return {iconName, iconColor: color, iconWidth: width, iconHeight: height};
 }
 
-export function getIssueKindDescription(issueKind: IssuesManager.Issue.IssueKind): Common.UIString.LocalizedString {
-  switch (issueKind) {
-    case IssuesManager.Issue.IssueKind.PageError:
-      return i18nString(UIStrings.pageErrorIssue);
-    case IssuesManager.Issue.IssueKind.BreakingChange:
-      return i18nString(UIStrings.breakingChangeIssue);
-    case IssuesManager.Issue.IssueKind.Improvement:
-      return i18nString(UIStrings.improvementIssue);
-  }
-}
-
 export const enum DisplayMode {
   OmitEmpty = 'OmitEmpty',
   ShowAlways = 'ShowAlways',
@@ -83,6 +60,7 @@ export interface IssueCounterData {
   issuesManager: IssuesManager.IssuesManager.IssuesManager;
   throttlerTimeout?: number;
   accessibleName?: string;
+  compact?: boolean;
 }
 
 // @ts-ignore Remove this comment once Intl.ListFormat is in type defs.
@@ -115,6 +93,7 @@ export class IssueCounter extends HTMLElement {
   private issuesManager: IssuesManager.IssuesManager.IssuesManager|undefined = undefined;
   private accessibleName: string|undefined = undefined;
   private throttlerTimeout: number|undefined;
+  private compact = false;
 
   scheduleUpdate(): void {
     if (this.throttler) {
@@ -135,6 +114,7 @@ export class IssueCounter extends HTMLElement {
     this.displayMode = data.displayMode ?? DisplayMode.OmitEmpty;
     this.accessibleName = data.accessibleName;
     this.throttlerTimeout = data.throttlerTimeout;
+    this.compact = Boolean(data.compact);
     if (this.issuesManager !== data.issuesManager) {
       this.issuesManager?.removeEventListener(
           IssuesManager.IssuesManager.Events.IssuesCountUpdated, this.scheduleUpdate, this);
@@ -153,12 +133,13 @@ export class IssueCounter extends HTMLElement {
   get data(): IssueCounterData {
     return {
       clickHandler: this.clickHandler,
-      tooltipCallback: this.tooltipCallback,
       leadingText: this.leadingText,
+      tooltipCallback: this.tooltipCallback,
       displayMode: this.displayMode,
-      issuesManager: this.issuesManager as IssuesManager.IssuesManager.IssuesManager,
       accessibleName: this.accessibleName,
       throttlerTimeout: this.throttlerTimeout,
+      compact: this.compact,
+      issuesManager: this.issuesManager as IssuesManager.IssuesManager.IssuesManager,
     };
   }
 
@@ -207,6 +188,7 @@ export class IssueCounter extends HTMLElement {
       clickHandler: this.clickHandler,
       leadingText: this.leadingText,
       accessibleName: this.accessibleName,
+      compact: this.compact,
     };
     LitHtml.render(
         LitHtml.html`

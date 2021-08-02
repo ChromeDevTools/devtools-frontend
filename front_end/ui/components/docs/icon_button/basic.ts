@@ -2,12 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as FrontendHelpers from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import * as ComponentHelpers from '../../helpers/helpers.js';
 import * as IconButton from '../../icon_button/icon_button.js';
-
-await ComponentHelpers.ComponentServerSetup.setup();
-await FrontendHelpers.initializeGlobalVars();
 
 function appendComponent(data: IconButton.IconButton.IconButtonData) {
   const component = new IconButton.IconButton.IconButton();
@@ -64,4 +59,14 @@ appendComponent({
     {iconName: 'issue-text-icon', iconColor: 'blue', text: '1'},
   ],
   leadingText: 'Issues:',
+});
+
+appendComponent({
+  clickHandler: (): void => {},
+  groups: [
+    {iconName: 'issue-exclamation-icon', iconColor: 'yellow', text: '23'},
+    {iconName: 'issue-text-icon', iconColor: 'blue', text: '1'},
+  ],
+  leadingText: 'Issues:',
+  compact: true,
 });

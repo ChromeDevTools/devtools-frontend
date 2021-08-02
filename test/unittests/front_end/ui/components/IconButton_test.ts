@@ -33,7 +33,9 @@ export const extractIconGroups =
       assert(icons.length === labels.length, 'Expected icons and labels to appear in pairs');
       const iconGroups = [];
       for (let i = 0; i < icons.length; ++i) {
-        iconGroups.push({iconData: icons[i].data, label: labels[i].textContent});
+        const labelElement = labels[i];
+        const label = window.getComputedStyle(labelElement).display === 'none' ? null : labelElement.textContent;
+        iconGroups.push({iconData: icons[i].data, label});
       }
       return iconGroups;
     };
@@ -67,6 +69,39 @@ describe('IconButton', () => {
     assert.deepEqual(icons.map(c => c.label), ['1', '12']);
     const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
     assert.deepEqual(iconNames, ['error_icon', 'warning_icon']);
+  });
+
+  describe('compact mode', async () => {
+    it('renders correctly with one icon', () => {
+      const {shadowRoot} = renderIconButton({clickHandler: () => {}, groups: [defaultIcon], compact: true});
+
+      const icons = extractIconGroups(shadowRoot);
+      assert.strictEqual(icons.length, 1);
+      assert.deepEqual(icons.map(c => c.label), [null]);
+      const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
+      assert.deepEqual(iconNames, ['error_icon']);
+    });
+
+    it('renders correctly with two icons', () => {
+      const {shadowRoot} = renderIconButton({
+        clickHandler: () => {},
+        groups: [
+          defaultIcon,
+          {
+            iconName: 'warning_icon',
+            iconColor: '#1a73e8',
+            text: '12',
+          },
+        ],
+        compact: true,
+      });
+
+      const icons = extractIconGroups(shadowRoot);
+      assert.strictEqual(icons.length, 1);
+      assert.deepEqual(icons.map(c => c.label), [null]);
+      const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
+      assert.deepEqual(iconNames, ['error_icon']);
+    });
   });
 
   it('renders correctly with two icons where one text is undefined', () => {
@@ -110,26 +145,34 @@ describe('IconButton', () => {
     assert.strictEqual(icon.iconData.width, '3ex');
   });
 
-  describe('setCounts', () => {
+  describe('data getter and setter', () => {
     it('renders correctly with two icons', () => {
       const {component, shadowRoot} = renderIconButton({
         clickHandler: () => {},
         groups: [
+          defaultIcon,
           {
             iconName: 'warning_icon',
             iconColor: '#1a73e8',
-            text: undefined,
+            text: '31',
           },
-          defaultIcon,
         ],
       });
-      component.setTexts(['31', '32']);
 
-      const icons = extractIconGroups(shadowRoot);
-      assert.strictEqual(icons.length, 2);
-      assert.deepEqual(icons.map(c => c.label), ['31', '32']);
-      const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
-      assert.deepEqual(iconNames, ['warning_icon', 'error_icon']);
+      const iconsBefore = extractIconGroups(shadowRoot);
+      assert.strictEqual(iconsBefore.length, 2);
+      assert.deepEqual(iconsBefore.map(c => c.label), ['1', '31']);
+      const iconNamesBefore = iconsBefore.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
+      assert.deepEqual(iconNamesBefore, ['error_icon', 'warning_icon']);
+
+      const data = component.data;
+      component.data = {...data, groups: data.groups.map((group, index) => ({...group, text: `${index}`}))};
+
+      const iconsAfter = extractIconGroups(shadowRoot);
+      assert.strictEqual(iconsAfter.length, 2);
+      assert.deepEqual(iconsAfter.map(c => c.label), ['0', '1']);
+      const iconNamesAfter = iconsAfter.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
+      assert.deepEqual(iconNamesAfter, ['error_icon', 'warning_icon']);
     });
   });
 
@@ -182,6 +225,13 @@ describe('IconButton', () => {
       assert.deepEqual(texts.map(x => x.textContent), ['LEAD', '1']);
     });
 
+    it('is omitted in compact mode even if provided', async () => {
+      const {shadowRoot} =
+          renderIconButton({clickHandler: () => {}, groups: [defaultIcon], leadingText: 'LEAD', compact: true});
+      const texts = Array.from(shadowRoot.querySelectorAll('.icon-button-title'));
+      assert.deepEqual(texts.map(x => x.textContent), ['1']);
+    });
+
     it('is omitted if not provided', async () => {
       const {shadowRoot} = renderIconButton({clickHandler: () => {}, groups: [defaultIcon]});
       const texts = Array.from(shadowRoot.querySelectorAll('.icon-button-title'));
@@ -194,6 +244,13 @@ describe('IconButton', () => {
       const {shadowRoot} = renderIconButton({clickHandler: () => {}, groups: [defaultIcon], trailingText: 'TRAIL'});
       const texts = Array.from(shadowRoot.querySelectorAll('.icon-button-title'));
       assert.deepEqual(texts.map(x => x.textContent), ['1', 'TRAIL']);
+    });
+
+    it('is omitted in compact mode even if provided', async () => {
+      const {shadowRoot} =
+          renderIconButton({clickHandler: () => {}, groups: [defaultIcon], trailingText: 'TRAIL', compact: true});
+      const texts = Array.from(shadowRoot.querySelectorAll('.icon-button-title'));
+      assert.deepEqual(texts.map(x => x.textContent), ['1']);
     });
 
     it('is omitted if not provided', async () => {

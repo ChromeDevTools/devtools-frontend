@@ -4607,9 +4607,6 @@
   "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
     "message": "L̂áp̂t́ôṕ ŵít̂h́ t̂óûćĥ"
   },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "âćĉél̂ér̂óm̂ét̂ér̂"
-  },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "Ĉáp̂t́ûŕê f́ûĺl̂ śîźê śĉŕêén̂śĥót̂"
   },
@@ -4622,23 +4619,8 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "d̂év̂íĉé"
   },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "D̂év̂íĉé-b̂áŝéd̂"
-  },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "d̂év̂íĉé ôŕîén̂t́ât́îón̂"
-  },
   "panels/emulation/emulation-meta.ts | devices": {
     "message": "D̂év̂íĉéŝ"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "Êḿûĺât́ê Íd̂ĺê D́êt́êćt̂ór̂ śt̂át̂é"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "F̂ór̂ćê én̂áb̂ĺêd́"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "ĝéôĺôćât́îón̂"
   },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "Ĥíd̂é d̂év̂íĉé f̂ŕâḿê"
@@ -4649,29 +4631,11 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "Ĥíd̂é r̂úl̂ér̂ś"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "l̂óĉál̂é"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "l̂óĉál̂éŝ"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "L̂óĉát̂íôńŝ"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "N̂ó îd́l̂é êḿûĺât́îón̂"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "Ŝén̂śôŕŝ"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Ŝh́ôẃ d̂év̂íĉé f̂ŕâḿê"
   },
   "panels/emulation/emulation-meta.ts | showDevices": {
     "message": "Ŝh́ôẃ D̂év̂íĉéŝ"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "Ŝh́ôẃ L̂óĉát̂íôńŝ"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "Ŝh́ôẃ m̂éd̂íâ q́ûér̂íêś"
@@ -4679,188 +4643,11 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "Ŝh́ôẃ r̂úl̂ér̂ś"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "Ŝh́ôẃ Ŝén̂śôŕŝ"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "t̂ím̂éẑón̂éŝ"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "T̂óĝǵl̂é d̂év̂íĉé t̂óôĺb̂ár̂"
   },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "T̂óûćĥ"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "Ûśêŕ âćt̂ív̂é, ŝćr̂éêń l̂óĉḱêd́"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "Ûśêŕ âćt̂ív̂é, ŝćr̂éêń ûńl̂óĉḱêd́"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "Ûśêŕ îd́l̂é, ŝćr̂éêń l̂óĉḱêd́"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "Ûśêŕ îd́l̂é, ŝćr̂éêń ûńl̂óĉḱêd́"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "Âd́d̂ ĺôćât́îón̂..."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "Ĉúŝt́ôḿ l̂óĉát̂íôńŝ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "L̂át̂"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "L̂át̂ít̂úd̂é"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "L̂át̂ít̂úd̂é m̂úŝt́ b̂é â ńûḿb̂ér̂"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "L̂át̂ít̂úd̂é m̂úŝt́ b̂é ĝŕêát̂ér̂ t́ĥán̂ ór̂ éq̂úâĺ t̂ó {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "L̂át̂ít̂úd̂é m̂úŝt́ b̂é l̂éŝś t̂h́âń ôŕ êq́ûál̂ t́ô {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "L̂óĉál̂é"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "L̂óĉál̂é m̂úŝt́ ĉón̂t́âín̂ ál̂ṕĥáb̂ét̂íĉ ćĥár̂áĉt́êŕŝ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "L̂óĉát̂íôń n̂ám̂é"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "L̂óĉát̂íôń n̂ám̂é ĉán̂ńôt́ b̂é êḿp̂t́ŷ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "L̂óĉát̂íôń n̂ám̂é m̂úŝt́ b̂é l̂éŝś t̂h́âń {PH1} ĉh́âŕâćt̂ér̂ś"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "L̂ón̂ǵ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "L̂ón̂ǵît́ûd́ê"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "L̂ón̂ǵît́ûd́ê ḿûśt̂ b́ê á n̂úm̂b́êŕ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "L̂ón̂ǵît́ûd́ê ḿûśt̂ b́ê ǵr̂éât́êŕ t̂h́âń ôŕ êq́ûál̂ t́ô {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "L̂ón̂ǵît́ûd́ê ḿûśt̂ b́ê ĺêśŝ t́ĥán̂ ór̂ éq̂úâĺ t̂ó {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "T̂ím̂éẑón̂é ÎD́"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "T̂ím̂éẑón̂é ÎD́ m̂úŝt́ ĉón̂t́âín̂ ál̂ṕĥáb̂ét̂íĉ ćĥár̂áĉt́êŕŝ"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "R̂év̂éâĺ îń ŝóûŕĉé ĉód̂é"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "Âd́ĵúŝt́ ŵít̂h́ m̂óûśêẃĥéêĺ ôŕ ûṕ/d̂óŵń k̂éŷś. {PH1}: ±10, Ŝh́îf́t̂: ±1, Ál̂t́: ±0.01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (âĺp̂h́â)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (b̂ét̂á)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "Ĉúŝt́ôḿ ôŕîén̂t́ât́îón̂"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "D̂év̂íĉé ôŕîén̂t́ât́îón̂ śêt́ t̂ó âĺp̂h́â: {PH1}, b́êt́â: {PH2}, ǵâḿm̂á: {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "D̂íŝṕl̂áŷ d́ôẃn̂"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "D̂íŝṕl̂áŷ úp̂"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "Êńâb́l̂é ôŕîén̂t́ât́îón̂ t́ô ŕôt́ât́ê"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "Êŕr̂ór̂"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "F̂ór̂ćêś ŝél̂éĉt́êd́ îd́l̂é ŝt́ât́ê ém̂úl̂át̂íôń"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "F̂ór̂ćêś t̂óûćĥ ín̂śt̂éâd́ ôf́ ĉĺîćk̂"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (ĝám̂ḿâ)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "L̂án̂d́ŝćâṕê ĺêf́t̂"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "L̂án̂d́ŝćâṕê ŕîǵĥt́"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "L̂át̂ít̂úd̂é"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "L̂óĉál̂é"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "L̂óĉát̂íôń"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "L̂óĉát̂íôń ûńâv́âíl̂áb̂ĺê"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "L̂ón̂ǵît́ûd́ê"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "M̂án̂áĝé"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "M̂án̂áĝé t̂h́ê ĺîśt̂ óf̂ ĺôćât́îón̂ś"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "N̂ó ôv́êŕr̂íd̂é"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "Ôf́f̂"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "Ôŕîén̂t́ât́îón̂"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "Ôt́ĥér̂…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "Ôv́êŕr̂íd̂éŝ"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "P̂ór̂t́r̂áît́"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "P̂ór̂t́r̂áît́ ûṕŝíd̂é d̂óŵń"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "P̂ŕêśêt́ŝ"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "R̂éŝét̂"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "R̂éŝét̂ d́êv́îćê ór̂íêńt̂át̂íôń"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "Ŝh́îf́t̂+d́r̂áĝ h́ôŕîźôńt̂ál̂ĺŷ t́ô ŕôt́ât́ê ár̂óûńd̂ t́ĥé ŷ-áx̂íŝ"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "T̂ím̂éẑón̂é ÎD́"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "D̂él̂ét̂é êv́êńt̂ ĺîśt̂én̂ér̂"
@@ -8386,6 +8173,219 @@
   },
   "panels/security/SecurityPanel.ts | yourPageRequestedNonsecure": {
     "message": "Ŷóûŕ p̂áĝé r̂éq̂úêśt̂éd̂ ńôń-ŝéĉúr̂é r̂éŝóûŕĉéŝ t́ĥát̂ ẃêŕê b́l̂óĉḱêd́."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "Âd́d̂ ĺôćât́îón̂..."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "Ĉúŝt́ôḿ l̂óĉát̂íôńŝ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "L̂át̂"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "L̂át̂ít̂úd̂é"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "L̂át̂ít̂úd̂é m̂úŝt́ b̂é â ńûḿb̂ér̂"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "L̂át̂ít̂úd̂é m̂úŝt́ b̂é ĝŕêát̂ér̂ t́ĥán̂ ór̂ éq̂úâĺ t̂ó {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "L̂át̂ít̂úd̂é m̂úŝt́ b̂é l̂éŝś t̂h́âń ôŕ êq́ûál̂ t́ô {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "L̂óĉál̂é"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "L̂óĉál̂é m̂úŝt́ ĉón̂t́âín̂ ál̂ṕĥáb̂ét̂íĉ ćĥár̂áĉt́êŕŝ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "L̂óĉát̂íôń n̂ám̂é"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "L̂óĉát̂íôń n̂ám̂é ĉán̂ńôt́ b̂é êḿp̂t́ŷ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "L̂óĉát̂íôń n̂ám̂é m̂úŝt́ b̂é l̂éŝś t̂h́âń {PH1} ĉh́âŕâćt̂ér̂ś"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "L̂ón̂ǵ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "L̂ón̂ǵît́ûd́ê"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "L̂ón̂ǵît́ûd́ê ḿûśt̂ b́ê á n̂úm̂b́êŕ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "L̂ón̂ǵît́ûd́ê ḿûśt̂ b́ê ǵr̂éât́êŕ t̂h́âń ôŕ êq́ûál̂ t́ô {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "L̂ón̂ǵît́ûd́ê ḿûśt̂ b́ê ĺêśŝ t́ĥán̂ ór̂ éq̂úâĺ t̂ó {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "T̂ím̂éẑón̂é ÎD́"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "T̂ím̂éẑón̂é ÎD́ m̂úŝt́ ĉón̂t́âín̂ ál̂ṕĥáb̂ét̂íĉ ćĥár̂áĉt́êŕŝ"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "âćĉél̂ér̂óm̂ét̂ér̂"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "D̂év̂íĉé-b̂áŝéd̂"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "d̂év̂íĉé ôŕîén̂t́ât́îón̂"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "Êḿûĺât́ê Íd̂ĺê D́êt́êćt̂ór̂ śt̂át̂é"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "F̂ór̂ćê én̂áb̂ĺêd́"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "ĝéôĺôćât́îón̂"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "l̂óĉál̂é"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "l̂óĉál̂éŝ"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "L̂óĉát̂íôńŝ"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "N̂ó îd́l̂é êḿûĺât́îón̂"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "Ŝén̂śôŕŝ"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "Ŝh́ôẃ L̂óĉát̂íôńŝ"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "Ŝh́ôẃ Ŝén̂śôŕŝ"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "t̂ím̂éẑón̂éŝ"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "T̂óûćĥ"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "Ûśêŕ âćt̂ív̂é, ŝćr̂éêń l̂óĉḱêd́"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "Ûśêŕ âćt̂ív̂é, ŝćr̂éêń ûńl̂óĉḱêd́"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "Ûśêŕ îd́l̂é, ŝćr̂éêń l̂óĉḱêd́"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "Ûśêŕ îd́l̂é, ŝćr̂éêń ûńl̂óĉḱêd́"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "Âd́ĵúŝt́ ŵít̂h́ m̂óûśêẃĥéêĺ ôŕ ûṕ/d̂óŵń k̂éŷś. {PH1}: ±10, Ŝh́îf́t̂: ±1, Ál̂t́: ±0.01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (âĺp̂h́â)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (b̂ét̂á)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "Ĉúŝt́ôḿ ôŕîén̂t́ât́îón̂"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "D̂év̂íĉé ôŕîén̂t́ât́îón̂ śêt́ t̂ó âĺp̂h́â: {PH1}, b́êt́â: {PH2}, ǵâḿm̂á: {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "D̂íŝṕl̂áŷ d́ôẃn̂"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "D̂íŝṕl̂áŷ úp̂"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "Êńâb́l̂é ôŕîén̂t́ât́îón̂ t́ô ŕôt́ât́ê"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "Êŕr̂ór̂"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "F̂ór̂ćêś ŝél̂éĉt́êd́ îd́l̂é ŝt́ât́ê ém̂úl̂át̂íôń"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "F̂ór̂ćêś t̂óûćĥ ín̂śt̂éâd́ ôf́ ĉĺîćk̂"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (ĝám̂ḿâ)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "L̂án̂d́ŝćâṕê ĺêf́t̂"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "L̂án̂d́ŝćâṕê ŕîǵĥt́"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "L̂át̂ít̂úd̂é"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "L̂óĉál̂é"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "L̂óĉát̂íôń"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "L̂óĉát̂íôń ûńâv́âíl̂áb̂ĺê"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "L̂ón̂ǵît́ûd́ê"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "M̂án̂áĝé"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "M̂án̂áĝé t̂h́ê ĺîśt̂ óf̂ ĺôćât́îón̂ś"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "N̂ó ôv́êŕr̂íd̂é"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "Ôf́f̂"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "Ôŕîén̂t́ât́îón̂"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "Ôt́ĥér̂…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "Ôv́êŕr̂íd̂éŝ"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "P̂ór̂t́r̂áît́"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "P̂ór̂t́r̂áît́ ûṕŝíd̂é d̂óŵń"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "P̂ŕêśêt́ŝ"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "R̂éŝét̂"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "R̂éŝét̂ d́êv́îćê ór̂íêńt̂át̂íôń"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "Ŝh́îf́t̂+d́r̂áĝ h́ôŕîźôńt̂ál̂ĺŷ t́ô ŕôt́ât́ê ár̂óûńd̂ t́ĥé ŷ-áx̂íŝ"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "T̂ím̂éẑón̂é ÎD́"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Âd́d̂ f́îĺêńâḿê ṕât́t̂ér̂ń"

@@ -10,6 +10,8 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import sensorsStyles from './sensors.css.js';
+
 const UIStrings = {
   /**
   *@description Title for a group of cities
@@ -159,7 +161,7 @@ const UIStrings = {
    */
   gamma: '\u03B3 (gamma)',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/emulation/SensorsView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/sensors/SensorsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -208,7 +210,6 @@ export class SensorsView extends UI.Widget.VBox {
 
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/emulation/sensors.css');
     this.contentElement.classList.add('sensors-view');
 
     this._LocationSetting = Common.Settings.Settings.instance().createSetting('emulation.locationOverride', '');
@@ -242,6 +243,11 @@ export class SensorsView extends UI.Widget.VBox {
       _instanceObject = new SensorsView();
     }
     return _instanceObject;
+  }
+
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([sensorsStyles]);
   }
 
   _createLocationSection(location: SDK.EmulationModel.Location): void {

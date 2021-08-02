@@ -9,8 +9,6 @@
     "deviceModeView.css",
     "devicesSettingsTab.css",
     "inspectedPagePlaceholder.css",
-    "locationsSettingsTab.css",
-    "mediaQueryInspector.css",
-    "sensors.css"
+    "mediaQueryInspector.css"
   ]
 }

@@ -28,6 +28,7 @@ devtools_entrypoint("devtools_app-meta-files") {
     "../../panels/network:meta",
     "../../panels/performance_monitor:meta",
     "../../panels/security:meta",
+    "../../panels/sensors:meta",
     "../../panels/timeline:meta",
     "../../panels/web_audio:meta",
     "../../panels/webauthn:meta",

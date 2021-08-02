@@ -4607,9 +4607,6 @@
   "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
     "message": "Laptop with touch"
   },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "accelerometer"
-  },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "Capture full size screenshot"
   },
@@ -4622,23 +4619,8 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "device"
   },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "Device-based"
-  },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "device orientation"
-  },
   "panels/emulation/emulation-meta.ts | devices": {
     "message": "Devices"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "Emulate Idle Detector state"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "Force enabled"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "geolocation"
   },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "Hide device frame"
@@ -4649,29 +4631,11 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "Hide rulers"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "locale"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "locales"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "Locations"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "No idle emulation"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "Sensors"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Show device frame"
   },
   "panels/emulation/emulation-meta.ts | showDevices": {
     "message": "Show Devices"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "Show Locations"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "Show media queries"
@@ -4679,188 +4643,11 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "Show rulers"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "Show Sensors"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "timezones"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Toggle device toolbar"
   },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "Touch"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "User active, screen locked"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "User active, screen unlocked"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "User idle, screen locked"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "User idle, screen unlocked"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "Add location..."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "Custom locations"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "Lat"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "Latitude"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "Latitude must be a number"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "Latitude must be greater than or equal to {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "Latitude must be less than or equal to {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "Locale"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "Locale must contain alphabetic characters"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "Location name"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "Location name cannot be empty"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "Location name must be less than {PH1} characters"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "Long"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "Longitude"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "Longitude must be a number"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "Longitude must be greater than or equal to {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "Longitude must be less than or equal to {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "Timezone ID"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "Timezone ID must contain alphabetic characters"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "Reveal in source code"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "Adjust with mousewheel or up/down keys. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (alpha)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (beta)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "Custom orientation"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "Device orientation set to alpha: {PH1}, beta: {PH2}, gamma: {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "Display down"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "Display up"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "Enable orientation to rotate"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "Error"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "Forces selected idle state emulation"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "Forces touch instead of click"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (gamma)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "Landscape left"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "Landscape right"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "Latitude"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "Locale"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "Location"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "Location unavailable"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "Longitude"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "Manage"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "Manage the list of locations"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "No override"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "Off"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "Orientation"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "Other…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "Overrides"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "Portrait"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "Portrait upside down"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "Presets"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "Reset"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "Reset device orientation"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "Shift+drag horizontally to rotate around the y-axis"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "Timezone ID"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Delete event listener"
@@ -8386,6 +8173,219 @@
   },
   "panels/security/SecurityPanel.ts | yourPageRequestedNonsecure": {
     "message": "Your page requested non-secure resources that were blocked."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "Add location..."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "Custom locations"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "Lat"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "Latitude"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "Latitude must be a number"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "Latitude must be greater than or equal to {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "Latitude must be less than or equal to {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "Locale"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "Locale must contain alphabetic characters"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "Location name"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "Location name cannot be empty"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "Location name must be less than {PH1} characters"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "Long"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "Longitude"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "Longitude must be a number"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "Longitude must be greater than or equal to {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "Longitude must be less than or equal to {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "Timezone ID"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "Timezone ID must contain alphabetic characters"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "accelerometer"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "Device-based"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "device orientation"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "Emulate Idle Detector state"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "Force enabled"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "geolocation"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "locale"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "locales"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "Locations"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "No idle emulation"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "Sensors"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "Show Locations"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "Show Sensors"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "timezones"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "Touch"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "User active, screen locked"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "User active, screen unlocked"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "User idle, screen locked"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "User idle, screen unlocked"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "Adjust with mousewheel or up/down keys. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (alpha)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (beta)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "Custom orientation"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "Device orientation set to alpha: {PH1}, beta: {PH2}, gamma: {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "Display down"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "Display up"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "Enable orientation to rotate"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "Error"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "Forces selected idle state emulation"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "Forces touch instead of click"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (gamma)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "Landscape left"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "Landscape right"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "Latitude"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "Locale"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "Location"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "Location unavailable"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "Longitude"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "Manage"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "Manage the list of locations"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "No override"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "Off"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "Orientation"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "Other…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "Overrides"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "Portrait"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "Portrait upside down"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "Presets"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "Reset"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "Reset device orientation"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "Shift+drag horizontally to rotate around the y-axis"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "Timezone ID"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Add filename pattern"

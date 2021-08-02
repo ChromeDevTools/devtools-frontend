@@ -7,6 +7,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import locationsSettingsTabStyles from './locationsSettingsTab.css.js';
 
 let locationsSettingsTabInstance: LocationsSettingsTab;
 
@@ -94,7 +95,7 @@ const UIStrings = {
   */
   addLocation: 'Add location...',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/emulation/LocationsSettingsTab.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/sensors/LocationsSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidget.Delegate<LocationDescription> {
@@ -104,7 +105,6 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
 
   private constructor() {
     super(true);
-    this.registerRequiredCSS('panels/emulation/locationsSettingsTab.css');
 
     this.contentElement.createChild('div', 'header').textContent = i18nString(UIStrings.customLocations);
 
@@ -114,7 +114,6 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
 
     this._list = new UI.ListWidget.ListWidget(this);
     this._list.element.classList.add('locations-list');
-    this._list.registerRequiredCSS('panels/emulation/locationsSettingsTab.css');
     this._list.show(this.contentElement);
     this._customSetting =
         Common.Settings.Settings.instance().moduleSetting<LocationDescription[]>('emulation.locations');
@@ -158,6 +157,8 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
 
   wasShown(): void {
     super.wasShown();
+    this.registerCSSFiles([locationsSettingsTabStyles]);
+    this._list.registerCSSFiles([locationsSettingsTabStyles]);
     this._locationsUpdated();
   }
 

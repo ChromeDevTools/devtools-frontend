@@ -16,9 +16,7 @@ devtools_module("emulation") {
     "DevicesSettingsTab.ts",
     "EmulatedDevices.ts",
     "InspectedPagePlaceholder.ts",
-    "LocationsSettingsTab.ts",
     "MediaQueryInspector.ts",
-    "SensorsView.ts",
   ]
 
   deps = [
@@ -49,9 +47,7 @@ copy_to_gen("legacy_css") {
     "deviceModeView.css",
     "devicesSettingsTab.css",
     "inspectedPagePlaceholder.css",
-    "locationsSettingsTab.css",
     "mediaQueryInspector.css",
-    "sensors.css",
   ]
 }
 

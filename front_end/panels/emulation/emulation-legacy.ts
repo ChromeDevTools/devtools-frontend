@@ -60,11 +60,6 @@ Emulation.EmulatedDevicesList = EmulationModule.EmulatedDevices.EmulatedDevicesL
 /**
  * @constructor
  */
-Emulation.LocationsSettingsTab = EmulationModule.LocationsSettingsTab.LocationsSettingsTab;
-
-/**
- * @constructor
- */
 Emulation.InspectedPagePlaceholder = EmulationModule.InspectedPagePlaceholder.InspectedPagePlaceholder;
 
 Emulation.InspectedPagePlaceholder.instance =
@@ -74,13 +69,3 @@ Emulation.InspectedPagePlaceholder.instance =
  * @constructor
  */
 Emulation.MediaQueryInspector = EmulationModule.MediaQueryInspector.MediaQueryInspector;
-
-/**
- * @constructor
- */
-Emulation.SensorsView = EmulationModule.SensorsView.SensorsView;
-
-/**
- * @constructor
- */
-Emulation.SensorsView.ShowActionDelegate = EmulationModule.SensorsView.ShowActionDelegate;

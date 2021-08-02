@@ -9,6 +9,8 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import xhrBreakpointsSidebarPaneStyles from './xhrBreakpointsSidebarPane.css.js';
+
 const UIStrings = {
   /**
   *@description Title of the 'XHR/fetch Breakpoints' tool in the bottom sidebar of the Sources tool
@@ -78,7 +80,6 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
 
   private constructor() {
     super(true);
-    this.registerRequiredCSS('panels/browser_debugger/xhrBreakpointsSidebarPane.css');
 
     this._breakpoints = new UI.ListModel.ListModel();
     this._list = new UI.ListControl.ListControl(this._breakpoints, this, UI.ListControl.ListMode.NonViewport);
@@ -381,5 +382,9 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
     for (const url of breakpoints.keys()) {
       this._setBreakpoint(url);
     }
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([xhrBreakpointsSidebarPaneStyles]);
   }
 }

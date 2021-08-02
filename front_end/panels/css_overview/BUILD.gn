@@ -4,6 +4,18 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/generate_css.gni")
+
+generate_css("css_files") {
+  sources = [
+    "cssOverview.css",
+    "cssOverviewCompletedView.css",
+    "cssOverviewProcessingView.css",
+    "cssOverviewSidebarPanel.css",
+    "cssOverviewStartView.css",
+  ]
+}
+
 import("../visibility.gni")
 
 devtools_module("css_overview") {
@@ -37,7 +49,10 @@ devtools_module("css_overview") {
 devtools_entrypoint("bundle") {
   entrypoint = "css_overview.ts"
 
-  deps = [ ":css_overview" ]
+  deps = [
+    ":css_files",
+    ":css_overview",
+  ]
 
   visibility = [
     ":*",

@@ -7,6 +7,9 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+
+import categorizedBreakpointsSidebarPaneStyles from './categorizedBreakpointsSidebarPane.css.js';
+
 import type * as Protocol from '../../generated/protocol.js';
 
 const UIStrings = {
@@ -32,7 +35,7 @@ export class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
       detailsPausedReason: Protocol.Debugger.PausedEventReason) {
     super(true);
     this._categoriesTreeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-    this._categoriesTreeOutline.registerRequiredCSS('panels/browser_debugger/categorizedBreakpointsSidebarPane.css');
+
     this._categoriesTreeOutline.setShowSelectionOnKeyboardFocus(/* show */ true);
     this.contentElement.appendChild(this._categoriesTreeOutline.element);
     this._viewId = viewId;
@@ -210,6 +213,10 @@ export class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
     } else {
       UI.ARIAUtils.setChecked(category.element.listItemElement, hasEnabled);
     }
+  }
+  wasShown(): void {
+    super.wasShown();
+    this._categoriesTreeOutline.registerCSSFiles([categorizedBreakpointsSidebarPaneStyles]);
   }
 }
 export interface Item {

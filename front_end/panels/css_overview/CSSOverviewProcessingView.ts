@@ -7,6 +7,8 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import cssOverviewProcessingViewStyles from './cssOverviewProcessingView.css.js';
+
 import type {OverviewController} from './CSSOverviewController.js';
 import {Events} from './CSSOverviewController.js';
 
@@ -24,7 +26,6 @@ export class CSSOverviewProcessingView extends UI.Widget.Widget {
   fragment?: UI.Fragment.Fragment;
   constructor(controller: OverviewController) {
     super();
-    this.registerRequiredCSS('panels/css_overview/cssOverviewProcessingView.css');
 
     this._formatter = new Intl.NumberFormat('en-US');
     this._controller = controller;
@@ -46,5 +47,9 @@ export class CSSOverviewProcessingView extends UI.Widget.Widget {
 
     this.contentElement.appendChild(this.fragment.element());
     this.contentElement.style.overflow = 'auto';
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([cssOverviewProcessingViewStyles]);
   }
 }

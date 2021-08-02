@@ -4,6 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
+import cssOverviewStyles from './cssOverview.css.js';
 import type * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -42,7 +43,7 @@ export class CSSOverviewPanel extends UI.Panel.Panel {
 
   private constructor() {
     super('css_overview');
-    this.registerRequiredCSS('panels/css_overview/cssOverview.css');
+
     this.element.classList.add('css-overview-panel');
 
     const [model] = SDK.TargetManager.TargetManager.instance().models(CSSOverviewModel);
@@ -205,5 +206,9 @@ export class CSSOverviewPanel extends UI.Panel.Panel {
 
   _overviewCompleted(): void {
     this._renderOverviewCompletedView();
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([cssOverviewStyles]);
   }
 }

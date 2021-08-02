@@ -10,6 +10,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import accessibilityNodeStyles from './accessibilityNode.css.js';
 import {AXAttributes, AXNativeSourceTypes, AXSourceTypes} from './AccessibilityStrings.js';
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 
@@ -133,7 +134,7 @@ export class AXNodeSubPane extends AccessibilitySubPane {
     this._ignoredReasonsTree = this.createTreeOutline();
 
     this.element.classList.add('accessibility-computed');
-    this.registerRequiredCSS('panels/accessibility/accessibilityNode.css');
+
     this._treeOutline.setFocusable(true);
   }
 
@@ -218,6 +219,10 @@ export class AXNodeSubPane extends AccessibilitySubPane {
   setNode(node: SDK.DOMModel.DOMNode|null): void {
     super.setNode(node);
     this._axNode = null;
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([accessibilityNodeStyles]);
   }
 }
 

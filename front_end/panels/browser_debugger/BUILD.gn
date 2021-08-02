@@ -4,7 +4,16 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/generate_css.gni")
 import("../visibility.gni")
+
+generate_css("css_files") {
+  sources = [
+    "categorizedBreakpointsSidebarPane.css",
+    "domBreakpointsSidebarPane.css",
+    "xhrBreakpointsSidebarPane.css",
+  ]
+}
 
 devtools_module("browser_debugger") {
   sources = [
@@ -29,7 +38,10 @@ devtools_module("browser_debugger") {
 devtools_entrypoint("bundle") {
   entrypoint = "browser_debugger.ts"
 
-  deps = [ ":browser_debugger" ]
+  deps = [
+    ":browser_debugger",
+    ":css_files",
+  ]
 
   visibility = [
     ":*",

@@ -13,6 +13,9 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+
+import cssOverviewCompletedViewStyles from './cssOverviewCompletedView.css.js';
+
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 
@@ -236,7 +239,6 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
 
   constructor(controller: OverviewController, target: SDK.Target.Target) {
     super('css_overview_completed_view');
-    this.registerRequiredCSS('panels/css_overview/cssOverviewCompletedView.css');
 
     this._controller = controller;
     this._formatter = new Intl.NumberFormat('en-US');
@@ -253,7 +255,6 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     });
 
     // Dupe the styles into the main container because of the shadow root will prevent outer styles.
-    this._mainContainer.registerRequiredCSS('panels/css_overview/cssOverviewCompletedView.css');
 
     this._mainContainer.setMainWidget(this._resultsContainer);
     this._mainContainer.setSidebarWidget(this._elementContainer);
@@ -295,6 +296,8 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
 
   wasShown(): void {
     super.wasShown();
+    this._mainContainer.registerCSSFiles([cssOverviewCompletedViewStyles]);
+    this.registerCSSFiles([cssOverviewCompletedViewStyles]);
 
     // TODO(paullewis): update the links in the panels in case source has been .
   }

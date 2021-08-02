@@ -37,6 +37,8 @@ import * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Sources from '../sources/sources.js';
 
+import domBreakpointsSidebarPaneStyles from './domBreakpointsSidebarPane.css.js';
+
 const UIStrings = {
   /**
   *@description Text to indicate there are no breakpoints
@@ -126,7 +128,6 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
 
   private constructor() {
     super(true);
-    this.registerRequiredCSS('panels/browser_debugger/domBreakpointsSidebarPane.css');
 
     this.elementToCheckboxes = new WeakMap();
 
@@ -358,6 +359,10 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
       this._list.refreshItem(this._highlightedBreakpoint);
     }
     UI.ViewManager.ViewManager.instance().showView('sources.domBreakpoints');
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([domBreakpointsSidebarPaneStyles]);
   }
 }
 

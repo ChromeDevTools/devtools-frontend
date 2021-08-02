@@ -4,6 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
+import accessibilityPropertiesStyles from './accessibilityProperties.css.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -14,7 +15,6 @@ export class AccessibilitySubPane extends UI.View.SimpleView {
     super(name);
 
     this._axNode = null;
-    this.registerRequiredCSS('panels/accessibility/accessibilityProperties.css');
   }
 
   setAXNode(_axNode: SDK.AccessibilityModel.AccessibilityNode|null): void {
@@ -45,5 +45,9 @@ export class AccessibilitySubPane extends UI.View.SimpleView {
     treeOutline.hideOverflow();
     this.element.appendChild(treeOutline.element);
     return treeOutline;
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([accessibilityPropertiesStyles]);
   }
 }

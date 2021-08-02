@@ -7,6 +7,8 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import cssOverviewStartViewStyles from './cssOverviewStartView.css.js';
+
 import type {OverviewController} from './CSSOverviewController.js';
 import {Events} from './CSSOverviewController.js';
 
@@ -26,7 +28,6 @@ export class CSSOverviewStartView extends UI.Widget.Widget {
   _controller: OverviewController;
   constructor(controller: OverviewController) {
     super();
-    this.registerRequiredCSS('panels/css_overview/cssOverviewStartView.css');
 
     this._controller = controller;
     this._render();
@@ -48,5 +49,9 @@ export class CSSOverviewStartView extends UI.Widget.Widget {
 
     this.contentElement.appendChild(fragment.element());
     this.contentElement.style.overflow = 'auto';
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([cssOverviewStartViewStyles]);
   }
 }

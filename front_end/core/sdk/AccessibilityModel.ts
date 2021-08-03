@@ -184,7 +184,7 @@ export class AccessibilityNode {
   }
 }
 
-export class AccessibilityModel extends SDKModel {
+export class AccessibilityModel extends SDKModel<void> {
   _agent: ProtocolProxyApi.AccessibilityApi;
   _axIdToAXNode: Map<string, AccessibilityNode>;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration

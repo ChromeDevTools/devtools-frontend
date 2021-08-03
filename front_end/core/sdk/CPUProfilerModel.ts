@@ -51,7 +51,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('core/sdk/CPUProfilerModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class CPUProfilerModel extends SDKModel implements ProtocolProxyApi.ProfilerDispatcher {
+export class CPUProfilerModel extends SDKModel<EventTypes> implements ProtocolProxyApi.ProfilerDispatcher {
   _isRecording: boolean;
   _nextAnonymousConsoleProfileNumber: number;
   _anonymousConsoleProfileIdToTitle: Map<string, string>;
@@ -85,7 +85,8 @@ export class CPUProfilerModel extends SDKModel implements ProtocolProxyApi.Profi
       title = i18nString(UIStrings.profileD, {PH1: this._nextAnonymousConsoleProfileNumber++});
       this._anonymousConsoleProfileIdToTitle.set(id, title);
     }
-    this._dispatchProfileEvent(Events.ConsoleProfileStarted, id, location, title);
+    const eventData = this.createEventDataFrom(id, location, title);
+    this.dispatchEventToListeners(Events.ConsoleProfileStarted, eventData);
   }
 
   consoleProfileFinished({id, location, profile, title}: Protocol.Profiler.ConsoleProfileFinishedEvent): void {
@@ -95,25 +96,23 @@ export class CPUProfilerModel extends SDKModel implements ProtocolProxyApi.Profi
     }
     // Make sure ProfilesPanel is initialized and CPUProfileType is created.
     Root.Runtime.Runtime.instance().loadModulePromise('profiler').then(() => {
-      this._dispatchProfileEvent(Events.ConsoleProfileFinished, id, location, title, profile);
+      const eventData: ProfileFinishedData = {
+        ...this.createEventDataFrom(id, location, title),
+        cpuProfile: profile,
+      };
+      this.dispatchEventToListeners(Events.ConsoleProfileFinished, eventData);
     });
   }
 
-  _dispatchProfileEvent(
-      eventName: Events, id: string, scriptLocation: Protocol.Debugger.Location, title?: string,
-      cpuProfile?: Protocol.Profiler.Profile): void {
+  private createEventDataFrom(id: string, scriptLocation: Protocol.Debugger.Location, title?: string): EventData {
     const debuggerLocation = Location.fromPayload(this._debuggerModel, scriptLocation);
     const globalId = this.target().id() + '.' + id;
-    const data = ({
+    return {
       id: globalId,
       scriptLocation: debuggerLocation,
-      cpuProfile: cpuProfile,
-      title: title,
+      title: title || '',
       cpuProfilerModel: this,
-    } as EventData);
-    // TODO(crbug.com/1228674): Use type-safe event dispatch and remove <any>.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.dispatchEventToListeners<any>(eventName, data);
+    };
   }
 
   isRecordingProfile(): boolean {
@@ -173,12 +172,20 @@ export enum Events {
   ConsoleProfileFinished = 'ConsoleProfileFinished',
 }
 
+export type EventTypes = {
+  [Events.ConsoleProfileStarted]: EventData,
+  [Events.ConsoleProfileFinished]: ProfileFinishedData,
+};
+
 SDKModel.register(CPUProfilerModel, {capabilities: Capability.JS, autostart: true});
 
 export interface EventData {
   id: string;
   scriptLocation: Location;
   title: string;
-  cpuProfile?: Protocol.Profiler.Profile;
   cpuProfilerModel: CPUProfilerModel;
+}
+
+export interface ProfileFinishedData extends EventData {
+  cpuProfile: Protocol.Profiler.Profile;
 }

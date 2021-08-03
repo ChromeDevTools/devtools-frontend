@@ -318,15 +318,17 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper implements 
     }
   }
 
-  _consoleProfileStarted(cpuProfilerModel: CPUProfilerModel, event: Common.EventTarget.EventTargetEvent): void {
-    const data = (event.data as EventData);
+  _consoleProfileStarted(cpuProfilerModel: CPUProfilerModel, event: Common.EventTarget.EventTargetEvent<EventData>):
+      void {
+    const {data} = event;
     this._addConsoleProfileMessage(
         cpuProfilerModel, Protocol.Runtime.ConsoleAPICalledEventType.Profile, data.scriptLocation,
         i18nString(UIStrings.profileSStarted, {PH1: data.title}));
   }
 
-  _consoleProfileFinished(cpuProfilerModel: CPUProfilerModel, event: Common.EventTarget.EventTargetEvent): void {
-    const data = (event.data as EventData);
+  _consoleProfileFinished(cpuProfilerModel: CPUProfilerModel, event: Common.EventTarget.EventTargetEvent<EventData>):
+      void {
+    const {data} = event;
     this._addConsoleProfileMessage(
         cpuProfilerModel, Protocol.Runtime.ConsoleAPICalledEventType.ProfileEnd, data.scriptLocation,
         i18nString(UIStrings.profileSFinished, {PH1: data.title}));

@@ -642,7 +642,7 @@ export class ToolbarInput extends ToolbarItem<ToolbarInput.EventTypes> {
     }
 
     const clearButton = this.element.createChild('div', 'toolbar-input-clear-button');
-    clearButton.appendChild(Icon.create('mediumicon-gray-cross-hover', 'search-cancel-button'));
+    clearButton.appendChild(Icon.create('mediumicon-gray-cross-active', 'search-cancel-button'));
     clearButton.addEventListener('click', () => {
       this.setValue('', true);
       this._prompt.focus();

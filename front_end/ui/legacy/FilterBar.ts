@@ -219,7 +219,7 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper implements 
     this._suggestionProvider = null;
 
     const clearButton = container.createChild('div', 'filter-input-clear-button');
-    clearButton.appendChild(Icon.create('mediumicon-gray-cross-hover', 'filter-cancel-button'));
+    clearButton.appendChild(Icon.create('mediumicon-gray-cross-active', 'filter-cancel-button'));
     clearButton.addEventListener('click', () => {
       this.clear();
       this.focus();

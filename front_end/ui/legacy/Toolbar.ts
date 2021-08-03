@@ -415,7 +415,9 @@ const TOOLBAR_BUTTON_DEFAULT_OPTIONS: ToolbarButtonOptions = {
   userActionCode: undefined,
 };
 
-export class ToolbarItem extends Common.ObjectWrapper.ObjectWrapper {
+// We need any here because Common.ObjectWrapper.ObjectWrapper is invariant in T.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export class ToolbarItem<T = any> extends Common.ObjectWrapper.ObjectWrapper<T> {
   element: HTMLElement;
   _visible: boolean;
   _enabled: boolean;
@@ -481,7 +483,7 @@ export class ToolbarItem extends Common.ObjectWrapper.ObjectWrapper {
   }
 }
 
-export class ToolbarText extends ToolbarItem {
+export class ToolbarText extends ToolbarItem<void> {
   constructor(text?: string) {
     const element = document.createElement('div');
     element.classList.add('toolbar-text');
@@ -499,7 +501,7 @@ export class ToolbarText extends ToolbarItem {
   }
 }
 
-export class ToolbarButton extends ToolbarItem {
+export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes> {
   _glyphElement: Icon;
   _textElement: HTMLElement;
   _title: string;
@@ -582,7 +584,7 @@ export class ToolbarButton extends ToolbarItem {
     event.consume();
   }
 
-  _mouseDown(event: Event): void {
+  _mouseDown(event: MouseEvent): void {
     if (!this._enabled) {
       return;
     }
@@ -597,9 +599,14 @@ export namespace ToolbarButton {
     Click = 'Click',
     MouseDown = 'MouseDown',
   }
+
+  export type EventTypes = {
+    [Events.Click]: Event,
+    [Events.MouseDown]: MouseEvent,
+  };
 }
 
-export class ToolbarInput extends ToolbarItem {
+export class ToolbarInput extends ToolbarItem<ToolbarInput.EventTypes> {
   _prompt: TextPrompt;
   _proxyElement: Element;
 
@@ -688,6 +695,11 @@ export namespace ToolbarInput {
     TextChanged = 'TextChanged',
     EnterPressed = 'EnterPressed',
   }
+
+  export interface EventTypes {
+    [Event.TextChanged]: string;
+    [Event.EnterPressed]: string;
+  }
 }
 
 export class ToolbarToggle extends ToolbarButton {
@@ -742,8 +754,8 @@ export class ToolbarMenuButton extends ToolbarButton {
     ARIAUtils.markAsMenuButton(this.element);
   }
 
-  _mouseDown(event: Event): void {
-    if ((event as MouseEvent).buttons !== 1) {
+  _mouseDown(event: MouseEvent): void {
+    if (event.buttons !== 1) {
       super._mouseDown(event);
       return;
     }
@@ -811,7 +823,7 @@ export class ToolbarSettingToggle extends ToolbarToggle {
   }
 }
 
-export class ToolbarSeparator extends ToolbarItem {
+export class ToolbarSeparator extends ToolbarItem<void> {
   constructor(spacer?: boolean) {
     const element = document.createElement('div');
     element.classList.add(spacer ? 'toolbar-spacer' : 'toolbar-divider');
@@ -827,7 +839,7 @@ export interface ItemsProvider {
   toolbarItems(): ToolbarItem[];
 }
 
-export class ToolbarComboBox extends ToolbarItem {
+export class ToolbarComboBox extends ToolbarItem<void> {
   _selectElement: HTMLSelectElement;
 
   constructor(changeHandler: ((arg0: Event) => void)|null, title: string, className?: string) {
@@ -972,7 +984,7 @@ export class ToolbarSettingComboBox extends ToolbarComboBox {
   }
 }
 
-export class ToolbarCheckbox extends ToolbarItem {
+export class ToolbarCheckbox extends ToolbarItem<void> {
   inputElement: HTMLInputElement;
 
   constructor(text: string, tooltip?: string, listener?: ((arg0: MouseEvent) => void)) {

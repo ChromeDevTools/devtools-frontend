@@ -12,7 +12,7 @@ import type {Target} from './Target.js';
 import {Capability} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 
-export class LogModel extends SDKModel implements ProtocolProxyApi.LogDispatcher {
+export class LogModel extends SDKModel<EventTypes> implements ProtocolProxyApi.LogDispatcher {
   _logAgent: ProtocolProxyApi.LogApi;
   constructor(target: Target) {
     super(target);
@@ -48,5 +48,14 @@ export class LogModel extends SDKModel implements ProtocolProxyApi.LogDispatcher
 export enum Events {
   EntryAdded = 'EntryAdded',
 }
+
+export interface EntryAddedEvent {
+  logModel: LogModel;
+  entry: Protocol.Log.LogEntry;
+}
+
+export type EventTypes = {
+  [Events.EntryAdded]: EntryAddedEvent,
+};
 
 SDKModel.register(LogModel, {capabilities: Capability.Log, autostart: true});

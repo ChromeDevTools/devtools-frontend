@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../common/common.js';
 
 import {RemoteObject} from './RemoteObject.js';
@@ -11,7 +9,7 @@ import type {Target} from './Target.js';
 import {Capability} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 
-export class IOModel extends SDKModel {
+export class IOModel extends SDKModel<void> {
   constructor(target: Target) {
     super(target);
   }

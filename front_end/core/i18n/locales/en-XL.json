@@ -4115,8 +4115,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "Ĉóp̂ý X̂Ṕât́ĥ"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "Ĉút̂ él̂ém̂én̂t́"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "Ĉút̂"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "D̂él̂ét̂é êĺêḿêńt̂"
@@ -4163,8 +4163,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Ĥíd̂é êĺêḿêńt̂"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "P̂áŝt́ê él̂ém̂én̂t́"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "P̂áŝt́ê"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Ŝćr̂ól̂ĺ îńt̂ó v̂íêẃ"

@@ -93,9 +93,17 @@ const UIStrings = {
   */
   editAsHtml: 'Edit as HTML',
   /**
-  *@description Text for copying
+  *@description Text to cut an element, cut should be used as a verb
+  */
+  cut: 'Cut',
+  /**
+  *@description Text for copying, copy should be used as a verb
   */
   copy: 'Copy',
+  /**
+  *@description Text to paste an element, paste should be used as a verb
+  */
+  paste: 'Paste',
   /**
   *@description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
   */
@@ -121,17 +129,9 @@ const UIStrings = {
   */
   copyFullXpath: 'Copy full XPath',
   /**
-  *@description Text in Elements Tree Element of the Elements panel
-  */
-  cutElement: 'Cut element',
-  /**
   *@description Text in Elements Tree Element of the Elements panel, copy should be used as a verb
   */
   copyElement: 'Copy element',
-  /**
-  *@description Text in Elements Tree Element of the Elements panel
-  */
-  pasteElement: 'Paste element',
   /**
   *@description A context menu item in the Elements Tree Element of the Elements panel
   */
@@ -659,8 +659,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
     const isShadowRoot = this._node.isShadowRoot();
 
-    // Place it here so that all "Copy"-ing items stick together.
-    const copyMenu = contextMenu.clipboardSection().appendSubMenuItem(i18nString(UIStrings.copy));
     const createShortcut = UI.KeyboardShortcut.KeyboardShortcut.shortcutToString.bind(null);
     const modifier = UI.KeyboardShortcut.Modifiers.CtrlOrMeta;
     const treeOutline = this.treeOutline;
@@ -668,6 +666,14 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
     let menuItem;
+
+    menuItem = contextMenu.clipboardSection().appendItem(
+        i18nString(UIStrings.cut), treeOutline.performCopyOrCut.bind(treeOutline, true, this._node),
+        !this.hasEditableNode());
+    menuItem.setShortcut(createShortcut('X', modifier));
+
+    // Place it here so that all "Copy"-ing items stick together.
+    const copyMenu = contextMenu.clipboardSection().appendSubMenuItem(i18nString(UIStrings.copy));
     const section = copyMenu.section();
     if (!isShadowRoot) {
       menuItem = section.appendItem(
@@ -686,16 +692,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
     if (!isShadowRoot) {
       menuItem = copyMenu.clipboardSection().appendItem(
-          i18nString(UIStrings.cutElement), treeOutline.performCopyOrCut.bind(treeOutline, true, this._node),
-          !this.hasEditableNode());
-      menuItem.setShortcut(createShortcut('X', modifier));
-      menuItem = copyMenu.clipboardSection().appendItem(
           i18nString(UIStrings.copyElement), treeOutline.performCopyOrCut.bind(treeOutline, false, this._node));
       menuItem.setShortcut(createShortcut('C', modifier));
-      menuItem = copyMenu.clipboardSection().appendItem(
-          i18nString(UIStrings.pasteElement), treeOutline.pasteNode.bind(treeOutline, this._node),
-          !treeOutline.canPaste(this._node));
-      menuItem.setShortcut(createShortcut('V', modifier));
 
       // Duplicate element, disabled on root element and ShadowDOM.
       const isRootElement = !this._node.parentNode || this._node.parentNode.nodeName() === '#document';
@@ -703,6 +701,11 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           i18nString(UIStrings.duplicateElement), treeOutline.duplicateNode.bind(treeOutline, this._node),
           (this._node.isInShadowTree() || isRootElement));
     }
+
+    menuItem = contextMenu.clipboardSection().appendItem(
+        i18nString(UIStrings.paste), treeOutline.pasteNode.bind(treeOutline, this._node),
+        !treeOutline.canPaste(this._node));
+    menuItem.setShortcut(createShortcut('V', modifier));
 
     menuItem = contextMenu.debugSection().appendCheckboxItem(
         i18nString(UIStrings.hideElement), treeOutline.toggleHideElement.bind(treeOutline, this._node),

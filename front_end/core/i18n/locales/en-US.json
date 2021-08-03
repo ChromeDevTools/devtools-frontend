@@ -4115,8 +4115,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "Copy XPath"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "Cut element"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "Cut"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Delete element"
@@ -4163,8 +4163,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Hide element"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "Paste element"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "Paste"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Scroll into view"

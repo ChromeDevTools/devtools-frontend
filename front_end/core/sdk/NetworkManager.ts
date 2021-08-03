@@ -125,7 +125,7 @@ const CONNECTION_TYPES = new Map([
   ['wimax', Protocol.Network.ConnectionType.Wimax],
 ]);
 
-export class NetworkManager extends SDKModel {
+export class NetworkManager extends SDKModel<EventTypes> {
   _dispatcher: NetworkDispatcher;
   _networkAgent: ProtocolProxyApi.NetworkApi;
   _bypassServiceWorkerSetting: Common.Settings.Setting<boolean>;
@@ -309,6 +309,33 @@ export enum Events {
   RequestRedirected = 'RequestRedirected',
   LoadingFinished = 'LoadingFinished',
 }
+
+export interface RequestStartedEvent {
+  request: NetworkRequest;
+  originalRequest: Protocol.Network.Request|null;
+}
+
+export interface ResponseReceivedEvent {
+  request: NetworkRequest;
+  response: Protocol.Network.Response;
+}
+
+export interface MessageGeneratedEvent {
+  message: Common.UIString.LocalizedString;
+  requestId: string;
+  warning: boolean;
+}
+
+export type EventTypes = {
+  [Events.RequestStarted]: RequestStartedEvent,
+  [Events.RequestUpdated]: NetworkRequest,
+  [Events.RequestFinished]: NetworkRequest,
+  [Events.RequestUpdateDropped]: RequestUpdateDroppedEventData,
+  [Events.ResponseReceived]: ResponseReceivedEvent,
+  [Events.MessageGenerated]: MessageGeneratedEvent,
+  [Events.RequestRedirected]: NetworkRequest,
+  [Events.LoadingFinished]: NetworkRequest,
+};
 
 export const NoThrottlingConditions: Conditions = {
   title: i18nLazyString(UIStrings.noThrottling),

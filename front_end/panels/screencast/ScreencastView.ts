@@ -808,11 +808,11 @@ export class ProgressTracker {
     return this._requestIds !== null;
   }
 
-  _onRequestStarted(event: Common.EventTarget.EventTargetEvent): void {
+  _onRequestStarted(event: Common.EventTarget.EventTargetEvent<SDK.NetworkManager.RequestStartedEvent>): void {
     if (!this._navigationProgressVisible()) {
       return;
     }
-    const request = event.data.request as SDK.NetworkRequest.NetworkRequest;
+    const request = event.data.request;
     // Ignore long-living WebSockets for the sake of progress indicator, as we won't be waiting them anyway.
     if (request.resourceType() === Common.ResourceType.resourceTypes.WebSocket) {
       return;
@@ -823,11 +823,11 @@ export class ProgressTracker {
     ++this._startedRequests;
   }
 
-  _onRequestFinished(event: Common.EventTarget.EventTargetEvent): void {
+  _onRequestFinished(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>): void {
     if (!this._navigationProgressVisible()) {
       return;
     }
-    const request = event.data as SDK.NetworkRequest.NetworkRequest;
+    const request = event.data;
     if (this._requestIds && !this._requestIds.has(request.requestId())) {
       return;
     }

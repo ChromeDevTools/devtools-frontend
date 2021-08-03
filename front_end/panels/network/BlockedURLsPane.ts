@@ -272,8 +272,8 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
     this._updateThrottler.schedule(this._update.bind(this));
   }
 
-  _onRequestFinished(event: Common.EventTarget.EventTargetEvent): void {
-    const request = (event.data as SDK.NetworkRequest.NetworkRequest);
+  _onRequestFinished(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>): void {
+    const request = event.data;
     if (request.wasBlocked()) {
       const count = this._blockedCountForUrl.get(request.url()) || 0;
       this._blockedCountForUrl.set(request.url(), count + 1);

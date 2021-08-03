@@ -16,8 +16,7 @@ describe('MultitargetNetworkManager', () => {
       const networkManager = new Common.ObjectWrapper.ObjectWrapper();
       const startedRequests: SDK.NetworkRequest.NetworkRequest[] = [];
       networkManager.addEventListener(SDK.NetworkManager.Events.RequestStarted, event => {
-        const request = event.data.request as SDK.NetworkRequest.NetworkRequest;
-        startedRequests.push(request);
+        startedRequests.push(event.data.request);
       });
       const networkDispatcher =
           new SDK.NetworkManager.NetworkDispatcher(networkManager as SDK.NetworkManager.NetworkManager);

@@ -620,8 +620,8 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
     }
   }
 
-  _onResponseReceived(event: Common.EventTarget.EventTargetEvent): void {
-    const request = event.data.request as SDK.NetworkRequest.NetworkRequest;
+  _onResponseReceived(event: Common.EventTarget.EventTargetEvent<SDK.NetworkManager.ResponseReceivedEvent>): void {
+    const request = event.data.request;
     if (request.resourceType() === Common.ResourceType.resourceTypes.Document) {
       this._lastResponseReceivedForLoaderId.set(request.loaderId, request);
     }
@@ -675,8 +675,8 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
     }
   }
 
-  _onRequestFinished(event: Common.EventTarget.EventTargetEvent): void {
-    const request = event.data as SDK.NetworkRequest.NetworkRequest;
+  _onRequestFinished(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>): void {
+    const request = event.data;
     this._updateFilterRequestCounts(request);
     this._processRequest(request);
   }

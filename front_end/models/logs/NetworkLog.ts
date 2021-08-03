@@ -452,10 +452,10 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements
     }
   }
 
-  _onRequestStarted(event: Common.EventTarget.EventTargetEvent): void {
-    const request = (event.data.request as SDK.NetworkRequest.NetworkRequest);
-    if (event.data.originalRequest) {
-      this._sentNetworkRequests.push(event.data.originalRequest);
+  _onRequestStarted(event: Common.EventTarget.EventTargetEvent<SDK.NetworkManager.RequestStartedEvent>): void {
+    const {request, originalRequest} = event.data;
+    if (originalRequest) {
+      this._sentNetworkRequests.push(originalRequest);
     }
     this._requestsSet.add(request);
     const manager = SDK.NetworkManager.NetworkManager.forRequest(request);
@@ -466,22 +466,21 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements
     this._addRequest(request);
   }
 
-  _onResponseReceived(event: Common.EventTarget.EventTargetEvent): void {
-    const response = (event.data.response as Protocol.Network.Response);
+  _onResponseReceived(event: Common.EventTarget.EventTargetEvent<SDK.NetworkManager.ResponseReceivedEvent>): void {
+    const response = event.data.response;
     this._receivedNetworkResponses.push(response);
   }
 
-  _onRequestUpdated(event: Common.EventTarget.EventTargetEvent): void {
-    const request = (event.data as SDK.NetworkRequest.NetworkRequest);
+  _onRequestUpdated(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>): void {
+    const request = event.data;
     if (!this._requestsSet.has(request)) {
       return;
     }
     this.dispatchEventToListeners(Events.RequestUpdated, request);
   }
 
-  _onRequestRedirect(event: Common.EventTarget.EventTargetEvent): void {
-    const request = (event.data as SDK.NetworkRequest.NetworkRequest);
-    this._initiatorData.delete(request);
+  _onRequestRedirect(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>): void {
+    this._initiatorData.delete(event.data);
   }
 
   _onDOMContentLoaded(
@@ -522,12 +521,13 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements
   }
 
   _networkMessageGenerated(
-      networkManager: SDK.NetworkManager.NetworkManager, event: Common.EventTarget.EventTargetEvent): void {
-    const message = (event.data as SDK.NetworkManager.Message);
+      networkManager: SDK.NetworkManager.NetworkManager,
+      event: Common.EventTarget.EventTargetEvent<SDK.NetworkManager.MessageGeneratedEvent>): void {
+    const {message, warning, requestId} = event.data;
     const consoleMessage = new SDK.ConsoleModel.ConsoleMessage(
         networkManager.target().model(SDK.RuntimeModel.RuntimeModel), Protocol.Log.LogEntrySource.Network,
-        message.warning ? Protocol.Log.LogEntryLevel.Warning : Protocol.Log.LogEntryLevel.Info, message.message);
-    this.associateConsoleMessageWithRequest(consoleMessage, message.requestId);
+        warning ? Protocol.Log.LogEntryLevel.Warning : Protocol.Log.LogEntryLevel.Info, message);
+    this.associateConsoleMessageWithRequest(consoleMessage, requestId);
     SDK.ConsoleModel.ConsoleModel.instance().addMessage(consoleMessage);
   }
 

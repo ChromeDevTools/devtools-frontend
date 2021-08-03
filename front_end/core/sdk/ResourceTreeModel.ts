@@ -264,12 +264,12 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     this._updateSecurityOrigins();
   }
 
-  _onRequestFinished(event: Common.EventTarget.EventTargetEvent): void {
+  _onRequestFinished(event: Common.EventTarget.EventTargetEvent<NetworkRequest>): void {
     if (!this._cachedResourcesProcessed) {
       return;
     }
 
-    const request = (event.data as NetworkRequest);
+    const request = event.data;
     if (request.failed || request.resourceType() === Common.ResourceType.resourceTypes.XHR) {
       return;
     }
@@ -280,12 +280,12 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     }
   }
 
-  _onRequestUpdateDropped(event: Common.EventTarget.EventTargetEvent): void {
+  _onRequestUpdateDropped(event: Common.EventTarget.EventTargetEvent<RequestUpdateDroppedEventData>): void {
     if (!this._cachedResourcesProcessed) {
       return;
     }
 
-    const data = (event.data as RequestUpdateDroppedEventData);
+    const data = event.data;
     const frameId = data.frameId;
     const frame = this._frames.get(frameId);
     if (!frame) {

@@ -4,7 +4,12 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/generate_css.gni")
 import("../visibility.gni")
+
+generate_css("css_files") {
+  sources = [ "screencastView.css" ]
+}
 
 devtools_module("screencast") {
   sources = [
@@ -26,7 +31,10 @@ devtools_module("screencast") {
 devtools_entrypoint("bundle") {
   entrypoint = "screencast.ts"
 
-  deps = [ ":screencast" ]
+  deps = [
+    ":css_files",
+    ":screencast",
+  ]
 
   visibility = [
     ":*",

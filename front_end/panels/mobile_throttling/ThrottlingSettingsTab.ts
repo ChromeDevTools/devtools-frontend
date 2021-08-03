@@ -6,6 +6,9 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+
+import throttlingSettingsTabStyles from './throttlingSettingsTab.css.js';
+
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -88,7 +91,6 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
   _editor?: UI.ListWidget.Editor<SDK.NetworkManager.Conditions>;
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/mobile_throttling/throttlingSettingsTab.css');
 
     const header = this.contentElement.createChild('div', 'header');
     header.textContent = i18nString(UIStrings.networkThrottlingProfiles);
@@ -100,7 +102,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
 
     this._list = new UI.ListWidget.ListWidget(this);
     this._list.element.classList.add('conditions-list');
-    this._list.registerRequiredCSS('panels/mobile_throttling/throttlingSettingsTab.css');
+
     this._list.show(this.contentElement);
 
     this._customSetting = Common.Settings.Settings.instance().moduleSetting('customNetworkConditions');
@@ -120,6 +122,8 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
 
   wasShown(): void {
     super.wasShown();
+    this._list.registerCSSFiles([throttlingSettingsTabStyles]);
+    this.registerCSSFiles([throttlingSettingsTabStyles]);
     this._conditionsUpdated();
   }
 

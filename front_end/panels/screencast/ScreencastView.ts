@@ -38,6 +38,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {InputModel} from './InputModel.js';
+import screencastViewStyles from './screencastView.css.js';
 
 const UIStrings = {
   /**
@@ -130,7 +131,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     this._inputModel = screenCaptureModel.target().model(InputModel);
 
     this.setMinimumSize(150, 150);
-    this.registerRequiredCSS('panels/screencast/screencastView.css');
+
     this._shortcuts = {} as {
       [x: number]: (arg0?: Event|undefined) => boolean,
     };
@@ -191,6 +192,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
 
   wasShown(): void {
     this._startCasting();
+    this.registerCSSFiles([screencastViewStyles]);
   }
 
   willHide(): void {

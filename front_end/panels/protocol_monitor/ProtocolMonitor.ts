@@ -16,6 +16,8 @@ import * as SourceFrame from '../../ui/legacy/components/source_frame/source_fra
 import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
 
+import protocolMonitorStyles from './protocolMonitor.css.js';
+
 const UIStrings = {
   /**
   *@description Text for one or a group of functions
@@ -125,7 +127,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     this._startTime = 0;
     this._dataGridRowForId = new Map();
     const topToolbar = new UI.Toolbar.Toolbar('protocol-monitor-toolbar', this.contentElement);
-    this.registerRequiredCSS('panels/protocol_monitor/protocolMonitor.css');
+
     this.contentElement.classList.add('protocol-monitor');
     const recordButton = new UI.Toolbar.ToolbarToggle(
         i18nString(UIStrings.record), 'largeicon-start-recording', 'largeicon-stop-recording');
@@ -317,6 +319,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     if (this._started) {
       return;
     }
+    this.registerCSSFiles([protocolMonitorStyles]);
     this._started = true;
     this._startTime = Date.now();
     this._setRecording(true);

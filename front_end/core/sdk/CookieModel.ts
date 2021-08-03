@@ -16,7 +16,7 @@ import type {Target} from './Target.js';
 import {Capability} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 
-export class CookieModel extends SDKModel {
+export class CookieModel extends SDKModel<void> {
   _blockedCookies: Map<string, Cookie>;
   _cookieToBlockedReasons: Map<Cookie, BlockedReason[]>;
   constructor(target: Target) {

@@ -15,7 +15,7 @@ import type {Target} from './Target.js';
 import {Capability} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 
-export class EmulationModel extends SDKModel {
+export class EmulationModel extends SDKModel<void> {
   _emulationAgent: ProtocolProxyApi.EmulationApi;
   _pageAgent: ProtocolProxyApi.PageApi;
   _deviceOrientationAgent: ProtocolProxyApi.DeviceOrientationApi;

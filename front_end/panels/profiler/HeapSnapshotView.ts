@@ -1281,34 +1281,29 @@ export class HeapSnapshotProfileType extends ProfileType implements
     this.dispatchEventToListeners(ProfileTypeEvents.ProfileComplete, profile);
   }
 
-  _addHeapSnapshotChunk(event: Common.EventTarget.EventTargetEvent): void {
+  _addHeapSnapshotChunk(event: Common.EventTarget.EventTargetEvent<string>): void {
     const profile = (this.profileBeingRecorded() as HeapProfileHeader | null);
     if (!profile) {
       return;
     }
-    const chunk = (event.data as string);
-    profile.transferChunk(chunk);
+    profile.transferChunk(event.data);
   }
 
-  _reportHeapSnapshotProgress(event: Common.EventTarget.EventTargetEvent): void {
+  _reportHeapSnapshotProgress(event: Common.EventTarget.EventTargetEvent<SDK.HeapProfilerModel.HeapSnapshotProgress>):
+      void {
     const profile = (this.profileBeingRecorded() as HeapProfileHeader | null);
     if (!profile) {
       return;
     }
-    const data = (event.data as {
-      done: number,
-      total: number,
-      finished: boolean,
-    });
-    profile.updateStatus(
-        i18nString(UIStrings.percentagePlaceholder, {PH1: ((data.done / data.total) * 100).toFixed(0)}), true);
-    if (data.finished) {
+    const {done, total, finished} = event.data;
+    profile.updateStatus(i18nString(UIStrings.percentagePlaceholder, {PH1: ((done / total) * 100).toFixed(0)}), true);
+    if (finished) {
       profile._prepareToLoad();
     }
   }
 
-  _resetProfiles(event: Common.EventTarget.EventTargetEvent): void {
-    const heapProfilerModel = (event.data as SDK.HeapProfilerModel.HeapProfilerModel);
+  _resetProfiles(event: Common.EventTarget.EventTargetEvent<SDK.HeapProfilerModel.HeapProfilerModel>): void {
+    const heapProfilerModel = event.data;
     for (const profile of this.getProfiles()) {
       if (profile.heapProfilerModel() === heapProfilerModel) {
         this.removeProfile(profile);
@@ -1355,11 +1350,11 @@ export class TrackingHeapSnapshotProfileType extends HeapSnapshotProfileType {
     heapProfilerModel.removeEventListener(SDK.HeapProfilerModel.Events.LastSeenObjectId, this._lastSeenObjectId, this);
   }
 
-  _heapStatsUpdate(event: Common.EventTarget.EventTargetEvent): void {
+  _heapStatsUpdate(event: Common.EventTarget.EventTargetEvent<SDK.HeapProfilerModel.HeapStatsUpdateSamples>): void {
     if (!this._profileSamples) {
       return;
     }
-    const samples = (event.data as number[]);
+    const samples = event.data;
     let index;
     for (let i = 0; i < samples.length; i += 3) {
       index = samples[i];
@@ -1371,23 +1366,20 @@ export class TrackingHeapSnapshotProfileType extends HeapSnapshotProfileType {
     }
   }
 
-  _lastSeenObjectId(event: Common.EventTarget.EventTargetEvent): void {
+  _lastSeenObjectId(event: Common.EventTarget.EventTargetEvent<SDK.HeapProfilerModel.LastSeenObjectId>): void {
     const profileSamples = this._profileSamples;
     if (!profileSamples) {
       return;
     }
-    const data = (event.data as {
-      lastSeenObjectId: number,
-      timestamp: number,
-    });
+    const {lastSeenObjectId, timestamp} = event.data;
     const currentIndex = Math.max(profileSamples.ids.length, profileSamples.max.length - 1);
-    profileSamples.ids[currentIndex] = data.lastSeenObjectId;
+    profileSamples.ids[currentIndex] = lastSeenObjectId;
     if (!profileSamples.max[currentIndex]) {
       profileSamples.max[currentIndex] = 0;
       profileSamples.sizes[currentIndex] = 0;
     }
-    profileSamples.timestamps[currentIndex] = data.timestamp;
-    if (profileSamples.totalTime < data.timestamp - profileSamples.timestamps[0]) {
+    profileSamples.timestamps[currentIndex] = timestamp;
+    if (profileSamples.totalTime < timestamp - profileSamples.timestamps[0]) {
       profileSamples.totalTime *= 2;
     }
     this.dispatchEventToListeners(TrackingHeapSnapshotProfileType.HeapStatsUpdate, this._profileSamples);

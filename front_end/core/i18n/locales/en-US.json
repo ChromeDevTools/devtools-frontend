@@ -4742,6 +4742,9 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "Domain"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "Show network requests that include this Set-Cookie header in the network panel"
+  },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Name"
   },

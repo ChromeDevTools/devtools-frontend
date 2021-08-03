@@ -620,6 +620,12 @@ export class NetworkLogView extends UI.Widget.VBox implements
     return request.responseHeaderValue(value) !== undefined;
   }
 
+  static _requestResponseHeaderSetCookieFilter(value: string, request: SDK.NetworkRequest.NetworkRequest): boolean {
+    // Multiple Set-Cookie headers in the request are concatenated via space. Only
+    // filter via `includes` instead of strict equality.
+    return Boolean(request.responseHeaderValue('Set-Cookie')?.includes(value));
+  }
+
   static _requestMethodFilter(value: string, request: SDK.NetworkRequest.NetworkRequest): boolean {
     return request.requestMethod === value;
   }
@@ -1431,8 +1437,11 @@ export class NetworkLogView extends UI.Widget.VBox implements
     }
 
     const responseHeaders = request.responseHeaders;
-    for (let i = 0, l = responseHeaders.length; i < l; ++i) {
-      this._suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.HasResponseHeader, responseHeaders[i].name);
+    for (const responseHeader of responseHeaders) {
+      this._suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.HasResponseHeader, responseHeader.name);
+      if (responseHeader.name === 'Set-Cookie') {
+        this._suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.ResponseHeaderValueSetCookie);
+      }
     }
 
     for (const cookie of request.responseCookies) {
@@ -1733,6 +1742,9 @@ export class NetworkLogView extends UI.Widget.VBox implements
 
       case NetworkForward.UIFilter.FilterType.HasResponseHeader:
         return NetworkLogView._requestResponseHeaderFilter.bind(null, value);
+
+      case NetworkForward.UIFilter.FilterType.ResponseHeaderValueSetCookie:
+        return NetworkLogView._requestResponseHeaderSetCookieFilter.bind(null, value);
 
       case NetworkForward.UIFilter.FilterType.Is:
         if (value.toLowerCase() === NetworkForward.UIFilter.IsFilterType.Running) {

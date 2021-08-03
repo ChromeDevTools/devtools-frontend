@@ -4742,6 +4742,9 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "D̂óm̂áîń"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "Ŝh́ôẃ n̂ét̂ẃôŕk̂ ŕêq́ûéŝt́ŝ t́ĥát̂ ín̂ćl̂úd̂é t̂h́îś Set-Cookie ĥéâd́êŕ îń t̂h́ê ńêt́ŵór̂ḱ p̂án̂él̂"
+  },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "N̂ám̂é"
   },

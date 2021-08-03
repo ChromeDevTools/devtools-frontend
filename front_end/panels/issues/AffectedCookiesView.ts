@@ -34,6 +34,10 @@ const UIStrings = {
   *@description Label for the the number of affected `Set-Cookie` lines associated with a DevTools issue. `Set-Cookie` is a specific header line in an HTTP network request and consists of a single line of text.
   */
   nRawCookieLines: '{n, plural, =1 {1 Raw `Set-Cookie` header} other {# Raw `Set-Cookie` headers}}',
+  /**
+  *@description Title for text button in the Issues panel. Clicking the button navigates the user to the Network Panel. `Set-Cookie` is a specific header line in an HTTP network request and consists of a single line of text.
+  */
+  filterSetCookieTitle: 'Show network requests that include this `Set-Cookie` header in the network panel',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedCookiesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -117,13 +121,31 @@ export class AffectedRawCookieLinesView extends AffectedResourcesView {
 
   override update(): void {
     this.clear();
-    const rawCookieLines = this.issue.getRawCookieLines();
-    for (const rawCookieLine of rawCookieLines) {
+    const cookieLinesWithRequestIndicator = this.issue.getRawCookieLines();
+    let count = 0;
+
+    for (const cookie of cookieLinesWithRequestIndicator) {
       const row = document.createElement('tr');
       row.classList.add('affected-resource-directive');
-      this.appendIssueDetailCell(row, rawCookieLine);
+      if (cookie.hasRequest) {
+        const cookieLine = document.createElement('td');
+        const textButton = UI.UIUtils.createTextButton(cookie.rawCookieLine, () => {
+          Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
+            {
+              filterType: NetworkForward.UIFilter.FilterType.ResponseHeaderValueSetCookie,
+              filterValue: cookie.rawCookieLine,
+            },
+          ]));
+        }, 'link-style devtools-link');
+        textButton.title = i18nString(UIStrings.filterSetCookieTitle);
+        cookieLine.appendChild(textButton);
+        row.appendChild(cookieLine);
+      } else {
+        this.appendIssueDetailCell(row, cookie.rawCookieLine);
+      }
       this.affectedResources.appendChild(row);
+      count++;
     }
-    this.updateAffectedResourceCount(rawCookieLines.size);
+    this.updateAffectedResourceCount(count);
   }
 }

@@ -16,7 +16,7 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
     cookie: Protocol.Audits.AffectedCookie,
     hasRequest: boolean,
   }>();
-  private affectedRawCookieLines = new Set<string>();
+  private affectedRawCookieLines = new Map<string, {rawCookieLine: string, hasRequest: boolean}>();
   private affectedRequests = new Map<string, Protocol.Audits.AffectedRequest>();
   private affectedLocations = new Map<string, Protocol.Audits.SourceCodeLocation>();
   private heavyAdIssues = new Set<IssuesManager.HeavyAdIssue.HeavyAdIssue>();
@@ -47,8 +47,8 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
     return Array.from(this.affectedCookies.values()).map(x => x.cookie);
   }
 
-  getRawCookieLines(): ReadonlySet<string> {
-    return this.affectedRawCookieLines;
+  getRawCookieLines(): Iterable<{rawCookieLine: string, hasRequest: boolean}> {
+    return this.affectedRawCookieLines.values();
   }
 
   sources(): Iterable<Protocol.Audits.SourceCodeLocation> {
@@ -154,7 +154,9 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
       }
     }
     for (const rawCookieLine of issue.rawCookieLines()) {
-      this.affectedRawCookieLines.add(rawCookieLine);
+      if (!this.affectedRawCookieLines.has(rawCookieLine)) {
+        this.affectedRawCookieLines.set(rawCookieLine, {rawCookieLine, hasRequest});
+      }
     }
     for (const location of issue.sources()) {
       const key = JSON.stringify(location);

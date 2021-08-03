@@ -537,9 +537,28 @@ export class TabbedPane extends VBox {
     }
 
     this._measureDropDownButton();
+    this._adjustToolbarWidth();
     this._updateWidths();
     this._updateTabsDropDown();
     this._updateTabSlider();
+  }
+
+  _adjustToolbarWidth(): void {
+    if (!this._rightToolbar || !this._measuredDropDownButtonWidth) {
+      return;
+    }
+    const leftToolbarWidth = this._leftToolbar?.element.getBoundingClientRect().width ?? 0;
+    const rightToolbarWidth = this._rightToolbar.element.getBoundingClientRect().width;
+    const totalWidth = this._headerElement.getBoundingClientRect().width;
+    if (!this._rightToolbar.hasCompactLayout() &&
+        totalWidth - rightToolbarWidth - leftToolbarWidth < this._measuredDropDownButtonWidth + 10) {
+      this._rightToolbar.setCompactLayout(true);
+    } else if (
+        this._rightToolbar.hasCompactLayout() &&
+        // Estimate the right toolbar size in non-compact mode as 2 times its compact size.
+        totalWidth - 2 * rightToolbarWidth - leftToolbarWidth > this._measuredDropDownButtonWidth + 10) {
+      this._rightToolbar.setCompactLayout(false);
+    }
   }
 
   _showTabElement(index: number, tab: TabbedPaneTab): void {

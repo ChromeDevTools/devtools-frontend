@@ -69,6 +69,7 @@ export class Toolbar {
   _shadowRoot: ShadowRoot;
   _contentElement: Element;
   _insertionPoint: Element;
+  private compactLayout = false;
 
   constructor(className: string, parentElement?: Element) {
     this._items = [];
@@ -80,6 +81,20 @@ export class Toolbar {
         createShadowRootWithCoreStyles(this.element, {cssFile: 'ui/legacy/toolbar.css', delegatesFocus: undefined});
     this._contentElement = this._shadowRoot.createChild('div', 'toolbar-shadow');
     this._insertionPoint = this._contentElement.createChild('slot');
+  }
+
+  hasCompactLayout(): boolean {
+    return this.compactLayout;
+  }
+
+  setCompactLayout(enable: boolean): void {
+    if (this.compactLayout === enable) {
+      return;
+    }
+    this.compactLayout = enable;
+    for (const item of this._items) {
+      item.setCompactLayout(enable);
+    }
   }
 
   static createLongPressActionButton(
@@ -302,6 +317,7 @@ export class Toolbar {
   appendToolbarItem(item: ToolbarItem): void {
     this._items.push(item);
     item.toolbar = this;
+    item.setCompactLayout(this.hasCompactLayout());
     if (!this._enabled) {
       item._applyEnabledState(false);
     }
@@ -423,6 +439,7 @@ export class ToolbarItem<T = any> extends Common.ObjectWrapper.ObjectWrapper<T> 
   _enabled: boolean;
   toolbar: Toolbar|null;
   _title?: string;
+
   constructor(element: Element) {
     super();
     this.element = (element as HTMLElement);
@@ -461,8 +478,6 @@ export class ToolbarItem<T = any> extends Common.ObjectWrapper.ObjectWrapper<T> 
     this.element.disabled = !enabled;
   }
 
-  /** x
-     */
   visible(): boolean {
     return this._visible;
   }
@@ -480,6 +495,27 @@ export class ToolbarItem<T = any> extends Common.ObjectWrapper.ObjectWrapper<T> 
 
   setRightAligned(alignRight: boolean): void {
     this.element.classList.toggle('toolbar-item-right-aligned', alignRight);
+  }
+
+  setCompactLayout(_enable: boolean): void {
+  }
+}
+
+export const enum ToolbarItemWithCompactLayoutEvents {
+  CompactLayoutUpdated = 'CompactLayoutUpdated',
+}
+
+type ToolbarItemWithCompactLayoutEventTypes = {
+  [ToolbarItemWithCompactLayoutEvents.CompactLayoutUpdated]: boolean,
+};
+
+export class ToolbarItemWithCompactLayout extends ToolbarItem<ToolbarItemWithCompactLayoutEventTypes> {
+  constructor(element: Element) {
+    super(element);
+  }
+
+  override setCompactLayout(enable: boolean): void {
+    this.dispatchEventToListeners(ToolbarItemWithCompactLayoutEvents.CompactLayoutUpdated, enable);
   }
 }
 

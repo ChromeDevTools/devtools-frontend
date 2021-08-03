@@ -37,7 +37,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let warningErrorCounterInstance: WarningErrorCounter;
 export class WarningErrorCounter implements UI.Toolbar.Provider {
-  _toolbarItem: UI.Toolbar.ToolbarItem;
+  _toolbarItem: UI.Toolbar.ToolbarItemWithCompactLayout;
   _consoleCounter: IconButton.IconButton.IconButton;
   _issueCounter: IssueCounter.IssueCounter.IssueCounter;
   _throttler: Common.Throttler.Throttler;
@@ -47,8 +47,10 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
     WarningErrorCounter._instanceForTest = this;
 
     const countersWrapper = document.createElement('div');
-    this._toolbarItem = new UI.Toolbar.ToolbarItem(countersWrapper);
+    this._toolbarItem = new UI.Toolbar.ToolbarItemWithCompactLayout(countersWrapper);
     this._toolbarItem.setVisible(false);
+    this._toolbarItem.addEventListener(
+        UI.Toolbar.ToolbarItemWithCompactLayoutEvents.CompactLayoutUpdated, this.onSetCompactLayout, this);
 
     this._consoleCounter = new IconButton.IconButton.IconButton();
     countersWrapper.appendChild(this._consoleCounter);
@@ -80,6 +82,15 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
     issuesManager.addEventListener(IssuesManager.IssuesManager.Events.IssuesCountUpdated, this._update, this);
 
     this._update();
+  }
+
+  onSetCompactLayout(event: Common.EventTarget.EventTargetEvent<boolean>): void {
+    this.setCompactLayout(event.data);
+  }
+
+  setCompactLayout(enable: boolean): void {
+    this._consoleCounter.data = {...this._consoleCounter.data, compact: enable};
+    this._issueCounter.data = {...this._issueCounter.data, compact: enable};
   }
 
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): WarningErrorCounter {

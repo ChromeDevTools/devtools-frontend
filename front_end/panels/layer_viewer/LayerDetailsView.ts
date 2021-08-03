@@ -34,6 +34,9 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+
+import layerDetailsViewStyles from './layerDetailsView.css.js';
+
 import type * as Protocol from '../../generated/protocol.js';
 
 import type {LayerView, LayerViewHost, Selection, SnapshotSelection} from './LayerViewHost.js';
@@ -171,7 +174,7 @@ export class LayerDetailsView extends UI.Widget.Widget implements LayerView {
 
   constructor(layerViewHost: LayerViewHost) {
     super(true);
-    this.registerRequiredCSS('panels/layer_viewer/layerDetailsView.css');
+
     this._layerViewHost = layerViewHost;
     this._layerViewHost.registerView(this);
     this._emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.selectALayerToSeeItsDetails));
@@ -196,6 +199,7 @@ export class LayerDetailsView extends UI.Widget.Widget implements LayerView {
 
   wasShown(): void {
     super.wasShown();
+    this.registerCSSFiles([layerDetailsViewStyles]);
     this.update();
   }
 

@@ -33,6 +33,9 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+
+import layers3DViewStyles from './layers3DView.css.js';
+
 import type * as Protocol from '../../generated/protocol.js';
 
 import type * as SDK from '../../core/sdk/sdk.js';
@@ -130,7 +133,6 @@ export class Layers3DView extends UI.Widget.VBox implements LayerView {
   constructor(layerViewHost: LayerViewHost) {
     super(true);
 
-    this.registerRequiredCSS('panels/layer_viewer/layers3DView.css');
     this.contentElement.classList.add('layers-3d-view');
     this._failBanner = new UI.Widget.VBox();
     this._failBanner.element.classList.add('full-widget-dimmed-banner');
@@ -200,6 +202,7 @@ export class Layers3DView extends UI.Widget.VBox implements LayerView {
 
   wasShown(): void {
     this._textureManager.resume();
+    this.registerCSSFiles([layers3DViewStyles]);
     if (!this._needsUpdate) {
       return;
     }

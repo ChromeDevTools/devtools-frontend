@@ -33,6 +33,9 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
+
+import paintProfilerStyles from './paintProfiler.css.js';
+
 import type * as Protocol from '../../generated/protocol.js';
 
 import type * as SDK from '../../core/sdk/sdk.js';
@@ -97,7 +100,7 @@ export class PaintProfilerView extends UI.Widget.HBox {
 
   constructor(showImageCallback: (arg0?: string|undefined) => void) {
     super(true);
-    this.registerRequiredCSS('panels/layer_viewer/paintProfiler.css');
+
     this.contentElement.classList.add('paint-profiler-overview');
     this._canvasContainer = this.contentElement.createChild('div', 'paint-profiler-canvas-container');
     this._progressBanner = this.contentElement.createChild('div', 'full-widget-dimmed-banner hidden');
@@ -408,6 +411,10 @@ export class PaintProfilerView extends UI.Widget.HBox {
     this._profiles = null;
     this._selectionWindow.reset();
     this._selectionWindow.setEnabled(false);
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([paintProfilerStyles]);
   }
 }
 

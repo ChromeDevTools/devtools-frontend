@@ -4,7 +4,16 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/generate_css.gni")
 import("../visibility.gni")
+
+generate_css("css_files") {
+  sources = [
+    "layerDetailsView.css",
+    "layers3DView.css",
+    "paintProfiler.css",
+  ]
+}
 
 devtools_module("layer_viewer") {
   sources = [
@@ -29,7 +38,10 @@ devtools_module("layer_viewer") {
 devtools_entrypoint("bundle") {
   entrypoint = "layer_viewer.ts"
 
-  deps = [ ":layer_viewer" ]
+  deps = [
+    ":css_files",
+    ":layer_viewer",
+  ]
 
   visibility = [
     ":*",

@@ -22,7 +22,7 @@ function updateGRDFile(cssFilePath) {
     return;
   }
 
-  const contents = fs.readFileSync('config/gni/devtools_grd_files.gni', 'utf-8').split('\n');
+  const contents = fs.readFileSync('config/gni/devtools_grd_files.gni', 'utf-8').split('\n').map(c => c.trim());
   const newGRDFileEntry = JSON.stringify(`front_end/${cssFilePath}.js`) + ',';
   if (contents.includes(newGRDFileEntry)) {
     return;

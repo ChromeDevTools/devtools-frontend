@@ -7,6 +7,9 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
+
+import playerPropertiesViewStyles from './playerPropertiesView.css.js';
+
 import type * as Protocol from '../../generated/protocol.js';
 
 const UIStrings = {
@@ -439,7 +442,7 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
   constructor() {
     super();
     this.contentElement.classList.add('media-properties-frame');
-    this.registerRequiredCSS('panels/media/playerPropertiesView.css');
+
     this._mediaElements = [];
     this._videoDecoderElements = [];
     this._audioDecoderElements = [];
@@ -621,5 +624,9 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
 
     const textTrackManager = new TextTrackManager(this);
     this._attributeMap.set(PlayerPropertyKeys.TextTracks, textTrackManager);
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([playerPropertiesViewStyles]);
   }
 }

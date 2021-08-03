@@ -9,6 +9,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as EmulationModel from '../../models/emulation/emulation.js';
 /* eslint-disable rulesdir/es_modules_import */
 import reportStyles from '../../third_party/lighthouse/report-assets/report.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -402,7 +403,7 @@ export class LighthousePanel extends UI.Panel.Panel {
   async _setupEmulationAndProtocolConnection(): Promise<void> {
     const flags = this._controller.getFlags();
 
-    const emulationModel = Emulation.DeviceModeModel.DeviceModeModel.instance();
+    const emulationModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
     this._stateBefore = {
       emulation: {
         enabled: emulationModel.enabledSetting().get(),
@@ -415,14 +416,14 @@ export class LighthousePanel extends UI.Panel.Panel {
     emulationModel.toolbarControlsEnabledSetting().set(false);
     if ('emulatedFormFactor' in flags && flags.emulatedFormFactor === 'desktop') {
       emulationModel.enabledSetting().set(false);
-      emulationModel.emulate(Emulation.DeviceModeModel.Type.None, null, null);
+      emulationModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
     } else if (flags.emulatedFormFactor === 'mobile') {
       emulationModel.enabledSetting().set(true);
       emulationModel.deviceOutlineSetting().set(true);
 
-      for (const device of Emulation.EmulatedDevices.EmulatedDevicesList.instance().standard()) {
+      for (const device of EmulationModel.EmulatedDevices.EmulatedDevicesList.instance().standard()) {
         if (device.title === 'Moto G4') {
-          emulationModel.emulate(Emulation.DeviceModeModel.Type.Device, device, device.modes[0], 1);
+          emulationModel.emulate(EmulationModel.DeviceModeModel.Type.Device, device, device.modes[0], 1);
         }
       }
     }
@@ -440,7 +441,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     await this._protocolService.detach();
 
     if (this._stateBefore) {
-      const emulationModel = Emulation.DeviceModeModel.DeviceModeModel.instance();
+      const emulationModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
       emulationModel.enabledSetting().set(this._stateBefore.emulation.enabled);
       emulationModel.deviceOutlineSetting().set(this._stateBefore.emulation.outlineEnabled);
       emulationModel.toolbarControlsEnabledSetting().set(this._stateBefore.emulation.toolbarControlsEnabled);

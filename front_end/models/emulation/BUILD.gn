@@ -1,0 +1,40 @@
+# Copyright 2020 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+import("../visibility.gni")
+
+devtools_module("emulation") {
+  sources = [
+    "DeviceModeModel.ts",
+    "EmulatedDevices.ts",
+  ]
+
+  deps = [
+    "../../core/common:bundle",
+    "../../core/host:bundle",
+    "../../core/i18n:bundle",
+    "../../core/platform:bundle",
+    "../../core/root:bundle",
+    "../../core/sdk:bundle",
+    "../../generated:protocol",
+    "../../ui/legacy:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "emulation.ts"
+
+  deps = [ ":emulation" ]
+
+  visibility = [
+    ":*",
+    "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
+    "../../../test/unittests/front_end/models/emulation/*",
+    "../../panels/emulation/*",
+  ]
+
+  visibility += devtools_models_visibility
+}

@@ -68,15 +68,15 @@ const UIStrings = {
   */
   devicePixelRatioMustBeGreater: 'Device pixel ratio must be greater than or equal to {PH1}.',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/emulation/DeviceModeModel.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/emulation/DeviceModeModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let deviceModeModelInstance: DeviceModeModel;
 
 export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper implements
     SDK.TargetManager.SDKModelObserver<SDK.EmulationModel.EmulationModel> {
-  _screenRect: UI.Geometry.Rect;
-  _visiblePageRect: UI.Geometry.Rect;
+  _screenRect: Rect;
+  _visiblePageRect: Rect;
   _availableSize: UI.Geometry.Size;
   _preferredSize: UI.Geometry.Size;
   _initialized: boolean;
@@ -102,12 +102,12 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper implemen
   _emulationModel: SDK.EmulationModel.EmulationModel|null;
   _onModelAvailable: (() => void)|null;
   _emulatedPageSize?: UI.Geometry.Size;
-  _outlineRect?: UI.Geometry.Rect;
+  _outlineRect?: Rect;
 
   private constructor() {
     super();
-    this._screenRect = new UI.Geometry.Rect(0, 0, 1, 1);
-    this._visiblePageRect = new UI.Geometry.Rect(0, 0, 1, 1);
+    this._screenRect = new Rect(0, 0, 1, 1);
+    this._visiblePageRect = new Rect(0, 0, 1, 1);
     this._availableSize = new UI.Geometry.Size(1, 1);
     this._preferredSize = new UI.Geometry.Size(1, 1);
     this._initialized = false;
@@ -325,15 +325,15 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper implemen
                                                                               '';
   }
 
-  outlineRect(): UI.Geometry.Rect|null {
+  outlineRect(): Rect|null {
     return this._outlineRect || null;
   }
 
-  screenRect(): UI.Geometry.Rect {
+  screenRect(): Rect {
     return this._screenRect;
   }
 
-  visiblePageRect(): UI.Geometry.Rect {
+  visiblePageRect(): Rect {
     return this._visiblePageRect;
   }
 
@@ -474,8 +474,8 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper implemen
     return Math.floor(this._preferredSize.height / (this._scaleSetting.get() || 1));
   }
 
-  _currentOutline(): UI.Geometry.Insets {
-    let outline: UI.Geometry.Insets = new UI.Geometry.Insets(0, 0, 0, 0);
+  _currentOutline(): Insets {
+    let outline: Insets = new Insets(0, 0, 0, 0);
     if (this._type !== Type.Device || !this._device || !this._mode) {
       return outline;
     }
@@ -486,9 +486,9 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper implemen
     return outline;
   }
 
-  _currentInsets(): UI.Geometry.Insets {
+  _currentInsets(): Insets {
     if (this._type !== Type.Device || !this._mode) {
-      return new UI.Geometry.Insets(0, 0, 0, 0);
+      return new Insets(0, 0, 0, 0);
     }
     return this._mode.insets;
   }
@@ -537,8 +537,8 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper implemen
       this._fitScale = this._calculateFitScale(this._availableSize.width, this._availableSize.height);
       this._appliedUserAgentType = UA.Desktop;
       this._applyDeviceMetrics(
-          this._availableSize, new UI.Geometry.Insets(0, 0, 0, 0), new UI.Geometry.Insets(0, 0, 0, 0), 1, 0, mobile,
-          null, resetPageScaleFactor);
+          this._availableSize, new Insets(0, 0, 0, 0), new Insets(0, 0, 0, 0), 1, 0, mobile, null,
+          resetPageScaleFactor);
       this._applyUserAgent('', null);
       this._applyTouch(false, false);
     } else if (this._type === Type.Responsive) {
@@ -554,9 +554,8 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper implemen
       this._fitScale = this._calculateFitScale(this._widthSetting.get(), this._heightSetting.get());
       this._appliedUserAgentType = this._uaSetting.get();
       this._applyDeviceMetrics(
-          new UI.Geometry.Size(screenWidth, screenHeight), new UI.Geometry.Insets(0, 0, 0, 0),
-          new UI.Geometry.Insets(0, 0, 0, 0), this._scaleSetting.get(),
-          this._deviceScaleFactorSetting.get() || defaultDeviceScaleFactor, mobile,
+          new UI.Geometry.Size(screenWidth, screenHeight), new Insets(0, 0, 0, 0), new Insets(0, 0, 0, 0),
+          this._scaleSetting.get(), this._deviceScaleFactorSetting.get() || defaultDeviceScaleFactor, mobile,
           screenHeight >= screenWidth ? Protocol.Emulation.ScreenOrientationType.PortraitPrimary :
                                         Protocol.Emulation.ScreenOrientationType.LandscapePrimary,
           resetPageScaleFactor);
@@ -572,8 +571,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper implemen
     this.dispatchEventToListeners(Events.Updated);
   }
 
-  _calculateFitScale(
-      screenWidth: number, screenHeight: number, outline?: UI.Geometry.Insets, insets?: UI.Geometry.Insets): number {
+  _calculateFitScale(screenWidth: number, screenHeight: number, outline?: Insets, insets?: Insets): number {
     const outlineWidth = outline ? outline.left + outline.right : 0;
     const outlineHeight = outline ? outline.top + outline.bottom : 0;
     const insetsWidth = insets ? insets.left + insets.right : 0;
@@ -611,9 +609,9 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper implemen
   }
 
   _applyDeviceMetrics(
-      screenSize: UI.Geometry.Size, insets: UI.Geometry.Insets, outline: UI.Geometry.Insets, scale: number,
-      deviceScaleFactor: number, mobile: boolean, screenOrientation: Protocol.Emulation.ScreenOrientationType|null,
-      resetPageScaleFactor: boolean, forceMetricsOverride: boolean|undefined = false): void {
+      screenSize: UI.Geometry.Size, insets: Insets, outline: Insets, scale: number, deviceScaleFactor: number,
+      mobile: boolean, screenOrientation: Protocol.Emulation.ScreenOrientationType|null, resetPageScaleFactor: boolean,
+      forceMetricsOverride: boolean|undefined = false): void {
     screenSize.width = Math.max(1, Math.floor(screenSize.width));
     screenSize.height = Math.max(1, Math.floor(screenSize.height));
 
@@ -628,13 +626,13 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper implemen
 
     this._appliedDeviceSize = screenSize;
     this._appliedDeviceScaleFactor = deviceScaleFactor || window.devicePixelRatio;
-    this._screenRect = new UI.Geometry.Rect(
+    this._screenRect = new Rect(
         Math.max(0, (this._availableSize.width - screenSize.width * scale) / 2), outline.top * scale,
         screenSize.width * scale, screenSize.height * scale);
-    this._outlineRect = new UI.Geometry.Rect(
+    this._outlineRect = new Rect(
         this._screenRect.left - outline.left * scale, 0, (outline.left + screenSize.width + outline.right) * scale,
         (outline.top + screenSize.height + outline.bottom) * scale);
-    this._visiblePageRect = new UI.Geometry.Rect(
+    this._visiblePageRect = new Rect(
         positionX * scale, positionY * scale,
         Math.min(pageWidth * scale, this._availableSize.width - this._screenRect.left - positionX * scale),
         Math.min(pageHeight * scale, this._availableSize.height - this._screenRect.top - positionY * scale));
@@ -814,6 +812,38 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper implemen
       offset: (this._mode.orientation === VerticalSpanned) ? hinge.x : hinge.y,
       maskLength: (this._mode.orientation === VerticalSpanned) ? hinge.width : hinge.height,
     };
+  }
+}
+
+export class Insets {
+  constructor(public left: number, public top: number, public right: number, public bottom: number) {
+  }
+
+  isEqual(insets: Insets|null): boolean {
+    return insets !== null && this.left === insets.left && this.top === insets.top && this.right === insets.right &&
+        this.bottom === insets.bottom;
+  }
+}
+
+export class Rect {
+  constructor(public left: number, public top: number, public width: number, public height: number) {
+  }
+
+  isEqual(rect: Rect|null): boolean {
+    return rect !== null && this.left === rect.left && this.top === rect.top && this.width === rect.width &&
+        this.height === rect.height;
+  }
+
+  scale(scale: number): Rect {
+    return new Rect(this.left * scale, this.top * scale, this.width * scale, this.height * scale);
+  }
+
+  relativeTo(origin: Rect): Rect {
+    return new Rect(this.left - origin.left, this.top - origin.top, this.width, this.height);
+  }
+
+  rebaseTo(origin: Rect): Rect {
+    return new Rect(this.left + origin.left, this.top + origin.top, this.width, this.height);
   }
 }
 

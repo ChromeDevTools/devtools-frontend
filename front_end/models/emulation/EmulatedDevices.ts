@@ -9,10 +9,9 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
 
-import {MaxDeviceSize, MinDeviceSize} from './DeviceModeModel.js';
+import {MaxDeviceSize, MinDeviceSize, Insets} from './DeviceModeModel.js';
 
 const UIStrings = {
   /**
@@ -28,7 +27,7 @@ const UIStrings = {
   */
   laptopWithMDPIScreen: 'Laptop with MDPI screen',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/emulation/EmulatedDevices.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/emulation/EmulatedDevices.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 export class EmulatedDevice {
   title: string;
@@ -90,8 +89,8 @@ export class EmulatedDevice {
         return value;
       }
 
-      function parseInsets(json: any): UI.Geometry.Insets {
-        return new UI.Geometry.Insets(
+      function parseInsets(json: any): Insets {
+        return new Insets(
             parseIntValue(json, 'left'), parseIntValue(json, 'top'), parseIntValue(json, 'right'),
             parseIntValue(json, 'bottom'));
       }
@@ -539,10 +538,8 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper {
       if (device) {
         result.add(device);
         if (!device.modes.length) {
-          device.modes.push(
-              {title: '', orientation: Horizontal, insets: new UI.Geometry.Insets(0, 0, 0, 0), image: null});
-          device.modes.push(
-              {title: '', orientation: Vertical, insets: new UI.Geometry.Insets(0, 0, 0, 0), image: null});
+          device.modes.push({title: '', orientation: Horizontal, insets: new Insets(0, 0, 0, 0), image: null});
+          device.modes.push({title: '', orientation: Vertical, insets: new Insets(0, 0, 0, 0), image: null});
         }
       } else {
         success = false;
@@ -612,13 +609,13 @@ export const enum Events {
 export interface Mode {
   title: string;
   orientation: string;
-  insets: UI.Geometry.Insets;
+  insets: Insets;
   image: string|null;
 }
 export interface Orientation {
   width: number;
   height: number;
-  outlineInsets: UI.Geometry.Insets|null;
+  outlineInsets: Insets|null;
   outlineImage: string|null;
   hinge: SDK.OverlayModel.Hinge|null;
 }

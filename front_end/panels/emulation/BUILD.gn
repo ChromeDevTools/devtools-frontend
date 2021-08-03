@@ -9,12 +9,10 @@ import("../visibility.gni")
 devtools_module("emulation") {
   sources = [
     "AdvancedApp.ts",
-    "DeviceModeModel.ts",
     "DeviceModeToolbar.ts",
     "DeviceModeView.ts",
     "DeviceModeWrapper.ts",
     "DevicesSettingsTab.ts",
-    "EmulatedDevices.ts",
     "InspectedPagePlaceholder.ts",
     "MediaQueryInspector.ts",
   ]
@@ -29,6 +27,7 @@ devtools_module("emulation") {
     "../../core/sdk:bundle",
     "../../generated:protocol",
     "../../models/bindings:bundle",
+    "../../models/emulation:bundle",
     "../../models/workspace:bundle",
     "../../panels/mobile_throttling:bundle",
     "../../ui/components/icon_button:bundle",

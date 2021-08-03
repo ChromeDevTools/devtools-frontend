@@ -1235,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit f̂áîĺêd́: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "D̂év̂íĉé p̂íx̂él̂ ŕât́îó m̂úŝt́ b̂é â ńûḿb̂ér̂ ór̂ b́l̂án̂ḱ."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "D̂év̂íĉé p̂íx̂él̂ ŕât́îó m̂úŝt́ b̂é ĝŕêát̂ér̂ t́ĥán̂ ór̂ éq̂úâĺ t̂ó {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "D̂év̂íĉé p̂íx̂él̂ ŕât́îó m̂úŝt́ b̂é l̂éŝś t̂h́âń ôŕ êq́ûál̂ t́ô {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "Ĥéîǵĥt́ m̂úŝt́ b̂é â ńûḿb̂ér̂."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "Ĥéîǵĥt́ m̂úŝt́ b̂é ĝŕêát̂ér̂ t́ĥán̂ ór̂ éq̂úâĺ t̂ó {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "Ĥéîǵĥt́ m̂úŝt́ b̂é l̂éŝś t̂h́âń ôŕ êq́ûál̂ t́ô {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "Ŵíd̂t́ĥ ḿûśt̂ b́ê á n̂úm̂b́êŕ."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "Ŵíd̂t́ĥ ḿûśt̂ b́ê ǵr̂éât́êŕ t̂h́âń ôŕ êq́ûál̂ t́ô {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "Ŵíd̂t́ĥ ḿûśt̂ b́ê ĺêśŝ t́ĥán̂ ór̂ éq̂úâĺ t̂ó {PH1}."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "L̂áp̂t́ôṕ ŵít̂h́ ĤíD̂ṔÎ śĉŕêén̂"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "L̂áp̂t́ôṕ ŵít̂h́ M̂D́P̂Í ŝćr̂éêń"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "L̂áp̂t́ôṕ ŵít̂h́ t̂óûćĥ"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "Ĉól̂ĺêćt̂ín̂ǵ ĉón̂t́êńt̂…"
   },
@@ -4421,33 +4457,6 @@
   "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
     "message": "V̂ér̂śîón̂"
   },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "D̂év̂íĉé p̂íx̂él̂ ŕât́îó m̂úŝt́ b̂é â ńûḿb̂ér̂ ór̂ b́l̂án̂ḱ."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "D̂év̂íĉé p̂íx̂él̂ ŕât́îó m̂úŝt́ b̂é ĝŕêát̂ér̂ t́ĥán̂ ór̂ éq̂úâĺ t̂ó {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "D̂év̂íĉé p̂íx̂él̂ ŕât́îó m̂úŝt́ b̂é l̂éŝś t̂h́âń ôŕ êq́ûál̂ t́ô {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "Ĥéîǵĥt́ m̂úŝt́ b̂é â ńûḿb̂ér̂."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "Ĥéîǵĥt́ m̂úŝt́ b̂é ĝŕêát̂ér̂ t́ĥán̂ ór̂ éq̂úâĺ t̂ó {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "Ĥéîǵĥt́ m̂úŝt́ b̂é l̂éŝś t̂h́âń ôŕ êq́ûál̂ t́ô {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "Ŵíd̂t́ĥ ḿûśt̂ b́ê á n̂úm̂b́êŕ."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "Ŵíd̂t́ĥ ḿûśt̂ b́ê ǵr̂éât́êŕ t̂h́âń ôŕ êq́ûál̂ t́ô {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "Ŵíd̂t́ĥ ḿûśt̂ b́ê ĺêśŝ t́ĥán̂ ór̂ éq̂úâĺ t̂ó {PH1}."
-  },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Âd́d̂ d́êv́îćê ṕîx́êĺ r̂át̂íô"
   },
@@ -4597,15 +4606,6 @@
   },
   "panels/emulation/DevicesSettingsTab.ts | width": {
     "message": "Ŵíd̂t́ĥ"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "L̂áp̂t́ôṕ ŵít̂h́ ĤíD̂ṔÎ śĉŕêén̂"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "L̂áp̂t́ôṕ ŵít̂h́ M̂D́P̂Í ŝćr̂éêń"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "L̂áp̂t́ôṕ ŵít̂h́ t̂óûćĥ"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "Ĉáp̂t́ûŕê f́ûĺl̂ śîźê śĉŕêén̂śĥót̂"

@@ -10,8 +10,8 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as EmulationModel from '../../models/emulation/emulation.js';
 
-import {DeviceModeModel, Events, MaxDeviceSize, MinDeviceSize, Type} from './DeviceModeModel.js';
 import {DeviceModeToolbar} from './DeviceModeToolbar.js';
 import {MediaQueryInspector} from './MediaQueryInspector.js';
 
@@ -57,7 +57,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class DeviceModeView extends UI.Widget.VBox {
   wrapperInstance!: UI.Widget.VBox|null;
   blockElementToWidth: WeakMap<HTMLElement, number>;
-  _model: DeviceModeModel;
+  _model: EmulationModel.DeviceModeModel.DeviceModeModel;
   _mediaInspector: MediaQueryInspector;
   _showMediaInspectorSetting: Common.Settings.Setting<boolean>;
   _showRulersSetting: Common.Settings.Setting<boolean>;
@@ -84,9 +84,9 @@ export class DeviceModeView extends UI.Widget.VBox {
     y: number,
   }|null;
   _resizeStart?: UI.Geometry.Size;
-  _cachedCssScreenRect?: UI.Geometry.Rect;
-  _cachedCssVisiblePageRect?: UI.Geometry.Rect;
-  _cachedOutlineRect?: UI.Geometry.Rect;
+  _cachedCssScreenRect?: EmulationModel.DeviceModeModel.Rect;
+  _cachedCssVisiblePageRect?: EmulationModel.DeviceModeModel.Rect;
+  _cachedOutlineRect?: EmulationModel.DeviceModeModel.Rect;
   _cachedMediaInspectorVisible?: boolean;
   _cachedShowRulers?: boolean;
   _cachedScale?: number;
@@ -102,8 +102,8 @@ export class DeviceModeView extends UI.Widget.VBox {
     this.element.classList.add('device-mode-view');
     this.registerRequiredCSS('panels/emulation/deviceModeView.css');
 
-    this._model = DeviceModeModel.instance();
-    this._model.addEventListener(Events.Updated, this._updateUI, this);
+    this._model = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
+    this._model.addEventListener(EmulationModel.DeviceModeModel.Events.Updated, this._updateUI, this);
     this._mediaInspector =
         new MediaQueryInspector(() => this._model.appliedDeviceSize().width, this._model.setWidth.bind(this._model));
     this._showMediaInspectorSetting = Common.Settings.Settings.instance().moduleSetting('showMediaQueryInspector');
@@ -185,7 +185,7 @@ export class DeviceModeView extends UI.Widget.VBox {
     }
 
     function applySize(this: DeviceModeView, width: number, e: Event): void {
-      this._model.emulate(Type.Responsive, null, null);
+      this._model.emulate(EmulationModel.DeviceModeModel.Type.Responsive, null, null);
       this._model.setWidthAndScaleToFit(width);
       e.consume();
     }
@@ -211,7 +211,8 @@ export class DeviceModeView extends UI.Widget.VBox {
 
   _onResizeStart(): void {
     this._slowPositionStart = null;
-    this._resizeStart = this._model.screenRect().size();
+    const rect = this._model.screenRect();
+    this._resizeStart = new UI.Geometry.Size(rect.width, rect.height);
   }
 
   _onResizeUpdate(widthFactor: number, heightFactor: number, event: {
@@ -234,7 +235,8 @@ export class DeviceModeView extends UI.Widget.VBox {
       const dipOffsetX = cssOffsetX * UI.ZoomManager.ZoomManager.instance().zoomFactor();
       let newWidth: number = this._resizeStart.width + dipOffsetX * widthFactor;
       newWidth = Math.round(newWidth / this._model.scale());
-      if (newWidth >= MinDeviceSize && newWidth <= MaxDeviceSize) {
+      if (newWidth >= EmulationModel.DeviceModeModel.MinDeviceSize &&
+          newWidth <= EmulationModel.DeviceModeModel.MaxDeviceSize) {
         this._model.setWidth(newWidth);
       }
     }
@@ -243,7 +245,8 @@ export class DeviceModeView extends UI.Widget.VBox {
       const dipOffsetY = cssOffsetY * UI.ZoomManager.ZoomManager.instance().zoomFactor();
       let newHeight: number = this._resizeStart.height + dipOffsetY * heightFactor;
       newHeight = Math.round(newHeight / this._model.scale());
-      if (newHeight >= MinDeviceSize && newHeight <= MaxDeviceSize) {
+      if (newHeight >= EmulationModel.DeviceModeModel.MinDeviceSize &&
+          newHeight <= EmulationModel.DeviceModeModel.MaxDeviceSize) {
         this._model.setHeight(newHeight);
       }
     }
@@ -261,7 +264,7 @@ export class DeviceModeView extends UI.Widget.VBox {
   }
 
   _updateUI(): void {
-    function applyRect(element: HTMLElement, rect: UI.Geometry.Rect): void {
+    function applyRect(element: HTMLElement, rect: EmulationModel.DeviceModeModel.Rect): void {
       element.style.left = rect.left + 'px';
       element.style.top = rect.top + 'px';
       element.style.width = rect.width + 'px';
@@ -274,7 +277,7 @@ export class DeviceModeView extends UI.Widget.VBox {
 
     const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();
     let callDoResize = false;
-    const showRulers = this._showRulersSetting.get() && this._model.type() !== Type.None;
+    const showRulers = this._showRulersSetting.get() && this._model.type() !== EmulationModel.DeviceModeModel.Type.None;
     let contentAreaResized = false;
     let updateRulers = false;
 
@@ -304,7 +307,7 @@ export class DeviceModeView extends UI.Widget.VBox {
     }
     this._contentClip.classList.toggle('device-mode-outline-visible', Boolean(this._model.outlineImage()));
 
-    const resizable = this._model.type() === Type.Responsive;
+    const resizable = this._model.type() === EmulationModel.DeviceModeModel.Type.Responsive;
     if (resizable !== this._cachedResizable) {
       this._rightResizerElement.classList.toggle('hidden', !resizable);
       this._leftResizerElement.classList.toggle('hidden', !resizable);
@@ -314,7 +317,8 @@ export class DeviceModeView extends UI.Widget.VBox {
       this._cachedResizable = resizable;
     }
 
-    const mediaInspectorVisible = this._showMediaInspectorSetting.get() && this._model.type() !== Type.None;
+    const mediaInspectorVisible =
+        this._showMediaInspectorSetting.get() && this._model.type() !== EmulationModel.DeviceModeModel.Type.None;
     if (mediaInspectorVisible !== this._cachedMediaInspectorVisible) {
       if (mediaInspectorVisible) {
         this._mediaInspector.show(this._mediaInspectorContainer);
@@ -390,7 +394,7 @@ export class DeviceModeView extends UI.Widget.VBox {
   }
 
   setNonEmulatedAvailableSize(element: Element): void {
-    if (this._model.type() !== Type.None) {
+    if (this._model.type() !== EmulationModel.DeviceModeModel.Type.None) {
       return;
     }
     const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();
@@ -442,7 +446,7 @@ export class DeviceModeView extends UI.Widget.VBox {
   }
 
   willHide(): void {
-    this._model.emulate(Type.None, null, null);
+    this._model.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
   }
 
   async captureScreenshot(): Promise<void> {
@@ -518,7 +522,7 @@ export class DeviceModeView extends UI.Widget.VBox {
     };
   }
 
-  _paintImage(ctx: CanvasRenderingContext2D, src: string, rect: UI.Geometry.Rect): Promise<void> {
+  _paintImage(ctx: CanvasRenderingContext2D, src: string, rect: EmulationModel.DeviceModeModel.Rect): Promise<void> {
     return new Promise(resolve => {
       const image = new Image();
       image.crossOrigin = 'Anonymous';
@@ -540,7 +544,7 @@ export class DeviceModeView extends UI.Widget.VBox {
     }
 
     const device = this._model.device();
-    if (device && this._model.type() === Type.Device) {
+    if (device && this._model.type() === EmulationModel.DeviceModeModel.Type.Device) {
       fileName += `(${device.title})`;
     }
     const link = document.createElement('a');

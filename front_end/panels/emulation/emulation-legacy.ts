@@ -4,6 +4,8 @@
 
 // @ts-nocheck
 
+import * as EmulationModelModule from '../../models/emulation/emulation.js';
+
 import * as EmulationModule from './emulation.js';
 
 self.Emulation = self.Emulation || {};
@@ -22,10 +24,10 @@ Emulation.AdvancedAppProvider = EmulationModule.AdvancedApp.AdvancedAppProvider;
 /**
  * @constructor
  */
-Emulation.DeviceModeModel = EmulationModule.DeviceModeModel.DeviceModeModel;
+Emulation.DeviceModeModel = EmulationModelModule.DeviceModeModel.DeviceModeModel;
 
 /** @enum {string} */
-Emulation.DeviceModeModel.Type = EmulationModule.DeviceModeModel.Type;
+Emulation.DeviceModeModel.Type = EmulationModelModule.DeviceModeModel.Type;
 
 /**
  * @constructor
@@ -50,12 +52,12 @@ Emulation.DevicesSettingsTab = EmulationModule.DevicesSettingsTab.DevicesSetting
 /**
  * @constructor
  */
-Emulation.EmulatedDevice = EmulationModule.EmulatedDevices.EmulatedDevice;
+Emulation.EmulatedDevice = EmulationModelModule.EmulatedDevices.EmulatedDevice;
 
 /**
  * @constructor
  */
-Emulation.EmulatedDevicesList = EmulationModule.EmulatedDevices.EmulatedDevicesList;
+Emulation.EmulatedDevicesList = EmulationModelModule.EmulatedDevices.EmulatedDevicesList;
 
 /**
  * @constructor

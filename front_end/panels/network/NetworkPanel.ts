@@ -222,7 +222,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
 
     this._filterBar = new UI.FilterBar.FilterBar('networkPanel', true);
     this._filterBar.show(panel.contentElement);
-    this._filterBar.addEventListener(UI.FilterBar.FilterBar.Events.Changed, this._handleFilterChanged.bind(this));
+    this._filterBar.addEventListener(UI.FilterBar.FilterBarEvents.Changed, this._handleFilterChanged.bind(this));
 
     this._settingsPane = new UI.Widget.HBox();
     this._settingsPane.element.classList.add('network-settings-pane');

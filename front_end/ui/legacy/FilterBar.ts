@@ -98,7 +98,7 @@ export class FilterBar extends HBox {
   addFilter(filter: FilterUI): void {
     this._filters.push(filter);
     this.element.appendChild(filter.element());
-    filter.addEventListener(FilterUI.Events.FilterChanged, this._filterChanged, this);
+    filter.addEventListener(FilterUIEvents.FilterChanged, this._filterChanged, this);
     this._updateFilterButton();
   }
 
@@ -119,7 +119,7 @@ export class FilterBar extends HBox {
 
   _filterChanged(_event: Common.EventTarget.EventTargetEvent): void {
     this._updateFilterButton();
-    this.dispatchEventToListeners(FilterBar.Events.Changed);
+    this.dispatchEventToListeners(FilterBarEvents.Changed);
   }
 
   wasShown(): void {
@@ -174,12 +174,8 @@ export class FilterBar extends HBox {
   }
 }
 
-export namespace FilterBar {
-  // TODO(crbug.com/1167717): Make this a const enum again
-  // eslint-disable-next-line rulesdir/const_enum
-  export enum Events {
-    Changed = 'Changed',
-  }
+export const enum FilterBarEvents {
+  Changed = 'Changed',
 }
 
 export interface FilterUI extends Common.EventTarget.EventTarget {
@@ -187,12 +183,8 @@ export interface FilterUI extends Common.EventTarget.EventTarget {
   element(): Element;
 }
 
-export namespace FilterUI {
-  // TODO(crbug.com/1167717): Make this a const enum again
-  // eslint-disable-next-line rulesdir/const_enum
-  export enum Events {
-    FilterChanged = 'FilterChanged',
-  }
+export const enum FilterUIEvents {
+  FilterChanged = 'FilterChanged',
 }
 
 export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper implements FilterUI {
@@ -261,7 +253,7 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper implements 
   }
 
   _valueChanged(): void {
-    this.dispatchEventToListeners(FilterUI.Events.FilterChanged, null);
+    this.dispatchEventToListeners(FilterUIEvents.FilterChanged, null);
     this._updateEmptyStyles();
   }
 
@@ -350,7 +342,7 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper impl
       element.classList.toggle('selected', active);
       ARIAUtils.setSelected(element, active);
     }
-    this.dispatchEventToListeners(FilterUI.Events.FilterChanged, null);
+    this.dispatchEventToListeners(FilterUIEvents.FilterChanged, null);
   }
 
   _addBit(name: string, label: string, title?: string): void {
@@ -490,7 +482,7 @@ export class CheckboxFilterUI extends Common.ObjectWrapper.ObjectWrapper impleme
   }
 
   _fireUpdated(): void {
-    this.dispatchEventToListeners(FilterUI.Events.FilterChanged, null);
+    this.dispatchEventToListeners(FilterUIEvents.FilterChanged, null);
   }
 
   setColor(backgroundColor: string, borderColor: string): void {

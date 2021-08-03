@@ -456,20 +456,20 @@ export class NetworkLogView extends UI.Widget.VBox implements
     this._activeGroupLookup = null;
 
     this._textFilterUI = new UI.FilterBar.TextFilterUI();
-    this._textFilterUI.addEventListener(UI.FilterBar.FilterUI.Events.FilterChanged, this._filterChanged, this);
+    this._textFilterUI.addEventListener(UI.FilterBar.FilterUIEvents.FilterChanged, this._filterChanged, this);
     filterBar.addFilter(this._textFilterUI);
 
     this._invertFilterUI = new UI.FilterBar.CheckboxFilterUI(
         'invert-filter', i18nString(UIStrings.invertFilter), true, this._networkInvertFilterSetting);
     this._invertFilterUI.addEventListener(
-        UI.FilterBar.FilterUI.Events.FilterChanged, this._filterChanged.bind(this), this);
+        UI.FilterBar.FilterUIEvents.FilterChanged, this._filterChanged.bind(this), this);
     UI.Tooltip.Tooltip.install(this._invertFilterUI.element(), i18nString(UIStrings.invertsFilter));
     filterBar.addFilter(this._invertFilterUI);
 
     this._dataURLFilterUI = new UI.FilterBar.CheckboxFilterUI(
         'hide-data-url', i18nString(UIStrings.hideDataUrls), true, this._networkHideDataURLSetting);
     this._dataURLFilterUI.addEventListener(
-        UI.FilterBar.FilterUI.Events.FilterChanged, this._filterChanged.bind(this), this);
+        UI.FilterBar.FilterUIEvents.FilterChanged, this._filterChanged.bind(this), this);
     UI.Tooltip.Tooltip.install(this._dataURLFilterUI.element(), i18nString(UIStrings.hidesDataAndBlobUrls));
     filterBar.addFilter(this._dataURLFilterUI);
 
@@ -483,13 +483,13 @@ export class NetworkLogView extends UI.Widget.VBox implements
     UI.ARIAUtils.setAccessibleName(
         this._resourceCategoryFilterUI.element(), i18nString(UIStrings.resourceTypesToInclude));
     this._resourceCategoryFilterUI.addEventListener(
-        UI.FilterBar.FilterUI.Events.FilterChanged, this._filterChanged.bind(this), this);
+        UI.FilterBar.FilterUIEvents.FilterChanged, this._filterChanged.bind(this), this);
     filterBar.addFilter(this._resourceCategoryFilterUI);
 
     this._onlyIssuesFilterUI = new UI.FilterBar.CheckboxFilterUI(
         'only-show-issues', i18nString(UIStrings.hasBlockedCookies), true, this._networkShowIssuesOnlySetting);
     this._onlyIssuesFilterUI.addEventListener(
-        UI.FilterBar.FilterUI.Events.FilterChanged, this._filterChanged.bind(this), this);
+        UI.FilterBar.FilterUIEvents.FilterChanged, this._filterChanged.bind(this), this);
     UI.Tooltip.Tooltip.install(this._onlyIssuesFilterUI.element(), i18nString(UIStrings.onlyShowRequestsWithBlocked));
     filterBar.addFilter(this._onlyIssuesFilterUI);
 
@@ -497,14 +497,14 @@ export class NetworkLogView extends UI.Widget.VBox implements
         'only-show-blocked-requests', i18nString(UIStrings.blockedRequests), true,
         this._networkOnlyBlockedRequestsSetting);
     this._onlyBlockedRequestsUI.addEventListener(
-        UI.FilterBar.FilterUI.Events.FilterChanged, this._filterChanged.bind(this), this);
+        UI.FilterBar.FilterUIEvents.FilterChanged, this._filterChanged.bind(this), this);
     UI.Tooltip.Tooltip.install(this._onlyBlockedRequestsUI.element(), i18nString(UIStrings.onlyShowBlockedRequests));
     filterBar.addFilter(this._onlyBlockedRequestsUI);
 
     this._onlyThirdPartyFilterUI = new UI.FilterBar.CheckboxFilterUI(
         'only-show-third-party', i18nString(UIStrings.thirdParty), true, this._networkOnlyThirdPartySetting);
     this._onlyThirdPartyFilterUI.addEventListener(
-        UI.FilterBar.FilterUI.Events.FilterChanged, this._filterChanged.bind(this), this);
+        UI.FilterBar.FilterUIEvents.FilterChanged, this._filterChanged.bind(this), this);
     UI.Tooltip.Tooltip.install(
         this._onlyThirdPartyFilterUI.element(), i18nString(UIStrings.onlyShowThirdPartyRequests));
     filterBar.addFilter(this._onlyThirdPartyFilterUI);

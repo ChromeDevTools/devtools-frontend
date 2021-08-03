@@ -52,7 +52,8 @@ const str_ = i18n.i18n.registerUIStrings('core/host/InspectorFrontendHost.ts', U
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   _urlsBeingSaved: Map<string, string[]>;
-  events!: Common.EventTarget.EventTarget<unknown>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  events!: Common.EventTarget.EventTarget<any>;
   _windowVisible?: boolean;
 
   constructor() {

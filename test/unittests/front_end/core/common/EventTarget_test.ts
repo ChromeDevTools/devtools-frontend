@@ -45,6 +45,9 @@ class TypedEventEmitter extends Common.ObjectWrapper.ObjectWrapper<TestEvents> {
 
     // @ts-expect-error wrong object type provided as payload
     this.dispatchEventToListeners(Events.KeyValueEvent, {key: 'key', foo: 'foo'});
+
+    // @ts-expect-error wrong object type provided as payload
+    this.dispatchEventToListeners('fake', {key: 'key', foo: 'foo'});
   }
 
   testStringAndSymbolDisallowed() {
@@ -55,6 +58,38 @@ class TypedEventEmitter extends Common.ObjectWrapper.ObjectWrapper<TestEvents> {
     this.dispatchEventToListeners(Symbol('foo'));
   }
 }
+
+class VoidTypedEventEmitter extends Common.ObjectWrapper.ObjectWrapper<void> {
+  testInvalidArgumentTypes() {
+    // @ts-expect-error undefined instead of no argument provided
+    this.dispatchEventToListeners(Events.VoidEvent, undefined);
+
+    // @ts-expect-error string instead of undefined provided
+    this.dispatchEventToListeners(Events.VoidEvent, 'void');
+
+    // @ts-expect-error string instead of number provided
+    this.dispatchEventToListeners(Events.NumberEvent, 'expected number');
+
+    // @ts-expect-error argument missing
+    this.dispatchEventToListeners(Events.NumberEvent);
+
+    // @ts-expect-error wrong object type provided as payload
+    this.dispatchEventToListeners(Events.KeyValueEvent, {key: 'key', foo: 'foo'});
+
+    // @ts-expect-error wrong object type provided as payload
+    this.dispatchEventToListeners('fake', {key: 'key', foo: 'foo'});
+  }
+
+  testStringAndSymbolDisallowed() {
+    // @ts-expect-error only keys of `TestEvents` are allowed.
+    this.dispatchEventToListeners('foo');
+
+    // @ts-expect-error only keys of `TestEvents` are allowed.
+    this.dispatchEventToListeners(Symbol('foo'));
+  }
+}
+
+VoidTypedEventEmitter;
 
 class UntypedEventEmitter extends Common.ObjectWrapper.ObjectWrapper {
   testDispatch() {

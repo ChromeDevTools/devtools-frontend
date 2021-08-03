@@ -64,6 +64,10 @@ const UIStrings = {
   *@description Text for everything
   */
   allStrings: 'All',
+  /**
+   * @description Hover text for button to clear the filter that is applied
+   */
+  clearFilter: 'Clear input',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/FilterBar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -211,6 +215,7 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper implements 
     this._suggestionProvider = null;
 
     const clearButton = container.createChild('div', 'filter-input-clear-button');
+    Tooltip.install(clearButton, i18nString(UIStrings.clearFilter));
     clearButton.appendChild(Icon.create('mediumicon-gray-cross-active', 'filter-cancel-button'));
     clearButton.addEventListener('click', () => {
       this.clear();

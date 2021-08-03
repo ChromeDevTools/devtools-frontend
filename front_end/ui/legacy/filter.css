@@ -136,6 +136,7 @@
   opacity: 70%;
   height: 16px;
   margin-top: 1px;
+  cursor: pointer;
 }
 
 .filter-cancel-button {

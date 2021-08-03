@@ -11519,6 +11519,9 @@
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "All"
   },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "Clear input"
+  },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "e.g. /small[d]+/ url:a.com/b"
   },

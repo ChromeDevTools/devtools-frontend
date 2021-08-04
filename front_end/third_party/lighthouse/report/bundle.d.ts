@@ -43,26 +43,16 @@ export class DOM {
      * @template {string} T
      * @param {T} name
      * @param {string=} className
-     * @param {Object<string, (string|undefined)>=} attrs Attribute key/val pairs.
-     *     Note: if an attribute key has an undefined value, this method does not
-     *     set the attribute on the node.
      * @return {HTMLElementByTagName[T]}
      */
-    createElement<T extends string>(name: T, className?: string | undefined, attrs?: {
-        [x: string]: (string | undefined);
-    } | undefined): any;
+    createElement<T extends string>(name: T, className?: string | undefined): any;
     /**
      * @param {string} namespaceURI
      * @param {string} name
      * @param {string=} className
-     * @param {Object<string, (string|undefined)>=} attrs Attribute key/val pairs.
-     *     Note: if an attribute key has an undefined value, this method does not
-     *     set the attribute on the node.
      * @return {Element}
      */
-    createElementNS(namespaceURI: string, name: string, className?: string | undefined, attrs?: {
-        [x: string]: (string | undefined);
-    } | undefined): Element;
+    createElementNS(namespaceURI: string, name: string, className?: string | undefined): Element;
     /**
      * @return {!DocumentFragment}
      */
@@ -72,14 +62,9 @@ export class DOM {
      * @param {Element} parentElem
      * @param {T} elementName
      * @param {string=} className
-     * @param {Object<string, (string|undefined)>=} attrs Attribute key/val pairs.
-     *     Note: if an attribute key has an undefined value, this method does not
-     *     set the attribute on the node.
      * @return {HTMLElementByTagName[T]}
      */
-    createChildOf<T_1 extends string>(parentElem: Element, elementName: T_1, className?: string | undefined, attrs?: {
-        [x: string]: (string | undefined);
-    } | undefined): any;
+    createChildOf<T_1 extends string>(parentElem: Element, elementName: T_1, className?: string | undefined): any;
     /**
      * @param {string} selector
      * @param {ParentNode} context
@@ -96,6 +81,19 @@ export class DOM {
      * @return {Element}
      */
     convertMarkdownLinkSnippets(text: string): Element;
+    /**
+     * Set link href, but safely, preventing `javascript:` protocol, etc.
+     * @see https://github.com/google/safevalues/
+     * @param {HTMLAnchorElement} elem
+     * @param {string} url
+     */
+    safelySetHref(elem: HTMLAnchorElement, url: string): void;
+    /**
+     * Only create blob URLs for JSON & HTML
+     * @param {HTMLAnchorElement} elem
+     * @param {Blob} blob
+     */
+    safelySetBlobHref(elem: HTMLAnchorElement, blob: Blob): void;
     /**
      * @param {string} markdownText
      * @return {Element}
@@ -214,11 +212,11 @@ export class ReportUIFeatures {
     protected static computeWindowNameSuffix(json: any): string;
     /**
      * Opens a new tab to the online viewer and sends the local page's JSON results
-     * to the online viewer using postMessage.
+     * to the online viewer using URL.fragment
      * @param {LH.Result} json
      * @protected
      */
-    protected static openTabAndSendJsonReportToViewer(json: any): void;
+    protected static openViewer(json: any): void;
     /**
      * Opens a new tab to the treemap app and sends the JSON results using URL.fragment
      * @param {LH.Result} json

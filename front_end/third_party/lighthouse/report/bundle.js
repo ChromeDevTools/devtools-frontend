@@ -671,22 +671,13 @@ class DOM {
    * @template {string} T
    * @param {T} name
    * @param {string=} className
-   * @param {Object<string, (string|undefined)>=} attrs Attribute key/val pairs.
-   *     Note: if an attribute key has an undefined value, this method does not
-   *     set the attribute on the node.
    * @return {HTMLElementByTagName[T]}
    */
-  createElement(name, className, attrs = {}) {
+  createElement(name, className) {
     const element = this._document.createElement(name);
     if (className) {
       element.className = className;
     }
-    Object.keys(attrs).forEach(key => {
-      const value = attrs[key];
-      if (typeof value !== 'undefined') {
-        element.setAttribute(key, value);
-      }
-    });
     return element;
   }
 
@@ -694,22 +685,13 @@ class DOM {
    * @param {string} namespaceURI
    * @param {string} name
    * @param {string=} className
-   * @param {Object<string, (string|undefined)>=} attrs Attribute key/val pairs.
-   *     Note: if an attribute key has an undefined value, this method does not
-   *     set the attribute on the node.
    * @return {Element}
    */
-  createElementNS(namespaceURI, name, className, attrs = {}) {
+  createElementNS(namespaceURI, name, className) {
     const element = this._document.createElementNS(namespaceURI, name);
     if (className) {
       element.className = className;
     }
-    Object.keys(attrs).forEach(key => {
-      const value = attrs[key];
-      if (typeof value !== 'undefined') {
-        element.setAttribute(key, value);
-      }
-    });
     return element;
   }
 
@@ -725,13 +707,10 @@ class DOM {
    * @param {Element} parentElem
    * @param {T} elementName
    * @param {string=} className
-   * @param {Object<string, (string|undefined)>=} attrs Attribute key/val pairs.
-   *     Note: if an attribute key has an undefined value, this method does not
-   *     set the attribute on the node.
    * @return {HTMLElementByTagName[T]}
    */
-  createChildOf(parentElem, elementName, className, attrs) {
-    const element = this.createElement(elementName, className, attrs);
+  createChildOf(parentElem, elementName, className) {
+    const element = this.createElement(elementName, className);
     parentElem.appendChild(element);
     return element;
   }
@@ -796,11 +775,48 @@ class DOM {
       a.rel = 'noopener';
       a.target = '_blank';
       a.textContent = segment.text;
-      a.href = url.href;
+      this.safelySetHref(a, url.href);
       element.appendChild(a);
     }
 
     return element;
+  }
+
+  /**
+   * Set link href, but safely, preventing `javascript:` protocol, etc.
+   * @see https://github.com/google/safevalues/
+   * @param {HTMLAnchorElement} elem
+   * @param {string} url
+   */
+  safelySetHref(elem, url) {
+    // In-page anchor links are safe.
+    if (url.startsWith('#')) {
+      elem.href = url;
+      return;
+    }
+
+    const allowedProtocols = ['https:', 'http:'];
+    let parsed;
+    try {
+      parsed = new URL(url);
+    } catch (_) {}
+
+    if (parsed && allowedProtocols.includes(parsed.protocol)) {
+      elem.href = parsed.href;
+    }
+  }
+
+  /**
+   * Only create blob URLs for JSON & HTML
+   * @param {HTMLAnchorElement} elem
+   * @param {Blob} blob
+   */
+  safelySetBlobHref(elem, blob) {
+    if (blob.type !== 'text/html' && blob.type !== 'application/json') {
+      throw new Error('Unsupported blob type');
+    }
+    const href = URL.createObjectURL(blob);
+    elem.href = href;
   }
 
   /**
@@ -954,9 +970,8 @@ class CategoryRenderer {
     descEl.appendChild(this.dom.convertMarkdownLinkSnippets(audit.result.description));
 
     for (const relevantMetric of audit.relevantMetrics || []) {
-      const adornEl = this.dom.createChildOf(descEl, 'span', 'lh-audit__adorn', {
-        title: `Relevant to ${relevantMetric.result.title}`,
-      });
+      const adornEl = this.dom.createChildOf(descEl, 'span', 'lh-audit__adorn');
+      adornEl.title = `Relevant to ${relevantMetric.result.title}`;
       adornEl.textContent = relevantMetric.acronym || relevantMetric.id;
     }
 
@@ -1201,10 +1216,10 @@ class CategoryRenderer {
    * @param {Record<string, LH.Result.ReportGroup>} groupDefinitions
    * @return {DocumentFragment}
    */
-  renderScoreGauge(category, groupDefinitions) {
+  renderScoreGauge(category, groupDefinitions) { // eslint-disable-line no-unused-vars
     const tmpl = this.dom.cloneTemplate('#tmpl-lh-gauge', this.templateContext);
     const wrapper = this.dom.find('a.lh-gauge__wrapper', tmpl);
-    wrapper.href = `#${category.id}`;
+    this.dom.safelySetHref(wrapper, `#${category.id}`);
 
     if (Util.isPluginCategory(category.id)) {
       wrapper.classList.add('lh-gauge__wrapper--plugin');
@@ -2022,8 +2037,9 @@ class ElementScreenshotRenderer {
       `${right},${top} 1,${top}       1,${bottom}       ${right},${bottom}`,
     ];
     for (const points of polygonsPoints) {
-      clipPathEl.append(dom.createElementNS(
-        'http://www.w3.org/2000/svg', 'polygon', undefined, {points}));
+      const pointEl = dom.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+      pointEl.setAttribute('points', points);
+      clipPathEl.append(pointEl);
     }
   }
 
@@ -2328,24 +2344,19 @@ class DetailsRenderer {
    * @return {HTMLElement}
    */
   _renderLink(details) {
-    const allowedProtocols = ['https:', 'http:'];
-    let url;
-    try {
-      url = new URL(details.url);
-    } catch (_) {}
+    const a = this._dom.createElement('a');
+    this._dom.safelySetHref(a, details.url);
 
-    if (!url || !allowedProtocols.includes(url.protocol)) {
+    if (!a.href) {
       // Fall back to just the link text if invalid or protocol not allowed.
       const element = this._renderText(details.text);
       element.classList.add('lh-link');
       return element;
     }
 
-    const a = this._dom.createElement('a');
     a.rel = 'noopener';
     a.target = '_blank';
     a.textContent = details.text;
-    a.href = url.href;
     a.classList.add('lh-link');
     return a;
   }
@@ -2776,10 +2787,9 @@ class DetailsRenderer {
 
     for (const thumbnail of details.items) {
       const frameEl = this._dom.createChildOf(filmstripEl, 'div', 'lh-filmstrip__frame');
-      this._dom.createChildOf(frameEl, 'img', 'lh-filmstrip__thumbnail', {
-        src: thumbnail.data,
-        alt: `Screenshot`,
-      });
+      const imgEl = this._dom.createChildOf(frameEl, 'img', 'lh-filmstrip__thumbnail');
+      imgEl.src = thumbnail.data;
+      imgEl.alt = `Screenshot`;
     }
     return filmstripEl;
   }
@@ -3183,7 +3193,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
     const calculatorLink = this.dom.createChildOf(estValuesEl, 'a', 'lh-calclink');
     calculatorLink.target = '_blank';
     calculatorLink.textContent = strings.calculatorLink;
-    calculatorLink.href = this._getScoringCalculatorHref(category.auditRefs);
+    this.dom.safelySetHref(calculatorLink, this._getScoringCalculatorHref(category.auditRefs));
 
 
     metricAuditsEl.classList.add('lh-audit-group--metrics');
@@ -3300,18 +3310,20 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
       ({acronym: 'All'}),
       ...filterableMetrics,
     ]);
-    for (const metric of filterChoices) {
-      const elemId = `metric-${metric.acronym}`;
-      const radioEl = this.dom.createChildOf(metricFilterEl, 'input', 'lh-metricfilter__radio', {
-        type: 'radio',
-        name: 'metricsfilter',
-        id: elemId,
-      });
 
-      const labelEl = this.dom.createChildOf(metricFilterEl, 'label', 'lh-metricfilter__label', {
-        for: elemId,
-        title: metric.result && metric.result.title,
-      });
+    // Form labels need to reference unique IDs, but multiple reports rendered in the same DOM (eg PSI)
+    // would mean ID conflict.  To address this, we 'scope' these radio inputs with a unique suffix.
+    const uniqSuffix = Util.getUniqueSuffix();
+    for (const metric of filterChoices) {
+      const elemId = `metric-${metric.acronym}-${uniqSuffix}`;
+      const radioEl = this.dom.createChildOf(metricFilterEl, 'input', 'lh-metricfilter__radio');
+      radioEl.type = 'radio';
+      radioEl.name = `metricsfilter-${uniqSuffix}`;
+      radioEl.id = elemId;
+
+      const labelEl = this.dom.createChildOf(metricFilterEl, 'label', 'lh-metricfilter__label');
+      labelEl.htmlFor = elemId;
+      labelEl.title = metric.result && metric.result.title;
       labelEl.textContent = metric.acronym || metric.id;
 
       if (metric.acronym === 'All') {
@@ -3410,7 +3422,7 @@ class PwaCategoryRenderer extends CategoryRenderer {
 
     const tmpl = this.dom.cloneTemplate('#tmpl-lh-gauge--pwa', this.templateContext);
     const wrapper = this.dom.find('a.lh-gauge--pwa__wrapper', tmpl);
-    wrapper.href = `#${category.id}`;
+    this.dom.safelySetHref(wrapper, `#${category.id}`);
 
     // Correct IDs in case multiple instances end up in the page.
     const svgRoot = tmpl.querySelector('svg');
@@ -3599,8 +3611,9 @@ class ReportRenderer {
   _renderReportTopbar(report) {
     const el = this._dom.cloneTemplate('#tmpl-lh-topbar', this._templateContext);
     const metadataUrl = this._dom.find('a.lh-topbar__url', el);
-    metadataUrl.href = metadataUrl.textContent = report.finalUrl;
+    metadataUrl.textContent = report.finalUrl;
     metadataUrl.title = report.finalUrl;
+    this._dom.safelySetHref(metadataUrl, report.finalUrl);
     return el;
   }
 
@@ -4409,7 +4422,15 @@ class ReportUIFeatures {
         break;
       }
       case 'open-viewer': {
-        ReportUIFeatures.openTabAndSendJsonReportToViewer(this.json);
+        // DevTools cannot send data with postMessage, and we only want to use the URL fragment
+        // approach for viewer when needed, so check the environment and choose accordingly.
+        if (this._dom.isDevTools()) {
+          ReportUIFeatures.openViewer(this.json);
+        } else {
+          const windowName = 'viewer-' + ReportUIFeatures.computeWindowNameSuffix(this.json);
+          const url = getAppsOrigin() + '/viewer/';
+          ReportUIFeatures.openTabWithUrlData({lhr: this.json}, url, windowName);
+        }
         break;
       }
       case 'save-gist': {
@@ -4454,14 +4475,14 @@ class ReportUIFeatures {
 
   /**
    * Opens a new tab to the online viewer and sends the local page's JSON results
-   * to the online viewer using postMessage.
+   * to the online viewer using URL.fragment
    * @param {LH.Result} json
    * @protected
    */
-  static openTabAndSendJsonReportToViewer(json) {
+  static openViewer(json) {
     const windowName = 'viewer-' + this.computeWindowNameSuffix(json);
     const url = getAppsOrigin() + '/viewer/';
-    ReportUIFeatures.openTabAndSendData({lhr: json}, url, windowName);
+    ReportUIFeatures.openTabWithUrlData({lhr: json}, url, windowName);
   }
 
   /**
@@ -4606,17 +4627,16 @@ class ReportUIFeatures {
     });
 
     const ext = blob.type.match('json') ? '.json' : '.html';
-    const href = URL.createObjectURL(blob);
 
     const a = this._dom.createElement('a');
     a.download = `${filename}${ext}`;
-    a.href = href;
+    this._dom.safelySetBlobHref(a, blob);
     this._document.body.appendChild(a); // Firefox requires anchor to be in the DOM.
     a.click();
 
     // cleanup.
     this._document.body.removeChild(a);
-    setTimeout(_ => URL.revokeObjectURL(href), 500);
+    setTimeout(_ => URL.revokeObjectURL(a.href), 500);
   }
 
   /**

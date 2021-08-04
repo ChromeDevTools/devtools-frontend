@@ -310,12 +310,13 @@ export class MainImpl {
     // Hide Issues Feature.
     Root.Runtime.experiments.register('hideIssuesFeature', 'Enable experimental hide issues menu');
 
-    Root.Runtime.experiments.enableExperimentsByDefault([
-      'sourceOrderViewer',
-    ]);
-
     // Localized DevTools, hide "locale selector" setting behind an experiment.
     Root.Runtime.experiments.register(Root.Runtime.ExperimentName.LOCALIZED_DEVTOOLS, 'Enable localized DevTools');
+
+    Root.Runtime.experiments.enableExperimentsByDefault([
+      Root.Runtime.ExperimentName.LOCALIZED_DEVTOOLS,
+      'sourceOrderViewer',
+    ]);
 
     Root.Runtime.experiments.cleanUpStaleExperiments();
     const enabledExperiments = Root.Runtime.Runtime.queryParam('enabledExperiments');

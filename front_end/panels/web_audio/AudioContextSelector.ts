@@ -7,6 +7,9 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
+
+import audioContextSelectorStyles from './audioContextSelector.css.js';
+
 import type * as Protocol from '../../generated/protocol.js';
 
 const UIStrings = {
@@ -94,7 +97,7 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper imp
   createElementForItem(item: Protocol.WebAudio.BaseAudioContext): Element {
     const element = document.createElement('div');
     const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
-        element, {cssFile: 'panels/web_audio/audioContextSelector.css', delegatesFocus: undefined});
+        element, {cssFile: [audioContextSelectorStyles], delegatesFocus: undefined});
     const title = shadowRoot.createChild('div', 'title');
     UI.UIUtils.createTextChild(title, Platform.StringUtilities.trimEndWithMaxLength(this.titleFor(item), 100));
     return element;

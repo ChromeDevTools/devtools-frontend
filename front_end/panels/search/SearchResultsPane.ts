@@ -11,6 +11,8 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import searchResultsPaneStyles from './searchResultsPane.css.js';
+
 import type {SearchConfig, SearchResult} from './SearchConfig.js';
 
 const UIStrings = {
@@ -46,7 +48,7 @@ export class SearchResultsPane extends UI.Widget.VBox {
     this._searchResults = [];
     this._treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     this._treeOutline.hideOverflow();
-    this._treeOutline.registerRequiredCSS('panels/search/searchResultsPane.css');
+
     this.contentElement.appendChild(this._treeOutline.element);
 
     this._matchesExpandedCount = 0;
@@ -68,6 +70,10 @@ export class SearchResultsPane extends UI.Widget.VBox {
       treeElement.expand();
     }
     this._matchesExpandedCount += searchResult.matchesCount();
+  }
+  wasShown(): void {
+    super.wasShown();
+    this._treeOutline.registerCSSFiles([searchResultsPaneStyles]);
   }
 }
 

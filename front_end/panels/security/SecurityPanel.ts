@@ -12,6 +12,11 @@ import * as Protocol from '../../generated/protocol.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import lockIconStyles from './lockIcon.css.js';
+import mainViewStyles from './mainView.css.js';
+import originViewStyles from './originView.css.js';
+import sidebarStyles from './sidebar.css.js';
+
 import type {PageSecurityState, PageVisibleSecurityState} from './SecurityModel.js';
 import {Events, SecurityModel, SecurityStyleExplanation, SummaryMessages} from './SecurityModel.js';
 
@@ -793,8 +798,7 @@ export class SecurityPanelSidebarTree extends UI.TreeOutline.TreeOutlineInShadow
   _elementsByOrigin: Map<string, SecurityPanelSidebarTreeElement>;
   constructor(mainViewElement: SecurityPanelSidebarTreeElement, showOriginInPanel: (arg0: Origin) => void) {
     super();
-    this.registerRequiredCSS('panels/security/sidebar.css');
-    this.registerRequiredCSS('panels/security/lockIcon.css');
+
     this.appendChild(mainViewElement);
 
     this._showOriginInPanel = showOriginInPanel;
@@ -917,6 +921,9 @@ export class SecurityPanelSidebarTree extends UI.TreeOutline.TreeOutlineInShadow
     this._clearOriginGroups();
     this._elementsByOrigin.clear();
   }
+  wasShown(): void {
+    this.registerCSSFiles([lockIconStyles, sidebarStyles]);
+  }
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again
@@ -976,8 +983,7 @@ export class SecurityMainView extends UI.Widget.VBox {
   _securityState: Protocol.Security.SecurityState|null;
   constructor(panel: SecurityPanel) {
     super(true);
-    this.registerRequiredCSS('panels/security/mainView.css');
-    this.registerRequiredCSS('panels/security/lockIcon.css');
+
     this.setMinimumSize(200, 100);
 
     this.contentElement.classList.add('security-main-view');
@@ -1456,6 +1462,10 @@ export class SecurityMainView extends UI.Widget.VBox {
     Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters(
         [{filterType: NetworkForward.UIFilter.FilterType.MixedContent, filterValue: filterKey}]));
   }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([lockIconStyles, mainViewStyles]);
+  }
 }
 
 export class SecurityOriginView extends UI.Widget.VBox {
@@ -1467,8 +1477,6 @@ export class SecurityOriginView extends UI.Widget.VBox {
     this.setMinimumSize(200, 100);
 
     this.element.classList.add('security-origin-view');
-    this.registerRequiredCSS('panels/security/originView.css');
-    this.registerRequiredCSS('panels/security/lockIcon.css');
 
     const titleSection = this.element.createChild('div', 'title-section');
     const titleDiv = titleSection.createChild('div', 'title-section-header');
@@ -1688,6 +1696,10 @@ export class SecurityOriginView extends UI.Widget.VBox {
     }
 
     this._originLockIcon.classList.add('security-property-' + newSecurityState);
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([originViewStyles, lockIconStyles]);
   }
 }
 

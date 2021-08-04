@@ -11,6 +11,8 @@ import * as Protocol from '../../generated/protocol.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import webauthnPaneStyles from './webauthnPane.css.js';
+
 const UIStrings = {
   /**
   *@description Label for button that allows user to download the private key related to a credential.
@@ -243,7 +245,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
 
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/webauthn/webauthnPane.css');
+
     this.contentElement.classList.add('webauthn-pane');
     this._enabled = false;
     this._activeAuthId = null;
@@ -823,5 +825,9 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     }
     this._activeAuthId = null;
     this._updateActiveButtons();
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([webauthnPaneStyles]);
   }
 }

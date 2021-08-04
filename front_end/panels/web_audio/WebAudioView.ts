@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 /* eslint-disable rulesdir/no_underscored_properties */
+import webAudioStyles from './webAudio.css.js';
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -35,7 +36,6 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
   constructor() {
     super(true, 1000);
     this.element.classList.add('web-audio-drawer');
-    this.registerRequiredCSS('panels/web_audio/webAudio.css');
 
     // Creates the toolbar.
     const toolbarContainer = this.contentElement.createChild('div', 'web-audio-toolbar-container vbox');
@@ -87,6 +87,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
 
   wasShown(): void {
     super.wasShown();
+    this.registerCSSFiles([webAudioStyles]);
     for (const model of SDK.TargetManager.TargetManager.instance().models(WebAudioModel)) {
       this._addEventListeners(model);
     }

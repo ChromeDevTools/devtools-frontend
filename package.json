@@ -33,7 +33,7 @@
     "check-lint": "third_party/node/node.py --output scripts/test/run_lint_check_js.js && third_party/node/node.py --output scripts/test/run_lint_check_css.js && npm run check-lint-components-css",
     "check-lint-components-css": "third_party/node/node.py --output scripts/test/run_lint_check_css.js --glob 'front_end/**/*.ts' --syntax html",
     "check-lint-css": "third_party/node/node.py --output scripts/test/run_lint_check_css.js && npm run check-lint-components-css",
-    "collect-strings": "third_party/node/node.py --output third_party/i18n/collect-strings.js",
+    "collect-strings": "third_party/node/node.py --output third_party/i18n/collect-strings.js front_end",
     "components-server": "third_party/node/node.py --output scripts/component_server/server.js",
     "debug-e2etest": "DEBUG_TEST=1 npm run e2etest",
     "debug-test": "third_party/node/node.py --output scripts/npm_test.js --debug-devtools",

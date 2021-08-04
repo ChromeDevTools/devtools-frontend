@@ -14,7 +14,7 @@ const path = require('path');
 const tsc = require('typescript');
 const {collectAndBakeCtcStrings} = require('./bake-ctc-to-lhl.js');
 
-const SRC_ROOT = process.argv[2] || path.join(process.cwd(), 'front_end');
+const OUTPUT_ROOT = path.join(process.cwd(), 'front_end');
 const UISTRINGS_REGEX = /UIStrings = .*?\};\n/s;
 
 /** @typedef {import('./bake-ctc-to-lhl.js').CtcMessage} CtcMessage */
@@ -587,17 +587,17 @@ let collisions = 0;
 /** @type {Array<string>} */
 const collisionStrings = [];
 
+/** @type {Record<string, CtcMessage>} */
+const strings = {};
+
 /**
  * Collects all LHL messsages defined in UIString from Javascript files in dir,
  * and converts them into CTC.
  * @return {Record<string, CtcMessage>}
  */
-function collectAllStringsInDir() {
-  /** @type {Record<string, CtcMessage>} */
-  const strings = {};
-
+function collectAllStringsInDir(directory) {
   // Globs require UNIX path separators, even on Windows
-  const globPattern = path.join(SRC_ROOT, '/**/*.{js,ts}').replace(/\\/g, '/');
+  const globPattern = path.join(directory, '/**/*.{js,ts}').replace(/\\/g, '/');
   const files = glob.sync(globPattern, {
     ignore: ignoredPathComponents,
   });
@@ -640,7 +640,7 @@ function collectAllStringsInDir() {
         placeholders,
       };
       // slice out "front_end/" and use the path relative to front_end as id
-      const pathRelativeToFrontend = path.relative(SRC_ROOT, absolutePath).replace(/\\/g, '/');
+      const pathRelativeToFrontend = path.relative(directory, absolutePath).replace(/\\/g, '/');
       const messageKey = `${pathRelativeToFrontend} | ${key}`;
       strings[messageKey] = ctc;
 
@@ -669,7 +669,7 @@ function collectAllStringsInDir() {
  * @param {Record<string, CtcMessage>} strings
  */
 function writeStringsToCtcFiles(locale, strings) {
-  const fullPath = path.join(SRC_ROOT, `core/i18n/locales/${locale}.ctc.json`);
+  const fullPath = path.join(OUTPUT_ROOT, `core/i18n/locales/${locale}.ctc.json`);
   /** @type {Record<string, CtcMessage>} */
   const output = {};
   const sortedEntries = Object.entries(strings).sort(([keyA], [keyB]) => keyA.localeCompare(keyB));
@@ -682,17 +682,26 @@ function writeStringsToCtcFiles(locale, strings) {
 
 // @ts-ignore Test if called from the CLI or as a module.
 if (require.main === module) {
-  const frontendStrings = collectAllStringsInDir();
-  console.log('Collected from front_end!');
+  if (process.argv.length === 2) {
+    throw new Error('Provide at least one directory from which to collect strings!');
+  }
+  const directories = process.argv.slice(2);
+  let collectedStrings = {};
+  for (const directory of directories) {
+    collectedStrings = {
+      ...collectedStrings,
+      ...collectAllStringsInDir(directory),
+    };
+    console.log(`Collected from ${directory}!`);
+  }
 
-  const strings = {...frontendStrings};
-  writeStringsToCtcFiles('en-US', strings);
+  writeStringsToCtcFiles('en-US', collectedStrings);
   // Generate local pseudolocalized files for debugging while translating
-  writeStringsToCtcFiles('en-XL', createPsuedoLocaleStrings(strings));
+  writeStringsToCtcFiles('en-XL', createPsuedoLocaleStrings(collectedStrings));
 
   // Bake the ctc en-US and en-XL files into en-US and en-XL LHL format
-  const lhl =
-      collectAndBakeCtcStrings(path.join(SRC_ROOT, 'core/i18n/locales/'), path.join(SRC_ROOT, 'core/i18n/locales/'));
+  const lhl = collectAndBakeCtcStrings(
+      path.join(OUTPUT_ROOT, 'core/i18n/locales/'), path.join(OUTPUT_ROOT, 'core/i18n/locales/'));
 }
 
 module.exports = {

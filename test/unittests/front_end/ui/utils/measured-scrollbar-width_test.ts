@@ -8,6 +8,9 @@ import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 
 describe('measuredScrollbarWidth', () => {
   let style: HTMLStyleElement;
+  before(() => {
+    UI.Utils.resetMeasuredScrollbarWidthForTest();
+  });
   after(() => {
     style.remove();
   });

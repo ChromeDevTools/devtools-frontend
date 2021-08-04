@@ -4,7 +4,11 @@
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
 // eslint-disable-next-line @typescript-eslint/naming-convention
-let _measuredScrollbarWidth: number;
+let _measuredScrollbarWidth: number|undefined;
+
+export function resetMeasuredScrollbarWidthForTest(): void {
+  _measuredScrollbarWidth = undefined;
+}
 
 export function measuredScrollbarWidth(document?: Document|null): number {
   if (typeof _measuredScrollbarWidth === 'number') {

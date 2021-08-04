@@ -160,7 +160,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   initializeExtensions(): void {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.setAddExtensionCallback(this._addExtension.bind(this));
+    // Defer initialization until DevTools is fully loaded.
+    if (this._inspectedTabId !== null) {
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.setAddExtensionCallback(this._addExtension.bind(this));
+    }
   }
 
   hasExtensions(): boolean {
@@ -814,7 +817,12 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   _setInspectedTabId(event: Common.EventTarget.EventTargetEvent): void {
+    const oldId = this._inspectedTabId;
     this._inspectedTabId = (event.data as string);
+    if (oldId === null) {
+      // Run deferred init
+      this.initializeExtensions();
+    }
   }
 
   _addExtension(extensionInfo: Host.InspectorFrontendHostAPI.ExtensionDescriptor): boolean|undefined {

@@ -2,28 +2,26 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as Protocol from '../../generated/protocol.js';
 
 export class Cookie {
-  _name: string;
-  _value: string;
-  _type: Type|null|undefined;
-  _attributes: {
+  private readonly nameInternal: string;
+  private readonly valueInternal: string;
+  private readonly typeInternal: Type|null|undefined;
+  private attributes: {
     [x: string]: string|number|boolean|undefined,
   };
-  _size: number;
-  _priority: Protocol.Network.CookiePriority;
-  _cookieLine: string|null;
+  private sizeInternal: number;
+  private priorityInternal: Protocol.Network.CookiePriority;
+  private cookieLine: string|null;
   constructor(name: string, value: string, type?: Type|null, priority?: Protocol.Network.CookiePriority) {
-    this._name = name;
-    this._value = value;
-    this._type = type;
-    this._attributes = {};
-    this._size = 0;
-    this._priority = (priority || 'Medium' as Protocol.Network.CookiePriority);
-    this._cookieLine = null;
+    this.nameInternal = name;
+    this.valueInternal = value;
+    this.typeInternal = type;
+    this.attributes = {};
+    this.sizeInternal = 0;
+    this.priorityInternal = (priority || 'Medium' as Protocol.Network.CookiePriority);
+    this.cookieLine = null;
   }
 
   static fromProtocolCookie(protocolCookie: Protocol.Network.Cookie): Cookie {
@@ -60,75 +58,71 @@ export class Cookie {
   }
 
   name(): string {
-    return this._name;
+    return this.nameInternal;
   }
 
   value(): string {
-    return this._value;
+    return this.valueInternal;
   }
 
   type(): Type|null|undefined {
-    return this._type;
+    return this.typeInternal;
   }
 
   httpOnly(): boolean {
-    return 'httponly' in this._attributes;
+    return 'httponly' in this.attributes;
   }
 
   secure(): boolean {
-    return 'secure' in this._attributes;
+    return 'secure' in this.attributes;
   }
 
   sameSite(): Protocol.Network.CookieSameSite {
-    // TODO(allada) This should not rely on _attributes and instead store them individually.
+    // TODO(allada) This should not rely on attributes and instead store them individually.
     // when attributes get added via addAttribute() they are lowercased, hence the lowercasing of samesite here
-    return /** @type {!Protocol.Network.CookieSameSite} */ this._attributes['samesite'] as
-        Protocol.Network.CookieSameSite;
+    return this.attributes['samesite'] as Protocol.Network.CookieSameSite;
   }
 
-  /** boolean
-   */
   sameParty(): boolean {
-    return 'sameparty' in this._attributes;
+    return 'sameparty' in this.attributes;
   }
 
   priority(): Protocol.Network.CookiePriority {
-    return this._priority;
+    return this.priorityInternal;
   }
 
   session(): boolean {
     // RFC 2965 suggests using Discard attribute to mark session cookies, but this does not seem to be widely used.
     // Check for absence of explicitly max-age or expiry date instead.
-    return !('expires' in this._attributes || 'max-age' in this._attributes);
+    return !('expires' in this.attributes || 'max-age' in this.attributes);
   }
 
   path(): string {
-    return /** @type {string} */ this._attributes['path'] as string;
+    return this.attributes['path'] as string;
   }
 
   domain(): string {
-    return /** @type {string} */ this._attributes['domain'] as string;
+    return this.attributes['domain'] as string;
   }
 
   expires(): number {
-    return /** @type {number} */ this._attributes['expires'] as number;
+    return this.attributes['expires'] as number;
   }
 
   maxAge(): number {
-    return /** @type {number} */ this._attributes['max-age'] as number;
+    return this.attributes['max-age'] as number;
   }
 
   sourcePort(): number {
-    return /** @type {number} */ this._attributes['sourceport'] as number;
+    return this.attributes['sourceport'] as number;
   }
 
   sourceScheme(): Protocol.Network.CookieSourceScheme {
-    return /** @type {Protocol.Network.CookieSourceScheme} */ this._attributes['sourcescheme'] as
-        Protocol.Network.CookieSourceScheme;
+    return this.attributes['sourcescheme'] as Protocol.Network.CookieSourceScheme;
   }
 
   size(): number {
-    return this._size;
+    return this.sizeInternal;
   }
 
   /**
@@ -150,7 +144,7 @@ export class Cookie {
   }
 
   setSize(size: number): void {
-    this._size = size;
+    this.sizeInternal = size;
   }
 
   expiresDate(requestDate: Date): Date|null {
@@ -170,19 +164,19 @@ export class Cookie {
     const normalizedKey = key.toLowerCase();
     switch (normalizedKey) {
       case 'priority':
-        this._priority = (value as Protocol.Network.CookiePriority);
+        this.priorityInternal = (value as Protocol.Network.CookiePriority);
         break;
       default:
-        this._attributes[normalizedKey] = value;
+        this.attributes[normalizedKey] = value;
     }
   }
 
   setCookieLine(cookieLine: string): void {
-    this._cookieLine = cookieLine;
+    this.cookieLine = cookieLine;
   }
 
   getCookieLine(): string|null {
-    return this._cookieLine;
+    return this.cookieLine;
   }
 
   matchesSecurityOrigin(securityOrigin: string): boolean {
@@ -258,22 +252,22 @@ export enum Attributes {
  * included to make it clear which site under Application>Cookies should be opened when revealing a `CookieReference`.
  */
 export class CookieReference {
-  _name: string;
-  _domain: string;
-  _path: string;
-  _contextUrl: string|undefined;
+  private readonly name: string;
+  private readonly domainInternal: string;
+  private readonly path: string;
+  private readonly contextUrlInternal: string|undefined;
   constructor(name: string, domain: string, path: string, contextUrl: string|undefined) {
-    this._name = name;
-    this._domain = domain;
-    this._path = path;
-    this._contextUrl = contextUrl;
+    this.name = name;
+    this.domainInternal = domain;
+    this.path = path;
+    this.contextUrlInternal = contextUrl;
   }
 
   domain(): string {
-    return this._domain;
+    return this.domainInternal;
   }
 
   contextUrl(): string|undefined {
-    return this._contextUrl;
+    return this.contextUrlInternal;
   }
 }

@@ -622,7 +622,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
 
   _onResponseReceived(event: Common.EventTarget.EventTargetEvent<SDK.NetworkManager.ResponseReceivedEvent>): void {
     const request = event.data.request;
-    if (request.resourceType() === Common.ResourceType.resourceTypes.Document) {
+    if (request.resourceType() === Common.ResourceType.resourceTypes.Document && request.loaderId) {
       this._lastResponseReceivedForLoaderId.set(request.loaderId, request);
     }
   }

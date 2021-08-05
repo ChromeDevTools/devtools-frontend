@@ -196,7 +196,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper implement
   _backendRequestId?: Protocol.Network.RequestId;
   _documentURL: string;
   _frameId: string;
-  _loaderId: string;
+  _loaderId: Protocol.Network.LoaderId|null;
   _initiator: Protocol.Network.Initiator|null|undefined;
   _redirectSource: NetworkRequest|null;
   _preflightRequest: NetworkRequest|null;
@@ -283,7 +283,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper implement
 
   private constructor(
       requestId: string, backendRequestId: Protocol.Network.RequestId|undefined, url: string, documentURL: string,
-      frameId: string, loaderId: string, initiator: Protocol.Network.Initiator|null) {
+      frameId: string, loaderId: Protocol.Network.LoaderId|null, initiator: Protocol.Network.Initiator|null) {
     super();
 
     this._requestId = requestId;
@@ -355,20 +355,20 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper implement
   }
 
   static create(
-      backendRequestId: Protocol.Network.RequestId, url: string, documentURL: string, frameId: string, loaderId: string,
-      initiator: Protocol.Network.Initiator|null): NetworkRequest {
+      backendRequestId: Protocol.Network.RequestId, url: string, documentURL: string, frameId: string,
+      loaderId: Protocol.Network.LoaderId|null, initiator: Protocol.Network.Initiator|null): NetworkRequest {
     return new NetworkRequest(backendRequestId, backendRequestId, url, documentURL, frameId, loaderId, initiator);
   }
 
   static createForWebSocket(
       backendRequestId: Protocol.Network.RequestId, requestURL: string,
       initiator?: Protocol.Network.Initiator): NetworkRequest {
-    return new NetworkRequest(backendRequestId, backendRequestId, requestURL, '', '', '', initiator || null);
+    return new NetworkRequest(backendRequestId, backendRequestId, requestURL, '', '', null, initiator || null);
   }
 
   static createWithoutBackendRequest(
       requestId: string, url: string, documentURL: string, initiator: Protocol.Network.Initiator|null): NetworkRequest {
-    return new NetworkRequest(requestId, undefined, url, documentURL, '', '', initiator);
+    return new NetworkRequest(requestId, undefined, url, documentURL, '', null, initiator);
   }
 
   identityCompare(other: NetworkRequest): number {
@@ -424,7 +424,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper implement
     return this._frameId;
   }
 
-  get loaderId(): Protocol.Network.LoaderId {
+  get loaderId(): Protocol.Network.LoaderId|null {
     return this._loaderId;
   }
 

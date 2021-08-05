@@ -1031,8 +1031,8 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
    * This method is only kept for usage in a web test.
    */
   _createNetworkRequest(
-      requestId: Protocol.Network.RequestId, frameId: string, loaderId: string, url: string, documentURL: string,
-      initiator: Protocol.Network.Initiator|null): NetworkRequest {
+      requestId: Protocol.Network.RequestId, frameId: string, loaderId: Protocol.Network.LoaderId, url: string,
+      documentURL: string, initiator: Protocol.Network.Initiator|null): NetworkRequest {
     const request = NetworkRequest.create(requestId, url, documentURL, frameId, loaderId, initiator);
     requestToManagerMap.set(request, this._manager);
     return request;
@@ -1445,7 +1445,7 @@ export namespace MultitargetNetworkManager {
 
 export class InterceptedRequest {
   _networkAgent: ProtocolProxyApi.NetworkApi;
-  _interceptionId: string;
+  _interceptionId: Protocol.Network.InterceptionId;
   _hasResponded: boolean;
   request: Protocol.Network.Request;
   frameId: string;
@@ -1460,11 +1460,11 @@ export class InterceptedRequest {
   requestId: string|undefined;
 
   constructor(
-      networkAgent: ProtocolProxyApi.NetworkApi, interceptionId: string, request: Protocol.Network.Request,
-      frameId: string, resourceType: Protocol.Network.ResourceType, isNavigationRequest: boolean, isDownload?: boolean,
-      redirectUrl?: string, authChallenge?: Protocol.Network.AuthChallenge,
-      responseErrorReason?: Protocol.Network.ErrorReason, responseStatusCode?: number,
-      responseHeaders?: Protocol.Network.Headers, requestId?: string) {
+      networkAgent: ProtocolProxyApi.NetworkApi, interceptionId: Protocol.Network.InterceptionId,
+      request: Protocol.Network.Request, frameId: string, resourceType: Protocol.Network.ResourceType,
+      isNavigationRequest: boolean, isDownload?: boolean, redirectUrl?: string,
+      authChallenge?: Protocol.Network.AuthChallenge, responseErrorReason?: Protocol.Network.ErrorReason,
+      responseStatusCode?: number, responseHeaders?: Protocol.Network.Headers, requestId?: string) {
     this._networkAgent = networkAgent;
     this._interceptionId = interceptionId;
     this._hasResponded = false;
@@ -1699,7 +1699,7 @@ export type RequestInterceptor = (request: InterceptedRequest) => Promise<void>;
 export interface RequestUpdateDroppedEventData {
   url: string;
   frameId: string;
-  loaderId: string;
+  loaderId: Protocol.Network.LoaderId;
   resourceType: Protocol.Network.ResourceType;
   mimeType: string;
   lastModified: Date|null;

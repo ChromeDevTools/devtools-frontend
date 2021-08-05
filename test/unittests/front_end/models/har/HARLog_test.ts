@@ -11,7 +11,7 @@ import * as HAR from '../../../../../front_end/models/har/har.js';
 describe('HAR.Log', () => {
   it('blocked time when no response received is returned in milliseconds (crbug.com/1145177)', async () => {
     const requestId = 'r0' as Protocol.Network.RequestId;
-    const request = SDK.NetworkRequest.NetworkRequest.create(requestId, 'p0.com', '', '', '', null);
+    const request = SDK.NetworkRequest.NetworkRequest.create(requestId, 'p0.com', '', '', null, null);
     const issueTime = new Date(2020, 1, 3).getTime() / 1000;
     request.setIssueTime(issueTime, issueTime);
     request.endTime = issueTime + 5;

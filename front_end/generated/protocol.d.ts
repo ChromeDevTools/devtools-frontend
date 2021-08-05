@@ -6692,7 +6692,7 @@ declare namespace Protocol {
     /**
      * Unique loader identifier.
      */
-    export type LoaderId = string;
+    export type LoaderId = OpaqueIdentifier<string, 'Protocol.Network.LoaderId'>;
 
     /**
      * Unique request identifier.
@@ -6702,7 +6702,7 @@ declare namespace Protocol {
     /**
      * Unique intercepted request identifier.
      */
-    export type InterceptionId = string;
+    export type InterceptionId = OpaqueIdentifier<string, 'Protocol.Network.InterceptionId'>;
 
     /**
      * Network level fetch failure reason.

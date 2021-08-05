@@ -225,6 +225,8 @@ const knownIdentifierTypes = [
   'DOM.BackendNodeId',
   'DOM.NodeId',
   'Fetch.RequestId',
+  'Network.InterceptionId',
+  'Network.LoaderId',
   'Network.RequestId',
 ];
 

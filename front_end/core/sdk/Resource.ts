@@ -47,7 +47,7 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
   _url!: string;
   _documentURL: string;
   _frameId: string;
-  _loaderId: string;
+  _loaderId: Protocol.Network.LoaderId|null;
   _type: Common.ResourceType.ResourceType;
   _mimeType: string;
   _isGenerated: boolean;
@@ -62,8 +62,8 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
 
   constructor(
       resourceTreeModel: ResourceTreeModel, request: NetworkRequest|null, url: string, documentURL: string,
-      frameId: string, loaderId: string, type: Common.ResourceType.ResourceType, mimeType: string,
-      lastModified: Date|null, contentSize: number|null) {
+      frameId: string, loaderId: Protocol.Network.LoaderId|null, type: Common.ResourceType.ResourceType,
+      mimeType: string, lastModified: Date|null, contentSize: number|null) {
     this._resourceTreeModel = resourceTreeModel;
     this._request = request;
     this.url = url;
@@ -125,7 +125,7 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
     return this._frameId;
   }
 
-  get loaderId(): Protocol.Network.LoaderId {
+  get loaderId(): Protocol.Network.LoaderId|null {
     return this._loaderId;
   }
 

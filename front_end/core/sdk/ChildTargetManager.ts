@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import type * as ProtocolClient from '../protocol_client/protocol_client.js';
@@ -16,45 +14,34 @@ import {Capability, Type} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 import {Events as TargetManagerEvents, TargetManager} from './TargetManager.js';
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-let _lastAnonymousTargetId = 0;
-
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-let _attachCallback: ((arg0: {
-                        target: Target,
-                        waitingForDebugger: boolean,
-                      }) => Promise<void>)|undefined;
-
 export class ChildTargetManager extends SDKModel<EventTypes> implements ProtocolProxyApi.TargetDispatcher {
-  _targetManager: TargetManager;
-  _parentTarget: Target;
-  _targetAgent: ProtocolProxyApi.TargetApi;
-  _targetInfos: Map<Protocol.Target.TargetID, Protocol.Target.TargetInfo>;
-  _childTargets: Map<Protocol.Target.SessionID, Target>;
-  _parallelConnections: Map<string, ProtocolClient.InspectorBackend.Connection>;
-  _parentTargetId: string|null;
+  private readonly targetManager: TargetManager;
+  private parentTarget: Target;
+  private readonly targetAgent: ProtocolProxyApi.TargetApi;
+  private readonly targetInfosInternal: Map<Protocol.Target.TargetID, Protocol.Target.TargetInfo>;
+  private readonly childTargetsInternal: Map<Protocol.Target.SessionID, Target>;
+  private readonly parallelConnections: Map<string, ProtocolClient.InspectorBackend.Connection>;
+  private parentTargetId: string|null;
 
   constructor(parentTarget: Target) {
     super(parentTarget);
-    this._targetManager = parentTarget.targetManager();
-    this._parentTarget = parentTarget;
-    this._targetAgent = parentTarget.targetAgent();
-    this._targetInfos = new Map();
+    this.targetManager = parentTarget.targetManager();
+    this.parentTarget = parentTarget;
+    this.targetAgent = parentTarget.targetAgent();
+    this.targetInfosInternal = new Map();
 
-    this._childTargets = new Map();
+    this.childTargetsInternal = new Map();
 
-    this._parallelConnections = new Map();
+    this.parallelConnections = new Map();
 
-    this._parentTargetId = null;
+    this.parentTargetId = null;
 
     parentTarget.registerTargetDispatcher(this);
-    this._targetAgent.invoke_setAutoAttach({autoAttach: true, waitForDebuggerOnStart: true, flatten: true});
+    this.targetAgent.invoke_setAutoAttach({autoAttach: true, waitForDebuggerOnStart: true, flatten: true});
 
     if (!parentTarget.parentTarget() && !Host.InspectorFrontendHost.isUnderTest()) {
-      this._targetAgent.invoke_setDiscoverTargets({discover: true});
-      this._targetAgent.invoke_setRemoteLocations({locations: [{host: 'localhost', port: 9229}]});
+      this.targetAgent.invoke_setDiscoverTargets({discover: true});
+      this.targetAgent.invoke_setRemoteLocations({locations: [{host: 'localhost', port: 9229}]});
     }
   }
 
@@ -62,47 +49,47 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
                                      target: Target,
                                      waitingForDebugger: boolean,
                                    }) => Promise<void>)): void {
-    _attachCallback = attachCallback;
+    ChildTargetManager.attachCallback = attachCallback;
     SDKModel.register(ChildTargetManager, {capabilities: Capability.Target, autostart: true});
   }
 
   childTargets(): Target[] {
-    return Array.from(this._childTargets.values());
+    return Array.from(this.childTargetsInternal.values());
   }
 
   async suspendModel(): Promise<void> {
-    await this._targetAgent.invoke_setAutoAttach({autoAttach: true, waitForDebuggerOnStart: false, flatten: true});
+    await this.targetAgent.invoke_setAutoAttach({autoAttach: true, waitForDebuggerOnStart: false, flatten: true});
   }
 
   async resumeModel(): Promise<void> {
-    await this._targetAgent.invoke_setAutoAttach({autoAttach: true, waitForDebuggerOnStart: true, flatten: true});
+    await this.targetAgent.invoke_setAutoAttach({autoAttach: true, waitForDebuggerOnStart: true, flatten: true});
   }
 
   dispose(): void {
-    for (const sessionId of this._childTargets.keys()) {
+    for (const sessionId of this.childTargetsInternal.keys()) {
       this.detachedFromTarget({sessionId, targetId: undefined});
     }
   }
 
   targetCreated({targetInfo}: Protocol.Target.TargetCreatedEvent): void {
-    this._targetInfos.set(targetInfo.targetId, targetInfo);
-    this._fireAvailableTargetsChanged();
+    this.targetInfosInternal.set(targetInfo.targetId, targetInfo);
+    this.fireAvailableTargetsChanged();
     this.dispatchEventToListeners(Events.TargetCreated, targetInfo);
   }
 
   targetInfoChanged({targetInfo}: Protocol.Target.TargetInfoChangedEvent): void {
-    this._targetInfos.set(targetInfo.targetId, targetInfo);
-    const target = this._childTargets.get(targetInfo.targetId);
+    this.targetInfosInternal.set(targetInfo.targetId, targetInfo);
+    const target = this.childTargetsInternal.get(targetInfo.targetId);
     if (target) {
       target.updateTargetInfo(targetInfo);
     }
-    this._fireAvailableTargetsChanged();
+    this.fireAvailableTargetsChanged();
     this.dispatchEventToListeners(Events.TargetInfoChanged, targetInfo);
   }
 
   targetDestroyed({targetId}: Protocol.Target.TargetDestroyedEvent): void {
-    this._targetInfos.delete(targetId);
-    this._fireAvailableTargetsChanged();
+    this.targetInfosInternal.delete(targetId);
+    this.fireAvailableTargetsChanged();
     this.dispatchEventToListeners(Events.TargetDestroyed, targetId);
   }
 
@@ -110,20 +97,21 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
   targetCrashed({targetId, status, errorCode}: Protocol.Target.TargetCrashedEvent): void {
   }
 
-  _fireAvailableTargetsChanged(): void {
+  private fireAvailableTargetsChanged(): void {
     TargetManager.instance().dispatchEventToListeners(
-        TargetManagerEvents.AvailableTargetsChanged, [...this._targetInfos.values()]);
+        TargetManagerEvents.AvailableTargetsChanged, [...this.targetInfosInternal.values()]);
   }
 
-  async _getParentTargetId(): Promise<string> {
-    if (!this._parentTargetId) {
-      this._parentTargetId = (await this._parentTarget.targetAgent().invoke_getTargetInfo({})).targetInfo.targetId;
+  private async getParentTargetId(): Promise<string> {
+    if (!this.parentTargetId) {
+      this.parentTargetId = (await this.parentTarget.targetAgent().invoke_getTargetInfo({})).targetInfo.targetId;
     }
-    return this._parentTargetId;
+    return this.parentTargetId;
   }
 
-  attachedToTarget({sessionId, targetInfo, waitingForDebugger}: Protocol.Target.AttachedToTargetEvent): void {
-    if (this._parentTargetId === targetInfo.targetId) {
+  async attachedToTarget({sessionId, targetInfo, waitingForDebugger}: Protocol.Target.AttachedToTargetEvent):
+      Promise<void> {
+    if (this.parentTargetId === targetInfo.targetId) {
       return;
     }
 
@@ -132,7 +120,8 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
       targetName = targetInfo.title;
     } else if (targetInfo.type !== 'iframe') {
       const parsedURL = Common.ParsedURL.ParsedURL.fromString(targetInfo.url);
-      targetName = parsedURL ? parsedURL.lastPathComponentWithFragment() : '#' + (++_lastAnonymousTargetId);
+      targetName =
+          parsedURL ? parsedURL.lastPathComponentWithFragment() : '#' + (++ChildTargetManager.lastAnonymousTargetId);
     }
 
     let type = Type.Browser;
@@ -148,27 +137,24 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
       type = Type.ServiceWorker;
     }
 
-    const target = this._targetManager.createTarget(
-        targetInfo.targetId, targetName, type, this._parentTarget, sessionId, undefined, undefined, targetInfo);
-    this._childTargets.set(sessionId, target);
+    const target = this.targetManager.createTarget(
+        targetInfo.targetId, targetName, type, this.parentTarget, sessionId, undefined, undefined, targetInfo);
+    this.childTargetsInternal.set(sessionId, target);
 
-    if (_attachCallback) {
-      _attachCallback({target, waitingForDebugger}).then(() => {
-        target.runtimeAgent().invoke_runIfWaitingForDebugger();
-      });
-    } else {
-      target.runtimeAgent().invoke_runIfWaitingForDebugger();
+    if (ChildTargetManager.attachCallback) {
+      await ChildTargetManager.attachCallback({target, waitingForDebugger});
     }
+    target.runtimeAgent().invoke_runIfWaitingForDebugger();
   }
 
   detachedFromTarget({sessionId}: Protocol.Target.DetachedFromTargetEvent): void {
-    if (this._parallelConnections.has(sessionId)) {
-      this._parallelConnections.delete(sessionId);
+    if (this.parallelConnections.has(sessionId)) {
+      this.parallelConnections.delete(sessionId);
     } else {
-      const session = this._childTargets.get(sessionId);
+      const session = this.childTargetsInternal.get(sessionId);
       if (session) {
         session.dispose('target terminated');
-        this._childTargets.delete(sessionId);
+        this.childTargetsInternal.delete(sessionId);
       }
     }
   }
@@ -181,15 +167,14 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
       Promise<ProtocolClient.InspectorBackend.Connection> {
     // The main Target id is actually just `main`, instead of the real targetId.
     // Get the real id (requires an async operation) so that it can be used synchronously later.
-    const targetId = await this._getParentTargetId();
-    const {connection, sessionId} =
-        await this._createParallelConnectionAndSessionForTarget(this._parentTarget, targetId);
+    const targetId = await this.getParentTargetId();
+    const {connection, sessionId} = await this.createParallelConnectionAndSessionForTarget(this.parentTarget, targetId);
     connection.setOnMessage(onMessage);
-    this._parallelConnections.set(sessionId, connection);
+    this.parallelConnections.set(sessionId, connection);
     return connection;
   }
 
-  async _createParallelConnectionAndSessionForTarget(target: Target, targetId: string): Promise<{
+  private async createParallelConnectionAndSessionForTarget(target: Target, targetId: string): Promise<{
     connection: ProtocolClient.InspectorBackend.Connection,
     sessionId: string,
   }> {
@@ -206,8 +191,15 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
   }
 
   targetInfos(): Protocol.Target.TargetInfo[] {
-    return Array.from(this._targetInfos.values());
+    return Array.from(this.targetInfosInternal.values());
   }
+
+  private static lastAnonymousTargetId = 0;
+
+  private static attachCallback?: ((arg0: {
+                                     target: Target,
+                                     waitingForDebugger: boolean,
+                                   }) => Promise<void>);
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

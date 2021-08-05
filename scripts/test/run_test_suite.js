@@ -214,14 +214,18 @@ function main() {
   const targetPath = path.join(yargsObject['cwd'], 'out', target);
   validatePathExistsOrError(`Target out/${target}`, targetPath);
 
+  /*
+   * Pull out all the configuration flags, ignoring the Yargs special $0 and _
+   * keys, which we can ignore.
+   */
   // eslint-disable-next-line no-unused-vars
-  const {$0, _, ...namedConfigFlags} = yargsObject;
+  const {$0, _, ...configurationFlags} = yargsObject;
 
-  if (!yargsObject['test-server-type']) {
-    if (yargsObject['test-suite-path'].match(/e2e\/?/)) {
-      yargsObject['test-server-type'] = 'hosted-mode';
-    } else if (yargsObject['test-suite-path'].match(/interactions\/?/)) {
-      yargsObject['test-server-type'] = 'component-docs';
+  if (!configurationFlags['test-server-type']) {
+    if (configurationFlags['test-suite-path'].match(/e2e\/?/)) {
+      configurationFlags['test-server-type'] = 'hosted-mode';
+    } else if (configurationFlags['test-suite-path'].match(/interactions\/?/)) {
+      configurationFlags['test-server-type'] = 'component-docs';
     } else {
       err('test-server-type could not be intelligently set based on your test-suite-path, you must manually set --test-server-type.');
       process.exit(1);
@@ -232,11 +236,11 @@ function main() {
    * Expose the configuration to any downstream test runners (Mocha, Conductor,
    * Test servers, etc).
    */
-  process.env.TEST_RUNNER_JSON_CONFIG = JSON.stringify(namedConfigFlags);
+  process.env.TEST_RUNNER_JSON_CONFIG = JSON.stringify(configurationFlags);
 
   log(`Using Chromium binary ${chromeBinaryPath}`);
-  if (yargsObject['chrome-features']) {
-    log(`with --enable-features=${yargsObject['chrome-features']}`);
+  if (configurationFlags['chrome-features']) {
+    log(`with --enable-features=${configurationFlags['chrome-features']}`);
   }
   log(`Using target ${target}`);
 
@@ -248,13 +252,13 @@ function main() {
     resultStatusCode = executeTestSuite({
       absoluteTestSuitePath: testSuitePath,
       chromeBinaryPath,
-      chromeFeatures: yargsObject['chrome-features'],
-      nodeModulesPath: yargsObject['node-modules-path'],
-      jobs: yargsObject['jobs'],
-      testFilePattern: yargsObject['test-file-pattern'],
-      coverage: yargsObject['coverage'] && '1',
+      chromeFeatures: configurationFlags['chrome-features'],
+      nodeModulesPath: configurationFlags['node-modules-path'],
+      jobs: configurationFlags['jobs'],
+      testFilePattern: configurationFlags['test-file-pattern'],
+      coverage: configurationFlags['coverage'] && '1',
       target,
-      cwd: yargsObject['cwd']
+      cwd: configurationFlags['cwd']
     });
   } catch (error) {
     log('Unexpected error when running test suite', error);

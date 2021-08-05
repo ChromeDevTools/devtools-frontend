@@ -28,7 +28,7 @@ styles.replaceSync(
 export default styles;
 `);
 
-  configFiles.push(`\"${fileName}\"`);
+  configFiles.push(`\"${fileName}.js\"`);
 }
 
 fs.writeFileSync(path.join(targetGenDir, `${targetName}-tsconfig.json`), `{

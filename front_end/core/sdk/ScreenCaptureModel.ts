@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 
@@ -13,14 +11,14 @@ import {Capability} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 
 export class ScreenCaptureModel extends SDKModel implements ProtocolProxyApi.PageDispatcher {
-  _agent: ProtocolProxyApi.PageApi;
-  _onScreencastFrame: ((arg0: Protocol.binary, arg1: Protocol.Page.ScreencastFrameMetadata) => void)|null;
-  _onScreencastVisibilityChanged: ((arg0: boolean) => void)|null;
+  private readonly agent: ProtocolProxyApi.PageApi;
+  private onScreencastFrame: ((arg0: Protocol.binary, arg1: Protocol.Page.ScreencastFrameMetadata) => void)|null;
+  private onScreencastVisibilityChanged: ((arg0: boolean) => void)|null;
   constructor(target: Target) {
     super(target);
-    this._agent = target.pageAgent();
-    this._onScreencastFrame = null;
-    this._onScreencastVisibilityChanged = null;
+    this.agent = target.pageAgent();
+    this.onScreencastFrame = null;
+    this.onScreencastVisibilityChanged = null;
     target.registerPageDispatcher(this);
   }
 
@@ -29,22 +27,22 @@ export class ScreenCaptureModel extends SDKModel implements ProtocolProxyApi.Pag
       maxHeight: number|undefined, everyNthFrame: number|undefined,
       onFrame: (arg0: Protocol.binary, arg1: Protocol.Page.ScreencastFrameMetadata) => void,
       onVisibilityChanged: (arg0: boolean) => void): void {
-    this._onScreencastFrame = onFrame;
-    this._onScreencastVisibilityChanged = onVisibilityChanged;
-    this._agent.invoke_startScreencast({format, quality, maxWidth, maxHeight, everyNthFrame});
+    this.onScreencastFrame = onFrame;
+    this.onScreencastVisibilityChanged = onVisibilityChanged;
+    this.agent.invoke_startScreencast({format, quality, maxWidth, maxHeight, everyNthFrame});
   }
 
   stopScreencast(): void {
-    this._onScreencastFrame = null;
-    this._onScreencastVisibilityChanged = null;
-    this._agent.invoke_stopScreencast();
+    this.onScreencastFrame = null;
+    this.onScreencastVisibilityChanged = null;
+    this.agent.invoke_stopScreencast();
   }
 
   async captureScreenshot(
       format: Protocol.Page.CaptureScreenshotRequestFormat, quality: number,
       clip?: Protocol.Page.Viewport): Promise<string|null> {
     await OverlayModel.muteHighlight();
-    const result = await this._agent.invoke_captureScreenshot(
+    const result = await this.agent.invoke_captureScreenshot(
         {format, quality, clip, fromSurface: true, captureBeyondViewport: true});
     await OverlayModel.unmuteHighlight();
     return result.data;
@@ -57,7 +55,7 @@ export class ScreenCaptureModel extends SDKModel implements ProtocolProxyApi.Pag
     contentWidth: number,
     contentHeight: number,
   }|null> {
-    const response = await this._agent.invoke_getLayoutMetrics();
+    const response = await this.agent.invoke_getLayoutMetrics();
     if (response.getError()) {
       return null;
     }
@@ -71,15 +69,15 @@ export class ScreenCaptureModel extends SDKModel implements ProtocolProxyApi.Pag
   }
 
   screencastFrame({data, metadata, sessionId}: Protocol.Page.ScreencastFrameEvent): void {
-    this._agent.invoke_screencastFrameAck({sessionId});
-    if (this._onScreencastFrame) {
-      this._onScreencastFrame.call(null, data, metadata);
+    this.agent.invoke_screencastFrameAck({sessionId});
+    if (this.onScreencastFrame) {
+      this.onScreencastFrame.call(null, data, metadata);
     }
   }
 
   screencastVisibilityChanged({visible}: Protocol.Page.ScreencastVisibilityChangedEvent): void {
-    if (this._onScreencastVisibilityChanged) {
-      this._onScreencastVisibilityChanged.call(null, visible);
+    if (this.onScreencastVisibilityChanged) {
+      this.onScreencastVisibilityChanged.call(null, visible);
     }
   }
 

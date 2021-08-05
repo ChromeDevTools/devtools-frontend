@@ -2,73 +2,71 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 
 import {OverlayColorGenerator} from './OverlayColorGenerator.js';
 
 export class OverlayPersistentHighlighter {
-  _model: OverlayModel;
-  _gridHighlights: Map<number, Protocol.Overlay.GridHighlightConfig>;
-  _scrollSnapHighlights: Map<number, Protocol.Overlay.ScrollSnapContainerHighlightConfig>;
-  _flexHighlights: Map<number, Protocol.Overlay.FlexContainerHighlightConfig>;
-  _colors: Map<number, Common.Color.Color>;
-  _gridColorGenerator: OverlayColorGenerator;
-  _flexColorGenerator: OverlayColorGenerator;
-  _flexEnabled: boolean;
+  private readonly model: OverlayModel;
+  private readonly gridHighlights: Map<number, Protocol.Overlay.GridHighlightConfig>;
+  private readonly scrollSnapHighlights: Map<number, Protocol.Overlay.ScrollSnapContainerHighlightConfig>;
+  private readonly flexHighlights: Map<number, Protocol.Overlay.FlexContainerHighlightConfig>;
+  private readonly colors: Map<number, Common.Color.Color>;
+  private gridColorGenerator: OverlayColorGenerator;
+  private flexColorGenerator: OverlayColorGenerator;
+  private flexEnabled: boolean;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _showGridLineLabelsSetting: Common.Settings.Setting<any>;
+  private readonly showGridLineLabelsSetting: Common.Settings.Setting<any>;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _extendGridLinesSetting: Common.Settings.Setting<any>;
+  private readonly extendGridLinesSetting: Common.Settings.Setting<any>;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _showGridAreasSetting: Common.Settings.Setting<any>;
+  private readonly showGridAreasSetting: Common.Settings.Setting<any>;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _showGridTrackSizesSetting: Common.Settings.Setting<any>;
+  private readonly showGridTrackSizesSetting: Common.Settings.Setting<any>;
   constructor(model: OverlayModel, flexEnabled: boolean = true) {
-    this._model = model;
+    this.model = model;
 
-    this._gridHighlights = new Map();
+    this.gridHighlights = new Map();
 
-    this._scrollSnapHighlights = new Map();
+    this.scrollSnapHighlights = new Map();
 
-    this._flexHighlights = new Map();
+    this.flexHighlights = new Map();
 
-    this._colors = new Map();
+    this.colors = new Map();
 
-    this._gridColorGenerator = new OverlayColorGenerator();
-    this._flexColorGenerator = new OverlayColorGenerator();
-    this._flexEnabled = flexEnabled;
+    this.gridColorGenerator = new OverlayColorGenerator();
+    this.flexColorGenerator = new OverlayColorGenerator();
+    this.flexEnabled = flexEnabled;
 
-    this._showGridLineLabelsSetting = Common.Settings.Settings.instance().moduleSetting('showGridLineLabels');
-    this._showGridLineLabelsSetting.addChangeListener(this._onSettingChange, this);
-    this._extendGridLinesSetting = Common.Settings.Settings.instance().moduleSetting('extendGridLines');
-    this._extendGridLinesSetting.addChangeListener(this._onSettingChange, this);
-    this._showGridAreasSetting = Common.Settings.Settings.instance().moduleSetting('showGridAreas');
-    this._showGridAreasSetting.addChangeListener(this._onSettingChange, this);
-    this._showGridTrackSizesSetting = Common.Settings.Settings.instance().moduleSetting('showGridTrackSizes');
-    this._showGridTrackSizesSetting.addChangeListener(this._onSettingChange, this);
+    this.showGridLineLabelsSetting = Common.Settings.Settings.instance().moduleSetting('showGridLineLabels');
+    this.showGridLineLabelsSetting.addChangeListener(this.onSettingChange, this);
+    this.extendGridLinesSetting = Common.Settings.Settings.instance().moduleSetting('extendGridLines');
+    this.extendGridLinesSetting.addChangeListener(this.onSettingChange, this);
+    this.showGridAreasSetting = Common.Settings.Settings.instance().moduleSetting('showGridAreas');
+    this.showGridAreasSetting.addChangeListener(this.onSettingChange, this);
+    this.showGridTrackSizesSetting = Common.Settings.Settings.instance().moduleSetting('showGridTrackSizes');
+    this.showGridTrackSizesSetting.addChangeListener(this.onSettingChange, this);
   }
 
-  _onSettingChange(): void {
+  private onSettingChange(): void {
     this.resetOverlay();
   }
 
-  _buildGridHighlightConfig(nodeId: number): Protocol.Overlay.GridHighlightConfig {
+  private buildGridHighlightConfig(nodeId: number): Protocol.Overlay.GridHighlightConfig {
     const mainColor = this.colorOfGrid(nodeId);
     const background = mainColor.setAlpha(0.1);
     const gapBackground = mainColor.setAlpha(0.3);
     const gapHatch = mainColor.setAlpha(0.8);
 
-    const showGridExtensionLines = (this._extendGridLinesSetting.get() as boolean);
-    const showPositiveLineNumbers = this._showGridLineLabelsSetting.get() === 'lineNumbers';
+    const showGridExtensionLines = (this.extendGridLinesSetting.get() as boolean);
+    const showPositiveLineNumbers = this.showGridLineLabelsSetting.get() === 'lineNumbers';
     const showNegativeLineNumbers = showPositiveLineNumbers;
-    const showLineNames = this._showGridLineLabelsSetting.get() === 'lineNames';
+    const showLineNames = this.showGridLineLabelsSetting.get() === 'lineNames';
     return {
       rowGapColor: gapBackground.toProtocolRGBA(),
       rowHatchColor: gapHatch.toProtocolRGBA(),
@@ -84,14 +82,14 @@ export class OverlayPersistentHighlighter {
       showPositiveLineNumbers,
       showNegativeLineNumbers,
       showLineNames,
-      showAreaNames: (this._showGridAreasSetting.get() as boolean),
-      showTrackSizes: (this._showGridTrackSizesSetting.get() as boolean),
+      showAreaNames: (this.showGridAreasSetting.get() as boolean),
+      showTrackSizes: (this.showGridTrackSizesSetting.get() as boolean),
       areaBorderColor: mainColor.toProtocolRGBA(),
       gridBackgroundColor: background.toProtocolRGBA(),
     };
   }
 
-  _buildFlexContainerHighlightConfig(nodeId: number): Protocol.Overlay.FlexContainerHighlightConfig {
+  private buildFlexContainerHighlightConfig(nodeId: number): Protocol.Overlay.FlexContainerHighlightConfig {
     const mainColor = this.colorOfFlex(nodeId);
     return {
       containerBorder: {color: mainColor.toProtocolRGBA(), pattern: Protocol.Overlay.LineStylePattern.Dashed},
@@ -102,7 +100,8 @@ export class OverlayPersistentHighlighter {
     };
   }
 
-  _buildScrollSnapContainerHighlightConfig(_nodeId: number): Protocol.Overlay.ScrollSnapContainerHighlightConfig {
+  private buildScrollSnapContainerHighlightConfig(_nodeId: number):
+      Protocol.Overlay.ScrollSnapContainerHighlightConfig {
     return {
       snapAreaBorder: {
         color: Common.Color.PageHighlight.GridBorder.toProtocolRGBA(),
@@ -115,101 +114,101 @@ export class OverlayPersistentHighlighter {
   }
 
   highlightGridInOverlay(nodeId: number): void {
-    this._gridHighlights.set(nodeId, this._buildGridHighlightConfig(nodeId));
-    this._updateHighlightsInOverlay();
+    this.gridHighlights.set(nodeId, this.buildGridHighlightConfig(nodeId));
+    this.updateHighlightsInOverlay();
   }
 
   isGridHighlighted(nodeId: number): boolean {
-    return this._gridHighlights.has(nodeId);
+    return this.gridHighlights.has(nodeId);
   }
 
   colorOfGrid(nodeId: number): Common.Color.Color {
-    let color = this._colors.get(nodeId);
+    let color = this.colors.get(nodeId);
     if (!color) {
-      color = this._gridColorGenerator.next();
-      this._colors.set(nodeId, color);
+      color = this.gridColorGenerator.next();
+      this.colors.set(nodeId, color);
     }
 
     return color;
   }
 
   setColorOfGrid(nodeId: number, color: Common.Color.Color): void {
-    this._colors.set(nodeId, color);
+    this.colors.set(nodeId, color);
   }
 
   hideGridInOverlay(nodeId: number): void {
-    if (this._gridHighlights.has(nodeId)) {
-      this._gridHighlights.delete(nodeId);
-      this._updateHighlightsInOverlay();
+    if (this.gridHighlights.has(nodeId)) {
+      this.gridHighlights.delete(nodeId);
+      this.updateHighlightsInOverlay();
     }
   }
 
   highlightScrollSnapInOverlay(nodeId: number): void {
-    this._scrollSnapHighlights.set(nodeId, this._buildScrollSnapContainerHighlightConfig(nodeId));
-    this._updateHighlightsInOverlay();
+    this.scrollSnapHighlights.set(nodeId, this.buildScrollSnapContainerHighlightConfig(nodeId));
+    this.updateHighlightsInOverlay();
   }
 
   isScrollSnapHighlighted(nodeId: number): boolean {
-    return this._scrollSnapHighlights.has(nodeId);
+    return this.scrollSnapHighlights.has(nodeId);
   }
 
   hideScrollSnapInOverlay(nodeId: number): void {
-    if (this._scrollSnapHighlights.has(nodeId)) {
-      this._scrollSnapHighlights.delete(nodeId);
-      this._updateHighlightsInOverlay();
+    if (this.scrollSnapHighlights.has(nodeId)) {
+      this.scrollSnapHighlights.delete(nodeId);
+      this.updateHighlightsInOverlay();
     }
   }
 
   highlightFlexInOverlay(nodeId: number): void {
-    this._flexHighlights.set(nodeId, this._buildFlexContainerHighlightConfig(nodeId));
-    this._updateHighlightsInOverlay();
+    this.flexHighlights.set(nodeId, this.buildFlexContainerHighlightConfig(nodeId));
+    this.updateHighlightsInOverlay();
   }
 
   isFlexHighlighted(nodeId: number): boolean {
-    return this._flexHighlights.has(nodeId);
+    return this.flexHighlights.has(nodeId);
   }
 
   colorOfFlex(nodeId: number): Common.Color.Color {
-    let color = this._colors.get(nodeId);
+    let color = this.colors.get(nodeId);
     if (!color) {
-      color = this._flexColorGenerator.next();
-      this._colors.set(nodeId, color);
+      color = this.flexColorGenerator.next();
+      this.colors.set(nodeId, color);
     }
 
     return color;
   }
 
   setColorOfFlex(nodeId: number, color: Common.Color.Color): void {
-    this._colors.set(nodeId, color);
+    this.colors.set(nodeId, color);
   }
 
   hideFlexInOverlay(nodeId: number): void {
-    if (this._flexHighlights.has(nodeId)) {
-      this._flexHighlights.delete(nodeId);
-      this._updateHighlightsInOverlay();
+    if (this.flexHighlights.has(nodeId)) {
+      this.flexHighlights.delete(nodeId);
+      this.updateHighlightsInOverlay();
     }
   }
 
   hideAllInOverlay(): void {
-    this._flexHighlights.clear();
-    this._gridHighlights.clear();
-    this._scrollSnapHighlights.clear();
-    this._updateHighlightsInOverlay();
+    this.flexHighlights.clear();
+    this.gridHighlights.clear();
+    this.scrollSnapHighlights.clear();
+    this.updateHighlightsInOverlay();
   }
 
   refreshHighlights(): void {
-    const gridsNeedUpdate = this._updateHighlightsForDeletedNodes(this._gridHighlights);
-    const flexboxesNeedUpdate = this._updateHighlightsForDeletedNodes(this._flexHighlights);
-    const scrollSnapsNeedUpdate = this._updateHighlightsForDeletedNodes(this._scrollSnapHighlights);
+    const gridsNeedUpdate = this.updateHighlightsForDeletedNodes(this.gridHighlights);
+    const flexboxesNeedUpdate = this.updateHighlightsForDeletedNodes(this.flexHighlights);
+    const scrollSnapsNeedUpdate = this.updateHighlightsForDeletedNodes(this.scrollSnapHighlights);
     if (flexboxesNeedUpdate || gridsNeedUpdate || scrollSnapsNeedUpdate) {
-      this._updateHighlightsInOverlay();
+      this.updateHighlightsInOverlay();
     }
   }
 
-  _updateHighlightsForDeletedNodes(highlights: Map<number, unknown>): boolean {
+  private updateHighlightsForDeletedNodes(highlights: Map<number, unknown>): boolean {
     let needsUpdate = false;
     for (const nodeId of highlights.keys()) {
-      if (this._model.getDOMModel().nodeForId(nodeId) === null) {
+      if (this.model.getDOMModel().nodeForId(nodeId) === null) {
         highlights.delete(nodeId);
         needsUpdate = true;
       }
@@ -218,51 +217,51 @@ export class OverlayPersistentHighlighter {
   }
 
   resetOverlay(): void {
-    for (const nodeId of this._gridHighlights.keys()) {
-      this._gridHighlights.set(nodeId, this._buildGridHighlightConfig(nodeId));
+    for (const nodeId of this.gridHighlights.keys()) {
+      this.gridHighlights.set(nodeId, this.buildGridHighlightConfig(nodeId));
     }
-    for (const nodeId of this._flexHighlights.keys()) {
-      this._flexHighlights.set(nodeId, this._buildFlexContainerHighlightConfig(nodeId));
+    for (const nodeId of this.flexHighlights.keys()) {
+      this.flexHighlights.set(nodeId, this.buildFlexContainerHighlightConfig(nodeId));
     }
-    for (const nodeId of this._scrollSnapHighlights.keys()) {
-      this._scrollSnapHighlights.set(nodeId, this._buildScrollSnapContainerHighlightConfig(nodeId));
+    for (const nodeId of this.scrollSnapHighlights.keys()) {
+      this.scrollSnapHighlights.set(nodeId, this.buildScrollSnapContainerHighlightConfig(nodeId));
     }
-    this._updateHighlightsInOverlay();
+    this.updateHighlightsInOverlay();
   }
 
-  _updateHighlightsInOverlay(): void {
-    const hasNodesToHighlight = this._gridHighlights.size > 0 || this._flexHighlights.size > 0;
-    this._model.setShowViewportSizeOnResize(!hasNodesToHighlight);
-    this._updateGridHighlightsInOverlay();
-    this._updateFlexHighlightsInOverlay();
-    this._updateScrollSnapHighlightsInOverlay();
+  private updateHighlightsInOverlay(): void {
+    const hasNodesToHighlight = this.gridHighlights.size > 0 || this.flexHighlights.size > 0;
+    this.model.setShowViewportSizeOnResize(!hasNodesToHighlight);
+    this.updateGridHighlightsInOverlay();
+    this.updateFlexHighlightsInOverlay();
+    this.updateScrollSnapHighlightsInOverlay();
   }
 
-  _updateGridHighlightsInOverlay(): void {
-    const overlayModel = this._model;
+  private updateGridHighlightsInOverlay(): void {
+    const overlayModel = this.model;
     const gridNodeHighlightConfigs = [];
-    for (const [nodeId, gridHighlightConfig] of this._gridHighlights.entries()) {
+    for (const [nodeId, gridHighlightConfig] of this.gridHighlights.entries()) {
       gridNodeHighlightConfigs.push({nodeId, gridHighlightConfig});
     }
     overlayModel.target().overlayAgent().invoke_setShowGridOverlays({gridNodeHighlightConfigs});
   }
 
-  _updateFlexHighlightsInOverlay(): void {
-    if (!this._flexEnabled) {
+  private updateFlexHighlightsInOverlay(): void {
+    if (!this.flexEnabled) {
       return;
     }
-    const overlayModel = this._model;
+    const overlayModel = this.model;
     const flexNodeHighlightConfigs = [];
-    for (const [nodeId, flexContainerHighlightConfig] of this._flexHighlights.entries()) {
+    for (const [nodeId, flexContainerHighlightConfig] of this.flexHighlights.entries()) {
       flexNodeHighlightConfigs.push({nodeId, flexContainerHighlightConfig});
     }
     overlayModel.target().overlayAgent().invoke_setShowFlexOverlays({flexNodeHighlightConfigs});
   }
 
-  _updateScrollSnapHighlightsInOverlay(): void {
-    const overlayModel = this._model;
+  private updateScrollSnapHighlightsInOverlay(): void {
+    const overlayModel = this.model;
     const scrollSnapHighlightConfigs = [];
-    for (const [nodeId, scrollSnapContainerHighlightConfig] of this._scrollSnapHighlights.entries()) {
+    for (const [nodeId, scrollSnapContainerHighlightConfig] of this.scrollSnapHighlights.entries()) {
       scrollSnapHighlightConfigs.push({nodeId, scrollSnapContainerHighlightConfig});
     }
     overlayModel.target().overlayAgent().invoke_setShowScrollSnapOverlays({scrollSnapHighlightConfigs});

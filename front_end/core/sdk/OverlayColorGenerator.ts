@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../common/common.js';
 
 /**
@@ -12,11 +10,11 @@ import * as Common from '../common/common.js';
  * same time.
  */
 export class OverlayColorGenerator {
-  _colors: Common.Color.Color[];
-  _index: number;
+  private readonly colors: Common.Color.Color[];
+  private index: number;
   constructor() {
     const {Color, Format} = Common.Color;
-    this._colors = [
+    this.colors = [
       // F59794
       new Color([0.9607843137254902, 0.592156862745098, 0.5803921568627451, 1], Format.RGBA),
       // F0BF4C
@@ -36,17 +34,17 @@ export class OverlayColorGenerator {
       // EB94CF
       new Color([0.9215686274509803, 0.5803921568627451, 0.8117647058823529, 1], Format.RGBA),
     ];
-    this._index = 0;
+    this.index = 0;
   }
 
   /**
    * Generate the next color in the spectrum
    */
   next(): Common.Color.Color {
-    const color = this._colors[this._index];
-    this._index++;
-    if (this._index >= this._colors.length) {
-      this._index = 0;
+    const color = this.colors[this.index];
+    this.index++;
+    if (this.index >= this.colors.length) {
+      this.index = 0;
     }
 
     return color;

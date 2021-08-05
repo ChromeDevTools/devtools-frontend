@@ -139,6 +139,7 @@
   --color-details-hairline: rgb(73 76 80);
   --color-details-hairline-light: rgb(54 57 59);
   --color-accent-red: rgb(242 139 130);
+  --color-red: rgb(237 78 76);
   --color-accent-green: rgb(129 201 149);
   --color-link: var(--color-primary);
   --color-syntax-1: rgb(53 212 199);

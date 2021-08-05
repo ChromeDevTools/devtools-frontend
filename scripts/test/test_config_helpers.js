@@ -14,5 +14,16 @@ function getTestRunnerConfigSetting(settingKey, fallbackValue) {
   const config = getTestRunnerConfig();
   return config[settingKey] === undefined ? fallbackValue : config[settingKey];
 }
+function requireTestRunnerConfigSetting(settingKey, errorMessage) {
+  const config = getTestRunnerConfig();
+  if (config[settingKey] === undefined) {
+    throw new Error(errorMessage || `Test runner error: could not find required setting ${settingKey}`);
+  }
 
-module.exports = {getTestRunnerConfigSetting};
+  return config[settingKey];
+}
+
+module.exports = {
+  getTestRunnerConfigSetting,
+  requireTestRunnerConfigSetting
+};

@@ -15,10 +15,23 @@ function getTestRunnerConfig() {
   }
 }
 
-export function getTestRunnerConfigSetting<T>(settingKey: string, fallbackValue: T): T {
+export function getTestRunnerConfigSetting<T>(settingKey: string, fallbackValue: T): T;
+export function getTestRunnerConfigSetting<T>(settingKey: string, fallbackValue: T|undefined): T|undefined {
   const config = getTestRunnerConfig();
   if (config && config.hasOwnProperty(settingKey)) {
-    return config[settingKey];
+    return config[settingKey] as T;
   }
-  return fallbackValue;
+  if (fallbackValue !== undefined) {
+    return fallbackValue;
+  }
+  return undefined;
+}
+
+export function requireTestRunnerConfigSetting<T>(settingKey: string, errorMessage?: string): T {
+  const config = getTestRunnerConfig();
+  if (config[settingKey] === undefined) {
+    throw new Error(errorMessage || `Test runner error: could not find required setting ${settingKey}`);
+  }
+
+  return config[settingKey] as T;
 }

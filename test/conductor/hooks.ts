@@ -8,7 +8,7 @@ import * as puppeteer from 'puppeteer';
 import type {CoverageMapData} from 'istanbul-lib-coverage';
 
 import {clearPuppeteerState, getBrowserAndPages, registerHandlers, setBrowserAndPages, setTestServerPort} from './puppeteer-state.js';
-import {getTestRunnerConfigSetting} from './test_runner_config.js';
+import {getTestRunnerConfigSetting, requireTestRunnerConfigSetting} from './test_runner_config.js';
 
 // Workaround for mismatching versions of puppeteer types and puppeteer library.
 declare module 'puppeteer' {
@@ -44,11 +44,7 @@ const DEVTOOLS_WAITUNTIL_EVENTS: puppeteer.PuppeteerLifeCycleEvent[] = ['network
 // When loading an empty page (including within the devtools window), we wait for it to be loaded using these events.
 const EMPTY_PAGE_WAITUNTIL_EVENTS: puppeteer.PuppeteerLifeCycleEvent[] = ['domcontentloaded'];
 
-// TODO (jacktfranklin): remove fallback to process.env once test runner config migration is done: crbug.com/1186163
-const TEST_SERVER_TYPE = getTestRunnerConfigSetting('test-server-type', process.env.TEST_SERVER_TYPE);
-if (!TEST_SERVER_TYPE) {
-  throw new Error('Failed to run tests: test-server-type was not defined.');
-}
+const TEST_SERVER_TYPE = requireTestRunnerConfigSetting<string>('test-server-type');
 
 // TODO: move this into a file
 const ALLOWED_ASSERTION_FAILURES = [
@@ -89,9 +85,8 @@ interface DevToolsTarget {
   id: string;
 }
 
-// TODO (jacktfranklin): remove fallback to process.env once test runner config migration is done: crbug.com/1186163
-const envChromeBinary = getTestRunnerConfigSetting('chrome-binary-path', process.env['CHROME_BIN']);
-const envChromeFeatures = getTestRunnerConfigSetting('chrome-features', process.env['CHROME_FEATURES']);
+const envChromeBinary = requireTestRunnerConfigSetting<string>('chrome-binary-path');
+const envChromeFeatures = getTestRunnerConfigSetting<string>('chrome-features', '');
 
 function launchChrome() {
   // Use port 0 to request any free port.

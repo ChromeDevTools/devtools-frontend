@@ -11,15 +11,14 @@ import * as path from 'path';
 import * as rimraf from 'rimraf';
 
 import {collectCoverageFromPage, postFileTeardown, preFileSetup, resetPages} from './hooks.js';
-import {getTestRunnerConfigSetting} from './test_runner_config.js';
+import {requireTestRunnerConfigSetting} from './test_runner_config.js';
 import {startServer, stopServer} from './test_server.js';
 
 /* eslint-disable no-console */
 
 process.on('SIGINT', postFileTeardown);
 
-// TODO (jacktfranklin): remove fallback to process.env once test runner config migration is done: crbug.com/1186163
-const TEST_SERVER_TYPE = getTestRunnerConfigSetting('test-server-type', process.env.TEST_SERVER_TYPE);
+const TEST_SERVER_TYPE = requireTestRunnerConfigSetting<string>('test-server-type');
 
 if (TEST_SERVER_TYPE !== 'hosted-mode' && TEST_SERVER_TYPE !== 'component-docs') {
   throw new Error(`Invalid test server type: ${TEST_SERVER_TYPE}`);

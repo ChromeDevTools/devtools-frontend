@@ -331,6 +331,6 @@ export class ApplicationCacheItemsView extends UI.View.SimpleView {
   _deleteCallback(_node: DataGrid.DataGrid.DataGridNode<unknown>): void {
     // FIXME: Should we delete a single (selected) resource or all resources?
     // ProtocolClient.inspectorBackend.deleteCachedResource(...)
-    // this._update();
+    // this.update();
   }
 }

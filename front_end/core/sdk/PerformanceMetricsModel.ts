@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Platform from '../platform/platform.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 
@@ -12,18 +10,18 @@ import {Capability} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 
 export class PerformanceMetricsModel extends SDKModel {
-  _agent: ProtocolProxyApi.PerformanceApi;
-  _metricModes: Map<string, MetricMode>;
-  _metricData: Map<string, {
+  private readonly agent: ProtocolProxyApi.PerformanceApi;
+  private readonly metricModes: Map<string, MetricMode>;
+  private readonly metricData: Map<string, {
     lastValue: (number | undefined),
     lastTimestamp: (number|undefined),
   }>;
 
   constructor(target: Target) {
     super(target);
-    this._agent = target.performanceAgent();
+    this.agent = target.performanceAgent();
 
-    this._metricModes = new Map([
+    this.metricModes = new Map([
       ['TaskDuration', MetricMode.CumulativeTime],
       ['ScriptDuration', MetricMode.CumulativeTime],
       ['LayoutDuration', MetricMode.CumulativeTime],
@@ -32,32 +30,32 @@ export class PerformanceMetricsModel extends SDKModel {
       ['RecalcStyleCount', MetricMode.CumulativeCount],
     ]);
 
-    this._metricData = new Map();
+    this.metricData = new Map();
   }
 
   enable(): Promise<Object> {
-    return this._agent.invoke_enable({});
+    return this.agent.invoke_enable({});
   }
 
   disable(): Promise<Object> {
-    return this._agent.invoke_disable();
+    return this.agent.invoke_disable();
   }
 
   async requestMetrics(): Promise<{
     metrics: Map<string, number>,
     timestamp: number,
   }> {
-    const rawMetrics = await this._agent.invoke_getMetrics() || [];
+    const rawMetrics = await this.agent.invoke_getMetrics() || [];
     const metrics = new Map<string, number>();
     const timestamp = performance.now();
     for (const metric of rawMetrics.metrics) {
-      let data = this._metricData.get(metric.name);
+      let data = this.metricData.get(metric.name);
       if (!data) {
         data = {lastValue: undefined, lastTimestamp: undefined};
-        this._metricData.set(metric.name, data);
+        this.metricData.set(metric.name, data);
       }
       let value;
-      switch (this._metricModes.get(metric.name)) {
+      switch (this.metricModes.get(metric.name)) {
         case MetricMode.CumulativeTime:
           value = (data.lastTimestamp && data.lastValue) ?
               Platform.NumberUtilities.clamp(

@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../common/common.js';
 import type {Target} from './Target.js';
 
@@ -19,15 +17,15 @@ const registeredModels = new Map<new (arg1: Target) => SDKModel, RegistrationInf
 //                         all event emitters and sinks have been migrated.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class SDKModel<Events = any> extends Common.ObjectWrapper.ObjectWrapper<Events> {
-  _target: Target;
+  private readonly targetInternal: Target;
 
   constructor(target: Target) {
     super();
-    this._target = target;
+    this.targetInternal = target;
   }
 
   target(): Target {
-    return this._target;
+    return this.targetInternal;
   }
 
   /**

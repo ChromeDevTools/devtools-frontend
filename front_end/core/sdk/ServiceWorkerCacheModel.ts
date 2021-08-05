@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
@@ -27,13 +25,13 @@ const str_ = i18n.i18n.registerUIStrings('core/sdk/ServiceWorkerCacheModel.ts', 
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ServiceWorkerCacheModel extends SDKModel implements ProtocolProxyApi.StorageDispatcher {
-  _caches: Map<string, Cache>;
-  _cacheAgent: ProtocolProxyApi.CacheStorageApi;
-  _storageAgent: ProtocolProxyApi.StorageApi;
-  _securityOriginManager: SecurityOriginManager;
-  _originsUpdated: Set<string>;
-  _throttler: Common.Throttler.Throttler;
-  _enabled: boolean;
+  private readonly cachesInternal: Map<string, Cache>;
+  readonly cacheAgent: ProtocolProxyApi.CacheStorageApi;
+  private readonly storageAgent: ProtocolProxyApi.StorageApi;
+  private readonly securityOriginManager: SecurityOriginManager;
+  private readonly originsUpdated: Set<string>;
+  private readonly throttler: Common.Throttler.Throttler;
+  private enabled: boolean;
 
   /**
    * Invariant: This model can only be constructed on a ServiceWorker target.
@@ -42,62 +40,62 @@ export class ServiceWorkerCacheModel extends SDKModel implements ProtocolProxyAp
     super(target);
     target.registerStorageDispatcher(this);
 
-    this._caches = new Map();
+    this.cachesInternal = new Map();
 
-    this._cacheAgent = target.cacheStorageAgent();
-    this._storageAgent = target.storageAgent();
-    this._securityOriginManager = (target.model(SecurityOriginManager) as SecurityOriginManager);
+    this.cacheAgent = target.cacheStorageAgent();
+    this.storageAgent = target.storageAgent();
+    this.securityOriginManager = (target.model(SecurityOriginManager) as SecurityOriginManager);
 
-    this._originsUpdated = new Set();
-    this._throttler = new Common.Throttler.Throttler(2000);
+    this.originsUpdated = new Set();
+    this.throttler = new Common.Throttler.Throttler(2000);
 
-    this._enabled = false;
+    this.enabled = false;
   }
 
   enable(): void {
-    if (this._enabled) {
+    if (this.enabled) {
       return;
     }
 
-    this._securityOriginManager.addEventListener(
-        SecurityOriginManagerEvents.SecurityOriginAdded, this._securityOriginAdded, this);
-    this._securityOriginManager.addEventListener(
-        SecurityOriginManagerEvents.SecurityOriginRemoved, this._securityOriginRemoved, this);
+    this.securityOriginManager.addEventListener(
+        SecurityOriginManagerEvents.SecurityOriginAdded, this.securityOriginAdded, this);
+    this.securityOriginManager.addEventListener(
+        SecurityOriginManagerEvents.SecurityOriginRemoved, this.securityOriginRemoved, this);
 
-    for (const securityOrigin of this._securityOriginManager.securityOrigins()) {
-      this._addOrigin(securityOrigin);
+    for (const securityOrigin of this.securityOriginManager.securityOrigins()) {
+      this.addOrigin(securityOrigin);
     }
-    this._enabled = true;
+    this.enabled = true;
   }
 
   clearForOrigin(origin: string): void {
-    this._removeOrigin(origin);
-    this._addOrigin(origin);
+    this.removeOrigin(origin);
+    this.addOrigin(origin);
   }
 
   refreshCacheNames(): void {
-    for (const cache of this._caches.values()) {
-      this._cacheRemoved(cache);
+    for (const cache of this.cachesInternal.values()) {
+      this.cacheRemoved(cache);
     }
-    this._caches.clear();
-    const securityOrigins = this._securityOriginManager.securityOrigins();
+    this.cachesInternal.clear();
+    const securityOrigins = this.securityOriginManager.securityOrigins();
     for (const securityOrigin of securityOrigins) {
-      this._loadCacheNames(securityOrigin);
+      this.loadCacheNames(securityOrigin);
     }
   }
 
   async deleteCache(cache: Cache): Promise<void> {
-    const response = await this._cacheAgent.invoke_deleteCache({cacheId: cache.cacheId});
+    const response = await this.cacheAgent.invoke_deleteCache({cacheId: cache.cacheId});
     if (response.getError()) {
       console.error(`ServiceWorkerCacheAgent error deleting cache ${cache.toString()}: ${response.getError()}`);
       return;
     }
-    this._caches.delete(cache.cacheId);
-    this._cacheRemoved(cache);
+    this.cachesInternal.delete(cache.cacheId);
+    this.cacheRemoved(cache);
   }
 
   async deleteCacheEntry(cache: Cache, request: string): Promise<void> {
-    const response = await this._cacheAgent.invoke_deleteEntry({cacheId: cache.cacheId, request});
+    const response = await this.cacheAgent.invoke_deleteEntry({cacheId: cache.cacheId, request});
     if (response.getError()) {
       Common.Console.Console.instance().error(i18nString(
           UIStrings.serviceworkercacheagentError, {PH1: cache.toString(), PH2: String(response.getError())}));
@@ -108,73 +106,73 @@ export class ServiceWorkerCacheModel extends SDKModel implements ProtocolProxyAp
   loadCacheData(
       cache: Cache, skipCount: number, pageSize: number, pathFilter: string,
       callback: (arg0: Array<Protocol.CacheStorage.DataEntry>, arg1: number) => void): void {
-    this._requestEntries(cache, skipCount, pageSize, pathFilter, callback);
+    this.requestEntries(cache, skipCount, pageSize, pathFilter, callback);
   }
 
   loadAllCacheData(
       cache: Cache, pathFilter: string,
       callback: (arg0: Array<Protocol.CacheStorage.DataEntry>, arg1: number) => void): void {
-    this._requestAllEntries(cache, pathFilter, callback);
+    this.requestAllEntries(cache, pathFilter, callback);
   }
 
   caches(): Cache[] {
     const caches = new Array();
-    for (const cache of this._caches.values()) {
+    for (const cache of this.cachesInternal.values()) {
       caches.push(cache);
     }
     return caches;
   }
 
   dispose(): void {
-    for (const cache of this._caches.values()) {
-      this._cacheRemoved(cache);
+    for (const cache of this.cachesInternal.values()) {
+      this.cacheRemoved(cache);
     }
-    this._caches.clear();
-    if (this._enabled) {
-      this._securityOriginManager.removeEventListener(
-          SecurityOriginManagerEvents.SecurityOriginAdded, this._securityOriginAdded, this);
-      this._securityOriginManager.removeEventListener(
-          SecurityOriginManagerEvents.SecurityOriginRemoved, this._securityOriginRemoved, this);
-    }
-  }
-
-  _addOrigin(securityOrigin: string): void {
-    this._loadCacheNames(securityOrigin);
-    if (this._isValidSecurityOrigin(securityOrigin)) {
-      this._storageAgent.invoke_trackCacheStorageForOrigin({origin: securityOrigin});
+    this.cachesInternal.clear();
+    if (this.enabled) {
+      this.securityOriginManager.removeEventListener(
+          SecurityOriginManagerEvents.SecurityOriginAdded, this.securityOriginAdded, this);
+      this.securityOriginManager.removeEventListener(
+          SecurityOriginManagerEvents.SecurityOriginRemoved, this.securityOriginRemoved, this);
     }
   }
 
-  _removeOrigin(securityOrigin: string): void {
-    for (const [opaqueId, cache] of this._caches.entries()) {
+  private addOrigin(securityOrigin: string): void {
+    this.loadCacheNames(securityOrigin);
+    if (this.isValidSecurityOrigin(securityOrigin)) {
+      this.storageAgent.invoke_trackCacheStorageForOrigin({origin: securityOrigin});
+    }
+  }
+
+  private removeOrigin(securityOrigin: string): void {
+    for (const [opaqueId, cache] of this.cachesInternal.entries()) {
       if (cache.securityOrigin === securityOrigin) {
-        this._caches.delete((opaqueId as string));
-        this._cacheRemoved((cache as Cache));
+        this.cachesInternal.delete((opaqueId as string));
+        this.cacheRemoved((cache as Cache));
       }
     }
-    if (this._isValidSecurityOrigin(securityOrigin)) {
-      this._storageAgent.invoke_untrackCacheStorageForOrigin({origin: securityOrigin});
+    if (this.isValidSecurityOrigin(securityOrigin)) {
+      this.storageAgent.invoke_untrackCacheStorageForOrigin({origin: securityOrigin});
     }
   }
 
-  _isValidSecurityOrigin(securityOrigin: string): boolean {
+  private isValidSecurityOrigin(securityOrigin: string): boolean {
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(securityOrigin);
     return parsedURL !== null && parsedURL.scheme.startsWith('http');
   }
 
-  async _loadCacheNames(securityOrigin: string): Promise<void> {
-    const response = await this._cacheAgent.invoke_requestCacheNames({securityOrigin: securityOrigin});
+  private async loadCacheNames(securityOrigin: string): Promise<void> {
+    const response = await this.cacheAgent.invoke_requestCacheNames({securityOrigin: securityOrigin});
     if (response.getError()) {
       return;
     }
-    this._updateCacheNames(securityOrigin, response.caches);
+    this.updateCacheNames(securityOrigin, response.caches);
   }
 
-  _updateCacheNames(securityOrigin: string, cachesJson: Protocol.CacheStorage.Cache[]): void {
+  private updateCacheNames(securityOrigin: string, cachesJson: Protocol.CacheStorage.Cache[]): void {
     function deleteAndSaveOldCaches(this: ServiceWorkerCacheModel, cache: Cache): void {
       if (cache.securityOrigin === securityOrigin && !updatingCachesIds.has(cache.cacheId)) {
         oldCaches.set(cache.cacheId, cache);
-        this._caches.delete(cache.cacheId);
+        this.cachesInternal.delete(cache.cacheId);
       }
     }
 
@@ -185,40 +183,40 @@ export class ServiceWorkerCacheModel extends SDKModel implements ProtocolProxyAp
     for (const cacheJson of cachesJson) {
       const cache = new Cache(this, cacheJson.securityOrigin, cacheJson.cacheName, cacheJson.cacheId);
       updatingCachesIds.add(cache.cacheId);
-      if (this._caches.has(cache.cacheId)) {
+      if (this.cachesInternal.has(cache.cacheId)) {
         continue;
       }
       newCaches.set(cache.cacheId, cache);
-      this._caches.set(cache.cacheId, cache);
+      this.cachesInternal.set(cache.cacheId, cache);
     }
-    this._caches.forEach(deleteAndSaveOldCaches, this);
-    newCaches.forEach(this._cacheAdded, this);
-    oldCaches.forEach(this._cacheRemoved, this);
+    this.cachesInternal.forEach(deleteAndSaveOldCaches, this);
+    newCaches.forEach(this.cacheAdded, this);
+    oldCaches.forEach(this.cacheRemoved, this);
   }
 
-  _securityOriginAdded(event: Common.EventTarget.EventTargetEvent): void {
+  private securityOriginAdded(event: Common.EventTarget.EventTargetEvent): void {
     const securityOrigin = (event.data as string);
-    this._addOrigin(securityOrigin);
+    this.addOrigin(securityOrigin);
   }
 
-  _securityOriginRemoved(event: Common.EventTarget.EventTargetEvent): void {
+  private securityOriginRemoved(event: Common.EventTarget.EventTargetEvent): void {
     const securityOrigin = (event.data as string);
-    this._removeOrigin(securityOrigin);
+    this.removeOrigin(securityOrigin);
   }
 
-  _cacheAdded(cache: Cache): void {
+  private cacheAdded(cache: Cache): void {
     this.dispatchEventToListeners(Events.CacheAdded, {model: this, cache: cache});
   }
 
-  _cacheRemoved(cache: Cache): void {
+  private cacheRemoved(cache: Cache): void {
     this.dispatchEventToListeners(Events.CacheRemoved, {model: this, cache: cache});
   }
 
-  async _requestEntries(
+  private async requestEntries(
       cache: Cache, skipCount: number, pageSize: number, pathFilter: string,
       callback: (arg0: Array<Protocol.CacheStorage.DataEntry>, arg1: number) => void): Promise<void> {
     const response =
-        await this._cacheAgent.invoke_requestEntries({cacheId: cache.cacheId, skipCount, pageSize, pathFilter});
+        await this.cacheAgent.invoke_requestEntries({cacheId: cache.cacheId, skipCount, pageSize, pathFilter});
     if (response.getError()) {
       console.error('ServiceWorkerCacheAgent error while requesting entries: ', response.getError());
       return;
@@ -226,10 +224,10 @@ export class ServiceWorkerCacheModel extends SDKModel implements ProtocolProxyAp
     callback(response.cacheDataEntries, response.returnCount);
   }
 
-  async _requestAllEntries(
+  private async requestAllEntries(
       cache: Cache, pathFilter: string,
       callback: (arg0: Array<Protocol.CacheStorage.DataEntry>, arg1: number) => void): Promise<void> {
-    const response = await this._cacheAgent.invoke_requestEntries({cacheId: cache.cacheId, pathFilter});
+    const response = await this.cacheAgent.invoke_requestEntries({cacheId: cache.cacheId, pathFilter});
     if (response.getError()) {
       console.error('ServiceWorkerCacheAgent error while requesting entries: ', response.getError());
       return;
@@ -238,11 +236,11 @@ export class ServiceWorkerCacheModel extends SDKModel implements ProtocolProxyAp
   }
 
   cacheStorageListUpdated({origin}: Protocol.Storage.CacheStorageListUpdatedEvent): void {
-    this._originsUpdated.add(origin);
+    this.originsUpdated.add(origin);
 
-    this._throttler.schedule(() => {
-      const promises = Array.from(this._originsUpdated, origin => this._loadCacheNames(origin));
-      this._originsUpdated.clear();
+    this.throttler.schedule(() => {
+      const promises = Array.from(this.originsUpdated, origin => this.loadCacheNames(origin));
+      this.originsUpdated.clear();
       return Promise.all(promises);
     });
   }
@@ -267,7 +265,7 @@ export enum Events {
 }
 
 export class Cache {
-  _model: ServiceWorkerCacheModel;
+  private readonly model: ServiceWorkerCacheModel;
   securityOrigin: string;
   cacheName: string;
   cacheId: Protocol.CacheStorage.CacheId;
@@ -275,7 +273,7 @@ export class Cache {
   constructor(
       model: ServiceWorkerCacheModel, securityOrigin: string, cacheName: string,
       cacheId: Protocol.CacheStorage.CacheId) {
-    this._model = model;
+    this.model = model;
     this.securityOrigin = securityOrigin;
     this.cacheName = cacheName;
     this.cacheId = cacheId;
@@ -291,7 +289,7 @@ export class Cache {
 
   async requestCachedResponse(url: string, requestHeaders: NameValue[]):
       Promise<Protocol.CacheStorage.CachedResponse|null> {
-    const response = await this._model._cacheAgent.invoke_requestCachedResponse(
+    const response = await this.model.cacheAgent.invoke_requestCachedResponse(
         {cacheId: this.cacheId, requestURL: url, requestHeaders});
     if (response.getError()) {
       return null;

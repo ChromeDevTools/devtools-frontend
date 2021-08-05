@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
@@ -96,11 +94,11 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export class ServiceWorkerManager extends SDKModel {
-  _lastAnonymousTargetId: number;
-  _agent: ProtocolProxyApi.ServiceWorkerApi;
-  _registrations: Map<string, ServiceWorkerRegistration>;
-  _enabled: boolean;
-  _forceUpdateSetting: Common.Settings.Setting<boolean>;
+  private readonly lastAnonymousTargetId: number;
+  private readonly agent: ProtocolProxyApi.ServiceWorkerApi;
+  private readonly registrationsInternal: Map<string, ServiceWorkerRegistration>;
+  private enabled: boolean;
+  private readonly forceUpdateSetting: Common.Settings.Setting<boolean>;
   serviceWorkerNetworkRequestsPanelStatus: {
     isOpen: boolean,
     openedAt: number,
@@ -109,16 +107,16 @@ export class ServiceWorkerManager extends SDKModel {
   constructor(target: Target) {
     super(target);
     target.registerServiceWorkerDispatcher(new ServiceWorkerDispatcher(this));
-    this._lastAnonymousTargetId = 0;
-    this._agent = target.serviceWorkerAgent();
-    this._registrations = new Map();
-    this._enabled = false;
+    this.lastAnonymousTargetId = 0;
+    this.agent = target.serviceWorkerAgent();
+    this.registrationsInternal = new Map();
+    this.enabled = false;
     this.enable();
-    this._forceUpdateSetting = Common.Settings.Settings.instance().createSetting('serviceWorkerUpdateOnReload', false);
-    if (this._forceUpdateSetting.get()) {
-      this._forceUpdateSettingChanged();
+    this.forceUpdateSetting = Common.Settings.Settings.instance().createSetting('serviceWorkerUpdateOnReload', false);
+    if (this.forceUpdateSetting.get()) {
+      this.forceUpdateSettingChanged();
     }
-    this._forceUpdateSetting.addChangeListener(this._forceUpdateSettingChanged, this);
+    this.forceUpdateSetting.addChangeListener(this.forceUpdateSettingChanged, this);
     new ServiceWorkerContextNamer(target, this);
 
     /** Status of service worker network requests panel */
@@ -129,28 +127,28 @@ export class ServiceWorkerManager extends SDKModel {
   }
 
   async enable(): Promise<void> {
-    if (this._enabled) {
+    if (this.enabled) {
       return;
     }
-    this._enabled = true;
-    await this._agent.invoke_enable();
+    this.enabled = true;
+    await this.agent.invoke_enable();
   }
 
   async disable(): Promise<void> {
-    if (!this._enabled) {
+    if (!this.enabled) {
       return;
     }
-    this._enabled = false;
-    this._registrations.clear();
-    await this._agent.invoke_enable();
+    this.enabled = false;
+    this.registrationsInternal.clear();
+    await this.agent.invoke_enable();
   }
 
   registrations(): Map<string, ServiceWorkerRegistration> {
-    return this._registrations;
+    return this.registrationsInternal;
   }
 
   hasRegistrationForURLs(urls: string[]): boolean {
-    for (const registration of this._registrations.values()) {
+    for (const registration of this.registrationsInternal.values()) {
       if (urls.filter(url => url && url.startsWith(registration.scopeURL)).length === urls.length) {
         return true;
       }
@@ -169,90 +167,90 @@ export class ServiceWorkerManager extends SDKModel {
   }
 
   deleteRegistration(registrationId: string): void {
-    const registration = this._registrations.get(registrationId);
+    const registration = this.registrationsInternal.get(registrationId);
     if (!registration) {
       return;
     }
-    if (registration._isRedundant()) {
-      this._registrations.delete(registrationId);
+    if (registration.isRedundant()) {
+      this.registrationsInternal.delete(registrationId);
       this.dispatchEventToListeners(Events.RegistrationDeleted, registration);
       return;
     }
-    registration._deleting = true;
+    registration.deleting = true;
     for (const version of registration.versions.values()) {
       this.stopWorker(version.id);
     }
-    this._unregister(registration.scopeURL);
+    this.unregister(registration.scopeURL);
   }
 
   async updateRegistration(registrationId: string): Promise<void> {
-    const registration = this._registrations.get(registrationId);
+    const registration = this.registrationsInternal.get(registrationId);
     if (!registration) {
       return;
     }
-    await this._agent.invoke_updateRegistration({scopeURL: registration.scopeURL});
+    await this.agent.invoke_updateRegistration({scopeURL: registration.scopeURL});
   }
 
   async deliverPushMessage(registrationId: string, data: string): Promise<void> {
-    const registration = this._registrations.get(registrationId);
+    const registration = this.registrationsInternal.get(registrationId);
     if (!registration) {
       return;
     }
     const origin = Common.ParsedURL.ParsedURL.extractOrigin(registration.scopeURL);
-    await this._agent.invoke_deliverPushMessage({origin, registrationId, data});
+    await this.agent.invoke_deliverPushMessage({origin, registrationId, data});
   }
 
   async dispatchSyncEvent(registrationId: string, tag: string, lastChance: boolean): Promise<void> {
-    const registration = this._registrations.get(registrationId);
+    const registration = this.registrationsInternal.get(registrationId);
     if (!registration) {
       return;
     }
     const origin = Common.ParsedURL.ParsedURL.extractOrigin(registration.scopeURL);
-    await this._agent.invoke_dispatchSyncEvent({origin, registrationId, tag, lastChance});
+    await this.agent.invoke_dispatchSyncEvent({origin, registrationId, tag, lastChance});
   }
 
   async dispatchPeriodicSyncEvent(registrationId: string, tag: string): Promise<void> {
-    const registration = this._registrations.get(registrationId);
+    const registration = this.registrationsInternal.get(registrationId);
     if (!registration) {
       return;
     }
     const origin = Common.ParsedURL.ParsedURL.extractOrigin(registration.scopeURL);
-    await this._agent.invoke_dispatchPeriodicSyncEvent({origin, registrationId, tag});
+    await this.agent.invoke_dispatchPeriodicSyncEvent({origin, registrationId, tag});
   }
 
-  async _unregister(scopeURL: string): Promise<void> {
-    await this._agent.invoke_unregister({scopeURL});
+  private async unregister(scopeURL: string): Promise<void> {
+    await this.agent.invoke_unregister({scopeURL});
   }
 
   async startWorker(scopeURL: string): Promise<void> {
-    await this._agent.invoke_startWorker({scopeURL});
+    await this.agent.invoke_startWorker({scopeURL});
   }
 
   async skipWaiting(scopeURL: string): Promise<void> {
-    await this._agent.invoke_skipWaiting({scopeURL});
+    await this.agent.invoke_skipWaiting({scopeURL});
   }
 
   async stopWorker(versionId: string): Promise<void> {
-    await this._agent.invoke_stopWorker({versionId});
+    await this.agent.invoke_stopWorker({versionId});
   }
 
   async inspectWorker(versionId: string): Promise<void> {
-    await this._agent.invoke_inspectWorker({versionId});
+    await this.agent.invoke_inspectWorker({versionId});
   }
 
-  _workerRegistrationUpdated(registrations: Protocol.ServiceWorker.ServiceWorkerRegistration[]): void {
+  workerRegistrationUpdated(registrations: Protocol.ServiceWorker.ServiceWorkerRegistration[]): void {
     for (const payload of registrations) {
-      let registration = this._registrations.get(payload.registrationId);
+      let registration = this.registrationsInternal.get(payload.registrationId);
       if (!registration) {
         registration = new ServiceWorkerRegistration(payload);
-        this._registrations.set(payload.registrationId, registration);
+        this.registrationsInternal.set(payload.registrationId, registration);
         this.dispatchEventToListeners(Events.RegistrationUpdated, registration);
         continue;
       }
-      registration._update(payload);
+      registration.update(payload);
 
-      if (registration._shouldBeRemoved()) {
-        this._registrations.delete(registration.id);
+      if (registration.shouldBeRemoved()) {
+        this.registrationsInternal.delete(registration.id);
         this.dispatchEventToListeners(Events.RegistrationDeleted, registration);
       } else {
         this.dispatchEventToListeners(Events.RegistrationUpdated, registration);
@@ -260,19 +258,19 @@ export class ServiceWorkerManager extends SDKModel {
     }
   }
 
-  _workerVersionUpdated(versions: Protocol.ServiceWorker.ServiceWorkerVersion[]): void {
+  workerVersionUpdated(versions: Protocol.ServiceWorker.ServiceWorkerVersion[]): void {
     const registrations = new Set<ServiceWorkerRegistration>();
     for (const payload of versions) {
-      const registration = this._registrations.get(payload.registrationId);
+      const registration = this.registrationsInternal.get(payload.registrationId);
       if (!registration) {
         continue;
       }
-      registration._updateVersion(payload);
+      registration.updateVersion(payload);
       registrations.add(registration);
     }
     for (const registration of registrations) {
-      if (registration._shouldBeRemoved()) {
-        this._registrations.delete(registration.id);
+      if (registration.shouldBeRemoved()) {
+        this.registrationsInternal.delete(registration.id);
         this.dispatchEventToListeners(Events.RegistrationDeleted, registration);
       } else {
         this.dispatchEventToListeners(Events.RegistrationUpdated, registration);
@@ -280,8 +278,8 @@ export class ServiceWorkerManager extends SDKModel {
     }
   }
 
-  _workerErrorReported(payload: Protocol.ServiceWorker.ServiceWorkerErrorMessage): void {
-    const registration = this._registrations.get(payload.registrationId);
+  workerErrorReported(payload: Protocol.ServiceWorker.ServiceWorkerErrorMessage): void {
+    const registration = this.registrationsInternal.get(payload.registrationId);
     if (!registration) {
       return;
     }
@@ -290,12 +288,12 @@ export class ServiceWorkerManager extends SDKModel {
   }
 
   forceUpdateOnReloadSetting(): Common.Settings.Setting<boolean> {
-    return this._forceUpdateSetting;
+    return this.forceUpdateSetting;
   }
 
-  _forceUpdateSettingChanged(): void {
-    const forceUpdateOnPageLoad = this._forceUpdateSetting.get();
-    this._agent.invoke_setForceUpdateOnPageLoad({forceUpdateOnPageLoad});
+  private forceUpdateSettingChanged(): void {
+    const forceUpdateOnPageLoad = this.forceUpdateSetting.get();
+    this.agent.invoke_setForceUpdateOnPageLoad({forceUpdateOnPageLoad});
   }
 }
 
@@ -308,21 +306,21 @@ export enum Events {
 }
 
 class ServiceWorkerDispatcher implements ProtocolProxyApi.ServiceWorkerDispatcher {
-  _manager: ServiceWorkerManager;
+  private readonly manager: ServiceWorkerManager;
   constructor(manager: ServiceWorkerManager) {
-    this._manager = manager;
+    this.manager = manager;
   }
 
   workerRegistrationUpdated({registrations}: Protocol.ServiceWorker.WorkerRegistrationUpdatedEvent): void {
-    this._manager._workerRegistrationUpdated(registrations);
+    this.manager.workerRegistrationUpdated(registrations);
   }
 
   workerVersionUpdated({versions}: Protocol.ServiceWorker.WorkerVersionUpdatedEvent): void {
-    this._manager._workerVersionUpdated(versions);
+    this.manager.workerVersionUpdated(versions);
   }
 
   workerErrorReported({errorMessage}: Protocol.ServiceWorker.WorkerErrorReportedEvent): void {
-    this._manager._workerErrorReported(errorMessage);
+    this.manager.workerErrorReported(errorMessage);
   }
 }
 
@@ -363,10 +361,10 @@ export class ServiceWorkerVersion {
   registration: ServiceWorkerRegistration;
   constructor(registration: ServiceWorkerRegistration, payload: Protocol.ServiceWorker.ServiceWorkerVersion) {
     this.registration = registration;
-    this._update(payload);
+    this.update(payload);
   }
 
-  _update(payload: Protocol.ServiceWorker.ServiceWorkerVersion): void {
+  update(payload: Protocol.ServiceWorker.ServiceWorkerVersion): void {
     this.id = payload.versionId;
     this.scriptURL = payload.scriptURL;
     const parsedURL = new Common.ParsedURL.ParsedURL(payload.scriptURL);
@@ -482,24 +480,24 @@ export namespace ServiceWorkerVersion {
 }
 
 export class ServiceWorkerRegistration {
-  _fingerprint!: symbol;
+  private fingerprintInternal!: symbol;
   id!: string;
   scopeURL!: string;
   securityOrigin!: string;
   isDeleted!: boolean;
   versions: Map<string, ServiceWorkerVersion>;
-  _deleting: boolean;
+  deleting: boolean;
   errors: Protocol.ServiceWorker.ServiceWorkerErrorMessage[];
 
   constructor(payload: Protocol.ServiceWorker.ServiceWorkerRegistration) {
-    this._update(payload);
+    this.update(payload);
     this.versions = new Map();
-    this._deleting = false;
+    this.deleting = false;
     this.errors = [];
   }
 
-  _update(payload: Protocol.ServiceWorker.ServiceWorkerRegistration): void {
-    this._fingerprint = Symbol('fingerprint');
+  update(payload: Protocol.ServiceWorker.ServiceWorkerRegistration): void {
+    this.fingerprintInternal = Symbol('fingerprint');
     this.id = payload.registrationId;
     this.scopeURL = payload.scopeURL;
     const parsedURL = new Common.ParsedURL.ParsedURL(payload.scopeURL);
@@ -508,7 +506,7 @@ export class ServiceWorkerRegistration {
   }
 
   fingerprint(): symbol {
-    return this._fingerprint;
+    return this.fingerprintInternal;
   }
 
   versionsByMode(): Map<string, ServiceWorkerVersion> {
@@ -519,19 +517,19 @@ export class ServiceWorkerRegistration {
     return result;
   }
 
-  _updateVersion(payload: Protocol.ServiceWorker.ServiceWorkerVersion): ServiceWorkerVersion {
-    this._fingerprint = Symbol('fingerprint');
+  updateVersion(payload: Protocol.ServiceWorker.ServiceWorkerVersion): ServiceWorkerVersion {
+    this.fingerprintInternal = Symbol('fingerprint');
     let version = this.versions.get(payload.versionId);
     if (!version) {
       version = new ServiceWorkerVersion(this, payload);
       this.versions.set(payload.versionId, version);
       return version;
     }
-    version._update(payload);
+    version.update(payload);
     return version;
   }
 
-  _isRedundant(): boolean {
+  isRedundant(): boolean {
     for (const version of this.versions.values()) {
       if (!version.isStoppedAndRedundant()) {
         return false;
@@ -540,80 +538,80 @@ export class ServiceWorkerRegistration {
     return true;
   }
 
-  _shouldBeRemoved(): boolean {
-    return this._isRedundant() && (!this.errors.length || this._deleting);
+  shouldBeRemoved(): boolean {
+    return this.isRedundant() && (!this.errors.length || this.deleting);
   }
 
   canBeRemoved(): boolean {
-    return this.isDeleted || this._deleting;
+    return this.isDeleted || this.deleting;
   }
 
   clearErrors(): void {
-    this._fingerprint = Symbol('fingerprint');
+    this.fingerprintInternal = Symbol('fingerprint');
     this.errors = [];
   }
 }
 
 class ServiceWorkerContextNamer {
-  _target: Target;
-  _serviceWorkerManager: ServiceWorkerManager;
-  _versionByTargetId: Map<string, ServiceWorkerVersion>;
+  private readonly target: Target;
+  private readonly serviceWorkerManager: ServiceWorkerManager;
+  private readonly versionByTargetId: Map<string, ServiceWorkerVersion>;
 
   constructor(target: Target, serviceWorkerManager: ServiceWorkerManager) {
-    this._target = target;
-    this._serviceWorkerManager = serviceWorkerManager;
-    this._versionByTargetId = new Map();
-    serviceWorkerManager.addEventListener(Events.RegistrationUpdated, this._registrationsUpdated, this);
-    serviceWorkerManager.addEventListener(Events.RegistrationDeleted, this._registrationsUpdated, this);
+    this.target = target;
+    this.serviceWorkerManager = serviceWorkerManager;
+    this.versionByTargetId = new Map();
+    serviceWorkerManager.addEventListener(Events.RegistrationUpdated, this.registrationsUpdated, this);
+    serviceWorkerManager.addEventListener(Events.RegistrationDeleted, this.registrationsUpdated, this);
     TargetManager.instance().addModelListener(
-        RuntimeModel, RuntimeModelEvents.ExecutionContextCreated, this._executionContextCreated, this);
+        RuntimeModel, RuntimeModelEvents.ExecutionContextCreated, this.executionContextCreated, this);
   }
 
-  _registrationsUpdated(_event: Common.EventTarget.EventTargetEvent): void {
-    this._versionByTargetId.clear();
-    const registrations = this._serviceWorkerManager.registrations().values();
+  private registrationsUpdated(_event: Common.EventTarget.EventTargetEvent): void {
+    this.versionByTargetId.clear();
+    const registrations = this.serviceWorkerManager.registrations().values();
     for (const registration of registrations) {
       for (const version of registration.versions.values()) {
         if (version.targetId) {
-          this._versionByTargetId.set(version.targetId, version);
+          this.versionByTargetId.set(version.targetId, version);
         }
       }
     }
-    this._updateAllContextLabels();
+    this.updateAllContextLabels();
   }
 
-  _executionContextCreated(event: Common.EventTarget.EventTargetEvent<ExecutionContext>): void {
+  private executionContextCreated(event: Common.EventTarget.EventTargetEvent<ExecutionContext>): void {
     const executionContext = event.data;
-    const serviceWorkerTargetId = this._serviceWorkerTargetId(executionContext.target());
+    const serviceWorkerTargetId = this.serviceWorkerTargetId(executionContext.target());
     if (!serviceWorkerTargetId) {
       return;
     }
-    this._updateContextLabel(executionContext, this._versionByTargetId.get(serviceWorkerTargetId) || null);
+    this.updateContextLabel(executionContext, this.versionByTargetId.get(serviceWorkerTargetId) || null);
   }
 
-  _serviceWorkerTargetId(target: Target): string|null {
-    if (target.parentTarget() !== this._target || target.type() !== Type.ServiceWorker) {
+  private serviceWorkerTargetId(target: Target): string|null {
+    if (target.parentTarget() !== this.target || target.type() !== Type.ServiceWorker) {
       return null;
     }
     return target.id();
   }
 
-  _updateAllContextLabels(): void {
+  private updateAllContextLabels(): void {
     for (const target of TargetManager.instance().targets()) {
-      const serviceWorkerTargetId = this._serviceWorkerTargetId(target);
+      const serviceWorkerTargetId = this.serviceWorkerTargetId(target);
       if (!serviceWorkerTargetId) {
         continue;
       }
-      const version = this._versionByTargetId.get(serviceWorkerTargetId) || null;
+      const version = this.versionByTargetId.get(serviceWorkerTargetId) || null;
       const runtimeModel = target.model(RuntimeModel);
       const executionContexts = runtimeModel ? runtimeModel.executionContexts() : [];
       for (const context of executionContexts) {
-        this._updateContextLabel(context, version);
+        this.updateContextLabel(context, version);
       }
     }
   }
 
-  _updateContextLabel(context: ExecutionContext, version: ServiceWorkerVersion|null): void {
+  private updateContextLabel(context: ExecutionContext, version: ServiceWorkerVersion|null): void {
     if (!version) {
       context.setLabel('');
       return;

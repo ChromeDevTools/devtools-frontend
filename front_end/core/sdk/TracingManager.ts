@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
@@ -12,86 +11,86 @@ import {SDKModel} from './SDKModel.js';
 import type {ObjectSnapshot} from './TracingModel.js';
 
 export class TracingManager extends SDKModel {
-  _tracingAgent: ProtocolProxyApi.TracingApi;
-  _activeClient: TracingManagerClient|null;
-  _eventBufferSize: number|null;
-  _eventsRetrieved: number;
-  _finishing?: boolean;
+  private readonly tracingAgent: ProtocolProxyApi.TracingApi;
+  private activeClient: TracingManagerClient|null;
+  private eventBufferSize: number|null;
+  private eventsRetrieved: number;
+  private finishing?: boolean;
   constructor(target: Target) {
     super(target);
-    this._tracingAgent = target.tracingAgent();
+    this.tracingAgent = target.tracingAgent();
     target.registerTracingDispatcher(new TracingDispatcher(this));
 
-    this._activeClient = null;
-    this._eventBufferSize = 0;
-    this._eventsRetrieved = 0;
+    this.activeClient = null;
+    this.eventBufferSize = 0;
+    this.eventsRetrieved = 0;
   }
 
-  _bufferUsage(usage?: number, eventCount?: number, percentFull?: number): void {
-    this._eventBufferSize = eventCount === undefined ? null : eventCount;
-    if (this._activeClient) {
-      this._activeClient.tracingBufferUsage(usage || percentFull || 0);
+  bufferUsage(usage?: number, eventCount?: number, percentFull?: number): void {
+    this.eventBufferSize = eventCount === undefined ? null : eventCount;
+    if (this.activeClient) {
+      this.activeClient.tracingBufferUsage(usage || percentFull || 0);
     }
   }
 
-  _eventsCollected(events: EventPayload[]): void {
-    if (!this._activeClient) {
+  eventsCollected(events: EventPayload[]): void {
+    if (!this.activeClient) {
       return;
     }
-    this._activeClient.traceEventsCollected(events);
-    this._eventsRetrieved += events.length;
-    if (!this._eventBufferSize) {
-      this._activeClient.eventsRetrievalProgress(0);
+    this.activeClient.traceEventsCollected(events);
+    this.eventsRetrieved += events.length;
+    if (!this.eventBufferSize) {
+      this.activeClient.eventsRetrievalProgress(0);
       return;
     }
 
-    if (this._eventsRetrieved > this._eventBufferSize) {
-      this._eventsRetrieved = this._eventBufferSize;
+    if (this.eventsRetrieved > this.eventBufferSize) {
+      this.eventsRetrieved = this.eventBufferSize;
     }
-    this._activeClient.eventsRetrievalProgress(this._eventsRetrieved / this._eventBufferSize);
+    this.activeClient.eventsRetrievalProgress(this.eventsRetrieved / this.eventBufferSize);
   }
 
-  _tracingComplete(): void {
-    this._eventBufferSize = 0;
-    this._eventsRetrieved = 0;
-    if (this._activeClient) {
-      this._activeClient.tracingComplete();
-      this._activeClient = null;
+  tracingComplete(): void {
+    this.eventBufferSize = 0;
+    this.eventsRetrieved = 0;
+    if (this.activeClient) {
+      this.activeClient.tracingComplete();
+      this.activeClient = null;
     }
-    this._finishing = false;
+    this.finishing = false;
   }
 
   // TODO(petermarshall): Use the traceConfig argument instead of deprecated
   // categories + options.
   async start(client: TracingManagerClient, categoryFilter: string, options: string):
       Promise<Protocol.ProtocolResponseWithError> {
-    if (this._activeClient) {
+    if (this.activeClient) {
       throw new Error('Tracing is already started');
     }
     const bufferUsageReportingIntervalMs = 500;
-    this._activeClient = client;
+    this.activeClient = client;
     const args = {
       bufferUsageReportingInterval: bufferUsageReportingIntervalMs,
       categories: categoryFilter,
       options: options,
       transferMode: Protocol.Tracing.StartRequestTransferMode.ReportEvents,
     };
-    const response = await this._tracingAgent.invoke_start(args);
+    const response = await this.tracingAgent.invoke_start(args);
     if (response.getError()) {
-      this._activeClient = null;
+      this.activeClient = null;
     }
     return response;
   }
 
   stop(): void {
-    if (!this._activeClient) {
+    if (!this.activeClient) {
       throw new Error('Tracing is not started');
     }
-    if (this._finishing) {
+    if (this.finishing) {
       throw new Error('Tracing is already being stopped');
     }
-    this._finishing = true;
-    this._tracingAgent.invoke_end();
+    this.finishing = true;
+    this.tracingAgent.invoke_end();
   }
 }
 
@@ -107,21 +106,21 @@ export interface TracingManagerClient {
 }
 
 class TracingDispatcher implements ProtocolProxyApi.TracingDispatcher {
-  _tracingManager: TracingManager;
+  private readonly tracingManager: TracingManager;
   constructor(tracingManager: TracingManager) {
-    this._tracingManager = tracingManager;
+    this.tracingManager = tracingManager;
   }
 
   bufferUsage({value, eventCount, percentFull}: Protocol.Tracing.BufferUsageEvent): void {
-    this._tracingManager._bufferUsage(value, eventCount, percentFull);
+    this.tracingManager.bufferUsage(value, eventCount, percentFull);
   }
 
   dataCollected({value}: Protocol.Tracing.DataCollectedEvent): void {
-    this._tracingManager._eventsCollected(value);
+    this.tracingManager.eventsCollected(value);
   }
 
   tracingComplete(): void {
-    this._tracingManager._tracingComplete();
+    this.tracingManager.tracingComplete();
   }
 }
 

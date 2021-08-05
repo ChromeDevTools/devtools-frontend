@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
@@ -12,18 +10,18 @@ import type {TargetManager} from './TargetManager.js';
 import {SDKModel} from './SDKModel.js';
 
 export class Target extends ProtocolClient.InspectorBackend.TargetBase {
-  _targetManager: TargetManager;
-  _name: string;
-  _inspectedURL: string;
-  _inspectedURLName: string;
-  _capabilitiesMask: number;
-  _type: Type;
-  _parentTarget: Target|null;
-  _id: string;
-  _modelByConstructor: Map<new(arg1: Target) => SDKModel, SDKModel>;
-  _isSuspended: boolean;
-  _targetInfo: Protocol.Target.TargetInfo|undefined;
-  _creatingModels?: boolean;
+  private readonly targetManagerInternal: TargetManager;
+  private nameInternal: string;
+  private inspectedURLInternal: string;
+  private inspectedURLName: string;
+  private readonly capabilitiesMask: number;
+  private typeInternal: Type;
+  private readonly parentTargetInternal: Target|null;
+  private idInternal: string;
+  private modelByConstructor: Map<new(arg1: Target) => SDKModel, SDKModel>;
+  private isSuspended: boolean;
+  private targetInfoInternal: Protocol.Target.TargetInfo|undefined;
+  private creatingModels?: boolean;
 
   constructor(
       targetManager: TargetManager, id: string, name: string, type: Type, parentTarget: Target|null, sessionId: string,
@@ -31,54 +29,54 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
       targetInfo?: Protocol.Target.TargetInfo) {
     const needsNodeJSPatching = type === Type.Node;
     super(needsNodeJSPatching, parentTarget, sessionId, connection);
-    this._targetManager = targetManager;
-    this._name = name;
-    this._inspectedURL = '';
-    this._inspectedURLName = '';
-    this._capabilitiesMask = 0;
+    this.targetManagerInternal = targetManager;
+    this.nameInternal = name;
+    this.inspectedURLInternal = '';
+    this.inspectedURLName = '';
+    this.capabilitiesMask = 0;
     switch (type) {
       case Type.Frame:
-        this._capabilitiesMask = Capability.Browser | Capability.Storage | Capability.DOM | Capability.JS |
+        this.capabilitiesMask = Capability.Browser | Capability.Storage | Capability.DOM | Capability.JS |
             Capability.Log | Capability.Network | Capability.Target | Capability.Tracing | Capability.Emulation |
             Capability.Input | Capability.Inspector | Capability.Audits | Capability.WebAuthn | Capability.IO |
             Capability.Media;
         if (!parentTarget) {
           // This matches backend exposing certain capabilities only for the main frame.
-          this._capabilitiesMask |=
+          this.capabilitiesMask |=
               Capability.DeviceEmulation | Capability.ScreenCapture | Capability.Security | Capability.ServiceWorker;
           // TODO(dgozman): we report service workers for the whole frame tree on the main frame,
           // while we should be able to only cover the subtree corresponding to the target.
         }
         break;
       case Type.ServiceWorker:
-        this._capabilitiesMask = Capability.JS | Capability.Log | Capability.Network | Capability.Target |
+        this.capabilitiesMask = Capability.JS | Capability.Log | Capability.Network | Capability.Target |
             Capability.Inspector | Capability.IO;
         if (!parentTarget) {
-          this._capabilitiesMask |= Capability.Browser;
+          this.capabilitiesMask |= Capability.Browser;
         }
         break;
       case Type.Worker:
-        this._capabilitiesMask =
+        this.capabilitiesMask =
             Capability.JS | Capability.Log | Capability.Network | Capability.Target | Capability.IO | Capability.Media;
         break;
       case Type.Node:
-        this._capabilitiesMask = Capability.JS;
+        this.capabilitiesMask = Capability.JS;
         break;
       case Type.Browser:
-        this._capabilitiesMask = Capability.Target | Capability.IO;
+        this.capabilitiesMask = Capability.Target | Capability.IO;
         break;
     }
-    this._type = type;
-    this._parentTarget = parentTarget;
-    this._id = id;
+    this.typeInternal = type;
+    this.parentTargetInternal = parentTarget;
+    this.idInternal = id;
     /* } */
-    this._modelByConstructor = new Map();
-    this._isSuspended = suspended;
-    this._targetInfo = targetInfo;
+    this.modelByConstructor = new Map();
+    this.isSuspended = suspended;
+    this.targetInfoInternal = targetInfo;
   }
 
   createModels(required: Set<new(arg1: Target) => SDKModel>): void {
-    this._creatingModels = true;
+    this.creatingModels = true;
     const registeredModels = Array.from(SDKModel.registeredModels.entries());
     // Create early models.
     for (const [modelClass, info] of registeredModels) {
@@ -92,120 +90,120 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
         this.model(modelClass);
       }
     }
-    this._creatingModels = false;
+    this.creatingModels = false;
   }
 
   id(): string {
-    return this._id;
+    return this.idInternal;
   }
 
   name(): string {
-    return this._name || this._inspectedURLName;
+    return this.nameInternal || this.inspectedURLName;
   }
 
   type(): Type {
-    return this._type;
+    return this.typeInternal;
   }
 
   markAsNodeJSForTest(): void {
     super.markAsNodeJSForTest();
-    this._type = Type.Node;
+    this.typeInternal = Type.Node;
   }
 
   targetManager(): TargetManager {
-    return this._targetManager;
+    return this.targetManagerInternal;
   }
 
   hasAllCapabilities(capabilitiesMask: number): boolean {
     // TODO(dgozman): get rid of this method, once we never observe targets with
     // capability mask.
-    return (this._capabilitiesMask & capabilitiesMask) === capabilitiesMask;
+    return (this.capabilitiesMask & capabilitiesMask) === capabilitiesMask;
   }
 
   decorateLabel(label: string): string {
-    return (this._type === Type.Worker || this._type === Type.ServiceWorker) ? '\u2699 ' + label : label;
+    return (this.typeInternal === Type.Worker || this.typeInternal === Type.ServiceWorker) ? '\u2699 ' + label : label;
   }
 
   parentTarget(): Target|null {
-    return this._parentTarget;
+    return this.parentTargetInternal;
   }
 
   dispose(reason: string): void {
     super.dispose(reason);
-    this._targetManager.removeTarget(this);
-    for (const model of this._modelByConstructor.values()) {
+    this.targetManagerInternal.removeTarget(this);
+    for (const model of this.modelByConstructor.values()) {
       model.dispose();
     }
   }
 
   model<T extends SDKModel>(modelClass: new(arg1: Target) => T): T|null {
-    if (!this._modelByConstructor.get(modelClass)) {
+    if (!this.modelByConstructor.get(modelClass)) {
       const info = SDKModel.registeredModels.get(modelClass);
       if (info === undefined) {
         throw 'Model class is not registered @' + new Error().stack;
       }
-      if ((this._capabilitiesMask & info.capabilities) === info.capabilities) {
+      if ((this.capabilitiesMask & info.capabilities) === info.capabilities) {
         const model = new modelClass(this);
-        this._modelByConstructor.set(modelClass, model);
-        if (!this._creatingModels) {
-          this._targetManager.modelAdded(this, modelClass, model);
+        this.modelByConstructor.set(modelClass, model);
+        if (!this.creatingModels) {
+          this.targetManagerInternal.modelAdded(this, modelClass, model);
         }
       }
     }
-    return (this._modelByConstructor.get(modelClass) as T) || null;
+    return (this.modelByConstructor.get(modelClass) as T) || null;
   }
 
   models(): Map<new(arg1: Target) => SDKModel, SDKModel> {
-    return this._modelByConstructor;
+    return this.modelByConstructor;
   }
 
   inspectedURL(): string {
-    return this._inspectedURL;
+    return this.inspectedURLInternal;
   }
 
   setInspectedURL(inspectedURL: string): void {
-    this._inspectedURL = inspectedURL;
+    this.inspectedURLInternal = inspectedURL;
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(inspectedURL);
-    this._inspectedURLName = parsedURL ? parsedURL.lastPathComponentWithFragment() : '#' + this._id;
+    this.inspectedURLName = parsedURL ? parsedURL.lastPathComponentWithFragment() : '#' + this.idInternal;
     if (!this.parentTarget()) {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.inspectedURLChanged(inspectedURL || '');
     }
-    this._targetManager.onInspectedURLChange(this);
-    if (!this._name) {
-      this._targetManager.onNameChange(this);
+    this.targetManagerInternal.onInspectedURLChange(this);
+    if (!this.nameInternal) {
+      this.targetManagerInternal.onNameChange(this);
     }
   }
 
   async suspend(reason?: string): Promise<void> {
-    if (this._isSuspended) {
+    if (this.isSuspended) {
       return;
     }
-    this._isSuspended = true;
+    this.isSuspended = true;
 
     await Promise.all(Array.from(this.models().values(), m => m.preSuspendModel(reason)));
     await Promise.all(Array.from(this.models().values(), m => m.suspendModel(reason)));
   }
 
   async resume(): Promise<void> {
-    if (!this._isSuspended) {
+    if (!this.isSuspended) {
       return;
     }
-    this._isSuspended = false;
+    this.isSuspended = false;
 
     await Promise.all(Array.from(this.models().values(), m => m.resumeModel()));
     await Promise.all(Array.from(this.models().values(), m => m.postResumeModel()));
   }
 
   suspended(): boolean {
-    return this._isSuspended;
+    return this.isSuspended;
   }
 
   updateTargetInfo(targetInfo: Protocol.Target.TargetInfo): void {
-    this._targetInfo = targetInfo;
+    this.targetInfoInternal = targetInfo;
   }
 
   targetInfo(): Protocol.Target.TargetInfo|undefined {
-    return this._targetInfo;
+    return this.targetInfoInternal;
   }
 }
 

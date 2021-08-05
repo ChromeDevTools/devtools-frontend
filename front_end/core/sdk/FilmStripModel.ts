@@ -2,31 +2,28 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Platform from '../platform/platform.js';
 
 import type {Event, ObjectSnapshot} from './TracingModel.js';
 import {TracingModel} from './TracingModel.js';
 
 export class FilmStripModel {
-  _frames: Frame[];
-  _zeroTime: number;
-  _spanTime: number;
+  private framesInternal: Frame[];
+  private zeroTimeInternal: number;
+  private spanTimeInternal: number;
   constructor(tracingModel: TracingModel, zeroTime?: number) {
-    this._frames = [];
-    this._zeroTime = 0;
-    this._spanTime = 0;
+    this.framesInternal = [];
+    this.zeroTimeInternal = 0;
+    this.spanTimeInternal = 0;
 
     this.reset(tracingModel, zeroTime);
   }
 
   reset(tracingModel: TracingModel, zeroTime?: number): void {
-    this._zeroTime = zeroTime || tracingModel.minimumRecordTime();
-    this._spanTime = tracingModel.maximumRecordTime() - this._zeroTime;
+    this.zeroTimeInternal = zeroTime || tracingModel.minimumRecordTime();
+    this.spanTimeInternal = tracingModel.maximumRecordTime() - this.zeroTimeInternal;
 
-    /** @type {!Array<!Frame>} */
-    this._frames = [];
+    this.framesInternal = [];
     const browserMain = TracingModel.browserMainThread(tracingModel);
     if (!browserMain) {
       return;
@@ -35,46 +32,44 @@ export class FilmStripModel {
     const events = browserMain.events();
     for (let i = 0; i < events.length; ++i) {
       const event = events[i];
-      if (event.startTime < this._zeroTime) {
+      if (event.startTime < this.zeroTimeInternal) {
         continue;
       }
-      if (!event.hasCategory(_category)) {
+      if (!event.hasCategory(category)) {
         continue;
       }
       if (event.name === TraceEvents.CaptureFrame) {
         const data = event.args['data'];
         if (data) {
-          this._frames.push(Frame._fromEvent(this, event, this._frames.length));
+          this.framesInternal.push(Frame.fromEvent(this, event, this.framesInternal.length));
         }
       } else if (event.name === TraceEvents.Screenshot) {
-        this._frames.push(Frame._fromSnapshot(this, (event as ObjectSnapshot), this._frames.length));
+        this.framesInternal.push(Frame.fromSnapshot(this, (event as ObjectSnapshot), this.framesInternal.length));
       }
     }
   }
 
   frames(): Frame[] {
-    return this._frames;
+    return this.framesInternal;
   }
 
   zeroTime(): number {
-    return this._zeroTime;
+    return this.zeroTimeInternal;
   }
 
   spanTime(): number {
-    return this._spanTime;
+    return this.spanTimeInternal;
   }
 
   frameByTimestamp(timestamp: number): Frame|null {
-    const index =
-        Platform.ArrayUtilities.upperBound(this._frames, timestamp, (timestamp, frame) => timestamp - frame.timestamp) -
+    const index = Platform.ArrayUtilities.upperBound(
+                      this.framesInternal, timestamp, (timestamp, frame) => timestamp - frame.timestamp) -
         1;
-    return index >= 0 ? this._frames[index] : null;
+    return index >= 0 ? this.framesInternal[index] : null;
   }
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const _category = 'disabled-by-default-devtools.screenshot';
+const category = 'disabled-by-default-devtools.screenshot';
 
 const TraceEvents = {
   CaptureFrame: 'CaptureFrame',
@@ -82,40 +77,40 @@ const TraceEvents = {
 };
 
 export class Frame {
-  _model: FilmStripModel;
+  private readonly modelInternal: FilmStripModel;
   timestamp: number;
   index: number;
-  _imageData: string|null;
-  _snapshot: ObjectSnapshot|null;
+  private imageData: string|null;
+  private snapshot: ObjectSnapshot|null;
   constructor(model: FilmStripModel, timestamp: number, index: number) {
-    this._model = model;
+    this.modelInternal = model;
     this.timestamp = timestamp;
     this.index = index;
-    this._imageData = null;
-    this._snapshot = null;
+    this.imageData = null;
+    this.snapshot = null;
   }
 
-  static _fromEvent(model: FilmStripModel, event: Event, index: number): Frame {
+  static fromEvent(model: FilmStripModel, event: Event, index: number): Frame {
     const frame = new Frame(model, event.startTime, index);
-    frame._imageData = event.args['data'];
+    frame.imageData = event.args['data'];
     return frame;
   }
 
-  static _fromSnapshot(model: FilmStripModel, snapshot: ObjectSnapshot, index: number): Frame {
+  static fromSnapshot(model: FilmStripModel, snapshot: ObjectSnapshot, index: number): Frame {
     const frame = new Frame(model, snapshot.startTime, index);
-    frame._snapshot = snapshot;
+    frame.snapshot = snapshot;
     return frame;
   }
 
   model(): FilmStripModel {
-    return this._model;
+    return this.modelInternal;
   }
 
   imageDataPromise(): Promise<string|null> {
-    if (this._imageData || !this._snapshot) {
-      return Promise.resolve(this._imageData);
+    if (this.imageData || !this.snapshot) {
+      return Promise.resolve(this.imageData);
     }
 
-    return /** @type {!Promise<?string>} */ this._snapshot.objectPromise() as Promise<string|null>;
+    return this.snapshot.objectPromise() as Promise<string|null>;
   }
 }

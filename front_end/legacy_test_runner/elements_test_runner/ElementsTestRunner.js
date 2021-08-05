@@ -59,8 +59,8 @@ ElementsTestRunner.findNode = async function(matchFunction, callback) {
         return;
       }
 
-      if (node._childDocumentPromiseForTesting) {
-        await node._childDocumentPromiseForTesting;
+      if (node.childDocumentPromiseForTesting) {
+        await node.childDocumentPromiseForTesting;
       }
 
       const pseudoElementsMap = node.pseudoElements();
@@ -748,8 +748,8 @@ ElementsTestRunner.dumpElementsTree = function(rootNode, depth, resultsArray) {
     const node = treeItem._node;
 
     if (node) {
-      markers += dumpMap('markers', node._markers);
-      const dump = (node._subtreeMarkerCount ? 'subtreeMarkerCount:' + node._subtreeMarkerCount : '');
+      markers += dumpMap('markers', node.markers);
+      const dump = (node.subtreeMarkerCount ? 'subtreeMarkerCount:' + node.subtreeMarkerCount : '');
 
       if (dump) {
         if (markers) {
@@ -923,7 +923,7 @@ ElementsTestRunner.expandAndDump = function() {
 };
 
 ElementsTestRunner.dumpDOMAgentTree = function(node) {
-  if (!TestRunner.domModel._document) {
+  if (!TestRunner.domModel.document) {
     return;
   }
 

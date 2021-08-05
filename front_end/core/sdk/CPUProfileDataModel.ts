@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
@@ -72,12 +70,12 @@ export class CPUProfileDataModel extends ProfileTreeModel {
   lines: any;
   totalHitCount: number;
   profileHead: CPUProfileNode;
-  _idToNode!: Map<number, CPUProfileNode>;
+  private idToNode!: Map<number, CPUProfileNode>;
   gcNode!: CPUProfileNode;
   programNode?: ProfileNode;
   idleNode?: ProfileNode;
-  _stackStartTimes?: Float64Array;
-  _stackChildrenDuration?: Float64Array;
+  private stackStartTimes?: Float64Array;
+  private stackChildrenDuration?: Float64Array;
   constructor(profile: Protocol.Profiler.Profile, target: Target|null) {
     super(target);
     // @ts-ignore Legacy types
@@ -88,29 +86,29 @@ export class CPUProfileDataModel extends ProfileTreeModel {
       this.profileEndTime = profile.endTime * 1000;
       // @ts-ignore Legacy types
       this.timestamps = profile.timestamps;
-      this._compatibilityConversionHeadToNodes(profile);
+      this.compatibilityConversionHeadToNodes(profile);
     } else {
       // Current format encodes timestamps as deltas. Start/stop times are in microseconds.
       this.profileStartTime = profile.startTime / 1000;
       this.profileEndTime = profile.endTime / 1000;
-      this.timestamps = this._convertTimeDeltas(profile);
+      this.timestamps = this.convertTimeDeltas(profile);
     }
     this.samples = profile.samples;
     // @ts-ignore Legacy types
     this.lines = profile.lines;
     this.totalHitCount = 0;
-    this.profileHead = this._translateProfileTree(profile.nodes);
+    this.profileHead = this.translateProfileTree(profile.nodes);
     this.initialize(this.profileHead);
-    this._extractMetaNodes();
+    this.extractMetaNodes();
     if (this.samples) {
-      this._buildIdToNodeMap();
-      this._sortSamples();
-      this._normalizeTimestamps();
-      this._fixMissingSamples();
+      this.buildIdToNodeMap();
+      this.sortSamples();
+      this.normalizeTimestamps();
+      this.fixMissingSamples();
     }
   }
 
-  _compatibilityConversionHeadToNodes(profile: Protocol.Profiler.Profile): void {
+  private compatibilityConversionHeadToNodes(profile: Protocol.Profiler.Profile): void {
     // @ts-ignore Legacy types
     if (!profile.head || profile.nodes) {
       return;
@@ -129,7 +127,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     }
   }
 
-  _convertTimeDeltas(profile: Protocol.Profiler.Profile): number[] {
+  private convertTimeDeltas(profile: Protocol.Profiler.Profile): number[] {
     if (!profile.timeDeltas) {
       return [];
     }
@@ -142,7 +140,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     return timestamps;
   }
 
-  _translateProfileTree(nodes: Protocol.Profiler.ProfileNode[]): CPUProfileNode {
+  private translateProfileTree(nodes: Protocol.Profiler.ProfileNode[]): CPUProfileNode {
     function isNativeNode(node: Protocol.Profiler.ProfileNode): boolean {
       if (node.callFrame) {
         return Boolean(node.callFrame.url) && node.callFrame.url.startsWith('native ');
@@ -234,7 +232,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     return resultRoot;
   }
 
-  _sortSamples(): void {
+  private sortSamples(): void {
     const timestamps = this.timestamps;
     if (!timestamps) {
       return;
@@ -266,7 +264,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     }
   }
 
-  _normalizeTimestamps(): void {
+  private normalizeTimestamps(): void {
     if (!this.samples) {
       return;
     }
@@ -300,9 +298,9 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     this.profileEndTime = (timestamps[timestamps.length - 1] as number);
   }
 
-  _buildIdToNodeMap(): void {
-    this._idToNode = new Map();
-    const idToNode = this._idToNode;
+  private buildIdToNodeMap(): void {
+    this.idToNode = new Map();
+    const idToNode = this.idToNode;
     const stack = [this.profileHead];
     while (stack.length) {
       const node = (stack.pop() as CPUProfileNode);
@@ -312,7 +310,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     }
   }
 
-  _extractMetaNodes(): void {
+  private extractMetaNodes(): void {
     const topLevelNodes = this.profileHead.children;
     for (let i = 0; i < topLevelNodes.length && !(this.gcNode && this.programNode && this.idleNode); i++) {
       const node = topLevelNodes[i];
@@ -326,7 +324,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     }
   }
 
-  _fixMissingSamples(): void {
+  private fixMissingSamples(): void {
     // Sometimes sampler is not able to parse the JS stack and returns
     // a (program) sample instead. The issue leads to call frames belong
     // to the same function invocation being split apart.
@@ -341,7 +339,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     if (!this.programNode || samplesCount < 3) {
       return;
     }
-    const idToNode = this._idToNode;
+    const idToNode = this.idToNode;
     const programNodeId = this.programNode.id;
     const gcNodeId = this.gcNode ? this.gcNode.id : -1;
     const idleNodeId = this.idleNode ? this.idleNode.id : -1;
@@ -385,7 +383,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     stopTime = stopTime || Infinity;
     const samples = this.samples;
     const timestamps = this.timestamps;
-    const idToNode = this._idToNode;
+    const idToNode = this.idToNode;
     const gcNode = this.gcNode;
     const samplesCount = samples.length;
     const startIndex =
@@ -399,14 +397,14 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     // Extra slots for gc being put on top,
     // and one at the bottom to allow safe stackTop-1 access.
     const stackDepth = this.maxDepth + 3;
-    if (!this._stackStartTimes) {
-      this._stackStartTimes = new Float64Array(stackDepth);
+    if (!this.stackStartTimes) {
+      this.stackStartTimes = new Float64Array(stackDepth);
     }
-    const stackStartTimes = this._stackStartTimes;
-    if (!this._stackChildrenDuration) {
-      this._stackChildrenDuration = new Float64Array(stackDepth);
+    const stackStartTimes = this.stackStartTimes;
+    if (!this.stackChildrenDuration) {
+      this.stackChildrenDuration = new Float64Array(stackDepth);
     }
-    const stackChildrenDuration = this._stackChildrenDuration;
+    const stackChildrenDuration = this.stackChildrenDuration;
 
     let node;
     let sampleIndex;
@@ -497,6 +495,6 @@ export class CPUProfileDataModel extends ProfileTreeModel {
   }
 
   nodeByIndex(index: number): CPUProfileNode|null {
-    return this.samples && this._idToNode.get(this.samples[index]) || null;
+    return this.samples && this.idToNode.get(this.samples[index]) || null;
   }
 }

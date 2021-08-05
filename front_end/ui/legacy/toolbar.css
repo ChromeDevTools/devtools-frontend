@@ -219,7 +219,7 @@ it. */
 }
 
 .toolbar-button.toolbar-state-on .toolbar-text {
-  color: var(--color-text-primary);
+  color: var(--color-primary);
 }
 
 :not(.toolbar-render-as-links) .toolbar-button:enabled:hover:not(:active) .toolbar-glyph {

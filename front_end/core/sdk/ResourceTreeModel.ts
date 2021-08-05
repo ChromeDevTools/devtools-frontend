@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
@@ -49,16 +47,16 @@ import {TargetManager} from './TargetManager.js';
 import {SecurityOriginManager} from './SecurityOriginManager.js';
 
 export class ResourceTreeModel extends SDKModel<EventTypes> {
-  _agent: ProtocolProxyApi.PageApi;
-  _securityOriginManager: SecurityOriginManager;
-  _frames: Map<string, ResourceTreeFrame>;
-  _cachedResourcesProcessed: boolean;
-  _pendingReloadOptions: {
+  readonly agent: ProtocolProxyApi.PageApi;
+  private readonly securityOriginManager: SecurityOriginManager;
+  readonly framesInternal: Map<string, ResourceTreeFrame>;
+  private cachedResourcesProcessed: boolean;
+  private pendingReloadOptions: {
     ignoreCache: (boolean|undefined),
     scriptToEvaluateOnLoad: (string|undefined),
   }|null;
-  _reloadSuspensionCount: number;
-  _isInterstitialShowing: boolean;
+  private reloadSuspensionCount: number;
+  isInterstitialShowing: boolean;
   mainFrame: ResourceTreeFrame|null;
   private pendingBackForwardCacheNotUsedEvents: Set<Protocol.Page.BackForwardCacheNotUsedEvent>;
 
@@ -67,24 +65,24 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
 
     const networkManager = target.model(NetworkManager);
     if (networkManager) {
-      networkManager.addEventListener(NetworkManagerEvents.RequestFinished, this._onRequestFinished, this);
-      networkManager.addEventListener(NetworkManagerEvents.RequestUpdateDropped, this._onRequestUpdateDropped, this);
+      networkManager.addEventListener(NetworkManagerEvents.RequestFinished, this.onRequestFinished, this);
+      networkManager.addEventListener(NetworkManagerEvents.RequestUpdateDropped, this.onRequestUpdateDropped, this);
     }
-    this._agent = target.pageAgent();
-    this._agent.invoke_enable();
-    this._securityOriginManager = (target.model(SecurityOriginManager) as SecurityOriginManager);
+    this.agent = target.pageAgent();
+    this.agent.invoke_enable();
+    this.securityOriginManager = (target.model(SecurityOriginManager) as SecurityOriginManager);
     this.pendingBackForwardCacheNotUsedEvents = new Set<Protocol.Page.BackForwardCacheNotUsedEvent>();
     target.registerPageDispatcher(new PageDispatcher(this));
 
-    this._frames = new Map();
-    this._cachedResourcesProcessed = false;
-    this._pendingReloadOptions = null;
-    this._reloadSuspensionCount = 0;
-    this._isInterstitialShowing = false;
+    this.framesInternal = new Map();
+    this.cachedResourcesProcessed = false;
+    this.pendingReloadOptions = null;
+    this.reloadSuspensionCount = 0;
+    this.isInterstitialShowing = false;
     this.mainFrame = null;
 
-    this._agent.invoke_getResourceTree().then(event => {
-      this._processCachedResources(event.getError() ? null : event.frameTree);
+    this.agent.invoke_getResourceTree().then(event => {
+      this.processCachedResources(event.getError() ? null : event.frameTree);
     });
   }
 
@@ -100,7 +98,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   static frames(): ResourceTreeFrame[] {
     const result = [];
     for (const resourceTreeModel of TargetManager.instance().models(ResourceTreeModel)) {
-      result.push(...resourceTreeModel._frames.values());
+      result.push(...resourceTreeModel.framesInternal.values());
     }
     return result;
   }
@@ -128,7 +126,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     return this.target().model(DOMModel) as DOMModel;
   }
 
-  _processCachedResources(mainFramePayload: Protocol.Page.FrameResourceTree|null): void {
+  private processCachedResources(mainFramePayload: Protocol.Page.FrameResourceTree|null): void {
     // TODO(caseq): the url check below is a mergeable, conservative
     // workaround for a problem caused by us requesting resources from a
     // subtarget frame before it has committed. The proper fix is likely
@@ -136,68 +134,65 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     // See https://crbug.com/1081270 for details.
     if (mainFramePayload && mainFramePayload.frame.url !== ':') {
       this.dispatchEventToListeners(Events.WillLoadCachedResources);
-      this._addFramesRecursively(null, mainFramePayload);
+      this.addFramesRecursively(null, mainFramePayload);
       this.target().setInspectedURL(mainFramePayload.frame.url);
     }
-    this._cachedResourcesProcessed = true;
+    this.cachedResourcesProcessed = true;
     const runtimeModel = this.target().model(RuntimeModel);
     if (runtimeModel) {
-      runtimeModel.setExecutionContextComparator(this._executionContextComparator.bind(this));
+      runtimeModel.setExecutionContextComparator(this.executionContextComparator.bind(this));
       runtimeModel.fireExecutionContextOrderChanged();
     }
     this.dispatchEventToListeners(Events.CachedResourcesLoaded, this);
   }
 
   cachedResourcesLoaded(): boolean {
-    return this._cachedResourcesProcessed;
+    return this.cachedResourcesProcessed;
   }
 
-  isInterstitialShowing(): boolean {
-    return this._isInterstitialShowing;
-  }
-
-  _addFrame(frame: ResourceTreeFrame, _aboutToNavigate?: boolean): void {
-    this._frames.set(frame.id, frame);
+  private addFrame(frame: ResourceTreeFrame, _aboutToNavigate?: boolean): void {
+    this.framesInternal.set(frame.id, frame);
     if (frame.isMainFrame()) {
       this.mainFrame = frame;
     }
     this.dispatchEventToListeners(Events.FrameAdded, frame);
-    this._updateSecurityOrigins();
+    this.updateSecurityOrigins();
   }
 
-  _frameAttached(frameId: string, parentFrameId: string|null, stackTrace?: Protocol.Runtime.StackTrace):
+  frameAttached(frameId: string, parentFrameId: string|null, stackTrace?: Protocol.Runtime.StackTrace):
       ResourceTreeFrame|null {
-    const sameTargetParentFrame = parentFrameId ? (this._frames.get(parentFrameId) || null) : null;
+    const sameTargetParentFrame = parentFrameId ? (this.framesInternal.get(parentFrameId) || null) : null;
     // Do nothing unless cached resource tree is processed - it will overwrite everything.
-    if (!this._cachedResourcesProcessed && sameTargetParentFrame) {
+    if (!this.cachedResourcesProcessed && sameTargetParentFrame) {
       return null;
     }
-    if (this._frames.has(frameId)) {
+    if (this.framesInternal.has(frameId)) {
       return null;
     }
 
     const frame = new ResourceTreeFrame(this, sameTargetParentFrame, frameId, null, stackTrace || null);
     if (parentFrameId && !sameTargetParentFrame) {
-      frame._crossTargetParentFrameId = parentFrameId;
+      frame.crossTargetParentFrameId = parentFrameId;
     }
     if (frame.isMainFrame() && this.mainFrame) {
       // Navigation to the new backend process.
-      this._frameDetached(this.mainFrame.id, false);
+      this.frameDetached(this.mainFrame.id, false);
     }
-    this._addFrame(frame, true);
+    this.addFrame(frame, true);
     return frame;
   }
 
-  _frameNavigated(framePayload: Protocol.Page.Frame, type: Protocol.Page.NavigationType|undefined): void {
-    const sameTargetParentFrame = framePayload.parentId ? (this._frames.get(framePayload.parentId) || null) : null;
+  frameNavigated(framePayload: Protocol.Page.Frame, type: Protocol.Page.NavigationType|undefined): void {
+    const sameTargetParentFrame =
+        framePayload.parentId ? (this.framesInternal.get(framePayload.parentId) || null) : null;
     // Do nothing unless cached resource tree is processed - it will overwrite everything.
-    if (!this._cachedResourcesProcessed && sameTargetParentFrame) {
+    if (!this.cachedResourcesProcessed && sameTargetParentFrame) {
       return;
     }
-    let frame: (ResourceTreeFrame|null) = this._frames.get(framePayload.id) || null;
+    let frame: (ResourceTreeFrame|null) = this.framesInternal.get(framePayload.id) || null;
     if (!frame) {
       // Simulate missed "frameAttached" for a main frame navigation to the new backend process.
-      frame = this._frameAttached(framePayload.id, framePayload.parentId || '');
+      frame = this.frameAttached(framePayload.id, framePayload.parentId || '');
       console.assert(Boolean(frame));
       if (!frame) {
         return;
@@ -205,7 +200,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     }
 
     this.dispatchEventToListeners(Events.FrameWillNavigate, frame);
-    frame._navigate(framePayload);
+    frame.navigate(framePayload);
     if (type) {
       frame.backForwardCacheDetails.restoredFromCache = type === Protocol.Page.NavigationType.BackForwardCacheRestore;
     }
@@ -229,14 +224,14 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     if (frame.isMainFrame()) {
       this.target().setInspectedURL(frame.url);
     }
-    this._updateSecurityOrigins();
+    this.updateSecurityOrigins();
   }
 
-  _documentOpened(framePayload: Protocol.Page.Frame): void {
-    this._frameNavigated(framePayload, undefined);
-    const frame = this._frames.get(framePayload.id);
-    if (frame && !frame._resourcesMap.get(framePayload.url)) {
-      const frameResource = this._createResourceFromFramePayload(
+  documentOpened(framePayload: Protocol.Page.Frame): void {
+    this.frameNavigated(framePayload, undefined);
+    const frame = this.framesInternal.get(framePayload.id);
+    if (frame && !frame.getResourcesMap().get(framePayload.url)) {
+      const frameResource = this.createResourceFromFramePayload(
           framePayload, framePayload.url, Common.ResourceType.resourceTypes.Document, framePayload.mimeType, null,
           null);
       frameResource.isGenerated = true;
@@ -244,28 +239,28 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     }
   }
 
-  _frameDetached(frameId: string, isSwap: boolean): void {
+  frameDetached(frameId: string, isSwap: boolean): void {
     // Do nothing unless cached resource tree is processed - it will overwrite everything.
-    if (!this._cachedResourcesProcessed) {
+    if (!this.cachedResourcesProcessed) {
       return;
     }
 
-    const frame = this._frames.get(frameId);
+    const frame = this.framesInternal.get(frameId);
     if (!frame) {
       return;
     }
 
     const sameTargetParentFrame = frame.sameTargetParentFrame();
     if (sameTargetParentFrame) {
-      sameTargetParentFrame._removeChildFrame(frame, isSwap);
+      sameTargetParentFrame.removeChildFrame(frame, isSwap);
     } else {
-      frame._remove(isSwap);
+      frame.remove(isSwap);
     }
-    this._updateSecurityOrigins();
+    this.updateSecurityOrigins();
   }
 
-  _onRequestFinished(event: Common.EventTarget.EventTargetEvent<NetworkRequest>): void {
-    if (!this._cachedResourcesProcessed) {
+  private onRequestFinished(event: Common.EventTarget.EventTargetEvent<NetworkRequest>): void {
+    if (!this.cachedResourcesProcessed) {
       return;
     }
 
@@ -274,26 +269,26 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
       return;
     }
 
-    const frame = this._frames.get(request.frameId);
+    const frame = this.framesInternal.get(request.frameId);
     if (frame) {
-      frame._addRequest(request);
+      frame.addRequest(request);
     }
   }
 
-  _onRequestUpdateDropped(event: Common.EventTarget.EventTargetEvent<RequestUpdateDroppedEventData>): void {
-    if (!this._cachedResourcesProcessed) {
+  private onRequestUpdateDropped(event: Common.EventTarget.EventTargetEvent<RequestUpdateDroppedEventData>): void {
+    if (!this.cachedResourcesProcessed) {
       return;
     }
 
     const data = event.data;
     const frameId = data.frameId;
-    const frame = this._frames.get(frameId);
+    const frame = this.framesInternal.get(frameId);
     if (!frame) {
       return;
     }
 
     const url = data.url;
-    if (frame._resourcesMap.get(url)) {
+    if (frame.getResourcesMap().get(url)) {
       return;
     }
 
@@ -304,18 +299,18 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   }
 
   frameForId(frameId: string): ResourceTreeFrame|null {
-    return this._frames.get(frameId) || null;
+    return this.framesInternal.get(frameId) || null;
   }
 
   forAllResources(callback: (arg0: Resource) => boolean): boolean {
     if (this.mainFrame) {
-      return this.mainFrame._callForFrameResources(callback);
+      return this.mainFrame.callForFrameResources(callback);
     }
     return false;
   }
 
   frames(): ResourceTreeFrame[] {
-    return [...this._frames.values()];
+    return [...this.framesInternal.values()];
   }
 
   resourceForURL(url: string): Resource|null {
@@ -323,36 +318,36 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     return this.mainFrame ? this.mainFrame.resourceForURL(url) : null;
   }
 
-  _addFramesRecursively(
+  private addFramesRecursively(
       sameTargetParentFrame: ResourceTreeFrame|null, frameTreePayload: Protocol.Page.FrameResourceTree): void {
     const framePayload = frameTreePayload.frame;
     const frame = new ResourceTreeFrame(this, sameTargetParentFrame, framePayload.id, framePayload, null);
     if (!sameTargetParentFrame && framePayload.parentId) {
-      frame._crossTargetParentFrameId = framePayload.parentId;
+      frame.crossTargetParentFrameId = framePayload.parentId;
     }
-    this._addFrame(frame);
+    this.addFrame(frame);
 
     for (const childFrame of frameTreePayload.childFrames || []) {
-      this._addFramesRecursively(frame, childFrame);
+      this.addFramesRecursively(frame, childFrame);
     }
 
     for (let i = 0; i < frameTreePayload.resources.length; ++i) {
       const subresource = frameTreePayload.resources[i];
-      const resource = this._createResourceFromFramePayload(
+      const resource = this.createResourceFromFramePayload(
           framePayload, subresource.url, Common.ResourceType.resourceTypes[subresource.type], subresource.mimeType,
           subresource.lastModified || null, subresource.contentSize || null);
       frame.addResource(resource);
     }
 
-    if (!frame._resourcesMap.get(framePayload.url)) {
-      const frameResource = this._createResourceFromFramePayload(
+    if (!frame.getResourcesMap().get(framePayload.url)) {
+      const frameResource = this.createResourceFromFramePayload(
           framePayload, framePayload.url, Common.ResourceType.resourceTypes.Document, framePayload.mimeType, null,
           null);
       frame.addResource(frameResource);
     }
   }
 
-  _createResourceFromFramePayload(
+  private createResourceFromFramePayload(
       frame: Protocol.Page.Frame, url: string, type: Common.ResourceType.ResourceType, mimeType: string,
       lastModifiedTime: number|null, contentSize: number|null): Resource {
     const lastModified = typeof lastModifiedTime === 'number' ? new Date(lastModifiedTime * 1000) : null;
@@ -361,47 +356,47 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   }
 
   suspendReload(): void {
-    this._reloadSuspensionCount++;
+    this.reloadSuspensionCount++;
   }
 
   resumeReload(): void {
-    this._reloadSuspensionCount--;
-    console.assert(this._reloadSuspensionCount >= 0, 'Unbalanced call to ResourceTreeModel.resumeReload()');
-    if (!this._reloadSuspensionCount && this._pendingReloadOptions) {
-      const {ignoreCache, scriptToEvaluateOnLoad} = this._pendingReloadOptions;
+    this.reloadSuspensionCount--;
+    console.assert(this.reloadSuspensionCount >= 0, 'Unbalanced call to ResourceTreeModel.resumeReload()');
+    if (!this.reloadSuspensionCount && this.pendingReloadOptions) {
+      const {ignoreCache, scriptToEvaluateOnLoad} = this.pendingReloadOptions;
       this.reloadPage(ignoreCache, scriptToEvaluateOnLoad);
     }
   }
 
   reloadPage(ignoreCache?: boolean, scriptToEvaluateOnLoad?: string): void {
     // Only dispatch PageReloadRequested upon first reload request to simplify client logic.
-    if (!this._pendingReloadOptions) {
+    if (!this.pendingReloadOptions) {
       this.dispatchEventToListeners(Events.PageReloadRequested, this);
     }
-    if (this._reloadSuspensionCount) {
-      this._pendingReloadOptions = {ignoreCache, scriptToEvaluateOnLoad};
+    if (this.reloadSuspensionCount) {
+      this.pendingReloadOptions = {ignoreCache, scriptToEvaluateOnLoad};
       return;
     }
-    this._pendingReloadOptions = null;
+    this.pendingReloadOptions = null;
     const networkManager = this.target().model(NetworkManager);
     if (networkManager) {
       networkManager.clearRequests();
     }
     this.dispatchEventToListeners(Events.WillReloadPage);
-    this._agent.invoke_reload({ignoreCache, scriptToEvaluateOnLoad});
+    this.agent.invoke_reload({ignoreCache, scriptToEvaluateOnLoad});
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigate(url: string): Promise<any> {
-    return this._agent.invoke_navigate({url});
+    return this.agent.invoke_navigate({url});
   }
 
   async navigationHistory(): Promise<{
     currentIndex: number,
     entries: Array<Protocol.Page.NavigationEntry>,
   }|null> {
-    const response = await this._agent.invoke_getNavigationHistory();
+    const response = await this.agent.invoke_getNavigationHistory();
     if (response.getError()) {
       return null;
     }
@@ -409,11 +404,11 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   }
 
   navigateToHistoryEntry(entry: Protocol.Page.NavigationEntry): void {
-    this._agent.invoke_navigateToHistoryEntry({entryId: entry.id});
+    this.agent.invoke_navigateToHistoryEntry({entryId: entry.id});
   }
 
   setLifecycleEventsEnabled(enabled: boolean): Promise<Protocol.ProtocolResponseWithError> {
-    return this._agent.invoke_setLifecycleEventsEnabled({enabled});
+    return this.agent.invoke_setLifecycleEventsEnabled({enabled});
   }
 
   async fetchAppManifest(): Promise<{
@@ -421,7 +416,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     data: string|null,
     errors: Array<Protocol.Page.AppManifestError>,
   }> {
-    const response = await this._agent.invoke_getAppManifest();
+    const response = await this.agent.invoke_getAppManifest();
     if (response.getError()) {
       return {url: response.url, data: null, errors: []};
     }
@@ -429,18 +424,18 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   }
 
   async getInstallabilityErrors(): Promise<Protocol.Page.InstallabilityError[]> {
-    const response = await this._agent.invoke_getInstallabilityErrors();
+    const response = await this.agent.invoke_getInstallabilityErrors();
     return response.installabilityErrors || [];
   }
 
   async getManifestIcons(): Promise<{
     primaryIcon: string | null,
   }> {
-    const response = await this._agent.invoke_getManifestIcons();
+    const response = await this.agent.invoke_getManifestIcons();
     return {primaryIcon: response.primaryIcon || null};
   }
 
-  _executionContextComparator(a: ExecutionContext, b: ExecutionContext): number {
+  private executionContextComparator(a: ExecutionContext, b: ExecutionContext): number {
     function framePath(frame: ResourceTreeFrame|null): ResourceTreeFrame[] {
       let currentFrame: (ResourceTreeFrame|null) = frame;
       const parents = [];
@@ -481,12 +476,12 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     return ExecutionContext.comparator(a, b);
   }
 
-  _getSecurityOriginData(): SecurityOriginData {
+  private getSecurityOriginData(): SecurityOriginData {
     const securityOrigins = new Set<string>();
 
     let mainSecurityOrigin: string|null = null;
     let unreachableMainSecurityOrigin: string|null = null;
-    for (const frame of this._frames.values()) {
+    for (const frame of this.framesInternal.values()) {
       const origin = frame.securityOrigin;
       if (!origin) {
         continue;
@@ -508,15 +503,15 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     };
   }
 
-  _updateSecurityOrigins(): void {
-    const data = this._getSecurityOriginData();
-    this._securityOriginManager.setMainSecurityOrigin(
+  private updateSecurityOrigins(): void {
+    const data = this.getSecurityOriginData();
+    this.securityOriginManager.setMainSecurityOrigin(
         data.mainSecurityOrigin || '', data.unreachableMainSecurityOrigin || '');
-    this._securityOriginManager.updateSecurityOrigins(data.securityOrigins);
+    this.securityOriginManager.updateSecurityOrigins(data.securityOrigins);
   }
 
   getMainSecurityOrigin(): string|null {
-    const data = this._getSecurityOriginData();
+    const data = this.getSecurityOriginData();
     return data.mainSecurityOrigin || data.unreachableMainSecurityOrigin;
   }
 
@@ -588,26 +583,26 @@ export type EventTypes = {
 };
 
 export class ResourceTreeFrame {
-  _model: ResourceTreeModel;
-  _sameTargetParentFrame: ResourceTreeFrame|null;
-  _id: string;
-  _crossTargetParentFrameId: string|null;
-  _loaderId: string;
-  _name: string|null|undefined;
-  _url: string;
-  _domainAndRegistry: string;
-  _securityOrigin: string|null;
-  _mimeType: string|null;
-  _unreachableUrl: string;
-  _adFrameStatus?: Protocol.Page.AdFrameStatus;
-  _secureContextType: Protocol.Page.SecureContextType|null;
-  _crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType|null;
-  _gatedAPIFeatures: Protocol.Page.GatedAPIFeatures[]|null;
+  private model: ResourceTreeModel;
+  private sameTargetParentFrameInternal: ResourceTreeFrame|null;
+  private readonly idInternal: string;
+  crossTargetParentFrameId: string|null;
+  private loaderIdInternal: string;
+  private nameInternal: string|null|undefined;
+  private urlInternal: string;
+  private domainAndRegistryInternal: string;
+  private securityOriginInternal: string|null;
+  private mimeType: string|null;
+  private unreachableUrlInternal: string;
+  private adFrameStatusInternal?: Protocol.Page.AdFrameStatus;
+  private secureContextType: Protocol.Page.SecureContextType|null;
+  private crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType|null;
+  private gatedAPIFeatures: Protocol.Page.GatedAPIFeatures[]|null;
   private originTrials: Protocol.Page.OriginTrial[]|null;
   private creationStackTrace: Protocol.Runtime.StackTrace|null;
   private creationStackTraceTarget: Target|null;
-  _childFrames: Set<ResourceTreeFrame>;
-  _resourcesMap: Map<string, Resource>;
+  private childFramesInternal: Set<ResourceTreeFrame>;
+  resourcesMap: Map<string, Resource>;
   backForwardCacheDetails: {
     restoredFromCache: boolean|undefined,
     explanations: Protocol.Page.BackForwardCacheNotRestoredExplanation[],
@@ -616,54 +611,54 @@ export class ResourceTreeFrame {
   constructor(
       model: ResourceTreeModel, parentFrame: ResourceTreeFrame|null, frameId: string, payload: Protocol.Page.Frame|null,
       creationStackTrace: Protocol.Runtime.StackTrace|null) {
-    this._model = model;
-    this._sameTargetParentFrame = parentFrame;
-    this._id = frameId;
-    this._crossTargetParentFrameId = null;
+    this.model = model;
+    this.sameTargetParentFrameInternal = parentFrame;
+    this.idInternal = frameId;
+    this.crossTargetParentFrameId = null;
 
-    this._loaderId = (payload && payload.loaderId) || '';
-    this._name = payload && payload.name;
-    this._url = (payload && payload.url) || '';
-    this._domainAndRegistry = (payload && payload.domainAndRegistry) || '';
-    this._securityOrigin = payload && payload.securityOrigin;
-    this._mimeType = payload && payload.mimeType;
-    this._unreachableUrl = (payload && payload.unreachableUrl) || '';
-    this._adFrameStatus = payload?.adFrameStatus;
-    this._secureContextType = payload && payload.secureContextType;
-    this._crossOriginIsolatedContextType = payload && payload.crossOriginIsolatedContextType;
-    this._gatedAPIFeatures = payload && payload.gatedAPIFeatures;
+    this.loaderIdInternal = (payload && payload.loaderId) || '';
+    this.nameInternal = payload && payload.name;
+    this.urlInternal = (payload && payload.url) || '';
+    this.domainAndRegistryInternal = (payload && payload.domainAndRegistry) || '';
+    this.securityOriginInternal = payload && payload.securityOrigin;
+    this.mimeType = payload && payload.mimeType;
+    this.unreachableUrlInternal = (payload && payload.unreachableUrl) || '';
+    this.adFrameStatusInternal = payload?.adFrameStatus;
+    this.secureContextType = payload && payload.secureContextType;
+    this.crossOriginIsolatedContextType = payload && payload.crossOriginIsolatedContextType;
+    this.gatedAPIFeatures = payload && payload.gatedAPIFeatures;
     this.originTrials = (payload && payload.originTrials) || null;
 
     this.creationStackTrace = creationStackTrace;
     this.creationStackTraceTarget = null;
 
-    this._childFrames = new Set();
+    this.childFramesInternal = new Set();
 
-    this._resourcesMap = new Map();
+    this.resourcesMap = new Map();
 
-    if (this._sameTargetParentFrame) {
-      this._sameTargetParentFrame._childFrames.add(this);
+    if (this.sameTargetParentFrameInternal) {
+      this.sameTargetParentFrameInternal.childFramesInternal.add(this);
     }
   }
 
   isSecureContext(): boolean {
-    return this._secureContextType !== null && this._secureContextType.startsWith('Secure');
+    return this.secureContextType !== null && this.secureContextType.startsWith('Secure');
   }
 
   getSecureContextType(): Protocol.Page.SecureContextType|null {
-    return this._secureContextType;
+    return this.secureContextType;
   }
 
   isCrossOriginIsolated(): boolean {
-    return this._crossOriginIsolatedContextType !== null && this._crossOriginIsolatedContextType.startsWith('Isolated');
+    return this.crossOriginIsolatedContextType !== null && this.crossOriginIsolatedContextType.startsWith('Isolated');
   }
 
   getCrossOriginIsolatedContextType(): Protocol.Page.CrossOriginIsolatedContextType|null {
-    return this._crossOriginIsolatedContextType;
+    return this.crossOriginIsolatedContextType;
   }
 
   getGatedAPIFeatures(): Protocol.Page.GatedAPIFeatures[]|null {
-    return this._gatedAPIFeatures;
+    return this.gatedAPIFeatures;
   }
 
   getOriginTrials(): Protocol.Page.OriginTrial[]|null {
@@ -678,88 +673,88 @@ export class ResourceTreeFrame {
     };
   }
 
-  _navigate(framePayload: Protocol.Page.Frame): void {
-    this._loaderId = framePayload.loaderId;
-    this._name = framePayload.name;
-    this._url = framePayload.url;
-    this._domainAndRegistry = framePayload.domainAndRegistry;
-    this._securityOrigin = framePayload.securityOrigin;
-    this._mimeType = framePayload.mimeType;
-    this._unreachableUrl = framePayload.unreachableUrl || '';
-    this._adFrameStatus = framePayload?.adFrameStatus;
-    this._secureContextType = framePayload.secureContextType;
-    this._crossOriginIsolatedContextType = framePayload.crossOriginIsolatedContextType;
-    this._gatedAPIFeatures = framePayload.gatedAPIFeatures;
+  navigate(framePayload: Protocol.Page.Frame): void {
+    this.loaderIdInternal = framePayload.loaderId;
+    this.nameInternal = framePayload.name;
+    this.urlInternal = framePayload.url;
+    this.domainAndRegistryInternal = framePayload.domainAndRegistry;
+    this.securityOriginInternal = framePayload.securityOrigin;
+    this.mimeType = framePayload.mimeType;
+    this.unreachableUrlInternal = framePayload.unreachableUrl || '';
+    this.adFrameStatusInternal = framePayload?.adFrameStatus;
+    this.secureContextType = framePayload.secureContextType;
+    this.crossOriginIsolatedContextType = framePayload.crossOriginIsolatedContextType;
+    this.gatedAPIFeatures = framePayload.gatedAPIFeatures;
     this.backForwardCacheDetails = {restoredFromCache: undefined, explanations: []};
     this.originTrials = framePayload.originTrials || null;
 
-    const mainResource = this._resourcesMap.get(this._url);
-    this._resourcesMap.clear();
-    this._removeChildFrames();
-    if (mainResource && mainResource.loaderId === this._loaderId) {
+    const mainResource = this.resourcesMap.get(this.urlInternal);
+    this.resourcesMap.clear();
+    this.removeChildFrames();
+    if (mainResource && mainResource.loaderId === this.loaderIdInternal) {
       this.addResource(mainResource);
     }
   }
 
   resourceTreeModel(): ResourceTreeModel {
-    return this._model;
+    return this.model;
   }
 
   get id(): string {
-    return this._id;
+    return this.idInternal;
   }
 
   get name(): string {
-    return this._name || '';
+    return this.nameInternal || '';
   }
 
   get url(): string {
-    return this._url;
+    return this.urlInternal;
   }
 
   domainAndRegistry(): string {
-    return this._domainAndRegistry;
+    return this.domainAndRegistryInternal;
   }
 
   get securityOrigin(): string|null {
-    return this._securityOrigin;
+    return this.securityOriginInternal;
   }
 
   unreachableUrl(): string {
-    return this._unreachableUrl;
+    return this.unreachableUrlInternal;
   }
 
   get loaderId(): string {
-    return this._loaderId;
+    return this.loaderIdInternal;
   }
 
   adFrameType(): Protocol.Page.AdFrameType {
-    return this._adFrameStatus?.adFrameType || Protocol.Page.AdFrameType.None;
+    return this.adFrameStatusInternal?.adFrameType || Protocol.Page.AdFrameType.None;
   }
 
   adFrameStatus(): Protocol.Page.AdFrameStatus|undefined {
-    return this._adFrameStatus;
+    return this.adFrameStatusInternal;
   }
 
   get childFrames(): ResourceTreeFrame[] {
-    return [...this._childFrames];
+    return [...this.childFramesInternal];
   }
 
   /**
    * Returns the parent frame if both frames are part of the same process/target.
    */
   sameTargetParentFrame(): ResourceTreeFrame|null {
-    return this._sameTargetParentFrame;
+    return this.sameTargetParentFrameInternal;
   }
 
   /**
    * Returns the parent frame if both frames are part of different processes/targets (child is an OOPIF).
    */
   crossTargetParentFrame(): ResourceTreeFrame|null {
-    if (!this._crossTargetParentFrameId) {
+    if (!this.crossTargetParentFrameId) {
       return null;
     }
-    const parentTarget = this._model.target().parentTarget();
+    const parentTarget = this.model.target().parentTarget();
     if (!parentTarget) {
       return null;
     }
@@ -773,7 +768,7 @@ export class ResourceTreeFrame {
     // - both of them were handled in renderer in the same order;
     // - cached resource tree got processed on parent model;
     // - child target was created as a result of setAutoAttach call.
-    return parentModel._frames.get(this._crossTargetParentFrameId) || null;
+    return parentModel.framesInternal.get(this.crossTargetParentFrameId) || null;
   }
 
   /**
@@ -789,7 +784,7 @@ export class ResourceTreeFrame {
    * of an out-of-process iframe (OOPIF).
    */
   isMainFrame(): boolean {
-    return !this._sameTargetParentFrame;
+    return !this.sameTargetParentFrameInternal;
   }
 
   /**
@@ -797,60 +792,60 @@ export class ResourceTreeFrame {
    * tab.
    */
   isTopFrame(): boolean {
-    return !this._model.target().parentTarget() && !this._sameTargetParentFrame && !this._crossTargetParentFrameId;
+    return !this.model.target().parentTarget() && !this.sameTargetParentFrameInternal && !this.crossTargetParentFrameId;
   }
 
-  _removeChildFrame(frame: ResourceTreeFrame, isSwap: boolean): void {
-    this._childFrames.delete(frame);
-    frame._remove(isSwap);
+  removeChildFrame(frame: ResourceTreeFrame, isSwap: boolean): void {
+    this.childFramesInternal.delete(frame);
+    frame.remove(isSwap);
   }
 
-  _removeChildFrames(): void {
-    const frames = this._childFrames;
-    this._childFrames = new Set();
+  private removeChildFrames(): void {
+    const frames = this.childFramesInternal;
+    this.childFramesInternal = new Set();
     for (const frame of frames) {
-      frame._remove(false);
+      frame.remove(false);
     }
   }
 
-  _remove(isSwap: boolean): void {
-    this._removeChildFrames();
-    this._model._frames.delete(this.id);
-    this._model.dispatchEventToListeners(Events.FrameDetached, {frame: this, isSwap});
+  remove(isSwap: boolean): void {
+    this.removeChildFrames();
+    this.model.framesInternal.delete(this.id);
+    this.model.dispatchEventToListeners(Events.FrameDetached, {frame: this, isSwap});
   }
 
   addResource(resource: Resource): void {
-    if (this._resourcesMap.get(resource.url) === resource) {
+    if (this.resourcesMap.get(resource.url) === resource) {
       // Already in the tree, we just got an extra update.
       return;
     }
-    this._resourcesMap.set(resource.url, resource);
-    this._model.dispatchEventToListeners(Events.ResourceAdded, resource);
+    this.resourcesMap.set(resource.url, resource);
+    this.model.dispatchEventToListeners(Events.ResourceAdded, resource);
   }
 
-  _addRequest(request: NetworkRequest): void {
-    let resource = this._resourcesMap.get(request.url());
+  addRequest(request: NetworkRequest): void {
+    let resource = this.resourcesMap.get(request.url());
     if (resource && resource.request === request) {
       // Already in the tree, we just got an extra update.
       return;
     }
     resource = new Resource(
-        this._model, request, request.url(), request.documentURL, request.frameId, request.loaderId,
+        this.model, request, request.url(), request.documentURL, request.frameId, request.loaderId,
         request.resourceType(), request.mimeType, null, null);
-    this._resourcesMap.set(resource.url, resource);
-    this._model.dispatchEventToListeners(Events.ResourceAdded, resource);
+    this.resourcesMap.set(resource.url, resource);
+    this.model.dispatchEventToListeners(Events.ResourceAdded, resource);
   }
 
   resources(): Resource[] {
-    return Array.from(this._resourcesMap.values());
+    return Array.from(this.resourcesMap.values());
   }
 
   resourceForURL(url: string): Resource|null {
-    const resource = this._resourcesMap.get(url);
+    const resource = this.resourcesMap.get(url);
     if (resource) {
       return resource;
     }
-    for (const frame of this._childFrames) {
+    for (const frame of this.childFramesInternal) {
       const resource = frame.resourceForURL(url);
       if (resource) {
         return resource;
@@ -859,15 +854,15 @@ export class ResourceTreeFrame {
     return null;
   }
 
-  _callForFrameResources(callback: (arg0: Resource) => boolean): boolean {
-    for (const resource of this._resourcesMap.values()) {
+  callForFrameResources(callback: (arg0: Resource) => boolean): boolean {
+    for (const resource of this.resourcesMap.values()) {
       if (callback(resource)) {
         return true;
       }
     }
 
-    for (const frame of this._childFrames) {
-      if (frame._callForFrameResources(callback)) {
+    for (const frame of this.childFramesInternal) {
+      if (frame.callForFrameResources(callback)) {
         return true;
       }
     }
@@ -878,12 +873,12 @@ export class ResourceTreeFrame {
     if (this.isTopFrame()) {
       return i18n.i18n.lockedString('top');
     }
-    const subtitle = new Common.ParsedURL.ParsedURL(this._url).displayName;
+    const subtitle = new Common.ParsedURL.ParsedURL(this.urlInternal).displayName;
     if (subtitle) {
-      if (!this._name) {
+      if (!this.nameInternal) {
         return subtitle;
       }
-      return this._name + ' (' + subtitle + ')';
+      return this.nameInternal + ' (' + subtitle + ')';
     }
     return i18n.i18n.lockedString('iframe');
   }
@@ -893,7 +888,7 @@ export class ResourceTreeFrame {
     if (!parentFrame) {
       return null;
     }
-    return parentFrame.resourceTreeModel().domModel().getOwnerNodeForFrame(this._id);
+    return parentFrame.resourceTreeModel().domModel().getOwnerNodeForFrame(this.idInternal);
   }
 
   async getOwnerDOMNodeOrDocument(): Promise<DOMNode|null> {
@@ -911,7 +906,7 @@ export class ResourceTreeFrame {
     const parentFrame = this.parentFrame();
     const parentTarget = this.resourceTreeModel().target().parentTarget();
     const highlightFrameOwner = async(domModel: DOMModel): Promise<void> => {
-      const deferredNode = await domModel.getOwnerNodeForFrame(this._id);
+      const deferredNode = await domModel.getOwnerNodeForFrame(this.idInternal);
       if (deferredNode) {
         domModel.overlayModel().highlightInOverlay({deferredNode, selectorList: ''}, 'all', true);
       }
@@ -938,8 +933,8 @@ export class ResourceTreeFrame {
   }
 
   async getPermissionsPolicyState(): Promise<Protocol.Page.PermissionsPolicyFeatureState[]|null> {
-    const response =
-        await this.resourceTreeModel().target().pageAgent().invoke_getPermissionsPolicyState({frameId: this._id});
+    const response = await this.resourceTreeModel().target().pageAgent().invoke_getPermissionsPolicyState(
+        {frameId: this.idInternal});
     if (response.getError()) {
       return null;
     }
@@ -957,44 +952,48 @@ export class ResourceTreeFrame {
     this.backForwardCacheDetails.restoredFromCache = false;
     this.backForwardCacheDetails.explanations = event.notRestoredExplanations;
   }
+
+  getResourcesMap(): Map<string, Resource> {
+    return this.resourcesMap;
+  }
 }
 
 export class PageDispatcher implements ProtocolProxyApi.PageDispatcher {
-  _resourceTreeModel: ResourceTreeModel;
+  private resourceTreeModel: ResourceTreeModel;
   constructor(resourceTreeModel: ResourceTreeModel) {
-    this._resourceTreeModel = resourceTreeModel;
+    this.resourceTreeModel = resourceTreeModel;
   }
   backForwardCacheNotUsed(params: Protocol.Page.BackForwardCacheNotUsedEvent): void {
-    this._resourceTreeModel.onBackForwardCacheNotUsed(params);
+    this.resourceTreeModel.onBackForwardCacheNotUsed(params);
   }
 
   domContentEventFired({timestamp}: Protocol.Page.DomContentEventFiredEvent): void {
-    this._resourceTreeModel.dispatchEventToListeners(Events.DOMContentLoaded, timestamp);
+    this.resourceTreeModel.dispatchEventToListeners(Events.DOMContentLoaded, timestamp);
   }
 
   loadEventFired({timestamp}: Protocol.Page.LoadEventFiredEvent): void {
-    this._resourceTreeModel.dispatchEventToListeners(
-        Events.Load, {resourceTreeModel: this._resourceTreeModel, loadTime: timestamp});
+    this.resourceTreeModel.dispatchEventToListeners(
+        Events.Load, {resourceTreeModel: this.resourceTreeModel, loadTime: timestamp});
   }
 
   lifecycleEvent({frameId, name}: Protocol.Page.LifecycleEventEvent): void {
-    this._resourceTreeModel.dispatchEventToListeners(Events.LifecycleEvent, {frameId, name});
+    this.resourceTreeModel.dispatchEventToListeners(Events.LifecycleEvent, {frameId, name});
   }
 
   frameAttached({frameId, parentFrameId, stack}: Protocol.Page.FrameAttachedEvent): void {
-    this._resourceTreeModel._frameAttached(frameId, parentFrameId, stack);
+    this.resourceTreeModel.frameAttached(frameId, parentFrameId, stack);
   }
 
   frameNavigated({frame, type}: Protocol.Page.FrameNavigatedEvent): void {
-    this._resourceTreeModel._frameNavigated(frame, type);
+    this.resourceTreeModel.frameNavigated(frame, type);
   }
 
   documentOpened({frame}: Protocol.Page.DocumentOpenedEvent): void {
-    this._resourceTreeModel._documentOpened(frame);
+    this.resourceTreeModel.documentOpened(frame);
   }
 
   frameDetached({frameId, reason}: Protocol.Page.FrameDetachedEvent): void {
-    this._resourceTreeModel._frameDetached(frameId, reason === Protocol.Page.FrameDetachedEventReason.Swap);
+    this.resourceTreeModel.frameDetached(frameId, reason === Protocol.Page.FrameDetachedEventReason.Swap);
   }
 
   frameStartedLoading({}: Protocol.Page.FrameStartedLoadingEvent): void {
@@ -1016,12 +1015,12 @@ export class PageDispatcher implements ProtocolProxyApi.PageDispatcher {
   }
 
   frameResized(): void {
-    this._resourceTreeModel.dispatchEventToListeners(Events.FrameResized);
+    this.resourceTreeModel.dispatchEventToListeners(Events.FrameResized);
   }
 
   javascriptDialogOpening({hasBrowserHandler}: Protocol.Page.JavascriptDialogOpeningEvent): void {
     if (!hasBrowserHandler) {
-      this._resourceTreeModel._agent.invoke_handleJavaScriptDialog({accept: false});
+      this.resourceTreeModel.agent.invoke_handleJavaScriptDialog({accept: false});
     }
   }
 
@@ -1035,13 +1034,13 @@ export class PageDispatcher implements ProtocolProxyApi.PageDispatcher {
   }
 
   interstitialShown(): void {
-    this._resourceTreeModel._isInterstitialShowing = true;
-    this._resourceTreeModel.dispatchEventToListeners(Events.InterstitialShown);
+    this.resourceTreeModel.isInterstitialShowing = true;
+    this.resourceTreeModel.dispatchEventToListeners(Events.InterstitialShown);
   }
 
   interstitialHidden(): void {
-    this._resourceTreeModel._isInterstitialShowing = false;
-    this._resourceTreeModel.dispatchEventToListeners(Events.InterstitialHidden);
+    this.resourceTreeModel.isInterstitialShowing = false;
+    this.resourceTreeModel.dispatchEventToListeners(Events.InterstitialHidden);
   }
 
   windowOpen({}: Protocol.Page.WindowOpenEvent): void {

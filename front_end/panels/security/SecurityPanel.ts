@@ -734,7 +734,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
       networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, this._onRequestFinished, this),
     ];
 
-    if (resourceTreeModel.isInterstitialShowing()) {
+    if (resourceTreeModel.isInterstitialShowing) {
       this._onInterstitialShown();
     }
   }

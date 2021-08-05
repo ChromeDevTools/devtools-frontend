@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
 import * as HostModule from '../host/host.js';
@@ -26,11 +24,11 @@ export class CSSProperty {
   implicit: boolean;
   text: string|null|undefined;
   range: TextUtils.TextRange.TextRange|null;
-  _active: boolean;
-  _nameRange: TextUtils.TextRange.TextRange|null;
-  _valueRange: TextUtils.TextRange.TextRange|null;
-  _invalidProperty: string|null;
-  _invalidString?: Common.UIString.LocalizedString;
+  private active: boolean;
+  private nameRangeInternal: TextUtils.TextRange.TextRange|null;
+  private valueRangeInternal: TextUtils.TextRange.TextRange|null;
+  private readonly invalidProperty: string|null;
+  private invalidString?: Common.UIString.LocalizedString;
 
   constructor(
       ownerStyle: CSSStyleDeclaration, index: number, name: string, value: string, important: boolean,
@@ -45,10 +43,10 @@ export class CSSProperty {
     this.implicit = implicit;  // A longhand, implicitly set by missing values of shorthand.
     this.text = text;
     this.range = range ? TextUtils.TextRange.TextRange.fromObject(range) : null;
-    this._active = true;
-    this._nameRange = null;
-    this._valueRange = null;
-    this._invalidProperty = null;
+    this.active = true;
+    this.nameRangeInternal = null;
+    this.valueRangeInternal = null;
+    this.invalidProperty = null;
   }
 
   static parsePayload(ownerStyle: CSSStyleDeclaration, index: number, payload: Protocol.CSS.CSSProperty): CSSProperty {
@@ -64,8 +62,8 @@ export class CSSProperty {
     return result;
   }
 
-  _ensureRanges(): void {
-    if (this._nameRange && this._valueRange) {
+  private ensureRanges(): void {
+    if (this.nameRangeInternal && this.valueRangeInternal) {
       return;
     }
     const range = this.range;
@@ -83,8 +81,8 @@ export class CSSProperty {
     const nameSourceRange = new TextUtils.TextRange.SourceRange(nameIndex, this.name.length);
     const valueSourceRange = new TextUtils.TextRange.SourceRange(valueIndex, this.value.length);
 
-    this._nameRange = rebase(text.toTextRange(nameSourceRange), range.startLine, range.startColumn);
-    this._valueRange = rebase(text.toTextRange(valueSourceRange), range.startLine, range.startColumn);
+    this.nameRangeInternal = rebase(text.toTextRange(nameSourceRange), range.startLine, range.startColumn);
+    this.valueRangeInternal = rebase(text.toTextRange(valueSourceRange), range.startLine, range.startColumn);
 
     function rebase(oneLineRange: TextUtils.TextRange.TextRange, lineOffset: number, columnOffset: number):
         TextUtils.TextRange.TextRange {
@@ -99,13 +97,13 @@ export class CSSProperty {
   }
 
   nameRange(): TextUtils.TextRange.TextRange|null {
-    this._ensureRanges();
-    return this._nameRange;
+    this.ensureRanges();
+    return this.nameRangeInternal;
   }
 
   valueRange(): TextUtils.TextRange.TextRange|null {
-    this._ensureRanges();
-    return this._valueRange;
+    this.ensureRanges();
+    return this.valueRangeInternal;
   }
 
   rebase(edit: Edit): void {
@@ -118,7 +116,7 @@ export class CSSProperty {
   }
 
   setActive(active: boolean): void {
-    this._active = active;
+    this.active = active;
   }
 
   get propertyText(): string|null {
@@ -133,7 +131,7 @@ export class CSSProperty {
   }
 
   activeInStyle(): boolean {
-    return this._active;
+    return this.active;
   }
 
   trimmedValueWithoutImportant(): string {
@@ -168,21 +166,19 @@ export class CSSProperty {
 
     const range = this.range.relativeTo(this.ownerStyle.range.startLine, this.ownerStyle.range.startColumn);
     const indentation = this.ownerStyle.cssText ?
-        this._detectIndentation(this.ownerStyle.cssText) :
+        this.detectIndentation(this.ownerStyle.cssText) :
         Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get();
     const endIndentation = this.ownerStyle.cssText ? indentation.substring(0, this.ownerStyle.range.endColumn) : '';
     const text = new TextUtils.Text.Text(this.ownerStyle.cssText || '');
     const newStyleText = text.replaceRange(range, Platform.StringUtilities.sprintf(';%s;', propertyText));
     const tokenizerFactory = TextUtils.CodeMirrorUtils.TokenizerFactory.instance();
-    const styleText = CSSProperty._formatStyle(newStyleText, indentation, endIndentation, tokenizerFactory);
+    const styleText = CSSProperty.formatStyle(newStyleText, indentation, endIndentation, tokenizerFactory);
     return this.ownerStyle.setText(styleText, majorChange);
   }
 
-  static _formatStyle(
+  static formatStyle(
       styleText: string, indentation: string, endIndentation: string,
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      tokenizerFactory: TextUtils.TextUtils.TokenizerFactory, codeMirrorMode?: CodeMirror.Mode<any>): string {
+      tokenizerFactory: TextUtils.TextUtils.TokenizerFactory, codeMirrorMode?: CodeMirror.Mode<unknown>): string {
     const doubleIndent = indentation.substring(endIndentation.length) + indentation;
     if (indentation) {
       indentation = '\n' + indentation;
@@ -263,7 +259,7 @@ export class CSSProperty {
     }
   }
 
-  _detectIndentation(text: string): string {
+  private detectIndentation(text: string): string {
     const lines = text.split('\n');
     if (lines.length < 2) {
       return '';
@@ -295,13 +291,13 @@ export class CSSProperty {
    * This stores the warning string when a CSS Property is improperly parsed.
    */
   setDisplayedStringForInvalidProperty(invalidString: Common.UIString.LocalizedString): void {
-    this._invalidString = invalidString;
+    this.invalidString = invalidString;
   }
 
   /**
    * Retrieve the warning string for a screen reader to announce when editing the property.
    */
   getInvalidStringForInvalidProperty(): Common.UIString.LocalizedString|undefined {
-    return this._invalidString;
+    return this.invalidString;
   }
 }

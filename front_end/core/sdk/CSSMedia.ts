@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as Protocol from '../../generated/protocol.js';
 
@@ -11,13 +9,13 @@ import type {CSSModel} from './CSSModel.js';
 import {CSSQuery} from './CSSQuery.js';
 
 export class CSSMediaQuery {
-  _active: boolean;
-  _expressions: CSSMediaQueryExpression[]|null;
+  private readonly activeInternal: boolean;
+  private readonly expressionsInternal: CSSMediaQueryExpression[]|null;
   constructor(payload: Protocol.CSS.MediaQuery) {
-    this._active = payload.active;
-    this._expressions = [];
+    this.activeInternal = payload.active;
+    this.expressionsInternal = [];
     for (let j = 0; j < payload.expressions.length; ++j) {
-      this._expressions.push(CSSMediaQueryExpression.parsePayload(payload.expressions[j]));
+      this.expressionsInternal.push(CSSMediaQueryExpression.parsePayload(payload.expressions[j]));
     }
   }
 
@@ -26,26 +24,26 @@ export class CSSMediaQuery {
   }
 
   active(): boolean {
-    return this._active;
+    return this.activeInternal;
   }
 
   expressions(): CSSMediaQueryExpression[]|null {
-    return this._expressions;
+    return this.expressionsInternal;
   }
 }
 
 export class CSSMediaQueryExpression {
-  _value: number;
-  _unit: string;
-  _feature: string;
-  _valueRange: TextUtils.TextRange.TextRange|null;
-  _computedLength: number|null;
+  private readonly valueInternal: number;
+  private readonly unitInternal: string;
+  private readonly featureInternal: string;
+  private readonly valueRangeInternal: TextUtils.TextRange.TextRange|null;
+  private readonly computedLengthInternal: number|null;
   constructor(payload: Protocol.CSS.MediaQueryExpression) {
-    this._value = payload.value;
-    this._unit = payload.unit;
-    this._feature = payload.feature;
-    this._valueRange = payload.valueRange ? TextUtils.TextRange.TextRange.fromObject(payload.valueRange) : null;
-    this._computedLength = payload.computedLength || null;
+    this.valueInternal = payload.value;
+    this.unitInternal = payload.unit;
+    this.featureInternal = payload.feature;
+    this.valueRangeInternal = payload.valueRange ? TextUtils.TextRange.TextRange.fromObject(payload.valueRange) : null;
+    this.computedLengthInternal = payload.computedLength || null;
   }
 
   static parsePayload(payload: Protocol.CSS.MediaQueryExpression): CSSMediaQueryExpression {
@@ -53,23 +51,23 @@ export class CSSMediaQueryExpression {
   }
 
   value(): number {
-    return this._value;
+    return this.valueInternal;
   }
 
   unit(): string {
-    return this._unit;
+    return this.unitInternal;
   }
 
   feature(): string {
-    return this._feature;
+    return this.featureInternal;
   }
 
   valueRange(): TextUtils.TextRange.TextRange|null {
-    return this._valueRange;
+    return this.valueRangeInternal;
   }
 
   computedLength(): number|null {
-    return this._computedLength;
+    return this.computedLengthInternal;
   }
 }
 

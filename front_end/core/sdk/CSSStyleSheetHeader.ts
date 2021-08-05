@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
@@ -29,7 +27,7 @@ const str_ = i18n.i18n.registerUIStrings('core/sdk/CSSStyleSheetHeader.ts', UISt
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentProvider, FrameAssociated {
-  _cssModel: CSSModel;
+  private cssModelInternal: CSSModel;
   id: string;
   frameId: string;
   sourceURL: string;
@@ -47,10 +45,10 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
   contentLength: number;
   ownerNode: DeferredDOMNode|undefined;
   sourceMapURL: string|undefined;
-  _originalContentProvider: TextUtils.StaticContentProvider.StaticContentProvider|null;
+  private originalContentProviderInternal: TextUtils.StaticContentProvider.StaticContentProvider|null;
 
   constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSStyleSheetHeader) {
-    this._cssModel = cssModel;
+    this.cssModelInternal = cssModel;
     this.id = payload.styleSheetId;
     this.frameId = payload.frameId;
     this.sourceURL = payload.sourceURL;
@@ -70,22 +68,22 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
       this.ownerNode = new DeferredDOMNode(cssModel.target(), payload.ownerNode);
     }
     this.sourceMapURL = payload.sourceMapURL;
-    this._originalContentProvider = null;
+    this.originalContentProviderInternal = null;
   }
 
   originalContentProvider(): TextUtils.ContentProvider.ContentProvider {
-    if (!this._originalContentProvider) {
+    if (!this.originalContentProviderInternal) {
       const lazyContent = (async(): Promise<TextUtils.ContentProvider.DeferredContent> => {
-        const originalText = await this._cssModel.originalStyleSheetText(this);
+        const originalText = await this.cssModelInternal.originalStyleSheetText(this);
         if (originalText === null) {
           return {content: null, error: i18nString(UIStrings.couldNotFindTheOriginalStyle), isEncoded: false};
         }
         return {content: originalText, isEncoded: false};
       });
-      this._originalContentProvider =
+      this.originalContentProviderInternal =
           new TextUtils.StaticContentProvider.StaticContentProvider(this.contentURL(), this.contentType(), lazyContent);
     }
-    return this._originalContentProvider;
+    return this.originalContentProviderInternal;
   }
 
   setSourceMapURL(sourceMapURL?: string): void {
@@ -93,11 +91,11 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
   }
 
   cssModel(): CSSModel {
-    return this._cssModel;
+    return this.cssModelInternal;
   }
 
   isAnonymousInlineStyleSheet(): boolean {
-    return !this.resourceURL() && !this._cssModel.sourceMapManager().sourceMapForClient(this);
+    return !this.resourceURL() && !this.cssModelInternal.sourceMapManager().sourceMapForClient(this);
   }
 
   isConstructedByNew(): boolean {
@@ -105,11 +103,11 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
   }
 
   resourceURL(): string {
-    return this.isViaInspector() ? this._viaInspectorResourceURL() : this.sourceURL;
+    return this.isViaInspector() ? this.viaInspectorResourceURL() : this.sourceURL;
   }
 
-  _viaInspectorResourceURL(): string {
-    const model = this._cssModel.target().model(ResourceTreeModel);
+  private viaInspectorResourceURL(): string {
+    const model = this.cssModelInternal.target().model(ResourceTreeModel);
     console.assert(Boolean(model));
     if (!model) {
       return '';
@@ -161,7 +159,7 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
 
   async requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
     try {
-      const cssText = await this._cssModel.getStyleSheetText(this.id);
+      const cssText = await this.cssModelInternal.getStyleSheetText(this.id);
       return {content: (cssText as string), isEncoded: false};
     } catch (err) {
       return {

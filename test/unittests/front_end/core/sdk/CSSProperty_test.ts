@@ -14,7 +14,7 @@ describe('CSSProperty', () => {
     const tokenizerFactory = TextUtils.CodeMirrorUtils.TokenizerFactory.instance();
     const mode = tokenizerFactory.getMode('text/css');
     const formatStyle = (styleText: string) =>
-        SDK.CSSProperty.CSSProperty._formatStyle(styleText, ' ', '', tokenizerFactory, mode);
+        SDK.CSSProperty.CSSProperty.formatStyle(styleText, ' ', '', tokenizerFactory, mode);
 
     it('formats a style declaration with a single trailing semicolon correctly', () => {
       assert.strictEqual(formatStyle('color: red;'), '\n color: red;\n');

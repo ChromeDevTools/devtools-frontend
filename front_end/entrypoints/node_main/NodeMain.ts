@@ -127,7 +127,7 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel implements Pro
 
   receivedMessageFromTarget({sessionId, message}: Protocol.Target.ReceivedMessageFromTargetEvent): void {
     const connection = this._childConnections.get(sessionId);
-    const onMessage = connection ? connection._onMessage : null;
+    const onMessage = connection ? connection.onMessage : null;
     if (onMessage) {
       onMessage.call(null, message);
     }
@@ -140,17 +140,17 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel implements Pro
 export class NodeConnection implements ProtocolClient.InspectorBackend.Connection {
   _targetAgent: ProtocolProxyApi.TargetApi;
   _sessionId: string;
-  _onMessage: ((arg0: (Object|string)) => void)|null;
+  onMessage: ((arg0: (Object|string)) => void)|null;
   _onDisconnect: ((arg0: string) => void)|null;
   constructor(targetAgent: ProtocolProxyApi.TargetApi, sessionId: string) {
     this._targetAgent = targetAgent;
     this._sessionId = sessionId;
-    this._onMessage = null;
+    this.onMessage = null;
     this._onDisconnect = null;
   }
 
   setOnMessage(onMessage: (arg0: (Object|string)) => void): void {
-    this._onMessage = onMessage;
+    this.onMessage = onMessage;
   }
 
   setOnDisconnect(onDisconnect: (arg0: string) => void): void {
@@ -166,7 +166,7 @@ export class NodeConnection implements ProtocolClient.InspectorBackend.Connectio
       this._onDisconnect.call(null, 'force disconnect');
     }
     this._onDisconnect = null;
-    this._onMessage = null;
+    this.onMessage = null;
     await this._targetAgent.invoke_detachFromTarget({sessionId: this._sessionId});
   }
 }

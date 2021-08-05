@@ -171,7 +171,7 @@ export class InspectorBackend {
 let connectionFactory: () => Connection;
 
 export class Connection {
-  _onMessage!: ((arg0: Object) => void)|null;
+  onMessage!: ((arg0: Object) => void)|null;
   constructor() {
   }
 
@@ -378,13 +378,13 @@ export class SessionRouter {
         continue;
       }
 
-      if (!session.proxyConnection._onMessage) {
+      if (!session.proxyConnection.onMessage) {
         InspectorBackend.reportProtocolError(
             'Protocol Error: the session has a proxyConnection with no _onMessage', messageObject);
         continue;
       }
 
-      session.proxyConnection._onMessage(messageObject);
+      session.proxyConnection.onMessage(messageObject);
       suppressUnknownMessageErrors = true;
     }
 

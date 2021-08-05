@@ -101,12 +101,12 @@ export interface AffectedElement {
 export abstract class Issue<IssueCode extends string = string> {
   private issueCode: IssueCode;
   private issuesModel: SDK.IssuesModel.IssuesModel|null;
-  protected issueId: string|undefined = undefined;
+  protected issueId: Protocol.Audits.IssueId|undefined = undefined;
   private hidden: boolean;
 
   constructor(
       code: IssueCode|{code: IssueCode, umaCode: string}, issuesModel: SDK.IssuesModel.IssuesModel|null = null,
-      issueId?: string) {
+      issueId?: Protocol.Audits.IssueId) {
     this.issueCode = typeof code === 'object' ? code.code : code;
     this.issuesModel = issuesModel;
     this.issueId = issueId;
@@ -167,7 +167,7 @@ export abstract class Issue<IssueCode extends string = string> {
     return false;
   }
 
-  getIssueId(): string|undefined {
+  getIssueId(): Protocol.Audits.IssueId|undefined {
     return this.issueId;
   }
 

@@ -1096,7 +1096,7 @@ declare namespace Protocol {
      * A unique id for a DevTools inspector issue. Allows other entities (e.g.
      * exceptions, CDP message, console messages, etc.) to reference an issue.
      */
-    export type IssueId = string;
+    export type IssueId = OpaqueIdentifier<string, 'Protocol.Audits.IssueId'>;
 
     /**
      * An inspector issue reported from the back-end.

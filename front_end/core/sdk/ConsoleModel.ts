@@ -463,7 +463,7 @@ export enum Events {
 
 export interface AffectedResources {
   requestId?: Protocol.Network.RequestId;
-  issueId?: string;
+  issueId?: Protocol.Audits.IssueId;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

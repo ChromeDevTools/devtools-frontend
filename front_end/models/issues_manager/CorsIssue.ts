@@ -95,7 +95,7 @@ export class CorsIssue extends Issue<IssueCode> {
 
   constructor(
       issueDetails: Protocol.Audits.CorsIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel,
-      issueId: string|undefined) {
+      issueId: Protocol.Audits.IssueId|undefined) {
     super(getIssueCode(issueDetails), issuesModel, issueId);
     this.issueDetails = issueDetails;
   }

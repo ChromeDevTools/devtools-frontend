@@ -6,6 +6,7 @@ import * as FrontendHelpers from '../../../../../test/unittests/front_end/helper
 import * as ComponentHelpers from '../../helpers/helpers.js';
 import type * as IssuesManager from '../../../../models/issues_manager/issues_manager.js';
 import type * as IssueCounterModule from '../../../../ui/components/issue_counter/issue_counter.js';
+import type * as Protocol from '../../../../generated/protocol.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
@@ -20,6 +21,6 @@ function appendComponent(data: IssueCounterModule.IssueLinkIcon.IssueLinkIconDat
 }
 
 appendComponent({
-  issueId: 'fakeid',
+  issueId: 'fakeid' as Protocol.Audits.IssueId,
   issueResolver: {waitFor: () => new Promise(() => {})} as unknown as IssuesManager.IssueResolver.IssueResolver,
 });

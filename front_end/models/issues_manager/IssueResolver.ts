@@ -21,7 +21,7 @@ export class IssueResolver extends Common.ResolverBase.ResolverBase<Protocol.Aud
     this.issuesManager = issuesManager;
   }
 
-  protected override getForId(id: Protocol.Network.RequestId): Issue|null {
+  protected override getForId(id: Protocol.Audits.IssueId): Issue|null {
     return this.issuesManager.getIssueById(id) || null;
   }
 

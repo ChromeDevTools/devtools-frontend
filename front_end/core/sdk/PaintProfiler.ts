@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 
@@ -38,15 +36,15 @@ import {Capability} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 
 export class PaintProfilerModel extends SDKModel {
-  _layerTreeAgent: ProtocolProxyApi.LayerTreeApi;
+  readonly layerTreeAgent: ProtocolProxyApi.LayerTreeApi;
 
   constructor(target: Target) {
     super(target);
-    this._layerTreeAgent = target.layerTreeAgent();
+    this.layerTreeAgent = target.layerTreeAgent();
   }
 
   async loadSnapshotFromFragments(tiles: Protocol.LayerTree.PictureTile[]): Promise<PaintProfilerSnapshot|null> {
-    const {snapshotId} = await this._layerTreeAgent.invoke_loadSnapshot({tiles});
+    const {snapshotId} = await this.layerTreeAgent.invoke_loadSnapshot({tiles});
     return snapshotId ? new PaintProfilerSnapshot(this, snapshotId) : null;
   }
 
@@ -56,49 +54,49 @@ export class PaintProfilerModel extends SDKModel {
   }
 
   async makeSnapshot(layerId: Protocol.LayerTree.LayerId): Promise<PaintProfilerSnapshot|null> {
-    const {snapshotId} = await this._layerTreeAgent.invoke_makeSnapshot({layerId});
+    const {snapshotId} = await this.layerTreeAgent.invoke_makeSnapshot({layerId});
     return snapshotId ? new PaintProfilerSnapshot(this, snapshotId) : null;
   }
 }
 
 export class PaintProfilerSnapshot {
-  _paintProfilerModel: PaintProfilerModel;
-  _id: Protocol.LayerTree.SnapshotId;
-  _refCount: number;
+  private readonly paintProfilerModel: PaintProfilerModel;
+  private readonly id: Protocol.LayerTree.SnapshotId;
+  private refCount: number;
 
   constructor(paintProfilerModel: PaintProfilerModel, snapshotId: Protocol.LayerTree.SnapshotId) {
-    this._paintProfilerModel = paintProfilerModel;
-    this._id = snapshotId;
-    this._refCount = 1;
+    this.paintProfilerModel = paintProfilerModel;
+    this.id = snapshotId;
+    this.refCount = 1;
   }
 
   release(): void {
-    console.assert(this._refCount > 0, 'release is already called on the object');
-    if (!--this._refCount) {
-      this._paintProfilerModel._layerTreeAgent.invoke_releaseSnapshot({snapshotId: this._id});
+    console.assert(this.refCount > 0, 'release is already called on the object');
+    if (!--this.refCount) {
+      this.paintProfilerModel.layerTreeAgent.invoke_releaseSnapshot({snapshotId: this.id});
     }
   }
 
   addReference(): void {
-    ++this._refCount;
-    console.assert(this._refCount > 0, 'Referencing a dead object');
+    ++this.refCount;
+    console.assert(this.refCount > 0, 'Referencing a dead object');
   }
 
   async replay(scale?: number, fromStep?: number, toStep?: number): Promise<string|null> {
-    const response = await this._paintProfilerModel._layerTreeAgent.invoke_replaySnapshot(
-        {snapshotId: this._id, fromStep, toStep, scale: scale || 1.0});
+    const response = await this.paintProfilerModel.layerTreeAgent.invoke_replaySnapshot(
+        {snapshotId: this.id, fromStep, toStep, scale: scale || 1.0});
     return response.dataURL;
   }
 
   async profile(clipRect: Protocol.DOM.Rect|null): Promise<Protocol.LayerTree.PaintProfile[]> {
-    const response = await this._paintProfilerModel._layerTreeAgent.invoke_profileSnapshot(
-        {snapshotId: this._id, minRepeatCount: 5, minDuration: 1, clipRect: clipRect || undefined});
+    const response = await this.paintProfilerModel.layerTreeAgent.invoke_profileSnapshot(
+        {snapshotId: this.id, minRepeatCount: 5, minDuration: 1, clipRect: clipRect || undefined});
 
     return response.timings;
   }
 
   async commandLog(): Promise<PaintProfilerLogItem[]|null> {
-    const response = await this._paintProfilerModel._layerTreeAgent.invoke_snapshotCommandLog({snapshotId: this._id});
+    const response = await this.paintProfilerModel.layerTreeAgent.invoke_snapshotCommandLog({snapshotId: this.id});
 
     return response.commandLog ? response.commandLog.map((entry, index) => new PaintProfilerLogItem(entry, index)) :
                                  null;

@@ -14,9 +14,6 @@ export class IOModel extends SDKModel<void> {
     super(target);
   }
 
-  /**
-   * @throws {!Error}
-   */
   async read(handle: string, size?: number, offset?: number): Promise<string|ArrayBuffer|null> {
     const result = await this.target().ioAgent().invoke_read({handle, offset, size});
     if (result.getError()) {
@@ -38,9 +35,6 @@ export class IOModel extends SDKModel<void> {
     }
   }
 
-  /**
-   * @throws {!Error}
-   */
   async resolveBlob(objectOrObjectId: string|RemoteObject): Promise<string> {
     const objectId = objectOrObjectId instanceof RemoteObject ? objectOrObjectId.objectId : objectOrObjectId;
     if (!objectId) {
@@ -53,9 +47,6 @@ export class IOModel extends SDKModel<void> {
     return `blob:${result.uuid}`;
   }
 
-  /**
-   * @throws {!Error}
-   */
   async readToString(handle: string): Promise<string> {
     const strings: string[] = [];
     const decoder = new TextDecoder();

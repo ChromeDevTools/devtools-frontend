@@ -49,7 +49,7 @@ export class RemoteArrayBufferWrapper implements LazyUint8Array {
 async function getBufferFromObject(obj: SDK.RemoteObject.RemoteObject): Promise<SDK.RemoteObject.RemoteArrayBuffer> {
   console.assert(obj.type === 'object');
   console.assert(obj.subtype !== undefined && ACCEPTED_MEMORY_TYPES.includes(obj.subtype));
-  const response = await obj.runtimeModel()._agent.invoke_callFunctionOn({
+  const response = await obj.runtimeModel().agent.invoke_callFunctionOn({
     objectId: obj.objectId,
     functionDeclaration:
         'function() { return this instanceof ArrayBuffer || (typeof SharedArrayBuffer !== \'undefined\' && this instanceof SharedArrayBuffer) ? this : this.buffer; }',

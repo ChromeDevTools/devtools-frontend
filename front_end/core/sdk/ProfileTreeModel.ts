@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as Protocol from '../../generated/protocol.js';
 
 import type {Target} from './Target.js';
@@ -51,21 +49,21 @@ export class ProfileNode {
 }
 
 export class ProfileTreeModel {
-  _target: Target|null;
+  private readonly targetInternal: Target|null;
   root!: ProfileNode;
   total!: number;
   maxDepth!: number;
   constructor(target?: Target|null) {
-    this._target = target || null;
+    this.targetInternal = target || null;
   }
 
   initialize(root: ProfileNode): void {
     this.root = root;
-    this._assignDepthsAndParents();
-    this.total = this._calculateTotals(this.root);
+    this.assignDepthsAndParents();
+    this.total = this.calculateTotals(this.root);
   }
 
-  _assignDepthsAndParents(): void {
+  private assignDepthsAndParents(): void {
     const root = this.root;
     root.depth = -1;
     root.parent = null;
@@ -88,7 +86,7 @@ export class ProfileTreeModel {
     }
   }
 
-  _calculateTotals(root: ProfileNode): number {
+  private calculateTotals(root: ProfileNode): number {
     const nodesToTraverse = [root];
     const dfsList = [];
     while (nodesToTraverse.length) {
@@ -107,6 +105,6 @@ export class ProfileTreeModel {
   }
 
   target(): Target|null {
-    return this._target;
+    return this.targetInternal;
   }
 }

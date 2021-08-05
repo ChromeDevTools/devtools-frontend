@@ -44,10 +44,6 @@ function run() {
   // eslint-disable-next-line no-unused-vars
   const {glob, files, cwd, _, $0, ...flagsForStylelint} = yargsObject;
 
-  /*
-   * This reduce is a flatten, because our Node version
-   * doesn't have flatMap :(
-   */
   const extraFlagsForStylelint = Object.keys(flagsForStylelint).flatMap(key => [`--${key}`, flagsForStylelint[key]]);
 
   const args = [

@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Host from '../host/host.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -13,14 +11,14 @@ import {Capability} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 
 export class LogModel extends SDKModel<EventTypes> implements ProtocolProxyApi.LogDispatcher {
-  _logAgent: ProtocolProxyApi.LogApi;
+  private readonly logAgent: ProtocolProxyApi.LogApi;
   constructor(target: Target) {
     super(target);
     target.registerLogDispatcher(this);
-    this._logAgent = target.logAgent();
-    this._logAgent.invoke_enable();
+    this.logAgent = target.logAgent();
+    this.logAgent.invoke_enable();
     if (!Host.InspectorFrontendHost.isUnderTest()) {
-      this._logAgent.invoke_startViolationsReport({
+      this.logAgent.invoke_startViolationsReport({
         config: [
           {name: Protocol.Log.ViolationSettingName.LongTask, threshold: 200},
           {name: Protocol.Log.ViolationSettingName.LongLayout, threshold: 30},
@@ -39,7 +37,7 @@ export class LogModel extends SDKModel<EventTypes> implements ProtocolProxyApi.L
   }
 
   requestClear(): void {
-    this._logAgent.invoke_clear();
+    this.logAgent.invoke_clear();
   }
 }
 

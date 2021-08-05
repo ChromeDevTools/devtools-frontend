@@ -55,13 +55,12 @@
 }
 
 .data-grid td .percent-value {
-  color: var(--color-text-secondary);
   width: 6ex;
   display: inline-block;
 }
 
-.data-grid:focus tr.selected span.percent-value {
-  color: var(--color-text-secondary-selected);
+.data-grid tr:not(.selected) td .percent-value {
+  color: var(--color-text-secondary);
 }
 
 @media (forced-colors: active) {

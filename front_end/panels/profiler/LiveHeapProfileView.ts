@@ -11,6 +11,9 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
+
+import liveHeapProfileStyles from './liveHeapProfile.css.js';
+
 import type * as Protocol from '../../generated/protocol.js';
 
 const UIStrings = {
@@ -67,7 +70,6 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
   private constructor() {
     super(true);
     this._gridNodeByUrl = new Map();
-    this.registerRequiredCSS('panels/profiler/liveHeapProfile.css');
 
     this._setting = Common.Settings.Settings.instance().moduleSetting('memoryLiveHeapProfile');
     const toolbar = new UI.Toolbar.Toolbar('live-heap-profile-toolbar', this.contentElement);
@@ -173,6 +175,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
 
   wasShown(): void {
     this._poll();
+    this.registerCSSFiles([liveHeapProfileStyles]);
     this._setting.addChangeListener(this._settingChanged, this);
   }
 

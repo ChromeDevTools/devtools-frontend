@@ -28,11 +28,16 @@
  */
 
 /* eslint-disable rulesdir/no_underscored_properties */
-
+/* eslint-disable rulesdir/es_modules_import */
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
+
+import heapProfilerStyles from './heapProfiler.css.js';
+import profilesPanelStyles from './profilesPanel.css.js';
+import profilesSidebarTreeStyles from './profilesSidebarTree.css.js';
 
 import type {DataDisplayDelegate, ProfileHeader, ProfileType} from './ProfileHeader.js';
 import {ProfileEvents as ProfileTypeEvents} from './ProfileHeader.js';
@@ -100,9 +105,6 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
   constructor(name: string, profileTypes: ProfileType[], recordingActionId: string) {
     super(name);
     this._profileTypes = profileTypes;
-    this.registerRequiredCSS('panels/profiler/heapProfiler.css');
-    this.registerRequiredCSS('panels/profiler/profilesPanel.css');
-    this.registerRequiredCSS('ui/legacy/components/object_ui/objectValue.css');
 
     const mainContainer = new UI.Widget.VBox();
     this.splitWidget().setMainWidget(mainContainer);
@@ -110,7 +112,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     this.profilesItemTreeElement = new ProfilesSidebarTreeElement(this);
 
     this._sidebarTree = new UI.TreeOutline.TreeOutlineInShadow();
-    this._sidebarTree.registerRequiredCSS('panels/profiler/profilesSidebarTree.css');
+
     this._sidebarTree.element.classList.add('profiles-sidebar-tree-box');
     this.panelSidebarElement().appendChild(this._sidebarTree.element);
 
@@ -456,6 +458,11 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
   focus(): void {
     this._sidebarTree.focus();
   }
+  wasShown(): void {
+    super.wasShown();
+    this._sidebarTree.registerCSSFiles([profilesSidebarTreeStyles]);
+    this.registerCSSFiles([objectValueStyles, profilesPanelStyles, heapProfilerStyles]);
+  }
 }
 
 export class ProfileTypeSidebarSection extends UI.TreeOutline.TreeElement {
@@ -679,6 +686,7 @@ export class JSProfilerPanel extends ProfilesPanel implements UI.ActionRegistrat
     return jsProfilerPanelInstance;
   }
   wasShown(): void {
+    super.wasShown();
     UI.Context.Context.instance().setFlavor(JSProfilerPanel, this);
   }
 

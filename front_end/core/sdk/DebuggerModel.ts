@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
@@ -199,7 +197,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     }
   }
 
-  static _sourceMapId(executionContextId: number, sourceURL: string, sourceMapURL: string|undefined): string|null {
+  static sourceMapId(executionContextId: number, sourceURL: string, sourceMapURL: string|undefined): string|null {
     if (!sourceMapURL) {
       return null;
     }
@@ -251,11 +249,11 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   private onFrameNavigated(): void {
-    if (DebuggerModel._shouldResyncDebuggerId) {
+    if (DebuggerModel.shouldResyncDebuggerId) {
       return;
     }
 
-    DebuggerModel._shouldResyncDebuggerId = true;
+    DebuggerModel.shouldResyncDebuggerId = true;
   }
 
   private registerDebugger(response: Protocol.Debugger.EnableResponse): void {
@@ -273,9 +271,9 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   static async modelForDebuggerId(debuggerId: string): Promise<DebuggerModel|null> {
-    if (DebuggerModel._shouldResyncDebuggerId) {
+    if (DebuggerModel.shouldResyncDebuggerId) {
       await DebuggerModel.resyncDebuggerIdForModels();
-      DebuggerModel._shouldResyncDebuggerId = false;
+      DebuggerModel.shouldResyncDebuggerId = false;
     }
     return _debuggerIdToModel.get(debuggerId) || null;
   }
@@ -705,7 +703,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.registerScript(script);
     this.dispatchEventToListeners(Events.ParsedScriptSource, script);
 
-    const sourceMapId = DebuggerModel._sourceMapId(script.executionContextId, script.sourceURL, script.sourceMapURL);
+    const sourceMapId = DebuggerModel.sourceMapId(script.executionContextId, script.sourceURL, script.sourceMapURL);
     if (sourceMapId && !hasSyntaxError) {
       // Consecutive script evaluations in the same execution context with the same sourceURL
       // and sourceMappingURL should result in source map reloading.
@@ -726,14 +724,14 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   setSourceMapURL(script: Script, newSourceMapURL: string): void {
-    let sourceMapId = DebuggerModel._sourceMapId(script.executionContextId, script.sourceURL, script.sourceMapURL);
+    let sourceMapId = DebuggerModel.sourceMapId(script.executionContextId, script.sourceURL, script.sourceMapURL);
     if (sourceMapId && this.sourceMapIdToScript.get(sourceMapId) === script) {
       this.sourceMapIdToScript.delete(sourceMapId);
     }
     this.sourceMapManagerInternal.detachSourceMap(script);
 
     script.sourceMapURL = newSourceMapURL;
-    sourceMapId = DebuggerModel._sourceMapId(script.executionContextId, script.sourceURL, script.sourceMapURL);
+    sourceMapId = DebuggerModel.sourceMapId(script.executionContextId, script.sourceURL, script.sourceMapURL);
     if (!sourceMapId) {
       return;
     }
@@ -942,7 +940,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     await this.enableDebugger();
   }
 
-  static _shouldResyncDebuggerId = false;
+  private static shouldResyncDebuggerId = false;
 
   getContinueToLocationCallback(): ((arg0: DebuggerPausedDetails) => boolean)|null {
     return this.continueToLocationCallback;

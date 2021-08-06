@@ -219,9 +219,9 @@ const PROTOCOL_AUTHENTICATOR_VALUES: Protocol.EnumerableEnum<typeof Protocol.Web
 
 export class WebauthnPaneImpl extends UI.Widget.VBox {
   _enabled: boolean;
-  _activeAuthId: string|null;
+  _activeAuthId: Protocol.WebAuthn.AuthenticatorId|null;
   _hasBeenEnabled: boolean;
-  _dataGrids: Map<string, DataGrid.DataGrid.DataGridImpl<DataGridNode>>;
+  _dataGrids: Map<Protocol.WebAuthn.AuthenticatorId, DataGrid.DataGrid.DataGridImpl<DataGridNode>>;
   // @ts-ignore
   _enableCheckbox: UI.Toolbar.ToolbarCheckbox;
   _availableAuthenticatorSetting: Common.Settings.Setting<AvailableAuthenticatorOptions[]>;
@@ -275,7 +275,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
   }
 
   async _loadInitialAuthenticators(): Promise<void> {
-    let activeAuthenticatorId: string|null = null;
+    let activeAuthenticatorId: Protocol.WebAuthn.AuthenticatorId|null = null;
     const availableAuthenticators = this._availableAuthenticatorSetting.get();
     for (const options of availableAuthenticators) {
       if (!this._model) {
@@ -314,7 +314,8 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     this._topToolbar.appendToolbarItem(this._enableCheckbox);
   }
 
-  _createCredentialsDataGrid(authenticatorId: string): DataGrid.DataGrid.DataGridImpl<DataGridNode> {
+  _createCredentialsDataGrid(authenticatorId: Protocol.WebAuthn.AuthenticatorId):
+      DataGrid.DataGrid.DataGridImpl<DataGridNode> {
     const columns = ([
       {
         id: 'credentialId',
@@ -365,11 +366,12 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     this._exportCredential(e.data);
   }
 
-  _handleRemoveCredential(authenticatorId: string, e: {data: Protocol.WebAuthn.Credential}): void {
+  _handleRemoveCredential(authenticatorId: Protocol.WebAuthn.AuthenticatorId, e: {data: Protocol.WebAuthn.Credential}):
+      void {
     this._removeCredential(authenticatorId, e.data.credentialId);
   }
 
-  async _updateCredentials(authenticatorId: string): Promise<void> {
+  async _updateCredentials(authenticatorId: Protocol.WebAuthn.AuthenticatorId): Promise<void> {
     const dataGrid = this._dataGrids.get(authenticatorId);
     if (!dataGrid) {
       return;
@@ -577,8 +579,9 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     }
   }
 
-  async _addAuthenticatorSection(authenticatorId: string, options: Protocol.WebAuthn.VirtualAuthenticatorOptions):
-      Promise<HTMLDivElement> {
+  async _addAuthenticatorSection(
+      authenticatorId: Protocol.WebAuthn.AuthenticatorId,
+      options: Protocol.WebAuthn.VirtualAuthenticatorOptions): Promise<HTMLDivElement> {
     const section = document.createElement('div');
     section.classList.add('authenticator-section');
     section.setAttribute('data-authenticator-id', authenticatorId);
@@ -658,7 +661,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     link.click();
   }
 
-  async _removeCredential(authenticatorId: string, credentialId: string): Promise<void> {
+  async _removeCredential(authenticatorId: Protocol.WebAuthn.AuthenticatorId, credentialId: string): Promise<void> {
     const dataGrid = this._dataGrids.get(authenticatorId);
     if (!dataGrid) {
       return;
@@ -733,7 +736,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
   /**
    * Removes both the authenticator and its respective UI element.
    */
-  _removeAuthenticator(authenticatorId: string): void {
+  _removeAuthenticator(authenticatorId: Protocol.WebAuthn.AuthenticatorId): void {
     if (this._authenticatorsView) {
       const child = this._authenticatorsView.querySelector(`[data-authenticator-id=${CSS.escape(authenticatorId)}]`);
       if (child) {
@@ -787,7 +790,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
    * Sets the given authenticator as active.
    * Note that a newly added authenticator will automatically be set as active.
    */
-  async _setActiveAuthenticator(authenticatorId: string): Promise<void> {
+  async _setActiveAuthenticator(authenticatorId: Protocol.WebAuthn.AuthenticatorId): Promise<void> {
     await this._clearActiveAuthenticator();
     if (this._model) {
       await this._model.setAutomaticPresenceSimulation(authenticatorId, true);

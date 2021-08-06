@@ -13621,7 +13621,7 @@ declare namespace Protocol {
    */
   export namespace WebAuthn {
 
-    export type AuthenticatorId = string;
+    export type AuthenticatorId = OpaqueIdentifier<string, 'Protocol.WebAuthn.AuthenticatorId'>;
 
     export const enum AuthenticatorProtocol {
       U2f = 'u2f',

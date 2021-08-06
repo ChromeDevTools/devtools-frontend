@@ -24,25 +24,27 @@ export class WebAuthnModel extends SDKModel {
     return this.agent.invoke_disable();
   }
 
-  async addAuthenticator(options: Protocol.WebAuthn.VirtualAuthenticatorOptions): Promise<string> {
+  async addAuthenticator(options: Protocol.WebAuthn.VirtualAuthenticatorOptions):
+      Promise<Protocol.WebAuthn.AuthenticatorId> {
     const response = await this.agent.invoke_addVirtualAuthenticator({options});
     return response.authenticatorId;
   }
 
-  async removeAuthenticator(authenticatorId: string): Promise<void> {
+  async removeAuthenticator(authenticatorId: Protocol.WebAuthn.AuthenticatorId): Promise<void> {
     await this.agent.invoke_removeVirtualAuthenticator({authenticatorId});
   }
 
-  async setAutomaticPresenceSimulation(authenticatorId: string, enabled: boolean): Promise<void> {
+  async setAutomaticPresenceSimulation(authenticatorId: Protocol.WebAuthn.AuthenticatorId, enabled: boolean):
+      Promise<void> {
     await this.agent.invoke_setAutomaticPresenceSimulation({authenticatorId, enabled});
   }
 
-  async getCredentials(authenticatorId: string): Promise<Protocol.WebAuthn.Credential[]> {
+  async getCredentials(authenticatorId: Protocol.WebAuthn.AuthenticatorId): Promise<Protocol.WebAuthn.Credential[]> {
     const response = await this.agent.invoke_getCredentials({authenticatorId});
     return response.credentials;
   }
 
-  async removeCredential(authenticatorId: string, credentialId: string): Promise<void> {
+  async removeCredential(authenticatorId: Protocol.WebAuthn.AuthenticatorId, credentialId: string): Promise<void> {
     await this.agent.invoke_removeCredential({authenticatorId, credentialId});
   }
 }

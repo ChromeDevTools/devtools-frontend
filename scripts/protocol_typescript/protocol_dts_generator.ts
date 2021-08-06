@@ -228,6 +228,7 @@ const knownIdentifierTypes = [
   'Network.InterceptionId',
   'Network.LoaderId',
   'Network.RequestId',
+  'WebAuthn.AuthenticatorId',
 ];
 
 const emitDomainType = (domain: Protocol.Domain, type: Protocol.DomainType) => {

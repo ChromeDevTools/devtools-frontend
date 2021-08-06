@@ -32,8 +32,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -59,14 +57,14 @@ export class Writer {
       progress: Common.Progress.Progress): Promise<void> {
     const compositeProgress = new Common.Progress.CompositeProgress(progress);
 
-    const content = await Writer._harStringForRequests(requests, compositeProgress);
+    const content = await Writer.harStringForRequests(requests, compositeProgress);
     if (progress.isCanceled()) {
       return;
     }
-    await Writer._writeToStream(stream, compositeProgress, content);
+    await Writer.writeToStream(stream, compositeProgress, content);
   }
 
-  static async _harStringForRequests(
+  static async harStringForRequests(
       requests: SDK.NetworkRequest.NetworkRequest[],
       compositeProgress: Common.Progress.CompositeProgress): Promise<string> {
     const progress = compositeProgress.createSubProgress();
@@ -88,7 +86,7 @@ export class Writer {
     if (progress.isCanceled()) {
       return '';
     }
-    return JSON.stringify({log: harLog}, null, _jsonIndent);
+    return JSON.stringify({log: harLog}, null, jsonIndent);
 
     function isValidCharacter(codePoint: number): boolean {
       // Excludes non-characters (U+FDD0..U+FDEF, and all codepoints ending in
@@ -123,14 +121,14 @@ export class Writer {
     }
   }
 
-  static async _writeToStream(
+  static async writeToStream(
       stream: Common.StringOutputStream.OutputStream, compositeProgress: Common.Progress.CompositeProgress,
       fileContent: string): Promise<void> {
     const progress = compositeProgress.createSubProgress();
     progress.setTitle(i18nString(UIStrings.writingFile));
     progress.setTotalWork(fileContent.length);
-    for (let i = 0; i < fileContent.length && !progress.isCanceled(); i += _chunkSize) {
-      const chunk = fileContent.substr(i, _chunkSize);
+    for (let i = 0; i < fileContent.length && !progress.isCanceled(); i += chunkSize) {
+      const chunk = fileContent.substr(i, chunkSize);
       await stream.write(chunk);
       progress.incrementWorked(chunk.length);
     }
@@ -138,10 +136,5 @@ export class Writer {
   }
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const _jsonIndent = 2;
-
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const _chunkSize = 100000;
+export const jsonIndent = 2;
+export const chunkSize = 100000;

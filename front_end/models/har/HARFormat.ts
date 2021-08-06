@@ -5,12 +5,12 @@
 /* eslint-disable rulesdir/no_underscored_properties, @typescript-eslint/no-explicit-any */
 
 class HARBase {
-  _custom: Map<string, any>;
+  readonly custom: Map<string, any>;
   constructor(data: any) {
     if (!data || typeof data !== 'object') {
       throw 'First parameter is expected to be an object';
     }
-    this._custom = new Map();
+    this.custom = new Map();
   }
 
   static _safeDate(data: any): Date {
@@ -38,7 +38,7 @@ class HARBase {
   }
 
   customAsString(name: string): string|undefined {
-    const value = this._custom.get(name);
+    const value = this.custom.get(name);
     if (!value) {
       return undefined;
     }
@@ -46,7 +46,7 @@ class HARBase {
   }
 
   customAsNumber(name: string): number|undefined {
-    const value = this._custom.get(name);
+    const value = this.custom.get(name);
     if (!value) {
       return undefined;
     }
@@ -58,7 +58,7 @@ class HARBase {
   }
 
   customAsArray(name: string): any[]|undefined {
-    const value = this._custom.get(name);
+    const value = this.custom.get(name);
     if (!value) {
       return undefined;
     }
@@ -66,7 +66,7 @@ class HARBase {
   }
 
   customInitiator(): HARInitiator|undefined {
-    return this._custom.get('initiator');
+    return this.custom.get('initiator');
   }
 }
 
@@ -164,14 +164,14 @@ export class HAREntry extends HARBase {
     this.comment = HARBase._optionalString(data['comment']);
 
     // Chrome specific.
-    this._custom.set('fromCache', HARBase._optionalString(data['_fromCache']));
-    this._custom.set('initiator', this._importInitiator(data['_initiator']));
-    this._custom.set('priority', HARBase._optionalString(data['_priority']));
-    this._custom.set('resourceType', HARBase._optionalString(data['_resourceType']));
-    this._custom.set('webSocketMessages', this._importWebSocketMessages(data['_webSocketMessages']));
+    this.custom.set('fromCache', HARBase._optionalString(data['_fromCache']));
+    this.custom.set('initiator', this.importInitiator(data['_initiator']));
+    this.custom.set('priority', HARBase._optionalString(data['_priority']));
+    this.custom.set('resourceType', HARBase._optionalString(data['_resourceType']));
+    this.custom.set('webSocketMessages', this.importWebSocketMessages(data['_webSocketMessages']));
   }
 
-  _importInitiator(initiator: any): HARInitiator|undefined {
+  private importInitiator(initiator: any): HARInitiator|undefined {
     if (typeof initiator !== 'object') {
       return;
     }
@@ -179,7 +179,7 @@ export class HAREntry extends HARBase {
     return new HARInitiator(initiator);
   }
 
-  _importWebSocketMessages(inputMessages: any): HARWebSocketMessage[]|undefined {
+  private importWebSocketMessages(inputMessages: any): HARWebSocketMessage[]|undefined {
     if (!Array.isArray(inputMessages)) {
       return;
     }
@@ -246,8 +246,8 @@ class HARResponse extends HARBase {
     this.comment = HARBase._optionalString(data['comment']);
 
     // Chrome specific.
-    this._custom.set('transferSize', HARBase._optionalNumber(data['_transferSize']));
-    this._custom.set('error', HARBase._optionalString(data['_error']));
+    this.custom.set('transferSize', HARBase._optionalNumber(data['_transferSize']));
+    this.custom.set('error', HARBase._optionalString(data['_error']));
   }
 }
 
@@ -366,8 +366,8 @@ export class HARTimings extends HARBase {
     this.comment = HARBase._optionalString(data['comment']);
 
     // Chrome specific.
-    this._custom.set('blocked_queueing', HARBase._optionalNumber(data['_blocked_queueing']));
-    this._custom.set('blocked_proxy', HARBase._optionalNumber(data['_blocked_proxy']));
+    this.custom.set('blocked_queueing', HARBase._optionalNumber(data['_blocked_queueing']));
+    this.custom.set('blocked_proxy', HARBase._optionalNumber(data['_blocked_proxy']));
   }
 }
 

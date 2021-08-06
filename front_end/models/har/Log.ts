@@ -34,8 +34,6 @@
 // FIXME: Some fields are not yet supported due to back-end limitations.
 // See https://bugs.webkit.org/show_bug.cgi?id=58127 for details.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -52,16 +50,16 @@ export class Log {
       entryPromises.push(Entry.build(request));
     }
     const entries = await Promise.all(entryPromises);
-    return {version: '1.2', creator: log._creator(), pages: log._buildPages(requests), entries};
+    return {version: '1.2', creator: log.creator(), pages: log.buildPages(requests), entries};
   }
 
-  _creator(): Creator {
+  private creator(): Creator {
     const webKitVersion = /AppleWebKit\/([^ ]+)/.exec(window.navigator.userAgent);
 
     return {name: 'WebInspector', version: webKitVersion ? webKitVersion[1] : 'n/a'};
   }
 
-  _buildPages(requests: SDK.NetworkRequest.NetworkRequest[]): Page[] {
+  private buildPages(requests: SDK.NetworkRequest.NetworkRequest[]): Page[] {
     const seenIdentifiers = new Set<number>();
     const pages = [];
     for (let i = 0; i < requests.length; ++i) {
@@ -71,58 +69,58 @@ export class Log {
         continue;
       }
       seenIdentifiers.add(page.id);
-      pages.push(this._convertPage(page, request));
+      pages.push(this.convertPage(page, request));
     }
     return pages;
   }
 
-  _convertPage(page: SDK.PageLoad.PageLoad, request: SDK.NetworkRequest.NetworkRequest): Page {
+  private convertPage(page: SDK.PageLoad.PageLoad, request: SDK.NetworkRequest.NetworkRequest): Page {
     return {
       startedDateTime: Log.pseudoWallTime(request, page.startTime).toJSON(),
       id: 'page_' + page.id,
       title: page.url,
       pageTimings: {
-        onContentLoad: this._pageEventTime(page, page.contentLoadTime),
-        onLoad: this._pageEventTime(page, page.loadTime),
+        onContentLoad: this.pageEventTime(page, page.contentLoadTime),
+        onLoad: this.pageEventTime(page, page.loadTime),
       },
     };
   }
 
-  _pageEventTime(page: SDK.PageLoad.PageLoad, time: number): number {
+  private pageEventTime(page: SDK.PageLoad.PageLoad, time: number): number {
     const startTime = page.startTime;
     if (time === -1 || startTime === -1) {
       return -1;
     }
-    return Entry._toMilliseconds(time - startTime);
+    return Entry.toMilliseconds(time - startTime);
   }
 }
 
 export class Entry {
-  _request: SDK.NetworkRequest.NetworkRequest;
+  private request: SDK.NetworkRequest.NetworkRequest;
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
-    this._request = request;
+    this.request = request;
   }
 
-  static _toMilliseconds(time: number): number {
+  static toMilliseconds(time: number): number {
     return time === -1 ? -1 : time * 1000;
   }
 
   static async build(request: SDK.NetworkRequest.NetworkRequest): Promise<EntryDTO> {
     const harEntry = new Entry(request);
-    let ipAddress = harEntry._request.remoteAddress();
+    let ipAddress = harEntry.request.remoteAddress();
     const portPositionInString = ipAddress.lastIndexOf(':');
     if (portPositionInString !== -1) {
       ipAddress = ipAddress.substr(0, portPositionInString);
     }
 
-    const timings = harEntry._buildTimings();
+    const timings = harEntry.buildTimings();
     let time = 0;
     // "ssl" is included in the connect field, so do not double count it.
     for (const t of [timings.blocked, timings.dns, timings.connect, timings.send, timings.wait, timings.receive]) {
       time += Math.max(t, 0);
     }
 
-    const initiator = harEntry._request.initiator();
+    const initiator = harEntry.request.initiator();
     let exportedInitiator: Protocol.Network.Initiator|null = null;
     if (initiator) {
       exportedInitiator = {
@@ -142,45 +140,45 @@ export class Entry {
     const entry: EntryDTO = {
       _fromCache: undefined,
       _initiator: exportedInitiator,
-      _priority: harEntry._request.priority(),
-      _resourceType: harEntry._request.resourceType().name(),
+      _priority: harEntry.request.priority(),
+      _resourceType: harEntry.request.resourceType().name(),
       _webSocketMessages: undefined,
       cache: {},
       connection: undefined,
       pageref: undefined,
-      request: await harEntry._buildRequest(),
-      response: harEntry._buildResponse(),
+      request: await harEntry.buildRequest(),
+      response: harEntry.buildResponse(),
       // IPv6 address should not have square brackets per (https://tools.ietf.org/html/rfc2373#section-2.2).
       serverIPAddress: ipAddress.replace(/\[\]/g, ''),
-      startedDateTime: Log.pseudoWallTime(harEntry._request, harEntry._request.issueTime()).toJSON(),
+      startedDateTime: Log.pseudoWallTime(harEntry.request, harEntry.request.issueTime()).toJSON(),
       time: time,
       timings: timings,
     };
 
     // Chrome specific.
 
-    if (harEntry._request.cached()) {
-      entry._fromCache = harEntry._request.cachedInMemory() ? 'memory' : 'disk';
+    if (harEntry.request.cached()) {
+      entry._fromCache = harEntry.request.cachedInMemory() ? 'memory' : 'disk';
     } else {
       delete entry._fromCache;
     }
 
-    if (harEntry._request.connectionId !== '0') {
-      entry.connection = harEntry._request.connectionId;
+    if (harEntry.request.connectionId !== '0') {
+      entry.connection = harEntry.request.connectionId;
     } else {
       delete entry.connection;
     }
 
-    const page = SDK.PageLoad.PageLoad.forRequest(harEntry._request);
+    const page = SDK.PageLoad.PageLoad.forRequest(harEntry.request);
     if (page) {
       entry.pageref = 'page_' + page.id;
     } else {
       delete entry.pageref;
     }
 
-    if (harEntry._request.resourceType() === Common.ResourceType.resourceTypes.WebSocket) {
+    if (harEntry.request.resourceType() === Common.ResourceType.resourceTypes.WebSocket) {
       const messages = [];
-      for (const message of harEntry._request.frames()) {
+      for (const message of harEntry.request.frames()) {
         messages.push({type: message.type, time: message.time, opcode: message.opCode, data: message.text});
       }
       entry._webSocketMessages = messages;
@@ -191,20 +189,20 @@ export class Entry {
     return entry;
   }
 
-  async _buildRequest(): Promise<Request> {
-    const headersText = this._request.requestHeadersText();
+  private async buildRequest(): Promise<Request> {
+    const headersText = this.request.requestHeadersText();
     const res: Request = {
-      method: this._request.requestMethod,
-      url: this._buildRequestURL(this._request.url()),
-      httpVersion: this._request.requestHttpVersion(),
-      headers: this._request.requestHeaders(),
-      queryString: this._buildParameters(this._request.queryParameters || []),
-      cookies: this._buildCookies(this._request.includedRequestCookies()),
+      method: this.request.requestMethod,
+      url: this.buildRequestURL(this.request.url()),
+      httpVersion: this.request.requestHttpVersion(),
+      headers: this.request.requestHeaders(),
+      queryString: this.buildParameters(this.request.queryParameters || []),
+      cookies: this.buildCookies(this.request.includedRequestCookies()),
       headersSize: headersText ? headersText.length : -1,
-      bodySize: await this._requestBodySize(),
+      bodySize: await this.requestBodySize(),
       postData: undefined,
     };
-    const postData = await this._buildPostData();
+    const postData = await this.buildPostData();
     if (postData) {
       res.postData = postData;
     } else {
@@ -214,27 +212,27 @@ export class Entry {
     return res;
   }
 
-  _buildResponse(): Response {
-    const headersText = this._request.responseHeadersText;
+  private buildResponse(): Response {
+    const headersText = this.request.responseHeadersText;
     return {
-      status: this._request.statusCode,
-      statusText: this._request.statusText,
-      httpVersion: this._request.responseHttpVersion(),
-      headers: this._request.responseHeaders,
-      cookies: this._buildCookies(this._request.responseCookies),
-      content: this._buildContent(),
-      redirectURL: this._request.responseHeaderValue('Location') || '',
+      status: this.request.statusCode,
+      statusText: this.request.statusText,
+      httpVersion: this.request.responseHttpVersion(),
+      headers: this.request.responseHeaders,
+      cookies: this.buildCookies(this.request.responseCookies),
+      content: this.buildContent(),
+      redirectURL: this.request.responseHeaderValue('Location') || '',
       headersSize: headersText ? headersText.length : -1,
       bodySize: this.responseBodySize,
-      _transferSize: this._request.transferSize,
-      _error: this._request.localizedFailDescription,
+      _transferSize: this.request.transferSize,
+      _error: this.request.localizedFailDescription,
     };
   }
 
-  _buildContent(): Content {
+  private buildContent(): Content {
     const content = ({
-      size: this._request.resourceSize,
-      mimeType: this._request.mimeType || 'x-unknown',
+      size: this.request.resourceSize,
+      mimeType: this.request.mimeType || 'x-unknown',
       compression: undefined,
     } as Content);
     const compression = this.responseCompression;
@@ -246,11 +244,11 @@ export class Entry {
     return content;
   }
 
-  _buildTimings(): Timing {
+  private buildTimings(): Timing {
     // Order of events: request_start = 0, [proxy], [dns], [connect [ssl]], [send], duration
-    const timing = this._request.timing;
-    const issueTime = this._request.issueTime();
-    const startTime = this._request.startTime;
+    const timing = this.request.timing;
+    const issueTime = this.request.issueTime();
+    const startTime = this.request.startTime;
 
     const result: Timing = {
       blocked: -1,
@@ -265,8 +263,8 @@ export class Entry {
     };
 
     const queuedTime = (issueTime < startTime) ? startTime - issueTime : -1;
-    result.blocked = Entry._toMilliseconds(queuedTime);
-    result._blocked_queueing = Entry._toMilliseconds(queuedTime);
+    result.blocked = Entry.toMilliseconds(queuedTime);
+    result._blocked_queueing = Entry.toMilliseconds(queuedTime);
 
     let highestTime = 0;
     if (timing) {
@@ -307,19 +305,19 @@ export class Entry {
         result.send = 0;
       }
       highestTime = Math.max(sendEnd, connectEnd, sslEnd, dnsEnd, blockedStart, 0);
-    } else if (this._request.responseReceivedTime === -1) {
+    } else if (this.request.responseReceivedTime === -1) {
       // Means that we don't have any more details after blocked, so attribute all to blocked.
-      result.blocked = Entry._toMilliseconds(this._request.endTime - issueTime);
+      result.blocked = Entry.toMilliseconds(this.request.endTime - issueTime);
       return result;
     }
 
     const requestTime = timing ? timing.requestTime : startTime;
     const waitStart = highestTime;
-    const waitEnd = Entry._toMilliseconds(this._request.responseReceivedTime - requestTime);
+    const waitEnd = Entry.toMilliseconds(this.request.responseReceivedTime - requestTime);
     result.wait = waitEnd - waitStart;
 
     const receiveStart = waitEnd;
-    const receiveEnd = Entry._toMilliseconds(this._request.endTime - requestTime);
+    const receiveEnd = Entry.toMilliseconds(this.request.endTime - requestTime);
     result.receive = Math.max(receiveEnd - receiveStart, 0);
 
     return result;
@@ -329,40 +327,40 @@ export class Entry {
     }
   }
 
-  async _buildPostData(): Promise<PostData|null> {
-    const postData = await this._request.requestFormData();
+  private async buildPostData(): Promise<PostData|null> {
+    const postData = await this.request.requestFormData();
     if (!postData) {
       return null;
     }
-    const res: PostData = {mimeType: this._request.requestContentType() || '', text: postData, params: undefined};
-    const formParameters = await this._request.formParameters();
+    const res: PostData = {mimeType: this.request.requestContentType() || '', text: postData, params: undefined};
+    const formParameters = await this.request.formParameters();
     if (formParameters) {
-      res.params = this._buildParameters(formParameters);
+      res.params = this.buildParameters(formParameters);
     } else {
       delete res.params;
     }
     return res;
   }
 
-  _buildParameters(parameters: Parameter[]): Parameter[] {
+  private buildParameters(parameters: Parameter[]): Parameter[] {
     return parameters.slice();
   }
 
-  _buildRequestURL(url: string): string {
+  private buildRequestURL(url: string): string {
     return url.split('#', 2)[0];
   }
 
-  _buildCookies(cookies: SDK.Cookie.Cookie[]): CookieDTO[] {
-    return cookies.map(this._buildCookie.bind(this));
+  private buildCookies(cookies: SDK.Cookie.Cookie[]): CookieDTO[] {
+    return cookies.map(this.buildCookie.bind(this));
   }
 
-  _buildCookie(cookie: SDK.Cookie.Cookie): CookieDTO {
+  private buildCookie(cookie: SDK.Cookie.Cookie): CookieDTO {
     const c: CookieDTO = {
       name: cookie.name(),
       value: cookie.value(),
       path: cookie.path(),
       domain: cookie.domain(),
-      expires: cookie.expiresDate(Log.pseudoWallTime(this._request, this._request.startTime)),
+      expires: cookie.expiresDate(Log.pseudoWallTime(this.request, this.request.startTime)),
       httpOnly: cookie.httpOnly(),
       secure: cookie.secure(),
       sameSite: undefined,
@@ -375,8 +373,8 @@ export class Entry {
     return c;
   }
 
-  async _requestBodySize(): Promise<number> {
-    const postData = await this._request.requestFormData();
+  private async requestBodySize(): Promise<number> {
+    const postData = await this.request.requestFormData();
     if (!postData) {
       return 0;
     }
@@ -389,23 +387,23 @@ export class Entry {
   }
 
   get responseBodySize(): number {
-    if (this._request.cached() || this._request.statusCode === 304) {
+    if (this.request.cached() || this.request.statusCode === 304) {
       return 0;
     }
-    if (!this._request.responseHeadersText) {
+    if (!this.request.responseHeadersText) {
       return -1;
     }
-    return this._request.transferSize - this._request.responseHeadersText.length;
+    return this.request.transferSize - this.request.responseHeadersText.length;
   }
 
   get responseCompression(): number|undefined {
-    if (this._request.cached() || this._request.statusCode === 304 || this._request.statusCode === 206) {
+    if (this.request.cached() || this.request.statusCode === 304 || this.request.statusCode === 206) {
       return;
     }
-    if (!this._request.responseHeadersText) {
+    if (!this.request.responseHeadersText) {
       return;
     }
-    return this._request.resourceSize - this.responseBodySize;
+    return this.request.resourceSize - this.responseBodySize;
   }
 }
 

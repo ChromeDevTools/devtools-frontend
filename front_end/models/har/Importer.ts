@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -45,10 +43,10 @@ export class Importer {
           'har-' + requests.length, entry.request.url, documentURL, initiator);
       const page = pageref ? pages.get(pageref) : undefined;
       if (!pageLoad && pageref && page) {
-        pageLoad = Importer._buildPageLoad(page, request);
+        pageLoad = Importer.buildPageLoad(page, request);
         pageLoads.set(pageref, pageLoad);
       }
-      Importer._fillRequestFromHAREntry(request, entry, pageLoad);
+      Importer.fillRequestFromHAREntry(request, entry, pageLoad);
       if (pageLoad) {
         pageLoad.bindRequest(request);
       }
@@ -57,7 +55,7 @@ export class Importer {
     return requests;
   }
 
-  static _buildPageLoad(page: HARPage, mainRequest: SDK.NetworkRequest.NetworkRequest): SDK.PageLoad.PageLoad {
+  static buildPageLoad(page: HARPage, mainRequest: SDK.NetworkRequest.NetworkRequest): SDK.PageLoad.PageLoad {
     const pageLoad = new SDK.PageLoad.PageLoad(mainRequest);
     pageLoad.startTime = page.startedDateTime.valueOf();
     pageLoad.contentLoadTime = Number(page.pageTimings.onContentLoad) * 1000;
@@ -65,7 +63,7 @@ export class Importer {
     return pageLoad;
   }
 
-  static _fillRequestFromHAREntry(
+  static fillRequestFromHAREntry(
       request: SDK.NetworkRequest.NetworkRequest, entry: HAREntry, pageLoad: SDK.PageLoad.PageLoad|undefined): void {
     // Request data.
     if (entry.request.postData) {
@@ -121,11 +119,11 @@ export class Importer {
     request.setContentDataProvider(async () => contentData);
 
     // Timing data.
-    Importer._setupTiming(request, issueTime, entry.time, entry.timings);
+    Importer.setupTiming(request, issueTime, entry.time, entry.timings);
 
     // Meta data.
     request.setRemoteAddress(entry.serverIPAddress || '', 80);  // Har does not support port numbers.
-    request.setResourceType(Importer._getResourceType(request, entry, pageLoad));
+    request.setResourceType(Importer.getResourceType(request, entry, pageLoad));
 
     const priority = entry.customAsString('priority');
     if (priority && Protocol.Network.ResourcePriority.hasOwnProperty(priority)) {
@@ -157,7 +155,7 @@ export class Importer {
     request.finished = true;
   }
 
-  static _getResourceType(
+  static getResourceType(
       request: SDK.NetworkRequest.NetworkRequest, entry: HAREntry,
       pageLoad: SDK.PageLoad.PageLoad|undefined): Common.ResourceType.ResourceType {
     const customResourceTypeName = entry.customAsString('resourceType');
@@ -185,7 +183,7 @@ export class Importer {
     return Common.ResourceType.resourceTypes.Other;
   }
 
-  static _setupTiming(
+  static setupTiming(
       request: SDK.NetworkRequest.NetworkRequest, issueTime: number, entryTotalDuration: number,
       timings: HARTimings): void {
     function accumulateTime(timing: number|undefined): number {

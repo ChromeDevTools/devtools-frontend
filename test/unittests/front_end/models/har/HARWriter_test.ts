@@ -29,7 +29,7 @@ describe('HARWriter', () => {
 
     const progressIndicator = new UI.ProgressIndicator.ProgressIndicator();
     const compositeProgress = new Common.Progress.CompositeProgress(progressIndicator);
-    const result = await HAR.Writer.Writer._harStringForRequests(
+    const result = await HAR.Writer.Writer.harStringForRequests(
         [
           req3,
           req2,

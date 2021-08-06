@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 export const HeapSnapshotProgressEvent = {
   Update: 'ProgressUpdate',
   BrokenSnapshot: 'BrokenSnapshot',

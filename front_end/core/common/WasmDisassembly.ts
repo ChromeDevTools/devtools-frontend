@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 /**
  * Metadata to map between bytecode offsets and line numbers in the
  * disassembly for WebAssembly modules.

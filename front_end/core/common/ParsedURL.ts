@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
@@ -64,7 +62,7 @@ export class ParsedURL {
 
     const isBlobUrl = this.url.startsWith('blob:');
     const urlToMatch = isBlobUrl ? url.substring(5) : url;
-    const match = urlToMatch.match(ParsedURL._urlRegex());
+    const match = urlToMatch.match(ParsedURL.urlRegex());
     if (match) {
       this.isValid = true;
       if (isBlobUrl) {
@@ -140,9 +138,9 @@ export class ParsedURL {
     return url;
   }
 
-  static _urlRegex(): RegExp {
-    if (ParsedURL._urlRegexInstance) {
-      return ParsedURL._urlRegexInstance;
+  static urlRegex(): RegExp {
+    if (ParsedURL.urlRegexInstance) {
+      return ParsedURL.urlRegexInstance;
     }
     // RegExp groups:
     // 1 - scheme, hostname, ?port
@@ -161,10 +159,10 @@ export class ParsedURL {
     const queryRegex = /(?:\?([^#]*))?/;
     const fragmentRegex = /(?:#(.*))?/;
 
-    ParsedURL._urlRegexInstance = new RegExp(
+    ParsedURL.urlRegexInstance = new RegExp(
         '^(' + schemeRegex.source + userRegex.source + hostRegex.source + portRegex.source + ')' + pathRegex.source +
         queryRegex.source + fragmentRegex.source + '$');
-    return ParsedURL._urlRegexInstance;
+    return ParsedURL.urlRegexInstance;
   }
 
   static extractPath(url: string): string {
@@ -269,7 +267,7 @@ export class ParsedURL {
     columnNumber: (number|undefined),
   } {
     // Only look for line and column numbers in the path to avoid matching port numbers.
-    const beforePathMatch = string.match(ParsedURL._urlRegex());
+    const beforePathMatch = string.match(ParsedURL.urlRegex());
     let beforePath = '';
     let pathAndAfter: string = string;
     if (beforePathMatch) {
@@ -401,5 +399,5 @@ export class ParsedURL {
     return this.url;
   }
 
-  static _urlRegexInstance: RegExp|null = null;
+  static urlRegexInstance: RegExp|null = null;
 }

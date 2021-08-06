@@ -5,8 +5,6 @@
 /**
  * @interface
  */
-/* eslint-disable rulesdir/no_underscored_properties */
-
 export interface App {
   presentUI(document: Document): void;
 }

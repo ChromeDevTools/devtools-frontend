@@ -5,8 +5,6 @@
 /**
  * @interface
  */
-/* eslint-disable rulesdir/no_underscored_properties */
-
 export interface JavaScriptMetaData {
   signaturesForNativeFunction(name: string): string[][]|null;
 

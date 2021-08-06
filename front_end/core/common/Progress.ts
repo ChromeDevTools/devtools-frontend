@@ -59,7 +59,7 @@ export class CompositeProgress {
     this.parent.setWorked(0);
   }
 
-  _childDone(): void {
+  childDone(): void {
     if (++this.childrenDone !== this.children.length) {
       return;
     }
@@ -72,7 +72,7 @@ export class CompositeProgress {
     return child;
   }
 
-  _update(): void {
+  update(): void {
     let totalWeights = 0;
     let done = 0;
 
@@ -110,12 +110,12 @@ export class SubProgress implements Progress {
 
   done(): void {
     this.setWorked(this.totalWork);
-    this.composite._childDone();
+    this.composite.childDone();
   }
 
   setTotalWork(totalWork: number): void {
     this.totalWork = totalWork;
-    this.composite._update();
+    this.composite.update();
   }
 
   setWorked(worked: number, title?: string): void {
@@ -123,7 +123,7 @@ export class SubProgress implements Progress {
     if (typeof title !== 'undefined') {
       this.setTitle(title);
     }
-    this.composite._update();
+    this.composite.update();
   }
 
   incrementWorked(worked?: number): void {

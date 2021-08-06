@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Platform from '../platform/platform.js';
 
 export class Segment<T> {
@@ -42,7 +40,7 @@ export class SegmentedRange<T> {
     if (startIndex > 0) {
       // 2. Try mering the preceding segment
       const precedingSegment = this.segmentsInternal[startIndex - 1];
-      merged = this._tryMerge(precedingSegment, newSegment);
+      merged = this.tryMerge(precedingSegment, newSegment);
       if (merged) {
         --startIndex;
         newSegment = merged;
@@ -62,7 +60,7 @@ export class SegmentedRange<T> {
     }
     // 4. Merge or adjust the succeeding segment if it overlaps.
     if (endIndex < this.segmentsInternal.length) {
-      merged = this._tryMerge(newSegment, this.segmentsInternal[endIndex]);
+      merged = this.tryMerge(newSegment, this.segmentsInternal[endIndex]);
       if (merged) {
         endIndex++;
         newSegment = merged;
@@ -81,7 +79,7 @@ export class SegmentedRange<T> {
     return this.segmentsInternal;
   }
 
-  _tryMerge(first: Segment<T>, second: Segment<T>): Segment<T>|null {
+  private tryMerge(first: Segment<T>, second: Segment<T>): Segment<T>|null {
     const merged = this.mergeCallback && this.mergeCallback(first, second);
     if (!merged) {
       return null;

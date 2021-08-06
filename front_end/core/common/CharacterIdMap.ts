@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 export class CharacterIdMap<T> {
   private readonly elementToCharacter: Map<T, string>;
   private readonly characterToElement: Map<string, T>;

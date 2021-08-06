@@ -31,8 +31,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Platform from '../platform/platform.js';
 
 import {blendColors, contrastRatioAPCA, desiredLuminanceAPCA, luminance, luminanceAPCA, rgbaToHsla} from './ColorUtils.js';
@@ -141,10 +139,10 @@ export class Color {
 
       if (match[1]) {  // rgb/rgba
         const rgba = [
-          Color._parseRgbNumeric(values[0]),
-          Color._parseRgbNumeric(values[1]),
-          Color._parseRgbNumeric(values[2]),
-          hasAlpha ? Color._parseAlphaNumeric(values[3]) : 1,
+          Color.parseRgbNumeric(values[0]),
+          Color.parseRgbNumeric(values[1]),
+          Color.parseRgbNumeric(values[2]),
+          hasAlpha ? Color.parseAlphaNumeric(values[3]) : 1,
         ];
         if (rgba.indexOf(null) > -1) {
           return null;
@@ -154,10 +152,10 @@ export class Color {
 
       if (match[2]) {  // hsl/hsla
         const hsla = [
-          Color._parseHueNumeric(values[0]),
-          Color._parseSatLightNumeric(values[1]),
-          Color._parseSatLightNumeric(values[2]),
-          hasAlpha ? Color._parseAlphaNumeric(values[3]) : 1,
+          Color.parseHueNumeric(values[0]),
+          Color.parseSatLightNumeric(values[1]),
+          Color.parseSatLightNumeric(values[2]),
+          hasAlpha ? Color.parseAlphaNumeric(values[3]) : 1,
         ];
         if (hsla.indexOf(null) > -1) {
           return null;
@@ -181,7 +179,7 @@ export class Color {
     return new Color(rgba, Format.HSLA);
   }
 
-  static _parsePercentOrNumber(value: string): number|null {
+  static parsePercentOrNumber(value: string): number|null {
     // @ts-ignore: isNaN can accept strings
     if (isNaN(value.replace('%', ''))) {
       return null;
@@ -197,8 +195,8 @@ export class Color {
     return parsed;
   }
 
-  static _parseRgbNumeric(value: string): number|null {
-    const parsed = Color._parsePercentOrNumber(value);
+  static parseRgbNumeric(value: string): number|null {
+    const parsed = Color.parsePercentOrNumber(value);
     if (parsed === null) {
       return null;
     }
@@ -209,7 +207,7 @@ export class Color {
     return parsed / 255;
   }
 
-  static _parseHueNumeric(value: string): number|null {
+  static parseHueNumeric(value: string): number|null {
     const angle = value.replace(/(deg|g?rad|turn)$/, '');
     // @ts-ignore: isNaN can accept strings
     if (isNaN(angle) || value.match(/\s+(deg|g?rad|turn)/)) {
@@ -229,7 +227,7 @@ export class Color {
     return (number / 360) % 1;
   }
 
-  static _parseSatLightNumeric(value: string): number|null {
+  static parseSatLightNumeric(value: string): number|null {
     // @ts-ignore: isNaN can accept strings
     if (value.indexOf('%') !== value.length - 1 || isNaN(value.replace('%', ''))) {
       return null;
@@ -238,13 +236,13 @@ export class Color {
     return Math.min(1, parsed / 100);
   }
 
-  static _parseAlphaNumeric(value: string): number|null {
-    return Color._parsePercentOrNumber(value);
+  static parseAlphaNumeric(value: string): number|null {
+    return Color.parsePercentOrNumber(value);
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  static _hsva2hsla(hsva: number[], out_hsla: number[]): void {
+  static hsva2hsla(hsva: number[], out_hsla: number[]): void {
     const h = hsva[0];
     let s: 0|number = hsva[1];
     const v = hsva[2];
@@ -314,7 +312,7 @@ export class Color {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/naming-convention
   static hsva2rgba(hsva: number[], out_rgba: number[]): void {
-    Color._hsva2hsla(hsva, _tmpHSLA);
+    Color.hsva2hsla(hsva, _tmpHSLA);
     Color.hsl2rgb(_tmpHSLA, out_rgba);
 
     for (let i = 0; i < _tmpHSLA.length; i++) {
@@ -934,18 +932,18 @@ export class Generator {
   colorForID(id: string): string {
     let color = this.colors.get(id);
     if (!color) {
-      color = this._generateColorForID(id);
+      color = this.generateColorForID(id);
       this.colors.set(id, color);
     }
     return color;
   }
 
-  _generateColorForID(id: string): string {
+  private generateColorForID(id: string): string {
     const hash = Platform.StringUtilities.hashCode(id);
-    const h = this._indexToValueInSpace(hash, this.hueSpace);
-    const s = this._indexToValueInSpace(hash >> 8, this.satSpace);
-    const l = this._indexToValueInSpace(hash >> 16, this.lightnessSpace);
-    const a = this._indexToValueInSpace(hash >> 24, this.alphaSpace);
+    const h = this.indexToValueInSpace(hash, this.hueSpace);
+    const s = this.indexToValueInSpace(hash >> 8, this.satSpace);
+    const l = this.indexToValueInSpace(hash >> 16, this.lightnessSpace);
+    const a = this.indexToValueInSpace(hash >> 24, this.alphaSpace);
     const start = `hsl(${h}deg ${s}% ${l}%`;
     if (a !== 1) {
       return `${start} / ${Math.floor(a * 100)}%)`;
@@ -953,7 +951,7 @@ export class Generator {
     return `${start})`;
   }
 
-  _indexToValueInSpace(index: number, space: number|{
+  private indexToValueInSpace(index: number, space: number|{
     min: number,
     max: number,
     count: (number|undefined),

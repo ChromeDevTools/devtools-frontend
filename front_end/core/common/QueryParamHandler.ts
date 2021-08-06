@@ -5,8 +5,6 @@
 /**
  * @interface
  */
-/* eslint-disable rulesdir/no_underscored_properties */
-
 export interface QueryParamHandler {
   handleQueryParam(value: string): void;
 }

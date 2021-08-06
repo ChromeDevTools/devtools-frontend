@@ -5,8 +5,6 @@
 /**
  * Combine the two given colors according to alpha blending.
  */
-/* eslint-disable rulesdir/no_underscored_properties */
-
 export function blendColors(fgRGBA: number[], bgRGBA: number[]): number[] {
   const alpha = fgRGBA[3];
   return [

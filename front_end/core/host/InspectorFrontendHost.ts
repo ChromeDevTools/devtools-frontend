@@ -51,10 +51,10 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('core/host/InspectorFrontendHost.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
-  _urlsBeingSaved: Map<string, string[]>;
+  private readonly urlsBeingSaved: Map<string, string[]>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   events!: Common.EventTarget.EventTarget<any>;
-  _windowVisible?: boolean;
+  private windowVisible?: boolean;
 
   constructor() {
     function stopEventPropagation(this: InspectorFrontendHostAPI, event: KeyboardEvent): void {
@@ -67,7 +67,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     document.addEventListener('keydown', event => {
       stopEventPropagation.call(this, (event as KeyboardEvent));
     }, true);
-    this._urlsBeingSaved = new Map();
+    this.urlsBeingSaved = new Map();
   }
 
   platform(): string {
@@ -85,11 +85,11 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   }
 
   bringToFront(): void {
-    this._windowVisible = true;
+    this.windowVisible = true;
   }
 
   closeWindow(): void {
-    this._windowVisible = false;
+    this.windowVisible = false;
   }
 
   setIsDocked(isDocked: boolean, callback: () => void): void {
@@ -142,17 +142,17 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   }
 
   save(url: string, content: string, forceSaveAs: boolean): void {
-    let buffer = this._urlsBeingSaved.get(url);
+    let buffer = this.urlsBeingSaved.get(url);
     if (!buffer) {
       buffer = [];
-      this._urlsBeingSaved.set(url, buffer);
+      this.urlsBeingSaved.set(url, buffer);
     }
     buffer.push(content);
     this.events.dispatchEventToListeners(Events.SavedURL, {url, fileSystemPath: url});
   }
 
   append(url: string, content: string): void {
-    const buffer = this._urlsBeingSaved.get(url);
+    const buffer = this.urlsBeingSaved.get(url);
     if (buffer) {
       buffer.push(content);
       this.events.dispatchEventToListeners(Events.AppendedToURL, url);
@@ -160,8 +160,8 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   }
 
   close(url: string): void {
-    const buffer = this._urlsBeingSaved.get(url) || [];
-    this._urlsBeingSaved.delete(url);
+    const buffer = this.urlsBeingSaved.get(url) || [];
+    this.urlsBeingSaved.delete(url);
     let fileName = '';
 
     if (url) {
@@ -338,21 +338,21 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
 export let InspectorFrontendHostInstance: InspectorFrontendHostStub = window.InspectorFrontendHost;
 
 class InspectorFrontendAPIImpl {
-  _debugFrontend: boolean;
+  private readonly debugFrontend: boolean;
 
   constructor() {
-    this._debugFrontend = (Boolean(Root.Runtime.Runtime.queryParam('debugFrontend'))) ||
+    this.debugFrontend = (Boolean(Root.Runtime.Runtime.queryParam('debugFrontend'))) ||
         // @ts-ignore Compatibility hacks
         (window['InspectorTest'] && window['InspectorTest']['debugTest']);
 
     for (const descriptor of EventDescriptors) {
       // @ts-ignore Dispatcher magic
-      this[descriptor[1]] = this._dispatch.bind(this, descriptor[0], descriptor[2], descriptor[3]);
+      this[descriptor[1]] = this.dispatch.bind(this, descriptor[0], descriptor[2], descriptor[3]);
     }
   }
 
-  _dispatch(name: symbol, signature: string[], runOnceLoaded: boolean, ...params: string[]): void {
-    if (this._debugFrontend) {
+  private dispatch(name: symbol, signature: string[], runOnceLoaded: boolean, ...params: string[]): void {
+    if (this.debugFrontend) {
       setTimeout(() => innerDispatch(), 0);
     } else {
       innerDispatch();

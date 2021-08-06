@@ -28,21 +28,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../common/common.js';
 
 import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
 import {EnumeratedHistogram} from './InspectorFrontendHostAPI.js';
 
 export class UserMetrics {
-  _panelChangedSinceLaunch: boolean;
-  _firedLaunchHistogram: boolean;
-  _launchPanelName: string;
+  private panelChangedSinceLaunch: boolean;
+  private firedLaunchHistogram: boolean;
+  private launchPanelName: string;
   constructor() {
-    this._panelChangedSinceLaunch = false;
-    this._firedLaunchHistogram = false;
-    this._launchPanelName = '';
+    this.panelChangedSinceLaunch = false;
+    this.firedLaunchHistogram = false;
+    this.launchPanelName = '';
   }
 
   colorFixed(contrastThreshold: string): void {
@@ -62,7 +60,7 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.PanelShown, code, size);
     Common.EventTarget.fireEvent(EnumeratedHistogram.PanelShown, {value: code});
     // Store that the user has changed the panel so we know launch histograms should not be fired.
-    this._panelChangedSinceLaunch = true;
+    this.panelChangedSinceLaunch = true;
   }
 
   /**
@@ -74,7 +72,7 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.PanelClosed, code, size);
     Common.EventTarget.fireEvent(EnumeratedHistogram.PanelClosed, {value: code});
     // Store that the user has changed the panel so we know launch histograms should not be fired.
-    this._panelChangedSinceLaunch = true;
+    this.panelChangedSinceLaunch = true;
   }
 
   sidebarPaneShown(sidebarPaneName: string): void {
@@ -95,11 +93,11 @@ export class UserMetrics {
   }
 
   panelLoaded(panelName: string, histogramName: string): void {
-    if (this._firedLaunchHistogram || panelName !== this._launchPanelName) {
+    if (this.firedLaunchHistogram || panelName !== this.launchPanelName) {
       return;
     }
 
-    this._firedLaunchHistogram = true;
+    this.firedLaunchHistogram = true;
     // Use rAF and setTimeout to ensure the marker is fired after layout and rendering.
     // This will give the most accurate representation of the tool being ready for a user.
     requestAnimationFrame(() => {
@@ -108,7 +106,7 @@ export class UserMetrics {
         performance.mark(histogramName);
         // If the user has switched panel before we finished loading, ignore the histogram,
         // since the launch timings will have been affected and are no longer valid.
-        if (this._panelChangedSinceLaunch) {
+        if (this.panelChangedSinceLaunch) {
           return;
         }
         // This fires the event for the appropriate launch histogram.
@@ -120,7 +118,7 @@ export class UserMetrics {
   }
 
   setLaunchPanel(panelName: string|null): void {
-    this._launchPanelName = (panelName as string);
+    this.launchPanelName = (panelName as string);
   }
 
   keybindSetSettingChanged(keybindSet: string): void {

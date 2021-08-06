@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -43,9 +41,9 @@ let workspaceSettingsTabInstance: WorkspaceSettingsTab;
 
 export class WorkspaceSettingsTab extends UI.Widget.VBox {
   containerElement: HTMLElement;
-  _fileSystemsListContainer: HTMLElement;
-  _elementByPath: Map<string, Element>;
-  _mappingViewByPath: Map<string, EditFileSystemView>;
+  private readonly fileSystemsListContainer: HTMLElement;
+  private readonly elementByPath: Map<string, Element>;
+  private readonly mappingViewByPath: Map<string, EditFileSystemView>;
   private constructor() {
     super();
     this.registerRequiredCSS('models/persistence/workspaceSettingsTab.css');
@@ -57,31 +55,31 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
                                 .createChild('div', 'settings-tab settings-content settings-container');
 
     IsolatedFileSystemManager.instance().addEventListener(
-        Events.FileSystemAdded, event => this._fileSystemAdded(event.data as PlatformFileSystem), this);
+        Events.FileSystemAdded, event => this.fileSystemAdded(event.data as PlatformFileSystem), this);
     IsolatedFileSystemManager.instance().addEventListener(
-        Events.FileSystemRemoved, event => this._fileSystemRemoved(event.data as PlatformFileSystem), this);
+        Events.FileSystemRemoved, event => this.fileSystemRemoved(event.data as PlatformFileSystem), this);
 
-    const folderExcludePatternInput = this._createFolderExcludePatternInput();
+    const folderExcludePatternInput = this.createFolderExcludePatternInput();
     folderExcludePatternInput.classList.add('folder-exclude-pattern');
     this.containerElement.appendChild(folderExcludePatternInput);
 
     const div = this.containerElement.createChild('div', 'settings-info-message');
     UI.UIUtils.createTextChild(div, i18nString(UIStrings.mappingsAreInferredAutomatically));
 
-    this._fileSystemsListContainer = this.containerElement.createChild('div', '');
+    this.fileSystemsListContainer = this.containerElement.createChild('div', '');
 
     const addButton =
-        UI.UIUtils.createTextButton(i18nString(UIStrings.addFolder), this._addFileSystemClicked.bind(this));
+        UI.UIUtils.createTextButton(i18nString(UIStrings.addFolder), this.addFileSystemClicked.bind(this));
     this.containerElement.appendChild(addButton);
     this.setDefaultFocusedElement(addButton);
 
-    this._elementByPath = new Map();
+    this.elementByPath = new Map();
 
-    this._mappingViewByPath = new Map();
+    this.mappingViewByPath = new Map();
 
     const fileSystems = IsolatedFileSystemManager.instance().fileSystems();
     for (let i = 0; i < fileSystems.length; ++i) {
-      this._addItem(fileSystems[i]);
+      this.addItem(fileSystems[i]);
     }
   }
 
@@ -94,7 +92,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     return workspaceSettingsTabInstance;
   }
 
-  _createFolderExcludePatternInput(): Element {
+  private createFolderExcludePatternInput(): Element {
     const p = document.createElement('p');
     const labelElement = p.createChild('label');
     labelElement.textContent = i18nString(UIStrings.folderExcludePattern);
@@ -120,7 +118,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     }
   }
 
-  _addItem(fileSystem: PlatformFileSystem): void {
+  private addItem(fileSystem: PlatformFileSystem): void {
     // Support managing only instances of IsolatedFileSystem.
     if (!(fileSystem instanceof IsolatedFileSystem)) {
       return;
@@ -131,18 +129,18 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
             fileSystem) {
       return;
     }
-    const element = this._renderFileSystem(fileSystem);
-    this._elementByPath.set(fileSystem.path(), element);
+    const element = this.renderFileSystem(fileSystem);
+    this.elementByPath.set(fileSystem.path(), element);
 
-    this._fileSystemsListContainer.appendChild(element);
+    this.fileSystemsListContainer.appendChild(element);
 
     const mappingView = new EditFileSystemView(fileSystem.path());
-    this._mappingViewByPath.set(fileSystem.path(), mappingView);
+    this.mappingViewByPath.set(fileSystem.path(), mappingView);
     mappingView.element.classList.add('file-system-mapping-view');
     mappingView.show(element);
   }
 
-  _renderFileSystem(fileSystem: PlatformFileSystem): Element {
+  private renderFileSystem(fileSystem: PlatformFileSystem): Element {
     const fileSystemPath = fileSystem.path();
     const lastIndexOfSlash = fileSystemPath.lastIndexOf('/');
     const folderName = fileSystemPath.substr(lastIndexOfSlash + 1);
@@ -160,36 +158,35 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
 
     const toolbar = new UI.Toolbar.Toolbar('');
     const button = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.remove), 'largeicon-delete');
-    button.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.Click, this._removeFileSystemClicked.bind(this, fileSystem));
+    button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.removeFileSystemClicked.bind(this, fileSystem));
     toolbar.appendToolbarItem(button);
     header.appendChild(toolbar.element);
 
     return element;
   }
 
-  _removeFileSystemClicked(fileSystem: PlatformFileSystem): void {
+  private removeFileSystemClicked(fileSystem: PlatformFileSystem): void {
     IsolatedFileSystemManager.instance().removeFileSystem(fileSystem);
   }
 
-  _addFileSystemClicked(): void {
+  private addFileSystemClicked(): void {
     IsolatedFileSystemManager.instance().addFileSystem();
   }
 
-  _fileSystemAdded(fileSystem: PlatformFileSystem): void {
-    this._addItem(fileSystem);
+  private fileSystemAdded(fileSystem: PlatformFileSystem): void {
+    this.addItem(fileSystem);
   }
 
-  _fileSystemRemoved(fileSystem: PlatformFileSystem): void {
-    const mappingView = this._mappingViewByPath.get(fileSystem.path());
+  private fileSystemRemoved(fileSystem: PlatformFileSystem): void {
+    const mappingView = this.mappingViewByPath.get(fileSystem.path());
     if (mappingView) {
       mappingView.dispose();
-      this._mappingViewByPath.delete(fileSystem.path());
+      this.mappingViewByPath.delete(fileSystem.path());
     }
 
-    const element = this._elementByPath.get(fileSystem.path());
+    const element = this.elementByPath.get(fileSystem.path());
     if (element) {
-      this._elementByPath.delete(fileSystem.path());
+      this.elementByPath.delete(fileSystem.path());
       element.remove();
     }
   }

@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as TextUtils from '../text_utils/text_utils.js';
@@ -17,11 +15,11 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/persistence/PlatformFileSystem.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class PlatformFileSystem {
-  _path: string;
-  _type: string;
+  private readonly pathInternal: string;
+  private readonly typeInternal: string;
   constructor(path: string, type: string) {
-    this._path = path;
-    this._type = type;
+    this.pathInternal = path;
+    this.typeInternal = type;
   }
 
   getMetadata(_path: string): Promise<{modificationTime: Date, size: number}|null> {
@@ -37,7 +35,7 @@ export class PlatformFileSystem {
   }
 
   path(): string {
-    return this._path;
+    return this.pathInternal;
   }
 
   embedderPath(): string {
@@ -46,7 +44,7 @@ export class PlatformFileSystem {
 
   type(): string {
     // TODO(kozyatinskiy): remove type, overrides should implement this interface.
-    return this._type;
+    return this.typeInternal;
   }
 
   async createFile(_path: string, _name: string|null): Promise<string|null> {

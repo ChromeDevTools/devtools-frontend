@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
@@ -41,21 +39,20 @@ import {Events} from './IsolatedFileSystemManager.js';
 import type {PlatformFileSystem} from './PlatformFileSystem.js';
 
 export class FileSystemWorkspaceBinding {
-  _isolatedFileSystemManager: IsolatedFileSystemManager;
-  _workspace: Workspace.Workspace.WorkspaceImpl;
-  _eventListeners: Common.EventTarget.EventDescriptor[];
-  _boundFileSystems: Map<string, FileSystem>;
+  readonly isolatedFileSystemManager: IsolatedFileSystemManager;
+  private readonly workspace: Workspace.Workspace.WorkspaceImpl;
+  private readonly eventListeners: Common.EventTarget.EventDescriptor[];
+  private readonly boundFileSystems: Map<string, FileSystem>;
   constructor(isolatedFileSystemManager: IsolatedFileSystemManager, workspace: Workspace.Workspace.WorkspaceImpl) {
-    this._isolatedFileSystemManager = isolatedFileSystemManager;
-    this._workspace = workspace;
-    this._eventListeners = [
-      this._isolatedFileSystemManager.addEventListener(Events.FileSystemAdded, this._onFileSystemAdded, this),
-      this._isolatedFileSystemManager.addEventListener(Events.FileSystemRemoved, this._onFileSystemRemoved, this),
-      this._isolatedFileSystemManager.addEventListener(
-          Events.FileSystemFilesChanged, this._fileSystemFilesChanged, this),
+    this.isolatedFileSystemManager = isolatedFileSystemManager;
+    this.workspace = workspace;
+    this.eventListeners = [
+      this.isolatedFileSystemManager.addEventListener(Events.FileSystemAdded, this.onFileSystemAdded, this),
+      this.isolatedFileSystemManager.addEventListener(Events.FileSystemRemoved, this.onFileSystemRemoved, this),
+      this.isolatedFileSystemManager.addEventListener(Events.FileSystemFilesChanged, this.fileSystemFilesChanged, this),
     ];
-    this._boundFileSystems = new Map();
-    this._isolatedFileSystemManager.waitForFileSystems().then(this._onFileSystemsLoaded.bind(this));
+    this.boundFileSystems = new Map();
+    this.isolatedFileSystemManager.waitForFileSystems().then(this.onFileSystemsLoaded.bind(this));
   }
 
   static projectId(fileSystemPath: string): string {
@@ -63,28 +60,28 @@ export class FileSystemWorkspaceBinding {
   }
 
   static relativePath(uiSourceCode: Workspace.UISourceCode.UISourceCode): string[] {
-    const baseURL = (uiSourceCode.project() as FileSystem)._fileSystemBaseURL;
+    const baseURL = (uiSourceCode.project() as FileSystem).fileSystemBaseURL;
     return uiSourceCode.url().substring(baseURL.length).split('/');
   }
 
   static tooltipForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): string {
-    const fileSystem = (uiSourceCode.project() as FileSystem)._fileSystem;
+    const fileSystem = (uiSourceCode.project() as FileSystem).fileSystemInternal;
     return fileSystem.tooltipForURL(uiSourceCode.url());
   }
 
   static fileSystemType(project: Workspace.Workspace.Project): string {
-    const fileSystem = (project as FileSystem)._fileSystem;
+    const fileSystem = (project as FileSystem).fileSystemInternal;
     return fileSystem.type();
   }
 
   static fileSystemSupportsAutomapping(project: Workspace.Workspace.Project): boolean {
-    const fileSystem = (project as FileSystem)._fileSystem;
+    const fileSystem = (project as FileSystem).fileSystemInternal;
     return fileSystem.supportsAutomapping();
   }
 
   static completeURL(project: Workspace.Workspace.Project, relativePath: string): string {
     const fsProject = project as FileSystem;
-    return fsProject._fileSystemBaseURL + relativePath;
+    return fsProject.fileSystemBaseURL + relativePath;
   }
 
   static fileSystemPath(projectId: string): string {
@@ -92,54 +89,54 @@ export class FileSystemWorkspaceBinding {
   }
 
   fileSystemManager(): IsolatedFileSystemManager {
-    return this._isolatedFileSystemManager;
+    return this.isolatedFileSystemManager;
   }
 
-  _onFileSystemsLoaded(fileSystems: IsolatedFileSystem[]): void {
+  private onFileSystemsLoaded(fileSystems: IsolatedFileSystem[]): void {
     for (const fileSystem of fileSystems) {
-      this._addFileSystem(fileSystem);
+      this.addFileSystem(fileSystem);
     }
   }
 
-  _onFileSystemAdded(event: Common.EventTarget.EventTargetEvent): void {
+  private onFileSystemAdded(event: Common.EventTarget.EventTargetEvent): void {
     const fileSystem = event.data as PlatformFileSystem;
-    this._addFileSystem(fileSystem);
+    this.addFileSystem(fileSystem);
   }
 
-  _addFileSystem(fileSystem: PlatformFileSystem): void {
-    const boundFileSystem = new FileSystem(this, fileSystem, this._workspace);
-    this._boundFileSystems.set(fileSystem.path(), boundFileSystem);
+  private addFileSystem(fileSystem: PlatformFileSystem): void {
+    const boundFileSystem = new FileSystem(this, fileSystem, this.workspace);
+    this.boundFileSystems.set(fileSystem.path(), boundFileSystem);
   }
 
-  _onFileSystemRemoved(event: Common.EventTarget.EventTargetEvent): void {
+  private onFileSystemRemoved(event: Common.EventTarget.EventTargetEvent): void {
     const fileSystem = event.data as PlatformFileSystem;
-    const boundFileSystem = this._boundFileSystems.get(fileSystem.path());
+    const boundFileSystem = this.boundFileSystems.get(fileSystem.path());
     if (boundFileSystem) {
       boundFileSystem.dispose();
     }
-    this._boundFileSystems.delete(fileSystem.path());
+    this.boundFileSystems.delete(fileSystem.path());
   }
 
-  _fileSystemFilesChanged(event: Common.EventTarget.EventTargetEvent): void {
+  private fileSystemFilesChanged(event: Common.EventTarget.EventTargetEvent): void {
     const paths = event.data as FilesChangedData;
     for (const fileSystemPath of paths.changed.keysArray()) {
-      const fileSystem = this._boundFileSystems.get(fileSystemPath);
+      const fileSystem = this.boundFileSystems.get(fileSystemPath);
       if (!fileSystem) {
         continue;
       }
-      paths.changed.get(fileSystemPath).forEach(path => fileSystem._fileChanged(path));
+      paths.changed.get(fileSystemPath).forEach(path => fileSystem.fileChanged(path));
     }
 
     for (const fileSystemPath of paths.added.keysArray()) {
-      const fileSystem = this._boundFileSystems.get(fileSystemPath);
+      const fileSystem = this.boundFileSystems.get(fileSystemPath);
       if (!fileSystem) {
         continue;
       }
-      paths.added.get(fileSystemPath).forEach(path => fileSystem._fileChanged(path));
+      paths.added.get(fileSystemPath).forEach(path => fileSystem.fileChanged(path));
     }
 
     for (const fileSystemPath of paths.removed.keysArray()) {
-      const fileSystem = this._boundFileSystems.get(fileSystemPath);
+      const fileSystem = this.boundFileSystems.get(fileSystemPath);
       if (!fileSystem) {
         continue;
       }
@@ -148,21 +145,21 @@ export class FileSystemWorkspaceBinding {
   }
 
   dispose(): void {
-    Common.EventTarget.removeEventListeners(this._eventListeners);
-    for (const fileSystem of this._boundFileSystems.values()) {
+    Common.EventTarget.removeEventListeners(this.eventListeners);
+    for (const fileSystem of this.boundFileSystems.values()) {
       fileSystem.dispose();
-      this._boundFileSystems.delete(fileSystem._fileSystem.path());
+      this.boundFileSystems.delete(fileSystem.fileSystemInternal.path());
     }
   }
 }
 
 export class FileSystem extends Workspace.Workspace.ProjectStore implements Workspace.Workspace.Project {
-  _fileSystem: PlatformFileSystem;
-  _fileSystemBaseURL: string;
-  _fileSystemParentURL: string;
-  _fileSystemWorkspaceBinding: FileSystemWorkspaceBinding;
-  _fileSystemPath: string;
-  _creatingFilesGuard: Set<string>;
+  readonly fileSystemInternal: PlatformFileSystem;
+  readonly fileSystemBaseURL: string;
+  private readonly fileSystemParentURL: string;
+  private readonly fileSystemWorkspaceBinding: FileSystemWorkspaceBinding;
+  private readonly fileSystemPathInternal: string;
+  private readonly creatingFilesGuard: Set<string>;
   constructor(
       fileSystemWorkspaceBinding: FileSystemWorkspaceBinding, isolatedFileSystem: PlatformFileSystem,
       workspace: Workspace.Workspace.WorkspaceImpl) {
@@ -173,35 +170,35 @@ export class FileSystem extends Workspace.Workspace.ProjectStore implements Work
 
     super(workspace, id, Workspace.Workspace.projectTypes.FileSystem, displayName);
 
-    this._fileSystem = isolatedFileSystem;
-    this._fileSystemBaseURL = this._fileSystem.path() + '/';
-    this._fileSystemParentURL = this._fileSystemBaseURL.substr(0, fileSystemPath.lastIndexOf('/') + 1);
-    this._fileSystemWorkspaceBinding = fileSystemWorkspaceBinding;
-    this._fileSystemPath = fileSystemPath;
-    this._creatingFilesGuard = new Set();
+    this.fileSystemInternal = isolatedFileSystem;
+    this.fileSystemBaseURL = this.fileSystemInternal.path() + '/';
+    this.fileSystemParentURL = this.fileSystemBaseURL.substr(0, fileSystemPath.lastIndexOf('/') + 1);
+    this.fileSystemWorkspaceBinding = fileSystemWorkspaceBinding;
+    this.fileSystemPathInternal = fileSystemPath;
+    this.creatingFilesGuard = new Set();
 
     workspace.addProject(this);
     this.populate();
   }
 
   fileSystemPath(): string {
-    return this._fileSystemPath;
+    return this.fileSystemPathInternal;
   }
 
   fileSystem(): PlatformFileSystem {
-    return this._fileSystem;
+    return this.fileSystemInternal;
   }
 
   mimeType(uiSourceCode: Workspace.UISourceCode.UISourceCode): string {
-    return this._fileSystem.mimeFromPath(uiSourceCode.url());
+    return this.fileSystemInternal.mimeFromPath(uiSourceCode.url());
   }
 
   initialGitFolders(): string[] {
-    return this._fileSystem.initialGitFolders().map(folder => this._fileSystemPath + '/' + folder);
+    return this.fileSystemInternal.initialGitFolders().map(folder => this.fileSystemPathInternal + '/' + folder);
   }
 
-  _filePathForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): string {
-    return uiSourceCode.url().substring(this._fileSystemPath.length);
+  private filePathForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): string {
+    return uiSourceCode.url().substring(this.fileSystemPathInternal.length);
   }
 
   isServiceProject(): boolean {
@@ -214,8 +211,8 @@ export class FileSystem extends Workspace.Workspace.ProjectStore implements Work
     if (metadata) {
       return metadata;
     }
-    const relativePath = this._filePathForUISourceCode(uiSourceCode);
-    const promise = this._fileSystem.getMetadata(relativePath).then(onMetadata);
+    const relativePath = this.filePathForUISourceCode(uiSourceCode);
+    const promise = this.fileSystemInternal.getMetadata(relativePath).then(onMetadata);
     sourceCodeToMetadataMap.set(uiSourceCode, promise);
     return promise;
 
@@ -229,13 +226,13 @@ export class FileSystem extends Workspace.Workspace.ProjectStore implements Work
   }
 
   requestFileBlob(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<Blob|null> {
-    return this._fileSystem.requestFileBlob(this._filePathForUISourceCode(uiSourceCode));
+    return this.fileSystemInternal.requestFileBlob(this.filePathForUISourceCode(uiSourceCode));
   }
 
   requestFileContent(uiSourceCode: Workspace.UISourceCode.UISourceCode):
       Promise<TextUtils.ContentProvider.DeferredContent> {
-    const filePath = this._filePathForUISourceCode(uiSourceCode);
-    return this._fileSystem.requestFileContent(filePath);
+    const filePath = this.filePathForUISourceCode(uiSourceCode);
+    return this.fileSystemInternal.requestFileContent(filePath);
   }
 
   canSetFileContent(): boolean {
@@ -244,12 +241,12 @@ export class FileSystem extends Workspace.Workspace.ProjectStore implements Work
 
   async setFileContent(uiSourceCode: Workspace.UISourceCode.UISourceCode, newContent: string, isBase64: boolean):
       Promise<void> {
-    const filePath = this._filePathForUISourceCode(uiSourceCode);
-    await this._fileSystem.setFileContent(filePath, newContent, isBase64);
+    const filePath = this.filePathForUISourceCode(uiSourceCode);
+    await this.fileSystemInternal.setFileContent(filePath, newContent, isBase64);
   }
 
   fullDisplayName(uiSourceCode: Workspace.UISourceCode.UISourceCode): string {
-    const baseURL = (uiSourceCode.project() as FileSystem)._fileSystemParentURL;
+    const baseURL = (uiSourceCode.project() as FileSystem).fileSystemParentURL;
     return uiSourceCode.url().substring(baseURL.length);
   }
 
@@ -267,8 +264,8 @@ export class FileSystem extends Workspace.Workspace.ProjectStore implements Work
       return;
     }
 
-    let filePath = this._filePathForUISourceCode(uiSourceCode);
-    this._fileSystem.renameFile(filePath, newName, innerCallback.bind(this));
+    let filePath = this.filePathForUISourceCode(uiSourceCode);
+    this.fileSystemInternal.renameFile(filePath, newName, innerCallback.bind(this));
 
     function innerCallback(this: FileSystem, success: boolean, newName?: string): void {
       if (!success || !newName) {
@@ -280,8 +277,8 @@ export class FileSystem extends Workspace.Workspace.ProjectStore implements Work
       const parentPath = filePath.substring(0, slash);
       filePath = parentPath + '/' + newName;
       filePath = filePath.substr(1);
-      const newURL = this._fileSystemBaseURL + filePath;
-      const newContentType = this._fileSystem.contentType(newName);
+      const newURL = this.fileSystemBaseURL + filePath;
+      const newContentType = this.fileSystemInternal.contentType(newName);
       this.renameUISourceCode(uiSourceCode, newName);
       callback(true, newName, newURL, newContentType);
     }
@@ -290,8 +287,8 @@ export class FileSystem extends Workspace.Workspace.ProjectStore implements Work
   async searchInFileContent(
       uiSourceCode: Workspace.UISourceCode.UISourceCode, query: string, caseSensitive: boolean,
       isRegex: boolean): Promise<TextUtils.ContentProvider.SearchMatch[]> {
-    const filePath = this._filePathForUISourceCode(uiSourceCode);
-    const {content} = await this._fileSystem.requestFileContent(filePath);
+    const filePath = this.filePathForUISourceCode(uiSourceCode);
+    const {content} = await this.fileSystemInternal.requestFileContent(filePath);
     if (content) {
       return TextUtils.TextUtils.performSearchInContent(content, query, caseSensitive, isRegex);
     }
@@ -309,7 +306,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore implements Work
     progress.setTotalWork(queriesToRun.length);
 
     for (const query of queriesToRun) {
-      const files = await this._fileSystem.searchInPath(searchConfig.isRegex() ? '' : query, progress);
+      const files = await this.fileSystemInternal.searchInPath(searchConfig.isRegex() ? '' : query, progress);
       result = Platform.ArrayUtilities.intersectOrdered(
           result, files.sort(), Platform.StringUtilities.naturalOrderComparator);
       progress.incrementWorked(1);
@@ -320,18 +317,18 @@ export class FileSystem extends Workspace.Workspace.ProjectStore implements Work
   }
 
   indexContent(progress: Common.Progress.Progress): void {
-    this._fileSystem.indexContent(progress);
+    this.fileSystemInternal.indexContent(progress);
   }
 
   populate(): void {
     const chunkSize = 1000;
-    const filePaths = this._fileSystem.initialFilePaths();
+    const filePaths = this.fileSystemInternal.initialFilePaths();
     reportFileChunk.call(this, 0);
 
     function reportFileChunk(this: FileSystem, from: number): void {
       const to = Math.min(from + chunkSize, filePaths.length);
       for (let i = from; i < to; ++i) {
-        this._addFile(filePaths[i]);
+        this.addFile(filePaths[i]);
       }
       if (to < filePaths.length) {
         setTimeout(reportFileChunk.bind(this, to), 100);
@@ -340,14 +337,14 @@ export class FileSystem extends Workspace.Workspace.ProjectStore implements Work
   }
 
   excludeFolder(url: string): void {
-    let relativeFolder = url.substring(this._fileSystemBaseURL.length);
+    let relativeFolder = url.substring(this.fileSystemBaseURL.length);
     if (!relativeFolder.startsWith('/')) {
       relativeFolder = '/' + relativeFolder;
     }
     if (!relativeFolder.endsWith('/')) {
       relativeFolder += '/';
     }
-    this._fileSystem.addExcludedFolder(relativeFolder);
+    this.fileSystemInternal.addExcludedFolder(relativeFolder);
 
     const uiSourceCodes = this.uiSourceCodes().slice();
     for (let i = 0; i < uiSourceCodes.length; ++i) {
@@ -359,7 +356,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore implements Work
   }
 
   canExcludeFolder(path: string): boolean {
-    return this._fileSystem.canExcludeFolder(path);
+    return this.fileSystemInternal.canExcludeFolder(path);
   }
 
   canCreateFile(): boolean {
@@ -368,21 +365,21 @@ export class FileSystem extends Workspace.Workspace.ProjectStore implements Work
 
   async createFile(path: string, name: string|null, content: string, isBase64?: boolean):
       Promise<Workspace.UISourceCode.UISourceCode|null> {
-    const guardFileName = this._fileSystemPath + path + (!path.endsWith('/') ? '/' : '') + name;
-    this._creatingFilesGuard.add(guardFileName);
-    const filePath = await this._fileSystem.createFile(path, name);
+    const guardFileName = this.fileSystemPathInternal + path + (!path.endsWith('/') ? '/' : '') + name;
+    this.creatingFilesGuard.add(guardFileName);
+    const filePath = await this.fileSystemInternal.createFile(path, name);
     if (!filePath) {
       return null;
     }
-    const uiSourceCode = this._addFile(filePath);
+    const uiSourceCode = this.addFile(filePath);
     uiSourceCode.setContent(content, Boolean(isBase64));
-    this._creatingFilesGuard.delete(guardFileName);
+    this.creatingFilesGuard.delete(guardFileName);
     return uiSourceCode;
   }
 
   deleteFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
-    const relativePath = this._filePathForUISourceCode(uiSourceCode);
-    this._fileSystem.deleteFile(relativePath).then(success => {
+    const relativePath = this.filePathForUISourceCode(uiSourceCode);
+    this.fileSystemInternal.deleteFile(relativePath).then(success => {
       if (success) {
         this.removeUISourceCode(uiSourceCode.url());
       }
@@ -390,24 +387,24 @@ export class FileSystem extends Workspace.Workspace.ProjectStore implements Work
   }
 
   remove(): void {
-    this._fileSystemWorkspaceBinding._isolatedFileSystemManager.removeFileSystem(this._fileSystem);
+    this.fileSystemWorkspaceBinding.isolatedFileSystemManager.removeFileSystem(this.fileSystemInternal);
   }
 
-  _addFile(filePath: string): Workspace.UISourceCode.UISourceCode {
-    const contentType = this._fileSystem.contentType(filePath);
-    const uiSourceCode = this.createUISourceCode(this._fileSystemBaseURL + filePath, contentType);
+  private addFile(filePath: string): Workspace.UISourceCode.UISourceCode {
+    const contentType = this.fileSystemInternal.contentType(filePath);
+    const uiSourceCode = this.createUISourceCode(this.fileSystemBaseURL + filePath, contentType);
     this.addUISourceCode(uiSourceCode);
     return uiSourceCode;
   }
 
-  _fileChanged(path: string): void {
+  fileChanged(path: string): void {
     // Ignore files that are being created but do not have content yet.
-    if (this._creatingFilesGuard.has(path)) {
+    if (this.creatingFilesGuard.has(path)) {
       return;
     }
     const uiSourceCode = this.uiSourceCodeForURL(path);
     if (!uiSourceCode) {
-      const contentType = this._fileSystem.contentType(path);
+      const contentType = this.fileSystemInternal.contentType(path);
       this.addUISourceCode(this.createUISourceCode(path, contentType));
       return;
     }
@@ -416,7 +413,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore implements Work
   }
 
   tooltipForURL(url: string): string {
-    return this._fileSystem.tooltipForURL(url);
+    return this.fileSystemInternal.tooltipForURL(url);
   }
 
   dispose(): void {

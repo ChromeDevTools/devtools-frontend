@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -71,30 +69,30 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/persistence/IsolatedFileSystem.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class IsolatedFileSystem extends PlatformFileSystem {
-  _manager: IsolatedFileSystemManager;
-  _embedderPath: string;
-  _domFileSystem: FileSystem;
-  _excludedFoldersSetting: Common.Settings.Setting<{[path: string]: string[]}>;
-  _excludedFolders: Set<string>;
-  _excludedEmbedderFolders: string[];
-  _initialFilePaths: Set<string>;
-  _initialGitFolders: Set<string>;
-  _fileLocks: Map<string, Promise<void>>;
+  private readonly manager: IsolatedFileSystemManager;
+  private readonly embedderPathInternal: string;
+  private readonly domFileSystem: FileSystem;
+  private readonly excludedFoldersSetting: Common.Settings.Setting<{[path: string]: string[]}>;
+  private excludedFoldersInternal: Set<string>;
+  private readonly excludedEmbedderFolders: string[];
+  private readonly initialFilePathsInternal: Set<string>;
+  private readonly initialGitFoldersInternal: Set<string>;
+  private readonly fileLocks: Map<string, Promise<void>>;
 
   constructor(
       manager: IsolatedFileSystemManager, path: string, embedderPath: string, domFileSystem: FileSystem, type: string) {
     super(path, type);
-    this._manager = manager;
-    this._embedderPath = embedderPath;
-    this._domFileSystem = domFileSystem;
-    this._excludedFoldersSetting =
+    this.manager = manager;
+    this.embedderPathInternal = embedderPath;
+    this.domFileSystem = domFileSystem;
+    this.excludedFoldersSetting =
         Common.Settings.Settings.instance().createLocalSetting('workspaceExcludedFolders', {});
-    this._excludedFolders = new Set(this._excludedFoldersSetting.get()[path] || []);
-    this._excludedEmbedderFolders = [];
+    this.excludedFoldersInternal = new Set(this.excludedFoldersSetting.get()[path] || []);
+    this.excludedEmbedderFolders = [];
 
-    this._initialFilePaths = new Set();
-    this._initialGitFolders = new Set();
-    this._fileLocks = new Map();
+    this.initialFilePathsInternal = new Set();
+    this.initialGitFoldersInternal = new Set();
+    this.fileLocks = new Map();
   }
 
   static create(
@@ -106,7 +104,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     }
 
     const fileSystem = new IsolatedFileSystem(manager, path, embedderPath, domFileSystem, type);
-    return fileSystem._initializeFilePaths().then(() => fileSystem).catch(error => {
+    return fileSystem.initializeFilePaths().then(() => fileSystem).catch(error => {
       console.error(error);
       return null;
     });
@@ -117,9 +115,9 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     return i18nString(UIStrings.fileSystemErrorS, {PH1: error.message});
   }
 
-  _serializedFileOperation<T>(path: string, operation: () => Promise<T>): Promise<T> {
-    const promise = Promise.resolve(this._fileLocks.get(path)).then(() => operation.call(null));
-    this._fileLocks.set(path, promise as unknown as Promise<void>);
+  private serializedFileOperation<T>(path: string, operation: () => Promise<T>): Promise<T> {
+    const promise = Promise.resolve(this.fileLocks.get(path)).then(() => operation.call(null));
+    this.fileLocks.set(path, promise as unknown as Promise<void>);
     return promise;
   }
 
@@ -128,7 +126,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     const promise = new Promise<Metadata|null>(f => {
       fulfill = f;
     });
-    this._domFileSystem.root.getFile(path, undefined, fileEntryLoaded, errorHandler);
+    this.domFileSystem.root.getFile(path, undefined, fileEntryLoaded, errorHandler);
     return promise;
 
     function fileEntryLoaded(entry: FileEntry): void {
@@ -143,22 +141,22 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   }
 
   initialFilePaths(): string[] {
-    return [...this._initialFilePaths];
+    return [...this.initialFilePathsInternal];
   }
 
   initialGitFolders(): string[] {
-    return [...this._initialGitFolders];
+    return [...this.initialGitFoldersInternal];
   }
 
   embedderPath(): string {
-    return this._embedderPath;
+    return this.embedderPathInternal;
   }
 
-  _initializeFilePaths(): Promise<void> {
+  private initializeFilePaths(): Promise<void> {
     return new Promise(fulfill => {
       let pendingRequests = 1;
       const boundInnerCallback = innerCallback.bind(this);
-      this._requestEntries('', boundInnerCallback);
+      this.requestEntries('', boundInnerCallback);
 
       function innerCallback(this: IsolatedFileSystem, entries: FileEntry[]): void {
         for (let i = 0; i < entries.length; ++i) {
@@ -167,20 +165,20 @@ export class IsolatedFileSystem extends PlatformFileSystem {
             if (this.isFileExcluded(entry.fullPath)) {
               continue;
             }
-            this._initialFilePaths.add(entry.fullPath.substr(1));
+            this.initialFilePathsInternal.add(entry.fullPath.substr(1));
           } else {
             if (entry.fullPath.endsWith('/.git')) {
               const lastSlash = entry.fullPath.lastIndexOf('/');
               const parentFolder = entry.fullPath.substring(1, lastSlash);
-              this._initialGitFolders.add(parentFolder);
+              this.initialGitFoldersInternal.add(parentFolder);
             }
             if (this.isFileExcluded(entry.fullPath + '/')) {
-              this._excludedEmbedderFolders.push(
+              this.excludedEmbedderFolders.push(
                   Common.ParsedURL.ParsedURL.urlToPlatformPath(this.path() + entry.fullPath, Host.Platform.isWin()));
               continue;
             }
             ++pendingRequests;
-            this._requestEntries(entry.fullPath, boundInnerCallback);
+            this.requestEntries(entry.fullPath, boundInnerCallback);
           }
         }
         if ((--pendingRequests === 0)) {
@@ -190,10 +188,10 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     });
   }
 
-  async _createFoldersIfNotExist(folderPath: string): Promise<DirectoryEntry|null> {
+  private async createFoldersIfNotExist(folderPath: string): Promise<DirectoryEntry|null> {
     // Fast-path. If parent directory already exists we return it immidiatly.
     let dirEntry = await new Promise<DirectoryEntry|null>(
-        resolve => this._domFileSystem.root.getDirectory(folderPath, undefined, resolve, () => resolve(null)));
+        resolve => this.domFileSystem.root.getDirectory(folderPath, undefined, resolve, () => resolve(null)));
     if (dirEntry) {
       return dirEntry;
     }
@@ -201,7 +199,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     let activePath = '';
     for (const path of paths) {
       activePath = activePath + '/' + path;
-      dirEntry = await this._innerCreateFolderIfNeeded(activePath);
+      dirEntry = await this.innerCreateFolderIfNeeded(activePath);
       if (!dirEntry) {
         return null;
       }
@@ -209,9 +207,9 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     return dirEntry;
   }
 
-  _innerCreateFolderIfNeeded(path: string): Promise<DirectoryEntry|null> {
+  private innerCreateFolderIfNeeded(path: string): Promise<DirectoryEntry|null> {
     return new Promise(resolve => {
-      this._domFileSystem.root.getDirectory(path, {create: true}, dirEntry => resolve(dirEntry), error => {
+      this.domFileSystem.root.getDirectory(path, {create: true}, dirEntry => resolve(dirEntry), error => {
         const errorMessage = IsolatedFileSystem.errorMessage(error);
         console.error(errorMessage + ' trying to create directory \'' + path + '\'');
         resolve(null);
@@ -220,13 +218,12 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   }
 
   async createFile(path: string, name: string|null): Promise<string|null> {
-    const dirEntry = await this._createFoldersIfNotExist(path);
+    const dirEntry = await this.createFoldersIfNotExist(path);
     if (!dirEntry) {
       return null;
     }
     const fileEntry =
-        await this._serializedFileOperation(path, createFileCandidate.bind(this, name || 'NewFile')) as FileEntry |
-        null;
+        await this.serializedFileOperation(path, createFileCandidate.bind(this, name || 'NewFile')) as FileEntry | null;
     if (!fileEntry) {
       return null;
     }
@@ -256,7 +253,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     const promise = new Promise<boolean>(resolve => {
       resolveCallback = resolve;
     });
-    this._domFileSystem.root.getFile(path, undefined, fileEntryLoaded.bind(this), errorHandler.bind(this));
+    this.domFileSystem.root.getFile(path, undefined, fileEntryLoaded.bind(this), errorHandler.bind(this));
     return promise;
 
     function fileEntryLoaded(this: IsolatedFileSystem, fileEntry: FileEntry): void {
@@ -279,7 +276,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
 
   requestFileBlob(path: string): Promise<Blob|null> {
     return new Promise(resolve => {
-      this._domFileSystem.root.getFile(path, undefined, entry => {
+      this.domFileSystem.root.getFile(path, undefined, entry => {
         entry.file(resolve, errorHandler.bind(this));
       }, errorHandler.bind(this));
 
@@ -297,10 +294,10 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   }
 
   requestFileContent(path: string): Promise<TextUtils.ContentProvider.DeferredContent> {
-    return this._serializedFileOperation(path, () => this._innerRequestFileContent(path));
+    return this.serializedFileOperation(path, () => this.innerRequestFileContent(path));
   }
 
-  async _innerRequestFileContent(path: string): Promise<TextUtils.ContentProvider.DeferredContent> {
+  private async innerRequestFileContent(path: string): Promise<TextUtils.ContentProvider.DeferredContent> {
     const blob = await this.requestFileBlob(path);
     if (!blob) {
       return {content: null, error: i18nString(UIStrings.blobCouldNotBeLoaded), isEncoded: false};
@@ -347,11 +344,11 @@ export class IsolatedFileSystem extends PlatformFileSystem {
         // @ts-ignore TODO(crbug.com/1172300) Properly type this after jsdoc to ts migration
         callback = x;
       });
-      this._domFileSystem.root.getFile(path, {create: true}, fileEntryLoaded.bind(this), errorHandler.bind(this));
+      this.domFileSystem.root.getFile(path, {create: true}, fileEntryLoaded.bind(this), errorHandler.bind(this));
       return promise;
     };
 
-    this._serializedFileOperation(path, innerSetFileContent);
+    this.serializedFileOperation(path, innerSetFileContent);
 
     function fileEntryLoaded(this: IsolatedFileSystem, entry: FileEntry): void {
       entry.createWriter(fileWriterCreated.bind(this), errorHandler.bind(this));
@@ -391,7 +388,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     let fileEntry: FileEntry;
     let dirEntry: DirectoryEntry;
 
-    this._domFileSystem.root.getFile(path, undefined, fileEntryLoaded.bind(this), errorHandler.bind(this));
+    this.domFileSystem.root.getFile(path, undefined, fileEntryLoaded.bind(this), errorHandler.bind(this));
 
     function fileEntryLoaded(this: IsolatedFileSystem, entry: FileEntry): void {
       if (entry.name === newName) {
@@ -431,7 +428,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     }
   }
 
-  _readDirectory(dirEntry: DirectoryEntry, callback: (arg0: Array<FileEntry>) => void): void {
+  private readDirectory(dirEntry: DirectoryEntry, callback: (arg0: Array<FileEntry>) => void): void {
     const dirReader = dirEntry.createReader();
     let entries: FileEntry[] = [];
 
@@ -457,11 +454,11 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     }
   }
 
-  _requestEntries(path: string, callback: (arg0: Array<FileEntry>) => void): void {
-    this._domFileSystem.root.getDirectory(path, undefined, innerCallback.bind(this), errorHandler);
+  private requestEntries(path: string, callback: (arg0: Array<FileEntry>) => void): void {
+    this.domFileSystem.root.getDirectory(path, undefined, innerCallback.bind(this), errorHandler);
 
     function innerCallback(this: IsolatedFileSystem, dirEntry: DirectoryEntry): void {
-      this._readDirectory(dirEntry, callback);
+      this.readDirectory(dirEntry, callback);
     }
 
     function errorHandler(error: DOMError): void {
@@ -471,46 +468,47 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     }
   }
 
-  _saveExcludedFolders(): void {
-    const settingValue = this._excludedFoldersSetting.get();
-    settingValue[this.path()] = [...this._excludedFolders];
-    this._excludedFoldersSetting.set(settingValue);
+  private saveExcludedFolders(): void {
+    const settingValue = this.excludedFoldersSetting.get();
+    settingValue[this.path()] = [...this.excludedFoldersInternal];
+    this.excludedFoldersSetting.set(settingValue);
   }
 
   addExcludedFolder(path: string): void {
-    this._excludedFolders.add(path);
-    this._saveExcludedFolders();
-    this._manager.dispatchEventToListeners(Events.ExcludedFolderAdded, path);
+    this.excludedFoldersInternal.add(path);
+    this.saveExcludedFolders();
+    this.manager.dispatchEventToListeners(Events.ExcludedFolderAdded, path);
   }
 
   removeExcludedFolder(path: string): void {
-    this._excludedFolders.delete(path);
-    this._saveExcludedFolders();
-    this._manager.dispatchEventToListeners(Events.ExcludedFolderRemoved, path);
+    this.excludedFoldersInternal.delete(path);
+    this.saveExcludedFolders();
+    this.manager.dispatchEventToListeners(Events.ExcludedFolderRemoved, path);
   }
 
   fileSystemRemoved(): void {
-    const settingValue = this._excludedFoldersSetting.get();
+    const settingValue = this.excludedFoldersSetting.get();
     delete settingValue[this.path()];
-    this._excludedFoldersSetting.set(settingValue);
+    this.excludedFoldersSetting.set(settingValue);
   }
 
   isFileExcluded(folderPath: string): boolean {
-    if (this._excludedFolders.has(folderPath)) {
+    if (this.excludedFoldersInternal.has(folderPath)) {
       return true;
     }
-    const regex = (this._manager.workspaceFolderExcludePatternSetting() as Common.Settings.RegExpSetting).asRegExp();
+    const regex = (this.manager.workspaceFolderExcludePatternSetting() as Common.Settings.RegExpSetting).asRegExp();
     return Boolean(regex && regex.test(folderPath));
   }
 
   excludedFolders(): Set<string> {
-    return this._excludedFolders;
+    return this.excludedFoldersInternal;
   }
 
   searchInPath(query: string, progress: Common.Progress.Progress): Promise<string[]> {
     return new Promise(resolve => {
-      const requestId = this._manager.registerCallback(innerCallback);
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.searchInPath(requestId, this._embedderPath, query);
+      const requestId = this.manager.registerCallback(innerCallback);
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.searchInPath(
+          requestId, this.embedderPathInternal, query);
 
       function innerCallback(files: string[]): void {
         resolve(files.map(path => Common.ParsedURL.ParsedURL.platformPathToURL(path)));
@@ -521,9 +519,9 @@ export class IsolatedFileSystem extends PlatformFileSystem {
 
   indexContent(progress: Common.Progress.Progress): void {
     progress.setTotalWork(1);
-    const requestId = this._manager.registerProgress(progress);
+    const requestId = this.manager.registerProgress(progress);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.indexPath(
-        requestId, this._embedderPath, JSON.stringify(this._excludedEmbedderFolders));
+        requestId, this.embedderPathInternal, JSON.stringify(this.excludedEmbedderFolders));
   }
 
   mimeFromPath(path: string): string {

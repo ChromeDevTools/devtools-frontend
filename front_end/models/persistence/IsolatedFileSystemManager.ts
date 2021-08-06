@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -51,35 +49,35 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let isolatedFileSystemManagerInstance: IsolatedFileSystemManager;
 
 export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrapper {
-  _fileSystems: Map<string, PlatformFileSystem>;
-  _callbacks: Map<number, (arg0: Array<string>) => void>;
-  _progresses: Map<number, Common.Progress.Progress>;
-  _workspaceFolderExcludePatternSetting: Common.Settings.RegExpSetting;
-  _fileSystemRequestResolve: ((arg0: IsolatedFileSystem|null) => void)|null;
-  _fileSystemsLoadedPromise: Promise<IsolatedFileSystem[]>;
+  private readonly fileSystemsInternal: Map<string, PlatformFileSystem>;
+  private readonly callbacks: Map<number, (arg0: Array<string>) => void>;
+  private readonly progresses: Map<number, Common.Progress.Progress>;
+  private readonly workspaceFolderExcludePatternSettingInternal: Common.Settings.RegExpSetting;
+  private fileSystemRequestResolve: ((arg0: IsolatedFileSystem|null) => void)|null;
+  private readonly fileSystemsLoadedPromise: Promise<IsolatedFileSystem[]>;
   private constructor() {
     super();
 
-    this._fileSystems = new Map();
-    this._callbacks = new Map();
-    this._progresses = new Map();
+    this.fileSystemsInternal = new Map();
+    this.callbacks = new Map();
+    this.progresses = new Map();
 
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.FileSystemRemoved, this._onFileSystemRemoved, this);
+        Host.InspectorFrontendHostAPI.Events.FileSystemRemoved, this.onFileSystemRemoved, this);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.FileSystemAdded, event => {
-          this._onFileSystemAdded(event);
+          this.onFileSystemAdded(event);
         }, this);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved, this._onFileSystemFilesChanged, this);
+        Host.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved, this.onFileSystemFilesChanged, this);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.IndexingTotalWorkCalculated, this._onIndexingTotalWorkCalculated, this);
+        Host.InspectorFrontendHostAPI.Events.IndexingTotalWorkCalculated, this.onIndexingTotalWorkCalculated, this);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.IndexingWorked, this._onIndexingWorked, this);
+        Host.InspectorFrontendHostAPI.Events.IndexingWorked, this.onIndexingWorked, this);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.IndexingDone, this._onIndexingDone, this);
+        Host.InspectorFrontendHostAPI.Events.IndexingDone, this.onIndexingDone, this);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.SearchCompleted, this._onSearchCompleted, this);
+        Host.InspectorFrontendHostAPI.Events.SearchCompleted, this.onSearchCompleted, this);
 
     // Initialize exclude pattern settings
     const defaultCommonExcludedFolders = [
@@ -114,11 +112,11 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
       defaultExcludedFolders = defaultExcludedFolders.concat(defaultLinuxExcludedFolders);
     }
     const defaultExcludedFoldersPattern = defaultExcludedFolders.join('|');
-    this._workspaceFolderExcludePatternSetting = Common.Settings.Settings.instance().createRegExpSetting(
+    this.workspaceFolderExcludePatternSettingInternal = Common.Settings.Settings.instance().createRegExpSetting(
         'workspaceFolderExcludePattern', defaultExcludedFoldersPattern, Host.Platform.isWin() ? 'i' : '');
 
-    this._fileSystemRequestResolve = null;
-    this._fileSystemsLoadedPromise = this._requestFileSystems();
+    this.fileSystemRequestResolve = null;
+    this.fileSystemsLoadedPromise = this.requestFileSystems();
   }
 
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): IsolatedFileSystemManager {
@@ -130,7 +128,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     return isolatedFileSystemManagerInstance;
   }
 
-  _requestFileSystems(): Promise<IsolatedFileSystem[]> {
+  private requestFileSystems(): Promise<IsolatedFileSystem[]> {
     let fulfill: (arg0: IsolatedFileSystem[]) => void;
     const promise = new Promise<IsolatedFileSystem[]>(f => {
       fulfill = f;
@@ -144,7 +142,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
       const fileSystems = event.data as FileSystem[];
       const promises = [];
       for (let i = 0; i < fileSystems.length; ++i) {
-        promises.push(this._innerAddFileSystem(fileSystems[i], false));
+        promises.push(this.innerAddFileSystem(fileSystems[i], false));
       }
       Promise.all(promises).then(onFileSystemsAdded);
     }
@@ -156,7 +154,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
 
   addFileSystem(type?: string): Promise<IsolatedFileSystem|null> {
     return new Promise(resolve => {
-      this._fileSystemRequestResolve = resolve;
+      this.fileSystemRequestResolve = resolve;
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.addFileSystem(type || '');
     });
   }
@@ -166,10 +164,10 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   waitForFileSystems(): Promise<IsolatedFileSystem[]> {
-    return this._fileSystemsLoadedPromise;
+    return this.fileSystemsLoadedPromise;
   }
 
-  _innerAddFileSystem(fileSystem: FileSystem, dispatchEvent: boolean): Promise<IsolatedFileSystem|null> {
+  private innerAddFileSystem(fileSystem: FileSystem, dispatchEvent: boolean): Promise<IsolatedFileSystem|null> {
     const embedderPath = fileSystem.fileSystemPath;
     const fileSystemURL = Common.ParsedURL.ParsedURL.platformPathToURL(fileSystem.fileSystemPath);
     const promise = IsolatedFileSystem.create(
@@ -181,7 +179,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
       if (!fileSystem) {
         return null;
       }
-      this._fileSystems.set(fileSystemURL, fileSystem);
+      this.fileSystemsInternal.set(fileSystemURL, fileSystem);
       if (dispatchEvent) {
         this.dispatchEventToListeners(Events.FileSystemAdded, fileSystem);
       }
@@ -190,45 +188,45 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   addPlatformFileSystem(fileSystemURL: string, fileSystem: PlatformFileSystem): void {
-    this._fileSystems.set(fileSystemURL, fileSystem);
+    this.fileSystemsInternal.set(fileSystemURL, fileSystem);
     this.dispatchEventToListeners(Events.FileSystemAdded, fileSystem);
   }
 
-  _onFileSystemAdded(event: Common.EventTarget.EventTargetEvent): void {
+  private onFileSystemAdded(event: Common.EventTarget.EventTargetEvent): void {
     const errorMessage = event.data['errorMessage'] as string;
     const fileSystem = event.data['fileSystem'] as FileSystem | null;
     if (errorMessage) {
       if (errorMessage !== '<selection cancelled>') {
         Common.Console.Console.instance().error(i18nString(UIStrings.unableToAddFilesystemS, {PH1: errorMessage}));
       }
-      if (!this._fileSystemRequestResolve) {
+      if (!this.fileSystemRequestResolve) {
         return;
       }
-      this._fileSystemRequestResolve.call(null, null);
-      this._fileSystemRequestResolve = null;
+      this.fileSystemRequestResolve.call(null, null);
+      this.fileSystemRequestResolve = null;
     } else if (fileSystem) {
-      this._innerAddFileSystem(fileSystem, true).then(fileSystem => {
-        if (this._fileSystemRequestResolve) {
-          this._fileSystemRequestResolve.call(null, fileSystem);
-          this._fileSystemRequestResolve = null;
+      this.innerAddFileSystem(fileSystem, true).then(fileSystem => {
+        if (this.fileSystemRequestResolve) {
+          this.fileSystemRequestResolve.call(null, fileSystem);
+          this.fileSystemRequestResolve = null;
         }
       });
     }
   }
 
-  _onFileSystemRemoved(event: Common.EventTarget.EventTargetEvent): void {
+  private onFileSystemRemoved(event: Common.EventTarget.EventTargetEvent): void {
     const embedderPath = event.data as string;
     const fileSystemPath = Common.ParsedURL.ParsedURL.platformPathToURL(embedderPath);
-    const isolatedFileSystem = this._fileSystems.get(fileSystemPath);
+    const isolatedFileSystem = this.fileSystemsInternal.get(fileSystemPath);
     if (!isolatedFileSystem) {
       return;
     }
-    this._fileSystems.delete(fileSystemPath);
+    this.fileSystemsInternal.delete(fileSystemPath);
     isolatedFileSystem.fileSystemRemoved();
     this.dispatchEventToListeners(Events.FileSystemRemoved, isolatedFileSystem);
   }
 
-  _onFileSystemFilesChanged(event: Common.EventTarget.EventTargetEvent): void {
+  private onFileSystemFilesChanged(event: Common.EventTarget.EventTargetEvent): void {
     const urlPaths = {
       changed: groupFilePathsIntoFileSystemPaths.call(this, event.data.changed),
       added: groupFilePathsIntoFileSystemPaths.call(this, event.data.added),
@@ -242,8 +240,8 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
       const paths = new Platform.MapUtilities.Multimap<string, string>();
       for (const embedderPath of embedderPaths) {
         const filePath = Common.ParsedURL.ParsedURL.platformPathToURL(embedderPath);
-        for (const fileSystemPath of this._fileSystems.keys()) {
-          const fileSystem = this._fileSystems.get(fileSystemPath);
+        for (const fileSystemPath of this.fileSystemsInternal.keys()) {
+          const fileSystem = this.fileSystemsInternal.get(fileSystemPath);
           if (fileSystem && fileSystem.isFileExcluded(embedderPath)) {
             continue;
           }
@@ -259,76 +257,76 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   fileSystems(): PlatformFileSystem[] {
-    return [...this._fileSystems.values()];
+    return [...this.fileSystemsInternal.values()];
   }
 
   fileSystem(fileSystemPath: string): PlatformFileSystem|null {
-    return this._fileSystems.get(fileSystemPath) || null;
+    return this.fileSystemsInternal.get(fileSystemPath) || null;
   }
 
   workspaceFolderExcludePatternSetting(): Common.Settings.RegExpSetting {
-    return this._workspaceFolderExcludePatternSetting;
+    return this.workspaceFolderExcludePatternSettingInternal;
   }
 
   registerCallback(callback: (arg0: Array<string>) => void): number {
     const requestId = ++lastRequestId;
-    this._callbacks.set(requestId, callback);
+    this.callbacks.set(requestId, callback);
     return requestId;
   }
 
   registerProgress(progress: Common.Progress.Progress): number {
     const requestId = ++lastRequestId;
-    this._progresses.set(requestId, progress);
+    this.progresses.set(requestId, progress);
     return requestId;
   }
 
-  _onIndexingTotalWorkCalculated(event: Common.EventTarget.EventTargetEvent): void {
+  private onIndexingTotalWorkCalculated(event: Common.EventTarget.EventTargetEvent): void {
     const requestId = event.data['requestId'] as number;
     const totalWork = event.data['totalWork'] as number;
 
-    const progress = this._progresses.get(requestId);
+    const progress = this.progresses.get(requestId);
     if (!progress) {
       return;
     }
     progress.setTotalWork(totalWork);
   }
 
-  _onIndexingWorked(event: Common.EventTarget.EventTargetEvent): void {
+  private onIndexingWorked(event: Common.EventTarget.EventTargetEvent): void {
     const requestId = event.data['requestId'] as number;
     const worked = event.data['worked'] as number;
 
-    const progress = this._progresses.get(requestId);
+    const progress = this.progresses.get(requestId);
     if (!progress) {
       return;
     }
     progress.incrementWorked(worked);
     if (progress.isCanceled()) {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.stopIndexing(requestId);
-      this._onIndexingDone(event);
+      this.onIndexingDone(event);
     }
   }
 
-  _onIndexingDone(event: Common.EventTarget.EventTargetEvent): void {
+  private onIndexingDone(event: Common.EventTarget.EventTargetEvent): void {
     const requestId = event.data['requestId'] as number;
 
-    const progress = this._progresses.get(requestId);
+    const progress = this.progresses.get(requestId);
     if (!progress) {
       return;
     }
     progress.done();
-    this._progresses.delete(requestId);
+    this.progresses.delete(requestId);
   }
 
-  _onSearchCompleted(event: Common.EventTarget.EventTargetEvent): void {
+  private onSearchCompleted(event: Common.EventTarget.EventTargetEvent): void {
     const requestId = event.data['requestId'] as number;
     const files = event.data['files'] as string[];
 
-    const callback = this._callbacks.get(requestId);
+    const callback = this.callbacks.get(requestId);
     if (!callback) {
       return;
     }
     callback.call(null, files);
-    this._callbacks.delete(requestId);
+    this.callbacks.delete(requestId);
   }
 }
 

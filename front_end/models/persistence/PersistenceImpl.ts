@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -18,25 +16,26 @@ import {LinkDecorator} from './PersistenceUtils.js';
 let persistenceInstance: PersistenceImpl;
 
 export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
-  _workspace: Workspace.Workspace.WorkspaceImpl;
-  _breakpointManager: Bindings.BreakpointManager.BreakpointManager;
-  _filePathPrefixesToBindingCount: Map<string, number>;
-  _subscribedBindingEventListeners: Platform.MapUtilities.Multimap<Workspace.UISourceCode.UISourceCode, () => void>;
-  _mapping: Automapping;
+  private readonly workspace: Workspace.Workspace.WorkspaceImpl;
+  private readonly breakpointManager: Bindings.BreakpointManager.BreakpointManager;
+  private readonly filePathPrefixesToBindingCount: Map<string, number>;
+  private subscribedBindingEventListeners:
+      Platform.MapUtilities.Multimap<Workspace.UISourceCode.UISourceCode, () => void>;
+  private readonly mapping: Automapping;
 
   constructor(
       workspace: Workspace.Workspace.WorkspaceImpl, breakpointManager: Bindings.BreakpointManager.BreakpointManager) {
     super();
-    this._workspace = workspace;
-    this._breakpointManager = breakpointManager;
-    this._filePathPrefixesToBindingCount = new Map();
+    this.workspace = workspace;
+    this.breakpointManager = breakpointManager;
+    this.filePathPrefixesToBindingCount = new Map();
 
-    this._subscribedBindingEventListeners = new Platform.MapUtilities.Multimap();
+    this.subscribedBindingEventListeners = new Platform.MapUtilities.Multimap();
 
     const linkDecorator = new LinkDecorator(this);
     Components.Linkifier.Linkifier.setLinkDecorator(linkDecorator);
 
-    this._mapping = new Automapping(this._workspace, this._onStatusAdded.bind(this), this._onStatusRemoved.bind(this));
+    this.mapping = new Automapping(this.workspace, this.onStatusAdded.bind(this), this.onStatusRemoved.bind(this));
   }
 
   static instance(opts: {
@@ -56,64 +55,63 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   addNetworkInterceptor(interceptor: (arg0: Workspace.UISourceCode.UISourceCode) => boolean): void {
-    this._mapping.addNetworkInterceptor(interceptor);
+    this.mapping.addNetworkInterceptor(interceptor);
   }
 
   refreshAutomapping(): void {
-    this._mapping.scheduleRemap();
+    this.mapping.scheduleRemap();
   }
 
   async addBinding(binding: PersistenceBinding): Promise<void> {
-    await this._innerAddBinding(binding);
+    await this.innerAddBinding(binding);
   }
 
   async addBindingForTest(binding: PersistenceBinding): Promise<void> {
-    await this._innerAddBinding(binding);
+    await this.innerAddBinding(binding);
   }
 
   async removeBinding(binding: PersistenceBinding): Promise<void> {
-    await this._innerRemoveBinding(binding);
+    await this.innerRemoveBinding(binding);
   }
 
   async removeBindingForTest(binding: PersistenceBinding): Promise<void> {
-    await this._innerRemoveBinding(binding);
+    await this.innerRemoveBinding(binding);
   }
 
-  async _innerAddBinding(binding: PersistenceBinding): Promise<void> {
+  private async innerAddBinding(binding: PersistenceBinding): Promise<void> {
     bindings.set(binding.network, binding);
     bindings.set(binding.fileSystem, binding);
 
     binding.fileSystem.forceLoadOnCheckContent();
 
     binding.network.addEventListener(
-        Workspace.UISourceCode.Events.WorkingCopyCommitted, this._onWorkingCopyCommitted, this);
+        Workspace.UISourceCode.Events.WorkingCopyCommitted, this.onWorkingCopyCommitted, this);
     binding.fileSystem.addEventListener(
-        Workspace.UISourceCode.Events.WorkingCopyCommitted, this._onWorkingCopyCommitted, this);
-    binding.network.addEventListener(
-        Workspace.UISourceCode.Events.WorkingCopyChanged, this._onWorkingCopyChanged, this);
+        Workspace.UISourceCode.Events.WorkingCopyCommitted, this.onWorkingCopyCommitted, this);
+    binding.network.addEventListener(Workspace.UISourceCode.Events.WorkingCopyChanged, this.onWorkingCopyChanged, this);
     binding.fileSystem.addEventListener(
-        Workspace.UISourceCode.Events.WorkingCopyChanged, this._onWorkingCopyChanged, this);
+        Workspace.UISourceCode.Events.WorkingCopyChanged, this.onWorkingCopyChanged, this);
 
-    this._addFilePathBindingPrefixes(binding.fileSystem.url());
+    this.addFilePathBindingPrefixes(binding.fileSystem.url());
 
-    await this._moveBreakpoints(binding.fileSystem, binding.network);
+    await this.moveBreakpoints(binding.fileSystem, binding.network);
 
     console.assert(!binding.fileSystem.isDirty() || !binding.network.isDirty());
     if (binding.fileSystem.isDirty()) {
-      this._syncWorkingCopy(binding.fileSystem);
+      this.syncWorkingCopy(binding.fileSystem);
     } else if (binding.network.isDirty()) {
-      this._syncWorkingCopy(binding.network);
+      this.syncWorkingCopy(binding.network);
     } else if (binding.network.hasCommits() && binding.network.content() !== binding.fileSystem.content()) {
       binding.network.setWorkingCopy(binding.network.content());
-      this._syncWorkingCopy(binding.network);
+      this.syncWorkingCopy(binding.network);
     }
 
-    this._notifyBindingEvent(binding.network);
-    this._notifyBindingEvent(binding.fileSystem);
+    this.notifyBindingEvent(binding.network);
+    this.notifyBindingEvent(binding.fileSystem);
     this.dispatchEventToListeners(Events.BindingCreated, binding);
   }
 
-  async _innerRemoveBinding(binding: PersistenceBinding): Promise<void> {
+  private async innerRemoveBinding(binding: PersistenceBinding): Promise<void> {
     if (bindings.get(binding.network) !== binding) {
       return;
     }
@@ -125,39 +123,39 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
     bindings.delete(binding.fileSystem);
 
     binding.network.removeEventListener(
-        Workspace.UISourceCode.Events.WorkingCopyCommitted, this._onWorkingCopyCommitted, this);
+        Workspace.UISourceCode.Events.WorkingCopyCommitted, this.onWorkingCopyCommitted, this);
     binding.fileSystem.removeEventListener(
-        Workspace.UISourceCode.Events.WorkingCopyCommitted, this._onWorkingCopyCommitted, this);
+        Workspace.UISourceCode.Events.WorkingCopyCommitted, this.onWorkingCopyCommitted, this);
     binding.network.removeEventListener(
-        Workspace.UISourceCode.Events.WorkingCopyChanged, this._onWorkingCopyChanged, this);
+        Workspace.UISourceCode.Events.WorkingCopyChanged, this.onWorkingCopyChanged, this);
     binding.fileSystem.removeEventListener(
-        Workspace.UISourceCode.Events.WorkingCopyChanged, this._onWorkingCopyChanged, this);
+        Workspace.UISourceCode.Events.WorkingCopyChanged, this.onWorkingCopyChanged, this);
 
-    this._removeFilePathBindingPrefixes(binding.fileSystem.url());
-    await this._breakpointManager.copyBreakpoints(binding.network.url(), binding.fileSystem);
+    this.removeFilePathBindingPrefixes(binding.fileSystem.url());
+    await this.breakpointManager.copyBreakpoints(binding.network.url(), binding.fileSystem);
 
-    this._notifyBindingEvent(binding.network);
-    this._notifyBindingEvent(binding.fileSystem);
+    this.notifyBindingEvent(binding.network);
+    this.notifyBindingEvent(binding.fileSystem);
     this.dispatchEventToListeners(Events.BindingRemoved, binding);
   }
 
-  async _onStatusAdded(status: AutomappingStatus): Promise<void> {
+  private async onStatusAdded(status: AutomappingStatus): Promise<void> {
     const binding = new PersistenceBinding(status.network, status.fileSystem);
     statusBindings.set(status, binding);
-    await this._innerAddBinding(binding);
+    await this.innerAddBinding(binding);
   }
 
-  async _onStatusRemoved(status: AutomappingStatus): Promise<void> {
+  private async onStatusRemoved(status: AutomappingStatus): Promise<void> {
     const binding = statusBindings.get(status) as PersistenceBinding;
-    await this._innerRemoveBinding(binding);
+    await this.innerRemoveBinding(binding);
   }
 
-  _onWorkingCopyChanged(event: Common.EventTarget.EventTargetEvent): void {
+  private onWorkingCopyChanged(event: Common.EventTarget.EventTargetEvent): void {
     const uiSourceCode = event.data as Workspace.UISourceCode.UISourceCode;
-    this._syncWorkingCopy(uiSourceCode);
+    this.syncWorkingCopy(uiSourceCode);
   }
 
-  _syncWorkingCopy(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
+  private syncWorkingCopy(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     const binding = bindings.get(uiSourceCode);
     if (!binding || mutedWorkingCopies.has(binding)) {
       return;
@@ -167,7 +165,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
       mutedWorkingCopies.add(binding);
       other.resetWorkingCopy();
       mutedWorkingCopies.delete(binding);
-      this._contentSyncedForTest();
+      this.contentSyncedForTest();
       return;
     }
 
@@ -191,11 +189,11 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
       if (binding) {
         mutedWorkingCopies.delete(binding);
       }
-      this._contentSyncedForTest();
+      this.contentSyncedForTest();
     }
   }
 
-  _onWorkingCopyCommitted(event: Common.EventTarget.EventTargetEvent): void {
+  private onWorkingCopyCommitted(event: Common.EventTarget.EventTargetEvent): void {
     const uiSourceCode = event.data.uiSourceCode as Workspace.UISourceCode.UISourceCode;
     const newContent = event.data.content as string;
     this.syncContent(uiSourceCode, newContent, event.data.encoded);
@@ -225,7 +223,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
       if (binding) {
         mutedCommits.delete(binding);
       }
-      this._contentSyncedForTest();
+      this.contentSyncedForTest();
     }
   }
 
@@ -249,22 +247,22 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
     return newContent;
   }
 
-  _contentSyncedForTest(): void {
+  private contentSyncedForTest(): void {
   }
 
-  async _moveBreakpoints(from: Workspace.UISourceCode.UISourceCode, to: Workspace.UISourceCode.UISourceCode):
+  private async moveBreakpoints(from: Workspace.UISourceCode.UISourceCode, to: Workspace.UISourceCode.UISourceCode):
       Promise<void> {
-    const breakpoints = this._breakpointManager.breakpointLocationsForUISourceCode(from).map(
+    const breakpoints = this.breakpointManager.breakpointLocationsForUISourceCode(from).map(
         breakpointLocation => breakpointLocation.breakpoint);
     await Promise.all(breakpoints.map(breakpoint => {
       breakpoint.remove(false /* keepInStorage */);
-      return this._breakpointManager.setBreakpoint(
+      return this.breakpointManager.setBreakpoint(
           to, breakpoint.lineNumber(), breakpoint.columnNumber(), breakpoint.condition(), breakpoint.enabled());
     }));
   }
 
   hasUnsavedCommittedChanges(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
-    if (this._workspace.hasResourceContentTrackingExtensions()) {
+    if (this.workspace.hasResourceContentTrackingExtensions()) {
       return false;
     }
     if (uiSourceCode.project().canSetFileContent()) {
@@ -281,18 +279,18 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   subscribeForBindingEvent(uiSourceCode: Workspace.UISourceCode.UISourceCode, listener: () => void): void {
-    this._subscribedBindingEventListeners.set(uiSourceCode, listener);
+    this.subscribedBindingEventListeners.set(uiSourceCode, listener);
   }
 
   unsubscribeFromBindingEvent(uiSourceCode: Workspace.UISourceCode.UISourceCode, listener: () => void): void {
-    this._subscribedBindingEventListeners.delete(uiSourceCode, listener);
+    this.subscribedBindingEventListeners.delete(uiSourceCode, listener);
   }
 
-  _notifyBindingEvent(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
-    if (!this._subscribedBindingEventListeners.has(uiSourceCode)) {
+  private notifyBindingEvent(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
+    if (!this.subscribedBindingEventListeners.has(uiSourceCode)) {
       return;
     }
-    const listeners = Array.from(this._subscribedBindingEventListeners.get(uiSourceCode));
+    const listeners = Array.from(this.subscribedBindingEventListeners.get(uiSourceCode));
     for (const listener of listeners) {
       listener.call(null);
     }
@@ -308,24 +306,24 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
     return binding ? binding.network : null;
   }
 
-  _addFilePathBindingPrefixes(filePath: string): void {
+  private addFilePathBindingPrefixes(filePath: string): void {
     let relative = '';
     for (const token of filePath.split('/')) {
       relative += token + '/';
-      const count = this._filePathPrefixesToBindingCount.get(relative) || 0;
-      this._filePathPrefixesToBindingCount.set(relative, count + 1);
+      const count = this.filePathPrefixesToBindingCount.get(relative) || 0;
+      this.filePathPrefixesToBindingCount.set(relative, count + 1);
     }
   }
 
-  _removeFilePathBindingPrefixes(filePath: string): void {
+  private removeFilePathBindingPrefixes(filePath: string): void {
     let relative = '';
     for (const token of filePath.split('/')) {
       relative += token + '/';
-      const count = this._filePathPrefixesToBindingCount.get(relative);
+      const count = this.filePathPrefixesToBindingCount.get(relative);
       if (count === 1) {
-        this._filePathPrefixesToBindingCount.delete(relative);
+        this.filePathPrefixesToBindingCount.delete(relative);
       } else if (count !== undefined) {
-        this._filePathPrefixesToBindingCount.set(relative, count - 1);
+        this.filePathPrefixesToBindingCount.set(relative, count - 1);
       }
     }
   }
@@ -334,7 +332,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
     if (!filePath.endsWith('/')) {
       filePath += '/';
     }
-    return this._filePathPrefixesToBindingCount.has(filePath);
+    return this.filePathPrefixesToBindingCount.has(filePath);
   }
 }
 
@@ -355,17 +353,17 @@ export const Events = {
 };
 
 export class PathEncoder {
-  _encoder: Common.CharacterIdMap.CharacterIdMap<string>;
+  private readonly encoder: Common.CharacterIdMap.CharacterIdMap<string>;
   constructor() {
-    this._encoder = new Common.CharacterIdMap.CharacterIdMap();
+    this.encoder = new Common.CharacterIdMap.CharacterIdMap();
   }
 
   encode(path: string): string {
-    return path.split('/').map(token => this._encoder.toChar(token)).join('');
+    return path.split('/').map(token => this.encoder.toChar(token)).join('');
   }
 
   decode(path: string): string {
-    return path.split('').map(token => this._encoder.fromChar(token)).join('/');
+    return path.split('').map(token => this.encoder.fromChar(token)).join('/');
   }
 }
 

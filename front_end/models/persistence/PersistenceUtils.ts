@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -75,11 +73,11 @@ export class PersistenceUtils {
 export class LinkDecorator extends Common.ObjectWrapper.ObjectWrapper implements Components.Linkifier.LinkDecorator {
   constructor(persistence: PersistenceImpl) {
     super();
-    persistence.addEventListener(Events.BindingCreated, this._bindingChanged, this);
-    persistence.addEventListener(Events.BindingRemoved, this._bindingChanged, this);
+    persistence.addEventListener(Events.BindingCreated, this.bindingChanged, this);
+    persistence.addEventListener(Events.BindingRemoved, this.bindingChanged, this);
   }
 
-  _bindingChanged(event: Common.EventTarget.EventTargetEvent): void {
+  private bindingChanged(event: Common.EventTarget.EventTargetEvent): void {
     const binding = event.data as PersistenceBinding;
     this.dispatchEventToListeners(Components.Linkifier.LinkDecorator.Events.LinkIconChanged, binding.network);
   }

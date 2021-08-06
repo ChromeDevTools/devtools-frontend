@@ -1305,7 +1305,7 @@ export function dumpLoadedModules(relativeTo) {
     if (previous.has(module)) {
       continue;
     }
-    addResult('    ' + module._descriptor.name);
+    addResult('    ' + module.descriptor.name);
   }
   return sortedLoadedModules;
 }

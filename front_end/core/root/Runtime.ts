@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 const originalConsole = console;
 const originalAssert = console.assert;
 
@@ -67,20 +65,20 @@ export const mappingForLayoutTests = new Map<string, string>([
 ]);
 
 export class Runtime {
-  _modules: Module[];
-  _modulesMap: {
+  private readonly modules: Module[];
+  modulesMap: {
     [x: string]: Module,
   };
-  _descriptorsMap: {
+  private readonly descriptorsMap: {
     [x: string]: ModuleDescriptor,
   };
   private constructor(descriptors: ModuleDescriptor[]) {
-    this._modules = [];
-    this._modulesMap = {};
-    this._descriptorsMap = {};
+    this.modules = [];
+    this.modulesMap = {};
+    this.descriptorsMap = {};
 
     for (const descriptor of descriptors) {
-      this._registerModule(descriptor);
+      this.registerModule(descriptor);
     }
   }
 
@@ -142,7 +140,7 @@ export class Runtime {
     return queryParamsObject.get(name);
   }
 
-  static _experimentsSetting(): {
+  static experimentsSetting(): {
     [x: string]: boolean,
   } {
     try {
@@ -156,7 +154,7 @@ export class Runtime {
     }
   }
 
-  static _assert(value: boolean|undefined, message: string): void {
+  static assert(value: boolean|undefined, message: string): void {
     if (value) {
       return;
     }
@@ -206,21 +204,21 @@ export class Runtime {
   }
 
   module(moduleName: string): Module {
-    return this._modulesMap[moduleName];
+    return this.modulesMap[moduleName];
   }
 
-  _registerModule(descriptor: ModuleDescriptor): void {
+  private registerModule(descriptor: ModuleDescriptor): void {
     const module = new Module(this, descriptor);
-    this._modules.push(module);
-    this._modulesMap[descriptor['name']] = module;
+    this.modules.push(module);
+    this.modulesMap[descriptor['name']] = module;
     const mappedName = mappingForLayoutTests.get(descriptor['name']);
     if (mappedName !== undefined) {
-      this._modulesMap[mappedName] = module;
+      this.modulesMap[mappedName] = module;
     }
   }
 
   loadModulePromise(moduleName: string): Promise<boolean> {
-    return this._modulesMap[moduleName]._loadPromise();
+    return this.modulesMap[moduleName].loadPromise();
   }
 
   loadAutoStartModules(moduleNames: string[]): Promise<boolean[]> {
@@ -229,6 +227,10 @@ export class Runtime {
       promises.push(this.loadModulePromise(moduleName));
     }
     return Promise.all(promises);
+  }
+
+  getModulesMap(): {[x: string]: Module} {
+    return this.modulesMap;
   }
 }
 
@@ -257,28 +259,28 @@ function computeContainingFolderName(name: string): string {
 }
 
 export class Module {
-  _manager: Runtime;
-  _descriptor: ModuleDescriptor;
-  _name: string;
-  _loadedForTest: boolean;
-  _pendingLoadPromise?: Promise<boolean>;
+  private readonly manager: Runtime;
+  readonly descriptor: ModuleDescriptor;
+  private readonly nameInternal: string;
+  private loadedForTest: boolean;
+  private pendingLoadPromise?: Promise<boolean>;
   constructor(manager: Runtime, descriptor: ModuleDescriptor) {
-    this._manager = manager;
-    this._descriptor = descriptor;
-    this._name = descriptor.name;
-    this._loadedForTest = false;
+    this.manager = manager;
+    this.descriptor = descriptor;
+    this.nameInternal = descriptor.name;
+    this.loadedForTest = false;
   }
 
   name(): string {
-    return this._name;
+    return this.nameInternal;
   }
 
   enabled(): boolean {
-    return Runtime.isDescriptorEnabled(this._descriptor);
+    return Runtime.isDescriptorEnabled(this.descriptor);
   }
 
   resource(name: string): string {
-    const fullName = this._name + '/' + name;
+    const fullName = this.nameInternal + '/' + name;
     const content = cachedResources.get(fullName);
     if (!content) {
       throw new Error(fullName + ' not preloaded. Check module.json');
@@ -286,31 +288,31 @@ export class Module {
     return content;
   }
 
-  _loadPromise(): Promise<boolean> {
+  loadPromise(): Promise<boolean> {
     if (!this.enabled()) {
-      return Promise.reject(new Error('Module ' + this._name + ' is not enabled'));
+      return Promise.reject(new Error('Module ' + this.nameInternal + ' is not enabled'));
     }
 
-    if (this._pendingLoadPromise) {
-      return this._pendingLoadPromise;
+    if (this.pendingLoadPromise) {
+      return this.pendingLoadPromise;
     }
 
-    const dependencies = this._descriptor.dependencies;
+    const dependencies = this.descriptor.dependencies;
     const dependencyPromises = [];
     for (let i = 0; dependencies && i < dependencies.length; ++i) {
-      dependencyPromises.push(this._manager._modulesMap[dependencies[i]]._loadPromise());
+      dependencyPromises.push(this.manager.getModulesMap()[dependencies[i]].loadPromise());
     }
 
-    this._pendingLoadPromise = Promise.all(dependencyPromises).then(this._loadModules.bind(this)).then(() => {
-      this._loadedForTest = true;
-      return this._loadedForTest;
+    this.pendingLoadPromise = Promise.all(dependencyPromises).then(this.loadModules.bind(this)).then(() => {
+      this.loadedForTest = true;
+      return this.loadedForTest;
     });
 
-    return this._pendingLoadPromise;
+    return this.pendingLoadPromise;
   }
 
-  async _loadModules(): Promise<void> {
-    const containingFolderName = computeContainingFolderName(this._name);
+  private async loadModules(): Promise<void> {
+    const containingFolderName = computeContainingFolderName(this.nameInternal);
 
     const moduleFileName = `${containingFolderName}_module.js`;
     const entrypointFileName = `${containingFolderName}.js`;
@@ -318,19 +320,19 @@ export class Module {
     // If a module has resources, they are part of the `_module.js` files that are generated
     // by `build_release_applications`. These need to be loaded before any other code is
     // loaded, to make sure that the resource content is properly cached in `cachedResources`.
-    if (this._descriptor.modules && this._descriptor.modules.includes(moduleFileName)) {
-      await import(`../../${this._name}/${moduleFileName}`);
+    if (this.descriptor.modules && this.descriptor.modules.includes(moduleFileName)) {
+      await import(`../../${this.nameInternal}/${moduleFileName}`);
     }
 
-    await import(`../../${this._name}/${entrypointFileName}`);
+    await import(`../../${this.nameInternal}/${entrypointFileName}`);
   }
 
-  _modularizeURL(resourceName: string): string {
-    return Runtime.normalizePath(this._name + '/' + resourceName);
+  private modularizeURL(resourceName: string): string {
+    return Runtime.normalizePath(this.nameInternal + '/' + resourceName);
   }
 
   fetchResource(resourceName: string): Promise<string> {
-    const sourceURL = getResourceURL(this._modularizeURL(resourceName));
+    const sourceURL = getResourceURL(this.modularizeURL(resourceName));
     return loadResourcePromise(sourceURL);
   }
 
@@ -338,29 +340,29 @@ export class Module {
     return value.replace(/@url\(([^\)]*?)\)/g, convertURL.bind(this));
 
     function convertURL(this: Module, match: string, url: string): string {
-      return importScriptPathPrefix + this._modularizeURL(url);
+      return importScriptPathPrefix + this.modularizeURL(url);
     }
   }
 }
 
 export class ExperimentsSupport {
-  _experiments: Experiment[];
-  _experimentNames: Set<string>;
-  _enabledTransiently: Set<string>;
-  _enabledByDefault: Set<string>;
-  _serverEnabled: Set<string>;
+  private experiments: Experiment[];
+  private experimentNames: Set<string>;
+  private enabledTransiently: Set<string>;
+  private readonly enabledByDefault: Set<string>;
+  private readonly serverEnabled: Set<string>;
   constructor() {
-    this._experiments = [];
-    this._experimentNames = new Set();
-    this._enabledTransiently = new Set();
-    this._enabledByDefault = new Set();
-    this._serverEnabled = new Set();
+    this.experiments = [];
+    this.experimentNames = new Set();
+    this.enabledTransiently = new Set();
+    this.enabledByDefault = new Set();
+    this.serverEnabled = new Set();
   }
 
   allConfigurableExperiments(): Experiment[] {
     const result = [];
-    for (const experiment of this._experiments) {
-      if (!this._enabledTransiently.has(experiment.name)) {
+    for (const experiment of this.experiments) {
+      if (!this.enabledTransiently.has(experiment.name)) {
         result.push(experiment);
       }
     }
@@ -368,10 +370,10 @@ export class ExperimentsSupport {
   }
 
   enabledExperiments(): Experiment[] {
-    return this._experiments.filter(experiment => experiment.isEnabled());
+    return this.experiments.filter(experiment => experiment.isEnabled());
   }
 
-  _setExperimentsSetting(value: Object): void {
+  private setExperimentsSetting(value: Object): void {
     if (!self.localStorage) {
       return;
     }
@@ -379,88 +381,87 @@ export class ExperimentsSupport {
   }
 
   register(experimentName: string, experimentTitle: string, unstable?: boolean, docLink?: string): void {
-    Runtime._assert(
-        !this._experimentNames.has(experimentName), 'Duplicate registration of experiment ' + experimentName);
-    this._experimentNames.add(experimentName);
-    this._experiments.push(new Experiment(this, experimentName, experimentTitle, Boolean(unstable), docLink ?? ''));
+    Runtime.assert(!this.experimentNames.has(experimentName), 'Duplicate registration of experiment ' + experimentName);
+    this.experimentNames.add(experimentName);
+    this.experiments.push(new Experiment(this, experimentName, experimentTitle, Boolean(unstable), docLink ?? ''));
   }
 
   isEnabled(experimentName: string): boolean {
-    this._checkExperiment(experimentName);
+    this.checkExperiment(experimentName);
     // Check for explicitly disabled experiments first - the code could call setEnable(false) on the experiment enabled
     // by default and we should respect that.
-    if (Runtime._experimentsSetting()[experimentName] === false) {
+    if (Runtime.experimentsSetting()[experimentName] === false) {
       return false;
     }
-    if (this._enabledTransiently.has(experimentName) || this._enabledByDefault.has(experimentName)) {
+    if (this.enabledTransiently.has(experimentName) || this.enabledByDefault.has(experimentName)) {
       return true;
     }
-    if (this._serverEnabled.has(experimentName)) {
+    if (this.serverEnabled.has(experimentName)) {
       return true;
     }
 
-    return Boolean(Runtime._experimentsSetting()[experimentName]);
+    return Boolean(Runtime.experimentsSetting()[experimentName]);
   }
 
   setEnabled(experimentName: string, enabled: boolean): void {
-    this._checkExperiment(experimentName);
-    const experimentsSetting = Runtime._experimentsSetting();
+    this.checkExperiment(experimentName);
+    const experimentsSetting = Runtime.experimentsSetting();
     experimentsSetting[experimentName] = enabled;
-    this._setExperimentsSetting(experimentsSetting);
+    this.setExperimentsSetting(experimentsSetting);
   }
 
   enableExperimentsTransiently(experimentNames: string[]): void {
     for (const experimentName of experimentNames) {
-      this._checkExperiment(experimentName);
-      this._enabledTransiently.add(experimentName);
+      this.checkExperiment(experimentName);
+      this.enabledTransiently.add(experimentName);
     }
   }
 
   enableExperimentsByDefault(experimentNames: string[]): void {
     for (const experimentName of experimentNames) {
-      this._checkExperiment(experimentName);
-      this._enabledByDefault.add(experimentName);
+      this.checkExperiment(experimentName);
+      this.enabledByDefault.add(experimentName);
     }
   }
 
   setServerEnabledExperiments(experimentNames: string[]): void {
     for (const experiment of experimentNames) {
-      this._checkExperiment(experiment);
-      this._serverEnabled.add(experiment);
+      this.checkExperiment(experiment);
+      this.serverEnabled.add(experiment);
     }
   }
 
   enableForTest(experimentName: string): void {
-    this._checkExperiment(experimentName);
-    this._enabledTransiently.add(experimentName);
+    this.checkExperiment(experimentName);
+    this.enabledTransiently.add(experimentName);
   }
 
   clearForTest(): void {
-    this._experiments = [];
-    this._experimentNames.clear();
-    this._enabledTransiently.clear();
-    this._enabledByDefault.clear();
-    this._serverEnabled.clear();
+    this.experiments = [];
+    this.experimentNames.clear();
+    this.enabledTransiently.clear();
+    this.enabledByDefault.clear();
+    this.serverEnabled.clear();
   }
 
   cleanUpStaleExperiments(): void {
-    const experimentsSetting = Runtime._experimentsSetting();
+    const experimentsSetting = Runtime.experimentsSetting();
     const cleanedUpExperimentSetting: {
       [x: string]: boolean,
     } = {};
-    for (const {name: experimentName} of this._experiments) {
+    for (const {name: experimentName} of this.experiments) {
       if (experimentsSetting.hasOwnProperty(experimentName)) {
         const isEnabled = experimentsSetting[experimentName];
-        if (isEnabled || this._enabledByDefault.has(experimentName)) {
+        if (isEnabled || this.enabledByDefault.has(experimentName)) {
           cleanedUpExperimentSetting[experimentName] = isEnabled;
         }
       }
     }
-    this._setExperimentsSetting(cleanedUpExperimentSetting);
+    this.setExperimentsSetting(cleanedUpExperimentSetting);
   }
 
-  _checkExperiment(experimentName: string): void {
-    Runtime._assert(this._experimentNames.has(experimentName), 'Unknown experiment ' + experimentName);
+  private checkExperiment(experimentName: string): void {
+    Runtime.assert(this.experimentNames.has(experimentName), 'Unknown experiment ' + experimentName);
   }
 }
 
@@ -469,21 +470,21 @@ export class Experiment {
   title: string;
   unstable: boolean;
   docLink?: string;
-  _experiments: ExperimentsSupport;
+  private readonly experiments: ExperimentsSupport;
   constructor(experiments: ExperimentsSupport, name: string, title: string, unstable: boolean, docLink: string) {
     this.name = name;
     this.title = title;
     this.unstable = unstable;
     this.docLink = docLink;
-    this._experiments = experiments;
+    this.experiments = experiments;
   }
 
   isEnabled(): boolean {
-    return this._experiments.isEnabled(this.name);
+    return this.experiments.isEnabled(this.name);
   }
 
   setEnabled(enabled: boolean): void {
-    this._experiments.setEnabled(this.name, enabled);
+    this.experiments.setEnabled(this.name, enabled);
   }
 }
 

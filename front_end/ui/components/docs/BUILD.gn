@@ -18,6 +18,7 @@ group("docs") {
     "./expandable_list",
     "./icon_button",
     "./icon_component",
+    "./input",
     "./issue_counter",
     "./issue_link_icon",
     "./layout_pane",

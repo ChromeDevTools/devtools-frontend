@@ -102,7 +102,7 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
         TargetManagerEvents.AvailableTargetsChanged, [...this.targetInfosInternal.values()]);
   }
 
-  private async getParentTargetId(): Promise<string> {
+  async getParentTargetId(): Promise<string> {
     if (!this.parentTargetId) {
       this.parentTargetId = (await this.parentTarget.targetAgent().invoke_getTargetInfo({})).targetInfo.targetId;
     }

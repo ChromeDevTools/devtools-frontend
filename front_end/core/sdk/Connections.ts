@@ -233,6 +233,10 @@ export class ParallelConnection implements ProtocolClient.InspectorBackend.Conne
     this.onDisconnect = onDisconnect;
   }
 
+  getOnDisconnect(): ((arg0: string) => void)|null {
+    return this.onDisconnect;
+  }
+
   sendRawMessage(message: string): void {
     const messageObject = JSON.parse(message);
     // If the message isn't for a specific session, it must be for the root session.
@@ -240,6 +244,10 @@ export class ParallelConnection implements ProtocolClient.InspectorBackend.Conne
       messageObject.sessionId = this.sessionId;
     }
     this.connection.sendRawMessage(JSON.stringify(messageObject));
+  }
+
+  getSessionId(): string {
+    return this.sessionId;
   }
 
   async disconnect(): Promise<void> {

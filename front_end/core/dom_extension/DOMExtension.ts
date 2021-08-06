@@ -36,8 +36,6 @@
 
 // @ts-nocheck This file is not checked by TypeScript Compiler as it has a lot of legacy code.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Platform from '../platform/platform.js';
 
 export function rangeOfWord(

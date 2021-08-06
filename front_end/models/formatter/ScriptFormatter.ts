@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 
@@ -102,29 +100,29 @@ class IdentityFormatterSourceMapping implements FormatterSourceMapping {
 }
 
 class FormatterSourceMappingImpl implements FormatterSourceMapping {
-  _originalLineEndings: number[];
-  _formattedLineEndings: number[];
-  _mapping: FormatMapping;
+  private readonly originalLineEndings: number[];
+  private readonly formattedLineEndings: number[];
+  private readonly mapping: FormatMapping;
 
   constructor(originalLineEndings: number[], formattedLineEndings: number[], mapping: FormatMapping) {
-    this._originalLineEndings = originalLineEndings;
-    this._formattedLineEndings = formattedLineEndings;
-    this._mapping = mapping;
+    this.originalLineEndings = originalLineEndings;
+    this.formattedLineEndings = formattedLineEndings;
+    this.mapping = mapping;
   }
 
   originalToFormatted(lineNumber: number, columnNumber?: number): number[] {
-    const originalPosition = locationToPosition(this._originalLineEndings, lineNumber, columnNumber || 0);
-    const formattedPosition = this._convertPosition(this._mapping.original, this._mapping.formatted, originalPosition);
-    return positionToLocation(this._formattedLineEndings, formattedPosition);
+    const originalPosition = locationToPosition(this.originalLineEndings, lineNumber, columnNumber || 0);
+    const formattedPosition = this.convertPosition(this.mapping.original, this.mapping.formatted, originalPosition);
+    return positionToLocation(this.formattedLineEndings, formattedPosition);
   }
 
   formattedToOriginal(lineNumber: number, columnNumber?: number): number[] {
-    const formattedPosition = locationToPosition(this._formattedLineEndings, lineNumber, columnNumber || 0);
-    const originalPosition = this._convertPosition(this._mapping.formatted, this._mapping.original, formattedPosition);
-    return positionToLocation(this._originalLineEndings, originalPosition);
+    const formattedPosition = locationToPosition(this.formattedLineEndings, lineNumber, columnNumber || 0);
+    const originalPosition = this.convertPosition(this.mapping.formatted, this.mapping.original, formattedPosition);
+    return positionToLocation(this.originalLineEndings, originalPosition);
   }
 
-  _convertPosition(positions1: number[], positions2: number[], position: number): number {
+  private convertPosition(positions1: number[], positions2: number[], position: number): number {
     const index =
         Platform.ArrayUtilities.upperBound(positions1, position, Platform.ArrayUtilities.DEFAULT_COMPARATOR) - 1;
     let convertedPosition: number = positions2[index] + position - positions1[index];

@@ -2,30 +2,28 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Platform from '../../core/platform/platform.js';
 
 import {TextCursor} from './TextCursor.js';
 import {SourceRange, TextRange} from './TextRange.js';
 
 export class Text {
-  _value: string;
-  _lineEndings?: number[];
+  private valueInternal: string;
+  private lineEndingsInternal?: number[];
 
   constructor(value: string) {
-    this._value = value;
+    this.valueInternal = value;
   }
 
   lineEndings(): number[] {
-    if (!this._lineEndings) {
-      this._lineEndings = Platform.StringUtilities.findLineEndingIndexes(this._value);
+    if (!this.lineEndingsInternal) {
+      this.lineEndingsInternal = Platform.StringUtilities.findLineEndingIndexes(this.valueInternal);
     }
-    return this._lineEndings;
+    return this.lineEndingsInternal;
   }
 
   value(): string {
-    return this._value;
+    return this.valueInternal;
   }
 
   lineCount(): number {
@@ -48,7 +46,7 @@ export class Text {
     const lineEndings = this.lineEndings();
     const lineStart = lineNumber > 0 ? lineEndings[lineNumber - 1] + 1 : 0;
     const lineEnd = lineEndings[lineNumber];
-    let lineContent = this._value.substring(lineStart, lineEnd);
+    let lineContent = this.valueInternal.substring(lineStart, lineEnd);
     if (lineContent.length > 0 && lineContent.charAt(lineContent.length - 1) === '\r') {
       lineContent = lineContent.substring(0, lineContent.length - 1);
     }
@@ -77,13 +75,13 @@ export class Text {
 
   replaceRange(range: TextRange, replacement: string): string {
     const sourceRange = this.toSourceRange(range);
-    return this._value.substring(0, sourceRange.offset) + replacement +
-        this._value.substring(sourceRange.offset + sourceRange.length);
+    return this.valueInternal.substring(0, sourceRange.offset) + replacement +
+        this.valueInternal.substring(sourceRange.offset + sourceRange.length);
   }
 
   extract(range: TextRange): string {
     const sourceRange = this.toSourceRange(range);
-    return this._value.substr(sourceRange.offset, sourceRange.length);
+    return this.valueInternal.substr(sourceRange.offset, sourceRange.length);
   }
 }
 export interface Position {

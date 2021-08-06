@@ -2,47 +2,50 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Platform from '../../core/platform/platform.js';
 
 export class TextCursor {
-  _lineEndings: number[];
-  _offset: number;
-  _lineNumber: number;
-  _columnNumber: number;
+  private lineEndings: number[];
+  private offsetInternal: number;
+  private lineNumberInternal: number;
+  private columnNumberInternal: number;
 
   constructor(lineEndings: number[]) {
-    this._lineEndings = lineEndings;
-    this._offset = 0;
-    this._lineNumber = 0;
-    this._columnNumber = 0;
+    this.lineEndings = lineEndings;
+    this.offsetInternal = 0;
+    this.lineNumberInternal = 0;
+    this.columnNumberInternal = 0;
   }
 
   advance(offset: number): void {
-    this._offset = offset;
-    while (this._lineNumber < this._lineEndings.length && this._lineEndings[this._lineNumber] < this._offset) {
-      ++this._lineNumber;
+    this.offsetInternal = offset;
+    while (this.lineNumberInternal < this.lineEndings.length &&
+           this.lineEndings[this.lineNumberInternal] < this.offsetInternal) {
+      ++this.lineNumberInternal;
     }
-    this._columnNumber = this._lineNumber ? this._offset - this._lineEndings[this._lineNumber - 1] - 1 : this._offset;
+    this.columnNumberInternal = this.lineNumberInternal ?
+        this.offsetInternal - this.lineEndings[this.lineNumberInternal - 1] - 1 :
+        this.offsetInternal;
   }
 
   offset(): number {
-    return this._offset;
+    return this.offsetInternal;
   }
 
   resetTo(offset: number): void {
-    this._offset = offset;
-    this._lineNumber =
-        Platform.ArrayUtilities.lowerBound(this._lineEndings, offset, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
-    this._columnNumber = this._lineNumber ? this._offset - this._lineEndings[this._lineNumber - 1] - 1 : this._offset;
+    this.offsetInternal = offset;
+    this.lineNumberInternal =
+        Platform.ArrayUtilities.lowerBound(this.lineEndings, offset, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
+    this.columnNumberInternal = this.lineNumberInternal ?
+        this.offsetInternal - this.lineEndings[this.lineNumberInternal - 1] - 1 :
+        this.offsetInternal;
   }
 
   lineNumber(): number {
-    return this._lineNumber;
+    return this.lineNumberInternal;
   }
 
   columnNumber(): number {
-    return this._columnNumber;
+    return this.columnNumberInternal;
   }
 }

@@ -2,23 +2,21 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as Common from '../../core/common/common.js';
 
 import type {ContentProvider, DeferredContent, SearchMatch} from './ContentProvider.js';
 import {performSearchInContent} from './TextUtils.js';
 
 export class StaticContentProvider implements ContentProvider {
-  _contentURL: string;
-  _contentType: Common.ResourceType.ResourceType;
-  _lazyContent: () => Promise<DeferredContent>;
+  private readonly contentURLInternal: string;
+  private readonly contentTypeInternal: Common.ResourceType.ResourceType;
+  private readonly lazyContent: () => Promise<DeferredContent>;
 
   constructor(
       contentURL: string, contentType: Common.ResourceType.ResourceType, lazyContent: () => Promise<DeferredContent>) {
-    this._contentURL = contentURL;
-    this._contentType = contentType;
-    this._lazyContent = lazyContent;
+    this.contentURLInternal = contentURL;
+    this.contentTypeInternal = contentType;
+    this.lazyContent = lazyContent;
   }
 
   static fromString(contentURL: string, contentType: Common.ResourceType.ResourceType, content: string):
@@ -31,11 +29,11 @@ export class StaticContentProvider implements ContentProvider {
   }
 
   contentURL(): string {
-    return this._contentURL;
+    return this.contentURLInternal;
   }
 
   contentType(): Common.ResourceType.ResourceType {
-    return this._contentType;
+    return this.contentTypeInternal;
   }
 
   contentEncoded(): Promise<boolean> {
@@ -43,11 +41,11 @@ export class StaticContentProvider implements ContentProvider {
   }
 
   requestContent(): Promise<DeferredContent> {
-    return this._lazyContent();
+    return this.lazyContent();
   }
 
   async searchInContent(query: string, caseSensitive: boolean, isRegex: boolean): Promise<SearchMatch[]> {
-    const {content} = (await this._lazyContent() as {
+    const {content} = (await this.lazyContent() as {
       content: string,
       isEncoded: boolean,
     });

@@ -17,7 +17,7 @@ class MockRemoteObject extends SDK.RemoteObject.LocalJSONObject {
   }
 
   arrayBufferByteLength() {
-    return this._value.byteLength;
+    return this.value.byteLength;
   }
 
   get subtype(): string|undefined {

@@ -114,7 +114,7 @@ function dumpObjectPropertyTreeElement(treeElement) {
   for (const child of treeElement.children()) {
     const property = /** @type {!ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement} */ (child).property;
     const key = property.name;
-    const value = /** @type {!SDK.RemoteObject.RemoteObjectImpl} */ (property.value)._description;
+    const value = /** @type {!SDK.RemoteObject.RemoteObjectImpl} */ (property.value).description;
     TestRunner.addResult('    ' + key + ': ' + value);
   }
 }

@@ -11,14 +11,14 @@ describe('NodeURL', () => {
   describe('platform detection for paths', () => {
     it('works correctly on windows', () => {
       const isWindows = true;
-      assert.isTrue(ProtocolClient.NodeURL.NodeURL._isPlatformPath('c:\\prog\\foobar.js', isWindows));
-      assert.isFalse(ProtocolClient.NodeURL.NodeURL._isPlatformPath('/usr/local/foobar.js', isWindows));
+      assert.isTrue(ProtocolClient.NodeURL.NodeURL.isPlatformPath('c:\\prog\\foobar.js', isWindows));
+      assert.isFalse(ProtocolClient.NodeURL.NodeURL.isPlatformPath('/usr/local/foobar.js', isWindows));
     });
 
     it('works correctly on linux', () => {
       const isWindows = false;
-      assert.isFalse(ProtocolClient.NodeURL.NodeURL._isPlatformPath('c:\\prog\\foobar.js', isWindows));
-      assert.isTrue(ProtocolClient.NodeURL.NodeURL._isPlatformPath('/usr/local/foobar.js', isWindows));
+      assert.isFalse(ProtocolClient.NodeURL.NodeURL.isPlatformPath('c:\\prog\\foobar.js', isWindows));
+      assert.isTrue(ProtocolClient.NodeURL.NodeURL.isPlatformPath('/usr/local/foobar.js', isWindows));
     });
   });
 

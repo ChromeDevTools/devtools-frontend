@@ -402,7 +402,7 @@
       test.releaseControl();
     }
 
-    this.addSniffer(SDK.NetworkDispatcher.prototype, '_finishNetworkRequest', finishRequest);
+    this.addSniffer(SDK.NetworkDispatcher.prototype, 'finishNetworkRequest', finishRequest);
 
     // Reload inspected page to sniff network events
     test.evaluateInConsole_('window.location.reload(true);', function(resultText) {});
@@ -421,7 +421,7 @@
       test.releaseControl();
     }
 
-    this.addSniffer(SDK.NetworkDispatcher.prototype, '_finishNetworkRequest', finishRequest);
+    this.addSniffer(SDK.NetworkDispatcher.prototype, 'finishNetworkRequest', finishRequest);
 
     // Send synchronous XHR to sniff network events
     test.evaluateInConsole_(
@@ -446,7 +446,7 @@
       test.releaseControl();
     }
 
-    this.addSniffer(SDK.NetworkDispatcher.prototype, '_finishNetworkRequest', finishRequest);
+    this.addSniffer(SDK.NetworkDispatcher.prototype, 'finishNetworkRequest', finishRequest);
 
     // Reload inspected page to sniff network events
     test.evaluateInConsole_('window.location.reload(true);', function(resultText) {});
@@ -481,7 +481,7 @@
       test.releaseControl();
     }
 
-    this.addSniffer(SDK.NetworkDispatcher.prototype, '_finishNetworkRequest', finishRequest);
+    this.addSniffer(SDK.NetworkDispatcher.prototype, 'finishNetworkRequest', finishRequest);
 
     // Reload inspected page to sniff network events
     test.evaluateInConsole_('window.location.reload(true);', function(resultText) {});
@@ -514,7 +514,7 @@
       }
     }
 
-    this.addSniffer(SDK.NetworkDispatcher.prototype, '_finishNetworkRequest', finishRequest, true);
+    this.addSniffer(SDK.NetworkDispatcher.prototype, 'finishNetworkRequest', finishRequest, true);
 
     test.evaluateInConsole_('addImage(\'' + url + '\')', function(resultText) {});
     test.evaluateInConsole_('addImage(\'' + url + '?pushUseNullEndTime\')', function(resultText) {});
@@ -886,7 +886,7 @@
       test.releaseControl();
     }
 
-    this.addSniffer(SDK.NetworkDispatcher.prototype, '_finishNetworkRequest', finishRequest);
+    this.addSniffer(SDK.NetworkDispatcher.prototype, 'finishNetworkRequest', finishRequest);
 
     // Allow more time for this test as it needs to reload the inspected page.
     test.takeControl({slownessFactor: 10});

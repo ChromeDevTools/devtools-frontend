@@ -225,9 +225,11 @@ const knownIdentifierTypes = [
   'DOM.BackendNodeId',
   'DOM.NodeId',
   'Fetch.RequestId',
+  'Media.PlayerId',
   'Network.InterceptionId',
   'Network.LoaderId',
   'Network.RequestId',
+  'WebAudio.GraphObjectId',
   'WebAuthn.AuthenticatorId',
 ];
 

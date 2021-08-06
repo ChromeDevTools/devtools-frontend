@@ -114,7 +114,8 @@ export class WebAudioModel extends SDK.SDKModel.SDKModel implements ProtocolProx
         Events.NodeParamDisconnected, {contextId, sourceId, destinationId, sourceOutputIndex});
   }
 
-  async requestRealtimeData(contextId: string): Promise<Protocol.WebAudio.ContextRealtimeData|null> {
+  async requestRealtimeData(contextId: Protocol.WebAudio.GraphObjectId):
+      Promise<Protocol.WebAudio.ContextRealtimeData|null> {
     const realtimeResponse = await this._agent.invoke_getRealtimeData({contextId});
     return realtimeResponse.realtimeData;
   }

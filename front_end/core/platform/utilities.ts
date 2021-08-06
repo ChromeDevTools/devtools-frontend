@@ -36,7 +36,6 @@
  * extensions but in the mean time if an old func in here depends on one
  * that has been migrated, it will need to be imported.
  */
-/* eslint-disable rulesdir/no_underscored_properties */
 
 import {caseInsensetiveComparator, regexSpecialCharacters, sprintf} from './string-utilities.js';
 

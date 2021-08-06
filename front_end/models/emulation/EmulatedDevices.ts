@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-/* eslint-disable rulesdir/no_underscored_properties, @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -29,6 +29,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('models/emulation/EmulatedDevices.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+
 export class EmulatedDevice {
   title: string;
   type: string;
@@ -43,8 +44,8 @@ export class EmulatedDevice {
   isDualScreen: boolean;
   verticalSpanned: Orientation;
   horizontalSpanned: Orientation;
-  _show: string;
-  _showByDefault: boolean;
+  private showInternal: string;
+  private showByDefault: boolean;
 
   constructor() {
     this.title = '';
@@ -61,8 +62,8 @@ export class EmulatedDevice {
     this.verticalSpanned = {width: 0, height: 0, outlineInsets: null, outlineImage: null, hinge: null};
     this.horizontalSpanned = {width: 0, height: 0, outlineInsets: null, outlineImage: null, hinge: null};
 
-    this._show = _Show.Default;
-    this._showByDefault = true;
+    this.showInternal = _Show.Default;
+    this.showByDefault = true;
   }
 
   static fromJSONV1(json: any): EmulatedDevice|null {
@@ -245,8 +246,8 @@ export class EmulatedDevice {
         mode.image = (parseValue(modes[i], 'image', 'string', null) as string);
         result.modes.push(mode);
       }
-      result._showByDefault = (parseValue(json, 'show-by-default', 'boolean', undefined) as boolean);
-      result._show = (parseValue(json, 'show', 'string', _Show.Default) as string);
+      result.showByDefault = (parseValue(json, 'show-by-default', 'boolean', undefined) as boolean);
+      result.showInternal = (parseValue(json, 'show', 'string', _Show.Default) as string);
 
       return result;
     } catch (e) {
@@ -302,7 +303,7 @@ export class EmulatedDevice {
     }
   }
 
-  _toJSON(): any {
+  toJSON(): any {
     const json = {} as any;
     json['title'] = this.title;
     json['type'] = this.type;
@@ -311,8 +312,8 @@ export class EmulatedDevice {
 
     json['screen'] = {
       'device-pixel-ratio': this.deviceScaleFactor,
-      vertical: this._orientationToJSON(this.vertical),
-      horizontal: this._orientationToJSON(this.horizontal),
+      vertical: this.orientationToJSON(this.vertical),
+      horizontal: this.orientationToJSON(this.horizontal),
       'vertical-spanned': undefined,
       'horizontal-spanned': undefined,
     } as {
@@ -324,8 +325,8 @@ export class EmulatedDevice {
     };
 
     if (this.isDualScreen) {
-      json['screen']['vertical-spanned'] = this._orientationToJSON(this.verticalSpanned);
-      json['screen']['horizontal-spanned'] = this._orientationToJSON(this.horizontalSpanned);
+      json['screen']['vertical-spanned'] = this.orientationToJSON(this.verticalSpanned);
+      json['screen']['horizontal-spanned'] = this.orientationToJSON(this.horizontalSpanned);
     }
 
     json['modes'] = [] as JSONMode[];
@@ -344,9 +345,9 @@ export class EmulatedDevice {
       json['modes'].push(mode);
     }
 
-    json['show-by-default'] = this._showByDefault;
+    json['show-by-default'] = this.showByDefault;
     json['dual-screen'] = this.isDualScreen;
-    json['show'] = this._show;
+    json['show'] = this.showInternal;
 
     if (this.userAgentMetadata) {
       json['user-agent-metadata'] = this.userAgentMetadata;
@@ -355,7 +356,7 @@ export class EmulatedDevice {
     return json;
   }
 
-  _orientationToJSON(orientation: Orientation): any {
+  private orientationToJSON(orientation: Orientation): any {
     const json = {} as any;
     json['width'] = orientation.width;
     json['height'] = orientation.height;
@@ -435,18 +436,18 @@ export class EmulatedDevice {
     }
   }
   show(): boolean {
-    if (this._show === _Show.Default) {
-      return this._showByDefault;
+    if (this.showInternal === _Show.Default) {
+      return this.showByDefault;
     }
-    return this._show === _Show.Always;
+    return this.showInternal === _Show.Always;
   }
 
   setShow(show: boolean): void {
-    this._show = show ? _Show.Always : _Show.Never;
+    this.showInternal = show ? _Show.Always : _Show.Never;
   }
 
   copyShowFrom(other: EmulatedDevice): void {
-    this._show = other._show;
+    this.showInternal = other.showInternal;
   }
 
   touch(): boolean {
@@ -489,21 +490,21 @@ export const _Show = {
 let _instance: EmulatedDevicesList;
 
 export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper {
-  _standardSetting: Common.Settings.Setting<any[]>;
-  _standard: Set<EmulatedDevice>;
-  _customSetting: Common.Settings.Setting<any[]>;
-  _custom: Set<EmulatedDevice>;
+  private readonly standardSetting: Common.Settings.Setting<any[]>;
+  private standardInternal: Set<EmulatedDevice>;
+  private readonly customSetting: Common.Settings.Setting<any[]>;
+  private readonly customInternal: Set<EmulatedDevice>;
   constructor() {
     super();
 
-    this._standardSetting = Common.Settings.Settings.instance().createSetting('standardEmulatedDeviceList', []);
-    this._standard = new Set();
-    this._listFromJSONV1(this._standardSetting.get(), this._standard);
-    this._updateStandardDevices();
+    this.standardSetting = Common.Settings.Settings.instance().createSetting('standardEmulatedDeviceList', []);
+    this.standardInternal = new Set();
+    this.listFromJSONV1(this.standardSetting.get(), this.standardInternal);
+    this.updateStandardDevices();
 
-    this._customSetting = Common.Settings.Settings.instance().createSetting('customEmulatedDeviceList', []);
-    this._custom = new Set();
-    if (!this._listFromJSONV1(this._customSetting.get(), this._custom)) {
+    this.customSetting = Common.Settings.Settings.instance().createSetting('customEmulatedDeviceList', []);
+    this.customInternal = new Set();
+    if (!this.listFromJSONV1(this.customSetting.get(), this.customInternal)) {
       this.saveCustomDevices();
     }
   }
@@ -515,7 +516,7 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper {
     return _instance;
   }
 
-  _updateStandardDevices(): void {
+  private updateStandardDevices(): void {
     const devices = new Set<EmulatedDevice>();
     for (const extension of emulatedDevices) {
       const device = EmulatedDevice.fromJSONV1(extension);
@@ -523,12 +524,12 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper {
         devices.add(device);
       }
     }
-    this._copyShowValues(this._standard, devices);
-    this._standard = devices;
+    this.copyShowValues(this.standardInternal, devices);
+    this.standardInternal = devices;
     this.saveStandardDevices();
   }
 
-  _listFromJSONV1(jsonArray: any[], result: Set<EmulatedDevice>): boolean {
+  private listFromJSONV1(jsonArray: any[], result: Set<EmulatedDevice>): boolean {
     if (!Array.isArray(jsonArray)) {
       return false;
     }
@@ -549,44 +550,44 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   standard(): EmulatedDevice[] {
-    return [...this._standard];
+    return [...this.standardInternal];
   }
 
   custom(): EmulatedDevice[] {
-    return [...this._custom];
+    return [...this.customInternal];
   }
 
   revealCustomSetting(): void {
-    Common.Revealer.reveal(this._customSetting);
+    Common.Revealer.reveal(this.customSetting);
   }
 
   addCustomDevice(device: EmulatedDevice): void {
-    this._custom.add(device);
+    this.customInternal.add(device);
     this.saveCustomDevices();
   }
 
   removeCustomDevice(device: EmulatedDevice): void {
-    this._custom.delete(device);
+    this.customInternal.delete(device);
     this.saveCustomDevices();
   }
 
   saveCustomDevices(): void {
     const json: any[] = [];
-    this._custom.forEach(device => json.push(device._toJSON()));
+    this.customInternal.forEach(device => json.push(device.toJSON()));
 
-    this._customSetting.set(json);
+    this.customSetting.set(json);
     this.dispatchEventToListeners(Events.CustomDevicesUpdated);
   }
 
   saveStandardDevices(): void {
     const json: any[] = [];
-    this._standard.forEach(device => json.push(device._toJSON()));
+    this.standardInternal.forEach(device => json.push(device.toJSON()));
 
-    this._standardSetting.set(json);
+    this.standardSetting.set(json);
     this.dispatchEventToListeners(Events.StandardDevicesUpdated);
   }
 
-  _copyShowValues(from: Set<EmulatedDevice>, to: Set<EmulatedDevice>): void {
+  private copyShowValues(from: Set<EmulatedDevice>, to: Set<EmulatedDevice>): void {
     const fromDeviceById = new Map<string, EmulatedDevice>();
     for (const device of from) {
       fromDeviceById.set(device.title, device);

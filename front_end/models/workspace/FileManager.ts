@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 
@@ -40,16 +38,16 @@ interface SaveCallbackParam {
 }
 
 export class FileManager extends Common.ObjectWrapper.ObjectWrapper {
-  _saveCallbacks: Map<string, (arg0: SaveCallbackParam|null) => void>;
+  private readonly saveCallbacks: Map<string, (arg0: SaveCallbackParam|null) => void>;
   private constructor() {
     super();
-    this._saveCallbacks = new Map();
+    this.saveCallbacks = new Map();
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.SavedURL, this._savedURL, this);
+        Host.InspectorFrontendHostAPI.Events.SavedURL, this.savedURL, this);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.CanceledSaveURL, this._canceledSavedURL, this);
+        Host.InspectorFrontendHostAPI.Events.CanceledSaveURL, this.canceledSavedURL, this);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.AppendedToURL, this._appendedToURL, this);
+        Host.InspectorFrontendHostAPI.Events.AppendedToURL, this.appendedToURL, this);
   }
 
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): FileManager {
@@ -63,24 +61,24 @@ export class FileManager extends Common.ObjectWrapper.ObjectWrapper {
 
   save(url: string, content: string, forceSaveAs: boolean): Promise<SaveCallbackParam|null> {
     // Remove this url from the saved URLs while it is being saved.
-    const result = new Promise<SaveCallbackParam|null>(resolve => this._saveCallbacks.set(url, resolve));
+    const result = new Promise<SaveCallbackParam|null>(resolve => this.saveCallbacks.set(url, resolve));
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.save(url, content, forceSaveAs);
     return result;
   }
 
-  _savedURL(event: Common.EventTarget.EventTargetEvent): void {
+  private savedURL(event: Common.EventTarget.EventTargetEvent): void {
     const url = event.data.url as string;
-    const callback = this._saveCallbacks.get(url);
-    this._saveCallbacks.delete(url);
+    const callback = this.saveCallbacks.get(url);
+    this.saveCallbacks.delete(url);
     if (callback) {
       callback({fileSystemPath: event.data.fileSystemPath as string});
     }
   }
 
-  _canceledSavedURL(event: Common.EventTarget.EventTargetEvent): void {
+  private canceledSavedURL(event: Common.EventTarget.EventTargetEvent): void {
     const url = event.data as string;
-    const callback = this._saveCallbacks.get(url);
-    this._saveCallbacks.delete(url);
+    const callback = this.saveCallbacks.get(url);
+    this.saveCallbacks.delete(url);
     if (callback) {
       callback(null);
     }
@@ -94,7 +92,7 @@ export class FileManager extends Common.ObjectWrapper.ObjectWrapper {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.close(url);
   }
 
-  _appendedToURL(event: Common.EventTarget.EventTargetEvent): void {
+  private appendedToURL(event: Common.EventTarget.EventTargetEvent): void {
     const url = event.data as string;
     this.dispatchEventToListeners(Events.AppendedToURL, url);
   }

@@ -212,7 +212,7 @@ export class PresentationConsoleMessage extends Workspace.UISourceCode.Message {
     if (!uiLocation) {
       return;
     }
-    this._range = TextUtils.TextRange.TextRange.createFromLocation(uiLocation.lineNumber, uiLocation.columnNumber || 0);
+    this.range = TextUtils.TextRange.TextRange.createFromLocation(uiLocation.lineNumber, uiLocation.columnNumber || 0);
     this.uiSourceCode = uiLocation.uiSourceCode;
     this.uiSourceCode.addMessage(this);
   }

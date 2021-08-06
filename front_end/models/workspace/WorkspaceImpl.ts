@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import type * as TextUtils from '../text_utils/text_utils.js';
 
@@ -93,46 +91,46 @@ export enum projectTypes {
 }
 
 export class ProjectStore {
-  _workspace: WorkspaceImpl;
-  _id: string;
-  _type: projectTypes;
-  _displayName: string;
-  _uiSourceCodesMap: Map<string, {
+  private readonly workspaceInternal: WorkspaceImpl;
+  private readonly idInternal: string;
+  private readonly typeInternal: projectTypes;
+  private readonly displayNameInternal: string;
+  private uiSourceCodesMap: Map<string, {
     uiSourceCode: UISourceCode,
     index: number,
   }>;
-  _uiSourceCodesList: UISourceCode[];
-  _project: Project;
+  private uiSourceCodesList: UISourceCode[];
+  private readonly project: Project;
 
   constructor(workspace: WorkspaceImpl, id: string, type: projectTypes, displayName: string) {
-    this._workspace = workspace;
-    this._id = id;
-    this._type = type;
-    this._displayName = displayName;
+    this.workspaceInternal = workspace;
+    this.idInternal = id;
+    this.typeInternal = type;
+    this.displayNameInternal = displayName;
 
-    this._uiSourceCodesMap = new Map();
-    this._uiSourceCodesList = [];
-    this._project = (this as unknown as Project);
+    this.uiSourceCodesMap = new Map();
+    this.uiSourceCodesList = [];
+    this.project = (this as unknown as Project);
   }
 
   id(): string {
-    return this._id;
+    return this.idInternal;
   }
 
   type(): string {
-    return this._type;
+    return this.typeInternal;
   }
 
   displayName(): string {
-    return this._displayName;
+    return this.displayNameInternal;
   }
 
   workspace(): WorkspaceImpl {
-    return this._workspace;
+    return this.workspaceInternal;
   }
 
   createUISourceCode(url: string, contentType: Common.ResourceType.ResourceType): UISourceCode {
-    return new UISourceCode(this._project, url, contentType);
+    return new UISourceCode(this.project, url, contentType);
   }
 
   addUISourceCode(uiSourceCode: UISourceCode): boolean {
@@ -140,9 +138,9 @@ export class ProjectStore {
     if (this.uiSourceCodeForURL(url)) {
       return false;
     }
-    this._uiSourceCodesMap.set(url, {uiSourceCode: uiSourceCode, index: this._uiSourceCodesList.length});
-    this._uiSourceCodesList.push(uiSourceCode);
-    this._workspace.dispatchEventToListeners(Events.UISourceCodeAdded, uiSourceCode);
+    this.uiSourceCodesMap.set(url, {uiSourceCode: uiSourceCode, index: this.uiSourceCodesList.length});
+    this.uiSourceCodesList.push(uiSourceCode);
+    this.workspaceInternal.dispatchEventToListeners(Events.UISourceCodeAdded, uiSourceCode);
     return true;
   }
 
@@ -152,58 +150,58 @@ export class ProjectStore {
       return;
     }
 
-    const entry = this._uiSourceCodesMap.get(url);
+    const entry = this.uiSourceCodesMap.get(url);
     if (!entry) {
       return;
     }
-    const movedUISourceCode = this._uiSourceCodesList[this._uiSourceCodesList.length - 1];
-    this._uiSourceCodesList[entry.index] = movedUISourceCode;
-    const movedEntry = this._uiSourceCodesMap.get(movedUISourceCode.url());
+    const movedUISourceCode = this.uiSourceCodesList[this.uiSourceCodesList.length - 1];
+    this.uiSourceCodesList[entry.index] = movedUISourceCode;
+    const movedEntry = this.uiSourceCodesMap.get(movedUISourceCode.url());
     if (movedEntry) {
       movedEntry.index = entry.index;
     }
-    this._uiSourceCodesList.splice(this._uiSourceCodesList.length - 1, 1);
-    this._uiSourceCodesMap.delete(url);
-    this._workspace.dispatchEventToListeners(Events.UISourceCodeRemoved, entry.uiSourceCode);
+    this.uiSourceCodesList.splice(this.uiSourceCodesList.length - 1, 1);
+    this.uiSourceCodesMap.delete(url);
+    this.workspaceInternal.dispatchEventToListeners(Events.UISourceCodeRemoved, entry.uiSourceCode);
   }
 
   removeProject(): void {
-    this._workspace._removeProject(this._project);
-    this._uiSourceCodesMap = new Map();
-    this._uiSourceCodesList = [];
+    this.workspaceInternal.removeProject(this.project);
+    this.uiSourceCodesMap = new Map();
+    this.uiSourceCodesList = [];
   }
 
   uiSourceCodeForURL(url: string): UISourceCode|null {
-    const entry = this._uiSourceCodesMap.get(url);
+    const entry = this.uiSourceCodesMap.get(url);
     return entry ? entry.uiSourceCode : null;
   }
 
   uiSourceCodes(): UISourceCode[] {
-    return this._uiSourceCodesList;
+    return this.uiSourceCodesList;
   }
 
   renameUISourceCode(uiSourceCode: UISourceCode, newName: string): void {
     const oldPath = uiSourceCode.url();
     const newPath = uiSourceCode.parentURL() ? uiSourceCode.parentURL() + '/' + newName : newName;
-    const value = this._uiSourceCodesMap.get(oldPath) as {
+    const value = this.uiSourceCodesMap.get(oldPath) as {
       uiSourceCode: UISourceCode,
       index: number,
     };
-    this._uiSourceCodesMap.set(newPath, value);
-    this._uiSourceCodesMap.delete(oldPath);
+    this.uiSourceCodesMap.set(newPath, value);
+    this.uiSourceCodesMap.delete(oldPath);
   }
 }
 
 let workspaceInstance: WorkspaceImpl|undefined;
 
 export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper {
-  _projects: Map<string, Project>;
-  _hasResourceContentTrackingExtensions: boolean;
+  private projectsInternal: Map<string, Project>;
+  private hasResourceContentTrackingExtensionsInternal: boolean;
 
   private constructor() {
     super();
-    this._projects = new Map();
-    this._hasResourceContentTrackingExtensions = false;
+    this.projectsInternal = new Map();
+    this.hasResourceContentTrackingExtensionsInternal = false;
   }
 
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): WorkspaceImpl {
@@ -220,12 +218,12 @@ export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   uiSourceCode(projectId: string, url: string): UISourceCode|null {
-    const project = this._projects.get(projectId);
+    const project = this.projectsInternal.get(projectId);
     return project ? project.uiSourceCodeForURL(url) : null;
   }
 
   uiSourceCodeForURL(url: string): UISourceCode|null {
-    for (const project of this._projects.values()) {
+    for (const project of this.projectsInternal.values()) {
       const uiSourceCode = project.uiSourceCodeForURL(url);
       if (uiSourceCode) {
         return uiSourceCode;
@@ -236,7 +234,7 @@ export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper {
 
   uiSourceCodesForProjectType(type: string): UISourceCode[] {
     const result: UISourceCode[] = [];
-    for (const project of this._projects.values()) {
+    for (const project of this.projectsInternal.values()) {
       if (project.type() === type) {
         result.push(...project.uiSourceCodes());
       }
@@ -245,22 +243,22 @@ export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   addProject(project: Project): void {
-    console.assert(!this._projects.has(project.id()), `A project with id ${project.id()} already exists!`);
-    this._projects.set(project.id(), project);
+    console.assert(!this.projectsInternal.has(project.id()), `A project with id ${project.id()} already exists!`);
+    this.projectsInternal.set(project.id(), project);
     this.dispatchEventToListeners(Events.ProjectAdded, project);
   }
 
-  _removeProject(project: Project): void {
-    this._projects.delete(project.id());
+  removeProject(project: Project): void {
+    this.projectsInternal.delete(project.id());
     this.dispatchEventToListeners(Events.ProjectRemoved, project);
   }
 
   project(projectId: string): Project|null {
-    return this._projects.get(projectId) || null;
+    return this.projectsInternal.get(projectId) || null;
   }
 
   projects(): Project[] {
-    return [...this._projects.values()];
+    return [...this.projectsInternal.values()];
   }
 
   projectsForType(type: string): Project[] {
@@ -272,18 +270,18 @@ export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper {
 
   uiSourceCodes(): UISourceCode[] {
     const result: UISourceCode[] = [];
-    for (const project of this._projects.values()) {
+    for (const project of this.projectsInternal.values()) {
       result.push(...project.uiSourceCodes());
     }
     return result;
   }
 
   setHasResourceContentTrackingExtensions(hasExtensions: boolean): void {
-    this._hasResourceContentTrackingExtensions = hasExtensions;
+    this.hasResourceContentTrackingExtensionsInternal = hasExtensions;
   }
 
   hasResourceContentTrackingExtensions(): boolean {
-    return this._hasResourceContentTrackingExtensions;
+    return this.hasResourceContentTrackingExtensionsInternal;
   }
 }
 

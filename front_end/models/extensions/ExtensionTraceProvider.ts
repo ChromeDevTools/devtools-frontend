@@ -2,41 +2,39 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import {ExtensionServer} from './ExtensionServer.js';
 
 export class ExtensionTraceProvider {
-  _extensionOrigin: string;
-  _id: string;
-  _categoryName: string;
-  _categoryTooltip: string;
+  private readonly extensionOrigin: string;
+  private readonly id: string;
+  private readonly categoryName: string;
+  private readonly categoryTooltip: string;
   constructor(extensionOrigin: string, id: string, categoryName: string, categoryTooltip: string) {
-    this._extensionOrigin = extensionOrigin;
-    this._id = id;
-    this._categoryName = categoryName;
-    this._categoryTooltip = categoryTooltip;
+    this.extensionOrigin = extensionOrigin;
+    this.id = id;
+    this.categoryName = categoryName;
+    this.categoryTooltip = categoryTooltip;
   }
 
   start(session: TracingSession): void {
     const sessionId = String(++_lastSessionId);
-    ExtensionServer.instance().startTraceRecording(this._id, sessionId, session);
+    ExtensionServer.instance().startTraceRecording(this.id, sessionId, session);
   }
 
   stop(): void {
-    ExtensionServer.instance().stopTraceRecording(this._id);
+    ExtensionServer.instance().stopTraceRecording(this.id);
   }
 
   shortDisplayName(): string {
-    return this._categoryName;
+    return this.categoryName;
   }
 
   longDisplayName(): string {
-    return this._categoryTooltip;
+    return this.categoryTooltip;
   }
 
   persistentIdentifier(): string {
-    return `${this._extensionOrigin}/${this._categoryName}`;
+    return `${this.extensionOrigin}/${this.categoryName}`;
   }
 }
 

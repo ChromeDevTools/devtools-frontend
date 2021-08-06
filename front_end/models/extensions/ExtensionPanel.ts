@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as _ProtocolClient from '../../core/protocol_client/protocol_client.js';  // eslint-disable-line @typescript-eslint/no-unused-vars
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -38,54 +36,54 @@ import type {ExtensionServer} from './ExtensionServer.js';
 import {ExtensionNotifierView, ExtensionView} from './ExtensionView.js';
 
 export class ExtensionPanel extends UI.Panel.Panel implements UI.SearchableView.Searchable {
-  _server: ExtensionServer;
-  _id: string;
-  _panelToolbar: UI.Toolbar.Toolbar;
-  _searchableView: UI.SearchableView.SearchableView;
+  private readonly server: ExtensionServer;
+  private readonly id: string;
+  private readonly panelToolbar: UI.Toolbar.Toolbar;
+  private readonly searchableViewInternal: UI.SearchableView.SearchableView;
 
   constructor(server: ExtensionServer, panelName: string, id: string, pageURL: string) {
     super(panelName);
-    this._server = server;
-    this._id = id;
+    this.server = server;
+    this.id = id;
     this.setHideOnDetach();
-    this._panelToolbar = new UI.Toolbar.Toolbar('hidden', this.element);
+    this.panelToolbar = new UI.Toolbar.Toolbar('hidden', this.element);
 
-    this._searchableView = new UI.SearchableView.SearchableView(this, null);
-    this._searchableView.show(this.element);
+    this.searchableViewInternal = new UI.SearchableView.SearchableView(this, null);
+    this.searchableViewInternal.show(this.element);
 
-    const extensionView = new ExtensionView(server, this._id, pageURL, 'extension');
-    extensionView.show(this._searchableView.element);
+    const extensionView = new ExtensionView(server, this.id, pageURL, 'extension');
+    extensionView.show(this.searchableViewInternal.element);
   }
 
   addToolbarItem(item: UI.Toolbar.ToolbarItem): void {
-    this._panelToolbar.element.classList.remove('hidden');
-    this._panelToolbar.appendToolbarItem(item);
+    this.panelToolbar.element.classList.remove('hidden');
+    this.panelToolbar.appendToolbarItem(item);
   }
 
   searchCanceled(): void {
     // @ts-expect-error TODO(crbug.com/1011811): Fix after extensionAPI is migrated.
-    this._server.notifySearchAction(this._id, Extensions.extensionAPI.panels.SearchAction.CancelSearch);
-    this._searchableView.updateSearchMatchesCount(0);
+    this.server.notifySearchAction(this.id, Extensions.extensionAPI.panels.SearchAction.CancelSearch);
+    this.searchableViewInternal.updateSearchMatchesCount(0);
   }
 
   searchableView(): UI.SearchableView.SearchableView {
-    return this._searchableView;
+    return this.searchableViewInternal;
   }
 
   performSearch(searchConfig: UI.SearchableView.SearchConfig, _shouldJump: boolean, _jumpBackwards?: boolean): void {
     const query = searchConfig.query;
     // @ts-expect-error TODO(crbug.com/1011811): Fix after extensionAPI is migrated.
-    this._server.notifySearchAction(this._id, Extensions.extensionAPI.panels.SearchAction.PerformSearch, query);
+    this.server.notifySearchAction(this.id, Extensions.extensionAPI.panels.SearchAction.PerformSearch, query);
   }
 
   jumpToNextSearchResult(): void {
     // @ts-expect-error TODO(crbug.com/1011811): Fix after extensionAPI is migrated.
-    this._server.notifySearchAction(this._id, Extensions.extensionAPI.panels.SearchAction.NextSearchResult);
+    this.server.notifySearchAction(this.id, Extensions.extensionAPI.panels.SearchAction.NextSearchResult);
   }
 
   jumpToPreviousSearchResult(): void {
     // @ts-expect-error TODO(crbug.com/1011811): Fix after extensionAPI is migrated.
-    this._server.notifySearchAction(this._id, Extensions.extensionAPI.panels.SearchAction.PreviousSearchResult);
+    this.server.notifySearchAction(this.id, Extensions.extensionAPI.panels.SearchAction.PreviousSearchResult);
   }
 
   supportsCaseSensitiveSearch(): boolean {
@@ -98,80 +96,80 @@ export class ExtensionPanel extends UI.Panel.Panel implements UI.SearchableView.
 }
 
 export class ExtensionButton {
-  _id: string;
-  _toolbarButton: UI.Toolbar.ToolbarButton;
+  private readonly id: string;
+  private readonly toolbarButtonInternal: UI.Toolbar.ToolbarButton;
   constructor(server: ExtensionServer, id: string, iconURL: string, tooltip?: string, disabled?: boolean) {
-    this._id = id;
+    this.id = id;
 
-    this._toolbarButton = new UI.Toolbar.ToolbarButton('', '');
-    this._toolbarButton.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.Click, server.notifyButtonClicked.bind(server, this._id));
+    this.toolbarButtonInternal = new UI.Toolbar.ToolbarButton('', '');
+    this.toolbarButtonInternal.addEventListener(
+        UI.Toolbar.ToolbarButton.Events.Click, server.notifyButtonClicked.bind(server, this.id));
     this.update(iconURL, tooltip, disabled);
   }
 
   update(iconURL?: string, tooltip?: string, disabled?: boolean): void {
     if (typeof iconURL === 'string') {
-      this._toolbarButton.setBackgroundImage(iconURL);
+      this.toolbarButtonInternal.setBackgroundImage(iconURL);
     }
     if (typeof tooltip === 'string') {
-      this._toolbarButton.setTitle(tooltip);
+      this.toolbarButtonInternal.setTitle(tooltip);
     }
     if (typeof disabled === 'boolean') {
-      this._toolbarButton.setEnabled(!disabled);
+      this.toolbarButtonInternal.setEnabled(!disabled);
     }
   }
 
   toolbarButton(): UI.Toolbar.ToolbarButton {
-    return this._toolbarButton;
+    return this.toolbarButtonInternal;
   }
 }
 
 export class ExtensionSidebarPane extends UI.View.SimpleView {
-  _panelName: string;
-  _server: ExtensionServer;
-  _id: string;
-  _extensionView?: ExtensionView;
-  _objectPropertiesView?: ExtensionNotifierView;
+  private readonly panelNameInternal: string;
+  private server: ExtensionServer;
+  private idInternal: string;
+  private extensionView?: ExtensionView;
+  private objectPropertiesView?: ExtensionNotifierView;
   constructor(server: ExtensionServer, panelName: string, title: string, id: string) {
     super(title);
     this.element.classList.add('fill');
-    this._panelName = panelName;
-    this._server = server;
-    this._id = id;
+    this.panelNameInternal = panelName;
+    this.server = server;
+    this.idInternal = id;
   }
 
   id(): string {
-    return this._id;
+    return this.idInternal;
   }
 
   panelName(): string {
-    return this._panelName;
+    return this.panelNameInternal;
   }
 
   setObject(object: Object, title: string|undefined, callback: (arg0?: (string|null)|undefined) => void): void {
-    this._createObjectPropertiesView();
-    this._setObject(SDK.RemoteObject.RemoteObject.fromLocalObject(object), title, callback);
+    this.createObjectPropertiesView();
+    this.setObjectInternal(SDK.RemoteObject.RemoteObject.fromLocalObject(object), title, callback);
   }
 
   setExpression(
       expression: string, title: string|undefined, evaluateOptions: Object|undefined, securityOrigin: string,
       callback: (arg0?: (string|null)|undefined) => void): void {
-    this._createObjectPropertiesView();
-    this._server.evaluate(
-        expression, true, false, evaluateOptions, securityOrigin, this._onEvaluate.bind(this, title, callback));
+    this.createObjectPropertiesView();
+    this.server.evaluate(
+        expression, true, false, evaluateOptions, securityOrigin, this.onEvaluate.bind(this, title, callback));
   }
 
   setPage(url: string): void {
-    if (this._objectPropertiesView) {
-      this._objectPropertiesView.detach();
-      delete this._objectPropertiesView;
+    if (this.objectPropertiesView) {
+      this.objectPropertiesView.detach();
+      delete this.objectPropertiesView;
     }
-    if (this._extensionView) {
-      this._extensionView.detach(true);
+    if (this.extensionView) {
+      this.extensionView.detach(true);
     }
 
-    this._extensionView = new ExtensionView(this._server, this._id, url, 'extension fill');
-    this._extensionView.show(this.element);
+    this.extensionView = new ExtensionView(this.server, this.idInternal, url, 'extension fill');
+    this.extensionView.show(this.element);
 
     if (!this.element.style.height) {
       this.setHeight('150px');
@@ -182,7 +180,7 @@ export class ExtensionSidebarPane extends UI.View.SimpleView {
     this.element.style.height = height;
   }
 
-  _onEvaluate(
+  private onEvaluate(
       title: string|undefined, callback: (arg0?: (string|null)|undefined) => void, error: string|null,
       result: SDK.RemoteObject.RemoteObject|null, _wasThrown?: boolean): void {
     if (error) {
@@ -190,26 +188,26 @@ export class ExtensionSidebarPane extends UI.View.SimpleView {
     } else if (!result) {
       callback();
     } else {
-      this._setObject(result, title, callback);
+      this.setObject(result, title, callback);
     }
   }
 
-  _createObjectPropertiesView(): void {
-    if (this._objectPropertiesView) {
+  private createObjectPropertiesView(): void {
+    if (this.objectPropertiesView) {
       return;
     }
-    if (this._extensionView) {
-      this._extensionView.detach(true);
-      delete this._extensionView;
+    if (this.extensionView) {
+      this.extensionView.detach(true);
+      delete this.extensionView;
     }
-    this._objectPropertiesView = new ExtensionNotifierView(this._server, this._id);
-    this._objectPropertiesView.show(this.element);
+    this.objectPropertiesView = new ExtensionNotifierView(this.server, this.idInternal);
+    this.objectPropertiesView.show(this.element);
   }
 
-  _setObject(
+  private setObjectInternal(
       object: SDK.RemoteObject.RemoteObject, title: string|undefined,
       callback: (arg0?: (string|null)|undefined) => void): void {
-    const objectPropertiesView = this._objectPropertiesView;
+    const objectPropertiesView = this.objectPropertiesView;
     // This may only happen if setPage() was called while we were evaluating the expression.
     if (!objectPropertiesView) {
       callback('operation cancelled');

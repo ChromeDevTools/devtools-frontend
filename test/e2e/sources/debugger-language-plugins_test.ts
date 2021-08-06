@@ -31,12 +31,11 @@ describe('The Debugger Language Plugins', async () => {
       globalThis.installExtensionPlugin = function(
           registerPluginCallback: (extensionServerClient: unknown, extensionAPI: unknown) => void) {
         const extensionServer = globalThis.Extensions.ExtensionServer.instance();
-        /** @type {!{startPage: string, name: string}} */
         const extensionInfo = {
           startPage: `${resourcePath}/sources/language_extensions.html`,
           name: 'TestExtension',
         };
-        extensionServer._addExtension(extensionInfo);
+        extensionServer.addExtension(extensionInfo);
 
         const extensionIFrames = document.body.querySelectorAll(`[data-devtools-extension="${extensionInfo.name}"]`);
         const injectedAPI = globalThis.buildExtensionAPIInjectedScript(

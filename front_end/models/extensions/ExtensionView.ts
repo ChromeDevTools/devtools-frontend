@@ -28,75 +28,73 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type {ExtensionServer} from './ExtensionServer.js';
 
 export class ExtensionView extends UI.Widget.Widget {
-  _server: ExtensionServer;
-  _id: string;
-  _iframe: HTMLIFrameElement;
-  _frameIndex?: number;
+  private readonly server: ExtensionServer;
+  private readonly id: string;
+  private iframe: HTMLIFrameElement;
+  private frameIndex?: number;
   constructor(server: ExtensionServer, id: string, src: string, className: string) {
     super();
     this.setHideOnDetach();
     this.element.className = 'vbox flex-auto';  // Override
 
-    // TODO(crbug.com/872438): remove once we can use this._iframe instead
+    // TODO(crbug.com/872438): remove once we can use this.iframe instead
     this.element.tabIndex = -1;
 
-    this._server = server;
-    this._id = id;
-    this._iframe = document.createElement('iframe');
-    this._iframe.addEventListener('load', this._onLoad.bind(this), false);
-    this._iframe.src = src;
-    this._iframe.className = className;
+    this.server = server;
+    this.id = id;
+    this.iframe = document.createElement('iframe');
+    this.iframe.addEventListener('load', this.onLoad.bind(this), false);
+    this.iframe.src = src;
+    this.iframe.className = className;
 
-    // TODO(crbug.com/872438): make this._iframe the default focused element
+    // TODO(crbug.com/872438): make this.iframe the default focused element
     this.setDefaultFocusedElement(this.element);
 
-    this.element.appendChild(this._iframe);
+    this.element.appendChild(this.iframe);
   }
 
   wasShown(): void {
     super.wasShown();
-    if (typeof this._frameIndex === 'number') {
-      this._server.notifyViewShown(this._id, this._frameIndex);
+    if (typeof this.frameIndex === 'number') {
+      this.server.notifyViewShown(this.id, this.frameIndex);
     }
   }
 
   willHide(): void {
-    if (typeof this._frameIndex === 'number') {
-      this._server.notifyViewHidden(this._id);
+    if (typeof this.frameIndex === 'number') {
+      this.server.notifyViewHidden(this.id);
     }
   }
 
-  _onLoad(): void {
+  private onLoad(): void {
     const frames = window.frames;
-    this._frameIndex = Array.prototype.indexOf.call(frames, this._iframe.contentWindow);
+    this.frameIndex = Array.prototype.indexOf.call(frames, this.iframe.contentWindow);
     if (this.isShowing()) {
-      this._server.notifyViewShown(this._id, this._frameIndex);
+      this.server.notifyViewShown(this.id, this.frameIndex);
     }
   }
 }
 
 export class ExtensionNotifierView extends UI.Widget.VBox {
-  _server: ExtensionServer;
-  _id: string;
+  private readonly server: ExtensionServer;
+  private readonly id: string;
   constructor(server: ExtensionServer, id: string) {
     super();
 
-    this._server = server;
-    this._id = id;
+    this.server = server;
+    this.id = id;
   }
 
   wasShown(): void {
-    this._server.notifyViewShown(this._id);
+    this.server.notifyViewShown(this.id);
   }
 
   willHide(): void {
-    this._server.notifyViewHidden(this._id);
+    this.server.notifyViewHidden(this.id);
   }
 }

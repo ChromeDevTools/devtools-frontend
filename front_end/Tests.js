@@ -1606,7 +1606,7 @@
    * @param {function():void} callback
    */
   TestSuite.prototype._waitForScriptPause = function(callback) {
-    this.addSniffer(SDK.DebuggerModel.prototype, '_pausedScript', callback);
+    this.addSniffer(SDK.DebuggerModel.prototype, 'pausedScript', callback);
   };
 
   /**

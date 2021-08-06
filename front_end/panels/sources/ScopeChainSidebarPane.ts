@@ -306,7 +306,7 @@ export class OpenLinearMemoryInspector extends UI.Widget.VBox implements UI.Cont
       const valueNode = /** @type {!Bindings.DebuggerLanguagePlugins.ValueNode} */ obj;
       address = valueNode.inspectableAddress || 0;
       const callFrame = valueNode.callFrame;
-      const response = await obj.debuggerModel()._agent.invoke_evaluateOnCallFrame({
+      const response = await obj.debuggerModel().agent.invoke_evaluateOnCallFrame({
         callFrameId: callFrame.id,
         expression: 'memories[0]',
       });

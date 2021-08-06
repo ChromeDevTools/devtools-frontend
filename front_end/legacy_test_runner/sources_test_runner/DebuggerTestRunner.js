@@ -15,8 +15,8 @@ SourcesTestRunner.startDebuggerTest = function(callback, quiet) {
   }
 
   self.UI.viewManager.showView('sources');
-  TestRunner.addSniffer(SDK.DebuggerModel.prototype, '_pausedScript', SourcesTestRunner._pausedScript, true);
-  TestRunner.addSniffer(SDK.DebuggerModel.prototype, '_resumedScript', SourcesTestRunner._resumedScript, true);
+  TestRunner.addSniffer(SDK.DebuggerModel.prototype, 'pausedScript', SourcesTestRunner._pausedScript, true);
+  TestRunner.addSniffer(SDK.DebuggerModel.prototype, 'resumedScript', SourcesTestRunner._resumedScript, true);
   TestRunner.safeWrap(callback)();
 };
 

@@ -5,10 +5,10 @@
  */
 
 .protocol-monitor {
-  --override-data-grid-sent-message-row-background-color: hsl(281deg 64% 95%);
+  --override-data-grid-sent-message-row-background-color: rgb(240 246 255);
 }
 
-.-theme-with-dark-background .protocol-monitor,
+.-theme-with-dark-background .protocola-monitor,
 :host-context(.-theme-with-dark-background) .protocol-monitor {
-  --override-data-grid-sent-message-row-background-color: rgb(44 0 64);
+  --override-data-grid-sent-message-row-background-color: rgb(43 46 56);
 }

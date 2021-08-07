@@ -2,30 +2,28 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import accessibilityPropertiesStyles from './accessibilityProperties.css.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 export class AccessibilitySubPane extends UI.View.SimpleView {
-  _axNode: SDK.AccessibilityModel.AccessibilityNode|null;
-  _node?: SDK.DOMModel.DOMNode|null;
+  axNode: SDK.AccessibilityModel.AccessibilityNode|null;
+  protected nodeInternal?: SDK.DOMModel.DOMNode|null;
   constructor(name: string) {
     super(name);
 
-    this._axNode = null;
+    this.axNode = null;
   }
 
   setAXNode(_axNode: SDK.AccessibilityModel.AccessibilityNode|null): void {
   }
 
   node(): SDK.DOMModel.DOMNode|null {
-    return this._node || null;
+    return this.nodeInternal || null;
   }
 
   setNode(node: SDK.DOMModel.DOMNode|null): void {
-    this._node = node;
+    this.nodeInternal = node;
   }
 
   createInfo(textContent: string, className?: string): Element {

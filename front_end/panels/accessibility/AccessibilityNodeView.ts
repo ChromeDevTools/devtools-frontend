@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -115,57 +113,57 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/accessibility/AccessibilityNodeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AXNodeSubPane extends AccessibilitySubPane {
-  _axNode: SDK.AccessibilityModel.AccessibilityNode|null;
-  _noNodeInfo: Element;
-  _ignoredInfo: Element;
-  _treeOutline: UI.TreeOutline.TreeOutline;
-  _ignoredReasonsTree: UI.TreeOutline.TreeOutline;
+  axNode: SDK.AccessibilityModel.AccessibilityNode|null;
+  private readonly noNodeInfo: Element;
+  private readonly ignoredInfo: Element;
+  private readonly treeOutline: UI.TreeOutline.TreeOutline;
+  private readonly ignoredReasonsTree: UI.TreeOutline.TreeOutline;
   constructor() {
     super(i18nString(UIStrings.computedProperties));
 
-    this._axNode = null;
+    this.axNode = null;
 
     this.contentElement.classList.add('ax-subpane');
 
-    this._noNodeInfo = this.createInfo(i18nString(UIStrings.noAccessibilityNode));
-    this._ignoredInfo = this.createInfo(i18nString(UIStrings.accessibilityNodeNotExposed), 'ax-ignored-info hidden');
+    this.noNodeInfo = this.createInfo(i18nString(UIStrings.noAccessibilityNode));
+    this.ignoredInfo = this.createInfo(i18nString(UIStrings.accessibilityNodeNotExposed), 'ax-ignored-info hidden');
 
-    this._treeOutline = this.createTreeOutline();
-    this._ignoredReasonsTree = this.createTreeOutline();
+    this.treeOutline = this.createTreeOutline();
+    this.ignoredReasonsTree = this.createTreeOutline();
 
     this.element.classList.add('accessibility-computed');
 
-    this._treeOutline.setFocusable(true);
+    this.treeOutline.setFocusable(true);
   }
 
   setAXNode(axNode: SDK.AccessibilityModel.AccessibilityNode|null): void {
-    if (this._axNode === axNode) {
+    if (this.axNode === axNode) {
       return;
     }
-    this._axNode = axNode;
+    this.axNode = axNode;
 
-    const treeOutline = this._treeOutline;
+    const treeOutline = this.treeOutline;
     treeOutline.removeChildren();
-    const ignoredReasons = this._ignoredReasonsTree;
+    const ignoredReasons = this.ignoredReasonsTree;
     ignoredReasons.removeChildren();
 
     if (!axNode) {
       treeOutline.element.classList.add('hidden');
-      this._ignoredInfo.classList.add('hidden');
+      this.ignoredInfo.classList.add('hidden');
       ignoredReasons.element.classList.add('hidden');
 
-      this._noNodeInfo.classList.remove('hidden');
+      this.noNodeInfo.classList.remove('hidden');
       this.element.classList.add('ax-ignored-node-pane');
 
       return;
     }
 
     if (axNode.ignored()) {
-      this._noNodeInfo.classList.add('hidden');
+      this.noNodeInfo.classList.add('hidden');
       treeOutline.element.classList.add('hidden');
       this.element.classList.add('ax-ignored-node-pane');
 
-      this._ignoredInfo.classList.remove('hidden');
+      this.ignoredInfo.classList.remove('hidden');
       ignoredReasons.element.classList.remove('hidden');
       function addIgnoredReason(property: Protocol.Accessibility.AXProperty): void {
         ignoredReasons.appendChild(
@@ -182,9 +180,9 @@ export class AXNodeSubPane extends AccessibilitySubPane {
     }
     this.element.classList.remove('ax-ignored-node-pane');
 
-    this._ignoredInfo.classList.add('hidden');
+    this.ignoredInfo.classList.add('hidden');
     ignoredReasons.element.classList.add('hidden');
-    this._noNodeInfo.classList.add('hidden');
+    this.noNodeInfo.classList.add('hidden');
 
     treeOutline.element.classList.remove('hidden');
 
@@ -218,7 +216,7 @@ export class AXNodeSubPane extends AccessibilitySubPane {
 
   setNode(node: SDK.DOMModel.DOMNode|null): void {
     super.setNode(node);
-    this._axNode = null;
+    this.axNode = null;
   }
   wasShown(): void {
     super.wasShown();
@@ -227,11 +225,11 @@ export class AXNodeSubPane extends AccessibilitySubPane {
 }
 
 export class AXNodePropertyTreeElement extends UI.TreeOutline.TreeElement {
-  _axNode: SDK.AccessibilityModel.AccessibilityNode;
+  protected axNode: SDK.AccessibilityModel.AccessibilityNode;
   constructor(axNode: SDK.AccessibilityModel.AccessibilityNode) {
     // Pass an empty title, the title gets made later in onattach.
     super('');
-    this._axNode = axNode;
+    this.axNode = axNode;
   }
 
   static createSimpleValueElement(type: Protocol.Accessibility.AXValueType|null, value: string): Element {
@@ -298,7 +296,7 @@ export class AXNodePropertyTreeElement extends UI.TreeOutline.TreeElement {
       const sources = value.sources;
       for (let i = 0; i < sources.length; i++) {
         const source = sources[i];
-        const child = new AXValueSourceTreeElement(source, this._axNode);
+        const child = new AXValueSourceTreeElement(source, this.axNode);
         this.appendChild(child);
       }
       this.expand();
@@ -309,7 +307,7 @@ export class AXNodePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
   appendRelatedNode(relatedNode: Protocol.Accessibility.AXRelatedNode, _index: number): void {
     const deferredNode =
-        new SDK.DOMModel.DeferredDOMNode(this._axNode.accessibilityModel().target(), relatedNode.backendDOMNodeId);
+        new SDK.DOMModel.DeferredDOMNode(this.axNode.accessibilityModel().target(), relatedNode.backendDOMNodeId);
     const nodeTreeElement =
         new AXRelatedNodeSourceTreeElement({deferredNode: deferredNode, idref: undefined}, relatedNode);
     this.appendChild(nodeTreeElement);
@@ -317,7 +315,7 @@ export class AXNodePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
   appendRelatedNodeInline(relatedNode: Protocol.Accessibility.AXRelatedNode): void {
     const deferredNode =
-        new SDK.DOMModel.DeferredDOMNode(this._axNode.accessibilityModel().target(), relatedNode.backendDOMNodeId);
+        new SDK.DOMModel.DeferredDOMNode(this.axNode.accessibilityModel().target(), relatedNode.backendDOMNodeId);
     const linkedNode = new AXRelatedNodeElement({deferredNode: deferredNode, idref: undefined}, relatedNode);
     this.listItemElement.appendChild(linkedNode.render());
   }
@@ -365,47 +363,47 @@ export const StringProperties = new Set<Protocol.Accessibility.AXValueType>([
 ]);
 
 export class AXNodePropertyTreePropertyElement extends AXNodePropertyTreeElement {
-  _property: SDK.AccessibilityModel.CoreOrProtocolAxProperty;
+  private readonly property: SDK.AccessibilityModel.CoreOrProtocolAxProperty;
   toggleOnClick: boolean;
   constructor(
       property: SDK.AccessibilityModel.CoreOrProtocolAxProperty, axNode: SDK.AccessibilityModel.AccessibilityNode) {
     super(axNode);
 
-    this._property = property;
+    this.property = property;
     this.toggleOnClick = true;
 
     this.listItemElement.classList.add('property');
   }
 
   onattach(): void {
-    this._update();
+    this.update();
   }
 
-  _update(): void {
+  private update(): void {
     this.listItemElement.removeChildren();
 
-    this.appendNameElement(this._property.name);
+    this.appendNameElement(this.property.name);
 
     this.listItemElement.createChild('span', 'separator').textContent = ':\xA0';
 
-    this.appendValueElement(this._property.value);
+    this.appendValueElement(this.property.value);
   }
 }
 
 export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
-  _source: Protocol.Accessibility.AXValueSource;
+  private readonly source: Protocol.Accessibility.AXValueSource;
   constructor(source: Protocol.Accessibility.AXValueSource, axNode: SDK.AccessibilityModel.AccessibilityNode) {
     super(axNode);
-    this._source = source;
+    this.source = source;
   }
 
   onattach(): void {
-    this._update();
+    this.update();
   }
 
   appendRelatedNodeWithIdref(relatedNode: Protocol.Accessibility.AXRelatedNode, idref: string): void {
     const deferredNode =
-        new SDK.DOMModel.DeferredDOMNode(this._axNode.accessibilityModel().target(), relatedNode.backendDOMNodeId);
+        new SDK.DOMModel.DeferredDOMNode(this.axNode.accessibilityModel().target(), relatedNode.backendDOMNodeId);
     const nodeTreeElement = new AXRelatedNodeSourceTreeElement({deferredNode: deferredNode, idref: idref}, relatedNode);
     this.appendChild(nodeTreeElement);
   }
@@ -494,32 +492,32 @@ export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
     this.listItemElement.appendChild(nameElement);
   }
 
-  _update(): void {
+  private update(): void {
     this.listItemElement.removeChildren();
 
-    if (this._source.invalid) {
+    if (this.source.invalid) {
       const exclamationMark = AXNodePropertyTreeElement.createExclamationMark(i18nString(UIStrings.invalidSource));
       this.listItemElement.appendChild(exclamationMark);
       this.listItemElement.classList.add('ax-value-source-invalid');
-    } else if (this._source.superseded) {
+    } else if (this.source.superseded) {
       this.listItemElement.classList.add('ax-value-source-unused');
     }
 
-    this.appendSourceNameElement(this._source);
+    this.appendSourceNameElement(this.source);
 
     this.listItemElement.createChild('span', 'separator').textContent = ':\xA0';
 
-    if (this._source.attributeValue) {
-      this.appendValueElement(this._source.attributeValue);
+    if (this.source.attributeValue) {
+      this.appendValueElement(this.source.attributeValue);
       UI.UIUtils.createTextChild(this.listItemElement, '\xA0');
-    } else if (this._source.nativeSourceValue) {
-      this.appendValueElement(this._source.nativeSourceValue);
+    } else if (this.source.nativeSourceValue) {
+      this.appendValueElement(this.source.nativeSourceValue);
       UI.UIUtils.createTextChild(this.listItemElement, '\xA0');
-      if (this._source.value) {
-        this.appendValueElement(this._source.value);
+      if (this.source.value) {
+        this.appendValueElement(this.source.value);
       }
-    } else if (this._source.value) {
-      this.appendValueElement(this._source.value);
+    } else if (this.source.value) {
+      this.appendValueElement(this.source.value);
     } else {
       const valueElement = AXNodePropertyTreeElement.createSimpleValueElement(
           Protocol.Accessibility.AXValueType.ValueUndefined, i18nString(UIStrings.notSpecified));
@@ -527,15 +525,15 @@ export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
       this.listItemElement.classList.add('ax-value-source-unused');
     }
 
-    if (this._source.value && this._source.superseded) {
+    if (this.source.value && this.source.superseded) {
       this.listItemElement.classList.add('ax-value-source-superseded');
     }
   }
 }
 
 export class AXRelatedNodeSourceTreeElement extends UI.TreeOutline.TreeElement {
-  _value: Protocol.Accessibility.AXRelatedNode|undefined;
-  _axRelatedNodeElement: AXRelatedNodeElement;
+  private value: Protocol.Accessibility.AXRelatedNode|undefined;
+  private readonly axRelatedNodeElement: AXRelatedNodeElement;
 
   constructor(
       node: {
@@ -545,58 +543,58 @@ export class AXRelatedNodeSourceTreeElement extends UI.TreeOutline.TreeElement {
       value?: Protocol.Accessibility.AXRelatedNode) {
     super('');
 
-    this._value = value;
-    this._axRelatedNodeElement = new AXRelatedNodeElement(node, value);
+    this.value = value;
+    this.axRelatedNodeElement = new AXRelatedNodeElement(node, value);
     this.selectable = true;
   }
 
   onattach(): void {
-    this.listItemElement.appendChild(this._axRelatedNodeElement.render());
-    if (!this._value) {
+    this.listItemElement.appendChild(this.axRelatedNodeElement.render());
+    if (!this.value) {
       return;
     }
 
-    if (this._value.text) {
+    if (this.value.text) {
       this.listItemElement.appendChild(AXNodePropertyTreeElement.createSimpleValueElement(
-          Protocol.Accessibility.AXValueType.ComputedString, this._value.text));
+          Protocol.Accessibility.AXValueType.ComputedString, this.value.text));
     }
   }
 
   onenter(): boolean {
-    this._axRelatedNodeElement.revealNode();
+    this.axRelatedNodeElement.revealNode();
     return true;
   }
 }
 
 export class AXRelatedNodeElement {
-  _deferredNode: SDK.DOMModel.DeferredDOMNode|undefined;
-  _idref: string|undefined;
-  _value: Protocol.Accessibility.AXRelatedNode|undefined;
+  private readonly deferredNode: SDK.DOMModel.DeferredDOMNode|undefined;
+  private readonly idref: string|undefined;
+  private readonly value: Protocol.Accessibility.AXRelatedNode|undefined;
   constructor(
       node: {
         deferredNode?: SDK.DOMModel.DeferredDOMNode,
         idref?: string,
       },
       value?: Protocol.Accessibility.AXRelatedNode) {
-    this._deferredNode = node.deferredNode;
-    this._idref = node.idref;
-    this._value = value;
+    this.deferredNode = node.deferredNode;
+    this.idref = node.idref;
+    this.value = value;
   }
 
   render(): Element {
     const element = document.createElement('span');
 
-    if (this._deferredNode) {
+    if (this.deferredNode) {
       const valueElement = document.createElement('span');
       element.appendChild(valueElement);
-      this._deferredNode.resolvePromise().then(node => {
+      this.deferredNode.resolvePromise().then(node => {
         Common.Linkifier.Linkifier.linkify(node, {tooltip: undefined, preventKeyboardFocus: true})
             .then(linkfied => valueElement.appendChild(linkfied));
       });
-    } else if (this._idref) {
+    } else if (this.idref) {
       element.classList.add('invalid');
       const valueElement = AXNodePropertyTreeElement.createExclamationMark(i18nString(UIStrings.noNodeWithThisId));
-      UI.UIUtils.createTextChild(valueElement, this._idref);
+      UI.UIUtils.createTextChild(valueElement, this.idref);
       element.appendChild(valueElement);
     }
 
@@ -607,22 +605,21 @@ export class AXRelatedNodeElement {
    * Attempts to cause the node referred to by the related node to be selected in the tree.
    */
   revealNode(): void {
-    if (this._deferredNode) {
-      this._deferredNode.resolvePromise().then(node => Common.Revealer.reveal(node));
+    if (this.deferredNode) {
+      this.deferredNode.resolvePromise().then(node => Common.Revealer.reveal(node));
     }
   }
 }
 
 export class AXNodeIgnoredReasonTreeElement extends AXNodePropertyTreeElement {
-  _property: Protocol.Accessibility.AXProperty;
-  _axNode: SDK.AccessibilityModel.AccessibilityNode;
+  private property: Protocol.Accessibility.AXProperty;
   toggleOnClick: boolean;
-  _reasonElement?: Element|null;
+  private reasonElement?: Element|null;
 
   constructor(property: Protocol.Accessibility.AXProperty, axNode: SDK.AccessibilityModel.AccessibilityNode) {
     super(axNode);
-    this._property = property;
-    this._axNode = axNode;
+    this.property = property;
+    this.axNode = axNode;
     this.toggleOnClick = true;
     this.selectable = false;
   }
@@ -698,12 +695,12 @@ export class AXNodeIgnoredReasonTreeElement extends AXNodePropertyTreeElement {
   onattach(): void {
     this.listItemElement.removeChildren();
 
-    this._reasonElement = AXNodeIgnoredReasonTreeElement.createReasonElement(this._property.name, this._axNode);
-    if (this._reasonElement) {
-      this.listItemElement.appendChild(this._reasonElement);
+    this.reasonElement = AXNodeIgnoredReasonTreeElement.createReasonElement(this.property.name, this.axNode);
+    if (this.reasonElement) {
+      this.listItemElement.appendChild(this.reasonElement);
     }
 
-    const value = this._property.value;
+    const value = this.property.value;
     if (value.type === Protocol.Accessibility.AXValueType.Idref) {
       this.appendRelatedNodeListValueElement(value);
     }

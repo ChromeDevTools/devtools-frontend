@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as ARIAProperties from '../../generated/ARIAProperties.js';
 export interface AttributeConfig {
   name: string;
@@ -19,18 +17,18 @@ export interface Config {
 }
 
 export class ARIAMetadata {
-  _attributes: Map<string, Attribute>;
-  _roleNames: string[];
+  private readonly attributes: Map<string, Attribute>;
+  private roleNames: string[];
   constructor(config: Config|null) {
-    this._attributes = new Map();
-    this._roleNames = [];
+    this.attributes = new Map();
+    this.roleNames = [];
 
     if (config) {
-      this._initialize(config);
+      this.initialize(config);
     }
   }
 
-  _initialize(config: Config): void {
+  private initialize(config: Config): void {
     const attributes = config['attributes'];
 
     const booleanEnum = ['true', 'false'];
@@ -38,21 +36,21 @@ export class ARIAMetadata {
       if (attributeConfig.type === 'boolean') {
         attributeConfig.enum = booleanEnum;
       }
-      this._attributes.set(attributeConfig.name, new Attribute(attributeConfig));
+      this.attributes.set(attributeConfig.name, new Attribute(attributeConfig));
     }
 
     /** @type {!Array<string>} */
-    this._roleNames = config['roles'].map(roleConfig => roleConfig.name);
+    this.roleNames = config['roles'].map(roleConfig => roleConfig.name);
   }
 
   valuesForProperty(property: string): string[] {
-    const attribute = this._attributes.get(property);
+    const attribute = this.attributes.get(property);
     if (attribute) {
       return attribute.getEnum();
     }
 
     if (property === 'role') {
-      return this._roleNames;
+      return this.roleNames;
     }
 
     return [];
@@ -69,16 +67,16 @@ export function ariaMetadata(): ARIAMetadata {
 }
 
 export class Attribute {
-  _enum: string[];
+  private readonly enum: string[];
   constructor(config: AttributeConfig) {
-    this._enum = [];
+    this.enum = [];
 
     if (config.enum) {
-      this._enum = config.enum;
+      this.enum = config.enum;
     }
   }
 
   getEnum(): string[] {
-    return this._enum;
+    return this.enum;
   }
 }

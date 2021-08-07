@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as Workspace from '../workspace/workspace.js';
 
 export interface LiveLocation {
@@ -14,31 +12,31 @@ export interface LiveLocation {
 }
 
 export class LiveLocationWithPool implements LiveLocation {
-  _updateDelegate: ((arg0: LiveLocation) => Promise<void>)|null;
-  _locationPool: LiveLocationPool;
-  _updatePromise: Promise<void>|null;
+  private updateDelegate: ((arg0: LiveLocation) => Promise<void>)|null;
+  private readonly locationPool: LiveLocationPool;
+  private updatePromise: Promise<void>|null;
 
   constructor(updateDelegate: (arg0: LiveLocation) => Promise<void>, locationPool: LiveLocationPool) {
-    this._updateDelegate = updateDelegate;
-    this._locationPool = locationPool;
-    this._locationPool._add(this);
+    this.updateDelegate = updateDelegate;
+    this.locationPool = locationPool;
+    this.locationPool.add(this);
 
-    this._updatePromise = null;
+    this.updatePromise = null;
   }
 
   async update(): Promise<void> {
-    if (!this._updateDelegate) {
+    if (!this.updateDelegate) {
       return;
     }
     // The following is a basic scheduling algorithm, guaranteeing that
-    // {_updateDelegate} is always run atomically. That is, we always
+    // {updateDelegate} is always run atomically. That is, we always
     // wait for an update to finish before we trigger the next run.
-    if (this._updatePromise) {
-      await this._updatePromise.then(() => this.update());
+    if (this.updatePromise) {
+      await this.updatePromise.then(() => this.update());
     } else {
-      this._updatePromise = this._updateDelegate(this);
-      await this._updatePromise;
-      this._updatePromise = null;
+      this.updatePromise = this.updateDelegate(this);
+      await this.updatePromise;
+      this.updatePromise = null;
     }
   }
 
@@ -47,8 +45,8 @@ export class LiveLocationWithPool implements LiveLocation {
   }
 
   dispose(): void {
-    this._locationPool._delete(this);
-    this._updateDelegate = null;
+    this.locationPool.delete(this);
+    this.updateDelegate = null;
   }
 
   async isIgnoreListed(): Promise<boolean> {
@@ -57,22 +55,22 @@ export class LiveLocationWithPool implements LiveLocation {
 }
 
 export class LiveLocationPool {
-  _locations: Set<LiveLocation>;
+  private readonly locations: Set<LiveLocation>;
 
   constructor() {
-    this._locations = new Set();
+    this.locations = new Set();
   }
 
-  _add(location: LiveLocation): void {
-    this._locations.add(location);
+  add(location: LiveLocation): void {
+    this.locations.add(location);
   }
 
-  _delete(location: LiveLocation): void {
-    this._locations.delete(location);
+  delete(location: LiveLocation): void {
+    this.locations.delete(location);
   }
 
   disposeAll(): void {
-    for (const location of this._locations) {
+    for (const location of this.locations) {
       location.dispose();
     }
   }

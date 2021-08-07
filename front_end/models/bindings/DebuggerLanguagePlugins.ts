@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -319,13 +317,13 @@ async function formatSourceValue(
 // StaticallyTypedValueNodes. The class hooks into the creation of RemoteObjects for properties to check whether a
 // property is a marker.
 class FormattedValueNode extends ValueNode {
-  _plugin: DebuggerLanguagePlugin;
-  _sourceType: SourceType;
+  private readonly plugin: DebuggerLanguagePlugin;
+  private readonly sourceType: SourceType;
   formatterTag: {
     className: string,
     symbol: string,
   }|null;
-  _evalOptions: SDK.RuntimeModel.EvaluationOptions;
+  private readonly evalOptions: SDK.RuntimeModel.EvaluationOptions;
   constructor(
       callFrame: SDK.DebuggerModel.CallFrame, sourceType: SourceType, plugin: DebuggerLanguagePlugin,
       object: Protocol.Runtime.RemoteObject, formatterTag: {
@@ -337,13 +335,13 @@ class FormattedValueNode extends ValueNode {
         callFrame, object.objectId, object.type, object.subtype, object.value, inspectableAddress,
         object.unserializableValue, object.description, object.preview, object.customPreview, object.className);
 
-    this._plugin = plugin;
-    this._sourceType = sourceType;
+    this.plugin = plugin;
+    this.sourceType = sourceType;
 
     // The tag describes how to identify a marker by its className and its identifier symbol's object id.
     this.formatterTag = formatterTag;
 
-    this._evalOptions = evalOptions;
+    this.evalOptions = evalOptions;
   }
 
   async findProperties(...properties: string[]): Promise<{
@@ -368,33 +366,33 @@ class FormattedValueNode extends ValueNode {
   async createRemoteObject(newObject: Protocol.Runtime.RemoteObject):
       Promise<FormattedValueNode|StaticallyTypedValueNode> {
     // Check if the property RemoteObject is a marker
-    const base = await this._getEvalBaseFromObject(newObject);
+    const base = await this.getEvalBaseFromObject(newObject);
     if (!base) {
       return new FormattedValueNode(
-          this.callFrame, this._sourceType, this._plugin, newObject, this.formatterTag, this._evalOptions, undefined);
+          this.callFrame, this.sourceType, this.plugin, newObject, this.formatterTag, this.evalOptions, undefined);
     }
 
     // Property is a marker, check if it's just static type information or if we need to run formatters for the value.
-    const newSourceType = this._sourceType.typeMap.get(base.rootType.typeId);
+    const newSourceType = this.sourceType.typeMap.get(base.rootType.typeId);
     if (!newSourceType) {
       throw new Error('Unknown typeId in eval base');
     }
     // The marker refers to a value that needs to be formatted, so run the formatter.
     if (base.rootType.hasValue && !base.rootType.canExpand && base) {
-      return formatSourceValue(this.callFrame, this._plugin, newSourceType, base, [], this._evalOptions);
+      return formatSourceValue(this.callFrame, this.plugin, newSourceType, base, [], this.evalOptions);
     }
 
     // The marker is just static information, so start a new subtree with a static type info root.
     const address =
-        await StaticallyTypedValueNode.getInspectableAddress(this.callFrame, this._plugin, base, [], this._evalOptions);
+        await StaticallyTypedValueNode.getInspectableAddress(this.callFrame, this.plugin, base, [], this.evalOptions);
     return new StaticallyTypedValueNode(
-        this.callFrame, this._plugin, newSourceType, base, [], this._evalOptions, address);
+        this.callFrame, this.plugin, newSourceType, base, [], this.evalOptions, address);
   }
 
   /**
    * Check whether an object is a marker and if so return the EvalBase it contains.
    */
-  async _getEvalBaseFromObject(object: Protocol.Runtime.RemoteObject): Promise<Chrome.DevTools.EvalBase|null> {
+  private async getEvalBaseFromObject(object: Protocol.Runtime.RemoteObject): Promise<Chrome.DevTools.EvalBase|null> {
     const {objectId} = object;
     if (!object || !this.formatterTag) {
       return null;
@@ -416,8 +414,8 @@ class FormattedValueNode extends ValueNode {
 
     // The object is a marker, so pull the static type information from its symbol property. The symbol property is not
     // a formatted value per se, but we wrap it as one to be able to call `findProperties`.
-    const baseObject = new FormattedValueNode(
-        this.callFrame, this._sourceType, this._plugin, result, null, this._evalOptions, undefined);
+    const baseObject =
+        new FormattedValueNode(this.callFrame, this.sourceType, this.plugin, result, null, this.evalOptions, undefined);
     const {payload, rootType} = await baseObject.findProperties('payload', 'rootType');
     if (typeof payload === 'undefined' || typeof rootType === 'undefined') {
       return null;
@@ -428,7 +426,7 @@ class FormattedValueNode extends ValueNode {
       return null;
     }
 
-    const newSourceType = this._sourceType.typeMap.get(typeId.value);
+    const newSourceType = this.sourceType.typeMap.get(typeId.value);
     if (!newSourceType) {
       return null;
     }
@@ -465,12 +463,12 @@ class FormattingError extends Error {
 // latter is necessary to express navigating through type members. We don't know how to make sense of an `EvalBase`'s
 // payload here, which is why member navigation is relayed to the formatter via the `fieldChain`.
 class StaticallyTypedValueNode extends ValueNode {
-  _variableType: string;
-  _plugin: DebuggerLanguagePlugin;
-  _sourceType: SourceType;
-  _base: Chrome.DevTools.EvalBase|null;
-  _fieldChain: Chrome.DevTools.FieldInfo[];
-  _evalOptions: SDK.RuntimeModel.EvaluationOptions;
+  private readonly variableType: string;
+  private readonly plugin: DebuggerLanguagePlugin;
+  private readonly sourceType: SourceType;
+  private readonly base: Chrome.DevTools.EvalBase|null;
+  private readonly fieldChain: Chrome.DevTools.FieldInfo[];
+  private readonly evalOptions: SDK.RuntimeModel.EvaluationOptions;
 
   constructor(
       callFrame: SDK.DebuggerModel.CallFrame, plugin: DebuggerLanguagePlugin, sourceType: SourceType,
@@ -484,29 +482,29 @@ class StaticallyTypedValueNode extends ValueNode {
         /* type=*/ variableType,
         /* subtype=*/ undefined, /* value=*/ null, inspectableAddress, /* unserializableValue=*/ undefined,
         /* description=*/ typeName, /* preview=*/ undefined, /* customPreview=*/ undefined, /* className=*/ typeName);
-    this._variableType = variableType;
-    this._plugin = plugin;
-    this._sourceType = sourceType;
-    this._base = base;
-    this._fieldChain = fieldChain;
+    this.variableType = variableType;
+    this.plugin = plugin;
+    this.sourceType = sourceType;
+    this.base = base;
+    this.fieldChain = fieldChain;
     this.hasChildrenInternal = true;
-    this._evalOptions = evalOptions;
+    this.evalOptions = evalOptions;
   }
 
   get type(): string {
-    return this._variableType;
+    return this.variableType;
   }
 
-  async _expandMember(sourceType: SourceType, fieldInfo: Chrome.DevTools.FieldInfo):
+  private async expandMember(sourceType: SourceType, fieldInfo: Chrome.DevTools.FieldInfo):
       Promise<SDK.RemoteObject.RemoteObject> {
-    const fieldChain = this._fieldChain.concat(fieldInfo);
-    if (sourceType.typeInfo.hasValue && !sourceType.typeInfo.canExpand && this._base) {
-      return formatSourceValue(this.callFrame, this._plugin, sourceType, this._base, fieldChain, this._evalOptions);
+    const fieldChain = this.fieldChain.concat(fieldInfo);
+    if (sourceType.typeInfo.hasValue && !sourceType.typeInfo.canExpand && this.base) {
+      return formatSourceValue(this.callFrame, this.plugin, sourceType, this.base, fieldChain, this.evalOptions);
     }
 
     const address = this.inspectableAddress !== undefined ? this.inspectableAddress + fieldInfo.offset : undefined;
     return new StaticallyTypedValueNode(
-        this.callFrame, this._plugin, sourceType, this._base, fieldChain, this._evalOptions, address);
+        this.callFrame, this.plugin, sourceType, this.base, fieldChain, this.evalOptions, address);
   }
 
   static async getInspectableAddress(
@@ -553,7 +551,7 @@ class StaticallyTypedValueNode extends ValueNode {
 
   async doGetProperties(_ownProperties: boolean, accessorPropertiesOnly: boolean, _generatePreview: boolean):
       Promise<SDK.RemoteObject.GetPropertiesResult> {
-    const {typeInfo} = this._sourceType;
+    const {typeInfo} = this.sourceType;
     if (accessorPropertiesOnly || !typeInfo.canExpand) {
       return {properties: [], internalProperties: []} as SDK.RemoteObject.GetPropertiesResult;
     }
@@ -561,14 +559,14 @@ class StaticallyTypedValueNode extends ValueNode {
     if (typeInfo.members.length > 0) {
       // This value doesn't have a formatter, but we can eagerly expand arrays in the frontend if the size is known.
       if (typeInfo.arraySize > 0) {
-        const {typeId} = this._sourceType.typeInfo.members[0];
+        const {typeId} = this.sourceType.typeInfo.members[0];
         const properties: SDK.RemoteObject.RemoteObjectProperty[] = [];
-        const elementTypeInfo = this._sourceType.members[0];
+        const elementTypeInfo = this.sourceType.members[0];
         for (let i = 0; i < typeInfo.arraySize; ++i) {
           const name = `${i}`;
           const elementField = {name, typeId, offset: elementTypeInfo.typeInfo.size * i};
           properties.push(new SDK.RemoteObject.RemoteObjectProperty(
-              name, await this._expandMember(elementTypeInfo, elementField), /* enumerable=*/ false,
+              name, await this.expandMember(elementTypeInfo, elementField), /* enumerable=*/ false,
               /* writable=*/ false,
               /* isOwn=*/ true,
               /* wasThrown=*/ false));
@@ -577,9 +575,9 @@ class StaticallyTypedValueNode extends ValueNode {
       }
 
       // The node is expanded, just make remote objects for its members
-      const members = Promise.all(this._sourceType.members.map(async (memberTypeInfo, idx) => {
-        const fieldInfo = this._sourceType.typeInfo.members[idx];
-        const propertyObject = await this._expandMember(memberTypeInfo, fieldInfo);
+      const members = Promise.all(this.sourceType.members.map(async (memberTypeInfo, idx) => {
+        const fieldInfo = this.sourceType.typeInfo.members[idx];
+        const propertyObject = await this.expandMember(memberTypeInfo, fieldInfo);
         const name = fieldInfo.name || '';
         return new SDK.RemoteObject.RemoteObjectProperty(
             name, propertyObject, /* enumerable=*/ false, /* writable=*/ false, /* isOwn=*/ true,
@@ -610,17 +608,17 @@ class NamespaceObject extends SDK.RemoteObject.LocalJSONObject {
 
 class SourceScopeRemoteObject extends SDK.RemoteObject.RemoteObjectImpl {
   variables: Chrome.DevTools.Variable[];
-  _callFrame: SDK.DebuggerModel.CallFrame;
-  _plugin: DebuggerLanguagePlugin;
-  _location: Chrome.DevTools.RawLocation;
+  private callFrame: SDK.DebuggerModel.CallFrame;
+  private plugin: DebuggerLanguagePlugin;
+  private readonly location: Chrome.DevTools.RawLocation;
 
   constructor(
       callFrame: SDK.DebuggerModel.CallFrame, plugin: DebuggerLanguagePlugin, location: Chrome.DevTools.RawLocation) {
     super(callFrame.debuggerModel.runtimeModel(), undefined, 'object', undefined, null);
     this.variables = [];
-    this._callFrame = callFrame;
-    this._plugin = plugin;
-    this._location = location;
+    this.callFrame = callFrame;
+    this.plugin = plugin;
+    this.location = location;
   }
 
   async doGetProperties(ownProperties: boolean, accessorPropertiesOnly: boolean, _generatePreview: boolean):
@@ -643,7 +641,7 @@ class SourceScopeRemoteObject extends SDK.RemoteObject.RemoteObjectImpl {
     for (const variable of this.variables) {
       let sourceVar;
       try {
-        sourceVar = await getValueTreeForExpression(this._callFrame, this._plugin, variable.name, ({
+        sourceVar = await getValueTreeForExpression(this.callFrame, this.plugin, variable.name, ({
                                                       generatePreview: false,
                                                       includeCommandLineAPI: true,
                                                       objectGroup: 'backtrace',
@@ -684,33 +682,33 @@ class SourceScopeRemoteObject extends SDK.RemoteObject.RemoteObjectImpl {
 }
 
 export class SourceScope implements SDK.DebuggerModel.ScopeChainEntry {
-  _callFrame: SDK.DebuggerModel.CallFrame;
-  _type: string;
-  _typeName: string;
-  _icon: string|undefined;
-  _object: SourceScopeRemoteObject;
-  _name: string;
-  _startLocation: SDK.DebuggerModel.Location|null;
-  _endLocation: SDK.DebuggerModel.Location|null;
+  private readonly callFrameInternal: SDK.DebuggerModel.CallFrame;
+  private readonly typeInternal: string;
+  private readonly typeNameInternal: string;
+  private readonly iconInternal: string|undefined;
+  private readonly objectInternal: SourceScopeRemoteObject;
+  private readonly nameInternal: string;
+  private readonly startLocationInternal: SDK.DebuggerModel.Location|null;
+  private readonly endLocationInternal: SDK.DebuggerModel.Location|null;
   constructor(
       callFrame: SDK.DebuggerModel.CallFrame, type: string, typeName: string, icon: string|undefined,
       plugin: DebuggerLanguagePlugin, location: Chrome.DevTools.RawLocation) {
-    this._callFrame = callFrame;
-    this._type = type;
-    this._typeName = typeName;
-    this._icon = icon;
-    this._object = new SourceScopeRemoteObject(callFrame, plugin, location);
-    this._name = type;
-    this._startLocation = null;
-    this._endLocation = null;
+    this.callFrameInternal = callFrame;
+    this.typeInternal = type;
+    this.typeNameInternal = typeName;
+    this.iconInternal = icon;
+    this.objectInternal = new SourceScopeRemoteObject(callFrame, plugin, location);
+    this.nameInternal = type;
+    this.startLocationInternal = null;
+    this.endLocationInternal = null;
   }
 
   async getVariableValue(name: string): Promise<SDK.RemoteObject.RemoteObject|null> {
-    for (let v = 0; v < this._object.variables.length; ++v) {
-      if (this._object.variables[v].name !== name) {
+    for (let v = 0; v < this.objectInternal.variables.length; ++v) {
+      if (this.objectInternal.variables[v].name !== name) {
         continue;
       }
-      const properties = await this._object.getAllProperties(false, false);
+      const properties = await this.objectInternal.getAllProperties(false, false);
       if (!properties.properties) {
         continue;
       }
@@ -723,15 +721,15 @@ export class SourceScope implements SDK.DebuggerModel.ScopeChainEntry {
   }
 
   callFrame(): SDK.DebuggerModel.CallFrame {
-    return this._callFrame;
+    return this.callFrameInternal;
   }
 
   type(): string {
-    return this._type;
+    return this.typeInternal;
   }
 
   typeName(): string {
-    return this._typeName;
+    return this.typeNameInternal;
   }
 
   name(): string|undefined {
@@ -739,15 +737,15 @@ export class SourceScope implements SDK.DebuggerModel.ScopeChainEntry {
   }
 
   startLocation(): SDK.DebuggerModel.Location|null {
-    return this._startLocation;
+    return this.startLocationInternal;
   }
 
   endLocation(): SDK.DebuggerModel.Location|null {
-    return this._endLocation;
+    return this.endLocationInternal;
   }
 
   object(): SourceScopeRemoteObject {
-    return this._object;
+    return this.objectInternal;
   }
 
   description(): string {
@@ -755,17 +753,17 @@ export class SourceScope implements SDK.DebuggerModel.ScopeChainEntry {
   }
 
   icon(): string|undefined {
-    return this._icon;
+    return this.iconInternal;
   }
 }
 
 export class DebuggerLanguagePluginManager implements
     SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
-  _workspace: Workspace.Workspace.WorkspaceImpl;
-  _debuggerWorkspaceBinding: DebuggerWorkspaceBinding;
-  _plugins: DebuggerLanguagePlugin[];
-  _debuggerModelToData: Map<SDK.DebuggerModel.DebuggerModel, ModelData>;
-  _rawModuleHandles: Map<string, {
+  private readonly workspace: Workspace.Workspace.WorkspaceImpl;
+  private readonly debuggerWorkspaceBinding: DebuggerWorkspaceBinding;
+  private plugins: DebuggerLanguagePlugin[];
+  private readonly debuggerModelToData: Map<SDK.DebuggerModel.DebuggerModel, ModelData>;
+  private readonly rawModuleHandles: Map<string, {
     rawModuleId: string,
     plugin: DebuggerLanguagePlugin,
     scripts: Array<SDK.Script.Script>,
@@ -775,27 +773,27 @@ export class DebuggerLanguagePluginManager implements
   constructor(
       targetManager: SDK.TargetManager.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl,
       debuggerWorkspaceBinding: DebuggerWorkspaceBinding) {
-    this._workspace = workspace;
-    this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
+    this.workspace = workspace;
+    this.debuggerWorkspaceBinding = debuggerWorkspaceBinding;
 
-    this._plugins = [];
+    this.plugins = [];
 
-    this._debuggerModelToData = new Map();
+    this.debuggerModelToData = new Map();
     targetManager.observeModels(SDK.DebuggerModel.DebuggerModel, this);
 
-    this._rawModuleHandles = new Map();
+    this.rawModuleHandles = new Map();
   }
 
-  async _evaluateOnCallFrame(callFrame: SDK.DebuggerModel.CallFrame, options: SDK.RuntimeModel.EvaluationOptions):
-      Promise<{
-        object: SDK.RemoteObject.RemoteObject,
-        exceptionDetails: Protocol.Runtime.ExceptionDetails|undefined,
-      }|{
-        error: string,
-      }|null> {
+  private async evaluateOnCallFrame(
+      callFrame: SDK.DebuggerModel.CallFrame, options: SDK.RuntimeModel.EvaluationOptions): Promise<{
+    object: SDK.RemoteObject.RemoteObject,
+    exceptionDetails: Protocol.Runtime.ExceptionDetails|undefined,
+  }|{
+    error: string,
+  }|null> {
     const {script} = callFrame;
     const {expression} = options;
-    const {plugin} = await this._rawModuleIdAndPluginForScript(script);
+    const {plugin} = await this.rawModuleIdAndPluginForScript(script);
     if (!plugin) {
       return null;
     }
@@ -817,7 +815,7 @@ export class DebuggerLanguagePluginManager implements
     }
   }
 
-  _expandCallFrames(callFrames: SDK.DebuggerModel.CallFrame[]): Promise<SDK.DebuggerModel.CallFrame[]> {
+  private expandCallFrames(callFrames: SDK.DebuggerModel.CallFrame[]): Promise<SDK.DebuggerModel.CallFrame[]> {
     return Promise
         .all(callFrames.map(async callFrame => {
           const functionInfo = await this.getFunctionInfo(callFrame.script, callFrame.location());
@@ -840,68 +838,68 @@ export class DebuggerLanguagePluginManager implements
   }
 
   modelAdded(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
-    this._debuggerModelToData.set(debuggerModel, new ModelData(debuggerModel, this._workspace));
-    debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this._globalObjectCleared, this);
-    debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this);
-    debuggerModel.setEvaluateOnCallFrameCallback(this._evaluateOnCallFrame.bind(this));
-    debuggerModel.setExpandCallFramesCallback(this._expandCallFrames.bind(this));
+    this.debuggerModelToData.set(debuggerModel, new ModelData(debuggerModel, this.workspace));
+    debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this);
+    debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this.parsedScriptSource, this);
+    debuggerModel.setEvaluateOnCallFrameCallback(this.evaluateOnCallFrame.bind(this));
+    debuggerModel.setExpandCallFramesCallback(this.expandCallFrames.bind(this));
   }
 
   modelRemoved(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
-    debuggerModel.removeEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this._globalObjectCleared, this);
-    debuggerModel.removeEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this);
+    debuggerModel.removeEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this);
+    debuggerModel.removeEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this.parsedScriptSource, this);
     debuggerModel.setEvaluateOnCallFrameCallback(null);
     debuggerModel.setExpandCallFramesCallback(null);
-    const modelData = this._debuggerModelToData.get(debuggerModel);
+    const modelData = this.debuggerModelToData.get(debuggerModel);
     if (modelData) {
-      modelData._dispose();
-      this._debuggerModelToData.delete(debuggerModel);
+      modelData.dispose();
+      this.debuggerModelToData.delete(debuggerModel);
     }
-    this._rawModuleHandles.forEach((rawModuleHandle, rawModuleId) => {
+    this.rawModuleHandles.forEach((rawModuleHandle, rawModuleId) => {
       const scripts = rawModuleHandle.scripts.filter(script => script.debuggerModel !== debuggerModel);
       if (scripts.length === 0) {
         rawModuleHandle.plugin.removeRawModule(rawModuleId).catch(error => {
           Common.Console.Console.instance().error(
               i18nString(UIStrings.errorInDebuggerLanguagePlugin, {PH1: error.message}));
         });
-        this._rawModuleHandles.delete(rawModuleId);
+        this.rawModuleHandles.delete(rawModuleId);
       } else {
         rawModuleHandle.scripts = scripts;
       }
     });
   }
 
-  _globalObjectCleared(event: Common.EventTarget.EventTargetEvent<SDK.DebuggerModel.DebuggerModel>): void {
+  private globalObjectCleared(event: Common.EventTarget.EventTargetEvent<SDK.DebuggerModel.DebuggerModel>): void {
     const debuggerModel = event.data;
     this.modelRemoved(debuggerModel);
     this.modelAdded(debuggerModel);
   }
 
   addPlugin(plugin: DebuggerLanguagePlugin): void {
-    this._plugins.push(plugin);
-    for (const debuggerModel of this._debuggerModelToData.keys()) {
+    this.plugins.push(plugin);
+    for (const debuggerModel of this.debuggerModelToData.keys()) {
       for (const script of debuggerModel.scripts()) {
         if (this.hasPluginForScript(script)) {
           continue;
         }
-        this._parsedScriptSource({data: script});
+        this.parsedScriptSource({data: script});
       }
     }
   }
 
   removePlugin(plugin: DebuggerLanguagePlugin): void {
-    this._plugins = this._plugins.filter(p => p !== plugin);
+    this.plugins = this.plugins.filter(p => p !== plugin);
     const scripts = new Set<SDK.Script.Script>();
-    this._rawModuleHandles.forEach((rawModuleHandle, rawModuleId) => {
+    this.rawModuleHandles.forEach((rawModuleHandle, rawModuleId) => {
       if (rawModuleHandle.plugin !== plugin) {
         return;
       }
       rawModuleHandle.scripts.forEach(script => scripts.add(script));
-      this._rawModuleHandles.delete(rawModuleId);
+      this.rawModuleHandles.delete(rawModuleId);
     });
     for (const script of scripts) {
-      const modelData = (this._debuggerModelToData.get(script.debuggerModel) as ModelData);
-      modelData._removeScript(script);
+      const modelData = (this.debuggerModelToData.get(script.debuggerModel) as ModelData);
+      modelData.removeScript(script);
 
       // Let's see if we have another plugin that's happy to
       // take this orphaned script now. This is important to
@@ -909,13 +907,13 @@ export class DebuggerLanguagePluginManager implements
       // unregister/register and we might already have the
       // new instance of the plugin added before we remove
       // the previous instance.
-      this._parsedScriptSource({data: script});
+      this.parsedScriptSource({data: script});
     }
   }
 
   hasPluginForScript(script: SDK.Script.Script): boolean {
     const rawModuleId = rawModuleIdForScript(script);
-    const rawModuleHandle = this._rawModuleHandles.get(rawModuleId);
+    const rawModuleHandle = this.rawModuleHandles.get(rawModuleId);
     return rawModuleHandle !== undefined && rawModuleHandle.scripts.includes(script);
   }
 
@@ -927,15 +925,15 @@ export class DebuggerLanguagePluginManager implements
    * risk of racing with the `addRawModule` call. The returned plugin will be
    * set to undefined to indicate that there's no plugin for the script.
    */
-  async _rawModuleIdAndPluginForScript(script: SDK.Script.Script): Promise<{
+  private async rawModuleIdAndPluginForScript(script: SDK.Script.Script): Promise<{
     rawModuleId: string,
     plugin: DebuggerLanguagePlugin|null,
   }> {
     const rawModuleId = rawModuleIdForScript(script);
-    const rawModuleHandle = this._rawModuleHandles.get(rawModuleId);
+    const rawModuleHandle = this.rawModuleHandles.get(rawModuleId);
     if (rawModuleHandle) {
       await rawModuleHandle.addRawModulePromise;
-      if (rawModuleHandle === this._rawModuleHandles.get(rawModuleId)) {
+      if (rawModuleHandle === this.rawModuleHandles.get(rawModuleId)) {
         return {rawModuleId, plugin: rawModuleHandle.plugin};
       }
     }
@@ -944,9 +942,9 @@ export class DebuggerLanguagePluginManager implements
 
   uiSourceCodeForURL(debuggerModel: SDK.DebuggerModel.DebuggerModel, url: string): Workspace.UISourceCode.UISourceCode
       |null {
-    const modelData = this._debuggerModelToData.get(debuggerModel);
+    const modelData = this.debuggerModelToData.get(debuggerModel);
     if (modelData) {
-      return modelData._project.uiSourceCodeForURL(url);
+      return modelData.getProject().uiSourceCodeForURL(url);
     }
     return null;
   }
@@ -957,7 +955,7 @@ export class DebuggerLanguagePluginManager implements
     if (!script) {
       return null;
     }
-    const {rawModuleId, plugin} = await this._rawModuleIdAndPluginForScript(script);
+    const {rawModuleId, plugin} = await this.rawModuleIdAndPluginForScript(script);
     if (!plugin) {
       return null;
     }
@@ -1000,7 +998,7 @@ export class DebuggerLanguagePluginManager implements
     }[]>[] = [];
     this.scriptsForUISourceCode(uiSourceCode).forEach(script => {
       const rawModuleId = rawModuleIdForScript(script);
-      const rawModuleHandle = this._rawModuleHandles.get(rawModuleId);
+      const rawModuleHandle = this.rawModuleHandles.get(rawModuleId);
       if (!rawModuleHandle) {
         return;
       }
@@ -1049,8 +1047,8 @@ export class DebuggerLanguagePluginManager implements
   }
 
   scriptsForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.Script.Script[] {
-    for (const modelData of this._debuggerModelToData.values()) {
-      const scripts = modelData._uiSourceCodeToScripts.get(uiSourceCode);
+    for (const modelData of this.debuggerModelToData.values()) {
+      const scripts = modelData.uiSourceCodeToScripts.get(uiSourceCode);
       if (scripts) {
         return scripts;
       }
@@ -1058,18 +1056,18 @@ export class DebuggerLanguagePluginManager implements
     return [];
   }
 
-  _parsedScriptSource(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): void {
+  private parsedScriptSource(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): void {
     const script = event.data;
     if (!script.sourceURL) {
       return;
     }
 
-    for (const plugin of this._plugins) {
+    for (const plugin of this.plugins) {
       if (!plugin.handleScript(script)) {
         return;
       }
       const rawModuleId = rawModuleIdForScript(script);
-      let rawModuleHandle = this._rawModuleHandles.get(rawModuleId);
+      let rawModuleHandle = this.rawModuleHandles.get(rawModuleId);
       if (!rawModuleHandle) {
         const sourceFileURLsPromise = (async(): Promise<string[]> => {
           const console = Common.Console.Console.instance();
@@ -1087,7 +1085,7 @@ export class DebuggerLanguagePluginManager implements
             // `rawModuleHandle` below will run before this code because of the `await` in the preceding
             // line. This is primarily to avoid logging the message below, which would give the developer
             // the misleading information that we're done, while in reality it was a stale call that finished.
-            if (rawModuleHandle !== this._rawModuleHandles.get(rawModuleId)) {
+            if (rawModuleHandle !== this.rawModuleHandles.get(rawModuleId)) {
               return [];
             }
             if (sourceFileURLs.length === 0) {
@@ -1100,12 +1098,12 @@ export class DebuggerLanguagePluginManager implements
           } catch (error) {
             console.error(
                 i18nString(UIStrings.failedToLoadDebugSymbolsFor, {PH1: plugin.name, PH2: url, PH3: error.message}));
-            this._rawModuleHandles.delete(rawModuleId);
+            this.rawModuleHandles.delete(rawModuleId);
             return [];
           }
         })();
         rawModuleHandle = {rawModuleId, plugin, scripts: [script], addRawModulePromise: sourceFileURLsPromise};
-        this._rawModuleHandles.set(rawModuleId, rawModuleHandle);
+        this.rawModuleHandles.set(rawModuleId, rawModuleHandle);
       } else {
         rawModuleHandle.scripts.push(script);
       }
@@ -1117,10 +1115,10 @@ export class DebuggerLanguagePluginManager implements
       rawModuleHandle.addRawModulePromise.then(sourceFileURLs => {
         // The script might have disappeared meanwhile...
         if (script.debuggerModel.scriptForId(script.scriptId) === script) {
-          const modelData = this._debuggerModelToData.get(script.debuggerModel);
+          const modelData = this.debuggerModelToData.get(script.debuggerModel);
           if (modelData) {  // The DebuggerModel could have disappeared meanwhile...
-            modelData._addSourceFiles(script, sourceFileURLs);
-            this._debuggerWorkspaceBinding.updateLocations(script);
+            modelData.addSourceFiles(script, sourceFileURLs);
+            this.debuggerWorkspaceBinding.updateLocations(script);
           }
         }
       });
@@ -1130,7 +1128,7 @@ export class DebuggerLanguagePluginManager implements
 
   async resolveScopeChain(callFrame: SDK.DebuggerModel.CallFrame): Promise<SourceScope[]|null> {
     const script = callFrame.script;
-    const {rawModuleId, plugin} = await this._rawModuleIdAndPluginForScript(script);
+    const {rawModuleId, plugin} = await this.rawModuleIdAndPluginForScript(script);
     if (!plugin) {
       return null;
     }
@@ -1169,7 +1167,7 @@ export class DebuggerLanguagePluginManager implements
     frames: Array<Chrome.DevTools.FunctionInfo>,
     missingSymbolFiles?: Array<string>,
   }|null> {
-    const {rawModuleId, plugin} = await this._rawModuleIdAndPluginForScript(script);
+    const {rawModuleId, plugin} = await this.rawModuleIdAndPluginForScript(script);
     if (!plugin) {
       return null;
     }
@@ -1196,7 +1194,7 @@ export class DebuggerLanguagePluginManager implements
     if (!script) {
       return [];
     }
-    const {rawModuleId, plugin} = await this._rawModuleIdAndPluginForScript(script);
+    const {rawModuleId, plugin} = await this.rawModuleIdAndPluginForScript(script);
     if (!plugin) {
       return [];
     }
@@ -1233,7 +1231,7 @@ export class DebuggerLanguagePluginManager implements
     if (!script) {
       return [];
     }
-    const {rawModuleId, plugin} = await this._rawModuleIdAndPluginForScript(script);
+    const {rawModuleId, plugin} = await this.rawModuleIdAndPluginForScript(script);
     if (!plugin) {
       return [];
     }
@@ -1264,7 +1262,7 @@ export class DebuggerLanguagePluginManager implements
 
   async getMappedLines(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<Set<number>|undefined> {
     const rawModuleIds =
-        await Promise.all(this.scriptsForUISourceCode(uiSourceCode).map(s => this._rawModuleIdAndPluginForScript(s)));
+        await Promise.all(this.scriptsForUISourceCode(uiSourceCode).map(s => this.rawModuleIdAndPluginForScript(s)));
 
     let mappedLines: Set<number>|undefined;
     for (const {rawModuleId, plugin} of rawModuleIds) {
@@ -1290,25 +1288,25 @@ export class DebuggerLanguagePluginManager implements
 }
 
 class ModelData {
-  _debuggerModel: SDK.DebuggerModel.DebuggerModel;
-  _project: ContentProviderBasedProject;
-  _uiSourceCodeToScripts: Map<Workspace.UISourceCode.UISourceCode, SDK.Script.Script[]>;
+  private readonly debuggerModel: SDK.DebuggerModel.DebuggerModel;
+  project: ContentProviderBasedProject;
+  readonly uiSourceCodeToScripts: Map<Workspace.UISourceCode.UISourceCode, SDK.Script.Script[]>;
   constructor(debuggerModel: SDK.DebuggerModel.DebuggerModel, workspace: Workspace.Workspace.WorkspaceImpl) {
-    this._debuggerModel = debuggerModel;
-    this._project = new ContentProviderBasedProject(
+    this.debuggerModel = debuggerModel;
+    this.project = new ContentProviderBasedProject(
         workspace, 'language_plugins::' + debuggerModel.target().id(), Workspace.Workspace.projectTypes.Network, '',
         false /* isServiceProject */);
-    NetworkProject.setTargetForProject(this._project, debuggerModel.target());
+    NetworkProject.setTargetForProject(this.project, debuggerModel.target());
 
-    this._uiSourceCodeToScripts = new Map();
+    this.uiSourceCodeToScripts = new Map();
   }
 
-  _addSourceFiles(script: SDK.Script.Script, urls: string[]): void {
+  addSourceFiles(script: SDK.Script.Script, urls: string[]): void {
     const initiator = script.createPageResourceLoadInitiator();
     for (const url of urls) {
-      let uiSourceCode = this._project.uiSourceCodeForURL(url);
+      let uiSourceCode = this.project.uiSourceCodeForURL(url);
       if (!uiSourceCode) {
-        uiSourceCode = this._project.createUISourceCode(url, Common.ResourceType.resourceTypes.SourceMapScript);
+        uiSourceCode = this.project.createUISourceCode(url, Common.ResourceType.resourceTypes.SourceMapScript);
         NetworkProject.setInitialFrameAttribution(uiSourceCode, script.frameId);
 
         // Bind the uiSourceCode to the script first before we add the
@@ -1318,16 +1316,16 @@ class ModelData {
         // resolution logic kicks in right after adding the uiSourceCode
         // and at that point we already need to have the mapping in place
         // otherwise we will not get the breakpoint right.
-        this._uiSourceCodeToScripts.set(uiSourceCode, [script]);
+        this.uiSourceCodeToScripts.set(uiSourceCode, [script]);
 
         const contentProvider = new SDK.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(
             url, Common.ResourceType.resourceTypes.SourceMapScript, initiator);
         const mimeType = Common.ResourceType.ResourceType.mimeFromURL(url) || 'text/javascript';
-        this._project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, null, mimeType);
+        this.project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, null, mimeType);
       } else {
         // The same uiSourceCode can be provided by different scripts,
         // but we don't expect that to happen frequently.
-        const scripts = (this._uiSourceCodeToScripts.get(uiSourceCode) as SDK.Script.Script[]);
+        const scripts = (this.uiSourceCodeToScripts.get(uiSourceCode) as SDK.Script.Script[]);
         if (!scripts.includes(script)) {
           scripts.push(script);
         }
@@ -1335,20 +1333,24 @@ class ModelData {
     }
   }
 
-  _removeScript(script: SDK.Script.Script): void {
-    this._uiSourceCodeToScripts.forEach((scripts, uiSourceCode) => {
+  removeScript(script: SDK.Script.Script): void {
+    this.uiSourceCodeToScripts.forEach((scripts, uiSourceCode) => {
       scripts = scripts.filter(s => s !== script);
       if (scripts.length === 0) {
-        this._uiSourceCodeToScripts.delete(uiSourceCode);
-        this._project.removeUISourceCode(uiSourceCode.url());
+        this.uiSourceCodeToScripts.delete(uiSourceCode);
+        this.project.removeUISourceCode(uiSourceCode.url());
       } else {
-        this._uiSourceCodeToScripts.set(uiSourceCode, scripts);
+        this.uiSourceCodeToScripts.set(uiSourceCode, scripts);
       }
     });
   }
 
-  _dispose(): void {
-    this._project.dispose();
+  dispose(): void {
+    this.project.dispose();
+  }
+
+  getProject(): ContentProviderBasedProject {
+    return this.project;
   }
 }
 

@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -18,19 +16,19 @@ import {StylesSourceMapping} from './StylesSourceMapping.js';
 let cssWorkspaceBindingInstance: CSSWorkspaceBinding|undefined;
 
 export class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<SDK.CSSModel.CSSModel> {
-  _workspace: Workspace.Workspace.WorkspaceImpl;
-  _modelToInfo: Map<SDK.CSSModel.CSSModel, ModelInfo>;
-  _sourceMappings: SourceMapping[];
-  _liveLocationPromises: Set<Promise<unknown>>;
+  private readonly workspace: Workspace.Workspace.WorkspaceImpl;
+  private readonly modelToInfo: Map<SDK.CSSModel.CSSModel, ModelInfo>;
+  private readonly sourceMappings: SourceMapping[];
+  private readonly liveLocationPromises: Set<Promise<unknown>>;
 
   private constructor(targetManager: SDK.TargetManager.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl) {
-    this._workspace = workspace;
+    this.workspace = workspace;
 
-    this._modelToInfo = new Map();
-    this._sourceMappings = [];
+    this.modelToInfo = new Map();
+    this.sourceMappings = [];
     targetManager.observeModels(SDK.CSSModel.CSSModel, this);
 
-    this._liveLocationPromises = new Set();
+    this.liveLocationPromises = new Set();
   }
 
   static instance(opts: {
@@ -55,17 +53,17 @@ export class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<S
     cssWorkspaceBindingInstance = undefined;
   }
 
-  _getCSSModelInfo(cssModel: SDK.CSSModel.CSSModel): ModelInfo {
-    return this._modelToInfo.get(cssModel) as ModelInfo;
+  private getCSSModelInfo(cssModel: SDK.CSSModel.CSSModel): ModelInfo {
+    return this.modelToInfo.get(cssModel) as ModelInfo;
   }
 
   modelAdded(cssModel: SDK.CSSModel.CSSModel): void {
-    this._modelToInfo.set(cssModel, new ModelInfo(cssModel, this._workspace));
+    this.modelToInfo.set(cssModel, new ModelInfo(cssModel, this.workspace));
   }
 
   modelRemoved(cssModel: SDK.CSSModel.CSSModel): void {
-    this._getCSSModelInfo(cssModel)._dispose();
-    this._modelToInfo.delete(cssModel);
+    this.getCSSModelInfo(cssModel).dispose();
+    this.modelToInfo.delete(cssModel);
   }
 
   /**
@@ -73,19 +71,19 @@ export class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<S
    * pending LiveLocations are processed.
    */
   async pendingLiveLocationChangesPromise(): Promise<void> {
-    await Promise.all(this._liveLocationPromises);
+    await Promise.all(this.liveLocationPromises);
   }
 
-  _recordLiveLocationChange(promise: Promise<unknown>): void {
+  private recordLiveLocationChange(promise: Promise<unknown>): void {
     promise.then(() => {
-      this._liveLocationPromises.delete(promise);
+      this.liveLocationPromises.delete(promise);
     });
-    this._liveLocationPromises.add(promise);
+    this.liveLocationPromises.add(promise);
   }
 
   async updateLocations(header: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader): Promise<void> {
-    const updatePromise = this._getCSSModelInfo(header.cssModel())._updateLocations(header);
-    this._recordLiveLocationChange(updatePromise);
+    const updatePromise = this.getCSSModelInfo(header.cssModel()).updateLocations(header);
+    this.recordLiveLocationChange(updatePromise);
     await updatePromise;
   }
 
@@ -93,8 +91,8 @@ export class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<S
       rawLocation: SDK.CSSModel.CSSLocation, updateDelegate: (arg0: LiveLocationInterface) => Promise<void>,
       locationPool: LiveLocationPool): Promise<LiveLocation> {
     const locationPromise =
-        this._getCSSModelInfo(rawLocation.cssModel())._createLiveLocation(rawLocation, updateDelegate, locationPool);
-    this._recordLiveLocationChange(locationPromise);
+        this.getCSSModelInfo(rawLocation.cssModel()).createLiveLocation(rawLocation, updateDelegate, locationPool);
+    this.recordLiveLocationChange(locationPromise);
     return locationPromise;
   }
 
@@ -122,31 +120,31 @@ export class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<S
   }
 
   rawLocationToUILocation(rawLocation: SDK.CSSModel.CSSLocation): Workspace.UISourceCode.UILocation|null {
-    for (let i = this._sourceMappings.length - 1; i >= 0; --i) {
-      const uiLocation = this._sourceMappings[i].rawLocationToUILocation(rawLocation);
+    for (let i = this.sourceMappings.length - 1; i >= 0; --i) {
+      const uiLocation = this.sourceMappings[i].rawLocationToUILocation(rawLocation);
       if (uiLocation) {
         return uiLocation;
       }
     }
-    return this._getCSSModelInfo(rawLocation.cssModel())._rawLocationToUILocation(rawLocation);
+    return this.getCSSModelInfo(rawLocation.cssModel()).rawLocationToUILocation(rawLocation);
   }
 
   uiLocationToRawLocations(uiLocation: Workspace.UISourceCode.UILocation): SDK.CSSModel.CSSLocation[] {
-    for (let i = this._sourceMappings.length - 1; i >= 0; --i) {
-      const rawLocations = this._sourceMappings[i].uiLocationToRawLocations(uiLocation);
+    for (let i = this.sourceMappings.length - 1; i >= 0; --i) {
+      const rawLocations = this.sourceMappings[i].uiLocationToRawLocations(uiLocation);
       if (rawLocations.length) {
         return rawLocations;
       }
     }
     const rawLocations = [];
-    for (const modelInfo of this._modelToInfo.values()) {
-      rawLocations.push(...modelInfo._uiLocationToRawLocations(uiLocation));
+    for (const modelInfo of this.modelToInfo.values()) {
+      rawLocations.push(...modelInfo.uiLocationToRawLocations(uiLocation));
     }
     return rawLocations;
   }
 
   addSourceMapping(sourceMapping: SourceMapping): void {
-    this._sourceMappings.push(sourceMapping);
+    this.sourceMappings.push(sourceMapping);
   }
 }
 
@@ -160,155 +158,160 @@ export interface SourceMapping {
 }
 
 export class ModelInfo {
-  _eventListeners: Common.EventTarget.EventDescriptor[];
-  _stylesSourceMapping: StylesSourceMapping;
-  _sassSourceMapping: SASSSourceMapping;
-  _locations: Platform.MapUtilities.Multimap<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, LiveLocation>;
-  _unboundLocations: Platform.MapUtilities.Multimap<string, LiveLocation>;
+  private readonly eventListeners: Common.EventTarget.EventDescriptor[];
+  private stylesSourceMapping: StylesSourceMapping;
+  private sassSourceMapping: SASSSourceMapping;
+  private readonly locations: Platform.MapUtilities.Multimap<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, LiveLocation>;
+  private readonly unboundLocations: Platform.MapUtilities.Multimap<string, LiveLocation>;
   constructor(cssModel: SDK.CSSModel.CSSModel, workspace: Workspace.Workspace.WorkspaceImpl) {
-    this._eventListeners = [
+    this.eventListeners = [
       cssModel.addEventListener(
           SDK.CSSModel.Events.StyleSheetAdded,
           event => {
-            this._styleSheetAdded(event);
+            this.styleSheetAdded(event);
           },
           this),
       cssModel.addEventListener(
           SDK.CSSModel.Events.StyleSheetRemoved,
           event => {
-            this._styleSheetRemoved(event);
+            this.styleSheetRemoved(event);
           },
           this),
     ];
 
-    this._stylesSourceMapping = new StylesSourceMapping(cssModel, workspace);
+    this.stylesSourceMapping = new StylesSourceMapping(cssModel, workspace);
     const sourceMapManager = cssModel.sourceMapManager();
-    this._sassSourceMapping = new SASSSourceMapping(cssModel.target(), sourceMapManager, workspace);
+    this.sassSourceMapping = new SASSSourceMapping(cssModel.target(), sourceMapManager, workspace);
 
-    this._locations = new Platform.MapUtilities.Multimap();
-    this._unboundLocations = new Platform.MapUtilities.Multimap();
+    this.locations = new Platform.MapUtilities.Multimap();
+    this.unboundLocations = new Platform.MapUtilities.Multimap();
   }
 
-  async _createLiveLocation(
+  async createLiveLocation(
       rawLocation: SDK.CSSModel.CSSLocation, updateDelegate: (arg0: LiveLocationInterface) => Promise<void>,
       locationPool: LiveLocationPool): Promise<LiveLocation> {
     const location = new LiveLocation(rawLocation, this, updateDelegate, locationPool);
     const header = rawLocation.header();
     if (header) {
-      location._header = header;
-      this._locations.set(header, location);
+      location.setHeader(header);
+      this.locations.set(header, location);
       await location.update();
     } else {
-      this._unboundLocations.set(rawLocation.url, location);
+      this.unboundLocations.set(rawLocation.url, location);
     }
     return location;
   }
 
-  _disposeLocation(location: LiveLocation): void {
-    if (location._header) {
-      this._locations.delete(location._header, location);
+  disposeLocation(location: LiveLocation): void {
+    const header = location.header();
+    if (header) {
+      this.locations.delete(header, location);
     } else {
-      this._unboundLocations.delete(location._url, location);
+      this.unboundLocations.delete(location.url, location);
     }
   }
 
-  _updateLocations(header: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader): Promise<void[]> {
+  updateLocations(header: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader): Promise<void[]> {
     const promises = [];
-    for (const location of this._locations.get(header)) {
+    for (const location of this.locations.get(header)) {
       promises.push(location.update());
     }
     return Promise.all(promises);
   }
 
-  async _styleSheetAdded(event: Common.EventTarget.EventTargetEvent<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>):
-      Promise<void> {
+  private async styleSheetAdded(
+      event: Common.EventTarget.EventTargetEvent<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>): Promise<void> {
     const header = event.data;
     if (!header.sourceURL) {
       return;
     }
 
     const promises = [];
-    for (const location of this._unboundLocations.get(header.sourceURL)) {
-      location._header = header;
-      this._locations.set(header, location);
+    for (const location of this.unboundLocations.get(header.sourceURL)) {
+      location.setHeader(header);
+      this.locations.set(header, location);
       promises.push(location.update());
     }
     await Promise.all(promises);
-    this._unboundLocations.deleteAll(header.sourceURL);
+    this.unboundLocations.deleteAll(header.sourceURL);
   }
 
-  async _styleSheetRemoved(event: Common.EventTarget.EventTargetEvent<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>):
-      Promise<void> {
+  private async styleSheetRemoved(
+      event: Common.EventTarget.EventTargetEvent<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>): Promise<void> {
     const header = event.data;
     const promises = [];
-    for (const location of this._locations.get(header)) {
-      location._header = null;
-      this._unboundLocations.set(location._url, location);
+    for (const location of this.locations.get(header)) {
+      location.setHeader(header);
+      this.unboundLocations.set(location.url, location);
       promises.push(location.update());
     }
     await Promise.all(promises);
-    this._locations.deleteAll(header);
+    this.locations.deleteAll(header);
   }
 
-  _rawLocationToUILocation(rawLocation: SDK.CSSModel.CSSLocation): Workspace.UISourceCode.UILocation|null {
+  rawLocationToUILocation(rawLocation: SDK.CSSModel.CSSLocation): Workspace.UISourceCode.UILocation|null {
     let uiLocation: (Workspace.UISourceCode.UILocation|null)|null = null;
-    uiLocation = uiLocation || this._sassSourceMapping.rawLocationToUILocation(rawLocation);
-    uiLocation = uiLocation || this._stylesSourceMapping.rawLocationToUILocation(rawLocation);
+    uiLocation = uiLocation || this.sassSourceMapping.rawLocationToUILocation(rawLocation);
+    uiLocation = uiLocation || this.stylesSourceMapping.rawLocationToUILocation(rawLocation);
     uiLocation = uiLocation || ResourceMapping.instance().cssLocationToUILocation(rawLocation);
     return uiLocation;
   }
 
-  _uiLocationToRawLocations(uiLocation: Workspace.UISourceCode.UILocation): SDK.CSSModel.CSSLocation[] {
-    let rawLocations = this._sassSourceMapping.uiLocationToRawLocations(uiLocation);
+  uiLocationToRawLocations(uiLocation: Workspace.UISourceCode.UILocation): SDK.CSSModel.CSSLocation[] {
+    let rawLocations = this.sassSourceMapping.uiLocationToRawLocations(uiLocation);
     if (rawLocations.length) {
       return rawLocations;
     }
-    rawLocations = this._stylesSourceMapping.uiLocationToRawLocations(uiLocation);
+    rawLocations = this.stylesSourceMapping.uiLocationToRawLocations(uiLocation);
     if (rawLocations.length) {
       return rawLocations;
     }
     return ResourceMapping.instance().uiLocationToCSSLocations(uiLocation);
   }
 
-  _dispose(): void {
-    Common.EventTarget.removeEventListeners(this._eventListeners);
-    this._stylesSourceMapping.dispose();
-    this._sassSourceMapping.dispose();
+  dispose(): void {
+    Common.EventTarget.removeEventListeners(this.eventListeners);
+    this.stylesSourceMapping.dispose();
+    this.sassSourceMapping.dispose();
   }
 }
 
 export class LiveLocation extends LiveLocationWithPool {
-  _url: string;
-  _lineNumber: number;
-  _columnNumber: number;
-  _info: ModelInfo;
-  _header: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader|null;
+  readonly url: string;
+  private readonly lineNumber: number;
+  private readonly columnNumber: number;
+  private readonly info: ModelInfo;
+  headerInternal: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader|null;
   constructor(
       rawLocation: SDK.CSSModel.CSSLocation, info: ModelInfo,
       updateDelegate: (arg0: LiveLocationInterface) => Promise<void>, locationPool: LiveLocationPool) {
     super(updateDelegate, locationPool);
-    this._url = rawLocation.url;
-    this._lineNumber = rawLocation.lineNumber;
-    this._columnNumber = rawLocation.columnNumber;
-    this._info = info;
-    this._header = null;
+    this.url = rawLocation.url;
+    this.lineNumber = rawLocation.lineNumber;
+    this.columnNumber = rawLocation.columnNumber;
+    this.info = info;
+    this.headerInternal = null;
   }
 
   header(): SDK.CSSStyleSheetHeader.CSSStyleSheetHeader|null {
-    return this._header;
+    return this.headerInternal;
+  }
+
+  setHeader(header: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader|null): void {
+    this.headerInternal = header;
   }
 
   async uiLocation(): Promise<Workspace.UISourceCode.UILocation|null> {
-    if (!this._header) {
+    if (!this.headerInternal) {
       return null;
     }
-    const rawLocation = new SDK.CSSModel.CSSLocation(this._header, this._lineNumber, this._columnNumber);
+    const rawLocation = new SDK.CSSModel.CSSLocation(this.headerInternal, this.lineNumber, this.columnNumber);
     return CSSWorkspaceBinding.instance().rawLocationToUILocation(rawLocation);
   }
 
   dispose(): void {
     super.dispose();
-    this._info._disposeLocation(this);
+    this.info.disposeLocation(this);
   }
 
   async isIgnoreListed(): Promise<boolean> {

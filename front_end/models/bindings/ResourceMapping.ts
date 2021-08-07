@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
@@ -22,11 +20,11 @@ const scriptOffsetMap = new WeakMap<SDK.Script.Script, TextUtils.TextRange.TextR
 const boundUISourceCodes = new WeakSet<Workspace.UISourceCode.UISourceCode>();
 
 export class ResourceMapping implements SDK.TargetManager.SDKModelObserver<SDK.ResourceTreeModel.ResourceTreeModel> {
-  _workspace: Workspace.Workspace.WorkspaceImpl;
-  _modelToInfo: Map<SDK.ResourceTreeModel.ResourceTreeModel, ModelInfo>;
+  private readonly workspace: Workspace.Workspace.WorkspaceImpl;
+  private readonly modelToInfo: Map<SDK.ResourceTreeModel.ResourceTreeModel, ModelInfo>;
   private constructor(targetManager: SDK.TargetManager.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl) {
-    this._workspace = workspace;
-    this._modelToInfo = new Map();
+    this.workspace = workspace;
+    this.modelToInfo = new Map();
     targetManager.observeModels(SDK.ResourceTreeModel.ResourceTreeModel, this);
   }
 
@@ -49,21 +47,21 @@ export class ResourceMapping implements SDK.TargetManager.SDKModelObserver<SDK.R
   }
 
   modelAdded(resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel): void {
-    const info = new ModelInfo(this._workspace, resourceTreeModel);
-    this._modelToInfo.set(resourceTreeModel, info);
+    const info = new ModelInfo(this.workspace, resourceTreeModel);
+    this.modelToInfo.set(resourceTreeModel, info);
   }
 
   modelRemoved(resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel): void {
-    const info = this._modelToInfo.get(resourceTreeModel);
+    const info = this.modelToInfo.get(resourceTreeModel);
     if (info) {
       info.dispose();
-      this._modelToInfo.delete(resourceTreeModel);
+      this.modelToInfo.delete(resourceTreeModel);
     }
   }
 
-  _infoForTarget(target: SDK.Target.Target): ModelInfo|null {
+  private infoForTarget(target: SDK.Target.Target): ModelInfo|null {
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    return resourceTreeModel ? this._modelToInfo.get(resourceTreeModel) || null : null;
+    return resourceTreeModel ? this.modelToInfo.get(resourceTreeModel) || null : null;
   }
 
   cssLocationToUILocation(cssLocation: SDK.CSSModel.CSSLocation): Workspace.UISourceCode.UILocation|null {
@@ -71,11 +69,11 @@ export class ResourceMapping implements SDK.TargetManager.SDKModelObserver<SDK.R
     if (!header) {
       return null;
     }
-    const info = this._infoForTarget(cssLocation.cssModel().target());
+    const info = this.infoForTarget(cssLocation.cssModel().target());
     if (!info) {
       return null;
     }
-    const uiSourceCode = info._project.uiSourceCodeForURL(cssLocation.url);
+    const uiSourceCode = info.getProject().uiSourceCodeForURL(cssLocation.url);
     if (!uiSourceCode) {
       return null;
     }
@@ -94,11 +92,11 @@ export class ResourceMapping implements SDK.TargetManager.SDKModelObserver<SDK.R
     if (!script) {
       return null;
     }
-    const info = this._infoForTarget(jsLocation.debuggerModel.target());
+    const info = this.infoForTarget(jsLocation.debuggerModel.target());
     if (!info) {
       return null;
     }
-    const uiSourceCode = info._project.uiSourceCodeForURL(script.sourceURL);
+    const uiSourceCode = info.getProject().uiSourceCodeForURL(script.sourceURL);
     if (!uiSourceCode) {
       return null;
     }
@@ -151,60 +149,60 @@ export class ResourceMapping implements SDK.TargetManager.SDKModelObserver<SDK.R
         uiLocation.uiSourceCode.url(), uiLocation.lineNumber, uiLocation.columnNumber);
   }
 
-  _resetForTest(target: SDK.Target.Target): void {
+  private resetForTest(target: SDK.Target.Target): void {
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    const info = resourceTreeModel ? this._modelToInfo.get(resourceTreeModel) : null;
+    const info = resourceTreeModel ? this.modelToInfo.get(resourceTreeModel) : null;
     if (info) {
-      info._resetForTest();
+      info.resetForTest();
     }
   }
 }
 
 class ModelInfo {
-  _project: ContentProviderBasedProject;
-  _bindings: Map<string, Binding>;
-  _cssModel: SDK.CSSModel.CSSModel;
-  _eventListeners: Common.EventTarget.EventDescriptor[];
+  project: ContentProviderBasedProject;
+  private readonly bindings: Map<string, Binding>;
+  private readonly cssModel: SDK.CSSModel.CSSModel;
+  private readonly eventListeners: Common.EventTarget.EventDescriptor[];
   constructor(
       workspace: Workspace.Workspace.WorkspaceImpl, resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel) {
     const target = resourceTreeModel.target();
-    this._project = new ContentProviderBasedProject(
+    this.project = new ContentProviderBasedProject(
         workspace, 'resources:' + target.id(), Workspace.Workspace.projectTypes.Network, '',
         false /* isServiceProject */);
-    NetworkProject.setTargetForProject(this._project, target);
+    NetworkProject.setTargetForProject(this.project, target);
 
-    this._bindings = new Map();
+    this.bindings = new Map();
 
     const cssModel = target.model(SDK.CSSModel.CSSModel);
     console.assert(Boolean(cssModel));
-    this._cssModel = (cssModel as SDK.CSSModel.CSSModel);
-    this._eventListeners = [
-      resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.ResourceAdded, this._resourceAdded, this),
-      resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameWillNavigate, this._frameWillNavigate, this),
-      resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this),
-      this._cssModel.addEventListener(
+    this.cssModel = (cssModel as SDK.CSSModel.CSSModel);
+    this.eventListeners = [
+      resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.ResourceAdded, this.resourceAdded, this),
+      resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameWillNavigate, this.frameWillNavigate, this),
+      resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameDetached, this.frameDetached, this),
+      this.cssModel.addEventListener(
           SDK.CSSModel.Events.StyleSheetChanged,
           event => {
-            this._styleSheetChanged(event);
+            this.styleSheetChanged(event);
           },
           this),
     ];
   }
 
-  async _styleSheetChanged(
+  private async styleSheetChanged(
       event: Common.EventTarget.EventTargetEvent<{styleSheetId: string, edit?: SDK.CSSModel.Edit}>): Promise<void> {
-    const header = this._cssModel.styleSheetHeaderForId(event.data.styleSheetId);
+    const header = this.cssModel.styleSheetHeaderForId(event.data.styleSheetId);
     if (!header || !header.isInline || (header.isInline && header.isMutable)) {
       return;
     }
-    const binding = this._bindings.get(header.resourceURL());
+    const binding = this.bindings.get(header.resourceURL());
     if (!binding) {
       return;
     }
-    await binding._styleSheetChanged(header, event.data.edit || null);
+    await binding.styleSheetChanged(header, event.data.edit || null);
   }
 
-  _acceptsResource(resource: SDK.Resource.Resource): boolean {
+  private acceptsResource(resource: SDK.Resource.Resource): boolean {
     const resourceType = resource.resourceType();
     // Only load selected resource types from resources.
     if (resourceType !== Common.ResourceType.resourceTypes.Image &&
@@ -231,92 +229,97 @@ class ModelInfo {
     return true;
   }
 
-  _resourceAdded(event: Common.EventTarget.EventTargetEvent<SDK.Resource.Resource>): void {
+  private resourceAdded(event: Common.EventTarget.EventTargetEvent<SDK.Resource.Resource>): void {
     const resource = event.data;
-    if (!this._acceptsResource(resource)) {
+    if (!this.acceptsResource(resource)) {
       return;
     }
 
-    let binding = this._bindings.get(resource.url);
+    let binding = this.bindings.get(resource.url);
     if (!binding) {
-      binding = new Binding(this._project, resource);
-      this._bindings.set(resource.url, binding);
+      binding = new Binding(this.project, resource);
+      this.bindings.set(resource.url, binding);
     } else {
       binding.addResource(resource);
     }
   }
 
-  _removeFrameResources(frame: SDK.ResourceTreeModel.ResourceTreeFrame): void {
+  private removeFrameResources(frame: SDK.ResourceTreeModel.ResourceTreeFrame): void {
     for (const resource of frame.resources()) {
-      if (!this._acceptsResource(resource)) {
+      if (!this.acceptsResource(resource)) {
         continue;
       }
-      const binding = this._bindings.get(resource.url);
+      const binding = this.bindings.get(resource.url);
       if (!binding) {
         continue;
       }
-      if (binding._resources.size === 1) {
+      if (binding.resources.size === 1) {
         binding.dispose();
-        this._bindings.delete(resource.url);
+        this.bindings.delete(resource.url);
       } else {
         binding.removeResource(resource);
       }
     }
   }
 
-  _frameWillNavigate(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>): void {
-    this._removeFrameResources(event.data);
+  private frameWillNavigate(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>): void {
+    this.removeFrameResources(event.data);
   }
 
-  _frameDetached(event: Common.EventTarget
-                     .EventTargetEvent<{frame: SDK.ResourceTreeModel.ResourceTreeFrame, isSwap: boolean}>): void {
-    this._removeFrameResources(event.data.frame);
+  private frameDetached(
+      event: Common.EventTarget.EventTargetEvent<{frame: SDK.ResourceTreeModel.ResourceTreeFrame, isSwap: boolean}>):
+      void {
+    this.removeFrameResources(event.data.frame);
   }
 
-  _resetForTest(): void {
-    for (const binding of this._bindings.values()) {
+  resetForTest(): void {
+    for (const binding of this.bindings.values()) {
       binding.dispose();
     }
-    this._bindings.clear();
+    this.bindings.clear();
   }
 
   dispose(): void {
-    Common.EventTarget.removeEventListeners(this._eventListeners);
-    for (const binding of this._bindings.values()) {
+    Common.EventTarget.removeEventListeners(this.eventListeners);
+    for (const binding of this.bindings.values()) {
       binding.dispose();
     }
-    this._bindings.clear();
-    this._project.removeProject();
+    this.bindings.clear();
+    this.project.removeProject();
+  }
+
+  getProject(): ContentProviderBasedProject {
+    return this.project;
   }
 }
 
 class Binding implements TextUtils.ContentProvider.ContentProvider {
-  _resources: Set<SDK.Resource.Resource>;
-  _project: ContentProviderBasedProject;
-  _uiSourceCode: Workspace.UISourceCode.UISourceCode;
-  _edits: {
+  readonly resources: Set<SDK.Resource.Resource>;
+  private readonly project: ContentProviderBasedProject;
+  private readonly uiSourceCode: Workspace.UISourceCode.UISourceCode;
+  private edits: {
     stylesheet: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader,
     edit: SDK.CSSModel.Edit|null,
   }[];
   constructor(project: ContentProviderBasedProject, resource: SDK.Resource.Resource) {
-    this._resources = new Set([resource]);
-    this._project = project;
-    this._uiSourceCode = this._project.createUISourceCode(resource.url, resource.contentType());
-    boundUISourceCodes.add(this._uiSourceCode);
-    NetworkProject.setInitialFrameAttribution(this._uiSourceCode, resource.frameId);
-    this._project.addUISourceCodeWithProvider(this._uiSourceCode, this, resourceMetadata(resource), resource.mimeType);
-    this._edits = [];
+    this.resources = new Set([resource]);
+    this.project = project;
+    this.uiSourceCode = this.project.createUISourceCode(resource.url, resource.contentType());
+    boundUISourceCodes.add(this.uiSourceCode);
+    NetworkProject.setInitialFrameAttribution(this.uiSourceCode, resource.frameId);
+    this.project.addUISourceCodeWithProvider(this.uiSourceCode, this, resourceMetadata(resource), resource.mimeType);
+    this.edits = [];
   }
 
-  _inlineStyles(): SDK.CSSStyleSheetHeader.CSSStyleSheetHeader[] {
-    const target = NetworkProject.targetForUISourceCode(this._uiSourceCode);
+  private inlineStyles(): SDK.CSSStyleSheetHeader.CSSStyleSheetHeader[] {
+    const target = NetworkProject.targetForUISourceCode(this.uiSourceCode);
     const stylesheets: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader[] = [];
     if (!target) {
       return stylesheets;
     }
     const cssModel = target.model(SDK.CSSModel.CSSModel);
     if (cssModel) {
-      for (const headerId of cssModel.getStyleSheetIdsForURL(this._uiSourceCode.url())) {
+      for (const headerId of cssModel.getStyleSheetIdsForURL(this.uiSourceCode.url())) {
         const header = cssModel.styleSheetHeaderForId(headerId);
         if (header) {
           stylesheets.push(header);
@@ -326,8 +329,8 @@ class Binding implements TextUtils.ContentProvider.ContentProvider {
     return stylesheets;
   }
 
-  _inlineScripts(): SDK.Script.Script[] {
-    const target = NetworkProject.targetForUISourceCode(this._uiSourceCode);
+  private inlineScripts(): SDK.Script.Script[] {
+    const target = NetworkProject.targetForUISourceCode(this.uiSourceCode);
     if (!target) {
       return [];
     }
@@ -335,28 +338,28 @@ class Binding implements TextUtils.ContentProvider.ContentProvider {
     if (!debuggerModel) {
       return [];
     }
-    return debuggerModel.scriptsForSourceURL(this._uiSourceCode.url());
+    return debuggerModel.scriptsForSourceURL(this.uiSourceCode.url());
   }
 
-  async _styleSheetChanged(stylesheet: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, edit: SDK.CSSModel.Edit|null):
+  async styleSheetChanged(stylesheet: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, edit: SDK.CSSModel.Edit|null):
       Promise<void> {
-    this._edits.push({stylesheet, edit});
-    if (this._edits.length > 1) {
+    this.edits.push({stylesheet, edit});
+    if (this.edits.length > 1) {
       return;
-    }  // There is already a _styleSheetChanged loop running
+    }  // There is already a styleSheetChanged loop running
 
-    const {content} = await this._uiSourceCode.requestContent();
+    const {content} = await this.uiSourceCode.requestContent();
     if (content !== null) {
-      await this._innerStyleSheetChanged(content);
+      await this.innerStyleSheetChanged(content);
     }
-    this._edits = [];
+    this.edits = [];
   }
 
-  async _innerStyleSheetChanged(content: string): Promise<void> {
-    const scripts = this._inlineScripts();
-    const styles = this._inlineStyles();
+  private async innerStyleSheetChanged(content: string): Promise<void> {
+    const scripts = this.inlineScripts();
+    const styles = this.inlineStyles();
     let text: TextUtils.Text.Text = new TextUtils.Text.Text(content);
-    for (const data of this._edits) {
+    for (const data of this.edits) {
       const edit = data.edit;
       if (!edit) {
         continue;
@@ -389,46 +392,46 @@ class Binding implements TextUtils.ContentProvider.ContentProvider {
       }
       await Promise.all(updatePromises);
     }
-    this._uiSourceCode.addRevision(text.value());
+    this.uiSourceCode.addRevision(text.value());
   }
 
   addResource(resource: SDK.Resource.Resource): void {
-    this._resources.add(resource);
-    NetworkProject.addFrameAttribution(this._uiSourceCode, resource.frameId);
+    this.resources.add(resource);
+    NetworkProject.addFrameAttribution(this.uiSourceCode, resource.frameId);
   }
 
   removeResource(resource: SDK.Resource.Resource): void {
-    this._resources.delete(resource);
-    NetworkProject.removeFrameAttribution(this._uiSourceCode, resource.frameId);
+    this.resources.delete(resource);
+    NetworkProject.removeFrameAttribution(this.uiSourceCode, resource.frameId);
   }
 
   dispose(): void {
-    this._project.removeFile(this._uiSourceCode.url());
+    this.project.removeFile(this.uiSourceCode.url());
   }
 
-  _firstResource(): SDK.Resource.Resource {
-    console.assert(this._resources.size > 0);
-    return this._resources.values().next().value;
+  private firstResource(): SDK.Resource.Resource {
+    console.assert(this.resources.size > 0);
+    return this.resources.values().next().value;
   }
 
   contentURL(): string {
-    return this._firstResource().contentURL();
+    return this.firstResource().contentURL();
   }
 
   contentType(): Common.ResourceType.ResourceType {
-    return this._firstResource().contentType();
+    return this.firstResource().contentType();
   }
 
   contentEncoded(): Promise<boolean> {
-    return this._firstResource().contentEncoded();
+    return this.firstResource().contentEncoded();
   }
 
   requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
-    return this._firstResource().requestContent();
+    return this.firstResource().requestContent();
   }
 
   searchInContent(query: string, caseSensitive: boolean, isRegex: boolean):
       Promise<TextUtils.ContentProvider.SearchMatch[]> {
-    return this._firstResource().searchInContent(query, caseSensitive, isRegex);
+    return this.firstResource().searchInContent(query, caseSensitive, isRegex);
   }
 }

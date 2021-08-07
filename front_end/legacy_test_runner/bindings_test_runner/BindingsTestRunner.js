@@ -174,8 +174,8 @@ BindingsTestRunner.waitForStyleSheetRemoved = function(urlSuffix) {
   }
 };
 
-TestRunner.addSniffer(Bindings.CompilerScriptMapping.prototype, '_sourceMapAttachedForTest', onSourceMap, true);
-TestRunner.addSniffer(Bindings.SASSSourceMapping.prototype, '_sourceMapAttachedForTest', onSourceMap, true);
+TestRunner.addSniffer(Bindings.CompilerScriptMapping.prototype, 'sourceMapAttachedForTest', onSourceMap, true);
+TestRunner.addSniffer(Bindings.SASSSourceMapping.prototype, 'sourceMapAttachedForTest', onSourceMap, true);
 const sourceMapCallbacks = new Map();
 
 function onSourceMap(sourceMap) {

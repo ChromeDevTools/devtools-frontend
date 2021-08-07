@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -41,26 +39,26 @@ const uiSourceCodeToScriptsMap = new WeakMap<Workspace.UISourceCode.UISourceCode
 const scriptToUISourceCodeMap = new WeakMap<SDK.Script.Script, Workspace.UISourceCode.UISourceCode>();
 
 export class DefaultScriptMapping implements DebuggerSourceMapping {
-  _debuggerModel: SDK.DebuggerModel.DebuggerModel;
-  _debuggerWorkspaceBinding: DebuggerWorkspaceBinding;
-  _project: ContentProviderBasedProject;
-  _eventListeners: Common.EventTarget.EventDescriptor[];
-  _uiSourceCodeToScriptsMap: WeakMap<Workspace.UISourceCode.UISourceCode, SDK.Script.Script>;
+  private readonly debuggerModel: SDK.DebuggerModel.DebuggerModel;
+  private readonly debuggerWorkspaceBinding: DebuggerWorkspaceBinding;
+  private readonly project: ContentProviderBasedProject;
+  private readonly eventListeners: Common.EventTarget.EventDescriptor[];
+  private readonly uiSourceCodeToScriptsMap: WeakMap<Workspace.UISourceCode.UISourceCode, SDK.Script.Script>;
   constructor(
       debuggerModel: SDK.DebuggerModel.DebuggerModel, workspace: Workspace.Workspace.WorkspaceImpl,
       debuggerWorkspaceBinding: DebuggerWorkspaceBinding) {
-    this._debuggerModel = debuggerModel;
-    this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
-    this._project = new ContentProviderBasedProject(
+    this.debuggerModel = debuggerModel;
+    this.debuggerWorkspaceBinding = debuggerWorkspaceBinding;
+    this.project = new ContentProviderBasedProject(
         workspace, 'debugger:' + debuggerModel.target().id(), Workspace.Workspace.projectTypes.Debugger, '',
         true /* isServiceProject */);
-    this._eventListeners = [
-      debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this),
-      debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this),
+    this.eventListeners = [
+      debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this.debuggerReset, this),
+      debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this.parsedScriptSource, this),
       debuggerModel.addEventListener(
-          SDK.DebuggerModel.Events.DiscardedAnonymousScriptSource, this._discardedScriptSource, this),
+          SDK.DebuggerModel.Events.DiscardedAnonymousScriptSource, this.discardedScriptSource, this),
     ];
-    this._uiSourceCodeToScriptsMap = new WeakMap();
+    this.uiSourceCodeToScriptsMap = new WeakMap();
   }
 
   static scriptForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.Script.Script|null {
@@ -87,24 +85,24 @@ export class DefaultScriptMapping implements DebuggerSourceMapping {
 
   uiLocationToRawLocations(uiSourceCode: Workspace.UISourceCode.UISourceCode, lineNumber: number, columnNumber: number):
       SDK.DebuggerModel.Location[] {
-    const script = this._uiSourceCodeToScriptsMap.get(uiSourceCode);
+    const script = this.uiSourceCodeToScriptsMap.get(uiSourceCode);
     if (!script) {
       return [];
     }
     if (script.isInlineScriptWithSourceURL()) {
-      return [this._debuggerModel.createRawLocation(
+      return [this.debuggerModel.createRawLocation(
           script, lineNumber + script.lineOffset, lineNumber ? columnNumber : columnNumber + script.columnOffset)];
     }
-    return [this._debuggerModel.createRawLocation(script, lineNumber, columnNumber)];
+    return [this.debuggerModel.createRawLocation(script, lineNumber, columnNumber)];
   }
 
-  _parsedScriptSource(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): void {
+  private parsedScriptSource(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): void {
     const script = event.data;
     const name = Common.ParsedURL.ParsedURL.extractName(script.sourceURL);
     const url = 'debugger:///VM' + script.scriptId + (name ? ' ' + name : '');
 
-    const uiSourceCode = this._project.createUISourceCode(url, Common.ResourceType.resourceTypes.Script);
-    this._uiSourceCodeToScriptsMap.set(uiSourceCode, script);
+    const uiSourceCode = this.project.createUISourceCode(url, Common.ResourceType.resourceTypes.Script);
+    this.uiSourceCodeToScriptsMap.set(uiSourceCode, script);
     const scriptSet = uiSourceCodeToScriptsMap.get(uiSourceCode);
     if (!scriptSet) {
       uiSourceCodeToScriptsMap.set(uiSourceCode, new Set([script]));
@@ -112,18 +110,18 @@ export class DefaultScriptMapping implements DebuggerSourceMapping {
       scriptSet.add(script);
     }
     scriptToUISourceCodeMap.set(script, uiSourceCode);
-    this._project.addUISourceCodeWithProvider(uiSourceCode, script, null, 'text/javascript');
-    this._debuggerWorkspaceBinding.updateLocations(script);
+    this.project.addUISourceCodeWithProvider(uiSourceCode, script, null, 'text/javascript');
+    this.debuggerWorkspaceBinding.updateLocations(script);
   }
 
-  _discardedScriptSource(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): void {
+  private discardedScriptSource(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): void {
     const script = event.data;
     const uiSourceCode = scriptToUISourceCodeMap.get(script);
     if (!uiSourceCode) {
       return;
     }
     scriptToUISourceCodeMap.delete(script);
-    this._uiSourceCodeToScriptsMap.delete(uiSourceCode);
+    this.uiSourceCodeToScriptsMap.delete(uiSourceCode);
     const scripts = uiSourceCodeToScriptsMap.get(uiSourceCode);
     if (scripts) {
       scripts.delete(script);
@@ -131,16 +129,16 @@ export class DefaultScriptMapping implements DebuggerSourceMapping {
         uiSourceCodeToScriptsMap.delete(uiSourceCode);
       }
     }
-    this._project.removeUISourceCode(uiSourceCode.url());
+    this.project.removeUISourceCode(uiSourceCode.url());
   }
 
-  _debuggerReset(): void {
-    this._project.reset();
+  private debuggerReset(): void {
+    this.project.reset();
   }
 
   dispose(): void {
-    Common.EventTarget.removeEventListeners(this._eventListeners);
-    this._debuggerReset();
-    this._project.dispose();
+    Common.EventTarget.removeEventListeners(this.eventListeners);
+    this.debuggerReset();
+    this.project.dispose();
   }
 }

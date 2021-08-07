@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
@@ -49,11 +47,11 @@ export class PresentationConsoleMessageManager implements
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.DebuggerModel.DebuggerModel, this);
 
     SDK.ConsoleModel.ConsoleModel.instance().addEventListener(
-        SDK.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
+        SDK.ConsoleModel.Events.ConsoleCleared, this.consoleCleared, this);
     SDK.ConsoleModel.ConsoleModel.instance().addEventListener(
         SDK.ConsoleModel.Events.MessageAdded,
-        event => this._consoleMessageAdded((event.data as SDK.ConsoleModel.ConsoleMessage)));
-    SDK.ConsoleModel.ConsoleModel.instance().messages().forEach(this._consoleMessageAdded, this);
+        event => this.consoleMessageAdded((event.data as SDK.ConsoleModel.ConsoleMessage)));
+    SDK.ConsoleModel.ConsoleModel.instance().messages().forEach(this.consoleMessageAdded, this);
   }
 
   modelAdded(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
@@ -63,11 +61,11 @@ export class PresentationConsoleMessageManager implements
   modelRemoved(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
     const helper = debuggerModelToMessageHelperMap.get(debuggerModel);
     if (helper) {
-      helper._consoleCleared();
+      helper.consoleCleared();
     }
   }
 
-  _consoleMessageAdded(message: SDK.ConsoleModel.ConsoleMessage): void {
+  private consoleMessageAdded(message: SDK.ConsoleModel.ConsoleMessage): void {
     const runtimeModel = message.runtimeModel();
     if (!message.isErrorOrWarning() || !message.runtimeModel() ||
         message.source === Protocol.Log.LogEntrySource.Violation || !runtimeModel) {
@@ -75,120 +73,121 @@ export class PresentationConsoleMessageManager implements
     }
     const helper = debuggerModelToMessageHelperMap.get(runtimeModel.debuggerModel());
     if (helper) {
-      helper._consoleMessageAdded(message);
+      helper.consoleMessageAdded(message);
     }
   }
 
-  _consoleCleared(): void {
+  private consoleCleared(): void {
     for (const debuggerModel of SDK.TargetManager.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel)) {
       const helper = debuggerModelToMessageHelperMap.get(debuggerModel);
       if (helper) {
-        helper._consoleCleared();
+        helper.consoleCleared();
       }
     }
   }
 }
 
 export class PresentationConsoleMessageHelper {
-  _debuggerModel: SDK.DebuggerModel.DebuggerModel;
-  _pendingConsoleMessages: Map<string, SDK.ConsoleModel.ConsoleMessage[]>;
-  _presentationConsoleMessages: PresentationConsoleMessage[];
-  _locationPool: LiveLocationPool;
+  private readonly debuggerModel: SDK.DebuggerModel.DebuggerModel;
+  private pendingConsoleMessages: Map<string, SDK.ConsoleModel.ConsoleMessage[]>;
+  private presentationConsoleMessages: PresentationConsoleMessage[];
+  private readonly locationPool: LiveLocationPool;
 
   constructor(debuggerModel: SDK.DebuggerModel.DebuggerModel) {
-    this._debuggerModel = debuggerModel;
+    this.debuggerModel = debuggerModel;
 
-    this._pendingConsoleMessages = new Map();
+    this.pendingConsoleMessages = new Map();
 
-    this._presentationConsoleMessages = [];
+    this.presentationConsoleMessages = [];
 
     // TODO(dgozman): queueMicrotask because we race with DebuggerWorkspaceBinding on ParsedScriptSource event delivery.
     debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, event => {
       queueMicrotask(() => {
-        this._parsedScriptSource(event);
+        this.parsedScriptSource(event);
       });
     });
-    debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this);
+    debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this.debuggerReset, this);
 
-    this._locationPool = new LiveLocationPool();
+    this.locationPool = new LiveLocationPool();
   }
 
-  _consoleMessageAdded(message: SDK.ConsoleModel.ConsoleMessage): void {
-    const rawLocation = this._rawLocation(message);
+  consoleMessageAdded(message: SDK.ConsoleModel.ConsoleMessage): void {
+    const rawLocation = this.rawLocation(message);
     if (rawLocation) {
-      this._addConsoleMessageToScript(message, rawLocation);
+      this.addConsoleMessageToScript(message, rawLocation);
     } else {
-      this._addPendingConsoleMessage(message);
+      this.addPendingConsoleMessage(message);
     }
   }
 
-  _rawLocation(message: SDK.ConsoleModel.ConsoleMessage): SDK.DebuggerModel.Location|null {
+  private rawLocation(message: SDK.ConsoleModel.ConsoleMessage): SDK.DebuggerModel.Location|null {
     if (message.scriptId) {
-      return this._debuggerModel.createRawLocationByScriptId(message.scriptId, message.line, message.column);
+      return this.debuggerModel.createRawLocationByScriptId(message.scriptId, message.line, message.column);
     }
     const callFrame = message.stackTrace && message.stackTrace.callFrames ? message.stackTrace.callFrames[0] : null;
     if (callFrame) {
-      return this._debuggerModel.createRawLocationByScriptId(
+      return this.debuggerModel.createRawLocationByScriptId(
           callFrame.scriptId, callFrame.lineNumber, callFrame.columnNumber);
     }
     if (message.url) {
-      return this._debuggerModel.createRawLocationByURL(message.url, message.line, message.column);
+      return this.debuggerModel.createRawLocationByURL(message.url, message.line, message.column);
     }
     return null;
   }
 
-  _addConsoleMessageToScript(message: SDK.ConsoleModel.ConsoleMessage, rawLocation: SDK.DebuggerModel.Location): void {
-    this._presentationConsoleMessages.push(new PresentationConsoleMessage(message, rawLocation, this._locationPool));
+  private addConsoleMessageToScript(message: SDK.ConsoleModel.ConsoleMessage, rawLocation: SDK.DebuggerModel.Location):
+      void {
+    this.presentationConsoleMessages.push(new PresentationConsoleMessage(message, rawLocation, this.locationPool));
   }
 
-  _addPendingConsoleMessage(message: SDK.ConsoleModel.ConsoleMessage): void {
+  private addPendingConsoleMessage(message: SDK.ConsoleModel.ConsoleMessage): void {
     if (!message.url) {
       return;
     }
-    const pendingMessages = this._pendingConsoleMessages.get(message.url);
+    const pendingMessages = this.pendingConsoleMessages.get(message.url);
     if (!pendingMessages) {
-      this._pendingConsoleMessages.set(message.url, [message]);
+      this.pendingConsoleMessages.set(message.url, [message]);
     } else {
       pendingMessages.push(message);
     }
   }
 
-  _parsedScriptSource(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): void {
+  private parsedScriptSource(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): void {
     const script = event.data;
 
-    const messages = this._pendingConsoleMessages.get(script.sourceURL);
+    const messages = this.pendingConsoleMessages.get(script.sourceURL);
     if (!messages) {
       return;
     }
 
     const pendingMessages = [];
     for (const message of messages) {
-      const rawLocation = this._rawLocation(message);
+      const rawLocation = this.rawLocation(message);
       if (rawLocation && script.scriptId === rawLocation.scriptId) {
-        this._addConsoleMessageToScript(message, rawLocation);
+        this.addConsoleMessageToScript(message, rawLocation);
       } else {
         pendingMessages.push(message);
       }
     }
 
     if (pendingMessages.length) {
-      this._pendingConsoleMessages.set(script.sourceURL, pendingMessages);
+      this.pendingConsoleMessages.set(script.sourceURL, pendingMessages);
     } else {
-      this._pendingConsoleMessages.delete(script.sourceURL);
+      this.pendingConsoleMessages.delete(script.sourceURL);
     }
   }
 
-  _consoleCleared(): void {
-    this._pendingConsoleMessages = new Map();
-    this._debuggerReset();
+  consoleCleared(): void {
+    this.pendingConsoleMessages = new Map();
+    this.debuggerReset();
   }
 
-  _debuggerReset(): void {
-    for (const message of this._presentationConsoleMessages) {
+  private debuggerReset(): void {
+    for (const message of this.presentationConsoleMessages) {
       message.dispose();
     }
-    this._presentationConsoleMessages = [];
-    this._locationPool.disposeAll();
+    this.presentationConsoleMessages = [];
+    this.locationPool.disposeAll();
   }
 }
 
@@ -201,10 +200,10 @@ export class PresentationConsoleMessage extends Workspace.UISourceCode.Message {
     const level = message.level === Protocol.Log.LogEntryLevel.Error ? Workspace.UISourceCode.Message.Level.Error :
                                                                        Workspace.UISourceCode.Message.Level.Warning;
     super(level, message.messageText);
-    DebuggerWorkspaceBinding.instance().createLiveLocation(rawLocation, this._updateLocation.bind(this), locationPool);
+    DebuggerWorkspaceBinding.instance().createLiveLocation(rawLocation, this.updateLocation.bind(this), locationPool);
   }
 
-  async _updateLocation(liveLocation: LiveLocation): Promise<void> {
+  private async updateLocation(liveLocation: LiveLocation): Promise<void> {
     if (this.uiSourceCode) {
       this.uiSourceCode.removeMessage(this);
     }

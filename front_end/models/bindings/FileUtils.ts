@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as Common from '../../core/common/common.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -56,85 +54,85 @@ declare const DecompressionStream: {
 };
 
 export class ChunkedFileReader implements ChunkedReader {
-  _file: File|null;
-  _fileSize: number;
-  _loadedSize: number;
-  _streamReader: ReadableStreamReader<Uint8Array>|null;
-  _chunkSize: number;
-  _chunkTransferredCallback: ((arg0: ChunkedReader) => void)|undefined;
-  _decoder: TextDecoder;
-  _isCanceled: boolean;
-  _error: DOMException|null;
-  _transferFinished!: (arg0: boolean) => void;
-  _output?: Common.StringOutputStream.OutputStream;
-  _reader?: FileReader|null;
+  private file: File|null;
+  private readonly fileSizeInternal: number;
+  private loadedSizeInternal: number;
+  private streamReader: ReadableStreamReader<Uint8Array>|null;
+  private readonly chunkSize: number;
+  private readonly chunkTransferredCallback: ((arg0: ChunkedReader) => void)|undefined;
+  private readonly decoder: TextDecoder;
+  private isCanceled: boolean;
+  private errorInternal: DOMException|null;
+  private transferFinished!: (arg0: boolean) => void;
+  private output?: Common.StringOutputStream.OutputStream;
+  private reader?: FileReader|null;
 
   constructor(file: File, chunkSize: number, chunkTransferredCallback?: ((arg0: ChunkedReader) => void)) {
-    this._file = file;
-    this._fileSize = file.size;
-    this._loadedSize = 0;
-    this._chunkSize = chunkSize;
-    this._chunkTransferredCallback = chunkTransferredCallback;
-    this._decoder = new TextDecoder();
-    this._isCanceled = false;
-    this._error = null;
-    this._streamReader = null;
+    this.file = file;
+    this.fileSizeInternal = file.size;
+    this.loadedSizeInternal = 0;
+    this.chunkSize = chunkSize;
+    this.chunkTransferredCallback = chunkTransferredCallback;
+    this.decoder = new TextDecoder();
+    this.isCanceled = false;
+    this.errorInternal = null;
+    this.streamReader = null;
   }
 
   async read(output: Common.StringOutputStream.OutputStream): Promise<boolean> {
-    if (this._chunkTransferredCallback) {
-      this._chunkTransferredCallback(this);
+    if (this.chunkTransferredCallback) {
+      this.chunkTransferredCallback(this);
     }
 
-    if (this._file?.type.endsWith('gzip')) {
-      const stream = this._decompressStream(this._file.stream());
-      this._streamReader = stream.getReader();
+    if (this.file?.type.endsWith('gzip')) {
+      const stream = this.decompressStream(this.file.stream());
+      this.streamReader = stream.getReader();
     } else {
-      this._reader = new FileReader();
-      this._reader.onload = this._onChunkLoaded.bind(this);
-      this._reader.onerror = this._onError.bind(this);
+      this.reader = new FileReader();
+      this.reader.onload = this.onChunkLoaded.bind(this);
+      this.reader.onerror = this.onError.bind(this);
     }
 
-    this._output = output;
-    this._loadChunk();
+    this.output = output;
+    this.loadChunk();
 
     return new Promise(resolve => {
-      this._transferFinished = resolve;
+      this.transferFinished = resolve;
     });
   }
 
   cancel(): void {
-    this._isCanceled = true;
+    this.isCanceled = true;
   }
 
   loadedSize(): number {
-    return this._loadedSize;
+    return this.loadedSizeInternal;
   }
 
   fileSize(): number {
-    return this._fileSize;
+    return this.fileSizeInternal;
   }
 
   fileName(): string {
-    if (!this._file) {
+    if (!this.file) {
       return '';
     }
-    return this._file.name;
+    return this.file.name;
   }
 
   error(): DOMException|null {
-    return this._error;
+    return this.errorInternal;
   }
 
   // Decompress gzip natively thanks to https://wicg.github.io/compression/
-  _decompressStream(stream: ReadableStream): ReadableStream {
+  private decompressStream(stream: ReadableStream): ReadableStream {
     const ds = new DecompressionStream('gzip');
     const decompressionStream = stream.pipeThrough(ds);
     return decompressionStream;
   }
 
-  _onChunkLoaded(event: Event): void {
-    if (this._isCanceled) {
+  private onChunkLoaded(event: Event): void {
+    if (this.isCanceled) {
       return;
     }
 
@@ -143,126 +141,126 @@ export class ChunkedFileReader implements ChunkedReader {
       return;
     }
 
-    if (!this._reader) {
+    if (!this.reader) {
       return;
     }
 
-    const buffer = (this._reader.result as ArrayBuffer);
-    this._loadedSize += buffer.byteLength;
-    const endOfFile = this._loadedSize === this._fileSize;
-    this._decodeChunkBuffer(buffer, endOfFile);
+    const buffer = (this.reader.result as ArrayBuffer);
+    this.loadedSizeInternal += buffer.byteLength;
+    const endOfFile = this.loadedSizeInternal === this.fileSizeInternal;
+    this.decodeChunkBuffer(buffer, endOfFile);
   }
 
-  async _decodeChunkBuffer(buffer: ArrayBuffer, endOfFile: boolean): Promise<void> {
-    if (!this._output) {
+  private async decodeChunkBuffer(buffer: ArrayBuffer, endOfFile: boolean): Promise<void> {
+    if (!this.output) {
       return;
     }
-    const decodedString = this._decoder.decode(buffer, {stream: !endOfFile});
-    await this._output.write(decodedString);
-    if (this._isCanceled) {
+    const decodedString = this.decoder.decode(buffer, {stream: !endOfFile});
+    await this.output.write(decodedString);
+    if (this.isCanceled) {
       return;
     }
-    if (this._chunkTransferredCallback) {
-      this._chunkTransferredCallback(this);
+    if (this.chunkTransferredCallback) {
+      this.chunkTransferredCallback(this);
     }
 
     if (endOfFile) {
-      this._finishRead();
+      this.finishRead();
       return;
     }
-    this._loadChunk();
+    this.loadChunk();
   }
 
-  _finishRead(): void {
-    if (!this._output) {
+  private finishRead(): void {
+    if (!this.output) {
       return;
     }
-    this._file = null;
-    this._reader = null;
-    this._output.close();
-    this._transferFinished(!this._error);
+    this.file = null;
+    this.reader = null;
+    this.output.close();
+    this.transferFinished(!this.errorInternal);
   }
 
-  async _loadChunk(): Promise<void> {
-    if (!this._output || !this._file) {
+  private async loadChunk(): Promise<void> {
+    if (!this.output || !this.file) {
       return;
     }
-    if (this._streamReader) {
-      const {value, done} = await this._streamReader.read();
+    if (this.streamReader) {
+      const {value, done} = await this.streamReader.read();
       if (done || !value) {
-        return this._finishRead();
+        return this.finishRead();
       }
-      this._decodeChunkBuffer(value.buffer, false);
+      this.decodeChunkBuffer(value.buffer, false);
     }
-    if (this._reader) {
-      const chunkStart = this._loadedSize;
-      const chunkEnd = Math.min(this._fileSize, chunkStart + this._chunkSize);
-      const nextPart = this._file.slice(chunkStart, chunkEnd);
-      this._reader.readAsArrayBuffer(nextPart);
+    if (this.reader) {
+      const chunkStart = this.loadedSizeInternal;
+      const chunkEnd = Math.min(this.fileSizeInternal, chunkStart + this.chunkSize);
+      const nextPart = this.file.slice(chunkStart, chunkEnd);
+      this.reader.readAsArrayBuffer(nextPart);
     }
   }
 
-  _onError(event: Event): void {
+  private onError(event: Event): void {
     const eventTarget = (event.target as FileReader);
-    this._error = eventTarget.error;
-    this._transferFinished(false);
+    this.errorInternal = eventTarget.error;
+    this.transferFinished(false);
   }
 }
 
 export class FileOutputStream implements Common.StringOutputStream.OutputStream {
-  _writeCallbacks: (() => void)[];
-  _fileName!: string;
-  _closed?: boolean;
+  private writeCallbacks: (() => void)[];
+  private fileName!: string;
+  private closed?: boolean;
   constructor() {
-    this._writeCallbacks = [];
+    this.writeCallbacks = [];
   }
 
   async open(fileName: string): Promise<boolean> {
-    this._closed = false;
+    this.closed = false;
     /** @type {!Array<function():void>} */
-    this._writeCallbacks = [];
-    this._fileName = fileName;
-    const saveResponse = await Workspace.FileManager.FileManager.instance().save(this._fileName, '', true);
+    this.writeCallbacks = [];
+    this.fileName = fileName;
+    const saveResponse = await Workspace.FileManager.FileManager.instance().save(this.fileName, '', true);
     if (saveResponse) {
       Workspace.FileManager.FileManager.instance().addEventListener(
-          Workspace.FileManager.Events.AppendedToURL, this._onAppendDone, this);
+          Workspace.FileManager.Events.AppendedToURL, this.onAppendDone, this);
     }
     return Boolean(saveResponse);
   }
 
   write(data: string): Promise<void> {
     return new Promise(resolve => {
-      this._writeCallbacks.push(resolve);
-      Workspace.FileManager.FileManager.instance().append(this._fileName, data);
+      this.writeCallbacks.push(resolve);
+      Workspace.FileManager.FileManager.instance().append(this.fileName, data);
     });
   }
 
   async close(): Promise<void> {
-    this._closed = true;
-    if (this._writeCallbacks.length) {
+    this.closed = true;
+    if (this.writeCallbacks.length) {
       return;
     }
     Workspace.FileManager.FileManager.instance().removeEventListener(
-        Workspace.FileManager.Events.AppendedToURL, this._onAppendDone, this);
-    Workspace.FileManager.FileManager.instance().close(this._fileName);
+        Workspace.FileManager.Events.AppendedToURL, this.onAppendDone, this);
+    Workspace.FileManager.FileManager.instance().close(this.fileName);
   }
 
-  _onAppendDone(event: Common.EventTarget.EventTargetEvent): void {
-    if (event.data !== this._fileName) {
+  private onAppendDone(event: Common.EventTarget.EventTargetEvent): void {
+    if (event.data !== this.fileName) {
       return;
     }
-    const writeCallback = this._writeCallbacks.shift();
+    const writeCallback = this.writeCallbacks.shift();
     if (writeCallback) {
       writeCallback();
     }
-    if (this._writeCallbacks.length) {
+    if (this.writeCallbacks.length) {
       return;
     }
-    if (!this._closed) {
+    if (!this.closed) {
       return;
     }
     Workspace.FileManager.FileManager.instance().removeEventListener(
-        Workspace.FileManager.Events.AppendedToURL, this._onAppendDone, this);
-    Workspace.FileManager.FileManager.instance().close(this._fileName);
+        Workspace.FileManager.Events.AppendedToURL, this.onAppendDone, this);
+    Workspace.FileManager.FileManager.instance().close(this.fileName);
   }
 }

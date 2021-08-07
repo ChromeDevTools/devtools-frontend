@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
@@ -23,24 +21,24 @@ import {ResourceScriptMapping} from './ResourceScriptMapping.js';
 let debuggerWorkspaceBindingInstance: DebuggerWorkspaceBinding|undefined;
 
 export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
-  _workspace: Workspace.Workspace.WorkspaceImpl;
-  _sourceMappings: DebuggerSourceMapping[];
-  _debuggerModelToData: Map<SDK.DebuggerModel.DebuggerModel, ModelData>;
-  _liveLocationPromises: Set<Promise<void|Location|StackTraceTopFrameLocation|null>>;
+  readonly workspace: Workspace.Workspace.WorkspaceImpl;
+  private readonly sourceMappings: DebuggerSourceMapping[];
+  private readonly debuggerModelToData: Map<SDK.DebuggerModel.DebuggerModel, ModelData>;
+  private readonly liveLocationPromises: Set<Promise<void|Location|StackTraceTopFrameLocation|null>>;
   pluginManager: DebuggerLanguagePluginManager|null;
   private constructor(targetManager: SDK.TargetManager.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl) {
-    this._workspace = workspace;
+    this.workspace = workspace;
 
-    this._sourceMappings = [];
+    this.sourceMappings = [];
 
-    this._debuggerModelToData = new Map();
+    this.debuggerModelToData = new Map();
     targetManager.addModelListener(
-        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared, this._globalObjectCleared, this);
+        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this);
     targetManager.addModelListener(
-        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this._debuggerResumed, this);
+        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this.debuggerResumed, this);
     targetManager.observeModels(SDK.DebuggerModel.DebuggerModel, this);
 
-    this._liveLocationPromises = new Set();
+    this.liveLocationPromises = new Set();
 
     this.pluginManager = Root.Runtime.experiments.isEnabled('wasmDWARFDebugging') ?
         new DebuggerLanguagePluginManager(targetManager, workspace, this) :
@@ -70,13 +68,14 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
   }
 
   addSourceMapping(sourceMapping: DebuggerSourceMapping): void {
-    this._sourceMappings.push(sourceMapping);
+    this.sourceMappings.push(sourceMapping);
   }
 
-  async _computeAutoStepRanges(mode: SDK.DebuggerModel.StepMode, callFrame: SDK.DebuggerModel.CallFrame): Promise<{
-    start: SDK.DebuggerModel.Location,
-    end: SDK.DebuggerModel.Location,
-  }[]> {
+  private async computeAutoStepRanges(mode: SDK.DebuggerModel.StepMode, callFrame: SDK.DebuggerModel.CallFrame):
+      Promise<{
+        start: SDK.DebuggerModel.Location,
+        end: SDK.DebuggerModel.Location,
+      }[]> {
     function contained(location: SDK.DebuggerModel.Location, range: {
       start: SDK.DebuggerModel.Location,
       end: SDK.DebuggerModel.Location,
@@ -131,16 +130,16 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
   }
 
   modelAdded(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
-    this._debuggerModelToData.set(debuggerModel, new ModelData(debuggerModel, this));
-    debuggerModel.setComputeAutoStepRangesCallback(this._computeAutoStepRanges.bind(this));
+    this.debuggerModelToData.set(debuggerModel, new ModelData(debuggerModel, this));
+    debuggerModel.setComputeAutoStepRangesCallback(this.computeAutoStepRanges.bind(this));
   }
 
   modelRemoved(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
     debuggerModel.setComputeAutoStepRangesCallback(null);
-    const modelData = this._debuggerModelToData.get(debuggerModel);
+    const modelData = this.debuggerModelToData.get(debuggerModel);
     if (modelData) {
-      modelData._dispose();
-      this._debuggerModelToData.delete(debuggerModel);
+      modelData.dispose();
+      this.debuggerModelToData.delete(debuggerModel);
     }
   }
 
@@ -149,21 +148,21 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
    * pending LiveLocations are processed.
    */
   async pendingLiveLocationChangesPromise(): Promise<void|Location|StackTraceTopFrameLocation|null> {
-    await Promise.all(this._liveLocationPromises);
+    await Promise.all(this.liveLocationPromises);
   }
 
-  _recordLiveLocationChange(promise: Promise<void|Location|StackTraceTopFrameLocation|null>): void {
+  private recordLiveLocationChange(promise: Promise<void|Location|StackTraceTopFrameLocation|null>): void {
     promise.then(() => {
-      this._liveLocationPromises.delete(promise);
+      this.liveLocationPromises.delete(promise);
     });
-    this._liveLocationPromises.add(promise);
+    this.liveLocationPromises.add(promise);
   }
 
   async updateLocations(script: SDK.Script.Script): Promise<void> {
-    const modelData = this._debuggerModelToData.get(script.debuggerModel);
+    const modelData = this.debuggerModelToData.get(script.debuggerModel);
     if (modelData) {
-      const updatePromise = modelData._updateLocations(script);
-      this._recordLiveLocationChange(updatePromise);
+      const updatePromise = modelData.updateLocations(script);
+      this.recordLiveLocationChange(updatePromise);
       await updatePromise;
     }
   }
@@ -171,12 +170,12 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
   async createLiveLocation(
       rawLocation: SDK.DebuggerModel.Location, updateDelegate: (arg0: LiveLocation) => Promise<void>,
       locationPool: LiveLocationPool): Promise<Location|null> {
-    const modelData = this._debuggerModelToData.get(rawLocation.debuggerModel);
+    const modelData = this.debuggerModelToData.get(rawLocation.debuggerModel);
     if (!modelData) {
       return null;
     }
-    const liveLocationPromise = modelData._createLiveLocation(rawLocation, updateDelegate, locationPool);
-    this._recordLiveLocationChange(liveLocationPromise);
+    const liveLocationPromise = modelData.createLiveLocation(rawLocation, updateDelegate, locationPool);
+    this.recordLiveLocationChange(liveLocationPromise);
     return liveLocationPromise;
   }
 
@@ -186,7 +185,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     console.assert(rawLocations.length > 0);
     const locationPromise =
         StackTraceTopFrameLocation.createStackTraceTopFrameLocation(rawLocations, this, updateDelegate, locationPool);
-    this._recordLiveLocationChange(locationPromise);
+    this.recordLiveLocationChange(locationPromise);
     return locationPromise;
   }
 
@@ -199,18 +198,18 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     }
     const debuggerModel = location.debuggerModel;
     const liveLocationPromise = this.createLiveLocation(location, updateDelegate, locationPool);
-    this._recordLiveLocationChange(liveLocationPromise);
+    this.recordLiveLocationChange(liveLocationPromise);
     const liveLocation = await liveLocationPromise;
     if (!liveLocation) {
       return null;
     }
-    this._registerCallFrameLiveLocation(debuggerModel, liveLocation);
+    this.registerCallFrameLiveLocation(debuggerModel, liveLocation);
     return liveLocation;
   }
 
   async rawLocationToUILocation(rawLocation: SDK.DebuggerModel.Location):
       Promise<Workspace.UISourceCode.UILocation|null> {
-    for (const sourceMapping of this._sourceMappings) {
+    for (const sourceMapping of this.sourceMappings) {
       const uiLocation = sourceMapping.rawLocationToUILocation(rawLocation);
       if (uiLocation) {
         return uiLocation;
@@ -222,24 +221,24 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
         return uiLocation;
       }
     }
-    const modelData = this._debuggerModelToData.get(rawLocation.debuggerModel);
-    return modelData ? modelData._rawLocationToUILocation(rawLocation) : null;
+    const modelData = this.debuggerModelToData.get(rawLocation.debuggerModel);
+    return modelData ? modelData.rawLocationToUILocation(rawLocation) : null;
   }
 
   uiSourceCodeForSourceMapSourceURL(
       debuggerModel: SDK.DebuggerModel.DebuggerModel, url: string,
       isContentScript: boolean): Workspace.UISourceCode.UISourceCode|null {
-    const modelData = this._debuggerModelToData.get(debuggerModel);
+    const modelData = this.debuggerModelToData.get(debuggerModel);
     if (!modelData) {
       return null;
     }
-    return modelData._compilerMapping.uiSourceCodeForURL(url, isContentScript);
+    return modelData.compilerMapping.uiSourceCodeForURL(url, isContentScript);
   }
 
   async uiLocationToRawLocations(
       uiSourceCode: Workspace.UISourceCode.UISourceCode, lineNumber: number,
       columnNumber?: number): Promise<SDK.DebuggerModel.Location[]> {
-    for (const sourceMapping of this._sourceMappings) {
+    for (const sourceMapping of this.sourceMappings) {
       const locations = sourceMapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
       if (locations.length) {
         return locations;
@@ -249,8 +248,8 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     if (locations) {
       return locations;
     }
-    for (const modelData of this._debuggerModelToData.values()) {
-      const locations = modelData._uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
+    for (const modelData of this.debuggerModelToData.values()) {
+      const locations = modelData.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
       if (locations.length) {
         return locations;
       }
@@ -263,8 +262,8 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
       columnNumber: number): SDK.DebuggerModel.Location[] {
     console.assert(uiSourceCode.contentType().isScript());
     const locations = [];
-    for (const modelData of this._debuggerModelToData.values()) {
-      locations.push(...modelData._uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber));
+    for (const modelData of this.debuggerModelToData.values()) {
+      locations.push(...modelData.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber));
     }
     return locations;
   }
@@ -283,8 +282,8 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
 
   scriptFile(uiSourceCode: Workspace.UISourceCode.UISourceCode, debuggerModel: SDK.DebuggerModel.DebuggerModel):
       ResourceScriptFile|null {
-    const modelData = this._debuggerModelToData.get(debuggerModel);
-    return modelData ? modelData._resourceMapping.scriptFile(uiSourceCode) : null;
+    const modelData = this.debuggerModelToData.get(debuggerModel);
+    return modelData ? modelData.getResourceMapping().scriptFile(uiSourceCode) : null;
   }
 
   scriptsForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.Script.Script[] {
@@ -292,22 +291,22 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     if (this.pluginManager) {
       this.pluginManager.scriptsForUISourceCode(uiSourceCode).forEach(script => scripts.add(script));
     }
-    for (const modelData of this._debuggerModelToData.values()) {
-      const resourceScriptFile = modelData._resourceMapping.scriptFile(uiSourceCode);
-      if (resourceScriptFile && resourceScriptFile._script) {
-        scripts.add(resourceScriptFile._script);
+    for (const modelData of this.debuggerModelToData.values()) {
+      const resourceScriptFile = modelData.getResourceMapping().scriptFile(uiSourceCode);
+      if (resourceScriptFile && resourceScriptFile.script) {
+        scripts.add(resourceScriptFile.script);
       }
-      modelData._compilerMapping.scriptsForUISourceCode(uiSourceCode).forEach(script => scripts.add(script));
+      modelData.compilerMapping.scriptsForUISourceCode(uiSourceCode).forEach(script => scripts.add(script));
     }
     return [...scripts];
   }
 
   scriptsForResource(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.Script.Script[] {
     const scripts = new Set<SDK.Script.Script>();
-    for (const modelData of this._debuggerModelToData.values()) {
-      const resourceScriptFile = modelData._resourceMapping.scriptFile(uiSourceCode);
-      if (resourceScriptFile && resourceScriptFile._script) {
-        scripts.add(resourceScriptFile._script);
+    for (const modelData of this.debuggerModelToData.values()) {
+      const resourceScriptFile = modelData.getResourceMapping().scriptFile(uiSourceCode);
+      if (resourceScriptFile && resourceScriptFile.script) {
+        scripts.add(resourceScriptFile.script);
       }
     }
     return [...scripts];
@@ -324,129 +323,128 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
   }
 
   sourceMapForScript(script: SDK.Script.Script): SDK.SourceMap.SourceMap|null {
-    const modelData = this._debuggerModelToData.get(script.debuggerModel);
+    const modelData = this.debuggerModelToData.get(script.debuggerModel);
     if (!modelData) {
       return null;
     }
-    return modelData._compilerMapping.sourceMapForScript(script);
+    return modelData.compilerMapping.sourceMapForScript(script);
   }
 
-  _globalObjectCleared(event: Common.EventTarget.EventTargetEvent<SDK.DebuggerModel.DebuggerModel>): void {
-    this._reset(event.data);
+  private globalObjectCleared(event: Common.EventTarget.EventTargetEvent<SDK.DebuggerModel.DebuggerModel>): void {
+    this.reset(event.data);
   }
 
-  _reset(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
-    const modelData = this._debuggerModelToData.get(debuggerModel);
+  private reset(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
+    const modelData = this.debuggerModelToData.get(debuggerModel);
     if (!modelData) {
       return;
     }
     for (const location of modelData.callFrameLocations.values()) {
-      this._removeLiveLocation(location);
+      this.removeLiveLocation(location);
     }
     modelData.callFrameLocations.clear();
   }
 
-  _resetForTest(target: SDK.Target.Target): void {
+  private resetForTest(target: SDK.Target.Target): void {
     const debuggerModel = (target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel);
-    const modelData = this._debuggerModelToData.get(debuggerModel);
+    const modelData = this.debuggerModelToData.get(debuggerModel);
     if (modelData) {
-      modelData._resourceMapping.resetForTest();
+      modelData.getResourceMapping().resetForTest();
     }
   }
 
-  _registerCallFrameLiveLocation(debuggerModel: SDK.DebuggerModel.DebuggerModel, location: Location): void {
-    const modelData = this._debuggerModelToData.get(debuggerModel);
+  private registerCallFrameLiveLocation(debuggerModel: SDK.DebuggerModel.DebuggerModel, location: Location): void {
+    const modelData = this.debuggerModelToData.get(debuggerModel);
     if (modelData) {
       const locations = modelData.callFrameLocations;
       locations.add(location);
     }
   }
 
-  _removeLiveLocation(location: Location): void {
-    const modelData = this._debuggerModelToData.get(location._rawLocation.debuggerModel);
+  removeLiveLocation(location: Location): void {
+    const modelData = this.debuggerModelToData.get(location.rawLocation.debuggerModel);
     if (modelData) {
-      modelData._disposeLocation(location);
+      modelData.disposeLocation(location);
     }
   }
 
-  _debuggerResumed(event: Common.EventTarget.EventTargetEvent<SDK.DebuggerModel.DebuggerModel>): void {
-    this._reset(event.data);
+  private debuggerResumed(event: Common.EventTarget.EventTargetEvent<SDK.DebuggerModel.DebuggerModel>): void {
+    this.reset(event.data);
   }
 }
 
 class ModelData {
-  _debuggerModel: SDK.DebuggerModel.DebuggerModel;
-  _debuggerWorkspaceBinding: DebuggerWorkspaceBinding;
+  private readonly debuggerModel: SDK.DebuggerModel.DebuggerModel;
+  private readonly debuggerWorkspaceBinding: DebuggerWorkspaceBinding;
   callFrameLocations: Set<Location>;
-  _defaultMapping: DefaultScriptMapping;
-  _resourceMapping: ResourceScriptMapping;
-  _compilerMapping: CompilerScriptMapping;
-  _locations: Platform.MapUtilities.Multimap<string, Location>;
+  private defaultMapping: DefaultScriptMapping;
+  resourceMapping: ResourceScriptMapping;
+  readonly compilerMapping: CompilerScriptMapping;
+  private readonly locations: Platform.MapUtilities.Multimap<string, Location>;
   constructor(debuggerModel: SDK.DebuggerModel.DebuggerModel, debuggerWorkspaceBinding: DebuggerWorkspaceBinding) {
-    this._debuggerModel = debuggerModel;
-    this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
+    this.debuggerModel = debuggerModel;
+    this.debuggerWorkspaceBinding = debuggerWorkspaceBinding;
 
     this.callFrameLocations = new Set();
 
-    const workspace = debuggerWorkspaceBinding._workspace;
-    this._defaultMapping = new DefaultScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
-    this._resourceMapping = new ResourceScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
-    this._compilerMapping = new CompilerScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
+    const workspace = debuggerWorkspaceBinding.workspace;
+    this.defaultMapping = new DefaultScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
+    this.resourceMapping = new ResourceScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
+    this.compilerMapping = new CompilerScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
 
-    this._locations = new Platform.MapUtilities.Multimap();
+    this.locations = new Platform.MapUtilities.Multimap();
 
-    debuggerModel.setBeforePausedCallback(this._beforePaused.bind(this));
+    debuggerModel.setBeforePausedCallback(this.beforePaused.bind(this));
   }
 
-  async _createLiveLocation(
+  async createLiveLocation(
       rawLocation: SDK.DebuggerModel.Location, updateDelegate: (arg0: LiveLocation) => Promise<void>,
       locationPool: LiveLocationPool): Promise<Location> {
     console.assert(rawLocation.scriptId !== '');
     const scriptId = rawLocation.scriptId;
-    const location = new Location(scriptId, rawLocation, this._debuggerWorkspaceBinding, updateDelegate, locationPool);
-    this._locations.set(scriptId, location);
+    const location = new Location(scriptId, rawLocation, this.debuggerWorkspaceBinding, updateDelegate, locationPool);
+    this.locations.set(scriptId, location);
     await location.update();
     return location;
   }
 
-  _disposeLocation(location: Location): void {
-    this._locations.delete(location._scriptId, location);
+  disposeLocation(location: Location): void {
+    this.locations.delete(location.scriptId, location);
   }
 
-  async _updateLocations(script: SDK.Script.Script): Promise<void> {
+  async updateLocations(script: SDK.Script.Script): Promise<void> {
     const promises = [];
-    for (const location of this._locations.get(script.scriptId)) {
+    for (const location of this.locations.get(script.scriptId)) {
       promises.push(location.update());
     }
     await Promise.all(promises);
   }
 
-  _rawLocationToUILocation(rawLocation: SDK.DebuggerModel.Location): Workspace.UISourceCode.UILocation|null {
-    let uiLocation = this._compilerMapping.rawLocationToUILocation(rawLocation);
-    uiLocation = uiLocation || this._resourceMapping.rawLocationToUILocation(rawLocation);
+  rawLocationToUILocation(rawLocation: SDK.DebuggerModel.Location): Workspace.UISourceCode.UILocation|null {
+    let uiLocation = this.compilerMapping.rawLocationToUILocation(rawLocation);
+    uiLocation = uiLocation || this.resourceMapping.rawLocationToUILocation(rawLocation);
     uiLocation = uiLocation || ResourceMapping.instance().jsLocationToUILocation(rawLocation);
-    uiLocation = uiLocation || this._defaultMapping.rawLocationToUILocation(rawLocation);
+    uiLocation = uiLocation || this.defaultMapping.rawLocationToUILocation(rawLocation);
     return /** @type {!Workspace.UISourceCode.UILocation} */ uiLocation as Workspace.UISourceCode.UILocation;
   }
 
-  _uiLocationToRawLocations(
+  uiLocationToRawLocations(
       uiSourceCode: Workspace.UISourceCode.UISourceCode, lineNumber: number,
       columnNumber: number|undefined = 0): SDK.DebuggerModel.Location[] {
     // TODO(crbug.com/1153123): Revisit the `columnNumber = 0` and also preserve `undefined` for source maps?
-    let locations = this._compilerMapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
+    let locations = this.compilerMapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
     locations = locations.length ?
         locations :
-        this._resourceMapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
+        this.resourceMapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
     locations = locations.length ?
         locations :
         ResourceMapping.instance().uiLocationToJSLocations(uiSourceCode, lineNumber, columnNumber);
-    locations = locations.length ?
-        locations :
-        this._defaultMapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
+    locations = locations.length ? locations :
+                                   this.defaultMapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
     return locations;
   }
 
-  _beforePaused(debuggerPausedDetails: SDK.DebuggerModel.DebuggerPausedDetails): boolean {
+  private beforePaused(debuggerPausedDetails: SDK.DebuggerModel.DebuggerPausedDetails): boolean {
     const callFrame = debuggerPausedDetails.callFrames[0];
     if (!callFrame) {
       return false;
@@ -454,39 +452,43 @@ class ModelData {
     if (!Root.Runtime.experiments.isEnabled('emptySourceMapAutoStepping')) {
       return true;
     }
-    return Boolean(this._compilerMapping.mapsToSourceCode(callFrame.location()));
+    return Boolean(this.compilerMapping.mapsToSourceCode(callFrame.location()));
   }
 
-  _dispose(): void {
-    this._debuggerModel.setBeforePausedCallback(null);
-    this._compilerMapping.dispose();
-    this._resourceMapping.dispose();
-    this._defaultMapping.dispose();
+  dispose(): void {
+    this.debuggerModel.setBeforePausedCallback(null);
+    this.compilerMapping.dispose();
+    this.resourceMapping.dispose();
+    this.defaultMapping.dispose();
+  }
+
+  getResourceMapping(): ResourceScriptMapping {
+    return this.resourceMapping;
   }
 }
 
 export class Location extends LiveLocationWithPool {
-  _scriptId: string;
-  _rawLocation: SDK.DebuggerModel.Location;
-  _binding: DebuggerWorkspaceBinding;
+  readonly scriptId: string;
+  readonly rawLocation: SDK.DebuggerModel.Location;
+  private readonly binding: DebuggerWorkspaceBinding;
 
   constructor(
       scriptId: string, rawLocation: SDK.DebuggerModel.Location, binding: DebuggerWorkspaceBinding,
       updateDelegate: (arg0: LiveLocation) => Promise<void>, locationPool: LiveLocationPool) {
     super(updateDelegate, locationPool);
-    this._scriptId = scriptId;
-    this._rawLocation = rawLocation;
-    this._binding = binding;
+    this.scriptId = scriptId;
+    this.rawLocation = rawLocation;
+    this.binding = binding;
   }
 
   async uiLocation(): Promise<Workspace.UISourceCode.UILocation|null> {
-    const debuggerModelLocation = this._rawLocation;
-    return this._binding.rawLocationToUILocation(debuggerModelLocation);
+    const debuggerModelLocation = this.rawLocation;
+    return this.binding.rawLocationToUILocation(debuggerModelLocation);
   }
 
   dispose(): void {
     super.dispose();
-    this._binding._removeLiveLocation(this);
+    this.binding.removeLiveLocation(this);
   }
 
   async isIgnoreListed(): Promise<boolean> {
@@ -496,14 +498,14 @@ export class Location extends LiveLocationWithPool {
 }
 
 class StackTraceTopFrameLocation extends LiveLocationWithPool {
-  _updateScheduled: boolean;
-  _current: LiveLocation|null;
-  _locations: LiveLocation[]|null;
+  private updateScheduled: boolean;
+  private current: LiveLocation|null;
+  private locations: LiveLocation[]|null;
   constructor(updateDelegate: (arg0: LiveLocation) => Promise<void>, locationPool: LiveLocationPool) {
     super(updateDelegate, locationPool);
-    this._updateScheduled = true;
-    this._current = null;
-    this._locations = null;
+    this.updateScheduled = true;
+    this.current = null;
+    this.locations = null;
   }
 
   static async createStackTraceTopFrameLocation(
@@ -512,51 +514,51 @@ class StackTraceTopFrameLocation extends LiveLocationWithPool {
       locationPool: LiveLocationPool): Promise<StackTraceTopFrameLocation> {
     const location = new StackTraceTopFrameLocation(updateDelegate, locationPool);
     const locationsPromises = rawLocations.map(
-        rawLocation => binding.createLiveLocation(rawLocation, location._scheduleUpdate.bind(location), locationPool));
-    location._locations = ((await Promise.all(locationsPromises)).filter(l => Boolean(l)) as Location[]);
-    await location._updateLocation();
+        rawLocation => binding.createLiveLocation(rawLocation, location.scheduleUpdate.bind(location), locationPool));
+    location.locations = ((await Promise.all(locationsPromises)).filter(l => Boolean(l)) as Location[]);
+    await location.updateLocation();
     return location;
   }
 
   async uiLocation(): Promise<Workspace.UISourceCode.UILocation|null> {
-    return this._current ? this._current.uiLocation() : null;
+    return this.current ? this.current.uiLocation() : null;
   }
 
   async isIgnoreListed(): Promise<boolean> {
-    return this._current ? this._current.isIgnoreListed() : false;
+    return this.current ? this.current.isIgnoreListed() : false;
   }
 
   dispose(): void {
     super.dispose();
-    if (this._locations) {
-      for (const location of this._locations) {
+    if (this.locations) {
+      for (const location of this.locations) {
         location.dispose();
       }
     }
-    this._locations = null;
-    this._current = null;
+    this.locations = null;
+    this.current = null;
   }
 
-  async _scheduleUpdate(): Promise<void> {
-    if (this._updateScheduled) {
+  private async scheduleUpdate(): Promise<void> {
+    if (this.updateScheduled) {
       return;
     }
-    this._updateScheduled = true;
+    this.updateScheduled = true;
     queueMicrotask(() => {
-      this._updateLocation();
+      this.updateLocation();
     });
   }
 
-  async _updateLocation(): Promise<void> {
-    this._updateScheduled = false;
-    if (!this._locations || this._locations.length === 0) {
+  private async updateLocation(): Promise<void> {
+    this.updateScheduled = false;
+    if (!this.locations || this.locations.length === 0) {
       return;
     }
 
-    this._current = this._locations[0];
-    for (const location of this._locations) {
+    this.current = this.locations[0];
+    for (const location of this.locations) {
       if (!(await location.isIgnoreListed())) {
-        this._current = location;
+        this.current = location;
         break;
       }
     }

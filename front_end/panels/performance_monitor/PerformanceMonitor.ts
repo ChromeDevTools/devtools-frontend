@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -63,44 +61,44 @@ let performanceMonitorImplInstance: PerformanceMonitorImpl;
 
 export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     SDK.TargetManager.SDKModelObserver<SDK.PerformanceMetricsModel.PerformanceMetricsModel> {
-  _metricsBuffer: {timestamp: number, metrics: Map<string, number>}[];
-  _pixelsPerMs: number;
-  _pollIntervalMs: number;
-  _scaleHeight: number;
-  _graphHeight: number;
-  _gridColor: string;
-  _controlPane: ControlPane;
-  _canvas: HTMLCanvasElement;
-  _animationId!: number;
-  _width!: number;
-  _height!: number;
-  _model?: SDK.PerformanceMetricsModel.PerformanceMetricsModel|null;
-  _startTimestamp?: number;
-  _pollTimer?: number;
+  private metricsBuffer: {timestamp: number, metrics: Map<string, number>}[];
+  private readonly pixelsPerMs: number;
+  private pollIntervalMs: number;
+  private readonly scaleHeight: number;
+  private graphHeight: number;
+  private gridColor: string;
+  private controlPane: ControlPane;
+  private canvas: HTMLCanvasElement;
+  private animationId!: number;
+  private width!: number;
+  private height!: number;
+  private model?: SDK.PerformanceMetricsModel.PerformanceMetricsModel|null;
+  private startTimestamp?: number;
+  private pollTimer?: number;
 
   constructor() {
     super(true);
 
     this.contentElement.classList.add('perfmon-pane');
-    this._metricsBuffer = [];
+    this.metricsBuffer = [];
     /** @const */
-    this._pixelsPerMs = 10 / 1000;
+    this.pixelsPerMs = 10 / 1000;
     /** @const */
-    this._pollIntervalMs = 500;
+    this.pollIntervalMs = 500;
     /** @const */
-    this._scaleHeight = 16;
+    this.scaleHeight = 16;
     /** @const */
-    this._graphHeight = 90;
-    this._gridColor = ThemeSupport.ThemeSupport.instance().patchColorText(
+    this.graphHeight = 90;
+    this.gridColor = ThemeSupport.ThemeSupport.instance().patchColorText(
         'rgba(0, 0, 0, 0.08)', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
-    this._controlPane = new ControlPane(this.contentElement);
+    this.controlPane = new ControlPane(this.contentElement);
     const chartContainer = this.contentElement.createChild('div', 'perfmon-chart-container');
-    this._canvas = chartContainer.createChild('canvas') as HTMLCanvasElement;
-    this._canvas.tabIndex = -1;
-    UI.ARIAUtils.setAccessibleName(this._canvas, i18nString(UIStrings.graphsDisplayingARealtimeViewOf));
+    this.canvas = chartContainer.createChild('canvas') as HTMLCanvasElement;
+    this.canvas.tabIndex = -1;
+    UI.ARIAUtils.setAccessibleName(this.canvas, i18nString(UIStrings.graphsDisplayingARealtimeViewOf));
     this.contentElement.createChild('div', 'perfmon-chart-suspend-overlay fill').createChild('div').textContent =
         i18nString(UIStrings.paused);
-    this._controlPane.addEventListener(Events.MetricChanged, this._recalcChartHeight, this);
+    this.controlPane.addEventListener(Events.MetricChanged, this.recalcChartHeight, this);
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.PerformanceMetricsModel.PerformanceMetricsModel, this);
   }
 
@@ -114,113 +112,113 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
   }
 
   wasShown(): void {
-    if (!this._model) {
+    if (!this.model) {
       return;
     }
     this.registerCSSFiles([performanceMonitorStyles]);
     SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
-    this._model.enable();
-    this._suspendStateChanged();
+        SDK.TargetManager.Events.SuspendStateChanged, this.suspendStateChanged, this);
+    this.model.enable();
+    this.suspendStateChanged();
   }
 
   willHide(): void {
-    if (!this._model) {
+    if (!this.model) {
       return;
     }
     SDK.TargetManager.TargetManager.instance().removeEventListener(
-        SDK.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
-    this._stopPolling();
-    this._model.disable();
+        SDK.TargetManager.Events.SuspendStateChanged, this.suspendStateChanged, this);
+    this.stopPolling();
+    this.model.disable();
   }
 
   modelAdded(model: SDK.PerformanceMetricsModel.PerformanceMetricsModel): void {
-    if (this._model) {
+    if (this.model) {
       return;
     }
-    this._model = model;
+    this.model = model;
     if (this.isShowing()) {
       this.wasShown();
     }
   }
 
   modelRemoved(model: SDK.PerformanceMetricsModel.PerformanceMetricsModel): void {
-    if (this._model !== model) {
+    if (this.model !== model) {
       return;
     }
     if (this.isShowing()) {
       this.willHide();
     }
-    this._model = null;
+    this.model = null;
   }
 
-  _suspendStateChanged(): void {
+  private suspendStateChanged(): void {
     const suspended = SDK.TargetManager.TargetManager.instance().allTargetsSuspended();
     if (suspended) {
-      this._stopPolling();
+      this.stopPolling();
     } else {
-      this._startPolling();
+      this.startPolling();
     }
     this.contentElement.classList.toggle('suspended', suspended);
   }
 
-  _startPolling(): void {
-    this._startTimestamp = 0;
-    this._pollTimer = window.setInterval(() => this._poll(), this._pollIntervalMs);
+  private startPolling(): void {
+    this.startTimestamp = 0;
+    this.pollTimer = window.setInterval(() => this.poll(), this.pollIntervalMs);
     this.onResize();
     const animate = (): void => {
-      this._draw();
-      this._animationId = this.contentElement.window().requestAnimationFrame(() => {
+      this.draw();
+      this.animationId = this.contentElement.window().requestAnimationFrame(() => {
         animate();
       });
     };
     animate();
   }
 
-  _stopPolling(): void {
-    window.clearInterval(this._pollTimer);
-    this.contentElement.window().cancelAnimationFrame(this._animationId);
-    this._metricsBuffer = [];
+  private stopPolling(): void {
+    window.clearInterval(this.pollTimer);
+    this.contentElement.window().cancelAnimationFrame(this.animationId);
+    this.metricsBuffer = [];
   }
 
-  async _poll(): Promise<void> {
-    if (!this._model) {
+  private async poll(): Promise<void> {
+    if (!this.model) {
       return;
     }
-    const data = await this._model.requestMetrics();
+    const data = await this.model.requestMetrics();
     const timestamp = data.timestamp;
     const metrics = data.metrics;
-    this._metricsBuffer.push({timestamp, metrics: metrics});
-    const millisPerWidth = this._width / this._pixelsPerMs;
+    this.metricsBuffer.push({timestamp, metrics: metrics});
+    const millisPerWidth = this.width / this.pixelsPerMs;
     // Multiply by 2 as the pollInterval has some jitter and to have some extra samples if window is resized.
-    const maxCount = Math.ceil(millisPerWidth / this._pollIntervalMs * 2);
-    if (this._metricsBuffer.length > maxCount * 2)  // Multiply by 2 to have a hysteresis.
+    const maxCount = Math.ceil(millisPerWidth / this.pollIntervalMs * 2);
+    if (this.metricsBuffer.length > maxCount * 2)  // Multiply by 2 to have a hysteresis.
     {
-      this._metricsBuffer.splice(0, this._metricsBuffer.length - maxCount);
+      this.metricsBuffer.splice(0, this.metricsBuffer.length - maxCount);
     }
-    this._controlPane.updateMetrics(metrics);
+    this.controlPane.updateMetrics(metrics);
   }
 
-  _draw(): void {
-    const ctx = this._canvas.getContext('2d') as CanvasRenderingContext2D;
+  private draw(): void {
+    const ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
     ctx.save();
     ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-    ctx.clearRect(0, 0, this._width, this._height);
+    ctx.clearRect(0, 0, this.width, this.height);
     ctx.save();
-    ctx.translate(0, this._scaleHeight);  // Reserve space for the scale bar.
-    for (const chartInfo of this._controlPane.charts()) {
-      if (!this._controlPane.isActive(chartInfo.metrics[0].name)) {
+    ctx.translate(0, this.scaleHeight);  // Reserve space for the scale bar.
+    for (const chartInfo of this.controlPane.charts()) {
+      if (!this.controlPane.isActive(chartInfo.metrics[0].name)) {
         continue;
       }
-      this._drawChart(ctx, chartInfo, this._graphHeight);
-      ctx.translate(0, this._graphHeight);
+      this.drawChart(ctx, chartInfo, this.graphHeight);
+      ctx.translate(0, this.graphHeight);
     }
     ctx.restore();
-    this._drawHorizontalGrid(ctx);
+    this.drawHorizontalGrid(ctx);
     ctx.restore();
   }
 
-  _drawHorizontalGrid(ctx: CanvasRenderingContext2D): void {
+  private drawHorizontalGrid(ctx: CanvasRenderingContext2D): void {
     const labelDistanceSeconds = 10;
     const lightGray = ThemeSupport.ThemeSupport.instance().patchColorText(
         'rgba(0, 0, 0, 0.02)', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
@@ -229,34 +227,34 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
         'rgba(0, 0, 0, 0.55)', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
     const currentTime = Date.now() / 1000;
     for (let sec = Math.ceil(currentTime);; --sec) {
-      const x = this._width - ((currentTime - sec) * 1000 - this._pollIntervalMs) * this._pixelsPerMs;
+      const x = this.width - ((currentTime - sec) * 1000 - this.pollIntervalMs) * this.pixelsPerMs;
       if (x < -50) {
         break;
       }
       ctx.beginPath();
       ctx.moveTo(x, 0);
-      ctx.lineTo(x, this._height);
+      ctx.lineTo(x, this.height);
       if (sec >= 0 && sec % labelDistanceSeconds === 0) {
         ctx.fillText(new Date(sec * 1000).toLocaleTimeString(), x + 4, 12);
       }
-      ctx.strokeStyle = sec % labelDistanceSeconds ? lightGray : this._gridColor;
+      ctx.strokeStyle = sec % labelDistanceSeconds ? lightGray : this.gridColor;
       ctx.stroke();
     }
   }
 
-  _drawChart(ctx: CanvasRenderingContext2D, chartInfo: ChartInfo, height: number): void {
+  private drawChart(ctx: CanvasRenderingContext2D, chartInfo: ChartInfo, height: number): void {
     ctx.save();
-    ctx.rect(0, 0, this._width, height);
+    ctx.rect(0, 0, this.width, height);
     ctx.clip();
     const bottomPadding = 8;
     const extraSpace = 1.05;
-    const max = this._calcMax(chartInfo) * extraSpace;
+    const max = this.calcMax(chartInfo) * extraSpace;
     const stackedChartBaseLandscape = chartInfo.stacked ? new Map() : null;
     const paths = [];
     for (let i = chartInfo.metrics.length - 1; i >= 0; --i) {
       const metricInfo = chartInfo.metrics[i];
       paths.push({
-        path: this._buildMetricPath(
+        path: this.buildMetricPath(
             chartInfo, metricInfo, height - bottomPadding, max, i ? stackedChartBaseLandscape : null),
         color: metricInfo.color,
       });
@@ -283,20 +281,20 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
         'rgba(0, 0, 0, 0.55)', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
     ctx.font = `10px  ${Host.Platform.fontFamily()}`;
     ctx.fillText(chartInfo.title, 8, 10);
-    this._drawVerticalGrid(ctx, height - bottomPadding, max, chartInfo);
+    this.drawVerticalGrid(ctx, height - bottomPadding, max, chartInfo);
     ctx.restore();
   }
 
-  _calcMax(chartInfo: ChartInfo): number {
+  private calcMax(chartInfo: ChartInfo): number {
     if (chartInfo.max) {
       return chartInfo.max;
     }
-    const width = this._width;
-    const startTime = performance.now() - this._pollIntervalMs - width / this._pixelsPerMs;
+    const width = this.width;
+    const startTime = performance.now() - this.pollIntervalMs - width / this.pixelsPerMs;
     let max: number = -Infinity;
     for (const metricInfo of chartInfo.metrics) {
-      for (let i = this._metricsBuffer.length - 1; i >= 0; --i) {
-        const metrics = this._metricsBuffer[i];
+      for (let i = this.metricsBuffer.length - 1; i >= 0; --i) {
+        const metrics = this.metricsBuffer[i];
         const value = metrics.metrics.get(metricInfo.name);
         if (value !== undefined) {
           max = Math.max(max, value);
@@ -306,7 +304,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
         }
       }
     }
-    if (!this._metricsBuffer.length) {
+    if (!this.metricsBuffer.length) {
       return 10;
     }
 
@@ -318,7 +316,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     return chartInfo.currentMax;
   }
 
-  _drawVerticalGrid(ctx: CanvasRenderingContext2D, height: number, max: number, info: ChartInfo): void {
+  private drawVerticalGrid(ctx: CanvasRenderingContext2D, height: number, max: number, info: ChartInfo): void {
     let base = Math.pow(10, Math.floor(Math.log10(max)));
     const firstDigit = Math.floor(max / base);
     if (firstDigit !== 1 && firstDigit % 2 === 1) {
@@ -331,22 +329,22 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     const visibleHeight = height - topPadding;
     ctx.fillStyle = ThemeSupport.ThemeSupport.instance().patchColorText(
         'rgba(0, 0, 0, 0.55)', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
-    ctx.strokeStyle = this._gridColor;
+    ctx.strokeStyle = this.gridColor;
     ctx.beginPath();
     for (let i = 0; i < 2; ++i) {
       const y = calcY(scaleValue);
-      const labelText = MetricIndicator._formatNumber(scaleValue, info);
+      const labelText = MetricIndicator.formatNumber(scaleValue, info);
       ctx.moveTo(0, y);
       ctx.lineTo(4, y);
       ctx.moveTo(ctx.measureText(labelText).width + 12, y);
-      ctx.lineTo(this._width, y);
+      ctx.lineTo(this.width, y);
       ctx.fillText(labelText, 8, calcY(scaleValue) + 3);
       scaleValue /= 2;
     }
     ctx.stroke();
     ctx.beginPath();
     ctx.moveTo(0, height + 0.5);
-    ctx.lineTo(this._width, height + 0.5);
+    ctx.lineTo(this.width, height + 0.5);
     ctx.strokeStyle = ThemeSupport.ThemeSupport.instance().patchColorText(
         'rgba(0, 0, 0, 0.2)', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
     ctx.stroke();
@@ -355,7 +353,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     }
   }
 
-  _buildMetricPath(
+  private buildMetricPath(
       chartInfo: ChartInfo, metricInfo: MetricInfo, height: number, scaleMax: number,
       stackedChartBaseLandscape: Map<number, number>|null): Path2D {
     const path = new Path2D();
@@ -366,27 +364,27 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     }
     const span = scaleMax;
     const metricName = metricInfo.name;
-    const pixelsPerMs = this._pixelsPerMs;
-    const startTime = performance.now() - this._pollIntervalMs - this._width / pixelsPerMs;
+    const pixelsPerMs = this.pixelsPerMs;
+    const startTime = performance.now() - this.pollIntervalMs - this.width / pixelsPerMs;
     const smooth = chartInfo.smooth;
 
     let x = 0;
     let lastY = 0;
     let lastX = 0;
-    if (this._metricsBuffer.length) {
-      x = (this._metricsBuffer[0].timestamp - startTime) * pixelsPerMs;
+    if (this.metricsBuffer.length) {
+      x = (this.metricsBuffer[0].timestamp - startTime) * pixelsPerMs;
       path.moveTo(x, calcY(0));
-      path.lineTo(this._width + 5, calcY(0));
+      path.lineTo(this.width + 5, calcY(0));
       lastY = calcY(
-          (this._metricsBuffer[this._metricsBuffer.length - 1] as {
+          (this.metricsBuffer[this.metricsBuffer.length - 1] as {
             metrics: Map<string, number>,
           }).metrics.get(metricName) ||
           0);
-      lastX = this._width + 5;
+      lastX = this.width + 5;
       path.lineTo(lastX, lastY);
     }
-    for (let i = this._metricsBuffer.length - 1; i >= 0; --i) {
-      const metrics = this._metricsBuffer[i];
+    for (let i = this.metricsBuffer.length - 1; i >= 0; --i) {
+      const metrics = this.metricsBuffer[i];
       const timestamp = metrics.timestamp;
       let value: number = metrics.metrics.get(metricName) || 0;
       if (stackedChartBaseLandscape) {
@@ -418,21 +416,21 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
 
   onResize(): void {
     super.onResize();
-    this._width = this._canvas.offsetWidth;
-    this._canvas.width = Math.round(this._width * window.devicePixelRatio);
-    this._recalcChartHeight();
+    this.width = this.canvas.offsetWidth;
+    this.canvas.width = Math.round(this.width * window.devicePixelRatio);
+    this.recalcChartHeight();
   }
 
-  _recalcChartHeight(): void {
-    let height = this._scaleHeight;
-    for (const chartInfo of this._controlPane.charts()) {
-      if (this._controlPane.isActive(chartInfo.metrics[0].name)) {
-        height += this._graphHeight;
+  private recalcChartHeight(): void {
+    let height = this.scaleHeight;
+    for (const chartInfo of this.controlPane.charts()) {
+      if (this.controlPane.isActive(chartInfo.metrics[0].name)) {
+        height += this.graphHeight;
       }
     }
-    this._height = Math.ceil(height * window.devicePixelRatio);
-    this._canvas.height = this._height;
-    this._canvas.style.height = `${this._height / window.devicePixelRatio}px`;
+    this.height = Math.ceil(height * window.devicePixelRatio);
+    this.canvas.height = this.height;
+    this.canvas.style.height = `${this.height / window.devicePixelRatio}px`;
   }
 }
 
@@ -443,18 +441,18 @@ export const enum Format {
 
 export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
   element: Element;
-  _enabledChartsSetting: Common.Settings.Setting<string[]>;
-  _enabledCharts: Set<string>;
-  _chartsInfo: ChartInfo[];
-  _indicators: Map<string, MetricIndicator>;
+  private readonly enabledChartsSetting: Common.Settings.Setting<string[]>;
+  private readonly enabledCharts: Set<string>;
+  private readonly chartsInfo: ChartInfo[];
+  private readonly indicators: Map<string, MetricIndicator>;
 
   constructor(parent: Element) {
     super();
     this.element = parent.createChild('div', 'perfmon-control-pane');
 
-    this._enabledChartsSetting = Common.Settings.Settings.instance().createSetting(
+    this.enabledChartsSetting = Common.Settings.Settings.instance().createSetting(
         'perfmonActiveIndicators2', ['TaskDuration', 'JSHeapTotalSize', 'Nodes']);
-    this._enabledCharts = new Set(this._enabledChartsSetting.get());
+    this.enabledCharts = new Set(this.enabledChartsSetting.get());
 
     const defaults = {
       color: undefined,
@@ -465,7 +463,7 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
       stacked: undefined,
     };
 
-    this._chartsInfo = [
+    this.chartsInfo = [
       {
         ...defaults,
         title: i18nString(UIStrings.cpuUsage),
@@ -504,7 +502,7 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
         metrics: [{name: 'RecalcStyleCount', color: 'deeppink'}],
       },
     ];
-    for (const info of this._chartsInfo) {
+    for (const info of this.chartsInfo) {
       if (info.color) {
         info.color = ThemeSupport.ThemeSupport.instance().patchColorText(
             info.color, ThemeSupport.ThemeSupport.ColorUsage.Foreground);
@@ -515,38 +513,38 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
       }
     }
 
-    this._indicators = new Map();
-    for (const chartInfo of this._chartsInfo) {
+    this.indicators = new Map();
+    for (const chartInfo of this.chartsInfo) {
       const chartName = chartInfo.metrics[0].name;
-      const active = this._enabledCharts.has(chartName);
-      const indicator = new MetricIndicator(this.element, chartInfo, active, this._onToggle.bind(this, chartName));
-      this._indicators.set(chartName, indicator);
+      const active = this.enabledCharts.has(chartName);
+      const indicator = new MetricIndicator(this.element, chartInfo, active, this.onToggle.bind(this, chartName));
+      this.indicators.set(chartName, indicator);
     }
   }
 
-  _onToggle(chartName: string, active: boolean): void {
+  private onToggle(chartName: string, active: boolean): void {
     if (active) {
-      this._enabledCharts.add(chartName);
+      this.enabledCharts.add(chartName);
     } else {
-      this._enabledCharts.delete(chartName);
+      this.enabledCharts.delete(chartName);
     }
-    this._enabledChartsSetting.set(Array.from(this._enabledCharts));
+    this.enabledChartsSetting.set(Array.from(this.enabledCharts));
     this.dispatchEventToListeners(Events.MetricChanged);
   }
 
   charts(): ChartInfo[] {
-    return this._chartsInfo;
+    return this.chartsInfo;
   }
 
   isActive(metricName: string): boolean {
-    return this._enabledCharts.has(metricName);
+    return this.enabledCharts.has(metricName);
   }
 
   updateMetrics(metrics: Map<string, number>): void {
-    for (const name of this._indicators.keys()) {
+    for (const name of this.indicators.keys()) {
       const metric = metrics.get(name);
       if (metric !== undefined) {
-        const indicator = this._indicators.get(name);
+        const indicator = this.indicators.get(name);
         if (indicator) {
           indicator.setValue(metric);
         }
@@ -563,34 +561,34 @@ let numberFormatter: Intl.NumberFormat;
 let percentFormatter: Intl.NumberFormat;
 
 export class MetricIndicator {
-  _info: ChartInfo;
-  _active: boolean;
-  _onToggle: (arg0: boolean) => void;
+  private info: ChartInfo;
+  private active: boolean;
+  private readonly onToggle: (arg0: boolean) => void;
   element: HTMLElement;
-  _swatchElement: UI.Icon.Icon;
-  _valueElement: HTMLElement;
+  private readonly swatchElement: UI.Icon.Icon;
+  private valueElement: HTMLElement;
 
   constructor(parent: Element, info: ChartInfo, active: boolean, onToggle: (arg0: boolean) => void) {
     const color = info.color || info.metrics[0].color;
-    this._info = info;
-    this._active = active;
-    this._onToggle = onToggle;
+    this.info = info;
+    this.active = active;
+    this.onToggle = onToggle;
     this.element = parent.createChild('div', 'perfmon-indicator') as HTMLElement;
-    this._swatchElement = UI.Icon.Icon.create('smallicon-checkmark-square', 'perfmon-indicator-swatch');
-    this._swatchElement.style.backgroundColor = color;
-    this.element.appendChild(this._swatchElement);
+    this.swatchElement = UI.Icon.Icon.create('smallicon-checkmark-square', 'perfmon-indicator-swatch');
+    this.swatchElement.style.backgroundColor = color;
+    this.element.appendChild(this.swatchElement);
     this.element.createChild('div', 'perfmon-indicator-title').textContent = info.title;
-    this._valueElement = this.element.createChild('div', 'perfmon-indicator-value') as HTMLElement;
-    this._valueElement.style.color = color;
-    this.element.addEventListener('click', () => this._toggleIndicator());
-    this.element.addEventListener('keypress', event => this._handleKeypress(event));
+    this.valueElement = this.element.createChild('div', 'perfmon-indicator-value') as HTMLElement;
+    this.valueElement.style.color = color;
+    this.element.addEventListener('click', () => this.toggleIndicator());
+    this.element.addEventListener('keypress', event => this.handleKeypress(event));
     this.element.classList.toggle('active', active);
     UI.ARIAUtils.markAsCheckbox(this.element);
-    UI.ARIAUtils.setChecked(this.element, this._active);
+    UI.ARIAUtils.setChecked(this.element, this.active);
     this.element.tabIndex = 0;
   }
 
-  static _formatNumber(value: number, info: ChartInfo): string {
+  static formatNumber(value: number, info: ChartInfo): string {
     if (!numberFormatter) {
       numberFormatter = new Intl.NumberFormat('en-US', {maximumFractionDigits: 1});
       percentFormatter = new Intl.NumberFormat('en-US', {maximumFractionDigits: 1, style: 'percent'});
@@ -606,20 +604,20 @@ export class MetricIndicator {
   }
 
   setValue(value: number): void {
-    this._valueElement.textContent = MetricIndicator._formatNumber(value, this._info);
+    this.valueElement.textContent = MetricIndicator.formatNumber(value, this.info);
   }
 
-  _toggleIndicator(): void {
-    this._active = !this._active;
-    this.element.classList.toggle('active', this._active);
-    UI.ARIAUtils.setChecked(this.element, this._active);
-    this._onToggle(this._active);
+  private toggleIndicator(): void {
+    this.active = !this.active;
+    this.element.classList.toggle('active', this.active);
+    UI.ARIAUtils.setChecked(this.element, this.active);
+    this.onToggle(this.active);
   }
 
-  _handleKeypress(event: Event): void {
+  private handleKeypress(event: Event): void {
     const keyboardEvent = event as KeyboardEvent;
     if (keyboardEvent.key === ' ' || keyboardEvent.key === 'Enter') {
-      this._toggleIndicator();
+      this.toggleIndicator();
     }
   }
 }

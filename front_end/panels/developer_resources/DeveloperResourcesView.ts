@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -47,26 +45,26 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let developerResourcesViewInstance: DeveloperResourcesView;
 
 export class DeveloperResourcesView extends UI.Widget.VBox {
-  _textFilterRegExp: RegExp|null;
-  _filterInput: UI.Toolbar.ToolbarInput;
-  _coverageResultsElement: HTMLElement;
-  _listView: DeveloperResourcesListView;
-  _statusToolbarElement: HTMLElement;
-  _statusMessageElement: HTMLElement;
-  _throttler: Common.Throttler.Throttler;
-  _loader: SDK.PageResourceLoader.PageResourceLoader;
+  private textFilterRegExp: RegExp|null;
+  private readonly filterInput: UI.Toolbar.ToolbarInput;
+  private readonly coverageResultsElement: HTMLElement;
+  private listView: DeveloperResourcesListView;
+  private readonly statusToolbarElement: HTMLElement;
+  private statusMessageElement: HTMLElement;
+  private readonly throttler: Common.Throttler.Throttler;
+  private readonly loader: SDK.PageResourceLoader.PageResourceLoader;
   private constructor() {
     super(true);
 
     const toolbarContainer = this.contentElement.createChild('div', 'developer-resource-view-toolbar-container');
     const toolbar = new UI.Toolbar.Toolbar('developer-resource-view-toolbar', toolbarContainer);
 
-    this._textFilterRegExp = null;
+    this.textFilterRegExp = null;
     const accessiblePlaceholder = '';  // Indicates that ToobarInput should use the placeholder as ARIA label.
-    this._filterInput =
+    this.filterInput =
         new UI.Toolbar.ToolbarInput(i18nString(UIStrings.enterTextToSearchTheUrlAndError), accessiblePlaceholder, 1);
-    this._filterInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this._onFilterChanged, this);
-    toolbar.appendToolbarItem(this._filterInput);
+    this.filterInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this.onFilterChanged, this);
+    toolbar.appendToolbarItem(this.filterInput);
 
     const loadThroughTarget = SDK.PageResourceLoader.getLoadThroughTargetSetting();
     const loadThroughTargetCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
@@ -74,16 +72,16 @@ export class DeveloperResourcesView extends UI.Widget.VBox {
         i18nString(UIStrings.enableLoadingThroughTarget));
     toolbar.appendToolbarItem(loadThroughTargetCheckbox);
 
-    this._coverageResultsElement = this.contentElement.createChild('div', 'developer-resource-view-results');
-    this._listView = new DeveloperResourcesListView(this._isVisible.bind(this));
-    this._listView.show(this._coverageResultsElement);
-    this._statusToolbarElement = this.contentElement.createChild('div', 'developer-resource-view-toolbar-summary');
-    this._statusMessageElement = this._statusToolbarElement.createChild('div', 'developer-resource-view-message');
+    this.coverageResultsElement = this.contentElement.createChild('div', 'developer-resource-view-results');
+    this.listView = new DeveloperResourcesListView(this.isVisible.bind(this));
+    this.listView.show(this.coverageResultsElement);
+    this.statusToolbarElement = this.contentElement.createChild('div', 'developer-resource-view-toolbar-summary');
+    this.statusMessageElement = this.statusToolbarElement.createChild('div', 'developer-resource-view-message');
 
-    this._throttler = new Common.Throttler.Throttler(100);
-    this._loader = SDK.PageResourceLoader.PageResourceLoader.instance();
-    this._loader.addEventListener(SDK.PageResourceLoader.Events.Update, this._onUpdate, this);
-    this._onUpdate();
+    this.throttler = new Common.Throttler.Throttler(100);
+    this.loader = SDK.PageResourceLoader.PageResourceLoader.instance();
+    this.loader.addEventListener(SDK.PageResourceLoader.Events.Update, this.onUpdate, this);
+    this.onUpdate();
   }
 
   static instance(): DeveloperResourcesView {
@@ -93,43 +91,43 @@ export class DeveloperResourcesView extends UI.Widget.VBox {
     return developerResourcesViewInstance;
   }
 
-  _onUpdate(): void {
-    this._throttler.schedule(this._update.bind(this));
+  private onUpdate(): void {
+    this.throttler.schedule(this.update.bind(this));
   }
 
-  async _update(): Promise<void> {
-    this._listView.reset();
-    this._listView.update(this._loader.getResourcesLoaded().values());
-    this._updateStats();
+  private async update(): Promise<void> {
+    this.listView.reset();
+    this.listView.update(this.loader.getResourcesLoaded().values());
+    this.updateStats();
   }
 
-  _updateStats(): void {
-    const {loading, resources} = this._loader.getNumberOfResources();
+  private updateStats(): void {
+    const {loading, resources} = this.loader.getNumberOfResources();
     if (loading > 0) {
-      this._statusMessageElement.textContent =
+      this.statusMessageElement.textContent =
           i18nString(UIStrings.resourcesCurrentlyLoading, {PH1: resources, PH2: loading});
     } else {
-      this._statusMessageElement.textContent = i18nString(UIStrings.resources, {n: resources});
+      this.statusMessageElement.textContent = i18nString(UIStrings.resources, {n: resources});
     }
   }
 
-  _isVisible(item: SDK.PageResourceLoader.PageResource): boolean {
-    return !this._textFilterRegExp || this._textFilterRegExp.test(item.url) ||
-        this._textFilterRegExp.test(item.errorMessage || '');
+  private isVisible(item: SDK.PageResourceLoader.PageResource): boolean {
+    return !this.textFilterRegExp || this.textFilterRegExp.test(item.url) ||
+        this.textFilterRegExp.test(item.errorMessage || '');
   }
 
   /**
    *
    */
-  _onFilterChanged(): void {
-    if (!this._listView) {
+  private onFilterChanged(): void {
+    if (!this.listView) {
       return;
     }
 
-    const text = this._filterInput.value();
-    this._textFilterRegExp = text ? createPlainTextSearchRegex(text, 'i') : null;
-    this._listView.updateFilterAndHighlight(this._textFilterRegExp);
-    this._updateStats();
+    const text = this.filterInput.value();
+    this.textFilterRegExp = text ? createPlainTextSearchRegex(text, 'i') : null;
+    this.listView.updateFilterAndHighlight(this.textFilterRegExp);
+    this.updateStats();
   }
   wasShown(): void {
     super.wasShown();

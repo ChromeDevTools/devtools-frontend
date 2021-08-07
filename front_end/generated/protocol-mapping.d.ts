@@ -1324,6 +1324,14 @@ export namespace ProtocolMapping {
     'DOM.getContainerForNode':
         {paramsType: [Protocol.DOM.GetContainerForNodeRequest]; returnType: Protocol.DOM.GetContainerForNodeResponse;};
     /**
+     * Returns the descendants of a container query container that have
+     * container queries against this container.
+     */
+    'DOM.getQueryingDescendantsForContainer': {
+      paramsType: [Protocol.DOM.GetQueryingDescendantsForContainerRequest];
+      returnType: Protocol.DOM.GetQueryingDescendantsForContainerResponse;
+    };
+    /**
      * Returns event listeners of the given object.
      */
     'DOMDebugger.getEventListeners': {
@@ -1638,6 +1646,12 @@ export namespace ProtocolMapping {
      * for example an emoji keyboard or an IME.
      */
     'Input.insertText': {paramsType: [Protocol.Input.InsertTextRequest]; returnType: void;};
+    /**
+     * This method sets the current candidate text for ime.
+     * Use imeCommitComposition to commit the final text.
+     * Use imeSetComposition with empty string as text to cancel composition.
+     */
+    'Input.imeSetComposition': {paramsType: [Protocol.Input.ImeSetCompositionRequest]; returnType: void;};
     /**
      * Dispatches a mouse event to the page.
      */
@@ -2214,6 +2228,11 @@ export namespace ProtocolMapping {
       paramsType: [Protocol.Page.GetPermissionsPolicyStateRequest];
       returnType: Protocol.Page.GetPermissionsPolicyStateResponse;
     };
+    /**
+     * Get Origin Trials on given frame.
+     */
+    'Page.getOriginTrials':
+        {paramsType: [Protocol.Page.GetOriginTrialsRequest]; returnType: Protocol.Page.GetOriginTrialsResponse;};
     /**
      * Overrides the values of device screen dimensions (window.screen.width, window.screen.height,
      * window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media

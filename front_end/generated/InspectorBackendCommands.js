@@ -836,6 +836,8 @@ export function registerCommands(inspectorBackend) {
         {'name': 'containerName', 'type': 'string', 'optional': true}
       ],
       ['nodeId']);
+  inspectorBackend.registerCommand(
+      'DOM.getQueryingDescendantsForContainer', [{'name': 'nodeId', 'type': 'number', 'optional': false}], ['nodeIds']);
 
   // DOMDebugger.
   inspectorBackend.registerEnum(
@@ -1209,6 +1211,16 @@ export function registerCommands(inspectorBackend) {
       ],
       []);
   inspectorBackend.registerCommand('Input.insertText', [{'name': 'text', 'type': 'string', 'optional': false}], []);
+  inspectorBackend.registerCommand(
+      'Input.imeSetComposition',
+      [
+        {'name': 'text', 'type': 'string', 'optional': false},
+        {'name': 'selectionStart', 'type': 'number', 'optional': false},
+        {'name': 'selectionEnd', 'type': 'number', 'optional': false},
+        {'name': 'replacementStart', 'type': 'number', 'optional': true},
+        {'name': 'replacementEnd', 'type': 'number', 'optional': true}
+      ],
+      []);
   inspectorBackend.registerEnum('Input.DispatchMouseEventRequestType', {
     MousePressed: 'mousePressed',
     MouseReleased: 'mouseReleased',
@@ -1927,6 +1939,7 @@ export function registerCommands(inspectorBackend) {
     ChUaMobile: 'ch-ua-mobile',
     ChUaFullVersion: 'ch-ua-full-version',
     ChUaPlatformVersion: 'ch-ua-platform-version',
+    ChUaReduced: 'ch-ua-reduced',
     ChViewportWidth: 'ch-viewport-width',
     ChWidth: 'ch-width',
     ClipboardRead: 'clipboard-read',
@@ -2080,6 +2093,7 @@ export function registerCommands(inspectorBackend) {
     CacheControlNoStore: 'CacheControlNoStore',
     CacheControlNoStoreCookieModified: 'CacheControlNoStoreCookieModified',
     CacheControlNoStoreHTTPOnlyCookieModified: 'CacheControlNoStoreHTTPOnlyCookieModified',
+    NoResponseHead: 'NoResponseHead',
     WebSocket: 'WebSocket',
     WebRTC: 'WebRTC',
     MainResourceHasCacheControlNoStore: 'MainResourceHasCacheControlNoStore',
@@ -2290,6 +2304,8 @@ export function registerCommands(inspectorBackend) {
       'Page.setBypassCSP', [{'name': 'enabled', 'type': 'boolean', 'optional': false}], []);
   inspectorBackend.registerCommand(
       'Page.getPermissionsPolicyState', [{'name': 'frameId', 'type': 'string', 'optional': false}], ['states']);
+  inspectorBackend.registerCommand(
+      'Page.getOriginTrials', [{'name': 'frameId', 'type': 'string', 'optional': false}], ['originTrials']);
   inspectorBackend.registerCommand(
       'Page.setDeviceMetricsOverride',
       [
@@ -2728,7 +2744,8 @@ export function registerCommands(inspectorBackend) {
         {'name': 'requestId', 'type': 'string', 'optional': false}, {'name': 'url', 'type': 'string', 'optional': true},
         {'name': 'method', 'type': 'string', 'optional': true},
         {'name': 'postData', 'type': 'string', 'optional': true},
-        {'name': 'headers', 'type': 'object', 'optional': true}
+        {'name': 'headers', 'type': 'object', 'optional': true},
+        {'name': 'interceptResponse', 'type': 'boolean', 'optional': true}
       ],
       []);
   inspectorBackend.registerCommand(

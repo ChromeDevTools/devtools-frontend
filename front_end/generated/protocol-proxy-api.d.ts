@@ -1054,6 +1054,13 @@ declare namespace ProtocolProxyApi {
      */
     invoke_getContainerForNode(params: Protocol.DOM.GetContainerForNodeRequest):
         Promise<Protocol.DOM.GetContainerForNodeResponse>;
+
+    /**
+     * Returns the descendants of a container query container that have
+     * container queries against this container.
+     */
+    invoke_getQueryingDescendantsForContainer(params: Protocol.DOM.GetQueryingDescendantsForContainerRequest):
+        Promise<Protocol.DOM.GetQueryingDescendantsForContainerResponse>;
   }
   export interface DOMDispatcher {
     /**
@@ -1566,6 +1573,14 @@ declare namespace ProtocolProxyApi {
      * for example an emoji keyboard or an IME.
      */
     invoke_insertText(params: Protocol.Input.InsertTextRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * This method sets the current candidate text for ime.
+     * Use imeCommitComposition to commit the final text.
+     * Use imeSetComposition with empty string as text to cancel composition.
+     */
+    invoke_imeSetComposition(params: Protocol.Input.ImeSetCompositionRequest):
+        Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Dispatches a mouse event to the page.
@@ -2486,6 +2501,12 @@ declare namespace ProtocolProxyApi {
      */
     invoke_getPermissionsPolicyState(params: Protocol.Page.GetPermissionsPolicyStateRequest):
         Promise<Protocol.Page.GetPermissionsPolicyStateResponse>;
+
+    /**
+     * Get Origin Trials on given frame.
+     */
+    invoke_getOriginTrials(params: Protocol.Page.GetOriginTrialsRequest):
+        Promise<Protocol.Page.GetOriginTrialsResponse>;
 
     /**
      * Overrides the values of device screen dimensions (window.screen.width, window.screen.height,

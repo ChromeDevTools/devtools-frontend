@@ -362,8 +362,8 @@ ConsoleTestRunner.dumpConsoleClassesBrief = async function() {
 };
 
 ConsoleTestRunner.dumpConsoleCounters = async function() {
-  const counter = ConsoleCounters.WarningErrorCounter.WarningErrorCounter._instanceForTest;
-  if (counter._updatingForTest) {
+  const counter = ConsoleCounters.WarningErrorCounter.WarningErrorCounter.instanceForTest;
+  if (counter.updatingForTest) {
     await TestRunner.addSnifferPromise(counter, '_updatedForTest');
   }
   if (counter.titlesForTesting) {

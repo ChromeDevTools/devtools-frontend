@@ -2,22 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
 export class InputModel extends SDK.SDKModel.SDKModel {
-  _inputAgent: ProtocolProxyApi.InputApi;
-  _activeTouchOffsetTop: number|null;
-  _activeTouchParams: Protocol.Input.EmulateTouchFromMouseEventRequest|null;
+  private readonly inputAgent: ProtocolProxyApi.InputApi;
+  private activeTouchOffsetTop: number|null;
+  private activeTouchParams: Protocol.Input.EmulateTouchFromMouseEventRequest|null;
 
   constructor(target: SDK.Target.Target) {
     super(target);
-    this._inputAgent = target.inputAgent();
-    this._activeTouchOffsetTop = null;
-    this._activeTouchParams = null;
+    this.inputAgent = target.inputAgent();
+    this.activeTouchOffsetTop = null;
+    this.activeTouchParams = null;
   }
 
   emitKeyEvent(event: Event): void {
@@ -37,9 +35,9 @@ export class InputModel extends SDK.SDKModel.SDKModel {
     }
     const keyboardEvent = event as KeyboardEvent;
     const text = event.type === 'keypress' ? String.fromCharCode(keyboardEvent.charCode) : undefined;
-    this._inputAgent.invoke_dispatchKeyEvent({
+    this.inputAgent.invoke_dispatchKeyEvent({
       type: type,
-      modifiers: this._modifiersForEvent(keyboardEvent),
+      modifiers: this.modifiersForEvent(keyboardEvent),
       text: text,
       unmodifiedText: text ? text.toLowerCase() : undefined,
       keyIdentifier: (keyboardEvent as {keyIdentifier?: string}).keyIdentifier,
@@ -76,13 +74,13 @@ export class InputModel extends SDK.SDKModel.SDKModel {
       return;
     }
 
-    if (eventType === 'mousedown' || this._activeTouchOffsetTop === null) {
-      this._activeTouchOffsetTop = offsetTop;
+    if (eventType === 'mousedown' || this.activeTouchOffsetTop === null) {
+      this.activeTouchOffsetTop = offsetTop;
     }
 
     const x = Math.round(mouseEvent.offsetX / zoom);
     let y = Math.round(mouseEvent.offsetY / zoom);
-    y = Math.round(y - this._activeTouchOffsetTop);
+    y = Math.round(y - this.activeTouchOffsetTop);
     const params: Protocol.Input.EmulateTouchFromMouseEventRequest = {
       type: types[eventType],
       x: x,
@@ -96,24 +94,24 @@ export class InputModel extends SDK.SDKModel.SDKModel {
       params.deltaX = wheelEvent.deltaX / zoom;
       params.deltaY = -wheelEvent.deltaY / zoom;
     } else {
-      this._activeTouchParams = params;
+      this.activeTouchParams = params;
     }
     if (event.type === 'mouseup') {
-      this._activeTouchOffsetTop = null;
+      this.activeTouchOffsetTop = null;
     }
-    this._inputAgent.invoke_emulateTouchFromMouseEvent(params);
+    this.inputAgent.invoke_emulateTouchFromMouseEvent(params);
   }
 
   cancelTouch(): void {
-    if (this._activeTouchParams !== null) {
-      const params = this._activeTouchParams;
-      this._activeTouchParams = null;
+    if (this.activeTouchParams !== null) {
+      const params = this.activeTouchParams;
+      this.activeTouchParams = null;
       params.type = 'mouseReleased' as Protocol.Input.EmulateTouchFromMouseEventRequestType;
-      this._inputAgent.invoke_emulateTouchFromMouseEvent(params);
+      this.inputAgent.invoke_emulateTouchFromMouseEvent(params);
     }
   }
 
-  _modifiersForEvent(event: KeyboardEvent): number {
+  private modifiersForEvent(event: KeyboardEvent): number {
     return (event.altKey ? 1 : 0) | (event.ctrlKey ? 2 : 0) | (event.metaKey ? 4 : 0) | (event.shiftKey ? 8 : 0);
   }
 }

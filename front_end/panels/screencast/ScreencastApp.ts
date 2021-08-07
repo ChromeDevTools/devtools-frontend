@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -23,21 +21,21 @@ let appInstance: ScreencastApp;
 
 export class ScreencastApp implements Common.App.App,
                                       SDK.TargetManager.SDKModelObserver<SDK.ScreenCaptureModel.ScreenCaptureModel> {
-  _enabledSetting: Common.Settings.Setting<boolean>;
-  _toggleButton: UI.Toolbar.ToolbarToggle;
-  _rootSplitWidget?: UI.SplitWidget.SplitWidget;
-  _screenCaptureModel?: SDK.ScreenCaptureModel.ScreenCaptureModel;
-  _screencastView?: ScreencastView;
+  private readonly enabledSetting: Common.Settings.Setting<boolean>;
+  toggleButton: UI.Toolbar.ToolbarToggle;
+  private rootSplitWidget?: UI.SplitWidget.SplitWidget;
+  private screenCaptureModel?: SDK.ScreenCaptureModel.ScreenCaptureModel;
+  private screencastView?: ScreencastView;
   constructor() {
-    this._enabledSetting = Common.Settings.Settings.instance().createSetting('screencastEnabled', true);
-    this._toggleButton = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleScreencast), 'largeicon-phone');
-    this._toggleButton.setToggled(this._enabledSetting.get());
-    this._toggleButton.setEnabled(false);
-    this._toggleButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._toggleButtonClicked, this);
+    this.enabledSetting = Common.Settings.Settings.instance().createSetting('screencastEnabled', true);
+    this.toggleButton = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleScreencast), 'largeicon-phone');
+    this.toggleButton.setToggled(this.enabledSetting.get());
+    this.toggleButton.setEnabled(false);
+    this.toggleButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.toggleButtonClicked, this);
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.ScreenCaptureModel.ScreenCaptureModel, this);
   }
 
-  static _instance(): ScreencastApp {
+  static instance(): ScreencastApp {
     if (!appInstance) {
       appInstance = new ScreencastApp();
     }
@@ -47,62 +45,62 @@ export class ScreencastApp implements Common.App.App,
   presentUI(document: Document): void {
     const rootView = new UI.RootView.RootView();
 
-    this._rootSplitWidget =
+    this.rootSplitWidget =
         new UI.SplitWidget.SplitWidget(false, true, 'InspectorView.screencastSplitViewState', 300, 300);
-    this._rootSplitWidget.setVertical(true);
-    this._rootSplitWidget.setSecondIsSidebar(true);
-    this._rootSplitWidget.show(rootView.element);
-    this._rootSplitWidget.hideMain();
+    this.rootSplitWidget.setVertical(true);
+    this.rootSplitWidget.setSecondIsSidebar(true);
+    this.rootSplitWidget.show(rootView.element);
+    this.rootSplitWidget.hideMain();
 
-    this._rootSplitWidget.setSidebarWidget(UI.InspectorView.InspectorView.instance());
-    UI.InspectorView.InspectorView.instance().setOwnerSplit(this._rootSplitWidget);
+    this.rootSplitWidget.setSidebarWidget(UI.InspectorView.InspectorView.instance());
+    UI.InspectorView.InspectorView.instance().setOwnerSplit(this.rootSplitWidget);
     rootView.attachToDocument(document);
     rootView.focus();
   }
 
   modelAdded(screenCaptureModel: SDK.ScreenCaptureModel.ScreenCaptureModel): void {
-    if (this._screenCaptureModel) {
+    if (this.screenCaptureModel) {
       return;
     }
-    this._screenCaptureModel = screenCaptureModel;
-    this._toggleButton.setEnabled(true);
-    this._screencastView = new ScreencastView(screenCaptureModel);
-    if (this._rootSplitWidget) {
-      this._rootSplitWidget.setMainWidget(this._screencastView);
+    this.screenCaptureModel = screenCaptureModel;
+    this.toggleButton.setEnabled(true);
+    this.screencastView = new ScreencastView(screenCaptureModel);
+    if (this.rootSplitWidget) {
+      this.rootSplitWidget.setMainWidget(this.screencastView);
     }
-    this._screencastView.initialize();
-    this._onScreencastEnabledChanged();
+    this.screencastView.initialize();
+    this.onScreencastEnabledChanged();
   }
 
   modelRemoved(screenCaptureModel: SDK.ScreenCaptureModel.ScreenCaptureModel): void {
-    if (this._screenCaptureModel !== screenCaptureModel) {
+    if (this.screenCaptureModel !== screenCaptureModel) {
       return;
     }
-    delete this._screenCaptureModel;
-    this._toggleButton.setEnabled(false);
-    if (this._screencastView) {
-      this._screencastView.detach();
-      delete this._screencastView;
+    delete this.screenCaptureModel;
+    this.toggleButton.setEnabled(false);
+    if (this.screencastView) {
+      this.screencastView.detach();
+      delete this.screencastView;
     }
-    this._onScreencastEnabledChanged();
+    this.onScreencastEnabledChanged();
   }
 
-  _toggleButtonClicked(): void {
-    const enabled = !this._toggleButton.toggled();
-    this._enabledSetting.set(enabled);
-    this._onScreencastEnabledChanged();
+  private toggleButtonClicked(): void {
+    const enabled = !this.toggleButton.toggled();
+    this.enabledSetting.set(enabled);
+    this.onScreencastEnabledChanged();
   }
 
-  _onScreencastEnabledChanged(): void {
-    if (!this._rootSplitWidget) {
+  private onScreencastEnabledChanged(): void {
+    if (!this.rootSplitWidget) {
       return;
     }
-    const enabled = Boolean(this._enabledSetting.get() && this._screencastView);
-    this._toggleButton.setToggled(enabled);
+    const enabled = Boolean(this.enabledSetting.get() && this.screencastView);
+    this.toggleButton.setToggled(enabled);
     if (enabled) {
-      this._rootSplitWidget.showBoth();
+      this.rootSplitWidget.showBoth();
     } else {
-      this._rootSplitWidget.hideMain();
+      this.rootSplitWidget.hideMain();
     }
   }
 }
@@ -120,7 +118,7 @@ export class ToolbarButtonProvider implements UI.Toolbar.Provider {
   }
 
   item(): UI.Toolbar.ToolbarItem|null {
-    return ScreencastApp._instance()._toggleButton;
+    return ScreencastApp.instance().toggleButton;
   }
 }
 
@@ -137,6 +135,6 @@ export class ScreencastAppProvider implements Common.AppProvider.AppProvider {
   }
 
   createApp(): Common.App.App {
-    return ScreencastApp._instance();
+    return ScreencastApp.instance();
   }
 }

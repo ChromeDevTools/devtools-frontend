@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -110,22 +108,22 @@ export interface LogMessage {
 
 let protocolMonitorImplInstance: ProtocolMonitorImpl;
 export class ProtocolMonitorImpl extends UI.Widget.VBox {
-  _started: boolean;
-  _startTime: number;
-  _dataGridRowForId: Map<number, DataGrid.DataGridUtils.Row>;
-  _infoWidget: InfoWidget;
-  _dataGridIntegrator: DataGrid.DataGridControllerIntegrator.DataGridControllerIntegrator;
-  _filterParser: TextUtils.TextUtils.FilterParser;
-  _suggestionBuilder: UI.FilterSuggestionBuilder.FilterSuggestionBuilder;
-  _textFilterUI: UI.Toolbar.ToolbarInput;
+  private started: boolean;
+  private startTime: number;
+  private readonly dataGridRowForId: Map<number, DataGrid.DataGridUtils.Row>;
+  private readonly infoWidget: InfoWidget;
+  private readonly dataGridIntegrator: DataGrid.DataGridControllerIntegrator.DataGridControllerIntegrator;
+  private readonly filterParser: TextUtils.TextUtils.FilterParser;
+  private readonly suggestionBuilder: UI.FilterSuggestionBuilder.FilterSuggestionBuilder;
+  private readonly textFilterUI: UI.Toolbar.ToolbarInput;
   private messages: LogMessage[] = [];
   private isRecording: boolean = false;
 
   constructor() {
     super(true);
-    this._started = false;
-    this._startTime = 0;
-    this._dataGridRowForId = new Map();
+    this.started = false;
+    this.startTime = 0;
+    this.dataGridRowForId = new Map();
     const topToolbar = new UI.Toolbar.Toolbar('protocol-monitor-toolbar', this.contentElement);
 
     this.contentElement.classList.add('protocol-monitor');
@@ -133,7 +131,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
         i18nString(UIStrings.record), 'largeicon-start-recording', 'largeicon-stop-recording');
     recordButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
       recordButton.setToggled(!recordButton.toggled());
-      this._setRecording(recordButton.toggled());
+      this.setRecording(recordButton.toggled());
     });
     recordButton.setToggleWithRedColor(true);
     topToolbar.appendToolbarItem(recordButton);
@@ -142,7 +140,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'largeicon-clear');
     clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
       this.messages = [];
-      this._dataGridIntegrator.update({...this._dataGridIntegrator.data(), rows: []});
+      this.dataGridIntegrator.update({...this.dataGridIntegrator.data(), rows: []});
     });
     topToolbar.appendToolbarItem(clearButton);
 
@@ -154,7 +152,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
 
     const split = new UI.SplitWidget.SplitWidget(true, true, 'protocol-monitor-panel-split', 250);
     split.show(this.contentElement);
-    this._infoWidget = new InfoWidget();
+    this.infoWidget = new InfoWidget();
 
     const dataGridInitialData: DataGrid.DataGridController.DataGridControllerData = {
       columns: [
@@ -230,7 +228,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
              */
               menu.defaultSection().appendItem(i18nString(UIStrings.filter), () => {
                 const methodColumn = DataGrid.DataGridUtils.getRowEntryForColumnId(row, 'method');
-                this._textFilterUI.setValue(`method:${methodColumn.value}`, true);
+                this.textFilterUI.setValue(`method:${methodColumn.value}`, true);
               });
 
               /**
@@ -250,37 +248,37 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
       },
     };
 
-    this._dataGridIntegrator =
+    this.dataGridIntegrator =
         new DataGrid.DataGridControllerIntegrator.DataGridControllerIntegrator(dataGridInitialData);
 
-    this._dataGridIntegrator.dataGrid.addEventListener('cellfocused', event => {
+    this.dataGridIntegrator.dataGrid.addEventListener('cellfocused', event => {
       const focusedRow = event.data.row;
       const infoWidgetData = {
         request: DataGrid.DataGridUtils.getRowEntryForColumnId(focusedRow, 'request'),
         response: DataGrid.DataGridUtils.getRowEntryForColumnId(focusedRow, 'response'),
         direction: DataGrid.DataGridUtils.getRowEntryForColumnId(focusedRow, 'direction'),
       };
-      this._infoWidget.render(infoWidgetData);
+      this.infoWidget.render(infoWidgetData);
     });
 
-    this._dataGridIntegrator.dataGrid.addEventListener('newuserfiltertext', event => {
-      this._textFilterUI.setValue(event.data.filterText, /* notify listeners */ true);
+    this.dataGridIntegrator.dataGrid.addEventListener('newuserfiltertext', event => {
+      this.textFilterUI.setValue(event.data.filterText, /* notify listeners */ true);
     });
-    split.setMainWidget(this._dataGridIntegrator);
-    split.setSidebarWidget(this._infoWidget);
+    split.setMainWidget(this.dataGridIntegrator);
+    split.setSidebarWidget(this.infoWidget);
     const keys = ['method', 'request', 'response', 'direction', 'target', 'session'];
-    this._filterParser = new TextUtils.TextUtils.FilterParser(keys);
-    this._suggestionBuilder = new UI.FilterSuggestionBuilder.FilterSuggestionBuilder(keys);
+    this.filterParser = new TextUtils.TextUtils.FilterParser(keys);
+    this.suggestionBuilder = new UI.FilterSuggestionBuilder.FilterSuggestionBuilder(keys);
 
-    this._textFilterUI = new UI.Toolbar.ToolbarInput(
-        i18nString(UIStrings.filter), '', 1, .2, '', this._suggestionBuilder.completions.bind(this._suggestionBuilder),
+    this.textFilterUI = new UI.Toolbar.ToolbarInput(
+        i18nString(UIStrings.filter), '', 1, .2, '', this.suggestionBuilder.completions.bind(this.suggestionBuilder),
         true);
-    this._textFilterUI.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, event => {
+    this.textFilterUI.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, event => {
       const query = event.data as string;
-      const filters = this._filterParser.parse(query);
-      this._dataGridIntegrator.update({...this._dataGridIntegrator.data(), filters});
+      const filters = this.filterParser.parse(query);
+      this.dataGridIntegrator.update({...this.dataGridIntegrator.data(), filters});
     });
-    topToolbar.appendToolbarItem(this._textFilterUI);
+    topToolbar.appendToolbarItem(this.textFilterUI);
 
     const onSend = (): void => {
       const value = input.value();
@@ -316,25 +314,25 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
   }
 
   wasShown(): void {
-    if (this._started) {
+    if (this.started) {
       return;
     }
     this.registerCSSFiles([protocolMonitorStyles]);
-    this._started = true;
-    this._startTime = Date.now();
-    this._setRecording(true);
+    this.started = true;
+    this.startTime = Date.now();
+    this.setRecording(true);
   }
 
-  _setRecording(recording: boolean): void {
+  private setRecording(recording: boolean): void {
     this.isRecording = recording;
     const test = ProtocolClient.InspectorBackend.test;
     if (recording) {
       // TODO: TS thinks that properties are read-only because
       // in TS test is defined as a namespace.
       // @ts-ignore
-      test.onMessageSent = this._messageSent.bind(this);
+      test.onMessageSent = this.messageSent.bind(this);
       // @ts-ignore
-      test.onMessageReceived = this._messageReceived.bind(this);
+      test.onMessageReceived = this.messageReceived.bind(this);
     } else {
       // @ts-ignore
       test.onMessageSent = null;
@@ -343,7 +341,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     }
   }
 
-  _targetToString(target: SDK.Target.Target|null): string {
+  private targetToString(target: SDK.Target.Target|null): string {
     if (!target) {
       return '';
     }
@@ -352,16 +350,16 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
   }
 
   // eslint-disable
-  _messageReceived(message: Message, target: ProtocolClient.InspectorBackend.TargetBase|null): void {
+  private messageReceived(message: Message, target: ProtocolClient.InspectorBackend.TargetBase|null): void {
     if (this.isRecording) {
       this.messages.push({...message, type: 'recv', domain: '-'});
     }
     if ('id' in message && message.id) {
-      const existingRow = this._dataGridRowForId.get(message.id);
+      const existingRow = this.dataGridRowForId.get(message.id);
       if (!existingRow) {
         return;
       }
-      const allExistingRows = this._dataGridIntegrator.data().rows;
+      const allExistingRows = this.dataGridIntegrator.data().rows;
       const matchingExistingRowIndex = allExistingRows.findIndex(r => existingRow === r);
       const newRowWithUpdate = {
         ...existingRow,
@@ -377,13 +375,13 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
         }),
       };
 
-      const newRowsArray = [...this._dataGridIntegrator.data().rows];
+      const newRowsArray = [...this.dataGridIntegrator.data().rows];
       newRowsArray[matchingExistingRowIndex] = newRowWithUpdate;
 
       // Now we've updated the message, it won't be updated again, so we can delete it from the tracking map.
-      this._dataGridRowForId.delete(message.id);
-      this._dataGridIntegrator.update({
-        ...this._dataGridIntegrator.data(),
+      this.dataGridRowForId.delete(message.id);
+      this.dataGridIntegrator.update({
+        ...this.dataGridIntegrator.data(),
         rows: newRowsArray,
       });
       return;
@@ -401,23 +399,23 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
         },
         {
           columnId: 'timestamp',
-          value: Date.now() - this._startTime,
+          value: Date.now() - this.startTime,
           renderer: timestampRenderer,
         },
         {columnId: 'direction', value: 'received'},
-        {columnId: 'target', value: this._targetToString(sdkTarget)},
+        {columnId: 'target', value: this.targetToString(sdkTarget)},
         {columnId: 'session', value: message.sessionId || ''},
       ],
       hidden: false,
     };
 
-    this._dataGridIntegrator.update({
-      ...this._dataGridIntegrator.data(),
-      rows: this._dataGridIntegrator.data().rows.concat([newRow]),
+    this.dataGridIntegrator.update({
+      ...this.dataGridIntegrator.data(),
+      rows: this.dataGridIntegrator.data().rows.concat([newRow]),
     });
   }
 
-  _messageSent(
+  private messageSent(
       message: {domain: string, method: string, params: Object, id: number, sessionId?: string},
       target: ProtocolClient.InspectorBackend.TargetBase|null): void {
     if (this.isRecording) {
@@ -438,19 +436,19 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
         {columnId: 'response', value: '(pending)', renderer: DataGrid.DataGridRenderers.codeBlockRenderer},
         {
           columnId: 'timestamp',
-          value: Date.now() - this._startTime,
+          value: Date.now() - this.startTime,
           renderer: timestampRenderer,
         },
         {columnId: 'direction', value: 'sent'},
-        {columnId: 'target', value: this._targetToString(sdkTarget)},
+        {columnId: 'target', value: this.targetToString(sdkTarget)},
         {columnId: 'session', value: message.sessionId || ''},
       ],
       hidden: false,
     };
-    this._dataGridRowForId.set(message.id, newRow);
-    this._dataGridIntegrator.update({
-      ...this._dataGridIntegrator.data(),
-      rows: this._dataGridIntegrator.data().rows.concat([newRow]),
+    this.dataGridRowForId.set(message.id, newRow);
+    this.dataGridIntegrator.update({
+      ...this.dataGridIntegrator.data(),
+      rows: this.dataGridIntegrator.data().rows.concat([newRow]),
     });
   }
 
@@ -470,14 +468,14 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
 }
 
 export class InfoWidget extends UI.Widget.VBox {
-  _tabbedPane: UI.TabbedPane.TabbedPane;
+  private readonly tabbedPane: UI.TabbedPane.TabbedPane;
   constructor() {
     super();
-    this._tabbedPane = new UI.TabbedPane.TabbedPane();
-    this._tabbedPane.appendTab('request', i18nString(UIStrings.request), new UI.Widget.Widget());
-    this._tabbedPane.appendTab('response', i18nString(UIStrings.response), new UI.Widget.Widget());
-    this._tabbedPane.show(this.contentElement);
-    this._tabbedPane.selectTab('response');
+    this.tabbedPane = new UI.TabbedPane.TabbedPane();
+    this.tabbedPane.appendTab('request', i18nString(UIStrings.request), new UI.Widget.Widget());
+    this.tabbedPane.appendTab('response', i18nString(UIStrings.response), new UI.Widget.Widget());
+    this.tabbedPane.show(this.contentElement);
+    this.tabbedPane.selectTab('response');
     this.render(null);
   }
 
@@ -487,23 +485,22 @@ export class InfoWidget extends UI.Widget.VBox {
     direction: DataGrid.DataGridUtils.Cell|undefined,
   }|null): void {
     if (!data || !data.request || !data.response) {
-      this._tabbedPane.changeTabView(
-          'request', new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMessageSelected)));
-      this._tabbedPane.changeTabView(
+      this.tabbedPane.changeTabView('request', new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMessageSelected)));
+      this.tabbedPane.changeTabView(
           'response', new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMessageSelected)));
       return;
     }
 
     const requestEnabled = data && data.direction && data.direction.value === 'sent';
-    this._tabbedPane.setTabEnabled('request', Boolean(requestEnabled));
+    this.tabbedPane.setTabEnabled('request', Boolean(requestEnabled));
     if (!requestEnabled) {
-      this._tabbedPane.selectTab('response');
+      this.tabbedPane.selectTab('response');
     }
 
     const requestParsed = JSON.parse(String(data.request.value) || 'null');
-    this._tabbedPane.changeTabView('request', SourceFrame.JSONView.JSONView.createViewSync(requestParsed));
+    this.tabbedPane.changeTabView('request', SourceFrame.JSONView.JSONView.createViewSync(requestParsed));
     const responseParsed =
         data.response.value === '(pending)' ? null : JSON.parse(String(data.response.value) || 'null');
-    this._tabbedPane.changeTabView('response', SourceFrame.JSONView.JSONView.createViewSync(responseParsed));
+    this.tabbedPane.changeTabView('response', SourceFrame.JSONView.JSONView.createViewSync(responseParsed));
   }
 }

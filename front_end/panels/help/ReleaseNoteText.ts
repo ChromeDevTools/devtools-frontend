@@ -6,8 +6,6 @@
 // be shown in Canary (e.g. make sure the release notes are accurate).
 // https://github.com/ChromeDevTools/devtools-frontend/wiki/Release-Notes
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Host from '../../core/host/host.js';
 
 import type {ReleaseNote} from './HelpImpl.js';

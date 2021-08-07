@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -28,14 +26,14 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let releaseNoteViewInstance: ReleaseNoteView;
 
 export class ReleaseNoteView extends UI.Widget.VBox {
-  _releaseNoteElement: Element;
+  private readonly releaseNoteElement: Element;
   constructor() {
     super(true);
 
-    this._releaseNoteElement = this._createReleaseNoteElement(latestReleaseNote());
+    this.releaseNoteElement = this.createReleaseNoteElement(latestReleaseNote());
     const topSection = this.contentElement.createChild('div', 'release-note-top-section');
     topSection.textContent = latestReleaseNote().header;
-    this.contentElement.appendChild(this._releaseNoteElement);
+    this.contentElement.appendChild(this.releaseNoteElement);
   }
 
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): ReleaseNoteView {
@@ -47,10 +45,10 @@ export class ReleaseNoteView extends UI.Widget.VBox {
   }
 
   elementsToRestoreScrollPositionsFor(): Element[] {
-    return [this._releaseNoteElement];
+    return [this.releaseNoteElement];
   }
 
-  _createReleaseNoteElement(releaseNote: ReleaseNote): Element {
+  private createReleaseNoteElement(releaseNote: ReleaseNote): Element {
     const hbox = document.createElement('div');
     hbox.classList.add('hbox');
     const container = hbox.createChild('div', 'release-note-container');

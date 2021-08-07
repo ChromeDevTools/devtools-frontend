@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Acorn from '../../third_party/acorn/acorn.js';
 
 import type {TokenOrComment} from './AcornTokenizer.js';
@@ -38,30 +36,30 @@ import {ESTreeWalker} from './ESTreeWalker.js';
 import type {FormattedContentBuilder} from './FormattedContentBuilder.js';
 
 export class JavaScriptFormatter {
-  _builder: FormattedContentBuilder;
-  _tokenizer!: AcornTokenizer;
-  _content!: string;
-  _fromOffset!: number;
-  _lastLineNumber!: number;
-  _toOffset?: number;
+  private readonly builder: FormattedContentBuilder;
+  private tokenizer!: AcornTokenizer;
+  private content!: string;
+  private fromOffset!: number;
+  private lastLineNumber!: number;
+  private toOffset?: number;
   constructor(builder: FormattedContentBuilder) {
-    this._builder = builder;
+    this.builder = builder;
   }
 
   format(text: string, lineEndings: number[], fromOffset: number, toOffset: number): void {
-    this._fromOffset = fromOffset;
-    this._toOffset = toOffset;
-    this._content = text.substring(this._fromOffset, this._toOffset);
-    this._lastLineNumber = 0;
-    this._tokenizer = new AcornTokenizer(this._content);
-    const ast = Acorn.parse(this._content, {
+    this.fromOffset = fromOffset;
+    this.toOffset = toOffset;
+    this.content = text.substring(this.fromOffset, this.toOffset);
+    this.lastLineNumber = 0;
+    this.tokenizer = new AcornTokenizer(this.content);
+    const ast = Acorn.parse(this.content, {
       ranges: false,
       preserveParens: true,
       allowImportExportEverywhere: true,
       ecmaVersion: ECMA_VERSION,
       allowHashBang: true,
     });
-    const walker = new ESTreeWalker(this._beforeVisit.bind(this), this._afterVisit.bind(this));
+    const walker = new ESTreeWalker(this.beforeVisit.bind(this), this.afterVisit.bind(this));
     // @ts-ignore Technically, the acorn Node type is a subclass of Acorn.ESTree.Node.
     // However, the acorn package currently exports its type without specifying
     // this relationship. So while this is allowed on runtime, we can't properly
@@ -69,55 +67,55 @@ export class JavaScriptFormatter {
     walker.walk(ast);
   }
 
-  _push(token: Acorn.Token|Acorn.Comment|null, format: string): void {
+  private push(token: Acorn.Token|Acorn.Comment|null, format: string): void {
     for (let i = 0; i < format.length; ++i) {
       if (format[i] === 's') {
-        this._builder.addSoftSpace();
+        this.builder.addSoftSpace();
       } else if (format[i] === 'S') {
-        this._builder.addHardSpace();
+        this.builder.addHardSpace();
       } else if (format[i] === 'n') {
-        this._builder.addNewLine();
+        this.builder.addNewLine();
       } else if (format[i] === '>') {
-        this._builder.increaseNestingLevel();
+        this.builder.increaseNestingLevel();
       } else if (format[i] === '<') {
-        this._builder.decreaseNestingLevel();
+        this.builder.decreaseNestingLevel();
       } else if (format[i] === 't') {
-        if (this._tokenizer.tokenLineStart() - this._lastLineNumber > 1) {
-          this._builder.addNewLine(true);
+        if (this.tokenizer.tokenLineStart() - this.lastLineNumber > 1) {
+          this.builder.addNewLine(true);
         }
-        this._lastLineNumber = this._tokenizer.tokenLineEnd();
+        this.lastLineNumber = this.tokenizer.tokenLineEnd();
         if (token) {
-          this._builder.addToken(this._content.substring(token.start, token.end), this._fromOffset + token.start);
+          this.builder.addToken(this.content.substring(token.start, token.end), this.fromOffset + token.start);
         }
       }
     }
   }
 
-  _beforeVisit(node: Acorn.ESTree.Node): undefined {
+  private beforeVisit(node: Acorn.ESTree.Node): undefined {
     if (!node.parent) {
       return;
     }
     let token;
-    while ((token = this._tokenizer.peekToken()) && token.start < node.start) {
-      const token = (this._tokenizer.nextToken() as TokenOrComment);
+    while ((token = this.tokenizer.peekToken()) && token.start < node.start) {
+      const token = (this.tokenizer.nextToken() as TokenOrComment);
       // @ts-ignore Same reason as above about Acorn types and ESTree types
-      const format = this._formatToken(node.parent, token);
-      this._push(token, format);
+      const format = this.formatToken(node.parent, token);
+      this.push(token, format);
     }
     return;
   }
 
-  _afterVisit(node: Acorn.ESTree.Node): void {
+  private afterVisit(node: Acorn.ESTree.Node): void {
     let token;
-    while ((token = this._tokenizer.peekToken()) && token.start < node.end) {
-      const token = (this._tokenizer.nextToken() as TokenOrComment);
-      const format = this._formatToken(node, token);
-      this._push(token, format);
+    while ((token = this.tokenizer.peekToken()) && token.start < node.end) {
+      const token = (this.tokenizer.nextToken() as TokenOrComment);
+      const format = this.formatToken(node, token);
+      this.push(token, format);
     }
-    this._push(null, this._finishNode(node));
+    this.push(null, this.finishNode(node));
   }
 
-  _inForLoopHeader(node: Acorn.ESTree.Node): boolean {
+  private inForLoopHeader(node: Acorn.ESTree.Node): boolean {
     const parent = node.parent;
     if (!parent) {
       return false;
@@ -133,7 +131,7 @@ export class JavaScriptFormatter {
     return false;
   }
 
-  _formatToken(node: Acorn.ESTree.Node, tokenOrComment: TokenOrComment): string {
+  private formatToken(node: Acorn.ESTree.Node, tokenOrComment: TokenOrComment): string {
     const AT = AcornTokenizer;
     if (AT.lineComment(tokenOrComment)) {
       return 'tn';
@@ -243,7 +241,7 @@ export class JavaScriptFormatter {
           // it exists. We can't fix that, unless we use proper typechecking
           allVariablesInitialized = allVariablesInitialized && Boolean(declarations[i].init);
         }
-        return !this._inForLoopHeader(node) && allVariablesInitialized ? 'nSSts' : 'ts';
+        return !this.inForLoopHeader(node) && allVariablesInitialized ? 'nSSts' : 'ts';
       }
     } else if (node.type === 'PropertyDefinition') {
       if (AT.punctuator(token, '=')) {
@@ -358,13 +356,13 @@ export class JavaScriptFormatter {
     return AT.keyword(token) && !AT.keyword(token, 'this') ? 'ts' : 't';
   }
 
-  _finishNode(node: Acorn.ESTree.Node): string {
+  private finishNode(node: Acorn.ESTree.Node): string {
     if (node.type === 'WithStatement') {
       if (node.body && node.body.type !== 'BlockStatement') {
         return 'n<';
       }
     } else if (node.type === 'VariableDeclaration') {
-      if (!this._inForLoopHeader(node)) {
+      if (!this.inForLoopHeader(node)) {
         return 'n';
       }
     } else if (node.type === 'ForStatement' || node.type === 'ForOfStatement' || node.type === 'ForInStatement') {

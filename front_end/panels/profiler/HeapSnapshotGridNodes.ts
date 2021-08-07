@@ -770,7 +770,7 @@ export class HeapSnapshotObjectNode extends HeapSnapshotGenericObjectNode {
         return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig(
             'retainedSize', sortAscending, '!edgeName', true);
       case 'distance':
-        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('distance', sortAscending, '_name', true);
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('distance', sortAscending, 'name', true);
       default:
         return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('!edgeName', true, 'retainedSize', false);
     }

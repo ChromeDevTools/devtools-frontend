@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Platform from '../../core/platform/platform.js';
 
 import {CSSFormatter} from './CSSFormatter.js';
@@ -12,107 +10,107 @@ import {AbortTokenization, createTokenizer} from './FormatterWorker.js';
 import {JavaScriptFormatter} from './JavaScriptFormatter.js';
 
 export class HTMLFormatter {
-  _builder: FormattedContentBuilder;
-  _jsFormatter: JavaScriptFormatter;
-  _cssFormatter: CSSFormatter;
-  _text?: string;
-  _lineEndings?: number[];
-  _model?: HTMLModel;
+  private readonly builder: FormattedContentBuilder;
+  private readonly jsFormatter: JavaScriptFormatter;
+  private readonly cssFormatter: CSSFormatter;
+  private text?: string;
+  private lineEndings?: number[];
+  private model?: HTMLModel;
 
   constructor(builder: FormattedContentBuilder) {
-    this._builder = builder;
-    this._jsFormatter = new JavaScriptFormatter(builder);
-    this._cssFormatter = new CSSFormatter(builder);
+    this.builder = builder;
+    this.jsFormatter = new JavaScriptFormatter(builder);
+    this.cssFormatter = new CSSFormatter(builder);
   }
 
   format(text: string, lineEndings: number[]): void {
-    this._text = text;
-    this._lineEndings = lineEndings;
-    this._model = new HTMLModel(text);
-    this._walk(this._model.document());
+    this.text = text;
+    this.lineEndings = lineEndings;
+    this.model = new HTMLModel(text);
+    this.walk(this.model.document());
   }
 
-  _formatTokensTill(element: FormatterElement, offset: number): void {
-    if (!this._model) {
+  private formatTokensTill(element: FormatterElement, offset: number): void {
+    if (!this.model) {
       return;
     }
 
-    let nextToken = this._model.peekToken();
+    let nextToken = this.model.peekToken();
     while (nextToken && nextToken.startOffset < offset) {
-      const token = (this._model.nextToken() as Token);
-      this._formatToken(element, token);
-      nextToken = this._model.peekToken();
+      const token = (this.model.nextToken() as Token);
+      this.formatToken(element, token);
+      nextToken = this.model.peekToken();
     }
   }
 
-  _walk(element: FormatterElement): void {
+  private walk(element: FormatterElement): void {
     if (!element.openTag || !element.closeTag) {
       throw new Error('Element is missing open or close tag');
     }
 
     if (element.parent) {
-      this._formatTokensTill(element.parent, element.openTag.startOffset);
+      this.formatTokensTill(element.parent, element.openTag.startOffset);
     }
-    this._beforeOpenTag(element);
-    this._formatTokensTill(element, element.openTag.endOffset);
-    this._afterOpenTag(element);
+    this.beforeOpenTag(element);
+    this.formatTokensTill(element, element.openTag.endOffset);
+    this.afterOpenTag(element);
     for (let i = 0; i < element.children.length; ++i) {
-      this._walk(element.children[i]);
+      this.walk(element.children[i]);
     }
 
-    this._formatTokensTill(element, element.closeTag.startOffset);
-    this._beforeCloseTag(element);
-    this._formatTokensTill(element, element.closeTag.endOffset);
-    this._afterCloseTag(element);
+    this.formatTokensTill(element, element.closeTag.startOffset);
+    this.beforeCloseTag(element);
+    this.formatTokensTill(element, element.closeTag.endOffset);
+    this.afterCloseTag(element);
   }
 
-  _beforeOpenTag(element: FormatterElement): void {
-    if (!this._model) {
+  private beforeOpenTag(element: FormatterElement): void {
+    if (!this.model) {
       return;
     }
 
-    if (!element.children.length || element === this._model.document()) {
+    if (!element.children.length || element === this.model.document()) {
       return;
     }
-    this._builder.addNewLine();
+    this.builder.addNewLine();
   }
 
-  _afterOpenTag(element: FormatterElement): void {
-    if (!this._model) {
+  private afterOpenTag(element: FormatterElement): void {
+    if (!this.model) {
       return;
     }
 
-    if (!element.children.length || element === this._model.document()) {
+    if (!element.children.length || element === this.model.document()) {
       return;
     }
-    this._builder.increaseNestingLevel();
-    this._builder.addNewLine();
+    this.builder.increaseNestingLevel();
+    this.builder.addNewLine();
   }
 
-  _beforeCloseTag(element: FormatterElement): void {
-    if (!this._model) {
+  private beforeCloseTag(element: FormatterElement): void {
+    if (!this.model) {
       return;
     }
 
-    if (!element.children.length || element === this._model.document()) {
+    if (!element.children.length || element === this.model.document()) {
       return;
     }
-    this._builder.decreaseNestingLevel();
-    this._builder.addNewLine();
+    this.builder.decreaseNestingLevel();
+    this.builder.addNewLine();
   }
 
-  _afterCloseTag(_element: FormatterElement): void {
-    this._builder.addNewLine();
+  private afterCloseTag(_element: FormatterElement): void {
+    this.builder.addNewLine();
   }
 
-  _formatToken(element: FormatterElement, token: Token): void {
+  private formatToken(element: FormatterElement, token: Token): void {
     if (Platform.StringUtilities.isWhitespace(token.value)) {
       return;
     }
     if (hasTokenInSet(token.type, 'comment') || hasTokenInSet(token.type, 'meta')) {
-      this._builder.addNewLine();
-      this._builder.addToken(token.value.trim(), token.startOffset);
-      this._builder.addNewLine();
+      this.builder.addNewLine();
+      this.builder.addToken(token.value.trim(), token.startOffset);
+      this.builder.addNewLine();
       return;
     }
 
@@ -123,33 +121,33 @@ export class HTMLFormatter {
     const isBodyToken =
         element.openTag.endOffset <= token.startOffset && token.startOffset < element.closeTag.startOffset;
     if (isBodyToken && element.name === 'style') {
-      this._builder.addNewLine();
-      this._builder.increaseNestingLevel();
-      this._cssFormatter.format(this._text || '', this._lineEndings || [], token.startOffset, token.endOffset);
-      this._builder.decreaseNestingLevel();
+      this.builder.addNewLine();
+      this.builder.increaseNestingLevel();
+      this.cssFormatter.format(this.text || '', this.lineEndings || [], token.startOffset, token.endOffset);
+      this.builder.decreaseNestingLevel();
       return;
     }
     if (isBodyToken && element.name === 'script') {
-      this._builder.addNewLine();
-      this._builder.increaseNestingLevel();
-      if (this._scriptTagIsJavaScript(element)) {
-        this._jsFormatter.format(this._text || '', this._lineEndings || [], token.startOffset, token.endOffset);
+      this.builder.addNewLine();
+      this.builder.increaseNestingLevel();
+      if (this.scriptTagIsJavaScript(element)) {
+        this.jsFormatter.format(this.text || '', this.lineEndings || [], token.startOffset, token.endOffset);
       } else {
-        this._builder.addToken(token.value, token.startOffset);
-        this._builder.addNewLine();
+        this.builder.addToken(token.value, token.startOffset);
+        this.builder.addNewLine();
       }
-      this._builder.decreaseNestingLevel();
+      this.builder.decreaseNestingLevel();
       return;
     }
 
     if (!isBodyToken && hasTokenInSet(token.type, 'attribute')) {
-      this._builder.addSoftSpace();
+      this.builder.addSoftSpace();
     }
 
-    this._builder.addToken(token.value, token.startOffset);
+    this.builder.addToken(token.value, token.startOffset);
   }
 
-  _scriptTagIsJavaScript(element: FormatterElement): boolean {
+  private scriptTagIsJavaScript(element: FormatterElement): boolean {
     if (!element.openTag) {
       return true;
     }
@@ -202,37 +200,37 @@ function hasTokenInSet(tokenTypes: Set<string>, type: string): boolean {
 }
 
 export class HTMLModel {
-  _state: ParseState;
-  _document: FormatterElement;
-  _stack: FormatterElement[];
-  _tokens: Token[];
-  _tokenIndex: number;
-  _attributes: Map<string, string>;
-  _attributeName: string;
-  _tagName: string;
-  _isOpenTag: boolean;
-  _tagStartOffset?: number|null;
-  _tagEndOffset?: number|null;
+  private state: ParseState;
+  private readonly documentInternal: FormatterElement;
+  private stack: FormatterElement[];
+  private readonly tokens: Token[];
+  private tokenIndex: number;
+  private attributes: Map<string, string>;
+  private attributeName: string;
+  private tagName: string;
+  private isOpenTag: boolean;
+  private tagStartOffset?: number|null;
+  private tagEndOffset?: number|null;
 
   constructor(text: string) {
-    this._state = ParseState.Initial;
-    this._document = new FormatterElement('document');
-    this._document.openTag = new Tag('document', 0, 0, new Map(), true, false);
-    this._document.closeTag = new Tag('document', text.length, text.length, new Map(), false, false);
+    this.state = ParseState.Initial;
+    this.documentInternal = new FormatterElement('document');
+    this.documentInternal.openTag = new Tag('document', 0, 0, new Map(), true, false);
+    this.documentInternal.closeTag = new Tag('document', text.length, text.length, new Map(), false, false);
 
-    this._stack = [this._document];
+    this.stack = [this.documentInternal];
 
-    this._tokens = [];
-    this._tokenIndex = 0;
-    this._build(text);
+    this.tokens = [];
+    this.tokenIndex = 0;
+    this.build(text);
 
-    this._attributes = new Map();
-    this._attributeName = '';
-    this._tagName = '';
-    this._isOpenTag = false;
+    this.attributes = new Map();
+    this.attributeName = '';
+    this.tagName = '';
+    this.isOpenTag = false;
   }
 
-  _build(text: string): void {
+  private build(text: string): void {
     const tokenizer = createTokenizer('text/html');
     let lastOffset = 0;
     const lowerCaseText = text.toLowerCase();
@@ -242,7 +240,7 @@ export class HTMLModel {
       if (lastOffset >= text.length) {
         break;
       }
-      const element = this._stack[this._stack.length - 1];
+      const element = this.stack[this.stack.length - 1];
       if (!element) {
         break;
       }
@@ -259,16 +257,16 @@ export class HTMLModel {
       const tokenStart = element.openTag.endOffset;
       const tokenEnd = lastOffset;
       const tokenValue = text.substring(tokenStart, tokenEnd);
-      this._tokens.push(new Token(tokenValue, new Set(), tokenStart, tokenEnd));
+      this.tokens.push(new Token(tokenValue, new Set(), tokenStart, tokenEnd));
     }
 
-    while (this._stack.length > 1) {
-      const element = this._stack[this._stack.length - 1];
+    while (this.stack.length > 1) {
+      const element = this.stack[this.stack.length - 1];
       if (!element) {
         break;
       }
 
-      this._popElement(new Tag(element.name, text.length, text.length, new Map(), false, false));
+      this.popElement(new Tag(element.name, text.length, text.length, new Map(), false, false));
     }
 
     function processToken(
@@ -280,10 +278,10 @@ export class HTMLModel {
 
       const tokenType = type ? new Set<string>(type.split(' ')) : new Set<string>();
       const token = new Token(tokenValue, tokenType, tokenStart, tokenEnd);
-      this._tokens.push(token);
-      this._updateDOM(token);
+      this.tokens.push(token);
+      this.updateDOM(token);
 
-      const element = this._stack[this._stack.length - 1];
+      const element = this.stack[this.stack.length - 1];
       if (element && (element.name === 'script' || element.name === 'style') && element.openTag &&
           element.openTag.endOffset === lastOffset) {
         return AbortTokenization;
@@ -293,125 +291,124 @@ export class HTMLModel {
     }
   }
 
-  _updateDOM(token: Token): void {
+  private updateDOM(token: Token): void {
     const value = token.value;
     const type = token.type;
-    switch (this._state) {
+    switch (this.state) {
       case ParseState.Initial:
         if (hasTokenInSet(type, 'bracket') && (value === '<' || value === '</')) {
-          this._onStartTag(token);
-          this._state = ParseState.Tag;
+          this.onStartTag(token);
+          this.state = ParseState.Tag;
         }
         return;
       case ParseState.Tag:
         if (hasTokenInSet(type, 'tag') && !hasTokenInSet(type, 'bracket')) {
-          this._tagName = value.trim().toLowerCase();
+          this.tagName = value.trim().toLowerCase();
         } else if (hasTokenInSet(type, 'attribute')) {
-          this._attributeName = value.trim().toLowerCase();
-          this._attributes.set(this._attributeName, '');
-          this._state = ParseState.AttributeName;
+          this.attributeName = value.trim().toLowerCase();
+          this.attributes.set(this.attributeName, '');
+          this.state = ParseState.AttributeName;
         } else if (hasTokenInSet(type, 'bracket') && (value === '>' || value === '/>')) {
-          this._onEndTag(token);
-          this._state = ParseState.Initial;
+          this.onEndTag(token);
+          this.state = ParseState.Initial;
         }
         return;
       case ParseState.AttributeName:
         if (!type.size && value === '=') {
-          this._state = ParseState.AttributeValue;
+          this.state = ParseState.AttributeValue;
         } else if (hasTokenInSet(type, 'bracket') && (value === '>' || value === '/>')) {
-          this._onEndTag(token);
-          this._state = ParseState.Initial;
+          this.onEndTag(token);
+          this.state = ParseState.Initial;
         }
         return;
       case ParseState.AttributeValue:
         if (hasTokenInSet(type, 'string')) {
-          this._attributes.set(this._attributeName, value);
-          this._state = ParseState.Tag;
+          this.attributes.set(this.attributeName, value);
+          this.state = ParseState.Tag;
         } else if (hasTokenInSet(type, 'bracket') && (value === '>' || value === '/>')) {
-          this._onEndTag(token);
-          this._state = ParseState.Initial;
+          this.onEndTag(token);
+          this.state = ParseState.Initial;
         }
         return;
     }
   }
 
-  _onStartTag(token: Token): void {
-    this._tagName = '';
-    this._tagStartOffset = token.startOffset;
-    this._tagEndOffset = null;
-    this._attributes = new Map();
-    this._attributeName = '';
-    this._isOpenTag = token.value === '<';
+  private onStartTag(token: Token): void {
+    this.tagName = '';
+    this.tagStartOffset = token.startOffset;
+    this.tagEndOffset = null;
+    this.attributes = new Map();
+    this.attributeName = '';
+    this.isOpenTag = token.value === '<';
   }
 
-  _onEndTag(token: Token): void {
-    this._tagEndOffset = token.endOffset;
-    const selfClosingTag = token.value === '/>' || SelfClosingTags.has(this._tagName);
+  private onEndTag(token: Token): void {
+    this.tagEndOffset = token.endOffset;
+    const selfClosingTag = token.value === '/>' || SelfClosingTags.has(this.tagName);
     const tag = new Tag(
-        this._tagName, this._tagStartOffset || 0, this._tagEndOffset, this._attributes, this._isOpenTag,
-        selfClosingTag);
-    this._onTagComplete(tag);
+        this.tagName, this.tagStartOffset || 0, this.tagEndOffset, this.attributes, this.isOpenTag, selfClosingTag);
+    this.onTagComplete(tag);
   }
 
-  _onTagComplete(tag: Tag): void {
+  private onTagComplete(tag: Tag): void {
     if (tag.isOpenTag) {
-      const topElement = this._stack[this._stack.length - 1];
+      const topElement = this.stack[this.stack.length - 1];
       if (topElement) {
         const tagSet = AutoClosingTags.get(topElement.name);
-        if (topElement !== this._document && topElement.openTag && topElement.openTag.selfClosingTag) {
-          this._popElement(autocloseTag(topElement, topElement.openTag.endOffset));
+        if (topElement !== this.documentInternal && topElement.openTag && topElement.openTag.selfClosingTag) {
+          this.popElement(autocloseTag(topElement, topElement.openTag.endOffset));
         } else if (tagSet && tagSet.has(tag.name)) {
-          this._popElement(autocloseTag(topElement, tag.startOffset));
+          this.popElement(autocloseTag(topElement, tag.startOffset));
         }
-        this._pushElement(tag);
+        this.pushElement(tag);
       }
       return;
     }
 
-    let lastTag = this._stack[this._stack.length - 1];
-    while (this._stack.length > 1 && lastTag && lastTag.name !== tag.name) {
-      this._popElement(autocloseTag(lastTag, tag.startOffset));
-      lastTag = this._stack[this._stack.length - 1];
+    let lastTag = this.stack[this.stack.length - 1];
+    while (this.stack.length > 1 && lastTag && lastTag.name !== tag.name) {
+      this.popElement(autocloseTag(lastTag, tag.startOffset));
+      lastTag = this.stack[this.stack.length - 1];
     }
-    if (this._stack.length === 1) {
+    if (this.stack.length === 1) {
       return;
     }
-    this._popElement(tag);
+    this.popElement(tag);
 
     function autocloseTag(element: FormatterElement, offset: number): Tag {
       return new Tag(element.name, offset, offset, new Map(), false, false);
     }
   }
 
-  _popElement(closeTag: Tag): void {
-    const element = this._stack.pop();
+  private popElement(closeTag: Tag): void {
+    const element = this.stack.pop();
     if (!element) {
       return;
     }
     element.closeTag = closeTag;
   }
 
-  _pushElement(openTag: Tag): void {
-    const topElement = this._stack[this._stack.length - 1];
+  private pushElement(openTag: Tag): void {
+    const topElement = this.stack[this.stack.length - 1];
     const newElement = new FormatterElement(openTag.name);
     if (topElement) {
       newElement.parent = topElement;
       topElement.children.push(newElement);
     }
     newElement.openTag = openTag;
-    this._stack.push(newElement);
+    this.stack.push(newElement);
   }
 
   peekToken(): Token|null {
-    return this._tokenIndex < this._tokens.length ? this._tokens[this._tokenIndex] : null;
+    return this.tokenIndex < this.tokens.length ? this.tokens[this.tokenIndex] : null;
   }
 
   nextToken(): Token|null {
-    return this._tokens[this._tokenIndex++];
+    return this.tokens[this.tokenIndex++];
   }
 
   document(): FormatterElement {
-    return this._document;
+    return this.documentInternal;
   }
 }
 

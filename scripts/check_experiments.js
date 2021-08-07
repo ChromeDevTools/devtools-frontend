@@ -124,7 +124,7 @@ function getMainImplExperimentList(mainImplFile, experimentNames) {
   }
 
   // Find function in MainImpl Class
-  const initializeExperimentNode = findFunctionInClass(mainImplClassNode, '_initializeExperiments');
+  const initializeExperimentNode = findFunctionInClass(mainImplClassNode, 'initializeExperiments');
   if (!initializeExperimentNode) {
     return null;
   }

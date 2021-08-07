@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Platform from '../../core/platform/platform.js';
 
 import type {FormattedContentBuilder} from './FormattedContentBuilder.js';
@@ -42,21 +40,21 @@ const cssTrimEnd = (tokenValue: string): string => {
 };
 
 export class CSSFormatter {
-  _builder: FormattedContentBuilder;
-  _toOffset!: number;
-  _fromOffset!: number;
-  _lineEndings!: number[];
-  _lastLine: number;
-  _state: {
+  private readonly builder: FormattedContentBuilder;
+  private toOffset!: number;
+  private fromOffset!: number;
+  private lineEndings!: number[];
+  private lastLine: number;
+  private state: {
     eatWhitespace: (boolean|undefined),
     seenProperty: (boolean|undefined),
     inPropertyValue: (boolean|undefined),
     afterClosingBrace: (boolean|undefined),
   };
   constructor(builder: FormattedContentBuilder) {
-    this._builder = builder;
-    this._lastLine = -1;
-    this._state = {
+    this.builder = builder;
+    this.lastLine = -1;
+    this.state = {
       eatWhitespace: undefined,
       seenProperty: undefined,
       inPropertyValue: undefined,
@@ -65,86 +63,86 @@ export class CSSFormatter {
   }
 
   format(text: string, lineEndings: number[], fromOffset: number, toOffset: number): void {
-    this._lineEndings = lineEndings;
-    this._fromOffset = fromOffset;
-    this._toOffset = toOffset;
-    this._state = {
+    this.lineEndings = lineEndings;
+    this.fromOffset = fromOffset;
+    this.toOffset = toOffset;
+    this.state = {
       eatWhitespace: undefined,
       seenProperty: undefined,
       inPropertyValue: undefined,
       afterClosingBrace: undefined,
     };
-    this._lastLine = -1;
+    this.lastLine = -1;
     const tokenize = createTokenizer('text/css');
-    const oldEnforce = this._builder.setEnforceSpaceBetweenWords(false);
-    tokenize(text.substring(this._fromOffset, this._toOffset), this._tokenCallback.bind(this));
-    this._builder.setEnforceSpaceBetweenWords(oldEnforce);
+    const oldEnforce = this.builder.setEnforceSpaceBetweenWords(false);
+    tokenize(text.substring(this.fromOffset, this.toOffset), this.tokenCallback.bind(this));
+    this.builder.setEnforceSpaceBetweenWords(oldEnforce);
   }
 
-  _tokenCallback(token: string, type: string|null, startPosition: number): void {
-    startPosition += this._fromOffset;
-    const startLine = Platform.ArrayUtilities.lowerBound(
-        this._lineEndings, startPosition, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
-    if (startLine !== this._lastLine) {
-      this._state.eatWhitespace = true;
+  private tokenCallback(token: string, type: string|null, startPosition: number): void {
+    startPosition += this.fromOffset;
+    const startLine =
+        Platform.ArrayUtilities.lowerBound(this.lineEndings, startPosition, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
+    if (startLine !== this.lastLine) {
+      this.state.eatWhitespace = true;
     }
     // The css- prefix is optional, as we override that in the tokenizer defined
     // in CodeMirrorTextEditor.js. In a worker context, we don't use the prefix.
-    if (type && (/^(css-)?property/.test(type) || /^(css-)?variable-2/.test(type)) && !this._state.inPropertyValue) {
-      this._state.seenProperty = true;
+    if (type && (/^(css-)?property/.test(type) || /^(css-)?variable-2/.test(type)) && !this.state.inPropertyValue) {
+      this.state.seenProperty = true;
     }
-    this._lastLine = startLine;
+    this.lastLine = startLine;
     // https://drafts.csswg.org/css-syntax/#whitespace
     const isWhitespace = /^(?:\r?\n|[\t\f\r ])+$/.test(token);
     if (isWhitespace) {
-      if (!this._state.eatWhitespace) {
-        this._builder.addSoftSpace();
+      if (!this.state.eatWhitespace) {
+        this.builder.addSoftSpace();
       }
       return;
     }
-    this._state.eatWhitespace = false;
+    this.state.eatWhitespace = false;
     if (token === '\n') {
       return;
     }
 
     if (token !== '}') {
-      if (this._state.afterClosingBrace) {
-        this._builder.addNewLine(true);
+      if (this.state.afterClosingBrace) {
+        this.builder.addNewLine(true);
       }
-      this._state.afterClosingBrace = false;
+      this.state.afterClosingBrace = false;
     }
     if (token === '}') {
-      if (this._state.inPropertyValue) {
-        this._builder.addNewLine();
+      if (this.state.inPropertyValue) {
+        this.builder.addNewLine();
       }
-      this._builder.decreaseNestingLevel();
-      this._state.afterClosingBrace = true;
-      this._state.inPropertyValue = false;
-    } else if (token === ':' && !this._state.inPropertyValue && this._state.seenProperty) {
-      this._builder.addToken(token, startPosition);
-      this._builder.addSoftSpace();
-      this._state.eatWhitespace = true;
-      this._state.inPropertyValue = true;
-      this._state.seenProperty = false;
+      this.builder.decreaseNestingLevel();
+      this.state.afterClosingBrace = true;
+      this.state.inPropertyValue = false;
+    } else if (token === ':' && !this.state.inPropertyValue && this.state.seenProperty) {
+      this.builder.addToken(token, startPosition);
+      this.builder.addSoftSpace();
+      this.state.eatWhitespace = true;
+      this.state.inPropertyValue = true;
+      this.state.seenProperty = false;
       return;
     } else if (token === '{') {
-      this._builder.addSoftSpace();
-      this._builder.addToken(token, startPosition);
-      this._builder.addNewLine();
-      this._builder.increaseNestingLevel();
+      this.builder.addSoftSpace();
+      this.builder.addToken(token, startPosition);
+      this.builder.addNewLine();
+      this.builder.increaseNestingLevel();
       return;
     }
 
-    this._builder.addToken(cssTrimEnd(token), startPosition);
+    this.builder.addToken(cssTrimEnd(token), startPosition);
 
-    if (type === 'comment' && !this._state.inPropertyValue && !this._state.seenProperty) {
-      this._builder.addNewLine();
+    if (type === 'comment' && !this.state.inPropertyValue && !this.state.seenProperty) {
+      this.builder.addNewLine();
     }
-    if (token === ';' && this._state.inPropertyValue) {
-      this._state.inPropertyValue = false;
-      this._builder.addNewLine();
+    if (token === ';' && this.state.inPropertyValue) {
+      this.state.inPropertyValue = false;
+      this.builder.addNewLine();
     } else if (token === '}') {
-      this._builder.addNewLine();
+      this.builder.addNewLine();
     }
   }
 }

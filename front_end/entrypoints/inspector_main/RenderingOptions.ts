@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -212,68 +210,68 @@ export class RenderingOptionsView extends UI.Widget.VBox {
     super(true);
     this.registerRequiredCSS('entrypoints/inspector_main/renderingOptions.css');
 
-    this._appendCheckbox(
+    this.appendCheckbox(
         i18nString(UIStrings.paintFlashing), i18nString(UIStrings.highlightsAreasOfThePageGreen),
         Common.Settings.Settings.instance().moduleSetting('showPaintRects'));
-    this._appendCheckbox(
+    this.appendCheckbox(
         i18nString(UIStrings.layoutShiftRegions), i18nString(UIStrings.highlightsAreasOfThePageBlueThat),
         Common.Settings.Settings.instance().moduleSetting('showLayoutShiftRegions'));
-    this._appendCheckbox(
+    this.appendCheckbox(
         i18nString(UIStrings.layerBorders), i18nString(UIStrings.showsLayerBordersOrangeoliveAnd),
         Common.Settings.Settings.instance().moduleSetting('showDebugBorders'));
-    this._appendCheckbox(
+    this.appendCheckbox(
         i18nString(UIStrings.frameRenderingStats), i18nString(UIStrings.plotsFrameThroughputDropped),
         Common.Settings.Settings.instance().moduleSetting('showFPSCounter'));
-    this._appendCheckbox(
+    this.appendCheckbox(
         i18nString(UIStrings.scrollingPerformanceIssues), i18nString(UIStrings.highlightsElementsTealThatCan),
         Common.Settings.Settings.instance().moduleSetting('showScrollBottleneckRects'));
-    this._appendCheckbox(
+    this.appendCheckbox(
         i18nString(UIStrings.highlightAdFrames), i18nString(UIStrings.highlightsFramesRedDetectedToBe),
         Common.Settings.Settings.instance().moduleSetting('showAdHighlights'));
-    this._appendCheckbox(
+    this.appendCheckbox(
         i18nString(UIStrings.hittestBorders), i18nString(UIStrings.showsBordersAroundHittestRegions),
         Common.Settings.Settings.instance().moduleSetting('showHitTestBorders'));
-    this._appendCheckbox(
+    this.appendCheckbox(
         i18nString(UIStrings.coreWebVitals), i18nString(UIStrings.showsAnOverlayWithCoreWebVitals),
         Common.Settings.Settings.instance().moduleSetting('showWebVitals'));
-    this._appendCheckbox(
+    this.appendCheckbox(
         i18nString(UIStrings.disableLocalFonts), i18nString(UIStrings.disablesLocalSourcesInFontface),
         Common.Settings.Settings.instance().moduleSetting('localFontsDisabled'));
-    this._appendCheckbox(
+    this.appendCheckbox(
         i18nString(UIStrings.emulateAFocusedPage), i18nString(UIStrings.emulatesAFocusedPage),
         Common.Settings.Settings.instance().moduleSetting('emulatePageFocus'));
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
-    this._appendSelect(
+    this.appendSelect(
         i18nString(UIStrings.forcesMediaTypeForTestingPrint),
         Common.Settings.Settings.instance().moduleSetting('emulatedCSSMedia'));
-    this._appendSelect(
+    this.appendSelect(
         i18nString(UIStrings.forcesCssPreferscolorschemeMedia),
         Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersColorScheme'));
-    this._appendSelect(
+    this.appendSelect(
         i18nString(UIStrings.forcesCssPrefersreducedmotion),
         Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersReducedMotion'));
     if (supportsPrefersReducedData()) {
-      this._appendSelect(
+      this.appendSelect(
           i18nString(UIStrings.forcesCssPrefersreduceddataMedia),
           Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersReducedData'));
     }
-    this._appendSelect(
+    this.appendSelect(
         i18nString(UIStrings.forcesCssColorgamutMediaFeature),
         Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeatureColorGamut'));
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
-    this._appendSelect(
+    this.appendSelect(
         i18nString(UIStrings.forcesVisionDeficiencyEmulation),
         Common.Settings.Settings.instance().moduleSetting('emulatedVisionDeficiency'));
 
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
-    this._appendCheckbox(
+    this.appendCheckbox(
         i18nString(UIStrings.disableAvifImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd),
         Common.Settings.Settings.instance().moduleSetting('avifFormatDisabled'));
 
-    const webpCheckbox = this._appendCheckbox(
+    const webpCheckbox = this.appendCheckbox(
         i18nString(UIStrings.disableWebpImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd),
         Common.Settings.Settings.instance().moduleSetting('webpFormatDisabled'));
 
@@ -283,7 +281,7 @@ export class RenderingOptionsView extends UI.Widget.VBox {
       if (!hasSupport) {
         return;
       }
-      webpCheckbox.before(this._createCheckbox(
+      webpCheckbox.before(this.createCheckbox(
           i18nString(UIStrings.disableJpegXlImageFormat), i18nString(UIStrings.requiresAPageReloadToApplyAnd),
           Common.Settings.Settings.instance().moduleSetting('jpegXlFormatDisabled')));
     });
@@ -300,23 +298,23 @@ export class RenderingOptionsView extends UI.Widget.VBox {
     return renderingOptionsViewInstance;
   }
 
-  _createCheckbox(label: string, subtitle: string, setting: Common.Settings.Setting<boolean>):
+  private createCheckbox(label: string, subtitle: string, setting: Common.Settings.Setting<boolean>):
       UI.UIUtils.CheckboxLabel {
     const checkboxLabel = UI.UIUtils.CheckboxLabel.create(label, false, subtitle);
     UI.SettingsUI.bindCheckbox(checkboxLabel.checkboxElement, setting);
     return checkboxLabel;
   }
 
-  _appendCheckbox(label: string, subtitle: string, setting: Common.Settings.Setting<boolean>):
+  private appendCheckbox(label: string, subtitle: string, setting: Common.Settings.Setting<boolean>):
       UI.UIUtils.CheckboxLabel {
-    const checkbox = this._createCheckbox(label, subtitle, setting);
+    const checkbox = this.createCheckbox(label, subtitle, setting);
     this.contentElement.appendChild(checkbox);
     return checkbox;
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _appendSelect(label: string, setting: Common.Settings.Setting<any>): void {
+  private appendSelect(label: string, setting: Common.Settings.Setting<any>): void {
     const control = UI.SettingsUI.createControlForSetting(setting, label);
     if (control) {
       this.contentElement.appendChild(control);

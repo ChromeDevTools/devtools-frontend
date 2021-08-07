@@ -2,90 +2,88 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
 export class InputModel extends SDK.SDKModel.SDKModel {
-  _inputAgent: ProtocolProxyApi.InputApi;
-  _eventDispatchTimer: number;
-  _dispatchEventDataList: EventData[];
-  _finishCallback: (() => void)|null;
-  _dispatchingIndex!: number;
-  _lastEventTime?: number|null;
-  _replayPaused?: boolean;
+  private readonly inputAgent: ProtocolProxyApi.InputApi;
+  private eventDispatchTimer: number;
+  private dispatchEventDataList: EventData[];
+  private finishCallback: (() => void)|null;
+  private dispatchingIndex!: number;
+  private lastEventTime?: number|null;
+  private replayPaused?: boolean;
 
   constructor(target: SDK.Target.Target) {
     super(target);
-    this._inputAgent = target.inputAgent();
-    this._eventDispatchTimer = 0;
-    this._dispatchEventDataList = [];
-    this._finishCallback = null;
+    this.inputAgent = target.inputAgent();
+    this.eventDispatchTimer = 0;
+    this.dispatchEventDataList = [];
+    this.finishCallback = null;
 
-    this._reset();
+    this.reset();
   }
 
-  _reset(): void {
-    this._lastEventTime = null;
-    this._replayPaused = false;
-    this._dispatchingIndex = 0;
-    window.clearTimeout(this._eventDispatchTimer);
+  private reset(): void {
+    this.lastEventTime = null;
+    this.replayPaused = false;
+    this.dispatchingIndex = 0;
+    window.clearTimeout(this.eventDispatchTimer);
   }
 
   setEvents(tracingModel: SDK.TracingModel.TracingModel): void {
-    this._dispatchEventDataList = [];
+    this.dispatchEventDataList = [];
     for (const process of tracingModel.sortedProcesses()) {
       for (const thread of process.sortedThreads()) {
-        this._processThreadEvents(tracingModel, thread);
+        this.processThreadEvents(tracingModel, thread);
       }
     }
     function compareTimestamp(a: EventData, b: EventData): number {
       return a.timestamp - b.timestamp;
     }
-    this._dispatchEventDataList.sort(compareTimestamp);
+    this.dispatchEventDataList.sort(compareTimestamp);
   }
 
   startReplay(finishCallback: (() => void)|null): void {
-    this._reset();
-    this._finishCallback = finishCallback;
-    if (this._dispatchEventDataList.length) {
-      this._dispatchNextEvent();
+    this.reset();
+    this.finishCallback = finishCallback;
+    if (this.dispatchEventDataList.length) {
+      this.dispatchNextEvent();
     } else {
-      this._replayStopped();
+      this.replayStopped();
     }
   }
 
   pause(): void {
-    window.clearTimeout(this._eventDispatchTimer);
-    if (this._dispatchingIndex >= this._dispatchEventDataList.length) {
-      this._replayStopped();
+    window.clearTimeout(this.eventDispatchTimer);
+    if (this.dispatchingIndex >= this.dispatchEventDataList.length) {
+      this.replayStopped();
     } else {
-      this._replayPaused = true;
+      this.replayPaused = true;
     }
   }
 
   resume(): void {
-    this._replayPaused = false;
-    if (this._dispatchingIndex < this._dispatchEventDataList.length) {
-      this._dispatchNextEvent();
+    this.replayPaused = false;
+    if (this.dispatchingIndex < this.dispatchEventDataList.length) {
+      this.dispatchNextEvent();
     }
   }
 
-  _processThreadEvents(_tracingModel: SDK.TracingModel.TracingModel, thread: SDK.TracingModel.Thread): void {
+  private processThreadEvents(_tracingModel: SDK.TracingModel.TracingModel, thread: SDK.TracingModel.Thread): void {
     for (const event of thread.events()) {
-      if (event.name === 'EventDispatch' && this._isValidInputEvent(event.args.data)) {
-        this._dispatchEventDataList.push(event.args.data);
+      if (event.name === 'EventDispatch' && this.isValidInputEvent(event.args.data)) {
+        this.dispatchEventDataList.push(event.args.data);
       }
     }
   }
 
-  _isValidInputEvent(eventData: EventData): boolean {
-    return this._isMouseEvent(eventData as MouseEventData) || this._isKeyboardEvent(eventData as KeyboardEventData);
+  private isValidInputEvent(eventData: EventData): boolean {
+    return this.isMouseEvent(eventData as MouseEventData) || this.isKeyboardEvent(eventData as KeyboardEventData);
   }
 
-  _isMouseEvent(eventData: MouseEventData): boolean {
+  private isMouseEvent(eventData: MouseEventData): boolean {
     if (!MOUSE_EVENT_TYPE_TO_REQUEST_TYPE.has(eventData.type)) {
       return false;
     }
@@ -95,7 +93,7 @@ export class InputModel extends SDK.SDKModel.SDKModel {
     return true;
   }
 
-  _isKeyboardEvent(eventData: KeyboardEventData): boolean {
+  private isKeyboardEvent(eventData: KeyboardEventData): boolean {
     if (!KEYBOARD_EVENT_TYPE_TO_REQUEST_TYPE.has(eventData.type)) {
       return false;
     }
@@ -105,25 +103,25 @@ export class InputModel extends SDK.SDKModel.SDKModel {
     return true;
   }
 
-  _dispatchNextEvent(): void {
-    const eventData = this._dispatchEventDataList[this._dispatchingIndex];
-    this._lastEventTime = eventData.timestamp;
+  private dispatchNextEvent(): void {
+    const eventData = this.dispatchEventDataList[this.dispatchingIndex];
+    this.lastEventTime = eventData.timestamp;
     if (MOUSE_EVENT_TYPE_TO_REQUEST_TYPE.has(eventData.type)) {
-      this._dispatchMouseEvent(eventData as MouseEventData);
+      this.dispatchMouseEvent(eventData as MouseEventData);
     } else if (KEYBOARD_EVENT_TYPE_TO_REQUEST_TYPE.has(eventData.type)) {
-      this._dispatchKeyEvent(eventData as KeyboardEventData);
+      this.dispatchKeyEvent(eventData as KeyboardEventData);
     }
 
-    ++this._dispatchingIndex;
-    if (this._dispatchingIndex < this._dispatchEventDataList.length) {
-      const waitTime = (this._dispatchEventDataList[this._dispatchingIndex].timestamp - this._lastEventTime) / 1000;
-      this._eventDispatchTimer = window.setTimeout(this._dispatchNextEvent.bind(this), waitTime);
+    ++this.dispatchingIndex;
+    if (this.dispatchingIndex < this.dispatchEventDataList.length) {
+      const waitTime = (this.dispatchEventDataList[this.dispatchingIndex].timestamp - this.lastEventTime) / 1000;
+      this.eventDispatchTimer = window.setTimeout(this.dispatchNextEvent.bind(this), waitTime);
     } else {
-      this._replayStopped();
+      this.replayStopped();
     }
   }
 
-  async _dispatchMouseEvent(eventData: MouseEventData): Promise<void> {
+  private async dispatchMouseEvent(eventData: MouseEventData): Promise<void> {
     const type = MOUSE_EVENT_TYPE_TO_REQUEST_TYPE.get(eventData.type);
     if (!type) {
       throw new Error(`Could not find mouse event type for eventData ${eventData.type}`);
@@ -141,10 +139,10 @@ export class InputModel extends SDK.SDKModel.SDKModel {
       deltaX: eventData.deltaX,
       deltaY: eventData.deltaY,
     };
-    await this._inputAgent.invoke_dispatchMouseEvent(params);
+    await this.inputAgent.invoke_dispatchMouseEvent(params);
   }
 
-  async _dispatchKeyEvent(eventData: KeyboardEventData): Promise<void> {
+  private async dispatchKeyEvent(eventData: KeyboardEventData): Promise<void> {
     const type = KEYBOARD_EVENT_TYPE_TO_REQUEST_TYPE.get(eventData.type);
     if (!type) {
       throw new Error(`Could not find key event type for eventData ${eventData.type}`);
@@ -158,14 +156,14 @@ export class InputModel extends SDK.SDKModel.SDKModel {
       code: eventData.code,
       key: eventData.key,
     };
-    await this._inputAgent.invoke_dispatchKeyEvent(params);
+    await this.inputAgent.invoke_dispatchKeyEvent(params);
   }
 
-  _replayStopped(): void {
-    window.clearTimeout(this._eventDispatchTimer);
-    this._reset();
-    if (this._finishCallback) {
-      this._finishCallback();
+  private replayStopped(): void {
+    window.clearTimeout(this.eventDispatchTimer);
+    this.reset();
+    if (this.finishCallback) {
+      this.finishCallback();
     }
   }
 }

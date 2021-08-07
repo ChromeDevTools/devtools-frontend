@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 
@@ -33,21 +31,21 @@ const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/MobileThrottl
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class MobileThrottlingSelector {
-  _populateCallback: (arg0: Array<MobileThrottlingConditionsGroup>) => ConditionsList;
-  _selectCallback: (arg0: number) => void;
-  _options: ConditionsList;
+  private readonly populateCallback: (arg0: Array<MobileThrottlingConditionsGroup>) => ConditionsList;
+  private readonly selectCallback: (arg0: number) => void;
+  private readonly options: ConditionsList;
 
   constructor(
       populateCallback: (arg0: Array<MobileThrottlingConditionsGroup>) => ConditionsList,
       selectCallback: (arg0: number) => void) {
-    this._populateCallback = populateCallback;
-    this._selectCallback = selectCallback;
+    this.populateCallback = populateCallback;
+    this.selectCallback = selectCallback;
     SDK.CPUThrottlingManager.CPUThrottlingManager.instance().addEventListener(
-        SDK.CPUThrottlingManager.Events.RateChanged, this._conditionsChanged, this);
+        SDK.CPUThrottlingManager.Events.RateChanged, this.conditionsChanged, this);
     SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener(
-        SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, this._conditionsChanged, this);
-    this._options = this._populateOptions();
-    this._conditionsChanged();
+        SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, this.conditionsChanged, this);
+    this.options = this.populateOptions();
+    this.conditionsChanged();
   }
 
   optionSelected(conditions: Conditions): void {
@@ -55,33 +53,33 @@ export class MobileThrottlingSelector {
     throttlingManager().setCPUThrottlingRate(conditions.cpuThrottlingRate);
   }
 
-  _populateOptions(): ConditionsList {
+  private populateOptions(): ConditionsList {
     const disabledGroup = {
       title: i18nString(UIStrings.disabled),
       items: [ThrottlingPresets.getNoThrottlingConditions()],
     };
     const presetsGroup = {title: i18nString(UIStrings.presets), items: ThrottlingPresets.getMobilePresets()};
     const advancedGroup = {title: i18nString(UIStrings.advanced), items: ThrottlingPresets.getAdvancedMobilePresets()};
-    return this._populateCallback([disabledGroup, presetsGroup, advancedGroup]);
+    return this.populateCallback([disabledGroup, presetsGroup, advancedGroup]);
   }
 
-  _conditionsChanged(): void {
+  private conditionsChanged(): void {
     const networkConditions = SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
     const cpuThrottlingRate = SDK.CPUThrottlingManager.CPUThrottlingManager.instance().cpuThrottlingRate();
-    for (let index = 0; index < this._options.length; ++index) {
-      const option = this._options[index];
+    for (let index = 0; index < this.options.length; ++index) {
+      const option = this.options[index];
       if (option && 'network' in option && option.network === networkConditions &&
           option.cpuThrottlingRate === cpuThrottlingRate) {
-        this._selectCallback(index);
+        this.selectCallback(index);
         return;
       }
     }
 
     const customConditions = ThrottlingPresets.getCustomConditions();
-    for (let index = 0; index < this._options.length; ++index) {
-      const item = this._options[index];
+    for (let index = 0; index < this.options.length; ++index) {
+      const item = this.options[index];
       if (item && item.title === customConditions.title && item.description === customConditions.description) {
-        this._selectCallback(index);
+        this.selectCallback(index);
         return;
       }
     }

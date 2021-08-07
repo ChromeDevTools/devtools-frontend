@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -89,68 +87,68 @@ const playbackRates = new WeakMap<HTMLElement, number>();
 let animationTimelineInstance: AnimationTimeline;
 
 export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManager.SDKModelObserver<AnimationModel> {
-  _gridWrapper: HTMLElement;
-  _grid: Element;
-  _playbackRate: number;
-  _allPaused: boolean;
-  _animationsContainer: HTMLElement;
-  _playbackRateButtons!: HTMLElement[];
-  _previewContainer!: HTMLElement;
-  _timelineScrubber!: HTMLElement;
-  _currentTime!: HTMLElement;
-  _popoverHelper!: UI.PopoverHelper.PopoverHelper;
-  _clearButton!: UI.Toolbar.ToolbarButton;
-  _selectedGroup!: AnimationGroup|null;
-  _renderQueue!: AnimationUI[];
-  _defaultDuration: number;
-  _duration: number;
-  _timelineControlsWidth: number;
-  _nodesMap: Map<number, NodeUI>;
-  _uiAnimations: AnimationUI[];
-  _groupBuffer: AnimationGroup[];
-  _previewMap: Map<AnimationGroup, AnimationGroupPreviewUI>;
-  _symbol: symbol;
-  _animationsMap: Map<string, AnimationImpl>;
-  _timelineScrubberLine?: HTMLElement;
-  _pauseButton?: UI.Toolbar.ToolbarToggle;
-  _controlButton?: UI.Toolbar.ToolbarToggle;
-  _controlState?: ControlState;
-  _redrawing?: boolean;
-  _cachedTimelineWidth?: number;
-  _cachedTimelineHeight?: number;
-  _scrubberPlayer?: Animation;
-  _gridOffsetLeft?: number;
-  _originalScrubberTime?: number|null;
-  _originalMousePosition?: number;
+  private gridWrapper: HTMLElement;
+  private grid: Element;
+  private playbackRate: number;
+  private allPaused: boolean;
+  private animationsContainer: HTMLElement;
+  private playbackRateButtons!: HTMLElement[];
+  private previewContainer!: HTMLElement;
+  private timelineScrubber!: HTMLElement;
+  private currentTime!: HTMLElement;
+  private popoverHelper!: UI.PopoverHelper.PopoverHelper;
+  private clearButton!: UI.Toolbar.ToolbarButton;
+  private selectedGroup!: AnimationGroup|null;
+  private renderQueue!: AnimationUI[];
+  private defaultDuration: number;
+  private durationInternal: number;
+  private timelineControlsWidth: number;
+  private readonly nodesMap: Map<number, NodeUI>;
+  private uiAnimations: AnimationUI[];
+  private groupBuffer: AnimationGroup[];
+  private readonly previewMap: Map<AnimationGroup, AnimationGroupPreviewUI>;
+  private readonly symbol: symbol;
+  private readonly animationsMap: Map<string, AnimationImpl>;
+  private timelineScrubberLine?: HTMLElement;
+  private pauseButton?: UI.Toolbar.ToolbarToggle;
+  private controlButton?: UI.Toolbar.ToolbarToggle;
+  private controlState?: ControlState;
+  private redrawing?: boolean;
+  private cachedTimelineWidth?: number;
+  private cachedTimelineHeight?: number;
+  private scrubberPlayer?: Animation;
+  private gridOffsetLeft?: number;
+  private originalScrubberTime?: number|null;
+  private originalMousePosition?: number;
 
   private constructor() {
     super(true);
 
     this.element.classList.add('animations-timeline');
 
-    this._gridWrapper = this.contentElement.createChild('div', 'grid-overflow-wrapper');
-    this._grid = UI.UIUtils.createSVGChild(this._gridWrapper, 'svg', 'animation-timeline-grid');
+    this.gridWrapper = this.contentElement.createChild('div', 'grid-overflow-wrapper');
+    this.grid = UI.UIUtils.createSVGChild(this.gridWrapper, 'svg', 'animation-timeline-grid');
 
-    this._playbackRate = 1;
-    this._allPaused = false;
-    this._createHeader();
-    this._animationsContainer = this.contentElement.createChild('div', 'animation-timeline-rows');
+    this.playbackRate = 1;
+    this.allPaused = false;
+    this.createHeader();
+    this.animationsContainer = this.contentElement.createChild('div', 'animation-timeline-rows');
     const timelineHint = this.contentElement.createChild('div', 'animation-timeline-rows-hint');
     timelineHint.textContent = i18nString(UIStrings.selectAnEffectAboveToInspectAnd);
 
-    /** @const */ this._defaultDuration = 100;
-    this._duration = this._defaultDuration;
-    /** @const */ this._timelineControlsWidth = 150;
-    this._nodesMap = new Map();
-    this._uiAnimations = [];
-    this._groupBuffer = [];
-    this._previewMap = new Map();
-    this._symbol = Symbol('animationTimeline');
-    this._animationsMap = new Map();
+    /** @const */ this.defaultDuration = 100;
+    this.durationInternal = this.defaultDuration;
+    /** @const */ this.timelineControlsWidth = 150;
+    this.nodesMap = new Map();
+    this.uiAnimations = [];
+    this.groupBuffer = [];
+    this.previewMap = new Map();
+    this.symbol = Symbol('animationTimeline');
+    this.animationsMap = new Map();
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.NodeRemoved, this.nodeRemoved, this);
     SDK.TargetManager.TargetManager.instance().observeModels(AnimationModel, this);
-    UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this._nodeChanged, this);
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.nodeChanged, this);
   }
 
   static instance(): AnimationTimeline {
@@ -162,149 +160,148 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
 
   wasShown(): void {
     for (const animationModel of SDK.TargetManager.TargetManager.instance().models(AnimationModel)) {
-      this._addEventListeners(animationModel);
+      this.addEventListeners(animationModel);
     }
     this.registerCSSFiles([animationTimelineStyles]);
   }
 
   willHide(): void {
     for (const animationModel of SDK.TargetManager.TargetManager.instance().models(AnimationModel)) {
-      this._removeEventListeners(animationModel);
+      this.removeEventListeners(animationModel);
     }
 
-    if (this._popoverHelper) {
-      this._popoverHelper.hidePopover();
+    if (this.popoverHelper) {
+      this.popoverHelper.hidePopover();
     }
   }
 
   modelAdded(animationModel: AnimationModel): void {
     if (this.isShowing()) {
-      this._addEventListeners(animationModel);
+      this.addEventListeners(animationModel);
     }
   }
 
   modelRemoved(animationModel: AnimationModel): void {
-    this._removeEventListeners(animationModel);
+    this.removeEventListeners(animationModel);
   }
 
-  _addEventListeners(animationModel: AnimationModel): void {
+  private addEventListeners(animationModel: AnimationModel): void {
     animationModel.ensureEnabled();
-    animationModel.addEventListener(Events.AnimationGroupStarted, this._animationGroupStarted, this);
-    animationModel.addEventListener(Events.ModelReset, this._reset, this);
+    animationModel.addEventListener(Events.AnimationGroupStarted, this.animationGroupStarted, this);
+    animationModel.addEventListener(Events.ModelReset, this.reset, this);
   }
 
-  _removeEventListeners(animationModel: AnimationModel): void {
-    animationModel.removeEventListener(Events.AnimationGroupStarted, this._animationGroupStarted, this);
-    animationModel.removeEventListener(Events.ModelReset, this._reset, this);
+  private removeEventListeners(animationModel: AnimationModel): void {
+    animationModel.removeEventListener(Events.AnimationGroupStarted, this.animationGroupStarted, this);
+    animationModel.removeEventListener(Events.ModelReset, this.reset, this);
   }
 
-  _nodeChanged(): void {
-    for (const nodeUI of this._nodesMap.values()) {
-      nodeUI._nodeChanged();
+  private nodeChanged(): void {
+    for (const nodeUI of this.nodesMap.values()) {
+      nodeUI.nodeChanged();
     }
   }
 
-  _createScrubber(): HTMLElement {
-    this._timelineScrubber = document.createElement('div');
-    this._timelineScrubber.classList.add('animation-scrubber');
-    this._timelineScrubber.classList.add('hidden');
-    this._timelineScrubberLine = this._timelineScrubber.createChild('div', 'animation-scrubber-line');
-    this._timelineScrubberLine.createChild('div', 'animation-scrubber-head');
-    this._timelineScrubber.createChild('div', 'animation-time-overlay');
-    return this._timelineScrubber;
+  private createScrubber(): HTMLElement {
+    this.timelineScrubber = document.createElement('div');
+    this.timelineScrubber.classList.add('animation-scrubber');
+    this.timelineScrubber.classList.add('hidden');
+    this.timelineScrubberLine = this.timelineScrubber.createChild('div', 'animation-scrubber-line');
+    this.timelineScrubberLine.createChild('div', 'animation-scrubber-head');
+    this.timelineScrubber.createChild('div', 'animation-time-overlay');
+    return this.timelineScrubber;
   }
 
-  _createHeader(): HTMLElement {
+  private createHeader(): HTMLElement {
     const toolbarContainer = this.contentElement.createChild('div', 'animation-timeline-toolbar-container');
     const topToolbar = new UI.Toolbar.Toolbar('animation-timeline-toolbar', toolbarContainer);
-    this._clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'largeicon-clear');
-    this._clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._reset.bind(this));
-    topToolbar.appendToolbarItem(this._clearButton);
+    this.clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'largeicon-clear');
+    this.clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.reset.bind(this));
+    topToolbar.appendToolbarItem(this.clearButton);
     topToolbar.appendSeparator();
 
-    this._pauseButton =
+    this.pauseButton =
         new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.pauseAll), 'largeicon-pause', 'largeicon-resume');
-    this._pauseButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._togglePauseAll.bind(this));
-    topToolbar.appendToolbarItem(this._pauseButton);
+    this.pauseButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.togglePauseAll.bind(this));
+    topToolbar.appendToolbarItem(this.pauseButton);
 
     const playbackRateControl = toolbarContainer.createChild('div', 'animation-playback-rate-control');
-    playbackRateControl.addEventListener('keydown', this._handlePlaybackRateControlKeyDown.bind(this));
+    playbackRateControl.addEventListener('keydown', this.handlePlaybackRateControlKeyDown.bind(this));
     UI.ARIAUtils.markAsListBox(playbackRateControl);
     UI.ARIAUtils.setAccessibleName(playbackRateControl, i18nString(UIStrings.playbackRates));
 
     /** @type {!Array<!HTMLElement>} */
-    this._playbackRateButtons = [];
+    this.playbackRateButtons = [];
     for (const playbackRate of GlobalPlaybackRates) {
       const button = (playbackRateControl.createChild('button', 'animation-playback-rate-button') as HTMLElement);
       button.textContent = playbackRate ? i18nString(UIStrings.playbackRatePlaceholder, {PH1: playbackRate * 100}) :
                                           i18nString(UIStrings.pause);
       playbackRates.set(button, playbackRate);
-      button.addEventListener('click', this._setPlaybackRate.bind(this, playbackRate));
+      button.addEventListener('click', this.setPlaybackRate.bind(this, playbackRate));
       UI.ARIAUtils.markAsOption(button);
       UI.Tooltip.Tooltip.install(button, i18nString(UIStrings.setSpeedToS, {PH1: button.textContent}));
       button.tabIndex = -1;
-      this._playbackRateButtons.push(button);
+      this.playbackRateButtons.push(button);
     }
-    this._updatePlaybackControls();
-    this._previewContainer = (this.contentElement.createChild('div', 'animation-timeline-buffer') as HTMLElement);
-    UI.ARIAUtils.markAsListBox(this._previewContainer);
-    UI.ARIAUtils.setAccessibleName(this._previewContainer, i18nString(UIStrings.animationPreviews));
-    this._popoverHelper =
-        new UI.PopoverHelper.PopoverHelper(this._previewContainer, this._getPopoverRequest.bind(this));
-    this._popoverHelper.setDisableOnClick(true);
-    this._popoverHelper.setTimeout(0);
+    this.updatePlaybackControls();
+    this.previewContainer = (this.contentElement.createChild('div', 'animation-timeline-buffer') as HTMLElement);
+    UI.ARIAUtils.markAsListBox(this.previewContainer);
+    UI.ARIAUtils.setAccessibleName(this.previewContainer, i18nString(UIStrings.animationPreviews));
+    this.popoverHelper = new UI.PopoverHelper.PopoverHelper(this.previewContainer, this.getPopoverRequest.bind(this));
+    this.popoverHelper.setDisableOnClick(true);
+    this.popoverHelper.setTimeout(0);
     const emptyBufferHint = this.contentElement.createChild('div', 'animation-timeline-buffer-hint');
     emptyBufferHint.textContent = i18nString(UIStrings.waitingForAnimations);
     const container = this.contentElement.createChild('div', 'animation-timeline-header');
     const controls = container.createChild('div', 'animation-controls');
-    this._currentTime = (controls.createChild('div', 'animation-timeline-current-time monospace') as HTMLElement);
+    this.currentTime = (controls.createChild('div', 'animation-timeline-current-time monospace') as HTMLElement);
 
     const toolbar = new UI.Toolbar.Toolbar('animation-controls-toolbar', controls);
-    this._controlButton =
+    this.controlButton =
         new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.replayTimeline), 'largeicon-replay-animation');
-    this._controlState = ControlState.Replay;
-    this._controlButton.setToggled(true);
-    this._controlButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._controlButtonToggle.bind(this));
-    toolbar.appendToolbarItem(this._controlButton);
+    this.controlState = ControlState.Replay;
+    this.controlButton.setToggled(true);
+    this.controlButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.controlButtonToggle.bind(this));
+    toolbar.appendToolbarItem(this.controlButton);
 
     const gridHeader = container.createChild('div', 'animation-grid-header');
     UI.UIUtils.installDragHandle(
-        gridHeader, this._repositionScrubber.bind(this), this._scrubberDragMove.bind(this),
-        this._scrubberDragEnd.bind(this), 'text');
-    this._gridWrapper.appendChild(this._createScrubber());
+        gridHeader, this.repositionScrubber.bind(this), this.scrubberDragMove.bind(this),
+        this.scrubberDragEnd.bind(this), 'text');
+    this.gridWrapper.appendChild(this.createScrubber());
 
-    if (this._timelineScrubberLine) {
+    if (this.timelineScrubberLine) {
       UI.UIUtils.installDragHandle(
-          this._timelineScrubberLine, this._scrubberDragStart.bind(this), this._scrubberDragMove.bind(this),
-          this._scrubberDragEnd.bind(this), 'col-resize');
+          this.timelineScrubberLine, this.scrubberDragStart.bind(this), this.scrubberDragMove.bind(this),
+          this.scrubberDragEnd.bind(this), 'col-resize');
     }
-    this._currentTime.textContent = '';
+    this.currentTime.textContent = '';
 
     return container;
   }
 
-  _handlePlaybackRateControlKeyDown(event: Event): void {
+  private handlePlaybackRateControlKeyDown(event: Event): void {
     const keyboardEvent = (event as KeyboardEvent);
     switch (keyboardEvent.key) {
       case 'ArrowLeft':
       case 'ArrowUp':
-        this._focusNextPlaybackRateButton(event.target, /* focusPrevious */ true);
+        this.focusNextPlaybackRateButton(event.target, /* focusPrevious */ true);
         break;
       case 'ArrowRight':
       case 'ArrowDown':
-        this._focusNextPlaybackRateButton(event.target);
+        this.focusNextPlaybackRateButton(event.target);
         break;
     }
   }
 
-  _focusNextPlaybackRateButton(target: EventTarget|null, focusPrevious?: boolean): void {
+  private focusNextPlaybackRateButton(target: EventTarget|null, focusPrevious?: boolean): void {
     const button = (target as HTMLElement);
-    const currentIndex = this._playbackRateButtons.indexOf(button);
+    const currentIndex = this.playbackRateButtons.indexOf(button);
     const nextIndex = focusPrevious ? currentIndex - 1 : currentIndex + 1;
-    if (nextIndex < 0 || nextIndex >= this._playbackRateButtons.length) {
+    if (nextIndex < 0 || nextIndex >= this.playbackRateButtons.length) {
       return;
     }
-    const nextButton = this._playbackRateButtons[nextIndex];
+    const nextButton = this.playbackRateButtons[nextIndex];
     nextButton.tabIndex = 0;
     nextButton.focus();
     if (target) {
@@ -312,9 +309,9 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     }
   }
 
-  _getPopoverRequest(event: Event): UI.PopoverHelper.PopoverRequest|null {
+  private getPopoverRequest(event: Event): UI.PopoverHelper.PopoverRequest|null {
     const element = (event.target as HTMLElement);
-    if (!element || !element.isDescendant(this._previewContainer)) {
+    if (!element || !element.isDescendant(this.previewContainer)) {
       return null;
     }
 
@@ -322,7 +319,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
       box: element.boxInWindow(),
       show: (popover: UI.GlassPane.GlassPane): Promise<boolean> => {
         let animGroup;
-        for (const [group, previewUI] of this._previewMap) {
+        for (const [group, previewUI] of this.previewMap) {
           if (previewUI.element === element.parentElement) {
             animGroup = group;
           }
@@ -356,149 +353,149 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     };
   }
 
-  _togglePauseAll(): void {
-    this._allPaused = !this._allPaused;
-    if (this._pauseButton) {
-      this._pauseButton.setToggled(this._allPaused);
+  private togglePauseAll(): void {
+    this.allPaused = !this.allPaused;
+    if (this.pauseButton) {
+      this.pauseButton.setToggled(this.allPaused);
     }
-    this._setPlaybackRate(this._playbackRate);
-    if (this._pauseButton) {
-      this._pauseButton.setTitle(this._allPaused ? i18nString(UIStrings.resumeAll) : i18nString(UIStrings.pauseAll));
+    this.setPlaybackRate(this.playbackRate);
+    if (this.pauseButton) {
+      this.pauseButton.setTitle(this.allPaused ? i18nString(UIStrings.resumeAll) : i18nString(UIStrings.pauseAll));
     }
   }
 
-  _setPlaybackRate(playbackRate: number): void {
-    this._playbackRate = playbackRate;
+  private setPlaybackRate(playbackRate: number): void {
+    this.playbackRate = playbackRate;
     for (const animationModel of SDK.TargetManager.TargetManager.instance().models(AnimationModel)) {
-      animationModel.setPlaybackRate(this._allPaused ? 0 : this._playbackRate);
+      animationModel.setPlaybackRate(this.allPaused ? 0 : this.playbackRate);
     }
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AnimationsPlaybackRateChanged);
-    if (this._scrubberPlayer) {
-      this._scrubberPlayer.playbackRate = this._effectivePlaybackRate();
+    if (this.scrubberPlayer) {
+      this.scrubberPlayer.playbackRate = this.effectivePlaybackRate();
     }
 
-    this._updatePlaybackControls();
+    this.updatePlaybackControls();
   }
 
-  _updatePlaybackControls(): void {
-    for (const button of this._playbackRateButtons) {
-      const selected = this._playbackRate === playbackRates.get(button);
+  private updatePlaybackControls(): void {
+    for (const button of this.playbackRateButtons) {
+      const selected = this.playbackRate === playbackRates.get(button);
       button.classList.toggle('selected', selected);
       button.tabIndex = selected ? 0 : -1;
     }
   }
 
-  _controlButtonToggle(): void {
-    if (this._controlState === ControlState.Play) {
-      this._togglePause(false);
-    } else if (this._controlState === ControlState.Replay) {
-      this._replay();
+  private controlButtonToggle(): void {
+    if (this.controlState === ControlState.Play) {
+      this.togglePause(false);
+    } else if (this.controlState === ControlState.Replay) {
+      this.replay();
     } else {
-      this._togglePause(true);
+      this.togglePause(true);
     }
   }
 
-  _updateControlButton(): void {
-    if (!this._controlButton) {
+  private updateControlButton(): void {
+    if (!this.controlButton) {
       return;
     }
 
-    this._controlButton.setEnabled(Boolean(this._selectedGroup));
-    if (this._selectedGroup && this._selectedGroup.paused()) {
-      this._controlState = ControlState.Play;
-      this._controlButton.setToggled(true);
-      this._controlButton.setTitle(i18nString(UIStrings.playTimeline));
-      this._controlButton.setGlyph('largeicon-play-animation');
+    this.controlButton.setEnabled(Boolean(this.selectedGroup));
+    if (this.selectedGroup && this.selectedGroup.paused()) {
+      this.controlState = ControlState.Play;
+      this.controlButton.setToggled(true);
+      this.controlButton.setTitle(i18nString(UIStrings.playTimeline));
+      this.controlButton.setGlyph('largeicon-play-animation');
     } else if (
-        !this._scrubberPlayer || !this._scrubberPlayer.currentTime ||
-        this._scrubberPlayer.currentTime >= this.duration()) {
-      this._controlState = ControlState.Replay;
-      this._controlButton.setToggled(true);
-      this._controlButton.setTitle(i18nString(UIStrings.replayTimeline));
-      this._controlButton.setGlyph('largeicon-replay-animation');
+        !this.scrubberPlayer || !this.scrubberPlayer.currentTime ||
+        this.scrubberPlayer.currentTime >= this.duration()) {
+      this.controlState = ControlState.Replay;
+      this.controlButton.setToggled(true);
+      this.controlButton.setTitle(i18nString(UIStrings.replayTimeline));
+      this.controlButton.setGlyph('largeicon-replay-animation');
     } else {
-      this._controlState = ControlState.Pause;
-      this._controlButton.setToggled(false);
-      this._controlButton.setTitle(i18nString(UIStrings.pauseTimeline));
-      this._controlButton.setGlyph('largeicon-pause-animation');
+      this.controlState = ControlState.Pause;
+      this.controlButton.setToggled(false);
+      this.controlButton.setTitle(i18nString(UIStrings.pauseTimeline));
+      this.controlButton.setGlyph('largeicon-pause-animation');
     }
   }
 
-  _effectivePlaybackRate(): number {
-    return (this._allPaused || (this._selectedGroup && this._selectedGroup.paused())) ? 0 : this._playbackRate;
+  private effectivePlaybackRate(): number {
+    return (this.allPaused || (this.selectedGroup && this.selectedGroup.paused())) ? 0 : this.playbackRate;
   }
 
-  _togglePause(pause: boolean): void {
-    if (this._scrubberPlayer) {
-      this._scrubberPlayer.playbackRate = this._effectivePlaybackRate();
+  private togglePause(pause: boolean): void {
+    if (this.scrubberPlayer) {
+      this.scrubberPlayer.playbackRate = this.effectivePlaybackRate();
     }
-    if (this._selectedGroup) {
-      this._selectedGroup.togglePause(pause);
-      const preview = this._previewMap.get(this._selectedGroup);
+    if (this.selectedGroup) {
+      this.selectedGroup.togglePause(pause);
+      const preview = this.previewMap.get(this.selectedGroup);
       if (preview) {
         preview.element.classList.toggle('paused', pause);
       }
     }
-    this._updateControlButton();
+    this.updateControlButton();
   }
 
-  _replay(): void {
-    if (!this._selectedGroup) {
+  private replay(): void {
+    if (!this.selectedGroup) {
       return;
     }
-    this._selectedGroup.seekTo(0);
-    this._animateTime(0);
-    this._updateControlButton();
+    this.selectedGroup.seekTo(0);
+    this.animateTime(0);
+    this.updateControlButton();
   }
 
   duration(): number {
-    return this._duration;
+    return this.durationInternal;
   }
 
   setDuration(duration: number): void {
-    this._duration = duration;
+    this.durationInternal = duration;
     this.scheduleRedraw();
   }
 
-  _clearTimeline(): void {
-    this._uiAnimations = [];
-    this._nodesMap.clear();
-    this._animationsMap.clear();
-    this._animationsContainer.removeChildren();
-    this._duration = this._defaultDuration;
-    this._timelineScrubber.classList.add('hidden');
-    this._selectedGroup = null;
-    if (this._scrubberPlayer) {
-      this._scrubberPlayer.cancel();
+  private clearTimeline(): void {
+    this.uiAnimations = [];
+    this.nodesMap.clear();
+    this.animationsMap.clear();
+    this.animationsContainer.removeChildren();
+    this.durationInternal = this.defaultDuration;
+    this.timelineScrubber.classList.add('hidden');
+    this.selectedGroup = null;
+    if (this.scrubberPlayer) {
+      this.scrubberPlayer.cancel();
     }
-    delete this._scrubberPlayer;
-    this._currentTime.textContent = '';
-    this._updateControlButton();
+    delete this.scrubberPlayer;
+    this.currentTime.textContent = '';
+    this.updateControlButton();
   }
 
-  _reset(): void {
-    this._clearTimeline();
-    if (this._allPaused) {
-      this._togglePauseAll();
+  private reset(): void {
+    this.clearTimeline();
+    if (this.allPaused) {
+      this.togglePauseAll();
     } else {
-      this._setPlaybackRate(this._playbackRate);
+      this.setPlaybackRate(this.playbackRate);
     }
 
-    for (const group of this._groupBuffer) {
+    for (const group of this.groupBuffer) {
       group.release();
     }
-    this._groupBuffer = [];
-    this._previewMap.clear();
-    this._previewContainer.removeChildren();
-    this._popoverHelper.hidePopover();
-    this._renderGrid();
+    this.groupBuffer = [];
+    this.previewMap.clear();
+    this.previewContainer.removeChildren();
+    this.popoverHelper.hidePopover();
+    this.renderGrid();
   }
 
-  _animationGroupStarted(event: Common.EventTarget.EventTargetEvent): void {
-    this._addAnimationGroup((event.data as AnimationGroup));
+  private animationGroupStarted(event: Common.EventTarget.EventTargetEvent): void {
+    this.addAnimationGroup((event.data as AnimationGroup));
   }
 
-  _addAnimationGroup(group: AnimationGroup): void {
+  private addAnimationGroup(group: AnimationGroup): void {
     function startTimeComparator(left: AnimationGroup, right: AnimationGroup): 0|1|- 1 {
       if (left.startTime() === right.startTime()) {
         return 0;
@@ -506,79 +503,79 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
       return left.startTime() > right.startTime() ? 1 : -1;
     }
 
-    const previewGroup = this._previewMap.get(group);
+    const previewGroup = this.previewMap.get(group);
     if (previewGroup) {
-      if (this._selectedGroup === group) {
-        this._syncScrubber();
+      if (this.selectedGroup === group) {
+        this.syncScrubber();
       } else {
         previewGroup.replay();
       }
       return;
     }
-    this._groupBuffer.sort(startTimeComparator);
+    this.groupBuffer.sort(startTimeComparator);
     // Discard oldest groups from buffer if necessary
     const groupsToDiscard = [];
     const bufferSize = this.width() / 50;
-    while (this._groupBuffer.length > bufferSize) {
-      const toDiscard = this._groupBuffer.splice(this._groupBuffer[0] === this._selectedGroup ? 1 : 0, 1);
+    while (this.groupBuffer.length > bufferSize) {
+      const toDiscard = this.groupBuffer.splice(this.groupBuffer[0] === this.selectedGroup ? 1 : 0, 1);
       groupsToDiscard.push(toDiscard[0]);
     }
     for (const g of groupsToDiscard) {
-      const discardGroup = this._previewMap.get(g);
+      const discardGroup = this.previewMap.get(g);
       if (!discardGroup) {
         continue;
       }
       discardGroup.element.remove();
-      this._previewMap.delete(g);
+      this.previewMap.delete(g);
       g.release();
     }
     // Generate preview
     const preview = new AnimationGroupPreviewUI(group);
-    this._groupBuffer.push(group);
-    this._previewMap.set(group, preview);
-    this._previewContainer.appendChild(preview.element);
-    preview.removeButton().addEventListener('click', this._removeAnimationGroup.bind(this, group));
-    preview.element.addEventListener('click', this._selectAnimationGroup.bind(this, group));
-    preview.element.addEventListener('keydown', this._handleAnimationGroupKeyDown.bind(this, group));
+    this.groupBuffer.push(group);
+    this.previewMap.set(group, preview);
+    this.previewContainer.appendChild(preview.element);
+    preview.removeButton().addEventListener('click', this.removeAnimationGroup.bind(this, group));
+    preview.element.addEventListener('click', this.selectAnimationGroup.bind(this, group));
+    preview.element.addEventListener('keydown', this.handleAnimationGroupKeyDown.bind(this, group));
     UI.ARIAUtils.setAccessibleName(
-        preview.element, i18nString(UIStrings.animationPreviewS, {PH1: this._groupBuffer.indexOf(group) + 1}));
+        preview.element, i18nString(UIStrings.animationPreviewS, {PH1: this.groupBuffer.indexOf(group) + 1}));
     UI.ARIAUtils.markAsOption(preview.element);
 
-    if (this._previewMap.size === 1) {
-      const preview = this._previewMap.get(this._groupBuffer[0]);
+    if (this.previewMap.size === 1) {
+      const preview = this.previewMap.get(this.groupBuffer[0]);
       if (preview) {
         preview.element.tabIndex = 0;
       }
     }
   }
 
-  _handleAnimationGroupKeyDown(group: AnimationGroup, event: KeyboardEvent): void {
+  private handleAnimationGroupKeyDown(group: AnimationGroup, event: KeyboardEvent): void {
     switch (event.key) {
       case ' ':
       case 'Enter':
-        this._selectAnimationGroup(group);
+        this.selectAnimationGroup(group);
         break;
       case 'Backspace':
       case 'Delete':
-        this._removeAnimationGroup(group, event);
+        this.removeAnimationGroup(group, event);
         break;
       case 'ArrowLeft':
       case 'ArrowUp':
-        this._focusNextGroup(group, /* target */ event.target, /* focusPrevious */ true);
+        this.focusNextGroup(group, /* target */ event.target, /* focusPrevious */ true);
         break;
       case 'ArrowRight':
       case 'ArrowDown':
-        this._focusNextGroup(group, /* target */ event.target);
+        this.focusNextGroup(group, /* target */ event.target);
     }
   }
 
-  _focusNextGroup(group: AnimationGroup, target: EventTarget|null, focusPrevious?: boolean): void {
-    const currentGroupIndex = this._groupBuffer.indexOf(group);
+  private focusNextGroup(group: AnimationGroup, target: EventTarget|null, focusPrevious?: boolean): void {
+    const currentGroupIndex = this.groupBuffer.indexOf(group);
     const nextIndex = focusPrevious ? currentGroupIndex - 1 : currentGroupIndex + 1;
-    if (nextIndex < 0 || nextIndex >= this._groupBuffer.length) {
+    if (nextIndex < 0 || nextIndex >= this.groupBuffer.length) {
       return;
     }
-    const preview = this._previewMap.get(this._groupBuffer[nextIndex]);
+    const preview = this.previewMap.get(this.groupBuffer[nextIndex]);
     if (preview) {
       preview.element.tabIndex = 0;
       preview.element.focus();
@@ -589,31 +586,31 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     }
   }
 
-  _removeAnimationGroup(group: AnimationGroup, event: Event): void {
-    const currentGroupIndex = this._groupBuffer.indexOf(group);
+  private removeAnimationGroup(group: AnimationGroup, event: Event): void {
+    const currentGroupIndex = this.groupBuffer.indexOf(group);
 
-    Platform.ArrayUtilities.removeElement(this._groupBuffer, group);
-    const previewGroup = this._previewMap.get(group);
+    Platform.ArrayUtilities.removeElement(this.groupBuffer, group);
+    const previewGroup = this.previewMap.get(group);
     if (previewGroup) {
       previewGroup.element.remove();
     }
-    this._previewMap.delete(group);
+    this.previewMap.delete(group);
     group.release();
     event.consume(true);
 
-    if (this._selectedGroup === group) {
-      this._clearTimeline();
-      this._renderGrid();
+    if (this.selectedGroup === group) {
+      this.clearTimeline();
+      this.renderGrid();
     }
 
-    const groupLength = this._groupBuffer.length;
+    const groupLength = this.groupBuffer.length;
     if (groupLength === 0) {
-      (this._clearButton.element as HTMLElement).focus();
+      (this.clearButton.element as HTMLElement).focus();
       return;
     }
-    const nextGroup = currentGroupIndex >= this._groupBuffer.length ?
-        this._previewMap.get(this._groupBuffer[this._groupBuffer.length - 1]) :
-        this._previewMap.get(this._groupBuffer[currentGroupIndex]);
+    const nextGroup = currentGroupIndex >= this.groupBuffer.length ?
+        this.previewMap.get(this.groupBuffer[this.groupBuffer.length - 1]) :
+        this.previewMap.get(this.groupBuffer[currentGroupIndex]);
 
     if (nextGroup) {
       nextGroup.element.tabIndex = 0;
@@ -621,30 +618,30 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     }
   }
 
-  _selectAnimationGroup(group: AnimationGroup): void {
+  private selectAnimationGroup(group: AnimationGroup): void {
     function applySelectionClass(this: AnimationTimeline, ui: AnimationGroupPreviewUI, group: AnimationGroup): void {
-      ui.element.classList.toggle('selected', this._selectedGroup === group);
+      ui.element.classList.toggle('selected', this.selectedGroup === group);
     }
 
-    if (this._selectedGroup === group) {
-      this._togglePause(false);
-      this._replay();
+    if (this.selectedGroup === group) {
+      this.togglePause(false);
+      this.replay();
       return;
     }
-    this._clearTimeline();
-    this._selectedGroup = group;
-    this._previewMap.forEach(applySelectionClass, this);
+    this.clearTimeline();
+    this.selectedGroup = group;
+    this.previewMap.forEach(applySelectionClass, this);
     this.setDuration(Math.max(500, group.finiteDuration() + 100));
     for (const anim of group.animations()) {
-      this._addAnimation(anim);
+      this.addAnimation(anim);
     }
     this.scheduleRedraw();
-    this._timelineScrubber.classList.remove('hidden');
-    this._togglePause(false);
-    this._replay();
+    this.timelineScrubber.classList.remove('hidden');
+    this.togglePause(false);
+    this.replay();
   }
 
-  _addAnimation(animation: AnimationImpl): void {
+  private addAnimation(animation: AnimationImpl): void {
     function nodeResolved(this: AnimationTimeline, node: SDK.DOMModel.DOMNode|null): void {
       uiAnimation.setNode(node);
       if (node && nodeUI) {
@@ -653,21 +650,21 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
       }
     }
 
-    let nodeUI = this._nodesMap.get(animation.source().backendNodeId());
+    let nodeUI = this.nodesMap.get(animation.source().backendNodeId());
     if (!nodeUI) {
       nodeUI = new NodeUI(animation.source());
-      this._animationsContainer.appendChild(nodeUI.element);
-      this._nodesMap.set(animation.source().backendNodeId(), nodeUI);
+      this.animationsContainer.appendChild(nodeUI.element);
+      this.nodesMap.set(animation.source().backendNodeId(), nodeUI);
     }
     const nodeRow = nodeUI.createNewRow();
     const uiAnimation = new AnimationUI(animation, this, nodeRow);
     animation.source().deferredNode().resolve(nodeResolved.bind(this));
-    this._uiAnimations.push(uiAnimation);
-    this._animationsMap.set(animation.id(), animation);
+    this.uiAnimations.push(uiAnimation);
+    this.animationsMap.set(animation.id(), animation);
   }
 
-  _nodeRemoved(event: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode, parent: SDK.DOMModel.DOMNode}>):
-      void {
+  private nodeRemoved(
+      event: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode, parent: SDK.DOMModel.DOMNode}>): void {
     const {node} = event.data;
     const nodeUI = nodeUIsByNode.get(node);
     if (nodeUI) {
@@ -675,20 +672,20 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     }
   }
 
-  _renderGrid(): void {
+  private renderGrid(): void {
     /** @const */ const gridSize = 250;
     const gridWidth = (this.width() + 10).toString();
-    const gridHeight = ((this._cachedTimelineHeight || 0) + 30).toString();
+    const gridHeight = ((this.cachedTimelineHeight || 0) + 30).toString();
 
-    this._gridWrapper.style.width = gridWidth + 'px';
-    this._gridWrapper.style.height = gridHeight.toString() + 'px';
-    this._grid.setAttribute('width', gridWidth);
-    this._grid.setAttribute('height', gridHeight.toString());
-    this._grid.setAttribute('shape-rendering', 'crispEdges');
-    this._grid.removeChildren();
+    this.gridWrapper.style.width = gridWidth + 'px';
+    this.gridWrapper.style.height = gridHeight.toString() + 'px';
+    this.grid.setAttribute('width', gridWidth);
+    this.grid.setAttribute('height', gridHeight.toString());
+    this.grid.setAttribute('shape-rendering', 'crispEdges');
+    this.grid.removeChildren();
     let lastDraw: number|undefined = undefined;
     for (let time = 0; time < this.duration(); time += gridSize) {
-      const line = UI.UIUtils.createSVGChild(this._grid, 'rect', 'animation-timeline-grid-line');
+      const line = UI.UIUtils.createSVGChild(this.grid, 'rect', 'animation-timeline-grid-line');
       line.setAttribute('x', (time * this.pixelMsRatio() + 10).toString());
       line.setAttribute('y', '23');
       line.setAttribute('height', '100%');
@@ -698,7 +695,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
       const gridWidth = time * this.pixelMsRatio();
       if (lastDraw === undefined || gridWidth - lastDraw > 50) {
         lastDraw = gridWidth;
-        const label = UI.UIUtils.createSVGChild(this._grid, 'text', 'animation-timeline-grid-label');
+        const label = UI.UIUtils.createSVGChild(this.grid, 'text', 'animation-timeline-grid-label');
         label.textContent = i18n.TimeUtilities.millisToString(time);
         label.setAttribute('x', (gridWidth + 10).toString());
         label.setAttribute('y', '16');
@@ -707,158 +704,156 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
   }
 
   scheduleRedraw(): void {
-    this._renderQueue = [];
-    for (const ui of this._uiAnimations) {
-      this._renderQueue.push(ui);
+    this.renderQueue = [];
+    for (const ui of this.uiAnimations) {
+      this.renderQueue.push(ui);
     }
-    if (this._redrawing) {
+    if (this.redrawing) {
       return;
     }
-    this._redrawing = true;
-    this._renderGrid();
-    this._animationsContainer.window().requestAnimationFrame(this._render.bind(this));
+    this.redrawing = true;
+    this.renderGrid();
+    this.animationsContainer.window().requestAnimationFrame(this.render.bind(this));
   }
 
-  _render(timestamp?: number): void {
-    while (this._renderQueue.length && (!timestamp || window.performance.now() - timestamp < 50)) {
-      const animationUI = this._renderQueue.shift();
+  private render(timestamp?: number): void {
+    while (this.renderQueue.length && (!timestamp || window.performance.now() - timestamp < 50)) {
+      const animationUI = this.renderQueue.shift();
       if (animationUI) {
         animationUI.redraw();
       }
     }
-    if (this._renderQueue.length) {
-      this._animationsContainer.window().requestAnimationFrame(this._render.bind(this));
+    if (this.renderQueue.length) {
+      this.animationsContainer.window().requestAnimationFrame(this.render.bind(this));
     } else {
-      delete this._redrawing;
+      delete this.redrawing;
     }
   }
 
   onResize(): void {
-    this._cachedTimelineWidth = Math.max(0, this._animationsContainer.offsetWidth - this._timelineControlsWidth) || 0;
-    this._cachedTimelineHeight = this._animationsContainer.offsetHeight;
+    this.cachedTimelineWidth = Math.max(0, this.animationsContainer.offsetWidth - this.timelineControlsWidth) || 0;
+    this.cachedTimelineHeight = this.animationsContainer.offsetHeight;
     this.scheduleRedraw();
-    if (this._scrubberPlayer) {
-      this._syncScrubber();
+    if (this.scrubberPlayer) {
+      this.syncScrubber();
     }
-    delete this._gridOffsetLeft;
+    delete this.gridOffsetLeft;
   }
 
   width(): number {
-    return this._cachedTimelineWidth || 0;
+    return this.cachedTimelineWidth || 0;
   }
 
-  _resizeWindow(animation: AnimationImpl): boolean {
+  private resizeWindow(animation: AnimationImpl): boolean {
     let resized = false;
 
     // This shows at most 3 iterations
     const duration = animation.source().duration() * Math.min(2, animation.source().iterations());
     const requiredDuration = animation.source().delay() + duration + animation.source().endDelay();
-    if (requiredDuration > this._duration) {
+    if (requiredDuration > this.durationInternal) {
       resized = true;
-      this._duration = requiredDuration + 200;
+      this.durationInternal = requiredDuration + 200;
     }
     return resized;
   }
 
-  _syncScrubber(): void {
-    if (!this._selectedGroup) {
+  private syncScrubber(): void {
+    if (!this.selectedGroup) {
       return;
     }
-    this._selectedGroup.currentTimePromise()
-        .then(this._animateTime.bind(this))
-        .then(this._updateControlButton.bind(this));
+    this.selectedGroup.currentTimePromise().then(this.animateTime.bind(this)).then(this.updateControlButton.bind(this));
   }
 
-  _animateTime(currentTime: number): void {
-    if (this._scrubberPlayer) {
-      this._scrubberPlayer.cancel();
+  private animateTime(currentTime: number): void {
+    if (this.scrubberPlayer) {
+      this.scrubberPlayer.cancel();
     }
 
-    this._scrubberPlayer = this._timelineScrubber.animate(
+    this.scrubberPlayer = this.timelineScrubber.animate(
         [{transform: 'translateX(0px)'}, {transform: 'translateX(' + this.width() + 'px)'}],
         {duration: this.duration(), fill: 'forwards'});
-    this._scrubberPlayer.playbackRate = this._effectivePlaybackRate();
-    this._scrubberPlayer.onfinish = this._updateControlButton.bind(this);
-    this._scrubberPlayer.currentTime = currentTime;
-    this.element.window().requestAnimationFrame(this._updateScrubber.bind(this));
+    this.scrubberPlayer.playbackRate = this.effectivePlaybackRate();
+    this.scrubberPlayer.onfinish = this.updateControlButton.bind(this);
+    this.scrubberPlayer.currentTime = currentTime;
+    this.element.window().requestAnimationFrame(this.updateScrubber.bind(this));
   }
 
   pixelMsRatio(): number {
     return this.width() / this.duration() || 0;
   }
 
-  _updateScrubber(_timestamp: number): void {
-    if (!this._scrubberPlayer) {
+  private updateScrubber(_timestamp: number): void {
+    if (!this.scrubberPlayer) {
       return;
     }
-    this._currentTime.textContent = i18n.TimeUtilities.millisToString(this._scrubberPlayer.currentTime || 0);
-    if (this._scrubberPlayer.playState.toString() === 'pending' || this._scrubberPlayer.playState === 'running') {
-      this.element.window().requestAnimationFrame(this._updateScrubber.bind(this));
-    } else if (this._scrubberPlayer.playState === 'finished') {
-      this._currentTime.textContent = '';
+    this.currentTime.textContent = i18n.TimeUtilities.millisToString(this.scrubberPlayer.currentTime || 0);
+    if (this.scrubberPlayer.playState.toString() === 'pending' || this.scrubberPlayer.playState === 'running') {
+      this.element.window().requestAnimationFrame(this.updateScrubber.bind(this));
+    } else if (this.scrubberPlayer.playState === 'finished') {
+      this.currentTime.textContent = '';
     }
   }
 
-  _repositionScrubber(event: Event): boolean {
-    if (!this._selectedGroup) {
+  private repositionScrubber(event: Event): boolean {
+    if (!this.selectedGroup) {
       return false;
     }
 
     // Seek to current mouse position.
-    if (!this._gridOffsetLeft) {
-      this._gridOffsetLeft = this._grid.totalOffsetLeft() + 10;
+    if (!this.gridOffsetLeft) {
+      this.gridOffsetLeft = this.grid.totalOffsetLeft() + 10;
     }
 
     const {x} = (event as any);  // eslint-disable-line @typescript-eslint/no-explicit-any
-    const seekTime = Math.max(0, x - this._gridOffsetLeft) / this.pixelMsRatio();
-    this._selectedGroup.seekTo(seekTime);
-    this._togglePause(true);
-    this._animateTime(seekTime);
+    const seekTime = Math.max(0, x - this.gridOffsetLeft) / this.pixelMsRatio();
+    this.selectedGroup.seekTo(seekTime);
+    this.togglePause(true);
+    this.animateTime(seekTime);
 
     // Interface with scrubber drag.
-    this._originalScrubberTime = seekTime;
-    this._originalMousePosition = x;
+    this.originalScrubberTime = seekTime;
+    this.originalMousePosition = x;
     return true;
   }
 
-  _scrubberDragStart(event: Event): boolean {
-    if (!this._scrubberPlayer || !this._selectedGroup) {
+  private scrubberDragStart(event: Event): boolean {
+    if (!this.scrubberPlayer || !this.selectedGroup) {
       return false;
     }
 
-    this._originalScrubberTime = this._scrubberPlayer.currentTime;
-    this._timelineScrubber.classList.remove('animation-timeline-end');
-    this._scrubberPlayer.pause();
+    this.originalScrubberTime = this.scrubberPlayer.currentTime;
+    this.timelineScrubber.classList.remove('animation-timeline-end');
+    this.scrubberPlayer.pause();
 
     const {x} = (event as any);  // eslint-disable-line @typescript-eslint/no-explicit-any
-    this._originalMousePosition = x;
+    this.originalMousePosition = x;
 
-    this._togglePause(true);
+    this.togglePause(true);
     return true;
   }
 
-  _scrubberDragMove(event: Event): void {
+  private scrubberDragMove(event: Event): void {
     const {x} = (event as any);  // eslint-disable-line @typescript-eslint/no-explicit-any
-    const delta = x - (this._originalMousePosition || 0);
+    const delta = x - (this.originalMousePosition || 0);
     const currentTime =
-        Math.max(0, Math.min((this._originalScrubberTime || 0) + delta / this.pixelMsRatio(), this.duration()));
-    if (this._scrubberPlayer) {
-      this._scrubberPlayer.currentTime = currentTime;
+        Math.max(0, Math.min((this.originalScrubberTime || 0) + delta / this.pixelMsRatio(), this.duration()));
+    if (this.scrubberPlayer) {
+      this.scrubberPlayer.currentTime = currentTime;
     }
-    this._currentTime.textContent = i18n.TimeUtilities.millisToString(Math.round(currentTime));
+    this.currentTime.textContent = i18n.TimeUtilities.millisToString(Math.round(currentTime));
 
-    if (this._selectedGroup) {
-      this._selectedGroup.seekTo(currentTime);
+    if (this.selectedGroup) {
+      this.selectedGroup.seekTo(currentTime);
     }
   }
 
-  _scrubberDragEnd(_event: Event): void {
-    if (this._scrubberPlayer) {
-      const currentTime = Math.max(0, this._scrubberPlayer.currentTime || 0);
-      this._scrubberPlayer.play();
-      this._scrubberPlayer.currentTime = currentTime;
+  private scrubberDragEnd(_event: Event): void {
+    if (this.scrubberPlayer) {
+      const currentTime = Math.max(0, this.scrubberPlayer.currentTime || 0);
+      this.scrubberPlayer.play();
+      this.scrubberPlayer.currentTime = currentTime;
     }
-    this._currentTime.window().requestAnimationFrame(this._updateScrubber.bind(this));
+    this.currentTime.window().requestAnimationFrame(this.updateScrubber.bind(this));
   }
 }
 
@@ -872,44 +867,44 @@ const enum ControlState {
 
 export class NodeUI {
   element: HTMLDivElement;
-  _description: HTMLElement;
-  _timelineElement: HTMLElement;
-  _node?: SDK.DOMModel.DOMNode|null;
+  private readonly description: HTMLElement;
+  private readonly timelineElement: HTMLElement;
+  private node?: SDK.DOMModel.DOMNode|null;
 
   constructor(_animationEffect: AnimationEffect) {
     this.element = document.createElement('div');
     this.element.classList.add('animation-node-row');
-    this._description = this.element.createChild('div', 'animation-node-description');
-    this._timelineElement = this.element.createChild('div', 'animation-node-timeline');
-    UI.ARIAUtils.markAsApplication(this._timelineElement);
+    this.description = this.element.createChild('div', 'animation-node-description');
+    this.timelineElement = this.element.createChild('div', 'animation-node-timeline');
+    UI.ARIAUtils.markAsApplication(this.timelineElement);
   }
 
   nodeResolved(node: SDK.DOMModel.DOMNode|null): void {
     if (!node) {
-      UI.UIUtils.createTextChild(this._description, '<node>');
+      UI.UIUtils.createTextChild(this.description, '<node>');
       return;
     }
-    this._node = node;
-    this._nodeChanged();
-    Common.Linkifier.Linkifier.linkify(node).then(link => this._description.appendChild(link));
+    this.node = node;
+    this.nodeChanged();
+    Common.Linkifier.Linkifier.linkify(node).then(link => this.description.appendChild(link));
     if (!node.ownerDocument) {
       this.nodeRemoved();
     }
   }
 
   createNewRow(): Element {
-    return this._timelineElement.createChild('div', 'animation-timeline-row');
+    return this.timelineElement.createChild('div', 'animation-timeline-row');
   }
 
   nodeRemoved(): void {
     this.element.classList.add('animation-node-removed');
-    this._node = null;
+    this.node = null;
   }
 
-  _nodeChanged(): void {
+  nodeChanged(): void {
     let animationNodeSelected = false;
-    if (this._node) {
-      animationNodeSelected = (this._node === UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode));
+    if (this.node) {
+      animationNodeSelected = (this.node === UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode));
     }
 
     this.element.classList.toggle('animation-node-selected', animationNodeSelected);

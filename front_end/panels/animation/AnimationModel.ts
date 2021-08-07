@@ -2,54 +2,52 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
 export class AnimationModel extends SDK.SDKModel.SDKModel {
-  _runtimeModel: SDK.RuntimeModel.RuntimeModel;
-  _agent: ProtocolProxyApi.AnimationApi;
-  _animationsById: Map<string, AnimationImpl>;
-  _animationGroups: Map<string, AnimationGroup>;
-  _pendingAnimations: Set<string>;
-  _playbackRate: number;
-  _screenshotCapture?: ScreenshotCapture;
-  _enabled?: boolean;
+  readonly runtimeModel: SDK.RuntimeModel.RuntimeModel;
+  readonly agent: ProtocolProxyApi.AnimationApi;
+  private animationsById: Map<string, AnimationImpl>;
+  readonly animationGroups: Map<string, AnimationGroup>;
+  private pendingAnimations: Set<string>;
+  playbackRate: number;
+  private readonly screenshotCapture?: ScreenshotCapture;
+  private enabled?: boolean;
 
   constructor(target: SDK.Target.Target) {
     super(target);
-    this._runtimeModel = (target.model(SDK.RuntimeModel.RuntimeModel) as SDK.RuntimeModel.RuntimeModel);
-    this._agent = target.animationAgent();
+    this.runtimeModel = (target.model(SDK.RuntimeModel.RuntimeModel) as SDK.RuntimeModel.RuntimeModel);
+    this.agent = target.animationAgent();
     target.registerAnimationDispatcher(new AnimationDispatcher(this));
-    this._animationsById = new Map();
-    this._animationGroups = new Map();
-    this._pendingAnimations = new Set();
-    this._playbackRate = 1;
+    this.animationsById = new Map();
+    this.animationGroups = new Map();
+    this.pendingAnimations = new Set();
+    this.playbackRate = 1;
     const resourceTreeModel =
         (target.model(SDK.ResourceTreeModel.ResourceTreeModel) as SDK.ResourceTreeModel.ResourceTreeModel);
-    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.MainFrameNavigated, this._reset, this);
+    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.MainFrameNavigated, this.reset, this);
     const screenCaptureModel = target.model(SDK.ScreenCaptureModel.ScreenCaptureModel);
     if (screenCaptureModel) {
-      this._screenshotCapture = new ScreenshotCapture(this, screenCaptureModel);
+      this.screenshotCapture = new ScreenshotCapture(this, screenCaptureModel);
     }
   }
 
-  _reset(): void {
-    this._animationsById.clear();
-    this._animationGroups.clear();
-    this._pendingAnimations.clear();
+  private reset(): void {
+    this.animationsById.clear();
+    this.animationGroups.clear();
+    this.pendingAnimations.clear();
     this.dispatchEventToListeners(Events.ModelReset);
   }
 
   animationCreated(id: string): void {
-    this._pendingAnimations.add(id);
+    this.pendingAnimations.add(id);
   }
 
-  _animationCanceled(id: string): void {
-    this._pendingAnimations.delete(id);
-    this._flushPendingAnimationsIfNeeded();
+  animationCanceled(id: string): void {
+    this.pendingAnimations.delete(id);
+    this.flushPendingAnimationsIfNeeded();
   }
 
   animationStarted(payload: Protocol.Animation.Animation): void {
@@ -66,53 +64,53 @@ export class AnimationModel extends SDK.SDKModel.SDKModel {
     // Ignore Web Animations custom effects & groups.
     const keyframesRule = animation.source().keyframesRule();
     if (animation.type() === 'WebAnimation' && keyframesRule && keyframesRule.keyframes().length === 0) {
-      this._pendingAnimations.delete(animation.id());
+      this.pendingAnimations.delete(animation.id());
     } else {
-      this._animationsById.set(animation.id(), animation);
-      this._pendingAnimations.add(animation.id());
+      this.animationsById.set(animation.id(), animation);
+      this.pendingAnimations.add(animation.id());
     }
 
-    this._flushPendingAnimationsIfNeeded();
+    this.flushPendingAnimationsIfNeeded();
   }
 
-  _flushPendingAnimationsIfNeeded(): void {
-    for (const id of this._pendingAnimations) {
-      if (!this._animationsById.get(id)) {
+  private flushPendingAnimationsIfNeeded(): void {
+    for (const id of this.pendingAnimations) {
+      if (!this.animationsById.get(id)) {
         return;
       }
     }
 
-    while (this._pendingAnimations.size) {
-      this._matchExistingGroups(this._createGroupFromPendingAnimations());
+    while (this.pendingAnimations.size) {
+      this.matchExistingGroups(this.createGroupFromPendingAnimations());
     }
   }
 
-  _matchExistingGroups(incomingGroup: AnimationGroup): boolean {
+  private matchExistingGroups(incomingGroup: AnimationGroup): boolean {
     let matchedGroup: AnimationGroup|null = null;
-    for (const group of this._animationGroups.values()) {
-      if (group._matches(incomingGroup)) {
+    for (const group of this.animationGroups.values()) {
+      if (group.matches(incomingGroup)) {
         matchedGroup = group;
-        group._update(incomingGroup);
+        group.update(incomingGroup);
         break;
       }
     }
 
     if (!matchedGroup) {
-      this._animationGroups.set(incomingGroup.id(), incomingGroup);
-      if (this._screenshotCapture) {
-        this._screenshotCapture.captureScreenshots(incomingGroup.finiteDuration(), incomingGroup._screenshots);
+      this.animationGroups.set(incomingGroup.id(), incomingGroup);
+      if (this.screenshotCapture) {
+        this.screenshotCapture.captureScreenshots(incomingGroup.finiteDuration(), incomingGroup.screenshotsInternal);
       }
     }
     this.dispatchEventToListeners(Events.AnimationGroupStarted, matchedGroup || incomingGroup);
     return Boolean(matchedGroup);
   }
 
-  _createGroupFromPendingAnimations(): AnimationGroup {
-    console.assert(this._pendingAnimations.size > 0);
-    const firstAnimationId = this._pendingAnimations.values().next().value;
-    this._pendingAnimations.delete(firstAnimationId);
+  private createGroupFromPendingAnimations(): AnimationGroup {
+    console.assert(this.pendingAnimations.size > 0);
+    const firstAnimationId = this.pendingAnimations.values().next().value;
+    this.pendingAnimations.delete(firstAnimationId);
 
-    const firstAnimation = this._animationsById.get(firstAnimationId);
+    const firstAnimation = this.animationsById.get(firstAnimationId);
     if (!firstAnimation) {
       throw new Error('Unable to locate first animation');
     }
@@ -120,45 +118,45 @@ export class AnimationModel extends SDK.SDKModel.SDKModel {
     const groupedAnimations = [firstAnimation];
     const groupStartTime = firstAnimation.startTime();
     const remainingAnimations = new Set<string>();
-    for (const id of this._pendingAnimations) {
-      const anim = (this._animationsById.get(id) as AnimationImpl);
+    for (const id of this.pendingAnimations) {
+      const anim = (this.animationsById.get(id) as AnimationImpl);
       if (anim.startTime() === groupStartTime) {
         groupedAnimations.push(anim);
       } else {
         remainingAnimations.add(id);
       }
     }
-    this._pendingAnimations = remainingAnimations;
+    this.pendingAnimations = remainingAnimations;
     return new AnimationGroup(this, firstAnimationId, groupedAnimations);
   }
 
   setPlaybackRate(playbackRate: number): void {
-    this._playbackRate = playbackRate;
-    this._agent.invoke_setPlaybackRate({playbackRate});
+    this.playbackRate = playbackRate;
+    this.agent.invoke_setPlaybackRate({playbackRate});
   }
 
-  _releaseAnimations(animations: string[]): void {
-    this._agent.invoke_releaseAnimations({animations});
+  releaseAnimations(animations: string[]): void {
+    this.agent.invoke_releaseAnimations({animations});
   }
 
   async suspendModel(): Promise<void> {
-    this._reset();
-    await this._agent.invoke_disable();
+    this.reset();
+    await this.agent.invoke_disable();
   }
 
   async resumeModel(): Promise<void> {
-    if (!this._enabled) {
+    if (!this.enabled) {
       return;
     }
-    await this._agent.invoke_enable();
+    await this.agent.invoke_enable();
   }
 
   async ensureEnabled(): Promise<void> {
-    if (this._enabled) {
+    if (this.enabled) {
       return;
     }
-    await this._agent.invoke_enable();
-    this._enabled = true;
+    await this.agent.invoke_enable();
+    this.enabled = true;
   }
 }
 
@@ -170,14 +168,15 @@ export enum Events {
 }
 
 export class AnimationImpl {
-  _animationModel: AnimationModel;
-  _payload: Protocol.Animation.Animation;
-  _source: AnimationEffect;
-  _playState?: string;
+  private readonly animationModel: AnimationModel;
+  private readonly payloadInternal: Protocol.Animation.Animation;
+  private sourceInternal: AnimationEffect;
+  private playStateInternal?: string;
   constructor(animationModel: AnimationModel, payload: Protocol.Animation.Animation) {
-    this._animationModel = animationModel;
-    this._payload = payload;
-    this._source = new AnimationEffect(animationModel, (this._payload.source as Protocol.Animation.AnimationEffect));
+    this.animationModel = animationModel;
+    this.payloadInternal = payload;
+    this.sourceInternal =
+        new AnimationEffect(animationModel, (this.payloadInternal.source as Protocol.Animation.AnimationEffect));
   }
 
   static parsePayload(animationModel: AnimationModel, payload: Protocol.Animation.Animation): AnimationImpl {
@@ -185,35 +184,35 @@ export class AnimationImpl {
   }
 
   payload(): Protocol.Animation.Animation {
-    return this._payload;
+    return this.payloadInternal;
   }
 
   id(): string {
-    return this._payload.id;
+    return this.payloadInternal.id;
   }
 
   name(): string {
-    return this._payload.name;
+    return this.payloadInternal.name;
   }
 
   paused(): boolean {
-    return this._payload.pausedState;
+    return this.payloadInternal.pausedState;
   }
 
   playState(): string {
-    return this._playState || this._payload.playState;
+    return this.playStateInternal || this.payloadInternal.playState;
   }
 
   setPlayState(playState: string): void {
-    this._playState = playState;
+    this.playStateInternal = playState;
   }
 
   playbackRate(): number {
-    return this._payload.playbackRate;
+    return this.payloadInternal.playbackRate;
   }
 
   startTime(): number {
-    return this._payload.startTime;
+    return this.payloadInternal.startTime;
   }
 
   endTime(): number {
@@ -224,21 +223,21 @@ export class AnimationImpl {
         this.source().endDelay();
   }
 
-  _finiteDuration(): number {
+  finiteDuration(): number {
     const iterations = Math.min(this.source().iterations(), 3);
     return this.source().delay() + this.source().duration() * iterations;
   }
 
   currentTime(): number {
-    return this._payload.currentTime;
+    return this.payloadInternal.currentTime;
   }
 
   source(): AnimationEffect {
-    return this._source;
+    return this.sourceInternal;
   }
 
   type(): Protocol.Animation.AnimationType {
-    return this._payload.type;
+    return this.payloadInternal.type;
   }
 
   overlaps(animation: AnimationImpl): boolean {
@@ -253,18 +252,18 @@ export class AnimationImpl {
   }
 
   setTiming(duration: number, delay: number): void {
-    this._source.node().then(node => {
+    this.sourceInternal.node().then(node => {
       if (!node) {
         throw new Error('Unable to find node');
       }
-      this._updateNodeStyle(duration, delay, node);
+      this.updateNodeStyle(duration, delay, node);
     });
-    this._source._duration = duration;
-    this._source._delay = delay;
-    this._animationModel._agent.invoke_setTiming({animationId: this.id(), duration, delay});
+    this.sourceInternal.durationInternal = duration;
+    this.sourceInternal.delayInternal = delay;
+    this.animationModel.agent.invoke_setTiming({animationId: this.id(), duration, delay});
   }
 
-  _updateNodeStyle(duration: number, delay: number, node: SDK.DOMModel.DOMNode): void {
+  private updateNodeStyle(duration: number, delay: number, node: SDK.DOMModel.DOMNode): void {
     let animationPrefix;
     if (this.type() === Protocol.Animation.AnimationType.CSSTransition) {
       animationPrefix = 'transition-';
@@ -284,46 +283,46 @@ export class AnimationImpl {
   }
 
   async remoteObjectPromise(): Promise<SDK.RemoteObject.RemoteObject|null> {
-    const payload = await this._animationModel._agent.invoke_resolveAnimation({animationId: this.id()});
+    const payload = await this.animationModel.agent.invoke_resolveAnimation({animationId: this.id()});
     if (!payload) {
       return null;
     }
 
-    return this._animationModel._runtimeModel.createRemoteObject(payload.remoteObject);
+    return this.animationModel.runtimeModel.createRemoteObject(payload.remoteObject);
   }
 
-  _cssId(): string {
-    return this._payload.cssId || '';
+  cssId(): string {
+    return this.payloadInternal.cssId || '';
   }
 }
 
 export class AnimationEffect {
-  _animationModel: AnimationModel;
-  _payload: Protocol.Animation.AnimationEffect;
-  _keyframesRule: KeyframesRule|undefined;
-  _delay: number;
-  _duration: number;
-  _deferredNode?: SDK.DOMModel.DeferredDOMNode;
+  private animationModel: AnimationModel;
+  private readonly payload: Protocol.Animation.AnimationEffect;
+  private readonly keyframesRuleInternal: KeyframesRule|undefined;
+  delayInternal: number;
+  durationInternal: number;
+  private deferredNodeInternal?: SDK.DOMModel.DeferredDOMNode;
   constructor(animationModel: AnimationModel, payload: Protocol.Animation.AnimationEffect) {
-    this._animationModel = animationModel;
-    this._payload = payload;
+    this.animationModel = animationModel;
+    this.payload = payload;
     if (payload.keyframesRule) {
-      this._keyframesRule = new KeyframesRule(payload.keyframesRule);
+      this.keyframesRuleInternal = new KeyframesRule(payload.keyframesRule);
     }
-    this._delay = this._payload.delay;
-    this._duration = this._payload.duration;
+    this.delayInternal = this.payload.delay;
+    this.durationInternal = this.payload.duration;
   }
 
   delay(): number {
-    return this._delay;
+    return this.delayInternal;
   }
 
   endDelay(): number {
-    return this._payload.endDelay;
+    return this.payload.endDelay;
   }
 
   iterationStart(): number {
-    return this._payload.iterationStart;
+    return this.payload.iterationStart;
   }
 
   iterations(): number {
@@ -331,164 +330,164 @@ export class AnimationEffect {
     if (!this.delay() && !this.endDelay() && !this.duration()) {
       return 0;
     }
-    return this._payload.iterations || Infinity;
+    return this.payload.iterations || Infinity;
   }
 
   duration(): number {
-    return this._duration;
+    return this.durationInternal;
   }
 
   direction(): string {
-    return this._payload.direction;
+    return this.payload.direction;
   }
 
   fill(): string {
-    return this._payload.fill;
+    return this.payload.fill;
   }
 
   node(): Promise<SDK.DOMModel.DOMNode|null> {
-    if (!this._deferredNode) {
-      this._deferredNode = new SDK.DOMModel.DeferredDOMNode(this._animationModel.target(), this.backendNodeId());
+    if (!this.deferredNodeInternal) {
+      this.deferredNodeInternal = new SDK.DOMModel.DeferredDOMNode(this.animationModel.target(), this.backendNodeId());
     }
-    return this._deferredNode.resolvePromise();
+    return this.deferredNodeInternal.resolvePromise();
   }
 
   deferredNode(): SDK.DOMModel.DeferredDOMNode {
-    return new SDK.DOMModel.DeferredDOMNode(this._animationModel.target(), this.backendNodeId());
+    return new SDK.DOMModel.DeferredDOMNode(this.animationModel.target(), this.backendNodeId());
   }
 
   backendNodeId(): Protocol.DOM.BackendNodeId {
-    return this._payload.backendNodeId as Protocol.DOM.BackendNodeId;
+    return this.payload.backendNodeId as Protocol.DOM.BackendNodeId;
   }
 
   keyframesRule(): KeyframesRule|null {
-    return this._keyframesRule || null;
+    return this.keyframesRuleInternal || null;
   }
 
   easing(): string {
-    return this._payload.easing;
+    return this.payload.easing;
   }
 }
 
 export class KeyframesRule {
-  _payload: Protocol.Animation.KeyframesRule;
-  _keyframes: KeyframeStyle[];
+  private readonly payload: Protocol.Animation.KeyframesRule;
+  private keyframesInternal: KeyframeStyle[];
   constructor(payload: Protocol.Animation.KeyframesRule) {
-    this._payload = payload;
-    this._keyframes = this._payload.keyframes.map(function(keyframeStyle) {
+    this.payload = payload;
+    this.keyframesInternal = this.payload.keyframes.map(function(keyframeStyle) {
       return new KeyframeStyle(keyframeStyle);
     });
   }
 
-  _setKeyframesPayload(payload: Protocol.Animation.KeyframeStyle[]): void {
-    this._keyframes = payload.map(function(keyframeStyle) {
+  private setKeyframesPayload(payload: Protocol.Animation.KeyframeStyle[]): void {
+    this.keyframesInternal = payload.map(function(keyframeStyle) {
       return new KeyframeStyle(keyframeStyle);
     });
   }
 
   name(): string|undefined {
-    return this._payload.name;
+    return this.payload.name;
   }
 
   keyframes(): KeyframeStyle[] {
-    return this._keyframes;
+    return this.keyframesInternal;
   }
 }
 
 export class KeyframeStyle {
-  _payload: Protocol.Animation.KeyframeStyle;
-  _offset: string;
+  private readonly payload: Protocol.Animation.KeyframeStyle;
+  private offsetInternal: string;
   constructor(payload: Protocol.Animation.KeyframeStyle) {
-    this._payload = payload;
-    this._offset = this._payload.offset;
+    this.payload = payload;
+    this.offsetInternal = this.payload.offset;
   }
 
   offset(): string {
-    return this._offset;
+    return this.offsetInternal;
   }
 
   setOffset(offset: number): void {
-    this._offset = offset * 100 + '%';
+    this.offsetInternal = offset * 100 + '%';
   }
 
   offsetAsNumber(): number {
-    return parseFloat(this._offset) / 100;
+    return parseFloat(this.offsetInternal) / 100;
   }
 
   easing(): string {
-    return this._payload.easing;
+    return this.payload.easing;
   }
 }
 
 export class AnimationGroup {
-  _animationModel: AnimationModel;
-  _id: string;
-  _animations: AnimationImpl[];
-  _paused: boolean;
-  _screenshots: string[];
-  _screenshotImages: HTMLImageElement[];
+  private readonly animationModel: AnimationModel;
+  private readonly idInternal: string;
+  private animationsInternal: AnimationImpl[];
+  private pausedInternal: boolean;
+  screenshotsInternal: string[];
+  private readonly screenshotImages: HTMLImageElement[];
   constructor(animationModel: AnimationModel, id: string, animations: AnimationImpl[]) {
-    this._animationModel = animationModel;
-    this._id = id;
-    this._animations = animations;
-    this._paused = false;
-    this._screenshots = [];
+    this.animationModel = animationModel;
+    this.idInternal = id;
+    this.animationsInternal = animations;
+    this.pausedInternal = false;
+    this.screenshotsInternal = [];
 
-    this._screenshotImages = [];
+    this.screenshotImages = [];
   }
 
   id(): string {
-    return this._id;
+    return this.idInternal;
   }
 
   animations(): AnimationImpl[] {
-    return this._animations;
+    return this.animationsInternal;
   }
 
   release(): void {
-    this._animationModel._animationGroups.delete(this.id());
-    this._animationModel._releaseAnimations(this._animationIds());
+    this.animationModel.animationGroups.delete(this.id());
+    this.animationModel.releaseAnimations(this.animationIds());
   }
 
-  _animationIds(): string[] {
+  private animationIds(): string[] {
     function extractId(animation: AnimationImpl): string {
       return animation.id();
     }
 
-    return this._animations.map(extractId);
+    return this.animationsInternal.map(extractId);
   }
 
   startTime(): number {
-    return this._animations[0].startTime();
+    return this.animationsInternal[0].startTime();
   }
 
   finiteDuration(): number {
     let maxDuration = 0;
-    for (let i = 0; i < this._animations.length; ++i) {
-      maxDuration = Math.max(maxDuration, this._animations[i]._finiteDuration());
+    for (let i = 0; i < this.animationsInternal.length; ++i) {
+      maxDuration = Math.max(maxDuration, this.animationsInternal[i].finiteDuration());
     }
     return maxDuration;
   }
 
   seekTo(currentTime: number): void {
-    this._animationModel._agent.invoke_seekAnimations({animations: this._animationIds(), currentTime});
+    this.animationModel.agent.invoke_seekAnimations({animations: this.animationIds(), currentTime});
   }
 
   paused(): boolean {
-    return this._paused;
+    return this.pausedInternal;
   }
 
   togglePause(paused: boolean): void {
-    if (paused === this._paused) {
+    if (paused === this.pausedInternal) {
       return;
     }
-    this._paused = paused;
-    this._animationModel._agent.invoke_setPaused({animations: this._animationIds(), paused});
+    this.pausedInternal = paused;
+    this.animationModel.agent.invoke_setPaused({animations: this.animationIds(), paused});
   }
 
   currentTimePromise(): Promise<number> {
     let longestAnim: AnimationImpl|null = null;
-    for (const anim of this._animations) {
+    for (const anim of this.animationsInternal) {
       if (!longestAnim || anim.endTime() > longestAnim.endTime()) {
         longestAnim = anim;
       }
@@ -497,23 +496,23 @@ export class AnimationGroup {
       throw new Error('No longest animation found');
     }
 
-    return this._animationModel._agent.invoke_getCurrentTime({id: longestAnim.id()})
+    return this.animationModel.agent.invoke_getCurrentTime({id: longestAnim.id()})
         .then(({currentTime}) => currentTime || 0);
   }
 
-  _matches(group: AnimationGroup): boolean {
+  matches(group: AnimationGroup): boolean {
     function extractId(anim: AnimationImpl): string {
       if (anim.type() === Protocol.Animation.AnimationType.WebAnimation) {
         return anim.type() + anim.id();
       }
-      return anim._cssId();
+      return anim.cssId();
     }
 
-    if (this._animations.length !== group._animations.length) {
+    if (this.animationsInternal.length !== group.animationsInternal.length) {
       return false;
     }
-    const left = this._animations.map(extractId).sort();
-    const right = group._animations.map(extractId).sort();
+    const left = this.animationsInternal.map(extractId).sort();
+    const right = group.animationsInternal.map(extractId).sort();
     for (let i = 0; i < left.length; i++) {
       if (left[i] !== right[i]) {
         return false;
@@ -522,101 +521,101 @@ export class AnimationGroup {
     return true;
   }
 
-  _update(group: AnimationGroup): void {
-    this._animationModel._releaseAnimations(this._animationIds());
-    this._animations = group._animations;
+  update(group: AnimationGroup): void {
+    this.animationModel.releaseAnimations(this.animationIds());
+    this.animationsInternal = group.animationsInternal;
   }
 
   screenshots(): HTMLImageElement[] {
-    for (let i = 0; i < this._screenshots.length; ++i) {
+    for (let i = 0; i < this.screenshotsInternal.length; ++i) {
       const image = new Image();
-      image.src = 'data:image/jpeg;base64,' + this._screenshots[i];
-      this._screenshotImages.push(image);
+      image.src = 'data:image/jpeg;base64,' + this.screenshotsInternal[i];
+      this.screenshotImages.push(image);
     }
-    this._screenshots = [];
-    return this._screenshotImages;
+    this.screenshotsInternal = [];
+    return this.screenshotImages;
   }
 }
 
 export class AnimationDispatcher implements ProtocolProxyApi.AnimationDispatcher {
-  _animationModel: AnimationModel;
+  private readonly animationModel: AnimationModel;
   constructor(animationModel: AnimationModel) {
-    this._animationModel = animationModel;
+    this.animationModel = animationModel;
   }
 
   animationCreated({id}: Protocol.Animation.AnimationCreatedEvent): void {
-    this._animationModel.animationCreated(id);
+    this.animationModel.animationCreated(id);
   }
 
   animationCanceled({id}: Protocol.Animation.AnimationCanceledEvent): void {
-    this._animationModel._animationCanceled(id);
+    this.animationModel.animationCanceled(id);
   }
 
   animationStarted({animation}: Protocol.Animation.AnimationStartedEvent): void {
-    this._animationModel.animationStarted(animation);
+    this.animationModel.animationStarted(animation);
   }
 }
 
 export class ScreenshotCapture {
-  _requests: Request[];
-  _screenCaptureModel: SDK.ScreenCaptureModel.ScreenCaptureModel;
-  _animationModel: AnimationModel;
-  _stopTimer?: number;
-  _endTime?: number;
-  _capturing?: boolean;
+  private requests: Request[];
+  private readonly screenCaptureModel: SDK.ScreenCaptureModel.ScreenCaptureModel;
+  private readonly animationModel: AnimationModel;
+  private stopTimer?: number;
+  private endTime?: number;
+  private capturing?: boolean;
   constructor(animationModel: AnimationModel, screenCaptureModel: SDK.ScreenCaptureModel.ScreenCaptureModel) {
-    this._requests = [];
-    this._screenCaptureModel = screenCaptureModel;
-    this._animationModel = animationModel;
-    this._animationModel.addEventListener(Events.ModelReset, this._stopScreencast, this);
+    this.requests = [];
+    this.screenCaptureModel = screenCaptureModel;
+    this.animationModel = animationModel;
+    this.animationModel.addEventListener(Events.ModelReset, this.stopScreencast, this);
   }
 
   captureScreenshots(duration: number, screenshots: string[]): void {
-    const screencastDuration = Math.min(duration / this._animationModel._playbackRate, 3000);
+    const screencastDuration = Math.min(duration / this.animationModel.playbackRate, 3000);
     const endTime = screencastDuration + window.performance.now();
-    this._requests.push({endTime: endTime, screenshots: screenshots});
+    this.requests.push({endTime: endTime, screenshots: screenshots});
 
-    if (!this._endTime || endTime > this._endTime) {
-      clearTimeout(this._stopTimer);
-      this._stopTimer = window.setTimeout(this._stopScreencast.bind(this), screencastDuration);
-      this._endTime = endTime;
+    if (!this.endTime || endTime > this.endTime) {
+      clearTimeout(this.stopTimer);
+      this.stopTimer = window.setTimeout(this.stopScreencast.bind(this), screencastDuration);
+      this.endTime = endTime;
     }
 
-    if (this._capturing) {
+    if (this.capturing) {
       return;
     }
-    this._capturing = true;
-    this._screenCaptureModel.startScreencast(
-        Protocol.Page.StartScreencastRequestFormat.Jpeg, 80, undefined, 300, 2, this._screencastFrame.bind(this),
+    this.capturing = true;
+    this.screenCaptureModel.startScreencast(
+        Protocol.Page.StartScreencastRequestFormat.Jpeg, 80, undefined, 300, 2, this.screencastFrame.bind(this),
         _visible => {});
   }
 
-  _screencastFrame(base64Data: string, _metadata: Protocol.Page.ScreencastFrameMetadata): void {
+  private screencastFrame(base64Data: string, _metadata: Protocol.Page.ScreencastFrameMetadata): void {
     function isAnimating(request: Request): boolean {
       return request.endTime >= now;
     }
 
-    if (!this._capturing) {
+    if (!this.capturing) {
       return;
     }
 
     const now = window.performance.now();
-    this._requests = this._requests.filter(isAnimating);
-    for (const request of this._requests) {
+    this.requests = this.requests.filter(isAnimating);
+    for (const request of this.requests) {
       request.screenshots.push(base64Data);
     }
   }
 
-  _stopScreencast(): void {
-    if (!this._capturing) {
+  private stopScreencast(): void {
+    if (!this.capturing) {
       return;
     }
 
-    delete this._stopTimer;
-    delete this._endTime;
-    this._requests = [];
-    this._capturing = false;
-    this._screenCaptureModel.stopScreencast();
+    delete this.stopTimer;
+    delete this.endTime;
+    this.requests = [];
+    this.capturing = false;
+    this.screenCaptureModel.stopScreencast();
   }
 }
 

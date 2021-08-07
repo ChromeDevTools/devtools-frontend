@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
 
@@ -14,58 +12,58 @@ import {NodeLabelGenerator, NodeView} from './NodeView.js';
 // A class that tracks all the nodes and edges of an audio graph.
 export class GraphView extends Common.ObjectWrapper.ObjectWrapper {
   contextId: string;
-  _nodes: Map<string, NodeView>;
-  _edges: Map<string, EdgeView>;
-  _outboundEdgeMap: Platform.MapUtilities.Multimap<string, string>;
-  _inboundEdgeMap: Platform.MapUtilities.Multimap<string, string>;
-  _nodeLabelGenerator: NodeLabelGenerator;
-  _paramIdToNodeIdMap: Map<string, string>;
+  private readonly nodes: Map<string, NodeView>;
+  private readonly edges: Map<string, EdgeView>;
+  private readonly outboundEdgeMap: Platform.MapUtilities.Multimap<string, string>;
+  private readonly inboundEdgeMap: Platform.MapUtilities.Multimap<string, string>;
+  private readonly nodeLabelGenerator: NodeLabelGenerator;
+  private readonly paramIdToNodeIdMap: Map<string, string>;
   constructor(contextId: string) {
     super();
 
     this.contextId = contextId;
 
-    this._nodes = new Map();
-    this._edges = new Map();
+    this.nodes = new Map();
+    this.edges = new Map();
 
     /**
      * For each node ID, keep a set of all out-bound edge IDs.
      */
-    this._outboundEdgeMap = new Platform.MapUtilities.Multimap();
+    this.outboundEdgeMap = new Platform.MapUtilities.Multimap();
 
     /**
      * For each node ID, keep a set of all in-bound edge IDs.
      */
-    this._inboundEdgeMap = new Platform.MapUtilities.Multimap();
+    this.inboundEdgeMap = new Platform.MapUtilities.Multimap();
 
     // Use concise node label to replace the long UUID.
     // Each graph has its own label generator so that the label starts from 0.
-    this._nodeLabelGenerator = new NodeLabelGenerator();
+    this.nodeLabelGenerator = new NodeLabelGenerator();
 
     /**
      * For each param ID, save its corresponding node Id.
       */
-    this._paramIdToNodeIdMap = new Map();
+    this.paramIdToNodeIdMap = new Map();
   }
 
   /**
    * Add a node to the graph.
    */
   addNode(data: NodeCreationData): void {
-    const label = this._nodeLabelGenerator.generateLabel(data.nodeType);
+    const label = this.nodeLabelGenerator.generateLabel(data.nodeType);
     const node = new NodeView(data, label);
-    this._nodes.set(data.nodeId, node);
-    this._notifyShouldRedraw();
+    this.nodes.set(data.nodeId, node);
+    this.notifyShouldRedraw();
   }
 
   /**
    * Remove a node by id and all related edges.
    */
   removeNode(nodeId: string): void {
-    this._outboundEdgeMap.get(nodeId).forEach(edgeId => this._removeEdge(edgeId));
-    this._inboundEdgeMap.get(nodeId).forEach(edgeId => this._removeEdge(edgeId));
-    this._nodes.delete(nodeId);
-    this._notifyShouldRedraw();
+    this.outboundEdgeMap.get(nodeId).forEach(edgeId => this.removeEdge(edgeId));
+    this.inboundEdgeMap.get(nodeId).forEach(edgeId => this.removeEdge(edgeId));
+    this.nodes.delete(nodeId);
+    this.notifyShouldRedraw();
   }
 
   /**
@@ -78,8 +76,8 @@ export class GraphView extends Common.ObjectWrapper.ObjectWrapper {
       return;
     }
     node.addParamPort(data.paramId, data.paramType);
-    this._paramIdToNodeIdMap.set(data.paramId, data.nodeId);
-    this._notifyShouldRedraw();
+    this.paramIdToNodeIdMap.set(data.paramId, data.nodeId);
+    this.notifyShouldRedraw();
   }
 
   /**
@@ -87,7 +85,7 @@ export class GraphView extends Common.ObjectWrapper.ObjectWrapper {
    */
   removeParam(paramId: string): void {
     // Only need to delete the entry from the param id to node id map.
-    this._paramIdToNodeIdMap.delete(paramId);
+    this.paramIdToNodeIdMap.delete(paramId);
     // No need to remove the param port from the node because removeParam will always happen with
     // removeNode(). Since the whole Node will be gone, there is no need to remove port individually.
   }
@@ -97,7 +95,7 @@ export class GraphView extends Common.ObjectWrapper.ObjectWrapper {
    */
   addNodeToNodeConnection(edgeData: NodesConnectionData): void {
     const edge = new EdgeView(edgeData, EdgeTypes.NodeToNode);
-    this._addEdge(edge);
+    this.addEdge(edge);
   }
 
   /**
@@ -114,10 +112,10 @@ export class GraphView extends Common.ObjectWrapper.ObjectWrapper {
       }
       const {edgeId} = edgePortIds;
 
-      this._removeEdge(edgeId);
+      this.removeEdge(edgeId);
     } else {
       // Otherwise, remove all outgoing edges from source node.
-      this._outboundEdgeMap.get(edgeData.sourceId).forEach(edgeId => this._removeEdge(edgeId));
+      this.outboundEdgeMap.get(edgeData.sourceId).forEach(edgeId => this.removeEdge(edgeId));
     }
   }
 
@@ -126,7 +124,7 @@ export class GraphView extends Common.ObjectWrapper.ObjectWrapper {
    */
   addNodeToParamConnection(edgeData: NodeParamConnectionData): void {
     const edge = new EdgeView(edgeData, EdgeTypes.NodeToParam);
-    this._addEdge(edge);
+    this.addEdge(edge);
   }
 
   /**
@@ -139,60 +137,60 @@ export class GraphView extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     const {edgeId} = edgePortIds;
-    this._removeEdge(edgeId);
+    this.removeEdge(edgeId);
   }
 
   getNodeById(nodeId: string): NodeView|null {
-    return this._nodes.get(nodeId) || null;
+    return this.nodes.get(nodeId) || null;
   }
 
   getNodes(): Map<string, NodeView> {
-    return this._nodes;
+    return this.nodes;
   }
 
   getEdges(): Map<string, EdgeView> {
-    return this._edges;
+    return this.edges;
   }
 
   getNodeIdByParamId(paramId: string): string|null {
-    return this._paramIdToNodeIdMap.get(paramId) || null;
+    return this.paramIdToNodeIdMap.get(paramId) || null;
   }
 
   /**
    * Add an edge to the graph.
    */
-  _addEdge(edge: EdgeView): void {
+  private addEdge(edge: EdgeView): void {
     const sourceId = edge.sourceId;
     // Do nothing if the edge already exists.
-    if (this._outboundEdgeMap.hasValue(sourceId, edge.id)) {
+    if (this.outboundEdgeMap.hasValue(sourceId, edge.id)) {
       return;
     }
 
-    this._edges.set(edge.id, edge);
-    this._outboundEdgeMap.set(sourceId, edge.id);
-    this._inboundEdgeMap.set(edge.destinationId, edge.id);
+    this.edges.set(edge.id, edge);
+    this.outboundEdgeMap.set(sourceId, edge.id);
+    this.inboundEdgeMap.set(edge.destinationId, edge.id);
 
-    this._notifyShouldRedraw();
+    this.notifyShouldRedraw();
   }
 
   /**
    * Given an edge id, remove the edge from the graph.
    * Also remove the edge from inbound and outbound edge maps.
    */
-  _removeEdge(edgeId: string): void {
-    const edge = this._edges.get(edgeId);
+  private removeEdge(edgeId: string): void {
+    const edge = this.edges.get(edgeId);
     if (!edge) {
       return;
     }
 
-    this._outboundEdgeMap.delete(edge.sourceId, edgeId);
-    this._inboundEdgeMap.delete(edge.destinationId, edgeId);
+    this.outboundEdgeMap.delete(edge.sourceId, edgeId);
+    this.inboundEdgeMap.delete(edge.destinationId, edgeId);
 
-    this._edges.delete(edgeId);
-    this._notifyShouldRedraw();
+    this.edges.delete(edgeId);
+    this.notifyShouldRedraw();
   }
 
-  _notifyShouldRedraw(): void {
+  private notifyShouldRedraw(): void {
     this.dispatchEventToListeners(Events.ShouldRedraw, this);
   }
 }

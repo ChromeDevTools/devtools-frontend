@@ -66,58 +66,58 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/timeline_model/TimelineModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineModelImpl {
-  _isGenericTrace!: boolean;
-  _tracks!: Track[];
-  _namedTracks!: Map<TrackType, Track>;
-  _inspectedTargetEvents!: SDK.TracingModel.Event[];
-  _timeMarkerEvents!: SDK.TracingModel.Event[];
-  _sessionId!: string|null;
-  _mainFrameNodeId!: number|null;
-  _pageFrames!: Map<string, PageFrame>;
-  _cpuProfiles!: SDK.CPUProfileDataModel.CPUProfileDataModel[];
-  _workerIdByThread!: WeakMap<SDK.TracingModel.Thread, string>;
-  _requestsFromBrowser!: Map<string, SDK.TracingModel.Event>;
-  _mainFrame!: PageFrame;
-  _minimumRecordTime: number;
-  _maximumRecordTime: number;
-  _totalBlockingTime: number;
-  _estimatedTotalBlockingTime: number;
-  _asyncEventTracker!: TimelineAsyncEventTracker;
-  _invalidationTracker!: InvalidationTracker;
-  _layoutInvalidate!: {
+  private isGenericTraceInternal!: boolean;
+  private tracksInternal!: Track[];
+  private namedTracks!: Map<TrackType, Track>;
+  private inspectedTargetEventsInternal!: SDK.TracingModel.Event[];
+  private timeMarkerEventsInternal!: SDK.TracingModel.Event[];
+  private sessionId!: string|null;
+  private mainFrameNodeId!: number|null;
+  private pageFrames!: Map<string, PageFrame>;
+  private cpuProfilesInternal!: SDK.CPUProfileDataModel.CPUProfileDataModel[];
+  private workerIdByThread!: WeakMap<SDK.TracingModel.Thread, string>;
+  private requestsFromBrowser!: Map<string, SDK.TracingModel.Event>;
+  private mainFrame!: PageFrame;
+  private minimumRecordTimeInternal: number;
+  private maximumRecordTimeInternal: number;
+  private totalBlockingTimeInternal: number;
+  private estimatedTotalBlockingTime: number;
+  private asyncEventTracker!: TimelineAsyncEventTracker;
+  private invalidationTracker!: InvalidationTracker;
+  private layoutInvalidate!: {
     [x: string]: SDK.TracingModel.Event|null,
   };
-  _lastScheduleStyleRecalculation!: {
+  private lastScheduleStyleRecalculation!: {
     [x: string]: SDK.TracingModel.Event,
   };
-  _paintImageEventByPixelRefId!: {
+  private paintImageEventByPixelRefId!: {
     [x: string]: SDK.TracingModel.Event,
   };
-  _lastPaintForLayer!: {
+  private lastPaintForLayer!: {
     [x: string]: SDK.TracingModel.Event,
   };
-  _lastRecalculateStylesEvent!: SDK.TracingModel.Event|null;
-  _currentScriptEvent!: SDK.TracingModel.Event|null;
-  _eventStack!: SDK.TracingModel.Event[];
-  _knownInputEvents!: Set<string>;
-  _browserFrameTracking!: boolean;
-  _persistentIds!: boolean;
-  _legacyCurrentPage!: any;
-  _currentTaskLayoutAndRecalcEvents: SDK.TracingModel.Event[];
-  _tracingModel: SDK.TracingModel.TracingModel|null;
-  _mainFrameLayerTreeId?: any;
+  private lastRecalculateStylesEvent!: SDK.TracingModel.Event|null;
+  private currentScriptEvent!: SDK.TracingModel.Event|null;
+  private eventStack!: SDK.TracingModel.Event[];
+  private knownInputEvents!: Set<string>;
+  private browserFrameTracking!: boolean;
+  private persistentIds!: boolean;
+  private legacyCurrentPage!: any;
+  private currentTaskLayoutAndRecalcEvents: SDK.TracingModel.Event[];
+  private tracingModelInternal: SDK.TracingModel.TracingModel|null;
+  private mainFrameLayerTreeId?: any;
 
   constructor() {
-    this._minimumRecordTime = 0;
-    this._maximumRecordTime = 0;
-    this._totalBlockingTime = 0;
-    this._estimatedTotalBlockingTime = 0;
+    this.minimumRecordTimeInternal = 0;
+    this.maximumRecordTimeInternal = 0;
+    this.totalBlockingTimeInternal = 0;
+    this.estimatedTotalBlockingTime = 0;
 
-    this._reset();
-    this._resetProcessingState();
+    this.reset();
+    this.resetProcessingState();
 
-    this._currentTaskLayoutAndRecalcEvents = [];
-    this._tracingModel = null;
+    this.currentTaskLayoutAndRecalcEvents = [];
+    this.tracingModelInternal = null;
   }
 
   static forEachEvent(
@@ -178,7 +178,7 @@ export class TimelineModelImpl {
         return true;
       case RecordType.MarkFirstPaint:
       case RecordType.MarkFCP:
-        return Boolean(this._mainFrame) && event.args.frame === this._mainFrame.frameId && Boolean(event.args.data);
+        return Boolean(this.mainFrame) && event.args.frame === this.mainFrame.frameId && Boolean(event.args.data);
       case RecordType.MarkDOMContent:
       case RecordType.MarkLoad:
       case RecordType.MarkLCPCandidate:
@@ -213,8 +213,8 @@ export class TimelineModelImpl {
   }
 
   isFCPEvent(event: SDK.TracingModel.Event): boolean {
-    return event.name === RecordType.MarkFCP && Boolean(this._mainFrame) &&
-        event.args['frame'] === this._mainFrame.frameId;
+    return event.name === RecordType.MarkFCP && Boolean(this.mainFrame) &&
+        event.args['frame'] === this.mainFrame.frameId;
   }
 
   isLongRunningTask(event: SDK.TracingModel.Event): boolean {
@@ -246,42 +246,42 @@ export class TimelineModelImpl {
   }
 
   cpuProfiles(): SDK.CPUProfileDataModel.CPUProfileDataModel[] {
-    return this._cpuProfiles;
+    return this.cpuProfilesInternal;
   }
 
   totalBlockingTime(): {
     time: number,
     estimated: boolean,
   } {
-    if (this._totalBlockingTime === -1) {
-      return {time: this._estimatedTotalBlockingTime, estimated: true};
+    if (this.totalBlockingTimeInternal === -1) {
+      return {time: this.estimatedTotalBlockingTime, estimated: true};
     }
 
-    return {time: this._totalBlockingTime, estimated: false};
+    return {time: this.totalBlockingTimeInternal, estimated: false};
   }
 
   targetByEvent(event: SDK.TracingModel.Event): SDK.Target.Target|null {
     // FIXME: Consider returning null for loaded traces.
-    const workerId = this._workerIdByThread.get(event.thread);
+    const workerId = this.workerIdByThread.get(event.thread);
     const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
     return workerId ? SDK.TargetManager.TargetManager.instance().targetById(workerId) : mainTarget;
   }
 
   navStartTimes(): Map<string, SDK.TracingModel.Event> {
-    if (!this._tracingModel) {
+    if (!this.tracingModelInternal) {
       return new Map();
     }
 
-    return this._tracingModel.navStartTimes();
+    return this.tracingModelInternal.navStartTimes();
   }
 
   setEvents(tracingModel: SDK.TracingModel.TracingModel): void {
-    this._reset();
-    this._resetProcessingState();
-    this._tracingModel = tracingModel;
+    this.reset();
+    this.resetProcessingState();
+    this.tracingModelInternal = tracingModel;
 
-    this._minimumRecordTime = tracingModel.minimumRecordTime();
-    this._maximumRecordTime = tracingModel.maximumRecordTime();
+    this.minimumRecordTimeInternal = tracingModel.minimumRecordTime();
+    this.maximumRecordTimeInternal = tracingModel.maximumRecordTime();
 
     // Remove LayoutShift events from the main thread list of events because they are
     // represented in the experience track. This is done prior to the main thread being processed for its own events.
@@ -297,41 +297,41 @@ export class TimelineModelImpl {
       }
     }
 
-    this._processSyncBrowserEvents(tracingModel);
-    if (this._browserFrameTracking) {
-      this._processThreadsForBrowserFrames(tracingModel);
+    this.processSyncBrowserEvents(tracingModel);
+    if (this.browserFrameTracking) {
+      this.processThreadsForBrowserFrames(tracingModel);
     } else {
       // The next line is for loading legacy traces recorded before M67.
       // TODO(alph): Drop the support at some point.
-      const metadataEvents = this._processMetadataEvents(tracingModel);
-      this._isGenericTrace = !metadataEvents;
+      const metadataEvents = this.processMetadataEvents(tracingModel);
+      this.isGenericTraceInternal = !metadataEvents;
       if (metadataEvents) {
-        this._processMetadataAndThreads(tracingModel, metadataEvents);
+        this.processMetadataAndThreads(tracingModel, metadataEvents);
       } else {
-        this._processGenericTrace(tracingModel);
+        this.processGenericTrace(tracingModel);
       }
     }
-    this._inspectedTargetEvents.sort(SDK.TracingModel.Event.compareStartTime);
-    this._processAsyncBrowserEvents(tracingModel);
-    this._buildGPUEvents(tracingModel);
-    this._buildLoadingEvents(tracingModel, layoutShiftEvents);
-    this._resetProcessingState();
+    this.inspectedTargetEventsInternal.sort(SDK.TracingModel.Event.compareStartTime);
+    this.processAsyncBrowserEvents(tracingModel);
+    this.buildGPUEvents(tracingModel);
+    this.buildLoadingEvents(tracingModel, layoutShiftEvents);
+    this.resetProcessingState();
   }
 
-  _processGenericTrace(tracingModel: SDK.TracingModel.TracingModel): void {
+  private processGenericTrace(tracingModel: SDK.TracingModel.TracingModel): void {
     let browserMainThread = SDK.TracingModel.TracingModel.browserMainThread(tracingModel);
     if (!browserMainThread && tracingModel.sortedProcesses().length) {
       browserMainThread = tracingModel.sortedProcesses()[0].sortedThreads()[0];
     }
     for (const process of tracingModel.sortedProcesses()) {
       for (const thread of process.sortedThreads()) {
-        this._processThreadEvents(
+        this.processThreadEvents(
             tracingModel, [{from: 0, to: Infinity}], thread, thread === browserMainThread, false, true, null);
       }
     }
   }
 
-  _processMetadataAndThreads(tracingModel: SDK.TracingModel.TracingModel, metadataEvents: MetadataEvents): void {
+  private processMetadataAndThreads(tracingModel: SDK.TracingModel.TracingModel, metadataEvents: MetadataEvents): void {
     let startTime = 0;
     for (let i = 0, length = metadataEvents.page.length; i < length; i++) {
       const metaEvent = metadataEvents.page[i];
@@ -340,7 +340,7 @@ export class TimelineModelImpl {
       if (startTime === endTime) {
         continue;
       }
-      this._legacyCurrentPage = metaEvent.args['data'] && metaEvent.args['data']['page'];
+      this.legacyCurrentPage = metaEvent.args['data'] && metaEvent.args['data']['page'];
       for (const thread of process.sortedThreads()) {
         let workerUrl: null = null;
         if (thread.name() === TimelineModelImpl.WorkerThreadName ||
@@ -350,21 +350,21 @@ export class TimelineModelImpl {
               return false;
             }
             // This is to support old traces.
-            if (e.args['data']['sessionId'] === this._sessionId) {
+            if (e.args['data']['sessionId'] === this.sessionId) {
               return true;
             }
-            return Boolean(this._pageFrames.get(TimelineModelImpl.eventFrameId(e)));
+            return Boolean(this.pageFrames.get(TimelineModelImpl.eventFrameId(e)));
           });
           if (!workerMetaEvent) {
             continue;
           }
           const workerId = workerMetaEvent.args['data']['workerId'];
           if (workerId) {
-            this._workerIdByThread.set(thread, workerId);
+            this.workerIdByThread.set(thread, workerId);
           }
           workerUrl = workerMetaEvent.args['data']['url'] || '';
         }
-        this._processThreadEvents(
+        this.processThreadEvents(
             tracingModel, [{from: startTime, to: endTime}], thread, thread === metaEvent.thread, Boolean(workerUrl),
             true, workerUrl);
       }
@@ -372,14 +372,14 @@ export class TimelineModelImpl {
     }
   }
 
-  _processThreadsForBrowserFrames(tracingModel: SDK.TracingModel.TracingModel): void {
+  private processThreadsForBrowserFrames(tracingModel: SDK.TracingModel.TracingModel): void {
     const processData = new Map<number, {
       from: number,
       to: number,
       main: boolean,
       url: string,
     }[]>();
-    for (const frame of this._pageFrames.values()) {
+    for (const frame of this.pageFrames.values()) {
       for (let i = 0; i < frame.processes.length; i++) {
         const pid = frame.processes[i].processId;
         let data = processData.get(pid);
@@ -422,7 +422,7 @@ export class TimelineModelImpl {
 
       for (const thread of process.sortedThreads()) {
         if (thread.name() === TimelineModelImpl.RendererMainThreadName) {
-          this._processThreadEvents(
+          this.processThreadEvents(
               tracingModel, ranges, thread, true /* isMainThread */, false /* isWorker */, hasMain,
               hasMain ? lastMainUrl : lastUrl);
         } else if (
@@ -438,17 +438,17 @@ export class TimelineModelImpl {
             if (e.args['data']['workerThreadId'] !== thread.id()) {
               return false;
             }
-            return Boolean(this._pageFrames.get(TimelineModelImpl.eventFrameId(e)));
+            return Boolean(this.pageFrames.get(TimelineModelImpl.eventFrameId(e)));
           });
           if (!workerMetaEvent) {
             continue;
           }
-          this._workerIdByThread.set(thread, workerMetaEvent.args['data']['workerId'] || '');
-          this._processThreadEvents(
+          this.workerIdByThread.set(thread, workerMetaEvent.args['data']['workerId'] || '');
+          this.processThreadEvents(
               tracingModel, ranges, thread, false /* isMainThread */, true /* isWorker */, false /* forMainFrame */,
               workerMetaEvent.args['data']['url'] || '');
         } else {
-          this._processThreadEvents(
+          this.processThreadEvents(
               tracingModel, ranges, thread, false /* isMainThread */, false /* isWorker */, false /* forMainFrame */,
               null);
         }
@@ -456,7 +456,7 @@ export class TimelineModelImpl {
     }
   }
 
-  _processMetadataEvents(tracingModel: SDK.TracingModel.TracingModel): MetadataEvents|null {
+  private processMetadataEvents(tracingModel: SDK.TracingModel.TracingModel): MetadataEvents|null {
     const metadataEvents = tracingModel.devToolsMetadataEvents();
 
     const pageDevToolsMetadataEvents = [];
@@ -465,16 +465,16 @@ export class TimelineModelImpl {
       if (event.name === TimelineModelImpl.DevToolsMetadataEvent.TracingStartedInPage) {
         pageDevToolsMetadataEvents.push(event);
         if (event.args['data'] && event.args['data']['persistentIds']) {
-          this._persistentIds = true;
+          this.persistentIds = true;
         }
         const frames = ((event.args['data'] && event.args['data']['frames']) || [] as PageFrame[]);
-        frames.forEach((payload: PageFrame) => this._addPageFrame(event, payload));
-        this._mainFrame = this.rootFrames()[0];
+        frames.forEach((payload: PageFrame) => this.addPageFrame(event, payload));
+        this.mainFrame = this.rootFrames()[0];
       } else if (event.name === TimelineModelImpl.DevToolsMetadataEvent.TracingSessionIdForWorker) {
         workersDevToolsMetadataEvents.push(event);
       } else if (event.name === TimelineModelImpl.DevToolsMetadataEvent.TracingStartedInBrowser) {
-        console.assert(!this._mainFrameNodeId, 'Multiple sessions in trace');
-        this._mainFrameNodeId = event.args['frameTreeNodeId'];
+        console.assert(!this.mainFrameNodeId, 'Multiple sessions in trace');
+        this.mainFrameNodeId = event.args['frameTreeNodeId'];
       }
     }
     if (!pageDevToolsMetadataEvents.length) {
@@ -483,7 +483,7 @@ export class TimelineModelImpl {
 
     const sessionId =
         pageDevToolsMetadataEvents[0].args['sessionId'] || pageDevToolsMetadataEvents[0].args['data']['sessionId'];
-    this._sessionId = sessionId;
+    this.sessionId = sessionId;
 
     const mismatchingIds = new Set<any>();
     function checkSessionId(event: SDK.TracingModel.Event): boolean {
@@ -506,43 +506,43 @@ export class TimelineModelImpl {
     if (mismatchingIds.size) {
       Common.Console.Console.instance().error(
           'Timeline recording was started in more than one page simultaneously. Session id mismatch: ' +
-          this._sessionId + ' and ' + [...mismatchingIds] + '.');
+          this.sessionId + ' and ' + [...mismatchingIds] + '.');
     }
     return result;
   }
 
-  _processSyncBrowserEvents(tracingModel: SDK.TracingModel.TracingModel): void {
+  private processSyncBrowserEvents(tracingModel: SDK.TracingModel.TracingModel): void {
     const browserMain = SDK.TracingModel.TracingModel.browserMainThread(tracingModel);
     if (browserMain) {
-      browserMain.events().forEach(this._processBrowserEvent, this);
+      browserMain.events().forEach(this.processBrowserEvent, this);
     }
   }
 
-  _processAsyncBrowserEvents(tracingModel: SDK.TracingModel.TracingModel): void {
+  private processAsyncBrowserEvents(tracingModel: SDK.TracingModel.TracingModel): void {
     const browserMain = SDK.TracingModel.TracingModel.browserMainThread(tracingModel);
     if (browserMain) {
-      this._processAsyncEvents(browserMain, [{from: 0, to: Infinity}]);
+      this.processAsyncEvents(browserMain, [{from: 0, to: Infinity}]);
     }
   }
 
-  _buildGPUEvents(tracingModel: SDK.TracingModel.TracingModel): void {
+  private buildGPUEvents(tracingModel: SDK.TracingModel.TracingModel): void {
     const thread = tracingModel.getThreadByName('GPU Process', 'CrGpuMain');
     if (!thread) {
       return;
     }
     const gpuEventName = RecordType.GPUTask;
-    const track = this._ensureNamedTrack(TrackType.GPU);
+    const track = this.ensureNamedTrack(TrackType.GPU);
     track.thread = thread;
     track.events = thread.events().filter(event => event.name === gpuEventName);
   }
 
-  _buildLoadingEvents(tracingModel: SDK.TracingModel.TracingModel, events: SDK.TracingModel.Event[]): void {
+  private buildLoadingEvents(tracingModel: SDK.TracingModel.TracingModel, events: SDK.TracingModel.Event[]): void {
     const thread = tracingModel.getThreadByName('Renderer', 'CrRendererMain');
     if (!thread) {
       return;
     }
     const experienceCategory = 'experience';
-    const track = this._ensureNamedTrack(TrackType.Experience);
+    const track = this.ensureNamedTrack(TrackType.Experience);
     track.thread = thread;
     track.events = events;
 
@@ -562,23 +562,23 @@ export class TimelineModelImpl {
     }
   }
 
-  _resetProcessingState(): void {
-    this._asyncEventTracker = new TimelineAsyncEventTracker();
-    this._invalidationTracker = new InvalidationTracker();
-    this._layoutInvalidate = {};
-    this._lastScheduleStyleRecalculation = {};
-    this._paintImageEventByPixelRefId = {};
-    this._lastPaintForLayer = {};
-    this._lastRecalculateStylesEvent = null;
-    this._currentScriptEvent = null;
-    this._eventStack = [];
-    this._knownInputEvents = new Set();
-    this._browserFrameTracking = false;
-    this._persistentIds = false;
-    this._legacyCurrentPage = null;
+  private resetProcessingState(): void {
+    this.asyncEventTracker = new TimelineAsyncEventTracker();
+    this.invalidationTracker = new InvalidationTracker();
+    this.layoutInvalidate = {};
+    this.lastScheduleStyleRecalculation = {};
+    this.paintImageEventByPixelRefId = {};
+    this.lastPaintForLayer = {};
+    this.lastRecalculateStylesEvent = null;
+    this.currentScriptEvent = null;
+    this.eventStack = [];
+    this.knownInputEvents = new Set();
+    this.browserFrameTracking = false;
+    this.persistentIds = false;
+    this.legacyCurrentPage = null;
   }
 
-  _extractCpuProfile(tracingModel: SDK.TracingModel.TracingModel, thread: SDK.TracingModel.Thread):
+  private extractCpuProfile(tracingModel: SDK.TracingModel.TracingModel, thread: SDK.TracingModel.Thread):
       SDK.CPUProfileDataModel.CPUProfileDataModel|null {
     const events = thread.events();
     let cpuProfile;
@@ -657,7 +657,7 @@ export class TimelineModelImpl {
     try {
       const profile = (cpuProfile as Protocol.Profiler.Profile);
       const jsProfileModel = new SDK.CPUProfileDataModel.CPUProfileDataModel(profile, target);
-      this._cpuProfiles.push(jsProfileModel);
+      this.cpuProfilesInternal.push(jsProfileModel);
       return jsProfileModel;
     } catch (e) {
       Common.Console.Console.instance().error('Failed to parse CPU profile.');
@@ -665,9 +665,9 @@ export class TimelineModelImpl {
     return null;
   }
 
-  _injectJSFrameEvents(tracingModel: SDK.TracingModel.TracingModel, thread: SDK.TracingModel.Thread):
+  private injectJSFrameEvents(tracingModel: SDK.TracingModel.TracingModel, thread: SDK.TracingModel.Thread):
       SDK.TracingModel.Event[] {
-    const jsProfileModel = this._extractCpuProfile(tracingModel, thread);
+    const jsProfileModel = this.extractCpuProfile(tracingModel, thread);
     let events = thread.events();
     const jsSamples =
         jsProfileModel ? TimelineJSProfileProcessor.generateTracingEventsFromCpuProfile(jsProfileModel, thread) : null;
@@ -688,7 +688,7 @@ export class TimelineModelImpl {
     return events;
   }
 
-  _processThreadEvents(
+  private processThreadEvents(
       tracingModel: SDK.TracingModel.TracingModel, ranges: {
         from: number,
         to: number,
@@ -710,11 +710,11 @@ export class TimelineModelImpl {
     } else if (thread.name().startsWith('CompositorTileWorker')) {
       track.type = TrackType.Raster;
     }
-    this._tracks.push(track);
+    this.tracksInternal.push(track);
 
-    const events = this._injectJSFrameEvents(tracingModel, thread);
-    this._eventStack = [];
-    const eventStack = this._eventStack;
+    const events = this.injectJSFrameEvents(tracingModel, thread);
+    this.eventStack = [];
+    const eventStack = this.eventStack;
 
     // Get the worker name from the target.
     if (isWorker) {
@@ -736,8 +736,8 @@ export class TimelineModelImpl {
         }
 
         // There may be several TTI events, only take the first one.
-        if (this.isInteractiveTimeEvent(event) && this._totalBlockingTime === -1) {
-          this._totalBlockingTime = event.args['args']['total_blocking_time_ms'];
+        if (this.isInteractiveTimeEvent(event) && this.totalBlockingTimeInternal === -1) {
+          this.totalBlockingTimeInternal = event.args['args']['total_blocking_time_ms'];
         }
 
         const isLongRunningTask = event.name === RecordType.Task && event.duration && event.duration > 50;
@@ -745,7 +745,7 @@ export class TimelineModelImpl {
           // We only track main thread events that are over 50ms, and the amount of time in the
           // event (over 50ms) is what constitutes the blocking time. An event of 70ms, therefore,
           // contributes 20ms to TBT.
-          this._estimatedTotalBlockingTime += event.duration - 50;
+          this.estimatedTotalBlockingTime += event.duration - 50;
         }
 
         let last: SDK.TracingModel.Event = eventStack[eventStack.length - 1];
@@ -753,7 +753,7 @@ export class TimelineModelImpl {
           eventStack.pop();
           last = eventStack[eventStack.length - 1];
         }
-        if (!this._processEvent(event)) {
+        if (!this.processEvent(event)) {
           continue;
         }
         if (!SDK.TracingModel.TracingModel.isAsyncPhase(event.phase) && event.duration) {
@@ -762,7 +762,7 @@ export class TimelineModelImpl {
             if (parent) {
               parent.selfTime -= event.duration;
               if (parent.selfTime < 0) {
-                this._fixNegativeDuration(parent, event);
+                this.fixNegativeDuration(parent, event);
               }
             }
           }
@@ -773,17 +773,17 @@ export class TimelineModelImpl {
           eventStack.push(event);
         }
         if (this.isMarkerEvent(event)) {
-          this._timeMarkerEvents.push(event);
+          this.timeMarkerEventsInternal.push(event);
         }
 
         track.events.push(event);
-        this._inspectedTargetEvents.push(event);
+        this.inspectedTargetEventsInternal.push(event);
       }
     }
-    this._processAsyncEvents(thread, ranges);
+    this.processAsyncEvents(thread, ranges);
   }
 
-  _fixNegativeDuration(event: SDK.TracingModel.Event, child: SDK.TracingModel.Event): void {
+  private fixNegativeDuration(event: SDK.TracingModel.Event, child: SDK.TracingModel.Event): void {
     const epsilon = 1e-3;
     if (event.selfTime < -epsilon) {
       console.error(
@@ -793,7 +793,7 @@ export class TimelineModelImpl {
     event.selfTime = 0;
   }
 
-  _processAsyncEvents(thread: SDK.TracingModel.Thread, ranges: {
+  private processAsyncEvents(thread: SDK.TracingModel.Thread, ranges: {
     from: number,
     to: number,
   }[]): void {
@@ -846,7 +846,7 @@ export class TimelineModelImpl {
           const data = lastStep.args['data'];
           asyncEvent.causedFrame = Boolean(data && data['INPUT_EVENT_LATENCY_RENDERER_SWAP_COMPONENT']);
           if (asyncEvent.hasCategory(TimelineModelImpl.Category.LatencyInfo)) {
-            if (lastStep.id && !this._knownInputEvents.has(lastStep.id)) {
+            if (lastStep.id && !this.knownInputEvents.has(lastStep.id)) {
               continue;
             }
             if (asyncEvent.name === RecordType.InputLatencyMouseMove && !asyncEvent.causedFrame) {
@@ -870,35 +870,35 @@ export class TimelineModelImpl {
     }
 
     for (const [type, events] of groups) {
-      const track = this._ensureNamedTrack(type);
+      const track = this.ensureNamedTrack(type);
       track.thread = thread;
       track.asyncEvents =
           Platform.ArrayUtilities.mergeOrdered(track.asyncEvents, events, SDK.TracingModel.Event.compareStartTime);
     }
   }
 
-  _processEvent(event: SDK.TracingModel.Event): boolean {
-    const eventStack = this._eventStack;
+  private processEvent(event: SDK.TracingModel.Event): boolean {
+    const eventStack = this.eventStack;
 
     if (!eventStack.length) {
-      if (this._currentTaskLayoutAndRecalcEvents && this._currentTaskLayoutAndRecalcEvents.length) {
-        const totalTime = this._currentTaskLayoutAndRecalcEvents.reduce((time, event) => {
+      if (this.currentTaskLayoutAndRecalcEvents && this.currentTaskLayoutAndRecalcEvents.length) {
+        const totalTime = this.currentTaskLayoutAndRecalcEvents.reduce((time, event) => {
           return event.duration === undefined ? time : time + event.duration;
         }, 0);
         if (totalTime > TimelineModelImpl.Thresholds.ForcedLayout) {
-          for (const e of this._currentTaskLayoutAndRecalcEvents) {
+          for (const e of this.currentTaskLayoutAndRecalcEvents) {
             const timelineData = TimelineData.forEvent(e);
             timelineData.warning = e.name === RecordType.Layout ? TimelineModelImpl.WarningType.ForcedLayout :
                                                                   TimelineModelImpl.WarningType.ForcedStyle;
           }
         }
       }
-      this._currentTaskLayoutAndRecalcEvents = [];
+      this.currentTaskLayoutAndRecalcEvents = [];
     }
 
-    if (this._currentScriptEvent) {
-      if (this._currentScriptEvent.endTime !== undefined && event.startTime > this._currentScriptEvent.endTime) {
-        this._currentScriptEvent = null;
+    if (this.currentScriptEvent) {
+      if (this.currentScriptEvent.endTime !== undefined && event.startTime > this.currentScriptEvent.endTime) {
+        this.currentScriptEvent = null;
       }
     }
 
@@ -926,11 +926,11 @@ export class TimelineModelImpl {
     if (!pageFrameId && last) {
       pageFrameId = TimelineData.forEvent(last).frameId;
     }
-    timelineData.frameId = pageFrameId || (this._mainFrame && this._mainFrame.frameId) || '';
-    this._asyncEventTracker.processEvent(event);
+    timelineData.frameId = pageFrameId || (this.mainFrame && this.mainFrame.frameId) || '';
+    this.asyncEventTracker.processEvent(event);
 
     if (this.isMarkerEvent(event)) {
-      this._ensureNamedTrack(TrackType.Timings);
+      this.ensureNamedTrack(TrackType.Timings);
     }
 
     switch (event.name) {
@@ -942,19 +942,19 @@ export class TimelineModelImpl {
       }
 
       case RecordType.ScheduleStyleRecalculation: {
-        this._lastScheduleStyleRecalculation[eventData['frame']] = event;
+        this.lastScheduleStyleRecalculation[eventData['frame']] = event;
         break;
       }
 
       case RecordType.UpdateLayoutTree:
       case RecordType.RecalculateStyles: {
-        this._invalidationTracker.didRecalcStyle(event);
+        this.invalidationTracker.didRecalcStyle(event);
         if (event.args['beginData']) {
-          timelineData.setInitiator(this._lastScheduleStyleRecalculation[event.args['beginData']['frame']]);
+          timelineData.setInitiator(this.lastScheduleStyleRecalculation[event.args['beginData']['frame']]);
         }
-        this._lastRecalculateStylesEvent = event;
-        if (this._currentScriptEvent) {
-          this._currentTaskLayoutAndRecalcEvents.push(event);
+        this.lastRecalculateStylesEvent = event;
+        if (this.currentScriptEvent) {
+          this.currentTaskLayoutAndRecalcEvents.push(event);
         }
         break;
       }
@@ -963,7 +963,7 @@ export class TimelineModelImpl {
       case RecordType.StyleRecalcInvalidationTracking:
       case RecordType.StyleInvalidatorInvalidationTracking:
       case RecordType.LayoutInvalidationTracking: {
-        this._invalidationTracker.addInvalidation(new InvalidationTrackingEvent(event, timelineData));
+        this.invalidationTracker.addInvalidation(new InvalidationTrackingEvent(event, timelineData));
         break;
       }
 
@@ -972,19 +972,19 @@ export class TimelineModelImpl {
         // but only if we had no earlier layout invalidation records.
         let layoutInitator: (SDK.TracingModel.Event|null)|SDK.TracingModel.Event = event;
         const frameId = eventData['frame'];
-        if (!this._layoutInvalidate[frameId] && this._lastRecalculateStylesEvent &&
-            this._lastRecalculateStylesEvent.endTime !== undefined &&
-            this._lastRecalculateStylesEvent.endTime > event.startTime) {
-          layoutInitator = TimelineData.forEvent(this._lastRecalculateStylesEvent).initiator();
+        if (!this.layoutInvalidate[frameId] && this.lastRecalculateStylesEvent &&
+            this.lastRecalculateStylesEvent.endTime !== undefined &&
+            this.lastRecalculateStylesEvent.endTime > event.startTime) {
+          layoutInitator = TimelineData.forEvent(this.lastRecalculateStylesEvent).initiator();
         }
-        this._layoutInvalidate[frameId] = layoutInitator;
+        this.layoutInvalidate[frameId] = layoutInitator;
         break;
       }
 
       case RecordType.Layout: {
-        this._invalidationTracker.didLayout(event);
+        this.invalidationTracker.didLayout(event);
         const frameId = event.args['beginData']['frame'];
-        timelineData.setInitiator(this._layoutInvalidate[frameId]);
+        timelineData.setInitiator(this.layoutInvalidate[frameId]);
         // In case we have no closing Layout event, endData is not available.
         if (event.args['endData']) {
           if (event.args['endData']['layoutRoots']) {
@@ -995,9 +995,9 @@ export class TimelineModelImpl {
             timelineData.backendNodeIds.push(event.args['endData']['rootNode']);
           }
         }
-        this._layoutInvalidate[frameId] = null;
-        if (this._currentScriptEvent) {
-          this._currentTaskLayoutAndRecalcEvents.push(event);
+        this.layoutInvalidate[frameId] = null;
+        if (this.currentScriptEvent) {
+          this.currentTaskLayoutAndRecalcEvents.push(event);
         }
         break;
       }
@@ -1048,48 +1048,48 @@ export class TimelineModelImpl {
       case RecordType.RunMicrotasks: {
         // Microtasks technically are not necessarily scripts, but for purpose of
         // forced sync style recalc or layout detection they are.
-        if (!this._currentScriptEvent) {
-          this._currentScriptEvent = event;
+        if (!this.currentScriptEvent) {
+          this.currentScriptEvent = event;
         }
         break;
       }
 
       case RecordType.SetLayerTreeId: {
         // This is to support old traces.
-        if (this._sessionId && eventData['sessionId'] && this._sessionId === eventData['sessionId']) {
-          this._mainFrameLayerTreeId = eventData['layerTreeId'];
+        if (this.sessionId && eventData['sessionId'] && this.sessionId === eventData['sessionId']) {
+          this.mainFrameLayerTreeId = eventData['layerTreeId'];
           break;
         }
 
         // We currently only show layer tree for the main frame.
         const frameId = TimelineModelImpl.eventFrameId(event);
-        const pageFrame = this._pageFrames.get(frameId);
+        const pageFrame = this.pageFrames.get(frameId);
         if (!pageFrame || pageFrame.parent) {
           return false;
         }
-        this._mainFrameLayerTreeId = eventData['layerTreeId'];
+        this.mainFrameLayerTreeId = eventData['layerTreeId'];
         break;
       }
 
       case RecordType.Paint: {
-        this._invalidationTracker.didPaint = true;
+        this.invalidationTracker.didPaint = true;
         timelineData.backendNodeIds.push(eventData['nodeId']);
         // Only keep layer paint events, skip paints for subframes that get painted to the same layer as parent.
         if (!eventData['layerId']) {
           break;
         }
         const layerId = eventData['layerId'];
-        this._lastPaintForLayer[layerId] = event;
+        this.lastPaintForLayer[layerId] = event;
         break;
       }
 
       case RecordType.DisplayItemListSnapshot:
       case RecordType.PictureSnapshot: {
-        const layerUpdateEvent = this._findAncestorEvent(RecordType.UpdateLayer);
-        if (!layerUpdateEvent || layerUpdateEvent.args['layerTreeId'] !== this._mainFrameLayerTreeId) {
+        const layerUpdateEvent = this.findAncestorEvent(RecordType.UpdateLayer);
+        if (!layerUpdateEvent || layerUpdateEvent.args['layerTreeId'] !== this.mainFrameLayerTreeId) {
           break;
         }
-        const paintEvent = this._lastPaintForLayer[layerUpdateEvent.args['layerId']];
+        const paintEvent = this.lastPaintForLayer[layerUpdateEvent.args['layerId']];
         if (paintEvent) {
           TimelineData.forEvent(paintEvent).picture = (event as SDK.TracingModel.ObjectSnapshot);
         }
@@ -1109,11 +1109,11 @@ export class TimelineModelImpl {
 
       case RecordType.DecodeImage:
       case RecordType.ResizeImage: {
-        let paintImageEvent = this._findAncestorEvent(RecordType.PaintImage);
+        let paintImageEvent = this.findAncestorEvent(RecordType.PaintImage);
         if (!paintImageEvent) {
-          const decodeLazyPixelRefEvent = this._findAncestorEvent(RecordType.DecodeLazyPixelRef);
-          paintImageEvent = decodeLazyPixelRefEvent &&
-              this._paintImageEventByPixelRefId[decodeLazyPixelRefEvent.args['LazyPixelRef']];
+          const decodeLazyPixelRefEvent = this.findAncestorEvent(RecordType.DecodeLazyPixelRef);
+          paintImageEvent =
+              decodeLazyPixelRefEvent && this.paintImageEventByPixelRefId[decodeLazyPixelRefEvent.args['LazyPixelRef']];
         }
         if (!paintImageEvent) {
           break;
@@ -1125,11 +1125,11 @@ export class TimelineModelImpl {
       }
 
       case RecordType.DrawLazyPixelRef: {
-        const paintImageEvent = this._findAncestorEvent(RecordType.PaintImage);
+        const paintImageEvent = this.findAncestorEvent(RecordType.PaintImage);
         if (!paintImageEvent) {
           break;
         }
-        this._paintImageEventByPixelRefId[event.args['LazyPixelRef']] = paintImageEvent;
+        this.paintImageEventByPixelRefId[event.args['LazyPixelRef']] = paintImageEvent;
         const paintImageData = TimelineData.forEvent(paintImageEvent);
         timelineData.backendNodeIds.push(paintImageData.backendNodeIds[0]);
         timelineData.url = paintImageData.url;
@@ -1151,38 +1151,38 @@ export class TimelineModelImpl {
       case RecordType.MarkDOMContent:
       case RecordType.MarkLoad: {
         const frameId = TimelineModelImpl.eventFrameId(event);
-        if (!this._pageFrames.has(frameId)) {
+        if (!this.pageFrames.has(frameId)) {
           return false;
         }
         break;
       }
 
       case RecordType.CommitLoad: {
-        if (this._browserFrameTracking) {
+        if (this.browserFrameTracking) {
           break;
         }
         const frameId = TimelineModelImpl.eventFrameId(event);
         const isMainFrame = Boolean(eventData['isMainFrame']);
-        const pageFrame = this._pageFrames.get(frameId);
+        const pageFrame = this.pageFrames.get(frameId);
         if (pageFrame) {
           pageFrame.update(event.startTime, eventData);
         } else {
           // We should only have one main frame which has persistent id,
           // unless it's an old trace without 'persistentIds' flag.
-          if (!this._persistentIds) {
-            if (eventData['page'] && eventData['page'] !== this._legacyCurrentPage) {
+          if (!this.persistentIds) {
+            if (eventData['page'] && eventData['page'] !== this.legacyCurrentPage) {
               return false;
             }
           } else if (isMainFrame) {
             return false;
-          } else if (!this._addPageFrame(event, eventData)) {
+          } else if (!this.addPageFrame(event, eventData)) {
             return false;
           }
         }
         if (isMainFrame) {
-          const frame = this._pageFrames.get(frameId);
+          const frame = this.pageFrames.get(frameId);
           if (frame) {
-            this._mainFrame = frame;
+            this.mainFrame = frame;
           }
         }
         break;
@@ -1199,11 +1199,11 @@ export class TimelineModelImpl {
     return true;
   }
 
-  _processBrowserEvent(event: SDK.TracingModel.Event): void {
+  private processBrowserEvent(event: SDK.TracingModel.Event): void {
     if (event.name === RecordType.LatencyInfoFlow) {
       const frameId = event.args['frameTreeNodeId'];
-      if (typeof frameId === 'number' && frameId === this._mainFrameNodeId && event.bind_id) {
-        this._knownInputEvents.add(event.bind_id);
+      if (typeof frameId === 'number' && frameId === this.mainFrameNodeId && event.bind_id) {
+        this.knownInputEvents.add(event.bind_id);
       }
       return;
     }
@@ -1211,7 +1211,7 @@ export class TimelineModelImpl {
     if (event.name === RecordType.ResourceWillSendRequest) {
       const requestId = event.args?.data?.requestId;
       if (typeof requestId === 'string') {
-        this._requestsFromBrowser.set(requestId, event);
+        this.requestsFromBrowser.set(requestId, event);
       }
       return;
     }
@@ -1222,54 +1222,53 @@ export class TimelineModelImpl {
         if (!data['persistentIds']) {
           return;
         }
-        this._browserFrameTracking = true;
-        this._mainFrameNodeId = data['frameTreeNodeId'];
+        this.browserFrameTracking = true;
+        this.mainFrameNodeId = data['frameTreeNodeId'];
         const frames: any[] = data['frames'] || [];
         frames.forEach(payload => {
-          const parent = payload['parent'] && this._pageFrames.get(payload['parent']);
+          const parent = payload['parent'] && this.pageFrames.get(payload['parent']);
           if (payload['parent'] && !parent) {
             return;
           }
-          let frame = this._pageFrames.get(payload['frame']);
+          let frame = this.pageFrames.get(payload['frame']);
           if (!frame) {
             frame = new PageFrame(payload);
-            this._pageFrames.set(frame.frameId, frame);
+            this.pageFrames.set(frame.frameId, frame);
             if (parent) {
               parent.addChild(frame);
             } else {
-              this._mainFrame = frame;
+              this.mainFrame = frame;
             }
           }
           // TODO(dgozman): this should use event.startTime, but due to races between tracing start
           // in different processes we cannot do this yet.
-          frame.update(this._minimumRecordTime, payload);
+          frame.update(this.minimumRecordTimeInternal, payload);
         });
         return;
       }
-      if (event.name === TimelineModelImpl.DevToolsMetadataEvent.FrameCommittedInBrowser &&
-          this._browserFrameTracking) {
-        let frame = this._pageFrames.get(data['frame']);
+      if (event.name === TimelineModelImpl.DevToolsMetadataEvent.FrameCommittedInBrowser && this.browserFrameTracking) {
+        let frame = this.pageFrames.get(data['frame']);
         if (!frame) {
-          const parent = data['parent'] && this._pageFrames.get(data['parent']);
+          const parent = data['parent'] && this.pageFrames.get(data['parent']);
           if (!parent) {
             return;
           }
           frame = new PageFrame(data);
-          this._pageFrames.set(frame.frameId, frame);
+          this.pageFrames.set(frame.frameId, frame);
           parent.addChild(frame);
         }
         frame.update(event.startTime, data);
         return;
       }
-      if (event.name === TimelineModelImpl.DevToolsMetadataEvent.ProcessReadyInBrowser && this._browserFrameTracking) {
-        const frame = this._pageFrames.get(data['frame']);
+      if (event.name === TimelineModelImpl.DevToolsMetadataEvent.ProcessReadyInBrowser && this.browserFrameTracking) {
+        const frame = this.pageFrames.get(data['frame']);
         if (frame) {
           frame.processReady(data['processPseudoId'], data['processId']);
         }
         return;
       }
-      if (event.name === TimelineModelImpl.DevToolsMetadataEvent.FrameDeletedInBrowser && this._browserFrameTracking) {
-        const frame = this._pageFrames.get(data['frame']);
+      if (event.name === TimelineModelImpl.DevToolsMetadataEvent.FrameDeletedInBrowser && this.browserFrameTracking) {
+        const frame = this.pageFrames.get(data['frame']);
         if (frame) {
           frame.deletedTime = event.startTime;
         }
@@ -1278,22 +1277,22 @@ export class TimelineModelImpl {
     }
   }
 
-  _ensureNamedTrack(type: TrackType): Track {
-    let track = this._namedTracks.get(type);
+  private ensureNamedTrack(type: TrackType): Track {
+    let track = this.namedTracks.get(type);
     if (track) {
       return track;
     }
 
     track = new Track();
     track.type = type;
-    this._tracks.push(track);
-    this._namedTracks.set(type, track);
+    this.tracksInternal.push(track);
+    this.namedTracks.set(type, track);
     return track;
   }
 
-  _findAncestorEvent(name: string): SDK.TracingModel.Event|null {
-    for (let i = this._eventStack.length - 1; i >= 0; --i) {
-      const event = this._eventStack[i];
+  private findAncestorEvent(name: string): SDK.TracingModel.Event|null {
+    for (let i = this.eventStack.length - 1; i >= 0; --i) {
+      const event = this.eventStack[i];
       if (event.name === name) {
         return event;
       }
@@ -1301,13 +1300,13 @@ export class TimelineModelImpl {
     return null;
   }
 
-  _addPageFrame(event: SDK.TracingModel.Event, payload: any): boolean {
-    const parent = payload['parent'] && this._pageFrames.get(payload['parent']);
+  private addPageFrame(event: SDK.TracingModel.Event, payload: any): boolean {
+    const parent = payload['parent'] && this.pageFrames.get(payload['parent']);
     if (payload['parent'] && !parent) {
       return false;
     }
     const pageFrame = new PageFrame(payload);
-    this._pageFrames.set(pageFrame.frameId, pageFrame);
+    this.pageFrames.set(pageFrame.frameId, pageFrame);
     pageFrame.update(event.startTime, payload);
     if (parent) {
       parent.addChild(pageFrame);
@@ -1315,48 +1314,48 @@ export class TimelineModelImpl {
     return true;
   }
 
-  _reset(): void {
-    this._isGenericTrace = false;
-    this._tracks = [];
-    this._namedTracks = new Map();
-    this._inspectedTargetEvents = [];
-    this._timeMarkerEvents = [];
-    this._sessionId = null;
-    this._mainFrameNodeId = null;
-    this._cpuProfiles = [];
-    this._workerIdByThread = new WeakMap();
-    this._pageFrames = new Map();
-    this._requestsFromBrowser = new Map();
+  private reset(): void {
+    this.isGenericTraceInternal = false;
+    this.tracksInternal = [];
+    this.namedTracks = new Map();
+    this.inspectedTargetEventsInternal = [];
+    this.timeMarkerEventsInternal = [];
+    this.sessionId = null;
+    this.mainFrameNodeId = null;
+    this.cpuProfilesInternal = [];
+    this.workerIdByThread = new WeakMap();
+    this.pageFrames = new Map();
+    this.requestsFromBrowser = new Map();
 
-    this._minimumRecordTime = 0;
-    this._maximumRecordTime = 0;
+    this.minimumRecordTimeInternal = 0;
+    this.maximumRecordTimeInternal = 0;
 
-    this._totalBlockingTime = -1;
-    this._estimatedTotalBlockingTime = 0;
+    this.totalBlockingTimeInternal = -1;
+    this.estimatedTotalBlockingTime = 0;
   }
 
   isGenericTrace(): boolean {
-    return this._isGenericTrace;
+    return this.isGenericTraceInternal;
   }
 
   tracingModel(): SDK.TracingModel.TracingModel|null {
-    return this._tracingModel;
+    return this.tracingModelInternal;
   }
 
   minimumRecordTime(): number {
-    return this._minimumRecordTime;
+    return this.minimumRecordTimeInternal;
   }
 
   maximumRecordTime(): number {
-    return this._maximumRecordTime;
+    return this.maximumRecordTimeInternal;
   }
 
   inspectedTargetEvents(): SDK.TracingModel.Event[] {
-    return this._inspectedTargetEvents;
+    return this.inspectedTargetEventsInternal;
   }
 
   tracks(): Track[] {
-    return this._tracks;
+    return this.tracksInternal;
   }
 
   isEmpty(): boolean {
@@ -1364,19 +1363,19 @@ export class TimelineModelImpl {
   }
 
   timeMarkerEvents(): SDK.TracingModel.Event[] {
-    return this._timeMarkerEvents;
+    return this.timeMarkerEventsInternal;
   }
 
   rootFrames(): PageFrame[] {
-    return Array.from(this._pageFrames.values()).filter(frame => !frame.parent);
+    return Array.from(this.pageFrames.values()).filter(frame => !frame.parent);
   }
 
   pageURL(): string {
-    return this._mainFrame && this._mainFrame.url || '';
+    return this.mainFrame && this.mainFrame.url || '';
   }
 
   pageFrameById(frameId: string): PageFrame|null {
-    return frameId ? this._pageFrames.get(frameId) || null : null;
+    return frameId ? this.pageFrames.get(frameId) || null : null;
   }
 
   networkRequests(): NetworkRequest[] {
@@ -1402,8 +1401,8 @@ export class TimelineModelImpl {
       }
       const id = TimelineModelImpl.globalEventId(e, 'requestId');
       const requestId = e.args?.data?.requestId;
-      if (e.name === RecordType.ResourceSendRequest && requestId && this._requestsFromBrowser.has(requestId)) {
-        const event = this._requestsFromBrowser.get(requestId);
+      if (e.name === RecordType.ResourceSendRequest && requestId && this.requestsFromBrowser.has(requestId)) {
+        const event = this.requestsFromBrowser.get(requestId);
         if (event) {
           addRequest(event, id);
         }
@@ -1636,7 +1635,7 @@ export class Track {
   events: SDK.TracingModel.Event[];
   asyncEvents: SDK.TracingModel.AsyncEvent[];
   tasks: SDK.TracingModel.Event[];
-  _syncEvents: SDK.TracingModel.Event[]|null;
+  private syncEventsInternal: SDK.TracingModel.Event[]|null;
   thread: SDK.TracingModel.Thread|null;
   constructor() {
     this.name = '';
@@ -1648,7 +1647,7 @@ export class Track {
     this.events = [];
     this.asyncEvents = [];
     this.tasks = [];
-    this._syncEvents = null;
+    this.syncEventsInternal = null;
     this.thread = null;
   }
 
@@ -1657,8 +1656,8 @@ export class Track {
       return this.events;
     }
 
-    if (this._syncEvents) {
-      return this._syncEvents;
+    if (this.syncEventsInternal) {
+      return this.syncEventsInternal;
     }
 
     const stack: SDK.TracingModel.Event[] = [];
@@ -1674,7 +1673,7 @@ export class Track {
       throw new Error('End time does not exist on event.');
     }
 
-    this._syncEvents = [];
+    this.syncEventsInternal = [];
     for (const event of this.asyncEvents) {
       const startTime = event.startTime;
       let endTime: number|(number | undefined) = event.endTime;
@@ -1685,17 +1684,17 @@ export class Track {
         stack.pop();
       }
       if (stack.length && endTime > peekLastEndTime()) {
-        this._syncEvents = [];
+        this.syncEventsInternal = [];
         break;
       }
       const syncEvent = new SDK.TracingModel.Event(
           event.categoriesString, event.name, SDK.TracingModel.Phase.Complete, startTime, event.thread);
       syncEvent.setEndTime(endTime);
       syncEvent.addArgs(event.args);
-      this._syncEvents.push(syncEvent);
+      this.syncEventsInternal.push(syncEvent);
       stack.push(syncEvent);
     }
-    return this._syncEvents;
+    return this.syncEventsInternal;
   }
 }
 
@@ -1783,9 +1782,9 @@ export class NetworkRequest {
   mimeType!: string;
   url!: string;
   requestMethod!: string;
-  _transferSize: number;
-  _maybeDiskCached: boolean;
-  _memoryCached: boolean;
+  private transferSize: number;
+  private maybeDiskCached: boolean;
+  private memoryCachedInternal: boolean;
   priority?: any;
   finishTime?: number;
   responseTime?: number;
@@ -1799,9 +1798,9 @@ export class NetworkRequest {
     this.encodedDataLength = 0;
     this.decodedBodyLength = 0;
     this.children = [];
-    this._transferSize = 0;
-    this._maybeDiskCached = false;
-    this._memoryCached = false;
+    this.transferSize = 0;
+    this.maybeDiskCached = false;
+    this.memoryCachedInternal = false;
     this.addEvent(event);
   }
 
@@ -1829,12 +1828,12 @@ export class NetworkRequest {
     const encodedDataLength = eventData['encodedDataLength'] || 0;
     if (event.name === RecordType.ResourceMarkAsCached) {
       // This is a reliable signal for memory caching.
-      this._memoryCached = true;
+      this.memoryCachedInternal = true;
     }
     if (event.name === RecordType.ResourceReceiveResponse) {
       if (eventData['fromCache']) {
         // See BUG(chromium:998397): back-end over-approximates caching.
-        this._maybeDiskCached = true;
+        this.maybeDiskCached = true;
       }
       if (eventData['fromServiceWorker']) {
         this.fromServiceWorker = true;
@@ -1852,7 +1851,7 @@ export class NetworkRequest {
       // If a ResourceFinish event with an encoded data length is received,
       // then the resource was not cached; it was fetched before it was
       // requested, e.g. because it was pushed in this navigation.
-      this._transferSize = encodedDataLength;
+      this.transferSize = encodedDataLength;
     }
     const decodedBodyLength = eventData['decodedBodyLength'];
     if (event.name === RecordType.ResourceFinish && decodedBodyLength) {
@@ -1876,18 +1875,18 @@ export class NetworkRequest {
    * Return whether this request was cached. This works around BUG(chromium:998397),
    * which reports pushed resources, and resources serverd by a service worker as
    * disk cached. Pushed resources that were not disk cached, however, have a non-zero
-   * `_transferSize`.
+   * `transferSize`.
    */
   cached(): boolean {
-    return Boolean(this._memoryCached) ||
-        (Boolean(this._maybeDiskCached) && !this._transferSize && !this.fromServiceWorker);
+    return Boolean(this.memoryCachedInternal) ||
+        (Boolean(this.maybeDiskCached) && !this.transferSize && !this.fromServiceWorker);
   }
 
   /**
    * Return whether this request was served from a memory cache.
    */
   memoryCached(): boolean {
-    return this._memoryCached;
+    return this.memoryCachedInternal;
   }
 
   /**
@@ -1937,7 +1936,7 @@ export class NetworkRequest {
 export class InvalidationTrackingEvent {
   type: string;
   startTime: number;
-  _tracingEvent: SDK.TracingModel.Event;
+  readonly tracingEvent: SDK.TracingModel.Event;
   frame: number;
   nodeId: number|null;
   nodeName: string|null;
@@ -1958,7 +1957,7 @@ export class InvalidationTrackingEvent {
   constructor(event: SDK.TracingModel.Event, timelineData: TimelineData) {
     this.type = event.name;
     this.startTime = event.startTime;
-    this._tracingEvent = event;
+    this.tracingEvent = event;
 
     const eventData = event.args['data'];
 
@@ -1986,22 +1985,22 @@ export class InvalidationTrackingEvent {
 }
 
 export class InvalidationTracker {
-  _lastRecalcStyle: SDK.TracingModel.Event|null;
-  _lastPaintWithLayer: SDK.TracingModel.Event|null;
+  private lastRecalcStyle: SDK.TracingModel.Event|null;
+  private lastPaintWithLayer: SDK.TracingModel.Event|null;
   didPaint: boolean;
-  _invalidations: {
+  private invalidations: {
     [x: string]: InvalidationTrackingEvent[],
   };
-  _invalidationsByNodeId: {
+  private invalidationsByNodeId: {
     [x: number]: InvalidationTrackingEvent[],
   };
   constructor() {
-    this._lastRecalcStyle = null;
-    this._lastPaintWithLayer = null;
+    this.lastRecalcStyle = null;
+    this.lastPaintWithLayer = null;
     this.didPaint = false;
-    this._initializePerFrameState();
-    this._invalidations = {};
-    this._invalidationsByNodeId = {};
+    this.initializePerFrameState();
+    this.invalidations = {};
+    this.invalidationsByNodeId = {};
   }
 
   static invalidationEventsFor(event: SDK.TracingModel.Event): InvalidationTrackingEvent[]|null {
@@ -2009,7 +2008,7 @@ export class InvalidationTracker {
   }
 
   addInvalidation(invalidation: InvalidationTrackingEvent): void {
-    this._startNewFrameIfNeeded();
+    this.startNewFrameIfNeeded();
 
     if (!invalidation.nodeId) {
       console.error('Invalidation lacks node information.');
@@ -2033,69 +2032,68 @@ export class InvalidationTracker {
          invalidation.type === RecordType.StyleInvalidatorInvalidationTracking ||
          invalidation.type === RecordType.StyleRecalcInvalidationTracking);
     if (styleRecalcInvalidation) {
-      const duringRecalcStyle = invalidation.startTime && this._lastRecalcStyle &&
-          this._lastRecalcStyle.endTime !== undefined && invalidation.startTime >= this._lastRecalcStyle.startTime &&
-          invalidation.startTime <= this._lastRecalcStyle.endTime;
+      const duringRecalcStyle = invalidation.startTime && this.lastRecalcStyle &&
+          this.lastRecalcStyle.endTime !== undefined && invalidation.startTime >= this.lastRecalcStyle.startTime &&
+          invalidation.startTime <= this.lastRecalcStyle.endTime;
       if (duringRecalcStyle) {
-        this._associateWithLastRecalcStyleEvent(invalidation);
+        this.associateWithLastRecalcStyleEvent(invalidation);
       }
     }
 
     // Record the invalidation so later events can look it up.
-    if (this._invalidations[invalidation.type]) {
-      this._invalidations[invalidation.type].push(invalidation);
+    if (this.invalidations[invalidation.type]) {
+      this.invalidations[invalidation.type].push(invalidation);
     } else {
-      this._invalidations[invalidation.type] = [invalidation];
+      this.invalidations[invalidation.type] = [invalidation];
     }
     if (invalidation.nodeId) {
-      if (this._invalidationsByNodeId[invalidation.nodeId]) {
-        this._invalidationsByNodeId[invalidation.nodeId].push(invalidation);
+      if (this.invalidationsByNodeId[invalidation.nodeId]) {
+        this.invalidationsByNodeId[invalidation.nodeId].push(invalidation);
       } else {
-        this._invalidationsByNodeId[invalidation.nodeId] = [invalidation];
+        this.invalidationsByNodeId[invalidation.nodeId] = [invalidation];
       }
     }
   }
 
   didRecalcStyle(recalcStyleEvent: SDK.TracingModel.Event): void {
-    this._lastRecalcStyle = recalcStyleEvent;
+    this.lastRecalcStyle = recalcStyleEvent;
     const types = [
       RecordType.ScheduleStyleInvalidationTracking,
       RecordType.StyleInvalidatorInvalidationTracking,
       RecordType.StyleRecalcInvalidationTracking,
     ];
-    for (const invalidation of this._invalidationsOfTypes(types)) {
-      this._associateWithLastRecalcStyleEvent(invalidation);
+    for (const invalidation of this.invalidationsOfTypes(types)) {
+      this.associateWithLastRecalcStyleEvent(invalidation);
     }
   }
 
-  _associateWithLastRecalcStyleEvent(invalidation: InvalidationTrackingEvent): void {
+  private associateWithLastRecalcStyleEvent(invalidation: InvalidationTrackingEvent): void {
     if (invalidation.linkedRecalcStyleEvent) {
       return;
     }
 
-    if (!this._lastRecalcStyle) {
+    if (!this.lastRecalcStyle) {
       throw new Error('Last recalculate style event not set.');
     }
-    const recalcStyleFrameId = this._lastRecalcStyle.args['beginData']['frame'];
+    const recalcStyleFrameId = this.lastRecalcStyle.args['beginData']['frame'];
     if (invalidation.type === RecordType.StyleInvalidatorInvalidationTracking) {
-      // Instead of calling _addInvalidationToEvent directly, we create synthetic
-      // StyleRecalcInvalidationTracking events which will be added in _addInvalidationToEvent.
-      this._addSyntheticStyleRecalcInvalidations(this._lastRecalcStyle, recalcStyleFrameId, invalidation);
+      // Instead of calling addInvalidationToEvent directly, we create synthetic
+      // StyleRecalcInvalidationTracking events which will be added in addInvalidationToEvent.
+      this.addSyntheticStyleRecalcInvalidations(this.lastRecalcStyle, recalcStyleFrameId, invalidation);
     } else if (invalidation.type === RecordType.ScheduleStyleInvalidationTracking) {
       // ScheduleStyleInvalidationTracking events are only used for adding information to
-      // StyleInvalidatorInvalidationTracking events. See: _addSyntheticStyleRecalcInvalidations.
+      // StyleInvalidatorInvalidationTracking events. See: addSyntheticStyleRecalcInvalidations.
     } else {
-      this._addInvalidationToEvent(this._lastRecalcStyle, recalcStyleFrameId, invalidation);
+      this.addInvalidationToEvent(this.lastRecalcStyle, recalcStyleFrameId, invalidation);
     }
 
     invalidation.linkedRecalcStyleEvent = true;
   }
 
-  _addSyntheticStyleRecalcInvalidations(
+  private addSyntheticStyleRecalcInvalidations(
       event: SDK.TracingModel.Event, frameId: number, styleInvalidatorInvalidation: InvalidationTrackingEvent): void {
     if (!styleInvalidatorInvalidation.invalidationList) {
-      this._addSyntheticStyleRecalcInvalidation(
-          styleInvalidatorInvalidation._tracingEvent, styleInvalidatorInvalidation);
+      this.addSyntheticStyleRecalcInvalidation(styleInvalidatorInvalidation.tracingEvent, styleInvalidatorInvalidation);
       return;
     }
     if (!styleInvalidatorInvalidation.nodeId) {
@@ -2106,7 +2104,7 @@ export class InvalidationTracker {
     for (let i = 0; i < styleInvalidatorInvalidation.invalidationList.length; i++) {
       const setId = styleInvalidatorInvalidation.invalidationList[i]['id'];
       let lastScheduleStyleRecalculation;
-      const nodeInvalidations = this._invalidationsByNodeId[styleInvalidatorInvalidation.nodeId] || [];
+      const nodeInvalidations = this.invalidationsByNodeId[styleInvalidatorInvalidation.nodeId] || [];
       for (let j = 0; j < nodeInvalidations.length; j++) {
         const invalidation = nodeInvalidations[j];
         if (invalidation.frame !== frameId || invalidation.invalidationSet !== setId ||
@@ -2119,12 +2117,12 @@ export class InvalidationTracker {
         console.error('Failed to lookup the event that scheduled a style invalidator invalidation.');
         continue;
       }
-      this._addSyntheticStyleRecalcInvalidation(
-          lastScheduleStyleRecalculation._tracingEvent, styleInvalidatorInvalidation);
+      this.addSyntheticStyleRecalcInvalidation(
+          lastScheduleStyleRecalculation.tracingEvent, styleInvalidatorInvalidation);
     }
   }
 
-  _addSyntheticStyleRecalcInvalidation(
+  private addSyntheticStyleRecalcInvalidation(
       baseEvent: SDK.TracingModel.Event, styleInvalidatorInvalidation: InvalidationTrackingEvent): void {
     const timelineData = TimelineData.forEvent(baseEvent);
     const invalidation = new InvalidationTrackingEvent(baseEvent, timelineData);
@@ -2138,23 +2136,23 @@ export class InvalidationTracker {
 
     this.addInvalidation(invalidation);
     if (!invalidation.linkedRecalcStyleEvent) {
-      this._associateWithLastRecalcStyleEvent(invalidation);
+      this.associateWithLastRecalcStyleEvent(invalidation);
     }
   }
 
   didLayout(layoutEvent: SDK.TracingModel.Event): void {
     const layoutFrameId = layoutEvent.args['beginData']['frame'];
-    for (const invalidation of this._invalidationsOfTypes([RecordType.LayoutInvalidationTracking])) {
+    for (const invalidation of this.invalidationsOfTypes([RecordType.LayoutInvalidationTracking])) {
       if (invalidation.linkedLayoutEvent) {
         continue;
       }
-      this._addInvalidationToEvent(layoutEvent, layoutFrameId, invalidation);
+      this.addInvalidationToEvent(layoutEvent, layoutFrameId, invalidation);
       invalidation.linkedLayoutEvent = true;
     }
   }
 
-  _addInvalidationToEvent(event: SDK.TracingModel.Event, eventFrameId: number, invalidation: InvalidationTrackingEvent):
-      void {
+  private addInvalidationToEvent(
+      event: SDK.TracingModel.Event, eventFrameId: number, invalidation: InvalidationTrackingEvent): void {
     if (eventFrameId !== invalidation.frame) {
       return;
     }
@@ -2166,8 +2164,8 @@ export class InvalidationTracker {
     }
   }
 
-  _invalidationsOfTypes(types?: string[]): Generator<InvalidationTrackingEvent, any, any> {
-    const invalidations = this._invalidations;
+  private invalidationsOfTypes(types?: string[]): Generator<InvalidationTrackingEvent, any, any> {
+    const invalidations = this.invalidations;
     if (!types) {
       types = Object.keys(invalidations);
     }
@@ -2185,32 +2183,32 @@ export class InvalidationTracker {
     return generator();
   }
 
-  _startNewFrameIfNeeded(): void {
+  private startNewFrameIfNeeded(): void {
     if (!this.didPaint) {
       return;
     }
 
-    this._initializePerFrameState();
+    this.initializePerFrameState();
   }
 
-  _initializePerFrameState(): void {
-    this._invalidations = {};
-    this._invalidationsByNodeId = {};
+  private initializePerFrameState(): void {
+    this.invalidations = {};
+    this.invalidationsByNodeId = {};
 
-    this._lastRecalcStyle = null;
-    this._lastPaintWithLayer = null;
+    this.lastRecalcStyle = null;
+    this.lastPaintWithLayer = null;
     this.didPaint = false;
   }
 }
 
 export class TimelineAsyncEventTracker {
-  _initiatorByType: Map<RecordType, Map<RecordType, SDK.TracingModel.Event>>;
+  private readonly initiatorByType: Map<RecordType, Map<RecordType, SDK.TracingModel.Event>>;
   constructor() {
     TimelineAsyncEventTracker._initialize();
-    this._initiatorByType = new Map();
+    this.initiatorByType = new Map();
     if (TimelineAsyncEventTracker._asyncEvents) {
       for (const initiator of TimelineAsyncEventTracker._asyncEvents.keys()) {
-        this._initiatorByType.set(initiator, new Map());
+        this.initiatorByType.set(initiator, new Map());
       }
     }
   }
@@ -2274,7 +2272,7 @@ export class TimelineAsyncEventTracker {
     if (!id) {
       return;
     }
-    const initiatorMap: Map<RecordType, SDK.TracingModel.Event>|undefined = this._initiatorByType.get(initiatorType);
+    const initiatorMap: Map<RecordType, SDK.TracingModel.Event>|undefined = this.initiatorByType.get(initiatorType);
     if (initiatorMap) {
       if (isInitiator) {
         initiatorMap.set(id, event);
@@ -2300,7 +2298,7 @@ export class TimelineData {
   backendNodeIds: Protocol.DOM.BackendNodeId[];
   stackTrace: Protocol.Runtime.CallFrame[]|null;
   picture: SDK.TracingModel.ObjectSnapshot|null;
-  _initiator: SDK.TracingModel.Event|null;
+  private initiatorInternal: SDK.TracingModel.Event|null;
   frameId: string;
   timeWaitingForMainThread?: number;
 
@@ -2311,12 +2309,12 @@ export class TimelineData {
     this.backendNodeIds = [];
     this.stackTrace = null;
     this.picture = null;
-    this._initiator = null;
+    this.initiatorInternal = null;
     this.frameId = '';
   }
 
   setInitiator(initiator: SDK.TracingModel.Event|null): void {
-    this._initiator = initiator;
+    this.initiatorInternal = initiator;
     if (!initiator || this.url) {
       return;
     }
@@ -2327,7 +2325,7 @@ export class TimelineData {
   }
 
   initiator(): SDK.TracingModel.Event|null {
-    return this._initiator;
+    return this.initiatorInternal;
   }
 
   topFrame(): Protocol.Runtime.CallFrame|null {
@@ -2336,7 +2334,7 @@ export class TimelineData {
   }
 
   stackTraceForSelfOrInitiator(): Protocol.Runtime.CallFrame[]|null {
-    return this.stackTrace || (this._initiator && TimelineData.forEvent(this._initiator).stackTrace);
+    return this.stackTrace || (this.initiatorInternal && TimelineData.forEvent(this.initiatorInternal).stackTrace);
   }
 
   static forEvent(event: SDK.TracingModel.Event): TimelineData {

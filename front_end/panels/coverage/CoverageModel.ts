@@ -490,46 +490,46 @@ function locationCompare(a: string, b: string): number {
 }
 
 export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper {
-  _url: string;
+  private readonly urlInternal: string;
   private coverageInfoByLocation: Map<string, CoverageInfo>;
-  _size: number;
-  _usedSize: number;
-  _type!: CoverageType;
-  _isContentScript: boolean;
+  private sizeInternal: number;
+  private usedSizeInternal: number;
+  private typeInternal!: CoverageType;
+  private isContentScriptInternal: boolean;
 
   constructor(url: string) {
     super();
 
-    this._url = url;
+    this.urlInternal = url;
     this.coverageInfoByLocation = new Map();
-    this._size = 0;
-    this._usedSize = 0;
-    this._isContentScript = false;
+    this.sizeInternal = 0;
+    this.usedSizeInternal = 0;
+    this.isContentScriptInternal = false;
   }
 
   url(): string {
-    return this._url;
+    return this.urlInternal;
   }
 
   type(): CoverageType {
-    return this._type;
+    return this.typeInternal;
   }
 
   size(): number {
-    return this._size;
+    return this.sizeInternal;
   }
 
   usedSize(): number {
-    return this._usedSize;
+    return this.usedSizeInternal;
   }
 
   unusedSize(): number {
-    return this._size - this._usedSize;
+    return this.sizeInternal - this.usedSizeInternal;
   }
 
   usedPercentage(): number {
     // Per convention, empty files are reported as 100 % uncovered
-    if (this._size === 0) {
+    if (this.sizeInternal === 0) {
       return 0;
     }
     return this.usedSize() / this.size();
@@ -537,14 +537,14 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper {
 
   unusedPercentage(): number {
     // Per convention, empty files are reported as 100 % uncovered
-    if (this._size === 0) {
+    if (this.sizeInternal === 0) {
       return 100;
     }
     return this.unusedSize() / this.size();
   }
 
   isContentScript(): boolean {
-    return this._isContentScript;
+    return this.isContentScriptInternal;
   }
 
   entries(): IterableIterator<CoverageInfo> {
@@ -563,8 +563,8 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   addToSizes(usedSize: number, size: number): void {
-    this._usedSize += usedSize;
-    this._size += size;
+    this.usedSizeInternal += usedSize;
+    this.sizeInternal += size;
 
     if (usedSize !== 0 || size !== 0) {
       this.dispatchEventToListeners(URLCoverageInfo.Events.SizesChanged);
@@ -578,9 +578,9 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper {
     let entry = this.coverageInfoByLocation.get(key);
 
     if ((type & CoverageType.JavaScript) && !this.coverageInfoByLocation.size) {
-      this._isContentScript = (contentProvider as SDK.Script.Script).isContentScript();
+      this.isContentScriptInternal = (contentProvider as SDK.Script.Script).isContentScript();
     }
-    this._type |= type;
+    this.typeInternal |= type;
 
     if (entry) {
       entry.addCoverageType(type);
@@ -588,7 +588,7 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     if ((type & CoverageType.JavaScript) && !this.coverageInfoByLocation.size) {
-      this._isContentScript = (contentProvider as SDK.Script.Script).isContentScript();
+      this.isContentScriptInternal = (contentProvider as SDK.Script.Script).isContentScript();
     }
 
     entry = new CoverageInfo(contentProvider, contentLength, lineOffset, columnOffset, type);

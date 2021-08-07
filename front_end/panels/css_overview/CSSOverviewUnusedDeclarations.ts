@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as i18n from '../../core/i18n/i18n.js';
 
 const UIStrings = {
@@ -44,8 +42,8 @@ export interface UnusedDeclaration {
 }
 
 export class CSSOverviewUnusedDeclarations {
-  static _add(target: Map<string, UnusedDeclaration[]>, key: string, item: {declaration: string, nodeId: number}):
-      void {
+  private static add(
+      target: Map<string, UnusedDeclaration[]>, key: string, item: {declaration: string, nodeId: number}): void {
     const values = target.get(key) || [];
     values.push(item);
     target.set(key, values);
@@ -60,7 +58,7 @@ export class CSSOverviewUnusedDeclarations {
 
     if (strings[topIdx] !== 'auto') {
       const reason = i18nString(UIStrings.topAppliedToAStatically);
-      this._add(unusedDeclarations, reason, {
+      this.add(unusedDeclarations, reason, {
         declaration: `top: ${strings[topIdx]}`,
         nodeId,
       });
@@ -68,7 +66,7 @@ export class CSSOverviewUnusedDeclarations {
 
     if (strings[leftIdx] !== 'auto') {
       const reason = i18nString(UIStrings.leftAppliedToAStatically);
-      this._add(unusedDeclarations, reason, {
+      this.add(unusedDeclarations, reason, {
         declaration: `left: ${strings[leftIdx]}`,
         nodeId,
       });
@@ -76,7 +74,7 @@ export class CSSOverviewUnusedDeclarations {
 
     if (strings[rightIdx] !== 'auto') {
       const reason = i18nString(UIStrings.rightAppliedToAStatically);
-      this._add(unusedDeclarations, reason, {
+      this.add(unusedDeclarations, reason, {
         declaration: `right: ${strings[rightIdx]}`,
         nodeId,
       });
@@ -84,7 +82,7 @@ export class CSSOverviewUnusedDeclarations {
 
     if (strings[bottomIdx] !== 'auto') {
       const reason = i18nString(UIStrings.bottomAppliedToAStatically);
-      this._add(unusedDeclarations, reason, {
+      this.add(unusedDeclarations, reason, {
         declaration: `bottom: ${strings[bottomIdx]}`,
         nodeId,
       });
@@ -100,7 +98,7 @@ export class CSSOverviewUnusedDeclarations {
 
     if (strings[widthIdx] !== 'auto') {
       const reason = i18nString(UIStrings.widthAppliedToAnInlineElement);
-      this._add(unusedDeclarations, reason, {
+      this.add(unusedDeclarations, reason, {
         declaration: `width: ${strings[widthIdx]}`,
         nodeId,
       });
@@ -108,7 +106,7 @@ export class CSSOverviewUnusedDeclarations {
 
     if (strings[heightIdx] !== 'auto') {
       const reason = i18nString(UIStrings.heightAppliedToAnInlineElement);
-      this._add(unusedDeclarations, reason, {
+      this.add(unusedDeclarations, reason, {
         declaration: `height: ${strings[heightIdx]}`,
         nodeId,
       });
@@ -124,7 +122,7 @@ export class CSSOverviewUnusedDeclarations {
 
     if (strings[verticalAlignIdx] !== 'baseline') {
       const reason = i18nString(UIStrings.verticalAlignmentAppliedTo);
-      this._add(unusedDeclarations, reason, {
+      this.add(unusedDeclarations, reason, {
         declaration: `vertical-align: ${strings[verticalAlignIdx]}`,
         nodeId,
       });

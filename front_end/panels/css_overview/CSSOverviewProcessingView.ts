@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -21,20 +19,20 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/css_overview/CSSOverviewProcessingView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class CSSOverviewProcessingView extends UI.Widget.Widget {
-  _formatter: Intl.NumberFormat;
-  _controller: OverviewController;
+  private readonly formatter: Intl.NumberFormat;
+  private readonly controller: OverviewController;
   fragment?: UI.Fragment.Fragment;
   constructor(controller: OverviewController) {
     super();
 
-    this._formatter = new Intl.NumberFormat('en-US');
-    this._controller = controller;
-    this._render();
+    this.formatter = new Intl.NumberFormat('en-US');
+    this.controller = controller;
+    this.render();
   }
 
-  _render(): void {
+  private render(): void {
     const cancelButton = UI.UIUtils.createTextButton(
-        i18nString(UIStrings.cancel), () => this._controller.dispatchEventToListeners(Events.RequestOverviewCancel), '',
+        i18nString(UIStrings.cancel), () => this.controller.dispatchEventToListeners(Events.RequestOverviewCancel), '',
         true /* primary */);
     this.setDefaultFocusedElement(cancelButton);
 

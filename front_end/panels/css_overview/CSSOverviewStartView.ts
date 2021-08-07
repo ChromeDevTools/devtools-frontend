@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -25,18 +23,18 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/css_overview/CSSOverviewStartView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class CSSOverviewStartView extends UI.Widget.Widget {
-  _controller: OverviewController;
+  private readonly controller: OverviewController;
   constructor(controller: OverviewController) {
     super();
 
-    this._controller = controller;
-    this._render();
+    this.controller = controller;
+    this.render();
   }
 
-  _render(): void {
+  private render(): void {
     const startButton = UI.UIUtils.createTextButton(
         i18nString(UIStrings.captureOverview),
-        () => this._controller.dispatchEventToListeners(Events.RequestOverviewStart), '', true /* primary */);
+        () => this.controller.dispatchEventToListeners(Events.RequestOverviewStart), '', true /* primary */);
 
     this.setDefaultFocusedElement(startButton);
 

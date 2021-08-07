@@ -29,7 +29,6 @@
  */
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-/* eslint-disable rulesdir/no_underscored_properties */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import * as Common from '../common/common.js';

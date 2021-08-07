@@ -2,24 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
 
 export class SearchConfig implements Workspace.Workspace.ProjectSearchConfig {
-  _query: string;
-  _ignoreCase: boolean;
-  _isRegex: boolean;
-  _fileQueries?: QueryTerm[];
-  _queries?: string[];
-  _fileRegexQueries?: RegexQuery[];
+  private readonly queryInternal: string;
+  private readonly ignoreCaseInternal: boolean;
+  private readonly isRegexInternal: boolean;
+  private fileQueries?: QueryTerm[];
+  private queriesInternal?: string[];
+  private fileRegexQueries?: RegexQuery[];
   constructor(query: string, ignoreCase: boolean, isRegex: boolean) {
-    this._query = query;
-    this._ignoreCase = ignoreCase;
-    this._isRegex = isRegex;
-    this._parse();
+    this.queryInternal = query;
+    this.ignoreCaseInternal = ignoreCase;
+    this.isRegexInternal = isRegex;
+    this.parse();
   }
 
   static fromPlainObject(object: {
@@ -31,15 +29,15 @@ export class SearchConfig implements Workspace.Workspace.ProjectSearchConfig {
   }
 
   query(): string {
-    return this._query;
+    return this.queryInternal;
   }
 
   ignoreCase(): boolean {
-    return this._ignoreCase;
+    return this.ignoreCaseInternal;
   }
 
   isRegex(): boolean {
-    return this._isRegex;
+    return this.isRegexInternal;
   }
 
   toPlainObject(): {
@@ -50,7 +48,7 @@ export class SearchConfig implements Workspace.Workspace.ProjectSearchConfig {
     return {query: this.query(), ignoreCase: this.ignoreCase(), isRegex: this.isRegex()};
   }
 
-  _parse(): void {
+  private parse(): void {
     // Inside double quotes: any symbol except double quote and backslash or any symbol escaped with a backslash.
     const quotedPattern = /"([^\\"]|\\.)+"/;
     // A word is a sequence of any symbols except space and backslash or any symbols escaped with a backslash, that does not start with file:.
@@ -63,45 +61,45 @@ export class SearchConfig implements Workspace.Workspace.ProjectSearchConfig {
       '(' + unquotedPattern + ')',
     ].join('|');
     const regexp = new RegExp(pattern, 'g');
-    const queryParts = this._query.match(regexp) || [];
-    this._fileQueries = [];
+    const queryParts = this.queryInternal.match(regexp) || [];
+    this.fileQueries = [];
 
-    this._queries = [];
+    this.queriesInternal = [];
 
     for (let i = 0; i < queryParts.length; ++i) {
       const queryPart = queryParts[i];
       if (!queryPart) {
         continue;
       }
-      const fileQuery = this._parseFileQuery(queryPart);
+      const fileQuery = this.parseFileQuery(queryPart);
       if (fileQuery) {
-        this._fileQueries.push(fileQuery);
-        this._fileRegexQueries = this._fileRegexQueries || [];
-        this._fileRegexQueries.push(
+        this.fileQueries.push(fileQuery);
+        this.fileRegexQueries = this.fileRegexQueries || [];
+        this.fileRegexQueries.push(
             {regex: new RegExp(fileQuery.text, this.ignoreCase() ? 'i' : ''), isNegative: fileQuery.isNegative});
         continue;
       }
-      if (this._isRegex) {
-        this._queries.push(queryPart);
+      if (this.isRegexInternal) {
+        this.queriesInternal.push(queryPart);
         continue;
       }
       if (queryPart.startsWith('"')) {
         if (!queryPart.endsWith('"')) {
           continue;
         }
-        this._queries.push(this._parseQuotedQuery(queryPart));
+        this.queriesInternal.push(this.parseQuotedQuery(queryPart));
         continue;
       }
-      this._queries.push(this._parseUnquotedQuery(queryPart));
+      this.queriesInternal.push(this.parseUnquotedQuery(queryPart));
     }
   }
 
   filePathMatchesFileQuery(filePath: string): boolean {
-    if (!this._fileRegexQueries) {
+    if (!this.fileRegexQueries) {
       return true;
     }
-    for (let i = 0; i < this._fileRegexQueries.length; ++i) {
-      if (Boolean(filePath.match(this._fileRegexQueries[i].regex)) === this._fileRegexQueries[i].isNegative) {
+    for (let i = 0; i < this.fileRegexQueries.length; ++i) {
+      if (Boolean(filePath.match(this.fileRegexQueries[i].regex)) === this.fileRegexQueries[i].isNegative) {
         return false;
       }
     }
@@ -109,18 +107,18 @@ export class SearchConfig implements Workspace.Workspace.ProjectSearchConfig {
   }
 
   queries(): string[] {
-    return this._queries || [];
+    return this.queriesInternal || [];
   }
 
-  _parseUnquotedQuery(query: string): string {
+  private parseUnquotedQuery(query: string): string {
     return query.replace(/\\(.)/g, '$1');
   }
 
-  _parseQuotedQuery(query: string): string {
+  private parseQuotedQuery(query: string): string {
     return query.substring(1, query.length - 1).replace(/\\(.)/g, '$1');
   }
 
-  _parseFileQuery(query: string): QueryTerm|null {
+  private parseFileQuery(query: string): QueryTerm|null {
     const match = query.match(FilePatternRegex);
     if (!match) {
       return null;

@@ -177,6 +177,13 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/ApplicationPanelSidebar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+function assertNotMainTarget(targetId: Protocol.Target.TargetID|'main'): asserts targetId is Protocol.Target.TargetID {
+  if (targetId === 'main') {
+    throw new Error('Unexpected main target id');
+  }
+}
+
 export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.TargetManager.Observer {
   _panel: ResourcesPanel;
   _applicationCacheViews: Map<string, ApplicationCacheItemsView>;
@@ -1655,7 +1662,9 @@ export class ResourcesSection implements SDK.TargetManager.Observer {
     }
     const parentTargetId = parentTarget.id();
     const frameTreeElement = this._treeElementForTargetId.get(parentTargetId);
-    const {targetInfo} = await parentTarget.targetAgent().invoke_getTargetInfo({targetId: target.id()});
+    const targetId = target.id();
+    assertNotMainTarget(targetId);
+    const {targetInfo} = await parentTarget.targetAgent().invoke_getTargetInfo({targetId});
     if (frameTreeElement && targetInfo) {
       frameTreeElement.workerCreated(targetInfo);
     }
@@ -1868,8 +1877,10 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
       const targets = SDK.TargetManager.TargetManager.instance().targets();
       for (const target of targets) {
         if (target.type() === SDK.Target.Type.ServiceWorker) {
+          const targetId = target.id();
+          assertNotMainTarget(targetId);
           const agent = frame.resourceTreeModel().target().targetAgent();
-          const targetInfo = (await agent.invoke_getTargetInfo({targetId: target.id()})).targetInfo;
+          const targetInfo = (await agent.invoke_getTargetInfo({targetId})).targetInfo;
           this.workerCreated(targetInfo);
         }
       }

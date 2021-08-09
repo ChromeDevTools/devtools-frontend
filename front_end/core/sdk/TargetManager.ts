@@ -162,8 +162,8 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   }
 
   createTarget(
-      id: string, name: string, type: TargetType, parentTarget: Target|null, sessionId?: string,
-      waitForDebuggerInPage?: boolean, connection?: ProtocolClient.InspectorBackend.Connection,
+      id: Protocol.Target.TargetID|'main', name: string, type: TargetType, parentTarget: Target|null,
+      sessionId?: string, waitForDebuggerInPage?: boolean, connection?: ProtocolClient.InspectorBackend.Connection,
       targetInfo?: Protocol.Target.TargetInfo): Target {
     const target = new Target(
         this, id, name, type, parentTarget, sessionId || '', this.isSuspended, connection || null, targetInfo);
@@ -178,8 +178,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
       observer.targetAdded(target);
     }
 
-    for (const modelClass of target.models().keys()) {
-      const model = (target.models().get(modelClass) as SDKModel);
+    for (const [modelClass, model] of target.models().entries()) {
       this.modelAdded(target, modelClass, model);
     }
 

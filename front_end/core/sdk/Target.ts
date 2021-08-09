@@ -17,16 +17,16 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
   private readonly capabilitiesMask: number;
   private typeInternal: Type;
   private readonly parentTargetInternal: Target|null;
-  private idInternal: string;
+  private idInternal: Protocol.Target.TargetID|'main';
   private modelByConstructor: Map<new(arg1: Target) => SDKModel, SDKModel>;
   private isSuspended: boolean;
   private targetInfoInternal: Protocol.Target.TargetInfo|undefined;
   private creatingModels?: boolean;
 
   constructor(
-      targetManager: TargetManager, id: string, name: string, type: Type, parentTarget: Target|null, sessionId: string,
-      suspended: boolean, connection: ProtocolClient.InspectorBackend.Connection|null,
-      targetInfo?: Protocol.Target.TargetInfo) {
+      targetManager: TargetManager, id: Protocol.Target.TargetID|'main', name: string, type: Type,
+      parentTarget: Target|null, sessionId: string, suspended: boolean,
+      connection: ProtocolClient.InspectorBackend.Connection|null, targetInfo?: Protocol.Target.TargetInfo) {
     const needsNodeJSPatching = type === Type.Node;
     super(needsNodeJSPatching, parentTarget, sessionId, connection);
     this.targetManagerInternal = targetManager;
@@ -93,7 +93,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
     this.creatingModels = false;
   }
 
-  id(): string {
+  id(): Protocol.Target.TargetID|'main' {
     return this.idInternal;
   }
 

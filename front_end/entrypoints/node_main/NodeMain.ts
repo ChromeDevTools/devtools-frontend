@@ -51,7 +51,7 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel implements Pro
   private readonly targetManager: SDK.TargetManager.TargetManager;
   private readonly parentTarget: SDK.Target.Target;
   private readonly targetAgent: ProtocolProxyApi.TargetApi;
-  private readonly childTargets: Map<string, SDK.Target.Target>;
+  private readonly childTargets: Map<Protocol.Target.SessionID, SDK.Target.Target>;
   private readonly childConnections: Map<string, NodeConnection>;
   constructor(parentTarget: SDK.Target.Target) {
     super(parentTarget);
@@ -137,10 +137,10 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel implements Pro
 
 export class NodeConnection implements ProtocolClient.InspectorBackend.Connection {
   private readonly targetAgent: ProtocolProxyApi.TargetApi;
-  private readonly sessionId: string;
+  private readonly sessionId: Protocol.Target.SessionID;
   onMessage: ((arg0: (Object|string)) => void)|null;
   private onDisconnect: ((arg0: string) => void)|null;
-  constructor(targetAgent: ProtocolProxyApi.TargetApi, sessionId: string) {
+  constructor(targetAgent: ProtocolProxyApi.TargetApi, sessionId: Protocol.Target.SessionID) {
     this.targetAgent = targetAgent;
     this.sessionId = sessionId;
     this.onMessage = null;

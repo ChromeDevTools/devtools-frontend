@@ -233,6 +233,8 @@ const knownIdentifierTypes = [
   'Network.LoaderId',
   'Network.RequestId',
   'Security.CertificateId',
+  'Target.SessionID',
+  'Target.TargetID',
   'WebAudio.GraphObjectId',
   'WebAuthn.AuthenticatorId',
 ];

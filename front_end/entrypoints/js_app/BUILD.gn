@@ -25,6 +25,7 @@ devtools_entrypoint("js_main") {
     "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../core/sdk:bundle",
+    "../../generated:protocol",
     "../../ui/legacy/components/utils:bundle",
   ]
 

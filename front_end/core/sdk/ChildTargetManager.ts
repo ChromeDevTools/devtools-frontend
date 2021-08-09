@@ -18,23 +18,17 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
   private readonly targetManager: TargetManager;
   private parentTarget: Target;
   private readonly targetAgent: ProtocolProxyApi.TargetApi;
-  private readonly targetInfosInternal: Map<Protocol.Target.TargetID, Protocol.Target.TargetInfo>;
-  private readonly childTargetsInternal: Map<Protocol.Target.SessionID, Target>;
-  private readonly parallelConnections: Map<string, ProtocolClient.InspectorBackend.Connection>;
-  private parentTargetId: string|null;
+  private readonly targetInfosInternal: Map<Protocol.Target.TargetID, Protocol.Target.TargetInfo> = new Map();
+  private readonly childTargetsBySessionId: Map<Protocol.Target.SessionID, Target> = new Map();
+  private readonly childTargetsById: Map<Protocol.Target.TargetID|'main', Target> = new Map();
+  private readonly parallelConnections: Map<string, ProtocolClient.InspectorBackend.Connection> = new Map();
+  private parentTargetId: Protocol.Target.TargetID|null = null;
 
   constructor(parentTarget: Target) {
     super(parentTarget);
     this.targetManager = parentTarget.targetManager();
     this.parentTarget = parentTarget;
     this.targetAgent = parentTarget.targetAgent();
-    this.targetInfosInternal = new Map();
-
-    this.childTargetsInternal = new Map();
-
-    this.parallelConnections = new Map();
-
-    this.parentTargetId = null;
 
     parentTarget.registerTargetDispatcher(this);
     this.targetAgent.invoke_setAutoAttach({autoAttach: true, waitForDebuggerOnStart: true, flatten: true});
@@ -54,7 +48,7 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
   }
 
   childTargets(): Target[] {
-    return Array.from(this.childTargetsInternal.values());
+    return Array.from(this.childTargetsBySessionId.values());
   }
 
   async suspendModel(): Promise<void> {
@@ -66,7 +60,7 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
   }
 
   dispose(): void {
-    for (const sessionId of this.childTargetsInternal.keys()) {
+    for (const sessionId of this.childTargetsBySessionId.keys()) {
       this.detachedFromTarget({sessionId, targetId: undefined});
     }
   }
@@ -79,7 +73,7 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
 
   targetInfoChanged({targetInfo}: Protocol.Target.TargetInfoChangedEvent): void {
     this.targetInfosInternal.set(targetInfo.targetId, targetInfo);
-    const target = this.childTargetsInternal.get(targetInfo.targetId);
+    const target = this.childTargetsById.get(targetInfo.targetId);
     if (target) {
       target.updateTargetInfo(targetInfo);
     }
@@ -102,7 +96,7 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
         TargetManagerEvents.AvailableTargetsChanged, [...this.targetInfosInternal.values()]);
   }
 
-  async getParentTargetId(): Promise<string> {
+  async getParentTargetId(): Promise<Protocol.Target.TargetID> {
     if (!this.parentTargetId) {
       this.parentTargetId = (await this.parentTarget.targetAgent().invoke_getTargetInfo({})).targetInfo.targetId;
     }
@@ -139,7 +133,8 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
 
     const target = this.targetManager.createTarget(
         targetInfo.targetId, targetName, type, this.parentTarget, sessionId, undefined, undefined, targetInfo);
-    this.childTargetsInternal.set(sessionId, target);
+    this.childTargetsBySessionId.set(sessionId, target);
+    this.childTargetsById.set(target.id(), target);
 
     if (ChildTargetManager.attachCallback) {
       await ChildTargetManager.attachCallback({target, waitingForDebugger});
@@ -151,10 +146,11 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
     if (this.parallelConnections.has(sessionId)) {
       this.parallelConnections.delete(sessionId);
     } else {
-      const session = this.childTargetsInternal.get(sessionId);
-      if (session) {
-        session.dispose('target terminated');
-        this.childTargetsInternal.delete(sessionId);
+      const target = this.childTargetsBySessionId.get(sessionId);
+      if (target) {
+        target.dispose('target terminated');
+        this.childTargetsBySessionId.delete(sessionId);
+        this.childTargetsById.delete(target.id());
       }
     }
   }
@@ -174,10 +170,11 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
     return connection;
   }
 
-  private async createParallelConnectionAndSessionForTarget(target: Target, targetId: string): Promise<{
-    connection: ProtocolClient.InspectorBackend.Connection,
-    sessionId: string,
-  }> {
+  private async createParallelConnectionAndSessionForTarget(target: Target, targetId: Protocol.Target.TargetID):
+      Promise<{
+        connection: ProtocolClient.InspectorBackend.Connection,
+        sessionId: string,
+      }> {
     const targetAgent = target.targetAgent();
     const targetRouter = (target.router() as ProtocolClient.InspectorBackend.SessionRouter);
     const sessionId = (await targetAgent.invoke_attachToTarget({targetId, flatten: true})).sessionId;

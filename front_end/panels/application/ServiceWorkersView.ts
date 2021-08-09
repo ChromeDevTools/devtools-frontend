@@ -800,7 +800,7 @@ export class Section {
         'service-worker-client-focus-link');
   }
 
-  _activateTarget(targetId: string): void {
+  _activateTarget(targetId: Protocol.Target.TargetID): void {
     this._manager.target().targetAgent().invoke_activateTarget({targetId});
   }
 

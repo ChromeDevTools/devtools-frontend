@@ -355,7 +355,7 @@ export class ServiceWorkerVersion {
   securityOrigin!: string;
   scriptLastModified!: number|undefined;
   scriptResponseTime!: number|undefined;
-  controlledClients!: string[];
+  controlledClients!: Protocol.Target.TargetID[];
   targetId!: string|null;
   currentState!: ServiceWorkerVersionState;
   registration: ServiceWorkerRegistration;

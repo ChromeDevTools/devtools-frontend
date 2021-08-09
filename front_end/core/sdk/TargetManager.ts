@@ -168,8 +168,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     const target = new Target(
         this, id, name, type, parentTarget, sessionId || '', this.isSuspended, connection || null, targetInfo);
     if (waitForDebuggerInPage) {
-      // @ts-ignore TODO(1063322): Find out where pageAgent() is set on Target/TargetBase.
-      target.pageAgent().waitForDebugger();
+      target.pageAgent().invoke_waitForDebugger();
     }
     target.createModels(new Set(this.modelObservers.keysArray()));
     this.targetsInternal.add(target);

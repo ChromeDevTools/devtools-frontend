@@ -9,6 +9,7 @@ group("docs") {
   public_deps = [
     ":bundle",
     "../../../Images",
+    "./button",
     "./color_swatch",
     "./computed_style_property",
     "./computed_style_trace",

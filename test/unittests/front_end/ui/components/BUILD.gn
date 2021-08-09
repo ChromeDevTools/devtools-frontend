@@ -34,5 +34,6 @@ ts_library("components") {
     "../../../../../front_end/ui/components/tree_outline:bundle",
     "../../../../../front_end/ui/lit-html:bundle",
     "../../helpers",
+    "./buttons",
   ]
 }

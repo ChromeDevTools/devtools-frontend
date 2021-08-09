@@ -1,0 +1,54 @@
+/*
+ * Copyright 2021 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+*:focus,
+*:focus-visible {
+  outline: none;
+}
+
+button {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 4px;
+  border: 1px solid var(--color-details-hairline);
+  font-size: 12px;
+  height: 25px;
+  line-height: 14px;
+  padding: 5px 12px;
+  background: var(--color-background);
+  color: var(--color-primary);
+}
+
+button.primary {
+  border: 1px solid var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-background);
+}
+
+button.with-icon {
+  padding: 0 12px 0 4px;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+button devtools-icon {
+  width: 19px;
+  height: 19px;
+
+  --icon-color: var(--color-primary);
+}
+
+button.primary devtools-icon {
+  --icon-color: var(--color-background);
+}

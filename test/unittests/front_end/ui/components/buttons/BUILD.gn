@@ -1,0 +1,16 @@
+# Copyright 2021 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../../../third_party/typescript/typescript.gni")
+
+ts_library("buttons") {
+  testonly = true
+  sources = [ "Button_test.ts" ]
+
+  deps = [
+    "../../../../../../front_end/ui/components/buttons:bundle",
+    "../../../../../../front_end/ui/components/render_coordinator:bundle",
+    "../../../helpers",
+  ]
+}

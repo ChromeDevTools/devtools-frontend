@@ -245,7 +245,7 @@ export class FileOutputStream implements Common.StringOutputStream.OutputStream 
     Workspace.FileManager.FileManager.instance().close(this.fileName);
   }
 
-  private onAppendDone(event: Common.EventTarget.EventTargetEvent): void {
+  private onAppendDone(event: Common.EventTarget.EventTargetEvent<string>): void {
     if (event.data !== this.fileName) {
       return;
     }

@@ -14,13 +14,14 @@ import type {CSSStyleSheetHeader} from './CSSStyleSheetHeader.js';
 
 export class CSSRule {
   readonly cssModelInternal: CSSModel;
-  styleSheetId: string|undefined;
+  styleSheetId: Protocol.CSS.StyleSheetId|undefined;
   sourceURL: string|undefined;
   origin: Protocol.CSS.StyleSheetOrigin;
   style: CSSStyleDeclaration;
+
   constructor(cssModel: CSSModel, payload: {
     style: Protocol.CSS.CSSStyle,
-    styleSheetId: (string|undefined),
+    styleSheetId: Protocol.CSS.StyleSheetId|undefined,
     origin: Protocol.CSS.StyleSheetOrigin,
   }) {
     this.cssModelInternal = cssModel;
@@ -69,7 +70,7 @@ export class CSSRule {
     return this.cssModelInternal;
   }
 
-  getStyleSheetHeader(styleSheetId: string): CSSStyleSheetHeader {
+  getStyleSheetHeader(styleSheetId: Protocol.CSS.StyleSheetId): CSSStyleSheetHeader {
     const styleSheetHeader = this.cssModelInternal.styleSheetHeaderForId(styleSheetId);
     console.assert(styleSheetHeader !== null);
     return /** @type {!CSSStyleSheetHeader} */ styleSheetHeader as CSSStyleSheetHeader;
@@ -117,7 +118,7 @@ export class CSSStyleRule extends CSSRule {
         selectors: [{text: selectorText, value: undefined}],
       },
       style: {
-        styleSheetId: '0',
+        styleSheetId: '0' as Protocol.CSS.StyleSheetId,
         range: new TextUtils.TextRange.TextRange(0, 0, 0, 0),
         shorthandEntries: [],
         cssProperties: [],

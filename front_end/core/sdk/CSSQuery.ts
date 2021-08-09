@@ -14,7 +14,7 @@ type CSSQueryPayload = Protocol.CSS.CSSMedia|Protocol.CSS.CSSContainerQuery;
 export abstract class CSSQuery {
   text = '';
   range?: TextUtils.TextRange.TextRange|null;
-  styleSheetId?: string;
+  styleSheetId?: Protocol.CSS.StyleSheetId;
   protected cssModel: CSSModel;
 
   constructor(cssModel: CSSModel) {

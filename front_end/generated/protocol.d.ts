@@ -1675,7 +1675,7 @@ declare namespace Protocol {
    */
   export namespace CSS {
 
-    export type StyleSheetId = string;
+    export type StyleSheetId = OpaqueIdentifier<string, 'Protocol.CSS.StyleSheetId'>;
 
     /**
      * Stylesheet type: "injected" for stylesheets injected via extension, "user-agent" for user-agent

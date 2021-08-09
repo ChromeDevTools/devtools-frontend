@@ -1142,8 +1142,8 @@ export class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
   }
 
   private linkifyRuleLocation(
-      cssModel: SDK.CSSModel.CSSModel, linkifier: Components.Linkifier.Linkifier, styleSheetId: string,
-      ruleLocation: TextUtils.TextRange.TextRange): Element|undefined {
+      cssModel: SDK.CSSModel.CSSModel, linkifier: Components.Linkifier.Linkifier,
+      styleSheetId: Protocol.CSS.StyleSheetId, ruleLocation: TextUtils.TextRange.TextRange): Element|undefined {
     const styleSheetHeader = cssModel.styleSheetHeaderForId(styleSheetId);
     if (!styleSheetHeader) {
       return;

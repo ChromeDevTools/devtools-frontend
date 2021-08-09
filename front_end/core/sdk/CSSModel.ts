@@ -58,8 +58,8 @@ export class CSSModel extends SDKModel<EventTypes> {
   agent: ProtocolProxyApi.CSSApi;
   private readonly styleLoader: ComputedStyleLoader;
   private readonly resourceTreeModel: ResourceTreeModel|null;
-  private styleSheetIdToHeader: Map<string, CSSStyleSheetHeader>;
-  private readonly styleSheetIdsForURL: Map<string, Map<string, Set<string>>>;
+  private styleSheetIdToHeader: Map<Protocol.CSS.StyleSheetId, CSSStyleSheetHeader>;
+  private readonly styleSheetIdsForURL: Map<string, Map<string, Set<Protocol.CSS.StyleSheetId>>>;
   private readonly originalStyleSheetTextInternal: Map<CSSStyleSheetHeader, Promise<string|null>>;
   private isRuleUsageTrackingEnabled: boolean;
   private readonly fontFacesInternal: Map<string, CSSFontFace>;
@@ -171,8 +171,9 @@ export class CSSModel extends SDKModel<EventTypes> {
     return this.domModelInternal;
   }
 
-  async setStyleText(styleSheetId: string, range: TextUtils.TextRange.TextRange, text: string, majorChange: boolean):
-      Promise<boolean> {
+  async setStyleText(
+      styleSheetId: Protocol.CSS.StyleSheetId, range: TextUtils.TextRange.TextRange, text: string,
+      majorChange: boolean): Promise<boolean> {
     try {
       await this.ensureOriginalStyleSheetText(styleSheetId);
 
@@ -191,7 +192,8 @@ export class CSSModel extends SDKModel<EventTypes> {
     }
   }
 
-  async setSelectorText(styleSheetId: string, range: TextUtils.TextRange.TextRange, text: string): Promise<boolean> {
+  async setSelectorText(styleSheetId: Protocol.CSS.StyleSheetId, range: TextUtils.TextRange.TextRange, text: string):
+      Promise<boolean> {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
 
     try {
@@ -210,7 +212,8 @@ export class CSSModel extends SDKModel<EventTypes> {
     }
   }
 
-  async setKeyframeKey(styleSheetId: string, range: TextUtils.TextRange.TextRange, text: string): Promise<boolean> {
+  async setKeyframeKey(styleSheetId: Protocol.CSS.StyleSheetId, range: TextUtils.TextRange.TextRange, text: string):
+      Promise<boolean> {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
 
     try {
@@ -291,7 +294,7 @@ export class CSSModel extends SDKModel<EventTypes> {
         response.cssKeyframesRules || []);
   }
 
-  async classNamesPromise(styleSheetId: string): Promise<string[]> {
+  async classNamesPromise(styleSheetId: Protocol.CSS.StyleSheetId): Promise<string[]> {
     const {classNames} = await this.agent.invoke_collectClassNames({styleSheetId});
     return classNames || [];
   }
@@ -380,8 +383,9 @@ export class CSSModel extends SDKModel<EventTypes> {
     return node.marker(PseudoStateMarker) || [];
   }
 
-  async setMediaText(styleSheetId: string, range: TextUtils.TextRange.TextRange, newMediaText: string):
-      Promise<boolean> {
+  async setMediaText(
+      styleSheetId: Protocol.CSS.StyleSheetId, range: TextUtils.TextRange.TextRange,
+      newMediaText: string): Promise<boolean> {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
 
     try {
@@ -401,7 +405,8 @@ export class CSSModel extends SDKModel<EventTypes> {
   }
 
   async setContainerQueryText(
-      styleSheetId: string, range: TextUtils.TextRange.TextRange, newContainerQueryText: string): Promise<boolean> {
+      styleSheetId: Protocol.CSS.StyleSheetId, range: TextUtils.TextRange.TextRange,
+      newContainerQueryText: string): Promise<boolean> {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
 
     try {
@@ -421,7 +426,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     }
   }
 
-  async addRule(styleSheetId: string, ruleText: string, ruleLocation: TextUtils.TextRange.TextRange):
+  async addRule(styleSheetId: Protocol.CSS.StyleSheetId, ruleText: string, ruleLocation: TextUtils.TextRange.TextRange):
       Promise<CSSStyleRule|null> {
     try {
       await this.ensureOriginalStyleSheetText(styleSheetId);
@@ -474,7 +479,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     return [...this.fontFacesInternal.values()];
   }
 
-  styleSheetHeaderForId(id: string): CSSStyleSheetHeader|null {
+  styleSheetHeaderForId(id: Protocol.CSS.StyleSheetId): CSSStyleSheetHeader|null {
     return this.styleSheetIdToHeader.get(id) || null;
   }
 
@@ -482,14 +487,14 @@ export class CSSModel extends SDKModel<EventTypes> {
     return [...this.styleSheetIdToHeader.values()];
   }
 
-  fireStyleSheetChanged(styleSheetId: string, edit?: Edit): void {
+  fireStyleSheetChanged(styleSheetId: Protocol.CSS.StyleSheetId, edit?: Edit): void {
     this.dispatchEventToListeners(Events.StyleSheetChanged, {styleSheetId: styleSheetId, edit: edit});
   }
 
-  private ensureOriginalStyleSheetText(styleSheetId: string): Promise<string|null> {
+  private ensureOriginalStyleSheetText(styleSheetId: Protocol.CSS.StyleSheetId): Promise<string|null> {
     const header = this.styleSheetHeaderForId(styleSheetId);
     if (!header) {
-      return Promise.resolve((null as string | null));
+      return Promise.resolve(null);
     }
     let promise = this.originalStyleSheetTextInternal.get(header);
     if (!promise) {
@@ -534,7 +539,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     this.dispatchEventToListeners(Events.StyleSheetAdded, styleSheetHeader);
   }
 
-  styleSheetRemoved(id: string): void {
+  styleSheetRemoved(id: Protocol.CSS.StyleSheetId): void {
     const header = this.styleSheetIdToHeader.get(id);
     console.assert(Boolean(header));
     if (!header) {
@@ -562,7 +567,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     this.dispatchEventToListeners(Events.StyleSheetRemoved, header);
   }
 
-  getStyleSheetIdsForURL(url: string): string[] {
+  getStyleSheetIdsForURL(url: string): Protocol.CSS.StyleSheetId[] {
     const frameIdToStyleSheetIds = this.styleSheetIdsForURL.get(url);
     if (!frameIdToStyleSheetIds) {
       return [];
@@ -575,9 +580,12 @@ export class CSSModel extends SDKModel<EventTypes> {
     return result;
   }
 
-  async setStyleSheetText(styleSheetId: string, newText: string, majorChange: boolean): Promise<string|null> {
-    const header = (this.styleSheetIdToHeader.get(styleSheetId) as CSSStyleSheetHeader);
-    console.assert(Boolean(header));
+  async setStyleSheetText(styleSheetId: Protocol.CSS.StyleSheetId, newText: string, majorChange: boolean):
+      Promise<string|null> {
+    const header = this.styleSheetIdToHeader.get(styleSheetId);
+    if (!header) {
+      return 'Unknown stylesheet in CSS.setStyleSheetText';
+    }
     newText = CSSModel.trimSourceURL(newText);
     if (header.hasSourceURL) {
       newText += '\n/*# sourceURL=' + header.sourceURL + ' */';
@@ -598,7 +606,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     return null;
   }
 
-  async getStyleSheetText(styleSheetId: string): Promise<string|null> {
+  async getStyleSheetText(styleSheetId: Protocol.CSS.StyleSheetId): Promise<string|null> {
     try {
       const {text} = await this.agent.invoke_getStyleSheetText({styleSheetId});
       return text && CSSModel.trimSourceURL(text);
@@ -736,7 +744,7 @@ export type EventTypes = {
   [Events.ModelWasEnabled]: void,
   [Events.PseudoStateForced]: {node: DOMNode, pseudoClass: string, enable: boolean},
   [Events.StyleSheetAdded]: CSSStyleSheetHeader,
-  [Events.StyleSheetChanged]: {styleSheetId: string, edit?: Edit},
+  [Events.StyleSheetChanged]: {styleSheetId: Protocol.CSS.StyleSheetId, edit?: Edit},
   [Events.StyleSheetRemoved]: CSSStyleSheetHeader,
 };
 
@@ -759,7 +767,7 @@ export class Edit {
 
 export class CSSLocation {
   private readonly cssModelInternal: CSSModel;
-  styleSheetId: string;
+  styleSheetId: Protocol.CSS.StyleSheetId;
   url: string;
   lineNumber: number;
   columnNumber: number;

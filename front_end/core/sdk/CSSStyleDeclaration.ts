@@ -15,7 +15,7 @@ export class CSSStyleDeclaration {
   private readonly cssModelInternal: CSSModel;
   parentRule: CSSRule|null;
   private allPropertiesInternal!: CSSProperty[];
-  styleSheetId!: string|undefined;
+  styleSheetId!: Protocol.CSS.StyleSheetId|undefined;
   range!: TextUtils.TextRange.TextRange|null;
   cssText!: string|undefined;
   private shorthandValues!: Map<string, string>;

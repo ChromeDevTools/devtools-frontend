@@ -240,11 +240,11 @@ export class AgentLayer implements SDK.LayerTreeBase.Layer {
     this._reset(layerPayload);
   }
 
-  id(): string {
+  id(): Protocol.LayerTree.LayerId {
     return this._layerPayload.layerId;
   }
 
-  parentId(): string|null {
+  parentId(): Protocol.LayerTree.LayerId|null {
     return this._layerPayload.parentLayerId || null;
   }
 

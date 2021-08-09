@@ -221,14 +221,18 @@ const emitInlineEnums = (prefix: string, propertyTypes?: Protocol.PropertyType[]
 const knownIdentifierTypes = [
   'Accessibility.AXNodeId',
   'Audits.IssueId',
+  'Browser.BrowserContextID',
+  'Browser.WindowID',
   'CacheStorage.CacheId',
   'DOM.BackendNodeId',
   'DOM.NodeId',
   'Fetch.RequestId',
+  'LayerTree.LayerId',
   'Media.PlayerId',
   'Network.InterceptionId',
   'Network.LoaderId',
   'Network.RequestId',
+  'Security.CertificateId',
   'WebAudio.GraphObjectId',
   'WebAuthn.AuthenticatorId',
 ];

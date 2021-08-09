@@ -1261,9 +1261,9 @@ declare namespace Protocol {
    */
   export namespace Browser {
 
-    export type BrowserContextID = string;
+    export type BrowserContextID = OpaqueIdentifier<string, 'Protocol.Browser.BrowserContextID'>;
 
-    export type WindowID = integer;
+    export type WindowID = OpaqueIdentifier<integer, 'Protocol.Browser.WindowID'>;
 
     /**
      * The state of the browser window.
@@ -6198,7 +6198,7 @@ declare namespace Protocol {
     /**
      * Unique Layer identifier.
      */
-    export type LayerId = string;
+    export type LayerId = OpaqueIdentifier<string, 'Protocol.LayerTree.LayerId'>;
 
     /**
      * Unique snapshot identifier.
@@ -11676,7 +11676,7 @@ declare namespace Protocol {
     /**
      * An internal certificate ID value.
      */
-    export type CertificateId = integer;
+    export type CertificateId = OpaqueIdentifier<integer, 'Protocol.Security.CertificateId'>;
 
     /**
      * A description of mixed content (HTTP resources on HTTPS pages), as defined by

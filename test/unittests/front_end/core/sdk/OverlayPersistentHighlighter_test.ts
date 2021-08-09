@@ -29,6 +29,7 @@ describeWithEnvironment('OverlayColorGenerator', () => {
             invoke_setShowGridOverlays() {},
             invoke_setShowFlexOverlays() {},
             invoke_setShowScrollSnapOverlays() {},
+            invoke_setShowContainerQueryOverlays() {},
           };
         },
       };
@@ -58,7 +59,7 @@ describeWithEnvironment('OverlayColorGenerator', () => {
     assert(!highlighter.isGridHighlighted(nodeId));
   });
 
-  it('is able to highlight scroll snal elements', () => {
+  it('is able to highlight scroll snap elements', () => {
     const highlighter = new SDK.OverlayPersistentHighlighter.OverlayPersistentHighlighter(mockModel);
     const nodeId = 1;
     highlighter.highlightScrollSnapInOverlay(nodeId);
@@ -67,5 +68,17 @@ describeWithEnvironment('OverlayColorGenerator', () => {
     assert(!highlighter.isGridHighlighted(nodeId));
     highlighter.hideScrollSnapInOverlay(nodeId);
     assert(!highlighter.isScrollSnapHighlighted(nodeId));
+  });
+
+  it('is able to highlight container query elements', () => {
+    const highlighter = new SDK.OverlayPersistentHighlighter.OverlayPersistentHighlighter(mockModel);
+    const nodeId = 1;
+    highlighter.highlightContainerQueryInOverlay(nodeId);
+    assert(highlighter.isContainerQueryHighlighted(nodeId));
+    assert(!highlighter.isFlexHighlighted(nodeId));
+    assert(!highlighter.isGridHighlighted(nodeId));
+    assert(!highlighter.isScrollSnapHighlighted(nodeId));
+    highlighter.hideContainerQueryInOverlay(nodeId);
+    assert(!highlighter.isContainerQueryHighlighted(nodeId));
   });
 });

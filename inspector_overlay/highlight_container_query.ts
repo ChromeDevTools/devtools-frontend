@@ -6,17 +6,32 @@ import type {PathCommands} from './common.js';
 import type {LineStyle} from './highlight_common.js';
 import {buildPath, drawPathWithLineStyle, emptyBounds} from './highlight_common.js';
 
-export interface ContainerQueryContainerHighlight {
+interface QueryingDescendantData {
+  descendantBorder: PathCommands;
+}
+export interface ContainerQueryHighlight {
   containerBorder: PathCommands;
+  queryingDescendants?: QueryingDescendantData[];
   containerQueryContainerHighlightConfig: {
     containerBorder?: LineStyle,
+    descendantBorder?: LineStyle,
   };
 }
 
-export function drawContainerQueryContainerHighlight(
-    highlight: ContainerQueryContainerHighlight, context: CanvasRenderingContext2D, emulationScaleFactor: number) {
+export function drawContainerQueryHighlight(
+    highlight: ContainerQueryHighlight, context: CanvasRenderingContext2D, emulationScaleFactor: number) {
   const config = highlight.containerQueryContainerHighlightConfig;
   const bounds = emptyBounds();
   const borderPath = buildPath(highlight.containerBorder, bounds, emulationScaleFactor);
-  drawPathWithLineStyle(context, borderPath, config.containerBorder);
+  drawPathWithLineStyle(context, borderPath, config.containerBorder, 2 /* thicker container outline */);
+
+  if (!highlight.queryingDescendants) {
+    return;
+  }
+
+  for (const descendant of highlight.queryingDescendants) {
+    const descendantBounds = emptyBounds();
+    const descendantBorderPath = buildPath(descendant.descendantBorder, descendantBounds, emulationScaleFactor);
+    drawPathWithLineStyle(context, descendantBorderPath, config.descendantBorder);
+  }
 }

@@ -37,6 +37,15 @@ describe('Adornment in the Elements Tab', async function() {
     ]);
   });
 
+  it('displays container query adorners', async () => {
+    await goToResource('elements/adornment-container-query.html');
+    await prepareElementsTab();
+
+    await waitForAdorners([
+      {textContent: 'container', isActive: false},
+    ]);
+  });
+
   // Flaky test
   it.skip('[crbug.com/1134593] can toggle adorners', async () => {
     await goToResource('elements/adornment.html');

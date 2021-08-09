@@ -8,6 +8,7 @@ copy_to_gen("elements") {
   sources = [
     "accessibility-iframe-page.html",
     "accessibility-simple-page.html",
+    "adornment-container-query.html",
     "adornment-scroll-snap.html",
     "adornment-shadow.html",
     "adornment.html",

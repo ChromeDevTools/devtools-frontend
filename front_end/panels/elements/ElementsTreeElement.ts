@@ -2013,6 +2013,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     if (styles.get('scroll-snap-type') && styles.get('scroll-snap-type') !== 'none') {
       appendAdorner(this.createScrollSnapAdorner());
     }
+    if (styles.get('container-type') && styles.get('container-type') !== 'none') {
+      appendAdorner(this.createContainerAdorner());
+    }
   }
 
   createGridAdorner(): Adorners.Adorner.Adorner|null {
@@ -2121,6 +2124,45 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
     node.domModel().overlayModel().addEventListener(
         SDK.OverlayModel.Events.PersistentFlexContainerOverlayStateChanged, event => {
+          const {nodeId: eventNodeId, enabled} = event.data;
+          if (eventNodeId !== nodeId) {
+            return;
+          }
+          adorner.toggle(enabled);
+        });
+
+    return adorner;
+  }
+
+  createContainerAdorner(): Adorners.Adorner.Adorner|null {
+    const node = this.node();
+    const nodeId = node.id;
+    if (!nodeId) {
+      return null;
+    }
+    const config = ElementsComponents.AdornerManager.getRegisteredAdorner(
+        ElementsComponents.AdornerManager.RegisteredAdorners.CONTAINER);
+    const adorner = this.adorn(config);
+    adorner.classList.add('container');
+
+    const onClick = (((): void => {
+                       const model = node.domModel().overlayModel();
+                       if (adorner.isActive()) {
+                         model.highlightContainerQueryInPersistentOverlay(nodeId);
+                       } else {
+                         model.hideContainerQueryInPersistentOverlay(nodeId);
+                       }
+                     }) as EventListener);
+
+    adorner.addInteraction(onClick, {
+      isToggle: true,
+      shouldPropagateOnKeydown: false,
+      ariaLabelDefault: i18nString(UIStrings.enableScrollSnap),
+      ariaLabelActive: i18nString(UIStrings.disableScrollSnap),
+    });
+
+    node.domModel().overlayModel().addEventListener(
+        SDK.OverlayModel.Events.PersistentContainerQueryOverlayStateChanged, event => {
           const {nodeId: eventNodeId, enabled} = event.data;
           if (eventNodeId !== nodeId) {
             return;

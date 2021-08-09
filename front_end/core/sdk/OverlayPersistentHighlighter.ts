@@ -12,6 +12,7 @@ export class OverlayPersistentHighlighter {
   private readonly gridHighlights: Map<number, Protocol.Overlay.GridHighlightConfig>;
   private readonly scrollSnapHighlights: Map<number, Protocol.Overlay.ScrollSnapContainerHighlightConfig>;
   private readonly flexHighlights: Map<number, Protocol.Overlay.FlexContainerHighlightConfig>;
+  private readonly containerQueryHighlights: Map<number, Protocol.Overlay.ContainerQueryContainerHighlightConfig>;
   private readonly colors: Map<number, Common.Color.Color>;
   private gridColorGenerator: OverlayColorGenerator;
   private flexColorGenerator: OverlayColorGenerator;
@@ -36,6 +37,8 @@ export class OverlayPersistentHighlighter {
     this.scrollSnapHighlights = new Map();
 
     this.flexHighlights = new Map();
+
+    this.containerQueryHighlights = new Map();
 
     this.colors = new Map();
 
@@ -189,10 +192,40 @@ export class OverlayPersistentHighlighter {
     }
   }
 
+  highlightContainerQueryInOverlay(nodeId: number): void {
+    this.containerQueryHighlights.set(nodeId, this.buildContainerQueryContainerHighlightConfig());
+    this.updateHighlightsInOverlay();
+  }
+
+  hideContainerQueryInOverlay(nodeId: number): void {
+    if (this.containerQueryHighlights.has(nodeId)) {
+      this.containerQueryHighlights.delete(nodeId);
+      this.updateHighlightsInOverlay();
+    }
+  }
+
+  isContainerQueryHighlighted(nodeId: number): boolean {
+    return this.containerQueryHighlights.has(nodeId);
+  }
+
+  private buildContainerQueryContainerHighlightConfig(): Protocol.Overlay.ContainerQueryContainerHighlightConfig {
+    return {
+      containerBorder: {
+        color: Common.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
+        pattern: Protocol.Overlay.LineStylePattern.Dashed,
+      },
+      descendantBorder: {
+        color: Common.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
+        pattern: Protocol.Overlay.LineStylePattern.Dashed,
+      },
+    };
+  }
+
   hideAllInOverlay(): void {
     this.flexHighlights.clear();
     this.gridHighlights.clear();
     this.scrollSnapHighlights.clear();
+    this.containerQueryHighlights.clear();
     this.updateHighlightsInOverlay();
   }
 
@@ -200,7 +233,8 @@ export class OverlayPersistentHighlighter {
     const gridsNeedUpdate = this.updateHighlightsForDeletedNodes(this.gridHighlights);
     const flexboxesNeedUpdate = this.updateHighlightsForDeletedNodes(this.flexHighlights);
     const scrollSnapsNeedUpdate = this.updateHighlightsForDeletedNodes(this.scrollSnapHighlights);
-    if (flexboxesNeedUpdate || gridsNeedUpdate || scrollSnapsNeedUpdate) {
+    const containerQueriesNeedUpdate = this.updateHighlightsForDeletedNodes(this.containerQueryHighlights);
+    if (flexboxesNeedUpdate || gridsNeedUpdate || scrollSnapsNeedUpdate || containerQueriesNeedUpdate) {
       this.updateHighlightsInOverlay();
     }
   }
@@ -226,15 +260,20 @@ export class OverlayPersistentHighlighter {
     for (const nodeId of this.scrollSnapHighlights.keys()) {
       this.scrollSnapHighlights.set(nodeId, this.buildScrollSnapContainerHighlightConfig(nodeId));
     }
+    for (const nodeId of this.containerQueryHighlights.keys()) {
+      this.containerQueryHighlights.set(nodeId, this.buildContainerQueryContainerHighlightConfig());
+    }
     this.updateHighlightsInOverlay();
   }
 
   private updateHighlightsInOverlay(): void {
-    const hasNodesToHighlight = this.gridHighlights.size > 0 || this.flexHighlights.size > 0;
+    const hasNodesToHighlight =
+        this.gridHighlights.size > 0 || this.flexHighlights.size > 0 || this.containerQueryHighlights.size > 0;
     this.model.setShowViewportSizeOnResize(!hasNodesToHighlight);
     this.updateGridHighlightsInOverlay();
     this.updateFlexHighlightsInOverlay();
     this.updateScrollSnapHighlightsInOverlay();
+    this.updateContainerQueryHighlightsInOverlay();
   }
 
   private updateGridHighlightsInOverlay(): void {
@@ -265,6 +304,15 @@ export class OverlayPersistentHighlighter {
       scrollSnapHighlightConfigs.push({nodeId, scrollSnapContainerHighlightConfig});
     }
     overlayModel.target().overlayAgent().invoke_setShowScrollSnapOverlays({scrollSnapHighlightConfigs});
+  }
+
+  updateContainerQueryHighlightsInOverlay(): void {
+    const overlayModel = this.model;
+    const containerQueryHighlightConfigs = [];
+    for (const [nodeId, containerQueryContainerHighlightConfig] of this.containerQueryHighlights.entries()) {
+      containerQueryHighlightConfigs.push({nodeId, containerQueryContainerHighlightConfig});
+    }
+    overlayModel.target().overlayAgent().invoke_setShowContainerQueryOverlays({containerQueryHighlightConfigs});
   }
 }
 
@@ -301,6 +349,15 @@ export interface OverlayAgent {
   invoke_setShowScrollSnapOverlays(param: {
     scrollSnapHighlightConfigs: Array<{
       nodeId: number,
+    }>,
+  }): void;
+
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  invoke_setShowContainerQueryOverlays(param: {
+    containerQueryHighlightConfigs: Array<{
+      nodeId: number,
+      containerQueryContainerHighlightConfig: Protocol.Overlay.ContainerQueryContainerHighlightConfig,
     }>,
   }): void;
 }

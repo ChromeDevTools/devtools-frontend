@@ -30,6 +30,8 @@
 
 import type {ResetData} from './common.js';
 import {Overlay} from './common.js';
+import type {ContainerQueryHighlight} from './highlight_container_query.js';
+import {drawContainerQueryHighlight} from './highlight_container_query.js';
 import type {FlexContainerHighlight} from './highlight_flex_common.js';
 import {drawLayoutFlexContainerHighlight} from './highlight_flex_common.js';
 import type {GridHighlight} from './highlight_grid_common.js';
@@ -95,6 +97,12 @@ export class PersistentOverlay extends Overlay {
   drawScrollSnapHighlight(highlight: ScrollSnapHighlight) {
     this.context.save();
     drawScrollSnapHighlight(highlight, this.context, this.emulationScaleFactor);
+    this.context.restore();
+  }
+
+  drawContainerQueryHighlight(highlight: ContainerQueryHighlight) {
+    this.context.save();
+    drawContainerQueryHighlight(highlight, this.context, this.emulationScaleFactor);
     this.context.restore();
   }
 }

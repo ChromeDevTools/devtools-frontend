@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 
@@ -15,9 +17,9 @@ export class Node {
   id: string|symbol;
   event: SDK.TracingModel.Event|null;
   parent!: Node|null;
-  groupId: string;
-  isGroupNodeInternal: boolean;
-  depth: number;
+  _groupId: string;
+  _isGroupNode: boolean;
+  _depth: number;
 
   constructor(id: string|symbol, event: SDK.TracingModel.Event|null) {
     this.totalTime = 0;
@@ -25,13 +27,13 @@ export class Node {
     this.id = id;
     this.event = event;
 
-    this.groupId = '';
-    this.isGroupNodeInternal = false;
-    this.depth = 0;
+    this._groupId = '';
+    this._isGroupNode = false;
+    this._depth = 0;
   }
 
   isGroupNode(): boolean {
-    return this.isGroupNodeInternal;
+    return this._isGroupNode;
   }
 
   hasChildren(): boolean {
@@ -59,54 +61,54 @@ export class Node {
 }
 
 export class TopDownNode extends Node {
-  root: TopDownRootNode|null;
-  private hasChildrenInternal: boolean;
-  childrenInternal: ChildrenCache|null;
+  _root: TopDownRootNode|null;
+  _hasChildren: boolean;
+  _children: ChildrenCache|null;
   parent: TopDownNode|null;
 
   constructor(id: string|symbol, event: SDK.TracingModel.Event|null, parent: TopDownNode|null) {
     super(id, event);
-    this.root = parent && parent.root;
-    this.hasChildrenInternal = false;
-    this.childrenInternal = null;
+    this._root = parent && parent._root;
+    this._hasChildren = false;
+    this._children = null;
     this.parent = parent;
   }
 
   hasChildren(): boolean {
-    return this.hasChildrenInternal;
+    return this._hasChildren;
   }
 
   setHasChildren(value: boolean): void {
-    this.hasChildrenInternal = value;
+    this._hasChildren = value;
   }
 
   children(): ChildrenCache {
-    return this.childrenInternal || this.buildChildren();
+    return this._children || this._buildChildren();
   }
 
-  private buildChildren(): ChildrenCache {
+  _buildChildren(): ChildrenCache {
     const path: TopDownNode[] = [];
-    for (let node: TopDownNode = (this as TopDownNode); node.parent && !node.isGroupNode(); node = node.parent) {
+    for (let node: TopDownNode = (this as TopDownNode); node.parent && !node._isGroupNode; node = node.parent) {
       path.push((node as TopDownNode));
     }
     path.reverse();
     const children: ChildrenCache = new Map();
     const self = this;
-    const root = this.root;
+    const root = this._root;
     if (!root) {
-      this.childrenInternal = children;
-      return this.childrenInternal;
+      this._children = children;
+      return this._children;
     }
-    const startTime = root.startTime;
-    const endTime = root.endTime;
-    const instantEventCallback = root.doNotAggregate ? onInstantEvent : undefined;
-    const eventIdCallback = root.doNotAggregate ? undefined : _eventId;
-    const eventGroupIdCallback = root.getEventGroupIdCallback();
+    const startTime = root._startTime;
+    const endTime = root._endTime;
+    const instantEventCallback = root._doNotAggregate ? onInstantEvent : undefined;
+    const eventIdCallback = root._doNotAggregate ? undefined : _eventId;
+    const eventGroupIdCallback = root._eventGroupIdCallback;
     let depth = 0;
     let matchedDepth = 0;
     let currentDirectChild: Node|null = null;
     TimelineModelImpl.forEachEvent(
-        root.events, onStartEvent, onEndEvent, instantEventCallback, startTime, endTime, root.filter);
+        root._events, onStartEvent, onEndEvent, instantEventCallback, startTime, endTime, root._filter);
 
     function onStartEvent(e: SDK.TracingModel.Event): void {
       ++depth;
@@ -155,7 +157,7 @@ export class TopDownNode extends Node {
       let node = children.get(id);
       if (!node) {
         node = new TopDownNode(id, e, self);
-        node.groupId = groupId;
+        node._groupId = groupId;
         children.set(id, node);
       }
       node.selfTime += duration;
@@ -197,22 +199,19 @@ export class TopDownNode extends Node {
       }
     }
 
-    this.childrenInternal = children;
+    this._children = children;
     return children;
-  }
-
-  getRoot(): TopDownRootNode|null {
-    return this.root;
   }
 }
 
 export class TopDownRootNode extends TopDownNode {
-  readonly events: SDK.TracingModel.Event[];
-  readonly filter: (e: SDK.TracingModel.Event) => boolean;
-  readonly startTime: number;
-  readonly endTime: number;
-  eventGroupIdCallback: ((arg0: SDK.TracingModel.Event) => string)|null|undefined;
-  readonly doNotAggregate: boolean|undefined;
+  _root: this;
+  _events: SDK.TracingModel.Event[];
+  _filter: (e: SDK.TracingModel.Event) => boolean;
+  _startTime: number;
+  _endTime: number;
+  _eventGroupIdCallback: ((arg0: SDK.TracingModel.Event) => string)|null|undefined;
+  _doNotAggregate: boolean|undefined;
   totalTime: number;
   selfTime: number;
 
@@ -220,32 +219,32 @@ export class TopDownRootNode extends TopDownNode {
       events: SDK.TracingModel.Event[], filters: TimelineModelFilter[], startTime: number, endTime: number,
       doNotAggregate?: boolean, eventGroupIdCallback?: ((arg0: SDK.TracingModel.Event) => string)|null) {
     super('', null, null);
-    this.root = this;
-    this.events = events;
-    this.filter = (e: SDK.TracingModel.Event): boolean => filters.every(f => f.accept(e));
-    this.startTime = startTime;
-    this.endTime = endTime;
-    this.eventGroupIdCallback = eventGroupIdCallback;
-    this.doNotAggregate = doNotAggregate;
+    this._root = this;
+    this._events = events;
+    this._filter = (e: SDK.TracingModel.Event): boolean => filters.every(f => f.accept(e));
+    this._startTime = startTime;
+    this._endTime = endTime;
+    this._eventGroupIdCallback = eventGroupIdCallback;
+    this._doNotAggregate = doNotAggregate;
     this.totalTime = endTime - startTime;
     this.selfTime = this.totalTime;
   }
 
   children(): ChildrenCache {
-    return this.childrenInternal || this.grouppedTopNodes();
+    return this._children || this._grouppedTopNodes();
   }
 
-  private grouppedTopNodes(): ChildrenCache {
+  _grouppedTopNodes(): ChildrenCache {
     const flatNodes = super.children();
     for (const node of flatNodes.values()) {
       this.selfTime -= node.totalTime;
     }
-    if (!this.eventGroupIdCallback) {
+    if (!this._eventGroupIdCallback) {
       return flatNodes;
     }
     const groupNodes = new Map<string, GroupNode>();
     for (const node of flatNodes.values()) {
-      const groupId = this.eventGroupIdCallback((node.event as SDK.TracingModel.Event));
+      const groupId = this._eventGroupIdCallback((node.event as SDK.TracingModel.Event));
       let groupNode = groupNodes.get(groupId);
       if (!groupNode) {
         groupNode = new GroupNode(groupId, this, (node.event as SDK.TracingModel.Event));
@@ -253,36 +252,32 @@ export class TopDownRootNode extends TopDownNode {
       }
       groupNode.addChild(node as BottomUpNode, node.selfTime, node.totalTime);
     }
-    this.childrenInternal = groupNodes;
+    this._children = groupNodes;
     return groupNodes;
-  }
-
-  getEventGroupIdCallback(): ((arg0: SDK.TracingModel.Event) => string)|null|undefined {
-    return this.eventGroupIdCallback;
   }
 }
 
 export class BottomUpRootNode extends Node {
-  private childrenInternal: ChildrenCache|null;
-  readonly events: SDK.TracingModel.Event[];
-  private textFilter: TimelineModelFilter;
-  readonly filter: (e: SDK.TracingModel.Event) => boolean;
-  readonly startTime: number;
-  readonly endTime: number;
-  private eventGroupIdCallback: ((arg0: SDK.TracingModel.Event) => string)|null;
+  _children: ChildrenCache|null;
+  _events: SDK.TracingModel.Event[];
+  _textFilter: TimelineModelFilter;
+  _filter: (e: SDK.TracingModel.Event) => boolean;
+  _startTime: number;
+  _endTime: number;
+  _eventGroupIdCallback: ((arg0: SDK.TracingModel.Event) => string)|null;
   totalTime: number;
 
   constructor(
       events: SDK.TracingModel.Event[], textFilter: TimelineModelFilter, filters: TimelineModelFilter[],
       startTime: number, endTime: number, eventGroupIdCallback: ((arg0: SDK.TracingModel.Event) => string)|null) {
     super('', null);
-    this.childrenInternal = null;
-    this.events = events;
-    this.textFilter = textFilter;
-    this.filter = (e: SDK.TracingModel.Event): boolean => filters.every(f => f.accept(e));
-    this.startTime = startTime;
-    this.endTime = endTime;
-    this.eventGroupIdCallback = eventGroupIdCallback;
+    this._children = null;
+    this._events = events;
+    this._textFilter = textFilter;
+    this._filter = (e: SDK.TracingModel.Event): boolean => filters.every(f => f.accept(e));
+    this._startTime = startTime;
+    this._endTime = endTime;
+    this._eventGroupIdCallback = eventGroupIdCallback;
     this.totalTime = endTime - startTime;
   }
 
@@ -290,9 +285,9 @@ export class BottomUpRootNode extends Node {
     return true;
   }
 
-  filterChildren(children: ChildrenCache): ChildrenCache {
+  _filterChildren(children: ChildrenCache): ChildrenCache {
     for (const [id, child] of children) {
-      if (child.event && !this.textFilter.accept(child.event)) {
+      if (child.event && !this._textFilter.accept(child.event)) {
         children.delete((id as string | symbol));
       }
     }
@@ -300,21 +295,21 @@ export class BottomUpRootNode extends Node {
   }
 
   children(): ChildrenCache {
-    if (!this.childrenInternal) {
-      this.childrenInternal = this.filterChildren(this.grouppedTopNodes());
+    if (!this._children) {
+      this._children = this._filterChildren(this._grouppedTopNodes());
     }
-    return this.childrenInternal;
+    return this._children;
   }
 
-  private ungrouppedTopNodes(): ChildrenCache {
+  _ungrouppedTopNodes(): ChildrenCache {
     const root = this;
-    const startTime = this.startTime;
-    const endTime = this.endTime;
+    const startTime = this._startTime;
+    const endTime = this._endTime;
     const nodeById = new Map<string, Node>();
     const selfTimeStack: number[] = [endTime - startTime];
     const firstNodeStack: boolean[] = [];
     const totalTimeById = new Map<string, number>();
-    TimelineModelImpl.forEachEvent(this.events, onStartEvent, onEndEvent, undefined, startTime, endTime, this.filter);
+    TimelineModelImpl.forEachEvent(this._events, onStartEvent, onEndEvent, undefined, startTime, endTime, this._filter);
 
     function onStartEvent(e: SDK.TracingModel.Event): void {
       const actualEndTime = e.endTime !== undefined ? Math.min(e.endTime, endTime) : endTime;
@@ -355,14 +350,14 @@ export class BottomUpRootNode extends Node {
     return nodeById;
   }
 
-  private grouppedTopNodes(): ChildrenCache {
-    const flatNodes = this.ungrouppedTopNodes();
-    if (!this.eventGroupIdCallback) {
+  _grouppedTopNodes(): ChildrenCache {
+    const flatNodes = this._ungrouppedTopNodes();
+    if (!this._eventGroupIdCallback) {
       return flatNodes;
     }
     const groupNodes = new Map<string, GroupNode>();
     for (const node of flatNodes.values()) {
-      const groupId = this.eventGroupIdCallback((node.event as SDK.TracingModel.Event));
+      const groupId = this._eventGroupIdCallback((node.event as SDK.TracingModel.Event));
       let groupNode = groupNodes.get(groupId);
       if (!groupNode) {
         groupNode = new GroupNode(groupId, this, (node.event as SDK.TracingModel.Event));
@@ -375,18 +370,18 @@ export class BottomUpRootNode extends Node {
 }
 
 export class GroupNode extends Node {
-  private readonly childrenInternal: ChildrenCache;
-  isGroupNodeInternal: boolean;
+  _children: ChildrenCache;
+  _isGroupNode: boolean;
 
   constructor(id: string, parent: BottomUpRootNode|TopDownRootNode, event: SDK.TracingModel.Event) {
     super(id, event);
-    this.childrenInternal = new Map();
+    this._children = new Map();
     this.parent = parent;
-    this.isGroupNodeInternal = true;
+    this._isGroupNode = true;
   }
 
   addChild(child: BottomUpNode, selfTime: number, totalTime: number): void {
-    this.childrenInternal.set(child.id, child);
+    this._children.set(child.id, child);
     this.selfTime += selfTime;
     this.totalTime += totalTime;
     child.parent = this;
@@ -397,48 +392,48 @@ export class GroupNode extends Node {
   }
 
   children(): ChildrenCache {
-    return this.childrenInternal;
+    return this._children;
   }
 }
 
 export class BottomUpNode extends Node {
   parent: Node;
-  private root: BottomUpRootNode;
-  depth: number;
-  private cachedChildren: ChildrenCache|null;
-  private hasChildrenInternal: boolean;
+  _root: BottomUpRootNode;
+  _depth: number;
+  _cachedChildren: ChildrenCache|null;
+  _hasChildren: boolean;
 
   constructor(root: BottomUpRootNode, id: string, event: SDK.TracingModel.Event, hasChildren: boolean, parent: Node) {
     super(id, event);
     this.parent = parent;
-    this.root = root;
-    this.depth = (parent.depth || 0) + 1;
-    this.cachedChildren = null;
-    this.hasChildrenInternal = hasChildren;
+    this._root = root;
+    this._depth = (parent._depth || 0) + 1;
+    this._cachedChildren = null;
+    this._hasChildren = hasChildren;
   }
 
   hasChildren(): boolean {
-    return this.hasChildrenInternal;
+    return this._hasChildren;
   }
 
   setHasChildren(value: boolean): void {
-    this.hasChildrenInternal = value;
+    this._hasChildren = value;
   }
 
   children(): ChildrenCache {
-    if (this.cachedChildren) {
-      return this.cachedChildren;
+    if (this._cachedChildren) {
+      return this._cachedChildren;
     }
     const selfTimeStack: number[] = [0];
     const eventIdStack: string[] = [];
     const eventStack: SDK.TracingModel.Event[] = [];
     const nodeById = new Map<string, BottomUpNode>();
-    const startTime = this.root.startTime;
-    const endTime = this.root.endTime;
+    const startTime = this._root._startTime;
+    const endTime = this._root._endTime;
     let lastTimeMarker: number = startTime;
     const self = this;
     TimelineModelImpl.forEachEvent(
-        this.root.events, onStartEvent, onEndEvent, undefined, startTime, endTime, this.root.filter);
+        this._root._events, onStartEvent, onEndEvent, undefined, startTime, endTime, this._root._filter);
 
     function onStartEvent(e: SDK.TracingModel.Event): void {
       const actualEndTime = e.endTime !== undefined ? Math.min(e.endTime, endTime) : endTime;
@@ -458,20 +453,20 @@ export class BottomUpNode extends Node {
       const id = eventIdStack.pop();
       eventStack.pop();
       let node;
-      for (node = self; node.depth > 1; node = node.parent) {
-        if (node.id !== eventIdStack[eventIdStack.length + 1 - node.depth]) {
+      for (node = self; node._depth > 1; node = node.parent) {
+        if (node.id !== eventIdStack[eventIdStack.length + 1 - node._depth]) {
           return;
         }
       }
-      if (node.id !== id || eventIdStack.length < self.depth) {
+      if (node.id !== id || eventIdStack.length < self._depth) {
         return;
       }
-      const childId = eventIdStack[eventIdStack.length - self.depth];
+      const childId = eventIdStack[eventIdStack.length - self._depth];
       node = nodeById.get(childId);
       if (!node) {
-        const event = eventStack[eventStack.length - self.depth];
-        const hasChildren = eventStack.length > self.depth;
-        node = new BottomUpNode(self.root, childId, event, hasChildren, self);
+        const event = eventStack[eventStack.length - self._depth];
+        const hasChildren = eventStack.length > self._depth;
+        node = new BottomUpNode(self._root, childId, event, hasChildren, self);
         nodeById.set(childId, node);
       }
       const actualEndTime = e.endTime !== undefined ? Math.min(e.endTime, endTime) : endTime;
@@ -481,8 +476,8 @@ export class BottomUpNode extends Node {
       lastTimeMarker = actualEndTime;
     }
 
-    this.cachedChildren = this.root.filterChildren(nodeById);
-    return this.cachedChildren;
+    this._cachedChildren = this._root._filterChildren(nodeById);
+    return this._cachedChildren;
   }
 
   searchTree(matchFunction: (arg0: SDK.TracingModel.Event) => boolean, results?: Node[]): Node[] {

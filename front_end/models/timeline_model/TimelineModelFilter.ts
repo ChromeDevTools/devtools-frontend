@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import type * as SDK from '../../core/sdk/sdk.js';
 
 import {RecordType, TimelineModelImpl} from './TimelineModel.js';
@@ -13,17 +15,17 @@ export class TimelineModelFilter {
 }
 
 export class TimelineVisibleEventsFilter extends TimelineModelFilter {
-  private readonly visibleTypes: Set<string>;
+  _visibleTypes: Set<string>;
   constructor(visibleTypes: string[]) {
     super();
-    this.visibleTypes = new Set(visibleTypes);
+    this._visibleTypes = new Set(visibleTypes);
   }
 
   accept(event: SDK.TracingModel.Event): boolean {
-    return this.visibleTypes.has(TimelineVisibleEventsFilter.eventType(event));
+    return this._visibleTypes.has(TimelineVisibleEventsFilter._eventType(event));
   }
 
-  static eventType(event: SDK.TracingModel.Event): RecordType {
+  static _eventType(event: SDK.TracingModel.Event): RecordType {
     if (event.hasCategory(TimelineModelImpl.Category.Console)) {
       return RecordType.ConsoleTime;
     }
@@ -38,25 +40,25 @@ export class TimelineVisibleEventsFilter extends TimelineModelFilter {
 }
 
 export class TimelineInvisibleEventsFilter extends TimelineModelFilter {
-  private invisibleTypes: Set<string>;
+  _invisibleTypes: Set<string>;
   constructor(invisibleTypes: string[]) {
     super();
-    this.invisibleTypes = new Set(invisibleTypes);
+    this._invisibleTypes = new Set(invisibleTypes);
   }
 
   accept(event: SDK.TracingModel.Event): boolean {
-    return !this.invisibleTypes.has(TimelineVisibleEventsFilter.eventType(event));
+    return !this._invisibleTypes.has(TimelineVisibleEventsFilter._eventType(event));
   }
 }
 
 export class ExclusiveNameFilter extends TimelineModelFilter {
-  private excludeNames: Set<string>;
+  _excludeNames: Set<string>;
   constructor(excludeNames: string[]) {
     super();
-    this.excludeNames = new Set(excludeNames);
+    this._excludeNames = new Set(excludeNames);
   }
 
   accept(event: SDK.TracingModel.Event): boolean {
-    return !this.excludeNames.has(event.name);
+    return !this._excludeNames.has(event.name);
   }
 }

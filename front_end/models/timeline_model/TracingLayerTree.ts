@@ -12,13 +12,13 @@ import * as Protocol from '../../generated/protocol.js';
 import type {LayerPaintEvent} from './TimelineFrameModel.js';
 
 export class TracingLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
-  private tileById: Map<string, TracingLayerTile>;
-  private paintProfilerModel: SDK.PaintProfiler.PaintProfilerModel|null;
+  _tileById: Map<string, TracingLayerTile>;
+  _paintProfilerModel: SDK.PaintProfiler.PaintProfilerModel|null;
 
   constructor(target: SDK.Target.Target|null) {
     super(target);
-    this.tileById = new Map();
-    this.paintProfilerModel = target && target.model(SDK.PaintProfiler.PaintProfilerModel);
+    this._tileById = new Map();
+    this._paintProfilerModel = target && target.model(SDK.PaintProfiler.PaintProfilerModel);
   }
 
   async setLayers(root: TracingLayerPayload|null, layers: TracingLayerPayload[]|null, paints: LayerPaintEvent[]):
@@ -27,10 +27,10 @@ export class TracingLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
     if (root) {
       // This is a legacy code path for compatibility, as cc is removing
       // layer tree hierarchy, this code will eventually be removed.
-      this.extractNodeIdsToResolve(idsToResolve, {}, root);
+      this._extractNodeIdsToResolve(idsToResolve, {}, root);
     } else if (layers) {
       for (let i = 0; i < layers.length; ++i) {
-        this.extractNodeIdsToResolve(idsToResolve, {}, layers[i]);
+        this._extractNodeIdsToResolve(idsToResolve, {}, layers[i]);
       }
     }
 
@@ -40,10 +40,10 @@ export class TracingLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
     this.layersById = new Map();
     this.setContentRoot(null);
     if (root) {
-      const convertedLayers = this.innerSetLayers(oldLayersById, root);
+      const convertedLayers = this._innerSetLayers(oldLayersById, root);
       this.setRoot(convertedLayers);
     } else if (layers) {
-      const processedLayers = layers.map(this.innerSetLayers.bind(this, oldLayersById));
+      const processedLayers = layers.map(this._innerSetLayers.bind(this, oldLayersById));
       const contentRoot = this.contentRoot();
       if (!contentRoot) {
         throw new Error('Content root is not set.');
@@ -55,18 +55,18 @@ export class TracingLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
         }
       }
     }
-    this.setPaints(paints);
+    this._setPaints(paints);
   }
 
   setTiles(tiles: TracingLayerTile[]): void {
-    this.tileById = new Map();
+    this._tileById = new Map();
     for (const tile of tiles) {
-      this.tileById.set(tile.id, tile);
+      this._tileById.set(tile.id, tile);
     }
   }
 
   pictureForRasterTile(tileId: string): Promise<SDK.PaintProfiler.SnapshotWithRect|null> {
-    const tile = this.tileById.get('cc::Tile/' + tileId);
+    const tile = this._tileById.get('cc::Tile/' + tileId);
     if (!tile) {
       Common.Console.Console.instance().error(`Tile ${tileId} is missing`);
       return Promise.resolve(null) as Promise<SDK.PaintProfiler.SnapshotWithRect|null>;
@@ -76,123 +76,123 @@ export class TracingLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
       Common.Console.Console.instance().error(`Layer ${tile.layer_id} for tile ${tileId} is not found`);
       return Promise.resolve(null) as Promise<SDK.PaintProfiler.SnapshotWithRect|null>;
     }
-    return layer.pictureForRect(tile.content_rect);
+    return layer._pictureForRect(tile.content_rect);
   }
 
-  private setPaints(paints: LayerPaintEvent[]): void {
+  _setPaints(paints: LayerPaintEvent[]): void {
     for (let i = 0; i < paints.length; ++i) {
       const layer = (this.layersById.get(paints[i].layerId()) as TracingLayer | null);
       if (layer) {
-        layer.addPaintEvent(paints[i]);
+        layer._addPaintEvent(paints[i]);
       }
     }
   }
 
-  private innerSetLayers(oldLayersById: Map<string|number, SDK.LayerTreeBase.Layer>, payload: TracingLayerPayload):
+  _innerSetLayers(oldLayersById: Map<string|number, SDK.LayerTreeBase.Layer>, payload: TracingLayerPayload):
       TracingLayer {
     let layer = (oldLayersById.get(payload.layer_id) as TracingLayer | null);
     if (layer) {
-      layer.reset(payload);
+      layer._reset(payload);
     } else {
-      layer = new TracingLayer(this.paintProfilerModel, payload);
+      layer = new TracingLayer(this._paintProfilerModel, payload);
     }
     this.layersById.set(payload.layer_id, layer);
     if (payload.owner_node) {
-      layer.setNode(this.backendNodeIdToNode().get(payload.owner_node) || null);
+      layer._setNode(this.backendNodeIdToNode().get(payload.owner_node) || null);
     }
     if (!this.contentRoot() && layer.drawsContent()) {
       this.setContentRoot(layer);
     }
     for (let i = 0; payload.children && i < payload.children.length; ++i) {
-      layer.addChild(this.innerSetLayers(oldLayersById, payload.children[i]));
+      layer.addChild(this._innerSetLayers(oldLayersById, payload.children[i]));
     }
     return layer;
   }
 
-  private extractNodeIdsToResolve(
+  _extractNodeIdsToResolve(
       nodeIdsToResolve: Set<Protocol.DOM.BackendNodeId>, seenNodeIds: Object, payload: TracingLayerPayload): void {
     const backendNodeId = payload.owner_node;
     if (backendNodeId && !this.backendNodeIdToNode().has(backendNodeId)) {
       nodeIdsToResolve.add(backendNodeId);
     }
     for (let i = 0; payload.children && i < payload.children.length; ++i) {
-      this.extractNodeIdsToResolve(nodeIdsToResolve, seenNodeIds, payload.children[i]);
+      this._extractNodeIdsToResolve(nodeIdsToResolve, seenNodeIds, payload.children[i]);
     }
   }
 }
 
 export class TracingLayer implements SDK.LayerTreeBase.Layer {
-  private parentLayerId: string|null;
-  private parentInternal: SDK.LayerTreeBase.Layer|null;
-  private layerId: string;
-  private nodeInternal: SDK.DOMModel.DOMNode|null;
-  private offsetXInternal: number;
-  private offsetYInternal: number;
-  private widthInternal: number;
-  private heightInternal: number;
-  private childrenInternal: SDK.LayerTreeBase.Layer[];
-  private quadInternal: number[];
-  private scrollRectsInternal: Protocol.LayerTree.ScrollRect[];
-  private gpuMemoryUsageInternal: number;
-  private paints: LayerPaintEvent[];
-  private compositingReasonIds: string[];
-  private drawsContentInternal: boolean;
-  private paintProfilerModel: SDK.PaintProfiler.PaintProfilerModel|null;
+  _parentLayerId: string|null;
+  _parent: SDK.LayerTreeBase.Layer|null;
+  _layerId: string;
+  _node: SDK.DOMModel.DOMNode|null;
+  _offsetX: number;
+  _offsetY: number;
+  _width: number;
+  _height: number;
+  _children: SDK.LayerTreeBase.Layer[];
+  _quad: number[];
+  _scrollRects: Protocol.LayerTree.ScrollRect[];
+  _gpuMemoryUsage: number;
+  _paints: LayerPaintEvent[];
+  _compositingReasonIds: string[];
+  _drawsContent: boolean;
+  _paintProfilerModel: SDK.PaintProfiler.PaintProfilerModel|null;
   constructor(paintProfilerModel: SDK.PaintProfiler.PaintProfilerModel|null, payload: TracingLayerPayload) {
-    this.parentLayerId = null;
-    this.parentInternal = null;
-    this.layerId = '';
-    this.nodeInternal = null;
-    this.offsetXInternal = -1;
-    this.offsetYInternal = -1;
-    this.widthInternal = -1;
-    this.heightInternal = -1;
-    this.childrenInternal = [];
-    this.quadInternal = [];
-    this.scrollRectsInternal = [];
-    this.gpuMemoryUsageInternal = -1;
-    this.paints = [];
-    this.compositingReasonIds = [];
-    this.drawsContentInternal = false;
+    this._parentLayerId = null;
+    this._parent = null;
+    this._layerId = '';
+    this._node = null;
+    this._offsetX = -1;
+    this._offsetY = -1;
+    this._width = -1;
+    this._height = -1;
+    this._children = [];
+    this._quad = [];
+    this._scrollRects = [];
+    this._gpuMemoryUsage = -1;
+    this._paints = [];
+    this._compositingReasonIds = [];
+    this._drawsContent = false;
 
-    this.paintProfilerModel = paintProfilerModel;
-    this.reset(payload);
+    this._paintProfilerModel = paintProfilerModel;
+    this._reset(payload);
   }
 
-  reset(payload: TracingLayerPayload): void {
-    this.nodeInternal = null;
-    this.layerId = String(payload.layer_id);
-    this.offsetXInternal = payload.position[0];
-    this.offsetYInternal = payload.position[1];
-    this.widthInternal = payload.bounds.width;
-    this.heightInternal = payload.bounds.height;
-    this.childrenInternal = [];
-    this.parentLayerId = null;
-    this.parentInternal = null;
-    this.quadInternal = payload.layer_quad || [];
-    this.createScrollRects(payload);
+  _reset(payload: TracingLayerPayload): void {
+    this._node = null;
+    this._layerId = String(payload.layer_id);
+    this._offsetX = payload.position[0];
+    this._offsetY = payload.position[1];
+    this._width = payload.bounds.width;
+    this._height = payload.bounds.height;
+    this._children = [];
+    this._parentLayerId = null;
+    this._parent = null;
+    this._quad = payload.layer_quad || [];
+    this._createScrollRects(payload);
 
     // Keep payload.compositing_reasons as a default
     // but use the newer payload.debug_info.compositing_reasons
     // if the first one is not set.
-    this.compositingReasonIds =
+    this._compositingReasonIds =
         payload.compositing_reason_ids || (payload.debug_info && payload.debug_info.compositing_reason_ids) || [];
-    this.drawsContentInternal = Boolean(payload.draws_content);
-    this.gpuMemoryUsageInternal = payload.gpu_memory_usage;
+    this._drawsContent = Boolean(payload.draws_content);
+    this._gpuMemoryUsage = payload.gpu_memory_usage;
     /** @type {!Array<!LayerPaintEvent>} */
-    this.paints = [];
+    this._paints = [];
   }
 
   id(): string {
-    return this.layerId;
+    return this._layerId;
   }
 
   parentId(): string|null {
-    return this.parentLayerId;
+    return this._parentLayerId;
   }
 
   parent(): SDK.LayerTreeBase.Layer|null {
-    return this.parentInternal;
+    return this._parent;
   }
 
   isRoot(): boolean {
@@ -200,25 +200,25 @@ export class TracingLayer implements SDK.LayerTreeBase.Layer {
   }
 
   children(): SDK.LayerTreeBase.Layer[] {
-    return this.childrenInternal;
+    return this._children;
   }
 
   addChild(childParam: SDK.LayerTreeBase.Layer): void {
     const child = (childParam as TracingLayer);
-    if (child.parentInternal) {
+    if (child._parent) {
       console.assert(false, 'Child already has a parent');
     }
-    this.childrenInternal.push(child);
-    child.parentInternal = this;
-    child.parentLayerId = this.layerId;
+    this._children.push(child);
+    child._parent = this;
+    child._parentLayerId = this._layerId;
   }
 
-  setNode(node: SDK.DOMModel.DOMNode|null): void {
-    this.nodeInternal = node;
+  _setNode(node: SDK.DOMModel.DOMNode|null): void {
+    this._node = node;
   }
 
   node(): SDK.DOMModel.DOMNode|null {
-    return this.nodeInternal;
+    return this._node;
   }
 
   nodeForSelfOrAncestor(): SDK.DOMModel.DOMNode|null {
@@ -232,19 +232,19 @@ export class TracingLayer implements SDK.LayerTreeBase.Layer {
   }
 
   offsetX(): number {
-    return this.offsetXInternal;
+    return this._offsetX;
   }
 
   offsetY(): number {
-    return this.offsetYInternal;
+    return this._offsetY;
   }
 
   width(): number {
-    return this.widthInternal;
+    return this._width;
   }
 
   height(): number {
-    return this.heightInternal;
+    return this._height;
   }
 
   transform(): number[]|null {
@@ -252,7 +252,7 @@ export class TracingLayer implements SDK.LayerTreeBase.Layer {
   }
 
   quad(): number[] {
-    return this.quadInternal;
+    return this._quad;
   }
 
   anchorPoint(): number[] {
@@ -272,7 +272,7 @@ export class TracingLayer implements SDK.LayerTreeBase.Layer {
   }
 
   scrollRects(): Protocol.LayerTree.ScrollRect[] {
-    return this.scrollRectsInternal;
+    return this._scrollRects;
   }
 
   stickyPositionConstraint(): SDK.LayerTreeBase.StickyPositionConstraint|null {
@@ -281,11 +281,11 @@ export class TracingLayer implements SDK.LayerTreeBase.Layer {
   }
 
   gpuMemoryUsage(): number {
-    return this.gpuMemoryUsageInternal;
+    return this._gpuMemoryUsage;
   }
 
   snapshots(): Promise<SDK.PaintProfiler.SnapshotWithRect|null>[] {
-    return this.paints.map(paint => paint.snapshotPromise().then(snapshot => {
+    return this._paints.map(paint => paint.snapshotPromise().then(snapshot => {
       if (!snapshot) {
         return null;
       }
@@ -294,8 +294,8 @@ export class TracingLayer implements SDK.LayerTreeBase.Layer {
     }));
   }
 
-  pictureForRect(targetRect: number[]): Promise<SDK.PaintProfiler.SnapshotWithRect|null> {
-    return Promise.all(this.paints.map(paint => paint.picturePromise())).then(pictures => {
+  _pictureForRect(targetRect: number[]): Promise<SDK.PaintProfiler.SnapshotWithRect|null> {
+    return Promise.all(this._paints.map(paint => paint.picturePromise())).then(pictures => {
       const filteredPictures = (pictures.filter(picture => picture && rectsOverlap(picture.rect, targetRect)) as {
         rect: Array<number>,
         serializedPicture: string,
@@ -304,14 +304,14 @@ export class TracingLayer implements SDK.LayerTreeBase.Layer {
       const fragments = filteredPictures.map(
           picture => ({x: picture.rect[0], y: picture.rect[1], picture: picture.serializedPicture}));
 
-      if (!fragments.length || !this.paintProfilerModel) {
+      if (!fragments.length || !this._paintProfilerModel) {
         return null;
       }
       const x0 = fragments.reduce((min, item) => Math.min(min, item.x), Infinity);
       const y0 = fragments.reduce((min, item) => Math.min(min, item.y), Infinity);
       // Rect is in layer content coordinates, make it relative to picture by offsetting to the top left corner.
       const rect = {x: targetRect[0] - x0, y: targetRect[1] - y0, width: targetRect[2], height: targetRect[3]};
-      return this.paintProfilerModel.loadSnapshotFromFragments(fragments).then(
+      return this._paintProfilerModel.loadSnapshotFromFragments(fragments).then(
           snapshot => snapshot ? {rect: rect, snapshot: snapshot} : null);
     });
 
@@ -326,46 +326,45 @@ export class TracingLayer implements SDK.LayerTreeBase.Layer {
     }
   }
 
-  private scrollRectsFromParams(params: number[], type: Protocol.LayerTree.ScrollRectType):
-      Protocol.LayerTree.ScrollRect {
+  _scrollRectsFromParams(params: number[], type: Protocol.LayerTree.ScrollRectType): Protocol.LayerTree.ScrollRect {
     return {rect: {x: params[0], y: params[1], width: params[2], height: params[3]}, type: type};
   }
 
-  private createScrollRects(payload: TracingLayerPayload): void {
+  _createScrollRects(payload: TracingLayerPayload): void {
     const nonPayloadScrollRects: Protocol.LayerTree.ScrollRect[] = [];
     if (payload.non_fast_scrollable_region) {
-      nonPayloadScrollRects.push(this.scrollRectsFromParams(
+      nonPayloadScrollRects.push(this._scrollRectsFromParams(
           payload.non_fast_scrollable_region, 'NonFastScrollable' as Protocol.LayerTree.ScrollRectType));
     }
     if (payload.touch_event_handler_region) {
-      nonPayloadScrollRects.push(this.scrollRectsFromParams(
+      nonPayloadScrollRects.push(this._scrollRectsFromParams(
           payload.touch_event_handler_region, Protocol.LayerTree.ScrollRectType.TouchEventHandler));
     }
     if (payload.wheel_event_handler_region) {
-      nonPayloadScrollRects.push(this.scrollRectsFromParams(
+      nonPayloadScrollRects.push(this._scrollRectsFromParams(
           payload.wheel_event_handler_region, Protocol.LayerTree.ScrollRectType.WheelEventHandler));
     }
     if (payload.scroll_event_handler_region) {
-      nonPayloadScrollRects.push(this.scrollRectsFromParams(
+      nonPayloadScrollRects.push(this._scrollRectsFromParams(
           payload.scroll_event_handler_region, Protocol.LayerTree.ScrollRectType.RepaintsOnScroll));
     }
 
     // SDK.LayerBaseTree.Layer.ScrollRectType and Protocol.LayerTree.ScrollRectType are the
     // same type, but we need to use the indirection of the nonPayloadScrollRects since
     // the ScrollRectType is defined as a string in SDK.LayerBaseTree.Layer.ScrollRectType.
-    this.scrollRectsInternal = nonPayloadScrollRects;
+    this._scrollRects = nonPayloadScrollRects;
   }
 
-  addPaintEvent(paint: LayerPaintEvent): void {
-    this.paints.push(paint);
+  _addPaintEvent(paint: LayerPaintEvent): void {
+    this._paints.push(paint);
   }
 
   requestCompositingReasonIds(): Promise<string[]> {
-    return Promise.resolve(this.compositingReasonIds);
+    return Promise.resolve(this._compositingReasonIds);
   }
 
   drawsContent(): boolean {
-    return this.drawsContentInternal;
+    return this._drawsContent;
   }
 }
 

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
@@ -26,11 +28,11 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const eventToPhase = new WeakMap<SDK.TracingModel.Event, Phases>();
 
 export class TimelineIRModel {
-  private segments!: Common.SegmentedRange.Segment<Phases>[];
-  private drags!: Common.SegmentedRange.SegmentedRange<Phases>;
-  private cssAnimations!: Common.SegmentedRange.SegmentedRange<Phases>;
-  private responses!: Common.SegmentedRange.SegmentedRange<Phases>;
-  private scrolls!: Common.SegmentedRange.SegmentedRange<Phases>;
+  _segments!: Common.SegmentedRange.Segment<Phases>[];
+  _drags!: Common.SegmentedRange.SegmentedRange<Phases>;
+  _cssAnimations!: Common.SegmentedRange.SegmentedRange<Phases>;
+  _responses!: Common.SegmentedRange.SegmentedRange<Phases>;
+  _scrolls!: Common.SegmentedRange.SegmentedRange<Phases>;
 
   constructor() {
     this.reset();
@@ -45,19 +47,19 @@ export class TimelineIRModel {
     if (!inputLatencies) {
       return;
     }
-    this.processInputLatencies(inputLatencies);
+    this._processInputLatencies(inputLatencies);
     if (animations) {
-      this.processAnimations(animations);
+      this._processAnimations(animations);
     }
     const range = new Common.SegmentedRange.SegmentedRange<Phases>();
-    range.appendRange(this.drags);  // Drags take lower precedence than animation, as we can't detect them reliably.
-    range.appendRange(this.cssAnimations);
-    range.appendRange(this.scrolls);
-    range.appendRange(this.responses);
-    this.segments = range.segments();
+    range.appendRange(this._drags);  // Drags take lower precedence than animation, as we can't detect them reliably.
+    range.appendRange(this._cssAnimations);
+    range.appendRange(this._scrolls);
+    range.appendRange(this._responses);
+    this._segments = range.segments();
   }
 
-  private processInputLatencies(events: SDK.TracingModel.AsyncEvent[]): void {
+  _processInputLatencies(events: SDK.TracingModel.AsyncEvent[]): void {
     const eventTypes = InputEvents;
     const phases = Phases;
     const thresholdsMs = TimelineIRModel._mergeThresholdsMs;
@@ -75,25 +77,25 @@ export class TimelineIRModel {
       if (i > 0 && events[i].startTime < events[i - 1].startTime) {
         console.assert(false, 'Unordered input events');
       }
-      const type = this.inputEventType(event.name);
+      const type = this._inputEventType(event.name);
       switch (type) {
         case eventTypes.ScrollBegin:
-          this.scrolls.append(this.segmentForEvent(event, phases.Scroll));
+          this._scrolls.append(this._segmentForEvent(event, phases.Scroll));
           scrollStart = event;
           break;
 
         case eventTypes.ScrollEnd:
           if (scrollStart) {
-            this.scrolls.append(this.segmentForEventRange(scrollStart, event, phases.Scroll));
+            this._scrolls.append(this._segmentForEventRange(scrollStart, event, phases.Scroll));
           } else {
-            this.scrolls.append(this.segmentForEvent(event, phases.Scroll));
+            this._scrolls.append(this._segmentForEvent(event, phases.Scroll));
           }
           scrollStart = null;
           break;
 
         case eventTypes.ScrollUpdate:
           touchStart = null;  // Since we're scrolling now, disregard other touch gestures.
-          this.scrolls.append(this.segmentForEvent(event, phases.Scroll));
+          this._scrolls.append(this._segmentForEvent(event, phases.Scroll));
           break;
 
         case eventTypes.FlingStart:
@@ -110,12 +112,12 @@ export class TimelineIRModel {
           if (!flingStart) {
             break;
           }
-          this.scrolls.append(this.segmentForEventRange(flingStart, event, phases.Fling));
+          this._scrolls.append(this._segmentForEventRange(flingStart, event, phases.Fling));
           flingStart = null;
           break;
 
         case eventTypes.ImplSideFling:
-          this.scrolls.append(this.segmentForEvent(event, phases.Fling));
+          this._scrolls.append(this._segmentForEvent(event, phases.Fling));
           break;
 
         case eventTypes.ShowPress:
@@ -126,7 +128,7 @@ export class TimelineIRModel {
         case eventTypes.Char:
         case eventTypes.Click:
         case eventTypes.ContextMenu:
-          this.responses.append(this.segmentForEvent(event, phases.Response));
+          this._responses.append(this._segmentForEvent(event, phases.Response));
           break;
 
         case eventTypes.TouchStart:
@@ -138,7 +140,7 @@ export class TimelineIRModel {
             break;
           }
           touchStart = event;
-          this.setPhaseForEvent(event, phases.Response);
+          this._setPhaseForEvent(event, phases.Response);
           firstTouchMove = null;
           break;
 
@@ -148,10 +150,10 @@ export class TimelineIRModel {
 
         case eventTypes.TouchMove:
           if (firstTouchMove) {
-            this.drags.append(this.segmentForEvent(event, phases.Drag));
+            this._drags.append(this._segmentForEvent(event, phases.Drag));
           } else if (touchStart) {
             firstTouchMove = event;
-            this.responses.append(this.segmentForEventRange(touchStart, event, phases.Response));
+            this._responses.append(this._segmentForEventRange(touchStart, event, phases.Response));
           }
           break;
 
@@ -166,25 +168,25 @@ export class TimelineIRModel {
 
         case eventTypes.MouseMove:
           if (mouseDown && !mouseMove && mouseDown.startTime + thresholdsMs.mouse > event.startTime) {
-            this.responses.append(this.segmentForEvent(mouseDown, phases.Response));
-            this.responses.append(this.segmentForEvent(event, phases.Response));
+            this._responses.append(this._segmentForEvent(mouseDown, phases.Response));
+            this._responses.append(this._segmentForEvent(event, phases.Response));
           } else if (mouseDown) {
-            this.drags.append(this.segmentForEvent(event, phases.Drag));
+            this._drags.append(this._segmentForEvent(event, phases.Drag));
           }
           mouseMove = event;
           break;
 
         case eventTypes.MouseUp:
-          this.responses.append(this.segmentForEvent(event, phases.Response));
+          this._responses.append(this._segmentForEvent(event, phases.Response));
           mouseDown = null;
           break;
 
         case eventTypes.MouseWheel:
           // Do not consider first MouseWheel as trace viewer's implementation does -- in case of MouseWheel it's not really special.
           if (mouseWheel && canMerge(thresholdsMs.mouse, mouseWheel, event)) {
-            this.scrolls.append(this.segmentForEventRange(mouseWheel, event, phases.Scroll));
+            this._scrolls.append(this._segmentForEventRange(mouseWheel, event, phases.Scroll));
           } else {
-            this.scrolls.append(this.segmentForEvent(event, phases.Scroll));
+            this._scrolls.append(this._segmentForEvent(event, phases.Scroll));
           }
           mouseWheel = event;
           break;
@@ -200,43 +202,42 @@ export class TimelineIRModel {
     }
   }
 
-  private processAnimations(events: SDK.TracingModel.AsyncEvent[]): void {
+  _processAnimations(events: SDK.TracingModel.AsyncEvent[]): void {
     for (let i = 0; i < events.length; ++i) {
-      this.cssAnimations.append(this.segmentForEvent(events[i], Phases.Animation));
+      this._cssAnimations.append(this._segmentForEvent(events[i], Phases.Animation));
     }
   }
 
-  private segmentForEvent(event: SDK.TracingModel.AsyncEvent, phase: Phases): Common.SegmentedRange.Segment<Phases> {
-    this.setPhaseForEvent(event, phase);
+  _segmentForEvent(event: SDK.TracingModel.AsyncEvent, phase: Phases): Common.SegmentedRange.Segment<Phases> {
+    this._setPhaseForEvent(event, phase);
     return new Common.SegmentedRange.Segment<Phases>(
         event.startTime, event.endTime !== undefined ? event.endTime : Number.MAX_SAFE_INTEGER, phase);
   }
 
-  private segmentForEventRange(
-      startEvent: SDK.TracingModel.AsyncEvent, endEvent: SDK.TracingModel.AsyncEvent,
-      phase: Phases): Common.SegmentedRange.Segment<Phases> {
-    this.setPhaseForEvent(startEvent, phase);
-    this.setPhaseForEvent(endEvent, phase);
+  _segmentForEventRange(startEvent: SDK.TracingModel.AsyncEvent, endEvent: SDK.TracingModel.AsyncEvent, phase: Phases):
+      Common.SegmentedRange.Segment<Phases> {
+    this._setPhaseForEvent(startEvent, phase);
+    this._setPhaseForEvent(endEvent, phase);
     return new Common.SegmentedRange.Segment(
         startEvent.startTime, startEvent.endTime !== undefined ? startEvent.endTime : Number.MAX_SAFE_INTEGER, phase);
   }
 
-  private setPhaseForEvent(asyncEvent: SDK.TracingModel.AsyncEvent, phase: Phases): void {
+  _setPhaseForEvent(asyncEvent: SDK.TracingModel.AsyncEvent, phase: Phases): void {
     eventToPhase.set(asyncEvent.steps[0], phase);
   }
 
   interactionRecords(): Common.SegmentedRange.Segment<Phases>[] {
-    return this.segments;
+    return this._segments;
   }
 
   reset(): void {
     const thresholdsMs = TimelineIRModel._mergeThresholdsMs;
 
-    this.segments = [];
-    this.drags = new Common.SegmentedRange.SegmentedRange(merge.bind(null, thresholdsMs.mouse));
-    this.cssAnimations = new Common.SegmentedRange.SegmentedRange(merge.bind(null, thresholdsMs.animation));
-    this.responses = new Common.SegmentedRange.SegmentedRange(merge.bind(null, 0));
-    this.scrolls = new Common.SegmentedRange.SegmentedRange(merge.bind(null, thresholdsMs.animation));
+    this._segments = [];
+    this._drags = new Common.SegmentedRange.SegmentedRange(merge.bind(null, thresholdsMs.mouse));
+    this._cssAnimations = new Common.SegmentedRange.SegmentedRange(merge.bind(null, thresholdsMs.animation));
+    this._responses = new Common.SegmentedRange.SegmentedRange(merge.bind(null, 0));
+    this._scrolls = new Common.SegmentedRange.SegmentedRange(merge.bind(null, thresholdsMs.animation));
 
     function merge(
         threshold: number, first: Common.SegmentedRange.Segment<Phases>,
@@ -245,7 +246,7 @@ export class TimelineIRModel {
     }
   }
 
-  private inputEventType(eventName: string): InputEvents|null {
+  _inputEventType(eventName: string): InputEvents|null {
     const prefix = 'InputLatency::';
     if (!eventName.startsWith(prefix)) {
       const inputEventName = eventName as InputEvents;

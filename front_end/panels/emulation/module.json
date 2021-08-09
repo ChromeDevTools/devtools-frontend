@@ -7,7 +7,6 @@
     "resources": [
     "deviceModeToolbar.css",
     "deviceModeView.css",
-    "devicesSettingsTab.css",
     "inspectedPagePlaceholder.css",
     "mediaQueryInspector.css"
   ]

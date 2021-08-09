@@ -45,13 +45,8 @@ Emulation.DeviceModeWrapper = EmulationModule.DeviceModeWrapper.DeviceModeWrappe
 Emulation.DeviceModeWrapper.ActionDelegate = EmulationModule.DeviceModeWrapper.ActionDelegate;
 
 /**
- * @constructor
- */
-Emulation.DevicesSettingsTab = EmulationModule.DevicesSettingsTab.DevicesSettingsTab;
-
-/**
- * @constructor
- */
+  * @constructor
+  */
 Emulation.EmulatedDevice = EmulationModelModule.EmulatedDevices.EmulatedDevice;
 
 /**

@@ -104,7 +104,6 @@ all_devtools_files = [
   "front_end/emulated_devices/module.json",
   "front_end/panels/emulation/deviceModeToolbar.css",
   "front_end/panels/emulation/deviceModeView.css",
-  "front_end/panels/emulation/devicesSettingsTab.css",
   "front_end/panels/emulation/inspectedPagePlaceholder.css",
   "front_end/panels/emulation/mediaQueryInspector.css",
   "front_end/panels/emulation/module.json",

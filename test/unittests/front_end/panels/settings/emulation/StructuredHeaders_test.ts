@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 const {assert} = chai;
-import * as EmulationUtils from '../../../../../front_end/panels/emulation/utils/utils.js';
+import * as EmulationUtils from '../../../../../../front_end/panels/settings/emulation/utils/utils.js';
 import StructuredHeaders = EmulationUtils.StructuredHeaders;
 
 function assertItemError(result: StructuredHeaders.Item|StructuredHeaders.Error): void {

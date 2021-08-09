@@ -61,7 +61,10 @@ devtools_entrypoint("legacy") {
 devtools_entrypoint("meta") {
   entrypoint = "settings-meta.ts"
 
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    "./emulation:meta",
+  ]
 
   visibility = [ "../../entrypoints/*" ]
 }

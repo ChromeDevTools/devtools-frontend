@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../../../core/i18n/i18n.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
+import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
+import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import userAgentClientHintsFormStyles from './userAgentClientHintsForm.css.js';
 
-import type * as Protocol from '../../../generated/protocol.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
-import type * as UI from '../../../ui/legacy/legacy.js';
+import type * as Protocol from '../../../../generated/protocol.js';
+import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
+import type * as UI from '../../../../ui/legacy/legacy.js';
 import * as EmulationUtils from '../utils/utils.js';
 
 const UIStrings = {
@@ -123,7 +123,7 @@ const UIStrings = {
   userAgentClientHintsInfo:
       'User agent client hints are an alternative to the user agent string that identify the browser and the device in a more structured way with better privacy accounting. Click the button to learn more.',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/emulation/components/UserAgentClientHintsForm.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/settings/emulation/components/UserAgentClientHintsForm.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ClientHintsChangeEvent extends Event {
@@ -166,6 +166,7 @@ const DEFAULT_METADATA = {
  * Component for user agent client hints form, it is used in device settings panel
  * and network conditions panel. It is customizable through showMobileCheckbox and showSubmitButton.
  */
+// eslint-disable-next-line rulesdir/custom_element_definitions_location
 export class UserAgentClientHintsForm extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-user-agent-client-hints-form`;
   private readonly shadow = this.attachShadow({mode: 'open'});

@@ -84,7 +84,6 @@ export const CSS_RESOURCES_TO_LOAD_INTO_RUNTIME = [
   'panels/mobile_throttling/throttlingSettingsTab.css',
   'panels/emulation/deviceModeToolbar.css',
   'panels/emulation/deviceModeView.css',
-  'panels/emulation/devicesSettingsTab.css',
   'panels/emulation/inspectedPagePlaceholder.css',
   'panels/emulation/mediaQueryInspector.css',
   'ui/legacy/components/inline_editor/colorSwatch.css',

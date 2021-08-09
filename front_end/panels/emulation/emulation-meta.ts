@@ -35,15 +35,15 @@ const UIStrings = {
   */
   showMediaQueries: 'Show media queries',
   /**
-  *@description Command in the Device Mode Toolbar, to hide media query boundaries in the UI.
-  * https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries
-  */
-  hideMediaQueries: 'Hide media queries',
-  /**
   * @description A tag of Mobile related settings that can be searched in the command menu if the
   * user doesn't know the exact name of the tool. Device refers to e.g. phone/tablet.
   */
   device: 'device',
+  /**
+  *@description Command in the Device Mode Toolbar, to hide media query boundaries in the UI.
+  * https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries
+  */
+  hideMediaQueries: 'Hide media queries',
   /**
   *@description Command that shows measuring rulers next to the emulated device.
   */
@@ -60,14 +60,7 @@ const UIStrings = {
   *@description Command that hides a frame (like a picture frame) around the emulated device.
   */
   hideDeviceFrame: 'Hide device frame',
-  /**
-  *@description Title of the Devices tab/tool. Devices refers to e.g. phones/tablets.
-  */
-  devices: 'Devices',
-  /**
-  *@description Command that opens the device emulation view.
-  */
-  showDevices: 'Show Devices',
+
 };
 const str_ = i18n.i18n.registerUIStrings('panels/emulation/emulation-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -82,22 +75,6 @@ async function loadEmulationModule(): Promise<typeof Emulation> {
   }
   return loadedEmulationModule;
 }
-
-UI.ViewManager.registerViewExtension({
-  location: UI.ViewManager.ViewLocationValues.SETTINGS_VIEW,
-  commandPrompt: i18nLazyString(UIStrings.showDevices),
-  title: i18nLazyString(UIStrings.devices),
-  order: 30,
-  async loadView() {
-    const Emulation = await loadEmulationModule();
-    return Emulation.DevicesSettingsTab.DevicesSettingsTab.instance();
-  },
-  id: 'devices',
-  settings: [
-    'standardEmulatedDeviceList',
-    'customEmulatedDeviceList',
-  ],
-});
 
 UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.MOBILE,

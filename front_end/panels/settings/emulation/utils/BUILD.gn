@@ -2,9 +2,9 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../../../scripts/build/ninja/devtools_module.gni")
-import("../../visibility.gni")
+import("../../../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../visibility.gni")
 
 devtools_module("ui_utils") {
   sources = [
@@ -13,8 +13,8 @@ devtools_module("ui_utils") {
   ]
 
   deps = [
-    "../../../generated:protocol",
-    "../../../ui/legacy:bundle",
+    "../../../../generated:protocol",
+    "../../../../ui/legacy:bundle",
   ]
 }
 
@@ -26,7 +26,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../:*",
-    "../../../test/unittests/front_end/panels/emulation/*",
+    "../../../../test/unittests/front_end/panels/settings/emulation/*",
     "../components:*",
   ]
 

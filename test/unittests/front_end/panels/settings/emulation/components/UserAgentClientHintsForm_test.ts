@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as EmulationComponents from '../../../../../../front_end/panels/emulation/components/components.js';
-import {getElementsWithinComponent, getElementWithinComponent, getEventPromise, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import * as EmulationComponents from '../../../../../../../front_end/panels/settings/emulation/components/components.js';
+import {getElementsWithinComponent, getElementWithinComponent, getEventPromise, renderElementIntoDOM} from '../../../../helpers/DOMHelpers.js';
 
 const {assert} = chai;
 

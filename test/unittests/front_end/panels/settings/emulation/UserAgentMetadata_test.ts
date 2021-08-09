@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 const {assert} = chai;
-import * as EmulationUtils from '../../../../../front_end/panels/emulation/utils/utils.js';
-import type * as Protocol from '../../../../../front_end/generated/protocol.js';
+import * as EmulationUtils from '../../../../../../front_end/panels/settings/emulation/utils/utils.js';
+import type * as Protocol from '../../../../../../front_end/generated/protocol.js';
 const UserAgentMetadata = EmulationUtils.UserAgentMetadata;
 
 const errParse = 'syntax error';

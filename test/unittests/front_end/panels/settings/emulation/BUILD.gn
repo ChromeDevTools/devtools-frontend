@@ -2,7 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../../../../third_party/typescript/typescript.gni")
+import("../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("emulation") {
   testonly = true
@@ -12,7 +12,7 @@ ts_library("emulation") {
   ]
 
   deps = [
-    "../../../../../front_end/panels/emulation:bundle",
-    "../../helpers",
+    "../../../../../../front_end/panels/settings/emulation:bundle",
+    "../../../helpers",
   ]
 }

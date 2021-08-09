@@ -20,7 +20,7 @@ process.on('SIGINT', postFileTeardown);
 
 const TEST_SERVER_TYPE = requireTestRunnerConfigSetting<string>('test-server-type');
 
-if (TEST_SERVER_TYPE !== 'hosted-mode' && TEST_SERVER_TYPE !== 'component-docs') {
+if (TEST_SERVER_TYPE !== 'hosted-mode' && TEST_SERVER_TYPE !== 'component-docs' && TEST_SERVER_TYPE !== 'none') {
   throw new Error(`Invalid test server type: ${TEST_SERVER_TYPE}`);
 }
 
@@ -44,6 +44,9 @@ export async function mochaGlobalSetup(this: Mocha.Suite) {
   // Start the test server in the 'main' process. In parallel mode, we
   // share one server between all parallel runners. The parallel runners are all
   // in different processes, so we pass the port number as an environment var.
+  if (DERIVED_SERVER_TYPE === 'none') {
+    return;
+  }
   process.env.testServerPort = String(await startServer(DERIVED_SERVER_TYPE));
   console.log(`Started ${DERIVED_SERVER_TYPE} server on port ${process.env.testServerPort}`);
 }

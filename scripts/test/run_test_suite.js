@@ -38,9 +38,9 @@ const yargsObject =
               'Path to the node_modules directory for Node to use, relative to the current working directory. Defaults to local node_modules folder.'
         })
         .option('test-server-type', {
-          'choices': ['hosted-mode', 'component-docs'],
+          'choices': ['hosted-mode', 'component-docs', 'none'],
           'describe':
-              'The type of test-server to run for the tests. Will be set automatically if your test-suite-path ends with e2e or interactions, but you need to set it otherwise',
+              'The type of test-server to run for the tests. Will be set automatically if your test-suite-path ends with e2e or interactions, but you need to set it otherwise. If you do not need a test-server, you must explicitly pass the "none" option.',
         })
         .option('test-file-pattern', {
           type: 'string',
@@ -227,7 +227,7 @@ function main() {
     } else if (configurationFlags['test-suite-path'].match(/interactions\/?/)) {
       configurationFlags['test-server-type'] = 'component-docs';
     } else {
-      err('test-server-type could not be intelligently set based on your test-suite-path, you must manually set --test-server-type.');
+      err('test-server-type could not be intelligently set based on your test-suite-path, you must manually set --test-server-type. Set it to "none" if you do not need a test-server to be run.');
       process.exit(1);
     }
   }

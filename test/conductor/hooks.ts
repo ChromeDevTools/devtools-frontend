@@ -272,7 +272,7 @@ export async function resetPages() {
     await frontend.evaluate(() => localStorage.clear());
 
     await reloadDevTools();
-  } else {
+  } else if (TEST_SERVER_TYPE === 'component-docs') {
     // Reset the frontend back to an empty page for the component docs server.
     await loadEmptyPageAndWaitForContent(frontend);
   }

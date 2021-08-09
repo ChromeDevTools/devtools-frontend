@@ -14,7 +14,7 @@ let loadedObjectUIModule: (typeof ObjectUI|undefined);
 async function loadObjectUIModule(): Promise<typeof ObjectUI> {
   if (!loadedObjectUIModule) {
     // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('object_ui');
+    await Root.Runtime.Runtime.instance().loadModulePromise('ui/legacy/components/object_ui');
     loadedObjectUIModule = await import('./object_ui.js');
   }
   return loadedObjectUIModule;

@@ -140,7 +140,7 @@ def compute_previous_generated_file_metadata(sources,
                                              tsconfig_output_directory):
     gen_files = {}
     for src_fname in sources:
-        for ext in ['.d.ts', '.js', '.map']:
+        for ext in ['.d.ts', '.js', '.js.map']:
             gen_fname = os.path.basename(src_fname.replace('.ts', ext))
             gen_path = os.path.join(tsconfig_output_directory, gen_fname)
             if os.path.exists(gen_path):

@@ -130,17 +130,28 @@ function setEnvValueIfValuePresent(name, value) {
   }
 }
 
-function setNodeModulesPath(nodeModulesPath) {
-  if (nodeModulesPath) {
-    // Node requires the path to be absolute
-    if (path.isAbsolute(nodeModulesPath)) {
-      validatePathExistsOrError('node-modules-path', nodeModulesPath);
-      setEnvValueIfValuePresent('NODE_PATH', nodeModulesPath);
-    } else {
-      const absolutePath = path.resolve(path.join(yargsObject['cwd'], nodeModulesPath));
-      validatePathExistsOrError('node-modules-path', absolutePath);
-      setEnvValueIfValuePresent('NODE_PATH', absolutePath);
-    }
+function setNodeModulesPath(nodeModulesPathsInput) {
+  if (nodeModulesPathsInput) {
+    /** You can provide multiple paths split by either ; (windows) or : (everywhere else)
+     * So we need to split our input, ensure each part is absolute, check it
+     * exists, and then set NODE_PATH again.
+     */
+    const delimiter = os.platform() === 'win32' ? ';' : ':';
+    const inputPaths = nodeModulesPathsInput.split(delimiter);
+    const outputPaths = [];
+    inputPaths.forEach(nodePath => {
+      if (path.isAbsolute(nodePath)) {
+        validatePathExistsOrError('node-modules-path', nodePath);
+        outputPaths.push(nodePath);
+        return;
+      }
+
+      // Node requires the path to be absolute
+      const absolutePath = path.resolve(path.join(yargsObject['cwd'], nodePath));
+      validatePathExistsOrError('node-modules-path', nodePath);
+      outputPaths.push(absolutePath);
+    });
+    setEnvValueIfValuePresent('NODE_PATH', outputPaths.join(delimiter));
   }
 }
 

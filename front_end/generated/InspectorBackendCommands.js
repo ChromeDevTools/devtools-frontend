@@ -183,7 +183,8 @@ export function registerCommands(inspectorBackend) {
     ExcludeSameSiteNoneInsecure: 'ExcludeSameSiteNoneInsecure',
     ExcludeSameSiteLax: 'ExcludeSameSiteLax',
     ExcludeSameSiteStrict: 'ExcludeSameSiteStrict',
-    ExcludeInvalidSameParty: 'ExcludeInvalidSameParty'
+    ExcludeInvalidSameParty: 'ExcludeInvalidSameParty',
+    ExcludeSamePartyCrossPartyContext: 'ExcludeSamePartyCrossPartyContext'
   });
   inspectorBackend.registerEnum('Audits.SameSiteCookieWarningReason', {
     WarnSameSiteUnspecifiedCrossSiteContext: 'WarnSameSiteUnspecifiedCrossSiteContext',

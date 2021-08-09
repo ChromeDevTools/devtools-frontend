@@ -747,6 +747,7 @@ declare namespace Protocol {
       ExcludeSameSiteLax = 'ExcludeSameSiteLax',
       ExcludeSameSiteStrict = 'ExcludeSameSiteStrict',
       ExcludeInvalidSameParty = 'ExcludeInvalidSameParty',
+      ExcludeSamePartyCrossPartyContext = 'ExcludeSamePartyCrossPartyContext',
     }
 
     export const enum SameSiteCookieWarningReason {

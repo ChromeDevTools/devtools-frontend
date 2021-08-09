@@ -235,6 +235,7 @@ const knownIdentifierTypes = [
   'Security.CertificateId',
   'Target.SessionID',
   'Target.TargetID',
+  'ServiceWorker.RegistrationID',
   'WebAudio.GraphObjectId',
   'WebAuthn.AuthenticatorId',
 ];

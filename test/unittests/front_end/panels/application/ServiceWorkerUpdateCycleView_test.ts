@@ -16,10 +16,10 @@ describe('ServiceWorkerUpdateCycleView', () => {
   before(async () => {
     SDK = await import('../../../../../front_end/core/sdk/sdk.js');
   });
+  const registrationId = 'fake-sw-id' as Protocol.ServiceWorker.RegistrationID;
 
   it('calculates update cycle ranges', () => {
-    const payload:
-        Protocol.ServiceWorker.ServiceWorkerRegistration = {registrationId: '', scopeURL: '', isDeleted: false};
+    const payload: Protocol.ServiceWorker.ServiceWorkerRegistration = {registrationId, scopeURL: '', isDeleted: false};
     const registration: SDKModule.ServiceWorkerManager.ServiceWorkerRegistration =
         new SDK.ServiceWorkerManager.ServiceWorkerRegistration(payload);
 
@@ -29,7 +29,7 @@ describe('ServiceWorkerUpdateCycleView', () => {
 
     versionId++;
     let versionPayload: Protocol.ServiceWorker.ServiceWorkerVersion = {
-      registrationId: '',
+      registrationId,
       versionId: versionId.toString(),
       scriptURL: '',
       status: Protocol.ServiceWorker.ServiceWorkerVersionStatus.New,
@@ -42,7 +42,7 @@ describe('ServiceWorkerUpdateCycleView', () => {
 
     versionId++;
     versionPayload = {
-      registrationId: '',
+      registrationId,
       versionId: versionId.toString(),
       scriptURL: '',
       status: Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installing,
@@ -55,7 +55,7 @@ describe('ServiceWorkerUpdateCycleView', () => {
 
     versionId++;
     versionPayload = {
-      registrationId: '',
+      registrationId,
       versionId: versionId.toString(),
       scriptURL: '',
       status: Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installing,
@@ -69,7 +69,7 @@ describe('ServiceWorkerUpdateCycleView', () => {
 
     versionId++;
     versionPayload = {
-      registrationId: '',
+      registrationId,
       versionId: versionId.toString(),
       scriptURL: '',
       status: Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installed,
@@ -82,7 +82,7 @@ describe('ServiceWorkerUpdateCycleView', () => {
 
     versionId++;
     versionPayload = {
-      registrationId: '',
+      registrationId,
       versionId: versionId.toString(),
       scriptURL: '',
       status: Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activating,
@@ -95,7 +95,7 @@ describe('ServiceWorkerUpdateCycleView', () => {
 
     versionId++;
     versionPayload = {
-      registrationId: '',
+      registrationId,
       versionId: versionId.toString(),
       scriptURL: '',
       status: Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activating,
@@ -108,7 +108,7 @@ describe('ServiceWorkerUpdateCycleView', () => {
 
     versionId++;
     versionPayload = {
-      registrationId: '',
+      registrationId,
       versionId: versionId.toString(),
       scriptURL: '',
       status: Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activated,
@@ -121,7 +121,7 @@ describe('ServiceWorkerUpdateCycleView', () => {
 
     versionId++;
     versionPayload = {
-      registrationId: '',
+      registrationId,
       versionId: versionId.toString(),
       scriptURL: '',
       status: Protocol.ServiceWorker.ServiceWorkerVersionStatus.Redundant,

@@ -191,7 +191,7 @@ export class ServiceWorkerManager extends SDKModel {
     await this.agent.invoke_updateRegistration({scopeURL: registration.scopeURL});
   }
 
-  async deliverPushMessage(registrationId: string, data: string): Promise<void> {
+  async deliverPushMessage(registrationId: Protocol.ServiceWorker.RegistrationID, data: string): Promise<void> {
     const registration = this.registrationsInternal.get(registrationId);
     if (!registration) {
       return;
@@ -200,7 +200,8 @@ export class ServiceWorkerManager extends SDKModel {
     await this.agent.invoke_deliverPushMessage({origin, registrationId, data});
   }
 
-  async dispatchSyncEvent(registrationId: string, tag: string, lastChance: boolean): Promise<void> {
+  async dispatchSyncEvent(registrationId: Protocol.ServiceWorker.RegistrationID, tag: string, lastChance: boolean):
+      Promise<void> {
     const registration = this.registrationsInternal.get(registrationId);
     if (!registration) {
       return;
@@ -209,7 +210,7 @@ export class ServiceWorkerManager extends SDKModel {
     await this.agent.invoke_dispatchSyncEvent({origin, registrationId, tag, lastChance});
   }
 
-  async dispatchPeriodicSyncEvent(registrationId: string, tag: string): Promise<void> {
+  async dispatchPeriodicSyncEvent(registrationId: Protocol.ServiceWorker.RegistrationID, tag: string): Promise<void> {
     const registration = this.registrationsInternal.get(registrationId);
     if (!registration) {
       return;
@@ -481,7 +482,7 @@ export namespace ServiceWorkerVersion {
 
 export class ServiceWorkerRegistration {
   private fingerprintInternal!: symbol;
-  id!: string;
+  id!: Protocol.ServiceWorker.RegistrationID;
   scopeURL!: string;
   securityOrigin!: string;
   isDeleted!: boolean;

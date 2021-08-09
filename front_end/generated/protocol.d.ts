@@ -11979,7 +11979,7 @@ declare namespace Protocol {
 
   export namespace ServiceWorker {
 
-    export type RegistrationID = string;
+    export type RegistrationID = OpaqueIdentifier<string, 'Protocol.ServiceWorker.RegistrationID'>;
 
     /**
      * ServiceWorker registration.

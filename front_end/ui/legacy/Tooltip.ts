@@ -2,18 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
+import {ShortcutRegistry} from './ShortcutRegistry.js';
 
 export class Tooltip {
-  _anchorElement?: Element;
-  _tooltipLastOpened?: number;
-  _tooltipLastClosed?: number;
-
-  static install(element: HTMLElement, tooltipContent: string|null, _actionId?: string, _options?: TooltipOptions|null):
-      void {
+  static install(element: HTMLElement, tooltipContent: string|null): void {
     element.title = tooltipContent || '';
   }
-}
-export interface TooltipOptions {
-  anchorTooltipAtElement?: boolean;
+
+  static installWithActionBinding(element: HTMLElement, tooltipContent: string, actionId: string): void {
+    let description: string = tooltipContent;
+    const shortcuts = ShortcutRegistry.instance().shortcutsForAction(actionId);
+    for (const shortcut of shortcuts) {
+      description += ` - ${shortcut.title()}`;
+    }
+    element.title = description;
+  }
 }

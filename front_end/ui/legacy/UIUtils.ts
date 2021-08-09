@@ -1168,11 +1168,9 @@ export function createSlider(min: number, max: number, tabIndex: number): Elemen
   return element;
 }
 
-export function setTitle(element: HTMLElement, title: string, actionId: string|undefined = undefined): void {
+export function setTitle(element: HTMLElement, title: string): void {
   ARIAUtils.setAccessibleName(element, title);
-  Tooltip.install(element, title, actionId, {
-    anchorTooltipAtElement: true,
-  });
+  Tooltip.install(element, title);
 }
 
 export class CheckboxLabel extends HTMLSpanElement {

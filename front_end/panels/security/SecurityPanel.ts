@@ -801,6 +801,8 @@ export class SecurityPanelSidebarTree extends UI.TreeOutline.TreeOutlineInShadow
 
     this.appendChild(mainViewElement);
 
+    this.registerCSSFiles([lockIconStyles, sidebarStyles]);
+
     this._showOriginInPanel = showOriginInPanel;
     this._mainOrigin = null;
 
@@ -922,7 +924,6 @@ export class SecurityPanelSidebarTree extends UI.TreeOutline.TreeOutlineInShadow
     this._elementsByOrigin.clear();
   }
   wasShown(): void {
-    this.registerCSSFiles([lockIconStyles, sidebarStyles]);
   }
 }
 

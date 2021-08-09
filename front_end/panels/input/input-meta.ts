@@ -47,7 +47,7 @@ let loadedInputModule: (typeof Input|undefined);
 async function loadInputModule(): Promise<typeof Input> {
   if (!loadedInputModule) {
     // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('input');
+    await Root.Runtime.Runtime.instance().loadModulePromise('panels/input');
     loadedInputModule = await import('./input.js');
   }
   return loadedInputModule;

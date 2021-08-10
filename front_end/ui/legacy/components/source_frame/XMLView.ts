@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
@@ -19,24 +17,24 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/XMLV
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searchable {
-  _treeOutline: UI.TreeOutline.TreeOutlineInShadow;
-  _searchableView!: UI.SearchableView.SearchableView|null;
-  _currentSearchFocusIndex: number;
-  _currentSearchTreeElements: XMLViewNode[];
-  _searchConfig!: UI.SearchableView.SearchConfig|null;
+  private readonly treeOutline: UI.TreeOutline.TreeOutlineInShadow;
+  private searchableView!: UI.SearchableView.SearchableView|null;
+  private currentSearchFocusIndex: number;
+  private currentSearchTreeElements: XMLViewNode[];
+  private searchConfig!: UI.SearchableView.SearchConfig|null;
 
   constructor(parsedXML: Document) {
     super(true);
     this.registerRequiredCSS('ui/legacy/components/source_frame/xmlView.css');
     this.contentElement.classList.add('shadow-xml-view', 'source-code');
-    this._treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-    this._treeOutline.registerRequiredCSS('ui/legacy/components/source_frame/xmlTree.css');
-    this.contentElement.appendChild(this._treeOutline.element);
-    this._currentSearchFocusIndex = 0;
-    this._currentSearchTreeElements = [];
+    this.treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
+    this.treeOutline.registerRequiredCSS('ui/legacy/components/source_frame/xmlTree.css');
+    this.contentElement.appendChild(this.treeOutline.element);
+    this.currentSearchFocusIndex = 0;
+    this.currentSearchTreeElements = [];
 
-    XMLViewNode.populate(this._treeOutline, parsedXML, this);
-    const firstChild = this._treeOutline.firstChild();
+    XMLViewNode.populate(this.treeOutline, parsedXML, this);
+    const firstChild = this.treeOutline.firstChild();
     if (firstChild) {
       firstChild.select(true /* omitFocus */, false /* selectedByUser */);
     }
@@ -46,7 +44,7 @@ export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searc
     const xmlView = new XMLView(parsedXML);
     const searchableView = new UI.SearchableView.SearchableView(xmlView, null);
     searchableView.setPlaceholder(i18nString(UIStrings.find));
-    xmlView._searchableView = searchableView;
+    xmlView.searchableView = searchableView;
     xmlView.show(searchableView.element);
     return searchableView;
   }
@@ -71,65 +69,65 @@ export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searc
     return parsedXML;
   }
 
-  _jumpToMatch(index: number, shouldJump: boolean): void {
-    if (!this._searchConfig) {
+  private jumpToMatch(index: number, shouldJump: boolean): void {
+    if (!this.searchConfig) {
       return;
     }
-    const regex = this._searchConfig.toSearchRegex(true);
-    const previousFocusElement = this._currentSearchTreeElements[this._currentSearchFocusIndex];
+    const regex = this.searchConfig.toSearchRegex(true);
+    const previousFocusElement = this.currentSearchTreeElements[this.currentSearchFocusIndex];
     if (previousFocusElement) {
       previousFocusElement.setSearchRegex(regex);
     }
 
-    const newFocusElement = this._currentSearchTreeElements[index];
+    const newFocusElement = this.currentSearchTreeElements[index];
     if (newFocusElement) {
-      this._updateSearchIndex(index);
+      this.updateSearchIndex(index);
       if (shouldJump) {
         newFocusElement.reveal(true);
       }
       newFocusElement.setSearchRegex(regex, UI.UIUtils.highlightedCurrentSearchResultClassName);
     } else {
-      this._updateSearchIndex(0);
+      this.updateSearchIndex(0);
     }
   }
 
-  _updateSearchCount(count: number): void {
-    if (!this._searchableView) {
+  private updateSearchCount(count: number): void {
+    if (!this.searchableView) {
       return;
     }
-    this._searchableView.updateSearchMatchesCount(count);
+    this.searchableView.updateSearchMatchesCount(count);
   }
 
-  _updateSearchIndex(index: number): void {
-    this._currentSearchFocusIndex = index;
-    if (!this._searchableView) {
+  private updateSearchIndex(index: number): void {
+    this.currentSearchFocusIndex = index;
+    if (!this.searchableView) {
       return;
     }
-    this._searchableView.updateCurrentMatchIndex(index);
+    this.searchableView.updateCurrentMatchIndex(index);
   }
 
-  _innerPerformSearch(shouldJump: boolean, jumpBackwards?: boolean): void {
-    if (!this._searchConfig) {
+  innerPerformSearch(shouldJump: boolean, jumpBackwards?: boolean): void {
+    if (!this.searchConfig) {
       return;
     }
-    let newIndex: number = this._currentSearchFocusIndex;
-    const previousSearchFocusElement = this._currentSearchTreeElements[newIndex];
-    this._innerSearchCanceled();
-    this._currentSearchTreeElements = [];
-    const regex = this._searchConfig.toSearchRegex(true);
+    let newIndex: number = this.currentSearchFocusIndex;
+    const previousSearchFocusElement = this.currentSearchTreeElements[newIndex];
+    this.innerSearchCanceled();
+    this.currentSearchTreeElements = [];
+    const regex = this.searchConfig.toSearchRegex(true);
 
     for (let element: (UI.TreeOutline.TreeElement|null) =
-             (this._treeOutline.rootElement() as UI.TreeOutline.TreeElement | null);
+             (this.treeOutline.rootElement() as UI.TreeOutline.TreeElement | null);
          element; element = element.traverseNextTreeElement(false)) {
       if (!(element instanceof XMLViewNode)) {
         continue;
       }
       const hasMatch = element.setSearchRegex(regex);
       if (hasMatch) {
-        this._currentSearchTreeElements.push(element);
+        this.currentSearchTreeElements.push(element);
       }
       if (previousSearchFocusElement === element) {
-        const currentIndex = this._currentSearchTreeElements.length - 1;
+        const currentIndex = this.currentSearchTreeElements.length - 1;
         if (hasMatch || jumpBackwards) {
           newIndex = currentIndex;
         } else {
@@ -137,59 +135,59 @@ export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searc
         }
       }
     }
-    this._updateSearchCount(this._currentSearchTreeElements.length);
+    this.updateSearchCount(this.currentSearchTreeElements.length);
 
-    if (!this._currentSearchTreeElements.length) {
-      this._updateSearchIndex(0);
+    if (!this.currentSearchTreeElements.length) {
+      this.updateSearchIndex(0);
       return;
     }
-    newIndex = Platform.NumberUtilities.mod(newIndex, this._currentSearchTreeElements.length);
+    newIndex = Platform.NumberUtilities.mod(newIndex, this.currentSearchTreeElements.length);
 
-    this._jumpToMatch(newIndex, shouldJump);
+    this.jumpToMatch(newIndex, shouldJump);
   }
 
-  _innerSearchCanceled(): void {
+  private innerSearchCanceled(): void {
     for (let element: (UI.TreeOutline.TreeElement|null) =
-             (this._treeOutline.rootElement() as UI.TreeOutline.TreeElement | null);
+             (this.treeOutline.rootElement() as UI.TreeOutline.TreeElement | null);
          element; element = element.traverseNextTreeElement(false)) {
       if (!(element instanceof XMLViewNode)) {
         continue;
       }
       element.revertHighlightChanges();
     }
-    this._updateSearchCount(0);
-    this._updateSearchIndex(0);
+    this.updateSearchCount(0);
+    this.updateSearchIndex(0);
   }
 
   searchCanceled(): void {
-    this._searchConfig = null;
-    this._currentSearchTreeElements = [];
-    this._innerSearchCanceled();
+    this.searchConfig = null;
+    this.currentSearchTreeElements = [];
+    this.innerSearchCanceled();
   }
 
   performSearch(searchConfig: UI.SearchableView.SearchConfig, shouldJump: boolean, jumpBackwards?: boolean): void {
-    this._searchConfig = searchConfig;
-    this._innerPerformSearch(shouldJump, jumpBackwards);
+    this.searchConfig = searchConfig;
+    this.innerPerformSearch(shouldJump, jumpBackwards);
   }
 
   jumpToNextSearchResult(): void {
-    if (!this._currentSearchTreeElements.length) {
+    if (!this.currentSearchTreeElements.length) {
       return;
     }
 
     const newIndex =
-        Platform.NumberUtilities.mod(this._currentSearchFocusIndex + 1, this._currentSearchTreeElements.length);
-    this._jumpToMatch(newIndex, true);
+        Platform.NumberUtilities.mod(this.currentSearchFocusIndex + 1, this.currentSearchTreeElements.length);
+    this.jumpToMatch(newIndex, true);
   }
 
   jumpToPreviousSearchResult(): void {
-    if (!this._currentSearchTreeElements.length) {
+    if (!this.currentSearchTreeElements.length) {
       return;
     }
 
     const newIndex =
-        Platform.NumberUtilities.mod(this._currentSearchFocusIndex - 1, this._currentSearchTreeElements.length);
-    this._jumpToMatch(newIndex, true);
+        Platform.NumberUtilities.mod(this.currentSearchFocusIndex - 1, this.currentSearchTreeElements.length);
+    this.jumpToMatch(newIndex, true);
   }
 
   supportsCaseSensitiveSearch(): boolean {
@@ -202,19 +200,19 @@ export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searc
 }
 
 export class XMLViewNode extends UI.TreeOutline.TreeElement {
-  _node: Node|ParentNode;
-  _closeTag: boolean;
-  _highlightChanges: UI.UIUtils.HighlightChange[];
-  _xmlView: XMLView;
+  private readonly node: Node|ParentNode;
+  private readonly closeTag: boolean;
+  private highlightChanges: UI.UIUtils.HighlightChange[];
+  private readonly xmlView: XMLView;
 
   constructor(node: Node|ParentNode, closeTag: boolean, xmlView: XMLView) {
     super('', !closeTag && 'childElementCount' in node && Boolean(node.childElementCount));
-    this._node = node;
-    this._closeTag = closeTag;
+    this.node = node;
+    this.closeTag = closeTag;
     this.selectable = true;
-    this._highlightChanges = [];
-    this._xmlView = xmlView;
-    this._updateTitle();
+    this.highlightChanges = [];
+    this.xmlView = xmlView;
+    this.updateTitle();
   }
 
   static populate(
@@ -244,7 +242,7 @@ export class XMLViewNode extends UI.TreeOutline.TreeElement {
     if (!regex) {
       return false;
     }
-    if (this._closeTag && this.parent && !this.parent.expanded) {
+    if (this.closeTag && this.parent && !this.parent.expanded) {
       return false;
     }
     regex.lastIndex = 0;
@@ -263,18 +261,18 @@ export class XMLViewNode extends UI.TreeOutline.TreeElement {
       match = regex.exec(content);
     }
     if (ranges.length) {
-      UI.UIUtils.highlightRangesWithStyleClass(this.listItemElement, ranges, cssClasses, this._highlightChanges);
+      UI.UIUtils.highlightRangesWithStyleClass(this.listItemElement, ranges, cssClasses, this.highlightChanges);
     }
-    return Boolean(this._highlightChanges.length);
+    return Boolean(this.highlightChanges.length);
   }
 
   revertHighlightChanges(): void {
-    UI.UIUtils.revertDomChanges(this._highlightChanges);
-    this._highlightChanges = [];
+    UI.UIUtils.revertDomChanges(this.highlightChanges);
+    this.highlightChanges = [];
   }
 
-  _updateTitle(): void {
-    const node = this._node;
+  private updateTitle(): void {
+    const node = this.node;
     if (!('nodeType' in node)) {
       return;
     }
@@ -282,8 +280,8 @@ export class XMLViewNode extends UI.TreeOutline.TreeElement {
       case 1: {  // ELEMENT
         if (node instanceof Element) {
           const tag = node.tagName;
-          if (this._closeTag) {
-            this._setTitle(['</' + tag + '>', 'shadow-xml-view-tag']);
+          if (this.closeTag) {
+            this.setTitle(['</' + tag + '>', 'shadow-xml-view-tag']);
             return;
           }
           const titleItems = ['<' + tag, 'shadow-xml-view-tag'];
@@ -311,20 +309,20 @@ export class XMLViewNode extends UI.TreeOutline.TreeElement {
             }
           }
           titleItems.push('>', 'shadow-xml-view-tag');
-          this._setTitle(titleItems);
+          this.setTitle(titleItems);
           return;
         }
         return;
       }
       case 3: {  // TEXT
         if (node.nodeValue) {
-          this._setTitle([node.nodeValue, 'shadow-xml-view-text']);
+          this.setTitle([node.nodeValue, 'shadow-xml-view-text']);
         }
         return;
       }
       case 4: {  // CDATA
         if (node.nodeValue) {
-          this._setTitle([
+          this.setTitle([
             '<![CDATA[',
             'shadow-xml-view-cdata',
             node.nodeValue,
@@ -337,41 +335,40 @@ export class XMLViewNode extends UI.TreeOutline.TreeElement {
       }
       case 7: {  // PROCESSING_INSTRUCTION
         if (node.nodeValue) {
-          this._setTitle(
-              ['<?' + node.nodeName + ' ' + node.nodeValue + '?>', 'shadow-xml-view-processing-instruction']);
+          this.setTitle(['<?' + node.nodeName + ' ' + node.nodeValue + '?>', 'shadow-xml-view-processing-instruction']);
         }
         return;
       }
       case 8: {  // COMMENT
-        this._setTitle(['<!--' + node.nodeValue + '-->', 'shadow-xml-view-comment']);
+        this.setTitle(['<!--' + node.nodeValue + '-->', 'shadow-xml-view-comment']);
         return;
       }
     }
   }
 
-  _setTitle(items: string[]): void {
+  private setTitle(items: string[]): void {
     const titleFragment = document.createDocumentFragment();
     for (let i = 0; i < items.length; i += 2) {
       titleFragment.createChild('span', items[i + 1]).textContent = items[i];
     }
     this.title = titleFragment;
-    this._xmlView._innerPerformSearch(false, false);
+    this.xmlView.innerPerformSearch(false, false);
   }
 
   onattach(): void {
-    this.listItemElement.classList.toggle('shadow-xml-view-close-tag', this._closeTag);
+    this.listItemElement.classList.toggle('shadow-xml-view-close-tag', this.closeTag);
   }
 
   onexpand(): void {
-    this._updateTitle();
+    this.updateTitle();
   }
 
   oncollapse(): void {
-    this._updateTitle();
+    this.updateTitle();
   }
 
   async onpopulate(): Promise<void> {
-    XMLViewNode.populate(this, this._node, this._xmlView);
-    this.appendChild(new XMLViewNode(this._node, true, this._xmlView));
+    XMLViewNode.populate(this, this.node, this.xmlView);
+    this.appendChild(new XMLViewNode(this.node, true, this.xmlView));
   }
 }

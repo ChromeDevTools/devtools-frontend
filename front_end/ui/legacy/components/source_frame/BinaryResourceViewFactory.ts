@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as Common from '../../../../core/common/common.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import type * as UI from '../../legacy.js';
@@ -11,68 +9,68 @@ import type * as UI from '../../legacy.js';
 import {ResourceSourceFrame} from './ResourceSourceFrame.js';
 
 export class BinaryResourceViewFactory {
-  _base64content: string;
-  _contentUrl: string;
-  _resourceType: Common.ResourceType.ResourceType;
-  _arrayPromise: Promise<Uint8Array>|null;
-  _hexPromise: Promise<TextUtils.ContentProvider.DeferredContent>|null;
-  _utf8Promise: Promise<TextUtils.ContentProvider.DeferredContent>|null;
+  private base64content: string;
+  private readonly contentUrl: string;
+  private readonly resourceType: Common.ResourceType.ResourceType;
+  private arrayPromise: Promise<Uint8Array>|null;
+  private hexPromise: Promise<TextUtils.ContentProvider.DeferredContent>|null;
+  private utf8Promise: Promise<TextUtils.ContentProvider.DeferredContent>|null;
   constructor(base64content: string, contentUrl: string, resourceType: Common.ResourceType.ResourceType) {
-    this._base64content = base64content;
-    this._contentUrl = contentUrl;
-    this._resourceType = resourceType;
-    this._arrayPromise = null;
-    this._hexPromise = null;
-    this._utf8Promise = null;
+    this.base64content = base64content;
+    this.contentUrl = contentUrl;
+    this.resourceType = resourceType;
+    this.arrayPromise = null;
+    this.hexPromise = null;
+    this.utf8Promise = null;
   }
 
-  async _fetchContentAsArray(): Promise<Uint8Array> {
-    if (!this._arrayPromise) {
-      this._arrayPromise = new Promise(async resolve => {
-        const fetchResponse = await fetch('data:;base64,' + this._base64content);
+  private async fetchContentAsArray(): Promise<Uint8Array> {
+    if (!this.arrayPromise) {
+      this.arrayPromise = new Promise(async resolve => {
+        const fetchResponse = await fetch('data:;base64,' + this.base64content);
         resolve(new Uint8Array(await fetchResponse.arrayBuffer()));
       });
     }
-    return await this._arrayPromise;
+    return await this.arrayPromise;
   }
 
   async hex(): Promise<TextUtils.ContentProvider.DeferredContent> {
-    if (!this._hexPromise) {
-      const content = await this._fetchContentAsArray();
+    if (!this.hexPromise) {
+      const content = await this.fetchContentAsArray();
       const hexString = BinaryResourceViewFactory.uint8ArrayToHexString(content);
       return {content: hexString, isEncoded: false};
     }
 
-    return this._hexPromise;
+    return this.hexPromise;
   }
 
   async base64(): Promise<TextUtils.ContentProvider.DeferredContent> {
-    return {content: this._base64content, isEncoded: true};
+    return {content: this.base64content, isEncoded: true};
   }
 
   async utf8(): Promise<TextUtils.ContentProvider.DeferredContent> {
-    if (!this._utf8Promise) {
-      this._utf8Promise = new Promise(async resolve => {
-        const content = await this._fetchContentAsArray();
+    if (!this.utf8Promise) {
+      this.utf8Promise = new Promise(async resolve => {
+        const content = await this.fetchContentAsArray();
         const utf8String = new TextDecoder('utf8').decode(content);
         resolve({content: utf8String, isEncoded: false});
       });
     }
 
-    return this._utf8Promise;
+    return this.utf8Promise;
   }
 
   createBase64View(): ResourceSourceFrame {
     return new ResourceSourceFrame(
         TextUtils.StaticContentProvider.StaticContentProvider.fromString(
-            this._contentUrl, this._resourceType, this._base64content),
+            this.contentUrl, this.resourceType, this.base64content),
         /* autoPrettyPrint */ false, ({lineNumbers: false, lineWrapping: true} as UI.TextEditor.Options));
   }
 
   createHexView(): ResourceSourceFrame {
     const hexViewerContentProvider =
-        new TextUtils.StaticContentProvider.StaticContentProvider(this._contentUrl, this._resourceType, async () => {
-          const contentAsArray = await this._fetchContentAsArray();
+        new TextUtils.StaticContentProvider.StaticContentProvider(this.contentUrl, this.resourceType, async () => {
+          const contentAsArray = await this.fetchContentAsArray();
           const content = BinaryResourceViewFactory.uint8ArrayToHexViewer(contentAsArray);
           return {content, isEncoded: false};
         });
@@ -84,7 +82,7 @@ export class BinaryResourceViewFactory {
   createUtf8View(): ResourceSourceFrame {
     const utf8fn = this.utf8.bind(this);
     const utf8ContentProvider =
-        new TextUtils.StaticContentProvider.StaticContentProvider(this._contentUrl, this._resourceType, utf8fn);
+        new TextUtils.StaticContentProvider.StaticContentProvider(this.contentUrl, this.resourceType, utf8fn);
     return new ResourceSourceFrame(
         utf8ContentProvider,
         /* autoPrettyPrint */ false, ({lineNumbers: true, lineWrapping: true} as UI.TextEditor.Options));

@@ -30,8 +30,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
@@ -51,32 +49,33 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/FontView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class FontView extends UI.View.SimpleView {
-  _url: string;
-  _mimeType: string;
-  _contentProvider: TextUtils.ContentProvider.ContentProvider;
-  _mimeTypeLabel: UI.Toolbar.ToolbarText;
+  private readonly url: string;
+  private readonly mimeType: string;
+  private readonly contentProvider: TextUtils.ContentProvider.ContentProvider;
+  private readonly mimeTypeLabel: UI.Toolbar.ToolbarText;
   fontPreviewElement!: HTMLElement|null;
-  _dummyElement!: HTMLElement|null;
+  private dummyElement!: HTMLElement|null;
   fontStyleElement!: HTMLStyleElement|null;
-  _inResize!: boolean|null;
+  private inResize!: boolean|null;
   constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider) {
     super(i18nString(UIStrings.font));
     this.registerRequiredCSS('ui/legacy/components/source_frame/fontView.css');
     this.element.classList.add('font-view');
-    this._url = contentProvider.contentURL();
-    UI.ARIAUtils.setAccessibleName(this.element, i18nString(UIStrings.previewOfFontFromS, {PH1: this._url}));
-    this._mimeType = mimeType;
-    this._contentProvider = contentProvider;
-    this._mimeTypeLabel = new UI.Toolbar.ToolbarText(mimeType);
+    this.url = contentProvider.contentURL();
+    UI.ARIAUtils.setAccessibleName(this.element, i18nString(UIStrings.previewOfFontFromS, {PH1: this.url}));
+    this.mimeType = mimeType;
+    this.contentProvider = contentProvider;
+    this.mimeTypeLabel = new UI.Toolbar.ToolbarText(mimeType);
   }
 
   async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
-    return [this._mimeTypeLabel];
+    return [this.mimeTypeLabel];
   }
 
-  _onFontContentLoaded(uniqueFontName: string, deferredContent: TextUtils.ContentProvider.DeferredContent): void {
+  private onFontContentLoaded(uniqueFontName: string, deferredContent: TextUtils.ContentProvider.DeferredContent):
+      void {
     const {content} = deferredContent;
-    const url = content ? TextUtils.ContentProvider.contentAsDataURL(content, this._mimeType, true) : this._url;
+    const url = content ? TextUtils.ContentProvider.contentAsDataURL(content, this.mimeType, true) : this.url;
     if (!this.fontStyleElement) {
       return;
     }
@@ -85,15 +84,15 @@ export class FontView extends UI.View.SimpleView {
     this.updateFontPreviewSize();
   }
 
-  _createContentIfNeeded(): void {
+  private createContentIfNeeded(): void {
     if (this.fontPreviewElement) {
       return;
     }
 
     const uniqueFontName = 'WebInspectorFontPreview' + (++_fontId);
     this.fontStyleElement = document.createElement('style');
-    this._contentProvider.requestContent().then(deferredContent => {
-      this._onFontContentLoaded(uniqueFontName, deferredContent);
+    this.contentProvider.requestContent().then(deferredContent => {
+      this.onFontContentLoaded(uniqueFontName, deferredContent);
     });
     this.element.appendChild(this.fontStyleElement);
 
@@ -113,46 +112,46 @@ export class FontView extends UI.View.SimpleView {
     this.fontPreviewElement.style.setProperty('font-family', uniqueFontName);
     this.fontPreviewElement.style.setProperty('visibility', 'hidden');
 
-    this._dummyElement = fontPreview;
-    this._dummyElement.style.visibility = 'hidden';
-    this._dummyElement.style.zIndex = '-1';
-    this._dummyElement.style.display = 'inline';
-    this._dummyElement.style.position = 'absolute';
-    this._dummyElement.style.setProperty('font-family', uniqueFontName);
-    this._dummyElement.style.setProperty('font-size', _measureFontSize + 'px');
+    this.dummyElement = fontPreview;
+    this.dummyElement.style.visibility = 'hidden';
+    this.dummyElement.style.zIndex = '-1';
+    this.dummyElement.style.display = 'inline';
+    this.dummyElement.style.position = 'absolute';
+    this.dummyElement.style.setProperty('font-family', uniqueFontName);
+    this.dummyElement.style.setProperty('font-size', _measureFontSize + 'px');
 
     this.element.appendChild(this.fontPreviewElement);
   }
 
   wasShown(): void {
-    this._createContentIfNeeded();
+    this.createContentIfNeeded();
 
     this.updateFontPreviewSize();
   }
 
   onResize(): void {
-    if (this._inResize) {
+    if (this.inResize) {
       return;
     }
 
-    this._inResize = true;
+    this.inResize = true;
     try {
       this.updateFontPreviewSize();
     } finally {
-      this._inResize = null;
+      this.inResize = null;
     }
   }
 
-  _measureElement(): {
+  private measureElement(): {
     width: number,
     height: number,
   } {
-    if (!this._dummyElement) {
+    if (!this.dummyElement) {
       throw new Error('No font preview loaded');
     }
-    this.element.appendChild(this._dummyElement);
-    const result = {width: this._dummyElement.offsetWidth, height: this._dummyElement.offsetHeight};
-    this.element.removeChild(this._dummyElement);
+    this.element.appendChild(this.dummyElement);
+    const result = {width: this.dummyElement.offsetWidth, height: this.dummyElement.offsetHeight};
+    this.element.removeChild(this.dummyElement);
 
     return result;
   }
@@ -163,7 +162,7 @@ export class FontView extends UI.View.SimpleView {
     }
 
     this.fontPreviewElement.style.removeProperty('visibility');
-    const dimension = this._measureElement();
+    const dimension = this.measureElement();
 
     const height = dimension.height;
     const width = dimension.width;

@@ -2,20 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Diff from '../../../../third_party/diff/diff.js';
 import type * as TextEditor from '../text_editor/text_editor.js';
 import type {SourcesTextEditor} from './SourcesTextEditor.js';
 
 export class SourceCodeDiff {
-  _textEditor: SourcesTextEditor;
-  _animatedLines: TextEditor.CodeMirrorTextEditor.TextEditorPositionHandle[];
-  _animationTimeout: number|null;
+  private readonly textEditor: SourcesTextEditor;
+  private animatedLines: TextEditor.CodeMirrorTextEditor.TextEditorPositionHandle[];
+  private animationTimeout: number|null;
   constructor(textEditor: SourcesTextEditor) {
-    this._textEditor = textEditor;
-    this._animatedLines = [];
-    this._animationTimeout = null;
+    this.textEditor = textEditor;
+    this.animatedLines = [];
+    this.animationTimeout = null;
   }
 
   highlightModifiedLines(oldContent: string|null, newContent: string|null): void {
@@ -32,35 +30,35 @@ export class SourceCodeDiff {
         continue;
       }
       for (let lineNumber = diffEntry.from; lineNumber < diffEntry.to; ++lineNumber) {
-        const position = this._textEditor.textEditorPositionHandle(lineNumber, 0);
+        const position = this.textEditor.textEditorPositionHandle(lineNumber, 0);
         if (position) {
           changedLines.push(position);
         }
       }
     }
-    this._updateHighlightedLines(changedLines);
-    this._animationTimeout = window.setTimeout(
-        this._updateHighlightedLines.bind(this, []), 400);  // // Keep this timeout in sync with sourcesView.css.
+    this.updateHighlightedLines(changedLines);
+    this.animationTimeout = window.setTimeout(
+        this.updateHighlightedLines.bind(this, []), 400);  // // Keep this timeout in sync with sourcesView.css.
   }
 
-  _updateHighlightedLines(newLines: TextEditor.CodeMirrorTextEditor.TextEditorPositionHandle[]): void {
-    if (this._animationTimeout) {
-      clearTimeout(this._animationTimeout);
+  private updateHighlightedLines(newLines: TextEditor.CodeMirrorTextEditor.TextEditorPositionHandle[]): void {
+    if (this.animationTimeout) {
+      clearTimeout(this.animationTimeout);
     }
-    this._animationTimeout = null;
-    this._textEditor.operation(operation.bind(this));
+    this.animationTimeout = null;
+    this.textEditor.operation(operation.bind(this));
 
     function operation(this: SourceCodeDiff): void {
       toggleLines.call(this, false);
-      this._animatedLines = newLines;
+      this.animatedLines = newLines;
       toggleLines.call(this, true);
     }
 
     function toggleLines(this: SourceCodeDiff, value: boolean): void {
-      for (let i = 0; i < this._animatedLines.length; ++i) {
-        const location = this._animatedLines[i].resolve();
+      for (let i = 0; i < this.animatedLines.length; ++i) {
+        const location = this.animatedLines[i].resolve();
         if (location) {
-          this._textEditor.toggleLineClass(location.lineNumber, 'highlight-line-modification', value);
+          this.textEditor.toggleLineClass(location.lineNumber, 'highlight-line-modification', value);
         }
       }
     }

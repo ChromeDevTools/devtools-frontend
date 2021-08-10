@@ -30,8 +30,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../../../core/common/common.js';
 import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
@@ -84,132 +82,132 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/ImageView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ImageView extends UI.View.SimpleView {
-  _url: string;
-  _parsedURL: Common.ParsedURL.ParsedURL;
-  _mimeType: string;
-  _contentProvider: TextUtils.ContentProvider.ContentProvider;
-  _uiSourceCode: Workspace.UISourceCode.UISourceCode|null;
-  _sizeLabel: UI.Toolbar.ToolbarText;
-  _dimensionsLabel: UI.Toolbar.ToolbarText;
-  _aspectRatioLabel: UI.Toolbar.ToolbarText;
-  _mimeTypeLabel: UI.Toolbar.ToolbarText;
-  _container: HTMLElement;
-  _imagePreviewElement: HTMLImageElement;
-  _cachedContent?: string|null;
+  private url: string;
+  private parsedURL: Common.ParsedURL.ParsedURL;
+  private readonly mimeType: string;
+  private readonly contentProvider: TextUtils.ContentProvider.ContentProvider;
+  private uiSourceCode: Workspace.UISourceCode.UISourceCode|null;
+  private readonly sizeLabel: UI.Toolbar.ToolbarText;
+  private readonly dimensionsLabel: UI.Toolbar.ToolbarText;
+  private readonly aspectRatioLabel: UI.Toolbar.ToolbarText;
+  private readonly mimeTypeLabel: UI.Toolbar.ToolbarText;
+  private readonly container: HTMLElement;
+  private imagePreviewElement: HTMLImageElement;
+  private cachedContent?: string|null;
   constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider) {
     super(i18nString(UIStrings.image));
     this.registerRequiredCSS('ui/legacy/components/source_frame/imageView.css');
     this.element.tabIndex = -1;
     this.element.classList.add('image-view');
-    this._url = contentProvider.contentURL();
-    this._parsedURL = new Common.ParsedURL.ParsedURL(this._url);
-    this._mimeType = mimeType;
-    this._contentProvider = contentProvider;
-    this._uiSourceCode = contentProvider instanceof Workspace.UISourceCode.UISourceCode ?
+    this.url = contentProvider.contentURL();
+    this.parsedURL = new Common.ParsedURL.ParsedURL(this.url);
+    this.mimeType = mimeType;
+    this.contentProvider = contentProvider;
+    this.uiSourceCode = contentProvider instanceof Workspace.UISourceCode.UISourceCode ?
         contentProvider as Workspace.UISourceCode.UISourceCode :
         null;
-    if (this._uiSourceCode) {
-      this._uiSourceCode.addEventListener(
-          Workspace.UISourceCode.Events.WorkingCopyCommitted, this._workingCopyCommitted, this);
+    if (this.uiSourceCode) {
+      this.uiSourceCode.addEventListener(
+          Workspace.UISourceCode.Events.WorkingCopyCommitted, this.workingCopyCommitted, this);
       new UI.DropTarget.DropTarget(
           this.element, [UI.DropTarget.Type.ImageFile, UI.DropTarget.Type.URI], i18nString(UIStrings.dropImageFileHere),
-          this._handleDrop.bind(this));
+          this.handleDrop.bind(this));
     }
-    this._sizeLabel = new UI.Toolbar.ToolbarText();
-    this._dimensionsLabel = new UI.Toolbar.ToolbarText();
-    this._aspectRatioLabel = new UI.Toolbar.ToolbarText();
-    this._mimeTypeLabel = new UI.Toolbar.ToolbarText(mimeType);
-    this._container = this.element.createChild('div', 'image');
-    this._imagePreviewElement = (this._container.createChild('img', 'resource-image-view') as HTMLImageElement);
-    this._imagePreviewElement.addEventListener('contextmenu', this._contextMenu.bind(this), true);
+    this.sizeLabel = new UI.Toolbar.ToolbarText();
+    this.dimensionsLabel = new UI.Toolbar.ToolbarText();
+    this.aspectRatioLabel = new UI.Toolbar.ToolbarText();
+    this.mimeTypeLabel = new UI.Toolbar.ToolbarText(mimeType);
+    this.container = this.element.createChild('div', 'image');
+    this.imagePreviewElement = (this.container.createChild('img', 'resource-image-view') as HTMLImageElement);
+    this.imagePreviewElement.addEventListener('contextmenu', this.contextMenu.bind(this), true);
   }
 
   async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
-    await this._updateContentIfNeeded();
+    await this.updateContentIfNeeded();
     return [
-      this._sizeLabel,
+      this.sizeLabel,
       new UI.Toolbar.ToolbarSeparator(),
-      this._dimensionsLabel,
+      this.dimensionsLabel,
       new UI.Toolbar.ToolbarSeparator(),
-      this._aspectRatioLabel,
+      this.aspectRatioLabel,
       new UI.Toolbar.ToolbarSeparator(),
-      this._mimeTypeLabel,
+      this.mimeTypeLabel,
     ];
   }
 
   wasShown(): void {
-    this._updateContentIfNeeded();
+    this.updateContentIfNeeded();
   }
 
   disposeView(): void {
-    if (this._uiSourceCode) {
-      this._uiSourceCode.removeEventListener(
-          Workspace.UISourceCode.Events.WorkingCopyCommitted, this._workingCopyCommitted, this);
+    if (this.uiSourceCode) {
+      this.uiSourceCode.removeEventListener(
+          Workspace.UISourceCode.Events.WorkingCopyCommitted, this.workingCopyCommitted, this);
     }
   }
 
-  _workingCopyCommitted(): void {
-    this._updateContentIfNeeded();
+  private workingCopyCommitted(): void {
+    this.updateContentIfNeeded();
   }
 
-  async _updateContentIfNeeded(): Promise<void> {
-    const {content} = await this._contentProvider.requestContent();
-    if (this._cachedContent === content) {
+  private async updateContentIfNeeded(): Promise<void> {
+    const {content} = await this.contentProvider.requestContent();
+    if (this.cachedContent === content) {
       return;
     }
 
-    const contentEncoded = await this._contentProvider.contentEncoded();
-    this._cachedContent = content;
-    const imageSrc = TextUtils.ContentProvider.contentAsDataURL(content, this._mimeType, contentEncoded) || this._url;
+    const contentEncoded = await this.contentProvider.contentEncoded();
+    this.cachedContent = content;
+    const imageSrc = TextUtils.ContentProvider.contentAsDataURL(content, this.mimeType, contentEncoded) || this.url;
     const loadPromise = new Promise(x => {
-      this._imagePreviewElement.onload = x;
+      this.imagePreviewElement.onload = x;
     });
-    this._imagePreviewElement.src = imageSrc;
-    this._imagePreviewElement.alt = i18nString(UIStrings.imageFromS, {PH1: this._url});
+    this.imagePreviewElement.src = imageSrc;
+    this.imagePreviewElement.alt = i18nString(UIStrings.imageFromS, {PH1: this.url});
     const size = content && !contentEncoded ? content.length : Platform.StringUtilities.base64ToSize(content);
-    this._sizeLabel.setText(Platform.NumberUtilities.bytesToString(size));
+    this.sizeLabel.setText(Platform.NumberUtilities.bytesToString(size));
     await loadPromise;
-    this._dimensionsLabel.setText(i18nString(
-        UIStrings.dD, {PH1: this._imagePreviewElement.naturalWidth, PH2: this._imagePreviewElement.naturalHeight}));
-    this._aspectRatioLabel.setText(Platform.NumberUtilities.aspectRatio(
-        this._imagePreviewElement.naturalWidth, this._imagePreviewElement.naturalHeight));
+    this.dimensionsLabel.setText(i18nString(
+        UIStrings.dD, {PH1: this.imagePreviewElement.naturalWidth, PH2: this.imagePreviewElement.naturalHeight}));
+    this.aspectRatioLabel.setText(Platform.NumberUtilities.aspectRatio(
+        this.imagePreviewElement.naturalWidth, this.imagePreviewElement.naturalHeight));
   }
 
-  _contextMenu(event: Event): void {
+  private contextMenu(event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    const parsedSrc = new Common.ParsedURL.ParsedURL(this._imagePreviewElement.src);
-    if (!this._parsedURL.isDataURL()) {
-      contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyImageUrl), this._copyImageURL.bind(this));
+    const parsedSrc = new Common.ParsedURL.ParsedURL(this.imagePreviewElement.src);
+    if (!this.parsedURL.isDataURL()) {
+      contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyImageUrl), this.copyImageURL.bind(this));
     }
     if (parsedSrc.isDataURL()) {
       contextMenu.clipboardSection().appendItem(
-          i18nString(UIStrings.copyImageAsDataUri), this._copyImageAsDataURL.bind(this));
+          i18nString(UIStrings.copyImageAsDataUri), this.copyImageAsDataURL.bind(this));
     }
 
-    contextMenu.clipboardSection().appendItem(i18nString(UIStrings.openImageInNewTab), this._openInNewTab.bind(this));
+    contextMenu.clipboardSection().appendItem(i18nString(UIStrings.openImageInNewTab), this.openInNewTab.bind(this));
     contextMenu.clipboardSection().appendItem(i18nString(UIStrings.saveImageAs), async () => {
-      await this._saveImage();
+      await this.saveImage();
     });
 
     contextMenu.show();
   }
 
-  _copyImageAsDataURL(): void {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this._imagePreviewElement.src);
+  private copyImageAsDataURL(): void {
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.imagePreviewElement.src);
   }
 
-  _copyImageURL(): void {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this._url);
+  private copyImageURL(): void {
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.url);
   }
 
-  async _saveImage(): Promise<void> {
-    const contentEncoded = await this._contentProvider.contentEncoded();
-    if (!this._cachedContent) {
+  private async saveImage(): Promise<void> {
+    const contentEncoded = await this.contentProvider.contentEncoded();
+    if (!this.cachedContent) {
       return;
     }
-    const cachedContent = this._cachedContent;
+    const cachedContent = this.cachedContent;
     const imageDataURL =
-        TextUtils.ContentProvider.contentAsDataURL(cachedContent, this._mimeType, contentEncoded, '', false);
+        TextUtils.ContentProvider.contentAsDataURL(cachedContent, this.mimeType, contentEncoded, '', false);
 
     if (!imageDataURL) {
       return;
@@ -223,16 +221,16 @@ export class ImageView extends UI.View.SimpleView {
     // by the OS will be replaced automatically. For example, in the Mac,
     // `:` it will be replaced with `_`.
     link.download =
-        this._parsedURL.isDataURL() ? i18nString(UIStrings.download) : decodeURIComponent(this._parsedURL.displayName);
+        this.parsedURL.isDataURL() ? i18nString(UIStrings.download) : decodeURIComponent(this.parsedURL.displayName);
     link.click();
     link.remove();
   }
 
-  _openInNewTab(): void {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this._url);
+  private openInNewTab(): void {
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.url);
   }
 
-  async _handleDrop(dataTransfer: DataTransfer): Promise<void> {
+  private async handleDrop(dataTransfer: DataTransfer): Promise<void> {
     const items = dataTransfer.items;
     if (!items.length || items[0].kind !== 'file') {
       return;
@@ -250,10 +248,10 @@ export class ImageView extends UI.View.SimpleView {
           result = null;
           console.error('Can\'t read file: ' + e);
         }
-        if (typeof result !== 'string' || !this._uiSourceCode) {
+        if (typeof result !== 'string' || !this.uiSourceCode) {
           return;
         }
-        this._uiSourceCode.setContent(encoded ? btoa(result) : result, encoded);
+        this.uiSourceCode.setContent(encoded ? btoa(result) : result, encoded);
       };
       if (encoded) {
         reader.readAsBinaryString(file);

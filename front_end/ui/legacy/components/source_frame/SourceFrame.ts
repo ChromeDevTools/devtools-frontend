@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
@@ -90,111 +88,111 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class SourceFrameImpl extends UI.View.SimpleView implements UI.SearchableView.Searchable,
                                                                    UI.SearchableView.Replaceable,
                                                                    SourcesTextEditorDelegate, Transformer {
-  _lazyContent: () => Promise<TextUtils.ContentProvider.DeferredContent>;
-  _pretty: boolean;
-  _rawContent: string|null;
-  _formattedContentPromise: Promise<Formatter.ScriptFormatter.FormattedContent>|null;
-  _formattedMap: Formatter.ScriptFormatter.FormatterSourceMapping|null;
-  _prettyToggle: UI.Toolbar.ToolbarToggle;
-  _shouldAutoPrettyPrint: boolean;
-  _progressToolbarItem: UI.Toolbar.ToolbarItem;
-  _textEditor: SourcesTextEditor;
-  _prettyCleanGeneration: number|null;
-  _cleanGeneration: number;
-  _searchConfig: UI.SearchableView.SearchConfig|null;
-  _delayedFindSearchMatches: (() => void)|null;
-  _currentSearchResultIndex: number;
-  _searchResults: TextUtils.TextRange.TextRange[];
-  _searchRegex: RegExp|null;
-  _loadError: boolean;
-  _muteChangeEventsForSetContent: boolean;
-  _sourcePosition: UI.Toolbar.ToolbarText;
-  _searchableView: UI.SearchableView.SearchableView|null;
-  _editable: boolean;
-  _positionToReveal: {
+  private readonly lazyContent: () => Promise<TextUtils.ContentProvider.DeferredContent>;
+  private prettyInternal: boolean;
+  private rawContent: string|null;
+  private formattedContentPromise: Promise<Formatter.ScriptFormatter.FormattedContent>|null;
+  private formattedMap: Formatter.ScriptFormatter.FormatterSourceMapping|null;
+  private readonly prettyToggle: UI.Toolbar.ToolbarToggle;
+  private shouldAutoPrettyPrint: boolean;
+  private readonly progressToolbarItem: UI.Toolbar.ToolbarItem;
+  private textEditorInternal: SourcesTextEditor;
+  private prettyCleanGeneration: number|null;
+  private cleanGeneration: number;
+  private searchConfig: UI.SearchableView.SearchConfig|null;
+  private delayedFindSearchMatches: (() => void)|null;
+  private currentSearchResultIndex: number;
+  private searchResults: TextUtils.TextRange.TextRange[];
+  private searchRegex: RegExp|null;
+  private loadError: boolean;
+  private muteChangeEventsForSetContent: boolean;
+  private readonly sourcePosition: UI.Toolbar.ToolbarText;
+  private searchableView: UI.SearchableView.SearchableView|null;
+  private editable: boolean;
+  private positionToReveal: {
     line: number,
     column: (number|undefined),
     shouldHighlight: (boolean|undefined),
   }|null;
-  _lineToScrollTo: number|null;
-  _selectionToSet: TextUtils.TextRange.TextRange|null;
-  _loaded: boolean;
-  _contentRequested: boolean;
-  _highlighterType: string;
-  _wasmDisassembly: Common.WasmDisassembly.WasmDisassembly|null;
+  private lineToScrollTo: number|null;
+  private selectionToSet: TextUtils.TextRange.TextRange|null;
+  private loadedInternal: boolean;
+  private contentRequested: boolean;
+  private highlighterTypeInternal: string;
+  private wasmDisassemblyInternal: Common.WasmDisassembly.WasmDisassembly|null;
   contentSet: boolean;
   constructor(
       lazyContent: () => Promise<TextUtils.ContentProvider.DeferredContent>,
       codeMirrorOptions?: UI.TextEditor.Options) {
     super(i18nString(UIStrings.source));
 
-    this._lazyContent = lazyContent;
+    this.lazyContent = lazyContent;
 
-    this._pretty = false;
-    this._rawContent = null;
-    this._formattedContentPromise = null;
-    this._formattedMap = null;
-    this._prettyToggle = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.prettyPrint), 'largeicon-pretty-print');
-    this._prettyToggle.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
-      this._setPretty(!this._prettyToggle.toggled());
+    this.prettyInternal = false;
+    this.rawContent = null;
+    this.formattedContentPromise = null;
+    this.formattedMap = null;
+    this.prettyToggle = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.prettyPrint), 'largeicon-pretty-print');
+    this.prettyToggle.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+      this.setPretty(!this.prettyToggle.toggled());
     });
-    this._shouldAutoPrettyPrint = false;
-    this._prettyToggle.setVisible(false);
+    this.shouldAutoPrettyPrint = false;
+    this.prettyToggle.setVisible(false);
 
-    this._progressToolbarItem = new UI.Toolbar.ToolbarItem(document.createElement('div'));
+    this.progressToolbarItem = new UI.Toolbar.ToolbarItem(document.createElement('div'));
 
-    this._textEditor = new SourcesTextEditor(this, codeMirrorOptions);
-    this._textEditor.show(this.element);
+    this.textEditorInternal = new SourcesTextEditor(this, codeMirrorOptions);
+    this.textEditorInternal.show(this.element);
 
-    this._prettyCleanGeneration = null;
-    this._cleanGeneration = 0;
+    this.prettyCleanGeneration = null;
+    this.cleanGeneration = 0;
 
-    this._searchConfig = null;
-    this._delayedFindSearchMatches = null;
-    this._currentSearchResultIndex = -1;
-    this._searchResults = [];
-    this._searchRegex = null;
-    this._loadError = false;
+    this.searchConfig = null;
+    this.delayedFindSearchMatches = null;
+    this.currentSearchResultIndex = -1;
+    this.searchResults = [];
+    this.searchRegex = null;
+    this.loadError = false;
 
-    this._textEditor.addEventListener(Events.EditorFocused, this._resetCurrentSearchResultIndex, this);
-    this._textEditor.addEventListener(Events.SelectionChanged, this._updateSourcePosition, this);
-    this._textEditor.addEventListener(UI.TextEditor.Events.TextChanged, event => {
-      if (!this._muteChangeEventsForSetContent) {
+    this.textEditorInternal.addEventListener(Events.EditorFocused, this.resetCurrentSearchResultIndex, this);
+    this.textEditorInternal.addEventListener(Events.SelectionChanged, this.updateSourcePosition, this);
+    this.textEditorInternal.addEventListener(UI.TextEditor.Events.TextChanged, event => {
+      if (!this.muteChangeEventsForSetContent) {
         this.onTextChanged(event.data.oldRange, event.data.newRange);
       }
     });
-    this._muteChangeEventsForSetContent = false;
+    this.muteChangeEventsForSetContent = false;
 
-    this._sourcePosition = new UI.Toolbar.ToolbarText();
+    this.sourcePosition = new UI.Toolbar.ToolbarText();
 
-    this._searchableView = null;
-    this._editable = false;
-    this._textEditor.setReadOnly(true);
+    this.searchableView = null;
+    this.editable = false;
+    this.textEditorInternal.setReadOnly(true);
 
-    this._positionToReveal = null;
-    this._lineToScrollTo = null;
-    this._selectionToSet = null;
-    this._loaded = false;
-    this._contentRequested = false;
-    this._highlighterType = '';
+    this.positionToReveal = null;
+    this.lineToScrollTo = null;
+    this.selectionToSet = null;
+    this.loadedInternal = false;
+    this.contentRequested = false;
+    this.highlighterTypeInternal = '';
 
-    this._wasmDisassembly = null;
+    this.wasmDisassemblyInternal = null;
     this.contentSet = false;
   }
 
   get wasmDisassembly(): Common.WasmDisassembly.WasmDisassembly|null {
-    return this._wasmDisassembly;
+    return this.wasmDisassemblyInternal;
   }
 
   editorLocationToUILocation(lineNumber: number, columnNumber?: number): {
     lineNumber: number,
     columnNumber?: number|undefined,
   } {
-    if (this._wasmDisassembly) {
-      columnNumber = this._wasmDisassembly.lineNumberToBytecodeOffset(lineNumber);
+    if (this.wasmDisassemblyInternal) {
+      columnNumber = this.wasmDisassemblyInternal.lineNumberToBytecodeOffset(lineNumber);
       lineNumber = 0;
-    } else if (this._pretty) {
-      [lineNumber, columnNumber] = this._prettyToRawLocation(lineNumber, columnNumber);
+    } else if (this.prettyInternal) {
+      [lineNumber, columnNumber] = this.prettyToRawLocation(lineNumber, columnNumber);
     }
     return {lineNumber, columnNumber};
   }
@@ -203,157 +201,157 @@ export class SourceFrameImpl extends UI.View.SimpleView implements UI.Searchable
     lineNumber: number,
     columnNumber: number,
   } {
-    if (this._wasmDisassembly) {
-      lineNumber = this._wasmDisassembly.bytecodeOffsetToLineNumber(columnNumber);
+    if (this.wasmDisassemblyInternal) {
+      lineNumber = this.wasmDisassemblyInternal.bytecodeOffsetToLineNumber(columnNumber);
       columnNumber = 0;
-    } else if (this._pretty) {
-      [lineNumber, columnNumber] = this._rawToPrettyLocation(lineNumber, columnNumber);
+    } else if (this.prettyInternal) {
+      [lineNumber, columnNumber] = this.rawToPrettyLocation(lineNumber, columnNumber);
     }
     return {lineNumber, columnNumber};
   }
 
   setCanPrettyPrint(canPrettyPrint: boolean, autoPrettyPrint?: boolean): void {
-    this._shouldAutoPrettyPrint = canPrettyPrint && Boolean(autoPrettyPrint);
-    this._prettyToggle.setVisible(canPrettyPrint);
+    this.shouldAutoPrettyPrint = canPrettyPrint && Boolean(autoPrettyPrint);
+    this.prettyToggle.setVisible(canPrettyPrint);
   }
 
-  async _setPretty(value: boolean): Promise<void> {
-    this._pretty = value;
-    this._prettyToggle.setEnabled(false);
+  private async setPretty(value: boolean): Promise<void> {
+    this.prettyInternal = value;
+    this.prettyToggle.setEnabled(false);
 
     const wasLoaded = this.loaded;
     const selection = this.selection();
     let newSelection;
-    if (this._pretty) {
-      const formatInfo = await this._requestFormattedContent();
-      this._formattedMap = formatInfo.formattedMapping;
+    if (this.prettyInternal) {
+      const formatInfo = await this.requestFormattedContent();
+      this.formattedMap = formatInfo.formattedMapping;
       this.setContent(formatInfo.formattedContent, null);
-      this._prettyCleanGeneration = this._textEditor.markClean();
-      const start = this._rawToPrettyLocation(selection.startLine, selection.startColumn);
-      const end = this._rawToPrettyLocation(selection.endLine, selection.endColumn);
+      this.prettyCleanGeneration = this.textEditorInternal.markClean();
+      const start = this.rawToPrettyLocation(selection.startLine, selection.startColumn);
+      const end = this.rawToPrettyLocation(selection.endLine, selection.endColumn);
       newSelection = new TextUtils.TextRange.TextRange(start[0], start[1], end[0], end[1]);
     } else {
-      this.setContent(this._rawContent, null);
-      this._cleanGeneration = this._textEditor.markClean();
-      const start = this._prettyToRawLocation(selection.startLine, selection.startColumn);
-      const end = this._prettyToRawLocation(selection.endLine, selection.endColumn);
+      this.setContent(this.rawContent, null);
+      this.cleanGeneration = this.textEditorInternal.markClean();
+      const start = this.prettyToRawLocation(selection.startLine, selection.startColumn);
+      const end = this.prettyToRawLocation(selection.endLine, selection.endColumn);
       newSelection = new TextUtils.TextRange.TextRange(start[0], start[1], end[0], end[1]);
     }
     if (wasLoaded) {
-      this.textEditor.revealPosition(newSelection.endLine, newSelection.endColumn, this._editable);
+      this.textEditor.revealPosition(newSelection.endLine, newSelection.endColumn, this.editable);
       this.textEditor.setSelection(newSelection);
     }
-    this._prettyToggle.setEnabled(true);
-    this._updatePrettyPrintState();
+    this.prettyToggle.setEnabled(true);
+    this.updatePrettyPrintState();
   }
 
-  _updateLineNumberFormatter(): void {
-    if (this._wasmDisassembly) {
-      const disassembly = this._wasmDisassembly;
+  private updateLineNumberFormatter(): void {
+    if (this.wasmDisassemblyInternal) {
+      const disassembly = this.wasmDisassemblyInternal;
       const lastBytecodeOffset = disassembly.lineNumberToBytecodeOffset(disassembly.lineNumbers - 1);
       const bytecodeOffsetDigits = lastBytecodeOffset.toString(16).length + 1;
-      this._textEditor.setLineNumberFormatter(lineNumber => {
+      this.textEditorInternal.setLineNumberFormatter(lineNumber => {
         const bytecodeOffset = disassembly.lineNumberToBytecodeOffset(lineNumber - 1);
         return `0x${bytecodeOffset.toString(16).padStart(bytecodeOffsetDigits, '0')}`;
       });
-    } else if (this._pretty) {
-      this._textEditor.setLineNumberFormatter(lineNumber => {
-        const line = this._prettyToRawLocation(lineNumber - 1, 0)[0] + 1;
+    } else if (this.prettyInternal) {
+      this.textEditorInternal.setLineNumberFormatter(lineNumber => {
+        const line = this.prettyToRawLocation(lineNumber - 1, 0)[0] + 1;
         if (lineNumber === 1) {
           return String(line);
         }
-        if (line !== this._prettyToRawLocation(lineNumber - 2, 0)[0] + 1) {
+        if (line !== this.prettyToRawLocation(lineNumber - 2, 0)[0] + 1) {
           return String(line);
         }
         return '-';
       });
     } else {
-      this._textEditor.setLineNumberFormatter(lineNumber => {
+      this.textEditorInternal.setLineNumberFormatter(lineNumber => {
         return String(lineNumber);
       });
     }
   }
 
-  _updatePrettyPrintState(): void {
-    this._prettyToggle.setToggled(this._pretty);
-    this._textEditor.element.classList.toggle('pretty-printed', this._pretty);
-    this._updateLineNumberFormatter();
+  private updatePrettyPrintState(): void {
+    this.prettyToggle.setToggled(this.prettyInternal);
+    this.textEditorInternal.element.classList.toggle('pretty-printed', this.prettyInternal);
+    this.updateLineNumberFormatter();
   }
 
-  _prettyToRawLocation(line: number, column: number|undefined = 0): number[] {
-    if (!this._formattedMap) {
+  private prettyToRawLocation(line: number, column: number|undefined = 0): number[] {
+    if (!this.formattedMap) {
       return [line, column];
     }
-    return this._formattedMap.formattedToOriginal(line, column);
+    return this.formattedMap.formattedToOriginal(line, column);
   }
 
-  _rawToPrettyLocation(line: number, column: number): number[] {
-    if (!this._formattedMap) {
+  private rawToPrettyLocation(line: number, column: number): number[] {
+    if (!this.formattedMap) {
       return [line, column];
     }
-    return this._formattedMap.originalToFormatted(line, column);
+    return this.formattedMap.originalToFormatted(line, column);
   }
 
   setEditable(editable: boolean): void {
-    this._editable = editable;
-    if (this._loaded) {
-      this._textEditor.setReadOnly(!editable);
+    this.editable = editable;
+    if (this.loadedInternal) {
+      this.textEditorInternal.setReadOnly(!editable);
     }
   }
 
   hasLoadError(): boolean {
-    return this._loadError;
+    return this.loadError;
   }
 
   wasShown(): void {
-    this._ensureContentLoaded();
-    this._wasShownOrLoaded();
+    this.ensureContentLoaded();
+    this.wasShownOrLoaded();
   }
 
   willHide(): void {
     super.willHide();
 
-    this._clearPositionToReveal();
+    this.clearPositionToReveal();
   }
 
   async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
-    return [this._prettyToggle, this._sourcePosition, this._progressToolbarItem];
+    return [this.prettyToggle, this.sourcePosition, this.progressToolbarItem];
   }
 
   get loaded(): boolean {
-    return this._loaded;
+    return this.loadedInternal;
   }
 
   get textEditor(): SourcesTextEditor {
-    return this._textEditor;
+    return this.textEditorInternal;
   }
 
   get pretty(): boolean {
-    return this._pretty;
+    return this.prettyInternal;
   }
 
-  async _ensureContentLoaded(): Promise<void> {
-    if (!this._contentRequested) {
-      this._contentRequested = true;
+  private async ensureContentLoaded(): Promise<void> {
+    if (!this.contentRequested) {
+      this.contentRequested = true;
 
       const progressIndicator = new UI.ProgressIndicator.ProgressIndicator();
       progressIndicator.setTitle(i18nString(UIStrings.loading));
       progressIndicator.setTotalWork(100);
-      this._progressToolbarItem.element.appendChild(progressIndicator.element);
+      this.progressToolbarItem.element.appendChild(progressIndicator.element);
 
-      const deferredContent = await this._lazyContent();
+      const deferredContent = await this.lazyContent();
       let error, content;
       if (deferredContent.content === null) {
         error = deferredContent.error;
-        this._rawContent = deferredContent.error;
+        this.rawContent = deferredContent.error;
       } else {
         content = deferredContent.content;
-        this._rawContent = deferredContent.isEncoded ? window.atob(deferredContent.content) : deferredContent.content;
+        this.rawContent = deferredContent.isEncoded ? window.atob(deferredContent.content) : deferredContent.content;
       }
 
       progressIndicator.setWorked(1);
 
-      if (!error && this._highlighterType === 'application/wasm') {
+      if (!error && this.highlighterTypeInternal === 'application/wasm') {
         const worker = Common.Worker.WorkerWrapper.fromURL(
             new URL('../../../../entrypoints/wasmparser_worker/wasmparser_worker-entrypoint.js', import.meta.url));
         const promise = new Promise<{
@@ -392,10 +390,10 @@ export class SourceFrameImpl extends UI.View.SimpleView implements UI.Searchable
         worker.postMessage({method: 'disassemble', params: {content}});
         try {
           const {source, offsets, functionBodyOffsets} = await promise;
-          this._rawContent = content = source;
-          this._wasmDisassembly = new Common.WasmDisassembly.WasmDisassembly(offsets, functionBodyOffsets);
+          this.rawContent = content = source;
+          this.wasmDisassemblyInternal = new Common.WasmDisassembly.WasmDisassembly(offsets, functionBodyOffsets);
         } catch (e) {
-          this._rawContent = content = error = e.message;
+          this.rawContent = content = error = e.message;
         } finally {
           worker.terminate();
         }
@@ -404,13 +402,13 @@ export class SourceFrameImpl extends UI.View.SimpleView implements UI.Searchable
       progressIndicator.setWorked(100);
       progressIndicator.done();
 
-      this._formattedContentPromise = null;
-      this._formattedMap = null;
-      this._prettyToggle.setEnabled(true);
+      this.formattedContentPromise = null;
+      this.formattedMap = null;
+      this.prettyToggle.setEnabled(true);
 
       if (error) {
         this.setContent(null, error);
-        this._prettyToggle.setEnabled(false);
+        this.prettyToggle.setEnabled(false);
 
         // Occasionally on load, there can be a race in which it appears the CodeMirror plugin
         // runs the highlighter type assignment out of order. In case of an error then, set
@@ -423,34 +421,34 @@ export class SourceFrameImpl extends UI.View.SimpleView implements UI.Searchable
         // CRBug 1011445
         setTimeout(() => this.setHighlighterType('text/plain'), 50);
       } else {
-        if (this._shouldAutoPrettyPrint && TextUtils.TextUtils.isMinified(content)) {
-          await this._setPretty(true);
+        if (this.shouldAutoPrettyPrint && TextUtils.TextUtils.isMinified(content)) {
+          await this.setPretty(true);
         } else {
-          this.setContent(this._rawContent, null);
+          this.setContent(this.rawContent, null);
         }
       }
       this.contentSet = true;
     }
   }
 
-  _requestFormattedContent(): Promise<Formatter.ScriptFormatter.FormattedContent> {
-    if (this._formattedContentPromise) {
-      return this._formattedContentPromise;
+  private requestFormattedContent(): Promise<Formatter.ScriptFormatter.FormattedContent> {
+    if (this.formattedContentPromise) {
+      return this.formattedContentPromise;
     }
-    this._formattedContentPromise =
-        Formatter.ScriptFormatter.formatScriptContent(this._highlighterType, this._rawContent || '');
-    return this._formattedContentPromise;
+    this.formattedContentPromise =
+        Formatter.ScriptFormatter.formatScriptContent(this.highlighterTypeInternal, this.rawContent || '');
+    return this.formattedContentPromise;
   }
 
   revealPosition(line: number, column?: number, shouldHighlight?: boolean): void {
-    this._lineToScrollTo = null;
-    this._selectionToSet = null;
-    this._positionToReveal = {line: line, column: column, shouldHighlight: shouldHighlight};
-    this._innerRevealPositionIfNeeded();
+    this.lineToScrollTo = null;
+    this.selectionToSet = null;
+    this.positionToReveal = {line: line, column: column, shouldHighlight: shouldHighlight};
+    this.innerRevealPositionIfNeeded();
   }
 
-  _innerRevealPositionIfNeeded(): void {
-    if (!this._positionToReveal) {
+  private innerRevealPositionIfNeeded(): void {
+    if (!this.positionToReveal) {
       return;
     }
 
@@ -459,28 +457,28 @@ export class SourceFrameImpl extends UI.View.SimpleView implements UI.Searchable
     }
 
     const {lineNumber, columnNumber} =
-        this.uiLocationToEditorLocation(this._positionToReveal.line, this._positionToReveal.column);
+        this.uiLocationToEditorLocation(this.positionToReveal.line, this.positionToReveal.column);
 
-    this._textEditor.revealPosition(lineNumber, columnNumber, this._positionToReveal.shouldHighlight);
-    this._positionToReveal = null;
+    this.textEditorInternal.revealPosition(lineNumber, columnNumber, this.positionToReveal.shouldHighlight);
+    this.positionToReveal = null;
   }
 
-  _clearPositionToReveal(): void {
-    this._textEditor.clearPositionHighlight();
-    this._positionToReveal = null;
+  private clearPositionToReveal(): void {
+    this.textEditorInternal.clearPositionHighlight();
+    this.positionToReveal = null;
   }
 
   scrollToLine(line: number): void {
-    this._clearPositionToReveal();
-    this._lineToScrollTo = line;
-    this._innerScrollToLineIfNeeded();
+    this.clearPositionToReveal();
+    this.lineToScrollTo = line;
+    this.innerScrollToLineIfNeeded();
   }
 
-  _innerScrollToLineIfNeeded(): void {
-    if (this._lineToScrollTo !== null) {
+  private innerScrollToLineIfNeeded(): void {
+    if (this.lineToScrollTo !== null) {
       if (this.loaded && this.isShowing()) {
-        this._textEditor.scrollToLine(this._lineToScrollTo);
-        this._lineToScrollTo = null;
+        this.textEditorInternal.scrollToLine(this.lineToScrollTo);
+        this.lineToScrollTo = null;
       }
     }
   }
@@ -490,55 +488,55 @@ export class SourceFrameImpl extends UI.View.SimpleView implements UI.Searchable
   }
 
   setSelection(textRange: TextUtils.TextRange.TextRange): void {
-    this._selectionToSet = textRange;
-    this._innerSetSelectionIfNeeded();
+    this.selectionToSet = textRange;
+    this.innerSetSelectionIfNeeded();
   }
 
-  _innerSetSelectionIfNeeded(): void {
-    if (this._selectionToSet && this.loaded && this.isShowing()) {
-      this._textEditor.setSelection(this._selectionToSet, true);
-      this._selectionToSet = null;
+  private innerSetSelectionIfNeeded(): void {
+    if (this.selectionToSet && this.loaded && this.isShowing()) {
+      this.textEditorInternal.setSelection(this.selectionToSet, true);
+      this.selectionToSet = null;
     }
   }
 
-  _wasShownOrLoaded(): void {
-    this._innerRevealPositionIfNeeded();
-    this._innerSetSelectionIfNeeded();
-    this._innerScrollToLineIfNeeded();
+  private wasShownOrLoaded(): void {
+    this.innerRevealPositionIfNeeded();
+    this.innerSetSelectionIfNeeded();
+    this.innerScrollToLineIfNeeded();
   }
 
   onTextChanged(_oldRange: TextUtils.TextRange.TextRange, _newRange: TextUtils.TextRange.TextRange): void {
     const wasPretty = this.pretty;
-    this._pretty = this._prettyCleanGeneration !== null && this.textEditor.isClean(this._prettyCleanGeneration);
-    if (this._pretty !== wasPretty) {
-      this._updatePrettyPrintState();
+    this.prettyInternal = this.prettyCleanGeneration !== null && this.textEditor.isClean(this.prettyCleanGeneration);
+    if (this.prettyInternal !== wasPretty) {
+      this.updatePrettyPrintState();
     }
-    this._prettyToggle.setEnabled(this.isClean());
+    this.prettyToggle.setEnabled(this.isClean());
 
-    if (this._searchConfig && this._searchableView) {
-      this.performSearch(this._searchConfig, false, false);
+    if (this.searchConfig && this.searchableView) {
+      this.performSearch(this.searchConfig, false, false);
     }
   }
 
   isClean(): boolean {
-    return this.textEditor.isClean(this._cleanGeneration) ||
-        (this._prettyCleanGeneration !== null && this.textEditor.isClean(this._prettyCleanGeneration));
+    return this.textEditor.isClean(this.cleanGeneration) ||
+        (this.prettyCleanGeneration !== null && this.textEditor.isClean(this.prettyCleanGeneration));
   }
 
   contentCommitted(): void {
-    this._cleanGeneration = this._textEditor.markClean();
-    this._prettyCleanGeneration = null;
-    this._rawContent = this.textEditor.text();
-    this._formattedMap = null;
-    this._formattedContentPromise = null;
-    if (this._pretty) {
-      this._pretty = false;
-      this._updatePrettyPrintState();
+    this.cleanGeneration = this.textEditorInternal.markClean();
+    this.prettyCleanGeneration = null;
+    this.rawContent = this.textEditor.text();
+    this.formattedMap = null;
+    this.formattedContentPromise = null;
+    if (this.prettyInternal) {
+      this.prettyInternal = false;
+      this.updatePrettyPrintState();
     }
-    this._prettyToggle.setEnabled(true);
+    this.prettyToggle.setEnabled(true);
   }
 
-  _simplifyMimeType(content: string, mimeType: string): string {
+  private simplifyMimeType(content: string, mimeType: string): string {
     if (!mimeType) {
       return '';
     }
@@ -565,153 +563,154 @@ export class SourceFrameImpl extends UI.View.SimpleView implements UI.Searchable
   }
 
   setHighlighterType(highlighterType: string): void {
-    this._highlighterType = highlighterType;
-    this._updateHighlighterType('');
+    this.highlighterTypeInternal = highlighterType;
+    this.updateHighlighterType('');
   }
 
   highlighterType(): string {
-    return this._highlighterType;
+    return this.highlighterTypeInternal;
   }
 
-  _updateHighlighterType(content: string): void {
-    this._textEditor.setMimeType(this._simplifyMimeType(content, this._highlighterType));
+  private updateHighlighterType(content: string): void {
+    this.textEditorInternal.setMimeType(this.simplifyMimeType(content, this.highlighterTypeInternal));
   }
 
   setContent(content: string|null, loadError: string|null): void {
-    this._muteChangeEventsForSetContent = true;
-    if (!this._loaded) {
-      this._loaded = true;
+    this.muteChangeEventsForSetContent = true;
+    if (!this.loadedInternal) {
+      this.loadedInternal = true;
       if (!loadError) {
-        this._textEditor.setText(content || '');
-        this._cleanGeneration = this._textEditor.markClean();
-        this._textEditor.setReadOnly(!this._editable);
-        this._loadError = false;
+        this.textEditorInternal.setText(content || '');
+        this.cleanGeneration = this.textEditorInternal.markClean();
+        this.textEditorInternal.setReadOnly(!this.editable);
+        this.loadError = false;
       } else {
-        this._textEditor.setText(loadError || '');
-        this._highlighterType = 'text/plain';
-        this._textEditor.setReadOnly(true);
-        this._loadError = true;
+        this.textEditorInternal.setText(loadError || '');
+        this.highlighterTypeInternal = 'text/plain';
+        this.textEditorInternal.setReadOnly(true);
+        this.loadError = true;
       }
     } else {
-      const scrollTop = this._textEditor.scrollTop();
-      const selection = this._textEditor.selection();
-      this._textEditor.setText(content || '');
-      this._textEditor.setScrollTop(scrollTop);
-      this._textEditor.setSelection(selection);
+      const scrollTop = this.textEditorInternal.scrollTop();
+      const selection = this.textEditorInternal.selection();
+      this.textEditorInternal.setText(content || '');
+      this.textEditorInternal.setScrollTop(scrollTop);
+      this.textEditorInternal.setSelection(selection);
     }
 
     // Mark non-breakable lines in the Wasm disassembly after setting
     // up the content for the text editor (which creates the gutter).
-    if (this._wasmDisassembly) {
-      for (const lineNumber of this._wasmDisassembly.nonBreakableLineNumbers()) {
-        this._textEditor.toggleLineClass(lineNumber, 'cm-non-breakable-line', true);
+    if (this.wasmDisassemblyInternal) {
+      for (const lineNumber of this.wasmDisassemblyInternal.nonBreakableLineNumbers()) {
+        this.textEditorInternal.toggleLineClass(lineNumber, 'cm-non-breakable-line', true);
       }
     }
 
-    this._updateLineNumberFormatter();
-    this._updateHighlighterType(content || '');
-    this._wasShownOrLoaded();
+    this.updateLineNumberFormatter();
+    this.updateHighlighterType(content || '');
+    this.wasShownOrLoaded();
 
-    if (this._delayedFindSearchMatches) {
-      this._delayedFindSearchMatches();
-      this._delayedFindSearchMatches = null;
+    if (this.delayedFindSearchMatches) {
+      this.delayedFindSearchMatches();
+      this.delayedFindSearchMatches = null;
     }
-    this._muteChangeEventsForSetContent = false;
+    this.muteChangeEventsForSetContent = false;
   }
 
   setSearchableView(view: UI.SearchableView.SearchableView|null): void {
-    this._searchableView = view;
+    this.searchableView = view;
   }
 
-  _doFindSearchMatches(searchConfig: UI.SearchableView.SearchConfig, shouldJump: boolean, jumpBackwards: boolean):
-      void {
-    this._currentSearchResultIndex = -1;
-    this._searchResults = [];
+  private doFindSearchMatches(
+      searchConfig: UI.SearchableView.SearchConfig, shouldJump: boolean, jumpBackwards: boolean): void {
+    this.currentSearchResultIndex = -1;
+    this.searchResults = [];
 
     const regex = searchConfig.toSearchRegex();
-    this._searchRegex = regex;
-    this._searchResults = this._collectRegexMatches(regex);
+    this.searchRegex = regex;
+    this.searchResults = this.collectRegexMatches(regex);
 
-    if (this._searchableView) {
-      this._searchableView.updateSearchMatchesCount(this._searchResults.length);
+    if (this.searchableView) {
+      this.searchableView.updateSearchMatchesCount(this.searchResults.length);
     }
 
-    if (!this._searchResults.length) {
-      this._textEditor.cancelSearchResultsHighlight();
+    if (!this.searchResults.length) {
+      this.textEditorInternal.cancelSearchResultsHighlight();
     } else if (shouldJump && jumpBackwards) {
       this.jumpToPreviousSearchResult();
     } else if (shouldJump) {
       this.jumpToNextSearchResult();
     } else {
-      this._textEditor.highlightSearchResults(regex, null);
+      this.textEditorInternal.highlightSearchResults(regex, null);
     }
   }
 
   performSearch(searchConfig: UI.SearchableView.SearchConfig, shouldJump: boolean, jumpBackwards?: boolean): void {
-    if (this._searchableView) {
-      this._searchableView.updateSearchMatchesCount(0);
+    if (this.searchableView) {
+      this.searchableView.updateSearchMatchesCount(0);
     }
 
-    this._resetSearch();
-    this._searchConfig = searchConfig;
+    this.resetSearch();
+    this.searchConfig = searchConfig;
     if (this.loaded) {
-      this._doFindSearchMatches(searchConfig, shouldJump, Boolean(jumpBackwards));
+      this.doFindSearchMatches(searchConfig, shouldJump, Boolean(jumpBackwards));
     } else {
-      this._delayedFindSearchMatches =
-          this._doFindSearchMatches.bind(this, searchConfig, shouldJump, Boolean(jumpBackwards));
+      this.delayedFindSearchMatches =
+          this.doFindSearchMatches.bind(this, searchConfig, shouldJump, Boolean(jumpBackwards));
     }
 
-    this._ensureContentLoaded();
+    this.ensureContentLoaded();
   }
 
-  _resetCurrentSearchResultIndex(): void {
-    if (!this._searchResults.length) {
+  private resetCurrentSearchResultIndex(): void {
+    if (!this.searchResults.length) {
       return;
     }
-    this._currentSearchResultIndex = -1;
-    if (this._searchableView) {
-      this._searchableView.updateCurrentMatchIndex(this._currentSearchResultIndex);
+    this.currentSearchResultIndex = -1;
+    if (this.searchableView) {
+      this.searchableView.updateCurrentMatchIndex(this.currentSearchResultIndex);
     }
-    this._textEditor.highlightSearchResults((this._searchRegex as RegExp), null);
+    this.textEditorInternal.highlightSearchResults((this.searchRegex as RegExp), null);
   }
 
-  _resetSearch(): void {
-    this._searchConfig = null;
-    this._delayedFindSearchMatches = null;
-    this._currentSearchResultIndex = -1;
-    this._searchResults = [];
-    this._searchRegex = null;
+  private resetSearch(): void {
+    this.searchConfig = null;
+    this.delayedFindSearchMatches = null;
+    this.currentSearchResultIndex = -1;
+    this.searchResults = [];
+    this.searchRegex = null;
   }
 
   searchCanceled(): void {
-    const range = this._currentSearchResultIndex !== -1 ? this._searchResults[this._currentSearchResultIndex] : null;
-    this._resetSearch();
+    const range = this.currentSearchResultIndex !== -1 ? this.searchResults[this.currentSearchResultIndex] : null;
+    this.resetSearch();
     if (!this.loaded) {
       return;
     }
-    this._textEditor.cancelSearchResultsHighlight();
+    this.textEditorInternal.cancelSearchResultsHighlight();
     if (range) {
       this.setSelection(range);
     }
   }
 
   jumpToLastSearchResult(): void {
-    this.jumpToSearchResult(this._searchResults.length - 1);
+    this.jumpToSearchResult(this.searchResults.length - 1);
   }
 
-  _searchResultIndexForCurrentSelection(): number {
+  private searchResultIndexForCurrentSelection(): number {
     return Platform.ArrayUtilities.lowerBound(
-        this._searchResults, this._textEditor.selection().collapseToEnd(), TextUtils.TextRange.TextRange.comparator);
+        this.searchResults, this.textEditorInternal.selection().collapseToEnd(),
+        TextUtils.TextRange.TextRange.comparator);
   }
 
   jumpToNextSearchResult(): void {
-    const currentIndex = this._searchResultIndexForCurrentSelection();
-    const nextIndex = this._currentSearchResultIndex === -1 ? currentIndex : currentIndex + 1;
+    const currentIndex = this.searchResultIndexForCurrentSelection();
+    const nextIndex = this.currentSearchResultIndex === -1 ? currentIndex : currentIndex + 1;
     this.jumpToSearchResult(nextIndex);
   }
 
   jumpToPreviousSearchResult(): void {
-    const currentIndex = this._searchResultIndexForCurrentSelection();
+    const currentIndex = this.searchResultIndexForCurrentSelection();
     this.jumpToSearchResult(currentIndex - 1);
   }
 
@@ -724,25 +723,25 @@ export class SourceFrameImpl extends UI.View.SimpleView implements UI.Searchable
   }
 
   jumpToSearchResult(index: number): void {
-    if (!this.loaded || !this._searchResults.length) {
+    if (!this.loaded || !this.searchResults.length) {
       return;
     }
-    this._currentSearchResultIndex = (index + this._searchResults.length) % this._searchResults.length;
-    if (this._searchableView) {
-      this._searchableView.updateCurrentMatchIndex(this._currentSearchResultIndex);
+    this.currentSearchResultIndex = (index + this.searchResults.length) % this.searchResults.length;
+    if (this.searchableView) {
+      this.searchableView.updateCurrentMatchIndex(this.currentSearchResultIndex);
     }
-    this._textEditor.highlightSearchResults(
-        (this._searchRegex as RegExp), this._searchResults[this._currentSearchResultIndex]);
+    this.textEditorInternal.highlightSearchResults(
+        (this.searchRegex as RegExp), this.searchResults[this.currentSearchResultIndex]);
   }
 
   replaceSelectionWith(searchConfig: UI.SearchableView.SearchConfig, replacement: string): void {
-    const range = this._searchResults[this._currentSearchResultIndex];
+    const range = this.searchResults[this.currentSearchResultIndex];
     if (!range) {
       return;
     }
-    this._textEditor.highlightSearchResults((this._searchRegex as RegExp), null);
+    this.textEditorInternal.highlightSearchResults((this.searchRegex as RegExp), null);
 
-    const oldText = this._textEditor.text(range);
+    const oldText = this.textEditorInternal.text(range);
     const regex = searchConfig.toSearchRegex();
     let text;
     if (regex.__fromRegExpQuery) {
@@ -753,15 +752,15 @@ export class SourceFrameImpl extends UI.View.SimpleView implements UI.Searchable
       });
     }
 
-    const newRange = this._textEditor.editRange(range, text);
-    this._textEditor.setSelection(newRange.collapseToEnd());
+    const newRange = this.textEditorInternal.editRange(range, text);
+    this.textEditorInternal.setSelection(newRange.collapseToEnd());
   }
 
   replaceAllWith(searchConfig: UI.SearchableView.SearchConfig, replacement: string): void {
-    this._resetCurrentSearchResultIndex();
+    this.resetCurrentSearchResultIndex();
 
-    let text = this._textEditor.text();
-    const range = this._textEditor.fullRange();
+    let text = this.textEditorInternal.text();
+    const range = this.textEditorInternal.fullRange();
 
     const regex = searchConfig.toSearchRegex(true);
     if (regex.__fromRegExpQuery) {
@@ -772,14 +771,14 @@ export class SourceFrameImpl extends UI.View.SimpleView implements UI.Searchable
       });
     }
 
-    const ranges = this._collectRegexMatches(regex);
+    const ranges = this.collectRegexMatches(regex);
     if (!ranges.length) {
       return;
     }
 
     // Calculate the position of the end of the last range to be edited.
     const currentRangeIndex = Platform.ArrayUtilities.lowerBound(
-        ranges, this._textEditor.selection(), TextUtils.TextRange.TextRange.comparator);
+        ranges, this.textEditorInternal.selection(), TextUtils.TextRange.TextRange.comparator);
     const lastRangeIndex = Platform.NumberUtilities.mod(currentRangeIndex - 1, ranges.length);
     const lastRange = ranges[lastRangeIndex];
     const replacementLineEndings = Platform.StringUtilities.findLineEndingIndexes(replacement);
@@ -791,15 +790,16 @@ export class SourceFrameImpl extends UI.View.SimpleView implements UI.Searchable
           replacementLineEndings[replacementLineCount - 1] - replacementLineEndings[replacementLineCount - 2] - 1;
     }
 
-    this._textEditor.editRange(range, text);
-    this._textEditor.revealPosition(lastLineNumber, lastColumnNumber);
-    this._textEditor.setSelection(TextUtils.TextRange.TextRange.createFromLocation(lastLineNumber, lastColumnNumber));
+    this.textEditorInternal.editRange(range, text);
+    this.textEditorInternal.revealPosition(lastLineNumber, lastColumnNumber);
+    this.textEditorInternal.setSelection(
+        TextUtils.TextRange.TextRange.createFromLocation(lastLineNumber, lastColumnNumber));
   }
 
-  _collectRegexMatches(regexObject: RegExp): TextUtils.TextRange.TextRange[] {
+  private collectRegexMatches(regexObject: RegExp): TextUtils.TextRange.TextRange[] {
     const ranges = [];
-    for (let i = 0; i < this._textEditor.linesCount; ++i) {
-      let line = this._textEditor.line(i);
+    for (let i = 0; i < this.textEditorInternal.linesCount; ++i) {
+      let line = this.textEditorInternal.line(i);
       let offset = 0;
       let match;
       do {
@@ -827,44 +827,44 @@ export class SourceFrameImpl extends UI.View.SimpleView implements UI.Searchable
   }
 
   canEditSource(): boolean {
-    return this._editable;
+    return this.editable;
   }
 
-  _updateSourcePosition(): void {
-    const selections = this._textEditor.selections();
+  private updateSourcePosition(): void {
+    const selections = this.textEditorInternal.selections();
     if (!selections.length) {
       return;
     }
     if (selections.length > 1) {
-      this._sourcePosition.setText(i18nString(UIStrings.dSelectionRegions, {PH1: selections.length}));
+      this.sourcePosition.setText(i18nString(UIStrings.dSelectionRegions, {PH1: selections.length}));
       return;
     }
     let textRange: TextUtils.TextRange.TextRange = selections[0];
     if (textRange.isEmpty()) {
-      const location = this._prettyToRawLocation(textRange.endLine, textRange.endColumn);
-      if (this._wasmDisassembly) {
-        const disassembly = this._wasmDisassembly;
+      const location = this.prettyToRawLocation(textRange.endLine, textRange.endColumn);
+      if (this.wasmDisassemblyInternal) {
+        const disassembly = this.wasmDisassemblyInternal;
         const lastBytecodeOffset = disassembly.lineNumberToBytecodeOffset(disassembly.lineNumbers - 1);
         const bytecodeOffsetDigits = lastBytecodeOffset.toString(16).length;
         const bytecodeOffset = disassembly.lineNumberToBytecodeOffset(location[0]);
 
-        this._sourcePosition.setText(i18nString(
+        this.sourcePosition.setText(i18nString(
             UIStrings.bytecodePositionXs, {PH1: bytecodeOffset.toString(16).padStart(bytecodeOffsetDigits, '0')}));
       } else {
         if (!this.canEditSource()) {
-          this._textEditor.revealPosition(textRange.endLine, textRange.endColumn, true);
+          this.textEditorInternal.revealPosition(textRange.endLine, textRange.endColumn, true);
         }
-        this._sourcePosition.setText(i18nString(UIStrings.lineSColumnS, {PH1: location[0] + 1, PH2: location[1] + 1}));
+        this.sourcePosition.setText(i18nString(UIStrings.lineSColumnS, {PH1: location[0] + 1, PH2: location[1] + 1}));
       }
       return;
     }
     textRange = textRange.normalize();
 
-    const selectedText = this._textEditor.text(textRange);
+    const selectedText = this.textEditorInternal.text(textRange);
     if (textRange.startLine === textRange.endLine) {
-      this._sourcePosition.setText(i18nString(UIStrings.dCharactersSelected, {PH1: selectedText.length}));
+      this.sourcePosition.setText(i18nString(UIStrings.dCharactersSelected, {PH1: selectedText.length}));
     } else {
-      this._sourcePosition.setText(i18nString(
+      this.sourcePosition.setText(i18nString(
           UIStrings.dLinesDCharactersSelected,
           {PH1: textRange.endLine - textRange.startLine + 1, PH2: selectedText.length}));
     }

@@ -31,8 +31,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as UI from '../../legacy.js';
@@ -49,13 +47,13 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/Reso
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ResourceSourceFrame extends SourceFrameImpl {
-  _resource: TextUtils.ContentProvider.ContentProvider;
+  private readonly resourceInternal: TextUtils.ContentProvider.ContentProvider;
 
   constructor(
       resource: TextUtils.ContentProvider.ContentProvider, autoPrettyPrint?: boolean,
       codeMirrorOptions?: UI.TextEditor.Options) {
     super(() => resource.requestContent(), codeMirrorOptions);
-    this._resource = resource;
+    this.resourceInternal = resource;
   }
 
   static createSearchableView(
@@ -65,24 +63,24 @@ export class ResourceSourceFrame extends SourceFrameImpl {
   }
 
   get resource(): TextUtils.ContentProvider.ContentProvider {
-    return this._resource;
+    return this.resourceInternal;
   }
 
   populateTextAreaContextMenu(contextMenu: UI.ContextMenu.ContextMenu, _lineNumber: number, _columnNumber: number):
       Promise<void> {
-    contextMenu.appendApplicableItems(this._resource);
+    contextMenu.appendApplicableItems(this.resourceInternal);
     return Promise.resolve();
   }
 }
 
 export class SearchableContainer extends UI.Widget.VBox {
-  _sourceFrame: ResourceSourceFrame;
+  private readonly sourceFrame: ResourceSourceFrame;
 
   constructor(resource: TextUtils.ContentProvider.ContentProvider, highlighterType: string, autoPrettyPrint?: boolean) {
     super(true);
     this.registerRequiredCSS('ui/legacy/components/source_frame/resourceSourceFrame.css');
     const sourceFrame = new ResourceSourceFrame(resource, autoPrettyPrint);
-    this._sourceFrame = sourceFrame;
+    this.sourceFrame = sourceFrame;
     sourceFrame.setHighlighterType(highlighterType);
     const canPrettyPrint = sourceFrame.resource.contentType().isDocumentOrScriptOrStyleSheet() ||
         sourceFrame.highlighterType() === 'application/json';
@@ -101,6 +99,6 @@ export class SearchableContainer extends UI.Widget.VBox {
   }
 
   async revealPosition(lineNumber: number, columnNumber?: number): Promise<void> {
-    this._sourceFrame.revealPosition(lineNumber, columnNumber, true);
+    this.sourceFrame.revealPosition(lineNumber, columnNumber, true);
   }
 }

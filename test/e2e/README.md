@@ -17,9 +17,9 @@ Run all tests: `npm run e2etest` (note, this requires python2 to be the default 
 
 Some optional, helpful flags:
 * `--jobs=N` — use N parallel runners to speed things up
-* `--chrome-binary=LOCATION` — set a path to the chrome executable
+* `--chrome-binary-path=LOCATION` — set a path to the chrome executable
 * `--chrome-features=FEATURES` — set a comma separated list of chrome features passed as `--enable-features=[FEATURES]` to the chrome binary.
-* `--test-file=FILE_PATTERN` — run tests in selected test files only. The extglob pattern matches paths relative to the test/e2e/ directory. To run all sources panel tests, for example, use `--test-file=sources/*`.
+* `--test-file-pattern=FILE_PATTERN` — run tests in selected test files only. The extglob pattern matches paths relative to the test/e2e/ directory. To run all sources panel tests, for example, use `--test-file=sources/*`.
 
 To use the flags, first append `--` to the `npm` command, e.g.
 `npm run e2etest -- --jobs=4`

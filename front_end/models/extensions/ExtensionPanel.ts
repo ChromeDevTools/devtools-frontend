@@ -188,7 +188,7 @@ export class ExtensionSidebarPane extends UI.View.SimpleView {
     } else if (!result) {
       callback();
     } else {
-      this.setObject(result, title, callback);
+      this.setObjectInternal(result, title, callback);
     }
   }
 

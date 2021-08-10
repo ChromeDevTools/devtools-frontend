@@ -312,11 +312,11 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper {
     return Boolean(suffix.length) && !suffix.match(SDK.Script.sourceURLRegex);
   }
 
-  private workingCopyChanged(_event: Common.EventTarget.EventTargetEvent): void {
+  private workingCopyChanged(): void {
     this.update();
   }
 
-  private workingCopyCommitted(_event: Common.EventTarget.EventTargetEvent): void {
+  private workingCopyCommitted(): void {
     if (this.uiSourceCodeInternal.project().canSetFileContent()) {
       return;
     }

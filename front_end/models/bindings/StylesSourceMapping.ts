@@ -232,7 +232,7 @@ export class StyleFile implements TextUtils.ContentProvider.ContentProvider {
     this.throttler.schedule(mirrorContentBound, false /* asSoonAsPossible */);
   }
 
-  private workingCopyCommitted(_event: Common.EventTarget.EventTargetEvent): void {
+  private workingCopyCommitted(): void {
     if (this.isAddingRevision) {
       return;
     }
@@ -240,7 +240,7 @@ export class StyleFile implements TextUtils.ContentProvider.ContentProvider {
     this.throttler.schedule(mirrorContentBound, true /* asSoonAsPossible */);
   }
 
-  private workingCopyChanged(_event: Common.EventTarget.EventTargetEvent): void {
+  private workingCopyChanged(): void {
     if (this.isAddingRevision) {
       return;
     }

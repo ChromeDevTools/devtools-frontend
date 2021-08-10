@@ -150,8 +150,8 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
     await this.innerRemoveBinding(binding);
   }
 
-  private onWorkingCopyChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const uiSourceCode = event.data as Workspace.UISourceCode.UISourceCode;
+  private onWorkingCopyChanged(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
+    const uiSourceCode = event.data;
     this.syncWorkingCopy(uiSourceCode);
   }
 
@@ -193,10 +193,11 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  private onWorkingCopyCommitted(event: Common.EventTarget.EventTargetEvent): void {
-    const uiSourceCode = event.data.uiSourceCode as Workspace.UISourceCode.UISourceCode;
-    const newContent = event.data.content as string;
-    this.syncContent(uiSourceCode, newContent, event.data.encoded);
+  private onWorkingCopyCommitted(
+      event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.WorkingCopyCommitedEvent>): void {
+    const uiSourceCode = event.data.uiSourceCode;
+    const newContent = event.data.content;
+    this.syncContent(uiSourceCode, newContent, Boolean(event.data.encoded));
   }
 
   syncContent(uiSourceCode: Workspace.UISourceCode.UISourceCode, newContent: string, encoded: boolean): void {

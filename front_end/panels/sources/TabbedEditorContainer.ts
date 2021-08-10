@@ -581,19 +581,21 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  _uiSourceCodeTitleChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const uiSourceCode = (event.data as Workspace.UISourceCode.UISourceCode);
+  _uiSourceCodeTitleChanged(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
+    const uiSourceCode = event.data;
     this._updateFileTitle(uiSourceCode);
     this._updateHistory();
   }
 
-  _uiSourceCodeWorkingCopyChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const uiSourceCode = (event.data as Workspace.UISourceCode.UISourceCode);
+  _uiSourceCodeWorkingCopyChanged(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>):
+      void {
+    const uiSourceCode = event.data;
     this._updateFileTitle(uiSourceCode);
   }
 
-  _uiSourceCodeWorkingCopyCommitted(event: Common.EventTarget.EventTargetEvent): void {
-    const uiSourceCode = (event.data.uiSourceCode as Workspace.UISourceCode.UISourceCode);
+  _uiSourceCodeWorkingCopyCommitted(
+      event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.WorkingCopyCommitedEvent>): void {
+    const uiSourceCode = event.data.uiSourceCode;
     this._updateFileTitle(uiSourceCode);
   }
 

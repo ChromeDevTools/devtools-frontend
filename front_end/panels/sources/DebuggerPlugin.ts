@@ -498,7 +498,7 @@ export class DebuggerPlugin extends Plugin {
     }
   }
 
-  _workingCopyCommitted(_event: Common.EventTarget.EventTargetEvent): void {
+  _workingCopyCommitted(): void {
     this._scriptsPanel.updateLastModificationTime();
     if (!this._scriptFileForDebuggerModel.size) {
       this._restoreBreakpointsAfterEditing();

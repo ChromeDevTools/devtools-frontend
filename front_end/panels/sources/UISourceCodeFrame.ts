@@ -323,14 +323,14 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
     }
   }
 
-  _onWorkingCopyChanged(_event: Common.EventTarget.EventTargetEvent): void {
+  _onWorkingCopyChanged(): void {
     if (this._muteSourceCodeEvents) {
       return;
     }
     this._innerSetContent(this._uiSourceCode.workingCopy());
   }
 
-  _onWorkingCopyCommitted(_event: Common.EventTarget.EventTargetEvent): void {
+  _onWorkingCopyCommitted(): void {
     if (!this._muteSourceCodeEvents) {
       this._innerSetContent(this._uiSourceCode.workingCopy());
     }
@@ -434,8 +434,8 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
         .removeChangeListener(this._onNetworkPersistenceChanged, this);
   }
 
-  _onMessageAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const message = (event.data as Workspace.UISourceCode.Message);
+  _onMessageAdded(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.Message>): void {
+    const message = event.data;
     this._addMessageToSource(message);
   }
 
@@ -464,8 +464,8 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
     messageBucket.addMessage(message);
   }
 
-  _onMessageRemoved(event: Common.EventTarget.EventTargetEvent): void {
-    const message = (event.data as Workspace.UISourceCode.Message);
+  _onMessageRemoved(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.Message>): void {
+    const message = event.data;
     this._removeMessageFromSource(message);
   }
 
@@ -498,13 +498,13 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
     }
   }
 
-  _onLineDecorationAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const marker = (event.data as Workspace.UISourceCode.LineMarker);
+  _onLineDecorationAdded(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.LineMarker>): void {
+    const marker = event.data;
     this._decorateTypeThrottled(marker.type());
   }
 
-  _onLineDecorationRemoved(event: Common.EventTarget.EventTargetEvent): void {
-    const marker = (event.data as Workspace.UISourceCode.LineMarker);
+  _onLineDecorationRemoved(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.LineMarker>): void {
+    const marker = event.data;
     this._decorateTypeThrottled(marker.type());
   }
 

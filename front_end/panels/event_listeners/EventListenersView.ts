@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -53,51 +51,51 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/event_listeners/EventListenersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class EventListenersView extends UI.Widget.VBox {
-  _changeCallback: () => void;
-  _enableDefaultTreeFocus: boolean;
-  _treeOutline: UI.TreeOutline.TreeOutlineInShadow;
-  _emptyHolder: HTMLDivElement;
-  _linkifier: Components.Linkifier.Linkifier;
-  _treeItemMap: Map<string, EventListenersTreeElement>;
+  private changeCallback: () => void;
+  private enableDefaultTreeFocus: boolean;
+  treeOutline: UI.TreeOutline.TreeOutlineInShadow;
+  private emptyHolder: HTMLDivElement;
+  private linkifier: Components.Linkifier.Linkifier;
+  private readonly treeItemMap: Map<string, EventListenersTreeElement>;
   constructor(changeCallback: () => void, enableDefaultTreeFocus: boolean|undefined = false) {
     super();
-    this._changeCallback = changeCallback;
-    this._enableDefaultTreeFocus = enableDefaultTreeFocus;
-    this._treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-    this._treeOutline.hideOverflow();
+    this.changeCallback = changeCallback;
+    this.enableDefaultTreeFocus = enableDefaultTreeFocus;
+    this.treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
+    this.treeOutline.hideOverflow();
 
-    this._treeOutline.setComparator(EventListenersTreeElement.comparator);
-    this._treeOutline.element.classList.add('monospace');
-    this._treeOutline.setShowSelectionOnKeyboardFocus(true);
-    this._treeOutline.setFocusable(true);
-    this.element.appendChild(this._treeOutline.element);
-    this._emptyHolder = document.createElement('div');
-    this._emptyHolder.classList.add('gray-info-message');
-    this._emptyHolder.textContent = i18nString(UIStrings.noEventListeners);
-    this._emptyHolder.tabIndex = -1;
-    this._linkifier = new Components.Linkifier.Linkifier();
-    this._treeItemMap = new Map();
+    this.treeOutline.setComparator(EventListenersTreeElement.comparator);
+    this.treeOutline.element.classList.add('monospace');
+    this.treeOutline.setShowSelectionOnKeyboardFocus(true);
+    this.treeOutline.setFocusable(true);
+    this.element.appendChild(this.treeOutline.element);
+    this.emptyHolder = document.createElement('div');
+    this.emptyHolder.classList.add('gray-info-message');
+    this.emptyHolder.textContent = i18nString(UIStrings.noEventListeners);
+    this.emptyHolder.tabIndex = -1;
+    this.linkifier = new Components.Linkifier.Linkifier();
+    this.treeItemMap = new Map();
   }
 
   focus(): void {
-    if (!this._enableDefaultTreeFocus) {
+    if (!this.enableDefaultTreeFocus) {
       return;
     }
-    if (!this._emptyHolder.parentNode) {
-      this._treeOutline.forceSelect();
+    if (!this.emptyHolder.parentNode) {
+      this.treeOutline.forceSelect();
     } else {
-      this._emptyHolder.focus();
+      this.emptyHolder.focus();
     }
   }
 
   async addObjects(objects: (SDK.RemoteObject.RemoteObject|null)[]): Promise<void> {
     this.reset();
-    await Promise.all(objects.map(obj => obj ? this._addObject(obj) : Promise.resolve()));
+    await Promise.all(objects.map(obj => obj ? this.addObject(obj) : Promise.resolve()));
     this.addEmptyHolderIfNeeded();
-    this._eventListenersArrivedForTest();
+    this.eventListenersArrivedForTest();
   }
 
-  _addObject(object: SDK.RemoteObject.RemoteObject): Promise<void> {
+  private addObject(object: SDK.RemoteObject.RemoteObject): Promise<void> {
     let eventListeners: SDK.DOMDebuggerModel.EventListener[];
     let frameworkEventListenersObject: (FrameworkEventListenersObject|null)|null = null;
 
@@ -153,26 +151,26 @@ export class EventListenersView extends UI.Widget.VBox {
     }
 
     function addEventListeners(this: EventListenersView): void {
-      this._addObjectEventListeners(object, eventListeners);
+      this.addObjectEventListeners(object, eventListeners);
       if (frameworkEventListenersObject) {
-        this._addObjectEventListeners(object, frameworkEventListenersObject.eventListeners);
+        this.addObjectEventListeners(object, frameworkEventListenersObject.eventListeners);
       }
     }
   }
 
-  _addObjectEventListeners(
+  private addObjectEventListeners(
       object: SDK.RemoteObject.RemoteObject, eventListeners: SDK.DOMDebuggerModel.EventListener[]|null): void {
     if (!eventListeners) {
       return;
     }
     for (const eventListener of eventListeners) {
-      const treeItem = this._getOrCreateTreeElementForType(eventListener.type());
+      const treeItem = this.getOrCreateTreeElementForType(eventListener.type());
       treeItem.addObjectEventListener(eventListener, object);
     }
   }
 
   showFrameworkListeners(showFramework: boolean, showPassive: boolean, showBlocking: boolean): void {
-    const eventTypes = this._treeOutline.rootElement().children();
+    const eventTypes = this.treeOutline.rootElement().children();
     for (const eventType of eventTypes) {
       let hiddenEventType = true;
       for (const listenerElement of eventType.children()) {
@@ -198,30 +196,30 @@ export class EventListenersView extends UI.Widget.VBox {
     }
   }
 
-  _getOrCreateTreeElementForType(type: string): EventListenersTreeElement {
-    let treeItem = this._treeItemMap.get(type);
+  private getOrCreateTreeElementForType(type: string): EventListenersTreeElement {
+    let treeItem = this.treeItemMap.get(type);
     if (!treeItem) {
-      treeItem = new EventListenersTreeElement(type, this._linkifier, this._changeCallback);
-      this._treeItemMap.set(type, treeItem);
+      treeItem = new EventListenersTreeElement(type, this.linkifier, this.changeCallback);
+      this.treeItemMap.set(type, treeItem);
       treeItem.hidden = true;
-      this._treeOutline.appendChild(treeItem);
+      this.treeOutline.appendChild(treeItem);
     }
-    this._emptyHolder.remove();
+    this.emptyHolder.remove();
     return treeItem;
   }
 
   addEmptyHolderIfNeeded(): void {
     let allHidden = true;
     let firstVisibleChild: UI.TreeOutline.TreeElement|null = null;
-    for (const eventType of this._treeOutline.rootElement().children()) {
+    for (const eventType of this.treeOutline.rootElement().children()) {
       eventType.hidden = !eventType.firstChild();
       allHidden = allHidden && eventType.hidden;
       if (!firstVisibleChild && !eventType.hidden) {
         firstVisibleChild = eventType;
       }
     }
-    if (allHidden && !this._emptyHolder.parentNode) {
-      this.element.appendChild(this._emptyHolder);
+    if (allHidden && !this.emptyHolder.parentNode) {
+      this.element.appendChild(this.emptyHolder);
     }
     if (firstVisibleChild) {
       firstVisibleChild.select(true /* omitFocus */);
@@ -229,30 +227,30 @@ export class EventListenersView extends UI.Widget.VBox {
   }
 
   reset(): void {
-    const eventTypes = this._treeOutline.rootElement().children();
+    const eventTypes = this.treeOutline.rootElement().children();
     for (const eventType of eventTypes) {
       eventType.removeChildren();
     }
-    this._linkifier.reset();
+    this.linkifier.reset();
   }
 
-  _eventListenersArrivedForTest(): void {
+  private eventListenersArrivedForTest(): void {
   }
   wasShown(): void {
     super.wasShown();
-    this._treeOutline.registerCSSFiles([eventListenersViewStyles, objectValueStyles]);
+    this.treeOutline.registerCSSFiles([eventListenersViewStyles, objectValueStyles]);
   }
 }
 
 export class EventListenersTreeElement extends UI.TreeOutline.TreeElement {
   toggleOnClick: boolean;
-  _linkifier: Components.Linkifier.Linkifier;
-  _changeCallback: () => void;
+  private readonly linkifier: Components.Linkifier.Linkifier;
+  private readonly changeCallback: () => void;
   constructor(type: string, linkifier: Components.Linkifier.Linkifier, changeCallback: () => void) {
     super(type);
     this.toggleOnClick = true;
-    this._linkifier = linkifier;
-    this._changeCallback = changeCallback;
+    this.linkifier = linkifier;
+    this.changeCallback = changeCallback;
     UI.ARIAUtils.setAccessibleName(this.listItemElement, `${type}, event listener`);
   }
 
@@ -265,29 +263,29 @@ export class EventListenersTreeElement extends UI.TreeOutline.TreeElement {
 
   addObjectEventListener(eventListener: SDK.DOMDebuggerModel.EventListener, object: SDK.RemoteObject.RemoteObject):
       void {
-    const treeElement = new ObjectEventListenerBar(eventListener, object, this._linkifier, this._changeCallback);
+    const treeElement = new ObjectEventListenerBar(eventListener, object, this.linkifier, this.changeCallback);
     this.appendChild(treeElement as UI.TreeOutline.TreeElement);
   }
 }
 
 export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
-  _eventListener: SDK.DOMDebuggerModel.EventListener;
+  private eventListenerInternal: SDK.DOMDebuggerModel.EventListener;
   editable: boolean;
-  _changeCallback: () => void;
-  _valueTitle?: Element;
+  private readonly changeCallback: () => void;
+  private valueTitle?: Element;
   constructor(
       eventListener: SDK.DOMDebuggerModel.EventListener, object: SDK.RemoteObject.RemoteObject,
       linkifier: Components.Linkifier.Linkifier, changeCallback: () => void) {
     super('', true);
-    this._eventListener = eventListener;
+    this.eventListenerInternal = eventListener;
     this.editable = false;
-    this._setTitle(object, linkifier);
-    this._changeCallback = changeCallback;
+    this.setTitle(object, linkifier);
+    this.changeCallback = changeCallback;
   }
 
   async onpopulate(): Promise<void> {
     const properties = [];
-    const eventListener = this._eventListener;
+    const eventListener = this.eventListenerInternal;
     const runtimeModel = eventListener.domDebuggerModel().runtimeModel();
     properties.push(runtimeModel.createRemotePropertyFromPrimitiveValue('useCapture', eventListener.useCapture()));
     properties.push(runtimeModel.createRemotePropertyFromPrimitiveValue('passive', eventListener.passive()));
@@ -298,34 +296,35 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
     ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.populateWithProperties(this, properties, [], true, null);
   }
 
-  _setTitle(object: SDK.RemoteObject.RemoteObject, linkifier: Components.Linkifier.Linkifier): void {
+  private setTitle(object: SDK.RemoteObject.RemoteObject, linkifier: Components.Linkifier.Linkifier): void {
     const title = this.listItemElement.createChild('span', 'event-listener-details');
     const subtitle = this.listItemElement.createChild('span', 'event-listener-tree-subtitle');
-    const linkElement = linkifier.linkifyRawLocation(this._eventListener.location(), this._eventListener.sourceURL());
+    const linkElement =
+        linkifier.linkifyRawLocation(this.eventListenerInternal.location(), this.eventListenerInternal.sourceURL());
     subtitle.appendChild(linkElement);
 
     const propertyValue = ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValue(
         object, /* wasThrown */ false, /* showPreview */ false);
-    this._valueTitle = propertyValue.element;
-    title.appendChild(this._valueTitle);
+    this.valueTitle = propertyValue.element;
+    title.appendChild(this.valueTitle);
 
-    if (this._eventListener.canRemove()) {
+    if (this.eventListenerInternal.canRemove()) {
       const deleteButton = title.createChild('span', 'event-listener-button');
       deleteButton.textContent = i18nString(UIStrings.remove);
       UI.Tooltip.Tooltip.install(deleteButton, i18nString(UIStrings.deleteEventListener));
       deleteButton.addEventListener('click', event => {
-        this._removeListener();
+        this.removeListener();
         event.consume();
       }, false);
       title.appendChild(deleteButton);
     }
 
-    if (this._eventListener.isScrollBlockingType() && this._eventListener.canTogglePassive()) {
+    if (this.eventListenerInternal.isScrollBlockingType() && this.eventListenerInternal.canTogglePassive()) {
       const passiveButton = title.createChild('span', 'event-listener-button');
       passiveButton.textContent = i18nString(UIStrings.togglePassive);
       UI.Tooltip.Tooltip.install(passiveButton, i18nString(UIStrings.toggleWhetherEventListenerIs));
       passiveButton.addEventListener('click', event => {
-        this._togglePassiveListener();
+        this.togglePassiveListener();
         event.consume();
       }, false);
       title.appendChild(passiveButton);
@@ -341,24 +340,25 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
             i18nString(UIStrings.revealInElementsPanel), () => Common.Revealer.reveal(object));
       }
       menu.defaultSection().appendItem(
-          i18nString(UIStrings.deleteEventListener), this._removeListener.bind(this), !this._eventListener.canRemove());
+          i18nString(UIStrings.deleteEventListener), this.removeListener.bind(this),
+          !this.eventListenerInternal.canRemove());
       menu.defaultSection().appendCheckboxItem(
-          i18nString(UIStrings.passive), this._togglePassiveListener.bind(this), this._eventListener.passive(),
-          !this._eventListener.canTogglePassive());
+          i18nString(UIStrings.passive), this.togglePassiveListener.bind(this), this.eventListenerInternal.passive(),
+          !this.eventListenerInternal.canTogglePassive());
       menu.show();
     });
   }
 
-  _removeListener(): void {
-    this._removeListenerBar();
-    this._eventListener.remove();
+  private removeListener(): void {
+    this.removeListenerBar();
+    this.eventListenerInternal.remove();
   }
 
-  _togglePassiveListener(): void {
-    this._eventListener.togglePassive().then(() => this._changeCallback());
+  private togglePassiveListener(): void {
+    this.eventListenerInternal.togglePassive().then(() => this.changeCallback());
   }
 
-  _removeListenerBar(): void {
+  private removeListenerBar(): void {
     const parent = this.parent;
     if (!parent) {
       return;
@@ -377,12 +377,12 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
   }
 
   eventListener(): SDK.DOMDebuggerModel.EventListener {
-    return this._eventListener;
+    return this.eventListenerInternal;
   }
 
   onenter(): boolean {
-    if (this._valueTitle) {
-      (this._valueTitle as HTMLElement).click();
+    if (this.valueTitle) {
+      (this.valueTitle as HTMLElement).click();
       return true;
     }
 

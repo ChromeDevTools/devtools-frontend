@@ -227,7 +227,7 @@ export class EventListenersWidget extends UI.ThrottledWidget.ThrottledWidget imp
         });
   }
 
-  _eventListenersArrivedForTest(): void {
+  eventListenersArrivedForTest(): void {
   }
 }
 

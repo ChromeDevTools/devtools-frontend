@@ -28,7 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import * as Common from '../../core/common/common.js';

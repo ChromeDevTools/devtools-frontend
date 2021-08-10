@@ -28,7 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import * as Platform from '../../core/platform/platform.js';
@@ -324,7 +323,7 @@ export class TimelineFrameModel {
       this.currentTaskTimeByCategory = {};
       this.lastTaskBeginTime = event.startTime;
     }
-    if (!this.framePendingCommit && TimelineFrameModel._mainFrameMarkers.indexOf(event.name as RecordType) >= 0) {
+    if (!this.framePendingCommit && TimelineFrameModel.mainFrameMarkers.indexOf(event.name as RecordType) >= 0) {
       this.framePendingCommit =
           new PendingFrame(this.lastTaskBeginTime || event.startTime, this.currentTaskTimeByCategory);
     }
@@ -358,8 +357,7 @@ export class TimelineFrameModel {
     timeByCategory[categoryName] = (timeByCategory[categoryName] || 0) + event.selfTime;
   }
 
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  static readonly _mainFrameMarkers: RecordType[] = [
+  private static readonly mainFrameMarkers: RecordType[] = [
     RecordType.ScheduleStyleRecalculation,
     RecordType.InvalidateLayout,
     RecordType.BeginMainThreadFrame,

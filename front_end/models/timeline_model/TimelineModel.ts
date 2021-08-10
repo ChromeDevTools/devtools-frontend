@@ -28,7 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -128,7 +127,7 @@ export class TimelineModelImpl {
     startTime = startTime || 0;
     endTime = endTime || Infinity;
     const stack: SDK.TracingModel.Event[] = [];
-    const startEvent = TimelineModelImpl._topLevelEventEndingAfter(events, startTime);
+    const startEvent = TimelineModelImpl.topLevelEventEndingAfter(events, startTime);
     for (let i = startEvent; i < events.length; ++i) {
       const e = events[i];
       if ((e.endTime || e.startTime) < startTime) {
@@ -164,7 +163,7 @@ export class TimelineModelImpl {
     }
   }
 
-  static _topLevelEventEndingAfter(events: SDK.TracingModel.Event[], time: number): number {
+  private static topLevelEventEndingAfter(events: SDK.TracingModel.Event[], time: number): number {
     let index = Platform.ArrayUtilities.upperBound(events, time, (time, event) => time - event.startTime) - 1;
     while (index > 0 && !SDK.TracingModel.TracingModel.isTopLevelEvent(events[index])) {
       index--;
@@ -2204,17 +2203,17 @@ export class InvalidationTracker {
 export class TimelineAsyncEventTracker {
   private readonly initiatorByType: Map<RecordType, Map<RecordType, SDK.TracingModel.Event>>;
   constructor() {
-    TimelineAsyncEventTracker._initialize();
+    TimelineAsyncEventTracker.initialize();
     this.initiatorByType = new Map();
-    if (TimelineAsyncEventTracker._asyncEvents) {
-      for (const initiator of TimelineAsyncEventTracker._asyncEvents.keys()) {
+    if (TimelineAsyncEventTracker.asyncEvents) {
+      for (const initiator of TimelineAsyncEventTracker.asyncEvents.keys()) {
         this.initiatorByType.set(initiator, new Map());
       }
     }
   }
 
-  static _initialize(): void {
-    if (TimelineAsyncEventTracker._asyncEvents) {
+  private static initialize(): void {
+    if (TimelineAsyncEventTracker.asyncEvents) {
       return;
     }
 
@@ -2244,27 +2243,26 @@ export class TimelineAsyncEventTracker {
       joinBy: 'identifier',
     });
 
-    TimelineAsyncEventTracker._asyncEvents = events;
-    TimelineAsyncEventTracker._typeToInitiator = new Map();
+    TimelineAsyncEventTracker.asyncEvents = events;
+    TimelineAsyncEventTracker.typeToInitiator = new Map();
     for (const entry of events) {
       const types = entry[1].causes;
       for (const currentType of types) {
-        TimelineAsyncEventTracker._typeToInitiator.set(currentType, entry[0]);
+        TimelineAsyncEventTracker.typeToInitiator.set(currentType, entry[0]);
       }
     }
   }
 
   processEvent(event: SDK.TracingModel.Event): void {
-    if (!TimelineAsyncEventTracker._typeToInitiator || !TimelineAsyncEventTracker._asyncEvents) {
+    if (!TimelineAsyncEventTracker.typeToInitiator || !TimelineAsyncEventTracker.asyncEvents) {
       return;
     }
-    let initiatorType: RecordType|undefined =
-        TimelineAsyncEventTracker._typeToInitiator.get((event.name as RecordType));
+    let initiatorType: RecordType|undefined = TimelineAsyncEventTracker.typeToInitiator.get((event.name as RecordType));
     const isInitiator = !initiatorType;
     if (!initiatorType) {
       initiatorType = (event.name as RecordType);
     }
-    const initiatorInfo = TimelineAsyncEventTracker._asyncEvents.get(initiatorType);
+    const initiatorInfo = TimelineAsyncEventTracker.asyncEvents.get(initiatorType);
     if (!initiatorInfo) {
       return;
     }
@@ -2287,8 +2285,8 @@ export class TimelineAsyncEventTracker {
     }
   }
 
-  static _asyncEvents: Map<RecordType, {causes: RecordType[], joinBy: string}>|null = null;
-  static _typeToInitiator: Map<RecordType, RecordType>|null = null;
+  private static asyncEvents: Map<RecordType, {causes: RecordType[], joinBy: string}>|null = null;
+  private static typeToInitiator: Map<RecordType, RecordType>|null = null;
 }
 
 export class TimelineData {

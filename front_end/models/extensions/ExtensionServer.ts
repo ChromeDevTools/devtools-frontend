@@ -29,7 +29,7 @@
  */
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-/* eslint-disable @typescript-eslint/naming-convention,rulesdir/no_underscored_properties */
+/* eslint-disable @typescript-eslint/naming-convention */
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';

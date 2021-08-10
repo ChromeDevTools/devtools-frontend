@@ -21,7 +21,7 @@
     }
   }
 
-  TestRunner.override(LighthouseTestRunner._panel()._protocolService, 'getLocales', overrideLookupLocale, true);
+  TestRunner.override(LighthouseTestRunner._panel().protocolService, 'getLocales', overrideLookupLocale, true);
 
   const locales = ['invalid-locale', 'es'];
   function overrideLookupLocale() {

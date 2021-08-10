@@ -2,30 +2,28 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as Common from '../../core/common/common.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 export class RadioSetting {
-  _setting: Common.Settings.Setting<string>;
-  _options: {value: string, label: () => Common.UIString.LocalizedString}[];
+  private readonly setting: Common.Settings.Setting<string>;
+  private options: {value: string, label: () => Common.UIString.LocalizedString}[];
   element: HTMLDivElement;
-  _radioElements: HTMLInputElement[];
-  _ignoreChangeEvents: boolean;
-  _selectedIndex: number;
+  private radioElements: HTMLInputElement[];
+  private ignoreChangeEvents: boolean;
+  private selectedIndex: number;
   constructor(
       options: {value: string, label: () => Common.UIString.LocalizedString}[],
       setting: Common.Settings.Setting<string>, description: string) {
-    this._setting = setting;
-    this._options = options;
+    this.setting = setting;
+    this.options = options;
 
     this.element = document.createElement('div');
     UI.ARIAUtils.setDescription(this.element, description);
     UI.ARIAUtils.markAsRadioGroup(this.element);
 
-    this._radioElements = [];
-    for (const option of this._options) {
+    this.radioElements = [];
+    for (const option of this.options) {
       const fragment = UI.Fragment.Fragment.build`
   <label $="label" class="lighthouse-radio">
   <input $="input" type="radio" value=${option.value} name=${setting.name}>
@@ -39,38 +37,38 @@ export class RadioSetting {
         UI.Tooltip.Tooltip.install(fragment.$('span') as HTMLElement, description);
       }
       const radioElement = fragment.$('input') as HTMLInputElement;
-      radioElement.addEventListener('change', this._valueChanged.bind(this));
-      this._radioElements.push(radioElement);
+      radioElement.addEventListener('change', this.valueChanged.bind(this));
+      this.radioElements.push(radioElement);
     }
 
-    this._ignoreChangeEvents = false;
-    this._selectedIndex = -1;
+    this.ignoreChangeEvents = false;
+    this.selectedIndex = -1;
 
-    setting.addChangeListener(this._settingChanged, this);
-    this._settingChanged();
+    setting.addChangeListener(this.settingChanged, this);
+    this.settingChanged();
   }
 
-  _updateUI(): void {
-    this._ignoreChangeEvents = true;
-    this._radioElements[this._selectedIndex].checked = true;
-    this._ignoreChangeEvents = false;
+  private updateUI(): void {
+    this.ignoreChangeEvents = true;
+    this.radioElements[this.selectedIndex].checked = true;
+    this.ignoreChangeEvents = false;
   }
 
-  _settingChanged(): void {
-    const value = this._setting.get();
-    this._selectedIndex = this._options.findIndex(option => option.value === value);
-    this._updateUI();
+  private settingChanged(): void {
+    const value = this.setting.get();
+    this.selectedIndex = this.options.findIndex(option => option.value === value);
+    this.updateUI();
   }
 
-  _valueChanged(_event: Event): void {
-    if (this._ignoreChangeEvents) {
+  private valueChanged(_event: Event): void {
+    if (this.ignoreChangeEvents) {
       return;
     }
 
-    const selectedRadio = this._radioElements.find(radio => radio.checked);
+    const selectedRadio = this.radioElements.find(radio => radio.checked);
     if (!selectedRadio) {
       return;
     }
-    this._setting.set(selectedRadio.value);
+    this.setting.set(selectedRadio.value);
   }
 }

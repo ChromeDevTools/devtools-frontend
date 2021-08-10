@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import lighthouseStartViewStyles from './lighthouseStartView.css.js';
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -43,26 +41,26 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/lighthouse/LighthouseStartView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class StartView extends UI.Widget.Widget {
-  _controller: LighthouseController;
-  _settingsToolbar: UI.Toolbar.Toolbar;
-  _startButton!: HTMLButtonElement;
-  _helpText?: Element;
-  _warningText?: Element;
-  _shouldConfirm?: boolean;
+  private controller: LighthouseController;
+  private readonly settingsToolbarInternal: UI.Toolbar.Toolbar;
+  private startButton!: HTMLButtonElement;
+  private helpText?: Element;
+  private warningText?: Element;
+  private shouldConfirm?: boolean;
 
   constructor(controller: LighthouseController) {
     super();
 
-    this._controller = controller;
-    this._settingsToolbar = new UI.Toolbar.Toolbar('');
-    this._render();
+    this.controller = controller;
+    this.settingsToolbarInternal = new UI.Toolbar.Toolbar('');
+    this.render();
   }
 
   settingsToolbar(): UI.Toolbar.Toolbar {
-    return this._settingsToolbar;
+    return this.settingsToolbarInternal;
   }
 
-  _populateRuntimeSettingAsRadio(settingName: string, label: string, parentElement: Element): void {
+  private populateRuntimeSettingAsRadio(settingName: string, label: string, parentElement: Element): void {
     const runtimeSetting = RuntimeSettings.find(item => item.setting.name === settingName);
     if (!runtimeSetting || !runtimeSetting.options) {
       throw new Error(`${settingName} is not a setting with options`);
@@ -75,7 +73,7 @@ export class StartView extends UI.Widget.Widget {
     UI.ARIAUtils.setAccessibleName(control.element, label);
   }
 
-  _populateRuntimeSettingAsToolbarCheckbox(settingName: string, toolbar: UI.Toolbar.Toolbar): void {
+  private populateRuntimeSettingAsToolbarCheckbox(settingName: string, toolbar: UI.Toolbar.Toolbar): void {
     const runtimeSetting = RuntimeSettings.find(item => item.setting.name === settingName);
     if (!runtimeSetting || !runtimeSetting.title) {
       throw new Error(`${settingName} is not a setting with a title`);
@@ -93,10 +91,10 @@ export class StartView extends UI.Widget.Widget {
     }
   }
 
-  _populateFormControls(fragment: UI.Fragment.Fragment): void {
+  private populateFormControls(fragment: UI.Fragment.Fragment): void {
     // Populate the device type
     const deviceTypeFormElements = fragment.$('device-type-form-elements');
-    this._populateRuntimeSettingAsRadio('lighthouse.device_type', i18nString(UIStrings.device), deviceTypeFormElements);
+    this.populateRuntimeSettingAsRadio('lighthouse.device_type', i18nString(UIStrings.device), deviceTypeFormElements);
 
     // Populate the categories
     const categoryFormElements = fragment.$('categories-form-elements');
@@ -114,17 +112,17 @@ export class StartView extends UI.Widget.Widget {
     UI.ARIAUtils.setAccessibleName(pluginFormElements, i18nString(UIStrings.communityPluginsBeta));
   }
 
-  _render(): void {
-    this._populateRuntimeSettingAsToolbarCheckbox('lighthouse.clear_storage', this._settingsToolbar);
-    this._populateRuntimeSettingAsToolbarCheckbox('lighthouse.throttling', this._settingsToolbar);
+  private render(): void {
+    this.populateRuntimeSettingAsToolbarCheckbox('lighthouse.clear_storage', this.settingsToolbarInternal);
+    this.populateRuntimeSettingAsToolbarCheckbox('lighthouse.throttling', this.settingsToolbarInternal);
 
-    this._startButton = UI.UIUtils.createTextButton(
+    this.startButton = UI.UIUtils.createTextButton(
         i18nString(UIStrings.generateReport),
-        () => this._controller.dispatchEventToListeners(
+        () => this.controller.dispatchEventToListeners(
             Events.RequestLighthouseStart,
-            /* keyboardInitiated */ this._startButton.matches(':focus-visible')),
+            /* keyboardInitiated */ this.startButton.matches(':focus-visible')),
         /* className */ '', /* primary */ true);
-    this.setDefaultFocusedElement(this._startButton);
+    this.setDefaultFocusedElement(this.startButton);
 
     const auditsDescription = i18nString(UIStrings.identifyAndFixCommonProblemsThat);  // crbug.com/972969
 
@@ -133,7 +131,7 @@ export class StartView extends UI.Widget.Widget {
   <header>
   <div class="lighthouse-logo"></div>
   <div class="lighthouse-start-button-container hbox">
-  ${this._startButton}
+  ${this.startButton}
   </div>
   <div $="help-text" class="lighthouse-help-text hidden"></div>
   <div class="lighthouse-start-view-text">
@@ -167,9 +165,9 @@ export class StartView extends UI.Widget.Widget {
   </div>
   `;
 
-    this._helpText = fragment.$('help-text');
-    this._warningText = fragment.$('warning-text');
-    this._populateFormControls(fragment);
+    this.helpText = fragment.$('help-text');
+    this.warningText = fragment.$('warning-text');
+    this.populateFormControls(fragment);
     this.contentElement.appendChild(fragment.element());
     this.contentElement.style.overflow = 'auto';
   }
@@ -185,30 +183,30 @@ export class StartView extends UI.Widget.Widget {
   }
 
   focusStartButton(): void {
-    this._startButton.focus();
+    this.startButton.focus();
   }
 
   setStartButtonEnabled(isEnabled: boolean): void {
-    if (this._helpText) {
-      this._helpText.classList.toggle('hidden', isEnabled);
+    if (this.helpText) {
+      this.helpText.classList.toggle('hidden', isEnabled);
     }
 
-    if (this._startButton) {
-      this._startButton.disabled = !isEnabled;
+    if (this.startButton) {
+      this.startButton.disabled = !isEnabled;
     }
   }
 
   setUnauditableExplanation(text: string|null): void {
-    if (this._helpText) {
-      this._helpText.textContent = text;
+    if (this.helpText) {
+      this.helpText.textContent = text;
     }
   }
 
   setWarningText(text: string|null): void {
-    if (this._warningText) {
-      this._warningText.textContent = text;
-      this._warningText.classList.toggle('hidden', !text);
-      this._shouldConfirm = Boolean(text);
+    if (this.warningText) {
+      this.warningText.textContent = text;
+      this.warningText.classList.toggle('hidden', !text);
+      this.shouldConfirm = Boolean(text);
     }
   }
   wasShown(): void {

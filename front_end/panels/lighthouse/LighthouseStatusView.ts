@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -152,51 +150,51 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export class StatusView {
-  _controller: LighthouseController;
-  _statusView: Element|null;
-  _statusHeader: Element|null;
-  _progressWrapper: Element|null;
-  _progressBar: Element|null;
-  _statusText: Element|null;
-  _cancelButton: HTMLButtonElement|null;
-  _inspectedURL: string;
-  _textChangedAt: number;
-  _fastFactsQueued: Common.UIString.LocalizedString[];
-  _currentPhase: StatusPhase|null;
-  _scheduledTextChangeTimeout: number|null;
-  _scheduledFastFactTimeout: number|null;
-  _dialog: UI.Dialog.Dialog;
+  private readonly controller: LighthouseController;
+  private statusView: Element|null;
+  private statusHeader: Element|null;
+  private progressWrapper: Element|null;
+  private progressBar: Element|null;
+  private statusText: Element|null;
+  private cancelButton: HTMLButtonElement|null;
+  private inspectedURL: string;
+  private textChangedAt: number;
+  private fastFactsQueued: Common.UIString.LocalizedString[];
+  private currentPhase: StatusPhase|null;
+  private scheduledTextChangeTimeout: number|null;
+  private scheduledFastFactTimeout: number|null;
+  private readonly dialog: UI.Dialog.Dialog;
 
   constructor(controller: LighthouseController) {
-    this._controller = controller;
+    this.controller = controller;
 
-    this._statusView = null;
-    this._statusHeader = null;
-    this._progressWrapper = null;
-    this._progressBar = null;
-    this._statusText = null;
-    this._cancelButton = null;
+    this.statusView = null;
+    this.statusHeader = null;
+    this.progressWrapper = null;
+    this.progressBar = null;
+    this.statusText = null;
+    this.cancelButton = null;
 
-    this._inspectedURL = '';
-    this._textChangedAt = 0;
-    this._fastFactsQueued = FastFacts.map(lazyString => lazyString());
-    this._currentPhase = null;
-    this._scheduledTextChangeTimeout = null;
-    this._scheduledFastFactTimeout = null;
+    this.inspectedURL = '';
+    this.textChangedAt = 0;
+    this.fastFactsQueued = FastFacts.map(lazyString => lazyString());
+    this.currentPhase = null;
+    this.scheduledTextChangeTimeout = null;
+    this.scheduledFastFactTimeout = null;
 
-    this._dialog = new UI.Dialog.Dialog();
-    this._dialog.setDimmed(true);
-    this._dialog.setCloseOnEscape(false);
-    this._dialog.setOutsideClickCallback(event => event.consume(true));
-    this._render();
+    this.dialog = new UI.Dialog.Dialog();
+    this.dialog.setDimmed(true);
+    this.dialog.setCloseOnEscape(false);
+    this.dialog.setOutsideClickCallback(event => event.consume(true));
+    this.render();
   }
 
-  _render(): void {
+  private render(): void {
     const dialogRoot = UI.Utils.createShadowRootWithCoreStyles(
-        this._dialog.contentElement, {cssFile: [lighthouseDialogStyles], delegatesFocus: undefined});
+        this.dialog.contentElement, {cssFile: [lighthouseDialogStyles], delegatesFocus: undefined});
     const lighthouseViewElement = dialogRoot.createChild('div', 'lighthouse-view vbox');
 
-    const cancelButton = UI.UIUtils.createTextButton(i18nString(UIStrings.cancel), this._cancel.bind(this));
+    const cancelButton = UI.UIUtils.createTextButton(i18nString(UIStrings.cancel), this.cancel.bind(this));
     const fragment = UI.Fragment.Fragment.build`
   <div class="lighthouse-view vbox">
   <h2 $="status-header">Auditing your web page…</h2>
@@ -212,101 +210,101 @@ export class StatusView {
 
     lighthouseViewElement.appendChild(fragment.element());
 
-    this._statusView = fragment.$('status-view');
-    this._statusHeader = fragment.$('status-header');
-    this._progressWrapper = fragment.$('progress-wrapper');
-    this._progressBar = fragment.$('progress-bar');
-    this._statusText = fragment.$('status-text');
+    this.statusView = fragment.$('status-view');
+    this.statusHeader = fragment.$('status-header');
+    this.progressWrapper = fragment.$('progress-wrapper');
+    this.progressBar = fragment.$('progress-bar');
+    this.statusText = fragment.$('status-text');
     // Use StatusPhases array index as progress bar value
-    UI.ARIAUtils.markAsProgressBar(this._progressBar, 0, StatusPhases.length - 1);
-    this._cancelButton = cancelButton;
-    UI.ARIAUtils.markAsStatus(this._statusText);
+    UI.ARIAUtils.markAsProgressBar(this.progressBar, 0, StatusPhases.length - 1);
+    this.cancelButton = cancelButton;
+    UI.ARIAUtils.markAsStatus(this.statusText);
 
-    this._dialog.setDefaultFocusedElement(cancelButton);
-    this._dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactWidthMaxHeight);
-    this._dialog.setMaxContentSize(new UI.Geometry.Size(500, 400));
+    this.dialog.setDefaultFocusedElement(cancelButton);
+    this.dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactWidthMaxHeight);
+    this.dialog.setMaxContentSize(new UI.Geometry.Size(500, 400));
   }
 
-  _reset(): void {
-    this._resetProgressBarClasses();
-    clearTimeout(this._scheduledFastFactTimeout as number);
+  private reset(): void {
+    this.resetProgressBarClasses();
+    clearTimeout(this.scheduledFastFactTimeout as number);
 
-    this._textChangedAt = 0;
-    this._fastFactsQueued = FastFacts.map(lazyString => lazyString());
-    this._currentPhase = null;
-    this._scheduledTextChangeTimeout = null;
-    this._scheduledFastFactTimeout = null;
+    this.textChangedAt = 0;
+    this.fastFactsQueued = FastFacts.map(lazyString => lazyString());
+    this.currentPhase = null;
+    this.scheduledTextChangeTimeout = null;
+    this.scheduledFastFactTimeout = null;
   }
 
   show(dialogRenderElement: Element): void {
-    this._reset();
+    this.reset();
     this.updateStatus(i18nString(UIStrings.loading));
 
-    const parsedURL = Common.ParsedURL.ParsedURL.fromString(this._inspectedURL);
+    const parsedURL = Common.ParsedURL.ParsedURL.fromString(this.inspectedURL);
     const pageHost = parsedURL && parsedURL.host;
     const statusHeader =
         pageHost ? i18nString(UIStrings.auditingS, {PH1: pageHost}) : i18nString(UIStrings.auditingYourWebPage);
-    this._renderStatusHeader(statusHeader);
+    this.renderStatusHeader(statusHeader);
     // @ts-ignore TS expects Document, but gets Element (show takes Element|Document)
-    this._dialog.show(dialogRenderElement);
+    this.dialog.show(dialogRenderElement);
   }
 
-  _renderStatusHeader(statusHeader?: string): void {
-    if (this._statusHeader) {
-      this._statusHeader.textContent = `${statusHeader}…`;
+  private renderStatusHeader(statusHeader?: string): void {
+    if (this.statusHeader) {
+      this.statusHeader.textContent = `${statusHeader}…`;
     }
   }
 
   hide(): void {
-    if (this._dialog.isShowing()) {
-      this._dialog.hide();
+    if (this.dialog.isShowing()) {
+      this.dialog.hide();
     }
   }
 
   setInspectedURL(url: string = ''): void {
-    this._inspectedURL = url;
+    this.inspectedURL = url;
   }
 
   updateStatus(message: string|null): void {
-    if (!message || !this._statusText) {
+    if (!message || !this.statusText) {
       return;
     }
 
     if (message.startsWith('Cancel')) {
-      this._commitTextChange(i18nString(UIStrings.cancelling));
-      clearTimeout(this._scheduledFastFactTimeout as number);
+      this.commitTextChange(i18nString(UIStrings.cancelling));
+      clearTimeout(this.scheduledFastFactTimeout as number);
       return;
     }
 
-    const nextPhase = this._getPhaseForMessage(message);
+    const nextPhase = this.getPhaseForMessage(message);
 
     // @ts-ignore indexOf null is valid.
     const nextPhaseIndex = StatusPhases.indexOf(nextPhase);
 
     // @ts-ignore indexOf null is valid.
-    const currentPhaseIndex = StatusPhases.indexOf(this._currentPhase);
-    if (!nextPhase && !this._currentPhase) {
-      this._commitTextChange(i18nString(UIStrings.lighthouseIsWarmingUp));
-      clearTimeout(this._scheduledFastFactTimeout as number);
-    } else if (nextPhase && (!this._currentPhase || currentPhaseIndex < nextPhaseIndex)) {
-      this._currentPhase = nextPhase;
-      const text = this._getMessageForPhase(nextPhase);
-      this._scheduleTextChange(text);
-      this._scheduleFastFactCheck();
-      this._resetProgressBarClasses();
+    const currentPhaseIndex = StatusPhases.indexOf(this.currentPhase);
+    if (!nextPhase && !this.currentPhase) {
+      this.commitTextChange(i18nString(UIStrings.lighthouseIsWarmingUp));
+      clearTimeout(this.scheduledFastFactTimeout as number);
+    } else if (nextPhase && (!this.currentPhase || currentPhaseIndex < nextPhaseIndex)) {
+      this.currentPhase = nextPhase;
+      const text = this.getMessageForPhase(nextPhase);
+      this.scheduleTextChange(text);
+      this.scheduleFastFactCheck();
+      this.resetProgressBarClasses();
 
-      if (this._progressBar) {
-        this._progressBar.classList.add(nextPhase.progressBarClass);
-        UI.ARIAUtils.setProgressBarValue(this._progressBar, nextPhaseIndex, text);
+      if (this.progressBar) {
+        this.progressBar.classList.add(nextPhase.progressBarClass);
+        UI.ARIAUtils.setProgressBarValue(this.progressBar, nextPhaseIndex, text);
       }
     }
   }
 
-  _cancel(): void {
-    this._controller.dispatchEventToListeners(Events.RequestLighthouseCancel);
+  private cancel(): void {
+    this.controller.dispatchEventToListeners(Events.RequestLighthouseCancel);
   }
 
-  _getMessageForPhase(phase: StatusPhase): string {
+  private getMessageForPhase(phase: StatusPhase): string {
     if (phase.message()) {
       return phase.message();
     }
@@ -322,105 +320,105 @@ export class StatusView {
     return match ? match.message() : i18nString(UIStrings.lighthouseIsLoadingYourPage);
   }
 
-  _getPhaseForMessage(message: string): StatusPhase|null {
+  private getPhaseForMessage(message: string): StatusPhase|null {
     return StatusPhases.find(phase => message.startsWith(phase.statusMessagePrefix)) || null;
   }
 
-  _resetProgressBarClasses(): void {
-    if (this._progressBar) {
-      this._progressBar.className = 'lighthouse-progress-bar';
+  private resetProgressBarClasses(): void {
+    if (this.progressBar) {
+      this.progressBar.className = 'lighthouse-progress-bar';
     }
   }
 
-  _scheduleFastFactCheck(): void {
-    if (!this._currentPhase || this._scheduledFastFactTimeout) {
+  private scheduleFastFactCheck(): void {
+    if (!this.currentPhase || this.scheduledFastFactTimeout) {
       return;
     }
 
-    this._scheduledFastFactTimeout = window.setTimeout(() => {
-      this._updateFastFactIfNecessary();
-      this._scheduledFastFactTimeout = null;
+    this.scheduledFastFactTimeout = window.setTimeout(() => {
+      this.updateFastFactIfNecessary();
+      this.scheduledFastFactTimeout = null;
 
-      this._scheduleFastFactCheck();
+      this.scheduleFastFactCheck();
     }, 100);
   }
 
-  _updateFastFactIfNecessary(): void {
+  private updateFastFactIfNecessary(): void {
     const now = performance.now();
-    if (now - this._textChangedAt < fastFactRotationInterval) {
+    if (now - this.textChangedAt < fastFactRotationInterval) {
       return;
     }
-    if (!this._fastFactsQueued.length) {
+    if (!this.fastFactsQueued.length) {
       return;
     }
 
-    const fastFactIndex = Math.floor(Math.random() * this._fastFactsQueued.length);
-    this._scheduleTextChange(
-        i18nString(UIStrings.fastFactMessageWithPlaceholder, {PH1: this._fastFactsQueued[fastFactIndex]}));
-    this._fastFactsQueued.splice(fastFactIndex, 1);
+    const fastFactIndex = Math.floor(Math.random() * this.fastFactsQueued.length);
+    this.scheduleTextChange(
+        i18nString(UIStrings.fastFactMessageWithPlaceholder, {PH1: this.fastFactsQueued[fastFactIndex]}));
+    this.fastFactsQueued.splice(fastFactIndex, 1);
   }
 
-  _commitTextChange(text: string): void {
-    if (!this._statusText) {
+  private commitTextChange(text: string): void {
+    if (!this.statusText) {
       return;
     }
-    this._textChangedAt = performance.now();
-    this._statusText.textContent = text;
+    this.textChangedAt = performance.now();
+    this.statusText.textContent = text;
   }
 
-  _scheduleTextChange(text: string): void {
-    if (this._scheduledTextChangeTimeout) {
-      clearTimeout(this._scheduledTextChangeTimeout);
+  private scheduleTextChange(text: string): void {
+    if (this.scheduledTextChangeTimeout) {
+      clearTimeout(this.scheduledTextChangeTimeout);
     }
 
-    const msSinceLastChange = performance.now() - this._textChangedAt;
+    const msSinceLastChange = performance.now() - this.textChangedAt;
     const msToTextChange = minimumTextVisibilityDuration - msSinceLastChange;
 
-    this._scheduledTextChangeTimeout = window.setTimeout(() => {
-      this._commitTextChange(text);
+    this.scheduledTextChangeTimeout = window.setTimeout(() => {
+      this.commitTextChange(text);
     }, Math.max(msToTextChange, 0));
   }
 
   renderBugReport(err: Error): void {
     console.error(err);
-    if (this._scheduledFastFactTimeout) {
-      window.clearTimeout(this._scheduledFastFactTimeout);
+    if (this.scheduledFastFactTimeout) {
+      window.clearTimeout(this.scheduledFastFactTimeout);
     }
 
-    if (this._scheduledTextChangeTimeout) {
-      window.clearTimeout(this._scheduledTextChangeTimeout);
+    if (this.scheduledTextChangeTimeout) {
+      window.clearTimeout(this.scheduledTextChangeTimeout);
     }
 
-    this._resetProgressBarClasses();
+    this.resetProgressBarClasses();
 
-    if (this._progressBar) {
-      this._progressBar.classList.add('errored');
+    if (this.progressBar) {
+      this.progressBar.classList.add('errored');
     }
 
-    if (this._statusText) {
-      this._commitTextChange('');
-      UI.UIUtils.createTextChild(this._statusText.createChild('p'), i18nString(UIStrings.ahSorryWeRanIntoAnError));
+    if (this.statusText) {
+      this.commitTextChange('');
+      UI.UIUtils.createTextChild(this.statusText.createChild('p'), i18nString(UIStrings.ahSorryWeRanIntoAnError));
       if (KnownBugPatterns.some(pattern => pattern.test(err.message))) {
         const message = i18nString(UIStrings.tryToNavigateToTheUrlInAFresh);
-        UI.UIUtils.createTextChild(this._statusText.createChild('p'), message);
+        UI.UIUtils.createTextChild(this.statusText.createChild('p'), message);
       } else {
-        this._renderBugReportBody(err, this._inspectedURL);
+        this.renderBugReportBody(err, this.inspectedURL);
       }
     }
   }
 
   renderText(statusHeader: string, text: string): void {
-    this._renderStatusHeader(statusHeader);
-    this._commitTextChange(text);
+    this.renderStatusHeader(statusHeader);
+    this.commitTextChange(text);
   }
 
   toggleCancelButton(show: boolean): void {
-    if (this._cancelButton) {
-      this._cancelButton.style.visibility = show ? 'visible' : 'hidden';
+    if (this.cancelButton) {
+      this.cancelButton.style.visibility = show ? 'visible' : 'hidden';
     }
   }
 
-  _renderBugReportBody(err: Error, auditURL: string): void {
+  private renderBugReportBody(err: Error, auditURL: string): void {
     const chromeVersion = navigator.userAgent.match(/Chrome\/(\S+)/) || ['', 'Unknown'];
     // @ts-ignore Lighthouse sets `friendlyMessage` on certain
     // important errors such as PROTOCOL_TIMEOUT.
@@ -434,10 +432,10 @@ Chrome Version: ${chromeVersion[1]}
 Stack Trace: ${err.stack}
 \`\`\`
 `;
-    if (this._statusText) {
+    if (this.statusText) {
       UI.UIUtils.createTextChild(
-          this._statusText.createChild('p'), i18nString(UIStrings.ifThisIssueIsReproduciblePlease));
-      UI.UIUtils.createTextChild(this._statusText.createChild('code', 'monospace'), issueBody.trim());
+          this.statusText.createChild('p'), i18nString(UIStrings.ifThisIssueIsReproduciblePlease));
+      UI.UIUtils.createTextChild(this.statusText.createChild('code', 'monospace'), issueBody.trim());
     }
   }
 }

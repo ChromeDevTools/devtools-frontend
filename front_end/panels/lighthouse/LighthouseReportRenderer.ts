@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -155,21 +153,21 @@ export class LighthouseReportRenderer extends LighthouseReport.ReportRenderer {
 
 // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
 export class LighthouseReportUIFeatures extends LighthouseReport.ReportUIFeatures {
-  _beforePrint: (() => void)|null;
-  _afterPrint: (() => void)|null;
+  private beforePrint: (() => void)|null;
+  private afterPrint: (() => void)|null;
 
   constructor(dom: LighthouseReport.DOM) {
     super(dom);
-    this._beforePrint = null;
-    this._afterPrint = null;
+    this.beforePrint = null;
+    this.afterPrint = null;
   }
 
   setBeforePrint(beforePrint: (() => void)|null): void {
-    this._beforePrint = beforePrint;
+    this.beforePrint = beforePrint;
   }
 
   setAfterPrint(afterPrint: (() => void)|null): void {
-    this._afterPrint = afterPrint;
+    this.afterPrint = afterPrint;
   }
 
   /**
@@ -184,6 +182,9 @@ export class LighthouseReportUIFeatures extends LighthouseReport.ReportUIFeature
   /**
    * Downloads a file (blob) using the system dialog prompt.
    */
+  // This implements the interface ReportUIFeatures from lighthouse
+  // which follows a different naming convention.
+  // eslint-disable-next-line rulesdir/no_underscored_properties, @typescript-eslint/naming-convention
   async _saveFile(blob: Blob|File): Promise<void> {
     const domain = new Common.ParsedURL.ParsedURL(this.json.finalUrl).domain();
     const sanitizedDomain = domain.replace(/[^a-z0-9.-]+/gi, '_');
@@ -194,6 +195,9 @@ export class LighthouseReportUIFeatures extends LighthouseReport.ReportUIFeature
     Workspace.FileManager.FileManager.instance().save(basename, text, true /* forceSaveAs */);
   }
 
+  // This implements the interface ReportUIFeatures from lighthouse
+  // which follows a different naming convention.
+  // eslint-disable-next-line rulesdir/no_underscored_properties, @typescript-eslint/naming-convention
   async _print(): Promise<void> {
     const document = this.getDocument();
     const clonedReport = (document.querySelector('.lh-root') as HTMLElement).cloneNode(true);
@@ -208,14 +212,14 @@ export class LighthouseReportUIFeatures extends LighthouseReport.ReportUIFeature
     // Linkified nodes are shadow elements, which aren't exposed via `cloneNode`.
     await LighthouseReportRenderer.linkifyNodeDetails(clonedReport as HTMLElement);
 
-    if (this._beforePrint) {
-      this._beforePrint();
+    if (this.beforePrint) {
+      this.beforePrint();
     }
     printWindow.focus();
     printWindow.print();
     printWindow.close();
-    if (this._afterPrint) {
-      this._afterPrint();
+    if (this.afterPrint) {
+      this.afterPrint();
     }
   }
 

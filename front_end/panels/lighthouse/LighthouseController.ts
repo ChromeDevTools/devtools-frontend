@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -140,9 +138,9 @@ const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined
 
 export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper implements
     SDK.TargetManager.SDKModelObserver<SDK.ServiceWorkerManager.ServiceWorkerManager> {
-  _manager?: SDK.ServiceWorkerManager.ServiceWorkerManager|null;
-  _serviceWorkerListeners?: Common.EventTarget.EventDescriptor[];
-  _inspectedURL?: string;
+  private manager?: SDK.ServiceWorkerManager.ServiceWorkerManager|null;
+  private serviceWorkerListeners?: Common.EventTarget.EventDescriptor[];
+  private inspectedURL?: string;
 
   constructor(protocolService: ProtocolService) {
     super();
@@ -164,15 +162,15 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper imp
   }
 
   modelAdded(serviceWorkerManager: SDK.ServiceWorkerManager.ServiceWorkerManager): void {
-    if (this._manager) {
+    if (this.manager) {
       return;
     }
 
-    this._manager = serviceWorkerManager;
-    this._serviceWorkerListeners = [
-      this._manager.addEventListener(
+    this.manager = serviceWorkerManager;
+    this.serviceWorkerListeners = [
+      this.manager.addEventListener(
           SDK.ServiceWorkerManager.Events.RegistrationUpdated, this.recomputePageAuditability, this),
-      this._manager.addEventListener(
+      this.manager.addEventListener(
           SDK.ServiceWorkerManager.Events.RegistrationDeleted, this.recomputePageAuditability, this),
     ];
 
@@ -180,29 +178,29 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper imp
   }
 
   modelRemoved(serviceWorkerManager: SDK.ServiceWorkerManager.ServiceWorkerManager): void {
-    if (this._manager !== serviceWorkerManager) {
+    if (this.manager !== serviceWorkerManager) {
       return;
     }
-    if (this._serviceWorkerListeners) {
-      Common.EventTarget.removeEventListeners(this._serviceWorkerListeners);
+    if (this.serviceWorkerListeners) {
+      Common.EventTarget.removeEventListeners(this.serviceWorkerListeners);
     }
-    this._manager = null;
+    this.manager = null;
     this.recomputePageAuditability();
   }
 
-  _hasActiveServiceWorker(): boolean {
-    if (!this._manager) {
+  private hasActiveServiceWorker(): boolean {
+    if (!this.manager) {
       return false;
     }
 
-    const mainTarget = this._manager.target();
+    const mainTarget = this.manager.target();
     if (!mainTarget) {
       return false;
     }
 
     const inspectedURL = Common.ParsedURL.ParsedURL.fromString(mainTarget.inspectedURL());
     const inspectedOrigin = inspectedURL && inspectedURL.securityOrigin();
-    for (const registration of this._manager.registrations().values()) {
+    for (const registration of this.manager.registrations().values()) {
       if (registration.securityOrigin !== inspectedOrigin) {
         continue;
       }
@@ -217,16 +215,16 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper imp
     return false;
   }
 
-  _hasAtLeastOneCategory(): boolean {
+  private hasAtLeastOneCategory(): boolean {
     return Presets.some(preset => preset.setting.get());
   }
 
-  _unauditablePageMessage(): string|null {
-    if (!this._manager) {
+  private unauditablePageMessage(): string|null {
+    if (!this.manager) {
       return null;
     }
 
-    const mainTarget = this._manager.target();
+    const mainTarget = this.manager.target();
     const inspectedURL = mainTarget && mainTarget.inspectedURL();
     if (inspectedURL && !/^(http|chrome-extension)/.test(inspectedURL)) {
       return i18nString(UIStrings.canOnlyAuditHttphttpsPagesAnd);
@@ -235,16 +233,16 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper imp
     return null;
   }
 
-  async _hasImportantResourcesNotCleared(): Promise<string> {
+  private async hasImportantResourcesNotCleared(): Promise<string> {
     const clearStorageSetting =
         RuntimeSettings.find(runtimeSetting => runtimeSetting.setting.name === 'lighthouse.clear_storage');
     if (clearStorageSetting && !clearStorageSetting.setting.get()) {
       return '';
     }
-    if (!this._manager) {
+    if (!this.manager) {
       return '';
     }
-    const mainTarget = this._manager.target();
+    const mainTarget = this.manager.target();
     const usageData = await mainTarget.storageAgent().invoke_getUsageAndQuota({origin: mainTarget.inspectedURL()});
     const locations = usageData.usageBreakdown.filter(usage => usage.usage)
                           .map(usage => STORAGE_TYPE_NAMES.get(usage.storageType))
@@ -259,11 +257,11 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper imp
     return '';
   }
 
-  async _evaluateInspectedURL(): Promise<string> {
-    if (!this._manager) {
+  private async evaluateInspectedURL(): Promise<string> {
+    if (!this.manager) {
       return '';
     }
-    const mainTarget = this._manager.target();
+    const mainTarget = this.manager.target();
     const runtimeModel = mainTarget.model(SDK.RuntimeModel.RuntimeModel);
     const executionContext = runtimeModel && runtimeModel.defaultExecutionContext();
     let inspectedURL = mainTarget.inspectedURL();
@@ -326,16 +324,16 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper imp
   }
 
   async getInspectedURL(options?: {force: boolean}): Promise<string> {
-    if (options && options.force || !this._inspectedURL) {
-      this._inspectedURL = await this._evaluateInspectedURL();
+    if (options && options.force || !this.inspectedURL) {
+      this.inspectedURL = await this.evaluateInspectedURL();
     }
-    return this._inspectedURL;
+    return this.inspectedURL;
   }
 
   recomputePageAuditability(): void {
-    const hasActiveServiceWorker = this._hasActiveServiceWorker();
-    const hasAtLeastOneCategory = this._hasAtLeastOneCategory();
-    const unauditablePageMessage = this._unauditablePageMessage();
+    const hasActiveServiceWorker = this.hasActiveServiceWorker();
+    const hasAtLeastOneCategory = this.hasAtLeastOneCategory();
+    const unauditablePageMessage = this.unauditablePageMessage();
 
     let helpText = '';
     if (hasActiveServiceWorker) {
@@ -348,7 +346,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper imp
 
     this.dispatchEventToListeners(Events.PageAuditabilityChanged, {helpText});
 
-    this._hasImportantResourcesNotCleared().then(warning => {
+    this.hasImportantResourcesNotCleared().then(warning => {
       this.dispatchEventToListeners(Events.PageWarningsChanged, {warning});
     });
   }

@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -23,116 +21,116 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/lighthouse/LighthouseReportSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ReportSelector {
-  _renderNewLighthouseView: () => void;
-  _newLighthouseItem: HTMLOptionElement;
-  _comboBox: UI.Toolbar.ToolbarComboBox;
-  _itemByOptionElement: Map<Element, Item>;
+  private readonly renderNewLighthouseView: () => void;
+  private newLighthouseItem: HTMLOptionElement;
+  private readonly comboBoxInternal: UI.Toolbar.ToolbarComboBox;
+  private readonly itemByOptionElement: Map<Element, Item>;
 
   constructor(renderNewLighthouseView: () => void) {
-    this._renderNewLighthouseView = renderNewLighthouseView;
-    this._newLighthouseItem = document.createElement('option');
-    this._comboBox = new UI.Toolbar.ToolbarComboBox(
-        this._handleChange.bind(this), i18nString(UIStrings.reports), 'lighthouse-report');
-    this._comboBox.setMaxWidth(180);
-    this._comboBox.setMinWidth(140);
-    this._itemByOptionElement = new Map();
-    this._setEmptyState();
+    this.renderNewLighthouseView = renderNewLighthouseView;
+    this.newLighthouseItem = document.createElement('option');
+    this.comboBoxInternal = new UI.Toolbar.ToolbarComboBox(
+        this.handleChange.bind(this), i18nString(UIStrings.reports), 'lighthouse-report');
+    this.comboBoxInternal.setMaxWidth(180);
+    this.comboBoxInternal.setMinWidth(140);
+    this.itemByOptionElement = new Map();
+    this.setEmptyState();
   }
 
-  _setEmptyState(): void {
-    this._comboBox.selectElement().removeChildren();
+  private setEmptyState(): void {
+    this.comboBoxInternal.selectElement().removeChildren();
 
-    this._comboBox.setEnabled(false);
-    this._newLighthouseItem = document.createElement('option');
-    this._newLighthouseItem.label = i18nString(UIStrings.newReport);
-    this._comboBox.selectElement().appendChild(this._newLighthouseItem);
-    this._comboBox.select(this._newLighthouseItem);
+    this.comboBoxInternal.setEnabled(false);
+    this.newLighthouseItem = document.createElement('option');
+    this.newLighthouseItem.label = i18nString(UIStrings.newReport);
+    this.comboBoxInternal.selectElement().appendChild(this.newLighthouseItem);
+    this.comboBoxInternal.select(this.newLighthouseItem);
   }
 
-  _handleChange(_event: Event): void {
-    const item = this._selectedItem();
+  private handleChange(_event: Event): void {
+    const item = this.selectedItem();
     if (item) {
       item.select();
     } else {
-      this._renderNewLighthouseView();
+      this.renderNewLighthouseView();
     }
   }
 
-  _selectedItem(): Item {
-    const option = this._comboBox.selectedOption();
-    return this._itemByOptionElement.get(option as Element) as Item;
+  private selectedItem(): Item {
+    const option = this.comboBoxInternal.selectedOption();
+    return this.itemByOptionElement.get(option as Element) as Item;
   }
 
   hasCurrentSelection(): boolean {
-    return Boolean(this._selectedItem());
+    return Boolean(this.selectedItem());
   }
 
   hasItems(): boolean {
-    return this._itemByOptionElement.size > 0;
+    return this.itemByOptionElement.size > 0;
   }
 
   comboBox(): UI.Toolbar.ToolbarComboBox {
-    return this._comboBox;
+    return this.comboBoxInternal;
   }
 
   prepend(item: Item): void {
     const optionEl = item.optionElement();
-    const selectEl = this._comboBox.selectElement();
+    const selectEl = this.comboBoxInternal.selectElement();
 
-    this._itemByOptionElement.set(optionEl, item);
+    this.itemByOptionElement.set(optionEl, item);
     selectEl.insertBefore(optionEl, selectEl.firstElementChild);
-    this._comboBox.setEnabled(true);
-    this._comboBox.select(optionEl);
+    this.comboBoxInternal.setEnabled(true);
+    this.comboBoxInternal.select(optionEl);
     item.select();
   }
 
   clearAll(): void {
-    for (const elem of this._comboBox.options()) {
-      if (elem === this._newLighthouseItem) {
+    for (const elem of this.comboBoxInternal.options()) {
+      if (elem === this.newLighthouseItem) {
         continue;
       }
 
-      this._itemByOptionElement.get(elem)?.delete();
-      this._itemByOptionElement.delete(elem);
+      this.itemByOptionElement.get(elem)?.delete();
+      this.itemByOptionElement.delete(elem);
     }
 
-    this._setEmptyState();
+    this.setEmptyState();
   }
 
   selectNewReport(): void {
-    this._comboBox.select(this._newLighthouseItem);
+    this.comboBoxInternal.select(this.newLighthouseItem);
   }
 }
 
 export class Item {
-  _lighthouseResult: ReportRenderer.ReportJSON;
-  _renderReport: () => void;
-  _showLandingCallback: () => void;
-  _element: HTMLOptionElement;
+  private readonly lighthouseResult: ReportRenderer.ReportJSON;
+  private readonly renderReport: () => void;
+  private readonly showLandingCallback: () => void;
+  private readonly element: HTMLOptionElement;
 
   constructor(lighthouseResult: ReportRenderer.ReportJSON, renderReport: () => void, showLandingCallback: () => void) {
-    this._lighthouseResult = lighthouseResult;
-    this._renderReport = renderReport;
-    this._showLandingCallback = showLandingCallback;
+    this.lighthouseResult = lighthouseResult;
+    this.renderReport = renderReport;
+    this.showLandingCallback = showLandingCallback;
 
     const url = new Common.ParsedURL.ParsedURL(lighthouseResult.finalUrl);
     const timestamp = lighthouseResult.fetchTime;
-    this._element = document.createElement('option');
-    this._element.label = `${new Date(timestamp).toLocaleTimeString()} - ${url.domain()}`;
+    this.element = document.createElement('option');
+    this.element.label = `${new Date(timestamp).toLocaleTimeString()} - ${url.domain()}`;
   }
 
   select(): void {
-    this._renderReport();
+    this.renderReport();
   }
 
   optionElement(): Element {
-    return this._element;
+    return this.element;
   }
 
   delete(): void {
-    if (this._element) {
-      this._element.remove();
+    if (this.element) {
+      this.element.remove();
     }
-    this._showLandingCallback();
+    this.showLandingCallback();
   }
 }

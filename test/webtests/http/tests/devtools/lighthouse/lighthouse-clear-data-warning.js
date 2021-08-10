@@ -27,7 +27,7 @@
   const warningText = containerElement.querySelector('.lighthouse-warning-text');
 
   // Wait for warning event to be handled
-  LighthouseTestRunner._panel()._controller.addEventListener(Events.PageWarningsChanged, () => {
+  LighthouseTestRunner._panel().controller.addEventListener(Events.PageWarningsChanged, () => {
     TestRunner.addResult(`Warning Text: ${warningText.textContent}`);
     TestRunner.completeTest();
   });

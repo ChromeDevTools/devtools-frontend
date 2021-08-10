@@ -28,21 +28,21 @@ LighthouseTestRunner.getContainerElement = function() {
  * @return {?Element}
  */
 LighthouseTestRunner.getResultsElement = function() {
-  return LighthouseTestRunner._panel()._auditResultsElement;
+  return LighthouseTestRunner._panel().auditResultsElement;
 };
 
 /**
  * @return {?Element}
  */
 LighthouseTestRunner.getDialogElement = function() {
-  return LighthouseTestRunner._panel()._statusView._dialog.contentElement.shadowRoot.querySelector('.lighthouse-view');
+  return LighthouseTestRunner._panel().statusView._dialog.contentElement.shadowRoot.querySelector('.lighthouse-view');
 };
 
 /**
  * @return {?Element}
  */
 LighthouseTestRunner.getSettingsElement = function() {
-  return LighthouseTestRunner._panel()._settingsPane.element;
+  return LighthouseTestRunner._panel().settingsPane.element;
 };
 
 /**
@@ -62,7 +62,7 @@ LighthouseTestRunner.getCancelButton = function() {
 };
 
 LighthouseTestRunner.openStartAudit = function() {
-  LighthouseTestRunner._panel()._renderStartView();
+  LighthouseTestRunner._panel().renderStartView();
 };
 
 /**
@@ -78,12 +78,12 @@ LighthouseTestRunner.addStatusListener = function(onMessage) {
 LighthouseTestRunner.waitForResults = function() {
   return new Promise(resolve => {
     TestRunner.addSniffer(
-        Lighthouse.LighthousePanel.prototype, '_buildReportUI', (lhr, artifacts) => resolve({lhr, artifacts}));
+        Lighthouse.LighthousePanel.prototype, 'buildReportUI', (lhr, artifacts) => resolve({lhr, artifacts}));
   });
 };
 
 LighthouseTestRunner.forcePageAuditabilityCheck = function() {
-  LighthouseTestRunner._panel()._controller.recomputePageAuditability();
+  LighthouseTestRunner._panel().controller.recomputePageAuditability();
 };
 
 /**

@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as Common from '../../core/common/common.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -17,24 +15,24 @@ import type {InspectedPagePlaceholder} from './InspectedPagePlaceholder.js';
 let deviceModeWrapperInstance: DeviceModeWrapper;
 
 export class DeviceModeWrapper extends UI.Widget.VBox {
-  _inspectedPagePlaceholder: InspectedPagePlaceholder;
-  _deviceModeView: DeviceModeView|null;
-  _toggleDeviceModeAction: UI.ActionRegistration.Action|null;
-  _showDeviceModeSetting: Common.Settings.Setting<boolean>;
+  private readonly inspectedPagePlaceholder: InspectedPagePlaceholder;
+  private deviceModeView: DeviceModeView|null;
+  private readonly toggleDeviceModeAction: UI.ActionRegistration.Action|null;
+  private showDeviceModeSetting: Common.Settings.Setting<boolean>;
 
   private constructor(inspectedPagePlaceholder: InspectedPagePlaceholder) {
     super();
-    this._inspectedPagePlaceholder = inspectedPagePlaceholder;
-    this._deviceModeView = null;
-    this._toggleDeviceModeAction = UI.ActionRegistry.ActionRegistry.instance().action('emulation.toggle-device-mode');
+    this.inspectedPagePlaceholder = inspectedPagePlaceholder;
+    this.deviceModeView = null;
+    this.toggleDeviceModeAction = UI.ActionRegistry.ActionRegistry.instance().action('emulation.toggle-device-mode');
     const model = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
-    this._showDeviceModeSetting = model.enabledSetting();
-    this._showDeviceModeSetting.setRequiresUserAction(Boolean(Root.Runtime.Runtime.queryParam('hasOtherClients')));
-    this._showDeviceModeSetting.addChangeListener(this._update.bind(this, false));
+    this.showDeviceModeSetting = model.enabledSetting();
+    this.showDeviceModeSetting.setRequiresUserAction(Boolean(Root.Runtime.Runtime.queryParam('hasOtherClients')));
+    this.showDeviceModeSetting.addChangeListener(this.update.bind(this, false));
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.OverlayModel.OverlayModel, SDK.OverlayModel.Events.ScreenshotRequested,
-        this._screenshotRequestedFromOverlay, this);
-    this._update(true);
+        SDK.OverlayModel.OverlayModel, SDK.OverlayModel.Events.ScreenshotRequested, this.screenshotRequestedFromOverlay,
+        this);
+    this.update(true);
   }
 
   static instance(opts: {
@@ -54,57 +52,57 @@ export class DeviceModeWrapper extends UI.Widget.VBox {
     return deviceModeWrapperInstance;
   }
 
-  _toggleDeviceMode(): void {
-    this._showDeviceModeSetting.set(!this._showDeviceModeSetting.get());
+  toggleDeviceMode(): void {
+    this.showDeviceModeSetting.set(!this.showDeviceModeSetting.get());
   }
 
-  _captureScreenshot(fullSize?: boolean, clip?: Protocol.Page.Viewport): boolean {
-    if (!this._deviceModeView) {
-      this._deviceModeView = new DeviceModeView();
+  captureScreenshot(fullSize?: boolean, clip?: Protocol.Page.Viewport): boolean {
+    if (!this.deviceModeView) {
+      this.deviceModeView = new DeviceModeView();
     }
-    this._deviceModeView.setNonEmulatedAvailableSize(this._inspectedPagePlaceholder.element);
+    this.deviceModeView.setNonEmulatedAvailableSize(this.inspectedPagePlaceholder.element);
     if (fullSize) {
-      this._deviceModeView.captureFullSizeScreenshot();
+      this.deviceModeView.captureFullSizeScreenshot();
     } else if (clip) {
-      this._deviceModeView.captureAreaScreenshot(clip);
+      this.deviceModeView.captureAreaScreenshot(clip);
     } else {
-      this._deviceModeView.captureScreenshot();
+      this.deviceModeView.captureScreenshot();
     }
     return true;
   }
 
-  _screenshotRequestedFromOverlay(event: {
+  private screenshotRequestedFromOverlay(event: {
     data: Protocol.Page.Viewport,
   }): void {
     const clip = event.data;
-    this._captureScreenshot(false, clip);
+    this.captureScreenshot(false, clip);
   }
 
-  _update(force: boolean): void {
-    if (this._toggleDeviceModeAction) {
-      this._toggleDeviceModeAction.setToggled(this._showDeviceModeSetting.get());
+  private update(force: boolean): void {
+    if (this.toggleDeviceModeAction) {
+      this.toggleDeviceModeAction.setToggled(this.showDeviceModeSetting.get());
     }
     if (!force) {
-      const showing = this._deviceModeView && this._deviceModeView.isShowing();
-      if (this._showDeviceModeSetting.get() === showing) {
+      const showing = this.deviceModeView && this.deviceModeView.isShowing();
+      if (this.showDeviceModeSetting.get() === showing) {
         return;
       }
     }
 
-    if (this._showDeviceModeSetting.get()) {
-      if (!this._deviceModeView) {
-        this._deviceModeView = new DeviceModeView();
+    if (this.showDeviceModeSetting.get()) {
+      if (!this.deviceModeView) {
+        this.deviceModeView = new DeviceModeView();
       }
-      this._deviceModeView.show(this.element);
-      this._inspectedPagePlaceholder.clearMinimumSize();
-      this._inspectedPagePlaceholder.show(this._deviceModeView.element);
+      this.deviceModeView.show(this.element);
+      this.inspectedPagePlaceholder.clearMinimumSize();
+      this.inspectedPagePlaceholder.show(this.deviceModeView.element);
     } else {
-      if (this._deviceModeView) {
-        this._deviceModeView.exitHingeMode();
-        this._deviceModeView.detach();
+      if (this.deviceModeView) {
+        this.deviceModeView.exitHingeMode();
+        this.deviceModeView.detach();
       }
-      this._inspectedPagePlaceholder.restoreMinimumSize();
-      this._inspectedPagePlaceholder.show(this.element);
+      this.inspectedPagePlaceholder.restoreMinimumSize();
+      this.inspectedPagePlaceholder.show(this.element);
     }
   }
 }
@@ -116,7 +114,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     if (DeviceModeWrapper.instance()) {
       switch (actionId) {
         case 'emulation.capture-screenshot':
-          return DeviceModeWrapper.instance()._captureScreenshot();
+          return DeviceModeWrapper.instance().captureScreenshot();
 
         case 'emulation.capture-node-screenshot': {
           const node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
@@ -156,17 +154,17 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
             clip.y *= page_zoom;
             clip.width *= page_zoom;
             clip.height *= page_zoom;
-            DeviceModeWrapper.instance()._captureScreenshot(false, clip);
+            DeviceModeWrapper.instance().captureScreenshot(false, clip);
           }
           captureClip();
           return true;
         }
 
         case 'emulation.capture-full-height-screenshot':
-          return DeviceModeWrapper.instance()._captureScreenshot(true);
+          return DeviceModeWrapper.instance().captureScreenshot(true);
 
         case 'emulation.toggle-device-mode':
-          DeviceModeWrapper.instance()._toggleDeviceMode();
+          DeviceModeWrapper.instance().toggleDeviceMode();
           return true;
       }
     }

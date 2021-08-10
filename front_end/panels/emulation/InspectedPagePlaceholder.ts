@@ -2,14 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as UI from '../../ui/legacy/legacy.js';
 
 let inspectedPagePlaceholderInstance: InspectedPagePlaceholder;
 
 export class InspectedPagePlaceholder extends UI.Widget.Widget {
-  _updateId?: number;
+  private updateId?: number;
   constructor() {
     super(true);
     this.registerRequiredCSS('panels/emulation/inspectedPagePlaceholder.css');
@@ -29,10 +27,10 @@ export class InspectedPagePlaceholder extends UI.Widget.Widget {
   }
 
   onResize(): void {
-    if (this._updateId) {
-      this.element.window().cancelAnimationFrame(this._updateId);
+    if (this.updateId) {
+      this.element.window().cancelAnimationFrame(this.updateId);
     }
-    this._updateId = this.element.window().requestAnimationFrame(this.update.bind(this, false));
+    this.updateId = this.element.window().requestAnimationFrame(this.update.bind(this, false));
   }
 
   restoreMinimumSize(): void {
@@ -43,7 +41,7 @@ export class InspectedPagePlaceholder extends UI.Widget.Widget {
     this.setMinimumSize(1, 1);
   }
 
-  _dipPageRect(): {
+  private dipPageRect(): {
     x: number,
     y: number,
     width: number,
@@ -62,8 +60,8 @@ export class InspectedPagePlaceholder extends UI.Widget.Widget {
   }
 
   update(force?: boolean): void {
-    delete this._updateId;
-    const rect = this._dipPageRect();
+    delete this.updateId;
+    const rect = this.dipPageRect();
     const bounds = {
       x: Math.round(rect.x),
       y: Math.round(rect.y),

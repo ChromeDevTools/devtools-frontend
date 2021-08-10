@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Diff from '../../../../third_party/diff/diff.js';
 import * as UI from '../../legacy.js';
 import {FilteredListWidget, Provider} from './FilteredListWidget.js';
@@ -47,56 +45,56 @@ export class QuickPick {
 }
 
 class QuickPickProvider extends Provider {
-  _resolve: Function;
-  _items: QuickPickItem[];
-  _matchOnDescription: number;
-  _matchOnDetail: number;
+  private readonly resolve: Function;
+  private readonly items: QuickPickItem[];
+  private matchOnDescription: number;
+  private matchOnDetail: number;
   constructor(
       items: QuickPickItem[], resolve: Function, matchOnDescription: number|undefined = 0.5,
       matchOnDetail: number|undefined = 0.25) {
     super();
-    this._resolve = resolve;
-    this._items = items;
-    this._matchOnDescription = matchOnDescription;
-    this._matchOnDetail = matchOnDetail;
+    this.resolve = resolve;
+    this.items = items;
+    this.matchOnDescription = matchOnDescription;
+    this.matchOnDetail = matchOnDetail;
   }
 
   itemCount(): number {
-    return this._items.length;
+    return this.items.length;
   }
 
   itemKeyAt(itemIndex: number): string {
-    const item = this._items[itemIndex];
+    const item = this.items[itemIndex];
     let key = item.label;
-    if (this._matchOnDescription) {
+    if (this.matchOnDescription) {
       key += ' ' + item.description;
     }
-    if (this._matchOnDetail) {
+    if (this.matchOnDetail) {
       key += ' ' + item.detail;
     }
     return key;
   }
 
   itemScoreAt(itemIndex: number, query: string): number {
-    const item = this._items[itemIndex];
+    const item = this.items[itemIndex];
     const test = query.toLowerCase();
     let score = Diff.Diff.DiffWrapper.characterScore(test, item.label.toLowerCase());
 
-    if (this._matchOnDescription && item.description) {
+    if (this.matchOnDescription && item.description) {
       const descriptionScore = Diff.Diff.DiffWrapper.characterScore(test, item.description.toLowerCase());
-      score += descriptionScore * this._matchOnDescription;
+      score += descriptionScore * this.matchOnDescription;
     }
 
-    if (this._matchOnDetail && item.detail) {
+    if (this.matchOnDetail && item.detail) {
       const detailScore = Diff.Diff.DiffWrapper.characterScore(test, item.detail.toLowerCase());
-      score += detailScore * this._matchOnDetail;
+      score += detailScore * this.matchOnDetail;
     }
 
     return score;
   }
 
   renderItem(itemIndex: number, query: string, titleElement: Element, subtitleElement: Element): void {
-    const item = this._items[itemIndex];
+    const item = this.items[itemIndex];
     titleElement.removeChildren();
     const labelElement = titleElement.createChild('span');
     UI.UIUtils.createTextChild(labelElement, item.label);
@@ -104,28 +102,28 @@ class QuickPickProvider extends Provider {
     if (item.description) {
       const descriptionElement = titleElement.createChild('span', 'quickpick-description');
       UI.UIUtils.createTextChild(descriptionElement, item.description);
-      if (this._matchOnDescription) {
+      if (this.matchOnDescription) {
         FilteredListWidget.highlightRanges(descriptionElement, query, true);
       }
     }
     if (item.detail) {
       UI.UIUtils.createTextChild(subtitleElement, item.detail);
-      if (this._matchOnDetail) {
+      if (this.matchOnDetail) {
         FilteredListWidget.highlightRanges(subtitleElement, query, true);
       }
     }
   }
 
   renderAsTwoRows(): boolean {
-    return this._items.some(i => Boolean(i.detail));
+    return this.items.some(i => Boolean(i.detail));
   }
 
   selectItem(itemIndex: number|null, _promptValue: string): void {
     if (typeof itemIndex === 'number') {
-      this._resolve(this._items[itemIndex]);
+      this.resolve(this.items[itemIndex]);
       return;
     }
 
-    this._resolve(undefined);
+    this.resolve(undefined);
   }
 }

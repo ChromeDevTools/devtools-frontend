@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as i18n from '../../../../core/i18n/i18n.js';
 
 import {FilteredListWidget, Provider} from './FilteredListWidget.js';
@@ -60,19 +58,19 @@ export class QuickInput {
 }
 
 class QuickInputProvider extends Provider {
-  _options: QuickInputOptions;
-  _resolve: Function;
+  private readonly options: QuickInputOptions;
+  private readonly resolve: Function;
   constructor(options: QuickInputOptions, resolve: Function) {
     super();
-    this._options = options;
-    this._resolve = resolve;
+    this.options = options;
+    this.resolve = resolve;
   }
 
   notFoundText(): string {
-    return i18nString(UIStrings.pressEnterToConfirmOrEscapeTo, {PH1: this._options.prompt});
+    return i18nString(UIStrings.pressEnterToConfirmOrEscapeTo, {PH1: this.options.prompt});
   }
 
   selectItem(_itemIndex: number|null, promptValue: string): void {
-    this._resolve(promptValue);
+    this.resolve(promptValue);
   }
 }

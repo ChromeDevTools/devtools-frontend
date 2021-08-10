@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../../../core/common/common.js';
 import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
@@ -34,10 +32,10 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let commandMenuInstance: CommandMenu;
 
 export class CommandMenu {
-  _commands: Command[];
+  private readonly commandsInternal: Command[];
   private constructor() {
-    this._commands = [];
-    this._loadCommands();
+    this.commandsInternal = [];
+    this.loadCommands();
   }
 
   static instance(opts: {
@@ -132,7 +130,7 @@ export class CommandMenu {
     });
   }
 
-  _loadCommands(): void {
+  private loadCommands(): void {
     const locations = new Map<UI.ViewManager.ViewLocationValues, string>();
     for (const {category, name} of UI.ViewManager.getRegisteredLocationResolvers()) {
       if (category && name) {
@@ -154,7 +152,7 @@ export class CommandMenu {
         userActionCode: undefined,
         id: view.viewId(),
       };
-      this._commands.push(CommandMenu.createRevealViewCommand(options));
+      this.commandsInternal.push(CommandMenu.createRevealViewCommand(options));
     }
     // Populate allowlisted settings.
     const settingsRegistrations = Common.Settings.getRegisteredSettings();
@@ -165,13 +163,13 @@ export class CommandMenu {
       }
       for (const pair of options) {
         const setting = Common.Settings.Settings.instance().moduleSetting(settingRegistration.settingName);
-        this._commands.push(CommandMenu.createSettingCommand(setting, pair.title(), pair.value));
+        this.commandsInternal.push(CommandMenu.createSettingCommand(setting, pair.title(), pair.value));
       }
     }
   }
 
   commands(): Command[] {
-    return this._commands;
+    return this.commandsInternal;
   }
 }
 export interface ActionCommandOptions {
@@ -200,10 +198,10 @@ export interface CreateCommandOptions {
 let commandMenuProviderInstance: CommandMenuProvider;
 
 export class CommandMenuProvider extends Provider {
-  _commands: Command[];
+  private commands: Command[];
   private constructor() {
     super();
-    this._commands = [];
+    this.commands = [];
   }
   static instance(opts: {
     forceNew: boolean|null,
@@ -228,16 +226,16 @@ export class CommandMenuProvider extends Provider {
       }
 
       const options: ActionCommandOptions = {action, userActionCode: undefined};
-      this._commands.push(CommandMenu.createActionCommand(options));
+      this.commands.push(CommandMenu.createActionCommand(options));
     }
 
     for (const command of allCommands) {
       if (command.available()) {
-        this._commands.push(command);
+        this.commands.push(command);
       }
     }
 
-    this._commands = this._commands.sort(commandComparator);
+    this.commands = this.commands.sort(commandComparator);
 
     function commandComparator(left: Command, right: Command): number {
       const cats = Platform.StringUtilities.compare(left.category(), right.category());
@@ -246,19 +244,19 @@ export class CommandMenuProvider extends Provider {
   }
 
   detach(): void {
-    this._commands = [];
+    this.commands = [];
   }
 
   itemCount(): number {
-    return this._commands.length;
+    return this.commands.length;
   }
 
   itemKeyAt(itemIndex: number): string {
-    return this._commands[itemIndex].key();
+    return this.commands[itemIndex].key();
   }
 
   itemScoreAt(itemIndex: number, query: string): number {
-    const command = this._commands[itemIndex];
+    const command = this.commands[itemIndex];
     let score = Diff.Diff.DiffWrapper.characterScore(query.toLowerCase(), command.title().toLowerCase());
 
     // Score panel/drawer reveals above regular actions.
@@ -272,7 +270,7 @@ export class CommandMenuProvider extends Provider {
   }
 
   renderItem(itemIndex: number, query: string, titleElement: Element, subtitleElement: Element): void {
-    const command = this._commands[itemIndex];
+    const command = this.commands[itemIndex];
     titleElement.removeChildren();
     const tagElement = (titleElement.createChild('span', 'tag') as HTMLElement);
     const index = Platform.StringUtilities.hashCode(command.category()) % MaterialPaletteColors.length;
@@ -287,7 +285,7 @@ export class CommandMenuProvider extends Provider {
     if (itemIndex === null) {
       return;
     }
-    this._commands[itemIndex].execute();
+    this.commands[itemIndex].execute();
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.SelectCommandFromCommandMenu);
   }
 
@@ -317,46 +315,46 @@ export const MaterialPaletteColors = [
 ];
 
 export class Command {
-  _category: string;
-  _title: string;
-  _key: string;
-  _shortcut: string;
-  _executeHandler: () => void;
-  _availableHandler?: () => boolean;
+  private readonly categoryInternal: string;
+  private readonly titleInternal: string;
+  private readonly keyInternal: string;
+  private readonly shortcutInternal: string;
+  private readonly executeHandler: () => void;
+  private readonly availableHandler?: () => boolean;
 
   constructor(
       category: string, title: string, key: string, shortcut: string, executeHandler: () => void,
       availableHandler?: () => boolean) {
-    this._category = category;
-    this._title = title;
-    this._key = category + '\0' + title + '\0' + key;
-    this._shortcut = shortcut;
-    this._executeHandler = executeHandler;
-    this._availableHandler = availableHandler;
+    this.categoryInternal = category;
+    this.titleInternal = title;
+    this.keyInternal = category + '\0' + title + '\0' + key;
+    this.shortcutInternal = shortcut;
+    this.executeHandler = executeHandler;
+    this.availableHandler = availableHandler;
   }
 
   category(): string {
-    return this._category;
+    return this.categoryInternal;
   }
 
   title(): string {
-    return this._title;
+    return this.titleInternal;
   }
 
   key(): string {
-    return this._key;
+    return this.keyInternal;
   }
 
   shortcut(): string {
-    return this._shortcut;
+    return this.shortcutInternal;
   }
 
   available(): boolean {
-    return this._availableHandler ? this._availableHandler() : true;
+    return this.availableHandler ? this.availableHandler() : true;
   }
 
   execute(): void {
-    this._executeHandler();
+    this.executeHandler();
   }
 }
 

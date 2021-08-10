@@ -33,8 +33,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
@@ -42,18 +40,18 @@ import * as Root from '../../../core/root/root.js';
 let themeSupportInstance: ThemeSupport;
 
 export class ThemeSupport {
-  _themeName: string;
-  _themableProperties: Set<string>;
-  _cachedThemePatches: Map<string, string>;
-  _setting: Common.Settings.Setting<string>;
-  _customSheets: Set<string>;
-  _computedRoot: () => symbol | CSSStyleDeclaration;
-  _injectingStyleSheet?: boolean;
+  private readonly themeNameInternal: string;
+  private themableProperties: Set<string>;
+  private readonly cachedThemePatches: Map<string, string>;
+  private readonly setting: Common.Settings.Setting<string>;
+  private readonly customSheets: Set<string>;
+  private readonly computedRoot: () => symbol | CSSStyleDeclaration;
+  private injectingStyleSheet?: boolean;
 
   private constructor(setting: Common.Settings.Setting<string>) {
     const systemPreferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
-    this._themeName = setting.get() === 'systemPreferred' ? systemPreferredTheme : setting.get();
-    this._themableProperties = new Set([
+    this.themeNameInternal = setting.get() === 'systemPreferred' ? systemPreferredTheme : setting.get();
+    this.themableProperties = new Set([
       'color',
       'box-shadow',
       'text-shadow',
@@ -68,10 +66,10 @@ export class ThemeSupport {
       'fill',
       'stroke',
     ]);
-    this._cachedThemePatches = new Map();
-    this._setting = setting;
-    this._customSheets = new Set();
-    this._computedRoot = Common.Lazy.lazy(() => window.getComputedStyle(document.documentElement));
+    this.cachedThemePatches = new Map();
+    this.setting = setting;
+    this.customSheets = new Set();
+    this.computedRoot = Common.Lazy.lazy(() => window.getComputedStyle(document.documentElement));
   }
 
   static hasInstance(): boolean {
@@ -95,7 +93,7 @@ export class ThemeSupport {
   }
 
   getComputedValue(variableName: string): string {
-    const computedRoot = this._computedRoot();
+    const computedRoot = this.computedRoot();
 
     if (typeof computedRoot === 'symbol') {
       throw new Error(`Computed value for property (${variableName}) could not be found on :root.`);
@@ -105,27 +103,27 @@ export class ThemeSupport {
   }
 
   hasTheme(): boolean {
-    return this._themeName !== 'default';
+    return this.themeNameInternal !== 'default';
   }
 
   themeName(): string {
-    return this._themeName;
+    return this.themeNameInternal;
   }
 
   injectHighlightStyleSheets(element: Element|ShadowRoot): void {
-    this._injectingStyleSheet = true;
-    this._appendStyle(element, 'ui/legacy/inspectorSyntaxHighlight.css');
-    if (this._themeName === 'dark') {
-      this._appendStyle(element, 'ui/legacy/inspectorSyntaxHighlightDark.css');
+    this.injectingStyleSheet = true;
+    this.appendStyle(element, 'ui/legacy/inspectorSyntaxHighlight.css');
+    if (this.themeNameInternal === 'dark') {
+      this.appendStyle(element, 'ui/legacy/inspectorSyntaxHighlightDark.css');
     }
-    this._injectingStyleSheet = false;
+    this.injectingStyleSheet = false;
   }
 
   /**
    * Note: this is a duplicate of the function in ui/utils. It exists here
    * so there is no circular dependency between ui/utils and theme_support.
    */
-  _appendStyle(node: Node, cssFile: string): void {
+  private appendStyle(node: Node, cssFile: string): void {
     const content = Root.Runtime.cachedResources.get(cssFile) || '';
     if (!content) {
       console.error(cssFile + ' not preloaded. Check module.json');
@@ -136,7 +134,7 @@ export class ThemeSupport {
   }
 
   injectCustomStyleSheets(element: Element|ShadowRoot): void {
-    for (const sheet of this._customSheets) {
+    for (const sheet of this.customSheets) {
       const styleElement = document.createElement('style');
       styleElement.textContent = sheet;
       element.appendChild(styleElement);
@@ -148,7 +146,7 @@ export class ThemeSupport {
   }
 
   addCustomStylesheet(sheetText: string): void {
-    this._customSheets.add(sheetText);
+    this.customSheets.add(sheetText);
   }
 
   applyTheme(document: Document): void {
@@ -156,7 +154,7 @@ export class ThemeSupport {
       return;
     }
 
-    if (this._themeName === 'dark') {
+    if (this.themeNameInternal === 'dark') {
       document.documentElement.classList.add('-theme-with-dark-background');
     }
 
@@ -167,7 +165,7 @@ export class ThemeSupport {
       if (!href) {
         continue;
       }
-      result.push(this._patchForTheme(href, (styleSheets[i] as CSSStyleSheet)));
+      result.push(this.patchForTheme(href, (styleSheets[i] as CSSStyleSheet)));
     }
     result.push('/*# sourceURL=inspector.css.theme */');
 
@@ -177,11 +175,11 @@ export class ThemeSupport {
   }
 
   themeStyleSheet(id: string, text: string): string {
-    if (!this.hasTheme() || this._injectingStyleSheet || this.isForcedColorsMode()) {
+    if (!this.hasTheme() || this.injectingStyleSheet || this.isForcedColorsMode()) {
       return '';
     }
 
-    let patch = this._cachedThemePatches.get(id);
+    let patch = this.cachedThemePatches.get(id);
     if (!patch) {
       const styleElement = document.createElement('style');
       styleElement.textContent = text;
@@ -191,14 +189,14 @@ export class ThemeSupport {
       if (!sheet) {
         throw new Error('No sheet in stylesheet object');
       }
-      patch = this._patchForTheme(id, sheet);
+      patch = this.patchForTheme(id, sheet);
       document.body.removeChild(styleElement);
     }
     return patch;
   }
 
-  _patchForTheme(id: string, styleSheet: CSSStyleSheet): string {
-    const cached = this._cachedThemePatches.get(id);
+  private patchForTheme(id: string, styleSheet: CSSStyleSheet): string {
+    const cached = this.cachedThemePatches.get(id);
     if (cached) {
       return cached;
     }
@@ -209,7 +207,7 @@ export class ThemeSupport {
       for (let j = 0; j < rules.length; ++j) {
         const rule = rules[j];
         if (rule instanceof CSSImportRule) {
-          result.push(this._patchForTheme(rule.styleSheet.href || '', rule.styleSheet));
+          result.push(this.patchForTheme(rule.styleSheet.href || '', rule.styleSheet));
           continue;
         }
 
@@ -221,7 +219,7 @@ export class ThemeSupport {
         const style = rule.style;
         const selectorText = rule.selectorText;
         for (let i = 0; style && i < style.length; ++i) {
-          this._patchProperty(selectorText, style, style[i], output);
+          this.patchProperty(selectorText, style, style[i], output);
         }
         if (output.length) {
           result.push(rule.selectorText + '{' + output.join('') + '}');
@@ -229,10 +227,10 @@ export class ThemeSupport {
       }
 
       const fullText = result.join('\n');
-      this._cachedThemePatches.set(id, fullText);
+      this.cachedThemePatches.set(id, fullText);
       return fullText;
     } catch (e) {
-      this._setting.set('default');
+      this.setting.set('default');
       return '';
     }
   }
@@ -242,8 +240,8 @@ export class ThemeSupport {
    * - If rule has ".-theme-preserve" in selector, it won't be affected.
    * - One can create specializations for dark themes via body.-theme-with-dark-background selector in host context.
    */
-  _patchProperty(selectorText: string, style: CSSStyleDeclaration, name: string, output: string[]): void {
-    if (!this._themableProperties.has(name)) {
+  private patchProperty(selectorText: string, style: CSSStyleDeclaration, name: string, output: string[]): void {
+    if (!this.themableProperties.has(name)) {
       return;
     }
 
@@ -299,20 +297,20 @@ export class ThemeSupport {
 
   patchColor(color: Common.Color.Color, colorUsage: number): Common.Color.Color {
     const hsla = color.hsla();
-    this._patchHSLA(hsla, colorUsage);
+    this.patchHSLA(hsla, colorUsage);
 
     const rgba: number[] = [];
     Common.Color.Color.hsl2rgb(hsla, rgba);
     return new Common.Color.Color(rgba, color.format());
   }
 
-  _patchHSLA(hsla: number[], colorUsage: number): void {
+  private patchHSLA(hsla: number[], colorUsage: number): void {
     const hue = hsla[0];
     const sat = hsla[1];
     let lit: number = hsla[2];
     const alpha = hsla[3];
 
-    switch (this._themeName) {
+    switch (this.themeNameInternal) {
       case 'dark': {
         const minCap = colorUsage & ThemeSupport.ColorUsage.Background ? 0.14 : 0;
         const maxCap = colorUsage & ThemeSupport.ColorUsage.Foreground ? 0.9 : 1;

@@ -14,20 +14,20 @@
     // Make add pattern editor visible
     addPatternButton.click();
 
-    const ignoreListInputs = ignoreListWidget._list._editor._controls;
+    const ignoreListInputs = ignoreListWidget.list._editor._controls;
     TestRunner.addResult(`Opened input box: ${Boolean(ignoreListInputs)}`);
 
     await AxeCoreTestRunner.runValidation(ignoreListWidget.contentElement);
   }
 
   async function testPatternList() {
-    ignoreListWidget._list.appendItem('test*', true);
-    TestRunner.addResult(`Added a pattern in the list: ${ignoreListWidget._list._items}`);
+    ignoreListWidget.list.appendItem('test*', true);
+    TestRunner.addResult(`Added a pattern in the list: ${ignoreListWidget.list._items}`);
     await AxeCoreTestRunner.runValidation(ignoreListWidget.contentElement);
   }
 
   async function testPatternError() {
-    const ignoreListEditor = ignoreListWidget._list._editor;
+    const ignoreListEditor = ignoreListWidget.list._editor;
     const patternInput = ignoreListEditor._controls[0];
     // Blur patternInput to run validator
     patternInput.blur();

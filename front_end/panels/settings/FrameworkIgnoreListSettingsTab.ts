@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -80,11 +78,11 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let frameworkIgnoreListSettingsTabInstance: FrameworkIgnoreListSettingsTab;
 export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
     UI.ListWidget.Delegate<Common.Settings.RegExpSettingItem> {
-  _ignoreListLabel: Common.UIString.LocalizedString;
-  _disabledLabel: Common.UIString.LocalizedString;
-  _list: UI.ListWidget.ListWidget<Common.Settings.RegExpSettingItem>;
-  _setting: Common.Settings.RegExpSetting;
-  _editor?: UI.ListWidget.Editor<Common.Settings.RegExpSettingItem>;
+  private ignoreListLabel: Common.UIString.LocalizedString;
+  private disabledLabel: Common.UIString.LocalizedString;
+  private readonly list: UI.ListWidget.ListWidget<Common.Settings.RegExpSettingItem>;
+  private readonly setting: Common.Settings.RegExpSetting;
+  private editor?: UI.ListWidget.Editor<Common.Settings.RegExpSettingItem>;
 
   constructor() {
     super(true);
@@ -100,24 +98,24 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
         Common.Settings.Settings.instance().moduleSetting('skipContentScripts'), true));
     UI.Tooltip.Tooltip.install(ignoreListContentScripts, i18nString(UIStrings.ignoreListContentScriptsExtension));
 
-    this._ignoreListLabel = i18nString(UIStrings.ignoreList);
-    this._disabledLabel = i18nString(UIStrings.disabled);
+    this.ignoreListLabel = i18nString(UIStrings.ignoreList);
+    this.disabledLabel = i18nString(UIStrings.disabled);
 
-    this._list = new UI.ListWidget.ListWidget(this);
-    this._list.element.classList.add('ignore-list');
+    this.list = new UI.ListWidget.ListWidget(this);
+    this.list.element.classList.add('ignore-list');
 
     const placeholder = document.createElement('div');
     placeholder.classList.add('ignore-list-empty');
     placeholder.textContent = i18nString(UIStrings.noIgnoreListPatterns);
-    this._list.setEmptyPlaceholder(placeholder);
-    this._list.show(this.contentElement);
+    this.list.setEmptyPlaceholder(placeholder);
+    this.list.show(this.contentElement);
     const addPatternButton =
-        UI.UIUtils.createTextButton(i18nString(UIStrings.addPattern), this._addButtonClicked.bind(this), 'add-button');
+        UI.UIUtils.createTextButton(i18nString(UIStrings.addPattern), this.addButtonClicked.bind(this), 'add-button');
     UI.ARIAUtils.setAccessibleName(addPatternButton, i18nString(UIStrings.addFilenamePattern));
     this.contentElement.appendChild(addPatternButton);
-    this._setting =
+    this.setting =
         Common.Settings.Settings.instance().moduleSetting('skipStackFramesPattern') as Common.Settings.RegExpSetting;
-    this._setting.addChangeListener(this._settingUpdated, this);
+    this.setting.addChangeListener(this.settingUpdated, this);
 
     this.setDefaultFocusedElement(addPatternButton);
   }
@@ -133,21 +131,21 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
 
   wasShown(): void {
     super.wasShown();
-    this._list.registerCSSFiles([frameworkIgnoreListSettingsTabStyles]);
+    this.list.registerCSSFiles([frameworkIgnoreListSettingsTabStyles]);
     this.registerCSSFiles([frameworkIgnoreListSettingsTabStyles]);
-    this._settingUpdated();
+    this.settingUpdated();
   }
 
-  _settingUpdated(): void {
-    this._list.clear();
-    const patterns = this._setting.getAsArray();
+  private settingUpdated(): void {
+    this.list.clear();
+    const patterns = this.setting.getAsArray();
     for (let i = 0; i < patterns.length; ++i) {
-      this._list.appendItem(patterns[i], true);
+      this.list.appendItem(patterns[i], true);
     }
   }
 
-  _addButtonClicked(): void {
-    this._list.addNewItem(this._setting.getAsArray().length, {pattern: '', disabled: false});
+  private addButtonClicked(): void {
+    this.list.addNewItem(this.setting.getAsArray().length, {pattern: '', disabled: false});
   }
 
   renderItem(item: Common.Settings.RegExpSettingItem, _editable: boolean): Element {
@@ -158,7 +156,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
     UI.Tooltip.Tooltip.install(pattern, i18nString(UIStrings.ignoreScriptsWhoseNamesMatchS, {PH1: item.pattern}));
     element.createChild('div', 'ignore-list-separator');
     element.createChild('div', 'ignore-list-behavior').textContent =
-        item.disabled ? this._disabledLabel : this._ignoreListLabel;
+        item.disabled ? this.disabledLabel : this.ignoreListLabel;
     if (item.disabled) {
       element.classList.add('ignore-list-disabled');
     }
@@ -166,38 +164,38 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
   }
 
   removeItemRequested(item: Common.Settings.RegExpSettingItem, index: number): void {
-    const patterns = this._setting.getAsArray();
+    const patterns = this.setting.getAsArray();
     patterns.splice(index, 1);
-    this._setting.setAsArray(patterns);
+    this.setting.setAsArray(patterns);
   }
 
   commitEdit(
       item: Common.Settings.RegExpSettingItem, editor: UI.ListWidget.Editor<Common.Settings.RegExpSettingItem>,
       isNew: boolean): void {
     item.pattern = editor.control('pattern').value.trim();
-    item.disabled = editor.control('behavior').value === this._disabledLabel;
+    item.disabled = editor.control('behavior').value === this.disabledLabel;
 
-    const list = this._setting.getAsArray();
+    const list = this.setting.getAsArray();
     if (isNew) {
       list.push(item);
     }
-    this._setting.setAsArray(list);
+    this.setting.setAsArray(list);
   }
 
   beginEdit(item: Common.Settings.RegExpSettingItem): UI.ListWidget.Editor<Common.Settings.RegExpSettingItem> {
-    const editor = this._createEditor();
+    const editor = this.createEditor();
     editor.control('pattern').value = item.pattern;
-    editor.control('behavior').value = item.disabled ? this._disabledLabel : this._ignoreListLabel;
+    editor.control('behavior').value = item.disabled ? this.disabledLabel : this.ignoreListLabel;
     return editor;
   }
 
-  _createEditor(): UI.ListWidget.Editor<Common.Settings.RegExpSettingItem> {
-    if (this._editor) {
-      return this._editor;
+  private createEditor(): UI.ListWidget.Editor<Common.Settings.RegExpSettingItem> {
+    if (this.editor) {
+      return this.editor;
     }
 
     const editor = new UI.ListWidget.Editor<Common.Settings.RegExpSettingItem>();
-    this._editor = editor;
+    this.editor = editor;
     const content = editor.contentElement();
 
     const titles = content.createChild('div', 'ignore-list-edit-row');
@@ -210,7 +208,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
     UI.ARIAUtils.setAccessibleName(pattern, i18nString(UIStrings.pattern));
     fields.createChild('div', 'ignore-list-pattern').appendChild(pattern);
     fields.createChild('div', 'ignore-list-separator ignore-list-separator-invisible');
-    const behavior = editor.createSelect('behavior', [this._ignoreListLabel, this._disabledLabel], behaviorValidator);
+    const behavior = editor.createSelect('behavior', [this.ignoreListLabel, this.disabledLabel], behaviorValidator);
     UI.ARIAUtils.setAccessibleName(behavior, i18nString(UIStrings.behavior));
     fields.createChild('div', 'ignore-list-behavior').appendChild(behavior);
 
@@ -220,7 +218,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
         this: FrameworkIgnoreListSettingsTab, item: Common.Settings.RegExpSettingItem, index: number,
         input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
       const pattern = input.value.trim();
-      const patterns = this._setting.getAsArray();
+      const patterns = this.setting.getAsArray();
 
       if (!pattern.length) {
         return {valid: false, errorMessage: i18nString(UIStrings.patternCannotBeEmpty)};

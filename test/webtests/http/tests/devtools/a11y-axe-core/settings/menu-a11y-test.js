@@ -12,7 +12,7 @@
 
   await UI.actionRegistry.action('settings.show').execute();
 
-  const tabbedPane = Settings.SettingsScreen.instance()._tabbedLocation.tabbedPane();
+  const tabbedPane = Settings.SettingsScreen.instance().tabbedLocation.tabbedPane();
 
   // force tabs to update
   tabbedPane._innerUpdateTabElements();

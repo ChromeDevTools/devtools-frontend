@@ -1777,7 +1777,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand(
       'Network.loadNetworkResource',
       [
-        {'name': 'frameId', 'type': 'string', 'optional': false}, {'name': 'url', 'type': 'string', 'optional': false},
+        {'name': 'frameId', 'type': 'string', 'optional': true}, {'name': 'url', 'type': 'string', 'optional': false},
         {'name': 'options', 'type': 'object', 'optional': false}
       ],
       ['resource']);

@@ -12410,7 +12410,8 @@
                     "parameters": [
                         {
                             "name": "frameId",
-                            "description": "Frame id to get the resource for.",
+                            "description": "Frame id to get the resource for. Mandatory for frame targets, and\nshould be omitted for worker targets.",
+                            "optional": true,
                             "$ref": "Page.FrameId"
                         },
                         {

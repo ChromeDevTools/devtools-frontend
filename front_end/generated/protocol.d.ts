@@ -8307,9 +8307,10 @@ declare namespace Protocol {
 
     export interface LoadNetworkResourceRequest {
       /**
-       * Frame id to get the resource for.
+       * Frame id to get the resource for. Mandatory for frame targets, and
+       * should be omitted for worker targets.
        */
-      frameId: Page.FrameId;
+      frameId?: Page.FrameId;
       /**
        * URL of the resource to get content for.
        */

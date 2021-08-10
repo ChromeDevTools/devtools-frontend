@@ -13,7 +13,7 @@
   await UI.viewManager.showView('sources.xhrBreakpoints');
   TestRunner.addResult('Adding XHR breakpoint.');
   const xhrBreakpointsPane = BrowserDebugger.XHRBreakpointsSidebarPane.instance();
-  xhrBreakpointsPane._setBreakpoint('test xhr breakpoint', true);
+  xhrBreakpointsPane.setBreakpoint('test xhr breakpoint', true);
   TestRunner.addResult('Running axe on the XHR breakpoints pane.');
 
   await AxeCoreTestRunner.runValidation(xhrBreakpointsPane.contentElement, noRequiredParent);

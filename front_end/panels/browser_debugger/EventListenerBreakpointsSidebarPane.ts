@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 
@@ -28,7 +26,7 @@ export class EventListenerBreakpointsSidebarPane extends CategorizedBreakpointsS
     return eventListenerBreakpointsSidebarPaneInstance;
   }
 
-  _getBreakpointFromPausedDetails(details: SDK.DebuggerModel.DebuggerPausedDetails):
+  getBreakpointFromPausedDetails(details: SDK.DebuggerModel.DebuggerPausedDetails):
       SDK.DOMDebuggerModel.CategorizedBreakpoint|null {
     return SDK.DOMDebuggerModel.DOMDebuggerManager.instance().resolveEventListenerBreakpoint(details.auxData as {
       eventName: string,

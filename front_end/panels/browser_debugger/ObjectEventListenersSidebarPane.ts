@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as Common from '../../core/common/common.js';
 import * as EventListeners from '../event_listeners/event_listeners.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -21,20 +19,20 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let objectEventListenersSidebarPaneInstance: ObjectEventListenersSidebarPane;
 
 export class ObjectEventListenersSidebarPane extends UI.Widget.VBox implements UI.Toolbar.ItemsProvider {
-  _refreshButton: UI.Toolbar.ToolbarButton;
-  _eventListenersView: EventListeners.EventListenersView.EventListenersView;
-  _lastRequestedContext?: SDK.RuntimeModel.ExecutionContext;
+  private readonly refreshButton: UI.Toolbar.ToolbarButton;
+  private readonly eventListenersView: EventListeners.EventListenersView.EventListenersView;
+  private lastRequestedContext?: SDK.RuntimeModel.ExecutionContext;
   private constructor() {
     super();
-    this._refreshButton =
+    this.refreshButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refreshGlobalListeners), 'largeicon-refresh');
-    this._refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._refreshClick, this);
-    this._refreshButton.setEnabled(false);
+    this.refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.refreshClick, this);
+    this.refreshButton.setEnabled(false);
 
-    this._eventListenersView = new EventListeners.EventListenersView.EventListenersView(
+    this.eventListenersView = new EventListeners.EventListenersView.EventListenersView(
         this.update.bind(this), /* enableDefaultTreeFocus */ true);
-    this._eventListenersView.show(this.element);
-    this.setDefaultFocusedChild(this._eventListenersView);
+    this.eventListenersView.show(this.element);
+    this.setDefaultFocusedChild(this.eventListenersView);
   }
 
   static instance(): ObjectEventListenersSidebarPane {
@@ -45,39 +43,39 @@ export class ObjectEventListenersSidebarPane extends UI.Widget.VBox implements U
   }
 
   toolbarItems(): UI.Toolbar.ToolbarItem[] {
-    return [this._refreshButton];
+    return [this.refreshButton];
   }
 
   update(): void {
-    if (this._lastRequestedContext) {
-      this._lastRequestedContext.runtimeModel.releaseObjectGroup(objectGroupName);
-      delete this._lastRequestedContext;
+    if (this.lastRequestedContext) {
+      this.lastRequestedContext.runtimeModel.releaseObjectGroup(objectGroupName);
+      delete this.lastRequestedContext;
     }
     const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
     if (!executionContext) {
-      this._eventListenersView.reset();
-      this._eventListenersView.addEmptyHolderIfNeeded();
+      this.eventListenersView.reset();
+      this.eventListenersView.addEmptyHolderIfNeeded();
       return;
     }
-    this._lastRequestedContext = executionContext;
-    Promise.all([this._windowObjectInContext(executionContext)])
-        .then(this._eventListenersView.addObjects.bind(this._eventListenersView));
+    this.lastRequestedContext = executionContext;
+    Promise.all([this.windowObjectInContext(executionContext)])
+        .then(this.eventListenersView.addObjects.bind(this.eventListenersView));
   }
 
   wasShown(): void {
     super.wasShown();
     UI.Context.Context.instance().addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this.update, this);
-    this._refreshButton.setEnabled(true);
+    this.refreshButton.setEnabled(true);
     this.update();
   }
 
   willHide(): void {
     super.willHide();
     UI.Context.Context.instance().removeFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this.update, this);
-    this._refreshButton.setEnabled(false);
+    this.refreshButton.setEnabled(false);
   }
 
-  _windowObjectInContext(executionContext: SDK.RuntimeModel.ExecutionContext):
+  private windowObjectInContext(executionContext: SDK.RuntimeModel.ExecutionContext):
       Promise<SDK.RemoteObject.RemoteObject|null> {
     return executionContext
         .evaluate(
@@ -104,7 +102,7 @@ export class ObjectEventListenersSidebarPane extends UI.Widget.VBox implements U
         });
   }
 
-  _refreshClick(event: Common.EventTarget.EventTargetEvent): void {
+  private refreshClick(event: Common.EventTarget.EventTargetEvent): void {
     event.data.consume();
     this.update();
   }

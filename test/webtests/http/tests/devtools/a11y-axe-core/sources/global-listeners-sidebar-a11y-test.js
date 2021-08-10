@@ -13,7 +13,7 @@
   await TestRunner.evaluateInPagePromise('window.addEventListener(\'touchstart\', () => console.log);');
   await UI.viewManager.showView('sources.globalListeners');
   const globalListenersPane = BrowserDebugger.ObjectEventListenersSidebarPane.instance();
-  const eventListenersView = globalListenersPane._eventListenersView;
+  const eventListenersView = globalListenersPane.eventListenersView;
 
   TestRunner.addResult('Dumping event listeners view:');
   await ElementsTestRunner.expandAndDumpEventListenersPromise(eventListenersView);

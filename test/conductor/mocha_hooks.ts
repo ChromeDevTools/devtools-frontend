@@ -11,14 +11,14 @@ import * as path from 'path';
 import * as rimraf from 'rimraf';
 
 import {collectCoverageFromPage, postFileTeardown, preFileSetup, resetPages} from './hooks.js';
-import {requireTestRunnerConfigSetting} from './test_runner_config.js';
+import {getTestRunnerConfigSetting} from './test_runner_config.js';
 import {startServer, stopServer} from './test_server.js';
 
 /* eslint-disable no-console */
 
 process.on('SIGINT', postFileTeardown);
 
-const TEST_SERVER_TYPE = requireTestRunnerConfigSetting<string>('test-server-type');
+const TEST_SERVER_TYPE = getTestRunnerConfigSetting<string>('test-server-type', 'hosted-mode');
 
 if (TEST_SERVER_TYPE !== 'hosted-mode' && TEST_SERVER_TYPE !== 'component-docs' && TEST_SERVER_TYPE !== 'none') {
   throw new Error(`Invalid test server type: ${TEST_SERVER_TYPE}`);

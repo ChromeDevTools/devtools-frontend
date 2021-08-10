@@ -32,6 +32,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import type {FilesChangedData} from './FileSystemWorkspaceBinding.js';
 
 import {IsolatedFileSystem} from './IsolatedFileSystem.js';
 
@@ -48,7 +49,7 @@ const str_ = i18n.i18n.registerUIStrings('models/persistence/IsolatedFileSystemM
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let isolatedFileSystemManagerInstance: IsolatedFileSystemManager;
 
-export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrapper {
+export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly fileSystemsInternal: Map<string, PlatformFileSystem>;
   private readonly callbacks: Map<number, (arg0: Array<string>) => void>;
   private readonly progresses: Map<number, Common.Progress.Progress>;
@@ -339,6 +340,14 @@ export enum Events {
   ExcludedFolderAdded = 'ExcludedFolderAdded',
   ExcludedFolderRemoved = 'ExcludedFolderRemoved',
 }
+
+export type EventTypes = {
+  [Events.FileSystemAdded]: PlatformFileSystem,
+  [Events.FileSystemRemoved]: PlatformFileSystem,
+  [Events.FileSystemFilesChanged]: FilesChangedData,
+  [Events.ExcludedFolderAdded]: string,
+  [Events.ExcludedFolderRemoved]: string,
+};
 
 let lastRequestId = 0;
 

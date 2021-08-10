@@ -98,8 +98,8 @@ export class FileSystemWorkspaceBinding {
     }
   }
 
-  private onFileSystemAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const fileSystem = event.data as PlatformFileSystem;
+  private onFileSystemAdded(event: Common.EventTarget.EventTargetEvent<PlatformFileSystem>): void {
+    const fileSystem = event.data;
     this.addFileSystem(fileSystem);
   }
 
@@ -108,8 +108,8 @@ export class FileSystemWorkspaceBinding {
     this.boundFileSystems.set(fileSystem.path(), boundFileSystem);
   }
 
-  private onFileSystemRemoved(event: Common.EventTarget.EventTargetEvent): void {
-    const fileSystem = event.data as PlatformFileSystem;
+  private onFileSystemRemoved(event: Common.EventTarget.EventTargetEvent<PlatformFileSystem>): void {
+    const fileSystem = event.data;
     const boundFileSystem = this.boundFileSystems.get(fileSystem.path());
     if (boundFileSystem) {
       boundFileSystem.dispose();
@@ -117,8 +117,8 @@ export class FileSystemWorkspaceBinding {
     this.boundFileSystems.delete(fileSystem.path());
   }
 
-  private fileSystemFilesChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const paths = event.data as FilesChangedData;
+  private fileSystemFilesChanged(event: Common.EventTarget.EventTargetEvent<FilesChangedData>): void {
+    const paths = event.data;
     for (const fileSystemPath of paths.changed.keysArray()) {
       const fileSystem = this.boundFileSystems.get(fileSystemPath);
       if (!fileSystem) {

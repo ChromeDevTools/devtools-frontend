@@ -4,8 +4,8 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Timeline from '../timeline/timeline.js';
@@ -216,8 +216,7 @@ export class InputTimeline extends UI.Widget.VBox implements Timeline.TimelineLo
         new TracingClient(SDK.TargetManager.TargetManager.instance().mainTarget() as SDK.Target.Target, this);
 
     const response = await this.tracingClient.startRecording();
-    // @ts-ignore crbug.com/1011811 Fix tracing manager type once Closure is gone
-    if (response[ProtocolClient.InspectorBackend.ProtocolError]) {
+    if (!response || response.getError()) {
       this.recordingFailed();
     } else {
       this.setState(State.Recording);
@@ -353,17 +352,16 @@ export class TracingClient implements SDK.TracingManager.TracingManagerClient {
     this.tracingCompleteCallback = null;
   }
 
-  async startRecording(): Promise<Object> {
+  async startRecording(): Promise<Protocol.ProtocolResponseWithError|undefined> {
     if (!this.tracingManager) {
-      return {};
+      return;
     }
 
     const categoriesArray = ['devtools.timeline', 'disabled-by-default-devtools.timeline.inputs'];
     const categories = categoriesArray.join(',');
 
     const response = await this.tracingManager.start(this, categories, '');
-    // @ts-ignore crbug.com/1011811 Fix tracing manager type once Closure is gone
-    if (response['Protocol.Error']) {
+    if (response.getError()) {
       await this.waitForTracingToStop(false);
     }
     return response;

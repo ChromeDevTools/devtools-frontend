@@ -16,8 +16,6 @@ ProtocolClient.SessionRouter = ProtocolClientModule.InspectorBackend.SessionRout
 /** @constructor */
 ProtocolClient.InspectorBackend = ProtocolClientModule.InspectorBackend.InspectorBackend;
 
-ProtocolClient.InspectorBackend.ProtocolError = ProtocolClientModule.InspectorBackend.ProtocolError;
-
 /** @interface */
 ProtocolClient.Connection = ProtocolClientModule.InspectorBackend.Connection;
 

@@ -9874,7 +9874,7 @@ declare namespace Protocol {
       /**
        * Parent frame identifier.
        */
-      parentId?: string;
+      parentId?: FrameId;
       /**
        * Identifier of the loader associated with this frame.
        */

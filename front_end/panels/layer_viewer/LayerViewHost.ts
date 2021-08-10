@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -26,27 +24,27 @@ export abstract class LayerView {
 }
 
 export class Selection {
-  _type: Type;
-  _layer: SDK.LayerTreeBase.Layer;
+  readonly typeInternal: Type;
+  private readonly layerInternal: SDK.LayerTreeBase.Layer;
 
   constructor(type: Type, layer: SDK.LayerTreeBase.Layer) {
-    this._type = type;
-    this._layer = layer;
+    this.typeInternal = type;
+    this.layerInternal = layer;
   }
 
   static isEqual(a: Selection|null, b: Selection|null): boolean {
-    return a && b ? a._isEqual(b) : a === b;
+    return a && b ? a.isEqual(b) : a === b;
   }
 
   type(): Type {
-    return this._type;
+    return this.typeInternal;
   }
 
   layer(): SDK.LayerTreeBase.Layer {
-    return this._layer;
+    return this.layerInternal;
   }
 
-  _isEqual(_other: Selection): boolean {
+  isEqual(_other: Selection): boolean {
     return false;
   }
 }
@@ -63,8 +61,8 @@ export class LayerSelection extends Selection {
     super(Type.Layer, layer);
   }
 
-  _isEqual(other: Selection): boolean {
-    return other._type === Type.Layer && other.layer().id() === this.layer().id();
+  isEqual(other: Selection): boolean {
+    return other.typeInternal === Type.Layer && other.layer().id() === this.layer().id();
   }
 }
 
@@ -75,105 +73,105 @@ export class ScrollRectSelection extends Selection {
     this.scrollRectIndex = scrollRectIndex;
   }
 
-  _isEqual(other: Selection): boolean {
-    return other._type === Type.ScrollRect && this.layer().id() === other.layer().id() &&
+  isEqual(other: Selection): boolean {
+    return other.typeInternal === Type.ScrollRect && this.layer().id() === other.layer().id() &&
         this.scrollRectIndex === (other as ScrollRectSelection).scrollRectIndex;
   }
 }
 
 export class SnapshotSelection extends Selection {
-  _snapshot: SDK.PaintProfiler.SnapshotWithRect;
+  private readonly snapshotInternal: SDK.PaintProfiler.SnapshotWithRect;
   constructor(layer: SDK.LayerTreeBase.Layer, snapshot: SDK.PaintProfiler.SnapshotWithRect) {
     super(Type.Snapshot, layer);
-    this._snapshot = snapshot;
+    this.snapshotInternal = snapshot;
   }
 
-  _isEqual(other: Selection): boolean {
-    return other._type === Type.Snapshot && this.layer().id() === other.layer().id() &&
-        this._snapshot === (other as SnapshotSelection)._snapshot;
+  isEqual(other: Selection): boolean {
+    return other.typeInternal === Type.Snapshot && this.layer().id() === other.layer().id() &&
+        this.snapshotInternal === (other as SnapshotSelection).snapshotInternal;
   }
 
   snapshot(): SDK.PaintProfiler.SnapshotWithRect {
-    return this._snapshot;
+    return this.snapshotInternal;
   }
 }
 
 export class LayerViewHost {
-  _views: LayerView[];
-  _selectedObject: Selection|null;
-  _hoveredObject: Selection|null;
-  _showInternalLayersSetting: Common.Settings.Setting<boolean>;
-  _snapshotLayers: Map<SDK.LayerTreeBase.Layer, SnapshotSelection>;
-  _target?: SDK.Target.Target|null;
+  private readonly views: LayerView[];
+  private selectedObject: Selection|null;
+  private hoveredObject: Selection|null;
+  private showInternalLayersSettingInternal: Common.Settings.Setting<boolean>;
+  private snapshotLayers: Map<SDK.LayerTreeBase.Layer, SnapshotSelection>;
+  private target?: SDK.Target.Target|null;
   constructor() {
-    this._views = [];
-    this._selectedObject = null;
-    this._hoveredObject = null;
-    this._showInternalLayersSetting =
+    this.views = [];
+    this.selectedObject = null;
+    this.hoveredObject = null;
+    this.showInternalLayersSettingInternal =
         Common.Settings.Settings.instance().createSetting('layersShowInternalLayers', false);
-    this._snapshotLayers = new Map();
+    this.snapshotLayers = new Map();
   }
 
   registerView(layerView: LayerView): void {
-    this._views.push(layerView);
+    this.views.push(layerView);
   }
 
   setLayerSnapshotMap(snapshotLayers: Map<SDK.LayerTreeBase.Layer, SnapshotSelection>): void {
-    this._snapshotLayers = snapshotLayers;
+    this.snapshotLayers = snapshotLayers;
   }
 
   getLayerSnapshotMap(): Map<SDK.LayerTreeBase.Layer, SnapshotSelection> {
-    return this._snapshotLayers;
+    return this.snapshotLayers;
   }
 
   setLayerTree(layerTree: SDK.LayerTreeBase.LayerTreeBase|null): void {
     if (!layerTree) {
       return;
     }
-    this._target = layerTree.target();
-    const selectedLayer = this._selectedObject && this._selectedObject.layer();
+    this.target = layerTree.target();
+    const selectedLayer = this.selectedObject && this.selectedObject.layer();
     if (selectedLayer && (!layerTree || !layerTree.layerById(selectedLayer.id()))) {
       this.selectObject(null);
     }
-    const hoveredLayer = this._hoveredObject && this._hoveredObject.layer();
+    const hoveredLayer = this.hoveredObject && this.hoveredObject.layer();
     if (hoveredLayer && (!layerTree || !layerTree.layerById(hoveredLayer.id()))) {
       this.hoverObject(null);
     }
-    for (const view of this._views) {
+    for (const view of this.views) {
       view.setLayerTree(layerTree);
     }
   }
 
   hoverObject(selection: Selection|null): void {
-    if (Selection.isEqual(this._hoveredObject, selection)) {
+    if (Selection.isEqual(this.hoveredObject, selection)) {
       return;
     }
-    this._hoveredObject = selection;
+    this.hoveredObject = selection;
     const layer = selection && selection.layer();
-    this._toggleNodeHighlight(layer ? layer.nodeForSelfOrAncestor() : null);
-    for (const view of this._views) {
+    this.toggleNodeHighlight(layer ? layer.nodeForSelfOrAncestor() : null);
+    for (const view of this.views) {
       view.hoverObject(selection);
     }
   }
 
   selectObject(selection: Selection|null): void {
-    if (Selection.isEqual(this._selectedObject, selection)) {
+    if (Selection.isEqual(this.selectedObject, selection)) {
       return;
     }
-    this._selectedObject = selection;
-    for (const view of this._views) {
+    this.selectedObject = selection;
+    for (const view of this.views) {
       view.selectObject(selection);
     }
   }
 
   selection(): Selection|null {
-    return this._selectedObject;
+    return this.selectedObject;
   }
 
   showContextMenu(contextMenu: UI.ContextMenu.ContextMenu, selection: Selection|null): void {
     contextMenu.defaultSection().appendCheckboxItem(
-        i18nString(UIStrings.showInternalLayers), this._toggleShowInternalLayers.bind(this),
-        this._showInternalLayersSetting.get());
+        i18nString(UIStrings.showInternalLayers), this.toggleShowInternalLayers.bind(this),
+        this.showInternalLayersSettingInternal.get());
     const node = selection && selection.layer() && selection.layer().nodeForSelfOrAncestor();
     if (node) {
       contextMenu.appendApplicableItems(node);
@@ -182,14 +180,14 @@ export class LayerViewHost {
   }
 
   showInternalLayersSetting(): Common.Settings.Setting<boolean> {
-    return this._showInternalLayersSetting;
+    return this.showInternalLayersSettingInternal;
   }
 
-  _toggleShowInternalLayers(): void {
-    this._showInternalLayersSetting.set(!this._showInternalLayersSetting.get());
+  private toggleShowInternalLayers(): void {
+    this.showInternalLayersSettingInternal.set(!this.showInternalLayersSettingInternal.get());
   }
 
-  _toggleNodeHighlight(node: SDK.DOMModel.DOMNode|null): void {
+  private toggleNodeHighlight(node: SDK.DOMModel.DOMNode|null): void {
     if (node) {
       node.highlightForTwoSeconds();
       return;

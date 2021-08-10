@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -26,67 +24,67 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/TransformController.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
-  _mode!: Modes;
-  _scale: number;
-  _offsetX: number;
-  _offsetY: number;
-  _rotateX: number;
-  _rotateY: number;
-  _oldRotateX: number;
-  _oldRotateY: number;
-  _originX: number;
-  _originY: number;
+  private mode!: Modes;
+  private scaleInternal: number;
+  private offsetXInternal: number;
+  private offsetYInternal: number;
+  private rotateXInternal: number;
+  private rotateYInternal: number;
+  private oldRotateX: number;
+  private oldRotateY: number;
+  private originX: number;
+  private originY: number;
   element: HTMLElement;
-  _minScale: number;
-  _maxScale: number;
-  _controlPanelToolbar: UI.Toolbar.Toolbar;
-  _modeButtons: {[x: string]: UI.Toolbar.ToolbarToggle};
+  private minScale: number;
+  private maxScale: number;
+  private readonly controlPanelToolbar: UI.Toolbar.Toolbar;
+  private readonly modeButtons: {[x: string]: UI.Toolbar.ToolbarToggle};
   constructor(element: HTMLElement, disableRotate?: boolean) {
     super();
-    this._scale = 1;
-    this._offsetX = 0;
-    this._offsetY = 0;
-    this._rotateX = 0;
-    this._rotateY = 0;
-    this._oldRotateX = 0;
-    this._oldRotateY = 0;
-    this._originX = 0;
-    this._originY = 0;
+    this.scaleInternal = 1;
+    this.offsetXInternal = 0;
+    this.offsetYInternal = 0;
+    this.rotateXInternal = 0;
+    this.rotateYInternal = 0;
+    this.oldRotateX = 0;
+    this.oldRotateY = 0;
+    this.originX = 0;
+    this.originY = 0;
     this.element = element;
-    this._registerShortcuts();
+    this.registerShortcuts();
     UI.UIUtils.installDragHandle(
-        element, this._onDragStart.bind(this), this._onDrag.bind(this), this._onDragEnd.bind(this), 'move', null);
-    element.addEventListener('wheel', this._onMouseWheel.bind(this), false);
-    this._minScale = 0;
-    this._maxScale = Infinity;
+        element, this.onDragStart.bind(this), this.onDrag.bind(this), this.onDragEnd.bind(this), 'move', null);
+    element.addEventListener('wheel', this.onMouseWheel.bind(this), false);
+    this.minScale = 0;
+    this.maxScale = Infinity;
 
-    this._controlPanelToolbar = new UI.Toolbar.Toolbar('transform-control-panel');
+    this.controlPanelToolbar = new UI.Toolbar.Toolbar('transform-control-panel');
 
-    this._modeButtons = {};
+    this.modeButtons = {};
     if (!disableRotate) {
       const panModeButton = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.panModeX), 'largeicon-pan');
-      panModeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._setMode.bind(this, Modes.Pan));
-      this._modeButtons[Modes.Pan] = panModeButton;
-      this._controlPanelToolbar.appendToolbarItem(panModeButton);
+      panModeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.setMode.bind(this, Modes.Pan));
+      this.modeButtons[Modes.Pan] = panModeButton;
+      this.controlPanelToolbar.appendToolbarItem(panModeButton);
       const rotateModeButton = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.rotateModeV), 'largeicon-rotate');
-      rotateModeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._setMode.bind(this, Modes.Rotate));
-      this._modeButtons[Modes.Rotate] = rotateModeButton;
-      this._controlPanelToolbar.appendToolbarItem(rotateModeButton);
+      rotateModeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.setMode.bind(this, Modes.Rotate));
+      this.modeButtons[Modes.Rotate] = rotateModeButton;
+      this.controlPanelToolbar.appendToolbarItem(rotateModeButton);
     }
-    this._setMode(Modes.Pan);
+    this.setMode(Modes.Pan);
 
     const resetButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.resetTransform), 'largeicon-center');
     resetButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.resetAndNotify.bind(this, undefined));
-    this._controlPanelToolbar.appendToolbarItem(resetButton);
+    this.controlPanelToolbar.appendToolbarItem(resetButton);
 
-    this._reset();
+    this.reset();
   }
 
   toolbar(): UI.Toolbar.Toolbar {
-    return this._controlPanelToolbar;
+    return this.controlPanelToolbar;
   }
 
-  _registerShortcuts(): void {
+  private registerShortcuts(): void {
     const zoomFactor = 1.1;
     UI.ShortcutRegistry.ShortcutRegistry.instance().addShortcutListener(this.element, {
       'layers.reset-view': async(): Promise<true> => {
@@ -94,51 +92,51 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
         return true;
       },
       'layers.pan-mode': async(): Promise<true> => {
-        this._setMode(Modes.Pan);
+        this.setMode(Modes.Pan);
         return true;
       },
       'layers.rotate-mode': async(): Promise<true> => {
-        this._setMode(Modes.Rotate);
+        this.setMode(Modes.Rotate);
         return true;
       },
-      'layers.zoom-in': this._onKeyboardZoom.bind(this, zoomFactor),
-      'layers.zoom-out': this._onKeyboardZoom.bind(this, 1 / zoomFactor),
-      'layers.up': this._onKeyboardPanOrRotate.bind(this, 0, -1),
-      'layers.down': this._onKeyboardPanOrRotate.bind(this, 0, 1),
-      'layers.left': this._onKeyboardPanOrRotate.bind(this, -1, 0),
-      'layers.right': this._onKeyboardPanOrRotate.bind(this, 1, 0),
+      'layers.zoom-in': this.onKeyboardZoom.bind(this, zoomFactor),
+      'layers.zoom-out': this.onKeyboardZoom.bind(this, 1 / zoomFactor),
+      'layers.up': this.onKeyboardPanOrRotate.bind(this, 0, -1),
+      'layers.down': this.onKeyboardPanOrRotate.bind(this, 0, 1),
+      'layers.left': this.onKeyboardPanOrRotate.bind(this, -1, 0),
+      'layers.right': this.onKeyboardPanOrRotate.bind(this, 1, 0),
     });
   }
 
-  _postChangeEvent(): void {
+  private postChangeEvent(): void {
     this.dispatchEventToListeners(Events.TransformChanged);
   }
 
-  _reset(): void {
-    this._scale = 1;
-    this._offsetX = 0;
-    this._offsetY = 0;
-    this._rotateX = 0;
-    this._rotateY = 0;
+  private reset(): void {
+    this.scaleInternal = 1;
+    this.offsetXInternal = 0;
+    this.offsetYInternal = 0;
+    this.rotateXInternal = 0;
+    this.rotateYInternal = 0;
   }
 
-  _setMode(mode: Modes): void {
-    if (this._mode === mode) {
+  private setMode(mode: Modes): void {
+    if (this.mode === mode) {
       return;
     }
-    this._mode = mode;
-    this._updateModeButtons();
+    this.mode = mode;
+    this.updateModeButtons();
   }
 
-  _updateModeButtons(): void {
-    for (const mode in this._modeButtons) {
-      this._modeButtons[mode].setToggled(mode === this._mode);
+  private updateModeButtons(): void {
+    for (const mode in this.modeButtons) {
+      this.modeButtons[mode].setToggled(mode === this.mode);
     }
   }
 
   resetAndNotify(event?: Event): void {
-    this._reset();
-    this._postChangeEvent();
+    this.reset();
+    this.postChangeEvent();
     if (event) {
       event.preventDefault();
     }
@@ -146,115 +144,116 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   setScaleConstraints(minScale: number, maxScale: number): void {
-    this._minScale = minScale;
-    this._maxScale = maxScale;
-    this._scale = Platform.NumberUtilities.clamp(this._scale, minScale, maxScale);
+    this.minScale = minScale;
+    this.maxScale = maxScale;
+    this.scaleInternal = Platform.NumberUtilities.clamp(this.scaleInternal, minScale, maxScale);
   }
 
   clampOffsets(minX: number, maxX: number, minY: number, maxY: number): void {
-    this._offsetX = Platform.NumberUtilities.clamp(this._offsetX, minX, maxX);
-    this._offsetY = Platform.NumberUtilities.clamp(this._offsetY, minY, maxY);
+    this.offsetXInternal = Platform.NumberUtilities.clamp(this.offsetXInternal, minX, maxX);
+    this.offsetYInternal = Platform.NumberUtilities.clamp(this.offsetYInternal, minY, maxY);
   }
 
   scale(): number {
-    return this._scale;
+    return this.scaleInternal;
   }
 
   offsetX(): number {
-    return this._offsetX;
+    return this.offsetXInternal;
   }
 
   offsetY(): number {
-    return this._offsetY;
+    return this.offsetYInternal;
   }
 
   rotateX(): number {
-    return this._rotateX;
+    return this.rotateXInternal;
   }
 
   rotateY(): number {
-    return this._rotateY;
+    return this.rotateYInternal;
   }
 
-  _onScale(scaleFactor: number, x: number, y: number): void {
-    scaleFactor =
-        Platform.NumberUtilities.clamp(this._scale * scaleFactor, this._minScale, this._maxScale) / this._scale;
-    this._scale *= scaleFactor;
-    this._offsetX -= (x - this._offsetX) * (scaleFactor - 1);
-    this._offsetY -= (y - this._offsetY) * (scaleFactor - 1);
-    this._postChangeEvent();
+  private onScale(scaleFactor: number, x: number, y: number): void {
+    scaleFactor = Platform.NumberUtilities.clamp(this.scaleInternal * scaleFactor, this.minScale, this.maxScale) /
+        this.scaleInternal;
+    this.scaleInternal *= scaleFactor;
+    this.offsetXInternal -= (x - this.offsetXInternal) * (scaleFactor - 1);
+    this.offsetYInternal -= (y - this.offsetYInternal) * (scaleFactor - 1);
+    this.postChangeEvent();
   }
 
-  _onPan(offsetX: number, offsetY: number): void {
-    this._offsetX += offsetX;
-    this._offsetY += offsetY;
-    this._postChangeEvent();
+  private onPan(offsetX: number, offsetY: number): void {
+    this.offsetXInternal += offsetX;
+    this.offsetYInternal += offsetY;
+    this.postChangeEvent();
   }
 
-  _onRotate(rotateX: number, rotateY: number): void {
-    this._rotateX = rotateX;
-    this._rotateY = rotateY;
-    this._postChangeEvent();
+  private onRotate(rotateX: number, rotateY: number): void {
+    this.rotateXInternal = rotateX;
+    this.rotateYInternal = rotateY;
+    this.postChangeEvent();
   }
 
-  async _onKeyboardZoom(zoomFactor: number): Promise<boolean> {
-    this._onScale(zoomFactor, this.element.clientWidth / 2, this.element.clientHeight / 2);
+  private async onKeyboardZoom(zoomFactor: number): Promise<boolean> {
+    this.onScale(zoomFactor, this.element.clientWidth / 2, this.element.clientHeight / 2);
     return true;
   }
 
-  async _onKeyboardPanOrRotate(xMultiplier: number, yMultiplier: number): Promise<boolean> {
+  private async onKeyboardPanOrRotate(xMultiplier: number, yMultiplier: number): Promise<boolean> {
     const panStepInPixels = 6;
     const rotateStepInDegrees = 5;
 
-    if (this._mode === Modes.Rotate) {
-      // Sic! _onRotate treats X and Y as "rotate around X" and "rotate around Y", so swap X/Y multiplers.
-      this._onRotate(
-          this._rotateX + yMultiplier * rotateStepInDegrees, this._rotateY + xMultiplier * rotateStepInDegrees);
+    if (this.mode === Modes.Rotate) {
+      // Sic! onRotate treats X and Y as "rotate around X" and "rotate around Y", so swap X/Y multiplers.
+      this.onRotate(
+          this.rotateXInternal + yMultiplier * rotateStepInDegrees,
+          this.rotateYInternal + xMultiplier * rotateStepInDegrees);
     } else {
-      this._onPan(xMultiplier * panStepInPixels, yMultiplier * panStepInPixels);
+      this.onPan(xMultiplier * panStepInPixels, yMultiplier * panStepInPixels);
     }
     return true;
   }
 
-  _onMouseWheel(event: Event): void {
+  private onMouseWheel(event: Event): void {
     /** @const */
     const zoomFactor = 1.1;
     /** @const */
     const wheelZoomSpeed = 1 / 53;
     const mouseEvent = event as WheelEvent;
     const scaleFactor = Math.pow(zoomFactor, -mouseEvent.deltaY * wheelZoomSpeed);
-    this._onScale(
+    this.onScale(
         scaleFactor, mouseEvent.clientX - this.element.totalOffsetLeft(),
         mouseEvent.clientY - this.element.totalOffsetTop());
   }
 
-  _onDrag(event: Event): void {
+  private onDrag(event: Event): void {
     const {clientX, clientY} = event as MouseEvent;
-    if (this._mode === Modes.Rotate) {
-      this._onRotate(
-          this._oldRotateX + (this._originY - clientY) / this.element.clientHeight * 180,
-          this._oldRotateY - (this._originX - clientX) / this.element.clientWidth * 180);
+    if (this.mode === Modes.Rotate) {
+      this.onRotate(
+          this.oldRotateX + (this.originY - clientY) / this.element.clientHeight * 180,
+          this.oldRotateY - (this.originX - clientX) / this.element.clientWidth * 180);
     } else {
-      this._onPan(clientX - this._originX, clientY - this._originY);
-      this._originX = clientX;
-      this._originY = clientY;
+      this.onPan(clientX - this.originX, clientY - this.originY);
+      this.originX = clientX;
+      this.originY = clientY;
     }
   }
 
-  _onDragStart(event: MouseEvent): boolean {
+  private onDragStart(event: MouseEvent): boolean {
     this.element.focus();
-    this._originX = event.clientX;
-    this._originY = event.clientY;
-    this._oldRotateX = this._rotateX;
-    this._oldRotateY = this._rotateY;
+    this.originX = event.clientX;
+    this.originY = event.clientY;
+    this.oldRotateX = this.rotateXInternal;
+    this.oldRotateY = this.rotateYInternal;
     return true;
   }
 
-  _onDragEnd(): void {
-    this._originX = 0;
-    this._originY = 0;
-    this._oldRotateX = 0;
-    this._oldRotateY = 0;
+  private onDragEnd(): void {
+    this.originX = 0;
+    this.originY = 0;
+    this.oldRotateX = 0;
+    this.oldRotateY = 0;
   }
 }
 

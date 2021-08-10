@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -78,54 +76,54 @@ let categories: {[x: string]: PaintProfilerCategory}|null = null;
 let logItemCategoriesMap: {[x: string]: PaintProfilerCategory}|null = null;
 
 export class PaintProfilerView extends UI.Widget.HBox {
-  _canvasContainer: HTMLElement;
-  _progressBanner: HTMLElement;
-  _pieChart: PerfUI.PieChart.PieChart;
-  _showImageCallback: (arg0?: string|undefined) => void;
-  _canvas: HTMLCanvasElement;
-  _context: CanvasRenderingContext2D;
-  _selectionWindow: PerfUI.OverviewGrid.Window;
-  _innerBarWidth: number;
-  _minBarHeight: number;
-  _barPaddingWidth: number;
-  _outerBarWidth: number;
-  _pendingScale: number;
-  _scale: number;
-  _samplesPerBar: number;
-  _log: SDK.PaintProfiler.PaintProfilerLogItem[];
-  _snapshot?: SDK.PaintProfiler.PaintProfilerSnapshot|null;
-  _logCategories?: PaintProfilerCategory[];
-  _profiles?: Protocol.LayerTree.PaintProfile[]|null;
-  _updateImageTimer?: number;
+  private canvasContainer: HTMLElement;
+  private readonly progressBanner: HTMLElement;
+  private pieChart: PerfUI.PieChart.PieChart;
+  private readonly showImageCallback: (arg0?: string|undefined) => void;
+  private canvas: HTMLCanvasElement;
+  private context: CanvasRenderingContext2D;
+  private readonly selectionWindowInternal: PerfUI.OverviewGrid.Window;
+  private readonly innerBarWidth: number;
+  private minBarHeight: number;
+  private readonly barPaddingWidth: number;
+  private readonly outerBarWidth: number;
+  private pendingScale: number;
+  private scale: number;
+  private samplesPerBar: number;
+  private log: SDK.PaintProfiler.PaintProfilerLogItem[];
+  private snapshot?: SDK.PaintProfiler.PaintProfilerSnapshot|null;
+  private logCategories?: PaintProfilerCategory[];
+  private profiles?: Protocol.LayerTree.PaintProfile[]|null;
+  private updateImageTimer?: number;
 
   constructor(showImageCallback: (arg0?: string|undefined) => void) {
     super(true);
 
     this.contentElement.classList.add('paint-profiler-overview');
-    this._canvasContainer = this.contentElement.createChild('div', 'paint-profiler-canvas-container');
-    this._progressBanner = this.contentElement.createChild('div', 'full-widget-dimmed-banner hidden');
-    this._progressBanner.textContent = i18nString(UIStrings.profiling);
-    this._pieChart = new PerfUI.PieChart.PieChart();
-    this._populatePieChart(0, []);
-    this._pieChart.classList.add('paint-profiler-pie-chart');
-    this.contentElement.appendChild(this._pieChart);
+    this.canvasContainer = this.contentElement.createChild('div', 'paint-profiler-canvas-container');
+    this.progressBanner = this.contentElement.createChild('div', 'full-widget-dimmed-banner hidden');
+    this.progressBanner.textContent = i18nString(UIStrings.profiling);
+    this.pieChart = new PerfUI.PieChart.PieChart();
+    this.populatePieChart(0, []);
+    this.pieChart.classList.add('paint-profiler-pie-chart');
+    this.contentElement.appendChild(this.pieChart);
 
-    this._showImageCallback = showImageCallback;
-    this._canvas = this._canvasContainer.createChild('canvas', 'fill') as HTMLCanvasElement;
-    this._context = this._canvas.getContext('2d') as CanvasRenderingContext2D;
-    this._selectionWindow = new PerfUI.OverviewGrid.Window(this._canvasContainer);
-    this._selectionWindow.addEventListener(PerfUI.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
+    this.showImageCallback = showImageCallback;
+    this.canvas = this.canvasContainer.createChild('canvas', 'fill') as HTMLCanvasElement;
+    this.context = this.canvas.getContext('2d') as CanvasRenderingContext2D;
+    this.selectionWindowInternal = new PerfUI.OverviewGrid.Window(this.canvasContainer);
+    this.selectionWindowInternal.addEventListener(PerfUI.OverviewGrid.Events.WindowChanged, this.onWindowChanged, this);
 
-    this._innerBarWidth = 4 * window.devicePixelRatio;
-    this._minBarHeight = window.devicePixelRatio;
-    this._barPaddingWidth = 2 * window.devicePixelRatio;
-    this._outerBarWidth = this._innerBarWidth + this._barPaddingWidth;
-    this._pendingScale = 1;
-    this._scale = this._pendingScale;
-    this._samplesPerBar = 0;
-    this._log = [];
+    this.innerBarWidth = 4 * window.devicePixelRatio;
+    this.minBarHeight = window.devicePixelRatio;
+    this.barPaddingWidth = 2 * window.devicePixelRatio;
+    this.outerBarWidth = this.innerBarWidth + this.barPaddingWidth;
+    this.pendingScale = 1;
+    this.scale = this.pendingScale;
+    this.samplesPerBar = 0;
+    this.log = [];
 
-    this._reset();
+    this.reset();
   }
 
   static categories(): {[x: string]: PaintProfilerCategory} {
@@ -140,7 +138,7 @@ export class PaintProfilerView extends UI.Widget.HBox {
     return categories;
   }
 
-  static _initLogItemCategories(): {[x: string]: PaintProfilerCategory} {
+  private static initLogItemCategories(): {[x: string]: PaintProfilerCategory} {
     if (!logItemCategoriesMap) {
       const categories = PaintProfilerView.categories();
 
@@ -188,10 +186,10 @@ export class PaintProfilerView extends UI.Widget.HBox {
     return logItemCategoriesMap;
   }
 
-  static _categoryForLogItem(logItem: SDK.PaintProfiler.PaintProfilerLogItem): PaintProfilerCategory {
+  private static categoryForLogItem(logItem: SDK.PaintProfiler.PaintProfilerLogItem): PaintProfilerCategory {
     const method = Platform.StringUtilities.toTitleCase(logItem.method);
 
-    const logItemCategories = PaintProfilerView._initLogItemCategories();
+    const logItemCategories = PaintProfilerView.initLogItemCategories();
     let result: PaintProfilerCategory = logItemCategories[method];
     if (!result) {
       result = PaintProfilerView.categories()['misc'];
@@ -201,76 +199,76 @@ export class PaintProfilerView extends UI.Widget.HBox {
   }
 
   onResize(): void {
-    this._update();
+    this.update();
   }
 
   async setSnapshotAndLog(
       snapshot: SDK.PaintProfiler.PaintProfilerSnapshot|null, log: SDK.PaintProfiler.PaintProfilerLogItem[],
       clipRect: Protocol.DOM.Rect|null): Promise<void> {
-    this._reset();
-    this._snapshot = snapshot;
-    if (this._snapshot) {
-      this._snapshot.addReference();
+    this.reset();
+    this.snapshot = snapshot;
+    if (this.snapshot) {
+      this.snapshot.addReference();
     }
-    this._log = log;
-    this._logCategories = this._log.map(PaintProfilerView._categoryForLogItem);
+    this.log = log;
+    this.logCategories = this.log.map(PaintProfilerView.categoryForLogItem);
 
     if (!snapshot) {
-      this._update();
-      this._populatePieChart(0, []);
-      this._selectionWindow.setEnabled(false);
+      this.update();
+      this.populatePieChart(0, []);
+      this.selectionWindowInternal.setEnabled(false);
       return;
     }
 
-    this._selectionWindow.setEnabled(true);
-    this._progressBanner.classList.remove('hidden');
-    this._updateImage();
+    this.selectionWindowInternal.setEnabled(true);
+    this.progressBanner.classList.remove('hidden');
+    this.updateImage();
 
     const profiles = await snapshot.profile(clipRect);
 
-    this._progressBanner.classList.add('hidden');
-    this._profiles = profiles;
-    this._update();
-    this._updatePieChart();
+    this.progressBanner.classList.add('hidden');
+    this.profiles = profiles;
+    this.update();
+    this.updatePieChart();
   }
 
   setScale(scale: number): void {
-    const needsUpdate = scale > this._scale;
+    const needsUpdate = scale > this.scale;
     const predictiveGrowthFactor = 2;
-    this._pendingScale = Math.min(1, scale * predictiveGrowthFactor);
-    if (needsUpdate && this._snapshot) {
-      this._updateImage();
+    this.pendingScale = Math.min(1, scale * predictiveGrowthFactor);
+    if (needsUpdate && this.snapshot) {
+      this.updateImage();
     }
   }
 
-  _update(): void {
-    this._canvas.width = this._canvasContainer.clientWidth * window.devicePixelRatio;
-    this._canvas.height = this._canvasContainer.clientHeight * window.devicePixelRatio;
-    this._samplesPerBar = 0;
-    if (!this._profiles || !this._profiles.length || !this._logCategories) {
+  private update(): void {
+    this.canvas.width = this.canvasContainer.clientWidth * window.devicePixelRatio;
+    this.canvas.height = this.canvasContainer.clientHeight * window.devicePixelRatio;
+    this.samplesPerBar = 0;
+    if (!this.profiles || !this.profiles.length || !this.logCategories) {
       return;
     }
 
-    const maxBars = Math.floor((this._canvas.width - 2 * this._barPaddingWidth) / this._outerBarWidth);
-    const sampleCount = this._log.length;
-    this._samplesPerBar = Math.ceil(sampleCount / maxBars);
+    const maxBars = Math.floor((this.canvas.width - 2 * this.barPaddingWidth) / this.outerBarWidth);
+    const sampleCount = this.log.length;
+    this.samplesPerBar = Math.ceil(sampleCount / maxBars);
 
     let maxBarTime = 0;
     const barTimes = [];
     const barHeightByCategory = [];
     let heightByCategory: {[category: string]: number} = {};
     for (let i = 0, lastBarIndex = 0, lastBarTime = 0; i < sampleCount;) {
-      let categoryName = (this._logCategories[i] && this._logCategories[i].name) || 'misc';
-      const sampleIndex = this._log[i].commandIndex;
-      for (let row = 0; row < this._profiles.length; row++) {
-        const sample = this._profiles[row][sampleIndex];
+      let categoryName = (this.logCategories[i] && this.logCategories[i].name) || 'misc';
+      const sampleIndex = this.log[i].commandIndex;
+      for (let row = 0; row < this.profiles.length; row++) {
+        const sample = this.profiles[row][sampleIndex];
         lastBarTime += sample;
         heightByCategory[categoryName] = (heightByCategory[categoryName] || 0) + sample;
       }
       ++i;
-      if (i - lastBarIndex === this._samplesPerBar || i === sampleCount) {
+      if (i - lastBarIndex === this.samplesPerBar || i === sampleCount) {
         // Normalize by total number of samples accumulated.
-        const factor = this._profiles.length * (i - lastBarIndex);
+        const factor = this.profiles.length * (i - lastBarIndex);
         lastBarTime /= factor;
         for (categoryName in heightByCategory) {
           heightByCategory[categoryName] /= factor;
@@ -289,128 +287,128 @@ export class PaintProfilerView extends UI.Widget.HBox {
     }
 
     const paddingHeight = 4 * window.devicePixelRatio;
-    const scale = (this._canvas.height - paddingHeight - this._minBarHeight) / maxBarTime;
+    const scale = (this.canvas.height - paddingHeight - this.minBarHeight) / maxBarTime;
     for (let i = 0; i < barTimes.length; ++i) {
       for (const categoryName in barHeightByCategory[i]) {
-        barHeightByCategory[i][categoryName] *= (barTimes[i] * scale + this._minBarHeight) / barTimes[i];
+        barHeightByCategory[i][categoryName] *= (barTimes[i] * scale + this.minBarHeight) / barTimes[i];
       }
-      this._renderBar(i, barHeightByCategory[i]);
+      this.renderBar(i, barHeightByCategory[i]);
     }
   }
 
-  _renderBar(index: number, heightByCategory: {[x: string]: number}): void {
+  private renderBar(index: number, heightByCategory: {[x: string]: number}): void {
     const categories = PaintProfilerView.categories();
     let currentHeight = 0;
-    const x = this._barPaddingWidth + index * this._outerBarWidth;
+    const x = this.barPaddingWidth + index * this.outerBarWidth;
     for (const categoryName in categories) {
       if (!heightByCategory[categoryName]) {
         continue;
       }
       currentHeight += heightByCategory[categoryName];
-      const y = this._canvas.height - currentHeight;
-      this._context.fillStyle = categories[categoryName].color;
-      this._context.fillRect(x, y, this._innerBarWidth, heightByCategory[categoryName]);
+      const y = this.canvas.height - currentHeight;
+      this.context.fillStyle = categories[categoryName].color;
+      this.context.fillRect(x, y, this.innerBarWidth, heightByCategory[categoryName]);
     }
   }
 
-  _onWindowChanged(): void {
+  private onWindowChanged(): void {
     this.dispatchEventToListeners(Events.WindowChanged);
-    this._updatePieChart();
-    if (this._updateImageTimer) {
+    this.updatePieChart();
+    if (this.updateImageTimer) {
       return;
     }
-    this._updateImageTimer = window.setTimeout(this._updateImage.bind(this), 100);
+    this.updateImageTimer = window.setTimeout(this.updateImage.bind(this), 100);
   }
 
-  _updatePieChart(): void {
-    const {total, slices} = this._calculatePieChart();
-    this._populatePieChart(total, slices);
+  private updatePieChart(): void {
+    const {total, slices} = this.calculatePieChart();
+    this.populatePieChart(total, slices);
   }
 
-  _calculatePieChart(): {total: number, slices: Array<{value: number, color: string, title: string}>} {
+  private calculatePieChart(): {total: number, slices: Array<{value: number, color: string, title: string}>} {
     const window = this.selectionWindow();
-    if (!this._profiles || !this._profiles.length || !window) {
+    if (!this.profiles || !this.profiles.length || !window) {
       return {total: 0, slices: []};
     }
     let totalTime = 0;
     const timeByCategory: {[x: string]: number} = {};
     for (let i = window.left; i < window.right; ++i) {
-      const logEntry = this._log[i];
-      const category = PaintProfilerView._categoryForLogItem(logEntry);
+      const logEntry = this.log[i];
+      const category = PaintProfilerView.categoryForLogItem(logEntry);
       timeByCategory[category.color] = timeByCategory[category.color] || 0;
-      for (let j = 0; j < this._profiles.length; ++j) {
-        const time = this._profiles[j][logEntry.commandIndex];
+      for (let j = 0; j < this.profiles.length; ++j) {
+        const time = this.profiles[j][logEntry.commandIndex];
         totalTime += time;
         timeByCategory[category.color] += time;
       }
     }
     const slices: PerfUI.PieChart.Slice[] = [];
     for (const color in timeByCategory) {
-      slices.push({value: timeByCategory[color] / this._profiles.length, color, title: ''});
+      slices.push({value: timeByCategory[color] / this.profiles.length, color, title: ''});
     }
-    return {total: totalTime / this._profiles.length, slices};
+    return {total: totalTime / this.profiles.length, slices};
   }
 
-  _populatePieChart(total: number, slices: PerfUI.PieChart.Slice[]): void {
-    this._pieChart.data = {
+  private populatePieChart(total: number, slices: PerfUI.PieChart.Slice[]): void {
+    this.pieChart.data = {
       chartName: i18nString(UIStrings.profilingResults),
       size: 55,
-      formatter: this._formatPieChartTime.bind(this),
+      formatter: this.formatPieChartTime.bind(this),
       showLegend: false,
       total,
       slices,
     };
   }
 
-  _formatPieChartTime(value: number): string {
+  private formatPieChartTime(value: number): string {
     return i18n.TimeUtilities.millisToString(value * 1000, true);
   }
 
   selectionWindow(): {left: number, right: number}|null {
-    if (!this._log) {
+    if (!this.log) {
       return null;
     }
 
-    const screenLeft = (this._selectionWindow.windowLeft || 0) * this._canvas.width;
-    const screenRight = (this._selectionWindow.windowRight || 0) * this._canvas.width;
-    const barLeft = Math.floor(screenLeft / this._outerBarWidth);
-    const barRight = Math.floor((screenRight + this._innerBarWidth - this._barPaddingWidth / 2) / this._outerBarWidth);
-    const stepLeft = Platform.NumberUtilities.clamp(barLeft * this._samplesPerBar, 0, this._log.length - 1);
-    const stepRight = Platform.NumberUtilities.clamp(barRight * this._samplesPerBar, 0, this._log.length);
+    const screenLeft = (this.selectionWindowInternal.windowLeft || 0) * this.canvas.width;
+    const screenRight = (this.selectionWindowInternal.windowRight || 0) * this.canvas.width;
+    const barLeft = Math.floor(screenLeft / this.outerBarWidth);
+    const barRight = Math.floor((screenRight + this.innerBarWidth - this.barPaddingWidth / 2) / this.outerBarWidth);
+    const stepLeft = Platform.NumberUtilities.clamp(barLeft * this.samplesPerBar, 0, this.log.length - 1);
+    const stepRight = Platform.NumberUtilities.clamp(barRight * this.samplesPerBar, 0, this.log.length);
 
     return {left: stepLeft, right: stepRight};
   }
 
-  _updateImage(): void {
-    delete this._updateImageTimer;
+  private updateImage(): void {
+    delete this.updateImageTimer;
     let left;
     let right;
     const window = this.selectionWindow();
-    if (this._profiles && this._profiles.length && window) {
-      left = this._log[window.left].commandIndex;
-      right = this._log[window.right - 1].commandIndex;
+    if (this.profiles && this.profiles.length && window) {
+      left = this.log[window.left].commandIndex;
+      right = this.log[window.right - 1].commandIndex;
     }
-    const scale = this._pendingScale;
-    if (!this._snapshot) {
+    const scale = this.pendingScale;
+    if (!this.snapshot) {
       return;
     }
-    this._snapshot.replay(scale, left, right).then(image => {
+    this.snapshot.replay(scale, left, right).then(image => {
       if (!image) {
         return;
       }
-      this._scale = scale;
-      this._showImageCallback(image);
+      this.scale = scale;
+      this.showImageCallback(image);
     });
   }
 
-  _reset(): void {
-    if (this._snapshot) {
-      this._snapshot.release();
+  private reset(): void {
+    if (this.snapshot) {
+      this.snapshot.release();
     }
-    this._snapshot = null;
-    this._profiles = null;
-    this._selectionWindow.reset();
-    this._selectionWindow.setEnabled(false);
+    this.snapshot = null;
+    this.profiles = null;
+    this.selectionWindowInternal.reset();
+    this.selectionWindowInternal.setEnabled(false);
   }
   wasShown(): void {
     super.wasShown();
@@ -425,96 +423,96 @@ export enum Events {
 }
 
 export class PaintProfilerCommandLogView extends UI.ThrottledWidget.ThrottledWidget {
-  _treeOutline: UI.TreeOutline.TreeOutlineInShadow;
-  _log: SDK.PaintProfiler.PaintProfilerLogItem[];
-  _treeItemCache: Map<SDK.PaintProfiler.PaintProfilerLogItem, LogTreeElement>;
-  _selectionWindow?: {left: number, right: number}|null;
+  private readonly treeOutline: UI.TreeOutline.TreeOutlineInShadow;
+  private log: SDK.PaintProfiler.PaintProfilerLogItem[];
+  private readonly treeItemCache: Map<SDK.PaintProfiler.PaintProfilerLogItem, LogTreeElement>;
+  private selectionWindow?: {left: number, right: number}|null;
   constructor() {
     super();
     this.setMinimumSize(100, 25);
     this.element.classList.add('overflow-auto');
 
-    this._treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-    UI.ARIAUtils.setAccessibleName(this._treeOutline.contentElement, i18nString(UIStrings.commandLog));
-    this.element.appendChild(this._treeOutline.element);
-    this.setDefaultFocusedElement(this._treeOutline.contentElement);
+    this.treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
+    UI.ARIAUtils.setAccessibleName(this.treeOutline.contentElement, i18nString(UIStrings.commandLog));
+    this.element.appendChild(this.treeOutline.element);
+    this.setDefaultFocusedElement(this.treeOutline.contentElement);
 
-    this._log = [];
-    this._treeItemCache = new Map();
+    this.log = [];
+    this.treeItemCache = new Map();
   }
 
   setCommandLog(log: SDK.PaintProfiler.PaintProfilerLogItem[]): void {
-    this._log = log;
+    this.log = log;
 
-    this.updateWindow({left: 0, right: this._log.length});
+    this.updateWindow({left: 0, right: this.log.length});
   }
 
-  _appendLogItem(logItem: SDK.PaintProfiler.PaintProfilerLogItem): void {
-    let treeElement = this._treeItemCache.get(logItem);
+  private appendLogItem(logItem: SDK.PaintProfiler.PaintProfilerLogItem): void {
+    let treeElement = this.treeItemCache.get(logItem);
     if (!treeElement) {
       treeElement = new LogTreeElement(this, logItem);
-      this._treeItemCache.set(logItem, treeElement);
+      this.treeItemCache.set(logItem, treeElement);
     } else if (treeElement.parent) {
       return;
     }
-    this._treeOutline.appendChild(treeElement);
+    this.treeOutline.appendChild(treeElement);
   }
 
   updateWindow(selectionWindow: {left: number, right: number}|null): void {
-    this._selectionWindow = selectionWindow;
+    this.selectionWindow = selectionWindow;
     this.update();
   }
 
   doUpdate(): Promise<void> {
-    if (!this._selectionWindow || !this._log.length) {
-      this._treeOutline.removeChildren();
+    if (!this.selectionWindow || !this.log.length) {
+      this.treeOutline.removeChildren();
       return Promise.resolve();
     }
-    const root = this._treeOutline.rootElement();
+    const root = this.treeOutline.rootElement();
     for (;;) {
       const child = root.firstChild() as LogTreeElement;
-      if (!child || child._logItem.commandIndex >= this._selectionWindow.left) {
+      if (!child || child.logItem.commandIndex >= this.selectionWindow.left) {
         break;
       }
       root.removeChildAtIndex(0);
     }
     for (;;) {
       const child = root.lastChild() as LogTreeElement;
-      if (!child || child._logItem.commandIndex < this._selectionWindow.right) {
+      if (!child || child.logItem.commandIndex < this.selectionWindow.right) {
         break;
       }
       root.removeChildAtIndex(root.children().length - 1);
     }
-    for (let i = this._selectionWindow.left, right = this._selectionWindow.right; i < right; ++i) {
-      this._appendLogItem(this._log[i]);
+    for (let i = this.selectionWindow.left, right = this.selectionWindow.right; i < right; ++i) {
+      this.appendLogItem(this.log[i]);
     }
     return Promise.resolve();
   }
 }
 
 export class LogTreeElement extends UI.TreeOutline.TreeElement {
-  _logItem: SDK.PaintProfiler.PaintProfilerLogItem;
-  _ownerView: PaintProfilerCommandLogView;
-  _filled: boolean;
+  readonly logItem: SDK.PaintProfiler.PaintProfilerLogItem;
+  private readonly ownerView: PaintProfilerCommandLogView;
+  private readonly filled: boolean;
 
   constructor(ownerView: PaintProfilerCommandLogView, logItem: SDK.PaintProfiler.PaintProfilerLogItem) {
     super('', Boolean(logItem.params));
-    this._logItem = logItem;
-    this._ownerView = ownerView;
-    this._filled = false;
+    this.logItem = logItem;
+    this.ownerView = ownerView;
+    this.filled = false;
   }
 
   onattach(): void {
-    this._update();
+    this.update();
   }
 
   async onpopulate(): Promise<void> {
-    for (const param in this._logItem.params) {
-      LogPropertyTreeElement._appendLogPropertyItem(this, param, this._logItem.params[param]);
+    for (const param in this.logItem.params) {
+      LogPropertyTreeElement.appendLogPropertyItem(this, param, this.logItem.params[param]);
     }
   }
 
-  _paramToString(param: SDK.PaintProfiler.RawPaintProfilerLogItemParamValue, name: string): string {
+  private paramToString(param: SDK.PaintProfiler.RawPaintProfilerLogItemParamValue, name: string): string {
     if (typeof param !== 'object') {
       return typeof param === 'string' && param.length > 100 ? name : JSON.stringify(param);
     }
@@ -533,40 +531,40 @@ export class LogTreeElement extends UI.TreeOutline.TreeElement {
     return str;
   }
 
-  _paramsToString(params: SDK.PaintProfiler.RawPaintProfilerLogItemParams|null): string {
+  private paramsToString(params: SDK.PaintProfiler.RawPaintProfilerLogItemParams|null): string {
     let str = '';
     for (const key in params) {
       if (str) {
         str += ', ';
       }
-      str += this._paramToString(params[key], key);
+      str += this.paramToString(params[key], key);
     }
     return str;
   }
 
-  _update(): void {
+  private update(): void {
     const title = document.createDocumentFragment();
-    UI.UIUtils.createTextChild(title, this._logItem.method + '(' + this._paramsToString(this._logItem.params) + ')');
+    UI.UIUtils.createTextChild(title, this.logItem.method + '(' + this.paramsToString(this.logItem.params) + ')');
     this.title = title;
   }
 }
 
 export class LogPropertyTreeElement extends UI.TreeOutline.TreeElement {
-  _property: {name: string, value: SDK.PaintProfiler.RawPaintProfilerLogItemParamValue};
+  private property: {name: string, value: SDK.PaintProfiler.RawPaintProfilerLogItemParamValue};
 
   constructor(property: {name: string, value: SDK.PaintProfiler.RawPaintProfilerLogItemParamValue}) {
     super();
-    this._property = property;
+    this.property = property;
   }
 
-  static _appendLogPropertyItem(
+  static appendLogPropertyItem(
       element: UI.TreeOutline.TreeElement, name: string,
       value: SDK.PaintProfiler.RawPaintProfilerLogItemParamValue): void {
     const treeElement = new LogPropertyTreeElement({name: name, value: value});
     element.appendChild(treeElement);
     if (value && typeof value === 'object') {
       for (const property in value) {
-        LogPropertyTreeElement._appendLogPropertyItem(treeElement, property, value[property]);
+        LogPropertyTreeElement.appendLogPropertyItem(treeElement, property, value[property]);
       }
     }
   }
@@ -574,13 +572,13 @@ export class LogPropertyTreeElement extends UI.TreeOutline.TreeElement {
   onattach(): void {
     const title = document.createDocumentFragment();
     const nameElement = title.createChild('span', 'name');
-    nameElement.textContent = this._property.name;
+    nameElement.textContent = this.property.name;
     const separatorElement = title.createChild('span', 'separator');
     separatorElement.textContent = ': ';
-    if (this._property.value === null || typeof this._property.value !== 'object') {
+    if (this.property.value === null || typeof this.property.value !== 'object') {
       const valueElement = title.createChild('span', 'value');
-      valueElement.textContent = JSON.stringify(this._property.value);
-      valueElement.classList.add('cm-js-' + (this._property.value === null ? 'null' : typeof this._property.value));
+      valueElement.textContent = JSON.stringify(this.property.value);
+      valueElement.classList.add('cm-js-' + (this.property.value === null ? 'null' : typeof this.property.value));
     }
     this.title = title;
   }

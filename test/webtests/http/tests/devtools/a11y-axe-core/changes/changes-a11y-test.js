@@ -16,8 +16,8 @@
   TestRunner.addResult('Showing the Changes drawer.');
   await UI.viewManager.showView('changes.changes');
   const changesWidget = await UI.viewManager.view('changes.changes').widget();
-  changesWidget._selectedUISourceCode = uiSourceCodeMock;
-  changesWidget._renderDiffRows(diff);
+  changesWidget.selectedUISourceCode = uiSourceCodeMock;
+  changesWidget.renderDiffRows(diff);
 
   TestRunner.addResult('Running aXe on the Changes drawer.');
   await AxeCoreTestRunner.runValidation(changesWidget.contentElement);

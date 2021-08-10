@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -24,29 +23,29 @@ const str_ = i18n.i18n.registerUIStrings('panels/changes/ChangesSidebar.ts', UIS
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ChangesSidebar extends UI.Widget.Widget {
-  _treeoutline: UI.TreeOutline.TreeOutlineInShadow;
-  _treeElements: Map<Workspace.UISourceCode.UISourceCode, UISourceCodeTreeElement>;
-  _workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
+  private treeoutline: UI.TreeOutline.TreeOutlineInShadow;
+  private readonly treeElements: Map<Workspace.UISourceCode.UISourceCode, UISourceCodeTreeElement>;
+  private readonly workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
   constructor(workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl) {
     super();
-    this._treeoutline = new UI.TreeOutline.TreeOutlineInShadow();
-    this._treeoutline.setFocusable(false);
+    this.treeoutline = new UI.TreeOutline.TreeOutlineInShadow();
+    this.treeoutline.setFocusable(false);
 
-    this._treeoutline.setComparator((a, b) => Platform.StringUtilities.compare(a.titleAsText(), b.titleAsText()));
-    this._treeoutline.addEventListener(UI.TreeOutline.Events.ElementSelected, this._selectionChanged, this);
-    UI.ARIAUtils.markAsTablist(this._treeoutline.contentElement);
+    this.treeoutline.setComparator((a, b) => Platform.StringUtilities.compare(a.titleAsText(), b.titleAsText()));
+    this.treeoutline.addEventListener(UI.TreeOutline.Events.ElementSelected, this.selectionChanged, this);
+    UI.ARIAUtils.markAsTablist(this.treeoutline.contentElement);
 
-    this.element.appendChild(this._treeoutline.element);
+    this.element.appendChild(this.treeoutline.element);
 
-    this._treeElements = new Map();
-    this._workspaceDiff = workspaceDiff;
-    this._workspaceDiff.modifiedUISourceCodes().forEach(this._addUISourceCode.bind(this));
-    this._workspaceDiff.addEventListener(
-        WorkspaceDiff.WorkspaceDiff.Events.ModifiedStatusChanged, this._uiSourceCodeMofiedStatusChanged, this);
+    this.treeElements = new Map();
+    this.workspaceDiff = workspaceDiff;
+    this.workspaceDiff.modifiedUISourceCodes().forEach(this.addUISourceCode.bind(this));
+    this.workspaceDiff.addEventListener(
+        WorkspaceDiff.WorkspaceDiff.Events.ModifiedStatusChanged, this.uiSourceCodeMofiedStatusChanged, this);
   }
 
   selectUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode, omitFocus?: boolean|undefined): void {
-    const treeElement = this._treeElements.get(uiSourceCode);
+    const treeElement = this.treeElements.get(uiSourceCode);
     if (!treeElement) {
       return;
     }
@@ -55,54 +54,54 @@ export class ChangesSidebar extends UI.Widget.Widget {
 
   selectedUISourceCode(): Workspace.UISourceCode.UISourceCode|null {
     // @ts-ignore uiSourceCode seems to be dynamically attached.
-    return this._treeoutline.selectedTreeElement ? this._treeoutline.selectedTreeElement.uiSourceCode : null;
+    return this.treeoutline.selectedTreeElement ? this.treeoutline.selectedTreeElement.uiSourceCode : null;
   }
 
-  _selectionChanged(): void {
+  private selectionChanged(): void {
     this.dispatchEventToListeners(Events.SelectedUISourceCodeChanged);
   }
 
-  _uiSourceCodeMofiedStatusChanged(event: Common.EventTarget.EventTargetEvent): void {
+  private uiSourceCodeMofiedStatusChanged(event: Common.EventTarget.EventTargetEvent): void {
     if (event.data.isModified) {
-      this._addUISourceCode(event.data.uiSourceCode);
+      this.addUISourceCode(event.data.uiSourceCode);
     } else {
-      this._removeUISourceCode(event.data.uiSourceCode);
+      this.removeUISourceCode(event.data.uiSourceCode);
     }
   }
 
-  _removeUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
-    const treeElement = this._treeElements.get(uiSourceCode);
-    this._treeElements.delete(uiSourceCode);
-    if (this._treeoutline.selectedTreeElement === treeElement) {
+  private removeUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
+    const treeElement = this.treeElements.get(uiSourceCode);
+    this.treeElements.delete(uiSourceCode);
+    if (this.treeoutline.selectedTreeElement === treeElement) {
       const nextElementToSelect = treeElement.previousSibling || treeElement.nextSibling;
       if (nextElementToSelect) {
         nextElementToSelect.select(true);
       } else {
         treeElement.deselect();
-        this._selectionChanged();
+        this.selectionChanged();
       }
     }
     if (treeElement) {
-      this._treeoutline.removeChild(treeElement);
+      this.treeoutline.removeChild(treeElement);
       treeElement.dispose();
     }
-    if (this._treeoutline.rootElement().childCount() === 0) {
-      this._treeoutline.setFocusable(false);
+    if (this.treeoutline.rootElement().childCount() === 0) {
+      this.treeoutline.setFocusable(false);
     }
   }
 
-  _addUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
+  private addUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     const treeElement = new UISourceCodeTreeElement(uiSourceCode);
-    this._treeElements.set(uiSourceCode, treeElement);
-    this._treeoutline.setFocusable(true);
-    this._treeoutline.appendChild(treeElement);
-    if (!this._treeoutline.selectedTreeElement) {
+    this.treeElements.set(uiSourceCode, treeElement);
+    this.treeoutline.setFocusable(true);
+    this.treeoutline.appendChild(treeElement);
+    if (!this.treeoutline.selectedTreeElement) {
       treeElement.select(true);
     }
   }
   wasShown(): void {
     super.wasShown();
-    this._treeoutline.registerCSSFiles([changesSidebarStyles]);
+    this.treeoutline.registerCSSFiles([changesSidebarStyles]);
   }
 }
 
@@ -112,7 +111,7 @@ export const enum Events {
 
 export class UISourceCodeTreeElement extends UI.TreeOutline.TreeElement {
   uiSourceCode: Workspace.UISourceCode.UISourceCode;
-  _eventListeners: Common.EventTarget.EventDescriptor[];
+  private readonly eventListeners: Common.EventTarget.EventDescriptor[];
   constructor(uiSourceCode: Workspace.UISourceCode.UISourceCode) {
     super();
     this.uiSourceCode = uiSourceCode;
@@ -126,16 +125,16 @@ export class UISourceCodeTreeElement extends UI.TreeOutline.TreeElement {
     const defaultIcon = UI.Icon.Icon.create(iconType, 'icon');
     this.setLeadingIcons([defaultIcon]);
 
-    this._eventListeners = [
-      uiSourceCode.addEventListener(Workspace.UISourceCode.Events.TitleChanged, this._updateTitle, this),
-      uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyChanged, this._updateTitle, this),
-      uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted, this._updateTitle, this),
+    this.eventListeners = [
+      uiSourceCode.addEventListener(Workspace.UISourceCode.Events.TitleChanged, this.updateTitle, this),
+      uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyChanged, this.updateTitle, this),
+      uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted, this.updateTitle, this),
     ];
 
-    this._updateTitle();
+    this.updateTitle();
   }
 
-  _updateTitle(): void {
+  private updateTitle(): void {
     let titleText: string = this.uiSourceCode.displayName();
     if (this.uiSourceCode.isDirty()) {
       titleText = '*' + titleText;
@@ -150,6 +149,6 @@ export class UISourceCodeTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   dispose(): void {
-    Common.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.removeEventListeners(this.eventListeners);
   }
 }

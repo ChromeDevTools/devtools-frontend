@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Diff from '../../third_party/diff/diff.js';
@@ -57,15 +56,15 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let changesViewInstance: ChangesView;
 
 export class ChangesView extends UI.Widget.VBox {
-  _emptyWidget: UI.EmptyWidget.EmptyWidget;
-  _workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
-  _changesSidebar: ChangesSidebar;
-  _selectedUISourceCode: Workspace.UISourceCode.UISourceCode|null;
-  _diffRows: Row[];
-  _maxLineDigits: number;
-  _editor: ChangesTextEditor;
-  _toolbar: UI.Toolbar.Toolbar;
-  _diffStats: UI.Toolbar.ToolbarText;
+  private emptyWidget: UI.EmptyWidget.EmptyWidget;
+  private readonly workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
+  readonly changesSidebar: ChangesSidebar;
+  private selectedUISourceCode: Workspace.UISourceCode.UISourceCode|null;
+  private diffRows: Row[];
+  private maxLineDigits: number;
+  private readonly editor: ChangesTextEditor;
+  private readonly toolbar: UI.Toolbar.Toolbar;
+  private readonly diffStats: UI.Toolbar.ToolbarText;
 
   private constructor() {
     super(true);
@@ -75,21 +74,21 @@ export class ChangesView extends UI.Widget.VBox {
     splitWidget.setMainWidget(mainWidget);
     splitWidget.show(this.contentElement);
 
-    this._emptyWidget = new UI.EmptyWidget.EmptyWidget('');
-    this._emptyWidget.show(mainWidget.element);
+    this.emptyWidget = new UI.EmptyWidget.EmptyWidget('');
+    this.emptyWidget.show(mainWidget.element);
 
-    this._workspaceDiff = WorkspaceDiff.WorkspaceDiff.workspaceDiff();
-    this._changesSidebar = new ChangesSidebar(this._workspaceDiff);
-    this._changesSidebar.addEventListener(Events.SelectedUISourceCodeChanged, this._selectedUISourceCodeChanged, this);
-    splitWidget.setSidebarWidget(this._changesSidebar);
+    this.workspaceDiff = WorkspaceDiff.WorkspaceDiff.workspaceDiff();
+    this.changesSidebar = new ChangesSidebar(this.workspaceDiff);
+    this.changesSidebar.addEventListener(Events.SelectedUISourceCodeChanged, this.selectedUISourceCodeChanged, this);
+    splitWidget.setSidebarWidget(this.changesSidebar);
 
-    this._selectedUISourceCode = null;
+    this.selectedUISourceCode = null;
 
-    this._diffRows = [];
+    this.diffRows = [];
 
-    this._maxLineDigits = 1;
+    this.maxLineDigits = 1;
 
-    this._editor = new ChangesTextEditor({
+    this.editor = new ChangesTextEditor({
       bracketMatchingSetting: undefined,
       devtoolsAccessibleName: i18nString(UIStrings.changesDiffViewer),
       lineNumbers: true,
@@ -102,25 +101,25 @@ export class ChangesView extends UI.Widget.VBox {
       lineWiseCopyCut: undefined,
       inputStyle: undefined,
     });
-    this._editor.setReadOnly(true);
+    this.editor.setReadOnly(true);
     const editorContainer = mainWidget.element.createChild('div', 'editor-container');
     UI.ARIAUtils.markAsTabpanel(editorContainer);
-    this._editor.show(editorContainer);
-    this._editor.hideWidget();
+    this.editor.show(editorContainer);
+    this.editor.hideWidget();
 
-    self.onInvokeElement(this._editor.element, this._click.bind(this));
+    self.onInvokeElement(this.editor.element, this.click.bind(this));
 
-    this._toolbar = new UI.Toolbar.Toolbar('changes-toolbar', mainWidget.element);
+    this.toolbar = new UI.Toolbar.Toolbar('changes-toolbar', mainWidget.element);
     const revertButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.revertAllChangesToCurrentFile), 'largeicon-undo');
-    revertButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._revert.bind(this));
-    this._toolbar.appendToolbarItem(revertButton);
-    this._diffStats = new UI.Toolbar.ToolbarText('');
-    this._toolbar.appendToolbarItem(this._diffStats);
-    this._toolbar.setEnabled(false);
+    revertButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.revert.bind(this));
+    this.toolbar.appendToolbarItem(revertButton);
+    this.diffStats = new UI.Toolbar.ToolbarText('');
+    this.toolbar.appendToolbarItem(this.diffStats);
+    this.toolbar.setEnabled(false);
 
-    this._hideDiff(i18nString(UIStrings.noChanges));
-    this._selectedUISourceCodeChanged();
+    this.hideDiff(i18nString(UIStrings.noChanges));
+    this.selectedUISourceCodeChanged();
   }
 
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): ChangesView {
@@ -132,85 +131,85 @@ export class ChangesView extends UI.Widget.VBox {
     return changesViewInstance;
   }
 
-  _selectedUISourceCodeChanged(): void {
-    this._revealUISourceCode(this._changesSidebar.selectedUISourceCode());
+  private selectedUISourceCodeChanged(): void {
+    this.revealUISourceCode(this.changesSidebar.selectedUISourceCode());
   }
 
-  _revert(): void {
-    const uiSourceCode = this._selectedUISourceCode;
+  private revert(): void {
+    const uiSourceCode = this.selectedUISourceCode;
     if (!uiSourceCode) {
       return;
     }
-    this._workspaceDiff.revertToOriginal(uiSourceCode);
+    this.workspaceDiff.revertToOriginal(uiSourceCode);
   }
 
-  _click(event: Event): void {
-    const selection = this._editor.selection();
-    if (!selection.isEmpty() || !this._selectedUISourceCode) {
+  private click(event: Event): void {
+    const selection = this.editor.selection();
+    if (!selection.isEmpty() || !this.selectedUISourceCode) {
       return;
     }
-    const row = this._diffRows[selection.startLine];
+    const row = this.diffRows[selection.startLine];
     Common.Revealer.reveal(
-        this._selectedUISourceCode.uiLocation(row.currentLineNumber - 1, selection.startColumn), false);
+        this.selectedUISourceCode.uiLocation(row.currentLineNumber - 1, selection.startColumn), false);
     event.consume(true);
   }
 
-  _revealUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode|null): void {
-    if (this._selectedUISourceCode === uiSourceCode) {
+  private revealUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode|null): void {
+    if (this.selectedUISourceCode === uiSourceCode) {
       return;
     }
 
-    if (this._selectedUISourceCode) {
-      this._workspaceDiff.unsubscribeFromDiffChange(this._selectedUISourceCode, this._refreshDiff, this);
+    if (this.selectedUISourceCode) {
+      this.workspaceDiff.unsubscribeFromDiffChange(this.selectedUISourceCode, this.refreshDiff, this);
     }
     if (uiSourceCode && this.isShowing()) {
-      this._workspaceDiff.subscribeToDiffChange(uiSourceCode, this._refreshDiff, this);
+      this.workspaceDiff.subscribeToDiffChange(uiSourceCode, this.refreshDiff, this);
     }
 
-    this._selectedUISourceCode = uiSourceCode;
-    this._refreshDiff();
+    this.selectedUISourceCode = uiSourceCode;
+    this.refreshDiff();
   }
 
   wasShown(): void {
-    this._refreshDiff();
+    this.refreshDiff();
     this.registerCSSFiles([changesViewStyles]);
   }
 
-  _refreshDiff(): void {
+  private refreshDiff(): void {
     if (!this.isShowing()) {
       return;
     }
 
-    if (!this._selectedUISourceCode) {
-      this._renderDiffRows(null);
+    if (!this.selectedUISourceCode) {
+      this.renderDiffRows(null);
       return;
     }
-    const uiSourceCode = this._selectedUISourceCode;
+    const uiSourceCode = this.selectedUISourceCode;
     if (!uiSourceCode.contentType().isTextType()) {
-      this._hideDiff(i18nString(UIStrings.binaryData));
+      this.hideDiff(i18nString(UIStrings.binaryData));
       return;
     }
-    this._workspaceDiff.requestDiff(uiSourceCode).then((diff: Diff.Diff.DiffArray|null): void => {
-      if (this._selectedUISourceCode !== uiSourceCode) {
+    this.workspaceDiff.requestDiff(uiSourceCode).then((diff: Diff.Diff.DiffArray|null): void => {
+      if (this.selectedUISourceCode !== uiSourceCode) {
         return;
       }
-      this._renderDiffRows(diff);
+      this.renderDiffRows(diff);
     });
   }
 
-  _hideDiff(message: string): void {
-    this._diffStats.setText('');
-    this._toolbar.setEnabled(false);
-    this._editor.hideWidget();
-    this._emptyWidget.text = message;
-    this._emptyWidget.showWidget();
+  private hideDiff(message: string): void {
+    this.diffStats.setText('');
+    this.toolbar.setEnabled(false);
+    this.editor.hideWidget();
+    this.emptyWidget.text = message;
+    this.emptyWidget.showWidget();
   }
 
-  _renderDiffRows(diff: Diff.Diff.DiffArray|null): void {
-    this._diffRows = [];
+  private renderDiffRows(diff: Diff.Diff.DiffArray|null): void {
+    this.diffRows = [];
 
     if (!diff || (diff.length === 1 && diff[0][0] === Diff.Diff.Operation.Equal)) {
-      this._hideDiff(i18nString(UIStrings.noChanges));
+      this.hideDiff(i18nString(UIStrings.noChanges));
       return;
     }
 
@@ -227,13 +226,13 @@ export class ChangesView extends UI.Widget.VBox {
       const token = diff[i];
       switch (token[0]) {
         case Diff.Diff.Operation.Equal:
-          this._diffRows.push(...createEqualRows(token[1], i === 0, i === diff.length - 1));
+          this.diffRows.push(...createEqualRows(token[1], i === 0, i === diff.length - 1));
           originalLines.push(...token[1]);
           currentLines.push(...token[1]);
           break;
         case Diff.Diff.Operation.Insert:
           for (const line of token[1]) {
-            this._diffRows.push(createRow(line, RowType.Addition));
+            this.diffRows.push(createRow(line, RowType.Addition));
           }
           insertions += token[1].length;
           currentLines.push(...token[1]);
@@ -243,46 +242,45 @@ export class ChangesView extends UI.Widget.VBox {
           originalLines.push(...token[1]);
           if (diff[i + 1] && diff[i + 1][0] === Diff.Diff.Operation.Insert) {
             i++;
-            this._diffRows.push(...createModifyRows(token[1].join('\n'), diff[i][1].join('\n')));
+            this.diffRows.push(...createModifyRows(token[1].join('\n'), diff[i][1].join('\n')));
             insertions += diff[i][1].length;
             currentLines.push(...diff[i][1]);
           } else {
             for (const line of token[1]) {
-              this._diffRows.push(createRow(line, RowType.Deletion));
+              this.diffRows.push(createRow(line, RowType.Deletion));
             }
           }
           break;
       }
     }
 
-    this._maxLineDigits = Math.ceil(Math.log10(Math.max(currentLineNumber, baselineLineNumber)));
+    this.maxLineDigits = Math.ceil(Math.log10(Math.max(currentLineNumber, baselineLineNumber)));
 
     const insertionText = i18nString(UIStrings.sInsertions, {n: insertions});
     const deletionText = i18nString(UIStrings.sDeletions, {n: deletions});
 
-    this._diffStats.setText(`${insertionText}, ${deletionText}`);
-    this._toolbar.setEnabled(true);
-    this._emptyWidget.hideWidget();
+    this.diffStats.setText(`${insertionText}, ${deletionText}`);
+    this.toolbar.setEnabled(true);
+    this.emptyWidget.hideWidget();
 
-    this._editor.operation((): void => {
-      this._editor.showWidget();
-      this._editor.setHighlightMode({
+    this.editor.operation((): void => {
+      this.editor.showWidget();
+      this.editor.setHighlightMode({
         name: 'devtools-diff',
-        diffRows: this._diffRows,
+        diffRows: this.diffRows,
         mimeType: /** @type {!Workspace.UISourceCode.UISourceCode} */ (
-                      this._selectedUISourceCode as Workspace.UISourceCode.UISourceCode)
+                      this.selectedUISourceCode as Workspace.UISourceCode.UISourceCode)
                       .mimeType(),
         baselineLines: originalLines,
         currentLines: currentLines,
       });
-      this._editor.setText(
-          this._diffRows
-              .map(
-                  (row: Row): string =>
-                      row.tokens.map((t: {text: string, className: string}): string => t.text).join(''))
-              .join('\n'));
-      this._editor.setLineNumberFormatter(this._lineFormatter.bind(this));
-      this._editor.updateDiffGutter(this._diffRows);
+      this.editor.setText(this.diffRows
+                              .map(
+                                  (row: Row): string =>
+                                      row.tokens.map((t: {text: string, className: string}): string => t.text).join(''))
+                              .join('\n'));
+      this.editor.setLineNumberFormatter(this.lineFormatter.bind(this));
+      this.editor.updateDiffGutter(this.diffRows);
     });
 
     function createEqualRows(lines: string[], atStart: boolean, atEnd: boolean): Row[] {
@@ -361,8 +359,8 @@ export class ChangesView extends UI.Widget.VBox {
     }
   }
 
-  _lineFormatter(lineNumber: number): string {
-    const row = this._diffRows[lineNumber - 1];
+  private lineFormatter(lineNumber: number): string {
+    const row = this.diffRows[lineNumber - 1];
     let showBaseNumber = row.type === RowType.Deletion;
     let showCurrentNumber = row.type === RowType.Addition;
     if (row.type === RowType.Equal) {
@@ -370,9 +368,9 @@ export class ChangesView extends UI.Widget.VBox {
       showCurrentNumber = true;
     }
     const baseText = showBaseNumber ? String(row.baselineLineNumber) : '';
-    const base = baseText.padStart(this._maxLineDigits, '\xA0');
+    const base = baseText.padStart(this.maxLineDigits, '\xA0');
     const currentText = showCurrentNumber ? String(row.currentLineNumber) : '';
-    const current = currentText.padStart(this._maxLineDigits, '\xA0');
+    const current = currentText.padStart(this.maxLineDigits, '\xA0');
     return base + '\xA0' + current;
   }
 }
@@ -400,7 +398,7 @@ export class DiffUILocationRevealer implements Common.Revealer.Revealer {
       throw new Error('Internal error: not a diff ui location');
     }
     await UI.ViewManager.ViewManager.instance().showView('changes.changes');
-    ChangesView.instance()._changesSidebar.selectUISourceCode(diffUILocation.uiSourceCode, omitFocus);
+    ChangesView.instance().changesSidebar.selectUISourceCode(diffUILocation.uiSourceCode, omitFocus);
   }
 }
 

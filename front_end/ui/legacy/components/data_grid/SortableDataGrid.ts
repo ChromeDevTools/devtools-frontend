@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import * as Platform from '../../../../core/platform/platform.js';
@@ -12,10 +11,10 @@ import {Events} from './DataGrid.js';
 import {ViewportDataGrid, ViewportDataGridNode} from './ViewportDataGrid.js';
 
 export class SortableDataGrid<T> extends ViewportDataGrid<SortableDataGridNode<T>> {
-  _sortingFunction: <T>(a: SortableDataGridNode<T>, b: SortableDataGridNode<T>) => number;
+  sortingFunction: <T>(a: SortableDataGridNode<T>, b: SortableDataGridNode<T>) => number;
   constructor(dataGridParameters: Parameters) {
     super(dataGridParameters);
-    this._sortingFunction = SortableDataGrid.TrivialComparator;
+    this.sortingFunction = SortableDataGrid.TrivialComparator;
     this.setRootNode((new SortableDataGridNode() as SortableDataGridNode<T>));
   }
 
@@ -112,9 +111,9 @@ export class SortableDataGrid<T> extends ViewportDataGrid<SortableDataGridNode<T
 
   sortNodes(comparator: (arg0: SortableDataGridNode<T>, arg1: SortableDataGridNode<T>) => number, reverseMode: boolean):
       void {
-    this._sortingFunction = SortableDataGrid.Comparator.bind(null, comparator, reverseMode);
+    this.sortingFunction = SortableDataGrid.Comparator.bind(null, comparator, reverseMode);
     this.rootNode().recalculateSiblings(0);
-    (this.rootNode() as SortableDataGridNode<T>)._sortChildren();
+    (this.rootNode() as SortableDataGridNode<T>).sortChildren();
     this.scheduleUpdateStructure();
   }
 }
@@ -130,23 +129,23 @@ export class SortableDataGridNode<T> extends ViewportDataGridNode<SortableDataGr
       this.insertChild(
           node,
           Platform.ArrayUtilities.upperBound(
-              (this.children as SortableDataGridNode<T>[]), node, dataGrid._sortingFunction));
+              (this.children as SortableDataGridNode<T>[]), node, dataGrid.sortingFunction));
     }
   }
 
-  _sortChildren(): void {
+  sortChildren(): void {
     const dataGrid = (this.dataGrid as SortableDataGrid<T>| null);
     if (!dataGrid) {
       return;
     }
-    (this.children as SortableDataGridNode<T>[]).sort(dataGrid._sortingFunction);
+    (this.children as SortableDataGridNode<T>[]).sort(dataGrid.sortingFunction);
     for (let i = 0; i < this.children.length; ++i) {
       const child = (this.children[i] as SortableDataGridNode<T>);
       child.recalculateSiblings(i);
     }
     for (let i = 0; i < this.children.length; ++i) {
       const child = (this.children[i] as SortableDataGridNode<T>);
-      child._sortChildren();
+      child.sortChildren();
     }
   }
 }

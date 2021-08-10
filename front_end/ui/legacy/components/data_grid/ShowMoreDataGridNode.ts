@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as i18n from '../../../../core/i18n/i18n.js';
 
 import {DataGridNode} from './DataGrid.js';
@@ -60,59 +58,59 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 type ShowMoreDataGridNodeCallback = (arg0: number, arg1: number) => Promise<void>;
 export class ShowMoreDataGridNode extends DataGridNode<ShowMoreDataGridNode> {
-  _callback: ShowMoreDataGridNodeCallback;
-  _startPosition: number;
-  _endPosition: number;
-  _chunkSize: number;
+  private readonly callback: ShowMoreDataGridNodeCallback;
+  private startPosition: number;
+  private endPosition: number;
+  private readonly chunkSize: number;
   showNext: HTMLButtonElement;
   showAll: HTMLButtonElement;
   showLast: HTMLButtonElement;
   selectable: boolean;
-  _hasCells?: boolean;
+  private hasCells?: boolean;
 
   constructor(callback: ShowMoreDataGridNodeCallback, startPosition: number, endPosition: number, chunkSize: number) {
     super({summaryRow: true}, false);
-    this._callback = callback;
-    this._startPosition = startPosition;
-    this._endPosition = endPosition;
-    this._chunkSize = chunkSize;
+    this.callback = callback;
+    this.startPosition = startPosition;
+    this.endPosition = endPosition;
+    this.chunkSize = chunkSize;
 
     this.showNext = document.createElement('button');
     this.showNext.classList.add('text-button');
     this.showNext.type = 'button';
-    this.showNext.addEventListener('click', this._showNextChunk.bind(this), false);
-    this.showNext.textContent = i18nString(UIStrings.showDBefore, {PH1: this._chunkSize});
+    this.showNext.addEventListener('click', this.showNextChunk.bind(this), false);
+    this.showNext.textContent = i18nString(UIStrings.showDBefore, {PH1: this.chunkSize});
 
     this.showAll = document.createElement('button');
     this.showAll.classList.add('text-button');
     this.showAll.type = 'button';
-    this.showAll.addEventListener('click', this._showAll.bind(this), false);
+    this.showAll.addEventListener('click', this.showAllInternal.bind(this), false);
 
     this.showLast = document.createElement('button');
     this.showLast.classList.add('text-button');
     this.showLast.type = 'button';
-    this.showLast.addEventListener('click', this._showLastChunk.bind(this), false);
-    this.showLast.textContent = i18nString(UIStrings.showDAfter, {PH1: this._chunkSize});
+    this.showLast.addEventListener('click', this.showLastChunk.bind(this), false);
+    this.showLast.textContent = i18nString(UIStrings.showDAfter, {PH1: this.chunkSize});
 
-    this._updateLabels();
+    this.updateLabels();
     this.selectable = false;
   }
 
-  _showNextChunk(): void {
-    this._callback(this._startPosition, this._startPosition + this._chunkSize);
+  private showNextChunk(): void {
+    this.callback(this.startPosition, this.startPosition + this.chunkSize);
   }
 
-  _showAll(): void {
-    this._callback(this._startPosition, this._endPosition);
+  private showAllInternal(): void {
+    this.callback(this.startPosition, this.endPosition);
   }
 
-  _showLastChunk(): void {
-    this._callback(this._endPosition - this._chunkSize, this._endPosition);
+  private showLastChunk(): void {
+    this.callback(this.endPosition - this.chunkSize, this.endPosition);
   }
 
-  _updateLabels(): void {
-    const totalSize = this._endPosition - this._startPosition;
-    if (totalSize > this._chunkSize) {
+  private updateLabels(): void {
+    const totalSize = this.endPosition - this.startPosition;
+    if (totalSize > this.chunkSize) {
       this.showNext.classList.remove('hidden');
       this.showLast.classList.remove('hidden');
     } else {
@@ -123,15 +121,15 @@ export class ShowMoreDataGridNode extends DataGridNode<ShowMoreDataGridNode> {
   }
 
   createCells(element: Element): void {
-    this._hasCells = false;
+    this.hasCells = false;
     super.createCells(element);
   }
 
   createCell(columnIdentifier: string): HTMLElement {
     const cell = this.createTD(columnIdentifier);
     cell.classList.add('show-more');
-    if (!this._hasCells) {
-      this._hasCells = true;
+    if (!this.hasCells) {
+      this.hasCells = true;
       if (this.depth && this.dataGrid) {
         cell.style.setProperty('padding-left', (this.depth * this.dataGrid.indentWidth) + 'px');
       }
@@ -143,13 +141,13 @@ export class ShowMoreDataGridNode extends DataGridNode<ShowMoreDataGridNode> {
   }
 
   setStartPosition(from: number): void {
-    this._startPosition = from;
-    this._updateLabels();
+    this.startPosition = from;
+    this.updateLabels();
   }
 
   setEndPosition(to: number): void {
-    this._endPosition = to;
-    this._updateLabels();
+    this.endPosition = to;
+    this.updateLabels();
   }
 
   nodeSelfHeight(): number {

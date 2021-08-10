@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
@@ -44,14 +42,14 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export class SecurityModel extends SDK.SDKModel.SDKModel {
-  _dispatcher: SecurityDispatcher;
-  _securityAgent: ProtocolProxyApi.SecurityApi;
+  private readonly dispatcher: SecurityDispatcher;
+  private readonly securityAgent: ProtocolProxyApi.SecurityApi;
   constructor(target: SDK.Target.Target) {
     super(target);
-    this._dispatcher = new SecurityDispatcher(this);
-    this._securityAgent = target.securityAgent();
-    target.registerSecurityDispatcher(this._dispatcher);
-    this._securityAgent.invoke_enable();
+    this.dispatcher = new SecurityDispatcher(this);
+    this.securityAgent = target.securityAgent();
+    target.registerSecurityDispatcher(this.dispatcher);
+    this.securityAgent.invoke_enable();
   }
 
   resourceTreeModel(): SDK.ResourceTreeModel.ResourceTreeModel {
@@ -235,21 +233,21 @@ export class SecurityStyleExplanation {
 }
 
 class SecurityDispatcher implements ProtocolProxyApi.SecurityDispatcher {
-  _model: SecurityModel;
+  private readonly model: SecurityModel;
   constructor(model: SecurityModel) {
-    this._model = model;
+    this.model = model;
   }
 
   securityStateChanged({securityState, explanations, summary}: Protocol.Security.SecurityStateChangedEvent): void {
     const pageSecurityState = new PageSecurityState(securityState, explanations, summary || null);
-    this._model.dispatchEventToListeners(Events.SecurityStateChanged, pageSecurityState);
+    this.model.dispatchEventToListeners(Events.SecurityStateChanged, pageSecurityState);
   }
 
   visibleSecurityStateChanged({visibleSecurityState}: Protocol.Security.VisibleSecurityStateChangedEvent): void {
     const pageVisibleSecurityState = new PageVisibleSecurityState(
         visibleSecurityState.securityState, visibleSecurityState.certificateSecurityState || null,
         visibleSecurityState.safetyTipInfo || null, visibleSecurityState.securityStateIssueIds);
-    this._model.dispatchEventToListeners(Events.VisibleSecurityStateChanged, pageVisibleSecurityState);
+    this.model.dispatchEventToListeners(Events.VisibleSecurityStateChanged, pageVisibleSecurityState);
   }
 
   certificateError(_event: Protocol.Security.CertificateErrorEvent): void {

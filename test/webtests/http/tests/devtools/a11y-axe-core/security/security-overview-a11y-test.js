@@ -17,7 +17,7 @@
   request.mixedContentType = 'blockable';
   SecurityTestRunner.dispatchRequestFinished(request);
   const securityPanel = Security.SecurityPanel.instance();
-  await AxeCoreTestRunner.runValidation(securityPanel._mainView.contentElement);
+  await AxeCoreTestRunner.runValidation(securityPanel.mainView.contentElement);
 
   TestRunner.completeTest();
 })();

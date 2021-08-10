@@ -13,14 +13,14 @@
     const addLocationButton = locationsWidget._defaultFocusedElement;
     addLocationButton.click();
 
-    const newLocationInputs = locationsWidget._list._editor._controls;
+    const newLocationInputs = locationsWidget.list._editor._controls;
     TestRunner.addResult(`Opened input box: ${Boolean(newLocationInputs)}`);
 
     await AxeCoreTestRunner.runValidation(locationsWidget.contentElement);
   }
 
   async function testNewLocationError() {
-    const locationsEditor = locationsWidget._list._editor;
+    const locationsEditor = locationsWidget.list._editor;
     const newLocationInputs = locationsEditor._controls;
     const nameInput = newLocationInputs[0];
     const latitudeInput = newLocationInputs[1];

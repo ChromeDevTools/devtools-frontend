@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -99,9 +97,9 @@ const str_ = i18n.i18n.registerUIStrings('panels/sensors/LocationsSettingsTab.ts
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidget.Delegate<LocationDescription> {
-  _list: UI.ListWidget.ListWidget<LocationDescription>;
-  _customSetting: Common.Settings.Setting<LocationDescription[]>;
-  _editor?: UI.ListWidget.Editor<LocationDescription>;
+  private readonly list: UI.ListWidget.ListWidget<LocationDescription>;
+  private readonly customSetting: Common.Settings.Setting<LocationDescription[]>;
+  private editor?: UI.ListWidget.Editor<LocationDescription>;
 
   private constructor() {
     super(true);
@@ -109,16 +107,16 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     this.contentElement.createChild('div', 'header').textContent = i18nString(UIStrings.customLocations);
 
     const addButton = UI.UIUtils.createTextButton(
-        i18nString(UIStrings.addLocation), this._addButtonClicked.bind(this), 'add-locations-button');
+        i18nString(UIStrings.addLocation), this.addButtonClicked.bind(this), 'add-locations-button');
     this.contentElement.appendChild(addButton);
 
-    this._list = new UI.ListWidget.ListWidget(this);
-    this._list.element.classList.add('locations-list');
-    this._list.show(this.contentElement);
-    this._customSetting =
+    this.list = new UI.ListWidget.ListWidget(this);
+    this.list.element.classList.add('locations-list');
+    this.list.show(this.contentElement);
+    this.customSetting =
         Common.Settings.Settings.instance().moduleSetting<LocationDescription[]>('emulation.locations');
     const list =
-        this._customSetting.get().map(location => replaceLocationTitles(location, this._customSetting.defaultValue()));
+        this.customSetting.get().map(location => replaceLocationTitles(location, this.customSetting.defaultValue()));
 
     function replaceLocationTitles(
         location: LocationDescription, defaultValues: LocationDescription[]): LocationDescription {
@@ -141,8 +139,8 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
       return location;
     }
 
-    this._customSetting.set(list);
-    this._customSetting.addChangeListener(this._locationsUpdated, this);
+    this.customSetting.set(list);
+    this.customSetting.addChangeListener(this.locationsUpdated, this);
 
     this.setDefaultFocusedElement(addButton);
   }
@@ -158,23 +156,23 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
   wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([locationsSettingsTabStyles]);
-    this._list.registerCSSFiles([locationsSettingsTabStyles]);
-    this._locationsUpdated();
+    this.list.registerCSSFiles([locationsSettingsTabStyles]);
+    this.locationsUpdated();
   }
 
-  _locationsUpdated(): void {
-    this._list.clear();
+  private locationsUpdated(): void {
+    this.list.clear();
 
-    const conditions = this._customSetting.get();
+    const conditions = this.customSetting.get();
     for (const condition of conditions) {
-      this._list.appendItem(condition, true);
+      this.list.appendItem(condition, true);
     }
 
-    this._list.appendSeparator();
+    this.list.appendSeparator();
   }
 
-  _addButtonClicked(): void {
-    this._list.addNewItem(this._customSetting.get().length, {title: '', lat: 0, long: 0, timezoneId: '', locale: ''});
+  private addButtonClicked(): void {
+    this.list.addNewItem(this.customSetting.get().length, {title: '', lat: 0, long: 0, timezoneId: '', locale: ''});
   }
 
   renderItem(location: LocationDescription, _editable: boolean): Element {
@@ -196,9 +194,9 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
   }
 
   removeItemRequested(item: LocationDescription, index: number): void {
-    const list = this._customSetting.get();
+    const list = this.customSetting.get();
     list.splice(index, 1);
-    this._customSetting.set(list);
+    this.customSetting.set(list);
   }
 
   commitEdit(location: LocationDescription, editor: UI.ListWidget.Editor<LocationDescription>, isNew: boolean): void {
@@ -212,15 +210,15 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     const locale = editor.control('locale').value.trim();
     location.locale = locale;
 
-    const list = this._customSetting.get();
+    const list = this.customSetting.get();
     if (isNew) {
       list.push(location);
     }
-    this._customSetting.set(list);
+    this.customSetting.set(list);
   }
 
   beginEdit(location: LocationDescription): UI.ListWidget.Editor<LocationDescription> {
-    const editor = this._createEditor();
+    const editor = this.createEditor();
     editor.control('title').value = location.title;
     editor.control('lat').value = String(location.lat);
     editor.control('long').value = String(location.long);
@@ -229,13 +227,13 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     return editor;
   }
 
-  _createEditor(): UI.ListWidget.Editor<LocationDescription> {
-    if (this._editor) {
-      return this._editor;
+  private createEditor(): UI.ListWidget.Editor<LocationDescription> {
+    if (this.editor) {
+      return this.editor;
     }
 
     const editor = new UI.ListWidget.Editor<LocationDescription>();
-    this._editor = editor;
+    this.editor = editor;
     const content = editor.contentElement();
 
     const titles = content.createChild('div', 'locations-edit-row');

@@ -9,6 +9,8 @@ import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as TextEditor from '../../ui/legacy/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import breakpointEditDialogStyles from './breakpointEditDialog.css.js';
+
 const UIStrings = {
   /**
   *@description Screen reader label for a select box that chooses the breakpoint type in the Sources panel when editing a breakpoint
@@ -63,7 +65,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
                                                                                          condition: string,
                                                                                        }) => Promise<void>) {
     super(true);
-    this.registerRequiredCSS('panels/sources/breakpointEditDialog.css');
+
     this._onFinish = onFinish;
     this._finished = false;
     this._editor = null;
@@ -196,6 +198,10 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
       this._finishEditing(false);
       event.stopImmediatePropagation();
     }
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([breakpointEditDialogStyles]);
   }
 }
 

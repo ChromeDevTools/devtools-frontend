@@ -38,6 +38,9 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
+
+import callStackSidebarPaneStyles from './callStackSidebarPane.css.js';
+
 import type * as Protocol from '../../generated/protocol.js';
 
 const UIStrings = {
@@ -104,7 +107,6 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
 
   private constructor() {
     super(i18nString(UIStrings.callStack), true);
-    this.registerRequiredCSS('panels/sources/callStackSidebarPane.css');
 
     this._ignoreListMessageElement = this._createIgnoreListMessageElement();
     this.contentElement.appendChild(this._ignoreListMessageElement);
@@ -484,6 +486,10 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
       text.push(itemText);
     }
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(text.join('\n'));
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([callStackSidebarPaneStyles]);
   }
 }
 

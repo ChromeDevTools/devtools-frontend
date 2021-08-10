@@ -7,6 +7,9 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+
+import debuggerPausedMessageStyles from './debuggerPausedMessage.css.js';
+
 import type * as Bindings from '../../models/bindings/bindings.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -108,7 +111,7 @@ export class DebuggerPausedMessage {
     this._element.classList.add('paused-message');
     this._element.classList.add('flex-none');
     const root = UI.Utils.createShadowRootWithCoreStyles(
-        this._element, {cssFile: 'panels/sources/debuggerPausedMessage.css', delegatesFocus: undefined});
+        this._element, {cssFile: [debuggerPausedMessageStyles], delegatesFocus: undefined});
     this._contentElement = (root.createChild('div') as HTMLElement);
     UI.ARIAUtils.markAsPoliteLiveRegion(this._element, false);
   }

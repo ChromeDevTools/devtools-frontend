@@ -40,8 +40,13 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
+/* eslint-disable rulesdir/es_modules_import */
+import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+
+import watchExpressionsSidebarPaneStyles from './watchExpressionsSidebarPane.css.js';
+
 import type * as Protocol from '../../generated/protocol.js';
 
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';
@@ -96,8 +101,6 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
   _linkifier: Components.Linkifier.Linkifier;
   private constructor() {
     super(true);
-    this.registerRequiredCSS('ui/legacy/components/object_ui/objectValue.css');
-    this.registerRequiredCSS('panels/sources/watchExpressionsSidebarPane.css');
 
     // TODO(szuend): Replace with a Set once the web test
     // panels/sources/debugger-ui/watch-expressions-preserve-expansion.js is either converted
@@ -117,7 +120,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     this.contentElement.classList.add('watch-expressions');
     this.contentElement.addEventListener('contextmenu', this._contextMenu.bind(this), false);
     this._treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
-    this._treeOutline.registerRequiredCSS('panels/sources/watchExpressionsSidebarPane.css');
+
     this._treeOutline.setShowSelectionOnKeyboardFocus(/* show */ true);
     this._expandController =
         new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController(this._treeOutline);
@@ -284,6 +287,11 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     }
 
     contextMenu.debugSection().appendAction('sources.add-to-watch');
+  }
+  wasShown(): void {
+    super.wasShown();
+    this._treeOutline.registerCSSFiles([watchExpressionsSidebarPaneStyles]);
+    this.registerCSSFiles([watchExpressionsSidebarPaneStyles, objectValueStyles]);
   }
 }
 

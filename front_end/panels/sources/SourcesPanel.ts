@@ -44,6 +44,8 @@ import * as Snippets from '../snippets/snippets.js';
 
 import {CallStackSidebarPane} from './CallStackSidebarPane.js';
 import {DebuggerPausedMessage} from './DebuggerPausedMessage.js';
+import sourcesPanelStyles from './sourcesPanel.css.js';
+
 import type {NavigatorView} from './NavigatorView.js';
 import {ContentScriptsNavigatorView, FilesNavigatorView, NetworkNavigatorView, OverridesNavigatorView, SnippetsNavigatorView} from './SourcesNavigator.js';
 import {Events, SourcesView} from './SourcesView.js';
@@ -187,7 +189,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
   sidebarPaneView?: UI.Widget.VBox|UI.SplitWidget.SplitWidget;
   constructor() {
     super('sources');
-    this.registerRequiredCSS('panels/sources/sourcesPanel.css');
+
     new UI.DropTarget.DropTarget(
         this.element, [UI.DropTarget.Type.Folder], i18nString(UIStrings.dropWorkspaceFolderHere),
         this._handleDrop.bind(this));
@@ -373,6 +375,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
 
   wasShown(): void {
     UI.Context.Context.instance().setFlavor(SourcesPanel, this);
+    this.registerCSSFiles([sourcesPanelStyles]);
     super.wasShown();
     const wrapper = WrapperView.instance();
     if (wrapper && wrapper.isShowing()) {

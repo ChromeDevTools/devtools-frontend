@@ -4,7 +4,25 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/generate_css.gni")
 import("../visibility.gni")
+
+generate_css("css_files") {
+  sources = [
+    "breakpointEditDialog.css",
+    "callStackSidebarPane.css",
+    "debuggerPausedMessage.css",
+    "dialog.css",
+    "javaScriptBreakpointsSidebarPane.css",
+    "navigatorTree.css",
+    "navigatorView.css",
+    "scopeChainSidebarPane.css",
+    "sourcesPanel.css",
+    "sourcesView.css",
+    "threadsSidebarPane.css",
+    "watchExpressionsSidebarPane.css",
+  ]
+}
 
 devtools_module("sources") {
   sources = [
@@ -77,7 +95,11 @@ devtools_module("sources") {
 devtools_entrypoint("bundle") {
   entrypoint = "sources.ts"
 
-  deps = [ ":sources" ]
+  deps = [
+    ":css_files",
+    ":sources",
+    "../../ui/legacy/components/object_ui:css_files",
+  ]
 
   visibility = [
     ":*",

@@ -4,6 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
+import threadsSidebarPaneStyles from './threadsSidebarPane.css.js';
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -28,7 +29,6 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
 
   private constructor() {
     super(true);
-    this.registerRequiredCSS('panels/sources/threadsSidebarPane.css');
 
     this._items = new UI.ListModel.ListModel();
     this._list = new UI.ListControl.ListControl(this._items, this, UI.ListControl.ListMode.NonViewport);
@@ -151,5 +151,9 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
     if (hadFocus) {
       this.focus();
     }
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([threadsSidebarPaneStyles]);
   }
 }

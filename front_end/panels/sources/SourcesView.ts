@@ -15,6 +15,8 @@ import * as SourceFrame from '../../ui/legacy/components/source_frame/source_fra
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {EditingLocationHistoryManager} from './EditingLocationHistoryManager.js';
+import sourcesViewStyles from './sourcesView.css.js';
+
 import type {TabbedEditorContainerDelegate} from './TabbedEditorContainer.js';
 import {Events as TabbedEditorContainerEvents, TabbedEditorContainer} from './TabbedEditorContainer.js';
 import {Events as UISourceCodeFrameEvents, UISourceCodeFrame} from './UISourceCodeFrame.js';
@@ -62,7 +64,7 @@ export class SourcesView extends UI.Widget.VBox implements TabbedEditorContainer
 
   constructor() {
     super();
-    this.registerRequiredCSS('panels/sources/sourcesView.css');
+
     this.element.id = 'sources-panel-sources-view';
     this.setMinimumAndPreferredSizes(250, 52, 250, 100);
 
@@ -252,6 +254,7 @@ export class SourcesView extends UI.Widget.VBox implements TabbedEditorContainer
 
   wasShown(): void {
     super.wasShown();
+    this.registerCSSFiles([sourcesViewStyles]);
     UI.Context.Context.instance().setFlavor(SourcesView, this);
   }
 

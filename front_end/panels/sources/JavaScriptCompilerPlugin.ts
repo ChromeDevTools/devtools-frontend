@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -14,27 +12,27 @@ import * as Snippets from '../snippets/snippets.js';
 import {Plugin} from './Plugin.js';
 
 export class JavaScriptCompilerPlugin extends Plugin {
-  _textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor;
-  _uiSourceCode: Workspace.UISourceCode.UISourceCode;
-  _compiling: boolean;
-  _recompileScheduled: boolean;
-  _timeout: number|null;
-  _message: Workspace.UISourceCode.Message|null;
-  _disposed: boolean;
+  private readonly textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor;
+  private uiSourceCode: Workspace.UISourceCode.UISourceCode;
+  private compiling: boolean;
+  private recompileScheduled: boolean;
+  private timeout: number|null;
+  private message: Workspace.UISourceCode.Message|null;
+  private disposed: boolean;
   constructor(
       textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor, uiSourceCode: Workspace.UISourceCode.UISourceCode) {
     super();
-    this._textEditor = textEditor;
-    this._uiSourceCode = uiSourceCode;
-    this._compiling = false;
-    this._recompileScheduled = false;
-    this._timeout = null;
-    this._message = null;
-    this._disposed = false;
+    this.textEditor = textEditor;
+    this.uiSourceCode = uiSourceCode;
+    this.compiling = false;
+    this.recompileScheduled = false;
+    this.timeout = null;
+    this.message = null;
+    this.disposed = false;
 
-    this._textEditor.addEventListener(UI.TextEditor.Events.TextChanged, this._scheduleCompile, this);
-    if (this._uiSourceCode.hasCommits() || this._uiSourceCode.isDirty()) {
-      this._scheduleCompile();
+    this.textEditor.addEventListener(UI.TextEditor.Events.TextChanged, this.scheduleCompile, this);
+    if (this.uiSourceCode.hasCommits() || this.uiSourceCode.isDirty()) {
+      this.scheduleCompile();
     }
   }
 
@@ -54,22 +52,22 @@ export class JavaScriptCompilerPlugin extends Plugin {
     return false;
   }
 
-  _scheduleCompile(): void {
-    if (this._compiling) {
-      this._recompileScheduled = true;
+  private scheduleCompile(): void {
+    if (this.compiling) {
+      this.recompileScheduled = true;
       return;
     }
-    if (this._timeout) {
-      clearTimeout(this._timeout);
+    if (this.timeout) {
+      clearTimeout(this.timeout);
     }
-    this._timeout = window.setTimeout(this._compile.bind(this), CompileDelay);
+    this.timeout = window.setTimeout(this.compile.bind(this), CompileDelay);
   }
 
-  _findRuntimeModel(): SDK.RuntimeModel.RuntimeModel|null {
+  private findRuntimeModel(): SDK.RuntimeModel.RuntimeModel|null {
     const debuggerModels = SDK.TargetManager.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel);
     for (let i = 0; i < debuggerModels.length; ++i) {
       const scriptFile = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptFile(
-          this._uiSourceCode, debuggerModels[i]);
+          this.uiSourceCode, debuggerModels[i]);
       if (scriptFile) {
         return debuggerModels[i].runtimeModel();
       }
@@ -78,8 +76,8 @@ export class JavaScriptCompilerPlugin extends Plugin {
     return mainTarget ? mainTarget.model(SDK.RuntimeModel.RuntimeModel) : null;
   }
 
-  async _compile(): Promise<void> {
-    const runtimeModel = this._findRuntimeModel();
+  private async compile(): Promise<void> {
+    const runtimeModel = this.findRuntimeModel();
     if (!runtimeModel) {
       return;
     }
@@ -88,52 +86,52 @@ export class JavaScriptCompilerPlugin extends Plugin {
       return;
     }
 
-    const code = this._textEditor.text();
+    const code = this.textEditor.text();
     if (code.length > 1024 * 100) {
       return;
     }
 
     const scripts =
-        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptsForResource(this._uiSourceCode);
+        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptsForResource(this.uiSourceCode);
     const isModule = scripts.reduce((v, s) => v || s.isModule === true, false);
     if (isModule) {
       return;
     }
 
-    this._compiling = true;
+    this.compiling = true;
     const result = await runtimeModel.compileScript(code, '', false, currentExecutionContext.id);
 
-    this._compiling = false;
-    if (this._recompileScheduled) {
-      this._recompileScheduled = false;
-      this._scheduleCompile();
+    this.compiling = false;
+    if (this.recompileScheduled) {
+      this.recompileScheduled = false;
+      this.scheduleCompile();
       return;
     }
-    if (this._message) {
-      this._uiSourceCode.removeMessage(this._message);
+    if (this.message) {
+      this.uiSourceCode.removeMessage(this.message);
     }
-    if (this._disposed || !result || !result.exceptionDetails) {
+    if (this.disposed || !result || !result.exceptionDetails) {
       return;
     }
 
     const exceptionDetails = result.exceptionDetails;
     const text = SDK.RuntimeModel.RuntimeModel.simpleTextFromException(exceptionDetails);
-    this._message = this._uiSourceCode.addLineMessage(
+    this.message = this.uiSourceCode.addLineMessage(
         Workspace.UISourceCode.Message.Level.Error, text, exceptionDetails.lineNumber, exceptionDetails.columnNumber);
-    this._compilationFinishedForTest();
+    this.compilationFinishedForTest();
   }
 
-  _compilationFinishedForTest(): void {
+  private compilationFinishedForTest(): void {
   }
 
   dispose(): void {
-    this._textEditor.removeEventListener(UI.TextEditor.Events.TextChanged, this._scheduleCompile, this);
-    if (this._message) {
-      this._uiSourceCode.removeMessage(this._message);
+    this.textEditor.removeEventListener(UI.TextEditor.Events.TextChanged, this.scheduleCompile, this);
+    if (this.message) {
+      this.uiSourceCode.removeMessage(this.message);
     }
-    this._disposed = true;
-    if (this._timeout) {
-      clearTimeout(this._timeout);
+    this.disposed = true;
+    if (this.timeout) {
+      clearTimeout(this.timeout);
     }
   }
 }

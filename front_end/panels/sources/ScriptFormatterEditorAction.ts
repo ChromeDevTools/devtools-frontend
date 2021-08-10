@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as FormatterModule from '../../models/formatter/formatter.js';
@@ -32,11 +30,11 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let scriptFormatterEditorActionInstance: ScriptFormatterEditorAction;
 
 export class ScriptFormatterEditorAction implements EditorAction {
-  _pathsToFormatOnLoad: Set<string>;
-  _sourcesView!: SourcesView;
-  _button!: UI.Toolbar.ToolbarButton;
+  private readonly pathsToFormatOnLoad: Set<string>;
+  private sourcesView!: SourcesView;
+  private button!: UI.Toolbar.ToolbarButton;
   private constructor() {
-    this._pathsToFormatOnLoad = new Set();
+    this.pathsToFormatOnLoad = new Set();
   }
 
   static instance(opts: {
@@ -50,62 +48,62 @@ export class ScriptFormatterEditorAction implements EditorAction {
     return scriptFormatterEditorActionInstance;
   }
 
-  _editorSelected(event: Common.EventTarget.EventTargetEvent): void {
+  private editorSelected(event: Common.EventTarget.EventTargetEvent): void {
     const uiSourceCode = (event.data as Workspace.UISourceCode.UISourceCode);
-    this._updateButton(uiSourceCode);
+    this.updateButton(uiSourceCode);
 
-    if (this._isFormattableScript(uiSourceCode) && this._pathsToFormatOnLoad.has(uiSourceCode.url()) &&
+    if (this.isFormattableScript(uiSourceCode) && this.pathsToFormatOnLoad.has(uiSourceCode.url()) &&
         !FormatterModule.SourceFormatter.SourceFormatter.instance().hasFormatted(uiSourceCode)) {
-      this._showFormatted(uiSourceCode);
+      this.showFormatted(uiSourceCode);
     }
   }
 
-  async _editorClosed(event: Common.EventTarget.EventTargetEvent): Promise<void> {
+  private async editorClosed(event: Common.EventTarget.EventTargetEvent): Promise<void> {
     const uiSourceCode = (event.data.uiSourceCode as Workspace.UISourceCode.UISourceCode);
     const wasSelected = (event.data.wasSelected as boolean);
 
     if (wasSelected) {
-      this._updateButton(null);
+      this.updateButton(null);
     }
     const original =
         await FormatterModule.SourceFormatter.SourceFormatter.instance().discardFormattedUISourceCode(uiSourceCode);
     if (original) {
-      this._pathsToFormatOnLoad.delete(original.url());
+      this.pathsToFormatOnLoad.delete(original.url());
     }
   }
 
-  _updateButton(uiSourceCode: Workspace.UISourceCode.UISourceCode|null): void {
-    const isFormattable = this._isFormattableScript(uiSourceCode);
-    this._button.element.classList.toggle('hidden', !isFormattable);
+  private updateButton(uiSourceCode: Workspace.UISourceCode.UISourceCode|null): void {
+    const isFormattable = this.isFormattableScript(uiSourceCode);
+    this.button.element.classList.toggle('hidden', !isFormattable);
     if (uiSourceCode) {
       // We always update the title of the button, even if the {uiSourceCode} is
       // not formattable, since we use the title (the aria-label actually) as a
       // signal for the E2E tests that the source code loading is done.
-      this._button.setTitle(i18nString(UIStrings.prettyPrintS, {PH1: uiSourceCode.name()}));
+      this.button.setTitle(i18nString(UIStrings.prettyPrintS, {PH1: uiSourceCode.name()}));
     }
   }
 
   getOrCreateButton(sourcesView: SourcesView): UI.Toolbar.ToolbarButton {
-    if (this._button) {
-      return this._button;
+    if (this.button) {
+      return this.button;
     }
 
-    this._sourcesView = sourcesView;
-    this._sourcesView.addEventListener(Events.EditorSelected, event => {
-      this._editorSelected(event);
+    this.sourcesView = sourcesView;
+    this.sourcesView.addEventListener(Events.EditorSelected, event => {
+      this.editorSelected(event);
     });
-    this._sourcesView.addEventListener(Events.EditorClosed, event => {
-      this._editorClosed(event);
+    this.sourcesView.addEventListener(Events.EditorClosed, event => {
+      this.editorClosed(event);
     });
 
-    this._button = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.prettyPrint), 'largeicon-pretty-print');
-    this._button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._onFormatScriptButtonClicked, this);
-    this._updateButton(sourcesView.currentUISourceCode());
+    this.button = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.prettyPrint), 'largeicon-pretty-print');
+    this.button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.onFormatScriptButtonClicked, this);
+    this.updateButton(sourcesView.currentUISourceCode());
 
-    return this._button;
+    return this.button;
   }
 
-  _isFormattableScript(uiSourceCode: Workspace.UISourceCode.UISourceCode|null): boolean {
+  private isFormattableScript(uiSourceCode: Workspace.UISourceCode.UISourceCode|null): boolean {
     if (!uiSourceCode) {
       return false;
     }
@@ -125,35 +123,35 @@ export class ScriptFormatterEditorAction implements EditorAction {
   }
 
   isCurrentUISourceCodeFormattable(): boolean {
-    const uiSourceCode = this._sourcesView.currentUISourceCode();
-    return this._isFormattableScript(uiSourceCode);
+    const uiSourceCode = this.sourcesView.currentUISourceCode();
+    return this.isFormattableScript(uiSourceCode);
   }
 
-  _onFormatScriptButtonClicked(_event: Common.EventTarget.EventTargetEvent): void {
+  private onFormatScriptButtonClicked(_event: Common.EventTarget.EventTargetEvent): void {
     this.toggleFormatScriptSource();
   }
 
   toggleFormatScriptSource(): void {
-    const uiSourceCode = this._sourcesView.currentUISourceCode();
-    if (!uiSourceCode || !this._isFormattableScript(uiSourceCode)) {
+    const uiSourceCode = this.sourcesView.currentUISourceCode();
+    if (!uiSourceCode || !this.isFormattableScript(uiSourceCode)) {
       return;
     }
-    this._pathsToFormatOnLoad.add(uiSourceCode.url());
-    this._showFormatted(uiSourceCode);
+    this.pathsToFormatOnLoad.add(uiSourceCode.url());
+    this.showFormatted(uiSourceCode);
   }
 
-  async _showFormatted(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
+  private async showFormatted(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
     const formatData = await FormatterModule.SourceFormatter.SourceFormatter.instance().format(uiSourceCode);
-    if (uiSourceCode !== this._sourcesView.currentUISourceCode()) {
+    if (uiSourceCode !== this.sourcesView.currentUISourceCode()) {
       return;
     }
-    const sourceFrame = this._sourcesView.viewForFile(uiSourceCode);
+    const sourceFrame = this.sourcesView.viewForFile(uiSourceCode);
     let start: number[]|number[] = [0, 0];
     if (sourceFrame instanceof SourceFrame.SourceFrame.SourceFrameImpl) {
       const selection = sourceFrame.selection();
       start = formatData.mapping.originalToFormatted(selection.startLine, selection.startColumn);
     }
-    this._sourcesView.showSourceLocation(formatData.formattedSourceCode, start[0], start[1]);
+    this.sourcesView.showSourceLocation(formatData.formattedSourceCode, start[0], start[1]);
   }
 }
 

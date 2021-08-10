@@ -383,7 +383,7 @@
     function testScriptPause() {
       // The script should be in infinite loop. Click "Pause" button to
       // pause it and wait for the result.
-      UI.panels.sources._togglePause();
+      UI.panels.sources.togglePause();
 
       this._waitForScriptPause(this.releaseControl.bind(this));
     }

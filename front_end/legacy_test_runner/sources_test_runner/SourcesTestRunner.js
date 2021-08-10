@@ -12,7 +12,7 @@ self.SourcesTestRunner = self.SourcesTestRunner || {};
  * @param {boolean=} dumpIcons
  */
 SourcesTestRunner.dumpNavigatorView = function(navigatorView, dumpIcons) {
-  dumpNavigatorTreeOutline(navigatorView._scriptsTree);
+  dumpNavigatorTreeOutline(navigatorView.scriptsTree);
 
   /**
    * @param {string} prefix
@@ -20,17 +20,17 @@ SourcesTestRunner.dumpNavigatorView = function(navigatorView, dumpIcons) {
    */
   function dumpNavigatorTreeElement(prefix, treeElement) {
     let titleText = '';
-    if (treeElement._leadingIconsElement && dumpIcons) {
-      let icons = treeElement._leadingIconsElement.querySelectorAll('[is=ui-icon]');
+    if (treeElement.leadingIconsElement && dumpIcons) {
+      let icons = treeElement.leadingIconsElement.querySelectorAll('[is=ui-icon]');
       icons = Array.prototype.slice.call(icons);
-      const iconTypes = icons.map(icon => icon._iconType);
+      const iconTypes = icons.map(icon => icon.iconType);
       if (iconTypes.length) {
         titleText = titleText + '[' + iconTypes.join(', ') + '] ';
       }
     }
     titleText += treeElement.title;
-    if (treeElement._nodeType === Sources.NavigatorView.Types.FileSystem ||
-        treeElement._nodeType === Sources.NavigatorView.Types.FileSystemFolder) {
+    if (treeElement.nodeType === Sources.NavigatorView.Types.FileSystem ||
+        treeElement.nodeType === Sources.NavigatorView.Types.FileSystemFolder) {
       const hasMappedFiles = treeElement.listItemElement.classList.contains('has-mapped-files');
       if (!hasMappedFiles) {
         titleText += ' [dimmed]';

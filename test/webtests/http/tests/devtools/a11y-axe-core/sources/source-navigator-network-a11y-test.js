@@ -27,7 +27,7 @@
 
     sourcesNavigatorView.show(UI.inspectorView.element);
     SourcesTestRunner.dumpNavigatorView(sourcesNavigatorView);
-    const element = UI.panels.sources._navigatorTabbedLocation._tabbedPane.element;
+    const element = UI.panels.sources.navigatorTabbedLocation.tabbedPane().element;
     await AxeCoreTestRunner.runValidation(element, ruleSet);
   }
 })();

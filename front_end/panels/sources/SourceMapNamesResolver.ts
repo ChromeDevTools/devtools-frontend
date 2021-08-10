@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -265,60 +263,60 @@ export const resolveScopeInObject = function(scope: SDK.DebuggerModel.ScopeChain
 };
 
 export class RemoteObject extends SDK.RemoteObject.RemoteObject {
-  _scope: SDK.DebuggerModel.ScopeChainEntry;
-  _object: SDK.RemoteObject.RemoteObject;
+  private readonly scope: SDK.DebuggerModel.ScopeChainEntry;
+  private readonly object: SDK.RemoteObject.RemoteObject;
   constructor(scope: SDK.DebuggerModel.ScopeChainEntry) {
     super();
-    this._scope = scope;
-    this._object = scope.object();
+    this.scope = scope;
+    this.object = scope.object();
   }
 
   customPreview(): Protocol.Runtime.CustomPreview|null {
-    return this._object.customPreview();
+    return this.object.customPreview();
   }
 
   get objectId(): Protocol.Runtime.RemoteObjectId|undefined {
-    return this._object.objectId;
+    return this.object.objectId;
   }
 
   get type(): string {
-    return this._object.type;
+    return this.object.type;
   }
 
   get subtype(): string|undefined {
-    return this._object.subtype;
+    return this.object.subtype;
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   get value(): any {
-    return this._object.value;
+    return this.object.value;
   }
 
   get description(): string|undefined {
-    return this._object.description;
+    return this.object.description;
   }
 
   get hasChildren(): boolean {
-    return this._object.hasChildren;
+    return this.object.hasChildren;
   }
 
   get preview(): Protocol.Runtime.ObjectPreview|undefined {
-    return this._object.preview;
+    return this.object.preview;
   }
 
   arrayLength(): number {
-    return this._object.arrayLength();
+    return this.object.arrayLength();
   }
 
   getOwnProperties(generatePreview: boolean): Promise<SDK.RemoteObject.GetPropertiesResult> {
-    return this._object.getOwnProperties(generatePreview);
+    return this.object.getOwnProperties(generatePreview);
   }
 
   async getAllProperties(accessorPropertiesOnly: boolean, generatePreview: boolean):
       Promise<SDK.RemoteObject.GetPropertiesResult> {
-    const allProperties = await this._object.getAllProperties(accessorPropertiesOnly, generatePreview);
-    const namesMapping = await resolveScope(this._scope);
+    const allProperties = await this.object.getAllProperties(accessorPropertiesOnly, generatePreview);
+    const namesMapping = await resolveScope(this.scope);
 
     const properties = allProperties.properties;
     const internalProperties = allProperties.internalProperties;
@@ -339,7 +337,7 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
   }
 
   async setPropertyValue(argumentName: string|Protocol.Runtime.CallArgument, value: string): Promise<string|undefined> {
-    const namesMapping = await resolveScope(this._scope);
+    const namesMapping = await resolveScope(this.scope);
 
     let name;
     if (typeof argumentName === 'string') {
@@ -355,38 +353,38 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
         break;
       }
     }
-    return this._object.setPropertyValue(actualName, value);
+    return this.object.setPropertyValue(actualName, value);
   }
 
   async deleteProperty(name: Protocol.Runtime.CallArgument): Promise<string|undefined> {
-    return this._object.deleteProperty(name);
+    return this.object.deleteProperty(name);
   }
 
   callFunction<T>(functionDeclaration: (this: Object, ...arg1: unknown[]) => T, args?: Protocol.Runtime.CallArgument[]):
       Promise<SDK.RemoteObject.CallFunctionResult> {
-    return this._object.callFunction(functionDeclaration, args);
+    return this.object.callFunction(functionDeclaration, args);
   }
 
   callFunctionJSON<T>(
       functionDeclaration: (this: Object, ...arg1: unknown[]) => T,
       args?: Protocol.Runtime.CallArgument[]): Promise<T> {
-    return this._object.callFunctionJSON(functionDeclaration, args);
+    return this.object.callFunctionJSON(functionDeclaration, args);
   }
 
   release(): void {
-    this._object.release();
+    this.object.release();
   }
 
   debuggerModel(): SDK.DebuggerModel.DebuggerModel {
-    return this._object.debuggerModel();
+    return this.object.debuggerModel();
   }
 
   runtimeModel(): SDK.RuntimeModel.RuntimeModel {
-    return this._object.runtimeModel();
+    return this.object.runtimeModel();
   }
 
   isNode(): boolean {
-    return this._object.isNode();
+    return this.object.isNode();
   }
 }
 

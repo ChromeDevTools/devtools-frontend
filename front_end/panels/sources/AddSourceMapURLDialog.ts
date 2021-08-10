@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -20,50 +18,50 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/AddSourceMapURLDialog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AddSourceMapURLDialog extends UI.Widget.HBox {
-  _input: HTMLInputElement;
-  _dialog: UI.Dialog.Dialog;
-  _callback: (arg0: string) => void;
+  private readonly input: HTMLInputElement;
+  private readonly dialog: UI.Dialog.Dialog;
+  private readonly callback: (arg0: string) => void;
   constructor(callback: (arg0: string) => void) {
     super(/* isWebComponent */ true);
     this.registerRequiredCSS('panels/sources/dialog.css');
     this.contentElement.createChild('label').textContent = i18nString(UIStrings.sourceMapUrl);
 
-    this._input = UI.UIUtils.createInput('add-source-map', 'text');
-    this._input.addEventListener('keydown', this._onKeyDown.bind(this), false);
-    this.contentElement.appendChild(this._input);
+    this.input = UI.UIUtils.createInput('add-source-map', 'text');
+    this.input.addEventListener('keydown', this.onKeyDown.bind(this), false);
+    this.contentElement.appendChild(this.input);
 
-    const addButton = UI.UIUtils.createTextButton(i18nString(UIStrings.add), this._apply.bind(this));
+    const addButton = UI.UIUtils.createTextButton(i18nString(UIStrings.add), this.apply.bind(this));
     this.contentElement.appendChild(addButton);
 
-    this._dialog = new UI.Dialog.Dialog();
-    this._dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
-    this._dialog.setDefaultFocusedElement(this._input);
+    this.dialog = new UI.Dialog.Dialog();
+    this.dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
+    this.dialog.setDefaultFocusedElement(this.input);
 
-    this._callback = callback;
+    this.callback = callback;
   }
 
   show(): void {
-    super.show(this._dialog.contentElement);
+    super.show(this.dialog.contentElement);
     // UI.Dialog extends GlassPane and overrides the `show` method with a wider
     // accepted type. However, TypeScript uses the supertype declaration to
     // determine the full type, which requires a `!Document`.
     // @ts-ignore
-    this._dialog.show();
+    this.dialog.show();
   }
 
-  _done(value: string): void {
-    this._dialog.hide();
-    this._callback(value);
+  private done(value: string): void {
+    this.dialog.hide();
+    this.callback(value);
   }
 
-  _apply(): void {
-    this._done(this._input.value);
+  private apply(): void {
+    this.done(this.input.value);
   }
 
-  _onKeyDown(event: KeyboardEvent): void {
+  private onKeyDown(event: KeyboardEvent): void {
     if (event.key === 'Enter') {
       event.consume(true);
-      this._apply();
+      this.apply();
     }
   }
 }

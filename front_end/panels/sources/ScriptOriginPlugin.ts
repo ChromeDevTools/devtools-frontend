@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -29,21 +27,21 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/ScriptOriginPlugin.ts', UIStrings);
 
 export class ScriptOriginPlugin extends Plugin {
-  _textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor;
-  _uiSourceCode: Workspace.UISourceCode.UISourceCode;
+  private readonly textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor;
+  private readonly uiSourceCode: Workspace.UISourceCode.UISourceCode;
   constructor(
       textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor, uiSourceCode: Workspace.UISourceCode.UISourceCode) {
     super();
-    this._textEditor = textEditor;
-    this._uiSourceCode = uiSourceCode;
+    this.textEditor = textEditor;
+    this.uiSourceCode = uiSourceCode;
   }
 
   static accepts(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
-    return uiSourceCode.contentType().hasScripts() || Boolean(ScriptOriginPlugin._script(uiSourceCode));
+    return uiSourceCode.contentType().hasScripts() || Boolean(ScriptOriginPlugin.script(uiSourceCode));
   }
 
   async rightToolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
-    const originURLs = Bindings.CompilerScriptMapping.CompilerScriptMapping.uiSourceCodeOrigin(this._uiSourceCode);
+    const originURLs = Bindings.CompilerScriptMapping.CompilerScriptMapping.uiSourceCodeOrigin(this.uiSourceCode);
     if (originURLs.length) {
       return originURLs.map(originURL => {
         const item = i18n.i18n.getFormatLocalizedString(
@@ -54,7 +52,7 @@ export class ScriptOriginPlugin extends Plugin {
 
     const pluginManager = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().pluginManager;
     if (pluginManager) {
-      for (const originScript of pluginManager.scriptsForUISourceCode(this._uiSourceCode)) {
+      for (const originScript of pluginManager.scriptsForUISourceCode(this.uiSourceCode)) {
         if (originScript.sourceURL) {
           const item = i18n.i18n.getFormatLocalizedString(
               str_, UIStrings.providedViaDebugInfoByS,
@@ -65,7 +63,7 @@ export class ScriptOriginPlugin extends Plugin {
     }
 
     // Handle anonymous scripts with an originStackTrace.
-    const script = await ScriptOriginPlugin._script(this._uiSourceCode);
+    const script = await ScriptOriginPlugin.script(this.uiSourceCode);
     if (!script || !script.originStackTrace) {
       return [];
     }
@@ -73,7 +71,7 @@ export class ScriptOriginPlugin extends Plugin {
     return [new UI.Toolbar.ToolbarItem(link)];
   }
 
-  static async _script(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<SDK.Script.Script|null> {
+  private static async script(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<SDK.Script.Script|null> {
     const locations =
         await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().uiLocationToRawLocations(
             uiSourceCode, 0, 0);

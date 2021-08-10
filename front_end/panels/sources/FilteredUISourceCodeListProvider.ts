@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Persistence from '../../models/persistence/persistence.js';
@@ -22,46 +20,46 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/FilteredUISourceCodeListProvider.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidget.Provider {
-  _queryLineNumberAndColumnNumber: string;
-  _defaultScores: Map<Workspace.UISourceCode.UISourceCode, number>|null;
-  _scorer: FilePathScoreFunction;
-  _uiSourceCodes: Workspace.UISourceCode.UISourceCode[];
-  _uiSourceCodeUrls: Set<string>;
-  _query!: string;
+  private queryLineNumberAndColumnNumber: string;
+  private defaultScores: Map<Workspace.UISourceCode.UISourceCode, number>|null;
+  private scorer: FilePathScoreFunction;
+  private uiSourceCodes: Workspace.UISourceCode.UISourceCode[];
+  private readonly uiSourceCodeUrls: Set<string>;
+  private query!: string;
   constructor() {
     super();
 
-    this._queryLineNumberAndColumnNumber = '';
-    this._defaultScores = null;
-    this._scorer = new FilePathScoreFunction('');
+    this.queryLineNumberAndColumnNumber = '';
+    this.defaultScores = null;
+    this.scorer = new FilePathScoreFunction('');
 
-    this._uiSourceCodes = [];
-    this._uiSourceCodeUrls = new Set();
+    this.uiSourceCodes = [];
+    this.uiSourceCodeUrls = new Set();
   }
 
-  _projectRemoved(event: Common.EventTarget.EventTargetEvent): void {
+  private projectRemoved(event: Common.EventTarget.EventTargetEvent): void {
     const project = (event.data as Workspace.Workspace.Project);
-    this._populate(project);
+    this.populate(project);
     this.refresh();
   }
 
-  _populate(skipProject?: Workspace.Workspace.Project): void {
-    this._uiSourceCodes = [];
-    this._uiSourceCodeUrls.clear();
+  private populate(skipProject?: Workspace.Workspace.Project): void {
+    this.uiSourceCodes = [];
+    this.uiSourceCodeUrls.clear();
     for (const project of Workspace.Workspace.WorkspaceImpl.instance().projects()) {
       if (project !== skipProject && this.filterProject(project)) {
         for (const uiSourceCode of project.uiSourceCodes()) {
-          if (this._filterUISourceCode(uiSourceCode)) {
-            this._uiSourceCodes.push(uiSourceCode);
-            this._uiSourceCodeUrls.add(uiSourceCode.url());
+          if (this.filterUISourceCode(uiSourceCode)) {
+            this.uiSourceCodes.push(uiSourceCode);
+            this.uiSourceCodeUrls.add(uiSourceCode.url());
           }
         }
       }
     }
   }
 
-  _filterUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
-    if (this._uiSourceCodeUrls.has(uiSourceCode.url())) {
+  private filterUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
+    if (this.uiSourceCodeUrls.has(uiSourceCode.url())) {
       return false;
     }
     const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
@@ -79,27 +77,27 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
   }
 
   itemCount(): number {
-    return this._uiSourceCodes.length;
+    return this.uiSourceCodes.length;
   }
 
   itemKeyAt(itemIndex: number): string {
-    return this._uiSourceCodes[itemIndex].url();
+    return this.uiSourceCodes[itemIndex].url();
   }
 
   setDefaultScores(defaultScores: Map<Workspace.UISourceCode.UISourceCode, number>|null): void {
-    this._defaultScores = defaultScores;
+    this.defaultScores = defaultScores;
   }
 
   itemScoreAt(itemIndex: number, query: string): number {
-    const uiSourceCode = this._uiSourceCodes[itemIndex];
-    const score = this._defaultScores ? (this._defaultScores.get(uiSourceCode) || 0) : 0;
+    const uiSourceCode = this.uiSourceCodes[itemIndex];
+    const score = this.defaultScores ? (this.defaultScores.get(uiSourceCode) || 0) : 0;
     if (!query || query.length < 2) {
       return score;
     }
 
-    if (this._query !== query) {
-      this._query = query;
-      this._scorer = new FilePathScoreFunction(query);
+    if (this.query !== query) {
+      this.query = query;
+      this.scorer = new FilePathScoreFunction(query);
     }
 
     let multiplier = 10;
@@ -109,12 +107,12 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
     }
 
     const fullDisplayName = uiSourceCode.fullDisplayName();
-    return score + multiplier * this._scorer.calculateScore(fullDisplayName, null);
+    return score + multiplier * this.scorer.calculateScore(fullDisplayName, null);
   }
 
   renderItem(itemIndex: number, query: string, titleElement: Element, subtitleElement: Element): void {
     query = this.rewriteQuery(query);
-    const uiSourceCode = this._uiSourceCodes[itemIndex];
+    const uiSourceCode = this.uiSourceCodes[itemIndex];
     const fullDisplayName = uiSourceCode.fullDisplayName();
     const indexes: number[] = [];
     new FilePathScoreFunction(query).calculateScore(fullDisplayName, indexes);
@@ -122,8 +120,8 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
 
     titleElement.classList.add('monospace');
     subtitleElement.classList.add('monospace');
-    titleElement.textContent = uiSourceCode.displayName() + (this._queryLineNumberAndColumnNumber || '');
-    this._renderSubtitleElement(subtitleElement, fullDisplayName);
+    titleElement.textContent = uiSourceCode.displayName() + (this.queryLineNumberAndColumnNumber || '');
+    this.renderSubtitleElement(subtitleElement, fullDisplayName);
     /** @type {!HTMLElement} */ UI.Tooltip.Tooltip.install((subtitleElement as HTMLElement), fullDisplayName);
     const ranges = [];
     for (let i = 0; i < indexes.length; ++i) {
@@ -140,7 +138,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
     }
   }
 
-  _renderSubtitleElement(element: Element, text: string): void {
+  private renderSubtitleElement(element: Element, text: string): void {
     element.removeChildren();
     let splitPosition = text.lastIndexOf('/');
     const maxTextLength = 43;
@@ -168,7 +166,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
     if (parsedExpression[3]) {
       columnNumber = parseInt(parsedExpression[3].substr(1), 10) - 1;
     }
-    const uiSourceCode = itemIndex !== null ? this._uiSourceCodes[itemIndex] : null;
+    const uiSourceCode = itemIndex !== null ? this.uiSourceCodes[itemIndex] : null;
     this.uiSourceCodeSelected(uiSourceCode, lineNumber, columnNumber);
   }
 
@@ -178,17 +176,17 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
       return '';
     }
     const lineNumberMatch = query.match(/^([^:]+)((?::[^:]*){0,2})$/);
-    this._queryLineNumberAndColumnNumber = lineNumberMatch ? lineNumberMatch[2] : '';
+    this.queryLineNumberAndColumnNumber = lineNumberMatch ? lineNumberMatch[2] : '';
     return lineNumberMatch ? lineNumberMatch[1] : query;
   }
 
-  _uiSourceCodeAdded(event: Common.EventTarget.EventTargetEvent): void {
+  private uiSourceCodeAdded(event: Common.EventTarget.EventTargetEvent): void {
     const uiSourceCode = (event.data as Workspace.UISourceCode.UISourceCode);
-    if (!this._filterUISourceCode(uiSourceCode) || !this.filterProject(uiSourceCode.project())) {
+    if (!this.filterUISourceCode(uiSourceCode) || !this.filterProject(uiSourceCode.project())) {
       return;
     }
-    this._uiSourceCodes.push(uiSourceCode);
-    this._uiSourceCodeUrls.add(uiSourceCode.url());
+    this.uiSourceCodes.push(uiSourceCode);
+    this.uiSourceCodeUrls.add(uiSourceCode.url());
     this.refresh();
   }
 
@@ -198,18 +196,18 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
 
   attach(): void {
     Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
-        Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
+        Workspace.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAdded, this);
     Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
-        Workspace.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
-    this._populate();
+        Workspace.Workspace.Events.ProjectRemoved, this.projectRemoved, this);
+    this.populate();
   }
 
   detach(): void {
     Workspace.Workspace.WorkspaceImpl.instance().removeEventListener(
-        Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
+        Workspace.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAdded, this);
     Workspace.Workspace.WorkspaceImpl.instance().removeEventListener(
-        Workspace.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
-    this._queryLineNumberAndColumnNumber = '';
-    this._defaultScores = null;
+        Workspace.Workspace.Events.ProjectRemoved, this.projectRemoved, this);
+    this.queryLineNumberAndColumnNumber = '';
+    this.defaultScores = null;
   }
 }

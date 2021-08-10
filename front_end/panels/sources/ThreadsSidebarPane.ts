@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -22,21 +20,21 @@ let threadsSidebarPaneInstance: ThreadsSidebarPane;
 export class ThreadsSidebarPane extends UI.Widget.VBox implements
     SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel>,
     UI.ListControl.ListDelegate<SDK.DebuggerModel.DebuggerModel> {
-  _items: UI.ListModel.ListModel<SDK.DebuggerModel.DebuggerModel>;
-  _list: UI.ListControl.ListControl<SDK.DebuggerModel.DebuggerModel>;
-  _selectedModel: SDK.DebuggerModel.DebuggerModel|null;
+  private readonly items: UI.ListModel.ListModel<SDK.DebuggerModel.DebuggerModel>;
+  private readonly list: UI.ListControl.ListControl<SDK.DebuggerModel.DebuggerModel>;
+  private selectedModel: SDK.DebuggerModel.DebuggerModel|null;
 
   private constructor() {
     super(true);
     this.registerRequiredCSS('panels/sources/threadsSidebarPane.css');
 
-    this._items = new UI.ListModel.ListModel();
-    this._list = new UI.ListControl.ListControl(this._items, this, UI.ListControl.ListMode.NonViewport);
+    this.items = new UI.ListModel.ListModel();
+    this.list = new UI.ListControl.ListControl(this.items, this, UI.ListControl.ListMode.NonViewport);
     const currentTarget = UI.Context.Context.instance().flavor(SDK.Target.Target);
-    this._selectedModel = currentTarget !== null ? currentTarget.model(SDK.DebuggerModel.DebuggerModel) : null;
-    this.contentElement.appendChild(this._list.element);
+    this.selectedModel = currentTarget !== null ? currentTarget.model(SDK.DebuggerModel.DebuggerModel) : null;
+    this.contentElement.appendChild(this.list.element);
 
-    UI.Context.Context.instance().addFlavorChangeListener(SDK.Target.Target, this._targetFlavorChanged, this);
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.Target.Target, this.targetFlavorChanged, this);
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.DebuggerModel.DebuggerModel, this);
   }
 
@@ -125,29 +123,29 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
   }
 
   modelAdded(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
-    this._items.insert(this._items.length, debuggerModel);
+    this.items.insert(this.items.length, debuggerModel);
     const currentTarget = UI.Context.Context.instance().flavor(SDK.Target.Target);
     if (currentTarget === debuggerModel.target()) {
-      this._list.selectItem(debuggerModel);
+      this.list.selectItem(debuggerModel);
     }
   }
 
   modelRemoved(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
-    this._items.remove(this._items.indexOf(debuggerModel));
+    this.items.remove(this.items.indexOf(debuggerModel));
   }
 
-  _targetFlavorChanged(event: Common.EventTarget.EventTargetEvent): void {
+  private targetFlavorChanged(event: Common.EventTarget.EventTargetEvent): void {
     const hadFocus = this.hasFocus();
     const target = (event.data as SDK.Target.Target);
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
-    this._list.selectItem(debuggerModel);
+    this.list.selectItem(debuggerModel);
     if (debuggerModel) {
-      this._list.refreshItem(debuggerModel);
+      this.list.refreshItem(debuggerModel);
     }
-    if (this._selectedModel !== null) {
-      this._list.refreshItem(this._selectedModel);
+    if (this.selectedModel !== null) {
+      this.list.refreshItem(this.selectedModel);
     }
-    this._selectedModel = debuggerModel;
+    this.selectedModel = debuggerModel;
     if (hadFocus) {
       this.focus();
     }

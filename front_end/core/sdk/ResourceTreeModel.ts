@@ -598,7 +598,6 @@ export class ResourceTreeFrame {
   private secureContextType: Protocol.Page.SecureContextType|null;
   private crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType|null;
   private gatedAPIFeatures: Protocol.Page.GatedAPIFeatures[]|null;
-  private originTrials: Protocol.Page.OriginTrial[]|null;
   private creationStackTrace: Protocol.Runtime.StackTrace|null;
   private creationStackTraceTarget: Target|null;
   private childFramesInternal: Set<ResourceTreeFrame>;
@@ -627,7 +626,6 @@ export class ResourceTreeFrame {
     this.secureContextType = payload && payload.secureContextType;
     this.crossOriginIsolatedContextType = payload && payload.crossOriginIsolatedContextType;
     this.gatedAPIFeatures = payload && payload.gatedAPIFeatures;
-    this.originTrials = (payload && payload.originTrials) || null;
 
     this.creationStackTrace = creationStackTrace;
     this.creationStackTraceTarget = null;
@@ -661,10 +659,6 @@ export class ResourceTreeFrame {
     return this.gatedAPIFeatures;
   }
 
-  getOriginTrials(): Protocol.Page.OriginTrial[]|null {
-    return this.originTrials;
-  }
-
   getCreationStackTraceData():
       {creationStackTrace: Protocol.Runtime.StackTrace|null, creationStackTraceTarget: Target} {
     return {
@@ -686,7 +680,6 @@ export class ResourceTreeFrame {
     this.crossOriginIsolatedContextType = framePayload.crossOriginIsolatedContextType;
     this.gatedAPIFeatures = framePayload.gatedAPIFeatures;
     this.backForwardCacheDetails = {restoredFromCache: undefined, explanations: []};
-    this.originTrials = framePayload.originTrials || null;
 
     const mainResource = this.resourcesMap.get(this.urlInternal);
     this.resourcesMap.clear();
@@ -939,6 +932,15 @@ export class ResourceTreeFrame {
       return null;
     }
     return response.states;
+  }
+
+  async getOriginTrials(): Promise<Protocol.Page.OriginTrial[]> {
+    const response =
+        await this.resourceTreeModel().target().pageAgent().invoke_getOriginTrials({frameId: this.idInternal});
+    if (response.getError()) {
+      return [];
+    }
+    return response.originTrials;
   }
 
   setCreationStackTrace(creationStackTraceData:

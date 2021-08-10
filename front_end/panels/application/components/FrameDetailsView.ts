@@ -268,6 +268,7 @@ export class FrameDetailsReportView extends HTMLElement {
   private protocolMonitorExperimentEnabled = false;
   private permissionsPolicies: Promise<Protocol.Page.PermissionsPolicyFeatureState[]|null>|null = null;
   private permissionsPolicySectionData: PermissionsPolicySectionData = {policies: [], showDetails: false};
+  private originTrialTreeView: OriginTrialTreeView = new OriginTrialTreeView();
 
   connectedCallback(): void {
     this.protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled('protocolMonitor');
@@ -313,16 +314,35 @@ export class FrameDetailsReportView extends HTMLElement {
   }
 
   private renderOriginTrial(): LitHtml.TemplateResult|{} {
-    const originTrials = this.frame?.getOriginTrials();
-    if (!originTrials?.length) {
+    if (!this.frame) {
       return LitHtml.nothing;
     }
+
+    this.originTrialTreeView.classList.add('span-cols');
+
+    const frame = this.frame;
+    const refreshOriginTrials: () => void = () => {
+      frame.getOriginTrials().then(trials => {
+        this.originTrialTreeView.data = {trials} as OriginTrialTreeViewData;
+      });
+    };
+    refreshOriginTrials();
+
     return LitHtml.html`
-    <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.originTrials)}
+    <${ReportView.ReportView.ReportSectionHeader.litTagName}>
+      ${i18nString(UIStrings.originTrials)}
+      <${IconButton.IconButton.IconButton.litTagName} class="inline-button" .data="${{
+      clickHandler: refreshOriginTrials,
+      groups: [
+        {
+          iconName: 'refresh_12x12_icon',
+          text: 'Refresh',
+        } as IconButton.IconButton.IconWithTextData,
+      ],
+    } as IconButton.IconButton.IconButtonData}">
+      </${IconButton.IconButton.IconButton.litTagName}>
     </${ReportView.ReportView.ReportSectionHeader.litTagName}>
-    <${OriginTrialTreeView.litTagName} class="span-cols"
-      .data=${{trials: originTrials} as OriginTrialTreeViewData}>
-    </${OriginTrialTreeView.litTagName}>
+    ${this.originTrialTreeView}
     <${ReportView.ReportView.ReportSectionDivider.litTagName}></${
         ReportView.ReportView.ReportSectionDivider.litTagName}>
     `;

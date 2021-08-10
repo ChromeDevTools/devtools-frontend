@@ -29,6 +29,10 @@ button.link {
   font-size: inherit;
 }
 
+.inline-button {
+  padding-left: 1ex;
+}
+
 .inline-comment {
   padding-left: 1ex;
   white-space: pre-line;

@@ -63,7 +63,7 @@ const makeFrame = (): SDK.ResourceTreeModel.ResourceTreeFrame => {
       },
       creationStackTraceTarget: null,
     }),
-    getOriginTrials: () => ([
+    getOriginTrials: async () => ([
       {
         trialName: 'AppCache',
         status: 'Enabled',

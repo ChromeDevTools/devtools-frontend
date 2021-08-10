@@ -2,24 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as UI from '../../legacy.js';
 
 export class SyntaxHighlighter {
-  _mimeType: string;
-  _stripExtraWhitespace: boolean;
+  private readonly mimeType: string;
+  private readonly stripExtraWhitespace: boolean;
 
   constructor(mimeType: string, stripExtraWhitespace: boolean) {
-    this._mimeType = mimeType;
-    this._stripExtraWhitespace = stripExtraWhitespace;
+    this.mimeType = mimeType;
+    this.stripExtraWhitespace = stripExtraWhitespace;
   }
 
   createSpan(content: string, className: string): Element {
     const span = document.createElement('span');
     span.className = className.replace(/\S+/g, 'cm-$&');
-    if (this._stripExtraWhitespace && className !== 'whitespace') {
+    if (this.stripExtraWhitespace && className !== 'whitespace') {
       content = content.replace(/^[\n\r]*/, '').replace(/\s*$/, '');
     }
     UI.UIUtils.createTextChild(span, content);
@@ -32,7 +30,7 @@ export class SyntaxHighlighter {
     let line: string;
 
     node.removeChildren();
-    const tokenize = TextUtils.CodeMirrorUtils.TokenizerFactory.instance().createTokenizer(this._mimeType);
+    const tokenize = TextUtils.CodeMirrorUtils.TokenizerFactory.instance().createTokenizer(this.mimeType);
     for (let i = 0; i < lines.length; ++i) {
       line = lines[i];
       plainTextStart = 0;

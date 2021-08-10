@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import '../../../../third_party/codemirror/codemirror.js';
 
 // TODO(crbug.com/1029037): lazily load these files again after the

@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../../../core/common/common.js';
 import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
@@ -87,20 +85,20 @@ const linkHandlers = new Map<string, LinkHandler>();
 let linkHandlerSettingInstance: Common.Settings.Setting<string>;
 
 export class Linkifier implements SDK.TargetManager.Observer {
-  _maxLength: number;
-  _anchorsByTarget: Map<SDK.Target.Target, Element[]>;
-  _locationPoolByTarget: Map<SDK.Target.Target, Bindings.LiveLocation.LiveLocationPool>;
-  _onLiveLocationUpdate: (() => void)|undefined;
-  _useLinkDecorator: boolean;
+  private readonly maxLength: number;
+  private readonly anchorsByTarget: Map<SDK.Target.Target, Element[]>;
+  private readonly locationPoolByTarget: Map<SDK.Target.Target, Bindings.LiveLocation.LiveLocationPool>;
+  private onLiveLocationUpdate: (() => void)|undefined;
+  private useLinkDecorator: boolean;
 
   constructor(
       maxLengthForDisplayedURLs?: number, useLinkDecorator?: boolean,
       onLiveLocationUpdate: (() => void) = (): void => {}) {
-    this._maxLength = maxLengthForDisplayedURLs || UI.UIUtils.MaxLengthForDisplayedURLs;
-    this._anchorsByTarget = new Map();
-    this._locationPoolByTarget = new Map();
-    this._onLiveLocationUpdate = onLiveLocationUpdate;
-    this._useLinkDecorator = Boolean(useLinkDecorator);
+    this.maxLength = maxLengthForDisplayedURLs || UI.UIUtils.MaxLengthForDisplayedURLs;
+    this.anchorsByTarget = new Map();
+    this.locationPoolByTarget = new Map();
+    this.onLiveLocationUpdate = onLiveLocationUpdate;
+    this.useLinkDecorator = Boolean(useLinkDecorator);
     instances.add(this);
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
   }
@@ -110,27 +108,27 @@ export class Linkifier implements SDK.TargetManager.Observer {
     decorator = linkDecorator;
     linkDecorator.addEventListener(LinkDecorator.Events.LinkIconChanged, onLinkIconChanged);
     for (const linkifier of instances) {
-      linkifier._updateAllAnchorDecorations();
+      linkifier.updateAllAnchorDecorations();
     }
 
     function onLinkIconChanged(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
       const uiSourceCode = event.data;
       const links = anchorsByUISourceCode.get(uiSourceCode) || [];
       for (const link of links) {
-        Linkifier._updateLinkDecorations(link);
+        Linkifier.updateLinkDecorations(link);
       }
     }
   }
 
-  _updateAllAnchorDecorations(): void {
-    for (const anchors of this._anchorsByTarget.values()) {
+  private updateAllAnchorDecorations(): void {
+    for (const anchors of this.anchorsByTarget.values()) {
       for (const anchor of anchors) {
-        Linkifier._updateLinkDecorations(anchor);
+        Linkifier.updateLinkDecorations(anchor);
       }
     }
   }
 
-  static _bindUILocation(anchor: Element, uiLocation: Workspace.UISourceCode.UILocation): void {
+  private static bindUILocation(anchor: Element, uiLocation: Workspace.UISourceCode.UILocation): void {
     const linkInfo = Linkifier.linkInfo(anchor);
     if (!linkInfo) {
       return;
@@ -148,7 +146,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
     sourceCodeAnchors.add(anchor);
   }
 
-  static _unbindUILocation(anchor: Element): void {
+  private static unbindUILocation(anchor: Element): void {
     const info = Linkifier.linkInfo(anchor);
     if (!info || !info.uiLocation) {
       return;
@@ -163,29 +161,29 @@ export class Linkifier implements SDK.TargetManager.Observer {
   }
 
   targetAdded(target: SDK.Target.Target): void {
-    this._anchorsByTarget.set(target, []);
-    this._locationPoolByTarget.set(target, new Bindings.LiveLocation.LiveLocationPool());
+    this.anchorsByTarget.set(target, []);
+    this.locationPoolByTarget.set(target, new Bindings.LiveLocation.LiveLocationPool());
   }
 
   targetRemoved(target: SDK.Target.Target): void {
-    const locationPool = this._locationPoolByTarget.get(target);
-    this._locationPoolByTarget.delete(target);
+    const locationPool = this.locationPoolByTarget.get(target);
+    this.locationPoolByTarget.delete(target);
     if (!locationPool) {
       return;
     }
     locationPool.disposeAll();
-    const anchors = (this._anchorsByTarget.get(target) as HTMLElement[] | null);
+    const anchors = (this.anchorsByTarget.get(target) as HTMLElement[] | null);
     if (!anchors) {
       return;
     }
-    this._anchorsByTarget.delete(target);
+    this.anchorsByTarget.delete(target);
     for (const anchor of anchors) {
       const info = Linkifier.linkInfo(anchor);
       if (!info) {
         continue;
       }
       info.liveLocation = null;
-      Linkifier._unbindUILocation(anchor);
+      Linkifier.unbindUILocation(anchor);
       const fallback = (info.fallback as HTMLElement | null);
       if (fallback) {
         // @ts-ignore
@@ -207,7 +205,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
     let fallbackAnchor: HTMLElement|null = null;
     const linkifyURLOptions = {
       lineNumber,
-      maxLength: this._maxLength,
+      maxLength: this.maxLength,
       columnNumber: options ? options.columnNumber : undefined,
       className: options ? options.className : undefined,
       tabStop: options ? options.tabStop : undefined,
@@ -258,23 +256,23 @@ export class Linkifier implements SDK.TargetManager.Observer {
     // Not initialising the anchor element with 'zero width space' (\u200b) causes a crash
     // in the layout engine.
     // TODO(szuend): Remove comment and workaround once the crash is fixed.
-    const anchor = Linkifier._createLink(
+    const anchor = Linkifier.createLink(
         fallbackAnchor && fallbackAnchor.textContent ? fallbackAnchor.textContent : '\u200b', className,
         createLinkOptions);
     const info = Linkifier.linkInfo(anchor);
     if (!info) {
       return fallbackAnchor;
     }
-    info.enableDecorator = this._useLinkDecorator;
+    info.enableDecorator = this.useLinkDecorator;
     info.fallback = fallbackAnchor;
 
-    const pool = this._locationPoolByTarget.get(rawLocation.debuggerModel.target());
+    const pool = this.locationPoolByTarget.get(rawLocation.debuggerModel.target());
     if (!pool) {
       return fallbackAnchor;
     }
-    const currentOnLiveLocationUpdate = this._onLiveLocationUpdate;
+    const currentOnLiveLocationUpdate = this.onLiveLocationUpdate;
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
-        .createLiveLocation(rawLocation, this._updateAnchor.bind(this, anchor), pool)
+        .createLiveLocation(rawLocation, this.updateAnchor.bind(this, anchor), pool)
         .then(liveLocation => {
           if (liveLocation) {
             info.liveLocation = liveLocation;
@@ -284,7 +282,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
           }
         });
 
-    const anchors = (this._anchorsByTarget.get(rawLocation.debuggerModel.target()) as Element[]);
+    const anchors = (this.anchorsByTarget.get(rawLocation.debuggerModel.target()) as Element[]);
     anchors.push(anchor);
     return anchor;
   }
@@ -295,7 +293,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
     const scriptLink = this.maybeLinkifyScriptLocation(target, scriptId, sourceURL, lineNumber, options);
     const linkifyURLOptions = {
       lineNumber,
-      maxLength: this._maxLength,
+      maxLength: this.maxLength,
       className: options ? options.className : undefined,
       columnNumber: options ? options.columnNumber : undefined,
       inlineFrameIndex: options ? options.inlineFrameIndex : 0,
@@ -341,7 +339,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
       lineNumber: topFrame.lineNumber,
       columnNumber: topFrame.columnNumber,
       inlineFrameIndex: 0,
-      maxLength: this._maxLength,
+      maxLength: this.maxLength,
       text: undefined,
       preventClick: undefined,
       tabStop: undefined,
@@ -363,21 +361,21 @@ export class Linkifier implements SDK.TargetManager.Observer {
     // Not initialising the anchor element with 'zero width space' (\u200b) causes a crash
     // in the layout engine.
     // TODO(szuend): Remove comment and workaround once the crash is fixed.
-    const anchor = Linkifier._createLink('\u200b', classes || '');
+    const anchor = Linkifier.createLink('\u200b', classes || '');
     const info = Linkifier.linkInfo(anchor);
     if (!info) {
       return fallbackAnchor;
     }
-    info.enableDecorator = this._useLinkDecorator;
+    info.enableDecorator = this.useLinkDecorator;
     info.fallback = fallbackAnchor;
 
-    const pool = this._locationPoolByTarget.get(target);
+    const pool = this.locationPoolByTarget.get(target);
     if (!pool) {
       return fallbackAnchor;
     }
-    const currentOnLiveLocationUpdate = this._onLiveLocationUpdate;
+    const currentOnLiveLocationUpdate = this.onLiveLocationUpdate;
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
-        .createStackTraceTopFrameLiveLocation(rawLocations, this._updateAnchor.bind(this, anchor), pool)
+        .createStackTraceTopFrameLiveLocation(rawLocations, this.updateAnchor.bind(this, anchor), pool)
         .then(liveLocation => {
           info.liveLocation = liveLocation;
           // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
@@ -385,7 +383,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
           currentOnLiveLocationUpdate();
         });
 
-    const anchors = (this._anchorsByTarget.get(target) as Element[]);
+    const anchors = (this.anchorsByTarget.get(target) as Element[]);
     anchors.push(anchor);
     return anchor;
   }
@@ -402,20 +400,20 @@ export class Linkifier implements SDK.TargetManager.Observer {
     // Not initialising the anchor element with 'zero width space' (\u200b) causes a crash
     // in the layout engine.
     // TODO(szuend): Remove comment and workaround once the crash is fixed.
-    const anchor = (Linkifier._createLink('\u200b', classes || '', createLinkOptions) as HTMLElement);
+    const anchor = (Linkifier.createLink('\u200b', classes || '', createLinkOptions) as HTMLElement);
     const info = Linkifier.linkInfo(anchor);
     if (!info) {
       return anchor;
     }
-    info.enableDecorator = this._useLinkDecorator;
+    info.enableDecorator = this.useLinkDecorator;
 
-    const pool = this._locationPoolByTarget.get(rawLocation.cssModel().target());
+    const pool = this.locationPoolByTarget.get(rawLocation.cssModel().target());
     if (!pool) {
       return anchor;
     }
-    const currentOnLiveLocationUpdate = this._onLiveLocationUpdate;
+    const currentOnLiveLocationUpdate = this.onLiveLocationUpdate;
     Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance()
-        .createLiveLocation(rawLocation, this._updateAnchor.bind(this, anchor), pool)
+        .createLiveLocation(rawLocation, this.updateAnchor.bind(this, anchor), pool)
         .then(liveLocation => {
           info.liveLocation = liveLocation;
           // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
@@ -423,14 +421,14 @@ export class Linkifier implements SDK.TargetManager.Observer {
           currentOnLiveLocationUpdate();
         });
 
-    const anchors = (this._anchorsByTarget.get(rawLocation.cssModel().target()) as Element[]);
+    const anchors = (this.anchorsByTarget.get(rawLocation.cssModel().target()) as Element[]);
     anchors.push(anchor);
     return anchor;
   }
 
   reset(): void {
     // Create a copy of {keys} so {targetRemoved} can safely modify the map.
-    for (const target of [...this._anchorsByTarget.keys()]) {
+    for (const target of [...this.anchorsByTarget.keys()]) {
       this.targetRemoved(target);
       this.targetAdded(target);
     }
@@ -438,15 +436,15 @@ export class Linkifier implements SDK.TargetManager.Observer {
 
   dispose(): void {
     // Create a copy of {keys} so {targetRemoved} can safely modify the map.
-    for (const target of [...this._anchorsByTarget.keys()]) {
+    for (const target of [...this.anchorsByTarget.keys()]) {
       this.targetRemoved(target);
     }
     SDK.TargetManager.TargetManager.instance().unobserveTargets(this);
     instances.delete(this);
   }
 
-  async _updateAnchor(anchor: HTMLElement, liveLocation: Bindings.LiveLocation.LiveLocation): Promise<void> {
-    Linkifier._unbindUILocation(anchor);
+  private async updateAnchor(anchor: HTMLElement, liveLocation: Bindings.LiveLocation.LiveLocation): Promise<void> {
+    Linkifier.unbindUILocation(anchor);
     const uiLocation = await liveLocation.uiLocation();
     if (!uiLocation) {
       if (liveLocation instanceof Bindings.CSSWorkspaceBinding.LiveLocation) {
@@ -458,7 +456,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
           }, false);
           // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
           // This workaround is needed to make stylelint happy
-          Linkifier._setTrimmedText(
+          Linkifier.setTrimmedText(
               anchor,
               '<' +
                   'style>');
@@ -467,9 +465,9 @@ export class Linkifier implements SDK.TargetManager.Observer {
       return;
     }
 
-    Linkifier._bindUILocation(anchor, uiLocation);
+    Linkifier.bindUILocation(anchor, uiLocation);
     const text = uiLocation.linkText(true /* skipTrim */);
-    Linkifier._setTrimmedText(anchor, text, this._maxLength);
+    Linkifier.setTrimmedText(anchor, text, this.maxLength);
 
     let titleText = uiLocation.uiSourceCode.url();
     if (uiLocation.uiSourceCode.mimeType() === 'application/wasm') {
@@ -483,14 +481,14 @@ export class Linkifier implements SDK.TargetManager.Observer {
     }
     UI.Tooltip.Tooltip.install(anchor, titleText);
     anchor.classList.toggle('ignore-list-link', await liveLocation.isIgnoreListed());
-    Linkifier._updateLinkDecorations(anchor);
+    Linkifier.updateLinkDecorations(anchor);
   }
 
   setLiveLocationUpdateCallback(callback: () => void): void {
-    this._onLiveLocationUpdate = callback;
+    this.onLiveLocationUpdate = callback;
   }
 
-  static _updateLinkDecorations(anchor: Element): void {
+  private static updateLinkDecorations(anchor: Element): void {
     const info = Linkifier.linkInfo(anchor);
     if (!info || !info.enableDecorator) {
       return;
@@ -543,7 +541,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
     }
     const title = linkText !== url ? url : '';
     const linkOptions = {maxLength, title, href: url, preventClick, tabStop: options.tabStop, bypassURLTrimming};
-    const link = Linkifier._createLink(linkText, className, linkOptions);
+    const link = Linkifier.createLink(linkText, className, linkOptions);
     const info = Linkifier.linkInfo(link);
     if (!info) {
       return link;
@@ -568,7 +566,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
       tabStop: undefined,
       bypassURLTrimming: undefined,
     };
-    const link = Linkifier._createLink(text, className || '', createLinkOptions);
+    const link = Linkifier.createLink(text, className || '', createLinkOptions);
     const linkInfo = Linkifier.linkInfo(link);
     if (!linkInfo) {
       return link;
@@ -577,7 +575,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
     return link;
   }
 
-  static _createLink(text: string|HTMLElement, className: string, options?: _CreateLinkOptions): HTMLElement {
+  private static createLink(text: string|HTMLElement, className: string, options?: _CreateLinkOptions): HTMLElement {
     options = options || {
       maxLength: undefined,
       title: undefined,
@@ -605,9 +603,9 @@ export class Linkifier implements SDK.TargetManager.Observer {
     } else {
       if (bypassURLTrimming) {
         link.classList.add('devtools-link-styled-trim');
-        Linkifier._appendTextWithoutHashes(link, text);
+        Linkifier.appendTextWithoutHashes(link, text);
       } else {
-        Linkifier._setTrimmedText(link, text, maxLength);
+        Linkifier.setTrimmedText(link, text, maxLength);
       }
     }
 
@@ -626,12 +624,12 @@ export class Linkifier implements SDK.TargetManager.Observer {
     infoByAnchor.set(link, linkInfo);
     if (!preventClick) {
       link.addEventListener('click', event => {
-        if (Linkifier._handleClick(event)) {
+        if (Linkifier.handleClick(event)) {
           event.consume(true);
         }
       }, false);
       link.addEventListener('keydown', event => {
-        if (event.key === 'Enter' && Linkifier._handleClick(event)) {
+        if (event.key === 'Enter' && Linkifier.handleClick(event)) {
           event.consume(true);
         }
       }, false);
@@ -643,15 +641,15 @@ export class Linkifier implements SDK.TargetManager.Observer {
     return link;
   }
 
-  static _setTrimmedText(link: Element, text: string, maxLength?: number): void {
+  private static setTrimmedText(link: Element, text: string, maxLength?: number): void {
     link.removeChildren();
     if (maxLength && text.length > maxLength) {
       const middleSplit = splitMiddle(text, maxLength);
-      Linkifier._appendTextWithoutHashes(link, middleSplit[0]);
-      Linkifier._appendHiddenText(link, middleSplit[1]);
-      Linkifier._appendTextWithoutHashes(link, middleSplit[2]);
+      Linkifier.appendTextWithoutHashes(link, middleSplit[0]);
+      Linkifier.appendHiddenText(link, middleSplit[1]);
+      Linkifier.appendTextWithoutHashes(link, middleSplit[2]);
     } else {
-      Linkifier._appendTextWithoutHashes(link, text);
+      Linkifier.appendTextWithoutHashes(link, text);
     }
 
     function splitMiddle(string: string, maxLength: number): string[] {
@@ -672,19 +670,19 @@ export class Linkifier implements SDK.TargetManager.Observer {
     }
   }
 
-  static _appendTextWithoutHashes(link: Element, string: string): void {
+  private static appendTextWithoutHashes(link: Element, string: string): void {
     const hashSplit = TextUtils.TextUtils.Utils.splitStringByRegexes(string, [/[a-f0-9]{20,}/g]);
     for (const match of hashSplit) {
       if (match.regexIndex === -1) {
         UI.UIUtils.createTextChild(link, match.value);
       } else {
         UI.UIUtils.createTextChild(link, match.value.substring(0, 7));
-        Linkifier._appendHiddenText(link, match.value.substring(7));
+        Linkifier.appendHiddenText(link, match.value.substring(7));
       }
     }
   }
 
-  static _appendHiddenText(link: Element, string: string): void {
+  private static appendHiddenText(link: Element, string: string): void {
     const ellipsisNode = UI.UIUtils.createTextChild(link.createChild('span', 'devtools-link-ellipsis'), '…');
     textByAnchor.set(ellipsisNode, string);
   }
@@ -697,7 +695,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
     return /** @type {?_LinkInfo} */ link ? infoByAnchor.get(link) || null : null as _LinkInfo | null;
   }
 
-  static _handleClick(event: Event): boolean {
+  private static handleClick(event: Event): boolean {
     const link = (event.currentTarget as Element);
     if (UI.UIUtils.isBeingEdited((event.target as Node)) || link.hasSelection()) {
       return false;
@@ -709,12 +707,12 @@ export class Linkifier implements SDK.TargetManager.Observer {
     return Linkifier.invokeFirstAction(linkInfo);
   }
 
-  static _handleClickFromNewComponentLand(linkInfo: _LinkInfo): void {
+  static handleClickFromNewComponentLand(linkInfo: _LinkInfo): void {
     Linkifier.invokeFirstAction(linkInfo);
   }
 
   static invokeFirstAction(linkInfo: _LinkInfo): boolean {
-    const actions = Linkifier._linkActions(linkInfo);
+    const actions = Linkifier.linkActions(linkInfo);
     if (actions.length) {
       actions[0].handler.call(null);
       return true;
@@ -722,7 +720,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
     return false;
   }
 
-  static _linkHandlerSetting(): Common.Settings.Setting<string> {
+  static linkHandlerSetting(): Common.Settings.Setting<string> {
     if (!linkHandlerSettingInstance) {
       linkHandlerSettingInstance =
           Common.Settings.Settings.instance().createSetting('openLinkHandler', i18nString(UIStrings.auto));
@@ -732,12 +730,12 @@ export class Linkifier implements SDK.TargetManager.Observer {
 
   static registerLinkHandler(title: string, handler: LinkHandler): void {
     linkHandlers.set(title, handler);
-    LinkHandlerSettingUI.instance()._update();
+    LinkHandlerSettingUI.instance().update();
   }
 
   static unregisterLinkHandler(title: string): void {
     linkHandlers.delete(title);
-    LinkHandlerSettingUI.instance()._update();
+    LinkHandlerSettingUI.instance().update();
   }
 
   static uiLocation(link: Element): Workspace.UISourceCode.UILocation|null {
@@ -745,7 +743,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
     return info ? info.uiLocation : null;
   }
 
-  static _linkActions(info: _LinkInfo): {
+  static linkActions(info: _LinkInfo): {
     section: string,
     title: string,
     handler: () => Promise<void>| void,
@@ -796,7 +794,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
           title: i18nString(UIStrings.openUsingS, {PH1: title}),
           handler: handler.bind(null, contentProvider, lineNumber),
         };
-        if (title === Linkifier._linkHandlerSetting().get()) {
+        if (title === Linkifier.linkHandlerSetting().get()) {
           result.unshift(action);
         } else {
           result.push(action);
@@ -866,7 +864,7 @@ export class LinkContextMenuProvider implements UI.ContextMenu.Provider {
       return;
     }
 
-    const actions = Linkifier._linkActions(linkInfo);
+    const actions = Linkifier.linkActions(linkInfo);
     for (const action of actions) {
       contextMenu.section(action.section).appendItem(action.title, action.handler);
     }
@@ -876,13 +874,13 @@ export class LinkContextMenuProvider implements UI.ContextMenu.Provider {
 let linkHandlerSettingUIInstance: LinkHandlerSettingUI;
 
 export class LinkHandlerSettingUI implements UI.SettingsUI.SettingUI {
-  _element: HTMLSelectElement;
+  private element: HTMLSelectElement;
 
   private constructor() {
-    this._element = document.createElement('select');
-    this._element.classList.add('chrome-select');
-    this._element.addEventListener('change', this._onChange.bind(this), false);
-    this._update();
+    this.element = document.createElement('select');
+    this.element.classList.add('chrome-select');
+    this.element.addEventListener('change', this.onChange.bind(this), false);
+    this.update();
   }
 
   static instance(opts: {
@@ -896,29 +894,29 @@ export class LinkHandlerSettingUI implements UI.SettingsUI.SettingUI {
     return linkHandlerSettingUIInstance;
   }
 
-  _update(): void {
-    this._element.removeChildren();
+  update(): void {
+    this.element.removeChildren();
     const names = [...linkHandlers.keys()];
     names.unshift(i18nString(UIStrings.auto));
     for (const name of names) {
       const option = document.createElement('option');
       option.textContent = name;
-      option.selected = name === Linkifier._linkHandlerSetting().get();
-      this._element.appendChild(option);
+      option.selected = name === Linkifier.linkHandlerSetting().get();
+      this.element.appendChild(option);
     }
-    this._element.disabled = names.length <= 1;
+    this.element.disabled = names.length <= 1;
   }
 
-  _onChange(event: Event): void {
+  private onChange(event: Event): void {
     if (!event.target) {
       return;
     }
     const value = (event.target as HTMLSelectElement).value;
-    Linkifier._linkHandlerSetting().set(value);
+    Linkifier.linkHandlerSetting().set(value);
   }
 
   settingElement(): Element|null {
-    return UI.SettingsUI.createCustomSetting(i18nString(UIStrings.linkHandling), this._element);
+    return UI.SettingsUI.createCustomSetting(i18nString(UIStrings.linkHandling), this.element);
   }
 }
 
@@ -937,7 +935,7 @@ function listenForNewComponentLinkifierEvents(): void {
     const eventWithData = (unknownEvent as {
       data: _LinkInfo,
     });
-    Linkifier._handleClickFromNewComponentLand(eventWithData.data);
+    Linkifier.handleClickFromNewComponentLand(eventWithData.data);
   });
 }
 

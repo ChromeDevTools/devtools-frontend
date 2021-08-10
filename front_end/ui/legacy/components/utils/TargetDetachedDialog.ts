@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../../../generated/protocol-proxy-api.js';
@@ -19,12 +17,12 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/utils/TargetDetachedDialog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TargetDetachedDialog extends SDK.SDKModel.SDKModel implements ProtocolProxyApi.InspectorDispatcher {
-  _hideCrashedDialog: (() => void)|null;
+  private hideCrashedDialog: (() => void)|null;
   constructor(target: SDK.Target.Target) {
     super(target);
     target.registerInspectorDispatcher(this);
     target.inspectorAgent().invoke_enable();
-    this._hideCrashedDialog = null;
+    this.hideCrashedDialog = null;
   }
 
   detached({reason}: Protocol.Inspector.DetachedEvent): void {
@@ -47,10 +45,10 @@ export class TargetDetachedDialog extends SDK.SDKModel.SDKModel implements Proto
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
     dialog.addCloseButton();
     dialog.setDimmed(true);
-    this._hideCrashedDialog = dialog.hide.bind(dialog);
+    this.hideCrashedDialog = dialog.hide.bind(dialog);
     new UI.TargetCrashedScreen
         .TargetCrashedScreen(() => {
-          this._hideCrashedDialog = null;
+          this.hideCrashedDialog = null;
         })
         .show(dialog.contentElement);
 
@@ -65,9 +63,9 @@ export class TargetDetachedDialog extends SDK.SDKModel.SDKModel implements Proto
    */
   targetReloadedAfterCrash(): void {
     this.target().runtimeAgent().invoke_runIfWaitingForDebugger();
-    if (this._hideCrashedDialog) {
-      this._hideCrashedDialog.call(null);
-      this._hideCrashedDialog = null;
+    if (this.hideCrashedDialog) {
+      this.hideCrashedDialog.call(null);
+      this.hideCrashedDialog = null;
     }
   }
 }

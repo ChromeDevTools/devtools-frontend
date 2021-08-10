@@ -12,3 +12,11 @@
 :host-context(.-theme-with-dark-background) .protocol-monitor {
   --override-data-grid-sent-message-row-background-color: rgb(43 46 56);
 }
+
+.protocol-monitor .protocol-monitor-toolbar {
+  border-bottom: 1px solid var(--color-details-hairline);
+}
+
+.protocol-monitor .protocol-monitor-bottom-toolbar {
+  border-top: 1px solid var(--color-details-hairline);
+}

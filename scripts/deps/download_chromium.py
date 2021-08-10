@@ -68,7 +68,7 @@ def download_and_extract(options):
         os.chmod(EXPECTED_BINARY, 0o555)
         # On linux, the crashpad_handler binary needs the +x bit, too.
         crashpad = os.path.join(os.path.dirname(EXPECTED_BINARY),
-                                'crashpad_handler')
+                                'chrome_crashpad_handler')
         if os.path.isfile(crashpad):
             os.chmod(crashpad, 0o555)
     else:

@@ -2,30 +2,28 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../../../core/common/common.js';
 
 export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper {
-  _isNull: boolean;
-  _contrastRatio: number|null;
-  _contrastRatioAPCA: number|null;
-  _contrastRatioThresholds: {
+  private readonly isNullInternal: boolean;
+  private contrastRatioInternal: number|null;
+  private contrastRatioAPCAInternal: number|null;
+  private contrastRatioThresholds: {
     [x: string]: number,
   }|null;
-  _contrastRationAPCAThreshold: number|null;
-  _fgColor: Common.Color.Color|null;
-  _bgColor: Common.Color.Color|null;
-  _colorFormat!: string|undefined;
+  private readonly contrastRationAPCAThreshold: number|null;
+  private fgColor: Common.Color.Color|null;
+  private bgColorInternal: Common.Color.Color|null;
+  private colorFormatInternal!: string|undefined;
   constructor(contrastInfo: ContrastInfoType|null) {
     super();
-    this._isNull = true;
-    this._contrastRatio = null;
-    this._contrastRatioAPCA = null;
-    this._contrastRatioThresholds = null;
-    this._contrastRationAPCAThreshold = 0;
-    this._fgColor = null;
-    this._bgColor = null;
+    this.isNullInternal = true;
+    this.contrastRatioInternal = null;
+    this.contrastRatioAPCAInternal = null;
+    this.contrastRatioThresholds = null;
+    this.contrastRationAPCAThreshold = 0;
+    this.fgColor = null;
+    this.bgColorInternal = null;
 
     if (!contrastInfo) {
       return;
@@ -36,92 +34,94 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper {
       return;
     }
 
-    this._isNull = false;
-    this._contrastRatioThresholds =
+    this.isNullInternal = false;
+    this.contrastRatioThresholds =
         Common.ColorUtils.getContrastThreshold(contrastInfo.computedFontSize, contrastInfo.computedFontWeight);
-    this._contrastRationAPCAThreshold =
+    this.contrastRationAPCAThreshold =
         Common.ColorUtils.getAPCAThreshold(contrastInfo.computedFontSize, contrastInfo.computedFontWeight);
     const bgColorText = contrastInfo.backgroundColors[0];
     const bgColor = Common.Color.Color.parse(bgColorText);
     if (bgColor) {
-      this._setBgColorInternal(bgColor);
+      this.setBgColorInternal(bgColor);
     }
   }
 
   isNull(): boolean {
-    return this._isNull;
+    return this.isNullInternal;
   }
 
   setColor(fgColor: Common.Color.Color, colorFormat?: string): void {
-    this._fgColor = fgColor;
-    this._colorFormat = colorFormat;
-    this._updateContrastRatio();
+    this.fgColor = fgColor;
+    this.colorFormatInternal = colorFormat;
+    this.updateContrastRatio();
     this.dispatchEventToListeners(Events.ContrastInfoUpdated);
   }
 
   colorFormat(): string|undefined {
-    return this._colorFormat;
+    return this.colorFormatInternal;
   }
 
   color(): Common.Color.Color|null {
-    return this._fgColor;
+    return this.fgColor;
   }
 
   contrastRatio(): number|null {
-    return this._contrastRatio;
+    return this.contrastRatioInternal;
   }
 
   contrastRatioAPCA(): number|null {
-    return this._contrastRatioAPCA;
+    return this.contrastRatioAPCAInternal;
   }
 
   contrastRatioAPCAThreshold(): number|null {
-    return this._contrastRationAPCAThreshold;
+    return this.contrastRationAPCAThreshold;
   }
 
   setBgColor(bgColor: Common.Color.Color): void {
-    this._setBgColorInternal(bgColor);
+    this.setBgColorInternal(bgColor);
     this.dispatchEventToListeners(Events.ContrastInfoUpdated);
   }
 
-  _setBgColorInternal(bgColor: Common.Color.Color): void {
-    this._bgColor = bgColor;
+  private setBgColorInternal(bgColor: Common.Color.Color): void {
+    this.bgColorInternal = bgColor;
 
-    if (!this._fgColor) {
+    if (!this.fgColor) {
       return;
     }
 
-    const fgRGBA = this._fgColor.rgba();
+    const fgRGBA = this.fgColor.rgba();
 
     // If we have a semi-transparent background color over an unknown
     // background, draw the line for the "worst case" scenario: where
     // the unknown background is the same color as the text.
     if (bgColor.hasAlpha()) {
       const blendedRGBA: number[] = Common.ColorUtils.blendColors(bgColor.rgba(), fgRGBA);
-      this._bgColor = new Common.Color.Color(blendedRGBA, Common.Color.Format.RGBA);
+      this.bgColorInternal = new Common.Color.Color(blendedRGBA, Common.Color.Format.RGBA);
     }
 
-    this._contrastRatio = Common.ColorUtils.contrastRatio(fgRGBA, this._bgColor.rgba());
-    this._contrastRatioAPCA = Common.ColorUtils.contrastRatioAPCA(this._fgColor.rgba(), this._bgColor.rgba());
+    this.contrastRatioInternal = Common.ColorUtils.contrastRatio(fgRGBA, this.bgColorInternal.rgba());
+    this.contrastRatioAPCAInternal =
+        Common.ColorUtils.contrastRatioAPCA(this.fgColor.rgba(), this.bgColorInternal.rgba());
   }
 
   bgColor(): Common.Color.Color|null {
-    return this._bgColor;
+    return this.bgColorInternal;
   }
 
-  _updateContrastRatio(): void {
-    if (!this._bgColor || !this._fgColor) {
+  private updateContrastRatio(): void {
+    if (!this.bgColorInternal || !this.fgColor) {
       return;
     }
-    this._contrastRatio = Common.ColorUtils.contrastRatio(this._fgColor.rgba(), this._bgColor.rgba());
-    this._contrastRatioAPCA = Common.ColorUtils.contrastRatioAPCA(this._fgColor.rgba(), this._bgColor.rgba());
+    this.contrastRatioInternal = Common.ColorUtils.contrastRatio(this.fgColor.rgba(), this.bgColorInternal.rgba());
+    this.contrastRatioAPCAInternal =
+        Common.ColorUtils.contrastRatioAPCA(this.fgColor.rgba(), this.bgColorInternal.rgba());
   }
 
   contrastRatioThreshold(level: string): number|null {
-    if (!this._contrastRatioThresholds) {
+    if (!this.contrastRatioThresholds) {
       return null;
     }
-    return this._contrastRatioThresholds[level];
+    return this.contrastRatioThresholds[level];
   }
 }
 

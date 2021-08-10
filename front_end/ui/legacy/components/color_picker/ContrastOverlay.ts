@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../../../core/common/common.js';
 import * as Root from '../../../../core/root/root.js';
 import * as UI from '../../legacy.js';
@@ -12,71 +10,71 @@ import type {ContrastInfo} from './ContrastInfo.js';
 import {Events} from './ContrastInfo.js';
 
 export class ContrastOverlay {
-  _contrastInfo: ContrastInfo;
-  _visible: boolean;
-  _contrastRatioSVG: Element;
-  _contrastRatioLines: Map<string, Element>;
-  _width: number;
-  _height: number;
-  _contrastRatioLineBuilder: ContrastRatioLineBuilder;
-  _contrastRatioLinesThrottler: Common.Throttler.Throttler;
-  _drawContrastRatioLinesBound: () => Promise<void>;
+  private contrastInfo: ContrastInfo;
+  private visible: boolean;
+  private readonly contrastRatioSVG: Element;
+  private readonly contrastRatioLines: Map<string, Element>;
+  private width: number;
+  private height: number;
+  private readonly contrastRatioLineBuilder: ContrastRatioLineBuilder;
+  private readonly contrastRatioLinesThrottler: Common.Throttler.Throttler;
+  private readonly drawContrastRatioLinesBound: () => Promise<void>;
   constructor(contrastInfo: ContrastInfo, colorElement: Element) {
-    this._contrastInfo = contrastInfo;
+    this.contrastInfo = contrastInfo;
 
-    this._visible = false;
+    this.visible = false;
 
-    this._contrastRatioSVG = UI.UIUtils.createSVGChild(colorElement, 'svg', 'spectrum-contrast-container fill');
-    this._contrastRatioLines = new Map();
+    this.contrastRatioSVG = UI.UIUtils.createSVGChild(colorElement, 'svg', 'spectrum-contrast-container fill');
+    this.contrastRatioLines = new Map();
     if (Root.Runtime.experiments.isEnabled('APCA')) {
-      this._contrastRatioLines.set(
-          'APCA', UI.UIUtils.createSVGChild(this._contrastRatioSVG, 'path', 'spectrum-contrast-line'));
+      this.contrastRatioLines.set(
+          'APCA', UI.UIUtils.createSVGChild(this.contrastRatioSVG, 'path', 'spectrum-contrast-line'));
     } else {
-      this._contrastRatioLines.set(
-          'aa', UI.UIUtils.createSVGChild(this._contrastRatioSVG, 'path', 'spectrum-contrast-line'));
-      this._contrastRatioLines.set(
-          'aaa', UI.UIUtils.createSVGChild(this._contrastRatioSVG, 'path', 'spectrum-contrast-line'));
+      this.contrastRatioLines.set(
+          'aa', UI.UIUtils.createSVGChild(this.contrastRatioSVG, 'path', 'spectrum-contrast-line'));
+      this.contrastRatioLines.set(
+          'aaa', UI.UIUtils.createSVGChild(this.contrastRatioSVG, 'path', 'spectrum-contrast-line'));
     }
 
-    this._width = 0;
-    this._height = 0;
+    this.width = 0;
+    this.height = 0;
 
-    this._contrastRatioLineBuilder = new ContrastRatioLineBuilder(this._contrastInfo);
+    this.contrastRatioLineBuilder = new ContrastRatioLineBuilder(this.contrastInfo);
 
-    this._contrastRatioLinesThrottler = new Common.Throttler.Throttler(0);
-    this._drawContrastRatioLinesBound = this._drawContrastRatioLines.bind(this);
+    this.contrastRatioLinesThrottler = new Common.Throttler.Throttler(0);
+    this.drawContrastRatioLinesBound = this.drawContrastRatioLines.bind(this);
 
-    this._contrastInfo.addEventListener(Events.ContrastInfoUpdated, this._update.bind(this));
+    this.contrastInfo.addEventListener(Events.ContrastInfoUpdated, this.update.bind(this));
   }
 
-  _update(): void {
-    if (!this._visible || this._contrastInfo.isNull()) {
+  private update(): void {
+    if (!this.visible || this.contrastInfo.isNull()) {
       return;
     }
-    if (Root.Runtime.experiments.isEnabled('APCA') && this._contrastInfo.contrastRatioAPCA() === null) {
+    if (Root.Runtime.experiments.isEnabled('APCA') && this.contrastInfo.contrastRatioAPCA() === null) {
       return;
     }
-    if (!this._contrastInfo.contrastRatio()) {
+    if (!this.contrastInfo.contrastRatio()) {
       return;
     }
-    this._contrastRatioLinesThrottler.schedule(this._drawContrastRatioLinesBound);
+    this.contrastRatioLinesThrottler.schedule(this.drawContrastRatioLinesBound);
   }
 
   setDimensions(width: number, height: number): void {
-    this._width = width;
-    this._height = height;
-    this._update();
+    this.width = width;
+    this.height = height;
+    this.update();
   }
 
   setVisible(visible: boolean): void {
-    this._visible = visible;
-    this._contrastRatioSVG.classList.toggle('hidden', !visible);
-    this._update();
+    this.visible = visible;
+    this.contrastRatioSVG.classList.toggle('hidden', !visible);
+    this.update();
   }
 
-  async _drawContrastRatioLines(): Promise<void> {
-    for (const [level, element] of this._contrastRatioLines) {
-      const path = this._contrastRatioLineBuilder.drawContrastRatioLine(this._width, this._height, level as string);
+  private async drawContrastRatioLines(): Promise<void> {
+    for (const [level, element] of this.contrastRatioLines) {
+      const path = this.contrastRatioLineBuilder.drawContrastRatioLine(this.width, this.height, level as string);
       if (path) {
         element.setAttribute('d', path);
       } else {
@@ -87,15 +85,15 @@ export class ContrastOverlay {
 }
 
 export class ContrastRatioLineBuilder {
-  _contrastInfo: ContrastInfo;
+  private readonly contrastInfo: ContrastInfo;
   constructor(contrastInfo: ContrastInfo) {
-    this._contrastInfo = contrastInfo;
+    this.contrastInfo = contrastInfo;
   }
 
   drawContrastRatioLine(width: number, height: number, level: string): string|null {
     const isAPCA = Root.Runtime.experiments.isEnabled('APCA');
     const requiredContrast =
-        isAPCA ? this._contrastInfo.contrastRatioAPCAThreshold() : this._contrastInfo.contrastRatioThreshold(level);
+        isAPCA ? this.contrastInfo.contrastRatioAPCAThreshold() : this.contrastInfo.contrastRatioThreshold(level);
     if (!width || !height || requiredContrast === null) {
       return null;
     }
@@ -106,8 +104,8 @@ export class ContrastRatioLineBuilder {
     const V = 2;
     const A = 3;
 
-    const color = this._contrastInfo.color();
-    const bgColor = this._contrastInfo.bgColor();
+    const color = this.contrastInfo.color();
+    const bgColor = this.contrastInfo.bgColor();
     if (!color || !bgColor) {
       return null;
     }

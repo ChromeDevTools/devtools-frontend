@@ -30,8 +30,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../../../core/common/common.js';
 import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
@@ -128,213 +126,213 @@ const colorElementToMutable = new WeakMap<HTMLElement, boolean>();
 const colorElementToColor = new WeakMap<HTMLElement, string>();
 
 export class Spectrum extends UI.Widget.VBox {
-  _colorElement: HTMLElement;
-  _colorDragElement: HTMLElement;
-  _dragX: number;
-  _dragY: number;
-  _colorPickerButton: UI.Toolbar.ToolbarToggle;
-  _swatch: Swatch;
-  _hueElement: HTMLElement;
-  _hueSlider: HTMLElement;
-  _alphaElement: HTMLElement;
-  _alphaElementBackground: HTMLElement;
-  _alphaSlider: HTMLElement;
-  _displayContainer: HTMLElement;
-  _textValues: HTMLInputElement[];
-  _textLabels: HTMLElement;
-  _hexContainer: HTMLElement;
-  _hexValue: HTMLInputElement;
-  _contrastInfo: ContrastInfo|undefined;
-  _contrastOverlay: ContrastOverlay|undefined;
-  _contrastDetails: ContrastDetails|undefined;
-  _contrastDetailsBackgroundColorPickedToggledBound: ((event: {
-                                                        data: unknown,
-                                                      }) => void)|undefined;
-  _palettes: Map<string, Palette>;
-  _palettePanel: HTMLElement;
-  _palettePanelShowing: boolean;
-  _paletteSectionContainer: HTMLElement;
-  _paletteContainer: HTMLElement;
-  _shadesContainer: HTMLElement;
-  _deleteIconToolbar: UI.Toolbar.Toolbar;
-  _deleteButton: UI.Toolbar.ToolbarButton;
-  _addColorToolbar: UI.Toolbar.Toolbar;
-  _colorPickedBound: (event: Common.EventTarget.EventTargetEvent) => void;
-  _hsv!: number[];
-  _hueAlphaWidth!: number;
+  private colorElement: HTMLElement;
+  private colorDragElement: HTMLElement;
+  private dragX: number;
+  private dragY: number;
+  private colorPickerButton: UI.Toolbar.ToolbarToggle;
+  private readonly swatch: Swatch;
+  private hueElement: HTMLElement;
+  private hueSlider: HTMLElement;
+  private readonly alphaElement: HTMLElement;
+  private alphaElementBackground: HTMLElement;
+  private alphaSlider: HTMLElement;
+  private displayContainer: HTMLElement;
+  private textValues: HTMLInputElement[];
+  private textLabels: HTMLElement;
+  private hexContainer: HTMLElement;
+  private hexValue: HTMLInputElement;
+  private readonly contrastInfo: ContrastInfo|undefined;
+  private contrastOverlay: ContrastOverlay|undefined;
+  private contrastDetails: ContrastDetails|undefined;
+  private readonly contrastDetailsBackgroundColorPickedToggledBound: ((event: {
+                                                                        data: unknown,
+                                                                      }) => void)|undefined;
+  private readonly palettes: Map<string, Palette>;
+  private readonly palettePanel: HTMLElement;
+  private palettePanelShowing: boolean;
+  private readonly paletteSectionContainer: HTMLElement;
+  private paletteContainer: HTMLElement;
+  private shadesContainer: HTMLElement;
+  private readonly deleteIconToolbar: UI.Toolbar.Toolbar;
+  private readonly deleteButton: UI.Toolbar.ToolbarButton;
+  private readonly addColorToolbar: UI.Toolbar.Toolbar;
+  private readonly colorPickedBound: (event: Common.EventTarget.EventTargetEvent) => void;
+  private hsv!: number[];
+  private hueAlphaWidth!: number;
   dragWidth!: number;
   dragHeight!: number;
-  _colorDragElementHeight!: number;
+  private colorDragElementHeight!: number;
   slideHelperWidth!: number;
-  _numPaletteRowsShown: number;
-  _selectedColorPalette!: Common.Settings.Setting<string>;
-  _customPaletteSetting!: Common.Settings.Setting<Palette>;
-  _colorOffset?: {
+  private numPaletteRowsShown: number;
+  private selectedColorPalette!: Common.Settings.Setting<string>;
+  private customPaletteSetting!: Common.Settings.Setting<Palette>;
+  private colorOffset?: {
     left: number,
     top: number,
   };
-  _closeButton?: UI.Toolbar.ToolbarButton;
-  _paletteContainerMutable?: boolean;
-  _shadesCloseHandler?: (() => void);
-  _dragElement?: HTMLElement;
-  _dragHotSpotX?: number;
-  _dragHotSpotY?: number;
-  _originalFormat?: string;
-  _colorName?: string;
-  _colorString?: string;
-  _colorFormat?: string;
+  private closeButton?: UI.Toolbar.ToolbarButton;
+  private paletteContainerMutable?: boolean;
+  private shadesCloseHandler?: (() => void);
+  private dragElement?: HTMLElement;
+  private dragHotSpotX?: number;
+  private dragHotSpotY?: number;
+  private originalFormat?: string;
+  private colorNameInternal?: string;
+  private colorStringInternal?: string;
+  private colorFormat?: string;
   constructor(contrastInfo?: ContrastInfo|null) {
     super(true);
     this.registerRequiredCSS('ui/legacy/components/color_picker/spectrum.css');
 
     this.contentElement.tabIndex = 0;
-    this._colorElement = this.contentElement.createChild('div', 'spectrum-color');
-    this._colorElement.tabIndex = 0;
-    this.setDefaultFocusedElement(this._colorElement);
-    this._colorElement.addEventListener('keydown', this._onSliderKeydown.bind(this, positionColor.bind(this)));
+    this.colorElement = this.contentElement.createChild('div', 'spectrum-color');
+    this.colorElement.tabIndex = 0;
+    this.setDefaultFocusedElement(this.colorElement);
+    this.colorElement.addEventListener('keydown', this.onSliderKeydown.bind(this, positionColor.bind(this)));
     const swatchAriaText = i18nString(UIStrings.pressArrowKeysMessage);
-    UI.ARIAUtils.setAccessibleName(this._colorElement, swatchAriaText);
-    UI.ARIAUtils.markAsApplication(this._colorElement);
-    this._colorDragElement = this._colorElement.createChild('div', 'spectrum-sat fill')
-                                 .createChild('div', 'spectrum-val fill')
-                                 .createChild('div', 'spectrum-dragger');
-    this._dragX = 0;
-    this._dragY = 0;
+    UI.ARIAUtils.setAccessibleName(this.colorElement, swatchAriaText);
+    UI.ARIAUtils.markAsApplication(this.colorElement);
+    this.colorDragElement = this.colorElement.createChild('div', 'spectrum-sat fill')
+                                .createChild('div', 'spectrum-val fill')
+                                .createChild('div', 'spectrum-dragger');
+    this.dragX = 0;
+    this.dragY = 0;
 
     const toolsContainer: HTMLElement = this.contentElement.createChild('div', 'spectrum-tools') as HTMLElement;
     const toolbar = new UI.Toolbar.Toolbar('spectrum-eye-dropper', toolsContainer);
-    this._colorPickerButton =
+    this.colorPickerButton =
         new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleColorPicker), 'largeicon-eyedropper');
-    this._colorPickerButton.setToggled(true);
-    this._colorPickerButton.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.Click, this._toggleColorPicker.bind(this, undefined));
-    toolbar.appendToolbarItem(this._colorPickerButton);
+    this.colorPickerButton.setToggled(true);
+    this.colorPickerButton.addEventListener(
+        UI.Toolbar.ToolbarButton.Events.Click, this.toggleColorPicker.bind(this, undefined));
+    toolbar.appendToolbarItem(this.colorPickerButton);
 
-    this._swatch = new Swatch(toolsContainer);
+    this.swatch = new Swatch(toolsContainer);
 
-    this._hueElement = toolsContainer.createChild('div', 'spectrum-hue');
-    this._hueElement.tabIndex = 0;
-    this._hueElement.addEventListener('keydown', this._onSliderKeydown.bind(this, positionHue.bind(this)));
-    UI.ARIAUtils.setAccessibleName(this._hueElement, i18nString(UIStrings.changeHue));
-    UI.ARIAUtils.markAsSlider(this._hueElement, 0, 360);
-    this._hueSlider = this._hueElement.createChild('div', 'spectrum-slider');
-    this._alphaElement = toolsContainer.createChild('div', 'spectrum-alpha');
-    this._alphaElement.tabIndex = 0;
-    this._alphaElement.addEventListener('keydown', this._onSliderKeydown.bind(this, positionAlpha.bind(this)));
-    UI.ARIAUtils.setAccessibleName(this._alphaElement, i18nString(UIStrings.changeAlpha));
-    UI.ARIAUtils.markAsSlider(this._alphaElement, 0, 1);
-    this._alphaElementBackground = this._alphaElement.createChild('div', 'spectrum-alpha-background');
-    this._alphaSlider = this._alphaElement.createChild('div', 'spectrum-slider');
+    this.hueElement = toolsContainer.createChild('div', 'spectrum-hue');
+    this.hueElement.tabIndex = 0;
+    this.hueElement.addEventListener('keydown', this.onSliderKeydown.bind(this, positionHue.bind(this)));
+    UI.ARIAUtils.setAccessibleName(this.hueElement, i18nString(UIStrings.changeHue));
+    UI.ARIAUtils.markAsSlider(this.hueElement, 0, 360);
+    this.hueSlider = this.hueElement.createChild('div', 'spectrum-slider');
+    this.alphaElement = toolsContainer.createChild('div', 'spectrum-alpha');
+    this.alphaElement.tabIndex = 0;
+    this.alphaElement.addEventListener('keydown', this.onSliderKeydown.bind(this, positionAlpha.bind(this)));
+    UI.ARIAUtils.setAccessibleName(this.alphaElement, i18nString(UIStrings.changeAlpha));
+    UI.ARIAUtils.markAsSlider(this.alphaElement, 0, 1);
+    this.alphaElementBackground = this.alphaElement.createChild('div', 'spectrum-alpha-background');
+    this.alphaSlider = this.alphaElement.createChild('div', 'spectrum-slider');
 
     // RGBA/HSLA display.
-    this._displayContainer = toolsContainer.createChild('div', 'spectrum-text source-code');
-    UI.ARIAUtils.markAsPoliteLiveRegion(this._displayContainer, true);
-    this._textValues = [];
+    this.displayContainer = toolsContainer.createChild('div', 'spectrum-text source-code');
+    UI.ARIAUtils.markAsPoliteLiveRegion(this.displayContainer, true);
+    this.textValues = [];
     for (let i = 0; i < 4; ++i) {
       const inputValue = UI.UIUtils.createInput('spectrum-text-value');
-      this._displayContainer.appendChild(inputValue);
+      this.displayContainer.appendChild(inputValue);
       inputValue.maxLength = 4;
-      this._textValues.push(inputValue);
-      inputValue.addEventListener('keydown', this._inputChanged.bind(this), false);
-      inputValue.addEventListener('input', this._inputChanged.bind(this), false);
-      inputValue.addEventListener('wheel', this._inputChanged.bind(this), false);
-      inputValue.addEventListener('paste', this._pasted.bind(this), false);
+      this.textValues.push(inputValue);
+      inputValue.addEventListener('keydown', this.inputChanged.bind(this), false);
+      inputValue.addEventListener('input', this.inputChanged.bind(this), false);
+      inputValue.addEventListener('wheel', this.inputChanged.bind(this), false);
+      inputValue.addEventListener('paste', this.pasted.bind(this), false);
     }
 
-    this._textLabels = this._displayContainer.createChild('div', 'spectrum-text-label');
+    this.textLabels = this.displayContainer.createChild('div', 'spectrum-text-label');
 
     // HEX display.
-    this._hexContainer = toolsContainer.createChild('div', 'spectrum-text spectrum-text-hex source-code');
-    UI.ARIAUtils.markAsPoliteLiveRegion(this._hexContainer, true);
-    this._hexValue = UI.UIUtils.createInput('spectrum-text-value');
-    this._hexContainer.appendChild(this._hexValue);
-    this._hexValue.maxLength = 9;
-    this._hexValue.addEventListener('keydown', this._inputChanged.bind(this), false);
-    this._hexValue.addEventListener('input', this._inputChanged.bind(this), false);
-    this._hexValue.addEventListener('wheel', this._inputChanged.bind(this), false);
-    this._hexValue.addEventListener('paste', this._pasted.bind(this), false);
+    this.hexContainer = toolsContainer.createChild('div', 'spectrum-text spectrum-text-hex source-code');
+    UI.ARIAUtils.markAsPoliteLiveRegion(this.hexContainer, true);
+    this.hexValue = UI.UIUtils.createInput('spectrum-text-value');
+    this.hexContainer.appendChild(this.hexValue);
+    this.hexValue.maxLength = 9;
+    this.hexValue.addEventListener('keydown', this.inputChanged.bind(this), false);
+    this.hexValue.addEventListener('input', this.inputChanged.bind(this), false);
+    this.hexValue.addEventListener('wheel', this.inputChanged.bind(this), false);
+    this.hexValue.addEventListener('paste', this.pasted.bind(this), false);
 
-    const label = this._hexContainer.createChild('div', 'spectrum-text-label');
+    const label = this.hexContainer.createChild('div', 'spectrum-text-label');
     label.textContent = i18nString(UIStrings.hex);
-    UI.ARIAUtils.setAccessibleName(this._hexValue, label.textContent);
+    UI.ARIAUtils.setAccessibleName(this.hexValue, label.textContent);
 
     const displaySwitcher = toolsContainer.createChild('div', 'spectrum-display-switcher spectrum-switcher');
     appendSwitcherIcon(displaySwitcher);
     UI.UIUtils.setTitle(displaySwitcher, i18nString(UIStrings.changeColorFormat));
     displaySwitcher.tabIndex = 0;
     self.onInvokeElement(displaySwitcher, event => {
-      this._formatViewSwitch();
+      this.formatViewSwitch();
       event.consume(true);
     });
     UI.ARIAUtils.markAsButton(displaySwitcher);
 
     UI.UIUtils.installDragHandle(
-        this._hueElement, this._dragStart.bind(this, positionHue.bind(this)), positionHue.bind(this), null, 'pointer',
+        this.hueElement, this.dragStart.bind(this, positionHue.bind(this)), positionHue.bind(this), null, 'pointer',
         'default');
     UI.UIUtils.installDragHandle(
-        this._alphaElement, this._dragStart.bind(this, positionAlpha.bind(this)), positionAlpha.bind(this), null,
+        this.alphaElement, this.dragStart.bind(this, positionAlpha.bind(this)), positionAlpha.bind(this), null,
         'pointer', 'default');
     UI.UIUtils.installDragHandle(
-        this._colorElement, this._dragStart.bind(this, positionColor.bind(this)), positionColor.bind(this), null,
+        this.colorElement, this.dragStart.bind(this, positionColor.bind(this)), positionColor.bind(this), null,
         'pointer', 'default');
 
     // Color contrast business.
     if (contrastInfo) {
-      this._contrastInfo = contrastInfo;
-      this._contrastOverlay = new ContrastOverlay(this._contrastInfo, this._colorElement);
-      this._contrastDetails = new ContrastDetails(
-          this._contrastInfo, this.contentElement, this._toggleColorPicker.bind(this),
-          this._contrastPanelExpanded.bind(this), this.colorSelected.bind(this));
+      this.contrastInfo = contrastInfo;
+      this.contrastOverlay = new ContrastOverlay(this.contrastInfo, this.colorElement);
+      this.contrastDetails = new ContrastDetails(
+          this.contrastInfo, this.contentElement, this.toggleColorPicker.bind(this),
+          this.contrastPanelExpanded.bind(this), this.colorSelected.bind(this));
 
-      this._contrastDetailsBackgroundColorPickedToggledBound =
-          this._contrastDetailsBackgroundColorPickedToggled.bind(this);
+      this.contrastDetailsBackgroundColorPickedToggledBound =
+          this.contrastDetailsBackgroundColorPickedToggled.bind(this);
     }
 
     this.element.classList.add('flex-none');
-    this._palettes = new Map();
-    this._palettePanel = this.contentElement.createChild('div', 'palette-panel');
-    this._palettePanelShowing = false;
-    this._paletteSectionContainer = this.contentElement.createChild('div', 'spectrum-palette-container');
-    this._paletteContainer = this._paletteSectionContainer.createChild('div', 'spectrum-palette');
-    this._paletteContainer.addEventListener('contextmenu', this._showPaletteColorContextMenu.bind(this, -1));
-    this._shadesContainer = this.contentElement.createChild('div', 'palette-color-shades hidden');
+    this.palettes = new Map();
+    this.palettePanel = this.contentElement.createChild('div', 'palette-panel');
+    this.palettePanelShowing = false;
+    this.paletteSectionContainer = this.contentElement.createChild('div', 'spectrum-palette-container');
+    this.paletteContainer = this.paletteSectionContainer.createChild('div', 'spectrum-palette');
+    this.paletteContainer.addEventListener('contextmenu', this.showPaletteColorContextMenu.bind(this, -1));
+    this.shadesContainer = this.contentElement.createChild('div', 'palette-color-shades hidden');
     UI.UIUtils.installDragHandle(
-        this._paletteContainer, this._paletteDragStart.bind(this), this._paletteDrag.bind(this),
-        this._paletteDragEnd.bind(this), 'default');
+        this.paletteContainer, this.paletteDragStart.bind(this), this.paletteDrag.bind(this),
+        this.paletteDragEnd.bind(this), 'default');
     const paletteSwitcher =
-        this._paletteSectionContainer.createChild('div', 'spectrum-palette-switcher spectrum-switcher');
+        this.paletteSectionContainer.createChild('div', 'spectrum-palette-switcher spectrum-switcher');
     appendSwitcherIcon(paletteSwitcher);
     UI.UIUtils.setTitle(paletteSwitcher, i18nString(UIStrings.previewPalettes));
     UI.ARIAUtils.markAsButton(paletteSwitcher);
     paletteSwitcher.tabIndex = 0;
     self.onInvokeElement(paletteSwitcher, event => {
-      this._togglePalettePanel(true);
+      this.togglePalettePanel(true);
       event.consume(true);
     });
 
-    this._deleteIconToolbar = new UI.Toolbar.Toolbar('delete-color-toolbar');
-    this._deleteButton = new UI.Toolbar.ToolbarButton('', 'largeicon-trash-bin');
-    this._deleteIconToolbar.appendToolbarItem(this._deleteButton);
+    this.deleteIconToolbar = new UI.Toolbar.Toolbar('delete-color-toolbar');
+    this.deleteButton = new UI.Toolbar.ToolbarButton('', 'largeicon-trash-bin');
+    this.deleteIconToolbar.appendToolbarItem(this.deleteButton);
 
     const overlay = this.contentElement.createChild('div', 'spectrum-overlay fill');
-    overlay.addEventListener('click', this._togglePalettePanel.bind(this, false));
+    overlay.addEventListener('click', this.togglePalettePanel.bind(this, false));
 
-    this._addColorToolbar = new UI.Toolbar.Toolbar('add-color-toolbar');
+    this.addColorToolbar = new UI.Toolbar.Toolbar('add-color-toolbar');
     const addColorButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.addToPalette), 'largeicon-add');
-    addColorButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._onAddColorMousedown.bind(this));
-    addColorButton.element.addEventListener('keydown', this._onAddColorKeydown.bind(this));
-    this._addColorToolbar.appendToolbarItem(addColorButton);
+    addColorButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.onAddColorMousedown.bind(this));
+    addColorButton.element.addEventListener('keydown', this.onAddColorKeydown.bind(this));
+    this.addColorToolbar.appendToolbarItem(addColorButton);
 
-    this._colorPickedBound = this._colorPicked.bind(this);
+    this.colorPickedBound = this.colorPicked.bind(this);
 
-    this._numPaletteRowsShown = -1;
+    this.numPaletteRowsShown = -1;
 
-    this._loadPalettes();
+    this.loadPalettes();
     new PaletteGenerator(palette => {
       if (palette.colors.length) {
         this.addPalette(palette);
-      } else if (this._selectedColorPalette.get() === palette.title) {
-        this._paletteSelected(MaterialPalette);
+      } else if (this.selectedColorPalette.get() === palette.title) {
+        this.paletteSelected(MaterialPalette);
       }
     });
 
@@ -354,37 +352,37 @@ export class Spectrum extends UI.Widget.VBox {
     }
 
     function positionHue(this: Spectrum, event: Event): void {
-      const hsva = this._hsv.slice();
-      const sliderPosition = getUpdatedSliderPosition(this._hueSlider, event);
-      const hueAlphaLeft = this._hueElement.getBoundingClientRect().left;
-      const positionFraction = (sliderPosition - hueAlphaLeft) / this._hueAlphaWidth;
+      const hsva = this.hsv.slice();
+      const sliderPosition = getUpdatedSliderPosition(this.hueSlider, event);
+      const hueAlphaLeft = this.hueElement.getBoundingClientRect().left;
+      const positionFraction = (sliderPosition - hueAlphaLeft) / this.hueAlphaWidth;
       const newHue = 1 - positionFraction;
       hsva[0] = Platform.NumberUtilities.clamp(newHue, 0, 1);
-      this._innerSetColor(hsva, '', undefined /* colorName */, undefined, ChangeSource.Other);
-      const colorValues = this._color().canonicalHSLA();
-      UI.ARIAUtils.setValueNow(this._hueElement, colorValues[0]);
+      this.innerSetColor(hsva, '', undefined /* colorName */, undefined, ChangeSource.Other);
+      const colorValues = this.color().canonicalHSLA();
+      UI.ARIAUtils.setValueNow(this.hueElement, colorValues[0]);
     }
 
     function positionAlpha(this: Spectrum, event: Event): void {
-      const hsva = this._hsv.slice();
-      const sliderPosition = getUpdatedSliderPosition(this._alphaSlider, event);
-      const hueAlphaLeft = this._hueElement.getBoundingClientRect().left;
-      const positionFraction = (sliderPosition - hueAlphaLeft) / this._hueAlphaWidth;
+      const hsva = this.hsv.slice();
+      const sliderPosition = getUpdatedSliderPosition(this.alphaSlider, event);
+      const hueAlphaLeft = this.hueElement.getBoundingClientRect().left;
+      const positionFraction = (sliderPosition - hueAlphaLeft) / this.hueAlphaWidth;
       const newAlpha = Math.round(positionFraction * 100) / 100;
       hsva[3] = Platform.NumberUtilities.clamp(newAlpha, 0, 1);
-      this._innerSetColor(hsva, '', undefined /* colorName */, undefined, ChangeSource.Other);
-      const colorValues = this._color().canonicalHSLA();
-      UI.ARIAUtils.setValueText(this._alphaElement, colorValues[3]);
+      this.innerSetColor(hsva, '', undefined /* colorName */, undefined, ChangeSource.Other);
+      const colorValues = this.color().canonicalHSLA();
+      UI.ARIAUtils.setValueText(this.alphaElement, colorValues[3]);
     }
 
     function positionColor(this: Spectrum, event: Event): void {
-      const hsva = this._hsv.slice();
-      const colorPosition = getUpdatedColorPosition(this._colorDragElement, event);
-      this._colorOffset = this._colorElement.totalOffset();
-      hsva[1] = Platform.NumberUtilities.clamp((colorPosition.x - this._colorOffset.left) / this.dragWidth, 0, 1);
-      hsva[2] = Platform.NumberUtilities.clamp(1 - (colorPosition.y - this._colorOffset.top) / this.dragHeight, 0, 1);
+      const hsva = this.hsv.slice();
+      const colorPosition = getUpdatedColorPosition(this.colorDragElement, event);
+      this.colorOffset = this.colorElement.totalOffset();
+      hsva[1] = Platform.NumberUtilities.clamp((colorPosition.x - this.colorOffset.left) / this.dragWidth, 0, 1);
+      hsva[2] = Platform.NumberUtilities.clamp(1 - (colorPosition.y - this.colorOffset.top) / this.dragHeight, 0, 1);
 
-      this._innerSetColor(hsva, '', undefined /* colorName */, undefined, ChangeSource.Other);
+      this.innerSetColor(hsva, '', undefined /* colorName */, undefined, ChangeSource.Other);
     }
 
     function getUpdatedColorPosition(dragElement: Element, event: Event): {
@@ -433,63 +431,62 @@ export class Spectrum extends UI.Widget.VBox {
     }
   }
 
-  _dragStart(this: Spectrum, callback: (arg0: Event) => void, event: Event): boolean {
-    this._colorOffset = this._colorElement.totalOffset();
+  private dragStart(this: Spectrum, callback: (arg0: Event) => void, event: Event): boolean {
+    this.colorOffset = this.colorElement.totalOffset();
     callback(event);
     return true;
   }
 
-  _contrastDetailsBackgroundColorPickedToggled(event: {
+  private contrastDetailsBackgroundColorPickedToggled(event: {
     data: unknown,
   }): void {
     if (event.data) {
-      this._toggleColorPicker(false);
+      this.toggleColorPicker(false);
     }
   }
 
-  _contrastPanelExpanded(): void {
-    if (!this._contrastOverlay || !this._contrastDetails) {
+  private contrastPanelExpanded(): void {
+    if (!this.contrastOverlay || !this.contrastDetails) {
       return;
     }
-    this._contrastOverlay.setVisible(this._contrastDetails.expanded());
-    this._resizeForSelectedPalette(true);
+    this.contrastOverlay.setVisible(this.contrastDetails.expanded());
+    this.resizeForSelectedPalette(true);
   }
 
-  _updatePalettePanel(): void {
-    this._palettePanel.removeChildren();
-    const title = this._palettePanel.createChild('div', 'palette-title');
+  private updatePalettePanel(): void {
+    this.palettePanel.removeChildren();
+    const title = this.palettePanel.createChild('div', 'palette-title');
     title.textContent = i18nString(UIStrings.colorPalettes);
-    const toolbar = new UI.Toolbar.Toolbar('', this._palettePanel);
-    this._closeButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.returnToColorPicker), 'largeicon-delete');
-    this._closeButton.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.Click, this._togglePalettePanel.bind(this, false));
-    this._closeButton.element.addEventListener('keydown', this._onCloseBtnKeydown.bind(this));
-    toolbar.appendToolbarItem(this._closeButton);
-    for (const palette of this._palettes.values()) {
-      this._palettePanel.appendChild(this._createPreviewPaletteElement(palette));
+    const toolbar = new UI.Toolbar.Toolbar('', this.palettePanel);
+    this.closeButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.returnToColorPicker), 'largeicon-delete');
+    this.closeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.togglePalettePanel.bind(this, false));
+    this.closeButton.element.addEventListener('keydown', this.onCloseBtnKeydown.bind(this));
+    toolbar.appendToolbarItem(this.closeButton);
+    for (const palette of this.palettes.values()) {
+      this.palettePanel.appendChild(this.createPreviewPaletteElement(palette));
     }
   }
 
-  _togglePalettePanel(show: boolean): void {
-    if (this._palettePanelShowing === show) {
+  private togglePalettePanel(show: boolean): void {
+    if (this.palettePanelShowing === show) {
       return;
     }
     if (show) {
-      this._updatePalettePanel();
+      this.updatePalettePanel();
     }
-    this._palettePanelShowing = show;
+    this.palettePanelShowing = show;
     this.contentElement.classList.toggle('palette-panel-showing', show);
-    this._focus();
+    this.focus();
   }
 
-  _onCloseBtnKeydown(event: Event): void {
+  private onCloseBtnKeydown(event: Event): void {
     if (isEscKey(event) || isEnterOrSpaceKey(event)) {
-      this._togglePalettePanel(false);
+      this.togglePalettePanel(false);
       event.consume(true);
     }
   }
 
-  _onSliderKeydown(sliderNewPosition: (arg0: Event) => void, event: Event): void {
+  private onSliderKeydown(sliderNewPosition: (arg0: Event) => void, event: Event): void {
     const keyboardEvent = event as KeyboardEvent;
     switch (keyboardEvent.key) {
       case 'ArrowLeft':
@@ -504,18 +501,18 @@ export class Spectrum extends UI.Widget.VBox {
   /**
    * (Suppress warning about preventScroll)
    */
-  _focus(): void {
+  focus(): void {
     if (!this.isShowing()) {
       return;
     }
-    if (this._palettePanelShowing && this._closeButton) {
-      this._closeButton.element.focus({preventScroll: true});
+    if (this.palettePanelShowing && this.closeButton) {
+      this.closeButton.element.focus({preventScroll: true});
     } else {
       this.contentElement.focus();
     }
   }
 
-  _createPaletteColor(colorText: string, colorName?: string, animationDelay?: number): HTMLElement {
+  private createPaletteColor(colorText: string, colorName?: string, animationDelay?: number): HTMLElement {
     const element = document.createElement('div') as HTMLElement;
     element.classList.add('spectrum-palette-color');
     element.style.background =
@@ -527,28 +524,28 @@ export class Spectrum extends UI.Widget.VBox {
     return element;
   }
 
-  _showPalette(palette: Palette, animate: boolean, _event?: Event): void {
-    this._resizeForSelectedPalette();
-    this._paletteContainer.removeChildren();
+  private showPalette(palette: Palette, animate: boolean, _event?: Event): void {
+    this.resizeForSelectedPalette();
+    this.paletteContainer.removeChildren();
     for (let i = 0; i < palette.colors.length; i++) {
       const animationDelay = animate ? i * 100 / palette.colors.length : 0;
-      const colorElement = this._createPaletteColor(palette.colors[i], palette.colorNames[i], animationDelay);
+      const colorElement = this.createPaletteColor(palette.colors[i], palette.colorNames[i], animationDelay);
       UI.ARIAUtils.markAsButton(colorElement);
       UI.ARIAUtils.setAccessibleName(colorElement, i18nString(UIStrings.colorS, {PH1: palette.colors[i]}));
       colorElement.tabIndex = -1;
       colorElement.addEventListener(
           'mousedown',
-          this._paletteColorSelected.bind(
+          this.paletteColorSelected.bind(
               this, palette.colors[i], palette.colorNames[i], Boolean(palette.matchUserFormat)));
       colorElement.addEventListener(
           'focus',
-          this._paletteColorSelected.bind(
+          this.paletteColorSelected.bind(
               this, palette.colors[i], palette.colorNames[i], Boolean(palette.matchUserFormat)));
-      colorElement.addEventListener('keydown', this._onPaletteColorKeydown.bind(this, i));
+      colorElement.addEventListener('keydown', this.onPaletteColorKeydown.bind(this, i));
       if (palette.mutable) {
         colorElementToMutable.set(colorElement, true);
         colorElementToColor.set(colorElement, palette.colors[i]);
-        colorElement.addEventListener('contextmenu', this._showPaletteColorContextMenu.bind(this, i));
+        colorElement.addEventListener('contextmenu', this.showPaletteColorContextMenu.bind(this, i));
       } else if (palette === MaterialPalette) {
         colorElement.classList.add('has-material-shades');
         let shadow = colorElement.createChild('div', 'spectrum-palette-color spectrum-palette-color-shadow');
@@ -559,137 +556,137 @@ export class Spectrum extends UI.Widget.VBox {
         UI.Tooltip.Tooltip.install(colorElement, tooltipText);
         UI.ARIAUtils.setAccessibleName(colorElement, tooltipText);
         new UI.UIUtils.LongClickController(
-            colorElement, this._showLightnessShades.bind(this, colorElement, palette.colors[i]));
+            colorElement, this.showLightnessShades.bind(this, colorElement, palette.colors[i]));
       }
-      this._paletteContainer.appendChild(colorElement);
+      this.paletteContainer.appendChild(colorElement);
     }
-    if (this._paletteContainer.childNodes.length > 0) {
-      (this._paletteContainer.childNodes[0] as HTMLElement).tabIndex = 0;
+    if (this.paletteContainer.childNodes.length > 0) {
+      (this.paletteContainer.childNodes[0] as HTMLElement).tabIndex = 0;
     }
-    this._paletteContainerMutable = palette.mutable;
+    this.paletteContainerMutable = palette.mutable;
 
     if (palette.mutable) {
-      this._paletteContainer.appendChild(this._addColorToolbar.element);
-      this._paletteContainer.appendChild(this._deleteIconToolbar.element);
+      this.paletteContainer.appendChild(this.addColorToolbar.element);
+      this.paletteContainer.appendChild(this.deleteIconToolbar.element);
     } else {
-      this._addColorToolbar.element.remove();
-      this._deleteIconToolbar.element.remove();
+      this.addColorToolbar.element.remove();
+      this.deleteIconToolbar.element.remove();
     }
 
-    this._togglePalettePanel(false);
-    this._focus();
+    this.togglePalettePanel(false);
+    this.focus();
   }
 
-  _showLightnessShades(colorElement: HTMLElement, colorText: string, _event: Event): void {
+  private showLightnessShades(colorElement: HTMLElement, colorText: string, _event: Event): void {
     function closeLightnessShades(this: Spectrum, element: Element): void {
-      this._shadesContainer.classList.add('hidden');
+      this.shadesContainer.classList.add('hidden');
       element.classList.remove('spectrum-shades-shown');
-      if (this._shadesCloseHandler) {
-        this._shadesContainer.ownerDocument.removeEventListener('mousedown', this._shadesCloseHandler, true);
+      if (this.shadesCloseHandler) {
+        this.shadesContainer.ownerDocument.removeEventListener('mousedown', this.shadesCloseHandler, true);
       }
-      delete this._shadesCloseHandler;
+      delete this.shadesCloseHandler;
     }
 
-    if (this._shadesCloseHandler) {
-      this._shadesCloseHandler();
+    if (this.shadesCloseHandler) {
+      this.shadesCloseHandler();
     }
 
-    this._shadesContainer.classList.remove('hidden');
-    this._shadesContainer.removeChildren();
-    this._shadesContainer.animate(
+    this.shadesContainer.classList.remove('hidden');
+    this.shadesContainer.removeChildren();
+    this.shadesContainer.animate(
         [{transform: 'scaleY(0)', opacity: '0'}, {transform: 'scaleY(1)', opacity: '1'}],
         {duration: 200, easing: 'cubic-bezier(0.4, 0, 0.2, 1)'});
-    let shadesTop = this._paletteContainer.offsetTop + colorElement.offsetTop +
+    let shadesTop = this.paletteContainer.offsetTop + colorElement.offsetTop +
         (colorElement.parentElement ? colorElement.parentElement.offsetTop : 0);
-    if (this._contrastDetails) {
-      shadesTop += this._contrastDetails.element().offsetHeight;
+    if (this.contrastDetails) {
+      shadesTop += this.contrastDetails.element().offsetHeight;
     }
-    this._shadesContainer.style.top = shadesTop + 'px';
-    this._shadesContainer.style.left = colorElement.offsetLeft + 'px';
+    this.shadesContainer.style.top = shadesTop + 'px';
+    this.shadesContainer.style.left = colorElement.offsetLeft + 'px';
     colorElement.classList.add('spectrum-shades-shown');
 
     const shades = MaterialPaletteShades.get(colorText);
     if (shades !== undefined) {
       for (let i = shades.length - 1; i >= 0; i--) {
         const shadeElement =
-            this._createPaletteColor(shades[i], undefined /* colorName */, i * 200 / shades.length + 100);
+            this.createPaletteColor(shades[i], undefined /* colorName */, i * 200 / shades.length + 100);
         UI.ARIAUtils.markAsButton(shadeElement);
         UI.ARIAUtils.setAccessibleName(shadeElement, i18nString(UIStrings.colorS, {PH1: shades[i]}));
         shadeElement.tabIndex = -1;
-        shadeElement.addEventListener('mousedown', this._paletteColorSelected.bind(this, shades[i], shades[i], false));
-        shadeElement.addEventListener('focus', this._paletteColorSelected.bind(this, shades[i], shades[i], false));
-        shadeElement.addEventListener('keydown', this._onShadeColorKeydown.bind(this, colorElement));
-        this._shadesContainer.appendChild(shadeElement);
+        shadeElement.addEventListener('mousedown', this.paletteColorSelected.bind(this, shades[i], shades[i], false));
+        shadeElement.addEventListener('focus', this.paletteColorSelected.bind(this, shades[i], shades[i], false));
+        shadeElement.addEventListener('keydown', this.onShadeColorKeydown.bind(this, colorElement));
+        this.shadesContainer.appendChild(shadeElement);
       }
     }
 
-    if (this._shadesContainer.childNodes.length > 0) {
-      (this._shadesContainer.childNodes[this._shadesContainer.childNodes.length - 1] as HTMLElement).focus();
+    if (this.shadesContainer.childNodes.length > 0) {
+      (this.shadesContainer.childNodes[this.shadesContainer.childNodes.length - 1] as HTMLElement).focus();
     }
-    this._shadesCloseHandler = closeLightnessShades.bind(this, colorElement);
-    this._shadesContainer.ownerDocument.addEventListener('mousedown', this._shadesCloseHandler, true);
+    this.shadesCloseHandler = closeLightnessShades.bind(this, colorElement);
+    this.shadesContainer.ownerDocument.addEventListener('mousedown', this.shadesCloseHandler, true);
   }
 
-  _slotIndexForEvent(event: Event): number {
+  private slotIndexForEvent(event: Event): number {
     const mouseEvent = event as MouseEvent;
-    const localX = mouseEvent.pageX - this._paletteContainer.totalOffsetLeft();
-    const localY = mouseEvent.pageY - this._paletteContainer.totalOffsetTop();
+    const localX = mouseEvent.pageX - this.paletteContainer.totalOffsetLeft();
+    const localY = mouseEvent.pageY - this.paletteContainer.totalOffsetTop();
     const col = Math.min(localX / COLOR_CHIP_SIZE | 0, ITEMS_PER_PALETTE_ROW - 1);
     const row = (localY / COLOR_CHIP_SIZE) | 0;
-    return Math.min(row * ITEMS_PER_PALETTE_ROW + col, this._customPaletteSetting.get().colors.length - 1);
+    return Math.min(row * ITEMS_PER_PALETTE_ROW + col, this.customPaletteSetting.get().colors.length - 1);
   }
 
-  _isDraggingToBin(event: Event): boolean {
+  private isDraggingToBin(event: Event): boolean {
     const mouseEvent = event as MouseEvent;
-    return mouseEvent.pageX > this._deleteIconToolbar.element.totalOffsetLeft();
+    return mouseEvent.pageX > this.deleteIconToolbar.element.totalOffsetLeft();
   }
 
-  _paletteDragStart(event: Event): boolean {
+  private paletteDragStart(event: Event): boolean {
     const element = UI.UIUtils.deepElementFromEvent(event) as HTMLElement;
     if (!element || !colorElementToMutable.get(element)) {
       return false;
     }
 
-    const index = this._slotIndexForEvent(event);
-    this._dragElement = element;
+    const index = this.slotIndexForEvent(event);
+    this.dragElement = element;
     const mouseEvent = event as MouseEvent;
-    this._dragHotSpotX = mouseEvent.pageX - (index % ITEMS_PER_PALETTE_ROW) * COLOR_CHIP_SIZE;
-    this._dragHotSpotY = mouseEvent.pageY - (index / ITEMS_PER_PALETTE_ROW | 0) * COLOR_CHIP_SIZE;
+    this.dragHotSpotX = mouseEvent.pageX - (index % ITEMS_PER_PALETTE_ROW) * COLOR_CHIP_SIZE;
+    this.dragHotSpotY = mouseEvent.pageY - (index / ITEMS_PER_PALETTE_ROW | 0) * COLOR_CHIP_SIZE;
     return true;
   }
 
-  _paletteDrag(event: Event): void {
+  private paletteDrag(event: Event): void {
     const mouseEvent = event as MouseEvent;
-    if (mouseEvent.pageX < this._paletteContainer.totalOffsetLeft() ||
-        mouseEvent.pageY < this._paletteContainer.totalOffsetTop()) {
+    if (mouseEvent.pageX < this.paletteContainer.totalOffsetLeft() ||
+        mouseEvent.pageY < this.paletteContainer.totalOffsetTop()) {
       return;
     }
-    if (!this._dragElement || this._dragHotSpotX === undefined || this._dragHotSpotY === undefined) {
+    if (!this.dragElement || this.dragHotSpotX === undefined || this.dragHotSpotY === undefined) {
       return;
     }
-    const newIndex = this._slotIndexForEvent(event);
+    const newIndex = this.slotIndexForEvent(event);
     const offsetX = mouseEvent.pageX - (newIndex % ITEMS_PER_PALETTE_ROW) * COLOR_CHIP_SIZE;
     const offsetY = mouseEvent.pageY - (newIndex / ITEMS_PER_PALETTE_ROW | 0) * COLOR_CHIP_SIZE;
 
-    const isDeleting = this._isDraggingToBin(event);
-    this._deleteIconToolbar.element.classList.add('dragging');
-    this._deleteIconToolbar.element.classList.toggle('delete-color-toolbar-active', isDeleting);
+    const isDeleting = this.isDraggingToBin(event);
+    this.deleteIconToolbar.element.classList.add('dragging');
+    this.deleteIconToolbar.element.classList.toggle('delete-color-toolbar-active', isDeleting);
     const dragElementTransform =
-        'translateX(' + (offsetX - this._dragHotSpotX) + 'px) translateY(' + (offsetY - this._dragHotSpotY) + 'px)';
-    this._dragElement.style.transform = isDeleting ? dragElementTransform + ' scale(0.8)' : dragElementTransform;
-    const children = Array.prototype.slice.call(this._paletteContainer.children);
-    const index = children.indexOf(this._dragElement);
+        'translateX(' + (offsetX - this.dragHotSpotX) + 'px) translateY(' + (offsetY - this.dragHotSpotY) + 'px)';
+    this.dragElement.style.transform = isDeleting ? dragElementTransform + ' scale(0.8)' : dragElementTransform;
+    const children = Array.prototype.slice.call(this.paletteContainer.children);
+    const index = children.indexOf(this.dragElement);
     const swatchOffsets = new Map<Element, {left: number, top: number}>();
     for (const swatch of children) {
       swatchOffsets.set(swatch, swatch.totalOffset());
     }
 
     if (index !== newIndex) {
-      this._paletteContainer.insertBefore(this._dragElement, children[newIndex > index ? newIndex + 1 : newIndex]);
+      this.paletteContainer.insertBefore(this.dragElement, children[newIndex > index ? newIndex + 1 : newIndex]);
     }
 
     for (const swatch of children) {
-      if (swatch === this._dragElement) {
+      if (swatch === this.dragElement) {
         continue;
       }
       const before = swatchOffsets.get(swatch);
@@ -708,15 +705,15 @@ export class Spectrum extends UI.Widget.VBox {
     }
   }
 
-  _paletteDragEnd(e: Event): void {
-    if (!this._dragElement) {
+  private paletteDragEnd(e: Event): void {
+    if (!this.dragElement) {
       return;
     }
-    if (this._isDraggingToBin(e)) {
-      this._dragElement.remove();
+    if (this.isDraggingToBin(e)) {
+      this.dragElement.remove();
     }
-    this._dragElement.style.removeProperty('transform');
-    const children = this._paletteContainer.children;
+    this.dragElement.style.removeProperty('transform');
+    const children = this.paletteContainer.children;
     const colors = [];
     for (let i = 0; i < children.length; ++i) {
       const color = colorElementToColor.get(children[i] as HTMLElement);
@@ -724,42 +721,42 @@ export class Spectrum extends UI.Widget.VBox {
         colors.push(color);
       }
     }
-    const palette = this._customPaletteSetting.get() as Palette;
+    const palette = this.customPaletteSetting.get() as Palette;
     palette.colors = colors;
-    this._customPaletteSetting.set(palette);
-    this._showPalette(palette, false);
+    this.customPaletteSetting.set(palette);
+    this.showPalette(palette, false);
 
-    this._deleteIconToolbar.element.classList.remove('dragging');
-    this._deleteIconToolbar.element.classList.remove('delete-color-toolbar-active');
+    this.deleteIconToolbar.element.classList.remove('dragging');
+    this.deleteIconToolbar.element.classList.remove('delete-color-toolbar-active');
   }
 
-  _loadPalettes(): void {
-    this._palettes.set(MaterialPalette.title, MaterialPalette);
+  private loadPalettes(): void {
+    this.palettes.set(MaterialPalette.title, MaterialPalette);
     const defaultCustomPalette:
         Palette = {title: 'Custom', colors: [], colorNames: [], mutable: true, matchUserFormat: undefined};
-    this._customPaletteSetting =
+    this.customPaletteSetting =
         Common.Settings.Settings.instance().createSetting('customColorPalette', defaultCustomPalette);
-    const customPalette = this._customPaletteSetting.get() as Palette;
+    const customPalette = this.customPaletteSetting.get() as Palette;
     // Fallback case for custom palettes created pre-m67
     customPalette.colorNames = customPalette.colorNames || [];
-    this._palettes.set(customPalette.title, customPalette);
+    this.palettes.set(customPalette.title, customPalette);
 
-    this._selectedColorPalette =
+    this.selectedColorPalette =
         Common.Settings.Settings.instance().createSetting('selectedColorPalette', GeneratedPaletteTitle);
-    const palette = this._palettes.get(this._selectedColorPalette.get() as string);
+    const palette = this.palettes.get(this.selectedColorPalette.get() as string);
     if (palette) {
-      this._showPalette(palette, true);
+      this.showPalette(palette, true);
     }
   }
 
   addPalette(palette: Palette): void {
-    this._palettes.set(palette.title, palette);
-    if (this._selectedColorPalette.get() === palette.title) {
-      this._showPalette(palette, true);
+    this.palettes.set(palette.title, palette);
+    if (this.selectedColorPalette.get() === palette.title) {
+      this.showPalette(palette, true);
     }
   }
 
-  _createPreviewPaletteElement(palette: Palette): Element {
+  private createPreviewPaletteElement(palette: Palette): Element {
     const colorsPerPreviewRow = 5;
     const previewElement = document.createElement('div');
     previewElement.classList.add('palette-preview');
@@ -769,42 +766,42 @@ export class Spectrum extends UI.Widget.VBox {
     titleElement.textContent = palette.title;
     let i;
     for (i = 0; i < colorsPerPreviewRow && i < palette.colors.length; i++) {
-      previewElement.appendChild(this._createPaletteColor(palette.colors[i], palette.colorNames[i]));
+      previewElement.appendChild(this.createPaletteColor(palette.colors[i], palette.colorNames[i]));
     }
     for (; i < colorsPerPreviewRow; i++) {
       previewElement.createChild('div', 'spectrum-palette-color empty-color');
     }
     self.onInvokeElement(previewElement, event => {
-      this._paletteSelected(palette);
+      this.paletteSelected(palette);
       event.consume(true);
     });
     return previewElement;
   }
 
-  _paletteSelected(palette: Palette): void {
-    this._selectedColorPalette.set(palette.title);
-    this._showPalette(palette, true);
+  private paletteSelected(palette: Palette): void {
+    this.selectedColorPalette.set(palette.title);
+    this.showPalette(palette, true);
   }
 
-  _resizeForSelectedPalette(force?: boolean): void {
-    const palette = this._palettes.get(this._selectedColorPalette.get() as string);
+  private resizeForSelectedPalette(force?: boolean): void {
+    const palette = this.palettes.get(this.selectedColorPalette.get() as string);
     if (!palette) {
       return;
     }
     let numColors = palette.colors.length;
-    if (palette === this._customPaletteSetting.get()) {
+    if (palette === this.customPaletteSetting.get()) {
       numColors++;
     }
     const rowsNeeded = Math.max(1, Math.ceil(numColors / ITEMS_PER_PALETTE_ROW));
-    if (this._numPaletteRowsShown === rowsNeeded && !force) {
+    if (this.numPaletteRowsShown === rowsNeeded && !force) {
       return;
     }
-    this._numPaletteRowsShown = rowsNeeded;
+    this.numPaletteRowsShown = rowsNeeded;
     const paletteColorHeight = 12;
     const paletteMargin = 12;
     let paletteTop = 236;
-    if (this._contrastDetails) {
-      if (this._contrastDetails.expanded()) {
+    if (this.contrastDetails) {
+      if (this.contrastDetails.expanded()) {
         paletteTop += 78;
       } else {
         paletteTop += 36;
@@ -814,16 +811,16 @@ export class Spectrum extends UI.Widget.VBox {
     this.dispatchEventToListeners(Events.SizeChanged);
   }
 
-  _paletteColorSelected(colorText: string, colorName: string|undefined, matchUserFormat: boolean): void {
+  private paletteColorSelected(colorText: string, colorName: string|undefined, matchUserFormat: boolean): void {
     const color = Common.Color.Color.parse(colorText);
     if (!color) {
       return;
     }
-    this._innerSetColor(
-        color.hsva(), colorText, colorName, matchUserFormat ? this._colorFormat : color.format(), ChangeSource.Other);
+    this.innerSetColor(
+        color.hsva(), colorText, colorName, matchUserFormat ? this.colorFormat : color.format(), ChangeSource.Other);
   }
 
-  _onPaletteColorKeydown(colorIndex: number, event: Event): void {
+  private onPaletteColorKeydown(colorIndex: number, event: Event): void {
     const keyboardEvent = event as KeyboardEvent;
     let nextColorIndex;
     switch (keyboardEvent.key) {
@@ -841,18 +838,18 @@ export class Spectrum extends UI.Widget.VBox {
         break;
     }
     if (nextColorIndex !== undefined && nextColorIndex > -1 &&
-        nextColorIndex < this._paletteContainer.childNodes.length) {
-      (this._paletteContainer.childNodes[nextColorIndex] as HTMLElement).focus();
+        nextColorIndex < this.paletteContainer.childNodes.length) {
+      (this.paletteContainer.childNodes[nextColorIndex] as HTMLElement).focus();
     }
   }
 
-  _onShadeColorKeydown(colorElement: HTMLElement, event: Event): void {
+  private onShadeColorKeydown(colorElement: HTMLElement, event: Event): void {
     const keyboardEvent = event as KeyboardEvent;
     const target = keyboardEvent.target as HTMLElement;
     if (isEscKey(event) || keyboardEvent.key === 'Tab') {
       colorElement.focus();
-      if (this._shadesCloseHandler) {
-        this._shadesCloseHandler();
+      if (this.shadesCloseHandler) {
+        this.shadesCloseHandler();
       }
       event.consume(true);
     } else if (keyboardEvent.key === 'ArrowUp' && target.previousElementSibling) {
@@ -864,74 +861,74 @@ export class Spectrum extends UI.Widget.VBox {
     }
   }
 
-  _onAddColorMousedown(): void {
-    this._addColorToCustomPalette();
+  private onAddColorMousedown(): void {
+    this.addColorToCustomPalette();
   }
 
-  _onAddColorKeydown(event: Event): void {
+  private onAddColorKeydown(event: Event): void {
     if (isEnterOrSpaceKey(event)) {
-      this._addColorToCustomPalette();
+      this.addColorToCustomPalette();
       event.consume(true);
     }
   }
 
-  _addColorToCustomPalette(): void {
-    const palette = this._customPaletteSetting.get() as Palette;
+  private addColorToCustomPalette(): void {
+    const palette = this.customPaletteSetting.get() as Palette;
     palette.colors.push(this.colorString());
-    this._customPaletteSetting.set(palette);
-    this._showPalette(palette, false);
-    const colorElements = this._paletteContainer.querySelectorAll('.spectrum-palette-color');
+    this.customPaletteSetting.set(palette);
+    this.showPalette(palette, false);
+    const colorElements = this.paletteContainer.querySelectorAll('.spectrum-palette-color');
     (colorElements[colorElements.length - 1] as HTMLElement).focus();
   }
 
-  _showPaletteColorContextMenu(colorIndex: number, event: Event): void {
-    if (!this._paletteContainerMutable) {
+  private showPaletteColorContextMenu(colorIndex: number, event: Event): void {
+    if (!this.paletteContainerMutable) {
       return;
     }
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     if (colorIndex !== -1) {
       contextMenu.defaultSection().appendItem(
-          i18nString(UIStrings.removeColor), this._deletePaletteColors.bind(this, colorIndex, false));
+          i18nString(UIStrings.removeColor), this.deletePaletteColors.bind(this, colorIndex, false));
       contextMenu.defaultSection().appendItem(
-          i18nString(UIStrings.removeAllToTheRight), this._deletePaletteColors.bind(this, colorIndex, true));
+          i18nString(UIStrings.removeAllToTheRight), this.deletePaletteColors.bind(this, colorIndex, true));
     }
     contextMenu.defaultSection().appendItem(
-        i18nString(UIStrings.clearPalette), this._deletePaletteColors.bind(this, -1, true));
+        i18nString(UIStrings.clearPalette), this.deletePaletteColors.bind(this, -1, true));
     contextMenu.show();
   }
 
-  _deletePaletteColors(colorIndex: number, toRight: boolean): void {
-    const palette = this._customPaletteSetting.get() as Palette;
+  private deletePaletteColors(colorIndex: number, toRight: boolean): void {
+    const palette = this.customPaletteSetting.get() as Palette;
     if (toRight) {
       palette.colors.splice(colorIndex + 1, palette.colors.length - colorIndex - 1);
     } else {
       palette.colors.splice(colorIndex, 1);
     }
-    this._customPaletteSetting.set(palette);
-    this._showPalette(palette, false);
+    this.customPaletteSetting.set(palette);
+    this.showPalette(palette, false);
   }
 
   setColor(color: Common.Color.Color, colorFormat: string): void {
-    this._originalFormat = colorFormat;
-    this._innerSetColor(color.hsva(), '', undefined /* colorName */, colorFormat, ChangeSource.Model);
-    const colorValues = this._color().canonicalHSLA();
-    UI.ARIAUtils.setValueNow(this._hueElement, colorValues[0]);
-    UI.ARIAUtils.setValueText(this._alphaElement, colorValues[3]);
+    this.originalFormat = colorFormat;
+    this.innerSetColor(color.hsva(), '', undefined /* colorName */, colorFormat, ChangeSource.Model);
+    const colorValues = this.color().canonicalHSLA();
+    UI.ARIAUtils.setValueNow(this.hueElement, colorValues[0]);
+    UI.ARIAUtils.setValueText(this.alphaElement, colorValues[3]);
   }
 
   colorSelected(color: Common.Color.Color): void {
-    this._innerSetColor(color.hsva(), '', undefined /* colorName */, undefined /* colorFormat */, ChangeSource.Other);
+    this.innerSetColor(color.hsva(), '', undefined /* colorName */, undefined /* colorFormat */, ChangeSource.Other);
   }
 
-  _innerSetColor(
+  private innerSetColor(
       hsva: number[]|undefined, colorString: string|undefined, colorName: string|undefined,
       colorFormat: string|undefined, changeSource: string): void {
     if (hsva !== undefined) {
-      this._hsv = hsva;
+      this.hsv = hsva;
     }
-    this._colorName = colorName;
+    this.colorNameInternal = colorName;
     if (colorString !== undefined) {
-      this._colorString = colorString;
+      this.colorStringInternal = colorString;
     }
     if (colorFormat !== undefined) {
       const cf = Common.Color.Format;
@@ -945,51 +942,51 @@ export class Spectrum extends UI.Widget.VBox {
       } else if (colorFormat === cf.ShortHEXA) {
         colorFormat = cf.ShortHEX;
       }
-      this._colorFormat = colorFormat;
+      this.colorFormat = colorFormat;
     }
 
-    if (this._contrastInfo) {
-      this._contrastInfo.setColor(Common.Color.Color.fromHSVA(this._hsv), this._colorFormat);
+    if (this.contrastInfo) {
+      this.contrastInfo.setColor(Common.Color.Color.fromHSVA(this.hsv), this.colorFormat);
     }
 
-    this._updateHelperLocations();
-    this._updateUI();
+    this.updateHelperLocations();
+    this.updateUI();
 
     if (changeSource !== ChangeSource.Input) {
-      this._updateInput();
+      this.updateInput();
     }
     if (changeSource !== ChangeSource.Model) {
       this.dispatchEventToListeners(Events.ColorChanged, this.colorString());
     }
   }
 
-  _color(): Common.Color.Color {
-    return Common.Color.Color.fromHSVA(this._hsv);
+  private color(): Common.Color.Color {
+    return Common.Color.Color.fromHSVA(this.hsv);
   }
 
   colorName(): string|undefined {
-    return this._colorName;
+    return this.colorNameInternal;
   }
 
   colorString(): string {
-    if (this._colorString) {
-      return this._colorString;
+    if (this.colorStringInternal) {
+      return this.colorStringInternal;
     }
     const cf = Common.Color.Format;
-    const color = this._color();
+    const color = this.color();
 
-    let colorString = color.asString(this._colorFormat);
+    let colorString = color.asString(this.colorFormat);
     if (colorString) {
       return colorString;
     }
 
-    if (this._colorFormat === cf.Nickname) {
+    if (this.colorFormat === cf.Nickname) {
       colorString = color.asString(color.hasAlpha() ? cf.HEXA : cf.HEX);
-    } else if (this._colorFormat === cf.ShortHEX) {
+    } else if (this.colorFormat === cf.ShortHEX) {
       colorString = color.asString(color.detectHEXFormat());
-    } else if (this._colorFormat === cf.HEX) {
+    } else if (this.colorFormat === cf.HEX) {
       colorString = color.asString(cf.HEXA);
-    } else if (this._colorFormat === cf.HSL) {
+    } else if (this.colorFormat === cf.HSL) {
       colorString = color.asString(cf.HSLA);
     } else {
       colorString = color.asString(cf.RGBA);
@@ -999,100 +996,100 @@ export class Spectrum extends UI.Widget.VBox {
     return colorString || '';
   }
 
-  _updateHelperLocations(): void {
-    const h = this._hsv[0];
-    const s = this._hsv[1];
-    const v = this._hsv[2];
-    const alpha = this._hsv[3];
+  private updateHelperLocations(): void {
+    const h = this.hsv[0];
+    const s = this.hsv[1];
+    const v = this.hsv[2];
+    const alpha = this.hsv[3];
 
     // Where to show the little circle that displays your current selected color.
-    this._dragX = s * this.dragWidth;
-    this._dragY = this.dragHeight - (v * this.dragHeight);
+    this.dragX = s * this.dragWidth;
+    this.dragY = this.dragHeight - (v * this.dragHeight);
 
     const dragX = Math.max(
-        -this._colorDragElementHeight,
-        Math.min(this.dragWidth - this._colorDragElementHeight, this._dragX - this._colorDragElementHeight));
+        -this.colorDragElementHeight,
+        Math.min(this.dragWidth - this.colorDragElementHeight, this.dragX - this.colorDragElementHeight));
     const dragY = Math.max(
-        -this._colorDragElementHeight,
-        Math.min(this.dragHeight - this._colorDragElementHeight, this._dragY - this._colorDragElementHeight));
+        -this.colorDragElementHeight,
+        Math.min(this.dragHeight - this.colorDragElementHeight, this.dragY - this.colorDragElementHeight));
 
-    this._colorDragElement.positionAt(dragX, dragY);
+    this.colorDragElement.positionAt(dragX, dragY);
 
     // Where to show the bar that displays your current selected hue.
-    const hueSlideX = (1 - h) * this._hueAlphaWidth - this.slideHelperWidth;
-    this._hueSlider.style.left = hueSlideX + 'px';
-    const alphaSlideX = alpha * this._hueAlphaWidth - this.slideHelperWidth;
-    this._alphaSlider.style.left = alphaSlideX + 'px';
+    const hueSlideX = (1 - h) * this.hueAlphaWidth - this.slideHelperWidth;
+    this.hueSlider.style.left = hueSlideX + 'px';
+    const alphaSlideX = alpha * this.hueAlphaWidth - this.slideHelperWidth;
+    this.alphaSlider.style.left = alphaSlideX + 'px';
   }
 
-  _updateInput(): void {
+  private updateInput(): void {
     const cf = Common.Color.Format;
-    if (this._colorFormat === cf.HEX || this._colorFormat === cf.ShortHEX || this._colorFormat === cf.Nickname) {
-      this._hexContainer.hidden = false;
-      this._displayContainer.hidden = true;
-      if (this._colorFormat === cf.ShortHEX) {
-        this._hexValue.value = String(this._color().asString(this._color().detectHEXFormat()));
+    if (this.colorFormat === cf.HEX || this.colorFormat === cf.ShortHEX || this.colorFormat === cf.Nickname) {
+      this.hexContainer.hidden = false;
+      this.displayContainer.hidden = true;
+      if (this.colorFormat === cf.ShortHEX) {
+        this.hexValue.value = String(this.color().asString(this.color().detectHEXFormat()));
       } else {  // Don't use ShortHEX if original was not in that format.
-        this._hexValue.value = String(this._color().asString(this._color().hasAlpha() ? cf.HEXA : cf.HEX));
+        this.hexValue.value = String(this.color().asString(this.color().hasAlpha() ? cf.HEXA : cf.HEX));
       }
     } else {
       // RGBA, HSLA display.
-      this._hexContainer.hidden = true;
-      this._displayContainer.hidden = false;
-      const isRgb = this._colorFormat === cf.RGB;
-      this._textLabels.textContent = isRgb ? 'RGBA' : 'HSLA';
-      const colorValues = isRgb ? this._color().canonicalRGBA() : this._color().canonicalHSLA();
+      this.hexContainer.hidden = true;
+      this.displayContainer.hidden = false;
+      const isRgb = this.colorFormat === cf.RGB;
+      this.textLabels.textContent = isRgb ? 'RGBA' : 'HSLA';
+      const colorValues = isRgb ? this.color().canonicalRGBA() : this.color().canonicalHSLA();
       for (let i = 0; i < 3; ++i) {
         UI.ARIAUtils.setAccessibleName(
-            this._textValues[i],
+            this.textValues[i],
             /** R in RGBA */ i18nString(UIStrings.sInS, {
-              PH1: this._textLabels.textContent.charAt(i),
-              PH2: this._textLabels.textContent,
+              PH1: this.textLabels.textContent.charAt(i),
+              PH2: this.textLabels.textContent,
             }));
-        this._textValues[i].value = String(colorValues[i]);
+        this.textValues[i].value = String(colorValues[i]);
         if (!isRgb && (i === 1 || i === 2)) {
-          this._textValues[i].value += '%';
+          this.textValues[i].value += '%';
         }
       }
       UI.ARIAUtils.setAccessibleName(
-          this._textValues[3],
+          this.textValues[3],
           /** A in RGBA */ i18nString(UIStrings.sInS, {
-            PH1: this._textLabels.textContent.charAt(3),
-            PH2: this._textLabels.textContent,
+            PH1: this.textLabels.textContent.charAt(3),
+            PH2: this.textLabels.textContent,
           }));
-      this._textValues[3].value = String(Math.round(colorValues[3] * 100) / 100);
+      this.textValues[3].value = String(Math.round(colorValues[3] * 100) / 100);
     }
   }
 
-  _updateUI(): void {
-    const h = Common.Color.Color.fromHSVA([this._hsv[0], 1, 1, 1]);
-    this._colorElement.style.backgroundColor = h.asString(Common.Color.Format.RGB) as string;
-    if (this._contrastOverlay) {
-      this._contrastOverlay.setDimensions(this.dragWidth, this.dragHeight);
+  private updateUI(): void {
+    const h = Common.Color.Color.fromHSVA([this.hsv[0], 1, 1, 1]);
+    this.colorElement.style.backgroundColor = h.asString(Common.Color.Format.RGB) as string;
+    if (this.contrastOverlay) {
+      this.contrastOverlay.setDimensions(this.dragWidth, this.dragHeight);
     }
 
-    this._swatch.setColor(this._color(), this.colorString());
-    this._colorDragElement.style.backgroundColor = this._color().asString(Common.Color.Format.RGBA) as string;
-    const noAlpha = Common.Color.Color.fromHSVA(this._hsv.slice(0, 3).concat(1));
-    this._alphaElementBackground.style.backgroundImage = Platform.StringUtilities.sprintf(
+    this.swatch.setColor(this.color(), this.colorString());
+    this.colorDragElement.style.backgroundColor = this.color().asString(Common.Color.Format.RGBA) as string;
+    const noAlpha = Common.Color.Color.fromHSVA(this.hsv.slice(0, 3).concat(1));
+    this.alphaElementBackground.style.backgroundImage = Platform.StringUtilities.sprintf(
         'linear-gradient(to right, rgba(0,0,0,0), %s)', noAlpha.asString(Common.Color.Format.RGB));
   }
 
-  _formatViewSwitch(): void {
+  private formatViewSwitch(): void {
     const cf = Common.Color.Format;
     let format: string = cf.RGB;
-    if (this._colorFormat === cf.RGB) {
+    if (this.colorFormat === cf.RGB) {
       format = cf.HSL;
-    } else if (this._colorFormat === cf.HSL) {
-      format = (this._originalFormat === cf.ShortHEX || this._originalFormat === cf.ShortHEXA) ? cf.ShortHEX : cf.HEX;
+    } else if (this.colorFormat === cf.HSL) {
+      format = (this.originalFormat === cf.ShortHEX || this.originalFormat === cf.ShortHEXA) ? cf.ShortHEX : cf.HEX;
     }
-    this._innerSetColor(undefined, '', undefined /* colorName */, format, ChangeSource.Other);
+    this.innerSetColor(undefined, '', undefined /* colorName */, format, ChangeSource.Other);
   }
 
   /**
    * If the pasted input is parsable as a color, applies it converting to the current user format
    */
-  _pasted(/** @type {!ClipboardEvent} */ event: ClipboardEvent): void {
+  private pasted(/** @type {!ClipboardEvent} */ event: ClipboardEvent): void {
     if (!event.clipboardData) {
       return;
     }
@@ -1101,11 +1098,11 @@ export class Spectrum extends UI.Widget.VBox {
     if (!color) {
       return;
     }
-    this._innerSetColor(color.hsva(), text, undefined /* colorName */, undefined /* colorFormat */, ChangeSource.Other);
+    this.innerSetColor(color.hsva(), text, undefined /* colorName */, undefined /* colorFormat */, ChangeSource.Other);
     event.preventDefault();
   }
 
-  _inputChanged(event: Event): void {
+  private inputChanged(event: Event): void {
     function elementValue(element: HTMLInputElement): string {
       return element.value;
     }
@@ -1121,12 +1118,12 @@ export class Spectrum extends UI.Widget.VBox {
 
     const cf = Common.Color.Format;
     let colorString;
-    if (this._colorFormat === cf.Nickname || this._colorFormat === cf.HEX || this._colorFormat === cf.ShortHEX) {
-      colorString = this._hexValue.value;
+    if (this.colorFormat === cf.Nickname || this.colorFormat === cf.HEX || this.colorFormat === cf.ShortHEX) {
+      colorString = this.hexValue.value;
     } else {
-      const format = this._colorFormat === cf.RGB ? 'rgb' : 'hsl';
-      const values = this._textValues.slice(0, -1).map(elementValue).join(' ');
-      const alpha = this._textValues.slice(-1).map(elementValue).join(' ');
+      const format = this.colorFormat === cf.RGB ? 'rgb' : 'hsl';
+      const values = this.textValues.slice(0, -1).map(elementValue).join(' ');
+      const alpha = this.textValues.slice(-1).map(elementValue).join(' ');
       colorString = Platform.StringUtilities.sprintf('%s(%s)', format, [values, alpha].join(' / '));
     }
 
@@ -1136,60 +1133,60 @@ export class Spectrum extends UI.Widget.VBox {
     }
 
     let colorFormat: string|undefined = undefined;
-    if (this._colorFormat === cf.HEX || this._colorFormat === cf.ShortHEX) {
+    if (this.colorFormat === cf.HEX || this.colorFormat === cf.ShortHEX) {
       colorFormat = color.detectHEXFormat();
     }
-    this._innerSetColor(color.hsva(), colorString, undefined /* colorName */, colorFormat, ChangeSource.Input);
+    this.innerSetColor(color.hsva(), colorString, undefined /* colorName */, colorFormat, ChangeSource.Input);
   }
 
   wasShown(): void {
-    this._hueAlphaWidth = this._hueElement.offsetWidth;
-    this.slideHelperWidth = this._hueSlider.offsetWidth / 2;
-    this.dragWidth = this._colorElement.offsetWidth;
-    this.dragHeight = this._colorElement.offsetHeight;
-    this._colorDragElementHeight = this._colorDragElement.offsetHeight / 2;
-    this._innerSetColor(undefined, undefined, undefined /* colorName */, undefined, ChangeSource.Model);
-    this._toggleColorPicker(true);
+    this.hueAlphaWidth = this.hueElement.offsetWidth;
+    this.slideHelperWidth = this.hueSlider.offsetWidth / 2;
+    this.dragWidth = this.colorElement.offsetWidth;
+    this.dragHeight = this.colorElement.offsetHeight;
+    this.colorDragElementHeight = this.colorDragElement.offsetHeight / 2;
+    this.innerSetColor(undefined, undefined, undefined /* colorName */, undefined, ChangeSource.Model);
+    this.toggleColorPicker(true);
 
-    if (this._contrastDetails && this._contrastDetailsBackgroundColorPickedToggledBound) {
-      this._contrastDetails.addEventListener(
+    if (this.contrastDetails && this.contrastDetailsBackgroundColorPickedToggledBound) {
+      this.contrastDetails.addEventListener(
           ContrastDetailsEvents.BackgroundColorPickerWillBeToggled,
-          this._contrastDetailsBackgroundColorPickedToggledBound);
+          this.contrastDetailsBackgroundColorPickedToggledBound);
     }
   }
 
   willHide(): void {
-    this._toggleColorPicker(false);
-    if (this._contrastDetails && this._contrastDetailsBackgroundColorPickedToggledBound) {
-      this._contrastDetails.removeEventListener(
+    this.toggleColorPicker(false);
+    if (this.contrastDetails && this.contrastDetailsBackgroundColorPickedToggledBound) {
+      this.contrastDetails.removeEventListener(
           ContrastDetailsEvents.BackgroundColorPickerWillBeToggled,
-          this._contrastDetailsBackgroundColorPickedToggledBound);
+          this.contrastDetailsBackgroundColorPickedToggledBound);
     }
   }
 
-  _toggleColorPicker(enabled?: boolean, _event?: Common.EventTarget.EventTargetEvent): void {
+  private toggleColorPicker(enabled?: boolean, _event?: Common.EventTarget.EventTargetEvent): void {
     if (enabled === undefined) {
-      enabled = !this._colorPickerButton.toggled();
+      enabled = !this.colorPickerButton.toggled();
     }
-    this._colorPickerButton.setToggled(enabled);
+    this.colorPickerButton.setToggled(enabled);
 
     // This is to make sure that only one picker is open at a time
-    // Also have a look at this._contrastDetailsBackgroundColorPickedToggled
-    if (this._contrastDetails && enabled && this._contrastDetails.backgroundColorPickerEnabled()) {
-      this._contrastDetails.toggleBackgroundColorPicker(false);
+    // Also have a look at this.contrastDetailsBackgroundColorPickedToggled
+    if (this.contrastDetails && enabled && this.contrastDetails.backgroundColorPickerEnabled()) {
+      this.contrastDetails.toggleBackgroundColorPicker(false);
     }
 
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.setEyeDropperActive(enabled);
     if (enabled) {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-          Host.InspectorFrontendHostAPI.Events.EyeDropperPickedColor, this._colorPickedBound);
+          Host.InspectorFrontendHostAPI.Events.EyeDropperPickedColor, this.colorPickedBound);
     } else {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
-          Host.InspectorFrontendHostAPI.Events.EyeDropperPickedColor, this._colorPickedBound);
+          Host.InspectorFrontendHostAPI.Events.EyeDropperPickedColor, this.colorPickedBound);
     }
   }
 
-  _colorPicked(event: Common.EventTarget.EventTargetEvent): void {
+  private colorPicked(event: Common.EventTarget.EventTargetEvent): void {
     const rgbColor = event.data as {
       r: number,
       g: number,
@@ -1198,7 +1195,7 @@ export class Spectrum extends UI.Widget.VBox {
     };
     const rgba = [rgbColor.r, rgbColor.g, rgbColor.b, (rgbColor.a / 2.55 | 0) / 100];
     const color = Common.Color.Color.fromRGBA(rgba);
-    this._innerSetColor(color.hsva(), '', undefined /* colorName */, undefined, ChangeSource.Other);
+    this.innerSetColor(color.hsva(), '', undefined /* colorName */, undefined, ChangeSource.Other);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
   }
 }
@@ -1221,29 +1218,29 @@ const ITEMS_PER_PALETTE_ROW = 8;
 const GeneratedPaletteTitle = 'Page colors';
 
 export class PaletteGenerator {
-  _callback: (arg0: Palette) => void;
-  _frequencyMap: Map<string, number>;
+  private readonly callback: (arg0: Palette) => void;
+  private readonly frequencyMap: Map<string, number>;
   constructor(callback: (arg0: Palette) => void) {
-    this._callback = callback;
-    this._frequencyMap = new Map();
+    this.callback = callback;
+    this.frequencyMap = new Map();
     const stylesheetPromises = [];
     for (const cssModel of SDK.TargetManager.TargetManager.instance().models(SDK.CSSModel.CSSModel)) {
       for (const stylesheet of cssModel.allStyleSheets()) {
-        stylesheetPromises.push(this._processStylesheet(stylesheet));
+        stylesheetPromises.push(this.processStylesheet(stylesheet));
       }
     }
     Promise.all(stylesheetPromises)
         .catch(error => {
           console.error(error);
         })
-        .then(this._finish.bind(this));
+        .then(this.finish.bind(this));
   }
 
-  _frequencyComparator(a: string, b: string): number {
-    return (this._frequencyMap.get(b) as number) - (this._frequencyMap.get(a) as number);
+  private frequencyComparator(a: string, b: string): number {
+    return (this.frequencyMap.get(b) as number) - (this.frequencyMap.get(a) as number);
   }
 
-  _finish(): void {
+  private finish(): void {
     function hueComparator(a: string, b: string): number {
       const hsva = (paletteColors.get(a) as Common.Color.Color).hsva();
       const hsvb = (paletteColors.get(b) as Common.Color.Color).hsva();
@@ -1267,8 +1264,8 @@ export class PaletteGenerator {
       return (hsvb[0] + 0.94) % 1 - (hsva[0] + 0.94) % 1;
     }
 
-    let colors: string[]|string[] = [...this._frequencyMap.keys()];
-    colors = colors.sort(this._frequencyComparator.bind(this));
+    let colors: string[]|string[] = [...this.frequencyMap.keys()];
+    colors = colors.sort(this.frequencyComparator.bind(this));
     const paletteColors = new Map<string, Common.Color.Color>();
     const colorsPerRow = 24;
     while (paletteColors.size < colorsPerRow && colors.length) {
@@ -1280,7 +1277,7 @@ export class PaletteGenerator {
       paletteColors.set(colorText, color);
     }
 
-    this._callback({
+    this.callback({
       title: GeneratedPaletteTitle,
       colors: [...paletteColors.keys()].sort(hueComparator),
       colorNames: [],
@@ -1289,13 +1286,13 @@ export class PaletteGenerator {
     });
   }
 
-  async _processStylesheet(stylesheet: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader): Promise<void> {
+  private async processStylesheet(stylesheet: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader): Promise<void> {
     let text: string = (await stylesheet.requestContent()).content || '';
     text = text.toLowerCase();
     const regexResult = text.match(/((?:rgb|hsl)a?\([^)]+\)|#[0-9a-f]{6}|#[0-9a-f]{3})/g) || [];
     for (const c of regexResult) {
-      let frequency = this._frequencyMap.get(c) || 0;
-      this._frequencyMap.set(c, ++frequency);
+      let frequency = this.frequencyMap.get(c) || 0;
+      this.frequencyMap.set(c, ++frequency);
     }
   }
 }
@@ -1388,48 +1385,48 @@ export const MaterialPalette = {
 };
 
 export class Swatch {
-  _colorString!: string|null;
-  _swatchInnerElement: HTMLElement;
-  _swatchOverlayElement: HTMLElement;
-  _swatchCopyIcon: UI.Icon.Icon;
+  private colorString!: string|null;
+  private swatchInnerElement: HTMLElement;
+  private swatchOverlayElement: HTMLElement;
+  private readonly swatchCopyIcon: UI.Icon.Icon;
   constructor(parentElement: HTMLElement) {
     const swatchElement = parentElement.createChild('span', 'swatch');
-    this._swatchInnerElement = swatchElement.createChild('span', 'swatch-inner');
-    this._swatchOverlayElement = swatchElement.createChild('span', 'swatch-overlay') as HTMLElement;
-    UI.ARIAUtils.markAsButton(this._swatchOverlayElement);
-    UI.ARIAUtils.setPressed(this._swatchOverlayElement, false);
-    this._swatchOverlayElement.tabIndex = 0;
-    self.onInvokeElement(this._swatchOverlayElement, this._onCopyText.bind(this));
-    this._swatchOverlayElement.addEventListener('mouseout', this._onCopyIconMouseout.bind(this));
-    this._swatchOverlayElement.addEventListener('blur', this._onCopyIconMouseout.bind(this));
-    this._swatchCopyIcon = UI.Icon.Icon.create('largeicon-copy', 'copy-color-icon');
-    UI.Tooltip.Tooltip.install(this._swatchCopyIcon, i18nString(UIStrings.copyColorToClipboard));
-    this._swatchOverlayElement.appendChild(this._swatchCopyIcon);
-    UI.ARIAUtils.setAccessibleName(this._swatchOverlayElement, this._swatchCopyIcon.title);
+    this.swatchInnerElement = swatchElement.createChild('span', 'swatch-inner');
+    this.swatchOverlayElement = swatchElement.createChild('span', 'swatch-overlay') as HTMLElement;
+    UI.ARIAUtils.markAsButton(this.swatchOverlayElement);
+    UI.ARIAUtils.setPressed(this.swatchOverlayElement, false);
+    this.swatchOverlayElement.tabIndex = 0;
+    self.onInvokeElement(this.swatchOverlayElement, this.onCopyText.bind(this));
+    this.swatchOverlayElement.addEventListener('mouseout', this.onCopyIconMouseout.bind(this));
+    this.swatchOverlayElement.addEventListener('blur', this.onCopyIconMouseout.bind(this));
+    this.swatchCopyIcon = UI.Icon.Icon.create('largeicon-copy', 'copy-color-icon');
+    UI.Tooltip.Tooltip.install(this.swatchCopyIcon, i18nString(UIStrings.copyColorToClipboard));
+    this.swatchOverlayElement.appendChild(this.swatchCopyIcon);
+    UI.ARIAUtils.setAccessibleName(this.swatchOverlayElement, this.swatchCopyIcon.title);
   }
 
   setColor(color: Common.Color.Color, colorString?: string): void {
-    this._swatchInnerElement.style.backgroundColor = color.asString(Common.Color.Format.RGBA) as string;
+    this.swatchInnerElement.style.backgroundColor = color.asString(Common.Color.Format.RGBA) as string;
     // Show border if the swatch is white.
-    this._swatchInnerElement.classList.toggle('swatch-inner-white', color.hsla()[2] > 0.9);
-    this._colorString = colorString || null;
+    this.swatchInnerElement.classList.toggle('swatch-inner-white', color.hsla()[2] > 0.9);
+    this.colorString = colorString || null;
     if (colorString) {
-      this._swatchOverlayElement.hidden = false;
+      this.swatchOverlayElement.hidden = false;
     } else {
-      this._swatchOverlayElement.hidden = true;
+      this.swatchOverlayElement.hidden = true;
     }
   }
 
-  _onCopyText(event: Event): void {
-    this._swatchCopyIcon.setIconType('largeicon-checkmark');
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this._colorString);
-    UI.ARIAUtils.setPressed(this._swatchOverlayElement, true);
+  private onCopyText(event: Event): void {
+    this.swatchCopyIcon.setIconType('largeicon-checkmark');
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.colorString);
+    UI.ARIAUtils.setPressed(this.swatchOverlayElement, true);
     event.consume();
   }
 
-  _onCopyIconMouseout(): void {
-    this._swatchCopyIcon.setIconType('largeicon-copy');
-    UI.ARIAUtils.setPressed(this._swatchOverlayElement, false);
+  private onCopyIconMouseout(): void {
+    this.swatchCopyIcon.setIconType('largeicon-copy');
+    UI.ARIAUtils.setPressed(this.swatchOverlayElement, false);
   }
 }
 export interface Palette {

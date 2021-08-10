@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -74,61 +72,61 @@ interface SelectableLevel {
 
 class MessageLevelSelector extends Common.ObjectWrapper.ObjectWrapper implements
     UI.SoftDropDown.Delegate<SelectableLevel> {
-  _items: UI.ListModel.ListModel<SelectableLevel>;
-  _view: PlayerMessagesView;
-  _itemMap: Map<number, SelectableLevel>;
-  _hiddenLevels: string[];
-  _bitFieldValue: MessageLevelBitfield;
-  _savedBitFieldValue: MessageLevelBitfield;
-  _defaultTitle: Common.UIString.LocalizedString;
-  _customTitle: Common.UIString.LocalizedString;
-  _allTitle: Common.UIString.LocalizedString;
+  private readonly items: UI.ListModel.ListModel<SelectableLevel>;
+  private readonly view: PlayerMessagesView;
+  private readonly itemMap: Map<number, SelectableLevel>;
+  private hiddenLevels: string[];
+  private bitFieldValue: MessageLevelBitfield;
+  private readonly savedBitFieldValue: MessageLevelBitfield;
+  private readonly defaultTitleInternal: Common.UIString.LocalizedString;
+  private readonly customTitle: Common.UIString.LocalizedString;
+  private readonly allTitle: Common.UIString.LocalizedString;
   elementsForItems: WeakMap<SelectableLevel, HTMLElement>;
 
   constructor(items: UI.ListModel.ListModel<SelectableLevel>, view: PlayerMessagesView) {
     super();
-    this._items = items;
-    this._view = view;
-    this._itemMap = new Map();
+    this.items = items;
+    this.view = view;
+    this.itemMap = new Map();
 
-    this._hiddenLevels = [];
+    this.hiddenLevels = [];
 
-    this._bitFieldValue = MessageLevelBitfield.Default;
-    this._savedBitFieldValue = MessageLevelBitfield.Default;
+    this.bitFieldValue = MessageLevelBitfield.Default;
+    this.savedBitFieldValue = MessageLevelBitfield.Default;
 
-    this._defaultTitle = i18nString(UIStrings.default);
-    this._customTitle = i18nString(UIStrings.custom);
-    this._allTitle = i18nString(UIStrings.all);
+    this.defaultTitleInternal = i18nString(UIStrings.default);
+    this.customTitle = i18nString(UIStrings.custom);
+    this.allTitle = i18nString(UIStrings.all);
 
     this.elementsForItems = new WeakMap();
   }
 
   defaultTitle(): Common.UIString.LocalizedString {
-    return this._defaultTitle;
+    return this.defaultTitleInternal;
   }
 
   setDefault(dropdown: UI.SoftDropDown.SoftDropDown<SelectableLevel>): void {
-    dropdown.selectItem(this._items.at(0));
+    dropdown.selectItem(this.items.at(0));
   }
 
   populate(): void {
-    this._items.insert(this._items.length, {
-      title: this._defaultTitle,
+    this.items.insert(this.items.length, {
+      title: this.defaultTitleInternal,
       overwrite: true,
       stringValue: '',
       value: MessageLevelBitfield.Default,
       selectable: undefined,
     });
 
-    this._items.insert(this._items.length, {
-      title: this._allTitle,
+    this.items.insert(this.items.length, {
+      title: this.allTitle,
       overwrite: true,
       stringValue: '',
       value: MessageLevelBitfield.All,
       selectable: undefined,
     });
 
-    this._items.insert(this._items.length, {
+    this.items.insert(this.items.length, {
       title: i18nString(UIStrings.error),
       overwrite: false,
       stringValue: 'error',
@@ -136,7 +134,7 @@ class MessageLevelSelector extends Common.ObjectWrapper.ObjectWrapper implements
       selectable: undefined,
     });
 
-    this._items.insert(this._items.length, {
+    this.items.insert(this.items.length, {
       title: i18nString(UIStrings.warning),
       overwrite: false,
       stringValue: 'warning',
@@ -144,7 +142,7 @@ class MessageLevelSelector extends Common.ObjectWrapper.ObjectWrapper implements
       selectable: undefined,
     });
 
-    this._items.insert(this._items.length, {
+    this.items.insert(this.items.length, {
       title: i18nString(UIStrings.info),
       overwrite: false,
       stringValue: 'info',
@@ -152,7 +150,7 @@ class MessageLevelSelector extends Common.ObjectWrapper.ObjectWrapper implements
       selectable: undefined,
     });
 
-    this._items.insert(this._items.length, {
+    this.items.insert(this.items.length, {
       title: i18nString(UIStrings.debug),
       overwrite: false,
       stringValue: 'debug',
@@ -161,18 +159,18 @@ class MessageLevelSelector extends Common.ObjectWrapper.ObjectWrapper implements
     });
   }
 
-  _updateCheckMarks(): void {
-    this._hiddenLevels = [];
-    for (const [key, item] of this._itemMap) {
+  private updateCheckMarks(): void {
+    this.hiddenLevels = [];
+    for (const [key, item] of this.itemMap) {
       if (!item.overwrite) {
         const elementForItem = this.elementsForItems.get(item as SelectableLevel);
         if (elementForItem && elementForItem.firstChild) {
           elementForItem.firstChild.remove();
         }
-        if (elementForItem && key & this._bitFieldValue) {
+        if (elementForItem && key & this.bitFieldValue) {
           UI.UIUtils.createTextChild(elementForItem.createChild('div'), '✓');
         } else {
-          this._hiddenLevels.push(item.stringValue);
+          this.hiddenLevels.push(item.stringValue);
         }
       }
     }
@@ -182,25 +180,25 @@ class MessageLevelSelector extends Common.ObjectWrapper.ObjectWrapper implements
     // This would make a lot more sense to have in |itemSelected|, but this
     // method gets called first.
     if (item.overwrite) {
-      this._bitFieldValue = item.value;
+      this.bitFieldValue = item.value;
     } else {
-      this._bitFieldValue ^= item.value;
+      this.bitFieldValue ^= item.value;
     }
 
-    if (this._bitFieldValue === MessageLevelBitfield.Default) {
-      return this._defaultTitle;
+    if (this.bitFieldValue === MessageLevelBitfield.Default) {
+      return this.defaultTitleInternal;
     }
 
-    if (this._bitFieldValue === MessageLevelBitfield.All) {
-      return this._allTitle;
+    if (this.bitFieldValue === MessageLevelBitfield.All) {
+      return this.allTitle;
     }
 
-    const potentialMatch = this._itemMap.get(this._bitFieldValue);
+    const potentialMatch = this.itemMap.get(this.bitFieldValue);
     if (potentialMatch) {
       return potentialMatch.title;
     }
 
-    return this._customTitle;
+    return this.customTitle;
   }
 
   createElementForItem(item: SelectableLevel): Element {
@@ -212,9 +210,9 @@ class MessageLevelSelector extends Common.ObjectWrapper.ObjectWrapper implements
     const text = container.createChild('span', 'media-messages-level-dropdown-text');
     UI.UIUtils.createTextChild(text, item.title);
     this.elementsForItems.set(item, checkBox);
-    this._itemMap.set(item.value, item);
-    this._updateCheckMarks();
-    this._view.regenerateMessageDisplayCss(this._hiddenLevels);
+    this.itemMap.set(item.value, item);
+    this.updateCheckMarks();
+    this.view.regenerateMessageDisplayCss(this.hiddenLevels);
     return element;
   }
 
@@ -223,8 +221,8 @@ class MessageLevelSelector extends Common.ObjectWrapper.ObjectWrapper implements
   }
 
   itemSelected(_item: SelectableLevel|null): void {
-    this._updateCheckMarks();
-    this._view.regenerateMessageDisplayCss(this._hiddenLevels);
+    this.updateCheckMarks();
+    this.view.regenerateMessageDisplayCss(this.hiddenLevels);
   }
 
   highlightedItemChanged(
@@ -234,47 +232,47 @@ class MessageLevelSelector extends Common.ObjectWrapper.ObjectWrapper implements
 }
 
 export class PlayerMessagesView extends UI.Widget.VBox {
-  _headerPanel: HTMLElement;
-  _bodyPanel: HTMLElement;
-  _messageLevelSelector?: MessageLevelSelector;
+  private readonly headerPanel: HTMLElement;
+  private readonly bodyPanel: HTMLElement;
+  private messageLevelSelector?: MessageLevelSelector;
 
   constructor() {
     super();
 
-    this._headerPanel = this.contentElement.createChild('div', 'media-messages-header');
-    this._bodyPanel = this.contentElement.createChild('div', 'media-messages-body');
+    this.headerPanel = this.contentElement.createChild('div', 'media-messages-header');
+    this.bodyPanel = this.contentElement.createChild('div', 'media-messages-body');
 
-    this._buildToolbar();
+    this.buildToolbar();
   }
 
-  _buildToolbar(): void {
-    const toolbar = new UI.Toolbar.Toolbar('media-messages-toolbar', this._headerPanel);
+  private buildToolbar(): void {
+    const toolbar = new UI.Toolbar.Toolbar('media-messages-toolbar', this.headerPanel);
     toolbar.appendText(i18nString(UIStrings.logLevel));
-    toolbar.appendToolbarItem(this._createDropdown());
+    toolbar.appendToolbarItem(this.createDropdown());
     toolbar.appendSeparator();
-    toolbar.appendToolbarItem(this._createFilterInput());
+    toolbar.appendToolbarItem(this.createFilterInput());
   }
 
-  _createDropdown(): UI.Toolbar.ToolbarItem {
+  private createDropdown(): UI.Toolbar.ToolbarItem {
     const items = new UI.ListModel.ListModel<SelectableLevel>();
-    this._messageLevelSelector = new MessageLevelSelector(items, this);
-    const dropDown = new UI.SoftDropDown.SoftDropDown<SelectableLevel>(items, this._messageLevelSelector);
+    this.messageLevelSelector = new MessageLevelSelector(items, this);
+    const dropDown = new UI.SoftDropDown.SoftDropDown<SelectableLevel>(items, this.messageLevelSelector);
     dropDown.setRowHeight(18);
 
-    this._messageLevelSelector.populate();
-    this._messageLevelSelector.setDefault(dropDown);
+    this.messageLevelSelector.populate();
+    this.messageLevelSelector.setDefault(dropDown);
 
     const dropDownItem = new UI.Toolbar.ToolbarItem(dropDown.element);
     dropDownItem.element.classList.add('toolbar-has-dropdown');
     dropDownItem.setEnabled(true);
-    dropDownItem.setTitle(this._messageLevelSelector.defaultTitle());
+    dropDownItem.setTitle(this.messageLevelSelector.defaultTitle());
     return dropDownItem;
   }
 
-  _createFilterInput(): UI.Toolbar.ToolbarInput {
+  private createFilterInput(): UI.Toolbar.ToolbarInput {
     const filterInput = new UI.Toolbar.ToolbarInput(i18nString(UIStrings.filterLogMessages));
     filterInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, (data: {data: string}) => {
-      this._filterByString(data as {
+      this.filterByString(data as {
         data: string,
       });
     }, this);
@@ -282,9 +280,9 @@ export class PlayerMessagesView extends UI.Widget.VBox {
   }
 
   regenerateMessageDisplayCss(hiddenLevels: string[]): void {
-    const messages = this._bodyPanel.getElementsByClassName('media-messages-message-container');
+    const messages = this.bodyPanel.getElementsByClassName('media-messages-message-container');
     for (const message of messages) {
-      if (this._matchesHiddenLevels(message, hiddenLevels)) {
+      if (this.matchesHiddenLevels(message, hiddenLevels)) {
         message.classList.add('media-messages-message-unselected');
       } else {
         message.classList.remove('media-messages-message-unselected');
@@ -292,7 +290,7 @@ export class PlayerMessagesView extends UI.Widget.VBox {
     }
   }
 
-  _matchesHiddenLevels(element: Element, hiddenLevels: string[]): boolean {
+  private matchesHiddenLevels(element: Element, hiddenLevels: string[]): boolean {
     for (const level of hiddenLevels) {
       if (element.classList.contains('media-message-' + level)) {
         return true;
@@ -301,9 +299,9 @@ export class PlayerMessagesView extends UI.Widget.VBox {
     return false;
   }
 
-  _filterByString(userStringData: {data: string}): void {
+  private filterByString(userStringData: {data: string}): void {
     const userString = userStringData.data;
-    const messages = this._bodyPanel.getElementsByClassName('media-messages-message-container');
+    const messages = this.bodyPanel.getElementsByClassName('media-messages-message-container');
 
     for (const message of messages) {
       if (userString === '') {
@@ -318,7 +316,7 @@ export class PlayerMessagesView extends UI.Widget.VBox {
 
   addMessage(message: Protocol.Media.PlayerMessage): void {
     const container =
-        this._bodyPanel.createChild('div', 'media-messages-message-container media-message-' + message.level);
+        this.bodyPanel.createChild('div', 'media-messages-message-container media-message-' + message.level);
     UI.UIUtils.createTextChild(container, message.message);
   }
   wasShown(): void {

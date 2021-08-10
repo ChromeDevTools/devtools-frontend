@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as i18n from '../../core/i18n/i18n.js';
 
 import type {PlayerEvent} from './MediaModel.js';
@@ -31,28 +29,28 @@ type State = {
 };
 
 export class PlayerEventsTimeline extends TickingFlameChart {
-  _normalizedTimestamp: number;
-  _playbackStatusLastEvent: Event|null;
-  _audioBufferingStateEvent: Event|null;
-  _videoBufferingStateEvent: Event|null;
+  private normalizedTimestamp: number;
+  private playbackStatusLastEvent: Event|null;
+  private audioBufferingStateEvent: Event|null;
+  private videoBufferingStateEvent: Event|null;
 
   constructor() {
     super();
 
-    this._normalizedTimestamp = NO_NORMALIZED_TIMESTAMP;
+    this.normalizedTimestamp = NO_NORMALIZED_TIMESTAMP;
 
     this.addGroup(i18nString(UIStrings.playbackStatus), 2);
     this.addGroup(i18nString(UIStrings.bufferingStatus), 2);  // video on top, audio on bottom
 
-    this._playbackStatusLastEvent = null;
-    this._audioBufferingStateEvent = null;
-    this._videoBufferingStateEvent = null;
+    this.playbackStatusLastEvent = null;
+    this.audioBufferingStateEvent = null;
+    this.videoBufferingStateEvent = null;
   }
 
-  _ensureNoPreviousPlaybackEvent(normalizedTime: number): void {
-    if (this._playbackStatusLastEvent !== null) {
-      this._playbackStatusLastEvent.endTime = normalizedTime;
-      this._playbackStatusLastEvent = null;
+  private ensureNoPreviousPlaybackEvent(normalizedTime: number): void {
+    if (this.playbackStatusLastEvent !== null) {
+      this.playbackStatusLastEvent.endTime = normalizedTime;
+      this.playbackStatusLastEvent = null;
     }
   }
 
@@ -60,15 +58,15 @@ export class PlayerEventsTimeline extends TickingFlameChart {
    * Playback events are {kPlay, kPause, kSuspended, kEnded, and kWebMediaPlayerDestroyed}
    * once destroyed, a player cannot recieve more events of any kind.
    */
-  _onPlaybackEvent(event: PlayerEvent, normalizedTime: number): void {
+  private onPlaybackEvent(event: PlayerEvent, normalizedTime: number): void {
     switch (event.event) {
       case 'kPlay':
         this.canTick = true;
-        this._ensureNoPreviousPlaybackEvent(normalizedTime);
+        this.ensureNoPreviousPlaybackEvent(normalizedTime);
 
         // Disabled until Closure is gone.
         // clang-format off
-        this._playbackStatusLastEvent = this.startEvent({
+        this.playbackStatusLastEvent = this.startEvent({
           level: 0,
           startTime: normalizedTime,
           name: 'Play',
@@ -79,11 +77,11 @@ export class PlayerEventsTimeline extends TickingFlameChart {
       case 'kPause':
         // Don't change ticking state - the player is still active even during
         // video pause. It may recieve buffering events, seeks, etc.
-        this._ensureNoPreviousPlaybackEvent(normalizedTime);
+        this.ensureNoPreviousPlaybackEvent(normalizedTime);
 
         // Disabled until Closure is gone.
         // clang-format off
-        this._playbackStatusLastEvent = this.startEvent({
+        this.playbackStatusLastEvent = this.startEvent({
           level: 0,
           startTime: normalizedTime,
           name: 'Pause',
@@ -94,7 +92,7 @@ export class PlayerEventsTimeline extends TickingFlameChart {
 
       case 'kWebMediaPlayerDestroyed':
         this.canTick = false;
-        this._ensureNoPreviousPlaybackEvent(normalizedTime);
+        this.ensureNoPreviousPlaybackEvent(normalizedTime);
         this.addMarker({
           level: 1,
           startTime: normalizedTime,
@@ -108,11 +106,11 @@ export class PlayerEventsTimeline extends TickingFlameChart {
         // Other event's can't happen during suspension or while the player is
         // destroyed, so stop the ticking.
         this.canTick = false;
-        this._ensureNoPreviousPlaybackEvent(normalizedTime);
+        this.ensureNoPreviousPlaybackEvent(normalizedTime);
 
         // Disabled until Closure is gone.
         // clang-format off
-        this._playbackStatusLastEvent = this.startEvent({
+        this.playbackStatusLastEvent = this.startEvent({
           level: 1,
           startTime: normalizedTime,
           name: 'Suspended',
@@ -123,11 +121,11 @@ export class PlayerEventsTimeline extends TickingFlameChart {
 
       case 'kEnded':
         // Player ending can still have seeks & other events.
-        this._ensureNoPreviousPlaybackEvent(normalizedTime);
+        this.ensureNoPreviousPlaybackEvent(normalizedTime);
 
         // Disabled until Closure is gone.
         // clang-format off
-        this._playbackStatusLastEvent = this.startEvent({
+        this.playbackStatusLastEvent = this.startEvent({
           level: 1,
           startTime: normalizedTime,
           name: 'Ended',
@@ -141,11 +139,11 @@ export class PlayerEventsTimeline extends TickingFlameChart {
     }
   }
 
-  _bufferedEnough(state: State): boolean {
+  private bufferedEnough(state: State): boolean {
     return state['state'] === 'BUFFERING_HAVE_ENOUGH';
   }
 
-  _onBufferingStatus(event: PlayerEvent, normalizedTime: number): void {
+  private onBufferingStatus(event: PlayerEvent, normalizedTime: number): void {
     // No declarations inside the case labels.
     let audioState: State|null = null;
     let videoState: State|null = null;
@@ -162,12 +160,12 @@ export class PlayerEventsTimeline extends TickingFlameChart {
         videoState = event.value['video_buffering_state'];
 
         if (audioState) {
-          if (this._audioBufferingStateEvent !== null) {
-            this._audioBufferingStateEvent.endTime = normalizedTime;
-            this._audioBufferingStateEvent = null;
+          if (this.audioBufferingStateEvent !== null) {
+            this.audioBufferingStateEvent.endTime = normalizedTime;
+            this.audioBufferingStateEvent = null;
           }
-          if (!this._bufferedEnough(audioState)) {
-            this._audioBufferingStateEvent = this.startEvent({
+          if (!this.bufferedEnough(audioState)) {
+            this.audioBufferingStateEvent = this.startEvent({
               level: 3,
               startTime: normalizedTime,
               name: 'Audio Buffering',
@@ -177,12 +175,12 @@ export class PlayerEventsTimeline extends TickingFlameChart {
         }
 
         if (videoState) {
-          if (this._videoBufferingStateEvent !== null) {
-            this._videoBufferingStateEvent.endTime = normalizedTime;
-            this._videoBufferingStateEvent = null;
+          if (this.videoBufferingStateEvent !== null) {
+            this.videoBufferingStateEvent.endTime = normalizedTime;
+            this.videoBufferingStateEvent = null;
           }
-          if (!this._bufferedEnough(videoState)) {
-            this._videoBufferingStateEvent = this.startEvent({
+          if (!this.bufferedEnough(videoState)) {
+            this.videoBufferingStateEvent = this.startEvent({
               level: 2,
               startTime: normalizedTime,
               name: 'Video Buffering',
@@ -198,10 +196,10 @@ export class PlayerEventsTimeline extends TickingFlameChart {
   }
 
   onEvent(event: PlayerEvent): void {
-    if (this._normalizedTimestamp === NO_NORMALIZED_TIMESTAMP) {
-      this._normalizedTimestamp = Number(event.timestamp);
+    if (this.normalizedTimestamp === NO_NORMALIZED_TIMESTAMP) {
+      this.normalizedTimestamp = Number(event.timestamp);
     }
-    const inMilliseconds = (Number(event.timestamp) - this._normalizedTimestamp) * 1000;
+    const inMilliseconds = (Number(event.timestamp) - this.normalizedTimestamp) * 1000;
 
     switch (event.event) {
       case 'kPlay':
@@ -209,10 +207,10 @@ export class PlayerEventsTimeline extends TickingFlameChart {
       case 'kWebMediaPlayerDestroyed':
       case 'kSuspended':
       case 'kEnded':
-        return this._onPlaybackEvent(event, inMilliseconds);
+        return this.onPlaybackEvent(event, inMilliseconds);
 
       case 'kBufferingStateChanged':
-        return this._onBufferingStatus(event, inMilliseconds);
+        return this.onBufferingStatus(event, inMilliseconds);
 
       default:
     }

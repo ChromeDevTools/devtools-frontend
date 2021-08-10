@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -29,32 +27,32 @@ export interface TriggerDispatcher {
 }
 
 class PlayerDataCollection implements TriggerHandler {
-  _properties: Map<string, string>;
-  _messages: Protocol.Media.PlayerMessage[];
-  _events: PlayerEvent[];
-  _errors: Protocol.Media.PlayerError[];
+  private readonly properties: Map<string, string>;
+  private readonly messages: Protocol.Media.PlayerMessage[];
+  private readonly events: PlayerEvent[];
+  private readonly errors: Protocol.Media.PlayerError[];
 
   constructor() {
-    this._properties = new Map();
-    this._messages = [];
-    this._events = [];
-    this._errors = [];
+    this.properties = new Map();
+    this.messages = [];
+    this.events = [];
+    this.errors = [];
   }
 
   onProperty(property: Protocol.Media.PlayerProperty): void {
-    this._properties.set(property.name, property.value);
+    this.properties.set(property.name, property.value);
   }
 
   onError(error: Protocol.Media.PlayerError): void {
-    this._errors.push(error);
+    this.errors.push(error);
   }
 
   onMessage(message: Protocol.Media.PlayerMessage): void {
-    this._messages.push(message);
+    this.messages.push(message);
   }
 
   onEvent(event: PlayerEvent): void {
-    this._events.push(event);
+    this.events.push(event);
   }
 
   export(): {
@@ -63,22 +61,22 @@ class PlayerDataCollection implements TriggerHandler {
     events: PlayerEvent[],
     errors: Protocol.Media.PlayerError[],
   } {
-    return {'properties': this._properties, 'messages': this._messages, 'events': this._events, 'errors': this._errors};
+    return {'properties': this.properties, 'messages': this.messages, 'events': this.events, 'errors': this.errors};
   }
 }
 
 class PlayerDataDownloadManager implements TriggerDispatcher {
-  _playerDataCollection: Map<string, PlayerDataCollection>;
+  private readonly playerDataCollection: Map<string, PlayerDataCollection>;
   constructor() {
-    this._playerDataCollection = new Map();
+    this.playerDataCollection = new Map();
   }
 
   addPlayer(playerID: string): void {
-    this._playerDataCollection.set(playerID, new PlayerDataCollection());
+    this.playerDataCollection.set(playerID, new PlayerDataCollection());
   }
 
   onProperty(playerID: string, property: Protocol.Media.PlayerProperty): void {
-    const playerProperty = this._playerDataCollection.get(playerID);
+    const playerProperty = this.playerDataCollection.get(playerID);
     if (!playerProperty) {
       return;
     }
@@ -87,7 +85,7 @@ class PlayerDataDownloadManager implements TriggerDispatcher {
   }
 
   onError(playerID: string, error: Protocol.Media.PlayerError): void {
-    const playerProperty = this._playerDataCollection.get(playerID);
+    const playerProperty = this.playerDataCollection.get(playerID);
     if (!playerProperty) {
       return;
     }
@@ -96,7 +94,7 @@ class PlayerDataDownloadManager implements TriggerDispatcher {
   }
 
   onMessage(playerID: string, message: Protocol.Media.PlayerMessage): void {
-    const playerProperty = this._playerDataCollection.get(playerID);
+    const playerProperty = this.playerDataCollection.get(playerID);
     if (!playerProperty) {
       return;
     }
@@ -105,7 +103,7 @@ class PlayerDataDownloadManager implements TriggerDispatcher {
   }
 
   onEvent(playerID: string, event: PlayerEvent): void {
-    const playerProperty = this._playerDataCollection.get(playerID);
+    const playerProperty = this.playerDataCollection.get(playerID);
     if (!playerProperty) {
       return;
     }
@@ -119,7 +117,7 @@ class PlayerDataDownloadManager implements TriggerDispatcher {
     events: PlayerEvent[],
     errors: Protocol.Media.PlayerError[],
   } {
-    const playerProperty = this._playerDataCollection.get(playerID);
+    const playerProperty = this.playerDataCollection.get(playerID);
     if (!playerProperty) {
       throw new Error('Unable to find player');
     }
@@ -128,27 +126,27 @@ class PlayerDataDownloadManager implements TriggerDispatcher {
   }
 
   deletePlayer(playerID: string): void {
-    this._playerDataCollection.delete(playerID);
+    this.playerDataCollection.delete(playerID);
   }
 }
 
 let mainViewInstance: MainView;
 export class MainView extends UI.Panel.PanelWithSidebar implements SDK.TargetManager.SDKModelObserver<MediaModel> {
-  _detailPanels: Map<string, PlayerDetailView>;
-  _deletedPlayers: Set<string>;
-  _downloadStore: PlayerDataDownloadManager;
-  _sidebar: PlayerListView;
+  private detailPanels: Map<string, PlayerDetailView>;
+  private deletedPlayers: Set<string>;
+  private readonly downloadStore: PlayerDataDownloadManager;
+  private readonly sidebar: PlayerListView;
 
   constructor() {
     super('Media');
-    this._detailPanels = new Map();
+    this.detailPanels = new Map();
 
-    this._deletedPlayers = new Set();
+    this.deletedPlayers = new Set();
 
-    this._downloadStore = new PlayerDataDownloadManager();
+    this.downloadStore = new PlayerDataDownloadManager();
 
-    this._sidebar = new PlayerListView(this);
-    this._sidebar.show(this.panelSidebarElement());
+    this.sidebar = new PlayerListView(this);
+    this.sidebar.show(this.panelSidebarElement());
 
     SDK.TargetManager.TargetManager.instance().observeModels(MediaModel, this);
   }
@@ -163,143 +161,143 @@ export class MainView extends UI.Panel.PanelWithSidebar implements SDK.TargetMan
   }
 
   renderMainPanel(playerID: string): void {
-    if (!this._detailPanels.has(playerID)) {
+    if (!this.detailPanels.has(playerID)) {
       return;
     }
     const mainWidget = this.splitWidget().mainWidget();
     if (mainWidget) {
       mainWidget.detachChildWidgets();
     }
-    this._detailPanels.get(playerID)?.show(this.mainElement());
+    this.detailPanels.get(playerID)?.show(this.mainElement());
   }
 
   wasShown(): void {
     super.wasShown();
     for (const model of SDK.TargetManager.TargetManager.instance().models(MediaModel)) {
-      this._addEventListeners(model);
+      this.addEventListeners(model);
     }
   }
 
   willHide(): void {
     for (const model of SDK.TargetManager.TargetManager.instance().models(MediaModel)) {
-      this._removeEventListeners(model);
+      this.removeEventListeners(model);
     }
   }
 
   modelAdded(model: MediaModel): void {
     if (this.isShowing()) {
-      this._addEventListeners(model);
+      this.addEventListeners(model);
     }
   }
 
   modelRemoved(model: MediaModel): void {
-    this._removeEventListeners(model);
+    this.removeEventListeners(model);
   }
 
-  _addEventListeners(mediaModel: MediaModel): void {
+  private addEventListeners(mediaModel: MediaModel): void {
     mediaModel.ensureEnabled();
-    mediaModel.addEventListener(ProtocolTriggers.PlayerPropertiesChanged, this._propertiesChanged, this);
-    mediaModel.addEventListener(ProtocolTriggers.PlayerEventsAdded, this._eventsAdded, this);
-    mediaModel.addEventListener(ProtocolTriggers.PlayerMessagesLogged, this._messagesLogged, this);
-    mediaModel.addEventListener(ProtocolTriggers.PlayerErrorsRaised, this._errorsRaised, this);
-    mediaModel.addEventListener(ProtocolTriggers.PlayersCreated, this._playersCreated, this);
+    mediaModel.addEventListener(ProtocolTriggers.PlayerPropertiesChanged, this.propertiesChanged, this);
+    mediaModel.addEventListener(ProtocolTriggers.PlayerEventsAdded, this.eventsAdded, this);
+    mediaModel.addEventListener(ProtocolTriggers.PlayerMessagesLogged, this.messagesLogged, this);
+    mediaModel.addEventListener(ProtocolTriggers.PlayerErrorsRaised, this.errorsRaised, this);
+    mediaModel.addEventListener(ProtocolTriggers.PlayersCreated, this.playersCreated, this);
   }
 
-  _removeEventListeners(mediaModel: MediaModel): void {
-    mediaModel.removeEventListener(ProtocolTriggers.PlayerPropertiesChanged, this._propertiesChanged, this);
-    mediaModel.removeEventListener(ProtocolTriggers.PlayerEventsAdded, this._eventsAdded, this);
-    mediaModel.removeEventListener(ProtocolTriggers.PlayerMessagesLogged, this._messagesLogged, this);
-    mediaModel.removeEventListener(ProtocolTriggers.PlayerErrorsRaised, this._errorsRaised, this);
-    mediaModel.removeEventListener(ProtocolTriggers.PlayersCreated, this._playersCreated, this);
+  private removeEventListeners(mediaModel: MediaModel): void {
+    mediaModel.removeEventListener(ProtocolTriggers.PlayerPropertiesChanged, this.propertiesChanged, this);
+    mediaModel.removeEventListener(ProtocolTriggers.PlayerEventsAdded, this.eventsAdded, this);
+    mediaModel.removeEventListener(ProtocolTriggers.PlayerMessagesLogged, this.messagesLogged, this);
+    mediaModel.removeEventListener(ProtocolTriggers.PlayerErrorsRaised, this.errorsRaised, this);
+    mediaModel.removeEventListener(ProtocolTriggers.PlayersCreated, this.playersCreated, this);
   }
 
-  _onPlayerCreated(playerID: string): void {
-    this._sidebar.addMediaElementItem(playerID);
-    this._detailPanels.set(playerID, new PlayerDetailView());
-    this._downloadStore.addPlayer(playerID);
+  private onPlayerCreated(playerID: string): void {
+    this.sidebar.addMediaElementItem(playerID);
+    this.detailPanels.set(playerID, new PlayerDetailView());
+    this.downloadStore.addPlayer(playerID);
   }
 
-  _propertiesChanged(event: Common.EventTarget.EventTargetEvent): void {
+  private propertiesChanged(event: Common.EventTarget.EventTargetEvent): void {
     for (const property of event.data.properties) {
       this.onProperty(event.data.playerId, property);
     }
   }
 
-  _eventsAdded(event: Common.EventTarget.EventTargetEvent): void {
+  private eventsAdded(event: Common.EventTarget.EventTargetEvent): void {
     for (const ev of event.data.events) {
       this.onEvent(event.data.playerId, ev);
     }
   }
 
-  _messagesLogged(event: Common.EventTarget.EventTargetEvent): void {
+  private messagesLogged(event: Common.EventTarget.EventTargetEvent): void {
     for (const message of event.data.messages) {
       this.onMessage(event.data.playerId, message);
     }
   }
 
-  _errorsRaised(event: Common.EventTarget.EventTargetEvent): void {
+  private errorsRaised(event: Common.EventTarget.EventTargetEvent): void {
     for (const error of event.data.errors) {
       this.onError(event.data.playerId, error);
     }
   }
 
-  _shouldPropagate(playerID: string): boolean {
-    return !this._deletedPlayers.has(playerID) && this._detailPanels.has(playerID);
+  private shouldPropagate(playerID: string): boolean {
+    return !this.deletedPlayers.has(playerID) && this.detailPanels.has(playerID);
   }
 
   onProperty(playerID: string, property: Protocol.Media.PlayerProperty): void {
-    if (!this._shouldPropagate(playerID)) {
+    if (!this.shouldPropagate(playerID)) {
       return;
     }
-    this._sidebar.onProperty(playerID, property);
-    this._downloadStore.onProperty(playerID, property);
-    this._detailPanels.get(playerID)?.onProperty(property);
+    this.sidebar.onProperty(playerID, property);
+    this.downloadStore.onProperty(playerID, property);
+    this.detailPanels.get(playerID)?.onProperty(property);
   }
 
   onError(playerID: string, error: Protocol.Media.PlayerError): void {
-    if (!this._shouldPropagate(playerID)) {
+    if (!this.shouldPropagate(playerID)) {
       return;
     }
-    this._sidebar.onError(playerID, error);
-    this._downloadStore.onError(playerID, error);
-    this._detailPanels.get(playerID)?.onError(error);
+    this.sidebar.onError(playerID, error);
+    this.downloadStore.onError(playerID, error);
+    this.detailPanels.get(playerID)?.onError(error);
   }
 
   onMessage(playerID: string, message: Protocol.Media.PlayerMessage): void {
-    if (!this._shouldPropagate(playerID)) {
+    if (!this.shouldPropagate(playerID)) {
       return;
     }
-    this._sidebar.onMessage(playerID, message);
-    this._downloadStore.onMessage(playerID, message);
-    this._detailPanels.get(playerID)?.onMessage(message);
+    this.sidebar.onMessage(playerID, message);
+    this.downloadStore.onMessage(playerID, message);
+    this.detailPanels.get(playerID)?.onMessage(message);
   }
 
   onEvent(playerID: string, event: PlayerEvent): void {
-    if (!this._shouldPropagate(playerID)) {
+    if (!this.shouldPropagate(playerID)) {
       return;
     }
-    this._sidebar.onEvent(playerID, event);
-    this._downloadStore.onEvent(playerID, event);
-    this._detailPanels.get(playerID)?.onEvent(event);
+    this.sidebar.onEvent(playerID, event);
+    this.downloadStore.onEvent(playerID, event);
+    this.detailPanels.get(playerID)?.onEvent(event);
   }
 
-  _playersCreated(event: Common.EventTarget.EventTargetEvent): void {
+  private playersCreated(event: Common.EventTarget.EventTargetEvent): void {
     const playerlist = event.data as Iterable<string>;
     for (const playerID of playerlist) {
-      this._onPlayerCreated(playerID);
+      this.onPlayerCreated(playerID);
     }
   }
 
   markPlayerForDeletion(playerID: string): void {
     // TODO(tmathmeyer): send this to chromium to save the storage space there too.
-    this._deletedPlayers.add(playerID);
-    this._detailPanels.delete(playerID);
-    this._sidebar.deletePlayer(playerID);
-    this._downloadStore.deletePlayer(playerID);
+    this.deletedPlayers.add(playerID);
+    this.detailPanels.delete(playerID);
+    this.sidebar.deletePlayer(playerID);
+    this.downloadStore.deletePlayer(playerID);
   }
 
   markOtherPlayersForDeletion(playerID: string): void {
-    for (const keyID of this._detailPanels.keys()) {
+    for (const keyID of this.detailPanels.keys()) {
       if (keyID !== playerID) {
         this.markPlayerForDeletion(keyID);
       }
@@ -307,7 +305,7 @@ export class MainView extends UI.Panel.PanelWithSidebar implements SDK.TargetMan
   }
 
   exportPlayerData(playerID: string): void {
-    const dump = this._downloadStore.exportPlayerData(playerID);
+    const dump = this.downloadStore.exportPlayerData(playerID);
     const uriContent = 'data:application/octet-stream,' + encodeURIComponent(JSON.stringify(dump, null, 2));
     const anchor = document.createElement('a');
     anchor.href = uriContent;

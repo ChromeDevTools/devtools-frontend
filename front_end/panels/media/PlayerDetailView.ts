@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -60,45 +58,45 @@ export const enum PlayerDetailViewTabs {
 }
 
 export class PlayerDetailView extends UI.TabbedPane.TabbedPane implements TriggerHandler {
-  _eventView: PlayerEventsView;
-  _propertyView: PlayerPropertiesView;
-  _messageView: PlayerMessagesView;
-  _timelineView: PlayerEventsTimeline;
+  private readonly eventView: PlayerEventsView;
+  private readonly propertyView: PlayerPropertiesView;
+  private readonly messageView: PlayerMessagesView;
+  private readonly timelineView: PlayerEventsTimeline;
 
   constructor() {
     super();
 
-    this._eventView = new PlayerEventsView();
-    this._propertyView = new PlayerPropertiesView();
-    this._messageView = new PlayerMessagesView();
-    this._timelineView = new PlayerEventsTimeline();
+    this.eventView = new PlayerEventsView();
+    this.propertyView = new PlayerPropertiesView();
+    this.messageView = new PlayerMessagesView();
+    this.timelineView = new PlayerEventsTimeline();
 
     this.appendTab(
-        PlayerDetailViewTabs.Properties, i18nString(UIStrings.properties), this._propertyView,
+        PlayerDetailViewTabs.Properties, i18nString(UIStrings.properties), this.propertyView,
         i18nString(UIStrings.playerProperties));
     this.appendTab(
-        PlayerDetailViewTabs.Events, i18nString(UIStrings.events), this._eventView, i18nString(UIStrings.playerEvents));
+        PlayerDetailViewTabs.Events, i18nString(UIStrings.events), this.eventView, i18nString(UIStrings.playerEvents));
     this.appendTab(
-        PlayerDetailViewTabs.Messages, i18nString(UIStrings.messages), this._messageView,
+        PlayerDetailViewTabs.Messages, i18nString(UIStrings.messages), this.messageView,
         i18nString(UIStrings.playerMessages));
     this.appendTab(
-        PlayerDetailViewTabs.Timeline, i18nString(UIStrings.timeline), this._timelineView,
+        PlayerDetailViewTabs.Timeline, i18nString(UIStrings.timeline), this.timelineView,
         i18nString(UIStrings.playerTimeline));
   }
 
   onProperty(property: Protocol.Media.PlayerProperty): void {
-    this._propertyView.onProperty(property);
+    this.propertyView.onProperty(property);
   }
 
   onError(_error: Protocol.Media.PlayerError): void {
   }
 
   onMessage(message: Protocol.Media.PlayerMessage): void {
-    this._messageView.addMessage(message);
+    this.messageView.addMessage(message);
   }
 
   onEvent(event: PlayerEvent): void {
-    this._eventView.onEvent(event);
-    this._timelineView.onEvent(event);
+    this.eventView.onEvent(event);
+    this.timelineView.onEvent(event);
   }
 }

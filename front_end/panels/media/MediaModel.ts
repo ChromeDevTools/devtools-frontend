@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -23,28 +21,28 @@ export const enum ProtocolTriggers {
 }
 
 export class MediaModel extends SDK.SDKModel.SDKModel implements ProtocolProxyApi.MediaDispatcher {
-  _enabled: boolean;
-  _agent: ProtocolProxyApi.MediaApi;
+  private enabled: boolean;
+  private readonly agent: ProtocolProxyApi.MediaApi;
 
   constructor(target: SDK.Target.Target) {
     super(target);
 
-    this._enabled = false;
-    this._agent = target.mediaAgent();
+    this.enabled = false;
+    this.agent = target.mediaAgent();
 
     target.registerMediaDispatcher(this);
   }
 
   async resumeModel(): Promise<void> {
-    if (!this._enabled) {
+    if (!this.enabled) {
       return Promise.resolve();
     }
-    await this._agent.invoke_enable();
+    await this.agent.invoke_enable();
   }
 
   ensureEnabled(): void {
-    this._agent.invoke_enable();
-    this._enabled = true;
+    this.agent.invoke_enable();
+    this.enabled = true;
   }
 
   playerPropertiesChanged(event: Protocol.Media.PlayerPropertiesChangedEvent): void {

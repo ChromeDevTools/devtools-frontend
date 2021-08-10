@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
@@ -56,19 +54,19 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/OverviewG
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class OverviewGrid {
   element: HTMLDivElement;
-  _grid: TimelineGrid;
-  _window: Window;
+  private readonly grid: TimelineGrid;
+  private readonly window: Window;
   constructor(prefix: string, calculator?: Calculator) {
     this.element = document.createElement('div');
     this.element.id = prefix + '-overview-container';
 
-    this._grid = new TimelineGrid();
-    this._grid.element.id = prefix + '-overview-grid';
-    this._grid.setScrollTop(0);
+    this.grid = new TimelineGrid();
+    this.grid.element.id = prefix + '-overview-grid';
+    this.grid.setScrollTop(0);
 
-    this.element.appendChild(this._grid.element);
+    this.element.appendChild(this.grid.element);
 
-    this._window = new Window(this.element, this._grid.dividersLabelBarElement, calculator);
+    this.window = new Window(this.element, this.grid.dividersLabelBarElement, calculator);
   }
 
   clientWidth(): number {
@@ -76,49 +74,49 @@ export class OverviewGrid {
   }
 
   updateDividers(calculator: Calculator): void {
-    this._grid.updateDividers(calculator);
+    this.grid.updateDividers(calculator);
   }
 
   addEventDividers(dividers: Element[]): void {
-    this._grid.addEventDividers(dividers);
+    this.grid.addEventDividers(dividers);
   }
 
   removeEventDividers(): void {
-    this._grid.removeEventDividers();
+    this.grid.removeEventDividers();
   }
 
   reset(): void {
-    this._window.reset();
+    this.window.reset();
   }
 
   windowLeft(): number {
-    return this._window.windowLeft || 0;
+    return this.window.windowLeft || 0;
   }
 
   windowRight(): number {
-    return this._window.windowRight || 0;
+    return this.window.windowRight || 0;
   }
 
   setWindow(left: number, right: number): void {
-    this._window._setWindow(left, right);
+    this.window.setWindow(left, right);
   }
 
   addEventListener(
       eventType: string|symbol, listener: (arg0: Common.EventTarget.EventTargetEvent) => void,
       thisObject?: Object): Common.EventTarget.EventDescriptor {
-    return this._window.addEventListener(eventType, listener, thisObject);
+    return this.window.addEventListener(eventType, listener, thisObject);
   }
 
   setClickHandler(clickHandler: ((arg0: Event) => boolean)|null): void {
-    this._window.setClickHandler(clickHandler);
+    this.window.setClickHandler(clickHandler);
   }
 
   zoom(zoomFactor: number, referencePoint: number): void {
-    this._window._zoom(zoomFactor, referencePoint);
+    this.window.zoom(zoomFactor, referencePoint);
   }
 
   setResizeEnabled(enabled: boolean): void {
-    this._window.setEnabled(enabled);
+    this.window.setEnabled(enabled);
   }
 }
 
@@ -128,114 +126,114 @@ export const ResizerOffset = 3.5;  // half pixel because offset values are not r
 export const OffsetFromWindowEnds = 10;
 
 export class Window extends Common.ObjectWrapper.ObjectWrapper {
-  _parentElement: Element;
-  _calculator: Calculator|undefined;
-  _leftResizeElement: HTMLElement;
-  _rightResizeElement: HTMLElement;
-  _leftCurtainElement: HTMLElement;
-  _rightCurtainElement: HTMLElement;
-  _overviewWindowSelector!: WindowSelector|undefined;
-  _offsetLeft!: number;
-  _dragStartPoint!: number;
-  _dragStartLeft!: number;
-  _dragStartRight!: number;
+  private parentElement: Element;
+  private calculator: Calculator|undefined;
+  private leftResizeElement: HTMLElement;
+  private rightResizeElement: HTMLElement;
+  private leftCurtainElement: HTMLElement;
+  private rightCurtainElement: HTMLElement;
+  private overviewWindowSelector!: WindowSelector|undefined;
+  private offsetLeft!: number;
+  private dragStartPoint!: number;
+  private dragStartLeft!: number;
+  private dragStartRight!: number;
   windowLeft?: number;
   windowRight?: number;
-  _enabled?: boolean;
-  _clickHandler?: ((arg0: Event) => boolean)|null;
-  _resizerParentOffsetLeft?: number;
+  private enabled?: boolean;
+  private clickHandler?: ((arg0: Event) => boolean)|null;
+  private resizerParentOffsetLeft?: number;
   constructor(parentElement: Element, dividersLabelBarElement?: Element, calculator?: Calculator) {
     super();
-    this._parentElement = parentElement;
-    UI.ARIAUtils.markAsGroup(this._parentElement);
-    this._calculator = calculator;
+    this.parentElement = parentElement;
+    UI.ARIAUtils.markAsGroup(this.parentElement);
+    this.calculator = calculator;
 
-    UI.ARIAUtils.setAccessibleName(this._parentElement, i18nString(UIStrings.overviewGridWindow));
+    UI.ARIAUtils.setAccessibleName(this.parentElement, i18nString(UIStrings.overviewGridWindow));
 
     UI.UIUtils.installDragHandle(
-        this._parentElement, this._startWindowSelectorDragging.bind(this), this._windowSelectorDragging.bind(this),
-        this._endWindowSelectorDragging.bind(this), 'text', null);
+        this.parentElement, this.startWindowSelectorDragging.bind(this), this.windowSelectorDragging.bind(this),
+        this.endWindowSelectorDragging.bind(this), 'text', null);
     if (dividersLabelBarElement) {
       UI.UIUtils.installDragHandle(
-          dividersLabelBarElement, this._startWindowDragging.bind(this), this._windowDragging.bind(this), null,
+          dividersLabelBarElement, this.startWindowDragging.bind(this), this.windowDragging.bind(this), null,
           '-webkit-grabbing', '-webkit-grab');
     }
 
-    this._parentElement.addEventListener('wheel', this._onMouseWheel.bind(this), true);
-    this._parentElement.addEventListener('dblclick', this._resizeWindowMaximum.bind(this), true);
-    UI.Utils.appendStyle(this._parentElement, 'ui/legacy/components/perf_ui/overviewGrid.css');
+    this.parentElement.addEventListener('wheel', this.onMouseWheel.bind(this), true);
+    this.parentElement.addEventListener('dblclick', this.resizeWindowMaximum.bind(this), true);
+    UI.Utils.appendStyle(this.parentElement, 'ui/legacy/components/perf_ui/overviewGrid.css');
 
-    this._leftResizeElement = parentElement.createChild('div', 'overview-grid-window-resizer') as HTMLElement;
+    this.leftResizeElement = parentElement.createChild('div', 'overview-grid-window-resizer') as HTMLElement;
     UI.UIUtils.installDragHandle(
-        this._leftResizeElement, this._resizerElementStartDragging.bind(this),
-        this._leftResizeElementDragging.bind(this), null, 'ew-resize');
-    this._rightResizeElement = (parentElement.createChild('div', 'overview-grid-window-resizer') as HTMLElement);
+        this.leftResizeElement, this.resizerElementStartDragging.bind(this), this.leftResizeElementDragging.bind(this),
+        null, 'ew-resize');
+    this.rightResizeElement = (parentElement.createChild('div', 'overview-grid-window-resizer') as HTMLElement);
     UI.UIUtils.installDragHandle(
-        this._rightResizeElement, this._resizerElementStartDragging.bind(this),
-        this._rightResizeElementDragging.bind(this), null, 'ew-resize');
+        this.rightResizeElement, this.resizerElementStartDragging.bind(this),
+        this.rightResizeElementDragging.bind(this), null, 'ew-resize');
 
-    UI.ARIAUtils.setAccessibleName(this._leftResizeElement, i18nString(UIStrings.leftResizer));
-    UI.ARIAUtils.markAsSlider(this._leftResizeElement);
-    const leftKeyDown = (event: Event): void => this._handleKeyboardResizing(event, false);
-    this._leftResizeElement.addEventListener('keydown', leftKeyDown);
+    UI.ARIAUtils.setAccessibleName(this.leftResizeElement, i18nString(UIStrings.leftResizer));
+    UI.ARIAUtils.markAsSlider(this.leftResizeElement);
+    const leftKeyDown = (event: Event): void => this.handleKeyboardResizing(event, false);
+    this.leftResizeElement.addEventListener('keydown', leftKeyDown);
 
-    UI.ARIAUtils.setAccessibleName(this._rightResizeElement, i18nString(UIStrings.rightResizer));
-    UI.ARIAUtils.markAsSlider(this._rightResizeElement);
+    UI.ARIAUtils.setAccessibleName(this.rightResizeElement, i18nString(UIStrings.rightResizer));
+    UI.ARIAUtils.markAsSlider(this.rightResizeElement);
 
-    const rightKeyDown = (event: Event): void => this._handleKeyboardResizing(event, true);
-    this._rightResizeElement.addEventListener('keydown', rightKeyDown);
-    this._rightResizeElement.addEventListener('focus', this._onRightResizeElementFocused.bind(this));
-    this._leftCurtainElement = (parentElement.createChild('div', 'window-curtain-left') as HTMLElement);
-    this._rightCurtainElement = (parentElement.createChild('div', 'window-curtain-right') as HTMLElement);
+    const rightKeyDown = (event: Event): void => this.handleKeyboardResizing(event, true);
+    this.rightResizeElement.addEventListener('keydown', rightKeyDown);
+    this.rightResizeElement.addEventListener('focus', this.onRightResizeElementFocused.bind(this));
+    this.leftCurtainElement = (parentElement.createChild('div', 'window-curtain-left') as HTMLElement);
+    this.rightCurtainElement = (parentElement.createChild('div', 'window-curtain-right') as HTMLElement);
     this.reset();
   }
 
-  _onRightResizeElementFocused(): void {
+  private onRightResizeElementFocused(): void {
     // To prevent browser focus from scrolling the element into view and shifting the contents of the strip
-    this._parentElement.scrollLeft = 0;
+    this.parentElement.scrollLeft = 0;
   }
 
   reset(): void {
     this.windowLeft = 0.0;
     this.windowRight = 1.0;
     this.setEnabled(true);
-    this._updateCurtains();
+    this.updateCurtains();
   }
 
   setEnabled(enabled: boolean): void {
-    this._enabled = enabled;
-    this._rightResizeElement.tabIndex = enabled ? 0 : -1;
-    this._leftResizeElement.tabIndex = enabled ? 0 : -1;
+    this.enabled = enabled;
+    this.rightResizeElement.tabIndex = enabled ? 0 : -1;
+    this.leftResizeElement.tabIndex = enabled ? 0 : -1;
   }
 
   setClickHandler(clickHandler: ((arg0: Event) => boolean)|null): void {
-    this._clickHandler = clickHandler;
+    this.clickHandler = clickHandler;
   }
 
-  _resizerElementStartDragging(event: Event): boolean {
+  private resizerElementStartDragging(event: Event): boolean {
     const mouseEvent = (event as MouseEvent);
     const target = (event.target as HTMLElement);
-    if (!this._enabled) {
+    if (!this.enabled) {
       return false;
     }
-    this._resizerParentOffsetLeft = mouseEvent.pageX - mouseEvent.offsetX - target.offsetLeft;
+    this.resizerParentOffsetLeft = mouseEvent.pageX - mouseEvent.offsetX - target.offsetLeft;
     event.stopPropagation();
     return true;
   }
 
-  _leftResizeElementDragging(event: Event): void {
+  private leftResizeElementDragging(event: Event): void {
     const mouseEvent = (event as MouseEvent);
-    this._resizeWindowLeft(mouseEvent.pageX - (this._resizerParentOffsetLeft || 0));
+    this.resizeWindowLeft(mouseEvent.pageX - (this.resizerParentOffsetLeft || 0));
     event.preventDefault();
   }
 
-  _rightResizeElementDragging(event: Event): void {
+  private rightResizeElementDragging(event: Event): void {
     const mouseEvent = (event as MouseEvent);
-    this._resizeWindowRight(mouseEvent.pageX - (this._resizerParentOffsetLeft || 0));
+    this.resizeWindowRight(mouseEvent.pageX - (this.resizerParentOffsetLeft || 0));
     event.preventDefault();
   }
 
-  _handleKeyboardResizing(event: Event, moveRightResizer?: boolean): void {
+  private handleKeyboardResizing(event: Event, moveRightResizer?: boolean): void {
     const keyboardEvent = (event as KeyboardEvent);
     const target = (event.target as HTMLElement);
     let increment = false;
@@ -243,19 +241,19 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
       if (keyboardEvent.key === 'ArrowRight') {
         increment = true;
       }
-      const newPos = this._getNewResizerPosition(target.offsetLeft, increment, keyboardEvent.ctrlKey);
+      const newPos = this.getNewResizerPosition(target.offsetLeft, increment, keyboardEvent.ctrlKey);
       if (moveRightResizer) {
-        this._resizeWindowRight(newPos);
+        this.resizeWindowRight(newPos);
       } else {
-        this._resizeWindowLeft(newPos);
+        this.resizeWindowLeft(newPos);
       }
       event.consume(true);
     }
   }
 
-  _getNewResizerPosition(offset: number, increment?: boolean, ctrlPressed?: boolean): number {
+  private getNewResizerPosition(offset: number, increment?: boolean, ctrlPressed?: boolean): number {
     let newPos;
-    // We shift by 10px if the ctrlKey is pressed and 2 otherwise.  1px shifts result in noOp due to rounding in _updateCurtains
+    // We shift by 10px if the ctrlKey is pressed and 2 otherwise.  1px shifts result in noOp due to rounding in updateCurtains
     let pixelsToShift: number|(2 | 10) = ctrlPressed ? 10 : 2;
     pixelsToShift = increment ? pixelsToShift : -Math.abs(pixelsToShift);
     const offsetLeft = offset + ResizerOffset;
@@ -263,170 +261,170 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
     if (increment && newPos < OffsetFromWindowEnds) {
       // When incrementing, snap to the window offset value (10px) if the new position is between 0px and 10px
       newPos = OffsetFromWindowEnds;
-    } else if (!increment && newPos > this._parentElement.clientWidth - OffsetFromWindowEnds) {
+    } else if (!increment && newPos > this.parentElement.clientWidth - OffsetFromWindowEnds) {
       // When decrementing, snap to the window offset value (10px) from the rightmost side if the new position is within 10px from the end.
-      newPos = this._parentElement.clientWidth - OffsetFromWindowEnds;
+      newPos = this.parentElement.clientWidth - OffsetFromWindowEnds;
     }
 
     return newPos;
   }
 
-  _startWindowSelectorDragging(event: Event): boolean {
-    if (!this._enabled) {
+  private startWindowSelectorDragging(event: Event): boolean {
+    if (!this.enabled) {
       return false;
     }
     const mouseEvent = (event as MouseEvent);
-    this._offsetLeft = this._parentElement.totalOffsetLeft();
-    const position = mouseEvent.x - this._offsetLeft;
-    this._overviewWindowSelector = new WindowSelector(this._parentElement, position);
+    this.offsetLeft = this.parentElement.totalOffsetLeft();
+    const position = mouseEvent.x - this.offsetLeft;
+    this.overviewWindowSelector = new WindowSelector(this.parentElement, position);
     return true;
   }
 
-  _windowSelectorDragging(event: Event): void {
-    if (!this._overviewWindowSelector) {
+  private windowSelectorDragging(event: Event): void {
+    if (!this.overviewWindowSelector) {
       return;
     }
     const mouseEvent = (event as MouseEvent);
-    this._overviewWindowSelector._updatePosition(mouseEvent.x - this._offsetLeft);
+    this.overviewWindowSelector.updatePosition(mouseEvent.x - this.offsetLeft);
     event.preventDefault();
   }
 
-  _endWindowSelectorDragging(event: Event): void {
-    if (!this._overviewWindowSelector) {
+  private endWindowSelectorDragging(event: Event): void {
+    if (!this.overviewWindowSelector) {
       return;
     }
     const mouseEvent = (event as MouseEvent);
-    const window = this._overviewWindowSelector._close(mouseEvent.x - this._offsetLeft);
-    delete this._overviewWindowSelector;
+    const window = this.overviewWindowSelector.close(mouseEvent.x - this.offsetLeft);
+    delete this.overviewWindowSelector;
     const clickThreshold = 3;
     if (window.end - window.start < clickThreshold) {
-      if (this._clickHandler && this._clickHandler.call(null, event)) {
+      if (this.clickHandler && this.clickHandler.call(null, event)) {
         return;
       }
       const middle = window.end;
       window.start = Math.max(0, middle - MinSelectableSize / 2);
-      window.end = Math.min(this._parentElement.clientWidth, middle + MinSelectableSize / 2);
+      window.end = Math.min(this.parentElement.clientWidth, middle + MinSelectableSize / 2);
     } else if (window.end - window.start < MinSelectableSize) {
-      if (this._parentElement.clientWidth - window.end > MinSelectableSize) {
+      if (this.parentElement.clientWidth - window.end > MinSelectableSize) {
         window.end = window.start + MinSelectableSize;
       } else {
         window.start = window.end - MinSelectableSize;
       }
     }
-    this._setWindowPosition(window.start, window.end);
+    this.setWindowPosition(window.start, window.end);
   }
 
-  _startWindowDragging(event: Event): boolean {
+  private startWindowDragging(event: Event): boolean {
     const mouseEvent = (event as MouseEvent);
-    this._dragStartPoint = mouseEvent.pageX;
-    this._dragStartLeft = this.windowLeft || 0;
-    this._dragStartRight = this.windowRight || 0;
+    this.dragStartPoint = mouseEvent.pageX;
+    this.dragStartLeft = this.windowLeft || 0;
+    this.dragStartRight = this.windowRight || 0;
     event.stopPropagation();
     return true;
   }
 
-  _windowDragging(event: Event): void {
+  private windowDragging(event: Event): void {
     const mouseEvent = (event as MouseEvent);
     mouseEvent.preventDefault();
-    let delta: number = (mouseEvent.pageX - this._dragStartPoint) / this._parentElement.clientWidth;
-    if (this._dragStartLeft + delta < 0) {
-      delta = -this._dragStartLeft;
+    let delta: number = (mouseEvent.pageX - this.dragStartPoint) / this.parentElement.clientWidth;
+    if (this.dragStartLeft + delta < 0) {
+      delta = -this.dragStartLeft;
     }
 
-    if (this._dragStartRight + delta > 1) {
-      delta = 1 - this._dragStartRight;
+    if (this.dragStartRight + delta > 1) {
+      delta = 1 - this.dragStartRight;
     }
 
-    this._setWindow(this._dragStartLeft + delta, this._dragStartRight + delta);
+    this.setWindow(this.dragStartLeft + delta, this.dragStartRight + delta);
   }
 
-  _resizeWindowLeft(start: number): void {
+  private resizeWindowLeft(start: number): void {
     // Glue to edge.
     if (start < OffsetFromWindowEnds) {
       start = 0;
-    } else if (start > this._rightResizeElement.offsetLeft - 4) {
-      start = this._rightResizeElement.offsetLeft - 4;
+    } else if (start > this.rightResizeElement.offsetLeft - 4) {
+      start = this.rightResizeElement.offsetLeft - 4;
     }
-    this._setWindowPosition(start, null);
+    this.setWindowPosition(start, null);
   }
 
-  _resizeWindowRight(end: number): void {
+  private resizeWindowRight(end: number): void {
     // Glue to edge.
-    if (end > this._parentElement.clientWidth - OffsetFromWindowEnds) {
-      end = this._parentElement.clientWidth;
-    } else if (end < this._leftResizeElement.offsetLeft + MinSelectableSize) {
-      end = this._leftResizeElement.offsetLeft + MinSelectableSize;
+    if (end > this.parentElement.clientWidth - OffsetFromWindowEnds) {
+      end = this.parentElement.clientWidth;
+    } else if (end < this.leftResizeElement.offsetLeft + MinSelectableSize) {
+      end = this.leftResizeElement.offsetLeft + MinSelectableSize;
     }
-    this._setWindowPosition(null, end);
+    this.setWindowPosition(null, end);
   }
 
-  _resizeWindowMaximum(): void {
-    this._setWindowPosition(0, this._parentElement.clientWidth);
+  private resizeWindowMaximum(): void {
+    this.setWindowPosition(0, this.parentElement.clientWidth);
   }
 
-  _getRawSliderValue(leftSlider?: boolean): number {
-    if (!this._calculator) {
+  private getRawSliderValue(leftSlider?: boolean): number {
+    if (!this.calculator) {
       throw new Error('No calculator to calculate boundaries');
     }
 
-    const minimumValue = this._calculator.minimumBoundary();
-    const valueSpan = this._calculator.maximumBoundary() - minimumValue;
+    const minimumValue = this.calculator.minimumBoundary();
+    const valueSpan = this.calculator.maximumBoundary() - minimumValue;
     if (leftSlider) {
       return minimumValue + valueSpan * (this.windowLeft || 0);
     }
     return minimumValue + valueSpan * (this.windowRight || 0);
   }
 
-  _updateResizeElementPositionValue(leftValue: number, rightValue: number): void {
+  private updateResizeElementPositionValue(leftValue: number, rightValue: number): void {
     const roundedLeftValue = leftValue.toFixed(2);
     const roundedRightValue = rightValue.toFixed(2);
-    UI.ARIAUtils.setAriaValueNow(this._leftResizeElement, roundedLeftValue);
-    UI.ARIAUtils.setAriaValueNow(this._rightResizeElement, roundedRightValue);
+    UI.ARIAUtils.setAriaValueNow(this.leftResizeElement, roundedLeftValue);
+    UI.ARIAUtils.setAriaValueNow(this.rightResizeElement, roundedRightValue);
 
     // Left and right sliders cannot be within 0.5% of each other (Range of AriaValueMin/Max/Now is from 0-100).
     const leftResizeCeiling = Number(roundedRightValue) - 0.5;
     const rightResizeFloor = Number(roundedLeftValue) + 0.5;
-    UI.ARIAUtils.setAriaValueMinMax(this._leftResizeElement, '0', leftResizeCeiling.toString());
-    UI.ARIAUtils.setAriaValueMinMax(this._rightResizeElement, rightResizeFloor.toString(), '100');
+    UI.ARIAUtils.setAriaValueMinMax(this.leftResizeElement, '0', leftResizeCeiling.toString());
+    UI.ARIAUtils.setAriaValueMinMax(this.rightResizeElement, rightResizeFloor.toString(), '100');
   }
 
-  _updateResizeElementPositionLabels(): void {
-    if (!this._calculator) {
+  private updateResizeElementPositionLabels(): void {
+    if (!this.calculator) {
       return;
     }
-    const startValue = this._calculator.formatValue(this._getRawSliderValue(/* leftSlider */ true));
-    const endValue = this._calculator.formatValue(this._getRawSliderValue(/* leftSlider */ false));
-    UI.ARIAUtils.setAriaValueText(this._leftResizeElement, String(startValue));
-    UI.ARIAUtils.setAriaValueText(this._rightResizeElement, String(endValue));
+    const startValue = this.calculator.formatValue(this.getRawSliderValue(/* leftSlider */ true));
+    const endValue = this.calculator.formatValue(this.getRawSliderValue(/* leftSlider */ false));
+    UI.ARIAUtils.setAriaValueText(this.leftResizeElement, String(startValue));
+    UI.ARIAUtils.setAriaValueText(this.rightResizeElement, String(endValue));
   }
 
-  _updateResizeElementPercentageLabels(leftValue: string, rightValue: string): void {
-    UI.ARIAUtils.setAriaValueText(this._leftResizeElement, leftValue);
-    UI.ARIAUtils.setAriaValueText(this._rightResizeElement, rightValue);
+  private updateResizeElementPercentageLabels(leftValue: string, rightValue: string): void {
+    UI.ARIAUtils.setAriaValueText(this.leftResizeElement, leftValue);
+    UI.ARIAUtils.setAriaValueText(this.rightResizeElement, rightValue);
   }
 
-  _calculateWindowPosition(): {
+  private calculateWindowPosition(): {
     rawStartValue: number,
     rawEndValue: number,
   } {
     return {
-      rawStartValue: Number(this._getRawSliderValue(/* leftSlider */ true)),
-      rawEndValue: Number(this._getRawSliderValue(/* leftSlider */ false)),
+      rawStartValue: Number(this.getRawSliderValue(/* leftSlider */ true)),
+      rawEndValue: Number(this.getRawSliderValue(/* leftSlider */ false)),
     };
   }
 
-  _setWindow(windowLeft: number, windowRight: number): void {
+  setWindow(windowLeft: number, windowRight: number): void {
     this.windowLeft = windowLeft;
     this.windowRight = windowRight;
-    this._updateCurtains();
+    this.updateCurtains();
     let windowPosition;
-    if (this._calculator) {
-      windowPosition = this._calculateWindowPosition();
+    if (this.calculator) {
+      windowPosition = this.calculateWindowPosition();
     }
     this.dispatchEventToListeners(Events.WindowChanged, windowPosition);
   }
 
-  _updateCurtains(): void {
+  private updateCurtains(): void {
     const windowLeft = this.windowLeft || 0;
     const windowRight = this.windowRight || 0;
     let left = windowLeft;
@@ -434,9 +432,9 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
     const width = right - left;
 
     // OverviewGrids that are instantiated before the parentElement is shown will have a parent element client width of 0 which throws off the 'factor' calculation
-    if (this._parentElement.clientWidth !== 0) {
+    if (this.parentElement.clientWidth !== 0) {
       // We allow actual time window to be arbitrarily small but don't want the UI window to be too small.
-      const widthInPixels = width * this._parentElement.clientWidth;
+      const widthInPixels = width * this.parentElement.clientWidth;
       const minWidthInPixels = MinSelectableSize / 2;
       if (widthInPixels < minWidthInPixels) {
         const factor = minWidthInPixels / widthInPixels;
@@ -451,59 +449,59 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
     const leftResizerPercLeftOffsetString = leftResizerPercLeftOffset + '%';
     const rightResizerPercLeftOffsetString = rightResizerPercLeftOffset + '%';
 
-    this._leftResizeElement.style.left = leftResizerPercLeftOffsetString;
-    this._rightResizeElement.style.left = rightResizerPercLeftOffsetString;
+    this.leftResizeElement.style.left = leftResizerPercLeftOffsetString;
+    this.rightResizeElement.style.left = rightResizerPercLeftOffsetString;
 
-    this._leftCurtainElement.style.width = leftResizerPercLeftOffsetString;
-    this._rightCurtainElement.style.width = rightResizerPercRightOffset + '%';
+    this.leftCurtainElement.style.width = leftResizerPercLeftOffsetString;
+    this.rightCurtainElement.style.width = rightResizerPercRightOffset + '%';
 
-    this._updateResizeElementPositionValue(leftResizerPercLeftOffset, rightResizerPercLeftOffset);
-    if (this._calculator) {
-      this._updateResizeElementPositionLabels();
+    this.updateResizeElementPositionValue(leftResizerPercLeftOffset, rightResizerPercLeftOffset);
+    if (this.calculator) {
+      this.updateResizeElementPositionLabels();
     } else {
-      this._updateResizeElementPercentageLabels(leftResizerPercLeftOffsetString, rightResizerPercLeftOffsetString);
+      this.updateResizeElementPercentageLabels(leftResizerPercLeftOffsetString, rightResizerPercLeftOffsetString);
     }
   }
 
-  _setWindowPosition(start: number|null, end: number|null): void {
-    const clientWidth = this._parentElement.clientWidth;
+  private setWindowPosition(start: number|null, end: number|null): void {
+    const clientWidth = this.parentElement.clientWidth;
     const windowLeft = typeof start === 'number' ? start / clientWidth : this.windowLeft;
     const windowRight = typeof end === 'number' ? end / clientWidth : this.windowRight;
-    this._setWindow(windowLeft || 0, windowRight || 0);
+    this.setWindow(windowLeft || 0, windowRight || 0);
   }
 
-  _onMouseWheel(event: Event): void {
+  private onMouseWheel(event: Event): void {
     const wheelEvent = (event as WheelEvent);
-    if (!this._enabled) {
+    if (!this.enabled) {
       return;
     }
     if (wheelEvent.deltaY) {
       const zoomFactor = 1.1;
       const wheelZoomSpeed = 1 / 53;
 
-      const reference = wheelEvent.offsetX / this._parentElement.clientWidth;
-      this._zoom(Math.pow(zoomFactor, wheelEvent.deltaY * wheelZoomSpeed), reference);
+      const reference = wheelEvent.offsetX / this.parentElement.clientWidth;
+      this.zoom(Math.pow(zoomFactor, wheelEvent.deltaY * wheelZoomSpeed), reference);
     }
     if (wheelEvent.deltaX) {
       let offset = Math.round(wheelEvent.deltaX * WindowScrollSpeedFactor);
-      const windowLeft = this._leftResizeElement.offsetLeft + ResizerOffset;
-      const windowRight = this._rightResizeElement.offsetLeft + ResizerOffset;
+      const windowLeft = this.leftResizeElement.offsetLeft + ResizerOffset;
+      const windowRight = this.rightResizeElement.offsetLeft + ResizerOffset;
 
       if (windowLeft - offset < 0) {
         offset = windowLeft;
       }
 
-      if (windowRight - offset > this._parentElement.clientWidth) {
-        offset = windowRight - this._parentElement.clientWidth;
+      if (windowRight - offset > this.parentElement.clientWidth) {
+        offset = windowRight - this.parentElement.clientWidth;
       }
 
-      this._setWindowPosition(windowLeft - offset, windowRight - offset);
+      this.setWindowPosition(windowLeft - offset, windowRight - offset);
 
       wheelEvent.preventDefault();
     }
   }
 
-  _zoom(factor: number, reference: number): void {
+  zoom(factor: number, reference: number): void {
     let left: number = this.windowLeft || 0;
     let right: number = this.windowRight || 0;
     const windowSize = right - left;
@@ -517,7 +515,7 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
 
     right = reference + (right - reference) * factor;
     right = Platform.NumberUtilities.clamp(right, newWindowSize, 1);
-    this._setWindow(left, right);
+    this.setWindow(left, right);
   }
 }
 
@@ -528,38 +526,38 @@ export enum Events {
 }
 
 export class WindowSelector {
-  _startPosition: number;
-  _width: number;
-  _windowSelector: HTMLDivElement;
+  private startPosition: number;
+  private width: number;
+  private windowSelector: HTMLDivElement;
 
   constructor(parent: Element, position: number) {
-    this._startPosition = position;
-    this._width = (parent as HTMLElement).offsetWidth;
-    this._windowSelector = document.createElement('div');
-    this._windowSelector.className = 'overview-grid-window-selector';
-    this._windowSelector.style.left = this._startPosition + 'px';
-    this._windowSelector.style.right = this._width - this._startPosition + 'px';
-    parent.appendChild(this._windowSelector);
+    this.startPosition = position;
+    this.width = (parent as HTMLElement).offsetWidth;
+    this.windowSelector = document.createElement('div');
+    this.windowSelector.className = 'overview-grid-window-selector';
+    this.windowSelector.style.left = this.startPosition + 'px';
+    this.windowSelector.style.right = this.width - this.startPosition + 'px';
+    parent.appendChild(this.windowSelector);
   }
 
-  _close(position: number): {
+  close(position: number): {
     start: number,
     end: number,
   } {
-    position = Math.max(0, Math.min(position, this._width));
-    this._windowSelector.remove();
-    return this._startPosition < position ? {start: this._startPosition, end: position} :
-                                            {start: position, end: this._startPosition};
+    position = Math.max(0, Math.min(position, this.width));
+    this.windowSelector.remove();
+    return this.startPosition < position ? {start: this.startPosition, end: position} :
+                                           {start: position, end: this.startPosition};
   }
 
-  _updatePosition(position: number): void {
-    position = Math.max(0, Math.min(position, this._width));
-    if (position < this._startPosition) {
-      this._windowSelector.style.left = position + 'px';
-      this._windowSelector.style.right = this._width - this._startPosition + 'px';
+  updatePosition(position: number): void {
+    position = Math.max(0, Math.min(position, this.width));
+    if (position < this.startPosition) {
+      this.windowSelector.style.left = position + 'px';
+      this.windowSelector.style.right = this.width - this.startPosition + 'px';
     } else {
-      this._windowSelector.style.left = this._startPosition + 'px';
-      this._windowSelector.style.right = this._width - position + 'px';
+      this.windowSelector.style.left = this.startPosition + 'px';
+      this.windowSelector.style.right = this.width - position + 'px';
     }
   }
 }

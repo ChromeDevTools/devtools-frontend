@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
@@ -31,10 +29,10 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let performanceInstance: Performance;
 
 export class Performance {
-  _helper: Helper;
+  private readonly helper: Helper;
 
   private constructor() {
-    this._helper = new Helper('performance');
+    this.helper = new Helper('performance');
   }
 
   static instance(opts: {
@@ -49,10 +47,10 @@ export class Performance {
   }
 
   reset(): void {
-    this._helper.reset();
+    this.helper.reset();
   }
 
-  _appendLegacyCPUProfile(profile: SDK.CPUProfileDataModel.CPUProfileDataModel): void {
+  private appendLegacyCPUProfile(profile: SDK.CPUProfileDataModel.CPUProfileDataModel): void {
     const target = profile.target();
 
     const nodesToGo: SDK.CPUProfileDataModel.CPUProfileNode[] = [profile.profileHead];
@@ -72,7 +70,7 @@ export class Performance {
           const lineInfo = node.positionTicks[j];
           const line = lineInfo.line;
           const time = lineInfo.ticks * sampleDuration;
-          this._helper.addLineData(target, node.url, line, time);
+          this.helper.addLineData(target, node.url, line, time);
         }
       }
     }
@@ -80,8 +78,8 @@ export class Performance {
 
   appendCPUProfile(profile: SDK.CPUProfileDataModel.CPUProfileDataModel): void {
     if (!profile.lines) {
-      this._appendLegacyCPUProfile(profile);
-      this._helper.scheduleUpdate();
+      this.appendLegacyCPUProfile(profile);
+      this.helper.scheduleUpdate();
       return;
     }
     const target = profile.target();
@@ -103,18 +101,18 @@ export class Performance {
         continue;
       }
       const time = profile.timestamps[i] - profile.timestamps[i - 1];
-      this._helper.addLineData(target, scriptIdOrUrl, line, time);
+      this.helper.addLineData(target, scriptIdOrUrl, line, time);
     }
-    this._helper.scheduleUpdate();
+    this.helper.scheduleUpdate();
   }
 }
 
 let memoryInstance: Memory;
 
 export class Memory {
-  _helper: Helper;
+  private readonly helper: Helper;
   private constructor() {
-    this._helper = new Helper('memory');
+    this.helper = new Helper('memory');
   }
 
   static instance(opts: {
@@ -129,11 +127,11 @@ export class Memory {
   }
 
   reset(): void {
-    this._helper.reset();
+    this.helper.reset();
   }
 
   appendHeapProfile(profile: Protocol.HeapProfiler.SamplingHeapProfile, target: SDK.Target.Target|null): void {
-    const helper = this._helper;
+    const helper = this.helper;
     processNode(profile.head);
     helper.scheduleUpdate();
 
@@ -153,29 +151,29 @@ export class Memory {
 }
 
 export class Helper {
-  _type: string;
-  _locationPool: Bindings.LiveLocation.LiveLocationPool;
-  _updateTimer: number|null;
-  _lineData!: Map<SDK.Target.Target|null, Map<string|number, Map<number, number>>>;
+  private readonly type: string;
+  private readonly locationPool: Bindings.LiveLocation.LiveLocationPool;
+  private updateTimer: number|null;
+  private lineData!: Map<SDK.Target.Target|null, Map<string|number, Map<number, number>>>;
 
   constructor(type: string) {
-    this._type = type;
-    this._locationPool = new Bindings.LiveLocation.LiveLocationPool();
-    this._updateTimer = null;
+    this.type = type;
+    this.locationPool = new Bindings.LiveLocation.LiveLocationPool();
+    this.updateTimer = null;
     this.reset();
   }
 
   reset(): void {
     // The second map uses string keys for script URLs and numbers for scriptId.
-    this._lineData = new Map();
+    this.lineData = new Map();
     this.scheduleUpdate();
   }
 
   addLineData(target: SDK.Target.Target|null, scriptIdOrUrl: string|number, line: number, data: number): void {
-    let targetData = this._lineData.get(target);
+    let targetData = this.lineData.get(target);
     if (!targetData) {
       targetData = new Map();
-      this._lineData.set(target, targetData);
+      this.lineData.set(target, targetData);
     }
     let scriptData = targetData.get(scriptIdOrUrl);
     if (!scriptData) {
@@ -186,20 +184,20 @@ export class Helper {
   }
 
   scheduleUpdate(): void {
-    if (this._updateTimer) {
+    if (this.updateTimer) {
       return;
     }
-    this._updateTimer = window.setTimeout(() => {
-      this._updateTimer = null;
-      this._doUpdate();
+    this.updateTimer = window.setTimeout(() => {
+      this.updateTimer = null;
+      this.doUpdate();
     }, 0);
   }
 
-  _doUpdate(): void {
-    this._locationPool.disposeAll();
+  private doUpdate(): void {
+    this.locationPool.disposeAll();
     Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodes().forEach(
-        uiSourceCode => uiSourceCode.removeDecorationsForType(this._type));
-    for (const targetToScript of this._lineData) {
+        uiSourceCode => uiSourceCode.removeDecorationsForType(this.type));
+    for (const targetToScript of this.lineData) {
       const target = (targetToScript[0] as SDK.Target.Target | null);
       const debuggerModel = target ? target.model(SDK.DebuggerModel.DebuggerModel) : null;
       const scriptToLineMap = (targetToScript[1] as Map<string|number, Map<number, number>>);
@@ -218,7 +216,7 @@ export class Helper {
           const line = (lineToData[0] as number) - 1;
           const data = (lineToData[1] as number);
           if (uiSourceCode) {
-            uiSourceCode.addLineDecoration(line, this._type, data);
+            uiSourceCode.addLineDecoration(line, this.type, data);
             continue;
           }
           if (debuggerModel) {
@@ -226,7 +224,7 @@ export class Helper {
                 debuggerModel.createRawLocationByURL(scriptIdOrUrl, line, 0) :
                 debuggerModel.createRawLocationByScriptId(String(scriptIdOrUrl), line, 0);
             if (rawLocation) {
-              new Presentation(rawLocation, this._type, data, this._locationPool);
+              new Presentation(rawLocation, this.type, data, this.locationPool);
             }
           }
         }
@@ -236,27 +234,27 @@ export class Helper {
 }
 
 export class Presentation {
-  _type: string;
-  _time: number;
-  _uiLocation: Workspace.UISourceCode.UILocation|null;
+  private readonly type: string;
+  private readonly time: number;
+  private uiLocation: Workspace.UISourceCode.UILocation|null;
 
   constructor(
       rawLocation: SDK.DebuggerModel.Location, type: string, time: number,
       locationPool: Bindings.LiveLocation.LiveLocationPool) {
-    this._type = type;
-    this._time = time;
-    this._uiLocation = null;
+    this.type = type;
+    this.time = time;
+    this.uiLocation = null;
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createLiveLocation(
         rawLocation, this.updateLocation.bind(this), locationPool);
   }
 
   async updateLocation(liveLocation: Bindings.LiveLocation.LiveLocation): Promise<void> {
-    if (this._uiLocation) {
-      this._uiLocation.uiSourceCode.removeDecorationsForType(this._type);
+    if (this.uiLocation) {
+      this.uiLocation.uiSourceCode.removeDecorationsForType(this.type);
     }
-    this._uiLocation = await liveLocation.uiLocation();
-    if (this._uiLocation) {
-      this._uiLocation.uiSourceCode.addLineDecoration(this._uiLocation.lineNumber, this._type, this._time);
+    this.uiLocation = await liveLocation.uiLocation();
+    if (this.uiLocation) {
+      this.uiLocation.uiSourceCode.addLineDecoration(this.uiLocation.lineNumber, this.type, this.time);
     }
   }
 }
@@ -286,12 +284,12 @@ export class LineDecorator implements SourceFrame.SourceFrame.LineDecorator {
     textEditor.installGutter(gutterType, false);
     for (const decoration of decorations) {
       const value = (decoration.data() as number);
-      const element = this._createElement(type, value);
+      const element = this.createElement(type, value);
       textEditor.setGutterDecoration(decoration.range().startLine, gutterType, element);
     }
   }
 
-  _createElement(type: string, value: number): Element {
+  private createElement(type: string, value: number): Element {
     const element = document.createElement('div');
     element.classList.add('text-editor-line-marker-text');
     if (type === 'performance') {

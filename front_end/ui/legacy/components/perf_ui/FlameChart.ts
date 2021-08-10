@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../../../core/common/common.js';
 import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
@@ -88,71 +86,71 @@ interface GroupExpansionState {
 }
 
 export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewportDelegate {
-  _groupExpansionSetting?: Common.Settings.Setting<GroupExpansionState>;
-  _groupExpansionState: GroupExpansionState;
-  _flameChartDelegate: FlameChartDelegate;
-  _useWebGL: boolean;
-  _chartViewport: ChartViewport;
-  _dataProvider: FlameChartDataProvider;
-  _candyStripeCanvas: HTMLCanvasElement;
-  _viewportElement: HTMLElement;
-  _canvasGL!: HTMLCanvasElement;
-  _canvas: HTMLCanvasElement;
-  _entryInfo: HTMLElement;
-  _markerHighlighElement: HTMLElement;
-  _highlightElement: HTMLElement;
-  _selectedElement: HTMLElement;
-  _rulerEnabled: boolean;
-  _rangeSelectionStart: number;
-  _rangeSelectionEnd: number;
-  _barHeight: number;
-  _textBaseline: number;
-  _textPadding: number;
-  _markerRadius: number;
-  _headerLeftPadding: number;
-  _arrowSide: number;
-  _expansionArrowIndent: number;
-  _headerLabelXPadding: number;
-  _headerLabelYPadding: number;
-  _highlightedMarkerIndex: number;
-  _highlightedEntryIndex: number;
-  _selectedEntryIndex: number;
-  _rawTimelineDataLength: number;
-  _textWidth: Map<string, Map<string, number>>;
-  _markerPositions: Map<number, {
+  private readonly groupExpansionSetting?: Common.Settings.Setting<GroupExpansionState>;
+  private groupExpansionState: GroupExpansionState;
+  private readonly flameChartDelegate: FlameChartDelegate;
+  private useWebGL: boolean;
+  private chartViewport: ChartViewport;
+  private dataProvider: FlameChartDataProvider;
+  private candyStripeCanvas: HTMLCanvasElement;
+  private viewportElement: HTMLElement;
+  private canvasGL!: HTMLCanvasElement;
+  private canvas: HTMLCanvasElement;
+  private entryInfo: HTMLElement;
+  private readonly markerHighlighElement: HTMLElement;
+  private readonly highlightElement: HTMLElement;
+  private readonly selectedElement: HTMLElement;
+  private rulerEnabled: boolean;
+  private readonly rangeSelectionStart: number;
+  private readonly rangeSelectionEnd: number;
+  private barHeight: number;
+  private textBaseline: number;
+  private textPadding: number;
+  private readonly markerRadius: number;
+  private readonly headerLeftPadding: number;
+  private arrowSide: number;
+  private readonly expansionArrowIndent: number;
+  private readonly headerLabelXPadding: number;
+  private readonly headerLabelYPadding: number;
+  private highlightedMarkerIndex: number;
+  private highlightedEntryIndex: number;
+  private selectedEntryIndex: number;
+  private rawTimelineDataLength: number;
+  private textWidth: Map<string, Map<string, number>>;
+  private readonly markerPositions: Map<number, {
     x: number,
     width: number,
   }>;
-  _lastMouseOffsetX: number;
-  _selectedGroup: number;
-  _keyboardFocusedGroup: number;
-  _selectedGroupBackroundColor: string;
-  _selectedGroupBorderColor: string;
-  _offsetWidth!: number;
-  _offsetHeight!: number;
-  _dragStartX!: number;
-  _dragStartY!: number;
-  _lastMouseOffsetY!: number;
-  _minimumBoundary!: number;
-  _maxDragOffset!: number;
-  _shaderProgram?: WebGLProgram|null;
-  _vertexBuffer?: WebGLBuffer|null;
-  _colorBuffer?: WebGLBuffer|null;
-  _uScalingFactor?: WebGLUniformLocation|null;
-  _uShiftVector?: WebGLUniformLocation|null;
-  _aVertexPosition?: number;
-  _aVertexColor?: number;
-  _vertexCount?: number;
-  _prevTimelineData?: TimelineData;
-  _timelineLevels?: number[][]|null;
-  _visibleLevelOffsets?: Uint32Array|null;
-  _visibleLevels?: Uint16Array|null;
-  _groupOffsets?: Uint32Array|null;
-  _rawTimelineData?: TimelineData|null;
-  _forceDecorationCache?: Int8Array|null;
-  _entryColorsCache?: string[]|null;
-  _visibleLevelHeights?: Uint32Array;
-  _totalTime?: number;
+  private lastMouseOffsetX: number;
+  private selectedGroup: number;
+  private keyboardFocusedGroup: number;
+  private selectedGroupBackroundColor: string;
+  private selectedGroupBorderColor: string;
+  private offsetWidth!: number;
+  private offsetHeight!: number;
+  private dragStartX!: number;
+  private dragStartY!: number;
+  private lastMouseOffsetY!: number;
+  private minimumBoundaryInternal!: number;
+  private maxDragOffset!: number;
+  private shaderProgram?: WebGLProgram|null;
+  private vertexBuffer?: WebGLBuffer|null;
+  private colorBuffer?: WebGLBuffer|null;
+  private uScalingFactor?: WebGLUniformLocation|null;
+  private uShiftVector?: WebGLUniformLocation|null;
+  private aVertexPosition?: number;
+  private aVertexColor?: number;
+  private vertexCount?: number;
+  private prevTimelineData?: TimelineData;
+  private timelineLevels?: number[][]|null;
+  private visibleLevelOffsets?: Uint32Array|null;
+  private visibleLevels?: Uint16Array|null;
+  private groupOffsets?: Uint32Array|null;
+  private rawTimelineData?: TimelineData|null;
+  private forceDecorationCache?: Int8Array|null;
+  private entryColorsCache?: string[]|null;
+  private visibleLevelHeights?: Uint32Array;
+  private totalTime?: number;
 
   constructor(
       dataProvider: FlameChartDataProvider, flameChartDelegate: FlameChartDelegate,
@@ -160,79 +158,79 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     super(true);
     this.registerRequiredCSS('ui/legacy/components/perf_ui/flameChart.css');
     this.contentElement.classList.add('flame-chart-main-pane');
-    this._groupExpansionSetting = groupExpansionSetting;
-    this._groupExpansionState = groupExpansionSetting && groupExpansionSetting.get() || {};
-    this._flameChartDelegate = flameChartDelegate;
+    this.groupExpansionSetting = groupExpansionSetting;
+    this.groupExpansionState = groupExpansionSetting && groupExpansionSetting.get() || {};
+    this.flameChartDelegate = flameChartDelegate;
 
-    this._useWebGL = Root.Runtime.experiments.isEnabled('timelineWebGL');
-    this._chartViewport = new ChartViewport(this);
-    this._chartViewport.show(this.contentElement);
+    this.useWebGL = Root.Runtime.experiments.isEnabled('timelineWebGL');
+    this.chartViewport = new ChartViewport(this);
+    this.chartViewport.show(this.contentElement);
 
-    this._dataProvider = dataProvider;
-    this._candyStripeCanvas = document.createElement('canvas');
-    this._createCandyStripePattern();
+    this.dataProvider = dataProvider;
+    this.candyStripeCanvas = document.createElement('canvas');
+    this.createCandyStripePattern();
 
-    this._viewportElement = this._chartViewport.viewportElement;
-    if (this._useWebGL) {
-      this._canvasGL = (this._viewportElement.createChild('canvas', 'fill') as HTMLCanvasElement);
-      this._initWebGL();
+    this.viewportElement = this.chartViewport.viewportElement;
+    if (this.useWebGL) {
+      this.canvasGL = (this.viewportElement.createChild('canvas', 'fill') as HTMLCanvasElement);
+      this.initWebGL();
     }
-    this._canvas = (this._viewportElement.createChild('canvas', 'fill') as HTMLCanvasElement);
+    this.canvas = (this.viewportElement.createChild('canvas', 'fill') as HTMLCanvasElement);
 
-    this._canvas.tabIndex = 0;
-    UI.ARIAUtils.setAccessibleName(this._canvas, i18nString(UIStrings.flameChart));
-    UI.ARIAUtils.markAsTree(this._canvas);
-    this.setDefaultFocusedElement(this._canvas);
-    this._canvas.classList.add('flame-chart-canvas');
-    this._canvas.addEventListener('mousemove', this._onMouseMove.bind(this), false);
-    this._canvas.addEventListener('mouseout', this._onMouseOut.bind(this), false);
-    this._canvas.addEventListener('click', this._onClick.bind(this), false);
-    this._canvas.addEventListener('keydown', this._onKeyDown.bind(this), false);
+    this.canvas.tabIndex = 0;
+    UI.ARIAUtils.setAccessibleName(this.canvas, i18nString(UIStrings.flameChart));
+    UI.ARIAUtils.markAsTree(this.canvas);
+    this.setDefaultFocusedElement(this.canvas);
+    this.canvas.classList.add('flame-chart-canvas');
+    this.canvas.addEventListener('mousemove', this.onMouseMove.bind(this), false);
+    this.canvas.addEventListener('mouseout', this.onMouseOut.bind(this), false);
+    this.canvas.addEventListener('click', this.onClick.bind(this), false);
+    this.canvas.addEventListener('keydown', this.onKeyDown.bind(this), false);
 
-    this._entryInfo = this._viewportElement.createChild('div', 'flame-chart-entry-info');
-    this._markerHighlighElement = this._viewportElement.createChild('div', 'flame-chart-marker-highlight-element');
-    this._highlightElement = this._viewportElement.createChild('div', 'flame-chart-highlight-element');
-    this._selectedElement = this._viewportElement.createChild('div', 'flame-chart-selected-element');
-    this._canvas.addEventListener('focus', () => {
+    this.entryInfo = this.viewportElement.createChild('div', 'flame-chart-entry-info');
+    this.markerHighlighElement = this.viewportElement.createChild('div', 'flame-chart-marker-highlight-element');
+    this.highlightElement = this.viewportElement.createChild('div', 'flame-chart-highlight-element');
+    this.selectedElement = this.viewportElement.createChild('div', 'flame-chart-selected-element');
+    this.canvas.addEventListener('focus', () => {
       this.dispatchEventToListeners(Events.CanvasFocused);
     }, false);
 
     UI.UIUtils.installDragHandle(
-        this._viewportElement, this._startDragging.bind(this), this._dragging.bind(this), this._endDragging.bind(this),
+        this.viewportElement, this.startDragging.bind(this), this.dragging.bind(this), this.endDragging.bind(this),
         null);
 
-    this._rulerEnabled = true;
-    this._rangeSelectionStart = 0;
-    this._rangeSelectionEnd = 0;
-    this._barHeight = 17;
-    this._textBaseline = 5;
-    this._textPadding = 5;
-    this._markerRadius = 6;
-    this._chartViewport.setWindowTimes(
+    this.rulerEnabled = true;
+    this.rangeSelectionStart = 0;
+    this.rangeSelectionEnd = 0;
+    this.barHeight = 17;
+    this.textBaseline = 5;
+    this.textPadding = 5;
+    this.markerRadius = 6;
+    this.chartViewport.setWindowTimes(
         dataProvider.minimumBoundary(), dataProvider.minimumBoundary() + dataProvider.totalTime());
 
-    this._headerLeftPadding = 6;
-    this._arrowSide = 8;
-    this._expansionArrowIndent = this._headerLeftPadding + this._arrowSide / 2;
-    this._headerLabelXPadding = 3;
-    this._headerLabelYPadding = 2;
+    this.headerLeftPadding = 6;
+    this.arrowSide = 8;
+    this.expansionArrowIndent = this.headerLeftPadding + this.arrowSide / 2;
+    this.headerLabelXPadding = 3;
+    this.headerLabelYPadding = 2;
 
-    this._highlightedMarkerIndex = -1;
-    this._highlightedEntryIndex = -1;
-    this._selectedEntryIndex = -1;
-    this._rawTimelineDataLength = 0;
-    this._textWidth = new Map();
-    this._markerPositions = new Map();
+    this.highlightedMarkerIndex = -1;
+    this.highlightedEntryIndex = -1;
+    this.selectedEntryIndex = -1;
+    this.rawTimelineDataLength = 0;
+    this.textWidth = new Map();
+    this.markerPositions = new Map();
 
-    this._lastMouseOffsetX = 0;
-    this._selectedGroup = -1;
+    this.lastMouseOffsetX = 0;
+    this.selectedGroup = -1;
 
     // Keyboard focused group is used to navigate groups irrespective of whether they are selectable or not
-    this._keyboardFocusedGroup = -1;
+    this.keyboardFocusedGroup = -1;
 
-    this._selectedGroupBackroundColor = ThemeSupport.ThemeSupport.instance().patchColorText(
+    this.selectedGroupBackroundColor = ThemeSupport.ThemeSupport.instance().patchColorText(
         Colors.SelectedGroupBackground, ThemeSupport.ThemeSupport.ColorUsage.Background);
-    this._selectedGroupBorderColor = ThemeSupport.ThemeSupport.instance().patchColorText(
+    this.selectedGroupBorderColor = ThemeSupport.ThemeSupport.instance().patchColorText(
         Colors.SelectedGroupBorder, ThemeSupport.ThemeSupport.ColorUsage.Background);
   }
 
@@ -241,55 +239,55 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
   }
 
   setBarHeight(value: number): void {
-    this._barHeight = value;
+    this.barHeight = value;
   }
 
   setTextBaseline(value: number): void {
-    this._textBaseline = value;
+    this.textBaseline = value;
   }
 
   setTextPadding(value: number): void {
-    this._textPadding = value;
+    this.textPadding = value;
   }
 
   enableRuler(enable: boolean): void {
-    this._rulerEnabled = enable;
+    this.rulerEnabled = enable;
   }
 
   alwaysShowVerticalScroll(): void {
-    this._chartViewport.alwaysShowVerticalScroll();
+    this.chartViewport.alwaysShowVerticalScroll();
   }
 
   disableRangeSelection(): void {
-    this._chartViewport.disableRangeSelection();
+    this.chartViewport.disableRangeSelection();
   }
 
   highlightEntry(entryIndex: number): void {
-    if (this._highlightedEntryIndex === entryIndex) {
+    if (this.highlightedEntryIndex === entryIndex) {
       return;
     }
-    if (!this._dataProvider.entryColor(entryIndex)) {
+    if (!this.dataProvider.entryColor(entryIndex)) {
       return;
     }
-    this._highlightedEntryIndex = entryIndex;
-    this._updateElementPosition(this._highlightElement, this._highlightedEntryIndex);
+    this.highlightedEntryIndex = entryIndex;
+    this.updateElementPosition(this.highlightElement, this.highlightedEntryIndex);
     this.dispatchEventToListeners(Events.EntryHighlighted, entryIndex);
   }
 
   hideHighlight(): void {
-    this._entryInfo.removeChildren();
-    this._highlightedEntryIndex = -1;
-    this._updateElementPosition(this._highlightElement, this._highlightedEntryIndex);
+    this.entryInfo.removeChildren();
+    this.highlightedEntryIndex = -1;
+    this.updateElementPosition(this.highlightElement, this.highlightedEntryIndex);
     this.dispatchEventToListeners(Events.EntryHighlighted, -1);
   }
 
-  _createCandyStripePattern(): void {
+  private createCandyStripePattern(): void {
     // Set the candy stripe pattern to 17px so it repeats well.
     const size = 17;
-    this._candyStripeCanvas.width = size;
-    this._candyStripeCanvas.height = size;
+    this.candyStripeCanvas.width = size;
+    this.candyStripeCanvas.height = size;
 
-    const ctx = this._candyStripeCanvas.getContext('2d');
+    const ctx = this.candyStripeCanvas.getContext('2d');
     if (!ctx) {
       return;
     }
@@ -305,82 +303,82 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     }
   }
 
-  _resetCanvas(): void {
+  private resetCanvas(): void {
     const ratio = window.devicePixelRatio;
-    const width = Math.round(this._offsetWidth * ratio);
-    const height = Math.round(this._offsetHeight * ratio);
-    this._canvas.width = width;
-    this._canvas.height = height;
-    this._canvas.style.width = `${width / ratio}px`;
-    this._canvas.style.height = `${height / ratio}px`;
-    if (this._useWebGL) {
-      this._canvasGL.width = width;
-      this._canvasGL.height = height;
-      this._canvasGL.style.width = `${width / ratio}px`;
-      this._canvasGL.style.height = `${height / ratio}px`;
+    const width = Math.round(this.offsetWidth * ratio);
+    const height = Math.round(this.offsetHeight * ratio);
+    this.canvas.width = width;
+    this.canvas.height = height;
+    this.canvas.style.width = `${width / ratio}px`;
+    this.canvas.style.height = `${height / ratio}px`;
+    if (this.useWebGL) {
+      this.canvasGL.width = width;
+      this.canvasGL.height = height;
+      this.canvasGL.style.width = `${width / ratio}px`;
+      this.canvasGL.style.height = `${height / ratio}px`;
     }
   }
 
   windowChanged(startTime: number, endTime: number, animate: boolean): void {
-    this._flameChartDelegate.windowChanged(startTime, endTime, animate);
+    this.flameChartDelegate.windowChanged(startTime, endTime, animate);
   }
 
   updateRangeSelection(startTime: number, endTime: number): void {
-    this._flameChartDelegate.updateRangeSelection(startTime, endTime);
+    this.flameChartDelegate.updateRangeSelection(startTime, endTime);
   }
 
   setSize(width: number, height: number): void {
-    this._offsetWidth = width;
-    this._offsetHeight = height;
+    this.offsetWidth = width;
+    this.offsetHeight = height;
   }
 
-  _startDragging(event: MouseEvent): boolean {
+  private startDragging(event: MouseEvent): boolean {
     this.hideHighlight();
-    this._maxDragOffset = 0;
-    this._dragStartX = event.pageX;
-    this._dragStartY = event.pageY;
+    this.maxDragOffset = 0;
+    this.dragStartX = event.pageX;
+    this.dragStartY = event.pageY;
     return true;
   }
 
-  _dragging(event: MouseEvent): void {
-    const dx = event.pageX - this._dragStartX;
-    const dy = event.pageY - this._dragStartY;
-    this._maxDragOffset = Math.max(this._maxDragOffset, Math.sqrt(dx * dx + dy * dy));
+  private dragging(event: MouseEvent): void {
+    const dx = event.pageX - this.dragStartX;
+    const dy = event.pageY - this.dragStartY;
+    this.maxDragOffset = Math.max(this.maxDragOffset, Math.sqrt(dx * dx + dy * dy));
   }
 
-  _endDragging(_event: MouseEvent): void {
-    this._updateHighlight();
+  private endDragging(_event: MouseEvent): void {
+    this.updateHighlight();
   }
 
-  _timelineData(): TimelineData|null {
-    if (!this._dataProvider) {
+  private timelineData(): TimelineData|null {
+    if (!this.dataProvider) {
       return null;
     }
-    const timelineData = this._dataProvider.timelineData();
-    if (timelineData !== this._rawTimelineData ||
-        (timelineData && timelineData.entryStartTimes.length !== this._rawTimelineDataLength)) {
-      this._processTimelineData(timelineData);
+    const timelineData = this.dataProvider.timelineData();
+    if (timelineData !== this.rawTimelineData ||
+        (timelineData && timelineData.entryStartTimes.length !== this.rawTimelineDataLength)) {
+      this.processTimelineData(timelineData);
     }
-    return this._rawTimelineData || null;
+    return this.rawTimelineData || null;
   }
 
-  _revealEntry(entryIndex: number): void {
-    const timelineData = this._timelineData();
+  private revealEntry(entryIndex: number): void {
+    const timelineData = this.timelineData();
     if (!timelineData) {
       return;
     }
-    const timeLeft = this._chartViewport.windowLeftTime();
-    const timeRight = this._chartViewport.windowRightTime();
+    const timeLeft = this.chartViewport.windowLeftTime();
+    const timeRight = this.chartViewport.windowRightTime();
     const entryStartTime = timelineData.entryStartTimes[entryIndex];
     const entryTotalTime = timelineData.entryTotalTimes[entryIndex];
     const entryEndTime = entryStartTime + entryTotalTime;
     let minEntryTimeWindow = Math.min(entryTotalTime, timeRight - timeLeft);
 
     const level = timelineData.entryLevels[entryIndex];
-    this._chartViewport.setScrollOffset(this._levelToOffset(level), this._levelHeight(level));
+    this.chartViewport.setScrollOffset(this.levelToOffset(level), this.levelHeight(level));
 
     const minVisibleWidthPx = 30;
-    const futurePixelToTime = (timeRight - timeLeft) / this._offsetWidth;
+    const futurePixelToTime = (timeRight - timeLeft) / this.offsetWidth;
     minEntryTimeWindow = Math.max(minEntryTimeWindow, futurePixelToTime * minVisibleWidthPx);
     if (timeLeft > entryEndTime) {
       const delta = timeLeft - entryEndTime + minEntryTimeWindow;
@@ -392,76 +390,75 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
   }
 
   setWindowTimes(startTime: number, endTime: number, animate?: boolean): void {
-    this._chartViewport.setWindowTimes(startTime, endTime, animate);
-    this._updateHighlight();
+    this.chartViewport.setWindowTimes(startTime, endTime, animate);
+    this.updateHighlight();
   }
 
-  _onMouseMove(event: Event): void {
+  private onMouseMove(event: Event): void {
     const mouseEvent = (event as MouseEvent);
-    this._lastMouseOffsetX = mouseEvent.offsetX;
-    this._lastMouseOffsetY = mouseEvent.offsetY;
-    if (!this._enabled()) {
+    this.lastMouseOffsetX = mouseEvent.offsetX;
+    this.lastMouseOffsetY = mouseEvent.offsetY;
+    if (!this.enabled()) {
       return;
     }
-    if (this._chartViewport.isDragging()) {
+    if (this.chartViewport.isDragging()) {
       return;
     }
-    if (this._coordinatesToGroupIndex(mouseEvent.offsetX, mouseEvent.offsetY, true /* headerOnly */) >= 0) {
+    if (this.coordinatesToGroupIndex(mouseEvent.offsetX, mouseEvent.offsetY, true /* headerOnly */) >= 0) {
       this.hideHighlight();
-      this._viewportElement.style.cursor = 'pointer';
+      this.viewportElement.style.cursor = 'pointer';
       return;
     }
-    this._updateHighlight();
+    this.updateHighlight();
   }
 
-  _updateHighlight(): void {
-    const entryIndex = this._coordinatesToEntryIndex(this._lastMouseOffsetX, this._lastMouseOffsetY);
+  private updateHighlight(): void {
+    const entryIndex = this.coordinatesToEntryIndex(this.lastMouseOffsetX, this.lastMouseOffsetY);
     if (entryIndex === -1) {
       this.hideHighlight();
-      const group =
-          this._coordinatesToGroupIndex(this._lastMouseOffsetX, this._lastMouseOffsetY, false /* headerOnly */);
-      if (group >= 0 && this._rawTimelineData && this._rawTimelineData.groups &&
-          this._rawTimelineData.groups[group].selectable) {
-        this._viewportElement.style.cursor = 'pointer';
+      const group = this.coordinatesToGroupIndex(this.lastMouseOffsetX, this.lastMouseOffsetY, false /* headerOnly */);
+      if (group >= 0 && this.rawTimelineData && this.rawTimelineData.groups &&
+          this.rawTimelineData.groups[group].selectable) {
+        this.viewportElement.style.cursor = 'pointer';
       } else {
-        this._viewportElement.style.cursor = 'default';
+        this.viewportElement.style.cursor = 'default';
       }
       return;
     }
-    if (this._chartViewport.isDragging()) {
+    if (this.chartViewport.isDragging()) {
       return;
     }
-    this._updatePopover(entryIndex);
-    this._viewportElement.style.cursor = this._dataProvider.canJumpToEntry(entryIndex) ? 'pointer' : 'default';
+    this.updatePopover(entryIndex);
+    this.viewportElement.style.cursor = this.dataProvider.canJumpToEntry(entryIndex) ? 'pointer' : 'default';
     this.highlightEntry(entryIndex);
   }
 
-  _onMouseOut(): void {
-    this._lastMouseOffsetX = -1;
-    this._lastMouseOffsetY = -1;
+  private onMouseOut(): void {
+    this.lastMouseOffsetX = -1;
+    this.lastMouseOffsetY = -1;
     this.hideHighlight();
   }
 
-  _updatePopover(entryIndex: number): void {
-    if (entryIndex === this._highlightedEntryIndex) {
-      this._updatePopoverOffset();
+  private updatePopover(entryIndex: number): void {
+    if (entryIndex === this.highlightedEntryIndex) {
+      this.updatePopoverOffset();
       return;
     }
-    this._entryInfo.removeChildren();
-    const popoverElement = this._dataProvider.prepareHighlightedEntryInfo(entryIndex);
+    this.entryInfo.removeChildren();
+    const popoverElement = this.dataProvider.prepareHighlightedEntryInfo(entryIndex);
     if (popoverElement) {
-      this._entryInfo.appendChild(popoverElement);
-      this._updatePopoverOffset();
+      this.entryInfo.appendChild(popoverElement);
+      this.updatePopoverOffset();
     }
   }
 
-  _updatePopoverOffset(): void {
-    const mouseX = this._lastMouseOffsetX;
-    const mouseY = this._lastMouseOffsetY;
-    const parentWidth = this._entryInfo.parentElement ? this._entryInfo.parentElement.clientWidth : 0;
-    const parentHeight = this._entryInfo.parentElement ? this._entryInfo.parentElement.clientHeight : 0;
-    const infoWidth = this._entryInfo.clientWidth;
-    const infoHeight = this._entryInfo.clientHeight;
+  private updatePopoverOffset(): void {
+    const mouseX = this.lastMouseOffsetX;
+    const mouseY = this.lastMouseOffsetY;
+    const parentWidth = this.entryInfo.parentElement ? this.entryInfo.parentElement.clientWidth : 0;
+    const parentHeight = this.entryInfo.parentElement ? this.entryInfo.parentElement.clientHeight : 0;
+    const infoWidth = this.entryInfo.clientWidth;
+    const infoHeight = this.entryInfo.clientHeight;
     const /** @const */ offsetX = 10;
     const /** @const */ offsetY = 6;
     let x;
@@ -475,91 +472,90 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
         break;
       }
     }
-    this._entryInfo.style.left = x + 'px';
-    this._entryInfo.style.top = y + 'px';
+    this.entryInfo.style.left = x + 'px';
+    this.entryInfo.style.top = y + 'px';
   }
 
-  _onClick(event: Event): void {
+  private onClick(event: Event): void {
     const mouseEvent = (event as MouseEvent);
     this.focus();
     // onClick comes after dragStart and dragEnd events.
     // So if there was drag (mouse move) in the middle of that events
     // we skip the click. Otherwise we jump to the sources.
     const clickThreshold = 5;
-    if (this._maxDragOffset > clickThreshold) {
+    if (this.maxDragOffset > clickThreshold) {
       return;
     }
 
-    this._selectGroup(this._coordinatesToGroupIndex(mouseEvent.offsetX, mouseEvent.offsetY, false /* headerOnly */));
-    this._toggleGroupExpand(
-        this._coordinatesToGroupIndex(mouseEvent.offsetX, mouseEvent.offsetY, true /* headerOnly */));
-    const timelineData = this._timelineData();
-    if (mouseEvent.shiftKey && this._highlightedEntryIndex !== -1 && timelineData) {
-      const start = timelineData.entryStartTimes[this._highlightedEntryIndex];
-      const end = start + timelineData.entryTotalTimes[this._highlightedEntryIndex];
-      this._chartViewport.setRangeSelection(start, end);
+    this.selectGroup(this.coordinatesToGroupIndex(mouseEvent.offsetX, mouseEvent.offsetY, false /* headerOnly */));
+    this.toggleGroupExpand(this.coordinatesToGroupIndex(mouseEvent.offsetX, mouseEvent.offsetY, true /* headerOnly */));
+    const timelineData = this.timelineData();
+    if (mouseEvent.shiftKey && this.highlightedEntryIndex !== -1 && timelineData) {
+      const start = timelineData.entryStartTimes[this.highlightedEntryIndex];
+      const end = start + timelineData.entryTotalTimes[this.highlightedEntryIndex];
+      this.chartViewport.setRangeSelection(start, end);
     } else {
-      this._chartViewport.onClick(mouseEvent);
-      this.dispatchEventToListeners(Events.EntryInvoked, this._highlightedEntryIndex);
+      this.chartViewport.onClick(mouseEvent);
+      this.dispatchEventToListeners(Events.EntryInvoked, this.highlightedEntryIndex);
     }
   }
 
-  _selectGroup(groupIndex: number): void {
-    if (groupIndex < 0 || this._selectedGroup === groupIndex) {
+  private selectGroup(groupIndex: number): void {
+    if (groupIndex < 0 || this.selectedGroup === groupIndex) {
       return;
     }
-    if (!this._rawTimelineData) {
+    if (!this.rawTimelineData) {
       return;
     }
 
-    const groups = this._rawTimelineData.groups;
+    const groups = this.rawTimelineData.groups;
     if (!groups) {
       return;
     }
 
-    this._keyboardFocusedGroup = groupIndex;
-    this._scrollGroupIntoView(groupIndex);
+    this.keyboardFocusedGroup = groupIndex;
+    this.scrollGroupIntoView(groupIndex);
     const groupName = groups[groupIndex].name;
     if (!groups[groupIndex].selectable) {
-      this._deselectAllGroups();
+      this.deselectAllGroups();
       UI.ARIAUtils.alert(i18nString(UIStrings.sHovered, {PH1: groupName}));
     } else {
-      this._selectedGroup = groupIndex;
-      this._flameChartDelegate.updateSelectedGroup(this, groups[groupIndex]);
-      this._resetCanvas();
-      this._draw();
+      this.selectedGroup = groupIndex;
+      this.flameChartDelegate.updateSelectedGroup(this, groups[groupIndex]);
+      this.resetCanvas();
+      this.draw();
       UI.ARIAUtils.alert(i18nString(UIStrings.sSelected, {PH1: groupName}));
     }
   }
 
-  _deselectAllGroups(): void {
-    this._selectedGroup = -1;
-    this._flameChartDelegate.updateSelectedGroup(this, null);
-    this._resetCanvas();
-    this._draw();
+  private deselectAllGroups(): void {
+    this.selectedGroup = -1;
+    this.flameChartDelegate.updateSelectedGroup(this, null);
+    this.resetCanvas();
+    this.draw();
   }
 
-  _deselectAllEntries(): void {
-    this._selectedEntryIndex = -1;
-    this._resetCanvas();
-    this._draw();
+  private deselectAllEntries(): void {
+    this.selectedEntryIndex = -1;
+    this.resetCanvas();
+    this.draw();
   }
 
-  _isGroupFocused(index: number): boolean {
-    return index === this._selectedGroup || index === this._keyboardFocusedGroup;
+  private isGroupFocused(index: number): boolean {
+    return index === this.selectedGroup || index === this.keyboardFocusedGroup;
   }
 
-  _scrollGroupIntoView(index: number): void {
+  private scrollGroupIntoView(index: number): void {
     if (index < 0) {
       return;
     }
 
-    if (!this._rawTimelineData) {
+    if (!this.rawTimelineData) {
       return;
     }
 
-    const groups = this._rawTimelineData.groups;
-    const groupOffsets = this._groupOffsets;
+    const groups = this.rawTimelineData.groups;
+    const groupOffsets = this.groupOffsets;
     if (!groupOffsets || !groups) {
       return;
     }
@@ -574,33 +570,33 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     // to accommodate the bar with time markers
     const scrollTop = index === 0 ? 0 : groupTop;
 
-    const scrollHeight = Math.min(nextOffset - scrollTop, this._chartViewport.chartHeight());
-    this._chartViewport.setScrollOffset(scrollTop, scrollHeight);
+    const scrollHeight = Math.min(nextOffset - scrollTop, this.chartViewport.chartHeight());
+    this.chartViewport.setScrollOffset(scrollTop, scrollHeight);
   }
 
-  _toggleGroupExpand(groupIndex: number): void {
-    if (groupIndex < 0 || !this._isGroupCollapsible(groupIndex)) {
+  private toggleGroupExpand(groupIndex: number): void {
+    if (groupIndex < 0 || !this.isGroupCollapsible(groupIndex)) {
       return;
     }
 
-    if (!this._rawTimelineData || !this._rawTimelineData.groups) {
+    if (!this.rawTimelineData || !this.rawTimelineData.groups) {
       return;
     }
 
-    this._expandGroup(groupIndex, !this._rawTimelineData.groups[groupIndex].expanded /* setExpanded */);
+    this.expandGroup(groupIndex, !this.rawTimelineData.groups[groupIndex].expanded /* setExpanded */);
   }
 
-  _expandGroup(groupIndex: number, setExpanded: boolean|undefined = true, propagatedExpand: boolean|undefined = false):
-      void {
-    if (groupIndex < 0 || !this._isGroupCollapsible(groupIndex)) {
+  private expandGroup(
+      groupIndex: number, setExpanded: boolean|undefined = true, propagatedExpand: boolean|undefined = false): void {
+    if (groupIndex < 0 || !this.isGroupCollapsible(groupIndex)) {
       return;
     }
 
-    if (!this._rawTimelineData) {
+    if (!this.rawTimelineData) {
       return;
     }
 
-    const groups = this._rawTimelineData.groups;
+    const groups = this.rawTimelineData.groups;
     if (!groups) {
       return;
     }
@@ -608,29 +604,29 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     const group = groups[groupIndex];
     group.expanded = setExpanded;
 
-    this._groupExpansionState[group.name] = group.expanded;
-    if (this._groupExpansionSetting) {
-      this._groupExpansionSetting.set(this._groupExpansionState);
+    this.groupExpansionState[group.name] = group.expanded;
+    if (this.groupExpansionSetting) {
+      this.groupExpansionSetting.set(this.groupExpansionState);
     }
-    this._updateLevelPositions();
+    this.updateLevelPositions();
 
-    this._updateHighlight();
+    this.updateHighlight();
     if (!group.expanded) {
-      const timelineData = this._timelineData();
+      const timelineData = this.timelineData();
       if (timelineData) {
-        const level = timelineData.entryLevels[this._selectedEntryIndex];
-        if (this._selectedEntryIndex >= 0 && level >= group.startLevel &&
+        const level = timelineData.entryLevels[this.selectedEntryIndex];
+        if (this.selectedEntryIndex >= 0 && level >= group.startLevel &&
             (groupIndex >= groups.length - 1 || groups[groupIndex + 1].startLevel > level)) {
-          this._selectedEntryIndex = -1;
+          this.selectedEntryIndex = -1;
         }
       }
     }
 
-    this._updateHeight();
-    this._resetCanvas();
-    this._draw();
+    this.updateHeight();
+    this.resetCanvas();
+    this.draw();
 
-    this._scrollGroupIntoView(groupIndex);
+    this.scrollGroupIntoView(groupIndex);
     // We only want to read expanded/collapsed state on user inputted expand/collapse
     if (!propagatedExpand) {
       const groupName = groups[groupIndex].name;
@@ -640,50 +636,50 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     }
   }
 
-  _onKeyDown(e: KeyboardEvent): void {
-    if (!UI.KeyboardShortcut.KeyboardShortcut.hasNoModifiers(e) || !this._timelineData()) {
+  private onKeyDown(e: KeyboardEvent): void {
+    if (!UI.KeyboardShortcut.KeyboardShortcut.hasNoModifiers(e) || !this.timelineData()) {
       return;
     }
 
-    const eventHandled = this._handleSelectionNavigation(e);
+    const eventHandled = this.handleSelectionNavigation(e);
 
     // Handle keyboard navigation in groups
-    if (!eventHandled && this._rawTimelineData && this._rawTimelineData.groups) {
-      this._handleKeyboardGroupNavigation(e);
+    if (!eventHandled && this.rawTimelineData && this.rawTimelineData.groups) {
+      this.handleKeyboardGroupNavigation(e);
     }
   }
 
   bindCanvasEvent(eventName: string, onEvent: (arg0: Event) => void): void {
-    this._canvas.addEventListener(eventName, onEvent);
+    this.canvas.addEventListener(eventName, onEvent);
   }
 
-  _handleKeyboardGroupNavigation(event: Event): void {
+  private handleKeyboardGroupNavigation(event: Event): void {
     const keyboardEvent = (event as KeyboardEvent);
     let handled = false;
     let entrySelected = false;
 
     if (keyboardEvent.code === 'ArrowUp') {
-      handled = this._selectPreviousGroup();
+      handled = this.selectPreviousGroup();
     } else if (keyboardEvent.code === 'ArrowDown') {
-      handled = this._selectNextGroup();
+      handled = this.selectNextGroup();
     } else if (keyboardEvent.code === 'ArrowLeft') {
-      if (this._keyboardFocusedGroup >= 0) {
-        this._expandGroup(this._keyboardFocusedGroup, false /* setExpanded */);
+      if (this.keyboardFocusedGroup >= 0) {
+        this.expandGroup(this.keyboardFocusedGroup, false /* setExpanded */);
         handled = true;
       }
     } else if (keyboardEvent.code === 'ArrowRight') {
-      if (this._keyboardFocusedGroup >= 0) {
-        this._expandGroup(this._keyboardFocusedGroup, true /* setExpanded */);
-        this._selectFirstChild();
+      if (this.keyboardFocusedGroup >= 0) {
+        this.expandGroup(this.keyboardFocusedGroup, true /* setExpanded */);
+        this.selectFirstChild();
         handled = true;
       }
     } else if (keyboardEvent.key === 'Enter') {
-      entrySelected = this._selectFirstEntryInCurrentGroup();
+      entrySelected = this.selectFirstEntryInCurrentGroup();
       handled = entrySelected;
     }
 
     if (handled && !entrySelected) {
-      this._deselectAllEntries();
+      this.deselectAllEntries();
     }
 
     if (handled) {
@@ -691,18 +687,18 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     }
   }
 
-  _selectFirstEntryInCurrentGroup(): boolean {
-    if (!this._rawTimelineData) {
+  private selectFirstEntryInCurrentGroup(): boolean {
+    if (!this.rawTimelineData) {
       return false;
     }
 
-    const allGroups = this._rawTimelineData.groups;
+    const allGroups = this.rawTimelineData.groups;
 
-    if (this._keyboardFocusedGroup < 0 || !allGroups) {
+    if (this.keyboardFocusedGroup < 0 || !allGroups) {
       return false;
     }
 
-    const group = allGroups[this._keyboardFocusedGroup];
+    const group = allGroups[this.keyboardFocusedGroup];
     const startLevelInGroup = group.startLevel;
 
     // Return if no levels in this group
@@ -714,87 +710,87 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     // This is because a parent group also contains levels of all its child groups
     // So check if the next group has the same level, if it does, user should
     // go to that child group to select this entry
-    if (this._keyboardFocusedGroup < allGroups.length - 1 &&
-        allGroups[this._keyboardFocusedGroup + 1].startLevel === startLevelInGroup) {
+    if (this.keyboardFocusedGroup < allGroups.length - 1 &&
+        allGroups[this.keyboardFocusedGroup + 1].startLevel === startLevelInGroup) {
       return false;
     }
 
-    if (!this._timelineLevels) {
+    if (!this.timelineLevels) {
       return false;
     }
 
     // Get first (default) entry in startLevel of selected group
-    const firstEntryIndex = this._timelineLevels[startLevelInGroup][0];
+    const firstEntryIndex = this.timelineLevels[startLevelInGroup][0];
 
-    this._expandGroup(this._keyboardFocusedGroup, true /* setExpanded */);
+    this.expandGroup(this.keyboardFocusedGroup, true /* setExpanded */);
     this.setSelectedEntry(firstEntryIndex);
     return true;
   }
 
-  _selectPreviousGroup(): boolean {
-    if (this._keyboardFocusedGroup <= 0) {
+  private selectPreviousGroup(): boolean {
+    if (this.keyboardFocusedGroup <= 0) {
       return false;
     }
 
-    const groupIndexToSelect = this._getGroupIndexToSelect(-1 /* offset */);
-    this._selectGroup(groupIndexToSelect);
+    const groupIndexToSelect = this.getGroupIndexToSelect(-1 /* offset */);
+    this.selectGroup(groupIndexToSelect);
     return true;
   }
 
-  _selectNextGroup(): boolean {
-    if (!this._rawTimelineData || !this._rawTimelineData.groups) {
+  private selectNextGroup(): boolean {
+    if (!this.rawTimelineData || !this.rawTimelineData.groups) {
       return false;
     }
 
-    if (this._keyboardFocusedGroup >= this._rawTimelineData.groups.length - 1) {
+    if (this.keyboardFocusedGroup >= this.rawTimelineData.groups.length - 1) {
       return false;
     }
 
-    const groupIndexToSelect = this._getGroupIndexToSelect(1 /* offset */);
-    this._selectGroup(groupIndexToSelect);
+    const groupIndexToSelect = this.getGroupIndexToSelect(1 /* offset */);
+    this.selectGroup(groupIndexToSelect);
     return true;
   }
 
-  _getGroupIndexToSelect(offset: number): number {
-    if (!this._rawTimelineData || !this._rawTimelineData.groups) {
+  private getGroupIndexToSelect(offset: number): number {
+    if (!this.rawTimelineData || !this.rawTimelineData.groups) {
       throw new Error('No raw timeline data');
     }
-    const allGroups = this._rawTimelineData.groups;
-    let groupIndexToSelect = this._keyboardFocusedGroup;
+    const allGroups = this.rawTimelineData.groups;
+    let groupIndexToSelect = this.keyboardFocusedGroup;
     let groupName, groupWithSubNestingLevel;
 
     do {
       groupIndexToSelect += offset;
-      groupName = this._rawTimelineData.groups[groupIndexToSelect].name;
-      groupWithSubNestingLevel = this._keyboardFocusedGroup !== -1 &&
-          allGroups[groupIndexToSelect].style.nestingLevel > allGroups[this._keyboardFocusedGroup].style.nestingLevel;
+      groupName = this.rawTimelineData.groups[groupIndexToSelect].name;
+      groupWithSubNestingLevel = this.keyboardFocusedGroup !== -1 &&
+          allGroups[groupIndexToSelect].style.nestingLevel > allGroups[this.keyboardFocusedGroup].style.nestingLevel;
     } while (groupIndexToSelect > 0 && groupIndexToSelect < allGroups.length - 1 &&
              (!groupName || groupWithSubNestingLevel));
 
     return groupIndexToSelect;
   }
 
-  _selectFirstChild(): void {
-    if (!this._rawTimelineData || !this._rawTimelineData.groups) {
+  private selectFirstChild(): void {
+    if (!this.rawTimelineData || !this.rawTimelineData.groups) {
       return;
     }
 
-    const allGroups = this._rawTimelineData.groups;
-    if (this._keyboardFocusedGroup < 0 || this._keyboardFocusedGroup >= allGroups.length - 1) {
+    const allGroups = this.rawTimelineData.groups;
+    if (this.keyboardFocusedGroup < 0 || this.keyboardFocusedGroup >= allGroups.length - 1) {
       return;
     }
 
-    const groupIndexToSelect = this._keyboardFocusedGroup + 1;
-    if (allGroups[groupIndexToSelect].style.nestingLevel > allGroups[this._keyboardFocusedGroup].style.nestingLevel) {
-      this._selectGroup(groupIndexToSelect);
+    const groupIndexToSelect = this.keyboardFocusedGroup + 1;
+    if (allGroups[groupIndexToSelect].style.nestingLevel > allGroups[this.keyboardFocusedGroup].style.nestingLevel) {
+      this.selectGroup(groupIndexToSelect);
     }
   }
 
-  _handleSelectionNavigation(event: KeyboardEvent): boolean {
-    if (this._selectedEntryIndex === -1) {
+  private handleSelectionNavigation(event: KeyboardEvent): boolean {
+    if (this.selectedEntryIndex === -1) {
       return false;
     }
-    const timelineData = this._timelineData();
+    const timelineData = this.timelineData();
     if (!timelineData) {
       return false;
     }
@@ -821,9 +817,9 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     const keyboardEvent = (event as KeyboardEvent);
     const keys = UI.KeyboardShortcut.Keys;
     if (keyboardEvent.keyCode === keys.Left.code || keyboardEvent.keyCode === keys.Right.code) {
-      const level = timelineData.entryLevels[this._selectedEntryIndex];
-      const levelIndexes = this._timelineLevels ? this._timelineLevels[level] : [];
-      let indexOnLevel = Platform.ArrayUtilities.lowerBound(levelIndexes, this._selectedEntryIndex, (a, b) => a - b);
+      const level = timelineData.entryLevels[this.selectedEntryIndex];
+      const levelIndexes = this.timelineLevels ? this.timelineLevels[level] : [];
+      let indexOnLevel = Platform.ArrayUtilities.lowerBound(levelIndexes, this.selectedEntryIndex, (a, b) => a - b);
       indexOnLevel += keyboardEvent.keyCode === keys.Left.code ? -1 : 1;
       event.consume(true);
       if (indexOnLevel >= 0 && indexOnLevel < levelIndexes.length) {
@@ -833,27 +829,27 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     }
 
     if (keyboardEvent.keyCode === keys.Up.code || keyboardEvent.keyCode === keys.Down.code) {
-      let level = timelineData.entryLevels[this._selectedEntryIndex];
+      let level = timelineData.entryLevels[this.selectedEntryIndex];
       level += keyboardEvent.keyCode === keys.Up.code ? -1 : 1;
-      if (level < 0 || (this._timelineLevels && level >= this._timelineLevels.length)) {
-        this._deselectAllEntries();
+      if (level < 0 || (this.timelineLevels && level >= this.timelineLevels.length)) {
+        this.deselectAllEntries();
         keyboardEvent.consume(true);
         return true;
       }
-      const entryTime = timelineData.entryStartTimes[this._selectedEntryIndex] +
-          timelineData.entryTotalTimes[this._selectedEntryIndex] / 2;
-      const levelIndexes = this._timelineLevels ? this._timelineLevels[level] : [];
+      const entryTime = timelineData.entryStartTimes[this.selectedEntryIndex] +
+          timelineData.entryTotalTimes[this.selectedEntryIndex] / 2;
+      const levelIndexes = this.timelineLevels ? this.timelineLevels[level] : [];
       let indexOnLevel = Platform.ArrayUtilities.upperBound(levelIndexes, entryTime, timeComparator) - 1;
-      if (!entriesIntersect(this._selectedEntryIndex, levelIndexes[indexOnLevel])) {
+      if (!entriesIntersect(this.selectedEntryIndex, levelIndexes[indexOnLevel])) {
         ++indexOnLevel;
         if (indexOnLevel >= levelIndexes.length ||
-            !entriesIntersect(this._selectedEntryIndex, levelIndexes[indexOnLevel])) {
+            !entriesIntersect(this.selectedEntryIndex, levelIndexes[indexOnLevel])) {
           if (keyboardEvent.code === 'ArrowDown') {
             return false;
           }
 
           // Stay in the current group and give focus to the parent group instead of entries
-          this._deselectAllEntries();
+          this.deselectAllEntries();
           keyboardEvent.consume(true);
           return true;
         }
@@ -864,37 +860,36 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     }
     if (event.key === 'Enter') {
       event.consume(true);
-      this.dispatchEventToListeners(Events.EntryInvoked, this._selectedEntryIndex);
+      this.dispatchEventToListeners(Events.EntryInvoked, this.selectedEntryIndex);
       return true;
     }
     return false;
   }
 
-  _coordinatesToEntryIndex(x: number, y: number): number {
+  private coordinatesToEntryIndex(x: number, y: number): number {
     if (x < 0 || y < 0) {
       return -1;
     }
-    const timelineData = this._timelineData();
+    const timelineData = this.timelineData();
     if (!timelineData) {
       return -1;
     }
-    y += this._chartViewport.scrollOffset();
-    if (!this._visibleLevelOffsets) {
+    y += this.chartViewport.scrollOffset();
+    if (!this.visibleLevelOffsets) {
       throw new Error('No visible level offsets');
     }
     const cursorLevel =
-        Platform.ArrayUtilities.upperBound(this._visibleLevelOffsets, y, Platform.ArrayUtilities.DEFAULT_COMPARATOR) -
-        1;
-    if (cursorLevel < 0 || (this._visibleLevels && !this._visibleLevels[cursorLevel])) {
+        Platform.ArrayUtilities.upperBound(this.visibleLevelOffsets, y, Platform.ArrayUtilities.DEFAULT_COMPARATOR) - 1;
+    if (cursorLevel < 0 || (this.visibleLevels && !this.visibleLevels[cursorLevel])) {
       return -1;
     }
-    const offsetFromLevel = y - this._visibleLevelOffsets[cursorLevel];
-    if (offsetFromLevel > this._levelHeight(cursorLevel)) {
+    const offsetFromLevel = y - this.visibleLevelOffsets[cursorLevel];
+    if (offsetFromLevel > this.levelHeight(cursorLevel)) {
       return -1;
     }
 
     // Check markers first.
-    for (const [index, pos] of this._markerPositions) {
+    for (const [index, pos] of this.markerPositions) {
       if (timelineData.entryLevels[index] !== cursorLevel) {
         continue;
       }
@@ -905,12 +900,12 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
 
     // Check regular entries.
     const entryStartTimes = timelineData.entryStartTimes;
-    const entriesOnLevel: number[] = this._timelineLevels ? this._timelineLevels[cursorLevel] : [];
+    const entriesOnLevel: number[] = this.timelineLevels ? this.timelineLevels[cursorLevel] : [];
     if (!entriesOnLevel || !entriesOnLevel.length) {
       return -1;
     }
 
-    const cursorTime = this._chartViewport.pixelToTime(x);
+    const cursorTime = this.chartViewport.pixelToTime(x);
     const indexOnLevel = Math.max(
         Platform.ArrayUtilities.upperBound(
             entriesOnLevel, cursorTime, (time, entryIndex) => time - entryStartTimes[entryIndex]) -
@@ -928,8 +923,8 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
 
       const startTime = entryStartTimes[entryIndex];
       const duration = timelineData.entryTotalTimes[entryIndex];
-      const startX = this._chartViewport.timeToPosition(startTime);
-      const endX = this._chartViewport.timeToPosition(startTime + duration);
+      const startX = this.chartViewport.timeToPosition(startTime);
+      const endX = this.chartViewport.timeToPosition(startTime + duration);
       const barThresholdPx = 3;
       return startX - barThresholdPx < x && x < endX + barThresholdPx;
     }
@@ -945,33 +940,33 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     return -1;
   }
 
-  _coordinatesToGroupIndex(x: number, y: number, headerOnly: boolean): number {
-    if (!this._rawTimelineData || !this._rawTimelineData.groups || !this._groupOffsets) {
+  private coordinatesToGroupIndex(x: number, y: number, headerOnly: boolean): number {
+    if (!this.rawTimelineData || !this.rawTimelineData.groups || !this.groupOffsets) {
       return -1;
     }
 
     if (x < 0 || y < 0) {
       return -1;
     }
-    y += this._chartViewport.scrollOffset();
-    const groups = this._rawTimelineData.groups || [];
+    y += this.chartViewport.scrollOffset();
+    const groups = this.rawTimelineData.groups || [];
     const group =
-        Platform.ArrayUtilities.upperBound(this._groupOffsets, y, Platform.ArrayUtilities.DEFAULT_COMPARATOR) - 1;
+        Platform.ArrayUtilities.upperBound(this.groupOffsets, y, Platform.ArrayUtilities.DEFAULT_COMPARATOR) - 1;
     if (group < 0 || group >= groups.length) {
       return -1;
     }
-    const height = headerOnly ? groups[group].style.height : this._groupOffsets[group + 1] - this._groupOffsets[group];
-    if (y - this._groupOffsets[group] >= height) {
+    const height = headerOnly ? groups[group].style.height : this.groupOffsets[group + 1] - this.groupOffsets[group];
+    if (y - this.groupOffsets[group] >= height) {
       return -1;
     }
     if (!headerOnly) {
       return group;
     }
 
-    const context = (this._canvas.getContext('2d') as CanvasRenderingContext2D);
+    const context = (this.canvas.getContext('2d') as CanvasRenderingContext2D);
     context.save();
     context.font = groups[group].style.font;
-    const right = this._headerLeftPadding + this._labelWidthForGroup(context, groups[group]);
+    const right = this.headerLeftPadding + this.labelWidthForGroup(context, groups[group]);
     context.restore();
     if (x > right) {
       return -1;
@@ -980,8 +975,8 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     return group;
   }
 
-  _markerIndexAtPosition(x: number): number {
-    const timelineData = this._timelineData();
+  private markerIndexAtPosition(x: number): number {
+    const timelineData = this.timelineData();
     if (!timelineData) {
       return -1;
     }
@@ -991,10 +986,10 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
       return -1;
     }
     const /** @const */ accurracyOffsetPx = 4;
-    const time = this._chartViewport.pixelToTime(x);
-    const leftTime = this._chartViewport.pixelToTime(x - accurracyOffsetPx);
-    const rightTime = this._chartViewport.pixelToTime(x + accurracyOffsetPx);
-    const left = this._markerIndexBeforeTime(leftTime);
+    const time = this.chartViewport.pixelToTime(x);
+    const leftTime = this.chartViewport.pixelToTime(x - accurracyOffsetPx);
+    const rightTime = this.chartViewport.pixelToTime(x + accurracyOffsetPx);
+    const left = this.markerIndexBeforeTime(leftTime);
     let markerIndex = -1;
     let distance: number = Infinity;
     for (let i = left; i < markers.length && markers[i].startTime() < rightTime; i++) {
@@ -1007,8 +1002,8 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     return markerIndex;
   }
 
-  _markerIndexBeforeTime(time: number): number {
-    const timelineData = this._timelineData();
+  private markerIndexBeforeTime(time: number): number {
+    const timelineData = this.timelineData();
     if (!timelineData) {
       throw new Error('No timeline data');
     }
@@ -1022,20 +1017,20 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
         timelineData.markers, time, (markerTimestamp, marker) => markerTimestamp - marker.startTime());
   }
 
-  _draw(): void {
-    const timelineData = this._timelineData();
+  private draw(): void {
+    const timelineData = this.timelineData();
     if (!timelineData) {
       return;
     }
 
-    const visibleLevelOffsets = this._visibleLevelOffsets ? this._visibleLevelOffsets : new Uint32Array();
+    const visibleLevelOffsets = this.visibleLevelOffsets ? this.visibleLevelOffsets : new Uint32Array();
 
-    const width = this._offsetWidth;
-    const height = this._offsetHeight;
-    const context = (this._canvas.getContext('2d') as CanvasRenderingContext2D);
+    const width = this.offsetWidth;
+    const height = this.offsetHeight;
+    const context = (this.canvas.getContext('2d') as CanvasRenderingContext2D);
     context.save();
     const ratio = window.devicePixelRatio;
-    const top = this._chartViewport.scrollOffset();
+    const top = this.chartViewport.scrollOffset();
     context.scale(ratio, ratio);
     context.fillStyle = 'rgba(0, 0, 0, 0)';
     context.fillRect(0, 0, width, height);
@@ -1043,22 +1038,22 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     const defaultFont = '11px ' + Host.Platform.fontFamily();
     context.font = defaultFont;
 
-    const candyStripePattern = context.createPattern(this._candyStripeCanvas, 'repeat');
+    const candyStripePattern = context.createPattern(this.candyStripeCanvas, 'repeat');
 
     const entryTotalTimes = timelineData.entryTotalTimes;
     const entryStartTimes = timelineData.entryStartTimes;
     const entryLevels = timelineData.entryLevels;
-    const timeToPixel = this._chartViewport.timeToPixel();
+    const timeToPixel = this.chartViewport.timeToPixel();
 
     const titleIndices = [];
     const markerIndices = [];
-    const textPadding = this._textPadding;
+    const textPadding = this.textPadding;
     const minTextWidth = 2 * textPadding + UI.UIUtils.measureTextWidth(context, '…');
-    const minTextWidthDuration = this._chartViewport.pixelToTimeOffset(minTextWidth);
+    const minTextWidthDuration = this.chartViewport.pixelToTimeOffset(minTextWidth);
     const minVisibleBarLevel = Math.max(
         Platform.ArrayUtilities.upperBound(visibleLevelOffsets, top, Platform.ArrayUtilities.DEFAULT_COMPARATOR) - 1,
         0);
-    this._markerPositions.clear();
+    this.markerPositions.clear();
 
     let mainThreadTopLevel = -1;
 
@@ -1080,21 +1075,21 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     const colorBuckets = new Map<string, {
       indexes: number[],
     }>();
-    for (let level = minVisibleBarLevel; level < this._dataProvider.maxStackDepth(); ++level) {
-      if (this._levelToOffset(level) > top + height) {
+    for (let level = minVisibleBarLevel; level < this.dataProvider.maxStackDepth(); ++level) {
+      if (this.levelToOffset(level) > top + height) {
         break;
       }
-      if (!this._visibleLevels || !this._visibleLevels[level]) {
+      if (!this.visibleLevels || !this.visibleLevels[level]) {
         continue;
       }
-      if (!this._timelineLevels) {
+      if (!this.timelineLevels) {
         continue;
       }
 
       // Entries are ordered by start time within a level, so find the last visible entry.
-      const levelIndexes = this._timelineLevels[level];
+      const levelIndexes = this.timelineLevels[level];
       const rightIndexOnLevel = Platform.ArrayUtilities.lowerBound(
-                                    levelIndexes, this._chartViewport.windowRightTime(),
+                                    levelIndexes, this.chartViewport.windowRightTime(),
                                     (time, entryIndex) => time - entryStartTimes[entryIndex]) -
           1;
       let lastDrawOffset = Infinity;
@@ -1105,29 +1100,28 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
           markerIndices.push(entryIndex);
           continue;
         }
-        if (duration >= minTextWidthDuration ||
-            (this._forceDecorationCache && this._forceDecorationCache[entryIndex])) {
+        if (duration >= minTextWidthDuration || (this.forceDecorationCache && this.forceDecorationCache[entryIndex])) {
           titleIndices.push(entryIndex);
         }
 
         const entryStartTime = entryStartTimes[entryIndex];
         const entryOffsetRight = entryStartTime + duration;
-        if (entryOffsetRight <= this._chartViewport.windowLeftTime()) {
+        if (entryOffsetRight <= this.chartViewport.windowLeftTime()) {
           break;
         }
-        if (this._useWebGL) {
+        if (this.useWebGL) {
           continue;
         }
 
-        const barX = this._timeToPositionClipped(entryStartTime);
+        const barX = this.timeToPositionClipped(entryStartTime);
         // Check if the entry entirely fits into an already drawn pixel, we can just skip drawing it.
         if (barX >= lastDrawOffset) {
           continue;
         }
         lastDrawOffset = barX;
 
-        if (this._entryColorsCache) {
-          const color = this._entryColorsCache[entryIndex];
+        if (this.entryColorsCache) {
+          const color = this.entryColorsCache[entryIndex];
           let bucket = colorBuckets.get(color);
           if (!bucket) {
             bucket = {indexes: []};
@@ -1138,13 +1132,13 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
       }
     }
 
-    if (this._useWebGL) {
-      this._drawGL();
+    if (this.useWebGL) {
+      this.drawGL();
     } else {
       context.save();
-      this._forEachGroupInViewport((offset, index, group, isFirst, groupHeight) => {
-        if (this._isGroupFocused(index)) {
-          context.fillStyle = this._selectedGroupBackroundColor;
+      this.forEachGroupInViewport((offset, index, group, isFirst, groupHeight) => {
+        if (this.isGroupFocused(index)) {
+          context.fillStyle = this.selectedGroupBackroundColor;
           context.fillRect(0, offset, width, groupHeight - group.style.padding);
         }
       });
@@ -1159,11 +1153,11 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
             continue;
           }
           const entryStartTime = entryStartTimes[entryIndex];
-          const barX = this._timeToPositionClipped(entryStartTime);
+          const barX = this.timeToPositionClipped(entryStartTime);
           const barLevel = entryLevels[entryIndex];
-          const barHeight = this._levelHeight(barLevel);
-          const barY = this._levelToOffset(barLevel);
-          const barRight = this._timeToPositionClipped(entryStartTime + duration);
+          const barHeight = this.levelHeight(barLevel);
+          const barY = this.levelToOffset(barLevel);
+          const barRight = this.timeToPositionClipped(entryStartTime + duration);
           const barWidth = Math.max(barRight - barX, 1);
           context.rect(barX, barY, barWidth - 0.4, barHeight - 1);
         }
@@ -1186,11 +1180,11 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
           }
 
           const entryStartTime = entryStartTimes[entryIndex];
-          const barX = this._timeToPositionClipped(entryStartTime + 50);
+          const barX = this.timeToPositionClipped(entryStartTime + 50);
           const barLevel = entryLevels[entryIndex];
-          const barHeight = this._levelHeight(barLevel);
-          const barY = this._levelToOffset(barLevel);
-          const barRight = this._timeToPositionClipped(entryStartTime + duration);
+          const barHeight = this.levelHeight(barLevel);
+          const barY = this.levelToOffset(barLevel);
+          const barRight = this.timeToPositionClipped(entryStartTime + duration);
           const barWidth = Math.max(barRight - barX, 1);
           context.rect(barX, barY, barWidth - 0.4, barHeight - 1);
         }
@@ -1209,7 +1203,7 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     // Markers are sorted top to bottom, right to left.
     for (let m = markerIndices.length - 1; m >= 0; --m) {
       const entryIndex = markerIndices[m];
-      const title = this._dataProvider.entryTitle(entryIndex);
+      const title = this.dataProvider.entryTitle(entryIndex);
       if (!title) {
         continue;
       }
@@ -1218,18 +1212,18 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
       if (lastMarkerLevel !== level) {
         lastMarkerX = -Infinity;
       }
-      const x = Math.max(this._chartViewport.timeToPosition(entryStartTime), lastMarkerX);
-      const y = this._levelToOffset(level);
-      const h = this._levelHeight(level);
+      const x = Math.max(this.chartViewport.timeToPosition(entryStartTime), lastMarkerX);
+      const y = this.levelToOffset(level);
+      const h = this.levelHeight(level);
       const padding = 4;
       const width = Math.ceil(UI.UIUtils.measureTextWidth(context, title)) + 2 * padding;
       lastMarkerX = x + width + 1;
       lastMarkerLevel = level;
-      this._markerPositions.set(entryIndex, {x, width});
-      context.fillStyle = this._dataProvider.entryColor(entryIndex);
+      this.markerPositions.set(entryIndex, {x, width});
+      context.fillStyle = this.dataProvider.entryColor(entryIndex);
       context.fillRect(x, y, width, h - 1);
       context.fillStyle = 'white';
-      context.fillText(title, x + padding, y + h - this._textBaseline);
+      context.fillText(title, x + padding, y + h - this.textBaseline);
     }
     context.strokeStyle = 'rgba(0, 0, 0, 0.2)';
     context.stroke();
@@ -1237,36 +1231,36 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     for (let i = 0; i < titleIndices.length; ++i) {
       const entryIndex = titleIndices[i];
       const entryStartTime = entryStartTimes[entryIndex];
-      const barX = this._timeToPositionClipped(entryStartTime);
-      const barRight = Math.min(this._timeToPositionClipped(entryStartTime + entryTotalTimes[entryIndex]), width) + 1;
+      const barX = this.timeToPositionClipped(entryStartTime);
+      const barRight = Math.min(this.timeToPositionClipped(entryStartTime + entryTotalTimes[entryIndex]), width) + 1;
       const barWidth = barRight - barX;
       const barLevel = entryLevels[entryIndex];
-      const barY = this._levelToOffset(barLevel);
-      let text = this._dataProvider.entryTitle(entryIndex);
+      const barY = this.levelToOffset(barLevel);
+      let text = this.dataProvider.entryTitle(entryIndex);
       if (text && text.length) {
-        context.font = this._dataProvider.entryFont(entryIndex) || defaultFont;
+        context.font = this.dataProvider.entryFont(entryIndex) || defaultFont;
         text = UI.UIUtils.trimTextMiddle(context, text, barWidth - 2 * textPadding);
       }
-      const unclippedBarX = this._chartViewport.timeToPosition(entryStartTime);
-      const barHeight = this._levelHeight(barLevel);
-      if (this._dataProvider.decorateEntry(
+      const unclippedBarX = this.chartViewport.timeToPosition(entryStartTime);
+      const barHeight = this.levelHeight(barLevel);
+      if (this.dataProvider.decorateEntry(
               entryIndex, context, text, barX, barY, barWidth, barHeight, unclippedBarX, timeToPixel)) {
         continue;
       }
       if (!text || !text.length) {
         continue;
       }
-      context.fillStyle = this._dataProvider.textColor(entryIndex);
-      context.fillText(text, barX + textPadding, barY + barHeight - this._textBaseline);
+      context.fillStyle = this.dataProvider.textColor(entryIndex);
+      context.fillText(text, barX + textPadding, barY + barHeight - this.textBaseline);
     }
 
     context.restore();
 
-    this._drawGroupHeaders(width, height);
-    this._drawFlowEvents(context, width, height);
-    this._drawMarkers();
+    this.drawGroupHeaders(width, height);
+    this.drawFlowEvents(context, width, height);
+    this.drawMarkers();
     const dividersData = TimelineGrid.calculateGridOffsets(this);
-    const navStartTimes = Array.from(this._dataProvider.navStartTimes().values());
+    const navStartTimes = Array.from(this.dataProvider.navStartTimes().values());
 
     let navStartTimeIndex = 0;
     const drawAdjustedTime = (time: number): string => {
@@ -1291,20 +1285,20 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     };
 
     TimelineGrid.drawCanvasGrid(context, dividersData);
-    if (this._rulerEnabled) {
+    if (this.rulerEnabled) {
       TimelineGrid.drawCanvasHeaders(context, dividersData, drawAdjustedTime, 3, HeaderHeight);
     }
 
-    this._updateElementPosition(this._highlightElement, this._highlightedEntryIndex);
-    this._updateElementPosition(this._selectedElement, this._selectedEntryIndex);
-    this._updateMarkerHighlight();
+    this.updateElementPosition(this.highlightElement, this.highlightedEntryIndex);
+    this.updateElementPosition(this.selectedElement, this.selectedEntryIndex);
+    this.updateMarkerHighlight();
   }
 
-  _initWebGL(): void {
-    const gl = (this._canvasGL.getContext('webgl') as WebGLRenderingContext | null);
+  private initWebGL(): void {
+    const gl = (this.canvasGL.getContext('webgl') as WebGLRenderingContext | null);
     if (!gl) {
       console.error('Failed to obtain WebGL context.');
-      this._useWebGL = false;  // Fallback to use canvas.
+      this.useWebGL = false;  // Fallback to use canvas.
       return;
     }
 
@@ -1359,33 +1353,33 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     gl.linkProgram(shaderProgram);
 
     if (gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-      this._shaderProgram = shaderProgram;
+      this.shaderProgram = shaderProgram;
       gl.useProgram(shaderProgram);
     } else {
-      this._shaderProgram = null;
+      this.shaderProgram = null;
       throw new Error('Unable to initialize the shader program: ' + gl.getProgramInfoLog(shaderProgram));
     }
 
-    this._vertexBuffer = gl.createBuffer();
-    this._colorBuffer = gl.createBuffer();
+    this.vertexBuffer = gl.createBuffer();
+    this.colorBuffer = gl.createBuffer();
 
-    this._uScalingFactor = gl.getUniformLocation(shaderProgram, 'uScalingFactor');
-    this._uShiftVector = gl.getUniformLocation(shaderProgram, 'uShiftVector');
+    this.uScalingFactor = gl.getUniformLocation(shaderProgram, 'uScalingFactor');
+    this.uShiftVector = gl.getUniformLocation(shaderProgram, 'uShiftVector');
     const uSampler = gl.getUniformLocation(shaderProgram, 'uSampler');
     gl.uniform1i(uSampler, 0);
-    this._aVertexPosition = gl.getAttribLocation(this._shaderProgram, 'aVertexPosition');
-    this._aVertexColor = gl.getAttribLocation(this._shaderProgram, 'aVertexColor');
-    gl.enableVertexAttribArray(this._aVertexPosition);
-    gl.enableVertexAttribArray(this._aVertexColor);
+    this.aVertexPosition = gl.getAttribLocation(this.shaderProgram, 'aVertexPosition');
+    this.aVertexColor = gl.getAttribLocation(this.shaderProgram, 'aVertexColor');
+    gl.enableVertexAttribArray(this.aVertexPosition);
+    gl.enableVertexAttribArray(this.aVertexColor);
   }
 
-  _setupGLGeometry(): void {
-    const gl = (this._canvasGL.getContext('webgl') as WebGLRenderingContext | null);
+  private setupGLGeometry(): void {
+    const gl = (this.canvasGL.getContext('webgl') as WebGLRenderingContext | null);
     if (!gl) {
       return;
     }
 
-    const timelineData = this._timelineData();
+    const timelineData = this.timelineData();
     if (!timelineData) {
       return;
     }
@@ -1401,20 +1395,20 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     const parsedColorCache = new Map<string, number>();
     const colors: number[] = [];
 
-    const visibleLevels = this._visibleLevels || [];
-    const rawTimelineData = this._rawTimelineData || {groups: []};
+    const visibleLevels = this.visibleLevels || [];
+    const rawTimelineData = this.rawTimelineData || {groups: []};
 
     const collapsedOverviewLevels = new Array(visibleLevels.length);
     const groups = rawTimelineData.groups || [];
-    this._forEachGroup((offset, index, group) => {
-      if (group.style.useFirstLineForOverview || !this._isGroupCollapsible(index) || group.expanded) {
+    this.forEachGroup((offset, index, group) => {
+      if (group.style.useFirstLineForOverview || !this.isGroupCollapsible(index) || group.expanded) {
         return;
       }
       let nextGroup = index + 1;
       while (nextGroup < groups.length && groups[nextGroup].style.nestingLevel > group.style.nestingLevel) {
         ++nextGroup;
       }
-      const endLevel = nextGroup < groups.length ? groups[nextGroup].startLevel : this._dataProvider.maxStackDepth();
+      const endLevel = nextGroup < groups.length ? groups[nextGroup].startLevel : this.dataProvider.maxStackDepth();
       for (let i = group.startLevel; i < endLevel; ++i) {
         collapsedOverviewLevels[i] = offset;
       }
@@ -1426,11 +1420,11 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
       if (!visibleLevels[level] && !collapsedGroupOffset) {
         continue;
       }
-      if (!this._entryColorsCache) {
+      if (!this.entryColorsCache) {
         continue;
       }
 
-      const color = this._entryColorsCache[i];
+      const color = this.entryColorsCache[i];
       if (!color) {
         continue;
       }
@@ -1458,10 +1452,10 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
       }
 
       const vpos = vertex * 2;
-      const x0 = entryStartTimes[i] - this._minimumBoundary;
+      const x0 = entryStartTimes[i] - this.minimumBoundaryInternal;
       const x1 = x0 + entryTotalTimes[i];
-      const y0 = collapsedGroupOffset || this._levelToOffset(level);
-      const y1 = y0 + this._levelHeight(level) - 1;
+      const y0 = collapsedGroupOffset || this.levelToOffset(level);
+      const y1 = y0 + this.levelHeight(level) - 1;
       vertexArray[vpos + 0] = x0;
       vertexArray[vpos + 1] = y0;
       vertexArray[vpos + 2] = x1;
@@ -1477,7 +1471,7 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
 
       vertex += verticesPerBar;
     }
-    this._vertexCount = vertex;
+    this.vertexCount = vertex;
 
     const paletteTexture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, paletteTexture);
@@ -1502,67 +1496,67 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     pixels.set(colors);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
 
-    if (this._vertexBuffer && this._aVertexPosition) {
-      gl.bindBuffer(gl.ARRAY_BUFFER, this._vertexBuffer);
+    if (this.vertexBuffer && this.aVertexPosition) {
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, vertexArray, gl.STATIC_DRAW);
-      gl.vertexAttribPointer(this._aVertexPosition, /* vertexComponents */ 2, gl.FLOAT, false, 0, 0);
+      gl.vertexAttribPointer(this.aVertexPosition, /* vertexComponents */ 2, gl.FLOAT, false, 0, 0);
     }
 
-    if (this._colorBuffer && this._aVertexColor) {
-      gl.bindBuffer(gl.ARRAY_BUFFER, this._colorBuffer);
+    if (this.colorBuffer && this.aVertexColor) {
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, colorArray, gl.STATIC_DRAW);
-      gl.vertexAttribPointer(this._aVertexColor, /* colorComponents */ 1, colorIndexType, true, 0, 0);
+      gl.vertexAttribPointer(this.aVertexColor, /* colorComponents */ 1, colorIndexType, true, 0, 0);
     }
   }
 
-  _drawGL(): void {
-    const gl = (this._canvasGL.getContext('webgl') as WebGLRenderingContext | null);
+  private drawGL(): void {
+    const gl = (this.canvasGL.getContext('webgl') as WebGLRenderingContext | null);
     if (!gl) {
       return;
     }
-    const timelineData = this._timelineData();
+    const timelineData = this.timelineData();
     if (!timelineData) {
       return;
     }
 
-    if (!this._prevTimelineData || timelineData.entryTotalTimes !== this._prevTimelineData.entryTotalTimes) {
-      this._prevTimelineData = timelineData;
-      this._setupGLGeometry();
+    if (!this.prevTimelineData || timelineData.entryTotalTimes !== this.prevTimelineData.entryTotalTimes) {
+      this.prevTimelineData = timelineData;
+      this.setupGLGeometry();
     }
 
-    gl.viewport(0, 0, this._canvasGL.width, this._canvasGL.height);
+    gl.viewport(0, 0, this.canvasGL.width, this.canvasGL.height);
 
-    if (!this._vertexCount) {
+    if (!this.vertexCount) {
       return;
     }
 
-    const viewportScale = [2.0 / this.boundarySpan(), -2.0 * window.devicePixelRatio / this._canvasGL.height];
-    const viewportShift = [this.minimumBoundary() - this.zeroTime(), this._chartViewport.scrollOffset()];
-    if (this._uScalingFactor) {
-      gl.uniform2fv(this._uScalingFactor, viewportScale);
+    const viewportScale = [2.0 / this.boundarySpan(), -2.0 * window.devicePixelRatio / this.canvasGL.height];
+    const viewportShift = [this.minimumBoundary() - this.zeroTime(), this.chartViewport.scrollOffset()];
+    if (this.uScalingFactor) {
+      gl.uniform2fv(this.uScalingFactor, viewportScale);
     }
 
-    if (this._uShiftVector) {
-      gl.uniform2fv(this._uShiftVector, viewportShift);
+    if (this.uShiftVector) {
+      gl.uniform2fv(this.uShiftVector, viewportShift);
     }
 
-    gl.drawArrays(gl.TRIANGLES, 0, this._vertexCount);
+    gl.drawArrays(gl.TRIANGLES, 0, this.vertexCount);
   }
 
-  _drawGroupHeaders(width: number, height: number): void {
-    const context = (this._canvas.getContext('2d') as CanvasRenderingContext2D);
-    const top = this._chartViewport.scrollOffset();
+  private drawGroupHeaders(width: number, height: number): void {
+    const context = (this.canvas.getContext('2d') as CanvasRenderingContext2D);
+    const top = this.chartViewport.scrollOffset();
     const ratio = window.devicePixelRatio;
-    if (!this._rawTimelineData) {
+    if (!this.rawTimelineData) {
       return;
     }
 
-    const groups = this._rawTimelineData.groups || [];
+    const groups = this.rawTimelineData.groups || [];
     if (!groups.length) {
       return;
     }
 
-    const groupOffsets = this._groupOffsets;
+    const groupOffsets = this.groupOffsets;
     if (groupOffsets === null || groupOffsets === undefined) {
       return;
     }
@@ -1576,7 +1570,7 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     context.font = defaultFont;
 
     context.fillStyle = ThemeSupport.ThemeSupport.instance().patchColorText('#fff', colorUsage.Background);
-    this._forEachGroupInViewport((offset, index, group) => {
+    this.forEachGroupInViewport((offset, index, group) => {
       const paddingHeight = group.style.padding;
       if (paddingHeight < 5) {
         return;
@@ -1589,7 +1583,7 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
 
     context.strokeStyle = ThemeSupport.ThemeSupport.instance().patchColorText('#eee', colorUsage.Background);
     context.beginPath();
-    this._forEachGroupInViewport((offset, index, group, isFirst) => {
+    this.forEachGroupInViewport((offset, index, group, isFirst) => {
       if (isFirst || group.style.padding < 4) {
         return;
       }
@@ -1598,35 +1592,35 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     hLine(lastGroupOffset + 1.5);
     context.stroke();
 
-    this._forEachGroupInViewport((offset, index, group) => {
+    this.forEachGroupInViewport((offset, index, group) => {
       if (group.style.useFirstLineForOverview) {
         return;
       }
-      if (!this._isGroupCollapsible(index) || group.expanded) {
-        if (!group.style.shareHeaderLine && this._isGroupFocused(index)) {
+      if (!this.isGroupCollapsible(index) || group.expanded) {
+        if (!group.style.shareHeaderLine && this.isGroupFocused(index)) {
           context.fillStyle = group.style.backgroundColor;
           context.fillRect(0, offset, width, group.style.height);
         }
         return;
       }
-      if (this._useWebGL) {
+      if (this.useWebGL) {
         return;
       }
       let nextGroup = index + 1;
       while (nextGroup < groups.length && groups[nextGroup].style.nestingLevel > group.style.nestingLevel) {
         nextGroup++;
       }
-      const endLevel = nextGroup < groups.length ? groups[nextGroup].startLevel : this._dataProvider.maxStackDepth();
-      this._drawCollapsedOverviewForGroup(group, offset, endLevel);
+      const endLevel = nextGroup < groups.length ? groups[nextGroup].startLevel : this.dataProvider.maxStackDepth();
+      this.drawCollapsedOverviewForGroup(group, offset, endLevel);
     });
 
     context.save();
-    this._forEachGroupInViewport((offset, index, group) => {
+    this.forEachGroupInViewport((offset, index, group) => {
       context.font = group.style.font;
-      if (this._isGroupCollapsible(index) && !group.expanded || group.style.shareHeaderLine) {
-        const width = this._labelWidthForGroup(context, group) + 2;
-        if (this._isGroupFocused(index)) {
-          context.fillStyle = this._selectedGroupBackroundColor;
+      if (this.isGroupCollapsible(index) && !group.expanded || group.style.shareHeaderLine) {
+        const width = this.labelWidthForGroup(context, group) + 2;
+        if (this.isGroupFocused(index)) {
+          context.fillStyle = this.selectedGroupBackroundColor;
         } else {
           const parsedColor = Common.Color.Color.parse(group.style.backgroundColor);
           if (parsedColor) {
@@ -1635,23 +1629,23 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
         }
 
         context.fillRect(
-            this._headerLeftPadding - this._headerLabelXPadding, offset + this._headerLabelYPadding, width,
-            group.style.height - 2 * this._headerLabelYPadding);
+            this.headerLeftPadding - this.headerLabelXPadding, offset + this.headerLabelYPadding, width,
+            group.style.height - 2 * this.headerLabelYPadding);
       }
       context.fillStyle = group.style.color;
       context.fillText(
-          group.name, Math.floor(this._expansionArrowIndent * (group.style.nestingLevel + 1) + this._arrowSide),
-          offset + group.style.height - this._textBaseline);
+          group.name, Math.floor(this.expansionArrowIndent * (group.style.nestingLevel + 1) + this.arrowSide),
+          offset + group.style.height - this.textBaseline);
     });
     context.restore();
 
     context.fillStyle = ThemeSupport.ThemeSupport.instance().patchColorText('#6e6e6e', colorUsage.Foreground);
     context.beginPath();
-    this._forEachGroupInViewport((offset, index, group) => {
-      if (this._isGroupCollapsible(index)) {
+    this.forEachGroupInViewport((offset, index, group) => {
+      if (this.isGroupCollapsible(index)) {
         drawExpansionArrow.call(
-            this, this._expansionArrowIndent * (group.style.nestingLevel + 1),
-            offset + group.style.height - this._textBaseline - this._arrowSide / 2, Boolean(group.expanded));
+            this, this.expansionArrowIndent * (group.style.nestingLevel + 1),
+            offset + group.style.height - this.textBaseline - this.arrowSide / 2, Boolean(group.expanded));
       }
     });
     context.fill();
@@ -1660,11 +1654,11 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     context.beginPath();
     context.stroke();
 
-    this._forEachGroupInViewport((offset, index, group, isFirst, groupHeight) => {
-      if (this._isGroupFocused(index)) {
+    this.forEachGroupInViewport((offset, index, group, isFirst, groupHeight) => {
+      if (this.isGroupFocused(index)) {
         const lineWidth = 2;
         const bracketLength = 10;
-        context.fillStyle = this._selectedGroupBorderColor;
+        context.fillStyle = this.selectedGroupBorderColor;
         context.fillRect(0, offset - lineWidth, lineWidth, groupHeight - group.style.padding + 2 * lineWidth);
         context.fillRect(0, offset - lineWidth, bracketLength, lineWidth);
         context.fillRect(0, offset + groupHeight - group.style.padding, bracketLength, lineWidth);
@@ -1679,27 +1673,27 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     }
 
     function drawExpansionArrow(this: FlameChart, x: number, y: number, expanded: boolean): void {
-      const arrowHeight = this._arrowSide * Math.sqrt(3) / 2;
+      const arrowHeight = this.arrowSide * Math.sqrt(3) / 2;
       const arrowCenterOffset = Math.round(arrowHeight / 2);
       context.save();
       context.translate(x, y);
       context.rotate(expanded ? Math.PI / 2 : 0);
-      context.moveTo(-arrowCenterOffset, -this._arrowSide / 2);
-      context.lineTo(-arrowCenterOffset, this._arrowSide / 2);
+      context.moveTo(-arrowCenterOffset, -this.arrowSide / 2);
+      context.lineTo(-arrowCenterOffset, this.arrowSide / 2);
       context.lineTo(arrowHeight - arrowCenterOffset, 0);
       context.restore();
     }
   }
 
-  _forEachGroup(callback: (arg0: number, arg1: number, arg2: Group, arg3: boolean, arg4: number) => void): void {
-    if (!this._rawTimelineData) {
+  private forEachGroup(callback: (arg0: number, arg1: number, arg2: Group, arg3: boolean, arg4: number) => void): void {
+    if (!this.rawTimelineData) {
       return;
     }
-    const groups = this._rawTimelineData.groups || [];
+    const groups = this.rawTimelineData.groups || [];
     if (!groups.length) {
       return;
     }
-    const groupOffsets = this._groupOffsets;
+    const groupOffsets = this.groupOffsets;
     if (!groupOffsets) {
       return;
     }
@@ -1723,7 +1717,7 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
       }
       last = groupStack[groupStack.length - 1];
       const parentGroupVisible = last ? last.visible : false;
-      const thisGroupVisible = parentGroupVisible && (!this._isGroupCollapsible(i) || group.expanded);
+      const thisGroupVisible = parentGroupVisible && (!this.isGroupCollapsible(i) || group.expanded);
       groupStack.push({nestingLevel: group.style.nestingLevel, visible: Boolean(thisGroupVisible)});
       const nextOffset = i === groups.length - 1 ? groupOffsets[i + 1] + group.style.padding : groupOffsets[i + 1];
       if (!parentGroupVisible) {
@@ -1733,11 +1727,11 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     }
   }
 
-  _forEachGroupInViewport(callback: (arg0: number, arg1: number, arg2: Group, arg3: boolean, arg4: number) => void):
-      void {
-    const top = this._chartViewport.scrollOffset();
-    this._forEachGroup((groupTop, index, group, firstGroup, height) => {
-      if (groupTop - group.style.padding > top + this._offsetHeight) {
+  private forEachGroupInViewport(
+      callback: (arg0: number, arg1: number, arg2: Group, arg3: boolean, arg4: number) => void): void {
+    const top = this.chartViewport.scrollOffset();
+    this.forEachGroup((groupTop, index, group, firstGroup, height) => {
+      if (groupTop - group.style.padding > top + this.offsetHeight) {
         return;
       }
       if (groupTop + height < top) {
@@ -1747,26 +1741,26 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     });
   }
 
-  _labelWidthForGroup(context: CanvasRenderingContext2D, group: Group): number {
+  private labelWidthForGroup(context: CanvasRenderingContext2D, group: Group): number {
     return UI.UIUtils.measureTextWidth(context, group.name) +
-        this._expansionArrowIndent * (group.style.nestingLevel + 1) + 2 * this._headerLabelXPadding;
+        this.expansionArrowIndent * (group.style.nestingLevel + 1) + 2 * this.headerLabelXPadding;
   }
 
-  _drawCollapsedOverviewForGroup(group: Group, y: number, endLevel: number): void {
+  private drawCollapsedOverviewForGroup(group: Group, y: number, endLevel: number): void {
     const range = new Common.SegmentedRange.SegmentedRange<string>(mergeCallback);
-    const timeWindowLeft = this._chartViewport.windowLeftTime();
-    const timeWindowRight = this._chartViewport.windowRightTime();
-    const context = (this._canvas.getContext('2d') as CanvasRenderingContext2D);
+    const timeWindowLeft = this.chartViewport.windowLeftTime();
+    const timeWindowRight = this.chartViewport.windowRightTime();
+    const context = (this.canvas.getContext('2d') as CanvasRenderingContext2D);
     const barHeight = group.style.height;
-    if (!this._rawTimelineData) {
+    if (!this.rawTimelineData) {
       return;
     }
-    const entryStartTimes = this._rawTimelineData.entryStartTimes;
-    const entryTotalTimes = this._rawTimelineData.entryTotalTimes;
-    const timeToPixel = this._chartViewport.timeToPixel();
+    const entryStartTimes = this.rawTimelineData.entryStartTimes;
+    const entryTotalTimes = this.rawTimelineData.entryTotalTimes;
+    const timeToPixel = this.chartViewport.timeToPixel();
 
     for (let level = group.startLevel; level < endLevel; ++level) {
-      const levelIndexes: number[] = this._timelineLevels ? this._timelineLevels[level] : [];
+      const levelIndexes: number[] = this.timelineLevels ? this.timelineLevels[level] : [];
       const rightIndexOnLevel =
           Platform.ArrayUtilities.lowerBound(
               levelIndexes, timeWindowRight, (time, entryIndex) => time - entryStartTimes[entryIndex]) -
@@ -1776,7 +1770,7 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
       for (let entryIndexOnLevel = rightIndexOnLevel; entryIndexOnLevel >= 0; --entryIndexOnLevel) {
         const entryIndex = levelIndexes[entryIndexOnLevel];
         const entryStartTime = entryStartTimes[entryIndex];
-        const barX = this._timeToPositionClipped(entryStartTime);
+        const barX = this.timeToPositionClipped(entryStartTime);
         const entryEndTime = entryStartTime + entryTotalTimes[entryIndex];
         if (isNaN(entryEndTime) || barX >= lastDrawOffset) {
           continue;
@@ -1785,15 +1779,15 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
           break;
         }
         lastDrawOffset = barX;
-        const color = this._entryColorsCache ? this._entryColorsCache[entryIndex] : '';
-        const endBarX = this._timeToPositionClipped(entryEndTime);
-        if (group.style.useDecoratorsForOverview && this._dataProvider.forceDecoration(entryIndex)) {
-          const unclippedBarX = this._chartViewport.timeToPosition(entryStartTime);
+        const color = this.entryColorsCache ? this.entryColorsCache[entryIndex] : '';
+        const endBarX = this.timeToPositionClipped(entryEndTime);
+        if (group.style.useDecoratorsForOverview && this.dataProvider.forceDecoration(entryIndex)) {
+          const unclippedBarX = this.chartViewport.timeToPosition(entryStartTime);
           const barWidth = endBarX - barX;
           context.beginPath();
           context.fillStyle = color;
           context.fillRect(barX, y, barWidth, barHeight - 1);
-          this._dataProvider.decorateEntry(
+          this.dataProvider.decorateEntry(
               entryIndex, context, '', barX, y, barWidth, barHeight, unclippedBarX, timeToPixel);
           continue;
         }
@@ -1822,35 +1816,35 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     }
   }
 
-  _drawFlowEvents(context: CanvasRenderingContext2D, _width: number, _height: number): void {
+  private drawFlowEvents(context: CanvasRenderingContext2D, _width: number, _height: number): void {
     context.save();
     const ratio = window.devicePixelRatio;
-    const top = this._chartViewport.scrollOffset();
+    const top = this.chartViewport.scrollOffset();
     const arrowWidth = 6;
     context.scale(ratio, ratio);
     context.translate(0, -top);
 
     context.fillStyle = '#7f5050';
     context.strokeStyle = '#7f5050';
-    const td = this._timelineData();
+    const td = this.timelineData();
     if (!td) {
       return;
     }
 
     const endIndex = Platform.ArrayUtilities.lowerBound(
-        td.flowStartTimes, this._chartViewport.windowRightTime(), Platform.ArrayUtilities.DEFAULT_COMPARATOR);
+        td.flowStartTimes, this.chartViewport.windowRightTime(), Platform.ArrayUtilities.DEFAULT_COMPARATOR);
 
     context.lineWidth = 0.5;
     for (let i = 0; i < endIndex; ++i) {
-      if (!td.flowEndTimes[i] || td.flowEndTimes[i] < this._chartViewport.windowLeftTime()) {
+      if (!td.flowEndTimes[i] || td.flowEndTimes[i] < this.chartViewport.windowLeftTime()) {
         continue;
       }
-      const startX = this._chartViewport.timeToPosition(td.flowStartTimes[i]);
-      const endX = this._chartViewport.timeToPosition(td.flowEndTimes[i]);
+      const startX = this.chartViewport.timeToPosition(td.flowStartTimes[i]);
+      const endX = this.chartViewport.timeToPosition(td.flowEndTimes[i]);
       const startLevel = td.flowStartLevels[i];
       const endLevel = td.flowEndLevels[i];
-      const startY = this._levelToOffset(startLevel) + this._levelHeight(startLevel) / 2;
-      const endY = this._levelToOffset(endLevel) + this._levelHeight(endLevel) / 2;
+      const startY = this.levelToOffset(startLevel) + this.levelHeight(startLevel) / 2;
+      const endY = this.levelToOffset(endLevel) + this.levelHeight(endLevel) / 2;
 
       const segment = Math.min((endX - startX) / 4, 40);
       const distanceTime = td.flowEndTimes[i] - td.flowStartTimes[i];
@@ -1890,17 +1884,17 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     context.restore();
   }
 
-  _drawMarkers(): void {
-    const timelineData = this._timelineData();
+  private drawMarkers(): void {
+    const timelineData = this.timelineData();
     if (!timelineData) {
       return;
     }
     const markers = timelineData.markers;
-    const left = this._markerIndexBeforeTime(this.minimumBoundary());
+    const left = this.markerIndexBeforeTime(this.minimumBoundary());
     const rightBoundary = this.maximumBoundary();
-    const timeToPixel = this._chartViewport.timeToPixel();
+    const timeToPixel = this.chartViewport.timeToPixel();
 
-    const context = (this._canvas.getContext('2d') as CanvasRenderingContext2D);
+    const context = (this.canvas.getContext('2d') as CanvasRenderingContext2D);
     context.save();
     const ratio = window.devicePixelRatio;
     context.scale(ratio, ratio);
@@ -1911,59 +1905,59 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
       if (timestamp > rightBoundary) {
         break;
       }
-      markers[i].draw(context, this._chartViewport.timeToPosition(timestamp), height, timeToPixel);
+      markers[i].draw(context, this.chartViewport.timeToPosition(timestamp), height, timeToPixel);
     }
     context.restore();
   }
 
-  _updateMarkerHighlight(): void {
-    const element = this._markerHighlighElement;
+  private updateMarkerHighlight(): void {
+    const element = this.markerHighlighElement;
     if (element.parentElement) {
       element.remove();
     }
-    const markerIndex = this._highlightedMarkerIndex;
+    const markerIndex = this.highlightedMarkerIndex;
     if (markerIndex === -1) {
       return;
     }
-    const timelineData = this._timelineData();
+    const timelineData = this.timelineData();
     if (!timelineData) {
       return;
     }
     const marker = timelineData.markers[markerIndex];
-    const barX = this._timeToPositionClipped(marker.startTime());
+    const barX = this.timeToPositionClipped(marker.startTime());
     UI.Tooltip.Tooltip.install(element, marker.title() || '');
     const style = element.style;
     style.left = barX + 'px';
     style.backgroundColor = marker.color();
-    this._viewportElement.appendChild(element);
+    this.viewportElement.appendChild(element);
   }
 
-  _processTimelineData(timelineData: TimelineData|null): void {
+  private processTimelineData(timelineData: TimelineData|null): void {
     if (!timelineData) {
-      this._timelineLevels = null;
-      this._visibleLevelOffsets = null;
-      this._visibleLevels = null;
-      this._groupOffsets = null;
-      this._rawTimelineData = null;
-      this._forceDecorationCache = null;
-      this._entryColorsCache = null;
-      this._rawTimelineDataLength = 0;
-      this._selectedGroup = -1;
-      this._keyboardFocusedGroup = -1;
-      this._flameChartDelegate.updateSelectedGroup(this, null);
+      this.timelineLevels = null;
+      this.visibleLevelOffsets = null;
+      this.visibleLevels = null;
+      this.groupOffsets = null;
+      this.rawTimelineData = null;
+      this.forceDecorationCache = null;
+      this.entryColorsCache = null;
+      this.rawTimelineDataLength = 0;
+      this.selectedGroup = -1;
+      this.keyboardFocusedGroup = -1;
+      this.flameChartDelegate.updateSelectedGroup(this, null);
       return;
     }
 
-    this._rawTimelineData = timelineData;
-    this._rawTimelineDataLength = timelineData.entryStartTimes.length;
-    this._forceDecorationCache = new Int8Array(this._rawTimelineDataLength);
-    this._entryColorsCache = new Array(this._rawTimelineDataLength);
-    for (let i = 0; i < this._rawTimelineDataLength; ++i) {
-      this._forceDecorationCache[i] = this._dataProvider.forceDecoration(i) ? 1 : 0;
-      this._entryColorsCache[i] = this._dataProvider.entryColor(i);
+    this.rawTimelineData = timelineData;
+    this.rawTimelineDataLength = timelineData.entryStartTimes.length;
+    this.forceDecorationCache = new Int8Array(this.rawTimelineDataLength);
+    this.entryColorsCache = new Array(this.rawTimelineDataLength);
+    for (let i = 0; i < this.rawTimelineDataLength; ++i) {
+      this.forceDecorationCache[i] = this.dataProvider.forceDecoration(i) ? 1 : 0;
+      this.entryColorsCache[i] = this.dataProvider.entryColor(i);
     }
 
-    const entryCounters = new Uint32Array(this._dataProvider.maxStackDepth() + 1);
+    const entryCounters = new Uint32Array(this.dataProvider.maxStackDepth() + 1);
     for (let i = 0; i < timelineData.entryLevels.length; ++i) {
       ++entryCounters[timelineData.entryLevels[i]];
     }
@@ -1977,32 +1971,32 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
       const level = timelineData.entryLevels[i];
       levelIndexes[level][entryCounters[level]++] = i;
     }
-    this._timelineLevels = levelIndexes;
-    const groups = this._rawTimelineData.groups || [];
+    this.timelineLevels = levelIndexes;
+    const groups = this.rawTimelineData.groups || [];
     for (let i = 0; i < groups.length; ++i) {
-      const expanded = this._groupExpansionState[groups[i].name];
+      const expanded = this.groupExpansionState[groups[i].name];
       if (expanded !== undefined) {
         groups[i].expanded = expanded;
       }
     }
-    this._updateLevelPositions();
-    this._updateHeight();
+    this.updateLevelPositions();
+    this.updateHeight();
 
-    this._selectedGroup = timelineData.selectedGroup ? groups.indexOf(timelineData.selectedGroup) : -1;
-    this._keyboardFocusedGroup = this._selectedGroup;
-    this._flameChartDelegate.updateSelectedGroup(this, timelineData.selectedGroup);
+    this.selectedGroup = timelineData.selectedGroup ? groups.indexOf(timelineData.selectedGroup) : -1;
+    this.keyboardFocusedGroup = this.selectedGroup;
+    this.flameChartDelegate.updateSelectedGroup(this, timelineData.selectedGroup);
   }
 
-  _updateLevelPositions(): void {
-    const levelCount = this._dataProvider.maxStackDepth();
-    const groups = this._rawTimelineData ? (this._rawTimelineData.groups || []) : [];
-    this._visibleLevelOffsets = new Uint32Array(levelCount + 1);
-    this._visibleLevelHeights = new Uint32Array(levelCount);
-    this._visibleLevels = new Uint16Array(levelCount);
-    this._groupOffsets = new Uint32Array(groups.length + 1);
+  private updateLevelPositions(): void {
+    const levelCount = this.dataProvider.maxStackDepth();
+    const groups = this.rawTimelineData ? (this.rawTimelineData.groups || []) : [];
+    this.visibleLevelOffsets = new Uint32Array(levelCount + 1);
+    this.visibleLevelHeights = new Uint32Array(levelCount);
+    this.visibleLevels = new Uint16Array(levelCount);
+    this.groupOffsets = new Uint32Array(groups.length + 1);
 
     let groupIndex = -1;
-    let currentOffset = this._rulerEnabled ? HeaderHeight + 2 : 2;
+    let currentOffset = this.rulerEnabled ? HeaderHeight + 2 : 2;
     let visible = true;
     const groupStack: {
       nestingLevel: number,
@@ -2028,7 +2022,7 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
           last = groupStack[groupStack.length - 1];
         }
         const thisGroupIsVisible =
-            groupIndex >= 0 && this._isGroupCollapsible(groupIndex) ? groups[groupIndex].expanded : true;
+            groupIndex >= 0 && this.isGroupCollapsible(groupIndex) ? groups[groupIndex].expanded : true;
 
         last = groupStack[groupStack.length - 1];
         parentGroupIsVisible = last ? last.visible : false;
@@ -2037,7 +2031,7 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
         if (parentGroupIsVisible) {
           currentOffset += nextLevel ? 0 : style.padding;
         }
-        this._groupOffsets[groupIndex] = currentOffset;
+        this.groupOffsets[groupIndex] = currentOffset;
         if (parentGroupIsVisible && !style.shareHeaderLine) {
           currentOffset += style.height;
         }
@@ -2054,32 +2048,32 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
         const styleB = group.style;
         height = isFirstOnLevel && !styleB.shareHeaderLine || (styleB.collapsible && !group.expanded) ?
             styleB.height :
-            (styleB.itemsHeight || this._barHeight);
+            (styleB.itemsHeight || this.barHeight);
       } else {
-        height = this._barHeight;
+        height = this.barHeight;
       }
-      this._visibleLevels[level] = thisLevelIsVisible ? 1 : 0;
-      this._visibleLevelOffsets[level] = currentOffset;
-      this._visibleLevelHeights[level] = height;
+      this.visibleLevels[level] = thisLevelIsVisible ? 1 : 0;
+      this.visibleLevelOffsets[level] = currentOffset;
+      this.visibleLevelHeights[level] = height;
       if (thisLevelIsVisible || (parentGroupIsVisible && style && style.shareHeaderLine && isFirstOnLevel)) {
-        currentOffset += this._visibleLevelHeights[level];
+        currentOffset += this.visibleLevelHeights[level];
       }
     }
     if (groupIndex >= 0) {
-      this._groupOffsets[groupIndex + 1] = currentOffset;
+      this.groupOffsets[groupIndex + 1] = currentOffset;
     }
-    this._visibleLevelOffsets[level] = currentOffset;
-    if (this._useWebGL) {
-      this._setupGLGeometry();
+    this.visibleLevelOffsets[level] = currentOffset;
+    if (this.useWebGL) {
+      this.setupGLGeometry();
     }
   }
 
-  _isGroupCollapsible(index: number): boolean|undefined {
-    if (!this._rawTimelineData) {
+  private isGroupCollapsible(index: number): boolean|undefined {
+    if (!this.rawTimelineData) {
       return;
     }
 
-    const groups = this._rawTimelineData.groups || [];
+    const groups = this.rawTimelineData.groups || [];
     const style = groups[index].style;
     if (!style.shareHeaderLine || !style.collapsible) {
       return Boolean(style.collapsible);
@@ -2088,7 +2082,7 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     if (!isLastGroup && groups[index + 1].style.nestingLevel > style.nestingLevel) {
       return true;
     }
-    const nextGroupLevel = isLastGroup ? this._dataProvider.maxStackDepth() : groups[index + 1].startLevel;
+    const nextGroupLevel = isLastGroup ? this.dataProvider.maxStackDepth() : groups[index + 1].startLevel;
     if (nextGroupLevel !== groups[index].startLevel + 1) {
       return true;
     }
@@ -2098,24 +2092,24 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
   }
 
   setSelectedEntry(entryIndex: number): void {
-    if (this._selectedEntryIndex === entryIndex) {
+    if (this.selectedEntryIndex === entryIndex) {
       return;
     }
     if (entryIndex !== -1) {
-      this._chartViewport.hideRangeSelection();
+      this.chartViewport.hideRangeSelection();
     }
-    this._selectedEntryIndex = entryIndex;
-    this._revealEntry(entryIndex);
-    this._updateElementPosition(this._selectedElement, this._selectedEntryIndex);
+    this.selectedEntryIndex = entryIndex;
+    this.revealEntry(entryIndex);
+    this.updateElementPosition(this.selectedElement, this.selectedEntryIndex);
   }
 
-  _updateElementPosition(element: Element, entryIndex: number): void {
+  private updateElementPosition(element: Element, entryIndex: number): void {
     const elementMinWidthPx = 2;
     element.classList.add('hidden');
     if (entryIndex === -1) {
       return;
     }
-    const timelineData = this._timelineData();
+    const timelineData = this.timelineData();
     if (!timelineData) {
       return;
     }
@@ -2126,7 +2120,7 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
     let barWidth = 0;
     let visible = true;
     if (Number.isNaN(duration)) {
-      const position = this._markerPositions.get(entryIndex);
+      const position = this.markerPositions.get(entryIndex);
       if (position) {
         barX = position.x;
         barWidth = position.width;
@@ -2134,54 +2128,54 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
         visible = false;
       }
     } else {
-      barX = this._chartViewport.timeToPosition(startTime);
-      barWidth = duration * this._chartViewport.timeToPixel();
+      barX = this.chartViewport.timeToPosition(startTime);
+      barWidth = duration * this.chartViewport.timeToPixel();
     }
-    if (barX + barWidth <= 0 || barX >= this._offsetWidth) {
+    if (barX + barWidth <= 0 || barX >= this.offsetWidth) {
       return;
     }
     const barCenter = barX + barWidth / 2;
     barWidth = Math.max(barWidth, elementMinWidthPx);
     barX = barCenter - barWidth / 2;
     const entryLevel = timelineData.entryLevels[entryIndex];
-    const barY = this._levelToOffset(entryLevel) - this._chartViewport.scrollOffset();
-    const barHeight = this._levelHeight(entryLevel);
+    const barY = this.levelToOffset(entryLevel) - this.chartViewport.scrollOffset();
+    const barHeight = this.levelHeight(entryLevel);
     const style = (element as HTMLElement).style;
     style.left = barX + 'px';
     style.top = barY + 'px';
     style.width = barWidth + 'px';
     style.height = barHeight - 1 + 'px';
     element.classList.toggle('hidden', !visible);
-    this._viewportElement.appendChild(element);
+    this.viewportElement.appendChild(element);
   }
 
-  _timeToPositionClipped(time: number): number {
-    return Platform.NumberUtilities.clamp(this._chartViewport.timeToPosition(time), 0, this._offsetWidth);
+  private timeToPositionClipped(time: number): number {
+    return Platform.NumberUtilities.clamp(this.chartViewport.timeToPosition(time), 0, this.offsetWidth);
   }
 
-  _levelToOffset(level: number): number {
-    if (!this._visibleLevelOffsets) {
+  private levelToOffset(level: number): number {
+    if (!this.visibleLevelOffsets) {
       throw new Error('No visible level offsets');
     }
-    return this._visibleLevelOffsets[level];
+    return this.visibleLevelOffsets[level];
   }
 
-  _levelHeight(level: number): number {
-    if (!this._visibleLevelHeights) {
+  private levelHeight(level: number): number {
+    if (!this.visibleLevelHeights) {
       throw new Error('No visible level heights');
     }
-    return this._visibleLevelHeights[level];
+    return this.visibleLevelHeights[level];
   }
 
-  _updateBoundaries(): void {
-    this._totalTime = this._dataProvider.totalTime();
-    this._minimumBoundary = this._dataProvider.minimumBoundary();
-    this._chartViewport.setBoundaries(this._minimumBoundary, this._totalTime);
+  private updateBoundaries(): void {
+    this.totalTime = this.dataProvider.totalTime();
+    this.minimumBoundaryInternal = this.dataProvider.minimumBoundary();
+    this.chartViewport.setBoundaries(this.minimumBoundaryInternal, this.totalTime);
   }
 
-  _updateHeight(): void {
-    const height = this._levelToOffset(this._dataProvider.maxStackDepth()) + 2;
-    this._chartViewport.setContentHeight(height);
+  private updateHeight(): void {
+    const height = this.levelToOffset(this.dataProvider.maxStackDepth()) + 2;
+    this.chartViewport.setContentHeight(height);
   }
 
   onResize(): void {
@@ -2189,56 +2183,56 @@ export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewp
   }
 
   update(): void {
-    if (!this._timelineData()) {
+    if (!this.timelineData()) {
       return;
     }
-    this._resetCanvas();
-    this._updateHeight();
-    this._updateBoundaries();
-    this._draw();
-    if (!this._chartViewport.isDragging()) {
-      this._updateHighlight();
+    this.resetCanvas();
+    this.updateHeight();
+    this.updateBoundaries();
+    this.draw();
+    if (!this.chartViewport.isDragging()) {
+      this.updateHighlight();
     }
   }
 
   reset(): void {
-    this._chartViewport.reset();
-    this._rawTimelineData = null;
-    this._rawTimelineDataLength = 0;
-    this._highlightedMarkerIndex = -1;
-    this._highlightedEntryIndex = -1;
-    this._selectedEntryIndex = -1;
+    this.chartViewport.reset();
+    this.rawTimelineData = null;
+    this.rawTimelineDataLength = 0;
+    this.highlightedMarkerIndex = -1;
+    this.highlightedEntryIndex = -1;
+    this.selectedEntryIndex = -1;
     /** @type {!Map<string,!Map<string,number>>} */
-    this._textWidth = new Map();
-    this._chartViewport.scheduleUpdate();
+    this.textWidth = new Map();
+    this.chartViewport.scheduleUpdate();
   }
 
   scheduleUpdate(): void {
-    this._chartViewport.scheduleUpdate();
+    this.chartViewport.scheduleUpdate();
   }
 
-  _enabled(): boolean {
-    return this._rawTimelineDataLength !== 0;
+  private enabled(): boolean {
+    return this.rawTimelineDataLength !== 0;
   }
 
   computePosition(time: number): number {
-    return this._chartViewport.timeToPosition(time);
+    return this.chartViewport.timeToPosition(time);
   }
 
   formatValue(value: number, precision?: number): string {
-    return this._dataProvider.formatValue(value - this.zeroTime(), precision);
+    return this.dataProvider.formatValue(value - this.zeroTime(), precision);
   }
 
   maximumBoundary(): number {
-    return this._chartViewport.windowRightTime();
+    return this.chartViewport.windowRightTime();
   }
 
   minimumBoundary(): number {
-    return this._chartViewport.windowLeftTime();
+    return this.chartViewport.windowLeftTime();
   }
 
   zeroTime(): number {
-    return this._dataProvider.minimumBoundary();
+    return this.dataProvider.minimumBoundary();
   }
 
   boundarySpan(): number {

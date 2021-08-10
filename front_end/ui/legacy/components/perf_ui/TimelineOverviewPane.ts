@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../../../core/common/common.js';
 import type * as SDK from '../../../../core/sdk/sdk.js';
 import * as UI from '../../legacy.js';
@@ -39,146 +37,146 @@ import {Events as OverviewGridEvents, OverviewGrid} from './OverviewGrid.js';
 import type {Calculator} from './TimelineGrid.js';
 
 export class TimelineOverviewPane extends UI.Widget.VBox {
-  _overviewCalculator: TimelineOverviewCalculator;
-  _overviewGrid: OverviewGrid;
-  _cursorArea: HTMLElement;
-  _cursorElement: HTMLElement;
-  _overviewControls: TimelineOverview[];
-  _markers: Map<number, Element>;
-  _overviewInfo: OverviewInfo;
-  _updateThrottler: Common.Throttler.Throttler;
-  _cursorEnabled: boolean;
-  _cursorPosition: number;
-  _lastWidth: number;
-  _windowStartTime: number;
-  _windowEndTime: number;
-  _muteOnWindowChanged: boolean;
+  private readonly overviewCalculator: TimelineOverviewCalculator;
+  private readonly overviewGrid: OverviewGrid;
+  private readonly cursorArea: HTMLElement;
+  private cursorElement: HTMLElement;
+  private overviewControls: TimelineOverview[];
+  private markers: Map<number, Element>;
+  private readonly overviewInfo: OverviewInfo;
+  private readonly updateThrottler: Common.Throttler.Throttler;
+  private cursorEnabled: boolean;
+  private cursorPosition: number;
+  private lastWidth: number;
+  private windowStartTime: number;
+  private windowEndTime: number;
+  private muteOnWindowChanged: boolean;
 
   constructor(prefix: string) {
     super();
     this.element.id = prefix + '-overview-pane';
 
-    this._overviewCalculator = new TimelineOverviewCalculator();
-    this._overviewGrid = new OverviewGrid(prefix, this._overviewCalculator);
-    this.element.appendChild(this._overviewGrid.element);
-    this._cursorArea = this._overviewGrid.element.createChild('div', 'overview-grid-cursor-area');
-    this._cursorElement = this._overviewGrid.element.createChild('div', 'overview-grid-cursor-position');
-    this._cursorArea.addEventListener('mousemove', this._onMouseMove.bind(this), true);
-    this._cursorArea.addEventListener('mouseleave', this._hideCursor.bind(this), true);
+    this.overviewCalculator = new TimelineOverviewCalculator();
+    this.overviewGrid = new OverviewGrid(prefix, this.overviewCalculator);
+    this.element.appendChild(this.overviewGrid.element);
+    this.cursorArea = this.overviewGrid.element.createChild('div', 'overview-grid-cursor-area');
+    this.cursorElement = this.overviewGrid.element.createChild('div', 'overview-grid-cursor-position');
+    this.cursorArea.addEventListener('mousemove', this.onMouseMove.bind(this), true);
+    this.cursorArea.addEventListener('mouseleave', this.hideCursor.bind(this), true);
 
-    this._overviewGrid.setResizeEnabled(false);
-    this._overviewGrid.addEventListener(OverviewGridEvents.WindowChanged, this._onWindowChanged, this);
-    this._overviewGrid.setClickHandler(this._onClick.bind(this));
-    this._overviewControls = [];
-    this._markers = new Map();
+    this.overviewGrid.setResizeEnabled(false);
+    this.overviewGrid.addEventListener(OverviewGridEvents.WindowChanged, this.onWindowChanged, this);
+    this.overviewGrid.setClickHandler(this.onClick.bind(this));
+    this.overviewControls = [];
+    this.markers = new Map();
 
-    this._overviewInfo = new OverviewInfo(this._cursorElement);
-    this._updateThrottler = new Common.Throttler.Throttler(100);
+    this.overviewInfo = new OverviewInfo(this.cursorElement);
+    this.updateThrottler = new Common.Throttler.Throttler(100);
 
-    this._cursorEnabled = false;
-    this._cursorPosition = 0;
-    this._lastWidth = 0;
+    this.cursorEnabled = false;
+    this.cursorPosition = 0;
+    this.lastWidth = 0;
 
-    this._windowStartTime = 0;
-    this._windowEndTime = Infinity;
-    this._muteOnWindowChanged = false;
+    this.windowStartTime = 0;
+    this.windowEndTime = Infinity;
+    this.muteOnWindowChanged = false;
   }
 
-  _onMouseMove(event: Event): void {
-    if (!this._cursorEnabled) {
+  private onMouseMove(event: Event): void {
+    if (!this.cursorEnabled) {
       return;
     }
     const mouseEvent = (event as MouseEvent);
     const target = (event.target as HTMLElement);
-    this._cursorPosition = mouseEvent.offsetX + target.offsetLeft;
-    this._cursorElement.style.left = this._cursorPosition + 'px';
-    this._cursorElement.style.visibility = 'visible';
-    this._overviewInfo.setContent(this._buildOverviewInfo());
+    this.cursorPosition = mouseEvent.offsetX + target.offsetLeft;
+    this.cursorElement.style.left = this.cursorPosition + 'px';
+    this.cursorElement.style.visibility = 'visible';
+    this.overviewInfo.setContent(this.buildOverviewInfo());
   }
 
-  async _buildOverviewInfo(): Promise<DocumentFragment> {
+  private async buildOverviewInfo(): Promise<DocumentFragment> {
     const document = this.element.ownerDocument;
-    const x = this._cursorPosition;
-    const elements = await Promise.all(this._overviewControls.map(control => control.overviewInfoPromise(x)));
+    const x = this.cursorPosition;
+    const elements = await Promise.all(this.overviewControls.map(control => control.overviewInfoPromise(x)));
     const fragment = document.createDocumentFragment();
     const nonNullElements = (elements.filter(element => element !== null) as Element[]);
     fragment.append(...nonNullElements);
     return fragment;
   }
 
-  _hideCursor(): void {
-    this._cursorElement.style.visibility = 'hidden';
-    this._overviewInfo.hide();
+  private hideCursor(): void {
+    this.cursorElement.style.visibility = 'hidden';
+    this.overviewInfo.hide();
   }
 
   wasShown(): void {
-    this._update();
+    this.update();
   }
 
   willHide(): void {
-    this._overviewInfo.hide();
+    this.overviewInfo.hide();
   }
 
   onResize(): void {
     const width = this.element.offsetWidth;
-    if (width === this._lastWidth) {
+    if (width === this.lastWidth) {
       return;
     }
-    this._lastWidth = width;
+    this.lastWidth = width;
     this.scheduleUpdate();
   }
 
   setOverviewControls(overviewControls: TimelineOverview[]): void {
-    for (let i = 0; i < this._overviewControls.length; ++i) {
-      this._overviewControls[i].dispose();
+    for (let i = 0; i < this.overviewControls.length; ++i) {
+      this.overviewControls[i].dispose();
     }
 
     for (let i = 0; i < overviewControls.length; ++i) {
-      overviewControls[i].setCalculator(this._overviewCalculator);
-      overviewControls[i].show(this._overviewGrid.element);
+      overviewControls[i].setCalculator(this.overviewCalculator);
+      overviewControls[i].show(this.overviewGrid.element);
     }
-    this._overviewControls = overviewControls;
-    this._update();
+    this.overviewControls = overviewControls;
+    this.update();
   }
 
   setBounds(minimumBoundary: number, maximumBoundary: number): void {
-    this._overviewCalculator.setBounds(minimumBoundary, maximumBoundary);
-    this._overviewGrid.setResizeEnabled(true);
-    this._cursorEnabled = true;
+    this.overviewCalculator.setBounds(minimumBoundary, maximumBoundary);
+    this.overviewGrid.setResizeEnabled(true);
+    this.cursorEnabled = true;
   }
 
   setNavStartTimes(navStartTimes: Map<string, SDK.TracingModel.Event>): void {
-    this._overviewCalculator.setNavStartTimes(navStartTimes);
+    this.overviewCalculator.setNavStartTimes(navStartTimes);
   }
 
   scheduleUpdate(): void {
-    this._updateThrottler.schedule(async () => {
-      this._update();
+    this.updateThrottler.schedule(async () => {
+      this.update();
     });
   }
 
-  _update(): void {
+  private update(): void {
     if (!this.isShowing()) {
       return;
     }
-    this._overviewCalculator.setDisplayWidth(this._overviewGrid.clientWidth());
-    for (let i = 0; i < this._overviewControls.length; ++i) {
-      this._overviewControls[i].update();
+    this.overviewCalculator.setDisplayWidth(this.overviewGrid.clientWidth());
+    for (let i = 0; i < this.overviewControls.length; ++i) {
+      this.overviewControls[i].update();
     }
-    this._overviewGrid.updateDividers(this._overviewCalculator);
-    this._updateMarkers();
-    this._updateWindow();
+    this.overviewGrid.updateDividers(this.overviewCalculator);
+    this.updateMarkers();
+    this.updateWindow();
   }
 
   setMarkers(markers: Map<number, Element>): void {
-    this._markers = markers;
+    this.markers = markers;
   }
 
-  _updateMarkers(): void {
+  private updateMarkers(): void {
     const filteredMarkers = new Map<number, Element>();
-    for (const time of this._markers.keys()) {
-      const marker = this._markers.get(time) as HTMLElement;
-      const position = Math.round(this._overviewCalculator.computePosition(time));
+    for (const time of this.markers.keys()) {
+      const marker = this.markers.get(time) as HTMLElement;
+      const position = Math.round(this.overviewCalculator.computePosition(time));
       // Limit the number of markers to one per pixel.
       if (filteredMarkers.has(position)) {
         continue;
@@ -186,69 +184,68 @@ export class TimelineOverviewPane extends UI.Widget.VBox {
       filteredMarkers.set(position, marker);
       marker.style.left = position + 'px';
     }
-    this._overviewGrid.removeEventDividers();
-    this._overviewGrid.addEventDividers([...filteredMarkers.values()]);
+    this.overviewGrid.removeEventDividers();
+    this.overviewGrid.addEventDividers([...filteredMarkers.values()]);
   }
 
   reset(): void {
-    this._windowStartTime = 0;
-    this._windowEndTime = Infinity;
-    this._overviewCalculator.reset();
-    this._overviewGrid.reset();
-    this._overviewGrid.setResizeEnabled(false);
-    this._cursorEnabled = false;
-    this._hideCursor();
-    this._markers = new Map();
-    for (const control of this._overviewControls) {
+    this.windowStartTime = 0;
+    this.windowEndTime = Infinity;
+    this.overviewCalculator.reset();
+    this.overviewGrid.reset();
+    this.overviewGrid.setResizeEnabled(false);
+    this.cursorEnabled = false;
+    this.hideCursor();
+    this.markers = new Map();
+    for (const control of this.overviewControls) {
       control.reset();
     }
-    this._overviewInfo.hide();
+    this.overviewInfo.hide();
     this.scheduleUpdate();
   }
 
-  _onClick(event: Event): boolean {
-    return this._overviewControls.some(control => control.onClick(event));
+  private onClick(event: Event): boolean {
+    return this.overviewControls.some(control => control.onClick(event));
   }
 
-  _onWindowChanged(event: Common.EventTarget.EventTargetEvent): void {
-    if (this._muteOnWindowChanged) {
+  private onWindowChanged(event: Common.EventTarget.EventTargetEvent): void {
+    if (this.muteOnWindowChanged) {
       return;
     }
     // Always use first control as a time converter.
-    if (!this._overviewControls.length) {
+    if (!this.overviewControls.length) {
       return;
     }
 
-    this._windowStartTime = event.data.rawStartValue;
-    this._windowEndTime = event.data.rawEndValue;
-    const windowTimes = {startTime: this._windowStartTime, endTime: this._windowEndTime};
+    this.windowStartTime = event.data.rawStartValue;
+    this.windowEndTime = event.data.rawEndValue;
+    const windowTimes = {startTime: this.windowStartTime, endTime: this.windowEndTime};
 
     this.dispatchEventToListeners(Events.WindowChanged, windowTimes);
   }
 
   setWindowTimes(startTime: number, endTime: number): void {
-    if (startTime === this._windowStartTime && endTime === this._windowEndTime) {
+    if (startTime === this.windowStartTime && endTime === this.windowEndTime) {
       return;
     }
-    this._windowStartTime = startTime;
-    this._windowEndTime = endTime;
-    this._updateWindow();
+    this.windowStartTime = startTime;
+    this.windowEndTime = endTime;
+    this.updateWindow();
     this.dispatchEventToListeners(Events.WindowChanged, {startTime: startTime, endTime: endTime});
   }
 
-  _updateWindow(): void {
-    if (!this._overviewControls.length) {
+  private updateWindow(): void {
+    if (!this.overviewControls.length) {
       return;
     }
-    const absoluteMin = this._overviewCalculator.minimumBoundary();
-    const timeSpan = this._overviewCalculator.maximumBoundary() - absoluteMin;
+    const absoluteMin = this.overviewCalculator.minimumBoundary();
+    const timeSpan = this.overviewCalculator.maximumBoundary() - absoluteMin;
     const haveRecords = absoluteMin > 0;
-    const left =
-        haveRecords && this._windowStartTime ? Math.min((this._windowStartTime - absoluteMin) / timeSpan, 1) : 0;
-    const right = haveRecords && this._windowEndTime < Infinity ? (this._windowEndTime - absoluteMin) / timeSpan : 1;
-    this._muteOnWindowChanged = true;
-    this._overviewGrid.setWindow(left, right);
-    this._muteOnWindowChanged = false;
+    const left = haveRecords && this.windowStartTime ? Math.min((this.windowStartTime - absoluteMin) / timeSpan, 1) : 0;
+    const right = haveRecords && this.windowEndTime < Infinity ? (this.windowEndTime - absoluteMin) / timeSpan : 1;
+    this.muteOnWindowChanged = true;
+    this.overviewGrid.setWindow(left, right);
+    this.muteOnWindowChanged = false;
   }
 }
 
@@ -259,34 +256,34 @@ export enum Events {
 }
 
 export class TimelineOverviewCalculator implements Calculator {
-  _minimumBoundary!: number;
-  _maximumBoundary!: number;
-  _workingArea!: number;
-  _navStartTimes?: Map<string, SDK.TracingModel.Event>;
+  private minimumBoundaryInternal!: number;
+  private maximumBoundaryInternal!: number;
+  private workingArea!: number;
+  private navStartTimes?: Map<string, SDK.TracingModel.Event>;
 
   constructor() {
     this.reset();
   }
 
   computePosition(time: number): number {
-    return (time - this._minimumBoundary) / this.boundarySpan() * this._workingArea;
+    return (time - this.minimumBoundaryInternal) / this.boundarySpan() * this.workingArea;
   }
 
   positionToTime(position: number): number {
-    return position / this._workingArea * this.boundarySpan() + this._minimumBoundary;
+    return position / this.workingArea * this.boundarySpan() + this.minimumBoundaryInternal;
   }
 
   setBounds(minimumBoundary: number, maximumBoundary: number): void {
-    this._minimumBoundary = minimumBoundary;
-    this._maximumBoundary = maximumBoundary;
+    this.minimumBoundaryInternal = minimumBoundary;
+    this.maximumBoundaryInternal = maximumBoundary;
   }
 
   setNavStartTimes(navStartTimes: Map<string, SDK.TracingModel.Event>): void {
-    this._navStartTimes = navStartTimes;
+    this.navStartTimes = navStartTimes;
   }
 
   setDisplayWidth(clientWidth: number): void {
-    this._workingArea = clientWidth;
+    this.workingArea = clientWidth;
   }
 
   reset(): void {
@@ -295,10 +292,10 @@ export class TimelineOverviewCalculator implements Calculator {
 
   formatValue(value: number, precision?: number): string {
     // If there are nav start times the value needs to be remapped.
-    if (this._navStartTimes) {
+    if (this.navStartTimes) {
       // Find the latest possible nav start time which is considered earlier
       // than the value passed through.
-      const navStartTimes = Array.from(this._navStartTimes.values());
+      const navStartTimes = Array.from(this.navStartTimes.values());
       for (let i = navStartTimes.length - 1; i >= 0; i--) {
         if (value > navStartTimes[i].startTime) {
           value -= (navStartTimes[i].startTime - this.zeroTime());
@@ -311,19 +308,19 @@ export class TimelineOverviewCalculator implements Calculator {
   }
 
   maximumBoundary(): number {
-    return this._maximumBoundary;
+    return this.maximumBoundaryInternal;
   }
 
   minimumBoundary(): number {
-    return this._minimumBoundary;
+    return this.minimumBoundaryInternal;
   }
 
   zeroTime(): number {
-    return this._minimumBoundary;
+    return this.minimumBoundaryInternal;
   }
 
   boundarySpan(): number {
-    return this._maximumBoundary - this._minimumBoundary;
+    return this.maximumBoundaryInternal - this.minimumBoundaryInternal;
   }
 }
 
@@ -338,34 +335,34 @@ export interface TimelineOverview {
 }
 
 export class TimelineOverviewBase extends UI.Widget.VBox implements TimelineOverview {
-  _calculator: TimelineOverviewCalculator|null;
-  _canvas: HTMLCanvasElement;
-  _context: CanvasRenderingContext2D|null;
+  private calculatorInternal: TimelineOverviewCalculator|null;
+  private canvas: HTMLCanvasElement;
+  private contextInternal: CanvasRenderingContext2D|null;
 
   constructor() {
     super();
-    this._calculator = null;
-    this._canvas = (this.element.createChild('canvas', 'fill') as HTMLCanvasElement);
-    this._context = this._canvas.getContext('2d');
+    this.calculatorInternal = null;
+    this.canvas = (this.element.createChild('canvas', 'fill') as HTMLCanvasElement);
+    this.contextInternal = this.canvas.getContext('2d');
   }
 
   width(): number {
-    return this._canvas.width;
+    return this.canvas.width;
   }
 
   height(): number {
-    return this._canvas.height;
+    return this.canvas.height;
   }
 
   context(): CanvasRenderingContext2D {
-    if (!this._context) {
+    if (!this.contextInternal) {
       throw new Error('Unable to retrieve canvas context');
     }
-    return this._context as CanvasRenderingContext2D;
+    return this.contextInternal as CanvasRenderingContext2D;
   }
 
   calculator(): TimelineOverviewCalculator|null {
-    return this._calculator;
+    return this.calculatorInternal;
   }
 
   update(): void {
@@ -384,7 +381,7 @@ export class TimelineOverviewBase extends UI.Widget.VBox implements TimelineOver
   }
 
   setCalculator(calculator: TimelineOverviewCalculator): void {
-    this._calculator = calculator;
+    this.calculatorInternal = calculator;
   }
 
   onClick(_event: Event): boolean {
@@ -398,48 +395,48 @@ export class TimelineOverviewBase extends UI.Widget.VBox implements TimelineOver
   }
 
   setCanvasSize(width: number, height: number): void {
-    this._canvas.width = width * window.devicePixelRatio;
-    this._canvas.height = height * window.devicePixelRatio;
+    this.canvas.width = width * window.devicePixelRatio;
+    this.canvas.height = height * window.devicePixelRatio;
   }
 }
 
 export class OverviewInfo {
-  _anchorElement: Element;
-  _glassPane: UI.GlassPane.GlassPane;
-  _visible: boolean;
-  _element: Element;
+  private readonly anchorElement: Element;
+  private glassPane: UI.GlassPane.GlassPane;
+  private visible: boolean;
+  private readonly element: Element;
 
   constructor(anchor: Element) {
-    this._anchorElement = anchor;
-    this._glassPane = new UI.GlassPane.GlassPane();
-    this._glassPane.setPointerEventsBehavior(UI.GlassPane.PointerEventsBehavior.PierceContents);
-    this._glassPane.setMarginBehavior(UI.GlassPane.MarginBehavior.Arrow);
-    this._glassPane.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
-    this._visible = false;
-    this._element = UI.Utils
-                        .createShadowRootWithCoreStyles(this._glassPane.contentElement, {
-                          cssFile: 'ui/legacy/components/perf_ui/timelineOverviewInfo.css',
-                          delegatesFocus: undefined,
-                        })
-                        .createChild('div', 'overview-info');
+    this.anchorElement = anchor;
+    this.glassPane = new UI.GlassPane.GlassPane();
+    this.glassPane.setPointerEventsBehavior(UI.GlassPane.PointerEventsBehavior.PierceContents);
+    this.glassPane.setMarginBehavior(UI.GlassPane.MarginBehavior.Arrow);
+    this.glassPane.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
+    this.visible = false;
+    this.element = UI.Utils
+                       .createShadowRootWithCoreStyles(this.glassPane.contentElement, {
+                         cssFile: 'ui/legacy/components/perf_ui/timelineOverviewInfo.css',
+                         delegatesFocus: undefined,
+                       })
+                       .createChild('div', 'overview-info');
   }
 
   async setContent(contentPromise: Promise<DocumentFragment>): Promise<void> {
-    this._visible = true;
+    this.visible = true;
     const content = await contentPromise;
-    if (!this._visible) {
+    if (!this.visible) {
       return;
     }
-    this._element.removeChildren();
-    this._element.appendChild(content);
-    this._glassPane.setContentAnchorBox(this._anchorElement.boxInWindow());
-    if (!this._glassPane.isShowing()) {
-      this._glassPane.show((this._anchorElement.ownerDocument as Document));
+    this.element.removeChildren();
+    this.element.appendChild(content);
+    this.glassPane.setContentAnchorBox(this.anchorElement.boxInWindow());
+    if (!this.glassPane.isShowing()) {
+      this.glassPane.show((this.anchorElement.ownerDocument as Document));
     }
   }
 
   hide(): void {
-    this._visible = false;
-    this._glassPane.hide();
+    this.visible = false;
+    this.glassPane.hide();
   }
 }

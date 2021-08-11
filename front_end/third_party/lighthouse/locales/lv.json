@@ -477,7 +477,7 @@
     "message": "Novērsiet mantotā JavaScript koda izmantošanu modernos pārlūkos"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "Tādi attēlu formāti kā JPEG 2000, JPEG XR un WebP bieži ir veiksmīgāk saspiežami nekā PNG vai JPEG. Tas nozīmē ātrāku lejupielādi un mazāku datu patēriņu. [Uzziniet vairāk](https://web.dev/uses-webp-images/)."
+    "message": "Tādi attēlu formāti kā WebP un AVIF bieži ir sekmīgāk saspiežami nekā PNG vai JPEG. Tas nozīmē ātrāku lejupielādi un mazāku datu patēriņu. [Uzziniet vairāk](https://web.dev/uses-webp-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "Rādiet attēlus nākamās paaudzes formātos"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Efektīva attēlu kodēšana"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "Faktiskie izmēri"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "Parādītie izmēri"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Rādiet atbilstoša izmēra attēlus, lai tiktu izmantots mazāks mobilo datu apjoms un tiktu uzlabots ielādes laiks. [Uzziniet vairāk](https://web.dev/uses-responsive-images/)."
@@ -1200,7 +1206,7 @@
     "message": "Norāda uz citu atribūta “`hreflang`” atrašanās vietu ({url})."
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "Atbilstošs URL ({url})."
+    "message": "Nav absolūtais URL ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "Ekvivalenta satura lapas vietā norāda uz domēna saknes piekļuves URL (sākumlapu)"

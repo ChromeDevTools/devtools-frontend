@@ -477,7 +477,7 @@
     "message": "Избягвайте показването на остарял JavaScript в съвременни браузъри"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "Графични формати, като JPEG 2000, JPEG XR и WebP, често осигуряват по-ефективно компресиране от PNG или JPEG. Това означава по-бързо изтегляне и използване на по-малко данни. [Научете повече](https://web.dev/uses-webp-images/)."
+    "message": "Графичните формати, като например WebP и AVIF, често предоставят по-добро компресиране от PNG или JPEG, което означава по-бързи изтегляния и по-малко потребление на данни. [Научете повече](https://web.dev/uses-webp-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "Използвайте съвременни формати за показване на изображения"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Кодирайте изображенията ефективно"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "Действителни размери"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "Показани размери"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Показвайте правилно оразмерени изображения, за да пестите мобилни данни и да ускорите зареждането. [Научете повече](https://web.dev/uses-responsive-images/)."
@@ -1200,7 +1206,7 @@
     "message": "Сочи към местоположение с друг атрибут `hreflang` ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "Относителен URL адрес ({url})"
+    "message": "Не е абсолютен URL адрес ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "Води до основния URL адрес (началната страница) на домейна вместо до еквивалентна страница със съдържание"

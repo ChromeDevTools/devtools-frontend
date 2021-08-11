@@ -18,7 +18,7 @@
     "message": "Atribut `[aria-*]` cocok dengan perannya"
   },
   "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
-    "message": "Jika elemen tidak memiliki nama yang dapat diakses, pembaca layar akan mengucapkannya dengan nama umum, sehingga tidak dapat digunakan oleh pengguna yang mengandalkan pembaca layar. [Pelajari lebih lanjut](https://web.dev/aria-name/)."
+    "message": "Jika elemen tidak memiliki label aksesibilitas, pembaca layar akan mengucapkannya dengan nama umum, sehingga tidak dapat digunakan oleh pengguna yang mengandalkan pembaca layar. [Pelajari lebih lanjut](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
     "message": "Elemen `button`, `link`, dan `menuitem` tidak memiliki nama yang dapat diakses."
@@ -54,7 +54,7 @@
     "message": "Kolom masukan ARIA memiliki nama yang dapat diakses"
   },
   "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
-    "message": "Jika elemen tidak memiliki nama yang dapat diakses, pembaca layar akan mengucapkannya dengan nama umum, sehingga tidak dapat digunakan oleh pengguna yang mengandalkan pembaca layar. [Pelajari lebih lanjut](https://web.dev/aria-name/)."
+    "message": "Jika elemen tidak memiliki label aksesibilitas, pembaca layar akan mengucapkannya dengan nama umum, sehingga tidak dapat digunakan oleh pengguna yang mengandalkan pembaca layar. [Pelajari lebih lanjut](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
     "message": "Elemen `meter` ARIA tidak memiliki nama yang dapat diakses."
@@ -117,7 +117,7 @@
     "message": "Kolom beralih ARIA memiliki nama yang dapat diakses"
   },
   "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
-    "message": "Jika elemen tidak memiliki nama yang dapat diakses, pembaca layar akan mengucapkannya dengan nama umum, sehingga tidak dapat digunakan oleh pengguna yang mengandalkan pembaca layar. [Pelajari lebih lanjut](https://web.dev/aria-name/)."
+    "message": "Jika elemen tidak memiliki label aksesibilitas, pembaca layar akan mengucapkannya dengan nama umum, sehingga tidak dapat digunakan oleh pengguna yang mengandalkan pembaca layar. [Pelajari lebih lanjut](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
     "message": "Elemen `tooltip` ARIA tidak memiliki nama yang dapat diakses."
@@ -126,7 +126,7 @@
     "message": "Elemen `tooltip` ARIA memiliki nama yang dapat diakses"
   },
   "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
-    "message": "Jika elemen tidak memiliki nama yang dapat diakses, pembaca layar akan mengucapkannya dengan nama umum, sehingga tidak dapat digunakan oleh pengguna yang mengandalkan pembaca layar. [Pelajari lebih lanjut](https://web.dev/aria-name/)."
+    "message": "Jika elemen tidak memiliki label aksesibilitas, pembaca layar akan mengucapkannya dengan nama umum, sehingga tidak dapat digunakan oleh pengguna yang mengandalkan pembaca layar. [Pelajari lebih lanjut](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
     "message": "Elemen `treeitem` ARIA tidak memiliki nama yang dapat diakses."
@@ -477,7 +477,7 @@
     "message": "Hindari penayangan JavaScript lama di browser modern"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "Format gambar seperti JPEG 2000, JPEG XR, dan WebP biasanya memberikan kompresi yang lebih baik daripada PNG atau JPEG, sehingga download lebih cepat dan konsumsi data lebih kecil. [Pelajari lebih lanjut](https://web.dev/uses-webp-images/)."
+    "message": "Format gambar seperti WebP dan AVIF sering kali memberikan kompresi yang lebih baik daripada PNG atau JPEG, yang berarti proses download yang lebih cepat dan konsumsi data yang lebih sedikit. [Pelajari lebih lanjut](https://web.dev/uses-webp-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "Tayangkan gambar dalam format generasi berikutnya"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Enkode gambar secara efisien"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "Dimensi yang sebenarnya"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "Dimensi yang ditampilkan"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Menayangkan gambar yang berukuran sesuai untuk menghemat kuota dan meningkatkan waktu pemuatan. [Pelajari lebih lanjut](https://web.dev/uses-responsive-images/)."
@@ -1200,7 +1206,7 @@
     "message": "Mengarahkan ke lokasi `hreflang` lain ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "URL relatif ({url})"
+    "message": "Bukan URL absolut ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "Mengarah ke URL root domain (halaman beranda), bukan ke halaman yang setara untuk konten itu"

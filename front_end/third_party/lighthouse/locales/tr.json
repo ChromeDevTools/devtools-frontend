@@ -477,7 +477,7 @@
     "message": "Modern tarayıcılara eski JavaScript sunmaktan kaçının"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "JPEG 2000, JPEG XR ve WebP gibi resim biçimleri genellikle PNG veya JPEG'den daha iyi sıkıştırma sağlar. Böylece indirme işlemleri daha hızlı tamamlanır ve veri tüketimi daha az olur. [Daha fazla bilgi](https://web.dev/uses-webp-images/)."
+    "message": "WebP ve AVIF gibi resim biçimleri genellikle PNG veya JPEG'e kıyasla daha iyi sıkıştırma sağlar. Böylece indirme işlemleri daha hızlı tamamlanır ve veri tüketimi daha az olur. [Daha fazla bilgi](https://web.dev/uses-webp-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "Resimleri yeni nesil biçimlerde yayınlayın"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Resimleri verimli bir şekilde kodlayın"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "Gerçek boyutlar"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "Gösterilen boyutlar"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Hücresel veriden tasarruf etmek ve yükleme süresini kısaltmak için uygun boyutlu resimler sunun. [Daha fazla bilgi](https://web.dev/uses-responsive-images/)."
@@ -1200,7 +1206,7 @@
     "message": "Başka bir `hreflang` konumuna ({url}) yönlendiriyor"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "Göreli URL ({url})"
+    "message": "Mutlak URL değil ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "İçeriğe eşdeğer bir sayfanın yerine alan adının kök URL'sine (ana sayfa) yönlendiriyor"

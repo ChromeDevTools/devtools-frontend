@@ -477,7 +477,7 @@
     "message": "Izogibajte se prikazovanju starejšega JavaScripta v sodobnih brskalnikih"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "Oblike zapisa slik, kot so JPEG 2000, JPEG XR in WebP, pogosto omogočajo učinkovitejše stiskanje kot oblika zapisa PNG ali JPEG, kar pomeni hitrejše prenose in manjšo porabo podatkov. [Več o tem](https://web.dev/uses-webp-images/)."
+    "message": "Oblike zapisa slike, kot sta WebP in AVIF, pogosto omogočajo učinkovitejše stiskanje kot PNG ali JPEG, kar pomeni hitrejše prenose in manjšo porabo podatkov. [Več o tem](https://web.dev/uses-webp-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "Dostavljajte slike v sodobnih oblikah zapisa"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Učinkovito kodirajte slike"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "Dejanske mere"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "Prikazane mere"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Prikazujte slike primerne velikosti, s čimer poskrbite za prihranek prenesenih podatkov v mobilnih omrežjih in izboljšate čas nalaganja. [Več o tem](https://web.dev/uses-responsive-images/)."
@@ -1200,7 +1206,7 @@
     "message": "Kaže na drugo lokacijo `hreflang` ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "Relativni URL ({url})"
+    "message": "Ni absolutni URL ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "Kaže na korenski URL domene (domačo stran), namesto na enakovredno stran z vsebino"

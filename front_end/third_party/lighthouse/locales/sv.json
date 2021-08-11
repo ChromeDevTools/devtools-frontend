@@ -477,7 +477,7 @@
     "message": "Undvik att skicka äldre JavaScript till moderna webbläsare"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "Bildformat som JPEG 2000, JPEG XR och WebP ger ofta bättre komprimering än PNG eller JPEG. Det gör att nedladdningen går snabbare och ger minskad dataförbrukning. [Läs mer](https://web.dev/uses-webp-images/)."
+    "message": "Bildformat som WebP och AVIF ger ofta bättre komprimering än PNG eller JPEG. Det gör att nedladdningen går snabbare och ger minskad dataförbrukning. [Läs mer](https://web.dev/uses-webp-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "Skicka bilder i modernare bildformat"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Koda bilder effektivt"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "Faktiska mått"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "Visade mått"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Minska mobildataförbrukningen och förbättra inläsningstiden genom att skicka bilder i rätt storlek. [Läs mer](https://web.dev/uses-responsive-images/)."
@@ -1200,7 +1206,7 @@
     "message": "Pekar på en annan `hreflang`-plats ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "Relativ webbadress ({url})"
+    "message": "Är inte en absolut webbadress ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "Pekar på domänens rotadress (startsidan) i stället för motsvarande sida med innehåll"

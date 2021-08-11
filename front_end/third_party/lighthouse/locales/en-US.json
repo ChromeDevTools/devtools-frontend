@@ -1674,7 +1674,7 @@
     "message": "PWA Optimized"
   },
   "lighthouse-core/config/default-config.js | seoCategoryDescription": {
-    "message": "These checks ensure that your page is optimized for search engine results ranking. There are additional factors Lighthouse does not check that may affect your search ranking. [Learn more](https://support.google.com/webmasters/answer/35769)."
+    "message": "These checks ensure that your page is following basic search engine optimization advice. There are many additional factors Lighthouse does not score here that may affect your search ranking, including performance on [Core Web Vitals](https://web.dev/learn-web-vitals/). [Learn more](https://support.google.com/webmasters/answer/35769)."
   },
   "lighthouse-core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Run these additional validators on your site to check additional SEO best practices."

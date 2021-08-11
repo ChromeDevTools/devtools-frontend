@@ -477,7 +477,7 @@
     "message": "Nepoužívejte v moderních prohlížečích zastaralý JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "Formáty obrázků JPEG 2000, JPEG XR a WebP často poskytují lepší kompresi než formáty PNG a JPEG, což znamená rychlejší stahování a menší spotřebu dat. [Další informace](https://web.dev/uses-webp-images/)"
+    "message": "Formáty obrázků jako WebP a AVIF často nabízejí lepší kompresi než PNG nebo JPEG, což znamená rychlejší stahování a menší využití dat. [Další informace](https://web.dev/uses-webp-images/)"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "Zobrazujte obrázky ve formátech nové generace"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Používejte efektivní kódování obrázků"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "Skutečné rozměry"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "Zobrazené rozměry"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Zobrazujte obrázky s vhodnou velikostí, abyste ušetřili mobilní data a zrychlili načítání. [Další informace](https://web.dev/uses-responsive-images/)"
@@ -1200,7 +1206,7 @@
     "message": "Odkazuje na jiné umístění `hreflang` ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "Relativní adresa URL ({url})"
+    "message": "Nejedná se o absolutní adresu URL ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "Neodkazuje na ekvivalentní obsahovou stránku, ale na kořenovou adresu URL domény (domovskou stránku)"

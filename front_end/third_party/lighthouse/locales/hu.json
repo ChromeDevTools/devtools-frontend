@@ -477,7 +477,7 @@
     "message": "Kerülje régi JavaScript megjelenítését a modern böngészőkben"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "Az olyan képformátumok, mint a JPEG 2000, a JPEG XR és a WebP gyakran jobb tömörítést nyújtanak, mint a PNG és a JPEG, azaz kevesebb adatforgalom mellett gyorsabb letöltést biztosítanak. [További információ](https://web.dev/uses-webp-images/)."
+    "message": "Az olyan képformátumok, mint a WebP és az AVIF gyakran jobb tömörítést biztosítanak, mint a PNG vagy a JPEG, ami gyorsabb letöltést és kisebb adatforgalmat jelent. [További információ](https://web.dev/uses-webp-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "Jelenítse meg a képeket következő generációs formátumokban"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Kódolja hatékonyan a képeket"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "Valós méretek"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "Megjelenített méretek"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Használjon olyan képeket, amelyek megfelelő méretükkel elősegítik a mobiladat-forgalom csökkentését és a betöltési idő javulását. [További információ](https://web.dev/uses-responsive-images/)."
@@ -1200,7 +1206,7 @@
     "message": "Másik `hreflang` helyre mutat ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "Relatív URL ({url})"
+    "message": "Nem abszolút URL ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "A domain gyökér-URL-jére (a kezdőlapra) mutat egyenértékű tartalommal rendelkező oldal helyett"

@@ -18,7 +18,7 @@
     "message": "`[aria-*]` பண்புக்கூறுகள் அவற்றின் பங்களிப்புகளுடன் பொருந்துகின்றன"
   },
   "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
-    "message": "ஓர் உறுப்பிற்குத் தெளிவான பெயர் இல்லையெனில் ஸ்கிரீன் ரீடர்கள் அதைப் பொதுவான பெயரைப் பயன்படுத்தி அறிவிக்கும். இது ஸ்க்ரீன் ரீடர்களைப் பயன்படுத்தும் பயனர்களுக்கு உதவியாக இருக்காது. [மேலும் அறிக](https://web.dev/aria-name/)."
+    "message": "ஓர் உறுப்பிற்குத் தெளிவான பெயர் இல்லையெனில் ஸ்கிரீன் ரீடர்கள் பொதுவான பெயரைப் பயன்படுத்தி அதை அறிவிக்கும். ஸ்கிரீன் ரீடர்களைப் பயன்படுத்துபவர்களுக்கு இது உதவியாக இருக்காது. [மேலும் அறிக](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
     "message": "`button`, `link`, `menuitem` ஆகிய உறுப்புகளுக்குத் தெளிவான பெயர்கள் இல்லை."
@@ -54,7 +54,7 @@
     "message": "ARIA உள்ளீட்டுப் புலங்கள் தெளிவான பெயர்களைக் கொண்டுள்ளன"
   },
   "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
-    "message": "ஓர் உறுப்பிற்குத் தெளிவான பெயர் இல்லையெனில் ஸ்கிரீன் ரீடர்கள் அதைப் பொதுவான பெயரைப் பயன்படுத்தி அறிவிக்கும். இது ஸ்க்ரீன் ரீடர்களைப் பயன்படுத்தும் பயனர்களுக்கு உதவியாக இருக்காது. [மேலும் அறிக](https://web.dev/aria-name/)."
+    "message": "ஓர் உறுப்பிற்குத் தெளிவான பெயர் இல்லையெனில் ஸ்கிரீன் ரீடர்கள் பொதுவான பெயரைப் பயன்படுத்தி அதை அறிவிக்கும். ஸ்கிரீன் ரீடர்களைப் பயன்படுத்துபவர்களுக்கு இது உதவியாக இருக்காது. [மேலும் அறிக](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
     "message": "ARIA `meter` உறுப்புகளுக்குத் தெளிவான பெயர்கள் இல்லை."
@@ -117,7 +117,7 @@
     "message": "ARIA நிலைமாற்றுப் புலங்கள் தெளிவான பெயர்களைக் கொண்டுள்ளன"
   },
   "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
-    "message": "ஓர் உறுப்பிற்குத் தெளிவான பெயர் இல்லையெனில் ஸ்கிரீன் ரீடர்கள் அதைப் பொதுவான பெயரைப் பயன்படுத்தி அறிவிக்கும். இது ஸ்க்ரீன் ரீடர்களைப் பயன்படுத்தும் பயனர்களுக்கு உதவியாக இருக்காது. [மேலும் அறிக](https://web.dev/aria-name/)."
+    "message": "ஓர் உறுப்பிற்குத் தெளிவான பெயர் இல்லையெனில் ஸ்கிரீன் ரீடர்கள் பொதுவான பெயரைப் பயன்படுத்தி அதை அறிவிக்கும். ஸ்கிரீன் ரீடர்களைப் பயன்படுத்துபவர்களுக்கு இது உதவியாக இருக்காது. [மேலும் அறிக](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
     "message": "ARIA `tooltip` உறுப்புகளுக்குத் தெளிவான பெயர்கள் இல்லை."
@@ -126,7 +126,7 @@
     "message": "ARIA `tooltip` உறுப்புகளுக்குத் தெளிவான பெயர்கள் உள்ளன"
   },
   "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
-    "message": "ஓர் உறுப்பிற்குத் தெளிவான பெயர் இல்லையெனில் ஸ்கிரீன் ரீடர்கள் அதைப் பொதுவான பெயரைப் பயன்படுத்தி அறிவிக்கும். இது ஸ்க்ரீன் ரீடர்களைப் பயன்படுத்தும் பயனர்களுக்கு உதவியாக இருக்காது. [மேலும் அறிக](https://web.dev/aria-name/)."
+    "message": "ஓர் உறுப்பிற்குத் தெளிவான பெயர் இல்லையெனில் ஸ்கிரீன் ரீடர்கள் பொதுவான பெயரைப் பயன்படுத்தி அதை அறிவிக்கும். ஸ்கிரீன் ரீடர்களைப் பயன்படுத்துபவர்களுக்கு இது உதவியாக இருக்காது. [மேலும் அறிக](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
     "message": "ARIA `treeitem` உறுப்புகளுக்குத் தெளிவான பெயர்கள் இல்லை."
@@ -477,7 +477,7 @@
     "message": "நவீன உலாவிகளில் லெகஸி JavaScript சேவை வழங்குவதைத் தவிர்த்தல்"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "JPEG 2000, JPEG XR, WebP போன்ற பட வடிவமைப்புகளானது PNG அல்லது JPEGயைக் காட்டிலும் சிறந்த அளவு சுருக்கத்தை வழங்குகின்றன, இதன் மூலம் பதிவிறக்கங்கள் வேகமாக நடைபெறுவதுடன் டேட்டா உபயோகமும் குறையும். [மேலும் அறிக](https://web.dev/uses-webp-images/)."
+    "message": "PNG, JPEG போன்றவற்றைக் காட்டிலும் ஃபைலின் அளவைக் குறைக்க பெரும்பாலும் WebP, AVIF போன்ற பட வடிவமைப்புகள் சிறப்பாக உதவும். அதாவது அவற்றை விரைவாகப் பதிவிறக்க முடியும், டேட்டா உபயோகமும் குறைவாக இருக்கும். [மேலும் அறிக](https://web.dev/uses-webp-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "படங்களை நவீன வடிவமைப்புகளில் வழங்கவும்"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "படங்களைத் திறம்பட என்கோடிங் செய்யவும்"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "அசல் பரிமாணங்கள்"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "காட்சிப் பரிமாணங்கள்"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "மொபைல் டேட்டாவை சேமிக்கவும் பக்கத்தை விரைவாக ஏற்றவும் படங்களை சரியான அளவில் வழங்கவும். [மேலும் அறிக](https://web.dev/uses-responsive-images/)."
@@ -1200,7 +1206,7 @@
     "message": "வேறொரு `hreflang` இருப்பிடத்தைச் சுட்டுகிறது ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "தொடர்புடைய URL ({url})"
+    "message": "இது துல்லியமான URL அல்ல ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "உள்ளடக்கத்திற்குப் பொருத்தமான பக்கத்திற்குப் பதிலாக டொமைனின் மூல URLலை (முகப்புப்பக்கம்) குறிப்பிடுகிறது"
@@ -1335,7 +1341,7 @@
     "message": "{itemCount,plural, =1{1 பிழை உள்ளது}other{# பிழைகள் உள்ளன}}"
   },
   "lighthouse-core/audits/seo/robots-txt.js | explanation": {
-    "message": "Lighthouseஸால் robots.txt கோப்பைப் பதிவிறக்க முடியவில்லை"
+    "message": "Lighthouseஸால் robots.txt ஃபைலைப் பதிவிறக்க முடியவில்லை"
   },
   "lighthouse-core/audits/seo/robots-txt.js | failureTitle": {
     "message": "robots.txt செல்லுபடியாகவில்லை"
@@ -1524,7 +1530,7 @@
     "message": "பெரிய அளவிலான முதல் தரப்பு JavaScriptடுக்கான சோர்ஸ் மேப்கள் விடுபட்டுள்ளன"
   },
   "lighthouse-core/audits/valid-source-maps.js | missingSourceMapErrorMessage": {
-    "message": "பெரிய அளவிலான JavaScript கோப்பில் சோர்ஸ் மேப் விடுபட்டுள்ளது"
+    "message": "பெரிய அளவிலான JavaScript ஃபைலில் சோர்ஸ் மேப் விடுபட்டுள்ளது"
   },
   "lighthouse-core/audits/valid-source-maps.js | missingSourceMapItemsWarningMesssage": {
     "message": "{missingItems,plural, =1{எச்சரிக்கை: `.sourcesContent` இல் 1 உறுப்பு விடுபட்டுள்ளது}other{எச்சரிக்கை: `.sourcesContent` இல் # உறுப்புகள் விடுபட்டுள்ளன}}"
@@ -1968,7 +1974,7 @@
     "message": "நகல் மாடியூல்கள்"
   },
   "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
-    "message": "கோப்பின் அளவு (பைட்டுகள்)"
+    "message": "ஃபைலின் அளவு (பைட்டுகள்)"
   },
   "lighthouse-treemap/app/src/util.js | tableColumnName": {
     "message": "பெயர்"

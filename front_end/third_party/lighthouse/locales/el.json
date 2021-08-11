@@ -477,7 +477,7 @@
     "message": "Αποφύγετε την προβολή JavaScript παλαιού τύπου σε σύγχρονα προγράμματα περιήγησης"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "Οι μορφές εικόνας JPEG 2000, JPEG XR και WebP συχνά παρέχουν καλύτερη συμπίεση από ό,τι οι μορφές PNG και JPEG. Αυτό σημαίνει γρηγορότερες λήψεις και μικρότερη κατανάλωση δεδομένων. [Μάθετε περισσότερα](https://web.dev/uses-webp-images/)."
+    "message": "Οι μορφές εικόνας όπως WebP και AVIF παρέχουν συχνά καλύτερη συμπίεση σε σχέση με τις μορφές PNG ή JPEG, κάτι που σημαίνει ταχύτερες λήψεις και μικρότερη κατανάλωση δεδομένων. [Μάθετε περισσότερα](https://web.dev/uses-webp-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "Προβολή εικόνων σε μορφές επόμενης γενιάς"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Αποδοτική κωδικοποίηση εικόνων"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "Πραγματικές διαστάσεις"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "Διαστάσεις προβολής"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Συνιστάται η προβολή εικόνων κατάλληλου μεγέθους για την εξοικονόμηση δεδομένων κινητής τηλεφωνίας και τη βελτίωση του χρόνου φόρτωσης. [Μάθετε περισσότερα](https://web.dev/uses-responsive-images/)."
@@ -1200,7 +1206,7 @@
     "message": "Παραπέμπει σε μια άλλη τοποθεσία `hreflang` ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "Σχετικό URL ({url})"
+    "message": "Δεν είναι απόλυτο URL ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "Παραπέμπει στο ριζικό URL του τομέα (την αρχική σελίδα), αντί για μια αντίστοιχη σελίδα περιεχομένου"

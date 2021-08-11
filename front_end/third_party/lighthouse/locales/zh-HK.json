@@ -477,7 +477,7 @@
     "message": "避免向新型瀏覽器提供舊版 JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "JPEG 2000、JPEG XR 和 WebP 等圖片格式通常比 PNG 或 JPEG 有更好的壓縮效果，能夠更快完成下載及減少數據用量。[瞭解詳情](https://web.dev/uses-webp-images/)。"
+    "message": "WebP 和 AVIF 等圖片格式通常比 PNG 或 JPEG 有更好的壓縮效果，能夠更快完成下載及減少數據用量。[瞭解詳情](https://web.dev/uses-webp-images/)。"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "提供 next-gen 格式的圖片"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "有效地進行圖片編碼"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "實際尺寸"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "顯示的尺寸"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "提供適當大小的圖片有助節省流動數據用量，並縮短載入時間。[瞭解詳情](https://web.dev/uses-responsive-images/)。"
@@ -1200,7 +1206,7 @@
     "message": "指向其他 `hreflang` 位置 ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "相對網址 ({url})"
+    "message": "不是絕對網址 ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "指向目標為網域的根網址 (首頁)，而非相應的內容網頁"

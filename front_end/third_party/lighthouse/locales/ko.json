@@ -477,7 +477,7 @@
     "message": "레거시 JavaScript를 최신 브라우저에 제공하지 않기"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "JPEG 2000, JPEG XR, WebP와 같은 이미지 형식을 사용하면 PNG 또는 JPEG보다 압축률이 높으므로 다운로드 속도가 빠르고 데이터 소비량도 줄어듭니다. [자세히 알아보기](https://web.dev/uses-webp-images/)"
+    "message": "WebP 및 AVIF와 같은 이미지 형식은 PNG나 JPEG보다 압축률이 높기 때문에 다운로드가 빠르고 데이터 소비량도 적습니다. [자세히 알아보기](https://web.dev/uses-webp-images/)"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "차세대 형식을 사용해 이미지 제공하기"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "효율적으로 이미지 인코딩하기"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "실제 크기"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "표시된 크기"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "적절한 크기의 이미지를 게재하여 모바일 데이터를 절약하고 로드 시간을 단축하세요. [자세히 알아보기](https://web.dev/uses-responsive-images/)"
@@ -1200,7 +1206,7 @@
     "message": "다른 `hreflang` 위치({url})를 가리킵니다."
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "상대 URL({url})"
+    "message": "절대 URL이 아님({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "콘텐츠 페이지가 아닌 도메인의 루트 URL(홈페이지)을 가리킴"

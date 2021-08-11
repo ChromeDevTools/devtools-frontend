@@ -18,7 +18,7 @@
     "message": "`[aria-*]` 属性与其角色匹配"
   },
   "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
-    "message": "如果某个元素没有可供访问的名称，屏幕阅读器会将它读为通用名称，这会导致依赖屏幕阅读器的用户无法使用它。[了解详情](https://web.dev/aria-name/)。"
+    "message": "如果某个元素没有无障碍名称，屏幕阅读器会将它读为通用名称，这会导致依赖屏幕阅读器的用户无法使用它。[了解详情](https://web.dev/aria-name/)。"
   },
   "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
     "message": "`button`、`link` 和 `menuitem` 元素缺少可供访问的名称。"
@@ -54,7 +54,7 @@
     "message": "ARIA 输入字段都有可供访问的名称"
   },
   "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
-    "message": "如果某个元素没有可供访问的名称，屏幕阅读器会将它读为通用名称，这会导致依赖屏幕阅读器的用户无法使用它。[了解详情](https://web.dev/aria-name/)。"
+    "message": "如果某个元素没有无障碍名称，屏幕阅读器会将它读为通用名称，这会导致依赖屏幕阅读器的用户无法使用它。[了解详情](https://web.dev/aria-name/)。"
   },
   "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
     "message": "ARIA `meter` 元素缺少可供访问的名称。"
@@ -117,7 +117,7 @@
     "message": "ARIA 切换字段都有可供访问的名称"
   },
   "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
-    "message": "如果某个元素没有可供访问的名称，屏幕阅读器会将它读为通用名称，这会导致依赖屏幕阅读器的用户无法使用它。[了解详情](https://web.dev/aria-name/)。"
+    "message": "如果某个元素没有无障碍名称，屏幕阅读器会将它读为通用名称，这会导致依赖屏幕阅读器的用户无法使用它。[了解详情](https://web.dev/aria-name/)。"
   },
   "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
     "message": "ARIA `tooltip` 元素缺少可供访问的名称。"
@@ -126,7 +126,7 @@
     "message": "ARIA `tooltip` 元素都有可供访问的名称"
   },
   "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
-    "message": "如果某个元素没有可供访问的名称，屏幕阅读器会将它读为通用名称，这会导致依赖屏幕阅读器的用户无法使用它。[了解详情](https://web.dev/aria-name/)。"
+    "message": "如果某个元素没有无障碍名称，屏幕阅读器会将它读为通用名称，这会导致依赖屏幕阅读器的用户无法使用它。[了解详情](https://web.dev/aria-name/)。"
   },
   "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
     "message": "ARIA `treeitem` 元素缺少可供访问的名称。"
@@ -477,7 +477,7 @@
     "message": "应避免向新型浏览器提供旧版 JavaScript"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "JPEG 2000、JPEG XR 和 WebP 等图片格式的压缩效果通常比 PNG 或 JPEG 好，因此下载速度更快，消耗的数据流量更少。[了解详情](https://web.dev/uses-webp-images/)。"
+    "message": "WebP 和 AVIF 等图片格式的压缩效果通常优于 PNG 或 JPEG，因而下载速度更快，消耗的数据流量更少。[了解详情](https://web.dev/uses-webp-images/)。"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "采用新一代格式提供图片"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "对图片进行高效编码"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "实际尺寸"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "显示时的尺寸"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "提供大小合适的图片可节省移动数据网络流量并缩短加载用时。[了解详情](https://web.dev/uses-responsive-images/)。"
@@ -1200,7 +1206,7 @@
     "message": "指向了其他 `hreflang` 位置 ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "相对网址 ({url})"
+    "message": "不是一个绝对网址 ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "指向了网域的根网址（首页），而非等效内容页面"

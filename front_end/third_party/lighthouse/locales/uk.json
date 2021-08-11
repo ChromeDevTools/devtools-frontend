@@ -18,7 +18,7 @@
     "message": "Атрибути `[aria-*]` відповідають своїм ролям"
   },
   "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
-    "message": "Без такої назви програма зачитує тільки загальну назву (тобто роль або тип) елемента, що незручно для користувачів спеціальних можливостей. [Докладніше.](https://web.dev/aria-name/)"
+    "message": "Без доступної назви програма зачитує тільки загальну назву (тобто роль або тип) елемента, що незручно для користувачів спеціальних можливостей. [Докладніше.](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
     "message": "Елементи з ролями `button`, `link` і `menuitem` не мають зрозумілих назв для зчитування з екрана."
@@ -54,7 +54,7 @@
     "message": "Поля введення ARIA мають доступні для зчитування назви"
   },
   "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
-    "message": "Без такої назви програма зачитує тільки загальну назву (тобто роль або тип) елемента, що незручно для користувачів спеціальних можливостей. [Докладніше.](https://web.dev/aria-name/)"
+    "message": "Без доступної назви програма зачитує тільки загальну назву (тобто роль або тип) елемента, що незручно для користувачів спеціальних можливостей. [Докладніше.](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
     "message": "Елементи ARIA з роллю `meter` не мають зрозумілих назв для зчитування з екрана."
@@ -117,7 +117,7 @@
     "message": "Поля перемикача ARIA мають доступні для зчитування назви"
   },
   "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
-    "message": "Без такої назви програма зачитує тільки загальну назву (тобто роль або тип) елемента, що незручно для користувачів спеціальних можливостей. [Докладніше.](https://web.dev/aria-name/)"
+    "message": "Без доступної назви програма зачитує тільки загальну назву (тобто роль або тип) елемента, що незручно для користувачів спеціальних можливостей. [Докладніше.](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
     "message": "Елементи ARIA з роллю `tooltip` не мають зрозумілих назв для зчитування з екрана."
@@ -126,7 +126,7 @@
     "message": "Елементи ARIA з роллю `tooltip` мають зрозумілі назви для зчитування з екрана"
   },
   "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
-    "message": "Без такої назви програма зачитує тільки загальну назву (тобто роль або тип) елемента, що незручно для користувачів спеціальних можливостей. [Докладніше.](https://web.dev/aria-name/)"
+    "message": "Без доступної назви програма зачитує тільки загальну назву (тобто роль або тип) елемента, що незручно для користувачів спеціальних можливостей. [Докладніше.](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
     "message": "Елементи ARIA з роллю `treeitem` не мають зрозумілих назв для зчитування з екрана."
@@ -477,7 +477,7 @@
     "message": "Не показуйте застарілі елементи JavaScript у сучасних веб-переглядачах"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "Формати зображень JPEG 2000, JPEG XR і WebP часто стискаються краще, ніж PNG чи JPEG. Тому вони швидше завантажуються й використовують менше даних. [Докладніше](https://web.dev/uses-webp-images/)."
+    "message": "Формати зображень WebP і AVIF часто стискаються краще, ніж PNG чи JPEG. Тому вони швидше завантажуються й використовують менше даних. [Докладніше.](https://web.dev/uses-webp-images/)"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "Показуйте зображення в нових форматах"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Ефективно кодуйте зображення"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "Фактичні розміри"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "Відображені розміри"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Показуйте зображення правильного розміру, щоб заощадити мобільний трафік і покращити час завантаження. [Докладніше](https://web.dev/uses-responsive-images/)."
@@ -1200,7 +1206,7 @@
     "message": "Указує на інше місце `hreflang` ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "Відносна URL-адреса ({url})"
+    "message": "Це не абсолютна URL-адреса ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "Указує на основну URL-адресу домену (домашню сторінку), а не на еквівалентну сторінку вмісту"

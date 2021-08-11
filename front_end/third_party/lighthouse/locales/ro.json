@@ -477,7 +477,7 @@
     "message": "Nu folosi o versiune veche de JavaScript în browsere moderne"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "Formatele de imagine ca JPEG 2000, JPEG XR și WebP oferă adesea o comprimare mai bună decât PNG sau JPEG, ceea ce înseamnă descărcări mai rapide și mai puțin consum de date. [Află mai multe](https://web.dev/uses-webp-images/)."
+    "message": "Formatele de imagine ca WebP și AVIF oferă adesea o comprimare mai bună decât PNG sau JPEG, ceea ce înseamnă descărcări mai rapide și mai puțin consum de date. [Află mai multe](https://web.dev/uses-webp-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "Difuzează imagini în formate moderne"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Codifică eficient imaginile"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "Dimensiunile reale"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "Dimensiunile afișate"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Difuzează imagini de dimensiuni corespunzătoare ca să economisești date mobile și să obții o încărcare mai rapidă. [Află mai multe](https://web.dev/uses-responsive-images/)."
@@ -1200,7 +1206,7 @@
     "message": "Indică spre altă locație `hreflang` ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "Adresa URL relativă ({url})"
+    "message": "Nu este o adresă URL absolută ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "Direcționează către adresa URL a rădăcinii domeniului (pagina principală), nu către o pagină de conținut echivalentă"

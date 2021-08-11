@@ -477,7 +477,7 @@
     "message": "[Åvöîð šéŕvîñĝ ļéĝåçý ĴåvåŠçŕîþţ ţö möðéŕñ бŕöŵšéŕš one two three four five six seven eight nine ten eleven]"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "[Îmåĝé ƒöŕmåţš ļîķé ĴÞÉĜ 2000, ĴÞÉĜ XŔ, åñð ŴéбÞ öƒţéñ þŕövîðé бéţţéŕ çömþŕéššîöñ ţĥåñ ÞÑĜ öŕ ĴÞÉĜ, ŵĥîçĥ méåñš ƒåšţéŕ ðöŵñļöåðš åñð ļéšš ðåţå çöñšûmþţîöñ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/uses-webp-images/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour]"
+    "message": "[Îmåĝé ƒöŕmåţš ļîķé ŴéбÞ åñð ÅVÎF öƒţéñ þŕövîðé бéţţéŕ çömþŕéššîöñ ţĥåñ ÞÑĜ öŕ ĴÞÉĜ, ŵĥîçĥ méåñš ƒåšţéŕ ðöŵñļöåðš åñð ļéšš ðåţå çöñšûmþţîöñ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/uses-webp-images/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree]"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "[Šéŕvé îmåĝéš îñ ñéxţ-ĝéñ ƒöŕmåţš one two three four five six seven]"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "[Éƒƒîçîéñţļý éñçöðé îmåĝéš one two three]"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "[Åçţûåļ ðîméñšîöñš one two three]"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "[Ðîšþļåýéð ðîméñšîöñš one two three]"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "[Šéŕvé îmåĝéš ţĥåţ åŕé åþþŕöþŕîåţéļý-šîžéð ţö šåvé çéļļûļåŕ ðåţå åñð îmþŕövé ļöåð ţîmé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/uses-responsive-images/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
@@ -1200,7 +1206,7 @@
     "message": "[Þöîñţš ţö åñöţĥéŕ ᐅ`hreflang`ᐊ ļöçåţîöñ (ᐅ{url}ᐊ) one two three four five six seven eight]"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "[Ŕéļåţîvé ÛŔĻ (ᐅ{url}ᐊ) one two three four]"
+    "message": "[Îš ñöţ åñ åбšöļûţé ÛŔĻ (ᐅ{url}ᐊ) one two three four five six]"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "[Þöîñţš ţö ţĥé ðömåîñ'š ŕööţ ÛŔĻ (ţĥé ĥöméþåĝé), îñšţéåð öƒ åñ éqûîvåļéñţ þåĝé öƒ çöñţéñţ one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"

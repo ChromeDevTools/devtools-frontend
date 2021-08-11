@@ -18,7 +18,7 @@
     "message": "سمات `[aria-*]` هي مطابقة لأدوارها"
   },
   "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
-    "message": "إذا لم يتوفّر لأحد العناصر اسم يمكن الوصول إليه، ستقرأه برامج قراءة الشاشة مستخدمةً اسمًا عامًا له، ما يجعله غير قابل للاستخدام لدى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [مزيد من المعلومات](https://web.dev/aria-name/)"
+    "message": "عند عدم ظهور اسم أحد العناصر على واجهة المستخدم، تشير برامج قراءة الشاشة إلى هذا العنصر بصفة عامة، ما يجعله غير قابل للاستخدام بالنسبة إلى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [مزيد من المعلومات](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
     "message": "لا تتوفّر لعناصر `button` و`link` و`menuitem` أسماء يمكن الوصول إليها"
@@ -54,7 +54,7 @@
     "message": "تحتوي حقول إدخال ARIA على أسماء يمكن الوصول إليها"
   },
   "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
-    "message": "إذا لم يتوفّر لأحد العناصر اسم يمكن الوصول إليه، ستقرأه برامج قراءة الشاشة مستخدمةً اسمًا عامًا له، ما يجعله غير قابل للاستخدام لدى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [مزيد من المعلومات](https://web.dev/aria-name/)"
+    "message": "عند عدم ظهور اسم أحد العناصر على واجهة المستخدم، تشير برامج قراءة الشاشة إلى هذا العنصر بصفة عامة، ما يجعله غير قابل للاستخدام بالنسبة إلى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [مزيد من المعلومات](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
     "message": "لا تتوفّر لعناصر ARIA `meter` أسماء يمكن الوصول إليها"
@@ -117,7 +117,7 @@
     "message": "تحتوي جميع حقول تبديل ARIA على أسماء يمكن الوصول إليها"
   },
   "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
-    "message": "إذا لم يتوفّر لأحد العناصر اسم يمكن الوصول إليه، ستقرأه برامج قراءة الشاشة مستخدمةً اسمًا عامًا له، ما يجعله غير قابل للاستخدام لدى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [مزيد من المعلومات](https://web.dev/aria-name/)"
+    "message": "عند عدم ظهور اسم أحد العناصر على واجهة المستخدم، تشير برامج قراءة الشاشة إلى هذا العنصر بصفة عامة، ما يجعله غير قابل للاستخدام بالنسبة إلى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [مزيد من المعلومات](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
     "message": "لا تتوفّر لعناصر ARIA `tooltip` أسماء يمكن الوصول إليها"
@@ -126,7 +126,7 @@
     "message": "تتوفّر لعناصر ARIA `tooltip` أسماء يمكن الوصول إليها"
   },
   "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
-    "message": "إذا لم يتوفّر لأحد العناصر اسم يمكن الوصول إليه، ستقرأه برامج قراءة الشاشة مستخدمةً اسمًا عامًا له، ما يجعله غير قابل للاستخدام لدى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [مزيد من المعلومات](https://web.dev/aria-name/)"
+    "message": "عند عدم ظهور اسم أحد العناصر على واجهة المستخدم، تشير برامج قراءة الشاشة إلى هذا العنصر بصفة عامة، ما يجعله غير قابل للاستخدام بالنسبة إلى المستخدمين الذين يعتمدون على برامج قراءة الشاشة. [مزيد من المعلومات](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
     "message": "لا تتوفّر لعناصر ARIA `treeitem` أسماء يمكن الوصول إليها"
@@ -477,7 +477,7 @@
     "message": "تجنُّب عرض ميزات JavaScript القديمة في المتصفحات الحديثة"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "غالبًا ما توفِّر تنسيقات الصور، مثل JPEG 2000 وJPEG XR وWebP، ضغطًا أفضل من تنسيق PNG أو JPEG، وهذا يعني تنزيلاً أسرع واستهلاكًا أقل للبيانات. [مزيد من المعلومات](https://web.dev/uses-webp-images/)"
+    "message": "غالبًا ما توفِّر تنسيقات الصور، مثل WebP وAVIF، ضغطًا أفضل للصور من تنسيق PNG أو JPEG، وهذا بدوره يعني تنزيلاً أسرع واستهلاكًا أقل للبيانات. [مزيد من المعلومات](https://web.dev/uses-webp-images/)"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "عرض الصور بتنسيقات الجيل القادم"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "ترميز الصور بكفاءة"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "الأبعاد الفعلية"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "الأبعاد المعروضة"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "يمكنك عرض صور بحجم مناسب لحفظ بيانات شبكة الجوّال وتحسين وقت التحميل. [مزيد من المعلومات](https://web.dev/uses-responsive-images/)"
@@ -1200,7 +1206,7 @@
     "message": "يشير عنوان URL إلى موقع جغرافي `hreflang` آخر ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "عنوان URL هو نسبي ({url})"
+    "message": "عنوان URL غير كامل ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "يشير إلى عنوان URL الجذر للنطاق (الصفحة الرئيسية)، بدلاً من صفحة مكافئة للمحتوى"

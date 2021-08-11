@@ -51,7 +51,7 @@
     "message": "ARIA ఇన్‌పుట్ ఫీల్డ్‌లకు యాక్సెస్ చేయదగిన పేర్లు లేవు"
   },
   "lighthouse-core/audits/accessibility/aria-input-field-name.js | title": {
-    "message": "ARIA ఇన్‌పుట్ లేబుల్‌లు యాక్సెస్ చేయదగిన పేర్లను కలిగి ఉన్నాయి"
+    "message": "ARIA ఇన్‌పుట్ లేబుళ్లు యాక్సెస్ చేయదగిన పేర్లను కలిగి ఉన్నాయి"
   },
   "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
     "message": "ఒక ఎలిమెంట్‌కు యాక్సెస్ చేయగల పేరు లేనప్పుడు, స్క్రీన్ రీడర్‌లు దానిని సాధారణ పేరుతో ప్రకటిస్తాయి, తద్వారా వాటిని స్క్రీన్ రీడర్‌లపై ఆధారపడే యూజర్‌లకు నిరుపయోగమైనవిగా చేస్తాయి. [మరింత తెలుసుకోండి](https://web.dev/aria-name/)."
@@ -228,13 +228,13 @@
     "message": "ARIA IDలు విభిన్నంగా ఉన్నాయి"
   },
   "lighthouse-core/audits/accessibility/form-field-multiple-labels.js | description": {
-    "message": "మొదటి, చివరి లేదా అన్ని లేబుల్‌లను ఉపయోగించే స్క్రీన్ రీడర్‌ల వంటి సహాయక సాంకేతిక పరిజ్ఞానాలు, పలు లేబుల్‌లను కలిగి ఉండే ఫారమ్ ఫీల్డ్‌లను ప్రకటించేటప్పుడు గందరగోళానికి దారితీయవచ్చు. [మరింత తెలుసుకోండి](https://web.dev/form-field-multiple-labels/)."
+    "message": "మొదటి, చివరి లేదా అన్ని లేబుళ్లను ఉపయోగించే స్క్రీన్ రీడర్‌ల వంటి సహాయక సాంకేతిక పరిజ్ఞానాలు, పలు లేబుళ్లను కలిగి ఉండే ఫారమ్ ఫీల్డ్‌లను ప్రకటించేటప్పుడు గందరగోళానికి దారితీయవచ్చు. [మరింత తెలుసుకోండి](https://web.dev/form-field-multiple-labels/)."
   },
   "lighthouse-core/audits/accessibility/form-field-multiple-labels.js | failureTitle": {
-    "message": "ఫారమ్ ఫీల్డ్‌లు బహుళ లేబుల్‌లను కలిగి ఉన్నాయి"
+    "message": "ఫారమ్ ఫీల్డ్‌లు బహుళ లేబుళ్లను కలిగి ఉన్నాయి"
   },
   "lighthouse-core/audits/accessibility/form-field-multiple-labels.js | title": {
-    "message": "ఫారమ్ ఫీల్డ్‌లు వేటికీ బహుళ లేబుల్‌లు లేవు"
+    "message": "ఫారమ్ ఫీల్డ్‌లు వేటికీ బహుళ లేబుళ్లు లేవు"
   },
   "lighthouse-core/audits/accessibility/frame-title.js | description": {
     "message": "స్క్రీన్ రీడర్ వినియోగదారులు ఫ్రేమ్‌ల కంటెంట్‌లను వివరించడానికి ఫ్రేమ్ శీర్షికలపై ఆధారపడతారు. [మరింత తెలుసుకోండి](https://web.dev/frame-title/)."
@@ -291,13 +291,13 @@
     "message": "'`<input type=\"image\">`' మూలకాలు '`[alt]`' వచనాన్ని కలిగి ఉన్నాయి"
   },
   "lighthouse-core/audits/accessibility/label.js | description": {
-    "message": "స్క్రీన్ రీడర్‌ల లాంటి సహాయక సాంకేతిక పరిజ్ఞానాల ద్వారా ఫారమ్ నియంత్రణలు సక్రమంగా ప్రకటించబడుతున్నాయని లేబుల్‌లు నిర్ధారిస్తున్నాయి. [మరింత తెలుసుకోండి](https://web.dev/label/)."
+    "message": "స్క్రీన్ రీడర్‌ల లాంటి సహాయక సాంకేతిక పరిజ్ఞానాల ద్వారా ఫారమ్ నియంత్రణలు సక్రమంగా ప్రకటించబడుతున్నాయని లేబుళ్లు నిర్ధారిస్తున్నాయి. [మరింత తెలుసుకోండి](https://web.dev/label/)."
   },
   "lighthouse-core/audits/accessibility/label.js | failureTitle": {
-    "message": "ఫారమ్ మూలకాలలో అనుబంధిత లేబుల్‌లు లేవు"
+    "message": "ఫారమ్ మూలకాలలో అనుబంధిత లేబుళ్లు లేవు"
   },
   "lighthouse-core/audits/accessibility/label.js | title": {
-    "message": "ఫారమ్ మూలకాలు అనుబంధిత లేబుల్‌లను కలిగి ఉన్నాయి"
+    "message": "ఫారమ్ మూలకాలు అనుబంధిత లేబుళ్లను కలిగి ఉన్నాయి"
   },
   "lighthouse-core/audits/accessibility/link-name.js | description": {
     "message": "కనుగొనదగిన, విశిష్ఠమైన, దృష్టి కేంద్రీకరించగలిగిన లింక్ వచనం (అలాగే చిత్రాలను లింక్‌లుగా ఉపయోగించినప్పుడు వాటి ప్రత్యామ్నాయ వచనం) సహాయంతో స్క్రీన్ రీడర్ వినియోగదారులకు నావిగేషన్ అనుభవం మరింత మెరుగవుతుంది. [మరింత తెలుసుకోండి](https://web.dev/link-name/)."
@@ -477,7 +477,7 @@
     "message": "లెగసీ JavaScriptను మోడ్రన్ బ్రౌజర్‌లకు అందించడం మానివేయండి"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "JPEG 2000, JPEG XR, WebP లాంటి చిత్రం ఫార్మాట్‌లు తరచుగా PNG లేదా JPEG కంటే మెరుగైన కుదింపును అందిస్తాయి. దీని వలన, డౌన్‌లోడ్‌లు మరింత వేగంగా ఉంటాయి, తక్కువ డేటా వినియోగం అవుతుంది. [మరింత తెలుసుకోండి](https://web.dev/uses-webp-images/)."
+    "message": "PNG లేదా JPEGతో పోలిస్తే WebP ఇంకా AVIF వంటి ఇమేజ్ ఫార్మాట్‌లు సాధారణంగా మెరుగైన కుదింపును అందిస్తాయి, తద్వారా డౌన్‌లోడ్‌లు వేగంగా అవుతాయి, అలాగే డేటా వినియోగం తక్కువగా ఉంటుంది. [మరింత తెలుసుకోండి](https://web.dev/uses-webp-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "చిత్రాలను తర్వాతి-తరం ఫార్మాట్‌లలో అందించండి"
@@ -507,13 +507,13 @@
     "message": "అతి పెద్ద నెట్‌వర్క్ పేలోడ్‌లను నివారిస్తుంది"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | description": {
-    "message": "CSS ఫైల్‌లను చిన్నవిగా చేయడం వలన నెట్‌వర్క్ పేలోడ్ పరిమాణాలు తగ్గిపోగలవు. [మరింత తెలుసుకోండి](https://web.dev/unminified-css/)."
+    "message": "CSS ఫైళ్లను చిన్నవిగా చేయడం వలన నెట్‌వర్క్ పేలోడ్ పరిమాణాలు తగ్గిపోగలవు. [మరింత తెలుసుకోండి](https://web.dev/unminified-css/)."
   },
   "lighthouse-core/audits/byte-efficiency/unminified-css.js | title": {
     "message": "CSSని చిన్నదిగా చేయండి"
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | description": {
-    "message": "JavaScript ఫైల్‌లను చిన్నవిగా చేయడం పేలోడ్ పరిమాణాలను, స్క్రిప్ట్‌ను అన్వయించడానికి పట్టే సమయాన్ని తగ్గించగలదు. [మరింత తెలుసుకోండి](https://web.dev/unminified-javascript/)."
+    "message": "JavaScript ఫైళ్లను చిన్నవిగా చేయడం పేలోడ్ పరిమాణాలను, స్క్రిప్ట్‌ను అన్వయించడానికి పట్టే సమయాన్ని తగ్గించగలదు. [మరింత తెలుసుకోండి](https://web.dev/unminified-javascript/)."
   },
   "lighthouse-core/audits/byte-efficiency/unminified-javascript.js | title": {
     "message": "JavaScriptను చిన్నదిగా చేయండి"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "చిత్రాలను సమర్థవంతంగా ఎన్‌కోడ్ చేయండి"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "అసలు కొలతలు"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "ప్రదర్శించబడే కొలతలు"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "సెల్యులార్ డేటాను పొదుపు చేయడానికి, లోడ్ సమయాన్ని మెరుగుపరచడానికి తగిన-పరిమాణానికి మార్చబడిన చిత్రాలను అందించండి. [మరింత తెలుసుకోండి](https://web.dev/uses-responsive-images/)."
@@ -1200,7 +1206,7 @@
     "message": "మరొక '`hreflang`' స్థానం ({url})కు నిర్దేశిస్తోంది"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "సంబంధిత URL ({url})"
+    "message": "({url}) ఖచ్చితమైన URL కాదు"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "అలాంటి కంటెంట్‌ను కలిగిన పేజీకి బదులుగా డొమైన్ యొక్క మూలాధార URL (హోమ్‌పేజీ)ని సూచిస్తుంది"
@@ -1587,7 +1593,7 @@
     "message": "మీ అప్లికేషన్‌లోని నియంత్రణల అర్థ విచారాలను మెరుగుపరచడానికి ఇవి అవకాశాలుగా ఉపయోగపడతాయి. స్క్రీన్ రీడర్ లాంటి సహాయక సాంకేతిక పరిజ్ఞాన వినియోగదారులకు ఇది మరింత మెరుగైన అనుభవాన్ని అందించవచ్చు."
   },
   "lighthouse-core/config/default-config.js | a11yNamesLabelsGroupTitle": {
-    "message": "పేరు మరియు లేబుల్‌లు"
+    "message": "పేరు మరియు లేబుళ్లు"
   },
   "lighthouse-core/config/default-config.js | a11yNavigationGroupDescription": {
     "message": "ఇవి, మీ అప్లికేషన్‌లో కీబోర్డ్ నావిగేషన్‌ను మెరుగ‌ప‌ర‌చ‌గ‌ల అవ‌కాశాలు."
@@ -1944,7 +1950,7 @@
     "message": "మీరు అభ్యర్థించిన పేజీని Lighthouse విశ్వసనీయ రీతిలో లోడ్ చేయలేకపోయింది. మీరు సరైన URLను పరీక్షిస్తున్నారని, సర్వర్ అన్ని అభ్యర్థనలకు సరిగ్గా ప్రతిస్పందిస్తోందని నిర్ధారించుకోండి. (స్థితి కోడ్: {statusCode})"
   },
   "lighthouse-core/lib/lh-error.js | pageLoadTookTooLong": {
-    "message": "మీ పేజీ లోడ్ కావడానికి చాలా ఎక్కువ సమయం పట్టింది. మీ పేజీ లోడ్ సమయం తగ్గించడానికి దయచేసి నివేదికలో ఉన్న అవకాశాలను అనుసరించి, ఆపై Lighthouseను తిరిగి అమలు చేయడానికి ప్రయత్నించండి. ({errorCode})"
+    "message": "మీ పేజీ లోడ్ కావడానికి చాలా ఎక్కువ సమయం పట్టింది. మీ పేజీ లోడ్ సమయం తగ్గించడానికి దయచేసి రిపోర్ట్‌లో ఉన్న అవకాశాలను అనుసరించి, ఆపై Lighthouseను తిరిగి అమలు చేయడానికి ప్రయత్నించండి. ({errorCode})"
   },
   "lighthouse-core/lib/lh-error.js | protocolTimeout": {
     "message": "DevTools ప్రోటోకాల్ ప్రతిస్పందన కోసం వేచి ఉండటం వలన కేటాయించిన సమయాన్ని దాటిపోయింది. (పద్ధతి: {protocolMethod})"
@@ -2037,7 +2043,7 @@
     "message": "మీ పేజీలో లోడ్ చేయబడిన ఇమేజ్‌ల సైజ్‌ను తగ్గించడానికి [ప్రతిస్పందనాత్మక ఇమేజ్ స్టయిల్‌ల](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8)ను ఉపయోగించవచ్చు, దాన్ని పరిశీలించండి. మీరు పేజీలో అనేక కంటెంట్ ఐటెమ్‌లను చూపించడానికి వీక్షణలను ఉపయోగిస్తున్నట్లయితే, ఇవ్వబడిన పేజీలో చూపబడే కంటెంట్ ఐటెమ్‌ల సంఖ్యను పరిమితం చేయడానికి పేజీల రూపకల్పనను అమలు చేయవచ్చు, దాన్ని పరిశీలించండి."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "మీరు \"సముదాయ CSS ఫైల్‌ల\"ను \"అడ్మినిస్ట్రేషన్ » కాన్ఫిగరేషన్ » డెవలప్మెంట్\" పేజీలో ఎనేబుల్ చేశారని నిర్ధారించుకోండి. మీ CSS స్టయిల్‌లను సంగ్రహించడం, సైజు తగ్గించడం ఇంకా కుదించడం ద్వారా మీ సైట్‌ను వేగవంతం చేయడానికి, మీరు [అదనపు మాడ్యూల్‌ల](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search) ద్వారా మరింత అధునాతన సముదాయ ఆప్షన్‌లను కూడా కాన్ఫిగర్ చేయవచ్చు."
+    "message": "మీరు \"సముదాయ CSS ఫైళ్ల\"ను \"అడ్మినిస్ట్రేషన్ » కాన్ఫిగరేషన్ » డెవలప్మెంట్\" పేజీలో ఎనేబుల్ చేశారని నిర్ధారించుకోండి. మీ CSS స్టయిల్‌లను సంగ్రహించడం, సైజు తగ్గించడం ఇంకా కుదించడం ద్వారా మీ సైట్‌ను వేగవంతం చేయడానికి, మీరు [అదనపు మాడ్యూల్‌ల](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search) ద్వారా మరింత అధునాతన సముదాయ ఆప్షన్‌లను కూడా కాన్ఫిగర్ చేయవచ్చు."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
     "message": "మీరు \"సముదాయ JavaScript ఫైల్స్\"ను \"అడ్మినిస్ట్రేషన్ » కాన్ఫిగరేషన్ » డెవలప్మెంట్\" పేజీలో ఎనేబుల్ చేశారని నిర్ధారించుకోండి. మీ JavaScript అస్సెట్‌లను సంగ్రహించడం, సైజు తగ్గించడం ఇంకా కుదించడం ద్వారా మీ సైట్‌ను వేగవంతం చేయడానికి, మీరు [అదనపు మాడ్యూల్‌ల](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search) ద్వారా మరింత అధునాతన సముదాయ ఆప్షన్‌లను కూడా కాన్ఫిగర్ చేయవచ్చు."
@@ -2121,7 +2127,7 @@
     "message": "Magento సంబంధిత [వార్నిష్ ఇంటిగ్రేషన్‌](https://devdocs.magento.com/guides/v2.3/config-guide/varnish/config-varnish.html)ను ఉపయోగించండి."
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | unminified-css": {
-    "message": "మీ స్టోర్ డెవలపర్ సెట్టింగ్‌లలో \"CSS ఫైల్‌లను చిన్నవిగా చేయి\" ఎంపికను ప్రారంభించండి. [మరింత తెలుసుకోండి](https://devdocs.magento.com/guides/v2.3/performance-best-practices/configuration.html?itm_source=devdocs&itm_medium=search_page&itm_campaign=federated_search&itm_term=minify%20css%20files)."
+    "message": "మీ స్టోర్ డెవలపర్ సెట్టింగ్‌లలో \"CSS ఫైళ్లను చిన్నవిగా చేయి\" ఎంపికను ప్రారంభించండి. [మరింత తెలుసుకోండి](https://devdocs.magento.com/guides/v2.3/performance-best-practices/configuration.html?itm_source=devdocs&itm_medium=search_page&itm_campaign=federated_search&itm_term=minify%20css%20files)."
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | unminified-javascript": {
     "message": "స్టాటిక్ కంటెంట్ అమలు చేయడం నుండి ఉత్పన్నమయ్యే అన్ని JavaScript అస్సెట్‌ల సైజు తగ్గించడానికి [టెర్సర్‌](https://www.npmjs.com/package/terser)ను ఉపయోగించండి, అలాగే బిల్ట్-ఇన్ కనిష్ఠీకరణ ఫీచర్‌ను డిజేబుల్ చేయండి."
@@ -2190,10 +2196,10 @@
     "message": "మీరు సర్వర్ వైపు నుండి ఏవైనా 'రియాక్ట్' కాంపొనెంట్‌లను అమలు చేస్తున్నట్లయితే, `renderToNodeStream()` లేదా `renderToStaticNodeStream()`ను వినియోగించడానికి ప్రయత్నించడం ద్వారా మార్క్అప్‌లో ఉండే విభాగాలన్నీ ఒకేసారి కాకుండా, వివిధ భాగాలుగా అందుకోవడానికి, హైడ్రేట్ చేయడానికి క్లయింట్‌ను అనుమతించండి. [మరింత తెలుసుకోండి](https://reactjs.org/docs/react-dom-server.html#rendertonodestream)."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | unminified-css": {
-    "message": "మీ బిల్డ్ సిస్టమ్, CSS ఫైల్‌ల సైజును ఆటోమేటిక్‌గా తగ్గిస్తున్నట్లయితే, మీ అప్లికేషన్ ప్రొడక్షన్ బిల్డ్‌ను మీరు అమలు చేస్తున్నట్లు నిర్ధారించుకోండి. React Developer Tools ఎక్స్‌టెన్షన్ సహాయంతో మీరు దీనిని చెక్ చేయవచ్చు. [మరింత తెలుసుకోండి](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
+    "message": "మీ బిల్డ్ సిస్టమ్, CSS ఫైళ్ల సైజును ఆటోమేటిక్‌గా తగ్గిస్తున్నట్లయితే, మీ అప్లికేషన్ ప్రొడక్షన్ బిల్డ్‌ను మీరు అమలు చేస్తున్నట్లు నిర్ధారించుకోండి. React Developer Tools ఎక్స్‌టెన్షన్ సహాయంతో మీరు దీనిని చెక్ చేయవచ్చు. [మరింత తెలుసుకోండి](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | unminified-javascript": {
-    "message": "మీ బిల్డ్ సిస్టమ్, JS ఫైల్‌ల సైజును ఆటోమేటిక్‌గా తగ్గిస్తున్నట్లయితే, మీ అప్లికేషన్ ప్రొడక్షన్ బిల్డ్‌ను మీరు అమలు చేస్తున్నట్లు నిర్ధారించుకోండి. React Developer Tools ఎక్స్‌టెన్షన్ సహాయంతో మీరు దీనిని చెక్ చేయవచ్చు. [మరింత తెలుసుకోండి](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
+    "message": "మీ బిల్డ్ సిస్టమ్, JS ఫైళ్ల సైజును ఆటోమేటిక్‌గా తగ్గిస్తున్నట్లయితే, మీ అప్లికేషన్ ప్రొడక్షన్ బిల్డ్‌ను మీరు అమలు చేస్తున్నట్లు నిర్ధారించుకోండి. React Developer Tools ఎక్స్‌టెన్షన్ సహాయంతో మీరు దీనిని చెక్ చేయవచ్చు. [మరింత తెలుసుకోండి](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | unused-javascript": {
     "message": "మీరు సర్వర్ వైపు అమలు చేయనట్లయితే, `React.lazy()` ద్వారా [మీ JavaScript బండిల్‌లను విభజించండి](https://web.dev/code-splitting-suspense/). లేదంటే, '[లోడ్ చేయదగిన కాంపొనెంట్‌లు](https://www.smooth-code.com/open-source/loadable-components/docs/getting-started/)' లాంటి మూడవ పక్షం లైబ్రరీని ఉపయోగించడం ద్వారా కోడ్‌ను విభజించండి."
@@ -2217,7 +2223,7 @@
     "message": "థీమ్‌లు, ప్లగ్ఇన్‌లు, సర్వర్ లక్షణాలన్నీ కూడా సర్వర్ ప్రతిస్పందన సమయాన్ని ప్రభావితం చేస్తాయి. మరింత ఆప్టిమైజ్ చేయబడిన థీమ్‌ను కనుగొనడానికి, చాలా జాగ్రత్తగా ఆప్టిమైజేషన్ ప్లగ్ఇన్‌ను ఎంచుకోవడానికి మరియు/లేదా మీ సర్వర్‌ను అప్‌గ్రేడ్ చేయడానికి ప్రయత్నించండి."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | total-byte-weight": {
-    "message": "ఇవ్వబడిన పేజీలో చూపబడే పోస్ట్‌ల సంఖ్యను తగ్గించడం, మీ పొడవైన పోస్ట్‌లను బహుళ పేజీలుగా విడగొట్టడం లేదా మందకొడి లోడింగ్ వ్యాఖ్యల కోసం ప్లగ్ఇన్‌ను ఉపయోగించడం ద్వారా (అంటే, మరిన్ని ట్యాగ్ ద్వారా) మీ పోస్ట్ జాబితాలలో సారాంశాలను చూపడానికి ప్రయత్నించండి."
+    "message": "ఇవ్వబడిన పేజీలో చూపబడే పోస్ట్‌ల సంఖ్యను తగ్గించడం, మీ పొడవైన పోస్ట్‌లను బహుళ పేజీలుగా విడగొట్టడం లేదా మందకొడి లోడింగ్ కామెంట్‌ల కోసం ప్లగ్ఇన్‌ను ఉపయోగించడం ద్వారా (అంటే, మరిన్ని ట్యాగ్ ద్వారా) మీ పోస్ట్ జాబితాలలో సారాంశాలను చూపడానికి ప్రయత్నించండి."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | unminified-css": {
     "message": "అనేక '[WordPress ప్లగ్ఇన్‌లు](https://wordpress.org/plugins/search/minify+css/)' మీ శైలులను క్రమపరచడం, చిన్నవిగా చేయడం, కుదించడం ద్వారా మీ సైట్‌ను మరింత వేగవంతం చేయవచ్చు. వీలైతే, ఈ కనిష్ఠీకరణను ముందుగానే నిర్వహించేలా కూడా మీరు ఒక బిల్డ్ ప్రాసెస్‌ను ఉపయోగించవచ్చు."
@@ -2280,7 +2286,7 @@
     "message": "ఎర్రర్ ఏర్పడింది!"
   },
   "report/renderer/util.js | errorMissingAuditInfo": {
-    "message": "నివేదిక ఎర్రర్: ఆడిట్ సమాచారం లేదు"
+    "message": "రిపోర్ట్‌ ఎర్రర్: ఆడిట్ సమాచారం లేదు"
   },
   "report/renderer/util.js | footerIssue": {
     "message": "సమస్యను ఫైల్ చేయండి"

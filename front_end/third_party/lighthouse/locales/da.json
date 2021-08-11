@@ -477,7 +477,7 @@
     "message": "Undgå at vise forældet JavaScript i moderne browsere"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "Billedformater såsom JPEG 2000, JPEG XR og WebP giver ofte en bedre komprimering end PNG og JPEG, hvilket betyder hurtigere downloads og mindre dataforbrug. [Få flere oplysninger](https://web.dev/uses-webp-images/)."
+    "message": "Billedformater som f.eks. WebP og AVIF giver ofte en bedre komprimering end PNG og JPEG, hvilket betyder hurtigere downloads og mindre dataforbrug. [Få flere oplysninger](https://web.dev/uses-webp-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "Vis billeder i formater af næste generation"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Kryptér billeder effektivt"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "Faktiske mål"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "Viste mål"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Vis billeder i korrekte størrelser for at spare mobildata og forbedre indlæsningstiden. [Få flere oplysninger](https://web.dev/uses-responsive-images/)."
@@ -1200,7 +1206,7 @@
     "message": "Peger på en anden placering for `hreflang` ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "Relativ webadresse ({url})"
+    "message": "Webadressen er ikke en absolut webadresse ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "Peger på domænets rodwebadresse (startsiden) i stedet for en tilsvarende side med indhold"

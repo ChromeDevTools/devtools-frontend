@@ -18,7 +18,7 @@
     "message": "`[aria-*]` 属性は役割と一致しています"
   },
   "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
-    "message": "要素にユーザー補助機能向けの名前が設定されていない場合、スクリーン リーダーでは一般名で読み上げられるため、スクリーン リーダーのみを使用するユーザーには用途がわかりません。[詳細](https://web.dev/aria-name/)"
+    "message": "要素にユーザー補助機能用の名前が設定されていない場合、スクリーン リーダーでは一般名で読み上げられるため、スクリーン リーダーのみを使用するユーザーには用途がわかりません。[詳細](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
     "message": "`button`、`link`、`menuitem` 要素にユーザー補助機能向けの名前が設定されていません。"
@@ -54,7 +54,7 @@
     "message": "ARIA 入力フィールドにユーザー補助機能向けの名前が設定されています"
   },
   "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
-    "message": "要素にユーザー補助機能向けの名前が設定されていない場合、スクリーン リーダーでは一般名で読み上げられるため、スクリーン リーダーのみを使用するユーザーには用途がわかりません。[詳細](https://web.dev/aria-name/)"
+    "message": "要素にユーザー補助機能用の名前が設定されていない場合、スクリーン リーダーでは一般名で読み上げられるため、スクリーン リーダーのみを使用するユーザーには用途がわかりません。[詳細](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
     "message": "ARIA `meter` 要素にユーザー補助機能向けの名前が設定されていません。"
@@ -117,7 +117,7 @@
     "message": "ARIA 切り替えフィールドにユーザー補助機能向けの名前が設定されています"
   },
   "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
-    "message": "要素にユーザー補助機能向けの名前が設定されていない場合、スクリーン リーダーでは一般名で読み上げられるため、スクリーン リーダーのみを使用するユーザーには用途がわかりません。[詳細](https://web.dev/aria-name/)"
+    "message": "要素にユーザー補助機能用の名前が設定されていない場合、スクリーン リーダーでは一般名で読み上げられるため、スクリーン リーダーのみを使用するユーザーには用途がわかりません。[詳細](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
     "message": "ARIA `tooltip` 要素にユーザー補助機能向けの名前が設定されていません。"
@@ -126,7 +126,7 @@
     "message": "ARIA `tooltip` 要素にユーザー補助機能向けの名前が設定されています"
   },
   "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
-    "message": "要素にユーザー補助機能向けの名前が設定されていない場合、スクリーン リーダーでは一般名で読み上げられるため、スクリーン リーダーのみを使用するユーザーには用途がわかりません。[詳細](https://web.dev/aria-name/)"
+    "message": "要素にユーザー補助機能用の名前が設定されていない場合、スクリーン リーダーでは一般名で読み上げられるため、スクリーン リーダーのみを使用するユーザーには用途がわかりません。[詳細](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
     "message": "ARIA `treeitem` 要素にユーザー補助機能向けの名前が設定されていません。"
@@ -477,7 +477,7 @@
     "message": "最新ブラウザに従来の JavaScript を配信しないようにしてください"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "JPEG 2000、JPEG XR、WebP などの画像フォーマットは、PNG や JPEG より圧縮性能が高く、ダウンロード時間やデータ使用量を抑えることができます。[詳細](https://web.dev/uses-webp-images/)"
+    "message": "WebP や AVIF などの画像形式は、一般的に PNG や JPEG より圧縮率が高く、ダウンロード時間やデータ消費量が抑えられます。[詳細](https://web.dev/uses-webp-images/)"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "次世代フォーマットでの画像の配信"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "効率的な画像フォーマット"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "実際のサイズ"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "表示サイズ"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "適切なサイズの画像を配信して、モバイルデータ量を節約し読み込み時間を短縮してください。[詳細](https://web.dev/uses-responsive-images/)"
@@ -1200,7 +1206,7 @@
     "message": "別の `hreflang` 位置（{url}）を指しています"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "相対 URL（{url}）"
+    "message": "絶対 URL（{url}）ではありません"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "コンテンツの同等のページではなく、ドメインのルート URL（ホームページ）を参照しています。"

@@ -31,9 +31,6 @@ module.exports = {
   get REPORT_TEMPLATE() {
     return cachedResources.get('third_party/lighthouse/report-assets/standalone-template.html');
   },
-  get REPORT_TEMPLATES() {
-    return cachedResources.get('third_party/lighthouse/report-assets/templates.html');
-  },
 };
 
 },{}],1:[function(require,module,exports){
@@ -76,12 +73,14 @@ class ReportGenerator {
       .replace(/</g, '\\u003c') // replaces opening script tags
       .replace(/\u2028/g, '\\u2028') // replaces line separators ()
       .replace(/\u2029/g, '\\u2029'); // replaces paragraph separators
+    // terser does its own sanitization, but keep this basic replace for when
+    // we want to generate a report without minification.
+    const sanitizedJavascript = htmlReportAssets.REPORT_JAVASCRIPT.replace(/<\//g, '\\u003c/');
 
     return ReportGenerator.replaceStrings(htmlReportAssets.REPORT_TEMPLATE, [
       {search: '%%LIGHTHOUSE_JSON%%', replacement: sanitizedJson},
-      {search: '%%LIGHTHOUSE_JAVASCRIPT%%', replacement: htmlReportAssets.REPORT_JAVASCRIPT},
+      {search: '%%LIGHTHOUSE_JAVASCRIPT%%', replacement: sanitizedJavascript},
       {search: '/*%%LIGHTHOUSE_CSS%%*/', replacement: htmlReportAssets.REPORT_CSS},
-      {search: '%%LIGHTHOUSE_TEMPLATES%%', replacement: htmlReportAssets.REPORT_TEMPLATES},
     ]);
   }
 

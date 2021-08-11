@@ -18,7 +18,7 @@
     "message": "Os atributos `[aria-*]` correspondem às respetivas funções"
   },
   "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
-    "message": "Quando um elemento não tem um nome acessível, os leitores de ecrã anunciam-no com um nome genérico, tornando-o inutilizável para os utilizadores que dependem de leitores de ecrã. [Saiba mais](https://web.dev/aria-name/)"
+    "message": "Quando um elemento não tem um nome acessível, os leitores de ecrã anunciam-no com um nome genérico, tornando-o inutilizável para os utilizadores que dependem de leitores de ecrã. [Saiba mais](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
     "message": "Os elementos `button`, `link` e `menuitem` não têm nomes acessíveis"
@@ -54,7 +54,7 @@
     "message": "Os campos de entrada ARIA têm nomes acessíveis"
   },
   "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
-    "message": "Quando um elemento não tem um nome acessível, os leitores de ecrã anunciam-no com um nome genérico, tornando-o inutilizável para os utilizadores que dependem de leitores de ecrã. [Saiba mais](https://web.dev/aria-name/)"
+    "message": "Quando um elemento não tem um nome acessível, os leitores de ecrã anunciam-no com um nome genérico, tornando-o inutilizável para os utilizadores que dependem de leitores de ecrã. [Saiba mais](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
     "message": "Os elementos `meter` ARIA não têm nomes acessíveis"
@@ -117,7 +117,7 @@
     "message": "Os campos ativar/desativar ARIA têm nomes acessíveis"
   },
   "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
-    "message": "Quando um elemento não tem um nome acessível, os leitores de ecrã anunciam-no com um nome genérico, tornando-o inutilizável para os utilizadores que dependem de leitores de ecrã. [Saiba mais](https://web.dev/aria-name/)"
+    "message": "Quando um elemento não tem um nome acessível, os leitores de ecrã anunciam-no com um nome genérico, tornando-o inutilizável para os utilizadores que dependem de leitores de ecrã. [Saiba mais](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
     "message": "Os elementos `tooltip` ARIA não têm nomes acessíveis"
@@ -126,7 +126,7 @@
     "message": "Os elementos `tooltip` ARIA têm nomes acessíveis"
   },
   "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
-    "message": "Quando um elemento não tem um nome acessível, os leitores de ecrã anunciam-no com um nome genérico, tornando-o inutilizável para os utilizadores que dependem de leitores de ecrã. [Saiba mais](https://web.dev/aria-name/)"
+    "message": "Quando um elemento não tem um nome acessível, os leitores de ecrã anunciam-no com um nome genérico, tornando-o inutilizável para os utilizadores que dependem de leitores de ecrã. [Saiba mais](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
     "message": "Os elementos `treeitem` ARIA não têm nomes acessíveis"
@@ -477,7 +477,7 @@
     "message": "Evite a publicação do JavaScript antigo em navegadores modernos"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "Muitas vezes, os formatos de imagem como JPEG 2000, JPEG XR e WebP proporcionam uma melhor compressão do que os formatos PNG ou JPEG, o que se traduz em transferências mais rápidas e num menor consumo de dados. [Saiba mais](https://web.dev/uses-webp-images/)."
+    "message": "Muitas vezes, os formatos de imagem como WebP e AVIF proporcionam uma melhor compressão do que os formatos PNG ou JPEG, o que se traduz em transferências mais rápidas e num menor consumo de dados. [Saiba mais](https://web.dev/uses-webp-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "Publique imagens em formatos de última geração"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Codifique as imagens de forma eficiente"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "Dimensões reais"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "Dimensões apresentadas"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Publique imagens com um tamanho adequado para poupar dados móveis e melhorar o tempo de carregamento. [Saiba mais](https://web.dev/uses-responsive-images/)."
@@ -1200,7 +1206,7 @@
     "message": "Aponta para outra localização `hreflang` ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "URL relativo ({url})"
+    "message": "Não é um URL absoluto ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "Aponta para o URL raiz do domínio (a página inicial), em vez de uma página de conteúdo equivalente."

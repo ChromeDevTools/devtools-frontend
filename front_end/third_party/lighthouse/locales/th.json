@@ -18,7 +18,7 @@
     "message": "แอตทริบิวต์ `[aria-*]` ตรงกับบทบาทของตน"
   },
   "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
-    "message": "เมื่อองค์ประกอบไม่มีชื่อสำหรับการช่วยเหลือพิเศษ โปรแกรมอ่านหน้าจอจะอ่านองค์ประกอบนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้องค์ประกอบดังกล่าวไม่ได้ [ดูข้อมูลเพิ่มเติม](https://web.dev/aria-name/)"
+    "message": "เมื่อองค์ประกอบไม่มีชื่อที่เข้าถึงได้ โปรแกรมอ่านหน้าจอจะอ่านองค์ประกอบนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้องค์ประกอบดังกล่าวไม่ได้ [ดูข้อมูลเพิ่มเติม](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
     "message": "องค์ประกอบ `button`, `link` และ `menuitem` ไม่มีชื่อสำหรับการช่วยเหลือพิเศษ"
@@ -54,7 +54,7 @@
     "message": "ช่องป้อนข้อมูล ARIA มีชื่อสำหรับการช่วยเหลือพิเศษ"
   },
   "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
-    "message": "เมื่อองค์ประกอบไม่มีชื่อสำหรับการช่วยเหลือพิเศษ โปรแกรมอ่านหน้าจอจะอ่านองค์ประกอบนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้องค์ประกอบดังกล่าวไม่ได้ [ดูข้อมูลเพิ่มเติม](https://web.dev/aria-name/)"
+    "message": "เมื่อองค์ประกอบไม่มีชื่อที่เข้าถึงได้ โปรแกรมอ่านหน้าจอจะอ่านองค์ประกอบนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้องค์ประกอบดังกล่าวไม่ได้ [ดูข้อมูลเพิ่มเติม](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
     "message": "องค์ประกอบ ARIA `meter` ไม่มีชื่อสำหรับการช่วยเหลือพิเศษ"
@@ -117,7 +117,7 @@
     "message": "ช่องสลับ ARIA มีชื่อสำหรับการช่วยเหลือพิเศษ"
   },
   "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
-    "message": "เมื่อองค์ประกอบไม่มีชื่อสำหรับการช่วยเหลือพิเศษ โปรแกรมอ่านหน้าจอจะอ่านองค์ประกอบนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้องค์ประกอบดังกล่าวไม่ได้ [ดูข้อมูลเพิ่มเติม](https://web.dev/aria-name/)"
+    "message": "เมื่อองค์ประกอบไม่มีชื่อที่เข้าถึงได้ โปรแกรมอ่านหน้าจอจะอ่านองค์ประกอบนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้องค์ประกอบดังกล่าวไม่ได้ [ดูข้อมูลเพิ่มเติม](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
     "message": "องค์ประกอบ ARIA `tooltip` ไม่มีชื่อสำหรับการช่วยเหลือพิเศษ"
@@ -126,7 +126,7 @@
     "message": "องค์ประกอบ ARIA `tooltip` มีชื่อสำหรับการช่วยเหลือพิเศษ"
   },
   "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
-    "message": "เมื่อองค์ประกอบไม่มีชื่อสำหรับการช่วยเหลือพิเศษ โปรแกรมอ่านหน้าจอจะอ่านองค์ประกอบนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้องค์ประกอบดังกล่าวไม่ได้ [ดูข้อมูลเพิ่มเติม](https://web.dev/aria-name/)"
+    "message": "เมื่อองค์ประกอบไม่มีชื่อที่เข้าถึงได้ โปรแกรมอ่านหน้าจอจะอ่านองค์ประกอบนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้องค์ประกอบดังกล่าวไม่ได้ [ดูข้อมูลเพิ่มเติม](https://web.dev/aria-name/)"
   },
   "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
     "message": "องค์ประกอบ ARIA `treeitem` ไม่มีชื่อสำหรับการช่วยเหลือพิเศษ"
@@ -477,7 +477,7 @@
     "message": "หลีกเลี่ยงการแสดง JavaScript ในเบราว์เซอร์สมัยใหม่"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "รูปแบบรูปภาพอย่างเช่น JPEG 2000, JPEG XR และ WebP มักบีบอัดได้ดีกว่า PNG หรือ JPEG ซึ่งหมายความว่าจะดาวน์โหลดได้เร็วขึ้นและใช้อินเทอร์เน็ตน้อยลง [ดูข้อมูลเพิ่มเติม](https://web.dev/uses-webp-images/)"
+    "message": "รูปแบบรูปภาพ เช่น WebP และ AVIF มักบีบอัดได้ดีกว่า PNG หรือ JPEG ซึ่งหมายความว่าจะดาวน์โหลดได้เร็วขึ้นและใช้อินเทอร์เน็ตน้อยลง [ดูข้อมูลเพิ่มเติม](https://web.dev/uses-webp-images/)"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "แสดงรูปภาพในรูปแบบสมัยใหม่"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "เข้ารหัสรูปภาพอย่างมีประสิทธิภาพ"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "ขนาดจริง"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "ขนาดที่แสดง"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "แสดงรูปภาพที่มีขนาดที่เหมาะสมเพื่อประหยัดอินเทอร์เน็ตมือถือและปรับปรุงเวลาในการโหลด [ดูข้อมูลเพิ่มเติม](https://web.dev/uses-responsive-images/)"
@@ -1200,7 +1206,7 @@
     "message": "ชี้ไปที่ `hreflang` ตำแหน่งอื่น ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "URL แบบสัมพัทธ์ ({url})"
+    "message": "ไม่ใช่ URL ที่สมบูรณ์ ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "ชี้ไปที่ URL ระดับรากของโดเมน (หน้าแรก) แทนที่จะเป็นหน้าที่เทียบเท่ากันของเนื้อหา"

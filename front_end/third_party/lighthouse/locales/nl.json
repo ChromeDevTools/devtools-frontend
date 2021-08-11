@@ -477,7 +477,7 @@
     "message": "Voorkomen dat verouderde JavaScript wordt geleverd aan moderne browsers"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "Afbeeldingsindelingen zoals JPEG 2000, JPEG XR en WebP bieden vaak betere compressie dan PNG of JPEG. Dit resulteert in snellere downloads en minder dataverbruik. [Meer informatie](https://web.dev/uses-webp-images/)"
+    "message": "Afbeeldingsindelingen zoals webp en avif bieden vaak betere compressie dan png of jpeg. Dit zorgt voor snellere downloads en minder dataverbruik. [Meer informatie](https://web.dev/uses-webp-images/)"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "Lever afbeeldingen in moderne indelingen"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Codeer afbeeldingen op een efficiënte manier"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "Werkelijke afmetingen"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "Getoonde afmetingen"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Lever afbeeldingen met het juiste formaat om mobiele data te besparen en de laadtijd te verbeteren. [Meer informatie](https://web.dev/uses-responsive-images/)"
@@ -1200,7 +1206,7 @@
     "message": "Wijst naar een andere `hreflang`-locatie ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "Relatieve URL ({url})"
+    "message": "Is geen absolute URL ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "Verwijst naar de root-URL van het domein (de homepage), in plaats van een equivalente pagina van de content"

@@ -18,7 +18,7 @@
     "message": "Атрибути `[aria-*]` се подударају са својим улогама"
   },
   "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
-    "message": "Када елемент нема назив прилагођен функцији приступачности, читачи екрана га најављују помоћу генеричког назива, па корисници који се ослањају на читаче екрана не могу да га користе. [Сазнајте више](https://web.dev/aria-name/)."
+    "message": "Када елемент нема приступачан назив, читачи екрана га најављују помоћу генеричког назива, па корисници који се ослањају на читаче екрана не могу да га користе. [Сазнајте више](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
     "message": "Елементи `button`, `link` и `menuitem` немају називе прилагођене функцијама приступачности."
@@ -54,7 +54,7 @@
     "message": "ARIA поља за унос имају називе прилагођене функцији приступачности"
   },
   "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
-    "message": "Када елемент нема назив прилагођен функцији приступачности, читачи екрана га најављују помоћу генеричког назива, па корисници који се ослањају на читаче екрана не могу да га користе. [Сазнајте више](https://web.dev/aria-name/)."
+    "message": "Када елемент нема приступачан назив, читачи екрана га најављују помоћу генеричког назива, па корисници који се ослањају на читаче екрана не могу да га користе. [Сазнајте више](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
     "message": "ARIA елементи `meter` немају називе прилагођене функцијама приступачности."
@@ -117,7 +117,7 @@
     "message": "ARIA поља прекидача имају називе прилагођене функцији приступачности"
   },
   "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
-    "message": "Када елемент нема назив прилагођен функцији приступачности, читачи екрана га најављују помоћу генеричког назива, па корисници који се ослањају на читаче екрана не могу да га користе. [Сазнајте више](https://web.dev/aria-name/)."
+    "message": "Када елемент нема приступачан назив, читачи екрана га најављују помоћу генеричког назива, па корисници који се ослањају на читаче екрана не могу да га користе. [Сазнајте више](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
     "message": "ARIA елементи `tooltip` немају називе прилагођене функцијама приступачности."
@@ -126,7 +126,7 @@
     "message": "ARIA елементи `tooltip` имају називе прилагођене функцијама приступачности"
   },
   "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
-    "message": "Када елемент нема назив прилагођен функцији приступачности, читачи екрана га најављују помоћу генеричког назива, па корисници који се ослањају на читаче екрана не могу да га користе. [Сазнајте више](https://web.dev/aria-name/)."
+    "message": "Када елемент нема приступачан назив, читачи екрана га најављују помоћу генеричког назива, па корисници који се ослањају на читаче екрана не могу да га користе. [Сазнајте више](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
     "message": "ARIA елементи `treeitem` немају називе прилагођене функцијама приступачности."
@@ -477,7 +477,7 @@
     "message": "Избегавајте приказивање застарелог JavaScript-а модерним прегледачима"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "Формати слика као што су JPEG 2000, JPEG XR и WebP често пружају бољу компресију него PNG или JPEG, што подразумева бржа преузимања и мању потрошњу података. [Сазнајте више](https://web.dev/uses-webp-images/)."
+    "message": "Формати слика као што су WebP и AVIF често пружају бољу компресију од PNG-а или JPEG-а, што омогућава бржа преузимања и мању потрошњу података. [Сазнајте више](https://web.dev/uses-webp-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "Приказујте слике у форматима следеће генерације"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Ефикасно кодирајте слике"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "Стварне димензије"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "Приказане димензије"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Приказујте слике одговарајуће величине да бисте уштедели мобилне податке и побољшали време учитавања. [Сазнајте више](https://web.dev/uses-responsive-images/)."
@@ -1200,7 +1206,7 @@
     "message": "Усмерава на другу `hreflang` локацију ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "Релативни URL ({url})"
+    "message": "Није апсолутни URL ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "Усмерава на основни URL домена (почетну страницу), уместо еквивалентне странице садржаја"

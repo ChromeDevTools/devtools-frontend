@@ -477,7 +477,7 @@
     "message": "Evita di pubblicare codice JavaScript precedente in browser moderni"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "I formati delle immagini come JPEG 2000, JPEG XR e WebP spesso consentono una compressione migliore rispetto a quella dei formati PNG o JPEG, che comporta download più veloci e un minor consumo di dati. [Ulteriori informazioni](https://web.dev/uses-webp-images/)."
+    "message": "I formati delle immagini come WebP e AVIF spesso consentono una compressione migliore rispetto a quella dei formati PNG o JPEG, che comporta download più veloci e un minor consumo di dati. [Scopri di più](https://web.dev/uses-webp-images/)"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "Pubblica immagini in formati più recenti"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Codifica in modo efficace le immagini"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "Dimensioni effettive"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "Dimensioni visualizzate"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Pubblica immagini di dimensioni adeguate per consumare meno traffico della rete dati e ridurre i tempi di caricamento. [Ulteriori informazioni](https://web.dev/uses-responsive-images/)."
@@ -1200,7 +1206,7 @@
     "message": "Rimanda a un'altra posizione `hreflang` ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "URL relativo ({url})"
+    "message": "Non è un URL assoluto ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "Indirizza all'URL principale del dominio (la home page), anziché a una pagina di contenuto equivalente"

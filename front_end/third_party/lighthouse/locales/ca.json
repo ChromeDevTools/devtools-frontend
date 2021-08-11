@@ -477,7 +477,7 @@
     "message": "Evita utilitzar JavaScript heretat als navegadors moderns"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "Els formats d'imatge com JPEG 2000, JPEG XR i WebP solen oferir millors resultats de compressió que PNG o JPEG. Això implica baixades més ràpides i menys consum de dades. [Obtén més informació](https://web.dev/uses-webp-images/)."
+    "message": "Els formats d'imatge com WebP i AVIF solen proporcionar una millor compressió que els formats PNG o JPEG. D'aquesta manera, les baixades són més ràpides i el consum de dades és menor. [Obtén més informació](https://web.dev/uses-webp-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "Publica imatges en format d'última generació"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Codifica les imatges amb eficiència"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "Dimensions reals"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "Dimensions mostrades"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Publica imatges amb la mida correcta per estalviar dades mòbils i millorar el temps de càrrega. [Obtén més informació](https://web.dev/uses-responsive-images/)."
@@ -1200,7 +1206,7 @@
     "message": "Dirigeix a una altra ubicació de tipus \"`hreflang`\" ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "URL relatiu ({url})"
+    "message": "No és un URL absolut ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "Apunta a l'URL arrel (la pàgina d'inici) del domini en lloc d'apuntar a una pàgina equivalent de contingut"

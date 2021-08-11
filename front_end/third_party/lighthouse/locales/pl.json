@@ -477,7 +477,7 @@
     "message": "Unikaj wyświetlania starszych skryptów JavaScript w nowoczesnych przeglądarkach"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "Takie formaty obrazów jak JPEG 2000, JPEG XR i WebP często zapewniają lepszą kompresję niż PNG czy JPEG, co przekłada się na szybsze pobieranie i mniejsze wykorzystanie danych. [Więcej informacji](https://web.dev/uses-webp-images/)"
+    "message": "Formaty plików graficznych takie jak WebP i AVIF często umożliwiają lepszą kompresję niż PNG lub JPEG. Dzięki temu można je pobierać szybciej, zużywając przy tym mniej danych. [Więcej informacji](https://web.dev/uses-webp-images/)"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "Wyświetlaj obrazy w formatach nowej generacji"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Użyj efektywnego kodowania obrazów"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "Rzeczywiste wymiary"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "Wyświetlane wymiary"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Wyświetlaj obrazy o odpowiednim rozmiarze, by oszczędzać komórkową transmisję danych i przyśpieszyć ładowanie. [Więcej informacji](https://web.dev/uses-responsive-images/)"
@@ -1200,7 +1206,7 @@
     "message": "Wskazuje inną lokalizację atrybutu `hreflang` ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "Względny URL ({url})"
+    "message": "URL nie jest bezwzględny ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "Wskazuje główny URL domeny (stronę główną) zamiast odpowiedniej strony z treścią"

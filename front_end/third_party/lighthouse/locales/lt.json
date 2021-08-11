@@ -477,7 +477,7 @@
     "message": "Neteikite pasenusios „JavaScript“ modernioms naršyklėms"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "Tokių formatų kaip JPEG 2000, JPEG XR ir „WebP“ vaizdai dažniausiai glaudinami geriau nei PNG ar JPEG vaizdai, todėl yra atsisiunčiami greičiau ir sunaudoja mažiau duomenų. [Sužinokite daugiau](https://web.dev/uses-webp-images/)."
+    "message": "Tokių formatų kaip „WebP“ ir AVIF vaizdai dažniausiai glaudinami geriau nei PNG ar JPEG vaizdai, todėl yra atsisiunčiami greičiau ir sunaudoja mažiau duomenų. [Sužinokite daugiau](https://web.dev/uses-webp-images/)"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "Pateikite naujos kartos formatų vaizdus"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Efektyviai koduokite vaizdus"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "Tikrieji matmenys"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "Rodomi matmenys"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Teikite tinkamo dydžio vaizdus, kad būtų taupomi mobiliojo ryšio duomenys ir puslapis būtų įkeliamas greičiau. [Sužinokite daugiau](https://web.dev/uses-responsive-images/)."
@@ -1200,7 +1206,7 @@
     "message": "Nukreipia į kitą „`hreflang`“ vietą ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "Susijęs URL ({url})"
+    "message": "Tai nėra absoliutusis URL ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "Nukreipiama į domeno šakninį URL (pagrindinį puslapį) vietoje atitinkamo turinio puslapio"

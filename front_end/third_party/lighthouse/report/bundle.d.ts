@@ -1,3 +1,5 @@
+export type DOM_ = any;
+export type ComponentName = '3pFilter' | 'audit' | 'categoryHeader' | 'chevron' | 'clump' | 'crc' | 'crcChain' | 'elementScreenshot' | 'envItem' | 'footer' | 'gauge' | 'gaugePwa' | 'heading' | 'metric' | 'metricsToggle' | 'opportunity' | 'opportunityHeader' | 'scorescale' | 'scoresWrapper' | 'snippet' | 'snippetContent' | 'snippetHeader' | 'snippetLine' | 'topbar' | 'warningsToplevel';
 export type I18n<T> = any;
 export type CRCSegment = {
     node: any[string];
@@ -39,6 +41,8 @@ export class DOM {
     _document: Document;
     /** @type {string} */
     _lighthouseChannel: string;
+    /** @type {Map<string, DocumentFragment>} */
+    _componentCache: Map<string, DocumentFragment>;
     /**
      * @template {string} T
      * @param {T} name
@@ -66,16 +70,10 @@ export class DOM {
      */
     createChildOf<T_1 extends string>(parentElem: Element, elementName: T_1, className?: string | undefined): any;
     /**
-     * @param {string} selector
-     * @param {ParentNode} context
-     * @return {!DocumentFragment} A clone of the template content.
-     * @throws {Error}
+     * @param {import('./components.js').ComponentName} componentName
+     * @return {!DocumentFragment} A clone of the cached component.
      */
-    cloneTemplate(selector: string, context: ParentNode): DocumentFragment;
-    /**
-     * Resets the "stamped" state of the templates.
-     */
-    resetTemplates(): void;
+    createComponent(componentName: any): DocumentFragment;
     /**
      * @param {string} text
      * @return {Element}
@@ -156,8 +154,6 @@ export class ReportRenderer {
     constructor(dom: DOM);
     /** @type {DOM} */
     _dom: DOM;
-    /** @type {ParentNode} */
-    _templateContext: ParentNode;
     /**
      * @param {LH.Result} result
      * @param {Element} container Parent element to render the report into.
@@ -165,11 +161,9 @@ export class ReportRenderer {
      */
     renderReport(result: any, container: Element): Element;
     /**
-     * Define a custom element for <templates> to be extracted from. For example:
-     *     this.setTemplateContext(new DOMParser().parseFromString(htmlStr, 'text/html'))
-     * @param {ParentNode} context
+     * @param {ParentNode} _
      */
-    setTemplateContext(context: ParentNode): void;
+    setTemplateContext(_: ParentNode): void;
     /**
      * @param {LH.ReportResult} report
      * @return {DocumentFragment}
@@ -252,8 +246,6 @@ export class ReportUIFeatures {
     _dom: DOM;
     /** @type {Document} */
     _document: Document;
-    /** @type {ParentNode} */
-    _templateContext: ParentNode;
     /** @type {DropDown} */
     _dropDown: DropDown;
     /** @type {boolean} */
@@ -310,11 +302,9 @@ export class ReportUIFeatures {
      */
     initFeatures(report: any): void;
     /**
-     * Define a custom element for <templates> to be extracted from. For example:
-     *     this.setTemplateContext(new DOMParser().parseFromString(htmlStr, 'text/html'))
-     * @param {ParentNode} context
+     * @param {ParentNode} _
      */
-    setTemplateContext(context: ParentNode): void;
+    setTemplateContext(_: ParentNode): void;
     /**
      * @param {{container?: Element, text: string, icon?: string, onClick: () => void}} opts
      */
@@ -426,8 +416,6 @@ declare class CategoryRenderer {
     dom: DOM;
     /** @type {DetailsRenderer} */
     detailsRenderer: DetailsRenderer;
-    /** @type {ParentNode} */
-    templateContext: ParentNode;
     /**
      * Display info per top-level clump. Define on class to avoid race with Util init.
      */
@@ -445,10 +433,10 @@ declare class CategoryRenderer {
     /**
      * Populate an DOM tree with audit details. Used by renderAudit and renderOpportunity
      * @param {LH.ReportResult.AuditRef} audit
-     * @param {DocumentFragment} tmpl
+     * @param {DocumentFragment} component
      * @return {!Element}
      */
-    populateAuditValues(audit: any, tmpl: DocumentFragment): Element;
+    populateAuditValues(audit: any, component: DocumentFragment): Element;
     /**
      * @return {Element}
      */
@@ -504,10 +492,6 @@ declare class CategoryRenderer {
         auditRefs: Array<any>;
         description?: string;
     }): Element;
-    /**
-     * @param {ParentNode} context
-     */
-    setTemplateContext(context: ParentNode): void;
     /**
      * @param {LH.ReportResult.Category} category
      * @param {Record<string, LH.Result.ReportGroup>} groupDefinitions
@@ -642,12 +626,6 @@ declare class DetailsRenderer {
     });
     _dom: DOM;
     _fullPageScreenshot: any;
-    /** @type {ParentNode} */
-    _templateContext: ParentNode;
-    /**
-     * @param {ParentNode} context
-     */
-    setTemplateContext(context: ParentNode): void;
     /**
      * @param {AuditDetails} details
      * @return {Element|null}

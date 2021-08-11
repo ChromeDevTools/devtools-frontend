@@ -5,7 +5,6 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
 /* eslint-disable rulesdir/es_modules_import */
@@ -265,16 +264,6 @@ export class LighthousePanel extends UI.Panel.Panel {
     const dom = new LighthouseReport.DOM(this.auditResultsElement.ownerDocument as Document);
     const renderer = new LighthouseReportRenderer(dom) as LighthouseReport.ReportRenderer;
 
-    const templatesHTML = Root.Runtime.cachedResources.get('third_party/lighthouse/report-assets/templates.html');
-    if (!templatesHTML) {
-      return;
-    }
-    const templatesDOM = new DOMParser().parseFromString(templatesHTML, 'text/html');
-    if (!templatesDOM) {
-      return;
-    }
-
-    renderer.setTemplateContext(templatesDOM);
     const el = renderer.renderReport(lighthouseResult, reportContainer);
     // Linkifying requires the target be loaded. Do not block the report
     // from rendering, as this is just an embellishment and the main target
@@ -289,7 +278,6 @@ export class LighthousePanel extends UI.Panel.Panel {
     const features = new LighthouseReportUIFeatures(dom) as any;
     features.setBeforePrint(this.beforePrint.bind(this));
     features.setAfterPrint(this.afterPrint.bind(this));
-    features.setTemplateContext(templatesDOM);
     LighthouseReportRenderer.addViewTraceButton(el, features, artifacts);
     features.initFeatures(lighthouseResult);
 

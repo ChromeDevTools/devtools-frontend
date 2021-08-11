@@ -477,7 +477,7 @@
     "message": "Vältä vanhan JavaScriptin näyttämistä nykyaikaisilla selaimilla"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "Tietyt kuvamuodot, kuten JPEG 2000, JPEG XR ja WebP, pakkaavat sisältöä usein paremmin kuin PNG tai JPEG, minkä vuoksi ne auttavat nopeuttamaan latauksia ja vähentämään datan kulutusta. [Lue lisää](https://web.dev/uses-webp-images/)."
+    "message": "WebP:n ja AVIF:n kaltaiset kuvamuodot pakkautuvat usein paremmin kuin PNG tai JPEG, mikä nopeuttaa lataamista ja kuluttaa vähemmän dataa. [Lue lisää](https://web.dev/uses-webp-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "Jakele kuvat seuraavan sukupolven muodoissa"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Koodaa kuvat tehokkaasti"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "Todelliset mitat"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "Ilmoitetut mitat"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Näytä sopivan kokoisia kuvia, jotta voit vähentää mobiilidatan kulutusta ja lyhentää latausaikoja. [Lue lisää](https://web.dev/uses-responsive-images/)."
@@ -1200,7 +1206,7 @@
     "message": "Viittaa toiseen `hreflang`-sijaintiin ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "Suhteellinen URL-osoite ({url})"
+    "message": "Ei ole absoluuttinen URL-osoite ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "Osoittaa verkkotunnuksen juuri-URL-osoitteeseen (kotisivulle) sitä vastaavan sisältösivun sijaan"

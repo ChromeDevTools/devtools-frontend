@@ -18,7 +18,7 @@
     "message": "Các thuộc tính `[aria-*]` khớp với vai trò tương ứng"
   },
   "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
-    "message": "Khi một phần tử không có tên dễ đọc, trình đọc màn hình sẽ gọi phần tử đó bằng một tên gọi chung, khiến người dùng trình đọc màn hình không sử dụng được phần tử này. [Tìm hiểu thêm](https://web.dev/aria-name/)."
+    "message": "Khi một phần tử không có tên thành phần hỗ trợ tiếp cận, trình đọc màn hình sẽ gọi phần tử đó bằng một tên gọi chung, dẫn đến việc người dùng trình đọc màn hình không sử dụng được phần tử này. [Tìm hiểu thêm](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
     "message": "Các phần tử `button`, `link` và `menuitem` không có tên dễ đọc."
@@ -54,7 +54,7 @@
     "message": "Tên các trường nhập của ARIA ở trạng thái có thể tiếp cận"
   },
   "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
-    "message": "Khi một phần tử không có tên dễ đọc, trình đọc màn hình sẽ gọi phần tử đó bằng một tên gọi chung, khiến người dùng trình đọc màn hình không sử dụng được phần tử này. [Tìm hiểu thêm](https://web.dev/aria-name/)."
+    "message": "Khi một phần tử không có tên thành phần hỗ trợ tiếp cận, trình đọc màn hình sẽ gọi phần tử đó bằng một tên gọi chung, dẫn đến việc người dùng trình đọc màn hình không sử dụng được phần tử này. [Tìm hiểu thêm](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
     "message": "Các phần tử `meter` của ARIA không có tên dễ đọc."
@@ -117,7 +117,7 @@
     "message": "Tên các trường chuyển đổi của ARIA ở trạng thái có thể tiếp cận"
   },
   "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
-    "message": "Khi một phần tử không có tên dễ đọc, trình đọc màn hình sẽ gọi phần tử đó bằng một tên gọi chung, khiến người dùng trình đọc màn hình không sử dụng được phần tử này. [Tìm hiểu thêm](https://web.dev/aria-name/)."
+    "message": "Khi một phần tử không có tên thành phần hỗ trợ tiếp cận, trình đọc màn hình sẽ gọi phần tử đó bằng một tên gọi chung, dẫn đến việc người dùng trình đọc màn hình không sử dụng được phần tử này. [Tìm hiểu thêm](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
     "message": "Các phần tử `tooltip` của ARIA không có tên dễ đọc."
@@ -126,7 +126,7 @@
     "message": "Các phần tử `tooltip` của ARIA có tên dễ đọc"
   },
   "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
-    "message": "Khi một phần tử không có tên dễ đọc, trình đọc màn hình sẽ gọi phần tử đó bằng một tên gọi chung, khiến người dùng trình đọc màn hình không sử dụng được phần tử này. [Tìm hiểu thêm](https://web.dev/aria-name/)."
+    "message": "Khi một phần tử không có tên thành phần hỗ trợ tiếp cận, trình đọc màn hình sẽ gọi phần tử đó bằng một tên gọi chung, dẫn đến việc người dùng trình đọc màn hình không sử dụng được phần tử này. [Tìm hiểu thêm](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
     "message": "Các phần tử `treeitem` của ARIA không có tên dễ đọc."
@@ -477,7 +477,7 @@
     "message": "Tránh phân phối JavaScript cũ tới các trình duyệt hiện đại"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "Các định dạng hình ảnh như JPEG 2000, JPEG XR và WebP thường nén tốt hơn PNG hoặc JPEG, tức là tải xuống nhanh hơn và tiêu tốn ít dữ liệu hơn. [Tìm hiểu thêm](https://web.dev/uses-webp-images/)."
+    "message": "Các định dạng hình ảnh như WebP và AVIF thường nén tốt hơn so với các định dạng PNG hoặc JPEG. Điều này có nghĩa là tốc độ tải hình ảnh xuống sẽ nhanh hơn và tiêu tốn ít dữ liệu hơn. [Tìm hiểu thêm](https://web.dev/uses-webp-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "Phân phối hình ảnh ở định dạng mới và hiệu quả hơn"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Mã hóa hình ảnh hiệu quả"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "Kích thước thực"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "Kích thước hiển thị"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Phân phát hình ảnh có kích thước phù hợp để tiết kiệm dữ liệu di động và cải thiện thời gian tải. [Tìm hiểu thêm](https://web.dev/uses-responsive-images/)."
@@ -1200,7 +1206,7 @@
     "message": "Trỏ đến một vị trí `hreflang` khác ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "URL tương đối ({url})"
+    "message": "Không phải là một URL tuyệt đối ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "Trỏ đến URL gốc của miền (trang chủ) thay vì trang nội dung tương đương"

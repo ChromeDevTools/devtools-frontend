@@ -1168,16 +1168,14 @@
 }
 
 .lh-gauge-base {
-    opacity: 0.1;
-    stroke: var(--circle-background);
+  opacity: 0.1;
 }
 
 .lh-gauge-arc {
-    fill: none;
-    stroke: var(--circle-color);
-    transform-origin: 50% 50%;
-    animation: load-gauge var(--transition-length) ease forwards;
-    animation-delay: 250ms;
+  fill: none;
+  transform-origin: 50% 50%;
+  animation: load-gauge var(--transition-length) ease forwards;
+  animation-delay: 250ms;
 }
 
 .lh-gauge__svg-wrapper {

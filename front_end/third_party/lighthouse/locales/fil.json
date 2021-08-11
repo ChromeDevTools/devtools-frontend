@@ -477,7 +477,7 @@
     "message": "Iwasan ang paghahatid ng legacy na JavaScript sa mga modernong browser"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "Kadalasan, mas mahusay ang pag-compress ng mga format ng larawan gaya ng JPEG 2000, JPEG XR, at WebP kaysa sa pag-compress ng PNG o JPEG, kaya mas mabilis ang pag-download at mas kaunti ang nakokonsumong data. [Matuto pa](https://web.dev/uses-webp-images/)."
+    "message": "Madalas na nakapagbibigay ang mga format ng larawan gaya ng WebP at AVIF ng mas mahusay na compression kaysa sa PNG o JPEG, na nangangahulugang mas mabilis na mga pag-download at mas kaunting magagamit na data. [Matuto pa](https://web.dev/uses-webp-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "Maghatid ng mga larawan sa mga makabagong format"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "Mahusay na mag-encode ng mga larawan"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "Mga aktwal na dimensyon"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "Mga ipinapakitang dimensyon"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Maghatid ng mga larawang naaangkop ang laki para makatipid sa cellular data at mapabilis ang pag-load. [Matuto pa](https://web.dev/uses-responsive-images/)."
@@ -1200,7 +1206,7 @@
     "message": "Tumuturo sa ibang lokasyon ng `hreflang` ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "Relatibong URL ({url})"
+    "message": "Ay hindi isang buong URL ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "Tumuturo sa root URL ng domain (ang homepage), sa halip na sa katumbas na page ng content"

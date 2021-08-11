@@ -18,7 +18,7 @@
     "message": "מאפייני ה-`[aria-*]`‎ תואמים לתפקידים שלהם"
   },
   "lighthouse-core/audits/accessibility/aria-command-name.js | description": {
-    "message": "כשאין לרכיב שם נגיש, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בשדה. [למידע נוסף](https://web.dev/aria-name/)."
+    "message": "כשאין לרכיב תווית נגישות, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בשדה. [למידע נוסף](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-command-name.js | failureTitle": {
     "message": "לרכיבים `button`, `link` וגם `menuitem` אין שמות נגישים."
@@ -54,7 +54,7 @@
     "message": "לשדות ARIA להזנת קלט יש שמות נגישים"
   },
   "lighthouse-core/audits/accessibility/aria-meter-name.js | description": {
-    "message": "כשאין לרכיב שם נגיש, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בשדה. [למידע נוסף](https://web.dev/aria-name/)."
+    "message": "כשאין לרכיב תווית נגישות, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בשדה. [למידע נוסף](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-meter-name.js | failureTitle": {
     "message": "לרכיבי `meter` מסוג ARIA אין שמות נגישים."
@@ -117,7 +117,7 @@
     "message": "לשדות החלפת מצב (toggle) של ARIA יש שמות נגישים"
   },
   "lighthouse-core/audits/accessibility/aria-tooltip-name.js | description": {
-    "message": "כשאין לרכיב שם נגיש, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בשדה. [למידע נוסף](https://web.dev/aria-name/)."
+    "message": "כשאין לרכיב תווית נגישות, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בשדה. [למידע נוסף](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
     "message": "לרכיבי `tooltip` מסוג ARIA אין שמות נגישים."
@@ -126,7 +126,7 @@
     "message": "לרכיבי `tooltip` מסוג ARIA יש שמות נגישים"
   },
   "lighthouse-core/audits/accessibility/aria-treeitem-name.js | description": {
-    "message": "כשאין לרכיב שם נגיש, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בשדה. [למידע נוסף](https://web.dev/aria-name/)."
+    "message": "כשאין לרכיב תווית נגישות, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בשדה. [למידע נוסף](https://web.dev/aria-name/)."
   },
   "lighthouse-core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
     "message": "לרכיבי `treeitem` מסוג ARIA אין שמות נגישים."
@@ -477,7 +477,7 @@
     "message": "יש להימנע משימוש ב-JavaScript מדור קודם בדפדפנים מודרניים"
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | description": {
-    "message": "לעתים קרובות, פורמטים של תמונות כמו JPEG 2000‏, JPEG XR ו-WebP מספקים דחיסה טובה יותר מאשר PNG או JPEG. הדחיסה המשופרת מקצרת את זמן ההורדות ומצמצמת את צריכת הנתונים. [מידע נוסף](https://web.dev/uses-webp-images/)."
+    "message": "לעתים קרובות, פורמטים של תמונות כמו WebP ו-AVIF מספקים דחיסה טובה יותר מאשר PNG או JPEG. הדחיסה המשופרת מקצרת את זמן ההורדות ומצמצמת את צריכת הנתונים. [למידע נוסף](https://web.dev/uses-webp-images/)."
   },
   "lighthouse-core/audits/byte-efficiency/modern-image-formats.js | title": {
     "message": "יש להציג תמונות בפורמטים עדכניים"
@@ -547,6 +547,12 @@
   },
   "lighthouse-core/audits/byte-efficiency/uses-optimized-images.js | title": {
     "message": "יש לקודד תמונות בצורה יעילה"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnActualDimensions": {
+    "message": "הממדים בפועל"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
+    "message": "הממדים המוצגים"
   },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "הצגת תמונות שהגודל שלהן הוגדר בצורה נכונה עוזרת לחסוך בניצול חבילת הגלישה ולקצר את זמן הטעינה. [מידע נוסף](https://web.dev/uses-responsive-images/)."
@@ -1200,7 +1206,7 @@
     "message": "הכתובת מפנה למיקום `hreflang` אחר ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRelative": {
-    "message": "כתובת URL יחסית ({url})"
+    "message": "כתובת ה-URL אינה אבסולוטית ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationRoot": {
     "message": "מצביע אל כתובת ה-URL הבסיסית של הדומיין (דף הבית), במקום אל דף תוכן מתאים"

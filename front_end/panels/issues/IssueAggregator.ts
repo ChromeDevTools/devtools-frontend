@@ -203,6 +203,14 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
   getKind(): IssuesManager.Issue.IssueKind {
     return this.issueKind;
   }
+
+  isHidden(): boolean {
+    return this.representative?.isHidden() || false;
+  }
+
+  setHidden(_value: boolean): void {
+    throw new Error('Should not call setHidden on aggregatedIssue');
+  }
 }
 
 export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {

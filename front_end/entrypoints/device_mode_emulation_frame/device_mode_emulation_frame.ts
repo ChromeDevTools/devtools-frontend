@@ -12,6 +12,6 @@ Platform.runOnWindowLoad(() => {
     return;
   }
   // @ts-ignore TypeScript doesn't know about `Emulation` on `Window`.
-  const app = window.opener.Emulation.AdvancedApp._instance();
+  const app = window.opener.Emulation.AdvancedApp.instance();
   app.deviceModeEmulationFrameLoaded(document);
 });

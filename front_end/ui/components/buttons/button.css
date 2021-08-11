@@ -16,16 +16,22 @@
 }
 
 button {
-  display: inline-flex;
   align-items: center;
   border-radius: 4px;
-  border: 1px solid var(--color-details-hairline);
+  display: inline-flex;
+  font-family: inherit;
   font-size: 12px;
   height: 25px;
   line-height: 14px;
   padding: 5px 12px;
-  background: var(--color-background);
-  color: var(--color-primary);
+}
+
+button:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-button-outline-focus);
+}
+
+button:hover {
+  cursor: pointer;
 }
 
 button.primary {
@@ -34,21 +40,48 @@ button.primary {
   color: var(--color-background);
 }
 
-button.with-icon {
-  padding: 0 12px 0 4px;
+button.primary:hover {
+  background: var(--color-button-primary-background-hovering);
+  border: 1px solid var(--color-button-primary-background-hovering);
 }
 
-button:hover {
-  cursor: pointer;
+button.primary:active {
+  background: var(--color-button-primary-background-pressed);
+  border: 1px solid var(--color-button-primary-background-pressed);
+}
+
+button.secondary {
+  border: 1px solid var(--color-details-hairline);
+  background: var(--color-background);
+  color: var(--color-primary);
+}
+
+button.secondary:hover {
+  background: var(--color-button-secondary-background-hovering);
+}
+
+button.secondary:active {
+  background: var(--color-button-secondary-background-pressed);
+  border: 1px solid var(--color-button-secondary-background-pressed);
+}
+
+button.secondary:focus-visible {
+  border: 1px solid var(--color-background);
+}
+
+button.with-icon {
+  padding: 0 12px 0 4px;
 }
 
 button devtools-icon {
   width: 19px;
   height: 19px;
-
-  --icon-color: var(--color-primary);
 }
 
 button.primary devtools-icon {
   --icon-color: var(--color-background);
+}
+
+button.secondary devtools-icon {
+  --icon-color: var(--color-primary);
 }

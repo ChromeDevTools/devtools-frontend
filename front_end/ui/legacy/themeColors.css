@@ -113,6 +113,13 @@
   --color-input-outline-error: rgb(217 48 37);
   --color-input-outline-disabled: rgba(128 134 139 / 20%);
   --color-input-text-disabled: rgba(128 134 139 / 50%);
+
+  /* Colors for styling buttons */
+  --color-button-outline-focus: rgb(26 115 232 / 50%);
+  --color-button-primary-background-hovering: rgb(77 134 225 / 100%);
+  --color-button-primary-background-pressed: rgb(88 132 205);
+  --color-button-secondary-background-hovering: rgb(26 115 232 / 10%);
+  --color-button-secondary-background-pressed: rgb(26 92 178 / 25%);
 }
 
 .-theme-with-dark-background {
@@ -184,4 +191,10 @@
   --color-input-outline-error: rgb(242 139 130);
   --color-input-outline-disabled: rgba(189 193 198 / 20%);
   --color-input-text-disabled: rgba(128 134 139 / 70%);
+  /* Colors for styling buttons */
+  --color-button-outline-focus: rgb(138 180 248 / 80%);
+  --color-button-primary-background-hovering: rgb(174 203 250 / 100%);
+  --color-button-primary-background-pressed: rgb(210 227 252 / 100%);
+  --color-button-secondary-background-hovering: rgb(138 180 248 / 15%);
+  --color-button-secondary-background-pressed: rgb(138 180 248 / 23%);
 }

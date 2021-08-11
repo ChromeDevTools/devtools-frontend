@@ -317,9 +317,12 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     this.issueCounts.clear();
     this.issuesById.clear();
     const values = this.hideIssueSetting?.get();
+    const hideIssuesFeature = Root.Runtime.experiments.isEnabled('hideIssuesFeature');
     for (const [key, issue] of this.allIssues) {
       if (this.issueFilter(issue)) {
-        this.updateIssueHiddenStatus(issue, values);
+        if (hideIssuesFeature) {
+          this.updateIssueHiddenStatus(issue, values);
+        }
         this.filteredIssues.set(key, issue);
         this.issueCounts.set(issue.getKind(), 1 + (this.issueCounts.get(issue.getKind()) ?? 0));
         const issueId = issue.getIssueId();

@@ -48,6 +48,7 @@ ts_library("bundle") {
     "component_docs.ts",
     "create_breadcrumbs.ts",
     "toggle_dark_mode.ts",
+    "toggle_fonts.ts",
   ]
 
   deps = [ "../../../ui/lit-html:bundle" ]

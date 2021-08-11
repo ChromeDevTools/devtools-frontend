@@ -7,6 +7,8 @@ import '../../../Images/Images.js';
 
 import * as CreateBreadcrumbs from './create_breadcrumbs.js';
 import * as ToggleDarkMode from './toggle_dark_mode.js';
+import * as ToggleFonts from './toggle_fonts.js';
 
 ToggleDarkMode.init();
 CreateBreadcrumbs.init();
+ToggleFonts.init();

@@ -7,7 +7,7 @@ import type * as puppeteer from 'puppeteer';
 
 import {$$, click, getBrowserAndPages, goToResource, timeout, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {editQueryRuleText, getComputedStylesForDomNode, getDisplayedCSSPropertyNames, getDisplayedStyleRules, getStyleRule, getStyleSectionSubtitles, waitForContentOfSelectedElementsNode, waitForElementsStyleSection, waitForPropertyToHighlight, waitForStyleRule} from '../helpers/elements-helpers.js';
+import {editQueryRuleText, getComputedStylesForDomNode, getDisplayedCSSPropertyNames, getDisplayedStyleRules, getStyleRule, getStyleSectionSubtitles, waitForPartialContentOfSelectedElementsNode, waitForContentOfSelectedElementsNode, waitForElementsStyleSection, waitForPropertyToHighlight, waitForStyleRule} from '../helpers/elements-helpers.js';
 
 const PROPERTIES_TO_DELETE_SELECTOR = '#properties-to-delete';
 const PROPERTIES_TO_INSPECT_SELECTOR = '#properties-to-inspect';
@@ -32,7 +32,7 @@ const goToResourceAndWaitForStyleSection = async (path: string) => {
   await waitForElementsStyleSection();
 
   // Check to make sure we have the correct node selected after opening a file.
-  await waitForContentOfSelectedElementsNode('<body>\u200B');
+  await waitForPartialContentOfSelectedElementsNode('<body>\u200B');
 
   // FIXME(crbug/1112692): Refactor test to remove the timeout.
   await timeout(50);

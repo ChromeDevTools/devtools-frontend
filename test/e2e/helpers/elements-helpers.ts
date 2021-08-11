@@ -105,6 +105,13 @@ export const waitForContentOfSelectedElementsNode = async (expectedTextContent: 
   });
 };
 
+export const waitForPartialContentOfSelectedElementsNode = async (expectedPartialTextContent: string) => {
+  await waitForFunction(async () => {
+    const selectedTextContent = await getContentOfSelectedNode();
+    return selectedTextContent.includes(expectedPartialTextContent);
+  });
+};
+
 /**
  * Gets the text content of the currently selected element.
  */

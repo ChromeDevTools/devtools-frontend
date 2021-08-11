@@ -161,7 +161,6 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   _metricsWidget: MetricsSidebarPane;
   _treeOutlines: Set<ElementsTreeOutline>;
   _treeOutlineHeaders: Map<ElementsTreeOutline, Element>;
-  _gridStyleTrackerByCSSModel: Map<SDK.CSSModel.CSSModel, SDK.CSSModel.CSSPropertyTracker>;
   _searchResults!: {
     domModel: SDK.DOMModel.DOMModel,
     index: number,
@@ -181,6 +180,8 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   _notFirstInspectElement?: boolean;
   sidebarPaneView?: UI.View.TabbedViewLocation;
   _stylesViewToReveal?: UI.View.SimpleView;
+
+  private cssStyleTrackerByCSSModel: Map<SDK.CSSModel.CSSModel, SDK.CSSModel.CSSPropertyTracker>;
 
   constructor() {
     super('elements');
@@ -237,7 +238,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
     this._treeOutlines = new Set();
     this._treeOutlineHeaders = new Map();
-    this._gridStyleTrackerByCSSModel = new Map();
+    this.cssStyleTrackerByCSSModel = new Map();
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.DOMModel.DOMModel, this);
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.NameChanged, event => this._targetNameChanged(event.data));
@@ -1057,22 +1058,22 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   }
 
   _setupStyleTracking(cssModel: SDK.CSSModel.CSSModel): void {
-    const gridStyleTracker = cssModel.createCSSPropertyTracker(TrackedCSSGridProperties);
-    gridStyleTracker.start();
-    this._gridStyleTrackerByCSSModel.set(cssModel, gridStyleTracker);
-    gridStyleTracker.addEventListener(
+    const cssPropertyTracker = cssModel.createCSSPropertyTracker(TrackedCSSProperties);
+    cssPropertyTracker.start();
+    this.cssStyleTrackerByCSSModel.set(cssModel, cssPropertyTracker);
+    cssPropertyTracker.addEventListener(
         SDK.CSSModel.CSSPropertyTrackerEvents.TrackedCSSPropertiesUpdated, this._trackedCSSPropertiesUpdated, this);
   }
 
   _removeStyleTracking(cssModel: SDK.CSSModel.CSSModel): void {
-    const gridStyleTracker = this._gridStyleTrackerByCSSModel.get(cssModel);
-    if (!gridStyleTracker) {
+    const cssPropertyTracker = this.cssStyleTrackerByCSSModel.get(cssModel);
+    if (!cssPropertyTracker) {
       return;
     }
 
-    gridStyleTracker.stop();
-    this._gridStyleTrackerByCSSModel.delete(cssModel);
-    gridStyleTracker.removeEventListener(
+    cssPropertyTracker.stop();
+    this.cssStyleTrackerByCSSModel.delete(cssModel);
+    cssPropertyTracker.removeEventListener(
         SDK.CSSModel.CSSPropertyTrackerEvents.TrackedCSSPropertiesUpdated, this._trackedCSSPropertiesUpdated, this);
   }
 
@@ -1156,7 +1157,7 @@ export const enum _splitMode {
   Horizontal = 'Horizontal',
 }
 
-const TrackedCSSGridProperties = [
+const TrackedCSSProperties = [
   {
     name: 'display',
     value: 'grid',
@@ -1172,6 +1173,18 @@ const TrackedCSSGridProperties = [
   {
     name: 'display',
     value: 'inline-flex',
+  },
+  {
+    name: 'container-type',
+    value: 'inline-size',
+  },
+  {
+    name: 'container-type',
+    value: 'block-size',
+  },
+  {
+    name: 'container-type',
+    value: 'inline-size block-size',
   },
 ];
 

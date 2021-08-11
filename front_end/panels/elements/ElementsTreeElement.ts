@@ -1999,6 +1999,11 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     const isGrid = display === 'grid' || display === 'inline-grid';
     const isFlex = display === 'flex' || display === 'inline-flex';
 
+    const containerType = styles.get('container-type');
+    const contain = styles.get('contain');
+    const isContainer =
+        SDK.CSSContainerQuery.getQueryAxis(`${containerType} ${contain}`) !== SDK.CSSContainerQuery.QueryAxis.None;
+
     const appendAdorner = (adorner?: Adorners.Adorner.Adorner|null): void => {
       if (adorner) {
         this._styleAdorners.push(adorner);
@@ -2013,7 +2018,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     if (styles.get('scroll-snap-type') && styles.get('scroll-snap-type') !== 'none') {
       appendAdorner(this.createScrollSnapAdorner());
     }
-    if (styles.get('container-type') && styles.get('container-type') !== 'none') {
+    if (isContainer) {
       appendAdorner(this.createContainerAdorner());
     }
   }

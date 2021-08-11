@@ -665,8 +665,8 @@ export class CSSModel extends SDKModel<EventTypes> {
   }
 
   createCSSPropertyTracker(propertiesToTrack: Protocol.CSS.CSSComputedStyleProperty[]): CSSPropertyTracker {
-    const gridStyleTracker = new CSSPropertyTracker(this, propertiesToTrack);
-    return gridStyleTracker;
+    const cssPropertyTracker = new CSSPropertyTracker(this, propertiesToTrack);
+    return cssPropertyTracker;
   }
 
   enableCSSPropertyTracker(cssPropertyTracker: CSSPropertyTracker): void {

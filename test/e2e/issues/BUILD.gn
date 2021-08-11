@@ -13,6 +13,7 @@ node_ts_library("issues") {
     "heavy-ad-issues_test.ts",
     "hide-issues-menu_test.ts",
     "issue-links_test.ts",
+    "issue-view-reparent_test.ts",
     "low-text-contrast-issues_test.ts",
     "navigator-user-agent-issues_test.ts",
     "quirks-mode-issues_test.ts",

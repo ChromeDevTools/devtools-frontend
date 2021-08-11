@@ -108,6 +108,7 @@ class IssueCategoryView extends UI.TreeOutline.TreeElement {
 
     this.toggleOnClick = true;
     this.listItemElement.classList.add('issue-category');
+    this.childrenListElement.classList.add('issue-category-body');
   }
 
   getCategoryName(): string {
@@ -286,21 +287,30 @@ export class IssuesPane extends UI.Widget.VBox {
       }
       const markdownDescription =
           await IssuesManager.MarkdownIssueDescription.createIssueDescriptionFromMarkdown(description);
-      issueView = new IssueView(this, issue, markdownDescription);
+      issueView = new IssueView(issue, markdownDescription);
       this.issueViews.set(issue.code(), issueView);
       const parent = this.getIssueViewParent(issue);
-      parent.appendChild(issueView, (a, b) => {
-        if (a instanceof IssueView && b instanceof IssueView) {
-          return a.getIssueTitle().localeCompare(b.getIssueTitle());
-        }
-        console.error('The issues tree should only contain IssueView objects as direct children');
-        return 0;
-      });
+      this.appendIssueViewToParent(issueView, parent);
+    } else {
+      const newParent = this.getIssueViewParent(issue);
+      if (issueView.parent !== newParent) {
+        issueView.parent?.removeChild(issueView);
+        this.appendIssueViewToParent(issueView, newParent);
+      }
     }
     issueView.update();
     this.updateCounts();
   }
 
+  appendIssueViewToParent(issueView: IssueView, parent: UI.TreeOutline.TreeOutline|UI.TreeOutline.TreeElement): void {
+    parent.appendChild(issueView, (a, b) => {
+      if (a instanceof IssueView && b instanceof IssueView) {
+        return a.getIssueTitle().localeCompare(b.getIssueTitle());
+      }
+      console.error('The issues tree should only contain IssueView objects as direct children');
+      return 0;
+    });
+  }
   private getIssueViewParent(issue: AggregatedIssue): UI.TreeOutline.TreeOutline|UI.TreeOutline.TreeElement {
     if (!getGroupIssuesByCategorySetting().get()) {
       return this.issuesTree;

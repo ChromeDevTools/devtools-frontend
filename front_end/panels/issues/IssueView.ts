@@ -217,7 +217,6 @@ class AffectedMixedContentView extends AffectedResourcesView {
 }
 
 export class IssueView extends UI.TreeOutline.TreeElement {
-  _parent: UI.Widget.VBox;
   _issue: AggregatedIssue;
   _description: IssuesManager.MarkdownIssueDescription.IssueDescription;
   toggleOnClick: boolean;
@@ -228,13 +227,11 @@ export class IssueView extends UI.TreeOutline.TreeElement {
   _hasBeenExpandedBefore: boolean;
   private throttle: Common.Throttler.Throttler;
   private needsUpdateOnExpand = true;
-  private hiddenIssuesMenu: Components.HideIssuesMenu.HideIssuesMenu|null;
+  private hiddenIssuesMenu: Components.HideIssuesMenu.HideIssuesMenu;
+  private contentCreated: boolean = false;
 
-  constructor(
-      parent: UI.Widget.VBox, issue: AggregatedIssue,
-      description: IssuesManager.MarkdownIssueDescription.IssueDescription) {
+  constructor(issue: AggregatedIssue, description: IssuesManager.MarkdownIssueDescription.IssueDescription) {
     super();
-    this._parent = parent;
     this._issue = issue;
     this._description = description;
     this.throttle = new Common.Throttler.Throttler(250);
@@ -263,11 +260,8 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       new WasmCrossOriginModuleSharingAffectedResourcesView(this, this._issue),
       new AffectedRawCookieLinesView(this, this._issue),
     ];
-    if (Root.Runtime.experiments.isEnabled('hideIssuesFeature')) {
-      this.hiddenIssuesMenu = new Components.HideIssuesMenu.HideIssuesMenu();
-    } else {
-      this.hiddenIssuesMenu = null;
-    }
+
+    this.hiddenIssuesMenu = new Components.HideIssuesMenu.HideIssuesMenu();
     this._aggregatedIssuesCount = null;
     this._hasBeenExpandedBefore = false;
   }
@@ -288,6 +282,14 @@ export class IssueView extends UI.TreeOutline.TreeElement {
   }
 
   onattach(): void {
+    if (!this.contentCreated) {
+      this.createContent();
+      return;
+    }
+    this.update();
+  }
+
+  createContent(): void {
     this._appendHeader();
     this._createBody();
     this.appendChild(this.affectedResources);
@@ -298,6 +300,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
 
     this._createReadMoreLinks();
     this.updateAffectedResourceVisibility();
+    this.contentCreated = true;
   }
 
   appendAffectedResource(resource: UI.TreeOutline.TreeElement): void {
@@ -331,7 +334,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     title.classList.add('title');
     title.textContent = this._description.title;
     header.appendChild(title);
-    if (this.hiddenIssuesMenu) {
+    if (Root.Runtime.experiments.isEnabled('hideIssuesFeature')) {
       header.appendChild(this.hiddenIssuesMenu);
       const data: HiddenIssuesMenuData = {
         issueCode: this._issue.code(),
@@ -432,6 +435,10 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       this._affectedResourceViews.forEach(view => view.update());
       this.updateAffectedResourceVisibility();
     }
+    const data: HiddenIssuesMenuData = {
+      issueCode: this._issue.code(),
+    };
+    this.hiddenIssuesMenu.data = data;
     this.needsUpdateOnExpand = !this.expanded;
     this.updateFromIssue();
   }

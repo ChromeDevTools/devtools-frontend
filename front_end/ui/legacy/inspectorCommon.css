@@ -422,9 +422,15 @@ input::placeholder {
   flex: none;
 }
 
-.chrome-select-label p {
+.chrome-select-label p p {
   margin-top: 0;
   color: var(--color-text-secondary);
+}
+
+/* This class is used outside of the settings screen in the "Renderer" and
+   "Sensors" panel. As such we need to override their style globally */
+.settings-select {
+  margin: 0 0;
 }
 
 .chrome-select optgroup,

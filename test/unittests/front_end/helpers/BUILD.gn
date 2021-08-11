@@ -13,6 +13,8 @@ ts_library("helpers") {
     "MockConnection.ts",
     "MutationHelpers.ts",
     "MutationHelpers_test.ts",
+    "SourceMapEncoder.ts",
+    "SourceMapEncoder_test.ts",
   ]
 
   deps = [

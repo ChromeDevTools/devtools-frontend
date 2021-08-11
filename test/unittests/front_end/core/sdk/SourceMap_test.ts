@@ -6,6 +6,7 @@ const {assert} = chai;
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
+import {encodeSourceMap} from '../../helpers/SourceMapEncoder.js';
 
 const fakeInitiator = {
   target: null,
@@ -114,16 +115,28 @@ describe('TextSourceMap', () => {
           function add(a,b){return a+b}var global="foo";
           foo
     */
-    const mappingPayload = {
-      mappings: 'AAASA,QAAAA,IAAG,CAACC,CAAD,CAAaC,CAAb,CACZ,CACI,MAAOD,EAAP,CAAoBC,CADxB,CAIA,IAAIC,OAAS;A',
-      sources: ['example.js'],
-      version: 1,
-      file: undefined,
-      sections: undefined,
-      sourceRoot: undefined,
-      names: undefined,
-      sourcesContent: undefined,
-    };
+    const mappingPayload = encodeSourceMap([
+      // clang-format off
+      '0:0 => example.js:0:9@a',
+      '0:8 => example.js:0:9@a',
+      '0:12 => example.js:0:12',
+      '0:13 => example.js:0:13@b',
+      '0:14 => example.js:0:12',
+      '0:15 => example.js:0:25@c',
+      '0:16 => example.js:0:12',
+      '0:17 => example.js:1:0',
+      '0:18 => example.js:2:4',
+      '0:24 => example.js:2:11@b',
+      '0:26 => example.js:2:4',
+      '0:27 => example.js:2:24@c',
+      '0:28 => example.js:1:0',
+      '0:29 => example.js:5:0',
+      '0:33 => example.js:5:4@d',
+      '0:40 => example.js:5:13',
+      '1:0',
+      // clang-format on
+    ]);
+
     const sourceMap = new SDK.SourceMap.TextSourceMap('compiled.js', 'source-map.json', mappingPayload, fakeInitiator);
 
     assertMapping(sourceMap.findEntry(0, 9), 'example.js', 0, 9);

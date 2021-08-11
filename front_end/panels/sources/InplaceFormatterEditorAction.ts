@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Formatter from '../../models/formatter/formatter.js';
@@ -30,8 +32,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let inplaceFormatterEditorActionInstance: InplaceFormatterEditorAction;
 
 export class InplaceFormatterEditorAction implements EditorAction {
-  private button!: UI.Toolbar.ToolbarButton;
-  private sourcesView!: SourcesView;
+  _button!: UI.Toolbar.ToolbarButton;
+  _sourcesView!: SourcesView;
   constructor() {
   }
   static instance(opts: {
@@ -45,43 +47,43 @@ export class InplaceFormatterEditorAction implements EditorAction {
     return inplaceFormatterEditorActionInstance;
   }
 
-  private editorSelected(event: Common.EventTarget.EventTargetEvent): void {
+  _editorSelected(event: Common.EventTarget.EventTargetEvent): void {
     const uiSourceCode = (event.data as Workspace.UISourceCode.UISourceCode);
-    this.updateButton(uiSourceCode);
+    this._updateButton(uiSourceCode);
   }
 
-  private editorClosed(event: Common.EventTarget.EventTargetEvent): void {
+  _editorClosed(event: Common.EventTarget.EventTargetEvent): void {
     const wasSelected = (event.data.wasSelected as boolean);
     if (wasSelected) {
-      this.updateButton(null);
+      this._updateButton(null);
     }
   }
 
-  private updateButton(uiSourceCode: Workspace.UISourceCode.UISourceCode|null): void {
-    const isFormattable = this.isFormattable(uiSourceCode);
-    this.button.element.classList.toggle('hidden', !isFormattable);
+  _updateButton(uiSourceCode: Workspace.UISourceCode.UISourceCode|null): void {
+    const isFormattable = this._isFormattable(uiSourceCode);
+    this._button.element.classList.toggle('hidden', !isFormattable);
     if (uiSourceCode && isFormattable) {
-      this.button.setTitle(i18nString(UIStrings.formatS, {PH1: uiSourceCode.name()}));
+      this._button.setTitle(i18nString(UIStrings.formatS, {PH1: uiSourceCode.name()}));
     }
   }
 
   getOrCreateButton(sourcesView: SourcesView): UI.Toolbar.ToolbarButton {
-    if (this.button) {
-      return this.button;
+    if (this._button) {
+      return this._button;
     }
 
-    this.sourcesView = sourcesView;
-    this.sourcesView.addEventListener(Events.EditorSelected, this.editorSelected.bind(this));
-    this.sourcesView.addEventListener(Events.EditorClosed, this.editorClosed.bind(this));
+    this._sourcesView = sourcesView;
+    this._sourcesView.addEventListener(Events.EditorSelected, this._editorSelected.bind(this));
+    this._sourcesView.addEventListener(Events.EditorClosed, this._editorClosed.bind(this));
 
-    this.button = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.format), 'largeicon-pretty-print');
-    this.button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.formatSourceInPlace, this);
-    this.updateButton(sourcesView.currentUISourceCode());
+    this._button = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.format), 'largeicon-pretty-print');
+    this._button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._formatSourceInPlace, this);
+    this._updateButton(sourcesView.currentUISourceCode());
 
-    return this.button;
+    return this._button;
   }
 
-  private isFormattable(uiSourceCode: Workspace.UISourceCode.UISourceCode|null): boolean {
+  _isFormattable(uiSourceCode: Workspace.UISourceCode.UISourceCode|null): boolean {
     if (!uiSourceCode) {
       return false;
     }
@@ -94,38 +96,38 @@ export class InplaceFormatterEditorAction implements EditorAction {
     return uiSourceCode.contentType().isStyleSheet();
   }
 
-  private formatSourceInPlace(_event: Common.EventTarget.EventTargetEvent): void {
-    const uiSourceCode = this.sourcesView.currentUISourceCode();
-    if (!uiSourceCode || !this.isFormattable(uiSourceCode)) {
+  _formatSourceInPlace(_event: Common.EventTarget.EventTargetEvent): void {
+    const uiSourceCode = this._sourcesView.currentUISourceCode();
+    if (!uiSourceCode || !this._isFormattable(uiSourceCode)) {
       return;
     }
 
     if (uiSourceCode.isDirty()) {
-      this.contentLoaded(uiSourceCode, uiSourceCode.workingCopy());
+      this._contentLoaded(uiSourceCode, uiSourceCode.workingCopy());
     } else {
       uiSourceCode.requestContent().then(deferredContent => {
-        this.contentLoaded((uiSourceCode as Workspace.UISourceCode.UISourceCode), deferredContent.content || '');
+        this._contentLoaded((uiSourceCode as Workspace.UISourceCode.UISourceCode), deferredContent.content || '');
       });
     }
   }
 
-  private async contentLoaded(uiSourceCode: Workspace.UISourceCode.UISourceCode, content: string): Promise<void> {
+  async _contentLoaded(uiSourceCode: Workspace.UISourceCode.UISourceCode, content: string): Promise<void> {
     const highlighterType = uiSourceCode.mimeType();
     const {formattedContent, formattedMapping} =
         await Formatter.ScriptFormatter.format(uiSourceCode.contentType(), highlighterType, content);
-    this.formattingComplete(uiSourceCode, formattedContent, formattedMapping);
+    this._formattingComplete(uiSourceCode, formattedContent, formattedMapping);
   }
 
   /**
    * Post-format callback
    */
-  private formattingComplete(
+  _formattingComplete(
       uiSourceCode: Workspace.UISourceCode.UISourceCode, formattedContent: string,
       formatterMapping: Formatter.ScriptFormatter.FormatterSourceMapping): void {
     if (uiSourceCode.workingCopy() === formattedContent) {
       return;
     }
-    const sourceFrame = (this.sourcesView.viewForFile(uiSourceCode) as SourceFrame.SourceFrame.SourceFrameImpl);
+    const sourceFrame = (this._sourcesView.viewForFile(uiSourceCode) as SourceFrame.SourceFrame.SourceFrameImpl);
     let start: number[]|number[] = [0, 0];
     if (sourceFrame) {
       const selection = sourceFrame.selection();
@@ -133,7 +135,7 @@ export class InplaceFormatterEditorAction implements EditorAction {
     }
     uiSourceCode.setWorkingCopy(formattedContent);
 
-    this.sourcesView.showSourceLocation(uiSourceCode, start[0], start[1]);
+    this._sourcesView.showSourceLocation(uiSourceCode, start[0], start[1]);
   }
 }
 

@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -85,23 +87,23 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let scopeChainSidebarPaneInstance: ScopeChainSidebarPane;
 
 export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextFlavorListener.ContextFlavorListener {
-  private readonly treeOutline: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline;
-  private readonly expandController: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController;
-  private readonly linkifier: Components.Linkifier.Linkifier;
-  private infoElement: HTMLDivElement;
+  _treeOutline: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline;
+  _expandController: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController;
+  _linkifier: Components.Linkifier.Linkifier;
+  _infoElement: HTMLDivElement;
   private constructor() {
     super(true);
     this.registerRequiredCSS('panels/sources/scopeChainSidebarPane.css');
-    this.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
-    this.treeOutline.registerRequiredCSS('panels/sources/scopeChainSidebarPane.css');
-    this.treeOutline.setShowSelectionOnKeyboardFocus(/* show */ true);
-    this.expandController =
-        new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController(this.treeOutline);
-    this.linkifier = new Components.Linkifier.Linkifier();
-    this.infoElement = document.createElement('div');
-    this.infoElement.className = 'gray-info-message';
-    this.infoElement.tabIndex = -1;
-    this.update();
+    this._treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
+    this._treeOutline.registerRequiredCSS('panels/sources/scopeChainSidebarPane.css');
+    this._treeOutline.setShowSelectionOnKeyboardFocus(/* show */ true);
+    this._expandController =
+        new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController(this._treeOutline);
+    this._linkifier = new Components.Linkifier.Linkifier();
+    this._infoElement = document.createElement('div');
+    this._infoElement.className = 'gray-info-message';
+    this._infoElement.tabIndex = -1;
+    this._update();
   }
 
   static instance(): ScopeChainSidebarPane {
@@ -112,7 +114,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
   }
 
   flavorChanged(_object: Object|null): void {
-    this.update();
+    this._update();
   }
 
   focus(): void {
@@ -121,19 +123,19 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
     }
 
     if (UI.Context.Context.instance().flavor(SDK.DebuggerModel.DebuggerPausedDetails)) {
-      this.treeOutline.forceSelect();
+      this._treeOutline.forceSelect();
     }
   }
 
-  private async update(): Promise<void> {
+  async _update(): Promise<void> {
     // The `resolveThisObject(callFrame)` and `resolveScopeChain(callFrame)` calls
     // below may take a while to complete, so indicate to the user that something
     // is happening (see https://crbug.com/1162416).
-    this.infoElement.textContent = i18nString(UIStrings.loading);
+    this._infoElement.textContent = i18nString(UIStrings.loading);
     this.contentElement.removeChildren();
-    this.contentElement.appendChild(this.infoElement);
+    this.contentElement.appendChild(this._infoElement);
 
-    this.linkifier.reset();
+    this._linkifier.reset();
 
     const callFrame = UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame);
     const [thisObject, scopeChain] = await Promise.all([resolveThisObject(callFrame), resolveScopeChain(callFrame)]);
@@ -141,41 +143,41 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
     // scope information, so check again that we're still on the same CallFrame.
     if (callFrame === UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame)) {
       const details = UI.Context.Context.instance().flavor(SDK.DebuggerModel.DebuggerPausedDetails);
-      this.treeOutline.removeChildren();
+      this._treeOutline.removeChildren();
 
       if (!details || !callFrame || !scopeChain) {
-        this.infoElement.textContent = i18nString(UIStrings.notPaused);
+        this._infoElement.textContent = i18nString(UIStrings.notPaused);
         return;
       }
 
       this.contentElement.removeChildren();
-      this.contentElement.appendChild(this.treeOutline.element);
+      this.contentElement.appendChild(this._treeOutline.element);
       let foundLocalScope = false;
       for (let i = 0; i < scopeChain.length; ++i) {
         const scope = scopeChain[i];
-        const extraProperties = this.extraPropertiesForScope(scope, details, callFrame, thisObject, i === 0);
+        const extraProperties = this._extraPropertiesForScope(scope, details, callFrame, thisObject, i === 0);
 
         if (scope.type() === Protocol.Debugger.ScopeType.Local) {
           foundLocalScope = true;
         }
 
-        const section = this.createScopeSectionTreeElement(scope, extraProperties);
+        const section = this._createScopeSectionTreeElement(scope, extraProperties);
         if (scope.type() === Protocol.Debugger.ScopeType.Global) {
           section.collapse();
         } else if (!foundLocalScope || scope.type() === Protocol.Debugger.ScopeType.Local) {
           section.expand();
         }
 
-        this.treeOutline.appendChild(section);
+        this._treeOutline.appendChild(section);
         if (i === 0) {
           section.select(/* omitFocus */ true);
         }
       }
-      this.sidebarPaneUpdatedForTest();
+      this._sidebarPaneUpdatedForTest();
     }
   }
 
-  private createScopeSectionTreeElement(
+  _createScopeSectionTreeElement(
       scope: SDK.DebuggerModel.ScopeChainEntry,
       extraProperties: SDK.RemoteObject.RemoteObjectProperty[]): ObjectUI.ObjectPropertiesSection.RootElement {
     let emptyPlaceholder: Common.UIString.LocalizedString|null = null;
@@ -211,17 +213,17 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
     titleElement.createChild('div', 'scope-chain-sidebar-pane-section-title').textContent = title;
 
     const section = new ObjectUI.ObjectPropertiesSection.RootElement(
-        resolveScopeInObject(scope), this.linkifier, emptyPlaceholder,
+        resolveScopeInObject(scope), this._linkifier, emptyPlaceholder,
         ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.All, extraProperties);
     section.title = titleElement;
     section.listItemElement.classList.add('scope-chain-sidebar-pane-section');
     section.listItemElement.setAttribute('aria-label', title);
-    this.expandController.watchSection(title + (subtitle ? ':' + subtitle : ''), section);
+    this._expandController.watchSection(title + (subtitle ? ':' + subtitle : ''), section);
 
     return section;
   }
 
-  private extraPropertiesForScope(
+  _extraPropertiesForScope(
       scope: SDK.DebuggerModel.ScopeChainEntry, details: SDK.DebuggerModel.DebuggerPausedDetails,
       callFrame: SDK.DebuggerModel.CallFrame, thisObject: SDK.RemoteObject.RemoteObject|null,
       isFirstScope: boolean): SDK.RemoteObject.RemoteObjectProperty[] {
@@ -252,7 +254,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
     return extraProperties;
   }
 
-  private sidebarPaneUpdatedForTest(): void {
+  _sidebarPaneUpdatedForTest(): void {
   }
 }
 
@@ -270,7 +272,7 @@ export class OpenLinearMemoryInspector extends UI.Widget.VBox implements UI.Cont
     return openLinearMemoryInspectorInstance;
   }
 
-  private isMemoryObjectProperty(obj: SDK.RemoteObject.RemoteObject): boolean {
+  _isMemoryObjectProperty(obj: SDK.RemoteObject.RemoteObject): boolean {
     const isWasmMemory = obj.type === 'object' && obj.subtype &&
         LinearMemoryInspector.LinearMemoryInspectorController.ACCEPTED_MEMORY_TYPES.includes(obj.subtype);
     if (isWasmMemory) {
@@ -287,15 +289,15 @@ export class OpenLinearMemoryInspector extends UI.Widget.VBox implements UI.Cont
 
   appendApplicableItems(event: Event, contextMenu: UI.ContextMenu.ContextMenu, target: Object): void {
     if (target instanceof ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement) {
-      if (target.property && target.property.value && this.isMemoryObjectProperty(target.property.value)) {
+      if (target.property && target.property.value && this._isMemoryObjectProperty(target.property.value)) {
         contextMenu.debugSection().appendItem(
             i18nString(UIStrings.revealInMemoryInspectorPanel),
-            this.openMemoryInspector.bind(this, target.property.value));
+            this._openMemoryInspector.bind(this, target.property.value));
       }
     }
   }
 
-  private async openMemoryInspector(obj: SDK.RemoteObject.RemoteObject): Promise<void> {
+  async _openMemoryInspector(obj: SDK.RemoteObject.RemoteObject): Promise<void> {
     const controller = LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.instance();
     let address = 0;
     let memoryObj: SDK.RemoteObject.RemoteObject = obj;

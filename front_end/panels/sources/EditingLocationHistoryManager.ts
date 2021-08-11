@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../../core/common/common.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -37,79 +39,79 @@ import type {SourcesView} from './SourcesView.js';
 import type {UISourceCodeFrame} from './UISourceCodeFrame.js';
 
 export class EditingLocationHistoryManager {
-  private readonly sourcesView: SourcesView;
-  private readonly historyManager: Common.SimpleHistoryManager.SimpleHistoryManager;
-  private readonly currentSourceFrameCallback: () => UISourceCodeFrame | null;
+  _sourcesView: SourcesView;
+  _historyManager: Common.SimpleHistoryManager.SimpleHistoryManager;
+  _currentSourceFrameCallback: () => UISourceCodeFrame | null;
   constructor(sourcesView: SourcesView, currentSourceFrameCallback: () => UISourceCodeFrame | null) {
-    this.sourcesView = sourcesView;
-    this.historyManager = new Common.SimpleHistoryManager.SimpleHistoryManager(HistoryDepth);
-    this.currentSourceFrameCallback = currentSourceFrameCallback;
+    this._sourcesView = sourcesView;
+    this._historyManager = new Common.SimpleHistoryManager.SimpleHistoryManager(HistoryDepth);
+    this._currentSourceFrameCallback = currentSourceFrameCallback;
   }
 
   trackSourceFrameCursorJumps(sourceFrame: UISourceCodeFrame): void {
     sourceFrame.textEditor.addEventListener(
-        SourceFrame.SourcesTextEditor.Events.JumpHappened, this.onJumpHappened.bind(this));
+        SourceFrame.SourcesTextEditor.Events.JumpHappened, this._onJumpHappened.bind(this));
   }
 
-  private onJumpHappened(event: Common.EventTarget.EventTargetEvent): void {
+  _onJumpHappened(event: Common.EventTarget.EventTargetEvent): void {
     if (event.data.from) {
-      this.updateActiveState(event.data.from);
+      this._updateActiveState(event.data.from);
     }
     if (event.data.to) {
-      this.pushActiveState(event.data.to);
+      this._pushActiveState(event.data.to);
     }
   }
 
   rollback(): void {
-    this.historyManager.rollback();
+    this._historyManager.rollback();
   }
 
   rollover(): void {
-    this.historyManager.rollover();
+    this._historyManager.rollover();
   }
 
   updateCurrentState(): void {
-    const sourceFrame = this.currentSourceFrameCallback();
+    const sourceFrame = this._currentSourceFrameCallback();
     if (!sourceFrame) {
       return;
     }
-    this.updateActiveState(sourceFrame.textEditor.selection());
+    this._updateActiveState(sourceFrame.textEditor.selection());
   }
 
   pushNewState(): void {
-    const sourceFrame = this.currentSourceFrameCallback();
+    const sourceFrame = this._currentSourceFrameCallback();
     if (!sourceFrame) {
       return;
     }
-    this.pushActiveState(sourceFrame.textEditor.selection());
+    this._pushActiveState(sourceFrame.textEditor.selection());
   }
 
-  private updateActiveState(selection: TextUtils.TextRange.TextRange): void {
-    const active = (this.historyManager.active() as EditingLocationHistoryEntry | null);
+  _updateActiveState(selection: TextUtils.TextRange.TextRange): void {
+    const active = (this._historyManager.active() as EditingLocationHistoryEntry | null);
     if (!active) {
       return;
     }
-    const sourceFrame = this.currentSourceFrameCallback();
+    const sourceFrame = this._currentSourceFrameCallback();
     if (!sourceFrame) {
       return;
     }
-    const entry = new EditingLocationHistoryEntry(this.sourcesView, this, sourceFrame, selection);
+    const entry = new EditingLocationHistoryEntry(this._sourcesView, this, sourceFrame, selection);
     active.merge(entry);
   }
 
-  private pushActiveState(selection: TextUtils.TextRange.TextRange): void {
-    const sourceFrame = this.currentSourceFrameCallback();
+  _pushActiveState(selection: TextUtils.TextRange.TextRange): void {
+    const sourceFrame = this._currentSourceFrameCallback();
     if (!sourceFrame) {
       return;
     }
-    const entry = new EditingLocationHistoryEntry(this.sourcesView, this, sourceFrame, selection);
-    this.historyManager.push(entry);
+    const entry = new EditingLocationHistoryEntry(this._sourcesView, this, sourceFrame, selection);
+    this._historyManager.push(entry);
   }
 
   removeHistoryForSourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
-    this.historyManager.filterOut(entry => {
+    this._historyManager.filterOut(entry => {
       const historyEntry = (entry as EditingLocationHistoryEntry);
-      return historyEntry.projectId === uiSourceCode.project().id() && historyEntry.url === uiSourceCode.url();
+      return historyEntry._projectId === uiSourceCode.project().id() && historyEntry._url === uiSourceCode.url();
     });
   }
 }
@@ -117,35 +119,35 @@ export class EditingLocationHistoryManager {
 export const HistoryDepth = 20;
 
 export class EditingLocationHistoryEntry implements Common.SimpleHistoryManager.HistoryEntry {
-  private readonly sourcesView: SourcesView;
-  private readonly editingLocationManager: EditingLocationHistoryManager;
-  readonly projectId: string;
-  readonly url: string;
+  _sourcesView: SourcesView;
+  _editingLocationManager: EditingLocationHistoryManager;
+  _projectId: string;
+  _url: string;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private positionHandle: any;
+  _positionHandle: any;
 
   constructor(
       sourcesView: SourcesView, editingLocationManager: EditingLocationHistoryManager, sourceFrame: UISourceCodeFrame,
       selection: TextUtils.TextRange.TextRange) {
-    this.sourcesView = sourcesView;
-    this.editingLocationManager = editingLocationManager;
+    this._sourcesView = sourcesView;
+    this._editingLocationManager = editingLocationManager;
     const uiSourceCode = sourceFrame.uiSourceCode();
-    this.projectId = uiSourceCode.project().id();
-    this.url = uiSourceCode.url();
+    this._projectId = uiSourceCode.project().id();
+    this._url = uiSourceCode.url();
 
-    const position = this.positionFromSelection(selection);
-    this.positionHandle = sourceFrame.textEditor.textEditorPositionHandle(position.lineNumber, position.columnNumber);
+    const position = this._positionFromSelection(selection);
+    this._positionHandle = sourceFrame.textEditor.textEditorPositionHandle(position.lineNumber, position.columnNumber);
   }
 
   merge(entry: EditingLocationHistoryEntry): void {
-    if (this.projectId !== entry.projectId || this.url !== entry.url) {
+    if (this._projectId !== entry._projectId || this._url !== entry._url) {
       return;
     }
-    this.positionHandle = entry.positionHandle;
+    this._positionHandle = entry._positionHandle;
   }
 
-  private positionFromSelection(selection: TextUtils.TextRange.TextRange): {
+  _positionFromSelection(selection: TextUtils.TextRange.TextRange): {
     lineNumber: number,
     columnNumber: number,
   } {
@@ -153,19 +155,19 @@ export class EditingLocationHistoryEntry implements Common.SimpleHistoryManager.
   }
 
   valid(): boolean {
-    const position = this.positionHandle.resolve();
-    const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCode(this.projectId, this.url);
+    const position = this._positionHandle.resolve();
+    const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCode(this._projectId, this._url);
     return Boolean(position && uiSourceCode);
   }
 
   reveal(): void {
-    const position = this.positionHandle.resolve();
-    const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCode(this.projectId, this.url);
+    const position = this._positionHandle.resolve();
+    const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCode(this._projectId, this._url);
     if (!position || !uiSourceCode) {
       return;
     }
 
-    this.editingLocationManager.updateCurrentState();
-    this.sourcesView.showSourceLocation(uiSourceCode, position.lineNumber, position.columnNumber);
+    this._editingLocationManager.updateCurrentState();
+    this._sourcesView.showSourceLocation(uiSourceCode, position.lineNumber, position.columnNumber);
   }
 }

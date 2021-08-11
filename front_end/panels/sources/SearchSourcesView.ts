@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Search from '../search/search.js';
 
@@ -54,11 +56,11 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     return actionDelegateInstance;
   }
   handleAction(_context: UI.Context.Context, _actionId: string): boolean {
-    this.showSearch();
+    this._showSearch();
     return true;
   }
 
-  private showSearch(): Promise<UI.Widget.Widget> {
+  _showSearch(): Promise<UI.Widget.Widget> {
     const selection = UI.InspectorView.InspectorView.instance().element.window().getSelection();
     let queryCandidate = '';
     if (selection && selection.rangeCount) {

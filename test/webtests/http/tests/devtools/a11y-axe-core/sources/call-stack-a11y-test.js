@@ -25,7 +25,8 @@
 
   await SourcesTestRunner.startDebuggerTestPromise(/* quiet */ true);
   await SourcesTestRunner.runTestFunctionAndWaitUntilPausedPromise();
-  await TestRunner.addSnifferPromise(Sources.CallStackSidebarPane.prototype, 'updatedForTest');
+  await TestRunner.addSnifferPromise(
+      Sources.CallStackSidebarPane.prototype, '_updatedForTest');
 
   const callStackPane = Sources.CallStackSidebarPane.instance();
   const callStackElement = callStackPane.contentElement;

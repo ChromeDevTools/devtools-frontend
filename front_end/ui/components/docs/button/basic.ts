@@ -10,7 +10,7 @@ await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
 const testIcon =
-    'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDZIMTFWMTEuNUg1LjVWMTIuNUgxMVYxOEgxMlYxMi41SDE3LjVWMTEuNUgxMlY2WiIgZmlsbD0iYmxhY2siLz4KPC9zdmc+Cg==';
+    'data:text/plain;charset=utf-8;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCjxwYXRoIGQ9Ik0xMyA1SDEyVjExSDZWMTJIMTJWMThIMTNWMTJIMTlWMTFIMTNWNVoiIGZpbGw9ImJsYWNrIi8+DQo8L3N2Zz4=';
 
 function appendButton(button: Buttons.Button.Button): void {
   document.querySelector('#container')?.appendChild(button);

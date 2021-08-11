@@ -35,8 +35,6 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {IsolateSelector} from './IsolateSelector.js';
-import profileLauncherViewStyles from './profileLauncherView.css.js';
-
 import type {ProfileType} from './ProfileHeader.js';
 import type {ProfilesPanel} from './ProfilesPanel.js';
 
@@ -87,6 +85,7 @@ export class ProfileLauncherView extends UI.Widget.VBox {
 
   constructor(profilesPanel: ProfilesPanel) {
     super();
+    this.registerRequiredCSS('panels/profiler/profileLauncherView.css');
 
     this._panel = profilesPanel;
     this.element.classList.add('profile-launcher-view');
@@ -221,10 +220,6 @@ export class ProfileLauncherView extends UI.Widget.VBox {
     this._isEnabled = profileType.isEnabled();
     this._updateControls();
     this._selectedProfileTypeSetting.set(profileType.id);
-  }
-  wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([profileLauncherViewStyles]);
   }
 }
 

@@ -86,7 +86,6 @@ export class HeapProfilerPanel extends ProfilesPanel implements UI.ContextMenu.P
   }
 
   wasShown(): void {
-    super.wasShown();
     UI.Context.Context.instance().setFlavor(HeapProfilerPanel, this);
     // Record the memory tool load time.
     Host.userMetrics.panelLoaded('heap_profiler', 'DevTools.Launch.HeapProfiler');

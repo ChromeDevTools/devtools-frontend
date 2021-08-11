@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import type * as HeapSnapshotModel from '../../models/heap_snapshot_model/heap_snapshot_model.js';
 interface DispatcherResponse {
   callId?: number;
@@ -41,20 +43,20 @@ interface DispatcherResponse {
 export class HeapSnapshotWorkerDispatcher {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private objects: any[];
-  private readonly global: Worker;
-  private readonly postMessage: Function;
+  _objects: any[];
+  _global: Worker;
+  _postMessage: Function;
   constructor(globalObject: Worker, postMessage: Function) {
-    this.objects = [];
-    this.global = globalObject;
-    this.postMessage = postMessage;
+    this._objects = [];
+    this._global = globalObject;
+    this._postMessage = postMessage;
   }
 
-  private findFunction(name: string): Function {
+  _findFunction(name: string): Function {
     const path = name.split('.');
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let result = (this.global as any);
+    let result = (this._global as any);
     for (let i = 0; i < path.length; ++i) {
       result = result[path[i]];
     }
@@ -64,7 +66,7 @@ export class HeapSnapshotWorkerDispatcher {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   sendEvent(name: string, data: any): void {
-    this.postMessage({eventName: name, data: data});
+    this._postMessage({eventName: name, data: data});
   }
 
   dispatchMessage({data}: {data: HeapSnapshotModel.HeapSnapshotModel.WorkerCommand}): void {
@@ -73,32 +75,32 @@ export class HeapSnapshotWorkerDispatcher {
     try {
       switch (data.disposition) {
         case 'create': {
-          const constructorFunction = this.findFunction(data.methodName);
+          const constructorFunction = this._findFunction(data.methodName);
           // @ts-ignore
-          this.objects[data.objectId] = new constructorFunction(this);
+          this._objects[data.objectId] = new constructorFunction(this);
           break;
         }
         case 'dispose': {
-          delete this.objects[data.objectId];
+          delete this._objects[data.objectId];
           break;
         }
         case 'getter': {
-          const object = this.objects[data.objectId];
+          const object = this._objects[data.objectId];
           const result = object[data.methodName];
           response.result = result;
           break;
         }
         case 'factory': {
-          const object = this.objects[data.objectId];
+          const object = this._objects[data.objectId];
           const result = object[data.methodName].apply(object, data.methodArguments);
           if (result) {
-            this.objects[data.newObjectId] = result;
+            this._objects[data.newObjectId] = result;
           }
           response.result = Boolean(result);
           break;
         }
         case 'method': {
-          const object = this.objects[data.objectId];
+          const object = this._objects[data.objectId];
           response.result = object[data.methodName].apply(object, data.methodArguments);
           break;
         }
@@ -118,6 +120,6 @@ export class HeapSnapshotWorkerDispatcher {
         response.errorMethodName = data.methodName;
       }
     }
-    this.postMessage(response);
+    this._postMessage(response);
   }
 }

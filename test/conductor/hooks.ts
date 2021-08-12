@@ -229,13 +229,22 @@ async function loadTargetPageAndFrontend(testServerPort: number) {
     unhandledRejectionSet = true;
   }
 
-  frontend.on('console', msg => {
+  frontend.on('console', async msg => {
     const logLevel = logLevels[msg.type() as keyof typeof logLevels] as string;
     if (logLevel) {
       if (logLevel === 'E') {
-        let message = `${logLevel}> ${msg.text()}`;
-        for (const frame of msg.stackTrace()) {
-          message += '\n' + formatStackFrame(frame);
+        let message = `${logLevel}> `;
+        if (msg.text() === 'JSHandle@error') {
+          const errorHandle: puppeteer.JSHandle<Error> = msg.args()[0];
+          message += await errorHandle.evaluate(error => {
+            return error.stack;
+          });
+          await errorHandle.dispose();
+        } else {
+          message += msg.text();
+          for (const frame of msg.stackTrace()) {
+            message += '\n' + formatStackFrame(frame);
+          }
         }
         if (ALLOWED_ASSERTION_FAILURES.includes(msg.text())) {
           expectedErrors.push(message);

@@ -35,7 +35,7 @@ import type {Target} from './Target.js';
 import {Capability} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 
-export class PaintProfilerModel extends SDKModel {
+export class PaintProfilerModel extends SDKModel<void> {
   readonly layerTreeAgent: ProtocolProxyApi.LayerTreeApi;
 
   constructor(target: Target) {

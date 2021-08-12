@@ -297,10 +297,10 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
         SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, this.originChanged, this);
   }
 
-  private originChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const mainOrigin = /** *@type {string} */ (event.data.mainSecurityOrigin);
-    const unreachableMainOrigin = /** @type {string} */ (event.data.unreachableMainSecurityOrigin);
-    this.updateOrigin(mainOrigin, unreachableMainOrigin);
+  private originChanged(
+      event: Common.EventTarget.EventTargetEvent<SDK.SecurityOriginManager.MainSecurityOriginChangedEvent>): void {
+    const {mainSecurityOrigin, unreachableMainSecurityOrigin} = event.data;
+    this.updateOrigin(mainSecurityOrigin, unreachableMainSecurityOrigin);
   }
 
   private updateOrigin(mainOrigin: string, unreachableMainOrigin: string|null): void {

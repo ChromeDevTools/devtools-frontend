@@ -194,14 +194,12 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
     oldCaches.forEach(this.cacheRemoved, this);
   }
 
-  private securityOriginAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const securityOrigin = (event.data as string);
-    this.addOrigin(securityOrigin);
+  private securityOriginAdded(event: Common.EventTarget.EventTargetEvent<string>): void {
+    this.addOrigin(event.data);
   }
 
-  private securityOriginRemoved(event: Common.EventTarget.EventTargetEvent): void {
-    const securityOrigin = (event.data as string);
-    this.removeOrigin(securityOrigin);
+  private securityOriginRemoved(event: Common.EventTarget.EventTargetEvent<string>): void {
+    this.removeOrigin(event.data);
   }
 
   private cacheAdded(cache: Cache): void {

@@ -10,7 +10,7 @@ import type {Target} from './Target.js';
 import {Capability} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 
-export class ScreenCaptureModel extends SDKModel implements ProtocolProxyApi.PageDispatcher {
+export class ScreenCaptureModel extends SDKModel<void> implements ProtocolProxyApi.PageDispatcher {
   private readonly agent: ProtocolProxyApi.PageApi;
   private onScreencastFrame: ((arg0: Protocol.binary, arg1: Protocol.Page.ScreencastFrameMetadata) => void)|null;
   private onScreencastVisibilityChanged: ((arg0: boolean) => void)|null;

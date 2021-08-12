@@ -6,7 +6,7 @@ import type {Target} from './Target.js';
 import {Capability} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 
-export class SecurityOriginManager extends SDKModel {
+export class SecurityOriginManager extends SDKModel<EventTypes> {
   private mainSecurityOriginInternal: string;
   private unreachableMainSecurityOriginInternal: string|null;
   private securityOriginsInternal: Set<string>;
@@ -69,6 +69,17 @@ export enum Events {
   SecurityOriginRemoved = 'SecurityOriginRemoved',
   MainSecurityOriginChanged = 'MainSecurityOriginChanged',
 }
+
+export interface MainSecurityOriginChangedEvent {
+  mainSecurityOrigin: string;
+  unreachableMainSecurityOrigin: string|null;
+}
+
+export type EventTypes = {
+  [Events.SecurityOriginAdded]: string,
+  [Events.SecurityOriginRemoved]: string,
+  [Events.MainSecurityOriginChanged]: MainSecurityOriginChangedEvent,
+};
 
 // TODO(jarhar): this is the only usage of Capability.None. Do something about it!
 SDKModel.register(SecurityOriginManager, {capabilities: Capability.None, autostart: false});

@@ -147,8 +147,8 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel {
     this._addOrigin(origin);
   }
 
-  _securityOriginAdded(event: Common.EventTarget.EventTargetEvent): void {
-    this._addOrigin((event.data as string));
+  _securityOriginAdded(event: Common.EventTarget.EventTargetEvent<string>): void {
+    this._addOrigin(event.data);
   }
 
   _addOrigin(securityOrigin: string): void {
@@ -167,8 +167,8 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel {
     }
   }
 
-  _securityOriginRemoved(event: Common.EventTarget.EventTargetEvent): void {
-    this._removeOrigin((event.data as string));
+  _securityOriginRemoved(event: Common.EventTarget.EventTargetEvent<string>): void {
+    this._removeOrigin(event.data);
   }
 
   _removeOrigin(securityOrigin: string): void {

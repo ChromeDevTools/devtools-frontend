@@ -9,7 +9,7 @@ import type {Target} from './Target.js';
 import {Capability} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 
-export class PerformanceMetricsModel extends SDKModel {
+export class PerformanceMetricsModel extends SDKModel<void> {
   private readonly agent: ProtocolProxyApi.PerformanceApi;
   private readonly metricModes: Map<string, MetricMode>;
   private readonly metricData: Map<string, {

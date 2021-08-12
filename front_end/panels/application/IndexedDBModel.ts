@@ -205,14 +205,12 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel implements ProtocolPro
         {securityOrigin: databaseId.securityOrigin, databaseName: databaseId.name, objectStoreName, keyRange});
   }
 
-  _securityOriginAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const securityOrigin = (event.data as string);
-    this._addOrigin(securityOrigin);
+  _securityOriginAdded(event: Common.EventTarget.EventTargetEvent<string>): void {
+    this._addOrigin(event.data);
   }
 
-  _securityOriginRemoved(event: Common.EventTarget.EventTargetEvent): void {
-    const securityOrigin = (event.data as string);
-    this._removeOrigin(securityOrigin);
+  _securityOriginRemoved(event: Common.EventTarget.EventTargetEvent<string>): void {
+    this._removeOrigin(event.data);
   }
 
   _addOrigin(securityOrigin: string): void {

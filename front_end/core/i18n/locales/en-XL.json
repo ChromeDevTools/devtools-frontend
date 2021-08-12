@@ -4817,6 +4817,9 @@
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "Ĥíd̂é îśŝúêś m̂én̂ú"
   },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "Ûńĥíd̂é îśŝúêś l̂ík̂é t̂h́îś"
+  },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials Ĥéâd́êŕ V̂ál̂úê"
   },
@@ -4897,6 +4900,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "F̂íl̂t́êŕ"
+  },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "Ĥíd̂d́êń îśŝúêś"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "ĈŚP̂ V́îól̂át̂íôńŝ"

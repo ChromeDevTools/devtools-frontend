@@ -48,6 +48,11 @@
   border-width: 0 0 1px;
 }
 
+.issue-category.hidden-issues.parent.expanded {
+  border-width: 0 0 1px 0;
+  background-color: var(--color-background-elevation-1);
+}
+
 .issue-category + .children .issue,
 .issue.expanded {
   background: var(--color-background);

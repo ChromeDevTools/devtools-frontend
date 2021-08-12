@@ -4817,6 +4817,9 @@
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "Hide issues menu"
   },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "Unhide issues like this"
+  },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials Header Value"
   },
@@ -4897,6 +4900,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Filter"
+  },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "Hidden issues"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP Violations"

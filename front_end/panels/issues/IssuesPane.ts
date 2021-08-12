@@ -10,6 +10,7 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import {HiddenIssuesRow} from './HiddenIssuesRow.js';
 import type {AggregatedIssue} from './IssueAggregator.js';
 import {Events as IssueAggregatorEvents, IssueAggregator} from './IssueAggregator.js';
 import {IssueView} from './IssueView.js';
@@ -166,6 +167,7 @@ export class IssuesPane extends UI.Widget.VBox {
   private issueViews: Map<string, IssueView>;
   private showThirdPartyCheckbox: UI.Toolbar.ToolbarSettingCheckbox|null;
   private issuesTree: UI.TreeOutline.TreeOutlineInShadow;
+  private hiddenIssuesRow: HiddenIssuesRow;
   private noIssuesMessageDiv: HTMLDivElement;
   private issuesManager: IssuesManager.IssuesManager.IssuesManager;
   private aggregator: IssueAggregator;
@@ -188,6 +190,9 @@ export class IssuesPane extends UI.Widget.VBox {
     this.issuesTree.contentElement.classList.add('issues');
     this.contentElement.appendChild(this.issuesTree.element);
 
+    this.hiddenIssuesRow = new HiddenIssuesRow();
+    this.issuesTree.appendChild(this.hiddenIssuesRow);
+
     this.noIssuesMessageDiv = document.createElement('div');
     this.noIssuesMessageDiv.classList.add('issues-pane-no-issues');
     this.contentElement.appendChild(this.noIssuesMessageDiv);
@@ -196,11 +201,9 @@ export class IssuesPane extends UI.Widget.VBox {
     this.aggregator = new IssueAggregator(this.issuesManager);
     this.aggregator.addEventListener(IssueAggregatorEvents.AggregatedIssueUpdated, this.issueUpdated, this);
     this.aggregator.addEventListener(IssueAggregatorEvents.FullUpdateRequired, this.onFullUpdate, this);
-    for (const issue of this.aggregator.aggregatedIssues()) {
-      this.scheduleIssueViewUpdate(issue);
-    }
+    this.hiddenIssuesRow.hidden = this.issuesManager.numberOfHiddenIssues() === 0;
+    this.onFullUpdate();
     this.issuesManager.addEventListener(IssuesManager.IssuesManager.Events.IssuesCountUpdated, this.updateCounts, this);
-    this.updateCounts();
   }
 
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): IssuesPane {
@@ -304,6 +307,12 @@ export class IssuesPane extends UI.Widget.VBox {
 
   appendIssueViewToParent(issueView: IssueView, parent: UI.TreeOutline.TreeOutline|UI.TreeOutline.TreeElement): void {
     parent.appendChild(issueView, (a, b) => {
+      if (a instanceof HiddenIssuesRow) {
+        return 1;
+      }
+      if (b instanceof HiddenIssuesRow) {
+        return -1;
+      }
       if (a instanceof IssueView && b instanceof IssueView) {
         return a.getIssueTitle().localeCompare(b.getIssueTitle());
       }
@@ -311,8 +320,12 @@ export class IssuesPane extends UI.Widget.VBox {
       return 0;
     });
   }
+
   private getIssueViewParent(issue: AggregatedIssue): UI.TreeOutline.TreeOutline|UI.TreeOutline.TreeElement {
     if (!getGroupIssuesByCategorySetting().get()) {
+      if (issue.isHidden()) {
+        return this.hiddenIssuesRow;
+      }
       return this.issuesTree;
     }
 
@@ -354,16 +367,22 @@ export class IssuesPane extends UI.Widget.VBox {
       for (const issue of this.aggregator.aggregatedIssues()) {
         this.scheduleIssueViewUpdate(issue);
       }
+      for (const issue of this.aggregator.hiddenAggregatedIssues()) {
+        this.scheduleIssueViewUpdate(issue);
+      }
     }
     this.updateCounts();
   }
 
   private updateCounts(): void {
-    this.showIssuesTreeOrNoIssuesDetectedMessage(this.issuesManager.numberOfIssues());
+    this.showIssuesTreeOrNoIssuesDetectedMessage(
+        this.issuesManager.numberOfIssues(), this.issuesManager.numberOfHiddenIssues());
   }
 
-  private showIssuesTreeOrNoIssuesDetectedMessage(issuesCount: number): void {
+  private showIssuesTreeOrNoIssuesDetectedMessage(issuesCount: number, hiddenIssueCount: number): void {
     if (issuesCount > 0) {
+      this.hiddenIssuesRow.hidden = hiddenIssueCount === 0;
+      this.hiddenIssuesRow.update(hiddenIssueCount);
       this.issuesTree.element.hidden = false;
       this.noIssuesMessageDiv.style.display = 'none';
       const firstChild = this.issuesTree.firstChild();
@@ -388,6 +407,10 @@ export class IssuesPane extends UI.Widget.VBox {
     await this.issueViewUpdatePromise;
     const issueView = this.issueViews.get(code);
     if (issueView) {
+      if (issueView.isForHiddenIssue()) {
+        this.hiddenIssuesRow.expand();
+        this.hiddenIssuesRow.reveal();
+      }
       issueView.expand();
       issueView.reveal();
       issueView.select(false, true);

@@ -8,10 +8,10 @@ import type * as puppeteer from 'puppeteer';
 import {$$, click, hasClass, matchStringTable, waitFor, waitForClass, waitForFunction} from '../../shared/helper.js';
 import {openPanelViaMoreTools} from './settings-helpers.js';
 
-export const CATEGORY = '.issue-category';
+export const CATEGORY = '.issue-category:not(.hidden-issues)';
 export const CATEGORY_NAME = '.issue-category .title';
 export const CATEGORY_CHECKBOX = 'input[aria-label="Group by category"]';
-export const ISSUE = '.issue';
+export const ISSUE = '.issue:not(.hidden-issue)';
 export const ISSUE_TITLE = '.issue .title';
 export const AFFECTED_ELEMENT_ICON = '.affected-resource-csp-info-node';
 export const ELEMENT_REVEAL_ICON = '.element-reveal-icon';
@@ -22,6 +22,7 @@ export const REPORT_ONLY_STATUS = '.affected-resource-report-only-status';
 export const RESOURCES_LABEL = '.affected-resource-label';
 export const HIDE_ISSUES_MENU = '.hide-issues-menu';
 export const HIDE_THIS_ISSUE = 'Hide issues like this';
+export const UNHIDE_THIS_ISSUE = 'Unhide issues like this';
 export const UNHIDE_ALL_ISSUES = '.unhide-all-issues-btn';
 
 export async function getHideIssuesMenu() {
@@ -44,6 +45,18 @@ export async function getHideIssuesMenuItem(): Promise<puppeteer.ElementHandle<H
     return menuItem;
   }
   return null;
+}
+
+export async function getUnhideIssuesMenuItem(): Promise<puppeteer.ElementHandle<HTMLElement>|null> {
+  return await waitFor(`[aria-label="${UNHIDE_THIS_ISSUE}"]`);
+}
+
+export async function getHiddenIssuesRow(): Promise<puppeteer.ElementHandle<HTMLElement>|null> {
+  return await waitFor('.hidden-issues');
+}
+
+export async function getHiddenIssuesRowBody(): Promise<puppeteer.ElementHandle<HTMLElement>|null> {
+  return await waitFor('.hidden-issues-body');
 }
 
 export async function assertCategoryName(categoryName: string) {

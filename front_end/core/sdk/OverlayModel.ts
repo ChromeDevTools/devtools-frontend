@@ -51,7 +51,7 @@ export interface Hinge {
   outlineColor: HighlightColor;
 }
 
-export class OverlayModel extends SDKModel implements ProtocolProxyApi.OverlayDispatcher {
+export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyApi.OverlayDispatcher {
   private readonly domModel: DOMModel;
   overlayAgent: ProtocolProxyApi.OverlayApi;
   private readonly debuggerModel: DebuggerModel|null;
@@ -780,6 +780,22 @@ export enum Events {
   PersistentScrollSnapOverlayStateChanged = 'PersistentScrollSnapOverlayStateChanged',
   PersistentContainerQueryOverlayStateChanged = 'PersistentContainerQueryOverlayStateChanged',
 }
+
+export interface ChangedNodeId {
+  nodeId: number;
+  enabled: boolean;
+}
+
+export type EventTypes = {
+  [Events.InspectModeWillBeToggled]: OverlayModel,
+  [Events.ExitedInspectMode]: void,
+  [Events.HighlightNodeRequested]: DOMNode,
+  [Events.ScreenshotRequested]: Protocol.Page.Viewport,
+  [Events.PersistentGridOverlayStateChanged]: ChangedNodeId,
+  [Events.PersistentFlexContainerOverlayStateChanged]: ChangedNodeId,
+  [Events.PersistentScrollSnapOverlayStateChanged]: ChangedNodeId,
+  [Events.PersistentContainerQueryOverlayStateChanged]: ChangedNodeId,
+};
 
 export interface Highlighter {
   highlightInOverlay(data: HighlightData, config: Protocol.Overlay.HighlightConfig): void;

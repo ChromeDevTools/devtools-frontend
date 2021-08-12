@@ -35,12 +35,12 @@ export class ElementsTreeElementHighlighter {
     this._isModifyingTreeOutline = false;
   }
 
-  _highlightNode(event: Common.EventTarget.EventTargetEvent): void {
+  _highlightNode(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
     if (!Common.Settings.Settings.instance().moduleSetting('highlightNodeOnHoverInOverlay').get()) {
       return;
     }
 
-    const domNode = (event.data as SDK.DOMModel.DOMNode);
+    const domNode = event.data;
 
     this._throttler.schedule(async () => {
       this._highlightNodeInternal(this._pendingHighlightNode);

@@ -71,9 +71,7 @@ export class DeviceModeWrapper extends UI.Widget.VBox {
     return true;
   }
 
-  private screenshotRequestedFromOverlay(event: {
-    data: Protocol.Page.Viewport,
-  }): void {
+  private screenshotRequestedFromOverlay(event: Common.EventTarget.EventTargetEvent<Protocol.Page.Viewport>): void {
     const clip = event.data;
     this.captureScreenshot(false, clip);
   }

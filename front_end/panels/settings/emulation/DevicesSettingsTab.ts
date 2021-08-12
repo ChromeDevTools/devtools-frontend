@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as EmulationModel from '../../../models/emulation/emulation.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -68,11 +66,11 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class DevicesSettingsTab extends UI.Widget.VBox implements
     UI.ListWidget.Delegate<EmulationModel.EmulatedDevices.EmulatedDevice> {
   containerElement: HTMLElement;
-  _addCustomButton: HTMLButtonElement;
-  _list: UI.ListWidget.ListWidget<EmulationModel.EmulatedDevices.EmulatedDevice>;
-  _muteUpdate: boolean;
-  _emulatedDevicesList: EmulationModel.EmulatedDevices.EmulatedDevicesList;
-  _editor?: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>;
+  private readonly addCustomButton: HTMLButtonElement;
+  private readonly list: UI.ListWidget.ListWidget<EmulationModel.EmulatedDevices.EmulatedDevice>;
+  private muteUpdate: boolean;
+  private emulatedDevicesList: EmulationModel.EmulatedDevices.EmulatedDevicesList;
+  private editor?: UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>;
 
   private constructor() {
     super();
@@ -85,23 +83,23 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
                                 .createChild('div', 'settings-tab settings-content settings-container');
 
     const buttonsRow = this.containerElement.createChild('div', 'devices-button-row');
-    this._addCustomButton =
-        UI.UIUtils.createTextButton(i18nString(UIStrings.addCustomDevice), this._addCustomDevice.bind(this));
-    this._addCustomButton.id = 'custom-device-add-button';
-    buttonsRow.appendChild(this._addCustomButton);
+    this.addCustomButton =
+        UI.UIUtils.createTextButton(i18nString(UIStrings.addCustomDevice), this.addCustomDevice.bind(this));
+    this.addCustomButton.id = 'custom-device-add-button';
+    buttonsRow.appendChild(this.addCustomButton);
 
-    this._list = new UI.ListWidget.ListWidget(this, false /* delegatesFocus */);
-    this._list.element.classList.add('devices-list');
-    this._list.show(this.containerElement);
+    this.list = new UI.ListWidget.ListWidget(this, false /* delegatesFocus */);
+    this.list.element.classList.add('devices-list');
+    this.list.show(this.containerElement);
 
-    this._muteUpdate = false;
-    this._emulatedDevicesList = EmulationModel.EmulatedDevices.EmulatedDevicesList.instance();
-    this._emulatedDevicesList.addEventListener(
-        EmulationModel.EmulatedDevices.Events.CustomDevicesUpdated, this._devicesUpdated, this);
-    this._emulatedDevicesList.addEventListener(
-        EmulationModel.EmulatedDevices.Events.StandardDevicesUpdated, this._devicesUpdated, this);
+    this.muteUpdate = false;
+    this.emulatedDevicesList = EmulationModel.EmulatedDevices.EmulatedDevicesList.instance();
+    this.emulatedDevicesList.addEventListener(
+        EmulationModel.EmulatedDevices.Events.CustomDevicesUpdated, this.devicesUpdated, this);
+    this.emulatedDevicesList.addEventListener(
+        EmulationModel.EmulatedDevices.Events.StandardDevicesUpdated, this.devicesUpdated, this);
 
-    this.setDefaultFocusedElement(this._addCustomButton);
+    this.setDefaultFocusedElement(this.addCustomButton);
   }
 
   static instance(): DevicesSettingsTab {
@@ -113,53 +111,53 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
 
   wasShown(): void {
     super.wasShown();
-    this._devicesUpdated();
+    this.devicesUpdated();
     this.registerCSSFiles([devicesSettingsTabStyles]);
-    this._list.registerCSSFiles([devicesSettingsTabStyles]);
+    this.list.registerCSSFiles([devicesSettingsTabStyles]);
   }
 
-  _devicesUpdated(): void {
-    if (this._muteUpdate) {
+  private devicesUpdated(): void {
+    if (this.muteUpdate) {
       return;
     }
 
-    this._list.clear();
+    this.list.clear();
 
-    let devices = this._emulatedDevicesList.custom().slice();
+    let devices = this.emulatedDevicesList.custom().slice();
     for (let i = 0; i < devices.length; ++i) {
-      this._list.appendItem(devices[i], true);
+      this.list.appendItem(devices[i], true);
     }
 
-    this._list.appendSeparator();
+    this.list.appendSeparator();
 
-    devices = this._emulatedDevicesList.standard().slice();
+    devices = this.emulatedDevicesList.standard().slice();
     devices.sort(EmulationModel.EmulatedDevices.EmulatedDevice.deviceComparator);
     for (let i = 0; i < devices.length; ++i) {
-      this._list.appendItem(devices[i], false);
+      this.list.appendItem(devices[i], false);
     }
   }
 
-  _muteAndSaveDeviceList(custom: boolean): void {
-    this._muteUpdate = true;
+  private muteAndSaveDeviceList(custom: boolean): void {
+    this.muteUpdate = true;
     if (custom) {
-      this._emulatedDevicesList.saveCustomDevices();
+      this.emulatedDevicesList.saveCustomDevices();
     } else {
-      this._emulatedDevicesList.saveStandardDevices();
+      this.emulatedDevicesList.saveStandardDevices();
     }
-    this._muteUpdate = false;
+    this.muteUpdate = false;
   }
 
-  _addCustomDevice(): void {
+  private addCustomDevice(): void {
     const device = new EmulationModel.EmulatedDevices.EmulatedDevice();
     device.deviceScaleFactor = 0;
     device.horizontal.width = 700;
     device.horizontal.height = 400;
     device.vertical.width = 400;
     device.vertical.height = 700;
-    this._list.addNewItem(this._emulatedDevicesList.custom().length, device);
+    this.list.addNewItem(this.emulatedDevicesList.custom().length, device);
   }
 
-  _toNumericInputValue(value: number): string {
+  private toNumericInputValue(value: number): string {
     return value ? String(value) : '';
   }
 
@@ -179,13 +177,13 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
     function onItemClicked(this: DevicesSettingsTab, event: Event): void {
       const show = checkbox.checked;
       device.setShow(show);
-      this._muteAndSaveDeviceList(editable);
+      this.muteAndSaveDeviceList(editable);
       event.consume();
     }
   }
 
   removeItemRequested(item: EmulationModel.EmulatedDevices.EmulatedDevice): void {
-    this._emulatedDevicesList.removeCustomDevice(item);
+    this.emulatedDevicesList.removeCustomDevice(item);
   }
 
   commitEdit(
@@ -234,21 +232,21 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
       };
     }
     if (isNew) {
-      this._emulatedDevicesList.addCustomDevice(device);
+      this.emulatedDevicesList.addCustomDevice(device);
     } else {
-      this._emulatedDevicesList.saveCustomDevices();
+      this.emulatedDevicesList.saveCustomDevices();
     }
-    this._addCustomButton.scrollIntoViewIfNeeded();
-    this._addCustomButton.focus();
+    this.addCustomButton.scrollIntoViewIfNeeded();
+    this.addCustomButton.focus();
   }
 
   beginEdit(device: EmulationModel.EmulatedDevices.EmulatedDevice):
       UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice> {
-    const editor = this._createEditor();
+    const editor = this.createEditor();
     editor.control('title').value = device.title;
-    editor.control('width').value = this._toNumericInputValue(device.vertical.width);
-    editor.control('height').value = this._toNumericInputValue(device.vertical.height);
-    editor.control('scale').value = this._toNumericInputValue(device.deviceScaleFactor);
+    editor.control('width').value = this.toNumericInputValue(device.vertical.width);
+    editor.control('height').value = this.toNumericInputValue(device.vertical.height);
+    editor.control('scale').value = this.toNumericInputValue(device.deviceScaleFactor);
     editor.control('user-agent').value = device.userAgent;
     let uaType;
     if (device.mobile()) {
@@ -265,13 +263,13 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
     return editor;
   }
 
-  _createEditor(): UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice> {
-    if (this._editor) {
-      return this._editor;
+  private createEditor(): UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice> {
+    if (this.editor) {
+      return this.editor;
     }
 
     const editor = new UI.ListWidget.Editor<EmulationModel.EmulatedDevices.EmulatedDevice>();
-    this._editor = editor;
+    this.editor = editor;
     const content = editor.contentElement();
 
     const deviceFields = content.createChild('div', 'devices-edit-fields');

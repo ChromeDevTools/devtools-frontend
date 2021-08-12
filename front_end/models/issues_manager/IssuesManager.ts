@@ -267,7 +267,10 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
         this.issuesById.set(issueId, issue);
       }
       const values = this.hideIssueSetting?.get();
-      this.updateIssueHiddenStatus(issue, values);
+      const hideIssuesFeature = Root.Runtime.experiments.isEnabled('hideIssuesFeature');
+      if (hideIssuesFeature) {
+        this.updateIssueHiddenStatus(issue, values);
+      }
       this.dispatchEventToListeners(Events.IssueAdded, {issuesModel, issue});
     }
     // Always fire the "count" event even if the issue was filtered out.

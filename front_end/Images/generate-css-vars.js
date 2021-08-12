@@ -29,7 +29,7 @@ const style = sheet.cssRules[0].style;
 
 ${imageSources.map(generateCSSVariableDefinition).join('\n')}
 
-document.adoptedStyleSheets = [sheet];
+document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
 `;
 
 fs.writeFileSync(path.join(targetGenDir, 'Images.prebundle.js'), fileContent, {encoding: 'utf-8'});

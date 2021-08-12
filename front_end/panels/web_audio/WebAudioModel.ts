@@ -2,20 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 export class WebAudioModel extends SDK.SDKModel.SDKModel implements ProtocolProxyApi.WebAudioDispatcher {
-  _enabled: boolean;
-  _agent: ProtocolProxyApi.WebAudioApi;
+  private enabled: boolean;
+  private readonly agent: ProtocolProxyApi.WebAudioApi;
   constructor(target: SDK.Target.Target) {
     super(target);
 
-    this._enabled = false;
+    this.enabled = false;
 
-    this._agent = target.webAudioAgent();
+    this.agent = target.webAudioAgent();
     target.registerWebAudioDispatcher(this);
 
     // TODO(crbug.com/963510): Some OfflineAudioContexts are not uninitialized
@@ -27,32 +26,31 @@ export class WebAudioModel extends SDK.SDKModel.SDKModel implements ProtocolProx
     // frame when the current page is loaded. This call can be omitted when the
     // bug is fixed.
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated, this._flushContexts,
-        this);
+        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated, this.flushContexts, this);
   }
 
-  _flushContexts(): void {
+  private flushContexts(): void {
     this.dispatchEventToListeners(Events.ModelReset);
   }
 
   async suspendModel(): Promise<void> {
     this.dispatchEventToListeners(Events.ModelSuspend);
-    await this._agent.invoke_disable();
+    await this.agent.invoke_disable();
   }
 
   async resumeModel(): Promise<void> {
-    if (!this._enabled) {
+    if (!this.enabled) {
       return Promise.resolve();
     }
-    await this._agent.invoke_enable();
+    await this.agent.invoke_enable();
   }
 
   ensureEnabled(): void {
-    if (this._enabled) {
+    if (this.enabled) {
       return;
     }
-    this._agent.invoke_enable();
-    this._enabled = true;
+    this.agent.invoke_enable();
+    this.enabled = true;
   }
 
   contextCreated({context}: Protocol.WebAudio.ContextCreatedEvent): void {
@@ -116,7 +114,7 @@ export class WebAudioModel extends SDK.SDKModel.SDKModel implements ProtocolProx
 
   async requestRealtimeData(contextId: Protocol.WebAudio.GraphObjectId):
       Promise<Protocol.WebAudio.ContextRealtimeData|null> {
-    const realtimeResponse = await this._agent.invoke_getRealtimeData({contextId});
+    const realtimeResponse = await this.agent.invoke_getRealtimeData({contextId});
     return realtimeResponse.realtimeData;
   }
 }

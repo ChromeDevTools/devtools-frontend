@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -42,30 +41,30 @@ const str_ = i18n.i18n.registerUIStrings('panels/web_audio/AudioContextContentBu
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ContextDetailBuilder {
-  _fragment: DocumentFragment;
-  _container: HTMLDivElement;
+  private readonly fragment: DocumentFragment;
+  private readonly container: HTMLDivElement;
   constructor(context: Protocol.WebAudio.BaseAudioContext) {
-    this._fragment = document.createDocumentFragment();
-    this._container = document.createElement('div');
-    this._container.classList.add('context-detail-container');
-    this._fragment.appendChild(this._container);
-    this._build(context);
+    this.fragment = document.createDocumentFragment();
+    this.container = document.createElement('div');
+    this.container.classList.add('context-detail-container');
+    this.fragment.appendChild(this.container);
+    this.build(context);
   }
 
-  _build(context: Protocol.WebAudio.BaseAudioContext): void {
+  private build(context: Protocol.WebAudio.BaseAudioContext): void {
     const title = context.contextType === 'realtime' ? i18n.i18n.lockedString('AudioContext') :
                                                        i18n.i18n.lockedString('OfflineAudioContext');
-    this._addTitle(title, context.contextId);
-    this._addEntry(i18nString(UIStrings.state), context.contextState);
-    this._addEntry(i18nString(UIStrings.sampleRate), context.sampleRate, 'Hz');
+    this.addTitle(title, context.contextId);
+    this.addEntry(i18nString(UIStrings.state), context.contextState);
+    this.addEntry(i18nString(UIStrings.sampleRate), context.sampleRate, 'Hz');
     if (context.contextType === 'realtime') {
-      this._addEntry(i18nString(UIStrings.callbackBufferSize), context.callbackBufferSize, 'frames');
+      this.addEntry(i18nString(UIStrings.callbackBufferSize), context.callbackBufferSize, 'frames');
     }
-    this._addEntry(i18nString(UIStrings.maxOutputChannels), context.maxOutputChannelCount, 'ch');
+    this.addEntry(i18nString(UIStrings.maxOutputChannels), context.maxOutputChannelCount, 'ch');
   }
 
-  _addTitle(title: string, subtitle: string): void {
-    this._container.appendChild(UI.Fragment.html`
+  private addTitle(title: string, subtitle: string): void {
+    this.container.appendChild(UI.Fragment.html`
   <div class="context-detail-header">
   <div class="context-detail-title">${title}</div>
   <div class="context-detail-subtitle">${subtitle}</div>
@@ -73,9 +72,9 @@ export class ContextDetailBuilder {
   `);
   }
 
-  _addEntry(entry: string, value: string|number, unit?: string|undefined): void {
+  private addEntry(entry: string, value: string|number, unit?: string|undefined): void {
     const valueWithUnit = value + (unit ? ` ${unit}` : '');
-    this._container.appendChild(UI.Fragment.html`
+    this.container.appendChild(UI.Fragment.html`
   <div class="context-detail-row">
   <div class="context-detail-row-entry">${entry}</div>
   <div class="context-detail-row-value">${valueWithUnit}</div>
@@ -84,19 +83,19 @@ export class ContextDetailBuilder {
   }
 
   getFragment(): DocumentFragment {
-    return this._fragment;
+    return this.fragment;
   }
 }
 
 export class ContextSummaryBuilder {
-  _fragment: DocumentFragment;
+  private readonly fragment: DocumentFragment;
   constructor(contextId: string, contextRealtimeData: Protocol.WebAudio.ContextRealtimeData) {
     const time = contextRealtimeData.currentTime.toFixed(3);
     const mean = (contextRealtimeData.callbackIntervalMean * 1000).toFixed(3);
     const stddev = (Math.sqrt(contextRealtimeData.callbackIntervalVariance) * 1000).toFixed(3);
     const capacity = (contextRealtimeData.renderCapacity * 100).toFixed(3);
-    this._fragment = document.createDocumentFragment();
-    this._fragment.appendChild(UI.Fragment.html`
+    this.fragment = document.createDocumentFragment();
+    this.fragment.appendChild(UI.Fragment.html`
   <div class="context-summary-container">
   <span>${i18nString(UIStrings.currentTime)}: ${time} s</span>
   <span>\u2758</span>
@@ -108,6 +107,6 @@ export class ContextSummaryBuilder {
   }
 
   getFragment(): DocumentFragment {
-    return this._fragment;
+    return this.fragment;
   }
 }

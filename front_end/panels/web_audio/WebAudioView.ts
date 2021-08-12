@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
 import webAudioStyles from './webAudio.css.js';
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -27,49 +26,49 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let webAudioViewInstance: WebAudioView;
 export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
     SDK.TargetManager.SDKModelObserver<WebAudioModel> {
-  _contextSelector: AudioContextSelector;
-  _contentContainer: HTMLElement;
-  _detailViewContainer: HTMLElement;
-  _graphManager: GraphManager;
-  _landingPage: UI.Widget.VBox;
-  _summaryBarContainer: HTMLElement;
+  private readonly contextSelector: AudioContextSelector;
+  private readonly contentContainer: HTMLElement;
+  private readonly detailViewContainer: HTMLElement;
+  private graphManager: GraphManager;
+  private readonly landingPage: UI.Widget.VBox;
+  private readonly summaryBarContainer: HTMLElement;
   constructor() {
     super(true, 1000);
     this.element.classList.add('web-audio-drawer');
 
     // Creates the toolbar.
     const toolbarContainer = this.contentElement.createChild('div', 'web-audio-toolbar-container vbox');
-    this._contextSelector = new AudioContextSelector();
+    this.contextSelector = new AudioContextSelector();
     const toolbar = new UI.Toolbar.Toolbar('web-audio-toolbar', toolbarContainer);
     toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButtonForId('components.collect-garbage'));
     toolbar.appendSeparator();
-    toolbar.appendToolbarItem(this._contextSelector.toolbarItem());
+    toolbar.appendToolbarItem(this.contextSelector.toolbarItem());
 
     // Create content container
-    this._contentContainer = this.contentElement.createChild('div', 'web-audio-content-container vbox flex-auto');
+    this.contentContainer = this.contentElement.createChild('div', 'web-audio-content-container vbox flex-auto');
 
     // Creates the detail view.
-    this._detailViewContainer = this._contentContainer.createChild('div', 'web-audio-details-container vbox flex-auto');
+    this.detailViewContainer = this.contentContainer.createChild('div', 'web-audio-details-container vbox flex-auto');
 
-    this._graphManager = new GraphManager();
+    this.graphManager = new GraphManager();
 
     // Creates the landing page.
-    this._landingPage = new UI.Widget.VBox();
-    this._landingPage.contentElement.classList.add('web-audio-landing-page', 'fill');
-    this._landingPage.contentElement.appendChild(UI.Fragment.html`
+    this.landingPage = new UI.Widget.VBox();
+    this.landingPage.contentElement.classList.add('web-audio-landing-page', 'fill');
+    this.landingPage.contentElement.appendChild(UI.Fragment.html`
   <div>
   <p>${i18nString(UIStrings.openAPageThatUsesWebAudioApiTo)}</p>
   </div>
   `);
-    this._landingPage.show(this._detailViewContainer);
+    this.landingPage.show(this.detailViewContainer);
 
     // Creates the summary bar.
-    this._summaryBarContainer = this._contentContainer.createChild('div', 'web-audio-summary-container');
+    this.summaryBarContainer = this.contentContainer.createChild('div', 'web-audio-summary-container');
 
-    this._contextSelector.addEventListener(
+    this.contextSelector.addEventListener(
         SelectorEvents.ContextSelected, (event: Common.EventTarget.EventTargetEvent): void => {
           const context = (event.data as Protocol.WebAudio.BaseAudioContext);
-          this._updateDetailView(context);
+          this.updateDetailView(context);
           this.doUpdate();
         });
 
@@ -89,107 +88,107 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
     super.wasShown();
     this.registerCSSFiles([webAudioStyles]);
     for (const model of SDK.TargetManager.TargetManager.instance().models(WebAudioModel)) {
-      this._addEventListeners(model);
+      this.addEventListeners(model);
     }
   }
 
   willHide(): void {
     for (const model of SDK.TargetManager.TargetManager.instance().models(WebAudioModel)) {
-      this._removeEventListeners(model);
+      this.removeEventListeners(model);
     }
   }
 
   modelAdded(webAudioModel: WebAudioModel): void {
     if (this.isShowing()) {
-      this._addEventListeners(webAudioModel);
+      this.addEventListeners(webAudioModel);
     }
   }
 
   modelRemoved(webAudioModel: WebAudioModel): void {
-    this._removeEventListeners(webAudioModel);
+    this.removeEventListeners(webAudioModel);
   }
 
   async doUpdate(): Promise<void> {
-    await this._pollRealtimeData();
+    await this.pollRealtimeData();
     this.update();
   }
 
-  _addEventListeners(webAudioModel: WebAudioModel): void {
+  private addEventListeners(webAudioModel: WebAudioModel): void {
     webAudioModel.ensureEnabled();
-    webAudioModel.addEventListener(ModelEvents.ContextCreated, this._contextCreated, this);
-    webAudioModel.addEventListener(ModelEvents.ContextDestroyed, this._contextDestroyed, this);
-    webAudioModel.addEventListener(ModelEvents.ContextChanged, this._contextChanged, this);
-    webAudioModel.addEventListener(ModelEvents.ModelReset, this._reset, this);
-    webAudioModel.addEventListener(ModelEvents.ModelSuspend, this._suspendModel, this);
-    webAudioModel.addEventListener(ModelEvents.AudioListenerCreated, this._audioListenerCreated, this);
-    webAudioModel.addEventListener(ModelEvents.AudioListenerWillBeDestroyed, this._audioListenerWillBeDestroyed, this);
-    webAudioModel.addEventListener(ModelEvents.AudioNodeCreated, this._audioNodeCreated, this);
-    webAudioModel.addEventListener(ModelEvents.AudioNodeWillBeDestroyed, this._audioNodeWillBeDestroyed, this);
-    webAudioModel.addEventListener(ModelEvents.AudioParamCreated, this._audioParamCreated, this);
-    webAudioModel.addEventListener(ModelEvents.AudioParamWillBeDestroyed, this._audioParamWillBeDestroyed, this);
-    webAudioModel.addEventListener(ModelEvents.NodesConnected, this._nodesConnected, this);
-    webAudioModel.addEventListener(ModelEvents.NodesDisconnected, this._nodesDisconnected, this);
-    webAudioModel.addEventListener(ModelEvents.NodeParamConnected, this._nodeParamConnected, this);
-    webAudioModel.addEventListener(ModelEvents.NodeParamDisconnected, this._nodeParamDisconnected, this);
+    webAudioModel.addEventListener(ModelEvents.ContextCreated, this.contextCreated, this);
+    webAudioModel.addEventListener(ModelEvents.ContextDestroyed, this.contextDestroyed, this);
+    webAudioModel.addEventListener(ModelEvents.ContextChanged, this.contextChanged, this);
+    webAudioModel.addEventListener(ModelEvents.ModelReset, this.reset, this);
+    webAudioModel.addEventListener(ModelEvents.ModelSuspend, this.suspendModel, this);
+    webAudioModel.addEventListener(ModelEvents.AudioListenerCreated, this.audioListenerCreated, this);
+    webAudioModel.addEventListener(ModelEvents.AudioListenerWillBeDestroyed, this.audioListenerWillBeDestroyed, this);
+    webAudioModel.addEventListener(ModelEvents.AudioNodeCreated, this.audioNodeCreated, this);
+    webAudioModel.addEventListener(ModelEvents.AudioNodeWillBeDestroyed, this.audioNodeWillBeDestroyed, this);
+    webAudioModel.addEventListener(ModelEvents.AudioParamCreated, this.audioParamCreated, this);
+    webAudioModel.addEventListener(ModelEvents.AudioParamWillBeDestroyed, this.audioParamWillBeDestroyed, this);
+    webAudioModel.addEventListener(ModelEvents.NodesConnected, this.nodesConnected, this);
+    webAudioModel.addEventListener(ModelEvents.NodesDisconnected, this.nodesDisconnected, this);
+    webAudioModel.addEventListener(ModelEvents.NodeParamConnected, this.nodeParamConnected, this);
+    webAudioModel.addEventListener(ModelEvents.NodeParamDisconnected, this.nodeParamDisconnected, this);
   }
 
-  _removeEventListeners(webAudioModel: WebAudioModel): void {
-    webAudioModel.removeEventListener(ModelEvents.ContextCreated, this._contextCreated, this);
-    webAudioModel.removeEventListener(ModelEvents.ContextDestroyed, this._contextDestroyed, this);
-    webAudioModel.removeEventListener(ModelEvents.ContextChanged, this._contextChanged, this);
-    webAudioModel.removeEventListener(ModelEvents.ModelReset, this._reset, this);
-    webAudioModel.removeEventListener(ModelEvents.ModelSuspend, this._suspendModel, this);
-    webAudioModel.removeEventListener(ModelEvents.AudioListenerCreated, this._audioListenerCreated, this);
+  private removeEventListeners(webAudioModel: WebAudioModel): void {
+    webAudioModel.removeEventListener(ModelEvents.ContextCreated, this.contextCreated, this);
+    webAudioModel.removeEventListener(ModelEvents.ContextDestroyed, this.contextDestroyed, this);
+    webAudioModel.removeEventListener(ModelEvents.ContextChanged, this.contextChanged, this);
+    webAudioModel.removeEventListener(ModelEvents.ModelReset, this.reset, this);
+    webAudioModel.removeEventListener(ModelEvents.ModelSuspend, this.suspendModel, this);
+    webAudioModel.removeEventListener(ModelEvents.AudioListenerCreated, this.audioListenerCreated, this);
     webAudioModel.removeEventListener(
-        ModelEvents.AudioListenerWillBeDestroyed, this._audioListenerWillBeDestroyed, this);
-    webAudioModel.removeEventListener(ModelEvents.AudioNodeCreated, this._audioNodeCreated, this);
-    webAudioModel.removeEventListener(ModelEvents.AudioNodeWillBeDestroyed, this._audioNodeWillBeDestroyed, this);
-    webAudioModel.removeEventListener(ModelEvents.AudioParamCreated, this._audioParamCreated, this);
-    webAudioModel.removeEventListener(ModelEvents.AudioParamWillBeDestroyed, this._audioParamWillBeDestroyed, this);
-    webAudioModel.removeEventListener(ModelEvents.NodesConnected, this._nodesConnected, this);
-    webAudioModel.removeEventListener(ModelEvents.NodesDisconnected, this._nodesDisconnected, this);
-    webAudioModel.removeEventListener(ModelEvents.NodeParamConnected, this._nodeParamConnected, this);
-    webAudioModel.removeEventListener(ModelEvents.NodeParamDisconnected, this._nodeParamDisconnected, this);
+        ModelEvents.AudioListenerWillBeDestroyed, this.audioListenerWillBeDestroyed, this);
+    webAudioModel.removeEventListener(ModelEvents.AudioNodeCreated, this.audioNodeCreated, this);
+    webAudioModel.removeEventListener(ModelEvents.AudioNodeWillBeDestroyed, this.audioNodeWillBeDestroyed, this);
+    webAudioModel.removeEventListener(ModelEvents.AudioParamCreated, this.audioParamCreated, this);
+    webAudioModel.removeEventListener(ModelEvents.AudioParamWillBeDestroyed, this.audioParamWillBeDestroyed, this);
+    webAudioModel.removeEventListener(ModelEvents.NodesConnected, this.nodesConnected, this);
+    webAudioModel.removeEventListener(ModelEvents.NodesDisconnected, this.nodesDisconnected, this);
+    webAudioModel.removeEventListener(ModelEvents.NodeParamConnected, this.nodeParamConnected, this);
+    webAudioModel.removeEventListener(ModelEvents.NodeParamDisconnected, this.nodeParamDisconnected, this);
   }
 
-  _contextCreated(event: Common.EventTarget.EventTargetEvent): void {
+  private contextCreated(event: Common.EventTarget.EventTargetEvent): void {
     const context = (event.data as Protocol.WebAudio.BaseAudioContext);
-    this._graphManager.createContext(context.contextId);
-    this._contextSelector.contextCreated(event);
+    this.graphManager.createContext(context.contextId);
+    this.contextSelector.contextCreated(event);
   }
 
-  _contextDestroyed(event: Common.EventTarget.EventTargetEvent): void {
+  private contextDestroyed(event: Common.EventTarget.EventTargetEvent): void {
     const contextId = (event.data as string);
-    this._graphManager.destroyContext(contextId);
-    this._contextSelector.contextDestroyed(event);
+    this.graphManager.destroyContext(contextId);
+    this.contextSelector.contextDestroyed(event);
   }
 
-  _contextChanged(event: Common.EventTarget.EventTargetEvent): void {
+  private contextChanged(event: Common.EventTarget.EventTargetEvent): void {
     const context = (event.data as Protocol.WebAudio.BaseAudioContext);
-    if (!this._graphManager.hasContext(context.contextId)) {
+    if (!this.graphManager.hasContext(context.contextId)) {
       return;
     }
 
-    this._contextSelector.contextChanged(event);
+    this.contextSelector.contextChanged(event);
   }
 
-  _reset(): void {
-    if (this._landingPage.isShowing()) {
-      this._landingPage.detach();
+  private reset(): void {
+    if (this.landingPage.isShowing()) {
+      this.landingPage.detach();
     }
-    this._contextSelector.reset();
-    this._detailViewContainer.removeChildren();
-    this._landingPage.show(this._detailViewContainer);
-    this._graphManager.clearGraphs();
+    this.contextSelector.reset();
+    this.detailViewContainer.removeChildren();
+    this.landingPage.show(this.detailViewContainer);
+    this.graphManager.clearGraphs();
   }
 
-  _suspendModel(): void {
-    this._graphManager.clearGraphs();
+  private suspendModel(): void {
+    this.graphManager.clearGraphs();
   }
 
-  _audioListenerCreated(event: Common.EventTarget.EventTargetEvent): void {
+  private audioListenerCreated(event: Common.EventTarget.EventTargetEvent): void {
     const listener = (event.data as Protocol.WebAudio.AudioListener);
-    const graph = this._graphManager.getGraph(listener.contextId);
+    const graph = this.graphManager.getGraph(listener.contextId);
     if (!graph) {
       return;
     }
@@ -201,18 +200,18 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
     });
   }
 
-  _audioListenerWillBeDestroyed(event: Common.EventTarget.EventTargetEvent): void {
+  private audioListenerWillBeDestroyed(event: Common.EventTarget.EventTargetEvent): void {
     const {contextId, listenerId} = event.data;
-    const graph = this._graphManager.getGraph(contextId);
+    const graph = this.graphManager.getGraph(contextId);
     if (!graph) {
       return;
     }
     graph.removeNode(listenerId);
   }
 
-  _audioNodeCreated(event: Common.EventTarget.EventTargetEvent): void {
+  private audioNodeCreated(event: Common.EventTarget.EventTargetEvent): void {
     const node = (event.data as Protocol.WebAudio.AudioNode);
-    const graph = this._graphManager.getGraph(node.contextId);
+    const graph = this.graphManager.getGraph(node.contextId);
     if (!graph) {
       return;
     }
@@ -224,18 +223,18 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
     });
   }
 
-  _audioNodeWillBeDestroyed(event: Common.EventTarget.EventTargetEvent): void {
+  private audioNodeWillBeDestroyed(event: Common.EventTarget.EventTargetEvent): void {
     const {contextId, nodeId} = event.data;
-    const graph = this._graphManager.getGraph(contextId);
+    const graph = this.graphManager.getGraph(contextId);
     if (!graph) {
       return;
     }
     graph.removeNode(nodeId);
   }
 
-  _audioParamCreated(event: Common.EventTarget.EventTargetEvent): void {
+  private audioParamCreated(event: Common.EventTarget.EventTargetEvent): void {
     const param = (event.data as Protocol.WebAudio.AudioParam);
-    const graph = this._graphManager.getGraph(param.contextId);
+    const graph = this.graphManager.getGraph(param.contextId);
     if (!graph) {
       return;
     }
@@ -246,18 +245,18 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
     });
   }
 
-  _audioParamWillBeDestroyed(event: Common.EventTarget.EventTargetEvent): void {
+  private audioParamWillBeDestroyed(event: Common.EventTarget.EventTargetEvent): void {
     const {contextId, paramId} = event.data;
-    const graph = this._graphManager.getGraph(contextId);
+    const graph = this.graphManager.getGraph(contextId);
     if (!graph) {
       return;
     }
     graph.removeParam(paramId);
   }
 
-  _nodesConnected(event: Common.EventTarget.EventTargetEvent): void {
+  private nodesConnected(event: Common.EventTarget.EventTargetEvent): void {
     const {contextId, sourceId, destinationId, sourceOutputIndex, destinationInputIndex} = event.data;
-    const graph = this._graphManager.getGraph(contextId);
+    const graph = this.graphManager.getGraph(contextId);
     if (!graph) {
       return;
     }
@@ -269,9 +268,9 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
     });
   }
 
-  _nodesDisconnected(event: Common.EventTarget.EventTargetEvent): void {
+  private nodesDisconnected(event: Common.EventTarget.EventTargetEvent): void {
     const {contextId, sourceId, destinationId, sourceOutputIndex, destinationInputIndex} = event.data;
-    const graph = this._graphManager.getGraph(contextId);
+    const graph = this.graphManager.getGraph(contextId);
     if (!graph) {
       return;
     }
@@ -283,9 +282,9 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
     });
   }
 
-  _nodeParamConnected(event: Common.EventTarget.EventTargetEvent): void {
+  private nodeParamConnected(event: Common.EventTarget.EventTargetEvent): void {
     const {contextId, sourceId, destinationId, sourceOutputIndex} = event.data;
-    const graph = this._graphManager.getGraph(contextId);
+    const graph = this.graphManager.getGraph(contextId);
     if (!graph) {
       return;
     }
@@ -303,9 +302,9 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
     });
   }
 
-  _nodeParamDisconnected(event: Common.EventTarget.EventTargetEvent): void {
+  private nodeParamDisconnected(event: Common.EventTarget.EventTargetEvent): void {
     const {contextId, sourceId, destinationId, sourceOutputIndex} = event.data;
-    const graph = this._graphManager.getGraph(contextId);
+    const graph = this.graphManager.getGraph(contextId);
     if (!graph) {
       return;
     }
@@ -323,44 +322,44 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
     });
   }
 
-  _updateDetailView(context: Protocol.WebAudio.BaseAudioContext): void {
-    if (this._landingPage.isShowing()) {
-      this._landingPage.detach();
+  private updateDetailView(context: Protocol.WebAudio.BaseAudioContext): void {
+    if (this.landingPage.isShowing()) {
+      this.landingPage.detach();
     }
     const detailBuilder = new ContextDetailBuilder(context);
-    this._detailViewContainer.removeChildren();
-    this._detailViewContainer.appendChild(detailBuilder.getFragment());
+    this.detailViewContainer.removeChildren();
+    this.detailViewContainer.appendChild(detailBuilder.getFragment());
   }
 
-  _updateSummaryBar(contextId: string, contextRealtimeData: Protocol.WebAudio.ContextRealtimeData): void {
+  private updateSummaryBar(contextId: string, contextRealtimeData: Protocol.WebAudio.ContextRealtimeData): void {
     const summaryBuilder = new ContextSummaryBuilder(contextId, contextRealtimeData);
-    this._summaryBarContainer.removeChildren();
-    this._summaryBarContainer.appendChild(summaryBuilder.getFragment());
+    this.summaryBarContainer.removeChildren();
+    this.summaryBarContainer.appendChild(summaryBuilder.getFragment());
   }
 
-  _clearSummaryBar(): void {
-    this._summaryBarContainer.removeChildren();
+  private clearSummaryBar(): void {
+    this.summaryBarContainer.removeChildren();
   }
 
-  async _pollRealtimeData(): Promise<void> {
-    const context = this._contextSelector.selectedContext();
+  private async pollRealtimeData(): Promise<void> {
+    const context = this.contextSelector.selectedContext();
     if (!context) {
-      this._clearSummaryBar();
+      this.clearSummaryBar();
       return;
     }
 
     for (const model of SDK.TargetManager.TargetManager.instance().models(WebAudioModel)) {
       // Display summary only for real-time context.
       if (context.contextType === 'realtime') {
-        if (!this._graphManager.hasContext(context.contextId)) {
+        if (!this.graphManager.hasContext(context.contextId)) {
           continue;
         }
         const realtimeData = await model.requestRealtimeData(context.contextId);
         if (realtimeData) {
-          this._updateSummaryBar(context.contextId, realtimeData);
+          this.updateSummaryBar(context.contextId, realtimeData);
         }
       } else {
-        this._clearSummaryBar();
+        this.clearSummaryBar();
       }
     }
   }

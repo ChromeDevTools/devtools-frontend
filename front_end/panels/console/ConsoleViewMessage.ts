@@ -193,36 +193,36 @@ const parameterToRemoteObject = (runtimeModel: SDK.RuntimeModel.RuntimeModel|nul
     };
 
 export class ConsoleViewMessage implements ConsoleViewportElement {
-  _message: SDK.ConsoleModel.ConsoleMessage;
-  _linkifier: Components.Linkifier.Linkifier;
-  _repeatCount: number;
-  _closeGroupDecorationCount: number;
-  _nestingLevel: number;
-  _selectableChildren: {
+  protected message: SDK.ConsoleModel.ConsoleMessage;
+  private readonly linkifier: Components.Linkifier.Linkifier;
+  private repeatCountInternal: number;
+  private closeGroupDecorationCount: number;
+  private readonly nestingLevelInternal: number;
+  private selectableChildren: {
     element: HTMLElement,
     forceSelect: () => void,
   }[];
-  _messageResized: (arg0: Common.EventTarget.EventTargetEvent) => void;
-  _element: HTMLElement|null;
-  _previewFormatter: ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter;
-  _searchRegex: RegExp|null;
-  _messageLevelIcon: UI.Icon.Icon|null;
-  _traceExpanded: boolean;
-  _expandTrace: ((arg0: boolean) => void)|null;
-  _anchorElement: HTMLElement|null;
-  _contentElement: HTMLElement|null;
-  _nestingLevelMarkers: HTMLElement[]|null;
-  _searchHighlightNodes: Element[];
-  _searchHighlightNodeChanges: UI.UIUtils.HighlightChange[];
-  _isVisible: boolean;
-  _cachedHeight: number;
-  _messagePrefix: string;
-  _timestampElement: HTMLElement|null;
-  _inSimilarGroup: boolean;
-  _similarGroupMarker: HTMLElement|null;
-  _lastInSimilarGroup: boolean;
-  _groupKey: string;
-  _repeatCountElement: UI.UIUtils.DevToolsSmallBubble|null;
+  private readonly messageResized: (arg0: Common.EventTarget.EventTargetEvent) => void;
+  protected elementInternal: HTMLElement|null;
+  private readonly previewFormatter: ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter;
+  private searchRegexInternal: RegExp|null;
+  protected messageLevelIcon: UI.Icon.Icon|null;
+  private traceExpanded: boolean;
+  private expandTrace: ((arg0: boolean) => void)|null;
+  protected anchorElement: HTMLElement|null;
+  protected contentElementInternal: HTMLElement|null;
+  private nestingLevelMarkers: HTMLElement[]|null;
+  private searchHighlightNodes: Element[];
+  private searchHighlightNodeChanges: UI.UIUtils.HighlightChange[];
+  private isVisibleInternal: boolean;
+  private cachedHeight: number;
+  private messagePrefix: string;
+  private timestampElement: HTMLElement|null;
+  private inSimilarGroup: boolean;
+  private similarGroupMarker: HTMLElement|null;
+  private lastInSimilarGroup: boolean;
+  private groupKeyInternal: string;
+  protected repeatCountElement: UI.UIUtils.DevToolsSmallBubble|null;
   private requestResolver: Logs.RequestResolver.RequestResolver;
   private issueResolver: IssuesManager.IssueResolver.IssueResolver;
 
@@ -230,36 +230,36 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier,
       requestResolver: Logs.RequestResolver.RequestResolver, issueResolver: IssuesManager.IssueResolver.IssueResolver,
       nestingLevel: number, onResize: (arg0: Common.EventTarget.EventTargetEvent) => void) {
-    this._message = consoleMessage;
-    this._linkifier = linkifier;
+    this.message = consoleMessage;
+    this.linkifier = linkifier;
     this.requestResolver = requestResolver;
     this.issueResolver = issueResolver;
-    this._repeatCount = 1;
-    this._closeGroupDecorationCount = 0;
-    this._nestingLevel = nestingLevel;
-    this._selectableChildren = [];
-    this._messageResized = onResize;
-    this._element = null;
+    this.repeatCountInternal = 1;
+    this.closeGroupDecorationCount = 0;
+    this.nestingLevelInternal = nestingLevel;
+    this.selectableChildren = [];
+    this.messageResized = onResize;
+    this.elementInternal = null;
 
-    this._previewFormatter = new ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter();
-    this._searchRegex = null;
-    this._messageLevelIcon = null;
-    this._traceExpanded = false;
-    this._expandTrace = null;
-    this._anchorElement = null;
-    this._contentElement = null;
-    this._nestingLevelMarkers = null;
-    this._searchHighlightNodes = [];
-    this._searchHighlightNodeChanges = [];
-    this._isVisible = false;
-    this._cachedHeight = 0;
-    this._messagePrefix = '';
-    this._timestampElement = null;
-    this._inSimilarGroup = false;
-    this._similarGroupMarker = null;
-    this._lastInSimilarGroup = false;
-    this._groupKey = '';
-    this._repeatCountElement = null;
+    this.previewFormatter = new ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter();
+    this.searchRegexInternal = null;
+    this.messageLevelIcon = null;
+    this.traceExpanded = false;
+    this.expandTrace = null;
+    this.anchorElement = null;
+    this.contentElementInternal = null;
+    this.nestingLevelMarkers = null;
+    this.searchHighlightNodes = [];
+    this.searchHighlightNodeChanges = [];
+    this.isVisibleInternal = false;
+    this.cachedHeight = 0;
+    this.messagePrefix = '';
+    this.timestampElement = null;
+    this.inSimilarGroup = false;
+    this.similarGroupMarker = null;
+    this.lastInSimilarGroup = false;
+    this.groupKeyInternal = '';
+    this.repeatCountElement = null;
   }
 
   element(): HTMLElement {
@@ -267,24 +267,24 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   wasShown(): void {
-    this._isVisible = true;
+    this.isVisibleInternal = true;
   }
 
   onResize(): void {
   }
 
   willHide(): void {
-    this._isVisible = false;
-    this._cachedHeight = this.element().offsetHeight;
+    this.isVisibleInternal = false;
+    this.cachedHeight = this.element().offsetHeight;
   }
 
   isVisible(): boolean {
-    return this._isVisible;
+    return this.isVisibleInternal;
   }
 
   fastHeight(): number {
-    if (this._cachedHeight) {
-      return this._cachedHeight;
+    if (this.cachedHeight) {
+      return this.cachedHeight;
     }
     return this.approximateFastHeight();
   }
@@ -294,16 +294,16 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   consoleMessage(): SDK.ConsoleModel.ConsoleMessage {
-    return this._message;
+    return this.message;
   }
 
-  _buildMessage(): HTMLElement {
+  protected buildMessage(): HTMLElement {
     let messageElement;
-    let messageText: Common.UIString.LocalizedString|string = this._message.messageText;
-    if (this._message.source === SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI) {
-      switch (this._message.type) {
+    let messageText: Common.UIString.LocalizedString|string = this.message.messageText;
+    if (this.message.source === SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI) {
+      switch (this.message.type) {
         case Protocol.Runtime.ConsoleAPICalledEventType.Trace:
-          messageElement = this._format(this._message.parameters || ['console.trace']);
+          messageElement = this.format(this.message.parameters || ['console.trace']);
           break;
         case Protocol.Runtime.ConsoleAPICalledEventType.Clear:
           messageElement = document.createElement('span');
@@ -319,73 +319,73 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
               }));
           break;
         case Protocol.Runtime.ConsoleAPICalledEventType.Dir: {
-          const obj = this._message.parameters ? this._message.parameters[0] : undefined;
+          const obj = this.message.parameters ? this.message.parameters[0] : undefined;
           const args = ['%O', obj];
-          messageElement = this._format(args);
+          messageElement = this.format(args);
           break;
         }
         case Protocol.Runtime.ConsoleAPICalledEventType.Profile:
         case Protocol.Runtime.ConsoleAPICalledEventType.ProfileEnd:
-          messageElement = this._format([messageText]);
+          messageElement = this.format([messageText]);
           break;
         default: {
-          if (this._message.type === Protocol.Runtime.ConsoleAPICalledEventType.Assert) {
-            this._messagePrefix = i18nString(UIStrings.assertionFailed);
+          if (this.message.type === Protocol.Runtime.ConsoleAPICalledEventType.Assert) {
+            this.messagePrefix = i18nString(UIStrings.assertionFailed);
           }
-          if (this._message.parameters && this._message.parameters.length === 1) {
-            const parameter = this._message.parameters[0];
+          if (this.message.parameters && this.message.parameters.length === 1) {
+            const parameter = this.message.parameters[0];
             if (typeof parameter !== 'string' && parameter.type === 'string') {
-              messageElement = this._tryFormatAsError((parameter.value as string));
+              messageElement = this.tryFormatAsError((parameter.value as string));
             }
           }
-          const args = this._message.parameters || [messageText];
-          messageElement = messageElement || this._format(args);
+          const args = this.message.parameters || [messageText];
+          messageElement = messageElement || this.format(args);
         }
       }
     } else {
-      if (this._message.source === Protocol.Log.LogEntrySource.Network) {
-        messageElement = this._formatAsNetworkRequest() || this._format([messageText]);
+      if (this.message.source === Protocol.Log.LogEntrySource.Network) {
+        messageElement = this.formatAsNetworkRequest() || this.format([messageText]);
       } else {
-        const messageInParameters = this._message.parameters && messageText === (this._message.parameters[0] as string);
+        const messageInParameters = this.message.parameters && messageText === (this.message.parameters[0] as string);
         // These terms are locked because the console message will not be translated anyway.
-        if (this._message.source === Protocol.Log.LogEntrySource.Violation) {
+        if (this.message.source === Protocol.Log.LogEntrySource.Violation) {
           messageText = i18nString(UIStrings.violationS, {PH1: messageText});
-        } else if (this._message.source === Protocol.Log.LogEntrySource.Intervention) {
+        } else if (this.message.source === Protocol.Log.LogEntrySource.Intervention) {
           messageText = i18nString(UIStrings.interventionS, {PH1: messageText});
-        } else if (this._message.source === Protocol.Log.LogEntrySource.Deprecation) {
+        } else if (this.message.source === Protocol.Log.LogEntrySource.Deprecation) {
           messageText = i18nString(UIStrings.deprecationS, {PH1: messageText});
         }
-        const args = this._message.parameters || [messageText];
+        const args = this.message.parameters || [messageText];
         if (messageInParameters) {
           args[0] = messageText;
         }
-        messageElement = this._format(args);
+        messageElement = this.format(args);
       }
     }
     messageElement.classList.add('console-message-text');
 
     const formattedMessage = document.createElement('span');
     formattedMessage.classList.add('source-code');
-    this._anchorElement = this._buildMessageAnchor();
-    if (this._anchorElement) {
-      formattedMessage.appendChild(this._anchorElement);
+    this.anchorElement = this.buildMessageAnchor();
+    if (this.anchorElement) {
+      formattedMessage.appendChild(this.anchorElement);
     }
     formattedMessage.appendChild(messageElement);
     return formattedMessage;
   }
 
-  _formatAsNetworkRequest(): HTMLElement|null {
-    const request = Logs.NetworkLog.NetworkLog.requestForConsoleMessage(this._message);
+  private formatAsNetworkRequest(): HTMLElement|null {
+    const request = Logs.NetworkLog.NetworkLog.requestForConsoleMessage(this.message);
     if (!request) {
       return null;
     }
     const messageElement = document.createElement('span');
-    if (this._message.level === Protocol.Log.LogEntryLevel.Error) {
+    if (this.message.level === Protocol.Log.LogEntryLevel.Error) {
       UI.UIUtils.createTextChild(messageElement, request.requestMethod + ' ');
       const linkElement = Components.Linkifier.Linkifier.linkifyRevealable(request, request.url(), request.url());
       // Focus is handled by the viewport.
       linkElement.tabIndex = -1;
-      this._selectableChildren.push({element: linkElement, forceSelect: (): void => linkElement.focus()});
+      this.selectableChildren.push({element: linkElement, forceSelect: (): void => linkElement.focus()});
       messageElement.appendChild(linkElement);
       if (request.failed) {
         UI.UIUtils.createTextChildren(messageElement, ' ', request.localizedFailDescription || '');
@@ -397,15 +397,15 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         UI.UIUtils.createTextChildren(messageElement, ' (', request.statusText, ')');
       }
     } else {
-      const messageText = this._message.messageText;
-      const fragment = this._linkifyWithCustomLinkifier(messageText, (text, url, lineNumber, columnNumber) => {
+      const messageText = this.message.messageText;
+      const fragment = this.linkifyWithCustomLinkifier(messageText, (text, url, lineNumber, columnNumber) => {
         const linkElement = url === request.url() ?
             Components.Linkifier.Linkifier.linkifyRevealable(
                 (request as SDK.NetworkRequest.NetworkRequest), url, request.url()) :
             Components.Linkifier.Linkifier.linkifyURL(
                 url, ({text, lineNumber, columnNumber} as Components.Linkifier.LinkifyURLOptions));
         linkElement.tabIndex = -1;
-        this._selectableChildren.push({element: linkElement, forceSelect: (): void => linkElement.focus()});
+        this.selectableChildren.push({element: linkElement, forceSelect: (): void => linkElement.focus()});
         return linkElement;
       });
       messageElement.appendChild(fragment);
@@ -415,7 +415,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
   private createAffectedResourceLinks(): HTMLElement[] {
     const elements = [];
-    const requestId = this._message.getAffectedResources()?.requestId;
+    const requestId = this.message.getAffectedResources()?.requestId;
     if (requestId) {
       const icon = new RequestLinkIcon.RequestLinkIcon.RequestLinkIcon();
       icon.classList.add('resource-links');
@@ -426,7 +426,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       };
       elements.push(icon);
     }
-    const issueId = this._message.getAffectedResources()?.issueId;
+    const issueId = this.message.getAffectedResources()?.issueId;
     if (issueId) {
       const icon = new IssueCounter.IssueLinkIcon.IssueLinkIcon();
       icon.classList.add('resource-links');
@@ -436,24 +436,24 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return elements;
   }
 
-  _buildMessageAnchor(): HTMLElement|null {
+  protected buildMessageAnchor(): HTMLElement|null {
     const linkify = (message: SDK.ConsoleModel.ConsoleMessage): HTMLElement|null => {
       if (message.scriptId) {
-        return this._linkifyScriptId(message.scriptId, message.url || '', message.line, message.column);
+        return this.linkifyScriptId(message.scriptId, message.url || '', message.line, message.column);
       }
       if (message.stackTrace && message.stackTrace.callFrames.length) {
-        return this._linkifyStackTraceTopFrame(message.stackTrace);
+        return this.linkifyStackTraceTopFrame(message.stackTrace);
       }
       if (message.url && message.url !== 'undefined') {
-        return this._linkifyLocation(message.url, message.line, message.column);
+        return this.linkifyLocation(message.url, message.line, message.column);
       }
       return null;
     };
-    const anchorElement = linkify(this._message);
+    const anchorElement = linkify(this.message);
     // Append a space to prevent the anchor text from being glued to the console message when the user selects and copies the console messages.
     if (anchorElement) {
       anchorElement.tabIndex = -1;
-      this._selectableChildren.push({
+      this.selectableChildren.push({
         element: anchorElement,
         forceSelect: (): void => anchorElement.focus(),
       });
@@ -472,13 +472,13 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return null;
   }
 
-  _buildMessageWithStackTrace(runtimeModel: SDK.RuntimeModel.RuntimeModel): HTMLElement {
+  private buildMessageWithStackTrace(runtimeModel: SDK.RuntimeModel.RuntimeModel): HTMLElement {
     const toggleElement = document.createElement('div');
     toggleElement.classList.add('console-message-stack-trace-toggle');
     const contentElement = toggleElement.createChild('div', 'console-message-stack-trace-wrapper');
     UI.ARIAUtils.markAsTree(contentElement);
 
-    const messageElement = this._buildMessage();
+    const messageElement = this.buildMessage();
     const icon = UI.Icon.Icon.create('smallicon-triangle-right', 'console-message-expand-icon');
     const clickableElement = contentElement.createChild('div');
     UI.ARIAUtils.markAsTreeitem(clickableElement);
@@ -489,72 +489,72 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     clickableElement.appendChild(messageElement);
     const stackTraceElement = contentElement.createChild('div');
     const stackTracePreview = Components.JSPresentationUtils.buildStackTracePreviewContents(
-        runtimeModel.target(), this._linkifier, {stackTrace: this._message.stackTrace, tabStops: undefined});
+        runtimeModel.target(), this.linkifier, {stackTrace: this.message.stackTrace, tabStops: undefined});
     stackTraceElement.appendChild(stackTracePreview.element);
     for (const linkElement of stackTracePreview.links) {
-      this._selectableChildren.push({element: linkElement, forceSelect: (): void => linkElement.focus()});
+      this.selectableChildren.push({element: linkElement, forceSelect: (): void => linkElement.focus()});
     }
     stackTraceElement.classList.add('hidden');
     UI.ARIAUtils.markAsGroup(stackTraceElement);
-    this._expandTrace = (expand: boolean): void => {
+    this.expandTrace = (expand: boolean): void => {
       icon.setIconType(expand ? 'smallicon-triangle-down' : 'smallicon-triangle-right');
       stackTraceElement.classList.toggle('hidden', !expand);
       UI.ARIAUtils.setExpanded(clickableElement, expand);
-      this._traceExpanded = expand;
+      this.traceExpanded = expand;
     };
 
     const toggleStackTrace = (event: Event): void => {
       if (UI.UIUtils.isEditing() || contentElement.hasSelection()) {
         return;
       }
-      this._expandTrace && this._expandTrace(stackTraceElement.classList.contains('hidden'));
+      this.expandTrace && this.expandTrace(stackTraceElement.classList.contains('hidden'));
       event.consume();
     };
 
     clickableElement.addEventListener('click', toggleStackTrace, false);
-    if (this._message.type === Protocol.Runtime.ConsoleAPICalledEventType.Trace) {
-      this._expandTrace(true);
+    if (this.message.type === Protocol.Runtime.ConsoleAPICalledEventType.Trace) {
+      this.expandTrace(true);
     }
 
     // @ts-ignore
-    toggleElement._expandStackTraceForTest = this._expandTrace.bind(this, true);
+    toggleElement._expandStackTraceForTest = this.expandTrace.bind(this, true);
     return toggleElement;
   }
 
-  _linkifyLocation(url: string, lineNumber: number, columnNumber: number): HTMLElement|null {
-    const runtimeModel = this._message.runtimeModel();
+  private linkifyLocation(url: string, lineNumber: number, columnNumber: number): HTMLElement|null {
+    const runtimeModel = this.message.runtimeModel();
     if (!runtimeModel) {
       return null;
     }
-    return this._linkifier.linkifyScriptLocation(
+    return this.linkifier.linkifyScriptLocation(
         runtimeModel.target(), /* scriptId */ null, url, lineNumber,
         {columnNumber, className: undefined, tabStop: undefined, inlineFrameIndex: 0});
   }
 
-  _linkifyStackTraceTopFrame(stackTrace: Protocol.Runtime.StackTrace): HTMLElement|null {
-    const runtimeModel = this._message.runtimeModel();
+  private linkifyStackTraceTopFrame(stackTrace: Protocol.Runtime.StackTrace): HTMLElement|null {
+    const runtimeModel = this.message.runtimeModel();
     if (!runtimeModel) {
       return null;
     }
-    return this._linkifier.linkifyStackTraceTopFrame(runtimeModel.target(), stackTrace);
+    return this.linkifier.linkifyStackTraceTopFrame(runtimeModel.target(), stackTrace);
   }
 
-  _linkifyScriptId(scriptId: string, url: string, lineNumber: number, columnNumber: number): HTMLElement|null {
-    const runtimeModel = this._message.runtimeModel();
+  private linkifyScriptId(scriptId: string, url: string, lineNumber: number, columnNumber: number): HTMLElement|null {
+    const runtimeModel = this.message.runtimeModel();
     if (!runtimeModel) {
       return null;
     }
-    return this._linkifier.linkifyScriptLocation(
+    return this.linkifier.linkifyScriptLocation(
         runtimeModel.target(), scriptId, url, lineNumber,
         {columnNumber, className: undefined, tabStop: undefined, inlineFrameIndex: 0});
   }
 
-  _format(rawParameters: (string|SDK.RemoteObject.RemoteObject|Protocol.Runtime.RemoteObject|undefined)[]):
+  private format(rawParameters: (string|SDK.RemoteObject.RemoteObject|Protocol.Runtime.RemoteObject|undefined)[]):
       HTMLElement {
     // This node is used like a Builder. Values are continually appended onto it.
     const formattedResult = document.createElement('span');
-    if (this._messagePrefix) {
-      formattedResult.createChild('span').textContent = this._messagePrefix;
+    if (this.messagePrefix) {
+      formattedResult.createChild('span').textContent = this.messagePrefix;
     }
     if (!rawParameters.length) {
       return formattedResult;
@@ -563,17 +563,17 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     // Formatting code below assumes that parameters are all wrappers whereas frontend console
     // API allows passing arbitrary values as messages (strings, numbers, etc.). Wrap them here.
     // FIXME: Only pass runtime wrappers here.
-    let parameters = rawParameters.map(parameterToRemoteObject(this._message.runtimeModel()));
+    let parameters = rawParameters.map(parameterToRemoteObject(this.message.runtimeModel()));
 
     // There can be string log and string eval result. We distinguish between them based on message type.
     const shouldFormatMessage =
         SDK.RemoteObject.RemoteObject.type((parameters as SDK.RemoteObject.RemoteObject[])[0]) === 'string' &&
-        (this._message.type !== SDK.ConsoleModel.FrontendMessageType.Result ||
-         this._message.level === Protocol.Log.LogEntryLevel.Error);
+        (this.message.type !== SDK.ConsoleModel.FrontendMessageType.Result ||
+         this.message.level === Protocol.Log.LogEntryLevel.Error);
 
     // Multiple parameters with the first being a format string. Save unused substitutions.
     if (shouldFormatMessage) {
-      const result = this._formatWithSubstitutionString(
+      const result = this.formatWithSubstitutionString(
           (parameters[0].description as string), parameters.slice(1), formattedResult);
       parameters = Array.from(result.unusedSubstitutions || []);
       if (parameters.length) {
@@ -585,9 +585,9 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     for (let i = 0; i < parameters.length; ++i) {
       // Inline strings when formatting.
       if (shouldFormatMessage && parameters[i].type === 'string') {
-        formattedResult.appendChild(this._linkifyStringAsFragment(parameters[i].description || ''));
+        formattedResult.appendChild(this.linkifyStringAsFragment(parameters[i].description || ''));
       } else {
-        formattedResult.appendChild(this._formatParameter(parameters[i], false, true));
+        formattedResult.appendChild(this.formatParameter(parameters[i], false, true));
       }
       if (i < parameters.length - 1) {
         UI.UIUtils.createTextChild(formattedResult, ' ');
@@ -596,8 +596,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return formattedResult;
   }
 
-  _formatParameter(output: SDK.RemoteObject.RemoteObject, forceObjectFormat?: boolean, includePreview?: boolean):
-      HTMLElement {
+  protected formatParameter(
+      output: SDK.RemoteObject.RemoteObject, forceObjectFormat?: boolean, includePreview?: boolean): HTMLElement {
     if (output.customPreview()) {
       return new ObjectUI.CustomPreviewComponent.CustomPreviewComponent(output).element as HTMLElement;
     }
@@ -606,10 +606,10 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     let element;
     switch (outputType) {
       case 'error':
-        element = this._formatParameterAsError(output);
+        element = this.formatParameterAsError(output);
         break;
       case 'function':
-        element = this._formatParameterAsFunction(output, includePreview);
+        element = this.formatParameterAsFunction(output, includePreview);
         break;
       case 'array':
       case 'arraybuffer':
@@ -627,16 +627,16 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       case 'weakmap':
       case 'weakset':
       case 'webassemblymemory':
-        element = this._formatParameterAsObject(output, includePreview);
+        element = this.formatParameterAsObject(output, includePreview);
         break;
       case 'node':
-        element = output.isNode() ? this._formatParameterAsNode(output) : this._formatParameterAsObject(output, false);
+        element = output.isNode() ? this.formatParameterAsNode(output) : this.formatParameterAsObject(output, false);
         break;
       case 'trustedtype':
-        element = this._formatParameterAsObject(output, false);
+        element = this.formatParameterAsObject(output, false);
         break;
       case 'string':
-        element = this._formatParameterAsString(output);
+        element = this.formatParameterAsString(output);
         break;
       case 'boolean':
       case 'date':
@@ -646,10 +646,10 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       case 'symbol':
       case 'undefined':
       case 'bigint':
-        element = this._formatParameterAsValue(output);
+        element = this.formatParameterAsValue(output);
         break;
       default:
-        element = this._formatParameterAsValue(output);
+        element = this.formatParameterAsValue(output);
         console.error(`Tried to format remote object of unknown type ${outputType}.`);
     }
     element.classList.add(`object-value-${outputType}`);
@@ -657,7 +657,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return element;
   }
 
-  _formatParameterAsValue(obj: SDK.RemoteObject.RemoteObject): HTMLElement {
+  private formatParameterAsValue(obj: SDK.RemoteObject.RemoteObject): HTMLElement {
     const result = document.createElement('span');
     const description = obj.description || '';
     if (description.length > getMaxTokenizableStringLength()) {
@@ -667,32 +667,32 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     } else {
       UI.UIUtils.createTextChild(result, description);
     }
-    result.addEventListener('contextmenu', this._contextMenuEventFired.bind(this, obj), false);
+    result.addEventListener('contextmenu', this.contextMenuEventFired.bind(this, obj), false);
     return result;
   }
 
-  _formatParameterAsTrustedType(obj: SDK.RemoteObject.RemoteObject): HTMLElement {
+  private formatParameterAsTrustedType(obj: SDK.RemoteObject.RemoteObject): HTMLElement {
     const result = document.createElement('span');
     const trustedContentSpan = document.createElement('span');
-    trustedContentSpan.appendChild(this._formatParameterAsString(obj));
+    trustedContentSpan.appendChild(this.formatParameterAsString(obj));
     trustedContentSpan.classList.add('object-value-string');
     UI.UIUtils.createTextChild(result, `${obj.className} `);
     result.appendChild(trustedContentSpan);
     return result;
   }
 
-  _formatParameterAsObject(obj: SDK.RemoteObject.RemoteObject, includePreview?: boolean): HTMLElement {
+  private formatParameterAsObject(obj: SDK.RemoteObject.RemoteObject, includePreview?: boolean): HTMLElement {
     const titleElement = document.createElement('span');
     titleElement.classList.add('console-object');
     if (includePreview && obj.preview) {
       titleElement.classList.add('console-object-preview');
-      this._previewFormatter.appendObjectPreview(titleElement, obj.preview, false /* isEntry */);
+      this.previewFormatter.appendObjectPreview(titleElement, obj.preview, false /* isEntry */);
     } else if (obj.type === 'function') {
       const functionElement = titleElement.createChild('span');
       ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.formatObjectAsFunction(obj, functionElement, false);
       titleElement.classList.add('object-value-function');
     } else if (obj.subtype === 'trustedtype') {
-      titleElement.appendChild(this._formatParameterAsTrustedType(obj));
+      titleElement.appendChild(this.formatParameterAsTrustedType(obj));
     } else {
       UI.UIUtils.createTextChild(titleElement, obj.description || '');
     }
@@ -702,24 +702,24 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     }
 
     const note = titleElement.createChild('span', 'object-state-note info-note');
-    if (this._message.type === SDK.ConsoleModel.FrontendMessageType.QueryObjectResult) {
+    if (this.message.type === SDK.ConsoleModel.FrontendMessageType.QueryObjectResult) {
       UI.Tooltip.Tooltip.install(note, i18nString(UIStrings.thisValueWillNotBeCollectedUntil));
     } else {
       UI.Tooltip.Tooltip.install(note, i18nString(UIStrings.thisValueWasEvaluatedUponFirst));
     }
 
-    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(obj, titleElement, this._linkifier);
+    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(obj, titleElement, this.linkifier);
     section.element.classList.add('console-view-object-properties-section');
     section.enableContextMenu();
     section.setShowSelectionOnKeyboardFocus(true, true);
-    this._selectableChildren.push(section);
-    section.addEventListener(UI.TreeOutline.Events.ElementAttached, this._messageResized);
-    section.addEventListener(UI.TreeOutline.Events.ElementExpanded, this._messageResized);
-    section.addEventListener(UI.TreeOutline.Events.ElementCollapsed, this._messageResized);
+    this.selectableChildren.push(section);
+    section.addEventListener(UI.TreeOutline.Events.ElementAttached, this.messageResized);
+    section.addEventListener(UI.TreeOutline.Events.ElementExpanded, this.messageResized);
+    section.addEventListener(UI.TreeOutline.Events.ElementCollapsed, this.messageResized);
     return section.element;
   }
 
-  _formatParameterAsFunction(func: SDK.RemoteObject.RemoteObject, includePreview?: boolean): HTMLElement {
+  private formatParameterAsFunction(func: SDK.RemoteObject.RemoteObject, includePreview?: boolean): HTMLElement {
     const result = document.createElement('span');
     SDK.RemoteObject.RemoteFunction.objectAsFunction(func).targetFunction().then(formatTargetFunction.bind(this));
     return result;
@@ -733,32 +733,32 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         const note = result.createChild('span', 'object-info-state-note');
         UI.Tooltip.Tooltip.install(note, i18nString(UIStrings.functionWasResolvedFromBound));
       }
-      result.addEventListener('contextmenu', this._contextMenuEventFired.bind(this, targetFunction), false);
-      promise.then(() => this._formattedParameterAsFunctionForTest());
+      result.addEventListener('contextmenu', this.contextMenuEventFired.bind(this, targetFunction), false);
+      promise.then(() => this.formattedParameterAsFunctionForTest());
     }
   }
 
-  _formattedParameterAsFunctionForTest(): void {
+  private formattedParameterAsFunctionForTest(): void {
   }
 
-  _contextMenuEventFired(obj: SDK.RemoteObject.RemoteObject, event: Event): void {
+  private contextMenuEventFired(obj: SDK.RemoteObject.RemoteObject, event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.appendApplicableItems(obj);
     contextMenu.show();
   }
 
-  _renderPropertyPreviewOrAccessor(
+  protected renderPropertyPreviewOrAccessor(
       object: SDK.RemoteObject.RemoteObject|null, property: Protocol.Runtime.PropertyPreview, propertyPath: {
         name: (string|symbol),
       }[]): HTMLElement {
     if (property.type === 'accessor') {
-      return this._formatAsAccessorProperty(object, propertyPath.map(property => property.name.toString()), false);
+      return this.formatAsAccessorProperty(object, propertyPath.map(property => property.name.toString()), false);
     }
-    return this._previewFormatter.renderPropertyPreview(
+    return this.previewFormatter.renderPropertyPreview(
         property.type, 'subtype' in property ? property.subtype : undefined, null, property.value);
   }
 
-  _formatParameterAsNode(remoteObject: SDK.RemoteObject.RemoteObject): HTMLElement {
+  private formatParameterAsNode(remoteObject: SDK.RemoteObject.RemoteObject): HTMLElement {
     const result = document.createElement('span');
 
     const domModel = remoteObject.runtimeModel().target().model(SDK.DOMModel.DOMModel);
@@ -767,53 +767,53 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     }
     domModel.pushObjectAsNodeToFrontend(remoteObject).then(async (node: SDK.DOMModel.DOMNode|null) => {
       if (!node) {
-        result.appendChild(this._formatParameterAsObject(remoteObject, false));
+        result.appendChild(this.formatParameterAsObject(remoteObject, false));
         return;
       }
       const renderResult = await UI.UIUtils.Renderer.render((node as Object));
       if (renderResult) {
         if (renderResult.tree) {
-          this._selectableChildren.push(renderResult.tree);
-          renderResult.tree.addEventListener(UI.TreeOutline.Events.ElementAttached, this._messageResized);
-          renderResult.tree.addEventListener(UI.TreeOutline.Events.ElementExpanded, this._messageResized);
-          renderResult.tree.addEventListener(UI.TreeOutline.Events.ElementCollapsed, this._messageResized);
+          this.selectableChildren.push(renderResult.tree);
+          renderResult.tree.addEventListener(UI.TreeOutline.Events.ElementAttached, this.messageResized);
+          renderResult.tree.addEventListener(UI.TreeOutline.Events.ElementExpanded, this.messageResized);
+          renderResult.tree.addEventListener(UI.TreeOutline.Events.ElementCollapsed, this.messageResized);
         }
         result.appendChild(renderResult.node);
       } else {
-        result.appendChild(this._formatParameterAsObject(remoteObject, false));
+        result.appendChild(this.formatParameterAsObject(remoteObject, false));
       }
-      this._formattedParameterAsNodeForTest();
+      this.formattedParameterAsNodeForTest();
     });
 
     return result;
   }
 
-  _formattedParameterAsNodeForTest(): void {
+  private formattedParameterAsNodeForTest(): void {
   }
 
-  _formatParameterAsString(output: SDK.RemoteObject.RemoteObject): HTMLElement {
+  private formatParameterAsString(output: SDK.RemoteObject.RemoteObject): HTMLElement {
     const description = output.description ?? '';
     const text = Platform.StringUtilities.formatAsJSLiteral(description);
     const result = document.createElement('span');
-    result.addEventListener('contextmenu', this._contextMenuEventFired.bind(this, output), false);
-    result.appendChild(this._linkifyStringAsFragment(text));
+    result.addEventListener('contextmenu', this.contextMenuEventFired.bind(this, output), false);
+    result.appendChild(this.linkifyStringAsFragment(text));
     return result;
   }
 
-  _formatParameterAsError(output: SDK.RemoteObject.RemoteObject): HTMLElement {
+  private formatParameterAsError(output: SDK.RemoteObject.RemoteObject): HTMLElement {
     const result = document.createElement('span');
-    const errorSpan = this._tryFormatAsError(output.description || '');
-    result.appendChild(errorSpan ? errorSpan : this._linkifyStringAsFragment(output.description || ''));
+    const errorSpan = this.tryFormatAsError(output.description || '');
+    result.appendChild(errorSpan ? errorSpan : this.linkifyStringAsFragment(output.description || ''));
     return result;
   }
 
-  _formatAsArrayEntry(output: SDK.RemoteObject.RemoteObject): HTMLElement {
-    return this._previewFormatter.renderPropertyPreview(
+  private formatAsArrayEntry(output: SDK.RemoteObject.RemoteObject): HTMLElement {
+    return this.previewFormatter.renderPropertyPreview(
         output.type, output.subtype, output.className, output.description);
   }
 
-  _formatAsAccessorProperty(object: SDK.RemoteObject.RemoteObject|null, propertyPath: string[], isArrayEntry: boolean):
-      HTMLElement {
+  private formatAsAccessorProperty(
+      object: SDK.RemoteObject.RemoteObject|null, propertyPath: string[], isArrayEntry: boolean): HTMLElement {
     const rootElement =
         ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.createRemoteObjectAccessorPropertySpan(
             object, propertyPath, onInvokeGetterClick.bind(this));
@@ -830,7 +830,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         element.textContent = i18nString(UIStrings.exception);
         UI.Tooltip.Tooltip.install(element, (object.description as string));
       } else if (isArrayEntry) {
-        rootElement.appendChild(this._formatAsArrayEntry(object));
+        rootElement.appendChild(this.formatAsArrayEntry(object));
       } else {
         // Make a PropertyPreview from the RemoteObject similar to the backend logic.
         const maxLength = 100;
@@ -845,14 +845,14 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
           }
         }
         rootElement.appendChild(
-            this._previewFormatter.renderPropertyPreview(type, subtype, object.className, description));
+            this.previewFormatter.renderPropertyPreview(type, subtype, object.className, description));
       }
     }
 
     return rootElement;
   }
 
-  _formatWithSubstitutionString(
+  private formatWithSubstitutionString(
       format: string, parameters: SDK.RemoteObject.RemoteObject[], formattedResult: HTMLElement): {
     formattedResult: Element,
     unusedSubstitutions: ArrayLike<SDK.RemoteObject.RemoteObject>|null,
@@ -861,7 +861,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         this: ConsoleViewMessage, force: boolean, includePreview: boolean,
         obj?: string|SDK.RemoteObject.RemoteObject): string|HTMLElement|undefined {
       if (obj instanceof SDK.RemoteObject.RemoteObject) {
-        return this._formatParameter(obj, force, includePreview);
+        return this.formatParameter(obj, force, includePreview);
       }
       return stringFormatter(obj);
     }
@@ -979,13 +979,13 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         return a;
       }
       if (!currentStyle) {
-        a.appendChild(this._linkifyStringAsFragment(String(b)));
+        a.appendChild(this.linkifyStringAsFragment(String(b)));
         return a;
       }
       const lines = String(b).split('\n');
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
-        const lineFragment = this._linkifyStringAsFragment(line);
+        const lineFragment = this.linkifyStringAsFragment(line);
         const wrapper = document.createElement('span');
         wrapper.style.setProperty('contain', 'paint');
         wrapper.style.setProperty('display', 'inline-block');
@@ -994,7 +994,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         applyCurrentStyle(wrapper);
         for (const child of wrapper.children) {
           if (child.classList.contains('devtools-link') && child instanceof HTMLElement) {
-            this._applyForcedVisibleStyle(child);
+            this.applyForcedVisibleStyle(child);
           }
         }
         a.appendChild(wrapper);
@@ -1018,7 +1018,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return Platform.StringUtilities.format(format, parameters, formatters, formattedResult, append.bind(this));
   }
 
-  _applyForcedVisibleStyle(element: HTMLElement): void {
+  private applyForcedVisibleStyle(element: HTMLElement): void {
     element.style.setProperty('-webkit-text-stroke', '0', 'important');
     element.style.setProperty('text-decoration', 'underline', 'important');
 
@@ -1027,9 +1027,9 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     element.style.setProperty('color', themedColor, 'important');
 
     let backgroundColor = 'hsl(0, 0%, 100%)';
-    if (this._message.level === Protocol.Log.LogEntryLevel.Error) {
+    if (this.message.level === Protocol.Log.LogEntryLevel.Error) {
       backgroundColor = 'hsl(0, 100%, 97%)';
-    } else if (this._message.level === Protocol.Log.LogEntryLevel.Warning || this._shouldRenderAsWarning()) {
+    } else if (this.message.level === Protocol.Log.LogEntryLevel.Warning || this.shouldRenderAsWarning()) {
       backgroundColor = 'hsl(50, 100%, 95%)';
     }
     const themedBackgroundColor = ThemeSupport.ThemeSupport.instance().patchColorText(
@@ -1040,7 +1040,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   matchesFilterRegex(regexObject: RegExp): boolean {
     regexObject.lastIndex = 0;
     const contentElement = this.contentElement();
-    const anchorText = this._anchorElement ? this._anchorElement.deepTextContent() : '';
+    const anchorText = this.anchorElement ? this.anchorElement.deepTextContent() : '';
     return (Boolean(anchorText) && regexObject.test(anchorText.trim())) ||
         regexObject.test(contentElement.deepTextContent().slice(anchorText.length));
   }
@@ -1051,78 +1051,79 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   updateTimestamp(): void {
-    if (!this._contentElement) {
+    if (!this.contentElementInternal) {
       return;
     }
 
     if (Common.Settings.Settings.instance().moduleSetting('consoleTimestampsEnabled').get()) {
-      if (!this._timestampElement) {
-        this._timestampElement = document.createElement('span');
-        this._timestampElement.classList.add('console-timestamp');
+      if (!this.timestampElement) {
+        this.timestampElement = document.createElement('span');
+        this.timestampElement.classList.add('console-timestamp');
       }
-      this._timestampElement.textContent = UI.UIUtils.formatTimestamp(this._message.timestamp, false) + ' ';
-      UI.Tooltip.Tooltip.install(this._timestampElement, UI.UIUtils.formatTimestamp(this._message.timestamp, true));
-      this._contentElement.insertBefore(this._timestampElement, this._contentElement.firstChild);
-    } else if (this._timestampElement) {
-      this._timestampElement.remove();
-      this._timestampElement = null;
+      this.timestampElement.textContent = UI.UIUtils.formatTimestamp(this.message.timestamp, false) + ' ';
+      UI.Tooltip.Tooltip.install(this.timestampElement, UI.UIUtils.formatTimestamp(this.message.timestamp, true));
+      this.contentElementInternal.insertBefore(this.timestampElement, this.contentElementInternal.firstChild);
+    } else if (this.timestampElement) {
+      this.timestampElement.remove();
+      this.timestampElement = null;
     }
   }
 
   nestingLevel(): number {
-    return this._nestingLevel;
+    return this.nestingLevelInternal;
   }
 
   setInSimilarGroup(inSimilarGroup: boolean, isLast?: boolean): void {
-    this._inSimilarGroup = inSimilarGroup;
-    this._lastInSimilarGroup = inSimilarGroup && Boolean(isLast);
-    if (this._similarGroupMarker && !inSimilarGroup) {
-      this._similarGroupMarker.remove();
-      this._similarGroupMarker = null;
-    } else if (this._element && !this._similarGroupMarker && inSimilarGroup) {
-      this._similarGroupMarker = document.createElement('div');
-      this._similarGroupMarker.classList.add('nesting-level-marker');
-      this._element.insertBefore(this._similarGroupMarker, this._element.firstChild);
-      this._similarGroupMarker.classList.toggle('group-closed', this._lastInSimilarGroup);
+    this.inSimilarGroup = inSimilarGroup;
+    this.lastInSimilarGroup = inSimilarGroup && Boolean(isLast);
+    if (this.similarGroupMarker && !inSimilarGroup) {
+      this.similarGroupMarker.remove();
+      this.similarGroupMarker = null;
+    } else if (this.elementInternal && !this.similarGroupMarker && inSimilarGroup) {
+      this.similarGroupMarker = document.createElement('div');
+      this.similarGroupMarker.classList.add('nesting-level-marker');
+      this.elementInternal.insertBefore(this.similarGroupMarker, this.elementInternal.firstChild);
+      this.similarGroupMarker.classList.toggle('group-closed', this.lastInSimilarGroup);
     }
   }
 
   isLastInSimilarGroup(): boolean {
-    return Boolean(this._inSimilarGroup) && Boolean(this._lastInSimilarGroup);
+    return Boolean(this.inSimilarGroup) && Boolean(this.lastInSimilarGroup);
   }
 
   resetCloseGroupDecorationCount(): void {
-    if (!this._closeGroupDecorationCount) {
+    if (!this.closeGroupDecorationCount) {
       return;
     }
-    this._closeGroupDecorationCount = 0;
-    this._updateCloseGroupDecorations();
+    this.closeGroupDecorationCount = 0;
+    this.updateCloseGroupDecorations();
   }
 
   incrementCloseGroupDecorationCount(): void {
-    ++this._closeGroupDecorationCount;
-    this._updateCloseGroupDecorations();
+    ++this.closeGroupDecorationCount;
+    this.updateCloseGroupDecorations();
   }
 
-  _updateCloseGroupDecorations(): void {
-    if (!this._nestingLevelMarkers) {
+  private updateCloseGroupDecorations(): void {
+    if (!this.nestingLevelMarkers) {
       return;
     }
-    for (let i = 0, n = this._nestingLevelMarkers.length; i < n; ++i) {
-      const marker = this._nestingLevelMarkers[i];
-      marker.classList.toggle('group-closed', n - i <= this._closeGroupDecorationCount);
+    for (let i = 0, n = this.nestingLevelMarkers.length; i < n; ++i) {
+      const marker = this.nestingLevelMarkers[i];
+      marker.classList.toggle('group-closed', n - i <= this.closeGroupDecorationCount);
     }
   }
 
-  _focusedChildIndex(): number {
-    if (!this._selectableChildren.length) {
+  protected focusedChildIndex(): number {
+    if (!this.selectableChildren.length) {
       return -1;
     }
-    return this._selectableChildren.findIndex(child => child.element.hasFocus());
+    return this.selectableChildren.findIndex(child => child.element.hasFocus());
   }
 
-  _onKeyDown(event: KeyboardEvent): void {
-    if (UI.UIUtils.isEditing() || !this._element || !this._element.hasFocus() || this._element.hasSelection()) {
+  private onKeyDown(event: KeyboardEvent): void {
+    if (UI.UIUtils.isEditing() || !this.elementInternal || !this.elementInternal.hasFocus() ||
+        this.elementInternal.hasSelection()) {
       return;
     }
     if (this.maybeHandleOnKeyDown(event)) {
@@ -1132,50 +1133,50 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
   maybeHandleOnKeyDown(event: KeyboardEvent): boolean {
     // Handle trace expansion.
-    const focusedChildIndex = this._focusedChildIndex();
+    const focusedChildIndex = this.focusedChildIndex();
     const isWrapperFocused = focusedChildIndex === -1;
-    if (this._expandTrace && isWrapperFocused) {
-      if ((event.key === 'ArrowLeft' && this._traceExpanded) || (event.key === 'ArrowRight' && !this._traceExpanded)) {
-        this._expandTrace(!this._traceExpanded);
+    if (this.expandTrace && isWrapperFocused) {
+      if ((event.key === 'ArrowLeft' && this.traceExpanded) || (event.key === 'ArrowRight' && !this.traceExpanded)) {
+        this.expandTrace(!this.traceExpanded);
         return true;
       }
     }
-    if (!this._selectableChildren.length) {
+    if (!this.selectableChildren.length) {
       return false;
     }
 
     if (event.key === 'ArrowLeft') {
-      this._element && this._element.focus();
+      this.elementInternal && this.elementInternal.focus();
       return true;
     }
     if (event.key === 'ArrowRight') {
-      if (isWrapperFocused && this._selectNearestVisibleChild(0)) {
+      if (isWrapperFocused && this.selectNearestVisibleChild(0)) {
         return true;
       }
     }
     if (event.key === 'ArrowUp') {
-      const firstVisibleChild = this._nearestVisibleChild(0);
-      if (this._selectableChildren[focusedChildIndex] === firstVisibleChild && firstVisibleChild) {
-        this._element && this._element.focus();
+      const firstVisibleChild = this.nearestVisibleChild(0);
+      if (this.selectableChildren[focusedChildIndex] === firstVisibleChild && firstVisibleChild) {
+        this.elementInternal && this.elementInternal.focus();
         return true;
       }
-      if (this._selectNearestVisibleChild(focusedChildIndex - 1, true /* backwards */)) {
+      if (this.selectNearestVisibleChild(focusedChildIndex - 1, true /* backwards */)) {
         return true;
       }
     }
     if (event.key === 'ArrowDown') {
-      if (isWrapperFocused && this._selectNearestVisibleChild(0)) {
+      if (isWrapperFocused && this.selectNearestVisibleChild(0)) {
         return true;
       }
-      if (!isWrapperFocused && this._selectNearestVisibleChild(focusedChildIndex + 1)) {
+      if (!isWrapperFocused && this.selectNearestVisibleChild(focusedChildIndex + 1)) {
         return true;
       }
     }
     return false;
   }
 
-  _selectNearestVisibleChild(fromIndex: number, backwards?: boolean): boolean {
-    const nearestChild = this._nearestVisibleChild(fromIndex, backwards);
+  private selectNearestVisibleChild(fromIndex: number, backwards?: boolean): boolean {
+    const nearestChild = this.nearestVisibleChild(fromIndex, backwards);
     if (nearestChild) {
       nearestChild.forceSelect();
       return true;
@@ -1183,238 +1184,240 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return false;
   }
 
-  _nearestVisibleChild(fromIndex: number, backwards?: boolean): {
+  private nearestVisibleChild(fromIndex: number, backwards?: boolean): {
     element: Element,
     forceSelect: () => void,
   }|null {
-    const childCount = this._selectableChildren.length;
+    const childCount = this.selectableChildren.length;
     if (fromIndex < 0 || fromIndex >= childCount) {
       return null;
     }
     const direction = backwards ? -1 : 1;
     let index = fromIndex;
 
-    while (!this._selectableChildren[index].element.offsetParent) {
+    while (!this.selectableChildren[index].element.offsetParent) {
       index += direction;
       if (index < 0 || index >= childCount) {
         return null;
       }
     }
-    return this._selectableChildren[index];
+    return this.selectableChildren[index];
   }
 
   focusLastChildOrSelf(): void {
-    if (this._element && !this._selectNearestVisibleChild(this._selectableChildren.length - 1, true /* backwards */)) {
-      this._element.focus();
+    if (this.elementInternal &&
+        !this.selectNearestVisibleChild(this.selectableChildren.length - 1, true /* backwards */)) {
+      this.elementInternal.focus();
     }
   }
 
   setContentElement(element: HTMLElement): void {
-    console.assert(!this._contentElement, 'Cannot set content element twice');
-    this._contentElement = element;
+    console.assert(!this.contentElementInternal, 'Cannot set content element twice');
+    this.contentElementInternal = element;
   }
 
   getContentElement(): HTMLElement|null {
-    return this._contentElement;
+    return this.contentElementInternal;
   }
 
   contentElement(): HTMLElement {
-    if (this._contentElement) {
-      return this._contentElement;
+    if (this.contentElementInternal) {
+      return this.contentElementInternal;
     }
 
     const contentElement = document.createElement('div');
     contentElement.classList.add('console-message');
-    if (this._messageLevelIcon) {
-      contentElement.appendChild(this._messageLevelIcon);
+    if (this.messageLevelIcon) {
+      contentElement.appendChild(this.messageLevelIcon);
     }
-    this._contentElement = contentElement;
+    this.contentElementInternal = contentElement;
 
-    const runtimeModel = this._message.runtimeModel();
+    const runtimeModel = this.message.runtimeModel();
     let formattedMessage;
-    const shouldIncludeTrace = Boolean(this._message.stackTrace) &&
-        (this._message.source === Protocol.Log.LogEntrySource.Network ||
-         this._message.source === Protocol.Log.LogEntrySource.Violation ||
-         this._message.level === Protocol.Log.LogEntryLevel.Error ||
-         this._message.level === Protocol.Log.LogEntryLevel.Warning ||
-         this._message.type === Protocol.Runtime.ConsoleAPICalledEventType.Trace);
+    const shouldIncludeTrace = Boolean(this.message.stackTrace) &&
+        (this.message.source === Protocol.Log.LogEntrySource.Network ||
+         this.message.source === Protocol.Log.LogEntrySource.Violation ||
+         this.message.level === Protocol.Log.LogEntryLevel.Error ||
+         this.message.level === Protocol.Log.LogEntryLevel.Warning ||
+         this.message.type === Protocol.Runtime.ConsoleAPICalledEventType.Trace);
     if (runtimeModel && shouldIncludeTrace) {
-      formattedMessage = this._buildMessageWithStackTrace(runtimeModel);
+      formattedMessage = this.buildMessageWithStackTrace(runtimeModel);
     } else {
-      formattedMessage = this._buildMessage();
+      formattedMessage = this.buildMessage();
     }
     contentElement.appendChild(formattedMessage);
 
     this.updateTimestamp();
-    return this._contentElement;
+    return this.contentElementInternal;
   }
 
   toMessageElement(): HTMLElement {
-    if (this._element) {
-      return this._element;
+    if (this.elementInternal) {
+      return this.elementInternal;
     }
-    this._element = document.createElement('div');
-    this._element.tabIndex = -1;
-    this._element.addEventListener('keydown', (this._onKeyDown.bind(this) as EventListener));
+    this.elementInternal = document.createElement('div');
+    this.elementInternal.tabIndex = -1;
+    this.elementInternal.addEventListener('keydown', (this.onKeyDown.bind(this) as EventListener));
     this.updateMessageElement();
-    return this._element;
+    return this.elementInternal;
   }
 
   updateMessageElement(): void {
-    if (!this._element) {
+    if (!this.elementInternal) {
       return;
     }
 
-    this._element.className = 'console-message-wrapper';
-    this._element.removeChildren();
-    if (this._message.isGroupStartMessage()) {
-      this._element.classList.add('console-group-title');
+    this.elementInternal.className = 'console-message-wrapper';
+    this.elementInternal.removeChildren();
+    if (this.message.isGroupStartMessage()) {
+      this.elementInternal.classList.add('console-group-title');
     }
-    if (this._message.source === SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI) {
-      this._element.classList.add('console-from-api');
+    if (this.message.source === SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI) {
+      this.elementInternal.classList.add('console-from-api');
     }
-    if (this._inSimilarGroup) {
-      this._similarGroupMarker = (this._element.createChild('div', 'nesting-level-marker') as HTMLElement);
-      this._similarGroupMarker.classList.toggle('group-closed', this._lastInSimilarGroup);
+    if (this.inSimilarGroup) {
+      this.similarGroupMarker = (this.elementInternal.createChild('div', 'nesting-level-marker') as HTMLElement);
+      this.similarGroupMarker.classList.toggle('group-closed', this.lastInSimilarGroup);
     }
 
-    this._nestingLevelMarkers = [];
-    for (let i = 0; i < this._nestingLevel; ++i) {
-      this._nestingLevelMarkers.push(this._element.createChild('div', 'nesting-level-marker'));
+    this.nestingLevelMarkers = [];
+    for (let i = 0; i < this.nestingLevelInternal; ++i) {
+      this.nestingLevelMarkers.push(this.elementInternal.createChild('div', 'nesting-level-marker'));
     }
-    this._updateCloseGroupDecorations();
-    elementToMessage.set(this._element, this);
+    this.updateCloseGroupDecorations();
+    elementToMessage.set(this.elementInternal, this);
 
-    switch (this._message.level) {
+    switch (this.message.level) {
       case Protocol.Log.LogEntryLevel.Verbose:
-        this._element.classList.add('console-verbose-level');
+        this.elementInternal.classList.add('console-verbose-level');
         break;
       case Protocol.Log.LogEntryLevel.Info:
-        this._element.classList.add('console-info-level');
-        if (this._message.type === SDK.ConsoleModel.FrontendMessageType.System) {
-          this._element.classList.add('console-system-type');
+        this.elementInternal.classList.add('console-info-level');
+        if (this.message.type === SDK.ConsoleModel.FrontendMessageType.System) {
+          this.elementInternal.classList.add('console-system-type');
         }
         break;
       case Protocol.Log.LogEntryLevel.Warning:
-        this._element.classList.add('console-warning-level');
+        this.elementInternal.classList.add('console-warning-level');
         break;
       case Protocol.Log.LogEntryLevel.Error:
-        this._element.classList.add('console-error-level');
+        this.elementInternal.classList.add('console-error-level');
         break;
     }
-    this._updateMessageLevelIcon();
-    if (this._shouldRenderAsWarning()) {
-      this._element.classList.add('console-warning-level');
+    this.updateMessageLevelIcon();
+    if (this.shouldRenderAsWarning()) {
+      this.elementInternal.classList.add('console-warning-level');
     }
 
-    this._element.appendChild(this.contentElement());
-    if (this._repeatCount > 1) {
-      this._showRepeatCountElement();
+    this.elementInternal.appendChild(this.contentElement());
+    if (this.repeatCountInternal > 1) {
+      this.showRepeatCountElement();
     }
   }
 
-  _shouldRenderAsWarning(): boolean {
-    return (this._message.level === Protocol.Log.LogEntryLevel.Verbose ||
-            this._message.level === Protocol.Log.LogEntryLevel.Info) &&
-        (this._message.source === Protocol.Log.LogEntrySource.Violation ||
-         this._message.source === Protocol.Log.LogEntrySource.Deprecation ||
-         this._message.source === Protocol.Log.LogEntrySource.Intervention ||
-         this._message.source === Protocol.Log.LogEntrySource.Recommendation);
+  private shouldRenderAsWarning(): boolean {
+    return (this.message.level === Protocol.Log.LogEntryLevel.Verbose ||
+            this.message.level === Protocol.Log.LogEntryLevel.Info) &&
+        (this.message.source === Protocol.Log.LogEntrySource.Violation ||
+         this.message.source === Protocol.Log.LogEntrySource.Deprecation ||
+         this.message.source === Protocol.Log.LogEntrySource.Intervention ||
+         this.message.source === Protocol.Log.LogEntrySource.Recommendation);
   }
 
-  _updateMessageLevelIcon(): void {
+  private updateMessageLevelIcon(): void {
     let iconType = '';
     let accessibleName = '';
-    if (this._message.level === Protocol.Log.LogEntryLevel.Warning) {
+    if (this.message.level === Protocol.Log.LogEntryLevel.Warning) {
       iconType = 'smallicon-warning';
       accessibleName = i18nString(UIStrings.warning);
-    } else if (this._message.level === Protocol.Log.LogEntryLevel.Error) {
+    } else if (this.message.level === Protocol.Log.LogEntryLevel.Error) {
       iconType = 'smallicon-error';
       accessibleName = i18nString(UIStrings.error);
     }
-    if (!this._messageLevelIcon) {
+    if (!this.messageLevelIcon) {
       if (!iconType) {
         return;
       }
-      this._messageLevelIcon = UI.Icon.Icon.create('', 'message-level-icon');
-      if (this._contentElement) {
-        this._contentElement.insertBefore(this._messageLevelIcon, this._contentElement.firstChild);
+      this.messageLevelIcon = UI.Icon.Icon.create('', 'message-level-icon');
+      if (this.contentElementInternal) {
+        this.contentElementInternal.insertBefore(this.messageLevelIcon, this.contentElementInternal.firstChild);
       }
     }
-    this._messageLevelIcon.setIconType(iconType);
-    UI.ARIAUtils.setAccessibleName(this._messageLevelIcon, accessibleName);
+    this.messageLevelIcon.setIconType(iconType);
+    UI.ARIAUtils.setAccessibleName(this.messageLevelIcon, accessibleName);
   }
 
   repeatCount(): number {
-    return this._repeatCount || 1;
+    return this.repeatCountInternal || 1;
   }
 
   resetIncrementRepeatCount(): void {
-    this._repeatCount = 1;
-    if (!this._repeatCountElement) {
+    this.repeatCountInternal = 1;
+    if (!this.repeatCountElement) {
       return;
     }
 
-    this._repeatCountElement.remove();
-    if (this._contentElement) {
-      this._contentElement.classList.remove('repeated-message');
+    this.repeatCountElement.remove();
+    if (this.contentElementInternal) {
+      this.contentElementInternal.classList.remove('repeated-message');
     }
-    this._repeatCountElement = null;
+    this.repeatCountElement = null;
   }
 
   incrementRepeatCount(): void {
-    this._repeatCount++;
-    this._showRepeatCountElement();
+    this.repeatCountInternal++;
+    this.showRepeatCountElement();
   }
 
   setRepeatCount(repeatCount: number): void {
-    this._repeatCount = repeatCount;
-    this._showRepeatCountElement();
+    this.repeatCountInternal = repeatCount;
+    this.showRepeatCountElement();
   }
-  _showRepeatCountElement(): void {
-    if (!this._element) {
+
+  showRepeatCountElement(): void {
+    if (!this.elementInternal) {
       return;
     }
 
-    if (!this._repeatCountElement) {
-      this._repeatCountElement =
+    if (!this.repeatCountElement) {
+      this.repeatCountElement =
           (document.createElement('span', {is: 'dt-small-bubble'}) as UI.UIUtils.DevToolsSmallBubble);
-      this._repeatCountElement.classList.add('console-message-repeat-count');
-      switch (this._message.level) {
+      this.repeatCountElement.classList.add('console-message-repeat-count');
+      switch (this.message.level) {
         case Protocol.Log.LogEntryLevel.Warning:
-          this._repeatCountElement.type = 'warning';
+          this.repeatCountElement.type = 'warning';
           break;
         case Protocol.Log.LogEntryLevel.Error:
-          this._repeatCountElement.type = 'error';
+          this.repeatCountElement.type = 'error';
           break;
         case Protocol.Log.LogEntryLevel.Verbose:
-          this._repeatCountElement.type = 'verbose';
+          this.repeatCountElement.type = 'verbose';
           break;
         default:
-          this._repeatCountElement.type = 'info';
+          this.repeatCountElement.type = 'info';
       }
-      if (this._shouldRenderAsWarning()) {
-        this._repeatCountElement.type = 'warning';
+      if (this.shouldRenderAsWarning()) {
+        this.repeatCountElement.type = 'warning';
       }
 
-      this._element.insertBefore(this._repeatCountElement, this._contentElement);
+      this.elementInternal.insertBefore(this.repeatCountElement, this.contentElementInternal);
       this.contentElement().classList.add('repeated-message');
     }
-    this._repeatCountElement.textContent = `${this._repeatCount}`;
+    this.repeatCountElement.textContent = `${this.repeatCountInternal}`;
 
     let accessibleName;
-    if (this._message.level === Protocol.Log.LogEntryLevel.Warning) {
-      accessibleName = i18nString(UIStrings.warningS, {n: this._repeatCount});
-    } else if (this._message.level === Protocol.Log.LogEntryLevel.Error) {
-      accessibleName = i18nString(UIStrings.errorS, {n: this._repeatCount});
+    if (this.message.level === Protocol.Log.LogEntryLevel.Warning) {
+      accessibleName = i18nString(UIStrings.warningS, {n: this.repeatCountInternal});
+    } else if (this.message.level === Protocol.Log.LogEntryLevel.Error) {
+      accessibleName = i18nString(UIStrings.errorS, {n: this.repeatCountInternal});
     } else {
-      accessibleName = i18nString(UIStrings.repeatS, {n: this._repeatCount});
+      accessibleName = i18nString(UIStrings.repeatS, {n: this.repeatCountInternal});
     }
-    UI.ARIAUtils.setAccessibleName(this._repeatCountElement, accessibleName);
+    UI.ARIAUtils.setAccessibleName(this.repeatCountElement, accessibleName);
   }
 
   get text(): string {
-    return this._message.messageText;
+    return this.message.messageText;
   }
 
   toExportString(): string {
@@ -1428,43 +1431,43 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   setSearchRegex(regex: RegExp|null): void {
-    if (this._searchHighlightNodeChanges && this._searchHighlightNodeChanges.length) {
-      UI.UIUtils.revertDomChanges(this._searchHighlightNodeChanges);
+    if (this.searchHighlightNodeChanges && this.searchHighlightNodeChanges.length) {
+      UI.UIUtils.revertDomChanges(this.searchHighlightNodeChanges);
     }
-    this._searchRegex = regex;
-    this._searchHighlightNodes = [];
-    this._searchHighlightNodeChanges = [];
-    if (!this._searchRegex) {
+    this.searchRegexInternal = regex;
+    this.searchHighlightNodes = [];
+    this.searchHighlightNodeChanges = [];
+    if (!this.searchRegexInternal) {
       return;
     }
 
     const text = this.contentElement().deepTextContent();
     let match;
-    this._searchRegex.lastIndex = 0;
+    this.searchRegexInternal.lastIndex = 0;
     const sourceRanges = [];
-    while ((match = this._searchRegex.exec(text)) && match[0]) {
+    while ((match = this.searchRegexInternal.exec(text)) && match[0]) {
       sourceRanges.push(new TextUtils.TextRange.SourceRange(match.index, match[0].length));
     }
 
     if (sourceRanges.length) {
-      this._searchHighlightNodes =
-          UI.UIUtils.highlightSearchResults(this.contentElement(), sourceRanges, this._searchHighlightNodeChanges);
+      this.searchHighlightNodes =
+          UI.UIUtils.highlightSearchResults(this.contentElement(), sourceRanges, this.searchHighlightNodeChanges);
     }
   }
 
   searchRegex(): RegExp|null {
-    return this._searchRegex;
+    return this.searchRegexInternal;
   }
 
   searchCount(): number {
-    return this._searchHighlightNodes.length;
+    return this.searchHighlightNodes.length;
   }
 
   searchHighlightNode(index: number): Element {
-    return this._searchHighlightNodes[index];
+    return this.searchHighlightNodes[index];
   }
 
-  async _getInlineFrames(
+  private async getInlineFrames(
       debuggerModel: SDK.DebuggerModel.DebuggerModel, url: string, lineNumber: number|undefined,
       columnNumber: number|undefined): Promise<{frames: Chrome.DevTools.FunctionInfo[]}> {
     const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
@@ -1486,11 +1489,11 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
   // Expand inline stack frames in the formatted error in the stackTrace element, inserting new elements before the
   // insertBefore anchor.
-  async _expandInlineStackFrames(
+  private async expandInlineStackFrames(
       debuggerModel: SDK.DebuggerModel.DebuggerModel, prefix: string, suffix: string, url: string,
       lineNumber: number|undefined, columnNumber: number|undefined, stackTrace: HTMLElement,
       insertBefore: HTMLElement): Promise<boolean> {
-    const {frames} = await this._getInlineFrames(debuggerModel, url, lineNumber, columnNumber);
+    const {frames} = await this.getInlineFrames(debuggerModel, url, lineNumber, columnNumber);
     if (!frames.length) {
       return false;
     }
@@ -1498,25 +1501,25 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     for (let f = 0; f < frames.length; ++f) {
       const {name} = frames[f];
       const formattedLine = document.createElement('span');
-      formattedLine.appendChild(this._linkifyStringAsFragment(`${prefix} ${name} (`));
-      const scriptLocationLink = this._linkifier.linkifyScriptLocation(
+      formattedLine.appendChild(this.linkifyStringAsFragment(`${prefix} ${name} (`));
+      const scriptLocationLink = this.linkifier.linkifyScriptLocation(
           debuggerModel.target(), null, url, lineNumber,
           {columnNumber, className: undefined, tabStop: undefined, inlineFrameIndex: f});
       scriptLocationLink.tabIndex = -1;
-      this._selectableChildren.push({element: scriptLocationLink, forceSelect: (): void => scriptLocationLink.focus()});
+      this.selectableChildren.push({element: scriptLocationLink, forceSelect: (): void => scriptLocationLink.focus()});
       formattedLine.appendChild(scriptLocationLink);
-      formattedLine.appendChild(this._linkifyStringAsFragment(suffix));
+      formattedLine.appendChild(this.linkifyStringAsFragment(suffix));
       stackTrace.insertBefore(formattedLine, insertBefore);
     }
     return true;
   }
 
-  _tryFormatAsError(string: string): HTMLElement|null {
+  private tryFormatAsError(string: string): HTMLElement|null {
     function startsWith(prefix: string): boolean {
       return string.startsWith(prefix);
     }
 
-    const runtimeModel = this._message.runtimeModel();
+    const runtimeModel = this.message.runtimeModel();
     // TODO: Consider removing these in favor of a simpler regex.
     const errorPrefixes = [
       'AggregateError',
@@ -1611,21 +1614,21 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       const newline = i < linkInfos.length - 1 ? '\n' : '';
       const {line, link} = linkInfos[i];
       if (!link) {
-        formattedResult.appendChild(this._linkifyStringAsFragment(`${line}${newline}`));
+        formattedResult.appendChild(this.linkifyStringAsFragment(`${line}${newline}`));
         continue;
       }
       const formattedLine = document.createElement('span');
       const prefix = line.substring(0, link.positionLeft);
       const suffix = `${line.substring(link.positionRight)}${newline}`;
 
-      formattedLine.appendChild(this._linkifyStringAsFragment(prefix));
-      const scriptLocationLink = this._linkifier.linkifyScriptLocation(
+      formattedLine.appendChild(this.linkifyStringAsFragment(prefix));
+      const scriptLocationLink = this.linkifier.linkifyScriptLocation(
           debuggerModel.target(), null, link.url, link.lineNumber,
           {columnNumber: link.columnNumber, className: undefined, tabStop: undefined, inlineFrameIndex: 0});
       scriptLocationLink.tabIndex = -1;
-      this._selectableChildren.push({element: scriptLocationLink, forceSelect: (): void => scriptLocationLink.focus()});
+      this.selectableChildren.push({element: scriptLocationLink, forceSelect: (): void => scriptLocationLink.focus()});
       formattedLine.appendChild(scriptLocationLink);
-      formattedLine.appendChild(this._linkifyStringAsFragment(suffix));
+      formattedLine.appendChild(this.linkifyStringAsFragment(suffix));
       formattedResult.appendChild(formattedLine);
 
       if (!link.enclosedInBraces) {
@@ -1636,14 +1639,14 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
       // If we were able to parse the function name from the stack trace line, try to replace it with an expansion of
       // any inline frames.
-      const selectableChildIndex = this._selectableChildren.length - 1;
-      this._expandInlineStackFrames(
+      const selectableChildIndex = this.selectableChildren.length - 1;
+      this.expandInlineStackFrames(
               debuggerModel, prefixWithoutFunction, suffix, link.url, link.lineNumber, link.columnNumber,
               formattedResult, formattedLine)
           .then(modified => {
             if (modified) {
               formattedResult.removeChild(formattedLine);
-              this._selectableChildren.splice(selectableChildIndex, 1);
+              this.selectableChildren.splice(selectableChildIndex, 1);
             }
           });
     }
@@ -1670,7 +1673,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     }
   }
 
-  _linkifyWithCustomLinkifier(
+  private linkifyWithCustomLinkifier(
       string: string, linkifier: (arg0: string, arg1: string, arg2?: number, arg3?: number) => Node): DocumentFragment {
     if (string.length > getMaxTokenizableStringLength()) {
       const propertyValue = new ObjectUI.ObjectPropertiesSection.ExpandableTextPropertyValue(
@@ -1680,7 +1683,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       return fragment;
     }
     const container = document.createDocumentFragment();
-    const tokens = ConsoleViewMessage._tokenizeMessageText(string);
+    const tokens = ConsoleViewMessage.tokenizeMessageText(string);
     let isBlob = false;
     for (const token of tokens) {
       if (!token.text) {
@@ -1716,18 +1719,18 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return container;
   }
 
-  _linkifyStringAsFragment(string: string): DocumentFragment {
-    return this._linkifyWithCustomLinkifier(string, (text, url, lineNumber, columnNumber) => {
+  private linkifyStringAsFragment(string: string): DocumentFragment {
+    return this.linkifyWithCustomLinkifier(string, (text, url, lineNumber, columnNumber) => {
       const options = {text, lineNumber, columnNumber};
       const linkElement =
           Components.Linkifier.Linkifier.linkifyURL(url, (options as Components.Linkifier.LinkifyURLOptions));
       linkElement.tabIndex = -1;
-      this._selectableChildren.push({element: linkElement, forceSelect: (): void => linkElement.focus()});
+      this.selectableChildren.push({element: linkElement, forceSelect: (): void => linkElement.focus()});
       return linkElement;
     });
   }
 
-  static _tokenizeMessageText(string: string): {
+  private static tokenizeMessageText(string: string): {
     type?: string, text: string,
   }[] {
     const {tokenizerRegexes, tokenizerTypes} = getOrCreateTokenizers();
@@ -1739,14 +1742,14 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   groupKey(): string {
-    if (!this._groupKey) {
-      this._groupKey = this._message.groupCategoryKey() + ':' + this.groupTitle();
+    if (!this.groupKeyInternal) {
+      this.groupKeyInternal = this.message.groupCategoryKey() + ':' + this.groupTitle();
     }
-    return this._groupKey;
+    return this.groupKeyInternal;
   }
 
   groupTitle(): string {
-    const tokens = ConsoleViewMessage._tokenizeMessageText(this._message.messageText);
+    const tokens = ConsoleViewMessage.tokenizeMessageText(this.message.messageText);
     const result = tokens.reduce((acc, token) => {
       let text: Common.UIString.LocalizedString|string = token.text;
       if (token.type === 'url') {
@@ -1799,9 +1802,9 @@ function getOrCreateTokenizers(): {
 }
 
 export class ConsoleGroupViewMessage extends ConsoleViewMessage {
-  _collapsed: boolean;
-  _expandGroupIcon: UI.Icon.Icon|null;
-  _onToggle: () => void;
+  private collapsedInternal: boolean;
+  private expandGroupIcon: UI.Icon.Icon|null;
+  private readonly onToggle: () => void;
 
   constructor(
       consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier,
@@ -1809,28 +1812,29 @@ export class ConsoleGroupViewMessage extends ConsoleViewMessage {
       nestingLevel: number, onToggle: () => void, onResize: (arg0: Common.EventTarget.EventTargetEvent) => void) {
     console.assert(consoleMessage.isGroupStartMessage());
     super(consoleMessage, linkifier, requestResolver, issueResolver, nestingLevel, onResize);
-    this._collapsed = consoleMessage.type === Protocol.Runtime.ConsoleAPICalledEventType.StartGroupCollapsed;
-    this._expandGroupIcon = null;
-    this._onToggle = onToggle;
+    this.collapsedInternal = consoleMessage.type === Protocol.Runtime.ConsoleAPICalledEventType.StartGroupCollapsed;
+    this.expandGroupIcon = null;
+    this.onToggle = onToggle;
   }
 
-  _setCollapsed(collapsed: boolean): void {
-    this._collapsed = collapsed;
-    if (this._expandGroupIcon) {
-      this._expandGroupIcon.setIconType(this._collapsed ? 'smallicon-triangle-right' : 'smallicon-triangle-down');
+  private setCollapsed(collapsed: boolean): void {
+    this.collapsedInternal = collapsed;
+    if (this.expandGroupIcon) {
+      this.expandGroupIcon.setIconType(this.collapsedInternal ? 'smallicon-triangle-right' : 'smallicon-triangle-down');
     }
-    this._onToggle.call(null);
+    this.onToggle.call(null);
   }
 
   collapsed(): boolean {
-    return this._collapsed;
+    return this.collapsedInternal;
   }
 
   maybeHandleOnKeyDown(event: KeyboardEvent): boolean {
-    const focusedChildIndex = this._focusedChildIndex();
+    const focusedChildIndex = this.focusedChildIndex();
     if (focusedChildIndex === -1) {
-      if ((event.key === 'ArrowLeft' && !this._collapsed) || (event.key === 'ArrowRight' && this._collapsed)) {
-        this._setCollapsed(!this._collapsed);
+      if ((event.key === 'ArrowLeft' && !this.collapsedInternal) ||
+          (event.key === 'ArrowRight' && this.collapsedInternal)) {
+        this.setCollapsed(!this.collapsedInternal);
         return true;
       }
     }
@@ -1838,40 +1842,40 @@ export class ConsoleGroupViewMessage extends ConsoleViewMessage {
   }
 
   toMessageElement(): HTMLElement {
-    let element: HTMLElement|null = this._element || null;
+    let element: HTMLElement|null = this.elementInternal || null;
     if (!element) {
       element = super.toMessageElement();
-      const iconType = this._collapsed ? 'smallicon-triangle-right' : 'smallicon-triangle-down';
-      this._expandGroupIcon = UI.Icon.Icon.create(iconType, 'expand-group-icon');
+      const iconType = this.collapsedInternal ? 'smallicon-triangle-right' : 'smallicon-triangle-down';
+      this.expandGroupIcon = UI.Icon.Icon.create(iconType, 'expand-group-icon');
       // Intercept focus to avoid highlight on click.
       this.contentElement().tabIndex = -1;
-      if (this._repeatCountElement) {
-        this._repeatCountElement.insertBefore(this._expandGroupIcon, this._repeatCountElement.firstChild);
+      if (this.repeatCountElement) {
+        this.repeatCountElement.insertBefore(this.expandGroupIcon, this.repeatCountElement.firstChild);
       } else {
-        element.insertBefore(this._expandGroupIcon, this._contentElement);
+        element.insertBefore(this.expandGroupIcon, this.contentElementInternal);
       }
-      element.addEventListener('click', () => this._setCollapsed(!this._collapsed));
+      element.addEventListener('click', () => this.setCollapsed(!this.collapsedInternal));
     }
     return element;
   }
 
-  _showRepeatCountElement(): void {
-    super._showRepeatCountElement();
-    if (this._repeatCountElement && this._expandGroupIcon) {
-      this._repeatCountElement.insertBefore(this._expandGroupIcon, this._repeatCountElement.firstChild);
+  showRepeatCountElement(): void {
+    super.showRepeatCountElement();
+    if (this.repeatCountElement && this.expandGroupIcon) {
+      this.repeatCountElement.insertBefore(this.expandGroupIcon, this.repeatCountElement.firstChild);
     }
   }
 }
 
 export class ConsoleCommand extends ConsoleViewMessage {
-  _formattedCommand: HTMLElement|null;
+  private formattedCommand: HTMLElement|null;
 
   constructor(
       consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier,
       requestResolver: Logs.RequestResolver.RequestResolver, issueResolver: IssuesManager.IssueResolver.IssueResolver,
       nestingLevel: number, onResize: (arg0: Common.EventTarget.EventTargetEvent) => void) {
     super(consoleMessage, linkifier, requestResolver, issueResolver, nestingLevel, onResize);
-    this._formattedCommand = null;
+    this.formattedCommand = null;
   }
 
   contentElement(): HTMLElement {
@@ -1886,23 +1890,23 @@ export class ConsoleCommand extends ConsoleViewMessage {
     newContentElement.appendChild(icon);
 
     elementToMessage.set(newContentElement, this);
-    this._formattedCommand = document.createElement('span');
-    this._formattedCommand.classList.add('source-code');
-    this._formattedCommand.textContent = Platform.StringUtilities.replaceControlCharacters(this.text);
-    newContentElement.appendChild(this._formattedCommand);
+    this.formattedCommand = document.createElement('span');
+    this.formattedCommand.classList.add('source-code');
+    this.formattedCommand.textContent = Platform.StringUtilities.replaceControlCharacters(this.text);
+    newContentElement.appendChild(this.formattedCommand);
 
-    if (this._formattedCommand.textContent.length < MaxLengthToIgnoreHighlighter) {
+    if (this.formattedCommand.textContent.length < MaxLengthToIgnoreHighlighter) {
       const javascriptSyntaxHighlighter = new TextEditor.SyntaxHighlighter.SyntaxHighlighter('text/javascript', true);
-      javascriptSyntaxHighlighter.syntaxHighlightNode(this._formattedCommand).then(this._updateSearch.bind(this));
+      javascriptSyntaxHighlighter.syntaxHighlightNode(this.formattedCommand).then(this.updateSearch.bind(this));
     } else {
-      this._updateSearch();
+      this.updateSearch();
     }
 
     this.updateTimestamp();
     return newContentElement;
   }
 
-  _updateSearch(): void {
+  private updateSearch(): void {
     this.setSearchRegex(this.searchRegex());
   }
 }
@@ -1922,7 +1926,7 @@ export class ConsoleCommandResult extends ConsoleViewMessage {
 }
 
 export class ConsoleTableMessageView extends ConsoleViewMessage {
-  _dataGrid: DataGrid.SortableDataGrid.SortableDataGrid<unknown>|null;
+  private dataGrid: DataGrid.SortableDataGrid.SortableDataGrid<unknown>|null;
 
   constructor(
       consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier,
@@ -1930,12 +1934,12 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
       nestingLevel: number, onResize: (arg0: Common.EventTarget.EventTargetEvent) => void) {
     super(consoleMessage, linkifier, requestResolver, issueResolver, nestingLevel, onResize);
     console.assert(consoleMessage.type === Protocol.Runtime.ConsoleAPICalledEventType.Table);
-    this._dataGrid = null;
+    this.dataGrid = null;
   }
 
   wasShown(): void {
-    if (this._dataGrid) {
-      this._dataGrid.updateWidths();
+    if (this.dataGrid) {
+      this.dataGrid.updateWidths();
     }
     super.wasShown();
   }
@@ -1944,8 +1948,8 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
     if (!this.isVisible()) {
       return;
     }
-    if (this._dataGrid) {
-      this._dataGrid.onResize();
+    if (this.dataGrid) {
+      this.dataGrid.onResize();
     }
   }
 
@@ -1957,31 +1961,31 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
 
     const newContentElement = document.createElement('div');
     newContentElement.classList.add('console-message');
-    if (this._messageLevelIcon) {
-      newContentElement.appendChild(this._messageLevelIcon);
+    if (this.messageLevelIcon) {
+      newContentElement.appendChild(this.messageLevelIcon);
     }
     this.setContentElement(newContentElement);
 
-    newContentElement.appendChild(this._buildTableMessage());
+    newContentElement.appendChild(this.buildTableMessage());
     this.updateTimestamp();
     return newContentElement;
   }
 
-  _buildTableMessage(): HTMLElement {
+  private buildTableMessage(): HTMLElement {
     const formattedMessage = document.createElement('span');
     formattedMessage.classList.add('source-code');
-    this._anchorElement = this._buildMessageAnchor();
-    if (this._anchorElement) {
-      formattedMessage.appendChild(this._anchorElement);
+    this.anchorElement = this.buildMessageAnchor();
+    if (this.anchorElement) {
+      formattedMessage.appendChild(this.anchorElement);
     }
 
-    const table = this._message.parameters && this._message.parameters.length ? this._message.parameters[0] : null;
+    const table = this.message.parameters && this.message.parameters.length ? this.message.parameters[0] : null;
     if (!table) {
-      return this._buildMessage();
+      return this.buildMessage();
     }
-    const actualTable = parameterToRemoteObject(this._message.runtimeModel())(table);
+    const actualTable = parameterToRemoteObject(this.message.runtimeModel())(table);
     if (!actualTable || !actualTable.preview) {
-      return this._buildMessage();
+      return this.buildMessage();
     }
 
     const rawValueColumnSymbol = Symbol('rawValueColumn');
@@ -2015,7 +2019,7 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
 
         if (columnRendered) {
           const cellElement =
-              this._renderPropertyPreviewOrAccessor(actualTable, cellProperty, [rowProperty, cellProperty]);
+              this.renderPropertyPreviewOrAccessor(actualTable, cellProperty, [rowProperty, cellProperty]);
           cellElement.classList.add('console-message-nowrap-below');
           rowValue.set(cellProperty.name, cellElement);
         }
@@ -2035,27 +2039,27 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
         columnNames.map(name => name === rawValueColumnSymbol ? i18nString(UIStrings.value) : name.toString());
 
     if (flatValues.length) {
-      this._dataGrid = DataGrid.SortableDataGrid.SortableDataGrid.create(
+      this.dataGrid = DataGrid.SortableDataGrid.SortableDataGrid.create(
           columnDisplayNames, flatValues, i18nString(UIStrings.console));
-      if (this._dataGrid) {
-        this._dataGrid.setStriped(true);
-        this._dataGrid.setFocusable(false);
+      if (this.dataGrid) {
+        this.dataGrid.setStriped(true);
+        this.dataGrid.setFocusable(false);
 
         const formattedResult = document.createElement('span');
         formattedResult.classList.add('console-message-text');
         const tableElement = formattedResult.createChild('div', 'console-message-formatted-table');
         const dataGridContainer = tableElement.createChild('span');
-        tableElement.appendChild(this._formatParameter(actualTable, true, false));
-        dataGridContainer.appendChild(this._dataGrid.element);
+        tableElement.appendChild(this.formatParameter(actualTable, true, false));
+        dataGridContainer.appendChild(this.dataGrid.element);
         formattedMessage.appendChild(formattedResult);
-        this._dataGrid.renderInline();
+        this.dataGrid.renderInline();
       }
     }
     return formattedMessage;
   }
 
   approximateFastHeight(): number {
-    const table = this._message.parameters && this._message.parameters[0];
+    const table = this.message.parameters && this.message.parameters[0];
     if (table && typeof table !== 'string' && table.preview) {
       return defaultConsoleRowHeight * table.preview.properties.length;
     }

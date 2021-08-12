@@ -54,22 +54,22 @@ const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleSidebar.ts', UIS
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ConsoleSidebar extends UI.Widget.VBox {
-  _tree: UI.TreeOutline.TreeOutlineInShadow;
-  _selectedTreeElement: UI.TreeOutline.TreeElement|null;
-  _treeElements: FilterTreeElement[];
+  private readonly tree: UI.TreeOutline.TreeOutlineInShadow;
+  private selectedTreeElement: UI.TreeOutline.TreeElement|null;
+  private readonly treeElements: FilterTreeElement[];
 
   constructor() {
     super(true);
     this.setMinimumSize(125, 0);
 
-    this._tree = new UI.TreeOutline.TreeOutlineInShadow();
-    this._tree.addEventListener(UI.TreeOutline.Events.ElementSelected, this._selectionChanged.bind(this));
+    this.tree = new UI.TreeOutline.TreeOutlineInShadow();
+    this.tree.addEventListener(UI.TreeOutline.Events.ElementSelected, this.selectionChanged.bind(this));
 
     const deprecationWarning = new ConsoleComponents.SidebarDeprecation.SidebarDeprecation();
     this.contentElement.appendChild(deprecationWarning);
-    this.contentElement.appendChild(this._tree.element);
-    this._selectedTreeElement = null;
-    this._treeElements = [];
+    this.contentElement.appendChild(this.tree.element);
+    this.selectedTreeElement = null;
+    this.treeElements = [];
     const selectedFilterSetting =
         // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
         // @ts-expect-error
@@ -81,66 +81,66 @@ export class ConsoleSidebar extends UI.Widget.VBox {
       negative: false,
       regex: undefined,
     }];
-    this._appendGroup(
+    this.appendGroup(
         GroupName.All, [], ConsoleFilter.allLevelsFilterValue(), UI.Icon.Icon.create('mediumicon-list'),
         selectedFilterSetting);
-    this._appendGroup(
+    this.appendGroup(
         GroupName.ConsoleAPI, consoleAPIParsedFilters, ConsoleFilter.allLevelsFilterValue(),
         UI.Icon.Icon.create('mediumicon-account-circle'), selectedFilterSetting);
-    this._appendGroup(
+    this.appendGroup(
         GroupName.Error, [], ConsoleFilter.singleLevelMask(Protocol.Log.LogEntryLevel.Error),
         UI.Icon.Icon.create('mediumicon-error-circle'), selectedFilterSetting);
-    this._appendGroup(
+    this.appendGroup(
         GroupName.Warning, [], ConsoleFilter.singleLevelMask(Protocol.Log.LogEntryLevel.Warning),
         UI.Icon.Icon.create('mediumicon-warning-triangle'), selectedFilterSetting);
-    this._appendGroup(
+    this.appendGroup(
         GroupName.Info, [], ConsoleFilter.singleLevelMask(Protocol.Log.LogEntryLevel.Info),
         UI.Icon.Icon.create('mediumicon-info-circle'), selectedFilterSetting);
-    this._appendGroup(
+    this.appendGroup(
         GroupName.Verbose, [], ConsoleFilter.singleLevelMask(Protocol.Log.LogEntryLevel.Verbose),
         UI.Icon.Icon.create('mediumicon-bug'), selectedFilterSetting);
     const selectedTreeElementName = selectedFilterSetting.get();
     const defaultTreeElement =
-        this._treeElements.find(x => x.name() === selectedTreeElementName) || this._treeElements[0];
+        this.treeElements.find(x => x.name() === selectedTreeElementName) || this.treeElements[0];
     defaultTreeElement.select();
   }
 
-  _appendGroup(
+  private appendGroup(
       name: string, parsedFilters: TextUtils.TextUtils.ParsedFilter[], levelsMask: LevelsMask, icon: UI.Icon.Icon,
       selectedFilterSetting: Common.Settings.Setting<string>): void {
     const filter = new ConsoleFilter(name, parsedFilters, null, levelsMask);
     const treeElement = new FilterTreeElement(filter, icon, selectedFilterSetting);
-    this._tree.appendChild(treeElement);
-    this._treeElements.push(treeElement);
+    this.tree.appendChild(treeElement);
+    this.treeElements.push(treeElement);
   }
 
   clear(): void {
-    for (const treeElement of this._treeElements) {
+    for (const treeElement of this.treeElements) {
       treeElement.clear();
     }
   }
 
   onMessageAdded(viewMessage: ConsoleViewMessage): void {
-    for (const treeElement of this._treeElements) {
+    for (const treeElement of this.treeElements) {
       treeElement.onMessageAdded(viewMessage);
     }
   }
 
   shouldBeVisible(viewMessage: ConsoleViewMessage): boolean {
-    if (this._selectedTreeElement instanceof ConsoleSidebarTreeElement) {
-      return this._selectedTreeElement.filter().shouldBeVisible(viewMessage);
+    if (this.selectedTreeElement instanceof ConsoleSidebarTreeElement) {
+      return this.selectedTreeElement.filter().shouldBeVisible(viewMessage);
     }
     return true;
   }
 
-  _selectionChanged(event: Common.EventTarget.EventTargetEvent): void {
-    this._selectedTreeElement = (event.data as UI.TreeOutline.TreeElement);
+  private selectionChanged(event: Common.EventTarget.EventTargetEvent): void {
+    this.selectedTreeElement = (event.data as UI.TreeOutline.TreeElement);
     this.dispatchEventToListeners(Events.FilterSelected);
   }
 
   wasShown(): void {
     super.wasShown();
-    this._tree.registerCSSFiles([consoleSidebarStyles]);
+    this.tree.registerCSSFiles([consoleSidebarStyles]);
   }
 }
 
@@ -149,33 +149,33 @@ export const enum Events {
 }
 
 class ConsoleSidebarTreeElement extends UI.TreeOutline.TreeElement {
-  _filter: ConsoleFilter;
+  protected filterInternal: ConsoleFilter;
 
   constructor(title: string|Node, filter: ConsoleFilter) {
     super(title);
-    this._filter = filter;
+    this.filterInternal = filter;
   }
 
   filter(): ConsoleFilter {
-    return this._filter;
+    return this.filterInternal;
   }
 }
 
 export class URLGroupTreeElement extends ConsoleSidebarTreeElement {
-  _countElement: HTMLElement;
-  _messageCount: number;
+  private countElement: HTMLElement;
+  private messageCount: number;
 
   constructor(filter: ConsoleFilter) {
     super(filter.name, filter);
-    this._countElement = this.listItemElement.createChild('span', 'count');
+    this.countElement = this.listItemElement.createChild('span', 'count');
     const leadingIcons = [UI.Icon.Icon.create('largeicon-navigator-file')];
     this.setLeadingIcons(leadingIcons);
-    this._messageCount = 0;
+    this.messageCount = 0;
   }
 
   incrementAndUpdateCounter(): void {
-    this._messageCount++;
-    this._countElement.textContent = `${this._messageCount}`;
+    this.messageCount++;
+    this.countElement.textContent = `${this.messageCount}`;
   }
 }
 
@@ -194,43 +194,43 @@ const stringForFilterSidebarItemMap = new Map<GroupName, string>([
 ]);
 
 export class FilterTreeElement extends ConsoleSidebarTreeElement {
-  _selectedFilterSetting: Common.Settings.Setting<string>;
-  _urlTreeElements: Map<string|null, URLGroupTreeElement>;
-  _messageCount: number;
+  private readonly selectedFilterSetting: Common.Settings.Setting<string>;
+  private readonly urlTreeElements: Map<string|null, URLGroupTreeElement>;
+  private messageCount: number;
   private uiStringForFilterCount: string;
 
   constructor(filter: ConsoleFilter, icon: UI.Icon.Icon, selectedFilterSetting: Common.Settings.Setting<string>) {
     super(filter.name, filter);
     this.uiStringForFilterCount = stringForFilterSidebarItemMap.get(filter.name as GroupName) || '';
-    this._selectedFilterSetting = selectedFilterSetting;
-    this._urlTreeElements = new Map();
+    this.selectedFilterSetting = selectedFilterSetting;
+    this.urlTreeElements = new Map();
     this.setLeadingIcons([icon]);
-    this._messageCount = 0;
-    this._updateCounter();
+    this.messageCount = 0;
+    this.updateCounter();
   }
 
   clear(): void {
-    this._urlTreeElements.clear();
+    this.urlTreeElements.clear();
     this.removeChildren();
-    this._messageCount = 0;
-    this._updateCounter();
+    this.messageCount = 0;
+    this.updateCounter();
   }
 
   name(): string {
-    return this._filter.name;
+    return this.filterInternal.name;
   }
 
   onselect(selectedByUser?: boolean): boolean {
-    this._selectedFilterSetting.set(this._filter.name);
+    this.selectedFilterSetting.set(this.filterInternal.name);
     return super.onselect(selectedByUser);
   }
 
-  _updateCounter(): void {
-    this.title = this._updateGroupTitle(this._messageCount);
+  private updateCounter(): void {
+    this.title = this.updateGroupTitle(this.messageCount);
     this.setExpandable(Boolean(this.childCount()));
   }
 
-  _updateGroupTitle(messageCount: number): string {
+  private updateGroupTitle(messageCount: number): string {
     if (this.uiStringForFilterCount) {
       // eslint-disable-next-line rulesdir/l10n_i18nString_call_only_with_uistrings
       return i18nString(this.uiStringForFilterCount, {n: messageCount});
@@ -242,23 +242,23 @@ export class FilterTreeElement extends ConsoleSidebarTreeElement {
     const message = viewMessage.consoleMessage();
     const shouldIncrementCounter = message.type !== SDK.ConsoleModel.FrontendMessageType.Command &&
         message.type !== SDK.ConsoleModel.FrontendMessageType.Result && !message.isGroupMessage();
-    if (!this._filter.shouldBeVisible(viewMessage) || !shouldIncrementCounter) {
+    if (!this.filterInternal.shouldBeVisible(viewMessage) || !shouldIncrementCounter) {
       return;
     }
-    const child = this._childElement(message.url);
+    const child = this.childElement(message.url);
     child.incrementAndUpdateCounter();
-    this._messageCount++;
-    this._updateCounter();
+    this.messageCount++;
+    this.updateCounter();
   }
 
-  _childElement(url?: string): URLGroupTreeElement {
+  private childElement(url?: string): URLGroupTreeElement {
     const urlValue = url || null;
-    let child = this._urlTreeElements.get(urlValue);
+    let child = this.urlTreeElements.get(urlValue);
     if (child) {
       return child;
     }
 
-    const filter = this._filter.clone();
+    const filter = this.filterInternal.clone();
     const parsedURL = urlValue ? Common.ParsedURL.ParsedURL.fromString(urlValue) : null;
     if (urlValue) {
       filter.name = parsedURL ? parsedURL.displayName : urlValue;
@@ -270,7 +270,7 @@ export class FilterTreeElement extends ConsoleSidebarTreeElement {
     if (urlValue) {
       child.tooltip = urlValue;
     }
-    this._urlTreeElements.set(urlValue, child);
+    this.urlTreeElements.set(urlValue, child);
     this.appendChild(child);
     return child;
   }

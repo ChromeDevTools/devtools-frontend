@@ -40,10 +40,10 @@ import {ConsoleView} from './ConsoleView.js';
 let consolePanelInstance: ConsolePanel;
 
 export class ConsolePanel extends UI.Panel.Panel {
-  _view: ConsoleView;
+  private readonly view: ConsoleView;
   constructor() {
     super('console');
-    this._view = ConsoleView.instance();
+    this.view = ConsoleView.instance();
   }
 
   static instance(opts: {
@@ -57,8 +57,8 @@ export class ConsolePanel extends UI.Panel.Panel {
     return consolePanelInstance;
   }
 
-  static _updateContextFlavor(): void {
-    const consoleView = ConsolePanel.instance()._view;
+  static updateContextFlavor(): void {
+    const consoleView = ConsolePanel.instance().view;
     UI.Context.Context.instance().setFlavor(ConsoleView, consoleView.isShowing() ? consoleView : null);
   }
 
@@ -68,8 +68,8 @@ export class ConsolePanel extends UI.Panel.Panel {
     if (wrapper && wrapper.isShowing()) {
       UI.InspectorView.InspectorView.instance().setDrawerMinimized(true);
     }
-    this._view.show(this.element);
-    ConsolePanel._updateContextFlavor();
+    this.view.show(this.element);
+    ConsolePanel.updateContextFlavor();
   }
 
   willHide(): void {
@@ -78,9 +78,9 @@ export class ConsolePanel extends UI.Panel.Panel {
     // Console's scrollTop to 0. Unminimize before calling show to avoid this.
     UI.InspectorView.InspectorView.instance().setDrawerMinimized(false);
     if (wrapperViewInstance) {
-      wrapperViewInstance._showViewInWrapper();
+      wrapperViewInstance.showViewInWrapper();
     }
-    ConsolePanel._updateContextFlavor();
+    ConsolePanel.updateContextFlavor();
   }
 
   searchableView(): UI.SearchableView.SearchableView|null {
@@ -91,11 +91,11 @@ export class ConsolePanel extends UI.Panel.Panel {
 let wrapperViewInstance: WrapperView|null = null;
 
 export class WrapperView extends UI.Widget.VBox {
-  _view: ConsoleView;
+  private readonly view: ConsoleView;
 
   private constructor() {
     super();
-    this._view = ConsoleView.instance();
+    this.view = ConsoleView.instance();
   }
 
   static instance(): WrapperView {
@@ -107,20 +107,20 @@ export class WrapperView extends UI.Widget.VBox {
 
   wasShown(): void {
     if (!ConsolePanel.instance().isShowing()) {
-      this._showViewInWrapper();
+      this.showViewInWrapper();
     } else {
       UI.InspectorView.InspectorView.instance().setDrawerMinimized(true);
     }
-    ConsolePanel._updateContextFlavor();
+    ConsolePanel.updateContextFlavor();
   }
 
   willHide(): void {
     UI.InspectorView.InspectorView.instance().setDrawerMinimized(false);
-    ConsolePanel._updateContextFlavor();
+    ConsolePanel.updateContextFlavor();
   }
 
-  _showViewInWrapper(): void {
-    this._view.show(this.element);
+  showViewInWrapper(): void {
+    this.view.show(this.element);
   }
 }
 

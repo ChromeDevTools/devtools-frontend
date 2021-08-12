@@ -11015,6 +11015,12 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "Ŝh́ôẃŝ t́ĥé ŝóûŕĉé ŝćĥém̂é (Secure, NonSecure) t̂h́ê ćôók̂íê ẃâś ŝét̂ ón̂. Íf̂ t́ĥé ŝćĥém̂é îś ûńk̂ńôẃn̂, t́ĥíŝ śĥóŵś Unset."
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "âf́t̂ér̂ {date}"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "T̂h́ê éx̂ṕîŕât́îón̂ t́îḿêśt̂ám̂ṕ îś {seconds}, ŵh́îćĥ ćôŕr̂éŝṕôńd̂ś t̂ó â d́ât́ê áf̂t́êŕ {date}"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "V̂ál̂úê"
   },

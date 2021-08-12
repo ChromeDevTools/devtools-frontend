@@ -90,6 +90,17 @@ const UIStrings = {
   */
   sourceSchemeTooltip:
       'Shows the source scheme (`Secure`, `NonSecure`) the cookie was set on. If the scheme is unknown, this shows `Unset`.',
+  /**
+   * @description Text for the date column displayed if the expiration time of the cookie is extremely far out in the future.
+   * @example {+275760-09-13T00:00:00.000Z} date
+   */
+  timeAfter: 'after {date}',
+  /**
+   * @description Tooltip for the date column displayed if the expiration time of the cookie is extremely far out in the future.
+   * @example {+275760-09-13T00:00:00.000Z} date
+   * @example {9001628746521180} seconds
+   */
+  timeAfterTooltip: 'The expiration timestamp is {seconds}, which corresponds to a date after {date}',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/cookie_table/CookiesTable.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -523,13 +534,23 @@ export class CookiesTable extends UI.Widget.VBox {
       data[SDK.Cookie.Attributes.Path] = cookie.path() || '';
     }
 
+    let expiresTooltip = undefined;
     if (cookie.maxAge()) {
       data[SDK.Cookie.Attributes.Expires] = i18n.TimeUtilities.secondsToString(Math.floor(cookie.maxAge()));
     } else if (cookie.expires()) {
-      if (cookie.expires() < 0) {
+      const expires = cookie.expires();
+      if (expires < 0) {
         data[SDK.Cookie.Attributes.Expires] = expiresSessionValue();
       } else {
-        data[SDK.Cookie.Attributes.Expires] = new Date(cookie.expires()).toISOString();
+        // See https://tc39.es/ecma262/#sec-time-values-and-time-range
+        const maxTimestamp: number = 8640000000000000;
+        if (expires > maxTimestamp) {
+          const date = new Date(maxTimestamp).toISOString();
+          data[SDK.Cookie.Attributes.Expires] = i18nString(UIStrings.timeAfter, {date});
+          expiresTooltip = i18nString(UIStrings.timeAfterTooltip, {seconds: expires, date});
+        } else {
+          data[SDK.Cookie.Attributes.Expires] = new Date(expires).toISOString();
+        }
       }
     } else {
       data[SDK.Cookie.Attributes.Expires] =
@@ -547,6 +568,9 @@ export class CookiesTable extends UI.Widget.VBox {
 
     const blockedReasons = this.cookieToBlockedReasons?.get(cookie);
     const node = new DataGridNode(data, cookie, blockedReasons || null);
+    if (expiresTooltip) {
+      node.setExpiresTooltip(expiresTooltip);
+    }
     node.selectable = true;
     return node;
   }
@@ -696,6 +720,8 @@ export class CookiesTable extends UI.Widget.VBox {
 export class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
   cookie: SDK.Cookie.Cookie;
   private readonly blockedReasons: SDK.CookieModel.BlockedReason[]|null;
+  private expiresTooltip?: Platform.UIString.LocalizedString;
+
   constructor(
       data: {[x: string]: string|number|boolean}, cookie: SDK.Cookie.Cookie,
       blockedReasons: SDK.CookieModel.BlockedReason[]|null) {
@@ -711,12 +737,18 @@ export class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
     }
   }
 
+  setExpiresTooltip(tooltip: Platform.UIString.LocalizedString): void {
+    this.expiresTooltip = tooltip;
+  }
+
   createCell(columnId: string): HTMLElement {
     const cell = super.createCell(columnId);
     if (columnId === SDK.Cookie.Attributes.SourcePort) {
       UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.sourcePortTooltip));
     } else if (columnId === SDK.Cookie.Attributes.SourceScheme) {
       UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.sourceSchemeTooltip));
+    } else if (columnId === SDK.Cookie.Attributes.Expires && this.expiresTooltip) {
+      UI.Tooltip.Tooltip.install(cell, this.expiresTooltip);
     } else {
       UI.Tooltip.Tooltip.install(cell, cell.textContent || '');
     }

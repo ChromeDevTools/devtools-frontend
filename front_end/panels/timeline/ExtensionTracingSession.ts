@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Extensions from '../../models/extensions/extensions.js';
 
@@ -12,19 +10,19 @@ import type {Client} from './TimelineLoader.js';
 import {TimelineLoader} from './TimelineLoader.js';
 
 export class ExtensionTracingSession implements Extensions.ExtensionTraceProvider.TracingSession, Client {
-  _provider: Extensions.ExtensionTraceProvider.ExtensionTraceProvider;
-  _performanceModel: PerformanceModel;
-  _completionCallback!: () => void;
-  _completionPromise: Promise<void>;
-  _timeOffset: number;
+  private readonly provider: Extensions.ExtensionTraceProvider.ExtensionTraceProvider;
+  private readonly performanceModel: PerformanceModel;
+  private completionCallback!: () => void;
+  private readonly completionPromise: Promise<void>;
+  private timeOffset: number;
 
   constructor(provider: Extensions.ExtensionTraceProvider.ExtensionTraceProvider, performanceModel: PerformanceModel) {
-    this._provider = provider;
-    this._performanceModel = performanceModel;
-    this._completionPromise = new Promise(fulfill => {
-      this._completionCallback = fulfill;
+    this.provider = provider;
+    this.performanceModel = performanceModel;
+    this.completionPromise = new Promise(fulfill => {
+      this.completionCallback = fulfill;
     });
-    this._timeOffset = 0;
+    this.timeOffset = 0;
   }
 
   loadingStarted(): void {
@@ -40,25 +38,25 @@ export class ExtensionTracingSession implements Extensions.ExtensionTraceProvide
     if (!tracingModel) {
       return;
     }
-    this._performanceModel.addExtensionEvents(this._provider.longDisplayName(), tracingModel, this._timeOffset);
-    this._completionCallback();
+    this.performanceModel.addExtensionEvents(this.provider.longDisplayName(), tracingModel, this.timeOffset);
+    this.completionCallback();
   }
 
   complete(url: string, timeOffsetMicroseconds: number): void {
     if (!url) {
-      this._completionCallback();
+      this.completionCallback();
       return;
     }
-    this._timeOffset = timeOffsetMicroseconds;
+    this.timeOffset = timeOffsetMicroseconds;
     TimelineLoader.loadFromURL(url, this);
   }
 
   start(): void {
-    this._provider.start(this);
+    this.provider.start(this);
   }
 
   stop(): Promise<void> {
-    this._provider.stop();
-    return this._completionPromise;
+    this.provider.stop();
+    return this.completionPromise;
   }
 }

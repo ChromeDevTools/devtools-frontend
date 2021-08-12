@@ -9,7 +9,7 @@
   await TestRunner.showPanel('timeline');
   TestRunner.addResult('Performance panel loaded.');
 
-  const tabbedPane = UI.panels.timeline._flameChart._detailsView._tabbedPane;
+  const tabbedPane = UI.panels.timeline.flameChart.detailsView.tabbedPane;
   tabbedPane.selectTab(Timeline.TimelineDetailsView.Tab.EventLog);
 
   TestRunner.addResult('Loading a performance model.');

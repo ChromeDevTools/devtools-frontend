@@ -33,8 +33,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -1235,7 +1233,7 @@ interface EventStylesMap {
   [x: string]: TimelineRecordStyle;
 }
 export class TimelineUIUtils {
-  static _initEventStyles(): EventStylesMap {
+  private static initEventStyles(): EventStylesMap {
     if (eventStylesMap) {
       return eventStylesMap;
     }
@@ -1472,7 +1470,7 @@ export class TimelineUIUtils {
   }
 
   static eventStyle(event: SDK.TracingModel.Event): TimelineRecordStyle {
-    const eventStyles = TimelineUIUtils._initEventStyles();
+    const eventStyles = TimelineUIUtils.initEventStyles();
     if (event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.Console) ||
         event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming)) {
       return new TimelineRecordStyle(event.name, TimelineUIUtils.categories()['scripting']);
@@ -1563,7 +1561,7 @@ export class TimelineUIUtils {
     return title;
   }
 
-  static _interactionPhaseStyles(): Map<TimelineModel.TimelineIRModel.Phases, {
+  private static interactionPhaseStyles(): Map<TimelineModel.TimelineIRModel.Phases, {
     color: string,
     label: string,
   }> {
@@ -1602,7 +1600,7 @@ export class TimelineUIUtils {
   }
 
   static interactionPhaseColor(phase: TimelineModel.TimelineIRModel.Phases): string {
-    const interactionPhase = TimelineUIUtils._interactionPhaseStyles().get(phase);
+    const interactionPhase = TimelineUIUtils.interactionPhaseStyles().get(phase);
     if (!interactionPhase) {
       throw new Error(`Unknown phase ${phase}`);
     }
@@ -1610,7 +1608,7 @@ export class TimelineUIUtils {
   }
 
   static interactionPhaseLabel(phase: TimelineModel.TimelineIRModel.Phases): string {
-    const interactionPhase = TimelineUIUtils._interactionPhaseStyles().get(phase);
+    const interactionPhase = TimelineUIUtils.interactionPhaseStyles().get(phase);
     if (!interactionPhase) {
       throw new Error(`Unknown phase ${phase}`);
     }
@@ -2016,7 +2014,7 @@ export class TimelineUIUtils {
       }
       const invalidationTrackingEvents = TimelineModel.TimelineModel.InvalidationTracker.invalidationEventsFor(event);
       if (invalidationTrackingEvents) {
-        TimelineUIUtils._collectInvalidationNodeIds(nodeIdsToResolve, invalidationTrackingEvents);
+        TimelineUIUtils.collectInvalidationNodeIds(nodeIdsToResolve, invalidationTrackingEvents);
       }
       if (nodeIdsToResolve.size) {
         const domModel = target.model(SDK.DOMModel.DOMModel);
@@ -2438,13 +2436,13 @@ export class TimelineUIUtils {
 
     if (initiator || timelineData.stackTraceForSelfOrInitiator() ||
         TimelineModel.TimelineModel.InvalidationTracker.invalidationEventsFor(event)) {
-      TimelineUIUtils._generateCauses(event, model.targetByEvent(event), relatedNodesMap, contentHelper);
+      TimelineUIUtils.generateCauses(event, model.targetByEvent(event), relatedNodesMap, contentHelper);
     }
 
     const stats: {
       [x: string]: number,
     } = {};
-    const showPieChart = detailed && TimelineUIUtils._aggregatedStatsForTraceEvent(stats, model, event);
+    const showPieChart = detailed && TimelineUIUtils.aggregatedStatsForTraceEvent(stats, model, event);
     if (showPieChart) {
       contentHelper.addSection(i18nString(UIStrings.aggregatedTime));
       const pieChart =
@@ -2704,11 +2702,11 @@ export class TimelineUIUtils {
     return contentHelper.fragment;
   }
 
-  static _stackTraceFromCallFrames(callFrames: Protocol.Runtime.CallFrame[]): Protocol.Runtime.StackTrace {
+  static stackTraceFromCallFrames(callFrames: Protocol.Runtime.CallFrame[]): Protocol.Runtime.StackTrace {
     return {callFrames: callFrames} as Protocol.Runtime.StackTrace;
   }
 
-  static _generateCauses(
+  private static generateCauses(
       event: SDK.TracingModel.Event, target: SDK.Target.Target|null,
       relatedNodesMap: Map<number, SDK.DOMModel.DOMNode|null>|null, contentHelper: TimelineDetailsContentHelper): void {
     const recordTypes = TimelineModel.TimelineModel.RecordType;
@@ -2742,7 +2740,7 @@ export class TimelineUIUtils {
       contentHelper.addSection(i18nString(UIStrings.callStacks));
       contentHelper.appendStackTrace(
           stackLabel || i18nString(UIStrings.stackTrace),
-          TimelineUIUtils._stackTraceFromCallFrames(timelineData.stackTrace));
+          TimelineUIUtils.stackTraceFromCallFrames(timelineData.stackTrace));
     }
 
     const initiator = TimelineModel.TimelineModel.TimelineData.forEvent(event).initiator();
@@ -2750,7 +2748,7 @@ export class TimelineUIUtils {
     if (TimelineModel.TimelineModel.InvalidationTracker.invalidationEventsFor(event) && target) {
       // Full invalidation tracking (experimental).
       contentHelper.addSection(i18nString(UIStrings.invalidations));
-      TimelineUIUtils._generateInvalidations(event, target, relatedNodesMap, contentHelper);
+      TimelineUIUtils.generateInvalidations(event, target, relatedNodesMap, contentHelper);
     } else if (initiator) {  // Partial invalidation tracking.
       const delay = event.startTime - initiator.startTime;
       contentHelper.appendTextRow(i18nString(UIStrings.pendingFor), i18n.TimeUtilities.preciseMillisToString(delay, 1));
@@ -2775,12 +2773,12 @@ export class TimelineUIUtils {
       if (initiatorStackTrace) {
         contentHelper.appendStackTrace(
             callSiteStackLabel || i18nString(UIStrings.firstInvalidated),
-            TimelineUIUtils._stackTraceFromCallFrames(initiatorStackTrace));
+            TimelineUIUtils.stackTraceFromCallFrames(initiatorStackTrace));
       }
     }
   }
 
-  static _generateInvalidations(
+  private static generateInvalidations(
       event: SDK.TracingModel.Event, target: SDK.Target.Target,
       relatedNodesMap: Map<number, SDK.DOMModel.DOMNode|null>|null, contentHelper: TimelineDetailsContentHelper): void {
     const invalidationTrackingEvents = TimelineModel.TimelineModel.InvalidationTracker.invalidationEventsFor(event);
@@ -2799,11 +2797,11 @@ export class TimelineUIUtils {
     }
 
     Object.keys(invalidations).forEach(function(type) {
-      TimelineUIUtils._generateInvalidationsForType(type, target, invalidations[type], relatedNodesMap, contentHelper);
+      TimelineUIUtils.generateInvalidationsForType(type, target, invalidations[type], relatedNodesMap, contentHelper);
     });
   }
 
-  static _generateInvalidationsForType(
+  private static generateInvalidationsForType(
       type: string, target: SDK.Target.Target, invalidations: TimelineModel.TimelineModel.InvalidationTrackingEvent[],
       relatedNodesMap: Map<number, SDK.DOMModel.DOMNode|null>|null, contentHelper: TimelineDetailsContentHelper): void {
     let title;
@@ -2860,12 +2858,12 @@ export class TimelineUIUtils {
     }
   }
 
-  static _collectInvalidationNodeIds(
+  private static collectInvalidationNodeIds(
       nodeIds: Set<number>, invalidations: TimelineModel.TimelineModel.InvalidationTrackingEvent[]): void {
     Platform.SetUtilities.addAll(nodeIds, invalidations.map(invalidation => invalidation.nodeId).filter(id => id));
   }
 
-  static _aggregatedStatsForTraceEvent(
+  private static aggregatedStatsForTraceEvent(
       total: {
         [x: string]: number,
       },
@@ -2961,8 +2959,8 @@ export class TimelineUIUtils {
     return eventDivider;
   }
 
-  static _visibleTypes(): string[] {
-    const eventStyles = TimelineUIUtils._initEventStyles();
+  private static visibleTypes(): string[] {
+    const eventStyles = TimelineUIUtils.initEventStyles();
     const result = [];
     for (const name in eventStyles) {
       if (!eventStyles[name].hidden) {
@@ -2973,7 +2971,7 @@ export class TimelineUIUtils {
   }
 
   static visibleEventsFilter(): TimelineModel.TimelineModelFilter.TimelineModelFilter {
-    return new TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter(TimelineUIUtils._visibleTypes());
+    return new TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter(TimelineUIUtils.visibleTypes());
   }
 
   static categories(): {
@@ -3379,9 +3377,9 @@ export const aggregatedStatsKey = Symbol('aggregatedStats');
 
 export class InvalidationsGroupElement extends UI.TreeOutline.TreeElement {
   toggleOnClick: boolean;
-  _relatedNodesMap: Map<number, SDK.DOMModel.DOMNode|null>|null;
-  _contentHelper: TimelineDetailsContentHelper;
-  _invalidations: TimelineModel.TimelineModel.InvalidationTrackingEvent[];
+  private readonly relatedNodesMap: Map<number, SDK.DOMModel.DOMNode|null>|null;
+  private readonly contentHelper: TimelineDetailsContentHelper;
+  private readonly invalidations: TimelineModel.TimelineModel.InvalidationTrackingEvent[];
 
   constructor(
       target: SDK.Target.Target, relatedNodesMap: Map<number, SDK.DOMModel.DOMNode|null>|null,
@@ -3393,30 +3391,30 @@ export class InvalidationsGroupElement extends UI.TreeOutline.TreeElement {
     this.selectable = false;
     this.toggleOnClick = true;
 
-    this._relatedNodesMap = relatedNodesMap;
-    this._contentHelper = contentHelper;
-    this._invalidations = invalidations;
-    this.title = this._createTitle(target);
+    this.relatedNodesMap = relatedNodesMap;
+    this.contentHelper = contentHelper;
+    this.invalidations = invalidations;
+    this.title = this.createTitle(target);
   }
 
-  _createTitle(target: SDK.Target.Target): Element {
-    const first = this._invalidations[0];
+  private createTitle(target: SDK.Target.Target): Element {
+    const first = this.invalidations[0];
     const reason = first.cause.reason || i18nString(UIStrings.unknownCause);
     const topFrame = first.cause.stackTrace && first.cause.stackTrace[0];
 
-    const truncatedNodesElement = this._getTruncatedNodesElement(this._invalidations);
+    const truncatedNodesElement = this.getTruncatedNodesElement(this.invalidations);
     if (truncatedNodesElement === null) {
       return i18n.i18n.getFormatLocalizedString(str_, UIStrings.emptyPlaceholder, {PH1: reason});
     }
 
     const title = i18n.i18n.getFormatLocalizedString(str_, UIStrings.sForS, {PH1: reason, PH2: truncatedNodesElement});
 
-    if (topFrame && this._contentHelper.linkifier()) {
+    if (topFrame && this.contentHelper.linkifier()) {
       const stack = document.createElement('span');
       stack.classList.add('monospace');
       const completeTitle = i18n.i18n.getFormatLocalizedString(str_, UIStrings.sSDot, {PH1: title, PH2: stack});
       stack.createChild('span').textContent = TimelineUIUtils.frameDisplayName(topFrame);
-      const linkifier = this._contentHelper.linkifier();
+      const linkifier = this.contentHelper.linkifier();
       if (linkifier) {
         const link = linkifier.maybeLinkifyConsoleCallFrame(target, topFrame);
         if (link) {
@@ -3439,21 +3437,21 @@ export class InvalidationsGroupElement extends UI.TreeOutline.TreeElement {
     const content = document.createElement('div');
     content.classList.add('content');
 
-    const first = this._invalidations[0];
+    const first = this.invalidations[0];
     if (first.cause.stackTrace) {
       const stack = content.createChild('div');
       UI.UIUtils.createTextChild(stack, i18nString(UIStrings.stackTraceColon));
-      this._contentHelper.createChildStackTraceElement(
-          stack, TimelineUIUtils._stackTraceFromCallFrames(first.cause.stackTrace));
+      this.contentHelper.createChildStackTraceElement(
+          stack, TimelineUIUtils.stackTraceFromCallFrames(first.cause.stackTrace));
     }
 
     UI.UIUtils.createTextChild(
-        content, this._invalidations.length !== 1 ? i18nString(UIStrings.nodes) : i18nString(UIStrings.node));
+        content, this.invalidations.length !== 1 ? i18nString(UIStrings.nodes) : i18nString(UIStrings.node));
     const nodeList = content.createChild('div', 'node-list');
     let firstNode = true;
-    for (let i = 0; i < this._invalidations.length; i++) {
-      const invalidation = this._invalidations[i];
-      const invalidationNode = this._createInvalidationNode(invalidation, true);
+    for (let i = 0; i < this.invalidations.length; i++) {
+      const invalidation = this.invalidations[i];
+      const invalidationNode = this.createInvalidationNode(invalidation, true);
       if (invalidationNode) {
         if (!firstNode) {
           UI.UIUtils.createTextChild(nodeList, ', ');
@@ -3488,14 +3486,15 @@ export class InvalidationsGroupElement extends UI.TreeOutline.TreeElement {
     this.appendChild(contentTreeElement);
   }
 
-  _getTruncatedNodesElement(invalidations: TimelineModel.TimelineModel.InvalidationTrackingEvent[]): Element|null {
+  private getTruncatedNodesElement(invalidations: TimelineModel.TimelineModel.InvalidationTrackingEvent[]): Element
+      |null {
     const invalidationNodes = [];
     const invalidationNodeIdMap: {
       [x: number]: boolean,
     } = {};
     for (let i = 0; i < invalidations.length; i++) {
       const invalidation = invalidations[i];
-      const invalidationNode = this._createInvalidationNode(invalidation, false);
+      const invalidationNode = this.createInvalidationNode(invalidation, false);
       invalidationNode.addEventListener(
           'click',
 
@@ -3530,10 +3529,10 @@ export class InvalidationsGroupElement extends UI.TreeOutline.TreeElement {
     return null;
   }
 
-  _createInvalidationNode(
+  private createInvalidationNode(
       invalidation: TimelineModel.TimelineModel.InvalidationTrackingEvent, showUnknownNodes: boolean): HTMLSpanElement
       |Text {
-    const node = (invalidation.nodeId && this._relatedNodesMap) ? this._relatedNodesMap.get(invalidation.nodeId) : null;
+    const node = (invalidation.nodeId && this.relatedNodesMap) ? this.relatedNodesMap.get(invalidation.nodeId) : null;
     if (node) {
       const nodeSpan = document.createElement('span');
       Common.Linkifier.Linkifier.linkify(node).then(link => nodeSpan.appendChild(link));
@@ -3573,7 +3572,7 @@ export class TimelineCategory extends Common.ObjectWrapper.ObjectWrapper {
   visible: boolean;
   childColor: string;
   color: string;
-  _hidden?: boolean;
+  private hiddenInternal?: boolean;
 
   constructor(name: string, title: string, visible: boolean, childColor: string, color: string) {
     super();
@@ -3586,11 +3585,11 @@ export class TimelineCategory extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   get hidden(): boolean {
-    return Boolean(this._hidden);
+    return Boolean(this.hiddenInternal);
   }
 
   set hidden(hidden: boolean) {
-    this._hidden = hidden;
+    this.hiddenInternal = hidden;
     this.dispatchEventToListeners(TimelineCategory.Events.VisibilityChanged, this);
   }
 }
@@ -3605,25 +3604,25 @@ export namespace TimelineCategory {
 
 export class TimelineDetailsContentHelper {
   fragment: DocumentFragment;
-  _linkifier: Components.Linkifier.Linkifier|null;
-  _target: SDK.Target.Target|null;
+  private linkifierInternal: Components.Linkifier.Linkifier|null;
+  private target: SDK.Target.Target|null;
   element: HTMLDivElement;
-  _tableElement: HTMLElement;
+  private tableElement: HTMLElement;
 
   constructor(target: SDK.Target.Target|null, linkifier: Components.Linkifier.Linkifier|null) {
     this.fragment = document.createDocumentFragment();
 
-    this._linkifier = linkifier;
-    this._target = target;
+    this.linkifierInternal = linkifier;
+    this.target = target;
 
     this.element = document.createElement('div');
     this.element.classList.add('timeline-details-view-block');
-    this._tableElement = this.element.createChild('div', 'vbox timeline-details-chip-body');
+    this.tableElement = this.element.createChild('div', 'vbox timeline-details-chip-body');
     this.fragment.appendChild(this.element);
   }
 
   addSection(title: string, swatchColor?: string): void {
-    if (!this._tableElement.hasChildNodes()) {
+    if (!this.tableElement.hasChildNodes()) {
       this.element.removeChildren();
     } else {
       this.element = document.createElement('div');
@@ -3639,22 +3638,22 @@ export class TimelineDetailsContentHelper {
       UI.UIUtils.createTextChild(titleElement, title);
     }
 
-    this._tableElement = this.element.createChild('div', 'vbox timeline-details-chip-body');
+    this.tableElement = this.element.createChild('div', 'vbox timeline-details-chip-body');
     this.fragment.appendChild(this.element);
   }
 
   linkifier(): Components.Linkifier.Linkifier|null {
-    return this._linkifier;
+    return this.linkifierInternal;
   }
 
   appendTextRow(title: string, value: string|number|boolean): void {
-    const rowElement = this._tableElement.createChild('div', 'timeline-details-view-row');
+    const rowElement = this.tableElement.createChild('div', 'timeline-details-view-row');
     rowElement.createChild('div', 'timeline-details-view-row-title').textContent = title;
     rowElement.createChild('div', 'timeline-details-view-row-value').textContent = value.toString();
   }
 
   appendElementRow(title: string, content: string|Node, isWarning?: boolean, isStacked?: boolean): void {
-    const rowElement = this._tableElement.createChild('div', 'timeline-details-view-row');
+    const rowElement = this.tableElement.createChild('div', 'timeline-details-view-row');
     if (isWarning) {
       rowElement.classList.add('timeline-details-warning');
     }
@@ -3672,7 +3671,7 @@ export class TimelineDetailsContentHelper {
   }
 
   appendLocationRow(title: string, url: string, startLine: number, startColumn?: number): void {
-    if (!this._linkifier || !this._target) {
+    if (!this.linkifierInternal || !this.target) {
       return;
     }
 
@@ -3687,7 +3686,7 @@ export class TimelineDetailsContentHelper {
       maxLength: undefined,
       bypassURLTrimming: undefined,
     };
-    const link = this._linkifier.maybeLinkifyScriptLocation(this._target, null, url, startLine, options);
+    const link = this.linkifierInternal.maybeLinkifyScriptLocation(this.target, null, url, startLine, options);
     if (!link) {
       return;
     }
@@ -3695,12 +3694,12 @@ export class TimelineDetailsContentHelper {
   }
 
   appendLocationRange(title: string, url: string, startLine: number, endLine?: number): void {
-    if (!this._linkifier || !this._target) {
+    if (!this.linkifierInternal || !this.target) {
       return;
     }
     const locationContent = document.createElement('span');
-    const link = this._linkifier.maybeLinkifyScriptLocation(
-        this._target, null, url, startLine,
+    const link = this.linkifierInternal.maybeLinkifyScriptLocation(
+        this.target, null, url, startLine,
         {tabStop: true, className: undefined, inlineFrameIndex: 0, columnNumber: undefined});
     if (!link) {
       return;
@@ -3712,24 +3711,24 @@ export class TimelineDetailsContentHelper {
   }
 
   appendStackTrace(title: string, stackTrace: Protocol.Runtime.StackTrace): void {
-    if (!this._linkifier || !this._target) {
+    if (!this.linkifierInternal || !this.target) {
       return;
     }
 
-    const rowElement = this._tableElement.createChild('div', 'timeline-details-view-row');
+    const rowElement = this.tableElement.createChild('div', 'timeline-details-view-row');
     rowElement.createChild('div', 'timeline-details-view-row-title').textContent = title;
     this.createChildStackTraceElement(rowElement, stackTrace);
   }
 
   createChildStackTraceElement(parentElement: Element, stackTrace: Protocol.Runtime.StackTrace): void {
-    if (!this._linkifier || !this._target) {
+    if (!this.linkifierInternal || !this.target) {
       return;
     }
     parentElement.classList.add('timeline-details-stack-values');
     const stackTraceElement =
         parentElement.createChild('div', 'timeline-details-view-row-value timeline-details-view-row-stack-trace');
     const callFrameContents = Components.JSPresentationUtils.buildStackTracePreviewContents(
-        this._target, this._linkifier, {stackTrace, tabStops: true});
+        this.target, this.linkifierInternal, {stackTrace, tabStops: true});
     stackTraceElement.appendChild(callFrameContents.element);
   }
 

@@ -40,7 +40,7 @@
   const model =
       PerformanceTestRunner.createPerformanceModelWithEvents(testData);
 
-  const detailsView = UI.panels.timeline._flameChart._detailsView;
+  const detailsView = UI.panels.timeline.flameChart.detailsView;
 
   async function testDetailsView() {
     TestRunner.addResult('Tests accessibility in performance Details view using the axe-core linter');
@@ -48,7 +48,7 @@
     // Details pane gets data from the parent TimelineDetails view
     detailsView.setModel(model, PerformanceTestRunner.mainTrack());
 
-    const tabbedPane = detailsView._tabbedPane;
+    const tabbedPane = detailsView.tabbedPane;
     tabbedPane.selectTab(Timeline.TimelineDetailsView.Tab.Details);
     const detailsTab = tabbedPane.visibleView;
 
@@ -57,7 +57,7 @@
 
   async function testViewWithName(tab) {
     TestRunner.addResult(`Tests accessibility in performance ${tab} view using the axe-core linter`);
-    const tabbedPane = detailsView._tabbedPane;
+    const tabbedPane = detailsView.tabbedPane;
     tabbedPane.selectTab(tab);
     const detailsTab = tabbedPane.visibleView;
 

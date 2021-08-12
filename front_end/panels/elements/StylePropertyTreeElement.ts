@@ -1410,7 +1410,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this._hasBeenEditedIncrementally = true;
 
     // null check for updatedProperty before setting this.property as the code never expects this.property to be undefined or null.
-    // This occurs when deleting the last index of a StylePropertiesSection as this._style._allProperties array gets updated
+    // This occurs when deleting the last index of a StylePropertiesSection as this.style._allProperties array gets updated
     // before we index it when setting the value for updatedProperty
     const deleteProperty = majorChange && !styleText.length;
     const section = this.section();

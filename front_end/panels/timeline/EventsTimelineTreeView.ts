@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
@@ -43,28 +41,28 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/EventsTimelineTreeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class EventsTimelineTreeView extends TimelineTreeView {
-  _filtersControl: Filters;
-  _delegate: TimelineModeViewDelegate;
-  _currentTree!: TimelineModel.TimelineProfileTree.Node;
+  private readonly filtersControl: Filters;
+  private readonly delegate: TimelineModeViewDelegate;
+  private currentTree!: TimelineModel.TimelineProfileTree.Node;
   constructor(delegate: TimelineModeViewDelegate) {
     super();
-    this._filtersControl = new Filters();
-    this._filtersControl.addEventListener(Filters.Events.FilterChanged, this._onFilterChanged, this);
+    this.filtersControl = new Filters();
+    this.filtersControl.addEventListener(Filters.Events.FilterChanged, this.onFilterChanged, this);
     this.init();
-    this._delegate = delegate;
+    this.delegate = delegate;
     this.dataGrid.markColumnAsSortedBy('startTime', DataGrid.DataGrid.Order.Ascending);
     this.splitWidget.showBoth();
   }
 
   filters(): TimelineModel.TimelineModelFilter.TimelineModelFilter[] {
-    return [...super.filters(), ...this._filtersControl.filters()];
+    return [...super.filters(), ...this.filtersControl.filters()];
   }
 
   updateContents(selection: TimelineSelection): void {
     super.updateContents(selection);
     if (selection.type() === TimelineSelection.Type.TraceEvent) {
       const event = (selection.object() as SDK.TracingModel.Event);
-      this._selectEvent(event, true);
+      this.selectEvent(event, true);
     }
   }
 
@@ -72,22 +70,22 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     return i18nString(UIStrings.filterEventLog);
   }
 
-  _buildTree(): TimelineModel.TimelineProfileTree.Node {
-    this._currentTree = this.buildTopDownTree(true, null);
-    return this._currentTree;
+  buildTree(): TimelineModel.TimelineProfileTree.Node {
+    this.currentTree = this.buildTopDownTree(true, null);
+    return this.currentTree;
   }
 
-  _onFilterChanged(): void {
+  private onFilterChanged(): void {
     const lastSelectedNode = this.lastSelectedNode();
     const selectedEvent = lastSelectedNode && lastSelectedNode.event;
     this.refreshTree();
     if (selectedEvent) {
-      this._selectEvent(selectedEvent, false);
+      this.selectEvent(selectedEvent, false);
     }
   }
 
-  _findNodeWithEvent(event: SDK.TracingModel.Event): TimelineModel.TimelineProfileTree.Node|null {
-    const iterators = [this._currentTree.children().values()];
+  private findNodeWithEvent(event: SDK.TracingModel.Event): TimelineModel.TimelineProfileTree.Node|null {
+    const iterators = [this.currentTree.children().values()];
 
     while (iterators.length) {
       // @ts-ignore crbug.com/1011811 there is no common iterator type between Closure and TypeScript
@@ -105,8 +103,8 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     return null;
   }
 
-  _selectEvent(event: SDK.TracingModel.Event, expand?: boolean): void {
-    const node = this._findNodeWithEvent(event);
+  private selectEvent(event: SDK.TracingModel.Event, expand?: boolean): void {
+    const node = this.findNodeWithEvent(event);
     if (!node) {
       return;
     }
@@ -135,10 +133,10 @@ export class EventsTimelineTreeView extends TimelineTreeView {
 
   populateToolbar(toolbar: UI.Toolbar.Toolbar): void {
     super.populateToolbar(toolbar);
-    this._filtersControl.populateToolbar(toolbar);
+    this.filtersControl.populateToolbar(toolbar);
   }
 
-  _showDetailsForNode(node: TimelineModel.TimelineProfileTree.Node): boolean {
+  showDetailsForNode(node: TimelineModel.TimelineProfileTree.Node): boolean {
     const traceEvent = node.event;
     if (!traceEvent) {
       return false;
@@ -152,30 +150,30 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     return true;
   }
 
-  _onHover(node: TimelineModel.TimelineProfileTree.Node|null): void {
-    this._delegate.highlightEvent(node && node.event);
+  onHover(node: TimelineModel.TimelineProfileTree.Node|null): void {
+    this.delegate.highlightEvent(node && node.event);
   }
 }
 
 export class Filters extends Common.ObjectWrapper.ObjectWrapper {
-  _categoryFilter: Category;
-  _durationFilter: IsLong;
-  _filters: (IsLong|Category)[];
+  private readonly categoryFilter: Category;
+  private readonly durationFilter: IsLong;
+  private readonly filtersInternal: (IsLong|Category)[];
   constructor() {
     super();
-    this._categoryFilter = new Category();
-    this._durationFilter = new IsLong();
-    this._filters = [this._categoryFilter, this._durationFilter];
+    this.categoryFilter = new Category();
+    this.durationFilter = new IsLong();
+    this.filtersInternal = [this.categoryFilter, this.durationFilter];
   }
 
   filters(): TimelineModel.TimelineModelFilter.TimelineModelFilter[] {
-    return this._filters;
+    return this.filtersInternal;
   }
 
   populateToolbar(toolbar: UI.Toolbar.Toolbar): void {
     const durationFilterUI =
         new UI.Toolbar.ToolbarComboBox(durationFilterChanged.bind(this), i18nString(UIStrings.durationFilter));
-    for (const durationMs of Filters._durationFilterPresetsMs) {
+    for (const durationMs of Filters.durationFilterPresetsMs) {
       durationFilterUI.addOption(durationFilterUI.createOption(
           durationMs ? `≥ ${i18nString(UIStrings.Dms, {PH1: durationMs})}` : i18nString(UIStrings.all),
           String(durationMs)));
@@ -200,25 +198,25 @@ export class Filters extends Common.ObjectWrapper.ObjectWrapper {
     function durationFilterChanged(this: Filters): void {
       const duration = (durationFilterUI.selectedOption() as HTMLOptionElement).value;
       const minimumRecordDuration = parseInt(duration, 10);
-      this._durationFilter.setMinimumRecordDuration(minimumRecordDuration);
-      this._notifyFiltersChanged();
+      this.durationFilter.setMinimumRecordDuration(minimumRecordDuration);
+      this.notifyFiltersChanged();
     }
 
     function categoriesFilterChanged(this: Filters, name: string): void {
       const categories = TimelineUIUtils.categories();
       const checkBox = categoryFiltersUI.get(name);
       categories[name].hidden = !checkBox || !checkBox.checked();
-      this._notifyFiltersChanged();
+      this.notifyFiltersChanged();
     }
   }
 
-  _notifyFiltersChanged(): void {
+  private notifyFiltersChanged(): void {
     this.dispatchEventToListeners(Filters.Events.FilterChanged);
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  static readonly _durationFilterPresetsMs = [0, 1, 15];
+  private static readonly durationFilterPresetsMs = [0, 1, 15];
 }
 
 export namespace Filters {

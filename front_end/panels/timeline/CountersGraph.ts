@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -73,91 +71,90 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/CountersGraph.ts', UIS
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class CountersGraph extends UI.Widget.VBox {
-  _delegate: TimelineModeViewDelegate;
-  _calculator: Calculator;
-  _model!: PerformanceModel|null;
-  _header: UI.Widget.HBox;
-  _toolbar: UI.Toolbar.Toolbar;
-  _graphsContainer: UI.Widget.VBox;
-  _canvasContainer: UI.Widget.WidgetElement;
-  _canvas: HTMLCanvasElement;
-  _timelineGrid: PerfUI.TimelineGrid.TimelineGrid;
-  _counters: Counter[];
-  _counterUI: CounterUI[];
-  _countersByName: Map<string, Counter>;
-  _gpuMemoryCounter: Counter;
-  _track?: TimelineModel.TimelineModel.Track|null;
-  _currentValuesBar?: HTMLElement;
-  _markerXPosition?: number;
+  private readonly delegate: TimelineModeViewDelegate;
+  private readonly calculator: Calculator;
+  private model!: PerformanceModel|null;
+  private readonly header: UI.Widget.HBox;
+  readonly toolbar: UI.Toolbar.Toolbar;
+  private graphsContainer: UI.Widget.VBox;
+  canvasContainer: UI.Widget.WidgetElement;
+  private canvas: HTMLCanvasElement;
+  private readonly timelineGrid: PerfUI.TimelineGrid.TimelineGrid;
+  private readonly counters: Counter[];
+  private readonly counterUI: CounterUI[];
+  private readonly countersByName: Map<string, Counter>;
+  private readonly gpuMemoryCounter: Counter;
+  private track?: TimelineModel.TimelineModel.Track|null;
+  currentValuesBar?: HTMLElement;
+  private markerXPosition?: number;
 
   constructor(delegate: TimelineModeViewDelegate) {
     super();
     this.element.id = 'memory-graphs-container';
 
-    this._delegate = delegate;
-    this._calculator = new Calculator();
+    this.delegate = delegate;
+    this.calculator = new Calculator();
 
     // Create selectors
-    this._header = new UI.Widget.HBox();
-    this._header.element.classList.add('timeline-memory-header');
-    this._header.show(this.element);
-    this._toolbar = new UI.Toolbar.Toolbar('timeline-memory-toolbar');
-    this._header.element.appendChild(this._toolbar.element);
+    this.header = new UI.Widget.HBox();
+    this.header.element.classList.add('timeline-memory-header');
+    this.header.show(this.element);
+    this.toolbar = new UI.Toolbar.Toolbar('timeline-memory-toolbar');
+    this.header.element.appendChild(this.toolbar.element);
 
-    this._graphsContainer = new UI.Widget.VBox();
-    this._graphsContainer.show(this.element);
-    const canvasWidget = new UI.Widget.VBoxWithResizeCallback(this._resize.bind(this));
-    canvasWidget.show(this._graphsContainer.element);
-    this._createCurrentValuesBar();
-    this._canvasContainer = canvasWidget.element;
-    this._canvasContainer.id = 'memory-graphs-canvas-container';
-    this._canvas = document.createElement('canvas');
-    this._canvasContainer.appendChild(this._canvas);
-    this._canvas.id = 'memory-counters-graph';
+    this.graphsContainer = new UI.Widget.VBox();
+    this.graphsContainer.show(this.element);
+    const canvasWidget = new UI.Widget.VBoxWithResizeCallback(this.resize.bind(this));
+    canvasWidget.show(this.graphsContainer.element);
+    this.createCurrentValuesBar();
+    this.canvasContainer = canvasWidget.element;
+    this.canvasContainer.id = 'memory-graphs-canvas-container';
+    this.canvas = document.createElement('canvas');
+    this.canvasContainer.appendChild(this.canvas);
+    this.canvas.id = 'memory-counters-graph';
 
-    this._canvasContainer.addEventListener('mouseover', this._onMouseMove.bind(this), true);
-    this._canvasContainer.addEventListener('mousemove', this._onMouseMove.bind(this), true);
-    this._canvasContainer.addEventListener('mouseleave', this._onMouseLeave.bind(this), true);
-    this._canvasContainer.addEventListener('click', this._onClick.bind(this), true);
+    this.canvasContainer.addEventListener('mouseover', this.onMouseMove.bind(this), true);
+    this.canvasContainer.addEventListener('mousemove', this.onMouseMove.bind(this), true);
+    this.canvasContainer.addEventListener('mouseleave', this.onMouseLeave.bind(this), true);
+    this.canvasContainer.addEventListener('click', this.onClick.bind(this), true);
     // We create extra timeline grid here to reuse its event dividers.
-    this._timelineGrid = new PerfUI.TimelineGrid.TimelineGrid();
-    this._canvasContainer.appendChild(this._timelineGrid.dividersElement);
+    this.timelineGrid = new PerfUI.TimelineGrid.TimelineGrid();
+    this.canvasContainer.appendChild(this.timelineGrid.dividersElement);
 
-    this._counters = [];
-    this._counterUI = [];
+    this.counters = [];
+    this.counterUI = [];
 
-    this._countersByName = new Map();
-    this._countersByName.set(
+    this.countersByName = new Map();
+    this.countersByName.set(
         'jsHeapSizeUsed',
-        this._createCounter(
-            i18nString(UIStrings.jsHeap), 'hsl(220, 90%, 43%)', Platform.NumberUtilities.bytesToString));
-    this._countersByName.set('documents', this._createCounter(i18nString(UIStrings.documents), 'hsl(0, 90%, 43%)'));
-    this._countersByName.set('nodes', this._createCounter(i18nString(UIStrings.nodes), 'hsl(120, 90%, 43%)'));
-    this._countersByName.set(
-        'jsEventListeners', this._createCounter(i18nString(UIStrings.listeners), 'hsl(38, 90%, 43%)'));
+        this.createCounter(i18nString(UIStrings.jsHeap), 'hsl(220, 90%, 43%)', Platform.NumberUtilities.bytesToString));
+    this.countersByName.set('documents', this.createCounter(i18nString(UIStrings.documents), 'hsl(0, 90%, 43%)'));
+    this.countersByName.set('nodes', this.createCounter(i18nString(UIStrings.nodes), 'hsl(120, 90%, 43%)'));
+    this.countersByName.set(
+        'jsEventListeners', this.createCounter(i18nString(UIStrings.listeners), 'hsl(38, 90%, 43%)'));
 
-    this._gpuMemoryCounter = this._createCounter(
+    this.gpuMemoryCounter = this.createCounter(
         i18nString(UIStrings.gpuMemory), 'hsl(300, 90%, 43%)', Platform.NumberUtilities.bytesToString);
-    this._countersByName.set('gpuMemoryUsedKB', this._gpuMemoryCounter);
+    this.countersByName.set('gpuMemoryUsedKB', this.gpuMemoryCounter);
   }
 
   setModel(model: PerformanceModel|null, track: TimelineModel.TimelineModel.Track|null): void {
-    if (this._model !== model) {
-      if (this._model) {
-        this._model.removeEventListener(Events.WindowChanged, this._onWindowChanged, this);
+    if (this.model !== model) {
+      if (this.model) {
+        this.model.removeEventListener(Events.WindowChanged, this.onWindowChanged, this);
       }
-      this._model = model;
-      if (this._model) {
-        this._model.addEventListener(Events.WindowChanged, this._onWindowChanged, this);
+      this.model = model;
+      if (this.model) {
+        this.model.addEventListener(Events.WindowChanged, this.onWindowChanged, this);
       }
     }
-    this._calculator.setZeroTime(model ? model.timelineModel().minimumRecordTime() : 0);
-    for (let i = 0; i < this._counters.length; ++i) {
-      this._counters[i].reset();
-      this._counterUI[i].reset();
+    this.calculator.setZeroTime(model ? model.timelineModel().minimumRecordTime() : 0);
+    for (let i = 0; i < this.counters.length; ++i) {
+      this.counters[i].reset();
+      this.counterUI[i].reset();
     }
     this.scheduleRefresh();
-    this._track = track;
+    this.track = track;
     if (!track) {
       return;
     }
@@ -173,7 +170,7 @@ export class CountersGraph extends UI.Widget.VBox {
         return;
       }
       for (const name in counters) {
-        const counter = this._countersByName.get(name);
+        const counter = this.countersByName.get(name);
         if (counter) {
           counter.appendSample(event.startTime, counters[name]);
         }
@@ -181,38 +178,38 @@ export class CountersGraph extends UI.Widget.VBox {
 
       const gpuMemoryLimitCounterName = 'gpuMemoryLimitKB';
       if (gpuMemoryLimitCounterName in counters) {
-        this._gpuMemoryCounter.setLimit(counters[gpuMemoryLimitCounterName]);
+        this.gpuMemoryCounter.setLimit(counters[gpuMemoryLimitCounterName]);
       }
     }
   }
 
-  _createCurrentValuesBar(): void {
-    this._currentValuesBar = this._graphsContainer.element.createChild('div');
-    this._currentValuesBar.id = 'counter-values-bar';
+  private createCurrentValuesBar(): void {
+    this.currentValuesBar = this.graphsContainer.element.createChild('div');
+    this.currentValuesBar.id = 'counter-values-bar';
   }
 
-  _createCounter(uiName: string, color: string, formatter?: ((arg0: number) => string)): Counter {
+  private createCounter(uiName: string, color: string, formatter?: ((arg0: number) => string)): Counter {
     const counter = new Counter();
-    this._counters.push(counter);
-    this._counterUI.push(new CounterUI(this, uiName, color, counter, formatter));
+    this.counters.push(counter);
+    this.counterUI.push(new CounterUI(this, uiName, color, counter, formatter));
     return counter;
   }
 
   resizerElement(): Element|null {
-    return this._header.element;
+    return this.header.element;
   }
 
-  _resize(): void {
-    const parentElement = (this._canvas.parentElement as HTMLElement);
-    this._canvas.width = parentElement.clientWidth * window.devicePixelRatio;
-    this._canvas.height = parentElement.clientHeight * window.devicePixelRatio;
-    this._calculator.setDisplayWidth(this._canvas.width);
+  private resize(): void {
+    const parentElement = (this.canvas.parentElement as HTMLElement);
+    this.canvas.width = parentElement.clientWidth * window.devicePixelRatio;
+    this.canvas.height = parentElement.clientHeight * window.devicePixelRatio;
+    this.calculator.setDisplayWidth(this.canvas.width);
     this.refresh();
   }
 
-  _onWindowChanged(event: Common.EventTarget.EventTargetEvent): void {
+  private onWindowChanged(event: Common.EventTarget.EventTargetEvent): void {
     const window = (event.data.window as Window);
-    this._calculator.setWindow(window.left, window.right);
+    this.calculator.setWindow(window.left, window.right);
     this.scheduleRefresh();
   }
 
@@ -221,71 +218,70 @@ export class CountersGraph extends UI.Widget.VBox {
   }
 
   draw(): void {
-    this._clear();
-    for (const counter of this._counters) {
-      counter._calculateVisibleIndexes(this._calculator);
-      counter._calculateXValues(this._canvas.width);
+    this.clear();
+    for (const counter of this.counters) {
+      counter.calculateVisibleIndexes(this.calculator);
+      counter.calculateXValues(this.canvas.width);
     }
-    for (const counterUI of this._counterUI) {
-      counterUI._drawGraph(this._canvas);
+    for (const counterUI of this.counterUI) {
+      counterUI.drawGraph(this.canvas);
     }
   }
 
-  _onClick(event: Event): void {
-    const x = (event as MouseEvent).x - this._canvasContainer.totalOffsetLeft();
+  private onClick(event: Event): void {
+    const x = (event as MouseEvent).x - this.canvasContainer.totalOffsetLeft();
     let minDistance: number = Infinity;
     let bestTime;
-    for (const counterUI of this._counterUI) {
+    for (const counterUI of this.counterUI) {
       if (!counterUI.counter.times.length) {
         continue;
       }
-      const index = counterUI._recordIndexAt(x);
+      const index = counterUI.recordIndexAt(x);
       const distance = Math.abs(x * window.devicePixelRatio - counterUI.counter.x[index]);
       if (distance < minDistance) {
         minDistance = distance;
         bestTime = counterUI.counter.times[index];
       }
     }
-    if (bestTime !== undefined && this._track) {
-      this._delegate.selectEntryAtTime(
-          this._track.events.length ? this._track.events : this._track.asyncEvents, bestTime);
+    if (bestTime !== undefined && this.track) {
+      this.delegate.selectEntryAtTime(this.track.events.length ? this.track.events : this.track.asyncEvents, bestTime);
     }
   }
 
-  _onMouseLeave(_event: Event): void {
-    delete this._markerXPosition;
-    this._clearCurrentValueAndMarker();
+  private onMouseLeave(_event: Event): void {
+    delete this.markerXPosition;
+    this.clearCurrentValueAndMarker();
   }
 
-  _clearCurrentValueAndMarker(): void {
-    for (let i = 0; i < this._counterUI.length; i++) {
-      this._counterUI[i]._clearCurrentValueAndMarker();
+  private clearCurrentValueAndMarker(): void {
+    for (let i = 0; i < this.counterUI.length; i++) {
+      this.counterUI[i].clearCurrentValueAndMarker();
     }
   }
 
-  _onMouseMove(event: Event): void {
-    const x = (event as MouseEvent).x - this._canvasContainer.totalOffsetLeft();
-    this._markerXPosition = x;
-    this._refreshCurrentValues();
+  private onMouseMove(event: Event): void {
+    const x = (event as MouseEvent).x - this.canvasContainer.totalOffsetLeft();
+    this.markerXPosition = x;
+    this.refreshCurrentValues();
   }
 
-  _refreshCurrentValues(): void {
-    if (this._markerXPosition === undefined) {
+  private refreshCurrentValues(): void {
+    if (this.markerXPosition === undefined) {
       return;
     }
-    for (let i = 0; i < this._counterUI.length; ++i) {
-      this._counterUI[i].updateCurrentValue(this._markerXPosition);
+    for (let i = 0; i < this.counterUI.length; ++i) {
+      this.counterUI[i].updateCurrentValue(this.markerXPosition);
     }
   }
 
   refresh(): void {
-    this._timelineGrid.updateDividers(this._calculator);
+    this.timelineGrid.updateDividers(this.calculator);
     this.draw();
-    this._refreshCurrentValues();
+    this.refreshCurrentValues();
   }
 
-  _clear(): void {
-    const ctx = this._canvas.getContext('2d');
+  private clear(): void {
+    const ctx = this.canvas.getContext('2d');
     if (!ctx) {
       throw new Error('Unable to get canvas context');
     }
@@ -297,20 +293,20 @@ export class Counter {
   times: number[];
   values: number[];
   x: number[];
-  _minimumIndex: number;
-  _maximumIndex: number;
-  _maxTime: number;
-  _minTime: number;
-  _limitValue?: number;
+  minimumIndex: number;
+  maximumIndex: number;
+  private maxTime: number;
+  private minTime: number;
+  limitValue?: number;
 
   constructor() {
     this.times = [];
     this.values = [];
     this.x = [];
-    this._minimumIndex = 0;
-    this._maximumIndex = 0;
-    this._maxTime = 0;
-    this._minTime = 0;
+    this.minimumIndex = 0;
+    this.maximumIndex = 0;
+    this.maxTime = 0;
+    this.minTime = 0;
   }
 
   appendSample(time: number, value: number): void {
@@ -327,16 +323,16 @@ export class Counter {
   }
 
   setLimit(value: number): void {
-    this._limitValue = value;
+    this.limitValue = value;
   }
 
-  _calculateBounds(): {
+  calculateBounds(): {
     min: number,
     max: number,
   } {
     let maxValue;
     let minValue;
-    for (let i = this._minimumIndex; i <= this._maximumIndex; i++) {
+    for (let i = this.minimumIndex; i <= this.maximumIndex; i++) {
       const value = this.values[i];
       if (minValue === undefined || value < minValue) {
         minValue = value;
@@ -347,123 +343,123 @@ export class Counter {
     }
     minValue = minValue || 0;
     maxValue = maxValue || 1;
-    if (this._limitValue) {
-      if (maxValue > this._limitValue * 0.5) {
-        maxValue = Math.max(maxValue, this._limitValue);
+    if (this.limitValue) {
+      if (maxValue > this.limitValue * 0.5) {
+        maxValue = Math.max(maxValue, this.limitValue);
       }
-      minValue = Math.min(minValue, this._limitValue);
+      minValue = Math.min(minValue, this.limitValue);
     }
     return {min: minValue, max: maxValue};
   }
 
-  _calculateVisibleIndexes(calculator: Calculator): void {
+  calculateVisibleIndexes(calculator: Calculator): void {
     const start = calculator.minimumBoundary();
     const end = calculator.maximumBoundary();
 
     // Maximum index of element whose time <= start.
-    this._minimumIndex = Platform.NumberUtilities.clamp(
+    this.minimumIndex = Platform.NumberUtilities.clamp(
         Platform.ArrayUtilities.upperBound(this.times, start, Platform.ArrayUtilities.DEFAULT_COMPARATOR) - 1, 0,
         this.times.length - 1);
 
     // Minimum index of element whose time >= end.
-    this._maximumIndex = Platform.NumberUtilities.clamp(
+    this.maximumIndex = Platform.NumberUtilities.clamp(
         Platform.ArrayUtilities.lowerBound(this.times, end, Platform.ArrayUtilities.DEFAULT_COMPARATOR), 0,
         this.times.length - 1);
 
     // Current window bounds.
-    this._minTime = start;
-    this._maxTime = end;
+    this.minTime = start;
+    this.maxTime = end;
   }
 
-  _calculateXValues(width: number): void {
+  calculateXValues(width: number): void {
     if (!this.values.length) {
       return;
     }
 
-    const xFactor = width / (this._maxTime - this._minTime);
+    const xFactor = width / (this.maxTime - this.minTime);
 
     this.x = new Array(this.values.length);
-    for (let i = this._minimumIndex + 1; i <= this._maximumIndex; i++) {
-      this.x[i] = xFactor * (this.times[i] - this._minTime);
+    for (let i = this.minimumIndex + 1; i <= this.maximumIndex; i++) {
+      this.x[i] = xFactor * (this.times[i] - this.minTime);
     }
   }
 }
 
 export class CounterUI {
-  _countersPane: CountersGraph;
+  private readonly countersPane: CountersGraph;
   counter: Counter;
-  _formatter: (arg0: number) => string;
+  private readonly formatter: (arg0: number) => string;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _setting: Common.Settings.Setting<any>;
-  _filter: UI.Toolbar.ToolbarSettingCheckbox;
-  _range: HTMLElement;
-  _value: HTMLElement;
+  private readonly setting: Common.Settings.Setting<any>;
+  private filter: UI.Toolbar.ToolbarSettingCheckbox;
+  private range: HTMLElement;
+  private value: HTMLElement;
   graphColor: string;
   limitColor: string|null|undefined;
   graphYValues: number[];
-  _verticalPadding: number;
-  _currentValueLabel: string;
-  _marker: HTMLElement;
+  private readonly verticalPadding: number;
+  private currentValueLabel: string;
+  private marker: HTMLElement;
 
   constructor(
       countersPane: CountersGraph, title: string, graphColor: string, counter: Counter,
       formatter?: (arg0: number) => string) {
-    this._countersPane = countersPane;
+    this.countersPane = countersPane;
     this.counter = counter;
-    this._formatter = formatter || Platform.NumberUtilities.withThousandsSeparator;
+    this.formatter = formatter || Platform.NumberUtilities.withThousandsSeparator;
 
-    this._setting = Common.Settings.Settings.instance().createSetting('timelineCountersGraph-' + title, true);
-    this._setting.setTitle(title);
-    this._filter = new UI.Toolbar.ToolbarSettingCheckbox(this._setting, title);
-    this._filter.inputElement.classList.add('-theme-preserve-input');
+    this.setting = Common.Settings.Settings.instance().createSetting('timelineCountersGraph-' + title, true);
+    this.setting.setTitle(title);
+    this.filter = new UI.Toolbar.ToolbarSettingCheckbox(this.setting, title);
+    this.filter.inputElement.classList.add('-theme-preserve-input');
     const parsedColor = Common.Color.Color.parse(graphColor);
     if (parsedColor) {
       const colorWithAlpha = parsedColor.setAlpha(0.5).asString(Common.Color.Format.RGBA);
-      const htmlElement = (this._filter.element as HTMLElement);
+      const htmlElement = (this.filter.element as HTMLElement);
       if (colorWithAlpha) {
         htmlElement.style.backgroundColor = colorWithAlpha;
       }
       htmlElement.style.borderColor = 'transparent';
     }
-    this._filter.inputElement.addEventListener('click', this._toggleCounterGraph.bind(this));
-    countersPane._toolbar.appendToolbarItem(this._filter);
-    this._range = this._filter.element.createChild('span', 'range');
+    this.filter.inputElement.addEventListener('click', this.toggleCounterGraph.bind(this));
+    countersPane.toolbar.appendToolbarItem(this.filter);
+    this.range = this.filter.element.createChild('span', 'range');
 
-    this._value = (countersPane._currentValuesBar as HTMLElement).createChild('span', 'memory-counter-value');
-    this._value.style.color = graphColor;
+    this.value = (countersPane.currentValuesBar as HTMLElement).createChild('span', 'memory-counter-value');
+    this.value.style.color = graphColor;
     this.graphColor = graphColor;
     if (parsedColor) {
       this.limitColor = parsedColor.setAlpha(0.3).asString(Common.Color.Format.RGBA);
     }
     this.graphYValues = [];
-    this._verticalPadding = 10;
+    this.verticalPadding = 10;
 
-    this._currentValueLabel = title;
-    this._marker = countersPane._canvasContainer.createChild('div', 'memory-counter-marker');
-    this._marker.style.backgroundColor = graphColor;
-    this._clearCurrentValueAndMarker();
+    this.currentValueLabel = title;
+    this.marker = countersPane.canvasContainer.createChild('div', 'memory-counter-marker');
+    this.marker.style.backgroundColor = graphColor;
+    this.clearCurrentValueAndMarker();
   }
 
   reset(): void {
-    this._range.textContent = '';
+    this.range.textContent = '';
   }
 
   setRange(minValue: number, maxValue: number): void {
-    const min = this._formatter(minValue);
-    const max = this._formatter(maxValue);
-    this._range.textContent = i18nString(UIStrings.ss, {PH1: min, PH2: max});
+    const min = this.formatter(minValue);
+    const max = this.formatter(maxValue);
+    this.range.textContent = i18nString(UIStrings.ss, {PH1: min, PH2: max});
   }
 
-  _toggleCounterGraph(): void {
-    this._value.classList.toggle('hidden', !this._filter.checked());
-    this._countersPane.refresh();
+  private toggleCounterGraph(): void {
+    this.value.classList.toggle('hidden', !this.filter.checked());
+    this.countersPane.refresh();
   }
 
-  _recordIndexAt(x: number): number {
+  recordIndexAt(x: number): number {
     return Platform.ArrayUtilities.upperBound(
                this.counter.x, x * window.devicePixelRatio, Platform.ArrayUtilities.DEFAULT_COMPARATOR,
-               this.counter._minimumIndex + 1, this.counter._maximumIndex + 1) -
+               this.counter.minimumIndex + 1, this.counter.maximumIndex + 1) -
         1;
   }
 
@@ -471,32 +467,32 @@ export class CounterUI {
     if (!this.visible() || !this.counter.values.length || !this.counter.x) {
       return;
     }
-    const index = this._recordIndexAt(x);
+    const index = this.recordIndexAt(x);
     const value = Platform.NumberUtilities.withThousandsSeparator(this.counter.values[index]);
-    this._value.textContent = `${this._currentValueLabel}: ${value}`;
+    this.value.textContent = `${this.currentValueLabel}: ${value}`;
     const y = this.graphYValues[index] / window.devicePixelRatio;
-    this._marker.style.left = x + 'px';
-    this._marker.style.top = y + 'px';
-    this._marker.classList.remove('hidden');
+    this.marker.style.left = x + 'px';
+    this.marker.style.top = y + 'px';
+    this.marker.classList.remove('hidden');
   }
 
-  _clearCurrentValueAndMarker(): void {
-    this._value.textContent = '';
-    this._marker.classList.add('hidden');
+  clearCurrentValueAndMarker(): void {
+    this.value.textContent = '';
+    this.marker.classList.add('hidden');
   }
 
-  _drawGraph(canvas: HTMLCanvasElement): void {
+  drawGraph(canvas: HTMLCanvasElement): void {
     const ctx = canvas.getContext('2d');
     if (!ctx) {
       throw new Error('Unable to get canvas context');
     }
     const width = canvas.width;
-    const height = canvas.height - 2 * this._verticalPadding;
+    const height = canvas.height - 2 * this.verticalPadding;
     if (height <= 0) {
       this.graphYValues = [];
       return;
     }
-    const originY = this._verticalPadding;
+    const originY = this.verticalPadding;
     const counter = this.counter;
     const values = counter.values;
 
@@ -504,7 +500,7 @@ export class CounterUI {
       return;
     }
 
-    const bounds = counter._calculateBounds();
+    const bounds = counter.calculateBounds();
     const minValue = bounds.min;
     const maxValue = bounds.max;
     this.setRange(minValue, maxValue);
@@ -523,11 +519,11 @@ export class CounterUI {
       ctx.translate(0.5, 0.5);
     }
     ctx.beginPath();
-    let value: number = values[counter._minimumIndex];
+    let value: number = values[counter.minimumIndex];
     let currentY = Math.round(originY + height - (value - minValue) * yFactor);
     ctx.moveTo(0, currentY);
-    let i = counter._minimumIndex;
-    for (; i <= counter._maximumIndex; i++) {
+    let i = counter.minimumIndex;
+    for (; i <= counter.maximumIndex; i++) {
       const x = Math.round(counter.x[i]);
       ctx.lineTo(x, currentY);
       const currentValue = values[i];
@@ -542,8 +538,8 @@ export class CounterUI {
     ctx.lineTo(width, currentY);
     ctx.strokeStyle = this.graphColor;
     ctx.stroke();
-    if (counter._limitValue) {
-      const limitLineY = Math.round(originY + height - (counter._limitValue - minValue) * yFactor);
+    if (counter.limitValue) {
+      const limitLineY = Math.round(originY + height - (counter.limitValue - minValue) * yFactor);
       ctx.moveTo(0, limitLineY);
       ctx.lineTo(width, limitLineY);
       if (this.limitColor) {
@@ -556,37 +552,37 @@ export class CounterUI {
   }
 
   visible(): boolean {
-    return this._filter.checked();
+    return this.filter.checked();
   }
 }
 
 export class Calculator implements PerfUI.TimelineGrid.Calculator {
-  _minimumBoundary: number;
-  _maximumBoundary: number;
-  _workingArea: number;
-  _zeroTime: number;
+  private minimumBoundaryInternal: number;
+  private maximumBoundaryInternal: number;
+  private workingArea: number;
+  private zeroTimeInternal: number;
 
   constructor() {
-    this._minimumBoundary = 0;
-    this._maximumBoundary = 0;
-    this._workingArea = 0;
-    this._zeroTime = 0;
+    this.minimumBoundaryInternal = 0;
+    this.maximumBoundaryInternal = 0;
+    this.workingArea = 0;
+    this.zeroTimeInternal = 0;
   }
   setZeroTime(time: number): void {
-    this._zeroTime = time;
+    this.zeroTimeInternal = time;
   }
 
   computePosition(time: number): number {
-    return (time - this._minimumBoundary) / this.boundarySpan() * this._workingArea;
+    return (time - this.minimumBoundaryInternal) / this.boundarySpan() * this.workingArea;
   }
 
   setWindow(minimumBoundary: number, maximumBoundary: number): void {
-    this._minimumBoundary = minimumBoundary;
-    this._maximumBoundary = maximumBoundary;
+    this.minimumBoundaryInternal = minimumBoundary;
+    this.maximumBoundaryInternal = maximumBoundary;
   }
 
   setDisplayWidth(clientWidth: number): void {
-    this._workingArea = clientWidth;
+    this.workingArea = clientWidth;
   }
 
   formatValue(value: number, precision?: number): string {
@@ -594,18 +590,18 @@ export class Calculator implements PerfUI.TimelineGrid.Calculator {
   }
 
   maximumBoundary(): number {
-    return this._maximumBoundary;
+    return this.maximumBoundaryInternal;
   }
 
   minimumBoundary(): number {
-    return this._minimumBoundary;
+    return this.minimumBoundaryInternal;
   }
 
   zeroTime(): number {
-    return this._zeroTime;
+    return this.zeroTimeInternal;
   }
 
   boundarySpan(): number {
-    return this._maximumBoundary - this._minimumBoundary;
+    return this.maximumBoundaryInternal - this.minimumBoundaryInternal;
   }
 }

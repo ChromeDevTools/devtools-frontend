@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -71,76 +69,76 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineDetailsView extends UI.Widget.VBox {
-  _detailsLinkifier: Components.Linkifier.Linkifier;
-  _tabbedPane: UI.TabbedPane.TabbedPane;
-  _defaultDetailsWidget: UI.Widget.VBox;
-  _defaultDetailsContentElement: HTMLElement;
-  _rangeDetailViews: Map<string, TimelineTreeView>;
-  _additionalMetricsToolbar: UI.Toolbar.Toolbar;
-  _model!: PerformanceModel;
-  _track?: TimelineModel.TimelineModel.Track|null;
-  _lazyPaintProfilerView?: TimelinePaintProfilerView|null;
-  _lazyLayersView?: TimelineLayersView|null;
-  _preferredTabId?: string;
-  _selection?: TimelineSelection|null;
+  private readonly detailsLinkifier: Components.Linkifier.Linkifier;
+  private tabbedPane: UI.TabbedPane.TabbedPane;
+  private readonly defaultDetailsWidget: UI.Widget.VBox;
+  private readonly defaultDetailsContentElement: HTMLElement;
+  private rangeDetailViews: Map<string, TimelineTreeView>;
+  private readonly additionalMetricsToolbar: UI.Toolbar.Toolbar;
+  private model!: PerformanceModel;
+  private track?: TimelineModel.TimelineModel.Track|null;
+  private lazyPaintProfilerView?: TimelinePaintProfilerView|null;
+  private lazyLayersView?: TimelineLayersView|null;
+  private preferredTabId?: string;
+  private selection?: TimelineSelection|null;
 
   constructor(delegate: TimelineModeViewDelegate) {
     super();
     this.element.classList.add('timeline-details');
 
-    this._detailsLinkifier = new Components.Linkifier.Linkifier();
+    this.detailsLinkifier = new Components.Linkifier.Linkifier();
 
-    this._tabbedPane = new UI.TabbedPane.TabbedPane();
-    this._tabbedPane.show(this.element);
+    this.tabbedPane = new UI.TabbedPane.TabbedPane();
+    this.tabbedPane.show(this.element);
 
-    this._defaultDetailsWidget = new UI.Widget.VBox();
-    this._defaultDetailsWidget.element.classList.add('timeline-details-view');
-    this._defaultDetailsContentElement =
-        this._defaultDetailsWidget.element.createChild('div', 'timeline-details-view-body vbox');
-    this._appendTab(Tab.Details, i18nString(UIStrings.summary), this._defaultDetailsWidget);
+    this.defaultDetailsWidget = new UI.Widget.VBox();
+    this.defaultDetailsWidget.element.classList.add('timeline-details-view');
+    this.defaultDetailsContentElement =
+        this.defaultDetailsWidget.element.createChild('div', 'timeline-details-view-body vbox');
+    this.appendTab(Tab.Details, i18nString(UIStrings.summary), this.defaultDetailsWidget);
     this.setPreferredTab(Tab.Details);
 
-    this._rangeDetailViews = new Map();
+    this.rangeDetailViews = new Map();
 
     const bottomUpView = new BottomUpTimelineTreeView();
-    this._appendTab(Tab.BottomUp, i18nString(UIStrings.bottomup), bottomUpView);
-    this._rangeDetailViews.set(Tab.BottomUp, bottomUpView);
+    this.appendTab(Tab.BottomUp, i18nString(UIStrings.bottomup), bottomUpView);
+    this.rangeDetailViews.set(Tab.BottomUp, bottomUpView);
 
     const callTreeView = new CallTreeTimelineTreeView();
-    this._appendTab(Tab.CallTree, i18nString(UIStrings.callTree), callTreeView);
-    this._rangeDetailViews.set(Tab.CallTree, callTreeView);
+    this.appendTab(Tab.CallTree, i18nString(UIStrings.callTree), callTreeView);
+    this.rangeDetailViews.set(Tab.CallTree, callTreeView);
 
     const eventsView = new EventsTimelineTreeView(delegate);
-    this._appendTab(Tab.EventLog, i18nString(UIStrings.eventLog), eventsView);
-    this._rangeDetailViews.set(Tab.EventLog, eventsView);
+    this.appendTab(Tab.EventLog, i18nString(UIStrings.eventLog), eventsView);
+    this.rangeDetailViews.set(Tab.EventLog, eventsView);
 
-    this._additionalMetricsToolbar = new UI.Toolbar.Toolbar('timeline-additional-metrics');
-    this.element.appendChild(this._additionalMetricsToolbar.element);
+    this.additionalMetricsToolbar = new UI.Toolbar.Toolbar('timeline-additional-metrics');
+    this.element.appendChild(this.additionalMetricsToolbar.element);
 
-    this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
+    this.tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this.tabSelected, this);
   }
 
   setModel(model: PerformanceModel|null, track: TimelineModel.TimelineModel.Track|null): void {
-    if (this._model !== model) {
-      if (this._model) {
-        this._model.removeEventListener(Events.WindowChanged, this._onWindowChanged, this);
+    if (this.model !== model) {
+      if (this.model) {
+        this.model.removeEventListener(Events.WindowChanged, this.onWindowChanged, this);
       }
-      this._model = (model as PerformanceModel);
-      if (this._model) {
-        this._model.addEventListener(Events.WindowChanged, this._onWindowChanged, this);
+      this.model = (model as PerformanceModel);
+      if (this.model) {
+        this.model.addEventListener(Events.WindowChanged, this.onWindowChanged, this);
       }
     }
-    this._track = track;
-    this._tabbedPane.closeTabs([Tab.PaintProfiler, Tab.LayerViewer], false);
-    for (const view of this._rangeDetailViews.values()) {
+    this.track = track;
+    this.tabbedPane.closeTabs([Tab.PaintProfiler, Tab.LayerViewer], false);
+    for (const view of this.rangeDetailViews.values()) {
       view.setModel(model, track);
     }
-    this._lazyPaintProfilerView = null;
-    this._lazyLayersView = null;
+    this.lazyPaintProfilerView = null;
+    this.lazyLayersView = null;
     this.setSelection(null);
 
     // Add TBT info to the footer.
-    this._additionalMetricsToolbar.removeToolbarItems();
+    this.additionalMetricsToolbar.removeToolbarItems();
     if (model && model.timelineModel()) {
       const {estimated, time} = model.timelineModel().totalBlockingTime();
       const isEstimate = estimated ? ` (${i18nString(UIStrings.estimated)})` : '';
@@ -154,169 +152,169 @@ export class TimelineDetailsView extends UI.Widget.VBox {
       clsLink.style.marginRight = '2px';
       warning.appendChild(clsLink);
 
-      this._additionalMetricsToolbar.appendText(message);
-      this._additionalMetricsToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(warning));
+      this.additionalMetricsToolbar.appendText(message);
+      this.additionalMetricsToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(warning));
     }
   }
 
-  _setContent(node: Node): void {
-    const allTabs = this._tabbedPane.otherTabs(Tab.Details);
+  private setContent(node: Node): void {
+    const allTabs = this.tabbedPane.otherTabs(Tab.Details);
     for (let i = 0; i < allTabs.length; ++i) {
-      if (!this._rangeDetailViews.has(allTabs[i])) {
-        this._tabbedPane.closeTab(allTabs[i]);
+      if (!this.rangeDetailViews.has(allTabs[i])) {
+        this.tabbedPane.closeTab(allTabs[i]);
       }
     }
-    this._defaultDetailsContentElement.removeChildren();
-    this._defaultDetailsContentElement.appendChild(node);
+    this.defaultDetailsContentElement.removeChildren();
+    this.defaultDetailsContentElement.appendChild(node);
   }
 
-  _updateContents(): void {
-    const view = this._rangeDetailViews.get(this._tabbedPane.selectedTabId || '');
+  private updateContents(): void {
+    const view = this.rangeDetailViews.get(this.tabbedPane.selectedTabId || '');
     if (view) {
-      const window = this._model.window();
-      view.updateContents(this._selection || TimelineSelection.fromRange(window.left, window.right));
+      const window = this.model.window();
+      view.updateContents(this.selection || TimelineSelection.fromRange(window.left, window.right));
     }
   }
 
-  _appendTab(id: string, tabTitle: string, view: UI.Widget.Widget, isCloseable?: boolean): void {
-    this._tabbedPane.appendTab(id, tabTitle, view, undefined, undefined, isCloseable);
-    if (this._preferredTabId !== this._tabbedPane.selectedTabId) {
-      this._tabbedPane.selectTab(id);
+  private appendTab(id: string, tabTitle: string, view: UI.Widget.Widget, isCloseable?: boolean): void {
+    this.tabbedPane.appendTab(id, tabTitle, view, undefined, undefined, isCloseable);
+    if (this.preferredTabId !== this.tabbedPane.selectedTabId) {
+      this.tabbedPane.selectTab(id);
     }
   }
 
   headerElement(): Element {
-    return this._tabbedPane.headerElement();
+    return this.tabbedPane.headerElement();
   }
 
   setPreferredTab(tabId: string): void {
-    this._preferredTabId = tabId;
+    this.preferredTabId = tabId;
   }
 
-  _onWindowChanged(_event: Common.EventTarget.EventTargetEvent): void {
-    if (!this._selection) {
-      this._updateContentsFromWindow();
+  private onWindowChanged(_event: Common.EventTarget.EventTargetEvent): void {
+    if (!this.selection) {
+      this.updateContentsFromWindow();
     }
   }
 
-  _updateContentsFromWindow(): void {
-    if (!this._model) {
-      this._setContent(UI.Fragment.html`<div/>`);
+  private updateContentsFromWindow(): void {
+    if (!this.model) {
+      this.setContent(UI.Fragment.html`<div/>`);
       return;
     }
-    const window = this._model.window();
-    this._updateSelectedRangeStats(window.left, window.right);
-    this._updateContents();
+    const window = this.model.window();
+    this.updateSelectedRangeStats(window.left, window.right);
+    this.updateContents();
   }
 
   setSelection(selection: TimelineSelection|null): void {
-    this._detailsLinkifier.reset();
-    this._selection = selection;
-    if (!this._selection) {
-      this._updateContentsFromWindow();
+    this.detailsLinkifier.reset();
+    this.selection = selection;
+    if (!this.selection) {
+      this.updateContentsFromWindow();
       return;
     }
-    switch (this._selection.type()) {
+    switch (this.selection.type()) {
       case TimelineSelection.Type.TraceEvent: {
-        const event = (this._selection.object() as SDK.TracingModel.Event);
-        TimelineUIUtils.buildTraceEventDetails(event, this._model.timelineModel(), this._detailsLinkifier, true)
-            .then(fragment => this._appendDetailsTabsForTraceEventAndShowDetails(event, fragment));
+        const event = (this.selection.object() as SDK.TracingModel.Event);
+        TimelineUIUtils.buildTraceEventDetails(event, this.model.timelineModel(), this.detailsLinkifier, true)
+            .then(fragment => this.appendDetailsTabsForTraceEventAndShowDetails(event, fragment));
         break;
       }
       case TimelineSelection.Type.Frame: {
-        const frame = (this._selection.object() as TimelineModel.TimelineFrameModel.TimelineFrame);
-        const filmStripFrame = this._model.filmStripModelFrame(frame);
-        this._setContent(TimelineUIUtils.generateDetailsContentForFrame(frame, filmStripFrame));
+        const frame = (this.selection.object() as TimelineModel.TimelineFrameModel.TimelineFrame);
+        const filmStripFrame = this.model.filmStripModelFrame(frame);
+        this.setContent(TimelineUIUtils.generateDetailsContentForFrame(frame, filmStripFrame));
         if (frame.layerTree) {
-          const layersView = this._layersView();
+          const layersView = this.layersView();
           layersView.showLayerTree(frame.layerTree);
-          if (!this._tabbedPane.hasTab(Tab.LayerViewer)) {
-            this._appendTab(Tab.LayerViewer, i18nString(UIStrings.layers), layersView);
+          if (!this.tabbedPane.hasTab(Tab.LayerViewer)) {
+            this.appendTab(Tab.LayerViewer, i18nString(UIStrings.layers), layersView);
           }
         }
         break;
       }
       case TimelineSelection.Type.NetworkRequest: {
-        const request = (this._selection.object() as TimelineModel.TimelineModel.NetworkRequest);
-        TimelineUIUtils.buildNetworkRequestDetails(request, this._model.timelineModel(), this._detailsLinkifier)
-            .then(this._setContent.bind(this));
+        const request = (this.selection.object() as TimelineModel.TimelineModel.NetworkRequest);
+        TimelineUIUtils.buildNetworkRequestDetails(request, this.model.timelineModel(), this.detailsLinkifier)
+            .then(this.setContent.bind(this));
         break;
       }
       case TimelineSelection.Type.Range: {
-        this._updateSelectedRangeStats(this._selection.startTime(), this._selection.endTime());
+        this.updateSelectedRangeStats(this.selection.startTime(), this.selection.endTime());
         break;
       }
     }
 
-    this._updateContents();
+    this.updateContents();
   }
 
-  _tabSelected(event: Common.EventTarget.EventTargetEvent): void {
+  private tabSelected(event: Common.EventTarget.EventTargetEvent): void {
     if (!event.data.isUserGesture) {
       return;
     }
     this.setPreferredTab(event.data.tabId);
-    this._updateContents();
+    this.updateContents();
   }
 
-  _layersView(): TimelineLayersView {
-    if (this._lazyLayersView) {
-      return this._lazyLayersView;
+  private layersView(): TimelineLayersView {
+    if (this.lazyLayersView) {
+      return this.lazyLayersView;
     }
-    this._lazyLayersView =
-        new TimelineLayersView(this._model.timelineModel(), this._showSnapshotInPaintProfiler.bind(this));
-    return this._lazyLayersView;
+    this.lazyLayersView =
+        new TimelineLayersView(this.model.timelineModel(), this.showSnapshotInPaintProfiler.bind(this));
+    return this.lazyLayersView;
   }
 
-  _paintProfilerView(): TimelinePaintProfilerView {
-    if (this._lazyPaintProfilerView) {
-      return this._lazyPaintProfilerView;
+  private paintProfilerView(): TimelinePaintProfilerView {
+    if (this.lazyPaintProfilerView) {
+      return this.lazyPaintProfilerView;
     }
-    this._lazyPaintProfilerView = new TimelinePaintProfilerView(this._model.frameModel());
-    return this._lazyPaintProfilerView;
+    this.lazyPaintProfilerView = new TimelinePaintProfilerView(this.model.frameModel());
+    return this.lazyPaintProfilerView;
   }
 
-  _showSnapshotInPaintProfiler(snapshot: SDK.PaintProfiler.PaintProfilerSnapshot): void {
-    const paintProfilerView = this._paintProfilerView();
+  private showSnapshotInPaintProfiler(snapshot: SDK.PaintProfiler.PaintProfilerSnapshot): void {
+    const paintProfilerView = this.paintProfilerView();
     paintProfilerView.setSnapshot(snapshot);
-    if (!this._tabbedPane.hasTab(Tab.PaintProfiler)) {
-      this._appendTab(Tab.PaintProfiler, i18nString(UIStrings.paintProfiler), paintProfilerView, true);
+    if (!this.tabbedPane.hasTab(Tab.PaintProfiler)) {
+      this.appendTab(Tab.PaintProfiler, i18nString(UIStrings.paintProfiler), paintProfilerView, true);
     }
-    this._tabbedPane.selectTab(Tab.PaintProfiler, true);
+    this.tabbedPane.selectTab(Tab.PaintProfiler, true);
   }
 
-  _appendDetailsTabsForTraceEventAndShowDetails(event: SDK.TracingModel.Event, content: Node): void {
-    this._setContent(content);
+  private appendDetailsTabsForTraceEventAndShowDetails(event: SDK.TracingModel.Event, content: Node): void {
+    this.setContent(content);
     if (event.name === TimelineModel.TimelineModel.RecordType.Paint ||
         event.name === TimelineModel.TimelineModel.RecordType.RasterTask) {
-      this._showEventInPaintProfiler(event);
+      this.showEventInPaintProfiler(event);
     }
   }
 
-  _showEventInPaintProfiler(event: SDK.TracingModel.Event): void {
+  private showEventInPaintProfiler(event: SDK.TracingModel.Event): void {
     const paintProfilerModel =
         SDK.TargetManager.TargetManager.instance().models(SDK.PaintProfiler.PaintProfilerModel)[0];
     if (!paintProfilerModel) {
       return;
     }
-    const paintProfilerView = this._paintProfilerView();
+    const paintProfilerView = this.paintProfilerView();
     const hasProfileData = paintProfilerView.setEvent(paintProfilerModel, event);
     if (!hasProfileData) {
       return;
     }
-    if (this._tabbedPane.hasTab(Tab.PaintProfiler)) {
+    if (this.tabbedPane.hasTab(Tab.PaintProfiler)) {
       return;
     }
-    this._appendTab(Tab.PaintProfiler, i18nString(UIStrings.paintProfiler), paintProfilerView);
+    this.appendTab(Tab.PaintProfiler, i18nString(UIStrings.paintProfiler), paintProfilerView);
   }
 
-  _updateSelectedRangeStats(startTime: number, endTime: number): void {
-    if (!this._model || !this._track) {
+  private updateSelectedRangeStats(startTime: number, endTime: number): void {
+    if (!this.model || !this.track) {
       return;
     }
-    const aggregatedStats = TimelineUIUtils.statsForTimeRange(this._track.syncEvents(), startTime, endTime);
-    const startOffset = startTime - this._model.timelineModel().minimumRecordTime();
-    const endOffset = endTime - this._model.timelineModel().minimumRecordTime();
+    const aggregatedStats = TimelineUIUtils.statsForTimeRange(this.track.syncEvents(), startTime, endTime);
+    const startOffset = startTime - this.model.timelineModel().minimumRecordTime();
+    const endOffset = endTime - this.model.timelineModel().minimumRecordTime();
 
     const contentHelper = new TimelineDetailsContentHelper(null, null);
     contentHelper.addSection(i18nString(
@@ -324,7 +322,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
         {PH1: i18n.TimeUtilities.millisToString(startOffset), PH2: i18n.TimeUtilities.millisToString(endOffset)}));
     const pieChart = TimelineUIUtils.generatePieChart(aggregatedStats);
     contentHelper.appendElementRow('', pieChart);
-    this._setContent(contentHelper.fragment);
+    this.setContent(contentHelper.fragment);
   }
 }
 

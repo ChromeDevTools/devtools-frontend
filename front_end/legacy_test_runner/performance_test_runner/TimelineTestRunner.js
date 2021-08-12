@@ -80,7 +80,7 @@ PerformanceTestRunner.createTracingModel = function(events) {
 };
 
 PerformanceTestRunner.tracingModel = function() {
-  return UI.panels.timeline._performanceModel.tracingModel();
+  return UI.panels.timeline.performanceModel.tracingModel();
 };
 
 PerformanceTestRunner.invokeWithTracing = function(functionName, callback, additionalCategories, enableJSSampling) {
@@ -93,11 +93,11 @@ PerformanceTestRunner.invokeWithTracing = function(functionName, callback, addit
 
   const timelinePanel = UI.panels.timeline;
   const timelineController = PerformanceTestRunner.createTimelineController();
-  timelinePanel._timelineController = timelineController;
-  timelineController._startRecordingWithCategories(categories, enableJSSampling).then(tracingStarted);
+  timelinePanel.timelineController = timelineController;
+  timelineController.startRecordingWithCategories(categories, enableJSSampling).then(tracingStarted);
 
   function tracingStarted() {
-    timelinePanel._recordingStarted();
+    timelinePanel.recordingStarted();
     TestRunner.callFunctionInPageAsync(functionName).then(onPageActionsDone);
   }
 
@@ -108,7 +108,7 @@ PerformanceTestRunner.invokeWithTracing = function(functionName, callback, addit
 };
 
 PerformanceTestRunner.performanceModel = function() {
-  return UI.panels.timeline._performanceModel;
+  return UI.panels.timeline.performanceModel;
 };
 
 PerformanceTestRunner.timelineModel = function() {
@@ -125,14 +125,14 @@ PerformanceTestRunner.createPerformanceModelWithEvents = function(events) {
   tracingModel.tracingComplete();
   const performanceModel = new Timeline.PerformanceModel();
   performanceModel.setTracingModel(tracingModel);
-  UI.panels.timeline._performanceModel = performanceModel;
-  UI.panels.timeline._applyFilters(performanceModel);
+  UI.panels.timeline.performanceModel = performanceModel;
+  UI.panels.timeline.applyFilters(performanceModel);
   return performanceModel;
 };
 
 PerformanceTestRunner.createTimelineController = function() {
   const controller = new Timeline.TimelineController(self.SDK.targetManager.mainTarget(), UI.panels.timeline);
-  controller._tracingManager = TestRunner.tracingManager;
+  controller.tracingManager = TestRunner.tracingManager;
   return controller;
 };
 
@@ -142,14 +142,14 @@ PerformanceTestRunner.runWhenTimelineIsReady = function(callback) {
 
 PerformanceTestRunner.startTimeline = function() {
   const panel = UI.panels.timeline;
-  panel._toggleRecording();
+  panel.toggleRecording();
   return TestRunner.addSnifferPromise(panel, '_recordingStarted');
 };
 
 PerformanceTestRunner.stopTimeline = function() {
   return new Promise(resolve => {
     PerformanceTestRunner.runWhenTimelineIsReady(resolve);
-    UI.panels.timeline._toggleRecording();
+    UI.panels.timeline.toggleRecording();
   });
 };
 
@@ -165,12 +165,12 @@ PerformanceTestRunner.getTimelineWidget = async function() {
 
 PerformanceTestRunner.getNetworkFlameChartElement = async function() {
   const widget = await PerformanceTestRunner.getTimelineWidget();
-  return widget._flameChart._networkFlameChart.contentElement;
+  return widget.flameChart.networkFlameChart.contentElement;
 };
 
 PerformanceTestRunner.getMainFlameChartElement = async function() {
   const widget = await PerformanceTestRunner.getTimelineWidget();
-  return widget._flameChart._mainFlameChart.contentElement;
+  return widget.flameChart.mainFlameChart.contentElement;
 };
 
 PerformanceTestRunner.evaluateWithTimeline = async function(actions) {
@@ -212,13 +212,13 @@ PerformanceTestRunner.printTimelineRecordsWithDetails = async function(name) {
 };
 
 PerformanceTestRunner.walkTimelineEventTree = async function(callback) {
-  const view = new Timeline.EventsTimelineTreeView(UI.panels.timeline._filters, null);
+  const view = new Timeline.EventsTimelineTreeView(UI.panels.timeline.filters, null);
   view.setModel(PerformanceTestRunner.performanceModel(), PerformanceTestRunner.mainTrack());
   const selection = Timeline.TimelineSelection.fromRange(
       PerformanceTestRunner.timelineModel().minimumRecordTime(),
       PerformanceTestRunner.timelineModel().maximumRecordTime());
   view.updateContents(selection);
-  await PerformanceTestRunner.walkTimelineEventTreeUnderNode(callback, view._currentTree, 0);
+  await PerformanceTestRunner.walkTimelineEventTreeUnderNode(callback, view.currentTree, 0);
 };
 
 PerformanceTestRunner.walkTimelineEventTreeUnderNode = async function(callback, root, level) {
@@ -398,7 +398,7 @@ PerformanceTestRunner.dumpFlameChartProvider = function(provider, includeGroups)
 };
 
 PerformanceTestRunner.dumpTimelineFlameChart = function(includeGroups) {
-  const provider = UI.panels.timeline._flameChart._mainDataProvider;
+  const provider = UI.panels.timeline.flameChart.mainDataProvider;
   TestRunner.addResult('Timeline Flame Chart');
   PerformanceTestRunner.dumpFlameChartProvider(provider, includeGroups);
 };
@@ -406,7 +406,7 @@ PerformanceTestRunner.dumpTimelineFlameChart = function(includeGroups) {
 PerformanceTestRunner.loadTimeline = function(timelineData) {
   const promise = new Promise(fulfill => PerformanceTestRunner.runWhenTimelineIsReady(fulfill));
 
-  UI.panels.timeline._loadFromFile(new Blob([timelineData], {type: 'text/plain'}));
+  UI.panels.timeline.loadFromFile(new Blob([timelineData], {type: 'text/plain'}));
 
   return promise;
 };

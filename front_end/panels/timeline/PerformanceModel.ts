@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Bindings from '../../models/bindings/bindings.js';
@@ -12,74 +10,74 @@ import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper {
-  _mainTarget: SDK.Target.Target|null;
-  _tracingModel: SDK.TracingModel.TracingModel|null;
-  _filters: TimelineModel.TimelineModelFilter.TimelineModelFilter[];
-  _timelineModel: TimelineModel.TimelineModel.TimelineModelImpl;
-  _frameModel: TimelineModel.TimelineFrameModel.TimelineFrameModel;
-  _filmStripModel: SDK.FilmStripModel.FilmStripModel|null;
-  _irModel: TimelineModel.TimelineIRModel.TimelineIRModel;
-  _window: Window;
-  _extensionTracingModels: {
+  private mainTargetInternal: SDK.Target.Target|null;
+  private tracingModelInternal: SDK.TracingModel.TracingModel|null;
+  private filtersInternal: TimelineModel.TimelineModelFilter.TimelineModelFilter[];
+  private readonly timelineModelInternal: TimelineModel.TimelineModel.TimelineModelImpl;
+  private readonly frameModelInternal: TimelineModel.TimelineFrameModel.TimelineFrameModel;
+  private filmStripModelInternal: SDK.FilmStripModel.FilmStripModel|null;
+  private readonly irModel: TimelineModel.TimelineIRModel.TimelineIRModel;
+  private windowInternal: Window;
+  private readonly extensionTracingModels: {
     title: string,
     model: SDK.TracingModel.TracingModel,
     timeOffset: number,
   }[];
-  _recordStartTime?: number;
+  private recordStartTimeInternal?: number;
 
   constructor() {
     super();
-    this._mainTarget = null;
-    this._tracingModel = null;
-    this._filters = [];
+    this.mainTargetInternal = null;
+    this.tracingModelInternal = null;
+    this.filtersInternal = [];
 
-    this._timelineModel = new TimelineModel.TimelineModel.TimelineModelImpl();
-    this._frameModel = new TimelineModel.TimelineFrameModel.TimelineFrameModel(
+    this.timelineModelInternal = new TimelineModel.TimelineModel.TimelineModelImpl();
+    this.frameModelInternal = new TimelineModel.TimelineFrameModel.TimelineFrameModel(
         event => TimelineUIUtils.eventStyle(event).category.name);
-    this._filmStripModel = null;
-    this._irModel = new TimelineModel.TimelineIRModel.TimelineIRModel();
+    this.filmStripModelInternal = null;
+    this.irModel = new TimelineModel.TimelineIRModel.TimelineIRModel();
 
-    this._window = {left: 0, right: Infinity};
+    this.windowInternal = {left: 0, right: Infinity};
 
-    this._extensionTracingModels = [];
-    this._recordStartTime = undefined;
+    this.extensionTracingModels = [];
+    this.recordStartTimeInternal = undefined;
   }
 
   setMainTarget(target: SDK.Target.Target): void {
-    this._mainTarget = target;
+    this.mainTargetInternal = target;
   }
 
   mainTarget(): SDK.Target.Target|null {
-    return this._mainTarget;
+    return this.mainTargetInternal;
   }
 
   setRecordStartTime(time: number): void {
-    this._recordStartTime = time;
+    this.recordStartTimeInternal = time;
   }
 
   recordStartTime(): number|undefined {
-    return this._recordStartTime;
+    return this.recordStartTimeInternal;
   }
 
   setFilters(filters: TimelineModel.TimelineModelFilter.TimelineModelFilter[]): void {
-    this._filters = filters;
+    this.filtersInternal = filters;
   }
 
   filters(): TimelineModel.TimelineModelFilter.TimelineModelFilter[] {
-    return this._filters;
+    return this.filtersInternal;
   }
 
   isVisible(event: SDK.TracingModel.Event): boolean {
-    return this._filters.every(f => f.accept(event));
+    return this.filtersInternal.every(f => f.accept(event));
   }
 
   setTracingModel(model: SDK.TracingModel.TracingModel): void {
-    this._tracingModel = model;
-    this._timelineModel.setEvents(model);
+    this.tracingModelInternal = model;
+    this.timelineModelInternal.setEvents(model);
 
     let inputEvents: SDK.TracingModel.AsyncEvent[]|null = null;
     let animationEvents: SDK.TracingModel.AsyncEvent[]|null = null;
-    for (const track of this._timelineModel.tracks()) {
+    for (const track of this.timelineModelInternal.tracks()) {
       if (track.type === TimelineModel.TimelineModel.TrackType.Input) {
         inputEvents = track.asyncEvents;
       }
@@ -88,80 +86,83 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper {
       }
     }
     if (inputEvents || animationEvents) {
-      this._irModel.populate(inputEvents || [], animationEvents || []);
+      this.irModel.populate(inputEvents || [], animationEvents || []);
     }
 
-    const mainTracks = this._timelineModel.tracks().filter(
+    const mainTracks = this.timelineModelInternal.tracks().filter(
         track => track.type === TimelineModel.TimelineModel.TrackType.MainThread && track.forMainFrame &&
             track.events.length);
     const threadData = mainTracks.map(track => {
       const event = track.events[0];
       return {thread: event.thread, time: event.startTime};
     });
-    this._frameModel.addTraceEvents(this._mainTarget, this._timelineModel.inspectedTargetEvents(), threadData);
+    this.frameModelInternal.addTraceEvents(
+        this.mainTargetInternal, this.timelineModelInternal.inspectedTargetEvents(), threadData);
 
-    for (const entry of this._extensionTracingModels) {
+    for (const entry of this.extensionTracingModels) {
       entry.model.adjustTime(
-          this._tracingModel.minimumRecordTime() + (entry.timeOffset / 1000) - (this._recordStartTime as number));
+          this.tracingModelInternal.minimumRecordTime() + (entry.timeOffset / 1000) -
+          (this.recordStartTimeInternal as number));
     }
-    this._autoWindowTimes();
+    this.autoWindowTimes();
   }
 
   addExtensionEvents(title: string, model: SDK.TracingModel.TracingModel, timeOffset: number): void {
-    this._extensionTracingModels.push({model: model, title: title, timeOffset: timeOffset});
-    if (!this._tracingModel) {
+    this.extensionTracingModels.push({model: model, title: title, timeOffset: timeOffset});
+    if (!this.tracingModelInternal) {
       return;
     }
-    model.adjustTime(this._tracingModel.minimumRecordTime() + (timeOffset / 1000) - (this._recordStartTime as number));
+    model.adjustTime(
+        this.tracingModelInternal.minimumRecordTime() + (timeOffset / 1000) - (this.recordStartTimeInternal as number));
     this.dispatchEventToListeners(Events.ExtensionDataAdded);
   }
 
   tracingModel(): SDK.TracingModel.TracingModel {
-    if (!this._tracingModel) {
+    if (!this.tracingModelInternal) {
       throw 'call setTracingModel before accessing PerformanceModel';
     }
-    return this._tracingModel;
+    return this.tracingModelInternal;
   }
 
   timelineModel(): TimelineModel.TimelineModel.TimelineModelImpl {
-    return this._timelineModel;
+    return this.timelineModelInternal;
   }
 
   filmStripModel(): SDK.FilmStripModel.FilmStripModel {
-    if (this._filmStripModel) {
-      return this._filmStripModel;
+    if (this.filmStripModelInternal) {
+      return this.filmStripModelInternal;
     }
-    if (!this._tracingModel) {
+    if (!this.tracingModelInternal) {
       throw 'call setTracingModel before accessing PerformanceModel';
     }
-    this._filmStripModel = new SDK.FilmStripModel.FilmStripModel(this._tracingModel);
-    return this._filmStripModel;
+    this.filmStripModelInternal = new SDK.FilmStripModel.FilmStripModel(this.tracingModelInternal);
+    return this.filmStripModelInternal;
   }
 
   frames(): TimelineModel.TimelineFrameModel.TimelineFrame[] {
-    return this._frameModel.getFrames();
+    return this.frameModelInternal.getFrames();
   }
 
   frameModel(): TimelineModel.TimelineFrameModel.TimelineFrameModel {
-    return this._frameModel;
+    return this.frameModelInternal;
   }
 
   interactionRecords(): Common.SegmentedRange.Segment<TimelineModel.TimelineIRModel.Phases>[] {
-    return this._irModel.interactionRecords();
+    return this.irModel.interactionRecords();
   }
 
   extensionInfo(): {
     title: string,
     model: SDK.TracingModel.TracingModel,
   }[] {
-    return this._extensionTracingModels;
+    return this.extensionTracingModels;
   }
 
   dispose(): void {
-    if (this._tracingModel) {
-      this._tracingModel.dispose();
+    if (this.tracingModelInternal) {
+      this.tracingModelInternal.dispose();
     }
-    for (const extensionEntry of this._extensionTracingModels) {
+    for (const extensionEntry of this.extensionTracingModels) {
       extensionEntry.model.dispose();
     }
   }
@@ -169,30 +170,30 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper {
   filmStripModelFrame(frame: TimelineModel.TimelineFrameModel.TimelineFrame): SDK.FilmStripModel.Frame|null {
     // For idle frames, look at the state at the beginning of the frame.
     const screenshotTime = frame.idle ? frame.startTime : frame.endTime;
-    const filmStripModel = (this._filmStripModel as SDK.FilmStripModel.FilmStripModel);
+    const filmStripModel = (this.filmStripModelInternal as SDK.FilmStripModel.FilmStripModel);
     const filmStripFrame = filmStripModel.frameByTimestamp(screenshotTime);
     return filmStripFrame && filmStripFrame.timestamp - frame.endTime < 10 ? filmStripFrame : null;
   }
 
   save(stream: Common.StringOutputStream.OutputStream): Promise<DOMError|null> {
-    if (!this._tracingModel) {
+    if (!this.tracingModelInternal) {
       throw 'call setTracingModel before accessing PerformanceModel';
     }
-    const backingStorage = (this._tracingModel.backingStorage() as Bindings.TempFile.TempFileBackingStorage);
+    const backingStorage = (this.tracingModelInternal.backingStorage() as Bindings.TempFile.TempFileBackingStorage);
     return backingStorage.writeToStream(stream);
   }
 
   setWindow(window: Window, animate?: boolean): void {
-    this._window = window;
+    this.windowInternal = window;
     this.dispatchEventToListeners(Events.WindowChanged, {window, animate});
   }
 
   window(): Window {
-    return this._window;
+    return this.windowInternal;
   }
 
-  _autoWindowTimes(): void {
-    const timelineModel = this._timelineModel;
+  private autoWindowTimes(): void {
+    const timelineModel = this.timelineModelInternal;
     let tasks: SDK.TracingModel.Event[] = [];
     for (const track of timelineModel.tracks()) {
       // Deliberately pick up last main frame's track.

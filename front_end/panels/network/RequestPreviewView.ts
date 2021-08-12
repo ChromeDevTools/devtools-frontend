@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
@@ -70,7 +68,7 @@ export class RequestPreviewView extends RequestResponseView {
     return view;
   }
 
-  async _htmlPreview(): Promise<UI.Widget.Widget|null> {
+  private async htmlPreview(): Promise<UI.Widget.Widget|null> {
     const contentData = await this.request.contentData();
     if (contentData.error) {
       return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.failedToLoadResponseData) + ': ' + contentData.error);
@@ -103,7 +101,7 @@ export class RequestPreviewView extends RequestResponseView {
       return new WebBundleInfoView(this.request);
     }
 
-    const htmlErrorPreview = await this._htmlPreview();
+    const htmlErrorPreview = await this.htmlPreview();
     if (htmlErrorPreview) {
       return htmlErrorPreview;
     }

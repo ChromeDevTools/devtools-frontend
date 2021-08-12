@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
@@ -50,17 +48,17 @@ const str_ = i18n.i18n.registerUIStrings('panels/network/RequestResponseView.ts'
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestResponseView extends UI.Widget.VBox {
   request: SDK.NetworkRequest.NetworkRequest;
-  _contentViewPromise: Promise<UI.Widget.Widget>|null;
+  private contentViewPromise: Promise<UI.Widget.Widget>|null;
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
     this.element.classList.add('request-view');
     this.request = request;
-    this._contentViewPromise = null;
+    this.contentViewPromise = null;
   }
 
-  static _hasTextContent(request: SDK.NetworkRequest.NetworkRequest, contentData: SDK.NetworkRequest.ContentData):
-      boolean {
+  private static hasTextContent(
+      request: SDK.NetworkRequest.NetworkRequest, contentData: SDK.NetworkRequest.ContentData): boolean {
     const mimeType = request.mimeType || '';
     let resourceType = Common.ResourceType.ResourceType.fromMimeType(mimeType);
     if (resourceType === Common.ResourceType.resourceTypes.Other) {
@@ -88,7 +86,7 @@ export class RequestResponseView extends UI.Widget.VBox {
     }
 
     const contentData = await request.contentData();
-    if (!RequestResponseView._hasTextContent(request, contentData)) {
+    if (!RequestResponseView.hasTextContent(request, contentData)) {
       requestToSourceView.delete(request);
       return null;
     }
@@ -100,14 +98,14 @@ export class RequestResponseView extends UI.Widget.VBox {
   }
 
   wasShown(): void {
-    this._doShowPreview();
+    this.doShowPreview();
   }
 
-  _doShowPreview(): Promise<UI.Widget.Widget> {
-    if (!this._contentViewPromise) {
-      this._contentViewPromise = this.showPreview();
+  private doShowPreview(): Promise<UI.Widget.Widget> {
+    if (!this.contentViewPromise) {
+      this.contentViewPromise = this.showPreview();
     }
-    return this._contentViewPromise;
+    return this.contentViewPromise;
   }
 
   async showPreview(): Promise<UI.Widget.Widget> {
@@ -135,7 +133,7 @@ export class RequestResponseView extends UI.Widget.VBox {
   }
 
   async revealLine(line: number): Promise<void> {
-    const view = await this._doShowPreview();
+    const view = await this.doShowPreview();
     if (view instanceof SourceFrame.ResourceSourceFrame.SearchableContainer) {
       view.revealPosition(line);
     }

@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
@@ -13,12 +11,12 @@ import {NetworkGroupNode} from './NetworkDataGridNode.js';
 import type {GroupLookupInterface, NetworkLogView} from './NetworkLogView.js';
 
 export class NetworkFrameGrouper implements GroupLookupInterface {
-  _parentView: NetworkLogView;
-  _activeGroups: Map<SDK.ResourceTreeModel.ResourceTreeFrame, FrameGroupNode>;
+  private parentView: NetworkLogView;
+  private readonly activeGroups: Map<SDK.ResourceTreeModel.ResourceTreeFrame, FrameGroupNode>;
 
   constructor(parentView: NetworkLogView) {
-    this._parentView = parentView;
-    this._activeGroups = new Map();
+    this.parentView = parentView;
+    this.activeGroups = new Map();
   }
 
   groupNodeForRequest(request: SDK.NetworkRequest.NetworkRequest): NetworkGroupNode|null {
@@ -26,30 +24,30 @@ export class NetworkFrameGrouper implements GroupLookupInterface {
     if (!frame || frame.isTopFrame()) {
       return null;
     }
-    let groupNode = this._activeGroups.get(frame);
+    let groupNode = this.activeGroups.get(frame);
     if (groupNode) {
       return groupNode;
     }
-    groupNode = new FrameGroupNode(this._parentView, frame);
-    this._activeGroups.set(frame, groupNode);
+    groupNode = new FrameGroupNode(this.parentView, frame);
+    this.activeGroups.set(frame, groupNode);
     return groupNode;
   }
 
   reset(): void {
-    this._activeGroups.clear();
+    this.activeGroups.clear();
   }
 }
 
 export class FrameGroupNode extends NetworkGroupNode {
-  _frame: SDK.ResourceTreeModel.ResourceTreeFrame;
+  private readonly frame: SDK.ResourceTreeModel.ResourceTreeFrame;
 
   constructor(parentView: NetworkLogView, frame: SDK.ResourceTreeModel.ResourceTreeFrame) {
     super(parentView);
-    this._frame = frame;
+    this.frame = frame;
   }
 
   displayName(): string {
-    return new Common.ParsedURL.ParsedURL(this._frame.url).domain() || this._frame.name || '<iframe>';
+    return new Common.ParsedURL.ParsedURL(this.frame.url).domain() || this.frame.name || '<iframe>';
   }
 
   renderCell(cell: HTMLElement, columnId: string): void {

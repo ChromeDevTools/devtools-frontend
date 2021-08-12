@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -62,13 +60,13 @@ export class NetworkConfigView extends UI.Widget.VBox {
     this.registerRequiredCSS('panels/network/networkConfigView.css');
     this.contentElement.classList.add('network-config');
 
-    this._createCacheSection();
+    this.createCacheSection();
     this.contentElement.createChild('div').classList.add('panel-section-separator');
-    this._createNetworkThrottlingSection();
+    this.createNetworkThrottlingSection();
     this.contentElement.createChild('div').classList.add('panel-section-separator');
-    this._createUserAgentSection();
+    this.createUserAgentSection();
     this.contentElement.createChild('div').classList.add('panel-section-separator');
-    this._createAcceptedEncodingSection();
+    this.createAcceptedEncodingSection();
   }
 
   static instance(opts: {
@@ -177,7 +175,7 @@ export class NetworkConfigView extends UI.Widget.VBox {
     return {select: userAgentSelectElement, input: otherUserAgentElement, error: errorElement};
   }
 
-  _createSection(title: string, className?: string): Element {
+  private createSection(title: string, className?: string): Element {
     const section = this.contentElement.createChild('section', 'network-config-group');
     if (className) {
       section.classList.add(className);
@@ -186,23 +184,23 @@ export class NetworkConfigView extends UI.Widget.VBox {
     return section.createChild('div', 'network-config-fields');
   }
 
-  _createCacheSection(): void {
-    const section = this._createSection(i18nString(UIStrings.caching), 'network-config-disable-cache');
+  private createCacheSection(): void {
+    const section = this.createSection(i18nString(UIStrings.caching), 'network-config-disable-cache');
     section.appendChild(UI.SettingsUI.createSettingCheckbox(
         i18nString(UIStrings.disableCache), Common.Settings.Settings.instance().moduleSetting('cacheDisabled'), true));
   }
 
-  _createNetworkThrottlingSection(): void {
+  private createNetworkThrottlingSection(): void {
     const title = i18nString(UIStrings.networkThrottling);
-    const section = this._createSection(title, 'network-config-throttling');
+    const section = this.createSection(title, 'network-config-throttling');
     const networkThrottlingSelect = (section.createChild('select', 'chrome-select') as HTMLSelectElement);
     MobileThrottling.ThrottlingManager.throttlingManager().decorateSelectWithNetworkThrottling(networkThrottlingSelect);
     UI.ARIAUtils.setAccessibleName(networkThrottlingSelect, title);
   }
 
-  _createUserAgentSection(): void {
+  private createUserAgentSection(): void {
     const title = i18nString(UIStrings.userAgent);
-    const section = this._createSection(title, 'network-config-ua');
+    const section = this.createSection(title, 'network-config-ua');
     const checkboxLabel = UI.UIUtils.CheckboxLabel.create(i18nString(UIStrings.selectAutomatically), true);
     section.appendChild(checkboxLabel);
     const autoCheckbox = checkboxLabel.checkboxElement;
@@ -274,9 +272,9 @@ export class NetworkConfigView extends UI.Widget.VBox {
     }
   }
 
-  _createAcceptedEncodingSection(): void {
+  private createAcceptedEncodingSection(): void {
     const title = i18nString(UIStrings.acceptedEncoding);
-    const section = this._createSection(title, 'network-config-accepted-encoding');
+    const section = this.createSection(title, 'network-config-accepted-encoding');
     const checkboxLabel = UI.UIUtils.CheckboxLabel.create(i18nString(UIStrings.selectAutomatically), true);
     section.appendChild(checkboxLabel);
     const autoCheckbox = checkboxLabel.checkboxElement;

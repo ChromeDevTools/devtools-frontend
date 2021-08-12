@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
@@ -27,20 +25,20 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestInitiatorView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestInitiatorView extends UI.Widget.VBox {
-  _linkifier: Components.Linkifier.Linkifier;
-  _request: SDK.NetworkRequest.NetworkRequest;
-  _emptyWidget: UI.EmptyWidget.EmptyWidget;
-  _hasShown: boolean;
+  private readonly linkifier: Components.Linkifier.Linkifier;
+  private readonly request: SDK.NetworkRequest.NetworkRequest;
+  private readonly emptyWidget: UI.EmptyWidget.EmptyWidget;
+  private hasShown: boolean;
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
     this.registerRequiredCSS('panels/network/requestInitiatorView.css');
     this.element.classList.add('request-initiator-view');
-    this._linkifier = new Components.Linkifier.Linkifier();
-    this._request = request;
-    this._emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.thisRequestHasNoInitiatorData));
-    this._emptyWidget.show(this.element);
-    this._hasShown = false;
+    this.linkifier = new Components.Linkifier.Linkifier();
+    this.request = request;
+    this.emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.thisRequestHasNoInitiatorData));
+    this.emptyWidget.show(this.element);
+    this.hasShown = false;
   }
 
   static createStackTracePreview(
@@ -59,7 +57,7 @@ export class RequestInitiatorView extends UI.Widget.VBox {
     return stackTrace;
   }
 
-  _createTree(): UI.TreeOutline.TreeOutlineInShadow {
+  private createTree(): UI.TreeOutline.TreeOutlineInShadow {
     const treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     treeOutline.registerRequiredCSS('panels/network/requestInitiatorViewTree.css');
     treeOutline.contentElement.classList.add('request-initiator-view-tree');
@@ -67,7 +65,7 @@ export class RequestInitiatorView extends UI.Widget.VBox {
     return treeOutline;
   }
 
-  _buildRequestChainTree(
+  private buildRequestChainTree(
       initiatorGraph: Logs.NetworkLog.InitiatorGraph, title: string,
       tree: UI.TreeOutline.TreeOutlineInShadow): UI.TreeOutline.TreeElement {
     const root = new UI.TreeOutline.TreeElement(title);
@@ -95,16 +93,16 @@ export class RequestInitiatorView extends UI.Widget.VBox {
     }
 
     const initiated = initiatorGraph.initiated;
-    this._depthFirstSearchTreeBuilder(initiated, (parent as UI.TreeOutline.TreeElement), this._request);
+    this.depthFirstSearchTreeBuilder(initiated, (parent as UI.TreeOutline.TreeElement), this.request);
     return root;
   }
 
-  _depthFirstSearchTreeBuilder(
+  private depthFirstSearchTreeBuilder(
       initiated: Map<SDK.NetworkRequest.NetworkRequest, SDK.NetworkRequest.NetworkRequest>,
       parentElement: UI.TreeOutline.TreeElement, parentRequest: SDK.NetworkRequest.NetworkRequest): void {
     const visited = new Set<SDK.NetworkRequest.NetworkRequest>();
-    // this._request should be already in the tree when build initiator part
-    visited.add(this._request);
+    // this.request should be already in the tree when build initiator part
+    visited.add(this.request);
     for (const request of initiated.keys()) {
       if (initiated.get(request) === parentRequest) {
         const treeElement = new UI.TreeOutline.TreeElement(request.url());
@@ -113,13 +111,13 @@ export class RequestInitiatorView extends UI.Widget.VBox {
         // only do dfs when we haven't done one
         if (!visited.has(request)) {
           visited.add(request);
-          this._depthFirstSearchTreeBuilder(initiated, treeElement, request);
+          this.depthFirstSearchTreeBuilder(initiated, treeElement, request);
         }
       }
     }
   }
 
-  _buildStackTraceSection(content: Element, title: string, tree: UI.TreeOutline.TreeOutlineInShadow): void {
+  private buildStackTraceSection(content: Element, title: string, tree: UI.TreeOutline.TreeOutlineInShadow): void {
     const root = new UI.TreeOutline.TreeElement(title);
     tree.appendChild(root);
 
@@ -135,24 +133,24 @@ export class RequestInitiatorView extends UI.Widget.VBox {
   }
 
   wasShown(): void {
-    if (this._hasShown) {
+    if (this.hasShown) {
       return;
     }
     let initiatorDataPresent = false;
-    const containerTree = this._createTree();
+    const containerTree = this.createTree();
 
-    const stackTracePreview = RequestInitiatorView.createStackTracePreview(this._request, this._linkifier, true);
+    const stackTracePreview = RequestInitiatorView.createStackTracePreview(this.request, this.linkifier, true);
 
     if (stackTracePreview) {
       initiatorDataPresent = true;
-      this._buildStackTraceSection(stackTracePreview.element, i18nString(UIStrings.requestCallStack), containerTree);
+      this.buildStackTraceSection(stackTracePreview.element, i18nString(UIStrings.requestCallStack), containerTree);
     }
 
-    const initiatorGraph = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this._request);
+    const initiatorGraph = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.request);
 
     if (initiatorGraph.initiators.size > 1 || initiatorGraph.initiated.size > 1) {
       initiatorDataPresent = true;
-      this._buildRequestChainTree(initiatorGraph, i18nString(UIStrings.requestInitiatorChain), containerTree);
+      this.buildRequestChainTree(initiatorGraph, i18nString(UIStrings.requestInitiatorChain), containerTree);
     }
 
     const firstChild = containerTree.firstChild();
@@ -163,8 +161,8 @@ export class RequestInitiatorView extends UI.Widget.VBox {
 
     if (initiatorDataPresent) {
       this.element.appendChild(containerTree.element);
-      this._emptyWidget.hideWidget();
+      this.emptyWidget.hideWidget();
     }
-    this._hasShown = true;
+    this.hasShown = true;
   }
 }

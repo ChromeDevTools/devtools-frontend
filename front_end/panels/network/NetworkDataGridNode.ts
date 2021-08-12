@@ -32,7 +32,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -343,17 +342,17 @@ export abstract class NetworkLogViewInterface {
 }
 
 export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode<NetworkNode> {
-  _parentView: NetworkLogViewInterface;
-  _isHovered: boolean;
-  _showingInitiatorChain: boolean;
-  _requestOrFirstKnownChildRequest: SDK.NetworkRequest.NetworkRequest|null;
+  private readonly parentViewInternal: NetworkLogViewInterface;
+  private isHovered: boolean;
+  private showingInitiatorChainInternal: boolean;
+  private requestOrFirstKnownChildRequestInternal: SDK.NetworkRequest.NetworkRequest|null;
 
   constructor(parentView: NetworkLogViewInterface) {
     super({});
-    this._parentView = parentView;
-    this._isHovered = false;
-    this._showingInitiatorChain = false;
-    this._requestOrFirstKnownChildRequest = null;
+    this.parentViewInternal = parentView;
+    this.isHovered = false;
+    this.showingInitiatorChainInternal = false;
+    this.requestOrFirstKnownChildRequestInternal = null;
   }
 
   displayName(): string {
@@ -373,7 +372,7 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
   renderCell(cell: Element, columnId: string): void {
   }
 
-  _isFailed(): boolean {
+  isFailed(): boolean {
     return false;
   }
 
@@ -381,7 +380,7 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
     const bgColors = _backgroundColors;
     const hasFocus = document.hasFocus();
     const isSelected = this.dataGrid && this.dataGrid.element === document.activeElement;
-    const isFailed = this._isFailed();
+    const isFailed = this.isFailed();
 
     if (this.selected && hasFocus && isSelected && isFailed) {
       return bgColors.FocusSelectedHasError;
@@ -413,7 +412,7 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
       return;
     }
     element.style.backgroundColor = `var(${this.backgroundColor()})`;
-    this._parentView.stylesChanged();
+    this.parentViewInternal.stylesChanged();
   }
 
   setStriped(isStriped: boolean): void {
@@ -424,46 +423,46 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
   select(supressSelectedEvent?: boolean): void {
     super.select(supressSelectedEvent);
     this.updateBackgroundColor();
-    this._parentView.updateNodeSelectedClass(/* isSelected */ true);
+    this.parentViewInternal.updateNodeSelectedClass(/* isSelected */ true);
   }
 
   deselect(supressSelectedEvent?: boolean): void {
     super.deselect(supressSelectedEvent);
     this.updateBackgroundColor();
-    this._parentView.updateNodeSelectedClass(/* isSelected */ false);
+    this.parentViewInternal.updateNodeSelectedClass(/* isSelected */ false);
   }
 
   parentView(): NetworkLogViewInterface {
-    return this._parentView;
+    return this.parentViewInternal;
   }
 
   hovered(): boolean {
-    return this._isHovered;
+    return this.isHovered;
   }
 
   showingInitiatorChain(): boolean {
-    return this._showingInitiatorChain;
+    return this.showingInitiatorChainInternal;
   }
 
   nodeSelfHeight(): number {
-    return this._parentView.rowHeight();
+    return this.parentViewInternal.rowHeight();
   }
 
   setHovered(hovered: boolean, showInitiatorChain: boolean): void {
-    if (this._isHovered === hovered && this._showingInitiatorChain === showInitiatorChain) {
+    if (this.isHovered === hovered && this.showingInitiatorChainInternal === showInitiatorChain) {
       return;
     }
-    if (this._isHovered !== hovered) {
-      this._isHovered = hovered;
+    if (this.isHovered !== hovered) {
+      this.isHovered = hovered;
       if (this.attached()) {
         this.element().classList.toggle('hover', hovered);
       }
     }
-    if (this._showingInitiatorChain !== showInitiatorChain) {
-      this._showingInitiatorChain = showInitiatorChain;
+    if (this.showingInitiatorChainInternal !== showInitiatorChain) {
+      this.showingInitiatorChainInternal = showInitiatorChain;
       this.showingInitiatorChainChanged();
     }
-    this._parentView.stylesChanged();
+    this.parentViewInternal.stylesChanged();
     this.updateBackgroundColor();
   }
 
@@ -488,17 +487,17 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
 
   clearFlatNodes(): void {
     super.clearFlatNodes();
-    this._requestOrFirstKnownChildRequest = null;
+    this.requestOrFirstKnownChildRequestInternal = null;
   }
 
   requestOrFirstKnownChildRequest(): SDK.NetworkRequest.NetworkRequest|null {
-    if (this._requestOrFirstKnownChildRequest) {
-      return this._requestOrFirstKnownChildRequest;
+    if (this.requestOrFirstKnownChildRequestInternal) {
+      return this.requestOrFirstKnownChildRequestInternal;
     }
     let request = this.request();
     if (request || !this.hasChildren()) {
-      this._requestOrFirstKnownChildRequest = request;
-      return this._requestOrFirstKnownChildRequest;
+      this.requestOrFirstKnownChildRequestInternal = request;
+      return this.requestOrFirstKnownChildRequestInternal;
     }
 
     let firstChildRequest: (SDK.NetworkRequest.NetworkRequest|null)|null = null;
@@ -509,8 +508,8 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
         firstChildRequest = request;
       }
     }
-    this._requestOrFirstKnownChildRequest = firstChildRequest;
-    return this._requestOrFirstKnownChildRequest;
+    this.requestOrFirstKnownChildRequestInternal = firstChildRequest;
+    return this.requestOrFirstKnownChildRequestInternal;
   }
 }
 
@@ -530,23 +529,23 @@ export const _backgroundColors: {
 };
 
 export class NetworkRequestNode extends NetworkNode {
-  _nameCell: Element|null;
-  _initiatorCell: Element|null;
-  _request: SDK.NetworkRequest.NetworkRequest;
-  _isNavigationRequest: boolean;
+  private nameCell: Element|null;
+  private initiatorCell: Element|null;
+  private requestInternal: SDK.NetworkRequest.NetworkRequest;
+  private readonly isNavigationRequestInternal: boolean;
   selectable: boolean;
-  _isOnInitiatorPath: boolean;
-  _isOnInitiatedPath: boolean;
-  _linkifiedInitiatorAnchor?: HTMLElement;
+  private isOnInitiatorPathInternal: boolean;
+  private isOnInitiatedPathInternal: boolean;
+  private linkifiedInitiatorAnchor?: HTMLElement;
   constructor(parentView: NetworkLogViewInterface, request: SDK.NetworkRequest.NetworkRequest) {
     super(parentView);
-    this._nameCell = null;
-    this._initiatorCell = null;
-    this._request = request;
-    this._isNavigationRequest = false;
+    this.nameCell = null;
+    this.initiatorCell = null;
+    this.requestInternal = request;
+    this.isNavigationRequestInternal = false;
     this.selectable = true;
-    this._isOnInitiatorPath = false;
-    this._isOnInitiatedPath = false;
+    this.isOnInitiatorPathInternal = false;
+    this.isOnInitiatedPathInternal = false;
   }
 
   static NameComparator(a: NetworkNode, b: NetworkNode): number {
@@ -624,8 +623,8 @@ export class NetworkRequestNode extends NetworkNode {
     if (!aRequest || !bRequest) {
       return !aRequest ? -1 : 1;
     }
-    const aHasInitiatorCell = a instanceof NetworkRequestNode && a._initiatorCell;
-    const bHasInitiatorCell = b instanceof NetworkRequestNode && b._initiatorCell;
+    const aHasInitiatorCell = a instanceof NetworkRequestNode && a.initiatorCell;
+    const bHasInitiatorCell = b instanceof NetworkRequestNode && b.initiatorCell;
     if (!aHasInitiatorCell || !bHasInitiatorCell) {
       return !aHasInitiatorCell ? -1 : 1;
     }
@@ -633,12 +632,12 @@ export class NetworkRequestNode extends NetworkNode {
     const networkRequestNodeA = (a as NetworkRequestNode);
     const networkRequestNodeB = (b as NetworkRequestNode);
 
-    const aText = networkRequestNodeA._linkifiedInitiatorAnchor ?
-        networkRequestNodeA._linkifiedInitiatorAnchor.textContent || '' :
-        (networkRequestNodeA._initiatorCell as HTMLElement).title;
-    const bText = networkRequestNodeB._linkifiedInitiatorAnchor ?
-        networkRequestNodeB._linkifiedInitiatorAnchor.textContent || '' :
-        (networkRequestNodeB._initiatorCell as HTMLElement).title;
+    const aText = networkRequestNodeA.linkifiedInitiatorAnchor ?
+        networkRequestNodeA.linkifiedInitiatorAnchor.textContent || '' :
+        (networkRequestNodeA.initiatorCell as HTMLElement).title;
+    const bText = networkRequestNodeB.linkifiedInitiatorAnchor ?
+        networkRequestNodeB.linkifiedInitiatorAnchor.textContent || '' :
+        (networkRequestNodeB.initiatorCell as HTMLElement).title;
     return aText.localeCompare(bText);
   }
 
@@ -788,56 +787,56 @@ export class NetworkRequestNode extends NetworkNode {
   showingInitiatorChainChanged(): void {
     const showInitiatorChain = this.showingInitiatorChain();
 
-    const initiatorGraph = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this._request);
+    const initiatorGraph = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.requestInternal);
     for (const request of initiatorGraph.initiators) {
-      if (request === this._request) {
+      if (request === this.requestInternal) {
         continue;
       }
       const node = this.parentView().nodeForRequest(request);
       if (!node) {
         continue;
       }
-      node._setIsOnInitiatorPath(showInitiatorChain);
+      node.setIsOnInitiatorPath(showInitiatorChain);
     }
     for (const request of initiatorGraph.initiated.keys()) {
-      if (request === this._request) {
+      if (request === this.requestInternal) {
         continue;
       }
       const node = this.parentView().nodeForRequest(request);
       if (!node) {
         continue;
       }
-      node._setIsOnInitiatedPath(showInitiatorChain);
+      node.setIsOnInitiatedPath(showInitiatorChain);
     }
   }
 
-  _setIsOnInitiatorPath(isOnInitiatorPath: boolean): void {
-    if (this._isOnInitiatorPath === isOnInitiatorPath || !this.attached()) {
+  private setIsOnInitiatorPath(isOnInitiatorPath: boolean): void {
+    if (this.isOnInitiatorPathInternal === isOnInitiatorPath || !this.attached()) {
       return;
     }
-    this._isOnInitiatorPath = isOnInitiatorPath;
+    this.isOnInitiatorPathInternal = isOnInitiatorPath;
     this.updateBackgroundColor();
   }
 
   isOnInitiatorPath(): boolean {
-    return this._isOnInitiatorPath;
+    return this.isOnInitiatorPathInternal;
   }
 
-  _setIsOnInitiatedPath(isOnInitiatedPath: boolean): void {
-    if (this._isOnInitiatedPath === isOnInitiatedPath || !this.attached()) {
+  private setIsOnInitiatedPath(isOnInitiatedPath: boolean): void {
+    if (this.isOnInitiatedPathInternal === isOnInitiatedPath || !this.attached()) {
       return;
     }
-    this._isOnInitiatedPath = isOnInitiatedPath;
+    this.isOnInitiatedPathInternal = isOnInitiatedPath;
     this.updateBackgroundColor();
   }
 
   isOnInitiatedPath(): boolean {
-    return this._isOnInitiatedPath;
+    return this.isOnInitiatedPathInternal;
   }
 
   displayType(): string {
-    const mimeType = this._request.mimeType || this._request.requestContentType() || '';
-    const resourceType = this._request.resourceType();
+    const mimeType = this.requestInternal.mimeType || this.requestInternal.requestContentType() || '';
+    const resourceType = this.requestInternal.resourceType();
     let simpleType = resourceType.name();
 
     if (resourceType === Common.ResourceType.resourceTypes.Other ||
@@ -845,7 +844,7 @@ export class NetworkRequestNode extends NetworkNode {
       simpleType = mimeType.replace(/^(application|image)\//, '');
     }
 
-    if (this._request.isRedirect()) {
+    if (this.requestInternal.isRedirect()) {
       simpleType += ' / ' + i18nString(UIStrings.redirect);
     }
 
@@ -853,16 +852,16 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   displayName(): string {
-    return this._request.name();
+    return this.requestInternal.name();
   }
 
   request(): SDK.NetworkRequest.NetworkRequest {
-    return this._request;
+    return this.requestInternal;
   }
 
   isNavigationRequest(): boolean {
-    const pageLoad = SDK.PageLoad.PageLoad.forRequest(this._request);
-    return pageLoad ? pageLoad.mainRequest === this._request : false;
+    const pageLoad = SDK.PageLoad.PageLoad.forRequest(this.requestInternal);
+    return pageLoad ? pageLoad.mainRequest === this.requestInternal : false;
   }
 
   nodeSelfHeight(): number {
@@ -870,21 +869,21 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   createCells(element: Element): void {
-    this._nameCell = null;
-    this._initiatorCell = null;
+    this.nameCell = null;
+    this.initiatorCell = null;
 
-    element.classList.toggle('network-error-row', this._isFailed());
-    element.classList.toggle('network-navigation-row', this._isNavigationRequest);
+    element.classList.toggle('network-error-row', this.isFailed());
+    element.classList.toggle('network-navigation-row', this.isNavigationRequestInternal);
     super.createCells(element);
     this.updateBackgroundColor();
   }
 
-  _setTextAndTitle(element: HTMLElement, text: string, title?: string): void {
+  private setTextAndTitle(element: HTMLElement, text: string, title?: string): void {
     UI.UIUtils.createTextChild(element, text);
     UI.Tooltip.Tooltip.install(element, title || text);
   }
 
-  _setTextAndTitleAsLink(element: HTMLElement, cellText: string, titleText: string, handler: () => void): void {
+  private setTextAndTitleAsLink(element: HTMLElement, cellText: string, titleText: string, handler: () => void): void {
     const link = document.createElement('span');
     link.classList.add('devtools-link');
     link.textContent = cellText;
@@ -897,108 +896,108 @@ export class NetworkRequestNode extends NetworkNode {
     const cell = (c as HTMLElement);
     switch (columnId) {
       case 'name': {
-        this._renderPrimaryCell(cell, columnId);
+        this.renderPrimaryCell(cell, columnId);
         break;
       }
       case 'path': {
-        this._renderPrimaryCell(cell, columnId, this._request.pathname);
+        this.renderPrimaryCell(cell, columnId, this.requestInternal.pathname);
         break;
       }
       case 'url': {
-        this._renderPrimaryCell(cell, columnId, this._request.url());
+        this.renderPrimaryCell(cell, columnId, this.requestInternal.url());
         break;
       }
       case 'method': {
-        const preflightRequest = this._request.preflightRequest();
+        const preflightRequest = this.requestInternal.preflightRequest();
         if (preflightRequest) {
-          this._setTextAndTitle(
-              cell, `${this._request.requestMethod} + `,
-              i18nString(UIStrings.sPreflight, {PH1: this._request.requestMethod}));
+          this.setTextAndTitle(
+              cell, `${this.requestInternal.requestMethod} + `,
+              i18nString(UIStrings.sPreflight, {PH1: this.requestInternal.requestMethod}));
           cell.appendChild(Components.Linkifier.Linkifier.linkifyRevealable(
               preflightRequest, i18nString(UIStrings.preflight), undefined,
               i18nString(UIStrings.selectPreflightRequest)));
         } else {
-          this._setTextAndTitle(cell, this._request.requestMethod);
+          this.setTextAndTitle(cell, this.requestInternal.requestMethod);
         }
         break;
       }
       case 'status': {
-        this._renderStatusCell(cell);
+        this.renderStatusCell(cell);
         break;
       }
       case 'protocol': {
-        this._setTextAndTitle(cell, this._request.protocol);
+        this.setTextAndTitle(cell, this.requestInternal.protocol);
         break;
       }
       case 'scheme': {
-        this._setTextAndTitle(cell, this._request.scheme);
+        this.setTextAndTitle(cell, this.requestInternal.scheme);
         break;
       }
       case 'domain': {
-        this._setTextAndTitle(cell, this._request.domain);
+        this.setTextAndTitle(cell, this.requestInternal.domain);
         break;
       }
       case 'remoteaddress': {
-        this._setTextAndTitle(cell, this._request.remoteAddress());
+        this.setTextAndTitle(cell, this.requestInternal.remoteAddress());
         break;
       }
       case 'remoteaddress-space': {
-        this._renderAddressSpaceCell(cell, this._request.remoteAddressSpace());
+        this.renderAddressSpaceCell(cell, this.requestInternal.remoteAddressSpace());
         break;
       }
       case 'cookies': {
-        this._setTextAndTitle(cell, this._arrayLength(this._request.includedRequestCookies()));
+        this.setTextAndTitle(cell, this.arrayLength(this.requestInternal.includedRequestCookies()));
         break;
       }
       case 'setcookies': {
-        this._setTextAndTitle(cell, this._arrayLength(this._request.responseCookies));
+        this.setTextAndTitle(cell, this.arrayLength(this.requestInternal.responseCookies));
         break;
       }
       case 'priority': {
-        const priority = this._request.priority();
-        this._setTextAndTitle(cell, priority ? PerfUI.NetworkPriorities.uiLabelForNetworkPriority(priority) : '');
+        const priority = this.requestInternal.priority();
+        this.setTextAndTitle(cell, priority ? PerfUI.NetworkPriorities.uiLabelForNetworkPriority(priority) : '');
         break;
       }
       case 'connectionid': {
-        this._setTextAndTitle(cell, this._request.connectionId === '0' ? '' : this._request.connectionId);
+        this.setTextAndTitle(cell, this.requestInternal.connectionId === '0' ? '' : this.requestInternal.connectionId);
         break;
       }
       case 'type': {
-        this._setTextAndTitle(cell, this.displayType());
+        this.setTextAndTitle(cell, this.displayType());
         break;
       }
       case 'initiator': {
-        this._renderInitiatorCell(cell);
+        this.renderInitiatorCell(cell);
         break;
       }
       case 'initiator-address-space': {
-        const clientSecurityState = this._request.clientSecurityState();
-        this._renderAddressSpaceCell(
+        const clientSecurityState = this.requestInternal.clientSecurityState();
+        this.renderAddressSpaceCell(
             cell,
             clientSecurityState ? clientSecurityState.initiatorIPAddressSpace :
                                   Protocol.Network.IPAddressSpace.Unknown);
         break;
       }
       case 'size': {
-        this._renderSizeCell(cell);
+        this.renderSizeCell(cell);
         break;
       }
       case 'time': {
-        this._renderTimeCell(cell);
+        this.renderTimeCell(cell);
         break;
       }
       case 'timeline': {
-        this._setTextAndTitle(cell, '');
+        this.setTextAndTitle(cell, '');
         break;
       }
       default: {
-        this._setTextAndTitle(cell, this._request.responseHeaderValue(columnId) || '');
+        this.setTextAndTitle(cell, this.requestInternal.responseHeaderValue(columnId) || '');
         break;
       }
     }
   }
 
-  _arrayLength(array: Array<unknown>|null): string {
+  private arrayLength(array: Array<unknown>|null): string {
     return array ? String(array.length) : '';
   }
 
@@ -1006,75 +1005,77 @@ export class NetworkRequestNode extends NetworkNode {
     super.select(supressSelectedEvent);
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (this.parentView() as any).dispatchEventToListeners(Events.RequestSelected, this._request);
+    (this.parentView() as any).dispatchEventToListeners(Events.RequestSelected, this.requestInternal);
   }
 
   highlightMatchedSubstring(regexp: RegExp|null): Object[] {
-    if (!regexp || !this._nameCell || this._nameCell.textContent === null) {
+    if (!regexp || !this.nameCell || this.nameCell.textContent === null) {
       return [];
     }
     // Ensure element is created.
     this.element();
     const domChanges: UI.UIUtils.HighlightChange[] = [];
-    const matchInfo = this._nameCell.textContent.match(regexp);
+    const matchInfo = this.nameCell.textContent.match(regexp);
     if (matchInfo) {
-      UI.UIUtils.highlightSearchResult(this._nameCell, matchInfo.index || 0, matchInfo[0].length, domChanges);
+      UI.UIUtils.highlightSearchResult(this.nameCell, matchInfo.index || 0, matchInfo[0].length, domChanges);
     }
     return domChanges;
   }
 
-  _openInNewTab(): void {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this._request.url());
+  private openInNewTab(): void {
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.requestInternal.url());
   }
 
-  _isFailed(): boolean {
-    if (this._request.failed && !this._request.statusCode) {
+  isFailed(): boolean {
+    if (this.requestInternal.failed && !this.requestInternal.statusCode) {
       return true;
     }
-    if (this._request.statusCode >= 400) {
+    if (this.requestInternal.statusCode >= 400) {
       return true;
     }
-    const signedExchangeInfo = this._request.signedExchangeInfo();
+    const signedExchangeInfo = this.requestInternal.signedExchangeInfo();
     if (signedExchangeInfo !== null && Boolean(signedExchangeInfo.errors)) {
       return true;
     }
-    if (this._request.webBundleInfo()?.errorMessage || this._request.webBundleInnerRequestInfo()?.errorMessage) {
+    if (this.requestInternal.webBundleInfo()?.errorMessage ||
+        this.requestInternal.webBundleInnerRequestInfo()?.errorMessage) {
       return true;
     }
-    if (this._request.corsErrorStatus()) {
+    if (this.requestInternal.corsErrorStatus()) {
       return true;
     }
     return false;
   }
 
-  _renderPrimaryCell(cell: HTMLElement, columnId: string, text?: string): void {
+  private renderPrimaryCell(cell: HTMLElement, columnId: string, text?: string): void {
     const columnIndex = (this.dataGrid as DataGrid.DataGrid.DataGridImpl<unknown>).indexOfVisibleColumn(columnId);
     const isFirstCell = (columnIndex === 0);
     if (isFirstCell) {
       const leftPadding = this.leftPadding ? this.leftPadding + 'px' : '';
       cell.style.setProperty('padding-left', leftPadding);
-      this._nameCell = cell;
-      cell.addEventListener('dblclick', this._openInNewTab.bind(this), false);
+      this.nameCell = cell;
+      cell.addEventListener('dblclick', this.openInNewTab.bind(this), false);
       cell.addEventListener('click', () => {
         // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (this.parentView() as any).dispatchEventToListeners(Events.RequestActivated, {showPanel: true});
       });
       let iconElement;
-      if (this._request.resourceType() === Common.ResourceType.resourceTypes.Image) {
+      if (this.requestInternal.resourceType() === Common.ResourceType.resourceTypes.Image) {
         const previewImage = document.createElement('img');
         previewImage.classList.add('image-network-icon-preview');
-        previewImage.alt = this._request.resourceType().title();
-        this._request.populateImageSource((previewImage as HTMLImageElement));
+        previewImage.alt = this.requestInternal.resourceType().title();
+        this.requestInternal.populateImageSource((previewImage as HTMLImageElement));
 
         iconElement = document.createElement('div');
         iconElement.classList.add('image');
         iconElement.appendChild(previewImage);
       } else {
         iconElement = document.createElement('img');
-        iconElement.alt = this._request.resourceType().title();
+        iconElement.alt = this.requestInternal.resourceType().title();
         iconElement.src =
-            new URL(`../../Images/${imageNameForResourceType(this._request.resourceType())}.svg`, import.meta.url)
+            new URL(
+                `../../Images/${imageNameForResourceType(this.requestInternal.resourceType())}.svg`, import.meta.url)
                 .toString();
       }
       iconElement.classList.add('icon');
@@ -1083,7 +1084,7 @@ export class NetworkRequestNode extends NetworkNode {
     }
 
     if (columnId === 'name') {
-      const webBundleInnerRequestInfo = this._request.webBundleInnerRequestInfo();
+      const webBundleInnerRequestInfo = this.requestInternal.webBundleInnerRequestInfo();
       if (webBundleInnerRequestInfo) {
         const secondIconElement = document.createElement('img');
         secondIconElement.classList.add('icon');
@@ -1091,7 +1092,7 @@ export class NetworkRequestNode extends NetworkNode {
         secondIconElement.src = 'Images/ic_file_webbundle_inner_request.svg';
         new URL('../../Images/ic_file_webbundle_inner_request.svg', import.meta.url).toString();
 
-        const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this._request);
+        const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this.requestInternal);
         if (webBundleInnerRequestInfo.bundleRequestId && networkManager) {
           cell.appendChild(Components.Linkifier.Linkifier.linkifyRevealable(
               new NetworkForward.NetworkRequestId.NetworkRequestId(
@@ -1101,47 +1102,49 @@ export class NetworkRequestNode extends NetworkNode {
           cell.appendChild(secondIconElement);
         }
       }
-      const name = Platform.StringUtilities.trimMiddle(this._request.name(), 100);
-      const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this._request);
+      const name = Platform.StringUtilities.trimMiddle(this.requestInternal.name(), 100);
+      const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this.requestInternal);
       UI.UIUtils.createTextChild(cell, networkManager ? networkManager.target().decorateLabel(name) : name);
-      this._appendSubtitle(cell, this._request.path());
-      UI.Tooltip.Tooltip.install(cell, this._request.url());
+      this.appendSubtitle(cell, this.requestInternal.path());
+      UI.Tooltip.Tooltip.install(cell, this.requestInternal.url());
     } else if (text) {
       UI.UIUtils.createTextChild(cell, text);
       UI.Tooltip.Tooltip.install(cell, text);
     }
   }
 
-  _renderStatusCell(cell: HTMLElement): void {
+  private renderStatusCell(cell: HTMLElement): void {
     cell.classList.toggle(
-        'network-dim-cell', !this._isFailed() && (this._request.cached() || !this._request.statusCode));
+        'network-dim-cell', !this.isFailed() && (this.requestInternal.cached() || !this.requestInternal.statusCode));
 
-    const corsErrorStatus = this._request.corsErrorStatus();
-    const webBundleErrorMessage =
-        this._request.webBundleInfo()?.errorMessage || this._request.webBundleInnerRequestInfo()?.errorMessage;
+    const corsErrorStatus = this.requestInternal.corsErrorStatus();
+    const webBundleErrorMessage = this.requestInternal.webBundleInfo()?.errorMessage ||
+        this.requestInternal.webBundleInnerRequestInfo()?.errorMessage;
     if (webBundleErrorMessage) {
-      this._setTextAndTitle(cell, i18nString(UIStrings.webBundleError), webBundleErrorMessage);
-    } else if (this._request.failed && !this._request.canceled && !this._request.wasBlocked() && !corsErrorStatus) {
+      this.setTextAndTitle(cell, i18nString(UIStrings.webBundleError), webBundleErrorMessage);
+    } else if (
+        this.requestInternal.failed && !this.requestInternal.canceled && !this.requestInternal.wasBlocked() &&
+        !corsErrorStatus) {
       const failText = i18nString(UIStrings.failed);
-      if (this._request.localizedFailDescription) {
+      if (this.requestInternal.localizedFailDescription) {
         UI.UIUtils.createTextChild(cell, failText);
-        this._appendSubtitle(cell, this._request.localizedFailDescription, true);
-        UI.Tooltip.Tooltip.install(cell, failText + ' ' + this._request.localizedFailDescription);
+        this.appendSubtitle(cell, this.requestInternal.localizedFailDescription, true);
+        UI.Tooltip.Tooltip.install(cell, failText + ' ' + this.requestInternal.localizedFailDescription);
       } else {
-        this._setTextAndTitle(cell, failText);
+        this.setTextAndTitle(cell, failText);
       }
-    } else if (this._request.statusCode && this._request.statusCode >= 400) {
-      UI.UIUtils.createTextChild(cell, String(this._request.statusCode));
-      this._appendSubtitle(cell, this._request.statusText);
-      UI.Tooltip.Tooltip.install(cell, this._request.statusCode + ' ' + this._request.statusText);
-    } else if (!this._request.statusCode && this._request.parsedURL.isDataURL()) {
-      this._setTextAndTitle(cell, i18nString(UIStrings.data));
-    } else if (!this._request.statusCode && this._request.canceled) {
-      this._setTextAndTitle(cell, i18nString(UIStrings.canceled));
-    } else if (this._request.wasBlocked()) {
+    } else if (this.requestInternal.statusCode && this.requestInternal.statusCode >= 400) {
+      UI.UIUtils.createTextChild(cell, String(this.requestInternal.statusCode));
+      this.appendSubtitle(cell, this.requestInternal.statusText);
+      UI.Tooltip.Tooltip.install(cell, this.requestInternal.statusCode + ' ' + this.requestInternal.statusText);
+    } else if (!this.requestInternal.statusCode && this.requestInternal.parsedURL.isDataURL()) {
+      this.setTextAndTitle(cell, i18nString(UIStrings.data));
+    } else if (!this.requestInternal.statusCode && this.requestInternal.canceled) {
+      this.setTextAndTitle(cell, i18nString(UIStrings.canceled));
+    } else if (this.requestInternal.wasBlocked()) {
       let reason = i18nString(UIStrings.other);
       let displayShowHeadersLink = false;
-      switch (this._request.blockedReason()) {
+      switch (this.requestInternal.blockedReason()) {
         case Protocol.Network.BlockedReason.Other:
           reason = i18nString(UIStrings.other);
           break;
@@ -1185,7 +1188,7 @@ export class NetworkRequestNode extends NetworkNode {
           break;
       }
       if (displayShowHeadersLink) {
-        this._setTextAndTitleAsLink(
+        this.setTextAndTitleAsLink(
             cell, i18nString(UIStrings.blockeds, {PH1: reason}), i18nString(UIStrings.blockedTooltip), () => {
               // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1195,28 +1198,28 @@ export class NetworkRequestNode extends NetworkNode {
               });
             });
       } else {
-        this._setTextAndTitle(cell, i18nString(UIStrings.blockeds, {PH1: reason}));
+        this.setTextAndTitle(cell, i18nString(UIStrings.blockeds, {PH1: reason}));
       }
     } else if (corsErrorStatus) {
-      this._setTextAndTitle(
+      this.setTextAndTitle(
           cell, i18nString(UIStrings.corsError),
           i18nString(UIStrings.crossoriginResourceSharingErrorS, {PH1: corsErrorStatus.corsError}));
-    } else if (this._request.statusCode) {
-      UI.UIUtils.createTextChild(cell, String(this._request.statusCode));
-      this._appendSubtitle(cell, this._request.statusText);
-      UI.Tooltip.Tooltip.install(cell, this._request.statusCode + ' ' + this._request.statusText);
-    } else if (this._request.finished) {
-      this._setTextAndTitle(cell, i18nString(UIStrings.finished));
-    } else if (this._request.preserved) {
-      this._setTextAndTitle(cell, i18nString(UIStrings.unknown), i18nString(UIStrings.unknownExplanation));
+    } else if (this.requestInternal.statusCode) {
+      UI.UIUtils.createTextChild(cell, String(this.requestInternal.statusCode));
+      this.appendSubtitle(cell, this.requestInternal.statusText);
+      UI.Tooltip.Tooltip.install(cell, this.requestInternal.statusCode + ' ' + this.requestInternal.statusText);
+    } else if (this.requestInternal.finished) {
+      this.setTextAndTitle(cell, i18nString(UIStrings.finished));
+    } else if (this.requestInternal.preserved) {
+      this.setTextAndTitle(cell, i18nString(UIStrings.unknown), i18nString(UIStrings.unknownExplanation));
     } else {
-      this._setTextAndTitle(cell, i18nString(UIStrings.pendingq));
+      this.setTextAndTitle(cell, i18nString(UIStrings.pendingq));
     }
   }
 
-  _renderInitiatorCell(cell: HTMLElement): void {
-    this._initiatorCell = cell;
-    const request = this._request;
+  private renderInitiatorCell(cell: HTMLElement): void {
+    this.initiatorCell = cell;
+    const request = this.requestInternal;
     const initiator = Logs.NetworkLog.NetworkLog.instance().initiatorInfoForRequest(request);
 
     const timing = request.timing;
@@ -1233,7 +1236,7 @@ export class NetworkRequestNode extends NetworkNode {
                                                         lineNumber: initiator.lineNumber,
                                                         columnNumber: initiator.columnNumber,
                                                       } as Components.Linkifier.LinkifyURLOptions)));
-        this._appendSubtitle(cell, i18nString(UIStrings.parser));
+        this.appendSubtitle(cell, i18nString(UIStrings.parser));
         break;
       }
 
@@ -1247,7 +1250,7 @@ export class NetworkRequestNode extends NetworkNode {
         } else {
           cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(redirectSource.url()));
         }
-        this._appendSubtitle(cell, i18nString(UIStrings.redirect));
+        this.appendSubtitle(cell, i18nString(UIStrings.redirect));
         break;
       }
 
@@ -1259,16 +1262,15 @@ export class NetworkRequestNode extends NetworkNode {
 
         const linkifier = this.parentView().linkifier();
         if (initiator.stack) {
-          this._linkifiedInitiatorAnchor =
-              linkifier.linkifyStackTraceTopFrame(networkManager.target(), initiator.stack);
+          this.linkifiedInitiatorAnchor = linkifier.linkifyStackTraceTopFrame(networkManager.target(), initiator.stack);
         } else {
-          this._linkifiedInitiatorAnchor = linkifier.linkifyScriptLocation(
+          this.linkifiedInitiatorAnchor = linkifier.linkifyScriptLocation(
               networkManager.target(), initiator.scriptId, initiator.url, initiator.lineNumber,
               {columnNumber: initiator.columnNumber, inlineFrameIndex: 0, className: undefined, tabStop: undefined});
         }
-        UI.Tooltip.Tooltip.install((this._linkifiedInitiatorAnchor), '');
-        cell.appendChild(this._linkifiedInitiatorAnchor);
-        this._appendSubtitle(cell, i18nString(UIStrings.script));
+        UI.Tooltip.Tooltip.install((this.linkifiedInitiatorAnchor), '');
+        cell.appendChild(this.linkifiedInitiatorAnchor);
+        this.appendSubtitle(cell, i18nString(UIStrings.script));
         cell.classList.add('network-script-initiated');
         break;
       }
@@ -1282,7 +1284,7 @@ export class NetworkRequestNode extends NetworkNode {
 
       case SDK.NetworkRequest.InitiatorType.SignedExchange: {
         cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(initiator.url));
-        this._appendSubtitle(cell, i18nString(UIStrings.signedexchange));
+        this.appendSubtitle(cell, i18nString(UIStrings.signedexchange));
         break;
       }
 
@@ -1307,60 +1309,61 @@ export class NetworkRequestNode extends NetworkNode {
     }
   }
 
-  _renderAddressSpaceCell(cell: HTMLElement, ipAddressSpace: Protocol.Network.IPAddressSpace): void {
+  private renderAddressSpaceCell(cell: HTMLElement, ipAddressSpace: Protocol.Network.IPAddressSpace): void {
     if (ipAddressSpace !== Protocol.Network.IPAddressSpace.Unknown) {
       UI.UIUtils.createTextChild(cell, ipAddressSpace);
     }
   }
 
-  _renderSizeCell(cell: HTMLElement): void {
-    const resourceSize = Platform.NumberUtilities.bytesToString(this._request.resourceSize);
+  private renderSizeCell(cell: HTMLElement): void {
+    const resourceSize = Platform.NumberUtilities.bytesToString(this.requestInternal.resourceSize);
 
-    if (this._request.cachedInMemory()) {
+    if (this.requestInternal.cachedInMemory()) {
       UI.UIUtils.createTextChild(cell, i18nString(UIStrings.memoryCache));
       UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.servedFromMemoryCacheResource, {PH1: resourceSize}));
       cell.classList.add('network-dim-cell');
-    } else if (this._request.fetchedViaServiceWorker) {
+    } else if (this.requestInternal.fetchedViaServiceWorker) {
       UI.UIUtils.createTextChild(cell, i18nString(UIStrings.serviceworker));
       UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.servedFromServiceworkerResource, {PH1: resourceSize}));
       cell.classList.add('network-dim-cell');
-    } else if (this._request.redirectSourceSignedExchangeInfoHasNoErrors()) {
+    } else if (this.requestInternal.redirectSourceSignedExchangeInfoHasNoErrors()) {
       UI.UIUtils.createTextChild(cell, i18n.i18n.lockedString('(signed-exchange)'));
       UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.servedFromSignedHttpExchange, {PH1: resourceSize}));
       cell.classList.add('network-dim-cell');
-    } else if (this._request.webBundleInnerRequestInfo()) {
+    } else if (this.requestInternal.webBundleInnerRequestInfo()) {
       UI.UIUtils.createTextChild(cell, i18nString(UIStrings.webBundle));
       UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.servedFromWebBundle, {PH1: resourceSize}));
       cell.classList.add('network-dim-cell');
-    } else if (this._request.fromPrefetchCache()) {
+    } else if (this.requestInternal.fromPrefetchCache()) {
       UI.UIUtils.createTextChild(cell, i18nString(UIStrings.prefetchCache));
       UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.servedFromPrefetchCacheResource, {PH1: resourceSize}));
       cell.classList.add('network-dim-cell');
-    } else if (this._request.cached()) {
+    } else if (this.requestInternal.cached()) {
       UI.UIUtils.createTextChild(cell, i18nString(UIStrings.diskCache));
       UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.servedFromDiskCacheResourceSizeS, {PH1: resourceSize}));
       cell.classList.add('network-dim-cell');
     } else {
-      const transferSize = Platform.NumberUtilities.bytesToString(this._request.transferSize);
+      const transferSize = Platform.NumberUtilities.bytesToString(this.requestInternal.transferSize);
       UI.UIUtils.createTextChild(cell, transferSize);
       UI.Tooltip.Tooltip.install(cell, `${transferSize} transferred over network, resource size: ${resourceSize}`);
     }
-    this._appendSubtitle(cell, resourceSize);
+    this.appendSubtitle(cell, resourceSize);
   }
 
-  _renderTimeCell(cell: HTMLElement): void {
-    if (this._request.duration > 0) {
-      this._setTextAndTitle(cell, i18n.TimeUtilities.secondsToString(this._request.duration));
-      this._appendSubtitle(cell, i18n.TimeUtilities.secondsToString(this._request.latency));
-    } else if (this._request.preserved) {
-      this._setTextAndTitle(cell, i18nString(UIStrings.unknown), i18nString(UIStrings.unknownExplanation));
+  private renderTimeCell(cell: HTMLElement): void {
+    if (this.requestInternal.duration > 0) {
+      this.setTextAndTitle(cell, i18n.TimeUtilities.secondsToString(this.requestInternal.duration));
+      this.appendSubtitle(cell, i18n.TimeUtilities.secondsToString(this.requestInternal.latency));
+    } else if (this.requestInternal.preserved) {
+      this.setTextAndTitle(cell, i18nString(UIStrings.unknown), i18nString(UIStrings.unknownExplanation));
     } else {
       cell.classList.add('network-dim-cell');
-      this._setTextAndTitle(cell, i18nString(UIStrings.pending));
+      this.setTextAndTitle(cell, i18nString(UIStrings.pending));
     }
   }
 
-  _appendSubtitle(cellElement: Element, subtitleText: string, showInlineWhenSelected: boolean|undefined = false): void {
+  private appendSubtitle(cellElement: Element, subtitleText: string, showInlineWhenSelected: boolean|undefined = false):
+      void {
     const subtitleElement = document.createElement('div');
     subtitleElement.classList.add('network-cell-subtitle');
     if (showInlineWhenSelected) {

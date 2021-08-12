@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type * as SDK from '../../../../core/sdk/sdk.js';
@@ -21,18 +19,18 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/object_ui/CustomPreviewComponent.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class CustomPreviewSection {
-  _sectionElement: HTMLSpanElement;
-  _object: SDK.RemoteObject.RemoteObject;
-  _expanded: boolean;
-  _cachedContent: Node|null;
-  _header: Node|undefined;
-  _expandIcon: UI.Icon.Icon|undefined;
+  private readonly sectionElement: HTMLSpanElement;
+  private readonly object: SDK.RemoteObject.RemoteObject;
+  private expanded: boolean;
+  private cachedContent: Node|null;
+  private readonly header: Node|undefined;
+  private readonly expandIcon: UI.Icon.Icon|undefined;
   constructor(object: SDK.RemoteObject.RemoteObject) {
-    this._sectionElement = document.createElement('span');
-    this._sectionElement.classList.add('custom-expandable-section');
-    this._object = object;
-    this._expanded = false;
-    this._cachedContent = null;
+    this.sectionElement = document.createElement('span');
+    this.sectionElement.classList.add('custom-expandable-section');
+    this.object = object;
+    this.expanded = false;
+    this.cachedContent = null;
     const customPreview = object.customPreview();
 
     if (!customPreview) {
@@ -46,31 +44,31 @@ export class CustomPreviewSection {
       Common.Console.Console.instance().error('Broken formatter: header is invalid json ' + e);
       return;
     }
-    this._header = this._renderJSONMLTag(headerJSON);
-    if (this._header.nodeType === Node.TEXT_NODE) {
+    this.header = this.renderJSONMLTag(headerJSON);
+    if (this.header.nodeType === Node.TEXT_NODE) {
       Common.Console.Console.instance().error('Broken formatter: header should be an element node.');
       return;
     }
 
     if (customPreview.bodyGetterId) {
-      if (this._header instanceof Element) {
-        this._header.classList.add('custom-expandable-section-header');
+      if (this.header instanceof Element) {
+        this.header.classList.add('custom-expandable-section-header');
       }
-      this._header.addEventListener('click', this._onClick.bind(this), false);
-      this._expandIcon = UI.Icon.Icon.create('smallicon-triangle-right', 'custom-expand-icon');
-      this._header.insertBefore(this._expandIcon, this._header.firstChild);
+      this.header.addEventListener('click', this.onClick.bind(this), false);
+      this.expandIcon = UI.Icon.Icon.create('smallicon-triangle-right', 'custom-expand-icon');
+      this.header.insertBefore(this.expandIcon, this.header.firstChild);
     }
 
-    this._sectionElement.appendChild(this._header);
+    this.sectionElement.appendChild(this.header);
   }
 
   element(): Element {
-    return this._sectionElement;
+    return this.sectionElement;
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _renderJSONMLTag(jsonML: any): Node {
+  private renderJSONMLTag(jsonML: any): Node {
     if (!Array.isArray(jsonML)) {
       return document.createTextNode(String(jsonML));
     }
@@ -78,14 +76,14 @@ export class CustomPreviewSection {
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const array = (jsonML as any[]);
-    return array[0] === 'object' ? this._layoutObjectTag(array) : this._renderElement(array);
+    return array[0] === 'object' ? this.layoutObjectTag(array) : this.renderElement(array);
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _renderElement(object: any[]): Node {
+  private renderElement(object: any[]): Node {
     const tagName = object.shift();
-    if (!CustomPreviewSection._allowedTags.has(tagName)) {
+    if (!CustomPreviewSection.allowedTags.has(tagName)) {
       Common.Console.Console.instance().error('Broken formatter: element ' + tagName + ' is not allowed!');
       return document.createElement('span');
     }
@@ -102,16 +100,16 @@ export class CustomPreviewSection {
       }
     }
 
-    this._appendJsonMLTags(element, object);
+    this.appendJsonMLTags(element, object);
     return element;
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _layoutObjectTag(objectTag: any[]): Node {
+  private layoutObjectTag(objectTag: any[]): Node {
     objectTag.shift();
     const attributes = objectTag.shift();
-    const remoteObject = this._object.runtimeModel().createRemoteObject((attributes as Protocol.Runtime.RemoteObject));
+    const remoteObject = this.object.runtimeModel().createRemoteObject((attributes as Protocol.Runtime.RemoteObject));
     if (remoteObject.customPreview()) {
       return (new CustomPreviewSection(remoteObject)).element();
     }
@@ -123,47 +121,47 @@ export class CustomPreviewSection {
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _appendJsonMLTags(parentElement: Node, jsonMLTags: any[]): void {
+  private appendJsonMLTags(parentElement: Node, jsonMLTags: any[]): void {
     for (let i = 0; i < jsonMLTags.length; ++i) {
-      parentElement.appendChild(this._renderJSONMLTag(jsonMLTags[i]));
+      parentElement.appendChild(this.renderJSONMLTag(jsonMLTags[i]));
     }
   }
 
-  _onClick(event: Event): void {
+  private onClick(event: Event): void {
     event.consume(true);
-    if (this._cachedContent) {
-      this._toggleExpand();
+    if (this.cachedContent) {
+      this.toggleExpand();
     } else {
-      this._loadBody();
+      this.loadBody();
     }
   }
 
-  _toggleExpand(): void {
-    this._expanded = !this._expanded;
-    if (this._header instanceof Element) {
-      this._header.classList.toggle('expanded', this._expanded);
+  private toggleExpand(): void {
+    this.expanded = !this.expanded;
+    if (this.header instanceof Element) {
+      this.header.classList.toggle('expanded', this.expanded);
     }
-    if (this._cachedContent instanceof Element) {
-      this._cachedContent.classList.toggle('hidden', !this._expanded);
+    if (this.cachedContent instanceof Element) {
+      this.cachedContent.classList.toggle('hidden', !this.expanded);
     }
-    if (this._expandIcon) {
-      if (this._expanded) {
-        this._expandIcon.setIconType('smallicon-triangle-down');
+    if (this.expandIcon) {
+      if (this.expanded) {
+        this.expandIcon.setIconType('smallicon-triangle-down');
       } else {
-        this._expandIcon.setIconType('smallicon-triangle-right');
+        this.expandIcon.setIconType('smallicon-triangle-right');
       }
     }
   }
 
-  async _loadBody(): Promise<void> {
-    const customPreview = this._object.customPreview();
+  async loadBody(): Promise<void> {
+    const customPreview = this.object.customPreview();
 
     if (!customPreview) {
       return;
     }
 
     if (customPreview.bodyGetterId) {
-      const bodyJsonML = await this._object.callFunctionJSON(
+      const bodyJsonML = await this.object.callFunctionJSON(
           // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           bodyGetter => (bodyGetter as () => any)(), [{objectId: customPreview.bodyGetterId}]);
@@ -171,54 +169,53 @@ export class CustomPreviewSection {
         return;
       }
 
-      this._cachedContent = this._renderJSONMLTag(bodyJsonML);
-      this._sectionElement.appendChild(this._cachedContent);
-      this._toggleExpand();
+      this.cachedContent = this.renderJSONMLTag(bodyJsonML);
+      this.sectionElement.appendChild(this.cachedContent);
+      this.toggleExpand();
     }
   }
 
-  static _allowedTags = new Set(['span', 'div', 'ol', 'li', 'table', 'tr', 'td']);
+  private static allowedTags = new Set(['span', 'div', 'ol', 'li', 'table', 'tr', 'td']);
 }
 
 export class CustomPreviewComponent {
-  _object: SDK.RemoteObject.RemoteObject;
-  _customPreviewSection: CustomPreviewSection|null;
+  private readonly object: SDK.RemoteObject.RemoteObject;
+  private customPreviewSection: CustomPreviewSection|null;
   element: HTMLSpanElement;
   constructor(object: SDK.RemoteObject.RemoteObject) {
-    this._object = object;
-    this._customPreviewSection = new CustomPreviewSection(object);
+    this.object = object;
+    this.customPreviewSection = new CustomPreviewSection(object);
     this.element = document.createElement('span');
     this.element.classList.add('source-code');
     const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(this.element, {
       cssFile: 'ui/legacy/components/object_ui/customPreviewComponent.css',
       delegatesFocus: undefined,
     });
-    this.element.addEventListener('contextmenu', this._contextMenuEventFired.bind(this), false);
-    shadowRoot.appendChild(this._customPreviewSection.element());
+    this.element.addEventListener('contextmenu', this.contextMenuEventFired.bind(this), false);
+    shadowRoot.appendChild(this.customPreviewSection.element());
   }
 
   expandIfPossible(): void {
-    const customPreview = this._object.customPreview();
-    if (customPreview && customPreview.bodyGetterId && this._customPreviewSection) {
-      this._customPreviewSection._loadBody();
+    const customPreview = this.object.customPreview();
+    if (customPreview && customPreview.bodyGetterId && this.customPreviewSection) {
+      this.customPreviewSection.loadBody();
     }
   }
 
-  _contextMenuEventFired(event: Event): void {
+  private contextMenuEventFired(event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    if (this._customPreviewSection) {
-      contextMenu.revealSection().appendItem(
-          i18nString(UIStrings.showAsJavascriptObject), this._disassemble.bind(this));
+    if (this.customPreviewSection) {
+      contextMenu.revealSection().appendItem(i18nString(UIStrings.showAsJavascriptObject), this.disassemble.bind(this));
     }
-    contextMenu.appendApplicableItems(this._object);
+    contextMenu.appendApplicableItems(this.object);
     contextMenu.show();
   }
 
-  _disassemble(): void {
+  private disassemble(): void {
     if (this.element.shadowRoot) {
       this.element.shadowRoot.textContent = '';
-      this._customPreviewSection = null;
-      this.element.shadowRoot.appendChild(ObjectPropertiesSection.defaultObjectPresentation(this._object));
+      this.customPreviewSection = null;
+      this.element.shadowRoot.appendChild(ObjectPropertiesSection.defaultObjectPresentation(this.object));
     }
   }
 }

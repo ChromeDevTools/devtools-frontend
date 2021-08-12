@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as UI from '../../legacy.js';
@@ -63,11 +61,12 @@ export class JavaScriptREPL {
       allowUnsafeEvalBlockedByCSP: undefined,
     };
     const result = await executionContext.evaluate(options, false /* userGesture */, false /* awaitPromise */);
-    const preview = JavaScriptREPL._buildEvaluationPreview(result, allowErrors);
+    const preview = JavaScriptREPL.buildEvaluationPreview(result, allowErrors);
     return {preview, result};
   }
 
-  static _buildEvaluationPreview(result: SDK.RuntimeModel.EvaluationResult, allowErrors?: boolean): DocumentFragment {
+  private static buildEvaluationPreview(result: SDK.RuntimeModel.EvaluationResult, allowErrors?: boolean):
+      DocumentFragment {
     const fragment = document.createDocumentFragment();
     if ('error' in result) {
       return fragment;

@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
@@ -33,19 +31,19 @@ const DEFAULT_TIMEOUT = 500;
 let javaScriptAutocompleteInstance: JavaScriptAutocomplete;
 
 export class JavaScriptAutocomplete {
-  _expressionCache: Map<string, {
+  private readonly expressionCache: Map<string, {
     date: number,
     value: Promise<Array<CompletionGroup>>,
   }>;
   private constructor() {
-    this._expressionCache = new Map();
+    this.expressionCache = new Map();
     SDK.ConsoleModel.ConsoleModel.instance().addEventListener(
-        SDK.ConsoleModel.Events.CommandEvaluated, this._clearCache, this);
-    UI.Context.Context.instance().addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this._clearCache, this);
+        SDK.ConsoleModel.Events.CommandEvaluated, this.clearCache, this);
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this.clearCache, this);
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this._clearCache, this);
+        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this.clearCache, this);
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._clearCache, this);
+        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this.clearCache, this);
   }
 
   static instance(): JavaScriptAutocomplete {
@@ -55,8 +53,8 @@ export class JavaScriptAutocomplete {
     return javaScriptAutocompleteInstance;
   }
 
-  _clearCache(): void {
-    this._expressionCache.clear();
+  private clearCache(): void {
+    this.expressionCache.clear();
   }
 
   async completionsForTextInCurrentContext(fullText: string, query: string, force?: boolean):
@@ -64,7 +62,7 @@ export class JavaScriptAutocomplete {
     const trimmedText = fullText.trim();
 
     const [mapCompletions, expressionCompletions] = await Promise.all(
-        [this._mapCompletions(trimmedText, query), this._completionsForExpression(trimmedText, query, force)]);
+        [this.mapCompletions(trimmedText, query), this.completionsForExpression(trimmedText, query, force)]);
     return mapCompletions.concat(expressionCompletions);
   }
 
@@ -101,7 +99,7 @@ export class JavaScriptAutocomplete {
       return null;
     }
 
-    const args = await this._argumentsForFunction(result.object, async () => {
+    const args = await this.argumentsForFunction(result.object, async () => {
       const result = await executionContext.evaluate(
           {
             expression: functionCall.receiver,
@@ -126,7 +124,7 @@ export class JavaScriptAutocomplete {
     return {args, argumentIndex: functionCall.argumentIndex};
   }
 
-  async _argumentsForFunction(
+  private async argumentsForFunction(
       functionObject: SDK.RemoteObject.RemoteObject,
       receiverObjGetter: () => Promise<SDK.RemoteObject.RemoteObject|null>,
       parsedFunctionName?: string): Promise<string[][]> {
@@ -149,7 +147,7 @@ export class JavaScriptAutocomplete {
           argsProperty.value) {
         const thisValue = thisProperty.value;
         const originalSignatures =
-            await this._argumentsForFunction(targetProperty.value, () => Promise.resolve(thisValue));
+            await this.argumentsForFunction(targetProperty.value, () => Promise.resolve(thisValue));
         const boundArgsLength = SDK.RemoteObject.RemoteObject.arrayLength(argsProperty.value);
         const clippedArgs = [];
         for (const signature of originalSignatures) {
@@ -238,7 +236,7 @@ export class JavaScriptAutocomplete {
     return [];
   }
 
-  async _mapCompletions(text: string, query: string): Promise<UI.SuggestBox.Suggestions> {
+  private async mapCompletions(text: string, query: string): Promise<UI.SuggestBox.Suggestions> {
     const mapMatch = text.match(/\.\s*(get|set|delete)\s*\(\s*$/);
     const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
     if (!executionContext || !mapMatch) {
@@ -339,7 +337,7 @@ export class JavaScriptAutocomplete {
     return suggestions;
   }
 
-  async _completionsForExpression(fullText: string, query: string, force?: boolean):
+  private async completionsForExpression(fullText: string, query: string, force?: boolean):
       Promise<UI.SuggestBox.Suggestions> {
     const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
     if (!executionContext) {
@@ -376,7 +374,7 @@ export class JavaScriptAutocomplete {
     const selectedFrame = executionContext.debuggerModel.selectedCallFrame();
     let completionGroups: CompletionGroup[]|null;
     const TEN_SECONDS = 10000;
-    let cache = this._expressionCache.get(expressionString);
+    let cache = this.expressionCache.get(expressionString);
     if (cache && cache.date + TEN_SECONDS > Date.now()) {
       completionGroups = await cache.value;
     } else if (!expressionString && selectedFrame) {
@@ -399,7 +397,7 @@ export class JavaScriptAutocomplete {
         }
       }
       cache = {date: Date.now(), value: Promise.resolve(value)};
-      this._expressionCache.set(expressionString, cache);
+      this.expressionCache.set(expressionString, cache);
       completionGroups = await cache.value;
     } else {
       const resultPromise = executionContext.evaluate(
@@ -418,11 +416,10 @@ export class JavaScriptAutocomplete {
           },
           /* userGesture */ false, /* awaitPromise */ false);
       cache = {date: Date.now(), value: resultPromise.then(result => completionsOnGlobal.call(this, result))};
-      this._expressionCache.set(expressionString, cache);
+      this.expressionCache.set(expressionString, cache);
       completionGroups = await cache.value;
     }
-    return this._receivedPropertyNames(
-        completionGroups.slice(0), dotNotation, bracketNotation, expressionString, query);
+    return this.receivedPropertyNames(completionGroups.slice(0), dotNotation, bracketNotation, expressionString, query);
 
     async function completionsOnGlobal(
         this: JavaScriptAutocomplete, result: SDK.RuntimeModel.EvaluationResult): Promise<CompletionGroup[]> {
@@ -499,7 +496,7 @@ export class JavaScriptAutocomplete {
           group.items[i] = group.items[i].replace(/\n/g, '\\n');
         }
 
-        group.items.sort(group.items.length < 1000 ? this._itemComparator : undefined);
+        group.items.sort(group.items.length < 1000 ? this.itemComparator : undefined);
       }
 
       return completions;
@@ -554,7 +551,7 @@ export class JavaScriptAutocomplete {
     }
   }
 
-  _receivedPropertyNames(
+  private receivedPropertyNames(
       propertyGroups: CompletionGroup[]|null, dotNotation: boolean, bracketNotation: boolean, expressionString: string,
       query: string): UI.SuggestBox.Suggestions {
     if (!propertyGroups) {
@@ -592,10 +589,10 @@ export class JavaScriptAutocomplete {
         title: undefined,
       });
     }
-    return this._completionsForQuery(dotNotation, bracketNotation, expressionString, query, propertyGroups);
+    return this.completionsForQuery(dotNotation, bracketNotation, expressionString, query, propertyGroups);
   }
 
-  _completionsForQuery(
+  private completionsForQuery(
       dotNotation: boolean, bracketNotation: boolean, expressionString: string, query: string,
       propertyGroups: CompletionGroup[]): UI.SuggestBox.Suggestions {
     const quoteUsed = (bracketNotation && query.startsWith('\'')) ? '\'' : '"';
@@ -714,7 +711,7 @@ export class JavaScriptAutocomplete {
     return result;
   }
 
-  _itemComparator(a: string, b: string): number {
+  private itemComparator(a: string, b: string): number {
     const aStartsWithUnderscore = a.startsWith('_');
     const bStartsWithUnderscore = b.startsWith('_');
     if (aStartsWithUnderscore && !bStartsWithUnderscore) {
@@ -746,29 +743,29 @@ export class JavaScriptAutocomplete {
 }
 
 export class JavaScriptAutocompleteConfig {
-  _editor: UI.TextEditor.TextEditor;
+  private readonly editor: UI.TextEditor.TextEditor;
   constructor(editor: UI.TextEditor.TextEditor) {
-    this._editor = editor;
+    this.editor = editor;
   }
 
   static createConfigForEditor(editor: UI.TextEditor.TextEditor): UI.SuggestBox.AutocompleteConfig {
     const autocomplete = new JavaScriptAutocompleteConfig(editor);
     return {
-      substituteRangeCallback: autocomplete._substituteRange.bind(autocomplete),
-      suggestionsCallback: autocomplete._suggestionsCallback.bind(autocomplete),
-      tooltipCallback: autocomplete._tooltipCallback.bind(autocomplete),
+      substituteRangeCallback: autocomplete.substituteRange.bind(autocomplete),
+      suggestionsCallback: autocomplete.suggestionsCallback.bind(autocomplete),
+      tooltipCallback: autocomplete.tooltipCallback.bind(autocomplete),
       anchorBehavior: undefined,
       isWordChar: undefined,
     };
   }
 
-  _substituteRange(lineNumber: number, columnNumber: number): TextUtils.TextRange.TextRange|null {
-    const token = this._editor.tokenAtTextPosition(lineNumber, columnNumber);
+  private substituteRange(lineNumber: number, columnNumber: number): TextUtils.TextRange.TextRange|null {
+    const token = this.editor.tokenAtTextPosition(lineNumber, columnNumber);
     if (token && token.type === 'js-string') {
       return new TextUtils.TextRange.TextRange(lineNumber, token.startColumn, lineNumber, columnNumber);
     }
 
-    const lineText = this._editor.line(lineNumber);
+    const lineText = this.editor.line(lineNumber);
     let index;
     for (index = columnNumber - 1; index >= 0; index--) {
       if (' =:[({;,!+-*/&|^<>.\t\r\n'.indexOf(lineText.charAt(index)) !== -1) {
@@ -778,13 +775,13 @@ export class JavaScriptAutocompleteConfig {
     return new TextUtils.TextRange.TextRange(lineNumber, index + 1, lineNumber, columnNumber);
   }
 
-  async _suggestionsCallback(
+  private async suggestionsCallback(
       queryRange: TextUtils.TextRange.TextRange, substituteRange: TextUtils.TextRange.TextRange,
       force?: boolean): Promise<UI.SuggestBox.Suggestions> {
-    const query = this._editor.text(queryRange);
+    const query = this.editor.text(queryRange);
     const before =
-        this._editor.text(new TextUtils.TextRange.TextRange(0, 0, queryRange.startLine, queryRange.startColumn));
-    const token = this._editor.tokenAtTextPosition(substituteRange.startLine, substituteRange.startColumn);
+        this.editor.text(new TextUtils.TextRange.TextRange(0, 0, queryRange.startLine, queryRange.startColumn));
+    const token = this.editor.tokenAtTextPosition(substituteRange.startLine, substituteRange.startColumn);
     if (token) {
       const excludedTokens = new Set<string>(['js-comment', 'js-string-2', 'js-def']);
       const trimmedBefore = before.trim();
@@ -798,7 +795,7 @@ export class JavaScriptAutocompleteConfig {
         return [];
       }
     }
-    const queryAndAfter = this._editor.line(queryRange.startLine).substring(queryRange.startColumn);
+    const queryAndAfter = this.editor.line(queryRange.startLine).substring(queryRange.startColumn);
 
     const words = await JavaScriptAutocomplete.instance().completionsForTextInCurrentContext(before, query, force);
     if (!force && queryAndAfter && queryAndAfter !== query &&
@@ -808,8 +805,8 @@ export class JavaScriptAutocompleteConfig {
     return words;
   }
 
-  async _tooltipCallback(lineNumber: number, columnNumber: number): Promise<Element|null> {
-    const before = this._editor.text(new TextUtils.TextRange.TextRange(0, 0, lineNumber, columnNumber));
+  private async tooltipCallback(lineNumber: number, columnNumber: number): Promise<Element|null> {
+    const before = this.editor.text(new TextUtils.TextRange.TextRange(0, 0, lineNumber, columnNumber));
     const result = await JavaScriptAutocomplete.instance().argumentsHint(before);
     if (!result) {
       return null;

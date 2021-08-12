@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as UI from '../../legacy.js';
@@ -39,19 +37,19 @@ import {CustomPreviewComponent} from './CustomPreviewComponent.js';
 import {ObjectPropertiesSection} from './ObjectPropertiesSection.js';
 
 export class ObjectPopoverHelper {
-  _linkifier: Components.Linkifier.Linkifier|null;
-  _resultHighlightedAsDOM: boolean;
+  private readonly linkifier: Components.Linkifier.Linkifier|null;
+  private readonly resultHighlightedAsDOM: boolean;
   constructor(linkifier: Components.Linkifier.Linkifier|null, resultHighlightedAsDOM: boolean) {
-    this._linkifier = linkifier;
-    this._resultHighlightedAsDOM = resultHighlightedAsDOM;
+    this.linkifier = linkifier;
+    this.resultHighlightedAsDOM = resultHighlightedAsDOM;
   }
 
   dispose(): void {
-    if (this._resultHighlightedAsDOM) {
+    if (this.resultHighlightedAsDOM) {
       SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     }
-    if (this._linkifier) {
-      this._linkifier.dispose();
+    if (this.linkifier) {
+      this.linkifier.dispose();
     }
   }
 

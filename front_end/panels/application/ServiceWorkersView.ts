@@ -370,9 +370,9 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
     this._updateListVisibility();
   }
 
-  _registrationUpdated(event: Common.EventTarget.EventTargetEvent): void {
-    const registration = (event.data as SDK.ServiceWorkerManager.ServiceWorkerRegistration);
-    this._updateRegistration(registration);
+  _registrationUpdated(event: Common.EventTarget.EventTargetEvent<SDK.ServiceWorkerManager.ServiceWorkerRegistration>):
+      void {
+    this._updateRegistration(event.data);
     this._gcRegistrations();
   }
 
@@ -434,9 +434,9 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
     section._scheduleUpdate();
   }
 
-  _registrationDeleted(event: Common.EventTarget.EventTargetEvent): void {
-    const registration = (event.data as SDK.ServiceWorkerManager.ServiceWorkerRegistration);
-    this._removeRegistrationFromList(registration);
+  _registrationDeleted(event: Common.EventTarget.EventTargetEvent<SDK.ServiceWorkerManager.ServiceWorkerRegistration>):
+      void {
+    this._removeRegistrationFromList(event.data);
   }
 
   _removeRegistrationFromList(registration: SDK.ServiceWorkerManager.ServiceWorkerRegistration): void {

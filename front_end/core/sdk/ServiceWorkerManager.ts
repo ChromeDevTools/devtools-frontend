@@ -93,7 +93,7 @@ const str_ = i18n.i18n.registerUIStrings('core/sdk/ServiceWorkerManager.ts', UIS
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
-export class ServiceWorkerManager extends SDKModel {
+export class ServiceWorkerManager extends SDKModel<EventTypes> {
   private readonly lastAnonymousTargetId: number;
   private readonly agent: ProtocolProxyApi.ServiceWorkerApi;
   private readonly registrationsInternal: Map<string, ServiceWorkerRegistration>;
@@ -305,6 +305,17 @@ export enum Events {
   RegistrationErrorAdded = 'RegistrationErrorAdded',
   RegistrationDeleted = 'RegistrationDeleted',
 }
+
+export interface RegistrationErrorAddedEvent {
+  registration: ServiceWorkerRegistration;
+  error: Protocol.ServiceWorker.ServiceWorkerErrorMessage;
+}
+
+export type EventTypes = {
+  [Events.RegistrationUpdated]: ServiceWorkerRegistration,
+  [Events.RegistrationErrorAdded]: RegistrationErrorAddedEvent,
+  [Events.RegistrationDeleted]: ServiceWorkerRegistration,
+};
 
 class ServiceWorkerDispatcher implements ProtocolProxyApi.ServiceWorkerDispatcher {
   private readonly manager: ServiceWorkerManager;
@@ -568,7 +579,7 @@ class ServiceWorkerContextNamer {
         RuntimeModel, RuntimeModelEvents.ExecutionContextCreated, this.executionContextCreated, this);
   }
 
-  private registrationsUpdated(_event: Common.EventTarget.EventTargetEvent): void {
+  private registrationsUpdated(): void {
     this.versionByTargetId.clear();
     const registrations = this.serviceWorkerManager.registrations().values();
     for (const registration of registrations) {

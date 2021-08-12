@@ -100,9 +100,8 @@ export class ServiceWorkerCacheTreeElement extends ExpandableApplicationPanelTre
     }
   }
 
-  private cacheAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const cache = /** @type {!SDK.ServiceWorkerCacheModel.Cache} */ (event.data.cache);
-    const model = /** @type {!SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel} */ (event.data.model);
+  private cacheAdded(event: Common.EventTarget.EventTargetEvent<SDK.ServiceWorkerCacheModel.CacheEvent>): void {
+    const {model, cache} = event.data;
     this.addCache(model, cache);
   }
 
@@ -113,10 +112,8 @@ export class ServiceWorkerCacheTreeElement extends ExpandableApplicationPanelTre
     this.appendChild(swCacheTreeElement);
   }
 
-  private cacheRemoved(event: Common.EventTarget.EventTargetEvent): void {
-    const cache = /** @type {!SDK.ServiceWorkerCacheModel.Cache} */ (event.data.cache);
-    const model = /** @type {!SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel} */ (event.data.model);
-
+  private cacheRemoved(event: Common.EventTarget.EventTargetEvent<SDK.ServiceWorkerCacheModel.CacheEvent>): void {
+    const {model, cache} = event.data;
     const swCacheTreeElement = this.cacheTreeElement(model, cache);
     if (!swCacheTreeElement) {
       return;

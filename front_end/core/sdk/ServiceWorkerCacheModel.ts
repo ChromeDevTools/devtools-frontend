@@ -24,7 +24,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('core/sdk/ServiceWorkerCacheModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class ServiceWorkerCacheModel extends SDKModel implements ProtocolProxyApi.StorageDispatcher {
+export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements ProtocolProxyApi.StorageDispatcher {
   private readonly cachesInternal: Map<string, Cache>;
   readonly cacheAgent: ProtocolProxyApi.CacheStorageApi;
   private readonly storageAgent: ProtocolProxyApi.StorageApi;
@@ -263,6 +263,22 @@ export enum Events {
   CacheRemoved = 'CacheRemoved',
   CacheStorageContentUpdated = 'CacheStorageContentUpdated',
 }
+
+export interface CacheEvent {
+  model: ServiceWorkerCacheModel;
+  cache: Cache;
+}
+
+export interface CacheStorageContentUpdatedEvent {
+  origin: string;
+  cacheName: string;
+}
+
+export type EventTypes = {
+  [Events.CacheAdded]: CacheEvent,
+  [Events.CacheRemoved]: CacheEvent,
+  [Events.CacheStorageContentUpdated]: CacheStorageContentUpdatedEvent,
+};
 
 export class Cache {
   private readonly model: ServiceWorkerCacheModel;

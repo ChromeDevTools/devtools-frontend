@@ -76,7 +76,7 @@ Don’t be afraid to close issues with WontFix if:
 
 ### What if the issue belongs to another team?
 
-If you think the to-triage issue is not a DevTools issue, please simply set it to a component that you think it should belong to and potentially remove the DevTools component. Make sure that the status is set to Untriaged. Feel free to CC people that you think might help with triaging this.
+If you think the to-triage issue is not a DevTools issue, please simply set it to a component that you think it should belong to and potentially remove the DevTools component. Make sure that the status is set to Untriaged. Please also ensure that you add the label DevTools-Triaged to the bug to ensure that the bug does not come back to the DevTools component. Feel free to CC people that you think might help with triaging this.
 This essentially moves the issue out of the DevTools triage queue into another team’s queue.
 
 ### What if the issue is best handled by Microsoft?

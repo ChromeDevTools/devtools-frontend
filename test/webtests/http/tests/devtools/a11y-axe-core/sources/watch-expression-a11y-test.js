@@ -16,8 +16,8 @@
   TestRunner.addResult('Running the axe-core linter on the empty watch pane.');
   await AxeCoreTestRunner.runValidation(watchPane.contentElement);
 
-  const watchExpression = watchPane._createWatchExpression('2 + 2 === 5');
-  await TestRunner.addSnifferPromise(Sources.WatchExpression.prototype, '_createWatchExpression');
+  const watchExpression = watchPane.createWatchExpression('2 + 2 === 5');
+  await TestRunner.addSnifferPromise(Sources.WatchExpression.prototype, 'createWatchExpression');
 
   const watchExpressionElement = watchExpression.treeElement().listItemElement;
   TestRunner.addResult(`Watch expression text content: ${watchExpressionElement.deepTextContent()}`);

@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Formatter from '../../models/formatter/formatter.js';
@@ -33,12 +31,12 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let outlineQuickOpenInstance: OutlineQuickOpen;
 
 export class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
-  _items: Formatter.FormatterWorkerPool.OutlineItem[];
-  _active: boolean;
+  private items: Formatter.FormatterWorkerPool.OutlineItem[];
+  private active: boolean;
   private constructor() {
     super();
-    this._items = [];
-    this._active = false;
+    this.items = [];
+    this.active = false;
   }
 
   static instance(opts: {
@@ -53,33 +51,33 @@ export class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   }
 
   attach(): void {
-    this._items = [];
-    this._active = false;
+    this.items = [];
+    this.active = false;
 
-    const uiSourceCode = this._currentUISourceCode();
+    const uiSourceCode = this.currentUISourceCode();
     if (uiSourceCode) {
-      this._active = Formatter.FormatterWorkerPool.formatterWorkerPool().outlineForMimetype(
+      this.active = Formatter.FormatterWorkerPool.formatterWorkerPool().outlineForMimetype(
           uiSourceCode.workingCopy(), uiSourceCode.contentType().canonicalMimeType(),
-          this._didBuildOutlineChunk.bind(this));
+          this.didBuildOutlineChunk.bind(this));
     }
   }
 
-  _didBuildOutlineChunk(isLastChunk: boolean, items: Formatter.FormatterWorkerPool.OutlineItem[]): void {
-    this._items.push(...items);
+  private didBuildOutlineChunk(isLastChunk: boolean, items: Formatter.FormatterWorkerPool.OutlineItem[]): void {
+    this.items.push(...items);
     this.refresh();
   }
 
   itemCount(): number {
-    return this._items.length;
+    return this.items.length;
   }
 
   itemKeyAt(itemIndex: number): string {
-    const item = this._items[itemIndex];
+    const item = this.items[itemIndex];
     return item.title + (item.subtitle ? item.subtitle : '');
   }
 
   itemScoreAt(itemIndex: number, query: string): number {
-    const item = this._items[itemIndex];
+    const item = this.items[itemIndex];
     const methodName = query.split('(')[0];
     if (methodName.toLowerCase() === item.title.toLowerCase()) {
       return 1 / (1 + item.line);
@@ -88,7 +86,7 @@ export class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   }
 
   renderItem(itemIndex: number, query: string, titleElement: Element, subtitleElement: Element): void {
-    const item = this._items[itemIndex];
+    const item = this.items[itemIndex];
     titleElement.textContent = item.title + (item.subtitle ? item.subtitle : '');
     QuickOpen.FilteredListWidget.FilteredListWidget.highlightRanges(titleElement, query);
     subtitleElement.textContent = ':' + (item.line + 1);
@@ -98,17 +96,17 @@ export class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     if (itemIndex === null) {
       return;
     }
-    const uiSourceCode = this._currentUISourceCode();
+    const uiSourceCode = this.currentUISourceCode();
     if (!uiSourceCode) {
       return;
     }
-    const lineNumber = this._items[itemIndex].line;
+    const lineNumber = this.items[itemIndex].line;
     if (!isNaN(lineNumber) && lineNumber >= 0) {
-      Common.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, this._items[itemIndex].column));
+      Common.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, this.items[itemIndex].column));
     }
   }
 
-  _currentUISourceCode(): Workspace.UISourceCode.UISourceCode|null {
+  private currentUISourceCode(): Workspace.UISourceCode.UISourceCode|null {
     const sourcesView = UI.Context.Context.instance().flavor(SourcesView);
     if (!sourcesView) {
       return null;
@@ -117,10 +115,10 @@ export class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   }
 
   notFoundText(): string {
-    if (!this._currentUISourceCode()) {
+    if (!this.currentUISourceCode()) {
       return i18nString(UIStrings.noFileSelected);
     }
-    if (!this._active) {
+    if (!this.active) {
       return i18nString(UIStrings.openAJavascriptOrCssFileToSee);
     }
     return i18nString(UIStrings.noResultsFound);

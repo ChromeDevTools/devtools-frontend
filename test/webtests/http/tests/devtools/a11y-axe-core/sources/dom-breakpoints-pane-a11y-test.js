@@ -14,7 +14,7 @@
   TestRunner.addResult('Testing accessibility in the DOM breakpoints pane.');
 
   // Expand the DOM Breakpoints container
-  const domBreakpointContainer = UI.panels.sources._sidebarPaneStack._expandableContainers.get('sources.domBreakpoints');
+  const domBreakpointContainer = UI.panels.sources.sidebarPaneStack._expandableContainers.get('sources.domBreakpoints');
   await domBreakpointContainer._expand();
 
   TestRunner.addResult('Setting DOM breakpoints.');

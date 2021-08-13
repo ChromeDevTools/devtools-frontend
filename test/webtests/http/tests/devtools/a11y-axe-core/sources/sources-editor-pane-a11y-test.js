@@ -37,7 +37,7 @@
 
   async function runTest() {
     // Verify contents of the TabHeader to make sure files are open
-    const tabbedPane = UI.panels.sources._sourcesView._editorContainer._tabbedPane;
+    const tabbedPane = UI.panels.sources.sourcesView().editorContainer.tabbedPane;
     const tabs = tabbedPane._tabs;
     TestRunner.addResult('All tabs:');
     tabs.forEach(tab => TestRunner.addResult(tab.title));
@@ -48,7 +48,7 @@
 
   async function runA11yTest() {
     await UI.viewManager.showView('sources');
-    const element = UI.panels.sources._sourcesView.contentElement;
+    const element = UI.panels.sources.sourcesView().contentElement;
     await AxeCoreTestRunner.runValidation(element, NO_REQUIRED_CHILDREN_RULESET);
   }
 })();

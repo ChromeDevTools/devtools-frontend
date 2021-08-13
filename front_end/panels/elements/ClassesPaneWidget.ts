@@ -168,7 +168,7 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
     }
 
     this._classesContainer.removeChildren();
-    // @ts-ignore this._input is a div, not an input element. So this line makes no sense at all
+    // @ts-ignore this.input is a div, not an input element. So this line makes no sense at all
     this._input.disabled = !node;
 
     if (!node) {

@@ -28,45 +28,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 export class FilePathScoreFunction {
-  _query: string;
-  _queryUpperCase: string;
-  _score: Int32Array;
-  _sequence: Int32Array;
-  _dataUpperCase: string;
-  _fileNameIndex: number;
+  private query: string;
+  private readonly queryUpperCase: string;
+  private score: Int32Array;
+  private sequence: Int32Array;
+  private dataUpperCase: string;
+  private fileNameIndex: number;
 
   constructor(query: string) {
-    this._query = query;
-    this._queryUpperCase = query.toUpperCase();
-    this._score = new Int32Array(20 * 100);
-    this._sequence = new Int32Array(20 * 100);
-    this._dataUpperCase = '';
-    this._fileNameIndex = 0;
+    this.query = query;
+    this.queryUpperCase = query.toUpperCase();
+    this.score = new Int32Array(20 * 100);
+    this.sequence = new Int32Array(20 * 100);
+    this.dataUpperCase = '';
+    this.fileNameIndex = 0;
   }
 
   calculateScore(data: string, matchIndexes: number[]|null): number {
-    if (!data || !this._query) {
+    if (!data || !this.query) {
       return 0;
     }
-    const n = this._query.length;
+    const n = this.query.length;
     const m = data.length;
-    if (!this._score || this._score.length < n * m) {
-      this._score = new Int32Array(n * m * 2);
-      this._sequence = new Int32Array(n * m * 2);
+    if (!this.score || this.score.length < n * m) {
+      this.score = new Int32Array(n * m * 2);
+      this.sequence = new Int32Array(n * m * 2);
     }
-    const score = this._score;
-    const sequence = (this._sequence as Int32Array);
-    this._dataUpperCase = data.toUpperCase();
-    this._fileNameIndex = data.lastIndexOf('/');
+    const score = this.score;
+    const sequence = (this.sequence as Int32Array);
+    this.dataUpperCase = data.toUpperCase();
+    this.fileNameIndex = data.lastIndexOf('/');
     for (let i = 0; i < n; ++i) {
       for (let j = 0; j < m; ++j) {
         const skipCharScore = j === 0 ? 0 : score[i * m + j - 1];
         const prevCharScore = i === 0 || j === 0 ? 0 : score[(i - 1) * m + j - 1];
         const consecutiveMatch = i === 0 || j === 0 ? 0 : sequence[(i - 1) * m + j - 1];
-        const pickCharScore = this._match(this._query, data, i, j, consecutiveMatch);
+        const pickCharScore = this.match(this.query, data, i, j, consecutiveMatch);
         if (pickCharScore && prevCharScore + pickCharScore >= skipCharScore) {
           sequence[i * m + j] = consecutiveMatch + 1;
           score[i * m + j] = (prevCharScore + pickCharScore);
@@ -77,23 +75,23 @@ export class FilePathScoreFunction {
       }
     }
     if (matchIndexes) {
-      this._restoreMatchIndexes(sequence, n, m, matchIndexes);
+      this.restoreMatchIndexes(sequence, n, m, matchIndexes);
     }
     const maxDataLength = 256;
     return score[n * m - 1] * maxDataLength + (maxDataLength - data.length);
   }
 
-  _testWordStart(data: string, j: number): boolean {
+  private testWordStart(data: string, j: number): boolean {
     if (j === 0) {
       return true;
     }
 
     const prevChar = data.charAt(j - 1);
     return prevChar === '_' || prevChar === '-' || prevChar === '/' || prevChar === '.' || prevChar === ' ' ||
-        (data[j - 1] !== this._dataUpperCase[j - 1] && data[j] === this._dataUpperCase[j]);
+        (data[j - 1] !== this.dataUpperCase[j - 1] && data[j] === this.dataUpperCase[j]);
   }
 
-  _restoreMatchIndexes(sequence: Int32Array, n: number, m: number, out: number[]): void {
+  private restoreMatchIndexes(sequence: Int32Array, n: number, m: number, out: number[]): void {
     let i = n - 1, j = m - 1;
     while (i >= 0 && j >= 0) {
       switch (sequence[i * m + j]) {
@@ -110,11 +108,11 @@ export class FilePathScoreFunction {
     out.reverse();
   }
 
-  _singleCharScore(query: string, data: string, i: number, j: number): number {
-    const isWordStart = this._testWordStart(data, j);
-    const isFileName = j > this._fileNameIndex;
+  private singleCharScore(query: string, data: string, i: number, j: number): number {
+    const isWordStart = this.testWordStart(data, j);
+    const isFileName = j > this.fileNameIndex;
     const isPathTokenStart = j === 0 || data[j - 1] === '/';
-    const isCapsMatch = query[i] === data[j] && query[i] === this._queryUpperCase[i];
+    const isCapsMatch = query[i] === data[j] && query[i] === this.queryUpperCase[i];
     let score = 10;
     if (isPathTokenStart) {
       score += 4;
@@ -129,7 +127,7 @@ export class FilePathScoreFunction {
       score += 4;
     }
     // promote the case of making the whole match in the filename
-    if (j === this._fileNameIndex + 1 && i === 0) {
+    if (j === this.fileNameIndex + 1 && i === 0) {
       score += 5;
     }
     if (isFileName && isWordStart) {
@@ -138,8 +136,8 @@ export class FilePathScoreFunction {
     return score;
   }
 
-  _sequenceCharScore(query: string, data: string, i: number, j: number, sequenceLength: number): number {
-    const isFileName = j > this._fileNameIndex;
+  private sequenceCharScore(query: string, data: string, i: number, j: number, sequenceLength: number): number {
+    const isFileName = j > this.fileNameIndex;
     const isPathTokenStart = j === 0 || data[j - 1] === '/';
     let score = 10;
     if (isFileName) {
@@ -152,14 +150,14 @@ export class FilePathScoreFunction {
     return score;
   }
 
-  _match(query: string, data: string, i: number, j: number, consecutiveMatch: number): number {
-    if (this._queryUpperCase[i] !== this._dataUpperCase[j]) {
+  private match(query: string, data: string, i: number, j: number, consecutiveMatch: number): number {
+    if (this.queryUpperCase[i] !== this.dataUpperCase[j]) {
       return 0;
     }
 
     if (!consecutiveMatch) {
-      return this._singleCharScore(query, data, i, j);
+      return this.singleCharScore(query, data, i, j);
     }
-    return this._sequenceCharScore(query, data, i, j - consecutiveMatch, consecutiveMatch);
+    return this.sequenceCharScore(query, data, i, j - consecutiveMatch, consecutiveMatch);
   }
 }

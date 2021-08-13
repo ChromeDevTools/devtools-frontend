@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -101,29 +99,30 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export class DebuggerPausedMessage {
-  _element: HTMLDivElement;
-  _contentElement: HTMLElement;
+  private readonly elementInternal: HTMLDivElement;
+  private contentElement: HTMLElement;
   constructor() {
-    this._element = document.createElement('div');
-    this._element.classList.add('paused-message');
-    this._element.classList.add('flex-none');
+    this.elementInternal = document.createElement('div');
+    this.elementInternal.classList.add('paused-message');
+    this.elementInternal.classList.add('flex-none');
     const root = UI.Utils.createShadowRootWithCoreStyles(
-        this._element, {cssFile: 'panels/sources/debuggerPausedMessage.css', delegatesFocus: undefined});
-    this._contentElement = (root.createChild('div') as HTMLElement);
-    UI.ARIAUtils.markAsPoliteLiveRegion(this._element, false);
+        this.elementInternal, {cssFile: 'panels/sources/debuggerPausedMessage.css', delegatesFocus: undefined});
+    this.contentElement = (root.createChild('div') as HTMLElement);
+    UI.ARIAUtils.markAsPoliteLiveRegion(this.elementInternal, false);
   }
 
   element(): Element {
-    return this._element;
+    return this.elementInternal;
   }
 
-  static _descriptionWithoutStack(description: string): string {
+  private static descriptionWithoutStack(description: string): string {
     const firstCallFrame = /^\s+at\s/m.exec(description);
     return firstCallFrame ? description.substring(0, firstCallFrame.index - 1) :
                             description.substring(0, description.lastIndexOf('\n'));
   }
 
-  static async _createDOMBreakpointHitMessage(details: SDK.DebuggerModel.DebuggerPausedDetails): Promise<Element> {
+  private static async createDOMBreakpointHitMessage(details: SDK.DebuggerModel.DebuggerPausedDetails):
+      Promise<Element> {
     const messageWrapper = document.createElement('span');
     const domDebuggerModel = details.debuggerModel.target().model(SDK.DOMDebuggerModel.DOMDebuggerModel);
     if (!details.auxData || !domDebuggerModel) {
@@ -171,13 +170,13 @@ export class DebuggerPausedMessage {
       details: SDK.DebuggerModel.DebuggerPausedDetails|null,
       debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding,
       breakpointManager: Bindings.BreakpointManager.BreakpointManager): Promise<void> {
-    this._contentElement.removeChildren();
-    this._contentElement.hidden = !details;
+    this.contentElement.removeChildren();
+    this.contentElement.hidden = !details;
     if (!details) {
       return;
     }
 
-    const status = this._contentElement.createChild('div', 'paused-status');
+    const status = this.contentElement.createChild('div', 'paused-status');
 
     const errorLike = details.reason === Protocol.Debugger.PausedEventReason.Exception ||
         details.reason === Protocol.Debugger.PausedEventReason.PromiseRejection ||
@@ -185,7 +184,7 @@ export class DebuggerPausedMessage {
         details.reason === Protocol.Debugger.PausedEventReason.OOM;
     let messageWrapper;
     if (details.reason === Protocol.Debugger.PausedEventReason.DOM) {
-      messageWrapper = await DebuggerPausedMessage._createDOMBreakpointHitMessage(details);
+      messageWrapper = await DebuggerPausedMessage.createDOMBreakpointHitMessage(details);
     } else if (details.reason === Protocol.Debugger.PausedEventReason.EventListener) {
       let eventNameForUI = '';
       if (details.auxData) {
@@ -204,12 +203,12 @@ export class DebuggerPausedMessage {
     } else if (details.reason === Protocol.Debugger.PausedEventReason.Exception) {
       const auxData = (details.auxData as PausedDetailsAuxData);
       const description = auxData.description || auxData.value || '';
-      const descriptionWithoutStack = DebuggerPausedMessage._descriptionWithoutStack(description);
+      const descriptionWithoutStack = DebuggerPausedMessage.descriptionWithoutStack(description);
       messageWrapper = buildWrapper(i18nString(UIStrings.pausedOnException), descriptionWithoutStack, description);
     } else if (details.reason === Protocol.Debugger.PausedEventReason.PromiseRejection) {
       const auxData = (details.auxData as PausedDetailsAuxData);
       const description = auxData.description || auxData.value || '';
-      const descriptionWithoutStack = DebuggerPausedMessage._descriptionWithoutStack(description);
+      const descriptionWithoutStack = DebuggerPausedMessage.descriptionWithoutStack(description);
       messageWrapper =
           buildWrapper(i18nString(UIStrings.pausedOnPromiseRejection), descriptionWithoutStack, description);
     } else if (details.reason === Protocol.Debugger.PausedEventReason.Assert) {

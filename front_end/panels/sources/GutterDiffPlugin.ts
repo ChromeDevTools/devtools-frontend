@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Persistence from '../../models/persistence/persistence.js';
@@ -25,30 +23,30 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/GutterDiffPlugin.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class GutterDiffPlugin extends Plugin {
-  _textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor;
-  _uiSourceCode: Workspace.UISourceCode.UISourceCode;
-  _decorations: GutterDecoration[];
-  _workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
+  private readonly textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor;
+  private readonly uiSourceCode: Workspace.UISourceCode.UISourceCode;
+  private decorations: GutterDecoration[];
+  private readonly workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
 
   constructor(
       textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor, uiSourceCode: Workspace.UISourceCode.UISourceCode) {
     super();
-    this._textEditor = textEditor;
-    this._uiSourceCode = uiSourceCode;
+    this.textEditor = textEditor;
+    this.uiSourceCode = uiSourceCode;
 
-    this._decorations = [];
-    this._textEditor.installGutter(DiffGutterType, true);
-    this._workspaceDiff = WorkspaceDiff.WorkspaceDiff.workspaceDiff();
-    this._workspaceDiff.subscribeToDiffChange(this._uiSourceCode, this._update, this);
-    this._update();
+    this.decorations = [];
+    this.textEditor.installGutter(DiffGutterType, true);
+    this.workspaceDiff = WorkspaceDiff.WorkspaceDiff.workspaceDiff();
+    this.workspaceDiff.subscribeToDiffChange(this.uiSourceCode, this.update, this);
+    this.update();
   }
 
   static accepts(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
     return uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Network;
   }
 
-  _updateDecorations(removed: GutterDecoration[], added: GutterDecoration[]): void {
-    this._textEditor.operation(operation);
+  private updateDecorations(removed: GutterDecoration[], added: GutterDecoration[]): void {
+    this.textEditor.operation(operation);
 
     function operation(): void {
       for (const decoration of removed) {
@@ -60,18 +58,18 @@ export class GutterDiffPlugin extends Plugin {
     }
   }
 
-  _update(): void {
-    if (this._uiSourceCode) {
-      this._workspaceDiff.requestDiff(this._uiSourceCode).then(this._innerUpdate.bind(this));
+  private update(): void {
+    if (this.uiSourceCode) {
+      this.workspaceDiff.requestDiff(this.uiSourceCode).then(this.innerUpdate.bind(this));
     } else {
-      this._innerUpdate(null);
+      this.innerUpdate(null);
     }
   }
 
-  _innerUpdate(lineDiff: Diff.Diff.DiffArray|null): void {
+  private innerUpdate(lineDiff: Diff.Diff.DiffArray|null): void {
     if (!lineDiff) {
-      this._updateDecorations(this._decorations, []);
-      this._decorations = [];
+      this.updateDecorations(this.decorations, []);
+      this.decorations = [];
       return;
     }
 
@@ -88,18 +86,18 @@ export class GutterDiffPlugin extends Plugin {
       }
     }
 
-    const decorationDiff = this._calculateDecorationsDiff(newDecorations);
+    const decorationDiff = this.calculateDecorationsDiff(newDecorations);
     const addedDecorations =
-        decorationDiff.added.map(entry => new GutterDecoration(this._textEditor, entry.lineNumber, entry.type));
+        decorationDiff.added.map(entry => new GutterDecoration(this.textEditor, entry.lineNumber, entry.type));
 
-    this._decorations = decorationDiff.equal.concat(addedDecorations);
-    this._updateDecorations(decorationDiff.removed, addedDecorations);
-    this._decorationsSetForTest(newDecorations);
+    this.decorations = decorationDiff.equal.concat(addedDecorations);
+    this.updateDecorations(decorationDiff.removed, addedDecorations);
+    this.decorationsSetForTest(newDecorations);
   }
 
-  _decorationsByLine(): Map<number, GutterDecoration> {
+  private decorationsByLine(): Map<number, GutterDecoration> {
     const decorations = new Map<number, GutterDecoration>();
-    for (const decoration of this._decorations) {
+    for (const decoration of this.decorations) {
       const lineNumber = decoration.lineNumber();
       if (lineNumber !== -1) {
         decorations.set(lineNumber, decoration);
@@ -108,7 +106,7 @@ export class GutterDiffPlugin extends Plugin {
     return decorations;
   }
 
-  _calculateDecorationsDiff(decorations: Map<number, {
+  private calculateDecorationsDiff(decorations: Map<number, {
     lineNumber: number,
     type: SourceFrame.SourceCodeDiff.EditType,
   }>): {
@@ -119,7 +117,7 @@ export class GutterDiffPlugin extends Plugin {
     removed: GutterDecoration[],
     equal: GutterDecoration[],
   } {
-    const oldDecorations = this._decorationsByLine();
+    const oldDecorations = this.decorationsByLine();
     const leftKeys = [...oldDecorations.keys()];
     const rightKeys = [...decorations.keys()];
     leftKeys.sort((a, b) => a - b);
@@ -172,22 +170,22 @@ export class GutterDiffPlugin extends Plugin {
     return {added: added, removed: removed, equal: equal};
   }
 
-  _decorationsSetForTest(_decorations: Map<number, {
+  private decorationsSetForTest(_decorations: Map<number, {
     lineNumber: number,
     type: SourceFrame.SourceCodeDiff.EditType,
   }>): void {
   }
 
   async populateLineGutterContextMenu(contextMenu: UI.ContextMenu.ContextMenu, _lineNumber: number): Promise<void> {
-    GutterDiffPlugin._appendRevealDiffContextMenu(contextMenu, this._uiSourceCode);
+    GutterDiffPlugin.appendRevealDiffContextMenu(contextMenu, this.uiSourceCode);
   }
 
   async populateTextAreaContextMenu(
       contextMenu: UI.ContextMenu.ContextMenu, _lineNumber: number, _columnNumber: number): Promise<void> {
-    GutterDiffPlugin._appendRevealDiffContextMenu(contextMenu, this._uiSourceCode);
+    GutterDiffPlugin.appendRevealDiffContextMenu(contextMenu, this.uiSourceCode);
   }
 
-  static _appendRevealDiffContextMenu(
+  static appendRevealDiffContextMenu(
       contextMenu: UI.ContextMenu.ContextMenu, uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     if (!WorkspaceDiff.WorkspaceDiff.workspaceDiff().isUISourceCodeModified(uiSourceCode)) {
       return;
@@ -198,37 +196,37 @@ export class GutterDiffPlugin extends Plugin {
   }
 
   dispose(): void {
-    for (const decoration of this._decorations) {
+    for (const decoration of this.decorations) {
       decoration.remove();
     }
-    WorkspaceDiff.WorkspaceDiff.workspaceDiff().unsubscribeFromDiffChange(this._uiSourceCode, this._update, this);
+    WorkspaceDiff.WorkspaceDiff.workspaceDiff().unsubscribeFromDiffChange(this.uiSourceCode, this.update, this);
   }
 }
 
 export class GutterDecoration {
-  _textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor;
-  _position: TextEditor.CodeMirrorTextEditor.TextEditorPositionHandle;
-  _className: string;
+  private readonly textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor;
+  private readonly position: TextEditor.CodeMirrorTextEditor.TextEditorPositionHandle;
+  private readonly className: string;
   type: SourceFrame.SourceCodeDiff.EditType;
 
   constructor(
       textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor, lineNumber: number,
       type: SourceFrame.SourceCodeDiff.EditType) {
-    this._textEditor = textEditor;
-    this._position = this._textEditor.textEditorPositionHandle(lineNumber, 0);
-    this._className = '';
+    this.textEditor = textEditor;
+    this.position = this.textEditor.textEditorPositionHandle(lineNumber, 0);
+    this.className = '';
     if (type === SourceFrame.SourceCodeDiff.EditType.Insert) {
-      this._className = 'diff-entry-insert';
+      this.className = 'diff-entry-insert';
     } else if (type === SourceFrame.SourceCodeDiff.EditType.Delete) {
-      this._className = 'diff-entry-delete';
+      this.className = 'diff-entry-delete';
     } else if (type === SourceFrame.SourceCodeDiff.EditType.Modify) {
-      this._className = 'diff-entry-modify';
+      this.className = 'diff-entry-modify';
     }
     this.type = type;
   }
 
   lineNumber(): number {
-    const location = this._position.resolve();
+    const location = this.position.resolve();
     if (!location) {
       return -1;
     }
@@ -236,24 +234,24 @@ export class GutterDecoration {
   }
 
   install(): void {
-    const location = this._position.resolve();
+    const location = this.position.resolve();
     if (!location) {
       return;
     }
     const element = document.createElement('div');
     element.classList.add('diff-marker');
     element.textContent = '\xA0';
-    this._textEditor.setGutterDecoration(location.lineNumber, DiffGutterType, element);
-    this._textEditor.toggleLineClass(location.lineNumber, this._className, true);
+    this.textEditor.setGutterDecoration(location.lineNumber, DiffGutterType, element);
+    this.textEditor.toggleLineClass(location.lineNumber, this.className, true);
   }
 
   remove(): void {
-    const location = this._position.resolve();
+    const location = this.position.resolve();
     if (!location) {
       return;
     }
-    this._textEditor.setGutterDecoration(location.lineNumber, DiffGutterType, null);
-    this._textEditor.toggleLineClass(location.lineNumber, this._className, false);
+    this.textEditor.setGutterDecoration(location.lineNumber, DiffGutterType, null);
+    this.textEditor.toggleLineClass(location.lineNumber, this.className, false);
   }
 }
 
@@ -279,6 +277,6 @@ export class ContextMenuProvider implements UI.ContextMenu.Provider {
     if (binding) {
       uiSourceCode = binding.network;
     }
-    GutterDiffPlugin._appendRevealDiffContextMenu(contextMenu, uiSourceCode);
+    GutterDiffPlugin.appendRevealDiffContextMenu(contextMenu, uiSourceCode);
   }
 }

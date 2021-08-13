@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
@@ -70,11 +68,11 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   }
 
   selectItem(itemIndex: number|null, promptValue: string): void {
-    const uiSourceCode = this._currentUISourceCode();
+    const uiSourceCode = this.currentUISourceCode();
     if (!uiSourceCode) {
       return;
     }
-    const position = this._parsePosition(promptValue);
+    const position = this.parsePosition(promptValue);
     if (!position) {
       return;
     }
@@ -82,11 +80,11 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   }
 
   notFoundText(query: string): string {
-    if (!this._currentUISourceCode()) {
+    if (!this.currentUISourceCode()) {
       return i18nString(UIStrings.noFileSelected);
     }
-    const position = this._parsePosition(query);
-    const sourceFrame = this._currentSourceFrame();
+    const position = this.parsePosition(query);
+    const sourceFrame = this.currentSourceFrame();
     if (!position) {
       if (!sourceFrame) {
         return i18nString(UIStrings.typeANumberToGoToThatLine);
@@ -116,11 +114,11 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     return i18nString(UIStrings.goToLineS, {PH1: position.line});
   }
 
-  _parsePosition(query: string): {
+  private parsePosition(query: string): {
     line: number,
     column: number,
   }|null {
-    const sourceFrame = this._currentSourceFrame();
+    const sourceFrame = this.currentSourceFrame();
     if (sourceFrame && sourceFrame.wasmDisassembly) {
       const parts = query.match(/0x([0-9a-fA-F]+)/);
       if (!parts || !parts[0] || parts[0].length !== query.length) {
@@ -143,7 +141,7 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     return {line: Math.max(line | 0, 1), column: Math.max(column | 0, 1)};
   }
 
-  _currentUISourceCode(): Workspace.UISourceCode.UISourceCode|null {
+  private currentUISourceCode(): Workspace.UISourceCode.UISourceCode|null {
     const sourcesView = UI.Context.Context.instance().flavor(SourcesView);
     if (!sourcesView) {
       return null;
@@ -151,7 +149,7 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     return sourcesView.currentUISourceCode();
   }
 
-  _currentSourceFrame(): UISourceCodeFrame|null {
+  private currentSourceFrame(): UISourceCodeFrame|null {
     const sourcesView = UI.Context.Context.instance().flavor(SourcesView);
     if (!sourcesView) {
       return null;

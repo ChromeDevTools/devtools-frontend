@@ -27,8 +27,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -89,55 +87,55 @@ let callstackSidebarPaneInstance: CallStackSidebarPane;
 
 export class CallStackSidebarPane extends UI.View.SimpleView implements UI.ContextFlavorListener.ContextFlavorListener,
                                                                         UI.ListControl.ListDelegate<Item> {
-  _ignoreListMessageElement: Element;
-  _notPausedMessageElement: HTMLElement;
-  _items: UI.ListModel.ListModel<Item>;
-  _list: UI.ListControl.ListControl<Item>;
-  _showMoreMessageElement: Element;
-  _showIgnoreListed: boolean;
-  _locationPool: Bindings.LiveLocation.LiveLocationPool;
-  _updateThrottler: Common.Throttler.Throttler;
-  _maxAsyncStackChainDepth: number;
-  _updateItemThrottler: Common.Throttler.Throttler;
-  _scheduledForUpdateItems: Set<Item>;
-  _muteActivateItem?: boolean;
+  private readonly ignoreListMessageElement: Element;
+  private readonly notPausedMessageElement: HTMLElement;
+  private readonly items: UI.ListModel.ListModel<Item>;
+  private list: UI.ListControl.ListControl<Item>;
+  private readonly showMoreMessageElement: Element;
+  private showIgnoreListed: boolean;
+  private readonly locationPool: Bindings.LiveLocation.LiveLocationPool;
+  private readonly updateThrottler: Common.Throttler.Throttler;
+  private maxAsyncStackChainDepth: number;
+  private readonly updateItemThrottler: Common.Throttler.Throttler;
+  private readonly scheduledForUpdateItems: Set<Item>;
+  private muteActivateItem?: boolean;
 
   private constructor() {
     super(i18nString(UIStrings.callStack), true);
     this.registerRequiredCSS('panels/sources/callStackSidebarPane.css');
 
-    this._ignoreListMessageElement = this._createIgnoreListMessageElement();
-    this.contentElement.appendChild(this._ignoreListMessageElement);
+    this.ignoreListMessageElement = this.createIgnoreListMessageElement();
+    this.contentElement.appendChild(this.ignoreListMessageElement);
 
-    this._notPausedMessageElement = this.contentElement.createChild('div', 'gray-info-message');
-    this._notPausedMessageElement.textContent = i18nString(UIStrings.notPaused);
-    this._notPausedMessageElement.tabIndex = -1;
+    this.notPausedMessageElement = this.contentElement.createChild('div', 'gray-info-message');
+    this.notPausedMessageElement.textContent = i18nString(UIStrings.notPaused);
+    this.notPausedMessageElement.tabIndex = -1;
 
-    this._items = new UI.ListModel.ListModel();
-    this._list = new UI.ListControl.ListControl(this._items, this, UI.ListControl.ListMode.NonViewport);
-    this.contentElement.appendChild(this._list.element);
-    this._list.element.addEventListener('contextmenu', this._onContextMenu.bind(this), false);
-    self.onInvokeElement(this._list.element, event => {
-      const item = this._list.itemForNode((event.target as Node | null));
+    this.items = new UI.ListModel.ListModel();
+    this.list = new UI.ListControl.ListControl(this.items, this, UI.ListControl.ListMode.NonViewport);
+    this.contentElement.appendChild(this.list.element);
+    this.list.element.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
+    self.onInvokeElement(this.list.element, event => {
+      const item = this.list.itemForNode((event.target as Node | null));
       if (item) {
-        this._activateItem(item);
+        this.activateItem(item);
         event.consume(true);
       }
     });
 
-    this._showMoreMessageElement = this._createShowMoreMessageElement();
-    this._showMoreMessageElement.classList.add('hidden');
-    this.contentElement.appendChild(this._showMoreMessageElement);
+    this.showMoreMessageElement = this.createShowMoreMessageElement();
+    this.showMoreMessageElement.classList.add('hidden');
+    this.contentElement.appendChild(this.showMoreMessageElement);
 
-    this._showIgnoreListed = false;
-    this._locationPool = new Bindings.LiveLocation.LiveLocationPool();
+    this.showIgnoreListed = false;
+    this.locationPool = new Bindings.LiveLocation.LiveLocationPool();
 
-    this._updateThrottler = new Common.Throttler.Throttler(100);
-    this._maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
-    this._update();
+    this.updateThrottler = new Common.Throttler.Throttler(100);
+    this.maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
+    this.update();
 
-    this._updateItemThrottler = new Common.Throttler.Throttler(100);
-    this._scheduledForUpdateItems = new Set();
+    this.updateItemThrottler = new Common.Throttler.Throttler(100);
+    this.scheduledForUpdateItems = new Set();
   }
 
   static instance(opts: {
@@ -152,35 +150,35 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
   }
 
   flavorChanged(_object: Object|null): void {
-    this._showIgnoreListed = false;
-    this._maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
-    this._update();
+    this.showIgnoreListed = false;
+    this.maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
+    this.update();
   }
 
-  _update(): void {
-    this._updateThrottler.schedule(() => this._doUpdate());
+  private update(): void {
+    this.updateThrottler.schedule(() => this.doUpdate());
   }
 
-  async _doUpdate(): Promise<void> {
-    this._locationPool.disposeAll();
+  private async doUpdate(): Promise<void> {
+    this.locationPool.disposeAll();
 
     const details = UI.Context.Context.instance().flavor(SDK.DebuggerModel.DebuggerPausedDetails);
     if (!details) {
-      this._notPausedMessageElement.classList.remove('hidden');
-      this._ignoreListMessageElement.classList.add('hidden');
-      this._showMoreMessageElement.classList.add('hidden');
-      this._items.replaceAll([]);
+      this.notPausedMessageElement.classList.remove('hidden');
+      this.ignoreListMessageElement.classList.add('hidden');
+      this.showMoreMessageElement.classList.add('hidden');
+      this.items.replaceAll([]);
       UI.Context.Context.instance().setFlavor(SDK.DebuggerModel.CallFrame, null);
       return;
     }
 
     let debuggerModel: SDK.DebuggerModel.DebuggerModel|null = details.debuggerModel;
-    this._notPausedMessageElement.classList.add('hidden');
+    this.notPausedMessageElement.classList.add('hidden');
 
     const itemPromises = [];
     for (const frame of details.callFrames) {
       const itemPromise =
-          Item.createForDebuggerCallFrame(frame, this._locationPool, this._refreshItem.bind(this)).then(item => {
+          Item.createForDebuggerCallFrame(frame, this.locationPool, this.refreshItem.bind(this)).then(item => {
             itemToCallFrame.set(item, frame);
             return item;
           });
@@ -196,7 +194,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
       asyncStackTrace = debuggerModel ? await debuggerModel.fetchAsyncStackTrace(details.asyncStackTraceId) : null;
     }
     let previousStackTrace: Protocol.Runtime.CallFrame[]|SDK.DebuggerModel.CallFrame[] = details.callFrames;
-    let maxAsyncStackChainDepth = this._maxAsyncStackChainDepth;
+    let maxAsyncStackChainDepth = this.maxAsyncStackChainDepth;
     while (asyncStackTrace && maxAsyncStackChainDepth > 0) {
       let title = '';
       const isAwait = asyncStackTrace.description === 'async function';
@@ -209,7 +207,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
       }
 
       items.push(...await Item.createItemsForAsyncStack(
-          title, debuggerModel, asyncStackTrace.callFrames, this._locationPool, this._refreshItem.bind(this)));
+          title, debuggerModel, asyncStackTrace.callFrames, this.locationPool, this.refreshItem.bind(this)));
 
       --maxAsyncStackChainDepth;
       previousStackTrace = asyncStackTrace.callFrames;
@@ -224,47 +222,47 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
         asyncStackTrace = null;
       }
     }
-    this._showMoreMessageElement.classList.toggle('hidden', !asyncStackTrace);
-    this._items.replaceAll(items);
-    if (this._maxAsyncStackChainDepth === defaultMaxAsyncStackChainDepth) {
-      this._list.selectNextItem(true /* canWrap */, false /* center */);
-      const selectedItem = this._list.selectedItem();
+    this.showMoreMessageElement.classList.toggle('hidden', !asyncStackTrace);
+    this.items.replaceAll(items);
+    if (this.maxAsyncStackChainDepth === defaultMaxAsyncStackChainDepth) {
+      this.list.selectNextItem(true /* canWrap */, false /* center */);
+      const selectedItem = this.list.selectedItem();
       if (selectedItem) {
-        this._activateItem(selectedItem);
+        this.activateItem(selectedItem);
       }
     }
-    this._updatedForTest();
+    this.updatedForTest();
   }
 
-  _updatedForTest(): void {
+  private updatedForTest(): void {
   }
 
-  _refreshItem(item: Item): void {
-    this._scheduledForUpdateItems.add(item);
-    this._updateItemThrottler.schedule(async () => {
-      const items = Array.from(this._scheduledForUpdateItems);
-      this._scheduledForUpdateItems.clear();
+  private refreshItem(item: Item): void {
+    this.scheduledForUpdateItems.add(item);
+    this.updateItemThrottler.schedule(async () => {
+      const items = Array.from(this.scheduledForUpdateItems);
+      this.scheduledForUpdateItems.clear();
 
-      this._muteActivateItem = true;
-      if (!this._showIgnoreListed && this._items.every(item => item.isIgnoreListed)) {
-        this._showIgnoreListed = true;
-        for (let i = 0; i < this._items.length; ++i) {
-          this._list.refreshItemByIndex(i);
+      this.muteActivateItem = true;
+      if (!this.showIgnoreListed && this.items.every(item => item.isIgnoreListed)) {
+        this.showIgnoreListed = true;
+        for (let i = 0; i < this.items.length; ++i) {
+          this.list.refreshItemByIndex(i);
         }
-        this._ignoreListMessageElement.classList.toggle('hidden', true);
+        this.ignoreListMessageElement.classList.toggle('hidden', true);
       } else {
         const itemsSet = new Set<Item>(items);
         let hasIgnoreListed = false;
-        for (let i = 0; i < this._items.length; ++i) {
-          const item = this._items.at(i);
+        for (let i = 0; i < this.items.length; ++i) {
+          const item = this.items.at(i);
           if (itemsSet.has(item)) {
-            this._list.refreshItemByIndex(i);
+            this.list.refreshItemByIndex(i);
           }
           hasIgnoreListed = hasIgnoreListed || item.isIgnoreListed;
         }
-        this._ignoreListMessageElement.classList.toggle('hidden', this._showIgnoreListed || !hasIgnoreListed);
+        this.ignoreListMessageElement.classList.toggle('hidden', this.showIgnoreListed || !hasIgnoreListed);
       }
-      delete this._muteActivateItem;
+      delete this.muteActivateItem;
     });
   }
 
@@ -294,9 +292,9 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
 
     element.classList.toggle('selected', isSelected);
     UI.ARIAUtils.setSelected(element, isSelected);
-    element.classList.toggle('hidden', !this._showIgnoreListed && item.isIgnoreListed);
+    element.classList.toggle('hidden', !this.showIgnoreListed && item.isIgnoreListed);
     element.appendChild(UI.Icon.Icon.create('smallicon-thick-right-arrow', 'selected-call-frame-icon'));
-    element.tabIndex = item === this._list.selectedItem() ? 0 : -1;
+    element.tabIndex = item === this.list.selectedItem() ? 0 : -1;
 
     if (callframe && callframe.warnings.length) {
       const icon = UI.Icon.Icon.create('smallicon-warning', 'call-frame-warning-icon');
@@ -333,7 +331,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     return true;
   }
 
-  _createIgnoreListMessageElement(): Element {
+  private createIgnoreListMessageElement(): Element {
     const element = document.createElement('div');
     element.classList.add('ignore-listed-message');
     element.createChild('span');
@@ -342,65 +340,65 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     UI.ARIAUtils.markAsLink(showAllLink);
     showAllLink.tabIndex = 0;
     const showAll = (): void => {
-      this._showIgnoreListed = true;
-      for (const item of this._items) {
-        this._refreshItem(item);
+      this.showIgnoreListed = true;
+      for (const item of this.items) {
+        this.refreshItem(item);
       }
-      this._ignoreListMessageElement.classList.toggle('hidden', true);
+      this.ignoreListMessageElement.classList.toggle('hidden', true);
     };
     showAllLink.addEventListener('click', showAll);
     showAllLink.addEventListener('keydown', event => event.key === 'Enter' && showAll());
     return element;
   }
 
-  _createShowMoreMessageElement(): Element {
+  private createShowMoreMessageElement(): Element {
     const element = document.createElement('div');
     element.classList.add('show-more-message');
     element.createChild('span');
     const showAllLink = element.createChild('span', 'link');
     showAllLink.textContent = i18nString(UIStrings.showMore);
     showAllLink.addEventListener('click', () => {
-      this._maxAsyncStackChainDepth += defaultMaxAsyncStackChainDepth;
-      this._update();
+      this.maxAsyncStackChainDepth += defaultMaxAsyncStackChainDepth;
+      this.update();
     }, false);
     return element;
   }
 
-  _onContextMenu(event: Event): void {
-    const item = this._list.itemForNode((event.target as Node | null));
+  private onContextMenu(event: Event): void {
+    const item = this.list.itemForNode((event.target as Node | null));
     if (!item) {
       return;
     }
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.defaultSection().appendItem(i18nString(UIStrings.copyStackTrace), this._copyStackTrace.bind(this));
+    contextMenu.defaultSection().appendItem(i18nString(UIStrings.copyStackTrace), this.copyStackTrace.bind(this));
     if (item.uiLocation) {
       this.appendIgnoreListURLContextMenuItems(contextMenu, item.uiLocation.uiSourceCode);
     }
     contextMenu.show();
   }
 
-  _onClick(event: Event): void {
-    const item = this._list.itemForNode((event.target as Node | null));
+  private onClick(event: Event): void {
+    const item = this.list.itemForNode((event.target as Node | null));
     if (item) {
-      this._activateItem(item);
+      this.activateItem(item);
     }
   }
 
-  _activateItem(item: Item): void {
+  private activateItem(item: Item): void {
     const uiLocation = item.uiLocation;
-    if (this._muteActivateItem || !uiLocation) {
+    if (this.muteActivateItem || !uiLocation) {
       return;
     }
-    this._list.selectItem(item);
+    this.list.selectItem(item);
     const debuggerCallFrame = itemToCallFrame.get(item);
     const oldItem = this.activeCallFrameItem();
     if (debuggerCallFrame && oldItem !== item) {
       debuggerCallFrame.debuggerModel.setSelectedCallFrame(debuggerCallFrame);
       UI.Context.Context.instance().setFlavor(SDK.DebuggerModel.CallFrame, debuggerCallFrame);
       if (oldItem) {
-        this._refreshItem(oldItem);
+        this.refreshItem(oldItem);
       }
-      this._refreshItem(item);
+      this.refreshItem(item);
     } else {
       Common.Revealer.reveal(uiLocation);
     }
@@ -409,7 +407,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
   activeCallFrameItem(): Item|null {
     const callFrame = UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame);
     if (callFrame) {
-      return this._items.find(callFrameItem => itemToCallFrame.get(callFrameItem) === callFrame) || null;
+      return this.items.find(callFrameItem => itemToCallFrame.get(callFrameItem) === callFrame) || null;
     }
     return null;
   }
@@ -450,33 +448,33 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     }
   }
 
-  _selectNextCallFrameOnStack(): void {
+  selectNextCallFrameOnStack(): void {
     const oldItem = this.activeCallFrameItem();
-    const startIndex = oldItem ? this._items.indexOf(oldItem) + 1 : 0;
-    for (let i = startIndex; i < this._items.length; i++) {
-      const newItem = this._items.at(i);
+    const startIndex = oldItem ? this.items.indexOf(oldItem) + 1 : 0;
+    for (let i = startIndex; i < this.items.length; i++) {
+      const newItem = this.items.at(i);
       if (itemToCallFrame.has(newItem)) {
-        this._activateItem(newItem);
+        this.activateItem(newItem);
         break;
       }
     }
   }
 
-  _selectPreviousCallFrameOnStack(): void {
+  selectPreviousCallFrameOnStack(): void {
     const oldItem = this.activeCallFrameItem();
-    const startIndex = oldItem ? this._items.indexOf(oldItem) - 1 : this._items.length - 1;
+    const startIndex = oldItem ? this.items.indexOf(oldItem) - 1 : this.items.length - 1;
     for (let i = startIndex; i >= 0; i--) {
-      const newItem = this._items.at(i);
+      const newItem = this.items.at(i);
       if (itemToCallFrame.has(newItem)) {
-        this._activateItem(newItem);
+        this.activateItem(newItem);
         break;
       }
     }
   }
 
-  _copyStackTrace(): void {
+  private copyStackTrace(): void {
     const text = [];
-    for (const item of this._items) {
+    for (const item of this.items) {
       let itemText = item.title;
       if (item.uiLocation) {
         itemText += ' (' + item.uiLocation.linkText(true /* skipTrim */) + ')';
@@ -508,10 +506,10 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   handleAction(context: UI.Context.Context, actionId: string): boolean {
     switch (actionId) {
       case 'debugger.next-call-frame':
-        CallStackSidebarPane.instance()._selectNextCallFrameOnStack();
+        CallStackSidebarPane.instance().selectNextCallFrameOnStack();
         return true;
       case 'debugger.previous-call-frame':
-        CallStackSidebarPane.instance()._selectPreviousCallFrameOnStack();
+        CallStackSidebarPane.instance().selectPreviousCallFrameOnStack();
         return true;
     }
     return false;
@@ -531,7 +529,7 @@ export class Item {
       updateDelegate: (arg0: Item) => void): Promise<Item> {
     const item = new Item(UI.UIUtils.beautifyFunctionName(frame.functionName), updateDelegate);
     await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createCallFrameLiveLocation(
-        frame.location(), item._update.bind(item), locationPool);
+        frame.location(), item.update.bind(item), locationPool);
     return item;
   }
 
@@ -556,7 +554,7 @@ export class Item {
       } else {
         liveLocationPromises.push(
             Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createCallFrameLiveLocation(
-                rawLocation, item._update.bind(item), locationPool));
+                rawLocation, item.update.bind(item), locationPool));
       }
       asyncFrameItems.push(item);
     }
@@ -595,7 +593,7 @@ export class Item {
     this.updateDelegate = updateDelegate;
   }
 
-  async _update(liveLocation: Bindings.LiveLocation.LiveLocation): Promise<void> {
+  private async update(liveLocation: Bindings.LiveLocation.LiveLocation): Promise<void> {
     const uiLocation = await liveLocation.uiLocation();
     this.isIgnoreListed = await liveLocation.isIgnoreListed();
     this.linkText = uiLocation ? uiLocation.linkText() : '';

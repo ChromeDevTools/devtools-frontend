@@ -61,7 +61,8 @@ export class ChangesSidebar extends UI.Widget.Widget {
     this.dispatchEventToListeners(Events.SelectedUISourceCodeChanged);
   }
 
-  private uiSourceCodeMofiedStatusChanged(event: Common.EventTarget.EventTargetEvent): void {
+  private uiSourceCodeMofiedStatusChanged(
+      event: Common.EventTarget.EventTargetEvent<WorkspaceDiff.WorkspaceDiff.ModifiedStatusChangedEvent>): void {
     if (event.data.isModified) {
       this.addUISourceCode(event.data.uiSourceCode);
     } else {

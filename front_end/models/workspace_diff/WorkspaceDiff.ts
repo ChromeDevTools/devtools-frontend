@@ -264,6 +264,16 @@ export enum Events {
   ModifiedStatusChanged = 'ModifiedStatusChanged',
 }
 
+export interface ModifiedStatusChangedEvent {
+  uiSourceCode: Workspace.UISourceCode.UISourceCode;
+  isModified: boolean;
+}
+
+export type EventTypes = {
+  [Events.DiffChanged]: void,
+  [Events.ModifiedStatusChanged]: ModifiedStatusChangedEvent,
+};
+
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
 // eslint-disable-next-line @typescript-eslint/naming-convention
 let _instance: WorkspaceDiffImpl|null = null;

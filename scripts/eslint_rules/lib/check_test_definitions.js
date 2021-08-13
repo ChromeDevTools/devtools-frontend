@@ -39,7 +39,7 @@ module.exports = {
           'Skipped tests must have a CRBug included in the description: `it.skip(\'[crbug.com/BUGID]: testname\', async() => {})',
       extraBugId:
           'Non-skipped tests cannot include a CRBug tag at the beginning of the description: `it.skip(\'testname (crbug.com/BUGID)\', async() => {})',
-      comment: 'A skipped test must have an attached comment with an explanation'
+      comment: 'A skipped test must have an attached comment with an explanation written before the test'
     },
     fixable: 'code',
     schema: []  // no options

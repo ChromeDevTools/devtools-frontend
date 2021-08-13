@@ -9,6 +9,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Timeline from '../timeline/timeline.js';
+import inputTimelineStyles from './inputTimeline.css.js';
 
 import {InputModel} from './InputModel.js';
 
@@ -47,7 +48,6 @@ export class InputTimeline extends UI.Widget.VBox implements Timeline.TimelineLo
 
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/input//inputTimeline.css');
     this.element.classList.add('inputs-timeline');
 
     this.tracingClient = null;
@@ -116,6 +116,8 @@ export class InputTimeline extends UI.Widget.VBox implements Timeline.TimelineLo
   }
 
   wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([inputTimelineStyles]);
   }
 
   willHide(): void {

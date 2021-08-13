@@ -72,20 +72,20 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/application/ServiceWorkerCacheViews.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ServiceWorkerCacheView extends UI.View.SimpleView {
-  _model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel;
-  _entriesForTest: Protocol.CacheStorage.DataEntry[]|null;
-  _splitWidget: UI.SplitWidget.SplitWidget;
-  _previewPanel: UI.Widget.VBox;
-  _preview: UI.Widget.Widget|null;
-  _cache: SDK.ServiceWorkerCacheModel.Cache;
-  _dataGrid: DataGrid.DataGrid.DataGridImpl<DataGridNode>|null;
-  _refreshThrottler: Common.Throttler.Throttler;
-  _refreshButton: UI.Toolbar.ToolbarButton;
-  _deleteSelectedButton: UI.Toolbar.ToolbarButton;
-  _entryPathFilter: string;
-  _returnCount: number|null;
-  _summaryBarElement: Element|null;
-  _loadingPromise: Promise<{
+  private model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel;
+  private entriesForTest: Protocol.CacheStorage.DataEntry[]|null;
+  private readonly splitWidget: UI.SplitWidget.SplitWidget;
+  private readonly previewPanel: UI.Widget.VBox;
+  private preview: UI.Widget.Widget|null;
+  private cache: SDK.ServiceWorkerCacheModel.Cache;
+  private dataGrid: DataGrid.DataGrid.DataGridImpl<DataGridNode>|null;
+  private readonly refreshThrottler: Common.Throttler.Throttler;
+  private readonly refreshButton: UI.Toolbar.ToolbarButton;
+  private readonly deleteSelectedButton: UI.Toolbar.ToolbarButton;
+  private entryPathFilter: string;
+  private returnCount: number|null;
+  private summaryBarElement: Element|null;
+  private loadingPromise: Promise<{
     entries: Array<Protocol.CacheStorage.DataEntry>,
     returnCount: number,
   }>|null;
@@ -93,89 +93,89 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     super(i18nString(UIStrings.cache));
     this.registerRequiredCSS('panels/application/serviceWorkerCacheViews.css');
 
-    this._model = model;
-    this._entriesForTest = null;
+    this.model = model;
+    this.entriesForTest = null;
 
     this.element.classList.add('service-worker-cache-data-view');
     this.element.classList.add('storage-view');
 
     const editorToolbar = new UI.Toolbar.Toolbar('data-view-toolbar', this.element);
-    this._splitWidget = new UI.SplitWidget.SplitWidget(false, false);
-    this._splitWidget.show(this.element);
+    this.splitWidget = new UI.SplitWidget.SplitWidget(false, false);
+    this.splitWidget.show(this.element);
 
-    this._previewPanel = new UI.Widget.VBox();
-    const resizer = this._previewPanel.element.createChild('div', 'cache-preview-panel-resizer');
-    this._splitWidget.setMainWidget(this._previewPanel);
-    this._splitWidget.installResizer(resizer);
+    this.previewPanel = new UI.Widget.VBox();
+    const resizer = this.previewPanel.element.createChild('div', 'cache-preview-panel-resizer');
+    this.splitWidget.setMainWidget(this.previewPanel);
+    this.splitWidget.installResizer(resizer);
 
-    this._preview = null;
+    this.preview = null;
 
-    this._cache = cache;
-    this._dataGrid = null;
-    this._refreshThrottler = new Common.Throttler.Throttler(300);
-    this._refreshButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refresh), 'largeicon-refresh');
-    this._refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._refreshButtonClicked, this);
-    editorToolbar.appendToolbarItem(this._refreshButton);
+    this.cache = cache;
+    this.dataGrid = null;
+    this.refreshThrottler = new Common.Throttler.Throttler(300);
+    this.refreshButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refresh), 'largeicon-refresh');
+    this.refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.refreshButtonClicked, this);
+    editorToolbar.appendToolbarItem(this.refreshButton);
 
-    this._deleteSelectedButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.deleteSelected), 'largeicon-delete');
-    this._deleteSelectedButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
-      this._deleteButtonClicked(null);
+    this.deleteSelectedButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.deleteSelected), 'largeicon-delete');
+    this.deleteSelectedButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
+      this.deleteButtonClicked(null);
     });
-    editorToolbar.appendToolbarItem(this._deleteSelectedButton);
+    editorToolbar.appendToolbarItem(this.deleteSelectedButton);
 
     const entryPathFilterBox = new UI.Toolbar.ToolbarInput(i18nString(UIStrings.filterByPath), '', 1);
     editorToolbar.appendToolbarItem(entryPathFilterBox);
     const entryPathFilterThrottler = new Common.Throttler.Throttler(300);
-    this._entryPathFilter = '';
+    this.entryPathFilter = '';
     entryPathFilterBox.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, () => {
       entryPathFilterThrottler.schedule(() => {
-        this._entryPathFilter = entryPathFilterBox.value();
-        return this._updateData(true);
+        this.entryPathFilter = entryPathFilterBox.value();
+        return this.updateData(true);
       });
     });
-    this._returnCount = (null as number | null);
-    this._summaryBarElement = (null as Element | null);
-    this._loadingPromise = null;
+    this.returnCount = (null as number | null);
+    this.summaryBarElement = (null as Element | null);
+    this.loadingPromise = null;
 
     this.update(cache);
   }
 
-  _resetDataGrid(): void {
-    if (this._dataGrid) {
-      this._dataGrid.asWidget().detach();
+  private resetDataGrid(): void {
+    if (this.dataGrid) {
+      this.dataGrid.asWidget().detach();
     }
-    this._dataGrid = this._createDataGrid();
-    const dataGridWidget = this._dataGrid.asWidget();
-    this._splitWidget.setSidebarWidget(dataGridWidget);
+    this.dataGrid = this.createDataGrid();
+    const dataGridWidget = this.dataGrid.asWidget();
+    this.splitWidget.setSidebarWidget(dataGridWidget);
     dataGridWidget.setMinimumSize(0, 250);
   }
 
   wasShown(): void {
-    this._model.addEventListener(
-        SDK.ServiceWorkerCacheModel.Events.CacheStorageContentUpdated, this._cacheContentUpdated, this);
-    this._updateData(true);
+    this.model.addEventListener(
+        SDK.ServiceWorkerCacheModel.Events.CacheStorageContentUpdated, this.cacheContentUpdated, this);
+    this.updateData(true);
   }
 
   willHide(): void {
-    this._model.removeEventListener(
-        SDK.ServiceWorkerCacheModel.Events.CacheStorageContentUpdated, this._cacheContentUpdated, this);
+    this.model.removeEventListener(
+        SDK.ServiceWorkerCacheModel.Events.CacheStorageContentUpdated, this.cacheContentUpdated, this);
   }
 
-  _showPreview(preview: UI.Widget.Widget|null): void {
-    if (preview && this._preview === preview) {
+  private showPreview(preview: UI.Widget.Widget|null): void {
+    if (preview && this.preview === preview) {
       return;
     }
-    if (this._preview) {
-      this._preview.detach();
+    if (this.preview) {
+      this.preview.detach();
     }
     if (!preview) {
       preview = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.selectACacheEntryAboveToPreview));
     }
-    this._preview = preview;
-    this._preview.show(this._previewPanel.element);
+    this.preview = preview;
+    this.preview.show(this.previewPanel.element);
   }
 
-  _createDataGrid(): DataGrid.DataGrid.DataGridImpl<DataGridNode> {
+  private createDataGrid(): DataGrid.DataGrid.DataGridImpl<DataGridNode> {
     const columns = ([
       {id: 'number', title: '#', sortable: false, width: '3px'},
       {id: 'name', title: i18nString(UIStrings.name), weight: 4, sortable: true},
@@ -207,32 +207,32 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     const dataGrid = new DataGrid.DataGrid.DataGridImpl({
       displayName: i18nString(UIStrings.serviceWorkerCache),
       columns,
-      deleteCallback: this._deleteButtonClicked.bind(this),
-      refreshCallback: this._updateData.bind(this, true),
+      deleteCallback: this.deleteButtonClicked.bind(this),
+      refreshCallback: this.updateData.bind(this, true),
       editCallback: undefined,
     });
 
-    dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortingChanged, this);
+    dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this.sortingChanged, this);
 
     dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, event => {
-      this._previewCachedResponse(event.data.data);
+      this.previewCachedResponse(event.data.data);
     }, this);
     dataGrid.setStriped(true);
     return dataGrid;
   }
 
-  _sortingChanged(): void {
-    if (!this._dataGrid) {
+  private sortingChanged(): void {
+    if (!this.dataGrid) {
       return;
     }
 
-    const dataGrid = this._dataGrid;
+    const dataGrid = this.dataGrid;
 
     const accending = dataGrid.isSortOrderAscending();
     const columnId = dataGrid.sortColumnId();
     let comparator: (arg0: DataGridNode, arg1: DataGridNode) => number;
     if (columnId === 'name') {
-      comparator = (a: DataGridNode, b: DataGridNode): number => a._name.localeCompare(b._name);
+      comparator = (a: DataGridNode, b: DataGridNode): number => a.name.localeCompare(b.name);
     } else if (columnId === 'contentType') {
       comparator = (a: DataGridNode, b: DataGridNode): number => a.data.mimeType.localeCompare(b.data.mimeType);
     } else if (columnId === 'contentLength') {
@@ -240,9 +240,9 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     } else if (columnId === 'responseTime') {
       comparator = (a: DataGridNode, b: DataGridNode): number => a.data.endTime - b.data.endTime;
     } else if (columnId === 'responseType') {
-      comparator = (a: DataGridNode, b: DataGridNode): number => a._responseType.localeCompare(b._responseType);
+      comparator = (a: DataGridNode, b: DataGridNode): number => a.responseType.localeCompare(b.responseType);
     } else if (columnId === 'varyHeader') {
-      comparator = (a: DataGridNode, b: DataGridNode): number => a._varyHeader.localeCompare(b._varyHeader);
+      comparator = (a: DataGridNode, b: DataGridNode): number => a.varyHeader.localeCompare(b.varyHeader);
     }
 
     const children = dataGrid.rootNode().children.slice();
@@ -254,51 +254,51 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     children.forEach(child => dataGrid.rootNode().appendChild(child));
   }
 
-  async _deleteButtonClicked(node: DataGrid.DataGrid.DataGridNode<DataGridNode>|null): Promise<void> {
+  private async deleteButtonClicked(node: DataGrid.DataGrid.DataGridNode<DataGridNode>|null): Promise<void> {
     if (!node) {
-      node = this._dataGrid && this._dataGrid.selectedNode;
+      node = this.dataGrid && this.dataGrid.selectedNode;
       if (!node) {
         return;
       }
     }
-    await this._model.deleteCacheEntry(this._cache, (node.data.url() as string));
+    await this.model.deleteCacheEntry(this.cache, (node.data.url() as string));
     node.remove();
   }
 
   update(cache: SDK.ServiceWorkerCacheModel.Cache): void {
-    this._cache = cache;
-    this._resetDataGrid();
-    this._updateData(true);
+    this.cache = cache;
+    this.resetDataGrid();
+    this.updateData(true);
   }
 
-  _updateSummaryBar(): void {
-    if (!this._summaryBarElement) {
-      this._summaryBarElement = this.element.createChild('div', 'cache-storage-summary-bar');
+  private updateSummaryBar(): void {
+    if (!this.summaryBarElement) {
+      this.summaryBarElement = this.element.createChild('div', 'cache-storage-summary-bar');
     }
-    this._summaryBarElement.removeChildren();
+    this.summaryBarElement.removeChildren();
 
-    const span = this._summaryBarElement.createChild('span');
-    if (this._entryPathFilter) {
-      span.textContent = i18nString(UIStrings.matchingEntriesS, {PH1: String(this._returnCount)});
+    const span = this.summaryBarElement.createChild('span');
+    if (this.entryPathFilter) {
+      span.textContent = i18nString(UIStrings.matchingEntriesS, {PH1: String(this.returnCount)});
     } else {
-      span.textContent = i18nString(UIStrings.totalEntriesS, {PH1: String(this._returnCount)});
+      span.textContent = i18nString(UIStrings.totalEntriesS, {PH1: String(this.returnCount)});
     }
   }
 
-  _updateDataCallback(
+  private updateDataCallback(
       this: ServiceWorkerCacheView, skipCount: number, entries: Protocol.CacheStorage.DataEntry[],
       returnCount: number): void {
-    if (!this._dataGrid) {
+    if (!this.dataGrid) {
       return;
     }
-    const selected = this._dataGrid.selectedNode && this._dataGrid.selectedNode.data.url();
-    this._refreshButton.setEnabled(true);
-    this._entriesForTest = entries;
-    this._returnCount = returnCount;
-    this._updateSummaryBar();
+    const selected = this.dataGrid.selectedNode && this.dataGrid.selectedNode.data.url();
+    this.refreshButton.setEnabled(true);
+    this.entriesForTest = entries;
+    this.returnCount = returnCount;
+    this.updateSummaryBar();
 
     const oldEntries = new Map<string, DataGridNode>();
-    const rootNode = this._dataGrid.rootNode();
+    const rootNode = this.dataGrid.rootNode();
     for (const node of rootNode.children) {
       oldEntries.set(node.data.url, (node as DataGridNode));
     }
@@ -308,7 +308,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
       const entry = entries[i];
       let node = oldEntries.get(entry.requestURL);
       if (!node || node.data.responseTime !== entry.responseTime) {
-        node = new DataGridNode(i, this._createRequest(entry), entry.responseType);
+        node = new DataGridNode(i, this.createRequest(entry), entry.responseType);
         node.selectable = true;
       } else {
         node.data.number = i;
@@ -319,53 +319,53 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
       }
     }
     if (!selectedNode) {
-      this._showPreview(null);
+      this.showPreview(null);
     } else {
       selectedNode.revealAndSelect();
     }
-    this._updatedForTest();
+    this.updatedForTest();
   }
 
-  async _updateData(force: boolean): Promise<{
+  private async updateData(force: boolean): Promise<{
     entries: Protocol.CacheStorage.DataEntry[],
     returnCount: number,
   }|undefined> {
-    if (!force && this._loadingPromise) {
-      return this._loadingPromise;
+    if (!force && this.loadingPromise) {
+      return this.loadingPromise;
     }
-    this._refreshButton.setEnabled(false);
+    this.refreshButton.setEnabled(false);
 
-    if (this._loadingPromise) {
-      return this._loadingPromise;
+    if (this.loadingPromise) {
+      return this.loadingPromise;
     }
 
-    this._loadingPromise = new Promise(resolve => {
-      this._model.loadAllCacheData(
-          this._cache, this._entryPathFilter, (entries: Protocol.CacheStorage.DataEntry[], returnCount: number) => {
+    this.loadingPromise = new Promise(resolve => {
+      this.model.loadAllCacheData(
+          this.cache, this.entryPathFilter, (entries: Protocol.CacheStorage.DataEntry[], returnCount: number) => {
             resolve({entries, returnCount});
           });
     });
 
-    const {entries, returnCount} = await this._loadingPromise;
-    this._updateDataCallback(0, entries, returnCount);
-    this._loadingPromise = null;
+    const {entries, returnCount} = await this.loadingPromise;
+    this.updateDataCallback(0, entries, returnCount);
+    this.loadingPromise = null;
     return;
   }
 
-  _refreshButtonClicked(_event: Common.EventTarget.EventTargetEvent): void {
-    this._updateData(true);
+  private refreshButtonClicked(_event: Common.EventTarget.EventTargetEvent): void {
+    this.updateData(true);
   }
 
-  _cacheContentUpdated(
+  private cacheContentUpdated(
       event: Common.EventTarget.EventTargetEvent<SDK.ServiceWorkerCacheModel.CacheStorageContentUpdatedEvent>): void {
     const {cacheName, origin} = event.data;
-    if (this._cache.securityOrigin !== origin || this._cache.cacheName !== cacheName) {
+    if (this.cache.securityOrigin !== origin || this.cache.cacheName !== cacheName) {
       return;
     }
-    this._refreshThrottler.schedule(() => Promise.resolve(this._updateData(true)), true);
+    this.refreshThrottler.schedule(() => Promise.resolve(this.updateData(true)), true);
   }
 
-  async _previewCachedResponse(request: SDK.NetworkRequest.NetworkRequest): Promise<void> {
+  private async previewCachedResponse(request: SDK.NetworkRequest.NetworkRequest): Promise<void> {
     let preview = networkRequestToPreview.get(request);
     if (!preview) {
       preview = new RequestView(request);
@@ -373,12 +373,12 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     }
 
     // It is possible that table selection changes before the preview opens.
-    if (this._dataGrid && this._dataGrid.selectedNode && request === this._dataGrid.selectedNode.data) {
-      this._showPreview(preview);
+    if (this.dataGrid && this.dataGrid.selectedNode && request === this.dataGrid.selectedNode.data) {
+      this.showPreview(preview);
     }
   }
 
-  _createRequest(entry: Protocol.CacheStorage.DataEntry): SDK.NetworkRequest.NetworkRequest {
+  private createRequest(entry: Protocol.CacheStorage.DataEntry): SDK.NetworkRequest.NetworkRequest {
     const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
         'cache-storage-' + entry.requestURL, entry.requestURL, '', null);
     request.requestMethod = entry.requestMethod;
@@ -403,78 +403,78 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
           Common.ResourceType.ResourceType.fromURL(entry.requestURL) || Common.ResourceType.resourceTypes.Other;
     }
     request.setResourceType(resourceType);
-    request.setContentDataProvider(this._requestContent.bind(this, request));
+    request.setContentDataProvider(this.requestContent.bind(this, request));
     return request;
   }
 
-  async _requestContent(request: SDK.NetworkRequest.NetworkRequest): Promise<SDK.NetworkRequest.ContentData> {
+  private async requestContent(request: SDK.NetworkRequest.NetworkRequest): Promise<SDK.NetworkRequest.ContentData> {
     const isText = request.resourceType().isTextType();
     const contentData: SDK.NetworkRequest.ContentData = {error: null, content: null, encoded: !isText};
-    const response = await this._cache.requestCachedResponse(request.url(), request.requestHeaders());
+    const response = await this.cache.requestCachedResponse(request.url(), request.requestHeaders());
     if (response) {
       contentData.content = isText ? window.atob(response.body) : response.body;
     }
     return contentData;
   }
 
-  _updatedForTest(): void {
+  private updatedForTest(): void {
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  static readonly _previewSymbol = Symbol('preview');
+  private static readonly previewSymbol = Symbol('preview');
 }
 
 const networkRequestToPreview = new WeakMap<SDK.NetworkRequest.NetworkRequest, RequestView>();
 
 export class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
-  _number: number;
-  _name: string;
-  _request: SDK.NetworkRequest.NetworkRequest;
-  _responseType: Protocol.CacheStorage.CachedResponseType;
-  _varyHeader: string;
+  private number: number;
+  name: string;
+  private request: SDK.NetworkRequest.NetworkRequest;
+  responseType: Protocol.CacheStorage.CachedResponseType;
+  varyHeader: string;
 
   constructor(
       number: number, request: SDK.NetworkRequest.NetworkRequest,
       responseType: Protocol.CacheStorage.CachedResponseType) {
     super(request);
-    this._number = number;
+    this.number = number;
     const parsed = new Common.ParsedURL.ParsedURL(request.url());
     if (parsed.isValid) {
-      this._name = Platform.StringUtilities.trimURL(request.url(), parsed.domain());
+      this.name = Platform.StringUtilities.trimURL(request.url(), parsed.domain());
     } else {
-      this._name = request.url();
+      this.name = request.url();
     }
-    this._request = request;
-    this._responseType = responseType;
-    this._varyHeader = request.responseHeaders.find(header => header.name.toLowerCase() === 'vary')?.value || '';
+    this.request = request;
+    this.responseType = responseType;
+    this.varyHeader = request.responseHeaders.find(header => header.name.toLowerCase() === 'vary')?.value || '';
   }
 
   createCell(columnId: string): HTMLElement {
     const cell = this.createTD(columnId);
     let value;
-    let tooltip = this._request.url();
+    let tooltip = this.request.url();
     if (columnId === 'number') {
-      value = String(this._number);
+      value = String(this.number);
     } else if (columnId === 'name') {
-      value = this._name;
+      value = this.name;
     } else if (columnId === 'responseType') {
-      if (this._responseType === 'opaqueResponse') {
+      if (this.responseType === 'opaqueResponse') {
         value = 'opaque';
-      } else if (this._responseType === 'opaqueRedirect') {
+      } else if (this.responseType === 'opaqueRedirect') {
         value = 'opaqueredirect';
       } else {
-        value = this._responseType;
+        value = this.responseType;
       }
     } else if (columnId === 'contentType') {
-      value = this._request.mimeType;
+      value = this.request.mimeType;
     } else if (columnId === 'contentLength') {
-      value = (this._request.resourceSize | 0).toLocaleString('en-US');
+      value = (this.request.resourceSize | 0).toLocaleString('en-US');
     } else if (columnId === 'responseTime') {
-      value = new Date(this._request.endTime * 1000).toLocaleString();
+      value = new Date(this.request.endTime * 1000).toLocaleString();
     } else if (columnId === 'varyHeader') {
-      value = this._varyHeader;
-      if (this._varyHeader) {
+      value = this.varyHeader;
+      if (this.varyHeader) {
         tooltip = i18nString(UIStrings.varyHeaderWarning);
       }
     }
@@ -485,41 +485,41 @@ export class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
 }
 
 export class RequestView extends UI.Widget.VBox {
-  _tabbedPane: UI.TabbedPane.TabbedPane;
-  _resourceViewTabSetting: Common.Settings.Setting<string>;
+  private tabbedPane: UI.TabbedPane.TabbedPane;
+  private resourceViewTabSetting: Common.Settings.Setting<string>;
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
 
-    this._tabbedPane = new UI.TabbedPane.TabbedPane();
-    this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
-    this._resourceViewTabSetting = Common.Settings.Settings.instance().createSetting('cacheStorageViewTab', 'preview');
+    this.tabbedPane = new UI.TabbedPane.TabbedPane();
+    this.tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this.tabSelected, this);
+    this.resourceViewTabSetting = Common.Settings.Settings.instance().createSetting('cacheStorageViewTab', 'preview');
 
-    this._tabbedPane.appendTab(
+    this.tabbedPane.appendTab(
         'headers', i18nString(UIStrings.headers), new Network.RequestHeadersView.RequestHeadersView(request));
-    this._tabbedPane.appendTab(
+    this.tabbedPane.appendTab(
         'preview', i18nString(UIStrings.preview), new Network.RequestPreviewView.RequestPreviewView(request));
-    this._tabbedPane.show(this.element);
+    this.tabbedPane.show(this.element);
   }
 
   wasShown(): void {
     super.wasShown();
-    this._selectTab();
+    this.selectTab();
   }
 
-  _selectTab(tabId?: string): void {
+  private selectTab(tabId?: string): void {
     if (!tabId) {
-      tabId = this._resourceViewTabSetting.get();
+      tabId = this.resourceViewTabSetting.get();
     }
-    if (tabId && !this._tabbedPane.selectTab(tabId)) {
-      this._tabbedPane.selectTab('headers');
+    if (tabId && !this.tabbedPane.selectTab(tabId)) {
+      this.tabbedPane.selectTab('headers');
     }
   }
 
-  _tabSelected(event: Common.EventTarget.EventTargetEvent): void {
+  private tabSelected(event: Common.EventTarget.EventTargetEvent): void {
     if (!event.data.isUserGesture) {
       return;
     }
-    this._resourceViewTabSetting.set(event.data.tabId);
+    this.resourceViewTabSetting.set(event.data.tabId);
   }
 }

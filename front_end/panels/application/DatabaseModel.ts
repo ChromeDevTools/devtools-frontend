@@ -51,49 +51,49 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/application/DatabaseModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class Database {
-  _model: DatabaseModel;
-  _id: string;
-  _domain: string;
-  _name: string;
-  _version: string;
+  private readonly model: DatabaseModel;
+  private readonly idInternal: string;
+  private domainInternal: string;
+  private nameInternal: string;
+  private versionInternal: string;
   constructor(model: DatabaseModel, id: string, domain: string, name: string, version: string) {
-    this._model = model;
-    this._id = id;
-    this._domain = domain;
-    this._name = name;
-    this._version = version;
+    this.model = model;
+    this.idInternal = id;
+    this.domainInternal = domain;
+    this.nameInternal = name;
+    this.versionInternal = version;
   }
 
   get id(): string {
-    return this._id;
+    return this.idInternal;
   }
 
   get name(): string {
-    return this._name;
+    return this.nameInternal;
   }
 
   set name(x: string) {
-    this._name = x;
+    this.nameInternal = x;
   }
 
   get version(): string {
-    return this._version;
+    return this.versionInternal;
   }
 
   set version(x: string) {
-    this._version = x;
+    this.versionInternal = x;
   }
 
   get domain(): string {
-    return this._domain;
+    return this.domainInternal;
   }
 
   set domain(x: string) {
-    this._domain = x;
+    this.domainInternal = x;
   }
 
   async tableNames(): Promise<string[]> {
-    const {tableNames} = await this._model._agent.invoke_getDatabaseTableNames({databaseId: this._id}) || [];
+    const {tableNames} = await this.model.agent.invoke_getDatabaseTableNames({databaseId: this.idInternal}) || [];
     return tableNames.sort();
   }
 
@@ -102,7 +102,7 @@ export class Database {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       query: string, onSuccess: (arg0: Array<string>, arg1: Array<any>) => void,
       onError: (arg0: string) => void): Promise<void> {
-    const response = await this._model._agent.invoke_executeSQL({'databaseId': this._id, 'query': query});
+    const response = await this.model.agent.invoke_executeSQL({'databaseId': this.idInternal, 'query': query});
     const error = response.getError() || null;
     if (error) {
       onError(error);
@@ -127,45 +127,45 @@ export class Database {
 }
 
 export class DatabaseModel extends SDK.SDKModel.SDKModel {
-  _databases: Database[];
-  _agent: ProtocolProxyApi.DatabaseApi;
-  _enabled?: boolean;
+  private databasesInternal: Database[];
+  readonly agent: ProtocolProxyApi.DatabaseApi;
+  private enabled?: boolean;
   constructor(target: SDK.Target.Target) {
     super(target);
 
-    this._databases = [];
-    this._agent = target.databaseAgent();
+    this.databasesInternal = [];
+    this.agent = target.databaseAgent();
     this.target().registerDatabaseDispatcher(new DatabaseDispatcher(this));
   }
 
   enable(): void {
-    if (this._enabled) {
+    if (this.enabled) {
       return;
     }
-    this._agent.invoke_enable();
-    this._enabled = true;
+    this.agent.invoke_enable();
+    this.enabled = true;
   }
 
   disable(): void {
-    if (!this._enabled) {
+    if (!this.enabled) {
       return;
     }
-    this._enabled = false;
-    this._databases = [];
-    this._agent.invoke_disable();
+    this.enabled = false;
+    this.databasesInternal = [];
+    this.agent.invoke_disable();
     this.dispatchEventToListeners(Events.DatabasesRemoved);
   }
 
   databases(): Database[] {
     const result = [];
-    for (const database of this._databases) {
+    for (const database of this.databasesInternal) {
       result.push(database);
     }
     return result;
   }
 
-  _addDatabase(database: Database): void {
-    this._databases.push(database);
+  addDatabase(database: Database): void {
+    this.databasesInternal.push(database);
     this.dispatchEventToListeners(Events.DatabaseAdded, database);
   }
 }
@@ -180,12 +180,12 @@ export enum Events {
 }
 
 export class DatabaseDispatcher implements ProtocolProxyApi.DatabaseDispatcher {
-  _model: DatabaseModel;
+  private readonly model: DatabaseModel;
   constructor(model: DatabaseModel) {
-    this._model = model;
+    this.model = model;
   }
 
   addDatabase({database}: Protocol.Database.AddDatabaseEvent): void {
-    this._model._addDatabase(new Database(this._model, database.id, database.domain, database.name, database.version));
+    this.model.addDatabase(new Database(this.model, database.id, database.domain, database.name, database.version));
   }
 }

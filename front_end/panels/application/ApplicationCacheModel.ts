@@ -38,74 +38,76 @@ import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 export class ApplicationCacheModel extends SDK.SDKModel.SDKModel {
-  _agent: ProtocolProxyApi.ApplicationCacheApi;
-  _statuses: Map<Protocol.Page.FrameId, number>;
-  _manifestURLsByFrame: Map<Protocol.Page.FrameId, string>;
-  _onLine: boolean;
+  private readonly agent: ProtocolProxyApi.ApplicationCacheApi;
+  private readonly statuses: Map<Protocol.Page.FrameId, number>;
+  private manifestURLsByFrame: Map<Protocol.Page.FrameId, string>;
+  private onLineInternal: boolean;
   constructor(target: SDK.Target.Target) {
     super(target);
 
     target.registerApplicationCacheDispatcher(new ApplicationCacheDispatcher(this));
-    this._agent = target.applicationCacheAgent();
-    this._agent.invoke_enable();
+    this.agent = target.applicationCacheAgent();
+    this.agent.invoke_enable();
 
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     if (!resourceTreeModel) {
       throw new Error('Target must provide an ResourceTreeModel');
     }
-    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigatedCallback, this);
-    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this);
+    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, this.frameNavigatedCallback, this);
+    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameDetached, this.frameDetached, this);
 
-    this._statuses = new Map();
-    this._manifestURLsByFrame = new Map();
+    this.statuses = new Map();
+    this.manifestURLsByFrame = new Map();
 
-    this._mainFrameNavigated();
-    this._onLine = true;
+    this.mainFrameNavigated();
+    this.onLineInternal = true;
   }
 
-  _frameNavigatedCallback(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>): void {
-    this._frameNavigated(event);
+  private frameNavigatedCallback(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>):
+      void {
+    this.frameNavigated(event);
   }
 
-  async _frameNavigated(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>):
+  private async frameNavigated(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>):
       Promise<void> {
     const frame = event.data;
     if (frame.isMainFrame()) {
-      this._mainFrameNavigated();
+      this.mainFrameNavigated();
       return;
     }
 
     const frameId = frame.id;
-    const manifestURL = await this._agent.invoke_getManifestForFrame({frameId});
+    const manifestURL = await this.agent.invoke_getManifestForFrame({frameId});
     if (manifestURL !== null && !manifestURL) {
-      this._frameManifestRemoved(frameId);
+      this.frameManifestRemoved(frameId);
     }
   }
 
-  _frameDetached(event: Common.EventTarget
-                     .EventTargetEvent<{frame: SDK.ResourceTreeModel.ResourceTreeFrame, isSwap: boolean}>): void {
-    this._frameManifestRemoved(event.data.frame.id);
+  private frameDetached(
+      event: Common.EventTarget.EventTargetEvent<{frame: SDK.ResourceTreeModel.ResourceTreeFrame, isSwap: boolean}>):
+      void {
+    this.frameManifestRemoved(event.data.frame.id);
   }
 
   reset(): void {
-    this._statuses.clear();
-    this._manifestURLsByFrame.clear();
+    this.statuses.clear();
+    this.manifestURLsByFrame.clear();
     this.dispatchEventToListeners(Events.FrameManifestsReset);
   }
 
-  async _mainFrameNavigated(): Promise<void> {
-    const framesWithManifests = await this._agent.invoke_getFramesWithManifests();
+  private async mainFrameNavigated(): Promise<void> {
+    const framesWithManifests = await this.agent.invoke_getFramesWithManifests();
     if (framesWithManifests.getError()) {
       return;
     }
     for (const frame of framesWithManifests.frameIds) {
-      this._frameManifestUpdated(frame.frameId, frame.manifestURL, frame.status);
+      this.frameManifestUpdated(frame.frameId, frame.manifestURL, frame.status);
     }
   }
 
-  _frameManifestUpdated(frameId: Protocol.Page.FrameId, manifestURL: string, status: number): void {
+  private frameManifestUpdated(frameId: Protocol.Page.FrameId, manifestURL: string, status: number): void {
     if (status === UNCACHED) {
-      this._frameManifestRemoved(frameId);
+      this.frameManifestRemoved(frameId);
       return;
     }
 
@@ -113,16 +115,16 @@ export class ApplicationCacheModel extends SDK.SDKModel.SDKModel {
       return;
     }
 
-    const recordedManifestURL = this._manifestURLsByFrame.get(frameId);
+    const recordedManifestURL = this.manifestURLsByFrame.get(frameId);
     if (recordedManifestURL && manifestURL !== recordedManifestURL) {
-      this._frameManifestRemoved(frameId);
+      this.frameManifestRemoved(frameId);
     }
 
-    const statusChanged = this._statuses.get(frameId) !== status;
-    this._statuses.set(frameId, status);
+    const statusChanged = this.statuses.get(frameId) !== status;
+    this.statuses.set(frameId, status);
 
-    if (!this._manifestURLsByFrame.has(frameId)) {
-      this._manifestURLsByFrame.set(frameId, manifestURL);
+    if (!this.manifestURLsByFrame.has(frameId)) {
+      this.manifestURLsByFrame.set(frameId, manifestURL);
       this.dispatchEventToListeners(Events.FrameManifestAdded, frameId);
     }
 
@@ -131,41 +133,41 @@ export class ApplicationCacheModel extends SDK.SDKModel.SDKModel {
     }
   }
 
-  _frameManifestRemoved(frameId: Protocol.Page.FrameId): void {
-    const removed = this._manifestURLsByFrame.delete(frameId);
-    this._statuses.delete(frameId);
+  private frameManifestRemoved(frameId: Protocol.Page.FrameId): void {
+    const removed = this.manifestURLsByFrame.delete(frameId);
+    this.statuses.delete(frameId);
     if (removed) {
       this.dispatchEventToListeners(Events.FrameManifestRemoved, frameId);
     }
   }
 
   frameManifestURL(frameId: Protocol.Page.FrameId): string {
-    return this._manifestURLsByFrame.get(frameId) || '';
+    return this.manifestURLsByFrame.get(frameId) || '';
   }
 
   frameManifestStatus(frameId: Protocol.Page.FrameId): number {
-    return this._statuses.get(frameId) || UNCACHED;
+    return this.statuses.get(frameId) || UNCACHED;
   }
 
   get onLine(): boolean {
-    return this._onLine;
+    return this.onLineInternal;
   }
 
-  _statusUpdated(frameId: Protocol.Page.FrameId, manifestURL: string, status: number): void {
-    this._frameManifestUpdated(frameId, manifestURL, status);
+  statusUpdated(frameId: Protocol.Page.FrameId, manifestURL: string, status: number): void {
+    this.frameManifestUpdated(frameId, manifestURL, status);
   }
 
   async requestApplicationCache(frameId: Protocol.Page.FrameId):
       Promise<Protocol.ApplicationCache.ApplicationCache|null> {
-    const response = await this._agent.invoke_getApplicationCacheForFrame({frameId});
+    const response = await this.agent.invoke_getApplicationCacheForFrame({frameId});
     if (response.getError()) {
       return null;
     }
     return response.applicationCache;
   }
 
-  _networkStateUpdated(isNowOnline: boolean): void {
-    this._onLine = isNowOnline;
+  networkStateUpdated(isNowOnline: boolean): void {
+    this.onLineInternal = isNowOnline;
     this.dispatchEventToListeners(Events.NetworkStateChanged, isNowOnline);
   }
 }
@@ -183,18 +185,18 @@ export enum Events {
 }
 
 export class ApplicationCacheDispatcher implements ProtocolProxyApi.ApplicationCacheDispatcher {
-  _applicationCacheModel: ApplicationCacheModel;
+  private readonly applicationCacheModel: ApplicationCacheModel;
   constructor(applicationCacheModel: ApplicationCacheModel) {
-    this._applicationCacheModel = applicationCacheModel;
+    this.applicationCacheModel = applicationCacheModel;
   }
 
   applicationCacheStatusUpdated({frameId, manifestURL, status}:
                                     Protocol.ApplicationCache.ApplicationCacheStatusUpdatedEvent): void {
-    this._applicationCacheModel._statusUpdated(frameId, manifestURL, status);
+    this.applicationCacheModel.statusUpdated(frameId, manifestURL, status);
   }
 
   networkStateUpdated({isNowOnline}: Protocol.ApplicationCache.NetworkStateUpdatedEvent): void {
-    this._applicationCacheModel._networkStateUpdated(isNowOnline);
+    this.applicationCacheModel.networkStateUpdated(isNowOnline);
   }
 }
 

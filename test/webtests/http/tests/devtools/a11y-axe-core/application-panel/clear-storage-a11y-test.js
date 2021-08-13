@@ -9,7 +9,7 @@
   await TestRunner.showPanel('resources');
   await UI.viewManager.showView('resources');
 
-  const parent = UI.panels.resources._sidebar._applicationTreeElement;
+  const parent = UI.panels.resources.sidebar.applicationTreeElement;
   const storageElement = parent.children().find(child => child.title === 'Storage');
   storageElement.select();
   const storageView = UI.panels.resources.visibleView;

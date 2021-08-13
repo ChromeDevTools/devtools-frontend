@@ -80,85 +80,86 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/application/ApplicationCacheItemsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ApplicationCacheItemsView extends UI.View.SimpleView {
-  _model: ApplicationCacheModel;
-  _deleteButton: UI.Toolbar.ToolbarButton;
-  _connectivityIcon: UI.UIUtils.DevToolsIconLabel;
-  _statusIcon: UI.UIUtils.DevToolsIconLabel;
-  _frameId: Protocol.Page.FrameId;
-  _emptyWidget: UI.EmptyWidget.EmptyWidget;
-  _nodeResources: WeakMap<DataGrid.DataGrid.DataGridNode<unknown>, Protocol.ApplicationCache.ApplicationCacheResource>;
-  _viewDirty?: boolean;
-  _status?: number;
-  _manifest?: string;
-  _creationTime?: number;
-  _updateTime?: number;
-  _size?: number;
-  _resources?: Protocol.ApplicationCache.ApplicationCacheResource[];
-  _dataGrid?: DataGrid.DataGrid.DataGridImpl<unknown>;
+  private readonly model: ApplicationCacheModel;
+  private readonly deleteButton: UI.Toolbar.ToolbarButton;
+  private connectivityIcon: UI.UIUtils.DevToolsIconLabel;
+  private statusIcon: UI.UIUtils.DevToolsIconLabel;
+  private readonly frameId: Protocol.Page.FrameId;
+  private readonly emptyWidget: UI.EmptyWidget.EmptyWidget;
+  private readonly nodeResources:
+      WeakMap<DataGrid.DataGrid.DataGridNode<unknown>, Protocol.ApplicationCache.ApplicationCacheResource>;
+  private viewDirty?: boolean;
+  private status?: number;
+  private manifest?: string;
+  private creationTime?: number;
+  private updateTime?: number;
+  private size?: number;
+  private resources?: Protocol.ApplicationCache.ApplicationCacheResource[];
+  private dataGrid?: DataGrid.DataGrid.DataGridImpl<unknown>;
 
   constructor(model: ApplicationCacheModel, frameId: Protocol.Page.FrameId) {
     super(i18nString(UIStrings.appcache));
 
-    this._model = model;
+    this.model = model;
 
     this.element.classList.add('storage-view', 'table');
 
-    this._deleteButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.deleteString), 'largeicon-delete');
-    this._deleteButton.setVisible(false);
-    this._deleteButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._deleteButtonClicked, this);
-    this._connectivityIcon = (document.createElement('span', {is: 'dt-icon-label'}) as UI.UIUtils.DevToolsIconLabel);
-    this._connectivityIcon.style.margin = '0 2px 0 5px';
-    this._statusIcon = (document.createElement('span', {is: 'dt-icon-label'}) as UI.UIUtils.DevToolsIconLabel);
-    this._statusIcon.style.margin = '0 2px 0 5px';
+    this.deleteButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.deleteString), 'largeicon-delete');
+    this.deleteButton.setVisible(false);
+    this.deleteButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.deleteButtonClicked, this);
+    this.connectivityIcon = (document.createElement('span', {is: 'dt-icon-label'}) as UI.UIUtils.DevToolsIconLabel);
+    this.connectivityIcon.style.margin = '0 2px 0 5px';
+    this.statusIcon = (document.createElement('span', {is: 'dt-icon-label'}) as UI.UIUtils.DevToolsIconLabel);
+    this.statusIcon.style.margin = '0 2px 0 5px';
 
-    this._frameId = frameId;
+    this.frameId = frameId;
 
-    this._emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noApplicationCacheInformation));
-    this._emptyWidget.show(this.element);
+    this.emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noApplicationCacheInformation));
+    this.emptyWidget.show(this.element);
 
-    this._markDirty();
+    this.markDirty();
 
-    const status = this._model.frameManifestStatus(frameId);
+    const status = this.model.frameManifestStatus(frameId);
     this.updateStatus(status);
-    this.updateNetworkState(this._model.onLine);
-    (this._deleteButton.element as HTMLElement).style.display = 'none';
+    this.updateNetworkState(this.model.onLine);
+    (this.deleteButton.element as HTMLElement).style.display = 'none';
 
-    this._nodeResources = new WeakMap();
+    this.nodeResources = new WeakMap();
   }
 
   async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
     return [
-      this._deleteButton,
-      new UI.Toolbar.ToolbarItem(this._connectivityIcon),
+      this.deleteButton,
+      new UI.Toolbar.ToolbarItem(this.connectivityIcon),
       new UI.Toolbar.ToolbarSeparator(),
-      new UI.Toolbar.ToolbarItem(this._statusIcon),
+      new UI.Toolbar.ToolbarItem(this.statusIcon),
     ];
   }
 
   wasShown(): void {
-    this._maybeUpdate();
+    this.maybeUpdate();
   }
 
   willHide(): void {
-    this._deleteButton.setVisible(false);
+    this.deleteButton.setVisible(false);
   }
 
-  _maybeUpdate(): void {
-    if (!this.isShowing() || !this._viewDirty) {
+  private maybeUpdate(): void {
+    if (!this.isShowing() || !this.viewDirty) {
       return;
     }
 
-    this._update();
-    this._viewDirty = false;
+    this.update();
+    this.viewDirty = false;
   }
 
-  _markDirty(): void {
-    this._viewDirty = true;
+  private markDirty(): void {
+    this.viewDirty = true;
   }
 
   updateStatus(status: number): void {
-    const oldStatus = this._status;
-    this._status = status;
+    const oldStatus = this.status;
+    this.status = status;
 
     const statusInformation = new Map([
       // We should never have UNCACHED status, since we remove frames with UNCACHED application cache status from the tree.
@@ -171,68 +172,68 @@ export class ApplicationCacheItemsView extends UI.View.SimpleView {
     ]);
     const info = statusInformation.get(status) || statusInformation.get(UNCACHED);
     if (info) {
-      this._statusIcon.type = info.type;
-      this._statusIcon.textContent = info.text;
+      this.statusIcon.type = info.type;
+      this.statusIcon.textContent = info.text;
     }
 
-    if (this.isShowing() && this._status === IDLE && (oldStatus === UPDATEREADY || !this._resources)) {
-      this._markDirty();
+    if (this.isShowing() && this.status === IDLE && (oldStatus === UPDATEREADY || !this.resources)) {
+      this.markDirty();
     }
-    this._maybeUpdate();
+    this.maybeUpdate();
   }
 
   updateNetworkState(isNowOnline: boolean): void {
     if (isNowOnline) {
-      this._connectivityIcon.type = 'smallicon-green-ball';
-      this._connectivityIcon.textContent = i18nString(UIStrings.online);
+      this.connectivityIcon.type = 'smallicon-green-ball';
+      this.connectivityIcon.textContent = i18nString(UIStrings.online);
     } else {
-      this._connectivityIcon.type = 'smallicon-red-ball';
-      this._connectivityIcon.textContent = i18nString(UIStrings.offline);
+      this.connectivityIcon.type = 'smallicon-red-ball';
+      this.connectivityIcon.textContent = i18nString(UIStrings.offline);
     }
   }
 
-  async _update(): Promise<void> {
-    const applicationCache = await this._model.requestApplicationCache(this._frameId);
+  private async update(): Promise<void> {
+    const applicationCache = await this.model.requestApplicationCache(this.frameId);
 
     if (!applicationCache || !applicationCache.manifestURL) {
-      delete this._manifest;
-      delete this._creationTime;
-      delete this._updateTime;
-      delete this._size;
-      delete this._resources;
+      delete this.manifest;
+      delete this.creationTime;
+      delete this.updateTime;
+      delete this.size;
+      delete this.resources;
 
-      this._emptyWidget.show(this.element);
-      this._deleteButton.setVisible(false);
-      if (this._dataGrid) {
-        this._dataGrid.element.classList.add('hidden');
+      this.emptyWidget.show(this.element);
+      this.deleteButton.setVisible(false);
+      if (this.dataGrid) {
+        this.dataGrid.element.classList.add('hidden');
       }
       return;
     }
     // FIXME: are these variables needed anywhere else?
-    this._manifest = applicationCache.manifestURL;
-    this._creationTime = applicationCache.creationTime;
-    this._updateTime = applicationCache.updateTime;
-    this._size = applicationCache.size;
-    this._resources = applicationCache.resources;
+    this.manifest = applicationCache.manifestURL;
+    this.creationTime = applicationCache.creationTime;
+    this.updateTime = applicationCache.updateTime;
+    this.size = applicationCache.size;
+    this.resources = applicationCache.resources;
 
-    if (!this._dataGrid) {
-      this._createDataGrid();
+    if (!this.dataGrid) {
+      this.createDataGrid();
     }
 
-    this._populateDataGrid();
-    if (this._dataGrid) {
-      this._dataGrid.autoSizeColumns(20, 80);
-      this._dataGrid.element.classList.remove('hidden');
+    this.populateDataGrid();
+    if (this.dataGrid) {
+      this.dataGrid.autoSizeColumns(20, 80);
+      this.dataGrid.element.classList.remove('hidden');
     }
-    this._emptyWidget.detach();
-    this._deleteButton.setVisible(true);
+    this.emptyWidget.detach();
+    this.deleteButton.setVisible(true);
 
     // FIXME: For Chrome, put creationTime and updateTime somewhere.
     // NOTE: localizedString has not yet been added.
-    // i18nString("(%s) Created: %s Updated: %s", this.size, this._creationTime, this._updateTime);
+    // i18nString("(%s) Created: %s Updated: %s", this.size, this.creationTime, this.updateTime);
   }
 
-  _createDataGrid(): void {
+  private createDataGrid(): void {
     const columns = ([
       {id: 'resource', title: i18nString(UIStrings.resource), sort: DataGrid.DataGrid.Order.Ascending, sortable: true},
       {id: 'type', title: i18nString(UIStrings.typeString), sortable: true},
@@ -245,19 +246,19 @@ export class ApplicationCacheItemsView extends UI.View.SimpleView {
       deleteCallback: undefined,
       refreshCallback: undefined,
     };
-    this._dataGrid = new DataGrid.DataGrid.DataGridImpl(parameters);
-    this._dataGrid.setStriped(true);
-    this._dataGrid.asWidget().show(this.element);
-    this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._populateDataGrid, this);
+    this.dataGrid = new DataGrid.DataGrid.DataGridImpl(parameters);
+    this.dataGrid.setStriped(true);
+    this.dataGrid.asWidget().show(this.element);
+    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this.populateDataGrid, this);
   }
 
-  _populateDataGrid(): void {
-    if (!this._dataGrid) {
+  private populateDataGrid(): void {
+    if (!this.dataGrid) {
       return;
     }
     const selectedResource: Protocol.ApplicationCache.ApplicationCacheResource|null =
-        (this._dataGrid.selectedNode ? this._nodeResources.get(this._dataGrid.selectedNode) : null) || null;
-    const sortDirection = this._dataGrid.isSortOrderAscending() ? 1 : -1;
+        (this.dataGrid.selectedNode ? this.nodeResources.get(this.dataGrid.selectedNode) : null) || null;
+    const sortDirection = this.dataGrid.isSortOrderAscending() ? 1 : -1;
 
     function numberCompare(
         field: keyof Platform.TypeScriptUtilities
@@ -276,7 +277,7 @@ export class ApplicationCacheItemsView extends UI.View.SimpleView {
     }
 
     let comparator = null;
-    switch (this._dataGrid.sortColumnId()) {
+    switch (this.dataGrid.sortColumnId()) {
       case 'resource':
         comparator = localeCompare.bind(null, 'url');
         break;
@@ -288,47 +289,47 @@ export class ApplicationCacheItemsView extends UI.View.SimpleView {
         break;
     }
 
-    this._dataGrid.rootNode().removeChildren();
-    if (!this._resources) {
+    this.dataGrid.rootNode().removeChildren();
+    if (!this.resources) {
       return;
     }
     if (comparator) {
-      this._resources.sort(comparator);
+      this.resources.sort(comparator);
     }
 
     let nodeToSelect;
-    for (let i = 0; i < this._resources.length; ++i) {
-      const resource = this._resources[i];
+    for (let i = 0; i < this.resources.length; ++i) {
+      const resource = this.resources[i];
       const data = {
         resource: resource.url,
         type: resource.type,
         size: Platform.NumberUtilities.bytesToString(resource.size),
       };
       const node = new DataGrid.DataGrid.DataGridNode(data);
-      this._nodeResources.set(node, resource);
+      this.nodeResources.set(node, resource);
       node.selectable = true;
-      this._dataGrid.rootNode().appendChild(node);
+      this.dataGrid.rootNode().appendChild(node);
       if (resource === selectedResource) {
         nodeToSelect = node;
         nodeToSelect.selected = true;
       }
     }
 
-    if (!nodeToSelect && this._dataGrid.rootNode().children.length) {
-      this._dataGrid.rootNode().children[0].selected = true;
+    if (!nodeToSelect && this.dataGrid.rootNode().children.length) {
+      this.dataGrid.rootNode().children[0].selected = true;
     }
   }
 
-  _deleteButtonClicked(_event: Common.EventTarget.EventTargetEvent): void {
-    if (!this._dataGrid || !this._dataGrid.selectedNode) {
+  private deleteButtonClicked(_event: Common.EventTarget.EventTargetEvent): void {
+    if (!this.dataGrid || !this.dataGrid.selectedNode) {
       return;
     }
 
     // FIXME: Delete Button semantics are not yet defined. (Delete a single, or all?)
-    this._deleteCallback(this._dataGrid.selectedNode);
+    this.deleteCallback(this.dataGrid.selectedNode);
   }
 
-  _deleteCallback(_node: DataGrid.DataGrid.DataGridNode<unknown>): void {
+  private deleteCallback(_node: DataGrid.DataGrid.DataGridNode<unknown>): void {
     // FIXME: Should we delete a single (selected) resource or all resources?
     // ProtocolClient.inspectorBackend.deleteCachedResource(...)
     // this.update();

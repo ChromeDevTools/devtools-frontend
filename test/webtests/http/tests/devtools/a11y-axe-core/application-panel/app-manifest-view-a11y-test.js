@@ -23,7 +23,7 @@
 
   await TestRunner.showPanel('resources');
   const manifestView = UI.panels.resources.visibleView;
-  await manifestView._renderManifest('test_manifest', manifest, [], []);
+  await manifestView.renderManifest('test_manifest', manifest, [], []);
   await AxeCoreTestRunner.runValidation(manifestView.contentElement);
   TestRunner.completeTest();
 })();

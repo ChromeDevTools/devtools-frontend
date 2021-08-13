@@ -203,7 +203,7 @@ export class ApplicationCacheFrameTreeElement extends ApplicationPanelTreeElemen
   readonly manifestURL: string;
 
   constructor(sidebar: ApplicationPanelSidebar, frame: SDK.ResourceTreeModel.ResourceTreeFrame, manifestURL: string) {
-    super(sidebar._panel, '', false);
+    super(sidebar.panel, '', false);
     this.sidebar = sidebar;
     this.frameId = frame.id;
     this.manifestURL = manifestURL;
@@ -227,7 +227,7 @@ export class ApplicationCacheFrameTreeElement extends ApplicationPanelTreeElemen
 
   onselect(selectedByUser: boolean|undefined): boolean {
     super.onselect(selectedByUser);
-    this.sidebar._showApplicationCache(this.frameId);
+    this.sidebar.showApplicationCache(this.frameId);
     return false;
   }
 }

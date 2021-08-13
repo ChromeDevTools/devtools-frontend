@@ -69,34 +69,35 @@ export interface VisibleColumnsSetting {
 export class DatabaseTableView extends UI.View.SimpleView {
   database: Database;
   tableName: string;
-  _lastVisibleColumns: string;
-  _columnsMap: Map<string, string>;
-  _visibleColumnsSetting: Common.Settings.Setting<VisibleColumnsSetting>;
+  private lastVisibleColumns: string;
+  private readonly columnsMap: Map<string, string>;
+  private readonly visibleColumnsSetting: Common.Settings.Setting<VisibleColumnsSetting>;
   refreshButton: UI.Toolbar.ToolbarButton;
-  _visibleColumnsInput: UI.Toolbar.ToolbarInput;
-  _dataGrid: DataGrid.SortableDataGrid.SortableDataGrid<DataGrid.SortableDataGrid.SortableDataGridNode<unknown>>|null;
-  _emptyWidget?: UI.EmptyWidget.EmptyWidget;
+  private readonly visibleColumnsInput: UI.Toolbar.ToolbarInput;
+  private dataGrid: DataGrid.SortableDataGrid.SortableDataGrid<DataGrid.SortableDataGrid.SortableDataGridNode<unknown>>|
+      null;
+  private emptyWidget?: UI.EmptyWidget.EmptyWidget;
 
   constructor(database: Database, tableName: string) {
     super(i18nString(UIStrings.database));
 
     this.database = database;
     this.tableName = tableName;
-    this._lastVisibleColumns = '';
-    this._columnsMap = new Map();
+    this.lastVisibleColumns = '';
+    this.columnsMap = new Map();
 
     this.element.classList.add('storage-view', 'table');
 
-    this._visibleColumnsSetting =
+    this.visibleColumnsSetting =
         Common.Settings.Settings.instance().createSetting('databaseTableViewVisibleColumns', {});
 
     this.refreshButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refresh), 'largeicon-refresh');
-    this.refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._refreshButtonClicked, this);
-    this._visibleColumnsInput = new UI.Toolbar.ToolbarInput(i18nString(UIStrings.visibleColumns), '', 1);
-    this._visibleColumnsInput.addEventListener(
-        UI.Toolbar.ToolbarInput.Event.TextChanged, this._onVisibleColumnsChanged, this);
+    this.refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.refreshButtonClicked, this);
+    this.visibleColumnsInput = new UI.Toolbar.ToolbarInput(i18nString(UIStrings.visibleColumns), '', 1);
+    this.visibleColumnsInput.addEventListener(
+        UI.Toolbar.ToolbarInput.Event.TextChanged, this.onVisibleColumnsChanged, this);
 
-    this._dataGrid = null;
+    this.dataGrid = null;
   }
 
   wasShown(): void {
@@ -104,58 +105,58 @@ export class DatabaseTableView extends UI.View.SimpleView {
   }
 
   async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
-    return [this.refreshButton, this._visibleColumnsInput];
+    return [this.refreshButton, this.visibleColumnsInput];
   }
 
-  _escapeTableName(tableName: string): string {
+  private escapeTableName(tableName: string): string {
     return tableName.replace(/\"/g, '""');
   }
 
   update(): void {
     this.database.executeSql(
-        'SELECT rowid, * FROM "' + this._escapeTableName(this.tableName) + '"', this._queryFinished.bind(this),
-        this._queryError.bind(this));
+        'SELECT rowid, * FROM "' + this.escapeTableName(this.tableName) + '"', this.queryFinished.bind(this),
+        this.queryError.bind(this));
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _queryFinished(columnNames: string[], values: any[]): void {
+  private queryFinished(columnNames: string[], values: any[]): void {
     this.detachChildWidgets();
     this.element.removeChildren();
 
-    this._dataGrid =
+    this.dataGrid =
         DataGrid.SortableDataGrid.SortableDataGrid.create(columnNames, values, i18nString(UIStrings.database));
-    this._visibleColumnsInput.setVisible(Boolean(this._dataGrid));
-    if (!this._dataGrid) {
-      this._emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.theStableIsEmpty, {PH1: this.tableName}));
-      this._emptyWidget.show(this.element);
+    this.visibleColumnsInput.setVisible(Boolean(this.dataGrid));
+    if (!this.dataGrid) {
+      this.emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.theStableIsEmpty, {PH1: this.tableName}));
+      this.emptyWidget.show(this.element);
       return;
     }
-    this._dataGrid.setStriped(true);
-    this._dataGrid.asWidget().show(this.element);
-    this._dataGrid.autoSizeColumns(5);
+    this.dataGrid.setStriped(true);
+    this.dataGrid.asWidget().show(this.element);
+    this.dataGrid.autoSizeColumns(5);
 
-    this._columnsMap.clear();
+    this.columnsMap.clear();
     for (let i = 1; i < columnNames.length; ++i) {
-      this._columnsMap.set(columnNames[i], String(i));
+      this.columnsMap.set(columnNames[i], String(i));
     }
-    this._lastVisibleColumns = '';
-    const visibleColumnsText = this._visibleColumnsSetting.get()[this.tableName] || '';
-    this._visibleColumnsInput.setValue(visibleColumnsText);
-    this._onVisibleColumnsChanged();
+    this.lastVisibleColumns = '';
+    const visibleColumnsText = this.visibleColumnsSetting.get()[this.tableName] || '';
+    this.visibleColumnsInput.setValue(visibleColumnsText);
+    this.onVisibleColumnsChanged();
   }
 
-  _onVisibleColumnsChanged(): void {
-    if (!this._dataGrid) {
+  private onVisibleColumnsChanged(): void {
+    if (!this.dataGrid) {
       return;
     }
-    const text = this._visibleColumnsInput.value();
+    const text = this.visibleColumnsInput.value();
     const parts = text.split(/[\s,]+/);
     const matches = new Set<string>();
     const columnsVisibility = new Set<string>();
     columnsVisibility.add('0');
     for (const part of parts) {
-      const mappedColumn = this._columnsMap.get(part);
+      const mappedColumn = this.columnsMap.get(part);
       if (mappedColumn !== undefined) {
         matches.add(part);
         columnsVisibility.add(mappedColumn);
@@ -163,21 +164,21 @@ export class DatabaseTableView extends UI.View.SimpleView {
     }
     const newVisibleColumns = [...matches].sort().join(', ');
     if (newVisibleColumns.length === 0) {
-      for (const v of this._columnsMap.values()) {
+      for (const v of this.columnsMap.values()) {
         columnsVisibility.add(v);
       }
     }
-    if (newVisibleColumns === this._lastVisibleColumns) {
+    if (newVisibleColumns === this.lastVisibleColumns) {
       return;
     }
-    const visibleColumnsRegistry = this._visibleColumnsSetting.get();
+    const visibleColumnsRegistry = this.visibleColumnsSetting.get();
     visibleColumnsRegistry[this.tableName] = text;
-    this._visibleColumnsSetting.set(visibleColumnsRegistry);
-    this._dataGrid.setColumnsVisiblity(columnsVisibility);
-    this._lastVisibleColumns = newVisibleColumns;
+    this.visibleColumnsSetting.set(visibleColumnsRegistry);
+    this.dataGrid.setColumnsVisiblity(columnsVisibility);
+    this.lastVisibleColumns = newVisibleColumns;
   }
 
-  _queryError(): void {
+  private queryError(): void {
     this.detachChildWidgets();
     this.element.removeChildren();
 
@@ -187,7 +188,7 @@ export class DatabaseTableView extends UI.View.SimpleView {
     this.element.appendChild(errorMsgElement);
   }
 
-  _refreshButtonClicked(_event: Common.EventTarget.EventTargetEvent): void {
+  private refreshButtonClicked(_event: Common.EventTarget.EventTargetEvent): void {
     this.update();
   }
 }

@@ -50,116 +50,116 @@ const str_ = i18n.i18n.registerUIStrings('panels/application/DatabaseQueryView.t
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class DatabaseQueryView extends UI.Widget.VBox {
   database: Database;
-  _queryWrapper: HTMLElement;
-  _promptContainer: HTMLElement;
-  _promptElement: HTMLElement;
-  _prompt: UI.TextPrompt.TextPrompt;
-  _proxyElement: Element;
-  _queryResults: HTMLElement[];
-  _virtualSelectedIndex: number;
-  _lastSelectedElement!: Element|null;
-  _selectionTimeout: number;
+  private queryWrapper: HTMLElement;
+  private readonly promptContainer: HTMLElement;
+  private readonly promptElement: HTMLElement;
+  private prompt: UI.TextPrompt.TextPrompt;
+  private readonly proxyElement: Element;
+  private queryResults: HTMLElement[];
+  private virtualSelectedIndex: number;
+  private lastSelectedElement!: Element|null;
+  private selectionTimeout: number;
   constructor(database: Database) {
     super();
 
     this.database = database;
 
     this.element.classList.add('storage-view', 'query', 'monospace');
-    this.element.addEventListener('selectstart', this._selectStart.bind(this), false);
+    this.element.addEventListener('selectstart', this.selectStart.bind(this), false);
 
-    this._queryWrapper = this.element.createChild('div', 'database-query-group-messages');
-    this._queryWrapper.addEventListener('focusin', (this._onFocusIn.bind(this) as EventListener));
-    this._queryWrapper.addEventListener('focusout', (this._onFocusOut.bind(this) as EventListener));
-    this._queryWrapper.addEventListener('keydown', (this._onKeyDown.bind(this) as EventListener));
-    this._queryWrapper.tabIndex = -1;
+    this.queryWrapper = this.element.createChild('div', 'database-query-group-messages');
+    this.queryWrapper.addEventListener('focusin', (this.onFocusIn.bind(this) as EventListener));
+    this.queryWrapper.addEventListener('focusout', (this.onFocusOut.bind(this) as EventListener));
+    this.queryWrapper.addEventListener('keydown', (this.onKeyDown.bind(this) as EventListener));
+    this.queryWrapper.tabIndex = -1;
 
-    this._promptContainer = this.element.createChild('div', 'database-query-prompt-container');
-    this._promptContainer.appendChild(UI.Icon.Icon.create('smallicon-text-prompt', 'prompt-icon'));
-    this._promptElement = this._promptContainer.createChild('div');
-    this._promptElement.className = 'database-query-prompt';
-    this._promptElement.addEventListener('keydown', (this._promptKeyDown.bind(this) as EventListener));
+    this.promptContainer = this.element.createChild('div', 'database-query-prompt-container');
+    this.promptContainer.appendChild(UI.Icon.Icon.create('smallicon-text-prompt', 'prompt-icon'));
+    this.promptElement = this.promptContainer.createChild('div');
+    this.promptElement.className = 'database-query-prompt';
+    this.promptElement.addEventListener('keydown', (this.promptKeyDown.bind(this) as EventListener));
 
-    this._prompt = new UI.TextPrompt.TextPrompt();
-    this._prompt.initialize(this.completions.bind(this), ' ');
-    this._proxyElement = this._prompt.attach(this._promptElement);
+    this.prompt = new UI.TextPrompt.TextPrompt();
+    this.prompt.initialize(this.completions.bind(this), ' ');
+    this.proxyElement = this.prompt.attach(this.promptElement);
 
-    this.element.addEventListener('click', this._messagesClicked.bind(this), true);
+    this.element.addEventListener('click', this.messagesClicked.bind(this), true);
 
-    this._queryResults = [];
-    this._virtualSelectedIndex = -1;
-    this._selectionTimeout = 0;
+    this.queryResults = [];
+    this.virtualSelectedIndex = -1;
+    this.selectionTimeout = 0;
   }
 
-  _messagesClicked(): void {
-    this._prompt.focus();
-    if (!this._prompt.isCaretInsidePrompt() && !this.element.hasSelection()) {
-      this._prompt.moveCaretToEndOfPrompt();
+  private messagesClicked(): void {
+    this.prompt.focus();
+    if (!this.prompt.isCaretInsidePrompt() && !this.element.hasSelection()) {
+      this.prompt.moveCaretToEndOfPrompt();
     }
   }
 
-  _onKeyDown(event: KeyboardEvent): void {
-    if (UI.UIUtils.isEditing() || !this._queryResults.length || event.shiftKey) {
+  private onKeyDown(event: KeyboardEvent): void {
+    if (UI.UIUtils.isEditing() || !this.queryResults.length || event.shiftKey) {
       return;
     }
     switch (event.key) {
       case 'ArrowUp':
-        if (this._virtualSelectedIndex > 0) {
-          this._virtualSelectedIndex--;
+        if (this.virtualSelectedIndex > 0) {
+          this.virtualSelectedIndex--;
         } else {
           return;
         }
         break;
       case 'ArrowDown':
-        if (this._virtualSelectedIndex < this._queryResults.length - 1) {
-          this._virtualSelectedIndex++;
+        if (this.virtualSelectedIndex < this.queryResults.length - 1) {
+          this.virtualSelectedIndex++;
         } else {
           return;
         }
         break;
       case 'Home':
-        this._virtualSelectedIndex = 0;
+        this.virtualSelectedIndex = 0;
         break;
       case 'End':
-        this._virtualSelectedIndex = this._queryResults.length - 1;
+        this.virtualSelectedIndex = this.queryResults.length - 1;
         break;
       default:
         return;
     }
     event.consume(true);
-    this._updateFocusedItem();
+    this.updateFocusedItem();
   }
 
-  _onFocusIn(event: FocusEvent): void {
+  private onFocusIn(event: FocusEvent): void {
     // Make default selection when moving from external (e.g. prompt) to the container.
-    if (this._virtualSelectedIndex === -1 && this._isOutsideViewport((event.relatedTarget as Element | null)) &&
-        event.target === this._queryWrapper && this._queryResults.length) {
-      this._virtualSelectedIndex = this._queryResults.length - 1;
+    if (this.virtualSelectedIndex === -1 && this.isOutsideViewport((event.relatedTarget as Element | null)) &&
+        event.target === this.queryWrapper && this.queryResults.length) {
+      this.virtualSelectedIndex = this.queryResults.length - 1;
     }
-    this._updateFocusedItem();
+    this.updateFocusedItem();
   }
 
-  _onFocusOut(event: FocusEvent): void {
-    if (this._isOutsideViewport((event.relatedTarget as Element | null))) {
-      this._virtualSelectedIndex = -1;
+  private onFocusOut(event: FocusEvent): void {
+    if (this.isOutsideViewport((event.relatedTarget as Element | null))) {
+      this.virtualSelectedIndex = -1;
     }
-    this._updateFocusedItem();
+    this.updateFocusedItem();
 
-    this._queryWrapper.scrollTop = 10000000;
+    this.queryWrapper.scrollTop = 10000000;
   }
 
-  _isOutsideViewport(element: Element|null): boolean {
-    return element !== null && !element.isSelfOrDescendant(this._queryWrapper);
+  private isOutsideViewport(element: Element|null): boolean {
+    return element !== null && !element.isSelfOrDescendant(this.queryWrapper);
   }
 
-  _updateFocusedItem(): void {
-    let index: number = this._virtualSelectedIndex;
-    if (this._queryResults.length && this._virtualSelectedIndex < 0) {
-      index = this._queryResults.length - 1;
+  private updateFocusedItem(): void {
+    let index: number = this.virtualSelectedIndex;
+    if (this.queryResults.length && this.virtualSelectedIndex < 0) {
+      index = this.queryResults.length - 1;
     }
 
-    const selectedElement = index >= 0 ? this._queryResults[index] : null;
-    const changed = this._lastSelectedElement !== selectedElement;
-    const containerHasFocus = this._queryWrapper === this.element.ownerDocument.deepActiveElement();
+    const selectedElement = index >= 0 ? this.queryResults[index] : null;
+    const changed = this.lastSelectedElement !== selectedElement;
+    const containerHasFocus = this.queryWrapper === this.element.ownerDocument.deepActiveElement();
 
     if (selectedElement && (changed || containerHasFocus) && this.element.hasFocus()) {
       if (!selectedElement.hasFocus()) {
@@ -167,12 +167,12 @@ export class DatabaseQueryView extends UI.Widget.VBox {
       }
     }
 
-    if (this._queryResults.length && !this._queryWrapper.hasFocus()) {
-      this._queryWrapper.tabIndex = 0;
+    if (this.queryResults.length && !this.queryWrapper.hasFocus()) {
+      this.queryWrapper.tabIndex = 0;
     } else {
-      this._queryWrapper.tabIndex = -1;
+      this.queryWrapper.tabIndex = -1;
     }
-    this._lastSelectedElement = selectedElement;
+    this.lastSelectedElement = selectedElement;
   }
 
   async completions(_expression: string, prefix: string, _force?: boolean): Promise<UI.SuggestBox.Suggestions> {
@@ -188,42 +188,42 @@ export class DatabaseQueryView extends UI.Widget.VBox {
         .map(completion => ({text: completion} as UI.SuggestBox.Suggestion));
   }
 
-  _selectStart(_event: Event): void {
-    if (this._selectionTimeout) {
-      clearTimeout(this._selectionTimeout);
+  private selectStart(_event: Event): void {
+    if (this.selectionTimeout) {
+      clearTimeout(this.selectionTimeout);
     }
 
-    this._prompt.clearAutocomplete();
+    this.prompt.clearAutocomplete();
 
     function moveBackIfOutside(this: DatabaseQueryView): void {
-      this._selectionTimeout = 0;
-      if (!this._prompt.isCaretInsidePrompt() && !this.element.hasSelection()) {
-        this._prompt.moveCaretToEndOfPrompt();
+      this.selectionTimeout = 0;
+      if (!this.prompt.isCaretInsidePrompt() && !this.element.hasSelection()) {
+        this.prompt.moveCaretToEndOfPrompt();
       }
-      this._prompt.autoCompleteSoon();
+      this.prompt.autoCompleteSoon();
     }
 
-    this._selectionTimeout = window.setTimeout(moveBackIfOutside.bind(this), 100);
+    this.selectionTimeout = window.setTimeout(moveBackIfOutside.bind(this), 100);
   }
 
-  _promptKeyDown(event: KeyboardEvent): void {
+  private promptKeyDown(event: KeyboardEvent): void {
     if (event.key === 'Enter') {
-      this._enterKeyPressed(event);
+      this.enterKeyPressed(event);
       return;
     }
   }
 
-  async _enterKeyPressed(event: KeyboardEvent): Promise<void> {
+  private async enterKeyPressed(event: KeyboardEvent): Promise<void> {
     event.consume(true);
 
-    const query = this._prompt.textWithCurrentSuggestion();
-    this._prompt.clearAutocomplete();
+    const query = this.prompt.textWithCurrentSuggestion();
+    this.prompt.clearAutocomplete();
 
     if (!query.length) {
       return;
     }
 
-    this._prompt.setEnabled(false);
+    this.prompt.setEnabled(false);
     try {
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -231,18 +231,18 @@ export class DatabaseQueryView extends UI.Widget.VBox {
         this.database.executeSql(
             query, (columnNames, values) => resolve({columnNames, values}), errorText => reject(errorText));
       });
-      this._queryFinished(query, result.columnNames, result.values);
+      this.queryFinished(query, result.columnNames, result.values);
     } catch (e) {
-      this._appendErrorQueryResult(query, e);
+      this.appendErrorQueryResult(query, e);
     }
-    this._prompt.setEnabled(true);
-    this._prompt.setText('');
-    this._prompt.focus();
+    this.prompt.setEnabled(true);
+    this.prompt.setText('');
+    this.prompt.focus();
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _queryFinished(query: string, columnNames: string[], values: any[]): void {
+  private queryFinished(query: string, columnNames: string[], values: any[]): void {
     const dataGrid =
         DataGrid.SortableDataGrid.SortableDataGrid.create(columnNames, values, i18nString(UIStrings.databaseQuery));
     const trimmedQuery = query.trim();
@@ -255,46 +255,46 @@ export class DatabaseQueryView extends UI.Widget.VBox {
       view = dataGrid.asWidget();
       dataGrid.setFocusable(false);
     }
-    this._appendViewQueryResult(trimmedQuery, view);
+    this.appendViewQueryResult(trimmedQuery, view);
 
     if (trimmedQuery.match(/^create /i) || trimmedQuery.match(/^drop table /i)) {
       this.dispatchEventToListeners(Events.SchemaUpdated, this.database);
     }
   }
 
-  _appendViewQueryResult(query: string, view: UI.Widget.Widget|null): void {
-    const resultElement = this._appendQueryResult(query);
+  private appendViewQueryResult(query: string, view: UI.Widget.Widget|null): void {
+    const resultElement = this.appendQueryResult(query);
     if (view) {
       view.show(resultElement);
     } else {
       resultElement.remove();
     }
 
-    this._scrollResultIntoView();
+    this.scrollResultIntoView();
   }
 
-  _appendErrorQueryResult(query: string, errorText: string): void {
-    const resultElement = this._appendQueryResult(query);
+  private appendErrorQueryResult(query: string, errorText: string): void {
+    const resultElement = this.appendQueryResult(query);
     resultElement.classList.add('error');
     resultElement.appendChild(UI.Icon.Icon.create('smallicon-error', 'prompt-icon'));
     UI.UIUtils.createTextChild(resultElement, errorText);
 
-    this._scrollResultIntoView();
+    this.scrollResultIntoView();
   }
 
-  _scrollResultIntoView(): void {
-    this._queryResults[this._queryResults.length - 1].scrollIntoView(false);
-    this._promptElement.scrollIntoView(false);
+  private scrollResultIntoView(): void {
+    this.queryResults[this.queryResults.length - 1].scrollIntoView(false);
+    this.promptElement.scrollIntoView(false);
   }
 
-  _appendQueryResult(query: string): HTMLDivElement {
+  private appendQueryResult(query: string): HTMLDivElement {
     const element = document.createElement('div');
     element.className = 'database-user-query';
     element.tabIndex = -1;
 
     UI.ARIAUtils.setAccessibleName(element, i18nString(UIStrings.queryS, {PH1: query}));
-    this._queryResults.push(element);
-    this._updateFocusedItem();
+    this.queryResults.push(element);
+    this.updateFocusedItem();
 
     element.appendChild(UI.Icon.Icon.create('smallicon-user-command', 'prompt-icon'));
 
@@ -307,7 +307,7 @@ export class DatabaseQueryView extends UI.Widget.VBox {
     resultElement.className = 'database-query-result';
     element.appendChild(resultElement);
 
-    this._queryWrapper.appendChild(element);
+    this.queryWrapper.appendChild(element);
     return resultElement;
   }
 }

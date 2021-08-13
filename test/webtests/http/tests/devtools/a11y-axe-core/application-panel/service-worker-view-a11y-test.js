@@ -15,7 +15,7 @@
   const scope2 = 'http://127.0.0.1:8000/devtools/service-workers/resources/scope2/';
   Resources.ServiceWorkersView.setThrottleDisabledForDebugging = true;
 
-  UI.panels.resources._sidebar.serviceWorkersTreeElement.select();
+  UI.panels.resources.sidebar.serviceWorkersTreeElement.select();
   ApplicationTestRunner.registerServiceWorker(scriptURL, scope1);
   ApplicationTestRunner.registerServiceWorker(scriptURL, scope2);
   const element = UI.panels.resources.visibleView.contentElement;

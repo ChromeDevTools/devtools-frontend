@@ -80,16 +80,16 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/application/CookieItemsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 class CookiePreviewWidget extends UI.Widget.VBox {
-  _cookie: SDK.Cookie.Cookie|null;
-  _showDecodedSetting: Common.Settings.Setting<boolean>;
-  _toggle: UI.UIUtils.CheckboxLabel;
-  _value: HTMLDivElement;
+  private cookie: SDK.Cookie.Cookie|null;
+  private showDecodedSetting: Common.Settings.Setting<boolean>;
+  private toggle: UI.UIUtils.CheckboxLabel;
+  private value: HTMLDivElement;
 
   constructor() {
     super();
     this.setMinimumSize(230, 45);
-    this._cookie = null;
-    this._showDecodedSetting = Common.Settings.Settings.instance().createSetting('cookieViewShowDecoded', false);
+    this.cookie = null;
+    this.showDecodedSetting = Common.Settings.Settings.instance().createSetting('cookieViewShowDecoded', false);
 
     const header = document.createElement('div');
     header.classList.add('cookie-preview-widget-header');
@@ -99,44 +99,43 @@ class CookiePreviewWidget extends UI.Widget.VBox {
     header.appendChild(span);
     this.contentElement.appendChild(header);
 
-    const toggle =
-        UI.UIUtils.CheckboxLabel.create(i18nString(UIStrings.showUrlDecoded), this._showDecodedSetting.get());
+    const toggle = UI.UIUtils.CheckboxLabel.create(i18nString(UIStrings.showUrlDecoded), this.showDecodedSetting.get());
     toggle.classList.add('cookie-preview-widget-toggle');
-    toggle.checkboxElement.addEventListener('click', () => this.showDecoded(!this._showDecodedSetting.get()));
+    toggle.checkboxElement.addEventListener('click', () => this.showDecoded(!this.showDecodedSetting.get()));
     header.appendChild(toggle);
-    this._toggle = toggle;
+    this.toggle = toggle;
 
     const value = document.createElement('div');
     value.classList.add('cookie-preview-widget-cookie-value');
     value.textContent = '';
     value.addEventListener('dblclick', this.handleDblClickOnCookieValue.bind(this));
-    this._value = value;
+    this.value = value;
 
     this.contentElement.classList.add('cookie-preview-widget');
     this.contentElement.appendChild(value);
   }
 
   showDecoded(decoded: boolean): void {
-    if (!this._cookie) {
+    if (!this.cookie) {
       return;
     }
-    this._showDecodedSetting.set(decoded);
-    this._toggle.checkboxElement.checked = decoded;
-    this._updatePreview();
+    this.showDecodedSetting.set(decoded);
+    this.toggle.checkboxElement.checked = decoded;
+    this.updatePreview();
   }
 
-  _updatePreview(): void {
-    if (this._cookie) {
-      this._value.textContent =
-          this._showDecodedSetting.get() ? decodeURIComponent(this._cookie.value()) : this._cookie.value();
+  private updatePreview(): void {
+    if (this.cookie) {
+      this.value.textContent =
+          this.showDecodedSetting.get() ? decodeURIComponent(this.cookie.value()) : this.cookie.value();
     } else {
-      this._value.textContent = '';
+      this.value.textContent = '';
     }
   }
 
   setCookie(cookie: SDK.Cookie.Cookie): void {
-    this._cookie = cookie;
-    this._updatePreview();
+    this.cookie = cookie;
+    this.updatePreview();
   }
 
   /**
@@ -145,7 +144,7 @@ class CookiePreviewWidget extends UI.Widget.VBox {
   handleDblClickOnCookieValue(event: Event): void {
     event.preventDefault();
     const range = document.createRange();
-    range.selectNode(this._value);
+    range.selectNode(this.value);
     const selection = window.getSelection();
     if (!selection) {
       return;
@@ -156,124 +155,124 @@ class CookiePreviewWidget extends UI.Widget.VBox {
 }
 
 export class CookieItemsView extends StorageItemsView {
-  _model: SDK.CookieModel.CookieModel;
-  _cookieDomain: string;
-  _totalSize: number;
-  _cookiesTable: CookieTable.CookiesTable.CookiesTable;
-  _splitWidget: UI.SplitWidget.SplitWidget;
-  _previewPanel: UI.Widget.VBox;
-  _previewWidget: CookiePreviewWidget;
-  _emptyWidget: UI.EmptyWidget.EmptyWidget;
-  _onlyIssuesFilterUI: UI.Toolbar.ToolbarCheckbox;
-  _refreshThrottler: Common.Throttler.Throttler;
-  _eventDescriptors: Common.EventTarget.EventDescriptor[];
-  _allCookies: SDK.Cookie.Cookie[];
-  _shownCookies: SDK.Cookie.Cookie[];
-  _selectedCookie: SDK.Cookie.Cookie|null;
+  private model: SDK.CookieModel.CookieModel;
+  private cookieDomain: string;
+  private totalSize: number;
+  private cookiesTable: CookieTable.CookiesTable.CookiesTable;
+  private readonly splitWidget: UI.SplitWidget.SplitWidget;
+  private readonly previewPanel: UI.Widget.VBox;
+  private readonly previewWidget: CookiePreviewWidget;
+  private readonly emptyWidget: UI.EmptyWidget.EmptyWidget;
+  private onlyIssuesFilterUI: UI.Toolbar.ToolbarCheckbox;
+  private readonly refreshThrottler: Common.Throttler.Throttler;
+  private eventDescriptors: Common.EventTarget.EventDescriptor[];
+  private allCookies: SDK.Cookie.Cookie[];
+  private shownCookies: SDK.Cookie.Cookie[];
+  private selectedCookie: SDK.Cookie.Cookie|null;
   constructor(model: SDK.CookieModel.CookieModel, cookieDomain: string) {
     super(i18nString(UIStrings.cookies), 'cookiesPanel');
 
     this.registerRequiredCSS('panels/application/cookieItemsView.css');
     this.element.classList.add('storage-view');
 
-    this._model = model;
-    this._cookieDomain = cookieDomain;
+    this.model = model;
+    this.cookieDomain = cookieDomain;
 
-    this._totalSize = 0;
-    this._cookiesTable = new CookieTable.CookiesTable.CookiesTable(
-        /* renderInline */ false, this._saveCookie.bind(this), this.refreshItems.bind(this),
-        this._handleCookieSelected.bind(this), this._deleteCookie.bind(this));
+    this.totalSize = 0;
+    this.cookiesTable = new CookieTable.CookiesTable.CookiesTable(
+        /* renderInline */ false, this.saveCookie.bind(this), this.refreshItems.bind(this),
+        this.handleCookieSelected.bind(this), this.deleteCookie.bind(this));
 
-    this._cookiesTable.setMinimumSize(0, 50);
+    this.cookiesTable.setMinimumSize(0, 50);
 
-    this._splitWidget = new UI.SplitWidget.SplitWidget(
+    this.splitWidget = new UI.SplitWidget.SplitWidget(
         /* isVertical: */ false, /* secondIsSidebar: */ true, 'cookieItemsSplitViewState');
-    this._splitWidget.show(this.element);
+    this.splitWidget.show(this.element);
 
-    this._previewPanel = new UI.Widget.VBox();
-    const resizer = this._previewPanel.element.createChild('div', 'preview-panel-resizer');
+    this.previewPanel = new UI.Widget.VBox();
+    const resizer = this.previewPanel.element.createChild('div', 'preview-panel-resizer');
 
-    this._splitWidget.setMainWidget(this._cookiesTable);
-    this._splitWidget.setSidebarWidget(this._previewPanel);
-    this._splitWidget.installResizer(resizer);
+    this.splitWidget.setMainWidget(this.cookiesTable);
+    this.splitWidget.setSidebarWidget(this.previewPanel);
+    this.splitWidget.installResizer(resizer);
 
-    this._previewWidget = new CookiePreviewWidget();
-    this._emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.selectACookieToPreviewItsValue));
-    this._emptyWidget.show(this._previewPanel.contentElement);
+    this.previewWidget = new CookiePreviewWidget();
+    this.emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.selectACookieToPreviewItsValue));
+    this.emptyWidget.show(this.previewPanel.contentElement);
 
-    this._onlyIssuesFilterUI = new UI.Toolbar.ToolbarCheckbox(
+    this.onlyIssuesFilterUI = new UI.Toolbar.ToolbarCheckbox(
         i18nString(UIStrings.onlyShowCookiesWithAnIssue), i18nString(UIStrings.onlyShowCookiesWhichHaveAn), () => {
-          this._updateWithCookies(this._allCookies);
+          this.updateWithCookies(this.allCookies);
         });
-    this.appendToolbarItem(this._onlyIssuesFilterUI);
+    this.appendToolbarItem(this.onlyIssuesFilterUI);
 
-    this._refreshThrottler = new Common.Throttler.Throttler(300);
-    this._eventDescriptors = [];
+    this.refreshThrottler = new Common.Throttler.Throttler(300);
+    this.eventDescriptors = [];
 
-    this._allCookies = [];
-    this._shownCookies = [];
-    this._selectedCookie = null;
+    this.allCookies = [];
+    this.shownCookies = [];
+    this.selectedCookie = null;
 
     this.setCookiesDomain(model, cookieDomain);
   }
 
   setCookiesDomain(model: SDK.CookieModel.CookieModel, domain: string): void {
-    this._model = model;
-    this._cookieDomain = domain;
+    this.model = model;
+    this.cookieDomain = domain;
     this.refreshItems();
-    Common.EventTarget.removeEventListeners(this._eventDescriptors);
+    Common.EventTarget.removeEventListeners(this.eventDescriptors);
     const networkManager = model.target().model(SDK.NetworkManager.NetworkManager);
     if (networkManager) {
-      this._eventDescriptors = [
-        networkManager.addEventListener(SDK.NetworkManager.Events.ResponseReceived, this._onResponseReceived, this),
-        networkManager.addEventListener(SDK.NetworkManager.Events.LoadingFinished, this._onLoadingFinished, this),
+      this.eventDescriptors = [
+        networkManager.addEventListener(SDK.NetworkManager.Events.ResponseReceived, this.onResponseReceived, this),
+        networkManager.addEventListener(SDK.NetworkManager.Events.LoadingFinished, this.onLoadingFinished, this),
       ];
     }
   }
 
-  _showPreview(cookie: SDK.Cookie.Cookie|null): void {
-    if (cookie === this._selectedCookie) {
+  private showPreview(cookie: SDK.Cookie.Cookie|null): void {
+    if (cookie === this.selectedCookie) {
       return;
     }
-    this._selectedCookie = cookie;
+    this.selectedCookie = cookie;
 
     if (!cookie) {
-      this._previewWidget.detach();
-      this._emptyWidget.show(this._previewPanel.contentElement);
+      this.previewWidget.detach();
+      this.emptyWidget.show(this.previewPanel.contentElement);
     } else {
-      this._emptyWidget.detach();
-      this._previewWidget.setCookie(cookie);
-      this._previewWidget.show(this._previewPanel.contentElement);
+      this.emptyWidget.detach();
+      this.previewWidget.setCookie(cookie);
+      this.previewWidget.show(this.previewPanel.contentElement);
     }
   }
 
-  _handleCookieSelected(): void {
-    const cookie = this._cookiesTable.selectedCookie();
+  private handleCookieSelected(): void {
+    const cookie = this.cookiesTable.selectedCookie();
     this.setCanDeleteSelected(Boolean(cookie));
 
-    this._showPreview(cookie);
+    this.showPreview(cookie);
   }
 
-  async _saveCookie(newCookie: SDK.Cookie.Cookie, oldCookie: SDK.Cookie.Cookie|null): Promise<boolean> {
+  private async saveCookie(newCookie: SDK.Cookie.Cookie, oldCookie: SDK.Cookie.Cookie|null): Promise<boolean> {
     if (oldCookie && newCookie.key() !== oldCookie.key()) {
-      await this._model.deleteCookie(oldCookie);
+      await this.model.deleteCookie(oldCookie);
     }
-    return this._model.saveCookie(newCookie);
+    return this.model.saveCookie(newCookie);
   }
 
-  _deleteCookie(cookie: SDK.Cookie.Cookie, callback: () => void): void {
-    this._model.deleteCookie(cookie).then(callback);
+  private deleteCookie(cookie: SDK.Cookie.Cookie, callback: () => void): void {
+    this.model.deleteCookie(cookie).then(callback);
   }
 
-  _updateWithCookies(allCookies: SDK.Cookie.Cookie[]): void {
-    this._allCookies = allCookies;
-    this._totalSize = allCookies.reduce((size, cookie) => size + cookie.size(), 0);
+  private updateWithCookies(allCookies: SDK.Cookie.Cookie[]): void {
+    this.allCookies = allCookies;
+    this.totalSize = allCookies.reduce((size, cookie) => size + cookie.size(), 0);
 
-    const parsedURL = Common.ParsedURL.ParsedURL.fromString(this._cookieDomain);
+    const parsedURL = Common.ParsedURL.ParsedURL.fromString(this.cookieDomain);
     const host = parsedURL ? parsedURL.host : '';
-    this._cookiesTable.setCookieDomain(host);
+    this.cookiesTable.setCookieDomain(host);
 
-    this._shownCookies = this.filter(allCookies, cookie => `${cookie.name()} ${cookie.value()} ${cookie.domain()}`);
+    this.shownCookies = this.filter(allCookies, cookie => `${cookie.name()} ${cookie.value()} ${cookie.domain()}`);
     if (this.hasFilter()) {
       this.setDeleteAllTitle(i18nString(UIStrings.clearFilteredCookies));
       this.setDeleteAllGlyph('largeicon-delete-filter');
@@ -281,20 +280,20 @@ export class CookieItemsView extends StorageItemsView {
       this.setDeleteAllTitle(i18nString(UIStrings.clearAllCookies));
       this.setDeleteAllGlyph('largeicon-delete-list');
     }
-    this._cookiesTable.setCookies(this._shownCookies, this._model.getCookieToBlockedReasonsMap());
-    UI.ARIAUtils.alert(i18nString(UIStrings.numberOfCookiesShownInTableS, {PH1: this._shownCookies.length}));
+    this.cookiesTable.setCookies(this.shownCookies, this.model.getCookieToBlockedReasonsMap());
+    UI.ARIAUtils.alert(i18nString(UIStrings.numberOfCookiesShownInTableS, {PH1: this.shownCookies.length}));
     this.setCanFilter(true);
-    this.setCanDeleteAll(this._shownCookies.length > 0);
-    this.setCanDeleteSelected(Boolean(this._cookiesTable.selectedCookie()));
+    this.setCanDeleteAll(this.shownCookies.length > 0);
+    this.setCanDeleteSelected(Boolean(this.cookiesTable.selectedCookie()));
 
-    if (!this._cookiesTable.selectedCookie()) {
-      this._showPreview(null);
+    if (!this.cookiesTable.selectedCookie()) {
+      this.showPreview(null);
     }
   }
 
   filter<T>(items: T[], keyFunction: (arg0: T) => string): T[] {
     const predicate = (object: T|null): boolean => {
-      if (!this._onlyIssuesFilterUI.checked()) {
+      if (!this.onlyIssuesFilterUI.checked()) {
         return true;
       }
       if (object instanceof SDK.Cookie.Cookie) {
@@ -309,31 +308,31 @@ export class CookieItemsView extends StorageItemsView {
    * This will only delete the currently visible cookies.
    */
   deleteAllItems(): void {
-    this._showPreview(null);
-    this._model.deleteCookies(this._shownCookies).then(() => this.refreshItems());
+    this.showPreview(null);
+    this.model.deleteCookies(this.shownCookies).then(() => this.refreshItems());
   }
 
   deleteSelectedItem(): void {
-    const selectedCookie = this._cookiesTable.selectedCookie();
+    const selectedCookie = this.cookiesTable.selectedCookie();
     if (selectedCookie) {
-      this._showPreview(null);
-      this._model.deleteCookie(selectedCookie).then(() => this.refreshItems());
+      this.showPreview(null);
+      this.model.deleteCookie(selectedCookie).then(() => this.refreshItems());
     }
   }
 
   refreshItems(): void {
-    this._model.getCookiesForDomain(this._cookieDomain).then(this._updateWithCookies.bind(this));
+    this.model.getCookiesForDomain(this.cookieDomain).then(this.updateWithCookies.bind(this));
   }
 
   refreshItemsThrottled(): void {
-    this._refreshThrottler.schedule(() => Promise.resolve(this.refreshItems()));
+    this.refreshThrottler.schedule(() => Promise.resolve(this.refreshItems()));
   }
 
-  _onResponseReceived(): void {
+  private onResponseReceived(): void {
     this.refreshItemsThrottled();
   }
 
-  _onLoadingFinished(): void {
+  private onLoadingFinished(): void {
     this.refreshItemsThrottled();
   }
 }

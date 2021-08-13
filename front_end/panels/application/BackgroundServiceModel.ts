@@ -10,33 +10,34 @@ import type * as Protocol from '../../generated/protocol.js';
 
 export class BackgroundServiceModel extends SDK.SDKModel.SDKModel implements
     ProtocolProxyApi.BackgroundServiceDispatcher {
-  _backgroundServiceAgent: ProtocolProxyApi.BackgroundServiceApi;
-  _events: Map<Protocol.BackgroundService.ServiceName, Protocol.BackgroundService.BackgroundServiceEvent[]>;
+  private readonly backgroundServiceAgent: ProtocolProxyApi.BackgroundServiceApi;
+  private readonly events:
+      Map<Protocol.BackgroundService.ServiceName, Protocol.BackgroundService.BackgroundServiceEvent[]>;
 
   constructor(target: SDK.Target.Target) {
     super(target);
-    this._backgroundServiceAgent = target.backgroundServiceAgent();
+    this.backgroundServiceAgent = target.backgroundServiceAgent();
     target.registerBackgroundServiceDispatcher(this);
 
-    this._events = new Map();
+    this.events = new Map();
   }
 
   enable(service: Protocol.BackgroundService.ServiceName): void {
-    this._events.set(service, []);
-    this._backgroundServiceAgent.invoke_startObserving({service});
+    this.events.set(service, []);
+    this.backgroundServiceAgent.invoke_startObserving({service});
   }
 
   setRecording(shouldRecord: boolean, service: Protocol.BackgroundService.ServiceName): void {
-    this._backgroundServiceAgent.invoke_setRecording({shouldRecord, service});
+    this.backgroundServiceAgent.invoke_setRecording({shouldRecord, service});
   }
 
   clearEvents(service: Protocol.BackgroundService.ServiceName): void {
-    this._events.set(service, []);
-    this._backgroundServiceAgent.invoke_clearEvents({service});
+    this.events.set(service, []);
+    this.backgroundServiceAgent.invoke_clearEvents({service});
   }
 
   getEvents(service: Protocol.BackgroundService.ServiceName): Protocol.BackgroundService.BackgroundServiceEvent[] {
-    return this._events.get(service) || [];
+    return this.events.get(service) || [];
   }
 
   recordingStateChanged({isRecording, service}: Protocol.BackgroundService.RecordingStateChangedEvent): void {
@@ -47,7 +48,7 @@ export class BackgroundServiceModel extends SDK.SDKModel.SDKModel implements
                                      Protocol.BackgroundService.BackgroundServiceEventReceivedEvent): void {
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
     // @ts-expect-error
-    this._events.get(backgroundServiceEvent.service).push(backgroundServiceEvent);
+    this.events.get(backgroundServiceEvent.service).push(backgroundServiceEvent);
     this.dispatchEventToListeners(Events.BackgroundServiceEventReceived, backgroundServiceEvent);
   }
 }

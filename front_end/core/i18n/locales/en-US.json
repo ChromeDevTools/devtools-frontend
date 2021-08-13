@@ -7622,9 +7622,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Clear all"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Direction"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Documentation"
   },
@@ -7663,6 +7660,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Timestamp"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Type"
   },
   "panels/screencast/ScreencastApp.ts | toggleScreencast": {
     "message": "Toggle screencast"

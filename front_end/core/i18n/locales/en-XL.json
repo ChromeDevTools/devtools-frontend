@@ -7622,9 +7622,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Ĉĺêár̂ ál̂ĺ"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "D̂ír̂éĉt́îón̂"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "D̂óĉúm̂én̂t́ât́îón̂"
   },
@@ -7663,6 +7660,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "T̂ím̂éŝt́âḿp̂"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "T̂ýp̂é"
   },
   "panels/screencast/ScreencastApp.ts | toggleScreencast": {
     "message": "T̂óĝǵl̂é ŝćr̂éêńĉáŝt́"

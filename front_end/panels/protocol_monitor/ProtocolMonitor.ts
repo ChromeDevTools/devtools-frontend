@@ -26,7 +26,7 @@ const UIStrings = {
   * the particular protocol message was travelling. Values in this column will either be 'sent' or
   * 'received'.
   */
-  direction: 'Direction',
+  type: 'Type',
   /**
   * @description Text in Protocol Monitor of the Protocol Monitor tab. Noun relating to a network request.
   */
@@ -157,20 +157,20 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     const dataGridInitialData: DataGrid.DataGridController.DataGridControllerData = {
       columns: [
         {
+          id: 'type',
+          title: i18nString(UIStrings.type),
+          sortable: true,
+          widthWeighting: 1,
+          visible: true,
+          hideable: true,
+        },
+        {
           id: 'method',
           title: i18nString(UIStrings.method),
           sortable: false,
           widthWeighting: 1,
           visible: true,
           hideable: false,
-        },
-        {
-          id: 'direction',
-          title: i18nString(UIStrings.direction),
-          sortable: true,
-          widthWeighting: 1,
-          visible: false,
-          hideable: true,
         },
         {
           id: 'request',
@@ -219,7 +219,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
             (menu: UI.ContextMenu.ContextMenu, columns: readonly DataGrid.DataGridUtils.Column[],
              row: Readonly<DataGrid.DataGridUtils.Row>): void => {
               const methodColumn = DataGrid.DataGridUtils.getRowEntryForColumnId(row, 'method');
-              const directionColumn = DataGrid.DataGridUtils.getRowEntryForColumnId(row, 'direction');
+              const typeColumn = DataGrid.DataGridUtils.getRowEntryForColumnId(row, 'type');
 
               /**
              * You can click the "Filter" item in the context menu to filter the
@@ -240,7 +240,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
                   return;
                 }
                 const [domain, method] = String(methodColumn.value).split('.');
-                const type = directionColumn.value === 'sent' ? 'method' : 'event';
+                const type = typeColumn.value === 'sent' ? 'method' : 'event';
                 Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
                     `https://chromedevtools.github.io/devtools-protocol/tot/${domain}#${type}-${method}`);
               });
@@ -256,7 +256,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
       const infoWidgetData = {
         request: DataGrid.DataGridUtils.getRowEntryForColumnId(focusedRow, 'request'),
         response: DataGrid.DataGridUtils.getRowEntryForColumnId(focusedRow, 'response'),
-        direction: DataGrid.DataGridUtils.getRowEntryForColumnId(focusedRow, 'direction'),
+        type: DataGrid.DataGridUtils.getRowEntryForColumnId(focusedRow, 'type'),
       };
       this.infoWidget.render(infoWidgetData);
     });
@@ -266,7 +266,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     });
     split.setMainWidget(this.dataGridIntegrator);
     split.setSidebarWidget(this.infoWidget);
-    const keys = ['method', 'request', 'response', 'direction', 'target', 'session'];
+    const keys = ['method', 'request', 'response', 'type', 'target', 'session'];
     this.filterParser = new TextUtils.TextUtils.FilterParser(keys);
     this.suggestionBuilder = new UI.FilterSuggestionBuilder.FilterSuggestionBuilder(keys);
 
@@ -402,7 +402,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
           value: Date.now() - this.startTime,
           renderer: timestampRenderer,
         },
-        {columnId: 'direction', value: 'received'},
+        {columnId: 'type', value: 'received'},
         {columnId: 'target', value: this.targetToString(sdkTarget)},
         {columnId: 'session', value: message.sessionId || ''},
       ],
@@ -439,7 +439,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
           value: Date.now() - this.startTime,
           renderer: timestampRenderer,
         },
-        {columnId: 'direction', value: 'sent'},
+        {columnId: 'type', value: 'sent'},
         {columnId: 'target', value: this.targetToString(sdkTarget)},
         {columnId: 'session', value: message.sessionId || ''},
       ],
@@ -482,7 +482,7 @@ export class InfoWidget extends UI.Widget.VBox {
   render(data: {
     request: DataGrid.DataGridUtils.Cell|undefined,
     response: DataGrid.DataGridUtils.Cell|undefined,
-    direction: DataGrid.DataGridUtils.Cell|undefined,
+    type: DataGrid.DataGridUtils.Cell|undefined,
   }|null): void {
     if (!data || !data.request || !data.response) {
       this.tabbedPane.changeTabView('request', new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMessageSelected)));
@@ -491,7 +491,7 @@ export class InfoWidget extends UI.Widget.VBox {
       return;
     }
 
-    const requestEnabled = data && data.direction && data.direction.value === 'sent';
+    const requestEnabled = data && data.type && data.type.value === 'sent';
     this.tabbedPane.setTabEnabled('request', Boolean(requestEnabled));
     if (!requestEnabled) {
       this.tabbedPane.selectTab('response');

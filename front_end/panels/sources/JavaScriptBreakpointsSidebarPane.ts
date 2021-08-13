@@ -13,8 +13,6 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import javaScriptBreakpointsSidebarPaneStyles from './javaScriptBreakpointsSidebarPane.css.js';
-
 const UIStrings = {
   /**
   *@description Text to indicate there are no breakpoints
@@ -95,6 +93,7 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
 
   private constructor() {
     super(true);
+    this.registerRequiredCSS('panels/sources/javaScriptBreakpointsSidebarPane.css');
 
     this._breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance();
     this._breakpointManager.addEventListener(Bindings.BreakpointManager.Events.BreakpointAdded, this.update, this);
@@ -495,10 +494,6 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
   }
 
   _didUpdateForTest(): void {
-  }
-  wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([javaScriptBreakpointsSidebarPaneStyles]);
   }
 }
 

@@ -209,6 +209,12 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     if (!propertyB.synthetic && propertyA.synthetic) {
       return -1;
     }
+    if (!propertyA.isOwn && propertyB.isOwn) {
+      return 1;
+    }
+    if (!propertyB.isOwn && propertyA.isOwn) {
+      return -1;
+    }
     if (!propertyA.enumerable && propertyB.enumerable) {
       return 1;
     }
@@ -996,6 +1002,9 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         (ObjectPropertiesSection.createNameElement(this.property.name, this.property.private) as HTMLElement);
     if (!this.property.enumerable) {
       this.nameElement.classList.add('object-properties-section-dimmed');
+    }
+    if (this.property.isOwn) {
+      this.nameElement.classList.add('own-property');
     }
     if (this.property.synthetic) {
       this.nameElement.classList.add('synthetic-property');

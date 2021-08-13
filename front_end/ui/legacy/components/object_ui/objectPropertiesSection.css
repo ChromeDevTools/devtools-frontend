@@ -38,8 +38,12 @@
   padding-left: 0;
 }
 
+.object-properties-section .own-property {
+  font-weight: bold;
+}
+
 .object-properties-section .synthetic-property {
-  font-style: italic;
+  color: var(--color-text-secondary);
 }
 
 .object-properties-section .private-property-hash {

@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -39,6 +41,8 @@ import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+
+import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.js';
 
 import type {PerformanceModel} from './PerformanceModel.js';
 import {FlameChartStyle, Selection, TimelineFlameChartMarker} from './TimelineFlameChartView.js';
@@ -1033,7 +1037,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
     const element = document.createElement('div');
     const root = UI.Utils.createShadowRootWithCoreStyles(element, {
-      cssFile: 'panels/timeline/timelineFlamechartPopover.css',
+      cssFile: [timelineFlamechartPopoverStyles],
       delegatesFocus: undefined,
     });
     const contents = root.createChild('div', 'timeline-flamechart-popover');

@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
+import timelinePaintProfilerStyles from './timelinePaintProfiler.css.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -49,6 +52,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
   }
 
   wasShown(): void {
+    super.wasShown();
     if (this.needsUpdateWhenVisible) {
       this.needsUpdateWhenVisible = false;
       this.update();
@@ -154,7 +158,7 @@ export class TimelinePaintImageView extends UI.Widget.Widget {
   private maskRectangle?: Protocol.DOM.Rect|null;
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/timeline/timelinePaintProfiler.css');
+
     this.contentElement.classList.add('fill', 'paint-profiler-image-view');
     this.imageContainer = this.contentElement.createChild('div', 'paint-profiler-image-container');
     this.imageElement = (this.imageContainer.createChild('img') as HTMLImageElement);
@@ -220,5 +224,9 @@ export class TimelinePaintImageView extends UI.Widget.Widget {
   setMask(maskRectangle: Protocol.DOM.Rect|null): void {
     this.maskRectangle = maskRectangle;
     this.maskElement.classList.toggle('hidden', !maskRectangle);
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([timelinePaintProfilerStyles]);
   }
 }

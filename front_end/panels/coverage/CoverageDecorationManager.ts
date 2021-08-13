@@ -183,8 +183,8 @@ export class CoverageDecorationManager {
     return a.id.localeCompare(b.id) || a.line - b.line || a.column - b.column;
   }
 
-  private onUISourceCodeAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const uiSourceCode = event.data as Workspace.UISourceCode.UISourceCode;
+  private onUISourceCodeAdded(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
+    const uiSourceCode = event.data;
     uiSourceCode.addLineDecoration(0, decoratorType, this);
   }
 }

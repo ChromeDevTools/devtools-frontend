@@ -297,3 +297,29 @@ export enum Events {
   ProjectAdded = 'ProjectAdded',
   ProjectRemoved = 'ProjectRemoved',
 }
+
+export interface UISourceCodeRenamedEvent {
+  oldURL: string;
+  uiSourceCode: UISourceCode;
+}
+
+export interface WorkingCopyChangedEvent {
+  uiSourceCode: UISourceCode;
+}
+
+export interface WorkingCopyCommitedEvent {
+  uiSourceCode: UISourceCode;
+  content: string;
+  encoded?: boolean;
+}
+
+export type EventTypes = {
+  [Events.UISourceCodeAdded]: UISourceCode,
+  [Events.UISourceCodeRemoved]: UISourceCode,
+  [Events.UISourceCodeRenamed]: UISourceCodeRenamedEvent,
+  [Events.WorkingCopyChanged]: WorkingCopyChangedEvent,
+  [Events.WorkingCopyCommitted]: WorkingCopyCommitedEvent,
+  [Events.WorkingCopyCommittedByUser]: WorkingCopyCommitedEvent,
+  [Events.ProjectAdded]: Project,
+  [Events.ProjectRemoved]: Project,
+};

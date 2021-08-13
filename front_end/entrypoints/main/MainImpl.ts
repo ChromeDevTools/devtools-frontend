@@ -583,8 +583,8 @@ export class MainImpl {
       return;
     }
 
-    function listener(event: Common.EventTarget.EventTargetEvent): void {
-      const uiSourceCode = (event.data as Workspace.UISourceCode.UISourceCode);
+    function listener(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
+      const uiSourceCode = event.data;
       if (uiSourceCode.url() === url) {
         Common.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, columnNumber));
         Workspace.Workspace.WorkspaceImpl.instance().removeEventListener(

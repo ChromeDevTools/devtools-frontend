@@ -62,23 +62,24 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper {
     return diff;
   }
 
-  private uiSourceCodeChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const uiSourceCode = (event.data.uiSourceCode as Workspace.UISourceCode.UISourceCode);
+  private uiSourceCodeChanged(
+      event: Common.EventTarget.EventTargetEvent<{uiSourceCode: Workspace.UISourceCode.UISourceCode}>): void {
+    const uiSourceCode = event.data.uiSourceCode;
     this.updateModifiedState(uiSourceCode);
   }
 
-  private uiSourceCodeAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const uiSourceCode = (event.data as Workspace.UISourceCode.UISourceCode);
+  private uiSourceCodeAdded(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
+    const uiSourceCode = event.data;
     this.updateModifiedState(uiSourceCode);
   }
 
-  private uiSourceCodeRemoved(event: Common.EventTarget.EventTargetEvent): void {
-    const uiSourceCode = (event.data as Workspace.UISourceCode.UISourceCode);
+  private uiSourceCodeRemoved(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
+    const uiSourceCode = event.data;
     this.removeUISourceCode(uiSourceCode);
   }
 
-  private projectRemoved(event: Common.EventTarget.EventTargetEvent): void {
-    const project = (event.data as Workspace.Workspace.Project);
+  private projectRemoved(event: Common.EventTarget.EventTargetEvent<Workspace.Workspace.Project>): void {
+    const project = event.data;
     for (const uiSourceCode of project.uiSourceCodes()) {
       this.removeUISourceCode(uiSourceCode);
     }

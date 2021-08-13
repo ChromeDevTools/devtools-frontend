@@ -69,8 +69,9 @@ export class SourceFormatter {
     return sourceFormatterInstance;
   }
 
-  private async onUISourceCodeRemoved(event: Common.EventTarget.EventTargetEvent): Promise<void> {
-    const uiSourceCode = (event.data as Workspace.UISourceCode.UISourceCode);
+  private async onUISourceCodeRemoved(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>):
+      Promise<void> {
+    const uiSourceCode = event.data;
     const cacheEntry = this.formattedSourceCodes.get(uiSourceCode);
     if (cacheEntry && cacheEntry.formatData) {
       await this.discardFormatData(cacheEntry.formatData);

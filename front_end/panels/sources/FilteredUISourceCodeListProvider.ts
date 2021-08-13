@@ -39,8 +39,8 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
     this._uiSourceCodeUrls = new Set();
   }
 
-  _projectRemoved(event: Common.EventTarget.EventTargetEvent): void {
-    const project = (event.data as Workspace.Workspace.Project);
+  _projectRemoved(event: Common.EventTarget.EventTargetEvent<Workspace.Workspace.Project>): void {
+    const project = event.data;
     this._populate(project);
     this.refresh();
   }
@@ -182,8 +182,8 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
     return lineNumberMatch ? lineNumberMatch[1] : query;
   }
 
-  _uiSourceCodeAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const uiSourceCode = (event.data as Workspace.UISourceCode.UISourceCode);
+  _uiSourceCodeAdded(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
+    const uiSourceCode = event.data;
     if (!this._filterUISourceCode(uiSourceCode) || !this.filterProject(uiSourceCode.project())) {
       return;
     }

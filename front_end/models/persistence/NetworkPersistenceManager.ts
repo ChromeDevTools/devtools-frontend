@@ -54,10 +54,10 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     this.enabled = false;
 
     this.workspace.addEventListener(Workspace.Workspace.Events.ProjectAdded, event => {
-      this.onProjectAdded(event.data as Workspace.Workspace.Project);
+      this.onProjectAdded(event.data);
     });
     this.workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, event => {
-      this.onProjectRemoved(event.data as Workspace.Workspace.Project);
+      this.onProjectRemoved(event.data);
     });
 
     PersistenceImpl.instance().addNetworkInterceptor(this.canHandleNetworkUISourceCode.bind(this));
@@ -122,8 +122,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
             }),
         Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
             Workspace.Workspace.Events.WorkingCopyCommitted,
-            event => this.onUISourceCodeWorkingCopyCommitted(
-                event.data.uiSourceCode as Workspace.UISourceCode.UISourceCode)),
+            event => this.onUISourceCodeWorkingCopyCommitted(event.data.uiSourceCode)),
       ];
       await this.updateActiveProject();
     } else {
@@ -132,18 +131,21 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     }
   }
 
-  private async uiSourceCodeRenamedListener(event: Common.EventTarget.EventTargetEvent): Promise<void> {
-    const uiSourceCode = event.data.uiSourceCode as Workspace.UISourceCode.UISourceCode;
+  private async uiSourceCodeRenamedListener(
+      event: Common.EventTarget.EventTargetEvent<Workspace.Workspace.UISourceCodeRenamedEvent>): Promise<void> {
+    const uiSourceCode = event.data.uiSourceCode;
     await this.onUISourceCodeRemoved(uiSourceCode);
     await this.onUISourceCodeAdded(uiSourceCode);
   }
 
-  private async uiSourceCodeRemovedListener(event: Common.EventTarget.EventTargetEvent): Promise<void> {
-    await this.onUISourceCodeRemoved(event.data as Workspace.UISourceCode.UISourceCode);
+  private async uiSourceCodeRemovedListener(
+      event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): Promise<void> {
+    await this.onUISourceCodeRemoved(event.data);
   }
 
-  private async uiSourceCodeAdded(event: Common.EventTarget.EventTargetEvent): Promise<void> {
-    await this.onUISourceCodeAdded(event.data as Workspace.UISourceCode.UISourceCode);
+  private async uiSourceCodeAdded(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>):
+      Promise<void> {
+    await this.onUISourceCodeAdded(event.data);
   }
 
   private async updateActiveProject(): Promise<void> {

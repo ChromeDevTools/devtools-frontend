@@ -62,18 +62,14 @@ export class Automapping {
     this.interceptors = [];
 
     this.workspace.addEventListener(
-        Workspace.Workspace.Events.UISourceCodeAdded,
-        event => this.onUISourceCodeAdded(event.data as Workspace.UISourceCode.UISourceCode));
+        Workspace.Workspace.Events.UISourceCodeAdded, event => this.onUISourceCodeAdded(event.data));
     this.workspace.addEventListener(
-        Workspace.Workspace.Events.UISourceCodeRemoved,
-        event => this.onUISourceCodeRemoved(event.data as Workspace.UISourceCode.UISourceCode));
+        Workspace.Workspace.Events.UISourceCodeRemoved, event => this.onUISourceCodeRemoved(event.data));
     this.workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRenamed, this.onUISourceCodeRenamed, this);
     this.workspace.addEventListener(
-        Workspace.Workspace.Events.ProjectAdded,
-        event => this.onProjectAdded(event.data as Workspace.Workspace.Project), this);
+        Workspace.Workspace.Events.ProjectAdded, event => this.onProjectAdded(event.data), this);
     this.workspace.addEventListener(
-        Workspace.Workspace.Events.ProjectRemoved,
-        event => this.onProjectRemoved(event.data as Workspace.Workspace.Project), this);
+        Workspace.Workspace.Events.ProjectRemoved, event => this.onProjectRemoved(event.data), this);
 
     for (const fileSystem of workspace.projects()) {
       this.onProjectAdded(fileSystem);
@@ -168,9 +164,9 @@ export class Automapping {
     }
   }
 
-  private onUISourceCodeRenamed(event: Common.EventTarget.EventTargetEvent): void {
-    const uiSourceCode = event.data.uiSourceCode as Workspace.UISourceCode.UISourceCode;
-    const oldURL = event.data.oldURL as string;
+  private onUISourceCodeRenamed(
+      event: Common.EventTarget.EventTargetEvent<Workspace.Workspace.UISourceCodeRenamedEvent>): void {
+    const {uiSourceCode, oldURL} = event.data;
     if (uiSourceCode.project().type() !== Workspace.Workspace.projectTypes.FileSystem) {
       return;
     }

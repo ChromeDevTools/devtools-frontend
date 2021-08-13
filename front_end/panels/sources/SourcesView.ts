@@ -301,8 +301,8 @@ export class SourcesView extends UI.Widget.VBox implements TabbedEditorContainer
     this._historyManager.rollover();
   }
 
-  _uiSourceCodeAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const uiSourceCode = (event.data as Workspace.UISourceCode.UISourceCode);
+  _uiSourceCodeAdded(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
+    const uiSourceCode = event.data;
     this._addUISourceCode(uiSourceCode);
   }
 
@@ -318,8 +318,8 @@ export class SourcesView extends UI.Widget.VBox implements TabbedEditorContainer
     this._editorContainer.addUISourceCode(uiSourceCode);
   }
 
-  _uiSourceCodeRemoved(event: Common.EventTarget.EventTargetEvent): void {
-    const uiSourceCode = (event.data as Workspace.UISourceCode.UISourceCode);
+  _uiSourceCodeRemoved(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
+    const uiSourceCode = event.data;
     this._removeUISourceCodes([uiSourceCode]);
   }
 
@@ -331,7 +331,7 @@ export class SourcesView extends UI.Widget.VBox implements TabbedEditorContainer
     }
   }
 
-  _projectRemoved(event: Common.EventTarget.EventTargetEvent): void {
+  _projectRemoved(event: Common.EventTarget.EventTargetEvent<Workspace.Workspace.Project>): void {
     const project = event.data;
     const uiSourceCodes = project.uiSourceCodes();
     this._removeUISourceCodes(uiSourceCodes);

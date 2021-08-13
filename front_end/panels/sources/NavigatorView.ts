@@ -350,16 +350,16 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     this._computeUniqueFileSystemProjectNames();
   }
 
-  _projectAddedCallback(event: Common.EventTarget.EventTargetEvent): void {
-    const project = (event.data as Workspace.Workspace.Project);
+  _projectAddedCallback(event: Common.EventTarget.EventTargetEvent<Workspace.Workspace.Project>): void {
+    const project = event.data;
     this._projectAdded(project);
     if (project.type() === Workspace.Workspace.projectTypes.FileSystem) {
       this._computeUniqueFileSystemProjectNames();
     }
   }
 
-  _projectRemovedCallback(event: Common.EventTarget.EventTargetEvent): void {
-    const project = (event.data as Workspace.Workspace.Project);
+  _projectRemovedCallback(event: Common.EventTarget.EventTargetEvent<Workspace.Workspace.Project>): void {
+    const project = event.data;
     this._removeProject(project);
     if (project.type() === Workspace.Workspace.projectTypes.FileSystem) {
       this._computeUniqueFileSystemProjectNames();
@@ -439,13 +439,13 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   uiSourceCodeAdded(_uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
   }
 
-  _uiSourceCodeAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const uiSourceCode = (event.data as Workspace.UISourceCode.UISourceCode);
+  _uiSourceCodeAdded(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
+    const uiSourceCode = event.data;
     this._addUISourceCode(uiSourceCode);
   }
 
-  _uiSourceCodeRemoved(event: Common.EventTarget.EventTargetEvent): void {
-    const uiSourceCode = (event.data as Workspace.UISourceCode.UISourceCode);
+  _uiSourceCodeRemoved(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
+    const uiSourceCode = event.data;
     this._removeUISourceCode(uiSourceCode);
   }
 

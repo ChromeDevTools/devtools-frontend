@@ -108,68 +108,9 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
       return;
     }
 
-    const result = await object.callFunction(protoList);
-
-    if (!result.object || result.wasThrown) {
-      return;
-    }
-
-    const propertiesResult = await result.object.getOwnProperties(false /* generatePreview */);
-    result.object.release();
-
-    if (!propertiesResult || !propertiesResult.properties) {
-      return;
-    }
-
-    const properties = propertiesResult.properties;
-    this._treeOutline.removeChildren();
-
-    let selected = false;
-    // Get array of property user-friendly names.
-    for (const {name, value} of properties) {
-      if (isNaN(parseInt(name, 10))) {
-        continue;
-      }
-      if (!value) {
-        continue;
-      }
-      let title = value.description;
-      if (!title) {
-        continue;
-      }
-      title = title.replace(/Prototype$/, '');
-
-      const section = this._createSectionTreeElement(value, title, object);
-      this._treeOutline.appendChild(section);
-      if (!selected) {
-        section.select(/* omitFocus= */ true, /* selectedByUser= */ false);
-        selected = true;
-      }
-    }
-
-    function protoList(this: object): object[] {
-      const result: object[] = [];
-      for (let object = this; object !== null; object = Object.getPrototypeOf(object)) {
-        result.push(object);
-      }
-      return result;
-    }
-  }
-
-  _createSectionTreeElement(
-      property: SDK.RemoteObject.RemoteObject, title: string,
-      object: SDK.RemoteObject.RemoteObject): ObjectUI.ObjectPropertiesSection.RootElement {
-    const titleElement = document.createElement('span');
-    titleElement.classList.add('tree-element-title');
-    titleElement.textContent = title;
-
-    const section = new ObjectUI.ObjectPropertiesSection.RootElement(
-        property, undefined, undefined, ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OwnOnly, undefined,
-        object);
-    section.title = titleElement;
-    this._expandController.watchSection(title, section);
-
-    return section;
+    await ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.populate(
+        this._treeOutline.rootElement(), object, true, true, undefined, undefined,
+        ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.All);
   }
 
   _onNodeChange(event: Common.EventTarget

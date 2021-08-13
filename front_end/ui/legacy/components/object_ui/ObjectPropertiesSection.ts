@@ -589,8 +589,7 @@ export class ObjectPropertiesSectionsTreeOutline extends UI.TreeOutline.TreeOutl
 
 export const enum ObjectPropertiesMode {
   All = 0,                         // All properties, including prototype properties
-  OwnOnly = 1,                     // Own properties, excluding internal properties
-  OwnAndInternalAndInherited = 2,  // Own, internal, and inherited properties
+  OwnAndInternalAndInherited = 1,  // Own, internal, and inherited properties
 }
 
 export class RootElement extends UI.TreeOutline.TreeElement {
@@ -663,8 +662,8 @@ export class RootElement extends UI.TreeOutline.TreeElement {
     const treeOutline = (this.treeOutline as ObjectPropertiesSection | null);
     const skipProto = treeOutline ? Boolean(treeOutline.skipProtoInternal) : false;
     return ObjectPropertyTreeElement.populate(
-        this, this.object, skipProto, this.linkifier, this.emptyPlaceholder, this.propertiesMode, this.extraProperties,
-        this.targetObject);
+        this, this.object, skipProto, false, this.linkifier, this.emptyPlaceholder, this.propertiesMode,
+        this.extraProperties, this.targetObject);
   }
 }
 
@@ -701,7 +700,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
 
   static async populate(
       treeElement: UI.TreeOutline.TreeElement, value: SDK.RemoteObject.RemoteObject, skipProto: boolean,
-      linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string|null,
+      skipGettersAndSetters: boolean, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string|null,
       propertiesMode: ObjectPropertiesMode = ObjectPropertiesMode.OwnAndInternalAndInherited,
       extraProperties?: SDK.RemoteObject.RemoteObjectProperty[],
       targetValue?: SDK.RemoteObject.RemoteObject): Promise<void> {
@@ -715,9 +714,6 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     switch (propertiesMode) {
       case ObjectPropertiesMode.All:
         ({properties} = await value.getAllProperties(false /* accessorPropertiesOnly */, true /* generatePreview */));
-        break;
-      case ObjectPropertiesMode.OwnOnly:
-        ({properties} = await value.getOwnProperties(true /* generatePreview */));
         break;
       case ObjectPropertiesMode.OwnAndInternalAndInherited:
         ({properties, internalProperties} =
@@ -734,15 +730,15 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     ObjectPropertyTreeElement.populateWithProperties(
-        treeElement, properties, internalProperties, skipProto, targetValue || value, linkifier, emptyPlaceholder,
-        propertiesMode === ObjectPropertiesMode.OwnOnly);
+        treeElement, properties, internalProperties, skipProto, skipGettersAndSetters, targetValue || value, linkifier,
+        emptyPlaceholder);
   }
 
   static populateWithProperties(
       treeNode: UI.TreeOutline.TreeElement, properties: SDK.RemoteObject.RemoteObjectProperty[],
       internalProperties: SDK.RemoteObject.RemoteObjectProperty[]|null, skipProto: boolean,
-      value: SDK.RemoteObject.RemoteObject|null, linkifier?: Components.Linkifier.Linkifier,
-      emptyPlaceholder?: string|null, skipGettersAndSetters?: boolean): void {
+      skipGettersAndSetters: boolean, value: SDK.RemoteObject.RemoteObject|null,
+      linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string|null): void {
     properties.sort(ObjectPropertiesSection.compareProperties);
     internalProperties = internalProperties || [];
 
@@ -926,7 +922,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     const targetValue = this.property.name !== '[[Prototype]]' ? propertyValue : parentMap.get(this.property);
     if (targetValue) {
       await ObjectPropertyTreeElement.populate(
-          this, propertyValue, skipProto, this.linkifier, undefined, undefined, undefined, targetValue);
+          this, propertyValue, skipProto, false, this.linkifier, undefined, undefined, undefined, targetValue);
       if (this.childCount() > this.maxNumPropertiesToShow) {
         this.createShowAllPropertiesButton();
       }

@@ -3,7 +3,9 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
+import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
@@ -11,6 +13,10 @@ const UIStrings = {
   * @description Title for the hidden issues row
   */
   hiddenIssues: 'Hidden issues',
+  /**
+  * @description Title for the Unhide all issues button
+  */
+  unhideIssues: 'Unhide all issues',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/issues/HiddenIssuesRow.ts', UIStrings);
@@ -29,6 +35,15 @@ export class HiddenIssuesRow extends UI.TreeOutline.TreeElement {
   }
 
   private appendHeader(): void {
+    const unhideAllIssuesBtn = new IconButton.IconButton.IconButton();
+    unhideAllIssuesBtn.classList.add('unhide-all-issues-button');
+    unhideAllIssuesBtn.title = i18nString(UIStrings.unhideIssues);
+    unhideAllIssuesBtn.data = {
+      groups: [{iconName: 'refresh_12x12_icon', iconHeight: '12px', iconWidth: '12px', text: ''}],
+      clickHandler: (): void => IssuesManager.IssuesManager.IssuesManager.instance().unhideAllIssues(),
+      accessibleName: i18nString(UIStrings.unhideIssues),
+      compact: true,
+    };
     const countAdorner = new Adorners.Adorner.Adorner();
     countAdorner.data = {
       name: 'countWrapper',
@@ -43,6 +58,7 @@ export class HiddenIssuesRow extends UI.TreeOutline.TreeElement {
     title.textContent = i18nString(UIStrings.hiddenIssues);
     header.appendChild(countAdorner);
     header.appendChild(title);
+    header.appendChild(unhideAllIssuesBtn);
     this.listItemElement.appendChild(header);
   }
 

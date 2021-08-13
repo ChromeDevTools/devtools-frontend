@@ -4904,6 +4904,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Hidden issues"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Unhide all issues"
+  },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP Violations"
   },
@@ -4966,9 +4969,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Trusted Web Activity"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Unhide all hidden issues"
   },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Affected Resources"

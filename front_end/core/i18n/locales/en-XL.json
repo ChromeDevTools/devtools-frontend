@@ -4904,6 +4904,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Ĥíd̂d́êń îśŝúêś"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Ûńĥíd̂é âĺl̂ íŝśûéŝ"
+  },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "ĈŚP̂ V́îól̂át̂íôńŝ"
   },
@@ -4966,9 +4969,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "T̂ŕûśt̂éd̂ Ẃêb́ Âćt̂ív̂ít̂ý"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Ûńĥíd̂é âĺl̂ h́îd́d̂én̂ íŝśûéŝ"
   },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Âf́f̂éĉt́êd́ R̂éŝóûŕĉéŝ"

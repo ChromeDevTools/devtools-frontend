@@ -40,6 +40,7 @@ export class AccessibilityNode {
   private readonly propertiesInternal: Protocol.Accessibility.AXProperty[]|null;
   private childIds: string[]|null;
   private parentNodeInternal: AccessibilityNode|null;
+  private frameId: Protocol.Page.FrameId|null;
 
   constructor(accessibilityModel: AccessibilityModel, payload: Protocol.Accessibility.AXNode) {
     this.accessibilityModelInternal = accessibilityModel;
@@ -67,6 +68,7 @@ export class AccessibilityNode {
     this.propertiesInternal = payload.properties || null;
     this.childIds = payload.childIds || null;
     this.parentNodeInternal = null;
+    this.frameId = null;
   }
 
   id(): Protocol.Accessibility.AXNodeId {
@@ -129,6 +131,10 @@ export class AccessibilityNode {
     this.parentNodeInternal = parentNode;
   }
 
+  setFrameId(frameId: Protocol.Page.FrameId|null): void {
+    this.frameId = frameId;
+  }
+
   isDOMNode(): boolean {
     return Boolean(this.backendDOMNodeIdInternal);
   }
@@ -180,6 +186,17 @@ export class AccessibilityNode {
 
     return this.childIds.every(id => this.accessibilityModelInternal.axNodeForId(id) === null);
   }
+
+  // Only the root node gets a frameId, so nodes have to walk up the tree to find their frameId.
+  getFrameId(): string|null {
+    let node = this.parentNode() || this;
+    let parent = node.parentNode();
+    while (!node.frameId && parent) {
+      node = parent;
+      parent = node.parentNode();
+    }
+    return node.frameId;
+  }
 }
 
 export class AccessibilityModel extends SDKModel<void> {
@@ -226,8 +243,8 @@ export class AccessibilityModel extends SDKModel<void> {
     }
   }
 
-  async requestRootNode(depth: number = 2): Promise<AccessibilityNode|undefined> {
-    const {nodes} = await this.agent.invoke_getFullAXTree({max_depth: depth});
+  async requestRootNode(depth: number = 2, frameId?: Protocol.Page.FrameId): Promise<AccessibilityNode|undefined> {
+    const {nodes} = await this.agent.invoke_getFullAXTree({max_depth: depth, frameId});
     if (!nodes) {
       return;
     }
@@ -239,12 +256,16 @@ export class AccessibilityModel extends SDKModel<void> {
         axChild.setParentNode(axNode);
       }
     }
-
-    return axNodes[0];
+    const root = axNodes[0];
+    if (frameId) {
+      root.setFrameId(frameId);
+    }
+    return root;
   }
 
-  async requestAXChildren(nodeId: Protocol.Accessibility.AXNodeId): Promise<AccessibilityNode[]> {
-    const {nodes} = await this.agent.invoke_getChildAXNodes({id: nodeId});
+  async requestAXChildren(nodeId: Protocol.Accessibility.AXNodeId, frameId?: Protocol.Page.FrameId):
+      Promise<AccessibilityNode[]> {
+    const {nodes} = await this.agent.invoke_getChildAXNodes({id: nodeId, frameId: frameId});
     if (!nodes) {
       return [];
     }

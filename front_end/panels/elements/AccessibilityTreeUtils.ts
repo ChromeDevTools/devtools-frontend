@@ -13,7 +13,49 @@ export type AXTreeNode = TreeOutline.TreeOutlineUtils.TreeNode<AXTreeNodeData>;
 export function sdkNodeToAXTreeNode(sdkNode: SDK.AccessibilityModel.AccessibilityNode): AXTreeNode {
   const treeNodeData = sdkNode;
   const role = sdkNode.role()?.value;
-  if (!sdkNode.numChildren() && role !== 'Iframe') {
+
+  if (role === 'Iframe') {
+    return {
+      treeNodeData,
+      children: async(): Promise<AXTreeNode[]> => {
+        const domNode = await sdkNode.deferredDOMNode()?.resolvePromise();
+        if (!domNode) {
+          throw new Error('Could not find corresponding DOMNode');
+        }
+        const frameId = domNode.frameOwnerFrameId();
+
+        let document = domNode.contentDocument();
+        if (!document && frameId) {
+          const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
+          if (!frame) {
+            return [];
+          }
+          document = await frame.resourceTreeModel().domModel().requestDocument();
+        }
+        if (!document) {
+          return [];
+        }
+
+        const axmodel = document.domModel().target().model(SDK.AccessibilityModel.AccessibilityModel);
+        if (!axmodel) {
+          throw new Error('Could not find AccessibilityModel for child document');
+        }
+        // Check if we have requested the node before:
+        let localRoot = axmodel.axNodeForDOMNode(document);
+        if (!localRoot && frameId) {
+          // Request the root node of the iframe document:
+          localRoot = await axmodel.requestRootNode(1, frameId) || null;
+        }
+        if (!localRoot) {
+          throw new Error('Could not find root node');
+        }
+        return [sdkNodeToAXTreeNode(localRoot)];
+      },
+      id: sdkNode.id(),
+    };
+  }
+
+  if (!sdkNode.numChildren()) {
     return {
       treeNodeData,
       id: sdkNode.id(),
@@ -23,31 +65,13 @@ export function sdkNodeToAXTreeNode(sdkNode: SDK.AccessibilityModel.Accessibilit
   return {
     treeNodeData,
     children: async(): Promise<AXTreeNode[]> => {
-      const domNode = await sdkNode.deferredDOMNode()?.resolvePromise();
-      const document = domNode?.contentDocument();
-      if (document) {
-        const axmodel = document.domModel().target().model(SDK.AccessibilityModel.AccessibilityModel);
-        if (!axmodel) {
-          throw new Error('Could not create AccessibilityModel for iframe');
-        }
-        // Check if we have requested the node before:
-        if (!axmodel.axNodeForDOMNode(document)) {
-          // Request root node from backend and add to model
-          await axmodel.requestPartialAXTree(document);
-        }
-        const localRoot = axmodel.axNodeForDOMNode(document);
-        if (!localRoot) {
-          throw new Error('Could not find root node');
-        }
-        return [sdkNodeToAXTreeNode(localRoot)];
-      }
       if (sdkNode.numChildren() === sdkNode.children().length) {
         return sdkNode.children().map(child => sdkNodeToAXTreeNode(child));
       }
       // numChildren returns the number of children that this node has, whereas node.children()
       // returns only children that have been loaded. If these two don't match, that means that
       // there are backend children that need to be loaded into the model, so request them now.
-      await sdkNode.accessibilityModel().requestAXChildren(sdkNode.id());
+      await sdkNode.accessibilityModel().requestAXChildren(sdkNode.id(), sdkNode.getFrameId() || undefined);
 
       if (sdkNode.numChildren() !== sdkNode.children().length) {
         throw new Error('Once loaded, number of children and length of children must match.');

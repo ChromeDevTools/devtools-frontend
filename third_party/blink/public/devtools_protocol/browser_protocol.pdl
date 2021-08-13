@@ -209,6 +209,9 @@ experimental domain Accessibility
       # The maximum depth at which descendants of the root node should be retrieved.
       # If omitted, the full tree is returned.
       optional integer max_depth
+      # The frame for whose document the AX tree should be retrieved.
+      # If omited, the root frame is used.
+      optional Page.FrameId frameId
     returns
       array of AXNode nodes
 
@@ -217,6 +220,9 @@ experimental domain Accessibility
   experimental command getChildAXNodes
     parameters
       AXNodeId id
+      # The frame in whose document the node resides.
+      # If omitted, the root frame is used.
+      optional Page.FrameId frameId
     returns
       array of AXNode nodes
 
@@ -7793,8 +7799,11 @@ domain Page
       CacheControlNoStoreCookieModified
       CacheControlNoStoreHTTPOnlyCookieModified
       NoResponseHead
+      Unknown
+      ActivationNavigationsDisallowedForBug1234857
       #Blocklisted features
       WebSocket
+      WebTransport
       WebRTC
       MainResourceHasCacheControlNoStore
       MainResourceHasCacheControlNoCache
@@ -7837,8 +7846,17 @@ domain Page
       OutstandingNetworkRequestDirectSocket
       IsolatedWorldScript
       InjectedStyleSheet
+      # Disabled for render frame host reasons
       MediaSessionImplOnServiceCreated
-      Unknown
+      SecurityHandler
+      WebAuthenticationAPI
+      FileChooser
+      Serial
+      FileSystemAccess
+      MediaDevicesDispatcherHost
+      WebBluetooth
+      WebUSB
+      MediaSession
 
   # Types of not restored reasons for back-forward cache.
   experimental type BackForwardCacheNotRestoredReasonType extends string
@@ -8797,6 +8815,8 @@ domain Target
   # Controls whether to automatically attach to new targets which are considered to be related to
   # this one. When turned on, attaches to all existing related targets as well. When turned off,
   # automatically detaches from all currently attached targets.
+  # This also clears all targets added by `autoAttachRelated` from the list of targets to watch
+  # for creation of related targets.
   experimental command setAutoAttach
     parameters
       # Whether to auto-attach to related targets.
@@ -8808,6 +8828,17 @@ domain Target
       # We plan to make this the default, deprecate non-flattened mode,
       # and eventually retire it. See crbug.com/991325.
       optional boolean flatten
+
+  # Adds the specified target to the list of targets that will be monitored for any related target
+  # creation (such as child frames, child workers and new versions of service worker) and reported
+  # through `attachedToTarget`. This cancel the effect of any previous `setAutoAttach` and is also
+  # cancelled by subsequent `setAutoAttach`. Only available at the Browser target.
+  experimental command autoAttachRelated
+    parameters
+      TargetID targetId
+      # Whether to pause new targets when attaching to them. Use `Runtime.runIfWaitingForDebugger`
+      # to run paused targets.
+      boolean waitForDebuggerOnStart
 
   # Controls whether to discover available targets and notify via
   # `targetCreated/targetInfoChanged/targetDestroyed` events.

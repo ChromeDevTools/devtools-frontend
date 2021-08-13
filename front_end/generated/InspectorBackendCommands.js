@@ -109,9 +109,16 @@ export function registerCommands(inspectorBackend) {
       ],
       ['nodes']);
   inspectorBackend.registerCommand(
-      'Accessibility.getFullAXTree', [{'name': 'max_depth', 'type': 'number', 'optional': true}], ['nodes']);
+      'Accessibility.getFullAXTree',
+      [
+        {'name': 'max_depth', 'type': 'number', 'optional': true},
+        {'name': 'frameId', 'type': 'string', 'optional': true}
+      ],
+      ['nodes']);
   inspectorBackend.registerCommand(
-      'Accessibility.getChildAXNodes', [{'name': 'id', 'type': 'string', 'optional': false}], ['nodes']);
+      'Accessibility.getChildAXNodes',
+      [{'name': 'id', 'type': 'string', 'optional': false}, {'name': 'frameId', 'type': 'string', 'optional': true}],
+      ['nodes']);
   inspectorBackend.registerCommand(
       'Accessibility.queryAXTree',
       [
@@ -2095,7 +2102,10 @@ export function registerCommands(inspectorBackend) {
     CacheControlNoStoreCookieModified: 'CacheControlNoStoreCookieModified',
     CacheControlNoStoreHTTPOnlyCookieModified: 'CacheControlNoStoreHTTPOnlyCookieModified',
     NoResponseHead: 'NoResponseHead',
+    Unknown: 'Unknown',
+    ActivationNavigationsDisallowedForBug1234857: 'ActivationNavigationsDisallowedForBug1234857',
     WebSocket: 'WebSocket',
+    WebTransport: 'WebTransport',
     WebRTC: 'WebRTC',
     MainResourceHasCacheControlNoStore: 'MainResourceHasCacheControlNoStore',
     MainResourceHasCacheControlNoCache: 'MainResourceHasCacheControlNoCache',
@@ -2139,7 +2149,15 @@ export function registerCommands(inspectorBackend) {
     IsolatedWorldScript: 'IsolatedWorldScript',
     InjectedStyleSheet: 'InjectedStyleSheet',
     MediaSessionImplOnServiceCreated: 'MediaSessionImplOnServiceCreated',
-    Unknown: 'Unknown'
+    SecurityHandler: 'SecurityHandler',
+    WebAuthenticationAPI: 'WebAuthenticationAPI',
+    FileChooser: 'FileChooser',
+    Serial: 'Serial',
+    FileSystemAccess: 'FileSystemAccess',
+    MediaDevicesDispatcherHost: 'MediaDevicesDispatcherHost',
+    WebBluetooth: 'WebBluetooth',
+    WebUSB: 'WebUSB',
+    MediaSession: 'MediaSession'
   });
   inspectorBackend.registerEnum(
       'Page.BackForwardCacheNotRestoredReasonType',
@@ -2645,6 +2663,13 @@ export function registerCommands(inspectorBackend) {
         {'name': 'autoAttach', 'type': 'boolean', 'optional': false},
         {'name': 'waitForDebuggerOnStart', 'type': 'boolean', 'optional': false},
         {'name': 'flatten', 'type': 'boolean', 'optional': true}
+      ],
+      []);
+  inspectorBackend.registerCommand(
+      'Target.autoAttachRelated',
+      [
+        {'name': 'targetId', 'type': 'string', 'optional': false},
+        {'name': 'waitForDebuggerOnStart', 'type': 'boolean', 'optional': false}
       ],
       []);
   inspectorBackend.registerCommand(

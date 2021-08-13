@@ -381,6 +381,12 @@
                             "description": "The maximum depth at which descendants of the root node should be retrieved.\nIf omitted, the full tree is returned.",
                             "optional": true,
                             "type": "integer"
+                        },
+                        {
+                            "name": "frameId",
+                            "description": "The frame for whose document the AX tree should be retrieved.\nIf omited, the root frame is used.",
+                            "optional": true,
+                            "$ref": "Page.FrameId"
                         }
                     ],
                     "returns": [
@@ -401,6 +407,12 @@
                         {
                             "name": "id",
                             "$ref": "AXNodeId"
+                        },
+                        {
+                            "name": "frameId",
+                            "description": "The frame in whose document the node resides.\nIf omitted, the root frame is used.",
+                            "optional": true,
+                            "$ref": "Page.FrameId"
                         }
                     ],
                     "returns": [
@@ -15258,7 +15270,10 @@
                         "CacheControlNoStoreCookieModified",
                         "CacheControlNoStoreHTTPOnlyCookieModified",
                         "NoResponseHead",
+                        "Unknown",
+                        "ActivationNavigationsDisallowedForBug1234857",
                         "WebSocket",
+                        "WebTransport",
                         "WebRTC",
                         "MainResourceHasCacheControlNoStore",
                         "MainResourceHasCacheControlNoCache",
@@ -15302,7 +15317,15 @@
                         "IsolatedWorldScript",
                         "InjectedStyleSheet",
                         "MediaSessionImplOnServiceCreated",
-                        "Unknown"
+                        "SecurityHandler",
+                        "WebAuthenticationAPI",
+                        "FileChooser",
+                        "Serial",
+                        "FileSystemAccess",
+                        "MediaDevicesDispatcherHost",
+                        "WebBluetooth",
+                        "WebUSB",
+                        "MediaSession"
                     ]
                 },
                 {
@@ -18900,7 +18923,7 @@
                 },
                 {
                     "name": "setAutoAttach",
-                    "description": "Controls whether to automatically attach to new targets which are considered to be related to\nthis one. When turned on, attaches to all existing related targets as well. When turned off,\nautomatically detaches from all currently attached targets.",
+                    "description": "Controls whether to automatically attach to new targets which are considered to be related to\nthis one. When turned on, attaches to all existing related targets as well. When turned off,\nautomatically detaches from all currently attached targets.\nThis also clears all targets added by `autoAttachRelated` from the list of targets to watch\nfor creation of related targets.",
                     "experimental": true,
                     "parameters": [
                         {
@@ -18917,6 +18940,22 @@
                             "name": "flatten",
                             "description": "Enables \"flat\" access to the session via specifying sessionId attribute in the commands.\nWe plan to make this the default, deprecate non-flattened mode,\nand eventually retire it. See crbug.com/991325.",
                             "optional": true,
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "name": "autoAttachRelated",
+                    "description": "Adds the specified target to the list of targets that will be monitored for any related target\ncreation (such as child frames, child workers and new versions of service worker) and reported\nthrough `attachedToTarget`. This cancel the effect of any previous `setAutoAttach` and is also\ncancelled by subsequent `setAutoAttach`. Only available at the Browser target.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "targetId",
+                            "$ref": "TargetID"
+                        },
+                        {
+                            "name": "waitForDebuggerOnStart",
+                            "description": "Whether to pause new targets when attaching to them. Use `Runtime.runIfWaitingForDebugger`\nto run paused targets.",
                             "type": "boolean"
                         }
                     ]

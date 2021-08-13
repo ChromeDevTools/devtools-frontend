@@ -294,6 +294,11 @@ declare namespace Protocol {
        * If omitted, the full tree is returned.
        */
       max_depth?: integer;
+      /**
+       * The frame for whose document the AX tree should be retrieved.
+       * If omited, the root frame is used.
+       */
+      frameId?: Page.FrameId;
     }
 
     export interface GetFullAXTreeResponse extends ProtocolResponseWithError {
@@ -302,6 +307,11 @@ declare namespace Protocol {
 
     export interface GetChildAXNodesRequest {
       id: AXNodeId;
+      /**
+       * The frame in whose document the node resides.
+       * If omitted, the root frame is used.
+       */
+      frameId?: Page.FrameId;
     }
 
     export interface GetChildAXNodesResponse extends ProtocolResponseWithError {
@@ -10393,7 +10403,10 @@ declare namespace Protocol {
       CacheControlNoStoreCookieModified = 'CacheControlNoStoreCookieModified',
       CacheControlNoStoreHTTPOnlyCookieModified = 'CacheControlNoStoreHTTPOnlyCookieModified',
       NoResponseHead = 'NoResponseHead',
+      Unknown = 'Unknown',
+      ActivationNavigationsDisallowedForBug1234857 = 'ActivationNavigationsDisallowedForBug1234857',
       WebSocket = 'WebSocket',
+      WebTransport = 'WebTransport',
       WebRTC = 'WebRTC',
       MainResourceHasCacheControlNoStore = 'MainResourceHasCacheControlNoStore',
       MainResourceHasCacheControlNoCache = 'MainResourceHasCacheControlNoCache',
@@ -10437,7 +10450,15 @@ declare namespace Protocol {
       IsolatedWorldScript = 'IsolatedWorldScript',
       InjectedStyleSheet = 'InjectedStyleSheet',
       MediaSessionImplOnServiceCreated = 'MediaSessionImplOnServiceCreated',
-      Unknown = 'Unknown',
+      SecurityHandler = 'SecurityHandler',
+      WebAuthenticationAPI = 'WebAuthenticationAPI',
+      FileChooser = 'FileChooser',
+      Serial = 'Serial',
+      FileSystemAccess = 'FileSystemAccess',
+      MediaDevicesDispatcherHost = 'MediaDevicesDispatcherHost',
+      WebBluetooth = 'WebBluetooth',
+      WebUSB = 'WebUSB',
+      MediaSession = 'MediaSession',
     }
 
     /**
@@ -12762,6 +12783,15 @@ declare namespace Protocol {
        * and eventually retire it. See crbug.com/991325.
        */
       flatten?: boolean;
+    }
+
+    export interface AutoAttachRelatedRequest {
+      targetId: TargetID;
+      /**
+       * Whether to pause new targets when attaching to them. Use `Runtime.runIfWaitingForDebugger`
+       * to run paused targets.
+       */
+      waitForDebuggerOnStart: boolean;
     }
 
     export interface SetDiscoverTargetsRequest {

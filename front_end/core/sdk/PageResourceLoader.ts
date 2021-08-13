@@ -228,7 +228,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
           const result = await this.loadFromTarget(initiator.target, initiator.frameId, url);
           return result;
         }
-        const frame = FrameManager.instance().getFrame(initiator.frameId || '');
+        const frame = FrameManager.instance().getFrame(initiator.frameId);
         if (frame) {
           Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.LoadThroughPageViaFrame);
           const result = await this.loadFromTarget(frame.resourceTreeModel().target(), initiator.frameId, url);
@@ -283,7 +283,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     return Host.UserMetrics.DeveloperResourceScheme.SchemeOther;
   }
 
-  private async loadFromTarget(target: Target, frameId: string|null, url: string): Promise<{
+  private async loadFromTarget(target: Target, frameId: Protocol.Page.FrameId|null, url: string): Promise<{
     success: boolean,
     content: string,
     errorDescription: {
@@ -297,7 +297,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     const networkManager = (target.model(NetworkManager) as NetworkManager);
     const ioModel = (target.model(IOModel) as IOModel);
     const resource =
-        await networkManager.loadNetworkResource(frameId || '', url, {disableCache: true, includeCredentials: true});
+        await networkManager.loadNetworkResource(frameId, url, {disableCache: true, includeCredentials: true});
     try {
       const content = resource.stream ? await ioModel.readToString(resource.stream) : '';
       return {

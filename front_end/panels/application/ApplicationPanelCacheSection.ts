@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type {ApplicationPanelSidebar} from './ApplicationPanelSidebar.js';
@@ -198,7 +199,7 @@ export class SWCacheTreeElement extends ApplicationPanelTreeElement {
 
 export class ApplicationCacheFrameTreeElement extends ApplicationPanelTreeElement {
   private readonly sidebar: ApplicationPanelSidebar;
-  readonly frameId: string;
+  readonly frameId: Protocol.Page.FrameId;
   readonly manifestURL: string;
 
   constructor(sidebar: ApplicationPanelSidebar, frame: SDK.ResourceTreeModel.ResourceTreeFrame, manifestURL: string) {

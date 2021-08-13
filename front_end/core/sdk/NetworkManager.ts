@@ -261,17 +261,19 @@ export class NetworkManager extends SDKModel<EventTypes> {
     this.networkAgent.invoke_setBypassServiceWorker({bypass: this.bypassServiceWorkerSetting.get()});
   }
 
-  async getSecurityIsolationStatus(frameId: string): Promise<Protocol.Network.SecurityIsolationStatus|null> {
-    const result = await this.networkAgent.invoke_getSecurityIsolationStatus({frameId});
+  async getSecurityIsolationStatus(frameId: Protocol.Page.FrameId|
+                                   null): Promise<Protocol.Network.SecurityIsolationStatus|null> {
+    const result = await this.networkAgent.invoke_getSecurityIsolationStatus({frameId: frameId ?? undefined});
     if (result.getError()) {
       return null;
     }
     return result.status;
   }
 
-  async loadNetworkResource(frameId: string, url: string, options: Protocol.Network.LoadNetworkResourceOptions):
-      Promise<Protocol.Network.LoadNetworkResourcePageResult> {
-    const result = await this.networkAgent.invoke_loadNetworkResource({frameId, url, options});
+  async loadNetworkResource(
+      frameId: Protocol.Page.FrameId|null, url: string,
+      options: Protocol.Network.LoadNetworkResourceOptions): Promise<Protocol.Network.LoadNetworkResourcePageResult> {
+    const result = await this.networkAgent.invoke_loadNetworkResource({frameId: frameId ?? undefined, url, options});
     if (result.getError()) {
       throw new Error(result.getError());
     }
@@ -541,7 +543,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
       networkRequest = this.appendRedirect(requestId, timestamp, request.url);
       this.manager.dispatchEventToListeners(Events.RequestRedirected, networkRequest);
     } else {
-      networkRequest = NetworkRequest.create(requestId, request.url, documentURL, frameId || '', loaderId, initiator);
+      networkRequest = NetworkRequest.create(requestId, request.url, documentURL, frameId ?? null, loaderId, initiator);
       requestToManagerMap.set(networkRequest, this.manager);
     }
     networkRequest.hasNetworkData = true;
@@ -581,7 +583,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
       // We missed the requestWillBeSent.
       const eventData: RequestUpdateDroppedEventData = {
         url: response.url,
-        frameId: frameId || '',
+        frameId: frameId ?? null,
         loaderId: loaderId,
         resourceType: type,
         mimeType: response.mimeType,
@@ -1022,8 +1024,8 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
    * This method is only kept for usage in a web test.
    */
   private createNetworkRequest(
-      requestId: Protocol.Network.RequestId, frameId: string, loaderId: Protocol.Network.LoaderId, url: string,
-      documentURL: string, initiator: Protocol.Network.Initiator|null): NetworkRequest {
+      requestId: Protocol.Network.RequestId, frameId: Protocol.Page.FrameId, loaderId: Protocol.Network.LoaderId,
+      url: string, documentURL: string, initiator: Protocol.Network.Initiator|null): NetworkRequest {
     const request = NetworkRequest.create(requestId, url, documentURL, frameId, loaderId, initiator);
     requestToManagerMap.set(request, this.manager);
     return request;
@@ -1433,7 +1435,7 @@ export class InterceptedRequest {
   private readonly interceptionId: Protocol.Network.InterceptionId;
   private hasRespondedInternal: boolean;
   request: Protocol.Network.Request;
-  frameId: string;
+  frameId: Protocol.Page.FrameId;
   resourceType: Protocol.Network.ResourceType;
   isNavigationRequest: boolean;
   isDownload: boolean;
@@ -1446,7 +1448,7 @@ export class InterceptedRequest {
 
   constructor(
       networkAgent: ProtocolProxyApi.NetworkApi, interceptionId: Protocol.Network.InterceptionId,
-      request: Protocol.Network.Request, frameId: string, resourceType: Protocol.Network.ResourceType,
+      request: Protocol.Network.Request, frameId: Protocol.Page.FrameId, resourceType: Protocol.Network.ResourceType,
       isNavigationRequest: boolean, isDownload?: boolean, redirectUrl?: string,
       authChallenge?: Protocol.Network.AuthChallenge, responseErrorReason?: Protocol.Network.ErrorReason,
       responseStatusCode?: number, responseHeaders?: Protocol.Network.Headers, requestId?: string) {
@@ -1683,7 +1685,7 @@ export type RequestInterceptor = (request: InterceptedRequest) => Promise<void>;
 
 export interface RequestUpdateDroppedEventData {
   url: string;
-  frameId: string;
+  frameId: Protocol.Page.FrameId|null;
   loaderId: Protocol.Network.LoaderId;
   resourceType: Protocol.Network.ResourceType;
   mimeType: string;

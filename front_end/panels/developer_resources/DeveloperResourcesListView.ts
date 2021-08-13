@@ -247,7 +247,8 @@ class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<GridNode> 
         UI.Tooltip.Tooltip.install(cell, url);
         this.setCellAccessibleName(url, cell, columnId);
         cell.onmouseenter = (): void => {
-          const frame = SDK.FrameManager.FrameManager.instance().getFrame(this.item.initiator.frameId || '');
+          const frameId = this.item.initiator.frameId;
+          const frame = frameId ? SDK.FrameManager.FrameManager.instance().getFrame(frameId) : null;
           if (frame) {
             frame.highlight();
           }

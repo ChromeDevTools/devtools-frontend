@@ -7,10 +7,11 @@ const {assert} = chai;
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import {encodeSourceMap} from '../../helpers/SourceMapEncoder.js';
+import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 
 const fakeInitiator = {
   target: null,
-  frameId: '123',
+  frameId: '123' as Protocol.Page.FrameId,
   initiatorUrl: '',
 };
 

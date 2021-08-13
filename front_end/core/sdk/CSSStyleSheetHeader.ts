@@ -29,7 +29,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentProvider, FrameAssociated {
   private cssModelInternal: CSSModel;
   id: Protocol.CSS.StyleSheetId;
-  frameId: string;
+  frameId: Protocol.Page.FrameId;
   sourceURL: string;
   hasSourceURL: boolean;
   origin: Protocol.CSS.StyleSheetOrigin;

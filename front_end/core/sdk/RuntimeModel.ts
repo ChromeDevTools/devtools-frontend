@@ -545,10 +545,10 @@ export class ExecutionContext {
   isDefault: boolean;
   runtimeModel: RuntimeModel;
   debuggerModel: DebuggerModel;
-  frameId: string|undefined;
+  frameId: Protocol.Page.FrameId|undefined;
   constructor(
       runtimeModel: RuntimeModel, id: number, uniqueId: string, name: string, origin: string, isDefault: boolean,
-      frameId?: string) {
+      frameId?: Protocol.Page.FrameId) {
     this.id = id;
     this.uniqueId = uniqueId;
     this.name = name;

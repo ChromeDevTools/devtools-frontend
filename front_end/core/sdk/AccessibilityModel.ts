@@ -188,7 +188,7 @@ export class AccessibilityNode {
   }
 
   // Only the root node gets a frameId, so nodes have to walk up the tree to find their frameId.
-  getFrameId(): string|null {
+  getFrameId(): Protocol.Page.FrameId|null {
     let node = this.parentNode() || this;
     let parent = node.parentNode();
     while (!node.frameId && parent) {

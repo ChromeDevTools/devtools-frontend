@@ -9680,7 +9680,7 @@ declare namespace Protocol {
     /**
      * Unique frame identifier.
      */
-    export type FrameId = string;
+    export type FrameId = OpaqueIdentifier<string, 'Protocol.Page.FrameId'>;
 
     /**
      * Indicates whether a frame has been identified as an ad.

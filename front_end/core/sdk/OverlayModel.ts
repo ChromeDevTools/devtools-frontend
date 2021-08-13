@@ -473,7 +473,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     }
   }
 
-  highlightFrame(frameId: string): void {
+  highlightFrame(frameId: Protocol.Page.FrameId): void {
     if (this.hideHighlightTimeout) {
       clearTimeout(this.hideHighlightTimeout);
       this.hideHighlightTimeout = null;
@@ -802,7 +802,7 @@ export interface Highlighter {
 
   setInspectMode(mode: Protocol.Overlay.InspectMode, config: Protocol.Overlay.HighlightConfig): Promise<void>;
 
-  highlightFrame(frameId: string): void;
+  highlightFrame(frameId: Protocol.Page.FrameId): void;
 }
 
 class DefaultHighlighter implements Highlighter {
@@ -830,7 +830,7 @@ class DefaultHighlighter implements Highlighter {
     await this.model.target().overlayAgent().invoke_setInspectMode({mode, highlightConfig});
   }
 
-  highlightFrame(frameId: string): void {
+  highlightFrame(frameId: Protocol.Page.FrameId): void {
     this.model.target().overlayAgent().invoke_highlightFrame({
       frameId,
       contentColor: Common.Color.PageHighlight.Content.toProtocolRGBA(),

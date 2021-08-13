@@ -308,7 +308,9 @@ class Binding implements TextUtils.ContentProvider.ContentProvider {
     this.project = project;
     this.uiSourceCode = this.project.createUISourceCode(resource.url, resource.contentType());
     boundUISourceCodes.add(this.uiSourceCode);
-    NetworkProject.setInitialFrameAttribution(this.uiSourceCode, resource.frameId);
+    if (resource.frameId) {
+      NetworkProject.setInitialFrameAttribution(this.uiSourceCode, resource.frameId);
+    }
     this.project.addUISourceCodeWithProvider(this.uiSourceCode, this, resourceMetadata(resource), resource.mimeType);
     this.edits = [];
   }
@@ -399,12 +401,16 @@ class Binding implements TextUtils.ContentProvider.ContentProvider {
 
   addResource(resource: SDK.Resource.Resource): void {
     this.resources.add(resource);
-    NetworkProject.addFrameAttribution(this.uiSourceCode, resource.frameId);
+    if (resource.frameId) {
+      NetworkProject.addFrameAttribution(this.uiSourceCode, resource.frameId);
+    }
   }
 
   removeResource(resource: SDK.Resource.Resource): void {
     this.resources.delete(resource);
-    NetworkProject.removeFrameAttribution(this.uiSourceCode, resource.frameId);
+    if (resource.frameId) {
+      NetworkProject.removeFrameAttribution(this.uiSourceCode, resource.frameId);
+    }
   }
 
   dispose(): void {

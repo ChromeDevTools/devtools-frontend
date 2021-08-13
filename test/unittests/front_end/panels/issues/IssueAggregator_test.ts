@@ -156,13 +156,13 @@ describe('IssueAggregator', async () => {
     const details1 = {
       resolution: Protocol.Audits.HeavyAdResolutionStatus.HeavyAdBlocked,
       reason: Protocol.Audits.HeavyAdReason.CpuPeakLimit,
-      frame: {frameId: 'main'},
+      frame: {frameId: 'main' as Protocol.Page.FrameId},
     };
     const issue1 = new IssuesManager.HeavyAdIssue.HeavyAdIssue(details1, mockModel);
     const details2 = {
       resolution: Protocol.Audits.HeavyAdResolutionStatus.HeavyAdWarning,
       reason: Protocol.Audits.HeavyAdReason.NetworkTotalLimit,
-      frame: {frameId: 'main'},
+      frame: {frameId: 'main' as Protocol.Page.FrameId},
     };
     const issue2 = new IssuesManager.HeavyAdIssue.HeavyAdIssue(details2, mockModel);
 

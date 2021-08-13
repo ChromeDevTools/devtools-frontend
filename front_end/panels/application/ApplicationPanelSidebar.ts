@@ -186,7 +186,7 @@ function assertNotMainTarget(targetId: Protocol.Target.TargetID|'main'): asserts
 
 export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.TargetManager.Observer {
   _panel: ResourcesPanel;
-  _applicationCacheViews: Map<string, ApplicationCacheItemsView>;
+  _applicationCacheViews: Map<Protocol.Page.FrameId, ApplicationCacheItemsView>;
   _applicationCacheFrameElements: Map<string, ApplicationCacheFrameTreeElement>;
   _applicationCacheManifestElements: Map<string, ApplicationCacheManifestTreeElement>;
   _sidebarTree: UI.TreeOutline.TreeOutlineInShadow;
@@ -673,7 +673,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this._innerShowView(view);
   }
 
-  _showApplicationCache(frameId: string): void {
+  _showApplicationCache(frameId: Protocol.Page.FrameId): void {
     if (!this._applicationCacheModel) {
       return;
     }
@@ -778,7 +778,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   }
 
   _applicationCacheFrameManifestRemoved(event: Common.EventTarget.EventTargetEvent): void {
-    const frameId = (event.data as string);
+    const frameId = (event.data as Protocol.Page.FrameId);
     const frameTreeElement = this._applicationCacheFrameElements.get(frameId);
     if (!frameTreeElement) {
       return;
@@ -802,7 +802,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     if (!this._applicationCacheModel) {
       return;
     }
-    const frameId = (event.data as string);
+    const frameId = (event.data as Protocol.Page.FrameId);
     const status = this._applicationCacheModel.frameManifestStatus(frameId);
 
     const view = this._applicationCacheViews.get(frameId);
@@ -1741,7 +1741,7 @@ export class ResourcesSection implements SDK.TargetManager.Observer {
     }
   }
 
-  _frameDetached(frameId: string): void {
+  _frameDetached(frameId: Protocol.Page.FrameId): void {
     const frameTreeElement = this._treeElementForFrameId.get(frameId);
     if (!frameTreeElement) {
       return;
@@ -1761,6 +1761,9 @@ export class ResourcesSection implements SDK.TargetManager.Observer {
   }
 
   _resourceAdded(resource: SDK.Resource.Resource): void {
+    if (!resource.frameId) {
+      return;
+    }
     const frameTreeElement = this._treeElementForFrameId.get(resource.frameId);
     if (!frameTreeElement) {
       // This is a frame's main resource, it will be retained

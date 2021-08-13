@@ -14,13 +14,13 @@ describe('issuesAssociatedWith', () => {
   const requestId2 = 'r1' as Protocol.Network.RequestId;
 
   it('should return no issues if no issues exist', () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(requestId1, '', '', '', null, null);
+    const request = SDK.NetworkRequest.NetworkRequest.create(requestId1, '', '', null, null, null);
     assert.strictEqual(IssuesManager.RelatedIssue.issuesAssociatedWith([], request).length, 0);
   });
 
   it('should return no issues if issues dont affect any resources', () => {
     const issue = new StubIssue('code', [], []);
-    const request = SDK.NetworkRequest.NetworkRequest.create(requestId1, '', '', '', null, null);
+    const request = SDK.NetworkRequest.NetworkRequest.create(requestId1, '', '', null, null, null);
 
     assert.strictEqual(IssuesManager.RelatedIssue.issuesAssociatedWith([issue], request).length, 0);
   });
@@ -30,8 +30,8 @@ describe('issuesAssociatedWith', () => {
     const issue2 = StubIssue.createFromRequestIds([requestId1]);
     const issues = [issue1, issue2];
 
-    const request1 = SDK.NetworkRequest.NetworkRequest.create(requestId1, '', '', '', null, null);
-    const request2 = SDK.NetworkRequest.NetworkRequest.create(requestId2, '', '', '', null, null);
+    const request1 = SDK.NetworkRequest.NetworkRequest.create(requestId1, '', '', null, null, null);
+    const request2 = SDK.NetworkRequest.NetworkRequest.create(requestId2, '', '', null, null, null);
 
     assert.deepStrictEqual(IssuesManager.RelatedIssue.issuesAssociatedWith(issues, request1), issues);
     assert.deepStrictEqual(IssuesManager.RelatedIssue.issuesAssociatedWith(issues, request2), [issue1]);

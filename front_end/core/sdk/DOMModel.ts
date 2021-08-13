@@ -65,7 +65,7 @@ export class DOMNode {
   nodeValueInternal!: string;
   private pseudoTypeInternal!: Protocol.DOM.PseudoType|undefined;
   private shadowRootTypeInternal!: Protocol.DOM.ShadowRootType|undefined;
-  private frameOwnerFrameIdInternal!: string|null;
+  private frameOwnerFrameIdInternal!: Protocol.Page.FrameId|null;
   private xmlVersion!: string|undefined;
   private isSVGNodeInternal!: boolean;
   private creationStackTraceInternal: Promise<Protocol.Runtime.StackTrace|null>|null;
@@ -205,7 +205,8 @@ export class DOMNode {
     }
   }
 
-  private async createChildDocumentPromiseForTesting(frameId: string, notInTarget: Target): Promise<DOMDocument|null> {
+  private async createChildDocumentPromiseForTesting(frameId: Protocol.Page.FrameId, notInTarget: Target):
+      Promise<DOMDocument|null> {
     const frame = await FrameManager.instance().getOrWaitForFrame(frameId, notInTarget);
     const childModel = frame.resourceTreeModel()?.target().model(DOMModel);
     if (childModel) {
@@ -590,11 +591,11 @@ export class DOMNode {
     return descendant !== null && descendant.isAncestor(this);
   }
 
-  frameOwnerFrameId(): string|null {
+  frameOwnerFrameId(): Protocol.Page.FrameId|null {
     return this.frameOwnerFrameIdInternal;
   }
 
-  frameId(): string|null {
+  frameId(): Protocol.Page.FrameId|null {
     let node: DOMNode = this.parentNode || this;
     while (!node.frameOwnerFrameIdInternal && node.parentNode) {
       node = node.parentNode;
@@ -1110,7 +1111,7 @@ export class DOMModel extends SDKModel<EventTypes> {
     return this.pendingDocumentRequestPromise;
   }
 
-  async getOwnerNodeForFrame(frameId: string): Promise<DeferredDOMNode|null> {
+  async getOwnerNodeForFrame(frameId: Protocol.Page.FrameId): Promise<DeferredDOMNode|null> {
     // Returns an error if the frameId does not belong to the current target.
     const response = await this.agent.invoke_getFrameOwner({frameId});
     if (response.getError()) {

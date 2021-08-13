@@ -180,7 +180,7 @@ describe('HAR Importer', () => {
     assert.strictEqual(parsedRequest.requestId(), 'har-0');
     assert.strictEqual(parsedRequest.url(), 'https://example.com/api/testEndpoint?param1=test');
     assert.strictEqual(parsedRequest.documentURL, 'https://example.com/api/testEndpoint?param1=test');
-    assert.strictEqual(parsedRequest.frameId, '');
+    assert.strictEqual(parsedRequest.frameId, null);
     assert.strictEqual(parsedRequest.loaderId, null);
     assert.deepStrictEqual(
         parsedRequest.initiator(),

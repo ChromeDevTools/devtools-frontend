@@ -84,7 +84,7 @@ export class ApplicationCacheItemsView extends UI.View.SimpleView {
   _deleteButton: UI.Toolbar.ToolbarButton;
   _connectivityIcon: UI.UIUtils.DevToolsIconLabel;
   _statusIcon: UI.UIUtils.DevToolsIconLabel;
-  _frameId: string;
+  _frameId: Protocol.Page.FrameId;
   _emptyWidget: UI.EmptyWidget.EmptyWidget;
   _nodeResources: WeakMap<DataGrid.DataGrid.DataGridNode<unknown>, Protocol.ApplicationCache.ApplicationCacheResource>;
   _viewDirty?: boolean;
@@ -96,7 +96,7 @@ export class ApplicationCacheItemsView extends UI.View.SimpleView {
   _resources?: Protocol.ApplicationCache.ApplicationCacheResource[];
   _dataGrid?: DataGrid.DataGrid.DataGridImpl<unknown>;
 
-  constructor(model: ApplicationCacheModel, frameId: string) {
+  constructor(model: ApplicationCacheModel, frameId: Protocol.Page.FrameId) {
     super(i18nString(UIStrings.appcache));
 
     this._model = model;

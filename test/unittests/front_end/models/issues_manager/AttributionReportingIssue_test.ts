@@ -38,7 +38,7 @@ describe('AttributionReportingIssue', () => {
 
   it('creates different frontend issues for the same AttributionSourceUntrustworthyOrigin protocol issue', () => {
     const violationType = Protocol.Audits.AttributionReportingIssueType.AttributionSourceUntrustworthyOrigin;
-    const withFrameDetails = {violationType, frame: {frameId: 'frameId1'}};
+    const withFrameDetails = {violationType, frame: {frameId: 'frameId1' as Protocol.Page.FrameId}};
     const withoutFrameDetails = {violationType};
 
     const frontendIssueWithFrame = IssuesManager.AttributionReportingIssue.AttributionReportingIssue.fromInspectorIssue(
@@ -52,7 +52,7 @@ describe('AttributionReportingIssue', () => {
 
   it('creates different frontend issues for the same AttributionUntrustworthyOrigin protocol issue', () => {
     const violationType = Protocol.Audits.AttributionReportingIssueType.AttributionUntrustworthyOrigin;
-    const withFrameDetails = {violationType, frame: {frameId: 'frameId1'}};
+    const withFrameDetails = {violationType, frame: {frameId: 'frameId1' as Protocol.Page.FrameId}};
     const withoutFrameDetails = {violationType};
 
     const frontendIssueWithFrame = IssuesManager.AttributionReportingIssue.AttributionReportingIssue.fromInspectorIssue(

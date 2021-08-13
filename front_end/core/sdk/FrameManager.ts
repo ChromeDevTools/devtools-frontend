@@ -26,7 +26,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     frame: ResourceTreeFrame,
     count: number,
   }>;
-  private readonly framesForTarget: Map<string, Set<string>>;
+  private readonly framesForTarget: Map<Protocol.Target.TargetID|'main', Set<Protocol.Page.FrameId>>;
   private topFrame: ResourceTreeFrame|null;
   private creationStackTraceDataForTransferringFrame:
       Map<string, {creationStackTrace: Protocol.Runtime.StackTrace | null, creationStackTraceTarget: Target}>;
@@ -153,7 +153,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     this.dispatchEventToListeners(Events.ResourceAdded, {resource: event.data});
   }
 
-  private decreaseOrRemoveFrame(frameId: string): void {
+  private decreaseOrRemoveFrame(frameId: Protocol.Page.FrameId): void {
     const frameData = this.frames.get(frameId);
     if (frameData) {
       if (frameData.count === 1) {
@@ -183,7 +183,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
    * ResourceTreeFrame after detachment. Callers of getFrame() should therefore
    * immediately use the function return value and not store it for later use.
    */
-  getFrame(frameId: string): ResourceTreeFrame|null {
+  getFrame(frameId: Protocol.Page.FrameId): ResourceTreeFrame|null {
     const frameData = this.frames.get(frameId);
     if (frameData) {
       return frameData.frame;
@@ -199,7 +199,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     return this.topFrame;
   }
 
-  async getOrWaitForFrame(frameId: string, notInTarget?: Target): Promise<ResourceTreeFrame> {
+  async getOrWaitForFrame(frameId: Protocol.Page.FrameId, notInTarget?: Target): Promise<ResourceTreeFrame> {
     const frame = this.getFrame(frameId);
     if (frame && (!notInTarget || notInTarget !== frame.resourceTreeModel().target())) {
       return frame;
@@ -252,7 +252,7 @@ export enum Events {
 export type EventTypes = {
   [Events.FrameAddedToTarget]: {frame: ResourceTreeFrame},
   [Events.FrameNavigated]: {frame: ResourceTreeFrame},
-  [Events.FrameRemoved]: {frameId: string},
+  [Events.FrameRemoved]: {frameId: Protocol.Page.FrameId},
   [Events.ResourceAdded]: {resource: Resource},
   [Events.TopFrameNavigated]: {frame: ResourceTreeFrame},
 };

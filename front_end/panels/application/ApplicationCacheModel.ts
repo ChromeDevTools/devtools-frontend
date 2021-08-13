@@ -39,8 +39,8 @@ import type * as Protocol from '../../generated/protocol.js';
 
 export class ApplicationCacheModel extends SDK.SDKModel.SDKModel {
   _agent: ProtocolProxyApi.ApplicationCacheApi;
-  _statuses: Map<string, number>;
-  _manifestURLsByFrame: Map<string, string>;
+  _statuses: Map<Protocol.Page.FrameId, number>;
+  _manifestURLsByFrame: Map<Protocol.Page.FrameId, string>;
   _onLine: boolean;
   constructor(target: SDK.Target.Target) {
     super(target);
@@ -103,7 +103,7 @@ export class ApplicationCacheModel extends SDK.SDKModel.SDKModel {
     }
   }
 
-  _frameManifestUpdated(frameId: string, manifestURL: string, status: number): void {
+  _frameManifestUpdated(frameId: Protocol.Page.FrameId, manifestURL: string, status: number): void {
     if (status === UNCACHED) {
       this._frameManifestRemoved(frameId);
       return;
@@ -131,7 +131,7 @@ export class ApplicationCacheModel extends SDK.SDKModel.SDKModel {
     }
   }
 
-  _frameManifestRemoved(frameId: string): void {
+  _frameManifestRemoved(frameId: Protocol.Page.FrameId): void {
     const removed = this._manifestURLsByFrame.delete(frameId);
     this._statuses.delete(frameId);
     if (removed) {
@@ -139,11 +139,11 @@ export class ApplicationCacheModel extends SDK.SDKModel.SDKModel {
     }
   }
 
-  frameManifestURL(frameId: string): string {
+  frameManifestURL(frameId: Protocol.Page.FrameId): string {
     return this._manifestURLsByFrame.get(frameId) || '';
   }
 
-  frameManifestStatus(frameId: string): number {
+  frameManifestStatus(frameId: Protocol.Page.FrameId): number {
     return this._statuses.get(frameId) || UNCACHED;
   }
 
@@ -151,11 +151,12 @@ export class ApplicationCacheModel extends SDK.SDKModel.SDKModel {
     return this._onLine;
   }
 
-  _statusUpdated(frameId: string, manifestURL: string, status: number): void {
+  _statusUpdated(frameId: Protocol.Page.FrameId, manifestURL: string, status: number): void {
     this._frameManifestUpdated(frameId, manifestURL, status);
   }
 
-  async requestApplicationCache(frameId: string): Promise<Protocol.ApplicationCache.ApplicationCache|null> {
+  async requestApplicationCache(frameId: Protocol.Page.FrameId):
+      Promise<Protocol.ApplicationCache.ApplicationCache|null> {
     const response = await this._agent.invoke_getApplicationCacheForFrame({frameId});
     if (response.getError()) {
       return null;

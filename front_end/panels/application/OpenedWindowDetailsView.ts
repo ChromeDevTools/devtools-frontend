@@ -110,7 +110,7 @@ function linkifyIcon(iconType: string, title: string, eventHandler: () => (void|
   return span;
 }
 
-async function maybeCreateLinkToElementsPanel(opener: string|SDK.ResourceTreeModel.ResourceTreeFrame|
+async function maybeCreateLinkToElementsPanel(opener: Protocol.Page.FrameId|SDK.ResourceTreeModel.ResourceTreeFrame|
                                               undefined): Promise<Element|null> {
   let openerFrame: SDK.ResourceTreeModel.ResourceTreeFrame|(SDK.ResourceTreeModel.ResourceTreeFrame | null)|null = null;
   if (opener instanceof SDK.ResourceTreeModel.ResourceTreeFrame) {
@@ -261,7 +261,7 @@ export class WorkerDetailsView extends UI.ThrottledWidget.ThrottledWidget {
       return;
     }
     const model = target.model(SDK.NetworkManager.NetworkManager);
-    const info = model && await model.getSecurityIsolationStatus('');
+    const info = model && await model.getSecurityIsolationStatus(null);
     if (!info) {
       return;
     }

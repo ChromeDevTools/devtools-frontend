@@ -72,7 +72,7 @@ export class TimelineModelImpl {
   private timeMarkerEventsInternal!: SDK.TracingModel.Event[];
   private sessionId!: string|null;
   private mainFrameNodeId!: number|null;
-  private pageFrames!: Map<string, PageFrame>;
+  private pageFrames!: Map<Protocol.Page.FrameId, PageFrame>;
   private cpuProfilesInternal!: SDK.CPUProfileDataModel.CPUProfileDataModel[];
   private workerIdByThread!: WeakMap<SDK.TracingModel.Thread, string>;
   private requestsFromBrowser!: Map<string, SDK.TracingModel.Event>;
@@ -239,9 +239,9 @@ export class TimelineModelImpl {
     return `${event.thread.process().id()}.${id}`;
   }
 
-  static eventFrameId(event: SDK.TracingModel.Event): string {
+  static eventFrameId(event: SDK.TracingModel.Event): Protocol.Page.FrameId|null {
     const data = event.args['data'] || event.args['beginData'];
-    return data && data['frame'] || '';
+    return data && data['frame'] || null;
   }
 
   cpuProfiles(): SDK.CPUProfileDataModel.CPUProfileDataModel[] {
@@ -352,7 +352,8 @@ export class TimelineModelImpl {
             if (e.args['data']['sessionId'] === this.sessionId) {
               return true;
             }
-            return Boolean(this.pageFrames.get(TimelineModelImpl.eventFrameId(e)));
+            const frameId = TimelineModelImpl.eventFrameId(e);
+            return frameId ? Boolean(this.pageFrames.get(frameId)) : false;
           });
           if (!workerMetaEvent) {
             continue;
@@ -437,7 +438,8 @@ export class TimelineModelImpl {
             if (e.args['data']['workerThreadId'] !== thread.id()) {
               return false;
             }
-            return Boolean(this.pageFrames.get(TimelineModelImpl.eventFrameId(e)));
+            const frameId = TimelineModelImpl.eventFrameId(e);
+            return frameId ? Boolean(this.pageFrames.get(frameId)) : false;
           });
           if (!workerMetaEvent) {
             continue;
@@ -1062,7 +1064,7 @@ export class TimelineModelImpl {
 
         // We currently only show layer tree for the main frame.
         const frameId = TimelineModelImpl.eventFrameId(event);
-        const pageFrame = this.pageFrames.get(frameId);
+        const pageFrame = frameId ? this.pageFrames.get(frameId) : null;
         if (!pageFrame || pageFrame.parent) {
           return false;
         }
@@ -1150,7 +1152,7 @@ export class TimelineModelImpl {
       case RecordType.MarkDOMContent:
       case RecordType.MarkLoad: {
         const frameId = TimelineModelImpl.eventFrameId(event);
-        if (!this.pageFrames.has(frameId)) {
+        if (!frameId || !this.pageFrames.has(frameId)) {
           return false;
         }
         break;
@@ -1162,7 +1164,7 @@ export class TimelineModelImpl {
         }
         const frameId = TimelineModelImpl.eventFrameId(event);
         const isMainFrame = Boolean(eventData['isMainFrame']);
-        const pageFrame = this.pageFrames.get(frameId);
+        const pageFrame = frameId ? this.pageFrames.get(frameId) : null;
         if (pageFrame) {
           pageFrame.update(event.startTime, eventData);
         } else {
@@ -1178,7 +1180,7 @@ export class TimelineModelImpl {
             return false;
           }
         }
-        if (isMainFrame) {
+        if (isMainFrame && frameId) {
           const frame = this.pageFrames.get(frameId);
           if (frame) {
             this.mainFrame = frame;
@@ -1373,7 +1375,7 @@ export class TimelineModelImpl {
     return this.mainFrame && this.mainFrame.url || '';
   }
 
-  pageFrameById(frameId: string): PageFrame|null {
+  pageFrameById(frameId: Protocol.Page.FrameId): PageFrame|null {
     return frameId ? this.pageFrames.get(frameId) || null : null;
   }
 
@@ -2297,7 +2299,7 @@ export class TimelineData {
   stackTrace: Protocol.Runtime.CallFrame[]|null;
   picture: SDK.TracingModel.ObjectSnapshot|null;
   private initiatorInternal: SDK.TracingModel.Event|null;
-  frameId: string;
+  frameId: Protocol.Page.FrameId|null;
   timeWaitingForMainThread?: number;
 
   constructor() {
@@ -2308,7 +2310,7 @@ export class TimelineData {
     this.stackTrace = null;
     this.picture = null;
     this.initiatorInternal = null;
-    this.frameId = '';
+    this.frameId = null;
   }
 
   setInitiator(initiator: SDK.TracingModel.Event|null): void {

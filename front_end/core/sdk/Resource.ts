@@ -44,7 +44,7 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
   private requestInternal: NetworkRequest|null;
   private urlInternal!: string;
   private readonly documentURLInternal: string;
-  private readonly frameIdInternal: string;
+  private readonly frameIdInternal: Protocol.Page.FrameId|null;
   private readonly loaderIdInternal: Protocol.Network.LoaderId|null;
   private readonly type: Common.ResourceType.ResourceType;
   private mimeTypeInternal: string;
@@ -60,8 +60,8 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
 
   constructor(
       resourceTreeModel: ResourceTreeModel, request: NetworkRequest|null, url: string, documentURL: string,
-      frameId: string, loaderId: Protocol.Network.LoaderId|null, type: Common.ResourceType.ResourceType,
-      mimeType: string, lastModified: Date|null, contentSize: number|null) {
+      frameId: Protocol.Page.FrameId|null, loaderId: Protocol.Network.LoaderId|null,
+      type: Common.ResourceType.ResourceType, mimeType: string, lastModified: Date|null, contentSize: number|null) {
     this.resourceTreeModel = resourceTreeModel;
     this.requestInternal = request;
     this.url = url;
@@ -119,7 +119,7 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
     return this.documentURLInternal;
   }
 
-  get frameId(): Protocol.Page.FrameId {
+  get frameId(): Protocol.Page.FrameId|null {
     return this.frameIdInternal;
   }
 
@@ -240,7 +240,7 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
     }
     if (!loadResult) {
       const response = await this.resourceTreeModel.target().pageAgent().invoke_getResourceContent(
-          {frameId: this.frameId, url: this.url});
+          {frameId: this.frameId as Protocol.Page.FrameId, url: this.url});
       const protocolError = response.getError();
       if (protocolError) {
         this.contentLoadError = protocolError;
@@ -276,7 +276,7 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
   }
 
   frame(): ResourceTreeFrame|null {
-    return this.resourceTreeModel.frameForId(this.frameIdInternal);
+    return this.frameIdInternal ? this.resourceTreeModel.frameForId(this.frameIdInternal) : null;
   }
 
   statusCode(): number {

@@ -327,7 +327,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     return afterStart && beforeEnd;
   }
 
-  get frameId(): string {
+  get frameId(): Protocol.Page.FrameId {
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
     // @ts-expect-error
     if (typeof this[frameIdSymbol] !== 'string') {
@@ -337,7 +337,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     }
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
     // @ts-expect-error
-    return this[frameIdSymbol] || '';
+    return this[frameIdSymbol];
   }
 
   createPageResourceLoadInitiator(): PageResourceLoadInitiator {
@@ -347,15 +347,15 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
 
 const frameIdSymbol = Symbol('frameid');
 
-function frameIdForScript(script: Script): string {
+function frameIdForScript(script: Script): Protocol.Page.FrameId|null {
   const executionContext = script.executionContext();
   if (executionContext) {
-    return executionContext.frameId || '';
+    return executionContext.frameId || null;
   }
   // This is to overcome compilation cache which doesn't get reset.
   const resourceTreeModel = script.debuggerModel.target().model(ResourceTreeModel);
   if (!resourceTreeModel || !resourceTreeModel.mainFrame) {
-    return '';
+    return null;
   }
   return resourceTreeModel.mainFrame.id;
 }

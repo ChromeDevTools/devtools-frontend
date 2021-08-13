@@ -30,9 +30,10 @@
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import type * as Workspace from '../workspace/workspace.js';
 
-const uiSourceCodeToAttributionMap = new WeakMap<Workspace.UISourceCode.UISourceCode, Map<string, {
+const uiSourceCodeToAttributionMap = new WeakMap<Workspace.UISourceCode.UISourceCode, Map<Protocol.Page.FrameId, {
                                                    frame: SDK.ResourceTreeModel.ResourceTreeFrame,
                                                    count: number,
                                                  }>>();
@@ -62,19 +63,23 @@ export const Events = {
 };
 
 export class NetworkProject {
-  static resolveFrame(uiSourceCode: Workspace.UISourceCode.UISourceCode, frameId: string):
+  static resolveFrame(uiSourceCode: Workspace.UISourceCode.UISourceCode, frameId: Protocol.Page.FrameId):
       SDK.ResourceTreeModel.ResourceTreeFrame|null {
     const target = NetworkProject.targetForUISourceCode(uiSourceCode);
     const resourceTreeModel = target && target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     return resourceTreeModel ? resourceTreeModel.frameForId(frameId) : null;
   }
 
-  static setInitialFrameAttribution(uiSourceCode: Workspace.UISourceCode.UISourceCode, frameId: string): void {
+  static setInitialFrameAttribution(uiSourceCode: Workspace.UISourceCode.UISourceCode, frameId: Protocol.Page.FrameId):
+      void {
+    if (!frameId) {
+      return;
+    }
     const frame = NetworkProject.resolveFrame(uiSourceCode, frameId);
     if (!frame) {
       return;
     }
-    const attribution = new Map<string, {
+    const attribution = new Map<Protocol.Page.FrameId, {
       frame: SDK.ResourceTreeModel.ResourceTreeFrame,
       count: number,
     }>();
@@ -89,7 +94,7 @@ export class NetworkProject {
     if (!fromAttribution) {
       return;
     }
-    const toAttribution = new Map<string, {
+    const toAttribution = new Map<Protocol.Page.FrameId, {
       frame: SDK.ResourceTreeModel.ResourceTreeFrame,
       count: number,
     }>();
@@ -102,7 +107,7 @@ export class NetworkProject {
     uiSourceCodeToAttributionMap.set(toUISourceCode, toAttribution);
   }
 
-  static addFrameAttribution(uiSourceCode: Workspace.UISourceCode.UISourceCode, frameId: string): void {
+  static addFrameAttribution(uiSourceCode: Workspace.UISourceCode.UISourceCode, frameId: Protocol.Page.FrameId): void {
     const frame = NetworkProject.resolveFrame(uiSourceCode, frameId);
     if (!frame) {
       return;
@@ -122,7 +127,8 @@ export class NetworkProject {
     NetworkProjectManager.instance().dispatchEventToListeners(Events.FrameAttributionAdded, data);
   }
 
-  static removeFrameAttribution(uiSourceCode: Workspace.UISourceCode.UISourceCode, frameId: string): void {
+  static removeFrameAttribution(uiSourceCode: Workspace.UISourceCode.UISourceCode, frameId: Protocol.Page.FrameId):
+      void {
     const frameAttribution = uiSourceCodeToAttributionMap.get(uiSourceCode);
     if (!frameAttribution) {
       return;

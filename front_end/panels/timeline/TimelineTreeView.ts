@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -802,7 +803,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
         if (!this.modelInternal) {
           throw new Error('Unable to find model for group by frame operation');
         }
-        const frame = id ? this.modelInternal.timelineModel().pageFrameById(id) : undefined;
+        const frame = id ? this.modelInternal.timelineModel().pageFrameById(id as Protocol.Page.FrameId) : undefined;
         const frameName = frame ? TimelineUIUtils.displayNameForFrame(frame, 80) : i18nString(UIStrings.page);
         return {name: frameName, color: color, icon: undefined};
       }
@@ -885,7 +886,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
         return (event: SDK.TracingModel.Event): string => TimelineModel.TimelineProfileTree.eventURL(event) || '';
       case GroupBy.Frame:
         return (event: SDK.TracingModel.Event): string =>
-                   TimelineModel.TimelineModel.TimelineData.forEvent(event).frameId;
+                   TimelineModel.TimelineModel.TimelineData.forEvent(event).frameId || '';
       default:
         console.assert(false, `Unexpected aggregation setting: ${groupBy}`);
         return null;
@@ -930,7 +931,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     if (!this.modelInternal) {
       return;
     }
-    const frame = this.modelInternal.timelineModel().pageFrameById((node.id as string));
+    const frame = this.modelInternal.timelineModel().pageFrameById((node.id as Protocol.Page.FrameId));
     if (!frame || !frame.ownerNode) {
       return;
     }

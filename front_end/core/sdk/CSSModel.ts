@@ -446,11 +446,14 @@ export class CSSModel extends SDKModel<EventTypes> {
 
   async requestViaInspectorStylesheet(node: DOMNode): Promise<CSSStyleSheetHeader|null> {
     const frameId = node.frameId() ||
-        (this.resourceTreeModel && this.resourceTreeModel.mainFrame ? this.resourceTreeModel.mainFrame.id : '');
+        (this.resourceTreeModel && this.resourceTreeModel.mainFrame ? this.resourceTreeModel.mainFrame.id : null);
     const headers = [...this.styleSheetIdToHeader.values()];
     const styleSheetHeader = headers.find(header => header.frameId === frameId && header.isViaInspector());
     if (styleSheetHeader) {
       return styleSheetHeader;
+    }
+    if (!frameId) {
+      return null;
     }
 
     try {

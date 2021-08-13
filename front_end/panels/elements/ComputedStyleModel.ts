@@ -9,85 +9,86 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
-  _node: SDK.DOMModel.DOMNode|null;
-  _cssModel: SDK.CSSModel.CSSModel|null;
-  _eventListeners: Common.EventTarget.EventDescriptor[];
-  _frameResizedTimer?: number;
-  _computedStylePromise?: Promise<ComputedStyle|null>;
+  private nodeInternal: SDK.DOMModel.DOMNode|null;
+  private cssModelInternal: SDK.CSSModel.CSSModel|null;
+  private eventListeners: Common.EventTarget.EventDescriptor[];
+  private frameResizedTimer?: number;
+  private computedStylePromise?: Promise<ComputedStyle|null>;
   constructor() {
     super();
-    this._node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
-    this._cssModel = null;
-    this._eventListeners = [];
-    UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this._onNodeChanged, this);
+    this.nodeInternal = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
+    this.cssModelInternal = null;
+    this.eventListeners = [];
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.onNodeChanged, this);
   }
 
   node(): SDK.DOMModel.DOMNode|null {
-    return this._node;
+    return this.nodeInternal;
   }
 
   cssModel(): SDK.CSSModel.CSSModel|null {
-    return this._cssModel && this._cssModel.isEnabled() ? this._cssModel : null;
+    return this.cssModelInternal && this.cssModelInternal.isEnabled() ? this.cssModelInternal : null;
   }
 
-  _onNodeChanged(event: Common.EventTarget.EventTargetEvent): void {
-    this._node = (event.data as SDK.DOMModel.DOMNode | null);
-    this._updateModel(this._node ? this._node.domModel().cssModel() : null);
-    this._onComputedStyleChanged(null);
+  private onNodeChanged(event: Common.EventTarget.EventTargetEvent): void {
+    this.nodeInternal = (event.data as SDK.DOMModel.DOMNode | null);
+    this.updateModel(this.nodeInternal ? this.nodeInternal.domModel().cssModel() : null);
+    this.onComputedStyleChanged(null);
   }
 
-  _updateModel(cssModel: SDK.CSSModel.CSSModel|null): void {
-    if (this._cssModel === cssModel) {
+  private updateModel(cssModel: SDK.CSSModel.CSSModel|null): void {
+    if (this.cssModelInternal === cssModel) {
       return;
     }
-    Common.EventTarget.removeEventListeners(this._eventListeners);
-    this._cssModel = cssModel;
+    Common.EventTarget.removeEventListeners(this.eventListeners);
+    this.cssModelInternal = cssModel;
     const domModel = cssModel ? cssModel.domModel() : null;
     const resourceTreeModel = cssModel ? cssModel.target().model(SDK.ResourceTreeModel.ResourceTreeModel) : null;
     if (cssModel && domModel && resourceTreeModel) {
-      this._eventListeners = [
-        cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetAdded, this._onComputedStyleChanged, this),
-        cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetRemoved, this._onComputedStyleChanged, this),
-        cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetChanged, this._onComputedStyleChanged, this),
-        cssModel.addEventListener(SDK.CSSModel.Events.FontsUpdated, this._onComputedStyleChanged, this),
-        cssModel.addEventListener(SDK.CSSModel.Events.MediaQueryResultChanged, this._onComputedStyleChanged, this),
-        cssModel.addEventListener(SDK.CSSModel.Events.PseudoStateForced, this._onComputedStyleChanged, this),
-        cssModel.addEventListener(SDK.CSSModel.Events.ModelWasEnabled, this._onComputedStyleChanged, this),
-        domModel.addEventListener(SDK.DOMModel.Events.DOMMutated, this._onDOMModelChanged, this),
-        resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameResized, this._onFrameResized, this),
+      this.eventListeners = [
+        cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetAdded, this.onComputedStyleChanged, this),
+        cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetRemoved, this.onComputedStyleChanged, this),
+        cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetChanged, this.onComputedStyleChanged, this),
+        cssModel.addEventListener(SDK.CSSModel.Events.FontsUpdated, this.onComputedStyleChanged, this),
+        cssModel.addEventListener(SDK.CSSModel.Events.MediaQueryResultChanged, this.onComputedStyleChanged, this),
+        cssModel.addEventListener(SDK.CSSModel.Events.PseudoStateForced, this.onComputedStyleChanged, this),
+        cssModel.addEventListener(SDK.CSSModel.Events.ModelWasEnabled, this.onComputedStyleChanged, this),
+        domModel.addEventListener(SDK.DOMModel.Events.DOMMutated, this.onDOMModelChanged, this),
+        resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameResized, this.onFrameResized, this),
       ];
     }
   }
 
-  _onComputedStyleChanged(event: Common.EventTarget.EventTargetEvent<unknown>|null): void {
-    delete this._computedStylePromise;
+  private onComputedStyleChanged(event: Common.EventTarget.EventTargetEvent<unknown>|null): void {
+    delete this.computedStylePromise;
     this.dispatchEventToListeners(Events.ComputedStyleChanged, event ? event.data : null);
   }
 
-  _onDOMModelChanged(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
+  private onDOMModelChanged(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
     // Any attribute removal or modification can affect the styles of "related" nodes.
     const node = event.data;
-    if (!this._node ||
-        this._node !== node && node.parentNode !== this._node.parentNode && !node.isAncestor(this._node)) {
+    if (!this.nodeInternal ||
+        this.nodeInternal !== node && node.parentNode !== this.nodeInternal.parentNode &&
+            !node.isAncestor(this.nodeInternal)) {
       return;
     }
-    this._onComputedStyleChanged(null);
+    this.onComputedStyleChanged(null);
   }
 
-  _onFrameResized(): void {
+  private onFrameResized(): void {
     function refreshContents(this: ComputedStyleModel): void {
-      this._onComputedStyleChanged(null);
-      delete this._frameResizedTimer;
+      this.onComputedStyleChanged(null);
+      delete this.frameResizedTimer;
     }
 
-    if (this._frameResizedTimer) {
-      clearTimeout(this._frameResizedTimer);
+    if (this.frameResizedTimer) {
+      clearTimeout(this.frameResizedTimer);
     }
 
-    this._frameResizedTimer = setTimeout(refreshContents.bind(this), 100);
+    this.frameResizedTimer = setTimeout(refreshContents.bind(this), 100);
   }
 
-  _elementNode(): SDK.DOMModel.DOMNode|null {
+  private elementNode(): SDK.DOMModel.DOMNode|null {
     const node = this.node();
     if (!node) {
       return null;
@@ -96,7 +97,7 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   async fetchComputedStyle(): Promise<ComputedStyle|null> {
-    const elementNode = this._elementNode();
+    const elementNode = this.elementNode();
     const cssModel = this.cssModel();
     if (!elementNode || !cssModel) {
       return /** @type {?ComputedStyle} */ null as ComputedStyle | null;
@@ -106,17 +107,17 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
       return /** @type {?ComputedStyle} */ null as ComputedStyle | null;
     }
 
-    if (!this._computedStylePromise) {
-      this._computedStylePromise = cssModel.computedStylePromise(nodeId).then(verifyOutdated.bind(this, elementNode));
+    if (!this.computedStylePromise) {
+      this.computedStylePromise = cssModel.computedStylePromise(nodeId).then(verifyOutdated.bind(this, elementNode));
     }
 
-    return this._computedStylePromise;
+    return this.computedStylePromise;
 
     function verifyOutdated(
         this: ComputedStyleModel, elementNode: SDK.DOMModel.DOMNode, style: Map<string, string>|null): ComputedStyle|
         null {
-      return elementNode === this._elementNode() && style ? new ComputedStyle(elementNode, style) :
-                                                            null as ComputedStyle | null;
+      return elementNode === this.elementNode() && style ? new ComputedStyle(elementNode, style) :
+                                                           null as ComputedStyle | null;
     }
   }
 }

@@ -143,7 +143,7 @@ ElementsTestRunner.expandAndDumpEventListeners = function(eventListenersView, ca
       if (!listenerTypes[i].children().length) {
         continue;
       }
-      const eventType = listenerTypes[i]._title;
+      const eventType = listenerTypes[i].title;
       TestRunner.addResult('');
       TestRunner.addResult('======== ' + eventType + ' ========');
       const listenerItems = listenerTypes[i].children();
@@ -174,20 +174,20 @@ ElementsTestRunner.expandAndDumpEventListenersPromise = function(eventListenersV
 };
 
 ElementsTestRunner.inlineStyleSection = function() {
-  return UI.panels.elements._stylesWidget._sectionBlocks[0].sections[0];
+  return UI.panels.elements.stylesWidget.sectionBlocks[0].sections[0];
 };
 
 ElementsTestRunner.computedStyleWidget = function() {
-  return UI.panels.elements._computedStyleWidget;
+  return UI.panels.elements.computedStyleWidget;
 };
 
 ElementsTestRunner.dumpComputedStyle = async function(doNotAutoExpand, printInnerText) {
   const computed = ElementsTestRunner.computedStyleWidget();
-  const treeOutline = computed._propertiesOutline;
+  const treeOutline = computed.propertiesOutline;
   const children = treeOutline.rootElement().children();
 
   for (const treeElement of children) {
-    const property = computed._propertyByTreeElement.get(treeElement);
+    const property = computed.propertyByTreeElement.get(treeElement);
     if (!property || property.name === 'width' || property.name === 'height') {
       continue;
     }
@@ -228,11 +228,11 @@ ElementsTestRunner.dumpComputedStyle = async function(doNotAutoExpand, printInne
 
 ElementsTestRunner.findComputedPropertyWithName = function(name) {
   const computed = ElementsTestRunner.computedStyleWidget();
-  const treeOutline = computed._propertiesOutline;
+  const treeOutline = computed.propertiesOutline;
   const children = treeOutline.rootElement().children();
 
   for (const treeElement of children) {
-    const property = computed._propertyByTreeElement.get(treeElement);
+    const property = computed.propertyByTreeElement.get(treeElement);
     if (!property) {
       continue;
     }
@@ -245,7 +245,7 @@ ElementsTestRunner.findComputedPropertyWithName = function(name) {
 };
 
 ElementsTestRunner.firstMatchedStyleSection = function() {
-  return UI.panels.elements._stylesWidget._sectionBlocks[0].sections[1];
+  return UI.panels.elements.stylesWidget.sectionBlocks[0].sections[1];
 };
 
 ElementsTestRunner.firstMediaTextElementInSection = function(section) {
@@ -387,17 +387,17 @@ ElementsTestRunner.selectNodeAndWaitForStylesWithComputed = function(idValue, ca
 };
 
 ElementsTestRunner.firstElementsTreeOutline = function() {
-  return UI.panels.elements._treeOutlines.values().next().value;
+  return UI.panels.elements.treeOutlines.values().next().value;
 };
 
 ElementsTestRunner.filterMatchedStyles = function(text) {
   const regex = (text ? new RegExp(text, 'i') : null);
   TestRunner.addResult('Filtering styles by: ' + text);
-  UI.panels.elements._stylesWidget._onFilterChanged(regex);
+  UI.panels.elements.stylesWidget.onFilterChanged(regex);
 };
 
 ElementsTestRunner.dumpRenderedMatchedStyles = function() {
-  const sectionBlocks = UI.panels.elements._stylesWidget._sectionBlocks;
+  const sectionBlocks = UI.panels.elements.stylesWidget.sectionBlocks;
 
   for (const block of sectionBlocks) {
     for (const section of block.sections) {
@@ -410,7 +410,7 @@ ElementsTestRunner.dumpRenderedMatchedStyles = function() {
   }
 
   function dumpRenderedSection(section) {
-    TestRunner.addResult(section._selectorElement.textContent + ' {');
+    TestRunner.addResult(section.selectorElement.textContent + ' {');
     const rootElement = section.propertiesTreeOutline.rootElement();
 
     for (let i = 0; i < rootElement.childCount(); ++i) {
@@ -461,7 +461,7 @@ ElementsTestRunner.dumpRenderedMatchedStyles = function() {
 
 ElementsTestRunner.dumpSelectedElementStyles =
     async function(excludeComputed, excludeMatched, omitLonghands, includeSelectorGroupMarks, printInnerText) {
-  const sectionBlocks = UI.panels.elements._stylesWidget._sectionBlocks;
+  const sectionBlocks = UI.panels.elements.stylesWidget.sectionBlocks;
 
   if (!excludeComputed) {
     await ElementsTestRunner.dumpComputedStyle(false /* doNotAutoExpand */, printInnerText);
@@ -499,7 +499,7 @@ async function printStyleSection(section, omitLonghands, includeSelectorGroupMar
 
   TestRunner.addResult(
       '[expanded] ' + ((section.propertiesTreeOutline.element.classList.contains('no-affect') ? '[no-affect] ' : '')));
-  const queries = section._titleElement.querySelectorAll('devtools-css-query');
+  const queries = section.titleElement.querySelectorAll('devtools-css-query');
 
   for (const query of queries) {
     const queryElement = query.shadowRoot.querySelector('.query');
@@ -511,10 +511,10 @@ async function printStyleSection(section, omitLonghands, includeSelectorGroupMar
   }
 
   const selector =
-      section._titleElement.querySelector('.selector') || section._titleElement.querySelector('.keyframe-key');
+      section.titleElement.querySelector('.selector') || section.titleElement.querySelector('.keyframe-key');
   let selectorText = (includeSelectorGroupMarks ? buildMarkedSelectors(selector) : text(selector));
   selectorText += text(selector.nextSibling);
-  const anchor = section._titleElement.querySelector('.styles-section-subtitle');
+  const anchor = section.titleElement.querySelector('.styles-section-subtitle');
 
   if (anchor) {
     const anchorText = await extractLinkText(anchor);
@@ -523,8 +523,8 @@ async function printStyleSection(section, omitLonghands, includeSelectorGroupMar
 
   TestRunner.addResult(selectorText);
   ElementsTestRunner.dumpStyleTreeOutline(section.propertiesTreeOutline, (omitLonghands ? 1 : 2), printInnerText);
-  if (!section._showAllButton.classList.contains('hidden')) {
-    TestRunner.addResult(text(section._showAllButton));
+  if (!section.showAllButton.classList.contains('hidden')) {
+    TestRunner.addResult(text(section.showAllButton));
   }
   TestRunner.addResult('');
 
@@ -569,13 +569,13 @@ function buildMarkedSelectors(element) {
 ElementsTestRunner.toggleStyleProperty = function(propertyName, checked) {
   const treeItem = ElementsTestRunner.getElementStylePropertyTreeItem(propertyName);
 
-  treeItem._toggleDisabled(!checked);
+  treeItem.toggleDisabled(!checked);
 };
 
 ElementsTestRunner.toggleMatchedStyleProperty = function(propertyName, checked) {
   const treeItem = ElementsTestRunner.getMatchedStylePropertyTreeItem(propertyName);
 
-  treeItem._toggleDisabled(!checked);
+  treeItem.toggleDisabled(!checked);
 };
 
 ElementsTestRunner.eventListenersWidget = function() {
@@ -597,11 +597,11 @@ ElementsTestRunner.showComputedStyles = function() {
 
 ElementsTestRunner.expandAndDumpSelectedElementEventListeners = function(callback, force) {
   ElementsTestRunner.expandAndDumpEventListeners(
-      ElementsTestRunner.eventListenersWidget()._eventListenersView, callback, force);
+      ElementsTestRunner.eventListenersWidget().eventListenersView, callback, force);
 };
 
 ElementsTestRunner.removeFirstEventListener = function() {
-  const treeOutline = ElementsTestRunner.eventListenersWidget()._eventListenersView._treeOutline;
+  const treeOutline = ElementsTestRunner.eventListenersWidget().eventListenersView.treeOutline;
   const listenerTypes = treeOutline.rootElement().children();
 
   for (let i = 0; i < listenerTypes.length; i++) {
@@ -609,7 +609,7 @@ ElementsTestRunner.removeFirstEventListener = function() {
 
     if (listeners.length && !listenerTypes[i].hidden) {
       listeners[0].eventListener().remove();
-      listeners[0]._removeListenerBar();
+      listeners[0].removeListenerBar();
       break;
     }
   }
@@ -648,7 +648,7 @@ ElementsTestRunner.getElementStylePropertyTreeItem = function(propertyName) {
 };
 
 ElementsTestRunner.getMatchedStylePropertyTreeItem = function(propertyName) {
-  const sectionBlocks = UI.panels.elements._stylesWidget._sectionBlocks;
+  const sectionBlocks = UI.panels.elements.stylesWidget.sectionBlocks;
 
   for (const block of sectionBlocks) {
     for (const section of block.sections) {
@@ -740,12 +740,12 @@ ElementsTestRunner.dumpElementsTree = function(rootNode, depth, resultsArray) {
   }
 
   function markersDataDump(treeItem) {
-    if (treeItem._isClosingTag) {
+    if (treeItem.isClosingTag) {
       return '';
     }
 
     let markers = '';
-    const node = treeItem._node;
+    const node = treeItem.node;
 
     if (node) {
       markers += dumpMap('markers', node.markers);
@@ -810,7 +810,7 @@ ElementsTestRunner.dumpElementsTree = function(rootNode, depth, resultsArray) {
     const newPrefix = (treeItem.root ? '' : prefix + '    ');
 
     for (let i = 0; depth && children && i < children.length; ++i) {
-      if (!children[i]._isClosingTag) {
+      if (!children[i].isClosingTag) {
         print(children[i], newPrefix, depth - 1);
       } else {
         print(children[i], prefix, depth);
@@ -872,7 +872,7 @@ ElementsTestRunner.dumpDOMUpdateHighlights = function(rootNode, callback, depth)
     const newPrefix = (treeItem.root ? '' : prefix + '    ');
 
     for (let i = 0; depth && children && i < children.length; ++i) {
-      if (!children[i]._isClosingTag) {
+      if (!children[i].isClosingTag) {
         print(children[i], newPrefix, depth - 1);
       }
     }
@@ -1166,7 +1166,7 @@ ElementsTestRunner.dumpBreadcrumb = function(message) {
   }
 
   const result = [];
-  const crumbs = UI.panels.elements._breadcrumbs.crumbsElement;
+  const crumbs = UI.panels.elements.breadcrumbs.crumbsElement;
   let crumb = crumbs.lastChild;
 
   while (crumb) {
@@ -1191,11 +1191,11 @@ ElementsTestRunner.matchingSelectors = function(matchedStyles, rule) {
 ElementsTestRunner.addNewRuleInStyleSheet = function(styleSheetHeader, selector, callback) {
   TestRunner.addSniffer(
       Elements.StylesSidebarPane.prototype, '_addBlankSection', onBlankSection.bind(null, selector, callback));
-  UI.panels.elements._stylesWidget._createNewRuleInStyleSheet(styleSheetHeader);
+  UI.panels.elements.stylesWidget.createNewRuleInStyleSheet(styleSheetHeader);
 };
 
 ElementsTestRunner.addNewRule = function(selector, callback) {
-  UI.panels.elements._stylesWidget.contentElement.querySelector('.styles-pane-toolbar')
+  UI.panels.elements.stylesWidget.contentElement.querySelector('.styles-pane-toolbar')
       .shadowRoot.querySelector('.largeicon-add')
       .click();
   TestRunner.addSniffer(
@@ -1206,10 +1206,10 @@ function onBlankSection(selector, callback) {
   const section = ElementsTestRunner.firstMatchedStyleSection();
 
   if (typeof selector === 'string') {
-    section._selectorElement.textContent = selector;
+    section.selectorElement.textContent = selector;
   }
 
-  section._selectorElement.dispatchEvent(TestRunner.createKeyEvent('Enter'));
+  section.selectorElement.dispatchEvent(TestRunner.createKeyEvent('Enter'));
   ElementsTestRunner.waitForSelectorCommitted(callback.bind(null, section));
 }
 
@@ -1288,10 +1288,10 @@ ElementsTestRunner.waitForAnimationAdded = function(callback) {
 };
 
 ElementsTestRunner.dumpAnimationTimeline = function(timeline) {
-  for (const ui of timeline._uiAnimations) {
+  for (const ui of timeline.uiAnimations) {
     TestRunner.addResult(ui.animation().type());
-    TestRunner.addResult(ui._nameElement.innerHTML);
-    TestRunner.addResult(ui._svg.innerHTML);
+    TestRunner.addResult(ui.nameElement.innerHTML);
+    TestRunner.addResult(ui.svg.innerHTML);
   }
 };
 

@@ -173,36 +173,36 @@ const propertySorter = (propA: string, propB: string): number => {
 };
 
 export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
-  _computedStyleModel: ComputedStyleModel;
-  _showInheritedComputedStylePropertiesSetting: Common.Settings.Setting<boolean>;
-  _groupComputedStylesSetting: Common.Settings.Setting<boolean>;
+  private computedStyleModel: ComputedStyleModel;
+  private readonly showInheritedComputedStylePropertiesSetting: Common.Settings.Setting<boolean>;
+  private readonly groupComputedStylesSetting: Common.Settings.Setting<boolean>;
   input: Element;
-  _filterRegex: RegExp|null;
-  _noMatchesElement: HTMLElement;
-  _propertiesOutline: UI.TreeOutline.TreeOutlineInShadow;
-  _propertyByTreeElement: WeakMap<UI.TreeOutline.TreeElement, {
+  private filterRegex: RegExp|null;
+  private readonly noMatchesElement: HTMLElement;
+  private propertiesOutline: UI.TreeOutline.TreeOutlineInShadow;
+  private readonly propertyByTreeElement: WeakMap<UI.TreeOutline.TreeElement, {
     name: string,
     value: string,
   }>;
-  _categoryByTreeElement: WeakMap<UI.TreeOutline.TreeElement, Category>;
-  _expandedProperties: Set<string>;
-  _expandedGroups: Set<Category>;
-  _linkifier: Components.Linkifier.Linkifier;
-  _imagePreviewPopover: ImagePreviewPopover;
-  _idleCallbackManager: IdleCallbackManager;
+  private readonly categoryByTreeElement: WeakMap<UI.TreeOutline.TreeElement, Category>;
+  private readonly expandedProperties: Set<string>;
+  private readonly expandedGroups: Set<Category>;
+  private readonly linkifier: Components.Linkifier.Linkifier;
+  private readonly imagePreviewPopover: ImagePreviewPopover;
+  private idleCallbackManager: IdleCallbackManager;
 
   constructor() {
     super(true);
 
-    this._computedStyleModel = new ComputedStyleModel();
-    this._computedStyleModel.addEventListener(Events.ComputedStyleChanged, this.update, this);
+    this.computedStyleModel = new ComputedStyleModel();
+    this.computedStyleModel.addEventListener(Events.ComputedStyleChanged, this.update, this);
 
-    this._showInheritedComputedStylePropertiesSetting =
+    this.showInheritedComputedStylePropertiesSetting =
         Common.Settings.Settings.instance().createSetting('showInheritedComputedStyleProperties', false);
-    this._showInheritedComputedStylePropertiesSetting.addChangeListener(this.update.bind(this));
+    this.showInheritedComputedStylePropertiesSetting.addChangeListener(this.update.bind(this));
 
-    this._groupComputedStylesSetting = Common.Settings.Settings.instance().createSetting('groupComputedStyles', false);
-    this._groupComputedStylesSetting.addChangeListener(() => {
+    this.groupComputedStylesSetting = Common.Settings.Settings.instance().createSetting('groupComputedStyles', false);
+    this.groupComputedStylesSetting.addChangeListener(() => {
       this.update();
     });
 
@@ -213,91 +213,91 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     UI.ARIAUtils.setAccessibleName(filterInput, i18nString(UIStrings.filterComputedStyles));
     filterContainerElement.appendChild(filterInput);
     this.input = filterInput;
-    this._filterRegex = null;
+    this.filterRegex = null;
 
     const toolbar = new UI.Toolbar.Toolbar('styles-pane-toolbar', hbox);
     toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
-        this._showInheritedComputedStylePropertiesSetting, undefined, i18nString(UIStrings.showAll)));
-    toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
-        this._groupComputedStylesSetting, undefined, i18nString(UIStrings.group)));
+        this.showInheritedComputedStylePropertiesSetting, undefined, i18nString(UIStrings.showAll)));
+    toolbar.appendToolbarItem(
+        new UI.Toolbar.ToolbarSettingCheckbox(this.groupComputedStylesSetting, undefined, i18nString(UIStrings.group)));
 
-    this._noMatchesElement = this.contentElement.createChild('div', 'gray-info-message');
-    this._noMatchesElement.textContent = i18nString(UIStrings.noMatchingProperty);
+    this.noMatchesElement = this.contentElement.createChild('div', 'gray-info-message');
+    this.noMatchesElement.textContent = i18nString(UIStrings.noMatchingProperty);
 
-    this._propertiesOutline = new UI.TreeOutline.TreeOutlineInShadow();
-    this._propertiesOutline.hideOverflow();
-    this._propertiesOutline.setShowSelectionOnKeyboardFocus(true);
-    this._propertiesOutline.setFocusable(true);
-    this._propertiesOutline.element.classList.add('monospace', 'computed-properties');
-    this._propertiesOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, this._onTreeElementToggled, this);
-    this._propertiesOutline.addEventListener(UI.TreeOutline.Events.ElementCollapsed, this._onTreeElementToggled, this);
-    this.contentElement.appendChild(this._propertiesOutline.element);
+    this.propertiesOutline = new UI.TreeOutline.TreeOutlineInShadow();
+    this.propertiesOutline.hideOverflow();
+    this.propertiesOutline.setShowSelectionOnKeyboardFocus(true);
+    this.propertiesOutline.setFocusable(true);
+    this.propertiesOutline.element.classList.add('monospace', 'computed-properties');
+    this.propertiesOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, this.onTreeElementToggled, this);
+    this.propertiesOutline.addEventListener(UI.TreeOutline.Events.ElementCollapsed, this.onTreeElementToggled, this);
+    this.contentElement.appendChild(this.propertiesOutline.element);
 
-    this._propertyByTreeElement = new WeakMap();
-    this._categoryByTreeElement = new WeakMap();
+    this.propertyByTreeElement = new WeakMap();
+    this.categoryByTreeElement = new WeakMap();
 
-    this._expandedProperties = new Set();
-    this._expandedGroups = new Set(DefaultCategoryOrder);
+    this.expandedProperties = new Set();
+    this.expandedGroups = new Set(DefaultCategoryOrder);
 
-    this._linkifier = new Components.Linkifier.Linkifier(_maxLinkLength);
+    this.linkifier = new Components.Linkifier.Linkifier(_maxLinkLength);
 
-    this._imagePreviewPopover = new ImagePreviewPopover(this.contentElement, event => {
+    this.imagePreviewPopover = new ImagePreviewPopover(this.contentElement, event => {
       const link = event.composedPath()[0];
       if (link instanceof Element) {
         return link;
       }
       return null;
-    }, () => this._computedStyleModel.node());
+    }, () => this.computedStyleModel.node());
 
-    const fontsWidget = new PlatformFontsWidget(this._computedStyleModel);
+    const fontsWidget = new PlatformFontsWidget(this.computedStyleModel);
     fontsWidget.show(this.contentElement);
 
-    this._idleCallbackManager = new IdleCallbackManager();
+    this.idleCallbackManager = new IdleCallbackManager();
   }
 
   onResize(): void {
     const isNarrow = this.contentElement.offsetWidth < 260;
-    this._propertiesOutline.contentElement.classList.toggle('computed-narrow', isNarrow);
+    this.propertiesOutline.contentElement.classList.toggle('computed-narrow', isNarrow);
   }
 
-  _showInheritedComputedStyleChanged(): void {
+  private showInheritedComputedStyleChanged(): void {
     this.update();
   }
 
   update(): void {
-    if (this._idleCallbackManager) {
-      this._idleCallbackManager.discard();
+    if (this.idleCallbackManager) {
+      this.idleCallbackManager.discard();
     }
-    this._idleCallbackManager = new IdleCallbackManager();
+    this.idleCallbackManager = new IdleCallbackManager();
     super.update();
   }
 
   wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([computedStyleSidebarPaneStyles]);
-    this._propertiesOutline.registerCSSFiles([computedStyleWidgetTreeStyles]);
+    this.propertiesOutline.registerCSSFiles([computedStyleWidgetTreeStyles]);
   }
 
   async doUpdate(): Promise<void> {
     const [nodeStyles, matchedStyles] =
-        await Promise.all([this._computedStyleModel.fetchComputedStyle(), this._fetchMatchedCascade()]);
-    const shouldGroupComputedStyles = this._groupComputedStylesSetting.get();
-    this._propertiesOutline.contentElement.classList.toggle('grouped-list', shouldGroupComputedStyles);
-    this._propertiesOutline.contentElement.classList.toggle('alphabetical-list', !shouldGroupComputedStyles);
+        await Promise.all([this.computedStyleModel.fetchComputedStyle(), this.fetchMatchedCascade()]);
+    const shouldGroupComputedStyles = this.groupComputedStylesSetting.get();
+    this.propertiesOutline.contentElement.classList.toggle('grouped-list', shouldGroupComputedStyles);
+    this.propertiesOutline.contentElement.classList.toggle('alphabetical-list', !shouldGroupComputedStyles);
     if (shouldGroupComputedStyles) {
-      await this._rebuildGroupedList(nodeStyles, matchedStyles);
+      await this.rebuildGroupedList(nodeStyles, matchedStyles);
     } else {
-      await this._rebuildAlphabeticalList(nodeStyles, matchedStyles);
+      await this.rebuildAlphabeticalList(nodeStyles, matchedStyles);
     }
   }
 
-  async _fetchMatchedCascade(): Promise<SDK.CSSMatchedStyles.CSSMatchedStyles|null> {
-    const node = this._computedStyleModel.node();
-    if (!node || !this._computedStyleModel.cssModel()) {
+  private async fetchMatchedCascade(): Promise<SDK.CSSMatchedStyles.CSSMatchedStyles|null> {
+    const node = this.computedStyleModel.node();
+    if (!node || !this.computedStyleModel.cssModel()) {
       return null;
     }
 
-    const cssModel = this._computedStyleModel.cssModel();
+    const cssModel = this.computedStyleModel.cssModel();
     if (!cssModel) {
       return null;
     }
@@ -306,19 +306,19 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
 
     function validateStyles(this: ComputedStyleWidget, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles|null):
         SDK.CSSMatchedStyles.CSSMatchedStyles|null {
-      return matchedStyles && matchedStyles.node() === this._computedStyleModel.node() ? matchedStyles : null;
+      return matchedStyles && matchedStyles.node() === this.computedStyleModel.node() ? matchedStyles : null;
     }
   }
 
-  async _rebuildAlphabeticalList(
+  private async rebuildAlphabeticalList(
       nodeStyle: ComputedStyle|null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles|null): Promise<void> {
-    const hadFocus = this._propertiesOutline.element.hasFocus();
-    this._imagePreviewPopover.hide();
-    this._propertiesOutline.removeChildren();
-    this._linkifier.reset();
-    const cssModel = this._computedStyleModel.cssModel();
+    const hadFocus = this.propertiesOutline.element.hasFocus();
+    this.imagePreviewPopover.hide();
+    this.propertiesOutline.removeChildren();
+    this.linkifier.reset();
+    const cssModel = this.computedStyleModel.cssModel();
     if (!nodeStyle || !matchedStyles || !cssModel) {
-      this._noMatchesElement.classList.remove('hidden');
+      this.noMatchesElement.classList.remove('hidden');
       return;
     }
 
@@ -326,9 +326,9 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     uniqueProperties.sort(propertySorter);
 
     const node = nodeStyle.node;
-    const propertyTraces = this._computePropertyTraces(matchedStyles);
-    const nonInheritedProperties = this._computeNonInheritedProperties(matchedStyles);
-    const showInherited = this._showInheritedComputedStylePropertiesSetting.get();
+    const propertyTraces = this.computePropertyTraces(matchedStyles);
+    const nonInheritedProperties = this.computeNonInheritedProperties(matchedStyles);
+    const showInherited = this.showInheritedComputedStylePropertiesSetting.get();
     const computedStyleQueue = [];
     // filter and preprocess properties to line up in the computed style queue
     for (const propertyName of uniqueProperties) {
@@ -347,7 +347,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
       computedStyleQueue.push({propertyName, propertyValue, isInherited});
     }
 
-    this._propertiesOutline.contentElement.classList.add('render-flash');
+    this.propertiesOutline.contentElement.classList.add('render-flash');
 
     // Render computed style properties in batches via idle callbacks to avoid a
     // very long task. The batchSize and timeoutInterval should be tweaked in
@@ -360,40 +360,40 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     while (computedStyleQueue.length > 0) {
       const currentBatch = computedStyleQueue.splice(0, batchSize);
 
-      this._idleCallbackManager.schedule(() => {
+      this.idleCallbackManager.schedule(() => {
         for (const {propertyName, propertyValue, isInherited} of currentBatch) {
-          const treeElement = this._buildPropertyTreeElement(
+          const treeElement = this.buildPropertyTreeElement(
               propertyTraces, node, (matchedStyles as SDK.CSSMatchedStyles.CSSMatchedStyles), propertyName,
               propertyValue, isInherited, hadFocus);
-          this._propertiesOutline.appendChild(treeElement);
+          this.propertiesOutline.appendChild(treeElement);
         }
 
-        this._filterAlphabeticalList();
+        this.filterAlphabeticalList();
       }, timeout);
 
       timeout += timeoutInterval;
     }
 
-    await this._idleCallbackManager.awaitDone();
-    this._propertiesOutline.contentElement.classList.remove('render-flash');
+    await this.idleCallbackManager.awaitDone();
+    this.propertiesOutline.contentElement.classList.remove('render-flash');
   }
 
-  async _rebuildGroupedList(nodeStyle: ComputedStyle|null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles|null):
-      Promise<void> {
-    const hadFocus = this._propertiesOutline.element.hasFocus();
-    this._imagePreviewPopover.hide();
-    this._propertiesOutline.removeChildren();
-    this._linkifier.reset();
-    const cssModel = this._computedStyleModel.cssModel();
+  private async rebuildGroupedList(
+      nodeStyle: ComputedStyle|null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles|null): Promise<void> {
+    const hadFocus = this.propertiesOutline.element.hasFocus();
+    this.imagePreviewPopover.hide();
+    this.propertiesOutline.removeChildren();
+    this.linkifier.reset();
+    const cssModel = this.computedStyleModel.cssModel();
     if (!nodeStyle || !matchedStyles || !cssModel) {
-      this._noMatchesElement.classList.remove('hidden');
+      this.noMatchesElement.classList.remove('hidden');
       return;
     }
 
     const node = nodeStyle.node;
-    const propertyTraces = this._computePropertyTraces(matchedStyles);
-    const nonInheritedProperties = this._computeNonInheritedProperties(matchedStyles);
-    const showInherited = this._showInheritedComputedStylePropertiesSetting.get();
+    const propertyTraces = this.computePropertyTraces(matchedStyles);
+    const nonInheritedProperties = this.computeNonInheritedProperties(matchedStyles);
+    const showInherited = this.showInheritedComputedStylePropertiesSetting.get();
 
     const propertiesByCategory = new Map<Category, UI.TreeOutline.TreeElement[]>();
 
@@ -412,7 +412,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
 
       const categories = categorizePropertyName(propertyName);
       for (const category of categories) {
-        const treeElement = this._buildPropertyTreeElement(
+        const treeElement = this.buildPropertyTreeElement(
             propertyTraces, node, matchedStyles, propertyName, propertyValue, isInherited, hadFocus);
         if (!propertiesByCategory.has(category)) {
           propertiesByCategory.set(category, []);
@@ -436,33 +436,32 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
           group.appendChild(property);
         }
 
-        this._propertiesOutline.appendChild(group);
-        if (this._expandedGroups.has(category)) {
+        this.propertiesOutline.appendChild(group);
+        if (this.expandedGroups.has(category)) {
           group.expand();
         }
 
-        this._categoryByTreeElement.set(group, category);
+        this.categoryByTreeElement.set(group, category);
       }
     }
 
-    this._filterGroupLists();
+    this.filterGroupLists();
   }
 
-  _onTreeElementToggled(event: Common.EventTarget.EventTargetEvent): void {
+  private onTreeElementToggled(event: Common.EventTarget.EventTargetEvent): void {
     const treeElement = (event.data as UI.TreeOutline.TreeElement);
-    const property = this._propertyByTreeElement.get(treeElement);
+    const property = this.propertyByTreeElement.get(treeElement);
     if (property) {
-      treeElement.expanded ? this._expandedProperties.add(property.name) :
-                             this._expandedProperties.delete(property.name);
+      treeElement.expanded ? this.expandedProperties.add(property.name) : this.expandedProperties.delete(property.name);
     } else {
-      const category = this._categoryByTreeElement.get(treeElement);
+      const category = this.categoryByTreeElement.get(treeElement);
       if (category) {
-        treeElement.expanded ? this._expandedGroups.add(category) : this._expandedGroups.delete(category);
+        treeElement.expanded ? this.expandedGroups.add(category) : this.expandedGroups.delete(category);
       }
     }
   }
 
-  _buildPropertyTreeElement(
+  private buildPropertyTreeElement(
       propertyTraces: Map<string, SDK.CSSProperty.CSSProperty[]>, node: SDK.DOMModel.DOMNode,
       matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, propertyName: string, propertyValue: string,
       isInherited: boolean, hadFocus: boolean): UI.TreeOutline.TreeElement {
@@ -471,7 +470,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     let navigate: ((arg0?: Event|undefined) => void)|(() => void) = (): void => {};
     if (trace) {
       const activeProperty =
-          this._renderPropertyTrace((matchedStyles as SDK.CSSMatchedStyles.CSSMatchedStyles), node, treeElement, trace);
+          this.renderPropertyTrace((matchedStyles as SDK.CSSMatchedStyles.CSSMatchedStyles), node, treeElement, trace);
       treeElement.setExpandable(true);
       treeElement.listItemElement.addEventListener('click', event => {
         treeElement.expanded ? treeElement.collapse() : treeElement.expand();
@@ -488,19 +487,19 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     };
 
     treeElement.title = propertyElement;
-    this._propertyByTreeElement.set(treeElement, {name: propertyName, value: propertyValue});
-    if (!this._propertiesOutline.selectedTreeElement) {
+    this.propertyByTreeElement.set(treeElement, {name: propertyName, value: propertyValue});
+    if (!this.propertiesOutline.selectedTreeElement) {
       treeElement.select(!hadFocus);
     }
 
-    if (this._expandedProperties.has(propertyName)) {
+    if (this.expandedProperties.has(propertyName)) {
       treeElement.expand();
     }
 
     return treeElement;
   }
 
-  _renderPropertyTrace(
+  private renderPropertyTrace(
       matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, node: SDK.DOMModel.DOMNode,
       rootTreeElement: UI.TreeOutline.TreeElement,
       tracedProperties: SDK.CSSProperty.CSSProperty[]): SDK.CSSProperty.CSSProperty {
@@ -511,20 +510,20 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
       if (!isPropertyOverloaded) {
         activeProperty = property;
         rootTreeElement.listItemElement.addEventListener(
-            'contextmenu', this._handleContextMenuEvent.bind(this, matchedStyles, property));
+            'contextmenu', this.handleContextMenuEvent.bind(this, matchedStyles, property));
       }
-      const trace = createTraceElement(node, property, isPropertyOverloaded, matchedStyles, this._linkifier);
+      const trace = createTraceElement(node, property, isPropertyOverloaded, matchedStyles, this.linkifier);
       const traceTreeElement = new UI.TreeOutline.TreeElement();
       traceTreeElement.title = trace;
       traceTreeElement.listItemElement.addEventListener(
-          'contextmenu', this._handleContextMenuEvent.bind(this, matchedStyles, property));
+          'contextmenu', this.handleContextMenuEvent.bind(this, matchedStyles, property));
       rootTreeElement.appendChild(traceTreeElement);
     }
 
     return activeProperty as SDK.CSSProperty.CSSProperty;
   }
 
-  _handleContextMenuEvent(
+  private handleContextMenuEvent(
       matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, property: SDK.CSSProperty.CSSProperty, event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     const rule = property.ownerStyle.parentRule;
@@ -543,7 +542,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     contextMenu.show();
   }
 
-  _computePropertyTraces(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles):
+  private computePropertyTraces(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles):
       Map<string, SDK.CSSProperty.CSSProperty[]> {
     const result = new Map<string, SDK.CSSProperty.CSSProperty[]>();
     for (const style of matchedStyles.nodeStyles()) {
@@ -563,7 +562,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     return result;
   }
 
-  _computeNonInheritedProperties(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles): Set<string> {
+  private computeNonInheritedProperties(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles): Set<string> {
     const result = new Set<string>();
     for (const style of matchedStyles.nodeStyles()) {
       for (const property of style.allProperties()) {
@@ -577,20 +576,20 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   filterComputedStyles(this: ComputedStyleWidget, regex: RegExp|null): void {
-    this._filterRegex = regex;
-    if (this._groupComputedStylesSetting.get()) {
-      this._filterGroupLists();
+    this.filterRegex = regex;
+    if (this.groupComputedStylesSetting.get()) {
+      this.filterGroupLists();
     } else {
-      this._filterAlphabeticalList();
+      this.filterAlphabeticalList();
     }
   }
 
-  _filterAlphabeticalList(): void {
-    const regex = this._filterRegex;
-    const children = this._propertiesOutline.rootElement().children();
+  private filterAlphabeticalList(): void {
+    const regex = this.filterRegex;
+    const children = this.propertiesOutline.rootElement().children();
     let hasMatch = false;
     for (const child of children) {
-      const property = this._propertyByTreeElement.get(child);
+      const property = this.propertyByTreeElement.get(child);
       if (!property) {
         continue;
       }
@@ -598,19 +597,19 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
       child.hidden = !matched;
       hasMatch = hasMatch || matched;
     }
-    this._noMatchesElement.classList.toggle('hidden', Boolean(hasMatch));
+    this.noMatchesElement.classList.toggle('hidden', Boolean(hasMatch));
   }
 
-  _filterGroupLists(): void {
-    const regex = this._filterRegex;
-    const groups = this._propertiesOutline.rootElement().children();
+  private filterGroupLists(): void {
+    const regex = this.filterRegex;
+    const groups = this.propertiesOutline.rootElement().children();
     let hasOverallMatch = false;
     let foundFirstGroup = false;
     for (const group of groups) {
       let hasGroupMatch = false;
       const properties = group.children();
       for (const propertyTreeElement of properties) {
-        const property = this._propertyByTreeElement.get(propertyTreeElement);
+        const property = this.propertyByTreeElement.get(propertyTreeElement);
         if (!property) {
           continue;
         }
@@ -625,7 +624,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
       foundFirstGroup = foundFirstGroup || hasGroupMatch;
     }
 
-    this._noMatchesElement.classList.toggle('hidden', hasOverallMatch);
+    this.noMatchesElement.classList.toggle('hidden', hasOverallMatch);
   }
 }
 

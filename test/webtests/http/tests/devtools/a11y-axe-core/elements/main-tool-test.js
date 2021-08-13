@@ -44,7 +44,7 @@
     TestRunner.addResult('Tests accessibility of the Styles pane using the axe-core linter');
     await UI.viewManager.showView('elements');
     const panel = Elements.ElementsPanel.instance();
-    const element = panel._stylesWidget.element;
+    const element = panel.stylesWidget.element;
 
     await AxeCoreTestRunner.runValidation(element, NO_REQUIRED_CHILDREN_RULESET);
   }
@@ -54,7 +54,7 @@
     await UI.viewManager.showView('elements');
     await ElementsTestRunner.showComputedStyles();
     const panel = Elements.ElementsPanel.instance();
-    const element = panel._computedStyleWidget.element;
+    const element = panel.computedStyleWidget.element;
 
     await AxeCoreTestRunner.runValidation(element, DEFAULT_RULESET);
   }

@@ -20,19 +20,19 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let nodeStackTraceWidgetInstance: NodeStackTraceWidget;
 
 export class NodeStackTraceWidget extends UI.ThrottledWidget.ThrottledWidget {
-  _noStackTraceElement: HTMLElement;
-  _creationStackTraceElement: HTMLElement;
-  _linkifier: Components.Linkifier.Linkifier;
+  private readonly noStackTraceElement: HTMLElement;
+  private readonly creationStackTraceElement: HTMLElement;
+  private readonly linkifier: Components.Linkifier.Linkifier;
 
   constructor() {
     super(true /* isWebComponent */);
     this.registerRequiredCSS('panels/elements/nodeStackTraceWidget.css');
 
-    this._noStackTraceElement = this.contentElement.createChild('div', 'gray-info-message');
-    this._noStackTraceElement.textContent = i18nString(UIStrings.noStackTraceAvailable);
-    this._creationStackTraceElement = this.contentElement.createChild('div', 'stack-trace');
+    this.noStackTraceElement = this.contentElement.createChild('div', 'gray-info-message');
+    this.noStackTraceElement.textContent = i18nString(UIStrings.noStackTraceAvailable);
+    this.creationStackTraceElement = this.contentElement.createChild('div', 'stack-trace');
 
-    this._linkifier = new Components.Linkifier.Linkifier(MaxLengthForLinks);
+    this.linkifier = new Components.Linkifier.Linkifier(MaxLengthForLinks);
   }
 
   static instance(opts: {
@@ -59,23 +59,23 @@ export class NodeStackTraceWidget extends UI.ThrottledWidget.ThrottledWidget {
     const node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
 
     if (!node) {
-      this._noStackTraceElement.classList.remove('hidden');
-      this._creationStackTraceElement.classList.add('hidden');
+      this.noStackTraceElement.classList.remove('hidden');
+      this.creationStackTraceElement.classList.add('hidden');
       return;
     }
 
     const creationStackTrace = await node.creationStackTrace();
     if (creationStackTrace) {
-      this._noStackTraceElement.classList.add('hidden');
-      this._creationStackTraceElement.classList.remove('hidden');
+      this.noStackTraceElement.classList.add('hidden');
+      this.creationStackTraceElement.classList.remove('hidden');
 
       const stackTracePreview = Components.JSPresentationUtils.buildStackTracePreviewContents(
-          node.domModel().target(), this._linkifier, {stackTrace: creationStackTrace, tabStops: undefined});
-      this._creationStackTraceElement.removeChildren();
-      this._creationStackTraceElement.appendChild(stackTracePreview.element);
+          node.domModel().target(), this.linkifier, {stackTrace: creationStackTrace, tabStops: undefined});
+      this.creationStackTraceElement.removeChildren();
+      this.creationStackTraceElement.appendChild(stackTracePreview.element);
     } else {
-      this._noStackTraceElement.classList.remove('hidden');
-      this._creationStackTraceElement.classList.add('hidden');
+      this.noStackTraceElement.classList.remove('hidden');
+      this.creationStackTraceElement.classList.add('hidden');
     }
   }
 }

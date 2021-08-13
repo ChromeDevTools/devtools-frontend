@@ -10,9 +10,9 @@ import {StylePropertyTreeElement} from './StylePropertyTreeElement.js';
 import type {StylePropertiesSection, StylesSidebarPane} from './StylesSidebarPane.js';
 
 export class StylePropertyHighlighter {
-  _styleSidebarPane: StylesSidebarPane;
+  private readonly styleSidebarPane: StylesSidebarPane;
   constructor(ssp: StylesSidebarPane) {
-    this._styleSidebarPane = ssp;
+    this.styleSidebarPane = ssp;
   }
 
   /**
@@ -20,17 +20,17 @@ export class StylePropertyHighlighter {
    */
   highlightProperty(cssProperty: SDK.CSSProperty.CSSProperty): void {
     // Expand all shorthands.
-    for (const section of this._styleSidebarPane.allSections()) {
+    for (const section of this.styleSidebarPane.allSections()) {
       for (let treeElement = section.propertiesTreeOutline.firstChild(); treeElement;
            treeElement = treeElement.nextSibling) {
         treeElement.onpopulate();
       }
     }
 
-    const {treeElement, section} = this._findTreeElementAndSection(treeElement => treeElement.property === cssProperty);
+    const {treeElement, section} = this.findTreeElementAndSection(treeElement => treeElement.property === cssProperty);
     if (treeElement) {
       treeElement.parent && treeElement.parent.expand();
-      this._scrollAndHighlightTreeElement(treeElement);
+      this.scrollAndHighlightTreeElement(treeElement);
       if (section) {
         section.element.focus();
       }
@@ -41,10 +41,10 @@ export class StylePropertyHighlighter {
    * Find the first non-overridden property that matches the provided name, scroll to it and highlight it.
    */
   findAndHighlightPropertyName(propertyName: string): void {
-    const {treeElement, section} = this._findTreeElementAndSection(
+    const {treeElement, section} = this.findTreeElementAndSection(
         treeElement => treeElement.property.name === propertyName && !treeElement.overloaded());
     if (treeElement) {
-      this._scrollAndHighlightTreeElement(treeElement);
+      this.scrollAndHighlightTreeElement(treeElement);
       if (section) {
         section.element.focus();
       }
@@ -55,13 +55,13 @@ export class StylePropertyHighlighter {
    * Traverse the styles pane tree, execute the provided callback for every tree element found, and
    * return the first tree element and corresponding section for which the callback returns a truthy value.
    */
-  _findTreeElementAndSection(compareCb: (arg0: StylePropertyTreeElement) => boolean): {
+  private findTreeElementAndSection(compareCb: (arg0: StylePropertyTreeElement) => boolean): {
     treeElement: StylePropertyTreeElement|null,
     section: StylePropertiesSection|null,
   } {
     let result: StylePropertyTreeElement|null = null;
     let containingSection: StylePropertiesSection|null = null;
-    for (const section of this._styleSidebarPane.allSections()) {
+    for (const section of this.styleSidebarPane.allSections()) {
       let treeElement = section.propertiesTreeOutline.firstChild();
       while (treeElement && !result && (treeElement instanceof StylePropertyTreeElement)) {
         if (compareCb(treeElement)) {
@@ -78,7 +78,7 @@ export class StylePropertyHighlighter {
     return {treeElement: result, section: containingSection};
   }
 
-  _scrollAndHighlightTreeElement(treeElement: StylePropertyTreeElement): void {
+  private scrollAndHighlightTreeElement(treeElement: StylePropertyTreeElement): void {
     treeElement.listItemElement.scrollIntoViewIfNeeded();
     treeElement.listItemElement.animate(
         [

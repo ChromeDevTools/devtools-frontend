@@ -41,33 +41,33 @@ import {ElementsPanel} from './ElementsPanel.js';
 let inspectElementModeController: InspectElementModeController;
 
 export class InspectElementModeController implements SDK.TargetManager.SDKModelObserver<SDK.OverlayModel.OverlayModel> {
-  _toggleSearchAction: UI.ActionRegistration.Action|null;
-  _mode: Protocol.Overlay.InspectMode;
-  _showDetailedInspectTooltipSetting: Common.Settings.Setting<boolean>;
+  private readonly toggleSearchAction: UI.ActionRegistration.Action|null;
+  private mode: Protocol.Overlay.InspectMode;
+  private readonly showDetailedInspectTooltipSetting: Common.Settings.Setting<boolean>;
 
   constructor() {
-    this._toggleSearchAction = UI.ActionRegistry.ActionRegistry.instance().action('elements.toggle-element-search');
-    this._mode = Protocol.Overlay.InspectMode.None;
+    this.toggleSearchAction = UI.ActionRegistry.ActionRegistry.instance().action('elements.toggle-element-search');
+    this.mode = Protocol.Overlay.InspectMode.None;
     SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
+        SDK.TargetManager.Events.SuspendStateChanged, this.suspendStateChanged, this);
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.OverlayModel.OverlayModel, SDK.OverlayModel.Events.ExitedInspectMode,
-        () => this._setMode(Protocol.Overlay.InspectMode.None));
-    SDK.OverlayModel.OverlayModel.setInspectNodeHandler(this._inspectNode.bind(this));
+        () => this.setMode(Protocol.Overlay.InspectMode.None));
+    SDK.OverlayModel.OverlayModel.setInspectNodeHandler(this.inspectNode.bind(this));
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.OverlayModel.OverlayModel, this);
 
-    this._showDetailedInspectTooltipSetting =
+    this.showDetailedInspectTooltipSetting =
         Common.Settings.Settings.instance().moduleSetting('showDetailedInspectTooltip');
-    this._showDetailedInspectTooltipSetting.addChangeListener(this._showDetailedInspectTooltipChanged.bind(this));
+    this.showDetailedInspectTooltipSetting.addChangeListener(this.showDetailedInspectTooltipChanged.bind(this));
 
     document.addEventListener('keydown', event => {
       if (event.keyCode !== UI.KeyboardShortcut.Keys.Esc.code) {
         return;
       }
-      if (!this._isInInspectElementMode()) {
+      if (!this.isInInspectElementMode()) {
         return;
       }
-      this._setMode(Protocol.Overlay.InspectMode.None);
+      this.setMode(Protocol.Overlay.InspectMode.None);
       event.consume(true);
     }, true);
   }
@@ -85,65 +85,65 @@ export class InspectElementModeController implements SDK.TargetManager.SDKModelO
   modelAdded(overlayModel: SDK.OverlayModel.OverlayModel): void {
     // When DevTools are opening in the inspect element mode, the first target comes in
     // much later than the InspectorFrontendAPI.enterInspectElementMode event.
-    if (this._mode === Protocol.Overlay.InspectMode.None) {
+    if (this.mode === Protocol.Overlay.InspectMode.None) {
       return;
     }
-    overlayModel.setInspectMode(this._mode, this._showDetailedInspectTooltipSetting.get());
+    overlayModel.setInspectMode(this.mode, this.showDetailedInspectTooltipSetting.get());
   }
 
   modelRemoved(_overlayModel: SDK.OverlayModel.OverlayModel): void {
   }
 
-  _isInInspectElementMode(): boolean {
-    return this._mode !== Protocol.Overlay.InspectMode.None;
+  private isInInspectElementMode(): boolean {
+    return this.mode !== Protocol.Overlay.InspectMode.None;
   }
 
-  _toggleInspectMode(): void {
+  toggleInspectMode(): void {
     let mode;
-    if (this._isInInspectElementMode()) {
+    if (this.isInInspectElementMode()) {
       mode = Protocol.Overlay.InspectMode.None;
     } else {
       mode = Common.Settings.Settings.instance().moduleSetting('showUAShadowDOM').get() ?
           Protocol.Overlay.InspectMode.SearchForUAShadowDOM :
           Protocol.Overlay.InspectMode.SearchForNode;
     }
-    this._setMode(mode);
+    this.setMode(mode);
   }
 
-  _captureScreenshotMode(): void {
-    this._setMode(Protocol.Overlay.InspectMode.CaptureAreaScreenshot);
+  captureScreenshotMode(): void {
+    this.setMode(Protocol.Overlay.InspectMode.CaptureAreaScreenshot);
   }
 
-  _setMode(mode: Protocol.Overlay.InspectMode): void {
+  private setMode(mode: Protocol.Overlay.InspectMode): void {
     if (SDK.TargetManager.TargetManager.instance().allTargetsSuspended()) {
       return;
     }
-    this._mode = mode;
+    this.mode = mode;
     for (const overlayModel of SDK.TargetManager.TargetManager.instance().models(SDK.OverlayModel.OverlayModel)) {
-      overlayModel.setInspectMode(mode, this._showDetailedInspectTooltipSetting.get());
+      overlayModel.setInspectMode(mode, this.showDetailedInspectTooltipSetting.get());
     }
-    if (this._toggleSearchAction) {
-      this._toggleSearchAction.setToggled(this._isInInspectElementMode());
+    if (this.toggleSearchAction) {
+      this.toggleSearchAction.setToggled(this.isInInspectElementMode());
     }
   }
 
-  _suspendStateChanged(): void {
+  private suspendStateChanged(): void {
     if (!SDK.TargetManager.TargetManager.instance().allTargetsSuspended()) {
       return;
     }
 
-    this._mode = Protocol.Overlay.InspectMode.None;
-    if (this._toggleSearchAction) {
-      this._toggleSearchAction.setToggled(false);
+    this.mode = Protocol.Overlay.InspectMode.None;
+    if (this.toggleSearchAction) {
+      this.toggleSearchAction.setToggled(false);
     }
   }
 
-  _inspectNode(node: SDK.DOMModel.DOMNode): void {
+  private inspectNode(node: SDK.DOMModel.DOMNode): void {
     ElementsPanel.instance().revealAndSelectNode(node, true, true);
   }
 
-  _showDetailedInspectTooltipChanged(): void {
-    this._setMode(this._mode);
+  private showDetailedInspectTooltipChanged(): void {
+    this.setMode(this.mode);
   }
 }
 
@@ -160,9 +160,9 @@ export class ToggleSearchActionDelegate implements UI.ActionRegistration.ActionD
       return false;
     }
     if (actionId === 'elements.toggle-element-search') {
-      inspectElementModeController._toggleInspectMode();
+      inspectElementModeController.toggleInspectMode();
     } else if (actionId === 'elements.capture-area-screenshot') {
-      inspectElementModeController._captureScreenshotMode();
+      inspectElementModeController.captureScreenshotMode();
     }
     return true;
   }

@@ -89,22 +89,22 @@ const flexContainerNodesToElements = (nodes: SDK.DOMModel.DOMNode[]): ElementsCo
 };
 
 export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
-  _layoutPane: ElementsComponents.LayoutPane.LayoutPane;
-  _settings: string[];
-  _uaShadowDOMSetting: Common.Settings.Setting<boolean>;
+  private layoutPane: ElementsComponents.LayoutPane.LayoutPane;
+  private readonly settings: string[];
+  private readonly uaShadowDOMSetting: Common.Settings.Setting<boolean>;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _boundOnSettingChanged: (event: any) => void;
-  _domModels: SDK.DOMModel.DOMModel[];
+  private readonly boundOnSettingChanged: (event: any) => void;
+  private domModels: SDK.DOMModel.DOMModel[];
 
   constructor() {
     super(true /* isWebComponent */);
-    this._layoutPane = new ElementsComponents.LayoutPane.LayoutPane();
-    this.contentElement.appendChild(this._layoutPane);
-    this._settings = ['showGridLineLabels', 'showGridTrackSizes', 'showGridAreas', 'extendGridLines'];
-    this._uaShadowDOMSetting = Common.Settings.Settings.instance().moduleSetting('showUAShadowDOM');
-    this._boundOnSettingChanged = this.onSettingChanged.bind(this);
-    this._domModels = [];
+    this.layoutPane = new ElementsComponents.LayoutPane.LayoutPane();
+    this.contentElement.appendChild(this.layoutPane);
+    this.settings = ['showGridLineLabels', 'showGridTrackSizes', 'showGridAreas', 'extendGridLines'];
+    this.uaShadowDOMSetting = Common.Settings.Settings.instance().moduleSetting('showUAShadowDOM');
+    this.boundOnSettingChanged = this.onSettingChanged.bind(this);
+    this.domModels = [];
   }
 
   static instance(opts: {
@@ -123,7 +123,7 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     overlayModel.addEventListener(SDK.OverlayModel.Events.PersistentGridOverlayStateChanged, this.update, this);
     overlayModel.addEventListener(
         SDK.OverlayModel.Events.PersistentFlexContainerOverlayStateChanged, this.update, this);
-    this._domModels.push(domModel);
+    this.domModels.push(domModel);
   }
 
   modelRemoved(domModel: SDK.DOMModel.DOMModel): void {
@@ -131,17 +131,17 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     overlayModel.removeEventListener(SDK.OverlayModel.Events.PersistentGridOverlayStateChanged, this.update, this);
     overlayModel.removeEventListener(
         SDK.OverlayModel.Events.PersistentFlexContainerOverlayStateChanged, this.update, this);
-    this._domModels = this._domModels.filter(model => model !== domModel);
+    this.domModels = this.domModels.filter(model => model !== domModel);
   }
 
-  async _fetchNodesByStyle(style: {
+  private async fetchNodesByStyle(style: {
     name: string,
     value: string,
   }[]): Promise<SDK.DOMModel.DOMNode[]> {
-    const showUAShadowDOM = this._uaShadowDOMSetting.get();
+    const showUAShadowDOM = this.uaShadowDOMSetting.get();
 
     const nodes = [];
-    for (const domModel of this._domModels) {
+    for (const domModel of this.domModels) {
       try {
         const nodeIds = await domModel.getNodesByStyle(style, true /* pierce */);
         for (const nodeId of nodeIds) {
@@ -161,17 +161,17 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     return nodes;
   }
 
-  async _fetchGridNodes(): Promise<SDK.DOMModel.DOMNode[]> {
-    return await this._fetchNodesByStyle([{name: 'display', value: 'grid'}, {name: 'display', value: 'inline-grid'}]);
+  private async fetchGridNodes(): Promise<SDK.DOMModel.DOMNode[]> {
+    return await this.fetchNodesByStyle([{name: 'display', value: 'grid'}, {name: 'display', value: 'inline-grid'}]);
   }
 
-  async _fetchFlexContainerNodes(): Promise<SDK.DOMModel.DOMNode[]> {
-    return await this._fetchNodesByStyle([{name: 'display', value: 'flex'}, {name: 'display', value: 'inline-flex'}]);
+  private async fetchFlexContainerNodes(): Promise<SDK.DOMModel.DOMNode[]> {
+    return await this.fetchNodesByStyle([{name: 'display', value: 'flex'}, {name: 'display', value: 'inline-flex'}]);
   }
 
-  _mapSettings(): ElementsComponents.LayoutPaneUtils.Setting[] {
+  private mapSettings(): ElementsComponents.LayoutPaneUtils.Setting[] {
     const settings = [];
-    for (const settingName of this._settings) {
+    for (const settingName of this.settings) {
       const setting = Common.Settings.Settings.instance().moduleSetting(settingName);
       const settingValue = setting.get();
       const settingType = setting.type();
@@ -210,10 +210,10 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   async doUpdate(): Promise<void> {
-    this._layoutPane.data = {
-      gridElements: gridNodesToElements(await this._fetchGridNodes()),
-      flexContainerElements: flexContainerNodesToElements(await this._fetchFlexContainerNodes()),
-      settings: this._mapSettings(),
+    this.layoutPane.data = {
+      gridElements: gridNodesToElements(await this.fetchGridNodes()),
+      flexContainerElements: flexContainerNodesToElements(await this.fetchFlexContainerNodes()),
+      settings: this.mapSettings(),
     };
   }
 
@@ -224,27 +224,27 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   wasShown(): void {
-    for (const setting of this._settings) {
+    for (const setting of this.settings) {
       Common.Settings.Settings.instance().moduleSetting(setting).addChangeListener(this.update, this);
     }
-    this._layoutPane.addEventListener('settingchanged', this._boundOnSettingChanged);
-    for (const domModel of this._domModels) {
+    this.layoutPane.addEventListener('settingchanged', this.boundOnSettingChanged);
+    for (const domModel of this.domModels) {
       this.modelRemoved(domModel);
     }
-    this._domModels = [];
+    this.domModels = [];
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.DOMModel.DOMModel, this);
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.update, this);
-    this._uaShadowDOMSetting.addChangeListener(this.update, this);
+    this.uaShadowDOMSetting.addChangeListener(this.update, this);
     this.update();
   }
 
   willHide(): void {
-    for (const setting of this._settings) {
+    for (const setting of this.settings) {
       Common.Settings.Settings.instance().moduleSetting(setting).removeChangeListener(this.update, this);
     }
-    this._layoutPane.removeEventListener('settingchanged', this._boundOnSettingChanged);
+    this.layoutPane.removeEventListener('settingchanged', this.boundOnSettingChanged);
     SDK.TargetManager.TargetManager.instance().unobserveModels(SDK.DOMModel.DOMModel, this);
     UI.Context.Context.instance().removeFlavorChangeListener(SDK.DOMModel.DOMNode, this.update, this);
-    this._uaShadowDOMSetting.removeChangeListener(this.update, this);
+    this.uaShadowDOMSetting.removeChangeListener(this.update, this);
   }
 }

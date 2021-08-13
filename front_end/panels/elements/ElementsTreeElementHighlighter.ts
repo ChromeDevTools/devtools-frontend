@@ -12,52 +12,52 @@ import {ElementsTreeElement} from './ElementsTreeElement.js';
 import {ElementsTreeOutline} from './ElementsTreeOutline.js';
 
 export class ElementsTreeElementHighlighter {
-  _throttler: Common.Throttler.Throttler;
-  _treeOutline: ElementsTreeOutline;
-  _currentHighlightedElement: ElementsTreeElement|null;
-  _alreadyExpandedParentElement: UI.TreeOutline.TreeElement|ElementsTreeElement|null|undefined;
-  _pendingHighlightNode: SDK.DOMModel.DOMNode|null;
-  _isModifyingTreeOutline: boolean;
+  private readonly throttler: Common.Throttler.Throttler;
+  private treeOutline: ElementsTreeOutline;
+  private currentHighlightedElement: ElementsTreeElement|null;
+  private alreadyExpandedParentElement: UI.TreeOutline.TreeElement|ElementsTreeElement|null|undefined;
+  private pendingHighlightNode: SDK.DOMModel.DOMNode|null;
+  private isModifyingTreeOutline: boolean;
   constructor(treeOutline: ElementsTreeOutline) {
-    this._throttler = new Common.Throttler.Throttler(100);
-    this._treeOutline = treeOutline;
-    this._treeOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, this._clearState, this);
-    this._treeOutline.addEventListener(UI.TreeOutline.Events.ElementCollapsed, this._clearState, this);
-    this._treeOutline.addEventListener(ElementsTreeOutline.Events.SelectedNodeChanged, this._clearState, this);
+    this.throttler = new Common.Throttler.Throttler(100);
+    this.treeOutline = treeOutline;
+    this.treeOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, this.clearState, this);
+    this.treeOutline.addEventListener(UI.TreeOutline.Events.ElementCollapsed, this.clearState, this);
+    this.treeOutline.addEventListener(ElementsTreeOutline.Events.SelectedNodeChanged, this.clearState, this);
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.OverlayModel.OverlayModel, SDK.OverlayModel.Events.HighlightNodeRequested, this._highlightNode, this);
+        SDK.OverlayModel.OverlayModel, SDK.OverlayModel.Events.HighlightNodeRequested, this.highlightNode, this);
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.OverlayModel.OverlayModel, SDK.OverlayModel.Events.InspectModeWillBeToggled, this._clearState, this);
+        SDK.OverlayModel.OverlayModel, SDK.OverlayModel.Events.InspectModeWillBeToggled, this.clearState, this);
 
-    this._currentHighlightedElement = null;
-    this._alreadyExpandedParentElement = null;
-    this._pendingHighlightNode = null;
-    this._isModifyingTreeOutline = false;
+    this.currentHighlightedElement = null;
+    this.alreadyExpandedParentElement = null;
+    this.pendingHighlightNode = null;
+    this.isModifyingTreeOutline = false;
   }
 
-  _highlightNode(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
+  private highlightNode(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
     if (!Common.Settings.Settings.instance().moduleSetting('highlightNodeOnHoverInOverlay').get()) {
       return;
     }
 
     const domNode = event.data;
 
-    this._throttler.schedule(async () => {
-      this._highlightNodeInternal(this._pendingHighlightNode);
-      this._pendingHighlightNode = null;
+    this.throttler.schedule(async () => {
+      this.highlightNodeInternal(this.pendingHighlightNode);
+      this.pendingHighlightNode = null;
     });
-    this._pendingHighlightNode =
-        this._treeOutline === ElementsTreeOutline.forDOMModel(domNode.domModel()) ? domNode : null;
+    this.pendingHighlightNode =
+        this.treeOutline === ElementsTreeOutline.forDOMModel(domNode.domModel()) ? domNode : null;
   }
 
-  _highlightNodeInternal(node: SDK.DOMModel.DOMNode|null): void {
-    this._isModifyingTreeOutline = true;
+  private highlightNodeInternal(node: SDK.DOMModel.DOMNode|null): void {
+    this.isModifyingTreeOutline = true;
     let treeElement: (ElementsTreeElement|null)|null = null;
 
-    if (this._currentHighlightedElement) {
+    if (this.currentHighlightedElement) {
       let currentTreeElement: ((UI.TreeOutline.TreeElement & ElementsTreeElement)|null)|ElementsTreeElement =
-          this._currentHighlightedElement;
-      while (currentTreeElement && currentTreeElement !== this._alreadyExpandedParentElement) {
+          this.currentHighlightedElement;
+      while (currentTreeElement && currentTreeElement !== this.alreadyExpandedParentElement) {
         if (currentTreeElement.expanded) {
           currentTreeElement.collapse();
         }
@@ -67,11 +67,11 @@ export class ElementsTreeElementHighlighter {
       }
     }
 
-    this._currentHighlightedElement = null;
-    this._alreadyExpandedParentElement = null;
+    this.currentHighlightedElement = null;
+    this.alreadyExpandedParentElement = null;
     if (node) {
       let deepestExpandedParent: (SDK.DOMModel.DOMNode|null) = (node as SDK.DOMModel.DOMNode | null);
-      const treeElementByNode = this._treeOutline.treeElementByNode;
+      const treeElementByNode = this.treeOutline.treeElementByNode;
 
       const treeIsNotExpanded = (deepestExpandedParent: SDK.DOMModel.DOMNode): boolean => {
         const element = treeElementByNode.get(deepestExpandedParent);
@@ -81,27 +81,27 @@ export class ElementsTreeElementHighlighter {
         deepestExpandedParent = deepestExpandedParent.parentNode;
       }
 
-      this._alreadyExpandedParentElement =
-          deepestExpandedParent ? treeElementByNode.get(deepestExpandedParent) : this._treeOutline.rootElement();
-      treeElement = this._treeOutline.createTreeElementFor(node);
+      this.alreadyExpandedParentElement =
+          deepestExpandedParent ? treeElementByNode.get(deepestExpandedParent) : this.treeOutline.rootElement();
+      treeElement = this.treeOutline.createTreeElementFor(node);
     }
 
-    this._currentHighlightedElement = treeElement;
-    this._treeOutline.setHoverEffect(treeElement);
+    this.currentHighlightedElement = treeElement;
+    this.treeOutline.setHoverEffect(treeElement);
     if (treeElement) {
       treeElement.reveal(true);
     }
 
-    this._isModifyingTreeOutline = false;
+    this.isModifyingTreeOutline = false;
   }
 
-  _clearState(): void {
-    if (this._isModifyingTreeOutline) {
+  private clearState(): void {
+    if (this.isModifyingTreeOutline) {
       return;
     }
 
-    this._currentHighlightedElement = null;
-    this._alreadyExpandedParentElement = null;
-    this._pendingHighlightNode = null;
+    this.currentHighlightedElement = null;
+    this.alreadyExpandedParentElement = null;
+    this.pendingHighlightNode = null;
   }
 }

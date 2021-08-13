@@ -42,14 +42,14 @@ import {ElementsSidebarPane} from './ElementsSidebarPane.js';
 export class MetricsSidebarPane extends ElementsSidebarPane {
   originalPropertyData: SDK.CSSProperty.CSSProperty|null;
   previousPropertyDataCandidate: SDK.CSSProperty.CSSProperty|null;
-  _inlineStyle: SDK.CSSStyleDeclaration.CSSStyleDeclaration|null;
-  _highlightMode: string;
-  _boxElements: {
+  private inlineStyle: SDK.CSSStyleDeclaration.CSSStyleDeclaration|null;
+  private highlightMode: string;
+  private boxElements: {
     element: HTMLElement,
     name: string,
     backgroundColor: string,
   }[];
-  _isEditingMetrics?: boolean;
+  private isEditingMetrics?: boolean;
 
   constructor() {
     super();
@@ -57,15 +57,15 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
 
     this.originalPropertyData = null;
     this.previousPropertyDataCandidate = null;
-    this._inlineStyle = null;
-    this._highlightMode = '';
-    this._boxElements = [];
+    this.inlineStyle = null;
+    this.highlightMode = '';
+    this.boxElements = [];
   }
 
   doUpdate(): Promise<void> {
     // "style" attribute might have changed. Update metrics unless they are being edited
     // (if a CSS property is added, a StyleSheetChanged event is dispatched).
-    if (this._isEditingMetrics) {
+    if (this.isEditingMetrics) {
       return Promise.resolve();
     }
 
@@ -82,7 +82,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
       if (!style || this.node() !== node) {
         return;
       }
-      this._updateMetrics(style);
+      this.updateMetrics(style);
     }
 
     if (!node.id) {
@@ -93,7 +93,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
       cssModel.computedStylePromise(node.id).then(callback.bind(this)),
       cssModel.inlineStylesPromise(node.id).then(inlineStyleResult => {
         if (inlineStyleResult && this.node() === node) {
-          this._inlineStyle = inlineStyleResult.inlineStyle;
+          this.inlineStyle = inlineStyleResult.inlineStyle;
         }
       }),
     ];
@@ -114,7 +114,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     this.element.classList.toggle('invisible', !isVisible);
   }
 
-  _getPropertyValueAsPx(style: Map<string, string>, propertyName: string): number {
+  private getPropertyValueAsPx(style: Map<string, string>, propertyName: string): number {
     const propertyValue = style.get(propertyName);
     if (!propertyValue) {
       return 0;
@@ -122,42 +122,42 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     return Number(propertyValue.replace(/px$/, '') || 0);
   }
 
-  _getBox(computedStyle: Map<string, string>, componentName: string): {
+  private getBox(computedStyle: Map<string, string>, componentName: string): {
     left: number,
     top: number,
     right: number,
     bottom: number,
   } {
     const suffix = componentName === 'border' ? '-width' : '';
-    const left = this._getPropertyValueAsPx(computedStyle, componentName + '-left' + suffix);
-    const top = this._getPropertyValueAsPx(computedStyle, componentName + '-top' + suffix);
-    const right = this._getPropertyValueAsPx(computedStyle, componentName + '-right' + suffix);
-    const bottom = this._getPropertyValueAsPx(computedStyle, componentName + '-bottom' + suffix);
+    const left = this.getPropertyValueAsPx(computedStyle, componentName + '-left' + suffix);
+    const top = this.getPropertyValueAsPx(computedStyle, componentName + '-top' + suffix);
+    const right = this.getPropertyValueAsPx(computedStyle, componentName + '-right' + suffix);
+    const bottom = this.getPropertyValueAsPx(computedStyle, componentName + '-bottom' + suffix);
     return {left, top, right, bottom};
   }
 
-  _highlightDOMNode(showHighlight: boolean, mode: string, event: Event): void {
+  private highlightDOMNode(showHighlight: boolean, mode: string, event: Event): void {
     event.consume();
     const node = this.node();
     if (showHighlight && node) {
-      if (this._highlightMode === mode) {
+      if (this.highlightMode === mode) {
         return;
       }
-      this._highlightMode = mode;
+      this.highlightMode = mode;
       node.highlight(mode);
     } else {
-      this._highlightMode = '';
+      this.highlightMode = '';
       SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     }
 
-    for (const {element, name, backgroundColor} of this._boxElements) {
+    for (const {element, name, backgroundColor} of this.boxElements) {
       const shouldHighlight = !node || mode === 'all' || name === mode;
       element.style.backgroundColor = shouldHighlight ? backgroundColor : '';
       element.classList.toggle('highlighted', shouldHighlight);
     }
   }
 
-  _updateMetrics(style: Map<string, string>): void {
+  private updateMetrics(style: Map<string, string>): void {
     // Updating with computed style.
     const metricsElement = document.createElement('div');
     metricsElement.className = 'metrics';
@@ -196,8 +196,8 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
       width = width.replace(/px$/, '');
       const widthValue = Number(width);
       if (!isNaN(widthValue) && style.get('box-sizing') === 'border-box') {
-        const borderBox = self._getBox(style, 'border');
-        const paddingBox = self._getBox(style, 'padding');
+        const borderBox = self.getBox(style, 'border');
+        const paddingBox = self.getBox(style, 'padding');
 
         width = (widthValue - borderBox.left - borderBox.right - paddingBox.left - paddingBox.right).toString();
       }
@@ -213,8 +213,8 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
       height = height.replace(/px$/, '');
       const heightValue = Number(height);
       if (!isNaN(heightValue) && style.get('box-sizing') === 'border-box') {
-        const borderBox = self._getBox(style, 'border');
-        const paddingBox = self._getBox(style, 'padding');
+        const borderBox = self.getBox(style, 'border');
+        const paddingBox = self.getBox(style, 'padding');
 
         height = (heightValue - borderBox.top - borderBox.bottom - paddingBox.top - paddingBox.bottom).toString();
       }
@@ -256,7 +256,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     ];
     const boxLabels = ['content', 'padding', 'border', 'margin', 'position'];
     let previousBox: HTMLDivElement|null = null;
-    this._boxElements = [];
+    this.boxElements = [];
     for (let i = 0; i < boxes.length; ++i) {
       const name = boxes[i];
       const display = style.get('display');
@@ -279,8 +279,8 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
       const backgroundColor = boxColors[i].asString(Common.Color.Format.RGBA) || '';
       boxElement.style.backgroundColor = backgroundColor;
       boxElement.addEventListener(
-          'mouseover', this._highlightDOMNode.bind(this, true, name === 'position' ? 'all' : name), false);
-      this._boxElements.push({element: boxElement, name, backgroundColor});
+          'mouseover', this.highlightDOMNode.bind(this, true, name === 'position' ? 'all' : name), false);
+      this.boxElements.push({element: boxElement, name, backgroundColor});
 
       if (name === 'content') {
         const widthElement = document.createElement('span');
@@ -323,8 +323,8 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
       previousBox = boxElement;
     }
     metricsElement.appendChild((previousBox as HTMLDivElement));
-    metricsElement.addEventListener('mouseover', this._highlightDOMNode.bind(this, false, 'all'), false);
-    metricsElement.addEventListener('mouseleave', this._highlightDOMNode.bind(this, false, 'all'), false);
+    metricsElement.addEventListener('mouseover', this.highlightDOMNode.bind(this, false, 'all'), false);
+    metricsElement.addEventListener('mouseleave', this.highlightDOMNode.bind(this, false, 'all'), false);
     this.contentElement.removeChildren();
     this.contentElement.appendChild(metricsElement);
     this.element.classList.remove('collapsed');
@@ -341,21 +341,21 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
       computedStyle: Map<string, string>,
       keyDownHandler: (arg0: Event) => void,
     } = {box, styleProperty, computedStyle, keyDownHandler: (): void => {}};
-    const boundKeyDown = this._handleKeyDown.bind(this, context);
+    const boundKeyDown = this.handleKeyDown.bind(this, context);
     context.keyDownHandler = boundKeyDown;
     targetElement.addEventListener('keydown', boundKeyDown, false);
 
-    this._isEditingMetrics = true;
+    this.isEditingMetrics = true;
 
     const config =
-        new UI.InplaceEditor.Config(this._editingCommitted.bind(this), this.editingCancelled.bind(this), context);
+        new UI.InplaceEditor.Config(this.editingCommitted.bind(this), this.editingCancelled.bind(this), context);
     UI.InplaceEditor.InplaceEditor.startEditing(targetElement, config);
 
     const selection = targetElement.getComponentSelection();
     selection && selection.selectAllChildren(targetElement);
   }
 
-  _handleKeyDown(
+  private handleKeyDown(
       context: {
         box: string,
         styleProperty: string,
@@ -366,7 +366,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     const element = (event.currentTarget as Element);
 
     function finishHandler(this: MetricsSidebarPane, originalValue: string, replacementString: string): void {
-      this._applyUserInput(element, replacementString, originalValue, context, false);
+      this.applyUserInput(element, replacementString, originalValue, context, false);
     }
 
     function customNumberHandler(prefix: string, number: number, suffix: string): string {
@@ -386,7 +386,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     this.originalPropertyData = null;
     this.previousPropertyDataCandidate = null;
     element.removeEventListener('keydown', context.keyDownHandler, false);
-    delete this._isEditingMetrics;
+    delete this.isEditingMetrics;
   }
 
   editingCancelled(element: Element, context: {
@@ -395,15 +395,15 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     computedStyle: Map<string, string>,
     keyDownHandler: (arg0: Event) => void,
   }): void {
-    if (this._inlineStyle) {
+    if (this.inlineStyle) {
       if (!this.originalPropertyData) {
         // An added property, remove the last property in the style.
-        const pastLastSourcePropertyIndex = this._inlineStyle.pastLastSourcePropertyIndex();
+        const pastLastSourcePropertyIndex = this.inlineStyle.pastLastSourcePropertyIndex();
         if (pastLastSourcePropertyIndex) {
-          this._inlineStyle.allProperties()[pastLastSourcePropertyIndex - 1].setText('', false);
+          this.inlineStyle.allProperties()[pastLastSourcePropertyIndex - 1].setText('', false);
         }
       } else {
-        this._inlineStyle.allProperties()[this.originalPropertyData.index].setText(
+        this.inlineStyle.allProperties()[this.originalPropertyData.index].setText(
             this.originalPropertyData.propertyText || '', false);
       }
     }
@@ -411,7 +411,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     this.update();
   }
 
-  _applyUserInput(
+  private applyUserInput(
       element: Element, userInput: string, previousContent: string, context: {
         box: string,
         styleProperty: string,
@@ -419,7 +419,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
         keyDownHandler: (arg0: Event) => void,
       },
       commitEditor: boolean): void {
-    if (!this._inlineStyle) {
+    if (!this.inlineStyle) {
       // Element has no renderer.
       return this.editingCancelled(element, context);  // nothing changed, so cancel
     }
@@ -450,8 +450,8 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
         return;
       }
 
-      const borderBox = this._getBox(computedStyle, 'border');
-      const paddingBox = this._getBox(computedStyle, 'padding');
+      const borderBox = this.getBox(computedStyle, 'border');
+      const paddingBox = this.getBox(computedStyle, 'padding');
       let userValuePx = Number(userInput.replace(/px$/, ''));
       if (isNaN(userValuePx)) {
         return;
@@ -467,7 +467,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
 
     this.previousPropertyDataCandidate = null;
 
-    const allProperties = this._inlineStyle.allProperties();
+    const allProperties = this.inlineStyle.allProperties();
     for (let i = 0; i < allProperties.length; ++i) {
       const property = allProperties[i];
       if (property.name !== context.styleProperty || !property.activeInStyle()) {
@@ -479,7 +479,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
       return;
     }
 
-    this._inlineStyle.appendProperty(context.styleProperty, userInput, callback.bind(this));
+    this.inlineStyle.appendProperty(context.styleProperty, userInput, callback.bind(this));
 
     function callback(this: MetricsSidebarPane, success: boolean): void {
       if (!success) {
@@ -489,12 +489,12 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
         this.originalPropertyData = this.previousPropertyDataCandidate;
       }
 
-      if (this._highlightMode) {
+      if (this.highlightMode) {
         const node = this.node();
         if (!node) {
           return;
         }
-        node.highlight(this._highlightMode);
+        node.highlight(this.highlightMode);
       }
 
       if (commitEditor) {
@@ -503,13 +503,13 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     }
   }
 
-  _editingCommitted(element: Element, userInput: string, previousContent: string, context: {
+  private editingCommitted(element: Element, userInput: string, previousContent: string, context: {
     box: string,
     styleProperty: string,
     computedStyle: Map<string, string>,
     keyDownHandler: (arg0: Event) => void,
   }): void {
     this.editingEnded(element, context);
-    this._applyUserInput(element, userInput, previousContent, context, true);
+    this.applyUserInput(element, userInput, previousContent, context, true);
   }
 }

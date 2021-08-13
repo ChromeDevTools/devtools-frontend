@@ -82,43 +82,44 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let eventListenersWidgetInstance: EventListenersWidget;
 
 export class EventListenersWidget extends UI.ThrottledWidget.ThrottledWidget implements UI.Toolbar.ItemsProvider {
-  _toolbarItems: (UI.Toolbar.ToolbarButton|UI.Toolbar.ToolbarSettingCheckbox|UI.Toolbar.ToolbarComboBox)[];
-  _showForAncestorsSetting: Common.Settings.Setting<boolean>;
-  _dispatchFilterBySetting: Common.Settings.Setting<string>;
-  _showFrameworkListenersSetting: Common.Settings.Setting<boolean>;
-  _eventListenersView: EventListeners.EventListenersView.EventListenersView;
-  _lastRequestedNode?: SDK.DOMModel.DOMNode;
+  private readonly toolbarItemsInternal: (UI.Toolbar.ToolbarButton|UI.Toolbar.ToolbarSettingCheckbox|
+                                          UI.Toolbar.ToolbarComboBox)[];
+  private showForAncestorsSetting: Common.Settings.Setting<boolean>;
+  private readonly dispatchFilterBySetting: Common.Settings.Setting<string>;
+  private readonly showFrameworkListenersSetting: Common.Settings.Setting<boolean>;
+  private readonly eventListenersView: EventListeners.EventListenersView.EventListenersView;
+  private lastRequestedNode?: SDK.DOMModel.DOMNode;
 
   constructor() {
     super();
-    this._toolbarItems = [];
+    this.toolbarItemsInternal = [];
 
-    this._showForAncestorsSetting = Common.Settings.Settings.instance().moduleSetting('showEventListenersForAncestors');
-    this._showForAncestorsSetting.addChangeListener(this.update.bind(this));
+    this.showForAncestorsSetting = Common.Settings.Settings.instance().moduleSetting('showEventListenersForAncestors');
+    this.showForAncestorsSetting.addChangeListener(this.update.bind(this));
 
-    this._dispatchFilterBySetting =
+    this.dispatchFilterBySetting =
         Common.Settings.Settings.instance().createSetting('eventListenerDispatchFilterType', DispatchFilterBy.All);
-    this._dispatchFilterBySetting.addChangeListener(this.update.bind(this));
+    this.dispatchFilterBySetting.addChangeListener(this.update.bind(this));
 
-    this._showFrameworkListenersSetting =
+    this.showFrameworkListenersSetting =
         Common.Settings.Settings.instance().createSetting('showFrameowkrListeners', true);
-    this._showFrameworkListenersSetting.setTitle(i18nString(UIStrings.frameworkListeners));
-    this._showFrameworkListenersSetting.addChangeListener(this._showFrameworkListenersChanged.bind(this));
-    this._eventListenersView = new EventListeners.EventListenersView.EventListenersView(this.update.bind(this));
-    this._eventListenersView.show(this.element);
+    this.showFrameworkListenersSetting.setTitle(i18nString(UIStrings.frameworkListeners));
+    this.showFrameworkListenersSetting.addChangeListener(this.showFrameworkListenersChanged.bind(this));
+    this.eventListenersView = new EventListeners.EventListenersView.EventListenersView(this.update.bind(this));
+    this.eventListenersView.show(this.element);
 
     const refreshButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refresh), 'largeicon-refresh');
     refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.update.bind(this));
-    this._toolbarItems.push(refreshButton);
-    this._toolbarItems.push(new UI.Toolbar.ToolbarSettingCheckbox(
-        this._showForAncestorsSetting, i18nString(UIStrings.showListenersOnTheAncestors),
+    this.toolbarItemsInternal.push(refreshButton);
+    this.toolbarItemsInternal.push(new UI.Toolbar.ToolbarSettingCheckbox(
+        this.showForAncestorsSetting, i18nString(UIStrings.showListenersOnTheAncestors),
         i18nString(UIStrings.ancestors)));
     const dispatchFilter = new UI.Toolbar.ToolbarComboBox(
-        this._onDispatchFilterTypeChanged.bind(this), i18nString(UIStrings.eventListenersCategory));
+        this.onDispatchFilterTypeChanged.bind(this), i18nString(UIStrings.eventListenersCategory));
 
     function addDispatchFilterOption(this: EventListenersWidget, name: string, value: string): void {
       const option = dispatchFilter.createOption(name, value);
-      if (value === this._dispatchFilterBySetting.get()) {
+      if (value === this.dispatchFilterBySetting.get()) {
         dispatchFilter.select(option);
       }
     }
@@ -126,9 +127,9 @@ export class EventListenersWidget extends UI.ThrottledWidget.ThrottledWidget imp
     addDispatchFilterOption.call(this, i18nString(UIStrings.passive), DispatchFilterBy.Passive);
     addDispatchFilterOption.call(this, i18nString(UIStrings.blocking), DispatchFilterBy.Blocking);
     dispatchFilter.setMaxWidth(200);
-    this._toolbarItems.push(dispatchFilter);
-    this._toolbarItems.push(new UI.Toolbar.ToolbarSettingCheckbox(
-        this._showFrameworkListenersSetting, i18nString(UIStrings.resolveEventListenersBoundWith)));
+    this.toolbarItemsInternal.push(dispatchFilter);
+    this.toolbarItemsInternal.push(new UI.Toolbar.ToolbarSettingCheckbox(
+        this.showFrameworkListenersSetting, i18nString(UIStrings.resolveEventListenersBoundWith)));
 
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.update, this);
     this.update();
@@ -146,18 +147,18 @@ export class EventListenersWidget extends UI.ThrottledWidget.ThrottledWidget imp
   }
 
   doUpdate(): Promise<void> {
-    if (this._lastRequestedNode) {
-      this._lastRequestedNode.domModel().runtimeModel().releaseObjectGroup(objectGroupName);
-      delete this._lastRequestedNode;
+    if (this.lastRequestedNode) {
+      this.lastRequestedNode.domModel().runtimeModel().releaseObjectGroup(objectGroupName);
+      delete this.lastRequestedNode;
     }
     const node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
     if (!node) {
-      this._eventListenersView.reset();
-      this._eventListenersView.addEmptyHolderIfNeeded();
+      this.eventListenersView.reset();
+      this.eventListenersView.addEmptyHolderIfNeeded();
       return Promise.resolve();
     }
-    this._lastRequestedNode = node;
-    const selectedNodeOnly = !this._showForAncestorsSetting.get();
+    this.lastRequestedNode = node;
+    const selectedNodeOnly = !this.showForAncestorsSetting.get();
     const promises = [];
     promises.push(node.resolveToObject(objectGroupName));
     if (!selectedNodeOnly) {
@@ -166,31 +167,30 @@ export class EventListenersWidget extends UI.ThrottledWidget.ThrottledWidget imp
         promises.push(currentNode.resolveToObject(objectGroupName));
         currentNode = currentNode.parentNode;
       }
-      promises.push(this._windowObjectInNodeContext(node));
+      promises.push(this.windowObjectInNodeContext(node));
     }
     return Promise.all(promises)
-        .then(this._eventListenersView.addObjects.bind(this._eventListenersView))
-        .then(this._showFrameworkListenersChanged.bind(this));
+        .then(this.eventListenersView.addObjects.bind(this.eventListenersView))
+        .then(this.showFrameworkListenersChanged.bind(this));
   }
 
   toolbarItems(): UI.Toolbar.ToolbarItem[] {
-    return this._toolbarItems;
+    return this.toolbarItemsInternal;
   }
 
-  _onDispatchFilterTypeChanged(event: Event): void {
+  private onDispatchFilterTypeChanged(event: Event): void {
     const filter = (event.target as HTMLInputElement);
-    this._dispatchFilterBySetting.set(filter.value);
+    this.dispatchFilterBySetting.set(filter.value);
   }
 
-  _showFrameworkListenersChanged(): void {
-    const dispatchFilter = this._dispatchFilterBySetting.get();
+  private showFrameworkListenersChanged(): void {
+    const dispatchFilter = this.dispatchFilterBySetting.get();
     const showPassive = dispatchFilter === DispatchFilterBy.All || dispatchFilter === DispatchFilterBy.Passive;
     const showBlocking = dispatchFilter === DispatchFilterBy.All || dispatchFilter === DispatchFilterBy.Blocking;
-    this._eventListenersView.showFrameworkListeners(
-        this._showFrameworkListenersSetting.get(), showPassive, showBlocking);
+    this.eventListenersView.showFrameworkListeners(this.showFrameworkListenersSetting.get(), showPassive, showBlocking);
   }
 
-  _windowObjectInNodeContext(node: SDK.DOMModel.DOMNode): Promise<SDK.RemoteObject.RemoteObject|null> {
+  private windowObjectInNodeContext(node: SDK.DOMModel.DOMNode): Promise<SDK.RemoteObject.RemoteObject|null> {
     const executionContexts = node.domModel().runtimeModel().executionContexts();
     let context: SDK.RuntimeModel.ExecutionContext = executionContexts[0];
     if (node.frameId()) {

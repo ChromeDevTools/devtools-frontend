@@ -171,7 +171,7 @@ function getAuthoredStyles(
     section: StylePropertiesSection, editableProperties: Array<{propertyName: string}>): Map<string, string> {
   const authoredProperties = new Map();
   const editablePropertiesSet = new Set(editableProperties.map(prop => prop.propertyName));
-  for (const prop of section._style.leadingProperties()) {
+  for (const prop of section.style().leadingProperties()) {
     if (editablePropertiesSet.has(prop.name)) {
       authoredProperties.set(prop.name, prop.value);
     }

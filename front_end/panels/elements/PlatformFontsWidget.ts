@@ -60,46 +60,46 @@ const str_ = i18n.i18n.registerUIStrings('panels/elements/PlatformFontsWidget.ts
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class PlatformFontsWidget extends UI.ThrottledWidget.ThrottledWidget {
-  _sharedModel: ComputedStyleModel;
-  _sectionTitle: HTMLDivElement;
-  _fontStatsSection: HTMLElement;
+  private readonly sharedModel: ComputedStyleModel;
+  private readonly sectionTitle: HTMLDivElement;
+  private readonly fontStatsSection: HTMLElement;
 
   constructor(sharedModel: ComputedStyleModel) {
     super(true);
     this.registerRequiredCSS('panels/elements/platformFontsWidget.css');
 
-    this._sharedModel = sharedModel;
-    this._sharedModel.addEventListener(Events.ComputedStyleChanged, this.update, this);
+    this.sharedModel = sharedModel;
+    this.sharedModel.addEventListener(Events.ComputedStyleChanged, this.update, this);
 
-    this._sectionTitle = document.createElement('div');
-    this._sectionTitle.classList.add('title');
+    this.sectionTitle = document.createElement('div');
+    this.sectionTitle.classList.add('title');
     this.contentElement.classList.add('platform-fonts');
-    this.contentElement.appendChild(this._sectionTitle);
-    this._sectionTitle.textContent = i18nString(UIStrings.renderedFonts);
-    this._fontStatsSection = this.contentElement.createChild('div', 'stats-section');
+    this.contentElement.appendChild(this.sectionTitle);
+    this.sectionTitle.textContent = i18nString(UIStrings.renderedFonts);
+    this.fontStatsSection = this.contentElement.createChild('div', 'stats-section');
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   doUpdate(): Promise<any> {
-    const cssModel = this._sharedModel.cssModel();
-    const node = this._sharedModel.node();
+    const cssModel = this.sharedModel.cssModel();
+    const node = this.sharedModel.node();
     if (!node || !cssModel) {
       return Promise.resolve();
     }
 
-    return cssModel.platformFontsPromise(node.id).then(this._refreshUI.bind(this, node));
+    return cssModel.platformFontsPromise(node.id).then(this.refreshUI.bind(this, node));
   }
 
-  _refreshUI(node: SDK.DOMModel.DOMNode, platformFonts: Protocol.CSS.PlatformFontUsage[]|null): void {
-    if (this._sharedModel.node() !== node) {
+  private refreshUI(node: SDK.DOMModel.DOMNode, platformFonts: Protocol.CSS.PlatformFontUsage[]|null): void {
+    if (this.sharedModel.node() !== node) {
       return;
     }
 
-    this._fontStatsSection.removeChildren();
+    this.fontStatsSection.removeChildren();
 
     const isEmptySection = !platformFonts || !platformFonts.length;
-    this._sectionTitle.classList.toggle('hidden', isEmptySection);
+    this.sectionTitle.classList.toggle('hidden', isEmptySection);
     if (isEmptySection || !platformFonts) {
       return;
     }
@@ -109,7 +109,7 @@ export class PlatformFontsWidget extends UI.ThrottledWidget.ThrottledWidget {
     });
 
     for (let i = 0; i < platformFonts.length; ++i) {
-      const fontStatElement = this._fontStatsSection.createChild('div', 'font-stats-item');
+      const fontStatElement = this.fontStatsSection.createChild('div', 'font-stats-item');
 
       const fontNameElement = fontStatElement.createChild('span', 'font-name');
       fontNameElement.textContent = platformFonts[i].familyName;

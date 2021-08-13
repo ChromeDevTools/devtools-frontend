@@ -26,9 +26,9 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementStatePaneWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ElementStatePaneWidget extends UI.Widget.Widget {
-  _inputs: HTMLInputElement[];
-  _inputStates: WeakMap<HTMLInputElement, string>;
-  _cssModel?: SDK.CSSModel.CSSModel|null;
+  private readonly inputs: HTMLInputElement[];
+  private readonly inputStates: WeakMap<HTMLInputElement, string>;
+  private cssModel?: SDK.CSSModel.CSSModel|null;
   constructor() {
     super(true);
     this.registerRequiredCSS('panels/elements/elementStatePaneWidget.css');
@@ -39,16 +39,16 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
     UI.ARIAUtils.markAsPresentation(table);
 
     const inputs: HTMLInputElement[] = [];
-    this._inputs = inputs;
+    this.inputs = inputs;
 
-    this._inputStates = new WeakMap();
+    this.inputStates = new WeakMap();
 
     const clickListener = (event: MouseEvent): void => {
       const node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
       if (!node || !(event.target instanceof HTMLInputElement)) {
         return;
       }
-      const state = this._inputStates.get(event.target);
+      const state = this.inputStates.get(event.target);
       if (!state) {
         return;
       }
@@ -59,7 +59,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
       const td = document.createElement('td');
       const label = UI.UIUtils.CheckboxLabel.create(':' + state);
       const input = label.checkboxElement;
-      this._inputStates.set(input, state);
+      this.inputStates.set(input, state);
       input.addEventListener('click', (clickListener as EventListener), false);
       inputs.push(input);
       td.appendChild(label);
@@ -82,28 +82,28 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
     tr.appendChild(createCheckbox('target'));
 
     this.contentElement.appendChild(table);
-    UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this._update, this);
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.update, this);
   }
 
-  _updateModel(cssModel: SDK.CSSModel.CSSModel|null): void {
-    if (this._cssModel === cssModel) {
+  private updateModel(cssModel: SDK.CSSModel.CSSModel|null): void {
+    if (this.cssModel === cssModel) {
       return;
     }
-    if (this._cssModel) {
-      this._cssModel.removeEventListener(SDK.CSSModel.Events.PseudoStateForced, this._update, this);
+    if (this.cssModel) {
+      this.cssModel.removeEventListener(SDK.CSSModel.Events.PseudoStateForced, this.update, this);
     }
-    this._cssModel = cssModel;
-    if (this._cssModel) {
-      this._cssModel.addEventListener(SDK.CSSModel.Events.PseudoStateForced, this._update, this);
+    this.cssModel = cssModel;
+    if (this.cssModel) {
+      this.cssModel.addEventListener(SDK.CSSModel.Events.PseudoStateForced, this.update, this);
     }
   }
 
   wasShown(): void {
     super.wasShown();
-    this._update();
+    this.update();
   }
 
-  _update(): void {
+  private update(): void {
     if (!this.isShowing()) {
       return;
     }
@@ -113,16 +113,16 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
       node = node.enclosingElementOrSelf();
     }
 
-    this._updateModel(node ? node.domModel().cssModel() : null);
+    this.updateModel(node ? node.domModel().cssModel() : null);
     if (node) {
       const nodePseudoState = node.domModel().cssModel().pseudoState(node);
-      for (const input of this._inputs) {
+      for (const input of this.inputs) {
         input.disabled = Boolean(node.pseudoType());
-        const state = this._inputStates.get(input);
+        const state = this.inputStates.get(input);
         input.checked = nodePseudoState && state !== undefined ? nodePseudoState.indexOf(state) >= 0 : false;
       }
     } else {
-      for (const input of this._inputs) {
+      for (const input of this.inputs) {
         input.disabled = true;
         input.checked = false;
       }
@@ -133,14 +133,14 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
 let buttonProviderInstance: ButtonProvider;
 
 export class ButtonProvider implements UI.Toolbar.Provider {
-  _button: UI.Toolbar.ToolbarToggle;
-  _view: ElementStatePaneWidget;
+  private readonly button: UI.Toolbar.ToolbarToggle;
+  private view: ElementStatePaneWidget;
   private constructor() {
-    this._button = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleElementState), '');
-    this._button.setText(i18n.i18n.lockedString(':hov'));
-    this._button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._clicked, this);
-    this._button.element.classList.add('monospace');
-    this._view = new ElementStatePaneWidget();
+    this.button = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleElementState), '');
+    this.button.setText(i18n.i18n.lockedString(':hov'));
+    this.button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.clicked, this);
+    this.button.element.classList.add('monospace');
+    this.view = new ElementStatePaneWidget();
   }
 
   static instance(opts: {
@@ -154,11 +154,11 @@ export class ButtonProvider implements UI.Toolbar.Provider {
     return buttonProviderInstance;
   }
 
-  _clicked(): void {
-    ElementsPanel.instance().showToolbarPane(!this._view.isShowing() ? this._view : null, this._button);
+  private clicked(): void {
+    ElementsPanel.instance().showToolbarPane(!this.view.isShowing() ? this.view : null, this.button);
   }
 
   item(): UI.Toolbar.ToolbarItem {
-    return this._button;
+    return this.button;
   }
 }

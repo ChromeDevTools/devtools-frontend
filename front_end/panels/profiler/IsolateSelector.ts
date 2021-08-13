@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -61,121 +59,121 @@ const str_ = i18n.i18n.registerUIStrings('panels/profiler/IsolateSelector.ts', U
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class IsolateSelector extends UI.Widget.VBox implements UI.ListControl.ListDelegate<ListItem>,
                                                                SDK.IsolateManager.Observer {
-  _items: UI.ListModel.ListModel<ListItem>;
-  _list: UI.ListControl.ListControl<ListItem>;
-  _itemByIsolate: Map<SDK.IsolateManager.Isolate, ListItem>;
-  _totalElement: HTMLDivElement;
-  _totalValueDiv: HTMLElement;
-  _totalTrendDiv: HTMLElement;
+  readonly items: UI.ListModel.ListModel<ListItem>;
+  list: UI.ListControl.ListControl<ListItem>;
+  readonly itemByIsolate: Map<SDK.IsolateManager.Isolate, ListItem>;
+  readonly totalElement: HTMLDivElement;
+  totalValueDiv: HTMLElement;
+  readonly totalTrendDiv: HTMLElement;
 
   constructor() {
     super(false);
 
-    this._items = new UI.ListModel.ListModel();
-    this._list = new UI.ListControl.ListControl(this._items, this, UI.ListControl.ListMode.NonViewport);
-    this._list.element.classList.add('javascript-vm-instances-list');
-    UI.ARIAUtils.setAccessibleName(this._list.element, i18nString(UIStrings.javascriptVmInstances));
-    this.contentElement.appendChild(this._list.element);
+    this.items = new UI.ListModel.ListModel();
+    this.list = new UI.ListControl.ListControl(this.items, this, UI.ListControl.ListMode.NonViewport);
+    this.list.element.classList.add('javascript-vm-instances-list');
+    UI.ARIAUtils.setAccessibleName(this.list.element, i18nString(UIStrings.javascriptVmInstances));
+    this.contentElement.appendChild(this.list.element);
 
-    this._itemByIsolate = new Map();
+    this.itemByIsolate = new Map();
 
-    this._totalElement = document.createElement('div');
-    this._totalElement.classList.add('profile-memory-usage-item');
-    this._totalElement.classList.add('hbox');
-    this._totalValueDiv = this._totalElement.createChild('div', 'profile-memory-usage-item-size');
-    this._totalTrendDiv = this._totalElement.createChild('div', 'profile-memory-usage-item-trend');
-    this._totalElement.createChild('div').textContent = i18nString(UIStrings.totalJsHeapSize);
+    this.totalElement = document.createElement('div');
+    this.totalElement.classList.add('profile-memory-usage-item');
+    this.totalElement.classList.add('hbox');
+    this.totalValueDiv = this.totalElement.createChild('div', 'profile-memory-usage-item-size');
+    this.totalTrendDiv = this.totalElement.createChild('div', 'profile-memory-usage-item-trend');
+    this.totalElement.createChild('div').textContent = i18nString(UIStrings.totalJsHeapSize);
     const trendIntervalMinutes = Math.round(SDK.IsolateManager.MemoryTrendWindowMs / 60e3);
     UI.Tooltip.Tooltip.install(
-        this._totalTrendDiv, i18nString(UIStrings.totalPageJsHeapSizeChangeTrend, {PH1: trendIntervalMinutes}));
-    UI.Tooltip.Tooltip.install(this._totalValueDiv, i18nString(UIStrings.totalPageJsHeapSizeAcrossAllVm));
+        this.totalTrendDiv, i18nString(UIStrings.totalPageJsHeapSizeChangeTrend, {PH1: trendIntervalMinutes}));
+    UI.Tooltip.Tooltip.install(this.totalValueDiv, i18nString(UIStrings.totalPageJsHeapSizeAcrossAllVm));
 
     SDK.IsolateManager.IsolateManager.instance().observeIsolates(this);
     SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.NameChanged, this._targetChanged, this);
+        SDK.TargetManager.Events.NameChanged, this.targetChanged, this);
     SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.InspectedURLChanged, this._targetChanged, this);
+        SDK.TargetManager.Events.InspectedURLChanged, this.targetChanged, this);
   }
 
   wasShown(): void {
     SDK.IsolateManager.IsolateManager.instance().addEventListener(
-        SDK.IsolateManager.Events.MemoryChanged, this._heapStatsChanged, this);
+        SDK.IsolateManager.Events.MemoryChanged, this.heapStatsChanged, this);
   }
 
   willHide(): void {
     SDK.IsolateManager.IsolateManager.instance().removeEventListener(
-        SDK.IsolateManager.Events.MemoryChanged, this._heapStatsChanged, this);
+        SDK.IsolateManager.Events.MemoryChanged, this.heapStatsChanged, this);
   }
 
   isolateAdded(isolate: SDK.IsolateManager.Isolate): void {
-    this._list.element.tabIndex = 0;
+    this.list.element.tabIndex = 0;
     const item = new ListItem(isolate);
     const index = (item.model() as SDK.RuntimeModel.RuntimeModel).target() ===
             SDK.TargetManager.TargetManager.instance().mainTarget() ?
         0 :
-        this._items.length;
-    this._items.insert(index, item);
-    this._itemByIsolate.set(isolate, item);
-    if (this._items.length === 1 || isolate.isMainThread()) {
-      this._list.selectItem(item);
+        this.items.length;
+    this.items.insert(index, item);
+    this.itemByIsolate.set(isolate, item);
+    if (this.items.length === 1 || isolate.isMainThread()) {
+      this.list.selectItem(item);
     }
-    this._update();
+    this.update();
   }
 
   isolateChanged(isolate: SDK.IsolateManager.Isolate): void {
-    const item = this._itemByIsolate.get(isolate);
+    const item = this.itemByIsolate.get(isolate);
     if (item) {
       item.updateTitle();
     }
-    this._update();
+    this.update();
   }
 
   isolateRemoved(isolate: SDK.IsolateManager.Isolate): void {
-    const item = this._itemByIsolate.get(isolate);
+    const item = this.itemByIsolate.get(isolate);
     if (item) {
-      this._items.remove(this._items.indexOf(item));
+      this.items.remove(this.items.indexOf(item));
     }
-    this._itemByIsolate.delete(isolate);
-    if (this._items.length === 0) {
-      this._list.element.tabIndex = -1;
+    this.itemByIsolate.delete(isolate);
+    if (this.items.length === 0) {
+      this.list.element.tabIndex = -1;
     }
-    this._update();
+    this.update();
   }
 
-  _targetChanged(event: Common.EventTarget.EventTargetEvent<SDK.Target.Target>): void {
+  targetChanged(event: Common.EventTarget.EventTargetEvent<SDK.Target.Target>): void {
     const target = event.data;
     const model = target.model(SDK.RuntimeModel.RuntimeModel);
     if (!model) {
       return;
     }
     const isolate = SDK.IsolateManager.IsolateManager.instance().isolateByModel(model);
-    const item = isolate && this._itemByIsolate.get(isolate);
+    const item = isolate && this.itemByIsolate.get(isolate);
     if (item) {
       item.updateTitle();
     }
   }
 
-  _heapStatsChanged(event: Common.EventTarget.EventTargetEvent): void {
+  heapStatsChanged(event: Common.EventTarget.EventTargetEvent): void {
     const isolate = (event.data as SDK.IsolateManager.Isolate);
-    const listItem = this._itemByIsolate.get(isolate);
+    const listItem = this.itemByIsolate.get(isolate);
     if (listItem) {
       listItem.updateStats();
     }
-    this._updateTotal();
+    this.updateTotal();
   }
 
-  _updateTotal(): void {
+  updateTotal(): void {
     let total = 0;
     let trend = 0;
     for (const isolate of SDK.IsolateManager.IsolateManager.instance().isolates()) {
       total += isolate.usedHeapSize();
       trend += isolate.usedHeapSizeGrowRate();
     }
-    this._totalValueDiv.textContent = Platform.NumberUtilities.bytesToString(total);
-    IsolateSelector._formatTrendElement(trend, this._totalTrendDiv);
+    this.totalValueDiv.textContent = Platform.NumberUtilities.bytesToString(total);
+    IsolateSelector.formatTrendElement(trend, this.totalTrendDiv);
   }
 
-  static _formatTrendElement(trendValueMs: number, element: Element): void {
+  static formatTrendElement(trendValueMs: number, element: Element): void {
     const changeRateBytesPerSecond = trendValueMs * 1e3;
     const changeRateThresholdBytesPerSecond = 1000;
     if (Math.abs(changeRateBytesPerSecond) < changeRateThresholdBytesPerSecond) {
@@ -197,7 +195,7 @@ export class IsolateSelector extends UI.Widget.VBox implements UI.ListControl.Li
   }
 
   totalMemoryElement(): Element {
-    return this._totalElement;
+    return this.totalElement;
   }
 
   createElementForItem(item: ListItem): Element {
@@ -232,47 +230,47 @@ export class IsolateSelector extends UI.Widget.VBox implements UI.ListControl.Li
         SDK.CPUProfilerModel.CPUProfilerModel, model && model.target().model(SDK.CPUProfilerModel.CPUProfilerModel));
   }
 
-  _update(): void {
-    this._updateTotal();
-    this._list.invalidateRange(0, this._items.length);
+  update(): void {
+    this.updateTotal();
+    this.list.invalidateRange(0, this.items.length);
   }
 }
 
 export class ListItem {
-  _isolate: SDK.IsolateManager.Isolate;
+  isolate: SDK.IsolateManager.Isolate;
   element: HTMLDivElement;
-  _heapDiv: HTMLElement;
-  _trendDiv: HTMLElement;
-  _nameDiv: HTMLElement;
+  heapDiv: HTMLElement;
+  readonly trendDiv: HTMLElement;
+  readonly nameDiv: HTMLElement;
 
   constructor(isolate: SDK.IsolateManager.Isolate) {
-    this._isolate = isolate;
+    this.isolate = isolate;
     const trendIntervalMinutes = Math.round(SDK.IsolateManager.MemoryTrendWindowMs / 60e3);
     this.element = document.createElement('div');
     this.element.classList.add('profile-memory-usage-item');
     this.element.classList.add('hbox');
     UI.ARIAUtils.markAsOption(this.element);
-    this._heapDiv = this.element.createChild('div', 'profile-memory-usage-item-size');
-    UI.Tooltip.Tooltip.install(this._heapDiv, i18nString(UIStrings.heapSizeInUseByLiveJsObjects));
-    this._trendDiv = this.element.createChild('div', 'profile-memory-usage-item-trend');
+    this.heapDiv = this.element.createChild('div', 'profile-memory-usage-item-size');
+    UI.Tooltip.Tooltip.install(this.heapDiv, i18nString(UIStrings.heapSizeInUseByLiveJsObjects));
+    this.trendDiv = this.element.createChild('div', 'profile-memory-usage-item-trend');
     UI.Tooltip.Tooltip.install(
-        this._trendDiv, i18nString(UIStrings.heapSizeChangeTrendOverTheLastS, {PH1: trendIntervalMinutes}));
-    this._nameDiv = this.element.createChild('div', 'profile-memory-usage-item-name');
+        this.trendDiv, i18nString(UIStrings.heapSizeChangeTrendOverTheLastS, {PH1: trendIntervalMinutes}));
+    this.nameDiv = this.element.createChild('div', 'profile-memory-usage-item-name');
     this.updateTitle();
   }
 
   model(): SDK.RuntimeModel.RuntimeModel|null {
-    return this._isolate.runtimeModel();
+    return this.isolate.runtimeModel();
   }
 
   updateStats(): void {
-    this._heapDiv.textContent = Platform.NumberUtilities.bytesToString(this._isolate.usedHeapSize());
-    IsolateSelector._formatTrendElement(this._isolate.usedHeapSizeGrowRate(), this._trendDiv);
+    this.heapDiv.textContent = Platform.NumberUtilities.bytesToString(this.isolate.usedHeapSize());
+    IsolateSelector.formatTrendElement(this.isolate.usedHeapSizeGrowRate(), this.trendDiv);
   }
 
   updateTitle(): void {
     const modelCountByName = new Map<string, number>();
-    for (const model of this._isolate.models()) {
+    for (const model of this.isolate.models()) {
       const target = model.target();
       const name = SDK.TargetManager.TargetManager.instance().mainTarget() !== target ? target.name() : '';
       const parsedURL = new Common.ParsedURL.ParsedURL(target.inspectedURL());
@@ -281,12 +279,12 @@ export class ListItem {
           target.decorateLabel(domain && name ? `${domain}: ${name}` : name || domain || i18nString(UIStrings.empty));
       modelCountByName.set(title, (modelCountByName.get(title) || 0) + 1);
     }
-    this._nameDiv.removeChildren();
+    this.nameDiv.removeChildren();
     const titles = [];
     for (const [name, count] of modelCountByName) {
       const title = count > 1 ? `${name} (${count})` : name;
       titles.push(title);
-      const titleDiv = this._nameDiv.createChild('div');
+      const titleDiv = this.nameDiv.createChild('div');
       titleDiv.textContent = title;
       UI.Tooltip.Tooltip.install(titleDiv, String(title));
     }

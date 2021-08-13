@@ -27,8 +27,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as i18n from '../../core/i18n/i18n.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 
@@ -54,9 +52,9 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/ProfileDataGrid.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode<unknown> {
-  _searchMatchedSelfColumn: boolean;
-  _searchMatchedTotalColumn: boolean;
-  _searchMatchedFunctionColumn: boolean;
+  searchMatchedSelfColumn: boolean;
+  searchMatchedTotalColumn: boolean;
+  searchMatchedFunctionColumn: boolean;
   profileNode: SDK.ProfileTreeModel.ProfileNode;
   tree: ProfileDataGridTree;
   childrenByCallUID: Map<string, ProfileDataGridNode>;
@@ -65,20 +63,20 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode<unknown>
   self: number;
   total: number;
   functionName: string;
-  _deoptReason: string;
+  readonly deoptReason: string;
   url: string;
   linkElement: Element|null;
-  _populated: boolean;
-  _savedSelf?: number;
-  _savedTotal?: number;
-  _savedChildren?: DataGrid.DataGrid.DataGridNode<unknown>[];
+  populated: boolean;
+  savedSelf?: number;
+  savedTotal?: number;
+  savedChildren?: DataGrid.DataGrid.DataGridNode<unknown>[];
 
   constructor(profileNode: SDK.ProfileTreeModel.ProfileNode, owningTree: ProfileDataGridTree, hasChildren: boolean) {
     super(null, hasChildren);
 
-    this._searchMatchedSelfColumn = false;
-    this._searchMatchedTotalColumn = false;
-    this._searchMatchedFunctionColumn = false;
+    this.searchMatchedSelfColumn = false;
+    this.searchMatchedTotalColumn = false;
+    this.searchMatchedFunctionColumn = false;
 
     this.profileNode = profileNode;
     this.tree = owningTree;
@@ -89,11 +87,11 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode<unknown>
     this.self = profileNode.self;
     this.total = profileNode.total;
     this.functionName = UI.UIUtils.beautifyFunctionName(profileNode.functionName);
-    this._deoptReason = profileNode.deoptReason || '';
+    this.deoptReason = profileNode.deoptReason || '';
     this.url = profileNode.url;
     this.linkElement = null;
 
-    this._populated = false;
+    this.populated = false;
   }
 
   static sort<T>(gridNodeGroups: ProfileDataGridNode[][], comparator: (arg0: T, arg1: T) => number, force: boolean):
@@ -169,10 +167,10 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode<unknown>
   }
 
   static populate(container: ProfileDataGridTree|ProfileDataGridNode): void {
-    if (container._populated) {
+    if (container.populated) {
       return;
     }
-    container._populated = true;
+    container.populated = true;
 
     container.populateChildren();
 
@@ -186,31 +184,31 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode<unknown>
   createCell(columnId: string): HTMLElement {
     switch (columnId) {
       case 'self': {
-        const cell = this._createValueCell(this.self, this.selfPercent, columnId);
-        cell.classList.toggle('highlight', this._searchMatchedSelfColumn);
+        const cell = this.createValueCell(this.self, this.selfPercent, columnId);
+        cell.classList.toggle('highlight', this.searchMatchedSelfColumn);
         return cell;
       }
 
       case 'total': {
-        const cell = this._createValueCell(this.total, this.totalPercent, columnId);
-        cell.classList.toggle('highlight', this._searchMatchedTotalColumn);
+        const cell = this.createValueCell(this.total, this.totalPercent, columnId);
+        cell.classList.toggle('highlight', this.searchMatchedTotalColumn);
         return cell;
       }
 
       case 'function': {
         const cell = this.createTD(columnId);
-        cell.classList.toggle('highlight', this._searchMatchedFunctionColumn);
-        if (this._deoptReason) {
+        cell.classList.toggle('highlight', this.searchMatchedFunctionColumn);
+        if (this.deoptReason) {
           cell.classList.add('not-optimized');
           const warningIcon = UI.Icon.Icon.create('smallicon-warning', 'profile-warn-marker');
-          UI.Tooltip.Tooltip.install(warningIcon, i18nString(UIStrings.notOptimizedS, {PH1: this._deoptReason}));
+          UI.Tooltip.Tooltip.install(warningIcon, i18nString(UIStrings.notOptimizedS, {PH1: this.deoptReason}));
           cell.appendChild(warningIcon);
         }
         UI.UIUtils.createTextChild(cell, this.functionName);
         if (this.profileNode.scriptId === '0') {
           return cell;
         }
-        const urlElement = this.tree._formatter.linkifyNode(this);
+        const urlElement = this.tree.formatter.linkifyNode(this);
         if (!urlElement) {
           return cell;
         }
@@ -223,17 +221,17 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode<unknown>
     return super.createCell(columnId);
   }
 
-  _createValueCell(value: number, percent: number, columnId: string): HTMLElement {
+  createValueCell(value: number, percent: number, columnId: string): HTMLElement {
     const cell = document.createElement('td');
     cell.classList.add('numeric-column');
     const div = cell.createChild('div', 'profile-multiple-values');
     const valueSpan = div.createChild('span');
-    const valueText = this.tree._formatter.formatValue(value, this);
+    const valueText = this.tree.formatter.formatValue(value, this);
     valueSpan.textContent = valueText;
     const percentSpan = div.createChild('span', 'percent-column');
-    const percentText = this.tree._formatter.formatPercent(percent, this);
+    const percentText = this.tree.formatter.formatPercent(percent, this);
     percentSpan.textContent = percentText;
-    const valueAccessibleText = this.tree._formatter.formatValueAccessibleText(value, this);
+    const valueAccessibleText = this.tree.formatter.formatValueAccessibleText(value, this);
     this.setCellAccessibleName(
         i18nString(UIStrings.genericTextTwoPlaceholders, {PH1: valueAccessibleText, PH2: percentText}), cell, columnId);
     return cell;
@@ -290,14 +288,14 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode<unknown>
   // This allows us to restore them all to their original state when we revert.
 
   save(): void {
-    if (this._savedChildren) {
+    if (this.savedChildren) {
       return;
     }
 
-    this._savedSelf = this.self;
-    this._savedTotal = this.total;
+    this.savedSelf = this.self;
+    this.savedTotal = this.total;
 
-    this._savedChildren = this.children.slice();
+    this.savedChildren = this.children.slice();
   }
 
   /**
@@ -305,18 +303,18 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode<unknown>
    * This allows us to restore them all to their original state when we revert.
    */
   restore(): void {
-    if (!this._savedChildren) {
+    if (!this.savedChildren) {
       return;
     }
 
-    if (this._savedSelf && this._savedTotal) {
-      this.self = this._savedSelf;
-      this.total = this._savedTotal;
+    if (this.savedSelf && this.savedTotal) {
+      this.self = this.savedSelf;
+      this.total = this.savedTotal;
     }
 
     this.removeChildren();
 
-    const children = this._savedChildren;
+    const children = this.savedChildren;
     const count = children.length;
 
     for (let index = 0; index < count; ++index) {
@@ -334,32 +332,32 @@ export class ProfileDataGridTree implements UI.SearchableView.Searchable {
   tree: this;
   self: number;
   children: ProfileDataGridNode[];
-  _formatter: Formatter;
-  _searchableView: UI.SearchableView.SearchableView;
+  readonly formatter: Formatter;
+  readonly searchableView: UI.SearchableView.SearchableView;
   total: number;
   lastComparator: ((arg0: ProfileDataGridNode, arg1: ProfileDataGridNode) => number)|null;
   childrenByCallUID: Map<string, ProfileDataGridNode>;
   deepSearch: boolean;
-  _populated: boolean;
-  _searchResults!: {
+  populated: boolean;
+  searchResults!: {
     profileNode: ProfileDataGridNode,
   }[];
-  _savedTotal?: number;
-  _savedChildren?: ProfileDataGridNode[]|null;
-  _searchResultIndex: number = -1;
+  savedTotal?: number;
+  savedChildren?: ProfileDataGridNode[]|null;
+  searchResultIndex: number = -1;
 
   constructor(formatter: Formatter, searchableView: UI.SearchableView.SearchableView, total: number) {
     this.tree = this;
     this.self = 0;
     this.children = [];
-    this._formatter = formatter;
-    this._searchableView = searchableView;
+    this.formatter = formatter;
+    this.searchableView = searchableView;
     this.total = total;
 
     this.lastComparator = null;
     this.childrenByCallUID = new Map();
     this.deepSearch = true;
-    this._populated = false;
+    this.populated = false;
   }
 
   static propertyComparator(property: string, isAscending: boolean):
@@ -473,22 +471,22 @@ export class ProfileDataGridTree implements UI.SearchableView.Searchable {
   }
 
   save(): void {
-    if (this._savedChildren) {
+    if (this.savedChildren) {
       return;
     }
 
-    this._savedTotal = this.total;
-    this._savedChildren = this.children.slice();
+    this.savedTotal = this.total;
+    this.savedChildren = this.children.slice();
   }
 
   restore(): void {
-    if (!this._savedChildren) {
+    if (!this.savedChildren) {
       return;
     }
 
-    this.children = this._savedChildren;
-    if (this._savedTotal) {
-      this.total = this._savedTotal;
+    this.children = this.savedChildren;
+    if (this.savedTotal) {
+      this.total = this.savedTotal;
     }
 
     const children = this.children;
@@ -498,10 +496,10 @@ export class ProfileDataGridTree implements UI.SearchableView.Searchable {
       (children[index] as ProfileDataGridNode).restore();
     }
 
-    this._savedChildren = null;
+    this.savedChildren = null;
   }
 
-  _matchFunction(searchConfig: UI.SearchableView.SearchConfig): ((arg0: ProfileDataGridNode) => boolean)|null {
+  matchFunction(searchConfig: UI.SearchableView.SearchConfig): ((arg0: ProfileDataGridNode) => boolean)|null {
     const query = searchConfig.query.trim();
     if (!query.length) {
       return null;
@@ -533,69 +531,69 @@ export class ProfileDataGridTree implements UI.SearchableView.Searchable {
     const matcher = createPlainTextSearchRegex(query, 'i');
 
     function matchesQuery(profileDataGridNode: ProfileDataGridNode): boolean {
-      profileDataGridNode._searchMatchedSelfColumn = false;
-      profileDataGridNode._searchMatchedTotalColumn = false;
-      profileDataGridNode._searchMatchedFunctionColumn = false;
+      profileDataGridNode.searchMatchedSelfColumn = false;
+      profileDataGridNode.searchMatchedTotalColumn = false;
+      profileDataGridNode.searchMatchedFunctionColumn = false;
 
       if (percentUnits) {
         if (lessThan) {
           if (profileDataGridNode.selfPercent < queryNumber) {
-            profileDataGridNode._searchMatchedSelfColumn = true;
+            profileDataGridNode.searchMatchedSelfColumn = true;
           }
           if (profileDataGridNode.totalPercent < queryNumber) {
-            profileDataGridNode._searchMatchedTotalColumn = true;
+            profileDataGridNode.searchMatchedTotalColumn = true;
           }
         } else if (greaterThan) {
           if (profileDataGridNode.selfPercent > queryNumber) {
-            profileDataGridNode._searchMatchedSelfColumn = true;
+            profileDataGridNode.searchMatchedSelfColumn = true;
           }
           if (profileDataGridNode.totalPercent > queryNumber) {
-            profileDataGridNode._searchMatchedTotalColumn = true;
+            profileDataGridNode.searchMatchedTotalColumn = true;
           }
         }
 
         if (equalTo) {
           if (profileDataGridNode.selfPercent === queryNumber) {
-            profileDataGridNode._searchMatchedSelfColumn = true;
+            profileDataGridNode.searchMatchedSelfColumn = true;
           }
           if (profileDataGridNode.totalPercent === queryNumber) {
-            profileDataGridNode._searchMatchedTotalColumn = true;
+            profileDataGridNode.searchMatchedTotalColumn = true;
           }
         }
       } else if (millisecondsUnits || secondsUnits) {
         if (lessThan) {
           if (profileDataGridNode.self < queryNumberMilliseconds) {
-            profileDataGridNode._searchMatchedSelfColumn = true;
+            profileDataGridNode.searchMatchedSelfColumn = true;
           }
           if (profileDataGridNode.total < queryNumberMilliseconds) {
-            profileDataGridNode._searchMatchedTotalColumn = true;
+            profileDataGridNode.searchMatchedTotalColumn = true;
           }
         } else if (greaterThan) {
           if (profileDataGridNode.self > queryNumberMilliseconds) {
-            profileDataGridNode._searchMatchedSelfColumn = true;
+            profileDataGridNode.searchMatchedSelfColumn = true;
           }
           if (profileDataGridNode.total > queryNumberMilliseconds) {
-            profileDataGridNode._searchMatchedTotalColumn = true;
+            profileDataGridNode.searchMatchedTotalColumn = true;
           }
         }
 
         if (equalTo) {
           if (profileDataGridNode.self === queryNumberMilliseconds) {
-            profileDataGridNode._searchMatchedSelfColumn = true;
+            profileDataGridNode.searchMatchedSelfColumn = true;
           }
           if (profileDataGridNode.total === queryNumberMilliseconds) {
-            profileDataGridNode._searchMatchedTotalColumn = true;
+            profileDataGridNode.searchMatchedTotalColumn = true;
           }
         }
       }
 
       if (profileDataGridNode.functionName.match(matcher) ||
           (profileDataGridNode.url && profileDataGridNode.url.match(matcher))) {
-        profileDataGridNode._searchMatchedFunctionColumn = true;
+        profileDataGridNode.searchMatchedFunctionColumn = true;
       }
 
-      if (profileDataGridNode._searchMatchedSelfColumn || profileDataGridNode._searchMatchedTotalColumn ||
-          profileDataGridNode._searchMatchedFunctionColumn) {
+      if (profileDataGridNode.searchMatchedSelfColumn || profileDataGridNode.searchMatchedTotalColumn ||
+          profileDataGridNode.searchMatchedFunctionColumn) {
         profileDataGridNode.refresh();
         return true;
       }
@@ -607,12 +605,12 @@ export class ProfileDataGridTree implements UI.SearchableView.Searchable {
 
   performSearch(searchConfig: UI.SearchableView.SearchConfig, shouldJump: boolean, jumpBackwards?: boolean): void {
     this.searchCanceled();
-    const matchesQuery = this._matchFunction(searchConfig);
+    const matchesQuery = this.matchFunction(searchConfig);
     if (!matchesQuery) {
       return;
     }
 
-    this._searchResults = [];
+    this.searchResults = [];
     const deepSearch = this.deepSearch;
     let current: DataGrid.DataGrid.DataGridNode<unknown>|null;
     for (current = this.children[0]; current; current = current.traverseNextNode(!deepSearch, null, !deepSearch)) {
@@ -622,43 +620,43 @@ export class ProfileDataGridTree implements UI.SearchableView.Searchable {
       }
 
       if (matchesQuery(item)) {
-        this._searchResults.push({profileNode: item});
+        this.searchResults.push({profileNode: item});
       }
     }
-    this._searchResultIndex = jumpBackwards ? 0 : this._searchResults.length - 1;
-    this._searchableView.updateSearchMatchesCount(this._searchResults.length);
-    this._searchableView.updateCurrentMatchIndex(this._searchResultIndex);
+    this.searchResultIndex = jumpBackwards ? 0 : this.searchResults.length - 1;
+    this.searchableView.updateSearchMatchesCount(this.searchResults.length);
+    this.searchableView.updateCurrentMatchIndex(this.searchResultIndex);
   }
 
   searchCanceled(): void {
-    if (this._searchResults) {
-      for (let i = 0; i < this._searchResults.length; ++i) {
-        const profileNode = this._searchResults[i].profileNode;
-        profileNode._searchMatchedSelfColumn = false;
-        profileNode._searchMatchedTotalColumn = false;
-        profileNode._searchMatchedFunctionColumn = false;
+    if (this.searchResults) {
+      for (let i = 0; i < this.searchResults.length; ++i) {
+        const profileNode = this.searchResults[i].profileNode;
+        profileNode.searchMatchedSelfColumn = false;
+        profileNode.searchMatchedTotalColumn = false;
+        profileNode.searchMatchedFunctionColumn = false;
         profileNode.refresh();
       }
     }
 
-    this._searchResults = [];
-    this._searchResultIndex = -1;
+    this.searchResults = [];
+    this.searchResultIndex = -1;
   }
 
   jumpToNextSearchResult(): void {
-    if (!this._searchResults || !this._searchResults.length) {
+    if (!this.searchResults || !this.searchResults.length) {
       return;
     }
-    this._searchResultIndex = (this._searchResultIndex + 1) % this._searchResults.length;
-    this._jumpToSearchResult(this._searchResultIndex);
+    this.searchResultIndex = (this.searchResultIndex + 1) % this.searchResults.length;
+    this.jumpToSearchResult(this.searchResultIndex);
   }
 
   jumpToPreviousSearchResult(): void {
-    if (!this._searchResults || !this._searchResults.length) {
+    if (!this.searchResults || !this.searchResults.length) {
       return;
     }
-    this._searchResultIndex = (this._searchResultIndex - 1 + this._searchResults.length) % this._searchResults.length;
-    this._jumpToSearchResult(this._searchResultIndex);
+    this.searchResultIndex = (this.searchResultIndex - 1 + this.searchResults.length) % this.searchResults.length;
+    this.jumpToSearchResult(this.searchResultIndex);
   }
 
   supportsCaseSensitiveSearch(): boolean {
@@ -669,14 +667,14 @@ export class ProfileDataGridTree implements UI.SearchableView.Searchable {
     return false;
   }
 
-  _jumpToSearchResult(index: number): void {
-    const searchResult = this._searchResults[index];
+  jumpToSearchResult(index: number): void {
+    const searchResult = this.searchResults[index];
     if (!searchResult) {
       return;
     }
     const profileNode = searchResult.profileNode;
     profileNode.revealAndSelect();
-    this._searchableView.updateCurrentMatchIndex(index);
+    this.searchableView.updateCurrentMatchIndex(index);
   }
 
   // eslint-disable-next-line @typescript-eslint/naming-convention

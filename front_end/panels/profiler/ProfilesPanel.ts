@@ -27,8 +27,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -76,30 +74,30 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/ProfilesPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisplayDelegate {
-  _profileTypes: ProfileType[];
+  readonly profileTypes: ProfileType[];
   profilesItemTreeElement: ProfilesSidebarTreeElement;
-  _sidebarTree: UI.TreeOutline.TreeOutlineInShadow;
+  sidebarTree: UI.TreeOutline.TreeOutlineInShadow;
   profileViews: HTMLDivElement;
-  _toolbarElement: HTMLDivElement;
-  _toggleRecordAction: UI.ActionRegistration.Action;
-  _toggleRecordButton: UI.Toolbar.ToolbarButton;
+  readonly toolbarElement: HTMLDivElement;
+  toggleRecordAction: UI.ActionRegistration.Action;
+  readonly toggleRecordButton: UI.Toolbar.ToolbarButton;
   clearResultsButton: UI.Toolbar.ToolbarButton;
-  _profileViewToolbar: UI.Toolbar.Toolbar;
-  _profileGroups: {};
-  _launcherView: ProfileLauncherView;
+  readonly profileViewToolbar: UI.Toolbar.Toolbar;
+  profileGroups: {};
+  launcherView: ProfileLauncherView;
   visibleView!: UI.Widget.Widget|undefined;
-  _profileToView: {
+  readonly profileToView: {
     profile: ProfileHeader,
     view: UI.Widget.Widget,
   }[];
-  _typeIdToSidebarSection: {
+  typeIdToSidebarSection: {
     [x: string]: ProfileTypeSidebarSection,
   };
-  _fileSelectorElement!: HTMLInputElement;
-  _selectedProfileType?: ProfileType;
+  fileSelectorElement!: HTMLInputElement;
+  selectedProfileType?: ProfileType;
   constructor(name: string, profileTypes: ProfileType[], recordingActionId: string) {
     super(name);
-    this._profileTypes = profileTypes;
+    this.profileTypes = profileTypes;
     this.registerRequiredCSS('panels/profiler/heapProfiler.css');
     this.registerRequiredCSS('panels/profiler/profilesPanel.css');
     this.registerRequiredCSS('ui/legacy/components/object_ui/objectValue.css');
@@ -109,77 +107,77 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
 
     this.profilesItemTreeElement = new ProfilesSidebarTreeElement(this);
 
-    this._sidebarTree = new UI.TreeOutline.TreeOutlineInShadow();
-    this._sidebarTree.registerRequiredCSS('panels/profiler/profilesSidebarTree.css');
-    this._sidebarTree.element.classList.add('profiles-sidebar-tree-box');
-    this.panelSidebarElement().appendChild(this._sidebarTree.element);
+    this.sidebarTree = new UI.TreeOutline.TreeOutlineInShadow();
+    this.sidebarTree.registerRequiredCSS('panels/profiler/profilesSidebarTree.css');
+    this.sidebarTree.element.classList.add('profiles-sidebar-tree-box');
+    this.panelSidebarElement().appendChild(this.sidebarTree.element);
 
-    this._sidebarTree.appendChild(this.profilesItemTreeElement);
+    this.sidebarTree.appendChild(this.profilesItemTreeElement);
 
-    this._sidebarTree.element.addEventListener('keydown', this._onKeyDown.bind(this), false);
+    this.sidebarTree.element.addEventListener('keydown', this.onKeyDown.bind(this), false);
 
     this.profileViews = document.createElement('div');
     this.profileViews.id = 'profile-views';
     this.profileViews.classList.add('vbox');
     mainContainer.element.appendChild(this.profileViews);
 
-    this._toolbarElement = document.createElement('div');
-    this._toolbarElement.classList.add('profiles-toolbar');
-    mainContainer.element.insertBefore(this._toolbarElement, mainContainer.element.firstChild);
+    this.toolbarElement = document.createElement('div');
+    this.toolbarElement.classList.add('profiles-toolbar');
+    mainContainer.element.insertBefore(this.toolbarElement, mainContainer.element.firstChild);
 
     this.panelSidebarElement().classList.add('profiles-tree-sidebar');
     const toolbarContainerLeft = document.createElement('div');
     toolbarContainerLeft.classList.add('profiles-toolbar');
     this.panelSidebarElement().insertBefore(toolbarContainerLeft, this.panelSidebarElement().firstChild);
     const toolbar = new UI.Toolbar.Toolbar('', toolbarContainerLeft);
-    this._toggleRecordAction =
+    this.toggleRecordAction =
         (UI.ActionRegistry.ActionRegistry.instance().action(recordingActionId) as UI.ActionRegistration.Action);
-    this._toggleRecordButton = UI.Toolbar.Toolbar.createActionButton(this._toggleRecordAction);
-    toolbar.appendToolbarItem(this._toggleRecordButton);
+    this.toggleRecordButton = UI.Toolbar.Toolbar.createActionButton(this.toggleRecordAction);
+    toolbar.appendToolbarItem(this.toggleRecordButton);
 
     this.clearResultsButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAllProfiles), 'largeicon-clear');
-    this.clearResultsButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._reset, this);
+    this.clearResultsButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.reset, this);
     toolbar.appendToolbarItem(this.clearResultsButton);
     toolbar.appendSeparator();
     toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButtonForId('components.collect-garbage'));
 
-    this._profileViewToolbar = new UI.Toolbar.Toolbar('', this._toolbarElement);
-    this._profileViewToolbar.makeWrappable(true);
+    this.profileViewToolbar = new UI.Toolbar.Toolbar('', this.toolbarElement);
+    this.profileViewToolbar.makeWrappable(true);
 
-    this._profileGroups = {};
-    this._launcherView = new ProfileLauncherView(this);
-    this._launcherView.addEventListener(ProfileLauncherEvents.ProfileTypeSelected, this._onProfileTypeSelected, this);
+    this.profileGroups = {};
+    this.launcherView = new ProfileLauncherView(this);
+    this.launcherView.addEventListener(ProfileLauncherEvents.ProfileTypeSelected, this.onProfileTypeSelected, this);
 
-    this._profileToView = [];
+    this.profileToView = [];
 
-    this._typeIdToSidebarSection = {};
+    this.typeIdToSidebarSection = {};
 
-    const types = this._profileTypes;
+    const types = this.profileTypes;
     for (let i = 0; i < types.length; i++) {
-      this._registerProfileType(types[i]);
+      this.registerProfileType(types[i]);
     }
-    this._launcherView.restoreSelectedProfileType();
+    this.launcherView.restoreSelectedProfileType();
     this.profilesItemTreeElement.select();
-    this._showLauncherView();
-    this._createFileSelectorElement();
+    this.showLauncherView();
+    this.createFileSelectorElement();
 
-    this.element.addEventListener('contextmenu', this._handleContextMenuEvent.bind(this), false);
+    this.element.addEventListener('contextmenu', this.handleContextMenuEvent.bind(this), false);
 
     SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
+        SDK.TargetManager.Events.SuspendStateChanged, this.onSuspendStateChanged, this);
     UI.Context.Context.instance().addFlavorChangeListener(
-        SDK.CPUProfilerModel.CPUProfilerModel, this._updateProfileTypeSpecificUI, this);
+        SDK.CPUProfilerModel.CPUProfilerModel, this.updateProfileTypeSpecificUI, this);
     UI.Context.Context.instance().addFlavorChangeListener(
-        SDK.HeapProfilerModel.HeapProfilerModel, this._updateProfileTypeSpecificUI, this);
+        SDK.HeapProfilerModel.HeapProfilerModel, this.updateProfileTypeSpecificUI, this);
   }
 
-  _onKeyDown(ev: Event): void {
+  onKeyDown(ev: Event): void {
     const event = (ev as KeyboardEvent);
     let handled = false;
     if (event.key === 'ArrowDown' && !event.altKey) {
-      handled = this._sidebarTree.selectNext();
+      handled = this.sidebarTree.selectNext();
     } else if (event.key === 'ArrowUp' && !event.altKey) {
-      handled = this._sidebarTree.selectPrevious();
+      handled = this.sidebarTree.selectPrevious();
     }
     if (handled) {
       event.consume(true);
@@ -193,27 +191,27 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     return visibleView && visibleView.searchableView ? visibleView.searchableView() : null;
   }
 
-  _createFileSelectorElement(): void {
-    if (this._fileSelectorElement) {
-      this.element.removeChild(this._fileSelectorElement);
+  createFileSelectorElement(): void {
+    if (this.fileSelectorElement) {
+      this.element.removeChild(this.fileSelectorElement);
     }
-    this._fileSelectorElement = UI.UIUtils.createFileSelectorElement(this._loadFromFile.bind(this));
-    setSharedFileSelectorElement(this._fileSelectorElement);
-    this.element.appendChild(this._fileSelectorElement);
+    this.fileSelectorElement = UI.UIUtils.createFileSelectorElement(this.loadFromFile.bind(this));
+    setSharedFileSelectorElement(this.fileSelectorElement);
+    this.element.appendChild(this.fileSelectorElement);
   }
 
-  _findProfileTypeByExtension(fileName: string): ProfileType|null {
-    return this._profileTypes.find(
+  findProfileTypeByExtension(fileName: string): ProfileType|null {
+    return this.profileTypes.find(
                type => Boolean(type.fileExtension()) && fileName.endsWith(type.fileExtension() || '')) ||
         null;
   }
 
-  async _loadFromFile(file: File): Promise<void> {
-    this._createFileSelectorElement();
+  async loadFromFile(file: File): Promise<void> {
+    this.createFileSelectorElement();
 
-    const profileType = this._findProfileTypeByExtension(file.name);
+    const profileType = this.findProfileTypeByExtension(file.name);
     if (!profileType) {
-      const extensions = new Set(this._profileTypes.map(type => type.fileExtension()).filter(ext => ext));
+      const extensions = new Set(this.profileTypes.map(type => type.fileExtension()).filter(ext => ext));
       Common.Console.Console.instance().error(
           i18nString(UIStrings.cantLoadFileSupportedFile, {PH1: Array.from(extensions).join('\', \'')}));
       return;
@@ -231,23 +229,23 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
   }
 
   toggleRecord(): boolean {
-    if (!this._toggleRecordAction.enabled()) {
+    if (!this.toggleRecordAction.enabled()) {
       return true;
     }
     const toggleButton = this.element.ownerDocument.deepActiveElement();
-    const type = this._selectedProfileType;
+    const type = this.selectedProfileType;
     if (!type) {
       return true;
     }
     const isProfiling = type.buttonClicked();
-    this._updateToggleRecordAction(isProfiling);
+    this.updateToggleRecordAction(isProfiling);
     if (isProfiling) {
-      this._launcherView.profileStarted();
+      this.launcherView.profileStarted();
       if (type.hasTemporaryView()) {
         this.showProfile(type.profileBeingRecorded());
       }
     } else {
-      this._launcherView.profileFinished();
+      this.launcherView.profileFinished();
     }
     if (toggleButton) {
       (toggleButton as HTMLElement).focus();
@@ -255,140 +253,140 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     return true;
   }
 
-  _onSuspendStateChanged(): void {
-    this._updateToggleRecordAction(this._toggleRecordAction.toggled());
+  onSuspendStateChanged(): void {
+    this.updateToggleRecordAction(this.toggleRecordAction.toggled());
   }
 
-  _updateToggleRecordAction(toggled: boolean): void {
+  updateToggleRecordAction(toggled: boolean): void {
     const hasSelectedTarget = Boolean(
         UI.Context.Context.instance().flavor(SDK.CPUProfilerModel.CPUProfilerModel) ||
         UI.Context.Context.instance().flavor(SDK.HeapProfilerModel.HeapProfilerModel));
     const enable = toggled || (!SDK.TargetManager.TargetManager.instance().allTargetsSuspended() && hasSelectedTarget);
-    this._toggleRecordAction.setEnabled(enable);
-    this._toggleRecordAction.setToggled(toggled);
+    this.toggleRecordAction.setEnabled(enable);
+    this.toggleRecordAction.setToggled(toggled);
     if (enable) {
-      this._toggleRecordButton.setTitle(this._selectedProfileType ? this._selectedProfileType.buttonTooltip : '');
+      this.toggleRecordButton.setTitle(this.selectedProfileType ? this.selectedProfileType.buttonTooltip : '');
     } else {
-      this._toggleRecordButton.setTitle(UI.UIUtils.anotherProfilerActiveLabel());
+      this.toggleRecordButton.setTitle(UI.UIUtils.anotherProfilerActiveLabel());
     }
-    if (this._selectedProfileType) {
-      this._launcherView.updateProfileType(this._selectedProfileType, enable);
+    if (this.selectedProfileType) {
+      this.launcherView.updateProfileType(this.selectedProfileType, enable);
     }
   }
 
-  _profileBeingRecordedRemoved(): void {
-    this._updateToggleRecordAction(false);
-    this._launcherView.profileFinished();
+  profileBeingRecordedRemoved(): void {
+    this.updateToggleRecordAction(false);
+    this.launcherView.profileFinished();
   }
 
-  _onProfileTypeSelected(event: Common.EventTarget.EventTargetEvent): void {
-    this._selectedProfileType = (event.data as ProfileType);
-    this._updateProfileTypeSpecificUI();
+  onProfileTypeSelected(event: Common.EventTarget.EventTargetEvent): void {
+    this.selectedProfileType = (event.data as ProfileType);
+    this.updateProfileTypeSpecificUI();
   }
 
-  _updateProfileTypeSpecificUI(): void {
-    this._updateToggleRecordAction(this._toggleRecordAction.toggled());
+  updateProfileTypeSpecificUI(): void {
+    this.updateToggleRecordAction(this.toggleRecordAction.toggled());
   }
 
-  _reset(): void {
-    this._profileTypes.forEach(type => type.reset());
+  reset(): void {
+    this.profileTypes.forEach(type => type.reset());
 
     delete this.visibleView;
 
-    this._profileGroups = {};
-    this._updateToggleRecordAction(false);
-    this._launcherView.profileFinished();
+    this.profileGroups = {};
+    this.updateToggleRecordAction(false);
+    this.launcherView.profileFinished();
 
-    this._sidebarTree.element.classList.remove('some-expandable');
+    this.sidebarTree.element.classList.remove('some-expandable');
 
-    this._launcherView.detach();
+    this.launcherView.detach();
     this.profileViews.removeChildren();
-    this._profileViewToolbar.removeToolbarItems();
+    this.profileViewToolbar.removeToolbarItems();
 
     this.clearResultsButton.element.classList.remove('hidden');
     this.profilesItemTreeElement.select();
-    this._showLauncherView();
+    this.showLauncherView();
   }
 
-  _showLauncherView(): void {
+  showLauncherView(): void {
     this.closeVisibleView();
-    this._profileViewToolbar.removeToolbarItems();
-    this._launcherView.show(this.profileViews);
-    this.visibleView = this._launcherView;
-    this._toolbarElement.classList.add('hidden');
+    this.profileViewToolbar.removeToolbarItems();
+    this.launcherView.show(this.profileViews);
+    this.visibleView = this.launcherView;
+    this.toolbarElement.classList.add('hidden');
   }
 
-  _registerProfileType(profileType: ProfileType): void {
-    this._launcherView.addProfileType(profileType);
+  registerProfileType(profileType: ProfileType): void {
+    this.launcherView.addProfileType(profileType);
     const profileTypeSection = new ProfileTypeSidebarSection(this, profileType);
-    this._typeIdToSidebarSection[profileType.id] = profileTypeSection;
-    this._sidebarTree.appendChild(profileTypeSection);
+    this.typeIdToSidebarSection[profileType.id] = profileTypeSection;
+    this.sidebarTree.appendChild(profileTypeSection);
     profileTypeSection.childrenListElement.addEventListener(
-        'contextmenu', this._handleContextMenuEvent.bind(this), false);
+        'contextmenu', this.handleContextMenuEvent.bind(this), false);
 
     function onAddProfileHeader(this: ProfilesPanel, event: Common.EventTarget.EventTargetEvent): void {
-      this._addProfileHeader((event.data as ProfileHeader));
+      this.addProfileHeader((event.data as ProfileHeader));
     }
 
     function onRemoveProfileHeader(this: ProfilesPanel, event: Common.EventTarget.EventTargetEvent): void {
-      this._removeProfileHeader((event.data as ProfileHeader));
+      this.removeProfileHeader((event.data as ProfileHeader));
     }
 
     function profileComplete(this: ProfilesPanel, event: Common.EventTarget.EventTargetEvent): void {
       this.showProfile((event.data as ProfileHeader));
     }
 
-    profileType.addEventListener(ProfileTypeEvents.ViewUpdated, this._updateProfileTypeSpecificUI, this);
+    profileType.addEventListener(ProfileTypeEvents.ViewUpdated, this.updateProfileTypeSpecificUI, this);
     profileType.addEventListener(ProfileTypeEvents.AddProfileHeader, onAddProfileHeader, this);
     profileType.addEventListener(ProfileTypeEvents.RemoveProfileHeader, onRemoveProfileHeader, this);
     profileType.addEventListener(ProfileTypeEvents.ProfileComplete, profileComplete, this);
 
     const profiles = profileType.getProfiles();
     for (let i = 0; i < profiles.length; i++) {
-      this._addProfileHeader(profiles[i]);
+      this.addProfileHeader(profiles[i]);
     }
   }
 
-  _handleContextMenuEvent(event: Event): void {
+  handleContextMenuEvent(event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     if (this.panelSidebarElement().isSelfOrAncestor((event.target as Node | null))) {
       contextMenu.defaultSection().appendItem(
-          i18nString(UIStrings.load), this._fileSelectorElement.click.bind(this._fileSelectorElement));
+          i18nString(UIStrings.load), this.fileSelectorElement.click.bind(this.fileSelectorElement));
     }
     contextMenu.show();
   }
 
   showLoadFromFileDialog(): void {
-    this._fileSelectorElement.click();
+    this.fileSelectorElement.click();
   }
 
-  _addProfileHeader(profile: ProfileHeader): void {
+  addProfileHeader(profile: ProfileHeader): void {
     const profileType = profile.profileType();
     const typeId = profileType.id;
-    this._typeIdToSidebarSection[typeId].addProfileHeader(profile);
-    if (!this.visibleView || this.visibleView === this._launcherView) {
+    this.typeIdToSidebarSection[typeId].addProfileHeader(profile);
+    if (!this.visibleView || this.visibleView === this.launcherView) {
       this.showProfile(profile);
     }
   }
 
-  _removeProfileHeader(profile: ProfileHeader): void {
+  removeProfileHeader(profile: ProfileHeader): void {
     if (profile.profileType().profileBeingRecorded() === profile) {
-      this._profileBeingRecordedRemoved();
+      this.profileBeingRecordedRemoved();
     }
 
-    const i = this._indexOfViewForProfile(profile);
+    const i = this.indexOfViewForProfile(profile);
     if (i !== -1) {
-      this._profileToView.splice(i, 1);
+      this.profileToView.splice(i, 1);
     }
 
     const typeId = profile.profileType().id;
-    const sectionIsEmpty = this._typeIdToSidebarSection[typeId].removeProfileHeader(profile);
+    const sectionIsEmpty = this.typeIdToSidebarSection[typeId].removeProfileHeader(profile);
 
     // No other item will be selected if there aren't any other profiles, so
     // make sure that view gets cleared when the last profile is removed.
     if (sectionIsEmpty) {
       this.profilesItemTreeElement.select();
-      this._showLauncherView();
+      this.showLauncherView();
     }
   }
 
@@ -406,19 +404,19 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     this.closeVisibleView();
 
     view.show(this.profileViews);
-    this._toolbarElement.classList.remove('hidden');
+    this.toolbarElement.classList.remove('hidden');
     this.visibleView = view;
 
-    const profileTypeSection = this._typeIdToSidebarSection[profile.profileType().id];
+    const profileTypeSection = this.typeIdToSidebarSection[profile.profileType().id];
     const sidebarElement = profileTypeSection.sidebarElementForProfile(profile);
     if (sidebarElement) {
       sidebarElement.revealAndSelect();
     }
 
-    this._profileViewToolbar.removeToolbarItems();
+    this.profileViewToolbar.removeToolbarItems();
 
     (view as unknown as UI.View.View).toolbarItems().then(items => {
-      items.map(item => this._profileViewToolbar.appendToolbarItem(item));
+      items.map(item => this.profileViewToolbar.appendToolbarItem(item));
     });
 
     return view;
@@ -432,18 +430,18 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
   }
 
   viewForProfile(profile: ProfileHeader): UI.Widget.Widget {
-    const index = this._indexOfViewForProfile(profile);
+    const index = this.indexOfViewForProfile(profile);
     if (index !== -1) {
-      return this._profileToView[index].view;
+      return this.profileToView[index].view;
     }
     const view = profile.createView(this);
     view.element.classList.add('profile-view');
-    this._profileToView.push({profile: profile, view: view});
+    this.profileToView.push({profile: profile, view: view});
     return view;
   }
 
-  _indexOfViewForProfile(profile: ProfileHeader): number {
-    return this._profileToView.findIndex(item => item.profile === profile);
+  indexOfViewForProfile(profile: ProfileHeader): number {
+    return this.profileToView.findIndex(item => item.profile === profile);
   }
 
   closeVisibleView(): void {
@@ -454,23 +452,23 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
   }
 
   focus(): void {
-    this._sidebarTree.focus();
+    this.sidebarTree.focus();
   }
 }
 
 export class ProfileTypeSidebarSection extends UI.TreeOutline.TreeElement {
-  _dataDisplayDelegate: DataDisplayDelegate;
-  _profileTreeElements: ProfileSidebarTreeElement[];
-  _profileGroups: {
+  dataDisplayDelegate: DataDisplayDelegate;
+  readonly profileTreeElements: ProfileSidebarTreeElement[];
+  profileGroups: {
     [x: string]: ProfileGroup,
   };
 
   constructor(dataDisplayDelegate: DataDisplayDelegate, profileType: ProfileType) {
     super(profileType.treeItemTitle, true);
     this.selectable = false;
-    this._dataDisplayDelegate = dataDisplayDelegate;
-    this._profileTreeElements = [];
-    this._profileGroups = {};
+    this.dataDisplayDelegate = dataDisplayDelegate;
+    this.profileTreeElements = [];
+    this.profileGroups = {};
     this.expand();
     this.hidden = true;
     this.setCollapsible(false);
@@ -481,22 +479,22 @@ export class ProfileTypeSidebarSection extends UI.TreeOutline.TreeElement {
     const profileType = profile.profileType();
     let sidebarParent: (ProfileGroupSidebarTreeElement|null)|this = this;
     const profileTreeElement =
-        (profile.createSidebarTreeElement(this._dataDisplayDelegate) as ProfileSidebarTreeElement);
-    this._profileTreeElements.push(profileTreeElement);
+        (profile.createSidebarTreeElement(this.dataDisplayDelegate) as ProfileSidebarTreeElement);
+    this.profileTreeElements.push(profileTreeElement);
 
     if (!profile.fromFile() && profileType.profileBeingRecorded() !== profile) {
       const profileTitle = profile.title;
-      let group: ProfileGroup = this._profileGroups[profileTitle];
+      let group: ProfileGroup = this.profileGroups[profileTitle];
       if (!group) {
         group = new ProfileGroup();
-        this._profileGroups[profileTitle] = group;
+        this.profileGroups[profileTitle] = group;
       }
       group.profileSidebarTreeElements.push(profileTreeElement);
 
       const groupSize = group.profileSidebarTreeElements.length;
       if (groupSize === 2) {
         // Make a group UI.TreeOutline.TreeElement now that there are 2 profiles.
-        group.sidebarTreeElement = new ProfileGroupSidebarTreeElement(this._dataDisplayDelegate, profile.title);
+        group.sidebarTreeElement = new ProfileGroupSidebarTreeElement(this.dataDisplayDelegate, profile.title);
 
         const firstProfileTreeElement = group.profileSidebarTreeElements[0];
         // Insert at the same index for the first profile of the group.
@@ -532,15 +530,15 @@ export class ProfileTypeSidebarSection extends UI.TreeOutline.TreeElement {
   }
 
   removeProfileHeader(profile: ProfileHeader): boolean {
-    const index = this._sidebarElementIndex(profile);
+    const index = this.sidebarElementIndex(profile);
     if (index === -1) {
       return false;
     }
-    const profileTreeElement = this._profileTreeElements[index];
-    this._profileTreeElements.splice(index, 1);
+    const profileTreeElement = this.profileTreeElements[index];
+    this.profileTreeElements.splice(index, 1);
 
     let sidebarParent: (ProfileGroupSidebarTreeElement|null)|this = this;
-    const group = this._profileGroups[profile.title];
+    const group = this.profileGroups[profile.title];
     if (group) {
       const groupElements = group.profileSidebarTreeElements;
       groupElements.splice(groupElements.indexOf(profileTreeElement), 1);
@@ -574,12 +572,12 @@ export class ProfileTypeSidebarSection extends UI.TreeOutline.TreeElement {
   }
 
   sidebarElementForProfile(profile: ProfileHeader): ProfileSidebarTreeElement|null {
-    const index = this._sidebarElementIndex(profile);
-    return index === -1 ? null : this._profileTreeElements[index];
+    const index = this.sidebarElementIndex(profile);
+    return index === -1 ? null : this.profileTreeElements[index];
   }
 
-  _sidebarElementIndex(profile: ProfileHeader): number {
-    const elements = this._profileTreeElements;
+  sidebarElementIndex(profile: ProfileHeader): number {
+    const elements = this.profileTreeElements;
     for (let i = 0; i < elements.length; i++) {
       if (elements[i].profile === profile) {
         return i;
@@ -603,15 +601,15 @@ export class ProfileGroup {
 }
 
 export class ProfileGroupSidebarTreeElement extends UI.TreeOutline.TreeElement {
-  _dataDisplayDelegate: DataDisplayDelegate;
-  _profileTitle: string;
+  readonly dataDisplayDelegate: DataDisplayDelegate;
+  profileTitle: string;
   toggleOnClick: boolean;
 
   constructor(dataDisplayDelegate: DataDisplayDelegate, title: string) {
     super('', true);
     this.selectable = false;
-    this._dataDisplayDelegate = dataDisplayDelegate;
-    this._profileTitle = title;
+    this.dataDisplayDelegate = dataDisplayDelegate;
+    this.profileTitle = title;
     this.expand();
     this.toggleOnClick = true;
   }
@@ -621,7 +619,7 @@ export class ProfileGroupSidebarTreeElement extends UI.TreeOutline.TreeElement {
     if (hasChildren) {
       const lastChild = this.lastChild();
       if (lastChild instanceof ProfileSidebarTreeElement) {
-        this._dataDisplayDelegate.showProfile(lastChild.profile);
+        this.dataDisplayDelegate.showProfile(lastChild.profile);
       }
     }
     return hasChildren;
@@ -633,21 +631,21 @@ export class ProfileGroupSidebarTreeElement extends UI.TreeOutline.TreeElement {
     this.listItemElement.createChild('div', 'titles no-subtitle')
         .createChild('span', 'title-container')
         .createChild('span', 'title')
-        .textContent = this._profileTitle;
+        .textContent = this.profileTitle;
   }
 }
 
 export class ProfilesSidebarTreeElement extends UI.TreeOutline.TreeElement {
-  _panel: ProfilesPanel;
+  readonly panel: ProfilesPanel;
 
   constructor(panel: ProfilesPanel) {
     super('', false);
     this.selectable = true;
-    this._panel = panel;
+    this.panel = panel;
   }
 
   onselect(): boolean {
-    this._panel._showLauncherView();
+    this.panel.showLauncherView();
     return true;
   }
 

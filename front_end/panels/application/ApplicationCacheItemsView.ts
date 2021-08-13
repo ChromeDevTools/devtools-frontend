@@ -229,7 +229,7 @@ export class ApplicationCacheItemsView extends UI.View.SimpleView {
 
     // FIXME: For Chrome, put creationTime and updateTime somewhere.
     // NOTE: localizedString has not yet been added.
-    // i18nString("(%s) Created: %s Updated: %s", this._size, this._creationTime, this._updateTime);
+    // i18nString("(%s) Created: %s Updated: %s", this.size, this._creationTime, this._updateTime);
   }
 
   _createDataGrid(): void {

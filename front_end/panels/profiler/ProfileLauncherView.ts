@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -67,37 +65,36 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/ProfileLauncherView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ProfileLauncherView extends UI.Widget.VBox {
-  _panel: ProfilesPanel;
-  _contentElement: HTMLElement;
-  _selectedProfileTypeSetting: Common.Settings.Setting<string>;
-  _profileTypeHeaderElement: HTMLElement;
-  _profileTypeSelectorForm: HTMLElement;
-  _controlButton: HTMLButtonElement;
-  _loadButton: HTMLButtonElement;
-  _recordButtonEnabled: boolean;
-  _typeIdToOptionElementAndProfileType: Map<string, {
+  readonly panel: ProfilesPanel;
+  readonly selectedProfileTypeSetting: Common.Settings.Setting<string>;
+  profileTypeHeaderElement: HTMLElement;
+  readonly profileTypeSelectorForm: HTMLElement;
+  controlButton: HTMLButtonElement;
+  readonly loadButton: HTMLButtonElement;
+  recordButtonEnabled: boolean;
+  typeIdToOptionElementAndProfileType: Map<string, {
     optionElement: HTMLInputElement,
     profileType: ProfileType,
   }>;
-  _isProfiling?: boolean;
-  _isInstantProfile?: boolean;
-  _isEnabled?: boolean;
+  isProfiling?: boolean;
+  isInstantProfile?: boolean;
+  isEnabled?: boolean;
 
   constructor(profilesPanel: ProfilesPanel) {
     super();
     this.registerRequiredCSS('panels/profiler/profileLauncherView.css');
 
-    this._panel = profilesPanel;
+    this.panel = profilesPanel;
     this.element.classList.add('profile-launcher-view');
-    this._contentElement = this.element.createChild('div', 'profile-launcher-view-content vbox');
+    this.contentElement = this.element.createChild('div', 'profile-launcher-view-content vbox') as HTMLDivElement;
 
-    const profileTypeSelectorElement = this._contentElement.createChild('div', 'vbox');
-    this._selectedProfileTypeSetting = Common.Settings.Settings.instance().createSetting('selectedProfileType', 'CPU');
-    this._profileTypeHeaderElement = profileTypeSelectorElement.createChild('h1');
-    this._profileTypeSelectorForm = profileTypeSelectorElement.createChild('form');
-    UI.ARIAUtils.markAsRadioGroup(this._profileTypeSelectorForm);
+    const profileTypeSelectorElement = this.contentElement.createChild('div', 'vbox');
+    this.selectedProfileTypeSetting = Common.Settings.Settings.instance().createSetting('selectedProfileType', 'CPU');
+    this.profileTypeHeaderElement = profileTypeSelectorElement.createChild('h1');
+    this.profileTypeSelectorForm = profileTypeSelectorElement.createChild('form');
+    UI.ARIAUtils.markAsRadioGroup(this.profileTypeSelectorForm);
 
-    const isolateSelectorElement = this._contentElement.createChild('div', 'vbox profile-isolate-selector-block');
+    const isolateSelectorElement = this.contentElement.createChild('div', 'vbox profile-isolate-selector-block');
     isolateSelectorElement.createChild('h1').textContent = i18nString(UIStrings.selectJavascriptVmInstance);
     const isolateSelector = new IsolateSelector();
     const isolateSelectorElementChild = isolateSelectorElement.createChild('div', 'vbox profile-launcher-target-list');
@@ -105,121 +102,120 @@ export class ProfileLauncherView extends UI.Widget.VBox {
     isolateSelector.show(isolateSelectorElementChild);
     isolateSelectorElement.appendChild(isolateSelector.totalMemoryElement());
 
-    const buttonsDiv = this._contentElement.createChild('div', 'hbox profile-launcher-buttons');
-    this._controlButton =
-        UI.UIUtils.createTextButton('', this._controlButtonClicked.bind(this), '', /* primary */ true);
-    this._loadButton = UI.UIUtils.createTextButton(i18nString(UIStrings.load), this._loadButtonClicked.bind(this), '');
-    buttonsDiv.appendChild(this._controlButton);
-    buttonsDiv.appendChild(this._loadButton);
-    this._recordButtonEnabled = true;
+    const buttonsDiv = this.contentElement.createChild('div', 'hbox profile-launcher-buttons');
+    this.controlButton = UI.UIUtils.createTextButton('', this.controlButtonClicked.bind(this), '', /* primary */ true);
+    this.loadButton = UI.UIUtils.createTextButton(i18nString(UIStrings.load), this.loadButtonClicked.bind(this), '');
+    buttonsDiv.appendChild(this.controlButton);
+    buttonsDiv.appendChild(this.loadButton);
+    this.recordButtonEnabled = true;
 
-    this._typeIdToOptionElementAndProfileType = new Map();
+    this.typeIdToOptionElementAndProfileType = new Map();
   }
 
-  _loadButtonClicked(): void {
-    this._panel.showLoadFromFileDialog();
+  loadButtonClicked(): void {
+    this.panel.showLoadFromFileDialog();
   }
 
-  _updateControls(): void {
-    if (this._isEnabled && this._recordButtonEnabled) {
-      this._controlButton.removeAttribute('disabled');
+  updateControls(): void {
+    if (this.isEnabled && this.recordButtonEnabled) {
+      this.controlButton.removeAttribute('disabled');
     } else {
-      this._controlButton.setAttribute('disabled', '');
+      this.controlButton.setAttribute('disabled', '');
     }
     UI.Tooltip.Tooltip.install(
-        this._controlButton, this._recordButtonEnabled ? '' : UI.UIUtils.anotherProfilerActiveLabel());
-    if (this._isInstantProfile) {
-      this._controlButton.classList.remove('running');
-      this._controlButton.classList.add('primary-button');
-      this._controlButton.textContent = i18nString(UIStrings.takeSnapshot);
-    } else if (this._isProfiling) {
-      this._controlButton.classList.add('running');
-      this._controlButton.classList.remove('primary-button');
-      this._controlButton.textContent = i18nString(UIStrings.stop);
+        this.controlButton, this.recordButtonEnabled ? '' : UI.UIUtils.anotherProfilerActiveLabel());
+    if (this.isInstantProfile) {
+      this.controlButton.classList.remove('running');
+      this.controlButton.classList.add('primary-button');
+      this.controlButton.textContent = i18nString(UIStrings.takeSnapshot);
+    } else if (this.isProfiling) {
+      this.controlButton.classList.add('running');
+      this.controlButton.classList.remove('primary-button');
+      this.controlButton.textContent = i18nString(UIStrings.stop);
     } else {
-      this._controlButton.classList.remove('running');
-      this._controlButton.classList.add('primary-button');
-      this._controlButton.textContent = i18nString(UIStrings.start);
+      this.controlButton.classList.remove('running');
+      this.controlButton.classList.add('primary-button');
+      this.controlButton.textContent = i18nString(UIStrings.start);
     }
-    for (const {optionElement} of this._typeIdToOptionElementAndProfileType.values()) {
-      optionElement.disabled = Boolean(this._isProfiling);
+    for (const {optionElement} of this.typeIdToOptionElementAndProfileType.values()) {
+      optionElement.disabled = Boolean(this.isProfiling);
     }
   }
 
   profileStarted(): void {
-    this._isProfiling = true;
-    this._updateControls();
+    this.isProfiling = true;
+    this.updateControls();
   }
 
   profileFinished(): void {
-    this._isProfiling = false;
-    this._updateControls();
+    this.isProfiling = false;
+    this.updateControls();
   }
 
   updateProfileType(profileType: ProfileType, recordButtonEnabled: boolean): void {
-    this._isInstantProfile = profileType.isInstantProfile();
-    this._recordButtonEnabled = recordButtonEnabled;
-    this._isEnabled = profileType.isEnabled();
-    this._updateControls();
+    this.isInstantProfile = profileType.isInstantProfile();
+    this.recordButtonEnabled = recordButtonEnabled;
+    this.isEnabled = profileType.isEnabled();
+    this.updateControls();
   }
 
   addProfileType(profileType: ProfileType): void {
     const labelElement = UI.UIUtils.createRadioLabel('profile-type', profileType.name);
-    this._profileTypeSelectorForm.appendChild(labelElement);
+    this.profileTypeSelectorForm.appendChild(labelElement);
     const optionElement = labelElement.radioElement;
-    this._typeIdToOptionElementAndProfileType.set(profileType.id, {optionElement, profileType});
-    optionElement.addEventListener('change', this._profileTypeChanged.bind(this, profileType), false);
-    const descriptionElement = this._profileTypeSelectorForm.createChild('p');
+    this.typeIdToOptionElementAndProfileType.set(profileType.id, {optionElement, profileType});
+    optionElement.addEventListener('change', this.profileTypeChanged.bind(this, profileType), false);
+    const descriptionElement = this.profileTypeSelectorForm.createChild('p');
     descriptionElement.textContent = profileType.description;
     UI.ARIAUtils.setDescription(optionElement, profileType.description);
     const customContent = profileType.customContent();
     if (customContent) {
-      this._profileTypeSelectorForm.createChild('p').appendChild(customContent);
+      this.profileTypeSelectorForm.createChild('p').appendChild(customContent);
       profileType.setCustomContentEnabled(false);
     }
-    const headerText = this._typeIdToOptionElementAndProfileType.size > 1 ? i18nString(UIStrings.selectProfilingType) :
-                                                                            profileType.name;
-    this._profileTypeHeaderElement.textContent = headerText;
-    UI.ARIAUtils.setAccessibleName(this._profileTypeSelectorForm, headerText);
+    const headerText = this.typeIdToOptionElementAndProfileType.size > 1 ? i18nString(UIStrings.selectProfilingType) :
+                                                                           profileType.name;
+    this.profileTypeHeaderElement.textContent = headerText;
+    UI.ARIAUtils.setAccessibleName(this.profileTypeSelectorForm, headerText);
   }
 
   restoreSelectedProfileType(): void {
-    let typeId = this._selectedProfileTypeSetting.get();
-    if (!this._typeIdToOptionElementAndProfileType.has(typeId)) {
-      typeId = this._typeIdToOptionElementAndProfileType.keys().next().value;
-      this._selectedProfileTypeSetting.set(typeId);
+    let typeId = this.selectedProfileTypeSetting.get();
+    if (!this.typeIdToOptionElementAndProfileType.has(typeId)) {
+      typeId = this.typeIdToOptionElementAndProfileType.keys().next().value;
+      this.selectedProfileTypeSetting.set(typeId);
     }
 
-    const optionElementAndProfileType = (this._typeIdToOptionElementAndProfileType.get(typeId) as {
+    const optionElementAndProfileType = (this.typeIdToOptionElementAndProfileType.get(typeId) as {
       optionElement: HTMLInputElement,
       profileType: ProfileType,
     });
     optionElementAndProfileType.optionElement.checked = true;
     const type = optionElementAndProfileType.profileType;
-    for (const [id, {profileType}] of this._typeIdToOptionElementAndProfileType) {
+    for (const [id, {profileType}] of this.typeIdToOptionElementAndProfileType) {
       const enabled = (id === typeId);
       profileType.setCustomContentEnabled(enabled);
     }
     this.dispatchEventToListeners(Events.ProfileTypeSelected, type);
   }
 
-  _controlButtonClicked(): void {
-    this._panel.toggleRecord();
+  controlButtonClicked(): void {
+    this.panel.toggleRecord();
   }
 
-  _profileTypeChanged(profileType: ProfileType): void {
-    const typeId = this._selectedProfileTypeSetting.get();
-    const type = (this._typeIdToOptionElementAndProfileType.get(typeId) as {
+  profileTypeChanged(profileType: ProfileType): void {
+    const typeId = this.selectedProfileTypeSetting.get();
+    const type = (this.typeIdToOptionElementAndProfileType.get(typeId) as {
                    optionElement: HTMLInputElement,
                    profileType: ProfileType,
                  }).profileType;
     type.setCustomContentEnabled(false);
     profileType.setCustomContentEnabled(true);
     this.dispatchEventToListeners(Events.ProfileTypeSelected, profileType);
-    this._isInstantProfile = profileType.isInstantProfile();
-    this._isEnabled = profileType.isEnabled();
-    this._updateControls();
-    this._selectedProfileTypeSetting.set(profileType.id);
+    this.isInstantProfile = profileType.isInstantProfile();
+    this.isEnabled = profileType.isEnabled();
+    this.updateControls();
+    this.selectedProfileTypeSetting.set(profileType.id);
   }
 }
 

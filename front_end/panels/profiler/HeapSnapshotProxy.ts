@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import type * as HeapSnapshotModel from '../../models/heap_snapshot_model/heap_snapshot_model.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -47,38 +45,38 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _eventHandler: (arg0: string, arg1: any) => void;
-  _nextObjectId: number;
-  _nextCallId: number;
+  readonly eventHandler: (arg0: string, arg1: any) => void;
+  nextObjectId: number;
+  nextCallId: number;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _callbacks: Map<number, (arg0: any) => void>;
-  _previousCallbacks: Set<number>;
-  _worker: Common.Worker.WorkerWrapper;
-  _interval?: number;
+  callbacks: Map<number, (arg0: any) => void>;
+  readonly previousCallbacks: Set<number>;
+  readonly worker: Common.Worker.WorkerWrapper;
+  interval?: number;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(eventHandler: (arg0: string, arg1: any) => void) {
     super();
-    this._eventHandler = eventHandler;
-    this._nextObjectId = 1;
-    this._nextCallId = 1;
-    this._callbacks = new Map();
-    this._previousCallbacks = new Set();
+    this.eventHandler = eventHandler;
+    this.nextObjectId = 1;
+    this.nextCallId = 1;
+    this.callbacks = new Map();
+    this.previousCallbacks = new Set();
     // We use the legacy file here, as below we postMessage and expect certain objects to be
     // defined on the global scope. Ideally we use some sort of import-export mechanism across
     // worker boundaries, but that requires a partial rewrite of the heap_snapshot_worker.
-    this._worker = Common.Worker.WorkerWrapper.fromURL(
+    this.worker = Common.Worker.WorkerWrapper.fromURL(
         new URL('../../entrypoints/heap_snapshot_worker/heap_snapshot_worker-legacy.js', import.meta.url));
-    this._worker.onmessage = this._messageReceived.bind(this);
+    this.worker.onmessage = this.messageReceived.bind(this);
   }
 
   createLoader(profileUid: number, snapshotReceivedCallback: (arg0: HeapSnapshotProxy) => void):
       HeapSnapshotLoaderProxy {
-    const objectId = this._nextObjectId++;
+    const objectId = this.nextObjectId++;
     const proxy = new HeapSnapshotLoaderProxy(this, objectId, profileUid, snapshotReceivedCallback);
-    this._postMessage({
-      callId: this._nextCallId++,
+    this.postMessage({
+      callId: this.nextCallId++,
       disposition: 'create',
       objectId: objectId,
       methodName: 'HeapSnapshotWorker.HeapSnapshotLoader',
@@ -87,36 +85,36 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper 
   }
 
   dispose(): void {
-    this._worker.terminate();
-    if (this._interval) {
-      clearInterval(this._interval);
+    this.worker.terminate();
+    if (this.interval) {
+      clearInterval(this.interval);
     }
   }
 
   disposeObject(objectId: number): void {
-    this._postMessage({callId: this._nextCallId++, disposition: 'dispose', objectId: objectId});
+    this.postMessage({callId: this.nextCallId++, disposition: 'dispose', objectId: objectId});
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   evaluateForTest(script: string, callback: (arg0: any) => void): void {
-    const callId = this._nextCallId++;
-    this._callbacks.set(callId, callback);
-    this._postMessage({callId: callId, disposition: 'evaluateForTest', source: script});
+    const callId = this.nextCallId++;
+    this.callbacks.set(callId, callback);
+    this.postMessage({callId: callId, disposition: 'evaluateForTest', source: script});
   }
 
   callFactoryMethod<T>(
       callback: ((...arg0: unknown[]) => void)|null, objectId: string, methodName: string,
       proxyConstructor: new(...arg1: unknown[]) => T): Object|null {
-    const callId = this._nextCallId++;
+    const callId = this.nextCallId++;
     const methodArguments = Array.prototype.slice.call(arguments, 4);
-    const newObjectId = this._nextObjectId++;
+    const newObjectId = this.nextObjectId++;
 
     if (callback) {
-      this._callbacks.set(callId, remoteResult => {
+      this.callbacks.set(callId, remoteResult => {
         callback(remoteResult ? new proxyConstructor(this, newObjectId) : null);
       });
-      this._postMessage({
+      this.postMessage({
         callId: callId,
         disposition: 'factory',
         objectId: objectId,
@@ -126,7 +124,7 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper 
       });
       return null;
     }
-    this._postMessage({
+    this.postMessage({
       callId: callId,
       disposition: 'factory',
       objectId: objectId,
@@ -140,12 +138,12 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   callMethod(callback: (arg0: any) => void, objectId: string, methodName: string): void {
-    const callId = this._nextCallId++;
+    const callId = this.nextCallId++;
     const methodArguments = Array.prototype.slice.call(arguments, 3);
     if (callback) {
-      this._callbacks.set(callId, callback);
+      this.callbacks.set(callId, callback);
     }
-    this._postMessage({
+    this.postMessage({
       callId: callId,
       disposition: 'method',
       objectId: objectId,
@@ -155,33 +153,33 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper 
   }
 
   startCheckingForLongRunningCalls(): void {
-    if (this._interval) {
+    if (this.interval) {
       return;
     }
-    this._checkLongRunningCalls();
-    this._interval = window.setInterval(this._checkLongRunningCalls.bind(this), 300);
+    this.checkLongRunningCalls();
+    this.interval = window.setInterval(this.checkLongRunningCalls.bind(this), 300);
   }
 
-  _checkLongRunningCalls(): void {
-    for (const callId of this._previousCallbacks) {
-      if (!this._callbacks.has(callId)) {
-        this._previousCallbacks.delete(callId);
+  checkLongRunningCalls(): void {
+    for (const callId of this.previousCallbacks) {
+      if (!this.callbacks.has(callId)) {
+        this.previousCallbacks.delete(callId);
       }
     }
-    const hasLongRunningCalls = Boolean(this._previousCallbacks.size);
+    const hasLongRunningCalls = Boolean(this.previousCallbacks.size);
     this.dispatchEventToListeners(HeapSnapshotWorkerProxy.Events.Wait, hasLongRunningCalls);
-    for (const callId of this._callbacks.keys()) {
-      this._previousCallbacks.add(callId);
+    for (const callId of this.callbacks.keys()) {
+      this.previousCallbacks.add(callId);
     }
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _messageReceived(event: MessageEvent<any>): void {
+  messageReceived(event: MessageEvent<any>): void {
     const data = event.data;
     if (data.eventName) {
-      if (this._eventHandler) {
-        this._eventHandler(data.eventName, data.data);
+      if (this.eventHandler) {
+        this.eventHandler(data.eventName, data.data);
       }
       return;
     }
@@ -191,21 +189,21 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper 
             i18nString(UIStrings.anErrorOccurredWhenACallToMethod, {PH1: data.errorMethodName}));
       }
       Common.Console.Console.instance().error(data['errorCallStack']);
-      this._callbacks.delete(data.callId);
+      this.callbacks.delete(data.callId);
       return;
     }
-    const callback = this._callbacks.get(data.callId);
+    const callback = this.callbacks.get(data.callId);
     if (!callback) {
       return;
     }
-    this._callbacks.delete(data.callId);
+    this.callbacks.delete(data.callId);
     callback(data.result);
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _postMessage(message: any): void {
-    this._worker.postMessage(message);
+  postMessage(message: any): void {
+    this.worker.postMessage(message);
   }
 }
 
@@ -216,32 +214,32 @@ export namespace HeapSnapshotWorkerProxy {
 }
 
 export class HeapSnapshotProxyObject {
-  _worker: HeapSnapshotWorkerProxy;
-  _objectId: number;
+  readonly worker: HeapSnapshotWorkerProxy;
+  readonly objectId: number;
   constructor(worker: HeapSnapshotWorkerProxy, objectId: number) {
-    this._worker = worker;
-    this._objectId = objectId;
+    this.worker = worker;
+    this.objectId = objectId;
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _callWorker(workerMethodName: string, args: any[]): any {
-    args.splice(1, 0, this._objectId);
+  callWorker(workerMethodName: string, args: any[]): any {
+    args.splice(1, 0, this.objectId);
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const worker = (this._worker as any)[workerMethodName];
+    const worker = (this.worker as any)[workerMethodName];
     if (!worker) {
       throw new Error(`Could not find worker with name ${workerMethodName}.`);
     }
-    return worker.apply(this._worker, args);
+    return worker.apply(this.worker, args);
   }
 
   dispose(): void {
-    this._worker.disposeObject(this._objectId);
+    this.worker.disposeObject(this.objectId);
   }
 
   disposeWorker(): void {
-    this._worker.dispose();
+    this.worker.dispose();
   }
 
   callFactoryMethod<T>(
@@ -251,70 +249,70 @@ export class HeapSnapshotProxyObject {
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/naming-convention
       ..._var_args: any[]): T {
-    return this._callWorker('callFactoryMethod', Array.prototype.slice.call(arguments, 0));
+    return this.callWorker('callFactoryMethod', Array.prototype.slice.call(arguments, 0));
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/naming-convention
-  _callMethodPromise<T>(_methodName: string, ..._var_args: any[]): Promise<T> {
+  callMethodPromise<T>(_methodName: string, ..._var_args: any[]): Promise<T> {
     const args = Array.prototype.slice.call(arguments);
-    return new Promise(resolve => this._callWorker('callMethod', [resolve, ...args]));
+    return new Promise(resolve => this.callWorker('callMethod', [resolve, ...args]));
   }
 }
 
 export class HeapSnapshotLoaderProxy extends HeapSnapshotProxyObject implements Common.StringOutputStream.OutputStream {
-  _profileUid: number;
-  _snapshotReceivedCallback: (arg0: HeapSnapshotProxy) => void;
+  readonly profileUid: number;
+  readonly snapshotReceivedCallback: (arg0: HeapSnapshotProxy) => void;
   constructor(
       worker: HeapSnapshotWorkerProxy, objectId: number, profileUid: number,
       snapshotReceivedCallback: (arg0: HeapSnapshotProxy) => void) {
     super(worker, objectId);
-    this._profileUid = profileUid;
-    this._snapshotReceivedCallback = snapshotReceivedCallback;
+    this.profileUid = profileUid;
+    this.snapshotReceivedCallback = snapshotReceivedCallback;
   }
 
   async write(chunk: string): Promise<void> {
-    await this._callMethodPromise('write', chunk);
+    await this.callMethodPromise('write', chunk);
   }
 
   async close(): Promise<void> {
-    await this._callMethodPromise('close');
+    await this.callMethodPromise('close');
     const snapshotProxy = await new Promise<HeapSnapshotProxy>(
         resolve => this.callFactoryMethod(resolve, 'buildSnapshot', HeapSnapshotProxy));
     this.dispose();
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
     // @ts-expect-error
-    snapshotProxy.setProfileUid(this._profileUid);
+    snapshotProxy.setProfileUid(this.profileUid);
     await snapshotProxy.updateStaticData();
-    this._snapshotReceivedCallback(snapshotProxy);
+    this.snapshotReceivedCallback(snapshotProxy);
   }
 }
 
 export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
-  _staticData: HeapSnapshotModel.HeapSnapshotModel.StaticData|null;
-  _profileUid?: string;
+  staticData: HeapSnapshotModel.HeapSnapshotModel.StaticData|null;
+  profileUid?: string;
 
   constructor(worker: HeapSnapshotWorkerProxy, objectId: number) {
     super(worker, objectId);
-    this._staticData = null;
+    this.staticData = null;
   }
 
   search(
       searchConfig: HeapSnapshotModel.HeapSnapshotModel.SearchConfig,
       filter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter): Promise<number[]> {
-    return this._callMethodPromise('search', searchConfig, filter);
+    return this.callMethodPromise('search', searchConfig, filter);
   }
 
   aggregatesWithFilter(filter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter): Promise<{
     [x: string]: HeapSnapshotModel.HeapSnapshotModel.Aggregate,
   }> {
-    return this._callMethodPromise('aggregatesWithFilter', filter);
+    return this.callMethodPromise('aggregatesWithFilter', filter);
   }
 
   aggregatesForDiff(): Promise<{
     [x: string]: HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff,
   }> {
-    return this._callMethodPromise('aggregatesForDiff');
+    return this.callMethodPromise('aggregatesForDiff');
   }
 
   calculateSnapshotDiff(baseSnapshotId: string, baseSnapshotAggregates: {
@@ -322,11 +320,11 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
   }): Promise<{
     [x: string]: HeapSnapshotModel.HeapSnapshotModel.Diff,
   }> {
-    return this._callMethodPromise('calculateSnapshotDiff', baseSnapshotId, baseSnapshotAggregates);
+    return this.callMethodPromise('calculateSnapshotDiff', baseSnapshotId, baseSnapshotAggregates);
   }
 
   nodeClassName(snapshotObjectId: number): Promise<string|null> {
-    return this._callMethodPromise('nodeClassName', snapshotObjectId);
+    return this.callMethodPromise('nodeClassName', snapshotObjectId);
   }
 
   createEdgesProvider(nodeIndex: number): HeapSnapshotProviderProxy {
@@ -359,15 +357,15 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
   }
 
   allocationTracesTops(): Promise<HeapSnapshotModel.HeapSnapshotModel.SerializedAllocationNode[]> {
-    return this._callMethodPromise('allocationTracesTops');
+    return this.callMethodPromise('allocationTracesTops');
   }
 
   allocationNodeCallers(nodeId: number): Promise<HeapSnapshotModel.HeapSnapshotModel.AllocationNodeCallers> {
-    return this._callMethodPromise('allocationNodeCallers', nodeId);
+    return this.callMethodPromise('allocationNodeCallers', nodeId);
   }
 
   allocationStack(nodeIndex: number): Promise<HeapSnapshotModel.HeapSnapshotModel.AllocationStackFrame[]|null> {
-    return this._callMethodPromise('allocationStack', nodeIndex);
+    return this.callMethodPromise('allocationStack', nodeIndex);
   }
 
   dispose(): void {
@@ -375,55 +373,55 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
   }
 
   get nodeCount(): number {
-    if (!this._staticData) {
+    if (!this.staticData) {
       return 0;
     }
-    return this._staticData.nodeCount;
+    return this.staticData.nodeCount;
   }
 
   get rootNodeIndex(): number {
-    if (!this._staticData) {
+    if (!this.staticData) {
       return 0;
     }
-    return this._staticData.rootNodeIndex;
+    return this.staticData.rootNodeIndex;
   }
 
   async updateStaticData(): Promise<void> {
-    this._staticData = await this._callMethodPromise('updateStaticData');
+    this.staticData = await this.callMethodPromise('updateStaticData');
   }
 
   getStatistics(): Promise<HeapSnapshotModel.HeapSnapshotModel.Statistics> {
-    return this._callMethodPromise('getStatistics');
+    return this.callMethodPromise('getStatistics');
   }
 
   getLocation(nodeIndex: number): Promise<HeapSnapshotModel.HeapSnapshotModel.Location|null> {
-    return this._callMethodPromise('getLocation', nodeIndex);
+    return this.callMethodPromise('getLocation', nodeIndex);
   }
 
   getSamples(): Promise<HeapSnapshotModel.HeapSnapshotModel.Samples|null> {
-    return this._callMethodPromise('getSamples');
+    return this.callMethodPromise('getSamples');
   }
 
   get totalSize(): number {
-    if (!this._staticData) {
+    if (!this.staticData) {
       return 0;
     }
-    return this._staticData.totalSize;
+    return this.staticData.totalSize;
   }
 
   get uid(): string|undefined {
-    return this._profileUid;
+    return this.profileUid;
   }
 
   setProfileUid(profileUid: string): void {
-    this._profileUid = profileUid;
+    this.profileUid = profileUid;
   }
 
   maxJSObjectId(): number {
-    if (!this._staticData) {
+    if (!this.staticData) {
       return 0;
     }
-    return this._staticData.maxJSObjectId;
+    return this.staticData.maxJSObjectId;
   }
 }
 
@@ -433,19 +431,19 @@ export class HeapSnapshotProviderProxy extends HeapSnapshotProxyObject implement
   }
 
   nodePosition(snapshotObjectId: number): Promise<number> {
-    return this._callMethodPromise('nodePosition', snapshotObjectId);
+    return this.callMethodPromise('nodePosition', snapshotObjectId);
   }
 
   isEmpty(): Promise<boolean> {
-    return this._callMethodPromise('isEmpty');
+    return this.callMethodPromise('isEmpty');
   }
 
   serializeItemsRange(startPosition: number, endPosition: number):
       Promise<HeapSnapshotModel.HeapSnapshotModel.ItemsRange> {
-    return this._callMethodPromise('serializeItemsRange', startPosition, endPosition);
+    return this.callMethodPromise('serializeItemsRange', startPosition, endPosition);
   }
 
   async sortAndRewind(comparator: HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig): Promise<void> {
-    await this._callMethodPromise('sortAndRewind', comparator);
+    await this.callMethodPromise('sortAndRewind', comparator);
   }
 }

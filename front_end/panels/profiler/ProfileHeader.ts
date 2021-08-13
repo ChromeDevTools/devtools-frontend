@@ -2,26 +2,24 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as Bindings from '../../models/bindings/bindings.js';
 import * as Common from '../../core/common/common.js';
 import type * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 export class ProfileHeader extends Common.ObjectWrapper.ObjectWrapper {
-  _profileType: ProfileType;
+  readonly profileTypeInternal: ProfileType;
   title: string;
   uid: number;
-  _fromFile: boolean;
+  fromFileInternal: boolean;
   tempFile: Bindings.TempFile.TempFile|null;
 
   constructor(profileType: ProfileType, title: string) {
     super();
-    this._profileType = profileType;
+    this.profileTypeInternal = profileType;
     this.title = title;
     this.uid = profileType.incrementProfileUid();
-    this._fromFile = false;
+    this.fromFileInternal = false;
 
     this.tempFile = null;
   }
@@ -32,7 +30,7 @@ export class ProfileHeader extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   profileType(): ProfileType {
-    return this._profileType;
+    return this.profileTypeInternal;
   }
 
   updateStatus(subtitle: string|null, wait?: boolean): void {
@@ -72,11 +70,11 @@ export class ProfileHeader extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   fromFile(): boolean {
-    return this._fromFile;
+    return this.fromFileInternal;
   }
 
   setFromFile(): void {
-    this._fromFile = true;
+    this.fromFileInternal = true;
   }
 
   setProfile(_profile: Protocol.Profiler.Profile): void {
@@ -101,22 +99,22 @@ export enum Events {
 }
 
 export abstract class ProfileType extends Common.ObjectWrapper.ObjectWrapper {
-  _id: string;
-  _name: string;
-  _profiles: ProfileHeader[];
-  _profileBeingRecorded: ProfileHeader|null;
-  _nextProfileUid: number;
+  readonly idInternal: string;
+  readonly nameInternal: string;
+  profiles: ProfileHeader[];
+  profileBeingRecordedInternal: ProfileHeader|null;
+  nextProfileUidInternal: number;
 
   constructor(id: string, name: string) {
     super();
-    this._id = id;
-    this._name = name;
-    this._profiles = [];
-    this._profileBeingRecorded = null;
-    this._nextProfileUid = 1;
+    this.idInternal = id;
+    this.nameInternal = name;
+    this.profiles = [];
+    this.profileBeingRecordedInternal = null;
+    this.nextProfileUidInternal = 1;
 
     if (!window.opener) {
-      window.addEventListener('unload', this._clearTempStorage.bind(this), false);
+      window.addEventListener('unload', this.clearTempStorage.bind(this), false);
     }
   }
 
@@ -125,11 +123,11 @@ export abstract class ProfileType extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   nextProfileUid(): number {
-    return this._nextProfileUid;
+    return this.nextProfileUidInternal;
   }
 
   incrementProfileUid(): number {
-    return this._nextProfileUid++;
+    return this.nextProfileUidInternal++;
   }
 
   hasTemporaryView(): boolean {
@@ -145,15 +143,15 @@ export abstract class ProfileType extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   get id(): string {
-    return this._id;
+    return this.idInternal;
   }
 
   get treeItemTitle(): string {
-    return this._name;
+    return this.nameInternal;
   }
 
   get name(): string {
-    return this._name;
+    return this.nameInternal;
   }
 
   buttonClicked(): boolean {
@@ -174,9 +172,9 @@ export abstract class ProfileType extends Common.ObjectWrapper.ObjectWrapper {
 
   getProfiles(): ProfileHeader[] {
     function isFinished(this: ProfileType, profile: ProfileHeader): boolean {
-      return this._profileBeingRecorded !== profile;
+      return this.profileBeingRecordedInternal !== profile;
     }
-    return this._profiles.filter(isFinished.bind(this));
+    return this.profiles.filter(isFinished.bind(this));
   }
 
   customContent(): Element|null {
@@ -187,9 +185,9 @@ export abstract class ProfileType extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   getProfile(uid: number): ProfileHeader|null {
-    for (let i = 0; i < this._profiles.length; ++i) {
-      if (this._profiles[i].uid === uid) {
-        return this._profiles[i];
+    for (let i = 0; i < this.profiles.length; ++i) {
+      if (this.profiles[i].uid === uid) {
+        return this.profiles[i];
       }
     }
     return null;
@@ -211,48 +209,48 @@ export abstract class ProfileType extends Common.ObjectWrapper.ObjectWrapper {
   abstract createProfileLoadedFromFile(title: string): ProfileHeader;
 
   addProfile(profile: ProfileHeader): void {
-    this._profiles.push(profile);
+    this.profiles.push(profile);
     this.dispatchEventToListeners(ProfileEvents.AddProfileHeader, profile);
   }
 
   removeProfile(profile: ProfileHeader): void {
-    const index = this._profiles.indexOf(profile);
+    const index = this.profiles.indexOf(profile);
     if (index === -1) {
       return;
     }
-    this._profiles.splice(index, 1);
-    this._disposeProfile(profile);
+    this.profiles.splice(index, 1);
+    this.disposeProfile(profile);
   }
 
-  _clearTempStorage(): void {
-    for (let i = 0; i < this._profiles.length; ++i) {
-      this._profiles[i].removeTempFile();
+  clearTempStorage(): void {
+    for (let i = 0; i < this.profiles.length; ++i) {
+      this.profiles[i].removeTempFile();
     }
   }
 
   profileBeingRecorded(): ProfileHeader|null {
-    return this._profileBeingRecorded;
+    return this.profileBeingRecordedInternal;
   }
 
   setProfileBeingRecorded(profile: ProfileHeader|null): void {
-    this._profileBeingRecorded = profile;
+    this.profileBeingRecordedInternal = profile;
   }
 
   profileBeingRecordedRemoved(): void {
   }
 
   reset(): void {
-    for (const profile of this._profiles.slice()) {
-      this._disposeProfile(profile);
+    for (const profile of this.profiles.slice()) {
+      this.disposeProfile(profile);
     }
-    this._profiles = [];
-    this._nextProfileUid = 1;
+    this.profiles = [];
+    this.nextProfileUidInternal = 1;
   }
 
-  _disposeProfile(profile: ProfileHeader): void {
+  disposeProfile(profile: ProfileHeader): void {
     this.dispatchEventToListeners(ProfileEvents.RemoveProfileHeader, profile);
     profile.dispose();
-    if (this._profileBeingRecorded === profile) {
+    if (this.profileBeingRecordedInternal === profile) {
       this.profileBeingRecordedRemoved();
       this.setProfileBeingRecorded(null);
     }

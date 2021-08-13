@@ -2,56 +2,54 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 export class HeapTimelineOverview extends UI.Widget.VBox {
-  _overviewCalculator: OverviewCalculator;
-  _overviewContainer: HTMLElement;
-  _overviewGrid: PerfUI.OverviewGrid.OverviewGrid;
-  _overviewCanvas: HTMLCanvasElement;
-  _windowLeft: number;
-  _windowRight: number;
-  _yScale: SmoothScale;
-  _xScale: SmoothScale;
-  _profileSamples: Samples;
-  _running?: boolean;
-  _updateOverviewCanvas?: boolean;
-  _updateGridTimerId?: number;
-  _updateTimerId?: number|null;
-  _windowWidth?: number;
+  readonly overviewCalculator: OverviewCalculator;
+  overviewContainer: HTMLElement;
+  overviewGrid: PerfUI.OverviewGrid.OverviewGrid;
+  overviewCanvas: HTMLCanvasElement;
+  windowLeft: number;
+  windowRight: number;
+  readonly yScale: SmoothScale;
+  readonly xScale: SmoothScale;
+  profileSamples: Samples;
+  running?: boolean;
+  updateOverviewCanvas?: boolean;
+  updateGridTimerId?: number;
+  updateTimerId?: number|null;
+  windowWidth?: number;
   constructor() {
     super();
     this.element.id = 'heap-recording-view';
     this.element.classList.add('heap-tracking-overview');
 
-    this._overviewCalculator = new OverviewCalculator();
-    this._overviewContainer = this.element.createChild('div', 'heap-overview-container');
-    this._overviewGrid = new PerfUI.OverviewGrid.OverviewGrid('heap-recording', this._overviewCalculator);
-    this._overviewGrid.element.classList.add('fill');
-    this._overviewCanvas =
-        (this._overviewContainer.createChild('canvas', 'heap-recording-overview-canvas') as HTMLCanvasElement);
-    this._overviewContainer.appendChild(this._overviewGrid.element);
-    this._overviewGrid.addEventListener(PerfUI.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
+    this.overviewCalculator = new OverviewCalculator();
+    this.overviewContainer = this.element.createChild('div', 'heap-overview-container');
+    this.overviewGrid = new PerfUI.OverviewGrid.OverviewGrid('heap-recording', this.overviewCalculator);
+    this.overviewGrid.element.classList.add('fill');
+    this.overviewCanvas =
+        (this.overviewContainer.createChild('canvas', 'heap-recording-overview-canvas') as HTMLCanvasElement);
+    this.overviewContainer.appendChild(this.overviewGrid.element);
+    this.overviewGrid.addEventListener(PerfUI.OverviewGrid.Events.WindowChanged, this.onWindowChanged, this);
 
-    this._windowLeft = 0.0;
-    this._windowRight = 1.0;
-    this._overviewGrid.setWindow(this._windowLeft, this._windowRight);
-    this._yScale = new SmoothScale();
-    this._xScale = new SmoothScale();
+    this.windowLeft = 0.0;
+    this.windowRight = 1.0;
+    this.overviewGrid.setWindow(this.windowLeft, this.windowRight);
+    this.yScale = new SmoothScale();
+    this.xScale = new SmoothScale();
 
-    this._profileSamples = new Samples();
+    this.profileSamples = new Samples();
   }
 
   start(): void {
-    this._running = true;
+    this.running = true;
     const drawFrame = (): void => {
       this.update();
-      if (this._running) {
+      if (this.running) {
         this.element.window().requestAnimationFrame(drawFrame);
       }
     };
@@ -59,27 +57,27 @@ export class HeapTimelineOverview extends UI.Widget.VBox {
   }
 
   stop(): void {
-    this._running = false;
+    this.running = false;
   }
 
   setSamples(samples: Samples): void {
-    this._profileSamples = samples;
-    if (!this._running) {
+    this.profileSamples = samples;
+    if (!this.running) {
       this.update();
     }
   }
 
-  _drawOverviewCanvas(width: number, height: number): void {
-    if (!this._profileSamples) {
+  drawOverviewCanvas(width: number, height: number): void {
+    if (!this.profileSamples) {
       return;
     }
-    const profileSamples = this._profileSamples;
+    const profileSamples = this.profileSamples;
     const sizes = profileSamples.sizes;
     const topSizes = profileSamples.max;
     const timestamps = profileSamples.timestamps;
     const startTime = timestamps[0];
 
-    const scaleFactor = this._xScale.nextScale(width / profileSamples.totalTime);
+    const scaleFactor = this.xScale.nextScale(width / profileSamples.totalTime);
     let maxSize = 0;
     function aggregateAndCall(sizes: number[], callback: (arg0: number, arg1: number) => void): void {
       let size = 0;
@@ -104,21 +102,21 @@ export class HeapTimelineOverview extends UI.Widget.VBox {
 
     aggregateAndCall(sizes, maxSizeCallback);
 
-    const yScaleFactor = this._yScale.nextScale(maxSize ? height / (maxSize * 1.1) : 0.0);
+    const yScaleFactor = this.yScale.nextScale(maxSize ? height / (maxSize * 1.1) : 0.0);
 
-    this._overviewCanvas.width = width * window.devicePixelRatio;
-    this._overviewCanvas.height = height * window.devicePixelRatio;
-    this._overviewCanvas.style.width = width + 'px';
-    this._overviewCanvas.style.height = height + 'px';
+    this.overviewCanvas.width = width * window.devicePixelRatio;
+    this.overviewCanvas.height = height * window.devicePixelRatio;
+    this.overviewCanvas.style.width = width + 'px';
+    this.overviewCanvas.style.height = height + 'px';
 
-    const maybeContext = this._overviewCanvas.getContext('2d');
+    const maybeContext = this.overviewCanvas.getContext('2d');
     if (!maybeContext) {
       throw new Error('Failed to get canvas context');
     }
     const context = maybeContext;
     context.scale(window.devicePixelRatio, window.devicePixelRatio);
 
-    if (this._running) {
+    if (this.running) {
       context.beginPath();
       context.lineWidth = 2;
       context.strokeStyle = 'rgba(192, 192, 192, 0.6)';
@@ -190,53 +188,53 @@ export class HeapTimelineOverview extends UI.Widget.VBox {
   }
 
   onResize(): void {
-    this._updateOverviewCanvas = true;
-    this._scheduleUpdate();
+    this.updateOverviewCanvas = true;
+    this.scheduleUpdate();
   }
 
-  _onWindowChanged(): void {
-    if (!this._updateGridTimerId) {
-      this._updateGridTimerId = setTimeout(this.updateGrid.bind(this), 10);
+  onWindowChanged(): void {
+    if (!this.updateGridTimerId) {
+      this.updateGridTimerId = setTimeout(this.updateGrid.bind(this), 10);
     }
   }
 
-  _scheduleUpdate(): void {
-    if (this._updateTimerId) {
+  scheduleUpdate(): void {
+    if (this.updateTimerId) {
       return;
     }
-    this._updateTimerId = setTimeout(this.update.bind(this), 10);
+    this.updateTimerId = setTimeout(this.update.bind(this), 10);
   }
 
-  _updateBoundaries(): void {
-    this._windowLeft = this._overviewGrid.windowLeft();
-    this._windowRight = this._overviewGrid.windowRight();
-    this._windowWidth = this._windowRight - this._windowLeft;
+  updateBoundaries(): void {
+    this.windowLeft = this.overviewGrid.windowLeft();
+    this.windowRight = this.overviewGrid.windowRight();
+    this.windowWidth = this.windowRight - this.windowLeft;
   }
 
   update(): void {
-    this._updateTimerId = null;
+    this.updateTimerId = null;
     if (!this.isShowing()) {
       return;
     }
-    this._updateBoundaries();
-    this._overviewCalculator._updateBoundaries(this);
-    this._overviewGrid.updateDividers(this._overviewCalculator);
-    this._drawOverviewCanvas(this._overviewContainer.clientWidth, this._overviewContainer.clientHeight - 20);
+    this.updateBoundaries();
+    this.overviewCalculator.updateBoundaries(this);
+    this.overviewGrid.updateDividers(this.overviewCalculator);
+    this.drawOverviewCanvas(this.overviewContainer.clientWidth, this.overviewContainer.clientHeight - 20);
   }
 
   updateGrid(): void {
-    this._updateGridTimerId = 0;
-    this._updateBoundaries();
-    const ids = this._profileSamples.ids;
+    this.updateGridTimerId = 0;
+    this.updateBoundaries();
+    const ids = this.profileSamples.ids;
     if (!ids.length) {
       return;
     }
-    const timestamps = this._profileSamples.timestamps;
-    const sizes = this._profileSamples.sizes;
+    const timestamps = this.profileSamples.timestamps;
+    const sizes = this.profileSamples.sizes;
     const startTime = timestamps[0];
-    const totalTime = this._profileSamples.totalTime;
-    const timeLeft = startTime + totalTime * this._windowLeft;
-    const timeRight = startTime + totalTime * this._windowRight;
+    const totalTime = this.profileSamples.totalTime;
+    const timeLeft = startTime + totalTime * this.windowLeft;
+    const timeRight = startTime + totalTime * this.windowRight;
     const minIndex =
         Platform.ArrayUtilities.lowerBound(timestamps, timeLeft, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
     const maxIndex =
@@ -255,27 +253,27 @@ export class HeapTimelineOverview extends UI.Widget.VBox {
 export const IdsRangeChanged = Symbol('IdsRangeChanged');
 
 export class SmoothScale {
-  _lastUpdate: number;
-  _currentScale: number;
+  lastUpdate: number;
+  currentScale: number;
   constructor() {
-    this._lastUpdate = 0;
-    this._currentScale = 0.0;
+    this.lastUpdate = 0;
+    this.currentScale = 0.0;
   }
 
   nextScale(target: number): number {
-    target = target || this._currentScale;
-    if (this._currentScale) {
+    target = target || this.currentScale;
+    if (this.currentScale) {
       const now = Date.now();
-      const timeDeltaMs = now - this._lastUpdate;
-      this._lastUpdate = now;
+      const timeDeltaMs = now - this.lastUpdate;
+      this.lastUpdate = now;
       const maxChangePerSec = 20;
       const maxChangePerDelta = Math.pow(maxChangePerSec, timeDeltaMs / 1000);
-      const scaleChange = target / this._currentScale;
-      this._currentScale *= Platform.NumberUtilities.clamp(scaleChange, 1 / maxChangePerDelta, maxChangePerDelta);
+      const scaleChange = target / this.currentScale;
+      this.currentScale *= Platform.NumberUtilities.clamp(scaleChange, 1 / maxChangePerDelta, maxChangePerDelta);
     } else {
-      this._currentScale = target;
+      this.currentScale = target;
     }
-    return this._currentScale;
+    return this.currentScale;
   }
 }
 
@@ -295,23 +293,23 @@ export class Samples {
 }
 
 export class OverviewCalculator implements PerfUI.TimelineGrid.Calculator {
-  _maximumBoundaries: number;
-  _minimumBoundaries: number;
-  _xScaleFactor: number;
+  maximumBoundaries: number;
+  minimumBoundaries: number;
+  xScaleFactor: number;
   constructor() {
-    this._maximumBoundaries = 0;
-    this._minimumBoundaries = 0;
-    this._xScaleFactor = 0;
+    this.maximumBoundaries = 0;
+    this.minimumBoundaries = 0;
+    this.xScaleFactor = 0;
   }
 
-  _updateBoundaries(chart: HeapTimelineOverview): void {
-    this._minimumBoundaries = 0;
-    this._maximumBoundaries = chart._profileSamples.totalTime;
-    this._xScaleFactor = chart._overviewContainer.clientWidth / this._maximumBoundaries;
+  updateBoundaries(chart: HeapTimelineOverview): void {
+    this.minimumBoundaries = 0;
+    this.maximumBoundaries = chart.profileSamples.totalTime;
+    this.xScaleFactor = chart.overviewContainer.clientWidth / this.maximumBoundaries;
   }
 
   computePosition(time: number): number {
-    return (time - this._minimumBoundaries) * this._xScaleFactor;
+    return (time - this.minimumBoundaries) * this.xScaleFactor;
   }
 
   formatValue(value: number, precision?: number): string {
@@ -319,18 +317,18 @@ export class OverviewCalculator implements PerfUI.TimelineGrid.Calculator {
   }
 
   maximumBoundary(): number {
-    return this._maximumBoundaries;
+    return this.maximumBoundaries;
   }
 
   minimumBoundary(): number {
-    return this._minimumBoundaries;
+    return this.minimumBoundaries;
   }
 
   zeroTime(): number {
-    return this._minimumBoundaries;
+    return this.minimumBoundaries;
   }
 
   boundarySpan(): number {
-    return this._maximumBoundaries - this._minimumBoundaries;
+    return this.maximumBoundaries - this.minimumBoundaries;
   }
 }

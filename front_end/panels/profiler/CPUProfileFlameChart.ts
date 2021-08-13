@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -40,17 +38,17 @@ import * as i18n from '../../core/i18n/i18n.js';
 let colorGeneratorInstance: Common.Color.Generator|null = null;
 
 export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameChartDataProvider {
-  _colorGenerator: Common.Color.Generator;
-  _maxStackDepth: number;
+  readonly colorGeneratorInternal: Common.Color.Generator;
+  maxStackDepthInternal: number;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   timelineData_: PerfUI.FlameChart.TimelineData|null;
   entryNodes: SDK.ProfileTreeModel.ProfileNode[];
-  _font?: string;
-  _boldFont?: string;
+  font?: string;
+  boldFont?: string;
 
   constructor() {
-    this._colorGenerator = ProfileFlameChartDataProvider.colorGenerator();
-    this._maxStackDepth = 0;
+    this.colorGeneratorInternal = ProfileFlameChartDataProvider.colorGenerator();
+    this.maxStackDepthInternal = 0;
     this.timelineData_ = null;
     this.entryNodes = [];
   }
@@ -80,14 +78,14 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
   }
 
   maxStackDepth(): number {
-    return this._maxStackDepth;
+    return this.maxStackDepthInternal;
   }
 
   timelineData(): PerfUI.FlameChart.TimelineData|null {
-    return this.timelineData_ || this._calculateTimelineData();
+    return this.timelineData_ || this.calculateTimelineData();
   }
 
-  _calculateTimelineData(): PerfUI.FlameChart.TimelineData {
+  calculateTimelineData(): PerfUI.FlameChart.TimelineData {
     throw 'Not implemented.';
   }
 
@@ -105,11 +103,11 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
   }
 
   entryFont(entryIndex: number): string|null {
-    if (!this._font) {
-      this._font = '11px ' + Host.Platform.fontFamily();
-      this._boldFont = 'bold ' + this._font;
+    if (!this.font) {
+      this.font = '11px ' + Host.Platform.fontFamily();
+      this.boldFont = 'bold ' + this.font;
     }
-    return this.entryHasDeoptReason(entryIndex) ? this._boldFont as string : this._font;
+    return this.entryHasDeoptReason(entryIndex) ? this.boldFont as string : this.font;
   }
 
   entryHasDeoptReason(_entryIndex: number): boolean {
@@ -120,7 +118,8 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
     const node = this.entryNodes[entryIndex];
     // For idle and program, we want different 'shades of gray', so we fallback to functionName as scriptId = 0
     // For rest of nodes e.g eval scripts, if url is empty then scriptId will be guaranteed to be non-zero
-    return this._colorGenerator.colorForID(node.url || (node.scriptId !== '0' ? node.scriptId : node.functionName));
+    return this.colorGeneratorInternal.colorForID(
+        node.url || (node.scriptId !== '0' ? node.scriptId : node.functionName));
   }
 
   decorateEntry(
@@ -147,117 +146,116 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
 }
 
 export class CPUProfileFlameChart extends UI.Widget.VBox implements UI.SearchableView.Searchable {
-  _searchableView: UI.SearchableView.SearchableView;
-  _overviewPane: OverviewPane;
-  _mainPane: PerfUI.FlameChart.FlameChart;
-  _entrySelected: boolean;
-  _dataProvider: ProfileFlameChartDataProvider;
-  _searchResults: number[];
-  _searchResultIndex: number = -1;
+  readonly searchableView: UI.SearchableView.SearchableView;
+  readonly overviewPane: OverviewPane;
+  readonly mainPane: PerfUI.FlameChart.FlameChart;
+  entrySelected: boolean;
+  readonly dataProvider: ProfileFlameChartDataProvider;
+  searchResults: number[];
+  searchResultIndex: number = -1;
 
   constructor(searchableView: UI.SearchableView.SearchableView, dataProvider: ProfileFlameChartDataProvider) {
     super();
     this.element.id = 'cpu-flame-chart';
 
-    this._searchableView = searchableView;
-    this._overviewPane = new OverviewPane(dataProvider);
-    this._overviewPane.show(this.element);
+    this.searchableView = searchableView;
+    this.overviewPane = new OverviewPane(dataProvider);
+    this.overviewPane.show(this.element);
 
-    this._mainPane = new PerfUI.FlameChart.FlameChart(dataProvider, this._overviewPane);
-    this._mainPane.setBarHeight(15);
-    this._mainPane.setTextBaseline(4);
-    this._mainPane.setTextPadding(2);
-    this._mainPane.show(this.element);
-    this._mainPane.addEventListener(PerfUI.FlameChart.Events.EntrySelected, this._onEntrySelected, this);
-    this._mainPane.addEventListener(PerfUI.FlameChart.Events.EntryInvoked, this._onEntryInvoked, this);
-    this._entrySelected = false;
-    this._mainPane.addEventListener(PerfUI.FlameChart.Events.CanvasFocused, this._onEntrySelected, this);
-    this._overviewPane.addEventListener(PerfUI.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
-    this._dataProvider = dataProvider;
-    this._searchResults = [];
+    this.mainPane = new PerfUI.FlameChart.FlameChart(dataProvider, this.overviewPane);
+    this.mainPane.setBarHeight(15);
+    this.mainPane.setTextBaseline(4);
+    this.mainPane.setTextPadding(2);
+    this.mainPane.show(this.element);
+    this.mainPane.addEventListener(PerfUI.FlameChart.Events.EntrySelected, this.onEntrySelected, this);
+    this.mainPane.addEventListener(PerfUI.FlameChart.Events.EntryInvoked, this.onEntryInvoked, this);
+    this.entrySelected = false;
+    this.mainPane.addEventListener(PerfUI.FlameChart.Events.CanvasFocused, this.onEntrySelected, this);
+    this.overviewPane.addEventListener(PerfUI.OverviewGrid.Events.WindowChanged, this.onWindowChanged, this);
+    this.dataProvider = dataProvider;
+    this.searchResults = [];
   }
 
   focus(): void {
-    this._mainPane.focus();
+    this.mainPane.focus();
   }
 
-  _onWindowChanged(event: Common.EventTarget.EventTargetEvent): void {
+  onWindowChanged(event: Common.EventTarget.EventTargetEvent): void {
     const windowLeft = event.data.windowTimeLeft;
     const windowRight = event.data.windowTimeRight;
-    this._mainPane.setWindowTimes(windowLeft, windowRight, /* animate */ true);
+    this.mainPane.setWindowTimes(windowLeft, windowRight, /* animate */ true);
   }
 
   selectRange(timeLeft: number, timeRight: number): void {
-    this._overviewPane._selectRange(timeLeft, timeRight);
+    this.overviewPane.selectRange(timeLeft, timeRight);
   }
 
-  _onEntrySelected(event: Common.EventTarget.EventTargetEvent): void {
+  onEntrySelected(event: Common.EventTarget.EventTargetEvent): void {
     if (event.data) {
       const eventIndex = Number(event.data);
-      this._mainPane.setSelectedEntry(eventIndex);
+      this.mainPane.setSelectedEntry(eventIndex);
       if (eventIndex === -1) {
-        this._entrySelected = false;
+        this.entrySelected = false;
       } else {
-        this._entrySelected = true;
+        this.entrySelected = true;
       }
-    } else if (!this._entrySelected) {
-      this._mainPane.setSelectedEntry(0);
-      this._entrySelected = true;
+    } else if (!this.entrySelected) {
+      this.mainPane.setSelectedEntry(0);
+      this.entrySelected = true;
     }
   }
 
-  _onEntryInvoked(event: Common.EventTarget.EventTargetEvent): void {
-    this._onEntrySelected(event);
+  onEntryInvoked(event: Common.EventTarget.EventTargetEvent): void {
+    this.onEntrySelected(event);
     this.dispatchEventToListeners(PerfUI.FlameChart.Events.EntryInvoked, event.data);
   }
 
   update(): void {
-    this._overviewPane.update();
-    this._mainPane.update();
+    this.overviewPane.update();
+    this.mainPane.update();
   }
 
   performSearch(searchConfig: UI.SearchableView.SearchConfig, _shouldJump: boolean, jumpBackwards?: boolean): void {
     const matcher = createPlainTextSearchRegex(searchConfig.query, searchConfig.caseSensitive ? '' : 'i');
 
-    const selectedEntryIndex: number =
-        this._searchResultIndex !== -1 ? this._searchResults[this._searchResultIndex] : -1;
-    this._searchResults = [];
-    const entriesCount = this._dataProvider.entryNodesLength();
+    const selectedEntryIndex: number = this.searchResultIndex !== -1 ? this.searchResults[this.searchResultIndex] : -1;
+    this.searchResults = [];
+    const entriesCount = this.dataProvider.entryNodesLength();
     for (let index = 0; index < entriesCount; ++index) {
-      if (this._dataProvider.entryTitle(index).match(matcher)) {
-        this._searchResults.push(index);
+      if (this.dataProvider.entryTitle(index).match(matcher)) {
+        this.searchResults.push(index);
       }
     }
 
-    if (this._searchResults.length) {
-      this._searchResultIndex = this._searchResults.indexOf(selectedEntryIndex);
-      if (this._searchResultIndex === -1) {
-        this._searchResultIndex = jumpBackwards ? this._searchResults.length - 1 : 0;
+    if (this.searchResults.length) {
+      this.searchResultIndex = this.searchResults.indexOf(selectedEntryIndex);
+      if (this.searchResultIndex === -1) {
+        this.searchResultIndex = jumpBackwards ? this.searchResults.length - 1 : 0;
       }
-      this._mainPane.setSelectedEntry(this._searchResults[this._searchResultIndex]);
+      this.mainPane.setSelectedEntry(this.searchResults[this.searchResultIndex]);
     } else {
       this.searchCanceled();
     }
-    this._searchableView.updateSearchMatchesCount(this._searchResults.length);
-    this._searchableView.updateCurrentMatchIndex(this._searchResultIndex);
+    this.searchableView.updateSearchMatchesCount(this.searchResults.length);
+    this.searchableView.updateCurrentMatchIndex(this.searchResultIndex);
   }
 
   searchCanceled(): void {
-    this._mainPane.setSelectedEntry(-1);
-    this._searchResults = [];
-    this._searchResultIndex = -1;
+    this.mainPane.setSelectedEntry(-1);
+    this.searchResults = [];
+    this.searchResultIndex = -1;
   }
 
   jumpToNextSearchResult(): void {
-    this._searchResultIndex = (this._searchResultIndex + 1) % this._searchResults.length;
-    this._mainPane.setSelectedEntry(this._searchResults[this._searchResultIndex]);
-    this._searchableView.updateCurrentMatchIndex(this._searchResultIndex);
+    this.searchResultIndex = (this.searchResultIndex + 1) % this.searchResults.length;
+    this.mainPane.setSelectedEntry(this.searchResults[this.searchResultIndex]);
+    this.searchableView.updateCurrentMatchIndex(this.searchResultIndex);
   }
 
   jumpToPreviousSearchResult(): void {
-    this._searchResultIndex = (this._searchResultIndex - 1 + this._searchResults.length) % this._searchResults.length;
-    this._mainPane.setSelectedEntry(this._searchResults[this._searchResultIndex]);
-    this._searchableView.updateCurrentMatchIndex(this._searchResultIndex);
+    this.searchResultIndex = (this.searchResultIndex - 1 + this.searchResults.length) % this.searchResults.length;
+    this.mainPane.setSelectedEntry(this.searchResults[this.searchResultIndex]);
+    this.searchableView.updateCurrentMatchIndex(this.searchResultIndex);
   }
 
   supportsCaseSensitiveSearch(): boolean {
@@ -270,72 +268,72 @@ export class CPUProfileFlameChart extends UI.Widget.VBox implements UI.Searchabl
 }
 
 export class OverviewCalculator implements PerfUI.TimelineGrid.Calculator {
-  _formatter: (arg0: number, arg1?: number|undefined) => string;
-  _minimumBoundaries!: number;
-  _maximumBoundaries!: number;
-  _xScaleFactor!: number;
+  readonly formatter: (arg0: number, arg1?: number|undefined) => string;
+  minimumBoundaries!: number;
+  maximumBoundaries!: number;
+  xScaleFactor!: number;
   constructor(formatter: (arg0: number, arg1?: number|undefined) => string) {
-    this._formatter = formatter;
+    this.formatter = formatter;
   }
 
-  _updateBoundaries(overviewPane: OverviewPane): void {
-    this._minimumBoundaries = overviewPane._dataProvider.minimumBoundary();
-    const totalTime = overviewPane._dataProvider.totalTime();
-    this._maximumBoundaries = this._minimumBoundaries + totalTime;
-    this._xScaleFactor = overviewPane._overviewContainer.clientWidth / totalTime;
+  updateBoundaries(overviewPane: OverviewPane): void {
+    this.minimumBoundaries = overviewPane.dataProvider.minimumBoundary();
+    const totalTime = overviewPane.dataProvider.totalTime();
+    this.maximumBoundaries = this.minimumBoundaries + totalTime;
+    this.xScaleFactor = overviewPane.overviewContainer.clientWidth / totalTime;
   }
 
   computePosition(time: number): number {
-    return (time - this._minimumBoundaries) * this._xScaleFactor;
+    return (time - this.minimumBoundaries) * this.xScaleFactor;
   }
 
   formatValue(value: number, precision?: number): string {
-    return this._formatter(value - this._minimumBoundaries, precision);
+    return this.formatter(value - this.minimumBoundaries, precision);
   }
 
   maximumBoundary(): number {
-    return this._maximumBoundaries;
+    return this.maximumBoundaries;
   }
 
   minimumBoundary(): number {
-    return this._minimumBoundaries;
+    return this.minimumBoundaries;
   }
 
   zeroTime(): number {
-    return this._minimumBoundaries;
+    return this.minimumBoundaries;
   }
 
   boundarySpan(): number {
-    return this._maximumBoundaries - this._minimumBoundaries;
+    return this.maximumBoundaries - this.minimumBoundaries;
   }
 }
 
 export class OverviewPane extends UI.Widget.VBox implements PerfUI.FlameChart.FlameChartDelegate {
-  _overviewContainer: HTMLElement;
-  _overviewCalculator: OverviewCalculator;
-  _overviewGrid: PerfUI.OverviewGrid.OverviewGrid;
-  _overviewCanvas: HTMLCanvasElement;
-  _dataProvider: PerfUI.FlameChart.FlameChartDataProvider;
-  _windowTimeLeft?: number;
-  _windowTimeRight?: number;
-  _updateTimerId?: number;
+  overviewContainer: HTMLElement;
+  readonly overviewCalculator: OverviewCalculator;
+  readonly overviewGrid: PerfUI.OverviewGrid.OverviewGrid;
+  overviewCanvas: HTMLCanvasElement;
+  dataProvider: PerfUI.FlameChart.FlameChartDataProvider;
+  windowTimeLeft?: number;
+  windowTimeRight?: number;
+  updateTimerId?: number;
 
   constructor(dataProvider: PerfUI.FlameChart.FlameChartDataProvider) {
     super();
     this.element.classList.add('cpu-profile-flame-chart-overview-pane');
-    this._overviewContainer = this.element.createChild('div', 'cpu-profile-flame-chart-overview-container');
-    this._overviewCalculator = new OverviewCalculator(dataProvider.formatValue);
-    this._overviewGrid = new PerfUI.OverviewGrid.OverviewGrid('cpu-profile-flame-chart', this._overviewCalculator);
-    this._overviewGrid.element.classList.add('fill');
-    this._overviewCanvas =
-        (this._overviewContainer.createChild('canvas', 'cpu-profile-flame-chart-overview-canvas') as HTMLCanvasElement);
-    this._overviewContainer.appendChild(this._overviewGrid.element);
-    this._dataProvider = dataProvider;
-    this._overviewGrid.addEventListener(PerfUI.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
+    this.overviewContainer = this.element.createChild('div', 'cpu-profile-flame-chart-overview-container');
+    this.overviewCalculator = new OverviewCalculator(dataProvider.formatValue);
+    this.overviewGrid = new PerfUI.OverviewGrid.OverviewGrid('cpu-profile-flame-chart', this.overviewCalculator);
+    this.overviewGrid.element.classList.add('fill');
+    this.overviewCanvas =
+        (this.overviewContainer.createChild('canvas', 'cpu-profile-flame-chart-overview-canvas') as HTMLCanvasElement);
+    this.overviewContainer.appendChild(this.overviewGrid.element);
+    this.dataProvider = dataProvider;
+    this.overviewGrid.addEventListener(PerfUI.OverviewGrid.Events.WindowChanged, this.onWindowChanged, this);
   }
 
   windowChanged(windowStartTime: number, windowEndTime: number): void {
-    this._selectRange(windowStartTime, windowEndTime);
+    this.selectRange(windowStartTime, windowEndTime);
   }
 
   updateRangeSelection(_startTime: number, _endTime: number): void {
@@ -344,60 +342,60 @@ export class OverviewPane extends UI.Widget.VBox implements PerfUI.FlameChart.Fl
   updateSelectedGroup(_flameChart: PerfUI.FlameChart.FlameChart, _group: PerfUI.FlameChart.Group|null): void {
   }
 
-  _selectRange(timeLeft: number, timeRight: number): void {
-    const startTime = this._dataProvider.minimumBoundary();
-    const totalTime = this._dataProvider.totalTime();
-    this._overviewGrid.setWindow((timeLeft - startTime) / totalTime, (timeRight - startTime) / totalTime);
+  selectRange(timeLeft: number, timeRight: number): void {
+    const startTime = this.dataProvider.minimumBoundary();
+    const totalTime = this.dataProvider.totalTime();
+    this.overviewGrid.setWindow((timeLeft - startTime) / totalTime, (timeRight - startTime) / totalTime);
   }
 
-  _onWindowChanged(event: Common.EventTarget.EventTargetEvent): void {
+  onWindowChanged(event: Common.EventTarget.EventTargetEvent): void {
     const windowPosition = {windowTimeLeft: event.data.rawStartValue, windowTimeRight: event.data.rawEndValue};
-    this._windowTimeLeft = windowPosition.windowTimeLeft;
-    this._windowTimeRight = windowPosition.windowTimeRight;
+    this.windowTimeLeft = windowPosition.windowTimeLeft;
+    this.windowTimeRight = windowPosition.windowTimeRight;
 
     this.dispatchEventToListeners(PerfUI.OverviewGrid.Events.WindowChanged, windowPosition);
   }
 
-  _timelineData(): PerfUI.FlameChart.TimelineData|null {
-    return this._dataProvider.timelineData();
+  timelineData(): PerfUI.FlameChart.TimelineData|null {
+    return this.dataProvider.timelineData();
   }
 
   onResize(): void {
-    this._scheduleUpdate();
+    this.scheduleUpdate();
   }
 
-  _scheduleUpdate(): void {
-    if (this._updateTimerId) {
+  scheduleUpdate(): void {
+    if (this.updateTimerId) {
       return;
     }
-    this._updateTimerId = this.element.window().requestAnimationFrame(this.update.bind(this));
+    this.updateTimerId = this.element.window().requestAnimationFrame(this.update.bind(this));
   }
 
   update(): void {
-    this._updateTimerId = 0;
-    const timelineData = this._timelineData();
+    this.updateTimerId = 0;
+    const timelineData = this.timelineData();
     if (!timelineData) {
       return;
     }
-    this._resetCanvas(
-        this._overviewContainer.clientWidth, this._overviewContainer.clientHeight - PerfUI.FlameChart.HeaderHeight);
-    this._overviewCalculator._updateBoundaries(this);
-    this._overviewGrid.updateDividers(this._overviewCalculator);
-    this._drawOverviewCanvas();
+    this.resetCanvas(
+        this.overviewContainer.clientWidth, this.overviewContainer.clientHeight - PerfUI.FlameChart.HeaderHeight);
+    this.overviewCalculator.updateBoundaries(this);
+    this.overviewGrid.updateDividers(this.overviewCalculator);
+    this.drawOverviewCanvas();
   }
 
-  _drawOverviewCanvas(): void {
-    const canvasWidth = this._overviewCanvas.width;
-    const canvasHeight = this._overviewCanvas.height;
-    const drawData = this._calculateDrawData(canvasWidth);
-    const context = this._overviewCanvas.getContext('2d');
+  drawOverviewCanvas(): void {
+    const canvasWidth = this.overviewCanvas.width;
+    const canvasHeight = this.overviewCanvas.height;
+    const drawData = this.calculateDrawData(canvasWidth);
+    const context = this.overviewCanvas.getContext('2d');
     if (!context) {
       throw new Error('Failed to get canvas context');
     }
     const ratio = window.devicePixelRatio;
     const offsetFromBottom = ratio;
     const lineWidth = 1;
-    const yScaleFactor = canvasHeight / (this._dataProvider.maxStackDepth() * 1.1);
+    const yScaleFactor = canvasHeight / (this.dataProvider.maxStackDepth() * 1.1);
     context.lineWidth = lineWidth;
     context.translate(0.5, 0.5);
     context.strokeStyle = 'rgba(20,0,0,0.4)';
@@ -416,14 +414,14 @@ export class OverviewPane extends UI.Widget.VBox implements PerfUI.FlameChart.Fl
     context.closePath();
   }
 
-  _calculateDrawData(width: number): Uint8Array {
-    const dataProvider = this._dataProvider;
-    const timelineData = (this._timelineData() as PerfUI.FlameChart.TimelineData);
+  calculateDrawData(width: number): Uint8Array {
+    const dataProvider = this.dataProvider;
+    const timelineData = (this.timelineData() as PerfUI.FlameChart.TimelineData);
     const entryStartTimes = timelineData.entryStartTimes;
     const entryTotalTimes = timelineData.entryTotalTimes;
     const entryLevels = timelineData.entryLevels;
     const length = entryStartTimes.length;
-    const minimumBoundary = this._dataProvider.minimumBoundary();
+    const minimumBoundary = this.dataProvider.minimumBoundary();
 
     const drawData = new Uint8Array(width);
     const scaleFactor = width / dataProvider.totalTime();
@@ -439,11 +437,11 @@ export class OverviewPane extends UI.Widget.VBox implements PerfUI.FlameChart.Fl
     return drawData;
   }
 
-  _resetCanvas(width: number, height: number): void {
+  resetCanvas(width: number, height: number): void {
     const ratio = window.devicePixelRatio;
-    this._overviewCanvas.width = width * ratio;
-    this._overviewCanvas.height = height * ratio;
-    this._overviewCanvas.style.width = width + 'px';
-    this._overviewCanvas.style.height = height + 'px';
+    this.overviewCanvas.width = width * ratio;
+    this.overviewCanvas.height = height * ratio;
+    this.overviewCanvas.style.width = width + 'px';
+    this.overviewCanvas.style.height = height + 'px';
   }
 }

@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -63,13 +61,13 @@ const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedDirectivesView.t
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class AffectedDirectivesView extends AffectedResourcesView {
-  _issue: AggregatedIssue;
+  private readonly issue: AggregatedIssue;
   constructor(parent: IssueView, issue: AggregatedIssue) {
     super(parent);
-    this._issue = issue;
+    this.issue = issue;
   }
 
-  _appendStatus(element: Element, isReportOnly: boolean): void {
+  private appendStatus(element: Element, isReportOnly: boolean): void {
     const status = document.createElement('td');
     if (isReportOnly) {
       status.classList.add('affected-resource-report-only-status');
@@ -85,20 +83,20 @@ export class AffectedDirectivesView extends AffectedResourcesView {
     return i18nString(UIStrings.nDirectives, {n: count});
   }
 
-  _appendViolatedDirective(element: Element, directive: string): void {
+  private appendViolatedDirective(element: Element, directive: string): void {
     const violatedDirective = document.createElement('td');
     violatedDirective.textContent = directive;
     element.appendChild(violatedDirective);
   }
 
-  _appendBlockedURL(element: Element, url: string): void {
+  private appendBlockedURL(element: Element, url: string): void {
     const info = document.createElement('td');
     info.classList.add('affected-resource-directive-info');
     info.textContent = url;
     element.appendChild(info);
   }
 
-  _appendBlockedElement(
+  private appendBlockedElement(
       element: Element, nodeId: Protocol.DOM.BackendNodeId|undefined, model: SDK.IssuesModel.IssuesModel): void {
     const elementsPanelLinkComponent = new ElementsComponents.ElementsPanelLink.ElementsPanelLink();
     if (nodeId) {
@@ -108,7 +106,7 @@ export class AffectedDirectivesView extends AffectedResourcesView {
       const onElementRevealIconClick: (arg0?: Event|undefined) => void = (): void => {
         const target = model.getTargetIfNotDisposed();
         if (target) {
-          Host.userMetrics.issuesPanelResourceOpened(this._issue.getCategory(), AffectedItem.Element);
+          Host.userMetrics.issuesPanelResourceOpened(this.issue.getCategory(), AffectedItem.Element);
           const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(target, violatingNodeId);
           Common.Revealer.reveal(deferredDOMNode);
         }
@@ -138,27 +136,27 @@ export class AffectedDirectivesView extends AffectedResourcesView {
     element.appendChild(violatingNode);
   }
 
-  _appendAffectedContentSecurityPolicyDetails(
+  private appendAffectedContentSecurityPolicyDetails(
       cspIssues: Iterable<IssuesManager.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue>): void {
     const header = document.createElement('tr');
-    if (this._issue.code() === IssuesManager.ContentSecurityPolicyIssue.inlineViolationCode) {
+    if (this.issue.code() === IssuesManager.ContentSecurityPolicyIssue.inlineViolationCode) {
       this.appendColumnTitle(header, i18nString(UIStrings.directiveC));
       this.appendColumnTitle(header, i18nString(UIStrings.element));
       this.appendColumnTitle(header, i18nString(UIStrings.sourceLocation));
       this.appendColumnTitle(header, i18nString(UIStrings.status));
-    } else if (this._issue.code() === IssuesManager.ContentSecurityPolicyIssue.urlViolationCode) {
+    } else if (this.issue.code() === IssuesManager.ContentSecurityPolicyIssue.urlViolationCode) {
       this.appendColumnTitle(header, i18nString(UIStrings.resourceC), 'affected-resource-directive-info-header');
       this.appendColumnTitle(header, i18nString(UIStrings.status));
       this.appendColumnTitle(header, i18nString(UIStrings.directiveC));
       this.appendColumnTitle(header, i18nString(UIStrings.sourceLocation));
-    } else if (this._issue.code() === IssuesManager.ContentSecurityPolicyIssue.evalViolationCode) {
+    } else if (this.issue.code() === IssuesManager.ContentSecurityPolicyIssue.evalViolationCode) {
       this.appendColumnTitle(header, i18nString(UIStrings.sourceLocation));
       this.appendColumnTitle(header, i18nString(UIStrings.directiveC));
       this.appendColumnTitle(header, i18nString(UIStrings.status));
-    } else if (this._issue.code() === IssuesManager.ContentSecurityPolicyIssue.trustedTypesSinkViolationCode) {
+    } else if (this.issue.code() === IssuesManager.ContentSecurityPolicyIssue.trustedTypesSinkViolationCode) {
       this.appendColumnTitle(header, i18nString(UIStrings.sourceLocation));
       this.appendColumnTitle(header, i18nString(UIStrings.status));
-    } else if (this._issue.code() === IssuesManager.ContentSecurityPolicyIssue.trustedTypesPolicyViolationCode) {
+    } else if (this.issue.code() === IssuesManager.ContentSecurityPolicyIssue.trustedTypesPolicyViolationCode) {
       this.appendColumnTitle(header, i18nString(UIStrings.sourceLocation));
       this.appendColumnTitle(header, i18nString(UIStrings.directiveC));
       this.appendColumnTitle(header, i18nString(UIStrings.status));
@@ -170,12 +168,12 @@ export class AffectedDirectivesView extends AffectedResourcesView {
     let count = 0;
     for (const cspIssue of cspIssues) {
       count++;
-      this._appendAffectedContentSecurityPolicyDetail(cspIssue);
+      this.appendAffectedContentSecurityPolicyDetail(cspIssue);
     }
     this.updateAffectedResourceCount(count);
   }
 
-  _appendAffectedContentSecurityPolicyDetail(
+  private appendAffectedContentSecurityPolicyDetail(
       cspIssue: IssuesManager.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue): void {
     const element = document.createElement('tr');
     element.classList.add('affected-resource-directive');
@@ -184,28 +182,28 @@ export class AffectedDirectivesView extends AffectedResourcesView {
     const location = IssuesManager.Issue.toZeroBasedLocation(cspIssueDetails.sourceCodeLocation);
     const model = cspIssue.model();
     const maybeTarget = cspIssue.model()?.getTargetIfNotDisposed();
-    if (this._issue.code() === IssuesManager.ContentSecurityPolicyIssue.inlineViolationCode && model) {
-      this._appendViolatedDirective(element, cspIssueDetails.violatedDirective);
-      this._appendBlockedElement(element, cspIssueDetails.violatingNodeId, model);
+    if (this.issue.code() === IssuesManager.ContentSecurityPolicyIssue.inlineViolationCode && model) {
+      this.appendViolatedDirective(element, cspIssueDetails.violatedDirective);
+      this.appendBlockedElement(element, cspIssueDetails.violatingNodeId, model);
       this.appendSourceLocation(element, location, maybeTarget);
-      this._appendStatus(element, cspIssueDetails.isReportOnly);
-    } else if (this._issue.code() === IssuesManager.ContentSecurityPolicyIssue.urlViolationCode) {
+      this.appendStatus(element, cspIssueDetails.isReportOnly);
+    } else if (this.issue.code() === IssuesManager.ContentSecurityPolicyIssue.urlViolationCode) {
       const url = cspIssueDetails.blockedURL ? cspIssueDetails.blockedURL : '';
-      this._appendBlockedURL(element, url);
-      this._appendStatus(element, cspIssueDetails.isReportOnly);
-      this._appendViolatedDirective(element, cspIssueDetails.violatedDirective);
+      this.appendBlockedURL(element, url);
+      this.appendStatus(element, cspIssueDetails.isReportOnly);
+      this.appendViolatedDirective(element, cspIssueDetails.violatedDirective);
       this.appendSourceLocation(element, location, maybeTarget);
-    } else if (this._issue.code() === IssuesManager.ContentSecurityPolicyIssue.evalViolationCode) {
+    } else if (this.issue.code() === IssuesManager.ContentSecurityPolicyIssue.evalViolationCode) {
       this.appendSourceLocation(element, location, maybeTarget);
-      this._appendViolatedDirective(element, cspIssueDetails.violatedDirective);
-      this._appendStatus(element, cspIssueDetails.isReportOnly);
-    } else if (this._issue.code() === IssuesManager.ContentSecurityPolicyIssue.trustedTypesSinkViolationCode) {
+      this.appendViolatedDirective(element, cspIssueDetails.violatedDirective);
+      this.appendStatus(element, cspIssueDetails.isReportOnly);
+    } else if (this.issue.code() === IssuesManager.ContentSecurityPolicyIssue.trustedTypesSinkViolationCode) {
       this.appendSourceLocation(element, location, maybeTarget);
-      this._appendStatus(element, cspIssueDetails.isReportOnly);
-    } else if (this._issue.code() === IssuesManager.ContentSecurityPolicyIssue.trustedTypesPolicyViolationCode) {
+      this.appendStatus(element, cspIssueDetails.isReportOnly);
+    } else if (this.issue.code() === IssuesManager.ContentSecurityPolicyIssue.trustedTypesPolicyViolationCode) {
       this.appendSourceLocation(element, location, maybeTarget);
-      this._appendViolatedDirective(element, cspIssueDetails.violatedDirective);
-      this._appendStatus(element, cspIssueDetails.isReportOnly);
+      this.appendViolatedDirective(element, cspIssueDetails.violatedDirective);
+      this.appendStatus(element, cspIssueDetails.isReportOnly);
     } else {
       return;
     }
@@ -215,6 +213,6 @@ export class AffectedDirectivesView extends AffectedResourcesView {
 
   update(): void {
     this.clear();
-    this._appendAffectedContentSecurityPolicyDetails(this._issue.getCspIssues());
+    this.appendAffectedContentSecurityPolicyDetails(this.issue.getCspIssues());
   }
 }

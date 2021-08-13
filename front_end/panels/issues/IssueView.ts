@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -81,18 +79,18 @@ const str_ = i18n.i18n.registerUIStrings('panels/issues/IssueView.ts', UIStrings
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 class AffectedRequestsView extends AffectedResourcesView {
-  _issue: IssuesManager.Issue.Issue;
+  private readonly issue: IssuesManager.Issue.Issue;
   constructor(parent: IssueView, issue: IssuesManager.Issue.Issue) {
     super(parent);
-    this._issue = issue;
+    this.issue = issue;
   }
 
-  _appendAffectedRequests(affectedRequests: Iterable<Protocol.Audits.AffectedRequest>): void {
+  private appendAffectedRequests(affectedRequests: Iterable<Protocol.Audits.AffectedRequest>): void {
     let count = 0;
     for (const affectedRequest of affectedRequests) {
       const element = document.createElement('tr');
       element.classList.add('affected-resource-request');
-      const category = this._issue.getCategory();
+      const category = this.issue.getCategory();
       const tab = issueTypeToNetworkHeaderMap.get(category) || NetworkForward.UIRequestLocation.UIRequestTabs.Headers;
       element.appendChild(this.createRequestCell(affectedRequest, {
         networkTab: tab,
@@ -113,18 +111,18 @@ class AffectedRequestsView extends AffectedResourcesView {
   update(): void {
     this.clear();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    for (const unused of this._issue.getBlockedByResponseDetails()) {
+    for (const unused of this.issue.getBlockedByResponseDetails()) {
       // If the issue has blockedByResponseDetails, the corresponding AffectedBlockedByResponseView
       // will take care of displaying the request.
       this.updateAffectedResourceCount(0);
       return;
     }
-    if (this._issue.getCategory() === IssuesManager.Issue.IssueCategory.MixedContent) {
+    if (this.issue.getCategory() === IssuesManager.Issue.IssueCategory.MixedContent) {
       // The AffectedMixedContentView takes care of displaying the resources.
       this.updateAffectedResourceCount(0);
       return;
     }
-    this._appendAffectedRequests(this._issue.requests());
+    this.appendAffectedRequests(this.issue.requests());
   }
 }
 
@@ -145,14 +143,14 @@ const issueTypeToNetworkHeaderMap =
     ]);
 
 class AffectedMixedContentView extends AffectedResourcesView {
-  _issue: AggregatedIssue;
+  private readonly issue: AggregatedIssue;
   constructor(parent: IssueView, issue: AggregatedIssue) {
     super(parent);
-    this._issue = issue;
+    this.issue = issue;
   }
 
-  _appendAffectedMixedContentDetails(mixedContentIssues: Iterable<IssuesManager.MixedContentIssue.MixedContentIssue>):
-      void {
+  private appendAffectedMixedContentDetails(mixedContentIssues:
+                                                Iterable<IssuesManager.MixedContentIssue.MixedContentIssue>): void {
     const header = document.createElement('tr');
     this.appendColumnTitle(header, i18nString(UIStrings.name));
     this.appendColumnTitle(header, i18nString(UIStrings.restrictionStatus));
@@ -177,7 +175,7 @@ class AffectedMixedContentView extends AffectedResourcesView {
     element.classList.add('affected-resource-mixed-content');
 
     if (mixedContent.request) {
-      const networkTab = issueTypeToNetworkHeaderMap.get(this._issue.getCategory()) ||
+      const networkTab = issueTypeToNetworkHeaderMap.get(this.issue.getCategory()) ||
           NetworkForward.UIRequestLocation.UIRequestTabs.Headers;
       element.appendChild(this.createRequestCell(mixedContent.request, {
         networkTab,
@@ -212,19 +210,19 @@ class AffectedMixedContentView extends AffectedResourcesView {
 
   update(): void {
     this.clear();
-    this._appendAffectedMixedContentDetails(this._issue.getMixedContentIssues());
+    this.appendAffectedMixedContentDetails(this.issue.getMixedContentIssues());
   }
 }
 
 export class IssueView extends UI.TreeOutline.TreeElement {
-  _issue: AggregatedIssue;
-  _description: IssuesManager.MarkdownIssueDescription.IssueDescription;
+  private issue: AggregatedIssue;
+  private description: IssuesManager.MarkdownIssueDescription.IssueDescription;
   toggleOnClick: boolean;
   affectedResources: UI.TreeOutline.TreeElement;
-  _affectedResourceViews: AffectedResourcesView[];
-  _aggregatedIssuesCount: HTMLElement|null;
+  private readonly affectedResourceViews: AffectedResourcesView[];
+  private aggregatedIssuesCount: HTMLElement|null;
   private issueKindIcon: IconButton.Icon.Icon|null = null;
-  _hasBeenExpandedBefore: boolean;
+  private hasBeenExpandedBefore: boolean;
   private throttle: Common.Throttler.Throttler;
   private needsUpdateOnExpand = true;
   private hiddenIssuesMenu: Components.HideIssuesMenu.HideIssuesMenu;
@@ -232,38 +230,38 @@ export class IssueView extends UI.TreeOutline.TreeElement {
 
   constructor(issue: AggregatedIssue, description: IssuesManager.MarkdownIssueDescription.IssueDescription) {
     super();
-    this._issue = issue;
-    this._description = description;
+    this.issue = issue;
+    this.description = description;
     this.throttle = new Common.Throttler.Throttler(250);
 
     this.toggleOnClick = true;
     this.listItemElement.classList.add('issue');
     this.childrenListElement.classList.add('body');
-    this.childrenListElement.classList.add(IssueView.getBodyCSSClass(this._issue.getKind()));
+    this.childrenListElement.classList.add(IssueView.getBodyCSSClass(this.issue.getKind()));
 
-    this.affectedResources = this._createAffectedResources();
-    this._affectedResourceViews = [
-      new AffectedCookiesView(this, this._issue),
-      new AffectedElementsView(this, this._issue),
-      new AffectedRequestsView(this, this._issue),
-      new AffectedMixedContentView(this, this._issue),
-      new AffectedSourcesView(this, this._issue),
-      new AffectedHeavyAdView(this, this._issue),
-      new AffectedDirectivesView(this, this._issue),
-      new AffectedBlockedByResponseView(this, this._issue),
-      new AffectedSharedArrayBufferIssueDetailsView(this, this._issue),
-      new AffectedElementsWithLowContrastView(this, this._issue),
-      new AffectedTrustedWebActivityIssueDetailsView(this, this._issue),
-      new CorsIssueDetailsView(this, this._issue),
-      new AffectedDocumentsInQuirksModeView(this, this._issue),
-      new AttributionReportingIssueDetailsView(this, this._issue),
-      new WasmCrossOriginModuleSharingAffectedResourcesView(this, this._issue),
-      new AffectedRawCookieLinesView(this, this._issue),
+    this.affectedResources = this.createAffectedResources();
+    this.affectedResourceViews = [
+      new AffectedCookiesView(this, this.issue),
+      new AffectedElementsView(this, this.issue),
+      new AffectedRequestsView(this, this.issue),
+      new AffectedMixedContentView(this, this.issue),
+      new AffectedSourcesView(this, this.issue),
+      new AffectedHeavyAdView(this, this.issue),
+      new AffectedDirectivesView(this, this.issue),
+      new AffectedBlockedByResponseView(this, this.issue),
+      new AffectedSharedArrayBufferIssueDetailsView(this, this.issue),
+      new AffectedElementsWithLowContrastView(this, this.issue),
+      new AffectedTrustedWebActivityIssueDetailsView(this, this.issue),
+      new CorsIssueDetailsView(this, this.issue),
+      new AffectedDocumentsInQuirksModeView(this, this.issue),
+      new AttributionReportingIssueDetailsView(this, this.issue),
+      new WasmCrossOriginModuleSharingAffectedResourcesView(this, this.issue),
+      new AffectedRawCookieLinesView(this, this.issue),
     ];
 
     this.hiddenIssuesMenu = new Components.HideIssuesMenu.HideIssuesMenu();
-    this._aggregatedIssuesCount = null;
-    this._hasBeenExpandedBefore = false;
+    this.aggregatedIssuesCount = null;
+    this.hasBeenExpandedBefore = false;
   }
 
   private static getBodyCSSClass(issueKind: IssuesManager.Issue.IssueKind): string {
@@ -278,7 +276,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
   }
 
   getIssueTitle(): string {
-    return this._description.title;
+    return this.description.title;
   }
 
   onattach(): void {
@@ -290,15 +288,15 @@ export class IssueView extends UI.TreeOutline.TreeElement {
   }
 
   createContent(): void {
-    this._appendHeader();
-    this._createBody();
+    this.appendHeader();
+    this.createBody();
     this.appendChild(this.affectedResources);
-    for (const view of this._affectedResourceViews) {
+    for (const view of this.affectedResourceViews) {
       this.appendAffectedResource(view);
       view.update();
     }
 
-    this._createReadMoreLinks();
+    this.createReadMoreLinks();
     this.updateAffectedResourceVisibility();
     this.contentCreated = true;
   }
@@ -307,7 +305,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     this.affectedResources.appendChild(resource);
   }
 
-  _appendHeader(): void {
+  private appendHeader(): void {
     const header = document.createElement('div');
     if (Root.Runtime.experiments.isEnabled('hideIssuesFeature')) {
       header.addEventListener('mouseenter', this.showHiddenIssuesMenu.bind(this));
@@ -315,30 +313,30 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     }
     header.classList.add('header');
     this.issueKindIcon = new IconButton.Icon.Icon();
-    const kind = this._issue.getKind();
+    const kind = this.issue.getKind();
     this.issueKindIcon.data = IssueCounter.IssueCounter.getIssueKindIconData(kind);
     this.issueKindIcon.classList.add('leading-issue-icon');
-    this._aggregatedIssuesCount = document.createElement('span');
+    this.aggregatedIssuesCount = document.createElement('span');
     const countAdorner = new Adorners.Adorner.Adorner();
     countAdorner.data = {
       name: 'countWrapper',
-      content: this._aggregatedIssuesCount,
+      content: this.aggregatedIssuesCount,
     };
     countAdorner.classList.add('aggregated-issues-count');
-    this._aggregatedIssuesCount.textContent = `${this._issue.getAggregatedIssuesCount()}`;
+    this.aggregatedIssuesCount.textContent = `${this.issue.getAggregatedIssuesCount()}`;
     header.appendChild(this.issueKindIcon);
     UI.Tooltip.Tooltip.install(this.issueKindIcon, IssuesManager.Issue.getIssueKindDescription(kind));
     header.appendChild(countAdorner);
 
     const title = document.createElement('div');
     title.classList.add('title');
-    title.textContent = this._description.title;
+    title.textContent = this.description.title;
     header.appendChild(title);
     if (Root.Runtime.experiments.isEnabled('hideIssuesFeature')) {
       header.appendChild(this.hiddenIssuesMenu);
       const data: HiddenIssuesMenuData = {
-        issueCode: this._issue.code(),
-        forHiddenIssue: this._issue.isHidden(),
+        issueCode: this.issue.code(),
+        forHiddenIssue: this.issue.isHidden(),
       };
       this.hiddenIssuesMenu.data = data;
     }
@@ -353,15 +351,15 @@ export class IssueView extends UI.TreeOutline.TreeElement {
   }
 
   onexpand(): void {
-    Host.userMetrics.issuesPanelIssueExpanded(this._issue.getCategory());
+    Host.userMetrics.issuesPanelIssueExpanded(this.issue.getCategory());
 
     if (this.needsUpdateOnExpand) {
       this.doUpdate();
     }
 
-    if (!this._hasBeenExpandedBefore) {
-      this._hasBeenExpandedBefore = true;
-      for (const view of this._affectedResourceViews) {
+    if (!this.hasBeenExpandedBefore) {
+      this.hasBeenExpandedBefore = true;
+      for (const view of this.affectedResourceViews) {
         view.expandIfOneResource();
       }
     }
@@ -369,20 +367,20 @@ export class IssueView extends UI.TreeOutline.TreeElement {
 
   private updateFromIssue(): void {
     if (this.issueKindIcon) {
-      const kind = this._issue.getKind();
+      const kind = this.issue.getKind();
       this.issueKindIcon.data = IssueCounter.IssueCounter.getIssueKindIconData(kind);
     }
-    if (this._aggregatedIssuesCount) {
-      this._aggregatedIssuesCount.textContent = `${this._issue.getAggregatedIssuesCount()}`;
+    if (this.aggregatedIssuesCount) {
+      this.aggregatedIssuesCount.textContent = `${this.issue.getAggregatedIssuesCount()}`;
     }
   }
 
   updateAffectedResourceVisibility(): void {
-    const noResources = this._affectedResourceViews.every(view => view.isEmpty());
+    const noResources = this.affectedResourceViews.every(view => view.isEmpty());
     this.affectedResources.hidden = noResources;
   }
 
-  _createAffectedResources(): UI.TreeOutline.TreeElement {
+  private createAffectedResources(): UI.TreeOutline.TreeElement {
     const wrapper = new UI.TreeOutline.TreeElement();
     wrapper.setCollapsible(false);
     wrapper.setExpandable(true);
@@ -394,18 +392,18 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     return wrapper;
   }
 
-  _createBody(): void {
+  private createBody(): void {
     const messageElement = new UI.TreeOutline.TreeElement();
     messageElement.setCollapsible(false);
     messageElement.selectable = false;
     const markdownComponent = new MarkdownView.MarkdownView.MarkdownView();
-    markdownComponent.data = {tokens: this._description.markdown};
+    markdownComponent.data = {tokens: this.description.markdown};
     messageElement.listItemElement.appendChild(markdownComponent);
     this.appendChild(messageElement);
   }
 
-  _createReadMoreLinks(): void {
-    if (this._description.links.length === 0) {
+  private createReadMoreLinks(): void {
+    if (this.description.links.length === 0) {
       return;
     }
 
@@ -414,7 +412,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     linkWrapper.listItemElement.classList.add('link-wrapper');
 
     const linkList = linkWrapper.listItemElement.createChild('ul', 'link-list');
-    for (const description of this._description.links) {
+    for (const description of this.description.links) {
       const link = UI.Fragment.html`<x-link class="link devtools-link" tabindex="0" href=${description.link}>${
                        i18nString(UIStrings.learnMoreS, {PH1: description.linkTitle})}</x-link>` as UI.XLink.XLink;
       const linkIcon = new IconButton.Icon.Icon();
@@ -422,7 +420,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       linkIcon.classList.add('link-icon');
       link.prepend(linkIcon);
       link.addEventListener('x-link-invoke', () => {
-        Host.userMetrics.issuesPanelResourceOpened(this._issue.getCategory(), AffectedItem.LearnMore);
+        Host.userMetrics.issuesPanelResourceOpened(this.issue.getCategory(), AffectedItem.LearnMore);
       });
 
       const linkListItem = linkList.createChild('li');
@@ -433,14 +431,14 @@ export class IssueView extends UI.TreeOutline.TreeElement {
 
   private doUpdate(): void {
     if (this.expanded) {
-      this._affectedResourceViews.forEach(view => view.update());
+      this.affectedResourceViews.forEach(view => view.update());
       this.updateAffectedResourceVisibility();
     }
     const data: HiddenIssuesMenuData = {
-      issueCode: this._issue.code(),
-      forHiddenIssue: this._issue.isHidden(),
+      issueCode: this.issue.code(),
+      forHiddenIssue: this.issue.isHidden(),
     };
-    this.listItemElement.classList.toggle('hidden-issue', this._issue.isHidden());
+    this.listItemElement.classList.toggle('hidden-issue', this.issue.isHidden());
     this.hiddenIssuesMenu.data = data;
     this.needsUpdateOnExpand = !this.expanded;
     this.updateFromIssue();
@@ -451,7 +449,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
   }
 
   isForHiddenIssue(): boolean {
-    return this._issue.isHidden();
+    return this.issue.isHidden();
   }
 
   toggle(expand?: boolean): void {

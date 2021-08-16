@@ -33,7 +33,7 @@ NetworkTestRunner.waitForNetworkLogViewNodeForRequest = function(request) {
 
   console.assert(networkLogView._staleRequests.has(request));
 
-  return TestRunner.addSnifferPromise(networkLogView, '_didRefreshForTest').then(() => {
+  return TestRunner.addSnifferPromise(networkLogView, 'didRefreshForTest').then(() => {
     const node = networkLogView.nodeForRequest(request);
     console.assert(node);
     return node;

@@ -9,7 +9,7 @@ self.ApplicationTestRunner = self.ApplicationTestRunner || {};
 
 ApplicationTestRunner.dumpCacheTree = async function(pathFilter) {
   UI.panels.resources._sidebar.cacheStorageListTreeElement.expand();
-  const promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, '_updateCacheNames');
+  const promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, 'updateCacheNames');
   UI.panels.resources._sidebar.cacheStorageListTreeElement.refreshCaches();
   await promise;
   await ApplicationTestRunner.dumpCacheTreeNoRefresh(pathFilter);
@@ -76,7 +76,7 @@ ApplicationTestRunner.dumpCacheTreeNoRefresh = async function(pathFilter) {
 
 ApplicationTestRunner.dumpCachedEntryContent = async function(cacheName, requestUrl, withHeader) {
   UI.panels.resources._sidebar.cacheStorageListTreeElement.expand();
-  const promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, '_updateCacheNames');
+  const promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, 'updateCacheNames');
   UI.panels.resources._sidebar.cacheStorageListTreeElement.refreshCaches();
   await promise;
   await ApplicationTestRunner.dumpCachedEntryContentNoRefresh(cacheName, requestUrl, withHeader);
@@ -137,7 +137,7 @@ ApplicationTestRunner.deleteCacheFromInspector = async function(cacheName, optio
   }
 
   const cachesTreeElement = UI.panels.resources._sidebar.cacheStorageListTreeElement;
-  let promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, '_updateCacheNames');
+  let promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, 'updateCacheNames');
   UI.panels.resources._sidebar.cacheStorageListTreeElement.refreshCaches();
   await promise;
 
@@ -155,13 +155,13 @@ ApplicationTestRunner.deleteCacheFromInspector = async function(cacheName, optio
     }
 
     if (!optionalEntry) {
-      promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, '_cacheRemoved');
+      promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, 'cacheRemoved');
       cacheTreeElement.clearCache();
       await promise;
       return;
     }
 
-    promise = TestRunner.addSnifferPromise(Resources.ServiceWorkerCacheView.prototype, '_updateDataCallback');
+    promise = TestRunner.addSnifferPromise(Resources.ServiceWorkerCacheView.prototype, 'updateDataCallback');
     let view = cacheTreeElement.view;
 
     if (!view) {

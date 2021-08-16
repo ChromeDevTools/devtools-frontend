@@ -1217,7 +1217,7 @@
     const test = this;
     this.showPanel('timeline').then(function() {
       const timeline = UI.panels.timeline;
-      test._overrideMethod(timeline, '_recordingStarted', callback);
+      test._overrideMethod(timeline, 'recordingStarted', callback);
       timeline._toggleRecording();
     });
   };

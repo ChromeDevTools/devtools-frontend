@@ -143,7 +143,7 @@ PerformanceTestRunner.runWhenTimelineIsReady = function(callback) {
 PerformanceTestRunner.startTimeline = function() {
   const panel = UI.panels.timeline;
   panel.toggleRecording();
-  return TestRunner.addSnifferPromise(panel, '_recordingStarted');
+  return TestRunner.addSnifferPromise(panel, 'recordingStarted');
 };
 
 PerformanceTestRunner.stopTimeline = function() {

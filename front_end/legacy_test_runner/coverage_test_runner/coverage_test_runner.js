@@ -85,7 +85,7 @@ CoverageTestRunner.exportReport = async function() {
  */
 CoverageTestRunner.sourceDecorated = async function(source) {
   await self.UI.inspectorView.showPanel('sources');
-  const decoratePromise = TestRunner.addSnifferPromise(Coverage.CoverageView.LineDecorator.prototype, '_innerDecorate');
+  const decoratePromise = TestRunner.addSnifferPromise(Coverage.CoverageView.LineDecorator.prototype, 'innerDecorate');
   const sourceFrame = await SourcesTestRunner.showScriptSourcePromise(source);
   await decoratePromise;
   return sourceFrame;

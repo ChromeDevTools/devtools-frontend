@@ -37,7 +37,7 @@ interface SaveCallbackParam {
   fileSystemPath?: string;
 }
 
-export class FileManager extends Common.ObjectWrapper.ObjectWrapper {
+export class FileManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly saveCallbacks: Map<string, (arg0: SaveCallbackParam|null) => void>;
   private constructor() {
     super();

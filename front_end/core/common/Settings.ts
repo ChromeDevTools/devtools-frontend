@@ -528,7 +528,7 @@ export class VersionController {
   private methodsToRunToUpdateVersion(oldVersion: number, currentVersion: number): string[] {
     const result = [];
     for (let i = oldVersion; i < currentVersion; ++i) {
-      result.push('_updateVersionFrom' + i + 'To' + (i + 1));
+      result.push('updateVersionFrom' + i + 'To' + (i + 1));
     }
     return result;
   }

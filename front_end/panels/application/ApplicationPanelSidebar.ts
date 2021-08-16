@@ -586,7 +586,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     }
   }
 
-  private domStorageAdded(event: Common.EventTarget.EventTargetEvent): void {
+  private domStorageAdded(event: Common.EventTarget.EventTargetEvent<DOMStorage>): void {
     const domStorage = (event.data as DOMStorage);
     this.addDOMStorage(domStorage);
   }
@@ -603,7 +603,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     }
   }
 
-  private domStorageRemoved(event: Common.EventTarget.EventTargetEvent): void {
+  private domStorageRemoved(event: Common.EventTarget.EventTargetEvent<DOMStorage>): void {
     const domStorage = (event.data as DOMStorage);
     this.removeDOMStorage(domStorage);
   }

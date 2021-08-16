@@ -38,7 +38,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 
-export class DOMStorage extends Common.ObjectWrapper.ObjectWrapper {
+export class DOMStorage extends Common.ObjectWrapper.ObjectWrapper<DOMStorage.EventTypes> {
   private readonly model: DOMStorageModel;
   private readonly securityOriginInternal: string;
   private readonly isLocalStorageInternal: boolean;
@@ -82,8 +82,8 @@ export class DOMStorage extends Common.ObjectWrapper.ObjectWrapper {
     this.model.agent.invoke_clear({storageId: this.id});
   }
 }
-export namespace DOMStorage {
 
+export namespace DOMStorage {
   // TODO(crbug.com/1167717): Make this a const enum again
   // eslint-disable-next-line rulesdir/const_enum
   export enum Events {
@@ -92,9 +92,31 @@ export namespace DOMStorage {
     DOMStorageItemAdded = 'DOMStorageItemAdded',
     DOMStorageItemUpdated = 'DOMStorageItemUpdated',
   }
+
+  export interface DOMStorageItemRemovedEvent {
+    key: string;
+  }
+
+  export interface DOMStorageItemAddedEvent {
+    key: string;
+    value: string;
+  }
+
+  export interface DOMStorageItemUpdatedEvent {
+    key: string;
+    oldValue: string;
+    value: string;
+  }
+
+  export type EventTypes = {
+    [Events.DOMStorageItemsCleared]: void,
+    [Events.DOMStorageItemRemoved]: DOMStorageItemRemovedEvent,
+    [Events.DOMStorageItemAdded]: DOMStorageItemAddedEvent,
+    [Events.DOMStorageItemUpdated]: DOMStorageItemUpdatedEvent,
+  };
 }
 
-export class DOMStorageModel extends SDK.SDKModel.SDKModel {
+export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
   private readonly securityOriginManager: SDK.SecurityOriginManager.SecurityOriginManager|null;
   private storagesInternal: {
     [x: string]: DOMStorage,
@@ -193,8 +215,7 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel {
       return;
     }
 
-    const eventData = {};
-    domStorage.dispatchEventToListeners(DOMStorage.Events.DOMStorageItemsCleared, eventData);
+    domStorage.dispatchEventToListeners(DOMStorage.Events.DOMStorageItemsCleared);
   }
 
   domStorageItemRemoved(storageId: Protocol.DOMStorage.StorageId, key: string): void {
@@ -248,6 +269,11 @@ export enum Events {
   DOMStorageAdded = 'DOMStorageAdded',
   DOMStorageRemoved = 'DOMStorageRemoved',
 }
+
+export type EventTypes = {
+  [Events.DOMStorageAdded]: DOMStorage,
+  [Events.DOMStorageRemoved]: DOMStorage,
+};
 
 export class DOMStorageDispatcher implements ProtocolProxyApi.DOMStorageDispatcher {
   private readonly model: DOMStorageModel;

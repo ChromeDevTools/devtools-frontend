@@ -266,7 +266,8 @@ export function registerCommands(inspectorBackend) {
     InvalidAttributionSourceEventId: 'InvalidAttributionSourceEventId',
     InvalidAttributionData: 'InvalidAttributionData',
     AttributionSourceUntrustworthyOrigin: 'AttributionSourceUntrustworthyOrigin',
-    AttributionUntrustworthyOrigin: 'AttributionUntrustworthyOrigin'
+    AttributionUntrustworthyOrigin: 'AttributionUntrustworthyOrigin',
+    AttributionTriggerDataTooLarge: 'AttributionTriggerDataTooLarge'
   });
   inspectorBackend.registerEnum('Audits.InspectorIssueCode', {
     SameSiteCookieIssue: 'SameSiteCookieIssue',
@@ -1642,7 +1643,8 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEvent('Network.webTransportConnectionEstablished', ['transportId', 'timestamp']);
   inspectorBackend.registerEvent('Network.webTransportClosed', ['transportId', 'timestamp']);
   inspectorBackend.registerEvent(
-      'Network.requestWillBeSentExtraInfo', ['requestId', 'associatedCookies', 'headers', 'clientSecurityState']);
+      'Network.requestWillBeSentExtraInfo',
+      ['requestId', 'associatedCookies', 'headers', 'connectTiming', 'clientSecurityState']);
   inspectorBackend.registerEvent(
       'Network.responseReceivedExtraInfo',
       ['requestId', 'blockedCookies', 'headers', 'resourceIPAddressSpace', 'statusCode', 'headersText']);

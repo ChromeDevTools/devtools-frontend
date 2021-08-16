@@ -28,6 +28,11 @@ export enum Events {
   CoverageReset = 'CoverageReset',
 }
 
+export type EventTypes = {
+  [Events.CoverageUpdated]: CoverageInfo[],
+  [Events.CoverageReset]: void,
+};
+
 const COVERAGE_POLLING_PERIOD_MS: number = 200;
 
 interface BacklogItem<T> {
@@ -35,7 +40,7 @@ interface BacklogItem<T> {
   stamp: number;
 }
 
-export class CoverageModel extends SDK.SDKModel.SDKModel {
+export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
   private cpuProfilerModel: SDK.CPUProfilerModel.CPUProfilerModel|null;
   private cssModel: SDK.CSSModel.CSSModel|null;
   private debuggerModel: SDK.DebuggerModel.DebuggerModel|null;

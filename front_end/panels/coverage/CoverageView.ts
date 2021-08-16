@@ -388,8 +388,8 @@ export class CoverageView extends UI.Widget.VBox {
     }
   }
 
-  private onCoverageDataReceived(event: Common.EventTarget.EventTargetEvent): void {
-    const data = event.data as CoverageInfo[];
+  private onCoverageDataReceived(event: Common.EventTarget.EventTargetEvent<CoverageInfo[]>): void {
+    const data = event.data;
     this.updateViews(data);
   }
 

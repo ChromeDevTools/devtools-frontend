@@ -8,7 +8,7 @@ import * as Diff from '../../third_party/diff/diff.js';
 import * as Persistence from '../persistence/persistence.js';
 import * as Workspace from '../workspace/workspace.js';
 
-export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper {
+export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly uiSourceCodeDiffs: WeakMap<Workspace.UISourceCode.UISourceCode, UISourceCodeDiff>;
   private readonly loadingUISourceCodes:
       Map<Workspace.UISourceCode.UISourceCode, Promise<[string | null, string|null]>>;

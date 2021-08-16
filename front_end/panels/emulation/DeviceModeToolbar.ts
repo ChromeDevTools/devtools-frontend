@@ -603,7 +603,7 @@ export class DeviceModeToolbar {
     }
   }
 
-  private deviceListChanged(this: DeviceModeToolbar): void {
+  private deviceListChanged(): void {
     const device = this.model.device();
     if (!device) {
       return;

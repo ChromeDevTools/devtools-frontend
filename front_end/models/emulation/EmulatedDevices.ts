@@ -489,7 +489,7 @@ export const _Show = {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 let _instance: EmulatedDevicesList;
 
-export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper {
+export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly standardSetting: Common.Settings.Setting<any[]>;
   private standardInternal: Set<EmulatedDevice>;
   private readonly customSetting: Common.Settings.Setting<any[]>;
@@ -606,6 +606,11 @@ export const enum Events {
   CustomDevicesUpdated = 'CustomDevicesUpdated',
   StandardDevicesUpdated = 'StandardDevicesUpdated',
 }
+
+export type EventTypes = {
+  [Events.CustomDevicesUpdated]: void,
+  [Events.StandardDevicesUpdated]: void,
+};
 
 export interface Mode {
   title: string;

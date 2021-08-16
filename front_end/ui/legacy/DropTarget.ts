@@ -2,20 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
 
 export class DropTarget {
-  _element: Element;
-  _transferTypes: {
+  private element: Element;
+  private readonly transferTypes: {
     kind: string,
     type: RegExp,
   }[];
-  _messageText: string;
-  _handleDrop: (arg0: DataTransfer) => void;
-  _enabled: boolean;
-  _dragMaskElement: Element|null;
+  private messageText: string;
+  private readonly handleDrop: (arg0: DataTransfer) => void;
+  private enabled: boolean;
+  private dragMaskElement: Element|null;
 
   constructor(
       element: Element, transferTypes: {
@@ -23,32 +21,32 @@ export class DropTarget {
         type: RegExp,
       }[],
       messageText: string, handleDrop: (arg0: DataTransfer) => void) {
-    element.addEventListener('dragenter', this._onDragEnter.bind(this), true);
-    element.addEventListener('dragover', this._onDragOver.bind(this), true);
-    this._element = element;
-    this._transferTypes = transferTypes;
-    this._messageText = messageText;
-    this._handleDrop = handleDrop;
-    this._enabled = true;
-    this._dragMaskElement = null;
+    element.addEventListener('dragenter', this.onDragEnter.bind(this), true);
+    element.addEventListener('dragover', this.onDragOver.bind(this), true);
+    this.element = element;
+    this.transferTypes = transferTypes;
+    this.messageText = messageText;
+    this.handleDrop = handleDrop;
+    this.enabled = true;
+    this.dragMaskElement = null;
   }
 
   setEnabled(enabled: boolean): void {
-    this._enabled = enabled;
+    this.enabled = enabled;
   }
 
-  _onDragEnter(event: Event): void {
-    if (this._enabled && this._hasMatchingType(event)) {
+  private onDragEnter(event: Event): void {
+    if (this.enabled && this.hasMatchingType(event)) {
       event.consume(true);
     }
   }
 
-  _hasMatchingType(ev: Event): boolean {
+  private hasMatchingType(ev: Event): boolean {
     const event = (ev as DragEvent);
     if (!event.dataTransfer) {
       return false;
     }
-    for (const transferType of this._transferTypes) {
+    for (const transferType of this.transferTypes) {
       const found = Array.from(event.dataTransfer.items).find(item => {
         return transferType.kind === item.kind && Boolean(transferType.type.exec(item.type));
       });
@@ -59,44 +57,44 @@ export class DropTarget {
     return false;
   }
 
-  _onDragOver(ev: Event): void {
+  private onDragOver(ev: Event): void {
     const event = (ev as DragEvent);
-    if (!this._enabled || !this._hasMatchingType(event)) {
+    if (!this.enabled || !this.hasMatchingType(event)) {
       return;
     }
     if (event.dataTransfer) {
       event.dataTransfer.dropEffect = 'copy';
     }
     event.consume(true);
-    if (this._dragMaskElement) {
+    if (this.dragMaskElement) {
       return;
     }
-    this._dragMaskElement = this._element.createChild('div', '');
+    this.dragMaskElement = this.element.createChild('div', '');
     const shadowRoot = createShadowRootWithCoreStyles(
-        this._dragMaskElement, {cssFile: 'ui/legacy/dropTarget.css', delegatesFocus: undefined});
-    shadowRoot.createChild('div', 'drop-target-message').textContent = this._messageText;
-    this._dragMaskElement.addEventListener('drop', this._onDrop.bind(this), true);
-    this._dragMaskElement.addEventListener('dragleave', this._onDragLeave.bind(this), true);
+        this.dragMaskElement, {cssFile: 'ui/legacy/dropTarget.css', delegatesFocus: undefined});
+    shadowRoot.createChild('div', 'drop-target-message').textContent = this.messageText;
+    this.dragMaskElement.addEventListener('drop', this.onDrop.bind(this), true);
+    this.dragMaskElement.addEventListener('dragleave', this.onDragLeave.bind(this), true);
   }
 
-  _onDrop(ev: Event): void {
+  private onDrop(ev: Event): void {
     const event = (ev as DragEvent);
     event.consume(true);
-    this._removeMask();
-    if (this._enabled && event.dataTransfer) {
-      this._handleDrop(event.dataTransfer);
+    this.removeMask();
+    if (this.enabled && event.dataTransfer) {
+      this.handleDrop(event.dataTransfer);
     }
   }
 
-  _onDragLeave(event: Event): void {
+  private onDragLeave(event: Event): void {
     event.consume(true);
-    this._removeMask();
+    this.removeMask();
   }
 
-  _removeMask(): void {
-    if (this._dragMaskElement) {
-      this._dragMaskElement.remove();
-      this._dragMaskElement = null;
+  private removeMask(): void {
+    if (this.dragMaskElement) {
+      this.dragMaskElement.remove();
+      this.dragMaskElement = null;
     }
   }
 }

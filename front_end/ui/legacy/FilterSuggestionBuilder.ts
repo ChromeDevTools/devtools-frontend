@@ -2,21 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Platform from '../../core/platform/platform.js';
 
 import type {Suggestion} from './SuggestBox.js';
 
 export class FilterSuggestionBuilder {
-  _keys: string[];
-  _valueSorter: ((arg0: string, arg1: Array<string>) => void)|((key: string, result: string[]) => string[]);
-  _valuesMap: Map<string, Set<string>>;
+  private readonly keys: string[];
+  private readonly valueSorter: ((arg0: string, arg1: Array<string>) => void)|
+      ((key: string, result: string[]) => string[]);
+  private readonly valuesMap: Map<string, Set<string>>;
 
   constructor(keys: string[], valueSorter?: ((arg0: string, arg1: Array<string>) => void)) {
-    this._keys = keys;
-    this._valueSorter = valueSorter || ((key: string, result: string[]): string[] => result.sort());
-    this._valuesMap = new Map();
+    this.keys = keys;
+    this.valueSorter = valueSorter || ((key: string, result: string[]): string[] => result.sort());
+    this.valuesMap = new Map();
   }
 
   completions(expression: string, prefix: string, force?: boolean): Promise<Suggestion[]> {
@@ -34,7 +33,7 @@ export class FilterSuggestionBuilder {
     const suggestions: Suggestion[] = [];
     if (valueDelimiterIndex === -1) {
       const matcher = new RegExp('^' + Platform.StringUtilities.escapeForRegExp(prefix), 'i');
-      for (const key of this._keys) {
+      for (const key of this.keys) {
         if (matcher.test(key)) {
           suggestions.push(({text: modifier + key + ':'} as Suggestion));
         }
@@ -43,8 +42,8 @@ export class FilterSuggestionBuilder {
       const key = prefix.substring(0, valueDelimiterIndex).toLowerCase();
       const value = prefix.substring(valueDelimiterIndex + 1);
       const matcher = new RegExp('^' + Platform.StringUtilities.escapeForRegExp(value), 'i');
-      const values = Array.from(this._valuesMap.get(key) || new Set<string>());
-      this._valueSorter(key, values);
+      const values = Array.from(this.valuesMap.get(key) || new Set<string>());
+      this.valueSorter(key, values);
       for (const item of values) {
         if (matcher.test(item) && (item !== value)) {
           suggestions.push(({text: modifier + key + ':' + item} as Suggestion));
@@ -59,15 +58,15 @@ export class FilterSuggestionBuilder {
       return;
     }
 
-    let set = this._valuesMap.get(key);
+    let set = this.valuesMap.get(key);
     if (!set) {
       set = (new Set() as Set<string>);
-      this._valuesMap.set(key, set);
+      this.valuesMap.set(key, set);
     }
     set.add(value);
   }
 
   clear(): void {
-    this._valuesMap.clear();
+    this.valuesMap.clear();
   }
 }

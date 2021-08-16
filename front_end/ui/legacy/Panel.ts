@@ -30,14 +30,12 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type {SearchableView} from './SearchableView.js';
 import {SplitWidget} from './SplitWidget.js';
 import {VBox} from './Widget.js';
 
 export class Panel extends VBox {
-  _panelName: string;
+  protected panelName: string;
 
   constructor(name: string) {
     super();
@@ -45,7 +43,7 @@ export class Panel extends VBox {
     this.element.classList.add('panel');
     this.element.setAttribute('aria-label', name);
     this.element.classList.add(name);
-    this._panelName = name;
+    this.panelName = name;
 
     // @ts-ignore: Legacy global. Requires rewriting tests to get rid of.
     // For testing.
@@ -53,7 +51,7 @@ export class Panel extends VBox {
   }
 
   get name(): string {
-    return this._panelName;
+    return this.panelName;
   }
 
   searchableView(): SearchableView|null {
@@ -66,35 +64,35 @@ export class Panel extends VBox {
 }
 
 export class PanelWithSidebar extends Panel {
-  _panelSplitWidget: SplitWidget;
-  _mainWidget: VBox;
-  _sidebarWidget: VBox;
+  private readonly panelSplitWidget: SplitWidget;
+  private readonly mainWidget: VBox;
+  private readonly sidebarWidget: VBox;
 
   constructor(name: string, defaultWidth?: number) {
     super(name);
 
-    this._panelSplitWidget = new SplitWidget(true, false, this._panelName + 'PanelSplitViewState', defaultWidth || 200);
-    this._panelSplitWidget.show(this.element);
+    this.panelSplitWidget = new SplitWidget(true, false, this.panelName + 'PanelSplitViewState', defaultWidth || 200);
+    this.panelSplitWidget.show(this.element);
 
-    this._mainWidget = new VBox();
-    this._panelSplitWidget.setMainWidget(this._mainWidget);
+    this.mainWidget = new VBox();
+    this.panelSplitWidget.setMainWidget(this.mainWidget);
 
-    this._sidebarWidget = new VBox();
-    this._sidebarWidget.setMinimumSize(100, 25);
-    this._panelSplitWidget.setSidebarWidget(this._sidebarWidget);
+    this.sidebarWidget = new VBox();
+    this.sidebarWidget.setMinimumSize(100, 25);
+    this.panelSplitWidget.setSidebarWidget(this.sidebarWidget);
 
-    this._sidebarWidget.element.classList.add('panel-sidebar');
+    this.sidebarWidget.element.classList.add('panel-sidebar');
   }
 
   panelSidebarElement(): Element {
-    return this._sidebarWidget.element;
+    return this.sidebarWidget.element;
   }
 
   mainElement(): Element {
-    return this._mainWidget.element;
+    return this.mainWidget.element;
   }
 
   splitWidget(): SplitWidget {
-    return this._panelSplitWidget;
+    return this.panelSplitWidget;
   }
 }

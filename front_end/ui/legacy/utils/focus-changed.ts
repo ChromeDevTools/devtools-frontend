@@ -6,23 +6,25 @@
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function WidgetfocusWidgetForNode(node: Node|null): void {
   while (node) {
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if ((node as any).__widget) {
+    if (node.__widget) {
       break;
     }
+
     node = node.parentNodeOrShadowHost();
   }
   if (!node) {
     return;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let widget = (node as any).__widget;
-  while (widget._parentWidget) {
-    widget._parentWidget._defaultFocusedChild = widget;
-    widget = widget._parentWidget;
+  let widget = node.__widget;
+  while (widget && widget.parentWidget()) {
+    const parentWidget = widget.parentWidget();
+    if (!parentWidget) {
+      break;
+    }
+
+    parentWidget.defaultFocusedChild = widget;
+    widget = parentWidget;
   }
 }
 
@@ -37,7 +39,7 @@ function XWidgetfocusWidgetForNode(node: Node|null): void {
       if (widget) {
         // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (node as any)._defaultFocusedElement = widget;
+        (node as any).defaultFocusedElement = widget;
       }
       widget = node;
     }

@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as Root from '../../core/root/root.js';  // eslint-disable-line @typescript-eslint/no-unused-vars
 
@@ -18,12 +16,12 @@ interface ConstructorFn<T> {
 }
 
 export class Context {
-  _flavors: Map<ConstructorFn<unknown>, Object>;
-  _eventDispatchers: Map<ConstructorFn<unknown>, Common.ObjectWrapper.ObjectWrapper>;
+  private readonly flavorsInternal: Map<ConstructorFn<unknown>, Object>;
+  private readonly eventDispatchers: Map<ConstructorFn<unknown>, Common.ObjectWrapper.ObjectWrapper>;
 
   private constructor() {
-    this._flavors = new Map();
-    this._eventDispatchers = new Map();
+    this.flavorsInternal = new Map();
+    this.eventDispatchers = new Map();
   }
 
   static instance(opts: {
@@ -38,26 +36,26 @@ export class Context {
   }
 
   setFlavor<T>(flavorType: ConstructorFn<T>, flavorValue: T|null): void {
-    const value = this._flavors.get(flavorType) || null;
+    const value = this.flavorsInternal.get(flavorType) || null;
     if (value === flavorValue) {
       return;
     }
     if (flavorValue) {
-      this._flavors.set(flavorType, flavorValue);
+      this.flavorsInternal.set(flavorType, flavorValue);
     } else {
-      this._flavors.delete(flavorType);
+      this.flavorsInternal.delete(flavorType);
     }
 
-    this._dispatchFlavorChange(flavorType, flavorValue);
+    this.dispatchFlavorChange(flavorType, flavorValue);
   }
 
-  _dispatchFlavorChange<T>(flavorType: ConstructorFn<T>, flavorValue: T|null): void {
+  private dispatchFlavorChange<T>(flavorType: ConstructorFn<T>, flavorValue: T|null): void {
     for (const extension of getRegisteredListeners()) {
       if (extension.contextTypes().includes(flavorType)) {
         extension.loadListener().then(instance => instance.flavorChanged(flavorValue));
       }
     }
-    const dispatcher = this._eventDispatchers.get(flavorType);
+    const dispatcher = this.eventDispatchers.get(flavorType);
     if (!dispatcher) {
       return;
     }
@@ -67,10 +65,10 @@ export class Context {
   addFlavorChangeListener<T>(
       flavorType: ConstructorFn<T>, listener: (arg0: Common.EventTarget.EventTargetEvent) => void,
       thisObject?: Object): void {
-    let dispatcher = this._eventDispatchers.get(flavorType);
+    let dispatcher = this.eventDispatchers.get(flavorType);
     if (!dispatcher) {
       dispatcher = new Common.ObjectWrapper.ObjectWrapper();
-      this._eventDispatchers.set(flavorType, dispatcher);
+      this.eventDispatchers.set(flavorType, dispatcher);
     }
     dispatcher.addEventListener(Events.FlavorChanged, listener, thisObject);
   }
@@ -78,22 +76,22 @@ export class Context {
   removeFlavorChangeListener<T>(
       flavorType: ConstructorFn<T>, listener: (arg0: Common.EventTarget.EventTargetEvent) => void,
       thisObject?: Object): void {
-    const dispatcher = this._eventDispatchers.get(flavorType);
+    const dispatcher = this.eventDispatchers.get(flavorType);
     if (!dispatcher) {
       return;
     }
     dispatcher.removeEventListener(Events.FlavorChanged, listener, thisObject);
     if (!dispatcher.hasEventListeners(Events.FlavorChanged)) {
-      this._eventDispatchers.delete(flavorType);
+      this.eventDispatchers.delete(flavorType);
     }
   }
 
   flavor<T>(flavorType: ConstructorFn<T>): T|null {
-    return (this._flavors.get(flavorType) as T | null) || null;
+    return (this.flavorsInternal.get(flavorType) as T | null) || null;
   }
 
   flavors(): Set<ConstructorFn<unknown>> {
-    return new Set(this._flavors.keys());
+    return new Set(this.flavorsInternal.keys());
   }
 }
 

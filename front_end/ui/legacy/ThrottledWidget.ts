@@ -2,19 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import {VBox} from './Widget.js';
 
 export class ThrottledWidget extends VBox {
-  _updateThrottler: Common.Throttler.Throttler;
-  _updateWhenVisible: boolean;
+  private readonly updateThrottler: Common.Throttler.Throttler;
+  private updateWhenVisible: boolean;
 
   constructor(isWebComponent?: boolean, timeout?: number) {
     super(isWebComponent);
-    this._updateThrottler = new Common.Throttler.Throttler(timeout === undefined ? 100 : timeout);
-    this._updateWhenVisible = false;
+    this.updateThrottler = new Common.Throttler.Throttler(timeout === undefined ? 100 : timeout);
+    this.updateWhenVisible = false;
   }
 
   protected doUpdate(): Promise<void> {
@@ -22,22 +20,22 @@ export class ThrottledWidget extends VBox {
   }
 
   update(): void {
-    this._updateWhenVisible = !this.isShowing();
-    if (this._updateWhenVisible) {
+    this.updateWhenVisible = !this.isShowing();
+    if (this.updateWhenVisible) {
       return;
     }
-    this._updateThrottler.schedule(() => {
+    this.updateThrottler.schedule(() => {
       if (this.isShowing()) {
         return this.doUpdate();
       }
-      this._updateWhenVisible = true;
+      this.updateWhenVisible = true;
       return Promise.resolve();
     });
   }
 
   wasShown(): void {
     super.wasShown();
-    if (this._updateWhenVisible) {
+    if (this.updateWhenVisible) {
       this.update();
     }
   }

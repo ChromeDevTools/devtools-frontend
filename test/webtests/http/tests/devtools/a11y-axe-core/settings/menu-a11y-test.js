@@ -15,9 +15,8 @@
   const tabbedPane = Settings.SettingsScreen.instance().tabbedLocation.tabbedPane();
 
   // force tabs to update
-  tabbedPane._innerUpdateTabElements();
+  tabbedPane.innerUpdateTabElements();
 
-  await AxeCoreTestRunner.runValidation(
-      [tabbedPane._headerElement, tabbedPane._tabsElement]);
+  await AxeCoreTestRunner.runValidation([tabbedPane.headerElement, tabbedPane.tabsElement]);
   TestRunner.completeTest();
 })();

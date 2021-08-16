@@ -5,7 +5,6 @@
 /**
  * @interface
  */
-/* eslint-disable rulesdir/no_underscored_properties */
 
 export interface ContextFlavorListener {
   flavorChanged(object: Object|null): void;

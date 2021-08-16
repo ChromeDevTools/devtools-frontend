@@ -33,8 +33,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 
@@ -98,123 +96,123 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/SearchableView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class SearchableView extends VBox {
-  _searchProvider: Searchable;
-  _replaceProvider: Replaceable|null;
+  private searchProvider: Searchable;
+  private replaceProvider: Replaceable|null;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _setting: Common.Settings.Setting<any>|null;
-  _replaceable: boolean;
-  _footerElementContainer: HTMLElement;
-  _footerElement: HTMLElement;
-  _replaceToggleButton: ToolbarToggle;
-  _searchInputElement: HistoryInput;
-  _matchesElement: HTMLElement;
-  _searchNavigationPrevElement: HTMLElement;
-  _searchNavigationNextElement: HTMLElement;
-  _replaceInputElement: HTMLInputElement;
-  _buttonsContainer: HTMLElement;
-  _caseSensitiveButton: ToolbarToggle|undefined;
-  _regexButton: ToolbarToggle|undefined;
-  _secondRowButtons: HTMLElement;
-  _replaceButtonElement: HTMLButtonElement;
-  _replaceAllButtonElement: HTMLButtonElement;
-  _minimalSearchQuerySize: number;
-  _searchIsVisible?: boolean;
-  _currentQuery?: string;
-  _valueChangedTimeoutId?: number;
+  private setting: Common.Settings.Setting<any>|null;
+  private replaceable: boolean;
+  private readonly footerElementContainer: HTMLElement;
+  private readonly footerElement: HTMLElement;
+  private replaceToggleButton: ToolbarToggle;
+  private searchInputElement: HistoryInput;
+  private matchesElement: HTMLElement;
+  private searchNavigationPrevElement: HTMLElement;
+  private searchNavigationNextElement: HTMLElement;
+  private readonly replaceInputElement: HTMLInputElement;
+  private readonly buttonsContainer: HTMLElement;
+  private caseSensitiveButton: ToolbarToggle|undefined;
+  private regexButton: ToolbarToggle|undefined;
+  private readonly secondRowButtons: HTMLElement;
+  private replaceButtonElement: HTMLButtonElement;
+  private replaceAllButtonElement: HTMLButtonElement;
+  private minimalSearchQuerySize: number;
+  private searchIsVisible?: boolean;
+  private currentQuery?: string;
+  private valueChangedTimeoutId?: number;
 
   constructor(searchable: Searchable, replaceable: Replaceable|null, settingName?: string) {
     super(true);
     this.registerRequiredCSS('ui/legacy/searchableView.css');
     searchableViewsByElement.set(this.element, this);
 
-    this._searchProvider = searchable;
-    this._replaceProvider = replaceable;
-    this._setting =
+    this.searchProvider = searchable;
+    this.replaceProvider = replaceable;
+    this.setting =
         settingName ? Common.Settings.Settings.instance().createSetting(settingName, /** @type {*} */ ({})) : null;
-    this._replaceable = false;
+    this.replaceable = false;
 
     this.contentElement.createChild('slot');
-    this._footerElementContainer = this.contentElement.createChild('div', 'search-bar hidden');
-    this._footerElementContainer.style.order = '100';
-    this._footerElement = this._footerElementContainer.createChild('div', 'toolbar-search');
+    this.footerElementContainer = this.contentElement.createChild('div', 'search-bar hidden');
+    this.footerElementContainer.style.order = '100';
+    this.footerElement = this.footerElementContainer.createChild('div', 'toolbar-search');
 
-    const replaceToggleToolbar = new Toolbar('replace-toggle-toolbar', this._footerElement);
-    this._replaceToggleButton = new ToolbarToggle(i18nString(UIStrings.replace), 'mediumicon-replace');
-    this._replaceToggleButton.addEventListener(ToolbarButton.Events.Click, this._toggleReplace, this);
-    replaceToggleToolbar.appendToolbarItem(this._replaceToggleButton);
+    const replaceToggleToolbar = new Toolbar('replace-toggle-toolbar', this.footerElement);
+    this.replaceToggleButton = new ToolbarToggle(i18nString(UIStrings.replace), 'mediumicon-replace');
+    this.replaceToggleButton.addEventListener(ToolbarButton.Events.Click, this.toggleReplace, this);
+    replaceToggleToolbar.appendToolbarItem(this.replaceToggleButton);
 
-    const searchInputElements = this._footerElement.createChild('div', 'toolbar-search-inputs');
+    const searchInputElements = this.footerElement.createChild('div', 'toolbar-search-inputs');
     const searchControlElement = searchInputElements.createChild('div', 'toolbar-search-control');
 
-    this._searchInputElement = HistoryInput.create();
-    this._searchInputElement.type = 'search';
-    this._searchInputElement.classList.add('search-replace', 'custom-search-input');
-    this._searchInputElement.id = 'search-input-field';
-    this._searchInputElement.placeholder = i18nString(UIStrings.findString);
-    searchControlElement.appendChild(this._searchInputElement);
+    this.searchInputElement = HistoryInput.create();
+    this.searchInputElement.type = 'search';
+    this.searchInputElement.classList.add('search-replace', 'custom-search-input');
+    this.searchInputElement.id = 'search-input-field';
+    this.searchInputElement.placeholder = i18nString(UIStrings.findString);
+    searchControlElement.appendChild(this.searchInputElement);
 
-    this._matchesElement = searchControlElement.createChild('label', 'search-results-matches');
-    this._matchesElement.setAttribute('for', 'search-input-field');
+    this.matchesElement = searchControlElement.createChild('label', 'search-results-matches');
+    this.matchesElement.setAttribute('for', 'search-input-field');
 
     const searchNavigationElement = searchControlElement.createChild('div', 'toolbar-search-navigation-controls');
 
-    this._searchNavigationPrevElement =
+    this.searchNavigationPrevElement =
         searchNavigationElement.createChild('div', 'toolbar-search-navigation toolbar-search-navigation-prev');
-    this._searchNavigationPrevElement.addEventListener('click', this._onPrevButtonSearch.bind(this), false);
-    Tooltip.install(this._searchNavigationPrevElement, i18nString(UIStrings.searchPrevious));
-    ARIAUtils.setAccessibleName(this._searchNavigationPrevElement, i18nString(UIStrings.searchPrevious));
+    this.searchNavigationPrevElement.addEventListener('click', this.onPrevButtonSearch.bind(this), false);
+    Tooltip.install(this.searchNavigationPrevElement, i18nString(UIStrings.searchPrevious));
+    ARIAUtils.setAccessibleName(this.searchNavigationPrevElement, i18nString(UIStrings.searchPrevious));
 
-    this._searchNavigationNextElement =
+    this.searchNavigationNextElement =
         searchNavigationElement.createChild('div', 'toolbar-search-navigation toolbar-search-navigation-next');
-    this._searchNavigationNextElement.addEventListener('click', this._onNextButtonSearch.bind(this), false);
-    Tooltip.install(this._searchNavigationNextElement, i18nString(UIStrings.searchNext));
-    ARIAUtils.setAccessibleName(this._searchNavigationNextElement, i18nString(UIStrings.searchNext));
+    this.searchNavigationNextElement.addEventListener('click', this.onNextButtonSearch.bind(this), false);
+    Tooltip.install(this.searchNavigationNextElement, i18nString(UIStrings.searchNext));
+    ARIAUtils.setAccessibleName(this.searchNavigationNextElement, i18nString(UIStrings.searchNext));
 
-    this._searchInputElement.addEventListener('keydown', this._onSearchKeyDown.bind(this), true);
-    this._searchInputElement.addEventListener('input', this._onInput.bind(this), false);
-    this._replaceInputElement =
+    this.searchInputElement.addEventListener('keydown', this.onSearchKeyDown.bind(this), true);
+    this.searchInputElement.addEventListener('input', this.onInput.bind(this), false);
+    this.replaceInputElement =
         (searchInputElements.createChild('input', 'search-replace toolbar-replace-control hidden') as HTMLInputElement);
-    this._replaceInputElement.addEventListener('keydown', this._onReplaceKeyDown.bind(this), true);
-    this._replaceInputElement.placeholder = i18nString(UIStrings.replace);
+    this.replaceInputElement.addEventListener('keydown', this.onReplaceKeyDown.bind(this), true);
+    this.replaceInputElement.placeholder = i18nString(UIStrings.replace);
 
-    this._buttonsContainer = this._footerElement.createChild('div', 'toolbar-search-buttons');
-    const firstRowButtons = this._buttonsContainer.createChild('div', 'first-row-buttons');
+    this.buttonsContainer = this.footerElement.createChild('div', 'toolbar-search-buttons');
+    const firstRowButtons = this.buttonsContainer.createChild('div', 'first-row-buttons');
 
     const toolbar = new Toolbar('toolbar-search-options', firstRowButtons);
 
-    if (this._searchProvider.supportsCaseSensitiveSearch()) {
-      this._caseSensitiveButton = new ToolbarToggle(i18nString(UIStrings.matchCase));
-      this._caseSensitiveButton.setText('Aa');
-      this._caseSensitiveButton.addEventListener(ToolbarButton.Events.Click, this._toggleCaseSensitiveSearch, this);
-      toolbar.appendToolbarItem(this._caseSensitiveButton);
+    if (this.searchProvider.supportsCaseSensitiveSearch()) {
+      this.caseSensitiveButton = new ToolbarToggle(i18nString(UIStrings.matchCase));
+      this.caseSensitiveButton.setText('Aa');
+      this.caseSensitiveButton.addEventListener(ToolbarButton.Events.Click, this.toggleCaseSensitiveSearch, this);
+      toolbar.appendToolbarItem(this.caseSensitiveButton);
     }
 
-    if (this._searchProvider.supportsRegexSearch()) {
-      this._regexButton = new ToolbarToggle(i18nString(UIStrings.useRegularExpression));
-      this._regexButton.setText('.*');
-      this._regexButton.addEventListener(ToolbarButton.Events.Click, this._toggleRegexSearch, this);
-      toolbar.appendToolbarItem(this._regexButton);
+    if (this.searchProvider.supportsRegexSearch()) {
+      this.regexButton = new ToolbarToggle(i18nString(UIStrings.useRegularExpression));
+      this.regexButton.setText('.*');
+      this.regexButton.addEventListener(ToolbarButton.Events.Click, this.toggleRegexSearch, this);
+      toolbar.appendToolbarItem(this.regexButton);
     }
 
     const cancelButtonElement =
         createTextButton(i18nString(UIStrings.cancel), this.closeSearch.bind(this), 'search-action-button');
     firstRowButtons.appendChild(cancelButtonElement);
 
-    this._secondRowButtons = this._buttonsContainer.createChild('div', 'second-row-buttons hidden');
+    this.secondRowButtons = this.buttonsContainer.createChild('div', 'second-row-buttons hidden');
 
-    this._replaceButtonElement =
-        createTextButton(i18nString(UIStrings.replace), this._replace.bind(this), 'search-action-button');
-    this._replaceButtonElement.disabled = true;
-    this._secondRowButtons.appendChild(this._replaceButtonElement);
+    this.replaceButtonElement =
+        createTextButton(i18nString(UIStrings.replace), this.replace.bind(this), 'search-action-button');
+    this.replaceButtonElement.disabled = true;
+    this.secondRowButtons.appendChild(this.replaceButtonElement);
 
-    this._replaceAllButtonElement =
-        createTextButton(i18nString(UIStrings.replaceAll), this._replaceAll.bind(this), 'search-action-button');
-    this._secondRowButtons.appendChild(this._replaceAllButtonElement);
-    this._replaceAllButtonElement.disabled = true;
+    this.replaceAllButtonElement =
+        createTextButton(i18nString(UIStrings.replaceAll), this.replaceAll.bind(this), 'search-action-button');
+    this.secondRowButtons.appendChild(this.replaceAllButtonElement);
+    this.replaceAllButtonElement.disabled = true;
 
-    this._minimalSearchQuerySize = 3;
-    this._loadSetting();
+    this.minimalSearchQuerySize = 3;
+    this.loadSetting();
   }
 
   static fromElement(element: Element|null): SearchableView|null {
@@ -226,136 +224,136 @@ export class SearchableView extends VBox {
     return view;
   }
 
-  _toggleCaseSensitiveSearch(): void {
-    if (this._caseSensitiveButton) {
-      this._caseSensitiveButton.setToggled(!this._caseSensitiveButton.toggled());
+  private toggleCaseSensitiveSearch(): void {
+    if (this.caseSensitiveButton) {
+      this.caseSensitiveButton.setToggled(!this.caseSensitiveButton.toggled());
     }
-    this._saveSetting();
-    this._performSearch(false, true);
+    this.saveSetting();
+    this.performSearch(false, true);
   }
 
-  _toggleRegexSearch(): void {
-    if (this._regexButton) {
-      this._regexButton.setToggled(!this._regexButton.toggled());
+  private toggleRegexSearch(): void {
+    if (this.regexButton) {
+      this.regexButton.setToggled(!this.regexButton.toggled());
     }
-    this._saveSetting();
-    this._performSearch(false, true);
+    this.saveSetting();
+    this.performSearch(false, true);
   }
 
-  _toggleReplace(): void {
-    this._replaceToggleButton.setToggled(!this._replaceToggleButton.toggled());
-    this._updateSecondRowVisibility();
+  private toggleReplace(): void {
+    this.replaceToggleButton.setToggled(!this.replaceToggleButton.toggled());
+    this.updateSecondRowVisibility();
   }
 
-  _saveSetting(): void {
-    if (!this._setting) {
+  private saveSetting(): void {
+    if (!this.setting) {
       return;
     }
-    const settingValue = this._setting.get() || {};
-    if (this._caseSensitiveButton) {
-      settingValue.caseSensitive = this._caseSensitiveButton.toggled();
+    const settingValue = this.setting.get() || {};
+    if (this.caseSensitiveButton) {
+      settingValue.caseSensitive = this.caseSensitiveButton.toggled();
     }
-    if (this._regexButton) {
-      settingValue.isRegex = this._regexButton.toggled();
+    if (this.regexButton) {
+      settingValue.isRegex = this.regexButton.toggled();
     }
-    this._setting.set(settingValue);
+    this.setting.set(settingValue);
   }
 
-  _loadSetting(): void {
-    const settingValue = this._setting ? (this._setting.get() || {}) : {};
-    if (this._searchProvider.supportsCaseSensitiveSearch() && this._caseSensitiveButton) {
-      this._caseSensitiveButton.setToggled(Boolean(settingValue.caseSensitive));
+  private loadSetting(): void {
+    const settingValue = this.setting ? (this.setting.get() || {}) : {};
+    if (this.searchProvider.supportsCaseSensitiveSearch() && this.caseSensitiveButton) {
+      this.caseSensitiveButton.setToggled(Boolean(settingValue.caseSensitive));
     }
-    if (this._searchProvider.supportsRegexSearch() && this._regexButton) {
-      this._regexButton.setToggled(Boolean(settingValue.isRegex));
+    if (this.searchProvider.supportsRegexSearch() && this.regexButton) {
+      this.regexButton.setToggled(Boolean(settingValue.isRegex));
     }
   }
 
   setMinimalSearchQuerySize(minimalSearchQuerySize: number): void {
-    this._minimalSearchQuerySize = minimalSearchQuerySize;
+    this.minimalSearchQuerySize = minimalSearchQuerySize;
   }
 
   setPlaceholder(placeholder: string, ariaLabel?: string): void {
-    this._searchInputElement.placeholder = placeholder;
+    this.searchInputElement.placeholder = placeholder;
     if (ariaLabel) {
-      ARIAUtils.setAccessibleName(this._searchInputElement, ariaLabel);
+      ARIAUtils.setAccessibleName(this.searchInputElement, ariaLabel);
     }
   }
 
   setReplaceable(replaceable: boolean): void {
-    this._replaceable = replaceable;
+    this.replaceable = replaceable;
   }
 
   updateSearchMatchesCount(matches: number): void {
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const untypedSearchProvider = (this._searchProvider as any);
+    const untypedSearchProvider = (this.searchProvider as any);
     if (untypedSearchProvider.currentSearchMatches === matches) {
       return;
     }
     untypedSearchProvider.currentSearchMatches = matches;
-    this._updateSearchMatchesCountAndCurrentMatchIndex(untypedSearchProvider.currentQuery ? matches : 0, -1);
+    this.updateSearchMatchesCountAndCurrentMatchIndex(untypedSearchProvider.currentQuery ? matches : 0, -1);
   }
 
   updateCurrentMatchIndex(currentMatchIndex: number): void {
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const untypedSearchProvider = (this._searchProvider as any);
-    this._updateSearchMatchesCountAndCurrentMatchIndex(untypedSearchProvider.currentSearchMatches, currentMatchIndex);
+    const untypedSearchProvider = (this.searchProvider as any);
+    this.updateSearchMatchesCountAndCurrentMatchIndex(untypedSearchProvider.currentSearchMatches, currentMatchIndex);
   }
 
   isSearchVisible(): boolean {
-    return Boolean(this._searchIsVisible);
+    return Boolean(this.searchIsVisible);
   }
 
   closeSearch(): void {
     this.cancelSearch();
-    if (this._footerElementContainer.hasFocus()) {
+    if (this.footerElementContainer.hasFocus()) {
       this.focus();
     }
   }
 
-  _toggleSearchBar(toggled: boolean): void {
-    this._footerElementContainer.classList.toggle('hidden', !toggled);
+  private toggleSearchBar(toggled: boolean): void {
+    this.footerElementContainer.classList.toggle('hidden', !toggled);
     this.doResize();
   }
 
   cancelSearch(): void {
-    if (!this._searchIsVisible) {
+    if (!this.searchIsVisible) {
       return;
     }
     this.resetSearch();
-    delete this._searchIsVisible;
-    this._toggleSearchBar(false);
+    delete this.searchIsVisible;
+    this.toggleSearchBar(false);
   }
 
   resetSearch(): void {
-    this._clearSearch();
-    this._updateReplaceVisibility();
-    this._matchesElement.textContent = '';
+    this.clearSearch();
+    this.updateReplaceVisibility();
+    this.matchesElement.textContent = '';
   }
 
   refreshSearch(): void {
-    if (!this._searchIsVisible) {
+    if (!this.searchIsVisible) {
       return;
     }
     this.resetSearch();
-    this._performSearch(false, false);
+    this.performSearch(false, false);
   }
 
   handleFindNextShortcut(): boolean {
-    if (!this._searchIsVisible) {
+    if (!this.searchIsVisible) {
       return false;
     }
-    this._searchProvider.jumpToNextSearchResult();
+    this.searchProvider.jumpToNextSearchResult();
     return true;
   }
 
   handleFindPreviousShortcut(): boolean {
-    if (!this._searchIsVisible) {
+    if (!this.searchIsVisible) {
       return false;
     }
-    this._searchProvider.jumpToPreviousSearchResult();
+    this.searchProvider.jumpToPreviousSearchResult();
     return true;
   }
 
@@ -365,66 +363,66 @@ export class SearchableView extends VBox {
   }
 
   handleCancelSearchShortcut(): boolean {
-    if (!this._searchIsVisible) {
+    if (!this.searchIsVisible) {
       return false;
     }
     this.closeSearch();
     return true;
   }
 
-  _updateSearchNavigationButtonState(enabled: boolean): void {
-    this._replaceButtonElement.disabled = !enabled;
-    this._replaceAllButtonElement.disabled = !enabled;
-    this._searchNavigationPrevElement.classList.toggle('enabled', enabled);
-    this._searchNavigationNextElement.classList.toggle('enabled', enabled);
+  private updateSearchNavigationButtonState(enabled: boolean): void {
+    this.replaceButtonElement.disabled = !enabled;
+    this.replaceAllButtonElement.disabled = !enabled;
+    this.searchNavigationPrevElement.classList.toggle('enabled', enabled);
+    this.searchNavigationNextElement.classList.toggle('enabled', enabled);
   }
 
-  _updateSearchMatchesCountAndCurrentMatchIndex(matches: number, currentMatchIndex: number): void {
-    if (!this._currentQuery) {
-      this._matchesElement.textContent = '';
+  private updateSearchMatchesCountAndCurrentMatchIndex(matches: number, currentMatchIndex: number): void {
+    if (!this.currentQuery) {
+      this.matchesElement.textContent = '';
     } else if (matches === 0 || currentMatchIndex >= 0) {
-      this._matchesElement.textContent = i18nString(UIStrings.dOfD, {PH1: currentMatchIndex + 1, PH2: matches});
+      this.matchesElement.textContent = i18nString(UIStrings.dOfD, {PH1: currentMatchIndex + 1, PH2: matches});
     } else if (matches === 1) {
-      this._matchesElement.textContent = i18nString(UIStrings.matchString);
+      this.matchesElement.textContent = i18nString(UIStrings.matchString);
     } else {
-      this._matchesElement.textContent = i18nString(UIStrings.dMatches, {PH1: matches});
+      this.matchesElement.textContent = i18nString(UIStrings.dMatches, {PH1: matches});
     }
-    this._updateSearchNavigationButtonState(matches > 0);
+    this.updateSearchNavigationButtonState(matches > 0);
   }
 
   showSearchField(): void {
-    if (this._searchIsVisible) {
+    if (this.searchIsVisible) {
       this.cancelSearch();
     }
 
     let queryCandidate;
-    if (!this._searchInputElement.hasFocus()) {
+    if (!this.searchInputElement.hasFocus()) {
       const selection = InspectorView.instance().element.window().getSelection();
       if (selection && selection.rangeCount) {
         queryCandidate = selection.toString().replace(/\r?\n.*/, '');
       }
     }
 
-    this._toggleSearchBar(true);
-    this._updateReplaceVisibility();
+    this.toggleSearchBar(true);
+    this.updateReplaceVisibility();
     if (queryCandidate) {
-      this._searchInputElement.value = queryCandidate;
+      this.searchInputElement.value = queryCandidate;
     }
-    this._performSearch(false, false);
-    this._searchInputElement.focus();
-    this._searchInputElement.select();
-    this._searchIsVisible = true;
+    this.performSearch(false, false);
+    this.searchInputElement.focus();
+    this.searchInputElement.select();
+    this.searchIsVisible = true;
   }
 
-  _updateReplaceVisibility(): void {
-    this._replaceToggleButton.setVisible(this._replaceable);
-    if (!this._replaceable) {
-      this._replaceToggleButton.setToggled(false);
-      this._updateSecondRowVisibility();
+  private updateReplaceVisibility(): void {
+    this.replaceToggleButton.setVisible(this.replaceable);
+    if (!this.replaceable) {
+      this.replaceToggleButton.setToggled(false);
+      this.updateSecondRowVisibility();
     }
   }
 
-  _onSearchKeyDown(ev: Event): void {
+  private onSearchKeyDown(ev: Event): void {
     const event = (ev as KeyboardEvent);
     if (isEscKey(event)) {
       this.closeSearch();
@@ -435,146 +433,146 @@ export class SearchableView extends VBox {
       return;
     }
 
-    if (!this._currentQuery) {
-      this._performSearch(true, true, event.shiftKey);
+    if (!this.currentQuery) {
+      this.performSearch(true, true, event.shiftKey);
     } else {
-      this._jumpToNextSearchResult(event.shiftKey);
+      this.jumpToNextSearchResult(event.shiftKey);
     }
   }
 
-  _onReplaceKeyDown(event: KeyboardEvent): void {
+  private onReplaceKeyDown(event: KeyboardEvent): void {
     if (event.key === 'Enter') {
-      this._replace();
+      this.replace();
     }
   }
 
-  _jumpToNextSearchResult(isBackwardSearch?: boolean): void {
-    if (!this._currentQuery) {
+  private jumpToNextSearchResult(isBackwardSearch?: boolean): void {
+    if (!this.currentQuery) {
       return;
     }
 
     if (isBackwardSearch) {
-      this._searchProvider.jumpToPreviousSearchResult();
+      this.searchProvider.jumpToPreviousSearchResult();
     } else {
-      this._searchProvider.jumpToNextSearchResult();
+      this.searchProvider.jumpToNextSearchResult();
     }
   }
 
-  _onNextButtonSearch(_event: Event): void {
-    if (!this._searchNavigationNextElement.classList.contains('enabled')) {
+  private onNextButtonSearch(_event: Event): void {
+    if (!this.searchNavigationNextElement.classList.contains('enabled')) {
       return;
     }
-    this._jumpToNextSearchResult();
-    this._searchInputElement.focus();
+    this.jumpToNextSearchResult();
+    this.searchInputElement.focus();
   }
 
-  _onPrevButtonSearch(_event: Event): void {
-    if (!this._searchNavigationPrevElement.classList.contains('enabled')) {
+  private onPrevButtonSearch(_event: Event): void {
+    if (!this.searchNavigationPrevElement.classList.contains('enabled')) {
       return;
     }
-    this._jumpToNextSearchResult(true);
-    this._searchInputElement.focus();
+    this.jumpToNextSearchResult(true);
+    this.searchInputElement.focus();
   }
 
-  _onFindClick(_event: Event): void {
-    if (!this._currentQuery) {
-      this._performSearch(true, true);
+  private onFindClick(_event: Event): void {
+    if (!this.currentQuery) {
+      this.performSearch(true, true);
     } else {
-      this._jumpToNextSearchResult();
+      this.jumpToNextSearchResult();
     }
-    this._searchInputElement.focus();
+    this.searchInputElement.focus();
   }
 
-  _onPreviousClick(_event: Event): void {
-    if (!this._currentQuery) {
-      this._performSearch(true, true, true);
+  private onPreviousClick(_event: Event): void {
+    if (!this.currentQuery) {
+      this.performSearch(true, true, true);
     } else {
-      this._jumpToNextSearchResult(true);
+      this.jumpToNextSearchResult(true);
     }
-    this._searchInputElement.focus();
+    this.searchInputElement.focus();
   }
 
-  _clearSearch(): void {
+  private clearSearch(): void {
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const untypedSearchProvider = (this._searchProvider as any);
-    delete this._currentQuery;
+    const untypedSearchProvider = (this.searchProvider as any);
+    delete this.currentQuery;
     if (Boolean(untypedSearchProvider.currentQuery)) {
       delete untypedSearchProvider.currentQuery;
-      this._searchProvider.searchCanceled();
+      this.searchProvider.searchCanceled();
     }
-    this._updateSearchMatchesCountAndCurrentMatchIndex(0, -1);
+    this.updateSearchMatchesCountAndCurrentMatchIndex(0, -1);
   }
 
-  _performSearch(forceSearch: boolean, shouldJump: boolean, jumpBackwards?: boolean): void {
-    const query = this._searchInputElement.value;
-    if (!query || (!forceSearch && query.length < this._minimalSearchQuerySize && !this._currentQuery)) {
-      this._clearSearch();
+  private performSearch(forceSearch: boolean, shouldJump: boolean, jumpBackwards?: boolean): void {
+    const query = this.searchInputElement.value;
+    if (!query || (!forceSearch && query.length < this.minimalSearchQuerySize && !this.currentQuery)) {
+      this.clearSearch();
       return;
     }
 
-    this._currentQuery = query;
+    this.currentQuery = query;
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (this._searchProvider as any).currentQuery = query;
+    (this.searchProvider as any).currentQuery = query;
 
-    const searchConfig = this._currentSearchConfig();
-    this._searchProvider.performSearch(searchConfig, shouldJump, jumpBackwards);
+    const searchConfig = this.currentSearchConfig();
+    this.searchProvider.performSearch(searchConfig, shouldJump, jumpBackwards);
   }
 
-  _currentSearchConfig(): SearchConfig {
-    const query = this._searchInputElement.value;
-    const caseSensitive = this._caseSensitiveButton ? this._caseSensitiveButton.toggled() : false;
-    const isRegex = this._regexButton ? this._regexButton.toggled() : false;
+  private currentSearchConfig(): SearchConfig {
+    const query = this.searchInputElement.value;
+    const caseSensitive = this.caseSensitiveButton ? this.caseSensitiveButton.toggled() : false;
+    const isRegex = this.regexButton ? this.regexButton.toggled() : false;
     return new SearchConfig(query, caseSensitive, isRegex);
   }
 
-  _updateSecondRowVisibility(): void {
-    const secondRowVisible = this._replaceToggleButton.toggled();
-    this._footerElementContainer.classList.toggle('replaceable', secondRowVisible);
-    this._secondRowButtons.classList.toggle('hidden', !secondRowVisible);
-    this._replaceInputElement.classList.toggle('hidden', !secondRowVisible);
+  private updateSecondRowVisibility(): void {
+    const secondRowVisible = this.replaceToggleButton.toggled();
+    this.footerElementContainer.classList.toggle('replaceable', secondRowVisible);
+    this.secondRowButtons.classList.toggle('hidden', !secondRowVisible);
+    this.replaceInputElement.classList.toggle('hidden', !secondRowVisible);
 
     if (secondRowVisible) {
-      this._replaceInputElement.focus();
+      this.replaceInputElement.focus();
     } else {
-      this._searchInputElement.focus();
+      this.searchInputElement.focus();
     }
     this.doResize();
   }
 
-  _replace(): void {
-    if (!this._replaceProvider) {
+  private replace(): void {
+    if (!this.replaceProvider) {
       throw new Error('No \'replacable\' provided to SearchableView!');
     }
-    const searchConfig = this._currentSearchConfig();
-    this._replaceProvider.replaceSelectionWith(searchConfig, this._replaceInputElement.value);
-    delete this._currentQuery;
-    this._performSearch(true, true);
+    const searchConfig = this.currentSearchConfig();
+    this.replaceProvider.replaceSelectionWith(searchConfig, this.replaceInputElement.value);
+    delete this.currentQuery;
+    this.performSearch(true, true);
   }
 
-  _replaceAll(): void {
-    if (!this._replaceProvider) {
+  private replaceAll(): void {
+    if (!this.replaceProvider) {
       throw new Error('No \'replacable\' provided to SearchableView!');
     }
-    const searchConfig = this._currentSearchConfig();
-    this._replaceProvider.replaceAllWith(searchConfig, this._replaceInputElement.value);
+    const searchConfig = this.currentSearchConfig();
+    this.replaceProvider.replaceAllWith(searchConfig, this.replaceInputElement.value);
   }
 
-  _onInput(_event: Event): void {
-    if (this._valueChangedTimeoutId) {
-      clearTimeout(this._valueChangedTimeoutId);
+  private onInput(_event: Event): void {
+    if (this.valueChangedTimeoutId) {
+      clearTimeout(this.valueChangedTimeoutId);
     }
-    const timeout = this._searchInputElement.value.length < 3 ? 200 : 0;
-    this._valueChangedTimeoutId = setTimeout(this._onValueChanged.bind(this), timeout);
+    const timeout = this.searchInputElement.value.length < 3 ? 200 : 0;
+    this.valueChangedTimeoutId = setTimeout(this.onValueChanged.bind(this), timeout);
   }
 
-  _onValueChanged(): void {
-    if (!this._searchIsVisible) {
+  private onValueChanged(): void {
+    if (!this.searchIsVisible) {
       return;
     }
-    delete this._valueChangedTimeoutId;
-    this._performSearch(false, true);
+    delete this.valueChangedTimeoutId;
+    this.performSearch(false, true);
   }
 }
 

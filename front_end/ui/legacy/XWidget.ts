@@ -2,31 +2,25 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as ComponentHelpers from '../components/helpers/helpers.js';
 import {appendStyle} from './utils/append-style.js';
 import {XElement} from './XElement.js';
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-let _observer: ResizeObserver|null = null;
+let observer: ResizeObserver|null = null;
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const _storedScrollPositions = new WeakMap<Element, {
+const storedScrollPositions = new WeakMap<Element, {
   scrollLeft: number,
   scrollTop: number,
 }>();
 
 export class XWidget extends XElement {
-  _visible: boolean;
-  _shadowRoot!: DocumentFragment|null;
-  _defaultFocusedElement: Element|null;
-  _elementsToRestoreScrollPositionsFor: Element[];
-  _onShownCallback!: (() => void)|null;
-  _onHiddenCallback!: (() => void)|null;
-  _onResizedCallback!: (() => void)|null;
+  private visible: boolean;
+  private readonly shadowRootInternal!: DocumentFragment|null;
+  private defaultFocusedElement: Element|null;
+  private elementsToRestoreScrollPositionsFor: Element[];
+  private onShownCallback!: (() => void)|null;
+  private onHiddenCallback!: (() => void)|null;
+  private onResizedCallback!: (() => void)|null;
 
   constructor() {
     super();
@@ -36,59 +30,59 @@ export class XWidget extends XElement {
     this.style.setProperty('justify-content', 'flex-start');
     this.style.setProperty('contain', 'layout style');
 
-    this._visible = false;
-    this._defaultFocusedElement = null;
-    this._elementsToRestoreScrollPositionsFor = [];
+    this.visible = false;
+    this.defaultFocusedElement = null;
+    this.elementsToRestoreScrollPositionsFor = [];
 
-    if (!_observer) {
-      _observer = new ResizeObserver(entries => {
+    if (!observer) {
+      observer = new ResizeObserver(entries => {
         for (const entry of entries) {
           const widget = (entry.target as XWidget);
-          if (widget._visible && widget._onResizedCallback) {
-            widget._onResizedCallback.call(null);
+          if (widget.visible && widget.onResizedCallback) {
+            widget.onResizedCallback.call(null);
           }
         }
       });
     }
 
-    _observer.observe(this);
+    observer.observe(this);
 
     this.setElementsToRestoreScrollPositionsFor([this]);
   }
 
   isShowing(): boolean {
-    return this._visible;
+    return this.visible;
   }
 
   registerRequiredCSS(cssFile: string): void {
-    appendStyle(this._shadowRoot || this, cssFile);
+    appendStyle(this.shadowRootInternal || this, cssFile);
   }
 
   setOnShown(callback: (() => void)|null): void {
-    this._onShownCallback = callback;
+    this.onShownCallback = callback;
   }
 
   setOnHidden(callback: (() => void)|null): void {
-    this._onHiddenCallback = callback;
+    this.onHiddenCallback = callback;
   }
 
   setOnResized(callback: (() => void)|null): void {
-    this._onResizedCallback = callback;
+    this.onResizedCallback = callback;
   }
 
   setElementsToRestoreScrollPositionsFor(elements: Element[]): void {
-    for (const element of this._elementsToRestoreScrollPositionsFor) {
-      element.removeEventListener('scroll', XWidget._storeScrollPosition, {capture: false});
+    for (const element of this.elementsToRestoreScrollPositionsFor) {
+      element.removeEventListener('scroll', XWidget.storeScrollPosition, {capture: false});
     }
-    this._elementsToRestoreScrollPositionsFor = elements;
-    for (const element of this._elementsToRestoreScrollPositionsFor) {
-      element.addEventListener('scroll', XWidget._storeScrollPosition, {passive: true, capture: false});
+    this.elementsToRestoreScrollPositionsFor = elements;
+    for (const element of this.elementsToRestoreScrollPositionsFor) {
+      element.addEventListener('scroll', XWidget.storeScrollPosition, {passive: true, capture: false});
     }
   }
 
   restoreScrollPositions(): void {
-    for (const element of this._elementsToRestoreScrollPositionsFor) {
-      const storedPositions = _storedScrollPositions.get(element);
+    for (const element of this.elementsToRestoreScrollPositionsFor) {
+      const storedPositions = storedScrollPositions.get(element);
       if (storedPositions) {
         element.scrollTop = storedPositions.scrollTop;
         element.scrollLeft = storedPositions.scrollLeft;
@@ -96,32 +90,32 @@ export class XWidget extends XElement {
     }
   }
 
-  static _storeScrollPosition(event: Event): void {
+  private static storeScrollPosition(event: Event): void {
     const element = (event.currentTarget as Element);
-    _storedScrollPositions.set(element, {scrollLeft: element.scrollLeft, scrollTop: element.scrollTop});
+    storedScrollPositions.set(element, {scrollLeft: element.scrollLeft, scrollTop: element.scrollTop});
   }
 
   setDefaultFocusedElement(element: Element|null): void {
     if (element && !this.isSelfOrAncestor(element)) {
       throw new Error('Default focus must be descendant');
     }
-    this._defaultFocusedElement = element;
+    this.defaultFocusedElement = element;
   }
 
   focus(): void {
-    if (!this._visible) {
+    if (!this.visible) {
       return;
     }
 
     let element;
-    if (this._defaultFocusedElement && this.isSelfOrAncestor(this._defaultFocusedElement)) {
-      element = this._defaultFocusedElement;
+    if (this.defaultFocusedElement && this.isSelfOrAncestor(this.defaultFocusedElement)) {
+      element = this.defaultFocusedElement;
     } else if (this.tabIndex !== -1) {
       element = this;
     } else {
       let child = this.traverseNextNode(this);
       while (child) {
-        if ((child instanceof XWidget) && child._visible) {
+        if ((child instanceof XWidget) && child.visible) {
           element = child;
           break;
         }
@@ -140,17 +134,17 @@ export class XWidget extends XElement {
   }
 
   connectedCallback(): void {
-    this._visible = true;
+    this.visible = true;
     this.restoreScrollPositions();
-    if (this._onShownCallback) {
-      this._onShownCallback.call(null);
+    if (this.onShownCallback) {
+      this.onShownCallback.call(null);
     }
   }
 
   disconnectedCallback(): void {
-    this._visible = false;
-    if (this._onHiddenCallback) {
-      this._onHiddenCallback.call(null);
+    this.visible = false;
+    if (this.onHiddenCallback) {
+      this.onHiddenCallback.call(null);
     }
   }
 }

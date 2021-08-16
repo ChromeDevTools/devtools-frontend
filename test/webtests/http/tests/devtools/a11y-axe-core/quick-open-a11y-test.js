@@ -10,8 +10,8 @@
 
   QuickOpen.QuickOpen.show('');
 
-  const dialogWidget = UI.Dialog._instance._widget;
-  const filteredListWidget = dialogWidget._defaultFocusedChild;
+  const dialogWidget = UI.Dialog.instance.widget();
+  const filteredListWidget = dialogWidget.defaultFocusedChild;
   TestRunner.assertTrue(filteredListWidget instanceof QuickOpen.FilteredListWidget);
 
   await AxeCoreTestRunner.runValidation(filteredListWidget.contentElement);

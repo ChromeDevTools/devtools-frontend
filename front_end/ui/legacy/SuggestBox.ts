@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
@@ -79,61 +77,61 @@ export interface SuggestBoxDelegate {
 }
 
 export class SuggestBox implements ListDelegate<Suggestion> {
-  _suggestBoxDelegate: SuggestBoxDelegate;
-  _maxItemsHeight: number|undefined;
-  _rowHeight: number;
-  _userEnteredText: string;
-  _defaultSelectionIsDimmed: boolean;
-  _onlyCompletion: Suggestion|null;
-  _items: ListModel<Suggestion>;
-  _list: ListControl<Suggestion>;
-  _element: HTMLDivElement;
-  _glassPane: GlassPane;
+  private readonly suggestBoxDelegate: SuggestBoxDelegate;
+  private readonly maxItemsHeight: number|undefined;
+  private rowHeight: number;
+  private userEnteredText: string;
+  private readonly defaultSelectionIsDimmed: boolean;
+  private onlyCompletion: Suggestion|null;
+  private readonly items: ListModel<Suggestion>;
+  private readonly list: ListControl<Suggestion>;
+  element: HTMLDivElement;
+  private readonly glassPane: GlassPane;
 
   constructor(suggestBoxDelegate: SuggestBoxDelegate, maxItemsHeight?: number) {
-    this._suggestBoxDelegate = suggestBoxDelegate;
-    this._maxItemsHeight = maxItemsHeight;
-    this._rowHeight = 17;
-    this._userEnteredText = '';
-    this._defaultSelectionIsDimmed = false;
+    this.suggestBoxDelegate = suggestBoxDelegate;
+    this.maxItemsHeight = maxItemsHeight;
+    this.rowHeight = 17;
+    this.userEnteredText = '';
+    this.defaultSelectionIsDimmed = false;
 
-    this._onlyCompletion = null;
+    this.onlyCompletion = null;
 
-    this._items = new ListModel();
-    this._list = new ListControl(this._items, this, ListMode.EqualHeightItems);
-    this._element = this._list.element;
-    this._element.classList.add('suggest-box');
-    this._element.addEventListener('mousedown', event => event.preventDefault(), true);
-    this._element.addEventListener('click', this._onClick.bind(this), false);
+    this.items = new ListModel();
+    this.list = new ListControl(this.items, this, ListMode.EqualHeightItems);
+    this.element = this.list.element;
+    this.element.classList.add('suggest-box');
+    this.element.addEventListener('mousedown', event => event.preventDefault(), true);
+    this.element.addEventListener('click', this.onClick.bind(this), false);
 
-    this._glassPane = new GlassPane();
-    this._glassPane.setAnchorBehavior(AnchorBehavior.PreferBottom);
-    this._glassPane.setOutsideClickCallback(this.hide.bind(this));
+    this.glassPane = new GlassPane();
+    this.glassPane.setAnchorBehavior(AnchorBehavior.PreferBottom);
+    this.glassPane.setOutsideClickCallback(this.hide.bind(this));
     const shadowRoot = createShadowRootWithCoreStyles(
-        this._glassPane.contentElement, {cssFile: 'ui/legacy/suggestBox.css', delegatesFocus: undefined});
-    shadowRoot.appendChild(this._element);
+        this.glassPane.contentElement, {cssFile: 'ui/legacy/suggestBox.css', delegatesFocus: undefined});
+    shadowRoot.appendChild(this.element);
   }
 
   visible(): boolean {
-    return this._glassPane.isShowing();
+    return this.glassPane.isShowing();
   }
 
   setPosition(anchorBox: AnchorBox): void {
-    this._glassPane.setContentAnchorBox(anchorBox);
+    this.glassPane.setContentAnchorBox(anchorBox);
   }
 
   setAnchorBehavior(behavior: AnchorBehavior): void {
-    this._glassPane.setAnchorBehavior(behavior);
+    this.glassPane.setAnchorBehavior(behavior);
   }
 
-  _updateMaxSize(items: Suggestion[]): void {
-    const maxWidth = this._maxWidth(items);
-    const length = this._maxItemsHeight ? Math.min(this._maxItemsHeight, items.length) : items.length;
-    const maxHeight = length * this._rowHeight;
-    this._glassPane.setMaxContentSize(new Size(maxWidth, maxHeight));
+  private updateMaxSize(items: Suggestion[]): void {
+    const maxWidth = this.maxWidth(items);
+    const length = this.maxItemsHeight ? Math.min(this.maxItemsHeight, items.length) : items.length;
+    const maxHeight = length * this.rowHeight;
+    this.glassPane.setMaxContentSize(new Size(maxWidth, maxHeight));
   }
 
-  _maxWidth(items: Suggestion[]): number {
+  private maxWidth(items: Suggestion[]): number {
     const kMaxWidth = 300;
     if (!items.length) {
       return kMaxWidth;
@@ -149,70 +147,70 @@ export class SuggestBox implements ListDelegate<Suggestion> {
     }
     const element = this.createElementForItem((maxItem as Suggestion));
     const preferredWidth =
-        measurePreferredSize(element, this._element).width + measuredScrollbarWidth(this._element.ownerDocument);
+        measurePreferredSize(element, this.element).width + measuredScrollbarWidth(this.element.ownerDocument);
     return Math.min(kMaxWidth, preferredWidth);
   }
 
-  _show(): void {
+  private show(): void {
     if (this.visible()) {
       return;
     }
     // TODO(dgozman): take document as a parameter.
-    this._glassPane.show(document);
+    this.glassPane.show(document);
     const suggestion = ({text: '1', subtitle: '12'} as Suggestion);
-    this._rowHeight = measurePreferredSize(this.createElementForItem(suggestion), this._element).height;
-    ARIAUtils.setControls(this._suggestBoxDelegate.ariaControlledBy(), this._element);
-    ARIAUtils.setExpanded(this._suggestBoxDelegate.ariaControlledBy(), true);
+    this.rowHeight = measurePreferredSize(this.createElementForItem(suggestion), this.element).height;
+    ARIAUtils.setControls(this.suggestBoxDelegate.ariaControlledBy(), this.element);
+    ARIAUtils.setExpanded(this.suggestBoxDelegate.ariaControlledBy(), true);
   }
 
   hide(): void {
     if (!this.visible()) {
       return;
     }
-    this._glassPane.hide();
-    ARIAUtils.setControls(this._suggestBoxDelegate.ariaControlledBy(), null);
-    ARIAUtils.setExpanded(this._suggestBoxDelegate.ariaControlledBy(), false);
+    this.glassPane.hide();
+    ARIAUtils.setControls(this.suggestBoxDelegate.ariaControlledBy(), null);
+    ARIAUtils.setExpanded(this.suggestBoxDelegate.ariaControlledBy(), false);
   }
 
-  _applySuggestion(isIntermediateSuggestion?: boolean): boolean {
-    if (this._onlyCompletion) {
+  private applySuggestion(isIntermediateSuggestion?: boolean): boolean {
+    if (this.onlyCompletion) {
       isIntermediateSuggestion ?
           ARIAUtils.alert(i18nString(
               UIStrings.sSuggestionSOfS,
-              {PH1: this._onlyCompletion.text, PH2: this._list.selectedIndex() + 1, PH3: this._items.length})) :
-          ARIAUtils.alert(i18nString(UIStrings.sSuggestionSSelected, {PH1: this._onlyCompletion.text}));
-      this._suggestBoxDelegate.applySuggestion(this._onlyCompletion, isIntermediateSuggestion);
+              {PH1: this.onlyCompletion.text, PH2: this.list.selectedIndex() + 1, PH3: this.items.length})) :
+          ARIAUtils.alert(i18nString(UIStrings.sSuggestionSSelected, {PH1: this.onlyCompletion.text}));
+      this.suggestBoxDelegate.applySuggestion(this.onlyCompletion, isIntermediateSuggestion);
       return true;
     }
-    const suggestion = this._list.selectedItem();
+    const suggestion = this.list.selectedItem();
     if (suggestion && suggestion.text) {
       isIntermediateSuggestion ?
           ARIAUtils.alert(i18nString(UIStrings.sSuggestionSOfS, {
             PH1: suggestion.title || suggestion.text,
-            PH2: this._list.selectedIndex() + 1,
-            PH3: this._items.length,
+            PH2: this.list.selectedIndex() + 1,
+            PH3: this.items.length,
           })) :
           ARIAUtils.alert(i18nString(UIStrings.sSuggestionSSelected, {PH1: suggestion.title || suggestion.text}));
     }
-    this._suggestBoxDelegate.applySuggestion(suggestion, isIntermediateSuggestion);
+    this.suggestBoxDelegate.applySuggestion(suggestion, isIntermediateSuggestion);
 
     return this.visible() && Boolean(suggestion);
   }
 
   acceptSuggestion(): boolean {
-    const result = this._applySuggestion();
+    const result = this.applySuggestion();
     this.hide();
     if (!result) {
       return false;
     }
 
-    this._suggestBoxDelegate.acceptSuggestion();
+    this.suggestBoxDelegate.acceptSuggestion();
 
     return true;
   }
 
   createElementForItem(item: Suggestion): Element {
-    const query = this._userEnteredText;
+    const query = this.userEnteredText;
     const element = document.createElement('div');
     element.classList.add('suggest-box-content-item');
     element.classList.add('source-code');
@@ -254,7 +252,7 @@ export class SuggestBox implements ListDelegate<Suggestion> {
   }
 
   heightForItem(_item: Suggestion): number {
-    return this._rowHeight;
+    return this.rowHeight;
   }
 
   isItemSelectable(_item: Suggestion): boolean {
@@ -270,25 +268,25 @@ export class SuggestBox implements ListDelegate<Suggestion> {
       toElement.classList.add('selected');
       toElement.classList.add('force-white-icons');
     }
-    this._applySuggestion(true);
+    this.applySuggestion(true);
   }
 
   updateSelectedItemARIA(_fromElement: Element|null, _toElement: Element|null): boolean {
     return false;
   }
 
-  _onClick(event: Event): void {
-    const item = this._list.itemForNode((event.target as Node | null));
+  private onClick(event: Event): void {
+    const item = this.list.itemForNode((event.target as Node | null));
     if (!item) {
       return;
     }
 
-    this._list.selectItem(item);
+    this.list.selectItem(item);
     this.acceptSuggestion();
     event.consume(true);
   }
 
-  _canShowBox(
+  private canShowBox(
       completions: Suggestion[], highestPriorityItem: Suggestion|null, canShowForSingleItem: boolean,
       userEnteredText: string): boolean {
     if (!completions || !completions.length) {
@@ -311,27 +309,27 @@ export class SuggestBox implements ListDelegate<Suggestion> {
   updateSuggestions(
       anchorBox: AnchorBox, completions: Suggestion[], selectHighestPriority: boolean, canShowForSingleItem: boolean,
       userEnteredText: string): void {
-    this._onlyCompletion = null;
+    this.onlyCompletion = null;
     const highestPriorityItem =
         selectHighestPriority ? completions.reduce((a, b) => (a.priority || 0) >= (b.priority || 0) ? a : b) : null;
-    if (this._canShowBox(completions, highestPriorityItem, canShowForSingleItem, userEnteredText)) {
-      this._userEnteredText = userEnteredText;
+    if (this.canShowBox(completions, highestPriorityItem, canShowForSingleItem, userEnteredText)) {
+      this.userEnteredText = userEnteredText;
 
-      this._show();
-      this._updateMaxSize(completions);
-      this._glassPane.setContentAnchorBox(anchorBox);
-      this._list.invalidateItemHeight();
-      this._items.replaceAll(completions);
+      this.show();
+      this.updateMaxSize(completions);
+      this.glassPane.setContentAnchorBox(anchorBox);
+      this.list.invalidateItemHeight();
+      this.items.replaceAll(completions);
 
       if (highestPriorityItem && !highestPriorityItem.isSecondary) {
-        this._list.selectItem(highestPriorityItem, true);
+        this.list.selectItem(highestPriorityItem, true);
       } else {
-        this._list.selectItem(null);
+        this.list.selectItem(null);
       }
     } else {
       if (completions.length === 1) {
-        this._onlyCompletion = completions[0];
-        this._applySuggestion(true);
+        this.onlyCompletion = completions[0];
+        this.applySuggestion(true);
       }
       this.hide();
     }
@@ -342,19 +340,19 @@ export class SuggestBox implements ListDelegate<Suggestion> {
       case 'Enter':
         return this.enterKeyPressed();
       case 'ArrowUp':
-        return this._list.selectPreviousItem(true, false);
+        return this.list.selectPreviousItem(true, false);
       case 'ArrowDown':
-        return this._list.selectNextItem(true, false);
+        return this.list.selectNextItem(true, false);
       case 'PageUp':
-        return this._list.selectItemPreviousPage(false);
+        return this.list.selectItemPreviousPage(false);
       case 'PageDown':
-        return this._list.selectItemNextPage(false);
+        return this.list.selectItemNextPage(false);
     }
     return false;
   }
 
   enterKeyPressed(): boolean {
-    const hasSelectedItem = Boolean(this._list.selectedItem()) || Boolean(this._onlyCompletion);
+    const hasSelectedItem = Boolean(this.list.selectedItem()) || Boolean(this.onlyCompletion);
     this.acceptSuggestion();
 
     // Report the event as non-handled if there is no selected item,

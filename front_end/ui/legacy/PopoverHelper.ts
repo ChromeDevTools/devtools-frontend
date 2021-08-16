@@ -28,173 +28,171 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import {GlassPane, MarginBehavior, SizeBehavior} from './GlassPane.js';
 
 export class PopoverHelper {
-  _disableOnClick: boolean;
-  _hasPadding: boolean;
-  _getRequest: (arg0: MouseEvent) => PopoverRequest | null;
-  _scheduledRequest: PopoverRequest|null;
-  _hidePopoverCallback: (() => void)|null;
-  _container: Element;
-  _showTimeout: number;
-  _hideTimeout: number;
-  _hidePopoverTimer: number|null;
-  _showPopoverTimer: number|null;
-  _boundMouseDown: (event: Event) => void;
-  _boundMouseMove: (ev: Event) => void;
-  _boundMouseOut: (event: Event) => void;
+  private disableOnClick: boolean;
+  private hasPadding: boolean;
+  private getRequest: (arg0: MouseEvent) => PopoverRequest | null;
+  private scheduledRequest: PopoverRequest|null;
+  private hidePopoverCallback: (() => void)|null;
+  private readonly container: Element;
+  private showTimeout: number;
+  private hideTimeout: number;
+  private hidePopoverTimer: number|null;
+  private showPopoverTimer: number|null;
+  private readonly boundMouseDown: (event: Event) => void;
+  private readonly boundMouseMove: (ev: Event) => void;
+  private readonly boundMouseOut: (event: Event) => void;
   constructor(container: Element, getRequest: (arg0: MouseEvent) => PopoverRequest | null) {
-    this._disableOnClick = false;
-    this._hasPadding = false;
-    this._getRequest = getRequest;
-    this._scheduledRequest = null;
-    this._hidePopoverCallback = null;
-    this._container = container;
-    this._showTimeout = 0;
-    this._hideTimeout = 0;
-    this._hidePopoverTimer = null;
-    this._showPopoverTimer = null;
-    this._boundMouseDown = this._mouseDown.bind(this);
-    this._boundMouseMove = this._mouseMove.bind(this);
-    this._boundMouseOut = this._mouseOut.bind(this);
-    this._container.addEventListener('mousedown', this._boundMouseDown, false);
-    this._container.addEventListener('mousemove', this._boundMouseMove, false);
-    this._container.addEventListener('mouseout', this._boundMouseOut, false);
+    this.disableOnClick = false;
+    this.hasPadding = false;
+    this.getRequest = getRequest;
+    this.scheduledRequest = null;
+    this.hidePopoverCallback = null;
+    this.container = container;
+    this.showTimeout = 0;
+    this.hideTimeout = 0;
+    this.hidePopoverTimer = null;
+    this.showPopoverTimer = null;
+    this.boundMouseDown = this.mouseDown.bind(this);
+    this.boundMouseMove = this.mouseMove.bind(this);
+    this.boundMouseOut = this.mouseOut.bind(this);
+    this.container.addEventListener('mousedown', this.boundMouseDown, false);
+    this.container.addEventListener('mousemove', this.boundMouseMove, false);
+    this.container.addEventListener('mouseout', this.boundMouseOut, false);
     this.setTimeout(1000);
   }
 
   setTimeout(showTimeout: number, hideTimeout?: number): void {
-    this._showTimeout = showTimeout;
-    this._hideTimeout = typeof hideTimeout === 'number' ? hideTimeout : showTimeout / 2;
+    this.showTimeout = showTimeout;
+    this.hideTimeout = typeof hideTimeout === 'number' ? hideTimeout : showTimeout / 2;
   }
 
   setHasPadding(hasPadding: boolean): void {
-    this._hasPadding = hasPadding;
+    this.hasPadding = hasPadding;
   }
 
   setDisableOnClick(disableOnClick: boolean): void {
-    this._disableOnClick = disableOnClick;
+    this.disableOnClick = disableOnClick;
   }
 
-  _eventInScheduledContent(ev: Event): boolean {
+  private eventInScheduledContent(ev: Event): boolean {
     const event = (ev as MouseEvent);
-    return this._scheduledRequest ? this._scheduledRequest.box.contains(event.clientX, event.clientY) : false;
+    return this.scheduledRequest ? this.scheduledRequest.box.contains(event.clientX, event.clientY) : false;
   }
 
-  _mouseDown(event: Event): void {
-    if (this._disableOnClick) {
+  private mouseDown(event: Event): void {
+    if (this.disableOnClick) {
       this.hidePopover();
       return;
     }
-    if (this._eventInScheduledContent(event)) {
+    if (this.eventInScheduledContent(event)) {
       return;
     }
 
-    this._startHidePopoverTimer(0);
-    this._stopShowPopoverTimer();
-    this._startShowPopoverTimer((event as MouseEvent), 0);
+    this.startHidePopoverTimer(0);
+    this.stopShowPopoverTimer();
+    this.startShowPopoverTimer((event as MouseEvent), 0);
   }
 
-  _mouseMove(ev: Event): void {
+  private mouseMove(ev: Event): void {
     const event = (ev as MouseEvent);
     // Pretend that nothing has happened.
-    if (this._eventInScheduledContent(event)) {
+    if (this.eventInScheduledContent(event)) {
       return;
     }
 
-    this._startHidePopoverTimer(this._hideTimeout);
-    this._stopShowPopoverTimer();
-    if (event.which && this._disableOnClick) {
+    this.startHidePopoverTimer(this.hideTimeout);
+    this.stopShowPopoverTimer();
+    if (event.which && this.disableOnClick) {
       return;
     }
-    this._startShowPopoverTimer(event, this.isPopoverVisible() ? this._showTimeout * 0.6 : this._showTimeout);
+    this.startShowPopoverTimer(event, this.isPopoverVisible() ? this.showTimeout * 0.6 : this.showTimeout);
   }
 
-  _popoverMouseMove(_event: Event): void {
-    this._stopHidePopoverTimer();
+  private popoverMouseMove(_event: Event): void {
+    this.stopHidePopoverTimer();
   }
 
-  _popoverMouseOut(popover: GlassPane, ev: Event): void {
+  private popoverMouseOut(popover: GlassPane, ev: Event): void {
     const event = (ev as MouseEvent);
     if (!popover.isShowing()) {
       return;
     }
     const node = (event.relatedTarget as Node | null);
     if (node && !node.isSelfOrDescendant(popover.contentElement)) {
-      this._startHidePopoverTimer(this._hideTimeout);
+      this.startHidePopoverTimer(this.hideTimeout);
     }
   }
 
-  _mouseOut(event: Event): void {
+  private mouseOut(event: Event): void {
     if (!this.isPopoverVisible()) {
       return;
     }
-    if (!this._eventInScheduledContent(event)) {
-      this._startHidePopoverTimer(this._hideTimeout);
+    if (!this.eventInScheduledContent(event)) {
+      this.startHidePopoverTimer(this.hideTimeout);
     }
   }
 
-  _startHidePopoverTimer(timeout: number): void {
+  private startHidePopoverTimer(timeout: number): void {
     // User has |timeout| ms to reach the popup.
-    if (!this._hidePopoverCallback || this._hidePopoverTimer) {
+    if (!this.hidePopoverCallback || this.hidePopoverTimer) {
       return;
     }
 
-    this._hidePopoverTimer = window.setTimeout(() => {
-      this._hidePopover();
-      this._hidePopoverTimer = null;
+    this.hidePopoverTimer = window.setTimeout(() => {
+      this.hidePopover();
+      this.hidePopoverTimer = null;
     }, timeout);
   }
 
-  _startShowPopoverTimer(event: MouseEvent, timeout: number): void {
-    this._scheduledRequest = this._getRequest.call(null, event);
-    if (!this._scheduledRequest) {
+  private startShowPopoverTimer(event: MouseEvent, timeout: number): void {
+    this.scheduledRequest = this.getRequest.call(null, event);
+    if (!this.scheduledRequest) {
       return;
     }
 
-    this._showPopoverTimer = window.setTimeout(() => {
-      this._showPopoverTimer = null;
-      this._stopHidePopoverTimer();
-      this._hidePopover();
+    this.showPopoverTimer = window.setTimeout(() => {
+      this.showPopoverTimer = null;
+      this.stopHidePopoverTimer();
+      this.hidePopoverInternal();
       const document = ((event.target as Node).ownerDocument) as Document;
-      this._showPopover(document);
+      this.showPopover(document);
     }, timeout);
   }
 
-  _stopShowPopoverTimer(): void {
-    if (!this._showPopoverTimer) {
+  private stopShowPopoverTimer(): void {
+    if (!this.showPopoverTimer) {
       return;
     }
-    clearTimeout(this._showPopoverTimer);
-    this._showPopoverTimer = null;
+    clearTimeout(this.showPopoverTimer);
+    this.showPopoverTimer = null;
   }
 
   isPopoverVisible(): boolean {
-    return Boolean(this._hidePopoverCallback);
+    return Boolean(this.hidePopoverCallback);
   }
 
   hidePopover(): void {
-    this._stopShowPopoverTimer();
-    this._hidePopover();
+    this.stopShowPopoverTimer();
+    this.hidePopoverInternal();
   }
 
-  _hidePopover(): void {
-    if (!this._hidePopoverCallback) {
+  private hidePopoverInternal(): void {
+    if (!this.hidePopoverCallback) {
       return;
     }
-    this._hidePopoverCallback.call(null);
-    this._hidePopoverCallback = null;
+    this.hidePopoverCallback.call(null);
+    this.hidePopoverCallback = null;
   }
 
-  _showPopover(document: Document): void {
+  private showPopover(document: Document): void {
     const popover = new GlassPane();
     popover.registerRequiredCSS('ui/legacy/popover.css');
     popover.setSizeBehavior(SizeBehavior.MeasureContent);
     popover.setMarginBehavior(MarginBehavior.Arrow);
-    const request = this._scheduledRequest;
+    const request = this.scheduledRequest;
     if (!request) {
       return;
     }
@@ -203,7 +201,7 @@ export class PopoverHelper {
         return;
       }
 
-      if (this._scheduledRequest !== request) {
+      if (this.scheduledRequest !== request) {
         if (request.hide) {
           request.hide.call(null);
         }
@@ -217,13 +215,13 @@ export class PopoverHelper {
       }
       popoverHelperInstance = this;
 
-      popover.contentElement.classList.toggle('has-padding', this._hasPadding);
-      popover.contentElement.addEventListener('mousemove', this._popoverMouseMove.bind(this), true);
-      popover.contentElement.addEventListener('mouseout', this._popoverMouseOut.bind(this, popover), true);
+      popover.contentElement.classList.toggle('has-padding', this.hasPadding);
+      popover.contentElement.addEventListener('mousemove', this.popoverMouseMove.bind(this), true);
+      popover.contentElement.addEventListener('mouseout', this.popoverMouseOut.bind(this, popover), true);
       popover.setContentAnchorBox(request.box);
       popover.show(document);
 
-      this._hidePopoverCallback = (): void => {
+      this.hidePopoverCallback = (): void => {
         if (request.hide) {
           request.hide.call(null);
         }
@@ -233,22 +231,22 @@ export class PopoverHelper {
     });
   }
 
-  _stopHidePopoverTimer(): void {
-    if (!this._hidePopoverTimer) {
+  private stopHidePopoverTimer(): void {
+    if (!this.hidePopoverTimer) {
       return;
     }
-    clearTimeout(this._hidePopoverTimer);
-    this._hidePopoverTimer = null;
+    clearTimeout(this.hidePopoverTimer);
+    this.hidePopoverTimer = null;
 
     // We know that we reached the popup, but we might have moved over other elements.
     // Discard pending command.
-    this._stopShowPopoverTimer();
+    this.stopShowPopoverTimer();
   }
 
   dispose(): void {
-    this._container.removeEventListener('mousedown', this._boundMouseDown, false);
-    this._container.removeEventListener('mousemove', this._boundMouseMove, false);
-    this._container.removeEventListener('mouseout', this._boundMouseOut, false);
+    this.container.removeEventListener('mousedown', this.boundMouseDown, false);
+    this.container.removeEventListener('mousemove', this.boundMouseMove, false);
+    this.container.removeEventListener('mouseout', this.boundMouseOut, false);
   }
 }
 

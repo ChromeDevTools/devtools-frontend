@@ -154,7 +154,7 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
   // unloaded.
   async selectedNodeChanged(inspectedNode: SDK.DOMModel.DOMNode): Promise<void> {
     // We only want to do this when the AccessibilityTree is visible.
-    if (!this._visible) {
+    if (!this.visibleInternal) {
       return;
     }
     if (inspectedNode === this.inspectedDOMNode) {

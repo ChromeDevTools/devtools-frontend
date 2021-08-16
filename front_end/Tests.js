@@ -772,7 +772,7 @@
   TestSuite.prototype.testForwardedKeysChanged = function() {
     this.takeControl();
 
-    this.addSniffer(self.UI.shortcutRegistry, '_registerBindings', () => {
+    this.addSniffer(self.UI.shortcutRegistry, 'registerBindings', () => {
       self.SDK.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent(
           {type: 'rawKeyDown', key: 'F1', windowsVirtualKeyCode: 112, nativeVirtualKeyCode: 112});
     });

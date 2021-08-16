@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type {Action} from './ActionRegistration.js';
 import {getRegisteredActionExtensions} from './ActionRegistration.js';
 import {Context} from './Context.js';
@@ -11,10 +9,10 @@ import {Context} from './Context.js';
 let actionRegistryInstance: ActionRegistry|undefined;
 
 export class ActionRegistry {
-  _actionsById: Map<string, Action>;
+  private readonly actionsById: Map<string, Action>;
   private constructor() {
-    this._actionsById = new Map();
-    this._registerActions();
+    this.actionsById = new Map();
+    this.registerActions();
   }
 
   static instance(opts: {
@@ -32,9 +30,9 @@ export class ActionRegistry {
     actionRegistryInstance = undefined;
   }
 
-  _registerActions(): void {
+  private registerActions(): void {
     for (const action of getRegisteredActionExtensions()) {
-      this._actionsById.set(action.id(), action);
+      this.actionsById.set(action.id(), action);
       if (!action.canInstantiate()) {
         action.setEnabled(false);
       }
@@ -42,17 +40,17 @@ export class ActionRegistry {
   }
 
   availableActions(): Action[] {
-    return this.applicableActions([...this._actionsById.keys()], Context.instance());
+    return this.applicableActions([...this.actionsById.keys()], Context.instance());
   }
 
   actions(): Action[] {
-    return [...this._actionsById.values()];
+    return [...this.actionsById.values()];
   }
 
   applicableActions(actionIds: string[], context: Context): Action[] {
     const applicableActions: Action[] = [];
     for (const actionId of actionIds) {
-      const action = this._actionsById.get(actionId);
+      const action = this.actionsById.get(actionId);
       if (action && action.enabled()) {
         if (isActionApplicableToContextTypes((action as Action), context.flavors())) {
           applicableActions.push((action as Action));
@@ -78,6 +76,6 @@ export class ActionRegistry {
   }
 
   action(actionId: string): Action|null {
-    return this._actionsById.get(actionId) || null;
+    return this.actionsById.get(actionId) || null;
   }
 }

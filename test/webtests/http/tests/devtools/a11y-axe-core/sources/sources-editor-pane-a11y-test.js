@@ -38,7 +38,7 @@
   async function runTest() {
     // Verify contents of the TabHeader to make sure files are open
     const tabbedPane = UI.panels.sources.sourcesView().editorContainer.tabbedPane;
-    const tabs = tabbedPane._tabs;
+    const tabs = tabbedPane.tabs;
     TestRunner.addResult('All tabs:');
     tabs.forEach(tab => TestRunner.addResult(tab.title));
     TestRunner.addResult('\n');

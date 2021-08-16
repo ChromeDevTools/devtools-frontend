@@ -2,21 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import {registerCustomElement} from './utils/register-custom-element.js';
 
 let iconConstructor: (() => Element)|null = null;
 
 export class Icon extends HTMLSpanElement {
-  _descriptor: Descriptor|null;
-  _spriteSheet: SpriteSheet|null;
-  _iconType: string;
+  private descriptor: Descriptor|null;
+  private spriteSheet: SpriteSheet|null;
+  private iconType: string;
   constructor() {
     super();
-    this._descriptor = null;
-    this._spriteSheet = null;
-    this._iconType = '';
+    this.descriptor = null;
+    this.spriteSheet = null;
+    this.iconType = '';
   }
 
   static create(iconType?: string, className?: string): Icon {
@@ -35,57 +33,57 @@ export class Icon extends HTMLSpanElement {
   }
 
   setIconType(iconType: string): void {
-    if (this._descriptor) {
+    if (this.descriptor) {
       this.style.removeProperty('--spritesheet-position');
       this.style.removeProperty('width');
       this.style.removeProperty('height');
-      this._toggleClasses(false);
-      this._iconType = '';
-      this._descriptor = null;
-      this._spriteSheet = null;
+      this.toggleClasses(false);
+      this.iconType = '';
+      this.descriptor = null;
+      this.spriteSheet = null;
     }
     const descriptor = descriptors.get(iconType) || null;
     if (descriptor) {
-      this._iconType = iconType;
-      this._descriptor = descriptor;
-      this._spriteSheet = spriteSheets.get(this._descriptor.spritesheet) || null;
-      if (!this._spriteSheet) {
-        throw new Error(`ERROR: icon ${this._iconType} has unknown spritesheet: ${this._descriptor.spritesheet}`);
+      this.iconType = iconType;
+      this.descriptor = descriptor;
+      this.spriteSheet = spriteSheets.get(this.descriptor.spritesheet) || null;
+      if (!this.spriteSheet) {
+        throw new Error(`ERROR: icon ${this.iconType} has unknown spritesheet: ${this.descriptor.spritesheet}`);
       }
-      this.style.setProperty('--spritesheet-position', this._propertyValue());
-      this.style.setProperty('width', this._spriteSheet.cellWidth + 'px');
-      this.style.setProperty('height', this._spriteSheet.cellHeight + 'px');
-      this._toggleClasses(true);
+      this.style.setProperty('--spritesheet-position', this.propertyValue());
+      this.style.setProperty('width', this.spriteSheet.cellWidth + 'px');
+      this.style.setProperty('height', this.spriteSheet.cellHeight + 'px');
+      this.toggleClasses(true);
     } else if (iconType) {
       throw new Error(`ERROR: failed to find icon descriptor for type: ${iconType}`);
     }
   }
 
-  _toggleClasses(value: boolean): void {
-    if (this._descriptor) {
-      this.classList.toggle('spritesheet-' + this._descriptor.spritesheet, value);
-      this.classList.toggle(this._iconType, value);
-      this.classList.toggle('icon-mask', value && Boolean(this._descriptor.isMask));
-      this.classList.toggle('icon-invert', value && Boolean(this._descriptor.invert));
+  private toggleClasses(value: boolean): void {
+    if (this.descriptor) {
+      this.classList.toggle('spritesheet-' + this.descriptor.spritesheet, value);
+      this.classList.toggle(this.iconType, value);
+      this.classList.toggle('icon-mask', value && Boolean(this.descriptor.isMask));
+      this.classList.toggle('icon-invert', value && Boolean(this.descriptor.invert));
     }
   }
 
-  _propertyValue(): string {
-    if (!this._descriptor || !this._spriteSheet) {
+  private propertyValue(): string {
+    if (!this.descriptor || !this.spriteSheet) {
       throw new Error('Descriptor and spriteSheet expected to be present');
     }
-    if (!this._descriptor.coordinates) {
-      if (!this._descriptor.position || !_positionRegex.test(this._descriptor.position)) {
-        throw new Error(`ERROR: icon '${this._iconType}' has malformed position: '${this._descriptor.position}'`);
+    if (!this.descriptor.coordinates) {
+      if (!this.descriptor.position || !_positionRegex.test(this.descriptor.position)) {
+        throw new Error(`ERROR: icon '${this.iconType}' has malformed position: '${this.descriptor.position}'`);
       }
-      const column = this._descriptor.position[0].toLowerCase().charCodeAt(0) - 97;
-      const row = parseInt(this._descriptor.position.substring(1), 10) - 1;
-      this._descriptor.coordinates = {
-        x: -(this._spriteSheet.cellWidth + this._spriteSheet.padding) * column,
-        y: (this._spriteSheet.cellHeight + this._spriteSheet.padding) * (row + 1) - this._spriteSheet.padding,
+      const column = this.descriptor.position[0].toLowerCase().charCodeAt(0) - 97;
+      const row = parseInt(this.descriptor.position.substring(1), 10) - 1;
+      this.descriptor.coordinates = {
+        x: -(this.spriteSheet.cellWidth + this.spriteSheet.padding) * column,
+        y: (this.spriteSheet.cellHeight + this.spriteSheet.padding) * (row + 1) - this.spriteSheet.padding,
       };
     }
-    return `${this._descriptor.coordinates.x}px ${this._descriptor.coordinates.y}px`;
+    return `${this.descriptor.coordinates.x}px ${this.descriptor.coordinates.y}px`;
   }
 }
 

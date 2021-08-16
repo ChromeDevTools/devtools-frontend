@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 
@@ -32,110 +30,110 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class Infobar {
   element: HTMLElement;
-  _shadowRoot: ShadowRoot;
-  _contentElement: HTMLDivElement;
-  _mainRow: HTMLElement;
-  _detailsRows: HTMLElement;
-  _hasDetails: boolean;
-  _detailsMessage: string;
-  _infoContainer: HTMLElement;
-  _infoMessage: HTMLElement;
-  _infoText: HTMLElement;
-  _actionContainer: HTMLElement;
+  private readonly shadowRoot: ShadowRoot;
+  private readonly contentElement: HTMLDivElement;
+  private readonly mainRow: HTMLElement;
+  private readonly detailsRows: HTMLElement;
+  private hasDetails: boolean;
+  private detailsMessage: string;
+  private readonly infoContainer: HTMLElement;
+  private readonly infoMessage: HTMLElement;
+  private infoText: HTMLElement;
+  private readonly actionContainer: HTMLElement;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _disableSetting: Common.Settings.Setting<any>|null;
-  _closeContainer: HTMLElement;
-  _toggleElement: HTMLButtonElement;
-  _closeButton: HTMLElement;
+  private readonly disableSetting: Common.Settings.Setting<any>|null;
+  private readonly closeContainer: HTMLElement;
+  private readonly toggleElement: HTMLButtonElement;
+  private readonly closeButton: HTMLElement;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _closeCallback: (() => any)|null;
-  _parentView?: Widget;
+  private closeCallback: (() => any)|null;
+  private parentView?: Widget;
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(type: Type, text: string, actions?: InfobarAction[], disableSetting?: Common.Settings.Setting<any>) {
     this.element = document.createElement('div');
     this.element.classList.add('flex-none');
-    this._shadowRoot =
+    this.shadowRoot =
         createShadowRootWithCoreStyles(this.element, {cssFile: 'ui/legacy/infobar.css', delegatesFocus: undefined});
 
-    this._contentElement = this._shadowRoot.createChild('div', 'infobar infobar-' + type) as HTMLDivElement;
+    this.contentElement = this.shadowRoot.createChild('div', 'infobar infobar-' + type) as HTMLDivElement;
 
-    this._mainRow = this._contentElement.createChild('div', 'infobar-main-row');
-    this._detailsRows = this._contentElement.createChild('div', 'infobar-details-rows hidden');
-    this._hasDetails = false;
-    this._detailsMessage = '';
+    this.mainRow = this.contentElement.createChild('div', 'infobar-main-row');
+    this.detailsRows = this.contentElement.createChild('div', 'infobar-details-rows hidden');
+    this.hasDetails = false;
+    this.detailsMessage = '';
 
-    this._infoContainer = this._mainRow.createChild('div', 'infobar-info-container');
+    this.infoContainer = this.mainRow.createChild('div', 'infobar-info-container');
 
-    this._infoMessage = this._infoContainer.createChild('div', 'infobar-info-message');
+    this.infoMessage = this.infoContainer.createChild('div', 'infobar-info-message');
 
     // Icon is in separate file and included via CSS.
-    this._infoMessage.createChild('div', type + '-icon icon');
+    this.infoMessage.createChild('div', type + '-icon icon');
 
-    this._infoText = this._infoMessage.createChild('div', 'infobar-info-text');
-    this._infoText.textContent = text;
-    ARIAUtils.markAsAlert(this._infoText);
+    this.infoText = this.infoMessage.createChild('div', 'infobar-info-text');
+    this.infoText.textContent = text;
+    ARIAUtils.markAsAlert(this.infoText);
 
-    this._actionContainer = this._infoContainer.createChild('div', 'infobar-info-actions');
+    this.actionContainer = this.infoContainer.createChild('div', 'infobar-info-actions');
     if (actions) {
-      this._contentElement.setAttribute('role', 'group');
+      this.contentElement.setAttribute('role', 'group');
 
       for (const action of actions) {
-        const actionCallback = this._actionCallbackFactory(action);
+        const actionCallback = this.actionCallbackFactory(action);
         let buttonClass = 'infobar-button';
         if (action.highlight) {
           buttonClass += ' primary-button';
         }
 
         const button = createTextButton(action.text, actionCallback, buttonClass);
-        this._actionContainer.appendChild(button);
+        this.actionContainer.appendChild(button);
       }
     }
 
-    this._disableSetting = disableSetting || null;
+    this.disableSetting = disableSetting || null;
     if (disableSetting) {
       const disableButton =
-          createTextButton(i18nString(UIStrings.dontShowAgain), this._onDisable.bind(this), 'infobar-button');
-      this._actionContainer.appendChild(disableButton);
+          createTextButton(i18nString(UIStrings.dontShowAgain), this.onDisable.bind(this), 'infobar-button');
+      this.actionContainer.appendChild(disableButton);
     }
 
-    this._closeContainer = this._mainRow.createChild('div', 'infobar-close-container');
-    this._toggleElement = createTextButton(
-        i18nString(UIStrings.learnMore), this._onToggleDetails.bind(this), 'link-style devtools-link hidden');
-    this._closeContainer.appendChild(this._toggleElement);
-    this._closeButton = this._closeContainer.createChild('div', 'close-button', 'dt-close-button');
+    this.closeContainer = this.mainRow.createChild('div', 'infobar-close-container');
+    this.toggleElement = createTextButton(
+        i18nString(UIStrings.learnMore), this.onToggleDetails.bind(this), 'link-style devtools-link hidden');
+    this.closeContainer.appendChild(this.toggleElement);
+    this.closeButton = this.closeContainer.createChild('div', 'close-button', 'dt-close-button');
     // @ts-ignore This is a custom element defined in UIUitls.js that has a `setTabbable` that TS doesn't
     //            know about.
-    this._closeButton.setTabbable(true);
-    ARIAUtils.setDescription(this._closeButton, i18nString(UIStrings.close));
-    self.onInvokeElement(this._closeButton, this.dispose.bind(this));
+    this.closeButton.setTabbable(true);
+    ARIAUtils.setDescription(this.closeButton, i18nString(UIStrings.close));
+    self.onInvokeElement(this.closeButton, this.dispose.bind(this));
 
     if (type !== Type.Issue) {
-      this._contentElement.tabIndex = 0;
+      this.contentElement.tabIndex = 0;
     }
-    ARIAUtils.setAccessibleName(this._contentElement, text);
-    this._contentElement.addEventListener('keydown', event => {
+    ARIAUtils.setAccessibleName(this.contentElement, text);
+    this.contentElement.addEventListener('keydown', event => {
       if (event.keyCode === Keys.Esc.code) {
         this.dispose();
         event.consume();
         return;
       }
 
-      if (event.target !== this._contentElement) {
+      if (event.target !== this.contentElement) {
         return;
       }
 
-      if (event.key === 'Enter' && this._hasDetails) {
-        this._onToggleDetails();
+      if (event.key === 'Enter' && this.hasDetails) {
+        this.onToggleDetails();
         event.consume();
         return;
       }
     });
 
-    this._closeCallback = null;
+    this.closeCallback = null;
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
@@ -150,28 +148,28 @@ export class Infobar {
 
   dispose(): void {
     this.element.remove();
-    this._onResize();
-    if (this._closeCallback) {
-      this._closeCallback.call(null);
+    this.onResize();
+    if (this.closeCallback) {
+      this.closeCallback.call(null);
     }
   }
 
   setText(text: string): void {
-    this._infoText.textContent = text;
-    this._onResize();
+    this.infoText.textContent = text;
+    this.onResize();
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setCloseCallback(callback: (() => any)|null): void {
-    this._closeCallback = callback;
+    this.closeCallback = callback;
   }
 
   setParentView(parentView: Widget): void {
-    this._parentView = parentView;
+    this.parentView = parentView;
   }
 
-  _actionCallbackFactory(action: InfobarAction): () => void {
+  private actionCallbackFactory(action: InfobarAction): () => void {
     if (!action.delegate) {
       return action.dismiss ? this.dispose.bind(this) : (): void => {};
     }
@@ -188,33 +186,33 @@ export class Infobar {
            }).bind(this);
   }
 
-  _onResize(): void {
-    if (this._parentView) {
-      this._parentView.doResize();
+  private onResize(): void {
+    if (this.parentView) {
+      this.parentView.doResize();
     }
   }
 
-  _onDisable(): void {
-    if (this._disableSetting) {
-      this._disableSetting.set(true);
+  private onDisable(): void {
+    if (this.disableSetting) {
+      this.disableSetting.set(true);
     }
     this.dispose();
   }
 
-  _onToggleDetails(): void {
-    this._detailsRows.classList.remove('hidden');
-    this._toggleElement.remove();
-    this._onResize();
-    ARIAUtils.alert(this._detailsMessage);
+  private onToggleDetails(): void {
+    this.detailsRows.classList.remove('hidden');
+    this.toggleElement.remove();
+    this.onResize();
+    ARIAUtils.alert(this.detailsMessage);
   }
 
   createDetailsRowMessage(message?: string): Element {
-    this._hasDetails = true;
-    this._detailsMessage = message || '';
-    this._toggleElement.classList.remove('hidden');
-    const infobarDetailsRow = this._detailsRows.createChild('div', 'infobar-details-row');
+    this.hasDetails = true;
+    this.detailsMessage = message || '';
+    this.toggleElement.classList.remove('hidden');
+    const infobarDetailsRow = this.detailsRows.createChild('div', 'infobar-details-row');
     const detailsRowMessage = infobarDetailsRow.createChild('span', 'infobar-row-message');
-    detailsRowMessage.textContent = this._detailsMessage;
+    detailsRowMessage.textContent = this.detailsMessage;
     return detailsRowMessage;
   }
 }

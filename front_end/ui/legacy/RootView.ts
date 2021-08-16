@@ -2,13 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import {VBox} from './Widget.js';
 import {ZoomManager} from './ZoomManager.js';
 
 export class RootView extends VBox {
-  _window?: (Window&typeof globalThis)|null;
+  private window?: (Window&typeof globalThis)|null;
   constructor() {
     super();
     this.markAsRoot();
@@ -21,18 +19,18 @@ export class RootView extends VBox {
     if (document.defaultView) {
       document.defaultView.addEventListener('resize', this.doResize.bind(this), false);
     }
-    this._window = document.defaultView;
+    this.window = document.defaultView;
     this.doResize();
     this.show((document.body as Element));
   }
 
   doResize(): void {
-    if (this._window) {
+    if (this.window) {
       const size = this.constraints().minimum;
       const zoom = ZoomManager.instance().zoomFactor();
-      const right = Math.min(0, this._window.innerWidth - size.width / zoom);
+      const right = Math.min(0, this.window.innerWidth - size.width / zoom);
       this.element.style.marginRight = right + 'px';
-      const bottom = Math.min(0, this._window.innerHeight - size.height / zoom);
+      const bottom = Math.min(0, this.window.innerHeight - size.height / zoom);
       this.element.style.marginBottom = bottom + 'px';
     }
     super.doResize();

@@ -10,11 +10,11 @@
   const ignoreListWidget = await UI.viewManager.view('blackbox').widget();
 
   async function testAddPattern() {
-    const addPatternButton = ignoreListWidget._defaultFocusedElement;
+    const addPatternButton = ignoreListWidget.defaultFocusedElement;
     // Make add pattern editor visible
     addPatternButton.click();
 
-    const ignoreListInputs = ignoreListWidget.list._editor._controls;
+    const ignoreListInputs = ignoreListWidget.list.editor.controls;
     TestRunner.addResult(`Opened input box: ${Boolean(ignoreListInputs)}`);
 
     await AxeCoreTestRunner.runValidation(ignoreListWidget.contentElement);
@@ -22,17 +22,17 @@
 
   async function testPatternList() {
     ignoreListWidget.list.appendItem('test*', true);
-    TestRunner.addResult(`Added a pattern in the list: ${ignoreListWidget.list._items}`);
+    TestRunner.addResult(`Added a pattern in the list: ${ignoreListWidget.list.items}`);
     await AxeCoreTestRunner.runValidation(ignoreListWidget.contentElement);
   }
 
   async function testPatternError() {
-    const ignoreListEditor = ignoreListWidget.list._editor;
-    const patternInput = ignoreListEditor._controls[0];
+    const ignoreListEditor = ignoreListWidget.list.editor;
+    const patternInput = ignoreListEditor.controls[0];
     // Blur patternInput to run validator
     patternInput.blur();
 
-    const errorMessage = ignoreListEditor._errorMessageContainer.textContent;
+    const errorMessage = ignoreListEditor.errorMessageContainer.textContent;
     TestRunner.addResult(`Error message: ${errorMessage}`);
 
     await AxeCoreTestRunner.runValidation(ignoreListWidget.contentElement);

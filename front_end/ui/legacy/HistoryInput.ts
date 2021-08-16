@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import {Keys} from './KeyboardShortcut.js';
 import {registerCustomElement} from './utils/register-custom-element.js';
 
@@ -12,15 +10,15 @@ import {registerCustomElement} from './utils/register-custom-element.js';
 let _constructor: (() => Element)|null = null;
 
 export class HistoryInput extends HTMLInputElement {
-  _history: string[];
-  _historyPosition: number;
+  private history: string[];
+  private historyPosition: number;
 
   constructor() {
     super();
-    this._history = [''];
-    this._historyPosition = 0;
-    this.addEventListener('keydown', this._onKeyDown.bind(this), false);
-    this.addEventListener('input', this._onInput.bind(this), false);
+    this.history = [''];
+    this.historyPosition = 0;
+    this.addEventListener('keydown', this.onKeyDown.bind(this), false);
+    this.addEventListener('input', this.onInput.bind(this), false);
   }
 
   static create(): HistoryInput {
@@ -31,35 +29,35 @@ export class HistoryInput extends HTMLInputElement {
     return _constructor() as HistoryInput;
   }
 
-  _onInput(_event: Event): void {
-    if (this._history.length === this._historyPosition + 1) {
-      this._history[this._history.length - 1] = this.value;
+  private onInput(_event: Event): void {
+    if (this.history.length === this.historyPosition + 1) {
+      this.history[this.history.length - 1] = this.value;
     }
   }
 
-  _onKeyDown(ev: Event): void {
+  private onKeyDown(ev: Event): void {
     const event = (ev as KeyboardEvent);
     if (event.keyCode === Keys.Up.code) {
-      this._historyPosition = Math.max(this._historyPosition - 1, 0);
-      this.value = this._history[this._historyPosition];
+      this.historyPosition = Math.max(this.historyPosition - 1, 0);
+      this.value = this.history[this.historyPosition];
       this.dispatchEvent(new Event('input', {'bubbles': true, 'cancelable': true}));
       event.consume(true);
     } else if (event.keyCode === Keys.Down.code) {
-      this._historyPosition = Math.min(this._historyPosition + 1, this._history.length - 1);
-      this.value = this._history[this._historyPosition];
+      this.historyPosition = Math.min(this.historyPosition + 1, this.history.length - 1);
+      this.value = this.history[this.historyPosition];
       this.dispatchEvent(new Event('input', {'bubbles': true, 'cancelable': true}));
       event.consume(true);
     } else if (event.keyCode === Keys.Enter.code) {
-      this._saveToHistory();
+      this.saveToHistory();
     }
   }
 
-  _saveToHistory(): void {
-    if (this._history.length > 1 && this._history[this._history.length - 2] === this.value) {
+  private saveToHistory(): void {
+    if (this.history.length > 1 && this.history[this.history.length - 2] === this.value) {
       return;
     }
-    this._history[this._history.length - 1] = this.value;
-    this._historyPosition = this._history.length - 1;
-    this._history.push('');
+    this.history[this.history.length - 1] = this.value;
+    this.historyPosition = this.history.length - 1;
+    this.history.push('');
   }
 }

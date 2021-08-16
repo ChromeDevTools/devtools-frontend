@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Platform from '../../core/platform/platform.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
@@ -15,7 +13,7 @@ import {ElementFocusRestorer, markBeingEdited} from './UIUtils.js';
 let _defaultInstance: InplaceEditor<unknown>|null = null;
 
 export class InplaceEditor<T> {
-  _focusRestorer?: ElementFocusRestorer;
+  private focusRestorer?: ElementFocusRestorer;
   static startEditing<T>(element: Element, config?: Config<T>): Controller|null {
     if (!_defaultInstance) {
       _defaultInstance = new InplaceEditor();
@@ -45,7 +43,7 @@ export class InplaceEditor<T> {
     if (typeof oldTabIndex !== 'number' || oldTabIndex < 0) {
       element.tabIndex = 0;
     }
-    this._focusRestorer = new ElementFocusRestorer(element);
+    this.focusRestorer = new ElementFocusRestorer(element);
     editingContext.oldTabIndex = oldTabIndex;
   }
 
@@ -113,8 +111,8 @@ export class InplaceEditor<T> {
         element.removeEventListener('paste', pasteEventListener, true);
       }
 
-      if (self._focusRestorer) {
-        self._focusRestorer.restore();
+      if (self.focusRestorer) {
+        self.focusRestorer.restore();
       }
       self.closeEditor(editingContext);
     }

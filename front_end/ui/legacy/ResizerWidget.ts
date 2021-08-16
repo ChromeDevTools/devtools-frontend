@@ -2,63 +2,61 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import {elementDragStart} from './UIUtils.js';
 
 export class ResizerWidget extends Common.ObjectWrapper.ObjectWrapper {
-  _isEnabled: boolean;
-  _elements: Set<HTMLElement>;
-  _installDragOnMouseDownBound: (event: Event) => false | undefined;
-  _cursor: string;
-  _startX?: number;
-  _startY?: number;
+  private isEnabledInternal: boolean;
+  private elementsInternal: Set<HTMLElement>;
+  private readonly installDragOnMouseDownBound: (event: Event) => false | undefined;
+  private cursorInternal: string;
+  private startX?: number;
+  private startY?: number;
 
   constructor() {
     super();
 
-    this._isEnabled = true;
-    this._elements = new Set();
-    this._installDragOnMouseDownBound = this._installDragOnMouseDown.bind(this);
-    this._cursor = 'nwse-resize';
+    this.isEnabledInternal = true;
+    this.elementsInternal = new Set();
+    this.installDragOnMouseDownBound = this.installDragOnMouseDown.bind(this);
+    this.cursorInternal = 'nwse-resize';
   }
 
   isEnabled(): boolean {
-    return this._isEnabled;
+    return this.isEnabledInternal;
   }
 
   setEnabled(enabled: boolean): void {
-    this._isEnabled = enabled;
+    this.isEnabledInternal = enabled;
     this.updateElementCursors();
   }
 
   elements(): Element[] {
-    return [...this._elements];
+    return [...this.elementsInternal];
   }
 
   addElement(element: HTMLElement): void {
-    if (!this._elements.has(element)) {
-      this._elements.add(element);
-      element.addEventListener('mousedown', this._installDragOnMouseDownBound, false);
-      this._updateElementCursor(element);
+    if (!this.elementsInternal.has(element)) {
+      this.elementsInternal.add(element);
+      element.addEventListener('mousedown', this.installDragOnMouseDownBound, false);
+      this.updateElementCursor(element);
     }
   }
 
   removeElement(element: HTMLElement): void {
-    if (this._elements.has(element)) {
-      this._elements.delete(element);
-      element.removeEventListener('mousedown', this._installDragOnMouseDownBound, false);
+    if (this.elementsInternal.has(element)) {
+      this.elementsInternal.delete(element);
+      element.removeEventListener('mousedown', this.installDragOnMouseDownBound, false);
       element.style.removeProperty('cursor');
     }
   }
 
   updateElementCursors(): void {
-    this._elements.forEach(this._updateElementCursor.bind(this));
+    this.elementsInternal.forEach(this.updateElementCursor.bind(this));
   }
 
-  _updateElementCursor(element: HTMLElement): void {
-    if (this._isEnabled) {
+  private updateElementCursor(element: HTMLElement): void {
+    if (this.isEnabledInternal) {
       element.style.setProperty('cursor', this.cursor());
     } else {
       element.style.removeProperty('cursor');
@@ -66,33 +64,33 @@ export class ResizerWidget extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   cursor(): string {
-    return this._cursor;
+    return this.cursorInternal;
   }
 
   setCursor(cursor: string): void {
-    this._cursor = cursor;
+    this.cursorInternal = cursor;
     this.updateElementCursors();
   }
 
-  _installDragOnMouseDown(event: Event): false|undefined {
+  private installDragOnMouseDown(event: Event): false|undefined {
     const element = (event.target as HTMLElement);
     // Only handle drags of the nodes specified.
-    if (!this._elements.has(element)) {
+    if (!this.elementsInternal.has(element)) {
       return false;
     }
-    elementDragStart(element, this._dragStart.bind(this), event => {
-      this._drag(event);
-    }, this._dragEnd.bind(this), this.cursor(), event);
+    elementDragStart(element, this.dragStart.bind(this), event => {
+      this.drag(event);
+    }, this.dragEnd.bind(this), this.cursor(), event);
     return undefined;
   }
 
-  _dragStart(event: MouseEvent): boolean {
-    if (!this._isEnabled) {
+  private dragStart(event: MouseEvent): boolean {
+    if (!this.isEnabledInternal) {
       return false;
     }
-    this._startX = event.pageX;
-    this._startY = event.pageY;
-    this.sendDragStart(this._startX, this._startY);
+    this.startX = event.pageX;
+    this.startY = event.pageY;
+    this.sendDragStart(this.startX, this.startY);
     return true;
   }
 
@@ -100,12 +98,12 @@ export class ResizerWidget extends Common.ObjectWrapper.ObjectWrapper {
     this.dispatchEventToListeners(Events.ResizeStart, {startX: x, currentX: x, startY: y, currentY: y});
   }
 
-  _drag(event: MouseEvent): boolean {
-    if (!this._isEnabled) {
-      this._dragEnd(event);
+  private drag(event: MouseEvent): boolean {
+    if (!this.isEnabledInternal) {
+      this.dragEnd(event);
       return true;  // Cancel drag.
     }
-    this.sendDragMove((this._startX as number), event.pageX, (this._startY as number), event.pageY, event.shiftKey);
+    this.sendDragMove((this.startX as number), event.pageX, (this.startY as number), event.pageY, event.shiftKey);
     event.preventDefault();
     return false;  // Continue drag.
   }
@@ -116,10 +114,10 @@ export class ResizerWidget extends Common.ObjectWrapper.ObjectWrapper {
         {startX: startX, currentX: currentX, startY: startY, currentY: currentY, shiftKey: shiftKey});
   }
 
-  _dragEnd(_event: MouseEvent): void {
+  private dragEnd(_event: MouseEvent): void {
     this.dispatchEventToListeners(Events.ResizeEnd);
-    delete this._startX;
-    delete this._startY;
+    delete this.startX;
+    delete this.startY;
   }
 }
 
@@ -132,35 +130,35 @@ export enum Events {
 }
 
 export class SimpleResizerWidget extends ResizerWidget {
-  _isVertical: boolean;
+  private isVerticalInternal: boolean;
   constructor() {
     super();
-    this._isVertical = true;
+    this.isVerticalInternal = true;
   }
 
   isVertical(): boolean {
-    return this._isVertical;
+    return this.isVerticalInternal;
   }
 
   /**
    * Vertical widget resizes height (along y-axis).
    */
   setVertical(vertical: boolean): void {
-    this._isVertical = vertical;
+    this.isVerticalInternal = vertical;
     this.updateElementCursors();
   }
 
   cursor(): string {
-    return this._isVertical ? 'ns-resize' : 'ew-resize';
+    return this.isVerticalInternal ? 'ns-resize' : 'ew-resize';
   }
 
   sendDragStart(x: number, y: number): void {
-    const position = this._isVertical ? y : x;
+    const position = this.isVerticalInternal ? y : x;
     this.dispatchEventToListeners(Events.ResizeStart, {startPosition: position, currentPosition: position});
   }
 
   sendDragMove(startX: number, currentX: number, startY: number, currentY: number, shiftKey: boolean): void {
-    if (this._isVertical) {
+    if (this.isVerticalInternal) {
       this.dispatchEventToListeners(
           Events.ResizeUpdate, {startPosition: startY, currentPosition: currentY, shiftKey: shiftKey});
     } else {

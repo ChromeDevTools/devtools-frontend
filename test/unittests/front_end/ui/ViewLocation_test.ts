@@ -42,11 +42,11 @@ describeWithEnvironment('ViewLocation', () => {
   });
 
   it('Prepends a tab correctly', () => {
-    const thirdTab = tabbedLocation.tabbedPane()._tabsById.get('third');
+    const thirdTab = tabbedLocation.tabbedPane().tabsById.get('third');
     if (!thirdTab) {
       throw new Error('Could not find a tab');
     }
-    tabbedLocation.tabbedPane()._insertBefore(thirdTab, 0);
+    tabbedLocation.tabbedPane().insertBefore(thirdTab, 0);
     assert.deepEqual(tabbedLocation.tabbedPane().tabIds(), ['third', 'first', 'second']);
   });
 

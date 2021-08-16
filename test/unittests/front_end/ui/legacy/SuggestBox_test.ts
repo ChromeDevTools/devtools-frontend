@@ -46,7 +46,7 @@ describe('SuggestBox', () => {
     suggestBox = new UI.SuggestBox.SuggestBox(delegate);
 
     // Needed to render the `SuggestBox`.
-    UI.GlassPane.GlassPane.setContainer(suggestBox._element);
+    UI.GlassPane.GlassPane.setContainer(suggestBox.element);
   });
 
   afterEach(() => {

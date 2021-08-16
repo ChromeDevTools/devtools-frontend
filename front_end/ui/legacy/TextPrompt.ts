@@ -31,8 +31,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as DOMExtension from '../../core/dom_extension/dom_extension.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -46,63 +44,63 @@ import {ElementFocusRestorer} from './UIUtils.js';
 import {appendStyle} from './utils/append-style.js';
 
 export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements SuggestBoxDelegate {
-  _proxyElement!: HTMLElement|undefined;
-  _proxyElementDisplay: string;
-  _autocompletionTimeout: number;
-  _title: string;
-  _queryRange: TextUtils.TextRange.TextRange|null;
-  _previousText: string;
-  _currentSuggestion: Suggestion|null;
-  _completionRequestId: number;
-  _ghostTextElement: HTMLSpanElement;
-  _leftParenthesesIndices: number[];
-  _loadCompletions!: (this: null, arg1: string, arg2: string, arg3?: boolean|undefined) => Promise<Suggestion[]>;
-  _completionStopCharacters!: string;
-  _usesSuggestionBuilder!: boolean;
-  _element?: Element;
-  _boundOnKeyDown?: ((ev: Event) => void);
-  _boundOnInput?: ((ev: Event) => void);
-  _boundOnMouseWheel?: ((event: Event) => void);
-  _boundClearAutocomplete?: (() => void);
-  _contentElement?: HTMLElement;
-  _suggestBox?: SuggestBox;
-  _isEditing?: boolean;
-  _focusRestorer?: ElementFocusRestorer;
-  _blurListener?: ((arg0: Event) => void);
-  _oldTabIndex?: number;
-  _completeTimeout?: number;
-  _disableDefaultSuggestionForEmptyInput?: boolean;
+  private proxyElement!: HTMLElement|undefined;
+  private proxyElementDisplay: string;
+  private autocompletionTimeout: number;
+  private titleInternal: string;
+  private queryRange: TextUtils.TextRange.TextRange|null;
+  private previousText: string;
+  private currentSuggestion: Suggestion|null;
+  private completionRequestId: number;
+  private ghostTextElement: HTMLSpanElement;
+  private leftParenthesesIndices: number[];
+  private loadCompletions!: (this: null, arg1: string, arg2: string, arg3?: boolean|undefined) => Promise<Suggestion[]>;
+  private completionStopCharacters!: string;
+  private usesSuggestionBuilder!: boolean;
+  private elementInternal?: Element;
+  private boundOnKeyDown?: ((ev: Event) => void);
+  private boundOnInput?: ((ev: Event) => void);
+  private boundOnMouseWheel?: ((event: Event) => void);
+  private boundClearAutocomplete?: (() => void);
+  private contentElement?: HTMLElement;
+  private suggestBox?: SuggestBox;
+  private isEditing?: boolean;
+  private focusRestorer?: ElementFocusRestorer;
+  private blurListener?: ((arg0: Event) => void);
+  private oldTabIndex?: number;
+  private completeTimeout?: number;
+  private disableDefaultSuggestionForEmptyInputInternal?: boolean;
 
   constructor() {
     super();
-    this._proxyElementDisplay = 'inline-block';
-    this._autocompletionTimeout = DefaultAutocompletionTimeout;
-    this._title = '';
-    this._queryRange = null;
-    this._previousText = '';
-    this._currentSuggestion = null;
-    this._completionRequestId = 0;
-    this._ghostTextElement = document.createElement('span');
-    this._ghostTextElement.classList.add('auto-complete-text');
-    this._ghostTextElement.setAttribute('contenteditable', 'false');
-    this._leftParenthesesIndices = [];
-    ARIAUtils.markAsHidden(this._ghostTextElement);
+    this.proxyElementDisplay = 'inline-block';
+    this.autocompletionTimeout = DefaultAutocompletionTimeout;
+    this.titleInternal = '';
+    this.queryRange = null;
+    this.previousText = '';
+    this.currentSuggestion = null;
+    this.completionRequestId = 0;
+    this.ghostTextElement = document.createElement('span');
+    this.ghostTextElement.classList.add('auto-complete-text');
+    this.ghostTextElement.setAttribute('contenteditable', 'false');
+    this.leftParenthesesIndices = [];
+    ARIAUtils.markAsHidden(this.ghostTextElement);
   }
 
   initialize(
       completions: (this: null, arg1: string, arg2: string, arg3?: boolean|undefined) => Promise<Suggestion[]>,
       stopCharacters?: string, usesSuggestionBuilder?: boolean): void {
-    this._loadCompletions = completions;
-    this._completionStopCharacters = stopCharacters || ' =:[({;,!+-*/&|^<>.';
-    this._usesSuggestionBuilder = usesSuggestionBuilder || false;
+    this.loadCompletions = completions;
+    this.completionStopCharacters = stopCharacters || ' =:[({;,!+-*/&|^<>.';
+    this.usesSuggestionBuilder = usesSuggestionBuilder || false;
   }
 
   setAutocompletionTimeout(timeout: number): void {
-    this._autocompletionTimeout = timeout;
+    this.autocompletionTimeout = timeout;
   }
 
   renderAsBlock(): void {
-    this._proxyElementDisplay = 'block';
+    this.proxyElementDisplay = 'block';
   }
 
   /**
@@ -110,7 +108,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements Su
    * they should use the result of this method to attach listeners for bubbling events.
    */
   attach(element: Element): Element {
-    return this._attachInternal(element);
+    return this.attachInternal(element);
   }
 
   /**
@@ -120,66 +118,66 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements Su
    * (since the "blur" event does not bubble.)
    */
   attachAndStartEditing(element: Element, blurListener: (arg0: Event) => void): Element {
-    const proxyElement = this._attachInternal(element);
-    this._startEditing(blurListener);
+    const proxyElement = this.attachInternal(element);
+    this.startEditing(blurListener);
     return proxyElement;
   }
 
-  _attachInternal(element: Element): Element {
-    if (this._proxyElement) {
+  private attachInternal(element: Element): Element {
+    if (this.proxyElement) {
       throw 'Cannot attach an attached TextPrompt';
     }
-    this._element = element;
+    this.elementInternal = element;
 
-    this._boundOnKeyDown = this.onKeyDown.bind(this);
-    this._boundOnInput = this.onInput.bind(this);
-    this._boundOnMouseWheel = this.onMouseWheel.bind(this);
-    this._boundClearAutocomplete = this.clearAutocomplete.bind(this);
-    this._proxyElement = element.ownerDocument.createElement('span');
-    appendStyle(this._proxyElement, 'ui/legacy/textPrompt.css');
-    this._contentElement = this._proxyElement.createChild('div', 'text-prompt-root');
-    this._proxyElement.style.display = this._proxyElementDisplay;
+    this.boundOnKeyDown = this.onKeyDown.bind(this);
+    this.boundOnInput = this.onInput.bind(this);
+    this.boundOnMouseWheel = this.onMouseWheel.bind(this);
+    this.boundClearAutocomplete = this.clearAutocomplete.bind(this);
+    this.proxyElement = element.ownerDocument.createElement('span');
+    appendStyle(this.proxyElement, 'ui/legacy/textPrompt.css');
+    this.contentElement = this.proxyElement.createChild('div', 'text-prompt-root');
+    this.proxyElement.style.display = this.proxyElementDisplay;
     if (element.parentElement) {
-      element.parentElement.insertBefore(this._proxyElement, element);
+      element.parentElement.insertBefore(this.proxyElement, element);
     }
-    this._contentElement.appendChild(element);
-    this._element.classList.add('text-prompt');
-    ARIAUtils.markAsTextBox(this._element);
-    ARIAUtils.setAutocomplete(this._element, ARIAUtils.AutocompleteInteractionModel.both);
-    ARIAUtils.setHasPopup(this._element, ARIAUtils.PopupRole.ListBox);
-    this._element.setAttribute('contenteditable', 'plaintext-only');
-    this.element().addEventListener('keydown', this._boundOnKeyDown, false);
-    this._element.addEventListener('input', this._boundOnInput, false);
-    this._element.addEventListener('wheel', this._boundOnMouseWheel, false);
-    this._element.addEventListener('selectstart', this._boundClearAutocomplete, false);
-    this._element.addEventListener('blur', this._boundClearAutocomplete, false);
+    this.contentElement.appendChild(element);
+    this.elementInternal.classList.add('text-prompt');
+    ARIAUtils.markAsTextBox(this.elementInternal);
+    ARIAUtils.setAutocomplete(this.elementInternal, ARIAUtils.AutocompleteInteractionModel.both);
+    ARIAUtils.setHasPopup(this.elementInternal, ARIAUtils.PopupRole.ListBox);
+    this.elementInternal.setAttribute('contenteditable', 'plaintext-only');
+    this.element().addEventListener('keydown', this.boundOnKeyDown, false);
+    this.elementInternal.addEventListener('input', this.boundOnInput, false);
+    this.elementInternal.addEventListener('wheel', this.boundOnMouseWheel, false);
+    this.elementInternal.addEventListener('selectstart', this.boundClearAutocomplete, false);
+    this.elementInternal.addEventListener('blur', this.boundClearAutocomplete, false);
 
-    this._suggestBox = new SuggestBox(this, 20);
+    this.suggestBox = new SuggestBox(this, 20);
 
-    if (this._title) {
-      Tooltip.install(this._proxyElement, this._title);
+    if (this.titleInternal) {
+      Tooltip.install(this.proxyElement, this.titleInternal);
     }
 
-    return this._proxyElement;
+    return this.proxyElement;
   }
 
   element(): HTMLElement {
-    if (!this._element) {
+    if (!this.elementInternal) {
       throw new Error('Expected an already attached element!');
     }
-    return /** @type {!HTMLElement} */ this._element as HTMLElement;
+    return /** @type {!HTMLElement} */ this.elementInternal as HTMLElement;
   }
 
   detach(): void {
-    this._removeFromElement();
-    if (this._focusRestorer) {
-      this._focusRestorer.restore();
+    this.removeFromElement();
+    if (this.focusRestorer) {
+      this.focusRestorer.restore();
     }
-    if (this._proxyElement && this._proxyElement.parentElement) {
-      this._proxyElement.parentElement.insertBefore(this.element(), this._proxyElement);
-      this._proxyElement.remove();
+    if (this.proxyElement && this.proxyElement.parentElement) {
+      this.proxyElement.parentElement.insertBefore(this.element(), this.proxyElement);
+      this.proxyElement.remove();
     }
-    delete this._proxyElement;
+    delete this.proxyElement;
     this.element().classList.remove('text-prompt');
     this.element().removeAttribute('contenteditable');
     this.element().removeAttribute('role');
@@ -189,17 +187,17 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements Su
 
   textWithCurrentSuggestion(): string {
     const text = this.text();
-    if (!this._queryRange || !this._currentSuggestion) {
+    if (!this.queryRange || !this.currentSuggestion) {
       return text;
     }
-    const suggestion = this._currentSuggestion.text;
-    return text.substring(0, this._queryRange.startColumn) + suggestion + text.substring(this._queryRange.endColumn);
+    const suggestion = this.currentSuggestion.text;
+    return text.substring(0, this.queryRange.startColumn) + suggestion + text.substring(this.queryRange.endColumn);
   }
 
   text(): string {
     let text: string = this.element().textContent || '';
-    if (this._ghostTextElement.parentNode) {
-      const addition = this._ghostTextElement.textContent || '';
+    if (this.ghostTextElement.parentNode) {
+      const addition = this.ghostTextElement.textContent || '';
       text = text.substring(0, text.length - addition.length);
     }
     return text;
@@ -208,7 +206,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements Su
   setText(text: string): void {
     this.clearAutocomplete();
     this.element().textContent = text;
-    this._previousText = this.text();
+    this.previousText = this.text();
     if (this.element().hasFocus()) {
       this.moveCaretToEndOfPrompt();
       this.element().scrollIntoView();
@@ -244,13 +242,13 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements Su
   }
 
   title(): string {
-    return this._title;
+    return this.titleInternal;
   }
 
   setTitle(title: string): void {
-    this._title = title;
-    if (this._proxyElement) {
-      Tooltip.install(this._proxyElement, title);
+    this.titleInternal = title;
+    if (this.proxyElement) {
+      Tooltip.install(this.proxyElement, title);
     }
   }
 
@@ -275,35 +273,34 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements Su
     this.element().classList.toggle('disabled', !enabled);
   }
 
-  _removeFromElement(): void {
+  private removeFromElement(): void {
     this.clearAutocomplete();
     this.element().removeEventListener(
-        'keydown', (this._boundOnKeyDown as (this: HTMLElement, arg1: Event) => void), false);
+        'keydown', (this.boundOnKeyDown as (this: HTMLElement, arg1: Event) => void), false);
+    this.element().removeEventListener('input', (this.boundOnInput as (this: HTMLElement, arg1: Event) => void), false);
     this.element().removeEventListener(
-        'input', (this._boundOnInput as (this: HTMLElement, arg1: Event) => void), false);
+        'selectstart', (this.boundClearAutocomplete as (this: HTMLElement, arg1: Event) => void), false);
     this.element().removeEventListener(
-        'selectstart', (this._boundClearAutocomplete as (this: HTMLElement, arg1: Event) => void), false);
-    this.element().removeEventListener(
-        'blur', (this._boundClearAutocomplete as (this: HTMLElement, arg1: Event) => void), false);
-    if (this._isEditing) {
-      this._stopEditing();
+        'blur', (this.boundClearAutocomplete as (this: HTMLElement, arg1: Event) => void), false);
+    if (this.isEditing) {
+      this.stopEditing();
     }
-    if (this._suggestBox) {
-      this._suggestBox.hide();
+    if (this.suggestBox) {
+      this.suggestBox.hide();
     }
   }
 
-  _startEditing(blurListener?: ((arg0: Event) => void)): void {
-    this._isEditing = true;
-    if (this._contentElement) {
-      this._contentElement.classList.add('text-prompt-editing');
+  private startEditing(blurListener?: ((arg0: Event) => void)): void {
+    this.isEditing = true;
+    if (this.contentElement) {
+      this.contentElement.classList.add('text-prompt-editing');
     }
-    this._focusRestorer = new ElementFocusRestorer(this.element());
+    this.focusRestorer = new ElementFocusRestorer(this.element());
     if (blurListener) {
-      this._blurListener = blurListener;
-      this.element().addEventListener('blur', this._blurListener, false);
+      this.blurListener = blurListener;
+      this.element().addEventListener('blur', this.blurListener, false);
     }
-    this._oldTabIndex = this.element().tabIndex;
+    this.oldTabIndex = this.element().tabIndex;
     if (this.element().tabIndex < 0) {
       this.element().tabIndex = 0;
     }
@@ -312,15 +309,15 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements Su
     }
   }
 
-  _stopEditing(): void {
-    this.element().tabIndex = (this._oldTabIndex as number);
-    if (this._blurListener) {
-      this.element().removeEventListener('blur', this._blurListener, false);
+  private stopEditing(): void {
+    this.element().tabIndex = (this.oldTabIndex as number);
+    if (this.blurListener) {
+      this.element().removeEventListener('blur', this.blurListener, false);
     }
-    if (this._contentElement) {
-      this._contentElement.classList.remove('text-prompt-editing');
+    if (this.contentElement) {
+      this.contentElement.classList.remove('text-prompt-editing');
     }
-    delete this._isEditing;
+    delete this.isEditing;
   }
 
   onMouseWheel(_event: Event): void {
@@ -330,7 +327,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements Su
   onKeyDown(ev: Event): void {
     let handled = false;
     const event = (ev as KeyboardEvent);
-    if (this.isSuggestBoxVisible() && this._suggestBox && this._suggestBox.keyPressed(event)) {
+    if (this.isSuggestBoxVisible() && this.suggestBox && this.suggestBox.keyPressed(event)) {
       event.consume(true);
       return;
     }
@@ -349,7 +346,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements Su
       case 'ArrowRight':
       case 'ArrowDown':
       case 'End':
-        if (this._isCaretAtEndOfPrompt()) {
+        if (this.isCaretAtEndOfPrompt()) {
           handled = this.acceptAutoComplete();
         } else {
           this.clearAutocomplete();
@@ -378,15 +375,15 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements Su
     }
   }
 
-  _acceptSuggestionOnStopCharacters(key: string): boolean {
-    if (!this._currentSuggestion || !this._queryRange || key.length !== 1 || !this._completionStopCharacters ||
-        !this._completionStopCharacters.includes(key)) {
+  private acceptSuggestionOnStopCharacters(key: string): boolean {
+    if (!this.currentSuggestion || !this.queryRange || key.length !== 1 || !this.completionStopCharacters ||
+        !this.completionStopCharacters.includes(key)) {
       return false;
     }
 
-    const query = this.text().substring(this._queryRange.startColumn, this._queryRange.endColumn);
-    if (query && this._currentSuggestion.text.startsWith(query + key)) {
-      this._queryRange.endColumn += 1;
+    const query = this.text().substring(this.queryRange.startColumn, this.queryRange.endColumn);
+    if (query && this.currentSuggestion.text.startsWith(query + key)) {
+      this.queryRange.endColumn += 1;
       return this.acceptAutoComplete();
     }
     return false;
@@ -409,24 +406,24 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements Su
     }
 
     // Skip the current ')' entry if the caret is right before a ')' and there's an unmatched '('.
-    const caretPosition = this._getCaretPosition();
-    if (currentEntry === ')' && caretPosition >= 0 && this._leftParenthesesIndices.length > 0) {
+    const caretPosition = this.getCaretPosition();
+    if (currentEntry === ')' && caretPosition >= 0 && this.leftParenthesesIndices.length > 0) {
       const nextCharAtCaret = text[caretPosition];
-      if (nextCharAtCaret === ')' && this._tryMatchingLeftParenthesis(caretPosition)) {
+      if (nextCharAtCaret === ')' && this.tryMatchingLeftParenthesis(caretPosition)) {
         text = text.substring(0, caretPosition) + text.substring(caretPosition + 1);
         this.setText(text);
         return;
       }
     }
 
-    if (currentEntry && !this._acceptSuggestionOnStopCharacters(currentEntry)) {
-      const hasCommonPrefix = text.startsWith(this._previousText) || this._previousText.startsWith(text);
-      if (this._queryRange && hasCommonPrefix) {
-        this._queryRange.endColumn += text.length - this._previousText.length;
+    if (currentEntry && !this.acceptSuggestionOnStopCharacters(currentEntry)) {
+      const hasCommonPrefix = text.startsWith(this.previousText) || this.previousText.startsWith(text);
+      if (this.queryRange && hasCommonPrefix) {
+        this.queryRange.endColumn += text.length - this.previousText.length;
       }
     }
-    this._refreshGhostText();
-    this._previousText = text;
+    this.refreshGhostText();
+    this.previousText = text;
     this.dispatchEventToListeners(Events.TextChanged);
 
     this.autoCompleteSoon();
@@ -434,13 +431,13 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements Su
 
   acceptAutoComplete(): boolean {
     let result = false;
-    if (this.isSuggestBoxVisible() && this._suggestBox) {
-      result = this._suggestBox.acceptSuggestion();
+    if (this.isSuggestBoxVisible() && this.suggestBox) {
+      result = this.suggestBox.acceptSuggestion();
     }
     if (!result) {
-      result = this._acceptSuggestionInternal();
+      result = this.acceptSuggestionInternal();
     }
-    if (this._usesSuggestionBuilder && result) {
+    if (this.usesSuggestionBuilder && result) {
       // Trigger autocompletions for text prompts using suggestion builders
       this.autoCompleteSoon();
     }
@@ -450,51 +447,50 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements Su
   clearAutocomplete(): void {
     const beforeText = this.textWithCurrentSuggestion();
 
-    if (this.isSuggestBoxVisible() && this._suggestBox) {
-      this._suggestBox.hide();
+    if (this.isSuggestBoxVisible() && this.suggestBox) {
+      this.suggestBox.hide();
     }
-    this._clearAutocompleteTimeout();
-    this._queryRange = null;
-    this._refreshGhostText();
+    this.clearAutocompleteTimeout();
+    this.queryRange = null;
+    this.refreshGhostText();
 
     if (beforeText !== this.textWithCurrentSuggestion()) {
       this.dispatchEventToListeners(Events.TextChanged);
     }
   }
 
-  _refreshGhostText(): void {
-    if (this._currentSuggestion && this._currentSuggestion.hideGhostText) {
-      this._ghostTextElement.remove();
+  private refreshGhostText(): void {
+    if (this.currentSuggestion && this.currentSuggestion.hideGhostText) {
+      this.ghostTextElement.remove();
       return;
     }
-    if (this._queryRange && this._currentSuggestion && this._isCaretAtEndOfPrompt() &&
-        this._currentSuggestion.text.startsWith(this.text().substring(this._queryRange.startColumn))) {
-      this._ghostTextElement.textContent =
-          this._currentSuggestion.text.substring(this._queryRange.endColumn - this._queryRange.startColumn);
-      this.element().appendChild(this._ghostTextElement);
+    if (this.queryRange && this.currentSuggestion && this.isCaretAtEndOfPrompt() &&
+        this.currentSuggestion.text.startsWith(this.text().substring(this.queryRange.startColumn))) {
+      this.ghostTextElement.textContent =
+          this.currentSuggestion.text.substring(this.queryRange.endColumn - this.queryRange.startColumn);
+      this.element().appendChild(this.ghostTextElement);
     } else {
-      this._ghostTextElement.remove();
+      this.ghostTextElement.remove();
     }
   }
 
-  _clearAutocompleteTimeout(): void {
-    if (this._completeTimeout) {
-      clearTimeout(this._completeTimeout);
-      delete this._completeTimeout;
+  private clearAutocompleteTimeout(): void {
+    if (this.completeTimeout) {
+      clearTimeout(this.completeTimeout);
+      delete this.completeTimeout;
     }
-    this._completionRequestId++;
+    this.completionRequestId++;
   }
 
   autoCompleteSoon(force?: boolean): void {
     const immediately = this.isSuggestBoxVisible() || force;
-    if (!this._completeTimeout) {
-      this._completeTimeout =
-          setTimeout(this.complete.bind(this, force), immediately ? 0 : this._autocompletionTimeout);
+    if (!this.completeTimeout) {
+      this.completeTimeout = setTimeout(this.complete.bind(this, force), immediately ? 0 : this.autocompletionTimeout);
     }
   }
 
   async complete(force?: boolean): Promise<void> {
-    this._clearAutocompleteTimeout();
+    this.clearAutocompleteTimeout();
     const selection = this.element().getComponentSelection();
     if (!selection || selection.rangeCount === 0) {
       return;
@@ -503,7 +499,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements Su
 
     let shouldExit;
 
-    if (!force && !this._isCaretAtEndOfPrompt() && !this.isSuggestBoxVisible()) {
+    if (!force && !this.isCaretAtEndOfPrompt() && !this.isSuggestBoxVisible()) {
       shouldExit = true;
     } else if (!selection.isCollapsed) {
       shouldExit = true;
@@ -515,23 +511,23 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements Su
     }
 
     const wordQueryRange = DOMExtension.DOMExtension.rangeOfWord(
-        selectionRange.startContainer, selectionRange.startOffset, this._completionStopCharacters, this.element(),
+        selectionRange.startContainer, selectionRange.startOffset, this.completionStopCharacters, this.element(),
         'backward');
 
     const expressionRange = wordQueryRange.cloneRange();
     expressionRange.collapse(true);
     expressionRange.setStartBefore(this.element());
-    const completionRequestId = ++this._completionRequestId;
+    const completionRequestId = ++this.completionRequestId;
     const completions =
-        await this._loadCompletions.call(null, expressionRange.toString(), wordQueryRange.toString(), Boolean(force));
-    this._completionsReady(completionRequestId, (selection as Selection), wordQueryRange, Boolean(force), completions);
+        await this.loadCompletions.call(null, expressionRange.toString(), wordQueryRange.toString(), Boolean(force));
+    this.completionsReady(completionRequestId, (selection as Selection), wordQueryRange, Boolean(force), completions);
   }
 
   disableDefaultSuggestionForEmptyInput(): void {
-    this._disableDefaultSuggestionForEmptyInput = true;
+    this.disableDefaultSuggestionForEmptyInputInternal = true;
   }
 
-  _boxForAnchorAtStart(selection: Selection, textRange: Range): AnchorBox {
+  private boxForAnchorAtStart(selection: Selection, textRange: Range): AnchorBox {
     const rangeCopy = selection.getRangeAt(0).cloneRange();
     const anchorElement = document.createElement('span');
     anchorElement.textContent = '\u200B';
@@ -547,10 +543,10 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements Su
     return [];
   }
 
-  _completionsReady(
+  private completionsReady(
       completionRequestId: number, selection: Selection, originalWordQueryRange: Range, force: boolean,
       completions: Suggestion[]): void {
-    if (this._completionRequestId !== completionRequestId) {
+    if (this.completionRequestId !== completionRequestId) {
       return;
     }
 
@@ -586,41 +582,41 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements Su
     const beforeRange = document.createRange();
     beforeRange.setStart(this.element(), 0);
     beforeRange.setEnd(fullWordRange.startContainer, fullWordRange.startOffset);
-    this._queryRange = new TextUtils.TextRange.TextRange(
+    this.queryRange = new TextUtils.TextRange.TextRange(
         0, beforeRange.toString().length, 0, beforeRange.toString().length + fullWordRange.toString().length);
 
-    const shouldSelect = !this._disableDefaultSuggestionForEmptyInput || Boolean(this.text());
-    if (this._suggestBox) {
-      this._suggestBox.updateSuggestions(
-          this._boxForAnchorAtStart(selection, fullWordRange), completions, shouldSelect, !this._isCaretAtEndOfPrompt(),
+    const shouldSelect = !this.disableDefaultSuggestionForEmptyInputInternal || Boolean(this.text());
+    if (this.suggestBox) {
+      this.suggestBox.updateSuggestions(
+          this.boxForAnchorAtStart(selection, fullWordRange), completions, shouldSelect, !this.isCaretAtEndOfPrompt(),
           this.text());
     }
   }
 
   applySuggestion(suggestion: Suggestion|null, isIntermediateSuggestion?: boolean): void {
-    this._currentSuggestion = suggestion;
-    this._refreshGhostText();
+    this.currentSuggestion = suggestion;
+    this.refreshGhostText();
     if (isIntermediateSuggestion) {
       this.dispatchEventToListeners(Events.TextChanged);
     }
   }
 
   acceptSuggestion(): void {
-    this._acceptSuggestionInternal();
+    this.acceptSuggestionInternal();
   }
 
-  _acceptSuggestionInternal(): boolean {
-    if (!this._queryRange) {
+  private acceptSuggestionInternal(): boolean {
+    if (!this.queryRange) {
       return false;
     }
 
-    const suggestionLength = this._currentSuggestion ? this._currentSuggestion.text.length : 0;
-    const selectionRange = this._currentSuggestion ? this._currentSuggestion.selectionRange : null;
+    const suggestionLength = this.currentSuggestion ? this.currentSuggestion.text.length : 0;
+    const selectionRange = this.currentSuggestion ? this.currentSuggestion.selectionRange : null;
     const endColumn = selectionRange ? selectionRange.endColumn : suggestionLength;
     const startColumn = selectionRange ? selectionRange.startColumn : suggestionLength;
     this.element().textContent = this.textWithCurrentSuggestion();
-    this.setDOMSelection(this._queryRange.startColumn + startColumn, this._queryRange.startColumn + endColumn);
-    this._updateLeftParenthesesIndices();
+    this.setDOMSelection(this.queryRange.startColumn + startColumn, this.queryRange.startColumn + endColumn);
+    this.updateLeftParenthesesIndices();
 
     this.clearAutocomplete();
     this.dispatchEventToListeners(Events.TextChanged);
@@ -635,7 +631,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements Su
   setDOMSelection(startColumn: number, endColumn: number): void {
     this.element().normalize();
     const node = this.element().childNodes[0];
-    if (!node || node === this._ghostTextElement) {
+    if (!node || node === this.ghostTextElement) {
       return;
     }
     const range = document.createRange();
@@ -649,7 +645,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements Su
   }
 
   isSuggestBoxVisible(): boolean {
-    return this._suggestBox !== undefined && this._suggestBox.visible();
+    return this.suggestBox !== undefined && this.suggestBox.visible();
   }
 
   isCaretInsidePrompt(): boolean {
@@ -662,7 +658,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements Su
     return selectionRange.startContainer.isSelfOrDescendant(this.element());
   }
 
-  _isCaretAtEndOfPrompt(): boolean {
+  private isCaretAtEndOfPrompt(): boolean {
     const selection = this.element().getComponentSelection();
     if (!selection || selection.rangeCount === 0 || !selection.isCollapsed) {
       return false;
@@ -674,7 +670,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements Su
       return false;
     }
 
-    if (this._ghostTextElement.isAncestor(node)) {
+    if (this.ghostTextElement.isAncestor(node)) {
       return true;
     }
 
@@ -685,13 +681,13 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements Su
     let foundNextText = false;
     while (node) {
       if (node.nodeType === Node.TEXT_NODE && node.nodeValue && node.nodeValue.length) {
-        if (foundNextText && !this._ghostTextElement.isAncestor(node)) {
+        if (foundNextText && !this.ghostTextElement.isAncestor(node)) {
           return false;
         }
         foundNextText = true;
       }
 
-      node = node.traverseNextNode(this._element);
+      node = node.traverseNextNode(this.elementInternal);
     }
 
     return true;
@@ -721,7 +717,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements Su
 
   /** -1 if no caret can be found in text prompt
      */
-  _getCaretPosition(): number {
+  private getCaretPosition(): number {
     if (!this.element().hasFocus()) {
       return -1;
     }
@@ -742,7 +738,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements Su
   }
 
   proxyElementForTests(): Element|null {
-    return this._proxyElement || null;
+    return this.proxyElement || null;
   }
 
   /**
@@ -750,8 +746,8 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements Su
    * parenthesis, and closes the matched left parenthesis if found.
    * Return the result of the matching.
    */
-  _tryMatchingLeftParenthesis(rightParenthesisIndex: number): boolean {
-    const leftParenthesesIndices = this._leftParenthesesIndices;
+  private tryMatchingLeftParenthesis(rightParenthesisIndex: number): boolean {
+    const leftParenthesesIndices = this.leftParenthesesIndices;
     if (leftParenthesesIndices.length === 0 || rightParenthesisIndex < 0) {
       return false;
     }
@@ -766,9 +762,9 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements Su
     return false;
   }
 
-  _updateLeftParenthesesIndices(): void {
+  private updateLeftParenthesesIndices(): void {
     const text = this.text();
-    const leftParenthesesIndices: number[] = this._leftParenthesesIndices = [];
+    const leftParenthesesIndices: number[] = this.leftParenthesesIndices = [];
     for (let i = 0; i < text.length; ++i) {
       if (text[i] === '(') {
         leftParenthesesIndices.push(i);

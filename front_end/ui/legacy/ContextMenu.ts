@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
@@ -41,64 +39,64 @@ import {SoftContextMenu} from './SoftContextMenu.js';
 import {deepElementFromEvent} from './UIUtils.js';
 
 export class Item {
-  _type: string;
-  _label: string|undefined;
-  _disabled: boolean|undefined;
-  _checked: boolean|undefined;
-  _contextMenu: ContextMenu|null;
-  _id: number|undefined;
-  _customElement?: Element;
-  _shortcut?: string;
+  private readonly typeInternal: string;
+  protected readonly label: string|undefined;
+  protected disabled: boolean|undefined;
+  private readonly checked: boolean|undefined;
+  protected contextMenu: ContextMenu|null;
+  protected idInternal: number|undefined;
+  customElement?: Element;
+  private shortcut?: string;
 
   constructor(contextMenu: ContextMenu|null, type: string, label?: string, disabled?: boolean, checked?: boolean) {
-    this._type = type;
-    this._label = label;
-    this._disabled = disabled;
-    this._checked = checked;
-    this._contextMenu = contextMenu;
-    this._id = undefined;
+    this.typeInternal = type;
+    this.label = label;
+    this.disabled = disabled;
+    this.checked = checked;
+    this.contextMenu = contextMenu;
+    this.idInternal = undefined;
     if (type === 'item' || type === 'checkbox') {
-      this._id = contextMenu ? contextMenu._nextId() : 0;
+      this.idInternal = contextMenu ? contextMenu.nextId() : 0;
     }
   }
 
   id(): number {
-    if (this._id === undefined) {
+    if (this.idInternal === undefined) {
       throw new Error('Tried to access a ContextMenu Item ID but none was set.');
     }
-    return this._id;
+    return this.idInternal;
   }
 
   type(): string {
-    return this._type;
+    return this.typeInternal;
   }
 
   isEnabled(): boolean {
-    return !this._disabled;
+    return !this.disabled;
   }
 
   setEnabled(enabled: boolean): void {
-    this._disabled = !enabled;
+    this.disabled = !enabled;
   }
 
-  _buildDescriptor(): SoftContextMenuDescriptor|Host.InspectorFrontendHostAPI.ContextMenuDescriptor {
-    switch (this._type) {
+  buildDescriptor(): SoftContextMenuDescriptor|Host.InspectorFrontendHostAPI.ContextMenuDescriptor {
+    switch (this.typeInternal) {
       case 'item': {
         const result = {
           type: 'item',
-          id: this._id,
-          label: this._label,
-          enabled: !this._disabled,
+          id: this.idInternal,
+          label: this.label,
+          enabled: !this.disabled,
           checked: undefined,
           subItems: undefined,
         };
-        if (this._customElement) {
+        if (this.customElement) {
           const resultAsSoftContextMenuItem = (result as SoftContextMenuDescriptor);
-          resultAsSoftContextMenuItem.element = (this._customElement as Element);
+          resultAsSoftContextMenuItem.element = (this.customElement as Element);
         }
-        if (this._shortcut) {
+        if (this.shortcut) {
           const resultAsSoftContextMenuItem = (result as SoftContextMenuDescriptor);
-          resultAsSoftContextMenuItem.shortcut = this._shortcut;
+          resultAsSoftContextMenuItem.shortcut = this.shortcut;
         }
         return result;
       }
@@ -115,49 +113,49 @@ export class Item {
       case 'checkbox': {
         return {
           type: 'checkbox',
-          id: this._id,
-          label: this._label,
-          checked: Boolean(this._checked),
-          enabled: !this._disabled,
+          id: this.idInternal,
+          label: this.label,
+          checked: Boolean(this.checked),
+          enabled: !this.disabled,
           subItems: undefined,
         };
       }
     }
-    throw new Error('Invalid item type:' + this._type);
+    throw new Error('Invalid item type:' + this.typeInternal);
   }
 
   setShortcut(shortcut: string): void {
-    this._shortcut = shortcut;
+    this.shortcut = shortcut;
   }
 }
 
 export class Section {
-  _contextMenu: ContextMenu|null;
-  _items: Item[];
+  private readonly contextMenu: ContextMenu|null;
+  readonly items: Item[];
   constructor(contextMenu: ContextMenu|null) {
-    this._contextMenu = contextMenu;
-    this._items = [];
+    this.contextMenu = contextMenu;
+    this.items = [];
   }
 
   appendItem(label: string, handler: () => void, disabled?: boolean): Item {
-    const item = new Item(this._contextMenu, 'item', label, disabled);
-    this._items.push(item);
-    if (this._contextMenu) {
-      this._contextMenu._setHandler(item.id(), handler);
+    const item = new Item(this.contextMenu, 'item', label, disabled);
+    this.items.push(item);
+    if (this.contextMenu) {
+      this.contextMenu.setHandler(item.id(), handler);
     }
     return item;
   }
 
   appendCustomItem(element: Element): Item {
-    const item = new Item(this._contextMenu, 'item', '<custom>');
-    item._customElement = element;
-    this._items.push(item);
+    const item = new Item(this.contextMenu, 'item', '<custom>');
+    item.customElement = element;
+    this.items.push(item);
     return item;
   }
 
   appendSeparator(): Item {
-    const item = new Item(this._contextMenu, 'separator');
-    this._items.push(item);
+    const item = new Item(this.contextMenu, 'separator');
+    this.items.push(item);
     return item;
   }
 
@@ -180,45 +178,45 @@ export class Section {
   }
 
   appendSubMenuItem(label: string, disabled?: boolean): SubMenu {
-    const item = new SubMenu(this._contextMenu, label, disabled);
-    item._init();
-    this._items.push(item);
+    const item = new SubMenu(this.contextMenu, label, disabled);
+    item.init();
+    this.items.push(item);
     return item;
   }
 
   appendCheckboxItem(label: string, handler: () => void, checked?: boolean, disabled?: boolean): Item {
-    const item = new Item(this._contextMenu, 'checkbox', label, disabled, checked);
-    this._items.push(item);
-    if (this._contextMenu) {
-      this._contextMenu._setHandler(item.id(), handler);
+    const item = new Item(this.contextMenu, 'checkbox', label, disabled, checked);
+    this.items.push(item);
+    if (this.contextMenu) {
+      this.contextMenu.setHandler(item.id(), handler);
     }
     return item;
   }
 }
 
 export class SubMenu extends Item {
-  _sections: Map<string, Section>;
-  _sectionList: Section[];
+  private readonly sections: Map<string, Section>;
+  private readonly sectionList: Section[];
 
   constructor(contextMenu: ContextMenu|null, label?: string, disabled?: boolean) {
     super(contextMenu, 'subMenu', label, disabled);
-    this._sections = new Map();
-    this._sectionList = [];
+    this.sections = new Map();
+    this.sectionList = [];
   }
 
-  _init(): void {
-    ContextMenu._groupWeights.forEach(name => this.section(name));
+  init(): void {
+    ContextMenu.groupWeights.forEach(name => this.section(name));
   }
 
   section(name?: string): Section {
-    let section: Section|(Section | null | undefined) = name ? this._sections.get(name) : null;
+    let section: Section|(Section | null | undefined) = name ? this.sections.get(name) : null;
     if (!section) {
-      section = new Section(this._contextMenu);
+      section = new Section(this.contextMenu);
       if (name) {
-        this._sections.set(name, section);
-        this._sectionList.push(section);
+        this.sections.set(name, section);
+        this.sectionList.push(section);
       } else {
-        this._sectionList.splice(ContextMenu._groupWeights.indexOf('default'), 0, section);
+        this.sectionList.splice(ContextMenu.groupWeights.indexOf('default'), 0, section);
       }
     }
     return section;
@@ -264,23 +262,23 @@ export class SubMenu extends Item {
     return this.section('footer');
   }
 
-  _buildDescriptor(): SoftContextMenuDescriptor|Host.InspectorFrontendHostAPI.ContextMenuDescriptor {
+  buildDescriptor(): SoftContextMenuDescriptor|Host.InspectorFrontendHostAPI.ContextMenuDescriptor {
     const result: Host.InspectorFrontendHostAPI.ContextMenuDescriptor|SoftContextMenuDescriptor = {
       type: 'subMenu',
-      label: this._label,
-      enabled: !this._disabled,
+      label: this.label,
+      enabled: !this.disabled,
       subItems: [],
       id: undefined,
       checked: undefined,
     };
 
-    const nonEmptySections = this._sectionList.filter(section => Boolean(section._items.length));
+    const nonEmptySections = this.sectionList.filter(section => Boolean(section.items.length));
     for (const section of nonEmptySections) {
-      for (const item of section._items) {
+      for (const item of section.items) {
         if (!result.subItems) {
           result.subItems = [];
         }
-        result.subItems.push(item._buildDescriptor());
+        result.subItems.push(item.buildDescriptor());
       }
       if (section !== nonEmptySections[nonEmptySections.length - 1]) {
         if (!result.subItems) {
@@ -328,36 +326,36 @@ export class SubMenu extends Item {
     }
   }
 
-  static _uniqueSectionName: number = 0;
+  private static uniqueSectionName: number = 0;
 }
 
 export class ContextMenu extends SubMenu {
-  _contextMenu: this;
-  _defaultSection: Section;
-  _pendingPromises: Promise<Provider[]>[];
-  _pendingTargets: Object[];
-  _event: MouseEvent;
-  _useSoftMenu: boolean;
-  _x: number;
-  _y: number;
-  _handlers: Map<number, () => void>;
-  _id: number;
-  _softMenu?: SoftContextMenu;
+  protected contextMenu: this;
+  private readonly defaultSectionInternal: Section;
+  private pendingPromises: Promise<Provider[]>[];
+  private pendingTargets: Object[];
+  private readonly event: MouseEvent;
+  private readonly useSoftMenu: boolean;
+  private x: number;
+  private y: number;
+  private readonly handlers: Map<number, () => void>;
+  idInternal: number;
+  private softMenu?: SoftContextMenu;
 
   constructor(event: Event, useSoftMenu?: boolean, x?: number, y?: number) {
     super(null);
     const mouseEvent = (event as MouseEvent);
-    this._contextMenu = this;
-    super._init();
-    this._defaultSection = this.defaultSection();
-    this._pendingPromises = [];
-    this._pendingTargets = [];
-    this._event = mouseEvent;
-    this._useSoftMenu = Boolean(useSoftMenu);
-    this._x = x === undefined ? mouseEvent.x : x;
-    this._y = y === undefined ? mouseEvent.y : y;
-    this._handlers = new Map();
-    this._id = 0;
+    this.contextMenu = this;
+    super.init();
+    this.defaultSectionInternal = this.defaultSection();
+    this.pendingPromises = [];
+    this.pendingTargets = [];
+    this.event = mouseEvent;
+    this.useSoftMenu = Boolean(useSoftMenu);
+    this.x = x === undefined ? mouseEvent.x : x;
+    this.y = y === undefined ? mouseEvent.y : y;
+    this.handlers = new Map();
+    this.idInternal = 0;
 
     const target = deepElementFromEvent(event);
     if (target) {
@@ -369,7 +367,7 @@ export class ContextMenu extends SubMenu {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.SetUseSoftMenu, setUseSoftMenu);
     function setUseSoftMenu(event: Common.EventTarget.EventTargetEvent): void {
-      ContextMenu._useSoftMenu = (event.data as boolean);
+      ContextMenu.useSoftMenu = (event.data as boolean);
     }
   }
 
@@ -382,62 +380,62 @@ export class ContextMenu extends SubMenu {
     }
   }
 
-  _nextId(): number {
-    return this._id++;
+  nextId(): number {
+    return this.idInternal++;
   }
 
   async show(): Promise<void> {
-    ContextMenu._pendingMenu = this;
-    this._event.consume(true);
-    const loadedProviders: Provider[][] = await Promise.all(this._pendingPromises);
+    ContextMenu.pendingMenu = this;
+    this.event.consume(true);
+    const loadedProviders: Provider[][] = await Promise.all(this.pendingPromises);
 
     // After loading all providers, the contextmenu might be hidden again, so bail out.
-    if (ContextMenu._pendingMenu !== this) {
+    if (ContextMenu.pendingMenu !== this) {
       return;
     }
-    ContextMenu._pendingMenu = null;
+    ContextMenu.pendingMenu = null;
 
     for (let i = 0; i < loadedProviders.length; ++i) {
       const providers = loadedProviders[i];
-      const target = this._pendingTargets[i];
+      const target = this.pendingTargets[i];
 
       for (const provider of providers) {
-        provider.appendApplicableItems(this._event, this, target);
+        provider.appendApplicableItems(this.event, this, target);
       }
     }
 
-    this._pendingPromises = [];
-    this._pendingTargets = [];
+    this.pendingPromises = [];
+    this.pendingTargets = [];
 
-    this._innerShow();
+    this.innerShow();
   }
 
   discard(): void {
-    if (this._softMenu) {
-      this._softMenu.discard();
+    if (this.softMenu) {
+      this.softMenu.discard();
     }
   }
 
-  _innerShow(): void {
-    const menuObject = this._buildMenuDescriptors();
-    const eventTarget = this._event.target;
+  private innerShow(): void {
+    const menuObject = this.buildMenuDescriptors();
+    const eventTarget = this.event.target;
     if (!eventTarget) {
       return;
     }
     const ownerDocument = (eventTarget as HTMLElement).ownerDocument;
-    if (this._useSoftMenu || ContextMenu._useSoftMenu ||
+    if (this.useSoftMenu || ContextMenu.useSoftMenu ||
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {
-      this._softMenu = new SoftContextMenu((menuObject as SoftContextMenuDescriptor[]), this._itemSelected.bind(this));
-      this._softMenu.show((ownerDocument as Document), new AnchorBox(this._x, this._y, 0, 0));
+      this.softMenu = new SoftContextMenu((menuObject as SoftContextMenuDescriptor[]), this.itemSelected.bind(this));
+      this.softMenu.show((ownerDocument as Document), new AnchorBox(this.x, this.y, 0, 0));
     } else {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.showContextMenuAtPoint(
-          this._x, this._y, menuObject, (ownerDocument as Document));
+          this.x, this.y, menuObject, (ownerDocument as Document));
 
       function listenToEvents(this: ContextMenu): void {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-            Host.InspectorFrontendHostAPI.Events.ContextMenuCleared, this._menuCleared, this);
+            Host.InspectorFrontendHostAPI.Events.ContextMenuCleared, this.menuCleared, this);
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-            Host.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this._onItemSelected, this);
+            Host.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this.onItemSelected, this);
       }
 
       // showContextMenuAtPoint call above synchronously issues a clear event for previous context menu (if any),
@@ -447,58 +445,58 @@ export class ContextMenu extends SubMenu {
   }
 
   setX(x: number): void {
-    this._x = x;
+    this.x = x;
   }
 
   setY(y: number): void {
-    this._y = y;
+    this.y = y;
   }
 
-  _setHandler(id: number, handler: () => void): void {
+  setHandler(id: number, handler: () => void): void {
     if (handler) {
-      this._handlers.set(id, handler);
+      this.handlers.set(id, handler);
     }
   }
 
-  _buildMenuDescriptors(): (SoftContextMenuDescriptor|Host.InspectorFrontendHostAPI.ContextMenuDescriptor)[] {
+  private buildMenuDescriptors(): (SoftContextMenuDescriptor|Host.InspectorFrontendHostAPI.ContextMenuDescriptor)[] {
     return /** @type {!Array.<!Host.InspectorFrontendHostAPI.ContextMenuDescriptor|!SoftContextMenuDescriptor>} */ super
-               ._buildDescriptor()
+               .buildDescriptor()
                .subItems as (SoftContextMenuDescriptor | Host.InspectorFrontendHostAPI.ContextMenuDescriptor)[];
   }
 
-  _onItemSelected(event: Common.EventTarget.EventTargetEvent): void {
-    this._itemSelected((event.data as number));
+  private onItemSelected(event: Common.EventTarget.EventTargetEvent): void {
+    this.itemSelected((event.data as number));
   }
 
-  _itemSelected(id: number): void {
-    const handler = this._handlers.get(id);
+  private itemSelected(id: number): void {
+    const handler = this.handlers.get(id);
     if (handler) {
       handler.call(this);
     }
-    this._menuCleared();
+    this.menuCleared();
   }
 
-  _menuCleared(): void {
+  private menuCleared(): void {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
-        Host.InspectorFrontendHostAPI.Events.ContextMenuCleared, this._menuCleared, this);
+        Host.InspectorFrontendHostAPI.Events.ContextMenuCleared, this.menuCleared, this);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
-        Host.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this._onItemSelected, this);
+        Host.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this.onItemSelected, this);
   }
 
   containsTarget(target: Object): boolean {
-    return this._pendingTargets.indexOf(target) >= 0;
+    return this.pendingTargets.indexOf(target) >= 0;
   }
 
   appendApplicableItems(target: Object): void {
-    this._pendingPromises.push(loadApplicableRegisteredProviders(target));
-    this._pendingTargets.push(target);
+    this.pendingPromises.push(loadApplicableRegisteredProviders(target));
+    this.pendingTargets.push(target);
   }
 
-  static _pendingMenu: ContextMenu|null = null;
-  static _useSoftMenu = false;
+  private static pendingMenu: ContextMenu|null = null;
+  private static useSoftMenu = false;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  static readonly _groupWeights =
+  static readonly groupWeights =
       ['header', 'new', 'reveal', 'edit', 'clipboard', 'debug', 'view', 'default', 'save', 'footer'];
 }
 

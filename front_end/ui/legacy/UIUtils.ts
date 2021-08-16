@@ -33,8 +33,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as DOMExtension from '../../core/dom_extension/dom_extension.js';
 import * as Host from '../../core/host/host.js';
@@ -157,44 +155,44 @@ export function elementDragStart(
 }
 
 class DragHandler {
-  _glassPaneInUse?: boolean;
-  _elementDraggingEventListener?: ((arg0: MouseEvent) => void|boolean);
-  _elementEndDraggingEventListener?: ((arg0: MouseEvent) => void)|null;
-  _dragEventsTargetDocument?: Document;
-  _dragEventsTargetDocumentTop?: Document;
-  _restoreCursorAfterDrag?: (() => void);
+  private glassPaneInUse?: boolean;
+  private elementDraggingEventListener?: ((arg0: MouseEvent) => void|boolean);
+  private elementEndDraggingEventListener?: ((arg0: MouseEvent) => void)|null;
+  private dragEventsTargetDocument?: Document;
+  private dragEventsTargetDocumentTop?: Document;
+  private restoreCursorAfterDrag?: (() => void);
 
   constructor() {
-    this._elementDragMove = this._elementDragMove.bind(this);
-    this._elementDragEnd = this._elementDragEnd.bind(this);
-    this._mouseOutWhileDragging = this._mouseOutWhileDragging.bind(this);
+    this.elementDragMove = this.elementDragMove.bind(this);
+    this.elementDragEnd = this.elementDragEnd.bind(this);
+    this.mouseOutWhileDragging = this.mouseOutWhileDragging.bind(this);
   }
 
-  _createGlassPane(): void {
-    this._glassPaneInUse = true;
-    if (!DragHandler._glassPaneUsageCount++) {
-      DragHandler._glassPane = new GlassPane();
-      DragHandler._glassPane.setPointerEventsBehavior(PointerEventsBehavior.BlockedByGlassPane);
-      if (DragHandler._documentForMouseOut) {
-        DragHandler._glassPane.show(DragHandler._documentForMouseOut);
+  private createGlassPane(): void {
+    this.glassPaneInUse = true;
+    if (!DragHandler.glassPaneUsageCount++) {
+      DragHandler.glassPane = new GlassPane();
+      DragHandler.glassPane.setPointerEventsBehavior(PointerEventsBehavior.BlockedByGlassPane);
+      if (DragHandler.documentForMouseOut) {
+        DragHandler.glassPane.show(DragHandler.documentForMouseOut);
       }
     }
   }
 
-  _disposeGlassPane(): void {
-    if (!this._glassPaneInUse) {
+  private disposeGlassPane(): void {
+    if (!this.glassPaneInUse) {
       return;
     }
-    this._glassPaneInUse = false;
-    if (--DragHandler._glassPaneUsageCount) {
+    this.glassPaneInUse = false;
+    if (--DragHandler.glassPaneUsageCount) {
       return;
     }
-    if (DragHandler._glassPane) {
-      DragHandler._glassPane.hide();
-      DragHandler._glassPane = null;
+    if (DragHandler.glassPane) {
+      DragHandler.glassPane.hide();
+      DragHandler.glassPane = null;
     }
-    DragHandler._documentForMouseOut = null;
-    DragHandler._rootForMouseOut = null;
+    DragHandler.documentForMouseOut = null;
+    DragHandler.rootForMouseOut = null;
   }
 
   elementDragStart(
@@ -207,7 +205,7 @@ class DragHandler {
       return;
     }
 
-    if (this._elementDraggingEventListener) {
+    if (this.elementDraggingEventListener) {
       return;
     }
 
@@ -216,105 +214,105 @@ class DragHandler {
     }
 
     const targetDocument = (event.target instanceof Node && event.target.ownerDocument) as Document;
-    this._elementDraggingEventListener = elementDrag;
-    this._elementEndDraggingEventListener = elementDragEnd;
+    this.elementDraggingEventListener = elementDrag;
+    this.elementEndDraggingEventListener = elementDragEnd;
     console.assert(
-        (DragHandler._documentForMouseOut || targetDocument) === targetDocument, 'Dragging on multiple documents.');
-    DragHandler._documentForMouseOut = targetDocument;
-    DragHandler._rootForMouseOut = event.target instanceof Node && event.target.getRootNode() || null;
-    this._dragEventsTargetDocument = targetDocument;
+        (DragHandler.documentForMouseOut || targetDocument) === targetDocument, 'Dragging on multiple documents.');
+    DragHandler.documentForMouseOut = targetDocument;
+    DragHandler.rootForMouseOut = event.target instanceof Node && event.target.getRootNode() || null;
+    this.dragEventsTargetDocument = targetDocument;
     try {
       if (targetDocument.defaultView) {
-        this._dragEventsTargetDocumentTop = targetDocument.defaultView.top.document;
+        this.dragEventsTargetDocumentTop = targetDocument.defaultView.top.document;
       }
     } catch (e) {
-      this._dragEventsTargetDocumentTop = this._dragEventsTargetDocument;
+      this.dragEventsTargetDocumentTop = this.dragEventsTargetDocument;
     }
 
-    targetDocument.addEventListener('mousemove', this._elementDragMove, true);
-    targetDocument.addEventListener('mouseup', this._elementDragEnd, true);
-    DragHandler._rootForMouseOut &&
-        DragHandler._rootForMouseOut.addEventListener('mouseout', this._mouseOutWhileDragging, {capture: true});
-    if (this._dragEventsTargetDocumentTop && targetDocument !== this._dragEventsTargetDocumentTop) {
-      this._dragEventsTargetDocumentTop.addEventListener('mouseup', this._elementDragEnd, true);
+    targetDocument.addEventListener('mousemove', this.elementDragMove, true);
+    targetDocument.addEventListener('mouseup', this.elementDragEnd, true);
+    DragHandler.rootForMouseOut &&
+        DragHandler.rootForMouseOut.addEventListener('mouseout', this.mouseOutWhileDragging, {capture: true});
+    if (this.dragEventsTargetDocumentTop && targetDocument !== this.dragEventsTargetDocumentTop) {
+      this.dragEventsTargetDocumentTop.addEventListener('mouseup', this.elementDragEnd, true);
     }
 
     const targetHtmlElement = (targetElement as HTMLElement);
     if (typeof cursor === 'string') {
-      this._restoreCursorAfterDrag = restoreCursor.bind(this, targetHtmlElement.style.cursor);
+      this.restoreCursorAfterDrag = restoreCursor.bind(this, targetHtmlElement.style.cursor);
       targetHtmlElement.style.cursor = cursor;
       targetDocument.body.style.cursor = cursor;
     }
     function restoreCursor(this: DragHandler, oldCursor: string): void {
       targetDocument.body.style.removeProperty('cursor');
       targetHtmlElement.style.cursor = oldCursor;
-      this._restoreCursorAfterDrag = undefined;
+      this.restoreCursorAfterDrag = undefined;
     }
     event.preventDefault();
   }
 
-  _mouseOutWhileDragging(): void {
-    this._unregisterMouseOutWhileDragging();
-    this._createGlassPane();
+  private mouseOutWhileDragging(): void {
+    this.unregisterMouseOutWhileDragging();
+    this.createGlassPane();
   }
 
-  _unregisterMouseOutWhileDragging(): void {
-    if (!DragHandler._rootForMouseOut) {
+  private unregisterMouseOutWhileDragging(): void {
+    if (!DragHandler.rootForMouseOut) {
       return;
     }
-    DragHandler._rootForMouseOut.removeEventListener('mouseout', this._mouseOutWhileDragging, {capture: true});
+    DragHandler.rootForMouseOut.removeEventListener('mouseout', this.mouseOutWhileDragging, {capture: true});
   }
 
-  _unregisterDragEvents(): void {
-    if (!this._dragEventsTargetDocument) {
+  private unregisterDragEvents(): void {
+    if (!this.dragEventsTargetDocument) {
       return;
     }
-    this._dragEventsTargetDocument.removeEventListener('mousemove', this._elementDragMove, true);
-    this._dragEventsTargetDocument.removeEventListener('mouseup', this._elementDragEnd, true);
-    if (this._dragEventsTargetDocumentTop && this._dragEventsTargetDocument !== this._dragEventsTargetDocumentTop) {
-      this._dragEventsTargetDocumentTop.removeEventListener('mouseup', this._elementDragEnd, true);
+    this.dragEventsTargetDocument.removeEventListener('mousemove', this.elementDragMove, true);
+    this.dragEventsTargetDocument.removeEventListener('mouseup', this.elementDragEnd, true);
+    if (this.dragEventsTargetDocumentTop && this.dragEventsTargetDocument !== this.dragEventsTargetDocumentTop) {
+      this.dragEventsTargetDocumentTop.removeEventListener('mouseup', this.elementDragEnd, true);
     }
-    delete this._dragEventsTargetDocument;
-    delete this._dragEventsTargetDocumentTop;
+    delete this.dragEventsTargetDocument;
+    delete this.dragEventsTargetDocumentTop;
   }
 
-  _elementDragMove(event: MouseEvent): void {
+  private elementDragMove(event: MouseEvent): void {
     if (event.buttons !== 1) {
-      this._elementDragEnd(event);
+      this.elementDragEnd(event);
       return;
     }
-    if (this._elementDraggingEventListener && this._elementDraggingEventListener(event)) {
-      this._cancelDragEvents(event);
+    if (this.elementDraggingEventListener && this.elementDraggingEventListener(event)) {
+      this.cancelDragEvents(event);
     }
   }
 
-  _cancelDragEvents(_event: Event): void {
-    this._unregisterDragEvents();
-    this._unregisterMouseOutWhileDragging();
+  private cancelDragEvents(_event: Event): void {
+    this.unregisterDragEvents();
+    this.unregisterMouseOutWhileDragging();
 
-    if (this._restoreCursorAfterDrag) {
-      this._restoreCursorAfterDrag();
+    if (this.restoreCursorAfterDrag) {
+      this.restoreCursorAfterDrag();
     }
 
-    this._disposeGlassPane();
+    this.disposeGlassPane();
 
-    delete this._elementDraggingEventListener;
-    delete this._elementEndDraggingEventListener;
+    delete this.elementDraggingEventListener;
+    delete this.elementEndDraggingEventListener;
   }
 
-  _elementDragEnd(event: Event): void {
-    const elementDragEnd = this._elementEndDraggingEventListener;
-    this._cancelDragEvents((event as MouseEvent));
+  private elementDragEnd(event: Event): void {
+    const elementDragEnd = this.elementEndDraggingEventListener;
+    this.cancelDragEvents((event as MouseEvent));
     event.preventDefault();
     if (elementDragEnd) {
       elementDragEnd((event as MouseEvent));
     }
   }
 
-  static _glassPaneUsageCount = 0;
-  static _glassPane: GlassPane|null = null;
-  static _documentForMouseOut: Document|null = null;
-  static _rootForMouseOut: Node|null = null;
+  private static glassPaneUsageCount = 0;
+  private static glassPane: GlassPane|null = null;
+  private static documentForMouseOut: Document|null = null;
+  private static rootForMouseOut: Node|null = null;
 }
 
 export function isBeingEdited(node?: Node|null): boolean {
@@ -643,23 +641,23 @@ function windowBlurred(document: Document, event: Event): void {
 }
 
 export class ElementFocusRestorer {
-  _element: HTMLElement|null;
-  _previous: HTMLElement|null;
+  private element: HTMLElement|null;
+  private previous: HTMLElement|null;
   constructor(element: Element) {
-    this._element = (element as HTMLElement | null);
-    this._previous = (element.ownerDocument.deepActiveElement() as HTMLElement | null);
+    this.element = (element as HTMLElement | null);
+    this.previous = (element.ownerDocument.deepActiveElement() as HTMLElement | null);
     (element as HTMLElement).focus();
   }
 
   restore(): void {
-    if (!this._element) {
+    if (!this.element) {
       return;
     }
-    if (this._element.hasFocus() && this._previous) {
-      this._previous.focus();
+    if (this.element.hasFocus() && this.previous) {
+      this.previous.focus();
     }
-    this._previous = null;
-    this._element = null;
+    this.previous = null;
+    this.element = null;
   }
 }
 
@@ -865,36 +863,36 @@ export function measurePreferredSize(element: Element, containerElement?: Elemen
 }
 
 class InvokeOnceHandlers {
-  _handlers: Map<Object, Set<Function>>|null;
-  _autoInvoke: boolean;
+  private handlers: Map<Object, Set<Function>>|null;
+  private readonly autoInvoke: boolean;
   constructor(autoInvoke: boolean) {
-    this._handlers = null;
-    this._autoInvoke = autoInvoke;
+    this.handlers = null;
+    this.autoInvoke = autoInvoke;
   }
 
   add(object: Object, method: () => void): void {
-    if (!this._handlers) {
-      this._handlers = new Map();
-      if (this._autoInvoke) {
+    if (!this.handlers) {
+      this.handlers = new Map();
+      if (this.autoInvoke) {
         this.scheduleInvoke();
       }
     }
-    let methods = this._handlers.get(object);
+    let methods = this.handlers.get(object);
     if (!methods) {
       methods = new Set();
-      this._handlers.set(object, methods);
+      this.handlers.set(object, methods);
     }
     methods.add(method);
   }
   scheduleInvoke(): void {
-    if (this._handlers) {
-      requestAnimationFrame(this._invoke.bind(this));
+    if (this.handlers) {
+      requestAnimationFrame(this.invoke.bind(this));
     }
   }
 
-  _invoke(): void {
-    const handlers = this._handlers;
-    this._handlers = null;
+  private invoke(): void {
+    const handlers = this.handlers;
+    this.handlers = null;
     if (handlers) {
       for (const [object, methods] of handlers) {
         for (const method of methods) {
@@ -955,35 +953,35 @@ export function animateFunction(
 }
 
 export class LongClickController extends Common.ObjectWrapper.ObjectWrapper {
-  _element: Element;
-  _callback: (arg0: Event) => void;
-  _editKey: (arg0: Event) => boolean;
-  _longClickData!: {
+  private readonly element: Element;
+  private readonly callback: (arg0: Event) => void;
+  private readonly editKey: (arg0: Event) => boolean;
+  private longClickData!: {
     mouseUp: (arg0: Event) => void,
     mouseDown: (arg0: Event) => void,
     reset: () => void,
   }|undefined;
-  _longClickInterval!: number|undefined;
+  private longClickInterval!: number|undefined;
 
   constructor(
       element: Element, callback: (arg0: Event) => void,
       isEditKeyFunc: (arg0: Event) => boolean = (event): boolean => isEnterOrSpaceKey(event)) {
     super();
-    this._element = element;
-    this._callback = callback;
-    this._editKey = isEditKeyFunc;
-    this._enable();
+    this.element = element;
+    this.callback = callback;
+    this.editKey = isEditKeyFunc;
+    this.enable();
   }
 
   reset(): void {
-    if (this._longClickInterval) {
-      clearInterval(this._longClickInterval);
-      delete this._longClickInterval;
+    if (this.longClickInterval) {
+      clearInterval(this.longClickInterval);
+      delete this.longClickInterval;
     }
   }
 
-  _enable(): void {
-    if (this._longClickData) {
+  private enable(): void {
+    if (this.longClickData) {
       return;
     }
     const boundKeyDown = keyDown.bind(this);
@@ -992,24 +990,24 @@ export class LongClickController extends Common.ObjectWrapper.ObjectWrapper {
     const boundMouseUp = mouseUp.bind(this);
     const boundReset = this.reset.bind(this);
 
-    this._element.addEventListener('keydown', boundKeyDown, false);
-    this._element.addEventListener('keyup', boundKeyUp, false);
-    this._element.addEventListener('mousedown', boundMouseDown, false);
-    this._element.addEventListener('mouseout', boundReset, false);
-    this._element.addEventListener('mouseup', boundMouseUp, false);
-    this._element.addEventListener('click', boundReset, true);
+    this.element.addEventListener('keydown', boundKeyDown, false);
+    this.element.addEventListener('keyup', boundKeyUp, false);
+    this.element.addEventListener('mousedown', boundMouseDown, false);
+    this.element.addEventListener('mouseout', boundReset, false);
+    this.element.addEventListener('mouseup', boundMouseUp, false);
+    this.element.addEventListener('click', boundReset, true);
 
-    this._longClickData = {mouseUp: boundMouseUp, mouseDown: boundMouseDown, reset: boundReset};
+    this.longClickData = {mouseUp: boundMouseUp, mouseDown: boundMouseDown, reset: boundReset};
 
     function keyDown(this: LongClickController, e: Event): void {
-      if (this._editKey(e)) {
-        const callback = this._callback;
-        this._longClickInterval = window.setTimeout(callback.bind(null, e), LongClickController.TIME_MS);
+      if (this.editKey(e)) {
+        const callback = this.callback;
+        this.longClickInterval = window.setTimeout(callback.bind(null, e), LongClickController.TIME_MS);
       }
     }
 
     function keyUp(this: LongClickController, e: Event): void {
-      if (this._editKey(e)) {
+      if (this.editKey(e)) {
         this.reset();
       }
     }
@@ -1018,8 +1016,8 @@ export class LongClickController extends Common.ObjectWrapper.ObjectWrapper {
       if ((e as MouseEvent).which !== 1) {
         return;
       }
-      const callback = this._callback;
-      this._longClickInterval = window.setTimeout(callback.bind(null, e), LongClickController.TIME_MS);
+      const callback = this.callback;
+      this.longClickInterval = window.setTimeout(callback.bind(null, e), LongClickController.TIME_MS);
     }
 
     function mouseUp(this: LongClickController, e: Event): void {
@@ -1031,14 +1029,14 @@ export class LongClickController extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   dispose(): void {
-    if (!this._longClickData) {
+    if (!this.longClickData) {
       return;
     }
-    this._element.removeEventListener('mousedown', this._longClickData.mouseDown, false);
-    this._element.removeEventListener('mouseout', this._longClickData.reset, false);
-    this._element.removeEventListener('mouseup', this._longClickData.mouseUp, false);
-    this._element.addEventListener('click', this._longClickData.reset, true);
-    delete this._longClickData;
+    this.element.removeEventListener('mousedown', this.longClickData.mouseDown, false);
+    this.element.removeEventListener('mouseout', this.longClickData.reset, false);
+    this.element.removeEventListener('mouseup', this.longClickData.mouseUp, false);
+    this.element.addEventListener('click', this.longClickData.reset, true);
+    delete this.longClickData;
   }
 
   static readonly TIME_MS = 200;
@@ -1174,29 +1172,29 @@ export function setTitle(element: HTMLElement, title: string): void {
 }
 
 export class CheckboxLabel extends HTMLSpanElement {
-  _shadowRoot!: DocumentFragment;
+  private readonly shadowRootInternal!: DocumentFragment;
   checkboxElement!: HTMLInputElement;
   textElement!: HTMLElement;
 
   constructor() {
     super();
-    CheckboxLabel._lastId = CheckboxLabel._lastId + 1;
-    const id = 'ui-checkbox-label' + CheckboxLabel._lastId;
-    this._shadowRoot =
+    CheckboxLabel.lastId = CheckboxLabel.lastId + 1;
+    const id = 'ui-checkbox-label' + CheckboxLabel.lastId;
+    this.shadowRootInternal =
         createShadowRootWithCoreStyles(this, {cssFile: 'ui/legacy/checkboxTextLabel.css', delegatesFocus: undefined});
-    this.checkboxElement = (this._shadowRoot.createChild('input') as HTMLInputElement);
+    this.checkboxElement = (this.shadowRootInternal.createChild('input') as HTMLInputElement);
     this.checkboxElement.type = 'checkbox';
     this.checkboxElement.setAttribute('id', id);
-    this.textElement = this._shadowRoot.createChild('label', 'dt-checkbox-text') as HTMLElement;
+    this.textElement = this.shadowRootInternal.createChild('label', 'dt-checkbox-text') as HTMLElement;
     this.textElement.setAttribute('for', id);
-    this._shadowRoot.createChild('slot');
+    this.shadowRootInternal.createChild('slot');
   }
 
   static create(title?: string, checked?: boolean, subtitle?: string): CheckboxLabel {
-    if (!CheckboxLabel._constructor) {
-      CheckboxLabel._constructor = registerCustomElement('span', 'dt-checkbox', CheckboxLabel);
+    if (!CheckboxLabel.constructorInternal) {
+      CheckboxLabel.constructorInternal = registerCustomElement('span', 'dt-checkbox', CheckboxLabel);
     }
-    const element = (CheckboxLabel._constructor() as CheckboxLabel);
+    const element = (CheckboxLabel.constructorInternal() as CheckboxLabel);
     element.checkboxElement.checked = Boolean(checked);
     if (title !== undefined) {
       element.textElement.textContent = title;
@@ -1217,7 +1215,7 @@ export class CheckboxLabel extends HTMLSpanElement {
     this.checkboxElement.classList.add('dt-checkbox-themed');
     const stylesheet = document.createElement('style');
     stylesheet.textContent = 'input.dt-checkbox-themed:checked:after { background-color: ' + color + '}';
-    this._shadowRoot.appendChild(stylesheet);
+    this.shadowRootInternal.appendChild(stylesheet);
   }
 
   set borderColor(color: string) {
@@ -1225,12 +1223,12 @@ export class CheckboxLabel extends HTMLSpanElement {
     this.checkboxElement.style.borderColor = color;
   }
 
-  static _lastId = 0;
-  static _constructor: (() => Element)|null = null;
+  private static lastId = 0;
+  static constructorInternal: (() => Element)|null = null;
 }
 
 export class DevToolsIconLabel extends HTMLSpanElement {
-  _iconElement: Icon;
+  private readonly iconElement: Icon;
 
   constructor() {
     super();
@@ -1238,14 +1236,14 @@ export class DevToolsIconLabel extends HTMLSpanElement {
       cssFile: undefined,
       delegatesFocus: undefined,
     });
-    this._iconElement = Icon.create();
-    this._iconElement.style.setProperty('margin-right', '4px');
-    root.appendChild(this._iconElement);
+    this.iconElement = Icon.create();
+    this.iconElement.style.setProperty('margin-right', '4px');
+    root.appendChild(this.iconElement);
     root.createChild('slot');
   }
 
   set type(type: string) {
-    this._iconElement.setIconType(type);
+    this.iconElement.setIconType(type);
   }
 }
 
@@ -1306,63 +1304,63 @@ export class DevToolsSlider extends HTMLSpanElement {
 registerCustomElement('span', 'dt-slider', DevToolsSlider);
 
 export class DevToolsSmallBubble extends HTMLSpanElement {
-  _textElement: Element;
+  private textElement: Element;
 
   constructor() {
     super();
     const root =
         createShadowRootWithCoreStyles(this, {cssFile: 'ui/legacy/smallBubble.css', delegatesFocus: undefined});
-    this._textElement = root.createChild('div');
-    this._textElement.className = 'info';
-    this._textElement.createChild('slot');
+    this.textElement = root.createChild('div');
+    this.textElement.className = 'info';
+    this.textElement.createChild('slot');
   }
 
   set type(type: string) {
-    this._textElement.className = type;
+    this.textElement.className = type;
   }
 }
 
 registerCustomElement('span', 'dt-small-bubble', DevToolsSmallBubble);
 
 export class DevToolsCloseButton extends HTMLDivElement {
-  _buttonElement: HTMLElement;
-  _hoverIcon: Icon;
-  _activeIcon: Icon;
+  private buttonElement: HTMLElement;
+  private readonly hoverIcon: Icon;
+  private readonly activeIcon: Icon;
 
   constructor() {
     super();
     const root =
         createShadowRootWithCoreStyles(this, {cssFile: 'ui/legacy/closeButton.css', delegatesFocus: undefined});
-    this._buttonElement = (root.createChild('div', 'close-button') as HTMLElement);
-    ARIAUtils.setAccessibleName(this._buttonElement, i18nString(UIStrings.close));
-    ARIAUtils.markAsButton(this._buttonElement);
+    this.buttonElement = (root.createChild('div', 'close-button') as HTMLElement);
+    ARIAUtils.setAccessibleName(this.buttonElement, i18nString(UIStrings.close));
+    ARIAUtils.markAsButton(this.buttonElement);
     const regularIcon = Icon.create('smallicon-cross', 'default-icon');
-    this._hoverIcon = Icon.create('mediumicon-red-cross-hover', 'hover-icon');
-    this._activeIcon = Icon.create('mediumicon-red-cross-active', 'active-icon');
-    this._buttonElement.appendChild(regularIcon);
-    this._buttonElement.appendChild(this._hoverIcon);
-    this._buttonElement.appendChild(this._activeIcon);
+    this.hoverIcon = Icon.create('mediumicon-red-cross-hover', 'hover-icon');
+    this.activeIcon = Icon.create('mediumicon-red-cross-active', 'active-icon');
+    this.buttonElement.appendChild(regularIcon);
+    this.buttonElement.appendChild(this.hoverIcon);
+    this.buttonElement.appendChild(this.activeIcon);
   }
 
   set gray(gray: boolean) {
     if (gray) {
-      this._hoverIcon.setIconType('mediumicon-gray-cross-hover');
-      this._activeIcon.setIconType('mediumicon-gray-cross-active');
+      this.hoverIcon.setIconType('mediumicon-gray-cross-hover');
+      this.activeIcon.setIconType('mediumicon-gray-cross-active');
     } else {
-      this._hoverIcon.setIconType('mediumicon-red-cross-hover');
-      this._activeIcon.setIconType('mediumicon-red-cross-active');
+      this.hoverIcon.setIconType('mediumicon-red-cross-hover');
+      this.activeIcon.setIconType('mediumicon-red-cross-active');
     }
   }
 
   setAccessibleName(name: string): void {
-    ARIAUtils.setAccessibleName(this._buttonElement, name);
+    ARIAUtils.setAccessibleName(this.buttonElement, name);
   }
 
   setTabbable(tabbable: boolean): void {
     if (tabbable) {
-      this._buttonElement.tabIndex = 0;
+      this.buttonElement.tabIndex = 0;
     } else {
-      this._buttonElement.tabIndex = -1;
+      this.buttonElement.tabIndex = -1;
     }
   }
 }

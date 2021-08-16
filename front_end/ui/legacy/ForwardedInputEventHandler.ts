@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 
@@ -14,10 +12,10 @@ import {ForwardedShortcut, ShortcutRegistry} from './ShortcutRegistry.js';
 export class ForwardedInputEventHandler {
   constructor() {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.KeyEventUnhandled, this._onKeyEventUnhandled, this);
+        Host.InspectorFrontendHostAPI.Events.KeyEventUnhandled, this.onKeyEventUnhandled, this);
   }
 
-  _onKeyEventUnhandled(event: Common.EventTarget.EventTargetEvent): void {
+  private onKeyEventUnhandled(event: Common.EventTarget.EventTargetEvent): void {
     const data = event.data;
     const type = (data.type as string);
     const key = (data.key as string);

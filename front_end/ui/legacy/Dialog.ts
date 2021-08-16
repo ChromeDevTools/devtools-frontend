@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as ARIAUtils from './ARIAUtils.js';
 import {GlassPane, PointerEventsBehavior} from './GlassPane.js';
 import {InspectorView} from './InspectorView.js';
@@ -40,13 +38,13 @@ import type {WidgetElement} from './Widget.js';
 import {WidgetFocusRestorer} from './Widget.js';
 
 export class Dialog extends GlassPane {
-  _tabIndexBehavior: OutsideTabIndexBehavior;
-  _tabIndexMap: Map<HTMLElement, number>;
-  _focusRestorer: WidgetFocusRestorer|null;
-  _closeOnEscape: boolean;
-  _targetDocument!: Document|null;
-  _targetDocumentKeyDownHandler: (event: Event) => void;
-  _escapeKeyCallback: ((arg0: Event) => void)|null;
+  private tabIndexBehavior: OutsideTabIndexBehavior;
+  private tabIndexMap: Map<HTMLElement, number>;
+  private focusRestorer: WidgetFocusRestorer|null;
+  private closeOnEscape: boolean;
+  private targetDocument!: Document|null;
+  private readonly targetDocumentKeyDownHandler: (event: Event) => void;
+  private escapeKeyCallback: ((arg0: Event) => void)|null;
 
   constructor() {
     super();
@@ -60,52 +58,52 @@ export class Dialog extends GlassPane {
       event.consume(true);
     });
     ARIAUtils.markAsModalDialog(this.contentElement);
-    this._tabIndexBehavior = OutsideTabIndexBehavior.DisableAllOutsideTabIndex;
-    this._tabIndexMap = new Map();
-    this._focusRestorer = null;
-    this._closeOnEscape = true;
-    this._targetDocumentKeyDownHandler = this._onKeyDown.bind(this);
-    this._escapeKeyCallback = null;
+    this.tabIndexBehavior = OutsideTabIndexBehavior.DisableAllOutsideTabIndex;
+    this.tabIndexMap = new Map();
+    this.focusRestorer = null;
+    this.closeOnEscape = true;
+    this.targetDocumentKeyDownHandler = this.onKeyDown.bind(this);
+    this.escapeKeyCallback = null;
   }
 
   static hasInstance(): boolean {
-    return Boolean(Dialog._instance);
+    return Boolean(Dialog.instance);
   }
 
   show(where?: Document | Element): void {
     const document = (where instanceof Document ? where : (where || InspectorView.instance().element).ownerDocument as Document);
-    this._targetDocument = document;
-    this._targetDocument.addEventListener('keydown', this._targetDocumentKeyDownHandler, true);
+    this.targetDocument = document;
+    this.targetDocument.addEventListener('keydown', this.targetDocumentKeyDownHandler, true);
 
-    if (Dialog._instance) {
-      Dialog._instance.hide();
+    if (Dialog.instance) {
+      Dialog.instance.hide();
     }
-    Dialog._instance = this;
-    this._disableTabIndexOnElements(document);
+    Dialog.instance = this;
+    this.disableTabIndexOnElements(document);
     super.show(document);
-    this._focusRestorer = new WidgetFocusRestorer(this.widget());
+    this.focusRestorer = new WidgetFocusRestorer(this.widget());
   }
 
   hide(): void {
-    if (this._focusRestorer) {
-      this._focusRestorer.restore();
+    if (this.focusRestorer) {
+      this.focusRestorer.restore();
     }
     super.hide();
 
-    if (this._targetDocument) {
-      this._targetDocument.removeEventListener('keydown', this._targetDocumentKeyDownHandler, true);
+    if (this.targetDocument) {
+      this.targetDocument.removeEventListener('keydown', this.targetDocumentKeyDownHandler, true);
     }
-    this._restoreTabIndexOnElements();
+    this.restoreTabIndexOnElements();
     this.dispatchEventToListeners('hidden');
-    Dialog._instance = null;
+    Dialog.instance = null;
   }
 
   setCloseOnEscape(close: boolean): void {
-    this._closeOnEscape = close;
+    this.closeOnEscape = close;
   }
 
   setEscapeKeyCallback(callback: (arg0: Event) => void): void {
-    this._escapeKeyCallback = callback;
+    this.escapeKeyCallback = callback;
   }
 
   addCloseButton(): void {
@@ -116,34 +114,34 @@ export class Dialog extends GlassPane {
   }
 
   setOutsideTabIndexBehavior(tabIndexBehavior: OutsideTabIndexBehavior): void {
-    this._tabIndexBehavior = tabIndexBehavior;
+    this.tabIndexBehavior = tabIndexBehavior;
   }
 
-  _disableTabIndexOnElements(document: Document): void {
-    if (this._tabIndexBehavior === OutsideTabIndexBehavior.PreserveTabIndex) {
+  private disableTabIndexOnElements(document: Document): void {
+    if (this.tabIndexBehavior === OutsideTabIndexBehavior.PreserveTabIndex) {
       return;
     }
 
     let exclusionSet: Set<HTMLElement>|(Set<HTMLElement>| null) = (null as Set<HTMLElement>| null);
-    if (this._tabIndexBehavior === OutsideTabIndexBehavior.PreserveMainViewTabIndex) {
-      exclusionSet = this._getMainWidgetTabIndexElements(InspectorView.instance().ownerSplit());
+    if (this.tabIndexBehavior === OutsideTabIndexBehavior.PreserveMainViewTabIndex) {
+      exclusionSet = this.getMainWidgetTabIndexElements(InspectorView.instance().ownerSplit());
     }
 
-    this._tabIndexMap.clear();
+    this.tabIndexMap.clear();
     let node: (Node|null)|Document = document;
     for (; node; node = node.traverseNextNode(document)) {
       if (node instanceof HTMLElement) {
         const element = (node as HTMLElement);
         const tabIndex = element.tabIndex;
         if (tabIndex >= 0 && (!exclusionSet || !exclusionSet.has(element))) {
-          this._tabIndexMap.set(element, tabIndex);
+          this.tabIndexMap.set(element, tabIndex);
           element.tabIndex = -1;
         }
       }
     }
   }
 
-  _getMainWidgetTabIndexElements(splitWidget: SplitWidget|null): Set<HTMLElement> {
+  private getMainWidgetTabIndexElements(splitWidget: SplitWidget|null): Set<HTMLElement> {
     const elementSet = (new Set() as Set<HTMLElement>);
     if (!splitWidget) {
       return elementSet;
@@ -172,32 +170,32 @@ export class Dialog extends GlassPane {
     return elementSet;
   }
 
-  _restoreTabIndexOnElements(): void {
-    for (const element of this._tabIndexMap.keys()) {
-      element.tabIndex = (this._tabIndexMap.get(element) as number);
+  private restoreTabIndexOnElements(): void {
+    for (const element of this.tabIndexMap.keys()) {
+      element.tabIndex = (this.tabIndexMap.get(element) as number);
     }
-    this._tabIndexMap.clear();
+    this.tabIndexMap.clear();
   }
 
-  _onKeyDown(event: Event): void {
+  private onKeyDown(event: Event): void {
     const keyboardEvent = (event as KeyboardEvent);
     if (keyboardEvent.keyCode === Keys.Esc.code && KeyboardShortcut.hasNoModifiers(event)) {
-      if (this._escapeKeyCallback) {
-        this._escapeKeyCallback(event);
+      if (this.escapeKeyCallback) {
+        this.escapeKeyCallback(event);
       }
 
       if (event.handled) {
         return;
       }
 
-      if (this._closeOnEscape) {
+      if (this.closeOnEscape) {
         event.consume(true);
         this.hide();
       }
     }
   }
 
-  static _instance: Dialog|null = null;
+  private static instance: Dialog|null = null;
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

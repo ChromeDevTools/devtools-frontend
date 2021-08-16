@@ -119,6 +119,7 @@ interface Node {
   deepTextContent(): string
   window(): Window;
   childTextNodes(): Node[];
+  __widget?: any;
 }
 
 declare function isEnterOrSpaceKey(event: Event): boolean;

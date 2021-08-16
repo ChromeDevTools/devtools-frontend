@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 
@@ -15,55 +13,55 @@ import type {WidgetElement} from './Widget.js';
 import {Widget} from './Widget.js';
 
 export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
-  _widget: Widget;
+  private readonly widgetInternal: Widget;
   element: WidgetElement;
   contentElement: HTMLDivElement;
-  _arrowElement: Icon;
-  _onMouseDownBound: (event: Event) => void;
-  _onClickOutsideCallback: ((arg0: Event) => void)|null;
-  _maxSize: Size|null;
-  _positionX: number|null;
-  _positionY: number|null;
-  _anchorBox: AnchorBox|null;
-  _anchorBehavior: AnchorBehavior;
-  _sizeBehavior: SizeBehavior;
-  _marginBehavior: MarginBehavior;
+  private readonly arrowElement: Icon;
+  private readonly onMouseDownBound: (event: Event) => void;
+  private onClickOutsideCallback: ((arg0: Event) => void)|null;
+  private maxSize: Size|null;
+  private positionX: number|null;
+  private positionY: number|null;
+  private anchorBox: AnchorBox|null;
+  private anchorBehavior: AnchorBehavior;
+  private sizeBehavior: SizeBehavior;
+  private marginBehavior: MarginBehavior;
 
   constructor() {
     super();
-    this._widget = new Widget(true);
-    this._widget.markAsRoot();
-    this.element = this._widget.element;
-    this.contentElement = this._widget.contentElement;
-    this._arrowElement = Icon.create('', 'arrow hidden');
+    this.widgetInternal = new Widget(true);
+    this.widgetInternal.markAsRoot();
+    this.element = this.widgetInternal.element;
+    this.contentElement = this.widgetInternal.contentElement;
+    this.arrowElement = Icon.create('', 'arrow hidden');
     if (this.element.shadowRoot) {
-      this.element.shadowRoot.appendChild(this._arrowElement);
+      this.element.shadowRoot.appendChild(this.arrowElement);
     }
 
     this.registerRequiredCSS('ui/legacy/glassPane.css');
     this.setPointerEventsBehavior(PointerEventsBehavior.PierceGlassPane);
 
-    this._onMouseDownBound = this._onMouseDown.bind(this);
-    this._onClickOutsideCallback = null;
-    this._maxSize = null;
-    this._positionX = null;
-    this._positionY = null;
-    this._anchorBox = null;
-    this._anchorBehavior = AnchorBehavior.PreferTop;
-    this._sizeBehavior = SizeBehavior.SetExactSize;
-    this._marginBehavior = MarginBehavior.DefaultMargin;
+    this.onMouseDownBound = this.onMouseDown.bind(this);
+    this.onClickOutsideCallback = null;
+    this.maxSize = null;
+    this.positionX = null;
+    this.positionY = null;
+    this.anchorBox = null;
+    this.anchorBehavior = AnchorBehavior.PreferTop;
+    this.sizeBehavior = SizeBehavior.SetExactSize;
+    this.marginBehavior = MarginBehavior.DefaultMargin;
   }
 
   isShowing(): boolean {
-    return this._widget.isShowing();
+    return this.widgetInternal.isShowing();
   }
 
   registerRequiredCSS(cssFile: string): void {
-    this._widget.registerRequiredCSS(cssFile);
+    this.widgetInternal.registerRequiredCSS(cssFile);
   }
 
   setDefaultFocusedElement(element: Element|null): void {
-    this._widget.setDefaultFocusedElement(element);
+    this.widgetInternal.setDefaultFocusedElement(element);
   }
 
   setDimmed(dimmed: boolean): void {
@@ -78,37 +76,37 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   setOutsideClickCallback(callback: ((arg0: Event) => void)|null): void {
-    this._onClickOutsideCallback = callback;
+    this.onClickOutsideCallback = callback;
   }
 
   setMaxContentSize(size: Size|null): void {
-    this._maxSize = size;
+    this.maxSize = size;
     this.positionContent();
   }
 
   setSizeBehavior(sizeBehavior: SizeBehavior): void {
-    this._sizeBehavior = sizeBehavior;
+    this.sizeBehavior = sizeBehavior;
     this.positionContent();
   }
 
   setContentPosition(x: number|null, y: number|null): void {
-    this._positionX = x;
-    this._positionY = y;
+    this.positionX = x;
+    this.positionY = y;
     this.positionContent();
   }
 
   setContentAnchorBox(anchorBox: AnchorBox|null): void {
-    this._anchorBox = anchorBox;
+    this.anchorBox = anchorBox;
     this.positionContent();
   }
 
   setAnchorBehavior(behavior: AnchorBehavior): void {
-    this._anchorBehavior = behavior;
+    this.anchorBehavior = behavior;
   }
 
   setMarginBehavior(behavior: MarginBehavior): void {
-    this._marginBehavior = behavior;
-    this._arrowElement.classList.toggle('hidden', behavior !== MarginBehavior.Arrow);
+    this.marginBehavior = behavior;
+    this.arrowElement.classList.toggle('hidden', behavior !== MarginBehavior.Arrow);
   }
 
   show(document: Document): void {
@@ -118,8 +116,8 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
     // TODO(crbug.com/1006759): Extract the magic number
     // Deliberately starts with 3000 to hide other z-indexed elements below.
     this.element.style.zIndex = `${3000 + 1000 * _panes.size}`;
-    document.body.addEventListener('mousedown', this._onMouseDownBound, true);
-    this._widget.show(document.body);
+    document.body.addEventListener('mousedown', this.onMouseDownBound, true);
+    this.widgetInternal.show(document.body);
     _panes.add(this);
     this.positionContent();
   }
@@ -129,19 +127,19 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
       return;
     }
     _panes.delete(this);
-    this.element.ownerDocument.body.removeEventListener('mousedown', this._onMouseDownBound, true);
-    this._widget.detach();
+    this.element.ownerDocument.body.removeEventListener('mousedown', this.onMouseDownBound, true);
+    this.widgetInternal.detach();
   }
 
-  _onMouseDown(event: Event): void {
-    if (!this._onClickOutsideCallback) {
+  private onMouseDown(event: Event): void {
+    if (!this.onClickOutsideCallback) {
       return;
     }
     const node = deepElementFromEvent(event);
     if (!node || this.contentElement.isSelfOrAncestor(node)) {
       return;
     }
-    this._onClickOutsideCallback.call(null, event);
+    this.onClickOutsideCallback.call(null, event);
   }
 
   positionContent(): void {
@@ -149,13 +147,13 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
       return;
     }
 
-    const showArrow = this._marginBehavior === MarginBehavior.Arrow;
-    const gutterSize = showArrow ? 8 : (this._marginBehavior === MarginBehavior.NoMargin ? 0 : 3);
+    const showArrow = this.marginBehavior === MarginBehavior.Arrow;
+    const gutterSize = showArrow ? 8 : (this.marginBehavior === MarginBehavior.NoMargin ? 0 : 3);
     const scrollbarSize = measuredScrollbarWidth(this.element.ownerDocument);
     const arrowSize = 10;
 
     const container = (_containers.get((this.element.ownerDocument as Document))) as HTMLElement;
-    if (this._sizeBehavior === SizeBehavior.MeasureContent) {
+    if (this.sizeBehavior === SizeBehavior.MeasureContent) {
       this.contentElement.positionAt(0, 0);
       this.contentElement.style.width = '';
       this.contentElement.style.maxWidth = '';
@@ -171,12 +169,12 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
     let positionX = gutterSize;
     let positionY = gutterSize;
 
-    if (this._maxSize) {
-      width = Math.min(width, this._maxSize.width);
-      height = Math.min(height, this._maxSize.height);
+    if (this.maxSize) {
+      width = Math.min(width, this.maxSize.width);
+      height = Math.min(height, this.maxSize.height);
     }
 
-    if (this._sizeBehavior === SizeBehavior.MeasureContent) {
+    if (this.sizeBehavior === SizeBehavior.MeasureContent) {
       const measuredRect = this.contentElement.getBoundingClientRect();
       const widthOverflow = height < measuredRect.height ? scrollbarSize : 0;
       const heightOverflow = width < measuredRect.width ? scrollbarSize : 0;
@@ -184,11 +182,11 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
       height = Math.min(height, measuredRect.height + heightOverflow);
     }
 
-    if (this._anchorBox) {
-      const anchorBox = this._anchorBox.relativeToElement(container);
+    if (this.anchorBox) {
+      const anchorBox = this.anchorBox.relativeToElement(container);
       let behavior: AnchorBehavior.PreferBottom|AnchorBehavior.PreferTop|AnchorBehavior.PreferRight|
-          AnchorBehavior.PreferLeft|AnchorBehavior = this._anchorBehavior;
-      this._arrowElement.classList.remove('arrow-none', 'arrow-top', 'arrow-bottom', 'arrow-left', 'arrow-right');
+          AnchorBehavior.PreferLeft|AnchorBehavior = this.anchorBehavior;
+      this.arrowElement.classList.remove('arrow-none', 'arrow-top', 'arrow-bottom', 'arrow-left', 'arrow-right');
 
       if (behavior === AnchorBehavior.PreferTop || behavior === AnchorBehavior.PreferBottom) {
         const top = anchorBox.y - 2 * gutterSize;
@@ -205,31 +203,31 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
         if (behavior === AnchorBehavior.PreferTop) {
           positionY = Math.max(gutterSize, anchorBox.y - height - gutterSize);
           const spaceTop = anchorBox.y - positionY - gutterSize;
-          if (this._sizeBehavior === SizeBehavior.MeasureContent) {
+          if (this.sizeBehavior === SizeBehavior.MeasureContent) {
             if (height > spaceTop) {
-              this._arrowElement.classList.add('arrow-none');
+              this.arrowElement.classList.add('arrow-none');
               enoughHeight = false;
             }
           } else {
             height = Math.min(height, spaceTop);
           }
-          this._arrowElement.setIconType('mediumicon-arrow-bottom');
-          this._arrowElement.classList.add('arrow-bottom');
+          this.arrowElement.setIconType('mediumicon-arrow-bottom');
+          this.arrowElement.classList.add('arrow-bottom');
           arrowY = anchorBox.y - gutterSize;
         } else {
           positionY = anchorBox.y + anchorBox.height + gutterSize;
           const spaceBottom = containerHeight - positionY - gutterSize;
-          if (this._sizeBehavior === SizeBehavior.MeasureContent) {
+          if (this.sizeBehavior === SizeBehavior.MeasureContent) {
             if (height > spaceBottom) {
-              this._arrowElement.classList.add('arrow-none');
+              this.arrowElement.classList.add('arrow-none');
               positionY = containerHeight - gutterSize - height;
               enoughHeight = false;
             }
           } else {
             height = Math.min(height, spaceBottom);
           }
-          this._arrowElement.setIconType('mediumicon-arrow-top');
-          this._arrowElement.classList.add('arrow-top');
+          this.arrowElement.setIconType('mediumicon-arrow-top');
+          this.arrowElement.classList.add('arrow-top');
           arrowY = anchorBox.y + anchorBox.height + gutterSize;
         }
 
@@ -241,11 +239,11 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
         }
         width = Math.min(width, containerWidth - positionX - gutterSize);
         if (2 * arrowSize >= width) {
-          this._arrowElement.classList.add('arrow-none');
+          this.arrowElement.classList.add('arrow-none');
         } else {
           let arrowX: number = anchorBox.x + Math.min(50, Math.floor(anchorBox.width / 2));
           arrowX = Platform.NumberUtilities.clamp(arrowX, positionX + arrowSize, positionX + width - arrowSize);
-          this._arrowElement.positionAt(arrowX, arrowY, container);
+          this.arrowElement.positionAt(arrowX, arrowY, container);
         }
       } else {
         const left = anchorBox.x - 2 * gutterSize;
@@ -262,31 +260,31 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
         if (behavior === AnchorBehavior.PreferLeft) {
           positionX = Math.max(gutterSize, anchorBox.x - width - gutterSize);
           const spaceLeft = anchorBox.x - positionX - gutterSize;
-          if (this._sizeBehavior === SizeBehavior.MeasureContent) {
+          if (this.sizeBehavior === SizeBehavior.MeasureContent) {
             if (width > spaceLeft) {
-              this._arrowElement.classList.add('arrow-none');
+              this.arrowElement.classList.add('arrow-none');
               enoughWidth = false;
             }
           } else {
             width = Math.min(width, spaceLeft);
           }
-          this._arrowElement.setIconType('mediumicon-arrow-right');
-          this._arrowElement.classList.add('arrow-right');
+          this.arrowElement.setIconType('mediumicon-arrow-right');
+          this.arrowElement.classList.add('arrow-right');
           arrowX = anchorBox.x - gutterSize;
         } else {
           positionX = anchorBox.x + anchorBox.width + gutterSize;
           const spaceRight = containerWidth - positionX - gutterSize;
-          if (this._sizeBehavior === SizeBehavior.MeasureContent) {
+          if (this.sizeBehavior === SizeBehavior.MeasureContent) {
             if (width > spaceRight) {
-              this._arrowElement.classList.add('arrow-none');
+              this.arrowElement.classList.add('arrow-none');
               positionX = containerWidth - gutterSize - width;
               enoughWidth = false;
             }
           } else {
             width = Math.min(width, spaceRight);
           }
-          this._arrowElement.setIconType('mediumicon-arrow-left');
-          this._arrowElement.classList.add('arrow-left');
+          this.arrowElement.setIconType('mediumicon-arrow-left');
+          this.arrowElement.classList.add('arrow-left');
           arrowX = anchorBox.x + anchorBox.width + gutterSize;
         }
 
@@ -298,34 +296,34 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
         }
         height = Math.min(height, containerHeight - positionY - gutterSize);
         if (2 * arrowSize >= height) {
-          this._arrowElement.classList.add('arrow-none');
+          this.arrowElement.classList.add('arrow-none');
         } else {
           let arrowY: number = anchorBox.y + Math.min(50, Math.floor(anchorBox.height / 2));
           arrowY = Platform.NumberUtilities.clamp(arrowY, positionY + arrowSize, positionY + height - arrowSize);
-          this._arrowElement.positionAt(arrowX, arrowY, container);
+          this.arrowElement.positionAt(arrowX, arrowY, container);
         }
       }
     } else {
-      positionX = this._positionX !== null ? this._positionX : (containerWidth - width) / 2;
-      positionY = this._positionY !== null ? this._positionY : (containerHeight - height) / 2;
+      positionX = this.positionX !== null ? this.positionX : (containerWidth - width) / 2;
+      positionY = this.positionY !== null ? this.positionY : (containerHeight - height) / 2;
       width = Math.min(width, containerWidth - positionX - gutterSize);
       height = Math.min(height, containerHeight - positionY - gutterSize);
-      this._arrowElement.classList.add('arrow-none');
+      this.arrowElement.classList.add('arrow-none');
     }
 
     this.contentElement.style.width = width + 'px';
-    if (this._sizeBehavior === SizeBehavior.SetExactWidthMaxHeight) {
+    if (this.sizeBehavior === SizeBehavior.SetExactWidthMaxHeight) {
       this.contentElement.style.maxHeight = height + 'px';
     } else {
       this.contentElement.style.height = height + 'px';
     }
 
     this.contentElement.positionAt(positionX, positionY, container);
-    this._widget.doResize();
+    this.widgetInternal.doResize();
   }
 
   widget(): Widget {
-    return this._widget;
+    return this.widgetInternal;
   }
 
   static setContainer(element: Element): void {

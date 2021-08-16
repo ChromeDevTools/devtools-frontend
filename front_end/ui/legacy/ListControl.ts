@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 
@@ -35,67 +33,67 @@ export enum ListMode {
 
 export class ListControl<T> {
   element: HTMLDivElement;
-  _topElement: HTMLElement;
-  _bottomElement: HTMLElement;
-  _firstIndex: number;
-  _lastIndex: number;
-  _renderedHeight: number;
-  _topHeight: number;
-  _bottomHeight: number;
-  _model: ListModel<T>;
-  _itemToElement: Map<T, Element>;
-  _selectedIndex: number;
-  _selectedItem: T|null;
-  _delegate: ListDelegate<T>;
-  _mode: ListMode;
-  _fixedHeight: number;
-  _variableOffsets: Int32Array;
+  private topElement: HTMLElement;
+  private bottomElement: HTMLElement;
+  private firstIndex: number;
+  private lastIndex: number;
+  private renderedHeight: number;
+  private topHeight: number;
+  private bottomHeight: number;
+  private model: ListModel<T>;
+  private itemToElement: Map<T, Element>;
+  private selectedIndexInternal: number;
+  private selectedItemInternal: T|null;
+  private delegate: ListDelegate<T>;
+  private readonly mode: ListMode;
+  private fixedHeight: number;
+  private variableOffsets: Int32Array;
 
   constructor(model: ListModel<T>, delegate: ListDelegate<T>, mode?: ListMode) {
     this.element = document.createElement('div');
     this.element.style.overflowY = 'auto';
-    this._topElement = this.element.createChild('div');
-    this._bottomElement = this.element.createChild('div');
-    this._firstIndex = 0;
-    this._lastIndex = 0;
-    this._renderedHeight = 0;
-    this._topHeight = 0;
-    this._bottomHeight = 0;
+    this.topElement = this.element.createChild('div');
+    this.bottomElement = this.element.createChild('div');
+    this.firstIndex = 0;
+    this.lastIndex = 0;
+    this.renderedHeight = 0;
+    this.topHeight = 0;
+    this.bottomHeight = 0;
 
-    this._model = model;
-    this._model.addEventListener(ListModelEvents.ItemsReplaced, this._replacedItemsInRange, this);
-    this._itemToElement = new Map();
-    this._selectedIndex = -1;
-    this._selectedItem = null;
+    this.model = model;
+    this.model.addEventListener(ListModelEvents.ItemsReplaced, this.replacedItemsInRange, this);
+    this.itemToElement = new Map();
+    this.selectedIndexInternal = -1;
+    this.selectedItemInternal = null;
 
     this.element.tabIndex = -1;
-    this.element.addEventListener('click', this._onClick.bind(this), false);
-    this.element.addEventListener('keydown', this._onKeyDown.bind(this), false);
+    this.element.addEventListener('click', this.onClick.bind(this), false);
+    this.element.addEventListener('keydown', this.onKeyDown.bind(this), false);
     ARIAUtils.markAsListBox(this.element);
 
-    this._delegate = delegate;
-    this._mode = mode || ListMode.EqualHeightItems;
-    this._fixedHeight = 0;
-    this._variableOffsets = new Int32Array(0);
-    this._clearContents();
+    this.delegate = delegate;
+    this.mode = mode || ListMode.EqualHeightItems;
+    this.fixedHeight = 0;
+    this.variableOffsets = new Int32Array(0);
+    this.clearContents();
 
-    if (this._mode !== ListMode.NonViewport) {
+    if (this.mode !== ListMode.NonViewport) {
       this.element.addEventListener('scroll', () => {
-        this._updateViewport(this.element.scrollTop, this.element.offsetHeight);
+        this.updateViewport(this.element.scrollTop, this.element.offsetHeight);
       }, false);
     }
   }
 
   setModel(model: ListModel<T>): void {
-    this._itemToElement.clear();
-    const length = this._model.length;
-    this._model.removeEventListener(ListModelEvents.ItemsReplaced, this._replacedItemsInRange, this);
-    this._model = model;
-    this._model.addEventListener(ListModelEvents.ItemsReplaced, this._replacedItemsInRange, this);
+    this.itemToElement.clear();
+    const length = this.model.length;
+    this.model.removeEventListener(ListModelEvents.ItemsReplaced, this.replacedItemsInRange, this);
+    this.model = model;
+    this.model.addEventListener(ListModelEvents.ItemsReplaced, this.replacedItemsInRange, this);
     this.invalidateRange(0, length);
   }
 
-  _replacedItemsInRange(event: Common.EventTarget.EventTargetEvent): void {
+  private replacedItemsInRange(event: Common.EventTarget.EventTargetEvent): void {
     const data = (event.data as {
       index: number,
       removed: Array<T>,
@@ -106,29 +104,29 @@ export class ListControl<T> {
     const to = from + data.removed.length;
     const keepSelectedIndex = data.keepSelectedIndex;
 
-    const oldSelectedItem = this._selectedItem;
-    const oldSelectedElement = oldSelectedItem ? (this._itemToElement.get(oldSelectedItem) || null) : null;
+    const oldSelectedItem = this.selectedItemInternal;
+    const oldSelectedElement = oldSelectedItem ? (this.itemToElement.get(oldSelectedItem) || null) : null;
     for (let i = 0; i < data.removed.length; i++) {
-      this._itemToElement.delete(data.removed[i]);
+      this.itemToElement.delete(data.removed[i]);
     }
-    this._invalidate(from, to, data.inserted);
+    this.invalidate(from, to, data.inserted);
 
-    if (this._selectedIndex >= to) {
-      this._selectedIndex += data.inserted - (to - from);
-      this._selectedItem = this._model.at(this._selectedIndex);
-    } else if (this._selectedIndex >= from) {
+    if (this.selectedIndexInternal >= to) {
+      this.selectedIndexInternal += data.inserted - (to - from);
+      this.selectedItemInternal = this.model.at(this.selectedIndexInternal);
+    } else if (this.selectedIndexInternal >= from) {
       const selectableIndex = keepSelectedIndex ? from : from + data.inserted;
-      let index = this._findFirstSelectable(selectableIndex, +1, false);
+      let index = this.findFirstSelectable(selectableIndex, +1, false);
       if (index === -1) {
         const alternativeSelectableIndex = keepSelectedIndex ? from : from - 1;
-        index = this._findFirstSelectable(alternativeSelectableIndex, -1, false);
+        index = this.findFirstSelectable(alternativeSelectableIndex, -1, false);
       }
-      this._select(index, oldSelectedItem, oldSelectedElement);
+      this.select(index, oldSelectedItem, oldSelectedElement);
     }
   }
 
   refreshItem(item: T): void {
-    const index = this._model.indexOf(item);
+    const index = this.model.indexOf(item);
     if (index === -1) {
       console.error('Item to refresh is not present');
       return;
@@ -137,47 +135,47 @@ export class ListControl<T> {
   }
 
   refreshItemByIndex(index: number): void {
-    const item = this._model.at(index);
-    this._itemToElement.delete(item);
+    const item = this.model.at(index);
+    this.itemToElement.delete(item);
     this.invalidateRange(index, index + 1);
-    if (this._selectedIndex !== -1) {
-      this._select(this._selectedIndex, null, null);
+    if (this.selectedIndexInternal !== -1) {
+      this.select(this.selectedIndexInternal, null, null);
     }
   }
 
   refreshAllItems(): void {
-    this._itemToElement.clear();
-    this.invalidateRange(0, this._model.length);
-    if (this._selectedIndex !== -1) {
-      this._select(this._selectedIndex, null, null);
+    this.itemToElement.clear();
+    this.invalidateRange(0, this.model.length);
+    if (this.selectedIndexInternal !== -1) {
+      this.select(this.selectedIndexInternal, null, null);
     }
   }
 
   invalidateRange(from: number, to: number): void {
-    this._invalidate(from, to, to - from);
+    this.invalidate(from, to, to - from);
   }
 
   viewportResized(): void {
-    if (this._mode === ListMode.NonViewport) {
+    if (this.mode === ListMode.NonViewport) {
       return;
     }
     // TODO(dgozman): try to keep visible scrollTop the same.
     const scrollTop = this.element.scrollTop;
     const viewportHeight = this.element.offsetHeight;
-    this._clearViewport();
-    this._updateViewport(
-        Platform.NumberUtilities.clamp(scrollTop, 0, this._totalHeight() - viewportHeight), viewportHeight);
+    this.clearViewport();
+    this.updateViewport(
+        Platform.NumberUtilities.clamp(scrollTop, 0, this.totalHeight() - viewportHeight), viewportHeight);
   }
 
   invalidateItemHeight(): void {
-    if (this._mode !== ListMode.EqualHeightItems) {
+    if (this.mode !== ListMode.EqualHeightItems) {
       console.error('Only supported in equal height items mode');
       return;
     }
-    this._fixedHeight = 0;
-    if (this._model.length) {
-      this._itemToElement.clear();
-      this._invalidate(0, this._model.length, this._model.length);
+    this.fixedHeight = 0;
+    if (this.model.length) {
+      this.itemToElement.clear();
+      this.invalidate(0, this.model.length, this.model.length);
     }
   }
 
@@ -189,137 +187,137 @@ export class ListControl<T> {
       return null;
     }
     const element = (node as Element);
-    const index = this._model.findIndex(item => this._itemToElement.get(item) === element);
-    return index !== -1 ? this._model.at(index) : null;
+    const index = this.model.findIndex(item => this.itemToElement.get(item) === element);
+    return index !== -1 ? this.model.at(index) : null;
   }
 
   scrollItemIntoView(item: T, center?: boolean): void {
-    const index = this._model.indexOf(item);
+    const index = this.model.indexOf(item);
     if (index === -1) {
       console.error('Attempt to scroll onto missing item');
       return;
     }
-    this._scrollIntoView(index, center);
+    this.scrollIntoView(index, center);
   }
 
   selectedItem(): T|null {
-    return this._selectedItem;
+    return this.selectedItemInternal;
   }
 
   selectedIndex(): number {
-    return this._selectedIndex;
+    return this.selectedIndexInternal;
   }
 
   selectItem(item: T|null, center?: boolean, dontScroll?: boolean): void {
     let index = -1;
     if (item !== null) {
-      index = this._model.indexOf(item);
+      index = this.model.indexOf(item);
       if (index === -1) {
         console.error('Attempt to select missing item');
         return;
       }
-      if (!this._delegate.isItemSelectable(item)) {
+      if (!this.delegate.isItemSelectable(item)) {
         console.error('Attempt to select non-selectable item');
         return;
       }
     }
     // Scrolling the item before selection ensures it is in the DOM.
     if (index !== -1 && !dontScroll) {
-      this._scrollIntoView(index, center);
+      this.scrollIntoView(index, center);
     }
-    if (this._selectedIndex !== index) {
-      this._select(index);
+    if (this.selectedIndexInternal !== index) {
+      this.select(index);
     }
   }
 
   selectPreviousItem(canWrap?: boolean, center?: boolean): boolean {
-    if (this._selectedIndex === -1 && !canWrap) {
+    if (this.selectedIndexInternal === -1 && !canWrap) {
       return false;
     }
-    let index: number = this._selectedIndex === -1 ? this._model.length - 1 : this._selectedIndex - 1;
-    index = this._findFirstSelectable(index, -1, Boolean(canWrap));
+    let index: number = this.selectedIndexInternal === -1 ? this.model.length - 1 : this.selectedIndexInternal - 1;
+    index = this.findFirstSelectable(index, -1, Boolean(canWrap));
     if (index !== -1) {
-      this._scrollIntoView(index, center);
-      this._select(index);
+      this.scrollIntoView(index, center);
+      this.select(index);
       return true;
     }
     return false;
   }
 
   selectNextItem(canWrap?: boolean, center?: boolean): boolean {
-    if (this._selectedIndex === -1 && !canWrap) {
+    if (this.selectedIndexInternal === -1 && !canWrap) {
       return false;
     }
-    let index: number = this._selectedIndex === -1 ? 0 : this._selectedIndex + 1;
-    index = this._findFirstSelectable(index, +1, Boolean(canWrap));
+    let index: number = this.selectedIndexInternal === -1 ? 0 : this.selectedIndexInternal + 1;
+    index = this.findFirstSelectable(index, +1, Boolean(canWrap));
     if (index !== -1) {
-      this._scrollIntoView(index, center);
-      this._select(index);
+      this.scrollIntoView(index, center);
+      this.select(index);
       return true;
     }
     return false;
   }
 
   selectItemPreviousPage(center?: boolean): boolean {
-    if (this._mode === ListMode.NonViewport) {
+    if (this.mode === ListMode.NonViewport) {
       return false;
     }
-    let index: number = this._selectedIndex === -1 ? this._model.length - 1 : this._selectedIndex;
-    index = this._findPageSelectable(index, -1);
+    let index: number = this.selectedIndexInternal === -1 ? this.model.length - 1 : this.selectedIndexInternal;
+    index = this.findPageSelectable(index, -1);
     if (index !== -1) {
-      this._scrollIntoView(index, center);
-      this._select(index);
+      this.scrollIntoView(index, center);
+      this.select(index);
       return true;
     }
     return false;
   }
 
   selectItemNextPage(center?: boolean): boolean {
-    if (this._mode === ListMode.NonViewport) {
+    if (this.mode === ListMode.NonViewport) {
       return false;
     }
-    let index: number = this._selectedIndex === -1 ? 0 : this._selectedIndex;
-    index = this._findPageSelectable(index, +1);
+    let index: number = this.selectedIndexInternal === -1 ? 0 : this.selectedIndexInternal;
+    index = this.findPageSelectable(index, +1);
     if (index !== -1) {
-      this._scrollIntoView(index, center);
-      this._select(index);
+      this.scrollIntoView(index, center);
+      this.select(index);
       return true;
     }
     return false;
   }
 
-  _scrollIntoView(index: number, center?: boolean): void {
-    if (this._mode === ListMode.NonViewport) {
-      this._elementAtIndex(index).scrollIntoViewIfNeeded(Boolean(center));
+  private scrollIntoView(index: number, center?: boolean): void {
+    if (this.mode === ListMode.NonViewport) {
+      this.elementAtIndex(index).scrollIntoViewIfNeeded(Boolean(center));
       return;
     }
 
-    const top = this._offsetAtIndex(index);
-    const bottom = this._offsetAtIndex(index + 1);
+    const top = this.offsetAtIndex(index);
+    const bottom = this.offsetAtIndex(index + 1);
     const viewportHeight = this.element.offsetHeight;
     if (center) {
       const scrollTo = (top + bottom) / 2 - viewportHeight / 2;
-      this._updateViewport(
-          Platform.NumberUtilities.clamp(scrollTo, 0, this._totalHeight() - viewportHeight), viewportHeight);
+      this.updateViewport(
+          Platform.NumberUtilities.clamp(scrollTo, 0, this.totalHeight() - viewportHeight), viewportHeight);
       return;
     }
 
     const scrollTop = this.element.scrollTop;
     if (top < scrollTop) {
-      this._updateViewport(top, viewportHeight);
+      this.updateViewport(top, viewportHeight);
     } else if (bottom > scrollTop + viewportHeight) {
-      this._updateViewport(bottom - viewportHeight, viewportHeight);
+      this.updateViewport(bottom - viewportHeight, viewportHeight);
     }
   }
 
-  _onClick(event: Event): void {
+  private onClick(event: Event): void {
     const item = this.itemForNode((event.target as Node | null));
-    if (item && this._delegate.isItemSelectable(item)) {
+    if (item && this.delegate.isItemSelectable(item)) {
       this.selectItem(item);
     }
   }
 
-  _onKeyDown(ev: Event): void {
+  private onKeyDown(ev: Event): void {
     const event = (ev as KeyboardEvent);
     let selected = false;
     switch (event.key) {
@@ -341,95 +339,95 @@ export class ListControl<T> {
     }
   }
 
-  _totalHeight(): number {
-    return this._offsetAtIndex(this._model.length);
+  private totalHeight(): number {
+    return this.offsetAtIndex(this.model.length);
   }
 
-  _indexAtOffset(offset: number): number {
-    if (this._mode === ListMode.NonViewport) {
+  private indexAtOffset(offset: number): number {
+    if (this.mode === ListMode.NonViewport) {
       throw 'There should be no offset conversions in non-viewport mode';
     }
-    if (!this._model.length || offset < 0) {
+    if (!this.model.length || offset < 0) {
       return 0;
     }
-    if (this._mode === ListMode.VariousHeightItems) {
+    if (this.mode === ListMode.VariousHeightItems) {
       return Math.min(
-          this._model.length - 1,
+          this.model.length - 1,
           Platform.ArrayUtilities.lowerBound(
-              this._variableOffsets, offset, Platform.ArrayUtilities.DEFAULT_COMPARATOR, 0, this._model.length));
+              this.variableOffsets, offset, Platform.ArrayUtilities.DEFAULT_COMPARATOR, 0, this.model.length));
     }
-    if (!this._fixedHeight) {
-      this._measureHeight();
+    if (!this.fixedHeight) {
+      this.measureHeight();
     }
-    return Math.min(this._model.length - 1, Math.floor(offset / this._fixedHeight));
+    return Math.min(this.model.length - 1, Math.floor(offset / this.fixedHeight));
   }
 
-  _elementAtIndex(index: number): Element {
-    const item = this._model.at(index);
-    let element = this._itemToElement.get(item);
+  private elementAtIndex(index: number): Element {
+    const item = this.model.at(index);
+    let element = this.itemToElement.get(item);
     if (!element) {
-      element = this._delegate.createElementForItem(item);
-      this._itemToElement.set(item, element);
-      this._updateElementARIA(element, index);
+      element = this.delegate.createElementForItem(item);
+      this.itemToElement.set(item, element);
+      this.updateElementARIA(element, index);
     }
     return element;
   }
 
-  _refreshARIA(): void {
-    for (let index = this._firstIndex; index <= this._lastIndex; index++) {
-      const item = this._model.at(index);
-      const element = this._itemToElement.get(item);
+  private refreshARIA(): void {
+    for (let index = this.firstIndex; index <= this.lastIndex; index++) {
+      const item = this.model.at(index);
+      const element = this.itemToElement.get(item);
       if (element) {
-        this._updateElementARIA(element, index);
+        this.updateElementARIA(element, index);
       }
     }
   }
 
-  _updateElementARIA(element: Element, index: number): void {
+  private updateElementARIA(element: Element, index: number): void {
     if (!ARIAUtils.hasRole(element)) {
       ARIAUtils.markAsOption(element);
     }
-    ARIAUtils.setSetSize(element, this._model.length);
+    ARIAUtils.setSetSize(element, this.model.length);
     ARIAUtils.setPositionInSet(element, index + 1);
   }
 
-  _offsetAtIndex(index: number): number {
-    if (this._mode === ListMode.NonViewport) {
+  private offsetAtIndex(index: number): number {
+    if (this.mode === ListMode.NonViewport) {
       throw new Error('There should be no offset conversions in non-viewport mode');
     }
-    if (!this._model.length) {
+    if (!this.model.length) {
       return 0;
     }
-    if (this._mode === ListMode.VariousHeightItems) {
-      return this._variableOffsets[index];
+    if (this.mode === ListMode.VariousHeightItems) {
+      return this.variableOffsets[index];
     }
-    if (!this._fixedHeight) {
-      this._measureHeight();
+    if (!this.fixedHeight) {
+      this.measureHeight();
     }
-    return index * this._fixedHeight;
+    return index * this.fixedHeight;
   }
 
-  _measureHeight(): void {
-    this._fixedHeight = this._delegate.heightForItem(this._model.at(0));
-    if (!this._fixedHeight) {
-      this._fixedHeight = measurePreferredSize(this._elementAtIndex(0), this.element).height;
+  private measureHeight(): void {
+    this.fixedHeight = this.delegate.heightForItem(this.model.at(0));
+    if (!this.fixedHeight) {
+      this.fixedHeight = measurePreferredSize(this.elementAtIndex(0), this.element).height;
     }
   }
 
-  _select(index: number, oldItem?: T|null, oldElement?: Element|null): void {
+  private select(index: number, oldItem?: T|null, oldElement?: Element|null): void {
     if (oldItem === undefined) {
-      oldItem = this._selectedItem;
+      oldItem = this.selectedItemInternal;
     }
     if (oldElement === undefined) {
-      oldElement = this._itemToElement.get((oldItem as T)) || null;
+      oldElement = this.itemToElement.get((oldItem as T)) || null;
     }
-    this._selectedIndex = index;
-    this._selectedItem = index === -1 ? null : this._model.at(index);
-    const newItem = this._selectedItem;
-    const newElement = this._selectedIndex !== -1 ? this._elementAtIndex(index) : null;
-    this._delegate.selectedItemChanged(
+    this.selectedIndexInternal = index;
+    this.selectedItemInternal = index === -1 ? null : this.model.at(index);
+    const newItem = this.selectedItemInternal;
+    const newElement = this.selectedIndexInternal !== -1 ? this.elementAtIndex(index) : null;
+    this.delegate.selectedItemChanged(
         oldItem, newItem, (oldElement as HTMLElement | null), (newElement as HTMLElement | null));
-    if (!this._delegate.updateSelectedItemARIA((oldElement as Element | null), newElement)) {
+    if (!this.delegate.updateSelectedItemARIA((oldElement as Element | null), newElement)) {
       if (oldElement) {
         ARIAUtils.setSelected(oldElement, false);
       }
@@ -440,8 +438,8 @@ export class ListControl<T> {
     }
   }
 
-  _findFirstSelectable(index: number, direction: number, canWrap: boolean): number {
-    const length = this._model.length;
+  private findFirstSelectable(index: number, direction: number, canWrap: boolean): number {
+    const length = this.model.length;
     if (!length) {
       return -1;
     }
@@ -452,7 +450,7 @@ export class ListControl<T> {
         }
         index = (index + length) % length;
       }
-      if (this._delegate.isItemSelectable(this._model.at(index))) {
+      if (this.delegate.isItemSelectable(this.model.at(index))) {
         return index;
       }
       index += direction;
@@ -460,14 +458,14 @@ export class ListControl<T> {
     return -1;
   }
 
-  _findPageSelectable(index: number, direction: number): number {
+  private findPageSelectable(index: number, direction: number): number {
     let lastSelectable = -1;
-    const startOffset = this._offsetAtIndex(index);
+    const startOffset = this.offsetAtIndex(index);
     // Compensate for zoom rounding errors with -1.
     const viewportHeight = this.element.offsetHeight - 1;
-    while (index >= 0 && index < this._model.length) {
-      if (this._delegate.isItemSelectable(this._model.at(index))) {
-        if (Math.abs(this._offsetAtIndex(index) - startOffset) >= viewportHeight) {
+    while (index >= 0 && index < this.model.length) {
+      if (this.delegate.isItemSelectable(this.model.at(index))) {
+        if (Math.abs(this.offsetAtIndex(index) - startOffset) >= viewportHeight) {
           return index;
         }
         lastSelectable = index;
@@ -477,71 +475,71 @@ export class ListControl<T> {
     return lastSelectable;
   }
 
-  _reallocateVariableOffsets(length: number, copyTo: number): void {
-    if (this._variableOffsets.length < length) {
-      const variableOffsets = new Int32Array(Math.max(length, this._variableOffsets.length * 2));
-      variableOffsets.set(this._variableOffsets.slice(0, copyTo), 0);
-      this._variableOffsets = variableOffsets;
-    } else if (this._variableOffsets.length >= 2 * length) {
+  private reallocateVariableOffsets(length: number, copyTo: number): void {
+    if (this.variableOffsets.length < length) {
+      const variableOffsets = new Int32Array(Math.max(length, this.variableOffsets.length * 2));
+      variableOffsets.set(this.variableOffsets.slice(0, copyTo), 0);
+      this.variableOffsets = variableOffsets;
+    } else if (this.variableOffsets.length >= 2 * length) {
       const variableOffsets = new Int32Array(length);
-      variableOffsets.set(this._variableOffsets.slice(0, copyTo), 0);
-      this._variableOffsets = variableOffsets;
+      variableOffsets.set(this.variableOffsets.slice(0, copyTo), 0);
+      this.variableOffsets = variableOffsets;
     }
   }
 
-  _invalidate(from: number, to: number, inserted: number): void {
-    if (this._mode === ListMode.NonViewport) {
-      this._invalidateNonViewportMode(from, to - from, inserted);
+  private invalidate(from: number, to: number, inserted: number): void {
+    if (this.mode === ListMode.NonViewport) {
+      this.invalidateNonViewportMode(from, to - from, inserted);
       return;
     }
 
-    if (this._mode === ListMode.VariousHeightItems) {
-      this._reallocateVariableOffsets(this._model.length + 1, from + 1);
-      for (let i = from + 1; i <= this._model.length; i++) {
-        this._variableOffsets[i] = this._variableOffsets[i - 1] + this._delegate.heightForItem(this._model.at(i - 1));
+    if (this.mode === ListMode.VariousHeightItems) {
+      this.reallocateVariableOffsets(this.model.length + 1, from + 1);
+      for (let i = from + 1; i <= this.model.length; i++) {
+        this.variableOffsets[i] = this.variableOffsets[i - 1] + this.delegate.heightForItem(this.model.at(i - 1));
       }
     }
 
     const viewportHeight = this.element.offsetHeight;
-    const totalHeight = this._totalHeight();
+    const totalHeight = this.totalHeight();
     const scrollTop = this.element.scrollTop;
 
-    if (this._renderedHeight < viewportHeight || totalHeight < viewportHeight) {
-      this._clearViewport();
-      this._updateViewport(Platform.NumberUtilities.clamp(scrollTop, 0, totalHeight - viewportHeight), viewportHeight);
+    if (this.renderedHeight < viewportHeight || totalHeight < viewportHeight) {
+      this.clearViewport();
+      this.updateViewport(Platform.NumberUtilities.clamp(scrollTop, 0, totalHeight - viewportHeight), viewportHeight);
       return;
     }
 
-    const heightDelta = totalHeight - this._renderedHeight;
-    if (to <= this._firstIndex) {
-      const topHeight = this._topHeight + heightDelta;
-      this._topElement.style.height = topHeight + 'px';
+    const heightDelta = totalHeight - this.renderedHeight;
+    if (to <= this.firstIndex) {
+      const topHeight = this.topHeight + heightDelta;
+      this.topElement.style.height = topHeight + 'px';
       this.element.scrollTop = scrollTop + heightDelta;
-      this._topHeight = topHeight;
-      this._renderedHeight = totalHeight;
+      this.topHeight = topHeight;
+      this.renderedHeight = totalHeight;
       const indexDelta = inserted - (to - from);
-      this._firstIndex += indexDelta;
-      this._lastIndex += indexDelta;
+      this.firstIndex += indexDelta;
+      this.lastIndex += indexDelta;
       return;
     }
 
-    if (from >= this._lastIndex) {
-      const bottomHeight = this._bottomHeight + heightDelta;
-      this._bottomElement.style.height = bottomHeight + 'px';
-      this._bottomHeight = bottomHeight;
-      this._renderedHeight = totalHeight;
+    if (from >= this.lastIndex) {
+      const bottomHeight = this.bottomHeight + heightDelta;
+      this.bottomElement.style.height = bottomHeight + 'px';
+      this.bottomHeight = bottomHeight;
+      this.renderedHeight = totalHeight;
       return;
     }
 
     // TODO(dgozman): try to keep visible scrollTop the same
     // when invalidating after firstIndex but before first visible element.
-    this._clearViewport();
-    this._updateViewport(Platform.NumberUtilities.clamp(scrollTop, 0, totalHeight - viewportHeight), viewportHeight);
-    this._refreshARIA();
+    this.clearViewport();
+    this.updateViewport(Platform.NumberUtilities.clamp(scrollTop, 0, totalHeight - viewportHeight), viewportHeight);
+    this.refreshARIA();
   }
 
-  _invalidateNonViewportMode(start: number, remove: number, add: number): void {
-    let startElement: HTMLElement = this._topElement;
+  private invalidateNonViewportMode(start: number, remove: number, add: number): void {
+    let startElement: HTMLElement = this.topElement;
     for (let index = 0; index < start; index++) {
       startElement = (startElement.nextElementSibling as HTMLElement);
     }
@@ -549,80 +547,80 @@ export class ListControl<T> {
       (startElement.nextElementSibling as HTMLElement).remove();
     }
     while (add--) {
-      this.element.insertBefore(this._elementAtIndex(start + add), startElement.nextElementSibling);
+      this.element.insertBefore(this.elementAtIndex(start + add), startElement.nextElementSibling);
     }
   }
 
-  _clearViewport(): void {
-    if (this._mode === ListMode.NonViewport) {
+  private clearViewport(): void {
+    if (this.mode === ListMode.NonViewport) {
       console.error('There should be no viewport updates in non-viewport mode');
       return;
     }
-    this._firstIndex = 0;
-    this._lastIndex = 0;
-    this._renderedHeight = 0;
-    this._topHeight = 0;
-    this._bottomHeight = 0;
-    this._clearContents();
+    this.firstIndex = 0;
+    this.lastIndex = 0;
+    this.renderedHeight = 0;
+    this.topHeight = 0;
+    this.bottomHeight = 0;
+    this.clearContents();
   }
 
-  _clearContents(): void {
+  private clearContents(): void {
     // Note: this method should not force layout. Be careful.
-    this._topElement.style.height = '0';
-    this._bottomElement.style.height = '0';
+    this.topElement.style.height = '0';
+    this.bottomElement.style.height = '0';
     this.element.removeChildren();
-    this.element.appendChild(this._topElement);
-    this.element.appendChild(this._bottomElement);
+    this.element.appendChild(this.topElement);
+    this.element.appendChild(this.bottomElement);
   }
 
-  _updateViewport(scrollTop: number, viewportHeight: number): void {
+  private updateViewport(scrollTop: number, viewportHeight: number): void {
     // Note: this method should not force layout. Be careful.
-    if (this._mode === ListMode.NonViewport) {
+    if (this.mode === ListMode.NonViewport) {
       console.error('There should be no viewport updates in non-viewport mode');
       return;
     }
-    const totalHeight = this._totalHeight();
+    const totalHeight = this.totalHeight();
     if (!totalHeight) {
-      this._firstIndex = 0;
-      this._lastIndex = 0;
-      this._topHeight = 0;
-      this._bottomHeight = 0;
-      this._renderedHeight = 0;
-      this._topElement.style.height = '0';
-      this._bottomElement.style.height = '0';
+      this.firstIndex = 0;
+      this.lastIndex = 0;
+      this.topHeight = 0;
+      this.bottomHeight = 0;
+      this.renderedHeight = 0;
+      this.topElement.style.height = '0';
+      this.bottomElement.style.height = '0';
       return;
     }
 
-    const firstIndex = this._indexAtOffset(scrollTop - viewportHeight);
-    const lastIndex = this._indexAtOffset(scrollTop + 2 * viewportHeight) + 1;
+    const firstIndex = this.indexAtOffset(scrollTop - viewportHeight);
+    const lastIndex = this.indexAtOffset(scrollTop + 2 * viewportHeight) + 1;
 
-    while (this._firstIndex < Math.min(firstIndex, this._lastIndex)) {
-      this._elementAtIndex(this._firstIndex).remove();
-      this._firstIndex++;
+    while (this.firstIndex < Math.min(firstIndex, this.lastIndex)) {
+      this.elementAtIndex(this.firstIndex).remove();
+      this.firstIndex++;
     }
-    while (this._lastIndex > Math.max(lastIndex, this._firstIndex)) {
-      this._elementAtIndex(this._lastIndex - 1).remove();
-      this._lastIndex--;
-    }
-
-    this._firstIndex = Math.min(this._firstIndex, lastIndex);
-    this._lastIndex = Math.max(this._lastIndex, firstIndex);
-    for (let index = this._firstIndex - 1; index >= firstIndex; index--) {
-      const element = this._elementAtIndex(index);
-      this.element.insertBefore(element, this._topElement.nextSibling);
-    }
-    for (let index = this._lastIndex; index < lastIndex; index++) {
-      const element = this._elementAtIndex(index);
-      this.element.insertBefore(element, this._bottomElement);
+    while (this.lastIndex > Math.max(lastIndex, this.firstIndex)) {
+      this.elementAtIndex(this.lastIndex - 1).remove();
+      this.lastIndex--;
     }
 
-    this._firstIndex = firstIndex;
-    this._lastIndex = lastIndex;
-    this._topHeight = this._offsetAtIndex(firstIndex);
-    this._topElement.style.height = this._topHeight + 'px';
-    this._bottomHeight = totalHeight - this._offsetAtIndex(lastIndex);
-    this._bottomElement.style.height = this._bottomHeight + 'px';
-    this._renderedHeight = totalHeight;
+    this.firstIndex = Math.min(this.firstIndex, lastIndex);
+    this.lastIndex = Math.max(this.lastIndex, firstIndex);
+    for (let index = this.firstIndex - 1; index >= firstIndex; index--) {
+      const element = this.elementAtIndex(index);
+      this.element.insertBefore(element, this.topElement.nextSibling);
+    }
+    for (let index = this.lastIndex; index < lastIndex; index++) {
+      const element = this.elementAtIndex(index);
+      this.element.insertBefore(element, this.bottomElement);
+    }
+
+    this.firstIndex = firstIndex;
+    this.lastIndex = lastIndex;
+    this.topHeight = this.offsetAtIndex(firstIndex);
+    this.topElement.style.height = this.topHeight + 'px';
+    this.bottomHeight = totalHeight - this.offsetAtIndex(lastIndex);
+    this.bottomElement.style.height = this.bottomHeight + 'px';
+    this.renderedHeight = totalHeight;
     this.element.scrollTop = scrollTop;
   }
 }

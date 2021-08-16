@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type {TabbedPane} from './TabbedPane.js';
 import type {ToolbarItem, ToolbarMenuButton} from './Toolbar.js';
 import {ViewManager} from './ViewManager.js';
@@ -26,18 +24,18 @@ export interface View {
 }
 
 export class SimpleView extends VBox implements View {
-  _title: string;
+  private readonly titleInternal: string;
   constructor(title: string, isWebComponent?: boolean) {
     super(isWebComponent);
-    this._title = title;
+    this.titleInternal = title;
   }
 
   viewId(): string {
-    return this._title;
+    return this.titleInternal;
   }
 
   title(): string {
-    return this._title;
+    return this.titleInternal;
   }
 
   isCloseable(): boolean {

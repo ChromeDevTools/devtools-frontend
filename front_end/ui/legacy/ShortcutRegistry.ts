@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -20,35 +18,35 @@ import {isEditing} from './UIUtils.js';
 let shortcutRegistryInstance: ShortcutRegistry|undefined;
 
 export class ShortcutRegistry {
-  _actionRegistry: ActionRegistry;
-  _actionToShortcut: Platform.MapUtilities.Multimap<string, KeyboardShortcut>;
-  _keyMap: ShortcutTreeNode;
-  _activePrefixKey: ShortcutTreeNode|null;
-  _activePrefixTimeout: number|null;
-  _consumePrefix: (() => Promise<void>)|null;
-  _devToolsDefaultShortcutActions: Set<string>;
-  _disabledDefaultShortcutsForAction: Platform.MapUtilities.Multimap<string, KeyboardShortcut>;
-  _keybindSetSetting: Common.Settings.Setting<string>;
-  _userShortcutsSetting: Common.Settings.Setting<KeyboardShortcut[]>;
+  private readonly actionRegistry: ActionRegistry;
+  private readonly actionToShortcut: Platform.MapUtilities.Multimap<string, KeyboardShortcut>;
+  private readonly keyMap: ShortcutTreeNode;
+  private activePrefixKey: ShortcutTreeNode|null;
+  private activePrefixTimeout: number|null;
+  private consumePrefix: (() => Promise<void>)|null;
+  private readonly devToolsDefaultShortcutActions: Set<string>;
+  private readonly disabledDefaultShortcutsForAction: Platform.MapUtilities.Multimap<string, KeyboardShortcut>;
+  private readonly keybindSetSetting: Common.Settings.Setting<string>;
+  private readonly userShortcutsSetting: Common.Settings.Setting<KeyboardShortcut[]>;
 
   constructor(actionRegistry: ActionRegistry) {
-    this._actionRegistry = actionRegistry;
-    this._actionToShortcut = new Platform.MapUtilities.Multimap();
-    this._keyMap = new ShortcutTreeNode(0, 0);
-    this._activePrefixKey = null;
-    this._activePrefixTimeout = null;
-    this._consumePrefix = null;
-    this._devToolsDefaultShortcutActions = new Set();
-    this._disabledDefaultShortcutsForAction = new Platform.MapUtilities.Multimap();
-    this._keybindSetSetting = Common.Settings.Settings.instance().moduleSetting('activeKeybindSet');
-    this._keybindSetSetting.addChangeListener(event => {
+    this.actionRegistry = actionRegistry;
+    this.actionToShortcut = new Platform.MapUtilities.Multimap();
+    this.keyMap = new ShortcutTreeNode(0, 0);
+    this.activePrefixKey = null;
+    this.activePrefixTimeout = null;
+    this.consumePrefix = null;
+    this.devToolsDefaultShortcutActions = new Set();
+    this.disabledDefaultShortcutsForAction = new Platform.MapUtilities.Multimap();
+    this.keybindSetSetting = Common.Settings.Settings.instance().moduleSetting('activeKeybindSet');
+    this.keybindSetSetting.addChangeListener(event => {
       Host.userMetrics.keybindSetSettingChanged(event.data);
-      this._registerBindings();
+      this.registerBindings();
     });
-    this._userShortcutsSetting = Common.Settings.Settings.instance().moduleSetting('userShortcuts');
-    this._userShortcutsSetting.addChangeListener(this._registerBindings, this);
+    this.userShortcutsSetting = Common.Settings.Settings.instance().moduleSetting('userShortcuts');
+    this.userShortcutsSetting.addChangeListener(this.registerBindings, this);
 
-    this._registerBindings();
+    this.registerBindings();
   }
 
   static instance(opts: {
@@ -69,20 +67,20 @@ export class ShortcutRegistry {
   static removeInstance(): void {
     shortcutRegistryInstance = undefined;
   }
-  _applicableActions(key: number, handlers: {
+  private applicableActions(key: number, handlers: {
     [x: string]: () => Promise<boolean>,
   }|undefined = {}): Action[] {
     let actions: string[] = [];
-    const keyMap = this._activePrefixKey || this._keyMap;
+    const keyMap = this.activePrefixKey || this.keyMap;
     const keyNode = keyMap.getNode(key);
     if (keyNode) {
       actions = keyNode.actions();
     }
-    const applicableActions = this._actionRegistry.applicableActions(actions, Context.instance());
+    const applicableActions = this.actionRegistry.applicableActions(actions, Context.instance());
     if (keyNode) {
       for (const actionId of Object.keys(handlers)) {
         if (keyNode.actions().indexOf(actionId) >= 0) {
-          const action = this._actionRegistry.action(actionId);
+          const action = this.actionRegistry.action(actionId);
           if (action) {
             applicableActions.push(action);
           }
@@ -93,14 +91,14 @@ export class ShortcutRegistry {
   }
 
   shortcutsForAction(action: string): KeyboardShortcut[] {
-    return [...this._actionToShortcut.get(action)];
+    return [...this.actionToShortcut.get(action)];
   }
 
   actionsForDescriptors(descriptors: {
     key: number,
     name: string,
   }[]): string[] {
-    let keyMapNode: (ShortcutTreeNode|null)|ShortcutTreeNode = this._keyMap;
+    let keyMapNode: (ShortcutTreeNode|null)|ShortcutTreeNode = this.keyMap;
     for (const {key} of descriptors) {
       if (!keyMapNode) {
         return [];
@@ -112,9 +110,9 @@ export class ShortcutRegistry {
 
   globalShortcutKeys(): number[] {
     const keys = [];
-    for (const node of this._keyMap.chords().values()) {
+    for (const node of this.keyMap.chords().values()) {
       const actions = node.actions();
-      const applicableActions = this._actionRegistry.applicableActions(actions, Context.instance());
+      const applicableActions = this.actionRegistry.applicableActions(actions, Context.instance());
       if (applicableActions.length || node.hasChords()) {
         keys.push(node.key());
       }
@@ -124,13 +122,13 @@ export class ShortcutRegistry {
 
   keysForActions(actionIds: string[]): number[] {
     const keys = actionIds.flatMap(
-        action => [...this._actionToShortcut.get(action)].flatMap(
+        action => [...this.actionToShortcut.get(action)].flatMap(
             shortcut => shortcut.descriptors.map(descriptor => descriptor.key)));
     return [...(new Set(keys))];
   }
 
   shortcutTitleForAction(actionId: string): string|undefined {
-    for (const shortcut of this._actionToShortcut.get(actionId)) {
+    for (const shortcut of this.actionToShortcut.get(actionId)) {
       return shortcut.title();
     }
     return undefined;
@@ -143,7 +141,7 @@ export class ShortcutRegistry {
   }
 
   actionHasDefaultShortcut(actionId: string): boolean {
-    return this._devToolsDefaultShortcutActions.has(actionId);
+    return this.devToolsDefaultShortcutActions.has(actionId);
   }
 
   addShortcutListener(element: Element, handlers: {
@@ -152,14 +150,14 @@ export class ShortcutRegistry {
     // We only want keys for these specific actions to get handled this
     // way; all others should be allowed to bubble up.
     const allowlistKeyMap = new ShortcutTreeNode(0, 0);
-    const shortcuts = Object.keys(handlers).flatMap(action => [...this._actionToShortcut.get(action)]);
+    const shortcuts = Object.keys(handlers).flatMap(action => [...this.actionToShortcut.get(action)]);
     shortcuts.forEach(shortcut => {
       allowlistKeyMap.addKeyMapping(shortcut.descriptors.map(descriptor => descriptor.key), shortcut.action);
     });
 
     const listener = (event: Event): void => {
       const key = KeyboardShortcut.makeKeyFromEvent((event as KeyboardEvent));
-      const keyMap = this._activePrefixKey ? allowlistKeyMap.getNode(this._activePrefixKey.key()) : allowlistKeyMap;
+      const keyMap = this.activePrefixKey ? allowlistKeyMap.getNode(this.activePrefixKey.key()) : allowlistKeyMap;
       if (!keyMap) {
         return;
       }
@@ -175,10 +173,10 @@ export class ShortcutRegistry {
     [x: string]: () => Promise<boolean>,
   }): Promise<void> {
     const keyModifiers = key >> 8;
-    const hasHandlersOrPrefixKey = Boolean(handlers) || Boolean(this._activePrefixKey);
-    const keyMapNode = this._keyMap.getNode(key);
+    const hasHandlersOrPrefixKey = Boolean(handlers) || Boolean(this.activePrefixKey);
+    const keyMapNode = this.keyMap.getNode(key);
     const maybeHasActions =
-        (this._applicableActions(key, handlers)).length > 0 || (keyMapNode && keyMapNode.hasChords());
+        (this.applicableActions(key, handlers)).length > 0 || (keyMapNode && keyMapNode.hasChords());
     if ((!hasHandlersOrPrefixKey && isPossiblyInputKey()) || !maybeHasActions ||
         KeyboardShortcut.isModifier(KeyboardShortcut.keyCodeAndModifiersFromKey(key).keyCode)) {
       return;
@@ -190,26 +188,26 @@ export class ShortcutRegistry {
       return;
     }
 
-    if (this._activePrefixTimeout) {
-      clearTimeout(this._activePrefixTimeout);
+    if (this.activePrefixTimeout) {
+      clearTimeout(this.activePrefixTimeout);
       const handled = await maybeExecuteActionForKey.call(this);
-      this._activePrefixKey = null;
-      this._activePrefixTimeout = null;
+      this.activePrefixKey = null;
+      this.activePrefixTimeout = null;
       if (handled) {
         return;
       }
-      if (this._consumePrefix) {
-        await this._consumePrefix();
+      if (this.consumePrefix) {
+        await this.consumePrefix();
       }
     }
     if (keyMapNode && keyMapNode.hasChords()) {
-      this._activePrefixKey = keyMapNode;
-      this._consumePrefix = async(): Promise<void> => {
-        this._activePrefixKey = null;
-        this._activePrefixTimeout = null;
+      this.activePrefixKey = keyMapNode;
+      this.consumePrefix = async(): Promise<void> => {
+        this.activePrefixKey = null;
+        this.activePrefixTimeout = null;
         await maybeExecuteActionForKey.call(this);
       };
-      this._activePrefixTimeout = window.setTimeout(this._consumePrefix, KeyTimeout);
+      this.activePrefixTimeout = window.setTimeout(this.consumePrefix, KeyTimeout);
     } else {
       await maybeExecuteActionForKey.call(this);
     }
@@ -258,7 +256,7 @@ export class ShortcutRegistry {
     /** ;
      */
     async function maybeExecuteActionForKey(this: ShortcutRegistry): Promise<boolean> {
-      const actions = this._applicableActions(key, handlers);
+      const actions = this.applicableActions(key, handlers);
       if (!actions.length) {
         return false;
       }
@@ -280,79 +278,79 @@ export class ShortcutRegistry {
   }
 
   registerUserShortcut(shortcut: KeyboardShortcut): void {
-    for (const otherShortcut of this._disabledDefaultShortcutsForAction.get(shortcut.action)) {
+    for (const otherShortcut of this.disabledDefaultShortcutsForAction.get(shortcut.action)) {
       if (otherShortcut.descriptorsMatch(shortcut.descriptors) &&
-          otherShortcut.hasKeybindSet(this._keybindSetSetting.get())) {
+          otherShortcut.hasKeybindSet(this.keybindSetSetting.get())) {
         // this user shortcut is the same as a disabled default shortcut,
         // so we should just enable the default
         this.removeShortcut(otherShortcut);
         return;
       }
     }
-    for (const otherShortcut of this._actionToShortcut.get(shortcut.action)) {
+    for (const otherShortcut of this.actionToShortcut.get(shortcut.action)) {
       if (otherShortcut.descriptorsMatch(shortcut.descriptors) &&
-          otherShortcut.hasKeybindSet(this._keybindSetSetting.get())) {
+          otherShortcut.hasKeybindSet(this.keybindSetSetting.get())) {
         // don't allow duplicate shortcuts
         return;
       }
     }
-    this._addShortcutToSetting(shortcut);
+    this.addShortcutToSetting(shortcut);
   }
 
   removeShortcut(shortcut: KeyboardShortcut): void {
     if (shortcut.type === Type.DefaultShortcut || shortcut.type === Type.KeybindSetShortcut) {
-      this._addShortcutToSetting(shortcut.changeType(Type.DisabledDefault));
+      this.addShortcutToSetting(shortcut.changeType(Type.DisabledDefault));
     } else {
-      this._removeShortcutFromSetting(shortcut);
+      this.removeShortcutFromSetting(shortcut);
     }
   }
 
   disabledDefaultsForAction(actionId: string): Set<KeyboardShortcut> {
-    return this._disabledDefaultShortcutsForAction.get(actionId);
+    return this.disabledDefaultShortcutsForAction.get(actionId);
   }
 
-  _addShortcutToSetting(shortcut: KeyboardShortcut): void {
-    const userShortcuts = this._userShortcutsSetting.get();
+  private addShortcutToSetting(shortcut: KeyboardShortcut): void {
+    const userShortcuts = this.userShortcutsSetting.get();
     userShortcuts.push(shortcut);
-    this._userShortcutsSetting.set(userShortcuts);
+    this.userShortcutsSetting.set(userShortcuts);
   }
 
-  _removeShortcutFromSetting(shortcut: KeyboardShortcut): void {
-    const userShortcuts = this._userShortcutsSetting.get();
+  private removeShortcutFromSetting(shortcut: KeyboardShortcut): void {
+    const userShortcuts = this.userShortcutsSetting.get();
     const index = userShortcuts.findIndex(shortcut.equals, shortcut);
     if (index !== -1) {
       userShortcuts.splice(index, 1);
-      this._userShortcutsSetting.set(userShortcuts);
+      this.userShortcutsSetting.set(userShortcuts);
     }
   }
 
-  _registerShortcut(shortcut: KeyboardShortcut): void {
-    this._actionToShortcut.set(shortcut.action, shortcut);
-    this._keyMap.addKeyMapping(shortcut.descriptors.map(descriptor => descriptor.key), shortcut.action);
+  private registerShortcut(shortcut: KeyboardShortcut): void {
+    this.actionToShortcut.set(shortcut.action, shortcut);
+    this.keyMap.addKeyMapping(shortcut.descriptors.map(descriptor => descriptor.key), shortcut.action);
   }
 
-  _registerBindings(): void {
-    this._actionToShortcut.clear();
-    this._keyMap.clear();
-    const keybindSet = this._keybindSetSetting.get();
-    this._disabledDefaultShortcutsForAction.clear();
-    this._devToolsDefaultShortcutActions.clear();
+  private registerBindings(): void {
+    this.actionToShortcut.clear();
+    this.keyMap.clear();
+    const keybindSet = this.keybindSetSetting.get();
+    this.disabledDefaultShortcutsForAction.clear();
+    this.devToolsDefaultShortcutActions.clear();
     const forwardedKeys: {
       keyCode: number,
       modifiers: number,
     }[] = [];
     if (Root.Runtime.experiments.isEnabled('keyboardShortcutEditor')) {
-      const userShortcuts = this._userShortcutsSetting.get();
+      const userShortcuts = this.userShortcutsSetting.get();
       for (const userShortcut of userShortcuts) {
         const shortcut = KeyboardShortcut.createShortcutFromSettingObject(userShortcut);
         if (shortcut.type === Type.DisabledDefault) {
-          this._disabledDefaultShortcutsForAction.set(shortcut.action, shortcut);
+          this.disabledDefaultShortcutsForAction.set(shortcut.action, shortcut);
         } else {
           if (ForwardedActions.has(shortcut.action)) {
             forwardedKeys.push(
                 ...shortcut.descriptors.map(descriptor => KeyboardShortcut.keyCodeAndModifiersFromKey(descriptor.key)));
           }
-          this._registerShortcut(shortcut);
+          this.registerShortcut(shortcut);
         }
       }
     }
@@ -367,8 +365,8 @@ export class ShortcutRegistry {
         const keys = bindings[i].shortcut.split(/\s+/);
         const shortcutDescriptors = keys.map(KeyboardShortcut.makeDescriptorFromBindingShortcut);
         if (shortcutDescriptors.length > 0) {
-          if (this._isDisabledDefault(shortcutDescriptors, actionId)) {
-            this._devToolsDefaultShortcutActions.add(actionId);
+          if (this.isDisabledDefault(shortcutDescriptors, actionId)) {
+            this.devToolsDefaultShortcutActions.add(actionId);
             continue;
           }
 
@@ -377,13 +375,13 @@ export class ShortcutRegistry {
                 ...shortcutDescriptors.map(shortcut => KeyboardShortcut.keyCodeAndModifiersFromKey(shortcut.key)));
           }
           if (!keybindSets) {
-            this._devToolsDefaultShortcutActions.add(actionId);
-            this._registerShortcut(new KeyboardShortcut(shortcutDescriptors, actionId, Type.DefaultShortcut));
+            this.devToolsDefaultShortcutActions.add(actionId);
+            this.registerShortcut(new KeyboardShortcut(shortcutDescriptors, actionId, Type.DefaultShortcut));
           } else {
             if (keybindSets.includes(KeybindSet.DEVTOOLS_DEFAULT)) {
-              this._devToolsDefaultShortcutActions.add(actionId);
+              this.devToolsDefaultShortcutActions.add(actionId);
             }
-            this._registerShortcut(
+            this.registerShortcut(
                 new KeyboardShortcut(shortcutDescriptors, actionId, Type.KeybindSetShortcut, new Set(keybindSets)));
           }
         }
@@ -412,13 +410,13 @@ export class ShortcutRegistry {
     }
   }
 
-  _isDisabledDefault(
+  private isDisabledDefault(
       shortcutDescriptors: {
         key: number,
         name: string,
       }[],
       action: string): boolean {
-    const disabledDefaults = this._disabledDefaultShortcutsForAction.get(action);
+    const disabledDefaults = this.disabledDefaultShortcutsForAction.get(action);
     for (const disabledDefault of disabledDefaults) {
       if (disabledDefault.descriptorsMatch(shortcutDescriptors)) {
         return true;
@@ -429,61 +427,61 @@ export class ShortcutRegistry {
 }
 
 export class ShortcutTreeNode {
-  _key: number;
-  _actions: string[];
-  _chords: Map<number, ShortcutTreeNode>;
-  _depth: number;
+  private readonly keyInternal: number;
+  private actionsInternal: string[];
+  private chordsInternal: Map<number, ShortcutTreeNode>;
+  private readonly depth: number;
 
   constructor(key: number, depth: number = 0) {
-    this._key = key;
-    this._actions = [];
-    this._chords = new Map();
-    this._depth = depth;
+    this.keyInternal = key;
+    this.actionsInternal = [];
+    this.chordsInternal = new Map();
+    this.depth = depth;
   }
 
   addAction(action: string): void {
-    this._actions.push(action);
+    this.actionsInternal.push(action);
   }
 
   key(): number {
-    return this._key;
+    return this.keyInternal;
   }
 
   chords(): Map<number, ShortcutTreeNode> {
-    return this._chords;
+    return this.chordsInternal;
   }
 
   hasChords(): boolean {
-    return this._chords.size > 0;
+    return this.chordsInternal.size > 0;
   }
 
   addKeyMapping(keys: number[], action: string): void {
-    if (keys.length < this._depth) {
+    if (keys.length < this.depth) {
       return;
     }
 
-    if (keys.length === this._depth) {
+    if (keys.length === this.depth) {
       this.addAction(action);
     } else {
-      const key = keys[this._depth];
-      if (!this._chords.has(key)) {
-        this._chords.set(key, new ShortcutTreeNode(key, this._depth + 1));
+      const key = keys[this.depth];
+      if (!this.chordsInternal.has(key)) {
+        this.chordsInternal.set(key, new ShortcutTreeNode(key, this.depth + 1));
       }
-      (this._chords.get(key) as ShortcutTreeNode).addKeyMapping(keys, action);
+      (this.chordsInternal.get(key) as ShortcutTreeNode).addKeyMapping(keys, action);
     }
   }
 
   getNode(key: number): ShortcutTreeNode|null {
-    return this._chords.get(key) || null;
+    return this.chordsInternal.get(key) || null;
   }
 
   actions(): string[] {
-    return this._actions;
+    return this.actionsInternal;
   }
 
   clear(): void {
-    this._actions = [];
-    this._chords = new Map();
+    this.actionsInternal = [];
+    this.chordsInternal = new Map();
   }
 }
 

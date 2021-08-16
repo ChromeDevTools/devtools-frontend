@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 
@@ -28,126 +26,126 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/SoftDropDown.ts', UIStrings)
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SoftDropDown<T> implements ListDelegate<T> {
-  _delegate: Delegate<T>;
-  _selectedItem: T|null;
-  _model: ListModel<T>;
-  _placeholderText: Common.UIString.LocalizedString;
+  private delegate: Delegate<T>;
+  private selectedItem: T|null;
+  private readonly model: ListModel<T>;
+  private placeholderText: Common.UIString.LocalizedString;
   element: HTMLButtonElement;
-  _titleElement: HTMLElement;
-  _glassPane: GlassPane;
-  _list: ListControl<T>;
-  _rowHeight: number;
-  _width: number;
-  _listWasShowing200msAgo: boolean;
+  private titleElement: HTMLElement;
+  private readonly glassPane: GlassPane;
+  private list: ListControl<T>;
+  private rowHeight: number;
+  private width: number;
+  private listWasShowing200msAgo: boolean;
 
   constructor(model: ListModel<T>, delegate: Delegate<T>) {
-    this._delegate = delegate;
-    this._selectedItem = null;
-    this._model = model;
+    this.delegate = delegate;
+    this.selectedItem = null;
+    this.model = model;
 
-    this._placeholderText = i18nString(UIStrings.noItemSelected);
+    this.placeholderText = i18nString(UIStrings.noItemSelected);
 
     this.element = document.createElement('button');
     this.element.classList.add('soft-dropdown');
     appendStyle(this.element, 'ui/legacy/softDropDownButton.css');
-    this._titleElement = this.element.createChild('span', 'title');
+    this.titleElement = this.element.createChild('span', 'title');
     const dropdownArrowIcon = Icon.create('smallicon-triangle-down');
     this.element.appendChild(dropdownArrowIcon);
     ARIAUtils.setExpanded(this.element, false);
 
-    this._glassPane = new GlassPane();
-    this._glassPane.setMarginBehavior(MarginBehavior.NoMargin);
-    this._glassPane.setAnchorBehavior(AnchorBehavior.PreferBottom);
-    this._glassPane.setOutsideClickCallback(this._hide.bind(this));
-    this._glassPane.setPointerEventsBehavior(PointerEventsBehavior.BlockedByGlassPane);
-    this._list = new ListControl(model, this, ListMode.EqualHeightItems);
-    this._list.element.classList.add('item-list');
-    this._rowHeight = 36;
-    this._width = 315;
-    createShadowRootWithCoreStyles(this._glassPane.contentElement, {
+    this.glassPane = new GlassPane();
+    this.glassPane.setMarginBehavior(MarginBehavior.NoMargin);
+    this.glassPane.setAnchorBehavior(AnchorBehavior.PreferBottom);
+    this.glassPane.setOutsideClickCallback(this.hide.bind(this));
+    this.glassPane.setPointerEventsBehavior(PointerEventsBehavior.BlockedByGlassPane);
+    this.list = new ListControl(model, this, ListMode.EqualHeightItems);
+    this.list.element.classList.add('item-list');
+    this.rowHeight = 36;
+    this.width = 315;
+    createShadowRootWithCoreStyles(this.glassPane.contentElement, {
       cssFile: 'ui/legacy/softDropDown.css',
       delegatesFocus: undefined,
-    }).appendChild(this._list.element);
-    ARIAUtils.markAsMenu(this._list.element);
+    }).appendChild(this.list.element);
+    ARIAUtils.markAsMenu(this.list.element);
 
-    this._listWasShowing200msAgo = false;
+    this.listWasShowing200msAgo = false;
     this.element.addEventListener('mousedown', event => {
-      if (this._listWasShowing200msAgo) {
-        this._hide(event);
+      if (this.listWasShowing200msAgo) {
+        this.hide(event);
       } else if (!this.element.disabled) {
-        this._show(event);
+        this.show(event);
       }
     }, false);
-    this.element.addEventListener('keydown', this._onKeyDownButton.bind(this), false);
-    this._list.element.addEventListener('keydown', this._onKeyDownList.bind(this), false);
-    this._list.element.addEventListener('focusout', this._hide.bind(this), false);
-    this._list.element.addEventListener('mousedown', event => event.consume(true), false);
-    this._list.element.addEventListener('mouseup', event => {
-      if (event.target === this._list.element) {
+    this.element.addEventListener('keydown', this.onKeyDownButton.bind(this), false);
+    this.list.element.addEventListener('keydown', this.onKeyDownList.bind(this), false);
+    this.list.element.addEventListener('focusout', this.hide.bind(this), false);
+    this.list.element.addEventListener('mousedown', event => event.consume(true), false);
+    this.list.element.addEventListener('mouseup', event => {
+      if (event.target === this.list.element) {
         return;
       }
 
-      if (!this._listWasShowing200msAgo) {
+      if (!this.listWasShowing200msAgo) {
         return;
       }
-      this._selectHighlightedItem();
-      this._hide(event);
+      this.selectHighlightedItem();
+      this.hide(event);
     }, false);
-    model.addEventListener(ListModelEvents.ItemsReplaced, this._itemsReplaced, this);
+    model.addEventListener(ListModelEvents.ItemsReplaced, this.itemsReplaced, this);
   }
 
-  _show(event: Event): void {
-    if (this._glassPane.isShowing()) {
+  private show(event: Event): void {
+    if (this.glassPane.isShowing()) {
       return;
     }
-    this._glassPane.setContentAnchorBox(this.element.boxInWindow());
-    this._glassPane.show((this.element.ownerDocument as Document));
-    this._list.element.focus();
+    this.glassPane.setContentAnchorBox(this.element.boxInWindow());
+    this.glassPane.show((this.element.ownerDocument as Document));
+    this.list.element.focus();
     ARIAUtils.setExpanded(this.element, true);
-    this._updateGlasspaneSize();
-    if (this._selectedItem) {
-      this._list.selectItem(this._selectedItem);
+    this.updateGlasspaneSize();
+    if (this.selectedItem) {
+      this.list.selectItem(this.selectedItem);
     }
     event.consume(true);
     setTimeout(() => {
-      this._listWasShowing200msAgo = true;
+      this.listWasShowing200msAgo = true;
     }, 200);
   }
 
-  _updateGlasspaneSize(): void {
-    const maxHeight = this._rowHeight * (Math.min(this._model.length, 9));
-    this._glassPane.setMaxContentSize(new Size(this._width, maxHeight));
-    this._list.viewportResized();
+  private updateGlasspaneSize(): void {
+    const maxHeight = this.rowHeight * (Math.min(this.model.length, 9));
+    this.glassPane.setMaxContentSize(new Size(this.width, maxHeight));
+    this.list.viewportResized();
   }
 
-  _hide(event: Event): void {
+  private hide(event: Event): void {
     setTimeout(() => {
-      this._listWasShowing200msAgo = false;
+      this.listWasShowing200msAgo = false;
     }, 200);
-    this._glassPane.hide();
-    this._list.selectItem(null);
+    this.glassPane.hide();
+    this.list.selectItem(null);
     ARIAUtils.setExpanded(this.element, false);
     this.element.focus();
     event.consume(true);
   }
 
-  _onKeyDownButton(ev: Event): void {
+  private onKeyDownButton(ev: Event): void {
     const event = (ev as KeyboardEvent);
     let handled = false;
     switch (event.key) {
       case 'ArrowUp':
-        this._show(event);
-        this._list.selectItemNextPage();
+        this.show(event);
+        this.list.selectItemNextPage();
         handled = true;
         break;
       case 'ArrowDown':
-        this._show(event);
-        this._list.selectItemPreviousPage();
+        this.show(event);
+        this.list.selectItemPreviousPage();
         handled = true;
         break;
       case 'Enter':
       case ' ':
-        this._show(event);
+        this.show(event);
         handled = true;
         break;
       default:
@@ -159,53 +157,53 @@ export class SoftDropDown<T> implements ListDelegate<T> {
     }
   }
 
-  _onKeyDownList(ev: Event): void {
+  private onKeyDownList(ev: Event): void {
     const event = (ev as KeyboardEvent);
     let handled = false;
     switch (event.key) {
       case 'ArrowLeft':
-        handled = this._list.selectPreviousItem(false, false);
+        handled = this.list.selectPreviousItem(false, false);
         break;
       case 'ArrowRight':
-        handled = this._list.selectNextItem(false, false);
+        handled = this.list.selectNextItem(false, false);
         break;
       case 'Home':
-        for (let i = 0; i < this._model.length; i++) {
-          if (this.isItemSelectable(this._model.at(i))) {
-            this._list.selectItem(this._model.at(i));
+        for (let i = 0; i < this.model.length; i++) {
+          if (this.isItemSelectable(this.model.at(i))) {
+            this.list.selectItem(this.model.at(i));
             handled = true;
             break;
           }
         }
         break;
       case 'End':
-        for (let i = this._model.length - 1; i >= 0; i--) {
-          if (this.isItemSelectable(this._model.at(i))) {
-            this._list.selectItem(this._model.at(i));
+        for (let i = this.model.length - 1; i >= 0; i--) {
+          if (this.isItemSelectable(this.model.at(i))) {
+            this.list.selectItem(this.model.at(i));
             handled = true;
             break;
           }
         }
         break;
       case 'Escape':
-        this._hide(event);
+        this.hide(event);
         handled = true;
         break;
       case 'Tab':
       case 'Enter':
       case ' ':
-        this._selectHighlightedItem();
-        this._hide(event);
+        this.selectHighlightedItem();
+        this.hide(event);
         handled = true;
         break;
       default:
         if (event.key.length === 1) {
-          const selectedIndex = this._list.selectedIndex();
+          const selectedIndex = this.list.selectedIndex();
           const letter = event.key.toUpperCase();
-          for (let i = 0; i < this._model.length; i++) {
-            const item = this._model.at((selectedIndex + i + 1) % this._model.length);
-            if (this._delegate.titleFor(item).toUpperCase().startsWith(letter)) {
-              this._list.selectItem(item);
+          for (let i = 0; i < this.model.length; i++) {
+            const item = this.model.at((selectedIndex + i + 1) % this.model.length);
+            if (this.delegate.titleFor(item).toUpperCase().startsWith(letter)) {
+              this.list.selectItem(item);
               break;
             }
           }
@@ -220,63 +218,63 @@ export class SoftDropDown<T> implements ListDelegate<T> {
   }
 
   setWidth(width: number): void {
-    this._width = width;
-    this._updateGlasspaneSize();
+    this.width = width;
+    this.updateGlasspaneSize();
   }
 
   setRowHeight(rowHeight: number): void {
-    this._rowHeight = rowHeight;
+    this.rowHeight = rowHeight;
   }
 
   setPlaceholderText(text: Common.UIString.LocalizedString): void {
-    this._placeholderText = text;
-    if (!this._selectedItem) {
-      this._titleElement.textContent = this._placeholderText;
+    this.placeholderText = text;
+    if (!this.selectedItem) {
+      this.titleElement.textContent = this.placeholderText;
     }
   }
 
-  _itemsReplaced(event: Common.EventTarget.EventTargetEvent): void {
+  private itemsReplaced(event: Common.EventTarget.EventTargetEvent): void {
     const removed = (event.data.removed as T[]);
-    if (this._selectedItem && removed.indexOf(this._selectedItem) !== -1) {
-      this._selectedItem = null;
-      this._selectHighlightedItem();
+    if (this.selectedItem && removed.indexOf(this.selectedItem) !== -1) {
+      this.selectedItem = null;
+      this.selectHighlightedItem();
     }
-    this._updateGlasspaneSize();
+    this.updateGlasspaneSize();
   }
 
   selectItem(item: T|null): void {
-    this._selectedItem = item;
-    if (this._selectedItem) {
-      this._titleElement.textContent = this._delegate.titleFor(this._selectedItem);
+    this.selectedItem = item;
+    if (this.selectedItem) {
+      this.titleElement.textContent = this.delegate.titleFor(this.selectedItem);
     } else {
-      this._titleElement.textContent = this._placeholderText;
+      this.titleElement.textContent = this.placeholderText;
     }
-    this._delegate.itemSelected(this._selectedItem);
+    this.delegate.itemSelected(this.selectedItem);
   }
 
   createElementForItem(item: T): Element {
     const element = document.createElement('div');
     element.classList.add('item');
     element.addEventListener('mousemove', e => {
-      if ((e.movementX || e.movementY) && this._delegate.isItemSelectable(item)) {
-        this._list.selectItem(item, false, /* Don't scroll */ true);
+      if ((e.movementX || e.movementY) && this.delegate.isItemSelectable(item)) {
+        this.list.selectItem(item, false, /* Don't scroll */ true);
       }
     });
-    element.classList.toggle('disabled', !this._delegate.isItemSelectable(item));
-    element.classList.toggle('highlighted', this._list.selectedItem() === item);
+    element.classList.toggle('disabled', !this.delegate.isItemSelectable(item));
+    element.classList.toggle('highlighted', this.list.selectedItem() === item);
 
     ARIAUtils.markAsMenuItem(element);
-    element.appendChild(this._delegate.createElementForItem(item));
+    element.appendChild(this.delegate.createElementForItem(item));
 
     return element;
   }
 
   heightForItem(_item: T): number {
-    return this._rowHeight;
+    return this.rowHeight;
   }
 
   isItemSelectable(item: T): boolean {
-    return this._delegate.isItemSelectable(item);
+    return this.delegate.isItemSelectable(item);
   }
 
   selectedItemChanged(from: T|null, to: T|null, fromElement: Element|null, toElement: Element|null): void {
@@ -287,8 +285,8 @@ export class SoftDropDown<T> implements ListDelegate<T> {
       toElement.classList.add('highlighted');
     }
 
-    ARIAUtils.setActiveDescendant(this._list.element, toElement);
-    this._delegate.highlightedItemChanged(
+    ARIAUtils.setActiveDescendant(this.list.element, toElement);
+    this.delegate.highlightedItemChanged(
         from, to, fromElement && fromElement.firstElementChild, toElement && toElement.firstElementChild);
   }
 
@@ -296,12 +294,12 @@ export class SoftDropDown<T> implements ListDelegate<T> {
     return false;
   }
 
-  _selectHighlightedItem(): void {
-    this.selectItem(this._list.selectedItem());
+  private selectHighlightedItem(): void {
+    this.selectItem(this.list.selectedItem());
   }
 
   refreshItem(item: T): void {
-    this._list.refreshItem(item);
+    this.list.refreshItem(item);
   }
 }
 

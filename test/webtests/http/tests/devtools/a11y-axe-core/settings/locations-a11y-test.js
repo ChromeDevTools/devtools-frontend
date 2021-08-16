@@ -10,18 +10,18 @@
   const locationsWidget = await UI.viewManager.view('emulation-locations').widget();
 
   async function testAddLocation() {
-    const addLocationButton = locationsWidget._defaultFocusedElement;
+    const addLocationButton = locationsWidget.defaultFocusedElement;
     addLocationButton.click();
 
-    const newLocationInputs = locationsWidget.list._editor._controls;
+    const newLocationInputs = locationsWidget.list.editor.controls;
     TestRunner.addResult(`Opened input box: ${Boolean(newLocationInputs)}`);
 
     await AxeCoreTestRunner.runValidation(locationsWidget.contentElement);
   }
 
   async function testNewLocationError() {
-    const locationsEditor = locationsWidget.list._editor;
-    const newLocationInputs = locationsEditor._controls;
+    const locationsEditor = locationsWidget.list.editor;
+    const newLocationInputs = locationsEditor.controls;
     const nameInput = newLocationInputs[0];
     const latitudeInput = newLocationInputs[1];
     const longitudeInput = newLocationInputs[2];
@@ -29,21 +29,21 @@
 
     TestRunner.addResult(`Invalidating the ${nameInput.getAttribute('aria-label')} input`);
     nameInput.blur();
-    errorMessage = locationsEditor._errorMessageContainer.textContent;
+    errorMessage = locationsEditor.errorMessageContainer.textContent;
     TestRunner.addResult(`Error message: ${errorMessage}`);
 
     TestRunner.addResult(`Invalidating the ${latitudeInput.getAttribute('aria-label')} input`);
     nameInput.value = 'location';
     latitudeInput.value = 'a.a';
     latitudeInput.dispatchEvent(new Event('input'));
-    errorMessage = locationsEditor._errorMessageContainer.textContent;
+    errorMessage = locationsEditor.errorMessageContainer.textContent;
     TestRunner.addResult(`Error message: ${errorMessage}`);
 
     TestRunner.addResult(`Invalidating the ${longitudeInput.getAttribute('aria-label')} input`);
     latitudeInput.value = '1.1';
     longitudeInput.value = '1a.1';
     longitudeInput.dispatchEvent(new Event('input'));
-    errorMessage = locationsEditor._errorMessageContainer.textContent;
+    errorMessage = locationsEditor.errorMessageContainer.textContent;
     TestRunner.addResult(`Error message: ${errorMessage}`);
 
     await AxeCoreTestRunner.runValidation(locationsWidget.contentElement);

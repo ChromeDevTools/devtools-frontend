@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as i18n from '../../core/i18n/i18n.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
@@ -38,80 +36,80 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/ListWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ListWidget<T> extends VBox {
-  _delegate: Delegate<T>;
-  _list: HTMLElement;
-  _lastSeparator: boolean;
-  _focusRestorer: ElementFocusRestorer|null;
-  _items: T[];
-  _editable: boolean[];
-  _elements: Element[];
-  _editor: Editor<T>|null;
-  _editItem: T|null;
-  _editElement: Element|null;
-  _emptyPlaceholder: Element|null;
+  private delegate: Delegate<T>;
+  private readonly list: HTMLElement;
+  private lastSeparator: boolean;
+  private focusRestorer: ElementFocusRestorer|null;
+  private items: T[];
+  private editable: boolean[];
+  private elements: Element[];
+  private editor: Editor<T>|null;
+  private editItem: T|null;
+  private editElement: Element|null;
+  private emptyPlaceholder: Element|null;
   constructor(delegate: Delegate<T>, delegatesFocus: boolean|undefined = true) {
     super(true, delegatesFocus);
     this.registerRequiredCSS('ui/legacy/listWidget.css');
-    this._delegate = delegate;
+    this.delegate = delegate;
 
-    this._list = this.contentElement.createChild('div', 'list');
+    this.list = this.contentElement.createChild('div', 'list');
 
-    this._lastSeparator = false;
-    this._focusRestorer = null;
-    this._items = [];
-    this._editable = [];
-    this._elements = [];
-    this._editor = null;
-    this._editItem = null;
-    this._editElement = null;
+    this.lastSeparator = false;
+    this.focusRestorer = null;
+    this.items = [];
+    this.editable = [];
+    this.elements = [];
+    this.editor = null;
+    this.editItem = null;
+    this.editElement = null;
 
-    this._emptyPlaceholder = null;
+    this.emptyPlaceholder = null;
 
-    this._updatePlaceholder();
+    this.updatePlaceholder();
   }
 
   clear(): void {
-    this._items = [];
-    this._editable = [];
-    this._elements = [];
-    this._lastSeparator = false;
-    this._list.removeChildren();
-    this._updatePlaceholder();
-    this._stopEditing();
+    this.items = [];
+    this.editable = [];
+    this.elements = [];
+    this.lastSeparator = false;
+    this.list.removeChildren();
+    this.updatePlaceholder();
+    this.stopEditing();
   }
 
   appendItem(item: T, editable: boolean): void {
-    if (this._lastSeparator && this._items.length) {
+    if (this.lastSeparator && this.items.length) {
       const element = document.createElement('div');
       element.classList.add('list-separator');
-      this._list.appendChild(element);
+      this.list.appendChild(element);
     }
-    this._lastSeparator = false;
+    this.lastSeparator = false;
 
-    this._items.push(item);
-    this._editable.push(editable);
+    this.items.push(item);
+    this.editable.push(editable);
 
-    const element = this._list.createChild('div', 'list-item');
-    element.appendChild(this._delegate.renderItem(item, editable));
+    const element = this.list.createChild('div', 'list-item');
+    element.appendChild(this.delegate.renderItem(item, editable));
     if (editable) {
       element.classList.add('editable');
       element.tabIndex = 0;
-      element.appendChild(this._createControls(item, element));
+      element.appendChild(this.createControls(item, element));
     }
-    this._elements.push(element);
-    this._updatePlaceholder();
+    this.elements.push(element);
+    this.updatePlaceholder();
   }
 
   appendSeparator(): void {
-    this._lastSeparator = true;
+    this.lastSeparator = true;
   }
 
   removeItem(index: number): void {
-    if (this._editItem === this._items[index]) {
-      this._stopEditing();
+    if (this.editItem === this.items[index]) {
+      this.stopEditing();
     }
 
-    const element = this._elements[index];
+    const element = this.elements[index];
 
     const previous = element.previousElementSibling;
     const previousIsSeparator = previous && previous.classList.contains('list-separator');
@@ -127,22 +125,22 @@ export class ListWidget<T> extends VBox {
     }
     element.remove();
 
-    this._elements.splice(index, 1);
-    this._items.splice(index, 1);
-    this._editable.splice(index, 1);
-    this._updatePlaceholder();
+    this.elements.splice(index, 1);
+    this.items.splice(index, 1);
+    this.editable.splice(index, 1);
+    this.updatePlaceholder();
   }
 
   addNewItem(index: number, item: T): void {
-    this._startEditing(item, null, this._elements[index] || null);
+    this.startEditing(item, null, this.elements[index] || null);
   }
 
   setEmptyPlaceholder(element: Element|null): void {
-    this._emptyPlaceholder = element;
-    this._updatePlaceholder();
+    this.emptyPlaceholder = element;
+    this.updatePlaceholder();
   }
 
-  _createControls(item: T, element: Element): Element {
+  private createControls(item: T, element: Element): Element {
     const controls = document.createElement('div');
     controls.classList.add('controls-container');
     controls.classList.add('fill');
@@ -163,85 +161,85 @@ export class ListWidget<T> extends VBox {
     return controls;
 
     function onEditClicked(this: ListWidget<T>): void {
-      const index = this._elements.indexOf(element);
-      const insertionPoint = this._elements[index + 1] || null;
-      this._startEditing(item, element, insertionPoint);
+      const index = this.elements.indexOf(element);
+      const insertionPoint = this.elements[index + 1] || null;
+      this.startEditing(item, element, insertionPoint);
     }
 
     function onRemoveClicked(this: ListWidget<T>): void {
-      const index = this._elements.indexOf(element);
+      const index = this.elements.indexOf(element);
       this.element.focus();
-      this._delegate.removeItemRequested(this._items[index], index);
+      this.delegate.removeItemRequested(this.items[index], index);
     }
   }
 
   wasShown(): void {
     super.wasShown();
-    this._stopEditing();
+    this.stopEditing();
   }
 
-  _updatePlaceholder(): void {
-    if (!this._emptyPlaceholder) {
+  private updatePlaceholder(): void {
+    if (!this.emptyPlaceholder) {
       return;
     }
 
-    if (!this._elements.length && !this._editor) {
-      this._list.appendChild(this._emptyPlaceholder);
+    if (!this.elements.length && !this.editor) {
+      this.list.appendChild(this.emptyPlaceholder);
     } else {
-      this._emptyPlaceholder.remove();
+      this.emptyPlaceholder.remove();
     }
   }
 
-  _startEditing(item: T, element: Element|null, insertionPoint: Element|null): void {
-    if (element && this._editElement === element) {
+  private startEditing(item: T, element: Element|null, insertionPoint: Element|null): void {
+    if (element && this.editElement === element) {
       return;
     }
 
-    this._stopEditing();
-    this._focusRestorer = new ElementFocusRestorer(this.element);
+    this.stopEditing();
+    this.focusRestorer = new ElementFocusRestorer(this.element);
 
-    this._list.classList.add('list-editing');
-    this._editItem = item;
-    this._editElement = element;
+    this.list.classList.add('list-editing');
+    this.editItem = item;
+    this.editElement = element;
     if (element) {
       element.classList.add('hidden');
     }
 
-    const index = element ? this._elements.indexOf(element) : -1;
-    this._editor = this._delegate.beginEdit(item);
-    this._updatePlaceholder();
-    this._list.insertBefore(this._editor.element, insertionPoint);
-    this._editor.beginEdit(
+    const index = element ? this.elements.indexOf(element) : -1;
+    this.editor = this.delegate.beginEdit(item);
+    this.updatePlaceholder();
+    this.list.insertBefore(this.editor.element, insertionPoint);
+    this.editor.beginEdit(
         item, index, element ? i18nString(UIStrings.saveString) : i18nString(UIStrings.addString),
-        this._commitEditing.bind(this), this._stopEditing.bind(this));
+        this.commitEditing.bind(this), this.stopEditing.bind(this));
   }
 
-  _commitEditing(): void {
-    const editItem = this._editItem;
-    const isNew = !this._editElement;
-    const editor = (this._editor as Editor<T>);
-    this._stopEditing();
+  private commitEditing(): void {
+    const editItem = this.editItem;
+    const isNew = !this.editElement;
+    const editor = (this.editor as Editor<T>);
+    this.stopEditing();
     if (editItem) {
-      this._delegate.commitEdit(editItem, editor, isNew);
+      this.delegate.commitEdit(editItem, editor, isNew);
     }
   }
 
-  _stopEditing(): void {
-    this._list.classList.remove('list-editing');
-    if (this._focusRestorer) {
-      this._focusRestorer.restore();
+  private stopEditing(): void {
+    this.list.classList.remove('list-editing');
+    if (this.focusRestorer) {
+      this.focusRestorer.restore();
     }
-    if (this._editElement) {
-      this._editElement.classList.remove('hidden');
+    if (this.editElement) {
+      this.editElement.classList.remove('hidden');
     }
-    if (this._editor && this._editor.element.parentElement) {
-      this._editor.element.remove();
+    if (this.editor && this.editor.element.parentElement) {
+      this.editor.element.remove();
     }
 
-    this._editor = null;
-    this._editItem = null;
-    this._editElement = null;
-    this._updatePlaceholder();
+    this.editor = null;
+    this.editItem = null;
+    this.editElement = null;
+    this.updatePlaceholder();
   }
 }
 
@@ -261,38 +259,38 @@ export type EditorControl<T = string> = (HTMLInputElement|HTMLSelectElement|Cust
 
 export class Editor<T> {
   element: HTMLDivElement;
-  _contentElement: HTMLElement;
-  _commitButton: HTMLButtonElement;
-  _cancelButton: HTMLButtonElement;
-  _errorMessageContainer: HTMLElement;
-  _controls: EditorControl[];
-  _controlByName: Map<string, EditorControl>;
-  _validators: ((arg0: T, arg1: number, arg2: EditorControl) => ValidatorResult)[];
-  _commit: (() => void)|null;
-  _cancel: (() => void)|null;
-  _item: T|null;
-  _index: number;
+  private readonly contentElementInternal: HTMLElement;
+  private commitButton: HTMLButtonElement;
+  private readonly cancelButton: HTMLButtonElement;
+  private errorMessageContainer: HTMLElement;
+  private readonly controls: EditorControl[];
+  private readonly controlByName: Map<string, EditorControl>;
+  private readonly validators: ((arg0: T, arg1: number, arg2: EditorControl) => ValidatorResult)[];
+  private commit: (() => void)|null;
+  private cancel: (() => void)|null;
+  private item: T|null;
+  private index: number;
 
   constructor() {
     this.element = document.createElement('div');
     this.element.classList.add('editor-container');
-    this.element.addEventListener('keydown', onKeyDown.bind(null, isEscKey, this._cancelClicked.bind(this)), false);
+    this.element.addEventListener('keydown', onKeyDown.bind(null, isEscKey, this.cancelClicked.bind(this)), false);
     this.element.addEventListener(
-        'keydown', onKeyDown.bind(null, event => event.key === 'Enter', this._commitClicked.bind(this)), false);
+        'keydown', onKeyDown.bind(null, event => event.key === 'Enter', this.commitClicked.bind(this)), false);
 
-    this._contentElement = this.element.createChild('div', 'editor-content');
+    this.contentElementInternal = this.element.createChild('div', 'editor-content');
 
     const buttonsRow = this.element.createChild('div', 'editor-buttons');
-    this._commitButton = createTextButton('', this._commitClicked.bind(this), '', true /* primary */);
-    buttonsRow.appendChild(this._commitButton);
-    this._cancelButton = createTextButton(
-        i18nString(UIStrings.cancelString), this._cancelClicked.bind(this), '', true /* primary */, 'mousedown');
-    this._cancelButton.addEventListener(
-        'keydown', onKeyDown.bind(null, event => event.key === 'Enter', this._cancelClicked.bind(this)), false);
-    buttonsRow.appendChild(this._cancelButton);
+    this.commitButton = createTextButton('', this.commitClicked.bind(this), '', true /* primary */);
+    buttonsRow.appendChild(this.commitButton);
+    this.cancelButton = createTextButton(
+        i18nString(UIStrings.cancelString), this.cancelClicked.bind(this), '', true /* primary */, 'mousedown');
+    this.cancelButton.addEventListener(
+        'keydown', onKeyDown.bind(null, event => event.key === 'Enter', this.cancelClicked.bind(this)), false);
+    buttonsRow.appendChild(this.cancelButton);
 
-    this._errorMessageContainer = this.element.createChild('div', 'list-widget-input-validation-error');
-    ARIAUtils.markAsAlert(this._errorMessageContainer);
+    this.errorMessageContainer = this.element.createChild('div', 'list-widget-input-validation-error');
+    ARIAUtils.markAsAlert(this.errorMessageContainer);
 
     function onKeyDown(predicate: (arg0: KeyboardEvent) => boolean, callback: () => void, event: KeyboardEvent): void {
       if (predicate(event)) {
@@ -301,18 +299,18 @@ export class Editor<T> {
       }
     }
 
-    this._controls = [];
-    this._controlByName = new Map();
-    this._validators = [];
+    this.controls = [];
+    this.controlByName = new Map();
+    this.validators = [];
 
-    this._commit = null;
-    this._cancel = null;
-    this._item = null;
-    this._index = -1;
+    this.commit = null;
+    this.cancel = null;
+    this.item = null;
+    this.index = -1;
   }
 
   contentElement(): Element {
-    return this._contentElement;
+    return this.contentElementInternal;
   }
 
   createInput(
@@ -320,12 +318,12 @@ export class Editor<T> {
       validator: (arg0: T, arg1: number, arg2: EditorControl) => ValidatorResult): HTMLInputElement {
     const input = (createInput('', type) as HTMLInputElement);
     input.placeholder = title;
-    input.addEventListener('input', this._validateControls.bind(this, false), false);
-    input.addEventListener('blur', this._validateControls.bind(this, false), false);
+    input.addEventListener('input', this.validateControls.bind(this, false), false);
+    input.addEventListener('blur', this.validateControls.bind(this, false), false);
     ARIAUtils.setAccessibleName(input, title);
-    this._controlByName.set(name, input);
-    this._controls.push(input);
-    this._validators.push(validator);
+    this.controlByName.set(name, input);
+    this.controls.push(input);
+    this.validators.push(validator);
     return input;
   }
 
@@ -343,11 +341,11 @@ export class Editor<T> {
       Tooltip.install(select, title);
       ARIAUtils.setAccessibleName(select, title);
     }
-    select.addEventListener('input', this._validateControls.bind(this, false), false);
-    select.addEventListener('blur', this._validateControls.bind(this, false), false);
-    this._controlByName.set(name, select);
-    this._controls.push(select);
-    this._validators.push(validator);
+    select.addEventListener('input', this.validateControls.bind(this, false), false);
+    select.addEventListener('blur', this.validateControls.bind(this, false), false);
+    this.controlByName.set(name, select);
+    this.controls.push(select);
+    this.validators.push(validator);
     return select;
   }
 
@@ -355,26 +353,26 @@ export class Editor<T> {
       name: string, ctor: {new(): U},
       validator: (arg0: T, arg1: number, arg2: EditorControl) => ValidatorResult): CustomEditorControl<S> {
     const control = new ctor();
-    this._controlByName.set(name, control as unknown as CustomEditorControl<string>);
-    this._controls.push(control as unknown as CustomEditorControl<string>);
-    this._validators.push(validator);
+    this.controlByName.set(name, control as unknown as CustomEditorControl<string>);
+    this.controls.push(control as unknown as CustomEditorControl<string>);
+    this.validators.push(validator);
     return control;
   }
 
   control(name: string): EditorControl {
-    const control = this._controlByName.get(name);
+    const control = this.controlByName.get(name);
     if (!control) {
       throw new Error(`Control with name ${name} does not exist, please verify.`);
     }
     return control;
   }
 
-  _validateControls(forceValid: boolean): void {
+  private validateControls(forceValid: boolean): void {
     let allValid = true;
-    this._errorMessageContainer.textContent = '';
-    for (let index = 0; index < this._controls.length; ++index) {
-      const input = this._controls[index];
-      const {valid, errorMessage} = this._validators[index].call(null, (this._item as T), this._index, input);
+    this.errorMessageContainer.textContent = '';
+    for (let index = 0; index < this.controls.length; ++index) {
+      const input = this.controls[index];
+      const {valid, errorMessage} = this.validators[index].call(null, (this.item as T), this.index, input);
 
       input.classList.toggle('error-input', !valid && !forceValid);
       if (valid || forceValid) {
@@ -383,54 +381,54 @@ export class Editor<T> {
         ARIAUtils.setInvalid(input, true);
       }
 
-      if (!forceValid && errorMessage && !this._errorMessageContainer.textContent) {
-        this._errorMessageContainer.textContent = errorMessage;
+      if (!forceValid && errorMessage && !this.errorMessageContainer.textContent) {
+        this.errorMessageContainer.textContent = errorMessage;
       }
 
       allValid = allValid && valid;
     }
-    this._commitButton.disabled = !allValid;
+    this.commitButton.disabled = !allValid;
   }
 
   requestValidation(): void {
-    this._validateControls(false);
+    this.validateControls(false);
   }
 
   beginEdit(item: T, index: number, commitButtonTitle: string, commit: () => void, cancel: () => void): void {
-    this._commit = commit;
-    this._cancel = cancel;
-    this._item = item;
-    this._index = index;
+    this.commit = commit;
+    this.cancel = cancel;
+    this.item = item;
+    this.index = index;
 
-    this._commitButton.textContent = commitButtonTitle;
+    this.commitButton.textContent = commitButtonTitle;
     this.element.scrollIntoViewIfNeeded(false);
-    if (this._controls.length) {
-      this._controls[0].focus();
+    if (this.controls.length) {
+      this.controls[0].focus();
     }
-    this._validateControls(true);
+    this.validateControls(true);
   }
 
-  _commitClicked(): void {
-    if (this._commitButton.disabled) {
+  private commitClicked(): void {
+    if (this.commitButton.disabled) {
       return;
     }
 
-    const commit = this._commit;
-    this._commit = null;
-    this._cancel = null;
-    this._item = null;
-    this._index = -1;
+    const commit = this.commit;
+    this.commit = null;
+    this.cancel = null;
+    this.item = null;
+    this.index = -1;
     if (commit) {
       commit();
     }
   }
 
-  _cancelClicked(): void {
-    const cancel = this._cancel;
-    this._commit = null;
-    this._cancel = null;
-    this._item = null;
-    this._index = -1;
+  private cancelClicked(): void {
+    const cancel = this.cancel;
+    this.commit = null;
+    this.cancel = null;
+    this.item = null;
+    this.index = -1;
     if (cancel) {
       cancel();
     }

@@ -33,8 +33,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 
@@ -51,72 +49,72 @@ import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-co
 const nodeToParentTreeElementMap = new WeakMap<Node, TreeElement>();
 
 export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
-  _rootElement: TreeElement;
-  _renderSelection: boolean;
+  readonly rootElementInternal: TreeElement;
+  renderSelection: boolean;
   selectedTreeElement: TreeElement|null;
   expandTreeElementsWhenArrowing: boolean;
-  _comparator: ((arg0: TreeElement, arg1: TreeElement) => number)|null;
+  comparator: ((arg0: TreeElement, arg1: TreeElement) => number)|null;
   contentElement: HTMLOListElement;
-  _preventTabOrder: boolean;
-  _showSelectionOnKeyboardFocus: boolean;
-  _focusable: boolean;
+  preventTabOrder: boolean;
+  showSelectionOnKeyboardFocus: boolean;
+  private focusable: boolean;
   element: HTMLElement;
-  _useLightSelectionColor: boolean;
-  _treeElementToScrollIntoView: TreeElement|null;
-  _centerUponScrollIntoView: boolean;
+  useLightSelectionColorInternal: boolean;
+  private treeElementToScrollIntoView: TreeElement|null;
+  private centerUponScrollIntoView: boolean;
 
   constructor() {
     super();
-    this._rootElement = this._createRootElement();
-    this._renderSelection = false;
+    this.rootElementInternal = this.createRootElement();
+    this.renderSelection = false;
 
     this.selectedTreeElement = null;
     this.expandTreeElementsWhenArrowing = false;
-    this._comparator = null;
+    this.comparator = null;
 
-    this.contentElement = this._rootElement._childrenListNode;
-    this.contentElement.addEventListener('keydown', this._treeKeyDown.bind(this), false);
+    this.contentElement = this.rootElementInternal.childrenListNode;
+    this.contentElement.addEventListener('keydown', this.treeKeyDown.bind(this), false);
 
-    this._preventTabOrder = false;
-    this._showSelectionOnKeyboardFocus = false;
-    this._focusable = true;
+    this.preventTabOrder = false;
+    this.showSelectionOnKeyboardFocus = false;
+    this.focusable = true;
     this.setFocusable(true);
     this.element = this.contentElement;
     ARIAUtils.markAsTree(this.element);
-    this._useLightSelectionColor = false;
-    this._treeElementToScrollIntoView = null;
-    this._centerUponScrollIntoView = false;
+    this.useLightSelectionColorInternal = false;
+    this.treeElementToScrollIntoView = null;
+    this.centerUponScrollIntoView = false;
   }
 
   setShowSelectionOnKeyboardFocus(show: boolean, preventTabOrder?: boolean): void {
     this.contentElement.classList.toggle('hide-selection-when-blurred', show);
-    this._preventTabOrder = Boolean(preventTabOrder);
-    if (this._focusable) {
+    this.preventTabOrder = Boolean(preventTabOrder);
+    if (this.focusable) {
       this.contentElement.tabIndex = Boolean(preventTabOrder) ? -1 : 0;
     }
-    this._showSelectionOnKeyboardFocus = show;
+    this.showSelectionOnKeyboardFocus = show;
   }
 
-  _createRootElement(): TreeElement {
+  private createRootElement(): TreeElement {
     const rootElement = new TreeElement();
     rootElement.treeOutline = this;
     rootElement.root = true;
     rootElement.selectable = false;
     rootElement.expanded = true;
-    rootElement._childrenListNode.classList.remove('children');
+    rootElement.childrenListNode.classList.remove('children');
     return rootElement;
   }
 
   rootElement(): TreeElement {
-    return this._rootElement;
+    return this.rootElementInternal;
   }
 
   firstChild(): TreeElement|null {
-    return this._rootElement.firstChild();
+    return this.rootElementInternal.firstChild();
   }
 
-  _lastDescendent(): TreeElement|null {
-    let last = this._rootElement.lastChild();
+  private lastDescendent(): TreeElement|null {
+    let last = this.rootElementInternal.lastChild();
     while (last && last.expanded && last.childCount()) {
       last = last.lastChild();
     }
@@ -124,19 +122,19 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   appendChild(child: TreeElement, comparator?: ((arg0: TreeElement, arg1: TreeElement) => number)): void {
-    this._rootElement.appendChild(child, comparator);
+    this.rootElementInternal.appendChild(child, comparator);
   }
 
   insertChild(child: TreeElement, index: number): void {
-    this._rootElement.insertChild(child, index);
+    this.rootElementInternal.insertChild(child, index);
   }
 
   removeChild(child: TreeElement): void {
-    this._rootElement.removeChild(child);
+    this.rootElementInternal.removeChild(child);
   }
 
   removeChildren(): void {
-    this._rootElement.removeChildren();
+    this.rootElementInternal.removeChildren();
   }
 
   treeElementFromPoint(x: number, y: number): TreeElement|null {
@@ -157,24 +155,24 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   setComparator(comparator: ((arg0: TreeElement, arg1: TreeElement) => number)|null): void {
-    this._comparator = comparator;
+    this.comparator = comparator;
   }
 
   setFocusable(focusable: boolean): void {
-    this._focusable = focusable;
+    this.focusable = focusable;
     this.updateFocusable();
   }
 
   updateFocusable(): void {
-    if (this._focusable) {
-      this.contentElement.tabIndex = (this._preventTabOrder || Boolean(this.selectedTreeElement)) ? -1 : 0;
+    if (this.focusable) {
+      this.contentElement.tabIndex = (this.preventTabOrder || Boolean(this.selectedTreeElement)) ? -1 : 0;
       if (this.selectedTreeElement) {
-        this.selectedTreeElement._setFocusable(true);
+        this.selectedTreeElement.setFocusable(true);
       }
     } else {
       this.contentElement.removeAttribute('tabIndex');
       if (this.selectedTreeElement) {
-        this.selectedTreeElement._setFocusable(false);
+        this.selectedTreeElement.setFocusable(false);
       }
     }
   }
@@ -188,10 +186,10 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   useLightSelectionColor(): void {
-    this._useLightSelectionColor = true;
+    this.useLightSelectionColorInternal = true;
   }
 
-  _bindTreeElement(element: TreeElement): void {
+  bindTreeElement(element: TreeElement): void {
     if (element.treeOutline) {
       console.error('Binding element for the second time: ' + new Error().stack);
     }
@@ -199,7 +197,7 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
     element.onbind();
   }
 
-  _unbindTreeElement(element: TreeElement): void {
+  unbindTreeElement(element: TreeElement): void {
     if (!element.treeOutline) {
       console.error('Unbinding element that was not bound: ' + new Error().stack);
     }
@@ -239,10 +237,10 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
     if (this.selectedTreeElement) {
       this.selectedTreeElement.deselect();
     }
-    this._selectFirst(omitFocus, selectedByUser);
+    this.selectFirst(omitFocus, selectedByUser);
   }
 
-  _selectFirst(omitFocus: boolean|undefined = false, selectedByUser: boolean|undefined = true): boolean {
+  private selectFirst(omitFocus: boolean|undefined = false, selectedByUser: boolean|undefined = true): boolean {
     let first = this.firstChild();
     while (first && !first.selectable) {
       first = first.traverseNextTreeElement(true);
@@ -254,8 +252,8 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
     return true;
   }
 
-  _selectLast(): boolean {
-    let last = this._lastDescendent();
+  private selectLast(): boolean {
+    let last = this.lastDescendent();
     while (last && !last.selectable) {
       last = last.traversePreviousTreeElement(true);
     }
@@ -266,7 +264,7 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
     return true;
   }
 
-  _treeKeyDown(event: KeyboardEvent): void {
+  private treeKeyDown(event: KeyboardEvent): void {
     if (event.shiftKey || event.metaKey || event.ctrlKey || isEditing()) {
       return;
     }
@@ -274,9 +272,9 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
     let handled = false;
     if (!this.selectedTreeElement) {
       if (event.key === 'ArrowUp' && !event.altKey) {
-        handled = this._selectLast();
+        handled = this.selectLast();
       } else if (event.key === 'ArrowDown' && !event.altKey) {
-        handled = this._selectFirst();
+        handled = this.selectFirst();
       }
     } else if (event.key === 'ArrowUp' && !event.altKey) {
       handled = this.selectPrevious();
@@ -298,9 +296,9 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
     } else if (event.keyCode === Keys.Space.code) {
       handled = this.selectedTreeElement.onspace();
     } else if (event.key === 'Home') {
-      handled = this._selectFirst();
+      handled = this.selectFirst();
     } else if (event.key === 'End') {
-      handled = this._selectLast();
+      handled = this.selectLast();
     }
 
     if (handled) {
@@ -308,16 +306,16 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  _deferredScrollIntoView(treeElement: TreeElement, center: boolean): void {
+  deferredScrollIntoView(treeElement: TreeElement, center: boolean): void {
     const deferredScrollIntoView = (): void => {
-      if (!this._treeElementToScrollIntoView) {
+      if (!this.treeElementToScrollIntoView) {
         return;
       }
 
       // This function doesn't use scrollIntoViewIfNeeded because it always
       // scrolls in both directions even if only one is necessary to bring the
       // item into view.
-      const itemRect = this._treeElementToScrollIntoView.listItemElement.getBoundingClientRect();
+      const itemRect = this.treeElementToScrollIntoView.listItemElement.getBoundingClientRect();
       const treeRect = this.contentElement.getBoundingClientRect();
 
       // Usually, this.element is the tree container that scrolls. But sometimes
@@ -333,29 +331,29 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
       const currentScrollY = viewRect.top - treeRect.top + this.contentElement.offsetTop;
 
       // Only scroll into view on each axis if the item is not visible at all
-      // but if we do scroll and _centerUponScrollIntoView is true
+      // but if we do scroll and centerUponScrollIntoView is true
       // then we center the top left corner of the item in view.
       let deltaLeft: number = itemRect.left - treeRect.left;
       if (deltaLeft > currentScrollX && deltaLeft < currentScrollX + viewRect.width) {
         deltaLeft = currentScrollX;
-      } else if (this._centerUponScrollIntoView) {
+      } else if (this.centerUponScrollIntoView) {
         deltaLeft = deltaLeft - viewRect.width / 2;
       }
       let deltaTop: number = itemRect.top - treeRect.top;
       if (deltaTop > currentScrollY && deltaTop < currentScrollY + viewRect.height) {
         deltaTop = currentScrollY;
-      } else if (this._centerUponScrollIntoView) {
+      } else if (this.centerUponScrollIntoView) {
         deltaTop = deltaTop - viewRect.height / 2;
       }
       scrollParentElement.scrollTo(deltaLeft, deltaTop);
-      this._treeElementToScrollIntoView = null;
+      this.treeElementToScrollIntoView = null;
     };
 
-    if (!this._treeElementToScrollIntoView) {
+    if (!this.treeElementToScrollIntoView) {
       this.element.window().requestAnimationFrame(deferredScrollIntoView);
     }
-    this._treeElementToScrollIntoView = treeElement;
-    this._centerUponScrollIntoView = center;
+    this.treeElementToScrollIntoView = treeElement;
+    this.centerUponScrollIntoView = center;
   }
 
   onStartedEditingTitle(_treeElement: TreeElement): void {
@@ -374,30 +372,30 @@ export enum Events {
 
 export class TreeOutlineInShadow extends TreeOutline {
   element: HTMLElement;
-  _shadowRoot: ShadowRoot;
-  _disclosureElement: Element;
-  _renderSelection: boolean;
+  shadowRoot: ShadowRoot;
+  private readonly disclosureElement: Element;
+  renderSelection: boolean;
   constructor() {
     super();
     this.contentElement.classList.add('tree-outline');
     this.element = document.createElement('div');
-    this._shadowRoot =
+    this.shadowRoot =
         createShadowRootWithCoreStyles(this.element, {cssFile: 'ui/legacy/treeoutline.css', delegatesFocus: undefined});
-    this._disclosureElement = this._shadowRoot.createChild('div', 'tree-outline-disclosure');
-    this._disclosureElement.appendChild(this.contentElement);
-    this._renderSelection = true;
+    this.disclosureElement = this.shadowRoot.createChild('div', 'tree-outline-disclosure');
+    this.disclosureElement.appendChild(this.contentElement);
+    this.renderSelection = true;
   }
 
   registerRequiredCSS(cssFile: string): void {
-    appendStyle(this._shadowRoot, cssFile);
+    appendStyle(this.shadowRoot, cssFile);
   }
 
   registerCSSFiles(cssFiles: CSSStyleSheet[]): void {
-    this._shadowRoot.adoptedStyleSheets = this._shadowRoot.adoptedStyleSheets.concat(cssFiles);
+    this.shadowRoot.adoptedStyleSheets = this.shadowRoot.adoptedStyleSheets.concat(cssFiles);
   }
 
   hideOverflow(): void {
-    this._disclosureElement.classList.add('tree-outline-disclosure-hide-overflow');
+    this.disclosureElement.classList.add('tree-outline-disclosure-hide-overflow');
   }
 
   makeDense(): void {
@@ -405,7 +403,7 @@ export class TreeOutlineInShadow extends TreeOutline {
   }
 
   onStartedEditingTitle(treeElement: TreeElement): void {
-    const selection = this._shadowRoot.getSelection();
+    const selection = this.shadowRoot.getSelection();
     if (selection) {
       selection.selectAllChildren(treeElement.titleElement);
     }
@@ -418,67 +416,67 @@ export class TreeElement {
   parent: TreeElement|null;
   previousSibling: TreeElement|null;
   nextSibling: TreeElement|null;
-  _boundOnFocus: () => void;
-  _boundOnBlur: () => void;
-  _listItemNode: HTMLLIElement;
+  private readonly boundOnFocus: () => void;
+  private readonly boundOnBlur: () => void;
+  readonly listItemNode: HTMLLIElement;
   titleElement: Node;
-  _title: string|Node;
-  _children: TreeElement[]|null;
-  _childrenListNode: HTMLOListElement;
-  _hidden: boolean;
-  _selectable: boolean;
+  titleInternal: string|Node;
+  private childrenInternal: TreeElement[]|null;
+  childrenListNode: HTMLOListElement;
+  private hiddenInternal: boolean;
+  private selectableInternal: boolean;
   expanded: boolean;
   selected: boolean;
-  _expandable!: boolean;
-  _collapsible: boolean;
+  private expandable!: boolean;
+  private collapsible: boolean;
   toggleOnClick: boolean;
   button: HTMLButtonElement|null;
   root: boolean;
-  _tooltip: string;
-  _leadingIconsElement: HTMLElement|null;
-  _trailingIconsElement: HTMLElement|null;
-  _selectionElement: HTMLElement|null;
-  _disableSelectFocus: boolean;
+  private tooltipInternal: string;
+  private leadingIconsElement: HTMLElement|null;
+  private trailingIconsElement: HTMLElement|null;
+  protected selectionElementInternal: HTMLElement|null;
+  private disableSelectFocus: boolean;
   constructor(title?: string|Node, expandable?: boolean) {
     this.treeOutline = null;
     this.parent = null;
     this.previousSibling = null;
     this.nextSibling = null;
-    this._boundOnFocus = this._onFocus.bind(this);
-    this._boundOnBlur = this._onBlur.bind(this);
-    this._listItemNode = document.createElement('li');
+    this.boundOnFocus = this.onFocus.bind(this);
+    this.boundOnBlur = this.onBlur.bind(this);
+    this.listItemNode = document.createElement('li');
 
-    this.titleElement = this._listItemNode.createChild('span', 'tree-element-title');
-    treeElementBylistItemNode.set(this._listItemNode, this);
-    this._title = '';
+    this.titleElement = this.listItemNode.createChild('span', 'tree-element-title');
+    treeElementBylistItemNode.set(this.listItemNode, this);
+    this.titleInternal = '';
     if (title) {
       this.title = title;
     }
-    this._listItemNode.addEventListener('mousedown', (this._handleMouseDown.bind(this) as EventListener), false);
-    this._listItemNode.addEventListener('click', (this._treeElementToggled.bind(this) as EventListener), false);
-    this._listItemNode.addEventListener('dblclick', this._handleDoubleClick.bind(this), false);
-    ARIAUtils.markAsTreeitem(this._listItemNode);
+    this.listItemNode.addEventListener('mousedown', (this.handleMouseDown.bind(this) as EventListener), false);
+    this.listItemNode.addEventListener('click', (this.treeElementToggled.bind(this) as EventListener), false);
+    this.listItemNode.addEventListener('dblclick', this.handleDoubleClick.bind(this), false);
+    ARIAUtils.markAsTreeitem(this.listItemNode);
 
-    this._children = null;
-    this._childrenListNode = document.createElement('ol');
-    nodeToParentTreeElementMap.set(this._childrenListNode, this);
-    this._childrenListNode.classList.add('children');
-    ARIAUtils.markAsGroup(this._childrenListNode);
+    this.childrenInternal = null;
+    this.childrenListNode = document.createElement('ol');
+    nodeToParentTreeElementMap.set(this.childrenListNode, this);
+    this.childrenListNode.classList.add('children');
+    ARIAUtils.markAsGroup(this.childrenListNode);
 
-    this._hidden = false;
-    this._selectable = true;
+    this.hiddenInternal = false;
+    this.selectableInternal = true;
     this.expanded = false;
     this.selected = false;
     this.setExpandable(expandable || false);
-    this._collapsible = true;
+    this.collapsible = true;
     this.toggleOnClick = false;
     this.button = null;
     this.root = false;
-    this._tooltip = '';
-    this._leadingIconsElement = null;
-    this._trailingIconsElement = null;
-    this._selectionElement = null;
-    this._disableSelectFocus = false;
+    this.tooltipInternal = '';
+    this.leadingIconsElement = null;
+    this.trailingIconsElement = null;
+    this.selectionElementInternal = null;
+    this.disableSelectFocus = false;
   }
 
   static getTreeElementBylistItemNode(node: Node): TreeElement|undefined {
@@ -522,48 +520,48 @@ export class TreeElement {
   }
 
   children(): TreeElement[] {
-    return this._children || [];
+    return this.childrenInternal || [];
   }
 
   childCount(): number {
-    return this._children ? this._children.length : 0;
+    return this.childrenInternal ? this.childrenInternal.length : 0;
   }
 
   firstChild(): TreeElement|null {
-    return this._children ? this._children[0] : null;
+    return this.childrenInternal ? this.childrenInternal[0] : null;
   }
 
   lastChild(): TreeElement|null {
-    return this._children ? this._children[this._children.length - 1] : null;
+    return this.childrenInternal ? this.childrenInternal[this.childrenInternal.length - 1] : null;
   }
 
   childAt(index: number): TreeElement|null {
-    return this._children ? this._children[index] : null;
+    return this.childrenInternal ? this.childrenInternal[index] : null;
   }
 
   indexOfChild(child: TreeElement): number {
-    return this._children ? this._children.indexOf(child) : -1;
+    return this.childrenInternal ? this.childrenInternal.indexOf(child) : -1;
   }
 
   appendChild(child: TreeElement, comparator?: ((arg0: TreeElement, arg1: TreeElement) => number)): void {
-    if (!this._children) {
-      this._children = [];
+    if (!this.childrenInternal) {
+      this.childrenInternal = [];
     }
 
     let insertionIndex;
     if (comparator) {
-      insertionIndex = Platform.ArrayUtilities.lowerBound(this._children, child, comparator);
-    } else if (this.treeOutline && this.treeOutline._comparator) {
-      insertionIndex = Platform.ArrayUtilities.lowerBound(this._children, child, this.treeOutline._comparator);
+      insertionIndex = Platform.ArrayUtilities.lowerBound(this.childrenInternal, child, comparator);
+    } else if (this.treeOutline && this.treeOutline.comparator) {
+      insertionIndex = Platform.ArrayUtilities.lowerBound(this.childrenInternal, child, this.treeOutline.comparator);
     } else {
-      insertionIndex = this._children.length;
+      insertionIndex = this.childrenInternal.length;
     }
     this.insertChild(child, insertionIndex);
   }
 
   insertChild(child: TreeElement, index: number): void {
-    if (!this._children) {
-      this._children = [];
+    if (!this.childrenInternal) {
+      this.childrenInternal = [];
     }
 
     if (!child) {
@@ -573,7 +571,7 @@ export class TreeElement {
     console.assert(
         !child.parent, 'Attempting to insert a child that is already in the tree, reparenting is not supported.');
 
-    const previousChild = (index > 0 ? this._children[index - 1] : null);
+    const previousChild = (index > 0 ? this.childrenInternal[index - 1] : null);
     if (previousChild) {
       previousChild.nextSibling = child;
       child.previousSibling = previousChild;
@@ -581,7 +579,7 @@ export class TreeElement {
       child.previousSibling = null;
     }
 
-    const nextChild = this._children[index];
+    const nextChild = this.childrenInternal[index];
     if (nextChild) {
       nextChild.previousSibling = child;
       child.nextSibling = nextChild;
@@ -589,26 +587,26 @@ export class TreeElement {
       child.nextSibling = null;
     }
 
-    this._children.splice(index, 0, child);
+    this.childrenInternal.splice(index, 0, child);
 
     this.setExpandable(true);
     child.parent = this;
 
     if (this.treeOutline) {
-      this.treeOutline._bindTreeElement(child);
+      this.treeOutline.bindTreeElement(child);
     }
     for (let current = child.firstChild(); this.treeOutline && current;
          current = current.traverseNextTreeElement(false, child, true)) {
-      this.treeOutline._bindTreeElement(current);
+      this.treeOutline.bindTreeElement(current);
     }
     child.onattach();
-    child._ensureSelection();
+    child.ensureSelection();
     if (this.treeOutline) {
       this.treeOutline.dispatchEventToListeners(Events.ElementAttached, child);
     }
-    const nextSibling = child.nextSibling ? child.nextSibling._listItemNode : null;
-    this._childrenListNode.insertBefore(child._listItemNode, nextSibling);
-    this._childrenListNode.insertBefore(child._childrenListNode, nextSibling);
+    const nextSibling = child.nextSibling ? child.nextSibling.listItemNode : null;
+    this.childrenListNode.insertBefore(child.listItemNode, nextSibling);
+    this.childrenListNode.insertBefore(child.childrenListNode, nextSibling);
     if (child.selected) {
       child.select();
     }
@@ -618,12 +616,12 @@ export class TreeElement {
   }
 
   removeChildAtIndex(childIndex: number): void {
-    if (!this._children || childIndex < 0 || childIndex >= this._children.length) {
+    if (!this.childrenInternal || childIndex < 0 || childIndex >= this.childrenInternal.length) {
       throw 'childIndex out of range';
     }
 
-    const child = this._children[childIndex];
-    this._children.splice(childIndex, 1);
+    const child = this.childrenInternal[childIndex];
+    this.childrenInternal.splice(childIndex, 1);
 
     const parent = child.parent;
     if (this.treeOutline && this.treeOutline.selectedTreeElement &&
@@ -646,14 +644,14 @@ export class TreeElement {
     child.parent = null;
 
     if (this.treeOutline) {
-      this.treeOutline._unbindTreeElement(child);
+      this.treeOutline.unbindTreeElement(child);
     }
     for (let current = child.firstChild(); this.treeOutline && current;
          current = current.traverseNextTreeElement(false, child, true)) {
-      this.treeOutline._unbindTreeElement(current);
+      this.treeOutline.unbindTreeElement(current);
     }
 
-    child._detach();
+    child.detach();
     if (this.treeOutline) {
       this.treeOutline.dispatchEventToListeners(Events.ElementsDetached);
     }
@@ -667,7 +665,7 @@ export class TreeElement {
       return;
     }
 
-    const childIndex = this._children ? this._children.indexOf(child) : -1;
+    const childIndex = this.childrenInternal ? this.childrenInternal.indexOf(child) : -1;
     if (childIndex === -1) {
       throw 'child not found in this node\'s children';
     }
@@ -681,23 +679,23 @@ export class TreeElement {
       this.select(true);
     }
 
-    if (this._children) {
-      for (const child of this._children) {
+    if (this.childrenInternal) {
+      for (const child of this.childrenInternal) {
         child.previousSibling = null;
         child.nextSibling = null;
         child.parent = null;
 
         if (this.treeOutline) {
-          this.treeOutline._unbindTreeElement(child);
+          this.treeOutline.unbindTreeElement(child);
         }
         for (let current = child.firstChild(); this.treeOutline && current;
              current = current.traverseNextTreeElement(false, child, true)) {
-          this.treeOutline._unbindTreeElement(current);
+          this.treeOutline.unbindTreeElement(current);
         }
-        child._detach();
+        child.detach();
       }
     }
-    this._children = [];
+    this.childrenInternal = [];
     if (this.treeOutline) {
       this.treeOutline.dispatchEventToListeners(Events.ElementsDetached);
     }
@@ -707,30 +705,30 @@ export class TreeElement {
     if (this.isHidden()) {
       return false;
     }
-    return this._selectable;
+    return this.selectableInternal;
   }
 
   set selectable(x: boolean) {
-    this._selectable = x;
+    this.selectableInternal = x;
   }
 
   get listItemElement(): HTMLLIElement {
-    return this._listItemNode;
+    return this.listItemNode;
   }
 
   get childrenListElement(): HTMLOListElement {
-    return this._childrenListNode;
+    return this.childrenListNode;
   }
 
   get title(): string|Node {
-    return this._title;
+    return this.titleInternal;
   }
 
   set title(x: string|Node) {
-    if (this._title === x) {
+    if (this.titleInternal === x) {
       return;
     }
-    this._title = x;
+    this.titleInternal = x;
 
     if (typeof x === 'string') {
       this.titleElement.textContent = x;
@@ -740,25 +738,25 @@ export class TreeElement {
       this.tooltip = '';
     }
 
-    this._listItemNode.removeChildren();
-    if (this._leadingIconsElement) {
-      this._listItemNode.appendChild(this._leadingIconsElement);
+    this.listItemNode.removeChildren();
+    if (this.leadingIconsElement) {
+      this.listItemNode.appendChild(this.leadingIconsElement);
     }
-    this._listItemNode.appendChild(this.titleElement);
-    if (this._trailingIconsElement) {
-      this._listItemNode.appendChild(this._trailingIconsElement);
+    this.listItemNode.appendChild(this.titleElement);
+    if (this.trailingIconsElement) {
+      this.listItemNode.appendChild(this.trailingIconsElement);
     }
-    this._ensureSelection();
+    this.ensureSelection();
   }
 
   titleAsText(): string {
-    if (!this._title) {
+    if (!this.titleInternal) {
       return '';
     }
-    if (typeof this._title === 'string') {
-      return this._title;
+    if (typeof this.titleInternal === 'string') {
+      return this.titleInternal;
     }
-    return this._title.textContent || '';
+    return this.titleInternal.textContent || '';
   }
 
   startEditingTitle<T>(editingConfig: Config<T>): void {
@@ -769,97 +767,97 @@ export class TreeElement {
   }
 
   setLeadingIcons(icons: Icon[]): void {
-    if (!this._leadingIconsElement && !icons.length) {
+    if (!this.leadingIconsElement && !icons.length) {
       return;
     }
-    if (!this._leadingIconsElement) {
-      this._leadingIconsElement = document.createElement('div');
-      this._leadingIconsElement.classList.add('leading-icons');
-      this._leadingIconsElement.classList.add('icons-container');
-      this._listItemNode.insertBefore(this._leadingIconsElement, this.titleElement);
-      this._ensureSelection();
+    if (!this.leadingIconsElement) {
+      this.leadingIconsElement = document.createElement('div');
+      this.leadingIconsElement.classList.add('leading-icons');
+      this.leadingIconsElement.classList.add('icons-container');
+      this.listItemNode.insertBefore(this.leadingIconsElement, this.titleElement);
+      this.ensureSelection();
     }
-    this._leadingIconsElement.removeChildren();
+    this.leadingIconsElement.removeChildren();
     for (const icon of icons) {
-      this._leadingIconsElement.appendChild(icon);
+      this.leadingIconsElement.appendChild(icon);
     }
   }
 
   setTrailingIcons(icons: Icon[]): void {
-    if (!this._trailingIconsElement && !icons.length) {
+    if (!this.trailingIconsElement && !icons.length) {
       return;
     }
-    if (!this._trailingIconsElement) {
-      this._trailingIconsElement = document.createElement('div');
-      this._trailingIconsElement.classList.add('trailing-icons');
-      this._trailingIconsElement.classList.add('icons-container');
-      this._listItemNode.appendChild(this._trailingIconsElement);
-      this._ensureSelection();
+    if (!this.trailingIconsElement) {
+      this.trailingIconsElement = document.createElement('div');
+      this.trailingIconsElement.classList.add('trailing-icons');
+      this.trailingIconsElement.classList.add('icons-container');
+      this.listItemNode.appendChild(this.trailingIconsElement);
+      this.ensureSelection();
     }
-    this._trailingIconsElement.removeChildren();
+    this.trailingIconsElement.removeChildren();
     for (const icon of icons) {
-      this._trailingIconsElement.appendChild(icon);
+      this.trailingIconsElement.appendChild(icon);
     }
   }
 
   get tooltip(): string {
-    return this._tooltip;
+    return this.tooltipInternal;
   }
 
   set tooltip(x: string) {
-    if (this._tooltip === x) {
+    if (this.tooltipInternal === x) {
       return;
     }
-    this._tooltip = x;
-    Tooltip.install(this._listItemNode, x);
+    this.tooltipInternal = x;
+    Tooltip.install(this.listItemNode, x);
   }
 
   isExpandable(): boolean {
-    return this._expandable;
+    return this.expandable;
   }
 
   setExpandable(expandable: boolean): void {
-    if (this._expandable === expandable) {
+    if (this.expandable === expandable) {
       return;
     }
 
-    this._expandable = expandable;
+    this.expandable = expandable;
 
-    this._listItemNode.classList.toggle('parent', expandable);
+    this.listItemNode.classList.toggle('parent', expandable);
     if (!expandable) {
       this.collapse();
-      ARIAUtils.unsetExpandable(this._listItemNode);
+      ARIAUtils.unsetExpandable(this.listItemNode);
     } else {
-      ARIAUtils.setExpanded(this._listItemNode, false);
+      ARIAUtils.setExpanded(this.listItemNode, false);
     }
   }
 
   setCollapsible(collapsible: boolean): void {
-    if (this._collapsible === collapsible) {
+    if (this.collapsible === collapsible) {
       return;
     }
 
-    this._collapsible = collapsible;
+    this.collapsible = collapsible;
 
-    this._listItemNode.classList.toggle('always-parent', !collapsible);
+    this.listItemNode.classList.toggle('always-parent', !collapsible);
     if (!collapsible) {
       this.expand();
     }
   }
 
   get hidden(): boolean {
-    return this._hidden;
+    return this.hiddenInternal;
   }
 
   set hidden(x: boolean) {
-    if (this._hidden === x) {
+    if (this.hiddenInternal === x) {
       return;
     }
 
-    this._hidden = x;
+    this.hiddenInternal = x;
 
-    this._listItemNode.classList.toggle('hidden', x);
-    this._childrenListNode.classList.toggle('hidden', x);
+    this.listItemNode.classList.toggle('hidden', x);
+    this.childrenListNode.classList.toggle('hidden', x);
 
     if (x && this.treeOutline && this.treeOutline.selectedTreeElement &&
         this.treeOutline.selectedTreeElement.hasAncestorOrSelf(this)) {
@@ -869,32 +867,32 @@ export class TreeElement {
   }
 
   invalidateChildren(): void {
-    if (this._children) {
+    if (this.childrenInternal) {
       this.removeChildren();
-      this._children = null;
+      this.childrenInternal = null;
     }
   }
 
-  _ensureSelection(): void {
-    if (!this.treeOutline || !this.treeOutline._renderSelection) {
+  private ensureSelection(): void {
+    if (!this.treeOutline || !this.treeOutline.renderSelection) {
       return;
     }
-    if (!this._selectionElement) {
-      this._selectionElement = document.createElement('div');
-      this._selectionElement.classList.add('selection');
-      this._selectionElement.classList.add('fill');
+    if (!this.selectionElementInternal) {
+      this.selectionElementInternal = document.createElement('div');
+      this.selectionElementInternal.classList.add('selection');
+      this.selectionElementInternal.classList.add('fill');
     }
-    this._listItemNode.insertBefore(this._selectionElement, this.listItemElement.firstChild);
+    this.listItemNode.insertBefore(this.selectionElementInternal, this.listItemElement.firstChild);
   }
 
-  _treeElementToggled(event: MouseEvent): void {
+  private treeElementToggled(event: MouseEvent): void {
     const element = (event.currentTarget as Node | null);
     if (!element || treeElementBylistItemNode.get(element) !== this || element.hasSelection()) {
       return;
     }
 
     console.assert(Boolean(this.treeOutline));
-    const showSelectionOnKeyboardFocus = this.treeOutline ? this.treeOutline._showSelectionOnKeyboardFocus : false;
+    const showSelectionOnKeyboardFocus = this.treeOutline ? this.treeOutline.showSelectionOnKeyboardFocus : false;
     const toggleOnClick = this.toggleOnClick && (showSelectionOnKeyboardFocus || !this.selectable);
     const isInTriangle = this.isEventWithinDisclosureTriangle(event);
     if (!toggleOnClick && !isInTriangle) {
@@ -917,7 +915,7 @@ export class TreeElement {
     event.consume();
   }
 
-  _handleMouseDown(event: MouseEvent): void {
+  private handleMouseDown(event: MouseEvent): void {
     const element = (event.currentTarget as Node | null);
     if (!element) {
       return;
@@ -936,7 +934,7 @@ export class TreeElement {
     this.selectOnMouseDown(event);
   }
 
-  _handleDoubleClick(event: Event): void {
+  private handleDoubleClick(event: Event): void {
     const element = (event.currentTarget as Node | null);
     if (!element || treeElementBylistItemNode.get(element) !== this) {
       return;
@@ -946,23 +944,23 @@ export class TreeElement {
     if (handled) {
       return;
     }
-    if (this._expandable && !this.expanded) {
+    if (this.expandable && !this.expanded) {
       this.expand();
     }
   }
 
-  _detach(): void {
-    this._listItemNode.remove();
-    this._childrenListNode.remove();
+  private detach(): void {
+    this.listItemNode.remove();
+    this.childrenListNode.remove();
   }
 
   collapse(): void {
-    if (!this.expanded || !this._collapsible) {
+    if (!this.expanded || !this.collapsible) {
       return;
     }
-    this._listItemNode.classList.remove('expanded');
-    this._childrenListNode.classList.remove('expanded');
-    ARIAUtils.setExpanded(this._listItemNode, false);
+    this.listItemNode.classList.remove('expanded');
+    this.childrenListNode.classList.remove('expanded');
+    ARIAUtils.setExpanded(this.listItemNode, false);
     this.expanded = false;
     this.oncollapse();
     if (this.treeOutline) {
@@ -986,16 +984,16 @@ export class TreeElement {
   }
 
   collapseChildren(): void {
-    if (!this._children) {
+    if (!this.childrenInternal) {
       return;
     }
-    for (const child of this._children) {
+    for (const child of this.childrenInternal) {
       child.collapseRecursively();
     }
   }
 
   expand(): void {
-    if (!this._expandable || (this.expanded && this._children)) {
+    if (!this.expandable || (this.expanded && this.childrenInternal)) {
       return;
     }
 
@@ -1005,10 +1003,10 @@ export class TreeElement {
 
     this.expanded = true;
 
-    this._populateIfNeeded();
-    this._listItemNode.classList.add('expanded');
-    this._childrenListNode.classList.add('expanded');
-    ARIAUtils.setExpanded(this._listItemNode, true);
+    this.populateIfNeeded();
+    this.listItemNode.classList.add('expanded');
+    this.childrenListNode.classList.add('expanded');
+    ARIAUtils.setExpanded(this.listItemNode, true);
 
     if (this.treeOutline) {
       this.onexpand();
@@ -1029,7 +1027,7 @@ export class TreeElement {
     }
 
     while (item) {
-      await item._populateIfNeeded();
+      await item.populateIfNeeded();
 
       if (depth < maxDepth) {
         item.expand();
@@ -1041,7 +1039,7 @@ export class TreeElement {
   }
 
   collapseOrAscend(altKey: boolean): boolean {
-    if (this.expanded && this._collapsible) {
+    if (this.expanded && this.collapsible) {
       if (altKey) {
         this.collapseRecursively();
       } else {
@@ -1072,7 +1070,7 @@ export class TreeElement {
   }
 
   descendOrExpand(altKey: boolean): boolean {
-    if (!this._expandable) {
+    if (!this.expandable) {
       return false;
     }
 
@@ -1107,7 +1105,7 @@ export class TreeElement {
     }
 
     if (this.treeOutline) {
-      this.treeOutline._deferredScrollIntoView(this, Boolean(center));
+      this.treeOutline.deferredScrollIntoView(this, Boolean(center));
     }
   }
 
@@ -1128,17 +1126,17 @@ export class TreeElement {
       event.consume(true);
     }
 
-    if (this._listItemNode.draggable && this._selectionElement && this.treeOutline) {
+    if (this.listItemNode.draggable && this.selectionElementInternal && this.treeOutline) {
       const marginLeft = this.treeOutline.element.getBoundingClientRect().left -
-          this._listItemNode.getBoundingClientRect().left - this.treeOutline.element.scrollLeft;
+          this.listItemNode.getBoundingClientRect().left - this.treeOutline.element.scrollLeft;
       // By default the left margin extends far off screen. This is not a problem except when dragging an element.
       // Setting the margin once here should be fine, because we believe the left margin should never change.
-      this._selectionElement.style.setProperty('margin-left', marginLeft + 'px');
+      this.selectionElementInternal.style.setProperty('margin-left', marginLeft + 'px');
     }
   }
 
   select(omitFocus?: boolean, selectedByUser?: boolean): boolean {
-    omitFocus = omitFocus || this._disableSelectFocus;
+    omitFocus = omitFocus || this.disableSelectFocus;
     if (!this.treeOutline || !this.selectable || this.selected) {
       if (!omitFocus) {
         this.listItemElement.focus();
@@ -1149,7 +1147,7 @@ export class TreeElement {
     const lastSelected = this.treeOutline.selectedTreeElement;
     this.treeOutline.selectedTreeElement = null;
 
-    if (this.treeOutline._rootElement === this) {
+    if (this.treeOutline.rootElementInternal === this) {
       if (lastSelected) {
         lastSelected.deselect();
       }
@@ -1167,8 +1165,8 @@ export class TreeElement {
       this.listItemElement.focus();
     }
 
-    this._listItemNode.classList.add('selected');
-    ARIAUtils.setSelected(this._listItemNode, true);
+    this.listItemNode.classList.add('selected');
+    ARIAUtils.setSelected(this.listItemNode, true);
     this.treeOutline.dispatchEventToListeners(Events.ElementSelected, this);
     if (lastSelected) {
       lastSelected.deselect();
@@ -1176,33 +1174,33 @@ export class TreeElement {
     return this.onselect(selectedByUser);
   }
 
-  _setFocusable(focusable: boolean): void {
+  setFocusable(focusable: boolean): void {
     if (focusable) {
-      this._listItemNode.setAttribute('tabIndex', (this.treeOutline && this.treeOutline._preventTabOrder) ? '-1' : '0');
-      this._listItemNode.addEventListener('focus', this._boundOnFocus, false);
-      this._listItemNode.addEventListener('blur', this._boundOnBlur, false);
+      this.listItemNode.setAttribute('tabIndex', (this.treeOutline && this.treeOutline.preventTabOrder) ? '-1' : '0');
+      this.listItemNode.addEventListener('focus', this.boundOnFocus, false);
+      this.listItemNode.addEventListener('blur', this.boundOnBlur, false);
     } else {
-      this._listItemNode.removeAttribute('tabIndex');
-      this._listItemNode.removeEventListener('focus', this._boundOnFocus, false);
-      this._listItemNode.removeEventListener('blur', this._boundOnBlur, false);
+      this.listItemNode.removeAttribute('tabIndex');
+      this.listItemNode.removeEventListener('focus', this.boundOnFocus, false);
+      this.listItemNode.removeEventListener('blur', this.boundOnBlur, false);
     }
   }
 
-  _onFocus(): void {
-    if (!this.treeOutline || this.treeOutline._useLightSelectionColor) {
+  private onFocus(): void {
+    if (!this.treeOutline || this.treeOutline.useLightSelectionColor()) {
       return;
     }
     if (!this.treeOutline.contentElement.classList.contains('hide-selection-when-blurred')) {
-      this._listItemNode.classList.add('force-white-icons');
+      this.listItemNode.classList.add('force-white-icons');
     }
   }
 
-  _onBlur(): void {
-    if (!this.treeOutline || this.treeOutline._useLightSelectionColor) {
+  private onBlur(): void {
+    if (!this.treeOutline || this.treeOutline.useLightSelectionColor()) {
       return;
     }
     if (!this.treeOutline.contentElement.classList.contains('hide-selection-when-blurred')) {
-      this._listItemNode.classList.remove('force-white-icons');
+      this.listItemNode.classList.remove('force-white-icons');
     }
   }
 
@@ -1212,11 +1210,11 @@ export class TreeElement {
   }
 
   deselect(): void {
-    const hadFocus = this._listItemNode.hasFocus();
+    const hadFocus = this.listItemNode.hasFocus();
     this.selected = false;
-    this._listItemNode.classList.remove('selected');
-    ARIAUtils.clearSelected(this._listItemNode);
-    this._setFocusable(false);
+    this.listItemNode.classList.remove('selected');
+    ARIAUtils.clearSelected(this.listItemNode);
+    this.setFocusable(false);
 
     if (this.treeOutline && this.treeOutline.selectedTreeElement === this) {
       this.treeOutline.selectedTreeElement = null;
@@ -1227,9 +1225,9 @@ export class TreeElement {
     }
   }
 
-  async _populateIfNeeded(): Promise<void> {
-    if (this.treeOutline && this._expandable && !this._children) {
-      this._children = [];
+  private async populateIfNeeded(): Promise<void> {
+    if (this.treeOutline && this.expandable && !this.childrenInternal) {
+      this.childrenInternal = [];
       await this.onpopulate();
     }
   }
@@ -1277,7 +1275,7 @@ export class TreeElement {
     depthChange: number,
   }): TreeElement|null {
     if (!dontPopulate) {
-      this._populateIfNeeded();
+      this.populateIfNeeded();
     }
 
     if (info) {
@@ -1323,14 +1321,14 @@ export class TreeElement {
     let element: (TreeElement|null) =
         skipUnrevealed ? (this.revealed() ? this.previousSibling : null) : this.previousSibling;
     if (!dontPopulate && element) {
-      element._populateIfNeeded();
+      element.populateIfNeeded();
     }
 
     while (element &&
            (skipUnrevealed ? (element.revealed() && element.expanded ? element.lastChild() : null) :
                              element.lastChild())) {
       if (!dontPopulate) {
-        element._populateIfNeeded();
+        element.populateIfNeeded();
       }
       element =
           (skipUnrevealed ? (element.revealed() && element.expanded ? element.lastChild() : null) :
@@ -1351,14 +1349,14 @@ export class TreeElement {
   isEventWithinDisclosureTriangle(event: MouseEvent): boolean {
     const arrowToggleWidth = 10;
     // FIXME: We should not use getComputedStyle(). For that we need to get rid of using ::before for disclosure triangle. (http://webk.it/74446)
-    const paddingLeftValue = window.getComputedStyle(this._listItemNode).paddingLeft;
+    const paddingLeftValue = window.getComputedStyle(this.listItemNode).paddingLeft;
     console.assert(paddingLeftValue.endsWith('px'));
     const computedLeftPadding = parseFloat(paddingLeftValue);
-    const left = this._listItemNode.totalOffsetLeft() + computedLeftPadding;
-    return event.pageX >= left && event.pageX <= left + arrowToggleWidth && this._expandable;
+    const left = this.listItemNode.totalOffsetLeft() + computedLeftPadding;
+    return event.pageX >= left && event.pageX <= left + arrowToggleWidth && this.expandable;
   }
 
   setDisableSelectFocus(toggle: boolean): void {
-    this._disableSelectFocus = toggle;
+    this.disableSelectFocus = toggle;
   }
 }

@@ -2,110 +2,108 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 
 export class ListModel<T> extends Common.ObjectWrapper.ObjectWrapper implements Iterable<T> {
-  _items: T[];
+  private items: T[];
   constructor(items?: T[]) {
     super();
-    this._items = items || [];
+    this.items = items || [];
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [Symbol.iterator](): Iterator<T, any, undefined> {
-    return this._items[Symbol.iterator]();
+    return this.items[Symbol.iterator]();
   }
 
   get length(): number {
-    return this._items.length;
+    return this.items.length;
   }
 
   at(index: number): T {
-    return this._items[index];
+    return this.items[index];
   }
 
   every(callback: (arg0: T) => boolean): boolean {
-    return this._items.every(callback);
+    return this.items.every(callback);
   }
 
   filter(callback: (arg0: T) => boolean): T[] {
-    return this._items.filter(callback);
+    return this.items.filter(callback);
   }
 
   find(callback: (arg0: T) => boolean): T|undefined {
-    return this._items.find(callback);
+    return this.items.find(callback);
   }
 
   findIndex(callback: (arg0: T) => boolean): number {
-    return this._items.findIndex(callback);
+    return this.items.findIndex(callback);
   }
 
   indexOf(value: T, fromIndex?: number): number {
-    return this._items.indexOf(value, fromIndex);
+    return this.items.indexOf(value, fromIndex);
   }
 
   insert(index: number, value: T): void {
-    this._items.splice(index, 0, value);
-    this._replaced(index, [], 1);
+    this.items.splice(index, 0, value);
+    this.replaced(index, [], 1);
   }
 
   insertWithComparator(value: T, comparator: (arg0: T, arg1: T) => number): void {
-    this.insert(Platform.ArrayUtilities.lowerBound(this._items, value, comparator), value);
+    this.insert(Platform.ArrayUtilities.lowerBound(this.items, value, comparator), value);
   }
 
   join(separator?: string): string {
-    return this._items.join(separator);
+    return this.items.join(separator);
   }
 
   remove(index: number): T {
-    const result = this._items[index];
-    this._items.splice(index, 1);
-    this._replaced(index, [result], 0);
+    const result = this.items[index];
+    this.items.splice(index, 1);
+    this.replaced(index, [result], 0);
     return result;
   }
 
   replace(index: number, value: T, keepSelectedIndex?: boolean): T {
-    const oldValue = this._items[index];
-    this._items[index] = value;
-    this._replaced(index, [oldValue], 1, keepSelectedIndex);
+    const oldValue = this.items[index];
+    this.items[index] = value;
+    this.replaced(index, [oldValue], 1, keepSelectedIndex);
     return oldValue;
   }
 
   replaceRange(from: number, to: number, items: T[]): T[] {
     let removed;
     if (items.length < 10000) {
-      removed = this._items.splice(from, to - from, ...items);
+      removed = this.items.splice(from, to - from, ...items);
     } else {
-      removed = this._items.slice(from, to);
+      removed = this.items.slice(from, to);
       // Splice may fail with too many arguments.
-      const before = this._items.slice(0, from);
-      const after = this._items.slice(to);
-      this._items = [...before, ...items, ...after];
+      const before = this.items.slice(0, from);
+      const after = this.items.slice(to);
+      this.items = [...before, ...items, ...after];
     }
-    this._replaced(from, removed, items.length);
+    this.replaced(from, removed, items.length);
     return removed;
   }
 
   replaceAll(items: T[]): T[] {
-    const oldItems = this._items.slice();
-    this._items = items;
-    this._replaced(0, oldItems, items.length);
+    const oldItems = this.items.slice();
+    this.items = items;
+    this.replaced(0, oldItems, items.length);
     return oldItems;
   }
 
   slice(from?: number, to?: number): T[] {
-    return this._items.slice(from, to);
+    return this.items.slice(from, to);
   }
 
   some(callback: (arg0: T) => boolean): boolean {
-    return this._items.some(callback);
+    return this.items.some(callback);
   }
 
-  _replaced(index: number, removed: T[], inserted: number, keepSelectedIndex?: boolean): void {
+  private replaced(index: number, removed: T[], inserted: number, keepSelectedIndex?: boolean): void {
     this.dispatchEventToListeners(Events.ItemsReplaced, {index, removed, inserted, keepSelectedIndex});
   }
 }

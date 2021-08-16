@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
@@ -67,115 +65,115 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/SoftContextMenu.ts', UIStrin
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SoftContextMenu {
-  _items: SoftContextMenuDescriptor[];
-  _itemSelectedCallback: (arg0: number) => void;
-  _parentMenu: SoftContextMenu|undefined;
-  _highlightedMenuItemElement: HTMLElement|null;
+  private items: SoftContextMenuDescriptor[];
+  private itemSelectedCallback: (arg0: number) => void;
+  private parentMenu: SoftContextMenu|undefined;
+  private highlightedMenuItemElement: HTMLElement|null;
   detailsForElementMap: WeakMap<HTMLElement, ElementMenuDetails>;
-  _document?: Document;
-  _glassPane?: GlassPane;
-  _contextMenuElement?: HTMLElement;
-  _focusRestorer?: ElementFocusRestorer;
-  _hideOnUserGesture?: ((event: Event) => void);
-  _activeSubMenuElement?: HTMLElement;
-  _subMenu?: SoftContextMenu;
+  private document?: Document;
+  private glassPane?: GlassPane;
+  private contextMenuElement?: HTMLElement;
+  private focusRestorer?: ElementFocusRestorer;
+  private hideOnUserGesture?: ((event: Event) => void);
+  private activeSubMenuElement?: HTMLElement;
+  private subMenu?: SoftContextMenu;
 
   constructor(
       items: SoftContextMenuDescriptor[], itemSelectedCallback: (arg0: number) => void, parentMenu?: SoftContextMenu) {
-    this._items = items;
-    this._itemSelectedCallback = itemSelectedCallback;
-    this._parentMenu = parentMenu;
-    this._highlightedMenuItemElement = null;
+    this.items = items;
+    this.itemSelectedCallback = itemSelectedCallback;
+    this.parentMenu = parentMenu;
+    this.highlightedMenuItemElement = null;
 
     this.detailsForElementMap = new WeakMap();
   }
 
   show(document: Document, anchorBox: AnchorBox): void {
-    if (!this._items.length) {
+    if (!this.items.length) {
       return;
     }
 
-    this._document = document;
+    this.document = document;
 
-    this._glassPane = new GlassPane();
-    this._glassPane.setPointerEventsBehavior(
-        this._parentMenu ? PointerEventsBehavior.PierceGlassPane : PointerEventsBehavior.BlockedByGlassPane);
-    this._glassPane.registerRequiredCSS('ui/legacy/softContextMenu.css');
-    this._glassPane.setContentAnchorBox(anchorBox);
-    this._glassPane.setSizeBehavior(SizeBehavior.MeasureContent);
-    this._glassPane.setMarginBehavior(MarginBehavior.NoMargin);
-    this._glassPane.setAnchorBehavior(this._parentMenu ? AnchorBehavior.PreferRight : AnchorBehavior.PreferBottom);
+    this.glassPane = new GlassPane();
+    this.glassPane.setPointerEventsBehavior(
+        this.parentMenu ? PointerEventsBehavior.PierceGlassPane : PointerEventsBehavior.BlockedByGlassPane);
+    this.glassPane.registerRequiredCSS('ui/legacy/softContextMenu.css');
+    this.glassPane.setContentAnchorBox(anchorBox);
+    this.glassPane.setSizeBehavior(SizeBehavior.MeasureContent);
+    this.glassPane.setMarginBehavior(MarginBehavior.NoMargin);
+    this.glassPane.setAnchorBehavior(this.parentMenu ? AnchorBehavior.PreferRight : AnchorBehavior.PreferBottom);
 
-    this._contextMenuElement = this._glassPane.contentElement.createChild('div', 'soft-context-menu');
-    this._contextMenuElement.tabIndex = -1;
-    ARIAUtils.markAsMenu(this._contextMenuElement);
-    this._contextMenuElement.addEventListener('mouseup', e => e.consume(), false);
-    this._contextMenuElement.addEventListener('keydown', this._menuKeyDown.bind(this), false);
+    this.contextMenuElement = this.glassPane.contentElement.createChild('div', 'soft-context-menu');
+    this.contextMenuElement.tabIndex = -1;
+    ARIAUtils.markAsMenu(this.contextMenuElement);
+    this.contextMenuElement.addEventListener('mouseup', e => e.consume(), false);
+    this.contextMenuElement.addEventListener('keydown', this.menuKeyDown.bind(this), false);
 
-    for (let i = 0; i < this._items.length; ++i) {
-      this._contextMenuElement.appendChild(this._createMenuItem(this._items[i]));
+    for (let i = 0; i < this.items.length; ++i) {
+      this.contextMenuElement.appendChild(this.createMenuItem(this.items[i]));
     }
 
-    this._glassPane.show(document);
-    this._focusRestorer = new ElementFocusRestorer(this._contextMenuElement);
+    this.glassPane.show(document);
+    this.focusRestorer = new ElementFocusRestorer(this.contextMenuElement);
 
-    if (!this._parentMenu) {
-      this._hideOnUserGesture = (event: Event): void => {
+    if (!this.parentMenu) {
+      this.hideOnUserGesture = (event: Event): void => {
         // If a user clicks on any submenu, prevent the menu system from closing.
-        let subMenu: (SoftContextMenu|undefined) = this._subMenu;
+        let subMenu: (SoftContextMenu|undefined) = this.subMenu;
         while (subMenu) {
-          if (subMenu._contextMenuElement === event.composedPath()[0]) {
+          if (subMenu.contextMenuElement === event.composedPath()[0]) {
             return;
           }
-          subMenu = subMenu._subMenu;
+          subMenu = subMenu.subMenu;
         }
 
         this.discard();
         event.consume(true);
       };
-      this._document.body.addEventListener('mousedown', this._hideOnUserGesture, false);
-      if (this._document.defaultView) {
-        this._document.defaultView.addEventListener('resize', this._hideOnUserGesture, false);
+      this.document.body.addEventListener('mousedown', this.hideOnUserGesture, false);
+      if (this.document.defaultView) {
+        this.document.defaultView.addEventListener('resize', this.hideOnUserGesture, false);
       }
     }
   }
 
   discard(): void {
-    if (this._subMenu) {
-      this._subMenu.discard();
+    if (this.subMenu) {
+      this.subMenu.discard();
     }
-    if (this._focusRestorer) {
-      this._focusRestorer.restore();
+    if (this.focusRestorer) {
+      this.focusRestorer.restore();
     }
-    if (this._glassPane) {
-      this._glassPane.hide();
-      delete this._glassPane;
-      if (this._hideOnUserGesture) {
-        if (this._document) {
-          this._document.body.removeEventListener('mousedown', this._hideOnUserGesture, false);
-          if (this._document.defaultView) {
-            this._document.defaultView.removeEventListener('resize', this._hideOnUserGesture, false);
+    if (this.glassPane) {
+      this.glassPane.hide();
+      delete this.glassPane;
+      if (this.hideOnUserGesture) {
+        if (this.document) {
+          this.document.body.removeEventListener('mousedown', this.hideOnUserGesture, false);
+          if (this.document.defaultView) {
+            this.document.defaultView.removeEventListener('resize', this.hideOnUserGesture, false);
           }
         }
-        delete this._hideOnUserGesture;
+        delete this.hideOnUserGesture;
       }
     }
-    if (this._parentMenu) {
-      delete this._parentMenu._subMenu;
-      if (this._parentMenu._activeSubMenuElement) {
-        ARIAUtils.setExpanded(this._parentMenu._activeSubMenuElement, false);
-        delete this._parentMenu._activeSubMenuElement;
+    if (this.parentMenu) {
+      delete this.parentMenu.subMenu;
+      if (this.parentMenu.activeSubMenuElement) {
+        ARIAUtils.setExpanded(this.parentMenu.activeSubMenuElement, false);
+        delete this.parentMenu.activeSubMenuElement;
       }
     }
   }
 
-  _createMenuItem(item: SoftContextMenuDescriptor): HTMLElement {
+  private createMenuItem(item: SoftContextMenuDescriptor): HTMLElement {
     if (item.type === 'separator') {
-      return this._createSeparator();
+      return this.createSeparator();
     }
 
     if (item.type === 'subMenu') {
-      return this._createSubMenu(item);
+      return this.createSubMenu(item);
     }
 
     const menuItemElement = document.createElement('div');
@@ -209,12 +207,12 @@ export class SoftContextMenu {
     createTextChild(menuItemElement, item.label || '');
     menuItemElement.createChild('span', 'soft-context-menu-shortcut').textContent = item.shortcut || '';
 
-    menuItemElement.addEventListener('mousedown', this._menuItemMouseDown.bind(this), false);
-    menuItemElement.addEventListener('mouseup', this._menuItemMouseUp.bind(this), false);
+    menuItemElement.addEventListener('mousedown', this.menuItemMouseDown.bind(this), false);
+    menuItemElement.addEventListener('mouseup', this.menuItemMouseUp.bind(this), false);
 
     // Manually manage hover highlight since :hover does not work in case of click-and-hold menu invocation.
-    menuItemElement.addEventListener('mouseover', this._menuItemMouseOver.bind(this), false);
-    menuItemElement.addEventListener('mouseleave', (this._menuItemMouseLeave.bind(this) as EventListener), false);
+    menuItemElement.addEventListener('mouseover', this.menuItemMouseOver.bind(this), false);
+    menuItemElement.addEventListener('mouseleave', (this.menuItemMouseLeave.bind(this) as EventListener), false);
 
     detailsForElement.actionId = item.id;
 
@@ -236,7 +234,7 @@ export class SoftContextMenu {
     return menuItemElement;
   }
 
-  _createSubMenu(item: SoftContextMenuDescriptor): HTMLElement {
+  private createSubMenu(item: SoftContextMenuDescriptor): HTMLElement {
     const menuItemElement = document.createElement('div');
     menuItemElement.classList.add('soft-context-menu-item');
     menuItemElement.tabIndex = -1;
@@ -268,17 +266,17 @@ export class SoftContextMenu {
       menuItemElement.appendChild(subMenuArrowElement);
     }
 
-    menuItemElement.addEventListener('mousedown', this._menuItemMouseDown.bind(this), false);
-    menuItemElement.addEventListener('mouseup', this._menuItemMouseUp.bind(this), false);
+    menuItemElement.addEventListener('mousedown', this.menuItemMouseDown.bind(this), false);
+    menuItemElement.addEventListener('mouseup', this.menuItemMouseUp.bind(this), false);
 
     // Manually manage hover highlight since :hover does not work in case of click-and-hold menu invocation.
-    menuItemElement.addEventListener('mouseover', this._menuItemMouseOver.bind(this), false);
-    menuItemElement.addEventListener('mouseleave', (this._menuItemMouseLeave.bind(this) as EventListener), false);
+    menuItemElement.addEventListener('mouseover', this.menuItemMouseOver.bind(this), false);
+    menuItemElement.addEventListener('mouseleave', (this.menuItemMouseLeave.bind(this) as EventListener), false);
 
     return menuItemElement;
   }
 
-  _createSeparator(): HTMLElement {
+  private createSeparator(): HTMLElement {
     const separatorElement = document.createElement('div');
     separatorElement.classList.add('soft-context-menu-separator');
     this.detailsForElementMap.set(separatorElement, {
@@ -292,43 +290,43 @@ export class SoftContextMenu {
     return separatorElement;
   }
 
-  _menuItemMouseDown(event: Event): void {
+  private menuItemMouseDown(event: Event): void {
     // Do not let separator's mouse down hit menu's handler - we need to receive mouse up!
     event.consume(true);
   }
 
-  _menuItemMouseUp(event: Event): void {
-    this._triggerAction((event.target as HTMLElement), event);
+  private menuItemMouseUp(event: Event): void {
+    this.triggerAction((event.target as HTMLElement), event);
     event.consume();
   }
 
-  _root(): SoftContextMenu {
+  private root(): SoftContextMenu {
     let root: SoftContextMenu = (this as SoftContextMenu);
-    while (root._parentMenu) {
-      root = root._parentMenu;
+    while (root.parentMenu) {
+      root = root.parentMenu;
     }
     return root;
   }
 
-  _triggerAction(menuItemElement: HTMLElement, event: Event): void {
+  private triggerAction(menuItemElement: HTMLElement, event: Event): void {
     const detailsForElement = this.detailsForElementMap.get(menuItemElement);
     if (detailsForElement) {
       if (!detailsForElement.subItems) {
-        this._root().discard();
+        this.root().discard();
         event.consume(true);
         if (typeof detailsForElement.actionId !== 'undefined') {
-          this._itemSelectedCallback(detailsForElement.actionId);
+          this.itemSelectedCallback(detailsForElement.actionId);
           delete detailsForElement.actionId;
         }
         return;
       }
     }
 
-    this._showSubMenu(menuItemElement);
+    this.showSubMenu(menuItemElement);
     event.consume();
   }
 
-  _showSubMenu(menuItemElement: HTMLElement): void {
+  private showSubMenu(menuItemElement: HTMLElement): void {
     const detailsForElement = this.detailsForElementMap.get(menuItemElement);
     if (!detailsForElement) {
       return;
@@ -337,81 +335,81 @@ export class SoftContextMenu {
       window.clearTimeout(detailsForElement.subMenuTimer);
       delete detailsForElement.subMenuTimer;
     }
-    if (this._subMenu || !this._document) {
+    if (this.subMenu || !this.document) {
       return;
     }
 
-    this._activeSubMenuElement = menuItemElement;
+    this.activeSubMenuElement = menuItemElement;
     ARIAUtils.setExpanded(menuItemElement, true);
     if (!detailsForElement.subItems) {
       return;
     }
-    this._subMenu = new SoftContextMenu(detailsForElement.subItems, this._itemSelectedCallback, this);
+    this.subMenu = new SoftContextMenu(detailsForElement.subItems, this.itemSelectedCallback, this);
     const anchorBox = menuItemElement.boxInWindow();
     // Adjust for padding.
     anchorBox.y -= 5;
     anchorBox.x += 3;
     anchorBox.width -= 6;
     anchorBox.height += 10;
-    this._subMenu.show(this._document, anchorBox);
+    this.subMenu.show(this.document, anchorBox);
   }
 
-  _menuItemMouseOver(event: Event): void {
-    this._highlightMenuItem((event.target as HTMLElement), true);
+  private menuItemMouseOver(event: Event): void {
+    this.highlightMenuItem((event.target as HTMLElement), true);
   }
 
-  _menuItemMouseLeave(event: MouseEvent): void {
-    if (!this._subMenu || !event.relatedTarget) {
-      this._highlightMenuItem(null, true);
+  private menuItemMouseLeave(event: MouseEvent): void {
+    if (!this.subMenu || !event.relatedTarget) {
+      this.highlightMenuItem(null, true);
       return;
     }
 
     const relatedTarget = event.relatedTarget;
-    if (relatedTarget === this._contextMenuElement) {
-      this._highlightMenuItem(null, true);
+    if (relatedTarget === this.contextMenuElement) {
+      this.highlightMenuItem(null, true);
     }
   }
 
-  _highlightMenuItem(menuItemElement: HTMLElement|null, scheduleSubMenu: boolean): void {
-    if (this._highlightedMenuItemElement === menuItemElement) {
+  private highlightMenuItem(menuItemElement: HTMLElement|null, scheduleSubMenu: boolean): void {
+    if (this.highlightedMenuItemElement === menuItemElement) {
       return;
     }
-    if (this._subMenu) {
-      this._subMenu.discard();
+    if (this.subMenu) {
+      this.subMenu.discard();
     }
-    if (this._highlightedMenuItemElement) {
-      const detailsForElement = this.detailsForElementMap.get(this._highlightedMenuItemElement);
-      this._highlightedMenuItemElement.classList.remove('force-white-icons');
-      this._highlightedMenuItemElement.classList.remove('soft-context-menu-item-mouse-over');
+    if (this.highlightedMenuItemElement) {
+      const detailsForElement = this.detailsForElementMap.get(this.highlightedMenuItemElement);
+      this.highlightedMenuItemElement.classList.remove('force-white-icons');
+      this.highlightedMenuItemElement.classList.remove('soft-context-menu-item-mouse-over');
       if (detailsForElement && detailsForElement.subItems && detailsForElement.subMenuTimer) {
         window.clearTimeout(detailsForElement.subMenuTimer);
         delete detailsForElement.subMenuTimer;
       }
     }
 
-    this._highlightedMenuItemElement = menuItemElement;
-    if (this._highlightedMenuItemElement) {
+    this.highlightedMenuItemElement = menuItemElement;
+    if (this.highlightedMenuItemElement) {
       if (ThemeSupport.ThemeSupport.instance().hasTheme() || Host.Platform.isMac()) {
-        this._highlightedMenuItemElement.classList.add('force-white-icons');
+        this.highlightedMenuItemElement.classList.add('force-white-icons');
       }
-      this._highlightedMenuItemElement.classList.add('soft-context-menu-item-mouse-over');
-      const detailsForElement = this.detailsForElementMap.get(this._highlightedMenuItemElement);
+      this.highlightedMenuItemElement.classList.add('soft-context-menu-item-mouse-over');
+      const detailsForElement = this.detailsForElementMap.get(this.highlightedMenuItemElement);
       if (detailsForElement && detailsForElement.customElement) {
         detailsForElement.customElement.focus();
       } else {
-        this._highlightedMenuItemElement.focus();
+        this.highlightedMenuItemElement.focus();
       }
       if (scheduleSubMenu && detailsForElement && detailsForElement.subItems && !detailsForElement.subMenuTimer) {
         detailsForElement.subMenuTimer =
-            window.setTimeout(this._showSubMenu.bind(this, this._highlightedMenuItemElement), 150);
+            window.setTimeout(this.showSubMenu.bind(this, this.highlightedMenuItemElement), 150);
       }
     }
   }
 
-  _highlightPrevious(): void {
-    let menuItemElement: (ChildNode|null) = this._highlightedMenuItemElement ?
-        this._highlightedMenuItemElement.previousSibling :
-        this._contextMenuElement ? this._contextMenuElement.lastChild : null;
+  private highlightPrevious(): void {
+    let menuItemElement: (ChildNode|null) = this.highlightedMenuItemElement ?
+        this.highlightedMenuItemElement.previousSibling :
+        this.contextMenuElement ? this.contextMenuElement.lastChild : null;
     let menuItemDetails: (ElementMenuDetails|undefined) =
         menuItemElement ? this.detailsForElementMap.get((menuItemElement as HTMLElement)) : undefined;
     while (menuItemElement && menuItemDetails &&
@@ -421,14 +419,14 @@ export class SoftContextMenu {
       menuItemDetails = menuItemElement ? this.detailsForElementMap.get((menuItemElement as HTMLElement)) : undefined;
     }
     if (menuItemElement) {
-      this._highlightMenuItem((menuItemElement as HTMLElement), false);
+      this.highlightMenuItem((menuItemElement as HTMLElement), false);
     }
   }
 
-  _highlightNext(): void {
-    let menuItemElement: (ChildNode|null) = this._highlightedMenuItemElement ?
-        this._highlightedMenuItemElement.nextSibling :
-        this._contextMenuElement ? this._contextMenuElement.firstChild : null;
+  private highlightNext(): void {
+    let menuItemElement: (ChildNode|null) = this.highlightedMenuItemElement ?
+        this.highlightedMenuItemElement.nextSibling :
+        this.contextMenuElement ? this.contextMenuElement.firstChild : null;
     let menuItemDetails: (ElementMenuDetails|undefined) =
         menuItemElement ? this.detailsForElementMap.get((menuItemElement as HTMLElement)) : undefined;
     while (menuItemElement &&
@@ -438,53 +436,53 @@ export class SoftContextMenu {
       menuItemDetails = menuItemElement ? this.detailsForElementMap.get((menuItemElement as HTMLElement)) : undefined;
     }
     if (menuItemElement) {
-      this._highlightMenuItem((menuItemElement as HTMLElement), false);
+      this.highlightMenuItem((menuItemElement as HTMLElement), false);
     }
   }
 
-  _menuKeyDown(event: Event): void {
+  private menuKeyDown(event: Event): void {
     const keyboardEvent = (event as KeyboardEvent);
     function onEnterOrSpace(this: SoftContextMenu): void {
-      if (!this._highlightedMenuItemElement) {
+      if (!this.highlightedMenuItemElement) {
         return;
       }
-      const detailsForElement = this.detailsForElementMap.get(this._highlightedMenuItemElement);
+      const detailsForElement = this.detailsForElementMap.get(this.highlightedMenuItemElement);
       if (!detailsForElement || detailsForElement.customElement) {
         // The custom element will handle the event, so return early and do not consume it.
         return;
       }
-      this._triggerAction(this._highlightedMenuItemElement, keyboardEvent);
-      if (detailsForElement.subItems && this._subMenu) {
-        this._subMenu._highlightNext();
+      this.triggerAction(this.highlightedMenuItemElement, keyboardEvent);
+      if (detailsForElement.subItems && this.subMenu) {
+        this.subMenu.highlightNext();
       }
       keyboardEvent.consume(true);
     }
 
     switch (keyboardEvent.key) {
       case 'ArrowUp':
-        this._highlightPrevious();
+        this.highlightPrevious();
         keyboardEvent.consume(true);
         break;
       case 'ArrowDown':
-        this._highlightNext();
+        this.highlightNext();
         keyboardEvent.consume(true);
         break;
       case 'ArrowLeft':
-        if (this._parentMenu) {
-          this._highlightMenuItem(null, false);
+        if (this.parentMenu) {
+          this.highlightMenuItem(null, false);
           this.discard();
         }
         keyboardEvent.consume(true);
         break;
       case 'ArrowRight': {
-        if (!this._highlightedMenuItemElement) {
+        if (!this.highlightedMenuItemElement) {
           break;
         }
-        const detailsForElement = this.detailsForElementMap.get(this._highlightedMenuItemElement);
+        const detailsForElement = this.detailsForElementMap.get(this.highlightedMenuItemElement);
         if (detailsForElement && detailsForElement.subItems) {
-          this._showSubMenu(this._highlightedMenuItemElement);
-          if (this._subMenu) {
-            this._subMenu._highlightNext();
+          this.showSubMenu(this.highlightedMenuItemElement);
+          if (this.subMenu) {
+            this.subMenu.highlightNext();
           }
         }
         keyboardEvent.consume(true);

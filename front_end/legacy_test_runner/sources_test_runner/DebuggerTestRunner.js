@@ -155,7 +155,7 @@ SourcesTestRunner.waitUntilResumedPromise = function() {
 
 SourcesTestRunner.resumeExecution = function(callback) {
   if (UI.panels.sources.paused()) {
-    UI.panels.sources._togglePause();
+    UI.panels.sources.togglePause();
   }
 
   SourcesTestRunner.waitUntilResumed(callback);
@@ -223,7 +223,7 @@ SourcesTestRunner.stepOut = function() {
 
 SourcesTestRunner.togglePause = function() {
   Promise.resolve().then(function() {
-    UI.panels.sources._togglePause();
+    UI.panels.sources.togglePause();
   });
 };
 

@@ -158,8 +158,8 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   stylesWidget: StylesSidebarPane;
   private readonly computedStyleWidget: ComputedStyleWidget;
   private readonly metricsWidget: MetricsSidebarPane;
-  private treeOutlines: Set<ElementsTreeOutline>;
-  private readonly treeOutlineHeaders: Map<ElementsTreeOutline, Element>;
+  private treeOutlines: Set<ElementsTreeOutline> = new Set();
+  private readonly treeOutlineHeaders: Map<ElementsTreeOutline, Element> = new Map();
   private searchResults!: {
     domModel: SDK.DOMModel.DOMModel,
     index: number,
@@ -235,8 +235,6 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
         .addChangeListener(this.updateSidebarPosition.bind(this));
     this.updateSidebarPosition();
 
-    this.treeOutlines = new Set();
-    this.treeOutlineHeaders = new Map();
     this.cssStyleTrackerByCSSModel = new Map();
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.DOMModel.DOMModel, this);
     SDK.TargetManager.TargetManager.instance().addEventListener(

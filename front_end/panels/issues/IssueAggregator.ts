@@ -258,7 +258,7 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   aggregatedIssues(): Iterable<AggregatedIssue> {
-    return this.aggregatedIssuesByCode.values();
+    return [...this.aggregatedIssuesByCode.values(), ...this.hiddenAggregatedIssuesByCode.values()];
   }
 
   hiddenAggregatedIssues(): Iterable<AggregatedIssue> {
@@ -266,7 +266,7 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   aggregatedIssueCodes(): Set<string> {
-    return new Set(this.aggregatedIssuesByCode.keys());
+    return new Set([...this.aggregatedIssuesByCode.keys(), ...this.hiddenAggregatedIssuesByCode.keys()]);
   }
 
   aggregatedIssueCategories(): Set<IssuesManager.Issue.IssueCategory> {

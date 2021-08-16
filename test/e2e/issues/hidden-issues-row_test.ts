@@ -23,6 +23,7 @@ describe('Hide issues row', async () => {
     const menuItem = await getHideIssuesMenuItem();
     assertNotNullOrUndefined(menuItem);
     await menuItem.click();
+    await waitFor('.hidden-issue');
     const hiddenIssuesRow = await getHiddenIssuesRow();
     const isHidden = await hiddenIssuesRow?.evaluate(node => node.classList.contains('hidden'));
     assert.isFalse(isHidden);
@@ -66,6 +67,7 @@ describe('Hide issues row', async () => {
     const menuItem = await getHideIssuesMenuItem();
     assertNotNullOrUndefined(menuItem);
     await menuItem.click();
+    await waitFor('.hidden-issue');
     const hiddenIssuesRow = await getHiddenIssuesRow();
     let isHidden = await hiddenIssuesRow?.evaluate(node => node.classList.contains('hidden'));
     assert.isFalse(isHidden);

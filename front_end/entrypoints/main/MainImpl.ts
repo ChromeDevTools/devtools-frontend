@@ -198,15 +198,21 @@ export class MainImpl {
 
     let localStorage;
     if (!Host.InspectorFrontendHost.isUnderTest() && window.localStorage) {
-      localStorage = new Common.Settings.SettingsStorage(
-          window.localStorage, undefined, undefined, () => window.localStorage.clear(), storagePrefix);
+      const localbackingStore: Common.Settings.SettingsBackingStore = {
+        ...Common.Settings.NOOP_STORAGE,
+        clear: () => window.localStorage.clear(),
+      };
+      localStorage = new Common.Settings.SettingsStorage(window.localStorage, localbackingStore, storagePrefix);
     } else {
-      localStorage = new Common.Settings.SettingsStorage({}, undefined, undefined, undefined, storagePrefix);
+      localStorage = new Common.Settings.SettingsStorage({}, Common.Settings.NOOP_STORAGE, storagePrefix);
     }
-    const globalStorage = new Common.Settings.SettingsStorage(
-        prefs, Host.InspectorFrontendHost.InspectorFrontendHostInstance.setPreference,
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.removePreference,
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.clearPreferences, storagePrefix);
+
+    const hostStorage: Common.Settings.SettingsBackingStore = {
+      set: Host.InspectorFrontendHost.InspectorFrontendHostInstance.setPreference,
+      remove: Host.InspectorFrontendHost.InspectorFrontendHostInstance.removePreference,
+      clear: Host.InspectorFrontendHost.InspectorFrontendHostInstance.clearPreferences,
+    };
+    const globalStorage = new Common.Settings.SettingsStorage(prefs, hostStorage, storagePrefix);
     Common.Settings.Settings.instance({forceNew: true, globalStorage, localStorage});
 
     // @ts-ignore layout test global

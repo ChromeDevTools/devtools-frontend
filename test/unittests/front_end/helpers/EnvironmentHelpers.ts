@@ -127,10 +127,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
   Common.Settings.registerSettingsForTest(settings, reset);
 
   // Instantiate the storage.
-  const storageVals = new Map<string, string>();
-  const storage = new Common.Settings.SettingsStorage(
-      {}, (key, value) => storageVals.set(key, value), key => storageVals.delete(key), () => storageVals.clear(),
-      'test');
+  const storage = new Common.Settings.SettingsStorage({}, Common.Settings.NOOP_STORAGE, 'test');
   Common.Settings.Settings.instance({forceNew: reset, globalStorage: storage, localStorage: storage});
 
   // Dynamically import UI after the rest of the environment is set up, otherwise it will fail.
@@ -179,10 +176,7 @@ export function describeWithEnvironment(title: string, fn: (this: Mocha.Suite) =
 }
 
 export function createFakeSetting<T>(name: string, defaultValue: T): Common.Settings.Setting<T> {
-  const storageVals = new Map<string, string>();
-  const storage = new Common.Settings.SettingsStorage(
-      {}, (key, value) => storageVals.set(key, value), key => storageVals.delete(key), () => storageVals.clear(),
-      'test');
+  const storage = new Common.Settings.SettingsStorage({}, Common.Settings.NOOP_STORAGE, 'test');
   return new Common.Settings.Setting(name, defaultValue, new Common.ObjectWrapper.ObjectWrapper(), storage);
 }
 

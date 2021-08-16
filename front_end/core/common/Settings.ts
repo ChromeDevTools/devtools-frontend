@@ -194,31 +194,28 @@ export class Settings {
   }
 }
 
+export interface SettingsBackingStore {
+  set(setting: string, value: string): void;
+  remove(setting: string): void;
+  clear(): void;
+}
+
+export const NOOP_STORAGE: SettingsBackingStore = {
+  set: () => {},
+  remove: () => {},
+  clear: () => {},
+};
+
 export class SettingsStorage {
-  private object: {
-    [x: string]: string,
-  };
-  private readonly setCallback: (arg0: string, arg1: string) => void;
-  private readonly removeCallback: (arg0: string) => void;
-  private readonly removeAllCallback: (arg0?: string|undefined) => void;
-  private storagePrefix: string;
   constructor(
-      object: {
-        [x: string]: string,
-      },
-      setCallback?: ((arg0: string, arg1: string) => void), removeCallback?: ((arg0: string) => void),
-      removeAllCallback?: ((arg0?: string|undefined) => void), storagePrefix?: string) {
-    this.object = object;
-    this.setCallback = setCallback || function(): void {};
-    this.removeCallback = removeCallback || function(): void {};
-    this.removeAllCallback = removeAllCallback || function(): void {};
-    this.storagePrefix = storagePrefix || '';
+      private object: Record<string, string>, private readonly backingStore: SettingsBackingStore = NOOP_STORAGE,
+      private readonly storagePrefix: string = '') {
   }
 
   set(name: string, value: string): void {
     name = this.storagePrefix + name;
     this.object[name] = value;
-    this.setCallback(name, value);
+    this.backingStore.set(name, value);
   }
 
   has(name: string): boolean {
@@ -234,12 +231,12 @@ export class SettingsStorage {
   remove(name: string): void {
     name = this.storagePrefix + name;
     delete this.object[name];
-    this.removeCallback(name);
+    this.backingStore.remove(name);
   }
 
   removeAll(): void {
     this.object = {};
-    this.removeAllCallback();
+    this.backingStore.clear();
   }
 
   dumpSizes(): void {

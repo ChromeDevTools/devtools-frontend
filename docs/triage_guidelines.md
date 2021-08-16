@@ -8,7 +8,7 @@ The most important thing: please use common sense. The guidelines below are like
 
 All `Untriaged` DevTools issues, as well as any `Unconfirmed` issues that also have the `TE-NeedsTriageHelp` label need to be triaged.
 
-[[Query]](https://bugs.chromium.org/p/chromium/issues/list?q=component%3APlatform%3EDevTools%20status%3AUntriaged%20OR%20component%3APlatform%3EDevTools%20status%3AUnconfirmed%20label%3ATE-NeedsTriageHelp)
+[[Query]](https://bugs.chromium.org/p/chromium/issues/list?sort=-modified&q=-label%3ADevTools-Triaged%20component%3APlatform%3EDevTools%20status%3AUntriaged%20OR%20component%3APlatform%3EDevTools%20status%3AUnconfirmed%20label%3ATE-NeedsTriageHelp)
 
 ## Who is triaging?
 
@@ -76,7 +76,7 @@ Don’t be afraid to close issues with WontFix if:
 
 ### What if the issue belongs to another team?
 
-If you think the to-triage issue is not a DevTools issue, please simply set it to a component that you think it should belong to and potentially remove the DevTools component. Make sure that the status is set to Untriaged. Feel free to CC people that you think might help with triaging this.
+If you think the to-triage issue is not a DevTools issue, please simply set it to a component that you think it should belong to and potentially remove the DevTools component. Make sure that the status is set to Untriaged. Please also ensure that you add the label DevTools-Triaged to the bug to ensure that the bug does not come back to the DevTools component. Feel free to CC people that you think might help with triaging this.
 This essentially moves the issue out of the DevTools triage queue into another team’s queue.
 
 ### What if the issue is best handled by Microsoft?

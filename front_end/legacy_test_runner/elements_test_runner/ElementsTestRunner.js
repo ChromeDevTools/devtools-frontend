@@ -291,7 +291,7 @@ globalThis.waitForStylesRebuild = function(matchFunction, callback, requireRebui
       return;
     }
 
-    TestRunner.addSniffer(Elements.StylesSidebarPane.prototype, '_nodeStylesUpdatedForTest', sniff);
+    TestRunner.addSniffer(Elements.StylesSidebarPane.prototype, 'nodeStylesUpdatedForTest', sniff);
   })(null);
 };
 
@@ -306,7 +306,7 @@ ElementsTestRunner.waitForStyles = function(idValue, callback, requireRebuild) {
 };
 
 ElementsTestRunner.waitForStyleCommitted = function(next) {
-  TestRunner.addSniffer(Elements.StylePropertyTreeElement.prototype, '_editingCommitted', (...args) => {
+  TestRunner.addSniffer(Elements.StylePropertyTreeElement.prototype, 'editingCommitted', (...args) => {
     Promise.all(args).then(next);
   });
 };
@@ -323,11 +323,11 @@ ElementsTestRunner.waitForStylesForClass = function(classValue, callback, requir
 };
 
 ElementsTestRunner.waitForSelectorCommitted = function(callback) {
-  TestRunner.addSniffer(Elements.StylePropertiesSection.prototype, '_editingSelectorCommittedForTest', callback);
+  TestRunner.addSniffer(Elements.StylePropertiesSection.prototype, 'editingSelectorCommittedForTest', callback);
 };
 
 ElementsTestRunner.waitForMediaTextCommitted = function(callback) {
-  TestRunner.addSniffer(Elements.StylePropertiesSection.prototype, '_editingMediaTextCommittedForTest', callback);
+  TestRunner.addSniffer(Elements.StylePropertiesSection.prototype, 'editingMediaTextCommittedForTest', callback);
 };
 
 ElementsTestRunner.waitForStyleApplied = function(callback) {
@@ -825,7 +825,7 @@ ElementsTestRunner.dumpElementsTree = function(rootNode, depth, resultsArray) {
 
 ElementsTestRunner.dumpDOMUpdateHighlights = function(rootNode, callback, depth) {
   let hasHighlights = false;
-  TestRunner.addSniffer(Elements.ElementsTreeOutline.prototype, '_updateModifiedNodes', didUpdate);
+  TestRunner.addSniffer(Elements.ElementsTreeOutline.prototype, 'updateModifiedNodes', didUpdate);
 
   function didUpdate() {
     const treeOutline = ElementsTestRunner.firstElementsTreeOutline();
@@ -1190,7 +1190,7 @@ ElementsTestRunner.matchingSelectors = function(matchedStyles, rule) {
 
 ElementsTestRunner.addNewRuleInStyleSheet = function(styleSheetHeader, selector, callback) {
   TestRunner.addSniffer(
-      Elements.StylesSidebarPane.prototype, '_addBlankSection', onBlankSection.bind(null, selector, callback));
+      Elements.StylesSidebarPane.prototype, 'addBlankSection', onBlankSection.bind(null, selector, callback));
   UI.panels.elements.stylesWidget.createNewRuleInStyleSheet(styleSheetHeader);
 };
 
@@ -1199,7 +1199,7 @@ ElementsTestRunner.addNewRule = function(selector, callback) {
       .shadowRoot.querySelector('.largeicon-add')
       .click();
   TestRunner.addSniffer(
-      Elements.StylesSidebarPane.prototype, '_addBlankSection', onBlankSection.bind(null, selector, callback));
+      Elements.StylesSidebarPane.prototype, 'addBlankSection', onBlankSection.bind(null, selector, callback));
 };
 
 function onBlankSection(selector, callback) {
@@ -1284,7 +1284,7 @@ ElementsTestRunner.dumpInspectorHighlightStyleJSON = async function(idValue) {
 };
 
 ElementsTestRunner.waitForAnimationAdded = function(callback) {
-  TestRunner.addSniffer(Animation.AnimationTimeline.prototype, '_addAnimationGroup', callback);
+  TestRunner.addSniffer(Animation.AnimationTimeline.prototype, 'addAnimationGroup', callback);
 };
 
 ElementsTestRunner.dumpAnimationTimeline = function(timeline) {

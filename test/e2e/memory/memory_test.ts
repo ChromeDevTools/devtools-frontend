@@ -11,9 +11,9 @@ import {changeAllocationSampleViewViaDropdown, changeViewViaDropdown, findSearch
 describe('The Memory Panel', async function() {
   // These tests render large chunks of data into DevTools and filter/search
   // through it. On bots with less CPU power, these can fail because the
-  // rendering takes a long time, so we allow a larger timeout.
+  // rendering takes a long time, so we allow a much larger timeout.
   if (this.timeout() !== 0) {
-    this.timeout(35000);
+    this.timeout(100000);
   }
 
   it('Loads content', async () => {
@@ -226,8 +226,7 @@ describe('The Memory Panel', async function() {
     assert.isTrue(childText[1].includes('inEventListener'));
   });
 
-  // Flaky test causing build failures
-  it.skip('[crbug.com/1239550] Shows the correct output for a detached iframe', async () => {
+  it('Shows the correct output for a detached iframe', async () => {
     await goToResource('memory/detached-iframe.html');
     await navigateToMemoryTab();
     await takeHeapSnapshot();

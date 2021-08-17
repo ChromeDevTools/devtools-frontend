@@ -13,8 +13,8 @@ let appInstance: AdvancedApp;
 
 interface Event {
   data: {
-    to: string,
-    from: string,
+    to: UI.DockController.DockState,
+    from: UI.DockController.DockState|undefined,
     x: number,
     y: number,
     width: number,
@@ -74,7 +74,7 @@ export class AdvancedApp implements Common.App.App {
   }
 
   private openToolboxWindow(event: Event): void {
-    if ((event.data.to as string) !== UI.DockController.State.Undocked) {
+    if (event.data.to !== UI.DockController.DockState.UNDOCKED) {
       return;
     }
 
@@ -107,7 +107,7 @@ export class AdvancedApp implements Common.App.App {
   }
 
   private onBeforeDockSideChange(event: Event): void {
-    if (event.data.to === UI.DockController.State.Undocked && this.toolboxRootView) {
+    if (event.data.to === UI.DockController.DockState.UNDOCKED && this.toolboxRootView) {
       // Hide inspectorView and force layout to mimic the undocked state.
       this.rootSplitWidget.hideSidebar();
       this.inspectedPagePlaceholder.update();
@@ -120,9 +120,12 @@ export class AdvancedApp implements Common.App.App {
     this.updateDeviceModeView();
 
     const toDockSide = event ? event.data.to : UI.DockController.DockController.instance().dockSide();
-    if (toDockSide === UI.DockController.State.Undocked) {
+    if (toDockSide === undefined) {
+      throw new Error('Got onDockSideChange event with unexpected undefined for dockSide()');
+    }
+    if (toDockSide === UI.DockController.DockState.UNDOCKED) {
       this.updateForUndocked();
-    } else if (this.toolboxRootView && event && event.data.from === UI.DockController.State.Undocked) {
+    } else if (this.toolboxRootView && event && event.data.from === UI.DockController.DockState.UNDOCKED) {
       // Don't update yet for smooth transition.
       this.rootSplitWidget.hideSidebar();
     } else {
@@ -135,26 +138,25 @@ export class AdvancedApp implements Common.App.App {
     if (!this.changingDockSide) {
       return;
     }
-    if ((event.data.from as string) === UI.DockController.State.Undocked) {
-      this.updateForDocked((event.data.to as string));
+    if (event.data.from && event.data.from === UI.DockController.DockState.UNDOCKED) {
+      this.updateForDocked(event.data.to);
     }
     this.changingDockSide = false;
     this.inspectedPagePlaceholder.update();
   }
 
-  private updateForDocked(dockSide: string): void {
+  private updateForDocked(dockSide: UI.DockController.DockState): void {
     const resizerElement = (this.rootSplitWidget.resizerElement() as HTMLElement);
-    resizerElement.style.transform = dockSide === UI.DockController.State.DockedToRight ?
+    resizerElement.style.transform = dockSide === UI.DockController.DockState.RIGHT ?
         'translateX(2px)' :
-        dockSide === UI.DockController.State.DockedToLeft ? 'translateX(-2px)' : '';
+        dockSide === UI.DockController.DockState.LEFT ? 'translateX(-2px)' : '';
     this.rootSplitWidget.setVertical(
-        dockSide === UI.DockController.State.DockedToRight || dockSide === UI.DockController.State.DockedToLeft);
+        dockSide === UI.DockController.DockState.RIGHT || dockSide === UI.DockController.DockState.LEFT);
     this.rootSplitWidget.setSecondIsSidebar(
-        dockSide === UI.DockController.State.DockedToRight || dockSide === UI.DockController.State.DockedToBottom);
+        dockSide === UI.DockController.DockState.RIGHT || dockSide === UI.DockController.DockState.BOTTOM);
     this.rootSplitWidget.toggleResizer(this.rootSplitWidget.resizerElement(), true);
     this.rootSplitWidget.toggleResizer(
-        UI.InspectorView.InspectorView.instance().topResizerElement(),
-        dockSide === UI.DockController.State.DockedToBottom);
+        UI.InspectorView.InspectorView.instance().topResizerElement(), dockSide === UI.DockController.DockState.BOTTOM);
     this.rootSplitWidget.showBoth();
   }
 
@@ -165,7 +167,7 @@ export class AdvancedApp implements Common.App.App {
   }
 
   private isDocked(): boolean {
-    return UI.DockController.DockController.instance().dockSide() !== UI.DockController.State.Undocked;
+    return UI.DockController.DockController.instance().dockSide() !== UI.DockController.DockState.UNDOCKED;
   }
 
   private onSetInspectedPageBounds(event: Event): void {

@@ -12,8 +12,6 @@ UI = UI || {};
 /** @constructor */
 UI.DockController = UIModule.DockController.DockController;
 
-UI.DockController.State = UIModule.DockController.State;
-
 /** @enum {symbol} */
 UI.DockController.Events = UIModule.DockController.Events;
 

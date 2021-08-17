@@ -7,7 +7,7 @@ import * as UI from '../../legacy.js';
 
 export function reload(): void {
   if (UI.DockController.DockController.instance().canDock() &&
-      UI.DockController.DockController.instance().dockSide() === UI.DockController.State.Undocked) {
+      UI.DockController.DockController.instance().dockSide() === UI.DockController.DockState.UNDOCKED) {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.setIsDocked(true, function() {});
   }
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.reattach(() => window.location.reload());

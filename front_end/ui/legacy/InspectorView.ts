@@ -37,7 +37,7 @@ import type {ActionDelegate as ActionDelegateInterface} from './ActionRegistrati
 import type {Context} from './Context.js';
 import type {ContextMenu} from './ContextMenu.js';
 import {Dialog} from './Dialog.js';
-import {DockController, State} from './DockController.js';
+import {DockController, DockState} from './DockController.js';
 import {GlassPane} from './GlassPane.js';
 import type {Icon} from './Icon.js';
 import {Infobar, Type as InfobarType} from './Infobar.js';
@@ -485,7 +485,7 @@ function createLocaleInfobar(): Infobar {
 }
 
 function reloadDevTools(): void {
-  if (DockController.instance().canDock() && DockController.instance().dockSide() === State.Undocked) {
+  if (DockController.instance().canDock() && DockController.instance().dockSide() === DockState.UNDOCKED) {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.setIsDocked(true, function() {});
   }
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.reattach(() => window.location.reload());

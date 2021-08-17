@@ -66,9 +66,9 @@ let dockControllerInstance: DockController;
 export class DockController extends Common.ObjectWrapper.ObjectWrapper {
   private canDockInternal: boolean;
   readonly closeButton: ToolbarButton;
-  private readonly currentDockStateSetting: Common.Settings.Setting<string>;
-  private readonly lastDockStateSetting: Common.Settings.Setting<string>;
-  private dockSideInternal!: string;
+  private readonly currentDockStateSetting: Common.Settings.Setting<DockState>;
+  private readonly lastDockStateSetting: Common.Settings.Setting<DockState>;
+  private dockSideInternal: DockState|undefined = undefined;
   private titles?: Common.UIString.LocalizedString[];
   private savedFocus?: Element|null;
 
@@ -84,20 +84,20 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper {
             Host.InspectorFrontendHost.InspectorFrontendHostInstance));
 
     this.currentDockStateSetting = Common.Settings.Settings.instance().moduleSetting('currentDockState');
-    this.lastDockStateSetting = Common.Settings.Settings.instance().createSetting('lastDockState', 'bottom');
+    this.lastDockStateSetting = Common.Settings.Settings.instance().createSetting('lastDockState', DockState.BOTTOM);
 
     if (!canDock) {
-      this.dockSideInternal = State.Undocked;
+      this.dockSideInternal = DockState.UNDOCKED;
       this.closeButton.setVisible(false);
       return;
     }
 
     this.currentDockStateSetting.addChangeListener(this.dockSideChanged, this);
     if (states.indexOf(this.currentDockStateSetting.get()) === -1) {
-      this.currentDockStateSetting.set('right');
+      this.currentDockStateSetting.set(DockState.RIGHT);
     }
     if (states.indexOf(this.lastDockStateSetting.get()) === -1) {
-      this.currentDockStateSetting.set('bottom');
+      this.currentDockStateSetting.set(DockState.BOTTOM);
     }
   }
 
@@ -131,7 +131,7 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper {
     this.setDockSide(this.currentDockStateSetting.get());
   }
 
-  dockSide(): string {
+  dockSide(): DockState|undefined {
     return this.dockSideInternal;
   }
 
@@ -140,11 +140,12 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   isVertical(): boolean {
-    return this.dockSideInternal === State.DockedToRight || this.dockSideInternal === State.DockedToLeft;
+    return this.dockSideInternal === DockState.RIGHT || this.dockSideInternal === DockState.LEFT;
   }
 
-  setDockSide(dockSide: string): void {
+  setDockSide(dockSide: DockState): void {
     if (states.indexOf(dockSide) === -1) {
+      // If the side is invalid, default to a valid one
       dockSide = states[0];
     }
 
@@ -152,7 +153,9 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper {
       return;
     }
 
-    document.body.classList.remove(this.dockSideInternal);
+    if (this.dockSideInternal !== undefined) {
+      document.body.classList.remove(this.dockSideInternal);
+    }
     document.body.classList.add(dockSide);
 
     if (this.dockSideInternal) {
@@ -166,13 +169,13 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper {
     this.dockSideInternal = dockSide;
     this.currentDockStateSetting.set(dockSide);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.setIsDocked(
-        dockSide !== State.Undocked, this.setIsDockedResponse.bind(this, eventData));
-    this.closeButton.setVisible(this.dockSideInternal !== State.Undocked);
+        dockSide !== DockState.UNDOCKED, this.setIsDockedResponse.bind(this, eventData));
+    this.closeButton.setVisible(this.dockSideInternal !== DockState.UNDOCKED);
     this.dispatchEventToListeners(Events.DockSideChanged, eventData);
   }
 
   private setIsDockedResponse(eventData: {
-    from: string,
+    from: string|undefined,
     to: string,
   }): void {
     this.dispatchEventToListeners(Events.AfterDockSideChanged, eventData);
@@ -191,14 +194,14 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper {
   }
 }
 
-export const State = {
-  DockedToBottom: 'bottom',
-  DockedToRight: 'right',
-  DockedToLeft: 'left',
-  Undocked: 'undocked',
-};
+export const enum DockState {
+  BOTTOM = 'bottom',
+  RIGHT = 'right',
+  LEFT = 'left',
+  UNDOCKED = 'undocked',
+}
 
-const states = [State.DockedToRight, State.DockedToBottom, State.DockedToLeft, State.Undocked];
+const states = [DockState.RIGHT, DockState.BOTTOM, DockState.LEFT, DockState.UNDOCKED];
 
 // Use BeforeDockSideChanged to do something before all the UI bits are updated,
 // DockSideChanged to update UI, and AfterDockSideChanged to perform actions

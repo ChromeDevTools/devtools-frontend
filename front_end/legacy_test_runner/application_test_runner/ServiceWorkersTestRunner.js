@@ -39,7 +39,7 @@ ApplicationTestRunner.waitForServiceWorker = function(callback) {
 ApplicationTestRunner.dumpServiceWorkersView = function() {
   const swView = UI.panels.resources.visibleView;
 
-  return swView._currentWorkersView._sectionList.childTextNodes()
+  return swView.currentWorkersView.sectionList.childTextNodes()
       .map(function(node) {
         if (node.textContent === 'Received ' + (new Date(0)).toLocaleString()) {
           return 'Invalid scriptResponseTime (unix epoch)';

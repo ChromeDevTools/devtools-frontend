@@ -9,7 +9,7 @@ self.ApplicationTestRunner = self.ApplicationTestRunner || {};
 
 ApplicationTestRunner.dumpIndexedDBTree = function() {
   TestRunner.addResult('Dumping IndexedDB tree:');
-  const indexedDBTreeElement = UI.panels.resources._sidebar.indexedDBListTreeElement;
+  const indexedDBTreeElement = UI.panels.resources.sidebar.indexedDBListTreeElement;
 
   if (!indexedDBTreeElement.childCount()) {
     TestRunner.addResult('    (empty)');
@@ -44,25 +44,25 @@ ApplicationTestRunner.dumpIndexedDBTree = function() {
 
 ApplicationTestRunner.dumpObjectStores = function() {
   TestRunner.addResult('Dumping ObjectStore data:');
-  const idbDatabaseTreeElement = UI.panels.resources._sidebar.indexedDBListTreeElement._idbDatabaseTreeElements[0];
+  const idbDatabaseTreeElement = UI.panels.resources.sidebar.indexedDBListTreeElement.idbDatabaseTreeElements[0];
   for (let i = 0; i < idbDatabaseTreeElement.childCount(); ++i) {
     const objectStoreTreeElement = idbDatabaseTreeElement.childAt(i);
     objectStoreTreeElement.onselect(false);
     TestRunner.addResult('    Object store: ' + objectStoreTreeElement.title);
-    const entries = objectStoreTreeElement._view._entries;
+    const entries = objectStoreTreeElement.view.entries;
     TestRunner.addResult('            Number of entries: ' + entries.length);
     for (let j = 0; j < entries.length; ++j) {
-      TestRunner.addResult('            Key = ' + entries[j].key._value + ', value = ' + entries[j].value);
+      TestRunner.addResult('            Key = ' + entries[j].key.value + ', value = ' + entries[j].value);
     }
 
     for (let k = 0; k < objectStoreTreeElement.childCount(); ++k) {
       const indexTreeElement = objectStoreTreeElement.childAt(k);
       TestRunner.addResult('            Index: ' + indexTreeElement.title);
       indexTreeElement.onselect(false);
-      const entries = indexTreeElement._view._entries;
+      const entries = indexTreeElement.view.entries;
       TestRunner.addResult('                Number of entries: ' + entries.length);
       for (let j = 0; j < entries.length; ++j) {
-        TestRunner.addResult('                Key = ' + entries[j].primaryKey._value + ', value = ' + entries[j].value);
+        TestRunner.addResult('                Key = ' + entries[j].primaryKey.value + ', value = ' + entries[j].value);
       }
     }
   }
@@ -73,7 +73,7 @@ const callbacks = {};
 const callbackIdPrefix = 'InspectorTest.IndexedDB_callback';
 
 ApplicationTestRunner.evaluateWithCallback = function(frameId, methodName, parameters, callback) {
-  ApplicationTestRunner._installIndexedDBSniffer();
+  ApplicationTestRunner.installIndexedDBSniffer();
   const callbackId = ++lastCallbackId;
   callbacks[callbackId] = callback;
   let parametersString = 'dispatchCallback.bind(this, "' + callbackIdPrefix + callbackId + '")';
@@ -86,7 +86,7 @@ ApplicationTestRunner.evaluateWithCallback = function(frameId, methodName, param
   TestRunner.evaluateInPageAnonymously(requestString);
 };
 
-ApplicationTestRunner._installIndexedDBSniffer = function() {
+ApplicationTestRunner.installIndexedDBSniffer = function() {
   ConsoleTestRunner.addConsoleSniffer(consoleMessageOverride, false);
 
   function consoleMessageOverride(msg) {

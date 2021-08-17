@@ -60,8 +60,8 @@ ApplicationTestRunner.dumpResourcesURLMap = function() {
 
 ApplicationTestRunner.dumpResourcesTree = function() {
   function dump(treeItem, prefix) {
-    if (typeof treeItem._resetBubble === 'function') {
-      treeItem._resetBubble();
+    if (typeof treeItem.resetBubble === 'function') {
+      treeItem.resetBubble();
     }
 
     TestRunner.addResult(prefix + treeItem.listItemElement.textContent);
@@ -73,14 +73,14 @@ ApplicationTestRunner.dumpResourcesTree = function() {
     }
   }
 
-  dump(UI.panels.resources._sidebar._resourcesSection._treeElement, '');
+  dump(UI.panels.resources.sidebar.resourcesSection.treeElement, '');
 
-  if (!ApplicationTestRunner._testSourceNavigator) {
-    ApplicationTestRunner._testSourceNavigator = new Sources.NetworkNavigatorView();
-    ApplicationTestRunner._testSourceNavigator.show(self.UI.inspectorView.element);
+  if (!ApplicationTestRunner.testSourceNavigator) {
+    ApplicationTestRunner.testSourceNavigator = new Sources.NetworkNavigatorView();
+    ApplicationTestRunner.testSourceNavigator.show(self.UI.inspectorView.element);
   }
 
-  SourcesTestRunner.dumpNavigatorViewInAllModes(ApplicationTestRunner._testSourceNavigator);
+  SourcesTestRunner.dumpNavigatorViewInAllModes(ApplicationTestRunner.testSourceNavigator);
 };
 
 ApplicationTestRunner.dumpResourceTreeEverything = function() {

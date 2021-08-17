@@ -8,9 +8,9 @@
 self.ApplicationTestRunner = self.ApplicationTestRunner || {};
 
 ApplicationTestRunner.dumpCacheTree = async function(pathFilter) {
-  UI.panels.resources._sidebar.cacheStorageListTreeElement.expand();
+  UI.panels.resources.sidebar.cacheStorageListTreeElement.expand();
   const promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, 'updateCacheNames');
-  UI.panels.resources._sidebar.cacheStorageListTreeElement.refreshCaches();
+  UI.panels.resources.sidebar.cacheStorageListTreeElement.refreshCaches();
   await promise;
   await ApplicationTestRunner.dumpCacheTreeNoRefresh(pathFilter);
 };
@@ -26,7 +26,7 @@ ApplicationTestRunner.dumpCacheTreeNoRefresh = async function(pathFilter) {
       TestRunner.addResult(' '.repeat(8) + entries.join(', '));
     }
   }
-  UI.panels.resources._sidebar.cacheStorageListTreeElement.expand();
+  UI.panels.resources.sidebar.cacheStorageListTreeElement.expand();
 
   if (!pathFilter) {
     TestRunner.addResult('Dumping CacheStorage tree:');
@@ -34,7 +34,7 @@ ApplicationTestRunner.dumpCacheTreeNoRefresh = async function(pathFilter) {
     TestRunner.addResult('Dumping CacheStorage tree with URL path filter string "' + pathFilter + '"');
   }
 
-  const cachesTreeElement = UI.panels.resources._sidebar.cacheStorageListTreeElement;
+  const cachesTreeElement = UI.panels.resources.sidebar.cacheStorageListTreeElement;
 
   if (!cachesTreeElement.childCount()) {
     TestRunner.addResult('    (empty)');
@@ -50,44 +50,44 @@ ApplicationTestRunner.dumpCacheTreeNoRefresh = async function(pathFilter) {
       cacheTreeElement.onselect(false);
     }
     view = cacheTreeElement.view;
-    await view._updateData(true);
-    if (cacheTreeElement.view._entriesForTest.length === 0) {
+    await view.updateData(true);
+    if (cacheTreeElement.view.entriesForTest.length === 0) {
       TestRunner.addResult('        (cache empty)');
       continue;
     }
 
     if (!pathFilter) {
-      _dumpDataGrid(view._dataGrid);
-      TestRunner.addResult('        totalCount: ' + String(view._returnCount));
+      _dumpDataGrid(view.dataGrid);
+      TestRunner.addResult('        totalCount: ' + String(view.returnCount));
       continue;
     }
 
-    cacheTreeElement.view._entryPathFilter = pathFilter;
-    await view._updateData(true);
-    if (cacheTreeElement.view._entriesForTest.length === 0) {
+    cacheTreeElement.view.entryPathFilter = pathFilter;
+    await view.updateData(true);
+    if (cacheTreeElement.view.entriesForTest.length === 0) {
       TestRunner.addResult('        (no matching entries)');
       continue;
     }
 
-    _dumpDataGrid(cacheTreeElement.view._dataGrid);
-    TestRunner.addResult('        totalCount: ' + String(view._returnCount));
+    _dumpDataGrid(cacheTreeElement.view.dataGrid);
+    TestRunner.addResult('        totalCount: ' + String(view.returnCount));
   }
 };
 
 ApplicationTestRunner.dumpCachedEntryContent = async function(cacheName, requestUrl, withHeader) {
-  UI.panels.resources._sidebar.cacheStorageListTreeElement.expand();
+  UI.panels.resources.sidebar.cacheStorageListTreeElement.expand();
   const promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, 'updateCacheNames');
-  UI.panels.resources._sidebar.cacheStorageListTreeElement.refreshCaches();
+  UI.panels.resources.sidebar.cacheStorageListTreeElement.refreshCaches();
   await promise;
   await ApplicationTestRunner.dumpCachedEntryContentNoRefresh(cacheName, requestUrl, withHeader);
 };
 
 ApplicationTestRunner.dumpCachedEntryContentNoRefresh = async function(cacheName, requestUrl, withHeader) {
-  UI.panels.resources._sidebar.cacheStorageListTreeElement.expand();
+  UI.panels.resources.sidebar.cacheStorageListTreeElement.expand();
 
   TestRunner.addResult('Dumping ' + cacheName + '\'s entry with request URL: ' + requestUrl);
 
-  const cachesTreeElement = UI.panels.resources._sidebar.cacheStorageListTreeElement;
+  const cachesTreeElement = UI.panels.resources.sidebar.cacheStorageListTreeElement;
 
   for (let i = 0; i < cachesTreeElement.childCount(); ++i) {
     const cacheTreeElement = cachesTreeElement.childAt(i);
@@ -100,23 +100,23 @@ ApplicationTestRunner.dumpCachedEntryContentNoRefresh = async function(cacheName
       cacheTreeElement.onselect(false);
     }
     view = cacheTreeElement.view;
-    await view._updateData(true);
+    await view.updateData(true);
 
     const promiseDumpContent = new Promise(resolve => {
-      view._model.loadCacheData(view._cache, 0, 50, '', async function(entries, totalCount) {
+      view.model.loadCacheData(view.cache, 0, 50, '', async function(entries, totalCount) {
         for (const entry of entries) {
           if (entry.requestURL !== requestUrl) {
             continue;
           }
 
-          const request = view._createRequest(entry);
+          const request = view.createRequest(entry);
           if (request.requestHeaders().length) {
             TestRunner.addResult('    the original request has headers; query with headers? ' + withHeader);
             if (!withHeader) {
               request.setRequestHeaders([]);
             }
           }
-          const contentObject = await view._requestContent(request);
+          const contentObject = await view.requestContent(request);
           const content = contentObject.content;
           TestRunner.addResult(' '.repeat(8) + (content ? content : '(nothing to preview)'));
         }
@@ -128,7 +128,7 @@ ApplicationTestRunner.dumpCachedEntryContentNoRefresh = async function(cacheName
 };
 
 ApplicationTestRunner.deleteCacheFromInspector = async function(cacheName, optionalEntry) {
-  UI.panels.resources._sidebar.cacheStorageListTreeElement.expand();
+  UI.panels.resources.sidebar.cacheStorageListTreeElement.expand();
 
   if (optionalEntry) {
     TestRunner.addResult('Deleting CacheStorage entry ' + optionalEntry + ' in cache ' + cacheName);
@@ -136,9 +136,9 @@ ApplicationTestRunner.deleteCacheFromInspector = async function(cacheName, optio
     TestRunner.addResult('Deleting CacheStorage cache ' + cacheName);
   }
 
-  const cachesTreeElement = UI.panels.resources._sidebar.cacheStorageListTreeElement;
+  const cachesTreeElement = UI.panels.resources.sidebar.cacheStorageListTreeElement;
   let promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, 'updateCacheNames');
-  UI.panels.resources._sidebar.cacheStorageListTreeElement.refreshCaches();
+  UI.panels.resources.sidebar.cacheStorageListTreeElement.refreshCaches();
   await promise;
 
   if (!cachesTreeElement.childCount()) {
@@ -167,18 +167,18 @@ ApplicationTestRunner.deleteCacheFromInspector = async function(cacheName, optio
     if (!view) {
       cacheTreeElement.onselect(false);
     } else {
-      view._updateData(true);
+      view.updateData(true);
     }
 
     view = cacheTreeElement.view;
     await promise;
-    const entry = view._entriesForTest.find(entry => entry.requestURL === optionalEntry);
+    const entry = view.entriesForTest.find(entry => entry.requestURL === optionalEntry);
 
     if (!entry) {
       throw 'Error: Could not find cache entry to delete: ' + optionalEntry;
     }
 
-    await view._model.deleteCacheEntry(view._cache, entry.requestURL);
+    await view.model.deleteCacheEntry(view.cache, entry.requestURL);
     return;
   }
 
@@ -186,7 +186,7 @@ ApplicationTestRunner.deleteCacheFromInspector = async function(cacheName, optio
 };
 
 ApplicationTestRunner.waitForCacheRefresh = function(callback) {
-  TestRunner.addSniffer(SDK.ServiceWorkerCacheModel.prototype, '_updateCacheNames', callback, false);
+  TestRunner.addSniffer(SDK.ServiceWorkerCacheModel.prototype, 'updateCacheNames', callback, false);
 };
 
 ApplicationTestRunner.createCache = function(cacheName) {

@@ -28,7 +28,7 @@ ApplicationTestRunner.requestURLComparer = function(r1, r2) {
 };
 
 ApplicationTestRunner.runAfterCachedResourcesProcessed = function(callback) {
-  if (!TestRunner.resourceTreeModel._cachedResourcesProcessed) {
+  if (!TestRunner.resourceTreeModel.cachedResourcesProcessed) {
     TestRunner.resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.CachedResourcesLoaded, callback);
   } else {
     callback();
@@ -80,7 +80,7 @@ ApplicationTestRunner.showResource = function(resourceURL, callback) {
     }
 
     UI.panels.resources.showResource(resource, 1);
-    const sourceFrame = UI.panels.resources._resourceViewForResource(resource);
+    const sourceFrame = UI.panels.resources.resourceViewForResource(resource);
 
     if (sourceFrame.loaded) {
       callbackWrapper(sourceFrame);
@@ -120,26 +120,26 @@ ApplicationTestRunner.findTreeElement = function(parent, path) {
 
 ApplicationTestRunner.waitForCookies = function() {
   return new Promise(resolve => {
-    TestRunner.addSniffer(CookieTable.CookiesTable.prototype, '_rebuildTable', resolve);
+    TestRunner.addSniffer(CookieTable.CookiesTable.prototype, 'rebuildTable', resolve);
   });
 };
 
 ApplicationTestRunner.dumpCookieDomains = function() {
-  const cookieListChildren = UI.panels.resources._sidebar.cookieListTreeElement.children();
+  const cookieListChildren = UI.panels.resources.sidebar.cookieListTreeElement.children();
   TestRunner.addResult('Available cookie domains:');
   for (const child of cookieListChildren) {
-    TestRunner.addResult(child._cookieDomain);
+    TestRunner.addResult(child.cookieDomain);
   }
 };
 
 ApplicationTestRunner.dumpCookies = function() {
-  if (!UI.panels.resources._cookieView || !UI.panels.resources._cookieView.isShowing()) {
+  if (!UI.panels.resources.cookieView || !UI.panels.resources.cookieView.isShowing()) {
     TestRunner.addResult('No cookies visible');
     return;
   }
 
   TestRunner.addResult('Visible cookies');
-  for (const item of UI.panels.resources._cookieView._cookiesTable._data) {
+  for (const item of UI.panels.resources.cookieView.cookiesTable.data) {
     const cookies = item.cookies || [];
     for (const cookie of cookies) {
       TestRunner.addResult(`${cookie.name()}=${cookie.value()}`);

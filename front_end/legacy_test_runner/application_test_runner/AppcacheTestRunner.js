@@ -9,7 +9,7 @@
 self.ApplicationTestRunner = self.ApplicationTestRunner || {};
 
 ApplicationTestRunner.createAndNavigateIFrame = function(url, callback) {
-  TestRunner.addSniffer(SDK.ResourceTreeModel.prototype, '_frameNavigated', frameNavigated);
+  TestRunner.addSniffer(SDK.ResourceTreeModel.prototype, 'frameNavigated', frameNavigated);
   TestRunner.evaluateInPageAnonymously('createAndNavigateIFrame(unescape(\'' + escape(url) + '\'))');
 
   function frameNavigated(frame) {
@@ -21,7 +21,7 @@ ApplicationTestRunner.navigateIFrame = function(frameId, url, callback) {
   const frame = TestRunner.resourceTreeModel.frameForId(frameId);
   TestRunner.evaluateInPageAnonymously(
       'navigateIFrame(unescape(\'' + escape(frame.name) + '\'), unescape(\'' + escape(url) + '\'))');
-  TestRunner.addSniffer(SDK.ResourceTreeModel.prototype, '_frameNavigated', frameNavigated);
+  TestRunner.addSniffer(SDK.ResourceTreeModel.prototype, 'frameNavigated', frameNavigated);
 
   function frameNavigated(frame) {
     callback(frame.id);
@@ -31,7 +31,7 @@ ApplicationTestRunner.navigateIFrame = function(frameId, url, callback) {
 ApplicationTestRunner.removeIFrame = function(frameId, callback) {
   const frame = TestRunner.resourceTreeModel.frameForId(frameId);
   TestRunner.evaluateInPageAnonymously('removeIFrame(unescape(\'' + escape(frame.name) + '\'))');
-  TestRunner.addSniffer(SDK.ResourceTreeModel.prototype, '_frameDetached', frameDetached);
+  TestRunner.addSniffer(SDK.ResourceTreeModel.prototype, 'frameDetached', frameDetached);
 
   function frameDetached(frame) {
     callback(frame.id);
@@ -51,7 +51,7 @@ ApplicationTestRunner.dumpApplicationCache = function() {
 
 ApplicationTestRunner.dumpApplicationCacheTree = function() {
   TestRunner.addResult('Dumping application cache tree:');
-  const applicationCacheTreeElement = UI.panels.resources._sidebar.applicationCacheListTreeElement;
+  const applicationCacheTreeElement = UI.panels.resources.sidebar.applicationCacheListTreeElement;
 
   if (!applicationCacheTreeElement.childCount()) {
     TestRunner.addResult('    (empty)');
@@ -102,10 +102,10 @@ ApplicationTestRunner.applicationCacheStatusToString = function(status) {
 
 ApplicationTestRunner.dumpApplicationCacheModel = function() {
   TestRunner.addResult('Dumping application cache model:');
-  const model = UI.panels.resources._sidebar._applicationCacheModel;
+  const model = UI.panels.resources.sidebar.applicationCacheModel;
   const frameIds = [];
 
-  for (const frameId in model._manifestURLsByFrame) {
+  for (const frameId in model.manifestURLsByFrame) {
     frameIds.push(frameId);
   }
 
@@ -131,8 +131,8 @@ ApplicationTestRunner.dumpApplicationCacheModel = function() {
 };
 
 ApplicationTestRunner.waitForFrameManifestURLAndStatus = function(frameId, manifestURL, status, callback) {
-  const frameManifestStatus = UI.panels.resources._sidebar._applicationCacheModel.frameManifestStatus(frameId);
-  const frameManifestURL = UI.panels.resources._sidebar._applicationCacheModel.frameManifestURL(frameId);
+  const frameManifestStatus = UI.panels.resources.sidebar.applicationCacheModel.frameManifestStatus(frameId);
+  const frameManifestURL = UI.panels.resources.sidebar.applicationCacheModel.frameManifestURL(frameId);
 
   if (frameManifestStatus === status && frameManifestURL.indexOf(manifestURL) !== -1) {
     callback();
@@ -141,7 +141,7 @@ ApplicationTestRunner.waitForFrameManifestURLAndStatus = function(frameId, manif
 
   const handler =
       ApplicationTestRunner.waitForFrameManifestURLAndStatus.bind(this, frameId, manifestURL, status, callback);
-  TestRunner.addSniffer(Resources.ApplicationCacheModel.prototype, '_frameManifestUpdated', handler);
+  TestRunner.addSniffer(Resources.ApplicationCacheModel.prototype, 'frameManifestUpdated', handler);
 };
 
 ApplicationTestRunner.startApplicationCacheStatusesRecording = function() {
@@ -173,7 +173,7 @@ ApplicationTestRunner.startApplicationCacheStatusesRecording = function() {
     }
   }
 
-  TestRunner.addSniffer(Resources.ApplicationCacheModel.prototype, '_frameManifestUpdated', addRecord, true);
+  TestRunner.addSniffer(Resources.ApplicationCacheModel.prototype, 'frameManifestUpdated', addRecord, true);
 };
 
 ApplicationTestRunner.ensureFrameStatusEventsReceived = function(frameId, count, callback) {

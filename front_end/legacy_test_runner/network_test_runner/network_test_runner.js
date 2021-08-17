@@ -24,14 +24,14 @@ NetworkTestRunner.waitForRequestResponse = function(request) {
 };
 
 NetworkTestRunner.waitForNetworkLogViewNodeForRequest = function(request) {
-  const networkLogView = UI.panels.network._networkLogView;
+  const networkLogView = UI.panels.network.networkLogView;
   const node = networkLogView.nodeForRequest(request);
 
   if (node) {
     return Promise.resolve(node);
   }
 
-  console.assert(networkLogView._staleRequests.has(request));
+  console.assert(networkLogView.staleRequests.has(request));
 
   return TestRunner.addSnifferPromise(networkLogView, 'didRefreshForTest').then(() => {
     const node = networkLogView.nodeForRequest(request);
@@ -55,11 +55,11 @@ NetworkTestRunner.waitForWebsocketFrameReceived = function(wsRequest, message) {
 };
 
 NetworkTestRunner.recordNetwork = function() {
-  UI.panels.network._networkLogView.setRecording(true);
+  UI.panels.network.networkLogView.setRecording(true);
 };
 
 NetworkTestRunner.networkWaterfallColumn = function() {
-  return UI.panels.network._networkLogView._columns._waterfallColumn;
+  return UI.panels.network.networkLogView.columns.waterfallColumn;
 };
 
 NetworkTestRunner.networkRequests = function() {

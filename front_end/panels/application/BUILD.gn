@@ -4,7 +4,23 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/generate_css.gni")
 import("../visibility.gni")
+
+generate_css("css_files") {
+  sources = [
+    "appManifestView.css",
+    "backgroundServiceView.css",
+    "cookieItemsView.css",
+    "frameDetailsReportView.css",
+    "indexedDBViews.css",
+    "resourcesPanel.css",
+    "resourcesSidebar.css",
+    "serviceWorkerCacheViews.css",
+    "serviceWorkersView.css",
+    "storageView.css",
+  ]
+}
 
 devtools_module("application") {
   sources = [
@@ -69,7 +85,11 @@ devtools_module("application") {
 devtools_entrypoint("bundle") {
   entrypoint = "application.ts"
 
-  deps = [ ":application" ]
+  deps = [
+    ":application",
+    ":css_files",
+    "../../ui/legacy:css_files",
+  ]
 
   visibility = [
     ":*",

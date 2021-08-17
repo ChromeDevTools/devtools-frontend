@@ -28,6 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import indexedDBViewsStyles from './indexedDBViews.css.js';
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
@@ -159,13 +160,12 @@ export class IDBDatabaseView extends UI.Widget.VBox {
     this.model = model;
     const databaseName = database ? database.databaseId.name : i18nString(UIStrings.loading);
 
-    this.registerRequiredCSS('panels/application/indexedDBViews.css');
     this.contentElement.classList.add('indexed-db-container');
 
     // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     this.reportView = new UI.ReportView.ReportView(databaseName);
     this.reportView.show(this.contentElement);
-    this.reportView.registerRequiredCSS('panels/application/indexedDBViews.css');
+
     this.reportView.element.classList.add('indexed-db-header');
 
     const bodySection = this.reportView.appendSection('');
@@ -219,6 +219,11 @@ export class IDBDatabaseView extends UI.Widget.VBox {
       this.model.deleteDatabase(this.database.databaseId);
     }
   }
+  wasShown(): void {
+    super.wasShown();
+    this.reportView.registerCSSFiles([indexedDBViewsStyles]);
+    this.registerCSSFiles([indexedDBViewsStyles]);
+  }
 }
 
 export class IDBDataView extends UI.View.SimpleView {
@@ -251,7 +256,6 @@ export class IDBDataView extends UI.View.SimpleView {
       model: IndexedDBModel, databaseId: DatabaseId, objectStore: ObjectStore, index: Index|null,
       refreshObjectStoreCallback: () => void) {
     super(i18nString(UIStrings.idb));
-    this.registerRequiredCSS('panels/application/indexedDBViews.css');
 
     this.model = model;
     this.databaseId = databaseId;
@@ -595,6 +599,10 @@ export class IDBDataView extends UI.View.SimpleView {
   private updateToolbarEnablement(): void {
     const empty = !this.dataGrid || this.dataGrid.rootNode().children.length === 0;
     this.deleteSelectedButton.setEnabled(!empty && this.dataGrid.selectedNode !== null);
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([indexedDBViewsStyles]);
   }
 }
 

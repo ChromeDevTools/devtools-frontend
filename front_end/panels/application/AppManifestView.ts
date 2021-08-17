@@ -4,6 +4,9 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+
+import appManifestViewStyles from './appManifestView.css.js';
+
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
@@ -376,7 +379,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
   private serviceWorkerManager?: SDK.ServiceWorkerManager.ServiceWorkerManager|null;
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/application/appManifestView.css');
+
     this.contentElement.classList.add('manifest-container');
 
     Common.Settings.Settings.instance()
@@ -391,7 +394,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
 
     // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     this.reportView = new UI.ReportView.ReportView(i18nString(UIStrings.appManifest));
-    this.reportView.registerRequiredCSS('panels/application/appManifestView.css');
+
     this.reportView.element.classList.add('manifest-view-header');
     this.reportView.show(this.contentElement);
     this.reportView.hideWidget();
@@ -941,5 +944,10 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
 
     field.appendChild(wrapper);
     return {imageResourceErrors, squareSizedIconAvailable};
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.reportView.registerCSSFiles([appManifestViewStyles]);
+    this.registerCSSFiles([appManifestViewStyles]);
   }
 }

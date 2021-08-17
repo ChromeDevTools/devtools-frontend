@@ -9,6 +9,9 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+
+import serviceWorkersViewStyles from './serviceWorkersView.css.js';
+
 import type * as Protocol from '../../generated/protocol.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
@@ -192,7 +195,6 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
 
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/application/serviceWorkersView.css');
 
     // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     this.currentWorkersView = new UI.ReportView.ReportView(i18n.i18n.lockedString('Service Workers'));
@@ -458,6 +460,10 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
 
   private updateListVisibility(): void {
     this.contentElement.classList.toggle('service-worker-list-empty', this.sections.size === 0);
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([serviceWorkersViewStyles]);
   }
 }
 

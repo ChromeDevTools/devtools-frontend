@@ -92,6 +92,7 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
         this.appendColumnTitle(header, i18nString(UIStrings.untrustworthyOrigin));
         break;
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidAttributionData:
+      case IssuesManager.AttributionReportingIssue.IssueCode.AttributionTriggerDataTooLarge:
         this.appendColumnTitle(header, i18nString(UIStrings.request));
         this.appendColumnTitle(header, i18nString(UIStrings.invalidTriggerData));
         break;
@@ -137,6 +138,7 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
         await this.appendElementOrEmptyCell(element, issue);
         this.appendIssueDetailCell(element, details.invalidParameter || '');
         break;
+      case IssuesManager.AttributionReportingIssue.IssueCode.AttributionTriggerDataTooLarge:
       case IssuesManager.AttributionReportingIssue.IssueCode.AttributionUntrustworthyOrigin:
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidAttributionData:
         this.appendRequestOrEmptyCell(element, details.request);

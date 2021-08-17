@@ -53,7 +53,7 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
     return IssueCategory.AttributionReporting;
   }
 
-  getDescription(): MarkdownIssueDescription|null {
+  getDescription(): MarkdownIssueDescription {
     switch (this.code()) {
       case IssueCode.PermissionPolicyDisabled:
         return {
@@ -96,7 +96,10 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
           links: [],
         };
       case IssueCode.AttributionTriggerDataTooLarge:
-        return null;
+        return {
+          file: 'arAttributionTriggerDataTooLarge.md',
+          links: [],
+        };
     }
   }
 

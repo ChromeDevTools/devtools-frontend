@@ -53,6 +53,7 @@ devtools_module("issues_manager") {
 devtools_issue_description_files = [
   "arAttributionSourceUntrustworthyFrameOrigin.md",
   "arAttributionSourceUntrustworthyOrigin.md",
+  "arAttributionTriggerDataTooLarge.md",
   "arAttributionUntrustworthyFrameOrigin.md",
   "arAttributionUntrustworthyOrigin.md",
   "arInvalidAttributionData.md",

@@ -12,8 +12,8 @@ self.CPUProfilerTestRunner = self.CPUProfilerTestRunner || {};
 
 CPUProfilerTestRunner.startProfilerTest = function(callback) {
   TestRunner.addResult('Profiler was enabled.');
-  TestRunner.addSniffer(UI.panels.js_profiler, '_addProfileHeader', CPUProfilerTestRunner._profileHeaderAdded, true);
-  TestRunner.addSniffer(Profiler.ProfileView.prototype, 'refresh', CPUProfilerTestRunner._profileViewRefresh, true);
+  TestRunner.addSniffer(UI.panels.js_profiler, 'addProfileHeader', CPUProfilerTestRunner.profileHeaderAdded, true);
+  TestRunner.addSniffer(Profiler.ProfileView.prototype, 'refresh', CPUProfilerTestRunner.profileViewRefresh, true);
   TestRunner.safeWrap(callback)();
 };
 
@@ -44,11 +44,11 @@ CPUProfilerTestRunner.runProfilerTestSuite = function(testSuite) {
 };
 
 CPUProfilerTestRunner.showProfileWhenAdded = function(title) {
-  CPUProfilerTestRunner._showProfileWhenAdded = title;
+  CPUProfilerTestRunner.showProfileWhenAdded = title;
 };
 
-CPUProfilerTestRunner._profileHeaderAdded = function(profile) {
-  if (CPUProfilerTestRunner._showProfileWhenAdded === profile.title) {
+CPUProfilerTestRunner.profileHeaderAdded = function(profile) {
+  if (CPUProfilerTestRunner.showProfileWhenAdded === profile.title) {
     UI.panels.js_profiler.showProfile(profile);
   }
 };
@@ -61,15 +61,15 @@ CPUProfilerTestRunner.waitUntilProfileViewIsShown = function(title, callback) {
       profilesPanel.visibleView.profileHeader.title === title) {
     callback(profilesPanel.visibleView);
   } else {
-    CPUProfilerTestRunner._waitUntilProfileViewIsShownCallback = {title: title, callback: callback};
+    CPUProfilerTestRunner.waitUntilProfileViewIsShownCallback = {title: title, callback: callback};
   }
 };
 
-CPUProfilerTestRunner._profileViewRefresh = function() {
-  if (CPUProfilerTestRunner._waitUntilProfileViewIsShownCallback &&
-      CPUProfilerTestRunner._waitUntilProfileViewIsShownCallback.title === this.profileHeader.title) {
-    const callback = CPUProfilerTestRunner._waitUntilProfileViewIsShownCallback;
-    delete CPUProfilerTestRunner._waitUntilProfileViewIsShownCallback;
+CPUProfilerTestRunner.profileViewRefresh = function() {
+  if (CPUProfilerTestRunner.waitUntilProfileViewIsShownCallback &&
+      CPUProfilerTestRunner.waitUntilProfileViewIsShownCallback.title === this.profileHeader.title) {
+    const callback = CPUProfilerTestRunner.waitUntilProfileViewIsShownCallback;
+    delete CPUProfilerTestRunner.waitUntilProfileViewIsShownCallback;
     callback.callback(this);
   }
 };

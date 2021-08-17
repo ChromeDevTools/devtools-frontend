@@ -1230,8 +1230,8 @@ export class StringOutputStream {
    * @param {function(string):void} callback
    */
   constructor(callback) {
-    this._callback = callback;
-    this._buffer = '';
+    this.callback = callback;
+    this.buffer = '';
   }
 
   /**
@@ -1246,11 +1246,11 @@ export class StringOutputStream {
    * @param {string} chunk
    */
   async write(chunk) {
-    this._buffer += chunk;
+    this.buffer += chunk;
   }
 
   async close() {
-    this._callback(this._buffer);
+    this.callback(this.buffer);
   }
 }
 
@@ -1262,21 +1262,21 @@ export class MockSetting {
    * @param {V} value
    */
   constructor(value) {
-    this._value = value;
+    this.value = value;
   }
 
   /**
    * @return {V}
    */
   get() {
-    return this._value;
+    return this.value;
   }
 
   /**
    * @param {V} value
    */
   set(value) {
-    this._value = value;
+    this.value = value;
   }
 }
 
@@ -1284,7 +1284,7 @@ export class MockSetting {
  * @return {!Array<!Root.Runtime.Module>}
  */
 export function loadedModules() {
-  return self.runtime._modules.filter(module => module._loadedForTest)
+  return self.runtime.modules.filter(module => module.loadedForTest)
       .filter(module => module.name() !== 'help')
       .filter(module => module.name().indexOf('test_runner') === -1);
 }
@@ -1296,7 +1296,7 @@ export function loadedModules() {
 export function dumpLoadedModules(relativeTo) {
   const previous = new Set(relativeTo || []);
   function moduleSorter(left, right) {
-    return Platform.StringUtilities.naturalOrderComparator(left._descriptor.name, right._descriptor.name);
+    return Platform.StringUtilities.naturalOrderComparator(left.descriptor.name, right.descriptor.name);
   }
 
   addResult('Loaded modules:');

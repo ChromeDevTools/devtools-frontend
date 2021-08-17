@@ -15,7 +15,7 @@ DataGridTestRunner.dumpDataGrid = function(root, descentIntoCollapsed, prefix) {
     prefix = '';
   }
   const suffix = root.selected ? ' <- selected' : '';
-  const columnKeys = root.dataGrid._columnsArray.map(column => column.id);
+  const columnKeys = root.dataGrid.columnsArray.map(column => column.id);
   const outputColumns = [];
   for (const key of columnKeys) {
     if (key in root.data) {
@@ -52,7 +52,7 @@ DataGridTestRunner.validateDataGrid = function(root) {
       throw 'Wrong child.previousSibling for ' + child.data.id + ' (' + i + ' of ' + children.length + ') ';
     }
 
-    if (child.parent && !child.parent._isRoot && child.depth !== root.depth + 1) {
+    if (child.parent && !child.parent.isRoot && child.depth !== root.depth + 1) {
       throw 'Wrong depth for ' + child.data.id + ' expected ' + (root.depth + 1) + ' but got ' + child.depth;
     }
 

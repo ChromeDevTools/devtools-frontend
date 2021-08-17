@@ -12,7 +12,7 @@ PerformanceTestRunner.timelineData = function() {
     {
       'args': {'number': 32},
 
-      'cat': '__metadata',
+      'cat': '_metadata',
       'name': 'num_cpus',
       'ph': 'M',
       'pid': 3840,
@@ -22,7 +22,7 @@ PerformanceTestRunner.timelineData = function() {
     {
       'args': {'sort_index': -5},
 
-      'cat': '__metadata',
+      'cat': '_metadata',
       'name': 'process_sort_index',
       'ph': 'M',
       'pid': 3840,
@@ -32,7 +32,7 @@ PerformanceTestRunner.timelineData = function() {
     {
       'args': {'name': 'Renderer'},
 
-      'cat': '__metadata',
+      'cat': '_metadata',
       'name': 'process_name',
       'ph': 'M',
       'pid': 3840,
@@ -42,7 +42,7 @@ PerformanceTestRunner.timelineData = function() {
     {
       'args': {'sort_index': -1},
 
-      'cat': '__metadata',
+      'cat': '_metadata',
       'name': 'thread_sort_index',
       'ph': 'M',
       'pid': 3840,
@@ -5126,7 +5126,7 @@ PerformanceTestRunner.timelineData = function() {
     {
       'args': {'number': 32},
 
-      'cat': '__metadata',
+      'cat': '_metadata',
       'name': 'num_cpus',
       'ph': 'M',
       'pid': 3834,
@@ -5136,7 +5136,7 @@ PerformanceTestRunner.timelineData = function() {
     {
       'args': {'sort_index': -5},
 
-      'cat': '__metadata',
+      'cat': '_metadata',
       'name': 'process_sort_index',
       'ph': 'M',
       'pid': 3834,
@@ -5146,7 +5146,7 @@ PerformanceTestRunner.timelineData = function() {
     {
       'args': {'name': 'Renderer'},
 
-      'cat': '__metadata',
+      'cat': '_metadata',
       'name': 'process_name',
       'ph': 'M',
       'pid': 3834,
@@ -5156,7 +5156,7 @@ PerformanceTestRunner.timelineData = function() {
     {
       'args': {'sort_index': -1},
 
-      'cat': '__metadata',
+      'cat': '_metadata',
       'name': 'thread_sort_index',
       'ph': 'M',
       'pid': 3834,
@@ -5166,7 +5166,7 @@ PerformanceTestRunner.timelineData = function() {
     {
       'args': {'name': 'CrRendererMain'},
 
-      'cat': '__metadata',
+      'cat': '_metadata',
       'name': 'thread_name',
       'ph': 'M',
       'pid': 3834,
@@ -5176,7 +5176,7 @@ PerformanceTestRunner.timelineData = function() {
     {
       'args': {'name': 'Compositor'},
 
-      'cat': '__metadata',
+      'cat': '_metadata',
       'name': 'thread_name',
       'ph': 'M',
       'pid': 3834,
@@ -5354,7 +5354,7 @@ PerformanceTestRunner.timelineData = function() {
     {
       'args': {'name': 'Browser'},
 
-      'cat': '__metadata',
+      'cat': '_metadata',
       'name': 'process_name',
       'ph': 'M',
       'pid': 3778,
@@ -5364,7 +5364,7 @@ PerformanceTestRunner.timelineData = function() {
     {
       'args': {'name': 'CrBrowserMain'},
 
-      'cat': '__metadata',
+      'cat': '_metadata',
       'name': 'thread_name',
       'ph': 'M',
       'pid': 3778,

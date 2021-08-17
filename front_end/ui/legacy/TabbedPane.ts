@@ -78,6 +78,7 @@ export class TabbedPane extends VBox {
   private readonly headerContentsElement: HTMLElement;
   tabSlider: HTMLDivElement;
   readonly tabsElement: HTMLElement;
+  private readonly contentElementInternal: HTMLElement;
   private tabs: TabbedPaneTab[];
   private readonly tabsHistory: TabbedPaneTab[];
   tabsById: Map<string, TabbedPaneTab>;
@@ -117,8 +118,8 @@ export class TabbedPane extends VBox {
     this.tabsElement = this.headerContentsElement.createChild('div', 'tabbed-pane-header-tabs');
     this.tabsElement.setAttribute('role', 'tablist');
     this.tabsElement.addEventListener('keydown', this.keyDown.bind(this), false);
-    this.contentElement = this.contentElement.createChild('div', 'tabbed-pane-content') as HTMLDivElement;
-    this.contentElement.createChild('slot');
+    this.contentElementInternal = this.contentElement.createChild('div', 'tabbed-pane-content') as HTMLDivElement;
+    this.contentElementInternal.createChild('slot');
     this.tabs = [];
     this.tabsHistory = [];
     this.tabsById = new Map();
@@ -516,16 +517,17 @@ export class TabbedPane extends VBox {
     }
 
     if (!this.tabs.length) {
-      this.contentElement.classList.add('has-no-tabs');
+      this.contentElementInternal.classList.add('has-no-tabs');
       if (this.placeholderElement && !this.placeholderContainerElement) {
-        this.placeholderContainerElement = this.contentElement.createChild('div', 'tabbed-pane-placeholder fill');
+        this.placeholderContainerElement =
+            this.contentElementInternal.createChild('div', 'tabbed-pane-placeholder fill');
         this.placeholderContainerElement.appendChild(this.placeholderElement);
         if (this.focusedPlaceholderElement) {
           this.setDefaultFocusedElement(this.focusedPlaceholderElement);
         }
       }
     } else {
-      this.contentElement.classList.remove('has-no-tabs');
+      this.contentElementInternal.classList.remove('has-no-tabs');
       if (this.placeholderContainerElement) {
         this.placeholderContainerElement.remove();
         this.setDefaultFocusedElement(this.contentElement);
@@ -851,7 +853,7 @@ export class TabbedPane extends VBox {
   }
 
   elementsToRestoreScrollPositionsFor(): Element[] {
-    return [this.contentElement];
+    return [this.contentElementInternal];
   }
 
   insertBefore(tab: TabbedPaneTab, index: number): void {

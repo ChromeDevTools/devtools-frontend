@@ -357,7 +357,7 @@ export class IssuesPane extends UI.Widget.VBox {
   }
 
   private onFullUpdate(): void {
-    this.fullUpdate(false);
+    this.fullUpdate(true);
   }
 
   private fullUpdate(force: boolean): void {

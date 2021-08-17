@@ -18,7 +18,7 @@ self.CoverageTestRunner = self.CoverageTestRunner || {};
 CoverageTestRunner.startCoverage = async function(jsCoveragePerBlock) {
   self.UI.viewManager.showView('coverage');
   const coverageView = Coverage.CoverageView.instance();
-  await coverageView._startRecording({reload: false, jsCoveragePerBlock});
+  await coverageView.startRecording({reload: false, jsCoveragePerBlock});
 };
 
 /**
@@ -34,8 +34,8 @@ CoverageTestRunner.stopCoverage = function() {
  */
 CoverageTestRunner.suspendCoverageModel = async function() {
   const coverageView = Coverage.CoverageView.instance();
-  await coverageView._model.preSuspendModel();
-  await coverageView._model.suspendModel();
+  await coverageView.model.preSuspendModel();
+  await coverageView.model.suspendModel();
 };
 
 /**
@@ -43,8 +43,8 @@ CoverageTestRunner.suspendCoverageModel = async function() {
  */
 CoverageTestRunner.resumeCoverageModel = async function() {
   const coverageView = Coverage.CoverageView.instance();
-  await coverageView._model.resumeModel();
-  await coverageView._model.postResumeModel();
+  await coverageView.model.resumeModel();
+  await coverageView.model.postResumeModel();
 };
 
 /**
@@ -53,8 +53,8 @@ CoverageTestRunner.resumeCoverageModel = async function() {
 CoverageTestRunner.pollCoverage = async function() {
   const coverageView = Coverage.CoverageView.instance();
   // Make sure not to have two instances of _pollAndCallback running at the same time.
-  await coverageView._model._currentPollPromise;
-  return coverageView._model.pollAndCallback();
+  await coverageView.model.currentPollPromise;
+  return coverageView.model.pollAndCallback();
 };
 
 /**
@@ -62,7 +62,7 @@ CoverageTestRunner.pollCoverage = async function() {
  */
 CoverageTestRunner.getCoverageModel = function() {
   const coverageView = Coverage.CoverageView.instance();
-  return coverageView._model;
+  return coverageView.model;
 };
 
 /**
@@ -71,7 +71,7 @@ CoverageTestRunner.getCoverageModel = function() {
 CoverageTestRunner.exportReport = async function() {
   const coverageView = Coverage.CoverageView.instance();
   let data;
-  await coverageView._model.exportReport({
+  await coverageView.model.exportReport({
     write: d => {
       data = d;
     },
@@ -100,11 +100,11 @@ CoverageTestRunner.dumpDecorations = async function(source) {
  * @return {?DataGrid.DataGridNode}
  */
 CoverageTestRunner.findCoverageNodeForURL = function(url) {
-  const coverageListView = Coverage.CoverageView.instance()._listView;
-  const rootNode = coverageListView._dataGrid.rootNode();
+  const coverageListView = Coverage.CoverageView.instance().listView;
+  const rootNode = coverageListView.dataGrid.rootNode();
 
   for (const child of rootNode.children) {
-    if (child._coverageInfo.url().endsWith(url)) {
+    if (child.coverageInfo.url().endsWith(url)) {
       return child;
     }
   }
@@ -137,12 +137,12 @@ CoverageTestRunner.dumpDecorationsInSourceFrame = function(sourceFrame) {
 };
 
 CoverageTestRunner.dumpCoverageListView = function() {
-  const coverageListView = Coverage.CoverageView.instance()._listView;
-  const dataGrid = coverageListView._dataGrid;
+  const coverageListView = Coverage.CoverageView.instance().listView;
+  const dataGrid = coverageListView.dataGrid;
   dataGrid.updateInstantly();
 
   for (const child of dataGrid.rootNode().children) {
-    const data = child._coverageInfo;
+    const data = child.coverageInfo;
     const url = TestRunner.formatters.formatAsURL(data.url());
 
     if (url.startsWith('test://')) {

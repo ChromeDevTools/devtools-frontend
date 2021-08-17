@@ -23957,6 +23957,13 @@
                             "experimental": true,
                             "optional": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "nonIndexedPropertiesOnly",
+                            "description": "If true, returns non-indexed properties only.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ],
                     "returns": [

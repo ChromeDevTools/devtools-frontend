@@ -16111,6 +16111,10 @@ declare namespace Protocol {
        * Whether preview should be generated for the results.
        */
       generatePreview?: boolean;
+      /**
+       * If true, returns non-indexed properties only.
+       */
+      nonIndexedPropertiesOnly?: boolean;
     }
 
     export interface GetPropertiesResponse extends ProtocolResponseWithError {

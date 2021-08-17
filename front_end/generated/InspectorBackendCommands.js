@@ -3333,7 +3333,8 @@ export function registerCommands(inspectorBackend) {
         {'name': 'objectId', 'type': 'string', 'optional': false},
         {'name': 'ownProperties', 'type': 'boolean', 'optional': true},
         {'name': 'accessorPropertiesOnly', 'type': 'boolean', 'optional': true},
-        {'name': 'generatePreview', 'type': 'boolean', 'optional': true}
+        {'name': 'generatePreview', 'type': 'boolean', 'optional': true},
+        {'name': 'nonIndexedPropertiesOnly', 'type': 'boolean', 'optional': true}
       ],
       ['result', 'internalProperties', 'privateProperties', 'exceptionDetails']);
   inspectorBackend.registerCommand(

@@ -687,10 +687,10 @@ ConsoleTestRunner.visibleIndices = function() {
   for (let i = 0; i < consoleView.visibleViewMessages.length; i++) {
     // Created message elements may have a bounding rect, but not be connected to DOM.
     const item = consoleView.visibleViewMessages[i];
-    if (!item.element || !item.element.isConnected) {
+    if (!item.elementInternal || !item.elementInternal.isConnected) {
       continue;
     }
-    const itemRect = item.element.getBoundingClientRect();
+    const itemRect = item.elementInternal.getBoundingClientRect();
     const isVisible = (itemRect.bottom > viewportRect.top + 0.5) && (itemRect.top < viewportRect.bottom - 0.5);
     if (isVisible) {
       first = first === -1 ? i : first;

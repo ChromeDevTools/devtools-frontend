@@ -57,8 +57,8 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
     this.codeMirror().on('cursorActivity', this.cursorActivity.bind(this));
     this.codeMirror().on('gutterClick', this.gutterClick.bind(this));
     this.codeMirror().on('scroll', this.scroll.bind(this));
-    this.codeMirror().on('focus', this.focus.bind(this));
-    this.codeMirror().on('blur', this.blur.bind(this));
+    this.codeMirror().on('focus', this.focusInternal.bind(this));
+    this.codeMirror().on('blur', this.blurInternal.bind(this));
     this.codeMirror().on('beforeSelectionChange', this.fireBeforeSelectionChanged.bind(this));
     this.codeMirror().on('gutterContextMenu', this.gutterContextMenu.bind(this));
     this.element.addEventListener('contextmenu', this.textAreaContextMenu.bind(this), false);
@@ -494,11 +494,11 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
     this.dispatchEventToListeners(Events.ScrollChanged, topmostLineNumber);
   }
 
-  focus(): void {
+  focusInternal(): void {
     this.dispatchEventToListeners(Events.EditorFocused);
   }
 
-  private blur(): void {
+  private blurInternal(): void {
     this.dispatchEventToListeners(Events.EditorBlurred);
   }
 

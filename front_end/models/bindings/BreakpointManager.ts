@@ -607,7 +607,6 @@ export class ModelBreakpoint {
     const condition = this.breakpoint.condition();
 
     let newState: Breakpoint.State|null = null;
-    const currentState = this.breakpoint.currentState;
     if (!this.breakpoint.getIsRemoved() && this.breakpoint.enabled() && !this.scriptDiverged()) {
       let debuggerLocations: SDK.DebuggerModel.Location[] = [];
       for (const uiSourceCode of this.breakpoint.getUiSourceCodes()) {
@@ -630,8 +629,8 @@ export class ModelBreakpoint {
           };
         });
         newState = new Breakpoint.State(positions, condition);
-      } else if (currentState) {
-        newState = new Breakpoint.State(currentState.positions, condition);
+      } else if (this.breakpoint.currentState) {
+        newState = new Breakpoint.State(this.breakpoint.currentState.positions, condition);
       } else {
         // TODO(bmeurer): This fallback doesn't make a whole lot of sense, we should
         // at least signal a warning to the developer that this breakpoint wasn't

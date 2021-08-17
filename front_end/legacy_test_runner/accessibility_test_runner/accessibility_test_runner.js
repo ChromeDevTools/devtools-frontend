@@ -34,7 +34,7 @@ AccessibilityTestRunner.dumpSelectedElementAccessibilityNode = function() {
     return;
   }
 
-  AccessibilityTestRunner.dumpAccessibilityNode(sidebarPane._axNodeSubPane._axNode);
+  AccessibilityTestRunner.dumpAccessibilityNode(sidebarPane.axNodeSubPane.axNode);
 };
 
 AccessibilityTestRunner.dumpAccessibilityNode = function(accessibilityNode) {
@@ -68,12 +68,12 @@ AccessibilityTestRunner.findARIAAttributeTreeElement = function(attribute) {
     return;
   }
 
-  const ariaSubPane = sidebarPane._ariaSubPane;
-  const treeOutline = ariaSubPane._treeOutline;
-  const childNodes = treeOutline._rootElement._children;
+  const ariaSubPane = sidebarPane.ariaSubPane;
+  const treeOutline = ariaSubPane.treeOutline;
+  const childNodes = treeOutline.rootElement.children;
 
   for (const treeElement of childNodes) {
-    if (treeElement._attribute.name === attribute) {
+    if (treeElement.attribute.name === attribute) {
       return treeElement;
     }
   }

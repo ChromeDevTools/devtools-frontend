@@ -863,6 +863,7 @@ export class BackgroundServiceTreeElement extends ApplicationPanelTreeElement {
   private serviceName: Protocol.BackgroundService.ServiceName;
   private view: BackgroundServiceView|null;
   private model: BackgroundServiceModel|null;
+  private selectedInternal: boolean;
 
   constructor(storagePanel: ResourcesPanel, serviceName: Protocol.BackgroundService.ServiceName) {
     super(storagePanel, BackgroundServiceView.getUIString(serviceName), false);
@@ -870,7 +871,7 @@ export class BackgroundServiceTreeElement extends ApplicationPanelTreeElement {
     this.serviceName = serviceName;
 
     /* Whether the element has been selected. */
-    this.selected = false;
+    this.selectedInternal = false;
 
     this.view = null;
 
@@ -903,7 +904,7 @@ export class BackgroundServiceTreeElement extends ApplicationPanelTreeElement {
   initialize(model: BackgroundServiceModel|null): void {
     this.model = model;
     // Show the view if the model was initialized after selection.
-    if (this.selected && !this.view) {
+    if (this.selectedInternal && !this.view) {
       this.onselect(false);
     }
   }
@@ -914,7 +915,7 @@ export class BackgroundServiceTreeElement extends ApplicationPanelTreeElement {
 
   onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
-    this.selected = true;
+    this.selectedInternal = true;
 
     if (!this.model) {
       return false;

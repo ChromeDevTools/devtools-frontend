@@ -20,6 +20,7 @@
   },
   "scripts": {
     "auto-debug-e2etest": "autoninja -C out/Default && npm run debug-e2etest --",
+    "auto-debug-interactionstest": "autoninja -C out/Default && npm run debug-interactionstest --",
     "auto-debug-unittest": "DEBUG_TEST=1 npm run auto-unittest --",
     "auto-e2etest": "autoninja -C out/Default && npm run e2etest --",
     "auto-interactionstest": "autoninja -C out/Default && npm run interactionstest",
@@ -35,6 +36,7 @@
     "collect-strings": "third_party/node/node.py --output third_party/i18n/collect-strings.js front_end",
     "components-server": "third_party/node/node.py --output scripts/component_server/server.js",
     "debug-e2etest": "DEBUG_TEST=1 npm run e2etest",
+    "debug-interactionstest": "DEBUG_TEST=1 npm run interactionstest",
     "debug-test": "third_party/node/node.py --output scripts/npm_test.js --debug-devtools",
     "debug-unittest": "DEBUG_TEST=1 npm run unittest",
     "e2etest": "third_party/node/node.py --output scripts/test/run_test_suite.js --config=test/e2e/test-runner-config.json",

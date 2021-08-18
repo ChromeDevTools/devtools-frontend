@@ -540,7 +540,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
     treeElement.revealAndSelect(omitFocus);
   }
 
-  treeElementFromEvent(event: MouseEvent): UI.TreeOutline.TreeElement|null {
+  treeElementFromEventInternal(event: MouseEvent): UI.TreeOutline.TreeElement|null {
     const scrollContainer = this.element.parentElement;
     if (!scrollContainer) {
       return null;
@@ -573,7 +573,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
   }
 
   private onmousedown(event: MouseEvent): void {
-    const element = this.treeElementFromEvent(event);
+    const element = this.treeElementFromEventInternal(event);
 
     if (!element || element.isEventWithinDisclosureTriangle(event)) {
       return;
@@ -599,7 +599,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
   }
 
   private onmousemove(event: MouseEvent): void {
-    const element = this.treeElementFromEvent(event);
+    const element = this.treeElementFromEventInternal(event);
     if (element && this.previousHoveredElement === element) {
       return;
     }
@@ -636,7 +636,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
       return false;
     }
 
-    const treeElement = this.validDragSourceOrTarget(this.treeElementFromEvent(event));
+    const treeElement = this.validDragSourceOrTarget(this.treeElementFromEventInternal(event));
     if (!treeElement) {
       return false;
     }
@@ -662,7 +662,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
       return false;
     }
 
-    const treeElement = this.validDragSourceOrTarget(this.treeElementFromEvent(event));
+    const treeElement = this.validDragSourceOrTarget(this.treeElementFromEventInternal(event));
     if (!treeElement) {
       return false;
     }
@@ -710,7 +710,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
 
   private ondrop(event: DragEvent): void {
     event.preventDefault();
-    const treeElement = this.treeElementFromEvent(event);
+    const treeElement = this.treeElementFromEventInternal(event);
     if (treeElement instanceof ElementsTreeElement) {
       this.doMove(treeElement);
     }
@@ -757,7 +757,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
   }
 
   private contextMenuEventFired(event: MouseEvent): void {
-    const treeElement = this.treeElementFromEvent(event);
+    const treeElement = this.treeElementFromEventInternal(event);
     if (treeElement instanceof ElementsTreeElement) {
       this.showContextMenu(treeElement, event);
     }

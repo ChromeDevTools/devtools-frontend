@@ -4,7 +4,27 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/generate_css.gni")
 import("../visibility.gni")
+
+generate_css("css_files") {
+  sources = [
+    "binaryResourceView.css",
+    "blockedURLsPane.css",
+    "eventSourceMessagesView.css",
+    "networkConfigView.css",
+    "networkLogView.css",
+    "networkManageCustomHeadersView.css",
+    "networkPanel.css",
+    "networkWaterfallColumn.css",
+    "requestCookiesView.css",
+    "requestHTMLView.css",
+    "requestHeadersView.css",
+    "requestInitiatorView.css",
+    "signedExchangeInfoView.css",
+    "webSocketFrameView.css",
+  ]
+}
 
 devtools_module("network") {
   sources = [
@@ -72,7 +92,10 @@ devtools_module("network") {
 devtools_entrypoint("bundle") {
   entrypoint = "network.ts"
 
-  deps = [ ":network" ]
+  deps = [
+    ":css_files",
+    ":network",
+  ]
 
   visibility = [
     ":*",

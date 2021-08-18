@@ -14,6 +14,7 @@ const isDebug = isDebugString === 'true';
 for (const fileName of filenames) {
   let output = fs.readFileSync(path.join(srcDir, fileName), {encoding: 'utf8', flag: 'r'});
   output = output.replace(/\`/g, '\\\'');
+  output = output.replace(/\\/g, '\\\\');
 
   fs.writeFileSync(
       path.join(targetGenDir, fileName + '.js'),

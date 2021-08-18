@@ -7,6 +7,8 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import blockedURLsPaneStyles from './blockedURLsPane.css.js';
+
 const UIStrings = {
   /**
   *@description Text to enable blocking of network requests
@@ -67,7 +69,6 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
 
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/network/blockedURLsPane.css');
 
     this.manager = SDK.NetworkManager.MultitargetNetworkManager.instance();
     this.manager.addEventListener(SDK.NetworkManager.MultitargetNetworkManager.Events.BlockedPatternsChanged, () => {
@@ -88,7 +89,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
 
     this.list = new UI.ListWidget.ListWidget(this);
     this.list.element.classList.add('blocked-urls');
-    this.list.registerRequiredCSS('panels/network/blockedURLsPane.css');
+
     this.list.setEmptyPlaceholder(this.createEmptyPlaceholder());
     this.list.show(this.contentElement);
 
@@ -276,5 +277,10 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
       this.blockedCountForUrl.set(request.url(), count + 1);
       this.updateThrottler.schedule(this.update.bind(this));
     }
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.list.registerCSSFiles([blockedURLsPaneStyles]);
+    this.registerCSSFiles([blockedURLsPaneStyles]);
   }
 }

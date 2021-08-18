@@ -52,6 +52,7 @@ import {Events} from './NetworkDataGridNode.js';
 import {NetworkItemView} from './NetworkItemView.js';
 import {NetworkLogView} from './NetworkLogView.js';
 import {NetworkOverview} from './NetworkOverview.js';
+import networkPanelStyles from './networkPanel.css.js';
 import {NetworkSearchScope} from './NetworkSearchScope.js';
 
 import type {NetworkTimeCalculator} from './NetworkTimeCalculator.js';
@@ -196,7 +197,6 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
 
   constructor() {
     super('network');
-    this.registerRequiredCSS('panels/network/networkPanel.css');
 
     this.networkLogShowOverviewSetting =
         Common.Settings.Settings.instance().createSetting('networkLogShowOverview', true);
@@ -601,6 +601,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
 
   wasShown(): void {
     UI.Context.Context.instance().setFlavor(NetworkPanel, this);
+    this.registerCSSFiles([networkPanelStyles]);
 
     // Record the network tool load time after the panel has loaded.
     Host.userMetrics.panelLoaded('network', 'DevTools.Launch.Network');

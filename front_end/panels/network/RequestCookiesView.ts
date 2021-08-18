@@ -35,6 +35,8 @@ import * as Protocol from '../../generated/protocol.js';
 import * as CookieTable from '../../ui/legacy/components/cookie_table/cookie_table.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import requestCookiesViewStyles from './requestCookiesView.css.js';
+
 const UIStrings = {
   /**
   *@description Text in Request Cookies View of the Network panel
@@ -94,7 +96,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
-    this.registerRequiredCSS('panels/network/requestCookiesView.css');
+
     this.element.classList.add('request-cookies-view');
 
     this.request = request;
@@ -274,6 +276,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
 
   wasShown(): void {
     super.wasShown();
+    this.registerCSSFiles([requestCookiesViewStyles]);
     this.request.addEventListener(
         SDK.NetworkRequest.Events.RequestHeadersChanged, this.refreshRequestCookiesView, this);
     this.request.addEventListener(

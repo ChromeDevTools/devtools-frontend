@@ -50,6 +50,8 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
+import networkLogViewStyles from './networkLogView.css.js';
+
 import type {NetworkLogViewInterface, NetworkNode} from './NetworkDataGridNode.js';
 import {Events, NetworkGroupNode, NetworkRequestNode} from './NetworkDataGridNode.js';
 import {NetworkFrameGrouper} from './NetworkFrameGrouper.js';
@@ -393,7 +395,6 @@ export class NetworkLogView extends UI.Widget.VBox implements
       networkLogLargeRowsSetting: Common.Settings.Setting<boolean>) {
     super();
     this.setMinimumSize(50, 64);
-    this.registerRequiredCSS('panels/network/networkLogView.css');
 
     this.element.id = 'network-container';
     this.element.classList.add('no-node-selected');
@@ -1185,6 +1186,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
 
   wasShown(): void {
     this.refreshIfNeeded();
+    this.registerCSSFiles([networkLogViewStyles]);
     this.columns.wasShown();
   }
 

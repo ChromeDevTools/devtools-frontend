@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import eventSourceMessagesViewStyles from './eventSourceMessagesView.css.js';
 import type * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -43,7 +44,7 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
-    this.registerRequiredCSS('panels/network/eventSourceMessagesView.css');
+
     this.element.classList.add('event-source-messages-view');
     this.request = request;
 
@@ -74,6 +75,7 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
 
   wasShown(): void {
     this.dataGrid.rootNode().removeChildren();
+    this.registerCSSFiles([eventSourceMessagesViewStyles]);
     const messages = this.request.eventSourceMessages();
     for (let i = 0; i < messages.length; ++i) {
       this.dataGrid.insertChild(new EventSourceMessageNode(messages[i]));

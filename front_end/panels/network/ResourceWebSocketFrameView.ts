@@ -31,6 +31,7 @@ import * as SourceFrame from '../../ui/legacy/components/source_frame/source_fra
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {BinaryResourceView} from './BinaryResourceView.js';
+import webSocketFrameViewStyles from './webSocketFrameView.css.js';
 
 const UIStrings = {
   /**
@@ -160,7 +161,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
-    this.registerRequiredCSS('panels/network/webSocketFrameView.css');
+
     this.element.classList.add('websocket-frame-view');
     this.request = request;
 
@@ -269,6 +270,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
 
   wasShown(): void {
     this.refresh();
+    this.registerCSSFiles([webSocketFrameViewStyles]);
     this.request.addEventListener(SDK.NetworkRequest.Events.WebsocketFrameAdded, this.frameAdded, this);
   }
 

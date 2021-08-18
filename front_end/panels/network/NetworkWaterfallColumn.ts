@@ -3,6 +3,9 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+
+import networkWaterfallColumnStyles from './networkWaterfallColumn.css.js';
+
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -47,7 +50,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
   constructor(calculator: NetworkTimeCalculator) {
     // TODO(allada) Make this a shadowDOM when the NetworkWaterfallColumn gets moved into NetworkLogViewColumns.
     super(false);
-    this.registerRequiredCSS('panels/network/networkWaterfallColumn.css');
+
     this.canvas = (this.contentElement.createChild('canvas') as HTMLCanvasElement);
     this.canvas.tabIndex = -1;
     this.setDefaultFocusedElement(this.canvas);
@@ -201,6 +204,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
 
   wasShown(): void {
     this.update();
+    this.registerCSSFiles([networkWaterfallColumnStyles]);
   }
 
   private onMouseMove(event: MouseEvent): void {

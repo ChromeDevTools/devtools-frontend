@@ -44,6 +44,8 @@ import * as ClientVariations from '../../third_party/chromium/client-variations/
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import requestHeadersViewStyles from './requestHeadersView.css.js';
+
 const UIStrings = {
   /**
   *@description Text in Request Headers View of the Network panel
@@ -261,7 +263,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
-    this.registerRequiredCSS('panels/network/requestHeadersView.css');
+
     this.element.classList.add('request-headers-view');
 
     this.request = request;
@@ -307,6 +309,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
 
   wasShown(): void {
     this.clearHighlight();
+    this.registerCSSFiles([requestHeadersViewStyles]);
     this.request.addEventListener(SDK.NetworkRequest.Events.RemoteAddressChanged, this.refreshRemoteAddress, this);
     this.request.addEventListener(SDK.NetworkRequest.Events.RequestHeadersChanged, this.refreshRequestHeaders, this);
     this.request.addEventListener(SDK.NetworkRequest.Events.ResponseHeadersChanged, this.refreshResponseHeaders, this);

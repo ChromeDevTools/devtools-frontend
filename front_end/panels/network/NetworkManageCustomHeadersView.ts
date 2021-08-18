@@ -5,6 +5,8 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import networkManageCustomHeadersViewStyles from './networkManageCustomHeadersView.css.js';
+
 const UIStrings = {
   /**
   *@description Text in Network Manage Custom Headers View of the Network panel
@@ -50,14 +52,12 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox implements UI
       changeHeaderColumnCallback: (arg0: string, arg1: string) => boolean,
       removeHeaderColumnCallback: (arg0: string) => boolean) {
     super(true);
-    this.registerRequiredCSS('panels/network/networkManageCustomHeadersView.css');
 
     this.contentElement.classList.add('custom-headers-wrapper');
     this.contentElement.createChild('div', 'header').textContent = i18nString(UIStrings.manageHeaderColumns);
 
     this.list = new UI.ListWidget.ListWidget(this);
     this.list.element.classList.add('custom-headers-list');
-    this.list.registerRequiredCSS('panels/network/networkManageCustomHeadersView.css');
 
     const placeholder = document.createElement('div');
     placeholder.classList.add('custom-headers-list-list-empty');
@@ -79,6 +79,8 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox implements UI
 
   wasShown(): void {
     this.headersUpdated();
+    this.list.registerCSSFiles([networkManageCustomHeadersViewStyles]);
+    this.registerCSSFiles([networkManageCustomHeadersViewStyles]);
   }
 
   private headersUpdated(): void {

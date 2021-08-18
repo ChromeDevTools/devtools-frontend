@@ -10,6 +10,8 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as EmulationComponents from '../settings/emulation/components/components.js';
 
+import networkConfigViewStyles from './networkConfigView.css.js';
+
 const UIStrings = {
   /**
   *@description Text in Network Config View of the Network panel
@@ -57,7 +59,7 @@ let networkConfigViewInstance: NetworkConfigView;
 export class NetworkConfigView extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/network/networkConfigView.css');
+
     this.contentElement.classList.add('network-config');
 
     this.createCacheSection();
@@ -332,6 +334,10 @@ export class NetworkConfigView extends UI.Widget.VBox {
       }
       customAcceptedEncodingSetting.set(encodings.join(','));
     }
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([networkConfigViewStyles]);
   }
 }
 

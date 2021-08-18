@@ -30,17 +30,20 @@
 
 import * as UI from '../../ui/legacy/legacy.js';
 
+import requestHTMLViewStyles from './requestHTMLView.css.js';
+
 export class RequestHTMLView extends UI.Widget.VBox {
   private readonly dataURL: string;
   constructor(dataURL: string) {
     super(true);
-    this.registerRequiredCSS('panels/network/requestHTMLView.css');
+
     this.dataURL = encodeURI(dataURL).replace(/#/g, '%23');
     this.contentElement.classList.add('html', 'request-view');
   }
 
   wasShown(): void {
     this.createIFrame();
+    this.registerCSSFiles([requestHTMLViewStyles]);
   }
 
   willHide(): void {

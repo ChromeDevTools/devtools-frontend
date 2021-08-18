@@ -8,6 +8,8 @@ import * as Logs from '../../models/logs/logs.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import requestInitiatorViewStyles from './requestInitiatorView.css.js';
+
 const UIStrings = {
   /**
   *@description Text in Request Initiator View of the Network panel
@@ -32,7 +34,7 @@ export class RequestInitiatorView extends UI.Widget.VBox {
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
-    this.registerRequiredCSS('panels/network/requestInitiatorView.css');
+
     this.element.classList.add('request-initiator-view');
     this.linkifier = new Components.Linkifier.Linkifier();
     this.request = request;
@@ -136,6 +138,7 @@ export class RequestInitiatorView extends UI.Widget.VBox {
     if (this.hasShown) {
       return;
     }
+    this.registerCSSFiles([requestInitiatorViewStyles]);
     let initiatorDataPresent = false;
     const containerTree = this.createTree();
 

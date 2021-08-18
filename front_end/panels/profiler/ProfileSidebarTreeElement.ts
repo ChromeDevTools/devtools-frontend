@@ -6,7 +6,7 @@ import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import type {DataDisplayDelegate, ProfileHeader} from './ProfileHeader.js';
+import type {DataDisplayDelegate, ProfileHeader, StatusUpdate} from './ProfileHeader.js';
 import {Events as ProfileHeaderEvents} from './ProfileHeader.js';
 
 const UIStrings = {
@@ -81,11 +81,11 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
     this.saveLinkElement.addEventListener('click', this.saveProfile.bind(this), false);
   }
 
-  onProfileReceived(_event: Common.EventTarget.EventTargetEvent): void {
+  onProfileReceived(): void {
     this.createSaveLink();
   }
 
-  updateStatus(event: Common.EventTarget.EventTargetEvent): void {
+  updateStatus(event: Common.EventTarget.EventTargetEvent<StatusUpdate>): void {
     const statusUpdate = event.data;
     if (statusUpdate.subtitle !== null) {
       this.subtitleElement.textContent = statusUpdate.subtitle || '';

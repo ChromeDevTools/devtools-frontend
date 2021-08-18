@@ -7,7 +7,7 @@ import * as Common from '../../core/common/common.js';
 import type * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
 
-export class ProfileHeader extends Common.ObjectWrapper.ObjectWrapper {
+export class ProfileHeader extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   readonly profileTypeInternal: ProfileType;
   title: string;
   uid: number;
@@ -97,6 +97,12 @@ export enum Events {
   ProfileReceived = 'ProfileReceived',
   ProfileTitleChanged = 'ProfileTitleChanged',
 }
+
+export type EventTypes = {
+  [Events.UpdateStatus]: StatusUpdate,
+  [Events.ProfileReceived]: void,
+  [Events.ProfileTitleChanged]: ProfileHeader,
+};
 
 export abstract class ProfileType extends Common.ObjectWrapper.ObjectWrapper {
   readonly idInternal: string;

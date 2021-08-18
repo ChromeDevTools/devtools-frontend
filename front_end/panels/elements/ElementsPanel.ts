@@ -150,6 +150,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
                                                              UI.View.ViewLocationResolver {
   private splitWidget: UI.SplitWidget.SplitWidget;
   private readonly searchableViewInternal: UI.SearchableView.SearchableView;
+  private contentElementInternal: HTMLDivElement;
   private splitMode: _splitMode|null;
   private readonly accessibilityTreeView: AccessibilityTreeView|undefined;
   private breadcrumbs: ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs;
@@ -193,21 +194,21 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     this.searchableViewInternal.setPlaceholder(i18nString(UIStrings.findByStringSelectorOrXpath));
     const stackElement = this.searchableViewInternal.element;
 
-    this.contentElement = document.createElement('div');
+    this.contentElementInternal = document.createElement('div');
     const crumbsContainer = document.createElement('div');
     if (Root.Runtime.experiments.isEnabled('fullAccessibilityTree')) {
       this.initializeFullAccessibilityTreeView(stackElement);
     }
-    stackElement.appendChild(this.contentElement);
+    stackElement.appendChild(this.contentElementInternal);
     stackElement.appendChild(crumbsContainer);
 
     this.splitWidget.setMainWidget(this.searchableViewInternal);
     this.splitMode = null;
 
-    this.contentElement.id = 'elements-content';
+    this.contentElementInternal.id = 'elements-content';
     // FIXME: crbug.com/425984
     if (Common.Settings.Settings.instance().moduleSetting('domWordWrap').get()) {
-      this.contentElement.classList.add('elements-wrap');
+      this.contentElementInternal.classList.add('elements-wrap');
     }
     Common.Settings.Settings.instance()
         .moduleSetting('domWordWrap')
@@ -407,12 +408,12 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
     for (const treeOutline of this.treeOutlines) {
       // Attach heavy component lazily
-      if (treeOutline.element.parentElement !== this.contentElement) {
+      if (treeOutline.element.parentElement !== this.contentElementInternal) {
         const header = this.treeOutlineHeaders.get(treeOutline);
         if (header) {
-          this.contentElement.appendChild(header);
+          this.contentElementInternal.appendChild(header);
         }
-        this.contentElement.appendChild(treeOutline.element);
+        this.contentElementInternal.appendChild(treeOutline.element);
       }
     }
     super.wasShown();
@@ -444,10 +445,10 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     for (const treeOutline of this.treeOutlines) {
       treeOutline.setVisible(false);
       // Detach heavy component on hide
-      this.contentElement.removeChild(treeOutline.element);
+      this.contentElementInternal.removeChild(treeOutline.element);
       const header = this.treeOutlineHeaders.get(treeOutline);
       if (header) {
-        this.contentElement.removeChild(header);
+        this.contentElementInternal.removeChild(header);
       }
     }
     super.willHide();
@@ -641,7 +642,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   }
 
   private domWordWrapSettingChanged(event: Common.EventTarget.EventTargetEvent): void {
-    this.contentElement.classList.toggle('elements-wrap', (event.data as boolean));
+    this.contentElementInternal.classList.toggle('elements-wrap', (event.data as boolean));
     for (const treeOutline of this.treeOutlines) {
       treeOutline.setWordWrap((event.data as boolean));
     }

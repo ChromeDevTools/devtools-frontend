@@ -96,6 +96,7 @@ export class IsolateSelector extends UI.Widget.VBox implements UI.ListControl.Li
   }
 
   wasShown(): void {
+    super.wasShown();
     SDK.IsolateManager.IsolateManager.instance().addEventListener(
         SDK.IsolateManager.Events.MemoryChanged, this.heapStatsChanged, this);
   }

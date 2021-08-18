@@ -45,8 +45,8 @@ SourcesTestRunner.runSearchAndDumpResults = function(scope, searchConfig, callba
 
   function searchFinishedCallback() {
     function comparator(searchResultA, searchResultB) {
-      const aUrl = searchResultA._uiSourceCode.url();
-      const bUrl = searchResultB._uiSourceCode.url();
+      const aUrl = searchResultA.uiSourceCode.url();
+      const bUrl = searchResultB.uiSourceCode.url();
       return aUrl > bUrl ? 1 : bUrl > aUrl ? -1 : 0;
     }
 
@@ -54,8 +54,8 @@ SourcesTestRunner.runSearchAndDumpResults = function(scope, searchConfig, callba
 
     for (let i = 0; i < searchResults.length; ++i) {
       const searchResult = searchResults[i];
-      const uiSourceCode = searchResult._uiSourceCode;
-      const searchMatches = searchResult._searchMatches;
+      const uiSourceCode = searchResult.uiSourceCode;
+      const searchMatches = searchResult.searchMatches;
 
       if (!searchMatches.length) {
         continue;
@@ -94,7 +94,7 @@ SourcesTestRunner.replaceAndDumpChange = function(sourceFrame, searchConfig, rep
   const modifiersString = (modifiers.length ? ' (' + modifiers.join(', ') + ')' : '');
   TestRunner.addResult(
       'Running replace test for /' + searchConfig.query + '/' + replacement + '/ ' + modifiersString + ':');
-  const editor = sourceFrame._textEditor;
+  const editor = sourceFrame.textEditor;
   const oldLines = [];
 
   for (let i = 0; i < editor.linesCount; ++i) {
@@ -103,18 +103,18 @@ SourcesTestRunner.replaceAndDumpChange = function(sourceFrame, searchConfig, rep
 
   const searchableView = UI.panels.sources.sourcesView().searchableView();
   searchableView.showSearchField();
-  searchableView._caseSensitiveButton.setToggled(searchConfig.caseSensitive);
-  searchableView._regexButton.setToggled(searchConfig.isRegex);
-  searchableView._searchInputElement.value = searchConfig.query;
-  searchableView._replaceToggleButton.setToggled(true);
-  searchableView._updateSecondRowVisibility();
-  searchableView._replaceInputElement.value = replacement;
-  searchableView._performSearch(true, true);
+  searchableView.caseSensitiveButton.setToggled(searchConfig.caseSensitive);
+  searchableView.regexButton.setToggled(searchConfig.isRegex);
+  searchableView.searchInputElement.value = searchConfig.query;
+  searchableView.replaceToggleButton.setToggled(true);
+  searchableView.updateSecondRowVisibility();
+  searchableView.replaceInputElement.value = replacement;
+  searchableView.performSearch(true, true);
 
   if (replaceAll) {
-    searchableView._replaceAll();
+    searchableView.replaceAll();
   } else {
-    searchableView._replace();
+    searchableView.replace();
   }
 
   const newLines = [];

@@ -8,10 +8,10 @@
 self.SourcesTestRunner = self.SourcesTestRunner || {};
 
 SourcesTestRunner.replaceInSource = function(sourceFrame, string, replacement) {
-  sourceFrame._textEditor.setReadOnly(false);
+  sourceFrame.textEditor.setReadOnly(false);
 
-  for (let i = 0; i < sourceFrame._textEditor.linesCount; ++i) {
-    const line = sourceFrame._textEditor.line(i);
+  for (let i = 0; i < sourceFrame.textEditor.linesCount; ++i) {
+    const line = sourceFrame.textEditor.line(i);
     const column = line.indexOf(string);
 
     if (column === -1) {
@@ -19,7 +19,7 @@ SourcesTestRunner.replaceInSource = function(sourceFrame, string, replacement) {
     }
 
     const range = new TextUtils.TextRange(i, column, i, column + string.length);
-    sourceFrame._textEditor.editRange(range, replacement);
+    sourceFrame.textEditor.editRange(range, replacement);
     break;
   }
 };
@@ -29,5 +29,5 @@ SourcesTestRunner.commitSource = function(sourceFrame) {
 };
 
 SourcesTestRunner.undoSourceEditing = function(sourceFrame) {
-  sourceFrame._textEditor.undo();
+  sourceFrame.textEditor.undo();
 };

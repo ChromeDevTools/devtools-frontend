@@ -69,10 +69,10 @@ SourcesTestRunner.dumpNavigatorViewInAllModes = function(view) {
  */
 SourcesTestRunner.dumpNavigatorViewInMode = function(view, mode) {
   TestRunner.addResult(view instanceof Sources.NetworkNavigatorView ? 'Sources:' : 'Content Scripts:');
-  view._groupByFrame = mode.includes('frame');
-  view._groupByDomain = mode.includes('domain');
-  view._groupByFolder = mode.includes('folder');
-  view._resetForTest();
+  view.groupByFrame = mode.includes('frame');
+  view.groupByDomain = mode.includes('domain');
+  view.groupByFolder = mode.includes('folder');
+  view.resetForTest();
   TestRunner.addResult('-------- Setting mode: [' + mode + ']');
   SourcesTestRunner.dumpNavigatorView(view);
 };
@@ -135,7 +135,7 @@ SourcesTestRunner.dumpSwatchPositions = function(sourceFrame, bookmarkType) {
 
   for (let i = 0; i < markers.length; i++) {
     const position = markers[i].position();
-    const swatch = markers[i]._marker.widgetNode.firstChild;
+    const swatch = markers[i].marker.widgetNode.firstChild;
     let text = swatch.textContent;
     if (swatch.localName === 'devtools-color-swatch') {
       text = swatch.color.asString(swatch.format);

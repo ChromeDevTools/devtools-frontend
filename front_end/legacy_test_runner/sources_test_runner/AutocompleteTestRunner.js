@@ -31,8 +31,8 @@ SourcesTestRunner.dumpSuggestions = function(textEditor, lines) {
   textEditor.setText(lines.join('\n').replace('|', ''));
   textEditor.setSelection(TextUtils.TextRange.createFromLocation(lineNumber, columnNumber));
   TestRunner.addSniffer(
-      TextEditor.TextEditorAutocompleteController.prototype, '_onSuggestionsShownForTest', suggestionsShown);
-  textEditor._autocompleteController.autocomplete();
+      TextEditor.TextEditorAutocompleteController.prototype, 'onSuggestionsShownForTest', suggestionsShown);
+  textEditor.autocompleteController.autocomplete();
 
   function suggestionsShown(words) {
     TestRunner.addResult('========= Selection In Editor =========');

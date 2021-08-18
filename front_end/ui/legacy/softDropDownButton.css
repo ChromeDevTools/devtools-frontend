@@ -12,10 +12,6 @@ button.soft-dropdown {
   background: none;
 }
 
-button.soft-dropdown:hover {
-  color: var(--color-text-primary);
-}
-
 button.soft-dropdown[disabled] {
   opacity: 50%;
 }

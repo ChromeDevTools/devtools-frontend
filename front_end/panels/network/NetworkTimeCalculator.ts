@@ -88,7 +88,7 @@ export class NetworkTimeBoundary {
   }
 }
 
-export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper implements
+export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     PerfUI.TimelineGrid.Calculator {
   startAtZero: boolean;
   private minimumBoundaryInternal: number;
@@ -305,6 +305,10 @@ export const _minimumSpread = 0.1;
 export enum Events {
   BoundariesChanged = 'BoundariesChanged',
 }
+
+export type EventTypes = {
+  [Events.BoundariesChanged]: void,
+};
 
 export class NetworkTransferTimeCalculator extends NetworkTimeCalculator {
   constructor() {

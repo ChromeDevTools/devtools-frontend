@@ -99,9 +99,3 @@ export function accessibilityNodeRenderer(node: AXTreeNode): LitHtml.TemplateRes
   const ignored = sdkNode.ignored();
   return LitHtml.html`<${tag} .data=${{name, role, ignored} as Data}></${tag}>`;
 }
-
-export interface AccessibilityTreeNodeData {
-  ignored: boolean;
-  name: string;
-  role: string;
-}

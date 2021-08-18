@@ -299,7 +299,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
       direction: key,
       setNodeExpandedState: (node, expanded) => this.setNodeExpandedState(node, expanded),
     });
-    this.focusTreeNode(domNode);
+    await this.focusTreeNode(domNode);
   }
 
   private processEnterOrSpaceNavigation(currentDOMNode: HTMLLIElement): void {

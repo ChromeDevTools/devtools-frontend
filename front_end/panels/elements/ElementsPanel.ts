@@ -496,9 +496,6 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       return;
     }
     selectedNode.setAsInspectedNode();
-    if (this.accessibilityTreeView) {
-      this.accessibilityTreeView.selectedNodeChanged(selectedNode);
-    }
     if (focus) {
       this.selectedNodeOnReset = selectedNode;
       this.hasNonDefaultSelectedNode = true;
@@ -830,7 +827,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     return node;
   }
 
-  revealAndSelectNode(node: SDK.DOMModel.DOMNode, focus: boolean, omitHighlight?: boolean): Promise<void> {
+  async revealAndSelectNode(node: SDK.DOMModel.DOMNode, focus: boolean, omitHighlight?: boolean): Promise<void> {
     this.omitDefaultSelection = true;
 
     node = Common.Settings.Settings.instance().moduleSetting('showUAShadowDOM').get() ?
@@ -840,17 +837,19 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       node.highlightForTwoSeconds();
     }
 
-    return UI.ViewManager.ViewManager.instance().showView('elements', false, !focus).then(() => {
-      this.selectDOMNode(node, focus);
-      delete this.omitDefaultSelection;
+    if (this.accessibilityTreeView) {
+      this.accessibilityTreeView.selectedNodeChanged(node);
+    }
 
-      if (!this.notFirstInspectElement) {
-        ElementsPanel.firstInspectElementNodeNameForTest = node.nodeName();
-        ElementsPanel.firstInspectElementCompletedForTest();
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.inspectElementCompleted();
-      }
-      this.notFirstInspectElement = true;
-    });
+    await UI.ViewManager.ViewManager.instance().showView('elements', false, !focus);
+    this.selectDOMNode(node, focus);
+    delete this.omitDefaultSelection;
+    if (!this.notFirstInspectElement) {
+      ElementsPanel.firstInspectElementNodeNameForTest = node.nodeName();
+      ElementsPanel.firstInspectElementCompletedForTest();
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.inspectElementCompleted();
+    }
+    this.notFirstInspectElement = true;
   }
 
   private showUAShadowDOMChanged(): void {

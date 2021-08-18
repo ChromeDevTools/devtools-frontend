@@ -66,6 +66,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/profiler/ProfileLauncherView.ts
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ProfileLauncherView extends UI.Widget.VBox {
   readonly panel: ProfilesPanel;
+  private contentElementInternal: HTMLElement;
   readonly selectedProfileTypeSetting: Common.Settings.Setting<string>;
   profileTypeHeaderElement: HTMLElement;
   readonly profileTypeSelectorForm: HTMLElement;
@@ -86,15 +87,17 @@ export class ProfileLauncherView extends UI.Widget.VBox {
 
     this.panel = profilesPanel;
     this.element.classList.add('profile-launcher-view');
-    this.contentElement = this.element.createChild('div', 'profile-launcher-view-content vbox') as HTMLDivElement;
+    this.contentElementInternal =
+        this.element.createChild('div', 'profile-launcher-view-content vbox') as HTMLDivElement;
 
-    const profileTypeSelectorElement = this.contentElement.createChild('div', 'vbox');
+    const profileTypeSelectorElement = this.contentElementInternal.createChild('div', 'vbox');
     this.selectedProfileTypeSetting = Common.Settings.Settings.instance().createSetting('selectedProfileType', 'CPU');
     this.profileTypeHeaderElement = profileTypeSelectorElement.createChild('h1');
     this.profileTypeSelectorForm = profileTypeSelectorElement.createChild('form');
     UI.ARIAUtils.markAsRadioGroup(this.profileTypeSelectorForm);
 
-    const isolateSelectorElement = this.contentElement.createChild('div', 'vbox profile-isolate-selector-block');
+    const isolateSelectorElement =
+        this.contentElementInternal.createChild('div', 'vbox profile-isolate-selector-block');
     isolateSelectorElement.createChild('h1').textContent = i18nString(UIStrings.selectJavascriptVmInstance);
     const isolateSelector = new IsolateSelector();
     const isolateSelectorElementChild = isolateSelectorElement.createChild('div', 'vbox profile-launcher-target-list');
@@ -102,7 +105,7 @@ export class ProfileLauncherView extends UI.Widget.VBox {
     isolateSelector.show(isolateSelectorElementChild);
     isolateSelectorElement.appendChild(isolateSelector.totalMemoryElement());
 
-    const buttonsDiv = this.contentElement.createChild('div', 'hbox profile-launcher-buttons');
+    const buttonsDiv = this.contentElementInternal.createChild('div', 'hbox profile-launcher-buttons');
     this.controlButton = UI.UIUtils.createTextButton('', this.controlButtonClicked.bind(this), '', /* primary */ true);
     this.loadButton = UI.UIUtils.createTextButton(i18nString(UIStrings.load), this.loadButtonClicked.bind(this), '');
     buttonsDiv.appendChild(this.controlButton);

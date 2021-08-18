@@ -15709,7 +15709,7 @@ declare namespace Protocol {
     /**
      * Id of an execution context.
      */
-    export type ExecutionContextId = integer;
+    export type ExecutionContextId = OpaqueIdentifier<integer, 'Protocol.Runtime.ExecutionContextId'>;
 
     /**
      * Description of an isolated world.
@@ -15851,7 +15851,7 @@ declare namespace Protocol {
     /**
      * Unique identifier of current debugger.
      */
-    export type UniqueDebuggerId = string;
+    export type UniqueDebuggerId = OpaqueIdentifier<string, 'Protocol.Runtime.UniqueDebuggerId'>;
 
     /**
      * If `debuggerId` is set stack trace comes from another debugger and can be resolved there. This

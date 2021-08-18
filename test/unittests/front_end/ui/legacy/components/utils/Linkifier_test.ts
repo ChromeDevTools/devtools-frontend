@@ -16,6 +16,7 @@ const {assert} = chai;
 
 const scriptId1 = '1' as Protocol.Runtime.ScriptId;
 const scriptId2 = '2' as Protocol.Runtime.ScriptId;
+const executionContextId = 1234 as Protocol.Runtime.ExecutionContextId;
 
 describeWithMockConnection('Linkifier', async () => {
   let SDK: typeof SDKModule;
@@ -84,7 +85,7 @@ describeWithMockConnection('Linkifier', async () => {
       startColumn: 0,
       endLine: 10,
       endColumn: 10,
-      executionContextId: 1234,
+      executionContextId,
       hash: '',
       isLiveEdit: false,
       sourceMapURL: undefined,
@@ -121,7 +122,7 @@ describeWithMockConnection('Linkifier', async () => {
       startColumn: 0,
       endLine: 10,
       endColumn: 10,
-      executionContextId: 1234,
+      executionContextId,
       hash: '',
       isLiveEdit: false,
       sourceMapURL: undefined,

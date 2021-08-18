@@ -197,8 +197,9 @@ export class RuntimeModel extends SDKModel<EventTypes> {
     this.agent.invoke_setCustomObjectFormatterEnabled({enabled});
   }
 
-  async compileScript(expression: string, sourceURL: string, persistScript: boolean, executionContextId: number):
-      Promise<CompileScriptResult|null> {
+  async compileScript(
+      expression: string, sourceURL: string, persistScript: boolean,
+      executionContextId: Protocol.Runtime.ExecutionContextId): Promise<CompileScriptResult|null> {
     const response = await this.agent.invoke_compileScript({
       expression: expression,
       sourceURL: sourceURL,
@@ -214,9 +215,9 @@ export class RuntimeModel extends SDKModel<EventTypes> {
   }
 
   async runScript(
-      scriptId: Protocol.Runtime.ScriptId, executionContextId: number, objectGroup?: string, silent?: boolean,
-      includeCommandLineAPI?: boolean, returnByValue?: boolean, generatePreview?: boolean,
-      awaitPromise?: boolean): Promise<EvaluationResult> {
+      scriptId: Protocol.Runtime.ScriptId, executionContextId: Protocol.Runtime.ExecutionContextId,
+      objectGroup?: string, silent?: boolean, includeCommandLineAPI?: boolean, returnByValue?: boolean,
+      generatePreview?: boolean, awaitPromise?: boolean): Promise<EvaluationResult> {
     const response = await this.agent.invoke_runScript({
       scriptId,
       executionContextId,
@@ -537,7 +538,7 @@ class RuntimeDispatcher implements ProtocolProxyApi.RuntimeDispatcher {
 }
 
 export class ExecutionContext {
-  id: number;
+  id: Protocol.Runtime.ExecutionContextId;
   uniqueId: string;
   name: string;
   private labelInternal: string|null;
@@ -547,8 +548,8 @@ export class ExecutionContext {
   debuggerModel: DebuggerModel;
   frameId: Protocol.Page.FrameId|undefined;
   constructor(
-      runtimeModel: RuntimeModel, id: number, uniqueId: string, name: string, origin: string, isDefault: boolean,
-      frameId?: Protocol.Page.FrameId) {
+      runtimeModel: RuntimeModel, id: Protocol.Runtime.ExecutionContextId, uniqueId: string, name: string,
+      origin: string, isDefault: boolean, frameId?: Protocol.Page.FrameId) {
     this.id = id;
     this.uniqueId = uniqueId;
     this.name = name;

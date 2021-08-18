@@ -23,7 +23,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/TransformController.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
+export class TransformController extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private mode!: Modes;
   private scaleInternal: number;
   private offsetXInternal: number;
@@ -262,6 +262,10 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
 export enum Events {
   TransformChanged = 'TransformChanged',
 }
+
+export type EventTypes = {
+  [Events.TransformChanged]: void,
+};
 
 export const enum Modes {
   Pan = 'Pan',

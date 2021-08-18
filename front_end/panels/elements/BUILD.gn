@@ -14,6 +14,15 @@ generate_css("css_files") {
     "computedStyleSidebarPane.css",
     "computedStyleWidgetTree.css",
     "domLinkifier.css",
+    "elementStatePaneWidget.css",
+    "elementsPanel.css",
+    "elementsTreeOutline.css",
+    "metricsSidebarPane.css",
+    "nodeStackTraceWidget.css",
+    "platformFontsWidget.css",
+    "propertiesWidget.css",
+    "stylesSectionTree.css",
+    "stylesSidebarPane.css",
   ]
 }
 

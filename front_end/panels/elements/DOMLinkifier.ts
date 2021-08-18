@@ -109,8 +109,8 @@ export const linkifyDeferredNodeReference = function(
       preventKeyboardFocus: undefined,
     }): Node {
   const root = document.createElement('div');
-  const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
-      root, {cssFile: 'panels/elements/domLinkifier.css', delegatesFocus: undefined});
+  const shadowRoot =
+      UI.Utils.createShadowRootWithCoreStyles(root, {cssFile: [domLinkifierStyles], delegatesFocus: undefined});
   const link = (shadowRoot.createChild('div', 'node-link') as HTMLDivElement);
   link.createChild('slot');
   link.addEventListener('click', deferredNode.resolve.bind(deferredNode, onDeferredNodeResolved), false);

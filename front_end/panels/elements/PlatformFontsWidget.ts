@@ -29,6 +29,9 @@
  */
 
 import * as i18n from '../../core/i18n/i18n.js';
+
+import platformFontsWidgetStyles from './platformFontsWidget.css.js';
+
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -64,7 +67,6 @@ export class PlatformFontsWidget extends UI.ThrottledWidget.ThrottledWidget {
 
   constructor(sharedModel: ComputedStyleModel) {
     super(true);
-    this.registerRequiredCSS('panels/elements/platformFontsWidget.css');
 
     this.sharedModel = sharedModel;
     this.sharedModel.addEventListener(Events.ComputedStyleChanged, this.update, this);
@@ -123,5 +125,9 @@ export class PlatformFontsWidget extends UI.ThrottledWidget.ThrottledWidget {
       const usage = platformFonts[i].glyphCount;
       fontUsageElement.textContent = i18nString(UIStrings.dGlyphs, {n: usage});
     }
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([platformFontsWidgetStyles]);
   }
 }

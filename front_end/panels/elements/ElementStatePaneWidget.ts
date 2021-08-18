@@ -7,6 +7,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {ElementsPanel} from './ElementsPanel.js';
+import elementStatePaneWidgetStyles from './elementStatePaneWidget.css.js';
 
 const UIStrings = {
   /**
@@ -29,7 +30,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
   private cssModel?: SDK.CSSModel.CSSModel|null;
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/elements/elementStatePaneWidget.css');
+
     this.contentElement.className = 'styles-element-state-pane';
     UI.UIUtils.createTextChild(this.contentElement.createChild('div'), i18nString(UIStrings.forceElementState));
     const table = document.createElement('table');
@@ -98,6 +99,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
 
   wasShown(): void {
     super.wasShown();
+    this.registerCSSFiles([elementStatePaneWidgetStyles]);
     this.update();
   }
 

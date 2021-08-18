@@ -68,7 +68,7 @@ export interface TabbedEditorContainerDelegate {
   recycleUISourceCodeFrame(sourceFrame: UISourceCodeFrame, uiSourceCode: Workspace.UISourceCode.UISourceCode): void;
 }
 
-export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
+export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly delegate: TabbedEditorContainerDelegate;
   private readonly tabbedPane: UI.TabbedPane.TabbedPane;
   private tabIds: Map<Workspace.UISourceCode.UISourceCode, string>;
@@ -615,6 +615,18 @@ export enum Events {
   EditorSelected = 'EditorSelected',
   EditorClosed = 'EditorClosed',
 }
+
+export interface EditorSelectedEvent {
+  currentFile: Workspace.UISourceCode.UISourceCode;
+  currentView: UI.Widget.Widget|null;
+  previousView: UI.Widget.Widget|null;
+  userGesture: boolean|undefined;
+}
+
+export type EventTypes = {
+  [Events.EditorSelected]: EditorSelectedEvent,
+  [Events.EditorClosed]: Workspace.UISourceCode.UISourceCode,
+};
 
 export let tabId = 0;
 export const maximalPreviouslyViewedFilesCount = 30;

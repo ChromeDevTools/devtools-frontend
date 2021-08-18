@@ -125,7 +125,7 @@ const UIStrings = {
   * show network activity in the current UI.
   *@example {Ctrl + E} PH1
   */
-  recordSToDisplayNetworkActivity: 'Record ({PH1}) to display network activity.',
+  recordToDisplayNetworkActivity: 'Record network log ({PH1}) to display network activity.',
   /**
   *@description Text that is usually a hyperlink to more documentation
   */
@@ -897,7 +897,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
       recordNode.textContent =
           UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction('network.toggle-recording') || '';
       hintText.appendChild(
-          i18n.i18n.getFormatLocalizedString(str_, UIStrings.recordSToDisplayNetworkActivity, {PH1: recordNode}));
+          i18n.i18n.getFormatLocalizedString(str_, UIStrings.recordToDisplayNetworkActivity, {PH1: recordNode}));
     }
     hintText.createChild('br');
     hintText.appendChild(UI.XLink.XLink.create(

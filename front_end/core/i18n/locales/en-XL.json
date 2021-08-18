@@ -6275,8 +6275,8 @@
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "R̂éĉór̂d́îńĝ ńêt́ŵór̂ḱ âćt̂ív̂ít̂ý…"
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "R̂éĉór̂d́ ({PH1}) t̂ó d̂íŝṕl̂áŷ ńêt́ŵór̂ḱ âćt̂ív̂ít̂ý."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "R̂éĉór̂d́ n̂ét̂ẃôŕk̂ ĺôǵ ({PH1}) t̂ó d̂íŝṕl̂áŷ ńêt́ŵór̂ḱ âćt̂ív̂ít̂ý."
   },
   "panels/network/NetworkLogView.ts | replayXhr": {
     "message": "R̂ép̂ĺâý X̂H́R̂"

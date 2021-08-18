@@ -6275,8 +6275,8 @@
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Recording network activity…"
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Record ({PH1}) to display network activity."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Record network log ({PH1}) to display network activity."
   },
   "panels/network/NetworkLogView.ts | replayXhr": {
     "message": "Replay XHR"

@@ -35,7 +35,7 @@ import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import type {PerformanceModel, Window} from './PerformanceModel.js';
+import type {PerformanceModel, WindowChangedEvent} from './PerformanceModel.js';
 import {Events} from './PerformanceModel.js';
 import type {TimelineModeViewDelegate} from './TimelinePanel.js';
 
@@ -207,8 +207,8 @@ export class CountersGraph extends UI.Widget.VBox {
     this.refresh();
   }
 
-  private onWindowChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const window = (event.data.window as Window);
+  private onWindowChanged(event: Common.EventTarget.EventTargetEvent<WindowChangedEvent>): void {
+    const window = event.data.window;
     this.calculator.setWindow(window.left, window.right);
     this.scheduleRefresh();
   }

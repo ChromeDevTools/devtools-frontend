@@ -13,7 +13,7 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {CountersGraph} from './CountersGraph.js';
-import type {PerformanceModel, Window} from './PerformanceModel.js';
+import type {PerformanceModel, WindowChangedEvent} from './PerformanceModel.js';
 import {Events as PerformanceModelEvents} from './PerformanceModel.js';
 import {TimelineDetailsView} from './TimelineDetailsView.js';
 import {TimelineRegExp} from './TimelineFilters.js';
@@ -275,13 +275,12 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.mainFlameChart.update();
   }
 
-  private onWindowChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const window = (event.data.window as Window);
-    const animate = Boolean(event.data.animate);
+  private onWindowChanged(event: Common.EventTarget.EventTargetEvent<WindowChangedEvent>): void {
+    const {window, animate} = event.data;
     this.mainFlameChart.setWindowTimes(window.left, window.right, animate);
     this.networkFlameChart.setWindowTimes(window.left, window.right, animate);
     this.networkDataProvider.setWindowTimes(window.left, window.right);
-    this.mainSplitWidget.setWindowTimes(window.left, window.right, animate);
+    this.mainSplitWidget.setWindowTimes(window.left, window.right, Boolean(animate));
     this.updateSearchResults(false, false);
   }
 

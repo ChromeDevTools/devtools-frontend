@@ -51,7 +51,7 @@ import timelineStatusDialogStyles from './timelineStatusDialog.css.js';
 import type * as Coverage from '../coverage/coverage.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
-import type {Window} from './PerformanceModel.js';
+import type {WindowChangedEvent} from './PerformanceModel.js';
 import {Events, PerformanceModel} from './PerformanceModel.js';
 import type {Client} from './TimelineController.js';
 import {TimelineController} from './TimelineController.js';
@@ -456,8 +456,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.performanceModel.setWindow({left, right}, /* animate */ true);
   }
 
-  private onModelWindowChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const window = (event.data.window as Window);
+  private onModelWindowChanged(event: Common.EventTarget.EventTargetEvent<WindowChangedEvent>): void {
+    const window = event.data.window;
     this.overviewPane.setWindowTimes(window.left, window.right);
   }
 

@@ -9,7 +9,7 @@ import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
-export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper {
+export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private mainTargetInternal: SDK.Target.Target|null;
   private tracingModelInternal: SDK.TracingModel.TracingModel|null;
   private filtersInternal: TimelineModel.TimelineModelFilter.TimelineModelFilter[];
@@ -248,6 +248,16 @@ export enum Events {
   ExtensionDataAdded = 'ExtensionDataAdded',
   WindowChanged = 'WindowChanged',
 }
+
+export interface WindowChangedEvent {
+  window: Window;
+  animate: boolean|undefined;
+}
+
+export type EventTypes = {
+  [Events.ExtensionDataAdded]: void,
+  [Events.WindowChanged]: WindowChangedEvent,
+};
 
 export interface Window {
   left: number;

@@ -191,7 +191,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     this.preferredTabId = tabId;
   }
 
-  private onWindowChanged(_event: Common.EventTarget.EventTargetEvent): void {
+  private onWindowChanged(): void {
     if (!this.selection) {
       this.updateContentsFromWindow();
     }

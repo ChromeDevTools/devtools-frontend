@@ -5,6 +5,8 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import dialogStyles from './dialog.css.js';
+
 const UIStrings = {
   /**
   *@description Text in Add Source Map URLDialog of the Sources panel
@@ -23,7 +25,7 @@ export class AddSourceMapURLDialog extends UI.Widget.HBox {
   private readonly callback: (arg0: string) => void;
   constructor(callback: (arg0: string) => void) {
     super(/* isWebComponent */ true);
-    this.registerRequiredCSS('panels/sources/dialog.css');
+
     this.contentElement.createChild('label').textContent = i18nString(UIStrings.sourceMapUrl);
 
     this.input = UI.UIUtils.createInput('add-source-map', 'text');
@@ -63,5 +65,9 @@ export class AddSourceMapURLDialog extends UI.Widget.HBox {
       event.consume(true);
       this.apply();
     }
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([dialogStyles]);
   }
 }

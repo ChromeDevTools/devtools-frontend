@@ -39,6 +39,7 @@ import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import scopeChainSidebarPaneStyles from './scopeChainSidebarPane.css.js';
 import {resolveScopeChain, resolveScopeInObject, resolveThisObject} from './SourceMapNamesResolver.js';
 
 const UIStrings = {
@@ -91,9 +92,9 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
   private infoElement: HTMLDivElement;
   private constructor() {
     super(true);
-    this.registerRequiredCSS('panels/sources/scopeChainSidebarPane.css');
+
     this.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
-    this.treeOutline.registerRequiredCSS('panels/sources/scopeChainSidebarPane.css');
+
     this.treeOutline.setShowSelectionOnKeyboardFocus(/* show */ true);
     this.expandController =
         new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController(this.treeOutline);
@@ -253,6 +254,11 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
   }
 
   private sidebarPaneUpdatedForTest(): void {
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.treeOutline.registerCSSFiles([scopeChainSidebarPaneStyles]);
+    this.registerCSSFiles([scopeChainSidebarPaneStyles]);
   }
 }
 

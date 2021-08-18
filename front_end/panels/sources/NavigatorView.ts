@@ -39,6 +39,8 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Snippets from '../snippets/snippets.js';
 
+import navigatorTreeStyles from './navigatorTree.css.js';
+import navigatorViewStyles from './navigatorView.css.js';
 import {SearchSourcesView} from './SearchSourcesView.js';
 
 const UIStrings = {
@@ -156,11 +158,10 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   private groupByFolder?: any;
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/sources/navigatorView.css');
 
     this.placeholder = null;
     this.scriptsTree = new UI.TreeOutline.TreeOutlineInShadow();
-    this.scriptsTree.registerRequiredCSS('panels/sources/navigatorTree.css');
+
     this.scriptsTree.setComparator(NavigatorView.treeElementsCompare);
     this.scriptsTree.setFocusable(false);
     this.contentElement.appendChild(this.scriptsTree.element);
@@ -963,6 +964,11 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     if (targetNode) {
       targetNode.setTitle(target.name());
     }
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.scriptsTree.registerCSSFiles([navigatorTreeStyles]);
+    this.registerCSSFiles([navigatorViewStyles]);
   }
 }
 

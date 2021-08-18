@@ -15,11 +15,11 @@ import * as Layers from '../../panels/layers/layers.js';
 self.LayersTestRunner = self.LayersTestRunner || {};
 
 LayersTestRunner.layerTreeModel = function() {
-  if (!LayersTestRunner._layerTreeModel) {
-    LayersTestRunner._layerTreeModel = TestRunner.mainTarget.model(Layers.LayerTreeModel.LayerTreeModel);
+  if (!LayersTestRunner.layerTreeModelInternal) {
+    LayersTestRunner.layerTreeModelInternal = TestRunner.mainTarget.model(Layers.LayerTreeModel.LayerTreeModel);
   }
 
-  return LayersTestRunner._layerTreeModel;
+  return LayersTestRunner.layerTreeModelInternal;
 };
 
 LayersTestRunner.labelForLayer = function(layer) {
@@ -64,11 +64,11 @@ LayersTestRunner.dumpLayers3DView = function(prefix, root) {
   }
 
   if (!root) {
-    root = UI.panels.layers._layers3DView._rotatingContainerElement;
+    root = UI.panels.layers.layers3DView.rotatingContainerElement;
   }
 
-  if (root.__layer) {
-    TestRunner.addResult(prefix + LayersTestRunner.labelForLayer(root.__layer));
+  if (root._layer) {
+    TestRunner.addResult(prefix + LayersTestRunner.labelForLayer(root._layer));
   }
 
   for (let element = root.firstElementChild; element; element = element.nextSibling) {

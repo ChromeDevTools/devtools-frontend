@@ -56,13 +56,13 @@ BindingsTestRunner.initializeTestMapping = function() {
 
 class TestMapping {
   constructor(persistence) {
-    this._persistence = persistence;
+    this.persistence = persistence;
     persistence.addNetworkInterceptor(() => true);
-    this._bindings = new Set();
+    this.bindings = new Set();
   }
 
   async addBinding(urlSuffix) {
-    if (this._findBinding(urlSuffix)) {
+    if (this.findBinding(urlSuffix)) {
       TestRunner.addResult(`FAILED TO ADD BINDING: binding already exists for ${urlSuffix}`);
       TestRunner.completeTest();
       return;
@@ -71,12 +71,12 @@ class TestMapping {
     const networkUISourceCode = await TestRunner.waitForUISourceCode(urlSuffix, Workspace.projectTypes.Network);
     const fileSystemUISourceCode = await TestRunner.waitForUISourceCode(urlSuffix, Workspace.projectTypes.FileSystem);
     const binding = new Persistence.PersistenceBinding(networkUISourceCode, fileSystemUISourceCode);
-    this._bindings.add(binding);
-    await this._persistence.addBindingForTest(binding);
+    this.bindings.add(binding);
+    await this.persistence.addBindingForTest(binding);
   }
 
-  _findBinding(urlSuffix) {
-    for (const binding of this._bindings) {
+  findBinding(urlSuffix) {
+    for (const binding of this.bindings) {
       if (binding.network.url().endsWith(urlSuffix)) {
         return binding;
       }
@@ -86,7 +86,7 @@ class TestMapping {
   }
 
   async removeBinding(urlSuffix) {
-    const binding = this._findBinding(urlSuffix);
+    const binding = this.findBinding(urlSuffix);
 
     if (!binding) {
       TestRunner.addResult(`FAILED TO REMOVE BINDING: binding does not exist for ${urlSuffix}`);
@@ -94,15 +94,15 @@ class TestMapping {
       return;
     }
 
-    this._bindings.delete(binding);
-    await this._persistence.removeBindingForTest(binding);
+    this.bindings.delete(binding);
+    await this.persistence.removeBindingForTest(binding);
   }
 
   async dispose() {
-    for (const binding of this._bindings) {
-      await this._persistence.removeBindingForTest(binding);
+    for (const binding of this.bindings) {
+      await this.persistence.removeBindingForTest(binding);
     }
 
-    this._bindings.clear();
+    this.bindings.clear();
   }
 }

@@ -8,7 +8,7 @@
 self.BindingsTestRunner = self.BindingsTestRunner || {};
 
 Host.InspectorFrontendHost.isolatedFileSystem = function(name) {
-  return BindingsTestRunner.TestFileSystem._instances[name];
+  return BindingsTestRunner.TestFileSystem.instances[name];
 };
 
 BindingsTestRunner.TestFileSystem = function(fileSystemPath) {
@@ -16,7 +16,7 @@ BindingsTestRunner.TestFileSystem = function(fileSystemPath) {
   this.fileSystemPath = fileSystemPath;
 };
 
-BindingsTestRunner.TestFileSystem._instances = {};
+BindingsTestRunner.TestFileSystem.instances = {};
 
 BindingsTestRunner.TestFileSystem.prototype = {
   dumpAsText: function() {
@@ -29,7 +29,7 @@ BindingsTestRunner.TestFileSystem.prototype = {
       result.push(indent + node.name);
       const newIndent = indent + '    ';
 
-      for (const child of node._children.values()) {
+      for (const child of node.children.values()) {
         dfs(child, newIndent);
       }
     }
@@ -41,7 +41,7 @@ BindingsTestRunner.TestFileSystem.prototype = {
 
   reportCreated: function(callback, type) {
     const fileSystemPath = this.fileSystemPath;
-    BindingsTestRunner.TestFileSystem._instances[this.fileSystemPath] = this;
+    BindingsTestRunner.TestFileSystem.instances[this.fileSystemPath] = this;
 
     Host.InspectorFrontendHost.events.dispatchEventToListeners(
         Host.InspectorFrontendHostAPI.Events.FileSystemAdded,
@@ -64,7 +64,7 @@ BindingsTestRunner.TestFileSystem.prototype = {
   },
 
   reportRemoved: function() {
-    delete BindingsTestRunner.TestFileSystem._instances[this.fileSystemPath];
+    delete BindingsTestRunner.TestFileSystem.instances[this.fileSystemPath];
     Host.InspectorFrontendHost.events.dispatchEventToListeners(
         Host.InspectorFrontendHostAPI.Events.FileSystemRemoved, this.fileSystemPath);
   },
@@ -76,7 +76,7 @@ BindingsTestRunner.TestFileSystem.prototype = {
     const fileName = pathTokens[pathTokens.length - 1];
 
     for (const folder of folders) {
-      let dir = node._children.get(folder);
+      let dir = node.children.get(folder);
 
       if (!dir) {
         dir = node.mkdir(folder);
@@ -88,7 +88,7 @@ BindingsTestRunner.TestFileSystem.prototype = {
     const file = node.addFile(fileName, content);
 
     if (lastModified) {
-      file._timestamp = lastModified;
+      file.timestamp = lastModified;
     }
 
     return file;
@@ -96,32 +96,32 @@ BindingsTestRunner.TestFileSystem.prototype = {
 };
 
 BindingsTestRunner.TestFileSystem.Entry = function(fileSystem, name, isDirectory, parent) {
-  this._fileSystem = fileSystem;
+  this.fileSystem = fileSystem;
   this.name = name;
-  this._children = new Map();
+  this.children = new Map();
   this.isDirectory = isDirectory;
-  this._timestamp = 1000000;
-  this._parent = parent;
+  this.timestamp = 1000000;
+  this.parent = parent;
 };
 
 BindingsTestRunner.TestFileSystem.Entry.prototype = {
   get fullPath() {
-    return (this._parent ? this._parent.fullPath + '/' + this.name : '');
+    return (this.parent ? this.parent.fullPath + '/' + this.name : '');
   },
 
   remove: function(success, failure) {
-    this._parent._removeChild(this, success, failure);
+    this.parent.removeChild(this, success, failure);
   },
 
-  _removeChild: function(child, success, failure) {
-    if (!this._children.has(child.name)) {
+  removeChild: function(child, success, failure) {
+    if (!this.children.has(child.name)) {
       failure('Failed to remove file: file not found.');
       return;
     }
 
-    const fullPath = this._fileSystem.fileSystemPath + child.fullPath;
-    this._children.delete(child.name);
-    child._parent = null;
+    const fullPath = this.fileSystem.fileSystemPath + child.fullPath;
+    this.children.delete(child.name);
+    child.parent = null;
 
     Host.InspectorFrontendHost.events.dispatchEventToListeners(
         Host.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved,
@@ -131,18 +131,18 @@ BindingsTestRunner.TestFileSystem.Entry.prototype = {
   },
 
   mkdir: function(name) {
-    const child = new BindingsTestRunner.TestFileSystem.Entry(this._fileSystem, name, true, this);
-    this._children.set(name, child);
+    const child = new BindingsTestRunner.TestFileSystem.Entry(this.fileSystem, name, true, this);
+    this.children.set(name, child);
     return child;
   },
 
   addFile: function(name, content) {
-    const child = new BindingsTestRunner.TestFileSystem.Entry(this._fileSystem, name, false, this);
-    this._children.set(name, child);
+    const child = new BindingsTestRunner.TestFileSystem.Entry(this.fileSystem, name, false, this);
+    this.children.set(name, child);
 
     child.content = new Blob([content], {type: 'text/plain'});
 
-    const fullPath = this._fileSystem.fileSystemPath + child.fullPath;
+    const fullPath = this.fileSystem.fileSystemPath + child.fullPath;
 
     Host.InspectorFrontendHost.events.dispatchEventToListeners(
         Host.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved,
@@ -154,8 +154,8 @@ BindingsTestRunner.TestFileSystem.Entry.prototype = {
   setContent: function(content) {
     this.content = new Blob([content], {type: 'text/plain'});
 
-    this._timestamp += 1000;
-    const fullPath = this._fileSystem.fileSystemPath + this.fullPath;
+    this.timestamp += 1000;
+    const fullPath = this.fileSystem.fileSystemPath + this.fullPath;
 
     Host.InspectorFrontendHost.events.dispatchEventToListeners(
         Host.InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved,
@@ -163,7 +163,7 @@ BindingsTestRunner.TestFileSystem.Entry.prototype = {
   },
 
   createReader: function() {
-    return new BindingsTestRunner.TestFileSystem.Reader([...this._children.values()]);
+    return new BindingsTestRunner.TestFileSystem.Reader([...this.children.values()]);
   },
 
   createWriter: function(success, failure) {
@@ -182,16 +182,16 @@ BindingsTestRunner.TestFileSystem.Entry.prototype = {
     this.getEntry(path, noop, callback, errorCallback);
   },
 
-  _createEntry: function(path, options, callback, errorCallback) {
+  createEntry: function(path, options, callback, errorCallback) {
     const tokens = path.split('/');
     const name = tokens.pop();
     let parentEntry = this;
 
     for (const token of tokens) {
-      parentEntry = parentEntry._children.get(token);
+      parentEntry = parentEntry.children.get(token);
     }
 
-    let entry = parentEntry._children.get(name);
+    let entry = parentEntry.children.get(name);
 
     if (entry && options.exclusive) {
       errorCallback(new DOMException('File exists: ' + path, 'InvalidModificationError'));
@@ -211,7 +211,7 @@ BindingsTestRunner.TestFileSystem.Entry.prototype = {
     }
 
     if (options && options.create) {
-      this._createEntry(path, options, callback, errorCallback);
+      this.createEntry(path, options, callback, errorCallback);
       return;
     }
 
@@ -223,7 +223,7 @@ BindingsTestRunner.TestFileSystem.Entry.prototype = {
     let entry = this;
 
     for (const token of path.split('/')) {
-      entry = entry._children.get(token);
+      entry = entry.children.get(token);
       if (!entry) {
         break;
       }
@@ -233,43 +233,43 @@ BindingsTestRunner.TestFileSystem.Entry.prototype = {
   },
 
   getMetadata: function(success, failure) {
-    success({modificationTime: new Date(this._timestamp), size: (this.isDirectory ? 0 : this.content.size)});
+    success({modificationTime: new Date(this.timestamp), size: (this.isDirectory ? 0 : this.content.size)});
   },
 
   moveTo: function(parent, newName, callback, errorCallback) {
-    this._parent._children.delete(this.name);
-    this._parent = parent;
+    this.parent.children.delete(this.name);
+    this.parent = parent;
     this.name = newName;
-    this._parent._children.set(this.name, this);
+    this.parent.children.set(this.name, this);
     callback(this);
   },
 
   getParent: function(callback, errorCallback) {
-    callback(this._parent);
+    callback(this.parent);
   }
 };
 
 BindingsTestRunner.TestFileSystem.Reader = function(children) {
-  this._children = children;
+  this.children = children;
 };
 
 BindingsTestRunner.TestFileSystem.Reader.prototype = {
   readEntries: function(callback) {
-    const children = this._children;
-    this._children = [];
+    const children = this.children;
+    this.children = [];
     callback(children);
   }
 };
 
 BindingsTestRunner.TestFileSystem.Writer = function(entry) {
-  this._entry = entry;
-  this._modificationTimesDelta = 500;
+  this.entry = entry;
+  this.modificationTimesDelta = 500;
 };
 
 BindingsTestRunner.TestFileSystem.Writer.prototype = {
   write: function(blob) {
-    this._entry._timestamp += this._modificationTimesDelta;
-    this._entry.content = blob;
+    this.entry.timestamp += this.modificationTimesDelta;
+    this.entry.content = blob;
 
     if (this.onwriteend) {
       this.onwriteend();
@@ -277,8 +277,8 @@ BindingsTestRunner.TestFileSystem.Writer.prototype = {
   },
 
   truncate: function(num) {
-    this._entry._timestamp += this._modificationTimesDelta;
-    this._entry.content = this._entry.content.slice(0, num);
+    this.entry.timestamp += this.modificationTimesDelta;
+    this.entry.content = this.entry.content.slice(0, num);
 
     if (this.onwriteend) {
       this.onwriteend();

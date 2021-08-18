@@ -48,25 +48,25 @@ BindingsTestRunner.overrideNetworkModificationTime = function(urlToTime) {
 };
 
 BindingsTestRunner.AutomappingTest = function(workspace) {
-  this._workspace = workspace;
-  this._networkProject = new Bindings.ContentProviderBasedProject(
-      this._workspace, 'AUTOMAPPING', Workspace.projectTypes.Network, 'simple website');
+  this.workspace = workspace;
+  this.networkProject = new Bindings.ContentProviderBasedProject(
+      this.workspace, 'AUTOMAPPING', Workspace.projectTypes.Network, 'simple website');
 
   if (workspace !== self.Workspace.workspace) {
-    new Persistence.FileSystemWorkspaceBinding(self.Persistence.isolatedFileSystemManager, this._workspace);
+    new Persistence.FileSystemWorkspaceBinding(self.Persistence.isolatedFileSystemManager, this.workspace);
   }
 
-  this._failedBindingsCount = 0;
-  this._automapping =
-      new Persistence.Automapping(this._workspace, this._onStatusAdded.bind(this), this._onStatusRemoved.bind(this));
-  TestRunner.addSniffer(this._automapping, 'onBindingFailedForTest', this._onBindingFailed.bind(this), true);
-  TestRunner.addSniffer(this._automapping, 'onSweepHappenedForTest', this._onSweepHappened.bind(this), true);
+  this.failedBindingsCount = 0;
+  this.automapping =
+      new Persistence.Automapping(this.workspace, this._onStatusAdded.bind(this), this._onStatusRemoved.bind(this));
+  TestRunner.addSniffer(this.automapping, 'onBindingFailedForTest', this._onBindingFailed.bind(this), true);
+  TestRunner.addSniffer(this.automapping, 'onSweepHappenedForTest', this._onSweepHappened.bind(this), true);
 };
 
 BindingsTestRunner.AutomappingTest.prototype = {
   removeResources: function(urls) {
     for (const url of urls) {
-      this._networkProject.removeFile(url);
+      this.networkProject.removeFile(url);
     }
   },
 
@@ -79,21 +79,21 @@ BindingsTestRunner.AutomappingTest.prototype = {
           (typeof asset.content === 'string' || asset.time ?
                new Workspace.UISourceCodeMetadata(asset.time, asset.content.length) :
                null);
-      const uiSourceCode = this._networkProject.createUISourceCode(url, contentType);
-      this._networkProject.addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata);
+      const uiSourceCode = this.networkProject.createUISourceCode(url, contentType);
+      this.networkProject.addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata);
     }
   },
 
   waitUntilMappingIsStabilized: function() {
     const promise = new Promise(x => {
-      this._stabilizedCallback = x;
+      this.stabilizedCallback = x;
     });
     this._checkStabilized();
     return promise;
   },
 
   _onSweepHappened: function() {
-    this._failedBindingsCount = 0;
+    this.failedBindingsCount = 0;
     this._checkStabilized();
   },
 
@@ -108,22 +108,22 @@ BindingsTestRunner.AutomappingTest.prototype = {
   },
 
   _onBindingFailed: function() {
-    ++this._failedBindingsCount;
+    ++this.failedBindingsCount;
     this._checkStabilized();
   },
 
   _checkStabilized: function() {
-    if (!this._stabilizedCallback || this._automapping.sweepThrottler.process) {
+    if (!this.stabilizedCallback || this.automapping.sweepThrottler.process) {
       return;
     }
 
-    const networkUISourceCodes = this._workspace.uiSourceCodesForProjectType(Workspace.projectTypes.Network);
-    const stabilized = this._failedBindingsCount + this._automapping.statuses.size === networkUISourceCodes.length;
+    const networkUISourceCodes = this.workspace.uiSourceCodesForProjectType(Workspace.projectTypes.Network);
+    const stabilized = this.failedBindingsCount + this.automapping.statuses.size === networkUISourceCodes.length;
 
     if (stabilized) {
       TestRunner.addResult('Mapping has stabilized.');
-      const callback = this._stabilizedCallback;
-      delete this._stabilizedCallback;
+      const callback = this.stabilizedCallback;
+      delete this.stabilizedCallback;
       callback.call(null);
     }
   }

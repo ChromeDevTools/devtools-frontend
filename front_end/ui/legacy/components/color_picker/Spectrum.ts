@@ -476,7 +476,7 @@ export class Spectrum extends UI.Widget.VBox {
     }
     this.palettePanelShowing = show;
     this.contentElement.classList.toggle('palette-panel-showing', show);
-    this.focus();
+    this.focusInternal();
   }
 
   private onCloseBtnKeydown(event: Event): void {
@@ -501,7 +501,7 @@ export class Spectrum extends UI.Widget.VBox {
   /**
    * (Suppress warning about preventScroll)
    */
-  focus(): void {
+  private focusInternal(): void {
     if (!this.isShowing()) {
       return;
     }
@@ -574,7 +574,7 @@ export class Spectrum extends UI.Widget.VBox {
     }
 
     this.togglePalettePanel(false);
-    this.focus();
+    this.focusInternal();
   }
 
   private showLightnessShades(colorElement: HTMLElement, colorText: string, _event: Event): void {

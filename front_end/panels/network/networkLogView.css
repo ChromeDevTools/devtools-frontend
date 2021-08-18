@@ -243,8 +243,8 @@
   filter: brightness(0) invert(1);
 }
 
-.network-log-grid.data-grid:focus .network-error-row.data-grid-data-grid-node img.icon,
-.network-log-grid.data-grid:focus .network-error-row.data-grid-data-grid-node.selected img.icon {
+.network-log-grid.data-grid .network-error-row.data-grid-data-grid-node img.icon,
+.network-log-grid.data-grid .network-error-row.data-grid-data-grid-node.selected img.icon {
   /* This is generated with https://codepen.io/sosuke/pen/Pjoqqp to target var(--color-red) */
   filter: brightness(0) saturate(100%) invert(35%) sepia(76%) saturate(1413%) hue-rotate(338deg) brightness(92%) contrast(103%);
 }

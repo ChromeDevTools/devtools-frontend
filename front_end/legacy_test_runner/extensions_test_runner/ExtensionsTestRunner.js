@@ -8,23 +8,23 @@
 self.ExtensionsTestRunner = self.ExtensionsTestRunner || {};
 
 const extensionsHost = 'devtools-extensions.oopif.test';
-self.Extensions.extensionServer._registerHandler('evaluateForTestInFrontEnd', onEvaluate);
+self.Extensions.extensionServer.registerHandler('evaluateForTestInFrontEnd', onEvaluate);
 Extensions.extensionsOrigin = `http://${extensionsHost}:8000`;
-self.Extensions.extensionServer._extensionAPITestHook = function(extensionServerClient, coreAPI) {
+self.Extensions.extensionServer.extensionAPITestHook = function(extensionServerClient, coreAPI) {
   window.webInspector = coreAPI;
   window._extensionServerForTests = extensionServerClient;
   coreAPI.panels.themeName = 'themeNameForTest';
 };
 
-ExtensionsTestRunner._replyToExtension = function(requestId, port) {
-  self.Extensions.extensionServer._dispatchCallback(requestId, port);
+ExtensionsTestRunner.replyToExtension = function(requestId, port) {
+  self.Extensions.extensionServer.dispatchCallback(requestId, port);
 };
 
 function onEvaluate(message, port) {
   // Note: reply(...) is actually used in eval strings
   // eslint-disable-next-line no-unused-vars
   function reply(param) {
-    self.Extensions.extensionServer._dispatchCallback(message.requestId, port, param);
+    self.Extensions.extensionServer.dispatchCallback(message.requestId, port, param);
   }
 
   try {
@@ -37,13 +37,13 @@ function onEvaluate(message, port) {
 
 ExtensionsTestRunner.showPanel = function(panelId) {
   if (panelId === 'extension') {
-    panelId = self.UI.inspectorView._tabbedPane._tabs[self.UI.inspectorView._tabbedPane._tabs.length - 1].id;
+    panelId = self.UI.inspectorView.tabbedPane.tabs[self.UI.inspectorView.tabbedPane.tabs.length - 1].id;
   }
   return self.UI.inspectorView.showPanel(panelId);
 };
 
 ExtensionsTestRunner.evaluateInExtension = function(code) {
-  ExtensionsTestRunner._codeToEvaluateBeforeTests = code;
+  ExtensionsTestRunner.codeToEvaluateBeforeTests = code;
 };
 
 ExtensionsTestRunner.runExtensionTests = async function(tests) {
@@ -53,12 +53,12 @@ ExtensionsTestRunner.runExtensionTests = async function(tests) {
     return;
   }
 
-  ExtensionsTestRunner._pendingTests = (ExtensionsTestRunner._codeToEvaluateBeforeTests || '') + tests.join('\n');
+  ExtensionsTestRunner._pendingTests = (ExtensionsTestRunner.codeToEvaluateBeforeTests || '') + tests.join('\n');
   const pageURL = result.value;
   let extensionURL = pageURL.replace(/^(https?:\/\/[^\/]*\/).*$/, '$1') + 'devtools/resources/extension-main.html';
   extensionURL = extensionURL.replace('127.0.0.1', extensionsHost);
 
-  self.Extensions.extensionServer._addExtension(
+  self.Extensions.extensionServer.addExtension(
       {startPage: extensionURL, name: 'test extension', exposeWebInspectorNamespace: true});
 };
 

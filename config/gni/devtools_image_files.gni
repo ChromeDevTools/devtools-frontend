@@ -90,6 +90,8 @@ devtools_svg_sources = [
   "ic_page_next_16x16_icon.svg",
   "ic_page_prev_16x16_icon.svg",
   "ic_redo_16x16_icon.svg",
+  "ic_request_response.svg",
+  "ic_response.svg",
   "ic_show_node_16x16.svg",
   "ic_suggest_color.svg",
   "ic_undo_16x16_icon.svg",

@@ -553,6 +553,7 @@ export class DeviceModeView extends UI.Widget.VBox {
 }
 
 export class Ruler extends UI.Widget.VBox {
+  private contentElementInternal: HTMLElement;
   private readonly horizontal: boolean;
   private scale: number;
   private count: number;
@@ -563,7 +564,7 @@ export class Ruler extends UI.Widget.VBox {
   constructor(horizontal: boolean, applyCallback: (arg0: number) => void) {
     super();
     this.element.classList.add('device-mode-ruler');
-    this.contentElement =
+    this.contentElementInternal =
         this.element.createChild('div', 'device-mode-ruler-content').createChild('div', 'device-mode-ruler-inner') as
         HTMLDivElement;
     this.horizontal = horizontal;
@@ -584,10 +585,10 @@ export class Ruler extends UI.Widget.VBox {
 
   private update(): Promise<void> {
     const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();
-    const size = this.horizontal ? this.contentElement.offsetWidth : this.contentElement.offsetHeight;
+    const size = this.horizontal ? this.contentElementInternal.offsetWidth : this.contentElementInternal.offsetHeight;
 
     if (this.scale !== this.renderedScale || zoomFactor !== this.renderedZoomFactor) {
-      this.contentElement.removeChildren();
+      this.contentElementInternal.removeChildren();
       this.count = 0;
       this.renderedScale = this.scale;
       this.renderedZoomFactor = zoomFactor;
@@ -614,7 +615,7 @@ export class Ruler extends UI.Widget.VBox {
 
     for (let i = count; i < this.count; i++) {
       if (!(i % step)) {
-        const lastChild = this.contentElement.lastChild;
+        const lastChild = this.contentElementInternal.lastChild;
         if (lastChild) {
           lastChild.remove();
         }
@@ -625,7 +626,7 @@ export class Ruler extends UI.Widget.VBox {
       if (i % step) {
         continue;
       }
-      const marker = this.contentElement.createChild('div', 'device-mode-ruler-marker');
+      const marker = this.contentElementInternal.createChild('div', 'device-mode-ruler-marker');
       if (i) {
         if (this.horizontal) {
           marker.style.left = (5 * i) * this.scale / zoomFactor + 'px';

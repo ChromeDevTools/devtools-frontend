@@ -4769,7 +4769,7 @@ declare namespace Protocol {
     /**
      * Unique identifier of Database object.
      */
-    export type DatabaseId = string;
+    export type DatabaseId = OpaqueIdentifier<string, 'Protocol.Database.DatabaseId'>;
 
     /**
      * Database object.

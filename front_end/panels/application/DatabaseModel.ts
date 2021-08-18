@@ -50,11 +50,12 @@ const str_ = i18n.i18n.registerUIStrings('panels/application/DatabaseModel.ts', 
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class Database {
   private readonly model: DatabaseModel;
-  private readonly idInternal: string;
+  private readonly idInternal: Protocol.Database.DatabaseId;
   private domainInternal: string;
   private nameInternal: string;
   private versionInternal: string;
-  constructor(model: DatabaseModel, id: string, domain: string, name: string, version: string) {
+
+  constructor(model: DatabaseModel, id: Protocol.Database.DatabaseId, domain: string, name: string, version: string) {
     this.model = model;
     this.idInternal = id;
     this.domainInternal = domain;

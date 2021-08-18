@@ -9,6 +9,9 @@ import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.j
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {HiddenIssuesRow} from './HiddenIssuesRow.js';
+import issuesPaneStyles from './issuesPane.css.js';
+import issuesTreeStyles from './issuesTree.css.js';
+
 import type {AggregatedIssue} from './IssueAggregator.js';
 import {Events as IssueAggregatorEvents, IssueAggregator} from './IssueAggregator.js';
 import {IssueView} from './IssueView.js';
@@ -169,7 +172,7 @@ export class IssuesPane extends UI.Widget.VBox {
 
   private constructor() {
     super(true);
-    this.registerRequiredCSS('panels/issues/issuesPane.css');
+
     this.contentElement.classList.add('issues-pane');
 
     this.categoryViews = new Map();
@@ -179,7 +182,7 @@ export class IssuesPane extends UI.Widget.VBox {
     this.createToolbars();
 
     this.issuesTree = new UI.TreeOutline.TreeOutlineInShadow();
-    this.issuesTree.registerRequiredCSS('panels/issues/issuesTree.css');
+
     this.issuesTree.setShowSelectionOnKeyboardFocus(true);
     this.issuesTree.contentElement.classList.add('issues');
     this.contentElement.appendChild(this.issuesTree.element);
@@ -395,5 +398,10 @@ export class IssuesPane extends UI.Widget.VBox {
       issueView.reveal();
       issueView.select(false, true);
     }
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.issuesTree.registerCSSFiles([issuesTreeStyles]);
+    this.registerCSSFiles([issuesPaneStyles]);
   }
 }

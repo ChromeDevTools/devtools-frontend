@@ -8,6 +8,8 @@ import * as Linkifier from '../../ui/components/linkifier/linkifier.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
 
+import cspViolationsListViewStyles from './cspViolationsListView.css.js';
+
 export class CSPViolationsListView extends UI.Widget.VBox {
   private table = new DataGrid.DataGridController.DataGridController();
   private categoryFilter = new Set<string>();
@@ -16,7 +18,6 @@ export class CSPViolationsListView extends UI.Widget.VBox {
 
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/issues/cspViolationsListView.css');
 
     this.table.data = {
       columns: [
@@ -116,5 +117,9 @@ export class CSPViolationsListView extends UI.Widget.VBox {
       return 'Policy Violation';
     }
     return 'unknown';
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([cspViolationsListViewStyles]);
   }
 }

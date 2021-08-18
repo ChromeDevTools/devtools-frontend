@@ -3,6 +3,9 @@
 // found in the LICENSE file.
 
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
+
+import cspViolationsViewStyles from './cspViolationsView.css.js';
+
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -28,7 +31,7 @@ export class CSPViolationsView extends UI.Widget.VBox {
    */
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/issues/cspViolationsView.css');
+
     this.contentElement.classList.add('csp-violations-pane');
 
     const topToolbar = new UI.Toolbar.Toolbar('csp-violations-toolbar', this.contentElement);
@@ -91,5 +94,9 @@ export class CSPViolationsView extends UI.Widget.VBox {
         this.listView.addIssue(issue);
       }
     }
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([cspViolationsViewStyles]);
   }
 }

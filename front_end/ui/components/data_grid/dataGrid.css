@@ -18,6 +18,10 @@
   height: 100%;
 }
 
+.wrapping-container::-webkit-scrollbar {
+  display: none;
+}
+
 table {
   border-spacing: 0;
   width: 100%;
@@ -29,6 +33,10 @@ table {
 
 tr {
   outline: none;
+}
+
+thead tr {
+  height: 27px;
 }
 
 tbody tr {

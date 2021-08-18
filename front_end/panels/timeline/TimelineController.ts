@@ -168,7 +168,7 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
     await Promise.all(models.map(model => model.startRecording()));
   }
 
-  private addCpuProfile(targetId: string, cpuProfile: Protocol.Profiler.Profile|null): void {
+  private addCpuProfile(targetId: Protocol.Target.TargetID|'main', cpuProfile: Protocol.Profiler.Profile|null): void {
     if (!cpuProfile) {
       Common.Console.Console.instance().warn(i18nString(UIStrings.cpuProfileForATargetIsNot));
       return;

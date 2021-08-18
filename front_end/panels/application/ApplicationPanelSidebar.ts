@@ -1820,8 +1820,8 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
   private frameId: string;
   private readonly categoryElements: Map<string, ExpandableApplicationPanelTreeElement>;
   private readonly treeElementForResource: Map<string, FrameResourceTreeElement>;
-  private treeElementForWindow: Map<string, FrameWindowTreeElement>;
-  private treeElementForWorker: Map<string, WorkerTreeElement>;
+  private treeElementForWindow: Map<Protocol.Target.TargetID, FrameWindowTreeElement>;
+  private treeElementForWorker: Map<Protocol.Target.TargetID, WorkerTreeElement>;
   private view: ApplicationComponents.FrameDetailsView.FrameDetailsView|null;
 
   constructor(section: ResourcesSection, frame: SDK.ResourceTreeModel.ResourceTreeFrame) {
@@ -1995,7 +1995,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
     windowTreeElement.update(targetInfo);
   }
 
-  windowDestroyed(targetId: string): void {
+  windowDestroyed(targetId: Protocol.Target.TargetID): void {
     const windowTreeElement = this.treeElementForWindow.get(targetId);
     if (windowTreeElement) {
       windowTreeElement.windowClosed();

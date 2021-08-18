@@ -205,7 +205,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements
     let url = '';
     let lineNumber: number = -Infinity;
     let columnNumber: number = -Infinity;
-    let scriptId: string|null = null;
+    let scriptId: Protocol.Runtime.ScriptId|null = null;
     let initiatorStack: Protocol.Runtime.StackTrace|null = null;
     let initiatorRequest: (SDK.NetworkRequest.NetworkRequest|null)|null = null;
     const initiator = request.initiator();
@@ -587,7 +587,7 @@ interface InitiatorInfo {
   url: string;
   lineNumber: number;
   columnNumber: number;
-  scriptId: string|null;
+  scriptId: Protocol.Runtime.ScriptId|null;
   stack: Protocol.Runtime.StackTrace|null;
   initiatorRequest: SDK.NetworkRequest.NetworkRequest|null;
 }

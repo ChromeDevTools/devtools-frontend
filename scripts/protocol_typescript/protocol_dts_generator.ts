@@ -234,6 +234,7 @@ const knownIdentifierTypes = [
   'Network.InterceptionId',
   'Network.LoaderId',
   'Network.RequestId',
+  'Runtime.ScriptId',
   'Security.CertificateId',
   'Target.SessionID',
   'Target.TargetID',

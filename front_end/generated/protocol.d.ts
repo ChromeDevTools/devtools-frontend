@@ -15366,7 +15366,7 @@ declare namespace Protocol {
     /**
      * Unique script identifier.
      */
-    export type ScriptId = string;
+    export type ScriptId = OpaqueIdentifier<string, 'Protocol.Runtime.ScriptId'>;
 
     /**
      * Unique object identifier.

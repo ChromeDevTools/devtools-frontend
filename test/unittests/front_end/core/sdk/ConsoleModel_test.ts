@@ -5,18 +5,21 @@
 const {assert} = chai;
 
 import type * as SDKModule from '../../../../../front_end/core/sdk/sdk.js';
+import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 
 describe('ConsoleMessage', () => {
   let SDK: typeof SDKModule;
   before(async () => {
     SDK = await import('../../../../../front_end/core/sdk/sdk.js');
   });
+  const scriptId1 = '1' as Protocol.Runtime.ScriptId;
+  const scriptId2 = '2' as Protocol.Runtime.ScriptId;
 
   function newMessage(options: {
     source?: SDKModule.ConsoleModel.MessageSource,
     message?: string,
     url?: string,
-    scriptId?: string,
+    scriptId?: Protocol.Runtime.ScriptId,
     executionContextId?: number,
   }) {
     return new SDK.ConsoleModel.ConsoleMessage(
@@ -56,10 +59,10 @@ describe('ConsoleMessage', () => {
 
   it('compares using execution context and script id', () => {
     const a = newMessage({});
-    const b = newMessage({executionContextId: 5, scriptId: '1'});
-    const c = newMessage({executionContextId: 5, scriptId: '1'});
-    const d = newMessage({executionContextId: 6, scriptId: '1'});
-    const e = newMessage({executionContextId: 5, scriptId: '2'});
+    const b = newMessage({executionContextId: 5, scriptId: scriptId1});
+    const c = newMessage({executionContextId: 5, scriptId: scriptId1});
+    const d = newMessage({executionContextId: 6, scriptId: scriptId1});
+    const e = newMessage({executionContextId: 5, scriptId: scriptId2});
     assert.isFalse(a.isEqual(b));
     assert.isFalse(b.isEqual(a));
     assert.isTrue(b.isEqual(c));
@@ -68,17 +71,17 @@ describe('ConsoleMessage', () => {
   });
 
   it('compares ignoring script id for the same watch expressions', () => {
-    const a = newMessage({executionContextId: 5, scriptId: '1'});
+    const a = newMessage({executionContextId: 5, scriptId: scriptId1});
     a.url = 'watch-expression-1.devtools';
-    const b = newMessage({executionContextId: 5, scriptId: '2'});
+    const b = newMessage({executionContextId: 5, scriptId: scriptId2});
     b.url = 'watch-expression-1.devtools';
     assert.isTrue(a.isEqual(b));
   });
 
   it('compares using script id for different watch expressions', () => {
-    const a = newMessage({executionContextId: 5, scriptId: '1'});
+    const a = newMessage({executionContextId: 5, scriptId: scriptId1});
     a.url = 'watch-expression-1.devtools';
-    const b = newMessage({executionContextId: 5, scriptId: '2'});
+    const b = newMessage({executionContextId: 5, scriptId: scriptId2});
     b.url = 'watch-expression-2.devtools';
     assert.isFalse(a.isEqual(b));
   });

@@ -222,7 +222,7 @@ export class Helper {
           if (debuggerModel) {
             const rawLocation = typeof scriptIdOrUrl === 'string' ?
                 debuggerModel.createRawLocationByURL(scriptIdOrUrl, line, 0) :
-                debuggerModel.createRawLocationByScriptId(String(scriptIdOrUrl), line, 0);
+                debuggerModel.createRawLocationByScriptId(String(scriptIdOrUrl) as Protocol.Runtime.ScriptId, line, 0);
             if (rawLocation) {
               new Presentation(rawLocation, this.type, data, this.locationPool);
             }

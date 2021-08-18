@@ -450,7 +450,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   async setBreakpointInAnonymousScript(
-      scriptId: string, scriptHash: string, lineNumber: number, columnNumber?: number,
+      scriptId: Protocol.Runtime.ScriptId, scriptHash: string, lineNumber: number, columnNumber?: number,
       condition?: string): Promise<SetBreakpointResult> {
     const response = await this.agent.invoke_setBreakpointByUrl(
         {lineNumber: lineNumber, scriptHash: scriptHash, columnNumber: columnNumber, condition: condition});
@@ -470,7 +470,8 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   private async setBreakpointBySourceId(
-      scriptId: string, lineNumber: number, columnNumber?: number, condition?: string): Promise<SetBreakpointResult> {
+      scriptId: Protocol.Runtime.ScriptId, lineNumber: number, columnNumber?: number,
+      condition?: string): Promise<SetBreakpointResult> {
     // This method is required for backward compatibility with V8 before 6.3.275.
     const response = await this.agent.invoke_setBreakpoint(
         {location: {scriptId: scriptId, lineNumber: lineNumber, columnNumber: columnNumber}, condition: condition});
@@ -680,7 +681,8 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   parsedScriptSource(
-      scriptId: string, sourceURL: string, startLine: number, startColumn: number, endLine: number, endColumn: number,
+      scriptId: Protocol.Runtime.ScriptId, sourceURL: string, startLine: number, startColumn: number, endLine: number,
+      endColumn: number,
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       executionContextId: number, hash: string, executionContextAuxData: any, isLiveEdit: boolean,
@@ -800,8 +802,9 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     return null;
   }
 
-  createRawLocationByScriptId(scriptId: string, lineNumber: number, columnNumber?: number, inlineFrameIndex?: number):
-      Location {
+  createRawLocationByScriptId(
+      scriptId: Protocol.Runtime.ScriptId, lineNumber: number, columnNumber?: number,
+      inlineFrameIndex?: number): Location {
     return new Location(this, scriptId, lineNumber, columnNumber, inlineFrameIndex);
   }
 
@@ -1088,13 +1091,13 @@ class DebuggerDispatcher implements ProtocolProxyApi.DebuggerDispatcher {
 
 export class Location {
   debuggerModel: DebuggerModel;
-  scriptId: string;
+  scriptId: Protocol.Runtime.ScriptId;
   lineNumber: number;
   columnNumber: number;
   inlineFrameIndex: number;
 
   constructor(
-      debuggerModel: DebuggerModel, scriptId: string, lineNumber: number, columnNumber?: number,
+      debuggerModel: DebuggerModel, scriptId: Protocol.Runtime.ScriptId, lineNumber: number, columnNumber?: number,
       inlineFrameIndex?: number) {
     this.debuggerModel = debuggerModel;
     this.scriptId = scriptId;
@@ -1162,10 +1165,10 @@ export class ScriptPosition {
 }
 
 export class LocationRange {
-  scriptId: string;
+  scriptId: Protocol.Runtime.ScriptId;
   start: ScriptPosition;
   end: ScriptPosition;
-  constructor(scriptId: string, start: ScriptPosition, end: ScriptPosition) {
+  constructor(scriptId: Protocol.Runtime.ScriptId, start: ScriptPosition, end: ScriptPosition) {
     this.scriptId = scriptId;
     this.start = start;
     this.end = end;
@@ -1212,7 +1215,7 @@ export class LocationRange {
 export class BreakLocation extends Location {
   type: Protocol.Debugger.BreakLocationType|undefined;
   constructor(
-      debuggerModel: DebuggerModel, scriptId: string, lineNumber: number, columnNumber?: number,
+      debuggerModel: DebuggerModel, scriptId: Protocol.Runtime.ScriptId, lineNumber: number, columnNumber?: number,
       type?: Protocol.Debugger.BreakLocationType) {
     super(debuggerModel, scriptId, lineNumber, columnNumber);
     if (type) {

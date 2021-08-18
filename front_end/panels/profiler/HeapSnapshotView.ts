@@ -34,6 +34,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as HeapSnapshotModel from '../../models/heap_snapshot_model/heap_snapshot_model.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
@@ -493,7 +494,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     }
     const debuggerModel = heapProfilerModel.runtimeModel().debuggerModel();
     const rawLocation = debuggerModel.createRawLocationByScriptId(
-        String(location.scriptId), location.lineNumber, location.columnNumber);
+        String(location.scriptId) as Protocol.Runtime.ScriptId, location.lineNumber, location.columnNumber);
     if (!rawLocation) {
       return null;
     }
@@ -1853,7 +1854,7 @@ export class HeapAllocationStackView extends UI.Widget.Widget {
       const target = this.heapProfilerModel ? this.heapProfilerModel.target() : null;
       const options = {columnNumber: frame.column - 1};
       const urlElement = this.linkifier.linkifyScriptLocation(
-          target, String(frame.scriptId), frame.scriptName, frame.line - 1,
+          target, String(frame.scriptId) as Protocol.Runtime.ScriptId, frame.scriptName, frame.line - 1,
           (options as Components.Linkifier.LinkifyOptions));
       frameDiv.appendChild(urlElement);
       stackFrameToURLElement.set(frameDiv, urlElement);

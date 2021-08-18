@@ -214,7 +214,7 @@ export class RuntimeModel extends SDKModel<EventTypes> {
   }
 
   async runScript(
-      scriptId: string, executionContextId: number, objectGroup?: string, silent?: boolean,
+      scriptId: Protocol.Runtime.ScriptId, executionContextId: number, objectGroup?: string, silent?: boolean,
       includeCommandLineAPI?: boolean, returnByValue?: boolean, generatePreview?: boolean,
       awaitPromise?: boolean): Promise<EvaluationResult> {
     const response = await this.agent.invoke_runScript({

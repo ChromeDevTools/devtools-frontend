@@ -454,7 +454,7 @@ export class SamplingHeapProfileHeader extends WritableProfileHeader {
     head: {
       callFrame: {
         functionName: string,
-        scriptId: string,
+        scriptId: Protocol.Runtime.ScriptId,
         url: string,
         lineNumber: number,
         columnNumber: number,
@@ -479,7 +479,7 @@ export class SamplingHeapProfileHeader extends WritableProfileHeader {
       head: {
         callFrame: {
           functionName: '',
-          scriptId: '',
+          scriptId: '' as Protocol.Runtime.ScriptId,
           url: '',
           lineNumber: 0,
           columnNumber: 0,

@@ -38,6 +38,8 @@ function mockBuildStackTraceRows(
                                    }));
 }
 
+const fakeScriptId = '1' as Protocol.Runtime.ScriptId;
+
 describe('StackTrace', () => {
   it('does not generate rows when there is no data', () => {
     const component = new ApplicationComponents.StackTrace.StackTrace();
@@ -55,14 +57,14 @@ describe('StackTrace', () => {
               url: 'http://www.example.com/script1.js',
               lineNumber: 15,
               columnNumber: 10,
-              scriptId: 'someScriptId',
+              scriptId: fakeScriptId,
             },
             {
               functionName: 'function2',
               url: 'http://www.example.com/script2.js',
               lineNumber: 20,
               columnNumber: 5,
-              scriptId: 'someScriptId',
+              scriptId: fakeScriptId,
             },
           ],
         },
@@ -109,14 +111,14 @@ describe('StackTrace', () => {
               url: 'http://www.example.com/script.js',
               lineNumber: 15,
               columnNumber: 10,
-              scriptId: 'someScriptId',
+              scriptId: fakeScriptId,
             },
             {
               functionName: 'function2',
               url: 'http://www.example.com/hidden.js',
               lineNumber: 20,
               columnNumber: 5,
-              scriptId: 'someScriptId',
+              scriptId: fakeScriptId,
             },
           ],
         },

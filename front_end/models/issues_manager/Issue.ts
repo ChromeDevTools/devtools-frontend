@@ -181,7 +181,8 @@ export abstract class Issue<IssueCode extends string = string> {
 }
 
 export function toZeroBasedLocation(location: Protocol.Audits.SourceCodeLocation|undefined):
-    {url: string, scriptId: string|undefined, lineNumber: number, columnNumber: number|undefined}|undefined {
+    {url: string, scriptId: Protocol.Runtime.ScriptId|undefined, lineNumber: number, columnNumber: number|undefined}|
+    undefined {
   if (!location) {
     return undefined;
   }

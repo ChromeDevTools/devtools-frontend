@@ -537,7 +537,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return this.linkifier.linkifyStackTraceTopFrame(runtimeModel.target(), stackTrace);
   }
 
-  private linkifyScriptId(scriptId: string, url: string, lineNumber: number, columnNumber: number): HTMLElement|null {
+  private linkifyScriptId(scriptId: Protocol.Runtime.ScriptId, url: string, lineNumber: number, columnNumber: number):
+      HTMLElement|null {
     const runtimeModel = this.message.runtimeModel();
     if (!runtimeModel) {
       return null;

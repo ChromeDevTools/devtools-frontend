@@ -53,6 +53,8 @@ function mockFrameToObjectForAssertion(mockFrame: MockResourceTreeFrame):
   };
 }
 
+const fakeScriptId = '1' as Protocol.Runtime.ScriptId;
+
 describe('FrameManager', () => {
   type FrameManager = SDK.FrameManager.FrameManager;
   type ResourceTreeModel = SDK.ResourceTreeModel.ResourceTreeModel;
@@ -209,14 +211,14 @@ describe('FrameManager', () => {
           url: 'http://www.example.com/script1.js',
           lineNumber: 15,
           columnNumber: 10,
-          scriptId: 'someScriptId',
+          scriptId: fakeScriptId,
         },
         {
           functionName: 'function2',
           url: 'http://www.example.com/script2.js',
           lineNumber: 20,
           columnNumber: 5,
-          scriptId: 'someScriptId',
+          scriptId: fakeScriptId,
         },
       ],
     };
@@ -253,14 +255,14 @@ describe('FrameManager', () => {
           url: 'http://www.example.com/script1.js',
           lineNumber: 15,
           columnNumber: 10,
-          scriptId: 'someScriptId',
+          scriptId: fakeScriptId,
         },
         {
           functionName: 'function2',
           url: 'http://www.example.com/script2.js',
           lineNumber: 20,
           columnNumber: 5,
-          scriptId: 'someScriptId',
+          scriptId: fakeScriptId,
         },
       ],
     };

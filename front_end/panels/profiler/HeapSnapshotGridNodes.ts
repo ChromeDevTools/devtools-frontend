@@ -32,6 +32,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as HeapSnapshotModel from '../../models/heap_snapshot_model/heap_snapshot_model.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -1284,8 +1285,9 @@ export class AllocationGridNode extends HeapSnapshotGridNode {
     if (allocationNode.scriptId) {
       const linkifier = (this.dataGridInternal as AllocationDataGrid).linkifier;
       const urlElement = linkifier.linkifyScriptLocation(
-          heapProfilerModel ? heapProfilerModel.target() : null, String(allocationNode.scriptId),
-          allocationNode.scriptName, allocationNode.line - 1, {
+          heapProfilerModel ? heapProfilerModel.target() : null,
+          String(allocationNode.scriptId) as Protocol.Runtime.ScriptId, allocationNode.scriptName,
+          allocationNode.line - 1, {
             columnNumber: allocationNode.column - 1,
             inlineFrameIndex: 0,
             className: 'profile-node-file',

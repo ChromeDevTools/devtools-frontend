@@ -487,7 +487,7 @@ export interface ConsoleMessageDetails {
   stackTrace?: Protocol.Runtime.StackTrace;
   timestamp?: number;
   executionContextId?: number;
-  scriptId?: string;
+  scriptId?: Protocol.Runtime.ScriptId;
   workerId?: string;
   context?: string;
   affectedResources?: AffectedResources;
@@ -506,7 +506,7 @@ export class ConsoleMessage {
   stackTrace: Protocol.Runtime.StackTrace|undefined;
   timestamp: number;
   private executionContextId: number;
-  scriptId?: string;
+  scriptId?: Protocol.Runtime.ScriptId;
   workerId?: string;
   context?: string;
   private originatingConsoleMessage: ConsoleMessage|null = null;

@@ -237,7 +237,8 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
 
   protected appendSourceLocation(
       element: HTMLElement,
-      sourceLocation: {url: string, scriptId?: string, lineNumber: number, columnNumber?: number}|undefined,
+      sourceLocation: {url: string, scriptId?: Protocol.Runtime.ScriptId, lineNumber: number, columnNumber?: number}|
+      undefined,
       target: SDK.Target.Target|null|undefined): void {
     const sourceCodeLocation = document.createElement('td');
     sourceCodeLocation.classList.add('affected-source-location');

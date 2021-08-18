@@ -31,7 +31,7 @@ export class ProfileNode {
     return this.callFrame.functionName;
   }
 
-  get scriptId(): string {
+  get scriptId(): Protocol.Runtime.ScriptId {
     return this.callFrame.scriptId;
   }
 

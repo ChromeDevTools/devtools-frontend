@@ -182,6 +182,8 @@ describe('IssueAggregator', async () => {
     ]);
   });
 
+  const scriptId1 = '1' as Protocol.Runtime.ScriptId;
+
   describe('IssueAggregator', async () => {
     it('aggregates affected locations correctly', () => {
       const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
@@ -195,7 +197,7 @@ describe('IssueAggregator', async () => {
         {url: 'baz', lineNumber: 1, columnNumber: 1},
       ]);
       const issue4 = StubIssue.createFromAffectedLocations([
-        {url: 'bar', lineNumber: 1, columnNumber: 1, scriptId: '1'},
+        {url: 'bar', lineNumber: 1, columnNumber: 1, scriptId: scriptId1},
         {url: 'foo', lineNumber: 2, columnNumber: 1},
       ]);
 
@@ -210,7 +212,7 @@ describe('IssueAggregator', async () => {
       assert.strictEqual(issues.length, 1);
       const locations = [...issues[0].sources()].sort((x, y) => JSON.stringify(x).localeCompare(JSON.stringify(y)));
       assert.deepStrictEqual(locations, [
-        {url: 'bar', lineNumber: 1, columnNumber: 1, scriptId: '1'},
+        {url: 'bar', lineNumber: 1, columnNumber: 1, scriptId: scriptId1},
         {url: 'bar', lineNumber: 1, columnNumber: 1},
         {url: 'baz', lineNumber: 1, columnNumber: 1},
         {url: 'foo', lineNumber: 1, columnNumber: 1},

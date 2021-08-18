@@ -209,7 +209,7 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
     super.wasShown();
     // We need CodeMirrorTextEditor to be initialized prior to this call as it calls |cursorPositionToCoordinates| internally. @see crbug.com/506566
     window.setTimeout(() => this.updateBucketDecorations(), 0);
-    this.setEditable(this.canEditSource());
+    this.setEditable(this.canEditSourceInternal());
     for (const plugin of this.plugins) {
       plugin.wasShown();
     }
@@ -235,7 +235,7 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
     this.ensurePluginsLoaded();
   }
 
-  canEditSource(): boolean {
+  canEditSourceInternal(): boolean {
     if (this.hasLoadError()) {
       return false;
     }
@@ -266,7 +266,7 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
   }
 
   private onNetworkPersistenceChanged(): void {
-    this.setEditable(this.canEditSource());
+    this.setEditable(this.canEditSourceInternal());
   }
 
   commitEditing(): void {
@@ -395,7 +395,7 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
   }
 
   private updateStyle(): void {
-    this.setEditable(this.canEditSource());
+    this.setEditable(this.canEditSourceInternal());
   }
 
   private innerSetContent(content: string): void {

@@ -19,86 +19,85 @@ function nextId(prefix) {
 
 SDKTestRunner.PageMock = class {
   constructor(url) {
-    this._url = url;
-    this._type = SDK.Target.Type.Frame;
-    this._enabledDomains = new Set();
-    this._children = new Map();
+    this.url = url;
+    this.type = SDK.Target.Type.Frame;
+    this.enabledDomains = new Set();
+    this.children = new Map();
 
-    this._mainFrame =
-        {id: nextId(), loaderId: nextId(), mimeType: 'text/html', securityOrigin: this._url, url: this._url};
+    this.mainFrame = {id: nextId(), loaderId: nextId(), mimeType: 'text/html', securityOrigin: this.url, url: this.url};
 
-    this._executionContexts = [];
-    this._executionContexts.push(this._createExecutionContext(this._mainFrame, false));
-    this._scripts = [];
-    this._scriptContents = new Map();
+    this.executionContexts = [];
+    this.executionContexts.push(this.createExecutionContext(this.mainFrame, false));
+    this.scripts = [];
+    this.scriptContents = new Map();
 
-    this._dispatchMap = {
-      'Debugger.enable': this._debuggerEnable,
-      'Debugger.getScriptSource': this._debuggerGetScriptSource,
-      'Debugger.setBlackboxPatterns': (id, params) => this._sendResponse(id, {}),
-      'Runtime.enable': this._runtimeEnable,
-      'Page.enable': this._pageEnable,
-      'Page.getResourceTree': this._pageGetResourceTree
+    this.dispatchMap = {
+      'Debugger.enable': this.debuggerEnable,
+      'Debugger.getScriptSource': this.debuggerGetScriptSource,
+      'Debugger.setBlackboxPatterns': (id, params) => this.sendResponse(id, {}),
+      'Runtime.enable': this.runtimeEnable,
+      'Page.enable': this.pageEnable,
+      'Page.getResourceTree': this.pageGetResourceTree
     };
   }
 
   turnIntoWorker() {
-    this._type = SDK.Target.Type.Worker;
+    this.type = SDK.Target.Type.Worker;
   }
 
   connectAsMainTarget(targetName) {
     self.Bindings.debuggerWorkspaceBinding.resetForTest(TestRunner.mainTarget);
     self.Bindings.resourceMapping.resetForTest(TestRunner.mainTarget);
-    this._enabledDomains.clear();
+    this.enabledDomains.clear();
     self.SDK.targetManager.targetsInternal.clear();
 
     const oldFactory = ProtocolClient.Connection.getFactory();
     ProtocolClient.Connection.setFactory(() => {
-      this._connection = new MockPageConnection(this);
-      return this._connection;
+      this.connection = new MockPageConnection(this);
+      return this.connection;
     });
-    const target = self.SDK.targetManager.createTarget(nextId('mock-target-'), targetName, this._type, null);
+    const target = self.SDK.targetManager.createTarget(nextId('mock-target-'), targetName, this.type, null);
     ProtocolClient.Connection.setFactory(oldFactory);
 
-    this._target = target;
+    this.target = target;
     return target;
   }
 
   connectAsChildTarget(targetName, parentMock) {
-    this._enabledDomains.clear();
-    this._sessionId = nextId('mock-target-');
-    this._root = parentMock._root || parentMock;
-    this._root._children.set(this._sessionId, this);
-    const target = self.SDK.targetManager.createTarget(
-        this._sessionId, targetName, this._type, parentMock._target, this._sessionId);
-    this._target = target;
+    this.enabledDomains.clear();
+    this.sessionId = nextId('mock-target-');
+    this.root = parentMock.root || parentMock;
+    this.root.children.set(this.sessionId, this);
+    const target =
+        self.SDK.targetManager.createTarget(this.sessionId, targetName, this.type, parentMock.target, this.sessionId);
+    this.target = target;
     return target;
   }
 
   disconnect() {
-    if (this._root) {
-      this._root._children.delete(this._sessionId);
-      this._target.dispose();
-      this._root = null;
-      this._sessionId = null;
+    if (this.root) {
+      this.root.children.delete(this.sessionId);
+      this.target.dispose();
+      this.root = null;
+      this.sessionId = null;
     } else {
-      this._connection.disconnect();
-      this._connection = null;
+      this.connection.disconnect();
+      this.connection = null;
     }
-    this._target = null;
+    this.target = null;
   }
 
   evalScript(url, content, isContentScript) {
     const id = nextId();
     content += '\n//# sourceURL=' + url;
-    this._scriptContents.set(id, content);
-    let context = this._executionContexts.find(context => context.auxData.isDefault !== isContentScript);
+    this.scriptContents.set(id, content);
+    let context = this.executionContexts.find(context => context.auxData.isDefault !== isContentScript);
 
     if (!context) {
-      context = this._createExecutionContext(this._mainFrame, isContentScript);
-      this._executionContexts.push(context);
+      context = this.createExecutionContext(this.mainFrame, isContentScript);
+      this.executionContexts.push(context);
 
-      this._fireEvent('Runtime.executionContextCreated', {context: context});
+      this.fireEvent('Runtime.executionContextCreated', {context: context});
     }
 
     const text = new TextUtils.Text(content);
@@ -120,45 +119,45 @@ SDKTestRunner.PageMock = class {
       length: content.length
     };
 
-    this._scripts.push(script);
-    this._fireEvent('Debugger.scriptParsed', script);
+    this.scripts.push(script);
+    this.fireEvent('Debugger.scriptParsed', script);
   }
 
   removeContentScripts() {
-    const index = this._executionContexts.findIndex(context => !context.auxData.isDefault);
+    const index = this.executionContexts.findIndex(context => !context.auxData.isDefault);
     if (index !== -1) {
-      this._fireEvent('Runtime.executionContextDestroyed', {executionContextId: this._executionContexts[index].id});
-      this._executionContexts.splice(index, 1);
+      this.fireEvent('Runtime.executionContextDestroyed', {executionContextId: this.executionContexts[index].id});
+      this.executionContexts.splice(index, 1);
     }
   }
 
   reload() {
-    this._fireEvent('Page.frameStartedLoading', {frameId: this._mainFrame.id});
+    this.fireEvent('Page.frameStartedLoading', {frameId: this.mainFrame.id});
 
-    for (const context of this._executionContexts) {
-      this._fireEvent('Runtime.executionContextDestroyed', {executionContextId: context.id});
+    for (const context of this.executionContexts) {
+      this.fireEvent('Runtime.executionContextDestroyed', {executionContextId: context.id});
     }
 
-    this._scripts = [];
-    this._scriptContents.clear();
-    this._executionContexts = [];
-    this._fireEvent('Runtime.executionContextsCleared', {});
-    this._executionContexts.push(this._createExecutionContext(this._mainFrame, false));
+    this.scripts = [];
+    this.scriptContents.clear();
+    this.executionContexts = [];
+    this.fireEvent('Runtime.executionContextsCleared', {});
+    this.executionContexts.push(this.createExecutionContext(this.mainFrame, false));
 
-    for (const context of this._executionContexts) {
-      this._fireEvent('Runtime.executionContextCreated', {context: context});
+    for (const context of this.executionContexts) {
+      this.fireEvent('Runtime.executionContextCreated', {context: context});
     }
 
-    this._fireEvent('Page.frameNavigated', {frame: this._mainFrame});
+    this.fireEvent('Page.frameNavigated', {frame: this.mainFrame});
 
-    this._fireEvent('Page.loadEventFired', {timestamp: Date.now() / 1000});
+    this.fireEvent('Page.loadEventFired', {timestamp: Date.now() / 1000});
 
-    this._fireEvent('Page.frameStoppedLoading', {frameId: this._mainFrame.id});
+    this.fireEvent('Page.frameStoppedLoading', {frameId: this.mainFrame.id});
 
-    this._fireEvent('Page.domContentEventFired', {timestamp: Date.now() / 1000});
+    this.fireEvent('Page.domContentEventFired', {timestamp: Date.now() / 1000});
   }
 
-  _createExecutionContext(frame, isContentScript) {
+  createExecutionContext(frame, isContentScript) {
     return {
       id: nextId(),
 
@@ -169,129 +168,129 @@ SDKTestRunner.PageMock = class {
     };
   }
 
-  _debuggerEnable(id, params) {
-    this._enabledDomains.add('Debugger');
-    this._sendResponse(id, {});
+  debuggerEnable(id, params) {
+    this.enabledDomains.add('Debugger');
+    this.sendResponse(id, {});
 
-    for (const script of this._scripts) {
-      this._fireEvent('Debugger.scriptParsed', script);
+    for (const script of this.scripts) {
+      this.fireEvent('Debugger.scriptParsed', script);
     }
   }
 
-  _debuggerGetScriptSource(id, params) {
-    if (!this._scriptContents.has(params.scriptId)) {
-      this._sendResponse(id, undefined, {message: 'Can\'t get script content for id ' + params.scriptId, code: 1});
+  debuggerGetScriptSource(id, params) {
+    if (!this.scriptContents.has(params.scriptId)) {
+      this.sendResponse(id, undefined, {message: 'Can\'t get script content for id ' + params.scriptId, code: 1});
 
       return;
     }
 
-    const result = {scriptSource: this._scriptContents.get(params.scriptId)};
+    const result = {scriptSource: this.scriptContents.get(params.scriptId)};
 
-    this._sendResponse(id, result);
+    this.sendResponse(id, result);
   }
 
-  _runtimeEnable(id, params) {
-    this._enabledDomains.add('Runtime');
-    this._sendResponse(id, {});
+  runtimeEnable(id, params) {
+    this.enabledDomains.add('Runtime');
+    this.sendResponse(id, {});
 
-    for (const context of this._executionContexts) {
-      this._fireEvent('Runtime.executionContextCreated', {context: context});
+    for (const context of this.executionContexts) {
+      this.fireEvent('Runtime.executionContextCreated', {context: context});
     }
   }
 
-  _pageEnable(id, params) {
-    this._enabledDomains.add('Page');
-    this._sendResponse(id, {});
+  pageEnable(id, params) {
+    this.enabledDomains.add('Page');
+    this.sendResponse(id, {});
   }
 
-  _pageGetResourceTree(id, params) {
-    const result = {frameTree: {frame: this._mainFrame, resources: []}};
+  pageGetResourceTree(id, params) {
+    const result = {frameTree: {frame: this.mainFrame, resources: []}};
 
-    this._sendResponse(id, result);
+    this.sendResponse(id, result);
   }
 
-  _isSupportedDomain(methodName) {
+  isSupportedDomain(methodName) {
     const domain = methodName.split('.')[0];
 
     if (domain === 'Page') {
-      return this._type === SDK.Target.Type.Frame;
+      return this.type === SDK.Target.Type.Frame;
     }
 
     return true;
   }
 
-  _dispatch(sessionId, id, methodName, params) {
+  dispatch(sessionId, id, methodName, params) {
     if (sessionId) {
-      const child = this._children.get(sessionId);
+      const child = this.children.get(sessionId);
       if (child) {
-        child._dispatch('', id, methodName, params);
+        child.dispatch('', id, methodName, params);
       }
       return;
     }
 
-    const handler = (this._isSupportedDomain(methodName) ? this._dispatchMap[methodName] : null);
+    const handler = (this.isSupportedDomain(methodName) ? this.dispatchMap[methodName] : null);
 
     if (handler) {
       return handler.call(this, id, params);
     }
 
-    this._sendResponse(
+    this.sendResponse(
         id, undefined, {message: 'Can\'t handle command ' + methodName, code: ProtocolClient.DevToolsStubErrorCode});
   }
 
-  _sendResponse(id, result, error) {
+  sendResponse(id, result, error) {
     const message = {id: id, result: result, error: error};
-    if (this._root) {
-      message.sessionId = this._sessionId;
-      this._root._connection.sendMessageToDevTools(message);
+    if (this.root) {
+      message.sessionId = this.sessionId;
+      this.root.connection.sendMessageToDevTools(message);
     } else {
-      this._connection.sendMessageToDevTools(message);
+      this.connection.sendMessageToDevTools(message);
     }
   }
 
-  _fireEvent(methodName, params) {
+  fireEvent(methodName, params) {
     const domain = methodName.split('.')[0];
 
-    if (!this._enabledDomains.has(domain)) {
+    if (!this.enabledDomains.has(domain)) {
       return;
     }
 
     const message = {method: methodName, params: params};
-    if (this._root) {
-      message.sessionId = this._sessionId;
-      this._root._connection.sendMessageToDevTools(message);
+    if (this.root) {
+      message.sessionId = this.sessionId;
+      this.root.connection.sendMessageToDevTools(message);
     } else {
-      this._connection.sendMessageToDevTools(message);
+      this.connection.sendMessageToDevTools(message);
     }
   }
 };
 
 class MockPageConnection {
   constructor(page) {
-    this._page = page;
+    this.page = page;
   }
 
   setOnMessage(onMessage) {
-    this._onMessage = onMessage;
+    this.onMessage = onMessage;
   }
 
   setOnDisconnect(onDisconnect) {
-    this._onDisconnect = onDisconnect;
+    this.onDisconnect = onDisconnect;
   }
 
   sendMessageToDevTools(message) {
-    setTimeout(() => this._onMessage.call(null, JSON.stringify(message)), 0);
+    setTimeout(() => this.onMessage.call(null, JSON.stringify(message)), 0);
   }
 
   sendRawMessage(messageString) {
     const message = JSON.parse(messageString);
-    this._page._dispatch(message.sessionId, message.id, message.method, message.params || {});
+    this.page.dispatch(message.sessionId, message.id, message.method, message.params || {});
   }
 
   disconnect() {
-    this._onDisconnect.call(null, 'force disconnect');
-    this._onDisconnect = null;
-    this._onMessage = null;
+    this.onDisconnect.call(null, 'force disconnect');
+    this.onDisconnect = null;
+    this.onMessage = null;
     return Promise.resolve();
   }
 }

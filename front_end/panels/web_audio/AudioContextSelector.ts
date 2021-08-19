@@ -25,7 +25,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/web_audio/AudioContextSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper implements
+export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     UI.SoftDropDown.Delegate<Protocol.WebAudio.BaseAudioContext> {
   private readonly placeholderText: Platform.UIString.LocalizedString;
   private readonly items: UI.ListModel.ListModel<Protocol.WebAudio.BaseAudioContext>;
@@ -155,3 +155,7 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper imp
 export const enum Events {
   ContextSelected = 'ContextSelected',
 }
+
+export type EventTypes = {
+  [Events.ContextSelected]: Protocol.WebAudio.BaseAudioContext|null,
+};

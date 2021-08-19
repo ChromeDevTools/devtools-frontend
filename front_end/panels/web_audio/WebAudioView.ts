@@ -66,9 +66,12 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
     this.summaryBarContainer = this.contentContainer.createChild('div', 'web-audio-summary-container');
 
     this.contextSelector.addEventListener(
-        SelectorEvents.ContextSelected, (event: Common.EventTarget.EventTargetEvent): void => {
-          const context = (event.data as Protocol.WebAudio.BaseAudioContext);
-          this.updateDetailView(context);
+        SelectorEvents.ContextSelected,
+        (event: Common.EventTarget.EventTargetEvent<Protocol.WebAudio.BaseAudioContext|null>): void => {
+          const context = event.data;
+          if (context) {
+            this.updateDetailView(context);
+          }
           this.doUpdate();
         });
 

@@ -111,6 +111,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand(
       'Accessibility.getFullAXTree',
       [
+        {'name': 'depth', 'type': 'number', 'optional': true},
         {'name': 'max_depth', 'type': 'number', 'optional': true},
         {'name': 'frameId', 'type': 'string', 'optional': true}
       ],
@@ -1385,6 +1386,7 @@ export function registerCommands(inspectorBackend) {
   });
   inspectorBackend.registerEnum(
       'Log.LogEntryLevel', {Verbose: 'verbose', Info: 'info', Warning: 'warning', Error: 'error'});
+  inspectorBackend.registerEnum('Log.LogEntryCategory', {Cors: 'cors'});
   inspectorBackend.registerEnum('Log.ViolationSettingName', {
     LongTask: 'longTask',
     LongLayout: 'longLayout',
@@ -1610,6 +1612,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEnum(
       'Network.CrossOriginEmbedderPolicyValue',
       {None: 'None', Credentialless: 'Credentialless', RequireCorp: 'RequireCorp'});
+  inspectorBackend.registerEnum('Network.ReportStatus', {Queued: 'Queued', Pending: 'Pending'});
   inspectorBackend.registerEvent('Network.dataReceived', ['requestId', 'timestamp', 'dataLength', 'encodedDataLength']);
   inspectorBackend.registerEvent(
       'Network.eventSourceMessageReceived', ['requestId', 'timestamp', 'eventName', 'eventId', 'data']);
@@ -1670,6 +1673,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEvent(
       'Network.subresourceWebBundleInnerResponseError',
       ['innerRequestId', 'innerRequestURL', 'errorMessage', 'bundleRequestId']);
+  inspectorBackend.registerEvent('Network.reportingApiReportAdded', ['report']);
   inspectorBackend.registerCommand(
       'Network.setAcceptedEncodings', [{'name': 'encodings', 'type': 'object', 'optional': false}], []);
   inspectorBackend.registerCommand('Network.clearAcceptedEncodingsOverride', [], []);
@@ -1783,6 +1787,8 @@ export function registerCommands(inspectorBackend) {
       []);
   inspectorBackend.registerCommand(
       'Network.getSecurityIsolationStatus', [{'name': 'frameId', 'type': 'string', 'optional': true}], ['status']);
+  inspectorBackend.registerCommand(
+      'Network.enableReportingApi', [{'name': 'enable', 'type': 'boolean', 'optional': false}], []);
   inspectorBackend.registerCommand(
       'Network.loadNetworkResource',
       [
@@ -1950,6 +1956,7 @@ export function registerCommands(inspectorBackend) {
     ChUaFullVersion: 'ch-ua-full-version',
     ChUaPlatformVersion: 'ch-ua-platform-version',
     ChUaReduced: 'ch-ua-reduced',
+    ChViewportHeight: 'ch-viewport-height',
     ChViewportWidth: 'ch-viewport-width',
     ChWidth: 'ch-width',
     ClipboardRead: 'clipboard-read',
@@ -2133,7 +2140,6 @@ export function registerCommands(inspectorBackend) {
     WebShare: 'WebShare',
     RequestedStorageAccessGrant: 'RequestedStorageAccessGrant',
     WebNfc: 'WebNfc',
-    WebFileSystem: 'WebFileSystem',
     OutstandingNetworkRequestFetch: 'OutstandingNetworkRequestFetch',
     OutstandingNetworkRequestXHR: 'OutstandingNetworkRequestXHR',
     AppBanner: 'AppBanner',
@@ -2735,8 +2741,8 @@ export function registerCommands(inspectorBackend) {
       'Fetch.AuthChallengeResponseResponse',
       {Default: 'Default', CancelAuth: 'CancelAuth', ProvideCredentials: 'ProvideCredentials'});
   inspectorBackend.registerEvent('Fetch.requestPaused', [
-    'requestId', 'request', 'frameId', 'resourceType', 'responseErrorReason', 'responseStatusCode', 'responseHeaders',
-    'networkId'
+    'requestId', 'request', 'frameId', 'resourceType', 'responseErrorReason', 'responseStatusCode',
+    'responseStatusText', 'responseHeaders', 'networkId'
   ]);
   inspectorBackend.registerEvent(
       'Fetch.authRequired', ['requestId', 'request', 'frameId', 'resourceType', 'authChallenge']);

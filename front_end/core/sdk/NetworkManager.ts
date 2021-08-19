@@ -1019,6 +1019,9 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     }
   }
 
+  reportingApiReportAdded(_params: Protocol.Network.ReportingApiReportAddedEvent): void {
+  }
+
   /**
    * @deprecated
    * This method is only kept for usage in a web test.

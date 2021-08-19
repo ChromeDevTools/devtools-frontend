@@ -9,6 +9,7 @@ import * as Root from '../../core/root/root.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
+import * as EmulationComponents from './components/components.js';
 
 const UIStrings = {
   /**
@@ -201,8 +202,8 @@ export class DeviceModeToolbar {
   private readonly persistenceSetting: Common.Settings.Setting<{device: string, orientation: string, mode: string}>;
   private spanButton!: UI.Toolbar.ToolbarButton;
   private modeButton!: UI.Toolbar.ToolbarButton;
-  private widthInput!: HTMLInputElement;
-  private heightInput!: HTMLInputElement;
+  private widthInput: EmulationComponents.DeviceSizeInputElement.SizeInputElement;
+  private heightInput: EmulationComponents.DeviceSizeInputElement.SizeInputElement;
   private deviceScaleItem!: UI.Toolbar.ToolbarMenuButton;
   private deviceSelectItem!: UI.Toolbar.ToolbarMenuButton;
   private scaleItem!: UI.Toolbar.ToolbarMenuButton;
@@ -210,11 +211,7 @@ export class DeviceModeToolbar {
   private experimentalButton!: UI.Toolbar.ToolbarToggle|null;
   private cachedDeviceScale!: number|null;
   private cachedUaType!: string|null;
-  private updateWidthInput!: (arg0: string) => void;
-  private widthItem?: UI.Toolbar.ToolbarItem;
   private xItem?: UI.Toolbar.ToolbarItem;
-  private updateHeightInput?: ((arg0: string) => void);
-  private heightItem?: UI.Toolbar.ToolbarItem;
   private throttlingConditionsItem?: UI.Toolbar.ToolbarMenuButton;
   private cachedModelType?: EmulationModel.DeviceModeModel.Type;
   private cachedScale?: number;
@@ -258,6 +255,15 @@ export class DeviceModeToolbar {
 
     const mainToolbar = new UI.Toolbar.Toolbar('', this.elementInternal);
     mainToolbar.makeWrappable();
+    this.widthInput = new EmulationComponents.DeviceSizeInputElement.SizeInputElement(i18nString(UIStrings.width));
+    this.widthInput.addEventListener('sizechanged', ({size: width}) => {
+      this.model.setWidthAndScaleToFit(width);
+    });
+    this.heightInput =
+        new EmulationComponents.DeviceSizeInputElement.SizeInputElement(i18nString(UIStrings.heightLeaveEmptyForFull));
+    this.heightInput.addEventListener('sizechanged', ({size: height}) => {
+      this.model.setHeightAndScaleToFit(height);
+    });
     this.fillMainToolbar(mainToolbar);
 
     const rightContainer = this.elementInternal.createChild('div', 'device-mode-toolbar-spacer');
@@ -320,14 +326,7 @@ export class DeviceModeToolbar {
   }
 
   private fillMainToolbar(toolbar: UI.Toolbar.Toolbar): void {
-    const widthInput = UI.UIUtils.createInput('device-mode-size-input', 'text');
-    widthInput.maxLength = 4;
-    widthInput.title = i18nString(UIStrings.width);
-    this.updateWidthInput = UI.UIUtils.bindInput(
-        widthInput, this.applyWidth.bind(this), EmulationModel.DeviceModeModel.DeviceModeModel.widthValidator, true);
-    this.widthInput = widthInput;
-    this.widthItem = this.wrapToolbarItem(widthInput);
-    toolbar.appendToolbarItem(this.widthItem);
+    toolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(this.widthInput));
 
     const xElement = document.createElement('div');
     xElement.classList.add('device-mode-x');
@@ -335,33 +334,7 @@ export class DeviceModeToolbar {
     this.xItem = this.wrapToolbarItem(xElement);
     toolbar.appendToolbarItem(this.xItem);
 
-    const heightInput = UI.UIUtils.createInput('device-mode-size-input', 'text');
-    heightInput.maxLength = 4;
-    heightInput.title = i18nString(UIStrings.heightLeaveEmptyForFull);
-    this.updateHeightInput = UI.UIUtils.bindInput(heightInput, this.applyHeight.bind(this), validateHeight, true);
-    this.heightInput = heightInput;
-    this.heightItem = this.wrapToolbarItem(heightInput);
-    toolbar.appendToolbarItem(this.heightItem);
-
-    function validateHeight(value: string): {
-      valid: boolean,
-      errorMessage: (string|undefined),
-    } {
-      if (!value) {
-        return {valid: true, errorMessage: undefined};
-      }
-      return EmulationModel.DeviceModeModel.DeviceModeModel.heightValidator(value);
-    }
-  }
-
-  private applyWidth(value: string): void {
-    const width = value ? Number(value) : 0;
-    this.model.setWidthAndScaleToFit(width);
-  }
-
-  private applyHeight(value: string): void {
-    const height = value ? Number(value) : 0;
-    this.model.setHeightAndScaleToFit(height);
+    toolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(this.heightInput));
   }
 
   private fillRightToolbar(toolbar: UI.Toolbar.Toolbar): void {
@@ -758,13 +731,11 @@ export class DeviceModeToolbar {
     }
 
     const size = this.model.appliedDeviceSize();
-    if (this.updateHeightInput) {
-      this.updateHeightInput(
-          this.model.type() === EmulationModel.DeviceModeModel.Type.Responsive && this.model.isFullHeight() ?
-              '' :
-              String(size.height));
-    }
-    this.updateWidthInput(String(size.width));
+    this.widthInput.size = String(size.width);
+    this.heightInput.size =
+        this.model.type() === EmulationModel.DeviceModeModel.Type.Responsive && this.model.isFullHeight() ?
+        '' :
+        String(size.height);
     this.heightInput.placeholder = String(size.height);
 
     if (this.model.scale() !== this.cachedScale) {

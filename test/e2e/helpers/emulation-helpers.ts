@@ -14,7 +14,7 @@ const SURFACE_DUO_MENU_ITEM_SELECTOR = '[aria-label*="Surface Duo"]';
 const EDIT_MENU_ITEM_SELECTOR = '[aria-label*="Edit"]';
 const TEST_DEVICE_MENU_ITEM_SELECTOR = '[aria-label*="Test device"]';
 const DUAL_SCREEN_BUTTON_SELECTOR = '[aria-label="Toggle dual-screen mode"]';
-const SCREEN_DIM_INPUT_SELECTOR = '.device-mode-size-input';
+const SCREEN_DIM_INPUT_SELECTOR = '[title="Width"]';
 
 export const reloadDockableFrontEnd = async () => {
   await reloadDevTools({canDock: true});

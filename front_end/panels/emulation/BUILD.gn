@@ -32,6 +32,7 @@ devtools_module("emulation") {
     "../../ui/components/icon_button:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/utils:bundle",
+    "./components:bundle",
   ]
 
   public_deps =

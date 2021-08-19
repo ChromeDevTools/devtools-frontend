@@ -4,23 +4,6 @@
  * found in the LICENSE file.
  */
 
-.device-mode-size-input {
-  width: 41px;
-  max-height: 18px;
-  margin: 0 2px;
-  text-align: center;
-}
-
-.device-mode-size-input:disabled {
-  background: transparent;
-  user-select: none;
-  opacity: 60%;
-}
-
-.device-mode-size-input:focus::-webkit-input-placeholder {
-  color: transparent;
-}
-
 .device-mode-x {
   margin: 0 1px;
   font-size: 16px;

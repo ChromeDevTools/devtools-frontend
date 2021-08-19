@@ -20,7 +20,7 @@ ElementsTestRunner.doAddAttribute = function(testName, dataNodeId, attributeText
           ElementsTestRunner.firstElementsTreeOutline()._shadowRoot.getSelection().anchorNode.parentElement;
       editorElement.textContent = attributeText;
       editorElement.dispatchEvent(TestRunner.createKeyEvent('Enter'));
-      TestRunner.addSniffer(Elements.ElementsTreeOutline.prototype, '_updateModifiedNodes', done);
+      TestRunner.addSniffer(Elements.ElementsTreeOutline.prototype, 'updateModifiedNodes', done);
     }
   }
 };
@@ -72,7 +72,7 @@ ElementsTestRunner.editNodePartAndRun = function(node, className, newValue, step
   editorElement.dispatchEvent(TestRunner.createKeyEvent('Enter'));
 
   if (useSniffer) {
-    TestRunner.addSniffer(Elements.ElementsTreeOutline.prototype, '_updateModifiedNodes', step2);
+    TestRunner.addSniffer(Elements.ElementsTreeOutline.prototype, 'updateModifiedNodes', step2);
   } else {
     TestRunner.deprecatedRunAfterPendingDispatches(step2);
   }

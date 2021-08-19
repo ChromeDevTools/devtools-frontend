@@ -13,7 +13,7 @@ ElementsTestRunner.selectReloadAndDump = function(next, node) {
   let selected = false;
 
   function onSelected() {
-    TestRunner.addSniffer(Elements.ElementsPanel.prototype, '_lastSelectedNodeSelectedForTest', onReSelected);
+    TestRunner.addSniffer(Elements.ElementsPanel.prototype, 'lastSelectedNodeSelectedForTest', onReSelected);
     TestRunner.reloadPage(onReloaded);
   }
 

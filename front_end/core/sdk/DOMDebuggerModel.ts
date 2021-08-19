@@ -238,7 +238,7 @@ export class DOMDebuggerModel extends SDKModel<EventTypes> {
       return [];
     }
 
-    const listeners = await this.agent.invoke_getEventListeners({objectId: (remoteObject.objectId as string)});
+    const listeners = await this.agent.invoke_getEventListeners({objectId: remoteObject.objectId});
     const eventListeners = [];
     for (const payload of listeners.listeners || []) {
       const location = this.runtimeModelInternal.debuggerModel().createRawLocationByScriptId(

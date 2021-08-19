@@ -196,7 +196,8 @@ export class RemoteObject {
   }
 
   get objectId(): Protocol.Runtime.RemoteObjectId|undefined {
-    return 'Not implemented';
+    // TODO(crbug.com/1226471): Return undefined here.
+    return 'Not implemented' as Protocol.Runtime.RemoteObjectId;
   }
 
   get type(): string {
@@ -294,7 +295,7 @@ export class RemoteObjectImpl extends RemoteObject {
   private readonly runtimeAgent: ProtocolProxyApi.RuntimeApi;
   private readonly typeInternal: string;
   private readonly subtypeInternal: string|undefined;
-  private objectIdInternal: string|undefined;
+  private objectIdInternal: Protocol.Runtime.RemoteObjectId|undefined;
   private descriptionInternal: string|undefined;
   hasChildrenInternal: boolean;
   private readonly previewInternal: Protocol.Runtime.ObjectPreview|undefined;
@@ -306,11 +307,11 @@ export class RemoteObjectImpl extends RemoteObject {
   private readonly classNameInternal: string|null;
 
   constructor(
+      runtimeModel: RuntimeModel, objectId: Protocol.Runtime.RemoteObjectId|undefined, type: string,
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      runtimeModel: RuntimeModel, objectId: string|undefined, type: string, subtype: string|undefined, value: any,
-      unserializableValue?: string, description?: string, preview?: Protocol.Runtime.ObjectPreview,
-      customPreview?: Protocol.Runtime.CustomPreview, className?: string) {
+      subtype: string|undefined, value: any, unserializableValue?: string, description?: string,
+      preview?: Protocol.Runtime.ObjectPreview, customPreview?: Protocol.Runtime.CustomPreview, className?: string) {
     super();
 
     this.runtimeModelInternal = runtimeModel;
@@ -610,7 +611,7 @@ export class ScopeRemoteObject extends RemoteObjectImpl {
   private savedScopeProperties: RemoteObjectProperty[]|undefined;
 
   constructor(
-      runtimeModel: RuntimeModel, objectId: string|undefined, scopeRef: ScopeRef, type: string,
+      runtimeModel: RuntimeModel, objectId: Protocol.Runtime.RemoteObjectId|undefined, scopeRef: ScopeRef, type: string,
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       subtype: string|undefined, value: any, unserializableValue?: string, description?: string,

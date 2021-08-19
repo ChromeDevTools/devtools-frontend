@@ -241,8 +241,8 @@ export class RuntimeModel extends SDKModel<EventTypes> {
     if (!prototype.objectId) {
       return {error: 'Prototype should be an Object.'};
     }
-    const response = await this.agent.invoke_queryObjects(
-        {prototypeObjectId: (prototype.objectId as string), objectGroup: 'console'});
+    const response =
+        await this.agent.invoke_queryObjects({prototypeObjectId: prototype.objectId, objectGroup: 'console'});
     const error = response.getError();
     if (error) {
       console.error(error);

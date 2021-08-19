@@ -50,7 +50,7 @@ export class HeapProfilerPanel extends ProfilesPanel implements UI.ContextMenu.P
     if (!object.objectId) {
       return;
     }
-    const objectId = (object.objectId as string);
+    const objectId = object.objectId;
 
     const heapProfiles = instance.heapSnapshotProfileType.getProfiles();
     if (!heapProfiles.length) {

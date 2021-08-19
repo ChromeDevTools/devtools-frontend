@@ -15371,7 +15371,7 @@ declare namespace Protocol {
     /**
      * Unique object identifier.
      */
-    export type RemoteObjectId = string;
+    export type RemoteObjectId = OpaqueIdentifier<string, 'Protocol.Runtime.RemoteObjectId'>;
 
     /**
      * Primitive value which cannot be JSON-stringified. Includes values `-0`, `NaN`, `Infinity`,

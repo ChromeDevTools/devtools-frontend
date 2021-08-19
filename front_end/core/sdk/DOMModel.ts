@@ -1168,7 +1168,7 @@ export class DOMModel extends SDKModel<EventTypes> {
     return this.document;
   }
 
-  async pushNodeToFrontend(objectId: string): Promise<DOMNode|null> {
+  async pushNodeToFrontend(objectId: Protocol.Runtime.RemoteObjectId): Promise<DOMNode|null> {
     await this.requestDocument();
     const {nodeId} = await this.agent.invoke_requestNode({objectId});
     return nodeId ? this.nodeForId(nodeId) : null;
@@ -1493,7 +1493,7 @@ export class DOMModel extends SDKModel<EventTypes> {
   }
 
   pushObjectAsNodeToFrontend(object: RemoteObject): Promise<DOMNode|null> {
-    return object.isNode() ? this.pushNodeToFrontend((object.objectId as string)) : Promise.resolve(null);
+    return object.isNode() && object.objectId ? this.pushNodeToFrontend(object.objectId) : Promise.resolve(null);
   }
 
   suspendModel(): Promise<void> {

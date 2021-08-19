@@ -154,7 +154,8 @@ export class ValueNode extends SDK.RemoteObject.RemoteObjectImpl {
   callFrame: SDK.DebuggerModel.CallFrame;
 
   constructor(
-      callFrame: SDK.DebuggerModel.CallFrame, objectId: string|undefined, type: string, subtype: string|undefined,
+      callFrame: SDK.DebuggerModel.CallFrame, objectId: Protocol.Runtime.RemoteObjectId|undefined, type: string,
+      subtype: string|undefined,
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       value: any, inspectableAddress?: number, unserializableValue?: string, description?: string,
@@ -405,8 +406,11 @@ class FormattedValueNode extends ValueNode {
       return null;
     }
 
-    const response = await this.debuggerModel().target().runtimeAgent().invoke_callFunctionOn(
-        {functionDeclaration: 'function(sym) { return this[sym]; }', objectId, arguments: [{objectId: symbol}]});
+    const response = await this.debuggerModel().target().runtimeAgent().invoke_callFunctionOn({
+      functionDeclaration: 'function(sym) { return this[sym]; }',
+      objectId,
+      arguments: [{objectId: symbol as Protocol.Runtime.RemoteObjectId}],
+    });
     const {result} = response;
     if (!result || result.type === 'undefined') {
       return null;

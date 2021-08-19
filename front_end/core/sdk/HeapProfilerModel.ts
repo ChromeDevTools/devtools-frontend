@@ -83,7 +83,7 @@ export class HeapProfilerModel extends SDKModel<EventTypes> {
     return Boolean(response.getError());
   }
 
-  async snapshotObjectIdForObjectId(objectId: string): Promise<string|null> {
+  async snapshotObjectIdForObjectId(objectId: Protocol.Runtime.RemoteObjectId): Promise<string|null> {
     const response = await this.heapProfilerAgent.invoke_getHeapObjectId({objectId});
     if (response.getError()) {
       return null;

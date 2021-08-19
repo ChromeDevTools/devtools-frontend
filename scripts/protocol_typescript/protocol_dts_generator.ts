@@ -240,6 +240,7 @@ const knownIdentifierTypes = [
   'Network.LoaderId',
   'Network.RequestId',
   'Runtime.ExecutionContextId',
+  'Runtime.RemoteObjectId',
   'Runtime.ScriptId',
   'Runtime.UniqueDebuggerId',
   'Security.CertificateId',

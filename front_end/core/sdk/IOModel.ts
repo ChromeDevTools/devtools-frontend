@@ -8,6 +8,7 @@ import {RemoteObject} from './RemoteObject.js';
 import type {Target} from './Target.js';
 import {Capability} from './Target.js';
 import {SDKModel} from './SDKModel.js';
+import type * as Protocol from '../../generated/protocol.js';
 
 export class IOModel extends SDKModel<void> {
   constructor(target: Target) {
@@ -35,7 +36,7 @@ export class IOModel extends SDKModel<void> {
     }
   }
 
-  async resolveBlob(objectOrObjectId: string|RemoteObject): Promise<string> {
+  async resolveBlob(objectOrObjectId: Protocol.Runtime.RemoteObjectId|RemoteObject): Promise<string> {
     const objectId = objectOrObjectId instanceof RemoteObject ? objectOrObjectId.objectId : objectOrObjectId;
     if (!objectId) {
       throw new Error('Remote object has undefined objectId');

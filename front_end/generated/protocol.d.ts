@@ -13999,7 +13999,7 @@ declare namespace Protocol {
     /**
      * Call frame identifier.
      */
-    export type CallFrameId = string;
+    export type CallFrameId = OpaqueIdentifier<string, 'Protocol.Debugger.CallFrameId'>;
 
     /**
      * Location in the source code.

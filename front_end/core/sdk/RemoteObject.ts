@@ -650,7 +650,8 @@ export class ScopeRemoteObject extends RemoteObjectImpl {
       Promise<string|undefined> {
     const name = (argumentName.value as string);
     const error = await this.debuggerModel().setVariableValue(
-        this.scopeRef.number, name, RemoteObject.toCallArgument(result), (this.scopeRef.callFrameId as string));
+        this.scopeRef.number, name, RemoteObject.toCallArgument(result),
+        (this.scopeRef.callFrameId as Protocol.Debugger.CallFrameId));
     if (error) {
       return error;
     }
@@ -667,8 +668,8 @@ export class ScopeRemoteObject extends RemoteObjectImpl {
 
 export class ScopeRef {
   number: number;
-  callFrameId: string|undefined;
-  constructor(number: number, callFrameId?: string) {
+  callFrameId: Protocol.Debugger.CallFrameId|undefined;
+  constructor(number: number, callFrameId?: Protocol.Debugger.CallFrameId) {
     this.number = number;
     this.callFrameId = callFrameId;
   }

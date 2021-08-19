@@ -227,6 +227,7 @@ const knownIdentifierTypes = [
   'CSS.StyleSheetId',
   'Database.DatabaseId',
   'Debugger.BreakpointId',
+  'Debugger.CallFrameId',
   'DOM.BackendNodeId',
   'DOM.NodeId',
   'DOM.SnapshotId',

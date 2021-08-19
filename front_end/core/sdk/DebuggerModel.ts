@@ -891,7 +891,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
 
   async setVariableValue(
       scopeNumber: number, variableName: string, newValue: Protocol.Runtime.CallArgument,
-      callFrameId: string): Promise<string|undefined> {
+      callFrameId: Protocol.Debugger.CallFrameId): Promise<string|undefined> {
     const response = await this.agent.invoke_setVariableValue({scopeNumber, variableName, newValue, callFrameId});
     const error = response.getError();
     if (error) {
@@ -1290,7 +1290,7 @@ export class CallFrame {
     return this.scriptInternal;
   }
 
-  get id(): string {
+  get id(): Protocol.Debugger.CallFrameId {
     return this.payload.callFrameId;
   }
 

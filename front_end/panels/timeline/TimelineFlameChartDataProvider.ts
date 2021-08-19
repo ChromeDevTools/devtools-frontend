@@ -161,7 +161,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineFlameChartDataProvider.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectWrapper implements
+export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     PerfUI.FlameChart.FlameChartDataProvider {
   private readonly font: string;
   private timelineDataInternal: PerfUI.FlameChart.TimelineData|null;
@@ -1427,6 +1427,10 @@ const indexForEvent = new WeakMap<SDK.TracingModel.Event, number>();
 export enum Events {
   DataChanged = 'DataChanged',
 }
+
+export type EventTypes = {
+  [Events.DataChanged]: void,
+};
 
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum

@@ -40,7 +40,6 @@ export const LOCALES: ReadonlyArray<Intl.UnicodeBCP47LocaleIdentifier> = [
   'id',
   'is',
   'it',
-  'iw',
   'ja',
   'ka',
   'kk',

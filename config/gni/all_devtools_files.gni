@@ -469,7 +469,6 @@ remote_devtools_locale_files = [
   "id.json",
   "is.json",
   "it.json",
-  "iw.json",
   "ja.json",
   "ka.json",
   "kk.json",

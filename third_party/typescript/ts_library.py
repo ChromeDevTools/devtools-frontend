@@ -140,7 +140,7 @@ def compute_previous_generated_file_metadata(sources,
                                              tsconfig_output_directory):
     gen_files = {}
     for src_fname in sources:
-        for ext in ['.d.ts', '.js', '.map']:
+        for ext in ['.d.ts', '.js', '.js.map']:
             gen_fname = os.path.basename(src_fname.replace('.ts', ext))
             gen_path = os.path.join(tsconfig_output_directory, gen_fname)
             if os.path.exists(gen_path):
@@ -207,6 +207,7 @@ def main():
     parser.add_argument('--verify-lib-check', action='store_true')
     parser.add_argument('--is_web_worker', action='store_true')
     parser.add_argument('--module', required=False)
+    parser.add_argument('--reset_timestamps', action='store_true')
     parser.add_argument('--use-rbe', action='store_true')
     parser.add_argument('--rewrapper-binary', required=False)
     parser.add_argument('--rewrapper-cfg', required=False)
@@ -214,6 +215,7 @@ def main():
     parser.set_defaults(test_only=False,
                         no_emit=False,
                         verify_lib_check=False,
+                        reset_timestamps=False,
                         module='esnext')
 
     opts = parser.parse_args()
@@ -281,8 +283,10 @@ def main():
         found_errors, stderr = runTsc(
             tsconfig_location=tsconfig_output_location)
 
-    maybe_reset_timestamps_on_generated_files(
-        previously_generated_file_metadata, tsconfig_output_directory)
+    if opts.reset_timestamps:
+        maybe_reset_timestamps_on_generated_files(
+            previously_generated_file_metadata, tsconfig_output_directory)
+
     remove_generated_tsbuildinfo_file(
         path.join(tsconfig_output_directory, tsbuildinfo_name))
 

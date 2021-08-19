@@ -130,6 +130,10 @@ template("ts_library") {
       args += [ "--module=" + invoker.module ]
     }
 
+    if (defined(invoker.reset_timestamps) && invoker.reset_timestamps) {
+      args += [ "--reset_timestamps" ]
+    }
+
     if (defined(invoker.is_web_worker) && invoker.is_web_worker) {
       args += [ "--is_web_worker" ]
     }

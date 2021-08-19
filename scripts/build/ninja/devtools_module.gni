@@ -23,6 +23,8 @@ template("devtools_module") {
     # `ts_library` is finished.
     typescript_config_name = invoker.target_name
 
+    reset_timestamps = true
+
     visibility += [ ":*" ]
   }
   _target_outputs = get_target_outputs(_typescript_target_dep)

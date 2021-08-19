@@ -6,6 +6,8 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {EditFileSystemView} from './EditFileSystemView.js';
+import workspaceSettingsTabStyles from './workspaceSettingsTab.css.js';
+
 import type {FileSystem} from './FileSystemWorkspaceBinding.js';
 import {IsolatedFileSystem} from './IsolatedFileSystem.js';
 import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
@@ -46,7 +48,6 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
   private readonly mappingViewByPath: Map<string, EditFileSystemView>;
   private constructor() {
     super();
-    this.registerRequiredCSS('models/persistence/workspaceSettingsTab.css');
 
     const header = this.element.createChild('header');
     UI.UIUtils.createTextChild(header.createChild('h1'), i18nString(UIStrings.workspace));
@@ -189,5 +190,9 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
       this.elementByPath.delete(fileSystem.path());
       element.remove();
     }
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([workspaceSettingsTabStyles]);
   }
 }

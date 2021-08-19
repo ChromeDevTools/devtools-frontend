@@ -32,7 +32,9 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import editFileSystemViewStyles from './editFileSystemView.css.js';
 import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
+
 import type {PlatformFileSystem} from './PlatformFileSystem.js';
 
 const UIStrings = {
@@ -79,7 +81,7 @@ export class EditFileSystemView extends UI.Widget.VBox implements UI.ListWidget.
   private excludedFolderEditor?: UI.ListWidget.Editor<string>;
   constructor(fileSystemPath: string) {
     super(true);
-    this.registerRequiredCSS('models/persistence/editFileSystemView.css');
+
     this.fileSystemPath = fileSystemPath;
 
     this.excludedFolders = [];
@@ -96,7 +98,7 @@ export class EditFileSystemView extends UI.Widget.VBox implements UI.ListWidget.
         i18nString(UIStrings.add), this.addExcludedFolderButtonClicked.bind(this), 'add-button'));
     this.excludedFoldersList = new UI.ListWidget.ListWidget(this);
     this.excludedFoldersList.element.classList.add('file-system-list');
-    this.excludedFoldersList.registerRequiredCSS('models/persistence/editFileSystemView.css');
+
     const excludedFoldersPlaceholder = document.createElement('div');
     excludedFoldersPlaceholder.classList.add('file-system-list-empty');
     excludedFoldersPlaceholder.textContent = i18nString(UIStrings.none);
@@ -203,5 +205,10 @@ export class EditFileSystemView extends UI.Widget.VBox implements UI.ListWidget.
       return '';
     }
     return prefix + (prefix[prefix.length - 1] === '/' ? '' : '/');
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.excludedFoldersList.registerCSSFiles([editFileSystemViewStyles]);
+    this.registerCSSFiles([editFileSystemViewStyles]);
   }
 }

@@ -155,11 +155,23 @@ luci.tree_closer(
 
 luci.notifier(
     name = "autoroll sheriff notifier",
-    on_occurrence = ["FAILURE"],
+    on_occurrence = ["FAILURE", "SUCCESS"],
     failed_step_regexp = [
         "Previous roll failed",
     ],
-    notify_emails = ["liviurau@chromium.org", "devtools-waterfall-sheriff-onduty@grotations.appspotmail.com"],
+    notify_emails = ["liviurau@google.com", "devtools-waterfall-sheriff-onduty@grotations.appspotmail.com"],
+    template = luci.notifier_template(
+        name = "sheriff_email", 
+        body = """
+Auto-roller {{.Build.Builder.Builder}} found a stale CL.
+
+Please check roll CLs.
+
+Builder {{.Build.Builder.Builder}} found stale CL at
+<a href=\"https://ci.chromium.org/b/{{.Build.Id}}\">Build {{.Build.Number}}</a>
+on `{{.Build.EndTime | time}}`
+"""
+    )
 )
 
 luci.milo(

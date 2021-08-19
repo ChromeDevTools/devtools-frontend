@@ -5,6 +5,9 @@
 import accessibilityPropertiesStyles from './accessibilityProperties.css.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import accessibilityNodeStyles from './accessibilityNode.css.js';
+// eslint-disable-next-line rulesdir/es_modules_import
+import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 
 export class AccessibilitySubPane extends UI.View.SimpleView {
   axNode: SDK.AccessibilityModel.AccessibilityNode|null;
@@ -35,9 +38,7 @@ export class AccessibilitySubPane extends UI.View.SimpleView {
 
   createTreeOutline(): UI.TreeOutline.TreeOutline {
     const treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-    treeOutline.registerRequiredCSS('panels/accessibility/accessibilityNode.css');
-    treeOutline.registerRequiredCSS('panels/accessibility/accessibilityProperties.css');
-    treeOutline.registerRequiredCSS('ui/legacy/components/object_ui/objectValue.css');
+    treeOutline.registerCSSFiles([accessibilityNodeStyles, accessibilityPropertiesStyles, objectValueStyles]);
 
     treeOutline.element.classList.add('hidden');
     treeOutline.hideOverflow();

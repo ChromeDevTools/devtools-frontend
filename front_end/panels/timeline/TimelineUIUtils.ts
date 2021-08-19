@@ -43,6 +43,7 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
+import invalidationsTreeStyles from './invalidationsTree.css.js';
 
 import {CLSRect} from './CLSLinkifier.js';
 import {TimelinePanel, TimelineSelection} from './TimelinePanel.js';
@@ -2820,7 +2821,7 @@ export class TimelineUIUtils {
     }
 
     const invalidationsTreeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-    invalidationsTreeOutline.registerRequiredCSS('panels/timeline/invalidationsTree.css');
+    invalidationsTreeOutline.registerCSSFiles([invalidationsTreeStyles]);
     invalidationsTreeOutline.element.classList.add('invalidations-tree');
 
     const invalidationGroups = groupInvalidationsByCause(invalidations);

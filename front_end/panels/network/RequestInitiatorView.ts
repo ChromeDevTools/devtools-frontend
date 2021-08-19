@@ -9,6 +9,7 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import requestInitiatorViewStyles from './requestInitiatorView.css.js';
+import requestInitiatorViewTreeStyles from './requestInitiatorViewTree.css.js';
 
 const UIStrings = {
   /**
@@ -61,7 +62,7 @@ export class RequestInitiatorView extends UI.Widget.VBox {
 
   private createTree(): UI.TreeOutline.TreeOutlineInShadow {
     const treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-    treeOutline.registerRequiredCSS('panels/network/requestInitiatorViewTree.css');
+    treeOutline.registerCSSFiles([requestInitiatorViewTreeStyles]);
     treeOutline.contentElement.classList.add('request-initiator-view-tree');
 
     return treeOutline;

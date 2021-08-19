@@ -46,6 +46,7 @@ devtools_entrypoint("bundle") {
     ":accessibility",
     ":css_files",
     "../../generated",
+    "../../ui/legacy/components/object_ui:css_files",
   ]
 
   visibility = [

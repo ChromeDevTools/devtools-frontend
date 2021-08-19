@@ -17,7 +17,7 @@ ElementsTestRunner.doAddAttribute = function(testName, dataNodeId, attributeText
 
     function testContinuation() {
       const editorElement =
-          ElementsTestRunner.firstElementsTreeOutline()._shadowRoot.getSelection().anchorNode.parentElement;
+          ElementsTestRunner.firstElementsTreeOutline().shadowRoot.getSelection().anchorNode.parentElement;
       editorElement.textContent = attributeText;
       editorElement.dispatchEvent(TestRunner.createKeyEvent('Enter'));
       TestRunner.addSniffer(Elements.ElementsTreeOutline.prototype, 'updateModifiedNodes', done);
@@ -62,7 +62,7 @@ ElementsTestRunner.editNodePart = function(node, className) {
     textElement = treeElement.childrenListElement.getElementsByClassName(className)[0];
   }
 
-  treeElement._startEditingTarget(textElement);
+  treeElement.startEditingTarget(textElement);
   return textElement;
 };
 

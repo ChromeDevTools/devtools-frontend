@@ -120,7 +120,7 @@ function createCodeMirrorFakeEvent(editor, eventType, code, charCode, modifiers)
     charCode: charCode,
     preventDefault: eventPreventDefault,
     stopPropagation: function() {},
-    target: editor.codeMirror.display.input.textarea
+    target: editor.codeMirror().display.input.textarea
   };
 
   if (modifiers) {
@@ -137,13 +137,13 @@ function fakeCodeMirrorKeyEvent(editor, eventType, code, charCode, modifiers) {
 
   switch (eventType) {
     case 'keydown':
-      editor.codeMirror.triggerOnKeyDown(event);
+      editor.codeMirror().triggerOnKeyDown(event);
       break;
     case 'keypress':
-      editor.codeMirror.triggerOnKeyPress(event);
+      editor.codeMirror().triggerOnKeyPress(event);
       break;
     case 'keyup':
-      editor.codeMirror.triggerOnKeyUp(event);
+      editor.codeMirror().triggerOnKeyUp(event);
       break;
     default:
       throw new Error('Unknown KeyEvent type');
@@ -156,7 +156,7 @@ function fakeCodeMirrorInputEvent(editor, character) {
   if (typeof character !== 'string') {
     return;
   }
-  const input = editor.codeMirror.display.input;
+  const input = editor.codeMirror().display.input;
   const value = input.textarea.value;
   const newValue =
       value.substring(0, input.textarea.selectionStart) + character + value.substring(input.textarea.selectionEnd);
@@ -200,7 +200,7 @@ SourcesTestRunner.fakeKeyEvent = function(editor, originalCode, modifiers, callb
     return;
   }
 
-  const inputReadPromise = new Promise(x => editor.codeMirror.on('inputRead', x));
+  const inputReadPromise = new Promise(x => editor.codeMirror().on('inputRead', x));
   fakeCodeMirrorInputEvent(editor, originalCode);
   fakeCodeMirrorKeyEvent(editor, 'keyup', code, charCode, modifiers);
   inputReadPromise.then(callback);

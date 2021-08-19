@@ -44,7 +44,7 @@ PerformanceTestRunner.timelinePropertyFormatters = {
 };
 
 PerformanceTestRunner.InvalidationFormatters = {
-  _tracingEvent: 'skip',
+  tracingEvent: 'skip',
   cause: 'formatAsInvalidationCause',
   frame: 'skip',
   invalidatedSelectorId: 'skip',

@@ -13,7 +13,7 @@ self.SecurityTestRunner = self.SecurityTestRunner || {};
 SecurityTestRunner.dumpSecurityPanelSidebarOrigins = function() {
   for (const key in Security.SecurityPanelSidebarTree.OriginGroup) {
     const originGroup = Security.SecurityPanelSidebarTree.OriginGroup[key];
-    const element = Security.SecurityPanel._instance()._sidebarTree._originGroups.get(originGroup);
+    const element = Security.SecurityPanel.instance().sidebarTree.originGroups.get(originGroup);
 
     if (element.hidden) {
       continue;

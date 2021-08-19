@@ -320,6 +320,7 @@ export class MainImpl {
     Root.Runtime.experiments.enableExperimentsByDefault([
       Root.Runtime.ExperimentName.LOCALIZED_DEVTOOLS,
       'sourceOrderViewer',
+      'hideIssuesFeature',
     ]);
 
     Root.Runtime.experiments.cleanUpStaleExperiments();

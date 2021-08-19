@@ -6214,7 +6214,7 @@ declare namespace Protocol {
     /**
      * Unique snapshot identifier.
      */
-    export type SnapshotId = string;
+    export type SnapshotId = OpaqueIdentifier<string, 'Protocol.LayerTree.SnapshotId'>;
 
     export const enum ScrollRectType {
       RepaintsOnScroll = 'RepaintsOnScroll',
@@ -10026,7 +10026,7 @@ declare namespace Protocol {
     /**
      * Unique script identifier.
      */
-    export type ScriptIdentifier = string;
+    export type ScriptIdentifier = OpaqueIdentifier<string, 'Protocol.Page.ScriptIdentifier'>;
 
     /**
      * Transition type.
@@ -13994,7 +13994,7 @@ declare namespace Protocol {
     /**
      * Breakpoint identifier.
      */
-    export type BreakpointId = string;
+    export type BreakpointId = OpaqueIdentifier<string, 'Protocol.Debugger.BreakpointId'>;
 
     /**
      * Call frame identifier.

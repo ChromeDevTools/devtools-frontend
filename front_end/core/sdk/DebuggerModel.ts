@@ -485,7 +485,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     return {locations: actualLocation, breakpointId: response.breakpointId};
   }
 
-  async removeBreakpoint(breakpointId: string): Promise<void> {
+  async removeBreakpoint(breakpointId: Protocol.Debugger.BreakpointId): Promise<void> {
     const response = await this.agent.invoke_removeBreakpoint({breakpointId});
     if (response.getError()) {
       console.error('Failed to remove breakpoint: ' + response.getError());
@@ -1568,6 +1568,6 @@ export interface FunctionDetails {
   functionName: string;
 }
 export interface SetBreakpointResult {
-  breakpointId: string|null;
+  breakpointId: Protocol.Debugger.BreakpointId|null;
   locations: Location[];
 }

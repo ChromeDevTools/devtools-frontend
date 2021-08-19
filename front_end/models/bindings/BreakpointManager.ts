@@ -536,7 +536,7 @@ export class ModelBreakpoint {
   private isUpdating: boolean;
   private cancelCallback: boolean;
   private currentState: Breakpoint.State|null;
-  private breakpointIds: string[];
+  private breakpointIds: Protocol.Debugger.BreakpointId[];
 
   constructor(
       debuggerModel: SDK.DebuggerModel.DebuggerModel, breakpoint: Breakpoint,
@@ -668,7 +668,7 @@ export class ModelBreakpoint {
       return this.debuggerModel.setBreakpointInAnonymousScript(
           pos.scriptId, pos.scriptHash as string, pos.lineNumber, pos.columnNumber, condition);
     }));
-    const breakpointIds: string[] = [];
+    const breakpointIds: Protocol.Debugger.BreakpointId[] = [];
     let locations: SDK.DebuggerModel.Location[] = [];
     let maybeRescheduleUpdate = false;
     for (const result of results) {

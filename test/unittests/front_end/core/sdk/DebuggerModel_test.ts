@@ -58,20 +58,36 @@ describeWithMockConnection('DebuggerModel', () => {
     });
   });
 
+  const breakpointId1 = 'fs.js:1' as Protocol.Debugger.BreakpointId;
+  const breakpointId2 = 'unsupported' as Protocol.Debugger.BreakpointId;
+
   describe('setBreakpointByURL', () => {
     it('correctly sets only a single breakpoint in Node.js internal scripts', async () => {
-      setMockConnectionResponseHandler('Debugger.setBreakpointByUrl', ({url}) => {
-        if (url === 'fs.js') {
-          return {breakpointId: 'fs.js:1', locations: []};
-        }
-        return {breakpointId: 'unsupported', locations: []};
-      });
+      setMockConnectionResponseHandler(
+          'Debugger.setBreakpointByUrl', ({url}): Protocol.Debugger.SetBreakpointByUrlResponse => {
+            if (url === 'fs.js') {
+              return {
+                breakpointId: breakpointId1,
+                locations: [],
+                getError() {
+                  return undefined;
+                },
+              };
+            }
+            return {
+              breakpointId: breakpointId2,
+              locations: [],
+              getError() {
+                return undefined;
+              },
+            };
+          });
 
       const target = createTarget();
       target.markAsNodeJSForTest();
       const model = new SDK.DebuggerModel.DebuggerModel(target);
       const {breakpointId} = await model.setBreakpointByURL('fs.js', 1);
-      assert.strictEqual(breakpointId, 'fs.js:1');
+      assert.strictEqual(breakpointId, breakpointId1);
     });
   });
 });

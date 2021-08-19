@@ -32,6 +32,8 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import renderingOptionsStyles from './renderingOptions.css.js';
+
 const UIStrings = {
   /**
   * @description The name of a checkbox setting in the Rendering tool. This setting highlights areas
@@ -208,7 +210,6 @@ let renderingOptionsViewInstance: RenderingOptionsView;
 export class RenderingOptionsView extends UI.Widget.VBox {
   private constructor() {
     super(true);
-    this.registerRequiredCSS('entrypoints/inspector_main/renderingOptions.css');
 
     this.appendCheckbox(
         i18nString(UIStrings.paintFlashing), i18nString(UIStrings.highlightsAreasOfThePageGreen),
@@ -319,5 +320,9 @@ export class RenderingOptionsView extends UI.Widget.VBox {
     if (control) {
       this.contentElement.appendChild(control);
     }
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([renderingOptionsStyles]);
   }
 }

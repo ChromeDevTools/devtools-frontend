@@ -4,7 +4,15 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/generate_css.gni")
 import("../visibility.gni")
+
+generate_css("css_files") {
+  sources = [
+    "nodeIcon.css",
+    "renderingOptions.css",
+  ]
+}
 
 devtools_module("inspector_main") {
   sources = [
@@ -35,7 +43,10 @@ copy_to_gen("legacy_css") {
 devtools_entrypoint("bundle") {
   entrypoint = "inspector_main.ts"
 
-  deps = [ ":inspector_main" ]
+  deps = [
+    ":css_files",
+    ":inspector_main",
+  ]
 
   visibility = [
     ":*",

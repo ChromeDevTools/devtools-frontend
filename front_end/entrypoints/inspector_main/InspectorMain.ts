@@ -10,6 +10,9 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as MobileThrottling from '../../panels/mobile_throttling/mobile_throttling.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+
+import nodeIconStyles from './nodeIcon.css.js';
+
 import type * as Protocol from '../../generated/protocol.js';
 
 const UIStrings = {
@@ -147,8 +150,8 @@ export class NodeIndicator implements UI.Toolbar.Provider {
   private readonly button: UI.Toolbar.ToolbarItem;
   private constructor() {
     const element = document.createElement('div');
-    const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
-        element, {cssFile: 'entrypoints/inspector_main/nodeIcon.css', delegatesFocus: undefined});
+    const shadowRoot =
+        UI.Utils.createShadowRootWithCoreStyles(element, {cssFile: [nodeIconStyles], delegatesFocus: undefined});
     this.element = shadowRoot.createChild('div', 'node-icon');
     element.addEventListener(
         'click', () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openNodeFrontend(), false);

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import nodeConnectionsPanelStyles from './nodeConnectionsPanel.css.js';
 import type * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -41,7 +42,7 @@ export class NodeConnectionsPanel extends UI.Panel.Panel {
   private readonly networkDiscoveryView: NodeConnectionsView;
   private constructor() {
     super('node-connection');
-    this.registerRequiredCSS('entrypoints/node_main/nodeConnectionsPanel.css');
+
     this.contentElement.classList.add('node-panel');
 
     const container = this.contentElement.createChild('div', 'node-panel-center');
@@ -81,6 +82,10 @@ export class NodeConnectionsPanel extends UI.Panel.Panel {
     this.config = (event.data as Adb.Config);
     this.networkDiscoveryView.discoveryConfigChanged(this.config.networkDiscoveryConfig);
   }
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([nodeConnectionsPanelStyles]);
+  }
 }
 
 export class NodeConnectionsView extends UI.Widget.VBox implements UI.ListWidget.Delegate<Adb.PortForwardingRule> {
@@ -102,7 +107,7 @@ export class NodeConnectionsView extends UI.Widget.VBox implements UI.ListWidget
         i18n.i18n.getFormatLocalizedString(str_, UIStrings.specifyNetworkEndpointAnd, {PH1: documentationLink}));
 
     this.list = new UI.ListWidget.ListWidget(this);
-    this.list.registerRequiredCSS('entrypoints/node_main/nodeConnectionsPanel.css');
+
     this.list.element.classList.add('network-discovery-list');
     const placeholder = document.createElement('div');
     placeholder.classList.add('network-discovery-list-empty');
@@ -196,5 +201,9 @@ export class NodeConnectionsView extends UI.Widget.VBox implements UI.ListWidget
         errorMessage: undefined,
       };
     }
+  }
+  wasShown(): void {
+    super.wasShown();
+    this.list.registerCSSFiles([nodeConnectionsPanelStyles]);
   }
 }

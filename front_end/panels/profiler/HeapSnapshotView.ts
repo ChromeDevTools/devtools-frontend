@@ -742,7 +742,8 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     const selectedNode = (event.data as HeapSnapshotGridNode);
     const heapProfilerModel = this.profile.heapProfilerModel();
     if (heapProfilerModel && selectedNode instanceof HeapSnapshotGenericObjectNode) {
-      heapProfilerModel.addInspectedHeapObject(String(selectedNode.snapshotNodeId));
+      heapProfilerModel.addInspectedHeapObject(
+          String(selectedNode.snapshotNodeId) as Protocol.HeapProfiler.HeapSnapshotObjectId);
     }
   }
 

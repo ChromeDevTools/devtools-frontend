@@ -14853,7 +14853,7 @@ declare namespace Protocol {
     /**
      * Heap snapshot object id.
      */
-    export type HeapSnapshotObjectId = string;
+    export type HeapSnapshotObjectId = OpaqueIdentifier<string, 'Protocol.HeapProfiler.HeapSnapshotObjectId'>;
 
     /**
      * Sampling Heap Profile node. Holds callsite information, allocation statistics and child nodes.

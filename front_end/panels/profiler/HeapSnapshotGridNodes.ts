@@ -628,7 +628,8 @@ export abstract class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode
     if (this.type === 'string') {
       return heapProfilerModel.runtimeModel().createRemoteObjectFromPrimitiveValue(this.nameInternal);
     }
-    return await heapProfilerModel.objectForSnapshotObjectId(String(this.snapshotNodeId), objectGroupName);
+    return await heapProfilerModel.objectForSnapshotObjectId(
+        String(this.snapshotNodeId) as Protocol.HeapProfiler.HeapSnapshotObjectId, objectGroupName);
   }
 
   async updateHasChildren(): Promise<void> {

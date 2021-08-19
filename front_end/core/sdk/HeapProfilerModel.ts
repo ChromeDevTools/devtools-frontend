@@ -91,7 +91,9 @@ export class HeapProfilerModel extends SDKModel<EventTypes> {
     return response.heapSnapshotObjectId;
   }
 
-  async objectForSnapshotObjectId(snapshotObjectId: string, objectGroupName: string): Promise<RemoteObject|null> {
+  async objectForSnapshotObjectId(
+      snapshotObjectId: Protocol.HeapProfiler.HeapSnapshotObjectId,
+      objectGroupName: string): Promise<RemoteObject|null> {
     const result = await this.heapProfilerAgent.invoke_getObjectByHeapObjectId(
         {objectId: snapshotObjectId, objectGroup: objectGroupName});
     if (result.getError()) {
@@ -100,7 +102,7 @@ export class HeapProfilerModel extends SDKModel<EventTypes> {
     return this.runtimeModelInternal.createRemoteObject(result.result);
   }
 
-  async addInspectedHeapObject(snapshotObjectId: string): Promise<boolean> {
+  async addInspectedHeapObject(snapshotObjectId: Protocol.HeapProfiler.HeapSnapshotObjectId): Promise<boolean> {
     const response = await this.heapProfilerAgent.invoke_addInspectedHeapObject({heapObjectId: snapshotObjectId});
     return Boolean(response.getError());
   }

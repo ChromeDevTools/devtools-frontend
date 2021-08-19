@@ -232,6 +232,7 @@ const knownIdentifierTypes = [
   'DOM.NodeId',
   'DOM.SnapshotId',
   'Fetch.RequestId',
+  'HeapProfiler.HeapSnapshotObjectId',
   'LayerTree.LayerId',
   'LayerTree.SnapshotId',
   'Media.PlayerId',

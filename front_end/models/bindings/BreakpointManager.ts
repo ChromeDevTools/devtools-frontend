@@ -40,7 +40,7 @@ import {LiveLocationPool} from './LiveLocation.js';
 
 let breakpointManagerInstance: BreakpointManager;
 
-export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper {
+export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   readonly storage: Storage;
   private readonly workspace: Workspace.Workspace.WorkspaceImpl;
   readonly targetManager: SDK.TargetManager.TargetManager;
@@ -296,6 +296,11 @@ export enum Events {
   BreakpointAdded = 'breakpoint-added',
   BreakpointRemoved = 'breakpoint-removed',
 }
+
+export type EventTypes = {
+  [Events.BreakpointAdded]: BreakpointLocation,
+  [Events.BreakpointRemoved]: BreakpointLocation,
+};
 
 export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
   readonly breakpointManager: BreakpointManager;

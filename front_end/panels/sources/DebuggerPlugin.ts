@@ -1539,8 +1539,9 @@ export class DebuggerPlugin extends Plugin {
     contextMenu.show();
   }
 
-  private shouldIgnoreExternalBreakpointEvents(event: Common.EventTarget.EventTargetEvent): boolean {
-    const uiLocation = (event.data.uiLocation as Workspace.UISourceCode.UILocation);
+  private shouldIgnoreExternalBreakpointEvents(
+      event: Common.EventTarget.EventTargetEvent<Bindings.BreakpointManager.BreakpointLocation>): boolean {
+    const {uiLocation} = event.data;
     if (uiLocation.uiSourceCode !== this.uiSourceCode) {
       return true;
     }
@@ -1555,12 +1556,12 @@ export class DebuggerPlugin extends Plugin {
     return false;
   }
 
-  private breakpointAdded(event: Common.EventTarget.EventTargetEvent): void {
+  private breakpointAdded(event: Common.EventTarget.EventTargetEvent<Bindings.BreakpointManager.BreakpointLocation>):
+      void {
     if (this.shouldIgnoreExternalBreakpointEvents(event)) {
       return;
     }
-    const uiLocation = (event.data.uiLocation as Workspace.UISourceCode.UILocation);
-    const breakpoint = (event.data.breakpoint as Bindings.BreakpointManager.Breakpoint);
+    const {breakpoint, uiLocation} = event.data;
     this.addBreakpoint(uiLocation, breakpoint);
   }
 
@@ -1636,12 +1637,12 @@ export class DebuggerPlugin extends Plugin {
     }
   }
 
-  private breakpointRemoved(event: Common.EventTarget.EventTargetEvent): void {
+  private breakpointRemoved(event: Common.EventTarget.EventTargetEvent<Bindings.BreakpointManager.BreakpointLocation>):
+      void {
     if (this.shouldIgnoreExternalBreakpointEvents(event)) {
       return;
     }
-    const uiLocation = (event.data.uiLocation as Workspace.UISourceCode.UILocation);
-    const breakpoint = (event.data.breakpoint as Bindings.BreakpointManager.Breakpoint);
+    const {breakpoint, uiLocation} = event.data;
     const decoration = this.decorationByBreakpoint.get(breakpoint);
     if (!decoration) {
       return;

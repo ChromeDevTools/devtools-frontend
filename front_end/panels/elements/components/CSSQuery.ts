@@ -3,12 +3,13 @@
 // found in the LICENSE file.
 
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+// eslint-disable-next-line rulesdir/es_modules_import
+import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import cssQueryStyles from './cssQuery.css.js';
 
 const {render, html} = LitHtml;
-const getStyleSheets = ComponentHelpers.GetStylesheet.getStyleSheets;
 
 export interface CSSQueryData {
   queryPrefix: string;
@@ -37,8 +38,7 @@ export class CSSQuery extends HTMLElement {
   connectedCallback(): void {
     this.shadow.adoptedStyleSheets = [
       cssQueryStyles,
-      // Required for editing styles.
-      ...getStyleSheets('ui/legacy/inspectorCommon.css'),
+      inspectorCommonStyles,
     ];
   }
 

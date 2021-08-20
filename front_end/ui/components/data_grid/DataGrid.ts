@@ -4,10 +4,12 @@
 
 import * as Host from '../../../core/host/host.js';
 import * as Platform from '../../../core/platform/platform.js';
+import inspectorScrollbarsStyles from '../../legacy/inspectorScrollbars.css.js';
 import * as UI from '../../legacy/legacy.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
+
 import dataGridStyles from './dataGrid.css.js';
 import {BodyCellFocusedEvent, ColumnHeaderClickEvent, ContextMenuHeaderResetClickEvent} from './DataGridEvents.js';
 
@@ -116,9 +118,7 @@ export class DataGrid extends HTMLElement {
 
   constructor() {
     super();
-    this.shadow.adoptedStyleSheets = [
-      ...ComponentHelpers.GetStylesheet.getStyleSheets('ui/legacy/inspectorScrollbars.css'),
-    ];
+    this.shadow.adoptedStyleSheets = [inspectorScrollbarsStyles];
   }
   connectedCallback(): void {
     this.shadow.adoptedStyleSheets = [dataGridStyles];
